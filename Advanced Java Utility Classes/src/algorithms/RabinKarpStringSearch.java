@@ -115,7 +115,7 @@ public class RabinKarpStringSearch {
      */
     public int search(String txt) {
         int n = txt.length(); 
-        if (n < m) return n;
+        if (n < m) return -1;
         long txtHash = hash(txt, m); 
 
         // check for match at offset 0
@@ -131,11 +131,11 @@ public class RabinKarpStringSearch {
             // match
             int offset = i - m + 1;
             if ((patHash == txtHash) && check(txt, offset))
-                return offset;
+            	return offset;
         }
 
         // no match
-        return n;
+        return -1;
     }
 
 
