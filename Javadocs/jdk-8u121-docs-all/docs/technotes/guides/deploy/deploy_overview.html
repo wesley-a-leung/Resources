@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Application Execution Modes</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1044" name="generator"/>
+<meta content="This topic explains the different application execution modes that are available for deploying your Java and JavaFX applications." name="description"/>
+<meta content="2015-02-16T9:50:3Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Deployment Guide, Release 8u40" name="doctitle"/>
+<meta content="Release 8u40" name="relnum"/>
+<meta content="E50259-02" name="partnum"/>
+<meta content="JSDPG" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Deployment Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="deploy_quick_start.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="deploy_user_experience.html">
+                Next</a><hr/>
+<div id="JSDPG352"><a id="CEGHEAHD" name="CEGHEAHD"/>
+<h1><span>3</span> Application Execution Modes</h1>
+<a id="JSDPG642" name="JSDPG642"/>
+<p>This topic explains the different application execution modes that are available for deploying your Java and JavaFX applications.</p>
+<p>One of the main features of the Java application model is that you can write one application and easily deploy it several different ways. The user can experience the same application running on the desktop, in a browser, or starting from a link in a browser.</p>
+<p>However, differences exist among the execution modes and need to be considered while developing the application.</p>
+<p>This topic contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#BABCGDJF">Execution Modes</a></p>
+</li>
+<li>
+<p><a href="#CEGDDIGC">Understanding Feature Differences</a></p>
+</li>
+</ul>
+<a id="BABCGDJF" name="BABCGDJF"/>
+<div id="JSDPG353">
+<h2><span>3.1</span> Execution Modes</h2>
+<p><a href="#CEGJGHGB">Table 3-1</a> describes the execution modes in which Java applications can be deployed.</p>
+<div id="JSDPG354"><a id="sthref8" name="sthref8"/><a id="CEGJGHGB" name="CEGJGHGB"/>
+<p>Table 3-1 Java Execution Modes</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="Describes each type of JavaFX deployment and the advantages of each one." title="Java Execution Modes" width="100%">
+<col width="22%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t2" valign="bottom">Execution Mode</th>
+<th align="left" id="r1c2-t2" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r2c1-t2">
+<p>Run as a standalone program</p>
+</td>
+<td align="left" headers="r2c1-t2 r1c2-t2">
+<p>The application package is available on a local drive. Users launch it using a Java launcher, such as <code dir="ltr">java -jar MyApp.jar</code>, or by double-clicking the application JAR file.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r3c1-t2">
+<p>Launched from a remote server using Java Web Start</p>
+</td>
+<td align="left" headers="r3c1-t2 r1c2-t2">
+<p>Users click a link in a web page to start the application from a remote web server. Once downloaded, a Java Web Start application can also be started from a desktop shortcut.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r4c1-t2">
+<p>Embedded in a browser</p>
+</td>
+<td align="left" headers="r4c1-t2 r1c2-t2">
+<p>Java content is embedded in the web page and hosted on a remote web server.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r5c1-t2">
+<p>Launched as a self-contained application</p>
+</td>
+<td align="left" headers="r5c1-t2 r1c2-t2">
+<p>Application is installed on the local drive and runs as a standalone program using a private copy of the JRE. The application can be launched in the same way as other native applications for that operating system, for example, using a desktop shortcut or menu entry.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p>Each execution environment has its drawbacks. For example, for remote applications the loading phase can be very long because the application has to be loaded from the network. This is less of an issue for applications that run on a local drive.</p>
+</div>
+
+<a id="CEGDDIGC" name="CEGDDIGC"/>
+<div id="JSDPG355">
+<h2><span>3.2</span> Understanding Feature Differences</h2>
+<p><a href="#CEGBBAJB">Figure 3-1</a> lists some of the features that behave differently in the different environments. The following sections describe the figure in more detail.</p>
+<div id="JSDPG356"><a id="CEGBBAJB" name="CEGBBAJB"/>
+<p><b><i>Figure 3-1 Features of Deployment Types</i></b></p>
+<img alt="Description of Figure 3-1 follows" longdesc="img_text/deploy_type_properties.htm" src="img/deploy_type_properties.gif"/><br/>
+<a href="img_text/deploy_type_properties.html" id="sthref9" name="sthref9">Description of "Figure 3-1 Features of Deployment Types"</a><br/>
+<br/></div>
+
+<div id="JSDPG360"><a id="sthref10" name="sthref10"/>
+<h3><span>3.2.1</span> Preloader Support for JavaFX Applications</h3>
+<p>The preloader is a small JavaFX application that receives notifications about application loading and initialization progress. The preloader is used with all execution modes, but depending on the execution mode, the preloader implementation receives a different set of events and optimal behavior may be different.</p>
+<p>For example, in self-contained application or standalone execution mode or when launched from a shortcut, the preloader does not get any loading progress events, because there is nothing to load. See <a href="preloaders.html#BABCDIHD">Chapter 13, "Preloaders for JavaFX Applications"</a> for information about preloader implementation and differences in behavior.</p>
+</div>
+
+<div id="JSDPG574"><a id="sthref11" name="sthref11"/>
+<h3><span>3.2.2</span> Built-In Proxy Support</h3>
+<p>Properly packaged Java applications have proxy settings initialized according to JRE configuration settings. By default, proxy settings are taken from the current browser, if the application is embedded in a web page. Otherwise, system proxy settings are used. Proxy settings are initialized by default in all execution modes.</p>
+</div>
+
+<div id="JSDPG357"><a id="sthref12" name="sthref12"/>
+<h3><span>3.2.3</span> Desktop Integration via Shortcut</h3>
+<p>Most of the operating systems allow applications to simplify subsequent launches and integrate with the user's desktop by creating a desktop shortcut or adding a link to the programs menu or dock.</p>
+<p>Built-in support for desktop shortcuts is available for self-contained and web-deployed applications.</p>
+</div>
+
+<a id="CEGJGHDA" name="CEGJGHDA"/>
+<div id="JSDPG359">
+<h3><span>3.2.4</span> Run in Sandbox</h3>
+<p>By default, Java applications that are launched from a browser or are embedded in a web page run in a restricted environment, known as a sandbox. Restricting applications to the sandbox provides the following benefits:</p>
+<ul>
+<li>
+<p>Users are protected against malicious code that could affect local files.</p>
+</li>
+<li>
+<p>Enterprises are protected against code that could attempt to access or destroy data on networks.</p>
+</li>
+</ul>
+<p>Applications that are restricted to the sandbox cannot perform the following operations:</p>
+<ul>
+<li>
+<p>Access client resources such as the local file system, executable files, system clipboard, and printers.</p>
+</li>
+<li>
+<p>Connect to or retrieve resources from any third-party server (in other words, any server other than the server it originated from).</p>
+</li>
+<li>
+<p>Load native libraries.</p>
+</li>
+<li>
+<p>Change the SecurityManager.</p>
+</li>
+<li>
+<p>Create a ClassLoader.</p>
+</li>
+<li>
+<p>Read certain system properties. See <a href="http://docs.oracle.com/javase/tutorial/deployment/doingMoreWithRIA/properties.html">System Properties</a> for a list of forbidden system properties.</p>
+</li>
+</ul>
+</div>
+
+<div id="JSDPG358"><a id="sthref13" name="sthref13"/>
+<h3><span>3.2.5</span> Auto-Updates</h3>
+<p>Java applications that run in a browser or were earlier installed from a web page automatically check for updates to the application at the original location where the application is loaded. This check is made every time an application starts, and, by default, the update runs in the background. The application is automatically updated if updates are detected.</p>
+<p>For standalone and self-contained applications, you are responsible for handling updates.</p>
+</div>
+
+<div id="JSDPG361"><a id="sthref14" name="sthref14"/>
+<h3><span>3.2.6</span> Deployment Toolkit</h3>
+<p>The Deployment Toolkit performs two important functions:</p>
+<ul>
+<li>
+<p>Simplifies web deployment of Java applications by managing updates.</p>
+</li>
+<li>
+<p>Improves the user's experience while waiting for applications to start.</p>
+</li>
+</ul>
+<p>These two functions are connected, because the application startup phase is a critical component of user satisfaction. For example, the Deployment Toolkit verifies that the user has the JRE installed, and if not, it offers to install it before trying to run the application, requiring little effort on the user's part.</p>
+<p>The Deployment Toolkit provides a JavaScript API and is only available for applications embedded in a web page or launched from a browser.</p>
+<p>For more information about the Deployment Toolkit, see <a href="deployment_toolkit.html#BABJHEJA">Chapter 19, "Deployment in the Browser."</a></p>
+</div>
+
+<div id="JSDPG362"><a id="sthref15" name="sthref15"/>
+<h3><span>3.2.7</span> Communicate to the Host Web Page</h3>
+<p>Applications that are embedded in a web page can communicate with the web page using JavaScript. To initiate communication, a JavaFX application must get the web context from the JavaFX <code dir="ltr">HostServices</code> API. For any other execution environment, an attempt to get a reference to web context returns null.</p>
+<p><a href="#CEGJJDHG">Example 3-1</a> shows an example of using JavaScript to go to a new page:</p>
+<div id="JSDPG663"><a id="CEGJJDHG" name="CEGJJDHG"/>
+<p>Example 3-1 Using JavaScript to Go to a New Page</p>
+<pre dir="ltr" xml:space="preserve">
+final HostServices services = getHostServices();
+JSObject js = services.getWebContext();
+js.eval("window.location='http://javafx.com'");
+</pre></div>
+
+<p>For JavaFX applications, see <a href="javafx_javascript.html#BCEBDHIF">Chapter 16, "Java and JavaScript"</a> for information about using JavaScript to communicate with the browser.</p>
+<p>For Java applets, see <a href="http://docs.oracle.com/javase/tutorial/deployment/applet/invokingJavaScriptFromApplet.html">Invoking JavaScript Code From an Applet</a> for information about using JavaScript to communicate with the browser.</p>
+</div>
+
+<div id="JSDPG569"><a id="sthref16" name="sthref16"/>
+<h3><span>3.2.8</span> Managing Platform Dependencies</h3>
+<p>To run Java content, a recent version of the JRE is required. Unless the application is self-contained, the JRE must be installed on the user's system.</p>
+<p>If users do not have the required version of the JRE, they are directed to install it. However, situations exist in which system installations of the JRE and the auto-update functionality are not sufficient, for example:</p>
+<ul>
+<li>
+<p>The user does not have admin permissions to install the JRE.</p>
+</li>
+<li>
+<p>The user requires an older version of the JRE for other applications.</p>
+</li>
+<li>
+<p>You want to set the exact version of the JRE to be used by your application.</p>
+</li>
+<li>
+<p>Your distribution channel disallows dependencies on external frameworks.</p>
+</li>
+</ul>
+<p>Deploying your application as a self-contained application resolves these issues. The JRE is included in the application package, and users do not need to install it separately. The self-contained application package can be as simple as a .zip file distribution, or it can be wrapped into an installable package using technology that is native to the target operating system. See the topic <a href="packaging.html#BABFECGG">Section 5, "Packaging Basics"</a> for more details about self-contained application packages.</p>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="deploy_quick_start.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="deploy_user_experience.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

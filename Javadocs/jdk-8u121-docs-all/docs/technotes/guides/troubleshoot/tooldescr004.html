@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>How to Produce a Flight Recording</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:27Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr003.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr005.html">
+                Next</a><hr/><a id="BABJJEEE" name="BABJJEEE"/>
+<div id="JSTGD121">
+<h1><span>2.4</span> How to Produce a Flight Recording</h1>
+<p>The following sections describe three ways to produce a flight recording.</p>
+<ul>
+<li>
+<p><a href="#BABJCJDB">Use Java Mission Control to Produce a Flight Recording</a></p>
+</li>
+<li>
+<p><a href="#BABHCDEA">Use Startup Flags at the Command Line to Produce a Flight Recording</a></p>
+</li>
+<li>
+<p><a href="#BABDIGFA">Use Triggers for Automatic Recordings</a></p>
+</li>
+</ul>
+<a id="BABJCJDB" name="BABJCJDB"/>
+<div id="JSTGD122">
+<h2><span>2.4.1</span> Use Java Mission Control to Produce a Flight Recording</h2>
+<p>Use Java Mission Control (JMC) to easily manage flight recordings. To begin with, find your server in the JVM Browser in the left most frame as shown in <a href="#BABFEGBD">Figure 2-1</a>.</p>
+<div id="JSTGD123"><a id="BABFEGBD" name="BABFEGBD"/>
+<p><b><i>Figure 2-1 Java Mission Control - Find Server</i></b></p>
+<img alt="Description of Figure 2-1 follows" longdesc="img_text/jmc-event.htm" src="img/jmc-event.png"/><br/>
+<a href="img_text/jmc-event.html" id="sthref10" name="sthref10">Description of "Figure 2-1 Java Mission Control - Find Server"</a><br/>
+<br/></div>
+
+<p>By default, any local running JVMs will be listed. Remote JVMs (running as the same effective user as the user running JMC) must be set up to use a remote JMX agent, see <a href="../management/agent.html">Monitoring and Management Using JMX Technology</a>. Then, click the <b>New JVM Connection</b> button, and enter the network details.</p>
+<p>Prior to JDK 8u40 release, the JVM must also have been started with the flag: <code dir="ltr">-XX:+UnlockCommercialFeatures -XX:FlightRecorder</code>.</p>
+<p>Since the JDK 8u40 release, the Java Flight Recorder can be enabled during runtime.</p>
+<p>The following are three ways to use Java Mission Control to produce a flight recording.</p>
+<ol>
+<li>
+<p><b>Inspect running recordings:</b> Expand the node in the JVM browser to see running recordings. <a href="#BABJJIJC">Figure 2-2</a> shows both a running continuous recording (with the infinity sign) and a timed profiling recording.</p>
+<div id="JSTGD124"><a id="BABJJIJC" name="BABJJIJC"/>
+<p><b><i>Figure 2-2 Java Mission Control - Running Recordings</i></b></p>
+<img alt="Description of Figure 2-2 follows" longdesc="img_text/jmc-expand-node.htm" src="img/jmc-expand-node.png"/><br/>
+<a href="img_text/jmc-expand-node.html" id="sthref11" name="sthref11">Description of "Figure 2-2 Java Mission Control - Running Recordings"</a><br/>
+<br/></div>
+
+<p>Right-click any of the recordings to dump, edit, or stop the recording. Stopping a profiling recording will still produce a recording file and closing a profiling recording will discard the recording.</p>
+</li>
+<li>
+<p><b>Dump continuous recordings:</b> Right-click a continuous recording in the JVM Browser and then select to dump it to a file. In the dialog box that comes up, select to dump all available data or only the last part of the recording, as shown in <a href="#BABEHFAC">Figure 2-3</a>.</p>
+<div id="JSTGD125"><a id="BABEHFAC" name="BABEHFAC"/>
+<p><b><i>Figure 2-3 Java Mission Control - Dump Continuous Recordings</i></b></p>
+<img alt="Description of Figure 2-3 follows" longdesc="img_text/jmc-continue-record.htm" src="img/jmc-continue-record.png"/><br/>
+<a href="img_text/jmc-continue-record.html" id="sthref12" name="sthref12">Description of "Figure 2-3 Java Mission Control - Dump Continuous Recordings"</a><br/>
+<br/></div>
+</li>
+<li>
+<p><b>Start a new recording:</b> To start a new recording, right click the JVM you want to record on and select <b>Start Flight Recording</b>. Then, a window displays, as shown in <a href="#BABJGJFC">Figure 2-4</a>.</p>
+<div id="JSTGD126"><a id="BABJGJFC" name="BABJGJFC"/>
+<p><b><i>Figure 2-4 Java Mission Control - Start Flight Recordings</i></b></p>
+<img alt="Description of Figure 2-4 follows" longdesc="img_text/jmc-start-record.htm" src="img/jmc-start-record.png"/><br/>
+<a href="img_text/jmc-start-record.html" id="sthref13" name="sthref13">Description of "Figure 2-4 Java Mission Control - Start Flight Recordings"</a><br/>
+<br/></div>
+
+<p>Select either <b>Time fixed recording</b> (profiling recording), or <b>Continuous recording</b> as shown in <a href="#BABJGJFC">Figure 2-4</a>. For continuous recordings, you also specify the maximum size or age of events you want to save.</p>
+<p>You can also select <b>Event settings</b>. There is an option to create your own templates, but for 99 percent of all use cases you want to select either the Continuous template (for very low overhead recordings) or the Profiling template (for more data and slightly more overhead). <i>Note:</i> The typical overhead for a profiling recording is about 2 percent.</p>
+<p>When done, click <b>Next</b>. The next screen, as shown in <a href="#BABBFHEC">Figure 2-5</a>, gives you a chance to modify the template for different use cases.</p>
+<div id="JSTGD127"><a id="BABBFHEC" name="BABBFHEC"/>
+<p><b><i>Figure 2-5 Java Mission Control - Event Options for Profiling</i></b></p>
+<img alt="Description of Figure 2-5 follows" longdesc="img_text/jmc-event-profile.htm" src="img/jmc-event-profile.png"/><br/>
+<a href="img_text/jmc-event-profile.html" id="sthref14" name="sthref14">Description of "Figure 2-5 Java Mission Control - Event Options for Profiling"</a><br/>
+<br/></div>
+
+<p>The default settings give a good balance between data and performance. In some cases, you may want to add extra events. For example, if you are investigating a memory leak or want to see the objects that take up the most Java heap, enable <b>Heap Statistics</b>. This will trigger two Old Collections at the start and end of the recording, so this will give some extra latency. You can also select to show all exceptions being thrown, even the ones that are caught. For some applications, this will generate a lot of events.</p>
+<p>The <b>Threshold</b> value is the length of event recording. For example, by default, synchronization events above 10 ms are gathered. This means, if a thread waits for a lock for more than 10 ms, an event is saved. You can lower this value to get more detailed data for short contentions.</p>
+<p>The <b>Thread Dump</b> setting gives you an option to do periodic thread dumps. These will be normal textual thread dumps, like the ones you would get using the diagnostic command <code dir="ltr">Thread.print</code>, or by using the <code dir="ltr">jstack</code> tool. The thread dumps complement the events.</p>
+</li>
+</ol>
+</div>
+
+<a id="BABHCDEA" name="BABHCDEA"/>
+<div id="JSTGD128">
+<h2><span>2.4.2</span> Use Startup Flags at the Command Line to Produce a Flight Recording</h2>
+<p>For a complete description of JFR flags, see <a href="../../tools/unix/java.html">Advanced Runtime Options</a>.</p>
+<p>The following are three ways to startup flags at the command line to produce a flight recording.</p>
+<ol>
+<li>
+<p><b>Start a profiling recording:</b> You can configure a time fixed recording at the start of the application using the <code dir="ltr">-XX:StartFlightRecording</code> option. Because the JFR is a commercial feature, you must specify the <code dir="ltr">-XX:+UnlockCommercialFeatures</code> option. The following example illustrates how to run the <code dir="ltr">MyApp</code> application and start a 60-second recording 20 seconds after starting the JVM, which will be saved to a file named <code dir="ltr">myrecording.jfr</code>:</p>
+<p><code dir="ltr">java -XX:+UnlockCommercialFeatures -XX:+FlightRecorder -XX:StartFlightRecording=delay=20s,duration=60s,name=myrecording,filename=C:\TEMP\myrecording.jfr,settings=profile MyApp</code></p>
+<p>The settings parameter takes either the path to or the name of a template. Default templates are located in the <code dir="ltr">jre/lib/jfr</code> folder. The two standard profiles are: <span>default</span> - a low overhead setting made primarily for continuous recordings and <span>profile</span> - gathers more data and is primarily for profiling recordings.</p>
+</li>
+<li>
+<p><b>Start a continuous recording:</b> You can also start a continuous recording from the command line using <code dir="ltr">-XX:FlightRecorderOptions</code>. These flags will start a continuous recording that can later be dumped if needed. The following example illustrates a continuous recording. The temporary data will be saved to disk, to the <code dir="ltr">/tmp</code> folder, and 6 hours of data will be stored.</p>
+<p><code dir="ltr">java -XX:+UnlockCommercialFeatures -XX:+FlightRecorder -XX:FlightRecorderOptions=defaultrecording=true,disk=true,repository=/tmp,maxage=6h,settings=default MyApp</code></p>
+<p><i>Note:</i> When you actually dump the recording, you specify a new location for the dumped file, so the files in the repository are only temporary.</p>
+<p>For more details about configuring and managing Java Flight Recordings, see chapter 2 from <a href="http://docs.oracle.com/javacomponents/jmc.htm">Java Flight Recorder Runtime Guide</a>.</p>
+</li>
+<li>
+<p><b>Use diagnostic commands:</b></p>
+<p>You can also control recordings by using Java command-line diagnostic commands. The simplest way to execute a diagnostic command is to use the <code dir="ltr">jcmd</code> tool located in the Java installation directory. For more details see, <a href="tooldescr006.html#BABEHABG">The jcmd Utility</a>.</p>
+</li>
+</ol>
+</div>
+
+<a id="BABDIGFA" name="BABDIGFA"/>
+<div id="JSTGD129">
+<h2><span>2.4.3</span> Use Triggers for Automatic Recordings</h2>
+<p>You can set up Java Mission Control to automatically start or dump a flight recording if a condition is met. This is done from the JMX console. To start the JMX console, find your application in the JVM Browser, right-click it, and select <b>Start JMX Browser</b>.</p>
+<p>Select the <b>Triggers</b> tab at the bottom of the screen, as shown in <a href="#BABCJFCD">Figure 2-6</a>.</p>
+<div id="JSTGD130"><a id="BABCJFCD" name="BABCJFCD"/>
+<p><b><i>Figure 2-6 Java Mission Control - Automatic Recordings</i></b></p>
+<img alt="Description of Figure 2-6 follows" longdesc="img_text/jmc-autorecording.htm" src="img/jmc-autorecording.png"/><br/>
+<a href="img_text/jmc-autorecording.html" id="sthref15" name="sthref15">Description of "Figure 2-6 Java Mission Control - Automatic Recordings"</a><br/>
+<br/></div>
+
+<p>You can choose to create a trigger on any <code dir="ltr">MBean</code> in the application. There are several default triggers set up for common conditions such as high CPU usage, deadlocked threads, or too large of a live set. Select <b>Add</b> to choose any <code dir="ltr">MBean</code> in the application, including your own application-specific ones. When you select your trigger, you can also select the conditions that must be met. For more information, click the question mark in the top right corner to see the built-in help.</p>
+<p>Click the boxes next to the triggers to have several triggers running.</p>
+<p>Once you have selected your condition, click the <span>Action</span> tab. Then, select what to do when the condition is met. Finally, choose to either dump a continuous recording or to start a time-limited flight recording as shown in <a href="#BABEIDAH">Figure 2-7</a>.</p>
+<div id="JSTGD131"><a id="BABEIDAH" name="BABEIDAH"/>
+<p><b><i>Figure 2-7 Java Mission Control - Use Triggers</i></b></p>
+<img alt="Description of Figure 2-7 follows" longdesc="img_text/jmc-triggers.htm" src="img/jmc-triggers.png"/><br/>
+<a href="img_text/jmc-triggers.html" id="sthref16" name="sthref16">Description of "Figure 2-7 Java Mission Control - Use Triggers"</a><br/>
+<br/></div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr003.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr005.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

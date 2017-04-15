@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>JConsole</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr008.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr010.html">
+                Next</a><hr/><a id="BABDCICF" name="BABDCICF"/>
+<div id="JSTGD173">
+<h1><span>2.9</span> JConsole</h1>
+<p>Another useful tool included in the JDK download is the JConsole monitoring tool. This tool is compliant with JMX. The tool uses the built-in JMX instrumentation in the JVM to provide information about the performance and resource consumption of running applications. Although the tool is included in the JDK download, it can also be used to monitor and manage applications deployed with the JRE.</p>
+<p>The JConsole tool can attach to any Java application in order to display useful information such as thread usage, memory consumption, and details about class loading, runtime compilation, and the operating system.</p>
+<p>This output helps with high-level diagnosis of problems such as memory leaks, excessive class loading, and running threads. It can also be useful for tuning and heap sizing.</p>
+<p>In addition to monitoring, JConsole can be used to dynamically change several parameters in the running system. For example, the setting of the <code dir="ltr">-verbose:gc</code> option can be changed so that garbage collection trace output can be dynamically enabled or disabled for a running application.</p>
+<p>For more details, see the <a href="../../tools/unix/jconsole.html"><code dir="ltr">jconsole</code> command man page</a>. For FAQs, see <a href="../management/faq.html">JConsole and Remote Management of Java Platform</a>.</p>
+<p>The following sections describe troubleshooting techniques with JConsole tool.</p>
+<ul>
+<li>
+<p><a href="#BABECDDF">Troubleshoot with JConsole Tool</a></p>
+</li>
+<li>
+<p><a href="#BABIGBJA">Monitor Local and Remote Applications with JConsole</a></p>
+</li>
+</ul>
+<a id="BABECDDF" name="BABECDDF"/>
+<div id="JSTGD174">
+<h2><span>2.9.1</span> Troubleshoot with JConsole Tool</h2>
+<p>The following list provides an idea of the data that can be monitored using the JConsole tool. Each heading corresponds to a tab pane in the tool. For details on how to use JConsole tool, see <a href="../management/jconsole.html">Using JConsole</a>.</p>
+<ul>
+<li>
+<p><b>Overview</b></p>
+<p>This pane displays graphs showing heap memory usage, number of threads, number of classes, and CPU usage over time. This overview allows you to visualize the activity of several resources at once.</p>
+</li>
+<li>
+<p><b>Memory</b></p>
+<ul>
+<li>
+<p>For a selected memory area (heap, non-heap, various memory pools):</p>
+<ul>
+<li>
+<p>Graph showing memory usage over time</p>
+</li>
+<li>
+<p>Current memory size</p>
+</li>
+<li>
+<p>Amount of committed memory</p>
+</li>
+<li>
+<p>Maximum memory size</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Garbage collector information, including the number of collections performed, and the total time spent performing garbage collection</p>
+</li>
+<li>
+<p>Graph showing percentage of heap and non-heap memory currently used</p>
+</li>
+</ul>
+<p>In addition, on this pane you can request garbage collection to be performed.</p>
+</li>
+<li>
+<p><b>Threads</b></p>
+<ul>
+<li>
+<p>Graph showing thread usage over time.</p>
+</li>
+<li>
+<p>Live threads: Current number of live threads.</p>
+</li>
+<li>
+<p>Peak: Highest number of live threads since the JVM started.</p>
+</li>
+<li>
+<p>For a selected thread, the name, state, and stack trace, as well as, for a blocked thread, the synchronizer that the thread is waiting to acquire, and the thread owning the lock.</p>
+</li>
+<li>
+<p>The <b>Deadlock Detection</b> button sends a request to the target application to perform deadlock detection and displays each deadlock cycle in a separate tab.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><b>Classes</b></p>
+<ul>
+<li>
+<p>Graph showing the number of loaded classes over time</p>
+</li>
+<li>
+<p>Number of classes currently loaded into memory</p>
+</li>
+<li>
+<p>Total number of classes loaded into memory since the JVM started, including those subsequently unloaded</p>
+</li>
+<li>
+<p>Total number of classes unloaded from memory since the JVM started</p>
+</li>
+</ul>
+</li>
+<li>
+<p><b>VM Summary</b></p>
+<ul>
+<li>
+<p>General information, such as the JConsole connection data, uptime for the JVM, CPU time consumed by the JVM, complier name, and total compile time, and so on.</p>
+</li>
+<li>
+<p>Thread and class summary information</p>
+</li>
+<li>
+<p>Memory and garbage collection information, including number of objects pending finalization, and so on</p>
+</li>
+<li>
+<p>Information about the operating system, including physical characteristics, the amount of virtual memory for the running process, and swap space</p>
+</li>
+<li>
+<p>Information about the JVM itself, such as arguments, and class path</p>
+</li>
+</ul>
+</li>
+<li>
+<p><b>MBeans</b></p>
+<p>This pane displays a tree structure showing all platform and application MBeans that are registered in the connected JMX agent. When you select an MBean in the tree, its attributes, operations, notifications, and other information are displayed.</p>
+<ul>
+<li>
+<p>You can invoke operations, if any. For example, the operation <code dir="ltr">dumpHeap</code> for the <code dir="ltr">HotSpotDiagnostic</code> MBean, which is in the <code dir="ltr">com.sun.management</code> domain, performs a heap dump. The input parameter for this operation is the pathname of the heap dump file on the machine where the target VM is running.</p>
+</li>
+<li>
+<p>You can set the value of writable attributes. For example, you can set, unset, or change the value of certain VM flags by invoking the <code dir="ltr">setVMOption</code> operation of the <code dir="ltr">HotSpotDiagnostic</code> MBean. The flags are indicated by the list of values of the <code dir="ltr">DiagnosticOptions</code> attribute.</p>
+</li>
+<li>
+<p>You can subscribe to notifications, if any, by using the <b>Subscribe</b> and <b>Unsubscribe</b> buttons.</p>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<a id="BABIGBJA" name="BABIGBJA"/>
+<div id="JSTGD175">
+<h2><span>2.9.2</span> Monitor Local and Remote Applications with JConsole</h2>
+<p>JConsole can monitor both local applications and remote applications. If you start the tool with an argument specifying a JMX agent to connect to, then the tool will automatically start monitoring the specified application.</p>
+<p>To monitor a local application, execute the command <code dir="ltr">jconsole</code> <span>pid</span>, where <span>pid</span> is the process ID of the application.</p>
+<p>To monitor a remote application, execute the command <code dir="ltr">jconsole</code> <span>hostname</span><code dir="ltr">:</code><span>portnumber</span>, where <span>hostname</span> is the name of the host running the application, and <span>portnumber</span> is the port number you specified when you enabled the JMX agent.</p>
+<p>If you execute the <code dir="ltr">jconsole</code> command without arguments, the tool will start by displaying the <b>New Connection</b> window, where you specify the local or remote process to be monitored. You can connect to a different host at any time by using the <b>Connection</b> menu.</p>
+<p>With the latest JDK releases, no option is necessary when starting the application to be monitored.</p>
+<p>As an example of the output of the monitoring tool, <a href="#BABJECGB">Figure 2-15</a> shows a chart of heap memory usage.</p>
+<p>For more details on the monitoring and management capabilities, and how to use <code dir="ltr">jconsole</code>, see the <a href="../management/index.html">Java SE Monitoring and Management Guide</a>.</p>
+<div id="JSTGD176"><a id="BABJECGB" name="BABJECGB"/>
+<p><b><i>Figure 2-15 Sample Output from JConsole</i></b></p>
+<img alt="Description of Figure 2-15 follows" longdesc="img_text/jconsole-memory-tab.htm" src="img/jconsole-memory-tab.gif"/><br/>
+<a href="img_text/jconsole-memory-tab.html" id="sthref24" name="sthref24">Description of "Figure 2-15 Sample Output from JConsole"</a><br/>
+<br/></div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr008.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr010.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

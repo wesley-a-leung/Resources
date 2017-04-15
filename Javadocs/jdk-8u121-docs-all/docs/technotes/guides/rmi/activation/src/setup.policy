@@ -1,0 +1,11 @@
+grant codeBase "${examples.activation.setup.codebase}" {
+
+    // permissions to read system properties required by setup program
+    permission java.util.PropertyPermission "examples.activation.impl.codebase","read";
+    permission java.util.PropertyPermission "examples.activation.policy","read";
+    permission java.util.PropertyPermission "examples.activation.file","read";
+    permission java.util.PropertyPermission "examples.activation.name","read";
+
+    // permission to connect to the activation system and the registry
+    permission java.net.SocketPermission "*:1098-1099","connect";
+};

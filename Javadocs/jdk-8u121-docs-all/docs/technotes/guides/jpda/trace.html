@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Platform Debugger Architecture</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Java Platform Debugger Architecture</h1>
+<p><b>Trace</b> runs the Java language program passed as an
+argument and generates a trace of its execution. <b>Trace</b> is a
+simple command line tool that uses the Java Debug Interface (JDI).
+Programs need not be compiled for debugging since this information
+is not used.</p>
+<p><b>Trace</b> can be invoked as follows:</p>
+<pre class="codeblock">
+        java Trace <i>options class args</i><br />
+</pre>
+Your classpath must include the JDK's <tt>lib/tools.jar</tt> file
+which contains the JDI Library (see <a href=
+"examples.html#SETUP">Required Set-up</a>), the path to the
+compiled <b>trace</b> class files, and the path for the application
+being traced.
+<p>Available <i>options</i> are: 
+<!-- BEGIN VCD7 CODE SAMPLE COMPONENT  --></p>
+<table border="0" cellpadding="10" cellspacing="0" width="100%"
+class="grey4" summary="">
+<tbody>
+<tr>
+<td headers="h1">
+<pre class="codeblock">
+  -output <i>filename</i><br />        Set destination for output trace. By default output<br />        goes to the terminal.<br /><br />  -all<br />        Include system classes in output.  By default<br />        java.*, javax.*, sun.* and com.sun.* events are<br />        not diplayed.<br /><br />  -fields<br />        Also show assignments into fields.<br /><br />  -help<br />        Print a help message<br /><br />      
+</pre></td>
+</tr>
+</tbody>
+</table>
+<br />
+<!-- END VCD7 CODE SAMPLE COMPONENT  -->
+<i>class</i> is the program to trace. <i>args</i> are the arguments
+to <i>class</i>.
+<h2>Source for trace</h2>
+<p>Full source code for <b>trace</b> is included in the
+<code>trace</code> directory of <code>examples.jar</code>. Source
+code of these example application is included to provide concrete
+examples for debugger developers. Example code may be used,
+modified and redistributed by debugger developers providing they
+adhere to the terms in the copyright notice.</p>
+<h2>Building trace</h2>
+<p>To completely rebuild the <b>trace</b> classes from the provided
+source files in the <code>trace</code> directory, you need only to
+compile them. No special options are required, aside from those
+which set your classpath to include the <a href=
+"examples.html#SETUP">JDI Library</a> in
+<tt>lib/tools.jar</tt>.</p>
+<!-- end main page content -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

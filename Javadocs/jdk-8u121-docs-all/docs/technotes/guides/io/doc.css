@@ -1,0 +1,6 @@
+  p { margin-left: 0.5in }
+  pre { margin-left: 0.75in }
+  li, li pre, li p { margin-left: 0.25in }
+  li li { margin-left: 0in }
+  h1 { text-align: center }
+  h3 { margin-left: 1.5em }

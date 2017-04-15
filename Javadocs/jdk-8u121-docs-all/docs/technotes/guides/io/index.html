@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<meta http-equiv="content-type" content=
+"text/html; charset=utf-8" />
+<style type="text/css">
+/*<![CDATA[*/
+
+ul li, ul ul li {font-weight: normal;}
+pre             {margin-left: 42pt;}
+a               {font-weight: bold;}
+
+/*]]>*/
+</style>
+<title>Java I/O, NIO, and NIO.2</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Java I/O, NIO, and NIO.2</h1>
+<!-- Body text begins here -->
+<p>Java I/O support is included in the <a href=
+"../../../api/java/io/package-summary.html">java.io</a> and
+<a href="../../../api/java/nio/package-summary.html">java.nio</a>
+packages. Together these packages include the following
+features:</p>
+<ul>
+<li>Input and output through data streams, serialization and the
+file system.</li>
+<li>Charsets, decoders, and encoders, for translating between bytes
+and Unicode characters.</li>
+<li>Access to file, file attributes and file systems.</li>
+<li>APIs for building scalable servers using asynchronous or
+multiplexed, non-blocking I/O.</li>
+</ul>
+<h2>Tutorials and Programmer's Guides</h2>
+<ul>
+<li><b>The <a href=
+"http://docs.oracle.com/javase/tutorial/essential/io/index.html">Basic
+I/O</a> section of <a href=
+"http://docs.oracle.com/javase/tutorial/">The Java Tutorial</a>
+and, in particular, <a href=
+"http://docs.oracle.com/javase/tutorial/essential/io/fileio.html">File
+I/O (featuring NIO.2)</a></b></li>
+<li><b><a href="fsp/filesystemprovider.html">Developing a Custom
+File System Provider</a></b></li>
+<li><b><a href="fsp/zipfilesystemprovider.html">Zip File System
+Provider</a></b></li>
+<li><b><a href="troubleshooting.html">Troubleshooting
+Tips</a></b></li>
+</ul>
+<h2>API Specification</h2>
+<ul>
+<li><b><a href=
+"../../../api/java/io/package-summary.html">java.io</a></b>
+(<a href=
+"../../../api/java/io/package-summary.html#package_description">description</a>)
+- Supports system input and output, and object serialization. to
+the file system</li>
+<li><b><a href=
+"../../../api/java/nio/package-summary.html">java.nio</a></b>
+(<a href=
+"../../../api/java/nio/package-summary.html#package_description">description</a>)
+- Defines <em>buffers</em> for bulk memory operations. Buffers may
+be allocated in direct memory for high performance.</li>
+<li><b><a href=
+"../../../api/java/nio/channels/package-summary.html">java.nio.channels</a></b>
+(<a href=
+"../../../api/java/nio/channels/package-summary.html#package_description">description</a>)
+- Defines <em>channels</em>, an abstraction for devices capable of
+performing I/O operations; defines <em>selectors</em> for
+multiplexed, non-blocking I/O</li>
+<li><b><a href=
+"../../../api/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></b>
+(<a href=
+"../../../api/java/nio/channels/spi/package-summary.html#package_description">description</a>)
+- Provides implementations for channels</li>
+<li><b><a href=
+"../../../api/java/nio/file/package-summary.html">java.nio.file</a></b>
+- Defines interfaces and classes to access files and file
+systems.</li>
+<li><b><a href=
+"../../../api/java/nio/file/attribute/package-summary.html">java.nio.file.attribute</a></b>
+- Defines interfaces and classes for accessing file system
+attributes.</li>
+<li><b><a href=
+"../../../api/java/nio/file/spi/package-summary.html">java.nio.file.spi</a></b>
+- Defines classes for creating a file system implementation.</li>
+<li><b><a href=
+"../../../api/java/nio/charset/package-summary.html">java.nio.charset</a></b>
+(<a href=
+"../../../api/java/nio/charset/package-summary.html#package_description">description</a>)
+- Defines charsets, decoders, and encoders, for translating between
+bytes and Unicode characters</li>
+<li><b><a href=
+"../../../api/java/nio/charset/spi/package-summary.html">java.nio.charset.spi</a></b>
+(<a href=
+"../../../api/java/nio/charset/spi/package-summary.html#package_description">description</a>)
+- Provides implementations for charsets</li>
+<li><b><a href=
+"../../../jre/api/nio/sctp/spec/index.html">com.sun.nio.sctp</a></b>
+(<a href=
+"../../../jre/api/nio/sctp/spec/com/sun/nio/sctp/package-summary.html#package.description">description</a>)
+- A Java API for Stream Control Transport Protocol</li>
+</ul>
+<h2>Examples</h2>
+<ul>
+<li><b><a href="example/index.html">NIO and NIO.2 Examples</a></b></li>
+</ul>
+<h2><b>Enhancements</b></h2>
+<ul>
+<li><b><a href="enhancements.html#jdk8">Enhancements in JDK 8 Release</a></b></li>
+<li><b><a href="enhancements.html#jdk7">Enhancements in JDK 7 Release</a></b></li>
+<li><b><a href="enhancements.html#jdk6">Enhancements in JDK 6 Release</a></b></li>
+<li><b><a href="enhancements.html#jdk5.0">Enhancements in JDK 5.0 Release</a></b>
+</li>
+<li><b><a href="enhancements.html#jdk1.4">Enhancements in J2SDK 1.4</a>
+</b></li>
+<li><b><a href="enhancements.html#pre">Previous Enhancements</a></b></li>
+</ul>
+<h2><b>More Information</b></h2>
+<ul>
+<li><b><a href="../intl/encoding.doc.html">Supported Encodings</a></b></li>
+<li><b><a href="../serialization/index.html">Object Serialization</a></b>
+</li>
+</ul>
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

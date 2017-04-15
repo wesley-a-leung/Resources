@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Configuration Problems</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="plugin.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="plugin002.html">
+                Next</a><hr/><a id="BABEIICJ" name="BABEIICJ"/>
+<div id="JSTGD495">
+<h1><span>16.1</span> Configuration Problems</h1>
+<p>This following sections describes a number of problems concerning various configuration parameters and settings and suggests troubleshooting techniques for configuring Applets and Java Web Start applications.</p>
+<ul>
+<li>
+<p><a href="#BABGEBFB">Validation</a></p>
+</li>
+<li>
+<p><a href="#BABDCJCH">Common Configuration Problems</a></p>
+</li>
+<li>
+<p><a href="#BABGCFIE">Manage Java Runtime</a></p>
+</li>
+<li>
+<p><a href="#BABDCIAF">Pass Parameters to the JRE</a></p>
+</li>
+<li>
+<p><a href="#BABHHDGA">Java Deployment Home</a></p>
+</li>
+<li>
+<p><a href="#BABDCDHH">Deployment Tracing</a></p>
+</li>
+<li>
+<p><a href="#BABFHBEC">Deployment Cache</a></p>
+</li>
+<li>
+<p><a href="#BABCFJBF">Network Configuration</a></p>
+</li>
+</ul>
+<a id="BABGEBFB" name="BABGEBFB"/>
+<div id="JSTGD496">
+<h2><span>16.1.1</span> Validation</h2>
+<p>If your application does not run, perform the following checks:</p>
+<ol>
+<li>
+<p><b>Verify that the Java Plugin is working.</b></p>
+<ul>
+<li>
+<p>Go to <a href="http://java.com/en/download/installed.jsp">Verify Java and Find Versions</a>.</p>
+</li>
+<li>
+<p>Click <b>Verify Java version</b>.</p>
+</li>
+<li>
+<p>If you see that the expected Java technology version is reported, then the plugin is enabled and found.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><b>Check that your browser knows about the Java plugin</b>.</p>
+<ul>
+<li>
+<p><b>Chrome</b>: Type <code dir="ltr">about: plugins</code> in the address bar.</p>
+</li>
+<li>
+<p><b>Firefox</b>: On the <b>Tools</b> menu, select <b>Addons</b> and click <b>Plugins</b>.</p>
+</li>
+<li>
+<p><b>Internet Explorer</b>: On the <b>Tools</b> menu, select <b>Manage Addons</b>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><b>Make sure the Java runtime environment is installed</b>.</p>
+<p>On Windows, check the list of installed programs in the Control Panel.</p>
+</li>
+</ol>
+</div>
+
+<a id="BABDCJCH" name="BABDCJCH"/>
+<div id="JSTGD497">
+<h2><span>16.1.2</span> Common Configuration Problems</h2>
+<p>The following are troubleshooting techniques for common configuration problems.</p>
+<ul>
+<li>
+<p><b>Install Java runtime:</b></p>
+<p>It is not sufficient to install the Java Developer Kit. A JRE is required to be able to run an applet or webstart. <i>Note:</i> If you use a 64-bit browser, then the 64-bit version of the JRE is required. Similarly, the 32-bit JRE is necessary for 32-bit browsers.</p>
+</li>
+<li>
+<p><b>Use latest matching plugin/webstart:</b></p>
+<p>There could be just one plugin registered in the browser and the JRE will always register plugin from latest JRE on the system as active. The only way to ensure use of an older plugin is to uninstall newer JREs.</p>
+</li>
+<li>
+<p><b>Restart browser for any change in the Java runtime configuration:</b></p>
+<p>Java is not enabled or there are multiple places where Java could be disabled. Check the Java Control Panel and your browser plugins/addons list.</p>
+</li>
+<li>
+<p><b>Make sure new generation plugin is enabled:</b></p>
+<p>Unless you need to run in the legacy mode, make sure <b>New generation plugin</b> is enabled in the Java Control Panel.</p>
+</li>
+<li>
+<p><b>Enable JavaScript:</b></p>
+<p>If JavaScript is disabled, then an attempt to launch a Java applet may fail at very early stage.</p>
+</li>
+<li>
+<p><b>Java control panel fails to make changes in the Java config:</b></p>
+<p>On Windows 7 or Windows Vista systems with UAC on, the Java Control Panel may fail to update global registry settings. To work around this, make sure you launch Java Control Panel as Administrator if you need to alter these settings.</p>
+</li>
+</ul>
+</div>
+
+<a id="BABGCFIE" name="BABGCFIE"/>
+<div id="JSTGD498">
+<h2><span>16.1.3</span> Manage Java Runtime</h2>
+<p>You can use the Java Control Panel tool to manage the list of installed Java Runtime Environments and their behavior. The Java Control Panel can be launched from the bin directory of the JRE installation folder. On Windows operating systems, you can also access it from Control Panel &gt; Java.</p>
+<p>Use Java Control Panel if you need to:</p>
+<ul>
+<li>
+<p>see what versions of JRE are installed and active</p>
+</li>
+<li>
+<p>temporarily enable/disable use of particular version of JRE</p>
+</li>
+<li>
+<p>set "global" parameters to be passed to JVM when applet or webstart application is launched</p>
+</li>
+<li>
+<p>enable/disable use of Java Plugin in the particular browser</p>
+</li>
+<li>
+<p>tune behavior of the plugin/webstart by specifying configuration parameters such as location of cache of temporary files or enable tracing as shown in <a href="#BABJFDEC">Figure 16-1</a>.</p>
+</li>
+</ul>
+<div id="JSTGD499"><a id="BABJFDEC" name="BABJFDEC"/>
+<p><b><i>Figure 16-1 The Java Runtime Environment Settings Window</i></b></p>
+<img alt="Description of Figure 16-1 follows" longdesc="img_text/jres.htm" src="img/jres.png"/><br/>
+<a href="img_text/jres.html" id="sthref65" name="sthref65">Description of "Figure 16-1 The Java Runtime Environment Settings Window"</a><br/>
+<br/></div>
+</div>
+
+<a id="BABDCIAF" name="BABDCIAF"/>
+<div id="JSTGD500">
+<h2><span>16.1.4</span> Pass Parameters to the JRE</h2>
+<p>Troubleshooting, debugging, profiling and other development activities may require launching JVM with a special set of parameters. One way to accomplish this is to use the Java Control Panel.</p>
+<p>Open the Java Control Panel and click <b>View</b> on the <b>Java</b> tab. Select the <b>Runtime Parameters</b> cell for the JRE you wish to change and enter parameters into this cell.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+TThese changes are global, meaning that any Java Web Start application or applet that runs using this version of JRE will have these parameters set (in addition to what the applet tag or JNLP file may specify).</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>To pass parameters to a specific JVM used with Java Web Start or an applet, use one of the following techniques:</p>
+<ul>
+<li>
+<p>Set environment variable before launching <code dir="ltr">javaws</code> or the browser process.</p>
+<ul>
+<li>
+<p><code dir="ltr">JAVAWS_VM_ARGS</code> for Java Web Start apps. For example:</p>
+<pre dir="ltr" xml:space="preserve">
+JAVAWS_VM_ARGS = -Dsome.property=true
+</pre></li>
+<li>
+<p><code dir="ltr">_JPI_VM_OPTIONS</code> for applets. For example:</p>
+<pre dir="ltr" xml:space="preserve">
+_JPI_VM_OPTIONS = -Dsome.property=true
+</pre>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+You need to restart your browser after you set the environment variable. If you are setting this environment variable in the command shell, then you must use the same command shell to launch the browser so that the browser inherits the value of the environment variable.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<p>Use the <code dir="ltr">-J</code> option for the <code dir="ltr">javaws</code> command. For example:</p>
+<pre dir="ltr" xml:space="preserve">
+javaws -J-Dsome.property=true http://example.com/my.jnlp
+</pre></li>
+</ul>
+</div>
+
+<a id="BABHHDGA" name="BABHHDGA"/>
+<div id="JSTGD501">
+<h2><span>16.1.5</span> Java Deployment Home</h2>
+<p>This is the place where main configuration files are kept. The location is specific to your operating system:</p>
+<ul>
+<li>
+<p><b>Windows XP</b>: <span>%HOME%</span>\Application Data\Sun\Java\Deployment</p>
+</li>
+<li>
+<p><b>Windows 7/Vista</b>: <span>%APPDATA%</span>\..\LocalLow\Sun\Java\Deployment</p>
+</li>
+<li>
+<p><b>Oracle Solaris/Linux</b>: <span>%HOME%</span>/.java/deployment</p>
+</li>
+</ul>
+</div>
+
+<a id="BABDCDHH" name="BABDCDHH"/>
+<div id="JSTGD502">
+<h2><span>16.1.6</span> Deployment Tracing</h2>
+<p>Both Java Plug-in and Java Web Start can print trace information into trace files. This includes log information from the JRE itself as well as everything your application may be printing to <code dir="ltr">System.out</code> or <code dir="ltr">System.err</code>.</p>
+<p>To get access to trace information, follow these steps:</p>
+<ol>
+<li>
+<p>Open the Java Control Panel (<i>jre_home_dir</i>/bin/ControlPanel).</p>
+</li>
+<li>
+<p>Select the <b>Advanced</b> tab.</p>
+</li>
+<li>
+<p>In the <b>Debugging</b> category, select the <b>Enable tracing</b> check box.</p>
+</li>
+<li>
+<p>Optionally, in the <b>Java console</b> category, select the <b>Show console</b> option to see trace information in the console window. The full trace still will be saved to a file.</p>
+</li>
+</ol>
+<p>The trace file is saved into the <code dir="ltr">log</code> directory in the Java deployment home folder. See <a href="#BABHHDGA">Java Deployment Home</a>. The file name has the prefix <code dir="ltr">javaws</code> or <code dir="ltr">plugin</code>, depending on what you are running. One trace file is produced per process, but one application can be launched using several processes.</p>
+<p>To get the maximum level of detail in the trace file, edit the deployment.properties file (which is located in the Java deployment home directory) and add the following line:</p>
+<pre dir="ltr" xml:space="preserve">
+deployment.trace.level=all
+</pre>
+<p>By default, a maximum of five trace files are created. The oldest trace files are automatically deleted. To change this limit of maximum number of trace files, add the following line to the deployment.properties file:</p>
+<pre dir="ltr" xml:space="preserve">
+deployment.max.output.files=<i>max_number_of_trace_files</i>
+</pre>
+<p>You can use the Java console to view the trace log at runtime. By default, the Java console is hidden. Enable it in the Java Control Panel. For more details on troubleshooting deployment issues, see <a href="../deploy/troubleshooting.html#CEGBHDIH">Troubleshoot Deployment Issues</a>.</p>
+</div>
+
+<a id="BABFHBEC" name="BABFHBEC"/>
+<div id="JSTGD503">
+<h2><span>16.1.7</span> Deployment Cache</h2>
+<p>Application jars and resources are cached on the disk to avoid loading them the next time they are needed.</p>
+<p>The default location of the cache depends on the operating system and can be overridden in the Java Control Panel.</p>
+<p>Settings and controls for the cache are available in the <b>General</b> tab of the Java Control Panel, in the <b>Temporary Internet Files</b> section. Click <b>Settings</b> to change the location and size of the cache. Click <b>View</b> to see what files are in the cache.</p>
+<p>You can clean the cache by running <code dir="ltr">javaws -uninstall</code>, or open the Java Control Panel's <b>General</b> tab, click <b>View</b>, and delete files manually. You can also use the Java Control Panel to uninstall individual applications and extensions.</p>
+</div>
+
+<a id="BABCFJBF" name="BABCFJBF"/>
+<div id="JSTGD504">
+<h2><span>16.1.8</span> Network Configuration</h2>
+<p>In general, Java Web Start applications use the system network configuration by default, and applets use the browser network settings. You can set network proxies explicitly using Java Control Panel.</p>
+<p>In particular, the Java technology networking layer automatically detects what networking stack to use. However, sometimes autodetection does not work and you may observe <code dir="ltr">Permission Denied</code> exceptions trying to open a socket to download your application or applet, even while the same URL is accessible using the same proxy settings with other tools. This problem was observed on some Windows 7 systems when VPN software is used. This can be resolved by explicitly passing a parameter to the JVM:</p>
+<pre dir="ltr" xml:space="preserve">
+-Djava.net.preferIPv4Stack=true
+</pre>
+<p>For more details, see <a href="#BABDCIAF">Pass Parameters to the JRE</a>.</p>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="plugin.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="plugin002.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

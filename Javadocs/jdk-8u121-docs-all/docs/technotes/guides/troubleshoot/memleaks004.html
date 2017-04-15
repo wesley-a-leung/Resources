@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Diagnose Leaks in Java Language Code</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="memleaks003.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="memleaks005.html">
+                Next</a><hr/><a id="CIHIEEFH" name="CIHIEEFH"/>
+<div id="JSTGD277">
+<h1><span>3.4</span> Diagnose Leaks in Java Language Code</h1>
+<p>Diagnosing leaks in Java language code can be difficult. Usually, it requires very detailed knowledge of the application. In addition, the process is often iterative and lengthy. This section provides information about the tools you can use to diagnose memory leaks in Java language code.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+Besides the tools mentioned in this section, a large number of third-party memory debugger tools are available. The Eclipse Memory Analyzer Tool (MAT), YourKit (www.yourkit.com) are two examples of commercial tools with memory debugging capabilities. There are many others, and no specific product is recommended.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>The following are two utilities used to diagnose leaks in Java language code.</p>
+<ol>
+<li>
+<p><b>The NetBeans Profiler:</b> The NetBeans Profiler can locate memory leaks very quickly. Commercial memory leak debugging tools may take a long time to locate a leak in a large application. The NetBeans Profiler, however, uses the pattern of memory allocations and reclamations that such objects typically demonstrate. This process includes also the lack of memory reclamations. The profiler can check where these objects were allocated, which often is sufficient to identify the root cause of the leak.</p>
+<p>For more details, see <a href="http://profiler.netbeans.org">NetBeans Profiler</a>.</p>
+</li>
+<li>
+<p><b>The jhat utility:</b> The <code dir="ltr">jhat</code> utility is useful when debugging unintentional object retention (or memory leaks). It provides a way to browse an object dump, view all reachable objects in the heap, and understand which references are keeping an object alive.</p>
+<p>To use <code dir="ltr">jhat</code> you must obtain one or more heap dumps of the running application, and the dumps must be in binary format. After the dump file is created, it can be used as input to <code dir="ltr">jhat</code>. See <a href="tooldescr012.html#BABJGJBI">The jhat Utility</a>.</p>
+</li>
+</ol>
+<p>The following sections describe the other ways to diagnose leaks in Java language code.</p>
+<ul>
+<li>
+<p><a href="#CIHJIIBA">Create a Heap Dump</a></p>
+</li>
+<li>
+<p><a href="#CIHBDBHJ">Obtain a Heap Histogram</a></p>
+</li>
+<li>
+<p><a href="#CIHCDBJB">Monitor the Objects Pending Finalization</a></p>
+</li>
+</ul>
+<a id="CIHJIIBA" name="CIHJIIBA"/>
+<div id="JSTGD278">
+<h2><span>3.4.1</span> Create a Heap Dump</h2>
+<p>A heap dump provides detailed information about the allocation of heap memory. There are several ways to create a heap dump:</p>
+<ul>
+<li>
+<p>HPROF can create a heap dump if it is launched with the application. <a href="#CIHCGHJI">Example 3-1</a> shows the usage of the command.</p>
+<div id="JSTGD279"><a id="CIHCGHJI" name="CIHCGHJI"/>
+<p>Example 3-1 Launch HPROF with the Application</p>
+<pre dir="ltr" xml:space="preserve">
+$ java -agentlib:hprof=file=snapshot.hprof,format=b <span>application</span>
+</pre></div>
+
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+If the JVM is embedded or is not started using a command-line launcher that allows additional options to be provided, then it might be possible to use the <code dir="ltr">JAVA_TOOLS_OPTIONS</code> environment variable so that the <code dir="ltr">-agentlib</code> option is automatically added to the command line. See <a href="envvars002.html#CIHDGJHI">The <code dir="ltr">JAVA_TOOL_OPTIONS</code> Environment Variable</a> for further information about this environment variable.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>When the application is running with HPROF, a heap dump can be created by pressing Control+\ or Control+Break (depending on the platform) in the application console. An alternative approach on Oracle Solaris and Linux operating systems is to send a QUIT signal with the <code dir="ltr">kill -QUIT</code> <span>pid</span> command. When the signal is received, a heap dump is created for the process with the specified PID; in the preceding example, the file <code dir="ltr">snapshot.hprof</code> will be created.</p>
+<p>The heap dump file contains all the primitive data and stack traces.</p>
+<p>A dump file can contain multiple heap dumps. If Control+\ or Control+Break is pressed a number of times then subsequent dumps are appended to the file. The <code dir="ltr">jhat</code> utility uses the <code dir="ltr">#n</code> syntax, to distinguish the dumps, where <code dir="ltr">n</code> is the dump number. See <a href="tooldescr008.html#BABGIIGB">HPROF</a>.</p>
+</li>
+<li>
+<p>The <code dir="ltr">jmap</code> utility can be used to create a heap dump of a running process.</p>
+<p>It is recommended to use the latest utility, <code dir="ltr">jcmd</code> instead of <code dir="ltr">jmap</code> utility for enhanced diagnostics and reduced performance overhead. See <a href="tooldescr006.html#BABEJDGE">Useful Commands for jcmd Utility</a>. The command in <a href="#CIHHHJHH">Example 3-2</a> creates a heap dump for a running process using <code dir="ltr">jcmd</code> and results similar to the <code dir="ltr">jmap</code> command in<a href="#CIHCJBHD">Example 3-3</a>.</p>
+<div id="JSTGD280"><a id="CIHHHJHH" name="CIHHHJHH"/>
+<p>Example 3-2 Create a Heap Dump using jcmd</p>
+<pre dir="ltr" xml:space="preserve">
+jcmd &lt;process id/main class&gt; GC.heap_dump filename=Myheapdump
+</pre></div>
+
+<div id="JSTGD281"><a id="CIHCJBHD" name="CIHCJBHD"/>
+<p>Example 3-3 Create a Heap Dump using jmap</p>
+<pre dir="ltr" xml:space="preserve">
+$ jmap -dump:format=b,file=snapshot.jmap <span>pid</span>
+</pre></div>
+
+<p>Regardless of how the JVM was started, the <code dir="ltr">jmap</code> tool produces a head dump snapshot in the preceding example in a file named <code dir="ltr">snapshot.jmap</code>. The <code dir="ltr">jmap</code> output files should contain all the primitive data, but will not include any stack traces showing where the objects have been created. See <a href="tooldescr014.html#BABGAFEG">The jmap Utility</a>.</p>
+</li>
+<li>
+<p>Another way to create a heap dump is by using the JConsole utility. In the <b>MBeans</b> tab, select the <b>HotSpotDiagnostic</b> MBean, then the <b>Operations</b> display, and choose the <b>dumpHeap</b> operation.</p>
+</li>
+<li>
+<p>If you specify the <code dir="ltr">-XX:+HeapDumpOnOutOfMemoryError</code> command-line option while running your application, then when an <code dir="ltr">OutOfMemoryError</code> exception is thrown, the JVM will generate a heap dump.</p>
+</li>
+</ul>
+</div>
+
+<a id="CIHBDBHJ" name="CIHBDBHJ"/>
+<div id="JSTGD282">
+<h2><span>3.4.2</span> Obtain a Heap Histogram</h2>
+<p>You can try to quickly narrow down a memory leak by examining the heap histogram. It can be obtained in several ways:</p>
+<ul>
+<li>
+<p>If the Java process is started with the <code dir="ltr">-XX:+PrintClassHistogram</code> command-line option, then the Control+Break handler will produce a heap histogram.</p>
+</li>
+<li>
+<p>You can use the <code dir="ltr">jmap</code> utility to obtain a heap histogram from a running process:</p>
+<p>It is recommended to use the latest utility, <code dir="ltr">jcmd</code> instead of <code dir="ltr">jmap</code> utility for enhanced diagnostics and reduced performance overhead. See <a href="tooldescr006.html#BABEJDGE">Useful Commands for jcmd Utility</a>.The command in <a href="#CIHEFBCG">Example 3-4</a> creates a heap histogram for a running process using <code dir="ltr">jcmd</code> and results similar to the following <code dir="ltr">jmap</code> command.</p>
+<div id="JSTGD283"><a id="CIHEFBCG" name="CIHEFBCG"/>
+<p>Example 3-4 Create a Heap Histogram using jcmd</p>
+<pre dir="ltr" xml:space="preserve">
+jcmd &lt;process id/main class&gt; GC.class_histogram filename=Myheaphistogram
+</pre>
+<pre dir="ltr" xml:space="preserve">
+jmap -histo <span>pid</span>
+</pre></div>
+
+<p>The output shows the total size and instance count for each class type in the heap. If a sequence of histograms is obtained (for example, every 2 minutes), then you might be able to observe a trend that can lead to further analysis.</p>
+</li>
+<li>
+<p>You can use the <code dir="ltr">jmap</code> utility to obtain a heap histogram from a core file as shown in <a href="#CIHIEFIJ">Example 3-5</a>.</p>
+<div id="JSTGD284"><a id="CIHIEFIJ" name="CIHIEFIJ"/>
+<p>Example 3-5 Create a Heap Histogram using jmap</p>
+<pre dir="ltr" xml:space="preserve">
+jmap -histo <span>core_file</span>
+</pre></div>
+
+<p>For example, if you specify the <code dir="ltr">-XX:+HeapDumpOnOutOfMemoryError</code> command-line option while running your application, then when an <code dir="ltr">OutOfMemoryError</code> exception is thrown, the JVM will generate a heap dump. You can then execute <code dir="ltr">jmap</code> on the core file to get a histogram, as shown in <a href="#CIHDDAEA">Example 3-6</a>.</p>
+<div id="JSTGD285"><a id="CIHDDAEA" name="CIHDDAEA"/>
+<p>Example 3-6 Execute jmap on the Core File</p>
+<pre dir="ltr" xml:space="preserve">
+$ <code dir="ltr"><span>jmap -histo \ /java/re/javase/6/latest/binaries/solaris-sparc/bin/java core.27421</span></code>
+
+Attaching to core core.27421 from executable 
+/java/re/javase/6/latest/binaries/solaris-sparc/bin/java, please wait...
+Debugger attached successfully.
+Server compiler detected.
+JVM version is 1.6.0-beta-b63
+Iterating over heap. This may take a while...
+Heap traversal took 8.902 seconds.
+
+Object Histogram:
+ 
+Size      Count   Class description
+-------------------------------------------------------
+86683872  3611828 java.lang.String
+20979136  204     java.lang.Object[]
+403728    4225    * ConstMethodKlass
+306608    4225    * MethodKlass
+220032    6094    * SymbolKlass
+152960    294     * ConstantPoolKlass
+108512    277     * ConstantPoolCacheKlass
+104928    294     * InstanceKlassKlass
+68024     362     byte[]
+65600     559     char[]
+31592     359     java.lang.Class
+27176     462     java.lang.Object[]
+25384     423     short[]
+17192     307     int[]
+:
+</pre></div>
+
+<p><a href="#CIHDDAEA">Example 3-6</a> shows that the <code dir="ltr">OutOfMemoryError</code> exception was caused by the number of <code dir="ltr">java.lang.String</code> objects (3,611,828 instances in the heap). Without further analysis it is not clear where the strings are allocated. However, the information is still useful. To continue investigation with tools such as <code dir="ltr">HPROF</code> and <code dir="ltr">jhat</code> to find where the strings are allocated, as well as what references are keeping them alive and preventing them from being garbage collected.</p>
+</li>
+</ul>
+</div>
+
+<a id="CIHCDBJB" name="CIHCDBJB"/>
+<div id="JSTGD286">
+<h2><span>3.4.3</span> Monitor the Objects Pending Finalization</h2>
+<p>When the OutOfMemoryError exception is thrown with the "Java heap space" detail message, the cause can be excessive use of finalizers. To diagnose this, you have several options for monitoring the number of objects that are pending finalization:</p>
+<ul>
+<li>
+<p>The <a href="tooldescr009.html#BABDCICF">JConsole</a> management tool can be used to monitor the number of objects that are pending finalization. This tool reports the pending finalization count in the memory statistics on the <b>Summary</b> tab pane. The count is approximate, but it can be used to characterize an application and understand if it relies a lot on finalization.</p>
+</li>
+<li>
+<p>On Oracle Solaris and Linux operating systems, the <code dir="ltr">jmap</code> utility can be used with the <code dir="ltr">-finalizerinfo</code> option to print information about objects awaiting finalization.</p>
+</li>
+<li>
+<p>An application can report the approximate number of objects pending finalization using the <code dir="ltr">getObjectPendingFinalizationCount</code> method of the <code dir="ltr">java.lang.management.MemoryMXBean</code> class. Links to the API documentation and example code can be found in <a href="tooldescr021.html#BABEDEBD">Custom Diagnostic Tools</a>. The example code can easily be extended to include the reporting of the pending finalization count.</p>
+</li>
+</ul>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="memleaks003.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="memleaks005.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

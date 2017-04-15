@@ -1,0 +1,634 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<meta http-equiv="Content-Type" content=
+"text/html; charset=utf-8" />
+<title>Java Virtual Machine Support for Non-Java Languages</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Java Virtual Machine Support for Non-Java Languages</h1>
+
+<p>The following topics are covered:</p>
+<ul>
+<li><a href="#intro">Introduction</a></li>
+<li><a href="#typing">Static and Dynamic Typing</a></li>
+<li><a href="#challenges">The Challenge of Compiling Dynamically
+Typed Languages</a></li>
+<li><a href="#invokedynamic">The invokedynamic Instruction</a></li>
+<li><a href="#resources">Resources</a></li>
+</ul>
+<h2><a name="intro" id="intro">Introduction</a></h2>
+<p>The Java SE platform enables the development of applications
+with the following features:</p>
+<ul>
+<li>Can be written once and run anywhere</li>
+<li>Can be run securely because of the Java sandbox security
+model</li>
+<li>Easy to package and deliver</li>
+</ul>
+<p>The Java SE platform also provides robust support with respect
+to the following areas (and more):</p>
+<ul>
+<li>Concurrency</li>
+<li>Garbage collection</li>
+<li>Reflective access to classes and objects</li>
+<li>JVM Tool Interface (JVM TI): A native programming interface for
+use by tools. It provides both a way to inspect the state and to
+control the execution of applications running in the JVM.</li>
+</ul>
+<p>Oracle's HotSpot JVM also offers the following tools and
+features:</p>
+<ul>
+<li>DTrace: A comprehensive dynamic tracing utility that monitors
+the behavior of applications programs as well as the operating
+system itself.</li>
+<li>Performance optimizations</li>
+<li>PrintAssembly: A Java HotSpot option that prints assembly code
+for bytecoded and native methods.</li>
+</ul>
+<p>The Java SE 7 platform enables non-Java languages to exploit the
+infrastructure and potential performance optimizations of the JVM.
+The key mechanism is the <code>invokedynamic</code> instruction,
+which simplifies the implementation of compilers and runtime
+systems for dynamically typed languages on the JVM.</p>
+<h2><a name="typing" id="typing">Static and Dynamic Typing</a></h2>
+<p>A programming language is statically typed if it performs type
+checking at compile time. Type checking is the process of verifying
+that a program is type safe. A program is type safe if the
+arguments of all of its operations are the correct type.</p>
+<p>Java is a statically typed language. All typed information for
+class and instance variables, method parameters, return values, and
+other variables is available when a program is compiled. The
+compiler for the Java programming language uses this type
+information to produce strongly typed bytecode, which can then be
+efficiently executed by the JVM at runtime.</p>
+<p>The following example of a Hello World program demonstrates
+static typing. Types are shown in <strong>bold</strong>.</p>
+<pre>
+import <strong>java.util.Date;</strong>
+
+public class HelloWorld {
+    public static <strong>void</strong> main(<strong>String[]</strong> argv) {
+        <strong>String</strong> hello = "Hello ";
+        <strong>Date</strong> currDate = new Date();
+        for (<strong>String</strong> a : argv) {
+            System.out.println(hello + a);
+            System.out.println("Today's date is: " + currDate);
+        }
+    }
+}
+</pre>
+<p>A programming language is dynamically typed if it performs type
+checking at runtime. JavaScript and Ruby are examples of
+dynamically typed languages. These languages verify at runtime,
+rather than at compile time, that values in an application conform
+to expected types. These languages typically do not have any type
+information available at compile time. The type of an object can be
+determined only at runtime. Hence, in the past, it was difficult to
+efficiently implement them on the JVM.</p>
+<p>The following is an example of the Hello World program written
+in the Ruby programming language:</p>
+<pre>
+#!/usr/bin/env ruby
+require 'date'
+
+hello = "Hello "
+currDate = DateTime.now
+ARGV.each do|a|
+  puts hello + a
+  puts "Date and time: " + currDate.to_s
+end
+</pre>
+<p>Note that every name is introduced without a type declaration.
+Also, the main program is not located inside of a holder type (the
+Java class <code>HelloWorld</code>. The Ruby equivalent of the Java
+<code>for</code> loop is inside the dynamic type of the variable
+<code>ARGV</code>. The body of the loop is contained in a block
+called a closure, a common feature in dynamic languages.</p>
+<h3>Statically Typed Languages Are Not Necessarily Strongly Typed
+Languages</h3>
+<p>A programming language that features strong typing specifies
+restrictions on the types of values supplied to its operations. If
+a computer language implements strong typing, it prevents the
+execution of an operation if its arguments have the wrong type.
+Conversely, a language that features weak typing would implicitly
+convert (or cast) arguments of an operation if those arguments have
+wrong or incompatible types.</p>
+<p>Statically typed programming languages can employ strong typing
+or weak typing. Similarly, dynamically typed languages can also
+apply strong typing or weak typing. For example, the Ruby
+programming language is dynamically typed and strongly typed. Once
+a variable has been initialized with a value of some type, the Ruby
+programming language will not implicitly convert the variable into
+another data type. The Ruby programming language would not allow
+the following:</p>
+<pre>
+a = "40"
+b = a + 2
+</pre>
+<p>In this example, the Ruby programming language will not
+implicitly cast the number 2, which has a <code>Fixnum</code> type,
+to a string.</p>
+<h2><a name="challenges" id="challenges">The Challenge of Compiling
+Dynamically Typed Languages</a></h2>
+<p>Consider the following dynamically typed method,
+<code>addtwo</code>, that adds any two numbers (which can be of any
+numeric type) and returns the sum:</p>
+<pre>
+def addtwo(a, b)
+       a + b;
+end
+</pre>
+<p>Suppose your organization is implementing a compiler and runtime
+system for the programming language in which the method
+<code>addtwo</code> is written. In a strongly typed language,
+whether typed statically or dynamically, the behavior of
+<code>+</code> (the addition operator) depends on the types of the
+operands. A compiler for a statically-typed language chooses which
+implementation of <code>+</code> is appropriate based on the static
+types of <code>a</code> and <code>b</code>. For example, a Java
+compiler implements <code>+</code> with the <code>iadd</code> JVM
+instruction if the types of <code>a</code> and <code>b</code> are
+<code>int</code>. The addition operator will be compiled to a
+method call because the JVM's <code>iadd</code> instruction
+requires the operand types to be statically known.</p>
+<p>In contrast, a compiler for a dynamically-typed language must
+defer the choice until runtime. The statement <code>a + b</code> is
+compiled as the method call <code>+(a, b)</code>, where
+<code>+</code> is the method name. (Note a method named
+<code>+</code> is permitted in the JVM but not in the Java
+programming language.) Suppose then that the runtime system for the
+dynamically-typed language is able to identify that <code>a</code>
+and <code>b</code> are variables of integer type. The runtime
+system would prefer to call an implementation of <code>+</code>
+that is specialized for integer types rather than arbitrary object
+types.</p>
+<p>The challenge of compiling dynamically typed languages is how to
+implement a runtime system that can choose the most appropriate
+implementation of a method or function &mdash; after the program
+has been compiled. Treating all variables as objects of
+<code>Object</code> type would not work efficiently; the
+<code>Object</code> class does not contain a method named
+<code>+</code>.</p>
+<p>Java SE 7 introduces the <code>invokedynamic</code> instruction
+that enables the runtime system to customize the linkage between a
+call site and a method implementation. In this example, the
+<code>invokedynamic</code> call site is <code>+</code>. An
+<code>invokedynamic</code> call site is linked to a method by means
+of a <em>bootstrap method</em>, which is a method specified by the
+compiler for the dynamically-typed language that is called once by
+the JVM to link the site. Assuming the compiler emitted an
+<code>invokedynamic</code> instruction that invokes <code>+</code>,
+and assuming that the runtime system knows about the method
+<code>adder(Integer,Integer)</code>, the runtime can link the
+<code>invokedynamic</code> call site to the <code>adder</code>
+method as follows:</p>
+<p><strong><a name="integerops-java" id=
+"integerops-java">IntegerOps.java</a></strong></p>
+<pre>
+class IntegerOps {
+
+  public static Integer adder(Integer x, Integer y) {
+    return x + y;
+  }
+}
+</pre>
+<p><strong><a name="example-java" id=
+"example-java">Example.java</a></strong></p>
+<pre>
+import java.util.*;
+import java.lang.invoke.*;
+import static java.lang.invoke.MethodType.*;
+import static java.lang.invoke.MethodHandles.*;
+
+class Example {
+
+  public static CallSite mybsm(
+    MethodHandles.Lookup callerClass, String dynMethodName, MethodType dynMethodType)
+    throws Throwable {
+
+    MethodHandle mh =
+      callerClass.findStatic(
+        Example.class,
+        "IntegerOps.adder",
+        MethodType.methodType(Integer.class, Integer.class, Integer.class));
+
+    if (!dynMethodType.equals(mh.type())) {
+      mh = mh.asType(dynMethodType);
+    }
+
+    return new ConstantCallSite(mh);
+  }
+}
+</pre>
+<p>In this example, the <code>IntegerOps</code> class belongs to
+the library that accompanies the dynamic language's runtime
+system.</p>
+<p>The method <code>Example.mybsm</code> is a bootstrap method that
+links the <code>invokedynamic</code> call site to the
+<code>adder</code> method.</p>
+<p>The object <code>callerClass</code> is a lookup object, which is
+a factory for creating method handles.</p>
+<p>The method <code>MethodHandles.Lookup.findStatic</code> (called
+from the <code>callerClass</code> lookup object) creates a static
+method handle for the method <code>adder</code>.</p>
+<p><strong>Note</strong>: This bootstrap method links an
+<code>invokedynamic</code> call site only to the code defined in
+the <code>adder</code> method, and it assumes that the arguments
+given to the <code>invokedynamic</code> call site will be
+<code>Integer</code> objects. A bootstrap method requires
+additional code to properly link <code>invokedynamic</code> call
+sites to the appropriate code to execute if the parameters of the
+bootstrap method (in this example, <code>callerClass</code>,
+<code>dynMethodName</code>, and <code>dynMethodType</code>)
+vary.</p>
+<p>The classes <code>java.lang.invoke.MethodHandles</code> and
+<code>java.lang.invoke.MethodHandle</code> contain various methods
+that create method handles based on existing method handles. This
+example calls the method <code>asType</code> if the method type of
+the method handle <code>mh</code> does not match the method type
+specified by the parameter <code>dynMethodType</code>. This enables
+the bootstrap method to link <code>invokedynamic</code> call sites
+to Java methods whose method types do not exactly match.</p>
+<p>The <code>ConstantCallSite</code> instance returned by the
+bootstrap method represents a call site to be associated with a
+distinct <code>invokedynamic</code> instruction. The target for a
+<code>ConstantCallSite</code> instance is permanent and can never
+be changed. In this case there is only one Java method,
+<code>adder</code>, which is a candidate for executing the call
+site. Note that this method does not have to be a Java method.
+Instead, if there were several such methods being available to the
+runtime system, each handling different argument types, the
+bootstrap method <code>mybsm</code> could dynamically select the
+correct method, based on the <code>dynMethodType</code>
+argument.</p>
+<!-- ******************************************************** -->
+<h2><a name="invokedynamic" id="invokedynamic">The invokedynamic
+Instruction</a></h2>
+<p>The <code>invokedynamic</code> instruction simplifies and
+potentially improves implementations of compilers and runtime
+systems for dynamic languages on the JVM. The
+<code>invokedynamic</code> instruction does this by allowing the
+language implementer to define custom linkage behavior. This
+contrasts with other JVM instructions such as
+<code>invokevirtual</code>, in which linkage behavior specific to
+Java classes and interfaces is hard-wired by the JVM.</p>
+<p>Each instance of an <code>invokedynamic</code> instruction is
+called a <em>dynamic call site</em>. A dynamic call site is
+originally in an unlinked state, which means that there is no
+method specified for the call site to invoke. As previously
+mentioned, a dynamic call site is linked to a method by means of a
+bootstrap method. A dynamic call site's bootstrap method is a
+method specified by the compiler for the dynamically-typed language
+that is called once by the JVM to link the site. The object
+returned from the bootstrap method permanently determines the call
+site's behavior.</p>
+<p>The <code>invokedynamic</code> instruction contains a constant
+pool index (in the same format as for the other <code>invoke</code>
+instructions). This constant pool index references a
+<code>CONSTANT_InvokeDynamic</code> entry. This entry specifies the
+bootstrap method (a <code>CONSTANT_MethodHandle</code> entry), the
+name of the dynamically linked method, and the argument types and
+return type of the call to the dynamically linked method.</p>
+<p>The following is an example of an <code>invokedynamic</code>
+instruction. In this example, the runtime system links the dynamic
+call site specified by this <code>invokedynamic</code> instruction
+(which is <code>+</code>, the addition operator) to the
+<code><a href="#integerops-java">IntegerOps.adder</a></code> method
+by using the bootstrap method <code><a href=
+"#example-java">Example.mybsm</a></code>. The methods
+<code>adder</code> and <code>mybsm</code> are defined in the
+section <a href="#challenges">The Challenge of Compiling
+Dynamically Typed Languages</a> (line breaks have been added for
+clarity):</p>
+<pre>
+invokedynamic   InvokeDynamic
+  REF_invokeStatic:
+    Example.mybsm:
+      "(Ljava/lang/invoke/MethodHandles/Lookup;
+        Ljava/lang/String;
+        Ljava/lang/invoke/MethodType;)
+      Ljava/lang/invoke/CallSite;":
+    +:
+      "(Ljava/lang/Integer;
+        Ljava/lang/Integer;)
+      Ljava/lang/Integer;";
+</pre>
+<p><strong>Note</strong>: The bytecode examples in these sections
+use the syntax of the <a href="http://asm.ow2.org/">ASM</a> Java
+bytecode manipulation and analysis framework.</p>
+<p>Invoking a dynamically linked method with the
+<code>invokedynamic</code> instruction involves the following
+steps:</p>
+<ol>
+<li><a href="#defining_bootstrap">Defining the Bootstrap
+Method</a></li>
+<li><a href="#constant_pool">Specifying Constant Pool
+Entries</a></li>
+<li><a href="#using_invokedynamic">Using the
+<code>invokedynamic</code> Instruction</a></li>
+</ol>
+<!-- ======================================================== -->
+<h3><a name="defining_bootstrap" id="defining_bootstrap">1.
+Defining the Bootstrap Method</a></h3>
+<p>At runtime, when the JVM first encounters an
+<code>invokedynamic</code> instruction, it calls the bootstrap
+method. This method links the name specified by the
+<code>invokedynamic</code> instruction with the code that should be
+executed (the target method), which is referenced by a method
+handle. If the JVM executes the same <code>invokedynamic</code>
+instruction again, it does not call the bootstrap method; it
+automatically calls the linked method handle.</p>
+<p>The bootstrap method's return type must be
+<code>java.lang.invoke.CallSite</code>. A <code>CallSite</code>
+object represents the linked state of an <code>invokedynamic</code>
+instruction and the method handle to which it is linked.</p>
+<p>The bootstrap method takes three or more parameters:</p>
+<ol>
+<li>A <code>MethodHandles.Lookup</code> object, which is a factory
+for creating method handles in the context of the
+<code>invokedynamic</code> instruction.</li>
+<li>A <code>String</code> object, the method name mentioned in the
+dynamic call site.</li>
+<li>A <code>MethodType</code> object, the resolved type signature
+of the dynamic call site.</li>
+<li>Optionally, one or more additional static arguments to the
+<code>invokedynamic</code> instruction. These arguments, drawn from
+the constant pool, are intended to help language implementers
+safely and compactly encode additional metadata useful to the
+bootstrap method. In principle, the name and extra arguments are
+redundant since each call site could be given its own unique
+bootstrap method. However, such a practice is likely to produce
+large class files and constant pools</li>
+</ol>
+<p>See the section <a href="#challenges">The Challenge of Compiling
+Dynamically Typed Languages</a> for an example of a bootstrap
+method.</p>
+<!-- *********************************************** -->
+<h3><a name="constant_pool" id="constant_pool">2. Specifying
+Constant Pool Entries</a></h3>
+<p>As mentioned previously, the <code>invokedynamic</code>
+instruction contains a reference to an entry in the constant pool
+with the tag <code>CONSTANT_InvokeDynamic</code>. This entry
+contains references to other entries in the constant pool and
+references to attributes. This section briefly describes constant
+pool entries used by the <code>invokedynamic</code> instruction.
+For more information, see the <a href=
+"../../../api/java/lang/invoke/package-summary.html">java.lang.invoke
+package documentation</a> and <em>The Java Virtual Machine
+Specification</em>.</p>
+<h4>Example Constant Pool</h4>
+<p>The following is an excerpt from the constant pool for the class
+<code>Example</code>, which contains the bootstrap method
+<code>Example.mybsm</code> that links the method <code>+</code>
+with the Java method <code>adder</code>:</p>
+<pre>
+    class #159; // #47
+    Utf8 "adder"; // #83
+    Utf8 "(Ljava/lang/Integer;Ljava/lang/Integer;)Ljava/lang/Integer;"; // #84
+    Utf8 "mybsm"; // #87
+    Utf8 "(Ljava/lang/invoke/MethodHandles/Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;)
+      java/lang/invoke/CallSite;"; // #88
+    Utf8 "Example"; // #159
+    Utf8 "+"; // #166
+
+    // ...
+
+    NameAndType #83 #84; // #228
+    Method #47 #228; // #229
+    MethodHandle 6b #229; // #230
+    NameAndType #87 #88; // #231
+    Method #47 #231; // #232
+    <strong>MethodHandle 6b #232; // #233</strong>
+    NameAndType #166 #84; // #234
+    Utf8 "BootstrapMethods"; // #235
+    <strong>InvokeDynamic 0s #234; // #236</strong>
+</pre>
+<p>The constant pool entry for the <code>invokedynamic</code>
+instruction in this example contains three values:</p>
+<ul>
+<li><code>CONSTANT_InvokeDynamic</code> tag</li>
+<li>Unsigned short of value <code>0</code></li>
+<li>Constant pool index <code>#234</code>.</li>
+</ul>
+<p>The value <code>0</code> refers to the first bootstrap method
+specifier in the array of specifiers stored in the
+<code>BootstrapMethods</code> attribute. Bootstrap method
+specifiers are not in the constant pool table; they are contained
+in this separate array of specifiers. Each bootstrap method
+specifier contains an index to a <code>CONSTANT_MethodHandle</code>
+constant pool entry, which is the bootstrap method itself.</p>
+<p>The following is an excerpt from the same constant pool that
+shows the <code>BootstrapMethods</code> attribute, which contains
+the array of bootstrap method specifiers:</p>
+<pre>
+  [3] { // Attributes
+
+    // ...
+
+    Attr(#235, 6) { // BootstrapMethods at 0x0F63
+      [1] { // bootstrap_methods
+        {  //  bootstrap_method
+          #233; // bootstrap_method_ref
+          [0] { // bootstrap_arguments
+          }  //  bootstrap_arguments
+        }  //  bootstrap_method
+      }
+    } // end BootstrapMethods
+  } // Attributes
+</pre>
+<p>The constant pool entry for the bootstrap method
+<code>mybsm</code> method handle contains three values:</p>
+<ul>
+<li><code>CONSTANT_MethodHandle</code> tag</li>
+<li>Unsigned byte of value <code>6</code></li>
+<li>Constant pool index <code>#232</code>.</li>
+</ul>
+<p>The value <code>6</code> is the subtag
+<code>REF_invokeStatic</code>. See the next section, <a href=
+"#using_invokedynamic">3. Using the invokedynamic Instruction</a>,
+for more information about this subtag.</p>
+<!-- ======================================== -->
+<h3><a name="using_invokedynamic" id="using_invokedynamic">3. Using
+the invokedynamic Instruction</a></h3>
+<p>The following bytecode uses the <code>invokedynamic</code>
+instruction to call the bootstrap method <code>mybsm</code>, which
+links the dynamic call site (<code>+</code>, the addition operator)
+to the method <code>adder</code>. This example uses the
+<code>+</code> method to add the numbers <code>40</code> and
+<code>2</code> (line breaks have been inserted for clarity):</p>
+<pre>
+bipush  40;
+invokestatic    Method java/lang/Integer.valueOf:"(I)Ljava/lang/Integer;";
+iconst_2;
+invokestatic    Method java/lang/Integer.valueOf:"(I)Ljava/lang/Integer;";
+invokedynamic   InvokeDynamic
+  REF_invokeStatic:
+    Example.mybsm:
+      "(Ljava/lang/invoke/MethodHandles/Lookup;
+        Ljava/lang/String;
+        Ljava/lang/invoke/MethodType;)
+      Ljava/lang/invoke/CallSite;":
+    +:
+      "(Ljava/lang/Integer;
+        Ljava/lang/Integer;)
+      Ljava/lang/Integer;";
+</pre>
+<p>The first four instructions put the integers <code>40</code> and
+<code>2</code> on the stack and boxes them in the
+<code>java.lang.Integer</code> wrapper type. The fifth instruction
+invokes a dynamic method. This instruction refers to a constant
+pool entry with a <code>CONSTANT_InvokeDynamic</code> tag:</p>
+<pre>
+REF_invokeStatic:
+  Example.mybsm:
+    "(Ljava/lang/invoke/MethodHandles/Lookup;
+      Ljava/lang/String;
+      Ljava/lang/invoke/MethodType;)
+    Ljava/lang/invoke/CallSite;":
+  +:
+    "(Ljava/lang/Integer;
+      Ljava/lang/Integer;)
+    Ljava/lang/Integer;";
+</pre>
+<p>Four bytes follow the <code>CONSTANT_InvokeDynamic</code> tag in
+this entry:</p>
+<ul>
+<li>
+<p>The first two bytes form a reference to a
+<code>CONSTANT_MethodHandle</code> entry that references a
+bootstrap method specifier:</p>
+<pre>
+REF_invokeStatic:
+  Example.mybsm:
+    "(Ljava/lang/invoke/MethodHandles/Lookup;
+      Ljava/lang/String;
+      Ljava/lang/invoke/MethodType;)
+    Ljava/lang/invoke/CallSite;"
+</pre>
+<p>As mentioned previously, this reference to a bootstrap method
+specifier is not in the constant pool table; it is contained in a
+separate array defined by a class file attribute named
+<code>BootstrapMethods</code>. The bootstrap method specifier
+contains an index to a <code>CONSTANT_MethodHandle</code> constant
+pool entry, which is the bootstrap method itself.</p>
+<p>Three bytes follow this <code>CONSTANT_MethodHandle</code>
+constant pool entry:</p>
+<ul>
+<li>
+<p>The first byte is the subtag <code>REF_invokeStatic</code>. This
+means that this bootstrap method will create a method handle for a
+static method; note that this bootstrap method is linking the
+dynamic call site with the static Java method
+<code>adder</code>.</p>
+</li>
+<li>
+<p>The next two bytes form a <code>CONSTANT_Methodref</code> entry
+that represents the method for which the method handle is to be
+created:</p>
+<pre>
+Example.mybsm:
+  "(Ljava/lang/invoke/MethodHandles/Lookup;
+    Ljava/lang/String;
+    Ljava/lang/invoke/MethodType;)
+  Ljava/lang/invoke/CallSite;"
+</pre>
+<p>In this example, the fully qualified name of the bootstrap
+method is <code>Example.mybsm</code>; the argument types are
+<code>MethodHandles.Lookup</code>, <code>String</code>, and
+<code>MethodType</code>; and the return type is
+<code>CallSite</code>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>The next two bytes form a reference to a
+<code>CONSTANT_NameAndType</code> entry:</p>
+<pre>
++:
+  "(Ljava/lang/Integer;
+    Ljava/lang/Integer;)
+  Ljava/lang/Integer;"
+</pre>
+<p>This constant pool entry specifies the method name
+(<code>+</code>), argument types (two <code>Integer</code>
+instances), and return type of the dynamic call site
+(<code>Integer</code>).</p>
+</li>
+</ul>
+<p>In this example, the dynamic call site is presented with boxed
+integer values, which exactly match the type of the eventual
+target, the <code>adder</code> method. In practice, the argument
+and return types do not need to exactly match. For example, the
+<code>invokedynamic</code> instruction could pass either or both of
+its operands on the JVM stack as primitive <code>int</code> values.
+Either or both operands could also be untyped <code>Object</code>
+values. The <code>invokedynamic</code> instruction could also
+receive its result as a primitive <code>int</code> value, or an
+untyped <code>Object</code> value. In any case, the
+<code>dynMethodType</code> argument to <code>mybsm</code> will
+accurately describe the method type required by the
+<code>invokedynamic</code> instruction.</p>
+<p>Independently, the <code>adder</code> method could also have
+been given primitive or untyped arguments or return values. The
+bootstrap method is responsible for making up any difference
+between the <code>dynMethodType</code> and the type of the
+<code>adder</code> method. As shown in the code, this is easily
+done with an <code>asType</code> call on the target method.</p>
+<h2><a name="resources" id="resources">Resources</a></h2>
+<ul>
+<li><a href=
+"../../../api/java/lang/invoke/package-summary.html">java.lang.invoke
+package documentation</a></li>
+<li><a href="http://openjdk.java.net/projects/mlvm/">The Da Vinci
+Machine Project</a></li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

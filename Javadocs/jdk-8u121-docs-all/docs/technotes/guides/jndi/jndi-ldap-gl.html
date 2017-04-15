@@ -1,0 +1,2841 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>JNDI/LDAP Supplement: Guidelines for LDAP Service
+Providers</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+JNDI Implementor Guidelines for LDAP Service Providers
+<h1>Draft 0.4.2</h1>
+<dl>
+<dt><b>Table of Contents</b></dt>
+<dt>&nbsp;</dt>
+<dt><b><a href="#INTRO">1. Introduction</a></b></dt>
+<dt><b><a href="#CONF">2. Conformance</a></b></dt>
+<dt><b><a href="#PROP">3. Environment Properties</a></b></dt>
+<dt><b><a href="#NAME">4. Names</a></b></dt>
+<dt><b><a href="#ATTRS">5. Attributes</a></b></dt>
+<dt><b><a href="#URLS">6. URLs</a></b></dt>
+<dt><b><a href="#OBJ">7. Java Objects</a></b></dt>
+<dt><b><a href="#SCHEMA">8. Schema</a></b></dt>
+<dt><b><a href="#EXCEPT">9. Exceptions</a></b></dt>
+<dt><b><a href="#API">10. API Mapping</a></b></dt>
+<dt><b><a href="#FED">11. Federation</a></b></dt>
+<dt><b><a href="#SASL">12. SASL</a></b></dt>
+<dt><b><a href="#CTL">13. Extensions and Controls</a></b></dt>
+<dt><b><a href="#EVENT">14. Event Notification</a></b></dt>
+<dt><b><a href="#SSL">15. SSL</a></b></dt>
+</dl>
+<dl>
+<dd>&nbsp;</dd>
+</dl>
+<hr />
+<a name="INTRO" id="INTRO"></a>
+<h2>1. Introduction</h2>
+This document specifies guidelines that developers creating LDAP
+service providers and service providers that support LDAP-like
+features should follow. By following these guidelines, developers
+can produce implementations that JNDI API users can configure and
+use with minimal differences.
+<p>Not all of the features described in this document must be
+supported by an LDAP service provider. However, if a feature is
+supported, it should be supported in the way described by this
+document.</p>
+<hr />
+<br />
+<a name="CONF" id="CONF"></a>
+<h2>2. Conformance</h2>
+An LDAP service provider that supports LDAP version 3 (LDAPv3)
+conforms to:
+<ul>
+<li>&nbsp;<a href="http://www.ietf.org/rfc/rfc2251.txt">RFC
+2251</a> and related specifications.</li>
+</ul>
+An LDAP service provider that supports LDAP version 2 (LDAPv2)
+conforms to:
+<ul>
+<li>&nbsp;<a href="http://www.ietf.org/rfc/rfc1777.txt">RFC
+1777</a>&nbsp; and related specifications.</li>
+</ul>
+<hr />
+<a name="PROP" id="PROP"></a>
+<h2>3. Environment Properties</h2>
+Environment properties are the means by which JNDI application
+users configure and affect the behavior of JNDI service providers.
+Consequently, service providers must interpret and handle
+environment properties in the same way.
+<p>There are four types of environment properties that affect LDAP
+service providers:</p>
+<ul>
+<li><a href="#JNDIPROPS">Standard JNDI environment
+properties</a></li>
+<li><a href="#LDAPPROPS">LDAP-specific environment
+properties</a></li>
+<li><a href="#SPIPROPS">Provider-specific environment
+properties</a></li>
+<li><a href="#FEATUREPROPS">Feature-specific environment
+properties</a></li>
+</ul>
+<h3>3.1 Overview</h3>
+<h4>3.1.1 Initialization</h4>
+When creating an initial context, environment properties can be
+passed as an argument to the constructor or may be initialized as
+specified in the <a href=
+"../../../api/javax/naming/InitialContext.html#ENVIRONMENT">JNDI
+documentation</a>.
+<p>In particular, if any of the following properties is not
+supplied in the environment properties then it is sought from the
+system properties, applet parameters, and both provider and
+application resource files (in that order):</p>
+<ul>
+<li><tt><a href=
+"#control">java.naming.factory.control</a></tt></li>
+<li><tt><a href=
+"#initial">java.naming.factory.initial</a></tt></li>
+<li><tt><a href="#object">java.naming.factory.object</a></tt></li>
+<li><tt><a href="#state">java.naming.factory.state</a></tt></li>
+<li><tt><a href="#url">java.naming.provider.url</a></tt></li>
+</ul>
+In the case of the control, object and state factory properties, if
+more than one occurrence of the property is located, then its
+values are concatenated into a single list. In the case of the url
+property and all other properties, only the first occurrence is
+used.
+<p>A context's environment properties can be examined using the
+<tt><a href=
+"../../../api/javax/naming/Context.html#getEnvironment--">Context.getEnvironment</a></tt>
+method.</p>
+<h4>3.1.2 Modification</h4>
+A context's environment properties may be changed using the
+<tt><a href=
+"../../../api/javax/naming/Context.html#addToEnvironment-java.lang.String-java.lang.Object-">
+Context.addToEnvironment</a></tt> and <tt><a href=
+"../../../api/javax/naming/Context.html#removeFromEnvironment-java.lang.String-">
+Context.removeFromEnvironment</a></tt> methods.
+<h4>3.1.3 Scope</h4>
+With the exception of the <tt><a href=
+"../../../api/javax/naming/Context.html#PROVIDER_URL">java.naming.provider.url</a></tt>
+and <tt><a href=
+"../../../api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY">java.naming.factory.initial</a></tt>
+properties, changing a property using the <tt><a href=
+"../../../api/javax/naming/Context.html#addToEnvironment-java.lang.String-java.lang.Object-">
+Context.addToEnvironment</a></tt> or <tt><a href=
+"../../../api/javax/naming/Context.html#removeFromEnvironment-java.lang.String-">
+Context.removeFromEnvironment</a></tt> methods affects the context
+instance on which the method is invoked. For example, if you
+specify new credentials for a context to use, subsequent methods
+invoked on that context that require communication with the server
+will use those new credentials (perhaps internally by first
+creating a new connection to the server). These updated environment
+properties are inherited by context instances that are subsequently
+derived from the affected context instance, but do not otherwise
+affect other context instances that were in existence prior to the
+update.
+<h4>3.1.4 Timeliness</h4>
+When a change is made to the environment properties, there is no
+requirement that the change be verified and acted upon at the time
+the&nbsp; <tt><a href=
+"../../../api/javax/naming/Context.html#addToEnvironment-java.lang.String-java.lang.Object-">
+Context.addToEnvironment</a></tt> or <tt><a href=
+"../../../api/javax/naming/Context.html#removeFromEnvironment-java.lang.String-">
+Context.removeFromEnvironment</a></tt> method is invoked. The only
+requirement is that the change (or changes) be effective the next
+time an operation that uses that property is invoked.
+<h4>3.1.5 Defaults</h4>
+This specification defines defaults for the environment properties.
+In a few cases, the default is determined by the service provider.
+If a context does not have a particular environment property, it
+behaves as if it has that environment property with its default
+value.
+<p>When a property is removed from the environment properties of a
+context, the context assumes the default behavior specified for
+that property. This does not necessarily mean that the default
+value must be recorded as the property's value. The removal may
+also be indicated by the absence of the property from the context's
+environment properties.</p>
+<h4>3.1.6 Acceptable Values</h4>
+This specification defines acceptable values for the environment
+properties. Some environment properties have a fixed set of
+acceptable values while others have values that must follow a
+particular syntax. If an unacceptable value is presented, a
+property-specific exception will be thrown (for example,
+<tt><a href=
+"../../../api/javax/naming/ConfigurationException.html">ConfigurationException</a></tt>,
+<tt><a href=
+"../../../api/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></tt>,
+or <tt><a href=
+"../../../api/javax/naming/AuthenticationNotSupportedException.html">
+AuthenticationNotSupportedException</a></tt>). In some cases, it
+might be reasonable for the service provider to accept additional
+values than those specified, in which case, those values should be
+documented.
+<p><a name="JNDIPROPS" id="JNDIPROPS"></a></p>
+<h3>3.2 JNDI Properties</h3>
+LDAP service providers should process the JNDI environment
+properties according to the following specifications. In the
+examples given, <tt>env</tt> is an instance of <tt><a href=
+"../../../api/java/util/Hashtable.html">Hashtable</a></tt> that
+holds the environment properties used to create an initial context.
+<p><a name="batchsize" id="batchsize"></a></p>
+<dl>
+<dt><b><tt>java.naming.batchsize</tt></b></dt>
+</dl>
+<p>The value of this property is a string of decimal digits that
+specifies the batch size of search results returned by the
+server.</p>
+<p>This property affects the blocking behaviour of the
+<tt>Context.list</tt>, <tt>Context.listBindings</tt>, and
+<tt>DirContext.search</tt> methods and the
+<tt>NamingEnumeration</tt> objects that they return. It does not
+affect how many items are returned in the enumeration; it only
+affects how the items are batched or read at the LDAP protocol
+level.</p>
+<p>A setting of zero means that the provider should block until all
+results have been received. A setting of an integer <i>n</i>
+greater than zero means that the provider should block until
+<i>n</i> results have been received from the server or until the
+enumeration terminates, whichever produces the fewer number of
+results. After the application has read <i>n</i> results (using
+<tt>NamingEnumeration.next</tt> or
+<tt>NamingEnumeration.nextElement</tt>), the provider should read
+<i>n</i> more results from the server or until the enumeration
+terminates, whichever produces the fewer number of results.</p>
+<p>If this property is not set then its default value is
+implementation-specific.</p>
+<p>For example, the following code specifies that the provider
+should block until 24 entries have been read from the server or
+until the enumeration terminates, whichever produces the fewer
+number of results:</p>
+<pre class="codeblock">
+env.put(<a href=
+"../../../api/javax/naming/Context.html#BATCHSIZE">Context.BATCHSIZE</a>, "24");
+</pre>
+<a name="control" id="control"></a>
+<dl>
+<dt><b><tt>java.naming.factory.control</tt></b></dt>
+</dl>
+<p>The value of this property is a colon-separated list of fully
+qualified class names of control factory classes.</p>
+<p>The factories are responsible for <i>narrowing</i> the class of
+response controls. They create specific response controls from the
+generic response controls generated by the provider.</p>
+<p>No default value is defined for this property.</p>
+<p>For example, the following code sets the
+<tt>ResponseControlFactory</tt> class as the control factory to
+try:</p>
+<pre class="codeblock">
+env.put(<a href=
+"../../../api/javax/naming/ldap/LdapContext.html#CONTROL_FACTORIES">LdapContext.CONTROL_FACTORIES</a>,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "com.sun.jndi.ldap.ctl.ResponseControlFactory");
+</pre>
+<a name="initial" id="initial"></a>
+<dl>
+<dt><b><tt>java.naming.factory.initial</tt></b></dt>
+</dl>
+<p>The value of this property is the fully qualified class name of
+the factory class which creates the initial context for the LDAP
+service provider.</p>
+<p>It is used to select a particular LDAP service provider; it's
+not actually used by the provider itself. This property need not be
+set when the name argument to initial context methods is a URL.</p>
+<p>No default value is defined for this property.</p>
+<p>For example, the following code selects Sun's LDAP provider:</p>
+<pre class="codeblock">
+<tt>env.put(<a href=
+"../../../api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY">Context.INITIAL_CONTEXT_FACTORY</a>,</tt>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "com.sun.jndi.ldap.LdapCtxFactory");
+</pre>
+<a name="object" id="object"></a>
+<dl>
+<dt><b><tt>java.naming.factory.object</tt></b></dt>
+</dl>
+<p>The value of this property is a colon-separated list of fully
+qualified class names of object factory classes.</p>
+<p>The factories are responsible for creating specific objects from
+the LDAP entries returned by the provider. For example, a Person
+object factory might generate a <tt>Person</tt> object from an LDAP
+entry of object class person. Object factories behave in the
+opposite way to <a href="#state">state factories</a> in that they
+generate objects from LDAP attributes.</p>
+<p>No default value is defined for this property.</p>
+<p>For example,</p>
+<pre class="codeblock">
+env.put(<a href=
+"../../../api/javax/naming/ldap/LdapContext.html#CONTROL_FACTORIES">Context.OBJECT_FACTORIES</a>,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "com.sun.jndi.ldap.obj.PersonFromLDAP");
+</pre>
+sets the <tt>PersonFromLDAP</tt> class as the object factory to
+try. <a name="state" id="state"></a>
+<dl>
+<dt><b><tt>java.naming.factory.state</tt></b></dt>
+</dl>
+<p>The value of this property is a colon-separated list of fully
+qualified class names of state factory classes.</p>
+<p>The factories are responsible for creating an object's state
+(for storing) from the object itself. For example, a Person state
+factory might generate an LDAP entry of object class person from a
+<tt>Person</tt> object. State factories behave in the opposite way
+to <a href="#object">object factories</a> in that they generate
+LDAP attributes from objects.</p>
+<p>No default value is defined for this property.</p>
+<p>For example,</p>
+<pre class="codeblock">
+env.put(<a href=
+"../../../api/javax/naming/Context.html#STATE_FACTORIES">Context.STATE_FACTORIES</a>,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "com.sun.jndi.ldap.obj.PersonToLDAP");
+</pre>
+<p>sets the <tt>PersonToLDAP</tt> class as the state factory to
+try.</p>
+<a name="language" id="language"></a>
+<dl>
+<dt><b><tt>java.naming.language</tt></b></dt>
+</dl>
+<p>The value of this property is a string language tag according to
+<a href="http://www.ietf.org/rfc/rfc1766.txt">RFC 1766</a>.</p>
+<dl>
+<dd>
+<dl>
+<dt>This property indicates a preference for a particular natural
+language. A provider may adjust its LDAP requests and responses
+according to the value of this property.<br />
+The affect of this property is implementation-specific. No default
+value is defined.<br />
+For example:</dt>
+<dd>
+<dl>
+<dd>
+<pre class="codeblock">
+<tt>env.put(<a href=
+"../../../api/javax/naming/Context.html#LANGUAGE">Context.LANGUAGE</a>, "ja-JP");</tt>
+</pre></dd>
+</dl>
+indicates a preference for Japanese.</dd>
+</dl>
+</dd>
+</dl>
+<a name="url" id="url"></a>
+<dl>
+<dt><b><tt>java.naming.provider.url</tt></b></dt>
+</dl>
+<p>The value of this property is a list of space-separated LDAP or
+LDAPS URL strings, each of which specifies the hostname and port
+number of the LDAP server, and the root distinguished name of the
+naming context to use. An LDAP URL specifies the use of a plain
+(i.e., unprotected) connection; an LDAPS URL specifies the use of
+an SSL connection. If the list contains more than one URL, the
+provider should attempt to use each URL in turn until it is able to
+create a successful connection, and after creation, set the
+property to the successful URL.</p>
+<p>The default hostname is <tt>localhost</tt>; the default port is
+<tt>389</tt> for plain connections and <tt>636</tt> for SSL
+connections. The default root distinguished name is the empty
+string. If this property is not set, or if either the hostname or
+port number is omitted, then the default values are used in place
+of the missing information. If both the hostname and port are
+missing but a non-empty distinguished name is present in the URL,
+then the provider should use the distinguished name to determine
+the hostname and port of the LDAP server(s) as described in the
+<a href="#URLS">URLs section</a> and when a connection has been
+established successfully, set the <tt>java.naming.provider.url</tt>
+property to a URL constructed using the successful hostname, port
+and distinguished name. See also the <a href="#URLS">URLs
+section</a> for information on how the provider should treat other
+information found in the URL.</p>
+<p>For example:</p>
+<pre class="codeblock">
+env.put(<a href=
+"../../../api/javax/naming/Context.html#PROVIDER_URL">Context.PROVIDER_URL</a>, "ldap://secserver:636");
+</pre>
+specifies that the LDAP server is running on a host named
+<tt>secserver</tt> at port <tt>636</tt>.
+<p><b>NOTE</b>: Changing this property using the <tt><a href=
+"../../../api/javax/naming/Context.html#addToEnvironment-java.lang.String-java.lang.Object-">
+Context.addToEnvironment</a></tt> or <tt><a href=
+"../../../api/javax/naming/Context.html#removeFromEnvironment-java.lang.String-">
+Context.removeFromEnvironment</a></tt> methods does not affect the
+context. It is only used by the initial context constructors.</p>
+<a name="referral" id="referral"></a>
+<dl>
+<dt><b><tt>java.naming.referral</tt></b></dt>
+</dl>
+<p>The value of this property is a string that specifies how
+referrals shall be handled by the provider. The following values
+are defined for this property:</p>
+<dl>
+<dd>
+<dl>
+<dd>
+<dl>
+<dt><tt>follow</tt></dt>
+<dd>automatically follow any referrals.</dd>
+<dt><tt>throw</tt></dt>
+<dd>throw a <tt><a href=
+"../../../api/javax/naming/ReferralException.html">ReferralException</a></tt>
+for each referral.</dd>
+<dt><tt>ignore</tt></dt>
+<dd>ignore referrals if they appear in results. A <tt><a href=
+"../../../api/javax/naming/PartialResultException.html">PartialResultException</a></tt>
+is thrown to indicate an incomplete result. In addition, for LDAPv3
+servers, the provider shall request that referrals be treated as
+ordinary attributes when they appear in entries. This is achieved
+by sending a non-critical ManageDsaIT (<a href=
+"http://www.ietf.org/rfc/rfc3296.txt">RFC 3296</a>) LDAP control
+with each LDAP request. LDAP servers which do not support this LDAP
+control will simply ignore it and process the request as
+normal.</dd>
+</dl>
+<p>See the <a href="#URLS">URLs section</a> for information on how
+to treat multiple URLs found in a single referral entry.</p>
+<p>If this property is not set then its default value is
+<tt>ignore</tt>.</p>
+<p>For example:</p>
+<dl>
+<dd>
+<pre class="codeblock">
+env.put(<a href=
+"../../../api/javax/naming/Context.html#REFERRAL">Context.REFERRAL</a>, "throw");
+</pre></dd>
+</dl>
+specifies that referrals encountered during an LDAP operation
+should throw a <tt><a href=
+"../../../api/javax/naming/ReferralException.html">ReferralException</a></tt>
+to the application.</dd>
+</dl>
+</dd>
+</dl>
+<a name="authentication" id="authentication"></a>
+<dl>
+<dt><b><tt>java.naming.security.authentication</tt></b></dt>
+</dl>
+<p>The value of this property is a string that specifies the
+authentication mechanism(s) for the provider to use. The following
+values are defined for this property:</p>
+<dl>
+<dd>
+<dl>
+<dd>
+<dl>
+<dt><tt>none</tt></dt>
+<dd>use no authentication (anonymous bind).</dd>
+<dt><tt>simple</tt></dt>
+<dd>use simple authentication (a cleartext password).</dd>
+<dt><i>A space-separated list of one or more SASL mechanism
+names</i>:</dt>
+<dd>use the first available SASL mechanism in the list that
+conforms to the specified policy requirements</dd>
+</dl>
+<p>See <a href="#SASL">the SASL section</a> for information on how
+this property is used for SASL authentication. See&nbsp; <a href=
+"http://www.ietf.org/rfc/rfc2829.txt">RFC 2829</a>&nbsp; for
+information on LDAP authentication mechanisms.</p>
+<p>If this property is not set then its default value is
+<tt>none</tt>, unless the <a href=
+"#credentials">java.naming.security.credentials</a> property is
+set, in which case the default value is <tt>simple</tt>. If this
+property is set to a value that the provider does not recognize or
+support, it should throw
+<tt>AuthenticationNotSupportedException</tt>.</p>
+<p>For example:</p>
+<dl>
+<dd>
+<pre class="codeblock">
+env.put(<a href=
+"../../../api/javax/naming/Context.html#SECURITY_AUTHENTICATION">Context.SECURITY_AUTHENTICATION</a>, "simple");
+</pre></dd>
+</dl>
+specifies that simple authentication be used to authenticate to the
+LDAP server. Or,
+<dl>
+<dd>
+<pre class="codeblock">
+env.put(<a href=
+"../../../api/javax/naming/Context.html#SECURITY_AUTHENTICATION">Context.SECURITY_AUTHENTICATION</a>, "DIGEST-MD5 CRAM-MD5");
+</pre></dd>
+</dl>
+specifies that DIGEST-MD5 authentication be used and, if that SASL
+mechanism is unavailable, that CRAM-MD5 authentication be used. If
+neither is available then throw
+<tt>AuthenticationNotSupportedException</tt>.</dd>
+</dl>
+</dd>
+</dl>
+<a name="credentials" id="credentials"></a>
+<dl>
+<dt><b><tt>java.naming.security.credentials</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>The value of this property is an object that specifies the
+credentials of the principal to be authenticated. Its format and
+handling depends on the value of the&nbsp; <a href=
+"#authentication">java.naming.security.authentication</a>
+property.<br />
+For anonymous binds, this property is ignored - an empty string is
+always used for the credentials. For simple authentication and SASL
+authentication that requires a password, the value of this property
+may be supplied as a <tt>java.lang.String</tt>, a <tt>char[]</tt>
+or a <tt>byte[]</tt>. If it is a <tt>String</tt> or a
+<tt>char[]</tt> then it is encoded into a byte array using UTF-8 in
+the case of LDAPv3 and encoded using ISO-Latin-1 in the case of
+LDAPv2. If it is a <tt>byte[]</tt> then it is used as is.<br />
+See <a href="#SASL">the SASL section</a> for information on how
+this property is used for SASL authentication.<br />
+No default value is defined for this property.<br />
+For example:</dt>
+<dd>
+<dl>
+<dd>
+<pre class="codeblock">
+env.put(<a href=
+"../../../api/javax/naming/Context.html#SECURITY_CREDENTIALS">Context.SECURITY_CREDENTIALS</a>, "secret");
+</pre></dd>
+</dl>
+sets the credentials to be the string "secret".</dd>
+</dl>
+</dd>
+</dl>
+<a name="principal" id="principal"></a>
+<dl>
+<dt><b><tt>java.naming.security.principal</tt></b></dt>
+</dl>
+<p>The value of this property is a string that specifies the
+identity of the principal to be authenticated. Its format depends
+on the authentication type; see <a href=
+"http://www.ietf.org/rfc/rfc2829.txt">RFC 2829</a>&nbsp; for more
+information. The value is used as the <tt>name</tt> component in an
+LDAP ASN.1 BindRequest for non-SASL authentication. For SASL
+authentication, the value of this property is used as the
+authentication ID for SASL mechanisms that need an authentication
+ID.</p>
+<p>The provider is not required to verify the validity of the
+principal name. It may, for example, just pass the string to be
+verified by the server. If the principal identified is not a valid
+principal then the provider shall throw an
+<tt>AuthenticationException</tt>.</p>
+<p>No default value is defined for this property.</p>
+<p>For example:</p>
+<pre class="codeblock">
+env.put(<a href=
+"../../../api/javax/naming/Context.html#SECURITY_PRINCIPAL">Context.SECURITY_PRINCIPAL</a>, "cn=admin,o=sun,c=us");
+</pre>
+<p>sets the principal name to be the distinguished name "cn=admin,
+o=sun, c=us".</p>
+<a name="protocol" id="protocol"></a>
+<dl>
+<dt><b><tt>java.naming.security.protocol</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>The value of this property is a string that specifies the
+security protocol for the provider to use. The following value is
+defined for this property:<br />
+&nbsp;</dt>
+<dd>
+<dl>
+<dt><tt>ssl</tt></dt>
+<dd>use Secure Sockets Layer version 3.0.</dd>
+</dl>
+<p>If this property is set to <tt>ssl</tt>, the provider must use
+SSL sockets, or throw <tt>ConfigurationException</tt> if it is
+unable to do so. In addition to the value listed above, a provider
+may support other security protocols. However, such
+provider-specific protocols might not be supported by all
+providers. If this property is set to a security protocol that the
+provider does not recognize or support, it should throw
+<tt>ConfigurationException</tt>.</p>
+<p>If the&nbsp; <a href=
+"#socket">java.naming.ldap.factory.socket</a>&nbsp; property is
+set, then the socket factory identified by that property must
+create sockets that are appropriate for this protocol setting. For
+example, if the security protocol is set to <tt>ssl</tt>, then the
+socket factory must create SSL-compliant sockets.</p>
+<p>If this property is not set then the default is to use no
+security protocol.</p>
+<p>As a developer of the LDAP provider, you should be aware that
+using SSL to connect to a server on a port that is not listening
+for SSL connections causes the socket to hang. Similarly, using a
+plain socket to connect to a server that is listening for SSL
+connections also leads to hanging. This is a characteristic of the
+protocol that some implementations may choose to correct but is not
+otherwise required to do so. The provider's documentation, however,
+should describe this behavior to its users. See <a href=
+"#SSL">SSL</a> for information on how to use SSL.</p>
+<p>For example:</p>
+<dl>
+<dd>
+<pre class="codeblock">
+env.put(<a href=
+"../../../api/javax/naming/Context.html#SECURITY_PROTOCOL">Context.SECURITY_PROTOCOL</a>, "ssl");
+</pre></dd>
+</dl>
+specifies that SSL-compliant sockets be used to communicate with
+the server.</dd>
+</dl>
+</dd>
+</dl>
+<a name="LDAPPROPS" id="LDAPPROPS"></a>
+<h3>3.3 LDAP-specific Properties</h3>
+LDAP-specific properties are environment properties that apply to
+LDAP service providers in general. These properties' names have the
+prefix "<tt>java.naming.ldap.</tt>". The following table lists
+LDAP-specific properties that have been defined so far.
+<p><a name="binary" id="binary"></a></p>
+<dl>
+<dt><b><tt>java.naming.ldap.attributes.binary</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>The value of this property is a string of space-separated
+attribute names. It specifies attributes which have non-string
+syntax. It extends the provider's <i>built-in</i> list of
+non-string attributes (below). The value of an attribute that has
+non-string syntax is returned as a byte array (<tt>byte[]</tt>)
+instead of a <tt>String</tt>.<br />
+No default is defined. If this property is not set then only the
+following attributes are considered to have non-string syntax:</dt>
+</dl>
+
+<table summary="attributes with non-string syntax" border="1"
+cellpadding="3" width="70%">
+<tr>
+<th id="h1">Attribute ID</th>
+<th id="h2">OID</th>
+<th id="h3">Reference</th>
+</tr>
+<tr>
+<td headers="h1">Any attribute ID with the "<tt>;binary</tt>" option.</td>
+<td headers="h2">&nbsp;</td>
+<td headers="h3">&nbsp;</td>
+</tr>
+<tr>
+<td headers="h1"><tt>photo</tt></td>
+<td headers="h2">0.9.2342.19200300.100.1.7</td>
+<td headers="h3" align="center"><a href=
+"http://www.ietf.org/rfc/rfc1274.txt">RFC 1274</a></td>
+</tr>
+<tr>
+<td headers="h1"><tt>personalSignature</tt></td>
+<td headers="h2">0.9.2342.19200300.100.1.53</td>
+<td headers="h3" align="center"><a href=
+"http://www.ietf.org/rfc/rfc1274.txt">RFC 1274</a></td>
+</tr>
+<tr>
+<td headers="h1"><tt>audio</tt></td>
+<td headers="h2">0.9.2342.19200300.100.1.55</td>
+<td headers="h3" align="center"><a href=
+"http://www.ietf.org/rfc/rfc1274.txt">RFC 1274</a></td>
+</tr>
+<tr>
+<td headers="h1"><tt>jpegPhoto</tt></td>
+<td headers="h2">0.9.2342.19200300.100.1.60</td>
+<td headers="h3" align="center"><a href=
+"http://www.ietf.org/rfc/rfc2798.txt">RFC 2798</a></td>
+</tr>
+<tr>
+<td headers="h1"><tt>javaSerializedData</tt></td>
+<td headers="h2">1.3.6.1.4.1.42.2.27.4.1.7</td>
+<td headers="h3" align="center"><a href=
+"http://www.ietf.org/rfc/rfc2713.txt">RFC 2713</a></td>
+</tr>
+<tr>
+<td headers="h1"><tt>thumbnailPhoto</tt></td>
+<td headers="h2">2.16.128.113533.1.1400.1</td>
+<td headers="h3" align="center">NAC LIP Schema</td>
+</tr>
+<tr>
+<td headers="h1"><tt>thumbnailLogo</tt></td>
+<td headers="h2">2.16.128.113533.1.1400.2</td>
+<td headers="h3" align="center">NAC LIP Schema</td>
+</tr>
+<tr>
+<td headers="h1"><tt>userPassword</tt></td>
+<td headers="h2">2.5.4.35</td>
+<td headers="h3" align="center"><a href=
+"http://www.ietf.org/rfc/rfc2256.txt">RFC 2256</a></td>
+</tr>
+<tr>
+<td headers="h1"><tt>userCertificate</tt></td>
+<td headers="h2">2.5.4.36</td>
+<td headers="h3" align="center"><a href=
+"http://www.ietf.org/rfc/rfc2256.txt">RFC 2256</a></td>
+</tr>
+<tr>
+<td headers="h1"><tt>cACertificate</tt></td>
+<td headers="h2">2.5.4.37</td>
+<td headers="h3" align="center"><a href=
+"http://www.ietf.org/rfc/rfc2256.txt">RFC 2256</a></td>
+</tr>
+<tr>
+<td headers="h1"><tt>authorityRevocationList</tt></td>
+<td headers="h2">2.5.4.38</td>
+<td headers="h3" align="center"><a href=
+"http://www.ietf.org/rfc/rfc2256.txt">RFC 2256</a></td>
+</tr>
+<tr>
+<td headers="h1"><tt>certificateRevocationList</tt></td>
+<td headers="h2">2.5.4.39</td>
+<td headers="h3" align="center"><a href=
+"http://www.ietf.org/rfc/rfc2256.txt">RFC 2256</a></td>
+</tr>
+<tr>
+<td headers="h1"><tt>crossCertificatePair</tt></td>
+<td headers="h2">2.5.4.40</td>
+<td headers="h3" align="center"><a href=
+"http://www.ietf.org/rfc/rfc2256.txt">RFC 2256</a></td>
+</tr>
+<tr>
+<td headers="h1"><tt>x500UniqueIdentifier</tt></td>
+<td headers="h2">2.5.4.45</td>
+<td headers="h3" align="center"><a href=
+"http://www.ietf.org/rfc/rfc2256.txt">RFC 2256</a></td>
+</tr>
+</table>
+
+<dl>
+<dt>For example:</dt>
+<dd>
+<dl>
+<dd>
+<pre class="codeblock">
+env.put("java.naming.ldap.attributes.binary",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "mpegVideo myspecialkey");
+</pre></dd>
+</dl>
+informs the provider to return values of the <tt>mpegVideo</tt> and
+<tt>myspecialkey</tt> attributes as <tt>byte[]</tt>. <a name=
+"connect" id="connect"></a></dd>
+</dl>
+</dd>
+<dt><b><tt>java.naming.ldap.control.connect</tt></b></dt>
+<dd>
+<dl>
+<dt>The value of this property is a <tt>Control[]</tt>
+object.&nbsp; It sets the connection request controls that are
+active on a connection. See <tt><a href=
+"../../../api/javax/naming/ldap/LdapContext.html">LdapContext</a></tt>.<br />
+
+No default value is defined for this property.<br />
+For example:</dt>
+<dd>
+<dl>
+<dd>
+<pre class="codeblock">
+env.put("java.naming.ldap.control.connect",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new Control[]{ new ManageReferralControl(true) });
+</pre></dd>
+</dl>
+sets a critical ManageDsaIT LDAP control as the connection request
+control.</dd>
+</dl>
+<p><a name="deleteRDN" id="deleteRDN"></a></p>
+</dd>
+<dt><b><tt>java.naming.ldap.deleteRDN</tt></b></dt>
+<dd>
+<dl>
+<dt>The value of this property is a string that specifies whether
+the old RDN is removed by the <tt><a href=
+"../../../api/javax/naming/Context.html#rename-java.lang.String-java.lang.String-">
+Context.rename</a></tt> method. The following values are defined
+for this property:<br />
+&nbsp;</dt>
+<dd>
+<dl>
+<dt><tt>true</tt></dt>
+<dd>delete the old RDN from the entry during the rename
+operation.</dd>
+<dt><tt>false</tt></dt>
+<dd>retain the old RDN as an attribute value of the entry.</dd>
+<dd><br />
+&nbsp;</dd>
+</dl>
+If this property is not set then its default value is
+<tt>true</tt>.
+<p>For example:</p>
+<dl>
+<dd>
+<pre class="codeblock">
+env.put("java.naming.ldap.deleteRDN", "false");
+</pre></dd>
+</dl>
+causes the old RDN to be retained as an attribute of the renamed
+entry.</dd>
+</dl>
+</dd>
+</dl>
+<p><a name="derefAliases" id="derefAliases"></a></p>
+<dl>
+<dt><b><tt>java.naming.ldap.derefAliases</tt></b></dt>
+</dl>
+<p>The value of this property is a string that specifies how
+aliases are dereferenced during search operations. The following
+values are defined for this property:</p>
+<dl>
+<dt><tt>always</tt></dt>
+<dd>always dereference aliases.</dd>
+<dt><tt>never</tt></dt>
+<dd>never dereference aliases.</dd>
+<dt><tt>finding</tt></dt>
+<dd>dereference aliases only during name resolution (that is, while
+locating the target entry).</dd>
+<dt><tt>searching</tt></dt>
+<dd>dereference aliases once name resolution has completed (that
+is, after locating the target entry).</dd>
+</dl>
+<dl>
+<dt>If this property is not set then its default value is
+<tt>always</tt>.<br />
+For example:</dt>
+<dd>
+<dl>
+<dd>
+<pre class="codeblock">
+env.put("java.naming.ldap.derefAliases", "searching");
+</pre></dd>
+</dl>
+causes the provider to dereference aliases only once the target
+entry has been located.
+<p><b>NOTE</b>: this property is unrelated to the dereference-links
+flag in the <tt><a href=
+"../../../api/javax/naming/directory/SearchControls.html">SearchControls</a></tt>
+object.</p>
+</dd>
+</dl>
+<p><a name="socket" id="socket"></a></p>
+<dl>
+<dt><b><tt>java.naming.ldap.factory.socket</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>The value of this property is a string identifying the class
+name of a socket factory.<br />
+This property is used to override the default socket factory. The
+class specified in this property must implement the <tt><a href=
+"../../../api/javax/net/SocketFactory.html">javax.net.SocketFactory</a></tt>
+interface. See <a href="../security/jsse/JSSERefGuide.html">JSSE
+Reference Guide</a> for more information. See <a href=
+"#SSL">SSL</a> for information on how to use SSL.<br />
+In addition, if the&nbsp; <a href=
+"#protocol">java.naming.security.protocol</a>&nbsp; property is
+set, then the socket factory identified by this property must
+create sockets which are appropriate for that protocol setting. For
+example, if the security protocol is set to <tt>ssl</tt> then the
+socket factory must create SSL-compliant sockets.<br />
+No default is defined for this property.<br />
+For example:</dt>
+<dd>
+<dl>
+<dd>
+<pre class="codeblock">
+env.put("java.naming.ldap.factory.socket",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "javax.net.ssl.SSLSocketFactory");
+</pre></dd>
+</dl>
+sets the socket factory of the provider to be
+<tt>javax.net.ssl.SSLSocketFactory</tt>.</dd>
+</dl>
+</dd>
+</dl>
+<p><a name="separator" id="separator"></a></p>
+<dl>
+<dt><b><tt>java.naming.ldap.ref.separator</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>The value of this property is a string containing the character
+to use when encoding a <tt><a href=
+"../../../api/javax/naming/RefAddr.html">RefAddr</a></tt> object in
+the <tt>javaReferenceAddress</tt> attribute (see <a href=
+"#OBJ">Java Objects</a>).<br />
+This property is used to avoid a conflict in the case where the
+default separator character appears in the components of a
+<tt><a href=
+"../../../api/javax/naming/RefAddr.html">RefAddr</a></tt>
+object.<br />
+If this property is not set then its default value is '<tt>#</tt>'
+(the hash character).<br />
+For example:</dt>
+<dd>
+<dl>
+<dd>
+<pre class="codeblock">
+env.put("java.naming.ldap.ref.separator", ":");
+</pre></dd>
+</dl>
+specifies that the separator '<tt>:</tt>' (the colon character) be
+used when storing <tt><a href=
+"../../../api/javax/naming/RefAddr.html">RefAddr</a></tt>
+instances.</dd>
+</dl>
+</dd>
+</dl>
+<p><a name="limit" id="limit"></a></p>
+<dl>
+<dt><b><tt>java.naming.ldap.referral.limit</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>The value of this property is a string of decimal digits
+specifying the maximum number of referrals to follow in a chain of
+referrals. A setting of zero indicates that there is no
+limit.<br />
+If this property is not set then the default value is
+<tt>10</tt>.<br />
+For example:</dt>
+<dd>
+<dl>
+<dd>
+<pre class="codeblock">
+env.put("java.naming.ldap.referral.limit", "5");
+</pre></dd>
+</dl>
+specifies that the referral limit is 5.</dd>
+</dl>
+</dd>
+</dl>
+<p><a name="typesOnly" id="typesOnly"></a></p>
+<dl>
+<dt><b><tt>java.naming.ldap.typesOnly</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>The value of this property is a string that specifies whether
+only attribute IDs are returned in results - attribute values are
+omitted. Affects the <tt><a href=
+"../../../api/javax/naming/directory/SearchResult.html#getAttributes--">
+SearchResult.getAttributes</a></tt> and <tt><a href=
+"../../../api/javax/naming/directory/DirContext.html#getAttributes-java.lang.String-">
+DirContext.getAttributes</a></tt> methods. The following values are
+defined for this property:<br />
+&nbsp;</dt>
+<dd>
+<dl>
+<dt><tt>true</tt></dt>
+<dd>return only attribute IDs.</dd>
+<dt><tt>false</tt></dt>
+<dd>return both attribute IDs and attribute values.</dd>
+</dl>
+<p>If this property is not set then its default value is
+<tt>false</tt>.</p>
+<p>For example:</p>
+<dl>
+<dd>
+<pre class="codeblock">
+env.put("java.naming.ldap.typesOnly", "true");
+</pre></dd>
+</dl>
+causes the server to return attribute IDs but not attribute
+values.</dd>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><a name="version" id="version"></a></dt>
+<dt><b><tt>java.naming.ldap.version</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>The value of this property is a string that specifies the
+protocol version for the provider. The following values are defined
+for this property:<br />
+&nbsp;</dt>
+<dd>
+<dl>
+<dt><tt>2</tt></dt>
+<dd>selects LDAP version 2 (LDAPv2).</dd>
+<dt><tt>3</tt></dt>
+<dd>selects LDAP version 3 (LDAPv3).</dd>
+</dl>
+<p>If this property is not set then the provider first attempts to
+bind using LDAP v3 and fails over to using LDAP v2 if a protocol
+error is received from the server. This failover mechanism is only
+used when the <tt><a href=
+"#authentication">java.naming.security.authentication</a></tt>
+property indicates anonymous bind or simple authentication.</p>
+<p>For example:</p>
+<dl>
+<dd>
+<pre class="codeblock">
+env.put("java.naming.ldap.version", "2");
+</pre></dd>
+</dl>
+requests the LDAP provider to communicate with the server using
+LDAPv2.</dd>
+</dl>
+</dd>
+</dl>
+<h3><a name="FEATUREPROPS" id="FEATUREPROPS"></a> 3.4
+Feature-specific Properties</h3>
+Feature-specific properties are environment properties which apply
+to a particular feature which is supported by a provider.
+<h4><a name="SASLPROPS" id="SASLPROPS"></a> 3.4.1 SASL
+Properties</h4>
+There are two groups of SASL properties. The first group comprises
+those that relate to how the JNDI service provider interacts with
+the Java SASL API (<a href="http://www.worldspot.com/jsr28/">JSR
+28). These properties have the prefix
+<tt>"java.naming.security.sasl."</tt> The second group comprises
+those that affect the SASL mechanisms. These properties are
+specified in the Java SASL API and have the prefix
+<tt>"javax.security.sasl."</tt> See</a> <a href="#SASL">the SASL
+section</a> and the Java SASL API for details about this second
+group of properties.
+<p><a name="authorizationId" id="authorizationId"></a>
+<b><tt>java.naming.security.sasl.authorizationId</tt></b></p>
+<p>The value of this property is a string that specifies the
+authorization ID for the SASL mechanisms.</p>
+<p>If this property is not set, then the authorization ID passed to
+the SASL mechanisms is the empty string. According to SASL
+(<a href="http://www.ietf.org/rfc/rfc2222.txt">RFC 2222</a>), using
+an authorization ID of the empty string directs the server to
+derive an authorization ID from the client's authentication
+credentials.</p>
+<p>For example:</p>
+<dl>
+<dd>
+<dl>
+<dd>
+<pre class="codeblock">
+env.put("java.naming.security.sasl.authorizationId",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "dn:cn=administrators,ou=groups,o=sun,c=us");
+</pre></dd>
+</dl>
+</dd>
+</dl>
+<p>specifies the identity to use for authorization (access control)
+upon successful authentication.</p>
+<p><a name="realm" id="realm"></a>
+<b><tt>java.naming.security.sasl.realm</tt></b></p>
+<p>The value of this property is a string that specifies the realm
+information required by some SASL mechanisms such as
+DIGEST-MD5.</p>
+<p>If this property is not set, then a mechanism-specific default
+such as that negotiated between the client and server during the
+authentication exchange is used.</p>
+<p>For example:</p>
+<dl>
+<dd>
+<dl>
+<dd>
+<pre class="codeblock">
+env.put("java.naming.security.sasl.realm", "webusers");
+</pre></dd>
+</dl>
+</dd>
+</dl>
+<p>specifies that the client wants to use the "webusers" realm for
+authentication.</p>
+<p><a name="callback" id="callback"></a><br />
+<b><tt>java.naming.security.sasl.callback</tt></b></p>
+<p>The value of this property is an instance of <a href=
+"../../../api/javax/security/auth/callback/CallbackHandler.html"><tt>
+javax.security.auth.callback.CallbackHandler</tt></a>. When the
+provider uses a SASL mechanism that requires callbacks, the SASL
+mechanism uses the object supplied in the property. The callback
+handler should satisfy a <a href=
+"../../../api/javax/security/auth/callback/NameCallback.html"><tt>NameCallback</tt></a>
+by supplying the authentication ID.</p>
+<p>If this property is not set, then the provider should use a
+default callback handler that satisfies the <a href=
+"../../../api/javax/security/auth/callback/NameCallback.html"><tt>NameCallback</tt></a>
+using the value of the <a href=
+"#principal"><tt>java.naming.security.principal</tt></a> property,
+satisfies the <a href=
+"../../../api/javax/security/auth/callback/PasswordCallback.html"><tt>
+PasswordCallback</tt></a> using the value of the <a href=
+"#credentials"><tt>java.naming.security.credentials</tt></a>
+property, and satisfies the <tt>RealmCallback</tt> and
+<tt>RealmChoiceCallback</tt> (described in the Java SASL API) using
+the value of the <a href=
+"#realm"><tt>java.naming.security.sasl.realm</tt></a> property.</p>
+<p>For example:</p>
+<dl>
+<dd>
+<dl>
+<dd>
+<pre class="codeblock">
+env.put("java.naming.security.sasl.callback",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new MyCallbackHandler());
+</pre></dd>
+</dl>
+</dd>
+</dl>
+<p>supplies an instance of the callback handler for SASL mechanisms
+to use.</p>
+<a name="qop" id="qop"></a><br />
+<b><tt>javax.security.sasl.qop</tt></b>
+<p>The value of this property is a '<tt>,</tt>'-separated list of
+quality-of-protection (qop) values used to specify the client's qop
+preference. A qop value is one of</p>
+<ul>
+<li><tt>"auth"</tt> - authentication only</li>
+<li><tt>"auth-int"</tt> - authentication plus integrity
+protection</li>
+<li><tt>"auth-conf"</tt> - authentication plus integrity and
+confidentiality protection</li>
+</ul>
+The order of the list specifies the preference order. If this
+property is absent, the default qop is <tt>"auth"</tt>. <a name=
+"strength" id="strength"></a><br />
+<b><tt>javax.security.sasl.strength</tt></b>
+<p>The value of this property is a '<tt>,</tt>'-separated list of
+cipher strength values used to specify the client's preference. A
+strength value is one of</p>
+<ul>
+<li><tt>"low"</tt></li>
+<li><tt>"medium"</tt></li>
+<li><tt>"high"</tt></li>
+</ul>
+The order of the list specifies the preference order. If this
+property is absent, the default strength is
+<tt>"high,medium,low"</tt>.
+<p>For privacy in DIGEST-MD5, <tt>"high"</tt> maps to
+<tt>"3des"</tt>, <tt>"medium"</tt> to <tt>"rc4"</tt> or
+<tt>"des"</tt>, and <tt>"low"</tt> to <tt>"rc4-56"</tt> or
+<tt>"rc4-40"</tt>.</p>
+<a name="maxbuffer" id="maxbuffer"></a><br />
+<b><tt>javax.security.sasl.maxbuffer</tt></b>
+<p>The value of this property is the string representation of an
+integer that specifies the maximum size of the receive buffer in
+bytes that the client is willing to receive. If this property is
+absent, the default size is defined by the SASL mechanism.</p>
+<a name="mutual" id="mutual"></a><br />
+<b><tt>javax.security.sasl.server.authentication</tt></b>
+<p>The value of this property is either "true" or "false",
+specifying whether the server must authenticate to the client or
+not, respectively. If this property is absent, the default is
+"false".</p>
+<a name="policy_forward" id="policy_forward"></a><br />
+<b><tt>javax.security.sasl.policy.forward</tt></b>
+<p>The value of this property is either "true" or "false",
+specifying whether the selected SASL mechanism must support forward
+secrecy between sessions or not, respectively. If this property is
+absent, the default is "false".</p>
+<a name="policy_creds" id="policy_creds"></a><br />
+<b><tt>javax.security.sasl.policy.credentials</tt></b>
+<p>The value of this property is either "true" or "false",
+specifying whether the selected SASL mechanism must require client
+credentials or not, respectively. If this property is absent, the
+default is "false".</p>
+<a name="policy_noplain" id="policy_noplain"></a><br />
+<b><tt>javax.security.sasl.policy.noplaintext</tt></b>
+<p>The value of this property is either "true" or "false",
+specifying whether the selected SASL mechanism must not be
+susceptible to simple plain passive attacks or not, respectively.
+If this property is absent, the default is "false".</p>
+<a name="policy_noactive" id="policy_noactive"></a><br />
+<b><tt>javax.security.sasl.policy.noactive</tt></b>
+<p>The value of this property is either "true" or "false",
+specifying whether the selected SASL mechanism must not be
+susceptible to active (non-dictionary) attacks or not,
+respectively. If this property is absent, the default is
+"false".</p>
+<a name="policy_nodictionary" id="policy_nodictionary"></a><br />
+<b><tt>javax.security.sasl.policy.nodictionary</tt></b>
+<p>The value of this property is either "true" or "false",
+specifying whether the selected SASL mechanism must not be
+susceptible to dictionary attacks or not, respectively. If this
+property is absent, the default is "false".</p>
+<a name="policy_noanonymous" id="policy_noanonymous"></a><br />
+<b><tt>javax.security.sasl.policy.noanonymous</tt></b>
+<p>The value of this property is either "true" or "false",
+specifying whether the selected SASL mechanism must not accept
+anonymous logins or not, respectively. If this property is absent,
+the default is "false".</p>
+<a name="SPIPROPS" id="SPIPROPS"></a>
+<h3>3.5 Provider-specific Properties</h3>
+Provider-specific properties are environment properties which apply
+only to particular provider implementations. The names of these
+properties are chosen by the provider's implementor. The
+recommended policy for naming these properties is to use the
+implementor's reversed DNS domain name to prefix the provider's
+package name and to use that package name to prefix the property
+name. For example, Sun prefixes its provider-specific LDAP
+properties with "<tt>com.sun.jndi.ldap</tt>".
+<hr />
+<a name="NAME" id="NAME"></a>
+<h2>4. Names</h2>
+Names are handled by the provider's context methods according to
+the following rules:
+<ol>
+<li><tt>String</tt> names supplied as parameters to the context
+methods are in the <a href=
+"../../../api/javax/naming/CompositeName.html">composite name
+syntax</a>.The first component of the composite name is an LDAP
+distinguished name while the rest of the components are used for
+federation.</li>
+<li>If a <tt>Name</tt> argument is a <tt>CompositeName</tt> object
+then its first component is assumed to be an LDAP distinguished
+name and the remaining components (if any) are used for
+federation.</li>
+<li>If a <tt>Name</tt> argument is <i>not</i> a
+<tt>CompositeName</tt> object then all of its components are
+assumed to be the parsed form of an LDAP distinguished name. That
+is, each <tt>Name</tt> component is an LDAP relative distinguished
+name (RDN).</li>
+<li>Names are parsed using the name parser returned by the
+<tt>Context.getNameParser</tt> method. The parser accepts LDAP
+distinguished names as <tt>String</tt> objects and produces LDAP
+distinguished names as <tt>Name</tt> objects.</li>
+<li>Names returned by context operations are string composite names
+or string URLs.</li>
+</ol>
+The syntax of string LDAP distinguished names follows <a href=
+"http://www.ietf.org/rfc/rfc2253.txt">RFC 2253</a>. For example:
+<ul>
+<li><tt>CN=Steve Kille, O=Isode Limited, C=GB</tt></li>
+<li><tt>OU=Sales+CN=J. Smith, O=Widget Inc., C=US</tt></li>
+<li><tt>CN=L. Eagle, O=Sue\, Grabbit and Runn, C=GB</tt></li>
+</ul>
+<p>The name supplied to an LDAP context is always relative to that
+context. For example, given an LDAP context (<tt>lctx</tt>) for
+"<tt>dc=widget,dc=com</tt>", in order to name LDAP entries in that
+subtree, a name relative to "<tt>dc=widget,dc=com</tt>" must be
+supplied. For example, the following call obtains the attributes
+for the "<tt>cn=John Smith,dc=widget,dc=com</tt>" entry.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <tt>Attributes attrs
+= lctx.getAttributes("cn=John Smith");</tt></p>
+<p>Similarly, when a context is enumerated using any of the
+enumeration methods (<tt>Context.list</tt>,
+<tt>Context.listBindings</tt>, <tt>DirContext.search</tt>), the
+names returned are relative to the target context--the context
+being enumerated.&nbsp; When referrals are invoked, instead of a
+relative name, an LDAP or LDAPS URL string containing the fully
+qualified name is returned. (If the enumeration was performed using
+a plain connection, an LDAP URL string is returned; if it was done
+using an SSL connection, an LDAPS URL string is returned.) The
+format of LDAP URLs is defined in <a href=
+"http://www.ietf.org/rfc/rfc2255.txt">RFC 2255</a>.</p>
+<p>LDAP URLs that follow <a href=
+"http://www.ietf.org/rfc/rfc2255.txt">RFC 2255</a> and LDAPS URLs
+may be supplied to any of the context methods. The hostname and
+port number are extracted from the URL and used to contact the LDAP
+server; the URL's scheme ("ldap" or "ldaps") is used to determine
+whether a plain or SSL connection is used. The <tt><a href=
+"#initial">java.naming.factory.initial</a></tt> and <tt><a href=
+"#url">java.naming.provider.url</a></tt> properties are ignored.
+For example,</p>
+<p><tt>&nbsp;&nbsp;&nbsp; DirContext ictx = new
+InitialDirContext();</tt><br />
+<tt>&nbsp;&nbsp;&nbsp; Attributes attrs =
+ictx.getAttributes(</tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"ldap://wserver:389/cn=John Smith,dc=widget,dc=com");</tt></p>
+<p>This code fragment contacts the LDAP server at machine
+<tt>wserver</tt> at port <tt>389</tt> using a plain connection.</p>
+<hr />
+<h2><a name="ATTRS" id="ATTRS"></a></h2>
+<h2>5. Attributes</h2>
+<p>The LDAP provider expects as input and returns as output all
+attribute values as either <tt>String</tt> or <tt>byte[]</tt>
+objects.&nbsp; See the <a href=
+"#binary"><tt>java.naming.ldap.attributes.binary</tt></a>
+environment property for which ones are treated as <tt>byte[]</tt>
+and how to extend the list.</p>
+<hr />
+<a name="URLS" id="URLS"></a>
+<h2>6. URLs</h2>
+<a href="http://www.ietf.org/rfc/rfc2255.txt">RFC 2255</a>
+describes the syntactic format of LDAP URLs. The format contains
+all the elements necessary to specify an LDAP search operation,
+with provisions for supporting extensions:
+<pre class="codeblock">
+ldap://host:port/dn?attributes?scope?filter?extensions
+</pre>
+<p>Authentication information may be specified in the
+<tt>extensions</tt> portion of the URL. See the RFC for a complete
+description of the format.</p>
+<p>In addition to LDAP URLs, the provider may also support the
+non-standard but widely used LDAPS URLs. LDAPS URLs use SSL
+connections instead of plain (i.e., unprotected) connections. They
+have a syntax similar to LDAP URLs except the schemes are different
+and the default port for LDAPS URLs is 636 instead of 389.</p>
+<pre class="codeblock">
+ldaps://host:port/dn?attributes?scope?filter?extensions
+</pre>
+<p>URLs play a role in several places in JNDI:</p>
+<ol>
+<li>Configuration of service providers.<br />
+To configure an LDAP service provider, you typically supply one or
+more space-separated LDAP or LDAPS URLs in the <a href=
+"#url"><tt>java.naming.provider.url</tt></a> property. This is used
+by the LDAP service provider to configure its connection to the
+directory server. Only the <tt>host</tt>, <tt>port</tt>, and
+<tt>dn</tt> parts of the URL are relevant in this setting.
+Supplying other parts of the URL results in a
+<tt>ConfigurationException</tt>.<br />
+&nbsp;</li>
+<li>Argument to initial context methods.<br />
+If a URL string (with syntax <i>scheme_id:rest_of_name</i>) is
+passed to the methods in <tt>InitialContext</tt>, either as a
+<tt>String</tt> argument or as the first component of
+<tt>Name</tt>, the URL's scheme id is used to locate the context
+factory for handling that scheme. If none is found, the URL string
+is treated as an ordinary name and passed to the initial context
+specified by the <a href=
+"#initial"><tt>java.naming.factory.initial</tt></a> property is
+used. See the <tt>java.naming.spi.NamingManager.getURLContext</tt>
+method for details on how URL context factories are located. Note
+that this support for URLs as names is only available in the
+initial context.
+<p>With the exception of the search methods, when an LDAP or LDAPS
+URL is passed as a name to the initial context, the URL should
+<i>not</i> contain any query ('<tt>?</tt>') components. Otherwise,
+an <tt>InvalidNameException</tt> is thrown by the service provider.
+For the search methods, the query components of the URL override
+any corresponding components supplied as arguments. For example, if
+an LDAP URL containing a scope component is supplied, then that
+scope overrides any scope setting that may be passed in a
+<tt>SearchControls</tt> argument.<br />
+&nbsp;</p>
+</li>
+<li>Referrals.<br />
+An LDAP referral contains a list of one or more URLs. To process an
+LDAP referral (either explicitly or implicitly by setting the
+<a href="#referral"><tt>java.naming.referral</tt></a> property),
+the service provider needs to use the information in the these URLs
+to create connections to LDAP servers to which they refer. When
+multiple URLs are present in a single referral they are treated as
+alternatives and each is followed until one succeeds. The complete
+URL (that is, including any query components) is used.<br />
+&nbsp;</li>
+<li>Returned as a name in list and search enumerations.<br />
+When the name of the entry being returned has a name that is not
+relative to the target context (i.e., the starting context for the
+list or search), the name is returned as a URL. See the
+<tt>NameClassPair.isRelative</tt> method for details.<br />
+&nbsp;</li>
+<li>Argument to the <tt>getObjectInstance</tt> method of
+<tt>NamingManager</tt> or <tt>DirectoryManager</tt>.<br />
+When an LDAP namespace is federated underneath another namespace
+(for example, such as DNS), the information that is stored in the
+superior namespace might be an LDAP or LDAPS URL. In such a
+scenario, a lookup/list/search operation in the superior namespace
+would return a <tt>Reference</tt> containing an LDAP or LDAPS URL
+for the LDAP namespace. The service provider for the superior
+namespace would pass the <tt>Reference</tt> to the
+<tt>getObjectInstance</tt> method to create an instance of an LDAP
+context.</li>
+</ol>
+For items (1), (2), (3), and (5), if the URL is missing the
+hostname and port but has a non-empty distinguished name, the
+provider should use the algorithm for discovering LDAP services
+with DNS as described in the Internet draft <a href=
+"http://tools.ietf.org/html/draft-ietf-ldapext-locate-08">draft-ietf-ldapext-locate-08.txt</a>.
+If the provider does not use this algorithm, or if the DNS
+configuration is not available, then the provider should use
+<tt>localhost</tt> as the hostname, and 389 as the port for plain
+connections, 636 as the port for SSL connections.
+<hr />
+<br />
+<a name="OBJ" id="OBJ"></a>
+<h2>7. Java Objects</h2>
+<h3>7.1 Storing</h3>
+The LDAP provider should support the storing of Java objects into
+the directory. This is implemented in the following methods:
+<ul>
+<li><tt>Context.bind()</tt></li>
+<li><tt>Context.rebind()</tt></li>
+<li><tt>DirContext.bind()</tt></li>
+<li><tt>DirContext.rebind()</tt></li>
+</ul>
+The provider should support at a minimum the storage of the
+following types of Java objects:
+<ol>
+<li>Instances of <tt>Reference</tt></li>
+<li>Objects that implement the <tt>Referenceable</tt>
+interface</li>
+<li>Objects that implement the <tt>Serializable</tt> interface</li>
+<li>Objects that implement the <tt>DirContext</tt> interface</li>
+</ol>
+It should check whether an object is in these four categories in
+the order listed because that is most likely to capture the intent
+of the client. For example, a <tt>Reference</tt> is
+<tt>Serializable</tt>, so if you performed the
+<tt>Serializable</tt> check first, no <tt>Reference</tt>s would
+ever be stored in the reference format (that is, they would all be
+serialized).
+<p>References, referenceable and serializable objects should be
+stored according to <a href=
+"http://www.ietf.org/rfc/rfc2713.txt">RFC 2713</a>.
+<tt>DirContext</tt> objects should be stored by storing their
+attributes.</p>
+<p>When storing a reference's list of <tt>RefAddr</tt> into the
+<tt>javaReferenceAddress</tt> attribute, the separator to use for
+delimiting the address's position, type and content are controlled
+using the environment property <a href=
+"#separator">java.naming.ldap.ref.separator</a>. If this
+environment property is not specified, the hash character '#'
+should be used as the separator.</p>
+<p>The provider uses the <tt>DirectoryManager.getStateToBind</tt>
+method when storing objects in the directory. This allows objects
+of any type to be transformed into one of the four categories
+listed above so that they can be stored into the directory.</p>
+<h3>7.2 Reading</h3>
+Objects are read from the directory using the following operations:
+<ul>
+<li><tt>Context.lookup()</tt></li>
+<li><tt>Context.lookupLink()</tt></li>
+<li><tt>Binding.getObject()</tt></li>
+</ul>
+When the provider reads an entry from the directory, it will get
+LDAP attributes, and attributes defined in <a href=
+"http://www.ietf.org/rfc/rfc2713.txt">RFC 2713</a> if the entry has
+an associated Java object. If the entry contains Java
+object-related attributes, the provider should recreate the object
+using those attributes. Otherwise, the provider should return an
+instance of <tt>DirContext</tt> containing the attributes of the
+entry. For both <tt>DirContext</tt> and Java objects, the provider
+should then invoke <tt>DirectoryManager.getObjectInstance()</tt> on
+it and return the result to the caller.
+<hr />
+<br />
+<a name="SCHEMA" id="SCHEMA"></a>
+<h2>8.0 Schema</h2>
+JNDI does not specify schema-related details such as structure and
+contents of the schema tree, permission to modify to the contents
+of the schema tree, and the effect of such modifications on the
+directory are dependent on the underlying directory. JNDI specifies
+only that the root schema context--that returned by
+<tt>DirContext.getSchema()</tt>--contain the following bindings:
+<ul>
+<li>AttributeDefinition</li>
+<li>ClassDefinition</li>
+<li>SyntaxDefinition</li>
+</ul>
+This document specifies the structure and content of schema trees
+that are derived from LDAP-based schemas. It describes how the
+schema tree is laid out, and the mandatory and optional attributes
+that you can expect to find associated with entries in different
+parts of this schema tree.
+<p>Permission to modify the contents of the schema tree is
+determined by the directory administrator. When the schema tree is
+modified, the changes are made to schema stored on the directory
+server.</p>
+<h3>8.1 Schema Tree Structure</h3>
+In addition to the three bindings in the root schema context listed
+previously, the root schema context may also contain the following
+four bindings:
+<ul>
+<li>MatchingRule</li>
+<li>ExtensionDefinition</li>
+<li>ControlDefinition</li>
+<li>SASLDefinition</li>
+<li style="list-style: none"><br />
+&nbsp;</li>
+</ul>
+
+<table summary="name and description of binding" border="1"
+cellpadding="3" width="70%">
+<tr>
+<th id="h101">Name of Binding</th>
+<th id="h102">Description of Binding</th>
+</tr>
+<tr>
+<td headers="h101"><a href="#ATTRSCHEMA">AttributeDefinition</a></td>
+<td headers="h102">Root of the attribute definition tree: a flat namespace with
+attributes identified by their name or OID.</td>
+</tr>
+<tr>
+<td headers="h101"><a href="#CLASSSCHEMA">ClassDefinition</a></td>
+<td headers="h102">Root of the "objectclass" definition tree: a flat namespace
+with object classes identified by their name or OID.</td>
+</tr>
+<tr>
+<td headers="h101"><a href="#SYNTAXSCHEMA">SyntaxDefinition</a></td>
+<td headers="h102">Root of the syntax definition tree: a flat namespace with
+syntaxes identified by their OID.</td>
+</tr>
+<tr>
+<td headers="h101"><a href="#MATCHSCHEMA">MatchingRule</a></td>
+<td headers="h102">Root of matching rule tree: a flat namespace with matching
+rules identified by their name or OID.</td>
+</tr>
+<tr>
+<td headers="h101"><a href="#EXTSCHEMA">ExtensionDefinition</a></td>
+<td headers="h102">Root of the extensions tree: a flat namespace with extensions
+identified by their OID.</td>
+</tr>
+<tr>
+<td headers="h101"><a href="#CTLSCHEMA">ControlDefinition</a></td>
+<td headers="h102">Root of the controls tree: a flat namespace with controls
+identified by their OID.</td>
+</tr>
+<tr>
+<td headers="h101"><a href="#SASLSCHEMA">SASLMechanism</a></td>
+<td headers="h102">Root of the SASL tree: a flat namespace with SASL
+authentication mechanisms identified by their string name.</td>
+</tr>
+</table>
+
+<p>Any or all of these bindings may be absent if the underlying
+directory does not publish such schema information, or the service
+provider does not support retrieving them. If these names are
+present in the root schema context, however, they must have the
+binding specified in the above table.</p>
+<p>The attribute names and values of these entries' attributes are
+case-insensitive.<br />
+<a name="ATTRSCHEMA" id="ATTRSCHEMA"></a></p>
+<h3>8.2 Attribute Definitions</h3>
+The name "AttributeDefinition" is bound to a context containing
+<tt>DirContext</tt> objects representing attribute definitions in
+the schema. For example, if a directory supports a "commonName"
+attribute, the "AttributeDefinition" context would have a binding
+with name "commonName" that is bound to a <tt>DirContext</tt>
+object.
+<p>Each object in the "AttributeDefinition" context has the
+following mandatory and optional attributes:<br />
+&nbsp;</p>
+
+<table summary="attribute identifier and value description" border=
+"1" cellpadding="3" width="70%">
+<tr>
+<th id="h201">Attribute Identifier</th>
+<th id="h202">Attribute Value Description</th>
+</tr>
+<tr>
+<td headers="h201">NUMERICOID (mandatory)</td>
+<td headers="h202">unique identifier (OID)</td>
+</tr>
+<tr>
+<td headers="h201">NAME</td>
+<td headers="h202">attribute's name</td>
+</tr>
+<tr>
+<td headers="h201">DESC</td>
+<td headers="h202">attribute's description</td>
+</tr>
+<tr>
+<td headers="h201">OBSOLETE</td>
+<td headers="h202">"true" if obsolete, "false" or absent otherwise</td>
+</tr>
+<tr>
+<td headers="h201">SUP</td>
+<td headers="h202">name of superior attribute type from which this attribute's
+type is derived</td>
+</tr>
+<tr>
+<td headers="h201">EQUALITY</td>
+<td headers="h202">name or OID of matching rule if equality matching allowed,
+absent otherwise</td>
+</tr>
+<tr>
+<td headers="h201">ORDERING</td>
+<td headers="h202">name or OID of matching rule if ordering matching allowed,
+absent otherwise</td>
+</tr>
+<tr>
+<td headers="h201">SUBSTRING</td>
+<td headers="h202">name or OID of matching rule if substring matching allowed,
+absent otherwise</td>
+</tr>
+<tr>
+<td headers="h201">SYNTAX</td>
+<td headers="h202">numeric OID of syntax of values of this type</td>
+</tr>
+<tr>
+<td headers="h201">SINGLE-VALUE</td>
+<td headers="h202">"true" if attribute not multi-valued, "false" or absent
+otherwise.</td>
+</tr>
+<tr>
+<td headers="h201">COLLECTIVE</td>
+<td headers="h202">"true" if attribute is collective, "false" or absent
+otherwise.</td>
+</tr>
+<tr>
+<td headers="h201">NO-USER-MODIFICATION</td>
+<td headers="h202">"true" if not user-modifiable, "false" or absent
+otherwise.</td>
+</tr>
+<tr>
+<td headers="h201">USAGE</td>
+<td headers="h202">description of attribute usage</td>
+</tr>
+</table>
+
+<p>These attributes have a 1-to-1 correspondence with the names
+defined in <a href="http://www.ietf.org/rfc/rfc2252.txt">RFC
+2252</a> for "AttributeTypeDescription." All the attribute values
+are represented by the <tt>java.lang.String</tt> class.</p>
+<p>You can, for example, obtain the object representing the "cn"
+attribute using the following code:</p>
+<pre class="codeblock">
+DirContext schema = ctx.getSchema(""); // get schema tree
+DirContext cnSchema = schema.lookup("AttributeDefinition/cn");
+</pre>
+<p>If you then get the attributes of the "cnSchema"
+<tt>DirContext</tt> object, you would see:</p>
+<pre class="codeblock">
+NUMERICOID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2.5.4.3
+NAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cn
+SYNTAX&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.3.6.1.4.1.1466.115.121.1.15
+DESC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Standard Attribute, alias for commonName
+</pre>
+<p>An equivalent way of getting "cnSchema" is if you already have a
+"cn" attribute. The following code illustrates this
+alternative:</p>
+<pre class="codeblock">
+Attributes attrs = ctx.getAttributes("cn=John", new String[]{"cn"});
+Attribute cnAttr = attrs.get("cn");
+DirContext cnSchema = cnAttr.getAttributeDefinition();
+</pre>
+<a name="CLASSSCHEMA" id="CLASSSCHEMA"></a>
+<h3>8.3 Object Class Definitions</h3>
+The name "ClassDefinition" is bound to a context containing
+<tt>DirContext</tt> objects representing object class definitions
+in the schema. For example, if a directory supports a "country"
+object class, the "ClassDefinition" context would have a binding
+with name "country" that is bound to a <tt>DirContext</tt> object.
+<p>Each object in the "ClassDefinition" context has the following
+mandatory and optional attributes:<br />
+&nbsp;</p>
+
+<table border="1" cellpadding="3" width="70%" summary=
+"attribute identifier and description">
+<caption>&nbsp;</caption>
+<tr>
+<th id="h301">Attribute Identifier</th>
+<th id="h302">Attribute Value Description</th>
+</tr>
+<tr>
+<td headers="h301">NUMERICOID (mandatory)</td>
+<td headers="h302">unique identifier (OID)</td>
+</tr>
+<tr>
+<td headers="h301">NAME</td>
+<td headers="h302">object class's name</td>
+</tr>
+<tr>
+<td headers="h301">DESC</td>
+<td headers="h302">object class's description</td>
+</tr>
+<tr>
+<td headers="h301">OBSOLETE</td>
+<td headers="h302">"true" if obsolete, "false" or absent otherwise</td>
+</tr>
+<tr>
+<td headers="h301">SUP</td>
+<td headers="h302">name of superior object class from which this object class is
+derived</td>
+</tr>
+<tr>
+<td headers="h301">ABSTRACT</td>
+<td headers="h302">"true" if object class is abstract, "false" or absent
+otherwise</td>
+</tr>
+<tr>
+<td headers="h301">STRUCTURAL</td>
+<td headers="h302">"true" if object class is structural, "false" or absent
+otherwise</td>
+</tr>
+<tr>
+<td headers="h301">AUXILIARY</td>
+<td headers="h302">"true" if object class is auxiliary, "false" or absent
+otherwise</td>
+</tr>
+<tr>
+<td headers="h301">MUST</td>
+<td headers="h302">a list of type names of attributes that must be present</td>
+</tr>
+<tr>
+<td headers="h301">MAY</td>
+<td headers="h302">a list of type names of attributes that may be present</td>
+</tr>
+</table>
+
+<p>These attributes have a 1-to-1 correspondence with the names
+defined in <a href="http://www.ietf.org/rfc/rfc2252.txt">RFC
+2252</a> for "ObjectClassDescription." All the attribute values are
+represented by the <tt>java.lang.String</tt> class.</p>
+<p>You can, for example, obtain the object representing the
+"country" object class using the following code:</p>
+<pre class="codeblock">
+DirContext schema = ctx.getSchema(""); // get schema tree
+DirContext countrySchema = schema.lookup("ClassDefinition/country");
+</pre>
+<p>If you then get the attributes of the "countrySchema"
+<tt>DirContext</tt> object, you would see:</p>
+<pre class="codeblock">
+NUMERICOID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2.5.6.2
+NAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; country
+MAY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; aci, searchguide, description
+MUST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectclass, c
+DESC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Standard ObjectClass
+SUP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; top
+</pre>
+<p>An equivalent way of getting "countrySchema" is if you already
+have a "country" object. The following code illustrates this
+alternative:</p>
+<pre class="codeblock">
+// Read object from directory
+DirContext countryObj = (DirContext)ctx.lookup("c=us", new String[]{"country"});
+
+// Get all of object's object class definitions
+DirContext objClasses = countryAttr.getSchemaClassDefinition();
+
+// Pick out "country" object class in particular
+DirContext countryClass = (DirContext)objClasses.lookup("country");
+</pre>
+<p><b>NOTE</b>: JNDI 1.1's specification of
+<tt>getSchemaClassDefinition()</tt> implies that the service
+provider should return any one of an object's object class
+definitions. This specification is inadequate because an object
+usually has multiple object classes and the application might
+require knowledge about any of those object classes depending on
+what it is doing. The proposal as illustrated by the example above
+is to return a context containing all of the object class
+definitions.<br />
+<a name="SYNTAXSCHEMA" id="SYNTAXSCHEMA"></a></p>
+<h3>8.4 Syntax Definitions</h3>
+The name "SyntaxDefinition" is bound to a context containing
+<tt>DirContext</tt> objects representing syntax definitions in the
+schema. For example, if a directory supports the
+"1.3.6.1.4.1.1466.115.121.1.15" syntax (Directory String) syntax,
+the "SyntaxDefinition" context would have a binding with name
+"1.3.6.1.4.1.1466.115.121.1.15" that is bound to a
+<tt>DirContext</tt> object.
+<p>Each object in "SyntaxDefinition" context has the following
+mandatory and optional attributes:<br />
+&nbsp;</p>
+
+<table summary="mandatory and optional attributes" border="1"
+cellpadding="3" width="70%">
+<tr>
+<th id="h401">Attribute Identifier</th>
+<th id="h402">Attribute Value Description</th>
+</tr>
+<tr>
+<td headers="h401">NUMERICOID (mandatory)</td>
+<td headers="h402">unique identifier (OID)</td>
+</tr>
+<tr>
+<td headers="h401">DESC</td>
+<td headers="h402">syntax's description</td>
+</tr>
+</table>
+
+<p>These attributes have a 1-to-1 correspondence with the names
+defined in <a href="http://www.ietf.org/rfc/rfc2252.txt">RFC
+2252</a> for "SyntaxDescription." All the attribute values are
+represented by the <tt>java.lang.String</tt> class.</p>
+<p>You can, for example, obtain the object representing the
+"1.3.6.1.4.1.1466.115.121.1.15" syntax using the following
+code:</p>
+<pre class="codeblock">
+DirContext schema = ctx.getSchema(""); // get schema tree
+DirContext dirStringSchema =&nbsp;
+&nbsp;&nbsp;&nbsp; schema.lookup("SyntaxDefinition/1.3.6.1.4.1.1466.115.121.1.15");
+</pre>
+<p>If you then get the attributes of the "dirStringSchema"
+<tt>DirContext</tt> object, you would see:</p>
+<pre class="codeblock">
+NUMERICOID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.3.6.1.4.1.1466.115.121.1.15
+DESC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Directory String
+</pre>
+<p>An equivalent way of getting "dirStringSchema" is if you already
+have an attribute that has that syntax (such as, the "country"
+attribute). The following code illustrates this alternative:</p>
+<pre class="codeblock">
+Attributes attrs = ctx.getAttributes("c=us", new String[]{"country"});
+Attribute countryAttr = attrs.get("country");
+DirContext dirStringSchema = countryAttr.getSyntaxAttributeDefinition();
+</pre>
+<a name="MATCHSCHEMA" id="MATCHSCHEMA"></a>
+<h3>8.5 Matching Rules</h3>
+The name "MatchingRule" is bound to a context containing
+<tt>DirContext</tt> objects representing matching rules in the
+schema. A "matching rule" uniquely identifies the algorithm to use
+when comparing attribute values. For example, a directory might
+support a matching rule that is based on how a string sounds and
+define it as the "soundAlikeMatch" matching rule. Then, the
+"MatchingRule" context would have a binding with name
+"soundAlikeMatch" that is bound to a <tt>DirContext</tt> object.
+<p>When a matching rule is an extensible matching rule, it must
+also contain an "APPLIES" attribute listing the attributes to which
+this extensible matching rule can be applied.</p>
+<p>Each object in "MatchingRule" context has the following
+mandatory and optional attributes:<br />
+&nbsp;</p>
+
+<table summary="mandatory and optional attributes" border="1"
+cellpadding="3" width="70%">
+<tr>
+<th id="h501">Attribute Identifier</th>
+<th id="h502">Attribute Value Description</th>
+</tr>
+<tr>
+<td headers="h501">NUMERICOID (mandatory)</td>
+<td headers="h502">unique identifier (OID)</td>
+</tr>
+<tr>
+<td headers="h501">NAME</td>
+<td headers="h502">name of matching rule</td>
+</tr>
+<tr>
+<td headers="h501">DESC</td>
+<td headers="h502">matching rule's description</td>
+</tr>
+<tr>
+<td headers="h501">OBSOLETE</td>
+<td headers="h502">"true" if obsolete, "false" or absent otherwise</td>
+</tr>
+<tr>
+<td headers="h501">SYNTAX</td>
+<td headers="h502">numeric oid of syntax to which this rule applies</td>
+</tr>
+<tr>
+<td headers="h501">APPLIES</td>
+<td headers="h502">a list type names of attributes to which this extensible
+matching rule applies</td>
+</tr>
+</table>
+
+<p>These attributes have a 1-to-1 correspondence with the names
+defined in <a href="http://www.ietf.org/rfc/rfc2252.txt">RFC
+2252</a> for "MatchingRuleDescription" and
+"MatchingRuleUseDescription." All the attribute values are
+represented by the <tt>java.lang.String</tt> class.</p>
+<p>You can, for example, obtain the object representing the
+"soundAlikeMatch" syntax using the following code:</p>
+<pre class="codeblock">
+DirContext schema = ctx.getSchema(""); // get schema tree
+DirContext soundMatchSchema =&nbsp;
+&nbsp;&nbsp;&nbsp; schema.lookup("MatchingRule/soundAlikeMatch");
+</pre>
+<p>If you then get the attributes of the "soundMatchSchema"
+<tt>DirContext</tt> object, you would see:</p>
+<pre class="codeblock">
+NUMERICOID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.2.3.4.5
+NAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; soundAlikeMatch
+SYNTAX&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.3.6.1.4.1.1466.115.121.1.15 (for directory string)
+APPLIES&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2.5.4.41, 2.5.4.15
+DESC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Home-grown Phonetic match
+</pre>
+<a name="EXTSCHEMA" id="EXTSCHEMA"></a>
+<h3>8.6 Extension Definitions</h3>
+The name "ExtensionDefinition" is bound to a context containing
+<tt>DirContext</tt> objects representing extensions supported by
+the server. For example, a directory might support the <a href=
+"http://www.ietf.org/rfc/rfc2830.txt">"Start TLS" extension</a>
+("1.3.6.1.4.1.1466.20037"). Then, the "ExtensionDefinition" context
+would have a binding with name "1.3.6.1.4.1.1466.20037" that is
+bound to a <tt>DirContext</tt> object.
+<p>Each object in "ExtensionDefinition" context has the following
+mandatory and optional attributes:<br />
+&nbsp;</p>
+
+<table summary="mandatory and optional attributes" border="1"
+cellpadding="3" width="70%">
+<tr>
+<th id="h601">Attribute Identifier</th>
+<th id="h602">Attribute Value Description</th>
+</tr>
+<tr>
+<td headers="h601">NUMERICOID (mandatory)</td>
+<td headers="h602">unique identifier (OID)</td>
+</tr>
+<tr>
+<td headers="h601">DESC</td>
+<td headers="h602">extension's description</td>
+</tr>
+</table>
+
+<p>All the attribute values are represented by the
+<tt>java.lang.String</tt> class.</p>
+<p>You can, for example, obtain the object representing the Start
+TLS extension ("1.3.6.1.4.1.1466.20037") using the following
+code:</p>
+<pre class="codeblock">
+DirContext schema = ctx.getSchema(""); // get schema tree
+DirContext startTLSSchema =&nbsp;
+&nbsp;&nbsp;&nbsp; schema.lookup("ExtensionDefinition/1.3.6.1.4.1.1466.20037");
+</pre>
+<p>If you then get the attributes of the "startTLSSchema"
+<tt>DirContext</tt> object, you would see:</p>
+<pre class="codeblock">
+NUMERICOID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.3.6.1.4.1.1466.20037
+DESC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Start TLS (see RFC 2830)
+</pre>
+<a name="CTLSCHEMA" id="CTLSCHEMA"></a>
+<h3>8.7 Control Definitions</h3>
+The name "ControlDefinition" is bound to a context containing
+<tt>DirContext</tt> objects representing controls supported by the
+server. For example, a directory might support the control for
+asking the server to sort the search results it returns.
+<p>Each object in "ControlDefinition" context has the following
+mandatory and optional attributes:<br />
+&nbsp;</p>
+
+<table summary="mandatory and optional attributes" border="1"
+cellpadding="3" width="70%">
+<tr>
+<th id="h701">Attribute Identifier</th>
+<th id="h702">Attribute Value Description</th>
+</tr>
+<tr>
+<td headers="h701">NUMERICOID (mandatory)</td>
+<td headers="h702">unique identifier (string)</td>
+</tr>
+<tr>
+<td headers="h701">DESC</td>
+<td headers="h702">control's description</td>
+</tr>
+</table>
+
+<p>All the attribute values are represented by the
+<tt>java.lang.String</tt> class.</p>
+<p>You can, for example, obtain the object representing the
+<a href="http://www.ietf.org/rfc/rfc2891.txt">server-side sorting
+control</a> ("1.2.840.113556.1.4.473") using the following
+code:</p>
+<pre class="codeblock">
+DirContext schema = ctx.getSchema(""); // get schema tree
+DirContext svrSortSchema =&nbsp;
+&nbsp;&nbsp;&nbsp; schema.lookup("ControlDefinition/1.2.840.113556.1.4.473");
+</pre>
+<p>If you then get the attributes of the "svrSortSchema"
+<tt>DirContext</tt> object, you would see:</p>
+<pre class="codeblock">
+NUMERICOID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.2.840.113556.1.4.473
+DESC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; server-side sorting of search results
+</pre>
+<a name="SASLSCHEMA" id="SASLSCHEMA"></a>
+<h3>8.8 SASL Mechanisms</h3>
+The name "SASLMechanism" is bound to a context containing
+<tt>DirContext</tt> objects representing SASL authentication
+mechanisms supported by the server. For example, a directory might
+support the EXTERNAL SASL mechanism (<a href=
+"http://www.ietf.org/rfc/rfc2222.txt">RFC 2222</a>) which requests
+that the server make use of security credentials exchanged by a
+lower layer.
+<p>Each object in "SASLMechanism" context has the following
+mandatory and optional attributes:<br />
+&nbsp;</p>
+
+<table summary="mandatory and optional attributes" border="1"
+cellpadding="3" width="70%">
+<tr>
+<th id="h801">Attribute Identifier</th>
+<th id="h802">Attribute Value Description</th>
+</tr>
+<tr>
+<td headers="h801">NAME (mandatory)</td>
+<td headers="h802">SASL mechanism's name</td>
+</tr>
+<tr>
+<td headers="h801">DESC</td>
+<td headers="h802">SASL mechanism's description</td>
+</tr>
+</table>
+
+<p>All the attribute values are represented by the
+<tt>java.lang.String</tt> class.</p>
+<p>You can, for example, obtain the object representing the
+EXTERNAL SASL mechanism using the following code:</p>
+<pre class="codeblock">
+DirContext schema = ctx.getSchema(""); // get schema tree
+DirContext saslExternalSchema =&nbsp;
+&nbsp;&nbsp;&nbsp; schema.lookup("SASLMechanism/EXTERNAL");
+</pre>
+If you then get the attributes of the "saslExternalSchema"
+<tt>DirContext</tt> object, you would see:
+<pre class="codeblock">
+<tt>NAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+EXTERNAL</tt>
+<tt>DESC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EXTERNAL SASL mechanism (RFC
+2222)</tt>
+</pre>
+<hr />
+<a name="EXCEPT" id="EXCEPT"></a>
+<h2>9. Exceptions</h2>
+When building an LDAP provider, you need to translate LDAP error
+codes (see <a href="http://www.ietf.org/rfc/rfc2251.txt">RFC
+2251</a>) into JNDI exceptions. You should use the following table
+when performing the translation. Furthermore, you should encode as
+much information as possible about the error into the exception's
+detailed message, "root cause" exception, resolved and remaining
+names. Note that resolved name and resolved object should
+correspond to each other's setting.<br />
+&nbsp;
+
+<table summary="LDAP error codes and exceptions or actions" border=
+"1" cellpadding="3" width="100%">
+<tr>
+<th id="h901">LDAP error code</th>
+<th id="h902">Exception or Action</th>
+</tr>
+<tr>
+<td headers="h901">success (0)</td>
+<td headers="h902">Report success.</td>
+</tr>
+<tr>
+<td headers="h901">operationsError (1)</td>
+<td headers="h902"><tt>NamingException</tt></td>
+</tr>
+<tr>
+<td headers="h901">protocolError (2)</td>
+<td headers="h902"><tt>CommunicationException</tt></td>
+</tr>
+<tr>
+<td headers="h901">timeLimitExceeded (3)</td>
+<td headers="h902"><tt>TimeLimitExceededException</tt></td>
+</tr>
+<tr>
+<td headers="h901">sizeLimitExceeded (4)</td>
+<td headers="h902"><tt>SizeLimitExceededException</tt></td>
+</tr>
+<tr>
+<td headers="h901">compareFalse (5)</td>
+<td headers="h902">Used by <tt>DirContext.search()</tt> and does not generate an
+exception.</td>
+</tr>
+<tr>
+<td headers="h901">compareTrue (6)</td>
+<td headers="h902">Used by <tt>DirContext.search()</tt> and does not generate an
+exception.</td>
+</tr>
+<tr>
+<td headers="h901">authMethodNotSupported (7)</td>
+<td headers="h902"><tt>AuthenticationNotSupportedException</tt></td>
+</tr>
+<tr>
+<td headers="h901">strongAuthRequired (8)</td>
+<td headers="h902"><tt>AuthenticationNotSupportedException</tt></td>
+</tr>
+<tr>
+<td headers="h901">partialResults (9)</td>
+<td headers="h902">If <tt>java.naming.referral</tt> is set to <tt>ignore</tt>, or
+contents of error does not contain a referral, throw
+<tt>PartialResultException</tt>. Otherwise, use the contents to
+build a referral.</td>
+</tr>
+<tr>
+<td headers="h901">referral (10)</td>
+<td headers="h902">If <tt>java.naming.referral</tt> is set to <tt>ignore</tt> then
+throw <tt>PartialResultException</tt>. If it is set to
+<tt>throw</tt> then throw <tt>ReferralException</tt>. If it is set
+to <tt>follow</tt> then the provider shall follow the referral. If
+the value for <tt>java.naming.ldap.referral.limit</tt> is exceeded
+while following the referral then throw
+<tt>LimitExceededException</tt>.</td>
+</tr>
+<tr>
+<td headers="h901">adminLimitExceeded (11)</td>
+<td headers="h902"><tt>LimitExceededException</tt></td>
+</tr>
+<tr>
+<td headers="h901">unavailableCriticalExtension (12)</td>
+<td headers="h902"><tt>OperationNotSupportedException</tt></td>
+</tr>
+<tr>
+<td headers="h901">confidentialityRequired (13)</td>
+<td headers="h902"><tt>AuthenticationNotSupportedException</tt></td>
+</tr>
+<tr>
+<td headers="h901">saslBindInProgress (14)</td>
+<td headers="h902">Used internally by LDAP provider during multi-stage SASL
+authentication.</td>
+</tr>
+<tr>
+<td headers="h901">noSuchAttribute (16)</td>
+<td headers="h902"><tt>NoSuchAttributeException</tt></td>
+</tr>
+<tr>
+<td headers="h901">undefinedAttributeType (17)</td>
+<td headers="h902"><tt>InvalidAttributeIdentifierException</tt></td>
+</tr>
+<tr>
+<td headers="h901">inappropriateMatching (18)</td>
+<td headers="h902"><tt>InvalidSearchFilterException</tt></td>
+</tr>
+<tr>
+<td headers="h901">constraintViolation (19)</td>
+<td headers="h902"><tt>InvalidAttributeValueException</tt></td>
+</tr>
+<tr>
+<td headers="h901">attributeOrValueExists (20)</td>
+<td headers="h902"><tt>AttributeInUseException</tt></td>
+</tr>
+<tr>
+<td headers="h901">invalidAttributeSyntax (21)</td>
+<td headers="h902"><tt>InvalidAttributeValueException</tt></td>
+</tr>
+<tr>
+<td headers="h901">noSuchObject (32)</td>
+<td headers="h902"><tt>NameNotFoundException</tt></td>
+</tr>
+<tr>
+<td headers="h901">aliasProblem (33)</td>
+<td headers="h902"><tt>NamingException</tt></td>
+</tr>
+<tr>
+<td headers="h901">invalidDNSyntax (34)</td>
+<td headers="h902"><tt>InvalidNameException</tt></td>
+</tr>
+<tr>
+<td headers="h901">isLeaf (35)</td>
+<td headers="h902">Used by provider; usually doesn't generate exception.</td>
+</tr>
+<tr>
+<td headers="h901">aliasDereferencingProblem (36)</td>
+<td headers="h902"><tt>NamingException</tt></td>
+</tr>
+<tr>
+<td headers="h901">inappropriateAuthentication (48)</td>
+<td headers="h902"><tt>AuthenticationNotSupportedException</tt></td>
+</tr>
+<tr>
+<td headers="h901">invalidCredentials (49)</td>
+<td headers="h902"><tt>AuthenticationException</tt></td>
+</tr>
+<tr>
+<td headers="h901">insufficientAccessRights (50)</td>
+<td headers="h902"><tt>NoPermissionException</tt></td>
+</tr>
+<tr>
+<td headers="h901">busy (51)</td>
+<td headers="h902"><tt>ServiceUnavailableException</tt></td>
+</tr>
+<tr>
+<td headers="h901">unavailable (52)</td>
+<td headers="h902"><tt>ServiceUnavailableException</tt></td>
+</tr>
+<tr>
+<td headers="h901">unwillingToPerform (53)</td>
+<td headers="h902"><tt>OperationNotSupportedException</tt></td>
+</tr>
+<tr>
+<td headers="h901">loopDetect (54)</td>
+<td headers="h902"><tt>NamingException</tt></td>
+</tr>
+<tr>
+<td headers="h901">namingViolation (64)</td>
+<td headers="h902"><tt>InvalidNameException</tt></td>
+</tr>
+<tr>
+<td headers="h901">objectClassViolation (65)</td>
+<td headers="h902"><tt>SchemaViolationException</tt></td>
+</tr>
+<tr>
+<td headers="h901">notAllowedOnNonLeaf (66)</td>
+<td headers="h902"><tt>ContextNotEmptyException</tt></td>
+</tr>
+<tr>
+<td headers="h901">notAllowedOnRDN (67)</td>
+<td headers="h902"><tt>SchemaViolationException</tt></td>
+</tr>
+<tr>
+<td headers="h901">entryAlreadyExists (68)</td>
+<td headers="h902"><tt>NameAlreadyBoundException</tt></td>
+</tr>
+<tr>
+<td headers="h901">objectClassModsProhibited (69)</td>
+<td headers="h902"><tt>SchemaViolationException</tt></td>
+</tr>
+<tr>
+<td headers="h901">affectsMultipleDSAs (71)</td>
+<td headers="h902"><tt>NamingException</tt></td>
+</tr>
+<tr>
+<td headers="h901">other (80)</td>
+<td headers="h902"><tt>NamingException</tt></td>
+</tr>
+</table>
+
+<hr />
+<a name="API" id="API"></a>
+<h2>10. API Mapping</h2>
+The methods of the JNDI API context interfaces are mapped onto LDAP
+operations as follows.<br />
+&nbsp;
+<dl>
+<dt><b><tt>EventContext.addNamingListener</tt></b></dt>
+<dt><b><tt>EventDirContext.addNamingListener</tt></b></dt>
+</dl>
+<dl>
+<dt>Register a listener for receiving naming events that take place
+in the specified subtree of LDAP entries. LDAP servers notify
+clients of events by means of LDAP controls attached to LDAP
+operation responses or by means of an LDAP unsolicited
+notifications. Such responses are then processed by the LDAP
+provider and indicated to the application in the form of
+<tt>NamingEvent</tt> or <tt>UnsolicitedNotificationEvent</tt>.</dt>
+</dl>
+<dl>
+<dt><b><tt>Context.addToEnvironment</tt></b></dt>
+</dl>
+<p>Update context's environment properties. If multiple contexts
+share the same set of environment properties, the provider should
+take care to only modify the intended context's environment.
+Changing an environment property might require changes to the
+existing connection the context is using.</p>
+<dl>
+<dd>
+<dl>
+<dt>Supplying null for the property value has the same effect as
+removing the property.<br />
+For all environment properties, the new property is recorded even
+if it does not affect the context. See the <a href=
+"#PROP">Environment Properties</a> section.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>Context.bind</tt></b></dt>
+<dd><br />
+<b><tt>DirContext.bind</tt></b></dd>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>Perform an LDAP add operation to create a new entry in the
+directory. The <tt>DirContext.bind</tt> method can accept null as
+the object to bind if it is also supplied a non-null set of
+attributes. Otherwise, if the method is given insufficient
+information (i.e., no object or attributes), no entry can be added.
+If an object is provided in the arguments, then it is converted
+into attributes and stored in the entry along with any supplied
+attributes, as described in the <a href="#OBJ">Java Objects</a>
+section. The provider should use the
+<tt>DirectoryManager.getStateToBind</tt> method to transform the
+input object into a form that it can store.<br />
+If the provider does not support binding any objects in the
+directory then it should throw
+<tt>OperationNotSupportedException</tt>. Otherwise, if it does
+support binding objects but does not support the supplied object
+then it should throw <tt>IllegalArgumentException</tt>.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>Context.close</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>Release resources associated with context. For example, if the
+connection being used by this context is not shared with another
+context, the provider may abandon any outstanding requests and
+close the network connection to the server. Precisely which
+resources are released is implementation-dependent.</dt>
+</dl>
+</dd>
+<dt><b><tt>Context.composeName</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>If the parent context is from the same LDAP namespace, then
+concatenate the names according to the LDAP name syntax described
+in <tt>Context.getNameParser()</tt>. Otherwise, concatenate the
+names as composite names.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>Context.createSubcontext</tt></b></dt>
+<dd><br />
+<b><tt>DirContext.createSubcontext</tt></b></dd>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>Perform an LDAP add operation to create the named entry and its
+associated attributes. If no attributes are supplied then the
+objectClass attribute is generated with the values <tt>top</tt> and
+<tt>javaContainer</tt> (<tt>javaContainer</tt> is a structural
+class that is necessary to avoid a schema violation error).</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>Context.destroySubcontext</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>Perform an LDAP delete operation to remove the named entry and
+its associated attributes. The named entry must be a leaf entry;
+subtrees are not removed. If the leaf entry does not exist (but its
+parent exists), the operation still succeeds.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>LdapContext.extendedOperation</tt></b></dt>
+</dl>
+<dl>
+<dt>Perform an LDAP extended operation.</dt>
+</dl>
+<dl>
+<dt><b><tt>DirContext.getAttributes</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>Perform an LDAP base-object search operation to retrieve the
+LDAP entry's attributes. Use "(objectclass=*)" as the filter.<br />
+If the list of requested attributes is null or contains the special
+attribute identifier '*' then all the user attributes at the LDAP
+entry are returned. If <i>operational</i> attributes are required
+then those attribute identifiers must be present in the list of
+requested attributes.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>LdapContext.getConnectControls</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>Retrieve the connection request controls in effect for LDAP
+bind operations invoked on this context.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>Context.getEnvironment</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>Return the environment properties recorded at the context.</dt>
+</dl>
+</dd>
+<dt><b><tt>Context.getNameInNamespace</tt></b></dt>
+<dd>
+<dl>
+<dt>Return the LDAP distinguished name of the context.</dt>
+</dl>
+</dd>
+<dt><b><tt>Context.getNameParser</tt></b></dt>
+<dd>
+<dl>
+<dt>Return a name parser that parses LDAP names according to
+<a href="http://www.ietf.org/rfc/rfc2253.txt">RFC 2253</a>.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>LdapContext.getRequestControls</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>Retrieve the request controls in effect for LDAP operations
+subsequently invoked on this context.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>LdapContext.getResponseControls</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>Retrieve the response controls returned by the last LDAP
+operation invoked on this context.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>DirContext.getSchema</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>See the <a href="#SCHEMA">Schema Section</a>.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>DirContext.getSchemaClassDefinition</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>See the <a href="#SCHEMA">Schema Section</a>.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>Context.list</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>Perform an LDAP one-level search operation of the named entry
+using the filter "(objectclass=*)" to retrieve the names of the
+entries immediately below the named entry.<br />
+Ask for, at a minimum, the <tt>javaClassName</tt> attributes so
+that the class name of each entry can be determined. If the class
+name cannot be determined, return
+<tt>javax.naming.directory.DirContext</tt> as the class name.<br />
+The names which are returned are either relative to the named
+context or they are LDAP or LDAPS URLs.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>Context.listBindings</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>Perform an LDAP one-level search operation of the named entry
+using the filter "(objectclass=*)" to retrieve the attributes
+representing objects (or object references). Request the attributes
+for reconstructing the Java object and possibly other attributes as
+well. See <a href="#OBJ">Java Objects</a> on how to reconstruct the
+object. If the object cannot be reconstructed according to <a href=
+"http://www.ietf.org/rfc/rfc2713.txt">RFC 2713</a> then return a
+<tt>DirContext</tt> object representing the LDAP entry. The
+provider should use the <tt>DirectoryManager.getObjectInstance</tt>
+method to satisfy calls to the <tt>Binding.getObject</tt>
+method.<br />
+The names which are returned are either relative to the named
+context or they are LDAP or LDAPS URLs.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>Context.lookup</tt></b></dt>
+<dd><br />
+<b><tt>Context.lookupLink</tt></b></dd>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>Perform an LDAP base-object search operation of the named entry
+using the filter "(objectclass=*)". Request (possibly all) the
+attributes for reconstructing the Java object. See <a href=
+"#OBJ">Java Objects</a> on how to reconstruct the object. The
+provider should use the <tt>DirectoryManager.getObjectInstance</tt>
+method to satisfy calls to the <tt>Binding.getObject</tt>
+method.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>DirContext.modifyAttributes</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>Perform an LDAP modify operation at the named entry using the
+supplied modifications. For the overloaded method that accepts an
+<tt>Attributes</tt>, first convert the <tt>Attributes</tt> argument
+into an ordered list of modifications by enumerating its contents
+using <tt>Attributes.getAll()</tt> and reusing the modification
+operation argument (<tt>mod_op</tt>).</dt>
+</dl>
+</dd>
+</dl>
+<b><tt>LdapContext.newInstance</tt></b>
+<dl>
+<dd>
+<dl>
+<dt>Initialize an new instance of this context with the specified
+request controls.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>Context.rebind</tt></b></dt>
+<dd><br />
+<b><tt>DirContext.rebind</tt></b></dd>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>This method may involve several different LDAP operations.
+First get the existing entry's attributes. If the existing entry
+does not exist, this method behaves the same as <tt>bind()</tt>.
+Otherwise, if no attributes have been supplied and the object being
+bound is <tt>DirContext</tt>, invoke
+<tt>DirContext.getAttributes()</tt> and use the result as the
+attributes argument (<tt>attrs</tt>). If there are still no
+attributes, use the original entry's attributes as <tt>attrs</tt>.
+Remove the existing entry using the LDAP delete operation. Convert
+the object provided in the arguments into attributes (as described
+in the <a href="#OBJ">Java Objects</a> section) and store in the
+entry along with <tt>attrs</tt> using the LDAP add operation. The
+provider should use the <tt>DirectoryManager.getStateToBind</tt>
+method to transform the input object into a form that it can
+store.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>LdapContext.reconnect</tt></b></dt>
+<dd>
+<dl>
+<dt>Reconnect to the LDAP server using the supplied connection
+request controls and the current environment properties.</dt>
+</dl>
+</dd>
+<dt><b><tt>Context.removeFromEnvironment</tt></b></dt>
+</dl>
+<p>Remove context's environment properties. If multiple contexts
+share the same set of environment properties, the provider should
+take care to only modify the intended context's environment.
+Changing an environment property might require changes to the
+existing connection the context is using.</p>
+<dl>
+<dd>
+<dl>
+<dt>For all environment properties, the new property is recorded
+even if it does not affect the context. Removing a property should
+cause the context to assume the property's default.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>EventContext.removeNamingListener</tt></b></dt>
+</dl>
+<dl>
+<dt>Deregister a naming event listener so that subsequent events
+destined for that listener are not delivered.</dt>
+</dl>
+<dl>
+<dt><b><tt>Context.rename</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>Perform an LDAP modify DN operation to rename the entry. If
+LDAPv2 is being used then the new name and the old name must share
+the same immediate parent name. If the parents are not equal then
+throw <tt>InvalidNameException</tt>.<br />
+Note the effect of the&nbsp; <a href=
+"#deleteRDN">java.naming.ldap.deleteRDN</a>&nbsp; property on the
+behavior of this method.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>DirContext.search</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>Perform an LDAP search operation according to the specified
+search controls.<br />
+If the list of requested attributes is null or contains the special
+attribute identifier '*' then all the user attributes at the LDAP
+entry are returned. If operational attributes are required then
+those attribute identifiers must be present in the list of
+requested attributes.<br />
+If objects are requested to be returned, then the Java
+object-related attributes (<a href=
+"http://www.ietf.org/rfc/rfc2713.txt">RFC 2713</a>) are requested
+in addition to any requested by the API user. If these attributes
+are present then they are used to assemble the original objects
+(see <a href="#OBJ">Java Objects</a>). If the object cannot be
+reconstructed according to <a href=
+"http://www.ietf.org/rfc/rfc2713.txt">RFC 2713</a> then return a
+<tt>DirContext</tt> object representing the LDAP entry. The
+provider should use the <tt>DirectoryManager.getObjectInstance</tt>
+method to satisfy calls to the <tt>Binding.getObject</tt>
+method.<br />
+The names which are returned are either relative to the named
+context or they are LDAP or LDAPS URLs.<br />
+The provider may use an LDAP compare operation instead of an LDAP
+search when the search filter supplied is suitably
+constrained:<br />
+&nbsp;</dt>
+<dd>
+<ul>
+<li>The filter must be of the form
+"<tt>(&lt;attributeID&gt;=&lt;value&gt;)</tt>"</li>
+<li>The scope must be object scope</li>
+<li>Zero attributes must be requested (empty returning-attributes
+list)</li>
+</ul>
+</dd>
+</dl>
+<p>In the forms of search that accept a string filter as argument,
+the syntax of the filter follows <a href=
+"http://www.ietf.org/rfc/rfc2254.txt">RFC 2254</a> with the
+exception that Unicode characters are also allowed. The use of
+Unicode characters is preferable to the use of encoded UTF-8
+octets. The service provider is responsible for translating the
+Unicode characters into their corresponding UTF-8 representation
+for transmission to the server. For example, the Greek letter alpha
+can be specified in the string filter either as "<tt>\u03B1</tt>"
+or as "<tt>\\CE\\B1</tt>".</p>
+<p>In the form <tt>search(Name, Attributes)</tt> and related
+methods, the <tt>Attributes</tt> argument is converted into a
+string filter by creating a conjunctive expression out of its
+elements. Each attribute value is treated as a literal; therefore
+'*' and other special characters defined in <a href=
+"http://www.ietf.org/rfc/rfc2254.txt">RFC 2254</a> that appear in
+the values of an attribute should be escaped according to the rules
+in <a href="http://www.ietf.org/rfc/rfc2254.txt">RFC 2254</a>. For
+example, an attribute value of '*' should be encoded as the string
+"<tt>\\2a</tt>".</p>
+<p>In the form <tt>search(Name, String filterExpr, Object[]
+filterArgs)</tt> and its <tt>String</tt> overloaded method,
+"{<i>num</i>}" expansion is done in the filter by putting in values
+from <tt>filterArgs</tt>. Each "{<i>num</i>}" component may appear
+in the place of "attr" or "value" in Section 4 from <a href=
+"http://www.ietf.org/rfc/rfc2254.txt">RFC 2254.</a></p>
+<p>The objects in <tt>filterArgs</tt> should be encoded in the
+following way:<br />
+&nbsp;</p>
+<ul>
+<li>byte arrays (<tt>byte[]</tt>) are encoded by encoding each byte
+as a string according to <a href=
+"http://www.ietf.org/rfc/rfc2254.txt">RFC 2254</a>. For example,
+the array {0, 1, 10, 100} is encoded as the string
+"<tt>\\00\\01\\0a\\64</tt>".</li>
+<li>Strings are treated as literals. In other words, '*' and other
+special characters defined in <a href=
+"http://www.ietf.org/rfc/rfc2254.txt">RFC 2254</a> that appear in
+the string are escaped according to the rules in <a href=
+"http://www.ietf.org/rfc/rfc2254.txt">RFC 2254</a>. For example, a
+string of "*" is encoded as the string "<tt>\\2a</tt>".</li>
+<li>Objects that are neither <tt>String</tt> nor <tt>byte[]</tt>
+are converted to their string form using <tt>Object.toString()</tt>
+and then the rules for <tt>String</tt> applied.</li>
+</ul>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>LdapContext.setRequestControls</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>Set the request controls for LDAP operations subsequently
+invoked on this context.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>EventContext.targetMustExist</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>Determine whether a listener can register interest in an LDAP
+entry that doesn't exist.</dt>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt><b><tt>Context.unbind</tt></b></dt>
+</dl>
+<dl>
+<dd>
+<dl>
+<dt>Perform an LDAP delete operation to remove the named entry. The
+named entry must be a leaf entry; subtrees are not removed. If the
+leaf entry does not exist (but its parents exist), the operation
+still succeeds.</dt>
+</dl>
+</dd>
+</dl>
+<hr />
+<a name="FED" id="FED"></a>
+<h2>11. Federation</h2>
+The LDAP service provider should support federation using strong
+separation and either or both of junctions or implicit next naming
+system pointer.
+<hr />
+<br />
+<a name="SASL" id="SASL"></a>
+<h2>12. SASL</h2>
+The provider supports SASL mechanisms by means of the Java SASL API
+(<a href="http://www.worldspot.com/jsr28/">JSR 28</a>). This allows
+SASL mechanism drivers from different vendors to be used with the
+LDAP provider, and also allows a SASL mechanism driver to be used
+with different LDAP providers and even non-LDAP protocol libraries.
+<p>The Java SASL API depends on the <a href=
+"http://www.oracle.com/technetwork/java/javase/jaas/index.html">Java
+Authentication and Authorization Service</a> (JAAS), which provides
+callback support for SASL mechanisms that need to obtain or supply
+user/application information directly.</p>
+<h3>12.1 SASL Configuration</h3>
+To specify that SASL authentication be used, you specify the
+official IANA-registered names of the SASL mechanisms in the
+<a href=
+"#authentication"><tt>java.naming.security.authentication</tt></a>
+property. The first SASL mechanism on the list that is both
+available and satisfies the optionally specified policies is used.
+That is, properties with the prefix
+<tt>"javax.security.sasl.policy."</tt> can be used to control the
+security characteristics of the selected SASL mechanism.
+<p>Some SASL mechanisms require the identity of the entity being
+authenticated. This is known as the <i>authentication ID</i>. Some
+SASL mechanisms, like DIGEST-MD5, require the use of a password
+and/or a realm. By default, the provider supplies the value of
+<a href="#principal"><tt>java.naming.security.principal</tt></a>
+property as the authentication ID to any SASL mechanism that
+requires the authentication ID, the value of the <a href=
+"#credentials"><tt>java.naming.security.credentials</tt></a>
+property as the password, and the value of the <a href=
+"#realm"><tt>java.naming.security.sasl.realm</tt></a> property as
+the realm. To override these defaults, use the <a href=
+"#callback"><tt>java.naming.security.sasl.callback</tt></a>
+property.</p>
+<p>SASL mechanisms support the notion of authorization identity or
+<i>authorization ID</i>, which is the entity to which the server
+should grant access if the authentication succeeds.&nbsp; If the
+<a href=
+"#authorizationId"><tt>java.naming.security.sasl.authorizationId</tt></a>
+property has been set, then its value is used as the authorization
+ID. Otherwise, the empty string is used as the authorization ID,
+which directs the server to derive an authorization ID from the
+client's authentication credentials.</p>
+<p>See <a href="#SASLPROPS">SASL properties</a> for a description
+of the properties used by an LDAP service provider for supporting
+SASL.</p>
+<p>In addition to these properties, there might be properties
+required for specific SASL mechanisms. For example, a SASL
+mechanism that supports privacy and integrity needs to know the
+quality of protection that the client requires. Properties such as
+these are passed to the SASL mechanism via the environment
+properties. See the <a href=
+"../../../api/javax/naming/InitialContext.html#ENVIRONMENT">JNDI
+documentation</a> for how to set environment properties.</p>
+<p>For example, if the application needs privacy, it can do so by
+using a call such as:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; <tt>env.put("javax.security.sasl.qop",
+"auth-conf");</tt></p>
+<p>before passing <tt>env</tt> to the initial context constructor.
+See the Java SASL API for details about these properties.</p>
+<h3>12.2 SASL Mechanism Drivers</h3>
+The Java SASL API provides a framework for dynamically plugging in
+SASL mechanism drivers. The LDAP provider might provide a few
+default drivers. See the Java SASL API for details.
+<hr />
+<a name="CTL" id="CTL"></a>
+<h2>13. Extensions and Controls</h2>
+The provider supports LDAP extensions and controls using the
+<tt>javax.naming.ldap</tt> package. In addition, the provider
+supports LDAP unsolicited notifications (which are transmitted in
+LDAP extended operation responses) using the services of the
+<tt>javax.naming.event</tt> package.
+<p>Several LDAP extensions and controls are defined by the IETF
+LDAPEXT working group.</p>
+<p>The <a href="http://www.ietf.org/rfc/rfc2830.txt">"Start TLS"
+extension</a> ("1.3.6.1.4.1.1466.20037") is supported by the
+<a href=
+"../../../api/javax/naming/ldap/StartTlsRequest.html"><tt>StartTlsRequest</tt></a>
+and <a href=
+"../../../api/javax/naming/ldap/StartTlsResponse.html"><tt>StartTlsResponse</tt></a>
+classes. The LDAP provider must provide a concrete implementation
+of the abstract <tt>StartTlsResponse</tt> class and make its
+implementation available to the LDAP provider. See the description
+in <a href=
+"../../../api/javax/naming/ldap/StartTlsRequest.html#createExtendedResponse-java.lang.String-byte:A-int-int-">
+StartTlsRequest.createExtendedResponse</a>. Typically, the
+<tt>StartTlsResponse</tt> implementation would need access to the
+LDAP provider's data structures.</p>
+<p>The LDAP service provider should perform hostname verification
+after Start TLS negotiation as specified in RFC 2830. If the LDAP
+server was discovered automatically by using information in DNS (as
+described in the <a href="#URLS">URLs section</a>), the provider
+should use the domain name derived from the distinguished name as
+the hostname to verify, as recommended by <a href=
+"http://tools.ietf.org/html/draft-ietf-ldapext-locate-08">draft-ietf-ldapext-locate-08.txt</a>.</p>
+<hr />
+<a name="EVENT" id="EVENT"></a>
+<h2>14. Event Notification</h2>
+The provider supports event notification using the
+<tt>javax.naming.event</tt> package.
+<p>A JNDI application can register for events that occur in the
+directory, such as the addition or removal of an entry, or the
+modification of an entry. Applications can also register for
+unsolicited notifications.</p>
+<hr />
+<br />
+<a name="SSL" id="SSL"></a>
+<h2>15. SSL</h2>
+<p>The provider supports SSL according to the <a href=
+"../security/jsse/JSSERefGuide.html">Java Secure Socket Extension
+(JSSE) specification</a>. SSL is activated by setting the <a href=
+"#protocol"><tt>java.naming.security.protocol</tt></a> environment
+property as follows:</p>
+<pre class="codeblock">
+<tt>env.put(Context.SECURITY_PROTOCOL,
+"ssl");</tt>
+</pre>
+and by selecting the hostname and port number of an LDAP server
+that supports SSL. Once an SSL connection has been established
+subsequent LDAP protocol exchanges take place over that secure
+connection.
+<p>If, in addition, LDAP authentication is also required then the
+<a href=
+"#authentication"><tt>java.naming.security.authentication</tt></a>,
+<a href="#principal"><tt>java.naming.security.principal</tt></a>,
+and <a href=
+"#credentials"><tt>java.naming.security.credentials</tt></a>
+environment properties should be set, as appropriate. If LDAP
+authentication is required and the SSL credentials should be reused
+for LDAP authentication then set the <a href=
+"#authentication"><tt>java.naming.security.authentication</tt></a>
+environment property to select the SASL EXTERNAL mechanism, as
+follows:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<tt>env.put(Context.SECURITY_AUTHENTICATION,
+"EXTERNAL");</tt><br />
+&nbsp;</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

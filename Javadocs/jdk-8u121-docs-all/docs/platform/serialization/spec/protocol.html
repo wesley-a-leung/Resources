@@ -1,0 +1,753 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Object Serialization Specification: 6 - Object
+Serialization Stream Protocol</title>
+</head>
+<body bgcolor="#FFFFFF">
+<table summary="" width="100%">
+<tr>
+<td>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href="serialTOC.html">CONTENTS</a> |
+<a href="version.html">PREV</a> | <a href="security.html">NEXT</a> 
+<!-- | <a href="examples.html">INDEX</a>  -->
+<!-- /font --></td>
+<td align="right"><i>Java Object Serialization Specification<br />
+version 6.0</i></td>
+</tr>
+</table>
+<br />
+<a name="a8101" id="a8101"><!-- --></a>
+<h1>Object Serialization Stream Protocol</h1>
+<!--
+<hr size="1" width="100%" align="left" noshade>
+-->
+<br />
+<br />
+<br />
+<a name="a8116" id="a8116"><!-- --></a>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<table summary="" border="0">
+<tr valign="bottom">
+<td valign="bottom"><br />
+<u><b>CHAPTER 6</b></u></td>
+</tr>
+</table>
+<br />
+<a name="a8121" id="a8121"><!-- --></a>
+<p><i>Topics:</i></p>
+<ul>
+<li><a name="a8120" id="a8120"><!-- --></a> <a href=
+"protocol.html#a8130">Overview</a></li>
+<li><a name="a8136" id="a8136"><!-- --></a> <a href=
+"protocol.html#a8299">Stream Elements</a></li>
+<li><a name="a10246" id="a10246"><!-- --></a> <a href=
+"protocol.html#a5849">Stream Protocol Versions</a></li>
+<li><a name="a8283" id="a8283"><!-- --></a> <a href=
+"protocol.html#a10258">Grammar for the Stream Format</a></li>
+<li><a name="a8526" id="a8526"><!-- --></a> <a href=
+"protocol.html#a10128">Example</a></li>
+</ul>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<h2><a name="a8130" id="a8130"><i>6.1</i> Overview</a></h2>
+<a name="a286" id="a286"><!-- --></a>
+<p>The stream format satisfies the following design goals:</p>
+<ul>
+<li><a name="a3872" id="a3872"><!-- --></a> Is compact and is
+structured for efficient reading.</li>
+<li><a name="a8296" id="a8296"><!-- --></a> Allows skipping through
+the stream using only the knowledge of the structure and format of
+the stream. Does not require invoking any per class code.</li>
+<li><a name="a8297" id="a8297"><!-- --></a> Requires only stream
+access to the data.</li>
+</ul>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<h2><a name="a8299" id="a8299"><i>6.2</i> Stream Elements</a></h2>
+<a name="a9605" id="a9605"><!-- --></a> A basic structure is needed
+to represent objects in a stream. Each attribute of the object
+needs to be represented: its classes, its fields, and data written
+and later read by class-specific methods. The representation of
+objects in the stream can be described with a grammar. There are
+special representations for null objects, new objects, classes,
+arrays, strings, and back references to any object already in the
+stream. Each object written to the stream is assigned a handle that
+is used to refer back to the object. Handles are assigned
+sequentially starting from 0x7E0000. The handles restart at
+0x7E0000 when the stream is reset.
+<p><a name="a4499" id="a4499"><!-- --></a></p>
+<p>A class object is represented by the following:</p>
+<ul>
+<li><a name="a8441" id="a8441"><!-- --></a> Its
+<code>ObjectStreamClass</code> object.</li>
+</ul>
+<a name="a8442" id="a8442"><!-- --></a>
+<p>An <code>ObjectStreamClass</code> object for a Class that is not
+a dynamic proxy class is represented by the following:</p>
+<ul>
+<li><a name="a7811" id="a7811"><!-- --></a> The Stream Unique
+Identifier (SUID) of compatible classes.</li>
+<li><a name="a7812" id="a7812"><!-- --></a> A set of flags
+indicating various properties of the class, such as whether the
+class defines a <code>writeObject</code> method, and whether the
+class is serializable, externalizable, or an enum type</li>
+<li><a name="a8445" id="a8445"><!-- --></a> The number of
+serializable fields</li>
+<li><a name="a9726" id="a9726"><!-- --></a> The array of fields of
+the class that are serialized by the default mechanismFor arrays
+and object fields, the type of the field is included as a string
+which must be in &#34;field descriptor&#34; format (e.g.,
+&#34;<code>Ljava/lang/Object;</code>&#34;) as specified in The Java
+Virtual Machine Specification.</li>
+<li><a name="a9733" id="a9733"><!-- --></a> Optional block-data
+records or objects written by the <code>annotateClass</code>
+method</li>
+<li><a name="a9734" id="a9734"><!-- --></a> The
+<code>ObjectStreamClass</code> of its supertype (null if the
+superclass is not serializable)</li>
+</ul>
+<a name="a53671" id="a53671"><!-- --></a>
+<p>An <code>ObjectStreamClass</code> object for a dynamic proxy
+class is represented by the following:</p>
+<ul>
+<li><a name="a53672" id="a53672"><!-- --></a> The number of
+interfaces that the dynamic proxy class implements</li>
+<li><a name="a53673" id="a53673"><!-- --></a> The names of all of
+the interfaces implemented by the dynamic proxy class, listed in
+the order that they are returned by invoking the
+<code>getInterfaces</code> method on the Class object.</li>
+<li><a name="a53674" id="a53674"><!-- --></a> Optional block-data
+records or objects written by the <code>annotateProxyClass</code>
+method.</li>
+<li><a name="a53800" id="a53800"><!-- --></a> The ObjectStreamClass
+of its supertype, <code>java.lang.reflect.Proxy</code>.</li>
+</ul>
+<a name="a53801" id="a53801"><!-- --></a> The representation of
+<code>String</code> objects consists of length information followed
+by the contents of the string encoded in modified UTF-8. The
+modified UTF-8 encoding is the same as used in the Java Virtual
+Machine and in the <code>java.io.DataInput</code> and
+<code>DataOutput</code> interfaces; it differs from standard UTF-8
+in the representation of supplementary characters and of the null
+character. The form of the length information depends on the length
+of the string in modified UTF-8 encoding. If the modified UTF-8
+encoding of the given <code>String</code> is less than 65536 bytes
+in length, the length is written as 2 bytes representing an
+unsigned 16-bit integer. Starting with the Java 2 platform,
+Standard Edition, v1.3, if the length of the string in modified
+UTF-8 encoding is 65536 bytes or more, the length is written in 8
+bytes representing a signed 64-bit integer. The typecode preceding
+the <code>String</code> in the serialization stream indicates which
+format was used to write the <code>String</code>.
+<p><a name="a4523" id="a4523"><!-- --></a></p>
+<p>Arrays are represented by the following:</p>
+<ul>
+<li><a name="a7824" id="a7824"><!-- --></a> Their
+<code>ObjectStreamClass</code> object.</li>
+<li><a name="a7825" id="a7825"><!-- --></a> The number of
+elements.</li>
+<li><a name="a7826" id="a7826"><!-- --></a> The sequence of values.
+The type of the values is implicit in the type of the array. for
+example the values of a byte array are of type byte.</li>
+</ul>
+<a name="a8447" id="a8447"><!-- --></a>
+<p>Enum constants are represented by the following:</p>
+<ul>
+<li><a name="a53793" id="a53793"><!-- --></a> The
+<code>ObjectStreamClass</code> object of the constant&#39;s base
+enum type.</li>
+<li><a name="a53794" id="a53794"><!-- --></a> The constant&#39;s
+name string.</li>
+</ul>
+<a name="a53788" id="a53788"><!-- --></a>
+<p>New objects in the stream are represented by the following:</p>
+<ul>
+<li><a name="a8448" id="a8448"><!-- --></a> The most derived class
+of the object.</li>
+<li><a name="a8449" id="a8449"><!-- --></a> Data for each
+serializable class of the object, with the highest superclass
+first. For each class the stream contains the following:
+<ul>
+<li>The serializable fields.See <a href=
+"serial-arch.html#a6250">Section&#160;1.5, &#34;Defining
+Serializable Fields for a Class</a>.&#34;</li>
+<li>If the class has
+<code>writeObject</code>/<code>readObject</code> methods, there may
+be optional objects and/or block-data records of primitive types
+written by the <code>writeObject</code> method followed by an
+<code>endBlockData</code> code.</li>
+</ul>
+</li>
+</ul>
+<a name="a7842" id="a7842"><!-- --></a>
+<p>All primitive data written by classes is buffered and wrapped in
+block-data records, regardless if the data is written to the stream
+within a <code>writeObject</code> method or written directly to the
+stream from outside a <code>writeObject</code> method. This data
+can only be read by the corresponding <code>readObject</code>
+methods or be read directly from the stream. Objects written by the
+<code>writeObject</code> method terminate any previous block-data
+record and are written either as regular objects or null or back
+references, as appropriate. The block-data records allow error
+recovery to discard any optional data. When called from within a
+class, the stream can discard any data or objects until the
+<code>endBlockData</code>.</p>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<h2><a name="a5849" id="a5849"><i>6.3</i> Stream Protocol
+Versions</a></h2>
+<a name="a10264" id="a10264"><!-- --></a> It was necessary to make
+a change to the serialization stream format in JDK 1.2 that is not
+backwards compatible to all minor releases of JDK 1.1. To provide
+for cases where backwards compatibility is required, a capability
+has been added to indicate what <em>PROTOCOL_VERSION</em> to use
+when writing a serialization stream. The method
+<code>ObjectOutputStream.useProtocolVersion</code> takes as a
+parameter the protocol version to use to write the serialization
+stream.
+<p><a name="a10265" id="a10265"><!-- --></a></p>
+<p>The Stream Protocol Versions are as follows:</p>
+<ul>
+<li>
+<p><code>ObjectStreamConstants.PROTOCOL_VERSION_1</code>: Indicates
+the initial stream format.</p>
+</li>
+<li>
+<p><code>ObjectStreamConstants.PROTOCOL_VERSION_2</code>: Indicates
+the new external data format. Primitive data is written in block
+data mode and is terminated with <em>TC_ENDBLOCKDATA</em>.</p>
+<p>Block data boundaries have been standardized. Primitive data
+written in block data mode is normalized to not exceed 1024 byte
+chunks. The benefit of this change was to tighten the specification
+of serialized data format within the stream. This change is fully
+backward and forward compatible.</p>
+</li>
+</ul>
+<a name="a10255" id="a10255"><!-- --></a> JDK 1.2 defaults to
+writing <code>PROTOCOL_VERSION_2</code>.
+<p><a name="a10388" id="a10388"><!-- --></a> JDK 1.1 defaults to
+writing <code>PROTOCOL_VERSION_1</code>.</p>
+<p><a name="a10251" id="a10251"><!-- --></a> JDK 1.1.7 and greater
+can read both versions.</p>
+<p><a name="a11072" id="a11072"><!-- --></a></p>
+<p>Releases prior to JDK 1.1.7 can only read
+<code>PROTOCOL_VERSION_1</code>.</p>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<h2><a name="a10258" id="a10258"><i>6.4</i> Grammar for the Stream
+Format</a></h2>
+<a name="a4999" id="a4999"><!-- --></a>
+<p>The table below contains the grammar for the stream format.
+Nonterminal symbols are shown in italics. Terminal symbols in a
+<em>fixed width font</em>. Definitions of nonterminals are followed
+by a &#34;:&#34;. The definition is followed by one or more
+alternatives, each on a separate line. The following table
+describes the notation:</p>
+<table summary="Grammar notation" border="1" cellpadding="5">
+<tr>
+<td><a name="a10013" id="a10013"><!-- --></a>
+<b>Notation</b><br /></td>
+<td><a name="a10015" id="a10015"><!-- --></a>
+<b>Meaning</b><br /></td>
+</tr>
+<tr valign="bottom">
+<td><a name="a10017" id="a10017"><!-- --></a>
+<p><em>(datatype</em>)</p>
+</td>
+<td><a name="a10019" id="a10019"><!-- --></a>
+<p>This token has the data type specified, such as byte.</p>
+</td>
+</tr>
+<tr valign="bottom">
+<td><a name="a10021" id="a10021"><!-- --></a>
+<p><em>token[n]</em></p>
+</td>
+<td><a name="a10023" id="a10023"><!-- --></a>
+<p>A predefined number of occurrences of the token, that is an
+array.</p>
+</td>
+</tr>
+<tr valign="bottom">
+<td><a name="a10025" id="a10025"><!-- --></a>
+<p><em>x0001</em></p>
+</td>
+<td><a name="a10027" id="a10027"><!-- --></a>
+<p>A literal value expressed in hexadecimal. The number of hex
+digits reflects the size of the value.</p>
+</td>
+</tr>
+<tr valign="bottom">
+<td><a name="a10029" id="a10029"><!-- --></a>
+<p>&lt;<em>xxx</em>&gt;</p>
+</td>
+<td><a name="a10031" id="a10031"><!-- --></a>
+<p>A value read from the stream used to indicate the length of an
+array.</p>
+</td>
+</tr>
+</table>
+<a name="a9298" id="a9298"><!-- --></a>
+<p>Note that the symbol (utf) is used to designate a string written
+using 2-byte length information, and (long-utf) is used to
+designate a string written using 8-byte length information. For
+details, refer to <a href="protocol.html#a8299">Section&#160;6.2,
+&#34;Stream Elements</a>&#34;.</p>
+<h3><a name="a53688" id="a53688"><!-- --></a> <i>6.4.1</i> Rules of
+the Grammar</h3>
+<a name="a9583" id="a9583"><!-- --></a>
+<p>A Serialized stream is represented by any stream satisfying the
+<em>stream</em> rule.</p>
+<a name="a4949" id="a4949"><!-- --></a>
+<pre>
+<em>stream:
+</em>  <em>magic version contents
+</em>
+</pre>
+<a name="a4953" id="a4953"><!-- --></a>
+<pre>
+<em>contents:
+</em>  <em>content
+</em>  <em>contents content
+</em>
+</pre>
+<a name="a9188" id="a9188"><!-- --></a>
+<pre>
+<em>content:
+</em>  <em>object
+</em>  <em>blockdata
+</em>
+</pre>
+<a name="a4393" id="a4393"><!-- --></a>
+<pre>
+<em>object:
+</em>  <em>newObject
+</em>  <em>newClass
+</em>  <em>newArray
+</em>  <em>newString
+  newEnum
+</em>  <em>newClassDesc
+</em>  <em>prevObject
+</em>  <em>nullReference
+</em>  <em>exception
+</em>  <em>TC_RESET
+</em>
+</pre>
+<a name="a9070" id="a9070"><!-- --></a>
+<pre>
+<em>newClass</em>:
+  <em>TC_CLASS</em><em> classDesc newHandle
+</em>
+</pre>
+<a name="a9261" id="a9261"><!-- --></a>
+<pre>
+<em>classDesc:
+  newClassDesc
+  nullReference
+  (ClassDesc)prevObject      // an object required to be of type
+                             // ClassDesc
+</em>
+</pre>
+<a name="a9716" id="a9716"><!-- --></a>
+<pre>
+<em>superClassDesc:
+  classDesc
+</em>
+</pre>
+<a name="a10577" id="a10577"><!-- --></a>
+<pre>
+<em>newClassDesc:
+  </em><em>TC_CLASSDESC</em><em> className serialVersionUID newHandle classDescInfo
+  </em><em>TC_PROXYCLASSDESC</em><em> newHandle proxyClassDescInfo</em>
+</pre>
+<a name="a10578" id="a10578"><!-- --></a>
+<pre>
+<em>classDescInfo:
+  classDescFlags fields classAnnotation superClassDesc 
+</em>
+</pre>
+<a name="a9169" id="a9169"><!-- --></a>
+<pre>
+<em>className:
+  (utf)
+</em>
+</pre>
+<a name="a9171" id="a9171"><!-- --></a>
+<pre>
+<em>serialVersionUID:
+  (long)
+</em>
+</pre>
+<a name="a9176" id="a9176"><!-- --></a>
+<pre>
+<em>classDescFlags:
+  (byte)                  // Defined in Terminal Symbols and
+                            // Constants
+</em>
+</pre>
+<a name="a53665" id="a53665"><!-- --></a>
+<pre>
+proxyClassDescInfo:
+  (int)&lt;count&gt; proxyInterfaceName[count] classAnnotation
+      superClassDesc
+</pre>
+<a name="a53669" id="a53669"><!-- --></a>
+<pre>
+proxyInterfaceName:
+</pre>
+<a name="a53670" id="a53670"><!-- --></a>
+<pre>
+  (utf)
+</pre>
+<a name="a9170" id="a9170"><!-- --></a>
+<pre>
+<em>fields:
+  (short)&lt;count&gt;  fieldDesc[count]
+</em>
+</pre>
+<a name="a9270" id="a9270"><!-- --></a>
+<pre>
+<em>fieldDesc:
+  primitiveDesc
+  objectDesc
+</em>
+</pre>
+<a name="a9207" id="a9207"><!-- --></a>
+<pre>
+<em>primitiveDesc:
+  prim_typecode fieldName
+</em>
+</pre>
+<a name="a10063" id="a10063"><!-- --></a>
+<pre>
+<em>objectDesc:
+  obj_typecode fieldName className1
+</em>
+</pre>
+<a name="a10064" id="a10064"><!-- --></a>
+<pre>
+<em>fieldName:
+  (utf)
+</em>
+</pre>
+<a name="a53757" id="a53757"><!-- --></a>
+<pre>
+<em>className1:
+  (String)object             // String containing the field&#39;s type,
+</em>                             // in field descriptor format
+</pre>
+<a name="a53759" id="a53759"><!-- --></a>
+<pre>
+<em>classAnnotation:
+  endBlockData
+  contents endBlockData      // contents written by annotateClass
+</em>
+</pre>
+<a name="a53716" id="a53716"><!-- --></a>
+<pre>
+<em>prim_typecode:
+  `B&#39;       // byte
+  `C&#39;       // char
+  `D&#39;       // double
+  `F&#39;       // float
+  `I&#39;       // integer
+  `J&#39;       // long
+  `S&#39;       // short
+  `Z&#39;       // boolean
+</em>
+</pre>
+<a name="a9114" id="a9114"><!-- --></a>
+<pre>
+<em>obj_typecode:
+  `[`   // array
+  `L&#39;       // object
+</em>
+</pre>
+<a name="a4426" id="a4426"><!-- --></a>
+<pre>
+<em>newArray:
+  </em><em>TC_ARRAY</em><em> classDesc newHandle (int)&lt;size&gt; values[size]
+</em>
+</pre>
+<a name="a4430" id="a4430"><!-- --></a>
+<pre>
+<em>newObject:
+  </em><em>TC_OBJECT</em><em> classDesc newHandle classdata[]  // data for each class
+</em>
+</pre>
+<a name="a9475" id="a9475"><!-- --></a>
+<pre>
+<em>classdata:
+  nowrclass                 // </em><em>SC_SERIALIZABLE</em><em> &amp; classDescFlag &amp;&amp;
+                            // !(</em><em>SC_WRITE_METHOD</em><em> &amp; classDescFlags)
+  wrclass objectAnnotation  // </em><em>SC_SERIALIZABLE</em><em> &amp; classDescFlag &amp;&amp;
+                            // </em><em>SC_WRITE_METHOD</em><em> &amp; classDescFlags
+  externalContents          // </em><em>SC_EXTERNALIZABLE</em><em> &amp; classDescFlag &amp;&amp;
+                            // !(</em><em>SC_BLOCKDATA</em><em>  &amp; classDescFlags
+  objectAnnotation          // </em><em>SC_EXTERNALIZABLE</em><em> &amp; classDescFlag&amp;&amp; 
+                            // </em><em>SC_BLOCKDATA</em><em> &amp; classDescFlags
+</em>
+</pre>
+<a name="a11092" id="a11092"><!-- --></a>
+<pre>
+<em>nowrclass:
+  values                    // fields in order of class descriptor
+</em>
+</pre>
+<a name="a7942" id="a7942"><!-- --></a>
+<pre>
+<em>wrclass:
+  nowrclass
+</em>
+</pre>
+<a name="a9749" id="a9749"><!-- --></a>
+<pre>
+<em>objectAnnotation:
+  endBlockData
+  contents endBlockData     // contents written by writeObject
+                            // or writeExternal </em><em>PROTOCOL_VERSION_2</em><em>.
+</em>
+</pre>
+<a name="a10242" id="a10242"><!-- --></a>
+<pre>
+<em>blockdata:
+  blockdatashort
+  blockdatalong
+</em>
+</pre>
+<a name="a10270" id="a10270"><!-- --></a>
+<pre>
+<em>blockdatashort:
+  </em><em>TC_BLOCKDATA</em><em> (unsigned byte)&lt;size&gt; (byte)[size]
+</em>
+</pre>
+<a name="a9453" id="a9453"><!-- --></a>
+<pre>
+<em>blockdatalong:
+  </em><em>TC_BLOCKDATALONG</em><em> (int)&lt;size&gt; (byte)[size]
+</em>
+</pre>
+<a name="a53766" id="a53766"><!-- --></a>
+<pre>
+<em>endBlockData   :
+  </em><em>TC_ENDBLOCKDATA
+</em>
+</pre>
+<a name="a53767" id="a53767"><!-- --></a>
+<pre>
+<em>externalContent:          // Only parseable by readExternal
+  ( bytes)                // primitive data
+    object
+</em>
+</pre>
+<a name="a10234" id="a10234"><!-- --></a>
+<pre>
+<em>externalContents:         // externalContent written by 
+  externalContent         // writeExternal in </em><em>PROTOCOL_VERSION_1</em><em>.
+  externalContents externalContent
+</em>
+</pre>
+<a name="a4452" id="a4452"><!-- --></a>
+<pre>
+<em>newString:
+  </em><em>TC_STRING</em><em> newHandle (utf)
+  </em><em>TC_LONGSTRING</em><em> newHandle (long-utf)
+</em>
+</pre>
+<a name="a53777" id="a53777"><!-- --></a>
+<pre>
+newEnum:
+  TC_ENUM classDesc newHandle enumConstantName
+</pre>
+<a name="a53781" id="a53781"><!-- --></a>
+<pre>
+enumConstantName:
+  (String)object
+</pre>
+<a name="a4456" id="a4456"><!-- --></a>
+<pre>
+<em>prevObject
+  </em><em>TC_REFERENCE</em><em> (int)handle
+</em>
+</pre>
+<a name="a4460" id="a4460"><!-- --></a>
+<pre>
+<em>nullReference
+  </em><em>TC_NULL
+</em>
+</pre>
+<a name="a9611" id="a9611"><!-- --></a>
+<pre>
+<em>exception:
+  </em><em>TC_EXCEPTION</em><em> reset (Throwable)object         reset 
+</em>
+</pre>
+<a name="a9150" id="a9150"><!-- --></a>
+<pre>
+<em>magic:
+  </em><em>STREAM_MAGIC
+</em>
+</pre>
+<a name="a9153" id="a9153"><!-- --></a>
+<pre>
+<em>version
+  </em><em>STREAM_VERSION
+</em>
+</pre>
+<a name="a4487" id="a4487"><!-- --></a>
+<pre>
+<em>values:          // The size and types are described by the
+                 // classDesc for the current object
+</em>
+</pre>
+<a name="a10151" id="a10151"><!-- --></a>
+<pre>
+<em>newHandle:       // The next number in sequence is assigned
+                 // to the object being serialized or deserialized
+</em>
+</pre>
+<a name="a11119" id="a11119"><!-- --></a>
+<pre>
+<em>reset:           // The set of known objects is discarded
+                 // so the objects of the exception do not
+                 // overlap with the previously sent objects 
+                 // or with objects that may be sent after 
+                 // the exception
+</em>
+</pre>
+<br />
+<h3><a name="a10152" id="a10152"><!-- --></a> <i>6.4.2</i> Terminal
+Symbols and Constants</h3>
+<a name="a9323" id="a9323"><!-- --></a> The following symbols in
+<code>java.io.ObjectStreamConstants</code> define the terminal and
+constant values expected in a stream.
+<p><a name="a10162" id="a10162"><!-- --></a></p>
+<pre>
+    final static short STREAM_MAGIC = (short)0xaced;
+    final static short STREAM_VERSION = 5;
+    final static byte TC_NULL = (byte)0x70;
+    final static byte TC_REFERENCE = (byte)0x71;
+    final static byte TC_CLASSDESC = (byte)0x72;
+    final static byte TC_OBJECT = (byte)0x73;
+    final static byte TC_STRING = (byte)0x74;
+    final static byte TC_ARRAY = (byte)0x75;
+    final static byte TC_CLASS = (byte)0x76;
+    final static byte TC_BLOCKDATA = (byte)0x77;
+    final static byte TC_ENDBLOCKDATA = (byte)0x78;
+    final static byte TC_RESET = (byte)0x79;
+    final static byte TC_BLOCKDATALONG = (byte)0x7A;
+    final static byte TC_EXCEPTION = (byte)0x7B;
+    final static byte TC_LONGSTRING = (byte) 0x7C;
+    final static byte TC_PROXYCLASSDESC = (byte) 0x7D;
+    final static byte TC_ENUM = (byte) 0x7E;
+    final static  int   baseWireHandle = 0x7E0000;
+</pre>
+<a name="a10163" id="a10163"><!-- --></a> The flag byte
+<em>classDescFlags</em> may include values of
+<p><a name="a9422" id="a9422"><!-- --></a></p>
+<pre>
+    final static byte SC_WRITE_METHOD = 0x01; //if SC_SERIALIZABLE
+     final static byte SC_BLOCK_DATA = 0x08;    //if SC_EXTERNALIZABLE
+    final static byte SC_SERIALIZABLE = 0x02;
+    final static byte SC_EXTERNALIZABLE = 0x04;
+    final static byte SC_ENUM = 0x10;
+</pre>
+<a name="a9895" id="a9895"><!-- --></a> The flag
+<em>SC_WRITE_METHOD</em> is set if the Serializable class writing
+the stream had a <code>writeObject</code> method that may have
+written additional data to the stream. In this case a
+<em>TC_ENDBLOCKDATA</em> marker is always expected to terminate the
+data for that class.
+<p><a name="a10223" id="a10223"><!-- --></a> The flag
+<em>SC_BLOCKDATA</em> is set if the <code>Externalizable</code>
+class is written into the stream using
+<code>STREAM_PROTOCOL_2</code>. By default, this is the protocol
+used to write <code>Externalizable</code> objects into the stream
+in JDK 1.2. JDK 1.1 writes <em>STREAM_PROTOCOL_1</em>.</p>
+<p><a name="a9900" id="a9900"><!-- --></a> The flag
+<em>SC_SERIALIZABLE</em> is set if the class that wrote the stream
+extended <code>java.io.Serializable</code> but not
+<code>java.io.Externalizable</code>, the class reading the stream
+must also extend <code>java.io.Serializable</code> and the default
+serialization mechanism is to be used.</p>
+<p><a name="a9901" id="a9901"><!-- --></a> The flag
+<em>SC_EXTERNALIZABLE</em> is set if the class that wrote the
+stream extended <code>java.io.Externalizable</code>, the class
+reading the data must also extend <code>Externalizable</code> and
+the data will be read using its <code>writeExternal</code> and
+<code>readExternal</code> methods.</p>
+<p><a name="a53782" id="a53782"><!-- --></a> The flag
+<em>SC_ENUM</em> is set if the class that wrote the stream was an
+enum type. The receiver&#39;s corresponding class must also be an
+enum type. Data for constants of the enum type will be written and
+read as described in <a href=
+"serial-arch.html#a6469">Section&#160;1.12, &#34;Serialization of
+Enum Constants</a>&#34;.</p>
+<p><br />
+<a name="a10128" id="a10128"><!-- --></a></p>
+<h4><i>Example</i></h4>
+<a name="a8334" id="a8334"><!-- --></a> Consider the case of an
+original class and two instances in a linked list:
+<p><a name="a9963" id="a9963"><!-- --></a></p>
+<pre>
+class List implements java.io.Serializable {
+    int value;
+    List next;
+    public static void main(String[] args) {
+        try {
+            List list1 = new List();
+            List list2 = new List();
+            list1.value = 17;
+            list1.next = list2;
+            list2.value = 19;
+            list2.next = null;
+
+            ByteArrayOutputStream o = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(o);
+            out.writeObject(list1);
+            out.writeObject(list2);
+            out.flush();
+            ...
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+}
+</pre>
+<a name="a9560" id="a9560"><!-- --></a> The resulting stream
+contains:
+<p><a name="a9983" id="a9983"><!-- --></a></p>
+<pre>
+00: ac ed 00 05 73 72 00 04 4c 69 73 74 69 c8 8a 15 &gt;....sr..Listi...&lt;
+</pre>
+<a name="a9774" id="a9774"><!-- --></a>
+<pre>
+10: 40 16 ae 68 02 00 02 49 00 05 76 61 6c 75 65 4c &gt;Z......I..valueL&lt;
+</pre>
+<a name="a9775" id="a9775"><!-- --></a>
+<pre>
+20: 00 04 6e 65 78 74 74 00 06 4c 4c 69 73 74 3b 78 &gt;..nextt..LList;x&lt;
+</pre>
+<a name="a9776" id="a9776"><!-- --></a>
+<pre>
+30: 70 00 00 00 11 73 71 00 7e 00 00 00 00 00 13 70 &gt;p....sq.~......p&lt;
+</pre>
+<a name="a9777" id="a9777"><!-- --></a>
+<pre>
+40: 71 00 7e 00 03                                  &gt;q.~..&lt;
+</pre>
+<br />
+<hr />
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href="serialTOC.html">CONTENTS</a> |
+<a href="version.html">PREV</a> | <a href="security.html">NEXT</a> 
+<!-- | <a href="examples.html">INDEX</a>  -->
+<!-- /font -->
+<hr />
+<font size="-1"><i><a href=
+"../../../legal/SMICopyright.html">Copyright</a> &#169; 2005, 2010,
+Oracle and/or its affiliates. All rights reserved.</i></font> 
+<!-- This HTML file was created with Quadralay WebWorks Publisher Professional Edition 7.0.2.1128 -->
+<!-- by Suzette Haines -->
+<!-- Last updated: Mon Nov 21 12:31:42 2005 -->
+</body>
+</html>

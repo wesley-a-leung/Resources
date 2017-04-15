@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>What are Java Flight Recordings</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:27Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr002.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr004.html">
+                Next</a><hr/><a id="BABFDCDA" name="BABFDCDA"/>
+<div id="JSTGD119">
+<h1><span>2.3</span> What are Java Flight Recordings</h1>
+<p>The Java Flight Recorder (JFR) is a commercial feature. You can use it for free on developer desktops/laptops, and for evaluation purposes in test, development, and production environments. However, to enable JFR <b>on a production server, you need a commercial license</b>. Using JMC UI for other purposes on the JDK <b>does not require a commercial license</b>.</p>
+<p>For more details about JFR commercial features and availability, see the <a href="http://www.oracle.com/technetwork/java/javase/terms/products/index.html">product documentation</a>.</p>
+<p>For more details about JFR commercial license, see the <a href="http://www.oracle.com/technetwork/java/javase/terms/license/index.html">license agreement</a>.</p>
+<p>The Java Flight Recorder records detailed information about the java runtime and the Java application running in the java runtime. The recording process is done with little overhead. The data is recorded as time stamped data points called events. Typical events can be threads waiting for locks, garbage collections, periodic CPU usage data, etc.</p>
+<p>When creating a flight recording, you select which events should be saved. This is called a <b>recording template</b>. Some templates only save very basic events and have virtually no impact on performance. Other templates may come with slight performance overhead, and may also trigger GCs in order to gather additional information. In general, it is rare to see more than a few percentage of overhead.</p>
+<p>Flight Recordings can be used to debug a wide range of issues from performance problems to memory leaks or heavy lock contention.</p>
+<p>The following topic describes types of recording to produce a Java flight recording.</p>
+<ul>
+<li>
+<p><a href="#BABGIHBB">Types of Recordings</a></p>
+</li>
+</ul>
+<a id="BABGIHBB" name="BABGIHBB"/>
+<div id="JSTGD120">
+<h2><span>2.3.1</span> Types of Recordings</h2>
+<p>The following are two types of flight recordings - continuous recordings and profiling recordings.</p>
+<ul>
+<li>
+<p><b>Continuous Recordings:</b> A continuous recording is a recording that is always on and saves, for example, the last six hours of data. If your application runs into any issues, you can dump the data from, for example, the last hour and see what happened at the time of the problem.</p>
+<p>The default setting for a continuous recordings is to use a recording profile with extremely low overhead. This profile will not get heap statistics or allocation profiling, but will still gather a lot of useful data.</p>
+<p>A continuous recording is great to always have running, and is very helpful when debugging issues that happen very rarely. The recording can be dumped manually using either jcmd or JMC. You can also set a trigger in JMC to dump the flight recording when some specific criteria is fulfilled.</p>
+</li>
+<li>
+<p><b>Profiling Recordings:</b> A profiling recording is a recording that is turned on, runs for a set amount of time, and then stops. Usually, a profiling recording has more events enabled and may have a slightly bigger performance impact. The events that are turned on can be modified depending on your use of profiling recording.</p>
+<p>Typical use cases for profiling recordings are as follows:</p>
+<ul>
+<li>
+<p>Profile what methods are run the most and where most objects are created.</p>
+</li>
+<li>
+<p>Look for classes that use more and more heap indicating a memory leak.</p>
+</li>
+<li>
+<p>Look for bottle necks due to synchronization and many more such use cases.</p>
+</li>
+</ul>
+<p>A profiling recording will give a lot of information; even though, you are not troubleshooting a specific issue. A profiling recording will give you a very good view of the application and can help you find any bottlenecks or areas in need of improvement.</p>
+</li>
+</ul>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+A typical overhead is only around 2%, so you can definitely run a profiling recording on your production environment (which is one of the main use cases for JFR), unless you are extremely sensitive for performance or latencies.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr002.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr004.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+/** Access Control Policy for the Sample Application **/
+
+
+grant codebase "file:./Login.jar" {
+   permission java.security.AllPermission;
+};
+
+
+grant	codebase "file:./Sample.jar",
+    Principal javax.security.auth.kerberos.KerberosPrincipal 
+        "your_user_name@your_realm"  {
+
+   permission java.util.PropertyPermission "java.home", "read";
+   permission java.util.PropertyPermission "user.home", "read";
+   permission java.io.FilePermission "foo.txt", "read";
+};
+

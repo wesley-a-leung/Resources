@@ -1,0 +1,313 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Print Service API User Guide: 3 - Specifying Document
+Types</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<a href="JPSTOC.fm.html">CONTENTS</a> | <a href=
+"docflavor.fm.html">PREV</a> | <a href=
+"docflavor.fm2.html">NEXT</a><br />
+<h2><a name="a997577" id="a997577">Client-Formatted Print
+Data</a></h2>
+<a name="a997581" id="a997581"><!-- --></a> The client uses the
+DocFlavor to describe the print data format and to indicate how the
+data will be delivered to the print service. The MIME type
+specifies the data format. The representation class name specifies
+how the data will be delivered to the printer.
+<p><a name="a998429" id="a998429"><!-- --></a> The DocFlavor class
+has an inner class for each of the common representation class
+names. Each inner class contains a set of DocFlavor object
+constants representing formats that can be delivered using the
+representation class. For example, an input stream can stream many
+different kinds of print data formats, including GIF, represented
+by DocFlavor.INPUT_STREAM.GIF, and PostScript, represented
+by DocFlavor.INPUT_STREAM.POSTSCRIPT. If one of the DocFlavor
+object constants accurately describes the format of a given piece
+of print data, the client can use this constant instead of
+constructing a DocFlavor.</p>
+<p><a name="a998430" id="a998430"><!-- --></a> If the appropriate
+DocFlavor is not already defined in the JPS API, a client can
+create it with the DocFlavor constructor. The client can use the
+MIME types and representation class names explained in the next two
+sections to construct the DocFlavor.</p>
+<br />
+<h3><a name="a997684" id="a997684"><!-- --></a> MIME Types for
+Preformatted Data</h3>
+<a name="a997857" id="a997857"><!-- --></a> The four most common
+types of preformatted data are: text data, page description
+language documents, image data, and autosense print data. This
+section describes each one of these data types and lists their
+corresponding MIME types.<br />
+<a name="a998469" id="a998469"><!-- --></a>
+<h4><i>Text Data</i></h4>
+<a name="a998977" id="a998977"><!-- --></a> Preformatted text data
+is usually provided in a character-oriented representation class,
+such as a character array, String, or Reader, or in a byte-oriented
+representation class, such as a byte array, input stream, or URL.
+Plain text and HTML are two common forms of preformatted text data.
+You can use these MIME type strings to represent the format of the
+data when constructing a DocFlavor:<br />
+<br />
+<table summary="MIME types" border="1" cellpadding="5">
+<tr valign="bottom">
+<th id="h1">MIME type</th>
+<th id="h2">Format of data</th>
+</tr>
+<tr valign="bottom">
+<td headers="h1"><a name="a999519" id="a999519"><!-- --></a>
+<p>"text/plain"</p>
+</td>
+<td headers="h2"><a name="a999521" id="a999521"><!-- --></a>
+<p>Plain text in the default character set US-ASCII</p>
+</td>
+</tr>
+<tr valign="bottom">
+<td headers="h1"><a name="a999523" id="a999523"><!-- --></a>
+<p>"text/plain;charset=xxx"</p>
+</td>
+<td headers="h2"><a name="a999525" id="a999525"><!-- --></a>
+<p>Plain text in character set xxx</p>
+</td>
+</tr>
+<tr valign="bottom">
+<td headers="h1"><a name="a999527" id="a999527"><!-- --></a>
+<p>"text/html"</p>
+</td>
+<td headers="h2"><a name="a999529" id="a999529"><!-- --></a>
+<p>HyperText Markup Languge in the default character set
+(US-ASCII)</p>
+</td>
+</tr>
+<tr valign="bottom">
+<td headers="h1"><a name="a999531" id="a999531"><!-- --></a>
+<p>"text/html;charset=xxx"</p>
+</td>
+<td headers="h2"><a name="a999533" id="a999533"><!-- --></a>
+<p>HyperText Markup Languge in the character set xxx</p>
+</td>
+</tr>
+</table>
+<br />
+<a name="a999079" id="a999079"><!-- --></a>
+<h4><i>Page Description Language Documents</i></h4>
+<a name="a999552" id="a999552"><!-- --></a> Preformatted page
+description language (PDL) documents are usually provided in a
+byte-oriented representation class, such as byte array,
+InputStream, or URL. You can use these MIME type strings to
+represent the format of the data when constructing a
+DocFlavor:<br />
+<br />
+<table summary="MIME types" border="1" cellpadding="5">
+<tr>
+<th id="h101">MIME type</th>
+<th id="h102">Format of data</th>
+</tr>
+<tr>
+<td headers="h101"><a name="a999579" id="a999579"><!-- --></a>
+<p>"application/pdf"</p>
+</td>
+<td headers="h102"><a name="a999581" id="a999581"><!-- --></a>
+<p>Portable Document Format document</p>
+</td>
+</tr>
+<tr valign="bottom">
+<td headers="h101"><a name="a999583" id="a999583"><!-- --></a>
+<p>"application/postscript"</p>
+</td>
+<td headers="h102"><a name="a999585" id="a999585"><!-- --></a>
+<p>PostScript document</p>
+</td>
+</tr>
+<tr valign="bottom">
+<td headers="h101"><a name="a999587" id="a999587"><!-- --></a>
+<p>"application/vnd.hp-PCL"</p>
+</td>
+<td headers="h102"><a name="a999589" id="a999589"><!-- --></a>
+<p>Printer Control Language document</p>
+</td>
+</tr>
+</table>
+<br />
+<a name="a999556" id="a999556"><!-- --></a>
+<h4><i>Image Data</i></h4>
+<a name="a999557" id="a999557"><!-- --></a> Preformatted image data
+is provided in a byte-oriented representation class: byte array,
+InputStream, or URL. You can use these MIME type strings to
+represent the format of the data when constructing a
+DocFlavor:<br />
+<br />
+<table summary="MIME types" border="1" cellpadding="5">
+<tr>
+<th id="h201">MIME type</th>
+<th id="h202">Format of data</th>
+</tr>
+<tr>
+<td headers="h201"><a name="a999605" id="a999605"><!-- --></a>
+"image/gif"<br /></td>
+<td headers="h202"><a name="a999607" id="a999607"><!-- --></a>
+<p>Graphics Interchange Format image</p>
+</td>
+</tr>
+<tr valign="bottom">
+<td headers="h201"><a name="a999609" id="a999609"><!-- --></a>
+<p>"image/jpeg"</p>
+</td>
+<td headers="h202"><a name="a999611" id="a999611"><!-- --></a>
+<p>Joint Photographic Experts Group image</p>
+</td>
+</tr>
+<tr valign="bottom">
+<td headers="h201"><a name="a999613" id="a999613"><!-- --></a>
+<p>"image/png"</p>
+</td>
+<td headers="h202"><a name="a999615" id="a999615"><!-- --></a>
+<p>Portable Network Graphics image</p>
+</td>
+</tr>
+</table>
+<br />
+<a name="a997874" id="a997874"><!-- --></a>
+<h4><i>Autosense Print Data</i></h4>
+<a name="a998491" id="a998491"><!-- --></a> Preformatted autosense
+print data allows the printer to decide how to interpret the print
+data. This type of data is usually provided in a byte-oriented
+representation class. You can use this MIME type string to
+represent the format of the data when constructing a DocFlavor:
+<p><a name="a999640" id="a999640"><!-- --></a>
+"application/octet-stream"</p>
+<br />
+<h3><a name="a997680" id="a997680"><!-- --></a> Representation
+Classes</h3>
+<a name="a1000338" id="a1000338"><!-- --></a> For client-formatted
+print data, the print data representation class is usually one of
+the following:<br />
+<br />
+<table summary="Print data representation class" border="1"
+cellpadding="5">
+<tr>
+<th id="h301">Print data representation class</th>
+<th id="h302">Description</th>
+</tr>
+<tr>
+<td headers="h301"><a name="a1000441" id="a1000441"><!-- --></a>
+<p>Character array (char[])</p>
+</td>
+<td headers="h302"><a name="a1000443" id="a1000443"><!-- --></a>
+<p>The print data consists of the Unicode characters in the array.
+This representation class can provide text data and PDL data.</p>
+</td>
+</tr>
+<tr valign="bottom">
+<td headers="h301"><a name="a1000445" id="a1000445"><!-- --></a>
+<p>java.lang.String</p>
+</td>
+<td headers="h302"><a name="a1000447" id="a1000447"><!-- --></a>
+<p>The print data consists of the Unicode characters in the string.
+This representation class can provide text data.</p>
+</td>
+</tr>
+<tr valign="bottom">
+<td headers="h301"><a name="a1000449" id="a1000449"><!-- --></a>
+<p>A Character stream represented by java.io.Reader</p>
+</td>
+<td headers="h302"><a name="a1000451" id="a1000451"><!-- --></a>
+<p>The print data consists of the Unicode characters read from the
+stream up to the end-of-stream. This representation class can
+provide text data.</p>
+</td>
+</tr>
+<tr valign="bottom">
+<td headers="h301"><a name="a1000453" id="a1000453"><!-- --></a>
+<p>Byte array (byte[])</p>
+</td>
+<td headers="h302"><a name="a1000455" id="a1000455"><!-- --></a>
+<p>The print data consists of the bytes in the array. The bytes are
+encoded in the character set specified by the doc flavor's MIME
+type. If the MIME type does not specify a character set, the
+default character set is US-ASCII. This representation class can
+provide text data, PDL documents, and image data.</p>
+</td>
+</tr>
+<tr valign="bottom">
+<td headers="h301"><a name="a1000457" id="a1000457"><!-- --></a>
+<p>A Byte stream represented by java.io.InputStream</p>
+</td>
+<td headers="h302"><a name="a1000459" id="a1000459"><!-- --></a>
+<p>The print data consists of the bytes read from the stream up to
+the end-of-stream. The bytes are encoded in the character set
+specified by the doc flavor's MIME type. If the MIME type does not
+specify a character set, the default character set is US-ASCII.
+This representation class can provide text data, PDL documents, and
+image data.</p>
+</td>
+</tr>
+<tr valign="bottom">
+<td headers="h301"><a name="a1000461" id="a1000461"><!-- --></a>
+<p>Uniform Resource Locator, java.net.URL</p>
+</td>
+<td headers="h302"><a name="a1000463" id="a1000463"><!-- --></a>
+<p>The print data consists of the bytes read from the URL location.
+The bytes are encoded in the character set specified by the doc
+flavor's MIME type. If the MIME type does not specify a character
+set, the default character set is US-ASCII. This representation
+class can provide text data, PDL documents, and image data. To
+print documents to a network print service that might not have
+access to the URL, open an input stream on the URL and use an input
+stream data flavor instead.</p>
+</td>
+</tr>
+</table>
+<br />
+<hr />
+<a href="JPSTOC.fm.html">CONTENTS</a> | <a href=
+"docflavor.fm.html">PREV</a> | <a href=
+"docflavor.fm2.html">NEXT</a>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

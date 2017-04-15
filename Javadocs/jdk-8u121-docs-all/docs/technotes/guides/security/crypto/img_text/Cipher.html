@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Description of Figure The Cipher Class</title>
+
+<link rel="stylesheet" type="text/css" href="../../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Description of Figure The Cipher Class</h1>
+
+<p><a href="../CryptoSpec.html#cipher_image">Link to figure The Cipher Class</a></p>
+
+<p>This figure consists of boxes labeled as follows:</p>
+
+<ul>
+  <li>Key: Contains a box labeled Secret Key</li>
+  <li>Plaintext</li>
+  <li>These two boxes are attached to each other:
+    <ul>
+      <li>Cipher (AES): Box 1 of 2</li>
+      <li>Encrypt</li>
+    </ul>
+  </li>
+  <li>Algorithm Parameters</li>
+  <li>Ciphertext</li>
+  <li>These two boxes are attached to each other:
+    <ul>
+      <li>Cipher (AES): Box 2 of 2</li>
+      <li>Decrypt</li>
+    </ul>
+  </li>
+  <li>Plaintext</li>
+</ul>
+
+<p>Labeled arrows connect these boxes:</p>
+
+<ul>
+  <li><code>update()</code>: From Plaintext to the Cipher (AES) #1</li>
+  <li><code>doFinal()</code>: From Plaintext to Encrypt</li>
+  <li><code>update()</code>: From Ciphertext to the Cipher (AES) #2</li>
+  <li><code>doFinal()</code>: From Ciphertext to Decrypt</li>
+</ul>
+
+<p>Unlabeled arrows connect these boxes:</p>
+
+<ul>
+  <li>From Key to the Cipher (AES) #1 and Cipher (AES) #2 (the arrow branches)</li>
+  <li>From Cipher (AES) #1 to Algorithm Parameters</li>
+  <li>From Algorithm Parameters to the Cipher (AES) compartment of the Decrypt box</li>
+  <li>From Cipher (AES) #2 to Plaintext</li>
+  <li>From Decrypt to Plaintext</li>
+</ul>
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Doclet Overview</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Doclet Overview</h1>
+
+<!-- Body text begins here -->
+<h2>Contents</h2>
+<ul>
+<li><a href="#basics">The Basics</a></li>
+<li><a href="#simple">A Simple Example Doclet</a></li>
+<li><a href="#custom">Example - Subclassing the standard
+doclet</a></li>
+<li><a href="#customtags">Example - Creating and handling custom
+tags</a></li>
+<li><a href="#options">Example - Using custom command-line
+options</a></li>
+</ul>
+<a name="basics" id="basics"></a>
+<h2>The Basics</h2>
+Doclets are programs written in the Java programming
+language that use the <a href=
+"../../../../jdk/api/javadoc/doclet/index.html">doclet API</a> to
+specify the content and format of the output of the Javadoc tool.
+By default, the Javadoc tool uses the <a href=
+"../standard-doclet.html">"standard"</a> doclet provided by
+Oracle to generate API documentation in HTML form. However, you
+can supply your own doclets to customize the output of Javadoc as
+you like. You can write the doclets from scratch using the doclet
+API, or you can start with the standard doclet and modify it to
+suit your needs.
+<p>Here are the basic steps you need to follow to create and use
+your own doclet:</p>
+<ol>
+<li>Write the Java program that constitutes your doclet. Your
+program should import com.sun.javadoc.* in order to use the doclet
+API. The entry point of your program is a class with a <tt>public
+static boolean start</tt> method that takes a <a href=
+"../../../../jdk/api/javadoc/doclet/com/sun/javadoc/RootDoc.html">RootDoc</a>
+as a parameter.</li>
+<li>Compile your doclet. You can use the compiler in the Java 2
+SDK, javac.</li>
+<li>Run the javadoc tool using the <b><tt>-doclet</tt>
+<i>startingclass</i></b>&nbsp; option to produce the output
+specified by your doclet, where <i>startingclass</i> is the
+fully-qualified name of the starting class mentioned in step 1
+above.</li>
+</ol>
+The doclet API class files are in the <tt>lib/tools.jar</tt> file
+in the SDK. When you compile a doclet, the <tt>tools.jar</tt> must
+be on the class path. You can use the <tt>-classpath</tt> option on
+javac for this purpose.
+<p>If you run javadoc without the <tt>-doclet</tt> command-line
+option, it will default to the standard doclet to produce
+HTML-format API documentation.</p>
+<p>Package com.sun.javadoc consists of interfaces that define the
+doclet API. The <tt>lib/tools.jar</tt> file in the Java 2 SDK
+contains these interfaces and also a private package with classes
+that implement the interfaces. The <tt>tools.jar</tt> file also
+contains the classes implementing the standard doclet. <a name=
+"simple" id="simple"></a></p>
+<h2>A Simple Example Doclet</h2>
+You can get a feeling for the way doclets work by looking at this
+simple example doclet that consists of one short class:
+<pre class="codeblock">
+import <a href=
+"../../../../jdk/api/javadoc/doclet/com/sun/javadoc/package-summary.html">com.sun.javadoc.*</a>;
+
+public class ListClass {
+    public static boolean start(<a href=
+"../../../../jdk/api/javadoc/doclet/com/sun/javadoc/RootDoc.html">RootDoc</a> root) {
+        <a href=
+"../../../../jdk/api/javadoc/doclet/com/sun/javadoc/ClassDoc.html">ClassDoc</a>[] classes = root.<a href="../../../../jdk/api/javadoc/doclet/com/sun/javadoc/RootDoc.html#classes--">classes()</a>;
+        for (int i = 0; i &lt; classes.length; ++i) {
+            System.out.println(classes[i]);
+        }
+        return true;
+    }
+}
+</pre>
+As you might be able to guess by looking at the code, this doclet
+takes the classes upon which Javadoc is operating and prints their
+names to standard out.
+<p>This first thing to notice about the doclet is that it imports
+the com.sun.javadoc package in order to use the doclet APIs. As
+with all doclets, the entry point is the
+<tt>public&nbsp;static&nbsp;boolean&nbsp;start</tt> method. The
+<tt>start</tt> method takes a RootDoc as a parameter. This
+parameter carries information about any options specified on the
+command line when javadoc is run, and also about the classes and
+packages upon which javadoc is operating.</p>
+<p>RootDoc defines a <tt>classes</tt> method that returns a
+ClassDoc array whose elements represent the classes that Javadoc
+parses. The <tt>for</tt> loop then prints out the names of each
+class in the array. (Passing a ClassDoc to <tt>println</tt> results
+in the printing of the name of the class that the ClassDoc
+represents.)</p>
+<p>To run this doclet, you first have to compile it. You can
+compile it with the javac compiler. The doclet API classfiles are
+in the file <tt>lib/tools.jar</tt> in the Java 2 SDK which javac
+does not automatically load. You therefore need to include
+<tt>tools.jar</tt> on the compiler's classpath, as in this
+example:</p>
+<pre class="codeblock">
+javac -classpath C:\jdk1.3\lib\tools.jar ListClass.java 
+</pre>
+To run the ListClass doclet, you point to the compiled doclet with
+Javadoc's <tt>-doclet</tt> and <tt>-docletpath</tt> tags. For
+example, to run the doclet on a file called <tt>MyClass.java</tt>,
+you could use this command, assuming <tt>ListClass.class</tt> is in
+the current directory:
+<pre class="codeblock">
+% javadoc -doclet ListClass -docletpath .  MyClass.java
+</pre>
+The output will be the string "<tt>MyClass</tt>". Note that this
+command does not require <tt>tools.jar</tt> to be on the class
+path, as the Javdoc tool automatically loads it.
+<p>A note about command-line options: If you run
+<tt>javadoc&nbsp;-help</tt>, you'll see that the Javadoc tool has
+two sets of command-line options. One set is generic and will work
+with any doclet. The second set of options is special to the
+standard doclet. Options in this second set will not be available
+when using custom doclets. Your custom doclets can also define
+their own command-line options. See the <a href=
+"#options">example</a> below.</p>
+<p>To generate API documentation, a doclet will have to be
+considerably more complex than this simple example. If you want to
+customize the format of the API documentation generated by Javadoc,
+you may want to start with the default standard doclet and modify
+it as necessary rather than write your own doclet from scratch.
+<a name="custom" id="custom"></a> 
+<!-- EVENTUALLY COPY THE FOLLOWING EXAMPLE HERE --></p>
+<h2>Example - Subclassing the Standard Doclet</h2>
+To customize the output of the Javadoc tool, you need to write your
+own doclet that specifies the content and format of the output that
+you desire. If you want HTML output with roughly the same format as
+the default output, you can use the standard doclet as a starting
+point for creating your doclet. You can subclass appropriate
+classes in the standard doclet and then add or override methods as
+necessary to produce the output you want. Or you can copy the whole
+standard doclet and modify it. If you use a copy of the standard
+doclet as your starting point, you may want to remove the
+<tt>package</tt> statements at the beginning of each source file
+and replace them with the name of your own, new package.
+<p>For an example, see <a href=
+"http://www.oracle.com/technetwork/java/javase/documentation/index-137483.html#sourcedoclet">How
+can I modify the standard doclet to produce links to source code
+from the API documentation?</a> <!-- NEED TO TEST THE FOLLOWING
+As a trivial example, suppose you want to customize the HTML 
+output generated by Javadoc so that the horizontal rules were 
+bolder and thicker than the default horizonal rules in the 
+standard output. 
+How would you go about modifying the APIs in the standard doclet to 
+produce these to changes?  Because the customization in question 
+involves a change in the HTML formatting, the above <a href="#api">API
+summary</a> suggests that 
+you might need to modify the APIs in class <tt>HtmlWriter</tt>. 
+If you look at the <a href="source/HtmlWriter.java">source</a> for 
+the HtmlWriter class, you will find methods for writing the HTML 
+tags used in generating the default HTML documentation. Among these, 
+there is a method for writing the HTML tag for horizonal rules:
+<pre class="codeblock">
+public void hr() {
+    println("&lt;hr&gt;");
+}
+</pre>
+You'll also notice that the HtmlWriter class doesn't provide a 
+way to produce the custom horizontal rules that you want. You can 
+therefore add a method to HtmlWriter, or an HtmlWriter subclass, that 
+prints the custom tag that you want. For example, you might 
+add this method:
+<pre class="codeblock">
+public void hrCustom() {
+    println("&lt;hr size=3 noshade&gt;");
+}
+</pre>
+and call it instead of the <tt>hr</tt> method when you want to 
+your output to use the thicker horizontal rules.
+<p>
+--></p>
+<h2><a name="customtags" id="customtags">Example - Creating and
+handling custom tags</a></h2>
+Suppose, for example, that you want use a custom tag, say
+<tt>@mytag</tt>, in your documentation comments in addition to the
+standard tags like <tt>@param</tt> and <tt>@return</tt>. To make
+use of the information in your custom tags, you need to have your
+doclet use instances of <a href=
+"../../../../jdk/api/javadoc/doclet/com/sun/javadoc/Tag.html"><tt>Tag</tt></a>
+that represent your custom tags. One of the easiest ways to do that
+is to use the <a href=
+"../../../../jdk/api/javadoc/doclet/com/sun/javadoc/Doc.html#tags-java.lang.String-">
+<tt>tags(String)</tt></a> method of <tt>Doc</tt> or one of
+<tt>Doc</tt>'s subclasses. This method returns an array of
+<tt>Tag</tt> objects representing any tags whose name matches the
+string argument. For example, if <tt>method</tt> is an instance of
+<tt>MethodDoc</tt>, then
+<pre class="codeblock">
+method.tags("mytag")
+</pre>
+would return an array of <tt>Tag</tt> objects representing any
+<tt>@mytag</tt> tags in the method's documentation comment. You can
+then access the information in your <tt>@mytag</tt> tags with
+<tt>Tag</tt>'s <a href=
+"../../../../jdk/api/javadoc/doclet/com/sun/javadoc/Tag.html#text--">
+<tt>text</tt></a> method. That method returns a string representing
+the content of the tag which you can parse or use as needed. For
+example, if a documentation comment contained one of your custom
+tags like this:
+<pre class="codeblock">
+@mytag Some dummy text.
+</pre>
+then the <tt>text</tt> method would return the string <tt>"Some
+dummy text."</tt>.
+<p>Here's a standalone doclet (not a subclass of the standard
+doclet) that uses these ideas to print out the text associated with
+all instances of a specified tag that it finds in method comments.
+It could be extended to find all instances of that tag in all
+comments.</p>
+<pre class="codeblock">
+import com.sun.javadoc.*;
+
+public class ListTags {
+    public static boolean start(RootDoc root){ 
+        String tagName = "mytag";
+        writeContents(root.classes(), tagName);
+        return true;
+    }
+
+    private static void writeContents(ClassDoc[] classes, String tagName) {
+        for (int i=0; i &lt; classes.length; i++) {
+            boolean classNamePrinted = false;
+            MethodDoc[] methods = classes[i].methods();
+            for (int j=0; j &lt; methods.length; j++) {
+                Tag[] tags = methods[j].tags(tagName);
+                if (tags.length &gt; 0) {
+                    if (!classNamePrinted) {
+                        System.out.println("\n" + classes[i].name() + "\n");
+                        classNamePrinted = true;
+                    }
+                    System.out.println(methods[j].name());
+                    for (int k=0; k &lt; tags.length; k++) {
+                        System.out.println("   " + tags[k].name() + ": " 
+                            + tags[k].text());
+                    }
+                } 
+            }
+        }
+    }
+}
+</pre>
+The tag for which this doclet searches is specified by the variable
+<tt>tagName</tt>. The value of the <tt>tagName</tt> string can be
+any tag name, custom or standard. This doclet writes to standard
+out, but its output format could be modified, for example, to write
+HTML output to a file.
+<h2><a name="options" id="options">Example - Using custom
+command-line options</a></h2>
+You can write doclets that accept custom command-line options. To
+see how that works, let's augment the example doclet above so that
+it allows you to use a command-line option to specify the tag name
+to search for.
+<p>Any doclet that uses custom options must have a method called
+<tt>optionLength(String option)</tt> that returns an <tt>int</tt>.
+For each custom option that you want your doclet to recognize,
+<tt>optionLength</tt> must return the number of separate pieces or
+tokens in the option. For our example, we want to be able to use
+the custom option of the form <tt>-tag mytag</tt>. This option has
+two pieces, the <tt>-tag</tt> option itself and its value, so the
+<tt>optionLength</tt> method in our doclet must return <tt>2</tt>
+for the <tt>-tag</tt> option. The <tt>optionsLength</tt> method
+should return <tt>0</tt> for unrecognized options.</p>
+<p>Here's the full, augmented doclet:</p>
+<pre class="codeblock">
+import com.sun.javadoc.*;
+
+public class ListTags {
+    public static boolean start(RootDoc root){ 
+        String tagName = readOptions(root.options());
+        writeContents(root.classes(), tagName);
+        return true;
+    }
+
+    private static void writeContents(ClassDoc[] classes, String tagName) {
+        for (int i=0; i &lt; classes.length; i++) {
+            boolean classNamePrinted = false;
+            MethodDoc[] methods = classes[i].methods();
+            for (int j=0; j &lt; methods.length; j++) {
+                Tag[] tags = methods[j].tags(tagName);
+                if (tags.length &gt; 0) {
+                    if (!classNamePrinted) {
+                        System.out.println("\n" + classes[i].name() + "\n");
+                        classNamePrinted = true;
+                    }
+                    System.out.println(methods[j].name());
+                    for (int k=0; k &lt; tags.length; k++) {
+                        System.out.println("   " + tags[k].name() + ": " + tags[k].text());
+                    }
+                } 
+            }
+        }
+    }
+
+    private static String readOptions(String[][] options) {
+        String tagName = null;
+        for (int i = 0; i &lt; options.length; i++) {
+            String[] opt = options[i];
+            if (opt[0].equals("-tag")) {
+                tagName = opt[1];
+            }
+        }
+        return tagName;
+    }
+
+    public static int optionLength(String option) {
+        if(option.equals("-tag")) {
+            return 2;
+        }
+        return 0;
+    }
+
+    public static boolean validOptions(String options[][], 
+                                       DocErrorReporter reporter) {
+        boolean foundTagOption = false;
+        for (int i = 0; i &lt; options.length; i++) {
+            String[] opt = options[i];
+            if (opt[0].equals("-tag")) {
+                if (foundTagOption) {
+                    reporter.printError("Only one -tag option allowed.");
+                    return false;
+                } else { 
+                    foundTagOption = true;
+                }
+            } 
+        }
+        if (!foundTagOption) {
+            reporter.printError("Usage: javadoc -tag mytag -doclet ListTags ...");
+        }
+        return foundTagOption;
+    }
+}
+</pre>
+In this modified doclet, the variable <tt>tagName</tt> is set with
+the command-line option <tt>-tag</tt>. It has a
+<tt>optionLength</tt> method returns two for our custom option.
+Note that an explicit call to <tt>optionLength</tt> isn't required.
+<p>This doclet also adds the <tt>readOptions</tt> methods that
+actually parses the command-line options looking for the
+<tt>-tag</tt> option. It makes use of the fact that the <a href=
+"../../../../jdk/api/javadoc/doclet/com/sun/javadoc/RootDoc.html#options--">
+<tt>Rootdoc.options</tt></a> method returns a two-dimensional
+String array containing option information. For example, given the
+command</p>
+<pre class="codeblock">
+javadoc -foo this that -bar other ...
+</pre>
+the <tt>RootDoc.options</tt> method will return
+<pre class="codeblock">
+options()[0][0] = "-foo"
+options()[0][1] = "this"
+options()[0][2] = "that"
+options()[1][0] = "-bar"
+options()[1][1] = "other"
+</pre>
+The number of elements in the array's second index is determined by
+the <tt>optionLength</tt> method. In this example,
+<tt>optionLength</tt> returns <tt>3</tt> for option <tt>-foo</tt>
+and returns <tt>2</tt> for option <tt>-bar</tt>.
+<p>The <tt>validOptions</tt> method is an optional method that you
+can use to test the validity of the usage of command-line tags. If
+the <tt>validOptions</tt> method is present, it is automatically
+invoked; you don't have to explicitly call it. It should return
+<tt>true</tt> if the option usage is valid, and <tt>false</tt>
+otherwise. You can also print appropriate error messages from
+<tt>validOptions</tt> when improper usages of command-line options
+are found. The <tt>validOptions</tt> method in this example doclet
+checks that the <tt>-tag</tt> option is used once and only
+once.</p>
+<p><!-- Body text ends here --></p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

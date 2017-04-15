@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Improvements to Program Execution Speed</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Improvements to Program Execution Speed</h1>
+
+<!-- Body text begins here -->
+<h2>Enhancements in JDK 6</h2>
+Descriptions of the many performance enhancements in JDK 6 can be
+found on the performance web site in the <a href=
+"http://www.oracle.com/technetwork/java/6-performance-137236.html">Java
+SE 6 Performance Whitepaper</a>.
+<h2>Enhancements in JDK 5.0</h2>
+The following are some of the enhancements made for improved
+program execution speed in JDK 5.0.
+<ul>
+<li><b>Garbage collection ergonomics</b> - Provides for the
+automatic detection and choice of the client or server runtime
+compiler, which enhances performance on server-class machines. See
+"Server-Class Machine Detection" and "Garbage Collection
+Ergonomics" at <a href="../vm/index.html">Java Virtual Machines</a>
+for more information.</li>
+<li><b>StringBuilder class</b> - The addition of a new class
+<a href=
+"../../../api/java/lang/StringBuilder.html"><tt>StringBuilder</tt></a>
+that works essentially as an unsynchronized StringBuffer for
+performance enhancement. You should replace all StringBuffer uses
+with StringBuilder unless you need the synchronization (which you
+almost certainly don't). StringBuilder is almost always faster than
+StringBuffer.</li>
+<li><b>Java 2D technology</b> - These Java 2D performance
+enhancements have spin-off performance benefits in other areas of
+functionality such as Swing/JFC. Examples include improved
+acceleration for BufferedImage objects, support for
+hardware-accelerated rendering using OpenGL, and improved
+text-rendering performance. See <a href=
+"../2d/new_features.html">New Java 2D Features</a> for more
+information.</li>
+<li><b>Image I/O</b> - Performance and memory usage improvements
+have been made when reading and writing JPEG images. See "Improved
+Performance" at <a href="../imageio/new_features.html">Image I/O
+Features</a>.</li>
+</ul>
+<h2>Enhancements in JDK 1.4</h2>
+The following are some of the enhancements made for improved
+program execution speed in JDK 1.4.
+<ul>
+<li><b>Java 2D technology</b> - These Java 2D performance
+enhancements have spin-off performance benefits in other areas of
+functionality such as Swing/JFC. One example of performance
+improvement in JDK 1.4 is that remote X display on Solaris is
+greatly improved. See <a href="../2d/new_features.html">New Java 2D
+Features</a> for more information on Java 2D enhancements,
+including performance enhancements.</li>
+<li><b>java.nio</b> - The New I/O API provides for improved
+performance in the areas of buffer management, scalable network and
+file I/O, character-set support, and regular-expression matching.
+The New I/O APIs supplement the I/O facilities in the
+<tt>java.io</tt> package. For more information, see <a href=
+"../io/index.html"><b>I/O APIs</b></a>.</li>
+<li><b>Reflection</b> - Beginning with JDK 1.4.0, certain
+reflective operations, specifically <a href=
+"../../../api/java/lang/reflect/Field.html">java.lang.reflect.Field</a>,
+<a href=
+"../../../api/java/lang/reflect/Method.html#invoke-java.lang.Object-java.lang.Object...-">
+java.lang.reflect.Method.invoke()</a>, <a href=
+"../../../api/java/lang/reflect/Constructor.html#newInstance-java.lang.Object...-">
+java.lang.reflect.Constructor.newInstance()</a>, and <a href=
+"../../../api/java/lang/Class.html#newInstance--">Class.newInstance()</a>,
+have been rewritten for higher performance. Reflective invocations
+and instantiations are several times faster than in previous
+releases.</li>
+<li><b>Networking</b> - The networking functionality in JDK 1.4
+has improved performance for Http streaming.</li>
+<li><b>java.math</b> - New static method <a href=
+"../../../api/java/math/BigInteger.html#probablePrime-int-java.util.Random-">
+<tt>probablePrime</tt></a> has been added to class
+<tt>BigInteger</tt> for generating prime numbers. Previously, the
+sole means of generating a prime <tt>BigInteger</tt> required the
+caller to provide a 'certainty' (the log of the probability of
+compositeness that the caller was willing to tolerate). However,
+providing an unreasonable value for the certainty could lead to
+poor performance (if the certainty was too high) or serious bugs
+(if it was too low). The new prime-generation method provides an
+efficient algorithm for generating primes using an automatically
+determined, appropriate value for the certainty based on a draft
+ANSI specification (X9-80).</li>
+<li><b>Hotspot</b> - The Java HotSpot virtual machine now uses
+"full-speed debugging". In the previous version of HotSpot, when
+debugging was enabled, the program executed using only the
+interpreter. Now, the full performance advantage of HotSpot
+Technology is available to programs running with debugging enabled.
+The improved performance allows long running programs to be more
+easily debugged. It also allows testing to proceed at full speed
+and the launch of a debugger to occur on an exception.</li>
+</ul>
+<h2>Enhancements in JDK 1.3</h2>
+The following are some of the changes made to improve the program
+execution speed and general runtime performance in previous release
+JDK 1.3. These enhancements have been carried forward into JDK
+1.4.
+<p>Links to relevant bug reports on the Bug Database web site are
+provided were applicable for further information.</p>
+<ul>
+<li><b>Improved Performance for readUTF and writeUTF</b> - The
+implementations of the <tt>readUTF</tt> and <tt>writeUTF</tt>
+methods of <tt>DataInputStream</tt> and <tt>DataInputStream</tt>
+have been modified to improve performance. This is a fix for bug
+number <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4219771">4219771</a> on the
+Bug Database web site.</li>
+<li><b>Improved Performance of JScrollPane Painting</b> - The
+implementation of JScrollPane has been improved so that it does not
+cause excessive painting and screen flashing when double buffering
+is not used.</li>
+<li><b>Improved JTable Performance</b> - The performance of the
+JTable's column-handling functionality has been improved.
+Previously, the performance of the operations of adding columns or
+recalculating column widths did not scale well as the number of
+columns became large. The implementation has been changed to
+improve scalability. This is a fix for bug number <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4223642">4223642</a> on the
+Bug Database web site.</li>
+<li><b>Paint Coalescing</b> - Painting performance has been
+enhanced through the implementation of an improved paint coalescing
+algorithm. Areas that require repainting are coalesced into a
+single, non-rectangular repaint area as they are posted to the
+event queue. This has the effect batching repaints, executing
+multiple repaints simultaneously in a manner more efficient than in
+previous releases.</li>
+<li><b>Frame Resizing</b> - Resizing of top-level frames has been
+improved.</li>
+<li><b>Internal Frame Blitting</b> - By using
+<tt>Graphics.copyArea</tt> calls, Swing's DefaultDesktopManager now
+needs to redraw far less when frames are dragged.</li>
+<li><b>Performance Enhancements in <tt>BigIntenger</tt></b> - Class
+<tt>java.math.BigInteger</tt> has been reimplemented in pure Java
+programming-language code. Previously, <tt>BigInteger</tt>'s
+implementation was based on the Plumb C library. The new
+implementation performs all standard operations much faster than
+the old implementation. The speed-up realized in the new
+implemenation can be as much as 5x or more, depending on the
+operation being performed.</li>
+<li><b>Provision for Better-Performing Numeric Operations</b> - Java SE now contains two classes which provide API for
+performing general numeric operations.
+<ul>
+<li><tt><a href=
+"../../../api/java/lang/StrictMath.html">java.lang.StrictMath</a></tt>
+- Class <tt>java.lang.StrictMath</tt> is a renaming of class
+<tt>java.lang.Math</tt> from previous versions of the Java
+platform, but otherwise retains the previous specification of
+<tt>Math</tt>. In particular, it is defined to return bit-for-bit
+reproducible results in all implementations.</li>
+<li><tt><a href=
+"../../../api/java/lang/Math.html">java.lang.Math</a></tt> - Class
+<tt>java.lang.Math</tt> provides the same set of API as does class
+<tt>StrictMath</tt>. However, unlike some of the numeric functions
+of class <tt>StrictMath</tt>, all implementations of the equivalent
+functions of class <tt>Math</tt> are not defined to return the
+bit-for-bit same results, but can vary within specified
+constraints. This relaxation permits better-performing
+implementations where strict reproducibility is not required.</li>
+</ul>
+</li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

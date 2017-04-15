@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>javap</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T8:11:40Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Windows, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38210-05" name="partnum"/>
+<meta content="JSWOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="javah.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jdb.html">
+                Next</a><hr/>
+<div><a id="BEHDBJHJ" name="BEHDBJHJ"/>
+<div id="JSWOR688"><a id="BEHHDJGA" name="BEHHDJGA"/>
+<h1>javap</h1>
+<p>Disassembles one or more class files.</p>
+<div><a id="sthref107" name="sthref107"/>
+<h2>Synopsis</h2>
+<p><b>javap</b> [<i>options</i>] <i>classfile</i>...</p>
+<dl>
+<dt><i>options</i></dt>
+<dd>
+<p>The command-line options. See <a href="#BEHGAHCA">Options</a>.</p>
+</dd>
+<dt><i>classfile</i></dt>
+<dd>
+<p>One or more classes separated by spaces to be processed for annotations such as DocFooter.class. You can specify a class that can be found in the class path, by its file name or with a URL such as <code dir="ltr">file:///home/user/myproject/src/DocFooter.class</code>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref108" name="sthref108"/>
+<h2>Description</h2>
+<p>The <code dir="ltr">javap</code> command disassembles one or more class files. The output depends on the options used. When no options are used, then the <code dir="ltr">javap</code> command prints the package, protected and public fields, and methods of the classes passed to it. The <code dir="ltr">javap</code> command prints its output to <code dir="ltr">stdout</code>.</p>
+</div>
+
+<div><a id="BEHGAHCA" name="BEHGAHCA"/><a id="BEHIHHBG" name="BEHIHHBG"/>
+<h2>Options</h2>
+<dl>
+<dt>-help</dt>
+<dt>--help</dt>
+<dt>-?</dt>
+<dd>
+<p>Prints a help message for the <code dir="ltr">javap</code> command.</p>
+</dd>
+<dt>-version</dt>
+<dd>
+<p>Prints release information.</p>
+</dd>
+<dt>-l</dt>
+<dd>
+<p>Prints line and local variable tables.</p>
+</dd>
+<dt>-public</dt>
+<dd>
+<p>Shows only public classes and members.</p>
+</dd>
+<dt>-protected</dt>
+<dd>
+<p>Shows only protected and public classes and members.</p>
+</dd>
+<dt>-private</dt>
+<dt>-p</dt>
+<dd>
+<p>Shows all classes and members.</p>
+</dd>
+<dt>-J<i>option</i></dt>
+<dd>
+<p>Passes the specified option to the JVM. For example:</p>
+<pre dir="ltr" xml:space="preserve">
+javap -J-version
+javap -J-Djava.security.manager -J-Djava.security.policy=MyPolicy MyClassName
+</pre>
+<p>For more information about JVM options, see the <code dir="ltr"><a href="java.html#CBBFHAJA"><code dir="ltr">java</code></a></code> command documentation.</p>
+</dd>
+<dt>-s</dt>
+<dd>
+<p>Prints internal type signatures.</p>
+</dd>
+<dt>-sysinfo</dt>
+<dd>
+<p>Shows system information (path, size, date, MD5 hash) of the class being processed.</p>
+</dd>
+<dt>-constants</dt>
+<dd>
+<p>Shows <code dir="ltr">static final</code> constants.</p>
+</dd>
+<dt>-c</dt>
+<dd>
+<p>Prints disassembled code, for example, the instructions that comprise the Java bytecodes, for each of the methods in the class.</p>
+</dd>
+<dt>-verbose</dt>
+<dd>
+<p>Prints stack size, number of locals and arguments for methods.</p>
+</dd>
+<dt>-classpath <i>path</i></dt>
+<dd>
+<p>Specifies the path the <code dir="ltr">javap</code> command uses to look up classes. Overrides the default or the <code dir="ltr">CLASSPATH</code> environment variable when it is set.</p>
+</dd>
+<dt>-bootclasspath <i>path</i></dt>
+<dd>
+<p>Specifies the path from which to load bootstrap classes. By default, the bootstrap classes are the classes that implement the core Java platform located in <code dir="ltr">jre/lib/rt.jar</code> and several other JAR files.</p>
+</dd>
+<dt>-extdir <i>dirs</i></dt>
+<dd>
+<p>Overrides the location at which installed extensions are searched for. The default location for extensions is the value of <code dir="ltr">java.ext.dirs</code>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref109" name="sthref109"/>
+<h2>Example</h2>
+<p>Compile the following <code dir="ltr">DocFooter</code> class:</p>
+<pre dir="ltr" xml:space="preserve">
+import java.awt.*;
+import java.applet.*;
+ 
+public class DocFooter extends Applet {
+        String date;
+        String email;
+ 
+        public void init() {
+                resize(500,100);
+                date = getParameter("LAST_UPDATED");
+                email = getParameter("EMAIL");
+        }
+ 
+        public void paint(Graphics g) {
+                g.drawString(date + " by ",100, 15);
+                g.drawString(email,290,15);
+        }
+}
+</pre>
+<p>The output from the <code dir="ltr">javap DocFooter.class</code> command yields the following:</p>
+<pre dir="ltr" xml:space="preserve">
+Compiled from "DocFooter.java"
+public class DocFooter extends java.applet.Applet {
+  java.lang.String date;
+  java.lang.String email;
+  public DocFooter();
+  public void init();
+  public void paint(java.awt.Graphics);
+}
+</pre>
+<p>The output from <code dir="ltr">javap -c DocFooter.class</code> command yields the following:</p>
+<pre dir="ltr" xml:space="preserve">
+Compiled from "DocFooter.java"
+public class DocFooter extends java.applet.Applet {
+  java.lang.String date;
+  java.lang.String email;
+
+  public DocFooter();
+    Code:
+       0: aload_0       
+       1: invokespecial #1                  // Method
+java/applet/Applet."&lt;init&gt;":()V
+       4: return        
+
+  public void init();
+    Code:
+       0: aload_0       
+       1: sipush        500
+       4: bipush        100
+       6: invokevirtual #2                  // Method resize:(II)V
+       9: aload_0       
+      10: aload_0       
+      11: ldc           #3                  // String LAST_UPDATED
+      13: invokevirtual #4                  // Method
+ getParameter:(Ljava/lang/String;)Ljava/lang/String;
+      16: putfield      #5                  // Field date:Ljava/lang/String;
+      19: aload_0       
+      20: aload_0       
+      21: ldc           #6                  // String EMAIL
+      23: invokevirtual #4                  // Method
+ getParameter:(Ljava/lang/String;)Ljava/lang/String;
+      26: putfield      #7                  // Field email:Ljava/lang/String;
+      29: return        
+
+  public void paint(java.awt.Graphics);
+    Code:
+       0: aload_1       
+       1: new           #8                  // class java/lang/StringBuilder
+       4: dup           
+       5: invokespecial #9                  // Method
+ java/lang/StringBuilder."&lt;init&gt;":()V
+       8: aload_0       
+       9: getfield      #5                  // Field date:Ljava/lang/String;
+      12: invokevirtual #10                 // Method
+ java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      15: ldc           #11                 // String  by 
+      17: invokevirtual #10                 // Method
+ java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+      20: invokevirtual #12                 // Method
+ java/lang/StringBuilder.toString:()Ljava/lang/String;
+      23: bipush        100
+      25: bipush        15
+      27: invokevirtual #13                 // Method
+ java/awt/Graphics.drawString:(Ljava/lang/String;II)V
+      30: aload_1       
+      31: aload_0       
+      32: getfield      #7                  // Field email:Ljava/lang/String;
+      35: sipush        290
+      38: bipush        15
+      40: invokevirtual #13                 // Method
+java/awt/Graphics.drawString:(Ljava/lang/String;II)V
+      43: return        
+}
+</pre></div>
+
+<div><a id="sthref110" name="sthref110"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="java.html#CBBFHAJA"><code dir="ltr">java</code>(1)</a></p>
+</li>
+<li>
+<p><a href="javac.html#BHCJCBFB"><code dir="ltr">javac</code>(1)</a></p>
+</li>
+<li>
+<p><a href="javadoc.html#CHDFCDCI"><code dir="ltr">javadoc</code>(1)</a></p>
+</li>
+<li>
+<p><a href="javah.html#BJECIACA"><code dir="ltr">javah</code>(1)</a></p>
+</li>
+<li>
+<p><a href="jdb.html#CHDFHFDB"><code dir="ltr">jdb</code>(1)</a></p>
+</li>
+<li>
+<p><a href="jdeps.html#BACEHAGD"><code dir="ltr">jdeps</code>(1)</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="javah.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jdb.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

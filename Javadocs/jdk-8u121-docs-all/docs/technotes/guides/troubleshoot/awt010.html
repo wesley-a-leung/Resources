@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Heavyweight/Lightweight Components Mix</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="awt009.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="java2dpipeline.html">
+                Next</a><hr/><a id="CIHEFCCB" name="CIHEFCCB"/>
+<div id="JSTGD427">
+<h1><span>10.10</span> Heavyweight/Lightweight Components Mix</h1>
+<p>This section discusses possible issues with the heavyweight/lightweight (HW/LW) mixing feature. In particular, it addresses the following issues:</p>
+<ul>
+<li>
+<p><b>Validate the component hierarchy:</b></p>
+<p>Changing any layout-related properties of a component, such as its size, location, or font, invalidates the component as well as its ancestors. In order for the HW/LW Mixing feature to function correctly, the component hierarchy must be validated after making such changes. By default, invalidation stops on the top-most container of the hierarchy (for example, a <code dir="ltr">Frame</code> object). Therefore, to restore the validity of the hierarchy, the application should call the <code dir="ltr">Frame.validate()</code> method. For example:</p>
+<pre dir="ltr" xml:space="preserve">
+component.setFont(myFont);
+frame.validate();
+</pre>
+<p>where <code dir="ltr">frame</code> refers to a frame which contains <code dir="ltr">component</code>. <i>Note:</i> Swing applications and the Swing library often use the following pattern:</p>
+<pre dir="ltr" xml:space="preserve">
+component.setFont(myFont);
+component.revalidate();
+</pre>
+<p>The <code dir="ltr">revalidate()</code> call is <i>not</i> sufficient because it validates the hierarchy starting from the nearest validate root of the component only, thus leaving the upper containers invalid. In that case, the HW/LW feature may not calculate correct shapes for HW components, and visual artifacts may be seen on the screen.</p>
+<p>To verify the validity of the whole component hierarchy a user can use the key combination Control+Shift+F1 as described in <a href="awt001.html#CIHGAAFA">Debug Tips for AWT</a>. A component marked 'invalid' may indicate a missing <code dir="ltr">validate()</code> call somewhere.</p>
+</li>
+<li>
+<p><b>Validate roots:</b></p>
+<p>The concept of validate roots mentioned in <b>Validate the component hierarchy</b> has been introduced in Swing in order to speed up the process of validating component hierarchies because it may take a significant amount of time. While such optimization leaves upper parts of hierarchies invalid, this did not bring any issues because the layout of components inside a validate root does not affect the layout of outside component hierarchy (that is, the siblings of the validate root). However, when HW and LW components are mixed together in a hierarchy, this statement is no longer true. That is why the feature requires the whole component hierarchy to be valid.</p>
+<p>Calling <code dir="ltr">frame.validate()</code> may be inefficient as well, and as such AWT supports an alternative, optimized way of handling invalidation/validation of component hierarchies. This feature is enabled with a system property:</p>
+<pre dir="ltr" xml:space="preserve">
+-Djava.awt.smartInvalidate=true
+</pre>
+<p>Once this property is specified, the <code dir="ltr">invalidate()</code> method will stop invalidation of the hierarchy when it reaches the nearest validate root of a component on which the <code dir="ltr">invalidate()</code> method has been invoked. Afterwards, to restore the validity of the component hierarchy, the application should simply call:</p>
+<pre dir="ltr" xml:space="preserve">
+component.revalidate();
+</pre>
+<p><i>Note:</i> In this case, calling <code dir="ltr">frame.validate()</code> would be effectively a no-op (a statement that does nothing) because <code dir="ltr">frame</code> is still valid. Since some applications rely on calling <code dir="ltr">validate()</code> directly on a component upper than the validate root of the hierarchy (for example, a frame), this new optimized behavior may cause incompatibility issues, and hence it is available only when specifying the system property.</p>
+<p>If an application experiences any difficulties running in this new optimized mode, a user can use the key combination Control+Shift+F1 as described in <a href="awt001.html#CIHGAAFA">Debug Tips for AWT</a> to investigate what parts of the component hierarchy are left invalid, and thus possibly cause the problems.</p>
+</li>
+<li>
+<p><b>Swing painting optimization:</b></p>
+<p>By default, the Swing library assumes that there are no HW components in the component hierarchy, and therefore uses optimized drawing techniques to boost performance of the Swing GUI. If a component hierarchy contains HW components, the optimizations must be turned off. This is relevant for Swing <code dir="ltr">JScrollPanes</code> in the first place. You can change the scrolling mode by using the <code dir="ltr">JViewPort.setScrollMode(int)</code> method.</p>
+</li>
+<li>
+<p><b>Non-opaque LW components:</b></p>
+<p>Non-opaque LW components are not supported by the HW/LW mixing feature implementation by default. In order to enable mixing non-rectangular LW components with HW components, the application must use the <code dir="ltr">com.sun.awt.AWTUtilities.setComponentMixingCutoutShape()</code> non-public API.</p>
+<p><i>Note:</i> The non-rectangular LW components should still paint themselves using either opaque (alpha = 1.0) or transparent (alpha = 0.0) colors. Using translucent colors (with 0.0 &lt; alpha &lt; 1.0) is not supported.</p>
+</li>
+<li>
+<p><b>Disable the default HW/LW mix feature:</b></p>
+<p>In the past, some developers have implemented their own support for cases when HW and LW components must be mixed together. The built-in implementation of the feature available since JDK 6 and JDK 7 may cause problems with custom workarounds. In order to disable the built-in feature the application must be started with the following system property:</p>
+<pre dir="ltr" xml:space="preserve">
+-Dsun.awt.disableMixing=true
+</pre></li>
+</ul>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="awt009.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="java2dpipeline.html">
+                Next</a><hr/>
+
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

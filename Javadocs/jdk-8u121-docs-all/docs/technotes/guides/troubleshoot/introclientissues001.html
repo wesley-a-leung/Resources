@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Java SE Desktop Technologies</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="introclientissues.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="introclientissues002.html">
+                Next</a><hr/><a id="BCFBAEGB" name="BCFBAEGB"/>
+<div id="JSTGD383">
+<h1><span>9.1</span> Java SE Desktop Technologies</h1>
+<p>Java SE Desktop consists of several technologies used to create rich client applications and applets. The desktop tools and libraries provide an interface between the Java application and the core tools and libraries of the platform as shown in <a href="#BCFCJGDH">Figure 9-1</a>.</p>
+<div id="JSTGD384"><a id="BCFCJGDH" name="BCFCJGDH"/>
+<p><b><i>Figure 9-1 Overview of Java SE Desktop</i></b></p>
+<img alt="Description of Figure 9-1 follows" longdesc="img_text/desktop-overview.htm" src="img/desktop-overview.gif"/><br/>
+<a href="img_text/desktop-overview.html" id="sthref59" name="sthref59">Description of "Figure 9-1 Overview of Java SE Desktop"</a><br/>
+<br/></div>
+
+<p>For information on all desktop technologies available in Java SE, visit the <a href="http://www.oracle.com/technetwork/java/javase/tech/index-jsp-142216.html">Java SE Desktop Overview documentation</a>.</p>
+<p>This topic describes troubleshooting techniques for the following Java SE Desktop technologies:</p>
+<ul>
+<li>
+<p><b>Abstract Window Toolkit (AWT)</b> provides a set of application programming interfaces (APIs) for constructing graphical user interface (GUI) components such as menus, buttons, text fields, dialog boxes, checkboxes, and for handling user input through those components. In addition, AWT allows for rendering of simple shapes such as ovals and polygons and enables developers to control the interface layout and fonts used by their applications. It also includes data transfer classes (including drag and drop) that allow cut and paste through the native platform clipboard.</p>
+<p>The classes of this API are at the bottom of the software stack (closest to the underlying operating and desktop system).</p>
+<p>AWT also provides a set of heavyweight components.</p>
+<p>Purely AWT applications are usually not related to Swing. If an AWT application does custom rendering, it uses Java 2D.</p>
+<p>For more information about AWT, see the <a href=".html">AWT documentation</a>.</p>
+</li>
+<li>
+<p><b>Java 2D</b> is a set of classes for advanced 2D graphics and imaging. It encompasses line art, text, and images in a single comprehensive model. The API provides extensive support for image compositing and alpha channel images, a set of classes to provide accurate color space definition and conversion, and a rich set of display-oriented imaging operators. These classes are provided as additions to the <code dir="ltr">java.awt</code> and <code dir="ltr">java.awt.image</code> packages.</p>
+<p>Like AWT, Java 2D is also at the bottom of the software stack (closest to the underlying operating and desktop system).</p>
+<p>For more information about Java 2D, see the <a href="../2d/index.html">Java 2D documentation</a>.</p>
+</li>
+<li>
+<p><b>Swing</b> provides a comprehensive set of GUI components and services which enables the development of commercial-quality desktop and Internet/Intranet applications.</p>
+<p>Swing is built on top of many of the other Java SE Desktop technologies, including AWT, Java2D and Internationalization. In most cases the Swing high-level components are recommended instead of those in AWT. However, there are many APIs in AWT that are important to understand when programming in Swing.</p>
+<p>Since Swing is a lightweight toolkit, it has very little interaction with the native platform. Swing uses Java 2D for rendering, and AWT provides creation and manipulation of top-level components, such as Windows, Frames, and Dialogs.</p>
+<p>For more information about Swing, see the <a href="../swing/index.html">Swing documentation</a>.</p>
+</li>
+<li>
+<p><b>Internationalization</b> is the process of designing software so that it can be adapted (localized) to various languages and regions easily, cost-effectively, and in particular without engineering changes to the software. <span>Localization</span> is performed by simply adding locale-specific components, such as translated text, data describing locale-specific behavior, fonts, and input methods.</p>
+<p>In Java SE, internationalization support is fully integrated into the classes and packages that provide language-dependent or culture-dependent functionality.</p>
+<p>For more information about internationalization APIs and features of Java SE, see the <a href="../intl/index.html">Internationalization documentation</a>.</p>
+</li>
+<li>
+<p><b>Java Sound</b> provides low-level support for audio operations such as audio playback and capture (recording), mixing, musical instrument digital interface (MIDI) sequencing, and MIDI synthesis in an extensible, flexible framework. This API is supported by an efficient sound engine which guarantees high-quality audio mixing and MIDI synthesis capabilities for the platform.</p>
+<p>For more information about Java Sound, see the <a href="../sound/index.html">Java Sound documentation</a>.</p>
+</li>
+<li>
+<p><b>Java Plug-in</b> extends the functionality of popular web browsers by connecting them to the Java platform. This connection enables Java applets on websites to be run within the web browser on the desktop.</p>
+<p>For more information about Java Plug-in, see <a href="../jweb/applet/applet_execution.html">Java Plug-in and Applet Architecture documentation</a>.</p>
+</li>
+</ul>
+<p>The better you understand the relationships between these technologies, the more quickly you can pinpoint the area your problem falls into.</p>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="introclientissues.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="introclientissues002.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

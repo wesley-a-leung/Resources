@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Sound Enhancements in JDK 5.0</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Java Sound Enhancements in JDK 5.0</h1>
+<p><!-- Body text begins here -->
+ The following enhancements took effect at JDK 5.0.</p>
+<ul>
+<li>Ports are available on all platforms (RFE 4782900).</li>
+<li>MIDI device i/o is available on all platforms (RFE's 4812168,
+4782924).</li>
+<li>Optimized direct audio access is implemented on all platforms
+(RFEs 4908240 and 4908879). It is enabled by default on systems
+which offer native mixing (i.e. Linux ALSA with hardware mixing,
+Solaris Mixer enabled, Windows DirectSound).</li>
+<li>The new real-time Sequencer works with all MIDI devices and
+allows unlimited Transmitters (RFE 4773012).</li>
+<li>The <code>sound.properties</code> configuration file allows
+choice of default devices (RFE 4776511). For details, see
+<code>MidiSystem</code> and <code>AudioSystem</code> for
+details.</li>
+<li>MidiDevices can query connected Receivers and Transmitters (RFE
+4931387, methods MidiDevice.getReceiver and
+MidiDevice.getTransmitter).</li>
+<li><code>AudioFormat</code>, <code>AudioFileFormat</code>, and
+<code>MidiFileFormat</code> now have properties that allow further
+description and qualification of the format (RFEs 4925767 and
+4666845).</li>
+<li>A set of ease-of-use methods allow easier retrieval of lines
+from AudioSystem (RFE 4896221).</li>
+<li>The Sequencer interface is extended with loop methods, for
+seamless looping of specific portions of a MIDI sequence (RFE
+4204105).</li>
+<li>Java Sound no longer prevents the VM from exiting (bug
+4735740).</li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

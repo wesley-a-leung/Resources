@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Java Rich Internet Applications</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1044" name="generator"/>
+<meta content="This topic provides information to help you decide between an applet or a Java Web Start application for your rich Internet application (RIA). RIAs are applications that take advantage of the Internet." name="description"/>
+<meta content="2015-02-16T9:50:5Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Deployment Guide, Release 8u40" name="doctitle"/>
+<meta content="Release 8u40" name="relnum"/>
+<meta content="E50259-02" name="partnum"/>
+<meta content="JSDPG" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Deployment Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="part_develop.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="applet_dev_guide.html">
+                Next</a><hr/>
+<div id="JSDPG1017"><a id="BABFEAGI" name="BABFEAGI"/>
+<h1><span>11</span> Java Rich Internet Applications</h1>
+<a id="JSDPG1018" name="JSDPG1018"/>
+<p>This topic provides information to help you decide between an applet or a Java Web Start application for your rich Internet application (RIA). RIAs are applications that take advantage of the Internet.</p>
+<p>This topic includes the following sections:</p>
+<ul>
+<li>
+<p><a href="#A1119115">About Java RIAs</a></p>
+</li>
+<li>
+<p><a href="#A998907">Rich Internet Applications Decision Guide</a></p>
+</li>
+<li>
+<p><a href="#A998883">Rich Internet Applications Deployment Advice</a></p>
+</li>
+<li>
+<p><a href="#A1125627">Properties That Affect the Behavior of Rich Internet Applications</a></p>
+</li>
+</ul>
+<a id="A1119115" name="A1119115"/>
+<div id="JSDPG1019">
+<h2><span>11.1</span> About Java RIAs</h2>
+<p>Java technology-based solutions are versatile when developed with good design principles. Two types of RIAs are available, based on their deployment mechanism and execution context:</p>
+<ol>
+<li>
+<p>Applets - These solutions run in the context of a web browser. They utilize the browser capabilities like session cookies, DOM access etc. Applets can be deployed by using Java Network Launch Protocol (JNLP) or by using applet tag attributes.</p>
+</li>
+<li>
+<p>Java Web Start applications - Java Web Start applications are deployed from a browser the first time. After the application is downloaded and the user has accepted its security certificate, it behaves almost like a standalone application. When run from the user's desktop using Java Web Start, updates to the application are automatically downloaded.</p>
+</li>
+</ol>
+<div id="JSDPG1020"><a id="sthref258" name="sthref258"/>
+<h3><span>11.1.1</span> Design</h3>
+<p>The decision of whether to deploy a RIA inside the browser as an applet, or outside the browser as a Java Web Start application, impacts the design of the solution. However, properly structured programs can be easily deployed either inside or outside the browser.</p>
+<p>A key methodology to follow during the design of your application is to use a <i>component-based architecture</i>. Traditional applications tend to construct their user interfaces, including the top-level Frame, in the <code dir="ltr">main</code> method. This programming style prevents easy re-deployment of the application in the browser, because it assumes that the application creates its own Frame. When running in the browser as an applet, the applet is implicitly the container that should hold the user interface for the application, and no top-level Frame is needed or desired.</p>
+<p>Instead, during the development of your application, try to organize its functionality into one or more components that can be composed together. In this context, the term "component" refers to a GUI element that is a subclass of the AWT <code dir="ltr">Component</code> class, the Swing <code dir="ltr">JComponent</code> class, or another subclass. Instead of phrasing the application in terms of various methods that build user interfaces and return or show them, phrase the application in terms of <code dir="ltr">Component</code> subclasses, each of which adds their portion of the user interface to themselves. Then the application, which at that point is just a Component (and perhaps, for example, a menu bar) can be added to any kind of Container. The container might be a top-level Frame or an Applet. Using this methodology and architecture makes it easy to redeploy the application either inside or outside the browser, and enables this deployment decision to be changed at essentially any time without significantly impacting the development cycle of the application.</p>
+<p>The SwingSet3 demo is an example that shows how to lay out components in a single cohesive unit. This demo is included in the <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">JDK 8 Demos and Samples</a> bundle that you can download. The constructor of the <code dir="ltr">ButtonDemo</code> class instantiates and lays out all required user interface components into one master panel. The <code dir="ltr">DemoModule</code> class is only responsible for displaying this master panel as an applet. This design enables the <code dir="ltr">ButtonDemo</code> to be reused or ported easily to another applet or application.</p>
+<p>To determine whether to develop an applet or a Java Web Start application, see <a href="#A998907">Section 11.2, "Rich Internet Applications Decision Guide."</a></p>
+</div>
+
+<div id="JSDPG1021"><a id="sthref259" name="sthref259"/>
+<h3><span>11.1.2</span> Development</h3>
+<p>Having decided on the type of client application that you plan to build, the next step is to build it. For applets, use the <a href="applet_dev_guide.html#CIACGFAJ">Chapter 12, "Applet Development Guide"</a> to set up the applet, get the browser and the applet talking to each other, and to communicate with other applets. For Java Web Start applications, use the <a href="../javaws/developersguide/contents.html">Java Web Start Developer's Guide</a>.</p>
+<p>Debugging is a natural part of development. In addition to using your Java IDE or the Java debugger, you can use the debugging facilities in the Java Console, as well as the JVM's Tracing and Logging capabilities. See <a href="console_trace_log.html#BABIEFCH">Chapter 22, "Java Console, Tracing, and Logging"</a> for information.</p>
+<p>The <a href="http://docs.oracle.com/javase/tutorial/deployment/index.html">Deployment trail</a> in the Java Tutorials is a comprehensive resource to learn more about the development and deployment of RIAs.</p>
+</div>
+
+<div id="JSDPG1022"><a id="sthref260" name="sthref260"/>
+<h3><span>11.1.3</span> Deployment</h3>
+<p>Signing the application JAR files with a valid public key certificate and specifying the runtime permission in the JAR file manifest are critical. Applications that are deployed without these elements might not be allowed to run.</p>
+<p>Deployment is a multi-step process. The following list provides an overview of deployment-related steps. See <a href="#A998883">Section 11.3, "Rich Internet Applications Deployment Advice"</a> for more information.</p>
+<ul>
+<li>
+<p><b>JNLP File:</b> A JNLP file is created for Java Web Start applications and applets that are deployed using JNLP. If the RIA requires access to resources on the user's system, include the <code dir="ltr">security</code> element in the JNLP file. Otherwise, the RIA runs in the security sandbox. See <a href="../javaws/developersguide/syntax.html">JNLP File Syntax</a> for information on the JNLP file.</p>
+</li>
+<li>
+<p><b>JAR File Manifest:</b> The JAR file manifest contains security and configuration information about the JAR file and the files it contains. Manifest attributes provide additional security for RIAs. See <a href="manifest.html#CIHJEJIA">Chapter 26, "JAR File Manifest Attributes for Security"</a> for more information.</p>
+</li>
+<li>
+<p><b>Security Certificate</b>: RIAs request permission from the user to run the first time they are launched, whether they run in the security sandbox or require access to a user's system. Sign and time stamp the JAR file for the RIA with a certificate from a recognized certificate authority. See <a href="client-security.html#A1155120">Section 23.5, "Security Dialogs"</a> and <a href="client-security.html#A1153002">Section 23.1, "Setting the Security Level of the Java Client"</a> for more information.</p>
+</li>
+<li>
+<p><b>JAR Indexing:</b> To keep the application from downloading JAR files before they are needed, use <i>JAR Indexing.</i><a href="../jar/jar.html#JAR_Index">J ar Indexing</a> works both for applets and Java Web Start applications. With Jar Indexing, the main JAR file contains an index file that tells which packages are in the other JAR files. When lazy-loading a resource, the underlying classloader uses the index to know what JAR file to download. Make sure that you create the index before you sign the JAR file.</p>
+</li>
+<li>
+<p><b>Pack200 Compression:</b> See <a href="deployment_networking.html#A1150779">Section 30.2, "Deploying JAR Files Compressed with Pack200"</a> for information on how to use Pack200 compression to minimize download time for JAR files.</p>
+</li>
+<li>
+<p><b>Deployment Toolkit:</b> Use the Deployment Toolkit to set up your web page with cross-browser JavaScript you need to launch your app. The deployment toolkit is essentially a set of JavaScript functions that ensure deployment of applets consistently across various browsers.</p>
+</li>
+</ul>
+<p>For enterprises that provide a common execution environment and manage the applications that users access, the Deployment Rule Set feature enables the creation of rules that allow some applications to be run without security prompts while automatically blocking other applications. This feature is intended to be used internally in an organization. See <a href="deployment_rules.html#CIHBCFAJ">Chapter 28, "Deployment Rule Set"</a> for more information.</p>
+<p>For users who need to run RIAs that are blocked because they do not meet current security requirements, the Exception Site List feature is provided. RIAs that are started from sites in the list prompt the user for permission to run. See <a href="exception_site_list.html#CIHIHJJE">Chapter 29, "Exception Site List"</a> for more information.</p>
+<p>To understand how the deployment of RIAs is handled, see <a href="deployment_flow.html#BABEDHCC">Chapter 24, "Rich Internet Application Deployment Process"</a>.</p>
+</div>
+</div>
+
+<a id="A998907" name="A998907"/>
+<div id="JSDPG1023">
+<h2><span>11.2</span> Rich Internet Applications Decision Guide</h2>
+<p>Both applets and Java Web Start applications are easier to distribute than standard applications, because they are launched over the web. They both require permission from the user to run, so it is important that they be signed with a valid certificate from a trusted authority to enable the user to make an informed decision about running the application. RIAs can only access the user's system in highly controlled ways, unless extended access is requested when launched and is permitted by user.</p>
+<p>The following table summarizes the differences between applets and Java Web Start applications:</p>
+<div>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="Comparison of application, applet, and java web start security." width="100%">
+<col width="24%"/>
+<col width="35%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t2" valign="bottom">Feature</th>
+<th align="left" id="r1c2-t2" valign="bottom">Applet</th>
+<th align="left" id="r1c3-t2" valign="bottom">Java Web Start</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r2c1-t2">Java version</td>
+<td align="left" headers="r2c1-t2 r1c2-t2">Individual applets can specify the exact version, or version range, of the Java platform it will use. The Java Plug-in supports both static version requests (such as "8.0 update 20") and family version requests (such as "8.0 family"), and supports several backward compatibility mechanisms such as static and family ClassIDs in Internet Explorer. See <a href="applet_dev_guide.html#CIABBBEC">Section 12.2.2, "Java Runtime Environment Version Selection"</a> for details.</td>
+<td align="left" headers="r2c1-t2 r1c3-t2">Java Web Start is also used only from the latest Java version installed on a system, but the version of Java Web Start run is independent of the version of the Java platform used. A Java Web Start application can specify the exact version, or version range, of the Java platform that it will use.</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r3c1-t2">Cookies</td>
+<td align="left" headers="r3c1-t2 r1c2-t2">Java Plug-in applets run in the same session as the browser, and have access to both "persistent" cookies and "session" cookies already stored in the browser session.</td>
+<td align="left" headers="r3c1-t2 r1c3-t2">Java Web Start runs outside the browser process. It can access "persistent" cookies stored by the browser (it does this by using the WinINet API on Windows), but has no access to "session" cookies unless set in that application using the <code dir="ltr">java.net.CookieManager</code> and <code dir="ltr">java.net.CookieHandler</code> API's.</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r4c1-t2">Browser Interactions</td>
+<td align="left" headers="r4c1-t2 r1c2-t2">Java Plug-in includes the ability for applets to interact with the current browser session with the the <a href="../../../jre/api/plugin/dom/index.html">Common DOM API</a>. See <a href="http://docs.oracle.com/javase/tutorial/deployment/applet/manipulatingDOMFromApplet.html">Manipulating DOM of Applet's Web Page</a> from the Java Tutorials. In addition, Java applets can invoke JavaScript functions present in the same web page as the applet and JavaScript code on a web page can interact with Java applets embedded on the page. See <a href="http://docs.oracle.com/javase/tutorial/deployment/applet/invokingJavaScriptFromApplet.html">Invoking JavaScript Code From an Applet</a> and <a href="http://docs.oracle.com/javase/tutorial/deployment/applet/invokingAppletMethodsFromJavaScript.html">Invoking Applet Methods From JavaScript Code</a> from the Java Tutorials.</td>
+<td align="left" headers="r4c1-t2 r1c3-t2">Java Web Start is limited to invoking the default browser to display specific URL's (see <a href="../../../jre/api/javaws/jnlp/index.html">JNLP API</a>).</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r5c1-t2">Java Runtime</td>
+<td align="left" headers="r5c1-t2 r1c2-t2">An applet can specify Java Runtime parameters used to launch that particular applet instance, without affecting the parameters used to launch other applets. Specifying Java Runtime parameters in the Java Control Panel is also supported for backward compatibility purposes.</td>
+<td align="left" headers="r5c1-t2 r1c3-t2">Java Web Start applications have (limited) control over the Java Runtime parameters that are used to launch that application.</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r6c1-t2">JNLP API</td>
+<td align="left" headers="r6c1-t2 r1c2-t2">Applets launched using Java Network Launching Protocol (JNLP) have access to <a href="../../../jre/api/javaws/jnlp/index.html">JNLP API</a>, which allows sandbox applications access to persistent storage, download control, file I/O, and more.</td>
+<td align="left" headers="r6c1-t2 r1c3-t2">Java Web Start includes access to the <a href="../../../jre/api/javaws/jnlp/index.html">JNLP API</a>,</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r7c1-t2">Shortcuts</td>
+<td align="left" headers="r7c1-t2 r1c2-t2">You can develop draggable applets. A Java applet that is deployed by specifying the <code dir="ltr">draggable</code> parameter can be dragged outside the browser and dynamically transformed into a Java Web Start application. The Java applet can be dragged by pressing the Alt key and the left mouse button and dragging the mouse. You can add a desktop shortcut that can be used to launch your application outside the browser. See <a href="http://docs.oracle.com/javase/tutorial/deployment/applet/draggableApplet.html">Developing Draggable Applets</a> in the Java Tutorials for more information.</td>
+<td align="left" headers="r7c1-t2 r1c3-t2">Java Web Start applications can install shortcuts that allow the application to be rerun, either online or offline, independent of the browser.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p>For more information on the specific differences between Java Web Start and Java Plug-in, see <a href="applet_dev_guide.html#CIADJHDC">Section 12.5, "Migrating Java Applets to the Java Network Launching Protocol"</a>.</p>
+</div>
+
+<a id="A998883" name="A998883"/>
+<div id="JSDPG1024">
+<h2><span>11.3</span> Rich Internet Applications Deployment Advice</h2>
+<p>The topics in this section provide information about JNLP, the Deployment Toolkit, and other considerations to be aware of when making deployment decisions.</p>
+<div id="JSDPG1025"><a id="sthref261" name="sthref261"/>
+<h3><span>11.3.1</span> Unified Deployment Mechanism - Java Network Launch Protocol</h3>
+<p>Starting in release Java SE 6 update 10, Java Network Launch Protocol (JNLP) provides a unified mechanism for deploying rich internet applications (RIAs - applets and Java Web Start applications). RIAs launched using JNLP have the following capabilities at their disposal:</p>
+<ul>
+<li>
+<p><b>Access to JNLP extensions -</b> Powerful JNLP extensions such as <a href="http://jogamp.org/jogl/www/">Java Binding for the Open GL OpenGL API</a> (JOGL), <a href="http://docs.oracle.com/javase/8/javafx/scene-graph-tutorial/scenegraph.htm#JFXSG107">JavaFX Scene Graph</a>, and <a href="http://worldwind.arc.nasa.gov/java/">NASA World Wind Java SDK</a> (a planetary and extra-planetary visualization system) can be used from applets and Java Web Start applications.</p>
+</li>
+<li>
+<p><b>Access to the JNLP APIs -</b> Applets and Java Web Start applications have access to the JNLP APIs to gain user-controlled access to persistent storage (the <code dir="ltr">PersistenceService</code>), lazily-downloaded parts (the <code dir="ltr">DownloadService</code>), the local file system (the <code dir="ltr">FileOpenService</code> and <code dir="ltr">FileSaveService</code>), and more. See the Java Tutorial lesson, <a href="http://docs.oracle.com/javase/tutorial/deployment/doingMoreWithRIA/usingJNLPAPI.html">Accessing the Client Using JNLP API</a> for step-by-step instructions about using JNLP API.</p>
+</li>
+<li>
+<p><b>Version selection and more -</b> Building on the Java Plug-in's architecture, applets launched using JNLP can utilize all of the features previously available to Java Web Start applications, such as JRE version selection, passing command-line arguments and system properties to the JVM, and more.</p>
+</li>
+</ul>
+</div>
+
+<a id="BABBCDDE" name="BABBCDDE"/>
+<div id="JSDPG1026">
+<h3><span>11.3.2</span> Deployment Toolkit Script</h3>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Tip:</b></p>
+This section describes an older version of the Deployment Toolkit and is provided as a reference for legacy applications. See <a href="deployment_toolkit.html#BABJHEJA">Chapter 19, "Deployment in the Browser"</a> for information on the latest Deployment Toolkit.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>To avoid browser compatibility issues, the <a href="https://java.com/js/deployJava.js">Deployment Toolkit script</a> provides JavaScript functions that automatically generate the HTML required to deploy RIAs. Developers should invoke these functions to deploy their solutions in a consistent fashion across various browsers.</p>
+<p>The script exposes a single object, named <i>deployJava</i>, which contains the following public functions:</p>
+<ul>
+<li>
+<p><code dir="ltr">createWebStartLaunchButton(jnlp, minimumVersion)</code> - Outputs a launch button for the specified JNLP URL. When clicked, the button will ensure that an appropriate JRE is installed and then launch the JNLP application.</p>
+</li>
+<li>
+<p><code dir="ltr">createWebStartLaunchButtonEx(jnlp, minimumVersion)</code> - Outputs a launch button for the specified JNLP URL. When clicked, the button will ensure that an appropriate JRE is installed and then launch the JNLP application. The JNLP file does not require a value for the <code dir="ltr">codebase</code> attribute. This function requires that the Java SE 6 update 18 release be present on the client. If the Java SE 6 update 18 release is not present on the client, then the user will be instructed to install the required software.</p>
+</li>
+<li>
+<p><code dir="ltr">getBrowser()</code> - Returns the name of the browser currently running.</p>
+</li>
+<li>
+<p><code dir="ltr">getJREs()</code> - Returns an array of currently-installed JRE version strings.</p>
+</li>
+<li>
+<p><code dir="ltr">installJRE(requestVersion)</code> - Triggers the installation of the specified <code dir="ltr">requestVersion</code>, the latest version matching the specified <code dir="ltr">requestVersion</code>, or the latest JRE.</p>
+</li>
+<li>
+<p><code dir="ltr">installLatestJRE()</code> - Triggers the installation of the latest JRE</p>
+</li>
+<li>
+<p><code dir="ltr">isPlugin2()</code> - Determines if the next generation Java Plug-in is the default.</p>
+</li>
+<li>
+<p><code dir="ltr">isWebStartInstalled(minimumVersion)</code> - Returns true if an installation of Java Web Start of the specified <code dir="ltr">minimumVersion</code> can be detected.</p>
+</li>
+<li>
+<p><code dir="ltr">launch</code>- Launches JNLP application.</p>
+</li>
+<li>
+<p><code dir="ltr">runApplet(attributes, parameters, minimumVersion)</code> - Ensures that an appropriate JRE is installed and then runs an applet.</p>
+</li>
+<li>
+<p><code dir="ltr">setAdditionalPackages(packageList)</code> - Sets additional package list to be used by kernel installer.</p>
+</li>
+<li>
+<p><code dir="ltr">setInstallerType(type)</code> - Sets the preferred install type : null, online, kernel.</p>
+</li>
+<li>
+<p><code dir="ltr">versionCheck(version)</code> - Returns true if there is a matching JRE version currently installed (among those detected by the <code dir="ltr">getJREs()</code> function).</p>
+</li>
+<li>
+<p><code dir="ltr">writeAppletTag(attributes, parameters)</code> - Outputs an applet tag with the specified attributes and parameters. The parameters argument is optional.</p>
+</li>
+</ul>
+<p>See <a href="http://www.java.com/js/deployJava.txt">the human readable version of the Deployment Toolkit</a> for a detailed description of these public functions.</p>
+</div>
+
+<div id="JSDPG1027"><a id="sthref262" name="sthref262"/>
+<h3><span>11.3.3</span> Other Deployment Considerations</h3>
+<p>The following sections provide information on additional items to consider when planning the deployment of your application.</p>
+<div id="JSDPG1028"><a id="sthref263" name="sthref263"/>
+<h4><span>11.3.3.1</span> ClassLoader and Accessing Resources</h4>
+<p>Resources accessed in a Java Web Start application or Java Plug-in applet may be cached on the client machine in the Deployment Cache. It is unwise to assume the format or content of this cache, as it may change between versions.</p>
+<p>When porting stand alone programs to Java Web Start or Java Plug-in, problems can occur when code has inherent assumptions that it is loaded by the <code dir="ltr">SystemClassLoader</code>. In Java Plug-in resources are loaded by the <code dir="ltr">PluginClassLoader</code>, which extends <code dir="ltr">java.net.URLClassLoader</code>. In Java Web Start resources are loaded by the <code dir="ltr">JNLPClassLoader</code>, which extends <code dir="ltr">java.net.URLClassLoader</code>.</p>
+<p>Access the <i>ClassLoader</i> being used with:</p>
+<pre dir="ltr" xml:space="preserve">
+ClassLoader cl = Thread.getCurrent().getContextClassLoader();
+</pre>
+<p>The correct way to access resources is to use <code dir="ltr">getResourceAsStream()</code>, which returns the correct content whatever type of <code dir="ltr">ClassLoader</code> is used to access the resource. If the resource is already cached, the contents of the resource are returned from the cache directly, so there won't be extra network connections to the resource itself.</p>
+<p>Modifying the contents of the Java deployment cache directly is not recommended. The cache is a private implementation of Java Web Start and Java Plug-in, and is subject to change anytime.</p>
+</div>
+
+<div id="JSDPG1029"><a id="sthref264" name="sthref264"/>
+<h4><span>11.3.3.2</span> Lazy Downloading</h4>
+<p>When applications are large, it can be useful to only download the part of the application that is required to start up, and then download the rest on demand. This process is referred to as lazy downloading.</p>
+<p>Java Web Start supports lazy downloading. It can be a way to significantly improve the download and startup time in some applications. Jar Indexing is a simple and effective way to download only the required jars, and avoid downloading everything when a nonexistent resource is requested. See <a href="../jar/jar.html#JAR_Index">Jar Indexing</a>.</p>
+<p>Java Plug-in has built-in support for lazy downloading (that is, downloading is lazy by default), and also supports Jar Indexing. As much as possible, package your classes in JAR files instead of using individual classes.</p>
+</div>
+</div>
+
+<div id="JSDPG1030"><a id="sthref265" name="sthref265"/>
+<h3><span>11.3.4</span> Other Resources</h3>
+<p>See the following Java Tutorial lessons for more information about deploying RIAs:</p>
+<ul>
+<li>
+<p><a href="http://docs.oracle.com/javase/tutorial/deployment/applet/deployingApplet.html">Deploying an Applet</a></p>
+</li>
+<li>
+<p><a href="http://docs.oracle.com/javase/tutorial/deployment/webstart/deploying.html">Deploying a Java Web Start application</a></p>
+</li>
+<li>
+<p><a href="http://docs.oracle.com/javase/tutorial/deployment/deploymentInDepth/index.html">Deployment In-Depth</a></p>
+</li>
+</ul>
+</div>
+</div>
+
+<a id="A1125627" name="A1125627"/>
+<div id="JSDPG1031">
+<h2><span>11.4</span> Properties That Affect the Behavior of Rich Internet Applications</h2>
+<p>The following table shows the properties that can be specified in the JNLP file to control the behavior of the RIA.</p>
+<div>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="Table of RIA JNLP Properties" width="100%">
+<col width="31%"/>
+<col width="24%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t4" valign="bottom">Property</th>
+<th align="left" id="r1c2-t4" valign="bottom">Allowed Value</th>
+<th align="left" id="r1c3-t4" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t4" id="r2c1-t4"><code dir="ltr">javaws.cfg.jauthenticator</code></td>
+<td align="left" headers="r2c1-t4 r1c2-t4">true, false, all</td>
+<td align="left" headers="r2c1-t4 r1c3-t4">A value of <code dir="ltr">true</code> or <code dir="ltr">all</code>, prevents Java Web Start software from installing the default <code dir="ltr">JAuthenticator</code>.</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t4" id="r3c1-t4"><code dir="ltr">jnlp.concurrentDownloads</code></td>
+<td align="left" headers="r3c1-t4 r1c2-t4">integer</td>
+<td align="left" headers="r3c1-t4 r1c3-t4">Number of threads for concurrent download of JAR files</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t4" id="r4c1-t4"><code dir="ltr">jnlp.packEnabled</code></td>
+<td align="left" headers="r4c1-t4 r1c2-t4">true, false</td>
+<td align="left" headers="r4c1-t4 r1c3-t4">A value of <code dir="ltr">true</code> indicates that the application's JAR files have been compressed using the Pack200 tool. See <a href="deployment_networking.html#A1150779">Section 30.2, "Deploying JAR Files Compressed with Pack200"</a> for more information.</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t4" id="r5c1-t4"><code dir="ltr">jnlp.versionEnabled</code></td>
+<td align="left" headers="r5c1-t4 r1c2-t4">true, false</td>
+<td align="left" headers="r5c1-t4 r1c3-t4">A value of <code dir="ltr">true</code> indicates that the application's JAR files have been versioned to enable the version download protocol.
+<p>Version download is the ability to request that specific versions of certain JAR files be used by applets and Java Web Start applications.</p>
+<p>When this property is set to <code dir="ltr">true</code> and if the JAR version is specified, the server is checked for the versioned JAR file using the following naming convention:</p>
+<pre dir="ltr" xml:space="preserve">
+&lt;file&gt; ::= &lt;name&gt; "__" &lt;options&gt; ".jar"
+  &lt;options&gt; ::= "V" &lt;version-id&gt;
+</pre>
+<p><b>Note</b>: version 1.0 of <code dir="ltr">sample.jar</code> should be named <code dir="ltr">sample__V1.0.jar</code>.</p>
+<p>The original JAR is used if the versioned JAR file is not found.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="part_develop.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="applet_dev_guide.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

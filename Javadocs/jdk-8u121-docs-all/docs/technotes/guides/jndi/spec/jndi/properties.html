@@ -1,0 +1,418 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title></title>
+<link rel="stylesheet" type="text/css" href="../../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<table summary="" width="100%" border="0" cellspacing="2"
+cellpadding="0">
+<tr>
+<td><a href="jndiTOC.html">CONTENTS</a> | <a href=
+"jndi.9.html">PREV</a> | <a href=
+"appendix-ldap-example.html">NEXT</a></td>
+</tr>
+</table>
+<h1>Appendix 1: JNDI Standard Environment Properties</h1>
+<p class="CellTitle">Environment Configuration</p>
+<table summary="Environment Configuration Properties" border="1"
+cellspacing="2" cellpadding="0">
+<tr>
+<th id="h101">Property Name</th>
+<th id="h102">Description</th>
+</tr>
+<tr>
+<td headers="h101">
+<p class="CellName"><code>java.naming.applet</code></p>
+<p class="CellName">(<code>Context.APPLET</code>)</p>
+</td>
+<td headers="h102">
+<p class="CellBody">An instance of <code>java.applet.Applet</code>
+whose applet parameters are used to obtain some environment
+properties.<br />
+See Chapter 6 for details. No default.</p>
+</td>
+</tr>
+</table>
+<p class="CellTitle"><a name="pgfId_999403" id=
+"pgfId_999403"></a>Program Configuration <a href="#pgfId_999680"
+class="footnote">2</a></p>
+<table summary="Program Configuration Properties" border="1"
+cellspacing="2" cellpadding="0">
+<tr>
+<th id="h201">Property Name</th>
+<th id="h202">Description</th>
+</tr>
+<tr>
+<td headers="h201">
+<p class="CellName"><a name="pgfId_999407" id=
+"pgfId_999407"></a><code>java.naming.factory.initial</code></p>
+<p class="CellName"><a name="pgfId_999578" id=
+"pgfId_999578"></a>(<code>Context.INITIAL_CONTEXT_FACTORY</code>)</p>
+</td>
+<td headers="h202">
+<p class="CellBody"><a name="pgfId_999409" id=
+"pgfId_999409"></a>Class name of initial context factory to
+use.</p>
+<p class="CellBody"><a name="pgfId_999456" id=
+"pgfId_999456"></a>See <code>InitialContext</code> .</p>
+<p class="CellBody"><a name="pgfId_999739" id="pgfId_999739"></a>No
+default.</p>
+</td>
+</tr>
+<tr>
+<td headers="h201">
+<p class="CellName"><a name="pgfId_999412" id=
+"pgfId_999412"></a><code>java.naming.factory.object</code></p>
+<p class="CellName"><a name="pgfId_999579" id=
+"pgfId_999579"></a>(<code>Context.OBJECT_FACTORIES</code>)</p>
+</td>
+<td headers="h202">
+<p class="CellBody"><a name="pgfId_999415" id=
+"pgfId_999415"></a>Colon-separated list of class names of object
+factory classes to use.</p>
+<p class="CellBody"><a name="pgfId_999454" id=
+"pgfId_999454"></a>See
+<code>NamingManager.getObjectInstance()</code> and
+<code>DirectoryManager.getObjectInstance()</code> .</p>
+<p class="CellBody"><a name="pgfId_999729" id=
+"pgfId_999729"></a>Defaults to empty list.</p>
+</td>
+</tr>
+<tr>
+<td headers="h201">
+<p class="CellName"><a name="pgfId_999615" id=
+"pgfId_999615"></a><code>java.naming.factory.state</code></p>
+<p class="CellName"><a name="pgfId_999616" id=
+"pgfId_999616"></a>(<code>Context.STATE_FACTORIES</code>)</p>
+</td>
+<td headers="h202">
+<p class="CellBody"><a name="pgfId_999618" id=
+"pgfId_999618"></a>Colon-separated list of class names of state
+factory classes to use.</p>
+<p class="CellBody"><a name="pgfId_999731" id=
+"pgfId_999731"></a>See <code>NamingManager.getStateToBind()</code>
+and <code>DirectoryManager.getStateToBind()</code> .</p>
+<p class="CellBody"><a name="pgfId_999734" id=
+"pgfId_999734"></a>Defaults to empty list.</p>
+</td>
+</tr>
+<tr>
+<td headers="h201">
+<p class="CellName"><a name="pgfId_999632" id=
+"pgfId_999632"></a><code>java.naming.factory.control</code></p>
+<p class="CellName"><a name="pgfId_999633" id=
+"pgfId_999633"></a>(<code>LdapContext.CONTROL_FACTORIES</code>)</p>
+</td>
+<td headers="h202">
+<p class="CellBody"><a name="pgfId_999635" id=
+"pgfId_999635"></a>Colon-separated list of class names of response
+control factory classes to use.</p>
+<p class="CellBody"><a name="pgfId_999637" id=
+"pgfId_999637"></a>See
+<code>ControlFactory.getControlInstance()</code> .</p>
+<p class="CellBody"><a name="pgfId_999737" id=
+"pgfId_999737"></a>Defaults to empty list.</p>
+</td>
+</tr>
+<tr>
+<td headers="h201">
+<p class="CellName"><a name="pgfId_999440" id=
+"pgfId_999440"></a><code>java.naming.factory.url.pkgs</code></p>
+<p class="CellName"><a name="pgfId_999580" id=
+"pgfId_999580"></a>(<code>Context.URL_PKG_PREFIXES</code>)</p>
+</td>
+<td headers="h202">
+<p class="CellBody"><a name="pgfId_999442" id=
+"pgfId_999442"></a>Colon-separated list of package prefixes to use
+when loading in URL context factories.
+<code>com.sun.jndi.url</code> is always added to end of list.</p>
+<p class="CellBody"><a name="pgfId_999455" id=
+"pgfId_999455"></a>See <code>NamingManager.getURLContext()</code>
+.</p>
+<p class="CellBody"><a name="pgfId_999738" id=
+"pgfId_999738"></a>Defaults to empty list.</p>
+</td>
+</tr>
+</table>
+<p class="CellTitle"><br />
+<a name="pgfId_999124" id="pgfId_999124"></a>Access Configuration
+<a href="#pgfId_999686" class="footnote">3</a></p>
+<table summary="Access Configuration Properties" border="1"
+cellspacing="2" cellpadding="0">
+<tr>
+<th id="h301">Property Name</th>
+<th id="h302">Description</th>
+</tr>
+<tr>
+<td headers="h301">
+<p class="CellName"><a name="pgfId_999128" id=
+"pgfId_999128"></a><code>java.naming.provider.url</code></p>
+<p class="CellName"><a name="pgfId_999581" id=
+"pgfId_999581"></a>(<code>Context.PROVIDER_URL</code>)</p>
+</td>
+<td headers="h302">
+<p class="CellBody"><a name="pgfId_999166" id=
+"pgfId_999166"></a>Specifies configuration information for provider
+to use.</p>
+<p class="CellBody"><a name="pgfId_999167" id=
+"pgfId_999167"></a>Defaults to provider default, using provider's
+own configuration or discovery protocols.</p>
+</td>
+</tr>
+<tr>
+<td headers="h301">
+<p class="CellName"><a name="pgfId_999132" id=
+"pgfId_999132"></a><code>java.naming.dns.url</code></p>
+<p class="CellName"><a name="pgfId_999582" id=
+"pgfId_999582"></a>(<code>Context.DNS_URL</code>)</p>
+</td>
+<td headers="h302">
+<p class="CellBody"><a name="pgfId_999186" id=
+"pgfId_999186"></a>Specifies the DNS host and domain names.</p>
+<p class="CellBody"><a name="pgfId_999740" id="pgfId_999740"></a>No
+default.</p>
+</td>
+</tr>
+</table>
+<p class="CellTitle"><br />
+<a name="pgfId_999140" id="pgfId_999140"></a>Service-Related</p>
+<table summary="Service-Related Properties" border="1" cellspacing=
+"2" cellpadding="0">
+<tr>
+<th id="h401">Property Name</th>
+<th id="h402">Description</th>
+</tr>
+<tr>
+<td headers="h401">
+<p class="CellName"><a name="pgfId_999144" id=
+"pgfId_999144"></a><code>java.naming.authoritative</code></p>
+<p class="CellName"><a name="pgfId_999583" id=
+"pgfId_999583"></a>(<code>Context.AUTHORITATIVE</code>)</p>
+</td>
+<td headers="h402">
+<p class="CellBody"><a name="pgfId_999200" id=
+"pgfId_999200"></a>Specifies the authoritativeness of the service
+requested. If &quot;<code>true</code>&quot;, specifies most
+authoritative source is to be used (e.g., bypass any caches, or
+bypass replicas in some systems). Otherwise, source need not be
+(but can be) authoritative.</p>
+<p class="CellBody"><a name="pgfId_999225" id=
+"pgfId_999225"></a>Defaults to &quot;<code>false</code>&quot;.</p>
+</td>
+</tr>
+<tr>
+<td headers="h401">
+<p class="CellName"><a name="pgfId_999148" id=
+"pgfId_999148"></a><code>java.naming.batchsize</code></p>
+<p class="CellName"><a name="pgfId_999584" id=
+"pgfId_999584"></a>(<code>Context.BATCHSIZE</code>)</p>
+</td>
+<td headers="h402">
+<p class="CellBody"><a name="pgfId_999212" id=
+"pgfId_999212"></a>Specifies the preferred batch size to use when
+returning data via the service's protocol. This is a hint to the
+provider to return the results of operations in batches of the
+specified size, so that the provider can optimize its performance
+and usage of resources. It does not affect the total number or size
+of the data returned.</p>
+<p class="CellBody"><a name="pgfId_999214" id=
+"pgfId_999214"></a>Defaults to provider default.</p>
+</td>
+</tr>
+<tr>
+<td headers="h401">
+<p class="CellName"><a name="pgfId_999460" id=
+"pgfId_999460"></a><code>java.naming.referral</code></p>
+<p class="CellName"><a name="pgfId_999585" id=
+"pgfId_999585"></a>(<code>Context.REFERRAL</code>)</p>
+</td>
+<td headers="h402">
+<p class="CellBody"><a name="pgfId_999462" id=
+"pgfId_999462"></a>Specifies that referrals encountered by the
+service provider are to be followed automatically. If
+&quot;<code>follow</code>&quot;, <code>follow</code> referrals
+automatically. If &quot;<code>ignore</code>&quot;,
+<code>ignore</code> referrals encountered. If
+&quot;<code>throw</code>&quot;, throw
+<code>ReferralException</code> when a referral is encountered.</p>
+<p class="CellBody"><a name="pgfId_999473" id=
+"pgfId_999473"></a>Defaults to provider default.</p>
+</td>
+</tr>
+</table>
+<p class="CellTitle"><br />
+<a name="pgfId_999152" id="pgfId_999152"></a>Security</p>
+<table summary="Security Properties" border="1" cellspacing="2"
+cellpadding="0">
+<tr>
+<th id="h501">Property Name</th>
+<th id="h502">Description</th>
+</tr>
+<tr>
+<td headers="h501">
+<p class="CellName"><a name="pgfId_999251" id=
+"pgfId_999251"></a><code>java.naming.security.protocol</code></p>
+<p class="CellName"><a name="pgfId_999586" id=
+"pgfId_999586"></a>(<code>Context.SECURITY_PROTOCOL</code>)</p>
+</td>
+<td headers="h502">
+<p class="CellBody"><a name="pgfId_999261" id=
+"pgfId_999261"></a>Security protocol to use for service.</p>
+<p class="CellBody"><a name="pgfId_999267" id=
+"pgfId_999267"></a>Defaults to provider default.</p>
+</td>
+</tr>
+<tr>
+<td headers="h501">
+<p class="CellName"><a name="pgfId_999247" id=
+"pgfId_999247"></a><code>java.naming.security.authentication</code></p>
+<p class="CellName"><a name="pgfId_999587" id=
+"pgfId_999587"></a>(<code>Context.SECURITY_AUTHENTICATION</code>)</p>
+</td>
+<td headers="h502">
+<p class="CellBody"><a name="pgfId_999277" id=
+"pgfId_999277"></a>Takes values &quot;<code>none</code>&quot;,
+&quot;<code>simple</code>&quot;, &quot;<code>strong</code>&quot;,
+or a provider-specific string (e.g., &quot;CRAM-MD5 DIGEST-MD5
+EXTERNAL&quot;).</p>
+<p class="CellBody"><a name="pgfId_999278" id=
+"pgfId_999278"></a>Defaults to provider default.</p>
+</td>
+</tr>
+<tr>
+<td headers="h501">
+<p class="CellName"><a name="pgfId_999243" id=
+"pgfId_999243"></a><code>java.naming.security.principal</code></p>
+<p class="CellName"><a name="pgfId_999588" id=
+"pgfId_999588"></a>(<code>Context.SECURITY_PRINCIPAL</code>)</p>
+</td>
+<td headers="h502">
+<p class="CellBody"><a name="pgfId_999292" id=
+"pgfId_999292"></a>Identity of principal (e.g., user) for the
+authentication scheme.</p>
+<p class="CellBody"><a name="pgfId_999293" id=
+"pgfId_999293"></a>Defaults to provider default.</p>
+</td>
+</tr>
+<tr>
+<td headers="h501">
+<p class="CellName"><a name="pgfId_999239" id=
+"pgfId_999239"></a><code>java.naming.security.credentials</code></p>
+<p class="CellName"><a name="pgfId_999591" id=
+"pgfId_999591"></a>(<code>Context.SECURITY_CREDENTIALS</code>)</p>
+</td>
+<td headers="h502">
+<p class="CellBody"><a name="pgfId_999313" id=
+"pgfId_999313"></a>Principal's credentials for the authentication
+scheme.</p>
+<p class="CellBody"><a name="pgfId_999751" id=
+"pgfId_999751"></a>The particular type of credentials is determined
+by the authentication scheme chosen. Examples of different types of
+credentials are passwords, keys, and certificates.</p>
+<p class="CellBody"><a name="pgfId_999318" id=
+"pgfId_999318"></a>Defaults to provider default.</p>
+</td>
+</tr>
+</table>
+<p class="CellTitle"><br />
+<a name="pgfId_999235" id=
+"pgfId_999235"></a>Internationalization</p>
+<table summary="Internationalization Properties" border="1"
+cellspacing="2" cellpadding="0">
+<tr>
+<th id="h601">Property Name</th>
+<th id="h602">Description</th>
+</tr>
+<tr>
+<td headers="h601">
+<p class="CellName"><a name="pgfId_999348" id=
+"pgfId_999348"></a><code>java.naming.language</code></p>
+<p class="CellName"><a name="pgfId_999592" id=
+"pgfId_999592"></a>(<code>Context.LANGUAGE</code>)</p>
+</td>
+<td headers="h602">
+<p class="CellBody"><a name="pgfId_999358" id=
+"pgfId_999358"></a>Specifies a colon-separated list of preferred
+language to use with this service (e.g., &quot;en-US&quot;,
+&quot;fr&quot;, &quot;fr-CH&quot;, &quot;ja-JP-kanji&quot;).</p>
+<p class="CellBody"><a name="pgfId_999363" id=
+"pgfId_999363"></a>Languages are specified using tags defined in
+RFC 1766.</p>
+<p class="CellBody"><a name="pgfId_999360" id=
+"pgfId_999360"></a>Defaults to provider default.</p>
+</td>
+</tr>
+</table>
+<hr align="left" />
+<div class="footnotes">
+<div class="footnote">
+<p class="TableFootnote"><span class="footnoteNumber">1.</span>
+<a name="pgfId_999608" id="pgfId_999608"></a>The
+<code>Context</code> and <code>LdapContext</code> interfaces define
+constants for these property names. The names of the constants are
+shown in parentheses below the property's string names.</p>
+</div>
+<div class="footnote">
+<p class="TableFootnote"><span class="footnoteNumber">2.</span>
+<a name="pgfId_999680" id="pgfId_999680"></a>These properties may
+be set in the Java runtime's system properties or in an applet's
+parameter list.</p>
+</div>
+<div class="footnote">
+<p class="TableFootnote"><span class="footnoteNumber">3.</span>
+<a name="pgfId_999686" id="pgfId_999686"></a>These properties may
+be set in the Java runtime's system properties or in an applet's
+parameter list.</p>
+</div>
+</div>
+<p><a href="jndiTOC.html">CONTENTS</a> | <a href=
+"jndi.9.html">PREV</a> | <a href=
+"appendix-ldap-example.html">NEXT</a></p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

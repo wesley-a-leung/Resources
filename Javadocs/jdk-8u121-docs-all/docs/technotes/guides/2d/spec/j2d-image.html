@@ -1,0 +1,2113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en">
+<head>
+<meta http-equiv="Content-Type" content=
+"text/html; charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="GENERATOR" content=
+"Quadralay WebWorks Publisher Professional Edition 7.0.2.1128" />
+<meta name="TEMPLATEBASE" content="book-no-index" />
+<meta name="LASTUPDATED" content="Tue Oct 15 15:10:43 2002" />
+<title>Imaging</title>
+<link rel="Table of Contents" href="j2d-bookTOC.html" />
+<link rel="Previous" href="j2d-fonts.html" />
+<link rel="Next" href="j2d-color.html" />
+<link rel="Index" href="j2d-print.html" />
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<table width="100%" summary="">
+<tr>
+<td align="left"><a accesskey="c" href=
+"j2d-bookTOC.html">Contents</a> | <a accesskey="p" href=
+"j2d-fonts.html">Previous</a> | <a accesskey="n" href=
+"j2d-color.html">Next</a></td>
+</tr>
+</table>
+<a name="wp65659" id="wp65659"></a>
+<h2 class="pChapNum">Chapter &#160; &#160;5</h2>
+<a name="wp65661" id="wp65661"></a>
+<h2 class="pChapTitle">Imaging</h2>
+<a name="wp65671" id="wp65671"></a>
+<p class="pBody">The Java 2D API supports three imaging
+models</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp68573"
+id="wp68573"></a>
+<div class="pBullet1">
+<ul>
+<li>The producer/consumer (push) model provided in previous
+versions of the JDK software.</li>
+</ul>
+</div>
+<a name="wp68580" id="wp68580"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>The immediate mode model.</li>
+</ul>
+</div>
+<a name="wp68578" id="wp68578"></a>
+<div class="pBullet1Last">
+<ul>
+<li>The pipeline (pull) model compatible with the immediate mode
+model and that will be fully implemented in the forthcoming Java
+Advanced Imaging API.</li>
+</ul>
+</div>
+</div>
+<a name="wp69740" id="wp69740"></a>
+<p class="pBody">The following table contrasts the features of each
+of these imaging models.</p>
+<a name="wp72976" id="wp72976"></a>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left">
+<table summary="features of imaging models" border="0" cellpadding=
+"7">
+<thead>
+<tr align="center">
+<th id="h101"><a name="wp72928" id="wp72928"></a>
+<div class="pCellHeading">&#160;</div>
+</th>
+<th id="h102"><a name="wp72930" id="wp72930"></a>
+<div class="pCellHeading">Push Model</div>
+</th>
+<th id="h103"><a name="wp72932" id="wp72932"></a>
+<div class="pCellHeading">Immediate Mode Image Buffer Model</div>
+</th>
+<th id="h104"><a name="wp72934" id="wp72934"></a>
+<div class="pCellHeading">Pull Model</div>
+</th>
+</tr>
+</thead>
+<tr align="left">
+<td headers="h101" align="left" valign="top"><a name="wp72936" id="wp72936"></a>
+<div class="pCellHeading">Major Interfaces/Classes</div>
+</td>
+<td headers="h102" align="left" valign="top">
+<div style="margin-left: 2em" class="pBullet1"><a name="wp72938"
+id="wp72938"></a>
+<div class="pBullet1">
+<ul>
+<li><code class="cCode">Image</code></li>
+</ul>
+</div>
+<a name="wp72939" id="wp72939"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">ImageProducer</code></li>
+</ul>
+</div>
+<a name="wp72940" id="wp72940"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">ImageConsumer</code></li>
+</ul>
+</div>
+<a name="wp72941" id="wp72941"></a>
+<div class="pBullet1Last">
+<ul>
+<li><code class="cCode">ImageObserver<br /></code></li>
+</ul>
+</div>
+</div>
+</td>
+<td headers="h103" align="left" valign="top">
+<div style="margin-left: 2em" class="pBullet1"><a name="wp72943"
+id="wp72943"></a>
+<div class="pBullet1">
+<ul>
+<li><code class="cCode">BufferedImage</code></li>
+</ul>
+</div>
+<a name="wp72944" id="wp72944"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">Raster</code></li>
+</ul>
+</div>
+<a name="wp72945" id="wp72945"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">BufferedImageOp</code></li>
+</ul>
+</div>
+<a name="wp72946" id="wp72946"></a>
+<div class="pBullet1Last">
+<ul>
+<li><code class="cCode">RasterOp<br /></code>(Java 2D API)</li>
+</ul>
+</div>
+</div>
+</td>
+<td headers="h104" align="left" valign="top">
+<div style="margin-left: 2em" class="pBullet1"><a name="wp72948"
+id="wp72948"></a>
+<div class="pBullet1">
+<ul>
+<li><code class="cCode">RenderableImage</code></li>
+</ul>
+</div>
+<a name="wp72949" id="wp72949"></a>
+<div class="pBullet1Last">
+<ul>
+<li><code class="cCode">RenderableImageOp<br /></code>(Java 2D
+API)</li>
+</ul>
+</div>
+</div>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp72950"
+id="wp72950"></a>
+<div class="pBullet1">
+<ul>
+<li><code class="cCode">RenderedOp</code></li>
+</ul>
+</div>
+<a name="wp72951" id="wp72951"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">RenderableOp</code></li>
+</ul>
+</div>
+<a name="wp72952" id="wp72952"></a>
+<div class="pBullet1Last">
+<ul>
+<li><code class="cCode">TiledImage<br /></code>(Java Advanced
+Imaging API)</li>
+</ul>
+</div>
+</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h101" align="left" valign="top"><a name="wp72954" id="wp72954"></a>
+<div class="pCellHeading">Pros</div>
+</td>
+<td headers="h102" align="left" valign="top">
+<div style="margin-left: 2em" class="pBullet1"><a name="wp72956"
+id="wp72956"></a>
+<div class="pBullet1">
+<ul>
+<li>Processing driven by image availability (e.g. over
+network)</li>
+</ul>
+</div>
+<a name="wp72957" id="wp72957"></a>
+<div class="pBullet1Last">
+<ul>
+<li>Images processed incrementally</li>
+</ul>
+</div>
+</div>
+</td>
+<td headers="h103" align="left" valign="top">
+<div style="margin-left: 2em" class="pBullet1"><a name="wp72959"
+id="wp72959"></a>
+<div class="pBullet1">
+<ul>
+<li>Simplest programming interface</li>
+</ul>
+</div>
+<a name="wp72960" id="wp72960"></a>
+<div class="pBullet1Last">
+<ul>
+<li>Commonly used model</li>
+</ul>
+</div>
+</div>
+</td>
+<td headers="h104" align="left" valign="top">
+<div style="margin-left: 2em" class="pBullet1"><a name="wp72962"
+id="wp72962"></a>
+<div class="pBullet1">
+<ul>
+<li>Stores/processes only required data</li>
+</ul>
+</div>
+<a name="wp72963" id="wp72963"></a>
+<div class="pBullet1Last">
+<ul>
+<li>Allows lazy evaluation</li>
+</ul>
+</div>
+</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h101" align="left" valign="top"><a name="wp72965" id="wp72965"></a>
+<div class="pCellHeading">Cons</div>
+</td>
+<td headers="h102" align="left" valign="top">
+<div style="margin-left: 2em" class="pBullet1"><a name="wp72967"
+id="wp72967"></a>
+<div class="pBullet1">
+<ul>
+<li>Requires transfer (but not processing)</li>
+</ul>
+</div>
+<a name="wp72968" id="wp72968"></a>
+<div class="pBullet1Last">
+<ul>
+<li>More complex programming interface</li>
+</ul>
+</div>
+</div>
+</td>
+<td headers="h103" align="left" valign="top">
+<div style="margin-left: 2em" class="pBullet1"><a name="wp72970"
+id="wp72970"></a>
+<div class="pBullet1">
+<ul>
+<li>Requires memory allocation of complete images</li>
+</ul>
+</div>
+<a name="wp72971" id="wp72971"></a>
+<div class="pBullet1Last">
+<ul>
+<li>Requires processing of complete images</li>
+</ul>
+</div>
+</div>
+</td>
+<td headers="h104" align="left" valign="top">
+<div style="margin-left: 2em" class="pBullet1"><a name="wp72973"
+id="wp72973"></a>
+<div class="pBullet1">
+<ul>
+<li>More complex programming interface</li>
+</ul>
+</div>
+<a name="wp72974" id="wp72974"></a>
+<div class="pBullet1Last">
+<ul>
+<li>More complex implementation</li>
+</ul>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<a name="wp65675" id="wp65675"></a>
+<p class="pBody">This chapter focuses on the objects and techniques
+of the immediate mode imaging model. The immediate mode imaging
+classes and interfaces of the Java 2D API provide techniques for
+dealing with pixel mapped images whose data is stored in memory.
+This API supports accessing image data in a variety of storage
+formats and manipulating image data through several types of
+filtering operations.</p>
+<a name="wp62520" id="wp62520"></a>
+<h2 class="pHeading1">5.1 Interfaces and Classes</h2>
+<a name="wp69754" id="wp69754"></a>
+<p class="pBody">The immediate mode imaging APIs in the Java
+2D API can be grouped into six categories: interfaces, image
+data classes, image operation classes, sample model classes, color
+model classes, and exceptions.</p>
+<a name="wp69751" id="wp69751"></a>
+<h3 class="pHeading2">5.1.1 Imaging Interfaces</h3>
+<a name="wp65180" id="wp65180"></a>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left">
+<table summary="interface and description" border="0" cellpadding=
+"7">
+<thead>
+<tr align="center">
+<th id="h201"><a name="wp62752" id="wp62752"></a>
+<div class="pCellHeading">Interface</div>
+</th>
+<th id="h202"><a name="wp62754" id="wp62754"></a>
+<div class="pCellHeading">Description</div>
+</th>
+</tr>
+</thead>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp62784" id="wp62784"></a>
+<div class="pCellBody"><code class=
+"cCode">BufferedImageOp</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp62971" id="wp62971"></a>
+<div class="pCellBody">Describes single-input/single-output
+operations performed on <code class="cCode">BufferedImage</code>
+objects. Implemented by <code class=
+"cCode">AffineTransformOp</code>, <code class=
+"cCode">ColorConvertOp</code>, <code class=
+"cCode">ConvolveOp</code>, <code class="cCode">LookupOp</code>, and
+<code class="cCode">RescaleOp</code>.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp62916" id="wp62916"></a>
+<div class="pCellBody"><code class="cCode">RasterOp</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp62975" id="wp62975"></a>
+<div class="pCellBody">Defines single-input/single-output
+operations performed on <code class="cCode">Raster</code> objects.
+Implemented by <code class="cCode">AffineTransformOp</code>,
+<code class="cCode">BandCombineOp</code>, <code class=
+"cCode">ColorConvertOp</code>, <code class=
+"cCode">ConvolveOp</code>, <code class="cCode">LookupOp</code>, and
+<code class="cCode">RescaleOp</code>.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp64598" id="wp64598"></a>
+<div class="pCellBody"><code class=
+"cCode">RenderedImage</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp64600" id="wp64600"></a>
+<div class="pCellBody">Defines a common protocol for objects that
+contain or can produce image data in the form of <code class=
+"cCode">Rasters</code>.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp64640" id="wp64640"></a>
+<div class="pCellBody"><code class=
+"cCode">WritableRenderedImage</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp64642" id="wp64642"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">RenderedImage</code></div>
+<a name="wp64643" id="wp64643"></a>
+<div class="pCellBody">Defines a common protocol for objects that
+contain or can produce image data in the form of <code class=
+"cCode">Rasters</code> which can be modified.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp64651" id="wp64651"></a>
+<div class="pCellBody"><code class=
+"cCode">TileObserver</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp64656" id="wp64656"></a>
+<div class="pCellBody">Defines a protocol for objects that want to
+be notified when the modification state of a <code class=
+"cCode">WritableRenderedImage</code> changes.</div>
+</td>
+</tr>
+</table>
+</div>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<a name="wp64405" id="wp64405"></a>
+<h3 class="pHeading2">5.1.2 Image Data Classes</h3>
+<a name="wp68794" id="wp68794"></a>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left">
+<table summary="Class and descriptions" border="0" cellpadding="7">
+<thead>
+<tr align="left">
+<th id="h301" align="left" valign="top"><a name="wp68733" id="wp68733"></a>
+<div class="pCellHeading">Class</div>
+</th>
+<th id="h302" align="left" valign="top"><a name="wp68735" id="wp68735"></a>
+<div class="pCellHeading">Description</div>
+</th>
+</tr>
+</thead>
+<tr align="left">
+<td headers="h301" align="left" valign="top"><a name="wp68737" id="wp68737"></a>
+<div class="pCellBody"><code class=
+"cCode">BufferedImage</code></div>
+</td>
+<td headers="h302" align="left" valign="top"><a name="wp68739" id="wp68739"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">Image</code></div>
+<a name="wp68740" id="wp68740"></a>
+<div class="pCellBody">Implements: <code class=
+"cCode">WriteableRenderedImage</code></div>
+<a name="wp68741" id="wp68741"></a>
+<div class="pCellBody">An image with an accessible data buffer. A
+<code class="cCode">BufferedImage</code> has a <code class=
+"cCode">ColorModel</code> and a <code class="cCode">Raster</code>
+of image data.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h301" align="left" valign="top"><a name="wp68743" id="wp68743"></a>
+<div class="pCellBody"><code class=
+"cCode">ByteLookupTable</code></div>
+</td>
+<td headers="h302" align="left" valign="top"><a name="wp68745" id="wp68745"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">LookupTable</code></div>
+<a name="wp68746" id="wp68746"></a>
+<div class="pCellBody">A <code class="cCode">LookupTable</code>
+that contains byte data.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h301" align="left" valign="top"><a name="wp68748" id="wp68748"></a>
+<div class="pCellBody"><code class="cCode">DataBuffer</code></div>
+</td>
+<td headers="h302" align="left" valign="top"><a name="wp68750" id="wp68750"></a>
+<div class="pCellBody">Wraps one or more data arrays holding pixel
+data. Each data array is called a <em class=
+"cEmphasis">bank</em>.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h301" align="left" valign="top"><a name="wp68752" id="wp68752"></a>
+<div class="pCellBody"><code class=
+"cCode">DataBufferByte</code></div>
+</td>
+<td headers="h302" align="left" valign="top"><a name="wp68754" id="wp68754"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">DataBuffer</code> (Final)</div>
+<a name="wp68755" id="wp68755"></a>
+<div class="pCellBody">A data buffer that stores bytes of data.
+(Used in Java Advanced Imaging API)</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h301" align="left" valign="top"><a name="wp68757" id="wp68757"></a>
+<div class="pCellBody"><code class=
+"cCode">DataBufferInt</code></div>
+</td>
+<td headers="h302" align="left" valign="top"><a name="wp68759" id="wp68759"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">DataBuffer</code> (Final)<code class="cCode">)</code></div>
+<a name="wp68760" id="wp68760"></a>
+<div class="pCellBody">A data buffer that stores integer data.(Used
+in Java Advanced Imaging API)</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h301" align="left" valign="top"><a name="wp68762" id="wp68762"></a>
+<div class="pCellBody"><code class=
+"cCode">DataBufferShort</code></div>
+</td>
+<td headers="h302" align="left" valign="top"><a name="wp68764" id="wp68764"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">DataBuffer</code> (Final)</div>
+<a name="wp68765" id="wp68765"></a>
+<div class="pCellBody">A data buffer that stores short data.(Used
+in Java Advanced Imaging API)</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h301" align="left" valign="top"><a name="wp68767" id="wp68767"></a>
+<div class="pCellBody"><code class=
+"cCode">DataBufferUShort</code></div>
+</td>
+<td headers="h302" align="left" valign="top"><a name="wp68769" id="wp68769"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">DataBuffer</code> (Final)</div>
+<a name="wp68770" id="wp68770"></a>
+<div class="pCellBody">A data buffer that stores unsigned short
+data.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h301" align="left" valign="top"><a name="wp68772" id="wp68772"></a>
+<div class="pCellBody"><code class="cCode">Kernel</code></div>
+</td>
+<td headers="h302" align="left" valign="top"><a name="wp68774" id="wp68774"></a>
+<div class="pCellBody">A matrix that describes how an input pixel
+and its surrounding pixels affect the value of an output pixel in a
+<code class="cCode">ConvolveOp</code> filtering operation.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h301" align="left" valign="top"><a name="wp68776" id="wp68776"></a>
+<div class="pCellBody"><code class="cCode">LookupTable</code></div>
+</td>
+<td headers="h302" align="left" valign="top"><a name="wp68778" id="wp68778"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">Object</code></div>
+<a name="wp68779" id="wp68779"></a>
+<div class="pCellBody">A table that maps values from single-banded
+pixel data to color values.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h301" align="left" valign="top"><a name="wp68781" id="wp68781"></a>
+<div class="pCellBody"><code class="cCode">Raster</code></div>
+</td>
+<td headers="h302" align="left" valign="top"><a name="wp68783" id="wp68783"></a>
+<div class="pCellBody">A rectangular array of pixels from which you
+can retrieve image data. A <code class="cCode">Raster</code>
+contains a <code class="cCode">DataBuffer</code> and a <code class=
+"cCode">SampleModel</code>.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h301" align="left" valign="top"><a name="wp68785" id="wp68785"></a>
+<div class="pCellBody"><code class=
+"cCode">ShortLookupTable</code></div>
+</td>
+<td headers="h302" align="left" valign="top"><a name="wp68787" id="wp68787"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">LookupTable</code></div>
+<a name="wp68788" id="wp68788"></a>
+<div class="pCellBody">A lookup table that contains short
+data.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h301" align="left" valign="top"><a name="wp68790" id="wp68790"></a>
+<div class="pCellBody"><code class=
+"cCode">WritableRaster</code></div>
+</td>
+<td headers="h302" align="left" valign="top"><a name="wp68792" id="wp68792"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">Raster</code></div>
+<a name="wp68793" id="wp68793"></a>
+<div class="pCellBody">A <code class="cCode">Raster</code> that you
+can modify.</div>
+</td>
+</tr>
+</table>
+</div>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<a name="wp68832" id="wp68832"></a>
+<h3 class="pHeading2">5.1.3 Image Operation Classes</h3>
+<a name="wp65263" id="wp65263"></a>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left">
+<table summary="class and description" border="0" cellpadding="7">
+<thead>
+<tr align="center">
+<th id="h401"><a name="wp65265" id="wp65265"></a>
+<div class="pCellHeading">Class</div>
+</th>
+<th id="h402"><a name="wp65267" id="wp65267"></a>
+<div class="pCellHeading">Description</div>
+</th>
+</tr>
+</thead>
+<tr align="left">
+<td headers="h401" align="left" valign="top"><a name="wp64417" id="wp64417"></a>
+<div class="pCellBody"><code class=
+"cCode">AffineTransformOp</code></div>
+</td>
+<td headers="h402" align="left" valign="top"><a name="wp64788" id="wp64788"></a>
+<div class="pCellBody">Implements: <code class=
+"cCode">BufferedImageOp</code>, <code class=
+"cCode">RasterOp</code></div>
+<a name="wp64817" id="wp64817"></a>
+<div class="pCellBody">A class that defines an affine transform to
+perform a linear mapping from 2D coordinates in a source
+<code class="cCode">Image</code> or <code class=
+"cCode">Raster</code> to 2D coordinates in the destination image or
+<code class="cCode">Raster</code>. This class can perform either
+bilinear or nearest neighbor affine transform operations.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h401" align="left" valign="top"><a name="wp64421" id="wp64421"></a>
+<div class="pCellBody"><code class=
+"cCode">BandCombineOp</code></div>
+</td>
+<td headers="h402" align="left" valign="top"><a name="wp64821" id="wp64821"></a>
+<div class="pCellBody">Implements: <code class=
+"cCode">RasterOp</code></div>
+<a name="wp64825" id="wp64825"></a>
+<div class="pCellBody">Using a specified matrix, this operation
+performs an arbitrary linear combination of bands in a <code class=
+"cCode">Raster</code>.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h401" align="left" valign="top"><a name="wp68838" id="wp68838"></a>
+<div class="pCellBody"><code class=
+"cCode">BufferedImageFilter</code></div>
+</td>
+<td headers="h402" align="left" valign="top"><a name="wp68840" id="wp68840"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">ImageFilter</code></div>
+<a name="wp68841" id="wp68841"></a>
+<div class="pCellBody">An <code class="cCode">ImageFilter</code>
+that provides a simple means of using a <code class=
+"cCode">BufferedImageOp</code> (a single-source/single-destination
+image operator) to filter a <code class=
+"cCode">BufferedImage</code> or <code class=
+"cCode">Raster</code>.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h401" align="left" valign="top"><a name="wp64429" id="wp64429"></a>
+<div class="pCellBody"><code class=
+"cCode">ColorConvertOp</code></div>
+</td>
+<td headers="h402" align="left" valign="top"><a name="wp64848" id="wp64848"></a>
+<div class="pCellBody">Implements: <code class=
+"cCode">BufferedImageOp</code>, <code class=
+"cCode">RasterOp</code></div>
+<a name="wp64850" id="wp64850"></a>
+<div class="pCellBody">Performs a pixel-by-pixel color conversion
+of the data in the source image.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h401" align="left" valign="top"><a name="wp64433" id="wp64433"></a>
+<div class="pCellBody"><code class="cCode">ConvolveOp</code></div>
+</td>
+<td headers="h402" align="left" valign="top"><a name="wp68443" id="wp68443"></a>
+<div class="pCellBody">Implements: <code class=
+"cCode">BufferedImageOp</code>, <code class=
+"cCode">RasterOp</code></div>
+<a name="wp64857" id="wp64857"></a>
+<div class="pCellBody">Uses a <code class="cCode">Kernel</code> to
+perform a convolution on the source image. A convolution is a
+spatial operation where the pixels surrounding the input pixel are
+multiplied by a kernel value to generate the value of the output
+pixel. The <code class="cCode">Kernel</code> mathematically defines
+the relationship between the pixels in the immediate neighborhood
+of the input pixel and the output pixel.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h401" align="left" valign="top"><a name="wp64441" id="wp64441"></a>
+<div class="pCellBody"><code class="cCode">LookupOp</code></div>
+</td>
+<td headers="h402" align="left" valign="top"><a name="wp64882" id="wp64882"></a>
+<div class="pCellBody">Implements: <code class=
+"cCode">BufferedImageOp</code>, <code class=
+"cCode">RasterOp</code></div>
+<a name="wp64879" id="wp64879"></a>
+<div class="pCellBody">Performs a lookup operation from the source
+to the destination. For <code class="cCode">Rasters</code>, the
+lookup operates on sample values. For <code class=
+"cCode">BufferedImages</code>, the lookup operates on color and
+alpha components.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h401" align="left" valign="top"><a name="wp64449" id="wp64449"></a>
+<div class="pCellBody"><code class="cCode">RescaleOp</code></div>
+</td>
+<td headers="h402" align="left" valign="top"><a name="wp64912" id="wp64912"></a>
+<div class="pCellBody">Implements: <code class=
+"cCode">BufferedImageOp</code>, <code class=
+"cCode">RasterOp</code></div>
+<a name="wp64914" id="wp64914"></a>
+<div class="pCellBody">Performs a pixel-by-pixel rescaling of the
+data in the source image by multiplying each pixel value by a scale
+factor and then adding an offset.</div>
+</td>
+</tr>
+</table>
+</div>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<a name="wp64487" id="wp64487"></a>
+<h3 class="pHeading2">5.1.4 Sample Model Classes</h3>
+<a name="wp65271" id="wp65271"></a>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left">
+<table summary="class and description" border="0" cellpadding="7">
+<thead>
+<tr align="center">
+<th id="h501"><a name="wp65273" id="wp65273"></a>
+<div class="pCellHeading">Class</div>
+</th>
+<th id="h502"><a name="wp65275" id="wp65275"></a>
+<div class="pCellHeading">Description</div>
+</th>
+</tr>
+</thead>
+<tr align="left">
+<td headers="h501" align="left" valign="top"><a name="wp64468" id="wp64468"></a>
+<div class="pCellBody"><code class=
+"cCode">BandedSampleModel</code></div>
+</td>
+<td headers="h502" align="left" valign="top"><a name="wp64958" id="wp64958"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">ComponentSampleModel</code> (Final)</div>
+<a name="wp64963" id="wp64963"></a>
+<div class="pCellBody">Provides access to image data stored with
+like samples stored as bands in separate banks of a <code class=
+"cCode">DataBuffer</code>. A pixel consists of one sample from each
+band.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h501" align="left" valign="top"><a name="wp64472" id="wp64472"></a>
+<div class="pCellBody"><code class=
+"cCode">ComponentSampleModel</code></div>
+</td>
+<td headers="h502" align="left" valign="top"><a name="wp64982" id="wp64982"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">SampleModel</code></div>
+<a name="wp64992" id="wp64992"></a>
+<div class="pCellBody">Provides access to image data stored with
+each sample of a pixel residing in a separate element of a
+<code class="cCode">DataBuffer</code>. Different types of pixel
+interleaving are supported.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h501" align="left" valign="top"><a name="wp68449" id="wp68449"></a>
+<div class="pCellBody"><code class=
+"cCode">MultiPixelPackedSampleModel</code></div>
+</td>
+<td headers="h502" align="left" valign="top"><a name="wp68451" id="wp68451"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">SampleModel</code></div>
+<a name="wp68452" id="wp68452"></a>
+<div class="pCellBody">Provides access to image data stored with
+multiple one-sample pixels packed into one element of a
+<code class="cCode">DataBuffer</code>.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h501" align="left" valign="top"><a name="wp64476" id="wp64476"></a>
+<div class="pCellBody"><code class=
+"cCode">PixelInterleavedSampleModel</code></div>
+</td>
+<td headers="h502" align="left" valign="top"><a name="wp64984" id="wp64984"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">ComponentSampleModel</code></div>
+<a name="wp68568" id="wp68568"></a>
+<div class="pCellBody">Provides access to image data stored with
+the sample data for each pixel in adjacent elements of the data
+array, and all elements in a single bank of a <code class=
+"cCode">DataBuffer</code>.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h501" align="left" valign="top"><a name="wp64480" id="wp64480"></a>
+<div class="pCellBody"><code class="cCode">SampleModel</code></div>
+</td>
+<td headers="h502" align="left" valign="top"><a name="wp65042" id="wp65042"></a>
+<div class="pCellBody">An abstract class that defines a mechanism
+for extracting sample data from an image without knowing how the
+underlying data is stored in a <code class=
+"cCode">DataBuffer</code>.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h501" align="left" valign="top"><a name="wp64484" id="wp64484"></a>
+<div class="pCellBody"><code class=
+"cCode">SinglePixelPackedSampleModel</code></div>
+</td>
+<td headers="h502" align="left" valign="top"><a name="wp64988" id="wp64988"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">SampleModel</code></div>
+<a name="wp68911" id="wp68911"></a>
+<div class="pCellBody">Provides access to image data stored with
+all the samples belonging to an individual pixel packed into one
+element of a <code class="cCode">DataBuffer</code>.</div>
+</td>
+</tr>
+</table>
+</div>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<a name="wp64040" id="wp64040"></a>
+<h3 class="pHeading2">5.1.5 Color Model Classes</h3>
+<a name="wp69804" id="wp69804"></a>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left">
+<table summary="class and description" border="0" cellpadding="7">
+<thead>
+<tr align="center">
+<th id="h601"><a name="wp65281" id="wp65281"></a>
+<div class="pCellHeading">Class</div>
+</th>
+<th id="h602"><a name="wp65283" id="wp65283"></a>
+<div class="pCellHeading">Description</div>
+</th>
+</tr>
+</thead>
+<tr align="left">
+<td headers="h601" align="left" valign="top"><a name="wp64227" id="wp64227"></a>
+<div class="pCellBody"><code class="cCode">ColorModel</code></div>
+</td>
+<td headers="h602" align="left" valign="top"><a name="wp64229" id="wp64229"></a>
+<div class="pCellBody">Implements: <code class=
+"cCode">Transparency</code></div>
+<a name="wp65085" id="wp65085"></a>
+<div class="pCellBody">An abstract class that defines
+methods for translating from image pixel values to color components
+such as red, green, and blue.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h601" align="left" valign="top"><a name="wp64236" id="wp64236"></a>
+<div class="pCellBody"><code class=
+"cCode">ComponentColorModel</code></div>
+</td>
+<td headers="h602" align="left" valign="top"><a name="wp64238" id="wp64238"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">ColorModel</code></div>
+<a name="wp65105" id="wp65105"></a>
+<div class="pCellBody">A <code class="cCode">ColorModel</code> that
+can handle an arbitrary <code class="cCode">ColorSpace</code> and
+an array of color components to match the <code class=
+"cCode">ColorSpace</code>. This class can be used to represent most
+color models on most types of <code class=
+"cCode">GraphicsDevices</code>.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h601" align="left" valign="top"><a name="wp64244" id="wp64244"></a>
+<div class="pCellBody"><code class=
+"cCode">DirectColorModel</code></div>
+</td>
+<td headers="h602" align="left" valign="top"><a name="wp65098" id="wp65098"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">PackedColorModel</code></div>
+<a name="wp65118" id="wp65118"></a>
+<div class="pCellBody"> A <code class=
+"cCode">ColorModel</code> that represents pixel values that have
+RGB color components embedded directly in the bits of the pixel.
+This color model is similar to an X11 TrueColor visual. The default
+RGB <code class="cCode">ColorModel</code> returned by <code class=
+"cCode">ColorModel</code><code class="cCode">.</code><code class=
+"cCode">getRGBdefault</code> is a <code class=
+"cCode">DirectColorModel</code>.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h601" align="left" valign="top"><a name="wp64260" id="wp64260"></a>
+<div class="pCellBody"><code class=
+"cCode">IndexColorModel</code></div>
+</td>
+<td headers="h602" align="left" valign="top"><a name="wp65100" id="wp65100"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">ColorModel</code></div>
+<a name="wp65145" id="wp65145"></a>
+<div class="pCellBody">A <code class=
+"cCode">ColorModel</code> that represents pixel values that are
+indices into a fixed color map in the sRGB <code class=
+"cCode">ColorSpace</code>.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h601" align="left" valign="top"><a name="wp64264" id="wp64264"></a>
+<div class="pCellBody"><code class=
+"cCode">PackedColorModel</code></div>
+</td>
+<td headers="h602" align="left" valign="top"><a name="wp65102" id="wp65102"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">ColorModel</code></div>
+<a name="wp65160" id="wp65160"></a>
+<div class="pCellBody">An abstract <code class=
+"cCode">ColorModel</code> that represents pixel values that have
+color components embedded directly in the bits of a pixel.
+<code class="cCode">DirectColorModel</code> extends <code class=
+"cCode">PackedColorModel</code> to support pixels that contain RGB
+color components.</div>
+</td>
+</tr>
+</table>
+</div>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<a name="wp68512" id="wp68512"></a>
+<h3 class="pHeading2">5.1.6 Exception Classes</h3>
+<a name="wp69810" id="wp69810"></a>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left">
+<table summary="class and description" border="0" cellpadding="7">
+<thead>
+<tr align="center">
+<th id="h701"><a name="wp68484" id="wp68484"></a>
+<div class="pCellHeading">Class</div>
+</th>
+<th id="h702"><a name="wp68486" id="wp68486"></a>
+<div class="pCellHeading">Description</div>
+</th>
+</tr>
+</thead>
+<tr align="left">
+<td headers="h701" align="left" valign="top"><a name="wp68488" id="wp68488"></a>
+<div class="pCellBody"><code class=
+"cCode">ImagingOpException</code></div>
+</td>
+<td headers="h702" align="left" valign="top"><a name="wp68490" id="wp68490"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">RuntimeException</code></div>
+<a name="wp68491" id="wp68491"></a>
+<div class="pCellBody">Thrown if one of the BufferedImageOp or
+RasterOp filter methods can&#8217;t process the image.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h701" align="left" valign="top"><a name="wp68493" id="wp68493"></a>
+<div class="pCellBody"><code class=
+"cCode">RasterFormatException</code></div>
+</td>
+<td headers="h702" align="left" valign="top"><a name="wp68495" id="wp68495"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">RuntimeException</code></div>
+<a name="wp68496" id="wp68496"></a>
+<div class="pCellBody">Thrown if there is invalid layout
+information in the Raster.</div>
+</td>
+</tr>
+</table>
+</div>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<a name="wp64209" id="wp64209"></a>
+<h2 class="pHeading1">5.2 Immediate Mode Imaging Concepts</h2>
+<a name="wp65688" id="wp65688"></a>
+<p class="pBody">The immediate mode imaging model supports
+fixed-resolution images stored in memory. The model also supports
+filtering operations on image data. A number of classes and
+interfaces are used in this model.</p>
+<a name="wp65861" id="wp65861"></a>
+<p class="pBody"></p>
+<div align="left"><img src="images/t606a8.jpg" alt=
+"The following context describes this graphic." border="0" hspace=
+"0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp65690" id="wp65690"></a>
+<div class="pFigureCaption">Figure 5-1 BufferedImage and supporting
+classes<br />
+<br /></div>
+<a name="wp69065" id="wp69065"></a>
+<p class="pBody">As shown in <a href=
+"j2d-image.html#wp65690">Figure&#160;5-1</a>, <code class=
+"cCode">BufferedImage</code> provides general image management. A
+<code class="cCode">BufferedImage</code> can be created directly in
+memory and used to hold and manipulate image data retrieved from a
+file or URL. A <code class="cCode">BufferedImage</code> can be
+displayed using any <code class="cCode">Graphics2D</code> object
+for a screen device, or rendered to any other destination using
+appropriate <code class="cCode">Graphics2D</code> context. A
+<code class="cCode">BufferedImage</code> object contains two other
+objects: a <code class="cCode">Raster</code> and a <code class=
+"cCode">ColorModel</code>.</p>
+<a name="wp65692" id="wp65692"></a>
+<p class="pBody">The <code class="cCode">Raster</code> class
+provides image data management. It represents the rectangular
+coordinates of the image, maintains image data in memory, and
+provides a mechanism for creating multiple subimages from a single
+image data buffer. It also provides methods for accessing specific
+pixels within an image. A Raster object contains two other objects,
+a <code class="cCode">DataBuffer</code> and a <code class=
+"cCode">SampleModel</code>.</p>
+<a name="wp65694" id="wp65694"></a>
+<p class="pBody">The <code class="cCode">DataBuffer</code> class
+holds pixel data in memory.</p>
+<a name="wp65696" id="wp65696"></a>
+<p class="pBody">The <code class="cCode">SampleModel</code> class
+interprets data in the buffer and provides it as individual pixels
+or rectangular ranges of pixels.</p>
+<a name="wp65698" id="wp65698"></a>
+<p class="pBody">The <code class="cCode">ColorModel</code> class
+provides a color interpretation of pixel data provided by the
+image&#8217;s sample model.</p>
+<a name="wp67352" id="wp67352"></a>
+<p class="pBody">The image package provides additional classes that
+define filtering operations on <code class=
+"cCode">BufferedImage</code> and <code class="cCode">Raster</code>
+objects. Each image processing operation is embodied in a class
+that implements the <code class="cCode">BufferedImageOp</code>
+interface, the <code class="cCode">RasterOp</code> interface, or
+both interfaces. The operation class defines <code class=
+"cCode">filter</code> methods that performs the actual image
+manipulation.</p>
+<a name="wp67356" id="wp67356"></a>
+<p class="pBody"><a href=
+"j2d-image.html#wp67384">Figure&#160;5-2</a> illustrates the basic
+model for Java 2D API image processing:</p>
+<a name="wp67382" id="wp67382"></a>
+<p class="pBody"></p>
+<div><img src="images/j2d-imagea.gif" height="132" width="456" alt=
+"Flow diagram shows that the source image flows through an image-processing operation before becoming the destination image."
+border="0" hspace="0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp67384" id="wp67384"></a>
+<div class="pFigureCaption">Figure 5-2 Image Processing Model<br />
+<br /></div>
+<a name="wp67385" id="wp67385"></a>
+<p class="pBody">The operations supported include:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp67386"
+id="wp67386"></a>
+<div class="pBullet1">
+<ul>
+<li>Affine transformation</li>
+</ul>
+</div>
+<a name="wp67387" id="wp67387"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>Amplitude scaling</li>
+</ul>
+</div>
+<a name="wp67388" id="wp67388"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>Lookup-table modification</li>
+</ul>
+</div>
+<a name="wp67389" id="wp67389"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>Linear combination of bands</li>
+</ul>
+</div>
+<a name="wp67390" id="wp67390"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>Color conversion</li>
+</ul>
+</div>
+<a name="wp67391" id="wp67391"></a>
+<div class="pBullet1Last">
+<ul>
+<li>Convolution</li>
+</ul>
+</div>
+</div>
+<a name="wp67350" id="wp67350"></a>
+<p class="pBody">Note that if you&#8217;re interested just in
+displaying and manipulating images, you only need to understand the
+<code class="cCode">BufferedImage</code> class and the filtering
+operation classes. On the other hand, if you&#8217;re planning to
+write filters or otherwise directly access image data, you&#8217;ll
+need to understand the classes associated with <code class=
+"cCode">BufferedImage</code>.</p>
+<a name="wp65725" id="wp65725"></a>
+<h3 class="pHeading2">5.2.1 Terminology</h3>
+<a name="wp65727" id="wp65727"></a>
+<p class="pBody">Here are some terms used throughout the following
+discussions:</p>
+<a name="wp65758" id="wp65758"></a>
+<p class="pBody">Data Elements: primitive types used as units of
+storage of image data. Data elements are individual members of a
+<code class="cCode">DataBuffer</code> array. The layout of elements
+in the data buffer is independent of the interpretation of the data
+as pixels by an image&#8217;s <code class=
+"cCode">SampleModel</code>.</p>
+<a name="wp65729" id="wp65729"></a>
+<p class="pBody">Samples: distinct members of the pixels of an
+image. A <code class="cCode">SampleModel</code> provides a
+mechanism for converting elements in the <code class=
+"cCode">DataBuffer</code> to pixels and their samples. The samples
+of a pixel may represent primary values in a particular color
+model. For example, a pixel in an RGB color model consists of three
+samples: red, green, and blue.</p>
+<a name="wp69136" id="wp69136"></a>
+<p class="pBody">Components: values of pixels independent of color
+interpretation. The distinction between component and sample is
+useful with <code class="cCode">IndexColorModel</code>, where pixel
+components are indexes into the <code class=
+"cCode">LookupTable</code>.</p>
+<a name="wp65731" id="wp65731"></a>
+<p class="pBody">Band: the set of all samples of one type in an
+image, such as all red samples or all green samples. Pixel data can
+be stored in a number of ways, the two supported in the Java 2D API
+being banded and pixel interleaved. Banded storage organizes image
+data by bands, and a pixel is made up of sample data from the same
+position in each band. Pixel interleaved storage organizes image
+data by pixels, with a single array containing all pixels, and
+bands consisting of the set of samples at the same index position
+in each pixel.</p>
+<a name="wp65733" id="wp65733"></a>
+<p class="pBody">Primaries: distinct members of a color value in a
+specific color model; for example the RGB model forms color values
+from the primaries red, green, and blue.</p>
+<a name="wp66504" id="wp66504"></a>
+<h2 class="pHeading1">5.3 Using BufferedImages</h2>
+<a name="wp66506" id="wp66506"></a>
+<p class="pBody">The <code class="cCode">BufferedImage</code> class
+is the main class supporting the immediate imaging mode. It manages
+an image in memory, providing ways to store pixel data, interpret
+pixel data, and to render the pixel data to a <code class=
+"cCode">Graphics</code> or <code class="cCode">Graphics2D</code>
+context.</p>
+<a name="wp66509" id="wp66509"></a>
+<h3 class="pHeading2">5.3.1 Creating a BufferedImage</h3>
+<a name="wp67919" id="wp67919"></a>
+<p class="pBody">To create a <code class=
+"cCode">BufferedImage</code>, call the <code class=
+"cCode">Component.createImage</code> method; this returns a
+<code class="cCode">BufferedImage</code> whose drawing
+characteristics match those of the component used to create
+it&#8212;the created image is opaque, has the foreground and
+background colors of the <code class="cCode">Component</code>, and
+you can&#8217;t adjust the transparency of the image. You could use
+this technique when you want to do double buffered drawing for
+animation in a component; the discussion <a href=
+"j2d-image.html#wp67210">&#8220;Drawing in an Offscreen
+Buffer&#8221;</a> gives more details.</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+    public Graphics2D createDemoGraphics2D(Graphics g) {<a name=
+"wp67979" id="wp67979"> </a>
+        Graphics2D g2 = null;<a name="wp67980" id="wp67980"> </a>
+        int width = getSize().width; <a name="wp67981" id=
+"wp67981"> </a>
+        int height = getSize().height; <a name="wp67982" id=
+"wp67982"> </a>
+<a name="wp67983" id="wp67983"> </a>
+        if (offImg == null || offImg.getWidth() != width ||<a name=
+"wp67984" id="wp67984"> </a>
+                        offImg.getHeight() != height) {<a name=
+"wp67985" id="wp67985"> </a>
+            offImg = (BufferedImage) createImage(width, height);<a name="wp67986"
+id="wp67986"> </a>
+        } <a name="wp67987" id="wp67987"> </a>
+<a name="wp67988" id="wp67988"> </a>
+        if (offImg != null) {<a name="wp67989" id="wp67989"> </a>
+            g2 = offImg.createGraphics();<a name="wp67990" id=
+"wp67990"> </a>
+            g2.setBackground(getBackground());<a name="wp67991" id=
+"wp67991"> </a>
+        }<a name="wp67992" id="wp67992"> </a>
+<a name="wp67993" id="wp67993"> </a>
+        // .. clear canvas ..<a name="wp67998" id="wp67998"> </a>
+        g2.clearRect(0, 0, width, height);<a name="wp67999" id=
+"wp67999"> </a>
+<a name="wp68000" id="wp68000"> </a>
+        return g2;<a name="wp68001" id="wp68001"> </a>
+    }<a name="wp67916" id="wp67916"> </a>
+</pre></div>
+<a name="wp66519" id="wp66519"></a>
+<p class="pBody">You can also create a blank <code class=
+"cCode">BufferedImage</code> in memory using one of several
+constructor methods provided.</p>
+<a name="wp66525" id="wp66525"></a>
+<h3 class="pHeading2">5.3.2 Drawing in an Offscreen Buffer</h3>
+<a name="wp67511" id="wp67511"></a>
+<p class="pBody">The <code class="cCode">BufferedImage</code> class
+can be used to prepare graphic elements offscreen then copy them to
+the screen. This technique is especially useful when a graphic is
+complex or used repeatedly. For example, if you want to display a
+complicated shape several times, you could draw it once into an
+offscreen buffer and then copy it to different locations in the
+window. By drawing the shape once and copying it, you can display
+the graphics more quickly.</p>
+<a name="wp67512" id="wp67512"></a>
+<p class="pBody">The <code class="cCode">java.awt</code> package
+facilitates the use of offscreen buffers by letting you draw to an
+<code class="cCode">Image</code> object the same way that you draw
+to a window. All of the Java 2D API rendering features can
+be used when drawing to offscreen images.</p>
+<a name="wp67516" id="wp67516"></a>
+<p class="pBody">Offscreen buffers are often used for animation.
+For example, you could use an offscreen buffer to draw an object
+once and then move it around in a window. Similarly, you could use
+an offscreen buffer to provide feedback as a user moves a graphic
+using the mouse. Instead of redrawing the graphic at every mouse
+location, you could draw the graphic once to an offscreen buffer,
+and then copy it to the mouse location as the user drags the
+mouse.<a href="#wp67519"><span class="Footnote">1</span></a></p>
+<a name="wp67523" id="wp67523"></a>
+<p class="pBody"></p>
+<div align="right"><img src="images/j2d-image11.gif" height="238"
+width="468" alt="The following context describes this graphic."
+border="0" hspace="0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp67525" id="wp67525"></a>
+<div class="pFigureCaption">Figure 5-3 Using an Offscreen
+Buffer<br />
+<br /></div>
+<a name="wp67529" id="wp67529"></a>
+<p class="pBody"><a href=
+"j2d-image.html#wp67525">Figure&#160;5-3</a> demonstrates how a
+program can draw to an offscreen image and then copy that image
+into a window multiple times. The last time the image is copied, it
+is transformed. Note that transforming the image instead of
+redrawing it with the transformation might produce unsatisfactory
+results.</p>
+<a name="wp67530" id="wp67530"></a>
+<h4 class="pHeading3">5.3.2.1 Creating an Offscreen Buffer</h4>
+<a name="wp67531" id="wp67531"></a>
+<p class="pBody">The simplest way to create an image that you can
+use as an offscreen buffer is to use the <code class=
+"cCode">Component</code>.<code class="cCode">createImage</code>
+method.</p>
+<a name="wp67532" id="wp67532"></a>
+<p class="pBody">By creating an image whose color space, depth, and
+pixel layout exactly match the window into which you are drawing,
+the image can be efficiently blitted to a graphics device. This
+allows <code class="cCode">drawImage</code> to do its job
+quickly.</p>
+<a name="wp67533" id="wp67533"></a>
+<p class="pBody">You can also construct a <code class=
+"cCode">BufferedImage</code> object directly to use as an offscreen
+buffer. This is useful when you need control over the offscreen
+image&#8217;s type or transparency.</p>
+<a name="wp67534" id="wp67534"></a>
+<p class="pBody"><code class="cCode">BufferedImage</code> supports
+several predefined image types:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp67535"
+id="wp67535"></a>
+<div class="pBullet1">
+<ul>
+<li><code class="cCode">TYPE_3BYTE_BGR</code></li>
+</ul>
+</div>
+<a name="wp67536" id="wp67536"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">TYPE_4BYTE_ABGR</code></li>
+</ul>
+</div>
+<a name="wp67537" id="wp67537"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">TYPE_4BYTE_ABGR_PRE</code></li>
+</ul>
+</div>
+<a name="wp69224" id="wp69224"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">TYPE_BYTE_BINARY</code></li>
+</ul>
+</div>
+<a name="wp69228" id="wp69228"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">TYPE_BYTE_GRAY</code></li>
+</ul>
+</div>
+<a name="wp69238" id="wp69238"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">TYPE_BYTE_INDEXED</code></li>
+</ul>
+</div>
+<a name="wp67539" id="wp67539"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">TYPE_CUSTOM</code></li>
+</ul>
+</div>
+<a name="wp69260" id="wp69260"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">TYPE_INT_ARGB_PRE</code></li>
+</ul>
+</div>
+<a name="wp67540" id="wp67540"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">TYPE_INT_ARGB</code></li>
+</ul>
+</div>
+<a name="wp69264" id="wp69264"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">TYPE_INT_BGR</code></li>
+</ul>
+</div>
+<a name="wp69274" id="wp69274"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">TYPE_INT_RGB</code></li>
+</ul>
+</div>
+<a name="wp69284" id="wp69284"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">TYPE_USHORT_555_RGB</code></li>
+</ul>
+</div>
+<a name="wp69288" id="wp69288"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">TYPE_USHORT_565_RGB</code></li>
+</ul>
+</div>
+<a name="wp69268" id="wp69268"></a>
+<div class="pBullet1Last">
+<ul>
+<li><code class="cCode">TYPE_INT_GRAY</code></li>
+</ul>
+</div>
+</div>
+<a name="wp69324" id="wp69324"></a>
+<p class="pBody">A <code class="cCode">BufferedImage</code> object
+can contain an alpha channel. In <a href=
+"j2d-image.html#wp67525">Figure&#160;5-3</a>, an alpha channel is
+used to distinguish painted and unpainted areas, allowing an
+irregular shape to appear over graphics that have already been
+painted (in this case, a shaded rectangle). In other cases, you
+might use alpha channel to blend the colors of the new image into
+those in the existing image.</p>
+<a name="wp69325" id="wp69325"></a>
+<p class="pBody">Note: unless you need alpha image data for
+transparency, as with the irregularly shaped images shown in Figure
+5-2, you should avoid creating an off-screen buffer with alpha.
+Using alpha where it&#8217;s unnecessary slows rendering
+performance.</p>
+<a name="wp67543" id="wp67543"></a>
+<p class="pBody"><code class="cCode">GraphicsConfiguration</code>
+provides convenience methods that automatically create buffered
+images in a format compatible with your configuration. You can also
+query the graphics configuration associated with the graphics
+device on which the window resides to get the information you need
+to construct a compatible <code class="cCode">BufferedImage</code>
+object.</p>
+<a name="wp67210" id="wp67210"></a>
+<h4 class="pHeading3">5.3.2.2 Drawing in an Offscreen Buffer</h4>
+<a name="wp66527" id="wp66527"></a>
+<p class="pBody">To draw in a buffered image, you call its
+<code class="cCode">BufferedImage.createGraphics</code> method,
+which returns a <code class="cCode">Graphics2D</code> object. With
+this object, you can call all of the <code class=
+"cCode">Graphics2D</code> methods to draw graphics primitives,
+place text, and render other images in the image. This drawing
+technique supports dithering and other enhancements provided by the
+2D imaging package. The following code illustrates the use of
+offscreen buffering:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp70019" id="wp70019"> </a>
+<code class=
+"cCode">    public void update(Graphics g){</code><a name="wp70162"
+id="wp70162"> </a>
+<code class=
+"cCode">        Graphics2D g2 = (Graphics2D)g;</code><a name=
+"wp70163" id="wp70163"> </a>
+<code class="cCode">        if(firstTime){</code><a name="wp70165"
+id="wp70165"> </a>
+<code class=
+"cCode">            Dimension dim = getSize();</code><a name=
+"wp70166" id="wp70166"> </a>
+<code class="cCode">            int w = dim.width;</code><a name=
+"wp70167" id="wp70167"> </a>
+<code class="cCode">            int h = dim.height;</code><a name=
+"wp70168" id="wp70168"> </a>
+<code class=
+"cCode">            area = new Rectangle(dim);</code><a name=
+"wp70169" id="wp70169"> </a>
+<b class=
+"cBold">            bi = (BufferedImage)createImage(w, h);</b><a name="wp70170"
+id="wp70170"> </a>
+<b class="cBold">            big = bi.createGraphics();</b><a name=
+"wp70171" id="wp70171"> </a>
+<b class=
+"cBold">            rect.setLocation(w/2-50, h/2-25);</b><a name=
+"wp70172" id="wp70172"> </a>
+<b class=
+"cBold">            big.setStroke(new BasicStroke(8.0f));</b><a name="wp70173"
+id="wp70173"> </a>
+<b class="cBold">            firstTime = false;</b><a name=
+"wp70174" id="wp70174"> </a>
+<b class="cBold">        } </b><a name="wp70175" id="wp70175"> </a>
+<a name="wp70176" id="wp70176"> </a>
+<b class=
+"cBold">        // Clears the rectangle that was previously drawn.</b><a name="wp70177"
+id="wp70177"> </a>
+<b class="cBold">        big.setColor(Color.white);</b><a name=
+"wp70178" id="wp70178"> </a>
+<b class=
+"cBold">        big.clearRect(0, 0, area.width, area.height);</b><a name="wp70179"
+id="wp70179"> </a>
+<a name="wp70180" id="wp70180"> </a>
+<b class=
+"cBold">        // Draws and fills the newly positioned rectangle to the buffer.</b><a name="wp70181"
+id="wp70181"> </a>
+<b class="cBold">        big.setPaint(strokePolka);</b><a name=
+"wp70182" id="wp70182"> </a>
+<b class="cBold">        big.draw(rect);</b><a name="wp70183" id=
+"wp70183"> </a>
+<b class="cBold">        big.setPaint(fillPolka);</b><a name=
+"wp70184" id="wp70184"> </a>
+<b class="cBold">        big.fill(rect);</b><a name="wp70185" id=
+"wp70185"> </a>
+<a name="wp70186" id="wp70186"> </a>
+<b class=
+"cBold">        // Draws the buffered image to the screen.</b><a name="wp70187"
+id="wp70187"> </a>
+<b class="cBold">        g2.drawImage(bi, 0, 0, this);</b><a name=
+"wp70188" id="wp70188"> </a>
+<code class="cCode">            </code><a name="wp71835" id=
+"wp71835"> </a>
+<code class="cCode">    }</code><a name="wp71846" id=
+"wp71846"> </a>
+<a name="wp71847" id="wp71847"> </a>
+</pre></div>
+<a name="wp67504" id="wp67504"></a>
+<h3 class="pHeading2">5.3.3 Manipulating BufferedImage Data
+Directly</h3>
+<a name="wp67505" id="wp67505"></a>
+<p class="pBody">In addition to drawing directly in a <code class=
+"cCode">BufferedImage</code>, you can directly access and
+manipulate the image&#8217;s pixel data in a couple of ways. These
+are useful if you&#8217;re implementing the <code class=
+"cCode">BufferedImageOp</code> filtering interface, as described in
+<a href="j2d-image.html#wp63208">&#8220;Image Processing and
+Enhancement&#8221;</a>.</p>
+<a name="wp66543" id="wp66543"></a>
+<p class="pBody">You can use the <code class=
+"cCode">BufferedImage</code>.<code class="cCode">setRGB</code>
+methods to directly set the value of a pixel or a pixel array to a
+specific RGB value. Note that no dithering is performed when you
+modify pixels directly. You can also manipulate pixel data by
+manipulating a <code class="cCode">WritableRaster</code> object
+associated with a <code class="cCode">BufferedImage</code>
+(see<a href="j2d-image.html#wp66674">&#8220;Managing and
+Manipulating Rasters&#8221;</a>).</p>
+<a name="wp66550" id="wp66550"></a>
+<h3 class="pHeading2">5.3.4 Filtering a BufferedImage</h3>
+<a name="wp66611" id="wp66611"></a>
+<p class="pBody">You can apply a filtering operation to a
+<code class="cCode">BufferedImage</code> using an object that
+implements <code class="cCode">BufferedImageOp</code> interface.
+Filtering and the classes that provide this filtering interface are
+discussed in <a href="j2d-image.html#wp63208">&#8220;Image
+Processing and Enhancement&#8221;</a>.</p>
+<a name="wp66557" id="wp66557"></a>
+<h3 class="pHeading2">5.3.5 Rendering a BufferedImage</h3>
+<a name="wp66559" id="wp66559"></a>
+<p class="pBody">To render a buffered image into a specific
+context, call one of the <code class="cCode">drawImage</code>
+method of the context&#8217;s <code class="cCode">Graphics</code>
+object. For example, when rendering within a <code class=
+"cCode">Component</code>.<code class="cCode">paint</code> method,
+you call <code class="cCode">drawImage</code> on the graphics
+object passed to the method.</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+    public void paint(Graphics g) {<a name="wp68353" id=
+"wp68353"> </a>
+<a name="wp68354" id="wp68354"> </a>
+        if (getSize().width &lt;= 0 || getSize().height &lt;= 0)<a name="wp68355"
+id="wp68355"> </a>
+            return;<a name="wp68356" id="wp68356"> </a>
+<a name="wp68357" id="wp68357"> </a>
+        Graphics2D g2 = (Graphics2D) g;<a name="wp68358" id=
+"wp68358"> </a>
+<a name="wp68361" id="wp68361"> </a>
+        if (offImg != null &amp;&amp; isShowing())  {<a name=
+"wp68362" id="wp68362"> </a>
+            g2.drawImage(offImg, 0, 0, this);<a name="wp68363" id=
+"wp68363"> </a>
+        }<a name="wp68364" id="wp68364"> </a>
+    }<a name="wp68138" id="wp68138"> </a>
+</pre></div>
+<a name="wp66674" id="wp66674"></a>
+<h2 class="pHeading1">5.4 Managing and Manipulating Rasters</h2>
+<a name="wp66676" id="wp66676"></a>
+<p class="pBody">A <code class="cCode">BufferedImage</code> object
+uses a <code class="cCode">Raster</code> to manage its rectangular
+array of pixel data. The <code class="cCode">Raster</code> class
+defines fields for the image&#8217;s coordinate system&#8212;width,
+height, and origin. A <code class="cCode">Raster</code> object
+itself uses two objects to manage the pixel data, a <code class=
+"cCode">DataBuffer</code> and a <code class=
+"cCode">SampleModel</code>. The <code class=
+"cCode">DataBuffer</code> is the object that stores pixel data for
+the raster (as described on <a href=
+"j2d-image.html#wp69487"></a>), and the <code class=
+"cCode">SampleModel</code> provides the interpretation of pixel
+data from the <code class="cCode">DataBuffer</code> (as described
+on <a href="j2d-image.html#wp66873"></a>).</p>
+<a name="wp67258" id="wp67258"></a>
+<h3 class="pHeading2">5.4.1 Creating a Raster</h3>
+<a name="wp67259" id="wp67259"></a>
+<p class="pBody">In most cases, you don&#8217;t need to create a
+<code class="cCode">Raster</code> directly, since one is supplied
+with any <code class="cCode">BufferedImage</code> that you create
+in memory. However, one of the <code class=
+"cCode">BufferedImage</code> constructor methods allows you to
+create a <code class="cCode">Raster</code> by passing in a
+<code class="cCode">WritableRaster</code>.</p>
+<a name="wp67264" id="wp67264"></a>
+<p class="pBody">The <code class="cCode">Raster</code> class
+provides a number of static factory methods for creating
+<code class="cCode">Rasters</code> with the <code class=
+"cCode">DataBuffers</code> and <code class=
+"cCode">SampleModels</code> you specify. You can use these
+factories when implementing <code class="cCode">RasterOp</code>
+filtering classes.</p>
+<a name="wp66680" id="wp66680"></a>
+<h3 class="pHeading2">5.4.2 Parent and Child Rasters</h3>
+<a name="wp66682" id="wp66682"></a>
+<p class="pBody">The <code class="cCode">Raster</code> class
+incorporates the concept of parent and child rasters. This can
+improve storage efficiency by allowing you to construct any number
+of buffered images from the same parent. The parent and its
+children all refer to the same data buffer, and each child has a
+specific offset and bounds to identify its image location in the
+buffer. A child identifies its ownership through its <code class=
+"cCode">getParent</code> method.</p>
+<a name="wp67257" id="wp67257"></a>
+<p class="pBody">To create a subraster, you use the <code class=
+"cCode">Raster</code>.<code class="cCode">createSubRaster</code>
+method.When you create a subraster, you identify the area of its
+parent that it covers and its offset from the parent&#8217;s
+origin.</p>
+<a name="wp66687" id="wp66687"></a>
+<h3 class="pHeading2">5.4.3 Operations on a Raster</h3>
+<a name="wp66698" id="wp66698"></a>
+<p class="pBody">The <code class="cCode">Raster</code> class
+defines a number of ways to access pixels and pixel data. These are
+useful when you&#8217;re implementing the <code class=
+"cCode">RasterOp</code> interface, which provides raster-level
+filtering and manipulation of image data, or when implementing any
+method that needs to perform low-level pixel manipulation.</p>
+<a name="wp66703" id="wp66703"></a>
+<p class="pBody">The <code class="cCode">Raster.getPixel</code>
+methods let you get an individual pixel, which is returned as
+individual samples in an array. The <code class=
+"cCode">Raster</code>.<code class="cCode">getDataElements</code>
+methods return a specified run of uninterpreted image data from the
+<code class="cCode">DataBuffer</code>. The <code class=
+"cCode">Raster</code>.<code class="cCode">getSample</code> method
+returns samples of an individual pixel. The <code class=
+"cCode">getSamples</code> method returns a band for a particular
+region of an image.</p>
+<a name="wp69483" id="wp69483"></a>
+<p class="pBody">In addition to these methods, you can also access
+the data buffer and the sample model through instance variables of
+the <code class="cCode">Raster</code> class. These objects provide
+additional ways to access and interpret the <code class=
+"cCode">Raster</code>&#8217;s pixel data.</p>
+<a name="wp69484" id="wp69484"></a>
+<h3 class="pHeading2">5.4.4 The WritableRaster Subclass</h3>
+<a name="wp69485" id="wp69485"></a>
+<p class="pBody">The <code class="cCode">WritableRaster</code>
+subclass provides methods for setting pixel data and samples. The
+<code class="cCode">Raster</code> associated with a <code class=
+"cCode">BufferedImage</code> is actually a <code class=
+"cCode">WritableRaster</code>, thus providing full access to
+manipulate its pixel data.</p>
+<a name="wp69487" id="wp69487"></a>
+<h2 class="pHeading1">5.5 Image Data and DataBuffers</h2>
+<a name="wp66743" id="wp66743"></a>
+<p class="pBody">The <code class="cCode">DataBuffer</code>
+belonging to a <code class="cCode">Raster</code> represents an
+array of image data. When you create a <code class=
+"cCode">Raster</code> directly or through the <code class=
+"cCode">BufferedImage</code> constructors, you specify a width and
+height in pixels, along with a <code class=
+"cCode">SampleModel</code> for the image data. This information is
+used to create a <code class="cCode">DataBuffer</code> of the
+appropriate data type and size.</p>
+<a name="wp66745" id="wp66745"></a>
+<p class="pBody">There are three subclasses of <code class=
+"cCode">DataBuffer</code>, each representing a different type of
+data element:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp69504"
+id="wp69504"></a>
+<div class="pBullet1">
+<ul>
+<li><code class="cCode">DataBufferByte</code> (represents 8-bit
+values)</li>
+</ul>
+</div>
+<a name="wp69505" id="wp69505"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">DataBufferInt</code> (represents 32-bit
+values)</li>
+</ul>
+</div>
+<a name="wp69508" id="wp69508"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">DataBufferShort</code> (represents 16-bit
+values)</li>
+</ul>
+</div>
+<a name="wp69512" id="wp69512"></a>
+<div class="pBullet1Last">
+<ul>
+<li><code class="cCode">DataBufferUShort</code> (represents
+unsigned short values)</li>
+</ul>
+</div>
+</div>
+<a name="wp66749" id="wp66749"></a>
+<p class="pBody">As defined earlier, elements are the discrete
+members of the array of the data buffer, and components or samples
+are the discrete values that together make up a pixel. There can be
+various mappings between a particular type of element in a
+<code class="cCode">DataBuffer</code> and a particular type of
+pixel represented by a <code class="cCode">SampleModel</code>. It
+is the responsibility of the various <code class=
+"cCode">SampleModel</code> subclasses to implement that mapping and
+provide a way to get specific pixels from a specific <code class=
+"cCode">DataBuffer</code>.</p>
+<a name="wp66755" id="wp66755"></a>
+<p class="pBody"><code class="cCode">DataBuffer</code> constructors
+provide ways to create buffers of a specific size and a specific
+number of banks.</p>
+<a name="wp66772" id="wp66772"></a>
+<p class="pBody">While you can access image data in a <code class=
+"cCode">DataBuffer</code> directly, it&#8217;s generally easier and
+more convenient to do so through the methods of the <code class=
+"cCode">Raster</code> and <code class="cCode">WritableRaster</code>
+classes.</p>
+<a name="wp66873" id="wp66873"></a>
+<h2 class="pHeading1">5.6 Extracting Pixel Data from a
+SampleModel</h2>
+<a name="wp66874" id="wp66874"></a>
+<p class="pBody">The abstract <code class=
+"cCode">SampleModel</code> class defines methods for extracting
+samples of an image without knowing how the underlying data is
+stored. The class provides fields for tracking the height and width
+of the image data in the associated <code class=
+"cCode">DataBuffer</code>, and for describing the number of bands
+and the data type of that buffer. <code class=
+"cCode">SampleModel</code> methods provide image data as a
+collection of pixels, with each pixel consisting of a number of
+samples or components.</p>
+<a name="wp66875" id="wp66875"></a>
+<p class="pBody">The <code class="cCode">java.awt.image</code>
+package provides five types of sample models:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp69534"
+id="wp69534"></a>
+<div class="pBullet1">
+<ul>
+<li><code class="cCode">ComponentSampleModel</code>&#8212;used to
+extract pixels from images that store sample data in separate data
+array elements in one bank of a <code class=
+"cCode">DataBuffer</code>.</li>
+</ul>
+</div>
+<a name="wp66876" id="wp66876"></a>
+<div class="pBullet1">
+<ul>
+<li><code class="cCode">BandedSampleModel</code>&#8212;used to
+extract pixels from images that store each sample in a separate
+data element with bands stored in a sequence of data elements</li>
+</ul>
+</div>
+<a name="wp69565" id="wp69565"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class=
+"cCode">PixelInterleavedSampleModel</code>&#8212;used to extract
+pixels from images that store each sample in a separate data
+element with pixels stored in a sequence of data elements.</li>
+</ul>
+</div>
+<a name="wp66878" id="wp66878"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class=
+"cCode">MultiPixelPackedSampleModel</code>&#8212;used to extract
+pixels from single banded images that store multiple one-sample
+pixels in one data element.</li>
+</ul>
+</div>
+<a name="wp66879" id="wp66879"></a>
+<div class="pBullet1Last">
+<ul>
+<li><code class=
+"cCode">SinglePixelPackedSampleModel</code>&#8212;used to extract
+samples from images that store sample data for a single pixel in
+one data array element in the first bank of a <code class=
+"cCode">DataBuffer</code>.</li>
+</ul>
+</div>
+</div>
+<a name="wp67744" id="wp67744"></a>
+<p class="pBody">Pixel data presented by the <code class=
+"cCode">SampleModel</code> may or may not correlate directly to a
+color data representation of a particular color model, depending on
+the data source. For example, in photographic image data, the
+samples may represent RGB data. In image data from a medical
+imaging device, samples can represent different types of data such
+as temperature or bone density.</p>
+<a name="wp66957" id="wp66957"></a>
+<p class="pBody">There are three categories of methods for
+accessing image data. The <code class="cCode">getPixel</code>
+methods return a whole pixel as an array, with one entry for each
+sample. The <code class="cCode">getDataElement</code> methods
+provide access to the raw, uninterpreted data stored in the
+<code class="cCode">DataBuffer</code>. The <code class=
+"cCode">getSample</code> methods provide access to pixel components
+for a specific band.</p>
+<a name="wp67775" id="wp67775"></a>
+<h2 class="pHeading1">5.7 ColorModels and Color Data</h2>
+<a name="wp67781" id="wp67781"></a>
+<p class="pBody">In addition to the <code class=
+"cCode">Raster</code> object for managing image data, the
+<code class="cCode">BufferedImage</code> class includes a
+<code class="cCode">ColorModel</code> for interpreting that data as
+color pixel values. The abstract <code class=
+"cCode">ColorModel</code> class defines methods for turning an
+image&#8217;s pixel data into a color value in its associated
+<code class="cCode">ColorSpace</code>.</p>
+<a name="wp69584" id="wp69584"></a>
+<p class="pBody">The <code class="cCode">java.awt.image</code>
+package provides four types of color models:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp67777"
+id="wp67777"></a>
+<div class="pBullet1">
+<ul>
+<li><code class="cCode">PackedColorModel</code>&#8212;An abstract
+<code class="cCode">ColorModel</code> that represents pixel values
+that have color components embedded directly in the bits of an
+integer pixel. A <code class="cCode">DirectColorModel</code> is a
+subclass of <code class="cCode">PackedColorModel</code>.</li>
+</ul>
+</div>
+<a name="wp63444" id="wp63444"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">DirectColorModel</code>&#8212;a
+<code class="cCode">ColorModel</code> that represents pixel values
+that have RGB color components embedded directly in the bits of the
+pixel itself. <code class="cCode">DirectColorModel</code> model is
+similar to an X11 TrueColor visual.</li>
+</ul>
+</div>
+<a name="wp67801" id="wp67801"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">ComponentColorModel</code>&#8212;a
+<code class="cCode">ColorModel</code> that can handle an arbitrary
+<code class="cCode">ColorSpace</code> and an array of color
+components to match the <code class="cCode">ColorSpace</code>.</li>
+</ul>
+</div>
+<a name="wp67802" id="wp67802"></a>
+<div class="pBullet1Last">
+<ul>
+<li><code class="cCode">IndexColorModel</code>&#8212;a <code class=
+"cCode">ColorModel</code> that represents pixel values that are
+indices into a fixed color map in the sRGB color space.</li>
+</ul>
+</div>
+</div>
+<a name="wp67061" id="wp67061"></a>
+<p class="pBody">Based on data in the <code class=
+"cCode">DataBuffer</code>, the <code class=
+"cCode">SampleModel</code> provides the <code class=
+"cCode">ColorModel</code> with a pixel, which the <code class=
+"cCode">ColorModel</code> then interprets as a color.</p>
+<a name="wp65329" id="wp65329"></a>
+<h3 class="pHeading2">5.7.1 Lookup Table</h3>
+<a name="wp67100" id="wp67100"></a>
+<p class="pBody">A lookup table contains data for one or more
+channels or image components; for example, separate arrays for R,
+G, and B. The <code class="cCode">java.awt.image</code> package
+defines two types of lookup tables that extend the abstract
+<code class="cCode">LookupTable</code> class, one that contains
+byte data and one that contains short data (<code class=
+"cCode">ByteLookupTable</code> and <code class=
+"cCode">ShortLookupData</code>).</p>
+<a name="wp63208" id="wp63208"></a>
+<h2 class="pHeading1">5.8 Image Processing and Enhancement</h2>
+<a name="wp61818" id="wp61818"></a>
+<p class="pBody">The image package provides a pair of interfaces
+that define operations on <code class="cCode">BufferedImage</code>
+and <code class="cCode">Raster</code> objects: <code class=
+"cCode">BufferedImageOp</code> and <code class=
+"cCode">RasterOp</code>.</p>
+<a name="wp69607" id="wp69607"></a>
+<p class="pBody">The classes that implement these interfaces
+include <code class="cCode">AffineTransformOp</code>, <code class=
+"cCode">BandCombineOp, ColorConvertOp, ConvolveOp</code>,
+<code class="cCode">LookupOp, RescaleOp</code>. These classes can
+be used to geometrically transform, blur, sharpen, enhance
+contrast, threshold, and color correct images.</p>
+<a name="wp72067" id="wp72067"></a>
+<p class="pBody"><a href=
+"j2d-image.html#wp72082">Figure&#160;5-4</a> illustrates edge
+detection and enhancement, an operation that emphasizes sharp
+changes in intensity within an image. Edge detection is commonly
+used in medical imaging and mapping applications. Edge detection is
+used to increase the contrast between adjacent structures in an
+image, allowing the viewer to discriminate greater detail.</p>
+<a name="wp72080" id="wp72080"></a>
+<p class="pBody"></p>
+<div><img src="images/j2d-image2.gif" height="241" width="731" alt=
+"The previous context describes this graphic." border="0" hspace=
+"0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp72082" id="wp72082"></a>
+<div class="pFigureCaption">Figure 5-4 Edge detection and
+enhancement<br />
+<br /></div>
+<a name="wp72085" id="wp72085"></a>
+<p class="pBody">The following code illustrates edge detection:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+float[] elements = { 0.0f, -1.0f, 0.0f,<a name="wp71983" id=
+"wp71983"> </a>
+                    -1.0f, 4.f, -1.0f,<a name="wp71984" id=
+"wp71984"> </a>
+                    0.0f, -1.0f, 0.0f};<a name="wp71985" id=
+"wp71985"> </a>
+...<a name="wp71996" id="wp71996"> </a>
+<a name="wp71997" id="wp71997"> </a>
+BufferedImage bimg = new BufferedImage(bw,bh,BufferedImage.TYPE_INT_RGB);<a name="wp71981"
+id="wp71981"> </a>
+Kernel kernel = new Kernel(3, 3, elements);<a name="wp72315" id=
+"wp72315"> </a>
+ConvolveOp cop = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP,                                             null);<a name="wp71977"
+id="wp71977"> </a>
+cop.filter(bi,bimg);<a name="wp71978" id="wp71978"> </a>
+</pre></div>
+<a name="wp71959" id="wp71959"></a>
+<p class="pBody"><a href=
+"j2d-image.html#wp67831">Figure&#160;5-5</a> demonstrates lookup
+table manipulation. A lookup operation can be used to alter
+individual components of a pixel.</p>
+<a name="wp72487" id="wp72487"></a>
+<p class="pBody"></p>
+<div align="center"><img src="images/j2d-image3.gif" height="145"
+width="470" alt="The previous context describes this graphic."
+border="0" hspace="0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp67831" id="wp67831"></a>
+<div class="pFigureCaption">Figure 5-5 Lookup-table
+Manipulation<br />
+<br /></div>
+<a name="wp72086" id="wp72086"></a>
+<p class="pBody">The following code demonstrates Lookup-table
+manipulation:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+        byte reverse[] = new byte[256];<a name="wp72034" id=
+"wp72034"> </a>
+   for (int j=0; j&lt;200; j++){ <a name="wp72036" id=
+"wp72036"> </a>
+                reverse[j]=(byte)(256-j); <a name="wp72037" id=
+"wp72037"> </a>
+        }       <a name="wp72038" id="wp72038"> </a>
+        ByteLookupTable blut=new ByteLookupTable(0, reverse); <a name="wp72053"
+id="wp72053"> </a>
+        LookupOp lop = new LookupOp(blut, null); <a name="wp72056"
+id="wp72056"> </a>
+   lop.filter(bi,bimg);  <a name="wp72024" id="wp72024"> </a>
+</pre></div>
+<a name="wp72032" id="wp72032"></a>
+<p class="pBody"><a href=
+"j2d-image.html#wp72115">Figure&#160;5-6</a> illustrates rescaling.
+Rescaling can increase or decrease the intensity of all points.
+Rescaling can be used to increase the dynamic range of an otherwise
+neutral image, bringing out detail in a region that appears neutral
+or flat.</p>
+<a name="wp72114" id="wp72114"></a>
+<p class="pBody"></p>
+<div align="center"><img src="images/j2d-image7.gif" height="167"
+width="470" alt="The previous context describes this graphic."
+border="0" hspace="0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp72115" id="wp72115"></a>
+<div class="pFigureCaption">Figure 5-6 Rescaling<br />
+<br /></div>
+<a name="wp72128" id="wp72128"></a>
+<p class="pBody">The following code snippet illustrates
+rescaling:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+        RescaleOp rop = new RescaleOp(1.5f, 1.0f, null);<a name=
+"wp72124" id="wp72124"> </a>
+        rop.filter(bi,bimg);<a name="wp72116" id="wp72116"> </a>
+</pre></div>
+<a name="wp61900" id="wp61900"></a>
+<h3 class="pHeading2">5.8.1 Using an Image Processing
+Operation</h3>
+<a name="wp72236" id="wp72236"></a>
+<p class="pBody">Convolution is the process that underlies most
+spatial filtering algorithms. Convolution is the process of
+weighting or averaging the value of each pixel in an image with the
+values of neighboring pixels.This allows each output pixel to be
+affected by the immediate neighborhood in a way that can be
+mathematically specified with a kernel. <a href=
+"j2d-image.html#wp72247">Figure&#160;5-7</a> illustrates
+Convolution.</p>
+<a name="wp72256" id="wp72256"></a>
+<p class="pBody"></p>
+<div align="center"><img src="images/j2d-image9.gif" height="145"
+width="470" alt="The previous context describes this graphic."
+border="0" hspace="0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp72247" id="wp72247"></a>
+<div class="pFigureCaption">Figure 5-7 Blurring with
+Convolution<br />
+<br /></div>
+<a name="wp72257" id="wp72257"></a>
+<p class="pBody">The following code fragment illustrates how to use
+one of the image processing classes, <code class=
+"cCode">ConvolveOp</code>. In this example, each pixel in the
+source image is averaged equally with the eight pixels that
+surround it.</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+float weight = 1.0f/9.0f;float[] elements = new float[9]; // create 2D array// fill the array with nine equal elements<a name="wp61902"
+id="wp61902"> </a>
+for (i = 0; i &lt; 9; i++) {   elements[i] = weight;}// use the array of elements as argument to create a Kernelprivate Kernel myKernel = new Kernel(3, 3, elements);public ConvolveOp simpleBlur = new ConvolveOp(myKernel);<a name="wp61903"
+id="wp61903"> </a>
+<a name="wp61904" id="wp61904"> </a>
+// sourceImage and destImage are instances of BufferedImagesimpleBlur.filter(sourceImage,&#160;destImage) // blur the image<a name="wp61905"
+id="wp61905"> </a>
+</pre></div>
+<a name="wp61906" id="wp61906"></a>
+<p class="pBody">The variable simpleBlur contains a new instance of
+<code class="cCode">ConvolveOp</code> that implements a blur
+operation on a <code class="cCode">BufferedImage</code> or a
+<code class="cCode">Raster</code>. Suppose that sourceImage and
+destImage are two instances of <code class=
+"cCode">BufferedImage</code>. When you call <code class=
+"cCode">filter</code>, the core method of the <code class=
+"cCode">ConvolveOp</code> class, it sets the value of each pixel in
+the destination image by averaging the corresponding pixel in the
+source image with the eight pixels that surround it.</p>
+<a name="wp69780" id="wp69780"></a>
+<p class="pBody">The convolution kernel in this example could be
+represented by the following matrix, with elements specified to
+four significant figures:</p>
+<a name="wp72983" id="wp72983"></a>
+<p class="pBody"></p>
+<div align="center"><img src="images/j2d-image4.gif" height="73"
+width="462" alt="A 3 by 3 matrix with all values being 0.1111."
+border="0" hspace="0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp72275" id="wp72275"></a>
+<p class="pBody">When an image is convolved, the value of each
+pixel in the destination image is calculated by using the kernel as
+a set of weights to average the pixel&#8217;s value with the values
+of surrounding pixels. This operation is performed on each channel
+of the image.</p>
+<a name="wp61912" id="wp61912"></a>
+<p class="pBody">The following formula shows how the weights in the
+kernel are associated with the pixels in the source image when the
+convolution is performed. Each value in the kernel is tied to a
+spatial position in the image.</p>
+<a name="wp72995" id="wp72995"></a>
+<p class="pBody"></p>
+<div align="center"><img src="images/j2d-image5.gif" height="73"
+width="462" alt=
+"A 3 by 3 matrix. The first row values are i minus 1, j minus 1, i, j minus 1, and i plus 1, j minus1. The second row values are i minus 1, j, i, j, and i plus1, j. The third row values are i minus 1, j plus 1, i, j plus 1, and i plus 1, j plus 1."
+border="0" hspace="0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp61916" id="wp61916"></a>
+<p class="pBody">The value of a destination pixel is the sum of the
+products of the weights in the kernel multiplied by the value of
+the corresponding source pixel. For many simple operations, the
+kernel is a matrix that is square and symmetric, and the sum of its
+weights adds up to one.<a href="#wp61919"><span class=
+"Footnote">2</span></a></p>
+<a name="wp61920" id="wp61920"></a>
+<p class="pBody">The convolution kernel in this example is
+relatively simple. It weights each pixel from the source image
+equally. By choosing a kernel that weights the source image at a
+higher or lower level, a program can increase or decrease the
+intensity of the destination image. The <code class=
+"cCode">Kernel</code> object, which is set in the <code class=
+"cCode">ConvolveOp</code> constructor, determines the type of
+filtering that is performed. By setting other values, you can
+perform other types of convolutions, including blurring (such as
+Gaussian blur, radial blur, and motion blur), sharpening, and
+smoothing operations. <a href=
+"j2d-image.html#wp72165">Figure&#160;5-8</a> illustrates sharpening
+using Convolution.</p>
+<a name="wp72156" id="wp72156"></a>
+<p class="pBody"></p>
+<div align="center"><img src="images/j2d-image10.gif" height="145"
+width="470" alt="The previous context describes this graphic."
+border="0" hspace="0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp72165" id="wp72165"></a>
+<div class="pFigureCaption">Figure 5-8 Sharpening with
+Convolution<br />
+<br /></div>
+<a name="wp72302" id="wp72302"></a>
+<p class="pBody">The following code snippet illustrates sharpening
+with Convolution:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+float[] elements = { 0.0f, -1.0f, 0.0f,<a name="wp72303" id=
+"wp72303"> </a>
+                    -1.0f,  5.f, -1.0f,<a name="wp72293" id=
+"wp72293"> </a>
+                     0.0f, -1.0f,  0.0f};<a name="wp72286" id=
+"wp72286"> </a>
+...<a name="wp72297" id="wp72297"> </a>
+<a name="wp72298" id="wp72298"> </a>
+Kernel kernel = new Kernel(3,3,elements);<a name="wp72310" id=
+"wp72310"> </a>
+ConvolveOp cop = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP,                                                                                                          null);<a name="wp72287"
+id="wp72287"> </a>
+        cop.filter(bi,bimg);<a name="wp72157" id="wp72157"> </a>
+</pre></div>
+<a name="wp67839" id="wp67839"></a>
+<p class="pBody"></p>
+<a name="wp67519" id="wp67519"></a>
+<div class="pFootNote"><a href="#wp67516"><span class=
+"Footnote">1</span></a>It is up to the programmer to
+&#8220;erase&#8221; the previous version of the image before making
+a new copy at a new location. This can be done by redrawing the
+background or copying the background from another offscreen
+buffer.</div>
+<a name="wp61919" id="wp61919"></a>
+<div class="pFootNote"><a href="#wp61916"><span class=
+"Footnote">2</span></a>If the sum of the weights in the matrix is
+one, the intensity of the destination image is unchanged from the
+source.</div>
+<hr class="pHr" />
+<table width="100%" summary="">
+<tr>
+<td align="left"><a accesskey="c" href=
+"j2d-bookTOC.html">Contents</a> | <a accesskey="p" href=
+"j2d-fonts.html">Previous</a> | <a accesskey="n" href=
+"j2d-color.html">Next</a></td>
+</tr>
+</table>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

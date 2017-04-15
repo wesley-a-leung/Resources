@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>System Properties for Java 2D Technology</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>System Properties for Java 2D Technology</h1>
+<!-- Body text begins here -->
+<p>This document describes several unsupported properties that you
+can use to customize how the 2D painting system operates. You might
+use these properties to improve performance, fix incorrect
+rendering, or avoid system crashes under certain configurations.
+For example, on a small set of Microsoft Windows computers with bad
+DirectDraw or Direct3D drivers, the use of hardware-accelerated
+rendering might cause system crashes. You can use properties to
+specify that on these computers, the Java 2D system shouldn't use
+DirectDraw or Direct3D.</p>
+<hr />
+<strong>Warning:</strong> Take care when using these properties.
+Some of them are unsupported for very practical reasons. For
+example, some behaviors are disabled by default due to driver
+instabilities; enabling such behaviors could cause system
+instabilities on some configurations.<br />
+<br />
+Since these properties have the sole purpose of enabling or
+disabling implementation-specific behaviors, they are subject to
+change or removal without notification. Some properties might work
+only on the exact product releases for which they are documented.
+<hr />
+<p>2D properties have the prefix <code>sun.java2d.</code>. To
+specify them, you can use either command-line flags or the
+<code>_JAVA_OPTIONS</code> environment variable. For example, you
+can specify the 2D <code>trace</code> property with a flag when
+running an application, like this:</p>
+<pre class="codeblock">
+java -Dsun.java2d.trace=log SomeApp
+</pre>
+Or you can specify it by setting <code>_JAVA_OPTIONS</code> before
+running the application, like this:
+<pre class="codeblock">
+export _JAVA_OPTIONS='-Dsun.java2d.trace=log' <em>(Solaris, Linux, or Mac OS X bash shell)</em>
+java SomeApp
+</pre>
+<p>Some system properties are also settable using environment
+variables. For example, the <code>d3d</code> property has the
+equivalent environment variable <code>J2D_D3D</code>. The property
+description lists the equivalent environment variable, if one
+exists.</p>
+<hr />
+<b>Note:</b> See the <a href="http://www.oracle.com/technetwork/java/perf-graphics-135933.html">High
+Performance Graphics White Paper</a> for explanations of terms used
+in property descriptions.
+<hr />
+<p>This document lists the following properties:</p>
+<ul>
+<li><a href="#all">System Properties for All Platforms</a>
+<ul>
+<li><a href="#opengl"><code>opengl</code></a></li>
+<li><code><a href="#trace">trace</a></code></li>
+<li><code><a href=
+"#aaFonts">awt.useSystemAAFontSettings</a></code></li>
+</ul>
+</li>
+<li><a href="#win">System Properties for Microsoft Windows
+Platforms</a>
+<ul>
+<li><a href="#accthreshold"><code>accthreshold</code></a></li>
+<li><a href="#d3d"><code>d3d</code></a></li>
+<li><a href="#d3dtexbpp"><code>d3dtexbpp</code></a></li>
+<li><a href="#ddforcevram"><code>ddforcevram</code></a></li>
+<li><a href="#ddoffscreen"><code>ddoffscreen</code></a></li>
+<li><a href="#ddscale"><code>ddscale</code></a></li>
+<li><a href="#noddraw"><code>noddraw</code></a></li>
+<li><a href="#translaccel"><code>translaccel</code></a></li>
+</ul>
+</li>
+<li><a href="#ix">System Properties for Linux and Solaris
+Platforms</a>
+<ul>
+<li><a href="#NO_J2D_DGA"><code>NO_J2D_DGA</code></a></li>
+<li><a href="#pixmaps"><code>J2D_PIXMAPS</code></a></li>
+<li><a href="#xrender"><code>xrender</code></a></li>
+<li><a href="#pmoffscreen"><code>pmoffscreen</code></a></li>
+</ul>
+</li>
+</ul>
+<hr size="3" noshade="noshade" />
+<!--============================== ALL ===================================-->
+<h2><a name="all" id="all">System Properties for All
+Platforms</a></h2>
+<h3><code><a name="opengl" id="opengl">opengl</a></code></h3>
+<p><b>Intended use:</b> To enable the OpenGL-based pipeline, which
+provides hardware acceleration.<br />
+<b>Introduced:</b> 1.5 Beta 1 (Solaris/Linux); 1.5 Beta 2
+(Microsoft Windows)<br />
+<b>Default value:</b> false<br />
+<b>How to use:</b> To silently enable the OpenGL-based pipeline,
+set this property to <code>true</code>:</p>
+<pre class="codeblock">
+-Dsun.java2d.opengl=true
+</pre>
+<p>To receive verbose console output about whether the OpenGL-based
+pipeline is initialized successfully for a particular screen, set
+this property to <code>True</code> (note the uppercase
+<i>T</i>):</p>
+<pre class="codeblock">
+-Dsun.java2d.opengl=True 
+</pre>
+<p>An OpenGL-based pipeline for Java 2D was introduced in 1.5 Beta
+1 for Solaris/Linux and 1.5 Beta 2 for Microsoft Windows platforms.
+This pipeline is currently disabled by default. It provides
+hardware acceleration for simple rendering operations (text,
+images, lines, and filled primitives) as well as those that involve
+complex transforms, paints, composites, and clips.</p>
+<p><b>For more information:</b> The <a href=
+"new_features.html#ogl">OpenGL</a> section of <a href=
+"new_features.html">New Java 2D Features in the Java 2 SDK,
+v1.5</a>.</p>
+<h3><code><br />
+<a name="trace" id="trace">trace</a></code></h3>
+<p><b>Intended use:</b> To help determine the source of
+less-than-desirable graphics performance.<br />
+<b>Introduced:</b> 1.4<br />
+<b>How to use:</b> If your application is experiencing
+less-than-desirable performance, the <code>trace</code> runtime
+flag can help you determine the source of the problem. The flag is
+specified with a list of options:</p>
+<pre class="codeblock">
+    -Dsun.java2d.trace=[log[,timestamp]],[count],[out:<i>&lt;filename&gt;</i>],[help],[verbose]
+</pre>
+<p>The options are:</p>
+<dl>
+<dt><code>log</code><br /></dt>
+<dd>print out the name of each primitive as it is executed</dd>
+<dt><code>timestamp</code><br /></dt>
+<dd>precede each log entry with the
+<code>currentTimeMillis()</code></dd>
+<dt><code>count</code><br /></dt>
+<dd>at exit, print out a count of each primitive used</dd>
+<dt><code>out:<i>&lt;filename&gt;</i></code><br /></dt>
+<dd>send output (logging and counts) to the indicated file</dd>
+<dt><code>help</code><br /></dt>
+<dd>print out a short usage statement</dd>
+<dt><code>verbose</code><br /></dt>
+<dd>print out a summary of the options chosen for this run</dd>
+</dl>
+<p>If you use the <code>log</code> option, the Java runtime will
+print the executed primitives' names, most of which will be in this
+format:</p>
+<pre class="codeblock">
+    <i>&lt;classname&gt;</i>.<i>&lt;methodname&gt;</i>(<i>&lt;src&gt;</i>,<i>&lt;composite&gt;</i>,<i>&lt;dst&gt;</i>)
+</pre>
+<p>The <i><code>methodname</code></i> represents the basic graphics
+operation that is used to do the actual rendering work of a
+<code>Graphics</code> method invocation. These method names will
+not necessarily map directly to methods on the
+<code>Graphics</code> object, nor will the number of calls made on
+the <code>Graphics</code> object map directly to the number of
+primitive operations performed.</p>
+<p>The <code><i>src</i></code> and <code><i>dst</i></code>
+represent the type of surfaces or source data involved in the
+operation.</p>
+<p>The <code><i>composite</i></code> names match the names in the
+<code>AlphaComposite</code> class fairly closely with the suffix
+&quot;<code>NoEa</code>&quot; meaning that the
+<code>AlphaComposite</code> instance had an &quot;extra alpha&quot;
+attribute of 1.0. The &quot;SrcNoEa&quot; type is the most commonly
+used composite type and represents the simplest way of transferring
+pixels with no blending required. &quot;SrcNoEa&quot; is often used
+behind the scenes even though the default composite is
+&quot;SrcOver&quot; when opaque colors and images are rendered
+because the two operations are indistinguishable for opaque source
+pixels.</p>
+<p>Platform rendering pipelines are sometimes used for doing opaque
+operations on surfaces accessible by a platform renderer, such as
+X11, GDI, or DirectDraw. Their names currently use a simplified
+naming format, which has a prefix for the platform renderer and the
+name of the operation but without any classname or operand type
+list. Examples are &quot;X11DrawLine&quot;,
+&quot;GDIFillOval&quot;, and &quot;DXFillRect&quot;. In the future
+these names should more closely approximate the names of the other
+primitives.</p>
+<h3><code><br />
+<a name="aaFonts" id=
+"aaFonts">awt.useSystemAAFontSettings</a></code></h3>
+<p><b>Intended use:</b>To override what text anti-aliasing settings
+are identified as being "desktop settings".<br />
+<b>Introduced:</b> 1.6<br />
+<b>Default value:</b>true.<br />
+<b>How to use:</b>Set on the command line or in a webstart jnlp
+file as one of the specified values below to control rendering
+hints used by Swing text.</p>
+<p>Strictly this flag doesn't control Java 2D but is documented
+here because the values all directly map to Java 2D text
+antialiasing rendering hints values.</p>
+<p>What the flag really does is override what the JRE reads from
+the user's desktop settings as the user's desktop antialiased text
+preferences. Swing instructs Java 2D to render Swing text to match
+that preference, so by overriding it you can control Swing text.
+This applies to standard Swing components (like JTextArea, JButton)
+in the Metal L&amp;F (aka Java L&amp;F) and native (Windows, GTK)
+Swing L&amp;Fs. It should also apply to any custom component or
+L&amp;F which picks up the same property.</p>
+<p>For information on the desktop setting this overrides see
+<a href=
+"../../../api/java/awt/doc-files/DesktopProperties.html">AWT
+Desktop Properties</a></p>
+<p>There aren't many reasons for you to specify this property but a
+couple are</p>
+<ul>
+<li>The desktop setting you want isn't supported on your desktop
+(eg you want LCD text on Windows 2000)</li>
+<li>JRE doesn't recognise your desktop setting (eg KDE)</li>
+<li>You are automating testing under each of these conditions</li>
+</ul>
+<pre class="codeblock">
+System Property Value   | java.awt.RenderingHint value
+"off"|"false"|"default" : VALUE_TEXT_ANTIALIAS_DEFAULT
+"on"                    : VALUE_TEXT_ANTIALIAS_ON
+"gasp"                  : VALUE_TEXT_ANTIALIAS_GASP
+"lcd"|"lcd_hrgb"        : VALUE_TEXT_ANTIALIAS_LCD_HRGB
+"lcd_hbgr"              : VALUE_TEXT_ANTIALIAS_LCD_HBGR
+"lcd_vrgb"              : VALUE_TEXT_ANTIALIAS_LCD_VRGB
+"lcd_vbgr"              : VALUE_TEXT_ANTIALIAS_LCD_VBGR
+</pre>
+<!--============================== WIN ===================================-->
+<br />
+<h2><a name="win" id="win">System Properties for Microsoft Windows
+Platforms</a></h2>
+<h3><code><a name="accthreshold" id=
+"accthreshold">accthreshold</a></code></h3>
+<p><b>Obsoleted in:</b> Java SE 6 Update 10<br />
+<b>Intended use:</b> To determine how many copies from managed
+images will occur before a VRAM version of the image is
+automatically created.<br />
+<b>Introduced:</b> 1.4.1_02<br />
+<b>Default value:</b> 1<br />
+<b>How to use:</b> To force accelerated surfaces to be created
+during image initialization, set the value to 0, as follows:</p>
+<pre class="codeblock">
+-Dsun.java2d.accthreshold=0
+</pre>
+<p>This property can be used to eliminate the initial delay in
+rendering when the images are being copied to the VRAM after the
+first few copies. Instead, the delay is effectively shifted to the
+image creation time.</p>
+<p>This could be useful behavior when you know that your
+application will be able to take advantage of image management;
+just get the overhead of the copy over with at the start instead of
+incurring some number of slower copies to begin with and then
+having the copy overhead at some later time.</p>
+<br />
+<h3><code><a name="d3d" id="d3d">d3d</a></code></h3>
+<b>Intended use:</b> To turn off the Java 2D system's use of
+Direct3D.<br />
+<b>Introduced:</b> 1.4.1_02<br />
+<b>Equivalent environment variable:</b> <code>J2D_D3D</code><br />
+<b>How to use:</b> On a small subset of Windows 2000 systems with
+buggy Direct3D drivers, the use of Direct3D can cause a system
+crash. To turn off the use of Direct3D, set this property to false:
+<pre class="codeblock">
+-Dsun.java2d.d3d=false
+</pre>
+If problems persist, try setting the <a href=
+"#ddoffscreen"><code>ddoffscreen</code></a> property to false. If
+that doesn't solve the problems, try setting <a href=
+"#noddraw"><code>noddraw</code></a> to true.<br />
+<h3><code><a name="d3dtexbpp" id=
+"d3dtexbpp">d3dtexbpp</a></code></h3>
+<p><b>Obsoleted in:</b> Java SE 6 Update 10<br />
+<b>Intended use:</b> To specify that accelerated surfaces for
+managed or translucent images should be in 16-bit (4444) format,
+which saves VRAM and system memory but at the cost of decreased
+quality.<br />
+<b>Introduced:</b> 1.4.1_02<br />
+<b>Default value:</b> 32<br />
+<b>How to use:</b> To turn on 4444 format, set this property to
+16:</p>
+<pre class="codeblock">
+-Dsun.java2d.d3dtexbpp=16
+</pre>
+<hr />
+<b>Note:</b> The <code>d3dtexbpp</code> property has no effect if
+the OpenGL pipeline is in use.
+<hr />
+<p>When this property is set to 16, it forces the accelerated
+surfaces for managed images (created with
+<code>GraphicsConfiguration.createCompatibleImage(w,h,
+TRANSLUCENT)</code>) or translucent images loaded with
+<code>Toolkit.getImage</code> to be in 4444 format. The system
+memory surface for these images will be in 4444 format as well.</p>
+<p>This option is useful when you have lots of images to be stored
+in VRAM. The downside is poorer quality.</p>
+<p>This option is also useful for computers with video boards (such
+as 3dfx Voodoo3) that don't support 32-bit textures. When the Java
+2D system uses 32-bit textures, as it does by default, then when it
+encounters a card without 32-bit texture support it disables
+support for accelerated translucent images. If you want
+acceleration of translucent images on a video board that doesn't
+support 32-bit textures, set the <code>d3dtexbpp</code> property to
+16.</p>
+<br />
+<h3><code><a name="ddforcevram" id=
+"ddforcevram">ddforcevram</a></code></h3>
+<p><b>Obsoleted in:</b> Java SE 6 Update 10<br />
+<b>Intended use:</b> To specify whether <code>VolatileImages</code>
+should be kept in VRAM.<br />
+<b>Introduced:</b> 1.4.1_02<br />
+<b>Default value:</b> false in 1.4; as of 1.5 Beta 1, true if
+<a href="#translaccel"><code>translaccel</code></a> is true, and
+otherwise false<br />
+<b>How to use:</b> Normally, if the 2D system is using the
+DirectDraw/Direct3D pipeline and detects that an image in video
+memory is being read from too often (an expensive operation), it
+punts it to a system memory surface, which is faster to read from.
+Later, if the system detects that the user is copying from this
+surface to an accelerated surface again, it promotes it to the
+video memory. Setting this property to true disables the punting
+mechanism and always keeps the image in video memory.</p>
+<hr />
+<b>Note:</b> The <code>ddforcevram</code> property has no effect if
+the OpenGL pipeline is in use.
+<hr />
+<p>Although this property is often used with the <a href=
+"#translaccel"><code>translaccel</code></a> property, it can be
+used separately. To set this property to true, either set
+<code>translaccel</code> to true in a 1.5 release, or set it
+separately:</p>
+<pre class="codeblock">
+-Dsun.java2d.ddforcevram=true
+</pre>
+<h3><code><a name="ddoffscreen" id=
+"ddoffscreen">ddoffscreen</a></code></h3>
+<p><b>Obsoleted in:</b> Java SE 6 Update 10, which contains a new
+implementation of D3D support. Setting
+<code>sun.java2d.ddoffscreen=false</code> is now interpreted
+exactly the same as disabling that via
+<code>sun.java2d.d3d=false</code>.<br />
+<b>Intended use:</b> To turn off the Java 2D system's use of
+DirectDraw and Direct3D for offscreen surfaces such as the Swing
+back buffer.<br />
+<b>Introduced:</b> 1.4<br />
+<b>Default value:</b> true<br />
+<b>How to use:</b> Setting this flag to false turns off DirectDraw
+offscreen surfaces acceleration.</p>
+<br />
+<h3><code><a name="ddscale" id="ddscale">ddscale</a></code></h3>
+<p><b>Obsoleted in:</b> Java SE 6 Update 10<br />
+<b>Intended use:</b> To turn on hardware-accelerated scaling when
+the DirectDraw/Direct3D pipeline is in use.<br />
+<b>Introduced:</b> 1.2<br />
+<b>Default value:</b> false<br />
+<b>How to use:</b> Setting this flag to true enables
+hardware-accelerated scaling if the DirectDraw/Direct3D pipeline is
+in use. DirectDraw/Direct3D hardware scaling is disabled by default
+to avoid rendering artifacts in existing applications. These
+rendering artifacts are caused by possible inconsistencies between
+the scale method that the software scaling operation uses (nearest
+neighbor) and the different scale methods that video cards use.
+Certain events that occur while an application is running might
+cause a scaled image to be rendered partially with hardware scaling
+operations and partially with software scaling operations,
+resulting in an inconsistent appearance. For now, you can enable
+acceleration by setting the <code>ddscale</code> flag to true.</p>
+<hr />
+<b>Note:</b> The <code>ddscale</code> property has no effect if the
+OpenGL pipeline is in use.
+<hr />
+<p><b>For more information:</b> <a href="http://www.oracle.com/technetwork/java/perf-graphics-135933.html">High
+Performance Graphics White Paper</a></p>
+<br />
+<h3><code><a name="noddraw" id="noddraw">noddraw</a></code></h3>
+<p><b>Obsoleted in:</b> Java SE 6 Update 10, which contains a new
+implementation of D3D support. Setting
+<code>sun.java2d.noddraw=true</code> is now interpreted exactly the
+same as disabling that via <code>sun.java2d.d3d=false</code>.<br />
+<b>Intended use:</b> To turn off the Java 2D system's use of
+DirectDraw and Direct3D completely.<br />
+<b>Introduced:</b> 1.2<br />
+<b>Default value:</b> false<br />
+<b>How to use:</b> Setting this flag to true turns off DirectDraw
+usage, which sometimes helps to get rid of rendering problems on
+Win32.</p>
+<br />
+<h3><code><a name="translaccel" id=
+"translaccel">translaccel</a></code></h3>
+<p><b>Obsoleted in:</b> Java SE 6 Update 10<br />
+<b>Intended use:</b> To specify whether translucent images should
+be hardware-accelerated when the DirectDraw/Direct3D pipeline is in
+use.<br />
+<b>Introduced:</b> 1.4.1_02<br />
+<b>Default value:</b> false<br />
+<b>How to use:</b> When the DirectDraw/Direct3D pipeline is being
+used, both <code>translaccel</code> and <a href=
+"#ddforcevram"><code>ddforcevram</code></a> must be true for
+translucent images to be accelerated.</p>
+<hr />
+<b>Note:</b> The <code>translaccel</code> property has no effect if
+the OpenGL pipeline is in use.
+<hr />
+<p>To turn on acceleration of translucent images in 1.4 and
+1.5:</p>
+<pre class="codeblock">
+-Dsun.java2d.translaccel=true
+-Dsun.java2d.ddforcevram=true <em>//unnecessary as of 1.5 Beta 1</em>
+</pre>
+<p>When both these properties are true, the Java 2D system attempts
+to put translucent images into VRAM and use Direct3D for rendering
+(compositing) them to the screen or to a
+<code>VolatileImage</code>. Only translation transforms are
+supported (no rotation, scaling, and so on). Before 1.5, to be
+accelerated a translucent image had to be created in one of the
+following ways:</p>
+<ul>
+<li><code>GraphicsConfiguration.createCompatibleImage(w,h,
+Transparency.TRANSLUCENT)</code></li>
+<li>Images loaded with <code>Toolkit.getImage()</code> that have a
+translucent color model</li>
+</ul>
+As of 1.5, translucent images created with a
+<code>BufferedImage</code> constructor can also be accelerated. To
+find out whether an image can be accelerated on a particular
+device, you can use the <code>Image</code> <a href="../../../api/java/awt/Image.html#getCapabilities-java.awt.GraphicsConfiguration-">
+<code>getCapabilities</code></a> method to get an
+<code>ImageCapabilities</code> object, which you can query using
+the <a href="../../../api/java/awt/ImageCapabilities.html#isAccelerated--">
+<code>isAccelerated</code></a> method. Note that a managed image
+gets accelerated only after a certain number of copies to the
+screen or to another accelerated surface.
+<p>The following code fragment illustrates the use of accelerated
+images. The fragment assumes that back buffer is a
+<code>VolatileImage</code>. <code>BufferStrategy</code> can be used
+as well.</p>
+<pre class="codeblock">
+Image translucentImage = gc.createCompatibleImage(w, h, Transparency.TRANSLUCENT);
+//...
+Graphics2D g2 = (Grahics2D)backBuffer.getGraphics();
+g2.drawImage(translucentImage, x, y, null);
+</pre>
+<p>Compositing with extra alpha with SRC_OVER rule (which is the
+default Graphics2D compositing rule) is accelerated, so the
+following code will allow the use of hardware for compositing:
+Code:</p>
+<pre class="codeblock">
+Image translucentImage = gc.createCompatibleImage(w, h, Transparency.TRANSLUCENT);
+// ...
+float ea = 0.5;
+Graphics2D g2 = (Grahics2D)backBuffer.getGraphics();
+g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ea));
+g2.drawImage(translucentImage, x, y, null);
+</pre>
+<!--============================== *IX ===================================-->
+<br />
+<h2><a name="ix" id="ix">System Properties for Linux and Solaris
+Platforms</a></h2>
+<h3><code><a name="NO_J2D_DGA" id=
+"NO_J2D_DGA">NO_J2D_DGA</a></code></h3>
+<b>Intended use:</b> To turn off DGA support and hardware
+acceleration on Solaris Sparc, which sometimes helps to reduce
+rendering artifacts.<br />
+<b>Introduced:</b> 1.2<br />
+<b>Default value:</b> (unset)<br />
+<b>How to use:</b> This property is settable only as an environment
+variable; it has no command-line flag equivalent. To turn off DGA
+support and hardware acceleration on Solaris Sparc, define the
+variable:
+<pre class="codeblock">
+setenv NO_J2D_DGA
+</pre>
+<p>Setting this variable automatically enables the use of pixmaps,
+in effect setting <a href=
+"#pmoffscreen"><code>pmoffscreen</code></a> to true. The reverse,
+however, is not true: setting <code>pmoffscreen</code> to true
+doesn't disable DGA.</p>
+<br />
+<h3><code><a name="pixmaps" id=
+"pixmaps">J2D_PIXMAPS</a></code></h3>
+<b>Intended use:</b> To determine whether the 2D system uses shared
+memory pixmaps in the local display environment for storing images
+that experience frequent reads.<br />
+<b>Introduced:</b> 1.4 Beta 3<br />
+<b>Default value:</b> (unset)<br />
+<b>How to use:</b> This property is settable only as an environment
+variable; it has no command-line flag equivalent. As of 1.4 Beta 3,
+Java 2D starts out using normal pixmaps to store images, but
+changes the storage of frequently read images to use Shared Memory
+Pixmaps in the local display environment. You can override this
+default behavior, and force only one type of pixmap to be used, with <code>J2D_PIXMAPS</code> environment flag:
+<pre class="codeblock">
+    setenv J2D_PIXMAPS=shared<br />    setenv J2D_PIXMAPS=server
+</pre>
+<p>If you set this flag to <code>shared</code>, all images are
+stored in Shared Memory Pixmaps if you are working in a local
+display environment. Conversely, if you set this flag to
+<code>server</code>, all images are stored in normal pixmaps, not
+Shared Memory Pixmaps; the normal pixmaps can be stored in VRAM at
+the discretion of the device driver.</p>
+<p><b>For more information:</b> <a href="http://www.oracle.com/technetwork/java/perf-graphics-135933.html">High
+Performance Graphics White Paper</a></p>
+<br />
+<h3><code><a name="xrender" id="xrender">xrender</a></code></h3>
+<b>Intended use:</b> To enable the XRender-based Java 2D rendering
+pipeline for modern X11-based desktops, offering improved graphics
+performance.<br />
+<b>Introduced:</b> Java SE 7<br />
+<b>Default value:</b> false<br />
+<b>How to use:</b> The pipeline is disabled by default, but may be
+enabled by setting the command line property
+<code>-Dsun.java2d.xrender=true</code>. Older X11 configurations
+may not be able to support XRender. The verbose form,
+<code>-Dsun.java2d.xrender=True</code>, can be used to enable a
+message to stdout indicating whether the pipeline was actually
+enabled.<br />
+<h3><code><a name="pmoffscreen" id=
+"pmoffscreen">pmoffscreen</a></code></h3>
+<p><b>Intended use:</b> To determine whether Java 2D stores images
+in pixmaps by default when DGA is not available.<br />
+<b>Introduced:</b> 1.4 Beta 3<br />
+<b>Default value:</b> (unset)<br />
+<b>How to use:</b> As of 1.4 Beta 3, Java 2D stores images in
+pixmaps by default when DGA is not available, whether you are
+working in a local or remote display environment. You can override
+this behavior with the <code>pmoffscreen</code> flag:</p>
+<pre class="codeblock">
+    -Dsun.java2d.pmoffscreen=true<br />    -Dsun.java2d.pmoffscreen=false
+</pre>
+<p>Setting this flag to false disables offscreen pixmap support,
+which can solve some rendering problems. When the flag is true,
+offscreen pixmap support is enabled even if DGA is available.</p>
+<p><b>For more information:</b> <a href="http://www.oracle.com/technetwork/java/perf-graphics-135933.html">High
+Performance Graphics White Paper</a></p>
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

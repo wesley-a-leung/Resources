@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>jstat</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T8:11:41Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Windows, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38210-05" name="partnum"/>
+<meta content="JSWOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="jps.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jstatd.html">
+                Next</a><hr/>
+<div><a id="BEHBBBDJ" name="BEHBBBDJ"/>
+<div id="JSWOR734"><a id="BEHHGFAE" name="BEHHGFAE"/>
+<h1>jstat</h1>
+<p>Monitors Java Virtual Machine (JVM) statistics. This command is experimental and unsupported.</p>
+<div><a id="sthref283" name="sthref283"/>
+<h2>Synopsis</h2>
+<p><b>jstat</b> [ <i>generalOption</i> | <i>outputOptions vmid</i> [ <i>interval</i>[s|ms] [ <i>count</i> ] ]</p>
+<dl>
+<dt><i>generalOption</i></dt>
+<dd>
+<p>A single general command-line option <code dir="ltr">-help</code> or <code dir="ltr">-options</code>. See <a href="#BEHEIDCB">General Options</a>.</p>
+</dd>
+<dt><i>outputOptions</i></dt>
+<dd>
+<p>One or more output options that consist of a single <code dir="ltr">statOption</code>, plus any of the <code dir="ltr">-t</code>, <code dir="ltr">-h</code>, and <code dir="ltr">-J</code> options. See <a href="#BEHIGDGJ">Output Options</a>.</p>
+</dd>
+<dt><i>vmid</i></dt>
+<dd>
+<p>Virtual machine identifier, which is a string that indicates the target JVM. The general syntax is the following:</p>
+<pre dir="ltr" xml:space="preserve">
+[protocol:][//]lvmid[@hostname[:port]/servername]
+</pre>
+<p>The syntax of the <code dir="ltr">vmid</code> string corresponds to the syntax of a URI. The <code dir="ltr">vmid</code> string can vary from a simple integer that represents a local JVM to a more complex construction that specifies a communications protocol, port number, and other implementation-specific values. See <a href="#BEHBCGCA">Virtual Machine Identifier</a>.</p>
+</dd>
+<dt><i>interval</i> [s|ms]</dt>
+<dd>
+<p>Sampling interval in the specified units, seconds (s) or milliseconds (ms). Default units are milliseconds. Must be a positive integer. When specified, the <code dir="ltr">jstat</code> command produces its output at each interval.</p>
+</dd>
+<dt><i>count</i></dt>
+<dd>
+<p>Number of samples to display. The default value is infinity which causes the <code dir="ltr">jstat</code> command to display statistics until the target JVM terminates or the <code dir="ltr">jstat</code> command is terminated. This value must be a positive integer.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref284" name="sthref284"/>
+<h2>Description</h2>
+<p>The <code dir="ltr">jstat</code> command displays performance statistics for an instrumented Java HotSpot VM. The target JVM is identified by its virtual machine identifier, or <code dir="ltr">vmid</code> option.</p>
+</div>
+
+<div><a id="BEHBCGCA" name="BEHBCGCA"/><a id="BEHGDIEC" name="BEHGDIEC"/>
+<h2>Virtual Machine Identifier</h2>
+<p>The syntax of the <code dir="ltr">vmid</code> string corresponds to the syntax of a URI:</p>
+<pre dir="ltr" xml:space="preserve">
+[protocol:][//]lvmid[@hostname[:port]/servername]
+</pre>
+<dl>
+<dt><i>protocol</i></dt>
+<dd>
+<p>The communications protocol. If the <i>protocol</i> value is omitted and a host name is not specified, then the default protocol is a platform-specific optimized local protocol. If the <i>protocol</i> value is omitted and a host name is specified, then the default protocol is <code dir="ltr">rmi</code>.</p>
+</dd>
+<dt><i>lvmid</i></dt>
+<dd>
+<p>The local virtual machine identifier for the target JVM. The <code dir="ltr">lvmid</code> is a platform-specific value that uniquely identifies a JVM on a system. The <code dir="ltr">lvmid</code> is the only required component of a virtual machine identifier. The <code dir="ltr">lvmid</code> is typically, but not necessarily, the operating system's process identifier for the target JVM process. You can use the <code dir="ltr">jps</code> command to determine the <code dir="ltr">lvmid</code>. Also, you can determine the <code dir="ltr">lvmid</code> on Solaris, Linux, and OS X platforms with the <code dir="ltr">ps</code> command, and on Windows with the Windows Task Manager.</p>
+</dd>
+<dt><i>hostname</i></dt>
+<dd>
+<p>A hostname or IP address that indicates the target host. If the <i>hostname</i> value is omitted, then the target host is the local host.</p>
+</dd>
+<dt><i>port</i></dt>
+<dd>
+<p>The default port for communicating with the remote server. If the <i>hostname</i> value is omitted or the <i>protocol</i> value specifies an optimized, local protocol, then the <i>port</i> value is ignored. Otherwise, treatment of the <code dir="ltr">port</code> parameter is implementation-specific. For the default <code dir="ltr">rmi</code> protocol, the port value indicates the port number for the rmiregistry on the remote host. If the <i>port</i> value is omitted and the <i>protocol</i> value indicates <code dir="ltr">rmi</code>, then the default rmiregistry port (1099) is used.</p>
+</dd>
+<dt><i>servername</i></dt>
+<dd>
+<p>The treatment of the <code dir="ltr">servername</code> parameter depends on implementation. For the optimized local protocol, this field is ignored. For the <code dir="ltr">rmi</code> protocol, it represents the name of the RMI remote object on the remote host.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref285" name="sthref285"/>
+<h2>Options</h2>
+<p>The <code dir="ltr">jstat</code> command supports two types of options, general options and output options. General options cause the <code dir="ltr">jstat</code> command to display simple usage and version information. Output options determine the content and format of the statistical output.</p>
+<p>All options and their functionality are subject to change or removal in future releases.</p>
+<div><a id="BEHEIDCB" name="BEHEIDCB"/><a id="BEHBIBEB" name="BEHBIBEB"/>
+<h3>General Options</h3>
+<p>If you specify one of the general options, then you cannot specify any other option or parameter.</p>
+<dl>
+<dt>-help</dt>
+<dd>
+<p>Displays a help message.</p>
+</dd>
+<dt>-options</dt>
+<dd>
+<p>Displays a list of static options. See <a href="#BEHIGDGJ">Output Options</a>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="BEHIGDGJ" name="BEHIGDGJ"/><a id="BEHDAJJB" name="BEHDAJJB"/>
+<h3>Output Options</h3>
+<p>If you do not specify a general option, then you can specify output options. Output options determine the content and format of the <code dir="ltr">jstat</code> command's output, and consist of a single <code dir="ltr">statOption</code>, plus any of the other output options (<code dir="ltr">-h</code>, <code dir="ltr">-t</code>, and <code dir="ltr">-J</code>). The <code dir="ltr">statOption</code> must come first.</p>
+<p>Output is formatted as a table, with columns that are separated by spaces. A header row with titles describes the columns. Use the <code dir="ltr">-h</code> option to set the frequency at which the header is displayed. Column header names are consistent among the different options. In general, if two options provide a column with the same name, then the data source for the two columns is the same.</p>
+<p>Use the <code dir="ltr">-t</code> option to display a time stamp column, labeled Timestamp as the first column of output. The Timestamp column contains the elapsed time, in seconds, since the target JVM started. The resolution of the time stamp is dependent on various factors and is subject to variation due to delayed thread scheduling on heavily loaded systems.</p>
+<p>Use the interval and count parameters to determine how frequently and how many times, respectively, the <code dir="ltr">jstat</code> command displays its output.</p>
+<p><b>Note:</b> Do not to write scripts to parse the <code dir="ltr">jstat</code> command's output because the format might change in future releases. If you write scripts that parse <code dir="ltr">jstat</code> command output, then expect to modify them for future releases of this tool.</p>
+<dl>
+<dt>-<i>statOption</i></dt>
+<dd>
+<p>Determines the statistics information the <code dir="ltr">jstat</code> command displays. The following lists the available options. Use the <code dir="ltr">-options</code> general option to display the list of options for a particular platform installation. See <a href="#BEHFAGBI">Stat Options and Output</a>.</p>
+<p><code dir="ltr">class</code>: Displays statistics about the behavior of the class loader.</p>
+<p><code dir="ltr">compiler</code>: Displays statistics about the behavior of the Java HotSpot VM Just-in-Time compiler.</p>
+<p><code dir="ltr">gc</code>: Displays statistics about the behavior of the garbage collected heap.</p>
+<p><code dir="ltr">gccapacity</code>: Displays statistics about the capacities of the generations and their corresponding spaces.</p>
+<p><code dir="ltr">gccause</code>: Displays a summary about garbage collection statistics (same as <code dir="ltr">-gcutil</code>), with the cause of the last and current (when applicable) garbage collection events.</p>
+<p><code dir="ltr">gcnew</code>: Displays statistics of the behavior of the new generation.</p>
+<p><code dir="ltr">gcnewcapacity</code>: Displays statistics about the sizes of the new generations and its corresponding spaces.</p>
+<p><code dir="ltr">gcold</code>: Displays statistics about the behavior of the old generation and metaspace statistics.</p>
+<p><code dir="ltr">gcoldcapacity</code>: Displays statistics about the sizes of the old generation.</p>
+<p><code dir="ltr">gcmetacapacity</code>: Displays statistics about the sizes of the metaspace.</p>
+<p><code dir="ltr">gcutil</code>: Displays a summary about garbage collection statistics.</p>
+<p><code dir="ltr">printcompilation</code>: Displays Java HotSpot VM compilation method statistics.</p>
+</dd>
+<dt>-h <i>n</i></dt>
+<dd>
+<p>Displays a column header every <i>n</i> samples (output rows), where <i>n</i> is a positive integer. Default value is 0, which displays the column header the first row of data.</p>
+</dd>
+<dt>-t</dt>
+<dd>
+<p>Displays a timestamp column as the first column of output. The time stamp is the time since the start time of the target JVM.</p>
+</dd>
+<dt>-J<i>javaOption</i></dt>
+<dd>
+<p>Passes <code dir="ltr">javaOption</code> to the Java application launcher. For example, <code dir="ltr">-J-Xms48m</code> sets the startup memory to 48 MB. For a complete list of options, see <a href="java.html#CBBFHAJA"><code dir="ltr">java</code>(1)</a>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="BEHFAGBI" name="BEHFAGBI"/><a id="BEHDDDCI" name="BEHDDDCI"/>
+<h3>Stat Options and Output</h3>
+<p>The following information summarizes the columns that the <code dir="ltr">jstat</code> command outputs for each <i>statOption</i>.</p>
+<dl>
+<dt>-class <i>option</i></dt>
+<dd>
+<p>Class loader statistics.</p>
+<p><code dir="ltr">Loaded</code>: Number of classes loaded.</p>
+<p><code dir="ltr">Bytes</code>: Number of kBs loaded.</p>
+<p><code dir="ltr">Unloaded</code>: Number of classes unloaded.</p>
+<p><code dir="ltr">Bytes</code>: Number of Kbytes unloaded.</p>
+<p><code dir="ltr">Time</code>: Time spent performing class loading and unloading operations.</p>
+</dd>
+<dt>-compiler <i>option</i></dt>
+<dd>
+<p>Java HotSpot VM Just-in-Time compiler statistics.</p>
+<p><code dir="ltr">Compiled</code>: Number of compilation tasks performed.</p>
+<p><code dir="ltr">Failed</code>: Number of compilations tasks failed.</p>
+<p><code dir="ltr">Invalid</code>: Number of compilation tasks that were invalidated.</p>
+<p><code dir="ltr">Time</code>: Time spent performing compilation tasks.</p>
+<p><code dir="ltr">FailedType</code>: Compile type of the last failed compilation.</p>
+<p><code dir="ltr">FailedMethod</code>: Class name and method of the last failed compilation.</p>
+</dd>
+<dt>-gc <i>option</i></dt>
+<dd>
+<p>Garbage-collected heap statistics.</p>
+<p><code dir="ltr">S0C</code>: Current survivor space 0 capacity (kB).</p>
+<p><code dir="ltr">S1C</code>: Current survivor space 1 capacity (kB).</p>
+<p><code dir="ltr">S0U</code>: Survivor space 0 utilization (kB).</p>
+<p><code dir="ltr">S1U</code>: Survivor space 1 utilization (kB).</p>
+<p><code dir="ltr">EC</code>: Current eden space capacity (kB).</p>
+<p><code dir="ltr">EU</code>: Eden space utilization (kB).</p>
+<p><code dir="ltr">OC</code>: Current old space capacity (kB).</p>
+<p><code dir="ltr">OU</code>: Old space utilization (kB).</p>
+<p><code dir="ltr">MC</code>: Metaspace capacity (kB).</p>
+<p><code dir="ltr">MU</code>: Metacspace utilization (kB).</p>
+<p><code dir="ltr">CCSC</code>: Compressed class space capacity (kB).</p>
+<p><code dir="ltr">CCSU</code>: Compressed class space used (kB).</p>
+<p><code dir="ltr">YGC</code>: Number of young generation garbage collection events.</p>
+<p><code dir="ltr">YGCT</code>: Young generation garbage collection time.</p>
+<p><code dir="ltr">FGC</code>: Number of full GC events.</p>
+<p><code dir="ltr">FGCT</code>: Full garbage collection time.</p>
+<p><code dir="ltr">GCT</code>: Total garbage collection time.</p>
+</dd>
+<dt>-gccapacity <i>option</i></dt>
+<dd>
+<p>Memory pool generation and space capacities.</p>
+<p><code dir="ltr">NGCMN</code>: Minimum new generation capacity (kB).</p>
+<p><code dir="ltr">NGCMX</code>: Maximum new generation capacity (kB).</p>
+<p><code dir="ltr">NGC</code>: Current new generation capacity (kB).</p>
+<p><code dir="ltr">S0C</code>: Current survivor space 0 capacity (kB).</p>
+<p><code dir="ltr">S1C</code>: Current survivor space 1 capacity (kB).</p>
+<p><code dir="ltr">EC</code>: Current eden space capacity (kB).</p>
+<p><code dir="ltr">OGCMN</code>: Minimum old generation capacity (kB).</p>
+<p><code dir="ltr">OGCMX</code>: Maximum old generation capacity (kB).</p>
+<p><code dir="ltr">OGC</code>: Current old generation capacity (kB).</p>
+<p><code dir="ltr">OC</code>: Current old space capacity (kB).</p>
+<p><code dir="ltr">MCMN</code>: Minimum metaspace capacity (kB).</p>
+<p><code dir="ltr">MCMX</code>: Maximum metaspace capacity (kB).</p>
+<p><code dir="ltr">MC</code>: Metaspace capacity (kB).</p>
+<p><code dir="ltr">CCSMN</code>: Compressed class space minimum capacity (kB).</p>
+<p><code dir="ltr">CCSMX</code>: Compressed class space maximum capacity (kB).</p>
+<p><code dir="ltr">CCSC</code>: Compressed class space capacity (kB).</p>
+<p><code dir="ltr">YGC</code>: Number of young generation GC events.</p>
+<p><code dir="ltr">FGC</code>: Number of full GC events.</p>
+</dd>
+<dt>-gccause <i>option</i></dt>
+<dd>
+<p>This option displays the same summary of garbage collection statistics as the <code dir="ltr">-gcutil</code> option, but includes the causes of the last garbage collection event and (when applicable) the current garbage collection event. In addition to the columns listed for <code dir="ltr">-gcutil</code>, this option adds the following columns.</p>
+<p><code dir="ltr">LGCC</code>: Cause of last garbage collection</p>
+<p><code dir="ltr">GCC</code>: Cause of current garbage collection</p>
+</dd>
+<dt>-gcnew <i>option</i></dt>
+<dd>
+<p>New generation statistics.</p>
+<p><code dir="ltr">S0C</code>: Current survivor space 0 capacity (kB).</p>
+<p><code dir="ltr">S1C</code>: Current survivor space 1 capacity (kB).</p>
+<p><code dir="ltr">S0U</code>: Survivor space 0 utilization (kB).</p>
+<p><code dir="ltr">S1U</code>: Survivor space 1 utilization (kB).</p>
+<p><code dir="ltr">TT</code>: Tenuring threshold.</p>
+<p><code dir="ltr">MTT</code>: Maximum tenuring threshold.</p>
+<p><code dir="ltr">DSS</code>: Desired survivor size (kB).</p>
+<p><code dir="ltr">EC</code>: Current eden space capacity (kB).</p>
+<p><code dir="ltr">EU</code>: Eden space utilization (kB).</p>
+<p><code dir="ltr">YGC</code>: Number of young generation GC events.</p>
+<p><code dir="ltr">YGCT</code>: Young generation garbage collection time.</p>
+</dd>
+<dt>-gcnewcapacity <i>option</i></dt>
+<dd>
+<p>New generation space size statistics.</p>
+<p><code dir="ltr">NGCMN</code>: Minimum new generation capacity (kB).</p>
+<p><code dir="ltr">NGCMX</code>: Maximum new generation capacity (kB).</p>
+<p><code dir="ltr">NGC</code>: Current new generation capacity (kB).</p>
+<p><code dir="ltr">S0CMX</code>: Maximum survivor space 0 capacity (kB).</p>
+<p><code dir="ltr">S0C</code>: Current survivor space 0 capacity (kB).</p>
+<p><code dir="ltr">S1CMX</code>: Maximum survivor space 1 capacity (kB).</p>
+<p><code dir="ltr">S1C</code>: Current survivor space 1 capacity (kB).</p>
+<p><code dir="ltr">ECMX</code>: Maximum eden space capacity (kB).</p>
+<p><code dir="ltr">EC</code>: Current eden space capacity (kB).</p>
+<p><code dir="ltr">YGC</code>: Number of young generation GC events.</p>
+<p><code dir="ltr">FGC</code>: Number of full GC events.</p>
+</dd>
+<dt>-gcold <i>option</i></dt>
+<dd>
+<p>Old generation and metaspace behavior statistics.</p>
+<p><code dir="ltr">MC</code>: Metaspace capacity (kB).</p>
+<p><code dir="ltr">MU</code>: Metaspace utilization (kB).</p>
+<p><code dir="ltr">CCSC</code>: Compressed class space capacity (kB).</p>
+<p><code dir="ltr">CCSU</code>: Compressed class space used (kB).</p>
+<p><code dir="ltr">OC</code>: Current old space capacity (kB).</p>
+<p><code dir="ltr">OU</code>: Old space utilization (kB).</p>
+<p><code dir="ltr">YGC</code>: Number of young generation GC events.</p>
+<p><code dir="ltr">FGC</code>: Number of full GC events.</p>
+<p><code dir="ltr">FGCT</code>: Full garbage collection time.</p>
+<p><code dir="ltr">GCT</code>: Total garbage collection time.</p>
+</dd>
+<dt>-gcoldcapacity <i>option</i></dt>
+<dd>
+<p>Old generation size statistics.</p>
+<p><code dir="ltr">OGCMN</code>: Minimum old generation capacity (kB).</p>
+<p><code dir="ltr">OGCMX</code>: Maximum old generation capacity (kB).</p>
+<p><code dir="ltr">OGC</code>: Current old generation capacity (kB).</p>
+<p><code dir="ltr">OC</code>: Current old space capacity (kB).</p>
+<p><code dir="ltr">YGC</code>: Number of young generation GC events.</p>
+<p><code dir="ltr">FGC</code>: Number of full GC events.</p>
+<p><code dir="ltr">FGCT</code>: Full garbage collection time.</p>
+<p><code dir="ltr">GCT</code>: Total garbage collection time.</p>
+</dd>
+<dt>-gcmetacapacity <i>option</i></dt>
+<dd>
+<p>Metaspace size statistics.</p>
+<p><code dir="ltr">MCMN</code>: Minimum metaspace capacity (kB).</p>
+<p><code dir="ltr">MCMX</code>: Maximum metaspace capacity (kB).</p>
+<p><code dir="ltr">MC</code>: Metaspace capacity (kB).</p>
+<p><code dir="ltr">CCSMN</code>: Compressed class space minimum capacity (kB).</p>
+<p><code dir="ltr">CCSMX</code>: Compressed class space maximum capacity (kB).</p>
+<p><code dir="ltr">YGC</code>: Number of young generation GC events.</p>
+<p><code dir="ltr">FGC</code>: Number of full GC events.</p>
+<p><code dir="ltr">FGCT</code>: Full garbage collection time.</p>
+<p><code dir="ltr">GCT</code>: Total garbage collection time.</p>
+</dd>
+<dt>-gcutil <i>option</i></dt>
+<dd>
+<p>Summary of garbage collection statistics.</p>
+<p><code dir="ltr">S0</code>: Survivor space 0 utilization as a percentage of the space's current capacity.</p>
+<p><code dir="ltr">S1</code>: Survivor space 1 utilization as a percentage of the space's current capacity.</p>
+<p><code dir="ltr">E</code>: Eden space utilization as a percentage of the space's current capacity.</p>
+<p><code dir="ltr">O</code>: Old space utilization as a percentage of the space's current capacity.</p>
+<p><code dir="ltr">M</code>: Metaspace utilization as a percentage of the space's current capacity.</p>
+<p><code dir="ltr">CCS</code>: Compressed class space utilization as a percentage.</p>
+<p><code dir="ltr">YGC</code>: Number of young generation GC events.</p>
+<p><code dir="ltr">YGCT</code>: Young generation garbage collection time.</p>
+<p><code dir="ltr">FGC</code>: Number of full GC events.</p>
+<p><code dir="ltr">FGCT</code>: Full garbage collection time.</p>
+<p><code dir="ltr">GCT</code>: Total garbage collection time.</p>
+</dd>
+<dt>-printcompilation <i>option</i></dt>
+<dd>
+<p>Java HotSpot VM compiler method statistics.</p>
+<p><code dir="ltr">Compiled</code>: Number of compilation tasks performed by the most recently compiled method.</p>
+<p><code dir="ltr">Size</code>: Number of bytes of byte code of the most recently compiled method.</p>
+<p><code dir="ltr">Type</code>: Compilation type of the most recently compiled method.</p>
+<p><code dir="ltr">Method</code>: Class name and method name identifying the most recently compiled method. Class name uses slash (/) instead of dot (.) as a name space separator. Method name is the method within the specified class. The format for these two fields is consistent with the HotSpot <code dir="ltr">-XX:+PrintCompilation</code> option.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+<div><a id="sthref286" name="sthref286"/>
+<h2>Examples</h2>
+<p>This section presents some examples of monitoring a local JVM with an <i>lvmid</i> of 21891.</p>
+<div><a id="sthref287" name="sthref287"/>
+<h3>The gcutil Option</h3>
+<p>This example attaches to lvmid 21891 and takes 7 samples at 250 millisecond intervals and displays the output as specified by the -<code dir="ltr">gcutil</code> option.</p>
+<p>The output of this example shows that a young generation collection occurred between the third and fourth sample. The collection took 0.078 seconds and promoted objects from the eden space (E) to the old space (O), resulting in an increase of old space utilization from 66.80% to 68.19%. Before the collection, the survivor space was 97.02% utilized, but after this collection it is 91.03% utilized.</p>
+<pre dir="ltr" xml:space="preserve">
+jstat -gcutil 21891 250 7
+  S0     S1     E      O      M     CCS    YGC     YGCT    FGC    FGCT     GCT   
+  0.00  97.02  70.31  66.80  95.52  89.14      7    0.300     0    0.000    0.300
+  0.00  97.02  86.23  66.80  95.52  89.14      7    0.300     0    0.000    0.300
+  0.00  97.02  96.53  66.80  95.52  89.14      7    0.300     0    0.000    0.300
+ 91.03   0.00   1.98  68.19  95.89  91.24      8    0.378     0    0.000    0.378
+ 91.03   0.00  15.82  68.19  95.89  91.24      8    0.378     0    0.000    0.378
+ 91.03   0.00  17.80  68.19  95.89  91.24      8    0.378     0    0.000    0.378
+ 91.03   0.00  17.80  68.19  95.89  91.24      8    0.378     0    0.000    0.378
+</pre></div>
+
+<div><a id="sthref288" name="sthref288"/>
+<h3>Repeat the Column Header String</h3>
+<p>This example attaches to lvmid 21891 and takes samples at 250 millisecond intervals and displays the output as specified by <code dir="ltr">-gcnew</code> option. In addition, it uses the <code dir="ltr">-h3</code> option to output the column header after every 3 lines of data.</p>
+<p>In addition to showing the repeating header string, this example shows that between the second and third samples, a young GC occurred. Its duration was 0.001 seconds. The collection found enough active data that the survivor space 0 utilization (S0U) would have exceeded the desired survivor Size (DSS). As a result, objects were promoted to the old generation (not visible in this output), and the tenuring threshold (TT) was lowered from 31 to 2.</p>
+<p>Another collection occurs between the fifth and sixth samples. This collection found very few survivors and returned the tenuring threshold to 31.</p>
+<pre dir="ltr" xml:space="preserve">
+jstat -gcnew -h3 21891 250
+ S0C    S1C    S0U    S1U   TT MTT  DSS      EC       EU     YGC     YGCT
+  64.0   64.0    0.0   31.7 31  31   32.0    512.0    178.6    249    0.203
+  64.0   64.0    0.0   31.7 31  31   32.0    512.0    355.5    249    0.203
+  64.0   64.0   35.4    0.0  2  31   32.0    512.0     21.9    250    0.204
+ S0C    S1C    S0U    S1U   TT MTT  DSS      EC       EU     YGC     YGCT
+  64.0   64.0   35.4    0.0  2  31   32.0    512.0    245.9    250    0.204
+  64.0   64.0   35.4    0.0  2  31   32.0    512.0    421.1    250    0.204
+  64.0   64.0    0.0   19.0 31  31   32.0    512.0     84.4    251    0.204
+ S0C    S1C    S0U    S1U   TT MTT  DSS      EC       EU     YGC     YGCT
+  64.0   64.0    0.0   19.0 31  31   32.0    512.0    306.7    251    0.204
+</pre></div>
+
+<div><a id="sthref289" name="sthref289"/>
+<h3>Include a Time Stamp for Each Sample</h3>
+<p>This example attaches to lvmid 21891 and takes 3 samples at 250 millisecond intervals. The <code dir="ltr">-t</code> option is used to generate a time stamp for each sample in the first column.</p>
+<p>The Timestamp column reports the elapsed time in seconds since the start of the target JVM. In addition, the <code dir="ltr">-gcoldcapacity</code> output shows the old generation capacity (OGC) and the old space capacity (OC) increasing as the heap expands to meet allocation or promotion demands. The old generation capacity (OGC) has grown from 11,696 kB to 13,820 kB after the eighty-first full garbage collection (FGC). The maximum capacity of the generation (and space) is 60,544 kB (OGCMX), so it still has room to expand.</p>
+<pre dir="ltr" xml:space="preserve">
+Timestamp      OGCMN    OGCMX     OGC       OC       YGC   FGC    FGCT    GCT
+          150.1   1408.0  60544.0  11696.0  11696.0   194    80    2.874   3.799
+          150.4   1408.0  60544.0  13820.0  13820.0   194    81    2.938   3.863
+          150.7   1408.0  60544.0  13820.0  13820.0   194    81    2.938   3.863
+</pre></div>
+
+<div><a id="sthref290" name="sthref290"/>
+<h3>Monitor Instrumentation for a Remote JVM</h3>
+<p>This example attaches to lvmid 40496 on the system named remote.domain using the <code dir="ltr">-gcutil</code> option, with samples taken every second indefinitely.</p>
+<p>The lvmid is combined with the name of the remote host to construct a <i>vmid</i> of <code dir="ltr">40496@remote.domain</code>. This vmid results in the use of the <code dir="ltr">rmi</code> protocol to communicate to the default <code dir="ltr">jstatd</code> server on the remote host. The <code dir="ltr">jstatd</code> server is located using the <code dir="ltr">rmiregistry</code> command on <code dir="ltr">remote.domain</code> that is bound to the default port of the <code dir="ltr">rmiregistry</code> command (port 1099).</p>
+<pre dir="ltr" xml:space="preserve">
+jstat -gcutil 40496@remote.domain 1000
+<i>... output omitted</i>
+</pre></div>
+</div>
+
+<div><a id="sthref291" name="sthref291"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="java.html#CBBFHAJA"><code dir="ltr">java</code>(1)</a></p>
+</li>
+<li>
+<p><a href="jps.html#CHDGHCGB"><code dir="ltr">jps</code>(1)</a></p>
+</li>
+<li>
+<p><a href="jstatd.html#BABHHDIB"><code dir="ltr">jstatd</code>(1)</a></p>
+</li>
+<li>
+<p><a href="rmiregistry.html#CHDEDDIE"><code dir="ltr">rmiregistry</code>(1)</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="jps.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jstatd.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

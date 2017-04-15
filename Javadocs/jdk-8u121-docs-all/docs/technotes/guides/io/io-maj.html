@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Features of java.io.File in the Java(TM) 2 Platform</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Features of <code>java.io.File</code> in the Java 2 Platform</h1>
+
+<!-- Body text begins here -->
+The <a href="../../../api/java/io/File.html">File</a> class is a
+true abstract representation of file and directory pathnames. This
+allows the File class to better support non-UNIX platforms such as
+Windows, which has a rich pathname syntax involving drive letters,
+UNC share names, and multiple separator characters. The
+specification of class File prior to the Java Platform could not handle these cases
+because it was written in terms of simple string operations.
+<p>The following features were introduced in the <code>File</code>
+class in Java SE 1.2:</p>
+<ul>
+<li>The ability to create temporary files, and a simple
+delete-on-exit facility (the new methods <a href=
+"../../../api/java/io/File.html#createNewFile--">createNewFile</a>,
+<a href=
+"../../../api/java/io/File.html#createTempFile-java.lang.String-java.lang.String-">
+createTempFile</a>, and <a href=
+"../../../api/java/io/File.html#deleteOnExit--">deleteOnExit</a>);</li>
+<li>Conversion of abstract pathnames to URLs (the new method
+<a href="../../../api/java/io/File.html#toURL--">toURL</a>);</li>
+<li>Access to the list of filesystem roots (the new method <a href=
+"../../../api/java/io/File.html#listRoots--">listRoots</a>);</li>
+<li>Comparability (the new <a href=
+"../../../api/java/io/File.html#compareTo-java.io.File-">compareTo</a>
+methods);</li>
+<li>Access to additional file attributes (the new methods <a href=
+"../../../api/java/io/File.html#isHidden--">isHidden</a>, <a href=
+"../../../api/java/io/File.html#setLastModified-long-">setLastModified</a>,
+and <a href=
+"../../../api/java/io/File.html#setReadOnly--">setReadOnly</a>);
+and</li>
+<li>A uniform set of methods that accept and return File objects
+rather than strings (the new methods <a href=
+"../../../api/java/io/File.html#getParentFile--">getParentFile</a>,
+<a href=
+"../../../api/java/io/File.html#getAbsoluteFile--">getAbsoluteFile</a>,
+<a href=
+"../../../api/java/io/File.html#getCanonicalFile--">getCanonicalFile</a>,
+and <a href=
+"../../../api/java/io/File.html#listFiles--">listFiles</a>, and the
+new interface <a href=
+"../../../api/java/io/FileFilter.html">FileFilter</a>).</li>
+</ul>
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

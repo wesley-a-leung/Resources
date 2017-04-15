@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Garbage-First Garbage Collector Tuning</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1044" name="generator"/>
+<meta content="2015-02-13T15:0:0Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition HotSpot Virtual Machine Garbage Collection Tuning Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E51587-02" name="partnum"/>
+<meta content="no_value_supplied" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition HotSpot Virtual Machine Garbage Collection Tuning Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="g1_gc.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="considerations.html">
+                Next</a><hr/>
+<script type="text/javascript">
+
+</script> <script type="text/javascript">
+// 
+function footdisplay(footnum,footnote) {
+    var msg = window.open('', 'NewWindow' + footnum,
+        'directories=no,height=120,location=no,menubar=no,resizable=yes,' +
+        'scrollbars=yes,status=no,toolbar=no,width=598');
+    msg.document.open('text/html');
+    msg.document.write('&lt;!DOCTYPE html ');
+    msg.document.write('PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" ');
+
+    msg.document.write('"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;');
+    msg.document.write('&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;&lt;head&gt;&lt;title&gt;');
+    msg.document.write('Footnote ' + footnum);
+    msg.document.write('&lt;\/title&gt;&lt;meta http-equiv="Content-Type" ');
+    msg.document.write('content="text/html; charset=utf-8" /&gt;');
+    msg.document.write('&lt;meta http-equiv="Content-Script-Type" ');
+    msg.document.write('content="text/javascript" /&gt;');
+    msg.document.write('&lt;style type="text/css"&gt; &lt;![CDATA[ ');
+    msg.document.write('h1 {text-align: center; font-size: 14pt;}');
+    msg.document.write('fieldset {border: none;}');
+    msg.document.write('form {text-align: center;}');
+    msg.document.write(' ]]\u003e &lt;\/style&gt;');
+    msg.document.write('&lt;\/head&gt;&lt;body&gt;&lt;h1&gt;Footnote ' + footnum + '&lt;\/h1&gt;&lt;p&gt;');
+    msg.document.write(footnote);
+    msg.document.write('&lt;\/p&gt;&lt;form action="" method="post"&gt;&lt;fieldset&gt;');
+    msg.document.write('&lt;input type="button" value="OK" ');
+    msg.document.write('onclick="window.close();" /&gt;');
+    msg.document.write('&lt;\/fieldset&gt;&lt;\/form&gt;&lt;\/body&gt;&lt;\/html&gt;');
+    msg.document.close();
+    msg.focus();
+}
+// 
+</script> <noscript>
+<p>The script content on this page is for navigation purposes only and does not alter the content in any way.</p>
+</noscript>
+<div><a id="g1_gc_tuning" name="g1_gc_tuning"/>
+<h1><span>10</span> Garbage-First Garbage Collector Tuning</h1>
+<p>This section describes how to adapt and tune the Garbage-First garbage collector (G1 GC) for evaluation, analysis and performance.</p>
+<p>As described in the section <a href="g1_gc.html#garbage_first_garbage_collection">Garbage-First Garbage Collector</a>, the G1 GC is a regionalized and generational garbage collector, which means that the Java object heap (heap) is divided into a number of equally sized regions. Upon startup, the Java Virtual Machine (JVM) sets the region size. The region sizes can vary from 1 MB to 32 MB depending on the heap size. The goal is to have no more than 2048 regions. The eden, survivor, and old generations are logical sets of these regions and are not contiguous.</p>
+<p>The G1 GC has a pause time target that it tries to meet (soft real time). During young collections, the G1 GC adjusts its young generation (eden and survivor sizes) to meet the soft real-time target. See the sections <a href="g1_gc.html#pauses">Pauses</a> and <a href="g1_gc.html#pause_time_goal">Pause Time Goal</a> in <a href="g1_gc.html#garbage_first_garbage_collection">Garbage-First Garbage Collector</a> for information about why the G1 GC takes pauses and how to set pause time targets.</p>
+<p>During mixed collections, the G1 GC adjusts the number of old regions that are collected based on a target number of mixed garbage collections, the percentage of live objects in each region of the heap, and the overall acceptable heap waste percentage.</p>
+<p>The G1 GC reduces heap fragmentation by incremental parallel copying of live objects from one or more sets of regions (called Collection Sets (CSet)s) into one or more different new regions to achieve compaction. The goal is to reclaim as much heap space as possible, starting with those regions that contain the most reclaimable space, while attempting to not exceed the pause time goal (garbage first).</p>
+<p>The G1 GC uses independent Remembered Sets (RSets) to track references into regions. Independent RSets enable parallel and independent collection of regions because only a region's RSet must be scanned for references into that region, instead of the whole heap. The G1 GC uses a post-write barrier to record changes to the heap and update the RSets.</p>
+<div><a id="sthref50" name="sthref50"/>
+<h2>Garbage Collection Phases</h2>
+<p>Apart from evacuation pauses (see the section <a href="g1_gc.html#allocation_evacuation_failure">Allocation (Evacuation) Failure</a> in <a href="g1_gc.html#garbage_first_garbage_collection">Garbage-First Garbage Collector</a>) that compose the stop-the-world (STW) young and mixed garbage collections, the G1 GC also has parallel, concurrent, and multiphase marking cycles. G1 GC uses the snapshot-at-the-beginning (SATB) algorithm, which logically takes a snapshot of the set of live objects in the heap at the start of a marking cycle. The set of live objects also includes objects allocated since the start of the marking cycle. The G1 GC marking algorithm uses a pre-write barrier to record and mark objects that are part of the logical snapshot.</p>
+</div>
+
+<div><a id="sthref51" name="sthref51"/>
+<h2>Young Garbage Collections</h2>
+<p>The G1 GC satisfies most allocation requests from regions added to the eden set of regions. During a young garbage collection, the G1 GC collects both the eden regions and the survivor regions from the previous garbage collection. The live objects from the eden and survivor regions are copied, or evacuated, to a new set of regions. The destination region for a particular object depends upon the object's age; an object that has aged sufficiently evacuates to an old generation region (that is, it is promoted); otherwise, the object evacuates to a survivor region and will be included in the CSet of the next young or mixed garbage collection.</p>
+</div>
+
+<div><a id="sthref52" name="sthref52"/>
+<h2>Mixed Garbage Collections</h2>
+<p>Upon successful completion of a concurrent marking cycle, the G1 GC switches from performing young garbage collections to performing mixed garbage collections. In a mixed garbage collection, the G1 GC optionally adds some old regions to the set of eden and survivor regions that will be collected. The exact number of old regions added is controlled by a number of flags (see "Taming Mixed Garbage Collectors" in the section <a href="#recommendations">Recommendations</a>). After the G1 GC collects a sufficient number of old regions (over multiple mixed garbage collections), G1 reverts to performing young garbage collections until the next marking cycle completes.</p>
+</div>
+
+<div><a id="sthref53" name="sthref53"/>
+<h2>Phases of the Marking Cycle</h2>
+<p>The marking cycle has the following phases:</p>
+<ul>
+<li>
+<p><b>Initial marking phase</b>: The G1 GC marks the roots during this phase. This phase is piggybacked on a normal (STW) young garbage collection.</p>
+</li>
+<li>
+<p><b>Root region scanning phase</b>: The G1 GC scans survivor regions marked during the initial marking phase for references to the old generation and marks the referenced objects. This phase runs concurrently with the application (not STW) and must complete before the next STW young garbage collection can start.</p>
+</li>
+<li>
+<p><b>Concurrent marking phase</b>: The G1 GC finds reachable (live) objects across the entire heap. This phase happens concurrently with the application, and can be interrupted by STW young garbage collections.</p>
+</li>
+<li>
+<p><b>Remark phase</b>: This phase is STW collection and helps the completion of the marking cycle. G1 GC drains SATB buffers, traces unvisited live objects, and performs reference processing.</p>
+</li>
+<li>
+<p><b>Cleanup phase</b>: In this final phase, the G1 GC performs the STW operations of accounting and RSet scrubbing. During accounting, the G1 GC identifies completely free regions and mixed garbage collection candidates. The cleanup phase is partly concurrent when it resets and returns the empty regions to the free list.</p>
+</li>
+</ul>
+</div>
+
+<a id="important_defaults" name="important_defaults"/>
+<div>
+<h2>Important Defaults</h2>
+<p>The G1 GC is an adaptive garbage collector with defaults that enable it to work efficiently without modification. <a href="#default_g1_gc">Table 10-1, "Default Values of Important Options for G1 Garbage Collector"</a> lists of important options and their default values in Java HotSpot VM, build 24. You can adapt and tune the G1 GC to your application performance needs by entering the options in <a href="#default_g1_gc">Table 10-1, "Default Values of Important Options for G1 Garbage Collector"</a> with changed settings on the JVM command line.</p>
+<div><a id="sthref54" name="sthref54"/><a id="default_g1_gc" name="default_g1_gc"/>
+<p>Table 10-1 Default Values of Important Options for G1 Garbage Collector</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="border" rules="all" summary="Default values for important options for G1 GC" title="Default Values of Important Options for G1 Garbage Collector" width="100%">
+<col width="31%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t2" valign="bottom">Option and Default Value</th>
+<th align="left" id="r1c2-t2" valign="bottom">Option</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r2c1-t2">
+<p><code dir="ltr">-XX:G1HeapRegionSize=</code><code dir="ltr"><span>n</span></code></p>
+</td>
+<td align="left" headers="r2c1-t2 r1c2-t2">
+<p>Sets the size of a G1 region. The value will be a power of two and can range from 1 MB to 32 MB. The goal is to have around 2048 regions based on the minimum Java heap size.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r3c1-t2">
+<p><code dir="ltr">-XX:MaxGCPauseMillis=200</code></p>
+</td>
+<td align="left" headers="r3c1-t2 r1c2-t2">
+<p>Sets a target value for desired maximum pause time. The default value is 200 milliseconds. The specified value does not adapt to your heap size.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r4c1-t2">
+<p><code dir="ltr">-XX:G1NewSizePercent=5</code></p>
+</td>
+<td align="left" headers="r4c1-t2 r1c2-t2">
+<p>Sets the percentage of the heap to use as the minimum for the young generation size. The default value is 5 percent of your Java heap.<a href="#not_available_hotspot_vm_build_23" id="not_available_hotspot_vm_build_23" name="not_available_hotspot_vm_build_23" onclick="footdisplay(1,&quot;This setting is not available in Java HotSpot VM build 23 or earlier.&quot;)"><sup>Foot1</sup></a></p>
+<p>This is an experimental flag. See <a href="#how_to_unlock_experimental_vm_flags">How to Unlock Experimental VM Flags</a> for an example. This setting replaces the <code dir="ltr">-XX:DefaultMinNewGenPercent</code> setting.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r5c1-t2">
+<p><code dir="ltr">-XX:G1MaxNewSizePercent=60</code></p>
+</td>
+<td align="left" headers="r5c1-t2 r1c2-t2">
+<p>Sets the percentage of the heap size to use as the maximum for young generation size. The default value is 60 percent of your Java heap.<a href="#sthref55" id="sthref55" name="sthref55" onclick="footdisplay(1,&quot;This setting is not available in Java HotSpot VM build 23 or earlier.&quot;)"><sup>Footref1</sup></a></p>
+<p>This is an experimental flag. See <a href="#how_to_unlock_experimental_vm_flags">How to Unlock Experimental VM Flags</a> for an example. This setting replaces the <code dir="ltr">-XX:DefaultMaxNewGenPercent</code> setting.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r6c1-t2">
+<p><code dir="ltr">-XX:ParallelGCThreads=</code><code dir="ltr"><span>n</span></code></p>
+</td>
+<td align="left" headers="r6c1-t2 r1c2-t2">
+<p>Sets the value of the STW worker threads. Sets the value of <code dir="ltr"><span>n</span></code> to the number of logical processors. The value of <code dir="ltr"><span>n</span></code> is the same as the number of logical processors up to a value of 8.</p>
+<p>If there are more than eight logical processors, sets the value of <i>n</i> to approximately 5/8 of the logical processors. This works in most cases except for larger SPARC systems where the value of <i>n</i> can be approximately 5/16 of the logical processors.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r7c1-t2">
+<p><code dir="ltr">-XX:ConcGCThreads=</code><code dir="ltr"><span>n</span></code></p>
+</td>
+<td align="left" headers="r7c1-t2 r1c2-t2">
+<p>Sets the number of parallel marking threads. Sets <code dir="ltr"><span>n</span></code> to approximately 1/4 of the number of parallel garbage collection threads (ParallelGCThreads).</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r8c1-t2">
+<p><code dir="ltr">-XX:InitiatingHeapOccupancyPercent=45</code></p>
+</td>
+<td align="left" headers="r8c1-t2 r1c2-t2">
+<p>Sets the Java heap occupancy threshold that triggers a marking cycle. The default occupancy is 45 percent of the entire Java heap.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r9c1-t2">
+<p><code dir="ltr">-XX:G1MixedGCLiveThresholdPercent=85</code></p>
+</td>
+<td align="left" headers="r9c1-t2 r1c2-t2">
+<p>Sets the occupancy threshold for an old region to be included in a mixed garbage collection cycle. The default occupancy is 85 percent.<a href="#sthref56" id="sthref56" name="sthref56" onclick="footdisplay(1,&quot;This setting is not available in Java HotSpot VM build 23 or earlier.&quot;)"><sup>Footref1</sup></a></p>
+<p>This is an experimental flag. See <a href="#how_to_unlock_experimental_vm_flags">How to Unlock Experimental VM Flags</a> for an example. This setting replaces the <code dir="ltr">-XX:G1OldCSetRegionLiveThresholdPercent</code> setting.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r10c1-t2">
+<p><code dir="ltr">-XX:G1HeapWastePercent=5</code></p>
+</td>
+<td align="left" headers="r10c1-t2 r1c2-t2">
+<p>Sets the percentage of heap that you are willing to waste. The Java HotSpot VM does not initiate the mixed garbage collection cycle when the reclaimable percentage is less than the heap waste percentage. The default is 5 percent.<a href="#sthref57" id="sthref57" name="sthref57" onclick="footdisplay(1,&quot;This setting is not available in Java HotSpot VM build 23 or earlier.&quot;)"><sup>Footref1</sup></a></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r11c1-t2">
+<p><code dir="ltr">-XX:G1MixedGCCountTarget=8</code></p>
+</td>
+<td align="left" headers="r11c1-t2 r1c2-t2">
+<p>Sets the target number of mixed garbage collections after a marking cycle to collect old regions with at most <code dir="ltr">G1MixedGCLIveThresholdPercent</code> live data. The default is 8 mixed garbage collections. The goal for mixed collections is to be within this target number.<a href="#sthref58" id="sthref58" name="sthref58" onclick="footdisplay(1,&quot;This setting is not available in Java HotSpot VM build 23 or earlier.&quot;)"><sup>Footref1</sup></a></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r12c1-t2">
+<p><code dir="ltr">-XX:G1OldCSetRegionThresholdPercent=10</code></p>
+</td>
+<td align="left" headers="r12c1-t2 r1c2-t2">
+<p>Sets an upper limit on the number of old regions to be collected during a mixed garbage collection cycle. The default is 10 percent of the Java heap.<a href="#sthref59" id="sthref59" name="sthref59" onclick="footdisplay(1,&quot;This setting is not available in Java HotSpot VM build 23 or earlier.&quot;)"><sup>Footref1</sup></a></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r13c1-t2">
+<p><code dir="ltr">-XX:G1ReservePercent=10</code></p>
+</td>
+<td align="left" headers="r13c1-t2 r1c2-t2">
+<p>Sets the percentage of reserve memory to keep free so as to reduce the risk of to-space overflows. The default is 10 percent. When you increase or decrease the percentage, make sure to adjust the total Java heap by the same amount.<a href="#sthref60" id="sthref60" name="sthref60" onclick="footdisplay(1,&quot;This setting is not available in Java HotSpot VM build 23 or earlier.&quot;)"><sup>Footref1</sup></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p><sup>Footnote1</sup>This setting is not available in Java HotSpot VM build 23 or earlier.</p>
+</div>
+
+<a id="how_to_unlock_experimental_vm_flags" name="how_to_unlock_experimental_vm_flags"/>
+<div>
+<h2>How to Unlock Experimental VM Flags</h2>
+<p>To change the value of experimental flags, you must unlock them first. You can do this by setting <code dir="ltr">-XX:+UnlockExperimentalVMOptions</code> explicitly on the command line before any experimental flags. For example:</p>
+<p><code dir="ltr">java -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=10 -XX:G1MaxNewSizePercent=75 G1test.jar</code></p>
+</div>
+
+<a id="recommendations" name="recommendations"/>
+<div>
+<h2>Recommendations</h2>
+<p>When you evaluate and fine-tune G1 GC, keep the following recommendations in mind:</p>
+<ul>
+<li>
+<p><b>Young Generation Size</b>: Avoid explicitly setting young generation size with the <code dir="ltr">-Xmn</code> option or any or other related option such as <code dir="ltr">-XX:NewRatio</code>. Fixing the size of the young generation overrides the target pause-time goal.</p>
+</li>
+<li>
+<p><b>Pause Time Goals</b>: When you evaluate or tune any garbage collection, there is always a latency versus throughput trade-off. The G1 GC is an incremental garbage collector with uniform pauses, but also more overhead on the application threads. The throughput goal for the G1 GC is 90 percent application time and 10 percent garbage collection time. Compare this to the Java HotSpot VM parallel collector. The throughput goal of the parallel collector is 99 percent application time and 1 percent garbage collection time. Therefore, when you evaluate the G1 GC for throughput, relax your pause time target. Setting too aggressive a goal indicates that you are willing to bear an increase in garbage collection overhead, which has a direct effect on throughput. When you evaluate the G1 GC for latency, you set your desired (soft) real-time goal, and the G1 GC will try to meet it. As a side effect, throughput may suffer. See the section <a href="g1_gc.html#pause_time_goal">Pause Time Goal</a> in <a href="g1_gc.html#garbage_first_garbage_collection">Garbage-First Garbage Collector</a> for additional information.</p>
+</li>
+<li id="taming_mixed_garbage_collections">
+<p><b>Taming Mixed Garbage Collections</b>: Experiment with the following options when you tune mixed garbage collections. See the section <a href="#important_defaults">Important Defaults</a> for information about these options:</p>
+<ul>
+<li>
+<p><code dir="ltr">-XX:InitiatingHeapOccupancyPercent</code>: Use to change the marking threshold.</p>
+</li>
+<li>
+<p><code dir="ltr">-XX:G1MixedGCLiveThresholdPercent</code> and <code dir="ltr">-XX:G1HeapWastePercent</code>: Use to change the mixed garbage collection decisions.</p>
+</li>
+<li>
+<p><code dir="ltr">-XX:G1MixedGCCountTarget</code> and <code dir="ltr">-XX:G1OldCSetRegionThresholdPercent</code>: Use to adjust the CSet for old regions.</p>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<div><a id="sthref61" name="sthref61"/>
+<h2>Overflow and Exhausted Log Messages</h2>
+<p>When you see to-space overflow or to-space exhausted messages in your logs, the G1 GC does not have enough memory for either survivor or promoted objects, or for both. The Java heap cannot because it is already at its maximum. Example messages:</p>
+<ul>
+<li>
+<p><code dir="ltr">924.897: [GC pause (G1 Evacuation Pause) (mixed) (to-space exhausted), 0.1957310 secs]</code></p>
+</li>
+<li>
+<p><code dir="ltr">924.897: [GC pause (G1 Evacuation Pause) (mixed) (to-space overflow), 0.1957310 secs]</code></p>
+</li>
+</ul>
+<p>To alleviate the problem, try the following adjustments:</p>
+<ul>
+<li>
+<p>Increase the value of the <code dir="ltr">-XX:G1ReservePercent</code> option (and the total heap accordingly) to increase the amount of reserve memory for "to-space".</p>
+</li>
+<li>
+<p>Start the marking cycle earlier by reducing the value of <code dir="ltr">-XX:InitiatingHeapOccupancyPercent.</code></p>
+</li>
+<li>
+<p>Increase the value of the <code dir="ltr">-XX:ConcGCThreads</code> option to increase the number of parallel marking threads.</p>
+</li>
+</ul>
+<p>See the section <a href="#important_defaults">Important Defaults</a> for a description of these options.</p>
+</div>
+
+<a id="humongous" name="humongous"/>
+<div>
+<h2>Humongous Objects and Humongous Allocations</h2>
+<p>For G1 GC, any object that is more than half a region size is considered a <i>humongous object</i>. Such an object is allocated directly in the old generation into <i>humongous regions</i>. These humongous regions are a contiguous set of regions. <code dir="ltr">StartsHumongous</code> marks the start of the contiguous set and <code dir="ltr">ContinuesHumongous</code> marks the continuation of the set.</p>
+<p>Before allocating any humongous region, the marking threshold is checked, initiating a concurrent cycle, if necessary.</p>
+<p>Dead humongous objects are freed at the end of the marking cycle during the cleanup phase and also during a full garbage collection cycle.</p>
+<p>To reduce copying overhead, the humongous objects are not included in any evacuation pause. A full garbage collection cycle compacts humongous objects in place.</p>
+<p>Because each individual set of <code dir="ltr">StartsHumongous</code> and <code dir="ltr">ContinuesHumongous</code> regions contains just one humongous object, the space between the end of the humongous object and the end of the last region spanned by the object is unused. For objects that are just slightly larger than a multiple of the heap region size, this unused space can cause the heap to become fragmented.</p>
+<p>If you see back-to-back concurrent cycles initiated due to humongous allocations and if such allocations are fragmenting your old generation, then increase the value of <code dir="ltr">-XX:G1HeapRegionSize</code> such that previous humongous objects are no longer humongous and will follow the regular allocation path.</p>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="g1_gc.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="considerations.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

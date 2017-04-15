@@ -1,0 +1,769 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Swing Data Transfer</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Swing Data Transfer</h1>
+<p>For the Java 2 Platform,
+Standard Edition, v 1.4 release, Swing has added support for data
+transfer between applications. A drag and drop operation is a data
+transfer request that has been specified by a gesture with a
+graphical pointing device. In the case of copy/paste, data transfer
+is often initiated with the keyboard. The ability to transfer data
+takes two forms:</p>
+<ul>
+<li>Drag and drop (DnD) support</li>
+<li>Clipboard transfer via cut/copy/paste</li>
+</ul>
+When adding data transfer support to Swing, the goal was to make it
+easy for developers using Swing components to add clipboard
+transfer as well as drag and drop to an application. Previous AWT
+support for drag and drop provided a great deal of flexibility, but
+also a fair amount of complexity, to implement. Also, AWT support
+for clipboard transfer had not been integrated into Swing in a
+natural way. For this release, data transfer support has been
+implemented so that the developer may take advantage of these
+powerful features with minimal effort.
+<p>Because the state of each Swing component is independent of the
+definition of the data model, it was easy to implement a mechanism
+for moving the data between components without worrying about the
+details of the data itself. The data transfer amounts to
+transferring part of one model to another model. (In the case of
+cut/copy/paste, the data is transferred between the model and the
+clipboard.) To support data transfer, we:</p>
+<ul>
+<li>Added a small amount of API to enable data transfer with a few
+method calls.</li>
+<li>Made it possible to disable the Swing DnD implementation so
+that the user can use the support provided by AWT to customize any
+special behavior.</li>
+<li>Implemented the necessary changes in the look and feel
+implementations we provide.</li>
+</ul>
+<h2 align="center">Quick Reference: Components That Support
+DnD</h2>
+<table summary="components that support DnD" align="center" border=
+"1">
+<tr>
+<th id="h1">Component</th>
+<th id="h2">Supports Drag</th>
+<th id="h3">Supports Drop</th>
+</tr>
+<tr>
+<th id="h4" align="left"><code>JColorChooser</code></th>
+<td headers="h1" align="center">Yes</td>
+<td headers="h2" align="center">Yes</td>
+</tr>
+<tr>
+<th id="h5" align="left"><code>JEditorPane</code></th>
+<td headers="h1" align="center">Yes</td>
+<td headers="h2" align="center">Yes</td>
+</tr>
+<tr>
+<th id="h6" align="left"><code>JFileChooser</code></th>
+<td headers="h1" align="center">Yes</td>
+<td headers="h2" align="center">No</td>
+</tr>
+<tr>
+<th id="h7" align="left"><code>JFormattedTextField</code></th>
+<td headers="h1" align="center">Yes</td>
+<td headers="h2" align="center">Yes</td>
+</tr>
+<tr>
+<th id="h8" align="left"><code>JLabel</code></th>
+<td headers="h1" align="center">see <a href="#AddingSupport">here</a></td>
+<td headers="h2" align="center">see <a href="#AddingSupport">here</a></td>
+</tr>
+<tr>
+<th id="h9" align="left"><code>JList</code></th>
+<td headers="h1" align="center">Yes</td>
+<td headers="h2" align="center">No</td>
+</tr>
+<tr>
+<th id="h10" align="left"><code>JPasswordField</code></th>
+<td headers="h1" align="center">No</td>
+<td headers="h2" align="center">Yes</td>
+</tr>
+<tr>
+<th id="h11" align="left"><code>JTable</code></th>
+<td headers="h1" align="center">Yes</td>
+<td headers="h2" align="center">No</td>
+</tr>
+<tr>
+<th id="h12" align="left"><code>JTextArea</code></th>
+<td headers="h1" align="center">Yes</td>
+<td headers="h2" align="center">Yes</td>
+</tr>
+<tr>
+<th id="h13" align="left"><code>JTextField</code></th>
+<td headers="h1" align="center">Yes</td>
+<td headers="h2" align="center">Yes</td>
+</tr>
+<tr>
+<th id="h14" align="left"><code>JTextPane</code></th>
+<td headers="h1" align="center">Yes</td>
+<td headers="h2" align="center">Yes</td>
+</tr>
+<tr>
+<th id="h15" align="left"><code>JTree</code></th>
+<td headers="h1" align="center">Yes</td>
+<td headers="h2" align="center">No</td>
+</tr>
+</table>
+<p>This document has the following sections:</p>
+<ul>
+<li><a href="#DataTransferSupport">Data Transfer Support</a>
+<ul>
+<li><a href="#DefaultTransferHandlerSupport">Default
+TransferHandler Support</a></li>
+<li><a href="#AddingSupport">Example of Adding Support to
+JLabel</a></li>
+</ul>
+</li>
+<li><a href="#DragSupport">Drag Support</a>
+<ul>
+<li><a href="#DefaultDragSupport">Default Drag Support</a></li>
+<li><a href="#DragSupportExtendSwing">Adding Drag Support to
+Subclasses of Swing Classes</a></li>
+<li><a href="#TransferHandler.exportAsDrag">Operation of
+TransferHandler.exportAsDrag</a></li>
+</ul>
+</li>
+<li><a href="#DropSupport">Drop Support</a>
+<ul>
+<li><a href="#DefaultDropSupport">Default Drop Support</a></li>
+<li><a href="#DropSupportExtendSwing">Using the Drop Support in
+Subclasses of Swing Classes</a></li>
+</ul>
+</li>
+<li><a href="#ClipboardTransferSupport">Clipboard Transfer
+Support</a>
+<ul>
+<li><a href="#DefaultClipboardTransfer">Default Clipboard
+Transfer</a></li>
+<li><a href="#ClipboardTransferSupportExtendSwing">Using the
+Clipboard Transfer Support in Subclasses of Swing Classes</a></li>
+</ul>
+</li>
+<li><a href="#Implementation">Implementation Details</a></li>
+<li><a href="#ChangesToBeta">Changes Since Beta</a></li>
+<li><a href="#KnownBugs">Known Bugs</a></li>
+</ul>
+<h2><a name="DataTransferSupport" id="DataTransferSupport">Data
+Transfer Support</a></h2>
+<p>The foundation of data transfer is support for handling the
+transfer of data into and out of a component. With this
+functionality available on the component, the mechanics of managing
+a drag and drop can be provided automatically. In addition, support
+for cut/copy/paste can also be provided automatically. The crux of
+this implementation is the new class <a href=
+"../../../../api/javax/swing/TransferHandler.html"><code>TransferHandler</code></a>.
+The <a href=
+"../../../../api/javax/swing/JComponent.html"><code>JComponent</code></a>
+property methods, <a href=
+"../../../../api/javax/swing/JComponent.html#setTransferHandler-javax.swing.TransferHandler-">
+<code>setTransferHandler</code></a> and <a href=
+"../../../../api/javax/swing/JComponent.html#getTransferHandler--"><code>
+getTransferHandler</code></a>, provide an entrypoint to the data
+transfer mechanism for any component which extends
+<code>JComponent</code>.</p>
+<p>The table below details the extent of the cut, copy, paste, and
+drop support for each of the components when a
+non-<code>null</code> <code>TransferHandler</code> is installed.
+Note that this support is enabled by the look and feel code.
+Support for dragging is initially disabled, but may be enabled by
+calling <code>setDragEnabled(true)</code> on the component. If the
+component doesn't have such a method, the drag may be enabled by
+binding some kind of gesture to it.</p>
+<h3><a name="DefaultTransferHandlerSupport" id=
+"DefaultTransferHandlerSupport">Default TransferHandler
+Support</a></h3>
+For the components listed below, Swing installs default
+implementations of <code>TransferHandler</code>. For those
+components that have default Swing support, the
+<code>TransferHandler</code> is installed by the
+<code>ComponentUI</code> if the value of the
+<code>transferHandler</code> property is <code>null</code> or
+marked by the presence of the <code>UIResource</code> interface.
+The default <code>TransferHandler</code> implementation installed
+by the <code>ComponentUI</code> is marked by the
+<code>UIResource</code> interface, enabling developers to override
+the default <code>TransferHandler</code>. The following table shows
+the support provided.
+<h4 align="center"><a name="DefaultSupport" id=
+"DefaultSupport">Components That Support DnD</a></h4>
+<table summary="components that support DnD" border="1">
+<tr>
+<th id="h101">Component</th>
+<th id="h102">Exports (Drag, Cut, Copy)</th>
+<th id="h103">Imports (Drop, Paste)</th>
+</tr>
+<tr>
+<th id="h104" align="left"><code>JColorChooser</code></th>
+<td headers="h101">The selected color is offered through the
+JavaBeans property handling of
+<code>TransferHandler</code>. The flavor offered is
+<code>application/x-java-jvm-local-objectref;
+class=java.awt.Color</code>. The value transferred is determined by
+<code>getColor</code>.</td>
+<td headers="h102">Accepts inserts of type <code>Color</code>. The data is
+imported by using <code>setColor</code> (from the bean property
+handling). Any flavor having <code>class=java.awt.Color</code> (or
+a subclass of <code>java.awt.Color</code>) is accepted.</td>
+</tr>
+<tr>
+<th id="h105" align="left"><code>JEditorPane</code></th>
+<td headers="h101"><b>1.4</b>: If the <code>content-type</code> of the
+<code>JEditorPane</code> is <code>text/plain</code>, the selected
+text is offered as <code>text/plain</code> through the
+<code>write</code> method of the <code>EditorKit</code>. If the
+<code>content-type</code> is <code>OTHER</code>, it is exported
+both as <code>text/plain</code> using the
+<code>getSelectedText</code> method, and as <code>OTHER</code>
+using the <code>write</code> method of the <code>EditorKit</code>.
+<p><b>1.4.1</b>: The selected text, as returned by the
+<code>getSelectedText</code> method, is exported as
+<code>text/plain</code>. In addition, if the
+<code>content-type</code> of the <code>JEditorPane</code> is other
+than <code>text/plain</code>, the selected content is also offered
+in that other flavor using the <code>EditorKit</code>'s
+<code>write</code> method.</p>
+</td>
+<td headers="h102"><b>1.4</b>: Accepts inserts of type <code>text/plain</code> and
+whatever the current type returned by <code>getContentType</code>.
+If a type is found matching the current type (<i>including</i>
+<code>text/plain</code>), it is imported using the
+<code>EditorKit</code>'s <code>read</code> method. Otherwise,
+<code>text/plain</code> is imported through the component's
+<code>replaceSelection</code> method. <i>Paste</i>: the contents of
+the selection, if any, are replaced. <i>Drop</i>: the data is
+inserted at the caret position.
+<p><b>1.4.1</b>: Accepts inserts of type <code>text/plain</code>
+and whatever the current type returned by
+<code>getContentType</code>. If a type is found matching the
+current type (<i>excluding</i> <code>text/plain</code>), it is
+imported using the <code>EditorKit</code>'s <code>read</code>
+method. Otherwise, <code>text/plain</code> is imported through the
+component's <code>replaceSelection</code> method. <i>Paste</i>: the
+contents of the selection, if any, are replaced. <i>Drop</i>: the
+data is inserted at the caret position.</p>
+</td>
+</tr>
+<tr>
+<th id="h106" align="left"><code>JFileChooser</code></th>
+<td headers="h101">The selection is offered in the same manner as those from the
+native file chooser.</td>
+<td headers="h102">Imports not accepted. As the mouse is moved over the list, the
+<i>potential</i> drop point is indicated by highlighting the
+file/directory under the cursor. See <a href=
+"#DefaultDropSupport">Default Drop Support</a>.</td>
+</tr>
+<tr>
+<th id="h107" align="left"><code>JFormattedTextField</code></th>
+<td headers="h101">The selected text is offered as <code>text/plain</code>.</td>
+<td headers="h102">Accepts inserts of type <code>text/plain</code>. <i>Paste</i>:
+the contents of the selection, if any, are replaced; otherwise the
+data is inserted at the caret position. <i>Drop</i>: the data is
+inserted at the caret position. Note that <i>paste</i> and
+<i>drop</i> employ the same code paths as typing from the keyboard,
+therefore code validation is preserved.</td>
+</tr>
+<tr>
+<th id="h108" align="left"><code>JList</code></th>
+<td headers="h101">If the selection is a single item, it is offered as
+<code>text/plain</code>. If multiple items are selected, they are
+offered as <code>text/html</code>. The format of the
+<code>text/html</code> is a <code>&lt;UL&gt;</code> tag followed by
+the selected list items each starting with an
+<code>&lt;LI&gt;</code> tag.</td>
+<td headers="h102">Imports not accepted. As the mouse is moved over the list, the
+<i>potential</i> drop point is indicated by highlighting the list
+item under the cursor. See <a href="#DefaultDropSupport">Default
+Drop Support</a>.</td>
+</tr>
+<tr>
+<th id="h109" align="left"><code>JPasswordField</code></th>
+<td headers="h101">For security reasons, cut, copy, and drag are not
+supported.</td>
+<td headers="h102">Accepts inserts of type <code>text/plain</code>. <i>Paste</i>:
+the contents of the selection, if any, are replaced; otherwise the
+data is inserted at the caret position. <i>Drop</i>: the data is
+inserted at the caret position.</td>
+</tr>
+<tr>
+<th id="h110" align="left"><code>JTable</code></th>
+<td headers="h101">If the selection is a single item, it is offered as
+<code>text/plain</code>. If multiple items are selected, they are
+offered as <code>text/html</code>. The format of the
+<code>text/html</code> is a <code>&lt;TABLE&gt;</code> tag followed
+by a <code>&lt;TR&gt;</code> tag for each row and a
+<code>&lt;TD&gt;</code> tag for each cell.</td>
+<td headers="h102">Imports not accepted. As the mouse is moved over the table, the
+<i>potential</i> drop point is indicated by highlighting the cell
+under the cursor. See <a href="#DefaultDropSupport">Default Drop
+Support</a>.</td>
+</tr>
+<tr>
+<th id="h111" align="left"><code>JTextArea</code></th>
+<td headers="h101">The selected text is offered as <code>text/plain</code>.</td>
+<td headers="h102">Accepts inserts of type <code>text/plain</code>. <i>Paste</i>:
+the contents of the selection, if any, are replaced; otherwise the
+data is inserted at the caret position. <i>Drop</i>: the data is
+inserted at the caret position.</td>
+</tr>
+<tr>
+<th id="h112" align="left"><code>JTextField</code></th>
+<td headers="h101">The selected text is offered as <code>text/plain</code>.</td>
+<td headers="h102">Accepts inserts of type <code>text/plain</code>. <i>Paste</i>:
+the contents of the selection, if any, are replaced; otherwise the
+data is inserted at the caret position. <i>Drop</i>: the data is
+inserted at the caret position.</td>
+</tr>
+<tr>
+<th id="h113" align="left"><code>JTextPane</code></th>
+<td headers="h101">Same as <code>JEditorPane</code>.</td>
+<td headers="h102">Same as <code>JEditorPane</code>.</td>
+</tr>
+<tr>
+<th id="h114" align="left"><code>JTree</code></th>
+<td headers="h101">If the selection is a single item, it is offered as
+<code>text/plain</code>. If multiple items are selected, they are
+offered as <code>text/html</code>. The format of the
+<code>text/html</code> is nested lists, similar to the format used
+for <code>JList</code>.</td>
+<td headers="h102">Imports not accepted. As the mouse is moved over the table, the
+<i>potential</i> drop point is indicated by highlighting the tree
+node under the cursor. See <a href="#DefaultDropSupport">Default
+Drop Support</a>.</td>
+</tr>
+</table>
+<h3><a name="AddingSupport" id="AddingSupport">Example of Adding
+Support to <code>JLabel</code></a></h3>
+<p>The <a href=
+"../../../../api/javax/swing/JLabel.html"><code>JLabel</code></a>
+component does not support DnD by default. The following code
+fragment creates a <code>JLabel</code> that supports drag and drop
+on the "text" property (a <code>String</code>):</p>
+<pre>
+JLabel componentType = new JLabel();
+componentType.setTransferHandler(new TransferHandler("text"));
+MouseListener ml = new MouseAdapter() {
+    public void mousePressed(MouseEvent e) {
+        JComponent c = (JComponent)e.getSource();
+        TransferHandler th = c.getTransferHandler();
+        th.exportAsDrag(c, e, TransferHandler.COPY);
+    }
+};
+componentType.addMouseListener(ml);
+</pre>
+<p>We have included a small example that implements drag and drop
+using a <code>JTextField</code> and a <code>JLabel</code>. You can
+type a value into the text field, highlight the text, then hold the
+mouse button down over the textfield and drag a few pixels. An icon
+appears under the cursor. Release the icon over the
+<code>JLabel</code> and see the text replace the "Drop Here" text.
+Simultaneously with the drop, the text is removed from the source
+textfield. The default behavior for drag and drop is
+<code>MOVE</code>. To change the behavior to <code>COPY</code>,
+hold down the <code>CONTROL</code> key while selecting the text. On
+Windows, a plus sign appears in the icon. When the text is released
+on the target, it is left intact in the source. You can likewise
+drag from the <code>JLabel</code> to the text field. Note that
+<code>JLabel</code> does not have bindings for copy/paste and is
+unable to get the focus that is required to support this
+feature.</p>
+<p>See the <b>JLabelDragNDrop.java</b> example <a href=
+"JLabelDragNDrop.java">here</a>.</p>
+<h2><a name="DragSupport" id="DragSupport">Drag Support</a></h2>
+<p>Some components, such as text fields, support selections. For
+those kinds of components, a drag operation is typically initiated
+by dragging an existing selection with the mouse. A controller for
+this type of component can recognize this condition and initiate a
+drag. For those components that don't have selections, Swing can't
+automatically initiate the drag, but Swing can handle the
+<i>mechanics</i> of the drag if told that a drag attempt has been
+initiated as shown in the <a href=
+"#AddingSupport"><code>JLabel</code> example</a>.</p>
+<p>With this level of drag support, the Swing developer can focus
+on implementing a <code>TransferHandler</code> that represents the
+desired transfer, and setting properties on the Swing component.
+This greatly simplifies the burden to the Swing developer wanting
+to support dragging in an application.</p>
+<p>Note that we are currently investigating providing different
+visual appearances of the drag, hence the reference to
+<code>Icon</code> in the API. Stay tuned for future
+developments.</p>
+<h3><a name="DefaultDragSupport" id="DefaultDragSupport">Default
+Drag Support</a></h3>
+<p>The simplest level of support is to set a flag that indicates
+the developer would like the default support enabled. The
+components that offer default support for dragging are described in
+the <b>Exports</b> column of the <a href=
+"#DefaultSupport">Components That Support DnD</a> table; but to
+summarize, the classes that directly implement <a href=
+"../../../../api/javax/swing/JFileChooser.html#setDragEnabled-boolean-">
+<code>setDragEnabled</code></a> and <a href=
+"../../../../api/javax/swing/JFileChooser.html#getDragEnabled--"><code>
+getDragEnabled</code></a> are: <a href=
+"../../../../api/javax/swing/JColorChooser.html"><code>JColorChooser</code></a>,
+<a href=
+"../../../../api/javax/swing/JFileChooser.html"><code>JFileChooser</code></a>,
+<a href=
+"../../../../api/javax/swing/JList.html"><code>JList</code></a>,
+<a href=
+"../../../../api/javax/swing/JTable.html"><code>JTable</code></a>,
+<a href=
+"../../../../api/javax/swing/JTree.html"><code>JTree</code></a>,
+and <a href=
+"../../../../api/javax/swing/text/JTextComponent.html"><code>JTextComponent</code></a>.
+The drag gesture is defined as the press of the first mouse button
+over a selection and dragging a few pixels. Setting the
+<code>dragEnabled</code> property to <code>true</code> therefore
+has a subtle effect on mouse behavior.</p>
+<p>When dragging is enabled on a component, the Swing controller
+(in the corresponding <code>ComponentUI</code> subclass) begins
+looking for a drag gesture, and if the <code>transferHandler</code>
+property is <code>null</code>, or marked by the presence of the
+<a href=
+"../../../../api/javax/swing/plaf/UIResource.html"><code>UIResource</code></a>
+interface, a default implementation is installed. The
+implementation provided by Swing is marked with the
+<code>UIResource</code> interface, so a developer can insert a new
+<code>TransferHandler</code> by replacing the default
+<code>TransferHandler</code> property with a custom implementation.
+When a drag gesture is recognized, the <a href=
+"../../../../api/javax/swing/TransferHandler.html#exportAsDrag-javax.swing.JComponent-java.awt.event.InputEvent-int-">
+<code>exportAsDrag</code></a> method is called on the <a href=
+"../../../../api/javax/swing/TransferHandler.html"><code>TransferHandler</code></a>
+which initiates the drag mechanism. The actual transfer is handled
+by the <a href=
+"../../../../api/java/awt/dnd/package-summary.html"><code>java.awt.dnd</code></a>
+mechanism, requiring no further effort from the developer. <a name=
+"DragSupportExtendSwing" id="DragSupportExtendSwing"></a></p>
+<h3>Adding Drag Support to Subclasses of Swing Classes</h3>
+<p>The drag support provided by Swing is activated by the
+<code>TransferHandler.exportAsDrag</code> method. This makes adding
+drag support as easy as:</p>
+<ol>
+<li>Installing a <code>TransferHandler</code> implementation (so
+there is something to drag) by calling the
+<code>setTransferHandler</code> method.</li>
+<li>Recognizing a drag gesture.</li>
+<li>Calling the <code>exportAsDrag</code> method.</li>
+</ol>
+<p>Some scenarios for accomplishing this are:</p>
+<ul>
+<li>Add a <code>MouseListener</code> that watches for the desired
+gesture, then call <code>getTransferHandler</code> on the component
+and call the <code>exportAsDrag</code> method when the desired
+gesture is found. See the <a href="#AddingSupport">JLabel
+example</a>.</li>
+<li>Reimplement the <code>processMouseEvent</code> method in a
+subclass and call the <code>exportAsDrag</code> method on the
+ComponentUI variable when a drag gesture is seen, otherwise execute
+the superclass behavior.</li>
+<li>In a component with a custom UI implementation, have the
+controller call <code>exportAsDrag</code> when a drag gesture has
+been seen.</li>
+</ul>
+<a name="TransferHandler.exportAsDrag" id=
+"TransferHandler.exportAsDrag"></a>
+<h3>Operation of TransferHandler.exportAsDrag</h3>
+<p>When the <code>exportAsDrag</code> method is called on
+<code>TransferHandler</code>, the drag is handled by Swing provided
+functionality. When this method is called, it is assumed that a
+valid drag gesture has been recognized. The method performs the
+following steps:</p>
+<ol>
+<li>A Swing implementation of a <code>DragSource</code> and
+<code>DragListener</code> is used to start the drag using the
+<a href=
+"../../../../api/java/awt/datatransfer/Transferable.html"><code>Transferable</code></a>
+implementation returned by <code>createTransferable</code> as data
+transfer object.</li>
+<li>When the drop has completed, the <code>exportDone</code> method
+is called on the <code>TransferHandler</code>. For some operations,
+such as <code>MOVE</code>, it may be necessary to remove the data
+from the source. The default behavior for text-based components,
+for example, is that a standard drag implements <code>MOVE</code>
+behavior (following the drop the selected text is removed from the
+source component). The user may override this behavior by holding
+down the <i>control</i> key when the text is selected for dragging.
+On Windows, the drag icon visually reflects this behavior with a
+small plus-sign.</li>
+</ol>
+<h2><a name="DropSupport" id="DropSupport">Drop Support</a></h2>
+<p>The primary support for handling a drop is the same as for a
+paste operation, the <a href=
+"../../../../api/javax/swing/TransferHandler.html#importData-javax.swing.JComponent-java.awt.datatransfer.Transferable-">
+<code>importData</code></a> method on the
+<code>TransferHandler</code>. The semantics of inserting data into
+a component are generally more meaningful at the application level
+than the toolkit level. Users of an application can drop all kinds
+of <code>Transferable</code> implementations on components that are
+completely unknown to the Swing toolkit. It is up to the Swing
+developer to provide a <code>TransferHandler</code> with meaningful
+import semantics if the default <code>TransferHandler</code> is
+insufficient.</p>
+<p>A drop operation does have some differences from a paste
+however:</p>
+<ul>
+<li>Typically a potential drop site provides feedback of where the
+data would be accepted.</li>
+<li>For components with selection capabilities, the insertion point
+is moved to indicate where the data would be placed.</li>
+</ul>
+<h3><a name="DefaultDropSupport" id="DefaultDropSupport">Default
+Drop Support</a></h3>
+<p>To assist Swing developers in adding drop support to an
+application, Swing provides <code>DropTarget</code> implementations
+that use the <code>TransferHandler</code> property on the Swing
+component. For those components that have a non-<code>null</code>
+<code>TransferHandler</code> property, the drop target is installed
+by the <code>ComponentUI</code> if the value of the
+<code>dropTarget</code> property is <code>null</code> or marked by
+the presence of the <code>UIResource</code> interface. The default
+<code>DropTarget</code> implementations installed by the
+<code>ComponentUI</code> is marked by the <code>UIResource</code>
+interface, enabling developers to override the default
+<code>DropTarget</code>.</p>
+<p>The components that provide a complete drop implementation by
+default are indicated in the <b>Imports</b> column of the <a href=
+"#DefaultSupport">Components That Support DnD</a> table. There are
+four components that provide only some support for drop.
+<code>JFileChooser</code>, <code>JList</code>, <code>JTable</code>,
+and <code>JTree</code> by default have an installed
+<code>DropTarget</code> that indicates a potential insertion point.
+However, to fully support imports of data the developer must write
+and install a custom <code>TransferHandler</code>. <a name=
+"DropSupportExtendSwing" id="DropSupportExtendSwing"></a></p>
+<h3>Using the Drop Support in Subclasses of Swing Classes</h3>
+<p>A well behaved DropTarget implementation uses the
+<code>transferHandler</code> property on <code>JComponent</code> to
+perform the drop. The Swing developer automatically gets a simple
+<code>DropTarget</code> implementation that links the drop to the
+<code>TransferHandler</code> when the <code>transferHandler</code>
+property is set and the <code>dropTarget</code> property is
+<code>null</code>.</p>
+<h2><a name="ClipboardTransferSupport" id=
+"ClipboardTransferSupport">Clipboard Transfer Support</a></h2>
+<p>Cut, copy, and paste operations perform data transfer in a
+manner that is more useful to those without a mouse, as they are
+typically initiated via a keyboard gesture. These operations can
+use the same <code>TransferHandler</code> services as the drag and
+drop support. This improves the accessibility of the data
+transfers, and enables Swing to provide keyboard bindings for these
+operations even though Swing may not know how to actually transfer
+the data to/from the clipboard. The keyboard bindings for clipboard
+transfer are dependent upon the current look and feel that is
+installed.</p>
+<h3><a name="DefaultClipboardTransfer" id=
+"DefaultClipboardTransfer">Default Clipboard Transfer</a></h3>
+<p>As with drag and drop, clipboard transfers are the most useful
+for those components that support selections. The list of
+components shown in the <b>Exports</b> column of the <a href=
+"#DefaultSupport">Components That Support DnD</a> table have
+<b>cut</b>, <b>copy</b>, and <b>paste</b> actions in the component
+action map, along with a LAF dependent set of keyboard bindings in
+the input map of the component. Having Swing provide these bindings
+frees the developer from trying to track the current look and feel
+and change the bindings. <a name=
+"ClipboardTransferSupportExtendSwing" id=
+"ClipboardTransferSupportExtendSwing"></a></p>
+<h3>Using the Clipboard Transfer Support in Subclasses of Swing
+Classes</h3>
+<p>A well behaved cut, copy, and paste implementation uses the
+<code>transferHandler</code> property on <code>JComponent</code> to
+perform the transfer. When the <code>transferHandler</code>
+property is set on a <code>JComponent</code>, a simple
+<code>Action</code> implementation that links the transfer of
+between a <a href=
+"../../../../api/java/awt/datatransfer/Clipboard.html"><code>Clipboard</code></a>
+and <code>TransferHandler</code> is installed in the component's
+action map under the keys <code>cut</code>, <code>copy</code>, and
+<code>paste</code> if there is no action currently installed.</p>
+<h2><a name="Implementation" id="Implementation">Implementation
+Details</a></h2>
+<p><b>Note</b>: The following information outlines private
+implementation details and is subject to change. We are providing
+this information only to satisfy the curiosity of those who have
+access to the source code and feel compelled to thump the tires and
+peek under the hood.</p>
+<p>If a <code>TransferHandler</code> is installed on a
+<code>JComponent</code>, the look and feel then enables <i>cut</i>,
+<i>copy</i>, and <i>paste</i> using the following
+<code>TransferHandler</code> methods:</p>
+<ul>
+<li><a href=
+"../../../../api/javax/swing/TransferHandler.html#getCutAction--"><code>
+getCutAction</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/TransferHandler.html#getCopyAction--"><code>
+getCopyAction</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/TransferHandler.html#getPasteAction--">
+<code>getPasteAction</code></a></li>
+</ul>
+If you bind some event to <code>TransferHandler.exportAsDrag</code>
+you also get <i>drag</i> support. This plumbing is located in
+package-private nested classes inside of the
+<code>TransferHandler</code> class.
+<p>The following package-private classes were added to the
+<code>javax.swing.plaf.basic</code> package for creating the
+default support:</p>
+<dl>
+<dt><b><code>BasicTransferable</code></b></dt>
+<dd>The basis of the various <code>Transferable</code>
+implementations.</dd>
+<dt><b><code>BasicDropTargetListener</code></b></dt>
+<dd>Adds scrolling support and drop target feedback for those
+components supporting selection.</dd>
+<dt><b><code>BasicDragGestureRecognizer</code></b></dt>
+<dd>Supports the "select and move a few pixels" drag gesture
+recognition.</dd>
+</dl>
+<p>Each of the <code>ComponentUI</code> classes that support DnD
+then have some additional nested classes:</p>
+<p><b><code>BasicTreeUI</code></b>:</p>
+<dl>
+<dt><b><code>TreeTransferHandler</code></b></dt>
+<dd>Default import/export support.</dd>
+<dt><b><code>TreeTransferable</code></b></dt>
+<dd>The actual tree data.</dd>
+<dt><b><code>TreeDragGestureRecognizer</code></b></dt>
+<dd>Tree drag gesture recognition, enabled by
+<code>JTree.setDragEnabled</code>.</dd>
+<dt><b><code>TreeDropHandler</code></b></dt>
+<dd>Shows drop target location.</dd>
+</dl>
+<p><b><code>BasicListUI</code></b>,
+<b><code>BasicTableUI</code></b>, <b><code>BasicTextUI</code></b>
+all have a pattern similar to as <code>BasicTreeUI</code>.</p>
+<dl>
+<dt><b><code>BasicFileChooserUI</code></b></dt>
+<dd>Uses the list support, but has a
+<code>FileTransferHandler</code> that produces the
+<code>FileTransferable</code> that extends the
+<code>ListTransferable</code> with the flavor used for file
+transfers.</dd>
+<dt><b><code>BasicColorChooserUI</code></b></dt>
+<dd>Uses the <code>TransferHandler</code> bean support and binds
+the "color" property. A mouse listener is added to the preview area
+to bind a mouse press to the <code>exportAsDrag</code> method on
+the <code>TransferHandler</code>.</dd>
+</dl>
+<h2><a name="ChangesToBeta" id="ChangesToBeta">Changes Since
+Beta</a></h2>
+<h3>TransferHandler Actions Should be Registered by UI</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4460011">4460011</a>.</p>
+<p>To implement drag and drop, bindings were provided in the
+<code>Action</code> class to support copying and pasting the data.
+In order for a look and feel, or other code, to override these
+<code>Action</code>s, the UI must install them -
+<code>Action</code>s are no longer automatically installed by the
+<code>TransferHandler</code>. The package-private methods <a href=
+"../../../../api/javax/swing/TransferHandler.html#getCutAction--"><code>
+getCutAction</code></a>, <a href=
+"../../../../api/javax/swing/TransferHandler.html#getCopyAction--"><code>
+getCopyAction</code></a>, and <a href=
+"../../../../api/javax/swing/TransferHandler.html#getPasteAction--">
+<code>getPasteAction</code></a> in <a href=
+"../../../../api/javax/swing/TransferHandler.html"><code>TransferHandler</code></a>
+are now made public.</p>
+<h3>Ability to Disable DropTarget</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4485914">4485914</a>.</p>
+<p>The drag and drop implementation causes a
+<code>DropTarget</code> to be added to a <code>JComponent</code> if
+that component has a <code>TransferHandler</code> installed. This
+may affect applications that are manually adding
+<code>DropTarget</code>s. Therefore the System property
+<code>suppressSwingDropSupport</code> has been added. The <a href=
+"../../../../api/javax/swing/JComponent.html"><code>JComponent</code></a>
+methods <a href=
+"../../../../api/javax/swing/JComponent.html#setTransferHandler-javax.swing.TransferHandler-">
+<code>setTransferHandler(TransferHandler)</code></a> and <a href=
+"../../../../api/javax/swing/JComponent.html#getTransferHandler--"><code>
+getTransferHandler</code></a> can be used to enable or disable this
+property.</p>
+<h2><a name="KnownBugs" id="KnownBugs">Known Bugs</a></h2>
+<h3><a name="a4513715" id="a4513715">Drop Clobbers Selected Text in
+JTextComponent</a></h3>
+<p>The bugtraq report that corresponds to this problem is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4513715">4513715</a>.</p>
+<p>Selecting text and then dragging and dropping that text within
+the selected region of the same text component causes the selected
+text to be clobbered and nothing to be pasted. This bug is fixed in
+release 1.4.1.</p>
+<h3>Occasional Errors in Restoring Caret when Exiting a
+Component</h3>
+<p>The bugtraq report that corresponds to this problem is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4513720">4513720</a>.</p>
+<p>With the built-in drop support, Swing text components respond to
+DnD dragovers by setting the <code>Caret</code> to visible and
+using it to display the potential insert location. When the drag
+exits the component, the <code>Caret</code>'s visibility is
+restored. Unfortunately, since the <code>Caret</code> uses the same
+"<code>visible</code>" property to represent the usual meaning of
+visible as well as when it is in mid-flash, we sometimes restore
+the Caret's visibility incorrectly.</p>
+<h3><a name="a4513638" id="a4513638">Cut/Copy/Drag Broken for
+JEditorPane with RTFEditorKit</a></h3>
+<p>The bugtraq report that corresponds to this problem is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4513638">4513638</a>.</p>
+<p>When using an <code>RTFEditorKit</code> set explicitly on a
+<code>JEditorPane</code> using <code>setEditorKit</code>, or by
+setting the <code>content-type</code> to <code>text/rtf</code>,
+cut, copy and drag no longer work. Note that this bug, filed
+against release 1.4, is fixed in release 1.4.1.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

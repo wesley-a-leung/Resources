@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Oracle Solaris 8 Thread Library</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="hangloop002.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="signals.html">
+                Next</a><hr/><a id="CEGDGDIG" name="CEGDGDIG"/>
+<div id="JSTGD344">
+<h1><span>6.3</span> Oracle Solaris 8 Thread Library</h1>
+<p>The default thread library on Oracle Solaris 8 operating system is often referred to as the T1 library. This thread library implemented the <span>m</span>:<span>n</span> threading model, where <span>m</span> user threads are mapped to <span>n</span> kernel-level threads (LWPs). Oracle Solaris 8 operating system also shipped with an alternative and newer thread library in /usr/lib/lwp. The alternative thread library is often referred to as the T2 library, and it became the default thread library in Oracle Solaris 9 and 10 operating systems. In older releases of J2SE (pre-1.4.0 in particular) there were a number of issues with the default thread library (for example, bugs in the thread library, LWP synchronization problems, or LWP starvation). LWP starvation is a scenario in which there are user threads in the <code dir="ltr">RUNNABLE</code> state but there are no kernel level threads available.</p>
+<p>Although the issues cited are historical, it should be noted that when the JDK software is deployed on Oracle Solaris 8 operating system, it still uses the T1 library by default. LWP starvation type issues do not arise because the JDK release uses "bound threads" so that each user thread is bound to a kernel thread. However in the event that you encounter an issue, such as a hang, which you believe is a thread library issue, then you can instruct the HotSpot VM to use the T2 library by adding /usr/lib/lwp to the <code dir="ltr">LD_LIBRARY_PATH</code>. To check if the T2 library is in use, issue the command <code dir="ltr">pldd</code> <span>pid</span> to list the libraries loaded by the specified process.</p>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="hangloop002.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="signals.html">
+                Next</a><hr/>
+
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,2554 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang=
+"en-US">
+<head>
+<meta name="collection" content="reference" />
+<meta http-equiv="Content-Type" content=
+"text/html; charset=utf-8" />
+<title>Java Cryptography Architecture Oracle Providers
+Documentation</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Java Cryptography Architecture Oracle Providers Documentation
+for JDK 8</h1>
+<p>The following topics are covered:</p>
+<ul>
+<li><a href="#Introduction">Introduction</a></li>
+<li><a href="#importlimits">Import Limits on Cryptographic
+Algorithms</a></li>
+<li><a href="#ciphertrans">Cipher Transformations</a></li>
+<li><a href="#SecureRandomImp">SecureRandom
+Implementations</a></li>
+<li><a href="#SunPKCS11Provider">The <code>SunPKCS11</code>
+Provider</a></li>
+<li><a href="#SUNProvider">The <code>SUN</code> Provider</a></li>
+<li><a href="#SunRsaSignProvider">The <code>SunRsaSign</code>
+Provider</a></li>
+<li><a href="#SunJSSEProvider">The <code>SunJSSE</code>
+Provider</a></li>
+<li><a href="#SunJCEProvider">The <code>SunJCE</code>
+Provider</a></li>
+<li><a href="#SunJGSSProvider">The <code>SunJGSS</code>
+Provider</a></li>
+<li><a href="#SunSASLProvider">The <code>SunSASL</code>
+Provider</a></li>
+<li><a href="#XMLDSigProvider">The <code>XMLDSig</code>
+Provider</a></li>
+<li><a href="#SunPCSCProvider">The <code>SunPCSC</code>
+Provider</a></li>
+<li><a href="#SunMSCAPI">The <code>SunMSCAPI</code>
+Provider</a></li>
+<li><a href="#SunEC">The <code>SunEC</code> Provider</a></li>
+<li><a href="#OracleUcrypto">The <code>OracleUcrypto</code>
+Provider</a></li>
+<li><a href="#Apple">The <code>Apple</code> Provider</a></li>
+</ul>
+<p><b>Note:</b> The <a href="StandardNames.html">Standard Names
+Documentation</a> contains more information about the standard
+names used in this document.</p>
+<!-- ==================================================== -->
+<h2><a name="Introduction" id="Introduction"></a>Introduction</h2>
+<p>The Java platform defines a set of APIs spanning major security
+areas, including cryptography, public key infrastructure,
+authentication, secure communication, and access control. These
+APIs allow developers to easily integrate security mechanisms into
+their application code. The <a href="crypto/CryptoSpec.html">Java
+Cryptography Architecture (JCA)</a> and its <a href=
+"crypto/CryptoSpec.html#ProviderArch">Provider Architecture</a> is
+a core concept of the Java Development Kit (JDK). It is assumed
+readers have a solid understanding of this architecture.</p>
+<p>This document describes the technical details of the providers
+shipped as part of Oracle's Java Environment.</p>
+<p><b>Reminder:</b> Cryptographic implementations in the JDK are
+distributed through several different providers ("Sun", "SunJSSE",
+"SunJCE", "SunRsaSign") for both historical reasons and by the
+types of services provided. General purpose applications <b>SHOULD
+NOT</b> request cryptographic services from specific providers.
+That is:</p>
+<pre class="codeblock">
+getInstance("...", <b><i>"SunJCE"</i></b>);  // not recommended
+</pre>
+<p>versus</p>
+<pre class="codeblock">
+getInstance("...");            // recommended
+</pre>
+<p>Otherwise, applications are tied to specific providers that may
+not be available on other Java implementations. They also might not
+be able to take advantage of available optimized providers (for
+example, hardware accelerators via PKCS11 or native OS
+implementations such as Microsoft's MSCAPI) that have a higher
+preference order than the specific requested provider.</p>
+<!-- ==================================================== -->
+<h2><a name="importlimits" id="importlimits"></a>Import Limits on
+Cryptographic Algorithms</h2>
+<p>Due to import regulations in some countries, the Oracle
+implementation provides a default cryptographic jurisdiction policy
+file that limits the strength of cryptographic algorithms. Here are
+the maximum key sizes allowed by this "strong" version of the
+jurisdiction policy files:</p>
+<table summary="maximimum key size allowed for various algorithms"
+border="1">
+<thead>
+<tr>
+<th id="h1">Algorithm</th>
+<th id="h2">Maximum Keysize</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1">DES</td>
+<td headers="h2">64</td>
+</tr>
+<tr>
+<td headers="h1">DESede</td>
+<td headers="h2">*</td>
+</tr>
+<tr>
+<td headers="h1">RC2</td>
+<td headers="h2">128</td>
+</tr>
+<tr>
+<td headers="h1">RC4</td>
+<td headers="h2">128</td>
+</tr>
+<tr>
+<td headers="h1">RC5</td>
+<td headers="h2">128</td>
+</tr>
+<tr>
+<td headers="h1">RSA</td>
+<td headers="h2">*</td>
+</tr>
+<tr>
+<td headers="h1">all others</td>
+<td headers="h2">128</td>
+</tr>
+</tbody>
+</table>
+<p>If stronger algorithms are needed (for example, AES with 256-bit
+keys), the <a href=
+"http://www.oracle.com/technetwork/java/javase/downloads/index.html">
+JCE Unlimited Strength Jurisdiction Policy Files</a> must be
+obtained and installed in the JDK/JRE.</p>
+<p>It is the user's responsibility to verify that this action is
+permissible under local regulations.</p>
+<!-- ==================================================== -->
+<!--  new -->
+<h2><a name="ciphertrans" id="ciphertrans"></a>Cipher
+Transformations</h2>
+<p>The <code>javax.crypto.Cipher.getInstance(String
+transformation)</code> factory method generates
+<code>Cipher</code>s using transformations of the form
+<strong>algorithm/mode/padding</strong>. If the mode/padding are
+omitted, the SunJCE and SunPKCS11 providers use ECB as the default
+mode and PKCS5Padding as the default padding for many symmetric
+ciphers.</p>
+<p>It is recommended to use transformations that fully specify the
+algorithm, mode, and padding instead of relying on the
+defaults.</p>
+<hr />
+<p><strong>Note:</strong> ECB works well for single blocks of data
+and can be parallelized, but generally should not be used for
+multiple blocks of data.</p>
+<hr />
+<!-- ==================================================== -->
+<h2><a name="SecureRandomImp" id="SecureRandomImp">SecureRandom
+Implementations</a></h2>
+<p>The following table lists the default preference order of the
+available <code>SecureRandom</code> implementations.</p>
+<table frame="border" summary="Default Provider Orader" align=
+"center" border="5" cellpadding="5">
+<thead>
+<tr>
+<th id="h101">OS</th>
+<th id="h102">Algorithm Name</th>
+<th id="h103">Provider Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h101" rowspan="5">Solaris</td>
+<td headers="h102">1. PKCS11*</td>
+<td headers="h103">SunPKCS11</td>
+</tr>
+<tr>
+<td headers="h101">2. NativePRNG**</td>
+<td headers="h102">Sun</td>
+</tr>
+<tr>
+<td headers="h101">3. SHA1PRNG**</td>
+<td headers="h102">Sun</td>
+</tr>
+<tr>
+<td headers="h101">4. NativePRNGBlocking</td>
+<td headers="h102">Sun</td>
+</tr>
+<tr>
+<td headers="h101">5. NativePRNGNonBlocking</td>
+<td headers="h102">Sun</td>
+</tr>
+<tr>
+<td headers="h101" rowspan="4">Linux</td>
+<td headers="h102">1. NativePRNG**</td>
+<td headers="h103">Sun</td>
+</tr>
+<tr>
+<td headers="h101">2. SHA1PRNG**</td>
+<td headers="h102">Sun</td>
+</tr>
+<tr>
+<td headers="h101">3. NativePRNGBlocking</td>
+<td headers="h102">Sun</td>
+</tr>
+<tr>
+<td headers="h101">4. NativePRNGNonBlocking</td>
+<td headers="h102">Sun</td>
+</tr>
+<tr>
+<td headers="h101" rowspan="4">OS X</td>
+<td headers="h102">1. NativePRNG**</td>
+<td headers="h103">Sun</td>
+</tr>
+<tr>
+<td headers="h101">2. SHA1PRNG**</td>
+<td headers="h102">Sun</td>
+</tr>
+<tr>
+<td headers="h101">3. NativePRNGBlocking</td>
+<td headers="h102">Sun</td>
+</tr>
+<tr>
+<td headers="h101">4. NativePRNGNonBlocking</td>
+<td headers="h102">Sun</td>
+</tr>
+<tr>
+<td headers="h101" rowspan="2">Windows</td>
+<td headers="h102">1. SHA1PRNG</td>
+<td headers="h103">Sun</td>
+</tr>
+<tr>
+<td headers="h101">2. Windows-PRNG***</td>
+<td headers="h102">SunMSCAPI</td>
+</tr>
+</tbody>
+</table>
+<p>* The SunPKCS11 provider is available on all platforms, but is
+only enabled by default on Solaris as it is the only OS with a
+native PKCS11 implementation automatically installed and
+configured. On other platforms, applications or deployers must
+specifically install and configure a native PKCS11 library, and
+then configure and enable the SunPKCS11 provider to use it.</p>
+<p>** On Solaris, Linux, and OS X, if the <i>entropy gathering
+device</i> in <code>java.security</code> is set to
+<code>file:/dev/urandom</code> or <code>file:/dev/random</code>,
+then NativePRNG is preferred to SHA1PRNG. Otherwise, SHA1PRNG is
+preferred.</p>
+<p>*** There is currently no NativePRNG on Windows. Access to the
+equivalent functionality is via the SunMSCAPI provider.</p>
+<p>If there are no <code>SecureRandom</code> implementations
+registered in the JCA framework,
+<code>java.security.SecureRandom</code> will use the hardcoded
+SHA1PRNG.</p>
+<!-- ==================================================== -->
+<h2><a name="SunPKCS11Provider" id="SunPKCS11Provider"></a>The
+<code>SunPKCS11</code> Provider</h2>
+<p>The Cryptographic Token Interface Standard (<a href=
+"http://www.rsa.com/rsalabs/pkcs/">PKCS#11</a>) provides native
+programming interfaces to cryptographic mechanisms, such as
+hardware cryptographic accelerators and Smart Cards. When properly
+configured, the <code>SunPKCS11</code> provider enables
+applications to use the standard JCA/JCE APIs to access native
+PKCS#11 libraries. <b>The <code>SunPKCS11</code> provider itself
+does not contain cryptographic functionality</b>, it is simply a
+conduit between the Java environment and the native PKCS11
+providers. The <a href="p11guide.html">Java PKCS#11 Reference
+Guide</a> has a much more detailed treatment of this provider.</p>
+<!-- ==================================================== -->
+<h2><a name="SUNProvider" id="SUNProvider"></a>The <code>SUN</code>
+Provider</h2>
+<p>JDK 1.1 introduced the <code>Provider</code> architecture. The
+first JDK provider was named <code>SUN</code>, and contained two
+types of cryptographic services (<code>MessageDigest</code>s and
+<code>Signature</code>s). In later releases, other mechanisms were
+added (<code>SecureRandom</code> number generators,
+<code>KeyPairGenerator</code>s, <code>KeyFactory</code>s, and so
+on.).</p>
+<p>United States export regulations in effect at the time placed
+significant restrictions on the type of cryptographic functionality
+that could be made available internationally in the JDK. For this
+reason, the <code>SUN</code> provider has historically contained
+cryptographic engines that did not directly encrypt or decrypt
+data.</p>
+<p>The following algorithms are available in the <code>SUN</code>
+provider:</p>
+<table summary="algorithms provided by the SUN provider" border=
+"1">
+<thead>
+<tr>
+<th id="h201">Engine</th>
+<th id="h202">Algorithm Names</th>
+</tr>
+</thead>
+<tbody>
+<!-- ==================================================== -->
+<tr>
+<td headers="h201"><code>AlgorithmParameterGenerator</code></td>
+<td headers="h202">DSA</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h201"><code>AlgorithmParameters</code></td>
+<td headers="h202">DSA</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h201"><code>CertificateFactory</code></td>
+<td headers="h202">X.509</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h201"><code>CertPathBuilder</code></td>
+<td headers="h202">PKIX</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h201"><code>CertPathValidator</code></td>
+<td headers="h202">PKIX</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h201"><code>CertStore</code></td>
+<td headers="h202">Collection<br />
+LDAP<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h201"><code>Configuration</code></td>
+<td headers="h202">JavaLoginConfig</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h201"><code>KeyFactory</code></td>
+<td headers="h202">DSA</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h201"><code>KeyPairGenerator</code></td>
+<td headers="h202">DSA</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h201"><code>KeyStore</code></td>
+<td headers="h202">JKS<br />
+DKS</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h201"><code>MessageDigest</code></td>
+<td headers="h202">MD2<br />
+MD5<br />
+SHA-1<br />
+SHA-224<br />
+SHA-256<br />
+SHA-384<br />
+SHA-512<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h201"><code>Policy</code></td>
+<td headers="h202">JavaPolicy</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h201"><code>SecureRandom</code></td>
+<td headers="h202">SHA1PRNG (Initial seeding is currently done via a combination
+of system attributes and the <code>java.security</code> entropy
+gathering device)<br />
+NativePRNG (<code>nextBytes()</code> uses
+<code>/dev/urandom</code>, <code>generateSeed()</code> uses
+<code>/dev/random</code>)<br />
+NativePRNGBlocking (<code>nextBytes()</code> and
+<code>generateSeed()</code> use <code>/dev/random</code>)<br />
+NativePRNGNonBlocking (<code>nextBytes()</code> and
+<code>generateSeed()</code> use
+<code>/dev/urandom</code>)<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h201"><code>Signature</code></td>
+<td headers="h202">NONEwithDSA<br />
+SHA1withDSA<br />
+SHA224withDSA<br />
+SHA256withDSA</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<p>The following table lists OIDs associated with SHA Message
+Digests:</p>
+<table summary="SHA Message Digest OIDs" border="1">
+<thead>
+<tr>
+<th id="h301">SHA Message Digest</th>
+<th id="h302">OID</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h301">SHA-224</td>
+<td headers="h302">2.16.840.1.101.3.4.2.4</td>
+</tr>
+<tr>
+<td headers="h301">SHA-256</td>
+<td headers="h302">2.16.840.1.101.3.4.2.1</td>
+</tr>
+<tr>
+<td headers="h301">SHA-384</td>
+<td headers="h302">2.16.840.1.101.3.4.2.2</td>
+</tr>
+<tr>
+<td headers="h301">SHA-512</td>
+<td headers="h302">2.16.840.1.101.3.4.2.3</td>
+</tr>
+</tbody>
+</table>
+<p>The following table lists OIDs associated with DSA
+Signatures:</p>
+<table summary="DSA Signature OIDs" border="1">
+<thead>
+<tr>
+<th id="h401">DSA Signature</th>
+<th id="h402">OID</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h401">SHA1withDSA</td>
+<td headers="h402">1.2.840.10040.4.3<br />
+1.3.14.3.2.13<br />
+1.3.14.3.2.27</td>
+</tr>
+<tr>
+<td headers="h401">SHA224withDSA</td>
+<td headers="h402">2.16.840.1.101.3.4.3.1</td>
+</tr>
+<tr>
+<td headers="h401">SHA256withDSA</td>
+<td headers="h402">2.16.840.1.101.3.4.3.2</td>
+</tr>
+</tbody>
+</table>
+<h3>Keysize Restrictions</h3>
+<p>The <code>SUN</code> provider uses the following default
+keysizes (in bits) and enforces the following restrictions:</p>
+<p>KeyPairGenerator</p>
+<table summary="keysize used in the KeyPairGenerator" border="1">
+<thead>
+<tr>
+<th id="h501">Alg. Name</th>
+<th id="h502">Default Keysize</th>
+<th id="h503">Restrictions/Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h501">DSA</td>
+<td headers="h502">1024</td>
+<td headers="h503">Keysize must be a multiple of 64, ranging from 512 to 1024
+(inclusive), or 2048.</td>
+</tr>
+</tbody>
+</table>
+<p>AlgorithmParameterGenerator</p>
+<table summary="key size used in the AlgorithmParameterGenerator"
+border="1">
+<thead>
+<tr>
+<th id="h601">Alg. Name</th>
+<th id="h602">Default Keysize</th>
+<th id="h603">Restrictions/Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h601">DSA</td>
+<td headers="h602">1024</td>
+<td headers="h603">Keysize must be a multiple of 64, ranging from 512 to 1024
+(inclusive), or 2048.</td>
+</tr>
+</tbody>
+</table>
+<h3>
+<code>CertificateFactory</code>/<code>CertPathBuilder</code>/<code>CertPathValidator</code>/<code>CertStore</code>
+Implementations</h3>
+<p>Additional details on the <code>SUN</code> provider
+implementations for <code>CertificateFactory</code>,
+<code>CertPathBuilder</code>, <code>CertPathValidator</code> and
+<code>CertStore</code> are documented in <a href=
+"certpath/CertPathProgGuide.html#AppB">Appendix B</a> of the PKI
+Programmer's Guide. 
+<!-- ==================================================== --></p>
+<h2><a name="SunRsaSignProvider" id="SunRsaSignProvider"></a>The
+<code>SunRsaSign</code> Provider</h2>
+<p>The <code>SunRsaSign</code> provider was introduced in JDK 1.3
+as an enhanced replacement for the RSA signatures in the <a href=
+"#SunJSSEProvider"><code>SunJSSE</code></a> provider.</p>
+<p>The following algorithms are available in the
+<code>SunRsaSign</code> provider:</p>
+<table summary="algorithms available in the SUN provider" border=
+"1">
+<thead>
+<tr>
+<th id="h701">Engine</th>
+<th id="h702">Algorithm Names</th>
+</tr>
+</thead>
+<tbody>
+<!-- ==================================================== -->
+<tr>
+<td headers="h701"><code>KeyFactory</code></td>
+<td headers="h702">RSA</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h701"><code>KeyPairGenerator</code></td>
+<td headers="h702">RSA</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h701"><code>Signature</code></td>
+<td headers="h702">MD2withRSA<br />
+MD5withRSA<br />
+SHA1withRSA<br />
+SHA224withRSA<br />
+SHA256withRSA<br />
+SHA384withRSA<br />
+SHA512withRSA<br /></td>
+</tr>
+</tbody>
+</table>
+<h3>Keysize Restrictions</h3>
+<p>The <code>SunRsaSign</code> provider uses the following default
+keysize (in bits) and enforces the following restriction:</p>
+<p>KeyPairGenerator</p>
+<table summary="key size used in KeyPairGenerator" border="1">
+<thead>
+<tr>
+<th id="h801">Alg. Name</th>
+<th id="h802">Default Keysize</th>
+<th id="h803">Restrictions/Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h801">RSA</td>
+<td headers="h802">1024</td>
+<td headers="h803">Keysize must range between 512 and 65536 bits, the latter of
+which is unnecessarily large.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="SunJSSEProvider" id="SunJSSEProvider"></a>The
+<code>SunJSSE</code> Provider</h2>
+<p>The Java Secure Socket Extension (JSSE) was originally released
+as a separate "Optional Package" (also briefly known as a "Standard
+Extension"), and was available for JDK 1.2.<i>n</i> and
+1.3.<i>n</i>. The <code>SunJSSE</code> provider was introduced as
+part of this release.</p>
+<p>In earlier JDK releases, there were no RSA signature providers
+available in the JDK, therefore <code>SunJSSE</code> had to provide
+its own RSA implementation in order to use commonly available
+RSA-based certificates. JDK 5 introduced the
+<code>SunRsaSign</code> provider, which provides all the
+functionality (and more) of the <code>SunJSSE</code> provider.
+Applications targeted at JDK 5.0 and later should request instances
+of the <code>SunRsaSign</code> provider instead. For backward
+compatibility, the RSA algorithms are still available through this
+provider, but are actually implemented in the
+<code>SunRsaSign</code> provider.</p>
+<h3>Algorithms</h3>
+<p>The following algorithms are available in the
+<code>SunJSSE</code> provider:</p>
+<table summary="algorithm available in the SUnJSSE provider"
+border="1">
+<thead>
+<tr>
+<th id="h901">Engine</th>
+<th id="h902">Algorithm Name(s)</th>
+</tr>
+</thead>
+<tbody>
+<!-- ==================================================== -->
+<tr>
+<td headers="h901"><code>KeyFactory</code></td>
+<td headers="h902">RSA</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h901"><code>KeyManagerFactory</code></td>
+<td headers="h902">
+<p>SunX509: A factory for <code>X509ExtendedKeyManager</code>
+instances that manage X.509 certificate-based key pairs for local
+side authentication according to the rules defined by the IETF PKIX
+working group in <a href="http://www.ietf.org/rfc/rfc3280.txt">RFC
+3280</a> or its successor. This <code>KeyManagerFactory</code>
+supports initialization using a <code>Keystore</code> object, but
+does not currently support initialization using the class
+<code>javax.net.ssl.ManagerFactoryParameters</code>.</p>
+<p>PKIX: A factory for <code>X509ExtendedKeyManager</code>
+instances that manage X.509 certificate-based key pairs for local
+side authentication according to the rules defined by the IETF PKIX
+working group in <a href="http://www.ietf.org/rfc/rfc3280.txt">RFC
+3280</a> or its successor. This <code>KeyManagerFactory</code>
+currently supports initialization using a <code>KeyStore</code>
+object or <code>javax.net.ssl.KeyStoreBuilderParameters</code>.</p>
+</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h901"><code>KeyPairGenerator</code></td>
+<td headers="h902">RSA</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h901"><code>KeyStore</code></td>
+<td headers="h902">PKCS12</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h901"><code>Signature</code></td>
+<td headers="h902">MD2withRSA<br />
+MD5withRSA<br />
+SHA1withRSA</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h901"><code>SSLContext</code></td>
+<td headers="h902">SSLv3<br />
+TLSv1<br />
+TLSv1.1<br />
+TLSv1.2</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h901"><code>TrustManagerFactory</code></td>
+<td headers="h902">
+<p>SunX509: A factory for <code>X509ExtendedTrustManager</code>
+instances that validate certificate chains according to the rules
+defined by the IETF PKIX working group in <a href=
+"http://www.ietf.org/rfc/rfc3280.txt">RFC 3280</a> or its
+successor. This <code>TrustManagerFactory</code> supports
+initialization using a <code>Keystore</code> object, but does not
+currently support initialization using the class
+<code>javax.net.ssl.ManagerFactoryParameters</code>.</p>
+<p>PKIX: A factory for <code>X509ExtendedTrustManager</code>
+instances that validate certificate chains according to the rules
+defined by the IETF PKIX working group in <a href=
+"http://www.ietf.org/rfc/rfc3280.txt">RFC 3280</a> or its
+successor. This <code>TrustManagerFactory</code> currently supports
+initialization using a <code>KeyStore</code> object or
+<code>javax.net.ssl.CertPathTrustManagerParameters</code>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3><a name="SunJSSE_Protocols" id=
+"SunJSSE_Protocols">Protocols</a></h3>
+<p>The <code>SunJSSE</code> provider supports the following
+<code>protocol</code> parameters:</p>
+<table summary="list of SunJSSE protocol parameters" border="1">
+<thead>
+<tr>
+<th id="h1001">Protocol</th>
+<th id="h1002">Enabled by Default for Client</th>
+<th id="h1003">Enabled by Default for Server</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1001">SSLv3</td>
+<td headers="h1002">No(Unavailable <a href="#enable-sslv3">Footnote 2</a>)</td>
+<td headers="h1003">No(Unavailable <a href="#enable-sslv3">Footnote 2</a>)</td>
+</tr>
+<tr>
+<td headers="h1001">TLSv1</td>
+<td headers="h1002">Yes</td>
+<td headers="h1003">Yes</td>
+</tr>
+<tr>
+<td headers="h1001">TLSv1.1</td>
+<td headers="h1002">Yes</td>
+<td headers="h1003">Yes</td>
+</tr>
+<tr>
+<td headers="h1001">TLSv1.2</td>
+<td headers="h1002">Yes</td>
+<td headers="h1003">Yes</td>
+</tr>
+<tr>
+<td headers="h1001">SSLv2Hello<a id="sslv2helloproto" name="sslv2helloproto"></a>
+<a class="footnote" href="#sslv2protonote">Footnote 1</a></td>
+<td headers="h1002">No</td>
+<td headers="h1003">Yes</td>
+</tr>
+</tbody>
+</table>
+<p><small><a class="footnote" id="sslv2protonote" name=
+"sslv2protonote">Footnote 1 -</a> The SSLv3, TLSv1, TLSv1.1 and
+TLSv1.2 protocols allow you to send SSLv3, TLSv1, TLSv1.1 and
+TLSv1.2 ClientHellos encapsulated in an SSLv2 format hello by using
+the SSLv2Hello psuedo-protocol. The following table illustrates
+which connection combinations are possible when using
+SSLv2Hellos:</small></p>
+<table summary="protocol combos" border="1">
+<thead>
+<tr>
+<th id="h1101"><small>Client</small></th>
+<th id="h1102"><small>Server</small></th>
+<th id="h1103"><small>Connection</small></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1101"><small>enabled</small></td>
+<td headers="h1102"><small>enabled</small></td>
+<td headers="h1103"><small>Y</small></td>
+</tr>
+<tr>
+<td headers="h1101"><small>disabled</small></td>
+<td headers="h1102"><small>enabled</small></td>
+<td headers="h1103"><small>Y (most interoperable: SunJSSE default)</small></td>
+</tr>
+<tr>
+<td headers="h1101"><small>enabled</small></td>
+<td headers="h1102"><small>disabled</small></td>
+<td headers="h1103"><small>N</small></td>
+</tr>
+<tr>
+<td headers="h1101"><small>disabled</small></td>
+<td headers="h1102"><small>disabled</small></td>
+<td headers="h1103"><small>Y</small></td>
+</tr>
+</tbody>
+</table>
+<p><small><a name="enable-sslv3" id="enable-sslv3"></a>Footnote 2 -
+Enabling SSLv3:</small></p>
+<p><small>Starting with JDK 8u31, the SSLv3 protocol (Secure Socket
+Layer) has been deactivated and is not available by default. See
+the <code>java.security.Security</code> property
+<code>jdk.tls.disabledAlgorithms</code> in
+<code>&lt;JRE_HOME&gt;/lib/security/java.security</code>
+file.</small></p>
+<p><small>If SSLv3 is absolutely required, the protocol can be
+reactivated at JRE level by removing "SSLv3" from the
+<code>jdk.tls.disabledAlgorithms</code> property in the
+<code>java.security</code> file or by dynamically setting this
+Security property before JSSE is initialized.</small></p>
+<p><small>To enable SSLv3 protocol at deploy level, after following
+the above steps, edit the <code><a href=
+"http://docs.oracle.com/javase/8/docs/technotes/guides/deploy/properties.html">
+deployment.properties</a></code> file and add the
+following:</small></p>
+<pre class="codeblock">
+deployment.security.SSLv3=true
+</pre>
+<br />
+<h3><a name="SupportedCipherSuites" id=
+"SupportedCipherSuites"></a>Cipher Suites</h3>
+<p><code>SunJSSE</code> supports a large number of cipher suites.
+The two tables that follow show the cipher suites supported by
+SunJSSE in preference order and the release in which they were
+introduced.</p>
+<p>The first table lists the cipher suites that are enable by
+default. The second table shows cipher suites that are supported by
+SunJSSE but disabled by default.</p>
+<table summary="Default Enabled Cipher Suites" border="1">
+<caption><strong>Default Enabled Cipher Suites</strong></caption>
+<thead>
+<tr>
+<th id="h1201">Cipher Suite</th>
+<th id="h1202">J2SE v1.4</th>
+<th id="h1203">J2SE v1.4.1, v1.4.2</th>
+<th id="h1204">J2SE 5.0</th>
+<th id="h1205">JDK 6</th>
+<th id="h1206">JDK 7</th>
+<th id="h1207">JDK 8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1201"><code>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">X<a class="footnote" href="#footnote1-1">Footnote 1</a></td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">X<a class="footnote" href="#footnote1-1">Footnote 1</a></td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_RSA_WITH_AES_256_CBC_SHA256</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">X<a class="footnote" href="#footnote1-1">Footnote 1</a></td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">X<a class="footnote" href="#footnote1-1">Footnote 1</a></td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">X<a class="footnote" href="#footnote1-1">Footnote 1</a></td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_DHE_RSA_WITH_AES_256_CBC_SHA256</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">X<a class="footnote" href="#footnote1-1">Footnote 1</a></td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_DHE_DSS_WITH_AES_256_CBC_SHA256</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">X<a class="footnote" href="#footnote1-1">Footnote 1</a></td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_RSA_WITH_AES_256_CBC_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">X</td>
+<td headers="h1204">X</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDH_RSA_WITH_AES_256_CBC_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_DHE_RSA_WITH_AES_256_CBC_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">X</td>
+<td headers="h1204">X</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_DHE_DSS_WITH_AES_256_CBC_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">X</td>
+<td headers="h1204">X</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">X<a class="footnote" href="#footnote1-1">Footnote 1</a></td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">X<a class="footnote" href="#footnote1-1">Footnote 1</a></td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_RSA_WITH_AES_128_CBC_SHA256</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">X<a class="footnote" href="#footnote1-1">Footnote 1</a></td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">X<a class="footnote" href="#footnote1-1">Footnote 1</a></td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">X<a class="footnote" href="#footnote1-1">Footnote 1</a></td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_DHE_RSA_WITH_AES_128_CBC_SHA256</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">X<a class="footnote" href="#footnote1-1">Footnote 1</a></td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_DHE_DSS_WITH_AES_128_CBC_SHA256</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">X<a class="footnote" href="#footnote1-1">Footnote 1</a></td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_RSA_WITH_AES_128_CBC_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">X</td>
+<td headers="h1204">X</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDH_RSA_WITH_AES_128_CBC_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_DHE_RSA_WITH_AES_128_CBC_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">X</td>
+<td headers="h1204">X</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_DHE_DSS_WITH_AES_128_CBC_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">X</td>
+<td headers="h1204">X</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDHE_ECDSA_WITH_RC4_128_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDHE_RSA_WITH_RC4_128_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>SSL_RSA_WITH_RC4_128_SHA</code></td>
+<td headers="h1202">X</td>
+<td headers="h1203">X</td>
+<td headers="h1204">X</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDH_ECDSA_WITH_RC4_128_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDH_RSA_WITH_RC4_128_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">&nbsp;</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">&nbsp;</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">&nbsp;</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_RSA_WITH_AES_256_GCM_SHA384</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">&nbsp;</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">&nbsp;</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">&nbsp;</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_DHE_RSA_WITH_AES_256_GCM_SHA384</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">&nbsp;</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_DHE_DSS_WITH_AES_256_GCM_SHA384</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">&nbsp;</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">&nbsp;</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_RSA_WITH_AES_128_GCM_SHA256</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">&nbsp;</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">&nbsp;</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">&nbsp;</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_DHE_RSA_WITH_AES_128_GCM_SHA256</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">&nbsp;</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_DHE_DSS_WITH_AES_128_GCM_SHA256</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">&nbsp;</td>
+<td headers="h1206">&nbsp;</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>SSL_RSA_WITH_3DES_EDE_CBC_SHA</code></td>
+<td headers="h1202">X</td>
+<td headers="h1203">X</td>
+<td headers="h1204">X</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">&nbsp;</td>
+<td headers="h1204">&nbsp;</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA</code></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">X</td>
+<td headers="h1204">X</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA</code></td>
+<td headers="h1202">X</td>
+<td headers="h1203">X</td>
+<td headers="h1204">X</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>SSL_RSA_WITH_RC4_128_MD5</code></td>
+<td headers="h1202">X</td>
+<td headers="h1203">X</td>
+<td headers="h1204">X</td>
+<td headers="h1205">X</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+<tr>
+<td headers="h1201"><code>TLS_EMPTY_RENEGOTIATION_INFO_SCSV</code><a class=
+"footnote" href="#footnote1-2">Footnote 2</a></td>
+<td headers="h1202">&nbsp;</td>
+<td headers="h1203">1.4.2u28+</td>
+<td headers="h1204">u26+</td>
+<td headers="h1205">u22+</td>
+<td headers="h1206">X</td>
+<td headers="h1207">X</td>
+</tr>
+</tbody>
+</table>
+<p><small><a class="footnote" name="footnote1-1" id=
+"footnote1-1">Footnote 1</a> Cipher suites with SHA384 and SHA256
+are available only for TLS 1.2 or later.</small></p>
+<p><small><a class="footnote" name="footnote1-2" id=
+"footnote1-2">Footnote 2</a>
+<code>TLS_EMPTY_RENEGOTIATION_INFO_SCSV</code> is a new
+pseudo-cipher suite to support RFC 5746. See the <a href=
+"jsse/JSSERefGuide.html#tlsRenegotiation">Transport Layer Security
+(TLS) Renegotiation Issue</a> section of the JSEE Reference Guide
+for more information.</small></p>
+<table summary="Default Disabled Cipher Suites" border="1">
+<caption><strong>Default Disabled Cipher Suites</strong></caption>
+<thead>
+<tr>
+<th id="h1301">Cipher Suite</th>
+<th id="h1302">J2SE v1.4</th>
+<th id="h1303">J2SE v1.4.1, v1.4.2</th>
+<th id="h1304">J2SE 5.0</th>
+<th id="h1305">JDK 6</th>
+<th id="h1306">JDK 7</th>
+<th id="h1307">JDK 8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1301"><code>TLS_DH_anon_WITH_AES_256_GCM_SHA384</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">&nbsp;</td>
+<td headers="h1305">&nbsp;</td>
+<td headers="h1306">&nbsp;</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_DH_anon_WITH_AES_128_GCM_SHA256</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">&nbsp;</td>
+<td headers="h1305">&nbsp;</td>
+<td headers="h1306">&nbsp;</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_DH_anon_WITH_AES_256_CBC_SHA256</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">&nbsp;</td>
+<td headers="h1305">&nbsp;</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_ECDH_anon_WITH_AES_256_CBC_SHA</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">&nbsp;</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_DH_anon_WITH_AES_256_CBC_SHA</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">X</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_DH_anon_WITH_AES_128_CBC_SHA256</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">&nbsp;</td>
+<td headers="h1305">&nbsp;</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_ECDH_anon_WITH_AES_128_CBC_SHA</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">&nbsp;</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_DH_anon_WITH_AES_128_CBC_SHA</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">X</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_ECDH_anon_WITH_RC4_128_SHA</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">&nbsp;</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>SSL_DH_anon_WITH_RC4_128_MD5</code></td>
+<td headers="h1302">X</td>
+<td headers="h1303">X</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_ECDH_anon_WITH_3DES_EDE_CBC_SHA</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">&nbsp;</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>SSL_DH_anon_WITH_3DES_EDE_CBC_SHA</code></td>
+<td headers="h1302">X</td>
+<td headers="h1303">X</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_RSA_WITH_NULL_SHA256</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">&nbsp;</td>
+<td headers="h1305">&nbsp;</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_ECDHE_ECDSA_WITH_NULL_SHA</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">&nbsp;</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_ECDHE_RSA_WITH_NULL_SHA</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">&nbsp;</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>SSL_RSA_WITH_NULL_SHA</code></td>
+<td headers="h1302">X</td>
+<td headers="h1303">X</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_ECDH_ECDSA_WITH_NULL_SHA</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">&nbsp;</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_ECDH_RSA_WITH_NULL_SHA</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">&nbsp;</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_ECDH_anon_WITH_NULL_SHA</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">&nbsp;</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>SSL_RSA_WITH_NULL_MD5</code></td>
+<td headers="h1302">X</td>
+<td headers="h1303">X</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>SSL_RSA_WITH_DES_CBC_SHA</code></td>
+<td headers="h1302">X</td>
+<td headers="h1303">X</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X<a class="footnote" href="#footnote2-1">Footnote 1</a></td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>SSL_DHE_RSA_WITH_DES_CBC_SHA</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">X</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X<a class="footnote" href="#footnote2-1">Footnote 1</a></td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>SSL_DHE_DSS_WITH_DES_CBC_SHA</code></td>
+<td headers="h1302">X</td>
+<td headers="h1303">X</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X<a class="footnote" href="#footnote2-1">Footnote 1</a></td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>SSL_DH_anon_WITH_DES_CBC_SHA</code></td>
+<td headers="h1302">X</td>
+<td headers="h1303">X</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X<a class="footnote" href="#footnote2-1">Footnote 1</a></td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>SSL_RSA_EXPORT_WITH_RC4_40_MD5</code></td>
+<td headers="h1302">X</td>
+<td headers="h1303">X</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X<a class="footnote" href="#footnote2-2">Footnote 2</a></td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>SSL_DH_anon_EXPORT_WITH_RC4_40_MD5</code></td>
+<td headers="h1302">X</td>
+<td headers="h1303">X</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X<a class="footnote" href="#footnote2-2">Footnote 2</a></td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>SSL_RSA_EXPORT_WITH_DES40_CBC_SHA</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">X</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X<a class="footnote" href="#footnote2-2">Footnote 2</a></td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">X</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X<a class="footnote" href="#footnote2-2">Footnote 2</a></td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA</code></td>
+<td headers="h1302">X</td>
+<td headers="h1303">X</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X<a class="footnote" href="#footnote2-2">Footnote 2</a></td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>SSL_DH_anon_EXPORT_WITH_DES40_CBC_SHA</code></td>
+<td headers="h1302">X</td>
+<td headers="h1303">X</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X<a class="footnote" href="#footnote2-2">Footnote 2</a></td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_KRB5_WITH_RC4_128_SHA</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_KRB5_WITH_RC4_128_MD5</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_KRB5_WITH_3DES_EDE_CBC_SHA</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_KRB5_WITH_3DES_EDE_CBC_MD5</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X</td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_KRB5_WITH_DES_CBC_SHA</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X<a class="footnote" href="#footnote2-1">Footnote 1</a></td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_KRB5_WITH_DES_CBC_MD5</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X<a class="footnote" href="#footnote2-1">Footnote 1</a></td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_KRB5_EXPORT_WITH_RC4_40_SHA</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X<a class="footnote" href="#footnote2-2">Footnote 2</a></td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_KRB5_EXPORT_WITH_RC4_40_MD5</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X<a class="footnote" href="#footnote2-2">Footnote 2</a></td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_KRB5_EXPORT_WITH_DES_CBC_40_SHA</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X<a class="footnote" href="#footnote2-2">Footnote 2</a></td>
+<td headers="h1307">X</td>
+</tr>
+<tr>
+<td headers="h1301"><code>TLS_KRB5_EXPORT_WITH_DES_CBC_40_MD5</code></td>
+<td headers="h1302">&nbsp;</td>
+<td headers="h1303">&nbsp;</td>
+<td headers="h1304">X</td>
+<td headers="h1305">X</td>
+<td headers="h1306">X<a class="footnote" href="#footnote2-2">Footnote 2</a></td>
+<td headers="h1307">X</td>
+</tr>
+</tbody>
+</table>
+<p><small><a class="footnote" name="footnote2-1" id=
+"footnote2-1">Footnote 1</a> <a href=
+"http://www.ietf.org/rfc/rfc5246.txt">RFC 5246 TLS 1.2</a> forbids
+the use of these suites. These can be used in the
+SSLv3/TLS1.0/TLS1.1 protocols, but cannot be used in TLS 1.2 and
+later.</small></p>
+<p><small><a class="footnote" name="footnote2-2" id=
+"footnote2-2">Footnote 2</a> <a href=
+"http://www.ietf.org/rfc/rfc4346.txt">RFC 4346 TLS 1.1</a> forbids
+the use of these suites. These can be used in the SSLv3/TLS1.0
+protocols, but cannot be used in TLS 1.1 and later.</small></p>
+<p><a name="requirements" id="requirements"></a>Cipher suites that
+use AES_256 require installation of the JCE Unlimited Strength
+Jurisdiction Policy Files. See <a href="#importlimits">Import
+Limits on Cryptographic Algorithms</a>.</p>
+<p>Cipher suites that use Elliptic Curve Cryptography (ECDSA, ECDH,
+ECDHE, ECDH_anon) require a JCE cryptographic provider that meets
+the following requirements:</p>
+<ul>
+<li>
+<p>The provider must implement ECC as defined by the classes and
+interfaces in the packages <code>java.security.spec</code> and
+<code>java.security.interfaces</code>. The
+<code>getAlgorithm()</code> method of elliptic curve key objects
+must return the string "EC".</p>
+</li>
+<li>
+<p>The provider must support the <code>Signature</code> algorithms
+SHA1withECDSA and NONEwithECDSA, the <code>KeyAgreement</code>
+algorithm ECDH, and a <code>KeyPairGenerator</code> and a
+<code>KeyFactory</code> for algorithm EC. If one of these
+algorithms is missing, SunJSSE will not allow EC cipher suites to
+be used.</p>
+</li>
+<li>
+<p>The provider must support all the SECG curves referenced in
+<a href="http://www.ietf.org/rfc/rfc4492.txt">RFC 4492</a>
+specification, section 5.1.1 (see also appendix A). In
+certificates, points should be encoded using the uncompressed form
+and curves should be encoded using the <code>namedCurve</code>
+choice, that is, using an object identifier.</p>
+</li>
+</ul>
+<p>If these requirements are not met, EC cipher suites may not be
+negotiated correctly.</p>
+<h3><a name="TighterCheckingEncryptedPreMasterSecret" id=
+"TighterCheckingEncryptedPreMasterSecret">Tighter Checking of
+EncryptedPreMasterSecret Version Numbers</a></h3>
+<p>Prior to the JDK 7 release, the SSL/TLS implementation did not
+check the version number in PreMasterSecret, and the SSL/TLS client
+did not send the correct version number by default. Unless the
+system property <code>com.sun.net.ssl.rsaPreMasterSecretFix</code>
+is set to <code>true</code>, the TLS client sends the active
+negotiated version, but not the expected maximum version supported
+by the client.</p>
+<p>For compatibility, this behavior is preserved for SSL version
+3.0 and TLS version 1.0. However, for TLS version 1.1 or later, the
+implementation tightens checking the PreMasterSecret version
+numbers as required by <a href=
+"http://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>. Clients always
+send the correct version number, and servers check the version
+number strictly. The system property,
+<code>com.sun.net.ssl.rsaPreMasterSecretFix</code>, is not used in
+TLS 1.1 or later.</p>
+<!-- ==================================================== -->
+<h2><a name="SunJCEProvider" id="SunJCEProvider"></a>The
+<code>SunJCE</code> Provider</h2>
+<p>As described briefly in <a href="#SUNProvider">The
+<code>SUN</code> Provider</a>, US export regulations at the time
+restricted the type of cryptographic functionality that could be
+made available in the JDK. A separate API and reference
+implementation was developed that allowed applications to
+encrypt/decrypt data. The Java Cryptographic Extension (JCE) was
+released as a separate "Optional Package" (also briefly known as a
+"Standard Extension"), and was available for JDK 1.2.x and 1.3.x.
+During the development of JDK 1.4, regulations were relaxed enough
+that JCE (and SunJSSE) could be bundled as part of the JDK.</p>
+<p>The following algorithms are available in the SunJCE
+provider:</p>
+<table summary="algorithms available in the SunJCE provider"
+border="1">
+<thead>
+<tr>
+<th id="h1401">Engine</th>
+<th id="h1402">Algorithm Names</th>
+</tr>
+</thead>
+<tbody>
+<!-- ==================================================== -->
+<tr>
+<td headers="h1401"><code>AlgorithmParameterGenerator</code></td>
+<td headers="h1402">DiffieHellman</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h1401"><code>AlgorithmParameters</code></td>
+<td headers="h1402">AES<br />
+Blowfish<br />
+DES<br />
+DESede<br />
+DiffieHellman<br />
+OAEP<br />
+PBE<br />
+PBES2<br />
+PBEWithHmacSHA1AndAES_128<br />
+PBEWithHmacSHA224AndAES_128<br />
+PBEWithHmacSHA256AndAES_128<br />
+PBEWithHmacSHA384AndAES_128<br />
+PBEWithHmacSHA512AndAES_128<br />
+PBEWithHmacSHA1AndAES_256<br />
+PBEWithHmacSHA224AndAES_256<br />
+PBEWithHmacSHA256AndAES_256<br />
+PBEWithHmacSHA384AndAES_256<br />
+PBEWithHmacSHA512AndAES_256<br />
+PBEWithMD5AndDES<br />
+PBEWithMD5AndTripleDES<br />
+PBEWithSHA1AndDESede<br />
+PBEWithSHA1AndRC2_40<br />
+PBEWithSHA1AndRC2_128<br />
+PBEWithSHA1AndRC4_40<br />
+PBEWithSHA1AndPC4_128<br />
+RC2<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h1401"><code>Cipher</code></td>
+<td headers="h1402">See the <a href="#cipherTable">Cipher</a> table.</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h1401"><code>KeyAgreement</code></td>
+<td headers="h1402">DiffieHellman</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h1401"><code>KeyFactory</code></td>
+<td headers="h1402">DiffieHellman<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h1401"><code>KeyGenerator</code></td>
+<td headers="h1402">AES<br />
+ARCFOUR<br />
+Blowfish<br />
+DES<br />
+DESede<br />
+HmacMD5<br />
+HmacSHA1<br />
+HmacSHA224<br />
+HmacSHA256<br />
+HmacSHA384<br />
+HmacSHA512<br />
+RC2<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h1401"><code>KeyPairGenerator</code></td>
+<td headers="h1402">DiffieHellman<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h1401"><code>KeyStore</code></td>
+<td headers="h1402">JCEKS<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h1401"><code>Mac</code></td>
+<td headers="h1402">HmacMD5<br />
+HmacSHA1<br />
+HmacSHA224<br />
+HmacSHA256<br />
+HmacSHA384<br />
+HmacSHA512<br />
+HmacPBESHA1<br />
+PBEWithHmacSHA1<br />
+PBEWithHmacSHA224<br />
+PBEWithHmacSHA256<br />
+PBEWithHmacSHA384<br />
+PBEWithHmacSHA512<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h1401"><code>SecretKeyFactory</code></td>
+<td headers="h1402">DES<br />
+DESede<br />
+PBEWithMD5AndDES<br />
+PBEWithMD5AndTripleDES<br />
+PBEWithSHA1AndDESede<br />
+PBEWithSHA1AndRC2_40<br />
+PBEWithSHA1AndRC2_128<br />
+PBEWithSHA1AndRC4_40<br />
+PBEWithSHA1AndRC4_128<br />
+PBKDF2WithHmacSHA1<br />
+PBKDF2WithHmacSHA224<br />
+PBKDF2WithHmacSHA256<br />
+PBKDF2WithHmacSHA384<br />
+PBKDF2WithHmacSHA512<br />
+PBEWithHmacSHA1AndAES_128<br />
+PBEWithHmacSHA224AndAES_128<br />
+PBEWithHmacSHA256AndAES_128<br />
+PBEWithHmacSHA384AndAES_128<br />
+PBEWithHmacSHA512AndAES_128<br />
+PBEWithHmacSHA1AndAES_256<br />
+PBEWithHmacSHA224AndAES_256<br />
+PBEWithHmacSHA256AndAES_256<br />
+PBEWithHmacSHA384AndAES_256<br />
+PBEWithHmacSHA512AndAES_256<br /></td>
+</tr>
+</tbody>
+</table>
+<p><a name="cipherTable" id="cipherTable">The following table lists
+cipher algorithms available in the SunJCE provider.</a></p>
+<table summary=
+"list of cipher algorithms available in the SunJCE provider"
+border="1">
+<thead>
+<tr>
+<th id="h1501">Algorithm Name</th>
+<th id="h1502">Modes</th>
+<th id="h1503">Paddings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1501">AES</td>
+<td headers="h1502">ECB, CBC, PCBC, CTR, CTS, CFB, CFB8..CFB128, OFB,
+OFB8..OFB128</td>
+<td headers="h1503">NoPadding, PKCS5Padding, ISO10126Padding</td>
+</tr>
+<tr>
+<td headers="h1501">AESWrap</td>
+<td headers="h1502">ECB</td>
+<td headers="h1503">NoPadding</td>
+</tr>
+<tr>
+<td headers="h1501">ARCFOUR</td>
+<td headers="h1502">ECB</td>
+<td headers="h1503">NoPadding</td>
+</tr>
+<tr>
+<td headers="h1501">Blowfish, DES, DESede, RC2</td>
+<td headers="h1502">ECB, CBC, PCBC, CTR, CTS, CFB, CFB8..CFB64, OFB,
+OFB8..OFB64</td>
+<td headers="h1503">NoPadding, PKCS5Padding, ISO10126Padding</td>
+</tr>
+<tr>
+<td headers="h1501">DESedeWrap</td>
+<td headers="h1502">CBC</td>
+<td headers="h1503">NoPadding</td>
+</tr>
+<tr>
+<td headers="h1501">PBEWithMD5AndDES,<br />
+PBEWithMD5AndTripleDES <a class="footnote" href=
+"#propFootnote">Footnote 1</a>,<br />
+PBEWithSHA1AndDESede,<br />
+PBEWithSHA1AndRC2_40,<br />
+PBEWithSHA1AndRC2_128,<br />
+PBEWithSHA1AndRC4_40,<br />
+PBEWithSHA1AndRC4_128,<br />
+PBEWithHmacSHA1AndAES_128,<br />
+PBEWithHmacSHA224AndAES_128,<br />
+PBEWithHmacSHA256AndAES_128,<br />
+PBEWithHmacSHA384AndAES_128,<br />
+PBEWithHmacSHA512AndAES_128,<br />
+PBEWithHmacSHA1AndAES_256,<br />
+PBEWithHmacSHA224AndAES_256,<br />
+PBEWithHmacSHA256AndAES_256,<br />
+PBEWithHmacSHA384AndAES_256,<br />
+PBEWithHmacSHA512AndAES_256<br /></td>
+<td headers="h1502">CBC</td>
+<td headers="h1503">PKCS5Padding</td>
+</tr>
+<tr>
+<td headers="h1501">RSA</td>
+<td headers="h1502">ECB</td>
+<td headers="h1503">NoPadding, PKCS1Padding, OAEPWithMD5AndMGF1Padding,
+OAEPWithSHA1AndMGF1Padding, OAEPWithSHA-1AndMGF1Padding,
+OAEPWithSHA-224AndMGF1Padding, OAEPWithSHA-256AndMGF1Padding,
+OAEPWithSHA-384AndMGF1Padding, OAEPWithSHA-512AndMGF1Padding 
+<!-- OAEPPadding later --></td>
+</tr>
+</tbody>
+</table>
+<p><small><a name="propFootnote" id="propFootnote" class=
+"footnote">Footnote 1</a> PBEWithMD5AndTripleDES is a proprietary
+algorithm that has not been standardized.</small></p>
+<h3>Keysize Restrictions</h3>
+<p>The SunJCE provider uses the following default keysizes (in
+bits) and enforces the following restrictions:</p>
+<p>KeyGenerator</p>
+<table summary="key sizes for the KeyGenerator algorithm" border=
+"1">
+<thead>
+<tr>
+<th id="h1601">Algorithm Name</th>
+<th id="h1602">Default Keysize</th>
+<th id="h1603">Restrictions/Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1601">AES</td>
+<td headers="h1602">128</td>
+<td headers="h1603">Keysize must be equal to 128, 192, or 256.</td>
+</tr>
+<tr>
+<td headers="h1601">ARCFOUR (RC4)</td>
+<td headers="h1602">128</td>
+<td headers="h1603">Keysize must range between 40 and 1024 (inclusive).</td>
+</tr>
+<tr>
+<td headers="h1601">Blowfish</td>
+<td headers="h1602">128</td>
+<td headers="h1603">Keysize must be a multiple of 8, ranging from 32 to 448
+(inclusive).</td>
+</tr>
+<tr>
+<td headers="h1601">DES</td>
+<td headers="h1602">56</td>
+<td headers="h1603">Keysize must be equal to 56.</td>
+</tr>
+<tr>
+<td headers="h1601">DESede (Triple DES)</td>
+<td headers="h1602">168</td>
+<td headers="h1603">Keysize must be equal to 112 or 168.
+<p>A keysize of 112 will generate a Triple DES key with 2
+intermediate keys, and a keysize of 168 will generate a Triple DES
+key with 3 intermediate keys.</p>
+<p>Due to the "Meet-In-The-Middle" problem, even though 112 or 168
+bits of key material are used, the <b>effective</b> keysize is 80
+or 112 bits respectively.</p>
+</td>
+</tr>
+<tr>
+<td headers="h1601">HmacMD5</td>
+<td headers="h1602">512</td>
+<td headers="h1603">No keysize restriction.</td>
+</tr>
+<tr>
+<td headers="h1601">HmacSHA1</td>
+<td headers="h1602">512</td>
+<td headers="h1603">No keysize restriction.</td>
+</tr>
+<tr>
+<td headers="h1601">HmacSHA224</td>
+<td headers="h1602">224</td>
+<td headers="h1603">No keysize restriction.</td>
+</tr>
+<tr>
+<td headers="h1601">HmacSHA256</td>
+<td headers="h1602">256</td>
+<td headers="h1603">No keysize restriction.</td>
+</tr>
+<tr>
+<td headers="h1601">HmacSHA384</td>
+<td headers="h1602">384</td>
+<td headers="h1603">No keysize restriction.</td>
+</tr>
+<tr>
+<td headers="h1601">HmacSHA512</td>
+<td headers="h1602">512</td>
+<td headers="h1603">No keysize restriction.</td>
+</tr>
+<tr>
+<td headers="h1601">RC2</td>
+<td headers="h1602">128</td>
+<td headers="h1603">Keysize must range between 40 and 1024 (inclusive).</td>
+</tr>
+</tbody>
+</table>
+<p><b>NOTE:</b> The various Password-Based Encryption (PBE)
+algorithms use various algorithms to generate key data, and
+ultimately depends on the targeted Cipher algorithm. For example,
+"PBEWithMD5AndDES" will always generate 56-bit keys.</p>
+<p>KeyPairGenerator</p>
+<table summary="key szie for the KeyPairGenerator algorithm"
+border="1">
+<thead>
+<tr>
+<th id="h1701">Algorithm Name</th>
+<th id="h1702">Default Keysize</th>
+<th id="h1703">Restrictions/Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1701">Diffie-Hellman (DH)</td>
+<td headers="h1702">1024</td>
+<td headers="h1703">Keysize must be a multiple of 64, ranging from 512 to 2048
+(inclusive).</td>
+</tr>
+</tbody>
+</table>
+<p>AlgorithmParameterGenerator</p>
+<table summary=
+"key size for the AlgorithmParameterGenerator algorithm" border=
+"1">
+<thead>
+<tr>
+<th id="h1801">Alg. Name</th>
+<th id="h1802">Default Keysize</th>
+<th id="h1803">Restrictions/Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1801">Diffie-Hellman (DH)</td>
+<td headers="h1802">1024</td>
+<td headers="h1803">Keysize must be a multiple of 64, ranging from 512 to 2048
+(inclusive).</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="SunJGSSProvider" id="SunJGSSProvider"></a>The
+<code>SunJGSS</code> Provider</h2>
+<p>The following algorithms are available in the
+<code>SunJGSS</code> provider:</p>
+<table summary="algorithms available in the SunJGSS provider"
+border="1">
+<thead>
+<tr>
+<th id="h1901">OID</th>
+<th id="h1902">Name</th>
+</tr>
+</thead>
+<tbody>
+<!-- ==================================================== -->
+<tr>
+<td headers="h1901"><code>1.2.840.113554.1.2.2</code></td>
+<td headers="h1902">Kerberos v5</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h1901"><code>1.3.6.1.5.5.2</code></td>
+<td headers="h1902">SPNEGO</td>
+</tr>
+<!-- ==================================================== --></tbody>
+</table>
+<!-- ==================================================== -->
+<p><a name="SunSASLProvider" id="SunSASLProvider"></a></p>
+<h2>The <code>SunSASL</code> Provider</h2>
+<p>The following algorithms are available in the
+<code>SunSASL</code> provider:</p>
+<table summary="algorithms availabe in the SunSASL provider"
+border="1">
+<thead>
+<tr>
+<th id="h2001">Engine</th>
+<th id="h2002">Algorithm Names</th>
+</tr>
+</thead>
+<tbody>
+<!-- ==================================================== -->
+<tr>
+<td headers="h2001"><code>SaslClient</code></td>
+<td headers="h2002">CRAM-MD5<br />
+DIGEST-MD5<br />
+EXTERNAL<br />
+GSSAPI<br />
+PLAIN<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h2001"><code>SaslServer</code></td>
+<td headers="h2002">CRAM-MD5<br />
+DIGEST-MD5<br />
+GSSAPI<br /></td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="XMLDSigProvider" id="XMLDSigProvider"></a>The
+<code>XMLDSig</code> Provider</h2>
+<p>The following algorithms are available in the
+<code>XMLDSig</code> provider:</p>
+<table summary="algorithms available in the XMLDSig provider"
+border="1">
+<thead>
+<tr>
+<th id="h2101">Engine</th>
+<th id="h2102">Algorithm Names</th>
+</tr>
+</thead>
+<tbody>
+<!-- ==================================================== -->
+<tr>
+<td headers="h2101"><code>KeyInfoFactory</code></td>
+<td headers="h2102">DOM</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h2101"><code>TransformService</code></td>
+<td headers="h2102">http://www.w3.org/TR/2001/REC-xml-c14n-20010315 -
+<i>(<code>CanonicalizationMethod.INCLUSIVE</code>)</i><br />
+http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments -
+<i>(<code>CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS</code>)</i><br />
+
+http://www.w3.org/2001/10/xml-exc-c14n# -
+<i>(<code>CanonicalizationMethod.EXCLUSIVE</code>)</i><br />
+http://www.w3.org/2001/10/xml-exc-c14n#WithComments -
+<i>(<code>CanonicalizationMethod.EXCLUSIVE_WITH_COMMENTS</code>)</i><br />
+
+http://www.w3.org/2000/09/xmldsig#base64 -
+<i>(<code>Transform.BASE64</code>)</i><br />
+http://www.w3.org/2000/09/xmldsig#enveloped-signature -
+<i>(<code>Transform.ENVELOPED</code>)</i><br />
+http://www.w3.org/TR/1999/REC-xpath-19991116 -
+<i>(<code>Transform.XPATH</code>)</i><br />
+http://www.w3.org/2002/06/xmldsig-filter2 -
+<i>(<code>Transform.XPATH2</code>)</i><br />
+http://www.w3.org/TR/1999/REC-xslt-19991116 -
+<i>(<code>Transform.XSLT</code>)</i><br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h2101"><code>XMLSignatureFactory</code></td>
+<td headers="h2102">DOM</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="SunPCSCProvider" id="SunPCSCProvider"></a>The
+<code>SunPCSC</code> Provider</h2>
+<p>The SunPCSC provider enables applications to use the <a href=
+"../../../jre/api/security/smartcardio/spec/">Java Smart Card I/O
+API</a> to interact with the PC/SC Smart Card stack of the
+underlying operating system. On some operating systems, it may be
+necessary to enable and configure the PC/SC stack before it is
+usable. Consult your operating system documentation for
+details.</p>
+<p>On Solaris and Linux platforms, SunPCSC accesses the PC/SC stack
+via the <code>libpcsclite.so</code> library. It looks for this
+library in the directories <code>/usr/$LIBISA</code> and
+<code>/usr/local/$LIBISA</code>, where <code>$LIBISA</code> is
+expanded to <code>lib</code> on 32-bit platforms,
+<code>lib/64</code> on 64-bit Solaris platforms, and
+<code>lib64</code> on 64-bit Linux platforms. The system property
+<code>sun.security.smartcardio.library</code> may also be set to
+the full filename of an alternate <code>libpcsclite.so</code>
+implementation. On Windows platforms, SunPCSC always calls into
+<code>winscard.dll</code> and no Java-level configuration is
+necessary or possible.</p>
+<p>If PC/SC is available on the host platform, the SunPCSC
+implementation can be obtained via
+<code>TerminalFactory.getDefault()</code> and
+<code>TerminalFactory.getInstance("PC/SC")</code>. If PC/SC is not
+available or not correctly configured, a <code>getInstance()</code>
+call will fail with a <code>NoSuchAlgorithmException</code> and
+<code>getDefault()</code> will return a JRE built-in implementation
+that does not support any terminals.</p>
+<p>The following algorithms are available in the
+<code>SunPCSC</code> provider:</p>
+<table summary="algorithms available in the SunPCSC provider"
+border="1">
+<thead>
+<tr>
+<th id="h2201">Engine</th>
+<th id="h2202">Algorithm Names</th>
+</tr>
+</thead>
+<tbody>
+<!-- ==================================================== -->
+<tr>
+<td headers="h2201"><code>TerminalFactory</code></td>
+<td headers="h2202">PC/SC</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="SunMSCAPI" id="SunMSCAPI"></a>The
+<code>SunMSCAPI</code> Provider</h2>
+<p>The SunMSCAPI provider enables applications to use the standard
+JCA/JCE APIs to access the native cryptographic libraries,
+certificates stores and key containers on the Microsoft Windows
+platform. The SunMSCAPI provider itself does not contain
+cryptographic functionality, it is simply a conduit between the
+Java environment and the native cryptographic services on
+Windows.</p>
+<p>The following algorithms are available in the
+<code>SunMSCAPI</code> provider:</p>
+<table summary="algorithms available in the SunMSCAPI provider"
+border="1">
+<thead>
+<tr>
+<th id="h2301">Engine</th>
+<th id="h2302">Algorithm Names</th>
+</tr>
+</thead>
+<tbody>
+<!-- ==================================================== -->
+<tr>
+<td headers="h2301"><code>Cipher</code></td>
+<td headers="h2302">RSA <i>RSA/ECB/PKCS1Padding only</i></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h2301"><code>KeyPairGenerator</code></td>
+<td headers="h2302">RSA</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h2301"><code>KeyStore</code></td>
+<td headers="h2302">Windows-MY<br />
+<p>The keystore type that identifies the native Microsoft Windows
+MY keystore. It contains the user's personal certificates and
+associated private keys.</p>
+Windows-ROOT<br />
+<p>The keystore type that identifies the native Microsoft Windows
+ROOT keystore. It contains the certificates of Root certificate
+authorities and other self-signed trusted certificates.</p>
+</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h2301"><code>SecureRandom</code></td>
+<td headers="h2302">Windows-PRNG
+<p>The name of the native pseudo-random number generation (PRNG)
+algorithm.</p>
+</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h2301"><code>Signature</code></td>
+<td headers="h2302">MD5withRSA<br />
+MD2withRSA<br />
+NONEwithRSA<br />
+SHA1withRSA<br />
+SHA256withRSA<br />
+SHA384withRSA<br />
+SHA512withRSA</td>
+</tr>
+</tbody>
+</table>
+<h3>Keysize Restrictions</h3>
+<p>The SunMSCAPI provider uses the following default keysizes (in
+bits) and enforce the following restrictions:</p>
+<p>KeyGenerator</p>
+<table summary="key size for KeyGenerators" border="1">
+<thead>
+<tr>
+<th id="h2401">Alg. Name</th>
+<th id="h2402">Default Keysize</th>
+<th id="h2403">Restrictions/Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h2401">RSA</td>
+<td headers="h2402">1024</td>
+<td headers="h2403">Keysize ranges from 512 bits to 16,384 bits (depending on the
+underlying Microsoft Windows cryptographic service provider).</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="SunEC" id="SunEC"></a>The <code>SunEC</code>
+Provider</h2>
+<p>The SunEC provider implements Elliptical Curve Cryptography
+(ECC). ECC is emerging as an attractive public-key cryptosystem for
+mobile/wireless and other environments. Compared to traditional
+cryptosystems like RSA, ECC offers equivalent security with smaller
+key sizes, which results in faster computations, lower power
+consumption, as well as memory and bandwidth savings.</p>
+<p>Applications can now use the standard JCA/JCE APIs to access ECC
+functionality without the dependency on external ECC libraries(via
+SunPKCS11), as was the case in the JDK 6 release.</p>
+<p>The following algorithms are available in the <code>SunEC</code>
+provider:</p>
+<table summary="algorithms available in the SunEC provider" border=
+"1">
+<thead>
+<tr>
+<th id="h2501">Engine</th>
+<th id="h2502">Algorithm Name(s)</th>
+</tr>
+</thead>
+<tbody>
+<!-- ==================================================== -->
+<tr>
+<td headers="h2501"><code>AlgorithmParameters</code></td>
+<td headers="h2502">EC</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h2501"><code>KeyAgreement</code></td>
+<td headers="h2502">ECDH</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h2501"><code>KeyFactory</code></td>
+<td headers="h2502">EC</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h2501"><code>KeyPairGenerator</code></td>
+<td headers="h2502">EC</td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h2501"><code>Signature</code></td>
+<td headers="h2502">NONEwithECDSA<br />
+SHA1withECDSA<br />
+SHA224withECDSA<br />
+SHA256withECDSA<br />
+SHA384withECDSA<br />
+SHA512withECDSA<br /></td>
+</tr>
+</tbody>
+</table>
+<h3>Keysize Restrictions</h3>
+<p>The SunEC provider uses the following default keysizes (in bits)
+and enforces the following restrictions:</p>
+<p>KeyPairGenerator</p>
+<table summary="key size for the KeyPairGenerator algorithm"
+border="1">
+<thead>
+<tr>
+<th id="h2601">Alg. Name</th>
+<th id="h2602">Default Keysize</th>
+<th id="h2603">Restrictions/Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h2601">EC</td>
+<td headers="h2602">256</td>
+<td headers="h2603">Keysize must range from 112 to 571 (inclusive).</td>
+</tr>
+</tbody>
+</table>
+<!-- *********************************************************************** -->
+<h2><a name="OracleUcrypto" id="OracleUcrypto"></a>The
+<code>OracleUcrypto</code> Provider</h2>
+<p>The Solaris-only security provider <code>OracleUcrypto</code>
+leverages the Solaris Ucrypto library to offload and delegate
+cryptographic operations supported by the Oracle SPARC T4 based
+on-core cryptographic instructions. The <code>OracleUcrypto</code>
+provider itself does not contain cryptographic functionality; it is
+simply a conduit between the Java environment and the Solaris
+Ucrypto library.</p>
+<p>If the underlying Solaris Ucrypto library does not support a
+particular algorithm, then the OracleUcrypto provider will not
+support it either. Consequently, at runtime, the supported
+algorithms consists of the intersection of those that the Solaris
+Ucrypto library supports and those that the
+<code>OracleUcrypto</code> provider recognizes.</p>
+<p>Note that the <code>OracleUcrypto</code> provider is included
+only in Oracle's JDK. It is not part of OpenJDK.</p>
+<p>The following algorithms are available in the
+<code>OracleUcrypto</code> provider:</p>
+<table summary="Algorithms available in the OracleUcrypto provider"
+border="1">
+<thead>
+<tr>
+<th id="h2701">Engine</th>
+<th id="h2702">Algorithm Name(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h2701"><code>Cipher</code></td>
+<td headers="h2702">AES<br />
+RSA<br />
+AES/ECB/NoPadding<br />
+AES/ECB/PKCS5Padding<br />
+AES/CBC/NoPadding<br />
+AES/CBC/PKCS5Padding<br />
+AES/CTR/NoPadding<br />
+AES/GCM/NoPadding<br />
+AES/CFB128/NoPadding<br />
+AES/CFB128/PKCS5Padding<br />
+RSA/ECB/PKCS1Padding<br />
+RSA/ECB/NoPadding</td>
+</tr>
+<tr>
+<td headers="h2701"><code>Signature</code></td>
+<td headers="h2702">MD5withRSA<br />
+SHA1withRSA<br />
+SHA256withRSA<br />
+SHA384withRSA<br />
+SHA512withRSA</td>
+</tr>
+<tr>
+<td headers="h2701"><code>MessageDigest</code></td>
+<td headers="h2702">MD5<br />
+SHA<br />
+SHA-256<br />
+SHA-384<br />
+SHA-512</td>
+</tr>
+</tbody>
+</table>
+<h3>Keysize Restrictions</h3>
+<p>The <code>OracleUcrypto</code> provider does not specify any
+default keysizes or keysize restrictions; these are specified by
+the underlying Solaris Ucrypto library.</p>
+<h3><code>OracleUcrypto</code> Provider Configuration File</h3>
+<p>The <code>OracleUcrypto</code> provider has a configuration file
+named <code>ucrypto-solaris.cfg</code> that resides in the
+<code>$JAVA_HOME/lib/security</code> directory. Modify this
+configuration file to specify which algorithms to disable by
+default. For example, the following configuration file disables AES
+with CFB128 mode by default:</p>
+<pre class="codeblock">
+#
+# Configuration file for the OracleUcrypto provider
+#
+disabledServices = {
+  Cipher.AES/CFB128/PKCS5Padding
+  Cipher.AES/CFB128/NoPadding
+}
+</pre>
+<!-- ======================================================================= -->
+<h2><a name="Apple" id="Apple">The Apple Provider</a></h2>
+<p>The <code>Apple</code> provider implements a
+<code>java.security.KeyStore</code> that provides access to the Mac
+OS X Keychain.</p>
+<p>The following algorithms are available in the <code>Apple</code>
+provider:</p>
+<table summary="Algorithms available in the Apple provider" border=
+"1">
+<thead>
+<tr>
+<th id="h2801">Engine</th>
+<th id="h2802">Algorithm Name(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h2801"><code>KeyStore</code></td>
+<td headers="h2802">KeychainStore</td>
+</tr>
+</tbody>
+</table>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

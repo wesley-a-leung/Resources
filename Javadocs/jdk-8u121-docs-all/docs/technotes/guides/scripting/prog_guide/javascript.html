@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Using Java From Scripts</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1044" name="generator"/>
+<meta content="This chapter describes how to access Java classes and interfaces from scripts." name="description"/>
+<meta content="2015-02-13T13:32:53Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Java Scripting Programmer's Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E41834-02" name="partnum"/>
+<meta content="no_value_supplied" name="docid"/>
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Java Scripting Programmer's Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="api.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<hr/>
+<div><a id="CIHFFHED" name="CIHFFHED"/>
+<h1><span>3</span> Using Java From Scripts</h1>
+<p>This chapter describes how to access Java classes and interfaces from scripts.</p>
+<p>The code snippets are written in JavaScript, but you can use any scripting language compliant with JSR 223. Examples can be used as script files, or can be run in an interactive shell one expression at a time. The syntax for accessing fields and methods of objects is the same in JavaScript as it is in Java.</p>
+<p>This chapter contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#A1147187">Accessing Java Classes</a></p>
+</li>
+<li>
+<p><a href="#A1147207">Importing Java Packages and Classes</a></p>
+</li>
+<li>
+<p><a href="#A1147227">Using Java Arrays</a></p>
+</li>
+<li>
+<p><a href="#CIHJCFAH">Implementing Java Interfaces</a></p>
+</li>
+<li>
+<p><a href="#A1147269">Extending Abstract Java Classes</a></p>
+</li>
+<li>
+<p><a href="#CIHBCAJH">Extending Concrete Java Classes</a></p>
+</li>
+<li>
+<p><a href="#A1160555">Accessing Methods of a Superclass</a></p>
+</li>
+<li>
+<p><a href="#A1147329">Binding Implementations to Classes</a></p>
+</li>
+<li>
+<p><a href="#A1147370">Selecting Method Overload Variant</a></p>
+</li>
+<li>
+<p><a href="#A1147390">Mapping Data Types</a></p>
+</li>
+</ul>
+<a id="A1147187" name="A1147187"/>
+<div>
+<h2><span>3.1</span> Accessing Java Classes</h2>
+<p>To access primitive and reference Java types from JavaScript, call the <code dir="ltr">Java.type()</code> function, which returns a type object that corresponds to the full name of the class passed in as a string. The following example shows you how to get various type objects:</p>
+<pre dir="ltr" xml:space="preserve">
+var ArrayList = Java.type("java.util.ArrayList");
+var intType = Java.type("int");
+var StringArrayType = Java.type("java.lang.String[]");
+var int2DArrayType = Java.type("int[][]");
+</pre>
+<p>The type object returned by the <code dir="ltr">Java.type()</code> function can be used in JavaScript code similar to how a class name is used in Java. For example, you can can use it to instantiate new objects as follows:</p>
+<pre dir="ltr" xml:space="preserve">
+var anArrayList = new Java.type("java.util.ArrayList");
+</pre>
+<p>Java type objects can be used to instantiate new Java objects. The following example shows you how to instantiate new objects using the default constructor and by passing arguments to another constructor:</p>
+<pre dir="ltr" xml:space="preserve">
+var ArrayList = Java.type("java.util.ArrayList");
+var defaultSizeArrayList = new ArrayList;
+var customSizeArrayList = new ArrayList(16);
+</pre>
+<p>You can use the type object returned by the <code dir="ltr">Java.type()</code> function to access static fields and methods as follows:</p>
+<pre dir="ltr" xml:space="preserve">
+var File = Java.type("java.io.File");
+File.createTempFile("nashorn", ".tmp");
+</pre>
+<p>To access a static inner class, use the dollar sign ($) in the argument passed to the <code dir="ltr">Java.type()</code> method. The following example shows how to return the type object of the <code dir="ltr">Float</code> inner class in <code dir="ltr">java.awt.geom.Arc2D</code>:</p>
+<pre dir="ltr" xml:space="preserve">
+var Float = Java.type("java.awt.geom.Arc2D$Float");
+</pre>
+<p>If you already have the outer class type object, then you can access the inner class as a property of the outer class as follows:</p>
+<pre dir="ltr" xml:space="preserve">
+var Arc2D = Java.type("java.awt.geom.Arc2D")
+var Float = Arc2D.Float
+</pre>
+<p>In case of a nonstatic inner class, you must pass an instance of the outer class as the first argument to the constructor.</p>
+<p>Although a type object in JavaScript is used similar to the Java class, it is distinct from the <code dir="ltr">java.lang.Class</code> object, which is returned by the <code dir="ltr">getClass()</code> method. You can obtain one from the other using the <code dir="ltr">class</code> and <code dir="ltr">static</code> properties. The following example shows this distinction:</p>
+<pre dir="ltr" xml:space="preserve">
+var ArrayList = Java.type("java.util.ArrayList");
+var a = new ArrayList;
+
+// All of the following are true:
+print("Type acts as target of instanceof: " + (a instanceof ArrayList));
+print("Class doesn't act as target of instanceof: " + !(a instanceof a.getClass()));
+print("Type is not the same as instance's getClass(): " + (a.getClass() !== ArrayList));
+print("Type's `class` property is the same as instance's getClass(): " + (a.getClass() === ArrayList.class));
+print("Type is the same as the `static` property of the instance's getClass(): " + (a.getClass().static === ArrayList));
+</pre>
+<p>Syntactically and semantically, this distinction between compile-time class expressions and runtime class objects makes JavaScript similar to Java code. However, there is no equivalent of the <code dir="ltr">static</code> property for a <code dir="ltr">Class</code> object in Java, because compile-time class expressions are never expressed as objects.</p>
+</div>
+
+<a id="A1147207" name="A1147207"/>
+<div>
+<h2><span>3.2</span> Importing Java Packages and Classes</h2>
+<p>To access Java classes by their simple names, you can use the <code dir="ltr">importPackage()</code> and <code dir="ltr">importClass()</code> functions to import Java packages and classes. These functions are built into the compatibility script (<code dir="ltr">mozilla_compat.js</code>). The following example shows you how to use the <code dir="ltr">importPackage()</code> and <code dir="ltr">importClass()</code> functions:</p>
+<pre dir="ltr" xml:space="preserve">
+// Load compatibility script
+load("nashorn:mozilla_compat.js");
+// Import the java.awt package
+importPackage(java.awt);
+// Import the java.awt.Frame class
+importClass(java.awt.Frame);
+// Create a new Frame object
+var frame = new java.awt.Frame("hello");
+// Call the setVisible() method
+frame.setVisible(true);
+// Access a JavaBean property
+print(frame.title);
+</pre>
+<p>You can access Java packages using the <code dir="ltr">Packages</code> global variable (for example, <code dir="ltr">Packages.java.util.Vector</code> or <code dir="ltr">Packages.javax.swing.JFrame</code>), but standard Java SE packages have shortcuts (<code dir="ltr">java</code> for <code dir="ltr">Packages.java</code>, <code dir="ltr">javax</code> for <code dir="ltr">Packages.javax</code>, and <code dir="ltr">org</code> for <code dir="ltr">Packages.org</code>).</p>
+<p>The <code dir="ltr">java.lang</code> package is not imported by default, because its classes would conflict with <code dir="ltr">Object</code>, <code dir="ltr">Boolean</code>, <code dir="ltr">Math</code>, and other built-in JavaScript objects. Furthermore, importing any Java package or class can lead to conflicts with the global variable scope in JavaScript. To avoid this, define a <code dir="ltr">JavaImporter</code> object and use the <code dir="ltr">with</code> statement to limit the scope of the imported Java packages and classes, as shown in the following example:</p>
+<pre dir="ltr" xml:space="preserve">
+// Create a JavaImporter object with specified packages and classes to import
+var Gui = new JavaImporter(java.awt, javax.swing);
+
+// Pass the JavaImporter object to the "with" statement and access the classes
+// from the imported packages by their simple names within the statement's body
+with (Gui) {
+    var awtframe = new Frame("AWT Frame");
+    var jframe = new JFrame("Swing JFrame");
+};
+</pre></div>
+
+<a id="A1147227" name="A1147227"/>
+<div>
+<h2><span>3.3</span> Using Java Arrays</h2>
+<p>To create a Java array object, you first have to get the Java array type object, and then instantiate it. The syntax for accessing array elements and the <code dir="ltr">length</code> property in JavaScript is the same as in Java, as shown in the following example:</p>
+<pre dir="ltr" xml:space="preserve">
+var StringArray = Java.type("java.lang.String[]");
+var a = new StringArray(5);
+
+// Set the value of the first element
+a[0] = "Scripting is great!";
+// Print the length of the array
+print(a.length);
+// Print the value of the first element
+print(a[0]);
+</pre>
+<p>Given a JavaScript array, you can convert it to a Java array using the <code dir="ltr">Java.to()</code> method. You must pass the JavaScript array variable to this method and the type of array to be returned, either as a string or a type object. You can also omit the array type argument to return an <code dir="ltr">Object[]</code> array. Conversion is performed according to the ECMAScript conversion rules. The following example shows you how to convert a JavaScript array to a Java array using various <code dir="ltr">Java.to()</code> method arguments:</p>
+<pre dir="ltr" xml:space="preserve">
+// Create a JavaScript array
+var anArray = [1, "13", false];
+
+// Convert the JavaScript array to a Java int[] array
+var javaIntArray = Java.to(anArray, "int[]");
+print(javaIntArray[0]); // prints the number 1
+print(javaIntArray[1]); // prints the number 13
+print(javaIntArray[2]); // prints the number 0
+
+// Convert the JavaScript array to a Java String[] array
+var javaStringArray = Java.to(anArray, Java.type("java.lang.String[]"));
+print(javaStringArray[0]); // prints the string "1"
+print(javaStringArray[1]); // prints the string "13"
+print(javaStringArray[2]); // prints the string "false"
+
+// Convert the JavaScript array to a Java Object[] array
+var javaObjectArray = Java.to(anArray);
+print(javaObjectArray[0]); // prints the number 1
+print(javaObjectArray[1]); // prints the string "13"
+print(javaObjectArray[2]); // prints the boolean value "false"
+</pre>
+<p>Given a Java array, you can convert it to a JavaScript array using the <code dir="ltr">Java.from()</code> method. The following example shows you how to convert a Java array that contains a list of files in the current directory to a JavaScript array with the same contents:</p>
+<pre dir="ltr" xml:space="preserve">
+// Get the Java File type object
+var File = Java.type("java.io.File");
+// Create a Java array of File objects
+var listCurDir = new File(".").listFiles();
+// Convert the Java array to a JavaScript array
+var jsList = Java.from(listCurDir);
+// Print the JavaScript array
+print(jsList);
+</pre>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+In most cases, you can use the Java array in scripts without converting the Java array to a JavaScript array.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+
+<a id="CIHJCFAH" name="CIHJCFAH"/>
+<div>
+<h2><span>3.4</span> Implementing Java Interfaces</h2>
+<p>The syntax for implementing a Java interface in JavaScript is similar to how anonymous classes are declared in Java. You instantiate an interface and implement its methods (as JavaScript functions) in the same expression. The following example shows you how to implement the <code dir="ltr">Runnable</code> interface:</p>
+<pre dir="ltr" xml:space="preserve">
+// Create an object that implements the Runnable interface by implementing
+// the run() method as a JavaScript function
+var r  = new java.lang.Runnable() {
+    run: function() {
+        print("running...\n");
+    }
+};
+
+// The r variable can be passed to Java methods that expect an object implementing
+// the java.lang.Runnable interface
+var th = new java.lang.Thread(r);
+th.start();
+th.join();
+</pre>
+<p>If a method expects an object that implements an interface with only one method, you can pass a script function to this method instead of the object. For instance, in the previous example, the <code dir="ltr">Thread()</code> constructor expects an object that implements the <code dir="ltr">Runnable</code> interface, which defines only one method. You can take advantage of automatic conversion and pass a script function to the <code dir="ltr">Thread()</code> constructor instead of the object. The following example shows you how you can create a <code dir="ltr">Thread</code> object without implementing the <code dir="ltr">Runnable</code> interface:</p>
+<pre dir="ltr" xml:space="preserve">
+// Define a JavaScript function
+function func() {
+    print("I am func!");
+};
+
+// Pass the JavaScript function instead of an object that implements
+// the java.lang.Runnable interface
+var th = new java.lang.Thread(func);
+th.start();
+th.join();
+</pre>
+<p>You can implement multiple interfaces in a subclass by passing the relevant type objects to the <code dir="ltr">Java.extend()</code> function. For more information, see <a href="#CIHBCAJH">Extending Concrete Java Classes</a>.</p>
+</div>
+
+<a id="A1147269" name="A1147269"/>
+<div>
+<h2><span>3.5</span> Extending Abstract Java Classes</h2>
+<p>You can instantiate an anonymous subclass of an abstract Java class by passing to its constructor a JavaScript object with properties whose values are functions that implement the abstract methods. If a method is overloaded, then the JavaScript function will provide implementations for all variants of the method. The following example shows you how to instantiate a subclass of the abstract <code dir="ltr">TimerTask</code> class:</p>
+<pre dir="ltr" xml:space="preserve">
+var TimerTask =  Java.type("java.util.TimerTask");
+var task = new TimerTask({ run: function() { print("Hello World!") } });
+</pre>
+<p>Instead of invoking the constructor and passing an argument to it, you can provide the argument directly after the <code dir="ltr">new</code> expression. The following example shows you how this syntax (similar to Java anonymous inner class definition) can simplify the second line in the previous example:</p>
+<pre dir="ltr" xml:space="preserve">
+var task = new TimerTask {
+    run: function() {
+        print("Hello World!")
+    }
+};
+</pre>
+<p>If the abstract class has a single abstract method (a <i>SAM type</i>), then instead of passing a JavaScript object to the constructor, you can pass the function that implements the method. The following example shows how you can simplify the syntax when using a SAM type:</p>
+<pre dir="ltr" xml:space="preserve">
+var task = new TimerTask(function() { print("Hello World!") });
+</pre>
+<p>Whichever syntax you choose, if you need to invoke a constructor with arguments, you can specify the arguments after the implementation object or function.</p>
+<p>If you want to invoke a Java method that takes a SAM type as the argument, you can pass a JavaScript function to the method. Nashorn will instantiate a subclass of the expected class and use the function to implement its only abstract method. The following example shows you how to invoke the <code dir="ltr">Timer.schedule()</code> method, which expects a <code dir="ltr">TimerTask</code> object as the argument:</p>
+<pre dir="ltr" xml:space="preserve">
+var Timer = Java.type("java.util.Timer");
+Timer.schedule(function() { print("Hello World!") });
+</pre>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+The previous syntax assumes that the expected SAM type is either an interface or it has a default constructor, which is used by Nashorn to instatiate a subclass of the expected class. It is not possible to use a non-default constructor.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+
+<a id="CIHBCAJH" name="CIHBCAJH"/>
+<div>
+<h2><span>3.6</span> Extending Concrete Java Classes</h2>
+<p>To avoid ambiguity, the syntax for extending abstract classes is not allowed for concrete classes. Because a concrete class can be instantiated, such syntax may be interpreted as an attempt to create a new instance of the class and pass to it an object of the type expected by the constructor (in case when the expected object type is an interface). As an illustration of this, consider the following example:</p>
+<pre dir="ltr" xml:space="preserve">
+var t = new java.lang.Thread({ run: function() { print("Thread running!") } });
+</pre>
+<p>This code can be interpreted both as extending the <code dir="ltr">Thread</code> class with the specified implementation of the <code dir="ltr">run()</code> method, and the instantiation of the <code dir="ltr">Thread</code> class by passing to its constructor an object that implenents the <code dir="ltr">Runnable</code> interface (for more information, see <a href="#CIHJCFAH">Implementing Java Interfaces</a>).</p>
+<p>To extend a concrete Java class, pass its type object to the <code dir="ltr">Java.extend()</code> function that returns a type object of the subclass. Then, use the type object of the subclass as a JavaScript-to-Java adapter to create instances of the subclass with the specified method implementations. The following example shows you how to extend the <code dir="ltr">Thread</code> class with the specified implementation of the <code dir="ltr">run()</code> method:</p>
+<pre dir="ltr" xml:space="preserve">
+var Thread = Java.type("java.lang.Thread");
+var threadExtender = Java.extend(Thread);
+var t = new threadExtender() {
+    run: function() { print("Thread running!") }};
+</pre>
+<p>The <code dir="ltr">Java.extend()</code> function can take a list of multiple type objects. You can specify no more than one type object of a Java class, and as many type objects of Java interfaces as you want. The returned type object extends the specified class (or <code dir="ltr">java.lang.Object</code> if no class is specified) and implements all interfaces. The class type object does not have to be first in the list.</p>
+</div>
+
+<a id="A1160555" name="A1160555"/>
+<div>
+<h2><span>3.7</span> Accessing Methods of a Superclass</h2>
+<p>To access methods in the superclass, you can use the <code dir="ltr">Java.super()</code> function. <a href="#BCEDGBEA">Example 3-1</a> shows you how to extend the <code dir="ltr">java.lang.Exception</code> class and access the methods in the superclass.</p>
+<div><a id="BCEDGBEA" name="BCEDGBEA"/>
+<p>Example 3-1 Accessing Methods of a Supreclass (super.js)</p>
+<pre dir="ltr" xml:space="preserve">
+var Exception = Java.type("java.lang.Exception");
+var ExceptionAdapter = Java.extend(Exception);
+
+var exception = new ExceptionAdapter("My Exception Message") {
+    getMessage: function() {
+        var _super_ = Java.super(exception);
+        return _super_.getMessage().toUpperCase();
+    }
+}
+
+try {
+    throw exception;
+} catch (ex) {
+    print(exception);
+}
+</pre></div>
+
+<p>If you run the code in <a href="#BCEDGBEA">Example 3-1</a>, the following will be printed to standard output:</p>
+<pre dir="ltr" xml:space="preserve">
+jdk.nashorn.javaadapters.java.lang.Exception: MY EXCEPTION MESSAGE
+</pre></div>
+
+<a id="A1147329" name="A1147329"/>
+<div>
+<h2><span>3.8</span> Binding Implementations to Classes</h2>
+<p>The previous sections described how to extend Java classes and implement interfaces using an extra JavaScript object parameter in the constructor that specifies the implementation. The implementation is therefore bound to the actual instance created with <code dir="ltr">new</code>, and not to the whole class. This has some advantages, for example, in the memory footprint of the runtime, because Nashorn can create a single universal adapter for every combination of types being implemented. However, the following example shows that different instances have the same Java class regardless of them having different JavaScript implementation objects:</p>
+<pre dir="ltr" xml:space="preserve">
+var Runnable = java.lang.Runnable;
+var r1 = new Runnable(function() { print("I'm runnable 1!") });
+var r2 = new Runnable(function() { print("I'm runnable 2!") });
+r1.run();
+r2.run();
+print("We share the same class: " + (r1.class === r2.class));
+</pre>
+<p>The previous example prints the following:</p>
+<pre dir="ltr" xml:space="preserve">
+I'm runnable 1!
+I'm runnable 2!
+We share the same class: true
+</pre>
+<p>If you want to pass the class for instantiation to an external API (for example, when using the JavaFX framework, the <code dir="ltr">Application</code> class is passed to the JavaFX API, which instantiates it), you must extend a Java class or implement an interface with the implementation bound to the class, rather than to its instances. You can bind the implementation to the class by passing a JavaScript object with the implementation as the last argument to the <code dir="ltr">Java.extend()</code> function. This creates a class with the same constructors as the original class, because they do not need an extra implementation object parameter. The following example shows you how to bind implementations to the class, and demonstrates that in this case the implementation classes for different invocations are different:</p>
+<pre dir="ltr" xml:space="preserve">
+var RunnableImpl1 = Java.extend(java.lang.Runnable, function() { print("I'm runnable 1!") });
+var RunnableImpl2 = Java.extend(java.lang.Runnable, function() { print("I'm runnable 2!") });
+var r1 = new RunnableImpl1();var r2 = new RunnableImpl2();
+r1.run();
+r2.run();
+print("We share the same class: " + (r1.class === r2.class));
+</pre>
+<p>The previous example prints the following:</p>
+<pre dir="ltr" xml:space="preserve">
+I'm runnable 1!
+I'm runnable 2!
+We share the same class: false
+</pre>
+<p>Moving the implementation objects from the constructor invocations to the invocations of the <code dir="ltr">Java.extend()</code> functions eliminates the need for an extra argument in the constructor invocations. Every invocation of the <code dir="ltr">Java.extend()</code> function with a class-specific implementation object produces a new Java adapter class.The adapter classes with class-bound implementations can still take an additional constructor argument to further override the behavior for certain instances. Thus, you can combine the two approaches: you can provide part of the implementation in a class-based JavaScript implementation object passed to the <code dir="ltr">Java.extend()</code> function, and provide implementations for instances in objects passed to the constructor. A function defined by the object passed to the constructer overrides the function defined by the class-bound object. The following example shows you how to override the function defined in the class-bound object with a function passed to the constructor:</p>
+<pre dir="ltr" xml:space="preserve">
+var RunnableImpl = Java.extend(java.lang.Runnable, function() { print("I'm runnable 1!") });
+var r1 = new RunnableImpl();
+var r2 = new RunnableImpl(function() { print("I'm runnable 2!") });
+r1.run();
+r2.run();
+print("We share the same class: " + (r1.class === r2.class));
+</pre>
+<p>The previous example prints the following:</p>
+<pre dir="ltr" xml:space="preserve">
+I'm runnable 1!
+I'm runnable 2!
+We share the same class: true
+</pre></div>
+
+<a id="A1147370" name="A1147370"/>
+<div>
+<h2><span>3.9</span> Selecting Method Overload Variant</h2>
+<p>Java methods can be overloaded by argument types. The Java Compiler (<code dir="ltr">javac</code>) selects the correct method variant during compilation. Overload resolution for Java methods called from Nashorn is performed when the method is invoked. The correct variant is selected automatically based on the argument types. However, if you run into genuine ambiguity with actual argument types, you can specify a particular overload variant explicitly. This may also improve performance, because the Nashorn engine will not need to perform overload resolution during invocation.</p>
+<p>Overload variants are exposed as special properties. You can refer to them in the form of strings that contain the name of the method followed by the argument types within parantheses. The following example shows how to invoke the variant of the <code dir="ltr">System.out.println()</code> method that expects an <code dir="ltr">Object</code> class as the argument, and pass <code dir="ltr">"hello"</code> to it:</p>
+<pre dir="ltr" xml:space="preserve">
+var out = java.lang.System.out;
+out["println(Object)"]("hello");
+</pre>
+<p>In the previous example, the unqualified class name (<code dir="ltr">Object</code>) is sufficient, because it uniquely identifies the correct signature. The only case when you must use the fully qualified class names in the signature is when two overload variants use different parameter types with identical unqualified names (this is possible if parameter types with the same name are from different packages).</p>
+</div>
+
+<a id="A1147390" name="A1147390"/>
+<div>
+<h2><span>3.10</span> Mapping Data Types</h2>
+<p>Most conversions between Java and JavaScript work as you expect. Previous sections described some of the less evident data type mappings between Java and JavaScript. For example, arrays must be explicitly converted, and JavaScript functions are automatically converted to SAM types when they are passed as parameters to Java methods.Every JavaScript object implements the <code dir="ltr">java.util.Map</code> interface to enable APIs to receive maps directly. When numbers are passed to a Java API, they are converted to the expected target numeric type, either boxed or primitive. However, if the target type is less specific (for example, <code dir="ltr">Number</code>), you can only expect them to be of type <code dir="ltr">Number</code>, and must test specifically for whether the type is a boxed <code dir="ltr">Double</code>, <code dir="ltr">Integer</code>, <code dir="ltr">Long</code>, and so on. The number can be any boxed type due to internal optimizations. Also, you can pass any JavaScript value to a Java API expecting either a boxed or primitive number, because the <code dir="ltr">ToNumber</code> conversion algorithm defined by the JavaScript specification will be applied to the value.If a Java method expects a <code dir="ltr">String</code> or a <code dir="ltr">Boolean</code> object, the values will be converted using all conversions allowed by the <code dir="ltr">ToString</code> and <code dir="ltr">ToBoolean</code> conversions defined by the JavaScript specification.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Caution:</b></p>
+Due to internal performance optimizations of string operations, JavaScript strings are not always necessarily of type <code dir="ltr">java.lang.String</code>, but they are of type <code dir="ltr">java.lang.CharSequence</code>. If you pass a JavaScript string to a Java method that expects a <code dir="ltr">java.lang.String</code> argument, then you will receive a Java <code dir="ltr">String</code>, but if the signature of your method is more generic (that is, if it expects a <code dir="ltr">java.lang.Object</code> parameter, for example), you can get an object of the private engine implementation class that implements <code dir="ltr">CharSequence</code> but is not a Java <code dir="ltr">String</code> object.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="api.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>JRE 8 Installation for OS X</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This page describes how to install and uninstall JRE 8 on OS X computers." name="description"/>
+<meta content="2016-01-06T16:14:50Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Installation Guide for OpenJDK on Solaris, Linux, OS X, and Windows, Release 8u71" name="doctitle"/>
+<meta content="Release 8u71" name="relnum"/>
+<meta content="E50307-05" name="partnum"/>
+<meta content="no_value_supplied" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Installation Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="mac_jdk.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="mac_install_faq.html">
+                Next</a><hr/>
+<div><a id="CHDGECEB" name="CHDGECEB"/>
+<h1><span>11</span> JRE 8 Installation for OS X</h1>
+<p>This page describes how to install and uninstall JRE 8 on OS X computers.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td style="text-align:left">
+<p><b>Note:</b></p>
+The JRE installation includes the JavaFX Runtime which is incorporated into the same directory structure.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>This page has these topics:</p>
+<ul>
+<li>
+<p><a href="#A1098497">"System Requirements"</a></p>
+</li>
+<li>
+<p><a href="#A1096856">"JRE Downloaded File"</a></p>
+</li>
+<li>
+<p><a href="#pre_8u40_post_8u45_jre_osx">"Installing JRE Version Prior to 8u40 or 8u45 and Later"</a></p>
+</li>
+<li>
+<p><a href="#jre_8u40_osx">"Installing JRE 8u40"</a></p>
+</li>
+<li>
+<p><a href="#A1097025">"Determining the Installed Version of the JRE"</a></p>
+</li>
+<li>
+<p><a href="#A1096890">"Uninstalling the JRE"</a></p>
+</li>
+</ul>
+<p>See <a href="install_overview.html#CJAGAACB">"JDK 8 and JRE 8 Installation Start Here"</a> for general information about installing JDK 8 and JRE 8.</p>
+<p>See <a href="mac_install_faq.html#CHDJEDDB">"OS X Platform Install FAQ"</a> for general information about installing JRE 8 on OS X.</p>
+<a id="A1098497" name="A1098497"/>
+<div>
+<h2>System Requirements</h2>
+<p>Observe these requirements:</p>
+<ul>
+<li>
+<p>Any Intel-based computer running OS X 10.8 (Mountain Lion) or later.</p>
+</li>
+<li>
+<p>Administrator privileges.</p>
+</li>
+</ul>
+<p>Note that installing the JRE on OS X is performed on a system-wide basis, for all users, and administrator privileges are required. You cannot install Java for a single user.</p>
+<p>Only one JRE can be installed at a time. The system will not install a JRE that has a lower version than the current version. If you wish to install a lower version of the JRE, uninstall the current version as described in <a href="#A1096890">"Uninstalling the JRE"</a>.</p>
+<p>Installing a JRE from Oracle will <i>not</i> update <code dir="ltr">java -version</code> symlinks or add <code dir="ltr">java</code> to your path. To be able to do this, you need to install the JDK.</p>
+</div>
+
+<a id="A1096856" name="A1096856"/>
+<div>
+<h2>JRE Downloaded File</h2>
+<p>Depending on your processor, the downloaded file has one of the following names, where <code dir="ltr"><span>version</span></code> is the update number:</p>
+<ul>
+<li>
+<p><code dir="ltr">jre-8u</code><code dir="ltr"><span>version</span></code><code dir="ltr">-macosx-amd64.dmg</code></p>
+</li>
+<li>
+<p><code dir="ltr">jre-8u</code><code dir="ltr"><span>version</span></code><code dir="ltr">-macosx-x64.dmg</code></p>
+</li>
+</ul>
+</div>
+
+<a id="pre_8u40_post_8u45_jre_osx" name="pre_8u40_post_8u45_jre_osx"/>
+<div><a id="pre_8u40_post_8u40" name="pre_8u40_post_8u40"/>
+<h2>Installing JRE Version Prior to 8u40 or 8u45 and Later</h2>
+<p>If you are installing a version of the JRE prior to 8u40, or 8u45 and later, then follow these steps:</p>
+<ol>
+<li>
+<p>Download the file.</p>
+<p>Before the file can be downloaded, you must accept the license agreement.</p>
+</li>
+<li>
+<p>From either the <span>Downloads</span> window of the browser, or from the file browser, double click the file <code dir="ltr">.dmg</code> to launch it.</p>
+<p>A <span>Finder</span> window appears containing an icon of an open box and the name of the <code dir="ltr">.pkg</code> file.</p>
+</li>
+<li>
+<p>Double click the package icon to launch the <span>Install</span> app.</p>
+<p>The Install app displays the <span>Introduction</span> window.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td style="text-align:left">
+<p><b>Note:</b></p>
+In some cases, a <span>Destination Select</span> window appears. This is a bug, as there is only one option available. If you see this window, select <b>Install for all users of this computer</b> to enable the <b>Continue</b> button.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</li>
+<li>
+<p>Click <b>Continue</b>.</p>
+<p>The <span>Installation Type</span> window appears.</p>
+</li>
+<li>
+<p>Click <b>Install</b>.</p>
+<p>A window appears that says "Installer is trying to install new software. Type your password to allow this."</p>
+</li>
+<li>
+<p>Enter the Administrator login and password and click <b>Install Software</b>.</p>
+<p>The software is installed and a confirmation window appears.</p>
+</li>
+<li>
+<p>After the software is installed, delete the <code dir="ltr">.dmg</code> file if you want to save disk space.</p>
+</li>
+</ol>
+</div>
+
+<a id="jre_8u40_osx" name="jre_8u40_osx"/>
+<div>
+<h2>Installing JRE 8u40</h2>
+<p>If you are installing JRE 8u40, then follow these steps:</p>
+<ol>
+<li>
+<p>Download the file.</p>
+<p>Before the file can be downloaded, you must accept the license agreement.</p>
+</li>
+<li>
+<p>From either the <span>Downloads</span> window of the browser, or from the file browser, double click the file <code dir="ltr">.dmg</code> to launch it.</p>
+<p>A <span>Finder</span> window appears containing an icon of an open box and the name of the <code dir="ltr">.app</code> file.</p>
+</li>
+<li>
+<p>Double click the package icon to launch the <span>Install</span> app.</p>
+<p>A window appears that says, "Java 8 Update 40 is trying to install a new helper tool. Type your password to allow this."</p>
+<p>Enter the Administrator login name and password and then click <b>Install Helper</b>.</p>
+<p>The <span>Install</span> app then displays the <span>Introduction</span> window.</p>
+</li>
+<li>
+<p>Click <b>Next</b>.</p>
+<p>Oracle has partnered with companies that offer various products. The installer may present you with the option to install these programs when you install Java. Specify if you want these programs installed and then click <b>Next</b>.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td style="text-align:left">
+<p><b>Note:</b></p>
+You can disable the presentation of offers during installation by specifying the <code dir="ltr">--args SPONSORS=0</code> option in the terminal command line. For example:
+<p><code dir="ltr">open /Volumes/Java\ 8\ Update\ 40/Java\ 8\ Update\ 40.app --args SPONSORS=0</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>An <span>Installation Progress</span> window is displayed. Once the software is installed, a confirmation window appears and then an applet is launched to verify the version of Java installed.</p>
+</li>
+<li>
+<p>Delete the <code dir="ltr">.dmg</code> file if you want to save disk space.</p>
+</li>
+</ol>
+</div>
+
+<a id="A1097025" name="A1097025"/>
+<div>
+<h2>Determining the Installed Version of the JRE</h2>
+<p>If you have not yet installed Apple's Java OS X 2012-006 update, then you are still using a version of Apple Java 6 that includes the plug-in and the Java Preferences app. See <a href="mac_preferences.html#BABHEJEC">"Note for Users of OS X that Include Apple Java 6 Plug-in"</a>.</p>
+<p>Only one JRE can be installed. Installing a JRE removes the previously installed JRE. The JRE version used by the system can be determined in one of two ways:</p>
+<ul>
+<li>
+<p>From <span>System Preferences</span> click the Java icon from the <b>Other</b> category. This launches the <span>Java Control Panel</span>. <b>Click About</b>.</p>
+</li>
+<li>
+<p>Type the following in a <span>Terminal</span> window (note escaped space character, ignore line break):</p>
+<pre dir="ltr" xml:space="preserve">
+% /Library/Internet\ Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java -version
+</pre></li>
+</ul>
+<p>The system will not install a JRE that has a lower version than the current version. If you want to install a lower version, first uninstall the existing version.</p>
+</div>
+
+<a id="A1096890" name="A1096890"/>
+<div>
+<h2>Uninstalling the JRE</h2>
+<p>To uninstall the JRE, you must have Administrator privileges and execute the remove commands either as root or by using the sudo(8) tool.</p>
+<p>Remove one directory and one file (a symlink), as follows:</p>
+<ul>
+<li>
+<p>Navigate to <code dir="ltr">/Library/Internet Plug-Ins</code> and remove the <code dir="ltr">JavaAppletPlugin.plugin</code> directory.</p>
+</li>
+<li>
+<p>Navigate to /<code dir="ltr">Library/PreferencePanes</code> and remove <code dir="ltr">JavaControlPanel.prefpane</code>.</p>
+</li>
+</ul>
+<p>Do not attempt to uninstall Java by removing the Java tools from <code dir="ltr">/usr/bin</code>. This directory is part of the system software and any changes will be reset by Apple the next time you perform an update of the OS.</p>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="mac_jdk.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="mac_install_faq.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

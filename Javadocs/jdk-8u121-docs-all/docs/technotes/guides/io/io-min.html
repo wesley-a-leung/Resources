@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Minor changes to java.io in Java SE 1.2</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Minor changes to <code>java.io</code> in Java SE 1.2</h1>
+
+<!-- Body text begins here -->
+The following changes to package <tt>java.io</tt> were introduced
+in Java SE 1.2. Minor changes to this package were:
+<ul>
+<li>The <tt><a href=
+"../../../api/java/io/PrintWriter.html#out">out</a></tt> field of
+the <tt><a href=
+"../../../api/java/io/PrintWriter.html">PrintWriter</a></tt> class
+is now protected rather than private, so that subclasses may access
+it</li>
+<li>The <tt><a href=
+"../../../api/java/io/RandomAccessFile.html">RandomAccessFile</a></tt>
+class supports a new <tt><a href=
+"../../../api/java/io/RandomAccessFile.html#setLength-long-">setLength</a></tt>
+method;&nbsp;and</li>
+<li>The <tt><a href=
+"../../../api/java/io/StringWriter.html#StringWriter-int-">StringWriter(int)</a></tt>
+constructor is now public.</li>
+</ul>
+<p>The following constructors check for
+<tt>null</tt> input parameters:</p>
+<ul>
+<li>The constructors <tt><a href=
+"../../../api/java/io/PrintStream.html#PrintStream-java.io.OutputStream-">
+PrintStream(OutputStream&nbsp;out)</a></tt> and <tt><a href=
+"../../../api/java/io/PrintStream.html#PrintStream-java.io.OutputStream-boolean-">
+PrintStream(OutputStream&nbsp;out,&nbsp;boolean&nbsp;autoFlush)</a></tt>
+will throw a <tt>NullPointerException</tt> if the parameter
+<tt>out</tt> is <tt>null</tt>.</li>
+<li>The constructors <tt><a href=
+"../../../api/java/io/InputStreamReader.html#InputStreamReader-java.io.InputStream-">
+InputStreamReader(InputStream&nbsp;in)</a></tt> and <tt><a href=
+"../../../api/java/io/InputStreamReader.html#InputStreamReader-java.io.InputStream-java.lang.String-">
+InputStreamReader(InputStream in,&nbsp;String enc)</a></tt> will
+throw a <tt>NullPointerException</tt> if the <tt>in</tt> parameter
+is <tt>null</tt>.</li>
+<li>The constructors <tt><a href=
+"../../../api/java/io/OutputStreamWriter.html#OutputStreamWriter-java.io.OutputStream-">
+OutputStreamWriter(OutputStream&nbsp;out)</a></tt> and <tt><a href=
+"../../../api/java/io/OutputStreamWriter.html#OutputStreamWriter-java.io.OutputStream-java.lang.String-">
+OutputStreamWriter(OutputStream&nbsp;out,&nbsp;String&nbsp;enc)</a></tt>
+will throw a <tt>NullPointerException</tt> if the <tt>out</tt>
+parameter is <tt>null</tt>.</li>
+<li>The protected constructors <tt><a href=
+"../../../api/java/io/Reader.html#Reader-java.lang.Object-">Reader(Object&nbsp;lock)</a></tt>
+and <tt><a href=
+"../../../api/java/io/Writer.html#Writer-java.lang.Object-">Writer(Object&nbsp;lock)</a></tt>
+now throw <tt>NullPointerException</tt> if the <tt>lock</tt>
+parameter is <tt>null</tt>.</li>
+</ul>
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

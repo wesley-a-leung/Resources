@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Specific Debug Tips for Swing</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="swing001.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="i18n.html">
+                Next</a><hr/><a id="BABDDAJI" name="BABDDAJI"/>
+<div id="JSTGD464">
+<h1><span>13.2</span> Specific Debug Tips for Swing</h1>
+<p>This topic discusses some specific debugging tips for Swing and provides illustration examples for possible issues and workarounds. The following topics describe problems in Swing and troubleshooting techniques:</p>
+<ul>
+<li>
+<p><a href="#BABGDJEG">Incorrect Threading</a></p>
+</li>
+<li>
+<p><a href="#BABFEABI">JComponent Children Overlap</a></p>
+</li>
+<li>
+<p><a href="#BABHEADA">Display Update</a></p>
+</li>
+<li>
+<p><a href="#BABFGCHB">Model Change</a></p>
+</li>
+<li>
+<p><a href="#BABGIFGG">Add or Remove Components</a></p>
+</li>
+<li>
+<p><a href="#BABFDIFA">Opaque Override</a></p>
+</li>
+<li>
+<p><a href="#BABEFFDH">Permanent Changes to Graphics</a></p>
+</li>
+<li>
+<p><a href="#BABFGIBJ">Custom Painting and Double Buffering</a></p>
+</li>
+<li>
+<p><a href="#BABHJGAH">Opaque Content Pane</a></p>
+</li>
+<li>
+<p><a href="#BABBBGBI">Renderer Call for Each Cell Performance</a></p>
+</li>
+<li>
+<p><a href="#BABEHFIE">Possible Leaks</a></p>
+</li>
+<li>
+<p><a href="#BABHEGAD">Mix Heavywight and Lightweight Components</a></p>
+</li>
+<li>
+<p><a href="#BABGAFFC">Use Synth</a></p>
+</li>
+<li>
+<p><a href="#BABEBJDF">Track Activity on Event Dispatch Thread</a></p>
+</li>
+<li>
+<p><a href="#BABBJDCE">Specify Default Layout Manager</a></p>
+</li>
+<li>
+<p><a href="#BABJJJDJ">Listener Object Dispatched to Incorrect Component</a></p>
+</li>
+<li>
+<p><a href="#BABECFFH">Add a Component to Content Pane</a></p>
+</li>
+<li>
+<p><a href="#BABCHDJI">Drag and Drop Support</a></p>
+</li>
+<li>
+<p><a href="#BABCCFFD">One Parent for a Component</a></p>
+</li>
+<li>
+<p><a href="#BABEDBIA">JFileChooser Issues with Windows Shortcuts</a></p>
+</li>
+</ul>
+<a id="BABGDJEG" name="BABGDJEG"/>
+<div id="JSTGD465">
+<h2><span>13.2.1</span> Incorrect Threading</h2>
+<p>Random exceptions and painting problems are usually the result of incorrect threading usage of Swing. <i>All</i> access to Swing components, unless specifically noted in the javadoc, must be done on the event dispatch thread. This includes any models (<code dir="ltr">TableModel</code>, <code dir="ltr">ListModel</code>, and others) that are attached to Swing components.</p>
+<p>The best way to check for bad usage of Swing is by way of an instrumented <code dir="ltr">RepaintManager</code>, as illustrated in <a href="#BABGBEGC">Example 13-1</a>.</p>
+<div id="JSTGD466"><a id="BABGBEGC" name="BABGBEGC"/>
+<p>Example 13-1 Incorrect Threading</p>
+<pre dir="ltr" xml:space="preserve">
+public class CheckThreadViolationRepaintManager extends RepaintManager {
+     // it is recommended to pass the complete check
+     private boolean completeCheck = true;
+
+     public boolean isCompleteCheck() {
+         return completeCheck;
+     }
+
+     public void setCompleteCheck(boolean completeCheck) {
+         this.completeCheck = completeCheck;
+     }
+
+     public synchronized void addInvalidComponent(JComponent component) {
+         checkThreadViolations(component);
+         super.addInvalidComponent(component);
+     }
+
+     public void addDirtyRegion(JComponent component, int x, int y, int w, int 
+h) {
+         checkThreadViolations(component);
+         super.addDirtyRegion(component, x, y, w, h);
+     }
+
+     private void checkThreadViolations(JComponent c) {
+         if (!SwingUtilities.isEventDispatchThread() &amp;&amp; (completeCheck || 
+c.isShowing())) {
+             Exception exception = new Exception();
+             boolean repaint = false;
+             boolean fromSwing = false;
+             StackTraceElement[] stackTrace = exception.getStackTrace();
+             for (StackTraceElement st : stackTrace) {
+                 if (repaint &amp;&amp; st.getClassName().startsWith("javax.swing.")) {
+                     fromSwing = true;
+                 }
+                 if ("repaint".equals(st.getMethodName())) {
+                     repaint = true;
+                 }
+             }
+             if (repaint &amp;&amp; !fromSwing) {
+                 //no problems here, since repaint() is thread safe
+                 return;
+             }
+             exception.printStackTrace();
+         }
+     }
+}
+</pre></div>
+</div>
+
+<a id="BABFEABI" name="BABFEABI"/>
+<div id="JSTGD467">
+<h2><span>13.2.2</span> JComponent Children Overlap</h2>
+<p>Another possible source of painting problems can occur if you allow children of a <code dir="ltr">JComponent</code> to overlap. In this case the parent must override <code dir="ltr">isOptimizedDrawingEnabled</code> to return <code dir="ltr">false</code>. If you do not override <code dir="ltr">isOptimizedDrawingEnabled</code>, components can randomly appear on top of others, depending upon which one repaint was invoked on.</p>
+</div>
+
+<a id="BABHEADA" name="BABHEADA"/>
+<div id="JSTGD468">
+<h2><span>13.2.3</span> Display Update</h2>
+<p>Another source of painting problems can occur if you do not invoke repaint correctly when you need to update the display. Changing a visible property of a Swing component, such as the font, will trigger a repaint or revalidate. If you are writing a custom component, you must invoke repaint and possibly revalidate whenever the display or sizing information has been updated. If you do not, the display will only update the next time someone triggers a repaint.</p>
+<p>A good way to diagnose this is to resize the window. If the content appears after a resize, it implies that the component did not invoke repaint or revalidate correctly.</p>
+</div>
+
+<a id="BABFGCHB" name="BABFGCHB"/>
+<div id="JSTGD469">
+<h2><span>13.2.4</span> Model Change</h2>
+<p>Just as you do not need to invoke repaint when you change a visible property of a Swing component, you also need not invoke repaint when your model changes. If your model sends out the correct change notification, the <code dir="ltr">JComponent</code> will invoke repaint or revalidate as appropriate.</p>
+<p>However, if you change your model but do not send out a notification, a repaint event may not even work. In particular this will not work with <code dir="ltr">JTree</code>. The correct thing to do is to send out the appropriate model notification. This can usually be diagnosed by again resizing the window and noticing that the display has not updated correctly.</p>
+</div>
+
+<a id="BABGIFGG" name="BABGIFGG"/>
+<div id="JSTGD470">
+<h2><span>13.2.5</span> Add or Remove Components</h2>
+<p>When you add or remove components, you need to invoke repaint or revalidate. Swing and AWT will not invoke repaint or revalidate in these situations, and therefore you must invoke them yourself.</p>
+</div>
+
+<a id="BABFDIFA" name="BABFDIFA"/>
+<div id="JSTGD471">
+<h2><span>13.2.6</span> Opaque Override</h2>
+<p>Another possible area of painting problems is if a component does not override opaque.</p>
+<p>Further, if you do not invoker super's implementation you must honor the opaque property, that is if this component is opaque, you must completely fill in the background in a non-opaque color. If you do not honor the opaque property you will likely see visual artifacts.</p>
+<p>The only way to check for this is to look for consistent visual artifacts when the component invokes repaint.</p>
+</div>
+
+<a id="BABEFFDH" name="BABEFFDH"/>
+<div id="JSTGD472">
+<h2><span>13.2.7</span> Permanent Changes to Graphics</h2>
+<p>Do not make any permanent changes to a <code dir="ltr">Graphics</code> passed to <code dir="ltr">paint</code>, <code dir="ltr">paintComponent</code>, or <code dir="ltr">paintChildren</code>. Here is the documentation warning on this:</p>
+<p>If you override this in a subclass you should not make permanent changes to the passed in <code dir="ltr">Graphics</code>. For example, you should not alter the clip <code dir="ltr">Rectangle</code> or modify the transform. If you need to do these operations you may find it easier to create a new <code dir="ltr">Graphics</code> from the passed in <code dir="ltr">Graphics</code> and manipulate it.</p>
+<p>Not honoring this restriction will result in clipping or other weird visual artifacts.</p>
+</div>
+
+<a id="BABFGIBJ" name="BABFGIBJ"/>
+<div id="JSTGD473">
+<h2><span>13.2.8</span> Custom Painting and Double Buffering</h2>
+<p>Although you can override <code dir="ltr">paint</code> and do custom painting in the override, you should instead override <code dir="ltr">paintComponent</code>. The <code dir="ltr">JComponent.paint</code> method ensures that painting happens to the double buffer. If you override <code dir="ltr">paint</code> directly, you may lose double buffering.</p>
+</div>
+
+<a id="BABHJGAH" name="BABHJGAH"/>
+<div id="JSTGD474">
+<h2><span>13.2.9</span> Opaque Content Pane</h2>
+<p>Swing's painting architecture requires an opaque content pane. Here is the documentation:</p>
+<p>The painting architecture of Swing requires an opaque <code dir="ltr">JComponent</code> to exist in the containment hierarchy above all other components. This is typically provided by way of the content pane. If you replace the content pane, it is recommended that you make the content pane opaque by way of <code dir="ltr">setOpaque(true)</code>. Additionally, if the content pane overrides <code dir="ltr">paintComponent</code>, it will need to completely fill in the background in an opaque color in <code dir="ltr">paintComponent</code>.</p>
+</div>
+
+<a id="BABBBGBI" name="BABBBGBI"/>
+<div id="JSTGD475">
+<h2><span>13.2.10</span> Renderer Call for Each Cell Performance</h2>
+<p>Renderers are painted for each cell, so ensure that the renderer does as little as possible. Any slowdown in the renderer is magnified across all cells. For example, if you repaint the visible region of a table with 50x20 visible cells, there will be 1000 calls to the renderer.</p>
+</div>
+
+<a id="BABEHFIE" name="BABEHFIE"/>
+<div id="JSTGD476">
+<h2><span>13.2.11</span> Possible Leaks</h2>
+<p>If the life cycle of your model is longer than that of a window with a component using the model, you must explicitly set the model of the Swing component to null. If you do not set the model to null, your model will retain a reference to the <code dir="ltr">Component</code>, which will keep all components in the window from being garbage-collected. Look at <a href="#BABJAADG">Example 13-2</a>.</p>
+<div id="JSTGD477"><a id="BABJAADG" name="BABJAADG"/>
+<p>Example 13-2 Possible leaks in Swing</p>
+<pre dir="ltr" xml:space="preserve">
+TableModel myModel = ...;
+JFrame frame = new JFrame();
+frame.setContentPane(new JScrollPane(new JTable(myModel)));
+frame.dispose();
+</pre></div>
+
+<p>If your application still holds a reference to <code dir="ltr">myModel</code>, then <code dir="ltr">frame</code> and all its children will still be reachable by way of the listener <code dir="ltr">JTable</code> installs on <code dir="ltr">myModel</code>. The solution is to invoke <code dir="ltr">table.setModel(new DefaultTableModel())</code>.</p>
+</div>
+
+<a id="BABHEGAD" name="BABHEGAD"/>
+<div id="JSTGD478">
+<h2><span>13.2.12</span> Mix Heavywight and Lightweight Components</h2>
+<p>Mixing heavyweight and lightweight components can work in certain scenarios, primarily as long as the heavyweight component does not overlap with any existing Swing components. For example, a heavyweight will not work in an internal frame, because when the user drags around the internal frame it will overlap with other internal frames. If you do use heavyweights, invoke the following methods:</p>
+<ul>
+<li>
+<p><code dir="ltr">JPopupMenu.setDefaultLightWeightPopupEnabled(false)</code></p>
+</li>
+<li>
+<p><code dir="ltr">ToolTipManager.sharedInstance().setLightWeightPopupEnabled(false)</code></p>
+</li>
+</ul>
+</div>
+
+<a id="BABGAFFC" name="BABGAFFC"/>
+<div id="JSTGD479">
+<h2><span>13.2.13</span> Use Synth</h2>
+<p><code dir="ltr">Synth</code> is an empty canvas. To use <code dir="ltr">Synth</code> you must either provide a complete XML file that configures the look and feel, or extend <code dir="ltr">SynthLookAndFeel</code> and provide your own <code dir="ltr">SynthStyleFactory</code>.</p>
+</div>
+
+<a id="BABEBJDF" name="BABEBJDF"/>
+<div id="JSTGD480">
+<h2><span>13.2.14</span> Track Activity on Event Dispatch Thread</h2>
+<p>If a Swing application tries to do too much on the event dispatch thread, the application will appear sluggish and unresponsive.</p>
+<p>One way to detect this situation is to push a new <code dir="ltr">EventQueue</code> that can output logging information if an event takes too long to process. This approach is not perfect in that it has problems with focus events and modality, but it is good for ad-hoc testing.</p>
+</div>
+
+<a id="BABBJDCE" name="BABBJDCE"/>
+<div id="JSTGD481">
+<h2><span>13.2.15</span> Specify Default Layout Manager</h2>
+<p>Problems can be caused by differing default layout manager classes on a Swing component. For example, the default for the <code dir="ltr">JPanel</code> class is <code dir="ltr">FlowLayout</code>, but the default for the <code dir="ltr">JFrame</code> class is <code dir="ltr">BorderLayout</code>. This situation is easily fixed by specifying a <code dir="ltr">LayoutManager</code>.</p>
+</div>
+
+<a id="BABJJJDJ" name="BABJJJDJ"/>
+<div id="JSTGD482">
+<h2><span>13.2.16</span> Listener Object Dispatched to Incorrect Component</h2>
+<p><code dir="ltr">MouseListener</code> objects are dispatched to the deepest component that has <code dir="ltr">MouseListener</code> objects (or has enabled <code dir="ltr">MouseEvent</code> objects). A ramification of this is that if you attach a <code dir="ltr">MouseListener</code> to a component whose descendants have <code dir="ltr">MouseListener</code> objects, your <code dir="ltr">MouseListener</code> object will never get called.</p>
+<p>This is easily reproduced with a composite component, like an editable <code dir="ltr">JComboBox</code>. Because a <code dir="ltr">JComboBox</code> has child components that have a <code dir="ltr">MouseListener</code>, a <code dir="ltr">MouseListener</code> attached to an editable <code dir="ltr">JComboBox</code> will never get notified.</p>
+<p>If your <code dir="ltr">MouseListener</code> suddenly stops getting events, it could be the result of a change in the application whereby a descendant component now has a <code dir="ltr">MouseListener</code>. A good way to check for this is to iterate over the descendants asking if they have any mouse listeners.</p>
+<p>A similar scenario occurs with the <code dir="ltr">KeyListener</code> class. A <code dir="ltr">KeyListener</code> object is dispatched only to the focused component.</p>
+<p>The <code dir="ltr">JComboBox</code> case is another example of this situation. In the editable <code dir="ltr">JComboBox</code> case the editor gets focus, not the <code dir="ltr">JComboBox</code>. As a result, a <code dir="ltr">KeyListener</code> attached to an editable <code dir="ltr">JComboBox</code> will never get notified.</p>
+</div>
+
+<a id="BABECFFH" name="BABECFFH"/>
+<div id="JSTGD483">
+<h2><span>13.2.17</span> Add a Component to Content Pane</h2>
+<p>Prior to J2SE 1.5 you could not add a component to a <code dir="ltr">JFrame</code>, <code dir="ltr">JWindow</code>, <code dir="ltr">JDialog</code> or <code dir="ltr">JApplet</code>. Instead, you needed to add the component to the content pane. As of J2SE 1.5 it is still the case that a component added to a top-level Swing component must go to the content pane, but the add method (and a couple of other methods) on these classes redirect to the content pane. In other words, doing <code dir="ltr">frame.getContentPane().add(component)</code> is the same as <code dir="ltr">frame.add(component)</code>.</p>
+<p>The following methods redirect to the content pane for you: <code dir="ltr">add</code> (and its variants), <code dir="ltr">remove</code> (and its variants), and <code dir="ltr">setLayout</code>.</p>
+<p>This is purely a convenience, but can cause confusion. In particular, <code dir="ltr">getChildren</code>, <code dir="ltr">getLayout</code>, and various others do not redirect to the content pane.</p>
+<p>This change impacts <code dir="ltr">LayoutManagers</code> that only work with one component, such as <code dir="ltr">GroupLayout</code> and <code dir="ltr">BoxLayout</code>. For example, new <code dir="ltr">GroupLayout(frame)</code> will not work; instead, you need to do new <code dir="ltr">GroupLayout(frame.getContentPane())</code>.</p>
+</div>
+
+<a id="BABCHDJI" name="BABCHDJI"/>
+<div id="JSTGD484">
+<h2><span>13.2.18</span> Drag and Drop Support</h2>
+<p>When using Swing you should use Swing's drag-and-drop support as provided by <code dir="ltr">TransferHandler</code>. Otherwise, you will have to manage the selection and various other issues.</p>
+</div>
+
+<a id="BABCCFFD" name="BABCCFFD"/>
+<div id="JSTGD485">
+<h2><span>13.2.19</span> One Parent for a Component</h2>
+<p>Remember that a component can only exist in one parent at a time. Problems occur when you attempt to share menu items between menus. For example, <code dir="ltr">JMenuItem</code> is a component, and therefore can exist in only one menu at a time.</p>
+</div>
+
+<a id="BABEDBIA" name="BABEDBIA"/>
+<div id="JSTGD486">
+<h2><span>13.2.20</span> JFileChooser Issues with Windows Shortcuts</h2>
+<p>The <code dir="ltr">JFileChooser</code> class does not support shortcuts on Windows OS (.lnk files). Unlike the standard Windows file choosers, <code dir="ltr">JFileChooser</code> does not allow the user to follow Windows shortcuts when browsing the file system, because it does not show the correct path to the file.</p>
+<p>To reproduce the problem, follow these steps:</p>
+<ol>
+<li id="BACBCCGJ">
+<p>Create a text file on the Desktop called, for example, MyFile.txt. Open the text file and type some text, for example: <code dir="ltr">This is the contents of MyFile.txt</code>.</p>
+</li>
+<li>
+<p>Create a shortcut to the new text file in the following way: Drag the file with the right mouse button to another location on the Desktop and choose <b>Create Shortcut(s) here</b>.</p>
+</li>
+<li>
+<p>Run the <code dir="ltr">JfileChooser</code> test application, browse the Desktop, select Shortcut to MyFile.txt and click <b>Open</b>.</p>
+</li>
+<li>
+<p>The result File is <span>PathToDesktop</span>\Shortcut to MyFile.txt.lnk, but it should be <span>PathToDesktop</span>\MyFile.txt.</p>
+</li>
+<li>
+<p>In addition, the contents of the result File in the text area shows the contents of the file Shortcut to MyFile.txt.lnk, but the contents should be <code dir="ltr">This is the contents of MyFile.txt</code>, which was typed in step <a href="#BACBCCGJ">1</a>.</p>
+</li>
+</ol>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="swing001.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="i18n.html">
+                Next</a><hr/>
+
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

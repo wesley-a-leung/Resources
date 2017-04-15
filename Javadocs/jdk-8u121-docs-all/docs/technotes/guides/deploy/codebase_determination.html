@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Codebase Determination</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1044" name="generator"/>
+<meta content="This topics explains how the codebase for a Java Web Start application is determined when the codebase is not specified in the JNLP file." name="description"/>
+<meta content="2015-02-16T9:50:5Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Deployment Guide, Release 8u40" name="doctitle"/>
+<meta content="Release 8u40" name="relnum"/>
+<meta content="E50259-02" name="partnum"/>
+<meta content="JSDPG" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Deployment Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="deployment_networking.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="other_features.html">
+                Next</a><hr/>
+<div id="JSDPG967"><a id="BABHIBCB" name="BABHIBCB"/>
+<h1><span>31</span> Codebase Determination</h1>
+<a id="JSDPG968" name="JSDPG968"/>
+<p>This topics explains how the codebase for a Java Web Start application is determined when the codebase is not specified in the JNLP file.</p>
+<p>In a JNLP file, the codebase is an optional parameter to the <code dir="ltr">&lt;jnlp&gt;</code> tag. It is used both to locate resources described in that JNLP file, as well as to find the JNLP file itself. For technical reasons, Java Web Start is not able to refresh the contents of the JNLP file from the server unless an absolute codebase is specified.</p>
+<p>A codebase is always provided by the browser, either because it was explicitly specified, or implicitly obtained from the location of the HTML document. This allows relative URLs to be used in JNLP files, which is very useful for moving an entire tree of content from one server to another.</p>
+<p>This topic contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#A998867">Codebase Computation Rules</a></p>
+</li>
+<li>
+<p><a href="#A1148363">Examples</a></p>
+</li>
+</ul>
+<a id="A998867" name="A998867"/>
+<div id="JSDPG969">
+<h2><span>31.1</span> Codebase Computation Rules</h2>
+<p>In a JNLP file, the codebase is an optional parameter to the <code dir="ltr">&lt;jnlp&gt;</code> tag. It is used both to locate resources described in that JNLP file, as well as to find the JNLP file itself. For technical reasons, Java Web Start is not able to refresh the contents of the JNLP file from the server unless an absolute codebase is specified.</p>
+<p>A codebase is always provided by the browser, either because it was explicitly specified, or implicitly obtained from the location of the HTML document. This allows relative URLs to be used in JNLP files, which is very useful for moving an entire tree of content from one server to another.</p>
+<p>JNLP files reference other JNLP files in a tree structure. The root JNLP file for a JNLP applet is referenced by an <code dir="ltr">&lt;applet&gt;</code> tag. The applet tag's codebase helps define the location of the <i>root JNLP file</i>.</p>
+<p>The rules for codebase computation are as follows:</p>
+<ul>
+<li>
+<p>If an absolute codebase is specified in the JNLP file, it is used. This is required for backward compatibility reasons.</p>
+</li>
+<li>
+<p>If the JNLP codebase is not specified, the directory containing the JNLP file is used.</p>
+</li>
+<li>
+<p>Otherwise, merge the JNLP's codebase into the directory containing the JNLP file.</p>
+</li>
+</ul>
+<p>In simple Java terms, this can be expressed as shown in the following example:</p>
+<pre dir="ltr" xml:space="preserve">
+URL new_codebase = new URL(current_jnlp_dir, current_jnlp_codebase);
+</pre>
+<p>This codebase computation is not an extension of JSR-56. JSR-56 does not restrict the codebase to be <b>absolute</b>, and therefore it <i>may</i> be <b>relative</b>.</p>
+</div>
+
+<a id="A1148363" name="A1148363"/>
+<div id="JSDPG970">
+<h2><span>31.2</span> Examples</h2>
+<p>Example 1:</p>
+<pre dir="ltr" xml:space="preserve">
+this JNLP's location: http://someserver.example.com/this.jnlp
+ this JNLP's codebase: http://www.example.com/test/
+ resulting codebase for
+ parsing this JNLP: http://www.example.com/test/
+</pre>
+<p>Example 2:</p>
+<pre dir="ltr" xml:space="preserve">
+this JNLP's location: http://www.example.com/test2/this.jnlp
+ this JNLP's codebase: &lt;none&gt;
+ resulting codebase for
+ parsing this JNLP: http://www.example.com/test2/
+</pre>
+<p>Example 3:</p>
+<pre dir="ltr" xml:space="preserve">
+this JNLP's location: http://www.example.com/this.jnlp
+ this JNLP's codebase: codebasedir
+ resulting codebase for
+ parsing this JNLP: http://www.example.com/codebasedir
+</pre>
+<p>Example 4:</p>
+<p>Relative paths are used to refer to each nested JNLP, just as in a tree of HTML files.</p>
+<pre dir="ltr" xml:space="preserve">
+www.example.com/html/my_applet.html
+ refers to: my_applet.jnlp
+ codebase: www.example.com/html
+
+ my_applet.jnlp:
+ codebase not specified
+ inherits "www.example.com/html"
+ references JNLP extension "jogl/jogl.jnlp"
+
+ jogl/
+ jogl.jnlp
+ codebase not specified
+ inherits "www.example.com/html/jogl"
+ (the directory containing jogl.jnlp)
+ references gluegen-rt/gluegen-rt.jnlp
+
+ gluegen-rt/
+ gluegen-rt.jnlp
+ codebase not specified
+ inherits "www.example.com/html/jogl/gluegen-rt"
+ (the directory containing gluegen-rt.jnlp)
+</pre></div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="deployment_networking.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="other_features.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

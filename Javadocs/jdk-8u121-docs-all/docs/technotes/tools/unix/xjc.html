@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>xjc</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T7:56:54Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Solaris, Linux, and OS X, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38209-05" name="partnum"/>
+<meta content="JSSOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="wsimport.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="s11-troubleshooting_tools.html">
+                Next</a><hr/>
+<div><a id="CHDJBDDF" name="CHDJBDDF"/>
+<div id="JSSOR741"><a id="CHDCDBFD" name="CHDCDBFD"/>
+<h1>xjc</h1>
+<p>Compiles an XML schema file into fully annotated Java classes.</p>
+<div><a id="sthref323" name="sthref323"/>
+<h2>Synopsis</h2>
+<p><b>xjc</b> [ <i>options</i> ] <b>schema</b> <i>file/URL/dir/jar</i> ... [<b>-b</b> <i>bindinfo</i> ] ...</p>
+<dl>
+<dt><i>options</i></dt>
+<dd>
+<p>The command-line options. See <a href="#CHDHFFIJ">Options</a>.</p>
+</dd>
+<dt>schema <i>file/URL/dir/jar ...</i></dt>
+<dd>
+<p>The location of the XML schema file. If <code dir="ltr">dir</code> is specified, then all schema files in it are compiled. If <code dir="ltr">jar</code> is specified, then the <code dir="ltr">/META-INF/sun-jaxb.episode</code> binding file is compiled.</p>
+</dd>
+<dt>-b <i>bindinfo</i></dt>
+<dd>
+<p>The location of the bindings files.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref324" name="sthref324"/>
+<h2>Description</h2>
+<p>Start the binding compiler with the appropriate <code dir="ltr">xjc</code> shell script in the bin directory for your platform. There is also an Ant task to run the binding complier. See Using the XJC with Ant at<br/>
+<code dir="ltr"><a href="http://jaxb.java.net/nonav/2.1.3/docs/xjcTask.html">http://jaxb.java.net/nonav/2.1.3/docs/xjcTask.html</a></code></p>
+</div>
+
+<div><a id="CHDHFFIJ" name="CHDHFFIJ"/><a id="CHDBIGBB" name="CHDBIGBB"/>
+<h2>Options</h2>
+<ul>
+<li>
+<p>See also <a href="#CHDFDDBA">Nonstandard Options</a></p>
+</li>
+<li>
+<p>See also <a href="#CHDGCJDB">Deprecated and Removed Options</a></p>
+</li>
+</ul>
+<dl>
+<dt>-nv</dt>
+<dd>
+<p>By default, the XJC binding compiler performs strict validation of the source schema before processing it. Use this option to disable strict schema validation. This does not mean that the binding compiler will not perform any validation, but means that it will perform a less-strict validation.</p>
+</dd>
+<dt>-extension</dt>
+<dd>
+<p>By default, the XJC binding compiler strictly enforces the rules outlined in the Compatibility chapter of the JAXB Specification. Appendix E.2 defines a set of W3C XML Schema features that are not completely supported by JAXB v1.0. In some cases, you may be allowed to use them in the <code dir="ltr">-extension</code> mode enabled by this switch. In the default (strict) mode, you are also limited to using only the binding customization defined in the specification. By using the <code dir="ltr">-extension</code> switch, you will be allowed to use the JAXB Vendor Extensions.</p>
+</dd>
+<dt>-b <i>file</i></dt>
+<dd>
+<p>Specifies one or more external binding files to process. Each binding file must have its own <code dir="ltr">-b</code> switch. The syntax of the external binding files is flexible. You can have a single binding file that contains customization for multiple schemas or you can break the customization into multiple bindings files: <code dir="ltr">xjc schema1.xsd schema2.xsd schema3.xsd -b bindings123.xjb</code> <code dir="ltr">xjc schema1.xsd schema2.xsd schema3.xsd -b bindings1.xjb -b bindings2.xjb -b bindings3.xjb</code>. In addition, the ordering of the schema files and binding files on the command line does not matter.</p>
+</dd>
+<dt>-d <i>dir</i></dt>
+<dd>
+<p>By default, the XJC binding compiler generates the Java content classes in the current directory. Use this option to specify an alternate output directory. The output directory must already exist. The XJC binding compiler does not create it for you.</p>
+</dd>
+<dt>-p <i>pkg</i></dt>
+<dd>
+<p>When you specify a target package with this command-line option, it overrides any binding customization for the package name and the default package name algorithm defined in the specification.</p>
+</dd>
+<dt>-httpproxy <i>proxy</i></dt>
+<dd>
+<p>Specifies the HTTP or HTTPS proxy in the format <i>[user[:password]@]proxyHost[:proxyPort]</i>. The old <code dir="ltr">-host</code> and <code dir="ltr">-port</code> options are still supported by the RI for backward compatibility, but they were deprecated. The password specified with this option is an argument that is visible to other users who use the top command. For greater security, use the <code dir="ltr">-httpproxyfile</code> option.</p>
+</dd>
+<dt>-httpproxyfile file</dt>
+<dd>
+<p>Specifies the HTTP or HTTPS proxy with a file. The same format as the <code dir="ltr">-httpproxy</code> option, but the password specified in the file is not visible to other users.</p>
+</dd>
+<dt>-classpath arg</dt>
+<dd>
+<p>Specifies where to find client application class files used by the <i>jxb:javaType</i> and xjc:<i>superClass</i> customization.</p>
+</dd>
+<dt>-catalog file</dt>
+<dd>
+<p>Specifies catalog files to resolve external entity references. Supports the TR9401, XCatalog, and OASIS XML Catalog formats. See XML Entity and URI Resolvers at<br/>
+<code dir="ltr"><a href="http://xerces.apache.org/xml-commons/components/resolver/resolver-article.html">http://xerces.apache.org/xml-commons/components/resolver/resolver-article.html</a></code></p>
+</dd>
+<dt>-readOnly</dt>
+<dd>
+<p>By default, the XJC binding compiler does not write-protect the Java source files it generates. Use this option to force the XJC binding compiler to mark the generated Java sources as read-only.</p>
+</dd>
+<dt>-npa</dt>
+<dd>
+<p>Suppresses the generation of package level annotations into <code dir="ltr">**/package-info.java</code>. Using this switch causes the generated code to internalize those annotations into the other generated classes.</p>
+</dd>
+<dt>-no-header</dt>
+<dd>
+<p>Suppresses the generation of a file header comment that includes some note and time stamp. Using this makes the generated code more compatible with the <code dir="ltr">diff</code> command.</p>
+</dd>
+<dt>-target 2.0</dt>
+<dd>
+<p>Avoids generating code that relies on any JAXB 2.1 features. This will allow the generated code to run with JAXB 2.0 runtime environment (such as Java SE 6).</p>
+</dd>
+<dt>-xmlschema</dt>
+<dd>
+<p>Treats input schemas as W3C XML Schema (default). If you do not specify this switch, then your input schemas are treated as though they are W3C XML Schemas.</p>
+</dd>
+<dt>-relaxing</dt>
+<dd>
+<p>Treats input schemas as RELAX NG (experimental and unsupported). Support for RELAX NG schemas is provided as a JAXB Vendor Extension.</p>
+</dd>
+<dt>-relaxing-compact</dt>
+<dd>
+<p>Treat input schemas as RELAX NG compact syntax (experimental and unsupported). Support for RELAX NG schemas is provided as a JAXB Vendor Extension.</p>
+</dd>
+<dt>-dtd</dt>
+<dd>
+<p>Treats input schemas as XML DTD (experimental and unsupported). Support for RELAX NG schemas is provided as a JAXB Vendor Extension.</p>
+</dd>
+<dt>-wsdl</dt>
+<dd>
+<p>Treats input as WSDL and compiles schemas inside it (experimental and unsupported).</p>
+</dd>
+<dt>-quiet</dt>
+<dd>
+<p>Suppress compiler output, such as progress information and warnings.</p>
+</dd>
+<dt>-verbose</dt>
+<dd>
+<p>Be extra verbose, such as printing informational messages or displaying stack traces upon some errors.</p>
+</dd>
+<dt>-help</dt>
+<dd>
+<p>Displays a brief summary of the compiler switches.</p>
+</dd>
+<dt>-version</dt>
+<dd>
+<p>Displays the compiler version information.</p>
+</dd>
+<dt><i>schema file/URL/dir</i></dt>
+<dd>
+<p>Specifies one or more schema files to compile. If you specify a directory, then the <code dir="ltr">xjc</code> command scans it for all schema files and compiles them.</p>
+</dd>
+</dl>
+<div><a id="CHDFDDBA" name="CHDFDDBA"/><a id="CHDEFHFB" name="CHDEFHFB"/>
+<h3>Nonstandard Options</h3>
+<dl>
+<dt>-XLocator</dt>
+<dd>
+<p>Causes the generated code to expose SAX Locator information about the source XML in the Java bean instances after unmarshalling.</p>
+</dd>
+<dt>-Xsync-methods</dt>
+<dd>
+<p>Causes all of the generated method signatures to include the <code dir="ltr">synchronized</code> keyword.</p>
+</dd>
+<dt>-mark-generated</dt>
+<dd>
+<p>Marks the generated code with the annotation <code dir="ltr">@javax.annotation.Generated</code>.</p>
+</dd>
+<dt>-episode file</dt>
+<dd>
+<p>Generates the specified episode file for separate compilation.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="CHDGCJDB" name="CHDGCJDB"/><a id="CHDEGIDC" name="CHDEGIDC"/>
+<h3>Deprecated and Removed Options</h3>
+<dl>
+<dt>-host &amp; -port</dt>
+<dd>
+<p>These options are replaced with the <code dir="ltr">-httpproxy</code> option. For backward compatibility, these options are supported, but will not be documented and might be removed from future releases.</p>
+</dd>
+<dt>-use-runtime</dt>
+<dd>
+<p>Because the JAXB 2.0 specification has defined a portable runtime environment, it is no longer necessary for the JAXB RI to generate <code dir="ltr">**/impl/runtime</code> packages. Therefore, this switch is obsolete and was removed.</p>
+</dd>
+<dt>-source</dt>
+<dd>
+<p>The <code dir="ltr">-source</code> compatibility switch was introduced in the first JAXB 2.0 Early Access release. This switch is removed from future releases of JAXB 2.0. If you need to generate 1.0.x code, then use an installation of the 1.0.x code base.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+<div><a id="sthref325" name="sthref325"/>
+<h2>Compiler Restrictions</h2>
+<p>In general, it is safest to compile all related schemas as a single unit with the same binding compiler switches. Keep the following list of restrictions in mind when running the <code dir="ltr">xjc</code> command. Most of these issues only apply when you compile multiple schemas with multiple invocations of the <code dir="ltr">xjc</code> command.</p>
+<p>To compile multiple schemas at the same time, keep the following precedence rules for the target Java package name in mind:</p>
+<ol>
+<li>
+<p>The <code dir="ltr">-p</code> option has the highest precedence.</p>
+</li>
+<li>
+<p><i>jaxb:package</i> customization.</p>
+</li>
+<li>
+<p>If <code dir="ltr">targetNamespace</code> is declared, then apply the <code dir="ltr">t</code><code dir="ltr">argetNamespace</code> to the Java package name algorithm defined in the specification.</p>
+</li>
+<li>
+<p>If no <code dir="ltr">targetNamespace</code> is declared, then use a hard coded package named <code dir="ltr">generated</code>.</p>
+</li>
+</ol>
+<p>You cannot have more than one <i>jaxb:schemaBindings</i> per name space, so it is impossible to have two schemas in the same target name space compiled into different Java packages.</p>
+<p>All schemas being compiled into the same Java package must be submitted to the XJC binding compiler at the same time. They cannot be compiled independently and work as expected.</p>
+<p>Element substitution groups that are spread across multiple schema files must be compiled at the same time.</p>
+</div>
+
+<div><a id="sthref326" name="sthref326"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p>Binding Compiler (xjc) at<br/>
+<code dir="ltr"><a href="http://jaxb.java.net/nonav/2.2.3u1/docs/xjc.html">http://jaxb.java.net/nonav/2.2.3u1/docs/xjc.html</a></code></p>
+</li>
+<li>
+<p>Java Architecture for XML Binding (JAXB) at<br/>
+<code dir="ltr"><a href="http://www.oracle.com/technetwork/articles/javase/index-140168.html">http://www.oracle.com/technetwork/articles/javase/index-140168.html</a></code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="wsimport.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="s11-troubleshooting_tools.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

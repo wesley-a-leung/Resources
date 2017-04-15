@@ -1,0 +1,264 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>B.3 Get Attributes</title>
+<link rel="stylesheet" type="text/css" href="../../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>B.3 Get Attributes</h1>
+<table summary="" width="100%" border="0" cellspacing="2"
+cellpadding="0">
+<tr>
+<td><a href="jndiTOC.html">CONTENTS</a> | <a href=
+"appendix-ldap-example.2.html">PREV</a> | <a href=
+"appendix-ldap-example.4.html">NEXT</a></td>
+</tr>
+</table>
+<p class="AppendixStart">Appendix B:</p>
+<a name="pgfId_999037" id="pgfId_999037"></a>
+<table summary="" width="585" border="0" cellspacing="2"
+cellpadding="0">
+<tr>
+<td width="8%">&nbsp;</td>
+<td width="49%">&nbsp;B.3.1 <a href="#pgfId_999038">Get Attributes
+Using LDAP C API</a></td>
+<td width="43%">&nbsp;B.3.2 <a href="#pgfId_999132">Get Attributes
+Using JNDI</a></td>
+</tr>
+</table>
+<h2 class="AppSection">&nbsp;</h2>
+<h3 class="AppSubsection"><a name="pgfId_999038" id=
+"pgfId_999038"></a>B.3.1 Get Attributes Using LDAP C API</h3>
+<pre class="codeblock">
+/*
+ * Copyright (c) 1996.  Netscape Communications Corporation.  All
+ * rights reserved.
+ *
+ * Retrieve several attributes of a particular entry.
+ */
+#include "examples.h"
+
+int
+main( int argc, char **argv )
+{
+    LDAP                *ld;
+    LDAPMessage         *result, *e;
+    char                **vals, *attrs[ 5 ];
+    int                 i;
+    /* get a handle to an LDAP connection */
+    if ( (ld = ldap_init( MY_HOST, MY_PORT )) == NULL ) {
+        perror( "ldap_init" );
+        return( 1 );
+    }
+    attrs[ 0 ] = "cn";         /* Get canonical name(s) (full name) */
+    attrs[ 1 ] = "sn";         /* Get surname(s) (last name) */
+    attrs[ 2 ] = "mail";       /* Get email address(es) */
+    attrs[ 3 ] = "telephonenumber";      /* Get telephone number(s) */
+    attrs[ 4 ] = NULL;
+    if ( ldap_search_s( ld, ENTRYDN, LDAP_SCOPE_BASE,
+            "(objectclass=*)", attrs, 0, &amp;result ) != LDAP_SUCCESS ) {
+        ldap_perror( ld, "ldap_search_s" );
+        return( 1 );
+    }
+    /* print it out */
+    if (( e = ldap_first_entry( ld, result )) != NULL ) {
+        if (( vals = ldap_get_values( ld, e, "cn" )) != NULL ) {
+            printf( "Full name:\n" );
+            for ( i = 0; vals[i] != NULL; i++ ) {
+                printf( "\t%s\n", vals[i] );
+            }
+            ldap_value_free( vals );
+        }
+        if (( vals = ldap_get_values( ld, e, "sn" )) != NULL ) {
+            printf( "Last name (surname):\n" );
+            for ( i = 0; vals[i] != NULL; i++ ) {
+                printf( "\t%s\n", vals[i] );
+            }
+            ldap_value_free( vals );
+        }
+        if (( vals = ldap_get_values( ld, e, "mail" )) != NULL ) {
+            printf( "Email address:\n" );
+            for ( i = 0; vals[i] != NULL; i++ ) {
+                printf( "\t%s\n", vals[i] );
+            }
+            ldap_value_free( vals );
+        }
+        if (( vals = ldap_get_values( ld, e, "telephonenumber" )) != NULL ) {
+            printf( "Telephone number:\n" );
+            for ( i = 0; vals[i] != NULL; i++ ) {
+                printf( "\t%s\n", vals[i] );
+            }
+            ldap_value_free( vals );
+        }
+    }
+    ldap_msgfree( result );
+    ldap_unbind( ld );
+    return( 0 );
+}
+</pre>
+
+<h3 class="AppSubsection"><a name="pgfId_999132" id=
+"pgfId_999132"></a>B.3.2 Get Attributes Using JNDI</h3>
+<pre class="codeblock">
+/*
+ *
+ * @(#)Getattrs.java      1.2 99/07/26 
+ *
+ * Copyright (c) 1997, 1999, Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *   - Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *
+ *   - Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *
+ *   - Neither the name of Oracle nor the names of its
+ *     contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+import java.util.Hashtable;
+import java.util.Enumeration;
+ 
+import javax.naming.*;
+import javax.naming.directory.*;
+/*
+ * Retrieve several attributes of a particular entry.
+ *
+ * [equivalent to getattrs.c in Netscape SDK]
+ */
+class Getattrs {
+public static void main(String[] args) {
+    Hashtable env = new Hashtable(5, 0.75f);
+    /*
+     * Specify the initial context implementation to use.
+     * For example,
+     * This could also be set by using the -D option to the java program.
+     *   java -Djava.naming.factory.initial=com.sun.jndi.ldap.LdapCtxFactory \
+     *       Getattrs
+     */
+    env.put(Context.INITIAL_CONTEXT_FACTORY, Env.INITCTX);
+    /* Specify host and port to use for directory service */
+    env.put(Context.PROVIDER_URL, Env.MY_SERVICE);
+    try {
+        /* get a handle to an Initial DirContext */
+        DirContext ctx = new InitialDirContext(env);
+        String[] attrs = new String[4];
+        attrs[ 0 ] = &quot;cn&quot;;              /* Get canonical name(s) (full name) */
+        attrs[ 1 ] = &quot;sn&quot;;              /* Get surname(s) (last name) */
+        attrs[ 2 ] = &quot;mail&quot;;            /* Get email address(es) */
+        attrs[ 3 ] = &quot;telephonenumber&quot;; /* Get telephone number(s) */
+        Attributes result = ctx.getAttributes(Env.ENTRYDN, attrs);
+        if (result == null) {
+            System.out.println(Env.ENTRYDN + 
+                               &quot;has none of the specified attributes.&quot;);
+        } else {
+            /* print it out */
+            Attribute attr = result.get(&quot;cn&quot;);
+            if (attr != null) {
+                System.out.println(&quot;Full name:&quot; );
+                for (NamingEnumeration vals = attr.getAll();
+                     vals.hasMoreElements();
+                     System.out.println(&quot;\t&quot; + vals.nextElement()))
+                    ;
+            }
+            attr = result.get(&quot;sn&quot;);
+            if (attr != null) {
+                System.out.println(&quot;Last name (surname):&quot; );
+                for (NamingEnumeration vals = attr.getAll();
+                     vals.hasMoreElements();
+                     System.out.println(&quot;\t&quot; + vals.nextElement()))
+                    ;
+            }
+            attr = result.get(&quot;mail&quot;);
+            if (attr != null) {
+                System.out.println(&quot;Email address:&quot; );
+                for (NamingEnumeration vals = attr.getAll();
+                     vals.hasMoreElements();
+                     System.out.println(&quot;\t&quot; + vals.nextElement()))
+                    ;
+            }
+            attr = result.get(&quot;telephonenumber&quot;);
+            if (attr != null) {
+                System.out.println(&quot;Telephone number:&quot; );
+                for (NamingEnumeration vals = attr.getAll();
+                     vals.hasMoreElements();
+                     System.out.println(&quot;\t&quot; + vals.nextElement()))
+                    ;
+            }
+        }
+    } catch (NamingException e) {
+        System.err.println(&quot;Getattrs example failed.&quot;);
+        e.printStackTrace();
+    }
+}
+}
+</pre>
+<p><br />
+<a href="jndiTOC.html">CONTENTS</a> | <a href=
+"appendix-ldap-example.2.html">PREV</a> | <a href=
+"appendix-ldap-example.4.html">NEXT</a></p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

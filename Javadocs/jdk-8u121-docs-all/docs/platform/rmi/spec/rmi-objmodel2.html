@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Remote Method Invocation: 2 - Distributed Object
+Model</title>
+</head>
+<body bgcolor="#FFFFFF">
+<a href="#skip" title="Skip navigation bar"></a>
+<table width="100%" summary="">
+<tr>
+<td><a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-objmodel.html">PREV</a> | <a href=
+"rmi-objmodel3.html">NEXT</a></td>
+<td align="right"><i>Java Remote Method Invocation</i></td>
+</tr>
+</table>
+<br />
+<a name="skip" id="skip"></a>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<h2><a name="a5112" id="a5112"><i>2.1</i> Distributed Object
+Applications</a></h2>
+<a name="a5102" id="a5102"><!-- --></a> <a name="a4847" id="a4847">
+<!-- --></a> RMI applications are often comprised of two separate
+programs: a server and a client. A typical server application
+creates a number of remote objects, makes references to those
+remote objects accessible, and waits for clients to invoke methods
+on those remote objects. A typical client application gets a remote
+reference to one or more remote objects in the server and then
+invokes methods on them. RMI provides the mechanism by which the
+server and the client communicate and pass information back and
+forth. Such an application is sometimes referred to as a
+distributed object application.
+<p><a name="a4851" id="a4851"><!-- --></a> Distributed object
+applications need to:</p>
+<ul>
+<li>Locate remote objects
+<p>Applications can use one of two mechanisms to obtain references
+to remote objects. An application can register its remote objects
+with RMI's simple naming facility, the <code>rmiregistry</code>, or
+the application can pass and return remote object references as
+part of its normal operation.</p>
+</li>
+<li>Communicate with remote objects
+<p>Details of communication between remote objects are handled by
+RMI; to the programmer, remote communication looks like a standard
+method invocation.</p>
+</li>
+<li>Load class bytecodes for objects that are passed as parameters
+or return values
+<p>Because RMI allows a caller to pass objects to remote objects,
+RMI provides the necessary mechanisms for loading an object's code
+as well as transmitting its data.</p>
+</li>
+</ul>
+<a name="a4862" id="a4862"><!-- --></a> The illustration below
+depicts an RMI distributed application that uses the registry to
+obtain references to a remote object. The server calls the registry
+to associate a name with a remote object. The client looks up the
+remote object by its name in the server&#39;s registry and then
+invokes a method on it. The illustration also shows that the RMI
+system uses an existing web server to load bytecodes of classes
+written in the Java programming language, from server to client and
+from client to server, for objects when needed. RMI can load class
+bytecodes using any URL protocol (e.g., HTTP, FTP, file, etc.) that
+is supported by the Java platform.
+<center><img src="rmi-objmodel2a.gif" alt=
+"This illustration depicts an RMI distributed application that uses the registry to obtain references to a remote object." /></center>
+<p><br /></p>
+<hr />
+<a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-objmodel.html">PREV</a> | <a href=
+"rmi-objmodel3.html">NEXT</a>
+<hr />
+Copyright 1997, 2010, Oracle and/or its affiliates. All rights
+reserved.
+</body>
+</html>

@@ -1,0 +1,186 @@
+The files in the windows/ dir can have any legal HTML they want,
+because they do not get converted to man pages.
+
+The files in the solaris/, linux/, and share/ directories, however,
+are RESTRICTED TO A MANPAGE-COMPATIBLE SUBSET OF HTML, explained
+below. (For a basic template, use pubs/make/basic_tool_page.html.)
+
+BEFORE YOU PUTBACK YOUR CHANGES
+-------------------------------
+
+ 1. Generate man pages
+
+      % cd pubs/make
+      % ./pubsmake man
+
+ 2. View the results, and make sure the
+    conversion produces the expected results
+
+    For files in share/ or solaris/ dirs:
+      % ./solaris_man <tool>
+
+    For files in the linux/ dir:
+      % ./linux_man <tool>
+
+    Example:
+      % ./solaris_man jar
+
+HTML RESTRICTIONS
+-----------------
+These are things that do not work, and cause the conversion to
+fail or, worse, appear to succeed but generate horrendous results.
+
+  * Nested tables do not work. There is no equivalent in nroff.
+
+  * Table cells with extraneous colspan indicators display fine
+    in HTML, but cause problems for the conversion.
+
+    **Symptom:**
+       Table lines are drawn after the table, instead of
+       around it. (NOTE: That symptom can also occur when
+       a table comes right down to the end of a page. To
+       fix the problem, adjust the text to move the table up.)
+
+  * <FORM> and <SCRIPT> tags are not allowed.
+    (surprisingly, some imported pages included them)
+
+  * <IMG> TAGS ARE NOT ALLOWED -- there is no nroff equivalent
+    Alternatives:
+      * Create a text-diagram in <pre>-format text
+      * Put the diagram in a guides page and create a relative link
+        (Relative links are converted to absolute during the
+         conversion process.)
+
+  * Ordered lists that use roman numerals are not allowed.
+    (Other kinds of lists are fine.)
+
+STYLE NOTES
+-----------
+These are things that lead to better HTML pages and/or better
+conversions into man pages:
+
+  * ALL LINKS SHOULD BE RELATIVE
+    That way, they keep working properly in a new release.
+    They're converted to absolute links when man pages are
+    generated (now), and when creating the downloadable doc bundle (soon).
+    See notes below for more information on links.
+
+  * A TOC list, if one is present, must be one of:
+
+     o An unordered list <ul> in which the first entry is a
+       link to "Synopsis" or "SYNOPSIS".
+
+     o An <h2> tag with the value Contents or CONTENTS.
+       (Everything down to the next <h2> is removed, including
+        intervening <h1> tags, if any.
+
+  * Tools pages should be attached to the tools stylesheet. From
+    any tools/ subdirectory, the path is ../../css/tools.css
+
+    Note:
+       Feel free to modify the stylesheet in any way that makes
+       sense. To be sure that your modifications *do* make sense,
+       create a test page and test the conversion:
+            % pubsmake man                # do the conversion
+            % solaris_man <testfilename>  # see the results
+
+  * Anchor-name tags should end with </a>. If they don't have any
+    ending, or end with an XML-style "... />", they cause the
+    css style for link-rollover to be applied to all text that comes
+    after the anchor name.
+
+  * Links should occupy an entire phrase, preferably at the
+    end of a line, ideally at the end of the paragraph.
+
+    Reason: The link is added as text. Since links tend to be
+    long, they break up the flow of the text. So use this:
+
+      o On windows, use _xyz_
+
+    If you have this:
+
+      o Use _xyz_ on windows
+
+    It becomes
+
+      o Use xyz @ http://java.sun.com/javase/6/docs/technotes/tools/share/xyz.html
+        on windows.
+
+    For links to tools pages, see the note below.
+
+  * Links to Tools Pages
+    --------------------
+    Here's how to code links so they work online and when converted.
+
+    Synopsis
+    ~~~~~~~~
+    When linking to a tool in the solaris/ directory,
+    route the user through the index page, since there is
+    always a corresponding page in the windows/ directory.
+    So instead of this:
+
+      <a href="../solaris/java.html">solaris/linux java
+      <a href="../windows/java.html">windows java
+
+    code this:
+
+      <a href="../index.html#java>java</a>
+
+    When linking to a tool in the share/ directory, on the
+    other hand, you can code the link normally, since the
+    same page is displayed for all operating systems:
+
+      <a href="../share/xjc.html>xjc</a>
+
+    (Of course, you can also go through the index page.
+     You might want to do so for consistency, but it's
+     not absolutely necessary.)
+
+    EXPLANATION
+    ~~~~~~~~~~~
+    When a tool is referenced in a man page, it uses a
+    format like this: java(1). That is the expected form
+    for such references in a man page. Some editors like
+    xemacs even recognize that form and convert them into
+    a clickable reference to the local man page.
+
+    Web pages, on the other hand, need links. And the link
+    text wants to read as "java", not "java(1)". The problem
+    for the conversion process, then, is to recognize links
+    to tool pages and, rather than displaying the URLs,
+    substitute the appropriate man page reference, instead.
+
+    So where _Tutorial_ becomes "Tutorial @ http://some_URL",
+    a link to _jmap_ needs to become "jmap(1)".
+
+    To do that, the following link formats are recognized
+    and converted to the standard man page form:
+
+      o <a href="../share/jmap.html">...  -- from solaris/
+      o <a href="jmap.html">...             -- from share/
+      o <a href="../index.html#classpath">... --all other
+
+    The last form is particularly important. In a web page,
+    the user's system is unknown, so it is desirable to put
+    in multiple links:
+
+      o java [_solaris and linux_] [_windows_]
+      o See the _classpath doc_ for solaris and linux, or see
+        the _classpath doc_ for windows.
+
+    But a man page displays on a single system. So a link
+    to the windows version of the classpath, for example,
+    is pointless in a linux man page.
+
+    The solution is to route the HTML reader through an
+    additional link:
+      See Also:
+        * <a href="../index.html#java">java</a>
+
+    That link takes the user to an anchor on the index page.
+    There, the reader will find a summary of the tool and
+    links to the different operating system pages:
+
+       java [_solaris and linux_] [_windows_]
+    or
+       java [_solaris_] [_linux_] [_windows_]

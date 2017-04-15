@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Control+Break Handler</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr018.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr020.html">
+                Next</a><hr/><a id="BABCDJFE" name="BABCDJFE"/>
+<div id="JSTGD226">
+<h1><span>2.19</span> Control+Break Handler</h1>
+<p>On Oracle Solaris or Linux operating systems, the combination of pressing the Control key and the backslash (\) key at the application console (standard input) causes the Java HotSpot VM to print a thread dump to the application's standard output. On Windows, the equivalent key sequence is the Control and Break keys. The general term for these key combinations is the Control+Break handler.</p>
+<p>On Oracle Solaris and Linux operating systems, a thread dump is printed if the Java process receives a QUIT signal. Therefore, the <code dir="ltr">kill -QUIT</code> <span>pid</span> command causes the process with the ID <span>pid</span> to print a thread dump to standard output.</p>
+<p>The following sections describe the data traced by the Control+Break handler:</p>
+<ul>
+<li>
+<p><a href="#BABBEFFC">Thread Dump</a></p>
+</li>
+<li>
+<p><a href="#BABGJGFD">Detect Deadlocks</a></p>
+</li>
+<li>
+<p><a href="#BABGEDCB">Heap Summary</a></p>
+</li>
+</ul>
+<a id="BABBEFFC" name="BABBEFFC"/>
+<div id="JSTGD227">
+<h2><span>2.19.1</span> Thread Dump</h2>
+<p>The thread dump consists of the thread stack, including thread state, for all Java threads in the virtual machine. The thread dump does not terminate the application: it continues after the thread information is printed.</p>
+<p><a href="#BABJBCHG">Example 2-35</a> illustrates a thread dump.</p>
+<div id="JSTGD228"><a id="BABJBCHG" name="BABJBCHG"/>
+<p>Example 2-35 Thread Dump for All Java Threads in the JVM</p>
+<pre dir="ltr" xml:space="preserve">
+Full thread dump Java HotSpot(TM) Client VM (1.6.0-rc-b100 mixed mode):
+
+"DestroyJavaVM" prio=10 tid=0x00030400 nid=0x2 waiting on condition [0x00000000..0xfe77fbf0]
+   java.lang.Thread.State: RUNNABLE
+
+"Thread2" prio=10 tid=0x000d7c00 nid=0xb waiting for monitor entry [0xf36ff000..0xf36ff8c0]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+        at Deadlock$DeadlockMakerThread.run(Deadlock.java:32)
+        - waiting to lock &lt;0xf819a938&gt; (a java.lang.String)
+        - locked &lt;0xf819a970&gt; (a java.lang.String)
+
+"Thread1" prio=10 tid=0x000d6c00 nid=0xa waiting for monitor entry [0xf37ff000..0xf37ffbc0]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+        at Deadlock$DeadlockMakerThread.run(Deadlock.java:32)
+        - waiting to lock &lt;0xf819a970&gt; (a java.lang.String)
+        - locked &lt;0xf819a938&gt; (a java.lang.String)
+
+"Low Memory Detector" daemon prio=10 tid=0x000c7800 nid=0x8 runnable [0x00000000..0x00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"CompilerThread0" daemon prio=10 tid=0x000c5400 nid=0x7 waiting on condition [0x00000000..0x00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Signal Dispatcher" daemon prio=10 tid=0x000c4400 nid=0x6 waiting on condition [0x00000000..0x00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Finalizer" daemon prio=10 tid=0x000b2800 nid=0x5 in Object.wait() [0xf3f7f000..0xf3f7f9c0]
+   java.lang.Thread.State: WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on &lt;0xf4000b40&gt; (a java.lang.ref.ReferenceQueue$Lock)
+        at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:116)
+        - locked &lt;0xf4000b40&gt; (a java.lang.ref.ReferenceQueue$Lock)
+        at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:132)
+        at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:159)
+
+"Reference Handler" daemon prio=10 tid=0x000ae000 nid=0x4 in Object.wait() [0xfe57f000..0xfe57f940]
+   java.lang.Thread.State: WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on &lt;0xf4000a40&gt; (a java.lang.ref.Reference$Lock)
+        at java.lang.Object.wait(Object.java:485)
+        at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:116)
+        - locked &lt;0xf4000a40&gt; (a java.lang.ref.Reference$Lock)
+
+"VM Thread" prio=10 tid=0x000ab000 nid=0x3 runnable 
+
+"VM Periodic Task Thread" prio=10 tid=0x000c8c00 nid=0x9 waiting on condition 
+</pre></div>
+
+<p>The output consists of a number of thread entries separated by an empty line. The Java Threads (threads that are capable of executing Java language code) are printed first, and these are followed by information about VM internal threads. Each thread entry consists of a header line followed by the thread stack trace.</p>
+<p>The header line contains the following information about the thread:</p>
+<ul>
+<li>
+<p>Thread name</p>
+</li>
+<li>
+<p>Indication if the thread is a daemon thread</p>
+</li>
+<li>
+<p>Thread priority (prio)</p>
+</li>
+<li>
+<p>Thread ID (tid), which is the address of a thread structure in memory</p>
+</li>
+<li>
+<p>ID of the native thread (nid)</p>
+</li>
+<li>
+<p>Thread state, which indicates what the thread was doing at the time of the thread dump. See <a href="tooldescr034.html#BABJFBFI">Table 2-6</a> for more details.</p>
+</li>
+<li>
+<p>Address range, which gives an estimate of the valid stack region for the thread</p>
+</li>
+</ul>
+</div>
+
+<a id="BABGJGFD" name="BABGJGFD"/>
+<div id="JSTGD229">
+<h2><span>2.19.2</span> Detect Deadlocks</h2>
+<p>In addition to the thread stacks, the Control+Break handler executes a deadlock detection algorithm. If any deadlocks are detected, the Control+Break handler, as shown in <a href="#BABIHICF">Example 2-36</a> prints additional information after the thread dump on each deadlocked thread.</p>
+<div id="JSTGD230"><a id="BABIHICF" name="BABIHICF"/>
+<p>Example 2-36 Additional Information for Deadlocked Thread</p>
+<pre dir="ltr" xml:space="preserve">
+Found one Java-level deadlock:
+=============================
+"Thread2":
+  waiting to lock monitor 0x000af330 (object 0xf819a938, a java.lang.String),
+  which is held by "Thread1"
+"Thread1":
+  waiting to lock monitor 0x000af398 (object 0xf819a970, a java.lang.String),
+  which is held by "Thread2"
+
+Java stack information for the threads listed above:
+===================================================
+"Thread2":
+        at Deadlock$DeadlockMakerThread.run(Deadlock.java:32)
+        - waiting to lock &lt;0xf819a938&gt; (a java.lang.String)
+        - locked &lt;0xf819a970&gt; (a java.lang.String)
+"Thread1":
+        at Deadlock$DeadlockMakerThread.run(Deadlock.java:32)
+        - waiting to lock &lt;0xf819a970&gt; (a java.lang.String)
+        - locked &lt;0xf819a938&gt; (a java.lang.String)
+
+Found 1 deadlock.
+</pre></div>
+
+<p>If the JVM flag <code dir="ltr">-XX:+PrintConcurrentLocks</code> is set, then the Control+Break handler will also print the list of concurrent locks owned by each thread.</p>
+</div>
+
+<a id="BABGEDCB" name="BABGEDCB"/>
+<div id="JSTGD231">
+<h2><span>2.19.3</span> Heap Summary</h2>
+<p>The Control+Break handler also prints a heap summary. <a href="#BABJCBDD">Example 2-37</a> shows the different generations (areas of the heap), with the size, the amount used, and the address range. The address range is especially useful if you are also examining the process with tools such as <code dir="ltr">pmap</code>.</p>
+<div id="JSTGD232"><a id="BABJCBDD" name="BABJCBDD"/>
+<p>Example 2-37 Heap Summary</p>
+<pre dir="ltr" xml:space="preserve">
+Heap
+ def new generation   total 1152K, used 435K [0x22960000, 0x22a90000, 0x22e40000
+)
+  eden space 1088K,  40% used [0x22960000, 0x229ccd40, 0x22a70000)
+  from space 64K,   0% used [0x22a70000, 0x22a70000, 0x22a80000)
+  to   space 64K,   0% used [0x22a80000, 0x22a80000, 0x22a90000)
+ tenured generation   total 13728K, used 6971K [0x22e40000, 0x23ba8000, 0x269600
+00)
+   the space 13728K,  50% used [0x22e40000, 0x2350ecb0, 0x2350ee00, 0x23ba8000)
+ compacting perm gen  total 12288K, used 1417K [0x26960000, 0x27560000, 0x2a9600
+00)
+   the space 12288K,  11% used [0x26960000, 0x26ac24f8, 0x26ac2600, 0x27560000)
+    ro space 8192K,  62% used [0x2a960000, 0x2ae5ba98, 0x2ae5bc00, 0x2b160000)
+    rw space 12288K,  52% used [0x2b160000, 0x2b79e410, 0x2b79e600, 0x2bd60000)
+</pre></div>
+
+<p>If the JVM flag <code dir="ltr">-XX:+PrintClassHistogram</code> is set, then the Control+Break handler will produce a heap histogram.</p>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr018.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr020.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>The jhat Utility</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr011.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr013.html">
+                Next</a><hr/><a id="BABJGJBI" name="BABJGJBI"/>
+<div id="JSTGD188">
+<h1><span>2.12</span> The jhat Utility</h1>
+<p>The <code dir="ltr">jhat</code> tool provides a convenient means to browse the object topology in a heap snapshot. This tool replaces the Heap Analysis Tool (HAT).</p>
+<p>For more details on the <code dir="ltr">jhat</code> utility, see the <a href="../../tools/unix/jhat.html"><code dir="ltr">jhat</code> command man page</a>.</p>
+<p>The tool parses a heap dump in binary format (for example, a heap dump produced by <code dir="ltr">jmap -dump</code>).</p>
+<p>This utility can help debug <b>unintentional object retention</b>. This term is used to describe an object that is no longer needed but is kept alive due to references through some path from the rootset. This can happen, for example, if an unintentional static reference to an object remains after the object is no longer needed, if an Observer or Listener fails to unregister itself from its subject when it is no longer needed, or if a Thread that refers to an object does not terminate when it should. Unintentional object retention is the Java language equivalent of a memory leak.</p>
+<p>The following sections describe troubleshooting techniques for jhat utility.</p>
+<ul>
+<li>
+<p><a href="#BABJIEHJ">Troubleshoot with jhat Utility</a></p>
+</li>
+<li>
+<p><a href="#BABJFDGC">Standard Queries</a></p>
+</li>
+<li>
+<p><a href="#BABBGGIB">Custom Queries</a></p>
+</li>
+<li>
+<p><a href="#BABDFACD">Heap Analysis Hints</a></p>
+</li>
+</ul>
+<a id="BABJIEHJ" name="BABJIEHJ"/>
+<div id="JSTGD189">
+<h2><span>2.12.1</span> Troubleshoot with jhat Utility</h2>
+<p>The tool provides a number of standard queries. For example, the Roots query displays all reference paths from the rootset to a specified object and is particularly useful for finding unnecessary object retention.</p>
+<p>In addition to the standard queries, you can develop your own custom queries with the Object Query Language (OQL) interface.</p>
+<p>When you issue the <code dir="ltr">jhat</code> command, the utility starts an HTTP server on a specified TCP port. You can then use any browser to connect to the server and execute queries on the specified heap dump.</p>
+<p><a href="#BABGIFCC">Example 2-17</a> shows how to execute <code dir="ltr">jhat</code> to analyze a heap dump file named <code dir="ltr">snapshot.hprof</code>:</p>
+<div id="JSTGD190"><a id="BABGIFCC" name="BABGIFCC"/>
+<p>Example 2-17 Analyse Heap Dump with jhat</p>
+<pre dir="ltr" xml:space="preserve">
+$ <code dir="ltr"><span>jhat snapshot.hprof</span></code>
+Started HTTP server on port 7000
+Reading from java_pid2278.hprof...
+Dump file created Fri May 19 17:18:38 BST 2006
+Snapshot read, resolving...
+Resolving 6162194 objects...
+Chasing references, expect 12324 dots................................
+Eliminating duplicate references.....................................
+Snapshot resolved.
+Server is ready.
+</pre></div>
+
+<p>At this point, <code dir="ltr">jhat</code> has started an HTTP server on port 7000. Point your browser to <code dir="ltr">http://localhost:7000</code> to connect to the <code dir="ltr">jhat</code> server.</p>
+<p>When you are connected to the server, you can execute a standard query, see <a href="#BABJFDGC">Standard Queries</a> or create an OQL query, see <a href="#BABBGGIB">Custom Queries</a>. The All Classes query is displayed by default.</p>
+</div>
+
+<a id="BABJFDGC" name="BABJFDGC"/>
+<div id="JSTGD191">
+<h2><span>2.12.2</span> Standard Queries</h2>
+<p>When you have connected to the <code dir="ltr">jhat</code> server, you can execute the following standard queries:</p>
+<ul>
+<li id="BCFJEDHC">
+<p><b>All Classes Query</b></p>
+<p>The default page is the All Classes query, which displays all of the classes present in the heap, excluding platform classes. This list is sorted by fully qualified class name, and broken out by package. Click the name of a class to go to the Class query.</p>
+<p>The second variant of this query includes the platform classes. <span>Platform classes</span> include classes whose fully qualified names start with prefixes such as <code dir="ltr">java</code>, <code dir="ltr">sun</code>., <code dir="ltr">javax.swing.</code>, or <code dir="ltr">char[</code>. The list of prefixes is in a system resource file called <code dir="ltr">/resources/platform_names.txt</code>. You can override this list by replacing it in the JAR file, or by arranging for your replacement to occur first on the classpath when <code dir="ltr">jhat</code> is invoked.</p>
+</li>
+<li>
+<p><b>Class Query</b></p>
+<p>The Class query displays information about a class. This includes its superclass, any subclasses, instance data members, and static data members. From this page you can navigate to any of the classes that are referenced, or you can navigate to an Instances query.</p>
+</li>
+<li>
+<p><b>Object Query</b></p>
+<p>The Object query provides information about an object that was on the heap. From here, you can navigate to the class of the object and to the value of any object members. You can also navigate to objects that refer to the current object. Perhaps the most valuable query is at the end: the Roots query reference chains from the rootset.</p>
+<p><i>Note:</i> The object query also provides a stack backtrace of the point of allocation of the object.</p>
+</li>
+<li>
+<p><b>Instances Query</b></p>
+<p>The Instances query displays all instances of a given class. The <code dir="ltr">allInstances</code> variant includes instances of subclasses of the given class as well. From here, you can navigate back to the source class, or you can navigate to an Object query on one of the instances.</p>
+</li>
+<li id="BABGCIIA">
+<p><b>Roots Query</b></p>
+<p>The Roots query displays reference chains from the rootset to a given object. It provides one chain for each member of the rootset from which the given object is reachable. When calculating these chains, the tool does a depth-first search, so that it will provide reference chains of minimal length.</p>
+<p>There are two kinds of the Roots query: one that excludes weak references (Roots), and one that includes them (All Roots). A <span>weak reference</span> is a reference object that does not prevent its referent from being made finalizable, finalized, and then reclaimed. If an object is only referred to by a weak reference, then it is usually not considered to be retained, because the garbage collector can collect it as soon as it needs the space.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+This is probably the most valuable query in <code dir="ltr">jhat</code> for debugging unintentional object retention. When you find an object that is being retained, this query tells you <b>why</b> it is being retained.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</li>
+<li>
+<p><b>Reachable Objects Query</b></p>
+<p>This query is accessible from the Object query and shows the transitive closure of all objects reachable from a given object. This list is sorted in decreasing size, and alphabetically within each size. At the end, the total size of all of the reachable objects is given. This can be useful for determining the total runtime footprint of an object in memory, at least in systems with simple object topologies.</p>
+<p>This query is most valuable when used in conjunction with the <code dir="ltr">-exclude</code> command-line option. This is useful, for example, if the object being analyzed is an Observable. By default, all of its Observers would be reachable, which would count against the total size. The <code dir="ltr">-exclude</code> option allows you to exclude the data members <code dir="ltr">java.util.Observable.obs</code> and <code dir="ltr">java.util.Observable.arr</code>.</p>
+</li>
+<li>
+<p><b>Instance Counts for All Classes Query</b></p>
+<p>This query shows the count of instances for every class in the system, excluding platform classes. It is sorted in descending order, by instance count. A good way to spot a problem with unintentional object retention is to run a program for a long time with a variety of input, and then request a heap dump. Looking at the instance counts for all classes, you may recognize a number of classes because there are more instances than you expect. Then you can analyze them to determine why they are being retained (possibly using the Roots query). A variant of this query includes platform classes.</p>
+<p>For more information about platform classes, see <a href="#BCFJEDHC"><b>All Classes Query</b></a>.</p>
+</li>
+<li id="BCFCFDEA">
+<p><b>All Roots Query</b></p>
+<p>This query shows all members of the rootset, including weak references.</p>
+<p>For more information about weak references, see <a href="#BABGCIIA"><b>Roots Query</b></a>.</p>
+</li>
+<li>
+<p><b>New Instances Query</b></p>
+<p>The New Instances query is available only if you invoke the <code dir="ltr">jhat</code> server with two heap dumps. This query is similar to the Instances query, except that it shows only new instances. An instance is considered new if it is in the second heap dump and there is no object of the same type with the same ID in the baseline heap dump. An object's ID is a 32-bit or 64-bit integer that uniquely identifies the object.</p>
+</li>
+<li>
+<p><b>Histogram Queries</b></p>
+<p>The built-in histogram and finalizer histogram queries also provide useful information.</p>
+</li>
+</ul>
+</div>
+
+<a id="BABBGGIB" name="BABBGGIB"/>
+<div id="JSTGD192">
+<h2><span>2.12.3</span> Custom Queries</h2>
+<p>You can develop your own custom queries with the built-in Object Query Language (OQL) interface. Click the <b>Execute OQL Query</b> button on the first page to display the OQL query page, where you can create and execute your custom queries. The <b>OQL Help</b> facility describes the built-in functions, as shown in <a href="#BABDJGCF">Example 2-18</a>.</p>
+<p>The syntax of the <code dir="ltr">select</code> statement is as follows:</p>
+<div id="JSTGD193"><a id="BABDJGCF" name="BABDJGCF"/>
+<p>Example 2-18 Syntax for Custom Query</p>
+<pre dir="ltr" xml:space="preserve">
+select <span>JavaScript-expression-to-select</span> [from [instanceof] <span>classname</span> <span>identifier</span> [where <span>JavaScript-boolean-expression-to-filter</span>]]
+</pre>
+<pre dir="ltr" xml:space="preserve">
+select s from java.lang.String s where s.count &gt;= 100
+</pre></div>
+</div>
+
+<a id="BABDFACD" name="BABDFACD"/>
+<div id="JSTGD194">
+<h2><span>2.12.4</span> Heap Analysis Hints</h2>
+<p>To get useful information from <code dir="ltr">jhat</code> often requires some knowledge of the application and the libraries and APIs that it uses. You can use <code dir="ltr">jhat</code> to answer two important questions:</p>
+<ul>
+<li>
+<p><b>What is keeping an object alive?</b></p>
+<p>When you view an object instance, you can check the objects listed in the section entitled "References to this object" to see which objects directly reference this object. More importantly, you can use the Roots query to determine the reference chains from the root set to the given object. These reference chains show a path from a root object to this object. With these chains, you can quickly see how an object is reachable from the root set.</p>
+<p>As noted earlier, the Roots query excludes weak references, whereas All Roots query includes them. A weak reference is a reference object that does not prevent its referent from being made finalizable, finalized, and then reclaimed. If an object is only referred to by a weak reference, then the garbage collector can collect it as soon as it needs the space.</p>
+<p>The <code dir="ltr">jhat</code> tool sorts the rootset reference chains by the type of the root, in the following order:</p>
+<ul>
+<li>
+<p>Static data members of Java classes.</p>
+</li>
+<li>
+<p>Java local variables. For these roots, the thread responsible for them is shown. Because a thread is a Java object, this link is clickable. This allows you, for example, to easily navigate to the name of the thread.</p>
+</li>
+<li>
+<p>Native static values.</p>
+</li>
+<li>
+<p>Native local variables. Again, such roots are identified by their thread.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><b>Where was this object allocated?</b></p>
+<p>When an object instance is being displayed, the section entitled "Objects allocated from" shows the allocation site in the form of a stack trace. In this way, you can see where the object was created.</p>
+<p><i>Note:</i> This allocation site information is available only if the heap dump was created with HPROF using the <code dir="ltr">heap=all</code> option. This HPROF option includes both the <code dir="ltr">heap=dump</code> option and the <code dir="ltr">heap=sites</code> option. For more information about HPROF and its options, see <a href="tooldescr008.html#BABGIIGB">HPROF</a>.</p>
+<p>If the leak cannot be identified using a single object dump, then another approach is to collect a series of dumps and to focus on the objects created in the interval between each dump. The <code dir="ltr">jhat</code> tool provides this capability using the <code dir="ltr">-baseline</code> option.</p>
+<p>The <code dir="ltr">-baseline</code> option allows two dumps to be compared if they were produced by HPROF and from the same VM instance. If the same object appears in both dumps, then it will be excluded from the list of new objects reported. One dump is specified as a baseline, and the analysis can focus on the objects that are created in the second dump since the baseline was obtained.</p>
+<p><a href="#BABIBGDD">Example 2-19</a> shows how to specify the baseline.</p>
+<div id="JSTGD195"><a id="BABIBGDD" name="BABIBGDD"/>
+<p>Example 2-19 Specify the Baseline</p>
+<pre dir="ltr" xml:space="preserve">
+$ jhat -baseline snapshot.hprof#1 snapshot.hprof#2
+</pre></div>
+
+<p>In the preceding example, the two dumps are in the file <code dir="ltr">snapshot.hprof</code>, and they are distinguished by appending <code dir="ltr">#1</code> and <code dir="ltr">#2</code> to the file name.</p>
+<p>When <code dir="ltr">jhat</code> is started with two heap dumps, the Instance Counts for All Classes query includes an additional column that is the count of the number of new objects for that type. An instance is considered new if it is in the second heap dump and there is no object of the same type with the same ID in the baseline. If you click a new count, then <code dir="ltr">jhat</code> lists the new objects of that type. Then for each instance, you can view where it was allocated, which objects these new objects reference, and which other objects reference the new object.</p>
+<p>In general, the <code dir="ltr">-baseline</code> option can be very useful if the objects that need to be identified are created in the interval between successive dumps.</p>
+</li>
+</ul>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr011.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr013.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

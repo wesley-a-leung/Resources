@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+
+<title>Java SE Remote Method Invocation APIs and Developer Guides</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>The Java Remote Method Invocation API (Java RMI)</h1>
+
+
+<h2>Overview</h2>
+
+<p>Java Remote Method Invocation (Java RMI) enables the programmer
+to create distributed Java technology-based to Java
+technology-based applications, in which the methods of remote Java
+objects can be invoked from other Java virtual machines, possibly
+on different hosts. RMI uses object serialization to marshal and
+unmarshal parameters and does not truncate types, supporting true
+object-oriented polymorphism.</p>
+
+<h2>Security Recommendations</h2>
+
+<p>See <a href="rmi_security_recommendations.html">RMI Security Recommendations</a> to improve the security of your RMI applications.</p>
+
+<h2>API Specification</h2>
+
+<ul>
+<li><b><a href=
+"../../../api/java/rmi/package-summary.html">java.rmi
+Package</a></b></li>
+<li><b><a href=
+"../../../api/java/rmi/dgc/package-summary.html">java.rmi.dgc
+Package</a></b></li>
+<li><b><a href=
+"../../../api/java/rmi/registry/package-summary.html">java.rmi.registry
+Package</a></b></li>
+<li><b><a href=
+"../../../api/java/rmi/server/package-summary.html">java.rmi.server
+Package</a></b></li>
+<li><b><a href=
+"../../../api/java/rmi/activation/package-summary.html">java.rmi.activation
+Package</a></b></li>
+</ul>
+<h2>Architecture and Functional Specification</h2>
+<ul>
+<li><a href="../../../platform/rmi/spec/rmiTOC.html"><b>Java RMI
+Specification</b></a></li>
+</ul>
+
+<h2>Tutorials</h2>
+
+<ul>
+  <li><p><b><a href="hello/hello-world.html">Getting Started</a></b><br />
+The Getting Started Tutorial shows you the steps to follow to
+create a distributed version of the classic Hello World program
+using Java RMI. The Hello World applet makes a remote method call
+to the server from which it was downloaded to retrieve the message
+"Hello World!"</p></li>
+
+  <li><p><b><a href="socketfactory/index.html"><b>Using Custom Socket
+Factories with Java RMI</b></a></b><br />
+The "Using Custom Socket Factories with Java RMI" tutorial shows
+you how to create a version of the distributed Hello World program
+in which the Java RMI runtime uses sockets of a type chosen by the
+programmer. This tutorial also includes a discussion of how Java
+RMI can be used over SSL sockets.</p></li>
+
+  <li><p><b><a href="activation/overview.html">The Activation
+Tutorials</a></b><br />
+The Activation Tutorials describe how to use the Java RMI APIs to
+implement, to register, and to use activatable objects. Each
+tutorial presents a different way to implement an activatable
+object. All tutorials use the same parameterized setup program that
+registers information about an activatable object with the Java RMI
+Activation System Daemon (rmid).</p></li>
+
+  <li><p><b><a href="inetd/rmid-inetd.html">Configuring
+<code>inetd</code> to Launch <code>rmid</code></a></b><br />
+The Internet services daemon <code>inetd</code>, supported
+on the Solaris Operating System (Solaris OS), provides an
+alternative to starting up services at system boot time. This
+daemon, a server process for Internet standard services, can be
+configured to start services on demand.</p></li>
+
+<li><p><b><a href="inetd/launch-service.html">Designing Services to be
+Launched from <code>inetd</code></a></b><br />
+This tutorial describes how to structure a service program
+(employing a specially exported local registry) so that the service
+can be started from <code>inetd</code> when clients connect to the
+service's local registry, and how to configure <code>inetd</code>
+to launch the service program.</p></li>
+
+<li><p><a href="codebase.html"><b>Dynamic code downloading using Java
+RMI (Using the <code>java.rmi.server.codebase</code>
+Property)</b></a><br />
+One of the most significant capabilities of the Java platform is
+the ability to dynamically download Java software from any URL to a
+VM running in a separate process, usually on a different physical
+system. The result is that a remote system can run a program, for
+example an applet, which has never been installed on its disk. This
+tutorial describes the use of dynamic code downloading in a Java
+system, and how it can be used with Java RMI.</p></li>
+
+<li><p><a href=
+"http://docs.oracle.com/javase/tutorial/rmi/index.html"><b>The Java
+RMI trail</b></a> of <em>The Java Tutorial</em><br />
+This trail provides a brief overview of the Java RMI system and
+then walks through a complete client/server example that uses Java
+RMI's unique capabilities to load and to execute user-defined tasks
+at runtime. The server in the example implements a generic compute
+engine, which the client uses to compute the value of pi.</p></li>
+
+</ul>
+
+<h2>Enhancements</h2>
+
+<ul>
+<li><b><a href="relnotes.html">Java RMI Release Notes</a></b><br />
+The release notes describe enhancements and changes to the Java RMI
+APIs and implementation, as well to the associated tools,
+<code>rmic</code>, <code>rmiregistry</code>, and
+<code>rmid</code>.</li>
+</ul>
+
+<h2>More Information</h2>
+
+<ul>
+<li><a href=
+"http://www.oracle.com/technetwork/java/javase/tech/index-jsp-136424.html">
+<b>The Java RMI Home Page</b></a></li>
+<li><a href="../../tools/index.html#rmi"><b>Java RMI Tools (rmic,
+rmiregistry, rmid)</b></a></li>
+<li><a href="faq.html"><b>The Java RMI and Object Serialization
+FAQ</b></a></li>
+<li><a href="javarmiproperties.html"><b>Useful java.rmi
+Properties</b></a></li>
+<li><a href="sunrmiproperties.html"><b>Useful sun.rmi
+Properties</b></a></li>
+<li><a href="logging.html"><b>Java RMI Implementation
+Logging</b></a></li>
+<li><a href="Factory.html"><b>Applying the Factory Pattern to Java
+RMI</b></a></li>
+<li><a href="socketfactory/SSLInfo.html"><b>Using Java RMI with
+SSL</b></a></li>
+</ul>
+<p><!-- Body text ends here --></p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

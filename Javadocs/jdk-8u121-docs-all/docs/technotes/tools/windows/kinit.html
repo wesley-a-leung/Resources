@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>kinit</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T8:11:41Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Windows, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38210-05" name="partnum"/>
+<meta content="JSWOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="policytool.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="klist.html">
+                Next</a><hr/>
+<div><a id="BIIIGIGE" name="BIIIGIGE"/>
+<div id="JSWOR699">
+<h1>kinit</h1>
+<p>Obtains and caches Kerberos ticket-granting tickets. This tool is similar in functionality to the <code dir="ltr">kinit</code> tool that is commonly found in other Kerberos implementations, such as SEAM and MIT Reference implementations. The user must be registered as a principal with the Key Distribution Center (KDC) prior to running <code dir="ltr">kinit</code>.</p>
+<div><a id="kinit_synopsis" name="kinit_synopsis"/>
+<h2>Synopsis</h2>
+<p><b>kinit</b> [-fp] [-c <i>cache_name</i>] [-k] [-t <i>keytab_filename</i>] [<i>principal</i>] [<i>password</i>] [-help]]</p>
+</div>
+
+<div><a id="kinit_description" name="kinit_description"/>
+<h2>Description</h2>
+<p>By default, on Windows, a cache file named <code dir="ltr"><span>USER_HOME</span></code><code dir="ltr">\krb5cc_</code><code dir="ltr"><span>USER_NAME</span></code> is generated.</p>
+<p>The identifier <code dir="ltr"><span>USER_HOME</span></code> is obtained from the <code dir="ltr">java.lang.System</code> property <code dir="ltr">user.home</code>. <code dir="ltr"><span>USER_NAME</span></code> is obtained from the <code dir="ltr">java.lang.System</code> property <code dir="ltr">user.name</code>. If <code dir="ltr"><span>USER_HOME</span></code> is null, the cache file is stored in the current directory from which the program is running. <code dir="ltr"><span>USER_NAME</span></code> is the operating system's login user name. This user name could be different than the user's principal name. For example, on Windows NT, the cache file could be <code dir="ltr">C:\winnt\profiles\duke\krb5cc_duke</code>, in which <code dir="ltr">duke</code> is the <code dir="ltr"><span>USER_NAME</span></code> and <code dir="ltr">C:\winnt\profiles\duke</code> is the <code dir="ltr"><span>USER_HOME</span></code>.</p>
+<p>By default, the keytab name is retrieved from the Kerberos configuration file. If the keytab name is not specified in the Kerberos configuration file, the kinit tool assumes that the name is <code dir="ltr"><span>USER_HOME</span></code><code dir="ltr">\krb5.keytab</code></p>
+<p>If you do not specify the password using the <code dir="ltr">password</code> option on the command line, the <code dir="ltr">kinit</code> tool prompts you for the password.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td style="text-align:left">
+<p><b>Note:</b></p>
+The <code dir="ltr">password</code> option is provided only for testing purposes. Do not specify your password in a script or provide your password on the command line. Doing so will compromise your password.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+
+<div><a id="sthref163" name="sthref163"/>
+<h2>Commands</h2>
+<p>You can specify one of the following commands. After the command, specify the options for it.</p>
+<dl>
+<dt>-A</dt>
+<dd>
+<p>Do not include addresses.</p>
+</dd>
+<dt>-f</dt>
+<dd>
+<p>Issue a forwardable ticket.</p>
+</dd>
+<dt>-p</dt>
+<dd>
+<p>Issue a proxiable ticket.</p>
+</dd>
+<dt>-c <span>cache_name</span></dt>
+<dd>
+<p>The cache name (for example, <code dir="ltr">FILE:D:\temp\mykrb5cc</code>).</p>
+</dd>
+<dt>-k</dt>
+<dd>
+<p>Use keytab</p>
+</dd>
+<dt>-t <span>keytab_filename</span></dt>
+<dd>
+<p>The keytab name (for example, <code dir="ltr">D:\winnt\profiles\duke\krb5.keytab</code>).</p>
+</dd>
+<dt><span>principal</span></dt>
+<dd>
+<p>The principal name (for example, <code dir="ltr">duke@example.com</code>).</p>
+</dd>
+<dt>password</dt>
+<dd>
+<p>The principal's Kerberos password. <b>Do not specify this on the command line or in a script.</b></p>
+</dd>
+<dt>-help</dt>
+<dd>
+<p>Displays instructions.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="kinit_examples" name="kinit_examples"/>
+<h2>Examples</h2>
+<p>Request credentials valid for authentication from the current client host, for the default services, storing the credentials cache in the default location (<code dir="ltr">C:\winnt\profiles\duke\krb5cc_duke</code>):</p>
+<pre dir="ltr" xml:space="preserve">
+kinit duke@example.com
+</pre>
+<p>Request proxiable credentials for a different principal and store these credentials in a specified file cache:</p>
+<pre dir="ltr" xml:space="preserve">
+kinit -p -c FILE:C:\winnt\profiles\duke\credentials\krb5cc_cafebeef
+    cafebeef@example.com
+</pre>
+<p>Request proxiable and forwardable credentials for a different principal and store these credentials in a specified file cache:</p>
+<pre dir="ltr" xml:space="preserve">
+kinit -f -p -c FILE:C:\winnt\profiles\duke\credentials\krb5cc_cafebeef
+    cafebeef@example.com
+</pre>
+<p>Display the help menu for the <code dir="ltr">kinit</code> tool:</p>
+<pre dir="ltr" xml:space="preserve">
+kinit -help
+</pre></div>
+
+<div><a id="kinit_see_also" name="kinit_see_also"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="klist.html#BABCEFBA"><code dir="ltr">klist</code>(1)</a></p>
+</li>
+<li>
+<p><a href="ktab.html#BAJGHDIB"><code dir="ltr">ktab</code>(1)</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="policytool.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="klist.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

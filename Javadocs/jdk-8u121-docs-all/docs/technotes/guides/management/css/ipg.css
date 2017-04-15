@@ -1,0 +1,57 @@
+/* IPG Extensions */
+
+div.embeddedtocpane {float: right; width: 200px; background:url("bg_navblue.gif") repeat-x bottom left #DDE6EC; margin-bottom:10px; margin-left:15px;}
+.embeddedtocpane div.cornerBL{height:8px;background:url("generic_bl.gif") no-repeat bottom left;margin-top:5px}
+.embeddedtocpane div.cornerBR{height:8px;background:url("generic_br.gif") no-repeat bottom right}
+.embeddedtocpane div.cornerTL{height:8px;background:url("generic_tl.gif") no-repeat top left}
+.embeddedtocpane div.cornerTR{height:8px;background:url("generic_tr.gif") no-repeat top right}
+
+div.embeddedtocpane h5 {margin: 3px; position: relative;}
+div.embeddedtocpane h5 span.toctitle {position: absolute; left: 0; width: 50%;}
+div.embeddedtocpane h5 span.index {position: absolute; right: 2px; width: 50%; text-align: right}
+
+div.embeddedtoc {margin: 2px; margin-top: 20px}
+p.toc    {margin: 0px; padding-top: 2px; padding-bottom: 2px; text-indent: -9px}
+p.level0 {padding-left:0px}
+p.level1 {padding-left:18px}
+p.level2 {padding-left:36px}
+p.level3 {padding-left:54px}
+p.level4 {padding-left:72px}
+p.level5 {padding-left:90px}
+p.tocsp  {margin-top:6px}
+
+div.onpage {background-color: #F8D583;  padding-top: 6px; padding-bottom: 6px; }
+.onpage a {font-weight: bold; padding-top: 2px; padding-bottom: 2px}
+.toc a {font-size: 80%; }
+
+
+div.maincontent {margin-left: 5px}
+
+div.subtitle{padding:0px 10px;font-weight:bold;font-size: 14px}
+div.lastmodified{padding:0px 10px;font-weight:bold;}
+div.abstract{padding:0px 10px}
+div.indent{padding:0px 10px}
+
+div.maincontent table {margin-top:15px; margin-bottom:15px; border-collapse: collapse; border: 1px solid black;}
+div.maincontent th {padding: 4px; padding-bottom: 6px; border: thin solid}
+div.maincontent th p {padding: 0px; margin: 0px}
+div.maincontent td {padding: 4px; padding-bottom: 6px; border: thin solid}
+div.maincontent td p:first-child {padding: 0px; margin: 0px}
+div.maincontent td p {padding: 0px; margin-top: 6px; margin-bottom: 0px;}
+
+
+div.indexdiv dd,dl {margin-left: 9px; margin-top: 0px}
+img.figure {padding-bottom: 25px}
+
+div.remark {font-weight: bold; color: red}
+span.inlineremark {padding-left: 10px; padding-right: 10px; font-weight: bold; color: red}
+
+div.maincontent pre, div.maincontent code, div.maincontent tt {color: black; font-family:Monaco,"Courier New",Courier}
+div.maincontent a:visited tt {color:#917E9C; font-family:Monaco,"Courier New",Courier}
+div.maincontent a:link tt  {color:#3E6B8A; font-family:Monaco,"Courier New",Courier}
+
+span.added, span.added *{color: green; text-decoration: underline}
+span.deleted, span.deleted *{color: red; text-decoration: line-through}
+
+div.added, div.added *{color: green; text-decoration: underline}
+div.deleted, div.deleted *{color: red; text-decoration: line-through}

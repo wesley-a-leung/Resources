@@ -1,0 +1,969 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+
+<style type="text/css">
+/*<![CDATA[*/
+    h3, p, ol, ul, dl { margin-left: 2em; }
+    pre  { margin-left: 4em; }
+    table p { margin: 0; font-size: 80%; }
+    .caption { font-size: 80%; font-weight: bold; }
+/*]]>*/
+</style>
+<title>Overview of Java SE Security</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Java&trade; Security Overview</h1>
+<h2>1 Introduction</h2>
+<p>The Java&trade; platform was designed with a strong emphasis on
+security. At its core, the Java language itself is type-safe and
+provides automatic garbage collection, enhancing the robustness of
+application code. A secure class loading and verification mechanism
+ensures that only legitimate Java code is executed.</p>
+<p>The initial version of the Java platform created a safe
+environment for running potentially untrusted code, such as Java
+applets downloaded from a public network. As the platform has grown
+and widened its range of deployment, the Java security architecture
+has correspondingly evolved to support an increasing set of
+services. Today the architecture includes a large set of
+application programming interfaces (APIs), tools, and
+implementations of commonly-used security algorithms, mechanisms,
+and protocols. This provides the developer a comprehensive security
+framework for writing applications, and also provides the user or
+administrator a set of tools to securely manage applications.</p>
+<p>The Java security APIs span a wide range of areas. Cryptographic
+and public key infrastructure (PKI) interfaces provide the
+underlying basis for developing secure applications. Interfaces for
+performing authentication and access control enable applications to
+guard against unauthorized access to protected resources.</p>
+<p>The APIs allow for multiple interoperable implementations of
+algorithms and other security services. Services are implemented in
+<i>providers</i>, which are plugged into the Java platform via a
+standard interface that makes it easy for applications to obtain
+security services without having to know anything about their
+implementations. This allows developers to focus on how to
+integrate security into their applications, rather than on how to
+actually implement complex security mechanisms.</p>
+<p>The Java platform includes a number of providers that implement
+a core set of security services. It also allows for additional
+custom providers to be installed. This enables developers to extend
+the platform with new security mechanisms.</p>
+<p>This paper gives a broad overview of security in the Java
+platform, from secure language features to the security APIs,
+tools, and built-in provider services, highlighting key packages
+and classes where applicable. Note that this paper is based on
+Java&trade; SE version 8.</p>
+<h2>2 Java Language Security and Bytecode Verification</h2>
+<p>The Java language is designed to be type-safe and easy to use.
+It provides automatic memory management, garbage collection, and
+range-checking on arrays. This reduces the overall programming
+burden placed on developers, leading to fewer subtle programming
+errors and to safer, more robust code.</p>
+<p>In addition, the Java language defines different access
+modifiers that can be assigned to Java classes, methods, and
+fields, enabling developers to restrict access to their class
+implementations as appropriate. Specifically, the language defines
+four distinct access levels: <code>private</code>,
+<code>protected</code>, <code>public</code>, and, if unspecified,
+<code>package</code>. The most open access specifier is
+<code>public</code> access is allowed to anyone. The most
+restrictive modifier is <code>private</code> access is not allowed
+outside the particular class in which the private member (a method,
+for example) is defined. The <code>protected</code> modifier allows
+access to any subclass, or to other classes within the same
+package. Package-level access only allows access to classes within
+the same package.</p>
+<p>A compiler translates Java programs into a machine-independent
+bytecode representation. A bytecode verifier is invoked to ensure
+that only legitimate bytecodes are executed in the Java runtime. It
+checks that the bytecodes conform to the Java Language
+Specification and do not violate Java language rules or namespace
+restrictions. The verifier also checks for memory management
+violations, stack underflows or overflows, and illegal data
+typecasts. Once bytecodes have been verified, the Java runtime
+prepares them for execution.</p>
+<!-- BEGIN SECTION 3 -->
+<h2>3 Basic Security Architecture</h2>
+<p>The Java platform defines a set of APIs spanning major security
+areas, including cryptography, public key infrastructure,
+authentication, secure communication, and access control. These
+APIs allow developers to easily integrate security into their
+application code. They were designed around the following
+principles:</p>
+<dl>
+<dt><i>Implementation independence</i></dt>
+<dd>Applications do not need to implement security themselves.
+Rather, they can request security services from the Java platform.
+Security services are implemented in providers (see below), which
+are plugged into the Java platform via a standard interface. An
+application may rely on multiple independent providers for security
+functionality.</dd>
+<dt><i>Implementation interoperability</i></dt>
+<dd>Providers are interoperable across applications. Specifically,
+an application is not bound to a specific provider, and a provider
+is not bound to a specific application.</dd>
+<dt><i>Algorithm extensibility</i></dt>
+<dd>The Java platform includes a number of built-in providers that
+implement a basic set of security services that are widely used
+today. However, some applications may rely on emerging standards
+not yet implemented, or on proprietary services. The Java platform
+supports the installation of custom providers that implement such
+services.</dd>
+</dl>
+<h3>Security Providers</h3>
+<p>The <code>java.security.Provider</code> class encapsulates the
+notion of a security provider in the Java platform. It specifies
+the provider's name and lists the security services it implements.
+Multiple providers may be configured at the same time, and are
+listed in order of preference. When a security service is
+requested, the highest priority provider that implements that
+service is selected.</p>
+<p>Applications rely on the relevant <code>getInstance</code>
+method to obtain a security service from an underlying provider.
+For example, message digest creation represents one type of service
+available from providers. (Section 4 discusses message digests and
+other cryptographic services.) An application invokes the
+<code>getInstance</code> method in the
+<code>java.security.MessageDigest</code> class to obtain an
+implementation of a specific message digest algorithm, such as
+SHA-256.</p>
+<pre class="codeblock">
+MessageDigest md = MessageDigest.getInstance("SHA-256");
+</pre>
+<p>The program may optionally request an implementation from a
+specific provider, by indicating the provider name, as in the
+following:</p>
+<pre class="codeblock">
+MessageDigest md = 
+    MessageDigest.getInstance("SHA-256", "ProviderC");
+</pre>
+<p>Figures 1 and 2 illustrate these options for requesting an
+SHA-256 message digest implementation. Both figures show three
+providers that implement message digest algorithms. The providers
+are ordered by preference from left to right (1-3). In Figure 1, an
+application requests an SHA-256 algorithm implementation without
+specifying a provider name. The providers are searched in
+preference order and the implementation from the first provider
+supplying that particular algorithm, ProviderB, is returned. In
+Figure 2, the application requests the SHA-256 algorithm
+implementation from a specific provider, ProviderC. This time the
+implementation from that provider is returned, even though a
+provider with a higher preference order, ProviderB, also supplies
+an SHA-256 implementation.</p>
+<table align="center" summary="">
+<tr>
+<td><img src="images/1.jpg" alt=
+"diagram showing an application requesting an SHA-256 algorithem without specifying a provider name" /></td>
+<td><img src="images/2.jpg" alt=
+"diagram showing an application requesting an SHA-256 algorithem from a specific provider" /></td>
+</tr>
+<tr>
+<td class="caption" align="center">Figure 1 Provider searching</td>
+<td class="caption" align="center">Figure 2 Specific provider
+requested</td>
+</tr>
+</table>
+<p>The Java platform implementation from Oracle includes a number
+of pre-configured default providers that implement a basic set of
+security services that can be used by applications. Note that other
+vendor implementations of the Java platform may include different
+sets of providers that encapsulate vendor-specific sets of security
+services. When this paper mentions built-in default providers, it
+is referencing those available in Oracle's implementation.</p>
+<p>The sections below on the various security areas (cryptography,
+authentication, etc.) each include descriptions of the relevant
+services supplied by the default providers. A table in Appendix C
+summarizes all of the default providers.</p>
+<h3>File Locations</h3>
+<p>Certain aspects of Java security mentioned in this paper,
+including the configuration of providers, may be customized by
+setting security properties. You may set security properties
+statically in the security properties file, which by default is the
+<i>java.security</i> file in the <i>lib/security</i> directory of
+the directory where the Java&trade; Runtime Environment (JRE) is
+installed. Security properties may also be set dynamically by
+calling appropriate methods of the <code>Security</code> class (in
+the <code>java.security</code> package).</p>
+<p>The tools and commands mentioned in this paper are all in the
+<code>~jre/bin</code> directory, where <code>~jre</code> stands for
+the directory in which the JRE is installed. The <i>cacerts</i>
+file mentioned in Section 5 is in
+<code>~jre/lib/security</code>.</p>
+<!-- END SECTION 3 -->
+<h2>4 Cryptography</h2>
+<p>The Java cryptography architecture is a framework for accessing
+and developing cryptographic functionality for the Java platform.
+It includes APIs for a large variety of cryptographic services,
+including</p>
+<ul>
+<li>Message digest algorithms</li>
+<li>Digital signature algorithms</li>
+<li>Symmetric bulk encryption</li>
+<li>Symmetric stream encryption</li>
+<li>Asymmetric encryption</li>
+<li>Password-based encryption (PBE)</li>
+<li>Elliptic Curve Cryptography (ECC)</li>
+<li>Key agreement algorithms</li>
+<li>Key generators</li>
+<li>Message Authentication Codes (MACs)</li>
+<li>(Pseudo-)random number generators</li>
+</ul>
+<p>For historical (export control) reasons, the cryptography APIs
+are organized into two distinct packages. The
+<code>java.security</code> package contains classes that are
+<i>not</i> subject to export controls (like <code>Signature</code>
+and <code>MessageDigest</code>). The <code>javax.crypto</code>
+package contains classes that are subject to export controls (like
+<code>Cipher</code> and <code>KeyAgreement</code>).</p>
+<p>The cryptographic interfaces are provider-based, allowing for
+multiple and interoperable cryptography implementations. Some
+providers may perform cryptographic operations in software; others
+may perform the operations on a hardware token (for example, on a
+smartcard device or on a hardware cryptographic accelerator).
+Providers that implement export-controlled services must be
+digitally signed.</p>
+<p>The Java platform includes built-in providers for many of the
+most commonly used cryptographic algorithms, including the RSA,
+DSA, and ECDSA signature algorithms, the DES, AES, and ARCFOUR
+encryption algorithms, the MD5, SHA-1, and SHA-256 message digest
+algorithms, and the Diffie-Hellman and ECDH key agreement
+algorithms. These default providers implement cryptographic
+algorithms in Java code.</p>
+<p>The Java platform also includes a built-in provider that acts as
+a bridge to a native PKCS#11 (v2.x) token. This provider, named
+<code>SunPKCS11</code>, allows Java applications to seamlessly
+access cryptographic services located on PKCS#11-compliant
+tokens.</p>
+<p>On Windows, the Java platform includes a built-in provider that
+acts as a bridge to the native Microsoft CryptoAPI. This provider,
+named SunMSCAPI, allows Java applications to seamlessly access
+cryptographic services on Windows through the CryptoAPI.</p>
+<h2>5 Public Key Infrastructure</h2>
+<p>Public Key Infrastructure (PKI) is a term used for a framework
+that enables secure exchange of information based on public key
+cryptography. It allows identities (of people, organizations, etc.)
+to be bound to digital certificates and provides a means of
+verifying the authenticity of certificates. PKI encompasses keys,
+certificates, public key encryption, and trusted Certification
+Authorities (CAs) who generate and digitally sign certificates.</p>
+<p>The Java platform includes APIs and provider support for X.509
+digital certificates and Certificate Revocation Lists (CRLs), as
+well as PKIX-compliant certification path building and validation.
+The classes related to PKI are located in the
+<code>java.security</code> and <code>java.security.cert</code>
+packages.</p>
+<h3>Key and Certificate Storage</h3>
+<p>The Java platform provides for long-term persistent storage of
+cryptographic keys and certificates via key and certificate stores.
+Specifically, the <code>java.security.KeyStore</code> class
+represents a <i>key store</i>, a secure repository of cryptographic
+keys and/or trusted certificates (to be used, for example, during
+certification path validation), and the
+<code>java.security.cert.CertStore</code> class represents a
+<i>certificate store</i>, a public and potentially vast repository
+of unrelated and typically untrusted certificates. A
+<code>CertStore</code> may also store CRLs.</p>
+<p><code>KeyStore</code> and <code>CertStore</code> implementations
+are distinguished by types. The Java platform includes the standard
+<i>PKCS11</i> and <i>PKCS12</i> key store types (whose
+implementations are compliant with the corresponding PKCS
+specifications from RSA Security). It also contains a proprietary
+file-based key store type called <i>JKS</i> (which stands for "Java
+Key Store"), and a type called DKS ("Domain Key Store") which is a
+collection of keystores that are presented as a single logical
+keystore.</p>
+<p>The Java platform includes a special built-in JKS key store,
+<i>cacerts</i>, that contains a number of certificates for
+well-known, trusted CAs. The keytool utility is able to list the
+certificates included in <i>cacerts</i> (see the security features
+documentation link in Section 10).</p>
+<p>The SunPKCS11 provider mentioned in the "Cryptography" section
+(Section 4) includes a <i>PKCS11</i> <code>KeyStore</code>
+implementation. This means that keys and certificates residing in
+secure hardware (such as a smartcard) can be accessed and used by
+Java applications via the <code>KeyStore</code> API. Note that
+smartcard keys may not be permitted to leave the device. In such
+cases, the <code>java.security.Key</code> object reference returned
+by the <code>KeyStore</code> API may simply be a reference to the
+key (that is, it would not contain the actual key material). Such a
+<code>Key</code> object can only be used to perform cryptographic
+operations on the device where the actual key resides.</p>
+<p>The Java platform also includes an <i>LDAP</i> certificate store
+type (for accessing certificates stored in an LDAP directory), as
+well as an in-memory <i>Collection</i> certificate store type (for
+accessing certificates managed in a
+<code>java.util.Collection</code> object).</p>
+<h3>PKI Tools</h3>
+<p>There are two built-in tools for working with keys,
+certificates, and key stores:</p>
+<p><b>keytool</b> is used to create and manage key stores. It
+can</p>
+<ul>
+<li>Create public/private key pairs</li>
+<li>Display, import, and export X.509 v1, v2, and v3 certificates
+stored as files</li>
+<li>Create self-signed certificates</li>
+<li>Issue certificate (PKCS#10) requests to be sent to CAs</li>
+<li>Create certificates based on certificate requests</li>
+<li>Import certificate replies (obtained from the CAs sent
+certificate requests)</li>
+<li>Designate public key certificates as trusted</li>
+<li>Accept a password and store it securely as a secret key</li>
+</ul>
+<p>The <b>jarsigner</b> tool is used to sign JAR files, or to
+verify signatures on signed JAR files. The Java ARchive (JAR) file
+format enables the bundling of multiple files into a single file.
+Typically a JAR file contains the class files and auxiliary
+resources associated with applets and applications. When you want
+to digitally sign code, you first use keytool to generate or import
+appropriate keys and certificates into your key store (if they are
+not there already), then use the <b>jar</b> tool to place the code
+in a JAR file, and finally use the jarsigner tool to sign the JAR
+file. The jarsigner tool accesses a key store to find any keys and
+certificates needed to sign a JAR file or to verify the signature
+of a signed JAR file. Note: <b>jarsigner</b> can optionally
+generate signatures that include a timestamp. Systems (such as Java
+Plug-in) that verify JAR file signatures can check the timestamp
+and accept a JAR file that was signed while the signing certificate
+was valid rather than requiring the certificate to be current.
+(Certificates typically expire annually, and it is not reasonable
+to expect JAR file creators to re-sign deployed JAR files
+annually.)</p>
+<h2>6 Authentication</h2>
+<p>Authentication is the process of determining the identity of a
+user. In the context of the Java runtime environment, it is the
+process of identifying the user of an executing Java program. In
+certain cases, this process may rely on the services described in
+the "Cryptography" section (Section 4).</p>
+<p>The Java platform provides APIs that enable an application to
+perform user authentication via pluggable login modules.
+Applications call into the <code>LoginContext</code> class (in the
+<code>javax.security.auth.login</code> package), which in turn
+references a configuration. The configuration specifies which login
+module (an implementation of the
+<code>javax.security.auth.spi.LoginModule</code> interface) is to
+be used to perform the actual authentication.</p>
+<p>Since applications solely talk to the standard
+<code>LoginContext</code> API, they can remain independent from the
+underlying plug-in modules. New or updated modules can be plugged
+in for an application without having to modify the application
+itself. Figure 3 illustrates the independence between applications
+and underlying login modules:</p>
+<p align="center"><img src="images/3.jpg" alt=
+"diagram illustrating the independence between applications and login modules" /></p>
+<p class="caption" align="center">Figure 3 Authentication login
+modules plugging into the authentication framework</p>
+<p>It is important to note that although login modules are
+pluggable components that can be configured into the Java platform,
+they are not plugged in via security Providers. Therefore, they do
+not follow the Provider searching model described in Section 3.
+Instead, as is shown in the above diagram, login modules are
+administered by their own unique configuration.</p>
+<p>The Java platform provides the following built-in LoginModules,
+all in the <code>com.sun.security.auth.module</code> package:</p>
+<ul>
+<li><code>Krb5LoginModule</code> for authentication using Kerberos
+protocols</li>
+<li><code>JndiLoginModule</code> for username/password
+authentication using LDAP or NIS databases</li>
+<li><code>KeyStoreLoginModule</code> for logging into any type of
+key store, including a PKCS#11 token key store</li>
+</ul>
+<p>Authentication can also be achieved during the process of
+establishing a secure communication channel between two peers. The
+Java platform provides implementations of a number of standard
+communication protocols, which are discussed in the following
+section.</p>
+<h2>7 Secure Communication</h2>
+<p>The data that travels across a network can be accessed by
+someone who is not the intended recipient. When the data includes
+private information, such as passwords and credit card numbers,
+steps must be taken to make the data unintelligible to unauthorized
+parties. It is also important to ensure that you are sending the
+data to the appropriate party, and that the data has not been
+modified, either intentionally or unintentionally, during
+transport.</p>
+<p>Cryptography forms the basis required for secure communication,
+and that is described in Section 4. The Java platform also provides
+API support and provider implementations for a number of standard
+secure communication protocols.</p>
+<h3>SSL/TLS</h3>
+<p>The Java platform provides APIs and an implementation of the SSL
+and TLS protocols that includes functionality for data encryption,
+message integrity, server authentication, and optional client
+authentication. Applications can use SSL/TLS to provide for the
+secure passage of data between two peers over any application
+protocol, such as HTTP on top of TCP/IP.</p>
+<p>The <code>javax.net.ssl.SSLSocket</code> class represents a
+network socket that encapsulates SSL/TLS support on top of a normal
+stream socket (<code>java.net.Socket</code>). Some applications
+might want to use alternate data transport abstractions (e.g.,
+New-I/O); the <code>javax.net.ssl.SSLEngine</code> class is
+available to produce and consume SSL/TLS packets.</p>
+<p>The Java platform also includes APIs that support the notion of
+pluggable (provider-based) key managers and trust managers. <i>A
+key manager</i> is encapsulated by the
+<code>javax.net.ssl.KeyManager</code> class, and manages the keys
+used to perform authentication. A <i>trust manager</i> is
+encapsulated by the <code>TrustManager</code> class (in the same
+package), and makes decisions about who to trust based on
+certificates in the key store it manages.</p>
+<p>The Java platform includes a built-in provider that implements
+the SSL/TLS protocols:</p>
+<ul>
+<li>SSLv3</li>
+<li>TLSv1</li>
+<li>TLSv1.1</li>
+<li>TLSv1.2</li>
+</ul>
+<h3>SASL</h3>
+<p>Simple Authentication and Security Layer (SASL) is an Internet
+standard that specifies a protocol for authentication and optional
+establishment of a security layer between client and server
+applications. SASL defines how authentication data is to be
+exchanged, but does not itself specify the contents of that data.
+It is a framework into which specific authentication mechanisms
+that specify the contents and semantics of the authentication data
+can fit. There are a number of standard SASL mechanisms defined by
+the Internet community for various security levels and deployment
+scenarios.</p>
+<p>The Java SASL API defines classes and interfaces for
+applications that use SASL mechanisms. It is defined to be
+mechanism-neutral; an application that uses the API need not be
+hardwired into using any particular SASL mechanism. Applications
+can select the mechanism to use based on desired security features.
+The API supports both client and server applications. The
+<code>javax.security.sasl.Sasl</code> class is used to create
+<code>SaslClient</code> and <code>SaslServer</code> objects.</p>
+<p>SASL mechanism implementations are supplied in provider
+packages. Each provider may support one or more SASL mechanisms and
+is registered and invoked via the standard provider
+architecture.</p>
+<p>The Java platform includes a built-in provider that implements
+the following SASL mechanisms:</p>
+<ul>
+<li>CRAM-MD5, DIGEST-MD5, EXTERNAL, GSSAPI, NTLM, and PLAIN client
+mechanisms</li>
+<li>CRAM-MD5, DIGEST-MD5, GSSAPI, and NTLM server mechanisms</li>
+</ul>
+<h3>GSS-API and Kerberos</h3>
+<p>The Java platform contains an API with the Java language
+bindings for the Generic Security Service Application Programming
+Interface (GSS-API). GSS-API offers application programmers uniform
+access to security services atop a variety of underlying security
+mechanisms. The Java GSS-API currently requires use of a Kerberos
+v5 mechanism, and the Java platform includes a built-in
+implementation of this mechanism. At this time, it is not possible
+to plug in additional mechanisms. Note: The
+<code>Krb5LoginModule</code> mentioned in Section 6 can be used in
+conjunction with the GSS Kerberos mechanism.</p>
+<p>The Java platform also includes a built-in implementation of the
+Simple and Protected GSSAPI Negotiation Mechanism (SPNEGO) GSS-API
+mechanism.</p>
+<p>Before two applications can use the Java GSS-API to securely
+exchange messages between them, they must establish a joint
+security context. The context encapsulates shared state information
+that might include, for example, cryptographic keys. Both
+applications create and use an
+<code>org.ietf.jgss.GSSContext</code> object to establish and
+maintain the shared information that makes up the security context.
+Once a security context has been established, it can be used to
+prepare secure messages for exchange.</p>
+<p>The Java GSS APIs are in the <code>org.ietf.jgss</code> package.
+The Java platform also defines basic Kerberos classes, like
+<code>KerberosPrincipal</code>, <code>KerberosTicket</code>,
+<code>KerberosKey</code>, and <code>KeyTab</code>, which are
+located in the <code>javax.security.auth.kerberos</code>
+package.</p>
+<h2>8 Access Control</h2>
+<p>The access control architecture in the Java platform protects
+access to sensitive resources (for example, local files) or
+sensitive application code (for example, methods in a class). All
+access control decisions are mediated by a security manager,
+represented by the <code>java.lang.SecurityManager</code> class. A
+<code>SecurityManager</code> must be installed into the Java
+runtime in order to activate the access control checks.</p>
+<p>Java applets and Java&trade; Web Start applications are
+automatically run with a <code>SecurityManager</code> installed.
+However, local applications executed via the <b>java</b> command
+are by default not run with a <code>SecurityManager</code>
+installed. In order to run local applications with a
+SecurityManager, either the application itself must
+programmatically set one via the <code>setSecurityManager</code>
+method (in the <code>java.lang.System</code> class), or <b>java</b>
+must be invoked with a <code>-Djava.security.manager</code>
+argument on the commandline.</p>
+<h3>Permissions</h3>
+<p>When Java code is loaded by a class loader into the Java
+runtime, the class loader automatically associates the following
+information with that code:</p>
+<ul>
+<li>Where the code was loaded from</li>
+<li>Who signed the code (if anyone)</li>
+<li>Default permissions granted to the code</li>
+</ul>
+<p>This information is associated with the code regardless of
+whether the code is downloaded over an untrusted network (e.g., an
+applet) or loaded from the filesystem (e.g., a local application).
+The location from which the code was loaded is represented by a
+URL, the code signer is represented by the signer's certificate
+chain, and default permissions are represented by
+<code>java.security.Permission</code> objects.</p>
+<p>The default permissions automatically granted to downloaded code
+include the ability to make network connections back to the host
+from which it originated. The default permissions automatically
+granted to code loaded from the local filesystem include the
+ability to read files from the directory it came from, and also
+from subdirectories of that directory.</p>
+<p>Note that the identity of the user executing the code is not
+available at class loading time. It is the responsibility of
+application code to authenticate the end user if necessary (for
+example, as described in Section 6). Once the user has been
+authenticated, the application can dynamically associate that user
+with executing code by invoking the <code>doAs</code> method in the
+<code>javax.security.auth.Subject</code> class.</p>
+<h3>Policy</h3>
+<p>As mentioned earlier, a limited set of default permissions are
+granted to code by class loaders. Administrators have the ability
+to flexibly manage additional code permissions via a security
+policy.</p>
+<p>The Java platform encapsulates the notion of a security policy
+in the <code>java.security.Policy</code> class. There is only one
+<code>Policy</code> object installed into the Java runtime at any
+given time. The basic responsibility of the <code>Policy</code>
+object is to determine whether access to a protected resource is
+permitted to code (characterized by where it was loaded from, who
+signed it, and who is executing it). How a <code>Policy</code>
+object makes this determination is implementation-dependent. For
+example, it may consult a database containing authorization data,
+or it may contact another service.</p>
+<p>The Java platform includes a default <code>Policy</code>
+implementation that reads its authorization data from one or more
+ASCII (UTF-8) files configured in the security properties file.
+These policy files contain the exact sets of permissions granted to
+code: specifically, the exact sets of permissions granted to code
+loaded from particular locations, signed by particular entities,
+and executing as particular users. The policy entries in each file
+must conform to a documented proprietary syntax, and may be
+composed via a simple text editor or the graphical
+<b>policytool</b> utility.</p>
+<h3>Access Control Enforcement</h3>
+<p>The Java runtime keeps track of the sequence of Java calls that
+are made as a program executes. When access to a protected resource
+is requested, the entire call stack, by default, is evaluated to
+determine whether the requested access is permitted.</p>
+<p>As mentioned earlier, resources are protected by the
+<code>SecurityManager</code>. Security-sensitive code in the Java
+platform and in applications protects access to resources via code
+like the following:</p>
+<pre class="codeblock">
+SecurityManager sm = System.getSecurityManager();
+if (sm != null) {
+   sm.checkPermission(perm);
+}
+</pre>
+<p>where perm is the Permission object that corresponds to the
+requested access. For example, if an attempt is made to read the
+file <i>/tmp/abc</i>, the permission may be constructed as
+follows:</p>
+<pre class="codeblock">
+Permission perm = 
+    new java.io.FilePermission("/tmp/abc", "read");
+</pre>
+<p>The default implementation of <code>SecurityManager</code>
+delegates its decision to the
+<code>java.security.AccessController</code> implementation. The
+<code>AccessController</code> traverses the call stack, passing to
+the installed security <code>Policy</code> each code element in the
+stack, along with the requested permission (for example, the
+<code>FilePermission</code> in the above example). The
+<code>Policy</code> determines whether the requested access is
+granted, based on the permissions configured by the administrator.
+If access is not granted, the <code>AccessController</code> throws
+a <code>java.lang.SecurityException.</code></p>
+<p>Figure 4 illustrates access control enforcement. In this
+particular example, there are initially two elements on the call
+stack, ClassA and ClassB. ClassA invokes a method in ClassB, which
+then attempts to access the file <i>/tmp/abc</i> by creating an
+instance of <code>java.io.FileInputStream.</code> The
+<code>FileInputStream</code> constructor creates a
+<code>FilePermission</code>, <code>perm</code>, as shown above, and
+then passes <code>perm</code> to the <code>SecurityManager</code>'s
+<code>checkPermission</code> method. In this particular case, only
+the permissions for ClassA and ClassB need to be checked, because
+all system code, including <code>FileInputStream</code>,
+<code>SecurityManager</code>, and <code>AccessController</code>,
+automatically receives all permissions.</p>
+<p>In this example, ClassA and ClassB have different code
+characteristics &ndash; they come from different locations and have
+different signers. Each may have been granted a different set of
+permissions. The <code>AccessController</code> only grants access
+to the requested file if the <code>Policy</code> indicates that
+both classes have been granted the required
+<code>FilePermission</code>.</p>
+<p align="center"><img src="images/4.jpg" alt=
+"diagram showing how access is controlled to resources" /></p>
+<p class="caption" align="center">Figure 4 Controlling access to
+resources</p>
+<h2>9 XML Signature</h2>
+<p>The Java XML Digital Signature API is a standard Java API for
+generating and validating XML Signatures.</p>
+<p>XML Signatures can be applied to data of any type, XML or binary
+(see <a href=
+"http://www.w3.org/TR/xmldsig-core/">http://www.w3.org/TR/xmldsig-core/</a>).
+The resulting signature is represented in XML. An XML Signature can
+be used to secure your data and provide data integrity, message
+authentication, and signer authentication.</p>
+<p>The API is designed to support all of the required or
+recommended features of the W3C Recommendation for XML-Signature
+Syntax and Processing. The API is extensible and pluggable and is
+based on the Java Cryptography Service Provider Architecture.</p>
+<p>The Java XML Digital Signature APIs consist of six packages:</p>
+<ul>
+<li><code>javax.xml.crypto</code></li>
+<li><code>javax.xml.crypto.dsig</code></li>
+<li><code>javax.xml.crypto.dsig.keyinfo</code></li>
+<li><code>javax.xml.crypto.dsig.spec</code></li>
+<li><code>javax.xml.crypto.dom</code></li>
+<li><code>javax.xml.crypto.dsig.dom</code></li>
+</ul>
+<h2>10 For More Information</h2>
+<p>Additional Java security documentation can be found online
+at</p>
+<p><a href=
+"http://www.oracle.com/technetwork/java/javase/tech/index-jsp-136007.html">
+Java SE Security</a></p>
+<p>and in the book <a href=
+"http://www.oracle.com/technetwork/java/javaee/gong-135902.html">Inside
+Java 2 Platform Security, Second Edition: Architecture, API Design
+and Implementation</a>.</p>
+<p><b>Note</b>: Historically, as new types of security services
+were added to the Java platform (sometimes initially as
+extensions), various acronyms were used to refer to them. Since
+these acronyms are still in use in the Java security documentation,
+here is an explanation of what they represent: JSSE (Java&trade;
+Secure Socket Extension) refers to the SSL-related services
+described in Section 7, JCE (Java&trade; Cryptography Extension)
+refers to cryptographic services (Section 4), and JAAS (Java&trade;
+Authentication and Authorization Service) refers to the
+authentication and user-based access control services described in
+Sections 6 and 8, respectively.</p>
+<h2>Appendix A Classes Summary</h2>
+<p>Table 1 summarizes the names, packages, and usage of the Java
+security classes and interfaces mentioned in this paper.</p>
+<p class="caption" align="center">Table 1 Key Java security
+packages and classes</p>
+<table border="1" cellspacing="0" cellpadding="0" align="center"
+summary="Java security class summary">
+<tr>
+<th id="h101">Package</th>
+<th id="h102">Class/Interface Name</th>
+<th id="h103">Usage</th>
+</tr>
+<tr>
+<td headers="h101"><code>com.sun.security.auth.module</code></td>
+<td headers="h102"><code>JndiLoginModule</code></td>
+<td headers="h103">Performs username/password authentication using LDAP or
+NIS</td>
+</tr>
+<tr>
+<td headers="h101"><code>com.sun.security.auth.module</code></td>
+<td headers="h102"><code>KeyStoreLoginModule</code></td>
+<td headers="h103">Performs authentication based on key store login</td>
+</tr>
+<tr>
+<td headers="h101"><code>com.sun.security.auth.module</code></td>
+<td headers="h102"><code>Krb5LoginModule</code></td>
+<td headers="h103">Performs authentication using Kerberos protocols</td>
+</tr>
+<tr>
+<td headers="h101"><code>java.lang</code></td>
+<td headers="h102"><code>SecurityException</code></td>
+<td headers="h103">Indicates a security violation</td>
+</tr>
+<tr>
+<td headers="h101"><code>java.lang</code></td>
+<td headers="h102"><code>SecurityManager</code></td>
+<td headers="h103">Mediates all access control decisions</td>
+</tr>
+<tr>
+<td headers="h101"><code>java.lang</code></td>
+<td headers="h102"><code>System</code></td>
+<td headers="h103">Installs the SecurityManager</td>
+</tr>
+<tr>
+<td headers="h101"><code>java.security</code></td>
+<td headers="h102"><code>AccessController</code></td>
+<td headers="h103">Called by default implementation of SecurityManager to make
+access control decisions</td>
+</tr>
+<tr>
+<td headers="h101"><code>java.security</code></td>
+<td headers="h102"><code>DomainLoadStoreParameter</code></td>
+<td headers="h103">Stores parameters for the Domain keystore (DKS)</td>
+</tr>
+<tr>
+<td headers="h101"><code>java.security</code></td>
+<td headers="h102"><code>Key</code></td>
+<td headers="h103">Represents a cryptographic key</td>
+</tr>
+<tr>
+<td headers="h101"><code>java.security</code></td>
+<td headers="h102"><code>KeyStore</code></td>
+<td headers="h103">Represents a repository of keys and trusted certificates</td>
+</tr>
+<tr>
+<td headers="h101"><code>java.security</code></td>
+<td headers="h102"><code>MessageDigest</code></td>
+<td headers="h103">Represents a message digest</td>
+</tr>
+<tr>
+<td headers="h101"><code>java.security</code></td>
+<td headers="h102"><code>Permission</code></td>
+<td headers="h103">Represents access to a particular resource</td>
+</tr>
+<tr>
+<td headers="h101"><code>java.security</code></td>
+<td headers="h102"><code>PKCS12Attribute</code></td>
+<td headers="h103">Supports attributes in PKCS12 keystores</td>
+</tr>
+<tr>
+<td headers="h101"><code>java.security</code></td>
+<td headers="h102"><code>Policy</code></td>
+<td headers="h103">Encapsulates the security policy</td>
+</tr>
+<tr>
+<td headers="h101"><code>java.security</code></td>
+<td headers="h102"><code>Provider</code></td>
+<td headers="h103">Encapsulates security service implementations</td>
+</tr>
+<tr>
+<td headers="h101"><code>java.security</code></td>
+<td headers="h102"><code>Security</code></td>
+<td headers="h103">Manages security providers and security properties</td>
+</tr>
+<tr>
+<td headers="h101"><code>java.security</code></td>
+<td headers="h102"><code>Signature</code></td>
+<td headers="h103">Creates and verifies digital signatures</td>
+</tr>
+<tr>
+<td headers="h101"><code>java.security.cert</code></td>
+<td headers="h102"><code>Certificate</code></td>
+<td headers="h103">Represents a public key certificate</td>
+</tr>
+<tr>
+<td headers="h101"><code>java.security.cert</code></td>
+<td headers="h102"><code>CertStore</code></td>
+<td headers="h103">Represents a repository of unrelated and typically untrusted
+certificates</td>
+</tr>
+<tr>
+<td headers="h101"><code>java.security.cert</code></td>
+<td headers="h102"><code>CRL</code></td>
+<td headers="h103">Represents a CRL</td>
+</tr>
+<tr>
+<td headers="h101"><code>javax.crypto</code></td>
+<td headers="h102"><code>Cipher</code></td>
+<td headers="h103">Performs encryption and decryption</td>
+</tr>
+<tr>
+<td headers="h101"><code>javax.crypto</code></td>
+<td headers="h102"><code>KeyAgreement</code></td>
+<td headers="h103">Performs a key exchange</td>
+</tr>
+<tr>
+<td headers="h101"><code>javax.net.ssl</code></td>
+<td headers="h102"><code>KeyManager</code></td>
+<td headers="h103">Manages keys used to perform SSL/TLS authentication</td>
+</tr>
+<tr>
+<td headers="h101"><code>javax.net.ssl</code></td>
+<td headers="h102"><code>SSLEngine</code></td>
+<td headers="h103">Produces/consumes SSL/TLS packets, allowing the application
+freedom to choose a transport mechanism</td>
+</tr>
+<tr>
+<td headers="h101"><code>javax.net.ssl</code></td>
+<td headers="h102"><code>SSLSocket</code></td>
+<td headers="h103">Represents a network socket that encapsulates SSL/TLS support
+on top of a normal stream socket</td>
+</tr>
+<tr>
+<td headers="h101"><code>javax.net.ssl</code></td>
+<td headers="h102"><code>TrustManager</code></td>
+<td headers="h103">Makes decisions about who to trust in SSL/TLS interactions (for
+example, based on trusted certificates in key stores)</td>
+</tr>
+<tr>
+<td headers="h101"><code>javax.security.auth</code></td>
+<td headers="h102"><code>Subject</code></td>
+<td headers="h103">Represents a user</td>
+</tr>
+<tr>
+<td headers="h101"><code>javax.security.auth.kerberos</code></td>
+<td headers="h102"><code>KerberosPrincipal</code></td>
+<td headers="h103">Represents a Kerberos principal</td>
+</tr>
+<tr>
+<td headers="h101"><code>javax.security.auth.kerberos</code></td>
+<td headers="h102"><code>KerberosTicket</code></td>
+<td headers="h103">Represents a Kerberos ticket</td>
+</tr>
+<tr>
+<td headers="h101"><code>javax.security.auth.kerberos</code></td>
+<td headers="h102"><code>KerberosKey</code></td>
+<td headers="h103">Represents a Kerberos key</td>
+</tr>
+<tr>
+<td headers="h101"><code>javax.security.auth.kerberos</code></td>
+<td headers="h102"><code>KerberosTab</code></td>
+<td headers="h103">Represents a Kerberos keytab file</td>
+</tr>
+<tr>
+<td headers="h101"><code>javax.security.auth.login</code></td>
+<td headers="h102"><code>LoginContext</code></td>
+<td headers="h103">Supports pluggable authentication</td>
+</tr>
+<tr>
+<td headers="h101"><code>javax.security.auth.spi</code></td>
+<td headers="h102"><code>LoginModule</code></td>
+<td headers="h103">Implements a specific authentication mechanism</td>
+</tr>
+<tr>
+<td headers="h101"><code>javax.security.sasl</code></td>
+<td headers="h102"><code>Sasl</code></td>
+<td headers="h103">Creates SaslClient and SaslServer objects</td>
+</tr>
+<tr>
+<td headers="h101"><code>javax.security.sasl</code></td>
+<td headers="h102"><code>SaslClient</code></td>
+<td headers="h103">Performs SASL authentication as a client</td>
+</tr>
+<tr>
+<td headers="h101"><code>javax.security.sasl</code></td>
+<td headers="h102"><code>SaslServer</code></td>
+<td headers="h103">Performs SASL authentication as a server</td>
+</tr>
+<tr>
+<td headers="h101"><code>org.ietf.jgss</code></td>
+<td headers="h102"><code>GSSContext</code></td>
+<td headers="h103">Encapsulates a GSS-API security context and provides the
+security services available via the context</td>
+</tr>
+</table>
+<h2>Appendix B Tools Summary</h2>
+<p>Table 2 summarizes the tools mentioned in this paper.</p>
+<p class="caption" align="center">Table 2 Java security tools</p>
+<div align="center">
+<table border="1" cellspacing="0" cellpadding="0" summary=
+"summary of tools used in this paper">
+<tr>
+<th id="h201">Tool</th>
+<th id="h202">Usage</th>
+</tr>
+<tr>
+<td headers="h201"><code>jar</code></td>
+<td headers="h202">Creates Java Archive (JAR) files</td>
+</tr>
+<tr>
+<td headers="h201"><code>jarsigner</code></td>
+<td headers="h202">Signs and verifies signatures on JAR files</td>
+</tr>
+<tr>
+<td headers="h201"><code>keytool</code></td>
+<td headers="h202">Creates and manages key stores</td>
+</tr>
+<tr>
+<td headers="h201"><code>policytool</code></td>
+<td headers="h202">Creates and edits policy files for use with default Policy
+implementation</td>
+</tr>
+</table>
+</div>
+<p>There are also three Kerberos-related tools that are shipped
+with the Java platform for Windows. Equivalent functionality is
+provided in tools of the same name that are automatically part of
+the Solaris and Linux operating environments. Table 3 summarizes
+the Kerberos tools.</p>
+<p class="caption" align="center">Table 3 Kerberos-related
+tools</p>
+<div align="center">
+<table border="1" cellspacing="0" cellpadding="0" summary=
+"summary of Kerberos-related tools shipped with the Java platform for Windows">
+<tr>
+<th id="h301">Tool</th>
+<th id="h302">Usage</th>
+</tr>
+<tr>
+<td headers="h301"><code>kinit</code></td>
+<td headers="h302">Obtains and caches Kerberos ticket-granting tickets</td>
+</tr>
+<tr>
+<td headers="h301"><code>klist</code></td>
+<td headers="h302">Lists entries in the local Kerberos credentials cache and key
+table</td>
+</tr>
+<tr>
+<td headers="h301"><code>ktab</code></td>
+<td headers="h302">Manages the names and service keys stored in the local Kerberos
+key table</td>
+</tr>
+</table>
+</div>
+<b><br clear="all" /></b>
+<h2>Appendix C Built-in Providers</h2>
+<p>The Java platform implementation from Oracle includes a number
+of built-in provider packages. For details, see the <a href=
+"../SunProviders.html">Java&trade; Cryptography Architecture Oracle
+Providers Documentation</a>.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

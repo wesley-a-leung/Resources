@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Native Memory Tracking</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr006.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr008.html">
+                Next</a><hr/><a id="BABGFCDA" name="BABGFCDA"/>
+<div id="JSTGD153">
+<h1><span>2.7</span> Native Memory Tracking</h1>
+<p>The Native Memory Tracking (NMT) is a Java HotSpot VM feature that tracks internal memory usage for a Java HotSpot VM. For details about NMT scope, how to enable NMT, and other additional usage details, see <a href="../vm/nmt-8.html">Native Memory Tracking</a>.</p>
+<p>Since NMT doesn't track memory allocations by non-JVM code, you may have to use tools supported by the operating system to detect memory leaks in native code.</p>
+<p>The following sections describe how to monitor VM internal memory allocations and diagnose VM memory leaks.</p>
+<ul>
+<li>
+<p><a href="#BABIIIAC">Use NMT to Detect a Memory Leak</a></p>
+</li>
+<li>
+<p><a href="#BABJGHDB">How to Monitor VM Internal Memory</a></p>
+</li>
+<li>
+<p><a href="tooldescr022.html#BABCBGFA">NMT Memory Categories</a></p>
+</li>
+</ul>
+<a id="BABIIIAC" name="BABIIIAC"/>
+<div id="JSTGD154">
+<h2><span>2.7.1</span> Use NMT to Detect a Memory Leak</h2>
+<p>Follow these steps to detect a memory leak.</p>
+<ol>
+<li>
+<p>Start the JVM with <span>summary</span> or <span>detail</span> tracking using the command line option: <code dir="ltr">-XX:NativeMemoryTracking=summary</code> or <code dir="ltr">-XX:NativeMemoryTracking=detail</code>.</p>
+</li>
+<li>
+<p>Establish an early baseline - use NMT baseline feature to get a baseline to compare during development and maintenance by running: <code dir="ltr">jcmd &lt;pid&gt; VM.native_memory baseline</code>.</p>
+</li>
+<li>
+<p>Monitor memory changes using: <code dir="ltr">jcmd &lt;pid&gt; VM.native_memory detail.diff</code>.</p>
+</li>
+<li>
+<p>If the application leaks a small amount of memory, it make take a while to show up.</p>
+</li>
+</ol>
+</div>
+
+<a id="BABJGHDB" name="BABJGHDB"/>
+<div id="JSTGD155">
+<h2><span>2.7.2</span> How to Monitor VM Internal Memory</h2>
+<p>Used with <a href="tooldescr006.html#BABEHABG">The jcmd Utility</a>, Native Memory Tracking can be set up to monitor memory and ensure that an application does not start to use increasing amounts of memory during development or maintenance. See <a href="tooldescr022.html#BABHIFJC">Table 2-1</a> for details about NMT memory categories.</p>
+<p>The following sections describe how to get <span>summary</span> or <span>detail</span> data for NMT and describes how to interpret the sample output.</p>
+<ul>
+<li>
+<p><b>Interpret sample output:</b> From the sample output below, you will see <span>reserved</span> and <span>committed</span> memory. Note that only <span>committed</span> memory is actually used. For example, if you run with <code dir="ltr">-Xms100m -Xmx1000m</code>, the JVM will reserve 1000 MB for the Java Heap. Since the initial heap size is only 100 MB, only 100MB will be committed to begin with. For a 64-bit machine where address space is almost unlimited, there is no problem if a JVM reserves a lot of memory. The problem arises if more and more memory gets committed, which may lead to swapping or native OOM situations.</p>
+<p>Arena is a chunk of memory allocated using malloc. Memory is freed from these chunks in bulk, when exiting a scope or leaving an area of code. These chunks may be reused in other subsystems to hold temporary memory, for example, pre-thread allocations. Arena malloc policy ensures no memory leakage. So Arena is tracked as a whole and not individual objects. Some amount of initial memory can not by tracked.</p>
+<p>Enabling NMT will result in a <span>5-10 percent</span> JVM performance drop and memory usage for NMT adds 2 machine words to all malloc memory as malloc header. NMT memory usage is also tracked by NMT.</p>
+</li>
+<li>
+<p><b>Get summary data:</b> To get a <span>summary</span> view of native memory usage, start the JVM with command line option: <code dir="ltr">-XX:NativeMemoryTracking=summary</code>.</p>
+<p><a href="#BABGFJDJ">Example 2-2</a> is a sample output that describes NMT for track level set to <span>summary</span>. One way to get this sample output is to run: <code dir="ltr">jcmd &lt;pid&gt; VM.native_memory summary</code>.</p>
+<div id="JSTGD156"><a id="BABGFJDJ" name="BABGFJDJ"/>
+<p>Example 2-2 Get Summary Data for NMT</p>
+<pre dir="ltr" xml:space="preserve">
+Total:  reserved=664192KB,  committed=253120KB                                           &lt;--- total memory tracked by Native Memory Tracking
+ 
+-                 Java Heap (reserved=516096KB, committed=204800KB)                      &lt;--- Java Heap
+                            (mmap: reserved=516096KB, committed=204800KB)
+ 
+-                     Class (reserved=6568KB, committed=4140KB)                          &lt;--- class metadata
+                            (classes #665)                                               &lt;--- number of loaded classes
+                            (malloc=424KB, #1000)                                        &lt;--- malloc'd memory, #number of malloc
+                            (mmap: reserved=6144KB, committed=3716KB)
+ 
+-                    Thread (reserved=6868KB, committed=6868KB)
+                            (thread #15)                                                 &lt;--- number of threads
+                            (stack: reserved=6780KB, committed=6780KB)                   &lt;--- memory used by thread stacks
+                            (malloc=27KB, #66)
+                            (arena=61KB, #30)                                            &lt;--- resource and handle areas
+ 
+-                      Code (reserved=102414KB, committed=6314KB)
+                            (malloc=2574KB, #74316)
+                            (mmap: reserved=99840KB, committed=3740KB)
+ 
+-                        GC (reserved=26154KB, committed=24938KB)
+                            (malloc=486KB, #110)
+                            (mmap: reserved=25668KB, committed=24452KB)
+ 
+-                  Compiler (reserved=106KB, committed=106KB)
+                            (malloc=7KB, #90)
+                            (arena=99KB, #3)
+ 
+-                  Internal (reserved=586KB, committed=554KB)
+                            (malloc=554KB, #1677)
+                            (mmap: reserved=32KB, committed=0KB)
+ 
+-                    Symbol (reserved=906KB, committed=906KB)
+                            (malloc=514KB, #2736)
+                            (arena=392KB, #1)
+ 
+-           Memory Tracking (reserved=3184KB, committed=3184KB)
+                            (malloc=3184KB, #300)
+ 
+-        Pooled Free Chunks (reserved=1276KB, committed=1276KB)
+                            (malloc=1276KB)
+ 
+-                   Unknown (reserved=33KB, committed=33KB)
+                            (arena=33KB, #1)
+</pre></div>
+</li>
+<li>
+<p><b>Get detail data:</b> To get a more detailed view of native memory usage, start the JVM with command line option: <code dir="ltr">-XX:NativeMemoryTracking=detail</code>. This will track exactly what methods allocate the most memory. Enabling NMT will result in <span>5-10 percent</span> JVM performance drop and memory usage for NMT adds 2 words to all malloc memory as malloc header. NMT memory usage is also tracked by NMT.</p>
+<p><a href="#BABJGBJG">Example 2-3</a> shows a sample output for virtual memory for track level set to <span>detail</span>. One way to get this sample output is to run: <code dir="ltr">jcmd &lt;pid&gt; VM.native_memory detail</code>.</p>
+<div id="JSTGD157"><a id="BABJGBJG" name="BABJGBJG"/>
+<p>Example 2-3 Get detail Data for NMT</p>
+<pre dir="ltr" xml:space="preserve">
+Virtual memory map:
+ 
+[0x8f1c1000 - 0x8f467000] reserved 2712KB for Thread Stack
+                from [Thread::record_stack_base_and_size()+0xca]
+        [0x8f1c1000 - 0x8f467000] committed 2712KB from [Thread::record_stack_base_and_size()+0xca]
+ 
+[0x8f585000 - 0x8f729000] reserved 1680KB for Thread Stack
+                from [Thread::record_stack_base_and_size()+0xca]
+        [0x8f585000 - 0x8f729000] committed 1680KB from [Thread::record_stack_base_and_size()+0xca]
+ 
+[0x8f930000 - 0x90100000] reserved 8000KB for GC
+                from [ReservedSpace::initialize(unsigned int, unsigned int, bool, char*, unsigned int, bool)+0x555]
+        [0x8f930000 - 0x90100000] committed 8000KB from [PSVirtualSpace::expand_by(unsigned int)+0x95]
+ 
+[0x902dd000 - 0x9127d000] reserved 16000KB for GC
+                from [ReservedSpace::initialize(unsigned int, unsigned int, bool, char*, unsigned int, bool)+0x555]
+        [0x902dd000 - 0x9127d000] committed 16000KB from [os::pd_commit_memory(char*, unsigned int, unsigned int, bool)+0x36]
+ 
+[0x9127d000 - 0x91400000] reserved 1548KB for Thread Stack
+                from [Thread::record_stack_base_and_size()+0xca]
+        [0x9127d000 - 0x91400000] committed 1548KB from [Thread::record_stack_base_and_size()+0xca]
+ 
+[0x91400000 - 0xb0c00000] reserved 516096KB for Java Heap                                                                            &lt;--- reserved memory range
+                from [ReservedSpace::initialize(unsigned int, unsigned int, bool, char*, unsigned int, bool)+0x190]                  &lt;--- callsite that reserves the memory
+        [0x91400000 - 0x93400000] committed 32768KB from [VirtualSpace::initialize(ReservedSpace, unsigned int)+0x3e8]               &lt;--- committed memory range and its callsite
+        [0xa6400000 - 0xb0c00000] committed 172032KB from [PSVirtualSpace::expand_by(unsigned int)+0x95]                             &lt;--- committed memory range and its callsite
+ 
+[0xb0c61000 - 0xb0ce2000] reserved 516KB for Thread Stack
+                from [Thread::record_stack_base_and_size()+0xca]
+        [0xb0c61000 - 0xb0ce2000] committed 516KB from [Thread::record_stack_base_and_size()+0xca]
+ 
+[0xb0ce2000 - 0xb0e83000] reserved 1668KB for GC
+                from [ReservedSpace::initialize(unsigned int, unsigned int, bool, char*, unsigned int, bool)+0x555]
+        [0xb0ce2000 - 0xb0cf0000] committed 56KB from [PSVirtualSpace::expand_by(unsigned int)+0x95]
+        [0xb0d88000 - 0xb0d96000] committed 56KB from [CardTableModRefBS::resize_covered_region(MemRegion)+0xebf]
+        [0xb0e2e000 - 0xb0e83000] committed 340KB from [CardTableModRefBS::resize_covered_region(MemRegion)+0xebf]
+ 
+[0xb0e83000 - 0xb7003000] reserved 99840KB for Code
+                from [ReservedSpace::initialize(unsigned int, unsigned int, bool, char*, unsigned int, bool)+0x555]
+        [0xb0e83000 - 0xb0e92000] committed 60KB from [VirtualSpace::initialize(ReservedSpace, unsigned int)+0x3e8]
+        [0xb1003000 - 0xb139b000] committed 3680KB from [VirtualSpace::initialize(ReservedSpace, unsigned int)+0x37a]
+ 
+[0xb7003000 - 0xb7603000] reserved 6144KB for Class
+                from [ReservedSpace::initialize(unsigned int, unsigned int, bool, char*, unsigned int, bool)+0x555]
+        [0xb7003000 - 0xb73a4000] committed 3716KB from [VirtualSpace::initialize(ReservedSpace, unsigned int)+0x37a]
+ 
+[0xb7603000 - 0xb760b000] reserved 32KB for Internal
+                from [PerfMemory::create_memory_region(unsigned int)+0x8ba]
+ 
+[0xb770b000 - 0xb775c000] reserved 324KB for Thread Stack
+                from [Thread::record_stack_base_and_size()+0xca]
+        [0xb770b000 - 0xb775c000] committed 324KB from [Thread::record_stack_base_and_size()+0xca]
+</pre></div>
+</li>
+<li>
+<p><b>Get diff from NMT baseline:</b> For both <i>summary</i> and <i>detail</i> level tracking, you can set baseline once the application is up and running. Do this by running <code dir="ltr">jcmd &lt;pid&gt; VM.native_memory baseline</code> after some warm up of the application. Then, you can run: <code dir="ltr">jcmd &lt;pid&gt; VM.native_memory summary.diff</code> or <code dir="ltr">jcmd &lt;pid&gt; VM.native_memory detail.diff</code>.</p>
+<p><a href="#BABJCHEF">Example 2-4</a> shows a sample output for the <span>summary</span> difference in native memory usage since the baseline and is a great way to find memory leaks.</p>
+<div id="JSTGD158"><a id="BABJCHEF" name="BABJCHEF"/>
+<p>Example 2-4 Get diff from NMT Baseline</p>
+<pre dir="ltr" xml:space="preserve">
+Total:  reserved=664624KB  -20610KB, committed=254344KB -20610KB                         &lt;--- total memory changes vs. earlier baseline. '+'=increase '-'=decrease
+ 
+-                 Java Heap (reserved=516096KB, committed=204800KB)
+                            (mmap: reserved=516096KB, committed=204800KB)
+ 
+-                     Class (reserved=6578KB +3KB, committed=4530KB +3KB)
+                            (classes #668 +3)                                            &lt;--- 3 more classes loaded
+                            (malloc=434KB +3KB, #930 -7)                                 &lt;--- malloc'd memory increased by 3KB, but number of malloc count decreased by 7
+                            (mmap: reserved=6144KB, committed=4096KB)
+ 
+-                    Thread (reserved=60KB -1129KB, committed=60KB -1129KB)
+                            (thread #16 +1)                                              &lt;--- one more thread
+                            (stack: reserved=7104KB +324KB, committed=7104KB +324KB)
+                            (malloc=29KB +2KB, #70 +4)
+                            (arena=31KB -1131KB, #32 +2)                                 &lt;--- 2 more arenas (one more resource area and one more handle area)
+ 
+-                      Code (reserved=102328KB +133KB, committed=6640KB +133KB)
+                            (malloc=2488KB +133KB, #72694 +4287)
+                            (mmap: reserved=99840KB, committed=4152KB)
+ 
+-                        GC (reserved=26154KB, committed=24938KB)
+                            (malloc=486KB, #110)
+                            (mmap: reserved=25668KB, committed=24452KB)
+ 
+-                  Compiler (reserved=106KB, committed=106KB)
+                            (malloc=7KB, #93)
+                            (arena=99KB, #3)
+ 
+-                  Internal (reserved=590KB +35KB, committed=558KB +35KB)
+                            (malloc=558KB +35KB, #1699 +20)
+                            (mmap: reserved=32KB, committed=0KB)
+ 
+-                    Symbol (reserved=911KB +5KB, committed=911KB +5KB)
+                            (malloc=519KB +5KB, #2921 +180)
+                            (arena=392KB, #1)
+ 
+-           Memory Tracking (reserved=2073KB -887KB, committed=2073KB -887KB)
+                            (malloc=2073KB -887KB, #84 -210)
+ 
+-        Pooled Free Chunks (reserved=2624KB -15876KB, committed=2624KB -15876KB)
+                            (malloc=2624KB -15876KB)
+</pre></div>
+
+<p><a href="#BABBABCH">Example 2-5</a> is a sample output that shows the <span>detail</span> difference in native memory usage since the baseline and is a great way to find memory leaks.</p>
+<div id="JSTGD159"><a id="BABBABCH" name="BABBABCH"/>
+<p>Example 2-5 Get detail diff for NMT</p>
+<pre dir="ltr" xml:space="preserve">
+Details:
+ 
+[0x01195652] ChunkPool::allocate(unsigned int)+0xe2
+                            (malloc=482KB -481KB, #8 -8)
+ 
+[0x01195652] ChunkPool::allocate(unsigned int)+0xe2
+                            (malloc=2786KB -19742KB, #134 -618)
+ 
+[0x013bd432] CodeBlob::set_oop_maps(OopMapSet*)+0xa2
+                            (malloc=591KB +6KB, #681 +37)
+ 
+[0x013c12b1] CodeBuffer::block_comment(int, char const*)+0x21                &lt;--- [callsite address] method name + offset
+                            (malloc=562KB +33KB, #35940 +2125)               &lt;--- malloc'd amount, increased by 33KB #malloc count, increased by 2125
+ 
+[0x0145f172] ConstantPool::ConstantPool(Array&lt;unsigned char&gt;*)+0x62
+                            (malloc=69KB +2KB, #610 +15)
+ 
+...
+ 
+[0x01aa3ee2] Thread::allocate(unsigned int, bool, unsigned short)+0x122
+                            (malloc=21KB +2KB, #13 +1)
+ 
+[0x01aa73ca] Thread::record_stack_base_and_size()+0xca
+                            (mmap: reserved=7104KB +324KB, committed=7104KB +324KB)
+</pre></div>
+</li>
+</ul>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr006.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr008.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Using Activation: Persistence</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Using Activation: Persistence</h1>
+
+<p>This tutorial describes how to implement an activatable remote
+object that uses persistent state in its implementation. This
+tutorial uses a <code>Setup</code> program (described in the
+tutorial <a href="setup.html">Using Activation: the
+<code>Setup</code> Program</a>) that registers information about an
+activatable remote object with the Java Remote Method Invocation (Java RMI) activation
+system daemon (<code>rmid</code>) and then binds a stub for that
+remote object in an <code>rmiregistry</code> so that clients can
+look it up. You may want to read that tutorial before this one.</p>
+<p>This tutorial has the following steps:</p>
+<ul>
+<li><a href="#a1">Implement the activatable remote object</a></li>
+<li><a href="#a2">Implement the client</a></li>
+<li><a href="#a3">Compile the source files</a></li>
+<li><a href="#a4">Run the <code>Setup</code> program</a></li>
+<li><a href="#a5">Run the client</a></li>
+</ul>
+<p>The files needed for this tutorial are:</p>
+<ul>
+<li><a href="src/Counter.java"><code>Counter.java</code></a> - a
+remote interface for counting</li>
+<li><a href=
+"src/CounterImpl.java"><code>CounterImpl.java</code></a> - an
+&quot;activatable&quot; implementation of the remote interface</li>
+<li><code><a href=
+"src/CounterClient.java">CounterClient.java</a></code> - a client
+that uses the remote interface</li>
+<li><code><a href="src/client.policy">client.policy</a></code> -
+the security policy file for the client</li>
+</ul>
+<hr />
+<h2><a name="a1" id="a1"></a>Implement the activatable remote
+object</h2>
+<p>There are a few basic ways to implement an activatable remote
+object. This tutorial describes how to implement an activatable
+remote object that uses persistent state in its implementation.</p>
+<p>A remote object is activated when a client invokes a remote
+method on a stub for an activatable remote object. A stub for an
+activatable remote object contains the remote object's activation
+ID and information on how to contact the Java RMI activation system
+daemon (<code>rmid</code>) for the remote object. If the stub
+cannot connect to the last-known address (i.e., host/port) for the
+remote object, the stub will contact the remote object's activator
+(<code>rmid</code>) to activate the object. When <code>rmid</code>
+receives an activation request, it starts the remote object's
+activation group (or container) virtual machine (VM) if the group
+is not already executing, and then <code>rmid</code> asks the group
+to make an instance of the remote object. Once the group constructs
+the remote object, it returns the remote object's stub to
+<code>rmid</code> which, in turn, returns the actual stub to the
+initiating stub so that the initiating stub can update its
+information on how to contact the remote object in the future.</p>
+<p>Before any of this activation can take place, an application
+must register information about the activatable remote objects it
+needs to use. The following separate tutorial describes the
+information needed to activatate a remote object and how to
+register this information with <code>rmid</code>:</p>
+<ul>
+<li><a href="setup.html">Using Activation: the <code>Setup</code>
+program</a></li>
+</ul>
+<p>This example defines the remote interface <code>Counter</code>
+with a single operation, <code>increment</code>. The implementation
+class <code>CounterImpl</code> persistently stores the result of
+the operation <code>increment</code> in a file, so that the result
+of the <code>increment</code> operation will survive across an
+object activation/deactivation cycle or even survive a machine
+reboot or crash. To make all this work, a <code>CounterImpl</code>
+object, when activated, needs the name of the file it will use to
+read and store counter values. A user can register an activation
+descriptor that contains this file name (in a
+<code>MarshalledObject</code>) as the &quot;initialization
+data&quot;. The object's activation group will pass this
+pre-registered marshalled data (the file name) to the object's
+constructor when the group constructs the object during
+activation.</p>
+<p>The remote interface <code>examples.activation.Counter</code> is
+defined as follows:</p>
+<pre class="codeblock">
+package examples.activation;
+
+import java.rmi.Remote;
+import java.io.IOException;
+
+public interface Counter extends Remote {
+
+    int increment() throws IOException;
+}
+</pre>
+<p>The implementation class,
+<code>examples.activation.CounterImpl</code>, for the activatable
+remote object is as follows:</p>
+<pre class="codeblock">
+package examples.activation; 
+
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.rmi.MarshalledObject;
+import java.rmi.activation.Activatable;
+import java.rmi.activation.ActivationID;
+
+public class CounterImpl implements Counter {
+    private RandomAccessFile raf;
+    private int count;
+    private final Object countLock = new Object();
+    
+    public CounterImpl(ActivationID id, MarshalledObject data) 
+        throws Exception
+    {
+        if (data != null) {
+            String filename = (String) data.get();
+            synchronized (countLock) {
+                count = openFile(filename);
+            }
+            System.err.println("count upon activation = " + count);
+        }
+
+        Activatable.exportObject(this, id, 0);
+    }
+
+    private int openFile(String filename) throws IOException {
+
+        if (filename != null &amp;&amp; !filename.equals("")) {
+            File file = new File(filename);
+            boolean fileExists = file.exists();
+            raf = new RandomAccessFile(file, "rws");
+            return (fileExists) ? raf.readInt() : writeCount(0);
+            
+        } else {
+            throw new IOException("invalid filename");
+        }
+    }
+
+    private int writeCount(int value) throws IOException {
+        raf.setLength(0);
+        raf.writeInt(value);
+        return value;
+    }
+            
+    public int increment() throws IOException {
+        synchronized (countLock) {
+            return writeCount(++count);
+        }
+    }
+}
+</pre>
+<p>The class <code>CounterImpl</code> implements the remote
+interface <code>Counter</code>, but does not extend any class.</p>
+<p>The class declares a special &quot;activation&quot; constructor
+that an activation group calls to construct an instance during the
+activation process. This special constructor takes two
+parameters:</p>
+<ul>
+<li>The first parameter, <code>ActivationID</code>, is an
+identifier for the activatable remote object. When an application
+registers an activation descriptor with <code>rmid</code>,
+<code>rmid</code> assigns it an activation ID, which refers to the
+information associated with the descriptor. This same activation ID
+(also contained in the remote object's stub) is passed to this
+constructor when the remote object is activated.</li>
+<li>The second parameter is a <code>MarshalledObject</code> that
+contains initialization data pre-registered with <code>rmid</code>.
+In this example, the marshalled data is the name of a file
+containing the object's persistent state which is the latest
+counter value.</li>
+</ul>
+<p>The constructor obtains the file name contained in the
+<code>MarshalledObject</code> which was passed as the second
+parameter. Next, the constructor calls the local method
+<code>openFile</code> to open the file and return the current
+counter value. If the file exists, the <code>openFile</code> method
+reads the value last saved to the file; otherwise, it creates a new
+file and initializes the count to zero. The constructor then calls
+the static method <code>Activatable.exportObject</code>, passing
+the implementation itself (<code>this</code>), the activation ID,
+and the port number <code>0</code>, indicating that the object
+should be exported on an anonymous TCP port. While this
+implementation does not use the activation ID passed as a parameter
+to the constructor, another implementation may wish to save the
+activation ID for future use, in order to deactivate the object,
+for example.</p>
+<p>Finally, the class implements the remote interface's single
+method, <code>increment</code> to increment the count, save the
+count to the file, and return the incremented count. Note that
+there is a flaw in the implementation of the
+<code>writeCount</code> method. If the machine crashes between the
+calls to <code>setLength</code> and <code>writeInt</code>, the
+value of the counter will be lost. Making this implementation more
+robust to a crash within that small window is an exercise left to
+the reader.</p>
+<h2><a name="a2" id="a2"></a>Implement the client</h2>
+<p>The <code>CounterClient</code> program looks up a remote
+object's stub (one that implements the remote interface
+<code>Counter</code>) in the registry on the host supplied as the
+optional first argument, and then invokes the stub's
+<code>increment</code> method and displays the result. When this
+client invokes a remote method on the stub acquired from the
+registry, the remote object will activate if not already
+active.</p>
+<p>The source for the program is as follows:</p>
+<pre class="codeblock">
+package examples.activation; 
+
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+public class CounterClient {
+
+    public static void main(String args[])  throws Exception {
+
+        String hostname = "localhost";
+        if (args.length &lt; 1) {
+            System.err.println(
+                "usage: java [options] examples.activation.CounterClient [host]");
+            System.exit(1);
+        } else {
+            hostname = args[0];
+        }
+
+        if (System.getSecurityManager() == null) {
+            System.setSecurityManager(new SecurityManager());
+        }
+
+        String name = System.getProperty("examples.activation.name");
+        Registry registry = LocateRegistry.getRegistry(hostname);
+        Counter stub = (Counter) registry.lookup(name);
+        System.err.println("Obtained stub from the registry.");
+
+        System.err.println("Invoking increment method...");
+        int count = stub.increment();
+        System.err.println("Returned from increment remote call.");
+        System.err.println("count = " + count);
+    }
+}
+</pre>
+<p>This program should be run as follows:</p>
+<pre class="codeblock">
+java -cp <b><i>clientDir</i></b>                               \
+     -Djava.security.policy=<i><b>client.policy</b></i>        \
+     -Dexamples.activation.client.codebase=<i><b>clientCodebase</b></i>   \
+     -Dexamples.activation.name=<i><b>name</b></i>             \
+     examples.activation.CounterClient [<i><b>host</b></i>]
+</pre>
+<p>where:</p>
+<ul>
+<li><i><b>clientDir</b></i> is the root directory for the client
+program (its class path),</li>
+<li><i><b>client.policy</b></i> is the security policy file for
+this program,</li>
+<li><i><b>clientCodebase</b></i> is the location (URL) for this
+program's class (used in granting permissions to this program in
+the <i><b>client.policy</b></i> file)</li>
+<li><i><b>name</b></i> is the name for the object's stub in the
+registry</li>
+<li><i><b>host</b></i> is the server's host</li>
+</ul>
+<p>Note: <code>rmid</code> must be running on its default port, and
+<code>rmiregistry</code> must be running on its default port (both
+on the remote host) prior to running this program.</p>
+<p>The following is an example <code>client.policy</code> file that
+grants the appropriate permissions for the activation examples:</p>
+<pre class="codeblock">
+grant codeBase "${examples.activation.client.codebase}" {
+
+    // permissions to read system properties required by the client
+    permission java.util.PropertyPermission "examples.activation.name","read";
+
+    // permission to connect to the registry, activation system, and remote host
+    permission java.net.SocketPermission "*:1024-","connect";
+};
+</pre>
+<p>The codebase to which permissions are granted is a file URL
+specifying the location of the client's classes. This file URL is
+the value of the <code>examples.activation.client.codebase</code>
+system property, defined when the client program is run. The client
+needs two permissions:</p>
+<ul>
+<li><code>java.util.PropertyPermission</code> - to read the system
+property <code>examples.activation.name</code> that specifies the
+name for the stub in the registry</li>
+<li><code>java.net.SocketPermission</code> - to connect to the
+registry, activation system, and remote object's host</li>
+</ul>
+<h2><a name="a3" id="a3"></a>Compile the source files</h2>
+<p>The source files for this example can be compiled as
+follows:</p>
+<pre class="codeblock">
+javac -d <b><i>implDir</i></b> Counter.java CounterImpl.java 
+javac -d <b><i>clientDir</i></b> Counter.java CounterClient.java
+</pre>
+<p>where <b><i>implDir</i></b> is the destination directory to put
+the implementation's class files in, and <b><i>clientDir</i></b> is
+the destination directory to put the client's class files in.</p>
+<h2><a name="a4" id="a4"></a>Run the <code>Setup</code>
+program</h2>
+<p>Once your implementation phase is complete, you need to register
+information about the activatable object so a client can use it.
+The <code>Setup</code> program, described by the tutorial <a href=
+"setup.html">Using Activation: the <code>Setup</code> Program</a>,
+registers an activation descriptor for an activatable object with
+<code>rmid</code>, and then binds the remote object's stub in an
+<code>rmiregistry</code> so that clients can look it up.</p>
+<p>To run the <code>Setup</code> program for this example, see the
+section <a href="setup.html#a3">Start <code>rmid</code>,
+<code>rmiregistry</code>, and the <code>Setup</code> program</a> in
+the <code>Setup</code> program tutorial, which describes how to
+start <code>rmid</code>, <code>rmiregistry</code>, and the
+<code>Setup</code> program itself.</p>
+<p>After you run <code>rmid</code> and <code>rmiregistry</code> as
+instructed in the <code>Setup</code> tutorial, you will need to run
+the <code>Setup</code> program to register an activation descriptor
+for an activatable object that implements the class
+<code>examples.activation.CounterImpl</code>. The following command
+line runs the <code>Setup</code> program, supplying an appropriate
+file URL for each codebase used:</p>
+<pre class="codeblock">
+java -cp <i><b>setupDir</b></i>:<i><b>implDir</b></i>                       \
+     -Djava.security.policy=<i><b>setup.policy</b></i>                      \
+     -Djava.rmi.server.codebase=file:/<i><b>implDir</b></i>/                \
+     -Dexamples.activation.setup.codebase=file:/<i><b>setupDir</b></i>/     \
+     -Dexamples.activation.impl.codebase=file:/<i><b>impDir</b></i>/        \
+     -Dexamples.activation.name=examples.activation.Counter                 \
+     -Dexamples.activation.policy=<i><b>group.policy</b></i>                \
+     -Dexamples.activation.file=<i><b>file</b></i>                          \
+         examples.activation.Setup examples.activation.CounterImpl
+</pre>
+<p>where:</p>
+<ul>
+<li><i><b>setupDir</b></i> is the root directory for the
+<code>Setup</code> program's class</li>
+<li><i><b>implDir</b></i> is the root directory for the
+implementation's classes</li>
+<li><i><b>setup.policy</b></i> is the security policy file for the
+<code>Setup</code> program</li>
+<li><i><b>group.policy</b></i> is the security policy file for the
+activation group</li>
+<li><i><b>file</b></i> is the name of a file containing the
+object's persistent state which is registered as the
+<code>data</code> in the object's activation descriptor</li>
+</ul>
+<p>Note that each file URL above has the required trailing slash.
+Examples of group and setup policy files, suitable for this
+tutorial, are described in the <code>Setup</code> tutorial, and are
+listed below:</p>
+<ul>
+<li><a href="src/setup.policy"><code>setup.policy</code></a></li>
+<li><a href="src/group.policy"><code>group.policy</code></a></li>
+</ul>
+<p>The output from the <code>Setup</code> program should look like
+this:</p>
+<pre class="codeblock">
+Activation group descriptor registered.
+Activation descriptor registered.
+Stub bound in registry.
+</pre>
+<h2><a name="a5" id="a5"></a>Run the client</h2>
+<p>Once you have successfully registered an activation descriptor
+for a <code>CounterImpl</code> implementation, you can run the
+client program, which, during its first execution, will cause the
+activatable object to activate.</p>
+<p>The following command line illustrates how to run the client
+program, specifying a file URL for the client codebase:</p>
+<pre class="codeblock">
+java -cp <b><i>clientDir</i></b>                                              \
+     -Djava.security.policy=<i><b>client.policy</b></i>                       \
+     -Dexamples.activation.client.codebase=file:/<i><b>clientDir</b></i>/     \
+     -Dexamples.activation.name=examples.activation.Counter                   \
+     examples.activation.CounterClient [<i><b>host</b></i>]
+</pre>
+<p>where:</p>
+<ul>
+<li><i><b>clientDir</b></i> is the root directory for the client
+program (its class path).</li>
+<li><i><b>client.policy</b></i> is the security policy file for
+this program.</li>
+<li><i><b>name</b></i> is the name for the object's stub in the
+registry.</li>
+<li><i><b>host</b></i> is the server's host.</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>The client codebase must have a trailing slash.</li>
+<li>The <b><i>name</i></b> must match the name supplied to the
+<code>Setup</code> program. In this example, we used the name
+<code>examples.activation.Counter</code>.</li>
+<li><code>rmid</code> and <code>rmiregistry</code> must be running
+on the server's host. If the server's host is not the local host,
+the <b><i>host</i></b> argument must specify the remote host that
+they are running on.</li>
+</ul>
+<p>The output from the client should look like this:</p>
+<pre class="codeblock">
+Obtained stub from the registry.
+Invoking increment method...
+Returned from increment remote call.
+count = 1
+</pre>
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

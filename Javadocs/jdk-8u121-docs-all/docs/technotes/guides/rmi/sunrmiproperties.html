@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>sun.rmi Properties</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1><b><code>sun.rmi</code> Properties</b></h1>
+
+<p><br /></p>
+<hr />
+<p>WARNING: The properties described here are not supported, can
+change at any time, and only exist in certain implementations of the
+Java Remote Method Invocation
+(Java RMI). These properties are not part of
+the Java RMI public API. To see a list of the properties that
+<i>are</i> part of the public API, please refer to the page,
+<a href="javarmiproperties.html"><code>java.rmi</code>
+Properties</a>.</p>
+<hr />
+<p><b>Please Note</b>: Unless otherwise stated, any output from
+these properties is sent to <code>System.err</code>.</p>
+<p>Each of the properties that have names ending in
+"<code>.logLevel</code>" have possible values of
+"<code>SILENT</code>", "<code>BRIEF</code>", and
+"<code>VERBOSE</code>". These values are case insensitive and may
+be abbreviated as a string containing the first <i>n</i> letters,
+where <i>n</i> is greater than or equal to 1. If not specified,
+these properties have a default value of "<code>SILENT</code>". A
+value of <code>"BRIEF"</code> causes the corresponding <a href=
+"logging.html"><code>Logger</code></a> to be set to the level
+<code>Level.FINE</code>, and a value of <code>"VERBOSE"</code>
+causes the corresponding <code>Logger</code> to be set to the level
+<code>Level.FINER</code>. Use of the logging configuration file is
+now preferred over the use of these <code>sun.rmi.*</code> system
+properties for logging.</p>
+<p>Logging messages are sent to <code>System.err</code>. For
+instance, if a property is said to send output to the "transport"
+log, this means that logging messages are sent to a
+<code>LogStream</code> returned by
+<code>java.rmi.server.LogStream.log("transport")</code>, which
+sends messages to <code>System.err</code>, unless you've set it to
+something else.</p>
+<hr />
+<h2>Properties that can be set on <code>rmid</code></h2>
+<dl>
+<dt><b><code>sun.rmi.activation.execPolicy</code></b></dt>
+<dd>The value of this property controls the policy that
+<code>rmid</code> uses to determine whether or not the information
+in an <code>ActivationGroupDesc</code> may be used to launch a
+virtual machine for an activation group. The possible values for
+the property are <code>default</code>, <code>none</code>, or the
+fully qualified name of a class that implements a method named
+<code>checkExecCommand</code> that is called to verify
+<code>ActivationGroupDesc</code> information. For details, see the
+tools documentation for <code>rmid</code> [<a href=
+"../../tools/unix/rmid.html">Solaris, Linux, or Mac OS X</a>] [<a href=
+"../../tools/windows/rmid.html">Windows</a>].</dd>
+<dt><b><code>sun.rmi.activation.execTimeout</code></b></dt>
+<dd>The value of this property represents the time (in
+milliseconds) that the activation system will wait for a spawned
+activation group to start up. Setting this property gives you the
+ability to shorten or lengthen the maximum time that
+<code>rmid</code> will wait for an activation group to start up.
+The default value is 30000 milliseconds (30 seconds).</dd>
+<dt><b><code>sun.rmi.activation.groupThrottle</code></b></dt>
+<dd>The value of this property represents the maximum number of
+activation group VMs that <code>rmid</code> will allow to be in the
+"spawning but not yet active" state simultaneously. If more VMs
+need to be started, they will queue up until one of the current
+spawn attempts either succeeds or times out. Note that this
+property does not limit the maximum number of active VMs; it is
+intended to smooth out sudden spikes of activity to avoid reaching
+operating system limits. While setting the value of this property
+to a lower number may result in a longer start-up time for
+<code>rmid</code>, and setting the value to a higher number could
+shorten the start-up time, setting this value too high can crash
+<code>rmid</code>, because your system may run out of resources.
+The default value is 3. In previous releases, this property was
+named <code>sun.rmi.rmid.maxstartgroup</code> which is no longer
+supported.</dd>
+<dt><b><code>sun.rmi.activation.groupTimeout</code></b></dt>
+<dd>The value of this property represents the time (in
+milliseconds) that <code>rmid</code> will wait after destroying an
+activation group's process before creating a new incarnation of the
+activation group. The default value is 60000 milliseconds (60
+seconds).</dd>
+<dt><b><code>sun.rmi.activation.snapshotInterval</code></b></dt>
+<dd>This property controls the number of updates for which the
+activation system will wait before it serializes a snapshot of its
+state to the <code>rmid</code> log file on disk. An "update" refers
+to a persistent change in the state of the activation system (for
+example, the registration of an <code>Activatable</code> object)
+since the last snapshot was taken. Changing the value of this
+property can be used to make <code>rmid</code> re-start more
+quickly (by taking snapshots of the log more often) or to make
+<code>rmid</code> more efficient (by taking snapshots of the log
+less often). The value of this property is a positive integer
+value. The default value is 200.</dd>
+<dt><b><code>sun.rmi.log.debug</code></b></dt>
+<dd>If this value is <code>true</code>, details of
+<code>rmid</code>'s logging activity are sent to
+<code>System.err</code>.</dd>
+<dt><b><code>sun.rmi.server.activation.debugExec</code></b></dt>
+<dd>If this value is <code>true</code>, the activation system will
+print out debugging information to the command line that is used
+for spawning activation groups. By default, the value is
+<code>false</code>, so debugging information is not printed.</dd>
+</dl>
+<h2>Properties that are useful to set on VMs that export remote
+objects</h2>
+<dl>
+<dt><b><code>sun.rmi.dgc.ackTimeout</code></b></dt>
+<dd>The value of this property represents the length of time (in
+milliseconds) that the server-side Java RMI runtime will strongly
+refer to a remote object (or a reference to a remote object) that
+has been returned from the current virtual machine as part of the
+result of a remote method call, until it receives positive
+acknowledgment from the client that the remote reference has been
+fully received and processed. This timeout only applies to failure
+situations (in which the client fails to send the acknowledgment).
+Setting the value too low can increase the risk of a remote object
+being prematurely garbage collected when the only known reference
+to the remote object is the one in transit as part of the remote
+method call result. The maximum value is
+<code>Long.MAX_VALUE</code>. The default value is 300000 (five
+minutes).</dd>
+<dt><b><code>sun.rmi.dgc.checkInterval</code></b></dt>
+<dd>The value of this property represents (in milliseconds) how
+often the Java RMI runtime checks for expired DGC leases. The
+default value is half the value of the <a href=
+"javarmiproperties.html#leaseValue"><code><b>java.rmi.dgc.leaseValue</b></code></a>
+property.</dd>
+<dt><b><code>sun.rmi.dgc.logLevel</code></b></dt>
+<dd>This property controls the logging of incoming and outgoing
+calls related to DGC lease granting, renewing, and expiration. It
+sends output to the "dgc" log.</dd>
+<dt><b><code>sun.rmi.dgc.server.gcInterval</code></b></dt>
+<dd>When it is necessary to ensure that unreachable remote objects
+are unexported and garbage collected in a timely fashion, the value
+of this property represents the maximum interval (in milliseconds)
+that the Java RMI runtime will allow between garbage collections of
+the local heap. The default value is 3600000 milliseconds (one
+hour).</dd>
+<dt><b><code>sun.rmi.loader.logLevel</code></b></dt>
+<dd>This property controls the logging of each class name and
+codebase, whenever the Java RMI runtime attempts to load a class as
+a result of unmarshalling either an argument or return value. This
+property sends output to the "loader" log.</dd>
+<dd>
+<p><a name="et" id="et"></a></p>
+</dd>
+<dt><b><code>sun.rmi.server.exceptionTrace</code></b></dt>
+<dd>This property controls the output of server-side stack traces
+from exceptions and errors that are thrown by dispatched, incoming
+remote calls. If this value is <code>true</code>, exception stack
+traces will be printed. By default (<code>false</code>), exception
+and error stack traces are not printed.</dd>
+<dd>
+<p><a name="suppressStackTraces" id="suppressStackTraces"></a></p>
+</dd>
+<dt><b><code>sun.rmi.server.suppressStackTraces</code></b></dt>
+<dd>If this value is <code>true</code>, the server-side Java RMI
+runtime implementation will clear the stack traces of all
+exceptions thrown from the current virtual machine as the result of
+remote calls. This property is useful for certain server
+applications that may wish to prevent any server-side stack trace
+data from accompanying an exception to be marshalled out as the
+result of an incoming remote call, perhaps for reasons of
+performance or confidentiality.</dd>
+<dt><b><code>sun.rmi.transport.logLevel</code></b></dt>
+<dd>This property controls detailed logging throughout the
+transport layer. It sends output to the "transport" log.</dd>
+<dt><b><code>sun.rmi.transport.tcp.localHostNameTimeOut</code></b></dt>
+<dd>The value of this property represents the time (in
+milliseconds) that the Java RMI runtime will wait to obtain a fully
+qualified domain name for the local host. The default value is
+10000 milliseconds (10 seconds).</dd>
+<dt><b><code>sun.rmi.transport.tcp.logLevel</code></b></dt>
+<dd>This property provides detailed logging for the TCP-specific
+transport sub-layer. It sends output to the "tcp" log.</dd>
+<dd>
+<p><a name="readTimeout" id="readTimeout"></a></p>
+</dd>
+<dt><b><code>sun.rmi.transport.tcp.readTimeout</code></b></dt>
+<dd>The value of this property represents the time (in
+milliseconds) used as an idle timeout for incoming TCP connections
+the Java RMI runtime uses. The value is passed to
+<code>java.net.Socket.setSoTimeout</code>. This property is used
+only for cases where a client has not dropped an unused connection
+as it should (see <a href=
+"#connectionTimeout"><i><code>sun.rmi.transport.connectionTimeout</code></i></a>).
+The default value is 2*3600*1000 milliseconds (two hours).</dd>
+<dt><b><code>sun.rmi.transport.tcp.maxConnectionThreads</code></b></dt>
+<dd>The value of this property controls the maximum size of the
+pool of threads used to handle incoming connections, and thus it
+places an upper bound on the number of incoming remote method
+invocations that can execute concurrently. Setting this property to
+a lower value may improve the throughput of a Java RMI server
+application under heavy load, but setting it too low may (depending
+on the nature of the application's remote invocation patterns) lead
+to deadlock or starvation. The default value is the maximum,
+<code>Integer.MAX_VALUE</code>, which effectively means no
+limit.</dd>
+<dt><b><code>sun.rmi.transport.tcp.threadKeepAliveTime</code></b></dt>
+<dd>The value of this property controls the amount of time that a
+thread in the pool of threads used to handle incoming connections
+will remain idle before terminating. The default value is 60000
+milliseconds (one minute).</dd>
+</dl>
+<h2>Properties that are useful to set on VMs that make remote
+method calls</h2>
+<dl>
+<dt><b><code>sun.rmi.client.logCalls</code></b></dt>
+<dd>If the value of this property is <code>true</code>, the
+<code>sun.rmi.client.call</code> logger will be set to the level
+<code>Level.FINER</code>. Remote calls are logged at the level
+<code>Level.FINER</code>, and exceptions from remote calls are
+logged at the level <code>Level.FINE</code>.</dd>
+<dt><b><code>sun.rmi.dgc.cleanInterval</code></b></dt>
+<dd>The value of this property represents the maximum length of
+time (in milliseconds) that the Java RMI runtime will wait before
+retrying a failed DGC "clean" call. The default value is 180000
+milliseconds (three minutes).</dd>
+<dt><b><code>sun.rmi.dgc.client.gcInterval</code></b></dt>
+<dd>When it is necessary to ensure that DGC clean calls for
+unreachable remote references are delivered in a timely fashion,
+the value of this property represents the maximum interval (in
+milliseconds) that the Java RMI runtime will allow between garbage
+collections of the local heap. The default value is 3600000
+milliseconds (one hour).</dd>
+<dt><b><code>sun.rmi.loader.logLevel</code></b></dt>
+<dd>This property controls the logging of each class name and
+codebase, whenever the Java RMI runtime attempts to load a class as
+a result of unmarshalling either an argument or return value. This
+property sends output to the "loader" log.</dd>
+<dt><b><code>sun.rmi.server.logLevel</code></b></dt>
+<dd>This property controls the logging of information related to
+outgoing calls, including some connection-reuse information. It
+sends output to the "transport" log.</dd>
+<dd>
+<p><a name="connectionTimeout" id="connectionTimeout"></a></p>
+</dd>
+<dt><b><code>sun.rmi.transport.connectionTimeout</code></b></dt>
+<dd>The value of this property represents the period (in
+milliseconds) for which socket connections may reside in an
+"unused" state, before the Java RMI runtime will allow those
+connections to be freed (closed). The default value is 15000
+milliseconds (15 seconds). See also <a href=
+"#readTimeout"><i><code>sun.rmi.transport.tcp.readTimeout</code></i></a>.</dd>
+<dt><b><code>sun.rmi.transport.logLevel</code></b></dt>
+<dd>This property controls detailed logging throughout the
+transport layer. It sends output to the "transport" log.</dd>
+<dt><b><code>sun.rmi.transport.proxy.connectTimeout</code></b></dt>
+<dd>The value of this property represents the maximum length of
+time (in milliseconds) that the Java RMI runtime will wait for a
+connection attempt (<code>createSocket</code>) to complete, before
+attempting to contact the server using HTTP. This property is only
+used when the <code>http.proxyHost</code> property is set and the
+value of <code>java.rmi.server.disableHttp</code> is
+<code>false</code>. The default value is 15000 milliseconds (15
+seconds).</dd>
+<dd>
+<p><a name="eagerHttpFallback" id="eagerHttpFallback"></a></p>
+</dd>
+<dt><b><code>sun.rmi.transport.proxy.eagerHttpFallback</code></b></dt>
+<dd>If this value is true and the <a href=
+"javarmiproperties.html#disableHttp"><code><b>java.rmi.server.disableHttp</b></code></a>
+system property is not set, then the default global
+<code>RMISocketFactory</code> will fall back to HTTP tunneling when
+any <code>java.net.SocketException</code> is thrown from an initial
+(direct) connection attempt, as opposed to the default behavior of
+falling back to HTTP tunneling only if an initial connection
+attempt throws a <code>java.net.UnknownHostException</code> or
+<code>java.net.NoRouteToHostException</code>.
+<p>This setting can be useful when dealing with firewalls that deny
+(instead of ignore) connection attempts to unauthorized ports,
+resulting in <code>java.net.ConnectionException</code>s inside the
+client's default global <code>RMISocketFactory</code>. If this
+system property is not enabled, then such
+<code>ConnectionException</code>s will not trigger HTTP fallback,
+since they are neither <code>UnknownHostException</code>s nor
+<code>NoRouteToHostException</code>s. However, if this system
+property is enabled, then the <code>ConnectionException</code>s
+will cause HTTP fallback to occur, because
+<code>ConnectionException</code> is a subclass of
+<code>SocketException</code>.</p>
+</dd>
+<dt><b><code>sun.rmi.transport.proxy.logLevel</code></b></dt>
+<dd>This property controls the logging of events
+(<code>createSocket</code> and <code>createServerSocket</code>)
+when the default <code>RMISocketFactory</code> class is used. This
+type of logging is likely to be useful for applications that use
+Java RMI over HTTP. Events in custom socket factories are not
+logged by this property. It sends some messages to the "proxy" log,
+and others to the "transport" log.</dd>
+<dt><b><code>sun.rmi.transport.tcp.handshakeTimeout</code></b></dt>
+<dd>The value of this property represents the length of time (in
+milliseconds) that the client-side Java RMI runtime will use as a
+socket read timeout when reading initial handshake data (protocol
+acknowledgment) when establishing a new JRMP connection. This
+property is used to configure how long the Java RMI runtime will
+wait before deciding that a TCP connection accepted by a remote
+server cannot actually be used, either because the entity listening
+on the remote host's port is not actually a Java RMI server, or
+because the server is somehow not functioning correctly. The
+maximum value is <code>Integer.MAX_VALUE</code>, and a value of
+zero indicates an infinite timeout. The default value is 60000 (one
+minute).</dd>
+<dt><b><code>sun.rmi.transport.tcp.responseTimeout</code></b></dt>
+<dd>The value of this property represents the length of time (in
+milliseconds) that the client-side Java RMI runtime will use as a
+socket read timeout on an established JRMP connection when reading
+response data for a remote method invocation. Therefore, this
+property can be used to impose a timeout on waiting for the results
+of remote invocations; if this timeout expires, the associated
+invocation will fail with a <code>java.rmi.RemoteException</code>.
+Setting this property should be done with due consideration,
+however, because it effectively places an upper bound on the
+allowed duration of any successful outgoing remote invocation. The
+maximum value is <code>Integer.MAX_VALUE</code>, and a value of
+zero indicates an infinite timeout. The default value is zero (no
+timeout).</dd>
+<dt><b><code>sun.rmi.transport.tcp.logLevel</code></b></dt>
+<dd>This property provides detailed logging for the TCP-specific
+transport sub-layer. It sends output to the "tcp" log.</dd>
+</dl>
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

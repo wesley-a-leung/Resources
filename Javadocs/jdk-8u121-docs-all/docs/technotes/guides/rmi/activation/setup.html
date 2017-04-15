@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Using Activation: the Setup Program</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Using Activation: the <code>Setup</code> Program</h1>
+
+<p>This tutorial describes how to write a program that registers an
+activation descriptor for a remote object with the
+Java Remote Method Invocation
+(Java RMI) activation system daemon (<code>rmid</code>) and then
+binds a stub for that remote object in an <code>rmiregistry</code>
+so that clients can look it up.</p>
+<p>This tutorial has the following steps:</p>
+<ul>
+<li><a href="#a1">Implement the <code>Setup</code> program</a></li>
+<li><a href="#a2">Compile the source file</a></li>
+<li><a href="#a3">Start <code>rmid</code>,
+<code>rmiregistry</code>, and the <code>Setup</code>
+program</a></li>
+</ul>
+The files needed for this tutorial are:
+<ul>
+<li><a href="src/Setup.java"><code>Setup.java</code></a> - main
+<code>Setup</code> program</li>
+<li><code><a href="src/setup.policy">setup.policy</a></code> -
+security policy file for the <code>Setup</code> program</li>
+<li><code><a href="src/rmid.policy">rmid.policy</a></code> -
+security policy file for <code>rmid</code></li>
+<li><code><a href="src/group.policy">group.policy</a></code> -
+security policy file for the activation group</li>
+</ul>
+<hr />
+<h2><a name="a1" id="a1"></a>Implement the <code>Setup</code>
+program</h2>
+<p>The <code>Setup</code> program, implemented by the class
+<code>examples.activation.Setup</code>, registers an activation
+descriptor with <code>rmid</code> to enable future activation of
+the object specified by that activation descriptor. This program
+does not create an instance of a remote object, but instead
+registers a remote object's stub with an <code>rmiregistry</code>
+so that clients can look it up. This <code>Setup</code> program
+must be run prior to running any of the clients described in the
+other activation tutorials.</p>
+<p>The <code>Setup</code> program uses a number of system
+properties to customize the information that is registered with
+<code>rmid</code> and <code>rmiregistry</code>. The program also
+takes a single command-line argument that specifies the
+package-qualified name of the implementation class for the
+activatable remote object being registered. The <code>Setup</code>
+program is run as follows:</p>
+<pre class="codeblock">
+java -cp <i><b>classpath</b></i> \
+     -Djava.security.policy=<i><b>setup.policy</b></i>        \
+     -Djava.rmi.server.codebase=<i><b>codebase</b></i>         \
+     -Dexamples.activation.setup.codebase=<i><b>setupCodebase</b></i>  \
+     -Dexamples.activation.impl.codebase=<i><b>implCodebase</b></i> \
+     -Dexamples.activation.name=<i><b>name</b></i>             \
+     [-Dexamples.activation.file=<i><b>filename</b></i>]       \
+     [-Dexamples.activation.policy=<i><b>group.policy</b></i>] \
+     examples.activation.Setup <i><b>implClass</b></i>
+</pre>
+<p>where:</p>
+<ul>
+<li><i><b>classpath</b></i> is a class path that includes the
+<code>Setup</code> program and the implementation classes</li>
+<li><i><b>setup.policy</b></i> is the security policy file for the
+<code>Setup</code> program</li>
+<li><i><b>codebase</b></i> is the location (URL) of the remote
+interface class(es)</li>
+<li><i><b>setupCodebase</b></i> is the location (URL) the
+<code>Setup</code> program class (used in granting permissions to
+the <code>Setup</code> program in the <i><b>setup.policy</b></i>
+file)</li>
+<li><i><b>implCodebase</b></i> is the location (URL) of the
+implementation class(es), used in the activation descriptor and
+also used in the group policy file as the codebase to grant
+permissions to</li>
+<li><i><b>name</b></i> is the name for the object's stub to be
+bound in the registry</li>
+<li><i><b>file</b></i> (optional) is the name of a file containing
+the object's persistent state which is registered as the
+<i><b>data</b></i> in the object's activation descriptor (no
+default)</li>
+<li><i><b>group.policy</b></i> (optional) is the security policy
+file for the activation group (defaults to
+<code>group.policy</code>), and</li>
+<li><i><b>implClass</b></i> is the fully-qualified name of the</li>
+<li style="list-style: none">implementation class.</li>
+</ul>
+<p>The following is an example policy file for the
+<code>Setup</code> program:</p>
+<pre class="codeblock">
+  grant codeBase &quot;${examples.activation.setup.codebase}&quot; {
+
+    // permissions to read system properties required by setup program
+    permission java.util.PropertyPermission &quot;examples.activation.impl.codebase&quot;,&quot;read&quot;;
+    permission java.util.PropertyPermission &quot;examples.activation.policy&quot;,&quot;read&quot;;
+    permission java.util.PropertyPermission &quot;examples.activation.file&quot;,&quot;read&quot;;
+    permission java.util.PropertyPermission &quot;examples.activation.name&quot;,&quot;read&quot;;
+
+    // permission to connect to the activation system and the registry
+    permission java.net.SocketPermission &quot;*:1098-1099&quot;,&quot;connect&quot;;
+};
+</pre>
+<p>The codebase to which permissions are granted is a URL
+specifying the location of the <code>Setup</code> program's
+implementation class(es). This URL is the value of the
+<code>examples.activation.setup.codebase</code> system property,
+which is defined when the <code>Setup</code> program is run. The
+<code>Setup</code> program needs the following permissions:</p>
+<ul>
+<li><code>java.util.PropertyPermission</code> - to read various
+system properties required by the <code>Setup</code> program</li>
+<li><code>java.net.SocketPermission</code> - to connect to the
+activation system (port <code>1098</code>) to register an
+activation descriptor, and to connect to the registry (port
+<code>1099</code>) to bind the activatable object's stub to a
+name</li>
+</ul>
+<p>There are several steps to writing this <code>Setup</code>
+program:</p>
+<ul>
+<li><a href="#a11">Construct an activation group
+descriptor</a></li>
+<li><a href="#a12">Register the group descriptor</a></li>
+<li><a href="#a13">Construct an activation descriptor</a></li>
+<li><a href="#a14">Register the activation descriptor</a>, and
+finally,</li>
+<li><a href="#a15">Bind the remote object's stub in an
+<code>rmiregistry</code></a></li>
+</ul>
+<p>The <code>Setup</code> class has a static <code>main</code>
+method that performs all of the above steps. But before doing so,
+the <code>main</code> method sets a <code>SecurityManager</code>
+and obtains the single command line argument that specifies the
+package-qualified name of the implementation class for the
+activatable remote object. The rest of the steps are described
+below. See <a href="src/Setup.java"><code>Setup.java</code></a> for
+the full source code.</p>
+<a name="a11" id="a11"></a>
+<h3>Construct an activation group descriptor</h3>
+<p>Before an application registers information about a particular
+activatable remote object, it first needs to register information
+about the <em>activation group</em> that the object will be
+contained in. An <em>activation group</em> is a container virtual
+machine (VM) for a set of activatable objects. Each activation
+group manages the execution of one or more activatable objects. An
+<em>activation group descriptor</em> contains information that the
+activation system needs to start an activation group's VM. An
+application can register an activation group descriptor with the
+activation system <code>rmid</code> to obtain an activation group
+ID to use for the activatable object, or the application can use an
+activation group ID obtained from a previous group
+registration.</p>
+<p>The activation group descriptor, an instance of the class
+<code>java.rmi.activation.ActivationGroupDesc</code>, can be
+constructed in several ways. This tutorial uses the two parameter
+constructor
+<code>ActivationGroupDesc(Properties,CommandEnvironment)</code>.
+The <code>Properties</code> map contains overrides for system
+properties in the activation group VM. For this tutorial, an
+activation group VM needs the following system properties
+defined:</p>
+<ul>
+<li><code>java.security.policy</code> - the group's security policy
+file</li>
+<li><code>java.class.path</code> - a dummy class path to prevent an
+activation group from loading implementation classes from the local
+class path</li>
+<li><code>examples.activation.impl.codebase</code> - the location
+of the implementation classes, which the group's policy file uses
+to grant permissions to</li>
+<li><code>examples.activation.file</code> - a file containg the
+object's persistent state</li>
+</ul>
+<p>The <code>java.security.policy</code> property is specified by
+the <code>examples.activation.policy</code> system property, and
+defaults to the file named <code>group.policy</code> which will, in
+practice, be in the working directory where <code>rmid</code> is
+run. The <code>java.class.path</code> property is defined as
+<code>no_classpath</code>. The
+<code>examples.activation.impl.codebase</code> and
+<code>examples.activation.file</code> properties are specified by
+their current values (respectively), defined when the
+<code>Setup</code> program runs.</p>
+<p>The group descriptor is constructed as follows:</p>
+<pre class="codeblock">
+String policy =
+    System.getProperty("examples.activation.policy", "group.policy");
+String implCodebase =
+    System.getProperty("examples.activation.impl.codebase");
+String filename =
+    System.getProperty("examples.activation.file", "");
+
+Properties props = new Properties();
+props.put("java.security.policy", policy);
+props.put("java.class.path", "no_classpath");
+props.put("examples.activation.impl.codebase", implCodebase);
+if (filename != null &amp;&amp; !filename.equals("")) {
+    props.put("examples.activation.file", filename);
+}
+
+ActivationGroupDesc groupDesc = new ActivationGroupDesc(props, null);
+</pre>
+<p>The following is an example <code>group.policy</code> file that
+grants the appropriate permissions for the activation examples:</p>
+<pre class="codeblock">
+grant codeBase "${examples.activation.impl.codebase}" {
+    
+    // permission to read and write object's file
+    permission java.io.FilePermission "${examples.activation.file}","read,write";
+    
+    // permission to listen on an anonymous port
+    permission java.net.SocketPermission "*:1024-","accept";
+};
+</pre>
+<p>The codebase to which permissions are granted is a URL
+specifying the location of the activatable object's implementation
+classes. This URL is the value of the
+<code>examples.activation.impl.codebase</code> system property,
+which will be defined in the activation group's VM. An activatable
+object in the group needs two permissions:</p>
+<ul>
+<li><code>java.io.FilePermission</code> - to read and write the
+file containing the activatable object's persistent state</li>
+<li><code>java.net.SocketPermission</code> - to export the
+activatable object to accept connections an anonymous port</li>
+</ul>
+<a name="a12" id="a12"></a>
+<h3>Register the group descriptor</h3>
+Next, the <code>Setup</code> program must register the activation
+group descriptor with the activation system to obtain the group's
+ID, an instance of the class
+<code>java.rmi.activation.ActivationGroupID</code>. The class
+<code>java.rmi.activation.ActivationGroup</code> has a static
+method <code>getSystem</code> for obtaining the stub for the
+activation system. The <code>Setup</code> program calls the
+activation system's remote method <code>registerGroup</code>,
+passing the group descriptor created above, to register the
+activation group:
+<pre class="codeblock">
+ActivationGroupID groupID = 
+    ActivationGroup.getSystem().registerGroup(groupDesc);
+</pre>
+<a name="a13" id="a13"></a>
+<h3>Construct an activation descriptor</h3>
+<p>Once the activation group ID is obtained, the <code>Setup</code>
+program can register the activation descriptor. The activation
+descriptor has four basic pieces of information:</p>
+<ul>
+<li>the activation group ID for the group that the object will be
+contained in</li>
+<li>the implementation's class name</li>
+<li>the location (URL) specifying where the implementation's
+classes can be loaded from</li>
+<li>a marshalled object containing initialization information for
+the object</li>
+</ul>
+<p>In this example, the activation group ID is the one obtained
+above; the implementation's class name is the class name,
+<strong><em>implClass</em></strong>, supplied as the command-line
+argument to the <code>Setup</code> program; the location (URL) is
+specified by the system property
+<code>examples.activation.impl.codebase</code>; and, the
+initialization data (which is optional) is a filename specified by
+the system property <code>examples.activation.file</code>.</p>
+<p>The activation descriptor is constructed as follows:</p>
+<pre class="codeblock">
+MarshalledObject data = null;
+if (filename != null &amp;&amp; !filename.equals("")) {
+    data = new MarshalledObject(filename);
+}
+
+ActivationDesc desc =
+    new ActivationDesc(groupID, implClass, implCodebase, data);
+</pre>
+<a name="a14" id="a14"></a>
+<h3>Register the activation descriptor</h3>
+<p>Next, the <code>Setup</code> program must register the
+activation descriptor with the activation system. The class
+<code>Activatable</code> has a static convenience method,
+<code>register</code>, that registers an activation descriptor with
+the activation system and returns a stub for the activatable object
+specified by the descriptor.</p>
+<pre class="codeblock">
+Remote stub = Activatable.register(desc);
+</pre>
+<p><strong>Note</strong>: The <code>register</code> method attempts
+to load a stub class for the implementation class in order to
+create a stub instance. If
+the <code>register</code> method is unable to load a pregenerated
+stub class, it will use an instance of a dynamically-generated
+proxy class that implements all the interfaces of the
+implementation class. In the latter case the <code>register</code>
+method needs <i>load the implementation class</i> in order to
+determine the remote interfaces that the implementation class
+implements. So, the <code>register</code> method has a slight
+behavioral difference, depending on whether a pregenerated or
+dynamically-generated stub class is used.</p>
+<a name="a15" id="a15"></a>
+<h3>Bind the remote object's stub in a
+<code>rmiregistry</code></h3>
+<p>Finally, the remote object's stub is bound to a name in the
+registry running on the default port of <code>1099</code>. The name
+is specified by the system property
+<code>examples.activation.name</code>.</p>
+<pre class="codeblock">
+String name = System.getProperty("examples.activation.name");
+LocateRegistry.getRegistry().rebind(name, stub);
+</pre>
+<h2><a name="a2" id="a2"></a>Compile the source file</h2>
+<p>The source file for this example can be compiled as follows:</p>
+<pre class="codeblock">
+javac -d <b><i>setupDir</i></b> Setup.java
+</pre>
+where <b><i>setupDir</i></b> is the root destination directory to
+put the class files in.
+<h2><a name="a3" id="a3"></a>Start <code>rmid</code>,
+<code>rmiregistry</code>, and the <code>Setup</code> program</h2>
+<p>To run this the <code>Setup</code> program, you will need to do
+the following:</p>
+<ul>
+<li><a href="#a31">Start <code>rmid</code></a></li>
+<li><a href="#a32">Start <code>rmiregistry</code></a></li>
+<li><a href="#a33">Run the <code>Setup</code> program</a></li>
+</ul>
+<a name="a31" id="a31"></a>
+<h3>Start <code>rmid</code></h3>
+<p>To start <code>rmid</code>, run the <code>rmid</code> command on
+the server's host. This command should produce no output if it is
+run with a security policy file as specified below. For more
+information, see the tools documentation for <code>rmid</code>
+[<a href="../../../tools/unix/rmid.html">Solaris, Linux, or Mac OS X</a>, <a href=
+"../../../tools/windows/rmid.html">Windows</a>].</p>
+<p>For example, in the Solaris Operating System:</p>
+<pre class="codeblock">
+rmid -J-Djava.security.policy=<i><b>rmid.policy</b></i> \
+     -J-Dexamples.activation.policy=<i><b>group.policy</b></i> &amp;
+         
+</pre>
+<p>Or, on Windows platforms:</p>
+<pre class="codeblock">
+start rmid -J-Djava.security.policy=<i><b>rmid.policy</b></i> \
+           -J-Dexamples.activation.policy=<i><b>group.policy</b></i>
+</pre>
+<p>where:</p>
+<ul>
+<li><i><b>rmid.policy</b></i> is the security policy file for
+<code>rmid</code></li>
+<li><i><b>group.policy</b></i> is the group policy file, used in
+<code>rmid</code>'s policy file</li>
+</ul>
+<p>The security policy file for <code>rmid</code> grants
+permissions for <code>rmid</code> to execute specific commands and
+to use specific command-line options in starting activation group
+VMs. For example, a user might grant specific permissions to start
+an activation group VM with one or more system properties or other
+<code>java</code> command-line options. This example allows
+<code>rmid</code> to start activation group VMs that define the
+system properties <code>java.security.policy</code>,
+<code>java.class.path</code>,
+<code>examples.activation.impl.codebase</code>, and
+<code>examples.activation.file</code>. The following example
+security policy file grants permission to start an activation group
+VM with these specific properties defined:</p>
+<pre class="codeblock">
+grant { 
+    // allow activation groups to use certain system properties
+    permission com.sun.rmi.rmid.ExecOptionPermission "-Djava.security.policy=${examples.activation.policy}";
+    permission com.sun.rmi.rmid.ExecOptionPermission "-Djava.class.path=no_classpath";
+    permission com.sun.rmi.rmid.ExecOptionPermission "-Dexamples.activation.impl.codebase=*";
+    permission com.sun.rmi.rmid.ExecOptionPermission "-Dexamples.activation.file=*";
+};
+</pre>
+<p>The first <code>ExecOptionPermission</code> permission grant
+restricts the <code>java.security.policy</code> system property to
+be the file specified by the system property
+<code>examples.activation.policy</code>, defined when
+<code>rmid</code> is run. The next permission grant allows a group
+to define the system property <code>java.class.path</code> as
+<code>no_classpath</code>, a dummy class path that prevents the
+group from having a valid class path. The next permission grant
+allows the group to define the system property
+<code>examples.activation.impl.codebase</code> to be any value. The
+final permission grant allows the
+<code>examples.activation.file</code> system property to be any
+value.</p>
+<a name="a32" id="a32"></a>
+<h3>Start <code>rmiregistry</code></h3>
+<p>To start the registry, run the <code>rmiregistry</code> command
+on the server's host. This command produces no output (when
+successful) and is typically run in the background. For more
+information, see the tools documentation for
+<code>rmiregistry</code> [<a href=
+"../../../tools/unix/rmiregistry.html">Solaris, Linux, or Mac OS X</a>, <a href=
+"../../../tools/windows/rmiregistry.html">Windows</a>].</p>
+<p>For example, in the Solaris Operating System:</p>
+<pre class="codeblock">
+rmiregistry &amp;
+</pre>
+<p>Or, on Windows platforms:</p>
+<pre class="codeblock">
+start rmiregistry 
+</pre>
+<p>By default, the registry runs on TCP port 1099. To start a
+registry on a different port, specify the port number from the
+command line. For example, to start the registry on port 2001 on a
+Windows platform:</p>
+<pre class="codeblock">
+start rmiregistry 2001
+</pre>
+<p><b>Note</b>: Make sure that <code>rmiregistry</code> does not
+have any implementation classes in its class path to prevent it
+from loading any classes from its local class path.</p>
+<p>If the registry will be running on a port other than 1099,
+you'll need to specify the port number in the calls to
+<code>LocateRegistry.getRegistry</code> in the <code>Setup</code>
+program, as well as any clients that access this registry. For
+example, if the registry is running on port 2001 in this example,
+the call to <code>getRegistry</code> would be:</p>
+<pre class="codeblock">
+Registry registry = LocateRegistry.getRegistry(2001);
+</pre>
+<p>Also note that if you use a registry port other than
+<code>1099</code>, you will also need to modify the
+<code>Setup</code> and client program's policy files to grant
+permission to connect to the registry's port.</p>
+<a name="a33" id="a33"></a>
+<h3>Run the <code>Setup</code> program</h3>
+<p>To start the <code>Setup</code> program, run the
+<code>Setup</code> class using the <code>java</code> command as
+follows:</p>
+<pre class="codeblock">
+java -cp <i><b>setupDir</b></i>:<i><b>implDir</b></i> \
+     -Djava.security.policy=<i><b>setup.policy</b></i>        \
+     -Djava.rmi.server.codebase=<i><b>codebase</b></i>         \
+     -Dexamples.activation.setup.codebase=<i><b>setupCodebase</b></i>       \
+     -Dexamples.activation.impl.codebase=<i><b>implCodebase</b></i> \
+     -Dexamples.activation.name=<i><b>name</b></i>             \
+     [-Dexamples.activation.file=<i><b>file</b></i>]       \
+     [-Dexamples.activation.policy=<i><b>group.policy</b></i>] \
+     examples.activation.Setup <i><b>implClass</b></i>
+</pre>
+<p>where:</p>
+<ul>
+<li><i><b>setupDir</b></i> is the root directory for the
+<code>Setup</code> program's class</li>
+<li><i><b>implDir</b></i> is the root directory for the
+implementation's classes</li>
+<li><i><b>setup.policy</b></i> is the security policy file for the
+<code>Setup</code> program</li>
+<li><i><b>codebase</b></i> is the location (URL) of the remote
+interface class(es)</li>
+<li><i><b>setupCodebase</b></i> is the location (URL) the
+<code>Setup</code> program class (used in granting permissions to
+the <code>Setup</code> program in the <i><b>setup.policy</b></i>
+file)</li>
+<li><i><b>implCodebase</b></i> is the location (URL) of the
+implementation class(es), used in the activation descriptor and
+also used in the group policy file as the codebase to grant
+permissions to</li>
+<li><i><b>name</b></i> is the name for the object's stub to be
+bound in the registry</li>
+<li><i><b>file</b></i> (optional) is the name of a file containing
+the object's persistent state which is registered as the
+<code>data</code> in the object's activation descriptor (no
+default)</li>
+<li><i><b>group.policy</b></i> (optional) is the security policy
+file for the activation group (defaults to
+<code>group.policy</code>), and</li>
+<li><i><b>implClass</b></i> is the fully-qualified name of the
+implementation class.</li>
+</ul>
+<p><b>Note</b>: If you use file URLs for any of the codebases
+listed above, make sure that each file URL has a trailing slash, or
+the codebase will be invalid.</p>
+<p>The output from the <code>Setup</code> program should look like
+this:</p>
+<pre class="codeblock">
+Activation group descriptor registered.
+Activation descriptor registered.
+Stub bound in registry.
+</pre>
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

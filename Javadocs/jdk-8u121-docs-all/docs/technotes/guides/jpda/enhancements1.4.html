@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+
+<style type="text/css">
+/*<![CDATA[*/
+
+p               {margin-left: 18pt;}
+pre             {margin-left: 18pt;}
+ul li, ul ul li {font-weight: normal;}
+a               {font-weight: bold;}
+
+/*]]>*/
+</style>
+<meta http-equiv="Content-Type" content=
+"text/html; charset=utf-8" />
+<title>JPDA Enhancements</title>
+<meta name="collection" content="reference" />
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Java Platform Debugger Architecture<br />
+Java SE 1.4 Enhancements</h1>
+
+The version 1.4 family of the JDK includes the following JPDA
+enhancements:
+<ul>
+<li><a href="#fsd">Full Speed Debugging</a></li>
+<li><a href="#hotswap">Enable "HotSwap" Class File
+Replacement</a></li>
+<li><a href="#instancefilters">Instance Filters</a></li>
+<li><a href="#debugotherlanguages">Support For Debugging Other
+Languages</a></li>
+<li><a href="#vmdeathrequests">VMDeathRequests</a></li>
+</ul>
+<hr />
+<a name="fsd" id="fsd"></a>
+<h2>Full Speed Debugging</h2>
+<p>The Java HotSpot virtual machine now uses "full-speed
+debugging". In the previous version of HotSpot, when debugging was
+enabled, the program executed using only the interpreter. Now, the
+full performance advantage of HotSpot Technology is available to
+programs running with debugging enabled. The improved performance
+allows long running programs to be more easily debugged. It also
+allows testing to proceed at full speed and the launch of a
+debugger to occur on an exception:</p>
+<pre>
+        -Xrunjdwp:transport=dt_socket,server=y,onuncaught=y,launch=myDebuggerLaunchScript
+</pre>
+<p>For details on launch "onthrow" and launch "onuncaught", see
+<a href="conninv.html">Connection and Invocation Details</a>.
+Setting a breakpoint only inhibits compilation (full speed
+execution) for the method containing the breakpoint. Execution
+reverts to the interpreter during some debug operations such as
+single-stepping and when method entry/exit or watchpoints are
+set.</p>
+<p>As of version 1.4.1, full-speed debugging is available with both
+the Java HotSpot Client VM (default) and Java HotSpot Server VM
+(invoked with the <code>-server</code> command-line flag). In the
+JDK 1.4.0, full-speed debugging was available only with the Java
+HotSpot Client VM.</p>
+<a name="hotswap" id="hotswap"></a>
+<h2>Enable "HotSwap" Class File Replacement</h2>
+<p>This new feature encapsulates the ability to substitute modified
+code in a running application through the debugger APIs. For
+example, one can recompile a single class and replace the old
+instance with the new instance.</p>
+<p>This change was made to address these issues:</p>
+<ul>
+<li>Tool (IDE) vendors want the ability to do fix-and-continue
+debugging. That is, while debugging, identify a problem, fix it,
+and continue debugging with fixed code.</li>
+<li>Organizations deploying long running servers wish to be able to
+fix bugs without taking down the server.</li>
+</ul>
+<p>HotSwap adds functionality to the Java Platform Debugger
+Architecture (JPDA) to allow a class to be updated while under the
+control of a debugger. The two central components of this
+functionality are <code>RedefineClasses</code> which replaces the
+class definitions and <code>PopFrame</code> which pops frames off
+the stack allowing a method which has been redefined to be
+re-executed.</p>
+<p>In the reference implementation, this functionality is
+implemented at the Java Virtual Machine Debug Interface (JVMDI)
+layer and made available through the higher layers of JPDA - the
+Java Debug Wire Protocol (JDWP) and the Java Debug Interface
+(JDI).</p>
+<table summary="" cellpadding="3" border="2">
+<caption>Redefinition Functionality</caption>
+<tr>
+<td>JDI</td>
+<td><code>VirtualMachine.redefineClasses(Map
+classToBytes)</code></td>
+</tr>
+<tr>
+<td>JDWP</td>
+<td><code>RedefineClasses (Cmd 18) in VirtualMachine (CmdSet
+1)</code></td>
+</tr>
+<tr>
+<td>JVMDI</td>
+<td><code>RedefineClasses(jint classCount, JVMDI_class_definition
+*classDefs)</code></td>
+</tr>
+</table>
+<p>&nbsp;</p>
+<table summary="" cellpadding="3" border="2">
+<caption>Pop Frame Functionality</caption>
+<tr>
+<td>JDI</td>
+<td><code>ThreadReference.popFrames(StackFrame frame)</code></td>
+</tr>
+<tr>
+<td>JDWP</td>
+<td><code>PopFrames (Cmd 4) in StackFrame (CmdSet 16)</code></td>
+</tr>
+<tr>
+<td>JVMDI</td>
+<td><code>PopFrame(jthread thread)</code></td>
+</tr>
+</table>
+<p>All functionality at each layer is independently optional. The
+<code>GetCapabilities</code> function at the JVMDI layer; the
+<code>CapabilitiesNew</code> command at the JDWP layer; and the
+<code>canRedefineClasses</code>, <code>canAddMethod</code>,
+<code>canUnrestrictedlyRedefineClasses</code>, and
+<code>canPopFrames</code>, methods at the JDI layer describe what
+functionality is implemented.</p>
+<p>The bug report associated with this change is <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4287595">4287595</a>.</p>
+<a name="instancefilters" id="instancefilters"></a>
+<h2>Instance Filters</h2>
+<p><code>BreakpointRequest</code>, <code>MethodExitRequest</code>,
+<code>ExceptionRequest</code>, <code>StepRequest</code>,
+<code>WatchpointRequest</code> and <code>MethodEntryRequest</code>
+classes now have the capability of adding instance filters by using
+the <code>addInstanceFilter</code> method. Instance filters
+restrict the events generated by a request to those in which the
+currently executing instance is the object specified.</p>
+<a name="debugotherlanguages" id="debugotherlanguages"></a>
+<h2>Support For Debugging Other Languages</h2>
+The Java Platform Debugger Architecture has been extended so that
+non-Java programming language source, which is translated to Java
+programming language source, can be debugged in the future. The
+table below describes the new APIs and APIs with comments that have
+changed. This information is based on the <a href=
+"SourceDebugExtension_attribute.html">SourceDebugExtension</a>.
+<p>&nbsp;</p>
+<table summary="new APIS and APIS with changed comments" border="1"
+align="center">
+<thead>
+<tr>
+<th id="h201">Package</th>
+<th id="h202">New APIs</th>
+<th id="h203">APIs with Changed Comments</th>
+</tr>
+</thead>
+<tr>
+<td headers="h201">JVMDI</td>
+<td headers="h202"><code>GetSourceDebugExtension</code></td>
+<td headers="h203"><code>&nbsp;</code></td>
+</tr>
+<tr>
+<td headers="h201">JDWP - <code>ReferenceType</code> (2) Command Set</td>
+<td headers="h202"><code>SourceDebugExtension</code> Command (12)</td>
+<td headers="h203"><code>&nbsp;</code></td>
+</tr>
+<tr>
+<td headers="h201">JDWP - <code>VirtualMachine</code> (1) Command Set</td>
+<td headers="h202"><code>SetDefaultStratum</code> Command (19)</td>
+<td headers="h203"><code>&nbsp;</code></td>
+</tr>
+<tr>
+<td headers="h201">JDK - <code>VirtualMachine</code> I/F</td>
+<td headers="h202"><code>void setDefaultStratum(String stratum)</code></td>
+<td headers="h203"><code>&nbsp;</code></td>
+</tr>
+<tr>
+<td headers="h201">JDK - <code>VirtualMachine</code> I/F</td>
+<td headers="h202"><code>String getDefaultStratum()</code></td>
+<td headers="h203"><code>&nbsp;</code></td>
+</tr>
+<tr>
+<td headers="h201">JDI - <code>ReferenceType</code> I/F</td>
+<td headers="h202"><code>String sourceNames(String stratum)</code></td>
+<td headers="h203"><code>String sourceName()</code></td>
+</tr>
+<tr>
+<td headers="h201">JDI - <code>ReferenceType</code> I/F</td>
+<td headers="h202"><code>String sourcePaths(String stratum)</code></td>
+<td headers="h203">&nbsp;</td>
+</tr>
+<tr>
+<td headers="h201">JDI - <code>ReferenceType</code> I/F</td>
+<td headers="h202"><code>List allLineLocations(String stratum, String
+sourceName)</code></td>
+<td headers="h203"><code>List allLineLocations()</code></td>
+</tr>
+<tr>
+<td headers="h201">JDI - <code>ReferenceType</code> I/F</td>
+<td headers="h202"><code>List locationsOfLine(String stratum, String sourceName,
+int lineNumber)</code></td>
+<td headers="h203"><code>List locationsOfLine(int lineNumber)</code></td>
+</tr>
+<tr>
+<td headers="h201">JDI - <code>ReferenceType</code> I/F</td>
+<td headers="h202"><code>List availableStrata()</code></td>
+<td headers="h203"><code>&nbsp;</code></td>
+</tr>
+<tr>
+<td headers="h201">JDI - <code>ReferenceType</code> I/F</td>
+<td headers="h202"><code>String defaultStratum()</code></td>
+<td headers="h203"><code>&nbsp;</code></td>
+</tr>
+<tr>
+<td headers="h201">JDI - <code>ReferenceType</code> I/F</td>
+<td headers="h202"><code>String sourceDebugExtension()</code></td>
+<td headers="h203"><code>&nbsp;</code></td>
+</tr>
+<tr>
+<td headers="h201">JDK - <code>Method</code> I/F</td>
+<td headers="h202"><code>List allLineLocations(String stratum, String
+sourceName)</code></td>
+<td headers="h203"><code>List allLineLocations()</code></td>
+</tr>
+<tr>
+<td headers="h201">JDK - <code>Method</code> I/F</td>
+<td headers="h202"><code>List locationsOfLine(String stratum, String sourceName,
+int lineNumber)</code></td>
+<td headers="h203"><code>List locationsOfLine(int lineNumber)</code></td>
+</tr>
+<tr>
+<td headers="h201">JDI - <code>Location</code> I/F</td>
+<td headers="h202"><code>&nbsp;</code></td>
+<td headers="h203">class comment (strata defined)</td>
+</tr>
+<tr>
+<td headers="h201">JDI - <code>Location</code> I/F</td>
+<td headers="h202"><code>int lineNumber(String stratum)</code></td>
+<td headers="h203"><code>int lineNumber()</code></td>
+</tr>
+<tr>
+<td headers="h201">JDI - <code>Location</code> I/F</td>
+<td headers="h202"><code>String sourceName(String stratum)</code></td>
+<td headers="h203"><code>String sourceName()</code></td>
+</tr>
+<tr>
+<td headers="h201">JDI - <code>Location</code> I/F</td>
+<td headers="h202"><code>String sourcePath(String stratum)</code></td>
+<td headers="h203"><code>&nbsp;</code></td>
+</tr>
+<tr>
+<td headers="h201">JDI - <code>Location</code> I/F</td>
+<td headers="h202"><code>String sourcePath()</code></td>
+<td headers="h203"><code>&nbsp;</code></td>
+</tr>
+</table>
+<a name="vmdeathrequests" id="vmdeathrequests"></a>
+<h2>VMDeathRequests</h2>
+<p>Using class <code>VMDeathRequest</code>, a request can be made
+for notification when the target VM terminates. When an enabled
+<code>VMDeathRequest</code> is satisfied, an <code>EventSet</code>
+containing a <code>VMDeathEvent</code> will be placed on the
+<code>EventQueue</code>.</p>
+<p>Even without creating a <code>VMDeathRequest</code>, a single
+unsolicited <code>VMDeathEvent</code> will be sent with a
+<code>suspend policy</code> of <code>SUSPEND_NONE</code>.</p>
+<p>This request would typically be created so that a
+<code>VMDeathEvent</code> with a suspend policy of
+<code>SUSPEND_ALL</code> will be sent. This event can be used to
+assure completion of any processing which requires the VM to be
+alive (e.g. event processing). Note: the unsolicited
+<code>VMDeathEvent</code> will still be sent.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

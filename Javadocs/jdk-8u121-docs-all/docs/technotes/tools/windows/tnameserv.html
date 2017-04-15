@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>tnameserv</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T8:11:41Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Windows, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38210-05" name="partnum"/>
+<meta content="JSWOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="s5-idl-rmi-iiop.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="idlj.html">
+                Next</a><hr/>
+<div><a id="CACFAFAH" name="CACFAFAH"/>
+<div id="JSWOR710"><a id="CACCHFHJ" name="CACCHFHJ"/>
+<h1>tnameserv</h1>
+<p>Interface Definition Language (IDL).</p>
+<div><a id="sthref187" name="sthref187"/>
+<h2>Synopsis</h2>
+<p><b>tnameserve</b> <b>-ORBInitialPort</b> [ <i>nameserverport</i> ]</p>
+<dl>
+<dt>-ORBInitialPort <i>nameserverport</i></dt>
+<dd>
+<p>The initial port where the naming service listens for the bootstrap protocol used to implement the ORB <code dir="ltr">resolve_initial_references</code> and <code dir="ltr">list_initial_references</code> methods.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref188" name="sthref188"/>
+<h2>Description</h2>
+<p>Java IDL includes the Object Request Broker Daemon (ORBD). ORBD is a daemon process that contains a Bootstrap Service, a Transient Naming Service, a Persistent Naming Service, and a Server Manager. The Java IDL tutorials all use ORBD, but you can substitute the <code dir="ltr">tnameserv</code> command for the <code dir="ltr">orbd</code> command in any of the examples that use a Transient Naming Service.</p>
+<p>See <a href="orbd.html#CIHGDGGE"><code dir="ltr">orbd</code>(1)</a> or Naming Service at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/idl/jidlNaming.html">http://docs.oracle.com/javase/8/docs/technotes/guides/idl/jidlNaming.html</a></code></p>
+<p>The CORBA Common Object Services (COS) Naming Service provides a tree-structure directory for object references similar to a file system that provides a directory structure for files. The Transient Naming Service provided with Java IDL, <code dir="ltr">tnameserv</code>, is a simple implementation of the COS Naming Service specification.</p>
+<p>Object references are stored in the name space by name and each object reference-name pair is called a name binding. Name bindings can be organized under naming contexts. Naming contexts are name bindings and serve the same organizational function as a file system subdirectory. All bindings are stored under the initial naming context. The initial naming context is the only persistent binding in the name space. The rest of the name space is lost when the Java IDL naming service process stops and restarts.</p>
+<p>For an applet or application to use COS naming, its ORB must know the port of a host running a naming service or have access to an initial naming context string for that naming service. The naming service can either be the Java IDL naming service or another COS-compliant naming service.</p>
+<div><a id="CACICGFE" name="CACICGFE"/><a id="CACJEIEJ" name="CACJEIEJ"/>
+<h3>Start the Naming Service</h3>
+<p>You must start the Java IDL naming service before an application or applet that uses its naming service. Installation of the Java IDL product creates a script (Oracle Solaris: <code dir="ltr">tnameserv</code>) or executable file (Windows: <code dir="ltr">tnameserv.exe</code>) that starts the Java IDL naming service. Start the naming service so it runs in the background.</p>
+<p>If you do not specify otherwise, then the Java IDL naming service listens on port 900 for the bootstrap protocol used to implement the ORB <code dir="ltr">resolve_initial_references</code> and <code dir="ltr">list_initial_references methods</code>, as follows:</p>
+<pre dir="ltr" xml:space="preserve">
+tnameserv -ORBInitialPort nameserverport&amp;
+</pre>
+<p>If you do not specify the name server port, then port 900 is used by default. When running Oracle Solaris software, you must become the root user to start a process on a port below 1024. For this reason, it is recommended that you use a port number greater than or equal to 1024. To specify a different port, for example, 1050, and to run the naming service in the background, from a Solaris, Linux, or OS X command shell, enter:</p>
+<pre dir="ltr" xml:space="preserve">
+tnameserv -ORBInitialPort 1050&amp;
+</pre>
+<p>From an MS-DOS system prompt (Windows), enter:</p>
+<pre dir="ltr" xml:space="preserve">
+start tnameserv -ORBInitialPort 1050
+</pre>
+<p>Clients of the name server must be made aware of the new port number. Do this by setting the <code dir="ltr">org.omg.CORBA.ORBInitialPort</code> property to the new port number when you create the ORB object.</p>
+</div>
+
+<div><a id="sthref189" name="sthref189"/>
+<h3>Run the Server and Client on Different Hosts</h3>
+<p>In most of the Java IDL and RMI-IIOP tutorials, the naming service, server, and client are all running on the development machine. In real-world deployment, the client and server probably run on different host machines from the Naming Service.</p>
+<p>For the client and server to find the Naming Service, they must be made aware of the port number and host on which the naming service is running. Do this by setting the <code dir="ltr">org.omg.CORBA.ORBInitialPort</code> and <code dir="ltr">org.omg.CORBA.ORBInitialHost</code> properties in the client and server files to the machine name and port number on which the Naming Service is running. An example of this is shown in Getting Started Using RMI-IIOP at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/rmi-iiop/rmiiiopexample.html">http://docs.oracle.com/javase/8/docs/technotes/guides/rmi-iiop/rmiiiopexample.html</a></code></p>
+<p>You could also use the command-line options <code dir="ltr">-ORBInitialPort nameserverport#</code> and <code dir="ltr">-ORBInitialHost nameserverhostname</code> to tell the client and server where to find the naming service. For one example of doing this using the command-line option, see Java IDL: The Hello World Example on Two Machines at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/idl/tutorial/jidl2machines.html">http://docs.oracle.com/javase/8/docs/technotes/guides/idl/tutorial/jidl2machines.html</a></code></p>
+<p>For example, suppose the Transient Naming Service, <code dir="ltr">tnameserv</code> is running on port 1050 on host <code dir="ltr">nameserverhost</code>. The client is running on host <code dir="ltr">clienthost,</code> and the server is running on host <code dir="ltr">serverhost</code>.</p>
+<p>Start <code dir="ltr">tnameserv</code> on the host <code dir="ltr">nameserverhost</code>:</p>
+<pre dir="ltr" xml:space="preserve">
+tnameserv -ORBInitialPort 1050
+</pre>
+<p>Start the server on the <code dir="ltr">serverhost</code>:</p>
+<pre dir="ltr" xml:space="preserve">
+java Server -ORBInitialPort 1050 -ORBInitialHost nameserverhost
+</pre>
+<p>Start the client on the <code dir="ltr">clienthost</code>:</p>
+<pre dir="ltr" xml:space="preserve">
+java Client -ORBInitialPort 1050 -ORBInitialHost nameserverhost
+</pre></div>
+
+<div><a id="sthref190" name="sthref190"/>
+<h3>Stop the Naming Service</h3>
+<p>To stop the Java IDL naming service, use the relevant operating system command, such as <code dir="ltr">kill</code> for a Solaris, Linux, or OS X process or <code dir="ltr">Ctrl+C</code> for a Windows process. The naming service continues to wait for invocations until it is explicitly shut down. Note that names registered with the Java IDL naming service disappear when the service is terminated.</p>
+</div>
+</div>
+
+<div><a id="sthref191" name="sthref191"/>
+<h2>Options</h2>
+<dl>
+<dt>-J<i>option</i></dt>
+<dd>
+<p>Passes <code dir="ltr">option</code> to the Java Virtual Machine, where <code dir="ltr">option</code> is one of the options described on the reference page for the Java application launcher. For example, <code dir="ltr">-J-Xms48m</code> sets the startup memory to 48 MB. See <a href="java.html#CBBFHAJA"><code dir="ltr">java</code>(1)</a>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref192" name="sthref192"/>
+<h2>Examples</h2>
+<div><a id="sthref193" name="sthref193"/>
+<h3>Add Objects to the Name Space</h3>
+<p>The following example shows how to add names to the name space. It is a self-contained Transient Naming Service client that creates the following simple tree.</p>
+<pre dir="ltr" xml:space="preserve">
+Initial Naming Context
+     plans
+     Personal
+          calendar
+          schedule
+</pre>
+<p>In this example, <code dir="ltr">plans</code> is an object reference and <code dir="ltr">Personal</code> is a naming context that contains two object references: <code dir="ltr">calendar</code> and <code dir="ltr">schedule</code>.</p>
+<pre dir="ltr" xml:space="preserve">
+import java.util.Properties;
+import org.omg.CORBA.*;
+import org.omg.CosNaming.*;
+ 
+public class NameClient {
+
+    public static void main(String args[]) {
+
+        try {
+</pre>
+<p>In <a href="#CACICGFE">Start the Naming Service</a>, the <code dir="ltr">nameserver</code> was started on port 1050. The following code ensures that the client program is aware of this port number.</p>
+<pre dir="ltr" xml:space="preserve">
+            Properties props = new Properties();
+            props.put("org.omg.CORBA.ORBInitialPort", "1050");
+            ORB orb = ORB.init(args, props);
+</pre>
+<p>This code obtains the initial naming context and assigns it to <code dir="ltr">ctx</code>. The second line copies <code dir="ltr">ctx</code> into a dummy object reference <code dir="ltr">objref</code> that is attached to various names and added into the name space.</p>
+<pre dir="ltr" xml:space="preserve">
+            NamingContext ctx =
+                NamingContextHelper.narrow(
+                    orb.resolve_initial_references("NameService"));
+             NamingContext objref = ctx;
+</pre>
+<p>This code creates a name <code dir="ltr">plans</code> of type <code dir="ltr">text</code> and binds it to the dummy object reference. <code dir="ltr">plans</code> is then added under the initial naming context using the <code dir="ltr">rebind</code> method. The <code dir="ltr">rebind</code> method enables you to run this program over and over again without getting the exceptions from using the <code dir="ltr">bind</code> method.</p>
+<pre dir="ltr" xml:space="preserve">
+            NameComponent nc1 = new NameComponent("plans", "text");
+            NameComponent[] name1 = {nc1};
+            ctx.rebind(name1, objref);
+            System.out.println("plans rebind successful!");
+</pre>
+<p>This code creates a naming context called <code dir="ltr">Personal</code> of type <code dir="ltr">directory</code>. The resulting object reference, <code dir="ltr">ctx2</code>, is bound to the <code dir="ltr">name</code> and added under the initial naming context.</p>
+<pre dir="ltr" xml:space="preserve">
+            NameComponent nc2 = new NameComponent("Personal", "directory");
+            NameComponent[] name2 = {nc2};
+            NamingContext ctx2 = ctx.bind_new_context(name2);
+            System.out.println("new naming context added..");
+</pre>
+<p>The remainder of the code binds the dummy object reference using the names <code dir="ltr">schedule</code> and <code dir="ltr">calendar</code> under the <code dir="ltr">Personal</code> naming context (<code dir="ltr">ctx2</code>).</p>
+<pre dir="ltr" xml:space="preserve">
+            NameComponent nc3 = new NameComponent("schedule", "text");
+            NameComponent[] name3 = {nc3};
+            ctx2.rebind(name3, objref);
+            System.out.println("schedule rebind successful!");
+ 
+            NameComponent nc4 = new NameComponent("calender", "text");
+            NameComponent[] name4 = {nc4};
+            ctx2.rebind(name4, objref);
+            System.out.println("calender rebind successful!");
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+    }
+}
+</pre></div>
+
+<div><a id="sthref194" name="sthref194"/>
+<h3>Browsing the Name Space</h3>
+<p>The following sample program shoes how to browse the name space.</p>
+<pre dir="ltr" xml:space="preserve">
+import java.util.Properties;
+import org.omg.CORBA.*;
+import org.omg.CosNaming.*;
+ 
+public class NameClientList {
+
+    public static void main(String args[]) {
+
+        try {
+</pre>
+<p>In <a href="#CACICGFE">Start the Naming Service</a>, the <code dir="ltr">nameserver</code> was started on port 1050. The following code ensures that the client program is aware of this port number.</p>
+<pre dir="ltr" xml:space="preserve">
+            Properties props = new Properties();
+            props.put("org.omg.CORBA.ORBInitialPort", "1050");
+            ORB orb = ORB.init(args, props);
+</pre>
+<p>The following code obtains the initial naming context.</p>
+<pre dir="ltr" xml:space="preserve">
+            NamingContext nc =
+            NamingContextHelper.narrow(
+                orb.resolve_initial_references("NameService"));
+</pre>
+<p>The <code dir="ltr">list</code> method lists the bindings in the naming context. In this case, up to 1000 bindings from the initial naming context will be returned in the <code dir="ltr">BindingListHolder</code>; any remaining bindings are returned in the <code dir="ltr">BindingIteratorHolder</code>.</p>
+<pre dir="ltr" xml:space="preserve">
+            BindingListHolder bl = new BindingListHolder();
+            BindingIteratorHolder blIt= new BindingIteratorHolder();
+            nc.list(1000, bl, blIt);
+</pre>
+<p>This code gets the array of bindings out of the returned <code dir="ltr">BindingListHolder</code>. If there are no bindings, then the program ends.</p>
+<pre dir="ltr" xml:space="preserve">
+            Binding bindings[] = bl.value;
+            if (bindings.length == 0) return;
+</pre>
+<p>The remainder of the code loops through the bindings and prints outs the names.</p>
+<pre dir="ltr" xml:space="preserve">
+            for (int i=0; i &lt; bindings.length; i++) {
+ 
+                // get the object reference for each binding
+                org.omg.CORBA.Object obj = nc.resolve(bindings[i].binding_name);
+                String objStr = orb.object_to_string(obj);
+                int lastIx = bindings[i].binding_name.length-1;
+ 
+                // check to see if this is a naming context
+                if (bindings[i].binding_type == BindingType.ncontext) {
+                    System.out.println("Context: " +
+                        bindings[i].binding_name[lastIx].id);
+                } else {
+                    System.out.println("Object: " +
+                        bindings[i].binding_name[lastIx].id);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err)
+        }
+    }
+}
+</pre></div>
+</div>
+
+<div><a id="sthref195" name="sthref195"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="orbd.html#CIHGDGGE"><code dir="ltr">orbd</code>(1)</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="s5-idl-rmi-iiop.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="idlj.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

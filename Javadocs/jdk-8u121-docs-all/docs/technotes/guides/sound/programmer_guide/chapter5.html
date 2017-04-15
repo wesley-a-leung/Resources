@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Chapter 5: Capturing Audio</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<p><small><a href="contents.html">&lt; Contents</a></small></p>
+<h1>Chapter 5: Capturing Audio</h1>
+<p><a name="a114180" id="a114180"></a> <em>Capturing</em> refers to
+the process of obtaining a signal from outside the computer. A
+common application of audio capture is recording, such as recording
+the microphone input to a sound file. However, capturing isn't
+synonymous with recording, because recording implies that the
+application always saves the sound data that's coming in. An
+application that captures audio doesn't necessarily store the
+audio. Instead it might do something with the data as it's coming
+in&mdash;such as transcribe speech into text&mdash;but then discard
+each buffer of audio as soon as it's finished with that buffer.</p>
+<p><a name="a114181" id="a114181"></a> As discussed in Chapter 2,
+"<a href="chapter2.html">Overview of the Sampled Package</a>," a
+typical audio-input system in an implementation of the Java Sound
+API consists of:</p>
+<ol>
+<li>An input port, such as a microphone port or a line-in port,
+which feeds its incoming audio data into: <a name="a115691"></a></li>
+<li>A mixer, which places the input data in: <a name="a115692"></a></li>
+<li>One or more target data lines, from which an application can
+retrieve the data.
+<p><a name="a113956" id="a113956"></a> Commonly, only one input
+port can be open at a time, but an audio-input mixer that mixes
+audio from multiple ports is also possible. Another scenario
+consists of a mixer that has no ports but instead gets its audio
+input over a network.</p>
+<p><a name="a113958" id="a113958"></a> The
+<code>TargetDataLine</code> interface was introduced briefly under
+"<a href="chapter2.html#a112445">The Line Interface Hierarchy</a>"
+in Chapter 2, "<a href="chapter2.html">Overview of the Sampled
+Package</a>." <code>TargetDataLine</code> is directly analogous to
+the <code>SourceDataLine</code> interface, which was discussed
+extensively in Chapter 4, "<a href="chapter4.html">Playing Back
+Audio</a>." Recall that the <code>SourceDataLine</code> interface
+consists of:</p>
+</li>
+</ol>
+<ul>
+<li style="list-style: none"><a name="a113960" id=
+"a113960"></a></li>
+<li>A <code>write</code> method to send audio to the mixer <a name="a113961"></a></li>
+<li>An <code>available</code> method to determine how much data can
+be written to the buffer without blocking
+<p><a name="a113963" id="a113963"></a></p>
+</li>
+</ul>
+Similarly, <code>TargetDataLine</code> consists of:
+<ul>
+<li style="list-style: none; display: inline"><a name="a113965"></a></li>
+<li>A <code>read</code> method to get audio from the mixer <a name="a113966"></a></li>
+<li>An <code>available</code> method to determine how much data can
+be read from the buffer without blocking</li>
+</ul>
+<a name="a113969" id="a113969"></a>
+<h2>Setting Up a TargetDataLine</h2>
+<p><a name="a113971" id="a113971"></a> The process of obtaining a
+target data line was described in Chapter 3, "<a href=
+"chapter3.html">Accessing Audio System Resources</a>," but we
+repeat it here for convenience:</p>
+<pre>
+<code>TargetDataLine line;
+</code><code>DataLine.Info info = new DataLine.Info(TargetDataLine.class, <br />    format); // format is an AudioFormat object
+</code><code>if (!AudioSystem.isLineSupported(info)) {
+</code><code>    // Handle the error ... 
+</code><code>}
+</code><code>// Obtain and open the line.
+</code><code>try {<br />    line = (TargetDataLine) AudioSystem.getLine(info);
+</code><code>    line.open(format);
+</code><code>} catch (LineUnavailableException ex) {
+</code><code>    // Handle the error ... 
+</code><code>}
+</code><br /><a name="a113992" id="a113992"> </a>
+</pre>
+You could instead invoke <code>Mixer's</code> <code>getLine</code>
+method, rather than <code>AudioSystem's</code>.
+<p><a name="a113994" id="a113994"></a> As shown in this example,
+once you've obtained a target data line, you reserve it for your
+application's use by invoking the <code>DataLine</code> method
+<code>open</code>, exactly as was described in the case of a source
+data line in Chapter 4, "<a href="chapter4.html">Playing Back
+Audio</a>." The single-parameter version of the <code>open</code>
+method causes the line's buffer to have the default size. You can
+instead set the buffer size according to your application's needs
+by invoking the two-parameter version:</p>
+<pre>
+    void open(AudioFormat format, int bufferSize) 
+</pre>
+When choosing a buffer size, keep in mind the tradeoff between the
+delays incurred by long buffers, on the one hand, and the risk of
+discontinuities in the audio if the buffers are so short that you
+can't retrieve the data fast enough, on the other hand. When
+capturing audio, you risk data overflow if you don't pull data from
+the filled buffers fast enough. If overflow occurs, some of the
+captured data will be discarded, which will probably cause audible
+clicks and skips in the sound. This is the opposite situation from
+playback, where you risk data underflow, which can result in gaps
+in the sound. (See Chapter 4, "<a href="chapter4.html">Playing Back
+Audio</a>," for more on choosing buffer sizes.) <a name="a115741"></a>
+<h2>Reading the Data from the TargetDataLine</h2>
+<p><a name="a114004" id="a114004"></a> Once the line is open, it is
+ready to start capturing data, but it isn't active yet. To actually
+commence the audio capture, use the <code>DataLine</code> method
+<code>start</code>. This begins delivering input audio data to the
+line's buffer for your application to read. Your application should
+invoke start only when it's ready to begin reading from the line;
+otherwise a lot of processing is wasted on filling the capture
+buffer, only to have it overflow (that is, discard data).</p>
+<p><a name="a114006" id="a114006"></a> To start retrieving data
+from the buffer, invoke <code>TargetDataLine's</code> read
+method:</p>
+<pre>
+int read(byte[] b, int offset, int length) 
+</pre>
+This method attempts to read <code>length</code> bytes of data into
+the array <code>b</code>, starting at the byte position
+<code>offset</code> in the array. The method returns the number of
+bytes actually read.
+<p><a name="a114011" id="a114011"></a> As with
+<code>SourceDataLine's write</code> method, you can request more
+data than actually fits in the buffer, because the method blocks
+until the requested amount of data has been delivered, even if you
+request many buffers' worth of data.</p>
+<p><a name="a115205" id="a115205"></a> To avoid having your
+application hang during recording, you can invoke the read method
+within a loop, until you've retrieved all the audio input, as in
+this example:</p>
+<pre>
+// Assume that the TargetDataLine, line, has already
+// been obtained and opened.
+ByteArrayOutputStream out  = new ByteArrayOutputStream();
+int numBytesRead;
+byte[] data = new byte[line.getBufferSize() / 5];
+
+// Begin audio capture.
+line.start();
+
+// Here, stopped is a global boolean set by another thread.
+while (!stopped) {
+   // Read the next chunk of data from the TargetDataLine.
+   numBytesRead =  line.read(data, 0, data.length);
+   // Save this chunk of data.
+   out.write(data, 0, numBytesRead);
+}     
+</pre>
+Notice that in this example, the size of the byte array into which
+the data is read is set to be one-fifth the size of the line's
+buffer. If you instead make it as big as the line's buffer and try
+to read the entire buffer, you need to be very exact in your
+timing, because data will be dumped if the mixer needs to deliver
+data to the line while you are reading from it. By using some
+fraction of the line's buffer size, as shown here, your application
+will be more successful in sharing access to the line's buffer with
+the mixer.
+<p><a name="a114034" id="a114034"></a> The <code>read</code> method
+of <code>TargetDataLine</code> takes three arguments: a byte array,
+an offset into the array, and the number of bytes of input data
+that you would like to read. In this example, the third argument is
+simply the length of your byte array. The <code>read</code> method
+returns the number of bytes that were actually read into your
+array.</p>
+<p><a name="a114036" id="a114036"></a> Typically, you read data
+from the line in a loop, as in this example. Within the
+<code>while</code> loop, each chunk of retrieved data is processed
+in whatever way is appropriate for the application&mdash;here, it's
+written to a <code>ByteArrayOutputStream</code>. Not shown here is
+the use of a separate thread to set the boolean
+<code>stopped</code>, which terminates the loop. This boolean's
+value might be set to <code>true</code> when the user clicks a Stop
+button, and also when a listener receives a <code>CLOSE</code> or
+<code>STOP</code> event from the line. The listener is necessary
+for <code>CLOSE</code> events and recommended for <code>STOP</code>
+events. Otherwise, if the line gets stopped somehow without stopped
+being set to <code>true</code>, the <code>while</code> loop will
+capture zero bytes on each iteration, running fast and wasting CPU
+cycles. A more thorough code example would show the loop being
+re-entered if capture becomes active again.</p>
+<p><a name="a114039" id="a114039"></a> As with a source data line,
+it's possible to drain or flush a target data line. For example, if
+you're recording the input to a file, you'll probably want to
+invoke the <code>drain</code> method when the user clicks a Stop
+button. The <code>drain</code> method will cause the mixer's
+remaining data to get delivered to the target data line's buffer.
+If you don't drain the data, the captured sound might seem to be
+truncated prematurely at the end.</p>
+<p><a name="a114041" id="a114041"></a> There might be some cases
+where you instead want to flush the data. In any case, if you
+neither flush nor drain the data, it will be left in the mixer.
+This means that when capture recommences, there will be some
+leftover sound at the beginning of the new recording, which might
+be undesirable. It can be useful, then, to flush the target data
+line before restarting the capture.</p>
+<a name="a114432" id="a114432"></a>
+<h2>Monitoring the Line's Status</h2>
+<p><a name="a114046" id="a114046"></a> Because the
+<code>TargetDataLine</code> interface extends
+<code>DataLine</code>, target data lines generate events in the
+same way source data lines do. You can register an object to
+receive events whenever the target data line opens, closes, starts,
+or stops. For more information, see "<a href=
+"chapter4.html#a113711">Monitoring the Line's Status</a>" in Chapter
+4, "<a href="chapter4.html">Playing Back Audio</a>."</p>
+<a name="a114049" id="a114049"></a>
+<h2>Processing the Incoming Audio</h2>
+<p><a name="a114051" id="a114051"></a> Like some source data lines,
+some mixers' target data lines have signal-processing controls,
+such as gain, pan, reverb, or sample-rate controls. The input ports
+might have similar controls, especially gain controls. For more
+information on how to determine whether a line has such controls,
+and how to use them if it does, see Chapter 6, "<a href=
+"chapter6.html">Processing Audio with Controls</a>."</p>
+<p>&nbsp;</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

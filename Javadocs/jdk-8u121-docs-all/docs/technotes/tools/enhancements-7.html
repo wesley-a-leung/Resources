@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- USE THIS TEMPLATE WHEN ENHANCEMENTS ARE LENGTHY; YOU THEN WILL USE A
+   SEPARATE FILE TO DOCUMENT THE ENHANCEMENTS OF EACH VERSION CURRENTLY SUPPORTED
+   -->
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Tools Enhancements in JDK 7</title>
+<meta name="collection" content="reference" />
+<link rel="stylesheet" type="text/css" href="../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Tools Enhancements in JDK 7</h1>
+
+<p><a href="index.html">JDK Tools and Utilities</a></p>
+
+<p><b>The following enhancements are introduced:</b></p>
+<p><b>Area</b>: Tools<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: A succinct and concise error message is printed,
+as appropriate, when an error occurs during the Java launcher
+initialization. The full stack trace will be printed when
+applicable, or when the error has trickled up from the ClassLoader
+or Reflection APIs.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6968053">6968053</a></p>
+<p><b>Area</b>: Tools<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: Previously, the pack200 tool defaulted to using
+java6 packfiles in the absence of any java6 (or newer) classfiles
+in a segment. Starting with JDK 7, the pack200 tool defaults to
+using java5 packfiles for maximum compatibility.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6712743">6712743</a></p>
+<p><b>Area</b>: Tools<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: On Solaris only, the JRE and JDK distributions had
+the following symbolic link (symlink):
+<tt>jre/lib/libjvm.so-&gt;client/libjvm.so</tt>. This was provided
+as a transition aid from Solaris Production JRE to the Java
+Reference version (more precisely ExactVM to HotSpot). This symlink
+will cease to exist and is no longer supported.<br />
+Applications (usually legacy Solaris applications with a custom
+launcher) that have assumed the existence of this symlink, must
+relink with the desired library (implementing server or client), or
+must dynamically link with the desired VM. They can also create
+that symlink manually or copy the desired library implementing the
+VM, though this is not a recommended practice and may cause
+undesired side effects.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6899834">6899834</a></p>
+<p><b>Area</b>: Tools<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: The HtmlConverter tool is no longer part of the
+JDK 7 distribution (starting with b128).<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4523289">4523289</a></p>
+<p><b>Area</b>: Tools<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: The default values for the cryptographic
+algorithms used by the <tt>keytool</tt> and <tt>jarsigner</tt>
+utilities have been updated to be stronger. See the
+<tt>keytool</tt> and <tt>jarsigner</tt> tool docs for more
+information.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6561126">6561126</a></p>
+<p><b>Area</b>: Tools<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: The <tt>keytool</tt> and <tt>jarsigner</tt> tools
+now support the ECC algorithm in keypair generation and jar
+signing.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6870812">6870812</a></p>
+<p><b>Area</b>: Tools<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: A new <tt>keytool</tt> command (<tt>-gencert</tt>)
+is provided to generate a non self-signed certificate. A new option
+(<tt>-ext</tt>) is provided to generate several X.509 v3 extensions
+for the <tt>-gencert</tt>, <tt>-genkeypair</tt>, and
+<tt>-certreq</tt> commands. There are also other new commands and
+options for the <tt>keytool</tt> and <tt>jarsigner</tt> tools. See
+the <a href="windows/keytool.html"><tt>keytool</tt></a> and
+<a href="windows/jarsigner.html"><tt>jarsigner</tt></a> tool docs
+for more information.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6780416">6780416</a>,
+<a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6802846">6802846</a>,
+<a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6324292">6324292</a>,
+<a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6890872">6890872</a></p>
+<p><b>Area</b>: Tools<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: In JDK 7, the <tt>javadoc</tt> tool has been
+updated to use style markup classes that can control the styles of
+the generated pages. With the -stylesheetfile option, you can
+provide an alternate stylesheet file to be used. Without this
+option, the <tt>javadoc</tt> tool automatically creates a
+stylesheet file called "stylesheet.css". You can override this
+default with another file name, for example:</p>
+<pre class="codeblock">
+C:&gt; javadoc -stylesheetfile C:\user\exampleStylesheet.css com.examplePackage
+</pre>
+The generated pages have style markups for various sections.
+Through the stylesheet file you can define styles for these
+sections. The default stylesheet file is sorted according to each
+style in that section. You can customize the styles for:
+<ul>
+<li>Page navigation</li>
+<li>Headers and Footers</li>
+<li>Content</li>
+<li>Overall document</li>
+</ul>
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7052425">7052425</a>,
+<a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6851834">6851834</a>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

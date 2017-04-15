@@ -1,0 +1,2129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>JNDI SPI</title>
+<link rel="stylesheet" type="text/css" href="../../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<a href="spicover.frame.html">[Top]</a> <a href=
+"jndispiTOC.fm.html">[Prev]</a> <a href=
+"spi-egs.frame.html">[Next]</a> <a href=
+"changes.fm.html">[Bottom]</a><br />
+<a name="a996852" id="a996852"></a>
+<h2>1 Introduction</h2>
+<p><a name="a996931" id="a996931"></a> The JNDI SPI provides the
+means by which developers can write different naming and directory
+<em>service providers</em> and make them available so that the
+corresponding services are accessible from applications that use
+the JNDI API. A service provider is a set of modules that together
+satisfy JNDI API requests. In addition, because JNDI allows the use
+of names that span multiple namespaces, one service provider
+implementation may need to interact with another in order to
+complete an operation. The SPI provides methods that allow
+different provider implementations to cooperate to complete client
+JNDI operations.</p>
+<p><a name="a998977" id="a998977"></a> This document describes the
+components of the SPI and explains how developers can build service
+providers for JNDI. It is assumed that the reader is familiar with
+the contents of the <strong>JNDI API</strong> document.</p>
+<p><a name="a1002116" id="a1002116"></a> All service provider
+developers should read the "Security Considerations" section of the
+<strong>JNDI API</strong> document. It contains important issues
+that all developers using JNDI, especially those writing service
+providers, should consider.</p>
+<a name="a1002621" id="a1002621"></a>
+<h3>1.1 Document Overview</h3>
+<p><a name="a1002623" id="a1002623"></a> There are several types of
+implementations that sit beneath the JNDI API. A service provider
+contains at a minimum a <em>context implementation</em>. A context
+implementation implements the <code>Context</code> interface or any
+of its subinterfaces, such as <code>DirContext</code>,
+<code>EventContext</code>, or <code>LdapContext</code>. The
+complexity of the implementation depends primarily on the
+complexity of the underlying service, and secondarily on the number
+of JNDI features that the implementation supports. <a href=
+"jndispi.fm.html#a998980">Chapter 2</a> describes the details of
+building a context implementation.</p>
+<p><a name="a1002624" id="a1002624"></a> A context implementation
+can be accessed in different ways. The most common way is to access
+it from the initial context. Chapter 3 describes two ways that a
+context implementation can be accessed from the initial context:
+via an initial context factory and a URL context factory.</p>
+<p><a name="a1002645" id="a1002645"></a> The JNDI architecture
+defines components/implementations that can be used to augment the
+behavior of context implementations. This allows users and
+applications to customize the implementation. These components are
+supported through <em>factories</em>. JNDI defines three types of
+factories and provides SPI methods that make use of them. These
+factories are described in <a href=
+"jndispi.fm.html#a997589">Chapter 4</a>.</p>
+<ul>
+<li style="list-style: none"><a name="a1002665" id=
+"a1002665"></a></li>
+<li><em>Object factories</em>-For transforming data stored in
+naming/directory services into Java types more natural to the Java
+application. <a name="a1002666" id="a1002666"></a></li>
+<li><em>State factories</em>-For transforming objects of Java types
+natural to the program into formats suitable for storage into
+naming/directory services. <a name="a1002667" id=
+"a1002667"></a></li>
+<li><em>Response control factories</em>-For narrowing LDAP v3
+response controls received from LDAP servers into more
+user-friendly types.</li>
+</ul>
+<a name="a1007434" id="a1007434"></a>
+<h3>1.2 Interface<a href="#a1007433"><sup>1</sup></a> Overview</h3>
+<p><a name="a1007435" id="a1007435"></a> The JNDI SPI is contained
+in the <code>javax.naming.spi</code> package. The following
+sections provide an overview of the SPI. For more details on the
+SPI, see the corresponding <strong>javadoc</strong>.</p>
+<p><a name="a1007440" id="a1007440"></a> <img src=
+"jndispi.fm.anc5.gif" alt="The javax.naming.spi package" /></p>
+<p>The information in this graphic is available in the <a href=
+"../../../../../api/javax/naming/spi/package-summary.html">API
+documentation</a>.</p>
+<a name="a1007441" id="a1007441"></a>
+<h4>1.2.1 NamingManager and DirectoryManager</h4>
+<p><a name="a1007442" id="a1007442"></a> The
+<code>NamingManager</code> class contains static methods that
+perform provider-related operations. For example, it contains
+methods to create instances of objects using
+<code>Reference</code>, to obtain an instance of the initial
+context using the <code>java.naming.factory.initial</code>
+property, and to install <code>ObjectFactoryBuilder</code> and
+<code>InitialContextFactoryBuilder</code>. The
+<code>DirectoryManager</code> class provides similar static methods
+for <code>DirContext</code> related operations.</p>
+<a name="a1007443" id="a1007443"></a>
+<h4>1.2.2 Initial Contexts</h4>
+<p><a name="a1007446" id="a1007446"></a>
+<code>InitialContextFactory</code> is the interface for creating an
+initial context instance. See <a href=
+"jndispi.fm.html#a1004566">Section 3.1</a> for more details.</p>
+<p><a name="a1007448" id="a1007448"></a>
+<code>InitialContextFactoryBuilder</code> is the interface for
+creating <code>InitialContextFactory</code> instances. See <a href=
+"jndispi.fm.html#a997025">Section 3.3</a> for more details.</p>
+<a name="a1007452" id="a1007452"></a>
+<h4>1.2.3 Object Factories</h4>
+<p><a name="a1007453" id="a1007453"></a> <code>ObjectFactory</code>
+is the interface for supporting creation of objects using
+information stored in the namespace. <code>DirObjectFactory</code>
+is a subinterface of <code>ObjectFactory</code> for use by context
+implementations that implement the <code>DirContext</code>
+interface. See <a href="jndispi.fm.html#a1007760">Section 4.1</a>
+for more details.</p>
+<p><a name="a1007460" id="a1007460"></a>
+<code>ObjectFactoryBuilder</code> is the interface for creating
+object factories. See <a href="jndispi.fm.html#a1006464">Section
+4.1.4</a> for more details.</p>
+<a name="a1007461" id="a1007461"></a>
+<h4>1.2.4 State Factories</h4>
+<p><a name="a1007462" id="a1007462"></a> <code>StateFactory</code>
+is the interface for supporting converting objects into storable
+formats supported by the naming/directory service.
+<code>DirStateFactory</code> is a subinterface of
+<code>StateFactory</code> for use by context implementations that
+implement the <code>DirContext</code> interface.
+<code>DirStateFactory.Result</code> is a class for holding a pair
+of <code>java.lang.Object</code> and <code>Attributes</code> that
+is returned by <code>DirStateFactory.getStateToBind()</code>. See
+<a href="jndispi.fm.html#a1005973">Section 4.2</a> for more
+details.</p>
+<a name="a1007466" id="a1007466"></a>
+<h4>1.2.5 Federation Support</h4>
+<p><a name="a1007467" id="a1007467"></a> The <code>Resolver</code>
+interface defines a method for providers to implement that allows
+them to participate in a federation for supporting extended
+interfaces to <code>Context</code>. See <a href=
+"jndispi.fm.html#a1003600">"Resolving Through to Subinterfaces of
+Context" on page &#32;10</a> for more details.</p>
+<p><a name="a1007471" id="a1007471"></a> <code>ResolveResult</code>
+is the return value of calling
+<code>Resolver.resolveToClass()</code>. It contains the object to
+which resolution succeeded, and the remaining name yet to be
+resolved.</p>
+<p><a name="a1002622" id="a1002622"></a></p>
+<p><a name="a998978" id="a998978"></a></p>
+<a name="a998980" id="a998980"></a>
+<h2>2 Building a Context Implementation</h2>
+<p><a name="a996974" id="a996974"></a> One of the basic tasks in
+building a service provider is to define a class that implements
+the <code>Context</code> interface or any of its subinterfaces.
+This class is called a <em>context implementation</em>. The
+following guidelines should be used for developing a context
+implementation.</p>
+<a name="a1004470" id="a1004470"></a>
+<h3>2.1 Ownership of Parameters</h3>
+<p><a name="a1004471" id="a1004471"></a> In general, any object
+passed as a parameter to methods in the <code>Context</code>
+interface (or subinterfaces) and
+<code>NamingManager</code>/<code>DirectoryManager</code> utility
+methods is owned by the caller. In many cases, the parameter
+eventually reaches a context implementation. Because the caller
+owns the object, the context implementation is prohibited from
+modifying the object. Furthermore, the context implementation is
+allowed to maintain a pointer to the object only for the duration
+of the operation and not beyond. If a context implementation needs
+to save the information contained in a parameter beyond the
+duration of the operation, it should maintain its own copy.</p>
+<p><a name="a1007867" id="a1007867"></a> For purposes of parameter
+ownership, an operation on a context instance is not considered to
+have completed while any referrals generated by that operation are
+still being followed, or if the operation returns a
+<code>NamingEnumeration</code>, while the enumeration is still in
+use.</p>
+<a name="a1007769" id="a1007769"></a>
+<h3>2.2 Reentrancy</h3>
+<p><a name="a1007770" id="a1007770"></a> A context instance need
+not be reentrant. Two threads that need to access the same context
+instance concurrently should synchronize amongst themselves and
+provide the necessary locking.</p>
+<p><a name="a1007806" id="a1007806"></a> However, different context
+instances must be safe for concurrent multithreaded access. That
+is, two threads each operating concurrently on their respective
+context instance should not need to synchronize their access. For
+example, even though two contexts might share the same resources
+(such as the same connection), it must be possible (and safe) for
+two separate threads to operate on each of those contexts without
+the threads having to do any explicit synchronization.</p>
+<p><a name="a1007907" id="a1007907"></a> For purposes of
+concurrency control, an operation on a context instance is not
+considered to have completed while any referrals generated by that
+operation are still being followed, or if the operation returns a
+<code>NamingEnumeration</code>, while the enumeration is still in
+use.</p>
+<a name="a1007828" id="a1007828"></a>
+<h3>2.3 Basic Support-Implementing the Context Interface(s)</h3>
+<p><a name="a996976" id="a996976"></a> The context implementation
+defines implementations for each of the methods in the
+<code>Context</code> interface or subinterfaces that the
+implementation supports.</p>
+<p><a name="a997775" id="a997775"></a> If a method is not
+supported, it should throw
+<code>OperationNotSupportedException</code>.</p>
+<p><a name="a998151" id="a998151"></a> For methods in the
+<code>Context</code> interface or subinterfaces that accept a name
+argument (either as a <code>String</code> or a <code>Name</code>),
+an empty name denotes the current context. For example, if an empty
+name is supplied to <code>lookup()</code>, that means to return a
+new instance of the current context. If an empty name is supplied
+to <code>list()</code>, that means to enumerate the names in the
+current context. If an empty name is supplied to
+<code>getAttributes()</code>, that means to retrieve the attributes
+associated with this context.</p>
+<p><a name="a1002973" id="a1002973"></a> Appendix A contains an
+example context implementation that implements a flat, in-memory
+namespace.</p>
+<a name="a1002974" id="a1002974"></a>
+<h3>2.4 Object Support</h3>
+<p><a name="a1002975" id="a1002975"></a> JNDI encourages providers
+to supply implementations of the <code>Context</code> and its
+subinterfaces that are natural and intuitive for the Java
+application programmer. For example, when looking up a printer name
+in the namespace, it is natural for the programmer to expect to get
+back a printer object on which to operate.</p>
+<pre class="codeblock">
+Context ctx = new InitialContext();        
+Printer prt = (Printer)ctx.lookup(somePrinterName); 
+prt.print(someStreamOfData);
+</pre>
+<p><a name="a1002957" id="a1002957"></a> Similarly, when storing an
+application's object into the underlying service, it is most
+portable and convenient if the application does not have to know
+about the underlying data representation.</p>
+<p><a name="a1002958" id="a1002958"></a> However, what is bound in
+the underlying directory or naming services typically are not
+objects in the Java programming language but merely reference
+information which can be used to locate or access the actual
+object. This case is quite common, especially for Java applications
+accessing and sharing services in an existing installed base. The
+reference in effect acts as a "pointer" to the real object. In the
+printer example, what is actually bound might be information on how
+to access the printer (e.g., its protocol type, its server
+address). To enable this easy-to-use model for the application
+developer, the context implementation must do the transformation of
+the data to/from the underlying service into the appropriate
+objects in the Java programming language.</p>
+<p><a name="a1003245" id="a1003245"></a> There are different ways
+to achieve this goal. One context implementation might have access
+to all the implementation classes of objects that a directory can
+return; another context implementation might have a special class
+loader for locating implementation classes for its objects. JNDI
+provides the <code>Reference</code> class as a standard way of
+representing references. Applications and context implementations
+are encouraged to use this class, rather than invent separate
+mechanisms on their own. However, this does not preclude context
+implementations from using their own mechanisms for achieving the
+same goal.</p>
+<p><a name="a1003239" id="a1003239"></a> JNDI provides utilities
+for context implementations to use when reading/storing objects in
+the Java programming language in a format-independent way to the
+underlying service. This section describes these utilities. These
+utilities interact with components called <em>object</em> and
+<em>state factories</em> that do the actual transformations. These
+factories are described in <a href=
+"jndispi.fm.html#a997589">Chapter 4</a>.</p>
+<a name="a1003127" id="a1003127"></a>
+<h4>2.4.1 Reading an Object</h4>
+<p><a name="a1003129" id="a1003129"></a> JNDI provides the
+following methods that context implementations should use to
+transform data read from the underlying service into objects in the
+Java programming language:</p>
+<pre class="codeblock">
+Object NamingManager.getObjectInstance(Object refInfo,
+                                       Name name,
+                                       Context nameCtx, 
+                                       Hashtable env)
+        throws Exception;
+Object DirectoryManager.getObjectInstance(Object refInfo,
+                                          Name name,
+                                          Context nameCtx,
+                                          Hashtable env,
+                                          Attributes attrs)
+        throws Exception;
+<br /><a name="a1003069" id="a1003069"> </a>
+</pre>
+<code>refInfo</code> is the data (representing the object) read
+from the underlying service. <code>name</code> is the name of the
+object while <code>nameCtx</code> is the context in which to
+resolve <code>name</code>. The
+<code>name</code>/<code>nameCtx</code> pair can be used to obtain
+more information about the object than is available from
+<code>refInfo</code>. <code>env</code> is the environment of the
+context from which <code>getObjectInstance()</code> is being
+invoked. <code>attrs</code> is the collection of attributes read
+from the directory about the object, usually in the same request
+that was used to get <code>refInfo</code>. It might not be the
+complete collection of attributes if such was not requested.
+<p><a name="a1003157" id="a1003157"></a> The method in the
+<code>NamingManager</code> class should be used by context
+implementations that implement the <code>Context</code> interface,
+while the method in the <code>DirectoryManager</code> class should
+be used by context implementations that implement the
+<code>DirContext</code> interface.</p>
+<p><a name="a1003147" id="a1003147"></a> When constructing objects
+to be returned for the following methods, the context
+implementation should call <code>getObjectInstance()</code>, or its
+own mechanism for generating objects from the bound information, if
+it wants this feature to be enabled in their contexts. (String
+overloads not shown.)</p>
+<pre class="codeblock">
+        javax.naming.Context.lookup(Name name)
+        javax.naming.Context.lookupLink(Name name)
+        javax.naming.Binding.getObject()
+        javax.naming.directory.SearchResult.getObject()
+</pre>
+<p><a name="a1003152" id="a1003152"></a> For <code>Binding</code>
+and <code>SearchResult</code>, the context implementation should
+either pass an object that is the result of calling
+<code>getObjectInstance()</code> or its equivalent to the
+constructor, or override the default implementation of
+<code>Binding</code> and <code>SearchResult</code> so that their
+<code>getObject()</code> implementations call
+<code>getObjectInstance()</code> or its equivalent before
+returning.</p>
+<p><a name="a1003143" id="a1003143"></a> Here is an example.
+Suppose printers are represented in the namespace using
+<code>Reference</code>s. To turn a printer <code>Reference</code>
+into a live <code>Printer</code> object, the context implementation
+would use the <code>NamingManager.getObjectInstance()</code>
+method. In this way, the underlying service need not know anything
+specific about printers.</p>
+<pre class="codeblock">
+Object lookup(Name name) {      
+        ...
+        Reference ref = &lt;<em>some printer reference looked up from naming service</em>&gt;;  
+        return NamingManager.getObjectInstance(ref, name, this, env);
+}
+</pre>
+<p><a name="a1003174" id="a1003174"></a> In another example,
+suppose printers are represented in the directory as a collection
+of attributes. To turn a printer's directory entry into a live
+<code>Printer</code> object, the context implementation would use
+<code>DirectoryManager.getObjectInstance()</code>.</p>
+<pre class="codeblock">
+Object lookup(Name name) {      
+        ...
+        Attributes attrs = &lt;<em>read attributes from directory</em>&gt;;
+        Reference ref = &lt;<em>construct reference from attributes</em>&gt;;   
+        return DirectoryManager.getObjectInstance(ref, name, this, 
+                env, attrs);
+}
+</pre>
+<a name="a1003128" id="a1003128"></a>
+<h4>2.4.2 Storing an Object</h4>
+<p><a name="a1003307" id="a1003307"></a> JNDI provides the
+following methods that context implementations should use to
+transform an object before storing it in the underlying
+service:</p>
+<pre class="codeblock">
+Object NamingManager.getStateToBind(
+                                    Object obj,
+                                    Name name,
+                                    Context nameCtx, 
+                                    Hashtable env)
+        throws NamingException;
+DirStateFactory.Result DirectoryManager.getStateToBind(
+                                    Object obj,
+                                    Name name,
+                                    Context nameCtx,
+                                    Hashtable env,
+                                    Attributes attrs)
+        throws NamingException;
+</pre>
+<p><a name="a1003319" id="a1003319"></a> <code>obj</code> is the
+object to be stored in the underlying service. <code>name</code> is
+the name of the object while <code>nameCtx</code> is the context in
+which to resolve <code>name</code>. The
+<code>name</code>/<code>nameCtx</code> pair can be used to obtain
+more information about the object than is available from
+<code>obj</code>. <code>env</code> is the environment of the
+context from which <code>getStateToBind()</code> is being invoked.
+<code>attrs</code> is the collection of attributes that is to be
+bound with the object. <code>DirStateFactory.Result</code> is a
+class that contains an object and a collection of attributes.</p>
+<p><a name="a1003320" id="a1003320"></a> The method in the
+<code>NamingManager</code> class should be used by context
+implementations that implement the <code>Context</code> interface,
+while the method in the <code>DirectoryManager</code> class should
+be used by context implementations that implement the
+<code>DirContext</code> interface.</p>
+<p><a name="a1003321" id="a1003321"></a> Before storing an object
+supplied by the application, the context implementation should call
+<code>getStateToBind()</code>, or its own mechanism for generating
+information to be bound, if it wants this feature to be enabled in
+their contexts. (String overloads not shown.)</p>
+<pre class="codeblock">
+javax.naming.Context.bind(Name name, Object o)
+javax.naming.Context.rebind(Name name, Object o)
+javax.naming.DirContext.bind(Name name, Object o, Attributes attrs)
+javax.naming.DirContext.rebind(Name name, Object o, Attributes attrs)
+</pre>
+<p><a name="a1003327" id="a1003327"></a> Here's an example of how a
+<code>Context</code> implementation supports
+<code>Context.bind</code>:</p>
+<pre class="codeblock">
+// First do transformation
+obj = NamingManager.getStateToBind(obj, name, ctx, env);
+
+// Check for Referenceable
+if (obj instanceof Referenceable) {
+    obj = ((Referenceable)obj).getReference();
+}
+
+if (obj instanceof Reference) {
+        // store as ref
+} else if (obj instanceof Serializable) {
+        // serialize
+} else {
+        ... 
+}
+</pre>
+<p><a name="a1003439" id="a1003439"></a> Here's an example of how a
+<code>DirContext</code> implementation supports
+<code>DirContext.bind</code>:</p>
+<pre class="codeblock">
+// First do transformation
+DirStateFactory.Result res = DirectoryManager.getStateToBind(
+        obj, name, ctx, env, inAttrs);
+
+obj = res.getObject();
+Attributes outAttrs = res.getAttributes();
+
+// Check for Referenceable
+if (obj instanceof Referenceable) {
+        obj = ((Referenceable)obj).getReference();
+}
+if (obj instanceof Reference) {
+        // store as ref and add outAttrs
+} else if (obj instanceof Serializable) {
+        // serialize and add outAttrs
+} else if (obj instanceof DirContext) {
+        // grab attributes and merge with outAttrs
+} else {
+        ... 
+}
+</pre>
+<p><a name="a1003675" id="a1003675"></a> As shown in these
+examples, a context implementation might be able to store different
+types of objects (<code>Reference</code>,
+<code>Serializable</code>, and <code>DirContext</code>). If the
+context implementation cannot store <code>Referenceable</code>
+objects directly and <code>getStateToBind()</code> returns such an
+object, the context implementation should subsequently call
+<code>Referenceable.getReference()</code> and store the resulting
+<code>Reference</code> instead.</p>
+<p><a name="a1006767" id="a1006767"></a> If a context
+implementation can store different types of objects, it should
+follow this order for the following common types:</p>
+<ul>
+<li style="list-style: none"><a name="a1006768" id=
+"a1006768"></a></li>
+<li><code>Reference</code> <a name="a1006769" id=
+"a1006769"></a></li>
+<li><code>Serializable</code> <a name="a1006770" id=
+"a1006770"></a></li>
+<li><code>DirContext</code>
+<p><a name="a1006773" id="a1006773"></a></p>
+</li>
+</ul>
+This order is recommended because it is most likely to capture the
+intent of the caller of the
+<code>bind()</code>/<code>rebind()</code> method. For example, a
+<code>Reference</code> is <code>Serializable</code>, so if you
+performed the <code>Serializable</code> check first, no
+<code>Reference</code> objects would ever be stored in the
+reference format (that is, they would all be serialized). <a name=
+"a1003676" id="a1003676"></a>
+<h3>2.5 Federation Support</h3>
+<a name="a1002989" id="a1002989"></a>
+<h4>2.5.1 Names</h4>
+<p><a name="a1002980" id="a1002980"></a> When a context is given a
+string name argument, the name represents a composite name that may
+span multiple namespaces, or it may have only a single compound
+name component (which in turn may be made up of one or several
+atomic names) that belongs to a single namespace. The context
+implementation must determine which part of the name is to be
+resolved/processed in its context and pass the rest onto the next
+context. This may be done syntactically by examining the name, or
+dynamically by resolving the name.</p>
+<p><a name="a1002984" id="a1002984"></a> When a context is given a
+<code>Name</code> argument, if it is an instance of
+<code>CompositeName</code>, then it will be treated as a composite
+name. Otherwise, it will be treated as a compound name that is
+implemented by the <code>CompoundName</code> class or some other
+compound name implementation.</p>
+<a name="a1003557" id="a1003557"></a>
+<h4>2.5.2 Resolving Through a Context</h4>
+<p><a name="a1003558" id="a1003558"></a> A context participates in
+a federation by performing the resolution phase of all of the
+context operations. The <code>lookup()</code> method must always be
+supported. Support for other methods is optional, but if the
+context is to participate in a federation, then the resolution
+implicit in all operations must be supported.</p>
+<p><font size="-1"><b>Figure 1: Example of Resolving through
+Intermediate Contexts to Perform a bind().</b></font></p>
+<img src="figure_one.gif" alt=
+"Example of resolving through intermediate contexts to perform a bind()" />
+<a name="a1003600" id="a1003600"></a>
+<p><a name="a1003595" id="a1003595"></a> For example, suppose a
+context does not support the <code>bind()</code> operation. When
+that context is being used as an intermediate context for
+<code>bind()</code>, it must perform the resolution part of that
+operation to enable the operation to continue to the next context.
+It should only throw <code>OperationNotSupportedException</code> if
+it is being asked to create a binding in its own context. Figure 1
+shows an example of how the <code>bind()</code> operation is passed
+through intermediate contexts to be performed in the target
+context.</p>
+<h4>2.5.3 Resolving Through to Subinterfaces of Context</h4>
+<p><a name="a1003601" id="a1003601"></a> To invoke a
+<code>DirContext</code> method (such as
+<code>getAttributes()</code>), the application first obtains an
+initial <code>DirContext</code>, and then perform the operation on
+the <code>DirContext</code>.</p>
+<pre class="codeblock">
+DirContext ctx = new InitialDirContext();
+Attributes attrs = ctx.getAttributes(someName);
+<br /><a name="a1003604" id="a1003604"> </a>
+</pre>
+From the context implementation's perspective, in order to retrieve
+the attributes, <code>getAttributes()</code> might need to traverse
+multiple naming systems. Some of these naming systems only support
+the <code>Context</code> interface, not the <code>DirContext</code>
+interface. These naming systems are being used as intermediaries
+for resolving towards the target context. The target context must
+support the <code>DirContext</code> interface. Figure 2 shows an
+example of this.
+<p><font size="-1"><b>Figure 2: Example of Resolving Through
+Intermediate non-DirContexts</b></font></p>
+<img src="figure_two.gif" alt=
+"Example of resolving through intermediate non-DirContexts" />
+<p><a name="a1003629" id="a1003629"></a> In order for intermediate
+naming systems to participate in the federation for extensions of
+<code>Context</code>, they must implement the <code>Resolver</code>
+interface. The <code>Resolver</code> interface is used by the JNDI
+framework to resolve through intermediate contexts that do not
+support a particular subinterface of <code>Context</code>. It
+consists of two overloaded forms of the method
+<code>resolveToClass()</code>. This method is used to partially
+resolve a name, stopping at the first context that is an instance
+of the required subinterface. By providing support for this method
+and the resolution phase of all methods in the <code>Context</code>
+interface, a context implementation can act as an intermediate
+context for extensions (subinterfaces) of <code>Context</code>.</p>
+<pre class="codeblock">
+public interface Resolver {
+        public ResolveResult resolveToClass(Name name, Class contextType)<br />                throws NamingException;
+        public ResolveResult resolveToClass(String name,
+                                           Class contextType)<br />                throws NamingException;
+}
+</pre>
+<a name="a1003689" id="a1003689"></a>
+<h4>2.5.4 Naming System Boundaries</h4>
+<p><a name="a1003694" id="a1003694"></a> The resolution of a
+(multicomponent) composite name proceeds from one naming system to
+the next, with the resolution of the components that span each
+naming system typically handled by a corresponding context
+implementation. From a context implementation's point of view, it
+passes the components for which it is not responsible to the
+(context implementation of the) <em>next naming system</em>.</p>
+<p><a name="a1003714" id="a1003714"></a> There are several ways in
+which the context implementation for the next naming system may be
+located. It may be done <em>explicitly</em> through the use of a
+<em>junction</em>, where a name in one naming system is bound to a
+context (or a <code>Reference</code> to a context) in the next
+naming system. For example, with the composite name
+"cn=fs,ou=eng/lib/xyz.zip", the LDAP name "cn=fs,ou=eng" might
+resolve to a file system context in which the name "lib/xyz.zip"
+could then be resolved.</p>
+<p><a name="a1003721" id="a1003721"></a> Alternately, the next
+naming system may be located <em>implicitly</em>. For example, a
+context implementation may choose the next naming system based upon
+service-specific knowledge of the object that it has resolved. For
+example, with the composite name "ldap.wiz.com/cn=fs,ou=eng", the
+DNS name <code>ldap.wiz.com</code> might name a DNS entry. To get
+the next naming system beyond DNS, the DNS context implementation
+might construct a context using SRV resource records found in that
+entry, which in this case, happens to name an LDAP context. When
+the next naming system is located in this fashion, JNDI composite
+name separator is used to denote the boundary from one naming
+system to the next, and is referred to as the <em>implicit next
+naming system pointer</em>.</p>
+<p><a name="a1003728" id="a1003728"></a> However the next naming
+system is located, the context implementation must hand the next
+naming system the remaining portion of the composite name to
+resolve.</p>
+<a name="a1003693" id="a1003693"></a>
+<h4>2.5.5 Continuing an Operation in a Federation</h4>
+<p><a name="a1003637" id="a1003637"></a> In performing an operation
+on a name that spans multiple namespaces, a context in an
+intermediate naming system needs to pass the operation onto the
+next naming system. The context does this by first constructing a
+<code>CannotProceedException</code> containing information
+pinpointing how far it has proceeded. In so doing it sets the
+resolved object, resolved name, remaining name, and environment
+parts of the exception.<a href="#a1003640"><sup>2</sup></a> (In the
+case of the <code>Context.rename()</code> method, it also sets the
+"resolved newname" part.)</p>
+<p><a name="a1003641" id="a1003641"></a> It then obtains a
+<em>continuation context</em> from JNDI by passing the
+<code>CannotProceedException</code> to static method
+<code>NamingManager</code>.<code>getContinuationContext()</code></p>
+<pre class="codeblock">
+public class NamingManager {
+        public static Context getContinuationContext(
+                CannotProceedException e) throws NamingException;
+        ...
+}
+</pre>
+<p><a name="a1003647" id="a1003647"></a> The information in the
+exception is used by <code>getContinuationContext()</code> to
+create the context instance in which to continue the operation.</p>
+<p><a name="a1003648" id="a1003648"></a> To obtain a continuation
+context for the <code>DirContext</code> operations, use
+<code>Directory-Manager.getContinuationDirContext()</code>.</p>
+<pre class="codeblock">
+public class DirectoryManager {
+        public static getContinuationDirContext(
+                CannotProceedException e) throws NamingException;
+        ...
+}
+</pre>
+<p><a name="a1003654" id="a1003654"></a> Upon receiving the
+continuation context, the operation should be continued using the
+remainder of the name that has not been resolved.</p>
+<p><a name="a1003655" id="a1003655"></a> For example, when
+attempting to continue a <code>bind()</code> operation, the code in
+the context implementation might look as follows:</p>
+<pre class="codeblock">
+public void bind(Name name, Object obj) throws NamingException {
+        ... 
+        try {
+                internal_bind(name, obj);
+                ...
+        } catch (CannotProceedException e) {
+                Context cctx =                  NamingManager.getContinuationContext(e);
+                cctx.bind(e.getRemainingName(), obj);
+        }       
+}
+</pre>
+<p><a name="a1003666" id="a1003666"></a> In this example,
+<code>bind()</code> depends on an internal method,
+<code>internal_bind(),</code> to carry out the actual work of the
+bind and to throw a <code>CannotProceedException</code> when it
+discovers that it is going beyond this naming system. The exception
+is then passed to <code>getContinuationContext()</code> in order to
+continue the operation. If the operation cannot be continued, the
+continuation context will throw the
+<code>CannotProceedException</code> to the caller of the original
+<code>bind()</code> operation.</p>
+<a name="a1003761" id="a1003761"></a>
+<h4>2.5.6 "Dynamic" Location of Next Naming System</h4>
+<p><a name="a1003898" id="a1003898"></a> In some federation
+configurations, the result of resolution in one naming system does
+not indicate which is the next naming system. The only conclusion
+that the context implementation can draw is that resolution has
+terminated in the current naming system and should proceed to the
+next naming system.</p>
+<p><a name="a1003943" id="a1003943"></a> For example, suppose the
+composite name "lib/xyz.zip/part1/abc" consists of two parts:
+"lib/xyz.zip", which names a file in ZIP format, and "part1/abc",
+which names an entry within the ZIP file. Although the resolution
+of "lib/xyz.zip" results in a file object, the desired result is a
+context in which to resolve names of ZIP entries. Similarly,
+another composite name could name an entry within a file in "tar"
+format, and the desired result of the resolution of the file
+component of the composite name would be a context in which to
+resolve tar entries.</p>
+<p><a name="a1003770" id="a1003770"></a> In effect, any type of
+context might be federated beneath the file system namespace
+depending on the format of the files. Such relationships should be
+symmetric: it should be possible for the ZIP file context and other
+similar contexts to federate beneath other, non-file system
+namespaces. Furthermore, developers writing the file system context
+implementation and those writing the context implementations for
+the ZIP file context, the tar file context, or a context for some
+yet-to-be defined format, should be able to work independently.</p>
+<p><a name="a1003788" id="a1003788"></a> To support this type of
+federation, JNDI defines a special form of <code>Reference</code>
+called an <em>nns reference</em> ("nns" stands for "next naming
+system"). This <code>Reference</code> has an address with type
+<code>nns</code>. The address contents is the resolved object (in
+the above example, the ZIP file). Continuing with the file system
+example, the file system context implementation might create the
+nns reference as follows:</p>
+<pre class="codeblock">
+ RefAddr addr = new RefAddr("nns") {
+        public Object getContent() {
+                return theFile;
+        }
+};
+Reference ref = new Reference("java.io.File", addr);
+</pre>
+<p><a name="a1003799" id="a1003799"></a> Next, the context
+implementation constructs a <code>CannotProceedException</code> (as
+with the junction case) by using the nns reference as the resolved
+object, and a resolved name consisting of the resolved file name
+and an empty component. The empty component is being used as an
+implicit next naming system pointer and indicates that the
+resolution has succeeded to the point of resolving the next naming
+system. (Notice how the values of the resolved object and resolved
+name are matched.) The context impementation then passes the
+<code>CannotProceedException</code> to
+<code>getContinuationContext()</code>.</p>
+<p><a name="a1004057" id="a1004057"></a> As with any resolved
+object in a <code>CannotProceedException</code>,
+<code>getContinuationContext()</code> searches for a context
+implementation that accepts this nns reference. The ZIP file
+context implementation, for instance, might accept an nns reference
+and other information provided, such as the name of the file
+(relative to a given context). If the context implementation
+determines that the file is a ZIP file, it would then construct a
+context for resolving names within that file.</p>
+<a name="a1004102" id="a1004102"></a>
+<h4>2.5.7 More about CannotProceedException</h4>
+<p><a name="a1004152" id="a1004152"></a> Central to the JNDI SPI's
+framework for federation is the
+<code>CannotProceedException</code>. A
+<code>Cannot-ProceedException</code> contains information such as
+the resolved name/object and remaining name, inherited from the
+<code>NamingException</code> superclass. In addition, a
+<code>CannotProceedException</code> also contains fields for the
+"alt" name and "alt" name context. While the resolved name from
+<code>NamingException</code> is the full composite name (relative
+to the starting context of the operation), alt name is the resolved
+name relative to the alt name context. That is, alt name might not
+necessarily be the same as the resolved name. Alt name and alt name
+context are used as arguments to
+<code>NamingManager</code>/<code>DirectoryManager.getObjectInstance()</code>.
+They allow the factories that are called by this method to obtain
+more information about the resolved object (for example, it could
+be used to get a special attribute about the object). These
+factories are described in <a href=
+"jndispi.fm.html#a997589">Chapter 4</a>.</p>
+<a name="a1004188" id="a1004188"></a>
+<h4>2.5.8 Contextual Information</h4>
+<p><a name="a1004185" id="a1004185"></a> While the emphasis of the
+JNDI SPI framework is on "looking forward" and trying to find the
+next naming system, some context implementations, once located,
+need to "look back" the resolution chain to obtain contextual
+information. For example, a particular context implementation that
+is federated off of a host naming system might be designed such
+that the only means by which it can find out host information is to
+ask its (possibly not immediate) superior naming system. To do
+that, it needs <em>contextual information</em>-information about
+how the resolution proceeded to its current point.</p>
+<p><a name="a1004257" id="a1004257"></a> Summarizing earlier
+discussions on federation, when performing an operation on a name
+that spans multiple namespaces, the context implementation first
+constructs a <code>CannotProceed-Exception</code> containing
+information pinpointing how far it has proceeded. It then obtains a
+continuation context from JNDI by calling
+<code>getContinuationContext()</code>. To support the retrieval of
+contextual information, <code>getContinuationContext()</code>
+automatically adds the environment property
+<code>java.naming.spi.CannotProceedException</code>, with the value
+of the <code>Cannot-ProceedException</code> argument, to the
+continuation context's environment. This property is inherited by
+the continuation context and may be used by that context's
+implementation to inspect the fields of the exception.</p>
+<a name="a1002999" id="a1002999"></a>
+<h3>2.6 Referral Support</h3>
+<p><a name="a1003000" id="a1003000"></a> LDAP-style directory
+services support the notion of <em>referrals</em> for redirecting a
+client's request to another server. A referral differs from the
+federation continuation mechanism described earlier in that a
+referral may be presented to the JNDI client, who then decides
+whether to follow it, whereas a <code>CannotProceedException</code>
+should be returned to the client only when no further progress is
+possible. Another difference is that an individual context
+implementation offers the capability of continuing the operation
+using the referral (and itself determines the mechanism for doing
+so). In a federation, the mechanism of continuation is beyond the
+scope of individual context implementations: individual context
+implementations benefit from the common federation mechanism
+provided by the JNDI SPI framework.</p>
+<p><a name="a1003001" id="a1003001"></a> A context implementation
+that supports referrals defines a subclass of
+<code>ReferralException</code> and provides implementations for its
+abstract methods. <code>getReferralContext()</code> returns a
+context at which to carry on the operation, and
+<code>getReferralInfo()</code> returns information on where the
+referral leads to, in a format appropriate to the context
+implementation.</p>
+<p><a name="a1003002" id="a1003002"></a> The environment property
+<code>java.naming.referral</code> specifies how the context
+implementation should treat referrals. If the context
+implementation is asked to throw an exception when a referral is
+encountered, or if the context implementation encounters problems
+following a referral, it throws a <code>ReferralException</code> to
+the application. To continue the operation, the application
+re-invokes the method on the referral context using the same
+arguments it supplied to the original method. The following code
+sample shows how <code>ReferralException</code> may be used by an
+application:<a href="#a1003008"><sup>3</sup></a></p>
+<pre class="codeblock">
+while (true) {
+        try {
+                bindings = ctx.listBindings(name);
+                while (bindings.hasMore()) {
+                        b = (Binding) bindings.next();
+                        ...
+                }
+                break;
+        } catch (ReferralException e) {
+                ctx = e.getReferralContext();
+        }
+}
+</pre>
+<p><a name="a1003021" id="a1003021"></a> This convention of
+re-invoking the method using the original arguments is a simple one
+for applications to follow. This places the burden on the
+implementation of the ReferralException to supply enough
+information to the implementation of the referral context for the
+operation to be continued. Note that this will likely render some
+of the arguments passed to the re-invoked operation superfluous.
+The referral context implementation is free to ignore any redundant
+or unneeded information.</p>
+<p><a name="a1003022" id="a1003022"></a> It is possible for an
+operation to return results in addition to a referral. For example,
+when searching a context, the server might return several results
+in addition to a few referrals as to where to obtain further
+results. These results and referrals might be interleaved at the
+protocol level. If referrals require user interaction (i.e., not
+followed automatically), the context implementation should return
+the results through the search enumeration first. When the results
+have been returned, the referral exception can then be thrown. This
+allows a simple programming model to be used when presenting the
+user with a clear relationship between a referral and its set of
+results.</p>
+<a name="a1003028" id="a1003028"></a>
+<h3>2.7 Schema Support</h3>
+<p><a name="a1003029" id="a1003029"></a> JNDI defines the
+<code>Attribute</code> interface for representing an attribute in a
+directory. An attribute consists of an attribute identifier (a
+string) and a set of attribute values, which can be any object in
+the Java programming language. There are also methods defined in
+<code>Attribute</code> for obtaining the attribute's definition and
+syntax definition from the directory's schema.</p>
+<pre class="codeblock">
+public class Attribute {
+        public DirContext getAttributeDefinition() throws NamingException;
+        public DirContext getAttributeSyntaxDefinition()<br />                throws NamingException;
+        ...
+}
+</pre>
+<p><a name="a1003035" id="a1003035"></a> The utility class,
+<code>BasicAttribute</code>, does not provide useful
+implementations for these methods. A directory context
+implementation that has support for such schema information should
+provide implementations of <code>Attribute</code> that implement
+these two methods based on its schema mechanisms, perhaps by
+subclassing <code>BasicAttribute</code> and overriding these two
+methods. The context implementation should then return instances of
+these subclasses when asked to return instances of
+<code>Attribute</code>. The context implementation, when it
+receives an <code>Attribute</code> instance that do not have
+meaningful implementations of these two methods, should use
+reasonable defaults to determine the attribute's definition and
+syntax, using information such as the attribute values' class names
+or conventions used for the attribute identifier.</p>
+<p><a name="a1003036" id="a1003036"></a> The
+<code>DirContext</code> interface contains schema-related
+methods:</p>
+<pre class="codeblock">
+public class DirContext {
+        ...
+        public DirContext getSchema(Name name) throws NamingException;
+        public DirContext getSchema(String name) throws NamingException;
+
+        public DirContext getSchemaClassDefinition(Name name) 
+                throws NamingException;
+        public DirContext getSchemaClassDefinition(String name) 
+                throws NamingException;
+
+}
+</pre>
+<p><a name="a1003048" id="a1003048"></a> <code>getSchema()</code>
+returns the schema tree for the named object, while
+<code>getSchemaClassDefinition()</code> returns a context
+containing schema class definitions for the named object. Some
+systems have just one global schema and, regardless of the value of
+the <code>name</code> argument, will return the same schema tree.
+Others support finer grained schema definitions, and may return
+different schema trees depending on which context is being
+examined.</p>
+<a name="a1005769" id="a1005769"></a>
+<h3>2.8 Event Support</h3>
+<p><a name="a1005770" id="a1005770"></a> A context implementation
+supports event notification by providing implementation for the
+methods in the
+<code>EventContext</code>/<code>EventDirContext</code> interfaces.
+The event model advocated by these interfaces can be readily
+supported using a multithreaded model. When an application uses
+<code>addNamingListener()</code> to register a listener with a
+context, the context records the requests and takes action to
+collect information required to generate the events. When the
+context eventually receives information to generate the events, it
+fires the events to the listener. The thread that does the
+registration is typically different from the thread that runs the
+listener. The context implementation typically uses a thread that
+it has created and manages to run the listener method. When one
+event is dispatched to multiple listeners, the context
+implementation may choose to (and is generally encouraged) to
+execute the listener methods concurrently in separate threads.</p>
+<p><a name="a1005771" id="a1005771"></a> The
+<code>addNamingListener()</code> methods accept an instance of
+<code>NamingListener</code>. The instance might implement one or
+more subinterfaces of <code>NamingListener</code>. If the listener
+implements more than one subinterface, the context implementation
+should try to conserve resources required to satisfy the
+registration. For example, an implementation might be able to
+submit a single request to the server that captures all of the
+requests of the subinterfaces.</p>
+<p><a name="a1005772" id="a1005772"></a> Where possible, the
+context implementation should fire a
+<code>NamingExceptionEvent</code> to a listener if the context will
+be unable to fire further events and then automatically deregister
+the listener. For example, if the connection to the server is
+broken subsequent to the registration of the listener and no
+information will be available to fire events, the context should
+fire a <code>NamingExceptionEvent</code> to the listener.</p>
+<a name="a1002895" id="a1002895"></a>
+<h3>2.9 Context Environment Support</h3>
+<p><a name="a1002896" id="a1002896"></a> Each instance of
+<code>Context</code> (or its subinterfaces) can have associated
+with it an <em>environment</em> which contains preferences
+expressed by the application of how it would like to access the
+services offered by the context. Examples of information found in
+an environment are security-related information that specify the
+user's credentials and desired level of security
+(<code>none</code>, <code>simple</code>, <code>strong</code>), and
+configuration information, such as the server to use. See Chapter 6
+and Appendix A of the <strong>JNDI API</strong> document for more
+details about environment properties.</p>
+<p><a name="a1002897" id="a1002897"></a> Environment properties are
+defined generically in order to ensure maximum portability.
+Individual service providers should map these generic properties to
+characteristics appropriate for their service. Properties that are
+not relevant to a provider should be recorded and silently ignored.
+The environment may also be used for storing service
+provider-specific properties or preferences, in which case their
+applicability across different providers is limited.</p>
+<a name="a1004358" id="a1004358"></a>
+<h4>2.9.1 Property Naming Convention</h4>
+<p><a name="a1004359" id="a1004359"></a> See Section 6.1 in the
+<strong>JNDI API</strong> document for a description of how
+environment properties are named. Service provider-specific
+properties should have a prefix that reflects their uniqueness to
+the provider. A common practice is to use the package name of the
+service provider as the prefix. For example, since Sun's LDAP
+provider is primarily contained in the package
+<code>com.sun.jndi.ldap</code>, properties specific to Sun's LDAP
+provider have the prefix "com.sun.jndi.ldap.".</p>
+<a name="a1002898" id="a1002898"></a>
+<h4>2.9.2 Initializing a Context's Environment</h4>
+<p><a name="a1004445" id="a1004445"></a> When creating an initial
+context (either using the constructors from
+<code>InitialContext</code> or its subclasses), the application can
+supply an environment as a parameter. The parameter is represented
+as a <code>Hashtable</code> or any of its subclasses (e.g.,
+<code>Properties</code>). The JNDI class library augments the data
+from this parameter with data from other sources (see Chapter 6 in
+the <strong>JNDI API</strong> document) and passes this to the
+context implementation.</p>
+<p><a name="a1004469" id="a1004469"></a> Like all other parameters,
+the environment parameter received by a context implementation is
+owned by the caller. The context implementation should make a copy
+of the environment parameter it gets or otherwise take steps to
+ensure that changes by the caller to the parameter would not affect
+what the context implementation sees and vice versa. Note also that
+if the environment parameter is a <code>Properties</code> instance,
+enumeration and <code>Hashtable.get()</code> on the parameter only
+examine the top-level properties (not any nested defaults). This is
+the expected behavior. The context implementation is not expected
+to retrieve or enumerate values in the <code>Properties</code>
+instance's nested defaults.</p>
+<p><a name="a1004537" id="a1004537"></a> The JNDI library is
+responsible for merging properties from different sources, such as
+the environment parameter to the initial context, resource files,
+and, where appropriate, system properties and applet parameters
+(see the JNDI API document, Chapter 6). The context implementation
+typically just reads the property it needs from the environment
+which it was supplied. There is seldom a need for a context
+implementation to consult other sources.</p>
+<a name="a1002900" id="a1002900"></a>
+<h4>2.9.3 Inheritance</h4>
+<p><a name="a1002901" id="a1002901"></a> The environment is
+inherited from parent to child as the context methods proceed from
+one context to the next. The entire environment of a context
+instance is inherited by the child context instances, regardless of
+whether certain properties within the environment are ignored by a
+particular context.</p>
+<p><a name="a1002902" id="a1002902"></a> A context implementation
+must pass on the environment from one context instance to the next
+in order to implement this "inheritance" trait of environments.
+Within one context implementation it can do so by passing the
+environment as an argument to the <code>Context</code> constructor,
+or to the
+<code>NamingManager/DirectoryManager.getObjectInstance()</code>
+method for creating <code>Context</code> instances.</p>
+<p><a name="a1002903" id="a1002903"></a> Across context
+implementations in a federation, this is supported by passing the
+environment as part of the <code>CannotProceedException</code>
+parameter of
+<code>NamingManager.getContinuationContext()/DirectoryManager.getContinuationDirContext()</code>,
+which in turn will use this environment when creating an instance
+of the context in which to continue the operation.</p>
+<p><a name="a1002904" id="a1002904"></a> Inheritance can be
+implemented in any way as long as it preserves the semantics that
+each context has its own view of its environment. For example, a
+copy-on-write implementation could be used to defer copying of the
+environment until it is absolutely necessary.</p>
+<a name="a1002905" id="a1002905"></a>
+<h4>2.9.4 Updates to the Environment</h4>
+<p><a name="a1002906" id="a1002906"></a> The environment of a
+context can be updated via the use of the <code>addToEnvironment()
+and removeFromEnvironment()</code> methods in the
+<code>Context</code> interface.</p>
+<pre class="codeblock">
+public interface Context {
+        ...
+        public Object addToEnvironment(String propName, Object propVal) 
+                throws NamingException;
+
+        public Object removeFromEnvironment(String propName) 
+                throws NamingException;
+}
+</pre>
+<p><a name="a1002915" id="a1002915"></a> These methods update the
+environment of this instance of <code>Context</code>. An
+environment property that is not relevant to the context
+implementation is silently ignored but maintained as part of the
+environment. The updated environment affects this instance of
+<code>Context</code>, and will be inherited by any new child
+<code>Context</code> instances, but does not affect any
+<code>Context</code> instances already in existence. A lookup of
+the empty name on a <code>Context</code> will return a new
+<code>Context</code> instance with an environment inherited as with
+any other child.</p>
+<p><a name="a1005730" id="a1005730"></a> See Section 6.6 in the
+<strong>JNDI API</strong> document for details.</p>
+<a name="a1004380" id="a1004380"></a>
+<h4>2.9.5 Provider Resource Files</h4>
+<p><a name="a1004381" id="a1004381"></a> Each service provider has
+an optional resource file that contains properties specific to that
+provider. The name of this resource is:</p>
+<pre class="codeblock">
+[<em>prefix</em>/]jndiprovider.properties 
+<br /><a name="a1004384" id="a1004384"> </a>
+</pre>
+where <em>prefix</em> is the package name of the provider's context
+implementation(s), with each period (".") converted to a slash
+("/"). For example, suppose a service provider defines a context
+implementation with class name
+<code>com.sun.jndi.ldap.LdapCtx</code>. The provider resource for
+this provider is named
+<code>com/sun/jndi/ldap/jndiprovider.properties</code>.
+<p><a name="a1004419" id="a1004419"></a> The JNDI class library
+will consult this file when it needs to determine the value of a
+property, as described in Section 6.5.2 in the <strong>JNDI
+API</strong> document.</p>
+<p><a name="a1004427" id="a1004427"></a> When the service provider
+needs to determine the value of a property, it will generally take
+that value directly from the environment. The service provider may
+define provider-specific properties to be placed in its own
+provider resource file. In that case it needs to read them from its
+property resource file and merge them in a way consistent with the
+algorithm described in Section 6.5.2 in the <strong>JNDI
+API</strong> document.</p>
+<a name="a1005562" id="a1005562"></a>
+<h3>2.10 Connection Management</h3>
+<p><a name="a1005731" id="a1005731"></a> For a context
+implementation that uses a client/server protocol, there is not
+necessarily a one-to-one mapping between a context and a connection
+between the client and the server. JNDI is a high-level API that
+does not deal directly with connections. It is the job of the
+context implementation to do any necessary connection management.
+Hence, a single connection may be shared by multiple context
+instances, and a context implementation is free to use its own
+algorithms to conserve connection and network usage. Thus, when a
+method is invoked on the context instance, the context
+implementation might need to do some connection management in
+addition to performing the requested operation.</p>
+<p><a name="a1005756" id="a1005756"></a> The
+<code>Context.close()</code> and
+<code>NamingEnumeration.close()</code> methods can be used by
+applications to provide hints to the context implementation as to
+when to free connection-related resources. A context implementation
+may choose to (and is generally encouraged to) take other measures
+to garbage-collect and conserve its connection-related
+resources.</p>
+<p><a name="a1005763" id="a1005763"></a> Some environment
+properties affect a context's connection. For example, if the
+application changes the security-related properties, the context
+implementation might need to modify or create a new connection
+using those updated properties. If the connection was being shared
+by other contexts prior to the change, the connection change should
+not affect contexts whose properties have not been updated.</p>
+<a name="a1002345" id="a1002345"></a>
+<h2>3 The Initial Context</h2>
+<p><a name="a997006" id="a997006"></a> Since all naming methods are
+performed relative to a context, an application needs a starting
+context in order to invoke them. This starting context is referred
+to as the <em>initial context</em>. The bindings in the initial
+context are determined by policies set forth by the initial context
+implementation, perhaps using standard policies for naming global
+and enterprise-wide namespaces. For example, the initial context
+might contain a binding to the Internet DNS namespace, a binding to
+the enterprise-wide namespace, and a binding to a personal
+directory belonging to the user who is running the application.</p>
+<p><a name="a997007" id="a997007"></a> An application obtains an
+initial context by making the following call:</p>
+<pre class="codeblock">
+Context ctx = new InitialContext();
+<br /><a name="a997009" id="a997009"> </a>
+</pre>
+An alternate constructor allows an environment to be passed as an
+argument. This allows the application to pass in preferences or
+security information to be used in the construction of the initial
+context.
+<pre class="codeblock">
+Hashtable env = new Hashtable();<a href=
+"#a1002114"><sup>4</sup></a>
+env.put(Context.SECURITY_PRINCIPAL, "jsmith");
+env.put(Context.SECURITY_CREDENTIALS, "xxxxxxx");
+Context ctx = new InitialContext(env);
+</pre>
+<p><a name="a997010" id="a997010"></a> Subsequent to getting an
+initial context, the application can invoke <code>Context</code>
+methods.</p>
+<pre class="codeblock">
+Object obj = ctx.lookup("this/is/a/test");
+</pre>
+<p><a name="a997012" id="a997012"></a> The
+<code>InitialContext</code> class (and subclasses) selects an
+implementation using a default algorithm that can be overridden by
+installing an <em>initial context factory builder</em> (described
+below).</p>
+<p><a name="a997013" id="a997013"></a> The
+<code>InitialDirContext</code> is an extension of
+<code>InitialContext</code>. It is used for performing directory
+operations using the initial context. The
+<code>InitialLdapContext</code> class is an extension of
+<code>InitialDirContext</code>. It is used for performing special
+LDAP v3 operations using the initial context. The algorithms and
+policies described in this section also apply to
+<code>InitialDirContext</code> and <code>InitialLdapContext</code>.
+Places where <code>DirContext/LdapContext</code> is required
+instead of <code>Context</code> have been noted.</p>
+<a name="a1004566" id="a1004566"></a>
+<h3>3.1 The Initial Context Factory</h3>
+<p><a name="a1004567" id="a1004567"></a> An <em>initial context
+factory</em> is a class that creates an instance of a context that
+has been implemented following the guidelines outlined in <a href=
+"jndispi.fm.html#a998980">Chapter 2</a>. The factory is used by the
+<code>InitialContext</code> class (or subclass) constructor.</p>
+<p><a name="a1004588" id="a1004588"></a> Given an environment, the
+factory returns an instance of <code>Context</code> (or its
+subinterfaces).</p>
+<pre class="codeblock">
+public interface InitialContextFactory {
+        public Context getInitialContext(Hashtable env)         <br />                throws NamingException;
+}
+</pre>
+<p><a name="a998189" id="a998189"></a> Appendix A contains an
+example of an <code>InitialContextFactory</code>.</p>
+<p><a name="a1004591" id="a1004591"></a> Once the context instance
+has been created, when a method is invoked on
+<code>InitialContext</code> by using a non-URL name (see below),
+the method is forwarded and invoked on that context instance.</p>
+<p><a name="a1004603" id="a1004603"></a> JNDI selects the initial
+context implementation to use by using the property
+<code>java.naming.factory.initial</code>. This property contains
+the fully-qualified class name of an initial context factory. The
+class must implement the <code>InitialContextFactory</code>
+interface and have a public constructor that does not take any
+arguments. JNDI will load the initial context factory class and
+then invoke <code>getInitialContext()</code> on it to obtain a
+<code>Context</code> instance to be used as the initial
+context.</p>
+<p><a name="a1004599" id="a1004599"></a> An application that wants
+to use a particular initial context must supply the
+<code>java.naming.factory.initial</code> property in the
+environment passed to the <code>InitialContext</code> (or subclass)
+constructors, or via resource files, system properties, or applet
+parameters.</p>
+<a name="a1007521" id="a1007521"></a>
+<h4>3.1.1 Exceptions</h4>
+<p><a name="a1004618" id="a1004618"></a> When the property
+<code>java.naming.factory.initial</code> is set to a
+non-<code>null</code> value, the <code>InitialContext</code> (and
+subclass) constructors will try to load and instantiate an initial
+context factory, which will then create a context instance. If the
+factory or context cannot be created, for example as a result of an
+authentication problem, the initial context factory can throw an
+exception to indicate this problem. Note however that it is up to
+the context implementation <em>when</em> it verifies and indicates
+to users of the initial context any environment property- or
+connection- related problems. It can do so lazily-delaying until an
+operation is performed on the context, or eagerly, at the time the
+context is created.</p>
+<p><a name="a1004636" id="a1004636"></a> If the property
+<code>java.naming.factory.initial</code> is not set, no attempt
+will be made to create an underlying context for the initial
+context. The initial context is still useful, for instance, for
+processing URL names, as described next.</p>
+<a name="a1004642" id="a1004642"></a>
+<h3>3.2 URL Support</h3>
+<p><a name="a1004685" id="a1004685"></a> If a URL<a href=
+"#a1004684"><sup>5</sup></a> string is passed to the initial
+context, it will be resolved using the corresponding <em>URL
+context implementation</em>. This feature is supported by the
+<code>InitialContext</code> class (and subclasses) and is
+independent of the setting of the
+<code>java.naming.factory.initial</code> environment property.</p>
+<p><a name="a1004725" id="a1004725"></a> This feature allows
+applications to use the initial context to reach any namespace for
+which a URL context implementation has been made available. For
+example, the following code lists an LDAP namespace from the
+initial context:</p>
+<p><a name="a1004734" id="a1004734"></a> &#32; &#32; &#32; &#32;
+&#32; &#32; &#32; &#32; &#32; <code>new
+InitialContext().list("ldap://lserver/ou=eng,o=wiz,c=us");</code></p>
+<a name="a1004731" id="a1004731"></a>
+<h4>3.2.1 URL Context</h4>
+<p><a name="a1005099" id="a1005099"></a> A URL string has the
+following format:</p>
+<p><a name="a1005100" id="a1005100"></a> &#32; &#32; &#32; &#32;
+&#32; &#32; &#32; &#32;
+<em>scheme_id</em>:<em>opaque_string</em></p>
+<p><a name="a1004713" id="a1004713"></a> For example, an LDAP URL
+string has the scheme id "ldap"; a file URL has the scheme id
+"file".</p>
+<p><a name="a1005103" id="a1005103"></a> A URL context
+implementation is a class that implements the <code>Context</code>
+interface (and possibly some subinterfaces) and accepts name
+arguments that are URL strings of the scheme that it supports. For
+example, an LDAP URL context accepts "ldap" URL strings.</p>
+<p><a name="a1005038" id="a1005038"></a> When a URL string name is
+passed to a URL context, the context methods that accept
+<code>String</code> treat the name as a URL with the syntax defined
+by the URL scheme. When a <code>Name</code> object in which the
+first component is a URL string name is passed to a URL context,
+the first component is treated as a URL string, and the rest is
+used for federation (that is, resolution of the first component
+will indicate which naming system to use to resolve the rest). The
+<code>Name</code> instance should be a <code>CompositeName</code>;
+otherwise, an <code>InvalidNameException</code> should be
+thrown.</p>
+<p><a name="a1005032" id="a1005032"></a> Name arguments that are
+not URL strings, and URL strings with an inappropriate scheme id
+should be rejected with an <code>InvalidNameException</code>.</p>
+<a name="a1005087" id="a1005087"></a>
+<h4>3.2.2 URL Context Factory</h4>
+<p><a name="a1004691" id="a1004691"></a> A <em>URL context
+factory</em> is a class (actually a special type <em>object
+factory</em> (see <a href="jndispi.fm.html#a1007760">Section
+4.1</a>)) that creates an instance of a URL context for URLs of one
+or more schemes.</p>
+<p><a name="a1005018" id="a1005018"></a> When the
+<code>InitialContext</code> class receives a URL string as a name
+argument, it will look for a URL context factory by using the
+following algorithm. The environment property
+<code>java.naming.factory.url.pkgs</code> contains a
+colon-separated list of package prefixes. The factory's class name
+is constructed by using the following rule:</p>
+<p><a name="a1005191" id="a1005191"></a> <em>package_prefix</em> +
+"." + <em>scheme_id</em> + "." +
+<em>scheme_id</em><code>URLContextFactory</code></p>
+<p><a name="a1005192" id="a1005192"></a> for each package prefix
+listed in the property. The default package prefix
+<code>com.sun.jndi.url</code> is appended to the end of the
+list.</p>
+<p><a name="a1005236" id="a1005236"></a> For example, if the URL is
+"<code>ldap://somehost:389</code>" and
+<code>java.naming.factory.url.pkgs</code> contains
+"<code>com.widget:com.wiz.jndi</code>", the
+<code>InitialContext</code> class will attempt to locate the
+corresponding factory class by loading the following classes until
+one is successfully instantiated:</p>
+<pre class="codeblock">
+com.widget.ldap.ldapURLContextFactory
+com.wiz.jndi.ldap.ldapURLContextFactory
+com.sun.jndi.url.ldap.ldapURLContextFactory
+<br /><a name="a1005198" id="a1005198"> </a>
+</pre>
+The factory class implements the <code>ObjectFactory</code>
+interface (see <a href="jndispi.fm.html#a1000794">"URL Context
+Factory" on page &#32;31</a>) and has a public constructor that
+takes no arguments. The <code>InitialContext</code> class passes
+the scheme id as the resolved object to the factory's
+<code>getObjectInstance()</code> method, which in turn creates a
+URL context for the URL scheme. The URL context will then be used
+to carry out the originally intended <code>Context</code> or
+<code>DirContext</code> operation on the URL supplied to
+<code>InitialContext</code>. <a name="a1005286" id="a1005286"></a>
+<h4>3.2.3 Service Provider's Responsibility</h4>
+<p><a name="a1005287" id="a1005287"></a> There is no requirement
+that a service provider supply a URL context factory and URL
+context implementation. It only does so if it wants to allow URL
+string names with its URL scheme to be accepted by the
+<code>InitialContext</code> class. A service provider, for
+instance, might just provide an initial context factory and a
+context implementation that is accessed through that factory.</p>
+<a name="a997025" id="a997025"></a>
+<h3>3.3 Overriding the Default Behavior</h3>
+<p><a name="a1005311" id="a1005311"></a> The policy of creating an
+initial context factory using the
+<code>java.naming.factory.initial</code> environment property and
+URL support is built into the <code>InitialContext</code> class.
+There are two ways an application can override some or all of this
+policy.</p>
+<a name="a1005328" id="a1005328"></a>
+<h4>3.3.1 Removing URL Support</h4>
+<p><a name="a1005329" id="a1005329"></a> If an application does not
+want URL strings to be treated specially, it can use the method
+<code>NamingManager.getInitialContext()</code>, which creates a
+context instance using the factory named in the
+<code>java.naming.factory.initial</code> environment property.</p>
+<p><a name="a1005345" id="a1005345"></a> This method is also useful
+if the application needs to access interfaces implemented by the
+context created by the initial context factory, but which are not
+one of <code>Context</code>, <code>DirContext</code>, or
+<code>LdapContext</code>. Here is a code fragment that gets a
+context using <code>NamingManager.getInitialContext()</code> and
+then casts it to a subclass:</p>
+<pre class="codeblock">
+FooContext ctx = (FooContext) NamingManager.getInitialContext(env);
+...
+Object obj = ctx.lookup(name);
+ctx.fooMethod1(...);
+<br /><a name="a1005350" id="a1005350"> </a>
+</pre>
+Note that installing an initial context factory builder (discussed
+next) affects the result of
+<code>NamingManager.getInitialContext()</code>. <a name="a1005371"
+id="a1005371"></a>
+<h4>3.3.2 Removing All Policy</h4>
+<p><a name="a997026" id="a997026"></a> An initial context factory
+<em>builder</em> is a class that creates instances of initial
+context factories.</p>
+<p><a name="a1005381" id="a1005381"></a> An application can install
+an initial context factory builder to define its own policy of how
+to locate and construct initial context implementations. When a
+builder has been installed, it is solely responsible for creating
+the initial context factories. None of the default policies
+(<code>java.naming.factory.initial</code> property or URL support)
+normally used by JNDI are employed.</p>
+<p><a name="a997027" id="a997027"></a> An implementation of an
+initial context factory builder must implement the
+<code>InitialContext-FactoryBuilder</code> interface. Its
+<code>createInitialContextFactory()</code> method creates instances
+of <code>InitialContextFactory</code>.</p>
+<p><a name="a997030" id="a997030"></a> After a builder has been
+installed. the application can get the initial context by either
+using the
+<code>InitialContext</code>/<code>InitialDirContext</code>/<code>InitialLdapContext</code>
+constructors, or by using
+<code>NamingManager.getInitialContext()</code>. When one of the
+constructors is used, its class is basically a wrapper around the
+underlying context implementation returned by
+<code>NamingManager.getInitialContext()</code>.</p>
+<a name="a1002587" id="a1002587"></a>
+<h3>3.4 Implementing a Subclass of InitialContext</h3>
+<p><a name="a1001471" id="a1001471"></a> When there is a need to
+provide an initial context that supports an interface that extends
+from <code>Context</code>, <code>DirContext</code>, or
+<code>LdapContext</code>, the service provider should supply a
+subclass of <code>InitialContext</code> (or
+<code>InitialDirContext/InitialLdapContext</code>).</p>
+<a name="a1005441" id="a1005441"></a>
+<h4>3.4.1 URL Support</h4>
+<p><a name="a1005440" id="a1005440"></a> To add support for URLs in
+the same way <code>InitialContext</code> and
+<code>InitialDirContext</code> do, the subclass should use the
+protected methods available in <code>InitialContext</code> as
+follows. This only makes sense for interfaces that have methods
+that accept name argument.</p>
+<p><a name="a1001558" id="a1001558"></a> For example, suppose
+<code>FooContext</code> is a subinterface of
+<code>DirContext</code>. Its initial context implementation would
+define <code>getURLOrDefaultInitFooCtx()</code> methods (for both
+<code>Name</code> and <code>String</code> parameters) that retrieve
+the real initial context to use.</p>
+<pre class="codeblock">
+public class InitialFooContext extends InitialDirContext {
+        ...
+        protected FooContext getURLOrDefaultInitFooCtx(Name name)
+                throws NamingException {
+                Context answer = getURLOrDefaultInitCtx(name);
+                if (!(answer instanceof FooContext)) {
+                        throw new NoInitialContextException("Not a FooContext");
+                }
+                return (FooContext)answer;
+        }
+        // similar code for getURLOrDefaultInitFooCtx(String name)
+}
+<br /><a name="a1001493" id="a1001493"> </a>
+</pre>
+When providing implementations for the new methods in the
+<code>FooContext</code> interface that accept a name argument,
+<code>getURLOrDefaultInitFooCtx()</code> is used in the following
+way.
+<pre class="codeblock">
+        public Object FooMethod1(Name name, ...) throws NamingException {
+                return getURLOrDefaultInitFooCtx(name).FooMethod1(name, ...);
+        }
+</pre>
+<a name="a1005470" id="a1005470"></a>
+<h4>3.4.2 New Method Support</h4>
+<p><a name="a1001506" id="a1001506"></a> When providing
+implementations for the new methods in the <code>FooContext</code>
+interface that do not have a name argument, or for which URL
+support is not required, use
+<code>InitialContext.getDefaultInitCtx()</code>.</p>
+<pre class="codeblock">
+protected FooContext getDefaultInitFooCtx() throws NamingException {
+        Context answer = getDefaultInitCtx();
+        if (!(answer instanceof FooContext)) {
+                throw new NoInitialContextException("Not an FooContext");
+        }
+        return (FooContext)answer;
+}
+public Object FooMethod2(Args args) throws NamingException {
+        return getDefaultInitFooCtx().FooMethod2(args);
+}
+<br /><a name="a1005784" id="a1005784"> </a>
+
+</pre>
+<a name="a1005483" id="a1005483"></a>
+<h4>3.4.3 Constructors</h4>
+<p><a name="a1001563" id="a1001563"></a> The implementation should
+provide appropriate constructors for the class. The constructor
+should call the appropriate constructor of the superclass. If the
+environment needs to be modified or examined prior to the
+superclass's constructor being called, it should use the protected
+constructor that accepts a boolean flag to control the
+initialization of the initial context, and then use the
+<code>init()</code> method to initialize the context. Here is an
+example:</p>
+<pre class="codeblock">
+public InitialFooContext(Hashtable environment, Object otherArg) 
+            throws NamingException {
+        super(true); // don't initialize yet
+
+        // Clone environment and adjust
+        Hashtable env = (environment == null) ? new Hashtable(11) :
+                (Hashtable)environment.clone();
+        ...
+        init(env);
+}
+<br /><a name="a1001565" id="a1001565"> </a>
+</pre>
+Client programs that use this new initial context would look as
+follows.
+<pre class="codeblock">
+<br />import com.widget.jndi.InitialFooContext;
+...
+FooContext ctx = new InitialFooContext(env);
+Object obj = ctx.lookup(name);
+ctx.FooMethod1(name, ...);
+</pre>
+<a name="a997589" id="a997589"></a>
+<h2>4 Customizing A Context Implementation</h2>
+<p><a name="a1005806" id="a1005806"></a> JNDI allows a context
+implementation to be customized-by the application, the
+application's deployer or user, or the service provider-in how it
+reads and stores objects in the naming/directory service. A similar
+facility is also available for narrowing LDAP v3 control
+classes.</p>
+<p><a name="a1006157" id="a1006157"></a> You can think of these
+facilities as modules that plug into a context implementation.</p>
+<a name="a1007760" id="a1007760"></a>
+<h3>4.1 Reading Objects: Object Factories</h3>
+<p><a name="a1000783" id="a1000783"></a> JNDI provides a generic
+way of creating objects (including instances of
+<code>Context</code>) using information stored in the namespace.
+That information may be of arbitrary type
+(<code>java.lang.Object</code>). For example, it may be a
+<code>Reference</code>, or a URL, or any other data required to
+create the object. Turning such information stored in the namespace
+into an object is supported through the use of <em>object
+factories</em>. An object factory is a class that implements the
+<code>ObjectFactory</code> interface (or the
+<code>DirObjectFactory</code> subinterface):</p>
+<pre class="codeblock">
+        public interface ObjectFactory {        
+                public Object getObjectInstance(Object refObj, 
+                                                Name name,
+                                                Context nameCtx, 
+                                                Hashtable env)
+                        throws Exception;
+        }
+        public interface DirObjectFactory extends ObjectFactory {
+                public Object getObjectInstance(Object refObj, 
+                                                Name name,
+                                                Context nameCtx, 
+                                                Hashtable env,
+                                                Attributes attrs)
+                        throws Exception;
+        }
+</pre>
+<p><a name="a1000788" id="a1000788"></a></p>
+Given some reference information (<code>refObj</code>) about an
+object, optional information about the name of the object and where
+it is bound, and optionally some additional environment information
+(for example, some identity or authentication information about the
+user creating the object), the factory attempts to create an object
+represented by the reference information. For example, given
+reference information about a printer, a printer object factory
+might return an instance of <code>Printer</code>. In the case of an
+object factory that is to be used with a <code>DirContext</code>
+implementation, the factory is also given some attributes about the
+object. If the factory requires more attributes or information, it
+can obtain them directly from the naming/directory service by using
+the <code>name</code>/<code>nameCtx</code> arguments.
+<p><a name="a1006175" id="a1006175"></a> If the factory cannot
+created an object using the arguments supplied, it should return
+<code>null</code>. For example, when a printer object factory is
+given data about a disk drive, it should return <code>null</code>.
+The factory should only thrown an exception if no other object
+factories should be tried. Therefore, the factory should be careful
+about runtime exceptions that might be thrown from its
+implementation. For example, if a printer object factory is given
+data about a printer but the data is malformed in some way, it
+should throw an exception.</p>
+<p><a name="a1006192" id="a1006192"></a> Object factories are used
+in several places in JNDI, basically to turn any reference
+information into an object. They are used in federation, URL
+processing in the initial context, and, as illustrated by the
+printer example, turning data into a form expected by the
+application.</p>
+<a name="a1006206" id="a1006206"></a>
+<h4>4.1.1 Handling Structured References</h4>
+<p><a name="a1006207" id="a1006207"></a> A <code>Reference</code>
+contains methods for returning the class name and location of the
+object factory. The following methods are found in
+<code>Reference</code>.</p>
+<pre class="codeblock">
+public class Reference {
+        ...
+        public String   getClassName();
+        public String getFactoryClassName();
+        public String getFactoryClassLocation();
+}
+<br /><a name="a1006214" id="a1006214"> </a>
+</pre>
+If the object read from the directory/naming service is an instance
+of <code>Reference</code> or <code>Referenceable</code>, its
+corresponding object factory can be located using information in
+<code>Reference</code>. The <code>getFactoryClassName()</code>
+method retrieves the name of the factory class that implements the
+<code>ObjectFactory</code> interface. This factory must implement
+the <code>ObjectFactory</code> interface and have a public
+constructor that takes no arguments.
+<code>getFactoryClassLocation()</code> retrieves the codebase of
+the class implementation for the factory, which is a list of
+space-separated URLs.
+<p><a name="a1006215" id="a1006215"></a> JNDI creates the object by
+invoking <code>getObjectInstance()</code> on the
+<code>ObjectFactory</code> instance, by using the
+<code>Reference</code> and environment as arguments. The result is
+an instance of a class identified by
+<code>getClassName()</code>.</p>
+<p><a name="a1006216" id="a1006216"></a> Note that all the classes
+necessary to instantiate the object returned to the application are
+made available using mechanisms provided by JNDI. The application
+doesn't have to install the classes locally.</p>
+<p><font size="-1"><b>Figure 3: Example Using Reference to Get Back
+an Object From the Namespace</b></font></p>
+<img src="figure_three.gif" alt=
+"Example Using Reference to Get Back an Object From the Namespace" />
+<p><a name="a1006267" id="a1006267"></a> Returning to the printer
+example, suppose <code>Printer</code> is an interface for
+representing a printer and the <code>BSDPrinter</code> class is an
+implementation of that interface. <code>BSDPrinter</code>
+implements the <code>Referenceable</code> interface and uses the
+<code>Reference</code> class to store information on how to
+construct instances of <code>BSDPrinter</code> and address
+information for communicating with the print server. The
+<code>Reference</code> contains the class name of the object
+("<code>Printer"</code>), the class name of the printer object
+factory ("<code>PrinterFactory</code>") and a URL for loading the
+factory's class implementation. Using the factory class name and
+implementation location, JNDI first loads the implementation of
+<code>PrinterFactory</code> and creates an instance of
+<code>PrinterFactory</code>. It then invokes
+<code>getObjectInstance()</code> on the factory to create an
+instance of <code>Printer</code> using the reference. For example,
+one address in the reference may have an address of type
+"<code>bsd</code>", and contains the print server's host name
+("<code>lobby-printserver</code>"). The <code>PrinterFactory</code>
+instance uses the address type ("<code>bsd</code>") to decide to
+create a <code>BSDPrinter</code> instance and passes the address
+contents ("<code>lobby-printserver</code>") to its constructor. The
+resulting <code>BSDPrinter</code> object is returned as the result
+of <code>lookup()</code>.</p>
+<p><a name="a1006379" id="a1006379"></a> From the context
+implementation's point of view, all of this is done automatically
+by its invocation of
+<code>NamingManager</code>/<code>DirectoryManager.getObjectInstance()</code>.</p>
+<p><a name="a1006268" id="a1006268"></a> When the application
+invokes <code>print()</code> on the <code>BSDPrinter</code>
+instance returned by <code>lookup()</code>, the data is sent to the
+print server on the machine "<code>lobby-printserver</code>" for
+printing. The application need not know the details of the
+<code>Reference</code> stored in the namespace, the protocol used
+to perform the job, or whether the <code>BSDPrinter</code> class
+was defined locally or loaded over the network. The transformation
+of the information stored in the underlying service into an object
+that implements the <code>Printer</code> interface is done
+transparently through the cooperation of the service provider
+(which stores bindings of printer names to printer address
+information), the printer service provider (which provides the
+<code>PrinterFactory</code> and <code>BSDPrinter</code> classes),
+and the JNDI SPI framework (which ties the two together to return
+an object that the application can use directly).</p>
+<p><a name="a1006526" id="a1006526"></a> A service provider for
+such an object must do the following:</p>
+<ol>
+<li style="list-style: none"><a name="a1006527" id=
+"a1006527"></a></li>
+<li>Define the class for the object (e.g., <code>BSDPrinter</code>)
+that implements <code>Referenceable</code> or is a subclass of
+<code>Reference</code>. <a name="a1006528" id="a1006528"></a></li>
+<li>Define the <code>Reference</code> and its reference addresses
+for the object. <a name="a1006546" id="a1006546"></a></li>
+<li>Define a factory class that implements
+<code>ObjectFactory</code> (e.g., <code>PrinterFactory</code>).
+This class's <code>getObjectInstance()</code> method will create an
+instance of the class from step 1 (e.g., <code>BSDPrinter</code>)
+when given the <code>Reference</code> from step 2.</li>
+</ol>
+<a name="a1006384" id="a1006384"></a>
+<h4>4.1.2 Handling URL References</h4>
+<p><a name="a1006385" id="a1006385"></a> If a
+<code>Reference</code> contains an address of type "URL" but not
+the factory class name and location, or if the reference is an
+array of strings containing URLs, JNDI will use the URL context
+factory support described in <a href=
+"jndispi.fm.html#a1004642">Section 3.2</a> to locate the factory,
+and then pass the URL string in the address to the factory's
+<code>getObjectInstance()</code> method. See <a href=
+"jndispi.fm.html#a1000794">Section 4.1.6</a> for a description of
+how JNDI expects a URL context factory implementation to
+behave.</p>
+<p><a name="a1006557" id="a1006557"></a> A service provider for
+such an object must do the following:</p>
+<ol>
+<li style="list-style: none"><a name="a1006558" id=
+"a1006558"></a></li>
+<li>Define the class for the object (e.g.,
+<code>BSDPrinter</code>). <a name="a1006559" id=
+"a1006559"></a></li>
+<li>Define the URL scheme for the object. <a name="a1006560" id=
+"a1006560"></a></li>
+<li>Define a URL context factory class that implements
+<code>ObjectFactory</code>. This class's
+<code>getObjectInstance()</code> method will create an instance of
+the class from step 1 (e.g., <code>BSDPrinter</code>) when given
+the URL from step 2.</li>
+</ol>
+<a name="a1006269" id="a1006269"></a>
+<h4>4.1.3 Handling Arbitrary References: The
+java.naming.factory.object Property</h4>
+<p><a name="a1006270" id="a1006270"></a> In addition to extracting
+factory information from <code>Reference</code>s, or using URLs,
+JNDI also looks for object factories specified in the
+<code>java.naming.factory.object</code> property, which can be in
+the environment or the provider resource file (see <a href=
+"jndispi.fm.html#a1004380">Section 2.9.5</a>). The property
+contains a colon-separated list of fully-qualified class names of
+object factories. Each class must implement the
+<code>ObjectFactory</code> interface and have a public constructor
+that takes no arguments. For each class in the list, JNDI attempts
+to load and instantiate the factory class, and to invoke the
+<code>ObjectFactory/DirObjectFactory.getObjectInstance()</code>
+method on it using the object and environment arguments supplied.
+If the creation is successful, the resulting object is returned;
+otherwise, JNDI uses the same procedure on the next class in the
+list until the list is exhausted or a factory returns a
+non-<code>null</code> result.</p>
+<p><font size="-1"><b>Figure 4: Example using
+java.naming.factory.object to Get Back an Object from the
+Namespace</b></font></p>
+<img src="figure_four.gif" alt=
+"Example using java.naming.factory.object to Get Back an Object from the Namespace" />
+<p><a name="a1006331" id="a1006331"></a> For the printer example,
+instead of using a <code>Reference</code> to represent a printer in
+the namespace, some other information is stored. When that
+information is later retrieved, the object factories specified
+<code>java.naming.factory.object</code> are tried in turn to
+attempt to turn that information into a <code>Printer</code>
+instance.</p>
+<p><a name="a1006332" id="a1006332"></a> A service provider for
+such an object must do the following:</p>
+<ol>
+<li style="list-style: none"><a name="a1006333" id=
+"a1006333"></a></li>
+<li>Define the class for the object (e.g.,
+<code>BSDPrinter</code>). <a name="a1006334" id=
+"a1006334"></a></li>
+<li>Define the class for reference information for the object. This
+is the object that will be bound in the namespace. This need
+<em>not</em> be <code>Reference</code>. It can be anything that
+will be understood by its corresponding object factory (e.g., some
+string containing the server name "<code>printer type=bsd;
+host=lobby-printserver</code>"). <a name="a1006335" id=
+"a1006335"></a></li>
+<li>Define a factory class that implements
+<code>ObjectFactory</code> (e.g., <code>PrinterFactory</code>).
+This class's <code>getObjectInstance()</code> method will create an
+instance of the class from step 1 (e.g., <code>BSDPrinter</code>)
+when given an instance of the class from step 2 (e.g.,
+"<code>printer type=bsd; host=lobby-printserver</code>").</li>
+</ol>
+<p><a name="a1006336" id="a1006336"></a> The service provider
+should automatically convert between the actual object (e.g.,
+<code>BSDPrinter</code>) and the reference information (step 2,
+e.g., "<code>printer type=bsd; host=lobby-printserver</code>") when
+binding or looking up the object.</p>
+<p><a name="a1006337" id="a1006337"></a> An application that wants
+to use a particular factory for generating objects must include the
+factory's class name in its <code>java.naming.factory.object</code>
+environment property and make the factory's classes and object
+classes available.</p>
+<a name="a1006464" id="a1006464"></a>
+<h4>4.1.4 Overriding the Default Behavior</h4>
+<p><a name="a1006465" id="a1006465"></a> An object factory
+<em>builder</em> is a class that creates instances of object
+factories.</p>
+<p><a name="a1006466" id="a1006466"></a> An application can install
+an object factory builder to defining its own policy of how to
+locate and construct object factory implementations. When a builder
+has been installed, it is solely responsible for creating the
+object factories. None of the default policies
+(<code>Reference</code>, URL string, or
+<code>java.naming.factory.object</code> property) normally used by
+JNDI are employed.</p>
+<p><a name="a1006517" id="a1006517"></a></p>
+<p><font size="-1"><b>Figure 5: Example using an Object Factory
+Builder to Get Back an Object from the Namespece</b></font></p>
+<img src="figure_five.gif" alt=
+"Example using an Object Factory Builder to Get Back an Object from the Namespece" />
+<p>A service provider for an object factory builder must do the
+following:</p>
+<ol>
+<li style="list-style: none"><a name="a1006518" id=
+"a1006518"></a></li>
+<li>Define object factories that implement
+<code>ObjectFactory</code>. <a name="a1006519" id=
+"a1006519"></a></li>
+<li>Define a class that implements
+<code>ObjectFactoryBuilder</code>. This class's
+<code>createObjectFactory()</code> method will use the constructors
+for the <code>ObjectFactory</code> classes in step 1.</li>
+</ol>
+<p><a name="a1006520" id="a1006520"></a> An application that wants
+to use this factory builder must first install it.</p>
+<pre class="codeblock">
+       NamingManager.setObjectFactoryBuilder(builder); 
+</pre>
+<a name="a1000829" id="a1000829"></a>
+<h4>4.1.5 Context Factory</h4>
+<p><a name="a1000830" id="a1000830"></a> A <em>context factory</em>
+is an object factory that creates instances of
+<code>Context</code>. The implementation of these contexts for a
+particular naming or directory service is referred to as a
+<em>context implementation</em>. Context implementations are
+described in <a href="jndispi.fm.html#a998980">Chapter 2</a>. Like
+any other object factory, a context factory can be obtained by
+using any of the three mechanisms described above: from a
+<code>Reference</code>, a URL scheme id, or listed in the
+<code>java.naming.factory.object</code> property.</p>
+<a name="a1000794" id="a1000794"></a>
+<h4>4.1.6 URL Context Factory</h4>
+<p><a name="a1000799" id="a1000799"></a> A URL context factory is a
+special kind of context factory. It follows these rules when
+implementing <code>ObjectFactory.getObjectInstance()</code>.</p>
+<ul>
+<li style="list-style: none"><a name="a1000800" id=
+"a1000800"></a></li>
+<li>If <code>refObj</code> is <code>null</code>, create a context
+for resolving URLs of the scheme associated with this factory. The
+resulting context is not tied to a specific URL. For example,
+invoking</li>
+</ul>
+<pre class="codeblock">
+<code>getObjectInstance(null, null, null, env)</code> 
+</pre>
+<ul>
+<li style="list-style: none"><a name="a1000802" id="a1000802"></a>
+on an "ldap" URL context factory returns a context that can resolve
+LDAP URLs (e.g., "<code>ldap://ldap.wiz.com/o=wiz,c=us</code>" or
+"<code>ldap://ldap.umich.edu/</code>", ...<code>).</code> <a name=
+"a1000803" id="a1000803"></a></li>
+<li>If <code>refObj</code> is a URL string, create the object
+identified by the URL. For example, invoking</li>
+</ul>
+<pre class="codeblock">
+getObjectInstance("ldap://ldap.wiz.com/o=wiz,c=us", null, null, env);
+</pre>
+<ul>
+<li style="list-style: none"><a name="a1000805" id="a1000805"></a>
+on an "ldap" URL context factory would return the object named by
+"<code>o=wiz,c=us</code>" on the LDAP server
+<code>ldap.wiz.com</code>. If this happens to name a context, it
+can then be used for resolving (relative) LDAP names (e.g.,
+"<code>cn=Jane Smith</code>"). <a name="a1000806" id=
+"a1000806"></a></li>
+<li>If <code>refObj</code> is an array of URL strings, the
+assumption is that the URLs are equivalent in terms of the context
+to which they refer. Verification of whether the URLs are, or need
+to be, equivalent is up to the context factory. The order of the
+URLs in the array is not significant. The object returned by
+<code>getObjectInstance()</code> is the same as that for the single
+URL case-it is an object (perhaps a context) named by the URLs.
+<a name="a1006433" id="a1006433"></a></li>
+<li>If <code>refObj</code> is any other type, the behavior of
+<code>getObjectInstance()</code> is determined by the
+implementation.
+<p><a name="a1000843" id="a1000843"></a> URL context factories are
+used by the <code>InitialContext</code> class when it is passed a
+URL to resolve. URL context factories are also used for creating
+objects in the Java programming language from URLs stored in the
+namespace (see <a href="jndispi.fm.html#a1006384">Section
+4.1.2</a>).</p>
+</li>
+</ul>
+<a name="a1005973" id="a1005973"></a>
+<h3>4.2 Storing Objects: State Factories</h3>
+<p><a name="a1006607" id="a1006607"></a> JNDI provides a mechanism
+to transform an object into a form storable by the underlying
+context implementation. That form may be any arbitrary type
+acceptable to the underlying context implementation. For example,
+it may be a <code>Reference</code>, a URL, a
+<code>Serializable</code> object, or a set of attributes, or any
+other data acceptable by the underlying context implementation.
+Turning an arbitrary object into data that can be stored in the
+namespace is supported through the use of <em>state factories</em>.
+A state factory is a class that implements the
+<code>StateFactory</code> interface (or the
+<code>DirStateFactory</code> subinterface):</p>
+<pre class="codeblock">
+        public interface StateFactory { 
+                public Object getStateToBind(Object obj, 
+                                             Name name,
+                                             Context nameCtx, 
+                                             Hashtable env)
+                        throws NamingException;
+        }
+
+        public interface DirStateFactory {
+                public DirStateFactory.Result getStateToBind(Object obj, 
+                                                             Name name,
+                                                             Context nameCtx, 
+                                                             Hashtable env,
+                                                             Attributes attrs)
+                        throws NamingException;
+        }
+</pre>
+<p><a name="a1006621" id="a1006621"></a></p>
+Given an object (<code>obj</code>), optional information about the
+name of the object and where it is bound, and optionally some
+additional environment information (for example, some identity or
+authentication information about the user accessing the namespace),
+the factory attempts to create an object suitable for binding.
+Typically, the state factory is knowledgeable about the target
+naming/directory service and/or context implementation, and knows
+which data formats are acceptable. In the case of a state factory
+that is to be used with a <code>DirContext</code> implementation,
+the factory is also given some attributes that are to be stored
+with the object. If the factory require more information about the
+object, it can obtain them directly from the naming/directory
+service by using the <code>name</code>/<code>nameCtx</code>
+arguments. For example, a printer state factory for an LDAP
+directory might return a set of attributes that represent the
+printer.
+<p><a name="a1006622" id="a1006622"></a> If the factory cannot
+return any data using the arguments supplied, it should return
+<code>null</code>. For example, when a printer state factory is
+given a disk object, it should return <code>null</code>. The
+factory should only thrown an exception if no other state factories
+should be tried. Therefore, the factory should be careful about
+exceptions that might be thrown from its implementation. For
+example, if a printer state factory is given a printer object but
+perhaps contradictory attributes, it might throw an exception.</p>
+<a name="a1006733" id="a1006733"></a>
+<h4>4.2.1 Input/Output Options</h4>
+<p><a name="a1006737" id="a1006737"></a> Ultimately, a factory's
+output formats are determined by the underlying naming/directory
+service. A context implementation for the CORBA Object Services
+(COS) naming service, for example, can only store CORBA object
+references into the service; a context implementation for LDAP can
+only store attributes, although there is a lot of flexibility in
+how to encode information within those attributes.</p>
+<p><a name="a1006747" id="a1006747"></a> A service provider
+typically supplies a factory for each (common) type of input that
+it expects, and the application can augment that set with state
+factories of its own. For example, a service provider for COS
+naming might have a state factory for converting a Java Remote
+Method Invocation (RMI) object into a CORBA object reference. A
+user of that provider might add a state factory for converting a
+Microsoft COM object reference into a CORBA object reference.</p>
+<a name="a1006881" id="a1006881"></a>
+<h4>4.2.2 Locating State Factories: The java.naming.factory.state
+Property</h4>
+<p><a name="a1006888" id="a1006888"></a> JNDI looks for state
+factories specified in the <code>java.naming.factory.state</code>
+property, which can be in the environment or the provider resource
+file (see <a href="jndispi.fm.html#a1004380">Section 2.9.5</a>).
+The property contains a colon-separated list of fully-qualified
+class names of state factories. Each class must implement the
+<code>StateFactory</code> interface and have a public constructor
+that takes no arguments. For each class in the list, JNDI attempts
+to load and instantiate the factory class, and to invoke the
+<code>StateFactory/DirStateFactory.getStateToBind()</code> method
+on it using the object, name, context, environment, and attributes
+arguments supplied. If the factory produces a non-<code>null</code>
+result, the result is returned; otherwise, JNDI uses the same
+procedure on the next class in the list until the list is exhausted
+or a factory returns a non-<code>null</code> result.</p>
+<a name="a1006735" id="a1006735"></a>
+<h3>4.3 Narrowing LDAP v3 Controls: Response Control Factories</h3>
+<p><a name="a1006829" id="a1006829"></a> The LDAP v3 protocol
+allows response controls to accompany any response sent by the
+server. The control consists of an OID string identifier and a
+sequence of ASN.1 BER encoded bytes. In the absence of any external
+information or assistance, the context implementation can only
+return a plain implementation of the <code>Control</code> interface
+that returns the OID and bytes.</p>
+<p><a name="a1006835" id="a1006835"></a> JNDI provides the
+following abstract class for dealing with response controls:</p>
+<pre class="codeblock">
+        public abstract javax.naming.ldap.ControlFactory {
+        ...
+        public static Control getControlInstance(Control ctl,
+                                                Context ctx,
+                                                Hashtable env)
+                throws NamingException;
+        public abstract Control getControlInstance(Control ctl)
+                throws NamingException;
+}
+<br /><a name="a1006850" id="a1006850"> </a>
+</pre>
+When a context implementation receives a response control, it
+invokes the static <code>getControl-Instance()</code> method to
+find a control factory that can narrow the control to one that has
+more user-friendly access methods. Such a control, for instance,
+can decode the ASN.1 BER bytes and provide access methods that
+return the information as Java types. If no such control factory
+can be found, the original response control is returned. Here is an
+example of a hypothetical <code>Time-ResponseControl</code> which
+decodes the time of day.
+<pre class="codeblock">
+public class TimeResponseControl implements Control {
+        long time;
+        // Constructor used by ControlFactory
+        public TimeResponseControl(String OID, byte[] berVal)
+                throws NamingException {
+                // check validity of OID
+                time = // extract time from berVal
+        };
+
+        // Type-safe and User-friendly method
+        public long getTime() {
+                return time;
+        }
+        // Low-level methods
+        public String getID() {
+                return TIME_OID;
+        }
+        public byte[] getEncodedValue() {
+                return // original berVal
+        }
+         ...
+}
+<br /><a name="a1006989" id="a1006989"> </a>
+</pre>
+A control factory may be responsible for one or more controls. If
+the factory cannot return a control using the arguments supplied,
+it should return <code>null</code>. Typically, this involves just
+matching the control's OID against the list of OIDs supported by
+the factory. The factory should only thrown an exception if no
+other control factories should be tried. Therefore, the factory
+should be careful about exceptions that might be thrown from its
+implementation. For example, if a control factory is given a
+control with an OID that it supports, but the byte array has an
+encoding error, it should throw an exception.
+<p><a name="a1007066" id="a1007066"></a> Here is an example of a
+control factory:</p>
+<pre class="codeblock">
+public class VendorXControlFactory extends ControlFactory {
+        public VendorXControlFactory () {
+        }
+        public Control getControlInstance(Control orig) 
+                throws NamingException {
+                if (isOneOfMyControls(orig.getID())) {
+                         ... 
+                        // determine which of ours it is and call its constructor
+                        return new TimeResponseControl(orig.getID(),
+                                                                orig.getEncodedValue());
+                }
+                return null;  // not one of ours
+        }
+}
+</pre>
+<a name="a1006932" id="a1006932"></a>
+<h4>4.3.1 Locating Response Control Factories: The
+java.naming.factory.control Property</h4>
+<p><a name="a1006933" id="a1006933"></a> JNDI looks for response
+control factories specified in the
+<code>java.naming.factory.control</code> property, which can be in
+the environment or the provider resource file (see <a href=
+"jndispi.fm.html#a1004380">Section 2.9.5</a>). The property
+contains a colon-separated list of fully-qualified class names of
+control factories. Each class must implement the
+<code>ControlFactory</code> interface and have a public constructor
+that takes no arguments. For each class in the list, JNDI attempts
+to load and instantiate the factory class, and to invoke the
+<code>ControlFactory.getControlInstance()</code> instance method on
+it using the control, context, and environment arguments supplied.
+If the factory produces a non-<code>null</code> result, the result
+is returned; otherwise, JNDI uses the same procedure on the next
+class in the list until the list is exhausted or a factory returns
+a non-<code>null</code> result.</p>
+<a name="a1007937" id="a1007937"></a>
+<h3>4.4 Ownership of Parameters</h3>
+<p><a name="a1007938" id="a1007938"></a> Any object passed as a
+parameter to a method in a factory is owned by the caller.
+Therefore, the factory is prohibited from maintaining a pointer to
+the object beyond the duration of the operation or modifying the
+object. If the factory needs to save the information contained in a
+parameter beyond the duration of the operation, it should maintain
+its own copy.</p>
+<a name="a1007939" id="a1007939"></a>
+<h3>4.5 Reentrancy</h3>
+<p><a name="a1007940" id="a1007940"></a> A factory instance should
+be reentrant. That is, it should be possible for multiple threads
+to invoke methods on a single instance of a factory
+concurrently.</p>
+<hr />
+<br />
+<a href="spicover.frame.html">[Top]</a> <a href=
+"jndispiTOC.fm.html">[Prev]</a> <a href=
+"spi-egs.frame.html">[Next]</a> <a href=
+"changes.fm.html">[Bottom]</a>
+<hr />
+<br />
+<sup>1</sup> <a name="a1007433" id="a1007433"></a> See Appendix B
+for legend of class diagram. <sup>2</sup> <a name="a1003640" id=
+"a1003640"></a> The <code>CannotProceedException</code> may well
+have been thrown by one of the context's internal methods when it
+discovered that the name being processed is beyond the scope of its
+naming system. The process by which the exception is produced is
+dependent on the implementation of the context. <sup>3</sup>
+<a name="a1003008" id="a1003008"></a> Note that this is code in the
+<em>application</em>. In <a href=
+"jndispi.fm.html#a1003693">"Continuing an Operation in a
+Federation"</a>, the code sample presented is code in the
+<em>context implementation</em>. <sup>4</sup> <a name="a1002114"
+id="a1002114"></a> You can also use a subclass of Hashtable (e.g.
+Properties) for this. <sup>5</sup> <a name="a1004684" id=
+"a1004684"></a> The mention of "URL" in this document refers to a
+URL string as defined by RFC 1738 and its related RFCs. It is any
+string that conforms to the syntax described therein, and may not
+always have corresponding support in the <code>java.net.URL</code>
+class or Web browsers. The URL string is either passed as the
+<code>String</code> name parameter, or as the first component of
+the <code>Name</code> parameter.
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- USE THIS TEMPLATE WHEN ENHANCEMENTS ARE LENGTHY; YOU THEN WILL USE A
+   SEPARATE FILE TO DOCUMENT THE ENHANCEMENTS OF EACH VERSION CURRENTLY SUPPORTED
+   -->
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Enhancements in Java SE 7</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Enhancements in Java SE 7</h1>
+<p>The following topics are covered:</p>
+<ul>
+<li><a href="#xrender">XRender-Based Rendering Pipeline</a></li>
+<li><a href="#opentype">Support for OpenType/CFF Fonts</a></li>
+<li><a href="#tibetan">TextLayout now Supports Tibetan
+Script</a></li>
+<li><a href="#linuxfonts">Better Support for Linux Fonts</a></li>
+</ul>
+<h2><a name="xrender" id="xrender">XRender-Based Rendering
+Pipeline</a></h2>
+<p>A new XRender-based Java 2D rendering pipeline is supported for
+modern X11-based desktops, offering improved graphics performance.
+The pipeline is disabled by default, but may be enabled by setting
+the command line property <code>-Dsun.java2d.xrender=true</code>.
+Older X11 configurations may not be able to support XRender. The
+verbose form, <code>-Dsun.java2d.xrender=True</code>, can be used
+to enable a message to stdout indicating whether the pipeline was
+actually enabled.</p>
+<p>This flag is listed in the <a href="flags.html#xrender">System
+Properties for Java 2D Technology</a> page.</p>
+<h2><a name="opentype" id="opentype">Support for OpenType/CFF
+Fonts</a></h2>
+<p>The JDK now enumerates and displays installed OpenType/CFF fonts
+through methods such as <a href=
+"../../../api/java/awt/GraphicsEnvironment.html#getAvailableFontFamilyNames--">
+<code>GraphicsEnvironment.getAvailableFontFamilyNames</code></a>;
+these fonts are also recognized by the <a href=
+"../../../api/java/awt/Font.html#createFont-int-java.io.InputStream-">
+<code>Font.createFont</code></a> method. See <a href=
+"http://docs.oracle.com/javase/tutorial/2d/text/fonts.html">Selecting
+a Font</a> in The Java Tutorials.</p>
+<h2><a name="tibetan" id="tibetan">TextLayout Support for Tibetan
+Script</a></h2>
+<p>The <a href=
+"../../../api/java/awt/font/TextLayout.html"><code>TextLayout</code></a>
+class supports Tibetan script.</p>
+<h2><a name="linuxfonts" id="linuxfonts">Support for Linux
+Fonts</a></h2>
+<p>For Solaris and Windows, the logical fonts for the JDK are
+statically specified in the <code>fontconfig.properties</code>
+file. On various implementations of Linux, there is no assurance of
+the presence of particular fonts to support particular locales. As
+of Java SE 7, <code>libfontconfig</code> is used to select fonts to
+use for the logical fonts for "unrecognized" Linux platforms. See
+<a href="http://www.freedesktop.org/wiki/Software/fontconfig">Fontconfig</a> for more
+information.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Diagnose a Loop Process</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="hangloop.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="hangloop002.html">
+                Next</a><hr/><a id="CEGEBFAB" name="CEGEBFAB"/>
+<div id="JSTGD337">
+<h1><span>6.1</span> Diagnose a Loop Process</h1>
+<p>If a VM process appears to be looping, the first step is to try to get a thread dump. If a thread dump can be obtained, it will often be clear which thread is looping. If the looping thread can be identified, then the trace stack in the thread dump can provide direction on where (and maybe why) the thread is looping.</p>
+<p>If the application console (standard input/output) is available, then press the Control+\ key combination (on Oracle Solaris or Linux) or the Control+Break key combination (on Windows) to cause the HotSpot VM to print a thread dump, including thread state. On Oracle Solaris and Linux operating systems the thread dump can also be obtained by sending a <code dir="ltr">SIGQUIT</code> to the process (command <code dir="ltr">kill -QUIT</code> <span>pid</span>). In this case the thread dump is printed to the standard output of the target process. The output might be directed to a file, depending on how the process was started.</p>
+<p>If the Java process is started with the <code dir="ltr">-XX:+PrintClassHistogram</code> command-line option, then the Control+Break handler will produce a heap histogram.</p>
+<p>If a thread dump can be obtained, then a good place to start is the thread stacks of the threads that are in the <code dir="ltr">RUNNABLE</code> state. See <a href="tooldescr019.html#BABBEFFC">Thread Dump</a> for information on the format of the thread dump, as well as a table of the possible thread states in the thread dump. In some cases it might be necessary to get a sequence of thread dumps in order to determine which threads appear to be continuously busy.</p>
+<p>If the application console is not available (for example, the process is running in the background, or the VM output is directed to an unknown location), then the <code dir="ltr">jstack</code> utility can be used to obtain the stack thread. Use the <code dir="ltr">jstack -F</code> <span>pid</span> command to force a stack dump of the looping process. See <a href="tooldescr016.html#BABFCHDE">The jstack Utility</a> for information on the output of this utility. The <code dir="ltr">jstack</code> utility should also be used if the thread dump does not provide any evidence that a Java thread is looping.</p>
+<p>When reviewing the output of the <code dir="ltr">jstack</code> utility, focus initially on the threads that are in the <code dir="ltr">RUNNABLE</code> state. This is the most likely state for threads that are busy and possibly looping. It might be necessary to execute <code dir="ltr">jstack</code> a number of times to get a more complete picture of which threads are looping. If a thread appears to be always in the <code dir="ltr">RUNNABLE</code> state, then the <code dir="ltr">-m</code> option can be used to print the native frames and provide a further hint on what the thread is doing. If a thread appears to be looping continuously while in the <code dir="ltr">RUNNABLE</code> state, this situation can indicate a potential HotSpot VM bug that needs further investigation.</p>
+<p>If the VM does not respond to Control+\, this could indicate a VM bug rather than an issue with application or library code. In this case use <code dir="ltr">jstack</code> with the <code dir="ltr">-m</code> option (in addition to the <code dir="ltr">-F</code> option) to get a thread stack for all threads. The output will include the thread stacks for VM internal threads. In this stack trace, identify threads that do not appear to be waiting. For example, on Oracle Solaris operating system you identify the threads that are not in functions such as <code dir="ltr">__lwp_cond_wait</code>, <code dir="ltr">__lwp_park</code>, <code dir="ltr">___pollsys</code>, or other blocking functions. If it appears that the looping is caused by a VM bug, then collect as much data as possible and submit a bug report. See <a href="bugreports.html#submit_a_bug_report_tsg">Submit a Bug Report</a> for more details on data collection.</p>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="hangloop.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="hangloop002.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

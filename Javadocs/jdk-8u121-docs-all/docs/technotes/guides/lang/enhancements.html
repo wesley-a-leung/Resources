@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Enhancements in java.lang and java.util.*</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Enhancements in Packages java.lang.* and java.util.*</h1>
+<p>The following topics are covered:</p>
+<ul>
+<li><a href="#jdk8">Enhancements in Java SE 8</a></li>
+<li><a href="#jdk7">Enhancements in Java SE 7</a></li>
+<li><a href="#jdk6">Enhancements in Java SE 6</a></li>
+<li><a href="#jdk5.0">Enhancements in Java SE 5.0</a></li>
+<li><a href="#jdk1.4">Enhancements in Java SE 1.4</a></li>
+<li><a href="#jdk1.3">Enhancements in Java SE 1.3</a></li>
+</ul>
+<h2><a name="jdk8" id="jdk8">Enhancements in Java SE 8</a></h2>
+<h3>Parallel Array Sorting</h3>
+<p>The Parallel Array Sorting feature adds the same set of sorting
+operations currently provided by the <tt>Arrays</tt> class, but
+with a parallel implementation that utilizes the Fork/Join
+framework. Additional utility methods were added to
+<tt>java.util.Arrays</tt> that use the JSR 166 Fork/Join
+parallelism common pool to provide sorting of arrays in parallel.
+The methods are called <tt>parallelSort()</tt> and are overloaded
+for all the primitive data types and <tt>Comparable</tt> objects.
+See <a href="http://openjdk.java.net/jeps/103">JEP 103</a> for more
+details.</p>
+<p>The new methods are mentioned in the Java Tutorials (see
+<a href="http://docs.oracle.com/javase/tutorial/java/nutsandbolts/arrays.html">
+Arrays</a> and <a href=
+"http://docs.oracle.com/javase/tutorial/essential/concurrency/forkjoin.html">
+Fork/Join</a>).</p>
+<h3>Standard Encoding and Decoding Base64</h3>
+Applications that use base64 encoding schemes include Multipurpose
+Internet Mail Extensions (MIME) and encode passwords for HTTP
+headers. These applications encode and decode textual data. A new
+API for base64 encoding and decoding has been introduced in the
+<tt>java.util</tt> package. The <code><a href=
+"../../../api/java/util/Base64.html">Base64</a></code> class
+defines factory methods to get <code><a href=
+"../../../api/java/util/Base64.Encoder.html">Encoder</a></code> and
+<code><a href=
+"../../../api/java/util/Base64.Decoder.html">Decoder</a></code>
+instances that encode and decode base64 data. <a href=
+"Base64Sample.java">Base64Sample</a> and <a href=
+"Base64Sample2.java">Base64Sample2</a> are code samples that
+demonstrate the <code>Base64</code> class. See <a href=
+"http://openjdk.java.net/jeps/135">JEP 135:
+Base64 Encoding and Decoding</a> for more details.
+<h3>Unsigned Arithmetic Support</h3>
+<p>Methods were added to the Java Libraries to support unsigned
+integer arithmetic. Integers are 32-bits numbers out of which 1 bit
+is reserved for the sign but using these unsigned methods one can
+use all the 32 bits. Static methods such as <code><a href=
+"../../../api/java/lang/Long.html#parseUnsignedLong-java.lang.String-">
+parseUnsignedLong</a></code>, <code><a href=
+"../../../api/java/lang/Long.html#toUnsignedString-long-">toUnsignedString</a></code>,
+<code><a href=
+"../../../api/java/lang/Long.html#divideUnsigned-long-long-">divideUnsigned</a></code>,
+<code><a href=
+"../../../api/java/lang/Long.html#Long.html#compareUnsigned-long-long-">
+compareUnsigned</a></code> were added to the <code><a href=
+"../../../api/java/lang/Long.html">Long</a></code> class and
+methods such as <code><a href=
+"../../../api/java/lang/Integer.html#divideUnsigned-int-int-">divideUnsigned</a></code>,
+<code><a href=
+"../../../api/java/lang/Integer.html#compareUnsigned-int-int-">compareUnsigned</a></code>,
+<code><a href=
+"../../../api/java/lang/Integer.html#parseUnsignedInt-java.lang.String-">
+parseUnsignedInt</a></code>, <code><a href=
+"../../../api/java/lang/Integer.html#remainderUnsigned-int-int-">
+remainderUnsigned</a></code>, <code><a href=
+"../../../api/java/lang/Integer.html#toUnsignedString-int-">toUnsignedString</a></code>
+were added to the <code><a href=
+"../../../api/java/lang/Integer.html">Integer</a></code> class.
+These methods are faster than using the <code><a href=
+"../../../api/java/math/BigDecimal.html">BigDecimal</a></code> and
+<code><a href=
+"../../../api/java/math/BigInteger.html">BigInteger</a></code> for
+arithmetic opearations as these include optimizations of primitive
+datatypes.</p>
+
+<h3>Other issues in Java SE 8</h3>
+
+<p>
+<strong>Area</strong>: Core Libraries / <tt>java.lang.reflect</tt><br />
+<strong>Synopsis</strong>: The <tt>java.lang.reflect.Proxy(InvocationHandler h)</tt> constructor now throws a <tt>NullPointerException</tt> if the given <tt>InvocationHandler</tt> parameter is null.<br />
+<strong>Nature of Incompatibility</strong>: behavioral<br />
+<strong>Description</strong>: Existing code that constructs a dynamic proxy instance with a null argument will now get <tt>NullPointerException</tt>. Such usage is expected to rarely exist since a null proxy instance has no use and will throw a <tt>NullPointerException</tt> when its method is invoked anyway.<br />
+<strong>RFE</strong>: <a href="https://bugs.openjdk.java.net/browse/JDK-4487672">4487672</a>.<br />
+</p>
+
+
+<h2><a name="jdk7" id="jdk7">Enhancements in Java SE 7</a></h2>
+<ul>
+<li><a href="cl-mt.html">Multithreaded Custom Class Loaders in Java
+SE 7</a> - Potential deadlocks were eliminated for multithreaded,
+non-hierarchically delegating custom class loaders.</li>
+</ul>
+<p><b>In addition, the following enhancements are
+introduced:</b></p>
+<p><b>Area</b>: API: Language<br />
+<b>Standard/Platform</b>: Java SE 7<br />
+<b>Synopsis</b>: Class loading can be prone to deadlocks if custom
+class loaders do not adhere to an acyclic class loader delegation
+model. New APIs have been added to the
+<tt>java.lang.ClassLoader</tt> class to support parallel loading of
+classes and finer-grained locking mechanism for class loading
+operations. Custom class loaders which would like to leverage this
+functionality must refer to the <a href=
+"http://openjdk.java.net/groups/core-libs/ClassLoaderProposal.html">
+Class Loader API Modifications for Deadlock Fix</a> documentation
+for the suggested model and requirements and be implemented
+accordingly.</p>
+<p><b>Area</b>: API: Language<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: Previously, the two exception types in the
+<tt>javax.lang.model.type</tt> package,
+<tt>MirroredTypeException</tt> and <tt>MirroredTypesException</tt>,
+were unrelated. In the <tt>javac</tt> implementation,
+<tt>MirroredTypeException</tt> was thrown where
+<tt>MirroredTypesException</tt> should have been thrown. In part to
+address this problem, <tt>MirroredTypeException</tt> was made a
+subclass of <tt>MirroredTypesException</tt>. This change is binary
+compatible and generally preserves the behavior of existing
+annotation processors. However, it is possible this change may
+cause source incompatibilities for client programs; in those cases,
+changing the order of catch clauses should allow the programs to
+compile again.</p>
+<p><b>Area</b>: API: Language<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: To model the language changes in this release,
+several updates were made to <tt>javax.lang.model.*</tt> including
+adding a method to the <tt>javax.lang.model.type.TypeVisitor</tt>
+interface. Such an addition is source incompatible with libraries
+that have directly implemented the <tt>TypeVisitor</tt> interface.
+However, such additions were foreseen as part of this API's
+evolution and libraries were explicitly cautioned to extend one of
+the utility visitors instead of directly implementing such an
+interface.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6933147">6933147</a></p>
+<p><b>Area</b>: API: Language<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: The method <a href=
+"../../../api/java/lang/Runtime.html#exec-java.lang.String-java.lang.String:A-java.io.File-">
+<code>Runtime.exec(String command, String[] envp, File
+dir)</code></a> breaks the command string into tokens, consisting
+of the name of the executable and its arguments, by the invocation
+<a href="../../../api/java/util/StringTokenizer.html"><code>new
+StringTokenizer(command)</code></a> with the default delimiter set
+(the space character, the tab character, the newline character, the
+carriage-return character, and the form-feed character).
+Essentially, this method splits the command string into tokens,
+using white space as the delimiter.<br />
+<br />
+On Windows operating systems, splitting the command parameter by
+white spaces can lead to errors. In particular, if the
+<code>command</code> parameter contains an executable path with
+spaces, the invocation <code>new StringTokenizer(command)</code>
+extracts the wrong executable name. For example, the invocation
+<code>Runtime.getRuntime().exec("C:\\My Programs\\foo.exe
+bar")</code> attempts to launch the program <code>C:\My</code> with
+the arguments <code>Programs\foo.exe</code> and <code>bar</code>.
+This invocation is likely to fail with an exception to indicate
+that the executable <code>C:\My</code> cannot be found.<br />
+<br />
+If your legacy application is not using a security manager (see the
+class <a href=
+"../../../api/java/lang/SecurityManager.html"><code>SecurityManager</code></a>),
+you can specify the system property
+<code>jdk.lang.Process.allowAmbigousCommands</code> with any value
+other than <code>false</code> so that the method
+<code>Runtime.exec</code> correctly parses path names with spaces.
+(See <a href=
+"http://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html">
+System Properties</a> in The Java Tutorials.) Alternatively, you
+can surround the path name with quotation marks. For example, the
+invocation <code>Runtime.getRuntime().exec("\"C:\\My
+Programs\\foo.exe\" bar")</code> attempts to launch <code>C:\My
+Programs\foo.exe</code> with the argument <code>bar</code>.<br />
+<br />
+<strong>Note</strong>: For updates after Update 25, the name of the
+system property to allow ambiguous commands is
+<code>jdk.lang.Process.allowAmbiguousCommands</code>.</p>
+<p><b>Area</b>: API: Utilities<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: Due to an error in <tt>java.util.TreeMap</tt>, it
+was previously possible to insert invalid null elements and
+elements not implementing <tt>Comparable</tt> into empty
+<tt>TreeMaps</tt> and <tt>TreeSets</tt>. Only a single invalid
+element could be inserted into the empty <tt>TreeMaps</tt> or
+<tt>TreeSets</tt>; additional elements would cause the expected
+<tt>NullPointerException</tt> or <tt>ClassCastException</tt>. Most
+other operations upon the collection would also fail. As of JDK 7,
+inserting an invalid null element or an element not implementing
+<tt>Comparable</tt> into an empty <tt>TreeMap</tt> or
+<tt>TreeSet</tt> throws a <tt>NullPointerException</tt>.
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=5045147">5045147</a></p>
+<h2><a name="jdk6" id="jdk6">Enhancements in Java SE 6</a></h2>
+<h3><a name="jdk6util" id="jdk6util">java.util</a></h3>
+<ul>
+<li><b><a href=
+"../../../api/java/util/ServiceLoader.html">ServiceLoader</a></b> -
+A facility to load a specific implementation of a service.</li>
+<li><b><a href="../collections/index.html">Collections Framework
+Enhancements</a></b> - There are many enhancements to the
+Collections framework.</li>
+</ul>
+<h2><a name="jdk5.0" id="jdk5.0">Enhancements in Java SE
+5.0</a></h2>
+<h3><a name="jdk5.0lang" id="jdk5.0lang">java.lang</a></h3>
+<ul>
+<li><a href=
+"../../../api/java/lang/ProcessBuilder.html"><b>ProcessBuilder</b></a>
+- The new <code>ProcessBuilder</code> class provides a more
+convenient way to invoke subprocesses than does <a href=
+"../../../api/java/lang/Runtime.html#exec-java.lang.String-java.lang.String:A-java.io.File-">
+Runtime.exec</a>. In particular, ProcessBuilder makes it easy to
+start a subprocess with a modified process environment (that is,
+one based on the parent's process environment, but with a few
+changes).</li>
+<li><b>Threads</b> - The <code>java.lang.Thread</code> class has
+the following enhancements:
+<ul>
+<li><a href="../vm/thread-priorities.html">Thread priority</a>
+handling has changed.</li>
+<li><a href=
+"../../../api/java/lang/Thread.State.html"><code>Thread.State</code></a>
+enum class and the new <a href=
+"../../../api/java/lang/Thread.html#getState--"><code>getState()</code></a>
+API are provided for querying the execution state of a thread.</li>
+<li>The new thread dump API - The <a href=
+"../../../api/java/lang/Thread.html#getStackTrace--"><code>getStackTrace</code></a>
+and <a href=
+"../../../api/java/lang/Thread.html#getAllStackTraces--"><code>getAllStackTraces</code></a>
+methods in the <code>Thread</code> class - provides a programmatic
+way to obtain the stack trace of a thread or all threads.</li>
+<li>The <a href=
+"../../../api/java/lang/Thread.html#setUncaughtExceptionHandler-java.lang.Thread.UncaughtExceptionHandler-">
+<code>uncaughtExceptionHandler</code></a> mechanism, previously
+available only through the ThreadGroup class, is now available
+directly through the Thread class.</li>
+<li>A new form of the <code>sleep()</code> method is provided which
+allows for sleep times smaller than one millisecond.</li>
+</ul>
+</li>
+</ul>
+<h3><a name="jdk5.0inst" id=
+"jdk5.0inst">java.lang.instrument</a></h3>
+<ul>
+<li><b><a name="instrument" id="instrument">Instrumentation</a></b>
+- The new <a href=
+"../../../api/java/lang/instrument/package-summary.html"><code>java.lang.instrument</code></a>
+package provides services that allow Java programming agents to
+instrument programs running on the Java virtual machine by
+modifying methods' bytecodes at runtime.</li>
+</ul>
+<h3><a name="jdk5.0util" id="jdk5.0util">java.util</a></h3>
+<ul>
+<li><b><a href=
+"../../../api/java/util/Formatter.html">Formatter</a></b> - An
+interpreter for printf-style format strings, the
+<code>Formatter</code> class provides support for layout
+justification and alignment, common formats for numeric, string,
+and date/time data, and locale-specific output. Common Java types
+such as <code>byte</code>, <a href=
+"../../../api/java/math/BigDecimal.html"><code>java.math.BigDecimal</code></a>
+, and <a href=
+"../../../api/java/util/Calendar.html"><code>java.util.Calendar</code></a>
+are supported. Limited formatting customization for arbitrary user
+types is provided through the <a href=
+"../../../api/java/util/Formattable.html"><code>java.util.Formattable</code></a>
+interface.</li>
+<li><b><a href=
+"../../../api/java/util/Scanner.html">Scanner</a></b> - The
+<code>java.util.Scanner</code> class can be used to convert text
+into primitives or <code>String</code>s. Since it is based on the
+<a href=
+"../../../api/java/util/regex/package-summary.html"><code>java.util.regex</code></a>
+package, it also offers a way to conduct regular expression based
+searches on streams, file data, strings, or implementors of the
+<a href=
+"../../../api/java/lang/Readable.html"><code>Readable</code></a>
+interface.</li>
+<li><b><a href="../collections/index.html">Collections Framework
+Enhancements</a></b> - There are many enhancements to the
+Collections framework.</li>
+</ul>
+<h2><a name="jdk1.4" id="jdk1.4">Enhancements in Java SE
+1.4</a></h2>
+<h3><a name="jdk1.4lang" id="jdk1.4lang">java.lang</a></h3>
+<ul>
+<li><a href="chained-exceptions.html"><b>Chained Exception
+Facility</b></a> - This is a new facility that provides a common
+API to record the fact that one exception caused another, to access
+causative exceptions, and to acess the entire "causal chain" as
+part of the standard stack backtrace, ensuring that preexisting
+programs will provide this information with no additional effort on
+the part of their authors.</li>
+<li><a href="../../../api/java/lang/String.html"><b>String</b></a>
+- Two <code>split</code> methods are new. The
+<code>subSequence</code> method has been added, as required by the
+<code>CharSequence</code> interface that <code>String</code> now
+implements. Three additional methods have been added:
+<code>matches</code>, <code>replaceAll</code>, and
+<code>replaceFirst</code>.</li>
+<li><a href=
+"../../../api/java/lang/StringBuffer.html"><b>StringBuffer</b></a>
+- The <code>subSequence</code> method has been added, as required
+by the <code>CharSequence</code> interface that
+<code>StringBuffer</code> now implements.</li>
+<li><a href="../../../api/java/lang/Thread.html"><b>Thread</b></a>
+- The <code>interrupt</code> method has been revised to interrupt
+threads blocked in channel-I/O operations.</li>
+</ul>
+<h3><a name="jdk1.4log" id="jdk1.4log">java.util.logging</a></h3>
+<ul>
+<li><b><a href="../logging/index.html">Logging API</a></b> - The
+Java Logging API facilitates software servicing and maintenance at
+customer sites by producing log reports suitable for analysis by
+end users, system administrators, field service engineers, and
+software development teams. The Logging APIs capture information
+such as security failures, configuration errors, performance
+bottlenecks, and/or bugs in the application or platform. The core
+package includes support for delivering plain text or XML formatted
+log records to memory, output streams, consoles, files, and
+sockets. In addition, the logging APIs are capable of interacting
+with logging services that already exist on the host operating
+system.</li>
+</ul>
+<h3><a name="jdk1.4pref" id="jdk1.4pref">java.util.prefs</a></h3>
+<ul>
+<li><b><a href="../preferences/index.html">Preferences API</a></b>
+- The preferences API, implemented by package <a href=
+"../../../api/java/util/prefs/package-summary.html"><code>java.util.prefs</code></a>,
+allows applications to store and retrieve user and system
+preference and configuration data. This data is stored persistently
+in an implementation-dependent backing store. The Preferences API
+is intended to replace most common uses of class
+<code>java.util.Properties</code>, rectifying many of its
+deficiencies, while retaining its light weight.</li>
+</ul>
+<h2><a name="jdk1.3" id="jdk1.3">Enhancements in Java SE
+1.3</a></h2>
+<h3><a name="jdk1.3lang" id="jdk1.3lang">java.lang</a></h3>
+<ul>
+<li><a name="math" id="math"><b>java.lang.Math and
+java.lang.StrictMath</b></a> - Two new classes which provide APIs
+for performing general numeric operations.
+<ul>
+<li><a href=
+"../../../api/java/lang/StrictMath.html"><code>java.lang.StrictMath</code></a>
+- Class <code>java.lang.StrictMath</code> has the same API as old
+class <code>java.lang.Math</code>, which was present in previous
+versions of the Java platform. Unlike class <code>Math</code>,
+however, <code>StrictMath</code> is defined to return bit-for-bit
+reproducible results in all implementations.</li>
+<li><a href=
+"../../../api/java/lang/Math.html"><code>java.lang.Math</code></a>
+- Class <code>java.lang.Math</code> provides the same set of API as
+does class <code>StrictMath</code>. However, unlike some of the
+numeric functions of class <code>StrictMath</code>, all
+implementations of the equivalent functions of class
+<code>Math</code> are not defined to return the bit-for-bit same
+results, but can vary within specified constraints. This permits
+better-performing implementations where strict reproducibility is
+not required.</li>
+</ul>
+</li>
+<li><a name="timer" id="timer"><b>Timer API</b></a> - Two new
+classes to provide an API for a timer facility which can be used
+for purposes such as animations, human interaction timeouts,
+on-screen clocks and calendars, work-scheduling routines, reminder
+facilities, and more.
+<ul>
+<li><a href=
+"../../../api/java/util/Timer.html"><code>java.util.Timer</code></a></li>
+<li><a href=
+"../../../api/java/util/TimerTask.html"><code>java.util.TimerTask</code></a></li>
+</ul>
+<a href="Countdown.java"><code>Countdown.java</code></a> is a
+simple demo application that uses the Timer API.</li>
+<li><a name="hooks" id="hooks"><b>Virtual Machine Shutdown
+Hooks</b></a> Sophisticated applications often require the ability
+to perform specific actions when the virtual machine shuts down,
+whether due to voluntary exit or involuntary termination. Typical
+actions include cleanly closing down network connections, saving
+session state, and deleting temporary files. Every major operating
+system provides the means for native applications to do this,
+though of course the details vary from platform to platform. Three
+methods have been added to <code>java.lang.Runtime</code> to
+provide a simple and portable interface to these facitilies. The
+new methods are:
+<ul>
+<li><a href=
+"../../../api/java/lang/Runtime.html#addShutdownHook-java.lang.Thread-">
+<code>addShutdownHook</code></a></li>
+<li><a href=
+"../../../api/java/lang/Runtime.html#removeShutdownHook-java.lang.Thread-">
+<code>removeShutdownHook</code></a></li>
+<li><a href=
+"../../../api/java/lang/Runtime.html#halt-int-"><code>halt</code></a></li>
+</ul>
+In addition, the <a href=
+"../../../api/java/lang/Runtime.html#exit-int-"><code>Runtime.exit</code></a>
+method has been revised. For more information, see <a href=
+"hook-design.html">Design of the Shutdown Hooks API</a>.</li>
+</ul>
+<h3><a name="jdk1.3util" id="jdk1.3util">java.util</a></h3>
+<ul>
+<li><a name="collections" id="collections"><b>Enhanced Collections
+Framework</b></a> - The Collections Framework has these new
+convenience APIs:
+<ul>
+<li><b>Added <a href=
+"../../../api/java/util/Collections.html#singletonList-java.lang.Object-">
+Collections.singletonList</a> and <a href=
+"../../../api/java/util/Collections.html#singletonMap-K-V-">Collections.singletonMap</a>.</b>
+Previously, there was a convenience implementation for singleton
+Set, but no corresponding implementation for List and Map. Both of
+these implementations proved desirable in practice.</li>
+<li><b>Added <a href=
+"../../../api/java/util/Collections.html#EMPTY_MAP">Collections.EMPTY_MAP</a>.</b>
+Previously, there were constant convenience implementations for the
+empty Set and List, but no corresponding implementation for
+Map.</li>
+</ul>
+The following special-purpose implementation has also been added:
+<ul>
+<li><b>Added <a href=
+"../../../api/java/util/WeakHashMap.html#WeakHashMap-java.util.Map-">
+Map constuctor</a> for WeakHashMap</b>. The <a href=
+"../../../api/java/util/Map.html">Map</a> interface dictates that
+most Map implementations should have a "copy constructor" that
+takes a Map argument. WeakHashMap lacked such a constructor in the
+1.2 release.</li>
+</ul>
+</li>
+</ul>
+<h3><a name="jdk1.3jarzip" id="jdk1.3jarzip">java.util.jar<br />
+java.util.zip</a></h3>
+<ul>
+<li><a name="caching" id="caching"><b>New URL JAR File
+Caching</b></a> - The API of classes <code>java.util.zip</code> and
+<code>java.util.jar</code> have been enhanced with the addition of
+the following:
+<ul>
+<li><a href=
+"../../../api/java/util/zip/ZipFile.html#OPEN_READ"><code>java.util.zip.OPEN_READ</code></a></li>
+<li><a href=
+"../../../api/java/util/zip/ZipFile.html#OPEN_DELETE"><code>java.util.zip.OPEN_DELETE</code></a></li>
+<li><a href=
+"../../../api/java/util/zip/ZipFile.html#ZipFile-java.io.File-int-">
+<code>java.util.zip.ZipFile(File file, int mode)</code></a></li>
+<li><a href=
+"../../../api/java/util/jar/JarFile.html#JarFile-java.io.File-boolean-int-">
+<code>java.util.jar.JarFile(File file, boolean verify, int
+mode)</code></a></li>
+</ul>
+<br />
+The previous implementation of caching downloaded Jar files created
+problems for long-running server application and for RMI. Each open
+<code>JarURLConnection</code> creates a temporary local file that
+holds Jar-file date, and a JarFile object is created on top of the
+temporary file. Because the open file handle/descriptor on each
+temporary file was never closed, the files could quickly take up
+disk space for long-running server applications. The new API
+provides a solution for this problem by supporting a new
+"delete-on-close" mode for opening Zip and Jar files.</li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

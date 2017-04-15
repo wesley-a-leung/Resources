@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- USE THIS TEMPLATE WHEN ENHANCEMENTS ARE SHORT. THEN USE JUST
+   THIS FILE TO DOCUMENT ALL THE ENHANCEMENTS OF EACH VERSION CURRENTLY SUPPORTED.  
+-->
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Collections Framework Enhancements in Java SE 8</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Collections Framework Enhancements in Java SE 8</h1>
+
+<h2>Support for Lambda Expressions, Streams, and Aggregate Operations</h2>
+<p>
+The Java Collections Framework has been updated to support 
+lambda expressions, streams, and aggregate operations. For more information on 
+these topics, see the following pages:
+</p>
+<ul>
+<li><a href="../language/enhancements.html#javase8">Enhancements in Java SE 8</a>
+<li><a href="../language/lambda_api_jdk8.html">New and Enhanced APIs That Take Advantage of Lambda Expressions and Streams in Java SE 8</a></li>
+<li><a href="http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html">Lambda Expressions</a> (The Java Tutorials)
+<li><a href="http://docs.oracle.com/javase/tutorial/collections/streams/">Aggregate Operations</a> (The Java Tutorials)
+<li><a href="http://docs.oracle.com/javase/tutorial/collections/">Collections</a> (The Java Tutorials)
+</ul>
+
+
+<h2>Performance Improvement for HashMaps with Key Collisions</h2>
+<p>As part of the work for <a href=
+"http://openjdk.java.net/jeps/180">JEP 180</a>, there is a
+performance improvement for <tt>HashMap</tt> objects where there
+are lots of collisions in the keys.</p>
+<p>The alternative <tt>String</tt> hash function added in <a href=
+"changes7.html">7u6</a> has been removed from JDK 8, along with the
+<tt>jdk.map.althashing.threshold</tt> system property. Instead,
+hash bins containing a large number of colliding keys improve
+performance by storing their entries in a balanced tree instead of
+a linked list. This JDK 8 change applies only to <tt>HashMap</tt>,
+<tt>LinkedHashMap</tt>, and <tt>ConcurrentHashMap</tt>.</p>
+<p>In rare situations, this change could introduce a change to the
+iteration order of <tt>HashMap</tt> and <tt>HashSet</tt>. A
+particular iteration order is not specified for <tt>HashMap</tt>
+objects - any code that depends on iteration order should be
+fixed.</p>
+<p>Note that, other than removing the feature introduced in 7u6,
+the <tt>java.util.Hashtable</tt> class is not affected. The
+features added in 7u6 applied to <tt>WeakHashMap</tt> and
+<tt>Hashtable</tt> (and by extension <tt>Properties</tt> and
+<tt>Provider</tt>) but in JDK 8 these have been removed.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

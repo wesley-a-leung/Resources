@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>JRE Installation for Microsoft Windows</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This page describes how to install and uninstall JRE 8 for Windows." name="description"/>
+<meta content="2016-01-06T16:14:50Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Installation Guide for OpenJDK on Solaris, Linux, OS X, and Windows, Release 8u71" name="doctitle"/>
+<meta content="Release 8u71" name="relnum"/>
+<meta content="E50307-05" name="partnum"/>
+<meta content="no_value_supplied" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Installation Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="windows_jdk_install.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="windows_installer_options.html">
+                Next</a><hr/>
+<div><a id="CHDEDHAJ" name="CHDEDHAJ"/>
+<h1><span>16</span> JRE Installation for Microsoft Windows</h1>
+<p>This page describes how to install and uninstall JRE 8 for Windows.</p>
+<p>The page has these topics:</p>
+<ul>
+<li>
+<p><a href="#A1096933">"System Requirements"</a></p>
+</li>
+<li>
+<p><a href="#A1098865">"Proxy Settings and Authentication"</a></p>
+</li>
+<li>
+<p><a href="#A1097282">"Installation Instructions Notation"</a></p>
+</li>
+<li>
+<p><a href="#A1099373">"Installation Instructions"</a></p>
+</li>
+<li>
+<p><a href="#uninstalling_the_jre_windows">"Uninstalling the JRE"</a></p>
+</li>
+<li>
+<p><a href="#CHDCJDFJ">"Java Start Menu"</a></p>
+</li>
+<li>
+<p><a href="#A1100356">"Java Plug-in"</a></p>
+</li>
+<li>
+<p><a href="#A1100264">"Java Web Start"</a></p>
+</li>
+<li>
+<p><a href="#A1100763">"Java Update Feature"</a></p>
+</li>
+<li>
+<p><a href="#A1134077">"Option to Disable the "JRE out of date" Warning"</a></p>
+</li>
+<li>
+<p><a href="#A1100993">"Installation of JRE on 64-Bit Windows Computers"</a></p>
+</li>
+</ul>
+<p>See <a href="install_overview.html#CJAGAACB">"JDK 8 and JRE 8 Installation Start Here"</a> for general information about installing JDK 8 and JRE 8.</p>
+<a id="A1096933" name="A1096933"/>
+<div>
+<h2>System Requirements</h2>
+<p>See <code dir="ltr"><a href="http://www.oracle.com/technetwork/java/javase/certconfig-2095354.html">http://www.oracle.com/technetwork/java/javase/certconfig-2095354.html</a></code> for information about supported platforms, operating systems, and browsers.</p>
+<p>See <a href="windows_system_requirements.html#BABHGIJF">"Windows System Requirements for JDK and JRE"</a> for minimum processor, disk space, and memory requirements.</p>
+<p>If you have any difficulties, see <code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/index.html">http://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/index.html</a></code>, <a href="windows_install_faq.html#CHDFIAHH">"Windows Online Installation and Java Update FAQ"</a>, or submit a bug report at <code dir="ltr"><a href="http://bugreport.java.com/bugreport/">http://bugreport.java.com/bugreport/</a></code>.</p>
+</div>
+
+<a id="A1098865" name="A1098865"/>
+<div>
+<h2>Proxy Settings and Authentication</h2>
+<p>To use the Windows Online Installer, you must be connected to the Internet. If you are running behind a proxy server, you must have your proxy settings correctly configured. If they are not configured, or are incorrectly configured, the installer will terminate with the following message:</p>
+<pre dir="ltr" xml:space="preserve">
+  The installer cannot proceed with the current Internet Connection proxy
+  settings. Please check the Installation Notes for more information.
+</pre>
+<p>If you see this message, check your proxy settings: From the <b>Start</b> menu select <b>Settings</b>, click <b>Control Panel</b>, double-click <b>Internet Options</b>, select the <b>Connections</b> tab, and click the <b>LAN Settings</b> button.</p>
+<p>If you do not know what the correct settings should be, check with your Internet provider or system administrator.</p>
+</div>
+
+<a id="A1097282" name="A1097282"/>
+<div>
+<h2>Installation Instructions Notation</h2>
+<p>For any text in this document that contains the following notation, you must substitute the appropriate update version number:</p>
+<pre dir="ltr" xml:space="preserve">
+<i>version</i>
+</pre>
+<p>For example, if you were downloading the JRE installer for 32-bit systems for update 1.8.0_01, the file name: <code dir="ltr">jre-8</code><code dir="ltr"><span>version</span></code>-windows-i586.exe would become <code dir="ltr">jre-8u1-windows-i586.exe</code>.</p>
+<p>Similarly, if you were downloading the JRE installer for 64-bit systems for update 1.8.0_01, the file name <code dir="ltr">jre-8</code><code dir="ltr"><span>version</span></code><code dir="ltr">-windows-x64.exe</code> would become <code dir="ltr">jre-8u1-windows-x64.exe</code>.</p>
+</div>
+
+<a id="A1099373" name="A1099373"/>
+<div>
+<h2>Installation Instructions</h2>
+<p>Installing the JRE consists of two main steps:</p>
+<ul>
+<li>
+<p><a href="#CHDFBCGI">"Downloading the Installer"</a></p>
+</li>
+<li>
+<p><a href="#CHDCHIDI">"Running the Installer"</a></p>
+</li>
+</ul>
+<a id="CHDFBCGI" name="CHDFBCGI"/>
+<div>
+<h3>Downloading the Installer</h3>
+<p>You have a choice of the following kinds of JRE installers that you can download:</p>
+<ul>
+<li>
+<p>Windows x86 Online: <code dir="ltr">jre-8</code><code dir="ltr"><span>version</span></code><code dir="ltr">-windows-i586-iftw.exe</code> (The letters <code dir="ltr">iftw</code> mean "install from the web.")</p>
+</li>
+<li>
+<p>Windows x86 Offline: <code dir="ltr">jre-8</code><code dir="ltr"><span>version</span></code><code dir="ltr">-windows-i586.exe</code></p>
+</li>
+<li>
+<p>Windows x64: <code dir="ltr">jre-8</code><code dir="ltr"><span>version</span></code><code dir="ltr">-windows-x64.exe</code></p>
+</li>
+</ul>
+<p>The Windows x86 Online Installer is a small program that will download more installer files based on your system configuration. Using this installer can help you avoid downloading large amounts of unnecessary files. For more information, see <a href="windows_install_faq.html#CHDFIAHH">"Windows Online Installation and Java Update FAQ"</a>.</p>
+<p>The Windows x86 Offline Installer, as well as the installers for 64-bit systems, contain everything needed to install the JRE.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td style="text-align:left">
+<p><b>Note:</b></p>
+The Microsoft Windows Installer (MSI) Enterprise JRE Installer is also available, which enables you to install the JRE across your enterprise. It requires a commercial license for use in production. For more information, see the <i>MSI Enterprise JRE Installer Guide</i> at <code dir="ltr"><a href="https://docs.oracle.com/javacomponents/msi-jre8/install-guide">https://docs.oracle.com/javacomponents/msi-jre8/install-guide</a></code>.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>Click the JRE <b>Download</b> link for the installer you want to use. A dialog box opens. Depending on your browser, click <b>Save</b> or <b>Save File</b> to save the JRE installer without installing it. Verify that you have downloaded the entire file by comparing the size of the file you downloaded with the expected size shown on the download page. Alternatively, (depending on your browser) click <b>Run</b> or <b>Open</b> to run the JRE installer from your browser.</p>
+</div>
+
+<a id="CHDCHIDI" name="CHDCHIDI"/>
+<div>
+<h3>Running the Installer</h3>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td style="text-align:left">
+<p><b>Note:</b></p>
+You must have administrative permissions in order to install the JRE.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>If you saved the JRE installer to your computer, run the installer by double-clicking it. Follow the instructions the installer provides. The installer notifies you if Java content is disabled in web browsers, and provides instructions for enabling it. If you previously chose to hide some of the security prompts for applets and Java Web Start applications, the installer provides an option for restoring the prompts. When you are finished with the installation, you can delete the downloaded file to recover disk space.</p>
+<p>Note the following:</p>
+<ul>
+<li>
+<p>The public JRE installed with the JDK is not registered. (This also applies to the 64-bit version of the JDK.) You must set the <code dir="ltr">PATH</code> environment variable to point to <code dir="ltr"><span>JAVA_HOME</span></code><code dir="ltr">\bin</code> (where <code dir="ltr"><span>JAVA_HOME</span></code> is the location where you installed the public JRE) to register the JRE. See <a href="windows_jdk_install.html#CHDJCCEG">"Private Versus Public JRE"</a> for more information about the public JRE.</p>
+</li>
+<li>
+<p>By default, Java Access Bridge is disabled. To enable it, see <code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/access/enable_and_test.html#enabling_jab">http://docs.oracle.com/javase/8/docs/technotes/guides/access/enable_and_test.html#enabling_jab</a></code>.</p>
+</li>
+<li>
+<p>After installation, use the <b>Java</b> item in the Windows <b>Start</b> menu to get access to essential Java information and functions, including help, the Java Control Panel, and checking for updates.</p>
+</li>
+</ul>
+</div>
+</div>
+
+<a id="uninstalling_the_jre_windows" name="uninstalling_the_jre_windows"/>
+<div>
+<h2>Uninstalling the JRE</h2>
+<p>To uninstall the JRE, use the Java Uninstall tool, which you can access in the following ways:</p>
+<ul>
+<li>
+<p>If the JRE is version 8u20 or later, uninstall it with the "Add/Remove Programs" utility in the Microsoft Windows Control Panel. The Java Removal Tool is integrated with the uninstallation process, and it will guide you through the removal of older JREs.</p>
+</li>
+<li>
+<p>Use the online Java Uninstall tool:</p>
+<p><code dir="ltr"><a href="https://www.java.com/en/download/uninstallapplet.jsp">https://www.java.com/en/download/uninstallapplet.jsp</a></code></p>
+</li>
+</ul>
+<p>The Java Uninstall tool helps you improve your computer security by simplifying the process of finding and uninstalling older versions of Java. The Uninstall tool shows you a list of the Java versions on your computer and then removes those that are out-of-date.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td style="text-align:left">
+<p><b>Note:</b></p>
+The Java Uninstall tool will not run if your system administrator specified a deployment rule set in your organization.
+<p>A deployment rule set enables enterprises to manage their Java desktop environment directly and continue using legacy business applications in an environment of ever-tightening Java applet and Java Web Start application security policies. A deployment rule set enables administrators to specify rules for applets and Java Web Start applications; these rules may specify that a specific JRE version must be used. Consequently, the Java Uninstall tool will not run if it detects a deployment rule set to ensure that no required JREs are uninstalled.</p>
+<p>See <code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/deploy/deployment_rules.html">http://docs.oracle.com/javase/8/docs/technotes/guides/deploy/deployment_rules.html</a></code> for more information about the Deployment Rule Set feature.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+
+<a id="CHDCJDFJ" name="CHDCJDFJ"/>
+<div>
+<h2>Java Start Menu</h2>
+<p>Starting with JDK 7u40 release, Java menu items are added to the Windows Start Menu to provide easy access to Java resources.</p>
+<p>During JRE install, a Java folder is created in the Windows Start Menu, which contains the following items:</p>
+<ul>
+<li>
+<p><b>About Java:</b> Opens an <b>About Java</b> window that shows the latest JRE version installed on the system.</p>
+</li>
+<li>
+<p><b>Check for Updates:</b> Opens the <b>Java Control Panel</b> with focus on the <b>Update</b> tab.</p>
+</li>
+<li>
+<p><b>Configure Java:</b> Opens the <b>Java Control Panel</b> with focus on the <b>General</b> tab.</p>
+</li>
+<li>
+<p><b>Get Help:</b> Opens the URL <code dir="ltr"><a href="http://java.com/en/download/help/index.xml">http://java.com/en/download/help/index.xml</a></code>.</p>
+</li>
+<li>
+<p><b>Visit Java.com:</b> Opens the URL <code dir="ltr"><a href="http://java.com/en/">http://java.com/en/</a></code>.</p>
+</li>
+</ul>
+<p>During JRE install and uninstall processes, the appropriate start menu items are updated to be associated with the latest JRE version on the system.</p>
+</div>
+
+<a id="A1100356" name="A1100356"/>
+<div>
+<h2>Java Plug-in</h2>
+<p>Java Plug-in technology, included as part of the JRE, establishes a connection between popular browsers and the Java platform. This connection enables applets on web sites to be run within a browser on the desktop. Java Plug-in is automatically enabled for supported web browsers during installation of the JRE. No user intervention is necessary. See <code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/deploy/applet_dev_guide.html">http://docs.oracle.com/javase/8/docs/technotes/guides/deploy/applet_dev_guide.html</a></code> for more information about Java Plug-in technology.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td style="text-align:left">
+<p><b>Note:</b></p>
+In Java SE 8, the version of Java Plug-in that is available in versions of the JRE prior to Java SE 6 Update 10 has been deprecated. However, this earlier version of Java Plug-in is still shipped with Java SE 8 for compatibility purposes but is no longer fully supported. It will be removed in a future release. For backward compatibility purposes, you can specify which Java Plug-in is used to run applets in the Java Control Panel. To specify this, run <b>Java Control Panel</b>, go to the <b>Advanced</b> tab, <b>Java Plug-in</b> node, and toggle the check box labeled <b>Enable the next-generation Java Plug-in</b>. See Java Control Panel <code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/deploy/jcp.html#JSDPG759">http://docs.oracle.com/javase/8/docs/technotes/guides/deploy/jcp.html#JSDPG759</a></code> for more information. In addition, you can use the Java Control Panel to manage multiple JRE versions used for applet execution.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+
+<a id="A1100264" name="A1100264"/>
+<div>
+<h2>Java Web Start</h2>
+<p>Java Web Start is an application-deployment technology that gives you the power to run full-featured applications with a single click from your Web browser. You can now download and run applications, such as a complete spreadsheet program or an Internet chat client, without going through complicated installation procedures. With Java Web Start, you run applications simply by clicking a web page link. If the application is not present on your computer, Java Web Start automatically downloads all necessary files. It then caches the files on your computer so the application is always ready to be run anytime you want - either from an icon on your desktop or from the browser link. No matter which method you use to run the application, the most current, available version of the application is always presented to you. See Java Web Start for more information.</p>
+<p>This topic covers the following topics:</p>
+<ul>
+<li>
+<p><a href="#CHDJCHDE">"Upgrading from Previous Versions"</a></p>
+</li>
+<li>
+<p><a href="#CHDFHDHA">"Uninstallation"</a></p>
+</li>
+</ul>
+<a id="CHDJCHDE" name="CHDJCHDE"/>
+<div>
+<h3>Upgrading from Previous Versions</h3>
+<p>If you have a previous version of Java Web Start, do not uninstall it. Uninstalling it will cause the download cache to be cleared, and all previously installed Java Web Start application data will have to be downloaded again. This new version will write over previous installations and automatically update browsers to use this new version. The configuration files and the program files folder used by Java Web Start have changed, but all your settings will remain intact after the upgrade because Java Web Start will translate your settings to the new form.</p>
+</div>
+
+<a id="CHDFHDHA" name="CHDFHDHA"/>
+<div>
+<h3>Uninstallation</h3>
+<p>The only way to uninstall Java Web Start is to uninstall the JDK/JRE. Uninstalling the JDK/JRE will not, however, remove the cache for previous versions of Java Web Start. Previous releases have separate uninstall instructions for Java Web Start.</p>
+<p>You may see a misleading message if you do the following:</p>
+<ul>
+<li>
+<p>Download and cache a Java Web Start application with the JDK or JRE.</p>
+</li>
+<li>
+<p>Remove the JDK or JRE using "Add or Remove Programs" from the Windows Control Panel.</p>
+</li>
+<li>
+<p>Remove the Java Web Start application using "Add or Remove Programs."</p>
+</li>
+</ul>
+<p>When you remove the application, you see an "Uninstaller Error" dialog box saying "An error occurred while trying to remove Java-Application: <i>name</i> App. It may have already been uninstalled. Would you like to remove Java-Application: <i>name</i> App from the Add or Remove program list?" If you say yes to this, then you will see another "Uninstaller Error" dialog box saying "You do not have sufficient access to remove Java-Application: <i>name</i> App from the Add or Remove Program list. Please contact your system administrator." This is the misleading message. It implies that the problem is due to privileges. It is not. The problem is that you have already removed the Java Web Start application when you removed JDK or JRE, but this is not reflected in the "Add or Remove Programs" dialog box until it is refreshed by pressing F5 or it is closed and reopened.</p>
+<p>To avoid seeing this misleading message, either press F5 or close and reopen the dialog box. Any Java Web Start application that was downloaded and cached with the JDK or JRE will no longer appear in the list of currently installed programs.</p>
+</div>
+</div>
+
+<a id="A1100763" name="A1100763"/>
+<div>
+<h2>Java Update Feature</h2>
+<p>For issues related to the Java Update feature, see <code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/deploy/jcp.html#JSDPG759">http://docs.oracle.com/javase/8/docs/technotes/guides/deploy/jcp.html#JSDPG759</a></code>.</p>
+</div>
+
+<a id="A1134077" name="A1134077"/>
+<div>
+<h2>Option to Disable the "JRE out of date" Warning</h2>
+<p>When the installed JRE (7u10 or later), falls below the security baseline or passes it's built-in expiration date, an additional warning is shown to users to update their installed JRE to the latest version. For businesses that manage the update process centrally, users attempting to update their JRE individually, may cause problems.</p>
+<p>Starting from 7u40, a new deployment property, <i>deployment.expiration.check.enabled</i> is available. This property can be used to disable the <b>JRE out of date</b> warning.</p>
+<p>To suppress this specific warning message, add the following entry in the deployment properties file:</p>
+<pre dir="ltr" xml:space="preserve">
+deployment.expiration.check.enabled=false
+</pre>
+<p>For more information, see <a href="../deploy/properties.html">Deployment Configuration File and Properties.</a></p>
+<p>To disable automatic updates, un-check the <b>Check for Updates Automatically</b> check box in the <a href="../deploy/jcp.html#JSDPG759">Update</a> tab of the Java Control Panel.</p>
+<a id="A1100726" name="A1100726"/>
+<div>
+<h3>Silent Installation</h3>
+<p>To install the JRE silently or non-interactively, which is useful for installing on multiple computers, see <a href="windows_installer_options.html#CJAJGEHA">"Command-Line Installation"</a>.</p>
+</div>
+</div>
+
+<a id="A1100993" name="A1100993"/>
+<div>
+<h2>Installation of JRE on 64-Bit Windows Computers</h2>
+<p>64-bit Windows operating systems (which may be Vista, Windows 7, or Windows 8) come with a 32-bit Internet Explorer (IE) browser as the standard (default) for viewing web pages. These operating systems also include a 64-bit Internet Explorer browser. However, using it is optional, and it must be explicitly selected to view web pages. Note that because some web content may not work properly in a 64-bit browser, it is recommended that you use the default 32-bit browser and install the 32-bit JRE.</p>
+<p>The following topics can help you determine which JRE to install:</p>
+<ul>
+<li>
+<p><a href="#CHDEHGFD">"Verifying Your Version of Windows"</a></p>
+</li>
+<li>
+<p><a href="#CHDHIGDI">"Verifying Your Browser"</a></p>
+</li>
+<li>
+<p><a href="#CHDEDDFA">"Choosing Which JRE Installer to Download"</a></p>
+</li>
+</ul>
+<a id="CHDEHGFD" name="CHDEHGFD"/>
+<div>
+<h3>Verifying Your Version of Windows</h3>
+<p>See <code dir="ltr"><a href="http://windows.microsoft.com/en-us/windows/32-bit-and-64-bit-windows#1TC=windows-7">http://windows.microsoft.com/en-us/windows/32-bit-and-64-bit-windows#1TC=windows-7</a></code> to determine if your system is running a 64-bit version of Windows.</p>
+</div>
+
+<a id="CHDHIGDI" name="CHDHIGDI"/>
+<div>
+<h3>Verifying Your Browser</h3>
+<p>Follow these steps to determine whether you are using a 32-bit or 64-bit version of Internet Explorer:</p>
+<ol>
+<li>
+<p>Start Internet Explorer.</p>
+</li>
+<li>
+<p>In the menu bar, click <b>Help</b>.</p>
+</li>
+<li>
+<p>Select <b>About Internet Explorer</b>, which will open an information window.</p>
+</li>
+</ol>
+<p>Follow one of the following methods to determine whether you are using a 64-bit version of Firefox:</p>
+<ul>
+<li>
+<p>Check the <b>About Firefox</b> panel.</p>
+</li>
+<li>
+<p>Type <code dir="ltr">about:support</code> in the browser address.</p>
+</li>
+</ul>
+<p>If you running 64-bit version of Firefox, it may be indicated as 64-bit (for example, Win64); otherwise, it is a 32-bit version of Firefox.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td style="text-align:left">
+<p><b>Note:</b></p>
+The 64-bit JRE is presented as a download option automatically for 64-bit Internet Explorer and 64-bit Firefox for Windows users.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+
+<a id="CHDEDDFA" name="CHDEDDFA"/>
+<div>
+<h3>Choosing Which JRE Installer to Download</h3>
+<p>Download a JRE installer, depending on which browser you have installed:</p>
+<ul>
+<li>
+<p>32-bit browser: download the 32-bit JRE installer (use either the Windows x86 Offline or Online installer).</p>
+</li>
+<li>
+<p>64-bit browser: download the 64-bit JRE installer.</p>
+</li>
+<li>
+<p>Both 32-bit and 64-bit browsers: download both the 32-bit and 64-bit JRE installers, respectively.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="windows_jdk_install.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="windows_installer_options.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,516 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Security Architecture: -</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<table summary="" width="100%">
+<tr>
+<td>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href=
+"security-specTOC.fm.html">CONTENTS</a> | <a href=
+"security-spec.doc3.html">PREV</a> | <a href=
+"security-spec.doc5.html">NEXT</a> 
+<!-- | <a href="security-spec.doc.html">INDEX</a>  -->
+<!-- /font --></td>
+</tr>
+</table>
+<br />
+<h2><a name="a20389" id="a20389"><i>4</i> Access Control Mechanisms
+and Algorithms</a></h2>
+<br />
+<h3><a name="a21491" id="a21491"><!-- --></a> <i>4.1</i>
+java.security.ProtectionDomain</h3>
+<a name="a24479" id="a24479"><!-- --></a> The ProtectionDomain
+class encapsulates the characteristics of a domain. Such a domain
+encloses a set of classes whose instances are granted a set of
+permissions when being executed on behalf of a given set of
+Principals.
+<p>A ProtectionDomain is constructed with a CodeSource, a
+ClassLoader, an array of Principals, and a collection of
+Permissions. The CodeSource encapsulates the codebase
+(java.net.URL) for all classes in this domain, as well as a set of
+certificates (of type java.security.cert.Certificate) for public
+keys that correspond to the private keys that signed all code in
+this domain. The Principals represent the user on whose behalf the
+code is running.</p>
+<p><a name="a24517" id="a24517"><!-- --></a> The permissions passed
+in at ProtectionDomain construction time represent a static set of
+permissions bound to the domain regardless of the Policy in force.
+The ProtectionDomain subsequently consults the current policy
+during each security check to retrieve dynamic permissions granted
+to the domain.</p>
+<p><a name="a24485" id="a24485"><!-- --></a> Classes from different
+CodeSources, or that are being executed on behalf of different
+principals, belong to different domains.</p>
+<p><a name="a27549" id="a27549"><!-- --></a> Today all code shipped
+as part of the Java 2 SDK is considered system code and run inside
+the unique system domain. Each applet or application runs in its
+appropriate domain, determined by policy.</p>
+<p><a name="a17021" id="a17021"><!-- --></a> It is possible to
+ensure that objects in any non-system domain cannot automatically
+discover objects in another non-system domain. This partition can
+be achieved by careful class resolution and loading, for example,
+using different classloaders for different domains. However,
+SecureClassLoader (or its subclasses) can, at its choice, load
+classes from different domains, thus allowing these classes to
+co-exist within the same name space (as partitioned by a
+classloader).</p>
+<br />
+<h3><a name="a17119" id="a17119"><!-- --></a> <i>4.2</i>
+java.security.AccessController</h3>
+<a name="a24542" id="a24542"><!-- --></a> The AccessController
+class is used for three purposes, each of which is described in
+further detail in sections below:
+<ul>
+<li><a name="a24544" id="a24544"><!-- --></a> to decide whether an
+access to a critical system resource is to be allowed or denied,
+based on the security policy currently in effect,</li>
+<li><a name="a24545" id="a24545"><!-- --></a> to mark code as being
+"privileged", thus affecting subsequent access determinations,
+and</li>
+<li><a name="a24546" id="a24546"><!-- --></a> to obtain a
+"snapshot" of the current calling context so access-control
+decisions from a different context can be made with respect to the
+saved context.</li>
+</ul>
+<a name="a24568" id="a24568"><!-- --></a> Any code that controls
+access to system resources should invoke AccessController methods
+if it wishes to use the specific security model and access control
+algorithm utilized by these methods. If, on the other hand, the
+application wishes to defer the security model to that of the
+SecurityManager installed at runtime, then it should instead invoke
+corresponding methods in the SecurityManager class.
+<p><a name="a18365" id="a18365"><!-- --></a> For example, the
+typical way to invoke access control has been the following code
+(taken from an earlier version of JDK):</p>
+<pre>
+ ClassLoader loader = this.getClass().getClassLoader();
+        if (loader != null) {
+                SecurityManager security = System.getSecurityManager();
+            if (security != null) {
+                security.checkRead("path/file");
+            }
+        }
+</pre>
+<a name="a17167" id="a17167"><!-- --></a> Under the new
+architecture, the check typically should be invoked whether or not
+there is a classloader associated with a calling class. It could be
+simply, for example:
+<pre>
+FilePermission perm = new FilePermission("path/file", "read");
+AccessController.checkPermission(perm);
+</pre>
+<a name="a24600" id="a24600"><!-- --></a> The AccessController
+<code>checkPermission</code> method examines the current execution
+context and makes the right decision as to whether or not the
+requested access is allowed. If it is, this check returns quietly.
+Otherwise, an AccessControlException (a subclass of
+java.lang.SecurityException) is thrown.
+<p><a name="a19481" id="a19481"><!-- --></a> Note that there are
+(legacy) cases, for example, in some browsers, where whether there
+is a SecurityManager installed signifies one or the other security
+state that may result in different actions being taken. For
+backward compatibility, the <code>checkPermission</code> method on
+SecurityManager can be used.</p>
+<pre>
+SecurityManager security = System.getSecurityManager();
+if (security != null) {
+    FilePermission perm = new FilePermission("path/file", "read");
+    security.checkPermission(perm);
+}
+</pre>
+<a name="a22739" id="a22739"><!-- --></a> We currently do not
+change this aspect of the SecurityManager usage, but would
+encourage application developers to use new techniques introduced
+in the Java 2 SDK in their future programming when the built-in
+access control algorithm is appropriate.
+<p><a name="a24648" id="a24648"><!-- --></a> The default behavior
+of the SecurityManager <code>checkPermission</code> method is
+actually to call the AccessController <code>checkPermission</code>
+method. A different SecurityManager implementation may implement
+its own security management approach, possibly including the
+addition of further constraints used in determining whether or not
+an access is permitted.</p>
+<br />
+<a name="a24646" id="a24646"><!-- --></a>
+<h4><i>4.2.1 Algorithm for Checking Permissions</i></h4>
+<a name="a20502" id="a20502"><!-- --></a> Suppose access control
+checking occurs in a thread of computation that has a chain of
+multiple callers (think of this as multiple method calls that cross
+the protection domain boundaries), as illustrated in the next
+figure.
+<p><a name="a21585" id="a21585"><!-- --></a></p>
+<img src="security-spec.doc.anc1.gif" alt=
+"Illustration of access control" />
+<p><a name="a20556" id="a20556"><!-- --></a> When the
+<code>checkPermission</code> method of the AccessController is
+invoked by the most recent caller (e.g., a method in the File
+class), the basic algorithm for deciding whether to allow or deny
+the requested access is as follows.</p>
+<a name="a20557" id="a20557"><!-- --></a> If any caller in the call
+chain does not have the requested permission,
+AccessControlException is thrown, unless the following is true -- a
+caller whose domain is granted the said permission has been marked
+as &#34;privileged&#34; (see the next section) and all parties
+subsequently called by this caller (directly or indirectly) all
+have the said permission. <a name="a20546" id="a20546"><!-- --></a>
+There are obviously two implementation strategies:
+<ul>
+<li><a name="a20547" id="a20547"><!-- --></a> In an &#34;eager
+evaluation&#34; implementation, whenever a thread enters a new
+protection domain or exits from one, the set of effective
+permissions is updated dynamically.</li>
+</ul>
+<a name="a20548" id="a20548"><!-- --></a> The benefit is that
+checking whether a permission is allowed is simplified and can be
+faster in many cases. The disadvantage is that, because permission
+checking occurs much less frequently than cross-domain calls, a
+large percentage of permission updates are likely to be useless
+effort.
+<ul>
+<li><a name="a20549" id="a20549"><!-- --></a> In a &#34;lazy
+evaluation&#34; implementation, whenever permission checking is
+requested, the thread state (as reflected by the current state,
+including the current thread&#39;s call stack or its equivalent) is
+examined and a decision is reached to either deny or grant the
+particular access requested.</li>
+</ul>
+<a name="a20504" id="a20504"><!-- --></a> One potential downside of
+this approach is performance penalty at permission checking time,
+although this penalty would have been incurred anyway in the
+&#34;eager evaluation&#34; approach (albeit at earlier times and
+spread out among each cross-domain call). Our implementation so far
+has yielded acceptable performance, so we feel that lazy evaluation
+is the most economical approach overall.
+<p><a name="a20537" id="a20537"><!-- --></a> Therefore, the
+algorithm for checking permissions is currently implemented as
+&#34;lazy evaluation&#34;. Suppose the current thread traversed m
+callers, in the order of caller 1 to caller 2 to caller m. Then
+caller m invoked the <code>checkPermission</code> method. The basic
+algorithm <code>checkPermission</code> uses to determine whether
+access is granted or denied is the following (see subsequent
+sections for refinements):</p>
+<pre>
+ i = m;
+ while (i &gt; 0) {
+     if (caller i's domain does not have the permission)
+         throw AccessControlException
+     else if (caller i is marked as privileged) 
+         return;
+     i = i - 1;
+ };
+</pre>
+<br />
+<a name="a20573" id="a20573"><!-- --></a>
+<h4><i>4.2.2 Handling Privileges</i></h4>
+<a name="a20571" id="a20571"><!-- --></a> A new, static method in
+the AccessController class allows code in a class instance to
+inform the AccessController that a body of its code is
+&#34;privileged&#34; in that it is solely responsible for
+requesting access to its available resources, no matter what code
+caused it to do so.
+<p><a name="a24767" id="a24767"><!-- --></a> That is, a caller can
+be marked as being "privileged" when it calls the
+<code>doPrivileged</code> method. When making access control
+decisions, the <code>checkPermission</code> method stops checking
+if it reaches a caller that was marked as "privileged" via a
+<code>doPrivileged</code> call without a context argument (see a
+subsequent section for information about a context argument). If
+that caller's domain has the specified permission, no further
+checking is done and <code>checkPermission</code> returns quietly,
+indicating that the requested access is allowed. If that domain
+does not have the specified permission, an exception is thrown, as
+usual.</p>
+<p><a name="a27712" id="a27712"><!-- --></a> The normal use of the
+"privileged" feature is as follows:</p>
+<p><a name="a27774" id="a27774"><!-- --></a> If you don't need to
+return a value from within the "privileged" block, do the
+following:</p>
+<pre>
+  somemethod() {
+       ...normal code here...
+       AccessController.doPrivileged(new PrivilegedAction() {
+           public Object run() {
+               // privileged code goes here, for example:
+               System.loadLibrary("awt");
+               return null; // nothing to return
+           }
+       });
+       ...normal code here...
+  }
+</pre>
+<a name="a27912" id="a27912"><!-- --></a> PrivilegedAction is an
+interface with a single method, named <code>run</code>, that
+returns an Object. The above example shows creation of an anonymous
+inner class implementing that interface; a concrete implementation
+of the <code>run</code> method is supplied. When the call to
+<code>doPrivileged</code> is made, an instance of the
+PrivilegedAction implementation is passed to it. The
+<code>doPrivileged</code> method calls the <code>run</code> method
+from the PrivilegedAction implementation after enabling privileges,
+and returns the <code>run</code> method's return value as the
+<code>doPrivileged</code> return value, which is ignored in this
+example.
+<p><a name="a28071" id="a28071"><!-- --></a> (For more information
+about inner classes, see <a href="http://docs.oracle.com/javase/tutorial/java/javaOO/nested.html">Nested Classes</a> in the Java Tutorials.</p>
+<p><a name="a28072" id="a28072"><!-- --></a> If you need to return
+a value, you can do something like the following:</p>
+<pre>
+  somemethod() {
+       ...normal code here...
+       String user = (String) AccessController.doPrivileged(
+         new PrivilegedAction() {
+           public Object run() {
+               return System.getProperty("user.name");
+           }
+         }
+       );
+       ...normal code here...
+  }
+</pre>
+<a name="a27738" id="a27738"><!-- --></a> If the action performed
+in your <code>run</code> method could throw a "checked" exception
+(one listed in the <code>throws</code> clause of a method), then
+you need to use the PrivilegedExceptionAction interface instead of
+the PrivilegedAction interface:
+<pre>
+  somemethod() throws FileNotFoundException {
+       ...normal code here...
+     try {
+       FileInputStream fis = (FileInputStream)
+        AccessController.doPrivileged(
+         new PrivilegedExceptionAction() {
+           public Object run() throws FileNotFoundException {
+               return new FileInputStream("someFile");
+           }
+         }
+       );
+     } catch (PrivilegedActionException e) {
+       // e.getException() should be an instance of
+       // FileNotFoundException,
+       // as only "checked" exceptions will be "wrapped" in a
+       // &lt;code&gt;PrivilegedActionException&lt;/code&gt;.
+       throw (FileNotFoundException) e.getException();
+     }
+       ...normal code here...
+ }
+</pre>
+<a name="a18471" id="a18471"><!-- --></a> Some important points
+about being privileged: Firstly, this concept only exists within a
+single thread. As soon as the privileged code completes, the
+privilege is guaranteed to be erased or revoked.
+<p><a name="a24808" id="a24808"><!-- --></a> Secondly, in this
+example, the body of code in the <code>run</code> method is
+privileged. However, if it calls less trustworthy code that is less
+privileged, that code will not gain any privileges as a result; a
+permission is only granted if the privileged code has the
+permission <em>and</em> so do all the subsequent callers in the
+call chain up to the <code>checkPermission</code> call.</p>
+<p><a name="a29313" id="a29313"><!-- --></a> For more information
+about marking code as &#34;privileged,&#34; see
+<a href="../doprivileged.html">
+API for Privileged Blocks</a>.</p>
+<br />
+<h3><a name="a21495" id="a21495"><!-- --></a> <i>4.3</i>
+Inheritence of Access Control Context</h3>
+<a name="a22406" id="a22406"><!-- --></a> When a thread creates a
+new thread, a new stack is created. If the current security context
+was not retained when this new thread was created, then when
+<code>AccessController.checkPermission</code> was called inside the
+new thread, a security decision would be made based solely upon the
+new thread&#39;s context, not taking into consideration that of the
+parent thread.
+<p><a name="a22435" id="a22435"><!-- --></a> This clean stack issue
+would not be a security problem per se, but it would make the
+writing of secure code, and especially system code, more prone to
+subtle errors. For example, a non-expert developer might assume,
+quite reasonably, that a child thread (e.g., one that does not
+involve untrusted code) inherits the same security context from the
+parent thread (e.g., one that involves untrusted code). This would
+cause unintended security holes when accessing controlled resources
+from inside the new thread (and then passing the resources along to
+less trusted code), if the parent context was not in fact
+saved.</p>
+<p><a name="a22434" id="a22434"><!-- --></a> Thus, when a new
+thread is created, we actually ensure (via thread creation and
+other code) that it automatically inherits the parent thread&#39;s
+security context at the time of creation of the child thread, in
+such a way that subsequent <code>checkPermission</code> calls in
+the child thread will take into consideration the inherited parent
+context.</p>
+<p><a name="a24860" id="a24860"><!-- --></a> In other words, the
+logical thread context is expanded to include both the parent
+context (in the form of an AccessControlContext, described in the
+next section) and the current context, and the algorithm for
+checking permissions is expanded to the following. (Recall there
+are m callers up to the call to <code>checkPermission</code>, and
+see the next section for information about the AccessControlContext
+<code>checkPermission</code> method.)</p>
+<pre>
+ i = m;
+ while (i &gt; 0) {
+     if (caller i's domain does not have the permission)
+         throw AccessControlException
+     else if (caller i is marked as privileged) 
+         return;
+     i = i - 1;
+ };
+
+ // Next, check the context inherited when
+ // the thread was created. Whenever a new thread is created, the
+ // AccessControlContext at that time is
+ // stored and associated with the new thread, as the "inherited"
+ // context.
+
+ inheritedContext.checkPermission(permission);
+</pre>
+<a name="a22454" id="a22454"><!-- --></a> Note that this
+inheritance is transitive so that, for example, a grandchild
+inherits both from the parent and the grandparent. Also note that
+the inherited context snapshot is taken when the new child is
+created, and not when the child is first run. There is no public
+API change for the inheritance feature.<br />
+<h3><a name="a22405" id="a22405"><!-- --></a> <i>4.4</i>
+java.security.AccessControlContext</h3>
+<a name="a21496" id="a21496"><!-- --></a> Recall that the
+AccessController <code>checkPermission</code> method performs
+security checks within the context of the current execution thread
+(including the inherited context). A difficulty arises when such a
+security check can only be done in a different context. That is,
+sometimes a security check that should be made within a given
+context will actually need to be done from within a
+<em>different</em> context. For example, when one thread posts an
+event to another thread, the second thread serving the requesting
+event would not have the proper context to complete access control,
+if the service requests access to controller resources.
+<p><a name="a24928" id="a24928"><!-- --></a> To address this issue,
+we provide the AccessController <code>getContext</code> method and
+AccessControlContext class. The <code>getContext</code> method
+takes a "snapshot" of the current calling context, and places it in
+an AccessControlContext object, which it returns. A sample call is
+the following:</p>
+<pre>
+AccessControlContext acc = AccessController.getContext();
+</pre>
+<a name="a24984" id="a24984"><!-- --></a> This context captures
+relevant information so that an access control decision can be made
+by checking, from within a different context, against this context
+information. For example, one thread can post a request event to a
+second thread, while also supplying this context information.
+AccessControlContext itself has a <code>checkPermission</code>
+method that makes access decisions based on the context <em>it</em>
+encapsulates, rather than that of the current execution thread.
+Thus, the second thread can perform an appropriate security check
+if necessary by invoking the following:
+<pre>
+acc.checkPermission(permission);
+</pre>
+<a name="a21503" id="a21503"><!-- --></a> The above method call is
+equivalent to performing the same security check in the context of
+the first thread, even though it is done in the second thread.
+<p><a name="a25011" id="a25011"><!-- --></a> There are also times
+where one or more permissions must be checked against an access
+control context, but it is unclear a priori which permissions are
+to be checked. In these cases you can use the
+<code>doPrivileged</code> method that takes a context:</p>
+<pre>
+  somemethod() {
+        AccessController.doPrivileged(new PrivilegedAction() {
+             public Object run() {
+                // Code goes here. Any permission checks from 
+                // this point forward require both the current 
+                // context and the snapshot's context to have 
+                // the desired permission.
+             }
+        }, acc);
+        ...normal code here...
+</pre>
+<a name="a28006" id="a28006"><!-- --></a> Now the complete
+algorithm utilized by the AccessController
+<code>checkPermission</code> method can be given. Suppose the
+current thread traversed m callers, in the order of caller 1 to
+caller 2 to caller m. Then caller m invoked the
+<code>checkPermission</code> method. The algorithm
+<code>checkPermission</code> uses to determine whether access is
+granted or denied is the following
+<pre>
+  i = m;
+  while (i &gt; 0) {
+     if (caller i&#39;s domain does not have the permission)
+        throw AccessControlException
+     else if (caller i is marked as privileged) {
+        if (a context was specified in the call to doPrivileged)
+           context.checkPermission(permission);
+        return;
+     }
+     i = i - 1;
+  };
+
+
+  // Next, check the context inherited when
+  // the thread was created. Whenever a new thread is created, the
+  // AccessControlContext at that time is
+  // stored and associated with the new thread, as the "inherited"
+  // context.
+
+  inheritedContext.checkPermission(permission);
+</pre>
+<br />
+<hr />
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href=
+"security-specTOC.fm.html">CONTENTS</a> | <a href=
+"security-spec.doc3.html">PREV</a> | <a href=
+"security-spec.doc5.html">NEXT</a> 
+<!-- | <a href="security-spec.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

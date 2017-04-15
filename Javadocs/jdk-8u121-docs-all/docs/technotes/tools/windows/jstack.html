@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>jstack</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T8:11:41Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Windows, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38210-05" name="partnum"/>
+<meta content="JSWOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="jsadebugd.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="s12-scripting-tools.html">
+                Next</a><hr/>
+<div><a id="BABBIIJD" name="BABBIIJD"/>
+<div id="JSWOR748"><a id="BABGJDIF" name="BABGJDIF"/>
+<h1>jstack</h1>
+<p>Prints Java thread stack traces for a Java process, core file, or remote debug server. This command is experimental and unsupported.</p>
+<div><a id="sthref338" name="sthref338"/>
+<h2>Synopsis</h2>
+<p><b>jstack</b> [ <i>options</i> ] <i>pid</i></p>
+<p><b>jstack</b> [ <i>options</i> ] <i>executable</i> <i>core</i></p>
+<p><b>jstack</b> [ <i>options</i> ] [ <i>server-id</i>@ ] <i>remote-hostname-or-IP</i></p>
+<dl>
+<dt><i>options</i></dt>
+<dd>
+<p>The command-line options. See <a href="#BABHGEEI">Options</a>.</p>
+</dd>
+<dt><i>pid</i></dt>
+<dd>
+<p>The process ID for which the stack trace is printed. The process must be a Java process. To get a list of Java processes running on a machine, use the <a href="jps.html#CHDGHCGB"><code dir="ltr">jps</code>(1)</a> command.</p>
+</dd>
+<dt><i>executable</i></dt>
+<dd>
+<p>The Java executable from which the core dump was produced.</p>
+</dd>
+<dt><i>core</i></dt>
+<dd>
+<p>The core file for which the stack trace is to be printed.</p>
+</dd>
+<dt><i>remote-hostname-or-IP</i></dt>
+<dd>
+<p>The remote debug server <code dir="ltr">hostname</code> or <code dir="ltr">IP</code> address. See <a href="jsadebugd.html#BHBHHJCA"><code dir="ltr">jsadebugd</code>(1)</a>.</p>
+</dd>
+<dt><i>server-id</i></dt>
+<dd>
+<p>An optional unique ID to use when multiple debug servers are running on the same remote host.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref339" name="sthref339"/>
+<h2>Description</h2>
+<p>The <code dir="ltr">jstack</code> command prints Java stack traces of Java threads for a specified Java process, core file, or remote debug server. For each Java frame, the full class name, method name, byte code index (BCI), and line number, when available, are printed. With the <code dir="ltr">-m</code> option, the <code dir="ltr">jstack</code> command prints both Java and native frames of all threads with the program counter (PC). For each native frame, the closest native symbol to PC, when available, is printed. C++ mangled names are not demangled. To demangle C++ names, the output of this command can be piped to <code dir="ltr">c++filt</code>. When the specified process is running on a 64-bit Java Virtual Machine, you might need to specify the <code dir="ltr">-J-d64</code> option, for example: <code dir="ltr">jstack -J-d64 -m pid</code>.</p>
+<p><b>Note:</b> This utility is unsupported and might not be available in future release of the JDK. In Windows Systems where the dbgeng.dll file is not present, Debugging Tools For Windows must be installed so these tools work. The <code dir="ltr">PATH</code> environment variable needs to contain the location of the jvm.dll that is used by the target process, or the location from which the crash dump file was produced. For example:</p>
+<pre dir="ltr" xml:space="preserve">
+set PATH=&lt;jdk&gt;\jre\bin\client;%PATH%
+</pre></div>
+
+<div><a id="BABHGEEI" name="BABHGEEI"/><a id="BABCEEEB" name="BABCEEEB"/>
+<h2>Options</h2>
+<dl>
+<dt>-F</dt>
+<dd>
+<p>Force a stack dump when <code dir="ltr">jstack</code> [<code dir="ltr">-l</code>] <code dir="ltr">pid</code> does not respond.</p>
+</dd>
+<dt>-l</dt>
+<dd>
+<p>Long listing. Prints additional information about locks such as a list of owned <code dir="ltr">java.util.concurrent</code> ownable synchronizers. See the <code dir="ltr">AbstractOwnableSynchronizer</code> class description at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/api/java/util/concurrent/locks/AbstractOwnableSynchronizer.html">http://docs.oracle.com/javase/8/docs/api/java/util/concurrent/locks/AbstractOwnableSynchronizer.html</a></code></p>
+</dd>
+<dt>-m</dt>
+<dd>
+<p>Prints a mixed mode stack trace that has both Java and native C/C++ frames.</p>
+</dd>
+<dt>-h</dt>
+<dd>
+<p>Prints a help message.</p>
+</dd>
+<dt>-help</dt>
+<dd>
+<p>Prints a help message.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref340" name="sthref340"/>
+<h2>Known Bugs</h2>
+<p>In mixed mode stack trace, the <code dir="ltr">-m</code> option does not work with the remote debug server.</p>
+</div>
+
+<div><a id="sthref341" name="sthref341"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="jps.html#CHDGHCGB"><code dir="ltr">jps</code>(1)</a></p>
+</li>
+<li>
+<p><a href="jsadebugd.html#BHBHHJCA"><code dir="ltr">jsadebugd</code>(1)</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="jsadebugd.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="s12-scripting-tools.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

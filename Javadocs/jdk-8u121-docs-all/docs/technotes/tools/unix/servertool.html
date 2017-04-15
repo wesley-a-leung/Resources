@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>servertool</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T7:56:53Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Solaris, Linux, and OS X, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38209-05" name="partnum"/>
+<meta content="JSSOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="orbd.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="s6-deployment-tools.html">
+                Next</a><hr/>
+<div><a id="BHBBBEHA" name="BHBBBEHA"/>
+<div id="JSSOR715"><a id="BHBDJEAE" name="BHBDJEAE"/>
+<h1>servertool</h1>
+<p>Provides an easy-to-use interface for developers to register, unregister, start up, and shut down a persistent server.</p>
+<div><a id="sthref211" name="sthref211"/>
+<h2>Synopsis</h2>
+<p><b>servertool</b> -ORBInitialPort <span>nameserverport</span> [ <i>options</i> ] [ <i>commands</i> ]</p>
+<dl>
+<dt><i>options</i></dt>
+<dd>
+<p>The command-line options. See <a href="#BHBBBICE">Options</a>.</p>
+</dd>
+<dt>commands</dt>
+<dd>
+<p>The command-line commands. See <a href="#BHBEJEHB">Commands</a>.</p>
+</dd>
+</dl>
+</div>
+
+<p>If you did not enter a command when starting <code dir="ltr">servertool</code>, the command-line tool displays with a <code dir="ltr">servertool &gt;</code> prompt. Enter commands at the <code dir="ltr">servertool &gt;</code> prompt.</p>
+<p>If you enter a command when starting <code dir="ltr">servertool</code>, the Java IDL Server Tool starts, runs the command, and exits.</p>
+<p>The <code dir="ltr">-ORBInitialPort nameserverport</code> option is <b>required</b>. The value for <code dir="ltr">nameserverport</code> must specify the port on which <code dir="ltr">orbd</code> is running and listening for incoming requests.</p>
+<p><b>Note:</b> On Oracle Solaris, you must become a root user to start a process on a port below 1024. Oracle recommends that you use a port number above or equal to 1024 for the <code dir="ltr">nameserverport</code> value.</p>
+<div><a id="sthref212" name="sthref212"/>
+<h2>Description</h2>
+<p>The <code dir="ltr">servertool</code> command provides the command-line interface for developers to register, unregister, start up, and shut down a persistent server. Command-line commands let you obtain various statistical information about the server. See <a href="#BHBEJEHB">Commands</a>.</p>
+</div>
+
+<div><a id="BHBBBICE" name="BHBBBICE"/><a id="BHBIHADG" name="BHBIHADG"/>
+<h2>Options</h2>
+<dl>
+<dt>-ORBInitialHost <i>nameserverhost</i></dt>
+<dd>
+<p>This options is required. It specifies the host machine on which the name server runs and listens for incoming requests. The <code dir="ltr">nameserverhost</code> value must specify the port on which the <code dir="ltr">orb</code> is running and listening for requests. The value defaults to <code dir="ltr">localhost</code> when this option is not specified. If <code dir="ltr">orbd</code> and <code dir="ltr">servertool</code> are running on different machines, then you must specify the name or IP address of the host on which <code dir="ltr">orbd</code> is running.</p>
+<p><b>Note:</b> On Oracle Solaris, you must become a root user to start a process on a port below 1024. Oracle recommends that you use a port number above or equal to 1024 for the <code dir="ltr">nameserverport</code> value.</p>
+</dd>
+<dt>-J<i>option</i></dt>
+<dd>
+<p>Passes <code dir="ltr">option</code> to the Java Virtual Machine, where <code dir="ltr">option</code> is one of the options described on the reference page for the Java application launcher. For example, <code dir="ltr">-J-Xms48m</code> sets the startup memory to 48 MB. See <a href="java.html#CBBFHAJA"><code dir="ltr">java</code>(1)</a>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="BHBEJEHB" name="BHBEJEHB"/><a id="BHBHGDDG" name="BHBHGDDG"/>
+<h2>Commands</h2>
+<p>You can start the <code dir="ltr">servertool</code> command with or without a command-line command.</p>
+<ul>
+<li>
+<p>If you did not specify a command when you started <code dir="ltr">servertool</code>, then the command-line tool displays the <code dir="ltr">servertool</code> prompt where you can enter commands: <code dir="ltr">servertool &gt;</code>.</p>
+</li>
+<li>
+<p>If you specify a command when you start <code dir="ltr">servertool</code>, then the Java IDL Server Tool starts, executes the command, and exits.</p>
+</li>
+</ul>
+<dl>
+<dt>register -server <i>server-class-name</i> -classpath <i>classpath-to-server</i> [ -applicationName <i>application-name</i> -args <i>args-to-server</i> -vmargs <i>flags-for-JVM</i> ]</dt>
+<dd>
+<p>Registers a new persistent server with the Object Request Broker Daemon (ORBD). If the server is not already registered, then it is registered and activated. This command causes an installation method to be called in the <code dir="ltr">main</code> class of the server identified by the <code dir="ltr">-server</code> option. The installation method must be <code dir="ltr">public static void install(org.omg.CORBA.ORB)</code>. The install method is optional and lets developers provide their own server installation behavior, such as creating a database schema.</p>
+</dd>
+<dt>unregister -serverid <i>server-id</i> | -applicationName <i>application-name</i></dt>
+<dd>
+<p>Unregisters a server from the ORBD with either its server ID or its application name. This command causes an uninstallation method to be called in the <code dir="ltr">main</code> class of the server identified by the <code dir="ltr">-server</code> option. The <code dir="ltr">uninstall</code> method must be <code dir="ltr">public static void uninstall(org.omg.CORBA.ORB)</code>. The <code dir="ltr">uninstall</code> method is optional and lets developers provide their own server uninstallation behavior, such as undoing the behavior of the <code dir="ltr">install</code> method.</p>
+</dd>
+<dt>getserverid -applicationName <i>application-name</i></dt>
+<dd>
+<p>Returns the server ID that corresponds to the <code dir="ltr">application-name</code> value.</p>
+</dd>
+<dt>list</dt>
+<dd>
+<p>Lists information about all persistent servers registered with the ORBD.</p>
+</dd>
+<dt>listappnames</dt>
+<dd>
+<p>Lists the application names for all servers currently registered with the ORBD.</p>
+</dd>
+<dt>listactive</dt>
+<dd>
+<p>Lists information about all persistent servers that were started by the ORBD and are currently running.</p>
+</dd>
+<dt>locate -serverid <i>server-id</i> | -applicationName <i>application-name</i> [ -endpointType <i>endpointType</i> ]</dt>
+<dd>
+<p>Locates the endpoints (ports) of a specific type for all ORBs created by a registered server. If a server is not already running, then it is activated. If an <code dir="ltr">endpointType</code> value is not specified, then the plain/non-protected endpoint associated with each ORB in a server is returned.</p>
+</dd>
+<dt>locateperorb -serverid <i>server-id</i> | -applicationName <i>application-name</i> [ -orbid <i>ORB-name</i> ]</dt>
+<dd>
+<p>Locates all the endpoints (ports) registered by a specific Object Request Broker (ORB) of registered server. If a server is not already running, then it is activated. If an <code dir="ltr">orbid</code> is not specified, then the default value of <code dir="ltr">""</code> is assigned to the <code dir="ltr">orbid</code>. If any ORBs are created with an <code dir="ltr">orbid</code> of empty string, then all ports registered by it are returned.</p>
+</dd>
+<dt>orblist -serverid <i>server-id</i> | -applicationName <i>application-name</i></dt>
+<dd>
+<p>Lists the <code dir="ltr">ORBId</code> of the ORBs defined on a server. An <code dir="ltr">ORBId</code> is the string name for the ORB created by the server. If the server is not already running, then it is activated.</p>
+</dd>
+<dt>shutdown -serverid <i>server-id</i> | -applicationName application-name</dt>
+<dd>
+<p>Shut down an active server that is registered with ORBD. During execution of this command, the <code dir="ltr">shutdown</code> method defined in the class specified by either the <code dir="ltr">-serverid</code> or <code dir="ltr">-applicationName</code> parameter is also called to shut down the server process.</p>
+</dd>
+<dt>startup -serverid <i>server-id</i> | -applicationName application-name</dt>
+<dd>
+<p>Starts up or activate a server that is registered with ORBD. If the server is not running, then this command starts the server. If the server is already running, then an error message is displayed.</p>
+</dd>
+<dt>help</dt>
+<dd>
+<p>Lists all the commands available to the server through the <code dir="ltr">servertool</code> command.</p>
+</dd>
+<dt>quit</dt>
+<dd>
+<p>Exits the <code dir="ltr">servertool</code> command.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref213" name="sthref213"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="orbd.html#CIHGDGGE"><code dir="ltr">orbd</code>(1)</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="orbd.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="s6-deployment-tools.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

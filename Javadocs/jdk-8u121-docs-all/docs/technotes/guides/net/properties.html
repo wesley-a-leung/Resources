@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Networking Properties</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Networking Properties</h1>
+<br />
+<h2>Java Properties</h2>
+<dl>
+<dt><strong>java.net.preferIPv4Stack</strong> (default: false)</dt>
+<dd>If IPv6 is available on the operating system the underlying
+native socket will be an IPv6 socket. This allows Java(tm)
+applications to connect too, and accept connections from, both IPv4
+and IPv6 hosts.
+<p>If an application has a preference to only use IPv4 sockets then
+this property can be set to true. The implication is that the
+application will not be able to communicate with IPv6 hosts.</p>
+</dd>
+<dd>
+<hr /></dd>
+<dt><strong>java.net.preferIPv6Addresses</strong> (default:
+false)</dt>
+<dd>If IPv6 is available on the operating system the default
+preference is to prefer an IPv4-mapped address over an IPv6
+address. This is for backward compatibility reasons - for example
+applications that depend on access to an IPv4 only service or
+applications that depend on the %d.%d.%d.%d representation of an IP
+address. This property can be set to try to change the preferences
+to use IPv6 addresses over IPv4 addresses. This allows applications
+to be tested and deployed in environments where the application is
+expected to connect to IPv6 services.</dd>
+<dd>
+<hr />
+<p><a name="nct" id="nct"></a></p>
+</dd>
+<dt><strong>networkaddress.cache.ttl</strong></dt>
+<dd>Specified in java.security to indicate the caching policy for
+successful name lookups from the name service.. The value is
+specified as integer to indicate the number of seconds to cache the
+successful lookup.
+<p>A value of -1 indicates "cache forever". The default behavior is
+to cache forever when a security manager is installed, and to cache
+for an implementation specific period of time, when a security
+manager is not installed.</p>
+</dd>
+<dd>
+<hr />
+<p><a name="ncnt" id="ncnt"></a></p>
+</dd>
+<dt><strong>networkaddress.cache.negative.ttl</strong> (default:
+10)</dt>
+<dd>Specified in java.security to indicate the caching policy for
+un-successful name lookups from the name service.. The value is
+specified as integer to indicate the number of seconds to cache the
+failure for un-successful lookups.
+<p>A value of 0 indicates "never cache". A value of -1 indicates
+"cache forever".</p>
+</dd>
+<dd>
+<hr /></dd>
+<dt><strong>http.proxyHost</strong> (default: &lt;none&gt;)<br />
+<strong>http.proxyPort</strong> (default: 80 if http.proxyHost
+specified)<br />
+<strong>http.nonProxyHosts</strong> (default: &lt;none&gt;<br />
+<br />
+<strong>ftp.proxyHost</strong> (default: &lt;none&gt;)<br />
+<strong>ftp.proxyPort</strong> (default: 80 if ftp.proxyHost
+specified)<br />
+<strong>ftp.nonProxyHosts</strong> (default: &lt;none&gt;)</dt>
+<dd>http.proxyHost and http.proxyPort indicate the proxy server and
+port that the http protocol handler will use.
+<p>http.nonProxyHosts indicates the hosts which should be connected
+too directly and not through the proxy server. The value can be a
+list of hosts, each seperated by a |, and in addition a wildcard
+character (*) can be used for matching. For example:
+-Dhttp.nonProxyHosts="*.example.com|localhost".</p>
+<p>ftp.proxyHost and ftp.proxyPort indicate the proxy server and
+port that the ftp protocol handler will use. ftp.nonProxyHosts is
+similiar to http.nonProxyHosts and indicates the hosts that should
+be connected too directly and not through the proxy server.</p>
+</dd>
+<dd>
+<hr /></dd>
+<dt><strong>http.agent</strong> (default: Java1.4.0)</dt>
+<dd>Indicates the User-Agent request header sent in http
+requests.</dd>
+<dd>
+<hr /></dd>
+<dt><strong>http.auth.digest.validateServer</strong> (default:
+false)<br />
+<strong>http.auth.digest.validateProxy</strong> (default:
+false)<br />
+<strong>http.auth.digest.cnonceRepeat</strong> (default: 5)</dt>
+<dd>These system properties modify the behavior of the HTTP digest
+authentication mechanism. Digest authentication provides a limited
+ability for the server to authenticate itself to the client (ie. by
+proving that it knows the users password). However, not all servers
+support this capability and by default the check is switched off.
+The first two properties above can be set to true, to enforce this
+check, for either authentication with an origin, or a proxy server
+respectively.
+<p>It is not normally necessary to set the third property
+(http.auth.digest.cnonceRepeat). This determines how many times a
+cnonce value is reused. This can be useful when the MD5-sess
+algorithm is being used. Increasing the value reduces the
+computational overhead on both the client and the server by
+reducing the amount of material that has to be hashed for each HTTP
+request.</p>
+</dd>
+<dd>
+<hr /></dd>
+<dt><a name="ntlm" id=
+"ntlm"></a><strong>http.auth.ntlm.domain:</strong></dt>
+<dd>Similar to other HTTP authentication schemes, NTLM uses the
+java.net.Authenticator class to acquire usernames and passwords
+when they are needed. However, NTLM also needs the NT domain name.
+There are three options for specifying the domain:
+<ol>
+<li>Do not specify it. In some environments, the domain is not
+actually required and the application need not specify it.</li>
+<li>The domain name can be encoded within the username by prefixing
+the domain name followed by a back-slash '\' before the username.
+With this method, existing applications that use the Authenticator
+class do not need to be modified, so long as users are made aware
+that this notation must be used.</li>
+<li>If a domain name is not specified as in method 2) and the
+system property "http.auth.ntlm.domain" is defined, then the value
+of this property will be used as the domain name.</li>
+</ol>
+</dd>
+<dd>
+<hr /></dd>
+<dt><strong>http.keepAlive</strong> (default: true)</dt>
+<dd>Indicates if keep alive (persistent) connections should be
+supported. Persistent connections improve performance by allowing
+the underlying socket connection be reused for multiple http
+requests.
+<p>The default is true and thus persistent connections will be used
+with http 1.1 servers. Set to 'false' to disable the use of
+persistent connections.</p>
+</dd>
+<dd>
+<hr /></dd>
+<dt><strong>http.maxConnections</strong> (default: 5)</dt>
+<dd>If HTTP keep-alive is enabled, this value is the number of idle
+connections that will be simultaneously kept alive,
+per-destination.</dd>
+<dd>
+<hr /></dd>
+</dl>
+<h2><a name="socks" id="socks">SOCKS protocol support
+settings</a></h2>
+The SOCKS username and password are acquired in the following way.
+First, if the application has registered a java.net.Authenticator
+default instance, then this will be queried with the protocol set
+to the string "SOCKS5", and the prompt set to the string "SOCKS
+authentication". If the authenticator does not return a
+username/password or if no authenticator is registered then the
+system checks for the user preferences "java.net.socks.username"
+and "java.net.socks.password". If these preferences do not exist,
+then the system property "user.name" is checked for a username. In
+this case, no password is supplied.
+<dl>
+<dt><strong>socksProxyHost</strong></dt>
+<dd>
+<hr /></dd>
+<dt><strong>socksProxyPort</strong> (default: 1080)</dt>
+<dd>Indicates the name of the SOCKS proxy server and the port
+number that will be used by the SOCKS protocol layer. If
+socksProxyHost is specified then all TCP sockets will use the SOCKS
+proxy server to establish a connection or accept one. The SOCKS
+proxy server can either be a SOCKS v4 or v5 server and it has to
+allow for unauthenticated connections.
+<hr /></dd>
+<dt><strong>socksProxyVersion</strong> (default: 5)</dt>
+<dd>The version of the SOCKS protocol supported by the server. The
+default is <code>5</code> indicating SOCKS V5, alternatively
+<code>4</code> can be specified for SOCKS V4. Setting the property
+to values other than these leads to unspecified behavior.
+<hr /></dd>
+</dl>
+<h2>JDK implementation-specific properties</h2>
+These properties may not be supported in future releases.
+<dl>
+<dt><strong>sun.net.inetaddr.ttl</strong></dt>
+<dd>This is a Oracle JDK private system property which corresponds to
+<a href="#nct">networkaddress.cache.ttl</a>. It takes the same
+value and has the same meaning, but can be set as a command-line
+option. However, the preferred way is to use the security property
+<a href="#nct">mentioned above</a>.</dd>
+<dd>
+<hr /></dd>
+<dt><strong>sun.net.inetaddr.negative.ttl</strong></dt>
+<dd>This is a Oracle JDK private system property which corresponds to
+<a href="#ncnt">networkaddress.cache.negative.ttl</a>. It takes the
+same value and has the same meaning, but can be set as a
+command-line option. However, the preferred way is to use the
+security property <a href="#ncnt">mentioned above</a>.</dd>
+<dd>
+<hr /></dd>
+<dt><strong>sun.net.client.defaultConnectTimeout</strong> (default:
+-1)<br />
+<strong>sun.net.client.defaultReadTimeout</strong> (default:
+-1)</dt>
+<dd>These properties specify the default connect and read timeout
+(resp.) for the protocol handler used by java.net.URLConnection.
+<p>sun.net.client.defaultConnectTimeout specifies the timeout (in
+milliseconds) to establish the connection to the host. For example
+for http connections it is the timeout when establishing the
+connection to the http server. For ftp connection it is the timeout
+when establishing the connection to ftp servers.</p>
+<p>sun.net.client.defaultReadTimeout specifies the timeout (in
+milliseconds) when reading from input stream when a connection is
+established to a resource.</p>
+</dd>
+<dd>
+<hr /></dd>
+<dt><strong>sun.net.http.retryPost</strong> (default: true)</dt>
+<dd>It determines if an unsuccessful HTTP POST request will be
+automatically resent to the server. Unsuccessful in this case means
+the server did not send a valid HTTP response or an IOException
+occurred.</dd>
+<dd>
+<hr /></dd>
+</dl>
+<h2><a name="jndi" id="jndi">JNDI DNS service provider
+settings</a></h2>
+These properties may not be supported in future releases.
+<dl>
+<dt>
+<strong>sun.net.spi.nameservice.provider.&lt;n&gt;=&lt;default|dns,sun|...&gt;</strong></dt>
+<dd>Specifies the name service provider that you can use. By
+default, Java will use the system configured name lookup mechanism,
+such as file, nis, etc. You can specify your own by setting this
+option. &lt;n&gt; takes the value of a positive number, it
+indicates the precedence order with a small number takes higher
+precendence over a bigger number. Aside from the default provider,
+the JDK includes a DNS provider named "dns,sun".
+<p>Prior to JDK 7, the first provider that was successfully loaded
+was used. In JDK 7, providers are chained, which means that if a
+lookup on a provider fails, the next provider in the list is
+consulted to resolve the name.</p>
+</dd>
+<dd>
+<hr /></dd>
+<dt>
+<strong>sun.net.spi.nameservice.nameservers=&lt;server1_ipaddr,server2_ipaddr
+...&gt;</strong></dt>
+<dd>You can specify a comma separated list of IP addresses that
+point to the DNS servers you want to use. If the
+sun.net.spi.nameservice.nameservers property is not defined, then
+the provider will use any name servers already configured in the
+platform DNS configuration.</dd>
+<dd>
+<hr /></dd>
+<dt>
+<strong>sun.net.spi.nameservice.domain=&lt;domainname&gt;</strong></dt>
+<dd>This property specifies the default DNS domain name, for
+instance, eng.example.com. If the sun.net.spi.nameservice.domain
+property is not defined then the provider will use any domain or
+domain search list configured in the platform DNS
+configuration.</dd>
+</dl>
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

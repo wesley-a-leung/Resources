@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>CORBA Compatibility Information</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>CORBA Compatibility Information - J2SE 5.0</h1>
+<ul>
+<li><a href="#api">CORBA API Changes Between J2SE 1.4.x and J2SE
+5.0.x</a></li>
+<li><a href="#spec">Official Specifications for CORBA support in
+J2SE 5.0.x</a></li>
+<li><a href="#other">Other Compatibility Information</a></li>
+</ul>
+<a name="api" id="api"></a>
+<h2>CORBA API Changes Between J2SE 1.3 and J2SE 5.0</h2>
+<p>This document contains information regarding all of the API
+changes related to CORBA functionality between JDK 1.3 and 5.0. The
+changes have been made to make the APIs for the CORBA technology
+shipped in the JDK 5.0 compliant to the CORBA 2.3 mapping as
+specified by the following OMG documents:</p>
+<ul>
+<li>CORBA 2.3.1 (<a href=
+"http://www.omg.org/cgi-bin/doc?formal/99-10-07">formal/99-10-07</a>)</li>
+<li>IDL to Java language mapping (<a href=
+"http://www.omg.org/cgi-bin/doc?ptc/00-01-08">ptc/00-01-08</a>)</li>
+<li>Java to IDL language mapping (<a href=
+"http://www.omg.org/cgi-bin/doc?ptc/00-01-06">ptc/00-01-06</a>)</li>
+<li>Interoperable Naming Service (/<a href=
+"http://www.omg.org/cgi-bin/doc?ptc/00-08-07">ptc/00-08-07</a>)</li>
+<li>Portable Interceptors (<a href=
+"http://www.omg.org/cgi-bin/doc?ptc/2001-03-04">ptc/2001-03-04</a>)</li>
+</ul>
+<hr />
+<h2>API changes to <tt>org.omg.COSNaming</tt> classes</h2>
+<p>To comply with the IDL to Java mapping specified by the CORBA
+Version 2.3 specification, the following <tt>org.omg.COSNaming</tt>
+classes have been regenerated from the <tt>idlj</tt> compiler
+shipped with the JDK. This change (CCC 4284015) consists of the
+following API changes. Compatibility impact: None.</p>
+<ol>
+<li>
+<p>To conform with CORBA V (2.3) All Helpers Section 1.5.2 Spec
+ptc/00-01-08.pdf, all Helpers are now abstract public classes.
+Below is the list of all Helper classes under
+<tt>org.omg.CosNaming</tt> that have been changed to abstract
+public classes.</p>
+<ul>
+<li><tt>BindingHelper.java</tt></li>
+<li><tt>BindingIteratorHelper.java</tt></li>
+<li><tt>BindingListHelper.java</tt></li>
+<li><tt>BindingTypeHelper.java</tt></li>
+<li><tt>IStringHelper.java</tt></li>
+<li><tt>NameComponentHelper.java</tt></li>
+<li><tt>NameHelper.java</tt></li>
+<li><tt>NamingContextHelper.java</tt></li>
+<li><tt>AlreadyBoundHelper.java</tt></li>
+<li><tt>CannotProceedHelper.java</tt></li>
+<li><tt>InvalidNameHelper.java</tt></li>
+<li><tt>NotEmptyHelper.java</tt></li>
+<li><tt>NotFoundHelper.java</tt></li>
+<li><tt>NotFoundReasonHelper.java</tt></li>
+</ul>
+<p>To conform with Section 1.7 OMG Spec ptc/00-01-08.pdf,
+<em>Mapping for Enum</em>, the mapping for the following Enum
+constructors is changed to protected.</p>
+<table border="1" cellpadding="2" width="100%" summary=
+"Enum constructors that are changed to protected">
+<tr valign="top">
+<th id="h1">CLASS</th>
+<th id="h2">BEFORE</th>
+<th id="h3">NOW</th>
+</tr>
+<tr valign="top">
+<td headers="h1"><tt>BindingType.java</tt></td>
+<td headers="h2">private BindingType( int )</td>
+<td headers="h3">protected BindingType( int )</td>
+</tr>
+<tr valign="top">
+<td headers="h1"><tt>NotFoundReason.java</tt></td>
+<td headers="h2">private NotFoundReason( int )</td>
+<td headers="h3">protected NotFoundReason( int )</td>
+</tr>
+</table>
+</li>
+<li>
+<p>To conform with CORBA 2.3 spec (ptc/00-01-08.pdf), <em>Deletion
+of constructors in Stub classes</em>, the following constructors
+have been deleted.</p>
+<table border="1" cellspacing="2" cellpadding="2" width="100%"
+summary="Deleted constructors">
+<tr valign="top">
+<th id="h101">CLASS</th>
+<th id="h102">BEFORE</th>
+<th id="h103">NOW</th>
+</tr>
+<tr valign="top">
+<td headers="h101"><tt>_BindingIteratorStub.java</tt></td>
+<td headers="h102">public _BindingIteratorStub(org.omg.CORBA.portable.Delegate
+d)</td>
+<td headers="h103">The constructor is deleted.</td>
+</tr>
+<tr valign="top">
+<td headers="h101"><tt>_NamingContextStub.java</tt></td>
+<td headers="h102">public _NamingContextStub(org.omg.CORBA.portable.Delegate
+d)</td>
+<td headers="h103">The constructor is deleted.</td>
+</tr>
+</table>
+</li>
+<li>
+<p>To conform with CORBA 2.3 spec (ptc/00-01-08.pdf), the following
+exceptions have been changed.</p>
+<table border="1" cellspacing="2" cellpadding="2" width="100%"
+summary="Changed exceptions">
+<tr valign="top">
+<th id="h201">CLASS</th>
+<th id="h202">BEFORE</th>
+<th id="h203">NOW</th>
+</tr>
+<tr valign="top">
+<td headers="h201"><tt>AlreadyBound.java</tt></td>
+<td headers="h202">public final class AlreadyBound extends
+org.omg.CORBA.UserException implements
+org.omg.CORBA.portable.IDLEntity</td>
+<td headers="h203">public final class AlreadyBound extends
+org.omg.CORBA.UserException</td>
+</tr>
+<tr valign="top">
+<td headers="h201"><tt>AlreadyBound.java</tt></td>
+<td headers="h202">Only default constructor</td>
+<td headers="h203">Add new constructor public AlreadyBound (String reason)</td>
+</tr>
+<tr valign="top">
+<td headers="h201"><tt>CannotProceed.java</tt></td>
+<td headers="h202">public final class CannotProceed extends
+org.omg.CORBA.UserException implements
+org.omg.CORBA.portable.IDLEntity</td>
+<td headers="h203">public final class CannotProceed extends
+org.omg.CORBA.UserException</td>
+</tr>
+<tr valign="top">
+<td headers="h201"><tt>CannotProceed.java</tt></td>
+<td headers="h202">Only default constructor&nbsp;</td>
+<td headers="h203">Add new constructor public CannotProceed (String reason)</td>
+</tr>
+<tr valign="top">
+<td headers="h201"><tt>InvalidName.java</tt></td>
+<td headers="h202">public final class InvalidName extends
+org.omg.CORBA.UserException implements
+org.omg.CORBA.portable.IDLEntity</td>
+<td headers="h203">public final class InvalidName extends
+org.omg.CORBA.UserException</td>
+</tr>
+<tr valign="top">
+<td headers="h201"><tt>InvalidName.java</tt></td>
+<td headers="h202">Only default constructor</td>
+<td headers="h203">Add new constructor public InvalidName (String reason)</td>
+</tr>
+<tr valign="top">
+<td headers="h201"><tt>NotEmpty.java</tt></td>
+<td headers="h202">public final class NotEmpty extends org.omg.CORBA.UserException
+implements org.omg.CORBA.portable.IDLEntity</td>
+<td headers="h203">public final class NotEmpty extends
+org.omg.CORBA.UserException</td>
+</tr>
+<tr valign="top">
+<td headers="h201"><tt>NotEmpty.java</tt></td>
+<td headers="h202">Only default constructor</td>
+<td headers="h203">Add new constructor public NotEmpty (String reason)</td>
+</tr>
+<tr valign="top">
+<td headers="h201"><tt>NotFound.java</tt></td>
+<td headers="h202">public final class NotFound extends org.omg.CORBA.UserException
+implements org.omg.CORBA.portable.IDLEntity</td>
+<td headers="h203">public final class NotFound extends
+org.omg.CORBA.UserException</td>
+</tr>
+<tr valign="top">
+<td headers="h201"><tt>NotFound.java</tt></td>
+<td headers="h202">Only default constructor</td>
+<td headers="h203">Add new constructor public NotFound (String,
+org.omg.CosNaming.NamingContextPackage.NotFoundReason,
+org.omg.CosNaming.NameComponent[])</td>
+</tr>
+</table>
+</li>
+<li>
+<p>To conform with the CORBA 2.3 specification, the following
+classes have been added.</p>
+<ul>
+<li><tt>NamingContextPOA.java</tt></li>
+<li><tt>BindingIteratorPOA.java</tt></li>
+</ul>
+</li>
+<li>
+<p>To conform with the CORBA 2.3 specification, the following
+classes are deprecated.</p>
+<ul>
+<li><tt>_NamingContextImplBase.java</tt></li>
+<li><tt>_BindingIteratorImplBase.java</tt></li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2>API changes to <tt>org.omg.CORBA</tt></h2>
+<ul>
+<li>To conform to OMG spec 99-07-57, <em>IDL to Java mapping</em>,
+the following methods have been changed.
+<ul>
+<li>The signature of method
+<tt>org.omg.CORBA.Any.insert_fixed(java.math.BigDecimal,
+org.omg.CORBA.TypeCode)</tt> is changed to throw an
+<tt>org.omg.CORBA.Bad_INV_ORDER</tt> exception. System exception
+does not need to be declared in user's code. (CCC 4340915)</li>
+<li>The method <tt>TypeCode.equivalent</tt> is defined as abstract.
+BEFORE: threw a <tt>NO_IMPLEMENT</tt> exception. Compatibility
+impact: Minimal impact for licensees, not for end user. Licensees
+need to provide a dummy implementation of this method. (CCC
+4340932)</li>
+<li>The method <tt>TypeCode.get_compact_typecode</tt> is defined as
+abstract. BEFORE: threw a <tt>NO_IMPLEMENT</tt> exception.
+Compatibility impact: Minimal impact for licensees, not for end
+user. Licensees need to provide a dummy implementation of this
+method. (CCC 4340932)</li>
+<li>The mapping for the
+<tt>get_interface_def(org.omg.CORBA.Object)</tt> method in
+<tt>org.omg.CORBA.portable.Delegate.java</tt> is defined as
+abstract. Compatibility impact: Yes, a non-abstract method is
+converted to abstract. (CCC 4366071)</li>
+<li>The mapping for the <tt>write_Principal()</tt> method in
+<tt>org.omg.CORBA.portable.OutputStream.java</tt> is no longer
+abstract. Compatibility impact: No, an abstract method is converted
+to non-abstract. (CCC 4366072)</li>
+<li>The mapping for the <tt>read_Principal()</tt> method in
+<tt>org.omg.CORBA.portable.InputStream.java</tt> is no longer
+abstract. Compatibility impact: None, changing a method that is
+declared abstract to no longer be abstract does not break
+compatibility with pre-existing binaries. (CCC 4366074)</li>
+</ul>
+</li>
+<li>To conform to the CORBA 2.3 specification, the
+<tt>org.omg.DomainManagerOperations</tt> interface no longer
+extends <tt>org.omg.CORBA.Object</tt>. Compatibility impact: None,
+no CORBA program will use the <tt>DomainManagerOperations</tt>
+interface directly. The <tt>DomainManagerOperations</tt> interface
+can only be used by the programs via the <tt>DomainManager</tt>
+interface, which already extends <tt>org.omg.CORBA.Object</tt>.
+(CCC 4340907)</li>
+<li>The following classes are declared as abstract and no longer
+have a private constructor. (CCC 4372196)
+<ul>
+<li><tt>org.omg.CORBA.ServiceDetailHelper</tt></li>
+<li><tt>org.omg.CORBA.ServiceInformationHelper</tt></li>
+</ul>
+</li>
+<li>To conform with the IDL to Java spec in section 1.15.2, the
+default constructor javadoc comments in the following
+<tt>org.omg.CORBA</tt> files have been changed from
+<tt>COMPLETED_MAYBE</tt> to <tt>COMPLETED_NO</tt>. Compatibility
+impact: None. (CCC 4363355)
+<ul>
+<li><tt>INTERNAL.java</tt></li>
+<li><tt>INVALID_TRANSACTION.java</tt></li>
+<li><tt>INV_OBJREF.java</tt></li>
+</ul>
+</li>
+<li>The following Helper classes in <tt>org.omg.CORBA</tt> have
+been changed from <tt>public final</tt> to <tt>public
+abstract</tt>, and the default constructor for the Helper classes
+has been deleted. This change has been made to comply with the ORB
+core specification as defined by CORBA 2.3.1 and with the IDL/Java
+Language mapping as defined in ptc/00-01-08. Compatibility impact:
+Minimal since the Helper classes have been made 'abstract' as
+defined by the OMG IDL/Java Language mapping specification,
+applications which had previously instantiated a Helper class
+instance would fail. But the Helper class has only static methods
+in it, and there is no good reason for an application to create an
+instance of the Helper class. (CCC 4364208)
+<ul>
+<li><tt>AnySeqHelper.java</tt></li>
+<li><tt>BooleanSeqHelper.java</tt></li>
+<li><tt>CharSeqHelper.java</tt></li>
+<li><tt>DoubleSeqHelper.java</tt></li>
+<li><tt>FloatSeqHelper.java</tt></li>
+<li><tt>LongLongSeqHelper.java</tt></li>
+<li><tt>LongSeqHelper.java</tt></li>
+<li><tt>OctetSeqHelper.java</tt></li>
+<li><tt>ShortSeqHelper.java</tt></li>
+<li><tt>StringValueHelper.java</tt></li>
+<li><tt>ULongLongSeqHelper.java</tt></li>
+<li><tt>ULongSeqHelper.java</tt></li>
+<li><tt>UShortSeqHelper.java</tt></li>
+<li><tt>WCharSeqHelper.java</tt></li>
+<li><tt>WStringValueHelper.java</tt></li>
+</ul>
+</li>
+<li>To conform with the recently passed OMG issue 3015, which adds
+a new class, <tt>AbstractInterfaceDef</tt> to Interface Repository
+classes, we have added the following new constants to
+<tt>org.omg.CORBA.DefinitionKind</tt>. Compatibility impact: None.
+(CCC 4367601)
+<ul>
+<li><tt>_dk_AbstractInterface=24</tt>. This is a constant that
+indicates that an Interface Repository object is representing an
+abstract object.</li>
+<li><tt>public static final DefinitionKind dk_AbstractInterface =
+new DefinitionKind(_dk_AbstractInterface)</tt>. This is the static
+instance of <tt>DefinitionKind</tt>, indicating that an Interface
+Repository object represents an abstract interface.</li>
+</ul>
+</li>
+<li>The following <tt>org.omg.CORBA</tt> APIs for typecodes were
+changed to conform to the OMG specification. All of the classes in
+the following list are in the <tt>org.omg.CORBA</tt> package.
+Compatibility impact: Yes. See each change below for details. (CCC
+4368800)
+<ul>
+<li>The <tt>Typecode</tt> methods <tt>fixed_digits</tt>,
+<tt>fixed_scale</tt>, <tt>member_visibility</tt>,
+<tt>type_modified</tt>, and <tt>concrete_base_type</tt> are changed
+from concrete to abstract. Typecode is always implemented by an ORB
+implementor and never subclassed by an ORB user, so this should not
+impact customers.</li>
+<li><tt>TCKind.from_int</tt> no longer throws the unchecked
+exception <tt>BAD_PARAM</tt>. Since <tt>BAD_PARAM</tt> is an
+unchecked exception, removing the exception should not affect
+customer code at compile time.</li>
+<li><tt>Principal</tt> is changed to a concrete class with methods
+that throw <tt>NO_IMPLEMENT</tt> from an abstract class with
+abstract methods. <tt>Principal</tt> is deprecated and rarely used.
+In any case, it would not generally be subclassed by a user and
+would always be fully implemented by an ORB implementor.</li>
+<li>An <tt>extract_Streamable</tt> method is added to <tt>Any</tt>.
+Adding a method does not affect compatibility.</li>
+<li><tt>Any.insert_object( object, Typecode )</tt> is changed to
+throw <tt>BAD_PARAM</tt>. Since <tt>BAD_PARAM</tt> is an unchecked
+exception, adding the exception should not affect customer code at
+compile time.</li>
+<li>The <tt>Any</tt> methods <tt>insert_Streamable</tt>,
+<tt>extract_Principal</tt>, and <tt>insert_Principal</tt> are no
+longer abstract. <tt>Any</tt> is fully implemented by ORB
+implementors and never subclassed by ORB users, so this should not
+impact customers.</li>
+<li>The <tt>Any</tt> methods <tt>extract_value</tt> and
+<tt>insert_value</tt> are changed to abstract. <tt>Any</tt> is
+fully implemented by ORB implementors and never subclassed by ORB
+users, so this should not impact customers.</li>
+</ul>
+</li>
+<li>The <tt>Identifier</tt> field is added to
+<tt>org.omg.CORBA.Initializer</tt>. Compatibility impact: None.
+(CCC 4372194)</li>
+<li>To comply with ptc/00-01-08.pdf, the following classes are
+changed:
+<ul>
+<li><tt>org.omg.CORBA.ORBPackage.InvalidName.java</tt> is declared
+as final. Compatibility impact: Yes. The <tt>InvalidName</tt> is
+being declared as final, which would impact source code that was
+subclassing this. Since it is an exception type, we do not
+anticipate this kind of behavior. (CCC 4366734)</li>
+<li><tt>org.omg.stub.java.rmi._Remote_Stub.java</tt> returns a
+clone of <tt>_type_ids</tt>. This will prevent mangling of the
+original <tt>type_ids_</tt> array by external users. (CCC
+4366734)</li>
+<li>The <tt>from_int(Int i)</tt> method in
+<tt>org.omg.CORBA.SetOverrideType</tt> no longer throws a
+<tt>BAD_PARAM</tt> exception. Compatibility impact: No. Should not
+cause a compatibility problem since we are removing a throws
+declaration of an unchecked exception. (CCC 4369490)</li>
+<li>The <tt>from_int(Int i)</tt> method in
+<tt>org.omg.CORBA.DefinitionKind</tt> no longer throws a
+<tt>BAD_PARAM</tt> exception. Compatibility impact: No. (CCC
+4370659)</li>
+<li><tt>org.omg.CORBA.DynamicImplementation</tt> has been
+deprecated by the OMG in favor of the Portable Object Adapter
+(POA). A default invoke body is supplied. Compatibility impact: No.
+Should not impact anyone implementing this class. (CCC
+4369490)</li>
+</ul>
+</li>
+<li>The following classes are changed to correct errors.
+Compatibility impact: No (CCC 4362556)
+<ul>
+<li>Helper and Holder classes are added to
+<tt>UnknownUserException.java</tt>. No compatibility impact.</li>
+<li>Helper and Holder classes are added to
+<tt>WrongTransaction.java</tt>, and the class is declared final. No
+compatibility impact.</li>
+<li><tt>CompletionStatus.java</tt> is declared final, no longer
+implements <tt>IDLEntity</tt>, is changed to a private constructor.
+A <tt>BAD_PARAM RuntimeException</tt> will no longer explicitly be
+thrown by <tt>from_int</tt>. Compatibility impact: Yes. New code
+written using the new <tt>CompletionStatus.java</tt> class will not
+have to explicitly catch the <tt>BAD_PARAM</tt> runtime exception.
+If it's recompiled with an older JDK, it would get a compile-time
+error.&nbsp; -- These changes were undone due to JCK regression
+(4375061).&nbsp; An OMG issue has been filed instead
+(http://www.omg.org/issues/java-rtf.html#Issue3946).</li>
+<li><tt>INV_POLICY.java</tt> is declared as final. No compatibility
+impact.</li>
+</ul>
+</li>
+<li>The addition of portable interceptors requires a new method on
+existing CORBA APIs and four new classes generated from IDL
+typedefs. Compatibility impact: none, these changes are all
+additions. (CCC 4379826)
+<ul>
+<li><tt>register_initial_reference</tt> is added in <tt>public
+class org.omg.CORBA.ORB</tt>.</li>
+<li>New class <tt>org.omg.CORBA.StringSeqHelper</tt> is added for 2
+IDL typedefs.</li>
+<li>New class <tt>org.omg.CORBA.StringSeqHolder</tt> is added for 2
+IDL typedefs.</li>
+<li>New class <tt>org.omg.CORBA.WStringSeqHelper</tt> is added for
+2 IDL typedefs.</li>
+<li>New class <tt>org.omg.CORBA.WStringSeqHolder</tt> is added for
+2 IDL typedefs.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2>API changes to javax.rmi.CORBA</h2>
+To comply with OMG API specifications, the following changes have
+been made to <tt>javax.rmi.CORBA</tt>:
+<ul>
+<li>The protected constructor in <tt>javax.rmi.CORBA.Stub</tt> is
+removed. Compatibility impact: None. (CCC 4366722)</li>
+<li>To comply with OMG specification 00-01-06.pdf, the
+<tt>jaxax.rmi.CORBA.ClassDesc</tt> constructor is removed. (CCC
+4366734)</li>
+</ul>
+<hr />
+<h2>Non-API changes</h2>
+The following non-API changes were also implemented in JDK 5.0.
+<ul>
+<li>Correct repository id computations. Compatibility impact: Yes.
+Added ORB versioning support to allow interoperability with the JDK
+1.3 ORB, maintain backwards compatibility, and enable
+interoperability with other vendor ORBs. (CCC 4365188)</li>
+<li>To conform with the recently passed OMG issue 3015, we have
+taken all Interface Repository-related version pragmas out of
+<tt>org.omg.CORBA.ir.idl</tt>. This also changes the Repository ID
+values of a few IR interfaces that we ship in
+<tt>org.omg.CORBA</tt>, for example, <tt>IDLTypeHelper</tt>, from
+<p><tt>private static String _id =
+"IDL:omg.org/CORBA/IDLType:2.3";</tt><br />
+to<br />
+<tt>private static String _id =
+"IDL:omg.org/CORBA/IDLType:1.0";</tt></p>
+<p>Compatibility impact: Yes. This change might affect
+interoperability with existing implementations. Restart the
+application and the IR if you get a <tt>COMM_FAILURE</tt> exception
+(or something similar). (CCC 4372718)</p>
+</li>
+<li>Added <tt>@serial exclude</tt> tags to all org.omg.* package
+files so that JAVADOC will ignore the whole package for the
+Serialization spec. There is no requirement from Object Management
+Group (OMG) to have Serialization compatibility between different
+versions. Practically speaking there are no use cases where the
+<tt>org.omg</tt> classes will be serialized in one version and
+de-serialized in the next version. Compatibility impact: None. (CCC
+4394004)</li>
+<li>Changed <tt>idlj</tt> compiler arguments in support of POA,
+which is a new CORBA feature in Merlin. Changes to the
+<tt>idlj</tt> tool arguments include:
+<ul>
+<li>removed undocumented <tt>-poa</tt> flag</li>
+<li>enabled generation of standard POA-based skeletons by
+default</li>
+<li>added a new flag, <tt>-oldImplBase</tt>, to allow generation of
+backward compatible skeletons (compatible with JDK 1.2 and
+1.3)</li>
+</ul>
+<p>Compatibility impact: Yes, existing programs that use the
+compiler may need to add the <tt>-oldImplBase</tt> flag to their
+<tt>idlj</tt> invocation to maintain compatibility. (CCC
+4407835)</p>
+</li>
+</ul>
+<hr />
+<h2>New API</h2>
+The following new API were added to JDK 5.0.
+<ul>
+<li>The <tt>PortableInterceptor</tt> API is added. An incorrect
+specification, ptc/2000-04-05, was being referenced in the test
+plan. Another incorrect specification, orbos/99-12-02 was being
+referenced in the feature list (ptc/2000-04-05 is the same as
+orbos/99-12-02 except the format has changed). The correct
+specification reference for this new API is
+http://www.omg.org/cgi-gin/doc?ptc/2001-03-04. CCC 4307834 includes
+the list of changes/additions from ptc/2000-04-05. Compatibility
+impact: none, this is a new feature so no existing code uses
+it.</li>
+<li>The addition of portable interceptors requires a new method,
+<tt>id</tt>, in public interface
+<tt>org.omg.PortableServer.POA</tt>.</li>
+</ul>
+<hr />
+<a name="spec" id="spec"></a>
+<h2>Official Specifications for CORBA support in J2SE 5.0</h2>
+<h2>Specification References</h2>
+The specifications with which the Java 2 Platform Standard Edition
+(J2SE) 5.0 ORB complies are as follows. If these links do not take
+you to the referenced specification, the OMG may have changed the
+URL, and you can link to <a href=
+"http://www.omg.org/">www.omg.org</a> to search for the correct
+specification.
+<ul>
+<li>CORBA 2.3.1 (<a href=
+"http://www.omg.org/cgi-bin/doc?formal/99-10-07">formal/99-10-07</a>)</li>
+<li>IDL to Java language mapping (<a href=
+"http://www.omg.org/cgi-bin/doc?ptc/00-01-08">ptc/00-01-08</a>)</li>
+<li>Revised IDL to Java language mapping (<a href=
+"http://www.omg.org/cgi-bin/doc?ptc/00-11-03">ptc/00-11-03</a>)</li>
+<li>Java to IDL language mapping (<a href=
+"http://www.omg.org/cgi-bin/doc?ptc/00-01-06">ptc/00-01-06</a>)</li>
+<li>Interoperable Naming Service (<a href=
+"http://www.omg.org/cgi-bin/doc?ptc/00-08-07">ptc/00-08-07</a>)</li>
+<li>Portable Interceptors (<a href=
+"http://www.omg.org/cgi-bin/doc?ptc/2001-08-31">ptc/2001-08-31</a>)</li>
+</ul>
+These are the only specifications referenced by this document.
+<h2>Supported Specification Details</h2>
+Not all of the above specifications are currently implemented in
+the ORB in J2SE 5.0. The precise list of supported sections is as
+follows:
+<ul>
+<li>CORBA 2.3.1 chapters 1-3 and 6-9</li>
+<li>Revised IDL to Java language mapping, section 1.21.8.2, the
+<tt>orb.properties</tt> file.</li>
+<li>CORBA 2.3.1 chapter 4 with the following replacements from the
+Portable Interceptors specification:</li>
+<li style="list-style: none; display: inline">
+<ul>
+<li>section 4.2.3.5 <tt>destroy</tt></li>
+<li>section 4.5.2 <tt>CodeFactory</tt> and <tt>PICurrent</tt> are
+required</li>
+<li>Section 4.5.3.4 as updated for
+<tt>register_initial_reference</tt></li>
+</ul>
+</li>
+<li>CORBA 2.3.1 chapter 5 with the following update from the
+Portable Interceptors specification:</li>
+<li style="list-style: none; display: inline">
+<ul>
+<li>5.5.2 <tt>StringSeq</tt> and <tt>WStringSeq</tt> are required.
+This adds the following classes to <tt>org.omg.CORBA</tt>:</li>
+<li style="list-style: none; display: inline">
+<ul>
+<li><tt>StringSeqHolder</tt></li>
+<li><tt>StringSeqHelper</tt></li>
+<li><tt>WStringSeqHolder</tt></li>
+<li><tt>WStringSeqHelper</tt></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>CORBA 2.3.1 sections 10.6.1 and 10.6.2 are supported for
+repository IDs.</li>
+<li>CORBA 2.3.1 section 10.7 for <tt>TypeCode</tt> APIs.</li>
+<li>CORBA 2.3.1 chapter 11, Portable Object Adapter (POA), with the
+following updates from the Portable Interceptors
+specification:</li>
+<li style="list-style: none; display: inline">
+<ul>
+<li>Section 11.3.7 POAs must preserve all policies</li>
+<li>Section 11.3.8.2 again states that POAs must preserve all
+policies</li>
+<li>Section 11.3.8.26 POA::id is required.</li>
+</ul>
+</li>
+<li>CORBA 2.3.1 chapters 13 and 15 define GIOP 1.0, 1.1, and 1.2.
+The J2SE 5.0 ORB fully supports all versions of GIOP, with the
+exception that the bi-directional GIOP feature defined in sections
+15.8 and 15.9 is not supported.</li>
+<li>All of the Interoperable Naming Service is supported.</li>
+<li>Portable Interceptors section 13.8 (the new
+<tt>Coder</tt>/<tt>Decoder</tt> interfaces) and all of chapter 21
+(the interceptor specification).</li>
+<li>Section 1.21.8 of the Revised IDL to Java Language Mapping
+Specification (ptc/00-11-03) has been changed from the version in
+the IDL to Java Language Mapping Specification (ptc/00-01-08).</li>
+</ul>
+<h2>Tools</h2>
+<ul>
+<li>The IDL to Java compiler (<tt>idlj</tt>) complies with:</li>
+<li style="list-style: none; display: inline">
+<ul>
+<li>CORBA 2.3.1 chapter 3 (IDL definition)</li>
+<li>CORBA 2.3.1 chapters 5 and 6 (semantics of Value types)</li>
+<li>CORBA 2.3.1 section 10.6.5 (pragmas)</li>
+<li>The IDL to Java mapping specification</li>
+<li>The Revised IDL to Java language mapping specification section
+1.12.1 "local interfaces"</li>
+</ul>
+</li>
+<li>The Java to IDL compiler (the IIOP backend for rmic) complies
+with:</li>
+<li style="list-style: none; display: inline">
+<ul>
+<li>CORBA 2.3.1 chapters 5 and 6 (value types)</li>
+<li>The Java to IDL language mapping. Note that this implicitly
+references section 1.21 of the IDL to Java language mapping</li>
+<li>IDL generated by the -idl flag complies with CORBA 2.3.1
+chapter 3.</li>
+</ul>
+</li>
+</ul>
+<br />
+<hr />
+<br />
+<a name="other" id="other"></a>
+<h2>Other Compatibility Information</h2>
+<ul>
+<li>The class <tt>java.util.Calendar</tt> is not interoperable
+between J2SE 1.3.x and J2SE 5.0 when using RMI-IIOP. OMG issue 3151
+may resolve this, but it will probably have to be implemented in a
+later release of the Java platform.
+<p>The J2SE 5.0 version of <tt>Calendar</tt> writes a
+<tt>ZoneInfo</tt> object in its <tt>writeObject</tt> method.
+Similarly, it calls <tt>readObject</tt> to read this. Based on Java
+Object Serialization, it expects that if it's talking to an older
+version, the object won't be there, so the stream will throw an
+<tt>EOFException</tt> and keep the stream position intact.</p>
+</li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

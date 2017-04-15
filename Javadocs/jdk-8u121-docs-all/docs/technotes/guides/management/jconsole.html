@@ -1,0 +1,1147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<meta http-equiv="Content-type" content=
+"text/html; charset=utf-8" />
+<title>Using JConsole - Java SE Monitoring and Management
+Guide</title>
+<meta name="date" content="2006-10-01" />
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%"
+summary="">
+<tr>
+<td headers="h1" colspan="5"></td>
+</tr>
+<tr>
+<td headers="h1"></td>
+<td headers="h2" style="width: 60%">&nbsp;</td>
+<td headers="h3"><a href="agent.html"><img style="padding-right: 3px" src=
+"graphics/prev.gif" border="0" alt="previous" />Previous</a></td>
+<td headers="h4"><a href="toc.html">Contents</a></td>
+<td headers="h5"></td>
+<td headers="h6"><a href="mxbeans.html">Next<img style="padding-left: 3px" src=
+"graphics/next.gif" border="0" alt="next" /></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+<table summary="">
+<tr>
+<td width="100%" valign="top"><!--startindex-->
+<div class="maincontent"><a name="jconsole" id=
+"jconsole"></a>Chapter&nbsp;3
+<h1>Using JConsole</h1>
+<p>The JConsole graphical user interface is a monitoring tool that
+complies to the Java Management Extensions (JMX) specification.
+JConsole uses the extensive instrumentation of the Java Virtual
+Machine (Java VM) to provide information about the performance and
+resource consumption of applications running on the Java
+platform.</p>
+<p>In the Java SE 6, JConsole has been updated to present the look and feel of the
+Windows and GNOME desktops (other platforms will present the
+standard Java graphical look and feel). The screen captures
+presented in this document were taken from an instance of the
+interface running on Windows XP.</p>
+<a name="gentextid-1095" id="gentextid-1095"></a>
+<h2>Starting JConsole</h2>
+<p>The <tt>jconsole</tt> executable can be found in
+<i>JDK_HOME</i><tt>/bin</tt>, where <i>JDK_HOME</i> is the
+directory in which the Java Development Kit (JDK) is installed. If
+this directory is in your system path, you can start JConsole by
+simply typing <tt>jconsole</tt> in a command (shell) prompt.
+Otherwise, you have to type the full path to the executable
+file.</p>
+<a name="gcykv" id="gcykv"></a>
+<h3>Command Syntax</h3>
+<p>You can use JConsole to monitor both local applications, namely
+those running on the same system as JConsole, as well as remote
+applications, namely those running on other systems.</p>
+<hr />
+<p><b>Note -</b> Using JConsole to monitor a local application is
+useful for development and for creating prototypes, but is not
+recommended for production environments, because JConsole itself
+consumes significant system resources. Remote monitoring is
+recommended to isolate the JConsole application from the platform
+being monitored.</p>
+<hr />
+<p>For a complete reference on the syntax of the <tt>jconsole</tt>
+command, see the manual page for the <tt>jconsole</tt> command:
+(<a href="../../tools/unix/jconsole.html">Solaris, Linux, or Mac OS X</a> or <a href="../../tools/windows/jconsole.html">Windows</a>).</p>
+<a name="gddam" id="gddam"></a>
+<h4>Setting up Local Monitoring</h4>
+<p>You start JConsole by typing the following command at the
+command line.</p>
+<pre class="codeblock">
+% jconsole
+</pre>
+<p>When JConsole starts, you will be given a choice of all the Java
+applications that are running locally that JConsole can connect
+to.</p>
+<p>If you want to monitor a specific application, and you know that
+application's process ID, then you can also start JConsole so that
+it connects to that application. This application must be running
+with the same user ID as JConsole. The command syntax to start
+JConsole for local monitoring of a specific application is the
+following.</p>
+<pre class="codeblock">
+% jconsole <i>processID</i>
+</pre>
+<p>In the command above <tt><i>processID</i></tt> is the
+application's process ID (PID). You can determine an application's
+PID in the following ways:</p>
+<ul>
+<li>
+<p>On Solaris, Linux, or Mac OS X systems, you can use the <tt>ps</tt> command to
+find the PID of the <tt>java</tt> instance that is running.</p>
+</li>
+<li>
+<p>On Windows systems, you can use the Task Manager to find the PID
+of <tt>java</tt> or <tt>javaw</tt>.</p>
+</li>
+<li>
+<p>You can also use the <tt>jps</tt> command-line utility to
+determine PIDs. See the manual page for the <tt>jps</tt> tool (<a href="../../tools/unix/jps.html">Solaris, Linux, or Mac OS X</a> or <a href="../../tools/windows/jps.html">Windows</a>).</p>
+</li>
+</ul>
+<p>For example, if you determined that the process ID of the
+<tt>Notepad</tt> application is 2956, then you would start JConsole
+with the following command.</p>
+<pre class="codeblock">
+% jconsole 2956
+</pre>
+<p>Both JConsole and the application must by executed by the same
+user. The management and monitoring system uses the operating
+system's file permissions. If you do not specify a process ID,
+JConsole will automatically detect all local Java applications, and
+display a dialog box that lets you select which one you want to
+monitor (see <a href="#gddaw">Connecting to a JMX Agent</a>).</p>
+<p>For more information, see <a href="agent.html#gcyjz">Local
+Monitoring and Management</a>.</p>
+<a name="gddav" id="gddav"></a>
+<h4>Setting up Remote Monitoring</h4>
+<p>To start JConsole for remote monitoring, you use the following
+command syntax.</p>
+<pre class="codeblock">
+% jconsole <i>hostName</i>:<i>portNum</i>
+</pre>
+<p>In the command above, <tt><i>hostName</i></tt> is the name of
+the system running the application and <tt><i>portNum</i></tt> is
+the port number you specified when you enabled the JMX agent when
+you started the Java VM. For more information, see <a href=
+"agent.html#gdenl">Remote Monitoring and Management</a>.</p>
+<p>If you do not specify a host name/port number combination, then
+JConsole will display a connection dialog box (<a href=
+"#gddaw">Connecting to a JMX Agent</a>) to enable you to enter a
+host name and port number.</p>
+<a name="gdfmc" id="gdfmc"></a>
+<h4>Setting up Secure Remote Monitoring</h4>
+<p>You can also start JConsole so that monitoring will be performed
+over a connection that is secured using Secure Sockets Layer (SSL).
+The command to start JConsole with a secure connection is given in
+<a href="agent.html#gdevo">Remote Monitoring with JConsole with SSL
+Enabled</a> in <a href="agent.html">Chapter&nbsp;2, Monitoring and
+Management Using JMX Technology</a>.</p>
+<a name="gddaw" id="gddaw"></a>
+<h3>Connecting to a JMX Agent</h3>
+<p>If you start JConsole with arguments specifying a JMX agent to
+connect to, it will automatically start monitoring the specified
+Java VM. You can connect to a different host at any time by
+choosing Connection | New Connection and entering the necessary
+information.</p>
+<p>Otherwise, if you do not provide any arguments when you start
+JConsole, the first thing you see is the connection dialog box.
+This dialog box has two options, allowing connections to either
+Local or Remote processes.</p>
+<a name="gddax" id="gddax"></a>
+<h4>Dynamic Attach</h4>
+<p>Under previous releases of the Java SE platform, applications
+that you wanted to monitor with JConsole needed to be started with
+the following option.</p>
+<pre class="codeblock">
+% -Dcom.sun.management.jmxremote
+</pre>
+<p>However, the version of JConsole provided with the Java SE 6
+platform can attach to any application that supports the Attach
+API. In other words, any application that is started in the Java SE
+6 HotSpot VM is detected automatically by JConsole, and does not
+need to be started using the above command-line option.</p>
+<a name="gddah" id="gddah"></a>
+<h4>Connecting JConsole to a Local Process</h4>
+<p>If you start JConsole without providing a specific JMX agent to
+connect to, you will see the following dialog window.</p>
+<a name="gddbk" id="gddbk"></a>
+<p><strong>Figure&nbsp;3-1 Creating a Connection to a Local
+Process</strong></p>
+<img src="figures/connect.gif" alt=
+"The dialog window for creating connections to local processes"
+width="409" height="429" />
+<p>The Local Process option lists any Java VMs running on the local
+system that were started with the same user ID as JConsole, along
+with their process ID and their class and/or argument information.
+To connect JConsole to your application, select the application you
+want to monitor, then click the Connect button. The list of local
+processes includes applications running in the following types of
+Java VM.</p>
+<ul>
+<li>
+<p><b>Applications with the management agent enabled.</b> These
+include applications on the Java SE 6 platform or on the Java SE 5.0
+platform that were started with the
+<tt>-Dcom.sun.management.jmxremote</tt> option or with the
+<tt>-Dcom.sun.management.jmxremote.port</tt> option specified. In
+addition, the list also includes any applications that were started
+on the Java SE 6 platform without any management properties but
+which are later attached to by JConsole, which enables the
+management agent at runtime.</p>
+</li>
+<li>
+<p><b>Applications that are attachable, with the management agent
+disabled.</b> An <i>attachable</i> application supports loading the
+management agent at runtime. Attachable applications include
+applications that are started on the Java SE 6 platform that
+support the Attach API. Applications which support dynamic attach
+do not require the management agent to be started by specifying the
+<tt>com.sun.management.jmxremote</tt> or
+<tt>com.sun.management.jmxremote.port</tt> options at the command
+line, and JConsole does not need to connect to the management agent
+before the application is started. If you select this application,
+you will be informed in a note onscreen that the management agent
+will be enabled when the connection is made. In the example
+connection dialog shown in <a href="#gddbk">Figure&nbsp;3-1</a>,
+the NetBeans IDE and JConsole itself were both started within a
+Java SE 6 platform VM. Both appear in normal text, meaning that
+JConsole can connect to them. In <a href=
+"#gddbk">Figure&nbsp;3-1</a>, JConsole is selected, and the note is
+visible.</p>
+</li>
+<li>
+<p><b>Applications that are not attachable, with the management
+agent disabled.</b> These include applications started on a Java SE
+1.4.2 platform or started on a Java SE 5.0 platform without the
+<tt>-Dcom.sun.management.jmxremote</tt> or
+<tt>com.sun.management.jmxremote.port</tt> options. These
+applications appear grayed-out in the table and JConsole cannot
+connect to them. In the example connection dialog shown in <a href=
+"#gddbk">Figure&nbsp;3-1</a>, the <tt>Anagrams</tt> application was
+started with a Java SE 5.0 platform VM without any of the management
+properties to enable the JMX agent, and consequently shows up in
+gray and cannot be selected.</p>
+</li>
+</ul>
+<a name="gddya" id="gddya"></a>
+<p><strong>Figure&nbsp;3-2 Attempting to Connect to an Application
+without the Management Agent Enabled</strong></p>
+<img src="figures/noconnect.gif" alt=
+"Attempting to connect to a local process without the management agent enabled. JConsole cannot connect to this application."
+width="408" height="428" />
+<p>In the example connection dialog shown in <a href=
+"#gddya">Figure&nbsp;3-2</a>, you can see that the
+<tt>Anagrams</tt> application has been selected by clicking on it,
+but the Connect button remains grayed-out and a note has appeared
+informing you that the management agent is not enabled for this
+process. JConsole cannot connect to <tt>Anagrams</tt> because it
+was not started with the correct Java VM or with the correct
+options.</p>
+<a name="gddyo" id="gddyo"></a>
+<h4>Connecting JConsole to a Remote Process</h4>
+<p>When the connection dialog opens, you are also given the option
+of connecting to a remote process.</p>
+<a name="gddym" id="gddym"></a>
+<p><strong>Figure&nbsp;3-3 Creating a Connection to a Remote
+Process</strong></p>
+<img src="figures/connectrem.gif" alt=
+"The dialog window for creating connections to remote processes"
+width="408" height="428" />
+<p>To monitor a process running on a remote Java VM, you must
+provide the following information.</p>
+<ul>
+<li>
+<p>Host name: name of the machine on which the Java VM is
+running.</p>
+</li>
+<li>
+<p>Port number: the JMX agent port number you specified when you
+started the Java VM.</p>
+</li>
+<li>
+<p>User name and password: the user name and password to use
+(required only if monitoring a Java VM through a JMX agent that
+requires password authentication).</p>
+</li>
+</ul>
+<p>For information about setting the port number of the JMX agent,
+see <a href="agent.html#gcykd">Enabling the Out-of-the-Box
+Management</a>. For information about user names and passwords, see
+<a href="agent.html#gdeup">Using Password and Access Files</a>.</p>
+<p>To monitor the Java VM that is running JConsole, simply click
+Connect, using host <tt>localhost</tt> and the port <tt>0</tt>.</p>
+<a name="gddzm" id="gddzm"></a>
+<h4>Connecting Using a JMX Service URL</h4>
+<p>You can also use the Remote Process option to connect to other
+JMX agents by specifying their JMX service URL, and the user name
+and password. The syntax of a JMX service URL requires that you
+provide the transport protocol used to make the connection, as well
+as a service access point. The full syntax for a JMX service URL is
+described in the API documentation for
+<tt>javax.management.remote.JMXServiceURL</tt>.</p>
+<a name="gddyu" id="gddyu"></a>
+<p><strong>Figure&nbsp;3-4 Connecting to a JMX Agent Using the JMX
+Service URL</strong></p>
+<img src="figures/connectadv.gif" alt=
+"Connecting to a JMX Agent Using the JMX Service URL" width="409"
+height="400" />
+<p>If the JMX agent uses a connector which is not included in the
+Java platform, you need to add the connector classes to the class
+path when you run the <tt>jconsole</tt> command, as follows.</p>
+<pre class="codeblock">
+% jconsole -J-Djava.class.path=<i>JAVA_HOME</i>/lib/jconsole.jar:<i>JAVA_HOME</i>/lib/tools.jar:<i>connector-path</i>
+</pre>
+<p>In the command above, <tt><i>connector-path</i></tt> is the
+directory or the Java archive (Jar) file containing the connector
+classes that are not included in the JDK, that are to be used by
+JConsole.</p>
+<a name="gddyr" id="gddyr"></a>
+<h3>Presenting the JConsole Tabs</h3>
+<p>Once you have connected JConsole to an application, JConsole is
+composed of six tabs.</p>
+<ul>
+<li>
+<p><b>Overview:</b> Displays overview information about the Java VM
+and monitored values.</p>
+</li>
+<li>
+<p><b>Memory:</b> Displays information about memory use.</p>
+</li>
+<li>
+<p><b>Threads:</b> Displays information about thread use.</p>
+</li>
+<li>
+<p><b>Classes:</b> Displays information about class loading.</p>
+</li>
+<li>
+<p><b>VM:</b> Displays information about the Java VM.</p>
+</li>
+<li>
+<p><b>MBeans:</b> Displays information about MBeans.</p>
+</li>
+</ul>
+<p>You can use the green connection status icon in the upper
+right-hand corner of JConsole at any time, to disconnect from or
+reconnect to a running Java VM. You can connect to any number of
+running Java VMs at a time by selecting <tt>Connection</tt> then
+<tt>New Connection</tt> from the drop-down menu.</p>
+<a name="gddzo" id="gddzo"></a>
+<h4>Viewing Overview Information</h4>
+<p>The Overview tab displays graphical monitoring information about
+CPU usage, memory usage, thread counts, and the classes loaded in
+the Java VM, all in a single screen.</p>
+<a name="gddzs" id="gddzs"></a>
+<p><strong>Figure&nbsp;3-5 Overview Tab</strong></p>
+<img src="figures/overviewtab.gif" alt="The JConsole Overview tab"
+width="695" height="510" />
+<p>The Overview tab provides an easy way to correlate information
+that was previously only available by switching between multiple
+tabs.</p>
+<a name="gentextid-1278" id="gentextid-1278"></a>
+<h4>Saving Chart Data</h4>
+<p>JConsole allows you to save the data presented in the charts in
+a Comma Separated Values (CSV) file. To save data from a chart,
+simply right-click on any chart, select <tt>Save data as...</tt>,
+and then specify the file in which the data will be saved. You can
+save the data from any of the charts displayed in any of JConsole's
+different tabs in this way.</p>
+<p><a name="gdkck" id="gdkck"></a>The CSV format is commonly used
+for data exchange between spreadsheet applications. The CSV file
+can be imported into spreadsheet applications and can be used to
+create diagrams in these applications. The data is presented as two
+or more named columns, where the first column represents the time
+stamps. After importing the file into a spreadsheet application,
+you will usually need to select the first column and change its
+format to be "date" or "date/time" as appropriate.</p>
+<a name="gddzq" id="gddzq"></a>
+<h4>Monitoring Memory Consumption</h4>
+<p>The Memory tab provides information about memory consumption and
+memory pools.</p>
+<a name="gddzx" id="gddzx"></a>
+<p><strong>Figure&nbsp;3-6 Memory Tab</strong></p>
+<img src="figures/memtab.gif" alt="The JConsole Memory tab." width=
+"696" height="509" />
+<p>The Memory tab features a &ldquo;Perform GC&rdquo; button that
+you can click to perform garbage collection whenever you want. The
+chart shows the memory use of the Java VM over time, for heap and
+non-heap memory, as well as for specific memory pools. The memory
+pools available depend on which version of the Java VM is being
+used. For the HotSpot Java VM, the memory pools for serial garbage
+collection are the following.</p>
+<ul>
+<li>
+<p><i>Eden Space (heap)</i>: The pool from which memory is
+initially allocated for most objects.</p>
+</li>
+<li>
+<p><i>Survivor Space (heap)</i>: The pool containing objects that
+have survived the garbage collection of the Eden space.</p>
+</li>
+<li>
+<p><i>Tenured Generation (heap)</i>: The pool containing objects
+that have existed for some time in the survivor space.</p>
+</li>
+<li>
+<p><i>Permanent Generation (non-heap)</i>: The pool containing all
+the reflective data of the virtual machine itself, such as class
+and method objects. With Java VMs that use class data sharing, this
+generation is divided into read-only and read-write areas.</p>
+</li>
+<li>
+<p><i>Code Cache (non-heap)</i>: The HotSpot Java VM also includes
+a code cache, containing memory that is used for compilation and
+storage of native code.</p>
+</li>
+</ul>
+<p>You can display different charts for charting the consumption of
+these memory pools by choosing from the options in the
+<tt>Chart</tt> drop-down menu. Also, clicking on either of the Heap
+or Non-Heap bar charts in the bottom right-hand corner will switch
+the chart displayed. Finally, you can specify the time range over
+which you track memory usage by selecting from the options in the
+<tt>Time Range</tt> drop-down menu.</p>
+<p>For more information about these memory pools, see <a href=
+"#gddzt">Garbage Collection</a> below.</p>
+<p>The <b>Details</b> area shows several current memory
+metrics:</p>
+<ul>
+<li>
+<p><i>Used</i>: the amount of memory currently used, including the
+memory occupied by all objects, both reachable and unreachable.</p>
+</li>
+<li>
+<p><i>Committed</i>: the amount of memory guaranteed to be
+available for use by the Java VM. The amount of committed memory
+may change over time. The Java virtual machine may release memory
+to the system and the amount of committed memory could be less than
+the amount of memory initially allocated at start up. The amount of
+committed memory will always be greater than or equal to the amount
+of used memory.</p>
+</li>
+<li>
+<p><i>Max</i>: the maximum amount of memory that can be used for
+memory management. Its value may change or be undefined. A memory
+allocation may fail if the Java VM attempts to increase the used
+memory to be greater than committed memory, even if the amount used
+is less than or equal to <tt>max</tt> (for example, when the system
+is low on virtual memory).</p>
+</li>
+<li>
+<p><i>GC time</i>: the cumulative time spent on garbage collection
+and the total number of invocations. It may have multiple rows,
+each of which represents one garbage collector algorithm used in
+the Java VM.</p>
+</li>
+</ul>
+<p>The bar chart on the lower right-hand side shows the memory
+consumed by the memory pools in heap and non-heap memory. The bar
+will turn red when the memory used exceeds the memory usage
+threshold. You can set the memory usage threshold through an
+attribute of the <tt>MemoryMXBean</tt>.</p>
+<a name="gdeah" id="gdeah"></a>
+<h5>Heap and Non-Heap Memory</h5>
+<p>The Java VM manages two kinds of memory: heap and non-heap
+memory, both of which are created when the Java VM starts.</p>
+<ul>
+<li>
+<p><b>Heap memory</b> is the runtime data area from which the Java
+VM allocates memory for all class instances and arrays. The heap
+may be of a fixed or variable size. The garbage collector is an
+automatic memory management system that reclaims heap memory for
+objects.</p>
+</li>
+<li>
+<p><b>Non-heap memory</b> includes a method area shared among all
+threads and memory required for the internal processing or
+optimization for the Java VM. It stores per-class structures such
+as a runtime constant pool, field and method data, and the code for
+methods and constructors. The method area is logically part of the
+heap but, depending on the implementation, a Java VM may not
+garbage collect or compact it. Like the heap memory, the method
+area may be of a fixed or variable size. The memory for the method
+area does not need to be contiguous.</p>
+</li>
+</ul>
+<p>In addition to the method area, a Java VM may require memory for
+internal processing or optimization which also belongs to non-heap
+memory. For example, the Just-In-Time (JIT) compiler requires
+memory for storing the native machine code translated from the Java
+VM code for high performance.</p>
+<a name="gdean" id="gdean"></a>
+<h5>Memory Pools and Memory Managers</h5>
+<p>Memory pools and memory managers are key aspects of the Java
+VM's memory system.</p>
+<ul>
+<li>
+<p>A <b>memory pool</b> represents a memory area that the Java VM
+manages. The Java VM has at least one memory pool and it may create
+or remove memory pools during execution. A memory pool can belong
+either to heap or to non-heap memory.</p>
+</li>
+<li>
+<p>A <b>memory manager</b> manages one or more memory pools. The
+garbage collector is a type of memory manager responsible for
+reclaiming memory used by unreachable objects. A Java VM may have
+one or more memory managers. It may add or remove memory managers
+during execution. A memory pool can be managed by more than one
+memory manager.</p>
+</li>
+</ul>
+<a name="gddzt" id="gddzt"></a>
+<h5>Garbage Collection</h5>
+<p>Garbage collection (GC) is how the Java VM frees memory occupied
+by objects that are no longer referenced. It is common to think of
+objects that have active references as being "alive" and
+non-referenced (or unreachable) objects as "dead." Garbage
+collection is the process of releasing memory used by the dead
+objects. The algorithms and parameters used by GC can have dramatic
+effects on performance.</p>
+<p>The Java HotSpot VM garbage collector uses generational GC.
+Generational GC takes advantage of the observation that most
+programs conform to the following generalizations.</p>
+<ul>
+<li>
+<p>They create many objects that have short lives, for example,
+iterators and local variables.</p>
+</li>
+<li>
+<p>They create some objects that have very long lives, for example,
+high level persistent objects.</p>
+</li>
+</ul>
+<p>Generational GC divides memory into several generations, and
+assigns one or more memory pools to each. When a generation uses up
+its allotted memory, the VM performs a partial GC (also called a
+minor collection) on that memory pool to reclaim memory used by
+dead objects. This partial GC is usually much faster than a full
+GC.</p>
+<p>The Java HotSpot VM defines two generations: the young
+generation (sometimes called the "nursery") and the old generation.
+The young generation consists of an "Eden space" and two "survivor
+spaces." The VM initially assigns all objects to the Eden space,
+and most objects die there. When it performs a minor GC, the VM
+moves any remaining objects from the Eden space to one of the
+survivor spaces. The VM moves objects that live long enough in the
+survivor spaces to the "tenured" space in the old generation. When
+the tenured generation fills up, there is a full GC that is often
+much slower because it involves all live objects. The permanent
+generation holds all the reflective data of the virtual machine
+itself, such as class and method objects.</p>
+<p>The default arrangement of generations looks something like
+<a href="#gdeao">Figure&nbsp;3-7</a>.</p>
+<a name="gdeao" id="gdeao"></a>
+<p><strong>Figure&nbsp;3-7 Generations of Data in Garbage
+Collection</strong></p>
+<img src="figures/generations.gif" alt=
+"The different generations of data defined by the Garbage Collector"
+width="600" height="333" />
+<p>If the garbage collector has become a bottleneck, you can
+improve performance by customizing the generation sizes. Using
+JConsole, you can investigate the sensitivity of your performance
+metric by experimenting with the garbage collector parameters. For
+more information, see <a href="http://www.oracle.com/technetwork/java/gc-tuning-5-138395.html">Tuning
+Garbage Collection with the 5.0 HotSpot VM</a>.</p>
+<a name="gdeaj" id="gdeaj"></a>
+<h5>Monitoring Thread Use</h5>
+<p>The Threads tab provides information about thread use.</p>
+<a name="gdebc" id="gdebc"></a>
+<p><strong>Figure&nbsp;3-8 Threads Tab</strong></p>
+<img src="figures/threadtab.gif" alt="The JConsole Threads tab."
+width="695" height="508" />
+<p>The Threads list in the lower left corner lists all the active
+threads. If you enter a string in the Filter field, the Threads
+list will show only those threads whose name contains the string
+you enter. Click on the name of a thread in the Threads list to
+display information about that thread to the right, including the
+thread name, state, and stack trace.</p>
+<p>The chart shows the number of live threads over time. Two lines
+are shown.</p>
+<ul>
+<li>
+<p><i>Red</i>: peak number of threads</p>
+</li>
+<li>
+<p><i>Blue</i>: number of live threads.</p>
+</li>
+</ul>
+<p>The Threading MXBean provides several other useful operations
+that are not covered by the Threads tab.</p>
+<ul>
+<li>
+<p><tt>findMonitorDeadlockedThreads</tt>: Detects if any threads
+are deadlocked on the object monitor locks. This operation returns
+an array of deadlocked thread IDs.</p>
+</li>
+<li>
+<p><tt>getThreadInfo</tt>: Returns the thread information. This
+includes the name, stack trace, and the monitor lock that the
+thread is currently blocked on, if any, and which thread is holding
+that lock, as well as thread contention statistics.</p>
+</li>
+<li>
+<p><tt>getThreadCpuTime</tt>: Returns the CPU time consumed by a
+given thread</p>
+</li>
+</ul>
+<p>You can access these additional features via the MBeans tab by
+selecting the Threading MXBean in the MBeans tree. This MXBean
+lists all the attributes and operations for accessing threading
+information in the Java VM being monitored. See <a href=
+"#gdeap">Monitoring and Managing MBeans</a>.</p>
+<a name="gdeba" id="gdeba"></a>
+<h5>Detecting Deadlocked Threads</h5>
+<p>To check if your application has run into a deadlock (for
+example, your application seems to be hanging), deadlocked threads
+can be detected by clicking on the "Detect Deadlock" button. If any
+deadlocked threads are detected, these are displayed in a new tab
+that appears next to the "Threads" tab, as shown in <a href=
+"#gdeae">Figure&nbsp;3-9</a>.</p>
+<a name="gdeae" id="gdeae"></a>
+<p><strong>Figure&nbsp;3-9 Deadlocked Threads</strong></p>
+<img src="figures/deadlock.gif" alt=
+"Deadlocked threads detected by JConsole." width="673" height=
+"367" />
+<p>The Detect Deadlock button will detect deadlock cycles involving
+object monitors and <tt>java.util.concurrent</tt> ownable
+synchronizers (see the API specification documentation for <a href="../../../api/java/lang/management/LockInfo.html">
+java.lang.management.LockInfo</a>). Monitoring support for
+<tt>java.util.concurrent</tt> locks has been added in Java SE 6. If
+JConsole connects to a Java SE 5.0 VM, the Detect Deadlock mechanism
+will only find deadlocks related to object monitors. JConsole will
+not show any deadlocks related to ownable synchronizers.</p>
+<p>See the API documentation for <tt>java.lang.Thread</tt> for more
+information about threads and daemon threads.</p>
+<a name="gdead" id="gdead"></a>
+<h4>Monitoring Class Loading</h4>
+<p>The Classes tab displays information about class loading.</p>
+<a name="gdeax" id="gdeax"></a>
+<p><strong>Figure&nbsp;3-10 Classes Tab</strong></p>
+<img src="figures/classtab.gif" alt="" width="696" height="511" />
+<p>The chart plots the number of classes loaded over time.</p>
+<ul>
+<li>
+<p>The red line is the total number of classes loaded (including
+those subsequently unloaded).</p>
+</li>
+<li>
+<p>The blue line is the current number of classes loaded.</p>
+</li>
+</ul>
+<p>The Details section at the bottom of the tab displays the total
+number of classes loaded since the Java VM started, the number
+currently loaded and the number unloaded. You can set the tracing
+of class loading to verbose output by checking the checkbox in the
+top right-hand corner.</p>
+<a name="gdeaw" id="gdeaw"></a>
+<h4>Viewing VM Information</h4>
+<p>The VM Summary tab provides information about the Java VM.</p>
+<a name="gdeab" id="gdeab"></a>
+<p><strong>Figure&nbsp;3-11 VM Summary Tab</strong></p>
+<img src="figures/vmtab.gif" alt="The JConsole VM Summary tab."
+width="650" height="612" />
+<p>The information presented in this tab includes the
+following.</p>
+<ul>
+<li>
+<p><b>Summary</b></p>
+<ul>
+<li>
+<p><i>Uptime</i>: Total amount of time since the Java VM was
+started.</p>
+</li>
+<li>
+<p><i>Process CPU Time</i>: Total amount of CPU time that the Java
+VM has consumed since it was started.</p>
+</li>
+<li>
+<p><i>Total Compile Time</i>: Total accumulated time spent in JIT
+compilation. The Java VM determines when JIT compilation occurs.
+The Hotspot VM uses adaptive compilation, in which the VM launches
+an application using a standard interpreter, but then analyzes the
+code as it runs to detect performance bottlenecks, or "hot
+spots".</p>
+</li>
+</ul>
+</li>
+<li>
+<p><b>Threads</b></p>
+<ul>
+<li>
+<p><i>Live threads</i>: Current number of live daemon threads plus
+non-daemon threads.</p>
+</li>
+<li>
+<p><i>Peak</i>: Highest number of live threads since Java VM
+started.</p>
+</li>
+<li>
+<p><i>Daemon threads</i>: Current number of live daemon
+threads.</p>
+</li>
+<li>
+<p><i>Total threads started</i>: Total number of threads started
+since Java VM started, including daemon, non-daemon, and terminated
+threads.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><b>Classes</b></p>
+<ul>
+<li>
+<p><i>Current classes loaded</i>: Number of classes currently
+loaded into memory.</p>
+</li>
+<li>
+<p><i>Total classes loaded</i>: Total number of classes loaded into
+memory since the Java VM started, including those that have
+subsequently been unloaded.</p>
+</li>
+<li>
+<p><i>Total classes unloaded</i>: Number of classes unloaded from
+memory since the Java VM started.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><b>Memory</b></p>
+<ul>
+<li>
+<p><i>Current heap size</i>: Number of kilobytes currently occupied
+by the heap.</p>
+</li>
+<li>
+<p><i>Committed memory</i>: Total amount of memory allocated for
+use by the heap.</p>
+</li>
+<li>
+<p><i>Maximum heap size</i>: Maximum number of kilobytes occupied
+by the heap.</p>
+</li>
+<li>
+<p><i>Objects pending for finalization</i>: Number of objects
+pending for finalization.</p>
+</li>
+<li>
+<p><i>Garbage collector</i>: Information about garbage collection,
+including the garbage collector names, number of collections
+performed, and total time spent performing GC.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><b>Operating System</b></p>
+<ul>
+<li>
+<p><i>Total physical memory</i>: Amount of random-access memory
+(RAM) the operating system has.</p>
+</li>
+<li>
+<p><i>Free physical memory</i>: Amount of free RAM available to the
+operating system.</p>
+</li>
+<li>
+<p><i>Committed virtual memory</i>: Amount of virtual memory
+guaranteed to be available to the running process.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><b>Other Information</b></p>
+<ul>
+<li>
+<p><i>VM arguments</i>: The input arguments the application passed
+to the Java VM, not including the arguments to the main method.</p>
+</li>
+<li>
+<p><i>Class path</i>: The class path that is used by the system
+class loader to search for class files.</p>
+</li>
+<li>
+<p><i>Library path</i>: The list of paths to search when loading
+libraries.</p>
+</li>
+<li>
+<p><i>Boot class path</i>: The boot class path is used by the
+bootstrap class loader to search for class files.</p>
+</li>
+</ul>
+</li>
+</ul>
+<a name="gdeap" id="gdeap"></a>
+<h4>Monitoring and Managing MBeans</h4>
+<p>The MBeans tab displays information about all the MBeans
+registered with the platform MBean server in a generic way. The
+MBeans tab allows you to access the full set of the platform MXBean
+instrumentation, including that which is not visible in the other
+tabs. In addition, you can monitor and manage your application's
+MBeans using the MBeans tab.</p>
+<a name="gdecl" id="gdecl"></a>
+<p><strong>Figure&nbsp;3-12 MBeans Tab</strong></p>
+<img src="figures/mbeantab.gif" alt="The JConsole MBeans tab."
+width="694" height="508" />
+<p>The tree on the left shows all the MBeans currently running.
+When you select an MBean in the tree, its <tt>MBeanInfo</tt> and
+its MBean Descriptor are both displayed on the right, and any
+attributes, operations or notifications appear in the tree below
+it.</p>
+<p>All the platform MXBeans and their various operations and
+attributes are accessible via JConsole's MBeans tab.</p>
+<a name="gdfub" id="gdfub"></a>
+<h5>Constructing the MBean Tree</h5>
+<p>By default, the MBeans are displayed in the tree based on their
+object names. The order of key properties specified when the object
+names are created is preserved by JConsole when it adds MBeans to
+the MBean tree. The exact key property list that JConsole will use
+to build the MBean tree will be the one returned by the method
+<tt>ObjectName.getKeyPropertyListString()</tt>, with <tt>type</tt>
+as the first key, and <tt>j2eeType</tt>, if present, as the second
+key.</p>
+<p>However, relying on the default order of the <tt>ObjectName</tt>
+key properties can sometimes lead to unexpected behavior when
+JConsole renders the MBean tree. For example, if two object names
+have similar keys but their key order differs, then the
+corresponding MBeans will not be created under the same node in the
+MBean tree.</p>
+<p>For example, suppose you create <tt>Triangle</tt> MBean objects
+with the following names.</p>
+<pre class="codeblock">
+com.sun.example:type=Triangle,side=isosceles,name=1
+com.sun.example:type=Triangle,name=2,side=isosceles
+com.sun.example:type=Triangle,side=isosceles,name=3
+</pre>
+<p>As far as the JMX technology is concerned, these objects will be
+treated in exactly the same way. The order of the keys in the
+object name makes no difference to the JMX technology. However, if
+JConsole connects to these MBeans and the default MBean tree
+rendering is used, then the object
+<tt>com.sun.example:type=Triangle,name=2,side=isosceles</tt> will
+end up being created under the <tt>Triangle</tt> node, in a node
+called <tt>2</tt>, which in turn will contain a sub-node called
+<tt>isosceles</tt>. The other two isosceles triangles,
+<tt>name=1</tt> and <tt>name=3</tt>, will be grouped together under
+<tt>Triangle</tt> in a different node called <tt>isosceles</tt>, as
+shown in <a href="#gdfuq">Figure&nbsp;3-13</a>.</p>
+<a name="gdfuq" id="gdfuq"></a>
+<p><strong>Figure&nbsp;3-13 Example of Unexpected MBean Tree
+Rendering</strong></p>
+<img src="figures/mbeanTree1.gif" alt=
+"Example of Unexpected MBean Tree Rendering" width="164" height=
+"206" />
+<p>To avoid this problem, you can specify the order in which the
+MBeans are displayed in the tree by supplying an ordered key
+property list when you start JConsole at the command line. This is
+achieved by setting the system property
+<tt>com.sun.tools.jconsole.mbeans.keyPropertyList</tt>, as shown in
+the following command.</p>
+<pre class="codeblock">
+% jconsole -J-Dcom.sun.tools.jconsole.mbeans.keyPropertyList=<i>key</i>[,<i>key</i>]*
+</pre>
+<p>The key property list system property takes a comma-separated
+list of keys, in the order of your choosing, where
+<tt><i>key</i></tt> must be a string representing an object name
+key or an empty string. If a key specified in the list does not
+apply to a particular MBean, then that key will be discarded. If an
+MBean has more keys than the ones specified in the key property
+list, then the key order defined by the value returned by
+<tt>ObjectName.getKeyPropertyListString()</tt> will be used to
+complete the key order defined by <tt>keyPropertyList</tt>.
+Therefore, specifying an empty list of keys simply means that
+JConsole will display keys in the order they appear in the MBean's
+<tt>ObjectName</tt>.</p>
+<p>So, returning to the example of the <tt>Triangle</tt> MBeans
+cited above, you could choose to start JConsole specifying the
+<tt>keyPropertyList</tt> system property, so that all your MBeans
+will be grouped according to their <tt>side</tt> key property
+first, and their <tt>name</tt> key property second. To do this, you
+would start JConsole with the following command.</p>
+<pre class="codeblock">
+% jconsole -J-Dcom.sun.tools.jconsole.mbeans.keyPropertyList=side,name
+</pre>
+<p>Starting JConsole with this system property specified would
+produce the MBean tree shown in <a href=
+"#gdfup">Figure&nbsp;3-14</a>.</p>
+<a name="gdfup" id="gdfup"></a>
+<p><strong>Figure&nbsp;3-14 Example of MBean Tree Constructed Using
+<tt>keyPropertyList</tt></strong></p>
+<img src="figures/mbeanTree2.gif" alt=
+"Example of MBean Tree Constructed Using keyPropertyList" width=
+"165" height="226" />
+<p>In <a href="#gdfup">Figure&nbsp;3-14</a>, the <tt>side</tt> key
+comes first, followed by the <tt>name</tt> key. The <tt>type</tt>
+key comes at the end because it was not specified in the key
+property list, so the MBean tree algorithm applied the original key
+order for the remaining keys. Consequently, the <tt>type</tt> key
+is appended at the end, after the keys which were defined by the
+<tt>keyPropertyList</tt> system property.</p>
+<p>According to the object name convention defined by the <a href="http://www.oracle.com/technetwork/java/javase/tech/javamanagement-140525.html">JMX
+Best Practices Guidelines</a>, the <tt>type</tt> key should always
+come first. So, to respect this convention you should start
+JConsole with the following system property.</p>
+<pre class="codeblock">
+% jconsole -J-Dcom.sun.tools.jconsole.mbeans.keyPropertyList=type,side,name
+</pre>
+<p>The above command will cause JConsole to render the MBean tree
+for the Triangle MBeans as shown in <a href=
+"#gdftr">Figure&nbsp;3-15</a>.</p>
+<a name="gdftr" id="gdftr"></a>
+<p><strong>Figure&nbsp;3-15 Example of MBean Tree Constructed
+Respecting JMX Best Practices</strong></p>
+<img src="figures/mbeanTree3.gif" alt=
+"Example of MBean Tree Constructed Respecting JMX Best Practices"
+width="165" height="192" />
+<p>This is obviously much more comprehensible than the MBean trees
+shown in <a href="#gdfuq">Figure&nbsp;3-13</a> and <a href=
+"#gdfup">Figure&nbsp;3-14</a>.</p>
+<a name="gdeby" id="gdeby"></a>
+<h5>MBean Attributes</h5>
+<p>Selecting the Attributes node displays all the attributes of an
+MBean. <a href="#gdhrn">Figure&nbsp;3-16</a> shows all the
+attributes of the Threading platform MXBean.</p>
+<a name="gdhrn" id="gdhrn"></a>
+<p><strong>Figure&nbsp;3-16 Viewing All MBean
+Attributes</strong></p>
+<img src="figures/allAttributes.gif" alt=
+"Viewing the attributes of the Threading MBean." width="642"
+height="398" />
+<p>Selecting an individual MBean attribute from the tree then
+displays the attribute's value, its <tt>MBeanAttributeInfo</tt>,
+and the associated Descriptor in the right pane, as you can see in
+<a href="#gdeha">Figure&nbsp;3-17</a>.</p>
+<a name="gdeha" id="gdeha"></a>
+<p><strong>Figure&nbsp;3-17 Viewing an Individual MBean
+Attribute</strong></p>
+<img src="figures/attributes.gif" alt=
+"Viewing MBean attributes in the MBeans tab." width="695" height=
+"509" />
+<p>You can display additional information about an attribute by
+double-clicking on the attribute value, if it appears in bold text.
+For example, if you click on the value of the
+<tt>HeapMemoryUsage</tt> attribute of the <tt>java.lang.Memory</tt>
+MBean, you will see a chart that looks something like <a href=
+"#gdehr">Figure&nbsp;3-18</a>.</p>
+<a name="gdehr" id="gdehr"></a>
+<p><strong>Figure&nbsp;3-18 Displaying Attribute
+Values</strong></p>
+<img src="figures/chart.gif" alt=
+"Viewing the values of MBean attributes." width="543" height=
+"305" />
+<p>Double-clicking on numeric attribute values will display a chart
+that plots changes in that numeric value. For example,
+double-clicking on the <tt>CollectionTime</tt> attribute of the
+Garbage Collector MBean <tt>PS Marksweep</tt> will plot the time
+spent performing garbage collection.</p>
+<p>You can also use JConsole to set the values of writable
+attributes. The value of a writable attribute is displayed in blue.
+Here you can see the Memory MBean's Verbose attribute.</p>
+<a name="gdehe" id="gdehe"></a>
+<p><strong>Figure&nbsp;3-19 Setting Writable Attribute
+Values</strong></p>
+<img src="figures/writeableAttrib.gif" alt=
+"Setting an MBean's writable attribute value." width="541" height=
+"100" />
+<p>You can set attributes by clicking on them and then editing
+them. For example, to enable or disable the verbose tracing of the
+garbage collector in JConsole, select the Memory MXBean in the
+MBeans tab and set the <tt>Verbose</tt> attribute to true or false.
+Similarly, the class loading MXBean also has the <tt>Verbose</tt>
+attribute, which can be set to enable or disable class loading
+verbose tracing.</p>
+<a name="gdehi" id="gdehi"></a>
+<h5>MBean Operations</h5>
+<p>Selecting the Operations node displays all the operations of an
+MBean. The MBean operations appear as buttons, that you can click
+to invoke the operation.<a href="#gdhqe">Figure&nbsp;3-20</a> shows
+all the operations of the Threading platform MXBean.</p>
+<a name="gdhqe" id="gdhqe"></a>
+<p><strong>Figure&nbsp;3-20 Viewing All MBean
+Operations</strong></p>
+<img src="figures/allOperations.gif" alt=
+"Viewing the Threading platform MXBean's operations." width="782"
+height="583" />
+<p>Selecting an individual MBean operation in the tree displays the
+button for invoking the MBean operation, and the operation's
+<tt>MBeanOperationInfo</tt> and its Descriptor, as shown in
+<a href="#gdejd">Figure&nbsp;3-21</a>.</p>
+<a name="gdejd" id="gdejd"></a>
+<p><strong>Figure&nbsp;3-21 Viewing Individual MBean
+Operations</strong></p>
+<img src="figures/operations.gif" alt=
+"Invoking an MBean's operations." width="694" height="511" />
+<a name="gdeiy" id="gdeiy"></a>
+<h5>MBean Notifications</h5>
+<p>You can subscribe to receive notifications by selecting the
+Notifications node in the left-hand tree, and clicking the
+Subscribe button that appears on the right. The number of
+notifications received is displayed in square brackets, and the
+Notifications node itself will appear in bold text when new
+notifications are received. The notifications of the Memory
+platform MXBean are shown in <a href=
+"#gdhrh">Figure&nbsp;3-22</a>.</p>
+<a name="gdhrh" id="gdhrh"></a>
+<p><strong>Figure&nbsp;3-22 Viewing MBean
+Notifications</strong></p>
+<img src="figures/allNotifications.gif" alt=
+"Viewing an MBean's notifications." width="817" height="367" />
+<p>Selecting an individual MBean notification displays the
+<tt>MBeanNotificationInfo</tt> in the right pane, as shown in
+<a href="#gdeir">Figure&nbsp;3-23</a>.</p>
+<a name="gdeir" id="gdeir"></a>
+<p><strong>Figure&nbsp;3-23 Viewing Individual MBean
+Notifications</strong></p>
+<img src="figures/notifications.gif" alt=
+"Subscribing to receive MBean Notifications." width="696" height=
+"509" /> <a name="gdeif" id="gdeif"></a>
+<h5>HotSpot Diagnostic MXBean</h5>
+<p>JConsole's MBeans tab also allows you to tell the HotSpot VM to
+perform a heap dump, and to get or set a VM option via the
+<tt>HotSpotDiagnostic</tt> MXBean.</p>
+<a name="gdekb" id="gdekb"></a>
+<p><strong>Figure&nbsp;3-24 Viewing the HotSpot Diagnostic
+MBean</strong></p>
+<img src="figures/hotspotdiagnostic.gif" alt=
+"Performing heap dumps using the HotSpot VM Diagnostic MBean."
+width="695" height="510" />
+<p>You can perform a heap dump manually by invoking the
+<tt>com.sun.management.HotSpotDiagnostic</tt> MXBean's
+<tt>dumpHeap</tt> operation. In addition, you can specify the
+<tt>HeapDumpOnOutOfMemoryError</tt> Java VM option using the
+<tt>setVMOption</tt> operation, so that the VM performs a heap dump
+automatically whenever it receives an
+<tt>OutOfMemoryError</tt>.</p>
+<a name="gdeje" id="gdeje"></a>
+<h4>Creating Custom Tabs</h4>
+<p>In addition to the existing standard tabs, you can add your own
+custom tabs to JConsole, to perform your own monitoring activities.
+The JConsole plug-in API provides a mechanism by which you can, for
+example, add a tab to access your own application's MBeans. The
+JConsole plug-in API defines the
+<tt>com.sun.tools.jconsole.JConsolePlugin</tt> abstract class that
+you can extend to build your custom plug-in.</p>
+<p>As stated above, your plug-in must extend
+<tt>JConsolePlugin,</tt> and implement the <tt>JConsolePlugin</tt>
+<tt>getTabs</tt> and <tt>newSwingWorker</tt> methods. The
+<tt>getTabs</tt> method returns either the list of tabs to be added
+to JConsole, or an empty list. The <tt>newSwingWorker</tt> method
+returns the <tt>SwingWorker</tt> to be responsible for the
+plug-in's GUI update.</p>
+<p>Your plug-in must be provided in a Java archive (JAR) file that
+contains a file named
+<tt>META-INF/services/com.sun.tools.jconsole.JConsolePlugin</tt>.
+This <tt>JConsolePlugin</tt> file itself contains a list of all the
+fully-qualified class names of the plug-ins you want to add as new
+JConsole tabs. JConsole uses the service-provider loading facility
+to look up and load the plug-ins. You can have multiple plug-ins,
+with one entry per plug-in in the <tt>JConsolePlugin</tt>.</p>
+<p>To load the new custom plug-ins into JConsole, start JConsole
+with the following command:</p>
+<pre class="codeblock">
+%  jconsole -pluginpath <i>plugin-path</i>
+</pre>
+<p>In the above command, <tt><i>plugin-path</i></tt> specifies the
+paths to the JConsole plug-ins to be looked up. These paths can
+either be to directory names or to JAR files, and multiple paths
+can be specified, using your platform's standard separator
+character.</p>
+<p>An example JConsole plug-in is provided with the Java SE 6
+platform. The <tt>JTop</tt> application is a JDK demonstration that
+shows the CPU usage of all threads running in the application. This
+demo is useful for identifying threads that have high CPU
+consumption, and it has been updated to be used as a JConsole
+plug-in as well as a standalone GUI. <tt>JTop</tt> is bundled with
+the Java SE 6 platform, as a demo application. You can run JConsole
+with the JTop plug-in by running the following command:</p>
+<pre class="codeblock">
+% <i>JDK_HOME</i>/bin/jconsole -pluginpath <i>JDK_HOME</i>/demo/management/JTop/JTop.jar
+</pre>
+<p>If you connect to this instance of JConsole, you will see that
+the <tt>JTop</tt> tab has been added, showing CPU usage of the
+various threads running.</p>
+<a name="gdejz" id="gdejz"></a>
+<p><strong>Figure&nbsp;3-25 Viewing a Custom Plug-in
+Tab</strong></p>
+<img src="figures/plugin.gif" alt=
+"A custom tab showing connected to the JTop example program."
+width="688" height="334" /></div>
+<!--stopindex-->
+<!-- END CENTRAL COLUMN COMPONENTS --></td>
+</tr>
+<!-- BEGIN SPACER ROW -->
+<tr>
+<td><img src="css/a.gif" width="780" height="1" border="0" alt=
+"" /></td>
+</tr>
+<!-- END SPACER ROW -->
+<tr>
+<td><!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%"
+summary="">
+<tr valign="bottom">
+<td headers="h101"></td>
+<td headers="h102" style="width: 60%"></td>
+<td headers="h103"><a href="agent.html"><img style="padding-right: 3px" src=
+"graphics/prev.gif" border="0" alt="previous" />Previous</a></td>
+<td headers="h104"><a href="toc.html">Contents</a></td>
+<td headers="h105"></td>
+<td headers="h106"><a href="mxbeans.html">Next<img style="padding-left: 3px" src=
+"graphics/next.gif" border="0" alt="next" /></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW --></td>
+</tr>
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

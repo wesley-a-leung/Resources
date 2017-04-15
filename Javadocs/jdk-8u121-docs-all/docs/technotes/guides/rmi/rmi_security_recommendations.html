@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>RMI Security Recommendations</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>RMI Security Recommendations</h1>
+
+<p>Improve the security of your RMI applications by following these recommendations:</p>
+
+<ul>
+  <li><p>Follow <a href="http://www.oracle.com/technetwork/java/seccodeguide-139067.html">Secure Coding Guidelines for Java SE</a>.</p></li>
+
+  <li><p>Always run a security manager when using RMI, either on a client or server. See <a href="https://docs.oracle.com/javase/tutorial/essential/environment/security.html">The Security Manager</a> in <a href="https://docs.oracle.com/javase/tutorial/">The Java Tutorials</a>.</p></li>
+
+  <li><p>Establish a reasonable security policy. For example, grant <code><a href="../../../api/java/net/SocketPermission.html">SocketPermission</a></code> and allow listen, accept, connect, and resolve actions only among hosts communicating with RMI. Do not have the security policy grant <code><a href="../../../api/security/AllPermission.html">AllPermission</a></code>. See <a href="../security/permissions.html">Permissions in the JDK</a> and <a href="../security/PolicyFiles.html">Default Policy Implementation and Policy File Syntax</a>.</li>
+
+  <li><p>If RMI is being used only for communication among JVMs on the local host, restrict communications to be local only. Accomplish this by specifying the appropriate socket permissions in the security policy file as described previously. Alternatively, you can use RMI APIs directly to restrict connections only to the local host. See an example of this in the documentation for the <code><a href="../../../api/java/rmi/server/RMISocketFactory.html">RMISocketFactory</a></code> class.</p></li>
+
+  <li><p>Ensure that the value of the <code>java.rmi.server.useCodebaseOnly</code> property is <code>true</code> (which is the default value). Setting this property to <code>false</code> enables remote code loading, which increases the level of security risk to the system. See <code><a href="javarmiproperties.html">java.rmi Properties</a></code>.</p></li>
+
+  <li><p>Run RMI over SSL/TLS, and require authentication for both server and client. For further information, see the following:</p>
+
+<ul>
+
+  <li>The <code><a href="../../../api/javax/rmi/ssl/SslRMIClientSocketFactory.html">SslRMIClientSocketFactory</a></code> class</li>
+
+  <li>The <code><a href="../../../api/javax/rmi/ssl/SslRMIServerSocketFactory.html">SslRMIServerSocketFactory</a></code> class</li>
+  
+  <li><a href="socketfactory/SSLInfo.html">Using Java RMI with SSL</a></li>
+  
+  <li><a href="../security/jsse/JSSERefGuide.html">Java Secure Socket Extension (JSSE) Reference Guide</a></li>
+  
+  <li><a href="../security/jsse/samples/index.html">JSSE Sample Code</a></li>
+  
+</ul>
+  
+  </li>
+</ul>
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

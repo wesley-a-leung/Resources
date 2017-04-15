@@ -1,0 +1,2 @@
+UML Sequence diagram shows how to open a connection and access a URL with
+the URL and URLConnection classes.

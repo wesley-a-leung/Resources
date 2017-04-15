@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Setting Up the Web Site</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<p><small><a href="contents.html">&lt; Contents</a></small></p>
+<h1>Setting Up the Web Site</h1>
+<h2><br />
+<a name="intro" id="intro"></a>Introduction</h2>
+<p>Java Web Start leverages existing Internet technology, such as
+the HTTP protocol and Web servers, so existing infrastructure for
+deploying HTML-based contents can be reused to deploy Java
+Technology-based applications using Java Web Start.</p>
+<p>In order to deploy your application to client machines, you must
+make sure that all files containing your application are accessible
+through a Web server. This typically amounts to copying one or more
+JAR files, along with a JNLP file, into the Web server's
+directories. The set-up required for enabling the Web site to
+support Java Web Start is very similar to deploying HTML-based
+contents. The only caveat is that a new MIME type needs to be
+configured for the Web server.</p>
+<h2><a name="steps" id="steps"></a>Basic Steps</h2>
+<p><b>1. Configure the Web server to use the Java Web Start MIME
+type</b></p>
+<p>Configure the Web server so that all files with the
+<tt>.jnlp</tt> file extension are set to the
+<tt>application/x-java-jnlp-file</tt> MIME type.</p>
+<p>Most Web browsers use the MIME type returned with the contents
+from the Web server to determine how to handle the particular
+content. The server must return
+<tt>application/x-java-jnlp-file</tt> MIME type for JNLP files in
+order for Java Web Start to be invoked.</p>
+<p>Each Web server has a specific way in which to add MIME types.
+For example, for the Apache Web server you must add the following
+line to the <tt>.mime.types</tt> configuration file:</p>
+<p><tt>application/x-java-jnlp-file JNLP</tt></p>
+<p>Check the documentation for the specifics of your Web
+server.</p>
+<p><b>2. Create a JNLP file for the application</b></p>
+<p>The easiest way to create this file is to modify an existing
+JNLP file to your requirements.</p>
+<p>The syntax and format for the JNLP file is described in a later
+<a href="syntax.html">section</a>.</p>
+<p><b>3. Make the application accessible on the Web server</b></p>
+<p>Ensure your application's JAR files and the JNLP file are
+accessible at the URLs listed in the JNLP file.</p>
+<p><b>4. Create the web page that launches the application</b></p>
+<p>See the next chapter, <a href="launch.html">Creating the Web
+Page that launches the Application</a>, for details on step 4.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

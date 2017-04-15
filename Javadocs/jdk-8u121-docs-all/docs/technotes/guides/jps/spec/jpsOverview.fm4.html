@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Print Service API User Guide: 1 - Introduction</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<a href="JPSTOC.fm.html">CONTENTS</a> | <a href=
+"jpsOverview.fm3.html">PREV</a> | <a href=
+"attributes.fm.html">NEXT</a>
+<h2><a name="a998377" id="a998377">How Applications Use the Java
+Print Service</a></h2>
+<a name="a998411" id="a998411"><!-- --></a> A typical application
+using the Java Print Service API performs these steps to process a
+print request:
+<ol>
+<li>Obtain a suitable DocFlavor, which is a class that defines the
+format of the print data.</li>
+<li>Create and populate an AttributeSet, which encapsulates a set
+of attributes that describe the desired print service capabilities,
+such as the ability to print five copies, stapled, and
+double-sided.</li>
+<li>Lookup a print service that can handle the print request as
+specified by the DocFlavor and the attribute set.</li>
+<li>Create a print job from the print service.</li>
+<li>Call the print job&#39;s print method.</li>
+</ol>
+The application performs these steps differently depending on what
+and how it intends to print. The application can either send print
+data to a printer or to an output stream. The print data can either
+be a document in the form of text or images, or a Jav a object
+encapsulating 2D Graphics. If the print data is 2D graphics , the
+print job can be represented by either a DocPrintJob or a
+PrinterJob. If the print data is a document then a DocPrintJob must
+be used.
+<p><a name="a998678" id="a998678"><!-- --></a> The combinations of
+printing methods and print data formats yield a choice of six
+printing mechanisms:</p>
+<ul>
+<li><a name="a998412" id="a998412"><!-- --></a> Print a document to
+a printer by using a DocPrintJob and an implementation of
+PrintService</li>
+<li><a name="a998413" id="a998413"><!-- --></a> Stream a document
+to an output stream by using a DocPrintJob and a
+StreamPrintService</li>
+<li><a name="a998476" id="a998476"><!-- --></a> Print 2D graphics
+to a printer by using a DocPrintJob and an implementation of
+PrintService</li>
+<li><a name="a999368" id="a999368"><!-- --></a> Stream 2D graphics
+to an output stream by using a DocPrintJob and a
+StreamPrintService</li>
+<li><a name="a999363" id="a999363"><!-- --></a> Print 2D graphics
+to a PrintService using java.awt.print.PrinterJob</li>
+<li><a name="a998503" id="a998503"><!-- --></a> Stream 2D graphics
+to a StreamPrintService using java.awt.print.PrinterJob</li>
+</ul>
+<a name="a999220" id="a999220"><!-- --></a> The Attributes chapter
+and the Specifying Document Types chapter describe how to create an
+attribute set and specify document types for use with any of the
+print mechanisms. The <a href="printing.fm.html#a996958"><em>Printing and Streaming Documents</em></a> chapter discusses printing and streaming
+documents using DocPrintJob. The <a href=
+"printing2d.fm.html"><em>Printing and Streaming 2D
+Graphics</em></a> chapter explains printing and streaming 2D
+graphics using both DocPrintJob and PrinterJob.<br />
+<h3><a name="a998638" id="a998638"><!-- --></a> A Basic
+Example</h3>
+<a name="a998637" id="a998637"><!-- --></a> Most applications using
+the Java Print Service API will probably send a document directly
+to a printer, which the following code sample demonstrates:
+<p><a name="a998651" id="a998651"><!-- --></a></p>
+<pre class="codeblock">
+// Input the file
+FileInputStream textStream; 
+try { 
+        textstream = new FileInputStream("file.TXT"); 
+} catch (FileNotFoundException ffne) { 
+} 
+if (textstream == null) { 
+        return; 
+} 
+// Set the document type
+DocFlavor myFormat = DocFlavor.INPUT_STREAM.TEXT_PLAIN_ASCII;
+// Create a Doc
+Doc myDoc = new SimpleDoc(texttream, myFormat, null); 
+// Build a set of attributes
+PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet(); 
+aset.add(new Copies(5)); 
+aset.add(MediaSize.ISO_A4);
+aset.add(Sides.DUPLEX); 
+// discover the printers that can print the format according to the
+// instructions in the attribute set
+PrintService[] services =
+        PrintServiceLookup.lookupPrintServices(myFormat, aset);
+// Create a print job from one of the print services
+if (services.length &gt; 0) { 
+        DocPrintJob job = services[0].createPrintJob(); 
+        try { 
+                job.print(myDoc, aset); 
+        } catch (PrintException pe) {} 
+} 
+</pre>
+<a name="a998943" id="a998943"><!-- --></a> Although this sample
+only demonstrates one of the six ways to print, the other printing
+mechanisms work in a similar way. The rest of this guide discusses
+each piece of the printing process and all the printing mechanisms
+in more detail
+<p><a name="a997030" id="a997030"><!-- --></a></p>
+<p><a name="a996814" id="a996814"><!-- --></a></p>
+<br />
+<hr />
+<a href="JPSTOC.fm.html">CONTENTS</a> | <a href=
+"jpsOverview.fm3.html">PREV</a> | <a href=
+"attributes.fm.html">NEXT</a>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

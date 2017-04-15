@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>jhat</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T7:56:54Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Solaris, Linux, and OS X, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38209-05" name="partnum"/>
+<meta content="JSSOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="jinfo.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jmap.html">
+                Next</a><hr/>
+<div><a id="CIHIEAEE" name="CIHIEAEE"/>
+<div id="JSSOR745"><a id="CIHHJAGE" name="CIHHJAGE"/>
+<h1>jhat</h1>
+<p>Analyzes the Java heap. This command is experimental and unsupported.</p>
+<div><a id="sthref334" name="sthref334"/>
+<h2>Synopsis</h2>
+<p><b>jhat</b> [ <i>options</i> ] <i>heap-dump-file</i></p>
+<dl>
+<dt><i>options</i></dt>
+<dd>
+<p>The command-line options. See <a href="#CIHFJAIJ">Options</a>.</p>
+</dd>
+<dt><i>heap-dump-file</i></dt>
+<dd>
+<p>Java binary heap dump file to be browsed. For a dump file that contains multiple heap dumps, you can specify which dump in the file by appending <code dir="ltr">#&lt;number&gt;</code> to the file name, for example, <code dir="ltr">myfile.hprof#3</code>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref335" name="sthref335"/>
+<h2>Description</h2>
+<p>The <code dir="ltr">jhat</code> command parses a Java heap dump file and starts a web server. The <code dir="ltr">jhat</code> command lets you to browse heap dumps with your favorite web browser. The <code dir="ltr">jhat</code> command supports predesigned queries such as show all instances of a known class <code dir="ltr">MyClass</code>, and Object Query Language (OQL). OQL is similar to SQL, except for querying heap dumps. Help on OQL is available from the OQL help page shown by the <code dir="ltr">jhat</code> command. With the default port, OQL help is available at http://localhost:7000/oqlhelp/</p>
+<p>There are several ways to generate a Java heap dump:</p>
+<ul>
+<li>
+<p>Use the <code dir="ltr">jmap -dump</code> option to obtain a heap dump at runtime. See <a href="jmap.html#CEGBCFBC"><code dir="ltr">jmap</code>(1)</a>.</p>
+</li>
+<li>
+<p>Use the <code dir="ltr">jconsole</code> option to obtain a heap dump through <code dir="ltr">HotSpotDiagnosticMXBean</code> at runtime. See <a href="jconsole.html#CACDDJCH"><code dir="ltr">jconsole</code>(1)</a> and the <code dir="ltr">HotSpotDiagnosticMXBean</code> interface description at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/jre/api/management/extension/com/sun/management/HotSpotDiagnosticMXBean.html">http://docs.oracle.com/javase/8/docs/jre/api/management/extension/com/sun/management/HotSpotDiagnosticMXBean.html</a></code></p>
+</li>
+<li>
+<p>Heap dump is generated when an <code dir="ltr">OutOfMemoryError</code> is thrown by specifying the <code dir="ltr">-XX:+HeapDumpOnOutOfMemoryError</code> Java Virtual Machine (JVM) option.</p>
+</li>
+<li>
+<p>Use the <code dir="ltr">hprof</code> command. See the HPROF: A Heap/CPU Profiling Tool at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/samples/hprof.html">http://docs.oracle.com/javase/8/docs/technotes/samples/hprof.html</a></code></p>
+</li>
+</ul>
+</div>
+
+<div><a id="CIHFJAIJ" name="CIHFJAIJ"/><a id="CIHJGGFF" name="CIHJGGFF"/>
+<h2>Options</h2>
+<dl>
+<dt>-stack false|true</dt>
+<dd>
+<p>Turns off tracking object allocation call stack. If allocation site information is not available in the heap dump, then you have to set this flag to <code dir="ltr">false</code>. The default is <code dir="ltr">true</code>.</p>
+</dd>
+<dt>-refs false|true</dt>
+<dd>
+<p>Turns off tracking of references to objects. Default is <code dir="ltr">true</code>. By default, back pointers, which are objects that point to a specified object such as referrers or incoming references, are calculated for all objects in the heap.</p>
+</dd>
+<dt>-port <i>port-number</i></dt>
+<dd>
+<p>Sets the port for the <code dir="ltr">jhat</code> HTTP server. Default is 7000.</p>
+</dd>
+<dt>-exclude <i>exclude-file</i></dt>
+<dd>
+<p>Specifies a file that lists data members that should be excluded from the reachable objects query. For example, if the file lists <code dir="ltr">java.lang.String.value</code>, then, then whenever the list of objects that are reachable from a specific object <code dir="ltr">o</code> are calculated, reference paths that involve <code dir="ltr">java.lang.String.value</code> field are not considered.</p>
+</dd>
+<dt>-baseline <i>exclude-file</i></dt>
+<dd>
+<p>Specifies a baseline heap dump. Objects in both heap dumps with the same object ID are marked as not being new. Other objects are marked as new. This is useful for comparing two different heap dumps.</p>
+</dd>
+<dt>-debug <i>int</i></dt>
+<dd>
+<p>Sets the debug level for this tool. A level of 0 means no debug output. Set higher values for more verbose modes.</p>
+</dd>
+<dt>-version</dt>
+<dd>
+<p>Reports the release number and exits</p>
+</dd>
+<dt>-h</dt>
+<dd>
+<p>Displays a help message and exits.</p>
+</dd>
+<dt>-help</dt>
+<dd>
+<p>Displays a help message and exits.</p>
+</dd>
+<dt>-J<i>flag</i></dt>
+<dd>
+<p>Passes <code dir="ltr">flag</code> to the Java Virtual Machine on which the <code dir="ltr">jhat</code> command is running. For example, <code dir="ltr">-J-Xmx512m</code> to use a maximum heap size of 512 MB.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref336" name="sthref336"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="jmap.html#CEGBCFBC"><code dir="ltr">jmap</code>(1)</a></p>
+</li>
+<li>
+<p><a href="jconsole.html#CACDDJCH"><code dir="ltr">jconsole</code>(1)</a></p>
+</li>
+<li>
+<p>HPROF: A Heap/CPU Profiling Tool at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/samples/hprof.html">http://docs.oracle.com/javase/8/docs/technotes/samples/hprof.html</a></code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="jinfo.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jmap.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

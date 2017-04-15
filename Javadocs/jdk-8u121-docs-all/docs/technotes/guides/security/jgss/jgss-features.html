@@ -1,0 +1,681 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>JGSS Security Enhancement List</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Java Generic Security Services and Kerberos</h1>
+<h2>Feature Enhancements Added to Java</h2>
+<p><a href="../index.html">Security Contents</a></p>
+<!-- Body content copy begins here. This paragraph 
+is introductory stuff.   -->
+<p>This page describes and lists security features and enhancements
+added to the Java Generic Security Services API (Java GSS) and
+Kerberos, by major version number, from v1.4 through v1.8.</p>
+<p><b>NOTE:</b> The APIs and features described in this document
+are subject to change.</p>
+<!-- insert Java 7 release copy here -->
+<!-- 
+<hr size="3" noshade="noshade" width="100%" />
+<h2>Java Generic Security Services (Java GSS) and Kerberos
+Enhancements for Java SE 7</h2>
+<p>The following enhancements were added to the Java GSS/Kerberos implementation in Java SE 7.</p>
+-->
+<!-- insert new detailed copy here -->
+<!-- 
+<ul>
+<li><b>Unbound GSS/Kerberos</b><br />
+<br />
+In today's virtualized world, a service might be serving clients from different networks by exposing different service names. For example, consider virtual hosts in a web server where a single httpd server can host two different domains, such as http://www.sun.com and http://www.oracle.com.
+The Java SE 6 kerberos server design did not allow for this. It mandated a service principal. In Java SE 7, this is relaxed to allow multiple hostname/service binding. This is called unbound krb5.<br />
+<br />
+<li><b>Specific support for Krb5 Configuration Parameters</b><br />
+<br />
+In previous releases, it was not specifically stated which <code>krb5.conf</code> file parameters were supported by the Java GSS/Kerberos implementation. 
+In Java SE 7, the following are the supported parameters. They are presented under specific sections of <code>krb5.conf</code>, such as <code>[libdefaults]</code>.
+<br />
+<pre>
+[libdefaults]
+default_realm
+allow_weak_crypto
+ 
+dns_lookup_kdc
+dns_lookup_realm
+dns_fallback
+ 
+default_checksum
+safe_checksum_type
+ap_req_checksum_type
+default_keytab_name
+ 
+default_tkt_enctypes
+permitted_enctypes
+default_tgs_enctypes
+ 
+no_addresses
+noaddresses
+ 
+renewable
+proxiable
+forwardable
+ 
+kdc_default_options
+clockskew
+ 
+kdc_timeout
+udp_preference_limit
+ 
+[realms]
+  REALM.NAME = {
+    kdc =
+  }
+ 
+[capaths]
+  A = {
+    I = .
+    B = I
+  }
+ 
+[domain_realm]
+  domain=REALM
+</pre>
+<br />
+Here are the defaults for the <code>krb5.conf</code> file parameters.<br />
+<pre>
+no_addresses = true
+noaddresses = true
+dns_fallback = true (false in JDK 6)
+dns_lookup_kdc = true (false in JDK 6)
+dns_lookup_realm = true (false in JDK 6)
+allow_weak_crypto = true (new in JDK 7)
+kdc_timeout = 30000
+max_retries = 3
+udp_preference_limit = -1
+clockskew = 300
+renewable = false
+proxiable = false
+forwardable = false
+</pre>
+</li>
+</ul>
+-->
+<!-- end insert Java 7 release copy here -->
+<!-- insert Java 6 release copy here -->
+<hr size="3" noshade="noshade" width="100%" />
+<a name="jgssse8" id="jgssse8"></a>
+<h2>Java Generic Security Services API and Kerberos Enhancements
+for Java SE 8</h2>
+<p>The following enhancements were added to the Java GSS API and
+Kerberos implementation in Java SE 8.</p>
+<a name="MS-SFU" id="MS-SFU"></a>
+<h3>MS-SFU Kerberos Extensions for JDK 8</h3>
+<p>MS-SFU refers to Microsoft Kerberos 5 extensions that allow a
+service to obtain a Kerberos service ticket on behalf of a client.
+This is useful when the authentication between the client and this
+service is not established through Kerberos (thus the standard
+Kerberos delegation cannot be used) but the service needs to access
+a Kerberos-secured back-end server in the name of the client.</p>
+<p>Support for the MS-SFU extensions was added in JDK 8. This
+includes support for the S4U2self and S4U2proxy protocols, as
+defined in <a href=
+"http://msdn.microsoft.com/en-us/library/cc246071.aspx">MS-SFU</a>.</p>
+<p>This feature is very useful in secure enterprise deployments.
+For example, in a typical network service, the front end (such as a
+web server) often needs to access the back end (such as a database
+server) on behalf of a client. Normal Kerberos 5 supports
+delegation, but demands that all layers in this chain explicitly
+use Kerberos authentication at each step, which is not always
+possible or desirable.</p>
+<p>For example, if a client logs in to a web server using digest
+authentication, then there are no Kerberos credentials to be
+delegated, and normal step-by-step Kerberos 5 authentication cannot
+occur. However, because MS-SFU defines the Service for User
+(S4U2self) extension so that the front end can access the back end
+on behalf of the client without presenting the client's Kerberos
+credentials, MS-SFU could provide authentication in this
+situation.</p>
+<p>In addition, there are potential security gaps in the standard
+Kerberos 5 delegation mechanism (which Microsoft calls <em>open
+delegation</em>). In this mechanism, once the service account has
+the client's delegated credentials, it has access to any service.
+Thus, great care is needed with open delegation.</p>
+<p>In contrast, the MS-SFU delegation (implemented in S4U2proxy) is
+much more secure. Here the administrator can precisely control the
+services to which a particular service can delegate. (Microsoft
+calls this <em>constrained delegation</em>.)</p>
+<a name="MS-SFUdetail" id="MS-SFUdetail"></a>
+<h3>MS-SFU Implementation Details</h3>
+<p>The original Kerberos 5 protocol was defined in RFC 4120. MS-SFU
+adds two extensions to that protocol: Service for User to Self
+(S4U2self), which allows a front-end service to obtain a Kerberos
+service ticket to itself on behalf of a user, and Service for User
+to Proxy (S4U2proxy), which enables it to obtain a service ticket
+on behalf of the user to a second, back-end service.</p>
+<p>Together, these two extensions enable the front-end service to
+obtain a Kerberos service ticket on behalf of a user. The resulting
+service ticket can be used to access other services on the local or
+remote machines.</p>
+<p>A new public method (<code>GSSCredential::impersonate</code>)
+has been added to the <code>com.sun.security.jgss</code> package to
+implement these extensions.</p>
+<!-- insert new detailed copy here -->
+<a name="jgssse6" id="jgssse6"></a>
+<h2>Java Generic Security Services API and Kerberos Enhancements
+for Java SE 6</h2>
+<p>The following enhancements were added to the Java Generic
+Security Services API (Java GSS) and Kerberos implementation in
+Java SE 6.</p>
+<!-- insert new detailed copy here -->
+<ul>
+<li><b>Support for AES encryption type</b><br />
+<br />
+Java SE 5.0 supports the DES and Triple DES encryption types, with
+the following aliases:<br />
+<br />
+<code>des-cbc-md5<br />
+des-cbc-crc<br />
+des3-cbc-sha1<br />
+<br /></code> Starting from Java SE 6, support for the AES
+encryption type (AES128 and AES256Triple DES encryption type is
+specified ) in Java GSS/Kerberos is available. This improves
+interoperability of the Java SE Kerberos implementation with other
+Kerberos implementations, such as Solaris 10 and MIT
+Kerberos.<br />
+<br />
+The AES encryption type is specified in the Kerberos configuration
+file under the <code>libdefaults</code> section. It is specified as
+follows, with the following tags: <code>default_tkt_enctypes,
+default_tgs_enctypes, permitted_enctypes.</code><br />
+<br />
+(AES128 encryption type)<br />
+<br />
+<code>aes128-cts<br />
+aes128-cts-hmac-sha1-96<br />
+<br /></code> (AES256 encryption type)<br />
+<br />
+<code>aes256-cts<br />
+aes256-cts-hmac-sha1-96<br />
+<br /></code> <b>NOTE:</b> The JCE framework within JDK includes an
+ability to enforce restrictions regarding the cryptographic
+algorithms and maximum cryptographic strengths available to
+applications. Such restrictions are specified in "jurisdiction
+policy files." The jurisdiction policy files bundled in Java SE
+limit the maximum key length. Hence, to use the AES256 encryption
+type, you will need to install the JCE crypto policy with the
+unlimited version to allow AES with 256-bit key.<br />
+<br />
+For example, the <code>libdefaults</code> section in the
+configuration file might include the following.<br />
+<br />
+<code>default_tkt_enctypes = aes128-cts des3-cbc-sha1 des-cbc-md5
+des-cbc-crc<br />
+default_tgs_enctypes = aes128-cts des3-cbc-sha1 des-cbc-md5
+des-cbc-crc<br />
+permitted_enctypes = aes128-cts des3-cbc-sha1 des-cbc-md5
+des-cbc-crc<br />
+<br /></code> <code>default_tkt_enctypes</code> is used to specify
+the encryption types to use for the session key in the
+ticket-granting-ticket. It is used by the client to restrict the
+encryption types of session keys that will be used to communicate
+with the KDC. The default value is <code>des-cbc-md5 des-cbc-crc
+des3-cbc-sha1 aes128-cts</code> .<br />
+<br />
+<code>default_tgs_enctypes</code> is used to specify the encryption
+types to use for the session key in service tickets. It is used by
+the client to restrict the encryption types of session keys that
+are shared by the client and server. The default value is
+<code>des-cbc-md5 des-cbc-crc des3-cbc-sha1
+aes128-cts</code>.<br />
+<br />
+<code>permitted_enctypes</code> is used to specify the encryption
+types permitted to be used by a service. It is used by the server
+to restrict the encryption types of session keys that it will
+accept. The default value is <code>des-cbc-md5 des-cbc-crc
+des3-cbc-sha1 aes128-cts</code>.</li>
+<li><b>Support for RC4-HMAC encryption type</b><br />
+<br />
+Java SE 5.0 already supports DES and Triple DES encryption type,
+with following aliases:<br />
+<code>des-cbc-md5<br />
+des-cbc-crc<br />
+des3-cbc-sha1<br />
+<br /></code> Starting from Java SE 6, support for the RC4-HMAC
+encryption type in Java GSS/Kerberos is available. This improves
+interoperability of the Java SE Kerberos implementation with other
+Kerberos implementations, such as Windows, Solaris 10, and MIT
+Kerberos. Windows Active Directory supports RC4-HMAC as the default
+Kerberos encryption type.<br />
+<br />
+The RC4-HMAC encryption type is specified in the Kerberos
+configuration file under the <code>libdefaults</code> section. It
+is specified as follows, with the following tags:
+<code>default_tkt_enctypes, default_tgs_enctypes,
+permitted_enctypes.</code><br />
+<br />
+<code>rc4-hmac<br />
+arcfour-hmac<br />
+arcfour-hmac-md5<br />
+<br /></code> For example, the libdefaults section in the
+configuration file might include the following.<br />
+<br />
+<code>default_tkt_enctypes = aes128-cts des3-cbc-sha1 rc4-hmac
+des-cbc-md5 des-cbc-crc<br />
+default_tgs_enctypes = aes128-cts des3-cbc-sha1 rc4-hmac
+des-cbc-md5 des-cbc-crc<br />
+permitted_enctypes = aes128-cts des3-cbc-sha1 rc4-hmac des-cbc-md5
+des-cbc-crc<br />
+<br /></code> <code>default_tkt_enctypes</code> is used to specify
+the encryption types to use for the session key in the
+ticket-granting-ticket. It is used by the client to restrict the
+encryption types of session keys that will be used to communicate
+with the KDC. The default value is <code>des-cbc-md5 des-cbc-crc
+rc4-hmac des3-cbc-sha1 aes128-cts</code><br />
+<br />
+<code>default_tgs_enctypes</code> is used to specify the encryption
+types to use for the session key in service tickets. It is used by
+the client to restrict the encryption types of session keys that
+are shared by the client and server. The default value is
+<code>des-cbc-md5 des-cbc-crc rc4-hmac des3-cbc-sha1
+aes128-cts</code>.<br />
+<br />
+<code>permitted_enctypes</code> is used to specify the encryption
+types permitted to be used by a service. It is used by the server
+to restrict the encryption types of session keys that it will
+accept. The default value is <code>des-cbc-md5 des-cbc-crc rc4-hmac
+des3-cbc-sha1 aes128-cts</code>.<br />
+<br />
+<!-- ======================================= --></li>
+<li><b>Support for SPNEGO in the Java GSS API</b><br />
+<br />
+Java SE now supports SPNEGO mechanism in the Java GSS API.<br />
+<br />
+The Java GSS API is a framework that can support multiple security
+mechanisms; however GSS-API does not prescribe the method by which
+peers can establish whether they have a common security mechanism.
+The Simple and Protected GSS-API Negotiation (SPNEGO) mechanism is
+a pseudo security mechanism that enables GSS-API peers to securely
+negotiate a common security mechanism to be used. The SPNEGO
+protocol is used to negotiate which security mechanism should be
+adopted.<br />
+<br />
+Currently Java GSS applications specify a unique object identifier
+(OID) to select the underlying security mechanism. For example,
+Java GSS applications specify the <code>OID
+"1.2.840.113554.1.2.2</code> to use the Kerberos mechanism. This
+would be coded as follows:<br />
+<code>Oid mechOid = new Oid("1.2.840.113554.1.2.2");</code><br />
+<br />
+To select the SPNEGO security mechanism, Java GSS applications
+would need to specify the SPNEGO mechanism <code>OID
+"1.3.6.1.5.5.2".</code> <code>Oid mechOid = new
+Oid("1.3.6.1.5.5.2);</code><br />
+<br />
+Support for SPNEGO improves interoperability with Microsoft
+products. The SPNEGO protocol is heavily used to interoperate with
+Microsoft server over HTTP, to support HTTP-Based Cross-Platform
+Authentication via the Negotiate Protocol. Java SE now supports the
+SPNEGO authentication scheme in HTTP as well. Check the list of new
+networking features for Java SE 6.<br />
+<br />
+<!-- ======================================= --></li>
+<li><b>Support for new pre-authentication mechanisms</b><br />
+<br />
+Java SE now includes support for the new pre-authentication
+mechanisms.<br />
+<br />
+Kerberos is a protocol for verifying the identity of principals.
+The Kerberos protocol provides a mechanism called
+pre-authentication for proving the identity of a principal and for
+better protecting the long-term secret of the principal.<br />
+<br />
+The Kerberos specification defines a framework for Kerberos
+pre-authentication mechanisms. The latest Kerberos specification
+defines new pre-authentication mechanisms to notify the client
+which key to use, salt updates, and other additional parameters.
+The new pre-authentication mechanisms indicate a requirement for
+additional pre-authentication.<br />
+<br />
+With the support of new pre-authentication mechanisms, Java
+GSS/Kerberos client can now handle the salt value updates when
+required.<br />
+<br />
+<!-- ======================================= --></li>
+<li><b>Native platform GSS integration</b><br />
+<p>This feature allows Java applications to take advantage of
+features in native GSS implementation available on the platform. To
+enable Java GSS to delegate to the native GSS library and its list
+of native mechanisms, set the system property
+"sun.security.jgss.native" to true. When enabled, Java GSS would
+look for a native GSS library using the operating system-specific
+name. For example, for Solaris, libgss.so or for Linux,
+libgssapi.so. If the desired GSS library has a different name or is
+not located under a directory for system libraries, then its full
+path should be specified using the system property
+"sun.security.jgss.lib".</p>
+<p>For Java SE 6, native GSS support is limited to Solaris and
+Linux. Setting these system properties on platforms where native
+GSS integration is not supported will be ignored.</p>
+<p>Unlike the default Java GSS implementation, which relies on the
+JAAS KerberosLoginModule for initial credential acquisition, when
+using native GSS, the initial credential should be acquired
+beforehand. That is, call kinit prior to calling JGSS APIs.</p>
+<p>In addition, when performing operations as a particular Subject,
+for example, Subject.doAs(...) or Subject.doAsPrivileged(...), the
+to-be-used GSSCredential should be added to Subject's private
+credential set. Otherwise, the GSS operations will fail since no
+credential is found.<br /></p>
+</li>
+<li><b>JAAS Login Entry Names Changes</b><br />
+<br />
+The JAAS login entry names for both SunJSSE and JGSS are unified,
+and can be specified separately for different mechanisms. For
+Kerberos 5, the names are
+<pre>
+com.sun.security.jgss.krb5.initiate
+com.sun.security.jgss.krb5.accept
+
+</pre></li>
+</ul>
+<!-- old outline copy -->
+<!-- 
+<ul>
+<li><b>Support for AES Encryption Type</b>
+
+<br><br>Starting from Java SE 6, support for AES encryption type (AES128 and AES256) in Java GSS/Kerberos is available. This improves interoperability of the Java SE Kerberos implementation with other Kerberos implementations, such as Solaris 10 and MIT Kerberos.<br><br></li>
+
+<li><b>Support for RC4-HMAC Encryption Type</b>
+
+<br><br>Starting from Java SE 6, support for RC4-HMAC encryption type in Java GSS/Kerberos is available. This improves interoperability of the Java SE Kerberos implementation with other Kerberos implementations, such as Windows, Solaris 10 and MIT Kerberos. Windows Active Directoiory supports RC4-HMAC as the default Kerberos encryption type.<br><br></li>
+
+<li><b>Support for SPNEGO in Java GSS</b>
+
+<br><br>Support for SPNEGO mechanism in Java GSS is now available. The Simple and Protected GSS-API Negotiation (SPNEGO) mechanism is a pseudo security mechanism 
+that enables GSS-API peers to securely negotiate a common security mechanism to be used.<br><br>
+
+Java SE 6 also supports SPNEGO authentication scheme in HTTP.<br><br></li>
+
+<li><b>Support for new Pre-Authentication Mechanisms</b>
+
+<br><br>Java GSS/Kerberos now includes support for the new pre-authentication mechanisms as described in the latest Kerberos specification.<br><br></li>
+
+<li><b>Native Platform GSS Integration</b>
+
+<br><br>This feature allows Java GSS applications to take advantage of features in the native GSS implementation available on the platform.<br><br></li>
+
+</ul>
+
+-->
+<!-- end insert Java 6 release copy here -->
+<!-- insert Java tiger release copy here -->
+<hr size="3" noshade="noshade" width="100%" />
+<a name="jgssse5" id="jgssse5"></a>
+<h2>Java Generic Security Services API and Kerberos Enhancements
+for Java SE 5.0</h2>
+<!--
+
+Fixed 4837364: KerberosLoginModule should support TGT renews
+Fixed 4642044: add SunJSSE support for the Kerberos cipher suites
+        (com.sun.net.ssl.client/com.sun.net.ssl.server index names
+        for Krb5LoginModule)
+-->
+<p>The following enhancements were added to the Java Generic
+Security Services API (Java GSS) and Kerberos implementation in
+Java SE 5.0.</p>
+<a name="tripledes" id="tripledes"></a>
+<ul>
+<li><b>Support for Triple DES encryption type</b><br />
+Prior to Java SE 5.0, only the DES encryption type was supported.
+Java SE 5.0 supports both DES and Triple DES encryption types. This
+improves interoperability of the Java SE Kerberos implementation
+with other Kerberos implementations, such as Solaris 10 and MIT
+Kerberos.
+<p>The Triple DES encryption type is specified in the Kerberos
+configuration file under the "<tt>libdefaults</tt>" section. It is
+specified as "<tt>des3-cbc-sha1</tt>" with the following tags:
+<tt>default_tkt_enctypes</tt>, <tt>default_tgs_enctypes</tt>,
+<tt>permitted_enctypes</tt>. "<tt>dec3-cbc-sha1</tt>" has the
+following aliases:</p>
+<pre>
+des3-hmac-sha1
+des3-cbc-sha1-kd
+des3-cbc-hmac-sha1-kd
+
+</pre>
+For example, the libdefaults section in the configuration file
+might include the following.
+<pre>
+default_tkt_enctypes = des3-cbc-sha1 des-cbc-md5 des-cbc-crc
+default_tgs_enctypes = des3-cbc-sha1 des-cbc-md5 des-cbc-crc
+permitted_enctypes   = des3-cbc-sha1 des-cbc-md5 des-cbc-crc
+
+</pre>
+<tt>default_tkt_enctypes</tt> is used to specify the encryption
+types to use for the session key in the ticket-granting-ticket. It
+is used by the client to restrict the encryption types of session
+keys that will be used to communicate with the KDC. The default
+value is "<tt>des-cbc-md5 des-cbc-crc des3-cbc-sha1</tt>".
+<p><tt>default_tgs_enctypes</tt> is used to specify the encryption
+types to use for the session key in service tickets. It is used by
+the client to restrict the encryption types of session keys that
+are shared by the client and server. The default value is
+"<tt>des-cbc-md5 des-cbc-crc des3-cbc-sha1</tt>".</p>
+<p><tt>permitted_enctypes</tt> is used to specify the encryption
+types permitted to be used by a service. It is used by the server
+to restrict the encryption types of session keys that it will
+accept. The default value is "<tt>des-cbc-md5 des-cbc-crc
+des3-cbc-sha1</tt>".</p>
+</li>
+<li><b>TCP vs. UDP Preference Configuration</b><br />
+Java SE now supports the use of the "<tt>udp_preference_limit</tt>"
+property in the Kerberos configuration file (<tt>krb5.conf</tt>).
+<p>When sending a message to the KDC, the Java SE Kerberos library
+will use TCP if the size of the message is larger than
+<tt>udp_preference_list</tt>. If the message is smaller than
+<tt>udp_preference_list</tt>, then UDP will be tried at most three
+times. If the KDC indicates that the request is too big, the Java
+SE Kerberos library will use TCP.</p>
+</li>
+<li><b>IPv6 Support in Kerberos</b><br />
+Java SE now supports IPv6 addresses in Kerberos tickets. Prior to
+Java SE 5, only IPv4 addresses were supported in tickets.</li>
+<li><strong>TGT Renewals</strong><br />
+The <a href=
+"http://www.oracle.com/technetwork/java/javase/jaas/index.html">Java
+Authentication and Authorizaton Server (JAAS)</a> Kerberos login
+module in JDK 5.0, <a href=
+"../../../../jre/api/security/jaas/spec/com/sun/security/auth/module/Krb5LoginModule.html">
+<tt>Krb5LoginModule</tt></a>, now supports Ticket Granting Ticket
+(TGT) renewal. This allows long-running services to renew their TGT
+automatically without user interaction or requiring the services to
+restart.
+<p>With this feature, if <tt>Krb5LoginModule</tt> obtains an
+expired ticket from the ticket cache, then the TGT will be
+automatically renewed and be added to Subject of the caller who
+requested the ticket. If the ticket cannot be renewed for any
+reason, then <tt>Krb5LoginModule</tt> will use its configured
+callback handler to retrieve a username and password to acquire a
+new TGT.</p>
+<p>To use this feature, configure <tt>Krb5LoginModule</tt> to use
+the ticket cache and set the newly introduced <tt>renewTGT</tt>
+option to <tt>true</tt>. Here is an example of a JAAS login
+configuration file that requests TGT renewal.</p>
+<pre>
+server {
+  com.sun.security.auth.module.Krb5LoginModule required
+        principal=<em>principal@your_realm</em>
+        useTicketCache=true
+        renewTGT=true;
+};
+
+</pre>
+Note that if <tt>renewTGT</tt> is set to true, then
+<tt>useTicketCache</tt> must also be set to true; otherwise, it
+results in a configuration error.</li>
+<li><strong>Login Entry Names for SunJSSE</strong><br />
+In JDK 5.0, the SunJSSE provider has added support for the Kerberos
+cipher suites, as described in <a href=
+"http://www.ietf.org/rfc/rfc2712.txt">RFC 2712</a> and the section
+<a href="../jsse/JSSERefGuide.html#KRBRequire">Kerberos
+Requirements</a> in the JSSE Reference Guide. The following JAAS
+login configuration index names are reserved for this feature.
+<pre>
+com.sun.net.ssl.server
+com.sun.net.ssl.client
+</pre>
+When a JSSE application uses the Kerberos cipher suites without an
+explicit JAAS program, the SunJSSE provider will use these index
+names to find and configure the JAAS login module to acquire the
+necessary Kerberos credentials. For example, such an application
+might have the following JAAS configuration file.
+<pre>
+ com.sun.net.ssl.server {
+  com.sun.security.auth.module.Krb5LoginModule required
+        principal=<em>service_principal@your_realm</em>
+        useKeyTab=true
+        keyTab=<em>keytab_name</em>
+        storeKey=true;
+};
+
+</pre>
+If the entry is not found, then the default "other" index name will
+be used. The service name for TLS is "host". For example, a TLS
+service running on a machine named "raven.example.com" in the realm
+named "KRBNT-OPERATIONS.EXAMPLE.COM" would have the service
+principal name
+<pre>
+host/raven.example.com@KRBNT-OPERATIONS.EXAMPLE.COM
+
+</pre>
+There are no restrictions on the TLS client; it may use any valid
+Kerberos principal name.
+<p>When a JSSE application uses the Kerberos cipher suites with an
+explicit JAAS program, it can use any index name, including the
+ones listed previously.</p>
+</li>
+</ul>
+<!-- end insert Java tiger release copy here -->
+<hr size="3" noshade="noshade" width="100%" />
+<h2>New Features in Java GSS for Java 2 SDK, Standard Edition, v
+1.4.2</h2>
+<ul>
+<li><b>Configurable Kerberos Settings</b><br />
+The Kerberos Key Distribution Center (KDC) name and realm settings
+are provided in the Kerberos configuration file or via the system
+properties <code>java.security.krb5.kdc</code> and
+<code>java.security.krb5.realm</code>. In previous releases,
+changes to the Kerberos configuration values would only take effect
+when an application was restarted.
+<p>In the 1.4.2 release of the Java platform, a new boolean option
+<code>refreshKrb5Config</code> can be specified in the entry for
+<code>Krb5LoginModule</code> in the JAAS configuration file. If
+this option is set to <code>true</code>, then the configuration
+values will be refreshed before the <code>login</code> method of
+the <code>Krb5LoginModule</code> is called.</p>
+</li>
+<li><b>Support for Slave Kerberos Key Distribution Center</b><br />
+Kerberos allows the use of slave KDCs so that if the master KDC is
+unavailable, the slave KDCs will respond to user requests. In
+earlier releases of Java SE, Sun's implementation of Kerberos tried
+only the master KDC and would give up if there was no response
+within the default KDC timeout specified in the Kerberos
+configuration file, or 30 seconds if no timeout had been specified.
+<p>With this 1.4.2 release, Sun's implementation of Kerberos will
+retry with the slave KDCs, if they are specified. The slave KDCs
+can be specified in the Kerberos configuration file or via a list
+of KDCs separated by a colon (<code>:</code>) in the system
+property <code>java.security.krb5.kdc</code>.</p>
+</li>
+<li><b>Support TCP for Kerberos Key Distribution Center
+Transport</b><br />
+Sun's implementation of Kerberos implements Kerberos version 5
+according to <a href="http://www.ietf.org/rfc/rfc1510.txt">RFC
+1510</a> and uses UDP transport for ticket requests. A new Internet
+draft updates this RFC. One of the added features is required
+support for TCP as a transport in addition to UDP. As a result, in
+cases where Kerberos tickets exceed the UDP packet size limit, the
+KDC would return an error code indicating that the request should
+be resent over TCP.
+<p>In the current 1.4.2 release, Sun's implementation of Kerberos
+now supports automatic fallback to TCP. Therefore, if the Kerberos
+ticket request using UDP fails and the KDC returns the error code
+<code>KRB_ERR_RESPONSE_TOO_BIG</code>, then TCP is automatically
+the default transport. <!-- <P>
+    The current draft which updates RFC 1510, is available online: 
+<A href="http://www.ietf.org/internet-drafts/draft-ietf-krb-wg-kerberos-clarifications-04.txt">http://www.ietf.org/internet-drafts/draft-ietf-krb-wg-kerberos-clarifications-04.txt</A>. 
+    </P></font> --></p>
+</li>
+<li><b>Kerberos Service Ticket in the Subject's Private
+Credentials</b><br />
+The Kerberos service ticket is now stored in the Subject's private
+credentials. This change allows application developers access to
+the service ticket so that it can be used outside the JGSS (for
+example, in native applications or for proprietary uses). In
+addition, the service ticket can now be reused if the application
+tries to establish a security context to the same service again.
+The service ticket should be valid for it to be reusable.
+<p>Previously, when using Java Generic Security Services API (JGSS)
+over Kerberos V5, if the <code>
+<!-- <a href="/j2se/1.4.2/docs/api/org/ietf/jgss/package-summary.html"> -->
+useSubjectCredsOnly <!-- </A> --></code> property was set to true,
+then the Ticket Granting Ticket (TGT) was retrieved from the
+Subject and used to establish a GSS Security context. The service
+ticket obtained was not stored in the Subject. Now the service
+ticket is also stored in the Subject if
+<code>useSubjectCredsOnly</code> is true.</p>
+<p>If a client application searches through the Subject's private
+credentials, in previous releases it would find only the TGT. As of
+this release, it also will find any Service tickets obtained.</p>
+<p>The bug report associated with this change is 4688866.</p>
+</li>
+</ul>
+<p><!-- Body text ends here -->
+<!-- ============================================================== --></p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

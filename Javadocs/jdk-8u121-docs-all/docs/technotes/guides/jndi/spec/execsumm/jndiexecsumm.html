@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title></title>
+<link rel="stylesheet" type="text/css" href="../../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<a name="a130874" id="a130874"></a>
+
+<h1>Java Naming and Directory Interface</h1>
+
+<p><a name="a130875" id="a130875"></a></p>
+<i>The Java Naming and Directory Interface technology
+(<strong>JNDI</strong>) provides a unified interface to multiple
+naming and directory services. As part of the Java enterprise API
+set, <strong>JNDI</strong> enables seamless connectivity to
+heterogeneous enterprise naming and directory services. Developers
+can now build powerful and portable directory-enabled Java
+applications using this industry-standard interface.</i>
+<p><i><a name="a130592" id="a130592"></a> The <strong>JNDI</strong>
+specification was developed by Sun Microsystems with a number of
+leading industry partners, including Novell, Netscape, SCO, and
+BEA.</i></p>
+<p><i><a name="a130596" id="a130596"></a> <img alt="Duke icon"
+align="left" src="jndiexecsumm.doc.anc.gif" /></i></p>
+<i><a name="a130547" id="a130547"></a></i>
+<p><i><br clear="left" /></i></p>
+<h2><i>Technical Overview</i></h2>
+<p><i><a name="a129732" id="a129732"></a> Directory services play a
+vital role in Intranets and Internets by providing access to a
+variety of information about users, machines, networks, services,
+and applications. By its very nature, a directory service
+incorporates a naming facility for providi ng human understandable
+namespaces that characterize the arrangement and identification of
+the various entities.</i></p>
+<p><i><a name="a129713" id="a129713"></a> The computing environment
+of an enterprise typically consists of several naming facilities
+often representing different parts of a <em>composite</em>
+namespace. For example, the Internet Domain Name System (DNS) may
+be used as the top-level naming facilit y for different
+organizations within an enterprise. The organizations themselves
+may use a directory service such as LDAP or NDS or NIS. From a
+user's perspective, there is one namespace consisting of composite
+names. URLs are examples of composite names because they span
+namespaces of multiple naming facilities. Applications which use
+directory services must support this user perspective.</i></p>
+<p><i><a name="a129714" id="a129714"></a> Many Java application
+developers can benefit from a directory service API that is not
+only independent of the particular directory or naming service
+implementation, but also enables seamless access to directory
+objects through multiple naming facilities. In fact, an application
+can attach its own objects to the namespace. Such a facility
+enables any Java application to discover and retrieve objects of
+any type.</i></p>
+<p><i><a name="a129715" id="a129715"></a> <strong>JNDI</strong>
+provides directory and naming functionality to Java applications.
+It is defined to be independent of any specific directory service
+implementation. Thus, a variety of directories, new and existing
+ones in the installed base, can be a ccessed in a common
+way.</i></p>
+<p><i><a name="a129717" id="a129717"></a> <strong>JNDI</strong>
+also defines a service provider's interface which allows various
+directory and naming service drivers to be plugged in.</i></p>
+<i><a name="a129718" id="a129718"></a></i>
+<h2><i>Examples</i></h2>
+<p><i><a name="a130556" id="a130556"></a> Here are two examples to
+briefly illustrate some of the more commonly used features of
+<strong>JNDI</strong>.</i></p>
+<p><i><a name="a129719" id="a129719"></a> An application that wants
+to access a printer needs the corresponding printer object. This is
+simply done as follows:</i></p>
+<pre>
+<i>prt = (Printer)
+        building7.lookup("puffin");
+prt.print(document);
+</i>
+</pre>
+<p><i><a name="a129722" id="a129722"></a> where
+<code>building7</code> is the naming context representing a
+physical building that provides a convenient context for referring
+to the printers.</i></p>
+<p><i><a name="a129723" id="a129723"></a> <strong>JNDI</strong>
+does all the work of locating the information needed to construct
+the printer object.</i></p>
+<p><i><a name="a129724" id="a129724"></a> As another example, an
+application that wants to find a person's phone numbers, which are
+stored in the organization's directory, can simply do:</i></p>
+<pre>
+<i>String[] attrs = {"workPhone", "cellPhone", "faxNumber"};
+bobsPhones = directory.getAttributes("cn=Bob,o=Widget,c=US", attrs);
+</i>
+</pre>
+<p><i><a name="a130584" id="a130584"></a> If there may be several
+Bobs in the Widget organization, the application can search the
+organization's directory to find the right Bob as follows:</i></p>
+<pre>
+<i>bob = directory.search("o=Widget,c=US","(cn=Bob)", controls);
+</i>
+</pre>
+<p><i><a name="a130487" id="a130487"></a> Other application
+examples include access to security credentials stored in an
+enterprise-wide directory service, access to electronic mail
+addresses, and access to addresses of a variety of existing
+services such as databases, network file systems, etc.</i></p>
+<i><a name="a130115" id="a130115"></a></i>
+<h2><i>Overview of Interfaces</i></h2>
+<i><a name="a130117" id="a130117"></a></i>
+<h3><i>The Naming Interface - javax.naming</i></h3>
+<p><i><a name="a130159" id="a130159"></a> <code>Context</code> is
+the core interface that specifies a naming context. It defines
+basic operations such as adding a name-to-object binding, looking
+up the object bound to a specified name, listing the bindings,
+removing a name-to-object binding, crea ting and destroying
+subcontexts of the same type, <em>etc.</em></i></p>
+<p><i><a name="a130160" id="a130160"></a>
+<code>Context.lookup()</code> is the most commonly used operation.
+The context implementation can return an object of whatever class
+is required by the Java application. For example, an application
+might use the name of a printer to look up the correspond ing
+<code>Printer</code> object, and then print to it directly:</i></p>
+<pre>
+<i>Printer printer = (Printer)
+ ctx.lookup("treekiller");
+printer.print(report);
+</i>
+</pre>
+<p><i><a name="a130576" id="a130576"></a> The application is not
+exposed to any naming service implementation. In fact, a new type
+of naming service can be introduced without requiring the
+application to be modified or even disrupted if it is
+running.</i></p>
+<i><a name="a130165" id="a130165"></a></i>
+<h3><i>The Directory Interface - javax.naming.directory</i></h3>
+<p><i><a name="a130193" id="a130193"></a> <em>Directory Objects and
+Attributes.</em> The <code>DirContext</code> interface enables the
+directory capability by defining methods for examining and updating
+attributes associated with a directory object. Each directory
+object contains a set of zero or more objects of class
+<code>Attribute</code>. Each attribute is denoted by a string
+identifier and can have zero or more values of any type.</i></p>
+<p><i><a name="a130195" id="a130195"></a> <em>Directory Objects as
+Naming Context.</em> The <code>DirContext</code> interface also
+behaves as a naming context by extending the <code>Context</code>
+interface. This means that any directory object can also provide a
+naming context. In addition to a directory object keeping a variety
+of information about a person, for example, it is also a natural
+naming context for resources associated with that person: a
+person's printers, file system, calendar, <em>etc.</em></i></p>
+<p><i><a name="a130198" id="a130198"></a> <em>Searches.</em> The
+<code>DirContext</code> interface supports content-based searching
+of directories. In the simplest and most common form of usage, the
+application specifies a set of attributes - possibly with specific
+values - to match. It then invo kes the
+<code>DirContext.search()</code> method on the directory object,
+which returns the matching directory objects along with the
+requested attributes.</i></p>
+<i><a name="a130792" id="a130792"></a></i>
+<h3><i>The Event Interface - javax.naming.event</i></h3>
+<p><i><a name="a130808" id="a130808"></a> <em>Naming Events</em>.
+The <code>NamingEvent</code> class represents an event generated by
+a naming or directory service. Examples of a
+<code>NamingEvent</code> are a change to a directory entry's
+attribute or a rename of a directory entry.</i></p>
+<p><i><a name="a130898" id="a130898"></a> <em>Naming
+Listeners</em>. A <code>NamingListener</code> is an object that
+registers interests in <code>NamingEvent</code>s. Listeners
+register with a context to receive notification of changes in the
+context, its children, or its subtree.</i></p>
+<i><a name="a130796" id="a130796"></a></i>
+<h3><i>The LDAP Interface - javax.naming.ldap</i></h3>
+<p><i><a name="a130837" id="a130837"></a> The
+<code>LdapContext</code> interface allows an application to use
+LDAP v3-specific features, including <em>extensions</em> and
+<em>controls</em>, not already covered by the more generic
+<code>DirContext</code> interface.</i></p>
+<i><a name="a130245" id="a130245"></a></i>
+<h3><i>The Service Provider Interface - javax.naming.spi</i></h3>
+<p><i><a name="a130253" id="a130253"></a> The <strong>JNDI</strong>
+SPI provides the means by which different naming/directory service
+providers can develop and hook up their implementations so that the
+corresponding services are accessible from applications that use
+<strong>JNDI</strong>. In add ition, because <strong>JNDI</strong>
+allows specification of names that span multiple namespaces, if one
+service provider implementation needs to interact with another in
+order to complete an operation, the SPI provides methods that allow
+different provider implementations to cooperate to complete client
+<strong>JNDI</strong> operations.</i></p>
+<i><a name="a130278" id="a130278"></a><br /></i>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

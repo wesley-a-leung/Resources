@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Find Bottlenecks</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="performissues001.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="performissues003.html">
+                Next</a><hr/><a id="CJAGIGEH" name="CJAGIGEH"/>
+<div id="JSTGD302">
+<h1><span>4.2</span> Find Bottlenecks</h1>
+<p>Different applications have different bottlenecks. For some applications, a bottleneck may be waiting for I/O or networking, it may be synchronization between threads, or it may be actual CPU usage. For others, a bottleneck may be garbage collection times. It is possible that an application has more than one bottleneck.</p>
+<p>One way to find out the application bottlenecks is to look at the <b>Events</b> tab. This is an advanced tab, and there are a few things to do. First, click the <b>Events</b> tab, which opens the <b>Event Types</b> tab on the left side of the JFR window. This is where you select the events that you are interested in looking at. For now, select all Java Application events except for <b>Statistics</b> and <b>Allocation,</b> as shown in <a href="#CJADBFCH">Figure 4-1</a>.</p>
+<div id="JSTGD303"><a id="CJADBFCH" name="CJADBFCH"/>
+<p><b><i>Figure 4-1 Find Bottlenecks - Java Application Events</i></b></p>
+<img alt="Description of Figure 4-1 follows" longdesc="img_text/jfr-eventtypes.htm" src="img/jfr-eventtypes.png"/><br/>
+<a href="img_text/jfr-eventtypes.html" id="sthref47" name="sthref47">Description of "Figure 4-1 Find Bottlenecks - Java Application Events"</a><br/>
+<br/></div>
+
+<p>Now, in all the <b>Events</b> tabs, you will only see these events. Next, from the <b>Graph</b> tab, look at the main threads for the Java application, as shown in <a href="#CJAIFEEG">Figure 4-2</a>.</p>
+<div id="JSTGD304"><a id="CJAIFEEG" name="CJAIFEEG"/>
+<p><b><i>Figure 4-2 Find Bottlenecks - Main Threads from the Graph Tab</i></b></p>
+<img alt="Description of Figure 4-2 follows" longdesc="img_text/jfr-eventgraph.htm" src="img/jfr-eventgraph.png"/><br/>
+<a href="img_text/jfr-eventgraph.html" id="sthref48" name="sthref48">Description of "Figure 4-2 Find Bottlenecks - Main Threads from the Graph Tab"</a><br/>
+<br/></div>
+
+<p>The <b>Graph</b> tab may be hard to grasp at first. Each row is a thread, and each thread can have several lines. In <a href="#CJAIFEEG">Figure 4-2</a>, each thread has a line, which represents the Java Application events that were enabled in the <b>Event Types</b> tab for this recording. The selected Java Application events all have the important property that they are all thread stalling events. Thread stalling indicates that the thread was not running your application during the event and they are all duration events. The duration event measures the duration the application was not running.</p>
+<p>From the <b>Event Types</b> tab, look at the color of each event. For example, <i>yellow</i> represents <b>Java Monitor Wait</b> events. The yellow part is when threads are waiting on an object. This often means that the thread is idle, perhaps waiting for a task. <i>Red</i> represents <b>Java Monitor Blocked</b> events or synchronization events. If your Java application's important threads spend a lot of time being blocked, then that means that a critical section of the application is single threaded, which is a bottleneck. <i>Blue</i> represents <b>Socket Reads</b> and <b>Socket Writes</b> events. Again, if the Java application spends a lot of time waiting for sockets, then the main bottleneck may be in the network or with the other machines that the application communicates.</p>
+<p>From <a href="#CJAIFEEG">Figure 4-2</a>, <i>green</i> represents parts that don't have any events. The <i>Green</i> part means that the thread is not sleeping, waiting, reading to or from a socket, or not being blocked. In general, this is where the application code is run. If your Java application's important threads are spending a lot of time without generating any application events, then the bottleneck in the application is the time spent executing code, or the CPU itself.</p>
+<p><i>Note:</i> For most Java Application event types, only events longer than 20 ms are recorded (this threshold can be modified when starting the flight recording). To summarize, the areas may not have recorded events because the application is doing a lot of short tasks, such as writing to a file (a small part at a time) or spending time in synchronization for very short amounts of time.</p>
+<p>Each of the previous bottlenecks can be further investigated within the flight recording.</p>
+<p>The <span>Event</span> tab does not show garbage collections and weather garbage collections may be a bottleneck. See the next topic about garbage collection performance.</p>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="performissues001.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="performissues003.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

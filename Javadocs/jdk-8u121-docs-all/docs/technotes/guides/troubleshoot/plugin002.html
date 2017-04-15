@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Troubleshoot Applets</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="plugin001.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="plugin003.html">
+                Next</a><hr/><a id="BABCFFHE" name="BABCFFHE"/>
+<div id="JSTGD505">
+<h1><span>16.2</span> Troubleshoot Applets</h1>
+<p>For modern browsers which support tabs, each tab might be a separate browser process. If a Java applet is embedded in a browser page and the next generation plugin is being used, usually the process associated with the browser tab creates a JVM within the process (browser VM). The browser VM will create another JVM process (client VM) which will run the applet and manage the applet's life cycle. The client VM is a Java process (<code dir="ltr">java.exe</code> on Windows and <code dir="ltr">java</code> on Oracle Solaris/Linux platforms).</p>
+<p>The following are some problems with Applets and troubleshooting techniques.</p>
+<ul>
+<li>
+<p><a href="#BABIDCCF">Plugin Cheat Sheet for Applet Start</a></p>
+</li>
+<li>
+<p><a href="#BABDIDHB">Browser or Java Process Crash</a></p>
+</li>
+<li>
+<p><a href="#BABFEGJJ">Unresponsive Web page</a></p>
+</li>
+</ul>
+<a id="BABIDCCF" name="BABIDCCF"/>
+<div id="JSTGD506">
+<h2><span>16.2.1</span> Plugin Cheat Sheet for Applet Start</h2>
+<p>If your applet does not start, make sure to enable tracing and the Java console as explained previously. Then use hits below to find reason why applet does not work.</p>
+<p>Do you get a trace file generated or see the Java console?</p>
+<ul>
+<li>
+<ul>
+<li>
+<p><b>No, I don't get a trace file</b></p>
+<p>Check if Java technology is detected, see</p>
+<ul>
+<li>
+<p><b>Yes</b></p>
+<p>Look at JVM browser issues from</p>
+</li>
+<li>
+<p><b>No</b></p>
+<p>It is likely to be a configuration issue. See for common configuration problems and if it does not help, look at JVM browser issues from</p>
+</li>
+</ul>
+</li>
+<li>
+<p><b>Yes, I have a trace file</b></p>
+<p>It is unlikely to be a configuration issue (unless you have the new generation plugin disabled). The problem is likely to be specific to this applet. Try to launch some other applets to confirm. Look at JVM client issues from</p>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<a id="BABDIDHB" name="BABDIDHB"/>
+<div id="JSTGD507">
+<h2><span>16.2.2</span> Browser or Java Process Crash</h2>
+<p>A crash could be caused by a platform or application issue.</p>
+<p>Typically, if a crash happens in the JVM then there should be hs_err_*log file created in the current working directory (on Windows it is often placed on the desktop). It is the same crash report file as for standalone applications. For details about the report file, see <a href="felog.html#fatal_error_log_vm">Appendix A</a>.</p>
+<p>If you can spot native libraries loaded from the deployment cache directory, especially if you see code from these libraries in the crash stack, it is very likely to be a bug in the application.</p>
+<p>Otherwise it is a JRE bug and needs to be reported to <a href="http://bugs.java.com">Bug Database</a>.</p>
+<p>The following are two scenarios to consider for a crash by platform or application issue.</p>
+<ul>
+<li>
+<p><b>JVM browser issues:</b> Get more details about a JVM running in the browser process. Set the following two environment variables before starting the browser:</p>
+<pre dir="ltr" xml:space="preserve">
+JPI_PLUGIN2_DEBUG=1
+JPI_PLUGIN2_VERBOSE=1
+</pre>
+<p>On Windows, there should be a command window associated with the browser process. All browser VM debug output goes into the command window. Check to see if any exceptions are visible there. A Java thread dump can be obtained by using the Control+Break key sequence on the command window.</p>
+<p>On Oracle Solaris or Linux platforms, after setting the above variables, start the browser from the same session. All browser VM debug output goes into the terminal window. To get a Java thread dump, on a separate terminal, use <code dir="ltr">kill -3</code> <span>pid</span> or <code dir="ltr">kill -SIGQUIT</code> <span>pid</span>, where <span>pid</span> is the process id of the browser process.</p>
+<p>There are "heartbeat" messages sent between the client VM and browser VM. The "heartbeat" messages can be turned off by setting the <code dir="ltr">JPI_PLUGIN2_NO_HEARTBEAT</code> environment variable to <code dir="ltr">1</code>. This will help isolate whether the problem is related to the "heartbeat".</p>
+<p>If the log is not opening and environment variables are set in the browser process, then it is likely that the JRE is not installed correctly or Java is disabled. Check for configuration errors and try to reinstall the JRE if nothing else helps.</p>
+</li>
+<li>
+<p><b>JVM client issues:</b> Check the latest trace file for ideas.</p>
+<p><i>Note:</i> The same client JVM may be shared between multiple applets. Sometimes intermittent failures happen because the shared JVM does not have enough resources available (for example, heap size). In that case, a page reload often helps to resolve the problem.</p>
+<p>If application fails with an <code dir="ltr">Out of memory</code> error, the heap size needs to be increased. This can be done in the application deployment descriptor (JNLP file) or in the Java Control Panel using Runtime Parameters for JRE in use.</p>
+<p>If an application is signed and the user declined a security dialog, this may cause application failure. The decision made by the user is remembered until the JVM is restarted. To see the security dialog again, the user may need to restart the browser.</p>
+<p><i>Note:</i> An applet can be deployed to reduce the risk of being affected by other applets and tailor execution environment for the applet's needs. See <a href="../deploy/applet_dev_guide.html#JSDPG709">Applet Deployment</a> in the JDK documentation. In particular, consider using the <code dir="ltr">separate_jvm parameter</code> argument.</p>
+</li>
+</ul>
+</div>
+
+<a id="BABFEGJJ" name="BABFEGJJ"/>
+<div id="JSTGD508">
+<h2><span>16.2.3</span> Unresponsive Web page</h2>
+<p>The following are scenarios that could cause an unresponsive web page.</p>
+<ul>
+<li>
+<p><b>Frozen applet at applet start or during runtime:</b></p>
+<p>The cause for a frozen applet at applet start or during runtime could be Liveconnect calls.</p>
+<p>On startup, an attempt to access the Java applet from JavaScript may block the JavaScript engine until the applet initialization is complete. It is recommended to postpone JavaScript access until the applet is ready and use the <code dir="ltr">enableStatusEvents</code> parameter to unlock non-blocking access to applet status checks. See <a href="../deploy/applet_dev_guide.html#JSDPG719">Applet Status And Event Handlers</a> for details and examples.</p>
+<p>To use Liveconnect in runtime, it is recommended to make JavaScript calls return quickly to avoid blocking the single-threaded JavaScript engine.</p>
+</li>
+<li>
+<p><b>Applet or browser hangs:</b></p>
+<p>The best source of information in this case is the stack state for both client and browser JVMs.</p>
+<p>Use jstack to collect the JVM stack status for the browser JVM (by running <code dir="ltr">jstack browser-pid</code>) and client JVM. <i>Note:</i> The <code dir="ltr">jstack</code> may highlight a deadlock if it happens in context of one of these VMs, but it cannot do this if the deadlock involves both processes. In this case, the thread stacks need to be examined manually. See for more details.</p>
+<p>For other approaches, see</p>
+</li>
+</ul>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="plugin001.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="plugin003.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<meta http-equiv="content-type" content=
+"text/html; charset=utf-8" />
+<style type="text/css">
+/*<![CDATA[*/
+
+.style1 {
+        color: #FF0000;
+        font-style: italic;
+        font-weight: bold;
+}
+.style8 {font-size: 12pt}
+.style10 {color: #594fbf}
+
+p, li,  ul li { margin-left: 40pt;
+                   font-family: Helvetica, Arial, sans-serif;
+                            font-size: medium; 
+                            }
+
+h2  { margin-left: 40pt;
+      margin-top:32pt;
+      font-family: Helvetica, Arial, sans-serif;
+         font-size: larger; }
+         
+h3      { font-family: helvetica,arial,sans-serif;
+       font-size: medium;
+       font-weight: bold; 
+ 
+          margin-left: 40pt;
+          }
+                            
+/*]]>*/
+</style>
+<title>Part VI: SPEGNO Authenticatio</title>
+<link rel="stylesheet" type="text/css" href="../../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<a name="PART6" id="PART6"></a>
+<h2>Part VI: HTTP/SPNEGO Authentication</h2>
+<ul>
+<li><a href="#nine">Exercise 9: Using HTTP/SPNEGO
+Authentication</a><br />
+<br /></li>
+<li><a href="#What_s_HTTP_SPNEGO">What is HTTP SPNEGO</a>
+<ul>
+<li><a href="#Web_Authentication">Web Authentication</a></li>
+<li><a href="#Proxy_Authentication">Proxy Authentication</a></li>
+</ul>
+</li>
+<li><a href="#How_to_use_the_new_feature">How to use HTTP/SPNEGO
+Authentication</a>
+<ul>
+<li><a href="#Kerberos_5_Configuration">Kerberos 5
+Configuration</a></li>
+<li><a href="#Username_and_Password_Retrieval">Username and
+Password Retrieval</a></li>
+<li><a href="#Scheme_Preference">Scheme Preference</a></li>
+<li><a href="#Fallback">Fallback</a></li>
+</ul>
+<br /></li>
+<li><a href="#Example">Example</a></li>
+</ul>
+<h2><a name="nine" id="nine">Exercise 9: Using HTTP/SPNEGO
+Authentication</a></h2>
+<h2><a name="What_s_HTTP_SPNEGO" id="What_s_HTTP_SPNEGO"></a> What
+is HTTP SPNEGO</h2>
+<p>HTTP SPNEGO supports the Negotiate authentication scheme in an
+HTTP communication. SPNEGO supports types of authentication:</p>
+<h3><a name="Web_Authentication" id="Web_Authentication"></a> Web
+Authentication</h3>
+<p>The Web Server responds with</p>
+<pre>
+       HTTP/1.1 401 Unauthorized
+       WWW-Authenticate: Negotiate
+</pre>
+<p>the client will need to send a header like</p>
+<pre>
+       Authorization: Negotiate YY.....
+</pre>
+<p>to authenticate itself to the server</p>
+<h3><a name="Proxy_Authentication" id="Proxy_Authentication"></a>
+Proxy Authentication</h3>
+<p>The Web Server responses with</p>
+<pre>
+       HTTP/1.1 407 Proxy Authentication Required
+       Proxy-Authenticate: Negotiate
+
+</pre>
+<p>the client will need to send a header like</p>
+<pre>
+       Proxy-Authorization: Negotiate YY.....
+</pre>
+<p>to authenticate itself to the proxy server</p>
+<p>This feature supports both types of authentication.</p>
+<h2><a name="How_to_use_the_new_feature" id=
+"How_to_use_the_new_feature"></a> How to use HTTP/SPNEGO
+Authentication</h2>
+<p>There is no new public API function involved in the new feature,
+but several configurations are needed to perform a success
+communication:</p>
+<h3><a name="Kerberos_5_Configuration" id=
+"Kerberos_5_Configuration"></a> Kerberos 5 Configuration</h3>
+<p>Since the SPNEGO mechanism will call JGSS, which in turns calls
+the Kerberos V5 login module to do real works. Kerberos 5
+configurations are needed. This includes the following:</p>
+<ul>
+<li>Some way to provide Kerberos configurations. This can be
+achieved with the Java system property
+<code>java.security.krb5.conf</code>. For example:</li>
+</ul>
+<pre>
+
+            java -Djava.security.krb5.conf=krb5.conf \
+                 -Djavax.security.auth.useSubjectCredsOnly=false \
+                 ClassName
+</pre>
+<ul>
+<li>A JAAS config file denoting what login module to use. HTTP
+SPNEGO codes will look for the standard entry named
+<code>com.sun.security.jgss.krb5.initiate</code>.</li>
+</ul>
+For example, you can provide a file <code>spnegoLogin.conf</code>:
+<pre>
+          com.sun.security.jgss.krb5.initiate {
+              com.sun.security.auth.module.Krb5LoginModule
+                  required useTicketCache=true;
+          };
+</pre>
+<p>and run java with:</p>
+<pre>
+            java -Djava.security.krb5.conf=krb5.conf \
+                 -Djava.security.auth.login.config=spnegoLogin.conf \
+                 -Djavax.security.auth.useSubjectCredsOnly=false \
+                 ClassName
+</pre>
+<h3><a name="Username_and_Password_Retrieval" id=
+"Username_and_Password_Retrieval"></a> Username and Password
+Retrieval</h3>
+<p>Just like any other HTTP authentication scheme, the client can
+provide a customized <code>java.net.Authenticator</code> to feed
+username and password to the HTTP SPNEGO module <strong>if</strong>
+they are needed (i.e. there is no credential cache available). The
+only authentication information needed to be checked in your
+Authenticator is the scheme which can be retrieved with
+<code>getRequestingScheme()</code>. The value should be
+"Negotiate".</p>
+This means your Authenticator implementation will look like:
+<pre>
+    class MyAuthenticator extends Authenticator {
+
+        public PasswordAuthentication getPasswordAuthentication () {
+            if (getRequestingScheme().equalsIgnoreCase("negotiate")) {
+                String krb5user;
+                char[] krb5pass;
+                // get krb5user and krb5pass in your own way
+                ....
+                return (new PasswordAuthentication (krb5user,
+                            krb5pass));
+            } else {
+                ....
+            }
+        }
+    }
+</pre>
+<p><strong>Note</strong> : According to the specification of
+<code>java.net.Authenticator</code>, it's designed to get the
+username and password at the same time, so do not specify
+<code>principal=xxx</code> in the JAAS config file.</p>
+<h3><a name="Scheme_Preference" id="Scheme_Preference"></a> Scheme
+Preference</h3>
+<p>The client can still provide system property
+<code>http.auth.preference</code> to denote that a certain scheme
+should always be used as long as the server request for it. You can
+use "SPNEGO" or "Kerberos" for this system property. "SPNEGO" means
+you prefer to response the Negotiate scheme using the GSS/SPNEGO
+mechanism; "Kerberos" means you prefer to response the Negotiate
+scheme using the GSS/Kerberos mechanism. Normally, when
+authenticating against a Microsoft product, you can use "SPNEGO".
+The value "Kerberos" also works for Microsoft servers. It's only
+needed when you encounter a server which knows Negotiate but
+doesn't know about SPNEGO.</p>
+<p>If <code>http.auth.preference</code> is not set, the internal
+order choosen is:</p>
+<ul>
+<li>GSS/SPNEGO -&gt; Digest -&gt; NTLM -&gt; Basic</li>
+</ul>
+<p>Noticed that Kerberos does not appear in this list, since
+whenever Negotiate is supported, GSS/SPNEGO is always chosen.</p>
+<h3><a name="Fallback" id="Fallback"></a> Fallback</h3>
+<p>If the server has provided more than one authentication scheme
+(including Negotiate), according to the processing order mentioned
+in the last section, Java will try to challenge the Negotiate
+scheme. However, if the protocol cannot be established successfully
+(for example; The kerberos configuration is not correct, or the
+server's hostname is not recorded in the KDC principal DB, or the
+username and password provided by Authenticator is wrong), then the
+second strongest scheme will be automatically used.</p>
+<strong>Note</strong> : If <code>http.auth.preference</code> is set
+to SPNEGO or Kerberos, then SPNEGO assumes you only want to try the
+Negotiate scheme even if it fails. SPNEGO will not fallback to any
+other scheme and your program will throw an
+<code>IOException</code> saying it received a 401 or 407 error from
+the HTTP response.
+<h2><a name="Example" id="Example"></a> Example</h2>
+Assume that you have an IIS Server running on a Windows Server
+within an Active Directory. A web page on this server is configured
+to be protected by Integrated Windows Authentication. This means
+the server will prompt for both Negotiate and NTLM authentication.
+<p>You need to prepare these files to get the protected file:</p>
+<p>Code listing for <code>RunHttpSpnego.java</code></p>
+<pre class="codeblock">
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
+import java.net.URL;
+
+public class RunHttpSpnego {
+
+    static final String kuser = "username"; // your account name
+    static final String kpass = "password"; // your password for the account
+
+    static class MyAuthenticator extends Authenticator {
+        public PasswordAuthentication getPasswordAuthentication() {
+            // I haven't checked getRequestingScheme() here, since for NTLM
+            // and Negotiate, the usrname and password are all the same.
+            System.err.println("Feeding username and password for "<br />               + getRequestingScheme());
+            return (new PasswordAuthentication(kuser, kpass.toCharArray()));
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        Authenticator.setDefault(new MyAuthenticator());
+        URL url = new URL(args[0]);
+        InputStream ins = url.openConnection().getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
+        String str;
+        while((str = reader.readLine()) != null)
+            System.out.println(str);
+    }
+}
+</pre>
+<p>Code listing for <code>krb.conf</code></p>
+<pre class="codeblock">
+
+[libdefaults]
+    default_realm = AD.LOCAL
+[realms]
+    AD.LOCAL = {
+        kdc = kdc.ad.local
+    }  
+</pre>
+<p>Code listing for <code>login.conf</code></p>
+<pre class="codeblock">
+com.sun.security.jgss.krb5.initiate {
+  com.sun.security.auth.module.Krb5LoginModule required<br /> doNotPrompt=false useTicketCache=true;
+};
+</pre>
+<p>Then, compile <code>RunHttpSpnego.java</code> and run</p>
+<pre class="codeblock">
+java -Djava.security.krb5.conf=krb5.conf \
+    -Djava.security.auth.login.config=login.conf \
+    -Djavax.security.auth.useSubjectCredsOnly=false \
+    RunHttpSpnego \
+    http://www.ad.local/hello/hello.html
+</pre>
+<p>You will see:</p>
+<pre class="codeblock">
+Feeding username and password for Negotiate 
+&lt;h1&gt;Hello, You got me!&lt;/h1&gt;
+</pre>
+<p>In fact, if you are running on a Windows machine as a domain
+user, or, you are running on a Linux or Solaris machine that has
+already issued the <code>kinit</code> command and got the
+credential cache. The class <code>MyAuthenticator</code> will be
+completely ignored, and the output will be simply</p>
+<pre class="codeblock">
+&lt;h1&gt;Hello, You got me!&lt;/h1&gt;
+</pre>
+<p>which shows the username and password are not consulted. This is
+the so-called Single Sign-On.</p>
+<p>Also, You can just run</p>
+<pre class="codeblock">
+java RunHttpSpnego \
+    http://www.ad.local/hello/hello.html
+</pre>
+<p>to see how the fallback is done, in which case you will see</p>
+<pre class="codeblock">
+Feeding username and password for ntlm
+&lt;h1&gt;Hello, You got me!&lt;/h1&gt;
+</pre>
+<!-- <a class="twikiLink" href="/web/bin/view/Main/MaxWang">MaxWang</a> - 21 Apr 2006
+<br class="twikiClear" /> -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

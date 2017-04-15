@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Signal Chaining</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="signals002.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="signals004.html">
+                Next</a><hr/><a id="CIHFCAIG" name="CIHFCAIG"/>
+<div id="JSTGD351">
+<h1><span>7.3</span> Signal Chaining</h1>
+<p>If an application with native code requires its own signal handlers, then it might need to be used with the signal chaining facility. The signal chaining facility offers the following features:</p>
+<ul>
+<li>
+<p>Support for pre-installed signal handlers when the HotSpot VM is created.</p>
+<p>When the VM is first created, existing signal handlers (that is, handlers for signals that are used by the VM) are saved. During execution, when any of these signals are raised and found not to be targeted at the Java HotSpot VM, the pre-installed handlers are invoked. In other words, pre-installed handlers are <span>chained</span> behind the VM handlers for these signals.</p>
+</li>
+<li>
+<p>Support for signal handler installation after the HotSpot VM is created, either inside JNI code or from another native thread.</p>
+<p>An application can link and load the libjsig.so shared library before libc/libthread/libpthread. This library ensures that calls such as <code dir="ltr">signal()</code>, <code dir="ltr">sigset()</code>, and <code dir="ltr">sigaction()</code> are intercepted so that they do not actually replace the Java HotSpot VM's signal handlers if the handlers conflict with those already installed by the VM. Instead, these calls save the new signal handlers (or <span>chain</span> them behind the VM-installed handlers). During execution, when any of these signals are raised and found not to be targeted at the Java HotSpot VM, the pre-installed handlers are invoked.</p>
+<p>If support for signal handler installation after the creation of the VM is not required, then the libjsig.so shared library is not needed.</p>
+<p>Perform one of these two procedures to use the libjsig.so shared library:</p>
+<ul>
+<li>
+<p>Link it with the application that creates/embeds the HotSpot VM:</p>
+<pre dir="ltr" xml:space="preserve">
+cc -L <span>libjvm.so-directory</span> -ljsig -ljvm java_application.c
+</pre></li>
+<li>
+<p>Use the <code dir="ltr">LD_PRELOAD</code> environment variable:</p>
+<ul>
+<li>
+<p>KornShell (ksh):</p>
+<pre dir="ltr" xml:space="preserve">
+export LD_PRELOAD=<span>libjvm.so-directory</span>/libjsig.so; java_application(ksh)
+</pre></li>
+<li>
+<p>C shell (csh):</p>
+<pre dir="ltr" xml:space="preserve">
+setenv LD_PRELOAD <span>libjvm.so-directory</span>/libjsig.so; java_application(csh)
+</pre></li>
+</ul>
+</li>
+</ul>
+<p>The interposed <code dir="ltr">signal()</code>, <code dir="ltr">sigset()</code>, and <code dir="ltr">sigaction()</code> return the saved signal handlers, not the signal handlers installed by the Java HotSpot VM and which are seen by the operating system.</p>
+</li>
+</ul>
+<p><i>Note:</i> <code dir="ltr">SIGUSR1</code> cannot be chained. If an application attempts to chain this signal on Oracle Solaris operating system, then the HotSpot VM terminates with a fatal error as shown in <a href="#CIHFAJIJ">Example 7-3</a>.</p>
+<div id="JSTGD352"><a id="CIHFAJIJ" name="CIHFAJIJ"/>
+<p>Example 7-3 HotSpot VM Fatal Error</p>
+<pre dir="ltr" xml:space="preserve">
+Signal chaining detected for VM interrupt signal, try -XX:+UseAltSigs
+</pre></div>
+
+<p>Also, the <code dir="ltr">SIGQUIT</code>, <code dir="ltr">SIGTERM</code>, <code dir="ltr">SIGINT</code>, and <code dir="ltr">SIGHUP</code> signals cannot be chained. If the application needs to handle these signals, consider using the <code dir="ltr">-Xrs</code> option.</p>
+<p>On Oracle Solaris operating system, the <code dir="ltr">SIGUSR2</code> signal can be chained only for non-Java and non-VM threads (that is, it can only be used for native threads created by applications that do not attach to the VM).</p>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="signals002.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="signals004.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Character streams</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h2>Character streams </h2>
+Version 1.1 of the Java Development Kit introduced support for <i>character streams</i> to
+the <a href=
+"../../../api/java/io/package-summary.html"><tt>java.io</tt></a>
+package.
+<p>Prior to JDK 1.1, the standard I/O facilities supported only
+byte streams, via the <a href=
+"../../../api/java/io/InputStream.html"><tt>InputStream</tt></a>
+and <a href=
+"../../../api/java/io/OutputStream.html"><tt>OutputStream</tt></a>
+classes and their subclasses. Character streams are like byte
+streams, but they contain 16-bit Unicode characters rather than
+eight-bit bytes. They are implemented by the <a href=
+"../../../api/java/io/Reader.html"><tt>Reader</tt></a> and <a href=
+"../../../api/java/io/Writer.html"><tt>Writer</tt></a> classes and
+their subclasses. <tt>Reader</tt>s and <tt>Writer</tt>s support
+essentially the same operations as <tt>InputStream</tt>s and
+<tt>OutputStream</tt>s, except that where byte-stream methods
+operate on bytes or byte arrays, character-stream methods operate
+on characters, character arrays, or strings.</p>
+<p>Most of the functionality available for byte streams is also
+provided for character streams. This is reflected in the name of
+each character-stream class, whose prefix is usually shared with
+the name of the corresponding byte-stream class. For example, there
+is a <a href=
+"../../../api/java/io/PushbackReader.html"><tt>PushbackReader</tt></a>
+class that provides the same functionality for character streams
+that is provided by <a href=
+"../../../api/java/io/PushbackInputStream.html"><tt>PushbackInputStream</tt></a>
+for byte streams.</p>
+<h3>Why use character streams?</h3>
+The primary advantage of character streams is that they make it
+easy to write programs that are not dependent upon a specific
+character encoding, and are therefore easy to <a href=
+"../intl/index.html">internationalize</a>.
+<p>Java stores strings in Unicode, an international standard
+character encoding that is capable of representing most of the
+world's written languages. Typical user-readable text files,
+however, use encodings that are not necessarily related to Unicode,
+or even to ASCII, and there are many such encodings. Character
+streams hide the complexity of dealing with these encodings by
+providing two classes that serve as bridges between byte streams
+and character streams. The <a href=
+"../../../api/java/io/InputStreamReader.html"><tt>InputStreamReader</tt></a>
+class implements a character-input stream that reads bytes from a
+byte-input stream and converts them to characters according to a
+specified encoding. Similarly, the <a href=
+"../../../api/java/io/OutputStreamWriter.html"><tt>OutputStreamWriter</tt></a>
+class implements a character-output stream that converts characters
+into bytes according a specified encoding and writes them to a
+byte-output stream.</p>
+<p>A second advantage of character streams is that they are
+potentially much more efficient than byte streams. The
+implementations of many of Java's original byte streams are
+oriented around byte-at-a-time read and write operations. The
+character-stream classes, in contrast, are oriented around
+buffer-at-a-time read and write operations. This difference, in
+combination with a more efficient locking scheme, allows the
+character stream classes to make up for the added overhead of
+encoding conversion in many cases.</p>
+<h3>API overview</h3>
+The character-stream classes have been designed to parallel the
+existing byte-stream classes in the <tt>java.io</tt> package. As
+noted above, the name of each character-stream class ends in
+<tt>Reader</tt> or <tt>Writer</tt>, as appropriate, while its
+prefix is usually shared with the corresponding byte-stream class,
+if any. The following table summarizes the new classes; in the left
+column, indentation indicates subclass relationships.
+
+<table summary="api overview" border="0" cellpadding="0"
+cellspacing="0">
+<tr>
+<th id="h1" valign="top"><i>Character-stream class</i></th>
+<th id="h2" valign="top"><i>Description</i></th>
+<th id="h3" valign="top"><i>Corresponding byte class</i></th>
+</tr>
+<tr>
+<td headers="h1">&nbsp;</td>
+</tr>
+<tr>
+<td headers="h1" valign="top"><a href=
+"../../../api/java/io/Reader.html"><tt>Reader</tt></a></td>
+<td headers="h2" valign="top">Abstract class for character-input streams</td>
+<td headers="h3" valign="top"><a href=
+"../../../api/java/io/InputStream.html"><tt>InputStream</tt></a></td>
+</tr>
+<tr>
+<td headers="h1" valign="top">&nbsp;&nbsp;&nbsp;&nbsp;<a href=
+"../../../api/java/io/BufferedReader.html"><tt>BufferedReader</tt></a></td>
+<td headers="h2" valign="top">Buffers input, parses lines</td>
+<td headers="h3" valign="top"><a href=
+"../../../api/java/io/BufferedInputStream.html"><tt>BufferedInputStream</tt></a></td>
+</tr>
+<tr>
+<td headers="h1" valign="top">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=
+"../../../api/java/io/LineNumberReader.html"><tt>LineNumberReader</tt></a>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td headers="h2" valign="top">Keeps track of line numbers</td>
+<td headers="h3" valign="top"><a href=
+"../../../api/java/io/LineNumberInputStream.html"><tt>LineNumberInputStream</tt></a></td>
+</tr>
+<tr>
+<td headers="h1" valign="top">&nbsp;&nbsp;&nbsp;&nbsp;<a href=
+"../../../api/java/io/CharArrayReader.html"><tt>CharArrayReader</tt></a></td>
+<td headers="h2" valign="top">Reads from a character array</td>
+<td headers="h3" valign="top"><a href=
+"../../../api/java/io/ByteArrayInputStream.html">ByteArrayInputStream</a></td>
+</tr>
+<tr>
+<td headers="h1" valign="top">&nbsp;&nbsp;&nbsp;&nbsp;<a href=
+"../../../api/java/io/InputStreamReader.html"><tt>InputStreamReader</tt></a></td>
+<td headers="h2" valign="top">Translates a byte stream into a character
+stream</td>
+<td headers="h3" valign="top"><i>(none)</i></td>
+</tr>
+<tr>
+<td headers="h1" valign="top">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=
+"../../../api/java/io/FileReader.html"><tt>FileReader</tt></a></td>
+<td headers="h2" valign="top">Translates bytes from a file into a character
+stream&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td headers="h3" valign="top"><a href=
+"../../../api/java/io/FileInputStream.html"><tt>FileInputStream</tt></a></td>
+</tr>
+<tr>
+<td headers="h1" valign="top">&nbsp;&nbsp;&nbsp;&nbsp;<a href=
+"../../../api/java/io/FilterReader.html"><tt>FilterReader</tt></a></td>
+<td headers="h2" valign="top">Abstract class for filtered character input</td>
+<td headers="h3" valign="top"><a href=
+"../../../api/java/io/FilterInputStream.html"><tt>FilterInputStream</tt></a></td>
+</tr>
+<tr>
+<td headers="h1" valign="top">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=
+"../../../api/java/io/PushbackReader.html"><tt>PushbackReader</tt></a></td>
+<td headers="h2" valign="top">Allows characters to be pushed back</td>
+<td headers="h3" valign="top"><a href=
+"../../../api/java/io/PushbackInputStream.html"><tt>PushbackInputStream</tt></a></td>
+</tr>
+<tr>
+<td headers="h1" valign="top">&nbsp;&nbsp;&nbsp;&nbsp;<a href=
+"../../../api/java/io/PipedReader.html"><tt>PipedReader</tt></a></td>
+<td headers="h2" valign="top">Reads from a <tt>PipedWriter</tt></td>
+<td headers="h3" valign="top"><a href=
+"../../../api/java/io/PipedInputStream.html"><tt>PipedInputStream</tt></a></td>
+</tr>
+<tr>
+<td headers="h1" valign="top">&nbsp;&nbsp;&nbsp;&nbsp;<a href=
+"../../../api/java/io/StringReader.html"><tt>StringReader</tt></a></td>
+<td headers="h2" valign="top">Reads from a <tt>String</tt></td>
+<td headers="h3" valign="top"><a href=
+"../../../api/java/io/StringBufferInputStream.html"><tt>StringBufferInputStream</tt></a></td>
+</tr>
+<tr>
+<td headers="h1">&nbsp;</td>
+</tr>
+<tr>
+<td headers="h1" valign="top"><a href=
+"../../../api/java/io/Writer.html"><tt>Writer</tt></a></td>
+<td headers="h2" valign="top">Abstract class for character-output streams</td>
+<td headers="h3" valign="top"><a href=
+"../../../api/java/io/OutputStream.html"><tt>OutputStream</tt></a></td>
+</tr>
+<tr>
+<td headers="h1" valign="top">&nbsp;&nbsp;&nbsp;&nbsp;<a href=
+"../../../api/java/io/BufferedWriter.html"><tt>BufferedWriter</tt></a></td>
+<td headers="h2" valign="top">Buffers output, uses platform's line
+separator</td>
+<td headers="h3" valign="top"><a href=
+"../../../api/java/io/BufferedOutputStream.html"><tt>BufferedOutputStream</tt></a></td>
+</tr>
+<tr>
+<td headers="h1" valign="top">&nbsp;&nbsp;&nbsp;&nbsp;<a href=
+"../../../api/java/io/CharArrayWriter.html"><tt>CharArrayWriter</tt></a></td>
+<td headers="h2" valign="top">Writes to a character array</td>
+<td headers="h3" valign="top"><a href=
+"../../../api/java/io/ByteArrayOutputStream.html"><tt>ByteArrayOutputStream</tt></a></td>
+</tr>
+<tr>
+<td headers="h1" valign="top">&nbsp;&nbsp;&nbsp;&nbsp;<a href=
+"../../../api/java/io/FilterWriter.html"><tt>FilterWriter</tt></a></td>
+<td headers="h2" valign="top">Abstract class for filtered character output</td>
+<td headers="h3" valign="top"><a href=
+"../../../api/java/io/FilterOutputStream.html"><tt>FilterOutputStream</tt></a></td>
+</tr>
+<tr>
+<td headers="h1" valign="top">&nbsp;&nbsp;&nbsp;&nbsp;<a href=
+"../../../api/java/io/OutputStreamWriter.html"><tt>OutputStreamWriter</tt></a></td>
+<td headers="h2" valign="top">Translates a character stream into a byte
+stream</td>
+<td headers="h3" valign="top"><i>(none)</i></td>
+</tr>
+<tr>
+<td headers="h1" valign="top">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=
+"../../../api/java/io/FileWriter.html"><tt>FileWriter</tt></a></td>
+<td headers="h2" valign="top">Translates a character stream into a byte
+file</td>
+<td headers="h3" valign="top"><a href=
+"../../../api/java/io/FileOutputStream.html"><tt>FileOutputStream</tt></a></td>
+</tr>
+<tr>
+<td headers="h1" valign="top">&nbsp;&nbsp;&nbsp;&nbsp;<a href=
+"../../../api/java/io/PrintWriter.html"><tt>PrintWriter</tt></a></td>
+<td headers="h2" valign="top">Prints values and objects to a
+<tt>Writer</tt></td>
+<td headers="h3" valign="top"><a href=
+"../../../api/java/io/PrintStream.html"><tt>PrintStream</tt></a></td>
+</tr>
+<tr>
+<td headers="h1" valign="top">&nbsp;&nbsp;&nbsp;&nbsp;<a href=
+"../../../api/java/io/PipedWriter.html"><tt>PipedWriter</tt></a></td>
+<td headers="h2" valign="top">Writes to a <tt>PipedReader</tt></td>
+<td headers="h3" valign="top"><a href=
+"../../../api/java/io/PipedOutputStream.html"><tt>PipedOutputStream</tt></a></td>
+</tr>
+<tr>
+<td headers="h1" valign="top">&nbsp;&nbsp;&nbsp;&nbsp;<a href=
+"../../../api/java/io/StringWriter.html"><tt>StringWriter</tt></a></td>
+<td headers="h2" valign="top">Writes to a <tt>String</tt></td>
+<td headers="h3" valign="top"><i>(none)</i></td>
+</tr>
+</table>
+
+<h3>Related changes</h3>
+<h4>PrintStream</h4>
+The <a href=
+"../../../api/java/io/PrintStream.html"><tt>PrintStream</tt></a>
+class has been modified to use the platform's default character
+encoding and the platform's default line terminator. Thus each
+<tt>PrintStream</tt> incorporates an <a href=
+"../../../api/java/io/OutputStreamWriter.html"><tt>OutputStreamWriter</tt></a>,
+and it passes all characters through this writer to produce bytes
+for output. The <tt>println</tt> methods use the platform's default
+line terminator, which is defined by the system property
+<tt>line.separator</tt> and is not necessarily a single newline
+character (<tt>'\n'</tt>). Bytes and byte arrays written via the
+existing <tt>write</tt> methods are not passed through the writer.
+<p>The primary motivation for changing the <tt>PrintStream</tt>
+class is that it will make <a href=
+"../../../api/java/lang/System.html#out"><tt>System.out</tt></a>
+and <a href=
+"../../../api/java/lang/System.html#err"><tt>System.err</tt></a>
+more useful to people writing Java programs on platforms where the
+local encoding is something other than ASCII. <tt>PrintStream</tt>
+is, in other words, provided primarily for use in debugging and for
+compatibility with existing code. Code that produces textual output
+should use the new <a href=
+"../../../api/java/io/PrintWriter.html"><tt>PrintWriter</tt></a>
+class, which allows the character encoding to be specified or the
+default encoding to be accepted. For convenience, the
+<tt>PrintWriter</tt> class provides constructors that take an
+<tt>OutputStream</tt> object and create an intermediate
+<tt>OutputStreamWriter</tt> object that uses the default
+encoding.</p>
+<h4>Other classes</h4>
+<p>The following constructors and methods have been deprecated
+because they do not properly convert between bytes and
+characters:</p>
+<table summary="" width="100%" border="0" cellpadding="0"
+cellspacing="0">
+<tr>
+<td width="25%" align="right" valign="top">
+<tt>String</tt>&nbsp;&nbsp;</td>
+<td width="75%" align="left" valign="top"><a href=
+"../../../api/java/io/DataInputStream.html#readLine--"><tt>DataInputStream.readLine()</tt></a></td>
+</tr>
+<tr>
+<td width="25%" align="right" valign="top">
+<tt>InputStream</tt>&nbsp;&nbsp;</td>
+<td width="75%" align="left" valign="top"><a href=
+"../../../api/java/lang/Runtime.html#getLocalizedInputStream-java.io.InputStream-">
+<tt>Runtime.getLocalizedInputStream(InputStream)</tt></a></td>
+</tr>
+<tr>
+<td width="25%" align="right" valign="top">
+<tt>OutputStream</tt>&nbsp;&nbsp;</td>
+<td width="75%" align="left" valign="top"><a href=
+"../../../api/java/lang/Runtime.html#getLocalizedOutputStream-java.io.OutputStream-">
+<tt>Runtime.getLocalizedOutputStream(OutputStream)</tt></a></td>
+</tr>
+<tr>
+<td width="25%" align="right" valign="top">&nbsp;</td>
+<td width="75%" align="left" valign="top"><a href=
+"../../../api/java/io/StreamTokenizer.html#StreamTokenizer-java.io.InputStream-">
+<tt>StreamTokenizer(InputStream)</tt></a></td>
+</tr>
+<tr>
+<td width="25%" align="right" valign="top">&nbsp;&nbsp;</td>
+<td width="75%" align="left" valign="top"><a href=
+"../../../api/java/lang/String.html#String-byte:A-int-int-int-">
+<tt>String(byte ascii[], int hibyte, int offset, int
+count)</tt></a></td>
+</tr>
+<tr>
+<td width="25%" align="right" valign="top">&nbsp;&nbsp;</td>
+<td width="75%" align="left" valign="top"><a href=
+"../../../api/java/lang/String.html#String-byte:A-int-"><tt>String(byte
+ascii[], int hibyte)</tt></a></td>
+</tr>
+<tr>
+<td width="25%" align="right" valign="top">
+<tt>void</tt>&nbsp;&nbsp;</td>
+<td width="75%" align="left" valign="top"><a href=
+"../../../api/java/lang/String.html#getBytes-int-int-byte:A-int-">
+<tt>String.getBytes(int srcBegin, int srcEnd, byte dst[], int
+dstBegin)</tt></a></td>
+</tr>
+</table>
+<p>Finally, the following constructor and methods have been
+added:</p>
+<table summary="" width="100%" border="0" cellpadding="0"
+cellspacing="0">
+<tr>
+<td width="25%" align="right" valign="top">&nbsp;</td>
+<td width="75%" align="left" valign="top"><a href=
+"../../../api/java/io/StreamTokenizer.html#StreamTokenizer-java.io.Reader-">
+<tt>StreamTokenizer(Reader)</tt></a></td>
+</tr>
+<tr>
+<td width="25%" align="right" valign="top">
+<tt>byte[]</tt>&nbsp;&nbsp;</td>
+<td width="75%" align="left" valign="top"><a href=
+"../../../api/java/lang/String.html#getBytes--"><tt>String.getBytes()</tt></a></td>
+</tr>
+<tr>
+<td width="25%" align="right"><tt>void</tt>&nbsp;&nbsp;</td>
+<td width="75%" align="left"><a href=
+"../../../api/java/lang/Throwable.html#printStackTrace-java.io.PrintWriter-">
+<tt>Throwable.printStackTrace(PrintWriter)</tt></a></td>
+</tr>
+</table>
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

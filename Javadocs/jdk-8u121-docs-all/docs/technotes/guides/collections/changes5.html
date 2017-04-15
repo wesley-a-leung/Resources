@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- USE THIS TEMPLATE WHEN ENHANCEMENTS ARE SHORT. THEN USE JUST
+   THIS FILE TO DOCUMENT ALL THE ENHANCEMENTS OF EACH VERSION CURRENTLY SUPPORTED.  
+-->
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+
+<style type="text/css">
+/*<![CDATA[*/
+
+p {margin-left: 18pt;}
+
+#footer
+{
+clear: both;
+
+float: center;
+width: 95%;
+height: 1.75em;
+position: absolute;
+bottom: 1.1em;
+
+margin: 0px;
+padding: .5em;
+background-color: #fff; /* powder blue */
+border-top: 3px solid #aaa; 
+}
+
+/*]]>*/
+</style>
+<title>Collections Framework Change Summary for JDK 5</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Collections Framework Enhancements</h1>
+<!-- Body text begins here -->
+<p>This page summarizes enhancements to the collections framework
+in version 5 of the JDK.</p>
+<p>Three new language features significantly enhance the
+collections framework:</p>
+<ul>
+<li><b>Generics</b> - adds compile-time type safety to the
+collections framework and eliminates the need to cast when reading
+elements from collections.</li>
+<li><b>Enhanced <tt>for</tt> loop</b> - eliminates the need for
+explicit iterators when interating over collections.</li>
+<li><b>Autoboxing/unboxing</b> - automatically converts primitives
+(such as <tt>int</tt>) to wrapper classes (such as
+<tt>Integer</tt>) when inserting them into collections, and
+converts wrapper class instances to primitives when reading from
+collections.</li>
+</ul>
+<p>Three new collection interfaces are provided:</p>
+<ul>
+<li><tt><a href="../../../api/java/util/Queue.html">Queue</a></tt>
+- represents a collection designed for holding elements prior to
+processing. Besides basic <tt>Collection</tt> operations, queues
+provide additional insertion, extraction, and inspection
+operations.</li>
+<li><tt><a href=
+"../../../api/java/util/concurrent/BlockingQueue.html">BlockingQueue</a></tt>
+- extends <tt>Queue</tt> with operations that wait for the queue to
+become non-empty when retrieving an element, and that wait for
+space to become available in the queue when storing an element.
+(This interface is part of the new package <tt><a href=
+"../../../api/java/util/concurrent/package-summary.html">java.util.concurrent</a></tt>.)</li>
+<li><tt><a href=
+"../../../api/java/util/concurrent/ConcurrentMap.html">ConcurrentMap</a></tt>
+- extends <tt><a href=
+"../../../api/java/util/Map.html">Map</a></tt> with atomic
+<tt>putIfAbsent</tt>, <tt>remove</tt>, and <tt>replace</tt>
+methods. (This interface is part of
+<tt>java.util.concurrent</tt>.)</li>
+</ul>
+<p>Two new concrete <tt><a href=
+"../../../api/java/util/Queue.html">Queue</a></tt> implementations
+are provided, one existing <tt>List</tt> implementation has been
+retrofitted to implement <tt>Queue</tt>, and one abstract
+<tt>Queue</tt> implementation is provided:</p>
+<ul>
+<li><tt><a href=
+"../../../api/java/util/PriorityQueue.html">PriorityQueue</a></tt>
+- an unbounded priority queue backed by a heap.</li>
+<li><tt><a href=
+"../../../api/java/util/concurrent/ConcurrentLinkedQueue.html">ConcurrentLinkedQueue</a></tt>
+- an unbounded thread-safe FIFO (first-in first-out) queue backed
+by linked nodes. (This class is part of
+<tt>java.util.concurrent</tt>.)</li>
+<li><tt><a href=
+"../../../api/java/util/LinkedList.html">LinkedList</a></tt> -
+retrofitted to implement the <tt>Queue</tt> interface. When
+accessed via the <tt>Queue</tt> interface, <tt>LinkedList</tt>
+behaves as a FIFO queue.</li>
+<li><tt><a href=
+"../../../api/java/util/AbstractQueue.html">AbstractQueue</a></tt>
+- a skeletal <tt>Queue</tt> implementation.</li>
+</ul>
+<p>Five new <tt><a href=
+"../../../api/java/util/concurrent/BlockingQueue.html">BlockingQueue</a></tt>
+implementations are provided, all of which are part of
+<tt>java.util.concurrent</tt>:</p>
+<ul>
+<li><tt><a href=
+"../../../api/java/util/concurrent/LinkedBlockingQueue.html">LinkedBlockingQueue</a></tt>
+- an optionally bounded FIFO blocking queue backed by linked
+nodes.</li>
+<li><tt><a href=
+"../../../api/java/util/concurrent/ArrayBlockingQueue.html">ArrayBlockingQueue</a></tt>
+- a bounded FIFO blocking queue backed by an array.</li>
+<li><tt><a href=
+"../../../api/java/util/concurrent/PriorityBlockingQueue.html">PriorityBlockingQueue</a></tt>
+- an unbounded blocking priority queue backed by a heap.</li>
+<li><tt><a href=
+"../../../api/java/util/concurrent/DelayQueue.html">DelayQueue</a></tt>
+- a time-based scheduling queue backed by a heap.</li>
+<li><tt><a href=
+"../../../api/java/util/concurrent/SynchronousQueue.html">SynchronousQueue</a></tt>
+- a simple rendezvous mechanism utilizing the
+<tt>BlockingQueue</tt> interface.</li>
+</ul>
+<p>One <tt><a href=
+"../../../api/java/util/concurrent/ConcurrentMap.html">ConcurrentMap</a></tt>
+implementation is provided:</p>
+<ul>
+<li><tt><a href=
+"../../../api/java/util/concurrent/ConcurrentHashMap.html">ConcurrentHashMap</a></tt>
+- a highly concurrent, high-performance <tt>ConcurrentMap</tt>
+implementation backed by a hash table. This implementation never
+blocks when performing retrievals and allows the client to select
+the concurrency level for updates. It is intended as a drop-in
+replacement for <tt><a href=
+"../../../api/java/util/Hashtable.html">Hashtable</a></tt>: in
+addition to implementing <tt>ConcurrentMap</tt>, it supports all of
+the "legacy" methods peculiar to <tt>Hashtable</tt>.</li>
+</ul>
+<p>Special-purpose <tt><a href=
+"../../../api/java/util/List.html">List</a></tt> and <tt><a href=
+"../../../api/java/util/Set.html">Set</a></tt> implementations are
+provided for use in situations where read operations vastly
+outnumber write operations and iteration cannot or should not be
+synchronized:</p>
+<ul>
+<li><tt><a href=
+"../../../api/java/util/concurrent/CopyOnWriteArrayList.html">CopyOnWriteArrayList</a></tt>
+- a <tt>List</tt> implementation backed by an array. All mutative
+operations (such as <tt>add</tt>, <tt>set</tt>, and
+<tt>remove</tt>) are implemented by making a new copy of the array.
+No synchronization is necessary, even during iteration, and
+iterators are guaranteed never to throw
+<tt>ConcurrentModificationException</tt>. This implementation is
+well-suited to maintaining event-handler lists (where change is
+infrequent, and traversal is frequent and potentially
+time-consuming).</li>
+<li><tt><a href=
+"../../../api/java/util/concurrent/CopyOnWriteArraySet.html">CopyOnWriteArraySet</a></tt>
+- a <tt>Set</tt> implementation backed by a copy-on-write array.
+This implementation is similar in nature to
+<tt>CopyOnWriteArrayList</tt>. Unlike most <tt>Set</tt>
+implementations, the <tt>add</tt>, <tt>remove</tt>, and
+<tt>contains</tt> methods require time proportional to the size of
+the set. This implementation is well-suited to maintaining
+event-handler lists that must prevent duplicates.</li>
+</ul>
+<p>Special-purpose <tt><a href=
+"../../../api/java/util/Set.html">Set</a></tt> and <tt><a href=
+"../../../api/java/util/Map.html">Map</a></tt> implementations are
+provided for use with enums:</p>
+<ul>
+<li><tt><a href=
+"../../../api/java/util/EnumSet.html">EnumSet</a></tt> - a
+high-performance <tt>Set</tt> implementation backed by a
+bit-vector. All elements of each <tt>EnumSet</tt> instance must be
+elements of a single enum type.</li>
+<li><tt><a href=
+"../../../api/java/util/EnumMap.html">EnumMap</a></tt> - a
+high-performance <tt>Map</tt> implementation backed by an array.
+All keys in each <tt>EnumMap</tt> instance must be elements of a
+single enum type.</li>
+</ul>
+<p>A new family of wrapper implementations is provided, primarily
+for use with generic collections:</p>
+<ul>
+<li><a href=
+"../../../api/java/util/Collections.html#checkedCollection-java.util.Collection-java.lang.Class-">
+<tt>Collections.checked<i>Interface</i></tt></a> - returns a
+dynamically typesafe view of the specified collection, which throws
+a <tt>ClassCastException</tt> if a client attempts to add an
+element of the wrong type. The generics mechanism in the language
+provides compile-time (static) type checking, but it is possible to
+defeat this mechanism. Dynamically typesafe views eliminate this
+possibility entirely.</li>
+</ul>
+<p>Three new generic algorithms and one comparator converter were
+added to the <tt>Collections</tt> utility class:</p>
+<ul>
+<li><tt><a href=
+"../../../api/java/util/Collections.html#frequency-java.util.Collection-java.lang.Object-">
+<code>frequency(Collection&lt;?&gt; c, Object o)</code></a></tt> -
+counts the number of times the specified element occurs in the
+specified collection.</li>
+<li><tt><a href=
+"../../../api/java/util/Collections.html#disjoint-java.util.Collection-java.util.Collection-">
+disjoint(Collection&lt;?&gt; c1, Collection&lt;?&gt; c2)</a></tt> -
+determines whether two collecitons are disjoint, in other words,
+whether they contain no elements in common.</li>
+<li><tt><a href=
+"../../../api/java/util/Collections.html#addAll-java.util.Collection-T...-">
+addAll(Collection&lt;? super T&gt; c, T... a)</a></tt> -
+convenience method to add all of the elements in the specified
+array to the specified collection.</li>
+<li><tt><a href=
+"../../../api/java/util/Collections.html#reverseOrder-java.util.Comparator-">
+Comparator&lt;T&gt; reverseOrder(Comparator&lt;T&gt; cmp)</a></tt>
+- returns a comparator that represents the reverse ordering of the
+specified comparator.</li>
+</ul>
+<p>The <tt>Arrays</tt> utility class has been outfitted with
+content-based <tt><a href=
+"../../../api/java/util/Arrays.html#hashCode-long:A-">hashCode</a></tt>
+and <tt><a href=
+"../../../api/java/util/Arrays.html#toString-long:A-">toString</a></tt>
+methods for arrays of all types. These methods complement the
+existing <tt><a href=
+"../../../api/java/util/Arrays.html#equals-long:A-long:A-">
+equals</a></tt> methods. Versions of all three methods are provided
+to operate on nested (or "multidimensional") arrays: <tt><a href=
+"../../../api/java/util/Arrays.html#deepEquals-java.lang.Object:A-java.lang.Object:A-">
+deepEquals</a></tt>, <tt><a href=
+"../../../api/java/util/Arrays.html#deepHashCode-java.lang.Object:A-">
+deepHashCode</a></tt>, and <tt><a href=
+"../../../api/java/util/Arrays.html#deepToString-java.lang.Object:A-">
+deepToString</a></tt>. It is now trivial to print the contents of
+any array. The idiom for printing a "flat" array is:</p>
+<pre>
+    System.out.println(Arrays.toString(a));
+</pre>
+<p>The idiom for printing a nested (multidimensional) array is:</p>
+<pre>
+    System.out.println(Arrays.deepToString(a));
+</pre>
+<p>Finally, <tt><a href=
+"../../../api/java/lang/Boolean.html">Boolean</a></tt> was
+retrofitted to implement <tt><a href=
+"../../../api/java/lang/Comparable.html">Comparable</a></tt>. 
+<!-- Body text ends here --></p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

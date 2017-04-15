@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java API for XML Web Services</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Java API for XML Web Services</h1>
+<p>The Java API for XML Web Services (JAX-WS) simplifies creating
+and deploying web services and web services clients.</p>
+<p>The Java Platform, Standard Edition (Java SE) includes JAX-WS
+2.2.</p>
+<h2>Backward Compatibility</h2>
+<p>Two small source compatibility anomalies exist between JAX-WS
+versions 2.1 and 2.2. The changes in the API are as follows:</p>
+<ul>
+<li>In <a href=
+"http://jax-ws.java.net/nonav/jaxws-api/2.2/javax/xml/ws/FaultAction.html">
+the <code>FaultAction</code> annotation</a>, the
+<code>className</code> element's type changed from being a plain
+vanilla <code>java.lang.Class</code> to being
+<code>java.lang.Class&lt;? extends
+java.lang.Exception&gt;</code>.</li>
+<li>In <a href=
+"http://jax-ws.java.net/nonav/jaxws-api/2.2/javax/xml/ws/WebServiceRef.html">
+the <code>WebServiceRef</code> annotation</a>, the
+<code>value</code> element's type is now more specific. Instead of
+being <code>java.lang.Class</code>, the type is now
+<code>java.lang.Class&lt;? extends Service&gt;</code>.</li>
+</ul>
+<p>Because of these changes, some applications that compile with
+Java SE 6 might not compile with Java SE 7. There
+will be a deployment error if incorrect types are used with JAX-WS
+2.1 API. In Java SE 7, these type errors are caught at
+compile time instead of deployment time.</p>
+<h2>References</h2>
+<ul>
+<li><a href=
+"http://jax-ws.java.net/nonav/jaxws-api/2.2/index.html">API
+reference</a></li>
+<li><a href=
+"http://docs.oracle.com/javaee/6/tutorial/doc/bnayl.html">Building
+Web Services with JAX-WS</a> , part of the Java EE 6 Tutorial</li>
+<li><a href="http://jax-ws.java.net/">JAX-WS Reference
+Implementation</a> project</li>
+</ul>
+<h2>Specification</h2>
+<ul>
+<li><a href="http://jcp.org/en/jsr/detail?id=224">JSR 224: Java API
+for XML-Based Web Services (JAX-WS) 2.0</a></li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Thread Section Format</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:29Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="felog003.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="felog005.html">
+                Next</a><hr/><a id="BABFIIJH" name="BABFIIJH"/>
+<div id="JSTGD553">
+<h1>Thread Section Format</h1>
+<p>This section contains information about the thread that just crashed. If multiple threads crash at the same time, only one thread is printed.</p>
+<div><a id="sthref69" name="sthref69"/>
+<h2>Thread Information</h2>
+<p>The first part of the thread section shows the thread that provoked the fatal error, as shown in <a href="#BABFJIAB">Example A-6</a>.</p>
+<div id="JSTGD554"><a id="BABFJIAB" name="BABFJIAB"/>
+<p>Example A-6 Thread Section in the Error Log</p>
+<pre dir="ltr" xml:space="preserve">
+Current thread (0x0805ac88):  JavaThread "main" [_thread_in_native, id=21139]
+                    |             |         |            |          +-- ID
+                    |             |         |            +------------- state
+                    |             |         +-------------------------- name
+                    |             +------------------------------------ type
+                    +-------------------------------------------------- pointer
+</pre></div>
+
+<p>The thread pointer is the pointer to the Java VM internal thread structure. It is generally of no interest unless you are debugging a live Java VM or core file.</p>
+<p>The following list shows possible thread types.</p>
+<ul>
+<li>
+<p><code dir="ltr">JavaThread</code></p>
+</li>
+<li>
+<p><code dir="ltr">VMThread</code></p>
+</li>
+<li>
+<p><code dir="ltr">CompilerThread</code></p>
+</li>
+<li>
+<p><code dir="ltr">GCTaskThread</code></p>
+</li>
+<li>
+<p><code dir="ltr">WatcherThread</code></p>
+</li>
+<li>
+<p><code dir="ltr">ConcurrentMarkSweepThread</code></p>
+</li>
+</ul>
+<p><a href="#BABJBJDA">Table A-2</a> shows the important thread states.</p>
+<div id="JSTGD555"><a id="sthref70" name="sthref70"/><a id="BABJBJDA" name="BABJBJDA"/>
+<p>Table A-2 Thread States</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="This table contains a list of thread states and their descriptions." title="Thread States" width="100%">
+<col width="27%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t7" valign="bottom">Thread State</th>
+<th align="left" id="r1c2-t7" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r2c1-t7">
+<p><code dir="ltr">_thread_uninitialized</code></p>
+</td>
+<td align="left" headers="r2c1-t7 r1c2-t7">
+<p>Thread is not created. This occurs only in the case of memory corruption.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r3c1-t7">
+<p><code dir="ltr">_thread_new</code></p>
+</td>
+<td align="left" headers="r3c1-t7 r1c2-t7">
+<p>Thread has been created but it has not yet started.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r4c1-t7">
+<p><code dir="ltr">_thread_in_native</code></p>
+</td>
+<td align="left" headers="r4c1-t7 r1c2-t7">
+<p>Thread is running native code. The error is probably a bug in native code.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r5c1-t7">
+<p><code dir="ltr">_thread_in_vm</code></p>
+</td>
+<td align="left" headers="r5c1-t7 r1c2-t7">
+<p>Thread is running VM code.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r6c1-t7">
+<p><code dir="ltr">_thread_in_Java</code></p>
+</td>
+<td align="left" headers="r6c1-t7 r1c2-t7">
+<p>Thread is running either interpreted or compiled Java code.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r7c1-t7">
+<p><code dir="ltr">_thread_blocked</code></p>
+</td>
+<td align="left" headers="r7c1-t7 r1c2-t7">
+<p>Thread is blocked.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r8c1-t7">
+<p><code dir="ltr">..._trans</code></p>
+</td>
+<td align="left" headers="r8c1-t7 r1c2-t7">
+<p>If any of the above states is followed by the string <code dir="ltr">_trans</code>, that means that the thread is changing to a different state.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p>The thread ID in the output is the native thread identifier.</p>
+<p>If a Java thread is a daemon thread, then the string daemon is printed before the thread state.</p>
+</div>
+
+<div><a id="sthref71" name="sthref71"/>
+<h2>Signal Information</h2>
+<p>The next information in the error log describes the unexpected signal that caused the VM to terminate. On a Windows system the output appears as shown in <a href="#BABJHCCH">Example A-7</a>.</p>
+<div id="JSTGD556"><a id="BABJHCCH" name="BABJHCCH"/>
+<p>Example A-7 Unexpected Signal Section in the Error Log</p>
+<pre dir="ltr" xml:space="preserve">
+siginfo: ExceptionCode=0xc0000005, reading address 0xd8ffecf1
+</pre></div>
+
+<p>In the above example, the exception code is <code dir="ltr">0xc0000005</code> (<code dir="ltr">ACCESS_VIOLATION</code>), and the exception occurred when the thread attempted to read address <code dir="ltr">0xd8ffecf1</code>.</p>
+<p>On Oracle Solaris and Linux operating systems the signal number (<code dir="ltr">si_signo</code>) and signal code (<code dir="ltr">si_code</code>) are used to identify the exception, as follows:</p>
+<pre dir="ltr" xml:space="preserve">
+siginfo:si_signo=11, si_errno=0, si_code=1, si_addr=0x00004321
+</pre></div>
+
+<div><a id="sthref72" name="sthref72"/>
+<h2>Register Context</h2>
+<p>The next information in the error log shows the register context at the time of the fatal error. The exact format of this output is processor-dependent. <a href="#BABGAAFJ">Example A-8</a> shows output for the Intel (IA32) processor.</p>
+<div id="JSTGD557"><a id="BABGAAFJ" name="BABGAAFJ"/>
+<p>Example A-8 Register Context in the Fatal Error</p>
+<pre dir="ltr" xml:space="preserve">
+Registers:
+EAX=0x00004321, EBX=0x41779dc0, ECX=0x080b8d28, EDX=0x00000000
+ESP=0xbfffc1e0, EBP=0xbfffc1f8, ESI=0x4a6b9278, EDI=0x0805ac88
+EIP=0x417789d7, CR2=0x00004321, EFLAGS=0x00010216
+</pre></div>
+
+<p>The register values might be useful when combined with instructions, as described below.</p>
+</div>
+
+<div><a id="sthref73" name="sthref73"/>
+<h2>Machine Instructions</h2>
+<p>After the register values, <a href="#BABGDACI">Example A-9</a> the error log that contains the top of stack followed by 32 bytes of instructions (opcodes) near the program counter (PC) when the system crashed. These opcodes can be decoded with a disassembler to produce the instructions around the location of the crash. <i>Note:</i> IA32 and AMD64 instructions are variable in length, and so it is not always possible to reliably decode instructions before the crash PC.</p>
+<div id="JSTGD558"><a id="BABGDACI" name="BABGDACI"/>
+<p>Example A-9 Top Stack in the Error Log</p>
+<pre dir="ltr" xml:space="preserve">
+Top of Stack: (sp=0xbfffc1e0)
+0xbfffc1e0:   00000000 00000000 0818d068 00000000
+0xbfffc1f0:   00000044 4a6b9278 bfffd208 41778a10
+0xbfffc200:   00004321 00000000 00000cd8 0818d328
+0xbfffc210:   00000000 00000000 00000004 00000003
+0xbfffc220:   00000000 4000c78c 00000004 00000000
+0xbfffc230:   00000000 00000000 00180003 00000000
+0xbfffc240:   42010322 417786ec 00000000 00000000
+0xbfffc250:   4177864c 40045250 400131e8 00000000 
+Instructions: (pc=0x417789d7)
+0x417789c7:   ec 14 e8 72 ff ff ff 81 c3 f2 13 00 00 8b 45 08
+0x417789d7:   0f b6 00 88 45 fb 8d 83 6f ee ff ff 89 04 24 e8
+</pre></div>
+</div>
+
+<div><a id="sthref74" name="sthref74"/>
+<h2>Thread Stack</h2>
+<p>Where possible, the next output in the error log is the thread stack, as shown in <a href="#BABGFECC">Example A-10</a>. This includes the addresses of the base and the top of the stack, the current stack pointer, and the amount of unused stack available to the thread. This is followed, where possible, by the stack frames, and up to 100 frames are printed. For C/C++ frames the library name may also be printed. <i>Note:</i> In some fatal error conditions the stack may be corrupt, and in such case this detail may not be available.</p>
+<div id="JSTGD559"><a id="BABGFECC" name="BABGFECC"/>
+<p>Example A-10 Thread Stack in the Error Log</p>
+<pre dir="ltr" xml:space="preserve">
+Stack: [0x00040000,0x00080000),  sp=0x0007f9f8,  free space=254k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x83d77]
+C  [App.dll+0x1047]
+j  Test.foo()V+0
+j  Test.main([Ljava/lang/String;)V+0
+v  ~StubRoutines::call_stub
+V  [jvm.dll+0x80f13]
+V  [jvm.dll+0xd3842]
+V  [jvm.dll+0x80de4]
+C  [java.exe+0x14c0]
+C  [java.exe+0x64cd]
+C  [kernel32.dll+0x214c7]
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  Test.foo()V+0
+j  Test.main([Ljava/lang/String;)V+0
+v  ~StubRoutines::call_stub
+</pre></div>
+
+<p>The log contains two thread stacks.</p>
+<ul>
+<li>
+<p>The first thread stack is <code dir="ltr">Native frames</code>, which prints the native thread showing all function calls. However this thread stack does not take into account the Java methods that are inlined by the runtime compiler; if methods are inlined they appear to be part of the parent's stack frame.</p>
+<p>The information in the thread stack for native frames provides important information about the cause of the crash. By analyzing the libraries in the list from the top down, you can generally determine which library might have caused the problem and report it to the appropriate organization responsible for that library.</p>
+</li>
+<li>
+<p>The second thread stack is <code dir="ltr">Java frames</code>, which prints the Java frames including the inlined methods, skipping the native frames. Depending on the crash it might not be possible to print the native thread stack but it might be possible to print the Java frames.</p>
+</li>
+</ul>
+</div>
+
+<div><a id="sthref75" name="sthref75"/>
+<h2>Further Details</h2>
+<p>If the error occurred in the VM thread or in a compiler thread, then further details may be seen from <a href="#BABBJHIB">Example A-11</a>. For example, in the case of the VM thread, the VM operation is printed if the VM thread is executing a VM operation at the time of the fatal error. In the following output example, the compiler thread provoked the fatal error. The task is a compiler task and the HotSpot Client VM is compiling method <code dir="ltr">hs101t004Thread.ackermann</code>.</p>
+<div id="JSTGD560"><a id="BABBJHIB" name="BABBJHIB"/>
+<p>Example A-11 VM Thread or Compile Thread in the Error Log</p>
+<pre dir="ltr" xml:space="preserve">
+Current CompileTask:
+HotSpot Client Compiler:754   b  
+nsk.jvmti.scenarios.hotswap.HS101.hs101t004Thread.ackermann(IJ)J (42 bytes)
+</pre></div>
+
+<p>For the HotSpot Server VM the output for the compiler task is slightly different but will also include the full class name and method.</p>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="felog003.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="felog005.html">
+                Next</a><hr/>
+
+
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

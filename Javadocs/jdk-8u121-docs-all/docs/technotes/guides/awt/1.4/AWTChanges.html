@@ -1,0 +1,1064 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>AWT Enhancements</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>AWT Enhancements in the Java SE 1.4</h1>
+<p><a href="#bugfix1.4.2">1.4.2 Bug Fixes</a><br />
+<a href="#bugfix1.4.1">1.4.1 Bug Fixes</a><br />
+<a href="#focus">New Focus Subsystem</a><br />
+<a href="#focusDeprecate">Deprecated Focus Methods</a><br />
+<a href="#actionEvents">ActionEvents (and Other Events) Need
+Timestamps</a><br />
+<a href="#headless">Headless Support</a><br />
+<a href="#windowCentering">Window Centering API Required for
+Multiscreen Support</a><br />
+<a href="#fullscreen">The New Fullscreen Exclusive Mode
+API</a><br />
+<a href="#syncOutOfRange">Sync Out of Range Error From Video Driver
+Under Windows NT</a> <a href="#undecorated">Undecorated
+Frames</a><br />
+<a href="#mousewheel">Mouse Wheel Support</a><br />
+<a href="#zoom">Programmatic Zooming of
+<code>Frame</code>s</a><br />
+<a href="#dynamicLayout">Dynamic Layout During Resize</a><br />
+<a href="#listenerList">Access to Component Listener
+Lists</a><br />
+<a href="#dragndrop">Changes to Drag and Drop</a><br />
+<a href="#a64bit">64-Bit Compliance on Solaris</a><br />
+<a href="#inconsistentDLLs">Inconsistent DLLs Warning</a><br />
+<a href="#drawingSurface">Removal of the
+<code>DrawingSurface</code> API</a><br />
+<a href="#inputEvent">New InputEvent Key Modifiers</a><br />
+<a href="#choice">Change in Drop Down Behavior for Choice
+Menus</a><br />
+<a href="#choice2">Choice Component Now Obeys Layout Manager
+Constraints</a><br /></p>
+<hr />
+<a name="bugfix1.4.2" id="bugfix1.4.2"><b>1.4.2 Bug Fixes</b></a>
+<p><a href=
+"http://bugs.java.com/view_bug.do?bug_id=4648702"><b>4648702</b></a>:
+On Microsoft Windows 2000 and Windows XP, a <code>TextArea</code>
+will sometimes display only a vertical scrollbar, even though the
+<code>SCROLLBARS_BOTH</code> field is set to <code>true</code>.</p>
+<p><a href=
+"http://bugs.java.com/view_bug.do?bug_id=4636311"><b>4636311</b></a>:
+Modal dialogs may hang when run from a <code>Runnable</code> on
+release 1.3.1 and 1.4.</p>
+<p><a href=
+"http://bugs.java.com/view_bug.do?bug_id=4385243"><b>4385243</b></a>:
+Unable to input text in Microsoft Windows locales that don't have
+an ANSI code page (such as Hindi).</p>
+<a name="bugfix1.4.1" id="bugfix1.4.1"><b>1.4.1 Bug Fixes</b></a>
+<p><a href=
+"http://bugs.java.com/view_bug.do?bug_id=4690831"><b>4690831</b></a>:
+Game applets fail to repaint properly with Internet Explorer.</p>
+<p><a href=
+"http://bugs.java.com/view_bug.do?bug_id=4627627"><b>4627627</b></a>:
+Focus traversal keys moved from awt.properties to Preferences
+API.</p>
+<p><a href=
+"http://bugs.java.com/view_bug.do?bug_id=4636548"><b>4636548</b></a>/
+<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4639735"><b>4639735</b></a>:
+Crash of release 1.4 when screensaver on Microsoft Windows 2000 is
+activated.</p>
+<p><a href=
+"http://bugs.java.com/view_bug.do?bug_id=4379138"><b>4379138</b></a>:
+Problems on Linux with key events for some dead keys.</p>
+<p><a href=
+"http://bugs.java.com/view_bug.do?bug_id=4627542"><b>4627542</b></a>:
+Swing applications don't support international keyboards under
+Linux.</p>
+<p><a href=
+"http://bugs.java.com/view_bug.do?bug_id=4395157"><b>4395157</b></a>:
+Under Linux on 1.3, can't type "%" in applets.</p>
+<p><a href=
+"http://bugs.java.com/view_bug.do?bug_id=4669873"><b>4669873</b></a>:
+A drag and drop bug, reported on hopper-beta under Microsoft
+Windows, caused an application to briefly freeze during DnD and is
+fixed in the final release of 1.4.1.</p>
+<a name="focus" id="focus"><b>New Focus Subsystem</b></a>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4290675">4290675</a>.</p>
+<p>A new focus subsystem replaces the previous focus architecture
+and addresses many focus-related bugs caused by platform
+inconsistencies, and incompatibilities between AWT and Swing
+components. See the new <a href=
+"../../../../api/java/awt/doc-files/FocusSpec.html"><b>Focus Model
+Specification</b></a> for further details.</p>
+<p>See the javadoc <a href="focusAPIChanges.html">here</a>.</p>
+<a name="headless" id="headless"></a> <b>Headless Support</b>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4281163">4281163</a>.</p>
+<p>Many environments, such as mainframe machines and dedicated
+servers, do not support a display, keyboard, or mouse. Headless
+support is enabled by the new <a href=
+"../../../../api/java/awt/GraphicsEnvironment.html"><code>GraphicsEnvironment</code></a>
+methods <code>isHeadless</code> and
+<code>isHeadlessInstance</code>. These methods indicate whether a
+display, keyboard, and mouse can be supported in a graphics
+environment.</p>
+<p>The API changes for headless include:</p>
+<ul>
+<li>A new public exception class, <a href=
+"../../../../api/java/awt/HeadlessException.html"><code><b>java.awt.HeadlessException</b></code></a>,
+is introduced. It is derived from
+<code>UnsupportedOperationException</code>, which derives from
+<code>RuntimeException</code>, so that existing implementations of
+methods that throw the new exception will not require signature
+changes.</li>
+<li>Two new methods, are added to
+<code>java.awt.GraphicsEnvironment</code>.
+<pre>
+    public static boolean <a href=
+"../../../../api/java/awt/GraphicsEnvironment.html#isHeadless--">isHeadless()</a>
+
+    public boolean <a href=
+"../../../../api/java/awt/GraphicsEnvironment.html#isHeadlessInstance--">isHeadlessInstance()</a>
+</pre></li>
+<li>The constructors of <code>Applet</code> and all heavyweight
+components (*) are changed to throw <code>HeadlessException</code>
+if a display, keyboard, and mouse are not supported by the toolkit
+implementation. All javadoc tags on all constructors are changed to
+reflect this <code>RuntimeException</code>.</li>
+<li>The <code>Robot</code> constructor throws an
+<code>AWTException</code> if a display, keyboard, and mouse are not
+supported by the toolkit implementation.</li>
+<li>Many of the methods in <code>Toolkit</code> and
+<code>GraphicsEnvironment</code>, with the exception of fonts,
+imaging, and printing, are changed to throw
+<code>HeadlessException</code> if a display, keyboard, and mouse
+are not supported. All the javadoc tags on these methods are
+changed to reflect this <code>RuntimeException</code>.</li>
+<li>Other methods that may be affected by lack of display,
+keyboard, or mouse support, are changed to throw
+<code>HeadlessException</code>.</li>
+<li>It should be worth noting that the
+<code>HeadlessException</code> is thrown if and only if
+<code>isHeadless</code> returns true, and that all javadoc comments
+should specify this.</li>
+</ul>
+<p>(*)<code>Applet</code>, <code>Button</code>,
+<code>Checkbox</code>, <code>Choice</code>,
+<code>FileDialog</code>, <code>Label</code>, <code>List</code>,
+<code>Menu</code>, <code>MenuBar</code>,
+<code>MenuComponent</code>, <code>MenuItem</code>,
+<code>PopupMenu</code>, <code>Scrollbar</code>,
+<code>ScrollPane</code>, <code>TextArea</code>,
+<code>TextComponent</code>, <code>Frame</code>,
+<code>Window</code>, <code>Dialog</code>, <code>JApplet</code>,
+<code>JFrame</code>, <code>JWindow</code>, <code>JDialog</code>,
+and <code>TextField</code>. <code>Canvas</code> and
+<code>Panel</code> do not need to throw this exception since these
+can be given empty peers and treated as lightweights.</p>
+<p>To run our environment with a headless implementation, the
+follow property may be specified at the <code>java</code> command
+line:</p>
+<pre>
+  -Djava.awt.headless=true
+</pre>
+If this property is not specified and a display, keyboard, and
+mouse are not supported, then headless implementation is used by
+default.
+<p>Source code should check for headless, so that the exception may
+be caught gracefully. For example, see the following pre-headless
+implementation of the class <code>Foo</code>:</p>
+<pre>
+class Foo {
+  static Choice c = new Choice();  // could throw HeadlessException
+}
+</pre>
+The new and improved implementation of <code>Foo</code> should be
+placed in a static block:
+<pre>
+class Foo {
+  static Choice c;
+  static {
+    try {
+      c = new Choice();
+    catch (HeadlessException e) {
+        ...
+    }
+  }
+}
+</pre>
+<p><a name="fullscreen" id="fullscreen"><b>The New Fullscreen
+Exclusive Mode API</b></a></p>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4189326">4189326</a>.</p>
+<p>The new full-screen exclusive mode API supports high performance
+graphics by suspending the windowing system so that drawing can be
+done directly to the screen. Full screen mode, which is entirely
+different from simply taking an AWT <code>Frame</code>,
+<code>Window</code>, or <code>Dialog</code> and expanding it to fit
+the screen, is a graphics mode whereby the application takes entire
+control over the contents of video memory. The application tells
+the graphics card what to draw, how to draw it, and when to draw
+it. This mode is not always available. On some operating systems,
+it may not be implemented at all. On other operating systems, it
+may only be available if the capability is supported by the
+graphics card. Nevertheless, this mode is critical for performance
+and is necessary for enabling hardware page-flipping on
+Windows.</p>
+<p>For a tutorial explaining how to use the full screen exclusive
+API mode with several code examples, see <a href=
+"http://docs.oracle.com/javase/tutorial/extra/fullscreen/">here</a>.</p>
+<p>API Changes:</p>
+<ul>
+<li>A new public final class, <a href=
+"../../../../api/java/awt/DisplayMode.html"><code>java.awt.DisplayMode</code></a>,
+is introduced.</li>
+<li>Changes to <a href=
+"../../../../api/java/awt/GraphicsDevice.html"><code>java.awt.GraphicsDevice</code>:</a>
+<pre>
+    public void <a href=
+"../../../../api/java/awt/GraphicsDevice.html#setFullScreenWindow-java.awt.Window-">setFullScreenWindow(Window w)</a>
+
+    public Window <a href=
+"../../../../api/java/awt/GraphicsDevice.html#getFullScreenWindow--">getFullScreenWindow()</a> 
+
+    public boolean <a href=
+"../../../../api/java/awt/GraphicsDevice.html#isDisplayChangeSupported--">isDisplayChangeSupported()</a> 
+
+    public void <a href=
+"../../../../api/java/awt/GraphicsDevice.html#setDisplayMode-java.awt.DisplayMode-">setDisplayMode(DisplayMode dm)</a>
+
+    public DisplayMode <a href=
+"../../../../api/java/awt/GraphicsDevice.html#getDisplayMode--">getDisplayMode()</a> 
+
+    public DisplayMode[] <a href=
+"../../../../api/java/awt/GraphicsDevice.html#getDisplayModes--">getDisplayModes()</a> 
+</pre></li>
+<li>The algorithm which handles direct video buffer control has
+been localized to a new class, <a href=
+"../../../../api/java/awt/image/BufferStrategy.html"><code>java.awt.image.BufferStrategy</code></a>.</li>
+<li>A new class <a href=
+"../../../../api/java/awt/BufferCapabilities.html"><code>java.awt.BufferCapabilities</code></a>
+can be used when creating a buffer strategy. Likewise, a new class
+<a href=
+"../../../../api/java/awt/ImageCapabilities.html"><code>java.awt.ImageCapabilities</code></a>
+is available to define the image capabilities of a specific
+configuration.</li>
+<li>An application programmer can create and use a buffer strategy
+from a <code>Canvas</code> or a <code>Window</code>. There are two
+buffer strategies that are supported as protected inner classes:
+<a href=
+"../../../../api/java/awt/Component.FlipBufferStrategy.html"><code>java.awt.Component.FlipBufferStrategy</code></a>
+and <a href=
+"../../../../api/java/awt/Component.BltBufferStrategy.html"><code>java.awt.Component.BltBufferStrategy</code></a>.
+One of these two inner classes is used on the <a href=
+"../../../../api/java/awt/Canvas.html"><code>Canvas</code></a> or
+<a href="../../../../api/java/awt/Window.html"><code>Window</code></a>
+when the <code>createBufferStrategy</code> method is called,
+depending on the <code>BufferCapabilities</code> object supplied
+when creating the strategy (if any). To get the buffer strategy
+used by a particular component, the <code>getBufferStrategy</code>
+method is used.</li>
+</ul>
+<a name="syncOutOfRange" id="syncOutOfRange"><b>Sync Out of Range
+Error From Video Driver Under Windows NT</b></a>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4452207">4452207</a>.</p>
+<p>If you have a Dell Optiplex GX110 using an Intel 810 Graphics
+Controller, under Windows NT, you may get a "sync out of range"
+message from the video driver if you change the display mode more
+than once and use a high display resolution. There is evidently a
+bug in the (DirectX) video driver that is causing this. There are
+several workarounds to this problem:</p>
+<ul>
+<li>Disable DirectDraw by using
+<code>-Dsun.java2d.noddraw=true</code> at the command line.</li>
+<li>Do not change the display resolution more than once during the
+lifetime of a program that is intended to run on this
+hardware.</li>
+<li>Disallow the following display modes on this hardware:
+<pre>
+    1152 X 864     8       85
+    1152 X 864     16      85
+    1152 X 864     24      85
+
+    1280 X 1024    8       70,72,75,85
+    1280 X 1024    16      70,72,75,85
+    1280 X 1024    24      70,75,85
+
+    Bad Color (Unsatisfactory appearance in terms of color)
+
+    1024 X 768     8       60,70,72,75,85
+</pre></li>
+</ul>
+<p><a name="undecorated" id="undecorated"><b>Undecorated
+Frames</b></a></p>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4038769">4038769</a>.</p>
+<p>For certain applications having no native frame decorations
+makes sense. For example, applications that will run across many
+platforms and that require that the look and feel is the same, or
+when the programmer does not want the end-user coming in contact
+with the native operating system.</p>
+<p>This release allows a Java application to turn off the creation
+of frame decorations; no native titlebar, system menu, border, or
+other native operating system dependent screen components appear
+when this mode is enabled. AWT and Swing components work
+transparently.</p>
+<p>Changes to <a href=
+"../../../../api/java/awt/Frame.html"><code>java.awt.Frame</code></a>:</p>
+<pre>
+    public void <a href=
+"../../../../api/java/awt/Frame.html#setUndecorated-boolean-">setUndecorated(boolean undecorated)</a>
+
+    public boolean <a href=
+"../../../../api/java/awt/Frame.html#isUndecorated--">isUndecorated()</a> 
+</pre>
+<p>Changes to <a href=
+"../../../../api/java/awt/Dialog.html"><code>java.awt.Dialog</code></a>:</p>
+<pre>
+    public void <a href=
+"../../../../api/java/awt/Dialog.html#setUndecorated-boolean-">setUndecorated(boolean undecorated)</a>
+
+    public boolean <a href=
+"../../../../api/java/awt/Dialog.html#isUndecorated--">isUndecorated()</a>
+</pre>
+<p><a name="mousewheel" id="mousewheel"><b>Mouse Wheel
+Support</b></a></p>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4289845">4289845</a>.</p>
+<p>The mouse wheel, with a scroll wheel in place of the middle
+mouse button, is enabled with new built-in Java support for
+scrolling via the mouse wheel. The <a href=
+"../../../../api/java/awt/event/MouseWheelEvent.html"><code>java.awt.event.MouseWheelEvent</code></a>
+class enables seamless support for mouse wheel scrolling in Java
+applications with no recompiling required. Also, a new <a href=
+"../../../../api/java/awt/event/MouseWheelListener.html"><code>java.awt.event.MouseWheelListener</code></a>
+interface allows customization of mouse wheel behavior.</p>
+<p><i>Note, for those using the mouse wheel on Linux, see <a href=
+"#linuxMouseWheel">here</a>.</i></p>
+<ul>
+<li><b>Scrolling Behavior</b>:
+<ul>
+<li>A scrollbar is considered "scrollable" if it is both showing
+<i>and</i> there is more content in the scrolling
+<code>Component</code> than can be displayed at once, such that the
+scroll thumb does not occupy the entire scroll track.</li>
+<li>It is possible for a scrollbar to be showing, but not be
+scrollable. Usually this occurs when a scrollbar is set to always
+be displayed.</li>
+<li>The scrollbar to be scrolled by the mouse wheel is determined
+as follows:
+<ul>
+<li>If only one scrollbar is scrollable, it will be scrolled.</li>
+<li>If both a horizontal and a vertical scrollbar are scrollable,
+the vertical scrollbar will be scrolled.</li>
+</ul>
+</li>
+<li>Wheel scrolling may be disabled altogether using
+<code>setWheelScrollEnabled(false)</code>.</li>
+<li>Up/away-from-user rotations cause vertical scroll bars to
+scroll upwards, and horizontal scrollbars to scroll to the left.
+Just the opposite is true for down/towards rotations.</li>
+<li>No scrolling takes place if a scroll thumb is at the end of the
+scroll track.</li>
+</ul>
+</li>
+<li><b>Heavyweight support:</b>
+<ul>
+<li>Some native peers with integrated scroll bars can handle mouse
+wheel scrolling by themselves. Examples on Windows includes
+<code>TextArea</code>, <code>Choice</code>,
+<code>FileDialog</code>, and <code>List</code>. Such components
+will let their native peers handle wheel scrolling.</li>
+<li><code>Component</code>s which do not inherit any native mouse
+wheel behavior will propagate mouse wheel events up the
+<code>Container</code> hierarchy until a <code>Container</code>
+with <code>MouseWheelEvent</code>s enabled is found. This is
+typically a <code>ScrollPane</code>. Mouse wheel events are
+delivered to the <code>Component</code> with
+<code>MouseWheelEvent</code>s enabled.</li>
+<li>Alternatively, client programmers may add
+<code>MouseWheelListener</code>s to customize what happens when the
+mouse wheel is moved while the mouse is over a
+<code>Component</code>. In the case of <code>Component</code>s that
+already have native handling of mouse wheel events, clients may
+consume the mouse wheel event to avoid native handling.</li>
+<li><code>java.awt.ScrollPane</code> is modified to have
+<code>MouseWheelEvent</code>s enabled by default. When a
+<code>ScrollPane</code> receives a <code>MouseWheelEvent</code>, it
+will properly scroll its contained <code>Component</code>. This
+functionality may be disabled with the new
+<code>setWheelScrollingEnabled</code> method.</li>
+</ul>
+</li>
+<li>
+<p><b>Lightweight Support:</b></p>
+<ul>
+<li>Lightweight components will deliver mouse wheel events to their
+first ancestor with a <code>MouseWheelListener</code>.</li>
+<li><code>MouseWheelListener</code>s may be added to any
+<code>JComponent</code> for custom event handling.</li>
+<li><code>javax.swing.JScrollPane</code> is modified to properly
+scroll its viewed component. Like <code>java.awt.ScrollPane</code>,
+this may be disabled using
+<code>setWheelScrollingEnabled</code>.</li>
+</ul>
+</li>
+<li><b>New API</b>:
+<p>In addition to the new class and new interface previously
+mentioned, there are some other changes to the API to support the
+mouse wheel.</p>
+<ul>
+<li>Change to <a href=
+"../../../../api/java/awt/AWTEvent.html"><code>java.awt.AWTEvent</code>:</a>
+<pre>
+    public final static long <a href=
+"../../../../api/java/awt/AWTEvent.html#MOUSE_WHEEL_EVENT_MASK">MOUSE_WHEEL_EVENT_MASK;</a>
+</pre></li>
+<li>Changes to <a href=
+"../../../../api/java/awt/AWTEventMulticaster.html"><code>java.awt.AWTEventMulticaster</code>:</a>
+<pre>
+    public void <a href=
+"../../../../api/java/awt/AWTEventMulticaster.html#mouseWheelMoved-java.awt.event.MouseWheelEvent-">mouseWheelMoved(MouseWheelEvent e)</a>
+
+    public static MouseWheelListener <a href=
+"../../../../api/java/awt/AWTEventMulticaster.html#add-java.awt.event.MouseWheelListener-java.awt.event.MouseWheelListener-">add(MouseWheelListener a, MouseWheelListener b)</a>
+
+    public static MouseWheelListener <a href=
+"../../../../api/java/awt/AWTEventMulticaster.html#remove-java.awt.event.MouseWheelListener-java.awt.event.MouseWheelListener-">remove(MouseWheelListener l, MouseWheelListener oldl)</a>
+</pre></li>
+<li>Changes to <a href=
+"../../../../api/java/awt/Component.html"><code>java.awt.Component</code>:</a>
+<pre>
+    public synchronized void <a href=
+"../../../../api/java/awt/Component.html#addMouseWheelListener-java.awt.event.MouseWheelListener-">addMouseWheelListener(MouseWheelListener l)</a>
+
+    public synchronized void <a href=
+"../../../../api/java/awt/Component.html#removeMouseWheelListener-java.awt.event.MouseWheelListener-">removeMouseWheelListener(MouseWheelListener l)</a>
+</pre></li>
+<li>Changes to <a href=
+"../../../../api/java/awt/ScrollPane.html"><code>java.awt.ScrollPane</code>:</a>
+<pre>
+    public void <a href=
+"../../../../api/java/awt/ScrollPane.html#setWheelScrollingEnabled-boolean-">setWheelScrollingEnabled(boolean handleWheel)</a>
+
+    public boolean <a href=
+"../../../../api/java/awt/ScrollPane.html#isWheelScrollingEnabled--">isWheelScrollingEnabled()</a>
+</pre></li>
+<li>Change to <a href=
+"../../../../api/java/awt/Robot.html"><code>java.awt.Robot</code>:</a>
+<pre>
+    public synchronized void <a href=
+"../../../../api/java/awt/Robot.html#mouseWheel-int-">mouseWheel(int wheelAmt)</a>
+</pre></li>
+</ul>
+</li>
+<li><a name="linuxMouseWheel" id="linuxMouseWheel"><b>Linux Mouse
+Wheel Support:</b></a>
+<p>For Linux to recognize your mouse wheel, two modifications to
+the <code>/etc/X11/XF86Config</code> file are required. Under the
+"Pointer" section:</p>
+<ul>
+<li>
+<p>Add the line:</p>
+<pre>
+    ZAxisMapping 4 5
+</pre></li>
+<li>
+<p>Change the protocol to: "imps/2" (this will vary depending on
+your particular wheel mouse).</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><a name="zoom" id="zoom"><b>Programmatic Zooming of
+<code>Frame</code>s</b></a></p>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4071554">4071554</a>.</p>
+<p>Previously there was no way to zoom (or maximize) a
+<code>Frame</code> programmatically. This feature has been added to
+this release.</p>
+<p>The new interface <a href=
+"../../../../api/java/awt/event/WindowStateListener.html"><code>java.awt.event.WindowStateListener</code></a>
+is introduced.</p>
+<p>Changes to <a href=
+"../../../../api/java/awt/Frame.html"><code>java.awt.Frame</code></a>:</p>
+<pre>
+    public static final int <a href=
+"../../../../api/java/awt/Frame.html#MAXIMIZED_HORIZ">MAXIMIZED_HORIZ;</a>
+
+    public static final int <a href=
+"../../../../api/java/awt/Frame.html#MAXIMIZED_VERT">MAXIMIZED_VERT;</a>
+
+    public static final int <a href=
+"../../../../api/java/awt/Frame.html#MAXIMIZED_BOTH">MAXIMIZED_BOTH;</a>
+
+    public synchronized void <a href=
+"../../../../api/java/awt/Frame.html#setMaximizedBounds-java.awt.Rectangle-">setMaximizedBounds(Rectangle bounds)</a>
+
+    public Rectangle <a href=
+"../../../../api/java/awt/Frame.html#getMaximizedBounds--">getMaximizedBounds()</a>
+
+    public synchronized void <a href=
+"../../../../api/java/awt/Frame.html#setExtendedState-int-">setExtendedState(int state)</a>
+
+    public synchronized int <a href=
+"../../../../api/java/awt/Frame.html#getExtendedState--">getExtendedState()</a>
+</pre>
+<p>Changes to <a href=
+"../../../../api/java/awt/event/WindowEvent.html"><code>java.awt.event.WindowEvent</code></a>:</p>
+<pre>
+    public static final int <a href=
+"../../../../api/java/awt/event/WindowEvent.html#WINDOW_STATE_CHANGED">WINDOW_STATE_CHANGED;</a>
+
+    public <a href=
+"../../../../api/java/awt/event/WindowEvent.html#WindowEvent-java.awt.Window-int-java.awt.Window-int-int-">WindowEvent(Window source, int id, Window opposite, int oldState, int newState)</a>
+
+    public <a href=
+"../../../../api/java/awt/event/WindowEvent.html#WindowEvent-java.awt.Window-int-int-int-">WindowEvent(Window source, int id, int oldState, int newState)</a>
+
+    public int <a href=
+"../../../../api/java/awt/event/WindowEvent.html#getOldState--">getOldState()</a>
+
+    public int <a href=
+"../../../../api/java/awt/event/WindowEvent.html#getNewState--">getNewState()</a>
+</pre>
+<p>Changes to <a href=
+"../../../../api/java/awt/AWTEvent.html"><code>java.awt.AWTEvent</code></a>:</p>
+<pre>
+    public final static long <a href=
+"../../../../api/java/awt/AWTEvent.html#WINDOW_STATE_EVENT_MASK">WINDOW_STATE_EVENT_MASK;</a>
+</pre>
+<p>Changes to <a href=
+"../../../../api/java/awt/Toolkit.html"><code>java.awt.Toolkit</code></a>:</p>
+<pre>
+    public boolean <a href=
+"../../../../api/java/awt/Toolkit.html#isFrameStateSupported-int-">isFrameStateSupported(int state)</a> throws HeadlessException
+</pre>
+<p>Changes to <a href=
+"../../../../api/java/awt/Window.html"><code>java.awt.Window</code></a>:</p>
+<pre>
+    public synchronized void <a href=
+"../../../../api/java/awt/Window.html#addWindowStateListener-java.awt.event.WindowStateListener-">addWindowStateListener(WindowStateListener l)</a>
+
+    public synchronized void <a href=
+"../../../../api/java/awt/Window.html#removeWindowStateListener-java.awt.event.WindowStateListener-">removeWindowStateListener(WindowStateListener l)</a>
+
+    public synchronized WindowStateListener[] <a href=
+"../../../../api/java/awt/Window.html#getWindowStateListeners--">getWindowStateListeners()</a>
+
+    protected void <a href=
+"../../../../api/java/awt/Window.html#processWindowStateEvent-java.awt.event.WindowEvent-">processWindowStateEvent(WindowEvent e)</a>
+</pre>
+<p>Change to <a href=
+"../../../../api/java/awt/event/WindowAdapter.html"><code>java.awt.event.WindowAdapter</code></a>:</p>
+<pre>
+    public void <a href=
+"../../../../api/java/awt/event/WindowAdapter.html#windowStateChanged-java.awt.event.WindowEvent-">windowStateChanged(WindowEvent e)</a>
+</pre>
+<p>Changes to <a href=
+"../../../../api/java/awt/AWTEventMulticaster.html"><code>java.awt.AWTEventMulticaster</code></a>:</p>
+<pre>
+    public static WindowStateListener <a href=
+"../../../../api/java/awt/AWTEventMulticaster.html#add-java.awt.event.WindowStateListener-java.awt.event.WindowStateListener-">add(WindowStateListener a, WindowStateListener b)</a>
+
+    public static WindowStateListener <a href=
+"../../../../api/java/awt/AWTEventMulticaster.html#remove-java.awt.event.WindowStateListener-java.awt.event.WindowStateListener-">remove(WindowStateListener l, WindowStateListener oldl)</a>
+</pre class="codeblock">
+<p><a name="dynamicLayout" id="dynamicLayout"><b>Dynamic Layout
+During Resize</b></a></p>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4077991">4077991</a>.</p>
+<p>Previously, dynamic window resizing wasn't supported on all
+platforms. For example, on Windows NT, with solid resize <i>on</i>,
+resizing a window recalculated the layout only when the drag was
+finished. This has been fixed in this release with the addition of
+the new desktop property <code>awt.dynamicLayoutSupported</code>.
+When dynamic layout is enabled, a <code>Container</code>
+continually lays out its components as it resizes. If disabled, the
+layout will be validated after resizing has finished.</p>
+<p>API changes to <a href=
+"../../../../api/java/awt/Toolkit.html"><code>java.awt.Toolkit</code></a>.</p>
+<pre>
+    public void <a href=
+"../../../../api/java/awt/Toolkit.html#setDynamicLayout-boolean-">setDynamicLayout(boolean dynamic)</a>
+
+    protected boolean <a href=
+"../../../../api/java/awt/Toolkit.html#isDynamicLayoutSet--">isDynamicLayoutSet()</a>
+
+    public boolean <a href=
+"../../../../api/java/awt/Toolkit.html#isDynamicLayoutActive--">isDynamicLayoutActive()</a>
+</pre>
+<p><a name="listenerList" id="listenerList"><b>Access to Component
+Listener Lists</b></a></p>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4290704">4290704</a>.</p>
+<p>Previously all of the state in an AWT component that could be
+written could also be read. For example, there are no write-only
+properties in the component API. Event listeners were a notable
+exception. AWT event listeners are managed according to the
+JavaBeans conventions with a
+pair of methods: <code>add<i>XXX</i>Listener</code> and
+<code>remove<i>XXX</i>Listener</code> for a listener that
+implements the <code><i>XXX</i>EventListener</code> interface.</p>
+<p>No access was provided to the listener lists themselves. The
+fields that contain the listener lists are package private and no
+method was provided that returns the contents of a listener list.
+This has caused some problems for Swing and other AWT clients.</p>
+<p>To mitigate the problem in the Java 2 SDK, v1.3 release, we
+added a <code>getListeners</code> method to <code>Component</code>
+and to the Swing classes that defined listener lists. The
+<code>getListeners</code> method uses a class to specify a
+particular listener list. For example to get all of the listeners
+added with <code>addFocusListener</code>, one would write:
+<code>getListeners(FocusListener.class)</code>.</p>
+<p>This particular approach to exposing listener lists was taken to
+minimize the overall change to the AWT/Swing public API. It was not
+intended to be a convention for all JavaBeans and it did not handle
+<code>PropertyChangeListener</code>s - which can be added to a
+single property, as in
+<code>addPropertyChangeListener("myProperty", myListener)</code>.
+For this release, we have designed a more complete solution to
+accessing event listeners. The two conceptual changes are:</p>
+<ul>
+<li>The addition of a <code>getFooListeners</code> method to the
+add/remove convention in AWT and Swing classes.</li>
+<li>Support for <code>PropertyChangeListener</code>s and
+<code>VetoableChangeListener</code>s, including those which listen
+to a single property, using the new <a href=
+"../../../../api/java/util/EventListenerProxy.html"><code>java.util.EventListenerProxy</code></a>
+class.</li>
+</ul>
+<p>There is a new <a href=
+"../../../../api/java/awt/event/AWTEventListenerProxy.html"><code>java.awt.event.AWTEventListenerProxy</code></a>
+class.</p>
+<p>API Changes to <a href=
+"../../../../api/java/awt/Toolkit.html"><code>java.awt.Toolkit</code></a>:</p>
+<pre>
+    public PropertyChangeListener[] <a href=
+"../../../../api/java/awt/Toolkit.html#getPropertyChangeListeners--">getPropertyChangeListeners()</a>
+
+    public synchronized PropertyChangeListener[] <a href=
+"../../../../api/java/awt/Toolkit.html#getPropertyChangeListeners-java.lang.String-">getPropertyChangeListeners(String propertyName)</a>
+
+    public AWTEventListener[] <a href=
+"../../../../api/java/awt/Toolkit.html#getAWTEventListeners--">getAWTEventListeners()</a>
+
+    public AWTEventListener[] <a href=
+"../../../../api/java/awt/Toolkit.html#getAWTEventListeners-long-">getAWTEventListeners(long eventMask)</a>
+</pre>
+<p><a name="dragndrop" id="dragndrop"><b>Changes to Drag and
+Drop</b></a></p>
+<p>The bugtraq reports that corresponds to this change are:
+<a href="http://bugs.java.com/view_bug.do?bug_id=4407057">4407057</a>
+and <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4426750">4426750</a>.</p>
+<p>In the Solaris and Linux releases of Java 2 Standard Edition,
+SDK 1.3, several of the AWT heavyweight <code>Component</code>s
+exhibited default drag behavior via the middle mouse button, even
+if the application did not identify these <code>Components</code>
+as <code>DragSource</code>s via the <code>java.awt.dnd API</code>.
+These <code>Component</code>s were implemented using Motif peers,
+and Motif provides middle button drag behavior for these peers by
+default.</p>
+<p>Because of the design of the AWT, and because of bugs in the
+Motif library, this default behavior has been the source of
+numerous stability problems. Rather than continue to risk the
+stability of AWT and Drag &amp; Drop for a niche feature, we have
+chosen to disable this feature explicitly in our
+implementations.</p>
+<p>Developers can still identify these <code>Component</code>s as
+<code>DragSource</code>s in their applications using the
+<code>java.awt.dnd API</code>. This is both functional and
+supported. This approach is superior to relying upon default Motif
+behavior in any case, because it enables drag support for these
+<code>Component</code>s on all platforms, not just Solaris and
+Linux.</p>
+<p><a name="a64bit" id="a64bit"><b>64-Bit Compliance on Solaris
+Machines</b></a></p>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4295833">4295833</a>.</p>
+<p>64-bit Solaris applications use 64 bits to address memory
+instead of 32. This allows larger applications by providing a much
+larger virtual memory space. For this release, AWT has been brought
+up to 64-bit compliance. For more information, see <a href=
+"../../vm/index.html">here</a>.</p>
+<a name="inconsistentDLLs" id="inconsistentDLLs"><b>Inconsistent
+DLLs Warning</b></a>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4414004">4414004</a>.</p>
+<p>If you have installed English VC++ 6.0 onto a machine that also
+has Asian Windows NT installed, you may encounter strange artifacts
+when rendering Asian text in the <code>TextArea</code> component.
+You may also see this problem if you have installed Microsoft
+Exchange or Microsoft Office 97 onto a machine running Asian
+Windows NT 4.0. Although this problem was reported on the Japanese
+version of Windows NT, it will probably occur on other non-Latin
+versions of NT as well, such as Chinese or Korean.</p>
+<p>The problem was caused when the installation of those programs
+replaced the Asian Riched32.dll with the English version. The
+problem can be corrected by replacing Riched32.dll with the Asian
+version.</p>
+<a name="drawingSurface" id="drawingSurface"><b>Removal of the
+Drawing Surface API</b></a>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4293646">4293646</a>.</p>
+<p>The <code>sun.awt.DrawingSurface</code> API has been removed. It
+was never made public, but some developers have been using it. The
+functionality has been replaced by the JAWT. For more information,
+see the <a href="../AWT_Native_Interface.html">AWT Native
+Interface</a> description.</p>
+<a name="windowCentering" id="windowCentering"><b>Window Centering
+API Required for Multiscreen Support</b></a>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4463949">4463949</a>.</p>
+<p>Xinerama-aware applications running on multi-headed systems have
+caused problems which have resulted in a variety of bug reports.
+Some multi-headed environments use monitors with little or no
+borders, which can be butted up against one another such that the
+resulting effect is one mammoth display. In this case, a "properly"
+centered window may span multiple screens. Other multi-headed
+environments use regular CRT monitors, with several inches of
+packaging between the actual display areas. In this case, a window
+spanning multiple screens produces a disconcerting effect,
+especially if the window cannot be dragged onto one monitor or the
+other (the Solaris login screen, for example). In short there was
+no way to tell where to center a window in a Xinerama
+environment.</p>
+<p>To address this problem, the X group has added API which allows
+Xinerama users to specify where they want "centered" windows to be
+centered, and allows developers of Xinerama-aware applications to
+code accordingly.</p>
+<p>Prior to this release, the way to center a window has been to
+center it within the bounds of the default
+<code>GraphicsDevice</code>, like this:</p>
+<pre>
+    bounds = getDefaultScreenDevice().getDefaultConfiguration().getBounds();
+    frame.setLocation(bounds / 2 - <i>size of window</i> / 2);
+</pre>
+This code would center the windows "correctly" on Xinerama systems
+where windows should be centered to the entire Xinerama coordinate
+space.
+<p>As of this release, post <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4356756">4356756</a>-fix
+JDKs will center windows "correctly" on Xinerama systems where
+windows should be centered within the first display.</p>
+<p>To accomplish this, the <a href=
+"../../../../api/java/awt/GraphicsEnvironment.html#getCenterPoint--"><code>
+getCenterPoint</code></a> method has been added to <a href=
+"../../../../api/java/awt/GraphicsEnvironment.html"><code>GraphicsEnvironment</code></a>
+.</p>
+<p>This method works as follows on various platforms:</p>
+<ul>
+<li>Microsoft Windows/Macintosh:<br />
+These platforms include all monitors in a single virtual coordinate
+space. However, there is one "primary" display (on Microsoft
+Windows the primary display contains the task bar, on the Mac, the
+menubar). Here, <code>getCenterPoint</code> returns the coordinates
+of the center of the primary display.</li>
+<li>X-Window, non-Xinerama<br />
+Each display has its own coordinate system; the upper-left corner
+of every display is 0.0. Again, there is a "first" display. Here,
+<code>getCenterPoint</code> returns the center point of the primary
+display.</li>
+<li>X-Window, Xinerama<br />
+All monitors share a single virtual coordinate space, as on
+Microsoft Windows. However, it is possible for the user to specify
+through X resources where windows should be centered. If these
+resources are set, <code>getCenterPoint</code> reflects their
+value. Otherwise, it returns the point at the center of the virtual
+coordinate space. (In practice, this will almost always be set -
+CDE sets it by default.)</li>
+</ul>
+<p>As of JDK 1.4, the correct code for centering is:</p>
+<pre>
+    frame.setLocation(getCenterPoint() - <i>size of window</i> / 2);
+</pre>
+<p>The other method added to <code>GraphicsEnvironment</code> is
+<a href=
+"../../../../api/java/awt/GraphicsEnvironment.html#getMaximumWindowBounds--">
+<code>getMaximumWindowBounds</code></a>. Both
+<code>getCenterPoint</code> and <code>getMaximumWindowBounds</code>
+throw a <code>HeadlessException</code> when in Headless mode.</p>
+<a name="inputEvent" id="inputEvent"><b>New InputEvent Key
+Modifiers</b></a>
+<p>The bugtraq reports that corresponds to this change are:
+<a href="http://bugs.java.com/view_bug.do?bug_id=4387938">4387938</a>
+and <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4421515">4421515</a>.</p>
+<p>Previously, the <a href=
+"../../../../api/java/awt/event/InputEvent.html"><code>InputEvent</code></a>
+modifiers had the same values for keyboard and mouse buttons. In
+certain situations there was no way to distinguish which one was
+pressed or when more than one was held simultaneously. These
+situations included cases when more than one mouse button was down
+at the same time, or when a modifier key was used to modify a mouse
+event.</p>
+<p>To address this deficiency, the following constants were added
+to <code>InputEvent</code>:</p>
+<ul>
+<li><a href=
+"../../../../api/java/awt/event/InputEvent.html#SHIFT_DOWN_MASK"><code>
+SHIFT_DOWN_MASK</code></a></li>
+<li><a href=
+"../../../../api/java/awt/event/InputEvent.html#CTRL_DOWN_MASK"><code>CTRL_DOWN_MASK</code></a></li>
+<li><a href=
+"../../../../api/java/awt/event/InputEvent.html#META_DOWN_MASK"><code>META_DOWN_MASK</code></a></li>
+<li><a href=
+"../../../../api/java/awt/event/InputEvent.html#ALT_DOWN_MASK"><code>ALT_DOWN_MASK</code></a></li>
+<li><a href=
+"../../../../api/java/awt/event/InputEvent.html#ALT_GRAPH_DOWN_MASK"><code>
+ALT_GRAPH_DOWN_MASK</code></a></li>
+<li><a href=
+"../../../../api/java/awt/event/InputEvent.html#BUTTON1_DOWN_MASK"><code>
+BUTTON1_DOWN_MASK</code></a></li>
+<li><a href=
+"../../../../api/java/awt/event/InputEvent.html#BUTTON2_DOWN_MASK"><code>
+BUTTON2_DOWN_MASK</code></a></li>
+<li><a href=
+"../../../../api/java/awt/event/InputEvent.html#BUTTON3_DOWN_MASK"><code>
+BUTTON3_DOWN_MASK</code></a></li>
+</ul>
+<p>The following methods were added to <code>InputEvent</code>:</p>
+<ul>
+<li><a href=
+"../../../../api/java/awt/event/InputEvent.html#getModifiersEx--"><code>
+getModifiersEx</code></a></li>
+<li><a href=
+"../../../../api/java/awt/event/InputEvent.html#getModifiersExText-int-">
+<code>getModifiersExText</code></a></li>
+</ul>
+<p>The class spec for <a href=
+"../../../../api/java/awt/event/MouseEvent.html"><code>MouseEvent</code></a>
+was updated. The following constants were also added to
+<code>MouseEvent</code>:</p>
+<ul>
+<li><a href=
+"../../../../api/java/awt/event/MouseEvent.html#NOBUTTON"><code>NOBUTTON</code></a></li>
+<li><a href=
+"../../../../api/java/awt/event/MouseEvent.html#BUTTON1"><code>BUTTON1</code></a></li>
+<li><a href=
+"../../../../api/java/awt/event/MouseEvent.html#BUTTON2"><code>BUTTON2</code></a></li>
+<li><a href=
+"../../../../api/java/awt/event/MouseEvent.html#BUTTON3"><code>BUTTON3</code></a></li>
+</ul>
+<p>These methods in <code>MouseEvent</code> were added:</p>
+<ul>
+<li><a href=
+"../../../../api/java/awt/event/MouseEvent.html#MouseEvent-java.awt.Component-int-long-int-int-int-int-boolean-int-">
+<code>MouseEvent(Component source, int id, long when, int
+modifiers, int x, int y, int clickCount, boolean popupTrigger, int
+button)</code></a></li>
+<li><a href=
+"../../../../api/java/awt/event/MouseEvent.html#getButton--"><code>getButton</code></a></li>
+<li><a href=
+"../../../../api/java/awt/event/MouseEvent.html#getMouseModifiersText-int-">
+<code>getMouseModifiersText</code></a></li>
+</ul>
+<p><a href=
+"../../../../api/java/awt/dnd/DragSourceDragEvent.html"><code>DragSourceDragEvent</code></a>
+has the new method <a href=
+"../../../../api/java/awt/dnd/DragSourceDragEvent.html#getGestureModifiersEx--">
+<code>getGestureModifiersEx</code></a>.</p>
+<a name="choice" id="choice"><b>Change in Drop Down Behavior for
+Choice Menus</b></a>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4462677">4462677</a>.</p>
+<p>The <code>Choice</code> drop down menu behavior has changed from
+JDK 1.3.1 to 1.4. In 1.3.1, you could click anywhere on the choice
+bar and the menu would drop down. In 1.4, you must click on the
+arrow selector on the right hand side of the <code>Choice</code>
+bar. Clicking anywhere else on the <code>Choice</code> bar has no
+effect. Also, the symbol on the <code>Choice</code> bar has changed
+from a bar to an arrow/bar combination. Finally, if the drop down
+menu extends outside of the parent, when clicking on that area, the
+application underneath is brought to the foreground. This happens
+on Solaris, not Windows.</p>
+<a name="choice2" id="choice2"><b>Choice Component Now Obeys Layout
+Manager Constraints</b></a>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4288285">4288285</a>.</p>
+<p>In releases prior to 1.4, the AWT <code>Choice</code> widget
+sometimes ignored the size that the layout manager told it to be.
+As of this release, it now obeys the layout manager
+constraints.</p>
+<a name="focusDeprecate" id="focusDeprecate"><b>Deprecated Focus
+Methods</b></a>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4476300">4476300</a>.</p>
+<p>The new focus subsystem, introduced in this release, introduced
+a new architecture and a new terminology for handling keyboard
+focus in sophisticated AWT and Swing applications. Prior to this
+project, many of the focus-related APIs were inconsistent in usage
+and termonology, were improperly documented, and led to poorly
+designed UIs. Now that the new architecture is in place, the most
+egregious of these APIs has been deprecated.</p>
+<p>The following constants and methods have been deprecated:</p>
+<ul>
+<li><a href=
+"../../../../api/javax/swing/FocusManager.html#FOCUS_MANAGER_CLASS_PROPERTY">
+<code>javax.swing.FocusManager.FOCUS_MANAGER_CLASS_PROPERTY</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/FocusManager.html#disableSwingFocusManager--">
+<code>javax.swing.FocusManager.disableSwingFocusManager()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/FocusManager.html#isFocusManagerEnabled--">
+<code>javax.swing.FocusManager.isFocusManagerEnabled()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JComponent.html#requestDefaultFocus--"><code>
+javax.swing.JComponent.requestDefaultFocus()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JComponent.html#isManagingFocus--"><code>javax.swing.JComponent.isManagingFocus()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JComponent.html#setNextFocusableComponent-java.awt.Component-">
+<code>javax.swing.JComponent.setNextFocusableComponent(Component)</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JComponent.html#getNextFocusableComponent--">
+<code>javax.swing.JComponent.getNextFocusableComponent()</code></a></li>
+<li><a href=
+"../../../../api/java/awt/Component.html#isFocusTraversable--"><code>java.awt.Component.isFocusTraversable()</code></a></li>
+<li><a href=
+"../../../../api/java/awt/Component.html#hasFocus--"><code>java.awt.Component.hasFocus()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/SwingUtilities.html#findFocusOwner-java.awt.Component-">
+<code>javax.swing.SwingUtilities.findFocusOwner(Component)</code></a></li>
+</ul>
+<a name="actionEvents" id="actionEvents"><b>ActionEvents (and Other
+Events) Need Timestamps</b></a>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4434193">4434193</a>.</p>
+<p>The new focus architecture includes a type-ahead mechanism that
+ensures that subsequent <code>KeyEvent</code>s that follow a
+<code>KeyEvent</code> that initiates a focus transfer are not
+delivered until the transfer is completed. The design for this
+feature is based on the UTC timestamps of the various events.
+Events with timestamps later than that of the initiating event are
+enqueued pending resolution of the transfer; events with earlier
+timestamps are not.</p>
+<p>To implement this feature, the focus code keeps track of the
+timestamp of the event currently being handled. If a focus change
+is initiated during this handling, the timestamp is available for
+use. However, if the current event does not have a timestamp, then
+the current system time is used. This time is usually too far ahead
+of the time that the event actually occurred to be of any real use.
+As a result, the type-ahead mechanism fails, and
+<code>KeyEvent</code>s are delivered before the focus transfer is
+completed.</p>
+<p>The most common case where we encountered this problem was with
+<code>ActionEvent</code>s. <code>ActionEvent</code>s are
+high-level, semantic events generated in response to underlying
+<code>InputEvent</code>s. While the <code>InputEvent</code>s had
+timestamps associated with them, the <code>ActionEvent</code>s did
+not. The <code>ActionEvent</code> API has therefore been expanded
+to accomodate a timestamp and the implementation has been updated
+so that an <code>ActionEvent</code>'s timestamp is equal to that of
+its underlying <code>InputEvent</code>.</p>
+<p>The following methods have been added to <a href=
+"../../../../api/java/awt/event/ActionEvent.html"><code>ActionEvent</code></a>:</p>
+<ul>
+<li><a href=
+"../../../../api/java/awt/event/ActionEvent.html#ActionEvent-java.lang.Object-int-java.lang.String-long-int-">
+<code>ActionEvent(Object source, int id, String command, long when,
+int modifiers)</code></a></li>
+<li><a href=
+"../../../../api/java/awt/event/ActionEvent.html#getWhen--"><code>getWhen</code></a></li>
+</ul>
+<p>The following <code>ActionEvent</code> methods were
+modified:</p>
+<ul>
+<li><a href=
+"../../../../api/java/awt/event/ActionEvent.html#ActionEvent-java.lang.Object-int-java.lang.String-">
+<code>ActionEvent(Object source, int id, String
+command)</code></a></li>
+<li><a href=
+"../../../../api/java/awt/event/ActionEvent.html#ActionEvent-java.lang.Object-int-java.lang.String-int-">
+<code>ActionEvent(Object source, int id, String command, int
+modifiers)</code></a></li>
+</ul>
+<p>The <a href=
+"../../../../api/java/awt/event/InvocationEvent.html#getWhen--"><code>getWhen</code></a>
+method was added to <a href=
+"../../../../api/java/awt/event/InvocationEvent.html"><code>InvocationEvent</code></a>.</p>
+<p>The <code>InvocationEvent</code> constructors <a href=
+"../../../../api/java/awt/event/InvocationEvent.html#InvocationEvent-java.lang.Object-java.lang.Runnable-">
+<code>InvocationEvent(Object, Runnable)</code></a> and <a href=
+"../../../../api/java/awt/event/InvocationEvent.html#InvocationEvent-java.lang.Object-java.lang.Runnable-java.lang.Object-boolean-">
+<code>InvocationEvent(Object, Runnable, Object, boolean)</code></a>
+were modified.</p>
+<p>A new constructor <a href=
+"../../../../api/java/awt/event/InputMethodEvent.html#InputMethodEvent-java.awt.Component-int-long-java.text.AttributedCharacterIterator-int-java.awt.font.TextHitInfo-java.awt.font.TextHitInfo-">
+<code>InputMethodEvent(Component, int, long,
+AttributedCharacterIterator, int, TextHitInfo,
+TextHitInfo)</code></a> was added to <a href=
+"../../../../api/java/awt/event/InputMethodEvent.html"><code>InputMethodEvent</code></a>,
+as well as the <a href=
+"../../../../api/java/awt/event/InputMethodEvent.html#getWhen--"><code>
+getWhen</code></a> method.</p>
+<p>The following <code>InputMethodEvent</code> constructors have
+been modified:</p>
+<ul>
+<li><a href=
+"../../../../api/java/awt/event/InputMethodEvent.html#InputMethodEvent-java.awt.Component-int-java.text.AttributedCharacterIterator-int-java.awt.font.TextHitInfo-java.awt.font.TextHitInfo-">
+<code>InputMethodEvent(Component, int, AttributedCharacterIterator,
+int, TextHitInfo, TextHitInfo)</code></a></li>
+<li><a href=
+"../../../../api/java/awt/event/InputMethodEvent.html#InputMethodEvent-java.awt.Component-int-java.awt.font.TextHitInfo-java.awt.font.TextHitInfo-">
+<code>InputMethodEvent(Component, int, TextHitInfo,
+TextHitInfo)</code></a>.</li>
+</ul>
+<p>Finally, the following methods were added to <a href=
+"../../../../api/java/awt/EventQueue.html"><code>EventQueue</code></a>:</p>
+<ul>
+<li><a href=
+"../../../../api/java/awt/EventQueue.html#getMostRecentEventTime--"><code>
+getMostRecentEventTime</code></a></li>
+<li><a href=
+"../../../../api/java/awt/EventQueue.html#getCurrentEvent--"><code>getCurrentEvent</code></a></li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

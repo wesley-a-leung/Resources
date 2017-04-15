@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Concurrency Utilities Overview</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Concurrency Utilities<br />
+Overview</h1>
+<!-- Body text begins here -->
+<p>The Java platform includes a package of <i>concurrency
+utilities</i>. These are classes that are designed to be used as
+building blocks in building concurrent classes or applications.
+Just as the collections framework simplified the organization and
+manipulation of in-memory data by providing implementations of
+commonly used data structures, the concurrency utilities simplify
+the development of concurrent classes by providing implementations
+of building blocks commonly used in concurrent designs. The
+concurrency utilities include a high-performance, flexible thread
+pool; a framework for asynchronous execution of tasks; a host of
+collection classes optimized for concurrent access; synchronization
+utilities such as counting semaphores; atomic variables; locks; and
+condition variables.</p>
+<p>Using the concurrency utilities, instead of developing
+components such as thread pools yourself, offers a number of
+advantages:</p>
+<ul>
+<li><strong>Reduced programming effort.</strong> It is easier to
+use a standard class than to develop it yourself.</li>
+<li><strong>Increased performance.</strong> The implementations in
+the concurrency utilities were developed and peer-reviewed by
+concurrency and performance experts; these implementations are
+likely to be faster and more scalable than a typical
+implementation, even by a skilled developer.</li>
+<li><strong>Increased reliability.</strong> Developing concurrent
+classes is difficult -- the low-level concurrency primitives
+provided by the Java language (<code>synchronized</code>,
+<code>volatile</code>, <code>wait()</code>, <code>notify()</code>,
+and <code>notifyAll()</code>) are difficult to use correctly, and
+errors using these facilities can be difficult to detect and debug.
+By using standardized, extensively tested concurrency building
+blocks, many potential sources of threading hazards such as
+deadlock, starvation, race conditions, or excessive context
+switching are eliminated. The concurrency utilities were carefully
+audited for deadlock, starvation, and race conditions.</li>
+<li><strong>Improved maintainability.</strong> Programs that use
+standard library classes are easier to understand and maintain than
+those that rely on complicated, homegrown classes.</li>
+<li><strong>Increased productivity.</strong> Developers are likely
+to already understand the standard library classes, so there is no
+need to learn the API and behavior of ad hoc concurrent components.
+Additionally, concurrent applications are simpler to debug when
+they are built on reliable, well-tested components.</li>
+</ul>
+<p>In short, using the concurrency utilities to implement a
+concurrent application can help your program be clearer, shorter,
+faster, more reliable, more scalable, easier to write, easier to
+read, and easier to maintain.</p>
+<p>The concurrency utilities includes:</p>
+<ul>
+<li><strong>Task scheduling framework</strong>. The <a href=
+"../../../api/java/util/concurrent/Executor.html"><code>Executor</code></a>
+interface standardizes invocation, scheduling, execution, and
+control of asynchronous tasks according to a set of execution
+policies. Implementations are provided that enable tasks to be
+executed within the submitting thread, in a <a href=
+"../../../api/java/util/concurrent/Executors.html#newSingleThreadExecutor--">
+single background thread</a> (as with events in Swing), in a newly
+created thread, or in a <a href=
+"../../../api/java/util/concurrent/Executors.html#newFixedThreadPool-int-">
+thread pool</a>, and developers can create customized
+implementations of <a href=
+"../../../api/java/util/concurrent/AbstractExecutorService.html">Executor</a>
+that support arbitrary execution policies. The built-in
+implementations offer configurable policies such as queue length
+limits and <a href=
+"../../../api/java/util/concurrent/RejectedExecutionHandler.html">saturation
+policy</a> that can improve the stability of applications by
+preventing runaway resource use.</li>
+<li><b>Fork/join framework</b>. Based on the <tt><a href=
+"../../../api/java/util/concurrent/ForkJoinPool.html">ForkJoinPool</a></tt>
+class, this framework is an implementation of <tt>Executor</tt>. It
+is designed to efficiently run a large number of tasks using a pool
+of worker threads. A <i>work-stealing</i> technique is used to keep
+all the worker threads busy, to take full advantage of multiple
+processors.</li>
+<li><strong>Concurrent collections</strong>. Several new
+collections classes were added, including the new <a href=
+"../../../api/java/util/Queue.html"><code>Queue</code></a>,
+<a href="../../../api/java/util/concurrent/BlockingQueue.html"><code>
+BlockingQueue</code></a> and <a href=
+"../../../api/java/util/concurrent/BlockingDeque.html"><code>BlockingDeque</code></a>
+interfaces, and high-performance, concurrent implementations of
+<code>Map</code>, <code>List</code>, and <code>Queue</code>. See
+the <a href="../collections/">Collections Framework Guide</a> for
+more information.</li>
+<li><strong>Atomic variables</strong>. Utility classes are provided
+that atomically manipulate single variables (primitive types or
+references), providing high-performance atomic arithmetic and
+compare-and-set methods. The atomic variable implementations in the
+<a href=
+"../../../api/java/util/concurrent/atomic/package-summary.html#package_description">
+<code>java.util.concurrent.atomic</code></a> package offer higher
+performance than would be available by using synchronization (on
+most platforms), making them useful for implementing
+high-performance concurrent algorithms and conveniently
+implementing counters and sequence number generators.</li>
+<li><strong>Synchronizers</strong>. General purpose synchronization
+classes, including <a href=
+"../../../api/java/util/concurrent/Semaphore.html">semaphores</a>,
+<a href=
+"../../../api/java/util/concurrent/CyclicBarrier.html">barriers</a>,
+<a href=
+"../../../api/java/util/concurrent/CountDownLatch.html">latches</a>,
+<a href=
+"../../../api/java/util/concurrent/Phaser.html">phasers</a>, and
+<a href=
+"../../../api/java/util/concurrent/Exchanger.html">exchangers</a>,
+facilitate coordination between threads.</li>
+<li><strong>Locks</strong>. While locking is built into the Java
+language through the <tt>synchronized</tt> keyword, there are a
+number of limitations to built-in monitor locks. The <a href=
+"../../../api/java/util/concurrent/locks/package-summary.html#package_description">
+<code>java.util.concurrent.locks</code></a> package provides a
+high-performance lock implementation with the same memory semantics
+as synchronization, and it also supports specifying a timeout when
+attempting to acquire a lock, multiple condition variables per
+lock, nonnested ("hand-over-hand") holding of multiple locks, and
+support for interrupting threads that are waiting to acquire a
+lock.</li>
+<li><strong>Nanosecond-granularity timing</strong>. The <a href=
+"../../../api/java/lang/System.html#nanoTime--"><code>System.nanoTime</code></a>
+method enables access to a nanosecond-granularity time source for
+making relative time measurements and methods that accept timeouts
+(such as the <a href=
+"../../../api/java/util/concurrent/BlockingQueue.html#offer-E-long-java.util.concurrent.TimeUnit-">
+<code>BlockingQueue.offer</code></a>, <a href=
+"../../../api/java/util/concurrent/BlockingQueue.html#poll-long-java.util.concurrent.TimeUnit-">
+<code>BlockingQueue.poll</code></a>, <a href=
+"../../../api/java/util/concurrent/locks/Lock.html#tryLock-long-java.util.concurrent.TimeUnit-">
+<code>Lock.tryLock</code></a>, <a href=
+"../../../api/java/util/concurrent/locks/Condition.html#await-long-java.util.concurrent.TimeUnit-">
+<code>Condition.await</code></a>, and <a href=
+"../../../api/java/lang/Thread.html#sleep-long-int-"><code>Thread.sleep</code></a>)
+can take timeout values in nanoseconds. The actual precision of the
+<code>System.nanoTime</code> method is platform-dependent.</li>
+</ul>
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

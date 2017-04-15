@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>javah</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T7:56:53Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Solaris, Linux, and OS X, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38209-05" name="partnum"/>
+<meta content="JSSOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="javadoc.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="javap.html">
+                Next</a><hr/>
+<div><a id="BJECIACA" name="BJECIACA"/>
+<div id="JSSOR687"><a id="BJEEFAIG" name="BJEEFAIG"/>
+<h1>javah</h1>
+<p>Generates C header and source files from a Java class.</p>
+<div><a id="sthref103" name="sthref103"/>
+<h2>Synopsis</h2>
+<p><b>javah</b> [ <i>options</i> ] f<i>ully-qualified-class-name ...</i></p>
+<dl>
+<dt><i>options</i></dt>
+<dd>
+<p>The command-line options. See <a href="#BJEJJAEA">Options</a>.</p>
+</dd>
+<dt><i>fully-qualified-class-name</i></dt>
+<dd>
+<p>The fully qualified location of the classes to be converted to C header and source files.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref104" name="sthref104"/>
+<h2>Description</h2>
+<p>The <code dir="ltr">javah</code> command generates C header and source files that are needed to implement native methods. The generated header and source files are used by C programs to reference an object's instance variables from native source code. The <code dir="ltr">.h</code> file contains a <code dir="ltr">struct</code> definition with a layout that parallels the layout of the corresponding class. The fields in the <code dir="ltr">struct</code> correspond to instance variables in the class.</p>
+<p>The name of the header file and the structure declared within it are derived from the name of the class. When the class passed to the <code dir="ltr">javah</code> command is inside a package, the package name is added to the beginning of both the header file name and the structure name. Underscores (_) are used as name delimiters.</p>
+<p>By default the <code dir="ltr">javah</code> command creates a header file for each class listed on the command line and puts the files in the current directory. Use the <code dir="ltr">-stubs</code> option to create source files. Use the <code dir="ltr">-o</code> option to concatenate the results for all listed classes into a single file.</p>
+<p>The Java Native Interface (JNI) does not require header information or stub files. The <code dir="ltr">javah</code> command can still be used to generate native method function prototypes needed for JNI-style native methods. The <code dir="ltr">javah</code> command produces JNI-style output by default and places the result in the <code dir="ltr">.h</code> file.</p>
+</div>
+
+<div><a id="BJEJJAEA" name="BJEJJAEA"/><a id="BJECGFIE" name="BJECGFIE"/>
+<h2>Options</h2>
+<dl>
+<dt>-o <i>outputfile</i></dt>
+<dd>
+<p>Concatenates the resulting header or source files for all the classes listed on the command line into an output file. Only one of <code dir="ltr">-o</code> or <code dir="ltr">-d</code> can be used.</p>
+</dd>
+<dt>-d <i>directory</i></dt>
+<dd>
+<p>Sets the directory where the <code dir="ltr">javah</code> command saves the header files or the stub files. Only one of <code dir="ltr">-d</code> or <code dir="ltr">-o</code> can be used.</p>
+</dd>
+<dt>-stubs</dt>
+<dd>
+<p>Causes the <code dir="ltr">javah</code> command to generate C declarations from the Java object file.</p>
+</dd>
+<dt>-verbose</dt>
+<dd>
+<p>Indicates verbose output and causes the <code dir="ltr">javah</code> command to print a message to <code dir="ltr">stdout</code> about the status of the generated files.</p>
+</dd>
+<dt>-help</dt>
+<dd>
+<p>Prints a help message for <code dir="ltr">javah</code> usage.</p>
+</dd>
+<dt>-version</dt>
+<dd>
+<p>Prints <code dir="ltr">javah</code> command release information.</p>
+</dd>
+<dt>-jni</dt>
+<dd>
+<p>Causes the <code dir="ltr">javah</code> command to create an output file containing JNI-style native method function prototypes. This is the default output; use of <code dir="ltr">-jni</code> is optional.</p>
+</dd>
+<dt>-classpath <i>path</i></dt>
+<dd>
+<p>Specifies the path the <code dir="ltr">javah</code> command uses to look up classes. Overrides the default or the <code dir="ltr">CLASSPATH</code> environment variable when it is set. Directories are separated by colons on Oracle Solaris and semicolons on Windows. The general format for path is:</p>
+<p><b>Oracle Solaris</b>:</p>
+<p>.:<i>your-path</i></p>
+<p>Example: <code dir="ltr">.:/home/avh/classes:/usr/local/java/classes</code></p>
+<p><b>Windows</b>:</p>
+<p>.;<i>your-path</i></p>
+<p>Example: <code dir="ltr">.;C:\users\dac\classes;C:\tools\java\classes</code></p>
+<p>As a special convenience, a class path element that contains a base name of * is considered equivalent to specifying a list of all the files in the directory with the extension <code dir="ltr">.jar</code> or <code dir="ltr">.JAR</code>.</p>
+<p>For example, if directory <code dir="ltr">mydir</code> contains <code dir="ltr">a.jar</code> and <code dir="ltr">b.JAR</code>, then the class path element <code dir="ltr">mydir/*</code> is expanded to a <code dir="ltr">A</code><code dir="ltr">.jar:b.JAR</code>, except that the order of jar files is unspecified. All JAR files in the specified directory, including hidden ones, are included in the list. A class path entry that consists of * expands to a list of all the JAR files in the current directory. The <code dir="ltr">CLASSPATH</code> environment variable, where defined, is similarly expanded. Any class path wild card expansion occurs before the Java Virtual Machine (JVM) is started. A Java program will never see unexpanded wild cards except by querying the environment. For example, by calling <code dir="ltr">System.getenv("CLASSPATH")</code>.</p>
+</dd>
+<dt>-bootclasspath <i>path</i></dt>
+<dd>
+<p>Specifies the path from which to load bootstrap classes. By default, the bootstrap classes are the classes that implement the core Java platform located in <code dir="ltr">jre\lib\rt.jar</code> and several other JAR files.</p>
+</dd>
+<dt>-old</dt>
+<dd>
+<p>Specifies that old JDK 1.0-style header files should be generated.</p>
+</dd>
+<dt>-force</dt>
+<dd>
+<p>Specifies that output files should always be written.</p>
+</dd>
+<dt>-J<i>option</i></dt>
+<dd>
+<p>Passes <code dir="ltr">option</code> to the Java Virtual Machine, where <code dir="ltr">option</code> is one of the options described on the reference page for the Java application launcher. For example, <code dir="ltr">-J-Xms48m</code> sets the startup memory to 48 MB. See <a href="java.html#CBBFHAJA"><code dir="ltr">java</code>(1)</a>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref105" name="sthref105"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="#BJECIACA"><code dir="ltr">javah</code>(1)</a></p>
+</li>
+<li>
+<p><a href="java.html#CBBFHAJA"><code dir="ltr">java</code>(1)</a></p>
+</li>
+<li>
+<p><a href="jdb.html#CHDFHFDB"><code dir="ltr">jdb</code>(1)</a></p>
+</li>
+<li>
+<p><a href="javap.html#BEHDBJHJ"><code dir="ltr">javap</code>(1)</a></p>
+</li>
+<li>
+<p><a href="javadoc.html#CHDFCDCI"><code dir="ltr">javadoc</code>(1)</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="javadoc.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="javap.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

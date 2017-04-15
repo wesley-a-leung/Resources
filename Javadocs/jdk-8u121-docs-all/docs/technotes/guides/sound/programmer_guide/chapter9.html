@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Chapter 9: Accessing MIDI System Resources</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<p><small><a href="contents.html">&lt; Contents</a></small></p>
+<h1>Chapter 9: Accessing MIDI System Resources</h1>
+<p>&nbsp;</p>
+<table summary="" width="80%" border="1" align="center"
+cellpadding="5" cellspacing="0">
+<tr>
+<td>
+<h2><u>Note</u></h2>
+<p>With version 5.0, the <code>sound.properties</code> file can be
+used to set default devices for <code>Sequencer</code>,
+<code>Synthesizer</code>, <code>Transmitter</code>, and
+<code>Receiver</code>. For details, see the <code><a href=
+"../../../../api/javax/sound/midi/MidiSystem.html">MidiSystem</a></code>
+class in the API; for examples, see <a href=
+"appendix2.html">Appendix 2: <code>sound.properties</code> File</a>
+in this guide.<br /></p>
+</td>
+</tr>
+</table>
+<br />
+<p><a name="a119694" id="a119694"></a> The Java Sound API offers a
+flexible model for MIDI system configuration, just as it does for
+configuration of the sampled-audio system. An implementation of the
+Java Sound API can itself provide different sorts of MIDI devices,
+and additional ones can be supplied by service providers and
+installed by users. You can write your program in such a way that
+it makes few assumptions about which specific MIDI devices are
+installed on the computer. Instead, the program can take advantage
+of the MIDI system's defaults, or it can allow the user to select
+from whatever devices happen to be available.</p>
+<p><a name="a119705" id="a119705"></a> This section shows how your
+program can learn what MIDI resources have been installed, and how
+to get access to the desired ones. After you've accessed and opened
+the devices, you can connect them to each other, as discussed in
+the next chapter, "<a href="chapter10.html">Transmitting and
+Receiving MIDI Messages</a>."</p>
+<a name="a119711" id="a119711"></a>
+<h2>The MidiSystem Class</h2>
+<p><a name="a119713" id="a119713"></a> The role of the
+<code>MidiSystem</code> class in the Java Sound API's MIDI package
+is directly analogous to the role of <code>AudioSystem</code> in
+the sampled-audio package. <code>MidiSystem</code> acts as a
+clearinghouse for accessing the installed MIDI resources.</p>
+<p><a name="a119718" id="a119718"></a> You can query the
+<code>MidiSystem</code> to learn what sorts of devices are
+installed, and then you can iterate over the available devices and
+obtain access to the desired ones. For example, an application
+program might start out by asking the <code>MidiSystem</code> what
+synthesizers are available, and then display a list of them, from
+which the user can select one. A simpler application program might
+just use the system's default synthesizer.</p>
+<p><a name="a119726" id="a119726"></a> The <code>MidiSystem</code>
+class also provides methods for translating between MIDI files and
+<code>Sequences</code>. It can report the file format of a MIDI
+file and can write files of different types.</p>
+<p><a name="a119731" id="a119731"></a> An application program can
+obtain the following resources from the
+<code>MidiSystem</code>:</p>
+<ul>
+<li style="list-style: none"><a name="a119733" id=
+"a119733"></a></li>
+<li>Sequencers <a name="a119734" id="a119734"></a></li>
+<li>Synthesizers <a name="a119735" id="a119735"></a></li>
+<li>Transmitters (such as those associated with MIDI input ports)
+<a name="a119736" id="a119736"></a></li>
+<li>Receivers (such as those associated with MIDI output ports)
+<a name="a119737" id="a119737"></a></li>
+<li>Data from standard MIDI files <a name="a119738" id=
+"a119738"></a></li>
+<li>Data from soundbank files
+<p><a name="a119740" id="a119740"></a></p>
+</li>
+</ul>
+This chapter focuses on the first four of these types of resource.
+The <code>MidiSystem</code> class's file-handling facilities are
+discussed in Chapter 11, "<a href="chapter11.html">Playing,
+Recording, and Editing MIDI Sequences</a>," and Chapter 12,
+"<a href="chapter12.html">Synthesizing Sound</a>." To understand
+how the MIDI system itself gets access to all these resources, see
+Part III of this guide, "Service Provider Interfaces." <a name=
+"a119749" id="a119749"></a>
+<h2>Obtaining Default Devices</h2>
+<p><a name="a119751" id="a119751"></a> A typical MIDI application
+program that uses the Java Sound API begins by obtaining the
+devices it needs, which can consist of one or more sequencers,
+synthesizers, input ports, or output ports.</p>
+<p><a name="a121015" id="a121015"></a> There is a default
+synthesizer device, a default sequencer device, a default
+transmitting device, and a default receiving device. The latter two
+devices normally represent the MIDI input and output ports,
+respectively, if there are any available on the system. (It's easy
+to get confused about the directionality here. Think of the ports'
+transmission or reception in relation to the software, not in
+relation to any external physical devices connected to the physical
+ports. A MIDI input port <em>transmits</em> data from an external
+device to a Java Sound API <code>Receiver</code>, and likewise a
+MIDI output port <em>receives</em> data from a software object and
+relays the data to an external device.)</p>
+<p><a name="a121012" id="a121012"></a> A simple application program
+might just use the default instead of exploring all the installed
+devices. The <code>MidiSystem</code> class includes the following
+methods for retrieving default resources:</p>
+<pre>
+    static Sequencer getSequencer()
+    static Synthesizer getSynthesizer()
+    static Receiver getReceiver()
+    static Transmitter getTransmitter()
+        
+</pre>
+<p><a name="a120991" id="a120991"></a> The first two of these
+methods obtain the system's default sequencing and synthesis
+resources, which either represent physical devices or are
+implemented wholly in software. The <code>getReceiver</code> method
+obtains a <code>Receiver</code> object that takes MIDI messages
+sent to it and relays them to the default receiving device.
+Similarly, the getTransmitter method obtains a Transmitter object
+that can send MIDI messages to some receiver on behalf of the
+default transmitting device.</p>
+<a name="a119787" id="a119787"></a>
+<h2>Learning What Devices Are Installed</h2>
+<p><a name="a119789" id="a119789"></a> Instead of using the default
+devices, a more thorough approach is to select the desired devices
+from the full set of devices that are installed on the system. An
+application program can select the desired devices
+programmatically, or it can display a list of available devices and
+let the user select which ones to use. The <code>MidiSystem</code>
+class provides a method for learning which devices are installed,
+and a corresponding method to obtain a device of a given type.</p>
+<p><a name="a119794" id="a119794"></a> Here is the method for
+learning about the installed devices:</p>
+<pre>
+    static MidiDevice.Info[] getMidiDeviceInfo()
+</pre>
+<p><a name="a119798" id="a119798"></a> As you can see, it returns
+an array of information objects. Each of these returned
+<code>MidiDevice.Info</code> objects identifies one type of
+sequencer, synthesizer, port, or other device that is installed.
+(Usually a system has at most one instance of a given type. For
+example, a given model of synthesizer from a certain vendor will be
+installed only once. ) The <code>MidiDevice.Info</code> includes
+the following strings to describe the device:</p>
+<ul>
+<li style="list-style: none"><a name="a119812" id=
+"a119812"></a></li>
+<li>Name <a name="a119813" id="a119813"></a></li>
+<li>Version number <a name="a119814" id="a119814"></a></li>
+<li>Vendor (the company that created the device) <a name="a119815"
+id="a119815"></a></li>
+<li>A description of the device
+<p><a name="a119817" id="a119817"></a></p>
+</li>
+</ul>
+You can display these strings in your user interface to let the
+user select from the list of devices.
+<p><a name="a121091" id="a121091"></a> However, to use the strings
+programmatically to select a device (as opposed to displaying the
+strings to the user), you need to know in advance what they might
+be. The company that provides each device should include this
+information in its documentation. An application program that
+requires or prefers a particular device can use this information to
+locate that device. This approach has the drawback of limiting the
+program to device implementations that it knows about in
+advance.</p>
+<p><a name="a119827" id="a119827"></a> Another, more general,
+approach is to go ahead and iterate over the
+<code>MidiDevice.Info</code> objects, obtaining each corresponding
+device, and determining programmatically whether it's suitable to
+use (or at least suitable to include in a list from which the user
+can choose). The next section describes how to do this.</p>
+<a name="a119833" id="a119833"></a>
+<h2>Obtaining a Desired Device</h2>
+<p><a name="a120802" id="a120802"></a> Once an appropriate device's
+info object is found, the application program invokes the following
+<code>MidiSystem</code> method to obtain the corresponding device
+itself:</p>
+<pre>
+    static MidiDevice getMidiDevice(MidiDevice.Info info)
+</pre>
+<p><a name="a120804" id="a120804"></a> You can use this method if
+you've already found the info object describing the device you
+need. However, if you can't interpret the info objects returned by
+<code>getMidiDeviceInfo</code> to determine which device you need,
+and if you don't want to display information about all the devices
+to the user, you might be able to do the following instead: Iterate
+over all the <code>MidiDevice.Info</code> objects returned by
+<code>getMidiDeviceInfo</code>, get the corresponding devices using
+the method above, and test each device to see whether it's
+suitable. In other words, you can query each device for its class
+and its capabilities before including it in the list that you
+display to the user, or as a way to decide upon a device
+programmatically without involving the user. For example, if your
+program needs a synthesizer, you can obtain each of the installed
+devices, see which are instances of classes that implement the
+<code>Synthesizer</code> interface, and then display them in a list
+from which the user can choose one, as follows:</p>
+<pre>
+// Obtain information about all the installed synthesizers.
+Vector synthInfos;
+MidiDevice device;
+MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
+for (int i = 0; i &lt; infos.length; i++) {
+    try {
+        device = MidiSystem.getMidiDevice(infos[i]);
+    } catch (MidiUnavailableException e) {
+          // Handle or throw exception...
+    }
+    if (device instanceof Synthesizer) {
+        synthInfos.add(infos[i]);
+    }
+}
+// Now, display strings from synthInfos list in GUI.    
+</pre>
+<p><a name="a119876" id="a119876"></a> As another example, you
+might choose a device programmatically, without involving the user.
+Let's suppose you want to obtain the synthesizer that can play the
+most notes simultaneously. You iterate over all the MidiDevice.Info
+objects, as above, but after determining that a device is a
+synthesizer, you query its capabilities by invoking the
+<code>getMaxPolyphony</code> method of <code>Synthesizer</code>.
+You reserve the synthesizer that has the greatest polyphony, as
+described in the next section. Even though you're not asking the
+user to choose a synthesizer, you might still display strings from
+the chosen <code>MidiDevice.Info</code> object, just for the user's
+information.</p>
+<a name="a119891" id="a119891"></a>
+<h2>Opening Devices</h2>
+<p><a name="a119893" id="a119893"></a> The previous section showed
+how to get an installed device. However, a device might be
+installed but unavailable. For example, another application program
+might have exclusive use of it. To actually reserve a device for
+your program, you need to use the <code>MidiDevice</code> method
+<code>open</code>:</p>
+<pre>
+if (!(device.isOpen())) {
+    try {
+      device.open();
+  } catch (MidiUnavailableException e) {
+          // Handle or throw exception...
+  }
+}
+</pre>
+<p><a name="a119916" id="a119916"></a> Once you've accessed a
+device and reserved it by opening it, you'll probably want to
+connect it to one or more other devices to let MIDI data flow
+between them. This procedure is described in Chapter 10, "<a href=
+"chapter10.html">Transmitting and Receiving MIDI Messages</a>."</p>
+<p><a name="a121197" id="a121197"></a> When done with a device, you
+release it for other programs' use by invoking the
+<code>close</code> method of <code>MidiDevice</code>.</p>
+<p>&nbsp;</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

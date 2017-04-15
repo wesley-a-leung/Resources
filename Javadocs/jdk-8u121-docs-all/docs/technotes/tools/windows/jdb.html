@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>jdb</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T8:11:40Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Windows, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38210-05" name="partnum"/>
+<meta content="JSWOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="javap.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jdeps.html">
+                Next</a><hr/>
+<div><a id="CHDFHFDB" name="CHDFHFDB"/>
+<div id="JSWOR689"><a id="CHDGJCIE" name="CHDGJCIE"/>
+<h1>jdb</h1>
+<p>Finds and fixes bugs in Java platform programs.</p>
+<div><a id="sthref111" name="sthref111"/>
+<h2>Synopsis</h2>
+<p><b>jdb</b> [<i>options</i>] [<i>classname</i>] [<i>arguments</i>]</p>
+<dl>
+<dt><i>options</i></dt>
+<dd>
+<p>Command-line options. See <a href="#CHDBACHA">Options</a>.</p>
+</dd>
+<dt><i>class</i>name</dt>
+<dd>
+<p>Name of the main class to debug.</p>
+</dd>
+<dt><i>arguments</i></dt>
+<dd>
+<p>Arguments passed to the <code dir="ltr">main()</code> method of the class.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref112" name="sthref112"/>
+<h2>Description</h2>
+<p>The Java Debugger (JDB) is a simple command-line debugger for Java classes. The <code dir="ltr">jdb</code> command and its options call the JDB. The <code dir="ltr">jdb</code> command demonstrates the Java Platform Debugger Architecture (JDBA) and provides inspection and debugging of a local or remote Java Virtual Machine (JVM). See Java Platform Debugger Architecture (JDBA) at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/jpda/index.html">http://docs.oracle.com/javase/8/docs/technotes/guides/jpda/index.html</a></code></p>
+<div><a id="sthref113" name="sthref113"/>
+<h3>Start a JDB Session</h3>
+<p>There are many ways to start a JDB session. The most frequently used way is to have JDB launch a new JVM with the main class of the application to be debugged. Do this by substituting the <code dir="ltr">jdb</code> command for the <code dir="ltr">java</code> command in the command line. For example, if your application's main class is <code dir="ltr">MyClass</code>, then use the following command to debug it under JDB:</p>
+<pre dir="ltr" xml:space="preserve">
+jdb MyClass
+</pre>
+<p>When started this way, the <code dir="ltr">jdb</code> command calls a second JVM with the specified parameters, loads the specified class, and stops the JVM before executing that class's first instruction.</p>
+<p>Another way to use the <code dir="ltr">jdb</code> command is by attaching it to a JVM that is already running. Syntax for starting a JVM to which the <code dir="ltr">jdb</code> command attaches when the JVM is running is as follows. This loads in-process debugging libraries and specifies the kind of connection to be made.</p>
+<pre dir="ltr" xml:space="preserve">
+java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n MyClass
+</pre>
+<p>You can then attach the <code dir="ltr">jdb</code> command to the JVM with the following command:</p>
+<pre dir="ltr" xml:space="preserve">
+jdb -attach 8000
+</pre>
+<p>The <code dir="ltr">MyClass</code> argument is not specified in the <code dir="ltr">jdb</code> command line in this case because the <code dir="ltr">jdb</code> command is connecting to an existing JVM instead of launching a new JVM.</p>
+<p>There are many other ways to connect the debugger to a JVM, and all of them are supported by the <code dir="ltr">jdb</code> command. The Java Platform Debugger Architecture has additional documentation on these connection options.</p>
+</div>
+
+<div><a id="sthref114" name="sthref114"/>
+<h3>Basic jdb Commands</h3>
+<p>The following is a list of the basic <code dir="ltr">jdb</code> commands. The JDB supports other commands that you can list with the <code dir="ltr">-help</code> option.</p>
+<dl>
+<dt>help or ?</dt>
+<dd>
+<p>The <code dir="ltr">help</code> or <code dir="ltr">?</code> commands display the list of recognized commands with a brief description.</p>
+</dd>
+<dt>run</dt>
+<dd>
+<p>After you start JDB and set breakpoints, you can use the <code dir="ltr">run</code> command to execute the debugged application. The <code dir="ltr">run</code> command is available only when the <code dir="ltr">jdb</code> command starts the debugged application as opposed to attaching to an existing JVM.</p>
+</dd>
+<dt>cont</dt>
+<dd>
+<p>Continues execution of the debugged application after a breakpoint, exception, or step.</p>
+</dd>
+<dt>print</dt>
+<dd>
+<p>Displays Java objects and primitive values. For variables or fields of primitive types, the actual value is printed. For objects, a short description is printed. See the <a href="#CHDGBBCH">dump</a> command to find out how to get more information about an object.</p>
+<p><b>Note:</b> To display local variables, the containing class must have been compiled with the <code dir="ltr">javac -g</code> option.</p>
+<p>The <code dir="ltr">print</code> command supports many simple Java expressions including those with method invocations, for example:</p>
+<pre dir="ltr" xml:space="preserve">
+print MyClass.myStaticField
+print myObj.myInstanceField
+print i + j + k (i, j, k are primities and either fields or local variables)
+print myObj.myMethod() (if myMethod returns a non-null)
+print new java.lang.String("Hello").length()
+</pre></dd>
+<dd><a id="CHDGBBCH" name="CHDGBBCH"/></dd>
+<dt>dump</dt>
+<dd>
+<p>For primitive values, the <code dir="ltr">dump</code> command is identical to the <code dir="ltr">print</code> command. For objects, the <code dir="ltr">dump</code> command prints the current value of each field defined in the object. Static and instance fields are included. The <code dir="ltr">dump</code> command supports the same set of expressions as the <code dir="ltr">print</code> command.</p>
+</dd>
+<dt>threads</dt>
+<dd>
+<p>List the threads that are currently running. For each thread, its name and current status are printed and an index that can be used in other commands. In this example, the thread index is 4, the thread is an instance of <code dir="ltr">java.lang.Thread</code>, the thread name is <code dir="ltr">main</code>, and it is currently running.</p>
+<pre dir="ltr" xml:space="preserve">
+4. (java.lang.Thread)0x1 main      running
+</pre></dd>
+<dt>thread</dt>
+<dd>
+<p>Select a thread to be the current thread. Many <code dir="ltr">jdb</code> commands are based on the setting of the current thread. The thread is specified with the thread index described in the threads command.</p>
+</dd>
+<dt>where</dt>
+<dd>
+<p>The <code dir="ltr">where</code> command with no arguments dumps the stack of the current thread. The <code dir="ltr">where</code> <code dir="ltr">all</code> command dumps the stack of all threads in the current thread group. The <code dir="ltr">where</code> <code dir="ltr">threadindex</code> command dumps the stack of the specified thread.</p>
+<p>If the current thread is suspended either through an event such as a breakpoint or through the <code dir="ltr">suspend</code> command, then local variables and fields can be displayed with the <code dir="ltr">print</code> and <code dir="ltr">dump</code> commands. The <code dir="ltr">up</code> and <code dir="ltr">down</code> commands select which stack frame is the current stack frame.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref115" name="sthref115"/>
+<h3>Breakpoints</h3>
+<p>Breakpoints can be set in JDB at line numbers or at the first instruction of a method, for example:</p>
+<ul>
+<li>
+<p>The command <code dir="ltr">stop at MyClass:22</code> sets a breakpoint at the first instruction for line 22 of the source file containing <code dir="ltr">MyClass</code>.</p>
+</li>
+<li>
+<p>The command <code dir="ltr">stop in java.lang.String.length</code> sets a breakpoint at the beginning of the method <code dir="ltr">java.lang.String.length</code>.</p>
+</li>
+<li>
+<p>The command <code dir="ltr">stop in MyClass.&lt;clinit&gt;</code> uses <code dir="ltr">&lt;clinit&gt;</code> to identify the static initialization code for <code dir="ltr">MyClass</code>.</p>
+</li>
+</ul>
+<p>When a method is overloaded, you must also specify its argument types so that the proper method can be selected for a breakpoint. For example, <code dir="ltr">MyClass.myMethod(int,java.lang.String)</code> or <code dir="ltr">MyClass.myMethod()</code>.</p>
+<p>The <code dir="ltr">clear</code> command removes breakpoints using the following syntax: <code dir="ltr">clear MyClass:45</code>. Using the <code dir="ltr">clear</code> or <code dir="ltr">stop</code> command with no argument displays a list of all breakpoints currently set. The <code dir="ltr">cont</code> command continues execution.</p>
+</div>
+
+<div><a id="sthref116" name="sthref116"/>
+<h3>Stepping</h3>
+<p>The <code dir="ltr">step</code> command advances execution to the next line whether it is in the current stack frame or a called method. The <code dir="ltr">next</code> command advances execution to the next line in the current stack frame.</p>
+</div>
+
+<div><a id="sthref117" name="sthref117"/>
+<h3>Exceptions</h3>
+<p>When an exception occurs for which there is not a <code dir="ltr">catch</code> statement anywhere in the throwing thread's call stack, the JVM typically prints an exception trace and exits. When running under JDB, however, control returns to JDB at the offending throw. You can then use the <code dir="ltr">jdb</code> command to diagnose the cause of the exception.</p>
+<p>Use the <code dir="ltr">catch</code> command to cause the debugged application to stop at other thrown exceptions, for example: <code dir="ltr">catch java.io.FileNotFoundException</code> or <code dir="ltr">catch</code> <code dir="ltr">mypackage.BigTroubleException</code>. Any exception that is an instance of the specified class or subclass stops the application at the point where it is thrown.</p>
+<p>The <code dir="ltr">ignore</code> command negates the effect of an earlier <code dir="ltr">catch</code> command. The <code dir="ltr">ignore</code> command does not cause the debugged JVM to ignore specific exceptions, but only to ignore the debugger.</p>
+</div>
+</div>
+
+<div><a id="CHDBACHA" name="CHDBACHA"/><a id="CHDBCFAA" name="CHDBCFAA"/>
+<h2>Options</h2>
+<p>When you use the <code dir="ltr">jdb</code> command instead of the <code dir="ltr">java</code> command on the command line, the <code dir="ltr">jdb</code> command accepts many of the same options as the <code dir="ltr">java</code> command, including <code dir="ltr">-D</code>, <code dir="ltr">-classpath</code>, and <code dir="ltr">-X</code> options. The following list contains additional options that are accepted by the <code dir="ltr">jdb</code> command.</p>
+<p>Other options are supported to provide alternate mechanisms for connecting the debugger to the JVM it is to debug. For additional documentation about these connection alternatives, see Java Platform Debugger Architecture (JPDA) at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/jpda/index.html">http://docs.oracle.com/javase/8/docs/technotes/guides/jpda/index.html</a></code></p>
+<dl>
+<dt>-help</dt>
+<dd>
+<p>Displays a help message.</p>
+</dd>
+<dt>-sourcepath <i>dir1:dir2: . . .</i></dt>
+<dd>
+<p>Uses the specified path to search for source files in the specified path. If this option is not specified, then use the default path of dot (.).</p>
+</dd>
+<dt>-attach <i>address</i></dt>
+<dd>
+<p>Attaches the debugger to a running JVM with the default connection mechanism.</p>
+</dd>
+<dt>-listen <i>address</i></dt>
+<dd>
+<p>Waits for a running JVM to connect to the specified address with a standard connector.</p>
+</dd>
+<dt>-launch</dt>
+<dd>
+<p>Starts the debugged application immediately upon startup of JDB. The <code dir="ltr">-launch</code> option removes the need for the <code dir="ltr">run</code> command. The debugged application is launched and then stopped just before the initial application class is loaded. At that point, you can set any necessary breakpoints and use the <code dir="ltr">cont</code> command to continue execution.</p>
+</dd>
+<dt>-listconnectors</dt>
+<dd>
+<p>List the connectors available in this JVM.</p>
+</dd>
+<dt>-connect connector-name:<i>name1=value1</i></dt>
+<dd>
+<p>Connects to the target JVM with the named connector and listed argument values.</p>
+</dd>
+<dt>-dbgtrace [<i>flags</i>]</dt>
+<dd>
+<p>Prints information for debugging the <code dir="ltr">jdb</code> command.</p>
+</dd>
+<dt>-tclient</dt>
+<dd>
+<p>Runs the application in the Java HotSpot VM client.</p>
+</dd>
+<dt>-tserver</dt>
+<dd>
+<p>Runs the application in the Java HotSpot VM server.</p>
+</dd>
+<dt>-J<i>option</i></dt>
+<dd>
+<p>Passes <code dir="ltr">option</code> to the JVM, where option is one of the options described on the reference page for the Java application launcher. For example, <code dir="ltr">-J-Xms48m</code> sets the startup memory to 48 MB. See <a href="java.html#CBBFHAJA"><code dir="ltr">java</code>(1)</a>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref118" name="sthref118"/>
+<h2>Options Forwarded to the Debugger Process</h2>
+<dl>
+<dt>-v -verbose[:<i>class</i>|gc|jni]</dt>
+<dd>
+<p>Turns on verbose mode.</p>
+</dd>
+<dt>-D<i>name</i>=<i>value</i></dt>
+<dd>
+<p>Sets a system property.</p>
+</dd>
+<dt>-classpath <i>dir</i></dt>
+<dd>
+<p>Lists directories separated by colons in which to look for classes.</p>
+</dd>
+<dt>-X<i>option</i></dt>
+<dd>
+<p>Nonstandard target JVM option.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref119" name="sthref119"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="javac.html#BHCJCBFB"><code dir="ltr">javac</code>(1)</a></p>
+</li>
+<li>
+<p><a href="java.html#CBBFHAJA"><code dir="ltr">java</code>(1)</a></p>
+</li>
+<li>
+<p><a href="javah.html#BJECIACA"><code dir="ltr">javah</code>(1)</a></p>
+</li>
+<li>
+<p><a href="javap.html#BEHDBJHJ"><code dir="ltr">javap</code>(1)</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="javap.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jdeps.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

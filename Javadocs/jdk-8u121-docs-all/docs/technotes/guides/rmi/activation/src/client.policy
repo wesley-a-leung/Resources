@@ -1,0 +1,8 @@
+grant codeBase "${examples.activation.client.codebase}" {
+
+    // permissions to read system properties required by the client
+    permission java.util.PropertyPermission "examples.activation.name","read";
+
+    // permission to connect to the registry, activation system, and remote host
+    permission java.net.SocketPermission "*:1024-","connect";
+};

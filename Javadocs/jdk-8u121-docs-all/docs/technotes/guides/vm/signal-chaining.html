@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Signal Chaining</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Signal Chaining</h1>
+<p>The Java 2 SDK, Standard Edition, (JDK) v1.4 contains a new
+signal-chaining facility. Signal-chaining enables the Java Platform
+to better interoperate with native code that installs its own
+signal handlers. The facility works on both Solaris and Linux
+platforms.</p>
+<p>The signal-chaining facility was introduced to remedy a problem
+with signal handling in previous versions of the Java HotSpot VM.
+Prior to version 1.4, the Java HotSpot VM would not allow
+application-installed signal handlers for certain signals
+including, for example, <tt>SIGBUS</tt>, <tt>SIGSEGV</tt>,
+<tt>SIGILL</tt>, etc, since those signal handlers could conflict
+with the signal handlers used internally by the Java HotSpot
+VM.</p>
+<p>The signal-chaining facility offers the following:</p>
+<ul>
+<li>Support for pre-installed signal handlers when the HotSpot VM
+is created.</li>
+<li>Support for signal handler installation after the HotSpot VM is
+created, inside JNI code or from another native thread.</li>
+</ul>
+<p>Pre-installed signal handlers (A) are supported by means of
+saving existing signal handlers, for signals that are used by the
+VM, when the VM is first created. Later, when any of these signals
+are raised and found not to be targeted at the Java HotSpot VM, the
+pre-installed handlers are invoked. In other words, pre-installed
+handlers are "chained" behind the VM handlers for these
+signals.</p>
+<p>The signal-chaining facility also allows an application to link
+and load a shared library <tt>libjsig.so</tt> before
+<tt>libc/libthread/libpthread</tt>. This library ensures that calls
+such as <tt>signal()</tt>, <tt>sigset()</tt>, and
+<tt>sigaction()</tt> are intercepted so that they do not actually
+replace the Java HotSpot VM's signal handlers if the handlers
+conflict with those already installed by the Java HotSpot VM (B).
+Instead, these calls save the new signal handlers, or "chain" them
+behind the VM-installed handlers. Later, when any of these signals
+are raised and found not to be targeted at the Java HotSpot VM, the
+pre-installed handlers are invoked. <tt>libjsig.so</tt> is not
+needed if (B) is not required.</p>
+<p>To use <tt>libjsig.so</tt>, either link it with the application
+that creates/embeds a HotSpot VM, for example:</p>
+<pre>
+cc -L &lt;libjvm.so dir&gt; -ljsig -ljvm java_application.c
+</pre>
+or use <tt>LD_PRELOAD</tt> environment variable, for example:
+<pre>
+export LD_PRELOAD=&lt;libjvm.so dir&gt;/libjsig.so; java_application (ksh)
+
+setenv LD_PRELOAD &lt;libjvm.so dir&gt;/libjsig.so; java_application (csh)
+</pre>
+The interposed <tt>signal()/sigset()/sigaction()</tt> return the
+saved signal handlers, not the signal handlers installed by the
+Java HotSpot VM which are seen by the OS.
+<p>The signal-chaining facility was introduced to address Request
+for Enhancement number <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4381843">4381843</a>. 
+<!-- Body text ends here --></p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

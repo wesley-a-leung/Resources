@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Remote Method Invocation: - Properties In RMI</title>
+</head>
+<body bgcolor="#FFFFFF">
+<a href="#skip" title="Skip navigation bar"></a>
+<table width="100%" summary="">
+<tr>
+<td><a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-properties.html">PREV</a> | <a href=
+"rmi-properties3.html">NEXT</a></td>
+<td align="right"><i>Java Remote Method Invocation</i></td>
+</tr>
+</table>
+<br />
+<a name="skip" id="skip"></a>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<h2><a name="a5112" id="a5112"><i>B.1</i> Server
+Properties</a></h2>
+<a name="a4677" id="a4677"><!-- --></a> The following table
+contains a list of properties typically used by servers for
+configuration. Note that properties are typically restricted from
+being set from applets.
+<table border="1" cellpadding="5" summary=
+"List of properties typically used by servers for configuration">
+<tr>
+<th>Property<br /></th>
+<th>Description<br /></th>
+</tr>
+<tr valign="top">
+<td>
+<p><code>java.rmi.server.codebase</code></p>
+</td>
+<td>
+<p>Indicates the codebase URL of classes originating from the JVM.
+The codebase property is used to annotate class descriptors of
+classes <em>originating</em> from a JVM so that the class for an
+object sent as a parameter or return value in a remote method call
+can be loaded at the receiver.</p>
+</td>
+</tr>
+<tr valign="top">
+<td>
+<p><code>java.rmi.server.disableHttp</code></p>
+</td>
+<td>
+<p>If set to <code>true</code>, disables the use of HTTP for RMI
+calls. This means that RMI will never resort to using HTTP to
+invoke a call via a firewall. Defaults to <code>false</code> (HTTP
+usage is enabled).</p>
+</td>
+</tr>
+<tr valign="top">
+<td>
+<p><code>java.rmi.server.hostname</code></p>
+</td>
+<td>
+<p>RMI uses IP addresses to indicate the location of a server
+(embedded in a remote reference). If the use of a hostname is
+desired, this property is used to specify the fully-qualified
+hostname for RMI to use for remote objects exported to the local
+JVM. The property can also be set to an IP address. Not set by
+default.</p>
+</td>
+</tr>
+<tr valign="top">
+<td>
+<p><code>java.rmi.dgc.leaseValue</code></p>
+</td>
+<td>
+<p>Sets the lease duration that the RMI runtime grants to clients
+referencing remote objects in the JVM. Defaults to 10 minutes.</p>
+</td>
+</tr>
+<tr valign="top">
+<td>
+<p><code>java.rmi.server.logCalls</code></p>
+</td>
+<td>
+<p>If set to <code>true</code>, server call logging is turned on
+and prints to stderr. Defaults to <code>false</code>.</p>
+</td>
+</tr>
+<tr valign="top">
+<td>
+<p><code>java.rmi.server.useCodebaseOnly</code></p>
+</td>
+<td>
+<p>If set to <code>true</code>, when RMI loads classes (if not
+available via <code>CLASSPATH</code>) they are only loaded using
+the URL specified by the property
+<code>java.rmi.server.codebase</code>.</p>
+</td>
+</tr>
+<tr valign="top">
+<td>
+<p><code>java.rmi.server.useLocalHostname</code></p>
+</td>
+<td>
+<p>If the <code>java.rmi.server.hostname</code> property is not set
+and this property is set, then RMI will not use an IP address to
+denote the location (embedded in remote references) of remote
+objects that are exported into the JVM. Instead, RMI will use the
+value of the call to the method
+<code>java.net.InetAddress.getLocalHost</code>.</p>
+</td>
+</tr>
+</table>
+<p><br /></p>
+<hr />
+<a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-properties.html">PREV</a> | <a href=
+"rmi-properties3.html">NEXT</a>
+<hr />
+<font size="-1"><i><a href=
+"../../../legal/SMICopyright.html">Copyright</a> &copy; 1997, 2010,
+Oracle and/or its affiliates. All rights reserved.</i></font> 
+<!-- by Susan Snyder -->
+<!-- Last updated: 1/16/05 -->
+</body>
+</html>

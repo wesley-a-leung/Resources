@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<meta http-equiv="Content-type" content=
+"text/html; charset=utf-8" />
+<title>SNMP Monitoring and Management - Java SE Monitoring and
+Management Guide</title>
+<meta name="date" content="2006-10-01" />
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%"
+summary="">
+<tr>
+<td headers="h1" colspan="5"></td>
+</tr>
+<tr>
+<td headers="h1"></td>
+<td headers="h2" style="width: 60%">&nbsp;</td>
+<td headers="h3"><a href="mxbeans.html"><img style="padding-right: 3px" src=
+"graphics/prev.gif" border="0" alt="previous" />Previous</a></td>
+<td headers="h4"><a href="toc.html">Contents</a></td>
+<td headers="h5"></td>
+<td headers="h6"><a href="security-windows.html">Next<img style=
+"padding-left: 3px" src="graphics/next.gif" border="0" alt=
+"next" /></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+<table summary="">
+<tr>
+<td width="100%" valign="top"><!--startindex-->
+<div class="maincontent"><a name="snmp" id=
+"snmp"></a>Chapter&nbsp;5
+<h1>SNMP Monitoring and Management</h1>
+<p>The Simple Network Management Protocol (SNMP) is an industry
+standard for network management. Objects managed by SNMP are
+arranged in management information bases (MIBs). The SNMP agent
+publishes the standard MIB for the Java virtual machine (Java VM)
+instrumentation. The file <a href="../../../jre/api/management/JVM-MANAGEMENT-MIB.mib"><code>JVM-MANAGEMENT-MIB.mib</code></a> is the standard MIB for monitoring and management of
+the Java VM.</p>
+<a name="gentextid-2010" id="gentextid-2010"></a>
+<h2>Enabling the SNMP Agent</h2>
+<p>To monitor a Java VM with SNMP you must first enable an SNMP
+agent when you start the Java VM. You can enable the SNMP agent for
+either a single-user environment or a multiple-user environment.
+Then, you can monitor the Java VM with an SNMP-compliant tool.</p>
+<p>For general information on setting system properties when you
+start the Java VM, see <a href="agent.html#gdepe">Setting System
+Properties</a> in <a href="agent.html">Chapter&nbsp;2, Monitoring
+and Management Using JMX Technology</a>. How to enable the SNMP
+agent in single and multiple-user environments is described below.
+The process is the same for both environments, but the actions
+performed are slightly different.</p>
+<a name="gdfak" id="gdfak"></a>
+<h3>Access Control List File</h3>
+<p>An Access Control List (ACL) template file is provided with the
+Java Platform, Standard Edition (Java SE platform) in
+<tt><i>JRE_HOME</i>/lib/management/snmp.acl.template</tt>, where
+<tt><i>JRE_HOME</i></tt> is the directory in which the Java Runtime
+Environment (JRE) implementation is installed. You will copy this
+file to either <tt><i>JRE_HOME</i>/lib/management/snmp.acl</tt> or
+to your home directory, depending on whether you are operating in a
+single or a multiple-user environment. Ensure that only you have
+read permissions, since the file contains non-encrypted SNMP
+community strings. For security reasons, the system checks that
+only the owner has read permissions on the file and exits with an
+error if this is not the case. Thus, in a multiple-user
+environment, you should put this file in private location, such as
+your home directory.</p>
+<p><a href="#gdfbd">Example&nbsp;5-1</a> shows some possible
+entries in an ACL file.</p>
+<a name="gdfbd" id="gdfbd"></a>Example&nbsp;5-1 Sample ACL Entries
+<pre class="codeblock">
+#The communities public and private are allowed access from the local host.
+acl = {
+        {
+          communities = public, private
+          access = read-only
+          managers = localhost
+        }
+      }
+# Traps are sent to localhost only
+trap = {
+          {
+            trap-community = public
+            hosts = localhost
+          }
+        }
+</pre>
+<a name="gdfcj" id="gdfcj"></a>
+<h3><img src="graphics/procedure.gif" alt="procedure graphic" /> To
+Enable the SNMP Agent in a Single-user Environment</h3>
+<ol>
+<li><b>Set the following system property when you start the Java
+VM.</b>
+<pre class="codeblock">
+com.sun.management.snmp.port=<i>portNum</i>
+</pre>
+<p>In the property above, <tt><i>portNum</i></tt> is the port
+number to use for monitoring. Setting this property starts an SNMP
+agent that listens on the specified port number for incoming SNMP
+requests.</p>
+</li>
+<li><b>Create an ACL File.</b>
+<p>Copy the ACL template file from
+<tt><i>JRE_HOME</i>/lib/management/snmp.acl.template</tt> to
+<tt><i>JRE_HOME</i>/lib/management/snmp.acl</tt>.</p>
+</li>
+<li><b>Set the permissions on the ACL file.</b>
+<p>Make sure the ACL file is readable by only the owner, and add
+community strings as needed.</p>
+</li>
+</ol>
+<a name="gdfca" id="gdfca"></a>
+<h3><img src="graphics/procedure.gif" alt="procedure graphic" /> To
+Enable the SNMP Agent in a Multiple-user Environment</h3>
+<ol>
+<li><b>Set the following system properties when you start the Java
+VM.</b>
+<pre class="codeblock">
+com.sun.management.snmp.port=portNum
+com.sun.management.snmp.acl.file=ACLFilePath
+</pre>
+<p>Where <tt><i>ACLFilePath</i></tt> is the path to the ACL
+file.</p>
+</li>
+<li><b>Create an ACL File.</b>
+<p>Copy the ACL template file from
+<tt><i>JRE_HOME</i>/lib/management/snmp.acl.template</tt> to a file
+named <tt>snmp.acl</tt> in your home directory.</p>
+</li>
+<li><b>Set the permissions on the ACL file.</b>
+<p>Make sure the ACL file is readable by only the owner, and add
+community strings as needed.</p>
+</li>
+</ol>
+<a name="gdfbs" id="gdfbs"></a>
+<h2>SNMP Monitoring and Management Properties</h2>
+<p>You can set SNMP monitoring and management properties in a
+configuration file or on the command line. Properties specified on
+the command line override properties in a configuration file. The
+default location for the configuration file is
+<tt><i>JRE_HOME</i>/lib/management/management.properties</tt>. The
+Java VM reads this file if the command-line property
+<tt>com.sun.management.snmp.port</tt> is set.</p>
+<p>You can specify a different location for the configuration file
+with the following command-line option.</p>
+<pre class="codeblock">
+com.sun.management.config.file=<i>ConfigFilePath</i>
+</pre>
+<p>In the property above, <tt><i>ConfigFilePath</i></tt> is the
+path to the configuration file.</p>
+<p>You must specify all system properties when you start the Java
+VM. After the Java VM has started, any changes to system properties
+(for example, via the <tt>setProperty</tt> method), to the password
+file, to the ACL file, or to the configuration file will have no
+effect.</p>
+<p><a href="#gdfaw">Table&nbsp;5-1</a> describes all the SNMP
+management properties.</p>
+<a name="gdfaw" id="gdfaw"></a>
+<p><strong>Table&nbsp;5-1 SNMP monitoring and management
+Properties</strong></p>
+<table border="1" summary=
+"SNMP monitoring and management properties">
+<col width="33*" />
+<col width="33*" />
+<col width="33*" />
+<tr>
+<th id="h101">Property Name</th>
+<th id="h102">
+Description 
+</th>
+<th id="h103">Default
+</th>
+</tr>
+<tr>
+<td headers="h101" align="left" valign="top" scope="row">
+<p><tt>com.sun.management.snmp.trap</tt></p>
+</td>
+<td headers="h102" align="left" valign="top" scope="row">
+<p>Remote port to which the SNMP agent sends traps.</p>
+</td>
+<td headers="h103" align="left" valign="top" scope="row">
+<p>162</p>
+</td>
+</tr>
+<tr>
+<td headers="h101" align="left" valign="top" scope="row">
+<p><tt>com.sun.management.snmp. interface</tt></p>
+</td>
+<td headers="h102" align="left" valign="top" scope="row">
+<p>Optional. The local host <tt>InetAddress,</tt> to force the SNMP
+agent to bind to the given <tt>InetAddress</tt>. This is for
+multi-home hosts if one wants to listen to a specific subnet
+only.</p>
+</td>
+<td headers="h103" align="left" valign="top" scope="row">
+<p>Not applicable</p>
+</td>
+</tr>
+<tr>
+<td headers="h101" align="left" valign="top" scope="row">
+<p><tt>com.sun.management.snmp.acl</tt></p>
+</td>
+<td headers="h102" align="left" valign="top" scope="row">
+<p>Enables or disables SNMP ACL checks.</p>
+</td>
+<td headers="h103" align="left" valign="top" scope="row">
+<p><tt>true</tt></p>
+</td>
+</tr>
+<tr>
+<td headers="h101" align="left" valign="top" scope="row">
+<p><tt>com.sun.management.snmp. acl.file</tt></p>
+</td>
+<td headers="h102" align="left" valign="top" scope="row">
+<p>Path to a valid ACL file. After the Java VM has started,
+modifying the ACL file has no effect.</p>
+</td>
+<td headers="h103" align="left" valign="top" scope="row">
+<p><tt><i>JRE_HOME</i>/lib/management/snmp.acl</tt></p>
+</td>
+</tr>
+</table>
+<a name="gdfat" id="gdfat"></a>
+<h3>Configuration Errors</h3>
+<p>If any errors occur during start up of the SNMP agent, the Java
+VM will throw an exception and exit. Configuration errors include
+the following.</p>
+<ul>
+<li>
+<p>Failure to bind to the port number.</p>
+</li>
+<li>
+<p>The password file is readable by anyone other than the
+owner.</p>
+</li>
+<li>
+<p>Invalid SNMP ACL file.</p>
+</li>
+</ul>
+<p>If your application runs a security manager, then additional
+permissions are required in the security permissions file.</p>
+</div>
+<!--stopindex-->
+<!-- END CENTRAL COLUMN COMPONENTS --></td>
+</tr>
+<!-- BEGIN SPACER ROW -->
+<tr>
+<td><img src="css/a.gif" width="780" height="1" border="0" alt=
+"spacer" /></td>
+</tr>
+<!-- END SPACER ROW -->
+<tr>
+<td><!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%"
+summary="">
+<tr valign="bottom">
+<td headers="h201"></td>
+<td headers="h202" style="width: 60%"></td>
+<td headers="h203"><a href="mxbeans.html"><img style="padding-right: 3px" src=
+"graphics/prev.gif" border="0" alt="previous" />Previous</a></td>
+<td headers="h204"><a href="toc.html">Contents</a></td>
+<td headers="h205"></td>
+<td headers="h206"><a href="security-windows.html">Next<img style=
+"padding-left: 3px" src="graphics/next.gif" border="0" alt=
+"next" /></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW --></td>
+</tr>
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

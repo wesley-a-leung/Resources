@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Input Method Engine SPI Tutorial</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Input Method Engine SPI Tutorial</h1>
+
+<!-- Body text begins here -->
+<h2>Contents</h2>
+<ol>
+<li><a href="#Introduction">Introduction</a></li>
+<li><a href="#DescribingtheInputMethod">Describing the Input
+Method</a></li>
+<li><a href="#CommunicatingwiththeClientComponent">Communicating
+with the Client Component</a></li>
+<li><a href="#UsingInputMethodWindows">Using Input Method
+Windows</a></li>
+<li><a href="#ImplementingComposition">Implementing
+Composition</a></li>
+<li><a href="#ProvidingEngine-SpecificFunctionality">Providing
+Engine-Specific Functionality</a></li>
+<li><a href="#PackagingtheInputMethod">Packaging the Input
+Method</a></li>
+<li><a href="#SampleCode">Sample Code</a></li>
+</ol>
+<hr />
+<h2><a name="Introduction" id="Introduction"></a>1.
+Introduction</h2>
+<p>The input method engine SPI enables the development of input
+methods in the Java programming language that can be used with any
+JRE. As far as the input method framework is
+concerned, an input method consists of two classes implementing the
+<code>InputMethodDescriptor</code> and <code>InputMethod</code>
+interfaces, packaged with some additional information as an
+extension and installed into a Java runtime. The specifications for
+the <code><a href=
+"../../../api/java/awt/im/spi/package-summary.html#package_specification">
+java.awt.im.spi</a></code> package, and the <code><a href=
+"../../../api/java/awt/im/spi/InputMethodDescriptor.html">InputMethodDescriptor</a></code>
+and <code><a href=
+"../../../api/java/awt/im/spi/InputMethod.html">InputMethod</a></code>
+interfaces provide the core information that's needed to implement
+an input method. This tutorial provides additional information that
+makes this task a little easier and helps avoid compatibility
+problems between different implementations of the Java platform.</p>
+<hr />
+<h2><a name="DescribingtheInputMethod" id=
+"DescribingtheInputMethod"></a>2. Describing the Input Method</h2>
+<p>Before the input method framework can start using an input
+method, it needs to know about its capabilities. The necessary
+information is provided by the input method's implementation of the
+<code><a href=
+"../../../api/java/awt/im/spi/InputMethodDescriptor.html">InputMethodDescriptor</a></code>
+class. This information is used in <a href=
+"spec.html#SelectingInputMethods">selecting input methods</a>.</p>
+<p>The list of available locales returned by <code><a href=
+"../../../api/java/awt/im/spi/InputMethodDescriptor.html#getAvailableLocales--">
+getAvailableLocales</a></code> should only return languages that
+the input method is really designed for. For example, a Chinese
+Pinyin input method that produces simplified Chinese characters
+should only return <code><a href=
+"../../../api/java/util/Locale.html#SIMPLIFIED_CHINESE">SIMPLIFIED_CHINESE</a></code>,
+even if it has a mode that simply lets key events pass through and
+thus also makes it possible to write English or Malay. The
+<code><a href=
+"../../../api/java/awt/im/spi/InputMethod.html#setLocale-java.util.Locale-">
+InputMethod.setLocale</a></code> method on the other hand may
+return true for a larger set of languages. The reason is that
+<code>getAvailableLocales</code> is used to decide whether to load
+and switch <em>to</em> an input method, which is only worthwhile if
+the input method handles the language well, while
+<code>setLocale</code> is used to decide whether to switch
+<em>away</em> from an input method, which is only worthwhile if the
+input method doesn't handle the language at all.</p>
+<hr />
+<h2><a name="CommunicatingwiththeClientComponent" id=
+"CommunicatingwiththeClientComponent"></a>3. Communicating with the
+Client Component</h2>
+<p>When an input method instance is created, it receives an
+<code><a href=
+"../../../api/java/awt/im/spi/InputMethodContext.html">InputMethodContext</a></code>
+instance through <code><a href=
+"../../../api/java/awt/im/spi/InputMethod.html#setInputMethodContext-java.awt.im.spi.InputMethodContext-">
+setInputMethodContext</a></code>. This instance provides it with
+all the functionality that it needs to communicate with the input
+method framework, the client component, or the composition window.
+It lets the input method send information about composed and
+committed text using the <code><a href=
+"../../../api/java/awt/im/spi/InputMethodContext.html#dispatchInputMethodEvent-int-java.text.AttributedCharacterIterator-int-java.awt.font.TextHitInfo-java.awt.font.TextHitInfo-">
+dispatchInputMethodEvent</a></code> method. And it lets the input
+method request information from the client component using the
+methods it inherits from the <code><a href=
+"../../../api/java/awt/im/InputMethodRequests.html">InputMethodRequests</a></code>
+interface.</p>
+<p>The input method framework provides the input method with an
+environment that makes it seem like it is always communicating with
+an <a href="spec.html#ClientComponents">active client</a> component
+using the on-the-spot <a href="spec.html#InputStyles">input
+style</a>. If the actual client component is not an active client,
+or if a different input style is used, then the framework <a href=
+"spec.html#InformationFlowThroughtheFramework">redirects</a> events
+and requests as needed.</p>
+<p>The input method should never try to access the client component
+directly, as doing so would conflict with the framework's switching
+and redirection functionality. Instead, the input method should
+always use the methods provided by its input method context.</p>
+<hr />
+<h2><a name="UsingInputMethodWindows" id=
+"UsingInputMethodWindows"></a>4. Using Input Method Windows</h2>
+<p>Input methods may use a number of different windows to
+communicate with the user. Windows commonly used by input methods
+include:</p>
+<ul>
+<li>a <em>look-up window</em>, which shows several possible
+interpretations of the user's input and lets the user choose the
+correct one.</li>
+<li>a <em>status window</em>, which provides the user with
+information about the current state of the input method, such as
+the selected language or target character set.</li>
+<li>a <em>control panel</em> (often combined with the status
+window), which lets the user change the input method's state, such
+as selecting a different language or target character set.</li>
+<li>a <em>preferences window</em>, which lets the user tailor the
+input method to his or her needs.</li>
+<li>a <em>dictionary editor window</em>, which lets the user add or
+correct conversions.</li>
+</ul>
+<p>Note: On some other platforms, input methods may also provide a
+composition window, which shows the composed text. In the Java
+input method framework, composed text is always displayed by the
+client component or the input method framework, never by the input
+method.</p>
+<p>It is useful to consider three groups of windows:</p>
+<ul>
+<li>transient windows: these windows pop up for short times during
+a composition operation. Their functionality is tied to a specific
+composition. Opening, closing, positioning, and sizing are usually
+automatic since any user interaction with the windows themselves
+would distract from the composition. In particular, transient
+windows are always closed when the composition operation ends or is
+interrupted. Examples: look-up window.</li>
+<li>persistent windows: these windows tend to stay around for
+extended periods of time, possibly for as long as the user is using
+the input method. Their functionality may be tied to the currently
+active instance of the input method, or to the input method class.
+Usually the user can actively open, close, position, and possibly
+resize these windows, although they are always automatically closed
+when switching to a different input method, and in some cases
+they're automatically positioned relative to the window containing
+the current client component. Examples: status window, control
+panel.</li>
+<li>document windows: these are just regular windows. Their
+functionality is not tied to composition. The user fully controls
+opening, closing, positioning, and possibly sizing of these
+windows. Examples: dictionary editor window.</li>
+</ul>
+<p>Here's how these window groups can be handled by input methods:</p>
+<ul>
+<li>transient windows are created using <code><a href=
+"../../../api/java/awt/im/spi/InputMethodContext.html#createInputMethodWindow-java.lang.String-boolean-">
+InputMethodContext.createInputMethodWindow</a></code>, typically
+with <code>attachToInputContext</code> set to true. They are opened
+either in the input method's implementation of <code><a href=
+"../../../api/java/awt/im/spi/InputMethod.html#activate--">activate</a></code>,
+or later when needed to respond to user input. They are closed in
+the input method's implementations of <code><a href=
+"../../../api/java/awt/im/spi/InputMethod.html#deactivate-boolean-">
+deactivate</a></code> or <code><a href=
+"../../../api/java/awt/im/spi/InputMethod.html#hideWindows--">hideWindows</a></code>,
+or earlier if they are no longer needed.</li>
+<li>persistent windows are created using <code><a href=
+"../../../api/java/awt/im/spi/InputMethodContext.html#createInputMethodWindow-java.lang.String-boolean-">
+InputMethodContext.createInputMethodWindow</a></code>, with
+<code>attachToInputContext</code> set to false. They are typically
+opened in the input method's implementation of <code><a href=
+"../../../api/java/awt/im/spi/InputMethod.html#activate--">activate</a></code>
+and closed in the input method's implementation of <code><a href=
+"../../../api/java/awt/im/spi/InputMethod.html#hideWindows--">hideWindows</a></code>.</li>
+<li>document windows are created as regular AWT windows, and
+opening and closing them is usually under user control.</li>
+</ul>
+<p>Note that the focus behavior of a window created by
+<code>createInputMethodWindow</code> is implementation dependent.
+It may never get the focus, it may get the focus when initially
+made visible, or it may get the focus when the user clicks into it.
+An input method must be able to handle either case.</p>
+<p>To position windows (such as the look-up window) automatically
+relative to the composed text, the input method can use the input
+method context's <code><a href=
+"../../../api/java/awt/im/InputMethodRequests.html#getTextLocation-java.awt.font.TextHitInfo-">
+getTextLocation</a></code> method. To position windows (such as a
+status window) automatically relative to the window containing the
+current client component, the input method can register for
+notifications about that window's location and state using the
+input method context's <code><a href=
+"../../../api/java/awt/im/spi/InputMethodContext.html#enableClientWindowNotification-java.awt.im.spi.InputMethod-boolean-">
+enableClientWindowNotification</a></code> method; it then has to
+implement the <code><a href=
+"../../../api/java/awt/im/spi/InputMethod.html#notifyClientWindowChange-java.awt.Rectangle-">
+notifyClientWindowChange</a></code> method to receive
+notifications.</p>
+<p>Input methods must call <a href=
+"../../../api/java/awt/Window.html#dispose--">Window.dispose</a>
+for all windows they create when they are no longer needed. This
+ensures that the JVM exits when the application terminates all
+non-daemon threads it started. Please refer to <a href=
+"../../../api/java/awt/doc-files/AWTThreadIssues.html">AWT
+Threading Issues</a> for more information.</p>
+<hr />
+<h2><a name="ImplementingComposition" id=
+"ImplementingComposition"></a>5. Implementing Composition</h2>
+<p>The main task of an input method is interpreting user actions in
+composing text input. The user actions may be typing on the
+keyboard, using the mouse, handwriting, or speaking.</p>
+<p>The <code><a href=
+"../../../api/java/awt/im/spi/InputMethod.html#activate--">activate</a></code>
+and <code><a href=
+"../../../api/java/awt/im/spi/InputMethod.html#deactivate-boolean-">
+deactivate</a></code> methods indicate to the input method whether
+a client component has the focus and therefore is the target of
+text input. Typically input methods only process events to compose
+text while they're active.</p>
+<p>When an input method is active, certain types of events are
+dispatched to the input method using the <code><a href=
+"../../../api/java/awt/im/spi/InputMethod.html#dispatchEvent-java.awt.AWTEvent-">
+dispatchEvent</a></code> method before they are processed by the
+client component. The input method decides for each event whether
+it wants to handle it. If it does, it marks the event as consumed
+so that it is not processed by the client component.</p>
+<p><em>Note</em>: For <a href=
+"../../../api/java/awt/event/KeyEvent.html">key events</a>, input
+methods should use only KEY_TYPED events to obtain information
+about characters being entered, and use KEY_PRESSED or KEY_RELEASED
+events only to obtain information about function keys that don't
+result in KEY_TYPED events. The mapping from key-presses to
+characters depends on platforms, hardware, locales, and possibly
+other factors, and is best left to the underlying operating
+system.</p>
+<p>As text is being composed and committed, the input method needs
+to inform the client component about all changes so that the client
+component can redraw the text. The input method does this by using
+<code><a href=
+"../../../api/java/awt/im/spi/InputMethodContext.html#dispatchInputMethodEvent-int-java.text.AttributedCharacterIterator-int-java.awt.font.TextHitInfo-java.awt.font.TextHitInfo-">
+InputMethodContext.dispatchInputMethodEvent</a></code> to construct
+and dispatch input method events to the client component. Depending
+on the current event flow model, the input method framework may
+redirect the events to its composition window. Dispatching input
+method events is the only way for Java input methods to have
+composed text displayed.</p>
+<p>Composed text is usually marked up with highlight styles that
+indicate the current state of the conversion. This is accomplished
+by adding attributes to the text using the <code><a href=
+"../../../api/java/awt/font/TextAttribute.html#INPUT_METHOD_HIGHLIGHT">
+TextAttribute.INPUT_METHOD_HIGHLIGHT</a></code> key and instances
+of <code><a href=
+"../../../api/java/awt/im/InputMethodHighlight.html">InputMethodHighlight</a></code>
+as values. Normally input methods only define abstract highlights
+(using the state and selected properties of the input method
+highlight) and leave the mapping to concrete styles to the
+rendering system. However, if desired, input methods can add
+concrete style information to the highlight using the style
+property. It is a good idea to design the concrete styles as
+variations of the styles provided returned by <code><a href=
+"../../../api/java/awt/Toolkit.html#mapInputMethodHighlight-java.awt.im.InputMethodHighlight-">
+Toolkit.mapInputMethodHighlight</a></code>.</p>
+<p>Both the client component and the input method framework may
+recognize situations where the current composition needs to be
+ended and all composed text either committed or cancelled. They
+inform the input method about this need using the <code><a href=
+"../../../api/java/awt/im/spi/InputMethod.html#endComposition--">endComposition</a></code>
+method. Note that <code>endComposition</code> may be called while
+the input method is not active.</p>
+<p>Client components can influence composition using several
+methods. The <code><a href=
+"../../../api/java/awt/im/InputContext.html#setCharacterSubsets-java.lang.Character.Subset:A-">
+InputContext.setCharacterSubsets</a></code> method lets them
+restrict the subset of the Unicode character set that the input
+method is allowed to input. Input methods should generally not
+create characters outside of the specified subsets, and may switch
+to a different input mode that particularly supports the specified
+character subsets. The <code><a href=
+"../../../api/java/awt/im/InputContext.html#setCompositionEnabled-boolean-">
+InputContext.setCompositionEnabled</a></code> and <code><a href=
+"../../../api/java/awt/im/InputContext.html#isCompositionEnabled--">
+isCompositionEnabled</a></code> methods let them control and
+examine whether the current input method is enabled for
+composition. The <code><a href=
+"../../../api/java/awt/im/InputContext.html#reconvert--">InputContext.reconvert</a></code>
+method lets them initiate reconversion.</p>
+<hr />
+<h2><a name="ProvidingEngine-SpecificFunctionality" id=
+"ProvidingEngine-SpecificFunctionality"></a>6. Providing
+Engine-Specific Functionality</h2>
+<p>Some input methods may want to provide functionality to client
+components that can not be made available through the input method
+framework API. This is possible through <em>input method control
+objects</em>. The input method developer must publish an interface
+for these objects, and return instances through <code><a href=
+"../../../api/java/awt/im/spi/InputMethod.html#getControlObject--">InputMethod.getControlObject</a></code>.
+Client components that want to take advantage of the additional
+functionality can then call <code><a href=
+"../../../api/java/awt/im/InputContext.html#getInputMethodControlObject--">
+InputContext.getInputMethodControlObject</a></code>, check whether
+the returned object is an instance of a known control object class,
+and if it is, call its methods.</p>
+<hr />
+<h2><a name="PackagingtheInputMethod" id=
+"PackagingtheInputMethod"></a>7. Packaging the Input Method</h2>
+<p>Input methods are packaged as installed extensions with specific
+content as described in the <a href=
+"../../../api/java/awt/im/spi/package-summary.html#Packaging">"Packaging
+Input Methods"</a> section of the SPI specification. One important
+aspect to consider is that all extensions installed in a Java
+application environment share the same name space. To avoid name
+collisions, input methods should follow the package naming
+conventions as described in the Java Language Specification.
+Similar conventions should be applied to naming non-class files
+that are packaged in the input method JAR file, such as
+dictionaries.</p>
+<hr />
+<h2><a name="SampleCode" id="SampleCode"></a>8. Sample Code</h2>
+<p>City Input Method is a simple input method that shows how to use
+the interfaces provided by the input method engine SPI.</p>
+<ul>
+<li><a href="spi-sample/CityIM.html">City Input Method
+documentation</a> - tells you how to install and use this input
+method.</li>
+<li><a href="spi-sample/CityIM.jar">City Input Method</a> - a jar
+file containing the input method. Some browsers will automatically
+offer to download this file; others will show its contents in a
+window (not a pretty sight), and you then have to use the Save
+command to write it into a file. See the documentation for <a href=
+"spi-sample/CityIM.html#InstallingandSelectingtheInputMethod">installation
+instructions</a>.</li>
+<li><a href=
+"spi-sample/CityInputMethodDescriptor.java">CityInputMethodDescriptor.java</a>
+- the InputMethodDescriptor implementation for this input
+method.</li>
+<li><a href=
+"spi-sample/CityInputMethod.java">CityInputMethod.java</a> - the
+InputMethod implementation for this input method.</li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

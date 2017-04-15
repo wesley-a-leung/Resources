@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Other Command-Line Options</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:29Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="clopts001.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tools-by-rel.html">
+                Next</a><hr/><a id="CHDHCBBG" name="CHDHCBBG"/>
+<div id="JSTGD603">
+<h1>Other Command-Line Options</h1>
+<p>In addition to the <code dir="ltr">-XX</code> options, many other command-line options can provide troubleshooting information. This section describes a few of these options.</p>
+<div><a id="CHDDEGBI" name="CHDDEGBI"/>
+<h2>The -Xcheck:jni Option</h2>
+<p>This option is useful in diagnosing problems with applications that use the Java Native Interface (JNI). Sometimes bugs in the native code can cause the HotSpot VM to crash or behave incorrectly.</p>
+<p>The <code dir="ltr">-Xcheck:jni</code> option is added to the command line that starts the application, as in the following example:</p>
+<pre dir="ltr" xml:space="preserve">
+java -Xcheck:jni MyApp
+</pre>
+<p>The <code dir="ltr">-Xcheck:jni</code> option causes the VM to do additional validation on the arguments passed to JNI functions. <i>Note:</i> The option is not guaranteed to find all invalid arguments or diagnose logic bugs in the application code, but it can help diagnose a large number of such problems.</p>
+<p>When an invalid argument is detected, the VM prints a message to the application console or to standard output, prints the stack trace of the offending thread, and aborts the VM.</p>
+<p><a href="#CHDFCBIJ">Example D-3</a> shows a <code dir="ltr">null</code> value was incorrectly passed to a JNI function that does not allow a <code dir="ltr">null</code> value.</p>
+<div id="JSTGD604"><a id="CHDFCBIJ" name="CHDFCBIJ"/>
+<p>Example D-3 Null Value Passed to JNI Function</p>
+<pre dir="ltr" xml:space="preserve">
+FATAL ERROR in native method: Null object passed to JNI
+    at java.net.PlainSocketImpl.socketAccept(Native Method)
+    at java.net.PlainSocketImpl.accept(PlainSocketImpl.java:343)
+    - locked &lt;0x450b9f70&gt; (a java.net.PlainSocketImpl)
+    at java.net.ServerSocket.implAccept(ServerSocket.java:439)
+    at java.net.ServerSocket.accept(ServerSocket.java:410)
+    at org.apache.tomcat.service.PoolTcpEndpoint.acceptSocket
+                        (PoolTcpEndpoint.java:286)
+    at org.apache.tomcat.service.TcpWorkerThread.runIt
+                        (PoolTcpEndpoint.java:402)
+    at org.apache.tomcat.util.ThreadPool$ControlRunnable.run
+                        (ThreadPool.java:498)
+    at java.lang.Thread.run(Thread.java:536)
+</pre></div>
+
+<p><a href="#CHDDIJGG">Example D-4</a> shows an incorrect argument was provided to a JNI function that expects a <code dir="ltr">jfieldID</code> argument.</p>
+<div id="JSTGD605"><a id="CHDDIJGG" name="CHDDIJGG"/>
+<p>Example D-4 Incorrect Argument Provided to a JNI Function</p>
+<pre dir="ltr" xml:space="preserve">
+FATAL ERROR in native method: Instance field not found in JNI get/set 
+                        field operations
+        at java.net.PlainSocketImpl.socketBind(Native Method)
+        at java.net.PlainSocketImpl.bind(PlainSocketImpl.java:359)
+        - locked &lt;0xf082f290&gt; (a java.net.PlainSocketImpl)
+        at java.net.ServerSocket.bind(ServerSocket.java:318)
+        at java.net.ServerSocket.&lt;init&gt;(ServerSocket.java:185)
+        at jvm003a.&lt;init&gt;(jvm003.java:190)
+        at jvm003a.&lt;init&gt;(jvm003.java:151)
+        at jvm003.run(jvm003.java:51)
+        at jvm003.main(jvm003.java:30)
+</pre></div>
+
+<p>The following list presents examples of other problems that the <code dir="ltr">-Xcheck:jni</code> option can help diagnose:</p>
+<ul>
+<li>
+<p>Cases where the JNI environment for the wrong thread is used</p>
+</li>
+<li>
+<p>Cases where an invalid JNI reference is used</p>
+</li>
+<li>
+<p>Cases where a reference to a non-array type is provided to a function that requires an array type</p>
+</li>
+<li>
+<p>Cases where a non-static field ID is provided to a function that expects a static field ID</p>
+</li>
+<li>
+<p>Cases where a JNI call is made with an exception pending</p>
+</li>
+</ul>
+<p>In general, all errors detected by the <code dir="ltr">-Xcheck:jni</code> option are fatal errors (that is, the error is printed and the VM is aborted). There is one exception to this behavior, when a JNI call is made within a JNI critical region. In this case, the following non-fatal warning message is printed, as shown in <a href="#CHDFGCHB">Example D-5</a>.</p>
+<div id="JSTGD606"><a id="CHDFGCHB" name="CHDFGCHB"/>
+<p>Example D-5 Non-Fatal Warning Message</p>
+<pre dir="ltr" xml:space="preserve">
+Warning: Calling other JNI functions in the scope of 
+Get/ReleasePrimitiveArrayCritical or Get/ReleaseStringCritical
+</pre></div>
+
+<p>A JNI critical region is created when native code uses the JNI functions <code dir="ltr">GetPrimitiveArrayCritical</code> or <code dir="ltr">GetStringCritical</code> to obtain a reference to an array or string in the Java heap. The reference is held until the native code calls the corresponding release function. The code between the get and release is called a JNI critical section and during that time the HotSpot VM cannot bring the VM to a state that allows garbage collection to occur. The general recommendation is not to use other JNI functions within a JNI critical section, and in particular any JNI function that could potentially cause a deadlock. The warning printed above by the <code dir="ltr">-Xcheck:jni</code> option is thus an indication of a potential issue; it does not always indicate an application bug.</p>
+<p>For more information on JNI, see the <a href="../jni/index.html">Java Native Interface</a> documentation.</p>
+</div>
+
+<div><a id="CHDJECGJ" name="CHDJECGJ"/>
+<h2>The -verbose:class Option</h2>
+<p>This option enables logging of class loading and unloading.</p>
+</div>
+
+<div><a id="CHDJIIFF" name="CHDJIIFF"/>
+<h2>The -verbose:gc Option</h2>
+<p>This option enables logging of garbage collection (GC) information. It can be combined with other HotSpot VM specific options such as <code dir="ltr">-XX:+PrintGCDetails</code> and <code dir="ltr">-XX:+PrintGCTimeStamps</code> to get further information about GC. The information output includes the size of the generations before and after each GC, total size of the heap, the size of objects promoted, and the time taken.</p>
+<p>More information about these options, along with detailed information about GC analysis and tuning are described in the <a href="http://www.oracle.com/technetwork/articles/javase/gcportal-136937.html">GC Portal article</a>.</p>
+<p>The <code dir="ltr">-verbose:gc</code> option can be dynamically enabled at runtime using the management API or JVM TI. For more information on these APIs, see <a href="tooldescr021.html#BABEDEBD">Custom Diagnostic Tools</a>.</p>
+<p>The JConsole monitoring and management tool can also enable or disable the option when the tool is attached to a management VM. For more information see <a href="tooldescr009.html#BABDCICF">JConsole</a>.</p>
+</div>
+
+<div><a id="CHDCHGEE" name="CHDCHGEE"/>
+<h2>The -verbose:jni Option</h2>
+<p>This option enables logging of JNI. When a JNI or native method is resolved, the HotSpot VM prints a trace message to the application console (standard output). It also prints a trace message when a native method is registered using the JNI <code dir="ltr">RegisterNative</code> function. The <code dir="ltr">-verbose:jni</code> option can be useful in diagnosing issues with applications that use native libraries.</p>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="clopts001.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tools-by-rel.html">
+                Next</a><hr/>
+
+
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

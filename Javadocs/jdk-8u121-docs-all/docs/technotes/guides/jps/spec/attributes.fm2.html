@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Print Service API User Guide: 2 - Attributes</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<a href="JPSTOC.fm.html">CONTENTS</a> | <a href=
+"attributes.fm1.html">PREV</a> | <a href=
+"attributes.fm3.html">NEXT</a><br />
+<h2><a name="a1001108" id="a1001108">Attribute Roles</a></h2>
+<a name="a1000352" id="a1000352"><!-- --></a> When submitting a
+print job to a printer, the client provides the attributes
+describing the characteristics of the print data, such as the
+document name, and how the print data should be printed, such as
+double-sided, five copies. If a print job consists of multiple
+pieces of print data, different pieces might have different
+processing instructions, such as 8 x 11 inch media for the first
+document, and 11 x 17 inch media for another document.
+<p><a name="a1000353" id="a1000353"><!-- --></a> Once the printer
+starts processing the print job, additional information about the
+job becomes available, which might include: the job state (such as
+completed or queued) and the number of pages printed so far. These
+pieces of information are also attributes. Attributes can also
+describe the printer itself, such as: the printer name, the printer
+location, and the number of jobs queued.</p>
+<p><a name="a998885" id="a998885"><!-- --></a> The Java Print
+Service API defines these different kinds of attribute roles with
+five subinterfaces of Attribute:</p>
+<ul>
+<li><a name="a998765" id="a998765"><!-- --></a>
+PrintRequestAttribute is used by an application to represents a
+setting applied to an entire print job and to specify how the
+entire print job should be printed.</li>
+<li><a name="a998767" id="a998767"><!-- --></a> DocAttribute is
+used by an application to specify a characteristic of a single
+document and the print job settings to be applied to the
+document.</li>
+<li><a name="a998771" id="a998771"><!-- --></a> PrintJobAttribute
+is used by a print service to report how a job is being printed.
+These values will usually be identical the requested attribute
+values. However, if the printer does not support the value of a
+print request attribute then the corresponding print job attribute
+contains a different value that is supported by the printer</li>
+<li><a name="a998940" id="a998940"><!-- --></a>
+PrintServiceAttribute is used by a print service to report the
+status of the print service.</li>
+<li><a name="a1000759" id="a1000759"><!-- --></a>
+SupportedValuesAttribute is used by a print service o indicate the
+range of values supported for a request attribute. For example, a
+printer might support only a certain range of copies. When a print
+service is queried for the supported range of copies, it returns
+this information in a CopiesSupported object, which implements
+SupportedValuesAttribute.</li>
+</ul>
+<a name="a998775" id="a998775"><!-- --></a> Many attributes can be
+members of more than one role. For example, the Media attribute
+belongs to the doc, print job, and print request roles because the
+Media attribute can describe the paper size, the paper tray, or
+paper type. In fact, most doc attributes are also request
+attributes, and all request attributes are also job attributes.
+<p><a name="a999612" id="a999612"><!-- --></a> The next section
+describes how to collect attributes together into attribute sets,
+which also have roles.</p>
+<br />
+<hr />
+<a href="JPSTOC.fm.html">CONTENTS</a> | <a href=
+"attributes.fm1.html">PREV</a> | <a href=
+"attributes.fm3.html">NEXT</a>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

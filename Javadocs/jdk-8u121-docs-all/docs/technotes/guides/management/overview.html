@@ -1,0 +1,530 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<meta http-equiv="Content-type" content=
+"text/html; charset=utf-8" />
+<title>Overview of Java SE Monitoring and Management - Java SE
+Monitoring and Management Guide</title>
+<meta name="date" content="2006-10-01" />
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%"
+summary="">
+<tr>
+<td headers="h1" colspan="5"></td>
+</tr>
+<tr>
+<td headers="h1"></td>
+<td headers="h2" style="width: 60%">&nbsp;</td>
+<td headers="h3"><a href="preface.html"><img style="padding-right: 3px" src=
+"graphics/prev.gif" border="0" alt="arrow icon" />Previous</a></td>
+<td headers="h4"><a href="toc.html">Contents</a></td>
+<td headers="h5"></td>
+<td headers="h6"><a href="agent.html">Next<img style="padding-left: 3px" src=
+"graphics/next.gif" border="0" alt="arrow icon" /></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+<table summary="">
+<tr>
+<td width="100%" valign="top"><!--startindex-->
+<div class="maincontent"><a name="overview" id=
+"overview"></a>Chapter&nbsp;1
+<h1>Overview of Java SE Monitoring and Management</h1>
+<p>This chapter introduces the features and utilities that provide
+monitoring and management services to the Java Platform, Standard
+Edition (Java SE platform). The features introduced here will be
+expanded upon in the following chapters of this guide.</p>
+<a name="gentextid-207" id="gentextid-207"></a>
+<h2>Key Monitoring and Management Features</h2>
+<p>The Java SE platform includes significant monitoring and
+management features. These features fall into four broad 
+categories.</p>
+<ul>
+<li>
+<p>Instrumentation for the Java Virtual Machine (Java VM).</p>
+</li>
+<li>
+<p>Monitoring and Management application programming interfaces
+(API).</p>
+</li>
+<li>
+<p>Monitoring and Management tools.</p>
+</li>
+<li>
+<p>The Java Management Extensions (JMX) technology.</p>
+</li>
+</ul>
+<p>These categories of monitoring and management features are
+introduced further in the next sections.</p>
+<a name="gdevp" id="gdevp"></a>
+<h3>Java VM Instrumentation</h3>
+<p>The Java VM is instrumented for monitoring and management,
+enabling built-in (or <i>out-of-the-box</i>) management
+capabilities that can be accessed both remotely and locally. For
+more information, see <a href="agent.html">Chapter&nbsp;2,
+Monitoring and Management Using JMX Technology</a> and <a href=
+"snmp.html">Chapter&nbsp;5, SNMP Monitoring and Management</a>.</p>
+<p>The Java VM includes a platform MBean server and platform MBeans
+for use by management applications that conform to the JMX
+specification. These are implementations of the monitoring and
+management API described in the next section. Platform MXBeans and
+MBean servers are introduced in <a href="#gdeug">Platform
+MXBeans</a> and <a href="#gdeuw">Platform MBean Server</a>.</p>
+<p>Example code is provided in the
+<tt><i>JDK_HOME</i>/demo/management</tt> directory, where
+<tt><i>JDK_HOME</i></tt> is the directory in which the Java
+Development Kit (JDK) is installed.</p>
+<a name="gdeue" id="gdeue"></a>
+<h3>Monitoring and Management API</h3>
+<p>The <tt>java.lang.management</tt> package provides the interface
+for monitoring and managing the Java VM. This API provides access
+to the following types of information.</p>
+<ul>
+<li>
+<p>Number of classes loaded and threads running.</p>
+</li>
+<li>
+<p>Java VM uptime, system properties, and VM input arguments.</p>
+</li>
+<li>
+<p>Thread state, thread contention statistics, and stack trace of
+live threads.</p>
+</li>
+<li>
+<p>Memory consumption.</p>
+</li>
+<li>
+<p>Garbage collection statistics.</p>
+</li>
+<li>
+<p>Low memory detection.</p>
+</li>
+<li>
+<p>On-demand deadlock detection.</p>
+</li>
+<li>
+<p>Operating system information.</p>
+</li>
+</ul>
+<p>In addition to the <tt>java.lang.management</tt> API, the
+<tt>java.util.logging.LoggingMXBean</tt> API provides allows you to
+perform monitoring and management of logging.</p>
+<a name="gdeva" id="gdeva"></a>
+<h3>Monitoring and Management Tools</h3>
+<p>The Java SE platform provides a graphical monitoring tool called
+JConsole. JConsole implements the JMX API and enables you to
+monitor the performance of a Java VM and any instrumented
+applications, by providing information to help you optimize
+performance. Introduced in the Java SE platform 5.0, JConsole became
+an officially supported feature of the platform in the Java SE 6.</p>
+<p>Some of the enhancements that have been made to JConsole between
+these two releases of the Java SE platform are as follows.</p>
+<ul>
+<li>
+<p>JConsole Plug-in support, that allows you to build your own
+plug-ins to run with JConsole, for example, to add a custom tab for
+accessing your applications' MBeans.</p>
+</li>
+<li>
+<p>Dynamic attach capability, allowing you to connect JConsole to
+any application that supports the Attach API, that was added to the
+Java SE platform, version 6.</p>
+</li>
+<li>
+<p>Enhanced user interface, that makes data more easily
+accessible.</p>
+</li>
+<li>
+<p>New Overview and VM Summary tabs, for a better presentation of
+general information about your Java VM.</p>
+</li>
+<li>
+<p>The HotSpot Diagnostic MBean, which provides an API to request
+heap dump at runtime and also change the setting of certain VM
+options.</p>
+</li>
+<li>
+<p>Improved presentation of MBeans, to make it easier to access
+your MBeans' operations and attributes.</p>
+</li>
+</ul>
+<p>JConsole is presented in full in <a href=
+"jconsole.html">Chapter&nbsp;3, Using JConsole</a>.</p>
+<p>Other command-line tools are also supplied with the Java SE
+platform. See the <a href="../../tools/index.html#monitor">
+Monitoring Tools</a> section of the JDK Development Tools document
+for more information.</p>
+<a name="gdeus" id="gdeus"></a>
+<h3>Java Management Extensions (JMX) Technology</h3>
+<p>The Java SE platform, version 8<!--6--> includes the JMX specification,
+version 1.4. The JMX API allows you to instrument applications for
+monitoring and management. An RMI connector allows this instrumentation to be remotely accessible, for example by JConsole.</p>
+<p>For more information, see the <a href="../jmx/index.html">JMX technology documentation</a> for the Java SE platform. A very brief introduction to the main components of the JMX API is included in the next sections.</p>
+<a name="gdevc" id="gdevc"></a>
+<h4>What are MBeans?</h4>
+<p>JMX technology MBeans are <i>managed beans</i>, namely Java
+objects that represent resources to be managed. An MBean has a
+<i>management interface</i> consisting of the following.</p>
+<ul>
+<li>
+<p>Named and typed attributes that can be read and written.</p>
+</li>
+<li>
+<p>Named and typed operations that can be invoked.</p>
+</li>
+<li>
+<p>Typed notifications that can be emitted by the MBean.</p>
+</li>
+</ul>
+<p>For example, an MBean representing an application's
+configuration could have attributes representing different
+configuration parameters, such as a cache size. Reading the
+<tt>CacheSize</tt> attribute would return the current size of the
+cache. Writing <tt>CacheSize</tt> would update the size of the
+cache, potentially changing the behavior of the running
+application. An operation such as <tt>save</tt> could store the
+current configuration persistently. The MBean could send a
+notification such as <tt>ConfigurationChangedNotification</tt> when
+the configuration changes.</p>
+<p>MBeans can be standard or dynamic. Standard MBeans are Java
+objects that conform to design patterns derived from the JavaBeans
+component model. Dynamic MBeans define their management interface
+at runtime. More recently, an additional type of MBean called an
+MXBean has also been added to the Java platform.</p>
+<ul>
+<li>
+<p>A <i>standard MBean</i> exposes the resource to be managed
+directly through its attributes and operations. Attributes are
+exposed through "getter" and "setter" methods. Operations are the
+other methods of the class that are available to managers. All
+these methods are defined statically in the MBean interface and are
+visible to a JMX agent through introspection. This is the most
+straightforward way of making a new resource manageable.</p>
+</li>
+<li>
+<p>A <i>dynamic MBean</i> is an MBean that defines its management
+interface at runtime. For example, a configuration MBean could
+determine the names and types of the attributes it exposes by
+parsing an XML file.</p>
+</li>
+<li>
+<p>An <i>MXBean</i> is a <!--new-->type of MBean that provides a simple
+way to code an MBean that only references a predefined set of
+types. In this way, you can be sure that your MBean will be usable
+by any client, including remote clients, without any requirement
+that the client have access to model-specific classes representing
+the types of your MBeans. The platform MBeans introduced below are
+all MXBeans.</p>
+</li>
+</ul>
+<a name="gdevr" id="gdevr"></a>
+<h4>MBean Server</h4>
+<p>To be useful, an MBean must be registered in an MBean server. An
+MBean Server is a repository of MBeans. Each MBean is registered
+with a unique name within the MBean server. Usually the only access
+to the MBeans is through the MBean server. In other words, code
+does not access an MBean directly, but rather accesses the MBean by
+name through the MBean server.</p>
+<p>The Java SE platform includes a built-in platform MBean server.
+For more information, see <a href="mxbeans.html">Chapter&nbsp;4,
+Using the Platform MBean Server and Platform MXBeans</a>.</p>
+<a name="gdevu" id="gdevu"></a>
+<h4>Creating and Registering MBeans</h4>
+<p>There are two ways to create an MBean. One is to construct a
+Java object that will be the MBean, then use the
+<tt>registerMBean</tt> method to register it in the MBean Server.
+The other is to create and register the MBean in a single operation
+using one of the <tt>createMBean</tt> methods.</p>
+<p>The <tt>registerMBean</tt> method is simpler for local use, but
+cannot be used remotely. The <tt>createMBean</tt> method can be
+used remotely, but sometimes requires attention to class loading
+issues. An MBean can perform actions when it is registered in or
+unregistered from an MBean Server if it implements the
+<tt>MBeanRegistration</tt> interface.</p>
+<a name="gdeuy" id="gdeuy"></a>
+<h4>Instrumenting Applications</h4>
+<p>General instructions on how to instrument your applications for
+management by the JMX API is beyond the scope of this document. See
+the documentation for the <a href="../jmx/index.html">Java Management Extensions (JMX) Technology</a> for information.</p>
+<a name="gdeug" id="gdeug"></a>
+<h2>Platform MXBeans</h2>
+<p>A platform MXBean is an MBean for monitoring and managing the
+Java VM and other components of the Java Runtime Environment (JRE).
+Each MXBean encapsulates a part of VM functionality such as the
+class loading system, just-in-time (JIT) compilation system,
+garbage collector, and so on.</p>
+<p><a href="#gdeuk">Table&nbsp;1-1</a> lists all the platform
+MXBeans and the aspect of the VM that they manage. Each platform
+MXBean has a unique <tt>javax.management.ObjectName</tt> for
+registration in the platform MBean server. A Java VM may have zero,
+one, or more than one instance of each MXBean, depending on its
+function, as shown in the table.</p>
+<a name="gdeuk" id="gdeuk"></a>
+<h3>Table&nbsp;1-1 Platform MXBeans</h3>
+<table border="1" summary="Platform MXBeans">
+<col width="25*" />
+<col width="25*" />
+<col width="25*" />
+<col width="25*" />
+<tr>
+<th id="h101">
+Interface
+</th>
+<th id="h102">
+Part of VM Managed
+</th>
+<th id="h103">
+Object Name
+</th>
+<th id="h104">
+Instances per VM
+</th>
+</tr>
+<tr>
+<td headers="h101">
+<p><tt>ClassLoadingMXBean</tt></p>
+</td>
+<td headers="h102">
+<p>Class loading system</p>
+</td>
+<td headers="h103">
+<p><tt>java.lang:type= ClassLoading</tt></p>
+</td>
+<td headers="h104">
+<p>One</p>
+</td>
+</tr>
+<tr>
+<td headers="h101">
+<p><tt>CompilationMXBean</tt></p>
+</td>
+<td headers="h102">
+<p>Compilation system</p>
+</td>
+<td headers="h103">
+<p><tt>java.lang:type= Compilation</tt></p>
+</td>
+<td headers="h104">
+<p>Zero or one</p>
+</td>
+</tr>
+<tr>
+<td headers="h101">
+<p><tt>GarbageCollectorMXBean</tt></p>
+</td>
+<td headers="h102">
+<p>Garbage collector</p>
+</td>
+<td headers="h103">
+<p><tt>java.lang:type= GarbageCollector,
+name=<i>collectorName</i></tt></p>
+</td>
+<td headers="h104">
+<p>One or more</p>
+</td>
+</tr>
+<tr>
+<td headers="h101">
+<p><tt>LoggingMXBean</tt></p>
+</td>
+<td headers="h102">
+<p>Logging system</p>
+</td>
+<td headers="h103">
+<p><tt>java.util.logging:type =Logging</tt></p>
+</td>
+<td headers="h104">
+<p>One</p>
+</td>
+</tr>
+<tr>
+<td headers="h101">
+<p><tt>MemoryManagerMXBean</tt> (sub-interface of
+<tt>GarbageCollectorMXBean</tt>)</p>
+</td>
+<td headers="h102">
+<p>Memory pool</p>
+</td>
+<td headers="h103">
+<p><tt>java.lang: typeMemoryManager,
+name=<i>managerName</i></tt></p>
+</td>
+<td headers="h104">
+<p>One or more</p>
+</td>
+</tr>
+<tr>
+<td headers="h101">
+<p><tt>MemoryPoolMXBean</tt></p>
+</td>
+<td headers="h102">
+<p>Memory</p>
+</td>
+<td headers="h103">
+<p><tt>java.lang: type= MemoryPool, name=<i>poolName</i></tt></p>
+</td>
+<td headers="h104">
+<p>One or more</p>
+</td>
+</tr>
+<tr>
+<td headers="h101">
+<p><tt>MemoryMXBean</tt></p>
+</td>
+<td headers="h102">
+<p>Memory system</p>
+</td>
+<td headers="h103">
+<p><tt>java.lang:type= Memory</tt></p>
+</td>
+<td headers="h104">
+<p>One</p>
+</td>
+</tr>
+<tr>
+<td headers="h101">
+<p><tt>OperatingSystemMXBean</tt></p>
+</td>
+<td headers="h102">
+<p>Underlying operating system</p>
+</td>
+<td headers="h103">
+<p><tt>java.lang:type= OperatingSystem</tt></p>
+</td>
+<td headers="h104">
+<p>One</p>
+</td>
+</tr>
+<tr>
+<td headers="h101">
+<p><tt>RuntimeMXBean</tt></p>
+</td>
+<td headers="h102">
+<p>Runtime system</p>
+</td>
+<td headers="h103">
+<p><tt>java.lang:type= Runtime</tt></p>
+</td>
+<td headers="h104">
+<p>One</p>
+</td>
+</tr>
+<tr>
+<td headers="h101">
+<p><tt>ThreadMXBean</tt></p>
+</td>
+<td headers="h102">
+<p>Thread system</p>
+</td>
+<td headers="h103">
+<p><tt>java.lang:type= Threading</tt></p>
+</td>
+<td headers="h104">
+<p>One</p>
+</td>
+</tr>
+</table>
+<p>See the package description in the API reference for the
+<a href="../../../api/java/lang/management/package-summary.html">
+java.lang.management</a> package for details of the platform
+MXBeans (apart from <tt>LoggingMXBean</tt>). See the API reference
+for <a href="../../../api/java/util/logging/package-summary.html">java.util.logging</a> for details of the <tt>LoggingMXBean</tt>.</p>
+<a name="gdeuw" id="gdeuw"></a>
+<h2>Platform MBean Server</h2>
+<p>The <i>platform MBean Server</i> can be shared by different
+managed components running within the same Java VM. You can access
+the platform MBean Server with the method
+<tt>ManagementFactory.getPlatformMBeanServer()</tt>. The first call
+to this method, creates the platform MBean server and registers the
+platform MXBeans using their unique object names. Subsequently, it
+returns the initially created platform <tt>MBeanServer</tt>
+instance.</p>
+<p>MXBeans that are created and destroyed dynamically (for example,
+memory pools and managers) will automatically be registered and
+unregistered in the platform MBean server. If the system property
+<tt>javax.management.builder.initial</tt> is set, the platform
+MBean server will be created by the specified
+<tt>MBeanServerBuilder</tt>.</p>
+<p>You can use the platform MBean server to register other MBeans
+besides the platform MXBeans. This enables all MBeans to be
+published through the same MBean server and makes network
+publishing and discovery easier.</p>
+</div>
+<!--stopindex-->
+<!-- END CENTRAL COLUMN COMPONENTS --></td>
+</tr>
+<!-- BEGIN SPACER ROW -->
+<tr>
+<td><img src="css/a.gif" width="780" height="1" border="0" alt=
+"spacer img" /></td>
+</tr>
+<!-- END SPACER ROW -->
+<tr>
+<td><!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%"
+summary="">
+<tr valign="bottom">
+<td headers="h201"></td>
+<td headers="h202" style="width: 60%"></td>
+<td headers="h203"><a href="preface.html"><img style="padding-right: 3px" src=
+"graphics/prev.gif" border="0" alt="arrow icon" />Previous</a></td>
+<td headers="h204"><a href="toc.html">Contents</a></td>
+<td headers="h205"></td>
+<td headers="h206"><a href="agent.html">Next<img style="padding-left: 3px" src=
+"graphics/next.gif" border="0" alt="arrow icon" /></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW --></td>
+</tr>
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

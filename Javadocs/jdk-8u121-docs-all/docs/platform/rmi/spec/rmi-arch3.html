@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Remote Method Invocation: 3 - RMI System
+Overview</title>
+</head>
+<body bgcolor="#FFFFFF">
+<a href="#skip" title="Skip navigation bar"></a>
+<table width="100%" summary="">
+<tr>
+<td><a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-arch2.html">PREV</a> | <a href="rmi-arch4.html">NEXT</a></td>
+<td align="right"><i>Java Remote Method Invocation</i></td>
+</tr>
+</table>
+<br />
+<a name="skip" id="skip"></a>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<h2><a name="a5112" id="a5112"><i>3.2</i> Thread Usage in Remote
+Method Invocations</a></h2>
+<a name="a5102" id="a5102"><!-- --></a> A method dispatched by the
+RMI runtime to a remote object implementation may or may not
+execute in a separate thread. The RMI runtime makes no guarantees
+with respect to mapping remote object invocations to threads. Since
+remote method invocation on the same remote object may execute
+concurrently, a remote object implementation needs to make sure its
+implementation is thread-safe.
+<p><br /></p>
+<hr />
+<a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-arch2.html">PREV</a> | <a href="rmi-arch4.html">NEXT</a>
+<hr />
+Copyright 1997, 2010, Oracle and/or its affiliates. All rights
+reserved.
+</body>
+</html>

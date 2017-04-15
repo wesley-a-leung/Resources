@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Remote Method Invocation: 7 - Remote Object
+Activation</title>
+</head>
+<body bgcolor="#FFFFFF">
+<a href="#skip" title="Skip navigation bar"></a>
+<table width="100%" summary="">
+<tr>
+<td><a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-activation.html">PREV</a> | <a href=
+"rmi-activation3.html">NEXT</a></td>
+<td align="right"><i>Java Remote Method Invocation</i></td>
+</tr>
+</table>
+<br />
+<a name="skip" id="skip"></a>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<h2><a name="a5112" id="a5112"><i>7.1</i> Overview</a></h2>
+<a name="a1122" id="a1122"><!-- --></a> Distributed object systems
+are designed to support long-lived persistent objects. Given that
+these systems will be made up of many thousands (perhaps millions)
+of such objects, it would be unreasonable for object
+implementations to become active and remain active, taking up
+valuable system resources, for indefinite periods of time. In
+addition, clients need the ability to store persistent references
+to objects so that communication among objects can be
+re-established after a system crash, since typically a reference to
+a distributed object is valid only while the object is active.
+<p><a name="a993" id="a993"><!-- --></a> Object activation is a
+mechanism for providing persistent references to objects and
+managing the execution of object implementations. In RMI,
+activation allows objects to begin execution on an as-needed basis.
+When an <em>activatable</em> remote object is accessed (via a
+method invocation) if that remote object is not currently
+executing, the system initiates the object's execution inside an
+appropriate JVM.</p>
+<p><br /></p>
+<h3><a name="a1000" id="a1000"><!-- --></a> <i>7.1.1</i>
+Terminology</h3>
+<a name="a1002" id="a1002"><!-- --></a> An <em>active</em> object
+is a remote object that is instantiated and exported in a JVM on
+some system. A <em>passive</em> object is one that is not yet
+instantiated (or exported) in a JVM, but which can be brought into
+an active state. Transforming a passive object into an active
+object is a process known as <em>activation</em>. Activation
+requires that an object be associated with a JVM, which may entail
+loading the class for that object into a JVM and the object
+restoring its persistent state (if any).
+<p><a name="a1198" id="a1198"><!-- --></a> In the RMI system, we
+use <em>lazy activation</em>. Lazy activation defers activating an
+object until a client's first use (i.e., the first method
+invocation).</p>
+<p><br /></p>
+<h3><a name="a1199" id="a1199"><!-- --></a> <i>7.1.2</i> Lazy
+Activation</h3>
+<a name="a2604" id="a2604"><!-- --></a> Lazy activation of remote
+objects is implemented using a <em>faulting remote reference</em>
+(sometimes referred to as a fault block). A faulting remote
+reference to a remote object &#34;faults in&#34; the active
+object&#39;s reference upon the first method invocation to the
+object. Each faulting reference maintains both a persistent handle
+(an activation identifier) and a transient remote reference to the
+target remote object. The remote object&#39;s activation identifier
+contains enough information to engage a third party in activating
+the object. The transient reference is the actual &#34;live&#34;
+reference to the active remote object that can be used to contact
+the executing object.
+<p><a name="a2605" id="a2605"><!-- --></a> In a faulting reference,
+if the live reference to a remote object is <code>null</code>, the
+target object is not known to be active. Upon method invocation,
+the faulting reference (for that object) engages in the activation
+protocol to obtain a &#34;live&#34; reference, which is a remote
+reference (such as a unicast remote reference) for the
+newly-activated object. Once the faulting reference obtains the
+live reference, the faulting reference forwards method invocations
+to the underlying remote reference which, in turn, forwards the
+method invocation to the remote object.</p>
+<p><a name="a1033" id="a1033"><!-- --></a> In more concrete terms,
+a remote object&#39;s stub contains a &#34;faulting&#34; remote
+reference type that contains both:</p>
+<ul>
+<li><a name="a1037" id="a1037"><!-- --></a> an activation
+identifier for a remote object, and</li>
+</ul>
+<ul>
+<li><a name="a1038" id="a1038"><!-- --></a> a &#34;live&#34;
+reference (possibly <code>null</code>) containing the
+&#34;active&#34; remote reference type of the remote object (for
+example, a remote reference type with unicast semantics).</li>
+</ul>
+<hr noshade="noshade" size="1" />
+<b><a name="a5045" id="a5045">Note -</a></b> The RMI system
+preserves &#34;at most once&#34; semantics for remote calls. In
+other words, a call to an <em>activatable</em> or <em>unicast</em>
+remote object is sent at most once. Thus, if a call to a remote
+object fails (indicated by a <code>RemoteException</code> being
+thrown), the client can be guaranteed that the remote method
+executed no more than once (and perhaps not at all).
+<hr noshade="noshade" size="1" />
+<br />
+<hr />
+<a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-activation.html">PREV</a> | <a href=
+"rmi-activation3.html">NEXT</a>
+<hr />
+Copyright 1997, 2010, Oracle and/or its affiliates. All rights
+reserved.
+</body>
+</html>

@@ -1,0 +1,1477 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Deployment Configuration File and Properties</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1044" name="generator"/>
+<meta content="This topic describes system and user properties that can be set to configure the deployment process." name="description"/>
+<meta content="2015-02-16T9:50:5Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Deployment Guide, Release 8u40" name="doctitle"/>
+<meta content="Release 8u40" name="relnum"/>
+<meta content="E50259-02" name="partnum"/>
+<meta content="JSDPG" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Deployment Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="jcp.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="console_trace_log.html">
+                Next</a><hr/>
+<div id="JSDPG802"><a id="CHDEIEHA" name="CHDEIEHA"/>
+<h1><span>21</span> Deployment Configuration File and Properties</h1>
+<a id="JSDPG803" name="JSDPG803"/>
+<p>This topic describes system and user properties that can be set to configure the deployment process.</p>
+<p>The <code dir="ltr">deployment.properties</code> file is used for storing and retrieving deployment configuration properties shown in the Java Control Panel. The properties are also used for customizing runtime behavior for both Java Plug-in and Java Web Start.</p>
+<p>This topic contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#CHDBGGEI">Deployment Configuration File <code dir="ltr">(deployment.properties)</code></a></p>
+</li>
+<li>
+<p><a href="#A1152834">Deployment Configuration Properties</a></p>
+</li>
+</ul>
+<a id="CHDBGGEI" name="CHDBGGEI"/>
+<div id="JSDPG804">
+<h2><span>21.1</span> Deployment Configuration File <code dir="ltr">(deployment.properties)</code></h2>
+<p>A user-level <code dir="ltr">deployment.properties</code> file always exists. Its location, which is non-configurable, is described in <a href="#CHDEGICA">User Level</a>. There can also be an optional system-level <code dir="ltr">deployment.properties</code> file. If it exists, its location is determined by a System Administrator through the <code dir="ltr">deployment.config</code> file, described in <a href="#CHDDDEHJ">System Level</a>.</p>
+<a id="CHDEGICA" name="CHDEGICA"/>
+<div id="JSDPG805">
+<h3><span>21.1.1</span> User Level</h3>
+<p>The following table shows the location of the user-level <code dir="ltr">deployment.properties</code> file.</p>
+<div id="JSDPG806"><a id="sthref363" name="sthref363"/><a id="sthref364" name="sthref364"/>
+<p>Table 21-1 Location of the User-Level Deployment Configuration File</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="User-Level deployment.properties file location" title="Location of the User-Level Deployment Configuration File" width="100%">
+<col width="24%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t2" valign="bottom">Operating System</th>
+<th align="left" id="r1c2-t2" valign="bottom">Location</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r2c1-t2">
+<p>Windows</p>
+</td>
+<td align="left" headers="r2c1-t2 r1c2-t2">
+<p><code dir="ltr">&lt;User Application Data Folder&gt;\LocalLow\Sun\Java\Deployment\deployment.properties</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r3c1-t2">
+<p>Solaris, Linux</p>
+</td>
+<td align="left" headers="r3c1-t2 r1c2-t2">
+<p><code dir="ltr">${user.home}/.java/deployment/deployment.properties</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r4c1-t2">
+<p>OS X</p>
+</td>
+<td align="left" headers="r4c1-t2 r1c2-t2">
+<p><code dir="ltr">~/Library/Application Support/Oracle/Java/Deployment/deployment.properties</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p>On Windows, <code dir="ltr">&lt;User Application Data Folder&gt;</code> is typically <code dir="ltr">C:\Users\</code><span>username</span>. On Solaris and Linux, <code dir="ltr">${user.home}</code> is typically <code dir="ltr">/home/</code><span>username</span>. On OS X, the tilde (~) represents the home directory, which is typically <code dir="ltr">/Users/</code><span>username</span>.</p>
+<p>The following locations provide examples for each operating system:</p>
+<ul>
+<li>
+<p>For user <code dir="ltr">jsmith</code> running on Windows 7, the <code dir="ltr">deployment.properties</code> file would be located in the following directory:</p>
+<p><code dir="ltr">C:\Users\jsmith\AppData\LocalLow\Sun\Java\Deployment\deployment.properties</code></p>
+</li>
+<li>
+<p>For user <code dir="ltr">bjones</code> running on Solaris or Linux, the <code dir="ltr">deployment.properties</code> file would be located in the following directory:</p>
+<p><code dir="ltr">/home/bjones/.java/deployment/deployment.properties</code></p>
+</li>
+<li>
+<p>For user <code dir="ltr">jdoe</code> running on OS X, the <code dir="ltr">deployment.properties</code> file would be located in the following directory:</p>
+<p><code dir="ltr">/Users/jdoe/Library/Application Support/Oracle/Java/Deployment/deployment.properties</code></p>
+</li>
+</ul>
+</div>
+
+<a id="CHDDDEHJ" name="CHDDDEHJ"/>
+<div id="JSDPG807">
+<h3><span>21.1.2</span> System Level</h3>
+<p>The <code dir="ltr">deployment.config</code> file is used for specifying the system-level <code dir="ltr">deployment.properties</code> in the infrastructure. By default no <code dir="ltr">deployment.config</code> file exists, so no system-wide <code dir="ltr">deployment.properties</code> file exists. If the <code dir="ltr">deployment.config</code> file exists, it is located in one of the directories shown in the following table.</p>
+<div id="JSDPG808"><a id="sthref365" name="sthref365"/><a id="sthref366" name="sthref366"/>
+<p>Table 21-2 Location of the System-Level Deployment Configuration File</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="Location of deployment.config file" title="Location of the System-Level Deployment Configuration File" width="100%">
+<col width="22%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t3" valign="bottom"><b>Operating System</b></th>
+<th align="left" id="r1c2-t3" valign="bottom"><b>Location</b></th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r2c1-t3">
+<p>Windows</p>
+</td>
+<td align="left" headers="r2c1-t3 r1c2-t3">
+<ul>
+<li>
+<p><code dir="ltr">&lt;Windows Directory&gt;\Sun\Java\Deployment\deployment.config</code></p>
+</li>
+<li>
+<p><code dir="ltr">${deployment.java.home}\lib\deployment.config</code></p>
+</li>
+</ul>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r3c1-t3">
+<p>Solaris, Linux</p>
+</td>
+<td align="left" headers="r3c1-t3 r1c2-t3">
+<ul>
+<li>
+<p><code dir="ltr">/etc/.java/deployment/deployment.config</code></p>
+</li>
+<li>
+<p><code dir="ltr">${deployment.java.home}/lib/deployment.config</code></p>
+</li>
+</ul>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r4c1-t3">
+<p>OS X</p>
+</td>
+<td align="left" headers="r4c1-t3 r1c2-t3">
+<ul>
+<li>
+<p><code dir="ltr">/Library/Application Support/Oracle/Java/Deployment/deployment.config</code></p>
+</li>
+<li>
+<p><code dir="ltr">${deployment.java.home}/lib/deploy/deployment.config</code></p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p><code dir="ltr">${deployment.java.home}</code> is the location of the JRE from which the deployment products are run. Deployment products include Java Web Start, Java Plug-in, Java Control Panel, and others.</p>
+<p>The <code dir="ltr">deployment.config</code> file contains two properties: <code dir="ltr">deployment.system.config</code> and <code dir="ltr">deployment.system.config.mandatory</code>.</p>
+<p>The <code dir="ltr">deployment.system.config</code> property is the URL to the system (enterprise-wide) <code dir="ltr">deployment.properties</code> file. This property can be used by system administrators to centrally administer or "lock-down" user-specific configuration settings. For local files, use the <code dir="ltr">file</code> protocol in the URL, for example, <code dir="ltr">file:///C:/Windows/Sun/Java/Deployment/deployment.properties</code>.</p>
+<p>The <code dir="ltr">deployment.system.config.mandatory</code> property is a boolean. If set to <code dir="ltr">true</code>, the <code dir="ltr">deployment.properties</code> file that is pointed to by the <code dir="ltr">deployment.system.config</code> property must be found and successfully loaded, otherwise, nothing is allowed to run. If the property is set to <code dir="ltr">false</code>, an attempt is made to find and load the deployment. properties file that is pointed to by the <code dir="ltr">deployment.system.config</code> property. If successful, the file is used, otherwise, the file is ignored. The default for the <code dir="ltr">deployment.system.config.mandatory</code> property is <code dir="ltr">false</code>.</p>
+</div>
+</div>
+
+<a id="A1152834" name="A1152834"/>
+<div id="JSDPG809">
+<h2><span>21.2</span> Deployment Configuration Properties</h2>
+<p>The following tables describe the properties that can be set in the <code dir="ltr">deployment.properties</code> file.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+Any system deployment property, for example <code dir="ltr">SomeKey=SomeValue</code>, can be locked by including another key, <code dir="ltr">SomeKey.locked</code>. The key <code dir="ltr">SomeKey.locked</code> does not require a value, when the key is present, the property <code dir="ltr">SomeKey=SomeValue</code> is locked so that the user cannot change it. If a system deployment property is not locked, then a user is allowed to change it.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<div id="JSDPG810"><a id="sthref367" name="sthref367"/>
+<h3><span>21.2.1</span> Infrastructure</h3>
+<div id="JSDPG811"><a id="sthref368" name="sthref368"/><a id="sthref369" name="sthref369"/>
+<p>Table 21-3 Configuration Properties Related to Infrastructure</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="Description of the configuration properties related to infrastructure." title="Configuration Properties Related to Infrastructure" width="100%">
+<col width="28%"/>
+<col width="12%"/>
+<col width="*"/>
+<col width="27%"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t5" valign="bottom">Property Key</th>
+<th align="left" id="r1c2-t5" valign="bottom">Type</th>
+<th align="left" id="r1c3-t5" valign="bottom">Default Value</th>
+<th align="left" id="r1c4-t5" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r2c1-t5">
+<p>deployment.user.cachedir</p>
+</td>
+<td align="left" headers="r2c1-t5 r1c2-t5">
+<p>String</p>
+</td>
+<td align="left" headers="r2c1-t5 r1c3-t5">
+<p><code dir="ltr">$USER_HOME</code> + File.separator + <code dir="ltr">cache</code></p>
+</td>
+<td align="left" headers="r2c1-t5 r1c4-t5">
+<p>User-level cache directory.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r3c1-t5">
+<p>deployment.system.cachedir</p>
+</td>
+<td align="left" headers="r3c1-t5 r1c2-t5">
+<p>String</p>
+</td>
+<td align="left" headers="r3c1-t5 r1c3-t5">
+<p>null</p>
+</td>
+<td align="left" headers="r3c1-t5 r1c4-t5">
+<p>System-level cache directory.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r4c1-t5">
+<p>deployment.user.logdir</p>
+</td>
+<td align="left" headers="r4c1-t5 r1c2-t5">
+<p>String</p>
+</td>
+<td align="left" headers="r4c1-t5 r1c3-t5">
+<p><code dir="ltr">$USER_HOME</code> + File.separator + <code dir="ltr">log</code></p>
+</td>
+<td align="left" headers="r4c1-t5 r1c4-t5">
+<p>User-level log directory.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+
+<div id="JSDPG812"><a id="sthref370" name="sthref370"/>
+<h3><span>21.2.2</span> Certificate stores and policy files</h3>
+<div id="JSDPG813"><a id="sthref371" name="sthref371"/><a id="sthref372" name="sthref372"/>
+<p>Table 21-4 Configuration Properties Related to Certificate Stores and Policy Files</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="Describes the deployment configuration properties that are related to certificate stores and policy files" title="Configuration Properties Related to Certificate Stores and Policy Files" width="100%">
+<col width="*"/>
+<col width="9%"/>
+<col width="23%"/>
+<col width="23%"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t6" valign="bottom">Property Key</th>
+<th align="left" id="r1c2-t6" valign="bottom">Type</th>
+<th align="left" id="r1c3-t6" valign="bottom">Default Value</th>
+<th align="left" id="r1c4-t6" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t6" id="r2c1-t6">
+<p>deployment.user.security.trusted.cacerts</p>
+</td>
+<td align="left" headers="r2c1-t6 r1c2-t6">
+<p>String</p>
+</td>
+<td align="left" headers="r2c1-t6 r1c3-t6">
+<p><code dir="ltr">$USER_HOME</code> + File.separator + <code dir="ltr">security</code> + File.separator + <code dir="ltr">trusted.cacerts</code>;</p>
+</td>
+<td align="left" headers="r2c1-t6 r1c4-t6">
+<p>User-level Root CA certificate store.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t6" id="r3c1-t6">
+<p>deployment.user.security.trusted.jssecacerts</p>
+</td>
+<td align="left" headers="r3c1-t6 r1c2-t6">
+<p>String</p>
+</td>
+<td align="left" headers="r3c1-t6 r1c3-t6">
+<p><code dir="ltr">$USER_HOME</code> + File.separator + <code dir="ltr">security</code> + File.separator + <code dir="ltr">trusted.jssecacerts</code></p>
+</td>
+<td align="left" headers="r3c1-t6 r1c4-t6">
+<p>User-level JSSE CA certificate store.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t6" id="r4c1-t6">
+<p>deployment.user.security.trusted.certs</p>
+</td>
+<td align="left" headers="r4c1-t6 r1c2-t6">
+<p>String</p>
+</td>
+<td align="left" headers="r4c1-t6 r1c3-t6">
+<p><code dir="ltr">$USER_HOME</code> + File.separator + <code dir="ltr">security</code> + File.separator + <code dir="ltr">trusted.certs</code></p>
+</td>
+<td align="left" headers="r4c1-t6 r1c4-t6">
+<p>User-level Trusted signer certificate store.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t6" id="r5c1-t6">
+<p>deployment.user.security.trusted.jssecerts</p>
+</td>
+<td align="left" headers="r5c1-t6 r1c2-t6">
+<p>String</p>
+</td>
+<td align="left" headers="r5c1-t6 r1c3-t6">
+<p><code dir="ltr">$USER_HOME</code> + File.separator + <code dir="ltr">security</code> + File.separator + <code dir="ltr">trusted.jssecerts;</code></p>
+</td>
+<td align="left" headers="r5c1-t6 r1c4-t6">
+<p>User-level Trusted JSSE certificate store.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t6" id="r6c1-t6">
+<p>deployment.user.security.trusted.clientauthcerts</p>
+</td>
+<td align="left" headers="r6c1-t6 r1c2-t6">
+<p>String</p>
+</td>
+<td align="left" headers="r6c1-t6 r1c3-t6">
+<p><code dir="ltr">$USER_HOME</code> + File.separator + <code dir="ltr">security</code> + File.separator + <code dir="ltr">trusted.clientcerts</code></p>
+</td>
+<td align="left" headers="r6c1-t6 r1c4-t6">
+<p>User-level Client Authentication certificate store.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t6" id="r7c1-t6">
+<p>deployment.user.security.exception.sites</p>
+</td>
+<td align="left" headers="r7c1-t6 r1c2-t6">
+<p>String</p>
+</td>
+<td align="left" headers="r7c1-t6 r1c3-t6">
+<p><code dir="ltr">$USER_HOME</code> + File.separator + <code dir="ltr">security</code> + File.separator + <code dir="ltr">exception.sites</code></p>
+</td>
+<td align="left" headers="r7c1-t6 r1c4-t6">
+<p>Location of the exception site list. See <a href="exception_site_list.html#CIHIHJJE">Chapter 29, "Exception Site List"</a> for information.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t6" id="r8c1-t6">
+<p>deployment.system.security.policy</p>
+</td>
+<td align="left" headers="r8c1-t6 r1c2-t6">
+<p>String</p>
+</td>
+<td align="left" headers="r8c1-t6 r1c3-t6">
+<p>null</p>
+</td>
+<td align="left" headers="r8c1-t6 r1c4-t6">
+<p>System-level security policy file. The protocol of URL is either file, HTTP, or HTTPS.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t6" id="r9c1-t6">
+<p>deployment.system.security.cacerts</p>
+</td>
+<td align="left" headers="r9c1-t6 r1c2-t6">
+<p>String</p>
+</td>
+<td align="left" headers="r9c1-t6 r1c3-t6">
+<p><code dir="ltr">$JAVA_HOME</code> + File.separator + <code dir="ltr">lib</code> + File.separator + <code dir="ltr">security</code> + File.separator + <code dir="ltr">cacerts</code></p>
+</td>
+<td align="left" headers="r9c1-t6 r1c4-t6">
+<p>System-level Root CA certificate store.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t6" id="r10c1-t6">
+<p>deployment.system.security.jssecacerts</p>
+</td>
+<td align="left" headers="r10c1-t6 r1c2-t6">
+<p>String</p>
+</td>
+<td align="left" headers="r10c1-t6 r1c3-t6">
+<p><code dir="ltr">$JAVA_HOME</code> + File.separator + <code dir="ltr">lib</code> + File.separator + <code dir="ltr">security</code> + File.separator + <code dir="ltr">jssecacerts;</code></p>
+</td>
+<td align="left" headers="r10c1-t6 r1c4-t6">
+<p>System-level JSSE CA certificate store.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t6" id="r11c1-t6">
+<p>deployment.system.security.trusted.certs</p>
+</td>
+<td align="left" headers="r11c1-t6 r1c2-t6">
+<p>String</p>
+</td>
+<td align="left" headers="r11c1-t6 r1c3-t6">
+<p><code dir="ltr">$SYSTEM_HOME</code> + File.separator + <code dir="ltr">security</code> + File.separator + <code dir="ltr">trusted.certs</code></p>
+</td>
+<td align="left" headers="r11c1-t6 r1c4-t6">
+<p>System-level Signer certificate store.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t6" id="r12c1-t6">
+<p>deployment.system.security.trusted.jssecerts</p>
+</td>
+<td align="left" headers="r12c1-t6 r1c2-t6">
+<p>String</p>
+</td>
+<td align="left" headers="r12c1-t6 r1c3-t6">
+<p><code dir="ltr">$SYSTEM_HOME</code> + File.separator + <code dir="ltr">security</code> + File.separator + <code dir="ltr">trusted.jssecerts</code></p>
+</td>
+<td align="left" headers="r12c1-t6 r1c4-t6">
+<p>System-level JSSE certificate store.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t6" id="r13c1-t6">
+<p>deployment.system.security.trusted.clientauthcerts</p>
+</td>
+<td align="left" headers="r13c1-t6 r1c2-t6">
+<p>String</p>
+</td>
+<td align="left" headers="r13c1-t6 r1c3-t6">
+<p><code dir="ltr">$SYSTEM_HOME</code> + File.separator + <code dir="ltr">security</code> + File.separator + <code dir="ltr">trusted.clientcerts</code></p>
+</td>
+<td align="left" headers="r13c1-t6 r1c4-t6">
+<p>System-level Client Authentication certificate store.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+
+<div id="JSDPG814"><a id="sthref373" name="sthref373"/>
+<h3><span>21.2.3</span> Security Access And Control Settings</h3>
+<div id="JSDPG815"><a id="sthref374" name="sthref374"/><a id="sthref375" name="sthref375"/>
+<p>Table 21-5 Configuration Properties Related to Security Access and Control</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="Describes the configuration properties related to security access and control" title="Configuration Properties Related to Security Access and Control" width="100%">
+<col width="*"/>
+<col width="8%"/>
+<col width="15%"/>
+<col width="32%"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t7" valign="bottom">Property Key</th>
+<th align="left" id="r1c2-t7" valign="bottom">Type</th>
+<th align="left" id="r1c3-t7" valign="bottom">Default Value</th>
+<th align="left" id="r1c4-t7" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r2c1-t7">
+<p>deployment.security.level</p>
+</td>
+<td align="left" headers="r2c1-t7 r1c2-t7">
+<p>String</p>
+</td>
+<td align="left" headers="r2c1-t7 r1c3-t7">
+<p><code dir="ltr">HIGH</code></p>
+</td>
+<td align="left" headers="r2c1-t7 r1c4-t7">
+<p>Security level setting. The following values are valid:</p>
+<ul>
+<li>
+<p><code dir="ltr">HIGH</code>: Applications that are signed with a valid certificate and include the Permissions attribute in the manifest for the main JAR file are allowed to run with security prompts. Applications are also allowed to run with security prompts when the revocation status of the certificate cannot be checked. All other applications are blocked.</p>
+</li>
+<li>
+<p><code dir="ltr">VERY_HIGH</code>: Applications that are signed with a valid certificate and include the Permissions attribute in the manifest for the main JAR file are allowed to run with security prompts. All other applications are blocked.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r3c1-t7">
+<p>deployment.webjava.enabled</p>
+</td>
+<td align="left" headers="r3c1-t7 r1c2-t7">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r3c1-t7 r1c3-t7">
+<p><code dir="ltr">true</code></p>
+</td>
+<td align="left" headers="r3c1-t7 r1c4-t7">
+<p>Set to <code dir="ltr">true</code> to run applets or Java Web Start (JWS) applications. Set to <code dir="ltr">false</code> to block applets and JWS applications from running.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r4c1-t7">
+<p>deployment.insecure.jres</p>
+</td>
+<td align="left" headers="r4c1-t7 r1c2-t7">
+<p>String</p>
+</td>
+<td align="left" headers="r4c1-t7 r1c3-t7">
+<p><code dir="ltr">PROMPT</code></p>
+</td>
+<td align="left" headers="r4c1-t7 r1c4-t7">
+<p>Setting for insecure JRE prompt. The following values are valid:</p>
+<ul>
+<li>
+<p><code dir="ltr">NEVER</code>: Untrusted content always runs with the default JRE.</p>
+</li>
+<li>
+<p><code dir="ltr">PROMPT</code>: Users are prompted before using insecure JRE versions, and are shown warning dialogs</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r5c1-t7">
+<p>deployment.expiration.check.enabled</p>
+</td>
+<td align="left" headers="r5c1-t7 r1c2-t7">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r5c1-t7 r1c3-t7">
+<p><code dir="ltr">true</code></p>
+</td>
+<td align="left" headers="r5c1-t7 r1c4-t7">
+<p>Set to <code dir="ltr">true</code> to prompt users to update the JRE when an out-of-date JRE is found on their system. Set to <code dir="ltr">false</code> to suppress the prompt.</p>
+<p><b>Note:</b> To ensure that the expiration check is disabled, use the <code dir="ltr">-userConfig deployment.expiration.check.enabled false</code> option with the <code dir="ltr">javaws</code> command. If this property is changed in the <code dir="ltr">deployment.properties</code> file, open the Java Control Panel before starting an application to ensure that the native cache is synchronized with the file. Otherwise, the change might be ignored the first time an application is started.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r6c1-t7">
+<p>deployment.security.askgrantdialog.show</p>
+</td>
+<td align="left" headers="r6c1-t7 r1c2-t7">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r6c1-t7 r1c3-t7">
+<p><code dir="ltr">true</code></p>
+</td>
+<td align="left" headers="r6c1-t7 r1c4-t7">
+<p>Set to <code dir="ltr">true</code> to allow users to grant permissions to applets and JWS applications. Set to <code dir="ltr">false</code> to block users from granting permissions.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r7c1-t7">
+<p>deployment.security.askgrantdialog.notinca</p>
+</td>
+<td align="left" headers="r7c1-t7 r1c2-t7">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r7c1-t7 r1c3-t7">
+<p><code dir="ltr">true</code></p>
+</td>
+<td align="left" headers="r7c1-t7 r1c4-t7">
+<p>Set to <code dir="ltr">true</code> to allow users to grant permissions to certificates that are not issued by a CA in the Root/JSSE CA certificate store. Set to <code dir="ltr">false</code> to block users from granting permissions.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r8c1-t7">
+<p>deployment.security.jsse.hostmismatch.warning</p>
+</td>
+<td align="left" headers="r8c1-t7 r1c2-t7">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r8c1-t7 r1c3-t7">
+<p><code dir="ltr">true</code></p>
+</td>
+<td align="left" headers="r8c1-t7 r1c4-t7">
+<p>Set to <code dir="ltr">true</code> to enable JSSE HTTPS certificate verification to show host-mismatch warnings. Set to <code dir="ltr">false</code> to suppress the warnings.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r9c1-t7">
+<p>deployment.security.trusted.policy</p>
+</td>
+<td align="left" headers="r9c1-t7 r1c2-t7">
+<p>String</p>
+</td>
+<td align="left" headers="r9c1-t7 r1c3-t7">
+<p>""</p>
+</td>
+<td align="left" headers="r9c1-t7 r1c4-t7">
+<p>Policy file that contains the ceiling policy of permissions granted to trusted applications and applets. The default is all permissions. Use this property to configure a lesser set of permissions.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r10c1-t7">
+<p>deployment.security.mixcode</p>
+</td>
+<td align="left" headers="r10c1-t7 r1c2-t7">
+<p>String</p>
+</td>
+<td align="left" headers="r10c1-t7 r1c3-t7">
+<p><code dir="ltr">ENABLE</code></p>
+</td>
+<td align="left" headers="r10c1-t7 r1c4-t7">
+<p>Setting for mixed mode. The following values are valid:</p>
+<ul>
+<li>
+<p><code dir="ltr">ENABLE</code>: Enables the software to test for mixing trusted and untrusted code and, when potentially unsafe components are detected, raises a warning dialog.</p>
+</li>
+<li>
+<p><code dir="ltr">HIDE_RUN</code>: Suppresses the warning dialog and, if potentially unsafe components are detected, behaves as if the user had clicked <b>Run</b> in the warning dialog - the applet or application continues running with some added protections.</p>
+</li>
+<li>
+<p><code dir="ltr">HIDE_CANCEL</code>: Suppresses the warning dialog and behaves as if the user had clicked <b>Cancel</b> in the warning dialog - potentially unsafe components are blocked from running and the program may terminate.</p>
+</li>
+<li>
+<p><code dir="ltr">DISABLE</code> (not recommended): Disables the software from checking for mixing trusted and untrusted code, leaving the user to run potentially unsafe code with no warning and without the additional protections.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r11c1-t7">
+<p>deployment.security.sandbox.awtwarningwindow</p>
+</td>
+<td align="left" headers="r11c1-t7 r1c2-t7">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r11c1-t7 r1c3-t7">
+<p><code dir="ltr">true</code></p>
+</td>
+<td align="left" headers="r11c1-t7 r1c4-t7">
+<p><code dir="ltr">true</code> if the sandbox has awtShowWindowWithoutWarning.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r12c1-t7">
+<p>deployment.security.sandbox.jnlp.enhanced</p>
+</td>
+<td align="left" headers="r12c1-t7 r1c2-t7">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r12c1-t7 r1c3-t7">
+<p><code dir="ltr">true</code></p>
+</td>
+<td align="left" headers="r12c1-t7 r1c4-t7">
+<p>Set to <code dir="ltr">true</code> to prompt the user to accept the JNLP API security dialogs.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r13c1-t7">
+<p>deployment.security.sandbox.selfsigned</p>
+</td>
+<td align="left" headers="r13c1-t7 r1c2-t7">
+<p>String</p>
+</td>
+<td align="left" headers="r13c1-t7 r1c3-t7">
+<p><code dir="ltr">PROMPT</code></p>
+</td>
+<td align="left" headers="r13c1-t7 r1c4-t7">
+<p>Setting for the prompt to run self-signed code in the sandbox. The following values are valid:</p>
+<ul>
+<li>
+<p><code dir="ltr">PROMPT</code>: Prompt user to allow the self-signed app to run in the sandbox.</p>
+</li>
+<li>
+<p><code dir="ltr">NEVER</code>: Block all self-signed content.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r14c1-t7">
+<p>deployment.security.sandbox.casigned</p>
+</td>
+<td align="left" headers="r14c1-t7 r1c2-t7">
+<p>String</p>
+</td>
+<td align="left" headers="r14c1-t7 r1c3-t7">
+<p><code dir="ltr">PROMPT</code></p>
+</td>
+<td align="left" headers="r14c1-t7 r1c4-t7">
+<p>Setting to enable users to turn off future prompts for a signed app running in the sandbox. The following values are valid:</p>
+<ul>
+<li>
+<p><code dir="ltr">PROMPT</code>: Prompt user to allow the app to run and provide information on the certificate used to sign the app. The user can choose to turn off future prompting for this application.</p>
+</li>
+<li>
+<p><code dir="ltr">NEVER</code>: Block any content from running unless it asks for and is granted all permissions.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r15c1-t7">
+<p>deployment.security.blacklist.check</p>
+</td>
+<td align="left" headers="r15c1-t7 r1c2-t7">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r15c1-t7 r1c3-t7">
+<p><code dir="ltr">true</code></p>
+</td>
+<td align="left" headers="r15c1-t7 r1c4-t7">
+<p>Support for blacklisting signed JAR files that contain serious security vulnerabilities. This property is used to toggle this behavior. For more information see <a href="../security/blacklistfeature.html">Blacklist Feature</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r16c1-t7">
+<p>deployment.security.revocation.check</p>
+</td>
+<td align="left" headers="r16c1-t7 r1c2-t7">
+<p>String</p>
+</td>
+<td align="left" headers="r16c1-t7 r1c3-t7">
+<p><code dir="ltr">ALL_CERTIFICATES</code></p>
+</td>
+<td align="left" headers="r16c1-t7 r1c4-t7">
+<p>Setting for revocation checks. The following values are valid:</p>
+<ul>
+<li>
+<p><code dir="ltr">PUBLISHER_ONLY</code>: Checks only the certificate that the publisher used to sign the application.</p>
+</li>
+<li>
+<p><code dir="ltr">ALL_CERTIFICATES</code>: Checks all certificates in the certificate chain.</p>
+</li>
+<li>
+<p><code dir="ltr">NO_CHECK</code> (not recommended): Suppresses the check for certificates that have been revoked.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r17c1-t7">
+<p>deployment.security.validation.ocsp</p>
+</td>
+<td align="left" headers="r17c1-t7 r1c2-t7">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r17c1-t7 r1c3-t7">
+<p><code dir="ltr">true</code></p>
+</td>
+<td align="left" headers="r17c1-t7 r1c4-t7">
+<p>Specifies whether Online Certificate Status Protocol is enabled.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r18c1-t7">
+<p>deployment.security.validation.ocsp.url</p>
+</td>
+<td align="left" headers="r18c1-t7 r1c2-t7">
+<p>String</p>
+</td>
+<td align="left" headers="r18c1-t7 r1c3-t7">
+<p>null</p>
+</td>
+<td align="left" headers="r18c1-t7 r1c4-t7">
+<p>Specifies a URL string pointing to an OCSP response server.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r19c1-t7">
+<p>deployment.security.validation.ocsp.signer</p>
+</td>
+<td align="left" headers="r19c1-t7 r1c2-t7">
+<p>String</p>
+</td>
+<td align="left" headers="r19c1-t7 r1c3-t7">
+<p>null</p>
+</td>
+<td align="left" headers="r19c1-t7 r1c4-t7">
+<p>Points to a OCSP response signer certificate subject name.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r20c1-t7">
+<p>deployment.security.validation.crl</p>
+</td>
+<td align="left" headers="r20c1-t7 r1c2-t7">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r20c1-t7 r1c3-t7">
+<p><code dir="ltr">true</code></p>
+</td>
+<td align="left" headers="r20c1-t7 r1c4-t7">
+<p>Specifies whether to use certificate revocation list.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r21c1-t7">
+<p>deployment.security.validation.crl.url</p>
+</td>
+<td align="left" headers="r21c1-t7 r1c2-t7">
+<p>String</p>
+</td>
+<td align="left" headers="r21c1-t7 r1c3-t7">
+<p>null</p>
+</td>
+<td align="left" headers="r21c1-t7 r1c4-t7">
+<p>Specifies a URL in the Certificate Revocation List to perform a certificate validation.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r22c1-t7">
+<p>deployment.security.validation.clockskew</p>
+</td>
+<td align="left" headers="r22c1-t7 r1c2-t7">
+<p>int</p>
+</td>
+<td align="left" headers="r22c1-t7 r1c3-t7">
+<p>900</p>
+</td>
+<td align="left" headers="r22c1-t7 r1c4-t7">
+<p>Acceptable time difference, in seconds, between the system clock and the clock on the server used for revocation checks. If the property is not set, or the value is negative, the default of 900 seconds (15 minutes) is used.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r23c1-t7">
+<p>deployment.security.validation.timeout</p>
+</td>
+<td align="left" headers="r23c1-t7 r1c2-t7">
+<p>int</p>
+</td>
+<td align="left" headers="r23c1-t7 r1c3-t7">
+<p>15</p>
+</td>
+<td align="left" headers="r23c1-t7 r1c4-t7">
+<p>Maximum time, in seconds, that the system attempts to connect to the server for revocation checks before timing out. If the property is not set, or the value is negative, the default of 15 seconds is used. To never time out, set the property to 0.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r24c1-t7">
+<p>deployment.security.authenticator</p>
+</td>
+<td align="left" headers="r24c1-t7 r1c2-t7">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r24c1-t7 r1c3-t7">
+<p><code dir="ltr">true</code></p>
+</td>
+<td align="left" headers="r24c1-t7 r1c4-t7">
+<p>Normally Plug-in and Web Start install an Authenticator to handle communication with Authenticating web pages or Authenticating proxies. This is the default behavior (true). This option can be used to turn the normal behavior off if, for example, an application communicates directly with an authenticating web page and needs to install its own Authenticator.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+
+<div id="JSDPG816"><a id="sthref376" name="sthref376"/>
+<h3><span>21.2.4</span> Networking</h3>
+<div id="JSDPG817"><a id="sthref377" name="sthref377"/><a id="sthref378" name="sthref378"/>
+<p>Table 21-6 Configuration Properties Related to Networking</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="Describes the deployment properties for configuring networking." title="Configuration Properties Related to Networking" width="100%">
+<col width="32%"/>
+<col width="12%"/>
+<col width="18%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t8" valign="bottom">Property Key</th>
+<th align="left" id="r1c2-t8" valign="bottom">Type</th>
+<th align="left" id="r1c3-t8" valign="bottom">Default Value</th>
+<th align="left" id="r1c4-t8" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r2c1-t8">
+<p>deployment.proxy.type</p>
+</td>
+<td align="left" headers="r2c1-t8 r1c2-t8">
+<p>int</p>
+</td>
+<td align="left" headers="r2c1-t8 r1c3-t8">
+<p>3 for <code dir="ltr">PROX_TYPE_BROWSER</code></p>
+</td>
+<td align="left" headers="r2c1-t8 r1c4-t8">
+<p>Type of proxy that should be used. The following values are valid:</p>
+<ul>
+<li>
+<p><code dir="ltr">PROX_TYPE_UNKNOWN</code> = -1;</p>
+</li>
+<li>
+<p><code dir="ltr">PROX_TYPE_NONE</code> = 0;</p>
+</li>
+<li>
+<p><code dir="ltr">PROX_TYPE_MANUAL</code> = 1;</p>
+</li>
+<li>
+<p><code dir="ltr">PROX_TYPE_AUTO</code> = 2;</p>
+</li>
+<li>
+<p><code dir="ltr">PROX_TYPE_BROWSER</code> = 3;</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r3c1-t8">
+<p>deployment.proxy.same</p>
+</td>
+<td align="left" headers="r3c1-t8 r1c2-t8">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r3c1-t8 r1c3-t8">
+<p><code dir="ltr">false</code></p>
+</td>
+<td align="left" headers="r3c1-t8 r1c4-t8">
+<p>Set to <code dir="ltr">true</code> to use the same web server and port for https and ftp as is configured for http. This is only valid if deployment.proxy.type = PROX_TYPE_MANUAL.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r4c1-t8">
+<p>deployment.proxy.auto.config.url</p>
+</td>
+<td align="left" headers="r4c1-t8 r1c2-t8">
+<p>String</p>
+</td>
+<td align="left" headers="r4c1-t8 r1c3-t8">
+<p>(no default)</p>
+</td>
+<td align="left" headers="r4c1-t8 r1c4-t8">
+<p>URL for auto-Auto proxy configuration JavaScript.proxy configuration JavaScript.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r5c1-t8">
+<p>deployment.proxy.bypass.list</p>
+</td>
+<td align="left" headers="r5c1-t8 r1c2-t8">
+<p>String</p>
+</td>
+<td align="left" headers="r5c1-t8 r1c3-t8">
+<p>(no default)</p>
+</td>
+<td align="left" headers="r5c1-t8 r1c4-t8">
+<p>List of host names that should bypass the proxy. Each host name is delimited by a comma in the property, for example, <code dir="ltr">192.168.1.100,localhost,example.com</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r6c1-t8">
+<p>deployment.proxy.bypass.local</p>
+</td>
+<td align="left" headers="r6c1-t8 r1c2-t8">
+<p>String</p>
+</td>
+<td align="left" headers="r6c1-t8 r1c3-t8">
+<p>(no default)</p>
+</td>
+<td align="left" headers="r6c1-t8 r1c4-t8">
+<p>All local hosts should be bypassed.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r7c1-t8">
+<p>deployment.proxy.http.host</p>
+</td>
+<td align="left" headers="r7c1-t8 r1c2-t8">
+<p>String</p>
+</td>
+<td align="left" headers="r7c1-t8 r1c3-t8">
+<p>(no default)</p>
+</td>
+<td align="left" headers="r7c1-t8 r1c4-t8">
+<p>HTTP proxy host name.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r8c1-t8">
+<p>deployment.proxy.http.port</p>
+</td>
+<td align="left" headers="r8c1-t8 r1c2-t8">
+<p>String</p>
+</td>
+<td align="left" headers="r8c1-t8 r1c3-t8">
+<p>(no default)</p>
+</td>
+<td align="left" headers="r8c1-t8 r1c4-t8">
+<p>HTTP proxy port.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r9c1-t8">
+<p>deployment.proxy.https.host</p>
+</td>
+<td align="left" headers="r9c1-t8 r1c2-t8">
+<p>String</p>
+</td>
+<td align="left" headers="r9c1-t8 r1c3-t8">
+<p>(no default)</p>
+</td>
+<td align="left" headers="r9c1-t8 r1c4-t8">
+<p>HTTPS proxy host name.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r10c1-t8">
+<p>deployment.proxy.https.port</p>
+</td>
+<td align="left" headers="r10c1-t8 r1c2-t8">
+<p>String</p>
+</td>
+<td align="left" headers="r10c1-t8 r1c3-t8">
+<p>(no default)</p>
+</td>
+<td align="left" headers="r10c1-t8 r1c4-t8">
+<p>HTTPS proxy port.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r11c1-t8">
+<p>deployment.proxy.ftp.host</p>
+</td>
+<td align="left" headers="r11c1-t8 r1c2-t8">
+<p>String</p>
+</td>
+<td align="left" headers="r11c1-t8 r1c3-t8">
+<p>(no default)</p>
+</td>
+<td align="left" headers="r11c1-t8 r1c4-t8">
+<p>FTP proxy host name.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r12c1-t8">
+<p>deployment.proxy.ftp.port</p>
+</td>
+<td align="left" headers="r12c1-t8 r1c2-t8">
+<p>String</p>
+</td>
+<td align="left" headers="r12c1-t8 r1c3-t8">
+<p>(no default)</p>
+</td>
+<td align="left" headers="r12c1-t8 r1c4-t8">
+<p>FTP proxy port.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r13c1-t8">
+<p>deployment.proxy.socks.host</p>
+</td>
+<td align="left" headers="r13c1-t8 r1c2-t8">
+<p>String</p>
+</td>
+<td align="left" headers="r13c1-t8 r1c3-t8">
+<p>(no default)</p>
+</td>
+<td align="left" headers="r13c1-t8 r1c4-t8">
+<p>SOCKS v4 proxy host name.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r14c1-t8">
+<p>deployment.proxy.socks.port</p>
+</td>
+<td align="left" headers="r14c1-t8 r1c2-t8">
+<p>String</p>
+</td>
+<td align="left" headers="r14c1-t8 r1c3-t8">
+<p>(no default)</p>
+</td>
+<td align="left" headers="r14c1-t8 r1c4-t8">
+<p>SOCKS v4 proxy port.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r15c1-t8">
+<p>deployment.proxy.override.hosts</p>
+</td>
+<td align="left" headers="r15c1-t8 r1c2-t8">
+<p>String</p>
+</td>
+<td align="left" headers="r15c1-t8 r1c3-t8">
+<p>""</p>
+</td>
+<td align="left" headers="r15c1-t8 r1c4-t8">
+<p>Proxy overridden list.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+
+<div id="JSDPG818"><a id="sthref379" name="sthref379"/>
+<h3><span>21.2.5</span> Cache and Optional Package Repository</h3>
+<div id="JSDPG819"><a id="sthref380" name="sthref380"/><a id="sthref381" name="sthref381"/>
+<p>Table 21-7 Configuration Properties Related to Cache and Optional Package Repository</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="Describes the deployment properties for configuring the cache and optional package repository." title="Configuration Properties Related to Cache and Optional Package Repository" width="100%">
+<col width="32%"/>
+<col width="9%"/>
+<col width="9%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t9" valign="bottom">Property Key</th>
+<th align="left" id="r1c2-t9" valign="bottom">Type</th>
+<th align="left" id="r1c3-t9" valign="bottom">Default Value</th>
+<th align="left" id="r1c4-t9" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t9" id="r2c1-t9">
+<p>deployment.cache.max.size</p>
+</td>
+<td align="left" headers="r2c1-t9 r1c2-t9">
+<p>int</p>
+</td>
+<td align="left" headers="r2c1-t9 r1c3-t9">
+<p>-1</p>
+</td>
+<td align="left" headers="r2c1-t9 r1c4-t9">
+<p>Maximum size of the deployment cache in megabytes (MB). This is the cache size for each cache: Java Web Start and Java Plug-in.</p>
+<p>0: Disables caching in Java Plug-in; cache size in Java Web Start will be unlimited.</p>
+<p>-1: Indicates unlimited cache size.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t9" id="r3c1-t9">
+<p>deployment.cache.jarcompression</p>
+</td>
+<td align="left" headers="r3c1-t9 r1c2-t9">
+<p>String</p>
+</td>
+<td align="left" headers="r3c1-t9 r1c3-t9">
+<p>0</p>
+</td>
+<td align="left" headers="r3c1-t9 r1c4-t9">
+<p>0-9 compression ratio to use in applet JAR compression.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t9" id="r4c1-t9">
+<p>deployment.javapi.cache.enabled</p>
+</td>
+<td align="left" headers="r4c1-t9 r1c2-t9">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r4c1-t9 r1c3-t9">
+<p><code dir="ltr">false</code></p>
+</td>
+<td align="left" headers="r4c1-t9 r1c4-t9">
+<p>Specifies if the cache should be disabled. Set to <code dir="ltr">false</code> to prevent the cache from being disabled.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+
+<div id="JSDPG820"><a id="sthref382" name="sthref382"/>
+<h3><span>21.2.6</span> Java Console</h3>
+<div id="JSDPG821"><a id="sthref383" name="sthref383"/><a id="sthref384" name="sthref384"/>
+<p>Table 21-8 Configuration Properties Related to the Java Console</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="Describes the deployment properties used to configure the Java Console." title="Configuration Properties Related to the Java Console" width="100%">
+<col width="33%"/>
+<col width="9%"/>
+<col width="10%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t10" valign="bottom">Property Key</th>
+<th align="left" id="r1c2-t10" valign="bottom">Type</th>
+<th align="left" id="r1c3-t10" valign="bottom">Default Value</th>
+<th align="left" id="r1c4-t10" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t10" id="r2c1-t10">
+<p>deployment.console.startup.mode</p>
+</td>
+<td align="left" headers="r2c1-t10 r1c2-t10">
+<p>String</p>
+</td>
+<td align="left" headers="r2c1-t10 r1c3-t10">
+<p><code dir="ltr">HIDE</code></p>
+</td>
+<td align="left" headers="r2c1-t10 r1c4-t10">
+<p>The following values are valid:</p>
+<ul>
+<li>
+<p><code dir="ltr">HIDE</code>: Hide the Java Console;</p>
+</li>
+<li>
+<p><code dir="ltr">SHOW</code>: Show the Java Console;</p>
+</li>
+<li>
+<p><code dir="ltr">DISABLE</code>: Dsable the Java Console;</p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+
+<div id="JSDPG822"><a id="sthref385" name="sthref385"/>
+<h3><span>21.2.7</span> Tracing and Logging</h3>
+<div id="JSDPG823"><a id="sthref386" name="sthref386"/><a id="sthref387" name="sthref387"/>
+<p>Table 21-9 Configuration Properties Related to Tracing and Logging</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="Describes the deployment propertes used to configure tracing and logging." title="Configuration Properties Related to Tracing and Logging" width="100%">
+<col width="33%"/>
+<col width="9%"/>
+<col width="8%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t11" valign="bottom">Property Key</th>
+<th align="left" id="r1c2-t11" valign="bottom">Type</th>
+<th align="left" id="r1c3-t11" valign="bottom">Default Value</th>
+<th align="left" id="r1c4-t11" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r2c1-t11">
+<p>deployment.trace</p>
+</td>
+<td align="left" headers="r2c1-t11 r1c2-t11">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r2c1-t11 r1c3-t11">
+<p><code dir="ltr">false</code></p>
+</td>
+<td align="left" headers="r2c1-t11 r1c4-t11">
+<p>Set to <code dir="ltr">true</code> to enable tracing.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r3c1-t11">
+<p>deployment.log</p>
+</td>
+<td align="left" headers="r3c1-t11 r1c2-t11">
+<p>Boolean</p>
+</td>
+<td align="left" headers="r3c1-t11 r1c3-t11">
+<p><code dir="ltr">false</code></p>
+</td>
+<td align="left" headers="r3c1-t11 r1c4-t11">
+<p>Set to <code dir="ltr">true</code> to enable logging.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+
+<div id="JSDPG824"><a id="sthref388" name="sthref388"/>
+<h3><span>21.2.8</span> Java Web Start</h3>
+<div id="JSDPG825"><a id="sthref389" name="sthref389"/><a id="sthref390" name="sthref390"/>
+<p>Table 21-10 Configuration Properties Related to Java Web Start</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="Describes the deployment properties used by Java Web Start" title="Configuration Properties Related to Java Web Start" width="100%">
+<col width="32%"/>
+<col width="9%"/>
+<col width="10%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t12" valign="bottom">Property Key</th>
+<th align="left" id="r1c2-t12" valign="bottom">Type</th>
+<th align="left" id="r1c3-t12" valign="bottom">Default Value</th>
+<th align="left" id="r1c4-t12" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t12" id="r2c1-t12">
+<p>deployment.javaws.associations</p>
+</td>
+<td align="left" headers="r2c1-t12 r1c2-t12">
+<p>int</p>
+</td>
+<td align="left" headers="r2c1-t12 r1c3-t12">
+<p>2</p>
+</td>
+<td align="left" headers="r2c1-t12 r1c4-t12">
+<p>JNLP associations. The following values are valid:</p>
+<ul>
+<li>
+<p><code dir="ltr">ASSOCIATION_NEVER = 0;</code></p>
+</li>
+<li>
+<p><code dir="ltr">ASSOCIATION_NEW_ONLY = 1;</code></p>
+</li>
+<li>
+<p><code dir="ltr">ASSOCIATION_ASK_USER = 2;</code></p>
+</li>
+<li>
+<p><code dir="ltr">ASSOCIATION_REPLACE_ASK = 3;</code></p>
+</li>
+</ul>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t12" id="r3c1-t12">
+<p>deployment.javaws.shortcut</p>
+</td>
+<td align="left" headers="r3c1-t12 r1c2-t12">
+<p>String</p>
+</td>
+<td align="left" headers="r3c1-t12 r1c3-t12">
+<p><code dir="ltr">ASK_IF_HINTED</code></p>
+</td>
+<td align="left" headers="r3c1-t12 r1c4-t12">
+<p>Create a desktop shortcut for Java Web Start. The following values are valid:</p>
+<ul>
+<li>
+<p><code dir="ltr">NEVER</code></p>
+</li>
+<li>
+<p><code dir="ltr">ALWAYS</code></p>
+</li>
+<li>
+<p><code dir="ltr">ASK_USER</code></p>
+</li>
+<li>
+<p><code dir="ltr">ASK_IF_HINTED</code></p>
+</li>
+<li>
+<p><code dir="ltr">ALWAYS_IF_HINTED</code></p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+
+<div id="JSDPG826"><a id="sthref391" name="sthref391"/>
+<h3><span>21.2.9</span> Browser Selection and Path</h3>
+<div id="JSDPG827"><a id="sthref392" name="sthref392"/><a id="sthref393" name="sthref393"/>
+<p>Table 21-11 Configuration Properties Related to Browser Selection and Path</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="Describes the deployment properties for configuring browser selection and path." title="Configuration Properties Related to Browser Selection and Path" width="100%">
+<col width="27%"/>
+<col width="10%"/>
+<col width="13%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t13" valign="bottom">Property Key</th>
+<th align="left" id="r1c2-t13" valign="bottom">Type</th>
+<th align="left" id="r1c3-t13" valign="bottom">Default Value</th>
+<th align="left" id="r1c4-t13" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t13" id="r2c1-t13">
+<p>deployment.browser.path</p>
+</td>
+<td align="left" headers="r2c1-t13 r1c2-t13">
+<p>String</p>
+</td>
+<td align="left" headers="r2c1-t13 r1c3-t13">
+<p>&lt;No Browser Selected&gt;</p>
+</td>
+<td align="left" headers="r2c1-t13 r1c4-t13">
+<p>Path to the browser for showing web pages from the application viewer, the About Box, and Java Web Start applications.</p>
+<p>Note that this property is used for Solaris and Linux only. On Windows, this property is ignored, and the default browser is determined in the same way as other applications that launches a browser on Windows.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+
+<div id="JSDPG828"><a id="sthref394" name="sthref394"/>
+<h3><span>21.2.10</span> Check for update Timeout</h3>
+<div id="JSDPG829"><a id="sthref395" name="sthref395"/><a id="sthref396" name="sthref396"/>
+<p>Table 21-12 Configuration Properties Related to Update Timeout</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="Describes the deployment properties used to configure the update timeout." title="Configuration Properties Related to Update Timeout" width="100%">
+<col width="35%"/>
+<col width="9%"/>
+<col width="12%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t14" valign="bottom">Property Key</th>
+<th align="left" id="r1c2-t14" valign="bottom">Type</th>
+<th align="left" id="r1c3-t14" valign="bottom">Default Value</th>
+<th align="left" id="r1c4-t14" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t14" id="r2c1-t14">
+<p>deployment.javaws.update.timeout</p>
+</td>
+<td align="left" headers="r2c1-t14 r1c2-t14">
+<p>int</p>
+</td>
+<td align="left" headers="r2c1-t14 r1c3-t14">
+<p>500</p>
+</td>
+<td align="left" headers="r2c1-t14 r1c4-t14">
+<p>Units are milliseconds.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+
+<div><a id="sthref397" name="sthref397"/>
+<h3><span>21.2.11</span> SSLv3 is disabled by default</h3>
+<p>It should be noted that SSLv3 is obsolete and should no longer be used. See <code dir="ltr"><a href="https://blogs.oracle.com/security/entry/information_about_ssl_poodle_vulnerability">https://blogs.oracle.com/security/entry/information_about_ssl_poodle_vulnerability</a></code>. Starting with JDK 8u31 release, the SSLv3 protocol (Secure Socket Layer) has been deactivated and is not available by default.</p>
+<p>If the user needs to use SSLv3 for applications, see the procedure to re-enable SSLv3 at <code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/security//SunProviders.html#enable-sslv3">http://docs.oracle.com/javase/8/docs/technotes/guides/security//SunProviders.html#enable-sslv3</a></code>.</p>
+<p>More information about how to configure specific protocols can be found at:</p>
+<p><code dir="ltr"><a href="http://www.oracle.com/technetwork/java/javase/documentation/cve-2014-3566-2342133.html">http://www.oracle.com/technetwork/java/javase/documentation/cve-2014-3566-2342133.html</a></code></p>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="jcp.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="console_trace_log.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

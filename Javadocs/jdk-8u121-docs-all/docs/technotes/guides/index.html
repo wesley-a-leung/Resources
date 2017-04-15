@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java&trade; Platform Overview</title>
+<link rel="stylesheet" type="text/css" href="../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Java&trade; Platform Overview</h1>
+
+<ul>
+<li><a href="#jre-jdk">JRE and JDK</a></li>
+<li><a href="#javalanguage">Java Programming Language</a></li>
+<li><a href="#javavm">Java Virtual Machines</a></li>
+<li><a href="#base">Base Libraries</a></li>
+<li><a href="#integration">Integration Libraries</a></li>
+<li><a href="#userinterface">User Interface Libraries</a></li>
+<li><a href="#deployment">Deployment</a></li>
+<li><a href="#toolspecs">Tool Specifications</a></li>
+<li><a href="#toolsupport">JDK Tools &amp; Utilities</a></li>
+<li><a href="#platform">Platforms</a></li>
+</ul>
+<!-- ============================================================== -->
+<hr />
+<a name="jre-jdk" id="jre-jdk"></a>
+<h2>JRE and JDK</h2>
+<div class="Indent">Oracle provides two principal
+software products in the Java&trade; Platform, Standard Edition
+(Java&trade; SE) family:
+<h3>Java SE Runtime Environment (JRE)</h3>
+<p>The JRE provides the libraries, Java virtual machine, and other
+components necessary for you to <em>run</em> applets and
+applications written in the Java programming language. This runtime
+environment can be redistributed with applications to make them
+free-standing.</p>
+<h3>Java SE Development Kit (JDK)</h3>
+<p>The JDK includes the JRE plus command-line development tools
+such as compilers and debuggers that are necessary or useful for
+<em>developing</em> applets and applications.</p>
+</div>
+<!-- ============================================================== -->
+<hr />
+<a name="javalanguage" id="javalanguage"></a>
+<h2>Java Programming Language</h2>
+<div class="Indent">
+<p>The Java Programming Language is a general-purpose, concurrent,
+strongly typed, class-based object-oriented language. It is
+normally compiled to the bytecode instruction set and binary format
+defined in the Java Virtual Machine Specification. For more
+information see <a href="language/index.html">Language
+Features</a>.</p>
+</div>
+<!-- ============================================================== -->
+<hr />
+<a name="javavm" id="javavm"></a>
+<h2>Java Virtual Machines</h2>
+<div class="Indent">
+<p>The Java virtual machine is an abstract computing machine that
+has an instruction set and manipulates memory at run time. The Java
+virtual machine is ported to different platforms to provide
+hardware- and operating system-independence.</p>
+<p>The Java Platform, Standard Edition provides two implementations
+of the Java virtual machine (VM):</p>
+<h3>Java HotSpot Client VM</h3>
+<p>The client VM is an implementation for platforms typically used
+for client applications. The client VM is tuned for reducing
+start-up time and memory footprint. It can be invoked by using the
+<code>-client</code> command-line option when launching an
+application.</p>
+<h3>Java HotSpot Server VM</h3>
+<p>The server VM is an implementation designed for maximum program
+execution speed, trading off launch time and memory. It can be
+invoked by using the <code>-server</code> command-line option when
+launching an application.</p>
+<p>For more information, see the <a href="vm/index.html">VM
+documentation</a>.</p>
+</div>
+<!-- ============================================================== -->
+<hr />
+<a name="base" id="base"></a><a name="core" id="core"></a>
+<h2>Base Libraries</h2>
+<div class="Indent">
+<p>Classes and interfaces that provide basic features and
+fundamental functionality for the Java platform.</p>
+<a name="langutil" id="langutil"></a>
+<h3>Lang and Util Packages</h3>
+<p>Provides the fundamental <tt>Object</tt> and <tt>Class</tt>
+classes, wrapper classes for primitive types, a basic math class,
+and more. See the <a href="lang/index.html">Lang and Util
+documentation</a> for more information.</p>
+<p><b>Math</b></p>
+<p>Math functionality includes floating point libraries and
+arbitrary-precision math. For more information, see the <a href=
+"math/index.html">Math documentation</a>.</p>
+<p><b>Monitoring and Management</b></p>
+<p>Comprehensive monitoring and management support for Java
+platform including Monitoring and Management API for Java virtual
+machine, Monitoring and Management API for the Logging Facility,
+jconsole and other monitoring utilities, out-of-the-box monitoring
+and management, Java Management Extensions (JMX), and Oracle's
+Platform Extension. See the <a href=
+"management/index.html">Monitoring and Management documentation</a>
+for more information.</p>
+<p><b>Package Version Identification</b></p>
+<p>The package versioning feature enables package-level version
+control so that applications and applets can identify at runtime
+the version of a specific Java Runtime Environment, VM, and class
+package. For more information, see the <a href=
+"versioning/index.html">Package Version Identification
+documentation</a>.</p>
+<p><b>Reference Objects</b></p>
+<p>Reference objects support a limited degree of interaction with
+the garbage collector. A program may use a reference object to
+maintain a reference to some other object in such a way that the
+latter object may still be reclaimed by the collector. A program
+may also arrange to be notified some time after the collector has
+determined that the reachability of a given object has changed.
+Reference objects are therefore useful for building simple caches
+as well as caches that are flushed when memory runs low, for
+implementing mappings that do not prevent their keys (or values)
+from being reclaimed, and for scheduling pre-mortem cleanup actions
+in a more flexible way than is possible with the Java finalization
+mechanism. For more information, see the <a href=
+"../../api/java/lang/ref/package-summary.html">Reference Objects
+documentation</a>.</p>
+<p><b>Reflection</b></p>
+<p>Reflection enables Java code to discover information about the
+fields, methods and constructors of loaded classes, and to use
+reflected fields, methods, and constructors to operate on their
+underlying counterparts on objects, within security restrictions.
+The API accommodates applications that need access to either the
+public members of a target object (based on its runtime class) or
+the members declared by a given class. Programs can suppress
+default reflective access control. For more information, see the
+<a href="reflection/index.html">Reflection documentation</a>.</p>
+<p><b>Collections Framework</b></p>
+<p>A <em>collection</em> is an object that represents a group of
+objects. The collections framework is a unified architecture for
+representing collections, allowing them to be manipulated
+independently of the details of their representation. It reduces
+programming effort while increasing performance. It allows for
+interoperability among unrelated APIs, reduces effort in designing
+and learning new APIs, and fosters software reuse. For more
+information, see the <a href="collections/index.html">Collections
+Framework documentation</a>.</p>
+<p><b>Concurrency Utilities</b></p>
+<p>The Concurrency Utilities packages provide a powerful,
+extensible framework of high-performance threading utilities such
+as thread pools and blocking queues. This package frees the
+programmer from the need to craft these utilities by hand, in much
+the same manner the Collections Framework did for data structures.
+Additionally, these packages provide low-level primitives for
+advanced concurrent programming. For more information, See the
+<a href="concurrency/index.html">Concurrency Utilities
+documentation</a>.</p>
+<p><b>Java Archive (JAR) Files</b></p>
+<p>JAR (Java Archive) is a platform-independent file format that
+aggregates many files into one. Multiple Java applets and their
+requisite components (.class files, images and sounds) can be
+bundled in a JAR file and subsequently downloaded to a browser in a
+single HTTP transaction, greatly improving the download speed. The
+JAR format also supports compression, which reduces the file size,
+further improving the download time. In addition, the applet author
+can digitally sign individual entries in a JAR file to authenticate
+their origin. It is fully extensible. For more information, see the
+<a href="jar/index.html">Java Archive documentation</a>.</p>
+<p><b>Logging</b></p>
+<p>The Logging APIs facilitate software servicing and maintenance
+at customer sites by producing log reports suitable for analysis by
+end users, system administrators, field service engineers, and
+software development teams. The Logging APIs capture information
+such as security failures, configuration errors, performance
+bottlenecks, and/or bugs in the application or platform. For more
+information, see the <a href="logging/index.html">Logging
+documentation</a>.</p>
+<p><b>Preferences</b></p>
+<p>The Preferences API provides a way for applications to store and
+retrieve user and system preference and configuration data. The
+data is stored persistently in an implementation-dependent backing
+store. There are two separate trees of preference nodes, one for
+user preferences and one for system preferences. For more
+information, see the <a href="preferences/index.html">Preferences
+API documentation</a>,</p>
+<p><a name="otherbase" id="otherbase"></a></p>
+<h3>Other Base Packages</h3>
+<p><b>I/O</b></p>
+<p>The <code>java.io</code> and <code>java.nio</code> packages
+provide a rich set of APIs for managing an application's I/O. The
+functionality includes file and device I/O, object serialization,
+buffer management, and character-set support. Additionally, the
+APIs support features for scalable servers including multiplexed,
+non-blocking I/O, memory mapping and locks for files. For more
+information, see the <a href="io/index.html">I/O
+documentation</a>.</p>
+<p><b>Object Serialization</b></p>
+<p>Object Serialization extends the core Java Input/Output classes
+with support for objects. Object Serialization supports the
+encoding of objects, and the objects reachable from them, into a
+stream of bytes; and it supports the complementary reconstruction
+of the object graph from the stream. Serialization is used for
+lightweight persistence and for communication via sockets or Remote
+Method Invocation (RMI). See the <a href=
+"serialization/index.html">Object Serialization documentation</a>
+for more information.</p>
+<p><b>Networking</b></p>
+<p>Provides classes for networking functionality, including
+addressing, classes for using URLs and URIs, socket classes for
+connecting to servers, networking security functionality, and more.
+See the <a href="net/index.html">Networking documentation</a> for
+more information.</p>
+<p><b>Security</b></p>
+<p>APIs for security-related functionality such as configurable
+access control, digital signing, authentication and authorization,
+cryptography, secure Internet communication, and more. See the
+<a href="security/index.html">Security documentation</a> for more
+information.</p>
+<p><b>Internationalization</b></p>
+<p>APIs that enable the development of internationalized
+applications. Internationalization is the process of designing an
+application so that it can be adapted to various languages and
+regions without engineering changes. See the <a href=
+"intl/index.html">Internationalization documentation</a> for more
+information.</p>
+<p><b>JavaBeans&trade; Component API</b></p>
+<p>Contains classes related to developing beans -- components based
+on the JavaBeans&trade; architecture that can be pieced together as
+part of developing an application. See the <a href=
+"beans/index.html">JavaBeans documentation</a> for more
+information.</p>
+<p><b>Java Management Extensions (JMX)</b></p>
+<p>The Java Management Extensions (JMX) API is a standard API for
+management and monitoring of resources such as applications,
+devices, services, and the Java virtual machine. Typical uses
+include consulting and changing application configuration,
+accumulating statistics about application behavior, and notifying
+of state changes and erroneous conditions. The JMX API includes
+remote access, so a remote management program can interact with a
+running application for these purposes. See the <a href=
+"jmx/index.html">Java Management Extensions documentation</a> for
+more information.</p>
+<p><b>XML (JAXP)</b></p>
+<p>The Java platform provides a rich set of APIs for processing XML
+documents and data. See the Java SE <a href="xml/index.html">XML
+documentation</a> for more information.</p>
+<p><b>Java Native Interface (JNI)</b></p>
+<p>Java Native Interface (JNI) is a standard programming interface
+for writing Java native methods and embedding the Java virtual
+machine into native applications. The primary goal is binary
+compatibility of native method libraries across all Java virtual
+machine implementations on a given platform. See the <a href=
+"jni/index.html">Java Native Interface documentation</a> for more
+information.</p>
+<p><b>Extension Mechanism</b></p>
+<p>Optional packages are packages of Java classes (and any
+associated native code) that application developers can use to
+extend the functionality of the core platform. The extension
+mechanism allows the Java virtual machine (VM) to use the classes
+of the optional extension in much the same way as the VM uses
+classes in the Java Platform. The extension mechanism also provides
+a way for needed optional packages to be retrieved from specified
+URLs when they are not already installed in the JDK or Runtime
+Environment. See the <a href="extensions/index.html">Java Extension
+Mechanism</a> documentation for more information.</p>
+<p><b>Endorsed Standards Override Mechanism</b></p>
+<p>An endorsed standard is a Java API defined through a standards
+process other than the Java Community ProcessSM (JCP). Because
+endorsed standards are defined outside the JCP, it is anticipated
+that such standards may be revised between releases of the Java
+Platform. In order to take advantage of new revisions to endorsed
+standards, developers and software vendors may use the Endorsed
+Standards Override Mechanism to provide newer versions of an
+endorsed standard than those included in the Java Platform as
+released by Oracle. See the <a href=
+"standards/index.html">Endorsed Standards Override Mechanism
+documentation</a> for more information.</p>
+</div>
+<!-- ============================================================== -->
+<hr />
+<a name="integration" id="integration"></a>
+<h2>Integration Libraries</h2>
+<div class="Indent">
+<h3>Java Database Connectivity (JDBC) API</h3>
+<p>The JDBC&trade; API provides universal data access from the Java
+programming language. Using the JDBC 3.0 API, you developers can
+write applications that can access virtually any data source, from
+relational databases to spreadsheets and flat files. JDBC
+technology also provides a common base on which tools and alternate
+interfaces can be built. For more information, see the <a href=
+"jdbc/index.html">JDBC documentation</a>.</p>
+<h3>Remote Method Invocation (RMI)</h3>
+<p>Remote Method Invocation (RMI) enables the development of
+distributed applications by providing for remote communication
+between programs written in the Java programming language. RMI
+enables an object running in one Java Virtual Machine to invoke
+methods on an object running in another Java VM, which may be on a
+different host. For more information, see the Java SE <a href=
+"rmi/index.html">RMI documentation</a>.</p>
+<h3>Java IDL (CORBA)</h3>
+<p>Java IDL technology adds CORBA (Common Object Request Broker
+Architecture) capability to the Java platform, providing
+standards-based interoperability and connectivity. Java IDL enables
+distributed Web-enabled Java applications to transparently invoke
+operations on remote network services using the industry standard
+IDL (Object Management Group Interface Definition Language) and
+IIOP (Internet Inter-ORB Protocol) defined by the Object Management
+Group. Runtime components include a Java ORB for distributed
+computing using IIOP communication. For more information, see the
+<a href="idl/index.html">Java IDL documentation</a>.</p>
+<h3>RMI-IIOP</h3>
+<p>Java Remote Method Invocation over Internet Inter-ORB Protocol
+technology The RMI Programming Model enables the programming of
+CORBA servers and applications via the RMI API. You can choose to
+work completely within the Java programming language using the Java
+Remote Method Protocol (JRMP) as the transport, or work with other
+CORBA-compliant programming languages using the Internet InterORB
+Protocol (IIOP). You use the rmic compiler to generate the code
+necessary for connecting your applications via the Internet
+InterORB Protocol (IIOP) to others written in any CORBA-compliant
+language. To work with CORBA applications in other languages, IDL
+can be generated from Java programming language interfaces using
+the rmic compiler with the -idl option. To generate IIOP stubs and
+tie classes, use the rmic compiler with the -iiop option. For more
+information, see the <a href="rmi-iiop/index.html">RMI-IIOP
+documentation</a>.</p>
+<h3>Scripting for the Java Platform</h3>
+<p>Java SE includes the <a href=
+"http://jcp.org/en/jsr/detail?id=223">JSR 223: Scripting for the
+Java&trade; Platform</a> API. This is a framework by which Java
+Applications can "host" script engines. Java SE includes the <a href="scripting/index.html">Nashorn Engine</a>, which
+is an implementation of the EMCAScript Edition 5.1 Language Specification.
+The scripting framework supports third-party script
+engines through jar "service discovery" mechanism. It is possible
+to "drop" any JSR-223 compliant script engine in the CLASSPATH and
+access the same from your Java applications For more information,
+see the <a href="scripting/index.html">Scripting
+documentation</a>.</p>
+<h3>Java Naming and Directory Interface&trade; (JNDI) API</h3>
+<p>The Java Naming and Directory Interface&trade; (JNDI) provides
+naming and directory functionality to applications written in the
+Java programming language. It is designed to be independent of any
+specific naming or directory service implementation. Thus a variety
+of services--new, emerging, and already deployed ones--can be
+accessed in a common way. The JNDI architecture consists of a API
+and an SPI (Service Provider Interface). Java applications use this
+API to access a variety of naming and directory services. The SPI
+enables a variety of naming and directory services to be plugged in
+transparently, allowing the Java application using the JNDI API to
+access their services. For more information, see <a href=
+"jndi/index.html">JNDI documentation</a>.</p>
+</div>
+<!-- ============================================================== -->
+<hr />
+<a name="userinterface" id="userinterface"></a>
+<h2>User Interface Libraries</h2>
+<div class="Indent">
+<h3>Input Method Framework</h3>
+<p>The input method framework enables the collaboration between
+text editing components and input methods in entering text. Input
+methods are software components that let the user enter text in
+ways other than simple typing on a keyboard. They are commonly used
+to enter Japanese, Chinese, or Korean -- languages using thousands
+of different characters - on keyboards with far fewer keys.
+However, the framework also supports input methods for other
+languages and the use of entirely different input mechanisms, such
+as handwriting or speech recognition. For more information, see the
+<a href="imf/index.html">Input Method Framework</a>
+documentation.</p>
+<h3>Accessibility</h3>
+<p>With the Java Accessibility API, developers can easily create
+Java applications that are accessible to disabled persons.
+Accessible Java applications are compatible with assistive
+technologies such as screen readers, speech recognition systems,
+and refreshable braille displays. For more information, see the
+<a href="access/index.html">Accessibility documentation</a>.</p>
+<h3>Print Service</h3>
+<p>The Java&trade; Print Service API, allows printing on all Java
+platforms including those requiring a small footprint, such as a
+Java ME profile. For more information, see <a href=
+"jps/index.html">Java Print Service documentation</a>.</p>
+<h3>Sound</h3>
+<p>The Java platform includes a powerful API for capturing,
+processing, and playing back audio and MIDI (Musical Instrument
+Digital Interface) data. This API is supported by an efficient
+sound engine which guarantees high-quality audio mixing and MIDI
+synthesis capabilities for the platform. For more information, see
+<a href="sound/index.html">Java Sound documentation</a>.</p>
+<h3>Drag and Drop Data Transfer</h3>
+<p>Drag and Drop enables data transfer both across Java programming
+language and native applications, between Java programming language
+applications, and within a single Java programming language
+application. For more information, see <a href=
+"dragndrop/index.html">Drag and Drop Transfer</a>.</p>
+<h3>Image I/O</h3>
+<p>The Java Image I/O API provides a pluggable architecture for
+working with images stored in files and accessed across the
+network. The API provides a framework for the addition of
+format-specific plugins. Plug-ins for several common formats are
+included with Java Image I/O, but third parties can use this API to
+create their own plugins to handle special formats. For more
+information, see <a href="imageio/index.html">Image I/O</a>.</p>
+<h3>Java 2D&trade; Graphics and Imaging</h3>
+<p>The Java 2D&trade; API is a set of classes for advanced 2D
+graphics and imaging. It encompasses line art, text, and images in
+a single comprehensive model. The API provides extensive support
+for image compositing and alpha channel images, a set of classes to
+provide accurate color space definition and conversion, and a rich
+set of display-oriented imaging operators. For more information,
+see the <a href="2d/index.html">Java 2D documentation</a>.</p>
+<h3>AWT</h3>
+<p>The Java&trade; platform's Abstract Windowing Toolkit (AWT)
+provides APIs for constructing user interface components such as
+menus, buttons, text fields, dialog boxes, checkboxes, and for
+handling user input through those components. In addition, AWT
+allows for rendering of simple shapes such as ovals and polygons
+and enables developers to control the user-interface layout and
+fonts used by their applications. For more information, see the
+<a href="awt/index.html">AWT documentation</a>.</p>
+<h3>Swing</h3>
+<p>The Swing APIs also provide graphical component (GUI) for use in
+user interfaces. The Swing APIs are written in the Java programming
+language without any reliance on code that is specific to the GUI
+facilities provided by underlying operating system. This allows the
+Swing GUI components to have a "pluggable" look-and-feel that can
+be switched while an application is running. For more information,
+see the Java SE <a href="swing/index.html">Swing
+documentation</a>.</p>
+
+<h3>JavaFX</h3>
+<p>Java SE 7 Update 2 and later includes the JavaFX SDK. The JavaFX platform is the evolution of the Java client platform designed to enable application developers to easily create and deploy rich internet applications (RIAs) that behave consistently across multiple platforms. See <a href="javafx/">JavaFX Documentation</a> for more information.</p>
+
+</div>
+<!-- ============================================================== -->
+<hr />
+<a name="deployment" id="deployment"></a>
+<h2>Deployment</h2>
+<div class="Indent">
+<h3>Java Deployment</h3>
+<p>Installation, setup, updating, redistribution and related
+topics:</p>
+<dl>
+<dd>
+<ul>
+<li>Installation of the Java Platform on a computer</li>
+<li>Setting Options in the Java Control Panel</li>
+<li>Writing applications and applets in the Java Programming
+language</li>
+<li>Authoring web pages that invoke applets or download and launch
+applications</li>
+<li>Making Java-related files available on web servers</li>
+<li>Updating the Java Platform on a computer</li>
+</ul>
+</dd>
+</dl>
+<p>For more information, see <a href=
+"deploy/index.html">Java Platform, Standard Edition Deployment Guide</a> and <a href=
+"javaws/index.html">Java Web Start</a>.</p>
+</div>
+<!-- ============================================================== -->
+<hr />
+<a name="toolspecs" id="toolspecs"></a>
+<h2>Tool Specifications</h2>
+<div class="Indent">
+<h3>Debugger Architecture</h3>
+<p>Architecture and specifications for use by debuggers in
+development environments. For more information, see the <a href=
+"jpda/index.html">Java Platform Debugger Architecture (JPDA)
+documentation</a>.</p>
+<h3>VM Tool Interface</h3>
+<p>The Java Virtual Machine Tool Interface (JVM TI) is a
+specification for inspecting the state and controlling the
+execution of applications running in the JVM. The Java Virtual
+Machine Profiler Interface (JVMPI) has been deprecated. For more
+information, see the <a href="jvmti/index.html">Java Virtual
+Machine Tool Interface (JVM TI) documentation</a>.</p>
+<h3>Javadoc Tool</h3>
+<p>Javadoc is a tool that parses the declarations and documentation
+comments source files to produce a set of HTML pages describing the
+program elements. The Doclet API provides a mechanism for clients
+to inspect the source-level structure of programs and libraries,
+including Javadoc comments embedded in the source. This API can be
+used by doclets to generate documentation. For more information,
+see the <a href="javadoc/index.html">Javadoc documentation</a>.</p>
+<h3>Dynamic Attach</h3>
+<p>The package com.sun.tools.attach contains an Oracle
+extension to the Java Platform that allows an application to attach
+to a running Java virtual machine. Once the attach has been made, a
+tool agent can be started in the target virtual machine. For more
+information, see the <a href="attach/index.html">attach
+documentation</a>.</p>
+<h3>JConsole API</h3>
+<p>The package com.sun.tools.jconsole contains an Oracle
+extension to the Java Platform that provides a programmatic
+interface to access JConsole. For more information, see <a href=
+"management/jconsole.html">Using JConsole</a>.</p>
+</div>
+<!-- ============================================================== -->
+<hr />
+<a name="toolsupport" id="toolsupport"></a>
+<h2>JDK Tools &amp; Utilities</h2>
+<div class="Indent">
+<p>Documentation for the tools and utilities included in the JDK.
+Covers basic tools (javac, java, javadoc, apt, appletviewer, jar,
+jdb, javah, javap, extcheck), security tools, internationalization
+tools, RMI tools, IDL and RMI-IIOP tools, deployment tools, Java
+Plug-in tools, and Java Web Start tools, monitoring and management
+tools, and troubleshooting tools. For more information, see the
+<a href="../tools/index.html">JDK Tools and Utilities</a>
+documentation.</p>
+<!--
+<p>
+Refer to the
+<a href="../../../1.6/pdf/jdk60_ts_guide.pdf">
+Java &trade; Platform, Standard Edition 6 Trouble-Shooting and Diagnostic Guide</a>
+which provides descriptions of tools, options, and other items for use in
+analyzing problems.  This document contains suggestions about what to try
+before submitting a bug report and what data to collect for a report.
+</p>
+<p>
+--></div>
+<!-- ============================================================== -->
+<hr />
+<a name="platform" id="platform"></a>
+<h2>Platforms</h2>
+<p>Oracle provides implementations of the JDK and Java Runtime
+Environment for Microsoft Windows, Linux, and the Solaris operating
+systems. See <a href=
+"http://www.oracle.com/technetwork/java/javase/certconfig-2095354.html">
+System Configurations</a> for information about which versions of
+these platforms are supported.</p>
+<p>Other companies may provide implementations of the Java platform
+for other operating systems such as Macintosh, AIX, etc.</p>
+<br />
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

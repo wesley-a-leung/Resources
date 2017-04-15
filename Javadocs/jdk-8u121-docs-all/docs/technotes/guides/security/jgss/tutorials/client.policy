@@ -1,0 +1,18 @@
+grant CodeBase "file:./Login.jar" {
+        permission java.security.AllPermission;
+};
+
+grant CodeBase "file:./SampleClient.jar", 
+	Principal javax.security.auth.kerberos.KerberosPrincipal 
+		"your_user_name@your_realm" {
+
+	permission java.net.SocketPermission "*", "connect";
+
+	permission javax.security.auth.kerberos.ServicePermission
+		"krbtgt/your_realm@your_realm", 
+		"initiate";
+
+	permission javax.security.auth.kerberos.ServicePermission
+		"service_principal@your_realm", 
+		"initiate";
+};

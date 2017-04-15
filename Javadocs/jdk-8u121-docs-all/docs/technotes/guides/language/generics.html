@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Generics</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Generics</h1>
+<br />
+<!-- Body text begins here -->
+<p>When you take an element out of a <code>Collection</code>, you
+must cast it to the type of element that is stored in the
+collection. Besides being inconvenient, this is unsafe. The
+compiler does not check that your cast is the same as the
+collection's type, so the cast can fail at run time.</p>
+<p>Generics provides a way for you to communicate the type of a
+collection to the compiler, so that it can be checked. Once the
+compiler knows the element type of the collection, the compiler can
+check that you have used the collection consistently and can insert
+the correct casts on values being taken out of the collection.</p>
+<p>Here is a simple example taken from the existing Collections
+tutorial:</p>
+<pre>
+// Removes 4-letter words from c. <strong>Elements must be strings</strong>
+static void expurgate(Collection c) {
+    for (Iterator i = c.iterator(); i.hasNext(); )
+      if (<strong>((String) i.next())</strong>.length() == 4)
+        i.remove();
+}
+</pre>
+<p>Here is the same example modified to use generics:</p>
+<pre>
+<a name="expurgate" id=
+"expurgate">// Removes the 4-letter words from c</a>
+static void expurgate(Collection<strong>&lt;String&gt;</strong> c) {
+    for (Iterator<strong>&lt;String&gt;</strong> i = c.iterator(); i.hasNext(); )
+      if (<strong>i.next()</strong>.length() == 4)
+        i.remove();
+}
+</pre>
+<p>When you see the code <code>&lt;Type&gt;</code>, read it as &quot;of
+<code>Type</code>&quot;; the declaration above reads as
+&quot;<code>Collection</code> of <code>String c</code>.&quot; The code
+using generics is clearer and safer. We have eliminated an unsafe
+cast and a number of extra parentheses. More importantly, we have
+moved part of the specification of the method from a comment to its
+signature, so the compiler can verify at compile time that the type
+constraints are not violated at run time. Because the program
+compiles without warnings, we can state with certainty that it will
+not throw a <code>ClassCastException</code> at run time. The net
+effect of using generics, especially in large programs, is improved
+readability and robustness.</p>
+<p>To paraphrase Generics Specification Lead Gilad Bracha, when we
+declare <code>c</code> to be of type
+<code>Collection&lt;String&gt;</code>, this tells us something
+about the variable <code>c</code> that holds true wherever and
+whenever it is used, and the compiler guarantees it (assuming the
+program compiles without warnings). A cast, on the other hand,
+tells us something the programmer thinks is true at a single point
+in the code, and the VM checks whether the programmer is right only
+at run time.</p>
+<p>While the primary use of generics is collections, there are many
+other uses. "Holder classes," such as <a href=
+"../../../api/java/lang/ref/WeakReference.html"><code>WeakReference</code></a>
+and <a href=
+"../../../api/java/lang/ThreadLocal.html"><code>ThreadLocal</code></a>,
+have all been <i>generified</i>, that is, they have been
+retrofitted to make use of generics. More surprisingly, class
+<a href="../../../api/java/lang/Class.html"><code>Class</code></a>
+has been generified. Class literals now function as <i>type
+tokens</i>, providing both run-time and compile-time type
+information. This enables a style of static factories exemplified
+by the <code>getAnnotation</code> method in the new <a href=
+"../../../api/java/lang/reflect/AnnotatedElement.html"><code>AnnotatedElement</code></a>
+interface:</p>
+<pre>
+    &lt;T extends Annotation&gt; T getAnnotation(Class&lt;T&gt; annotationType); 
+</pre>
+This is a <i>generic method</i>. It infers the value of its <i>type
+parameter</i> <code>T</code> from its argument, and returns an
+appropriate instance of <code>T</code>, as illustrated by the
+following snippet:
+<pre>
+    Author a = Othello.class.getAnnotation(Author.class);
+</pre>
+Prior to generics, you would have had to cast the result to
+<code>Author</code>. Also you would have had no way to make the
+compiler check that the actual parameter represented a subclass of
+<code>Annotation</code>.
+<p>Generics are implemented by <i>type erasure</i>: generic type
+information is present only at compile time, after which it is
+<i>erased</i> by the compiler. The main advantage of this approach
+is that it provides total interoperability between generic code and
+legacy code that uses non-parameterized types (which are
+technically known as <i>raw</i> types). The main disadvantages are
+that parameter type information is not available at run time, and
+that automatically generated casts may fail when interoperating
+with ill-behaved legacy code. There is, however, a way to achieve
+guaranteed run-time type safety for generic collections even when
+interoperating with ill-behaved legacy code.</p>
+<p>The <code>java.util.Collections</code> class has been outfitted
+with wrapper classes that provide guaranteed run-time type safety.
+They are similar in structure to the synchronized and unmodifiable
+wrappers. These "checked collection wrappers" are very useful for
+debugging. Suppose you have a set of strings, <code>s</code>, into
+which some legacy code is mysteriously inserting an integer.
+Without the wrapper, you will not find out about the problem until
+you read the problem element from the set, and an automatically
+generated cast to <code>String</code> fails. At this point, it is
+too late to determine the source of the problem. If, however, you
+replace the declaration:</p>
+<pre>
+    Set&lt;String&gt; s = new HashSet&lt;String&gt;();
+</pre>
+with this declaration:
+<pre>
+    Set&lt;String&gt; s = Collections.checkedSet(new HashSet&lt;String&gt;(), String.class);
+</pre>
+the collection will throw a <code>ClassCastException</code> at the
+point where the legacy code attempts to insert the integer. The
+resulting stack trace will allow you to diagnose and repair the
+problem.
+<p>You should use generics everywhere you can. The extra effort in
+generifying code is well worth the gains in clarity and type
+safety. It is straightforward to use a generic library, but it
+requires some expertise to write a generic library, or to generify
+an existing library. There is one caveat: You may not use generics
+(or any other Tiger features) if you intend to deploy the compiled
+code on a pre-5.0 virtual machine.</p>
+<p>If you are familiar with C++'s <i>template</i> mechanism, you
+might think that generics are similar, but the similarity is
+superficial. Generics do not generate a new class for each
+specialization, nor do they permit "template metaprogramming."</p>
+<p>There is much more to learn about generics. See the <a href=
+"http://docs.oracle.com/javase/tutorial/java/generics/index.html">Generics</a> lesson in the Java Tutorials. <!-- Body text ends here --></p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Converting JNLP Files to Work With This Release</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<p><small><a href="contents.html">&lt; Contents</a></small></p>
+<h1>Converting JNLP Files to Work With This Release</h1>
+<p><br />
+The JNLP file format has not changed between the 1.0 and this
+release.</p>
+<p>If your JNLP file is compatible with a version of Java Web Start
+that is lower than 1.0, please note that the JNLP file format has
+changed significantly.&nbsp; Below is a list of the most common
+modifications that needs to be applied to a 0.4 JNLP file to make
+it compatible with Java Web Start 1.0 or higher:</p>
+<ul>
+<li>Set <tt>spec</tt> attribute to 1.0.</li>
+<li>Rename the <tt>unrestricted</tt> element to
+<tt>all-permissions</tt>.</li>
+<li>Rename the <tt>jre</tt> element to <tt>j2se</tt> and move this
+element inside the <tt>resources</tt> element (i.e., make
+<tt>j2se</tt> a subelement of <tt>resources</tt>).</li>
+</ul>
+<p>Converting JNLP files used with the 1.0-beta or 1.0-rc release
+only requires updating the <tt>spec</tt> attribute to "1.0".</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

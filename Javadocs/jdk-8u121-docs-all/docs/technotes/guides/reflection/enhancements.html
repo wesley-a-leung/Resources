@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+
+<style type="text/css">
+/*<![CDATA[*/
+        
+p {margin-left: 18pt;}
+
+ul li, ul ul li {font-weight: normal;}
+pre             {margin-left: 18pt;}
+a               {font-weight: bold;}
+
+/*]]>*/
+</style>
+<title>Enhancements to the Java Reflection API</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Enhancements to the Reflection API including <code>java.lang.Class</code> and
+<code>java.lang.reflect</code></h1>
+<ul>
+<li><a href="#a8">Enhancements in Java SE 8</a></li>
+<li><a href="#a6">Enhancements in Java SE 6</a></li>
+<li><a href="#a5.0">Enhancements in Java SE 5.0</a></li>
+<li><a href="#a1.4">Enhancements in Java SE 1.4</a></li>
+</ul>
+
+<a name="a8" id="a8"></a>
+<h2>Enhancements in Java SE 8</h2>
+
+<ul>
+  <li>Method Parameter Reflection (RFE: <a href="http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8004841">JDK-8004841</a>): You can obtain the names of the formal parameters of any method or constructor with the method <a href="../../../api/java/lang/reflect/Executable.html#getParameters--"><code>java.lang.reflect.Executable.getParameters</code></a>. However, <code>.class</code> files do not store formal parameter names by default. To store formal parameter names in a particular <code>.class</code> file, and thus enable the Reflection API to retrieve formal parameter names, compile the source file with the <code>-parameters</code> option of the <code>javac</code> compiler.
+<!-- todojdk8 -->  
+<!--  
+  See <a href="http://docs.oracle.com/javase/tutorial/reflect/member/methodparameterreflection.html">Obtaining Names of Method Parameters</a> in the Java Tutorials.
+-->
+  </li>
+</ul>
+  
+<a name="a6" id="a6"></a>
+<h2>Enhancements in Java SE 6</h2>
+<ul>
+<li>The following methods in <a href=
+"../../../api/java/lang/Class.html"><code>java.lang.Class</code></a>
+were generified: <a href=
+"../../../api/java/lang/Class.html#getInterfaces--"><code>getInterfaces()</code></a>,
+<a href=
+"../../../api/java/lang/Class.html#getClasses--"><code>getClasses()</code></a>.
+<a href=
+"../../../api/java/lang/Class.html#getConstructors--"><code>getConstructors()</code></a>.
+<a href=
+"../../../api/java/lang/Class.html#getMethod-java.lang.String-java.lang.Class...-">
+<code>getMethod(String, Class...)</code></a>, <a href=
+"../../../api/java/lang/Class.html#getConstructor-java.lang.Class...-">
+<code>getConstructor(Class...)</code></a>, <a href=
+"../../../api/java/lang/Class.html#getDeclaredClasses--"><code>getDeclaredClasses()</code></a>,
+<a href=
+"../../../api/java/lang/Class.html#getDeclaredConstructors--"><code>
+getDeclaredConstructors()</code></a>, <a href=
+"../../../api/java/lang/Class.html#getDeclaredMethod-java.lang.String-java.lang.Class...-">
+<code>getDeclaredMethod(String, Class...)</code></a>, and <a href=
+"../../../api/java/lang/Class.html#getDeclaredConstructor-java.lang.Class...-">
+<code>getDeclaredConstructor(Class...)</code></a>. As a result,
+code which uses these methods now produces warnings during
+compilation.<br />
+<br />
+For example, consider the following code which invokes
+<code>getDeclaredMethod()</code>:<br />
+<br />
+<pre>
+import java.lang.reflect.Method;
+
+public class Warning {
+    void m() {
+        try {
+            Warning warn = new Warning();
+            Class c = warn.getClass();
+            Method m = c.getDeclaredMethod("m");
+        } catch (NoSuchMethodException x) {
+            x.printStackTrace();
+        }
+    }
+}
+
+$ <em>javac Warning.java</em>
+Note: Warning.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+$ <em>javac -Xlint:unchecked Warning.java</em> 
+Warning.java:8: warning: [unchecked] unchecked call to getDeclaredMethod(java.lang.String,java.lang.Class&lt;?&gt;...) as a member of the raw type java.lang.Class
+            Method m = c.getDeclaredMethod("m");
+                                          ^
+1 warning
+</pre></li>
+<li style="list-style: none; display: inline">
+<p>To remove the warning, the declaration of <code>c</code> should
+be modified to include an appropriate generic type. In this case,
+the declation should be:<br />
+<br /></p>
+<pre>
+Class&lt;?&gt; c = warn.getClass();
+</pre>
+<br /></li>
+<li><a href=
+"../../../api/java/lang/reflect/Method.html#toString--"><code>Method.toString()</code></a>
+and <a href=
+"../../../api/java/lang/reflect/Constructor.html#toString--"><code>Constructor.toString()</code></a>
+now correctly display the set of modifiers.</li>
+<li>The final parameter of <a href=
+"../../../api/java/lang/reflect/Array.html#newInstance-java.lang.Class-int...-">
+<code>Array.newInstance(Class, int...)</code></a> is of variable
+arity.</li>
+</ul>
+<h2><a name="a5.0" id="a5.0">Enhancements in Java SE 5.0</a></h2>
+<p>The changes in java.lang.Class and java.lang.reflect
+include:<br /></p>
+<ul>
+<li><b>Support for generics</b> - In particular, the changes
+support structural program reflection on generic type information.
+In other words, they make it possible to examine a type, method,
+constructor or field declaration and obtain generic type
+information. Specifically, one can determine whether a type, method
+or constructor declares any type variables, and reflect&nbsp; those
+type variables to the application program (so that one may learn
+their names and bounds, for example). One can also obtain the
+non-erased form of the type of a field,&nbsp; a method or
+constructor parameter, a method return type or the throws clause of
+a method or constructor. The generified form of a type name is
+available via toGenericString(). However, note that we do not
+provide any support for determining which generic invocation an
+instance belongs to.<br /></li>
+<li><b>Support for annotations</b> - This includes the ability to
+obtain annotations on types, methods, fields, constructors and
+formal parameters of methods and constructors that have been marked
+as available at run-time, using the getAnnotation() method. One can
+also determine whether an interface is an annotation
+type.<br /></li>
+<li><b>Support for enums</b> - One can determine whether a class is
+an enum, and whether a field represents an enum constant.</li>
+<li><b>Support for var args</b> - One can determine whether a
+method or constructor is a of variable arity.</li>
+<li><b>Convenience methods</b> - for establishing whether a class
+is local, anonymous or a member class, and what a type's simple and
+cannoical names are. One can also determine whether a member is
+synthetic (an artifiact by the implementation).<br /></li>
+<li><b>The generification of class java.lang.Class</b> - This
+allows the use of instances of java.lang.Class as type
+tokens.&nbsp; See the <a href="http://docs.oracle.com/javase/tutorial/java/generics/index.html">Generics</a> lesson in the Java Tutorials.</li>
+</ul>
+<h2><a name="a1.4" id="a1.4">Enhancements in Java SE 1.4</a></h2>
+<ul>
+<li><b>Performance enhancements</b> - Certain reflective
+operations, specifically <a href=
+"../../../api/java/lang/reflect/Field.html">Field</a>, <a href=
+"../../../api/java/lang/reflect/Method.html#invoke-java.lang.Object-java.lang.Object...-">
+Method.invoke()</a>, <a href=
+"../../../api/java/lang/reflect/Constructor.html#newInstance-java.lang.Object...-">
+Constructor.newInstance()</a>, and <a href=
+"../../../api/java/lang/Class.html#newInstance--">Class.newInstance()</a>,
+have been rewritten for higher performance. Reflective invocations
+and instantiations are several times faster than in previous
+releases.</li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

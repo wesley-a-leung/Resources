@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Getting Started</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1044" name="generator"/>
+<meta content="This topic describes the basics of deploying your Java and JavaFX applications." name="description"/>
+<meta content="2015-02-16T9:50:3Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Deployment Guide, Release 8u40" name="doctitle"/>
+<meta content="Release 8u40" name="relnum"/>
+<meta content="E50259-02" name="partnum"/>
+<meta content="JSDPG" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Deployment Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="part_basics.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="deploy_overview.html">
+                Next</a><hr/>
+<div id="JSDPG101"><a id="BABJCFHC" name="BABJCFHC"/>
+<h1><span>2</span> Getting Started</h1>
+<a id="JSDPG562" name="JSDPG562"/>
+<p>This topic describes the basics of deploying your Java and JavaFX applications.</p>
+<p>This topic contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#A1278746">Basic Steps</a></p>
+</li>
+<li>
+<p><a href="#A1276740">Choose the Execution Environment</a></p>
+</li>
+<li>
+<p><a href="#CHDHBBAB">Create the Package</a></p>
+</li>
+<li>
+<p><a href="#A1334040">Create the Web Page</a></p>
+</li>
+<li>
+<p><a href="#A1335028">Distribute Your Application</a></p>
+</li>
+<li>
+<p><a href="#A1336130">Beyond the Basics</a></p>
+</li>
+</ul>
+<a id="A1278746" name="A1278746"/>
+<div id="JSDPG563">
+<h2><span>2.1</span> Basic Steps</h2>
+<p>Have an application ready to publish? Follow these steps for basic deployment:</p>
+<ol>
+<li>
+<p>Decide how you want users to access and run your application.</p>
+<p>Applications can be deployed on a user's desktop, embedded in a web page, or launched from a browser.</p>
+</li>
+<li>
+<p>Create the application package.</p>
+<p>The application package consists of the JAR files needed to run your application, and the deployment descriptor or JNLP file for applications that are embedded in a web page or are launched from a browser. If your application is embedded in a web page or is launched from a browser, the JAR files must be signed with a valid signing certificate. A self-contained application package also includes the JRE needed.</p>
+</li>
+<li>
+<p>Set up the web page, if your application is embedded in a web page or is launched from a browser.</p>
+<p>The web page needs either HTML elements or JavaScript code to run an application embedded in the page. JavaScript code is needed to launch an application from the browser. The Java packaging tools generate JavaScript code for both types of execution, which you can copy into your web page.</p>
+</li>
+<li>
+<p>Copy the package to the location from which you want users to access it.</p>
+<p>A web server is typically used for applications embedded in a web page or launched from a browser. Desktop applications can be delivered directly to users or made available through an app store.</p>
+</li>
+</ol>
+</div>
+
+<a id="A1276740" name="A1276740"/>
+<div id="JSDPG546">
+<h2><span>2.2</span> Choose the Execution Environment</h2>
+<p>Java and JavaFX applications can be run in multiple execution environments. How you want users to access your application determines how you deploy it. The following options are available:</p>
+<ul>
+<li>
+<p>Launch as a desktop application</p>
+<p>Users can start the application from the command line using the Java launcher, or by double-clicking the JAR file for the application.</p>
+</li>
+<li>
+<p>Launch from a browser</p>
+<p>Users can download and start the application by clicking a link in the browser.</p>
+</li>
+<li>
+<p>View in a web page</p>
+<p>The application starts when the web page is loaded.</p>
+</li>
+</ul>
+<p>Each environment has advantages and disadvantages. See <a href="deploy_overview.html#BABCGDJF">Section 3.1, "Execution Modes"</a> for more information.</p>
+</div>
+
+<a id="CHDHBBAB" name="CHDHBBAB"/>
+<div id="JSDPG344">
+<h2><span>2.3</span> Create the Package</h2>
+<p>By default, the Java packaging tools generate the following collection of files needed to run the application:</p>
+<ul>
+<li>
+<p>An application JAR file (or multiple JAR files for large applications)</p>
+<p>Applications that are embedded in a web page or launched from a browser must be signed with a valid signing certificate. The packaging tools or the <code dir="ltr">jar</code> command can be used to sign the JAR file.</p>
+</li>
+<li>
+<p>A JNLP file with a deployment descriptor</p>
+<p>A deployment descriptor is an XML file that describes application components, platform requirements, and launch rules.</p>
+</li>
+<li>
+<p>An HTML file containing JavaScript code to embed or launch applications from the web page</p>
+</li>
+</ul>
+<p>Applications can also be packaged as a platform-specific, self-contained application. Self-contained applications include all application resources, the JRE, and a launcher. These applications provide the same install and launch experience as native applications for the operating system.</p>
+<p>Self-contained applications can be distributed as zip files or as installable packages: EXE or MSI for Windows; DMG, PKG, or mac.appStore for OS X, or RPM or DEB for Linux.</p>
+<p>Self-contained applications provide the following benefits:</p>
+<ul>
+<li>
+<p>They resemble native applications for the target platform.</p>
+<p>Users install the application with an installer that is familiar to them, and launch it in the usual way.</p>
+</li>
+<li>
+<p>They offer no-hassle compatibility.</p>
+<p>The version of JRE that is used by the application is controlled by the application developer.</p>
+</li>
+<li>
+<p>They are easily deployed on fresh systems with no requirement for the JRE to be installed.</p>
+</li>
+<li>
+<p>Deployment occurs with no need for admin permissions when using ZIP or user-level installers.</p>
+</li>
+</ul>
+<p>For more information, see <a href="self-contained-packaging.html#BCGIBBCI">Chapter 7, "Self-Contained Application Packaging."</a></p>
+<a id="A1278410" name="A1278410"/>
+<div id="JSDPG564">
+<h3><span>2.3.1</span> Packaging Tools</h3>
+<p>Three different tools are available for packaging your application:</p>
+<ul>
+<li>
+<p><a href="#CIHHIIGG">Section 2.3.1.1, "NetBeans IDE"</a></p>
+</li>
+<li>
+<p><a href="#CIHGBCHF">Section 2.3.1.2, "Ant Tasks"</a></p>
+</li>
+<li>
+<p><a href="#CIHIHJJB">Section 2.3.1.3, "Java Packager Command-Line Tool"</a></p>
+</li>
+</ul>
+<p>For more information about Java packaging, see Chapter 6, "Packaging Basics."</p>
+<a id="CIHHIIGG" name="CIHHIIGG"/>
+<div id="JSDPG517">
+<h4><span>2.3.1.1</span> NetBeans IDE</h4>
+<p>If you use Netbeans IDE, then much of the work is done for you. Open <b>Project Properties</b> to specify preferred dimensions for your JavaFX application scene. Build the project with <b>Clean and Build</b>. The application package is generated in the <code dir="ltr">dist</code> folder. To test your application, open this folder in Windows Explorer and double-click the HTML, JNLP, or JAR file, depending on your execution environment.</p>
+<p>To package a self-contained application, customize the <code dir="ltr">build.xml</code> script in the NetBeans IDE. For more information, see <a href="self-contained-packaging.html#BCGGACFA">Section 7.3.2, "Basic Build."</a></p>
+</div>
+
+<a id="CIHGBCHF" name="CIHGBCHF"/>
+<div id="JSDPG518">
+<h4><span>2.3.1.2</span> Ant Tasks</h4>
+<p>If you are using another IDE, then you can add Java packaging as a post-build step, using Ant tasks that are included in the JDK. <a href="#CIHBFBCE">Example 2-1</a> shows an Ant package task for the JavaFX example Colorful Circles. Download the <a href="http://docs.oracle.com/javase/8/javafx/sample-apps/ColorfulCircles.zip">ColorfulCircles.zip</a> file for the complete Colorful Circles example.</p>
+<p>When you add the <code dir="ltr">nativeBundles="all"</code> attribute into the <code dir="ltr">&lt;fx:deploy&gt;</code> Ant task, all possible packages are created: a standalone application package, one or more self-contained application packages for the platform on which you are running, and a web deployment package. Installable packages are created based on the third-party software that is available at packaging time. For example, if you have both Inno Setup and WiX on Windows, then you get three packages: a folder with the application, an .exe installer file, and an .msi installer file. For more information, see <a href="packaging.html#BABFECGG">Chapter 5, "Packaging Basics."</a> A simple Ant task with the <code dir="ltr">nativeBundles</code> attribute is shown in <a href="#CIHBFBCE">Example 2-1</a>.</p>
+<div id="JSDPG345"><a id="CIHBFBCE" name="CIHBFBCE"/>
+<p>Example 2-1 Ant Task to Produce All Packages for the ColorfulCircles Application</p>
+<pre dir="ltr" xml:space="preserve">
+&lt;taskdef resource="com/sun/javafx/tools/ant/antlib.xml"      
+        uri="javafx:com.sun.javafx.tools.ant"
+        classpath="${javafx.sdk.path}/lib/ant-javafx.jar"/&gt;
+ 
+&lt;fx:jar destfile="dist-web/ColorfulCircles.jar"&gt;
+    &lt;fx:application mainClass="colorfulcircles.ColorfulCircles"/&gt;
+    &lt;fileset dir="build/classes/"&gt;
+        &lt;include name="**"/&gt;
+    &lt;/fileset&gt;
+&lt;/fx:jar&gt;
+ 
+&lt;fx:deploy width="800" height="600" outdir="dist-web" 
+        outfile="ColorfulCircles" <b>nativeBundles="all"</b>&gt;
+    &lt;fx:info title="Colorful Circles"/&gt;
+    &lt;fx:application name="Colorful Circles example"
+            mainClass="colorfulcircles.ColorfulCircles"/&gt;
+    &lt;fx:resources&gt;
+        &lt;fx:fileset dir="dist-web" includes="ColorfulCircles.jar"/&gt;
+    &lt;/fx:resources&gt;
+&lt;/fx:deploy&gt; 
+</pre></div>
+
+<p>If your application will be embedded in a web page or launched from a browser, include the required JAR mainfest attributes in the <code dir="ltr">&lt;fx:jar&gt;</code> task and include an <code dir="ltr">&lt;fx:signjar&gt;</code> task.</p>
+</div>
+
+<a id="CIHIHJJB" name="CIHIHJJB"/>
+<div id="JSDPG519">
+<h4><span>2.3.1.3</span> Java Packager Command-Line Tool</h4>
+<p>If you cannot use Ant and prefer command-line tools, use the Java Packager tool that comes with the JDK. The Java Packager tool has several commands for packaging applications, described in <a href="packager.html#CCHIHIIJ">Chapter 9, "The Java Packager Tool."</a> For a quick test build, you can use the <code dir="ltr">javapackager -makeall</code> command, such as the one in <a href="#CIHFEBGH">Example 2-2</a>. This command compiles source code and combines the <code dir="ltr">javapackager -createjar</code> and <code dir="ltr">javapackager -deploy</code> commands, with simplified options.</p>
+<div id="JSDPG346"><a id="CIHFEBGH" name="CIHFEBGH"/>
+<p>Example 2-2 javapackager -makeall Command to Build an Application</p>
+<pre dir="ltr" xml:space="preserve">
+javapackager -makeall -appclass colorfulcircles.ColorfulCircles 
+    -name "Colorful Circles" -width 800 -height 600
+</pre></div>
+
+<p>As a command intended only to help to build simple projects quickly, the <code dir="ltr">-makeall</code> command supports a limited set of options to customize the command behavior. The <code dir="ltr">-makeall</code> command makes the following assumptions about input and output files:</p>
+<ul>
+<li>
+<p>Source and other resource files must be in a directory named <code dir="ltr">src</code> under the main project directory.</p>
+</li>
+<li>
+<p>The resulting package is always generated to a directory named <code dir="ltr">dist</code>, and file names all start with the dist prefix.</p>
+</li>
+<li>
+<p>By default, the <code dir="ltr">-makeall</code> command tries to build a self-contained application package. If this is not possible, the JAR, HTML, and JNLP files are generated so you can deploy to other execution modes.</p>
+</li>
+</ul>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+For JavaFX applications that are embedded in a web page, stage width and height must always be specified.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>When your application is ready to go live, use the <code dir="ltr">-createjar</code> and <code dir="ltr">-deploy</code> commands instead of the <code dir="ltr">-makeall</code> command. The <code dir="ltr">-createjar</code> and <code dir="ltr">-deploy</code> commands have considerably more options. Also use the <code dir="ltr">-signjar</code> command if your application is embedded in a web page or launched from a browser. You can create a self-contained application package with the <code dir="ltr">-deploy</code> command plus the <code dir="ltr">-native</code> option, for example:</p>
+<pre dir="ltr" xml:space="preserve">
+javapackager -deploy -native -outdir packages -outfile ColorfulCircles 
+    -srcdir dist -srcfiles ColorfulCircles.jar 
+    -appclass colorfulcircles.ColorfulCircles 
+</pre>
+<p>For more information, see Section <a href="packaging.html#BABBBEJH">Section 5.3.1, "Java Packaging Tools."</a></p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Tip:</b></p>
+For even more flexibility of options, use an Ant task instead of the Java Packager tool.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+</div>
+</div>
+
+<a id="A1334040" name="A1334040"/>
+<div id="JSDPG660">
+<h2><span>2.4</span> Create the Web Page</h2>
+<p>If your application is embedded in a web page or launched from a browser, you need to set up the web page that provides users with access to your application. The Java Plug-in is used to run an application embedded in the web page. Java Web Start is used to run an application that is launched from the browser.</p>
+<p>You can use an <code dir="ltr">&lt;applet&gt;</code> or <code dir="ltr">&lt;object&gt;</code> element or JavaScript code for applications that are embedded in a web page and use the Java Plug-In to run. Use JavaScript code to create the link or button that calls Java Web Start to launch an application from the browser. The Java packaging tools generate JavaScript code for both types of execution, which you can copy into your web page.</p>
+<p>The HTML page generated by the packaging tools is a simple test page for your application. It includes sample JavaScript code to launch and embed your application, which you can copy to your own web page. To avoid manual copying, consider using HTML templates for application packaging to insert the JavaScript code into an existing web page. For more information, see <a href="packaging.html#BABCDFAJ">Section 5.7.4, "Web Page Templates."</a></p>
+</div>
+
+<a id="A1335028" name="A1335028"/>
+<div id="JSDPG661">
+<h2><span>2.5</span> Distribute Your Application</h2>
+<p>When you have your application package and any web pages that you are using, copy them to the appropriate location to make your application available to users.</p>
+<ul>
+<li>
+<p>If your application is embedded in a web page or launched from a browser, copy your package and the web page to the web server from which they will be loaded.</p>
+</li>
+<li>
+<p>If your application is a desktop application, copy the application to the location from which users will download it. Self-contained applications provide installable packages and the required JRE, which makes it easier for users to install and run your application.</p>
+</li>
+</ul>
+</div>
+
+<a id="A1336130" name="A1336130"/>
+<div id="JSDPG662">
+<h2><span>2.6</span> Beyond the Basics</h2>
+<p>This topic provides the minimum information needed to deploy a simple application, which makes use of the default processing that is provided by the packaging tools. More advanced applications could have additional requirements, for example:</p>
+<ul>
+<li>
+<p>Include a custom splash screen that is shown when your application is loaded.</p>
+</li>
+<li>
+<p>Include a custom progress bar that is shown while your application is loading.</p>
+</li>
+<li>
+<p>Use JavaScript code to communicate between your application and the web page in which it is embedded.</p>
+</li>
+<li>
+<p>Deploy Swing and SWT Applications with Embedded JavaFX Content</p>
+</li>
+<li>
+<p>Minimize the number of security dialogs and the warnings contained within the dialogs to help ensure users that it is safe to run your application.</p>
+</li>
+</ul>
+<p>The <a href="http://docs.oracle.com/javase/tutorial/deployment/index.html">Deployment trail</a> in the Java Tutorials also provides information to help you deploy applications embedded in a web page or launched from a browser.</p>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="part_basics.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="deploy_overview.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

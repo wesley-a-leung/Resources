@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Java Mission Control</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:27Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr001.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr003.html">
+                Next</a><hr/><a id="BABIBBDE" name="BABIBBDE"/>
+<div id="JSTGD117">
+<h1><span>2.2</span> Java Mission Control</h1>
+<p>The Java Mission Control (JMC) is a new JDK profiling and diagnostics tools platform for HotSpot JVM. It is a tool suite for basic monitoring, managing, and production time profiling and diagnostics with high performance. Java Mission Control minimizes the performance overhead that's usually an issue with profiling tools. This tool is a commercial feature built into the JVM and available at runtime.</p>
+<p>The Java Flight Recorder (JFR) is a commercial feature. You can use it for free on developer desktops/laptops, and for evaluation purposes in test, development, and production environments. However, to enable JFR <b>on a production server, you require a commercial license</b>. Using JMC UI for other purposes on the JDK <b>does not require a commercial license</b>.</p>
+<p>The Java Mission Control (JMC) consists of Java Management Console (JMX), Java Flight Recorder (JFR), and several other plug-ins downloadable from the tool. The JMX is a tool for monitoring and managing Java applications and the JFR is a profiling tool. Java Mission Control is also available as a set of plug-ins for the Eclipse IDE.</p>
+<p>The following topic describes how to troubleshoot with Java Mission Control.</p>
+<ul>
+<li>
+<p><a href="#BABDCBGE">Troubleshoot with Java Mission Control</a></p>
+</li>
+</ul>
+<a id="BABDCBGE" name="BABDCBGE"/>
+<div id="JSTGD118">
+<h2><span>2.2.1</span> Troubleshoot with Java Mission Control</h2>
+<p>Java Mission Control allows you to perform the following troubleshooting activities:</p>
+<ul>
+<li>
+<p>Java Management console (JMX) connects to a running JVM, collects and displays key characteristics in real time.</p>
+</li>
+<li>
+<p>Triggers user provided custom actions and rules for JVM, which requires JDK 8.</p>
+</li>
+<li>
+<p>Experimental plug-ins like - <code dir="ltr">WLS</code>, <code dir="ltr">DTrace</code>, <code dir="ltr">JOverflow</code> and others from JMC tool provide troubleshooting activities.</p>
+<ul>
+<li>
+<p><code dir="ltr">DTrace</code> plug-in is an extended <code dir="ltr">DScript</code> language to produce self describing events. It provides visualization similar to Flight Recorder.</p>
+</li>
+</ul>
+<ul>
+<li>
+<p><code dir="ltr">JOverflow</code> is another plug-in tool for analyzing heap waste (empty/sparse collections), which uses <code dir="ltr">hprof</code> dumps. It is recommended to use JDK 8 release for optimal use of <code dir="ltr">JOverflow</code> plug-in.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>The Java Flight Recordings (JFR) in Java Mission Control is available to analyze events. The pre-configured tabs allow easy drill down in various areas of common interest, such as, code, memory and gc, threads and IO. The General Events tab and Operative Events tab together allow drilling down further and rapidly homing in on a set of events with certain properties. The Events tab usually have check boxes to only show events in the Operative set.</p>
+<ul>
+<li>
+<p>JFR when used as a plug-in for JMC client presents diagnostic information in logically grouped tables, charts, and dials. It enables you to select the range of time and level of detail necessary to focus on the problem. For more details about JFR, see <a href="http://docs.oracle.com/javacomponents/jmc.htm">Java Flight Recorder</a>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>The Java Mission Control plug-ins connect to JVM using Java Management Extensions (JMX) agent. The JMX is a standard API for management and monitoring of resources such as applications, devices, services, and the Java Virtual Machine. For more details about JMX, see <a href="../jmx/index.html">Java Management Extensions</a>.</p>
+</li>
+</ul>
+<p>For more details about JMC, see the <a href="http://docs.oracle.com/javacomponents/jmc.htm">JMC documentation</a>.</p>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr001.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr003.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

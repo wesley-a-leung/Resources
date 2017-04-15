@@ -1,0 +1,102 @@
+#
+# Copyright (c) 2004, Oracle and/or its affiliates. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+#   - Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#
+#   - Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#
+#   - Neither the name of Oracle or the names of its
+#     contributors may be used to endorse or promote products derived
+#     from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+# IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# 
+
+# ==============================================================================
+#
+#  JMX Tutorial Introductory Example : Instrumenting Your Own Applications.
+#                                      Using MXBeans.
+#
+#  The aim of this introductory example is to show the basic features of
+#  the JMX technology first by instrumenting a simple resource using the new
+#  type of MBean, i.e. MXBeans, and second by performing operations on it using
+#  the jconsole tool. This example shows the implementation of an MXBean, how to
+#  register it in the Platform MBean Server and how to perform remote operations
+#  on it by connecting to the RMI connector server using the jconsole tool. The
+#  goal of this example is to show a simple MXBean that manages a resource of
+#  type Queue<String>. The MXBean declares a getter getQueueSample that takes
+#  a snapshot of the queue when invoked and returns a Java class QueueSample
+#  that bundles the following values together: the time the snapshot was taken,
+#  the queue size and the head of the queue at that given time. The MXBean also
+#  declares an operation clearQueue that clears all the elements in the queue
+#  being managed. The example also shows how to register this MXBean in the
+#  Platform MBean Server alongside the MBeans you can already see in jconsole.
+#  This examples also shows how the existing Platform MBean Server can be
+#  shared between the JVM and the application itself to register the application
+#  MBeans, thus avoiding the creation of multiple MBean Server instances on the
+#  same JVM.
+#
+# ==============================================================================
+#
+# In order to compile and run the example, make a copy of this README file, and
+# then simply cut and paste all the commands as needed into a terminal window.
+#
+# This README makes the assumption that you are running under Java SE 6 on Unix,
+# you are familiar with the JMX technology, and with the bourne shell or korn
+# shell syntax.
+#
+# All the commands below are defined using Unix korn shell syntax.
+#
+# If you are not running Unix and korn shell you are expected to be able to
+# adapt these commands to your favorite OS and shell environment.
+#
+
+# Compile Java classes
+#
+# The Java classes used in this example are contained in the com.example.mxbeans
+# Java package.
+#
+# * Main.java: gets the Platform MBean Server, and creates
+#              and registers the QueueSampler MXBean on it.
+#
+# * QueueSampler.java: implements the QueueSampler MXBean.
+#
+# * QueueSamplerMXBean.java: the management interface exposed
+#                            by the QueueSampler MXBean.
+#
+# * QueueSample.java: the Java type returned by the getQueueSample()
+#                     method in the QueueSampler MXBean interface.
+#
+
+javac com/example/mxbeans/*.java
+
+# Start the Main application
+#
+
+java com.example.mxbeans.Main
+
+# Start jconsole on a different shell window on the same machine
+#
+# JConsole is located in $(J2SE_HOME)/bin/jconsole
+#
+
+jconsole
+
+# ==============================================================================

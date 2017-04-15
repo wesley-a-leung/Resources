@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Getting Started with Java IDL: Using Stringified Object
+References</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Getting Started with Java IDL: Using Stringified
+Object References</h1>
+<p><i>This document was not updated for this release.</i></p>
+<p>To invoke an operation on a CORBA object, a client application
+needs a reference to the object. You can get such references in a
+number of ways, such as calling
+<tt>ORB.resolve_initial_references()</tt> or using another CORBA
+object (like the name service). In previous sections of this
+tutorial, you used both of these methods to get an initial object
+reference.</p>
+<p>Often, however, there is no naming service available in the
+distributed environment. In that situation, CORBA clients use a
+<a href=
+"../jidlGlossary.html#stringified__object__reference"><i>stringified</i>
+object reference</a> to find their first object.</p>
+<p>When updated, this lesson will teach you how to create a
+stringified object reference as a part of the server startup, and
+how the client gets that reference and destringifies it for use as
+a real object reference.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

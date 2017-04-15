@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Jar and Zip Change Summary for JDK 6</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Jar and Zip Enhancements</h1>
+<!-- Body text begins here -->
+This page summarizes enhancements to the jar and zip support
+provided in JDK 6.
+<h2>API changes</h2>
+<p>Two new compressed streams have been added:</p>
+<ul>
+<li><code>java.util.zip.DeflaterInputStream</code>: Data read from
+this stream is compressed.</li>
+<li><code>java.util.zip.InflaterOutputStream</code>: Data written
+to this stream is decompressed.</li>
+</ul>
+For example, these can be useful if a client wants to send
+compressed data over a network. The data can be compressed into
+packets with <code>DeflaterInputStream</code>, and those packets
+written over the network connection. The receiving end then reads
+the compressed packets from the network connection, and
+decompresses them by writing to an
+<code>InflaterOutputStream</code>.
+<h2>Implementation changes</h2>
+<p>On all platforms, zip files can contain more than 64k
+entries.</p>
+<p>On Windows, some limitations have been removed:</p>
+<ul>
+<li>File names longer than 256 characters are now supported.</li>
+<li>The limitation of just over 2,000 simultaneously open zip files
+has been removed.</li>
+</ul>
+<h2>Changes to the <code>jar</code> command</h2>
+<p>There are two changes to the behavior of the <code>jar</code>
+command:</p>
+<ul>
+<li>The timestamps of extracted files are those listed in the
+archive, instead of the time of extraction.</li>
+<li>When creating a jar, it is possible to specify the entry point
+for stand-alone applications bundled into an executable jar file.
+The 'e' option specifies the application entry point by creating or
+overriding the Main-Class attribute value in the jar file's
+manifest.</li>
+</ul>
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

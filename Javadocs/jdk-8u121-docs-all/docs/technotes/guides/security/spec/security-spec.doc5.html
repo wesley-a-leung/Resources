@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Security Architecture: -</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<table summary="" width="100%">
+<tr>
+<td>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href=
+"security-specTOC.fm.html">CONTENTS</a> | <a href=
+"security-spec.doc4.html">PREV</a> | <a href=
+"security-spec.doc6.html">NEXT</a> 
+<!-- | <a href="security-spec.doc.html">INDEX</a>  -->
+<!-- /font --></td>
+</tr>
+</table>
+<br />
+<h2><a name="a20588" id="a20588"><i>5</i> Secure Class
+Loading</a></h2>
+<a name="a28413" id="a28413"><!-- --></a> Dynamic class loading is
+an important feature of the Java Virtual Machine because it
+provides the Java platform with the ability to install software
+components at run-time. It has a number of unique characteristics.
+First of all, lazy loading means that classes are loaded on demand
+and at the last moment possible. Second, dynamic class loading
+maintains the type safety of the Java Virtual Machine by adding
+link-time checks, which replace certain run-time checks and are
+performed only once. Moreover, programmers can define their own
+class loaders that, for example, specify the remote location from
+which certain classes are loaded, or assign appropriate security
+attributes to them. Finally, class loaders can be used to provide
+separate name spaces for various software components. For example,
+a browser can load applets from different web pages using separate
+class loaders, thus maintaining a degree of isolation between those
+applet classes. In fact, these applets can contain classes of the
+same name -- these classes are treated as distinct types by the
+Java Virtual Machine.
+<p><a name="a28430" id="a28430"><!-- --></a> The class loading
+mechanism is not only central to the dynamic nature of the Java
+programming language. It also plays a critical role in providing
+security because the class loader is responsible for locating and
+fetching the class file, consulting the security policy, and
+defining the class object with the appropriate permissions.</p>
+<br />
+<h3><a name="a28488" id="a28488"><!-- --></a> <i>5.1</i> Class
+Loader Class Hierarchies</h3>
+<a name="a28490" id="a28490"><!-- --></a> When loading a class,
+because there can be multiple instances of class loader objects in
+one Java Virtual Machine, an important question is how do we
+determine which class loader to use. The Java 2 SDK has introduced
+multiple class loader classes are introduced that have distinct
+properties, so another important question is what type of class
+loader we should use.
+<p><a name="a28505" id="a28505"><!-- --></a> The root of the class
+loader class hierarchy is an abstract class called
+java.lang.ClassLoader, originally defined in JDK 1.0 and since
+expanded. Class java.security.SecureClassLoader, introduced in Java
+2 SDK, v 1.2, is a subclass and a concrete implementation of the
+abstract ClassLoader class. Class java.net.URLClassLoader is a
+subclass of SecureClassLoader.</p>
+<p><a name="a28537" id="a28537"><!-- --></a> A utility program
+called Appletviewer uses a private class
+sun.applet.AppletClassLoader to load applets. In JDK 1.0,
+AppletClassLoader is a subclass and concrete implementation of
+ClassLoader. In Java 2 SDK, it is a subclass of URLClassLoader.</p>
+<p><a name="a28538" id="a28538"><!-- --></a> When creating a custom
+class loader class, one can subclass from any of the above class
+loader classes, depending on the particular needs of the custom
+class loader. Because AppletClassLoader is a private class defined
+in the sun.* package, it is not supported and is subject to change,
+so one should not subclass from it.</p>
+<br />
+<h3><a name="a28414" id="a28414"><!-- --></a> <i>5.2</i> The
+Primordial Class Loader</h3>
+<a name="a28553" id="a28553"><!-- --></a> Because each class is
+loaded by its class loader, and each class loader itself is a class
+and must be loaded by another class loader, we seem to have the
+obvious chicken-and-egg problem, i.e., where does the first class
+loader come from? There is a &#34;primordial&#39;&#39; class loader
+that bootstraps the class loading process. The primordial class
+loader is generally written in a native language, such as C, and
+does not manifest itself within the Java context. The primordial
+class loader often loads classes from the local file system in a
+platform-dependent manner.
+<p><a name="a28564" id="a28564"><!-- --></a> Some classes, such as
+those defined in the java.* package, are essential for the correct
+functioning of the Java Virtual Machine and runtime system. They
+are often referred to as base classes. Due to historical reasons,
+all such classes have a class loader that is a null. This null
+class loader is perhaps the only sign of the existence of a
+primordial class loader. In fact, it is easier to simply view the
+null class loader as the primordial class loader.</p>
+<p><a name="a28656" id="a28656"><!-- --></a> Given all classes in
+one Java application environment, we can easily form a class
+loading tree to reflect the class loading relationship. Each class
+that is not a class loader is a leaf node. Each class&#39;s parent
+node is its class loader, with the null class loader being the root
+class. Such a structure is a tree because there cannot be cycles --
+a class loader cannot have loaded its own ancestor class
+loader.</p>
+<br />
+<h3><a name="a28657" id="a28657"><!-- --></a> <i>5.3</i> Class
+Loader Delegation</h3>
+<a name="a28658" id="a28658"><!-- --></a> When one class loader is
+asked to load a class, this class loader either loads the class
+itself or it can ask another class loader to do so. In other words,
+the first class loader can delegate to the second class loader. The
+delegation relationship is virtual in the sense that it has nothing
+to do with which class loader loads which other class loader.
+Instead, the delegation relationship is formed when class loader
+objects are created, and in the form of a parent-child
+relationship. Nevertheless, the system class loader is the
+delegation root ancestor of all class loaders. Care must be taken
+to ensure that the delegation relationship does not contain cycles.
+Otherwise, the delegation process may enter into an infinite
+loop.<br />
+<h3><a name="a28633" id="a28633"><!-- --></a> <i>5.4</i> Class
+Resolution Algorithm</h3>
+<a name="a29062" id="a29062"><!-- --></a> The default
+implementation of the Java 2 SDK ClassLoader method for loading a
+class searches for classes in the following order:
+<ul>
+<li><a name="a28682" id="a28682"><!-- --></a> Check if the class
+has already been loaded.</li>
+<li><a name="a28684" id="a28684"><!-- --></a> If the current class
+loader has a specified delegation parent, delegate to the parent to
+try to load this class. If there is no parent, delegate to the
+primordial class loader.</li>
+<li><a name="a28696" id="a28696"><!-- --></a> Call a customizable
+method to find the class elsewhere.</li>
+</ul>
+<a name="a28698" id="a28698"><!-- --></a> Here, the first step
+looks into the class loader&#39;s local cache (or its functional
+equivalent, such as a global cache) to see if a loaded class
+matches the target class. The last step provides a way to customize
+the mechanism for looking for classes; thus a custom class loader
+can override this method to specify how a class should be looked
+up. For example, an applet class loader can override this method to
+go back to the applet host and try to locate the class file and
+load it over the network.
+<p><a name="a28770" id="a28770"><!-- --></a> If at any step a class
+is located, it is returned. If the class is not found using the
+above steps, a ClassNotFound exception is thrown.</p>
+<p><a name="a28709" id="a28709"><!-- --></a> Observe that it is
+critical for type safety that the same class not be loaded more
+than once by the same class loader. If the class is not among those
+already loaded, the current class loader attempts to delegate the
+task to the parent class loader. This can occur recursively. This
+ensures that the appropriate class loader is used. For example,
+when locating a system class, the delegation process continues
+until the system class loader is reached.</p>
+<p><a name="a28779" id="a28779"><!-- --></a> We have seen the
+delegation algorithm earlier. But, given the name of any class,
+which class loader do we start with in trying to load the class?
+The rules for determining the class loader are the following:</p>
+<ul>
+<li><a name="a28790" id="a28790"><!-- --></a> When loading the
+first class of an application, a new instance of the URLClassLoader
+is used.</li>
+<li><a name="a28801" id="a28801"><!-- --></a> When loading the
+first class of an applet, a new instance of the AppletClassLoader
+is used.</li>
+<li><a name="a28802" id="a28802"><!-- --></a> When
+java.lang.Class.ForName is directly called, the primordial class
+loader is used.</li>
+<li><a name="a28808" id="a28808"><!-- --></a> If the request to
+load a class is triggered by a reference to it from an existing
+class, the class loader for the existing class is asked to load the
+class.</li>
+</ul>
+<a name="a28818" id="a28818"><!-- --></a> Note that rules about the
+use of URLClassLoader and AppletClassLoader instances have
+exceptions and can vary depending on the particular system
+environment. For example, a web browser may choose to reuse an
+existing AppletClassLoader to load applet classes from the same web
+page.
+<p><a name="a28825" id="a28825"><!-- --></a> Due to the power of
+class loaders, we severely restrict who can create class loader
+instances. On the other hand, it is desirable to provide a
+convenient mechanism for applications or applets to specify URL
+locations and load classes from them. We provide static methods to
+allow any program to create instances of the URLClassLoader class,
+although not other types of class loaders.</p>
+<p><a name="a28831" id="a28831"><!-- --></a></p>
+<br />
+<hr />
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href=
+"security-specTOC.fm.html">CONTENTS</a> | <a href=
+"security-spec.doc4.html">PREV</a> | <a href=
+"security-spec.doc6.html">NEXT</a> 
+<!-- | <a href="security-spec.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

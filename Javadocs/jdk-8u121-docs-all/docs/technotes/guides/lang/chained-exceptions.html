@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Chained Exception Facility</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Chained Exception Facility</h1>
+<p>It is common for Java code to catch one exception and throw
+another:</p>
+<pre class="codeblock">
+try {
+    ...
+} catch(YourException e) {
+    throw new MyException();
+}
+</pre>
+<p>Unfortunately, the information contained in the "causative
+exception" (<tt>YourException</tt> in the example above) is
+generally lost, which greatly complicates debugging. Recognizing
+this problem, developers sometimes build ad hoc mechanisms to allow
+certain "wrapped exceptions" to contain a second exception. An
+accessor is generally provided to extract the contained exception.
+Such mechanisms are sometimes known as "exception chaining
+facilities", as they allow arbitrary chains of exceptions to be
+constructed when contained exceptions are, themselves, wrapped
+exceptions.</p>
+<p>There are many advantages to unifying all of these facilities.
+Chief among them are: (1) We guarantee that anyone who wants to
+record the fact that one exception caused another can do so,
+regardless of what the exceptions are. (2) By providing a common
+API to record the fact that one exception caused another, we ease
+this task, making it more likely that programmers will take the
+trouble to do it. (3) By providing a common API to access causative
+exceptions, we greatly increase the likelihood that this
+information will be made available to those who need it. In fact,
+the proposed mechanism prints entire "causal chain" as part of the
+standard stack backtrace, ensuring that preexisting programs will
+provide this information with no additional effort on the part of
+their authors.</p>
+<p>To address these issues, we have added two new methods to
+<tt>Throwable</tt>, <a href=
+"../../../api/java/lang/Throwable.html#getCause--"><tt>getCause()</tt></a>
+and <a href=
+"../../../api/java/lang/Throwable.html#initCause-java.lang.Throwable-">
+<tt>initCause(Throwable)</tt></a>, and two new constructors,
+<a href=
+"../../../api/java/lang/Throwable.html#Throwable-java.lang.Throwable-">
+<tt>Throwable(Throwable)</tt></a> and <a href=
+"../../../api/java/lang/Throwable.html#Throwable-java.lang.String-java.lang.Throwable-">
+<tt>Throwable(String, Throwable)</tt></a>. Other "general purpose"
+exception classes (like <a href=
+"../../../api/java/lang/Exception.html"><tt>Exception</tt></a>,
+<a href=
+"../../../api/java/lang/RuntimeException.html"><tt>RunTimeException</tt></a>
+and <a href="../../../api/java/lang/Error.html"><tt>Error</tt></a>)
+have been similarly outfitted with <tt>(Throwable)</tt> and
+<tt>(String,&nbsp;Throwable</tt>) constructors. However, even
+exceptions without such constructors will be usable as "wrapped
+exceptions" via the <tt>initCause</tt> method.</p>
+<p>The implementation of <a href=
+"../../../api/java/lang/Throwable.html#printStackTrace--"><tt>Throwable.printStackTrace</tt></a>
+has been modified to display backtraces for the entire causal chain
+of exceptions. New method <tt><a href=
+"../../../api/java/lang/Throwable.html#getStackTrace--">getStackTrace</a></tt>
+provides programmatic access to the stack trace information
+provided by <tt>printStackTrace</tt>.</p>
+<p>All of the platform's wrapped exceptions will be retrofitted to
+support the new facility (in addition to their legacy APIs).</p>
+<p><!--
+The bugtraq report that corresponds to this change is <A href="http://bugs.java.com/view_bug.do?bug_id=4209652">4209652</A>.
+-->
+ <!-- Body text ends here --></p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

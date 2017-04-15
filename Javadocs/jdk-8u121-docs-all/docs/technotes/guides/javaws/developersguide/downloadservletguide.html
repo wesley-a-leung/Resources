@@ -1,0 +1,663 @@
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>JnlpDownloadServlet Guide</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<p><small><a href="contents.html">&lt; Contents</a></small></p>
+<h1>JnlpDownloadServlet Guide</h1>
+<p>&nbsp;</p>
+<h2>Table of Contents</h2>
+<dl>
+<dd><b><a href="#introduction">Introduction</a></b></dd>
+<dd><b><a href="#using">Using
+<code>JnlpDownloadServlet</code></a></b></dd>
+<dd><b><a href="#substitutions">Substitutions</a></b></dd>
+<dd><b><a href="#requests">Version, Extension, and Platform
+Requests</a></b></dd>
+<dd><b><a href="#incremental">Incremental Updates with
+JARDiff</a></b></dd>
+<dd><b><a href="#pack200">Faster Downloads with
+Pack200</a></b></dd>
+<dd><b><a href="#other">Other Features</a></b></dd>
+<dd><b><a href="#building">Building
+<code>JnlpDownloadServlet</code></a></b></dd>
+<dd><b><a href="#reference">Reference</a></b></dd>
+</dl>
+<h2><a name="introduction" id="introduction"></a>Introduction</h2>
+<p><code>JnlpDownloadServlet</code> is a servlet that simplifies
+the process of deploying Java Web Start applications on a web
+server as well as providing enhanced functionality.
+<code>JnlpDownloadServlet</code> is available in the
+<code>sample/jnlp/servlet</code> directory of the JDK, both as
+compiled JAR files and as source code.</p>
+<p>In the simplest case of JNLP deployment, you put your
+application files and a JNLP file on a web server. After you
+configure the web server for the JNLP MIME type, you have basic
+JNLP functionality &mdash; the user clicks on a JNLP file link in a
+browser and your application is downloaded and run.</p>
+<p>However, this approach has some drawbacks. First, the explicit
+URL of the application codebase must appear in the JNLP file. This
+means it must be changed if you decide to host your application
+elsewhere, or if you're moving from a local test server to a more
+public production server. In addition, the file system time stamp
+on your application files will be used to report the time stamp of
+your application, which might not be what you want. Finally, only
+the most basic parts of the JNLP protocol are implemented through
+HTTP. Versioning and other features are not supported.</p>
+<h3>Features</h3>
+<p><code>JnlpDownloadServlet</code> acts as a liaison between your
+application files and the client. It provides the following
+features:</p>
+<ul>
+<li>You do not have to hardcode codebase URLs in the JNLP file.
+This simplifies moving from one server to another.</li>
+<li>You can specify an explicit time stamp for your application
+files, instead of relying on file system time stamps.</li>
+<li>The servlet supports the full set of download protocols defined
+by the JNLP specification.</li>
+<li>Version information can be specified per file or per
+directory.</li>
+<li>The servlet generates JARDiff files.</li>
+<li>The servlet supports Pack200 compression for application
+files.</li>
+</ul>
+<h3>Baseline Example</h3>
+<p>To understand the useful features that
+<code>JnlpDownloadServlet</code> brings to application deployment,
+you must first understand the simplest way an application can be
+distributed using JNLP and Java Web Start.</p>
+<p>The <code>app1</code> example (in the
+<code>sample/jnlp/servlet</code> directory of the JDK) contains a
+simple application and, perhaps more valuable, an Ant build script
+that builds the application and bundles it in a WAR file for
+distribution on a web server.</p>
+<p>The application itself consists of a single class,
+<code>Pie</code>, and an image file, <i>key-lime.jpg</i>, which are
+packaged into the <i>pie.jar</i> JAR file.</p>
+<p>The <i>pie.jar</i> archive is packaged into a web application
+file, <i>app1.war</i>, which has these contents:</p>
+<pre>
+WEB-INF/web.xml
+index.html
+pie.jnlp
+pie.jar
+</pre>
+<p>The JNLP file describes the application, assuming it is deployed
+on a server at <code>http://localhost:8080/</code>, which works for
+a locally installed Tomcat server.</p>
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;jnlp spec="1.0+" codebase="http://localhost:8080/app1"&gt;
+    &lt;information&gt;
+        &lt;title&gt;Pie&lt;/title&gt;
+        &lt;vendor&gt;Example Vendor&lt;/vendor&gt;
+    &lt;/information&gt;
+    &lt;resources&gt;
+        &lt;j2se version="1.2+"/&gt;
+        &lt;jar href="pie.jar" main="true" /&gt;
+    &lt;/resources&gt;
+    &lt;application-desc/&gt;
+&lt;/jnlp&gt;
+</pre>
+<p>Consider the interaction between client and server as a
+dialog:</p>
+<p>[User clicks a link in the browser.]</p>
+<p>Client browser: May I please have <i>pie.jnlp</i>?</p>
+<p>Server: Yes, here you go.</p>
+<p>Client browser: I notice the MIME type is
+<code>application/x-java-jnlp-file</code>. Java Web Start, would
+you please handle <i>pie.jnlp</i> for me?</p>
+<p>Client Java Web Start: Let me see what resources are required
+for this application. Hey Server, can I please have
+<i>pie.jar</i>?</p>
+<p>Server: Here you go.</p>
+<p>Client Java Web Start: Now I'll launch the JAR file using its
+<code>Main-class</code> manifest attribute.</p>
+<p>[Application appears on the user's screen.]</p>
+<h3>Other Examples</h3>
+<p>The <code>app2</code> example shows how to bundle
+<code>JnlpDownloadServlet</code> with an application and how to use
+it to perform simple substitutions in a JNLP file.</p>
+<p>The <code>app3</code> example shows how a versioned resource
+request is handled by <code>JnlpDownloadServlet</code>.</p>
+<p>Both <code>app2</code> and <code>app3</code> will be referenced
+from the following sections.</p>
+<h2><a name="using" id="using"></a>Using
+<code>JnlpDownloadServlet</code></h2>
+<p>To take advantage of <code>JnlpDownloadServlet</code>, perform
+these steps.</p>
+<ol>
+<li>Package <code>JnlpDownloadServlet</code> in your web
+application WAR file. You must use two JAR files to have the full
+functionality, <code>jnlp-servlet.jar</code> and
+<code>jardiff.jar</code>. These two JAR files are put in the
+<code>WEB-INF/lib</code> directory of your WAR file.</li>
+<li>Map requests for <code>*.jnlp</code> and <code>*.jar</code> to
+<code>JnlpDownloadServlet</code> using your web application's
+<i>web.xml</i> file. It must contain lines that identify
+<code>JnlpDownloadServlet</code> and makes it the handler for JNLP
+and JAR files. Here is a complete example:
+<pre>
+&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+&lt;!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd"&gt;
+
+&lt;web-app&gt;
+
+  &lt;servlet&gt;
+    &lt;servlet-name&gt;JnlpDownloadServlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;jnlp.sample.servlet.JnlpDownloadServlet&lt;/servlet-class&gt;
+  &lt;/servlet&gt;
+  
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;JnlpDownloadServlet&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;*.jnlp&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;JnlpDownloadServlet&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;*.jar&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+
+&lt;/web-app&gt;
+</pre></li>
+</ol>
+<p>The <code>app2</code> and <code>app3</code> examples show how to
+package <code>JnlpDownloadServlet</code> in a web application.
+Review the Ant build script <code>app2/build.xml</code> or
+<code>app3/build.xml</code> for more information.</p>
+<h2><a name="substitutions" id=
+"substitutions"></a>Substitutions</h2>
+<p><code>JnlpDownloadServlet</code> makes convenient substitutions
+in your JNLP files. When the client requests a JNLP file, the
+servlet reads the original file, substitutes values, and returns
+the results.</p>
+<h3>Time Stamp</h3>
+<p>If the first line of your JNLP file contains a time stamp,
+<code>JnlpDownloadServlet</code> uses the value as a time stamp for
+your application. If you do not specify a time stamp,
+<code>JnlpDownloadServlet</code> uses the last modified time stamp
+from the file system.</p>
+<p>Using an explicit time stamp is useful if you copy a JNLP file
+to multiple servers for load balancing. The explicit time stamp
+ensures that clients see consistent results, regardless of which
+server they consult.</p>
+<p>To use an explicit time stamp, add a line to the top of your
+JNLP file. Begin the line with <code>TS:</code>. The rest of the
+line must contain a time stamp in ISO 8601 format, which has this
+basic format:</p>
+<pre>
+YYYY-MM-DD hh:mm:ss
+</pre>
+<p>Here is one example:</p>
+<pre>
+TS: 2010-08-07 21:19:05
+</pre>
+<p>Consult the <a href="#reference">Reference</a> section for a
+more complete description of the time stamp string.</p>
+<h3>Codebase and Other Values</h3>
+<p><code>JnlpDownloadServlet</code> makes substitutions for strings
+that begin with two dollar signs. For example, consider this line
+in a JNLP file:</p>
+<pre>
+&lt;jnlp spec="1.0+" codebase="$$codebase"&gt;
+</pre>
+<p>When a client requests the JNLP file,
+<code>JnlpDownloadServlet</code> substitutes the correct value for
+<code>$$codebase</code>, wherever it is deployed. This is
+convenient because you do not have to hardcode this value in the
+JNLP file, making it easier to move from server to server.</p>
+<p>The full list of substitutions is shown in the following
+table:</p>
+<table border="1" summary="JNLP file substitutions" align="center">
+<thead>
+<tr>
+<th id="jnlpname" align="left">Name</th>
+<th id="jnlpvalue" align="left">Substituted value</th>
+</tr>
+<tr>
+<td headers="jnlpname"><code>$$codebase</code></td>
+<td headers="jnlpvalue">The URL of the request except for the name
+of the JNLP file</td>
+</tr>
+<tr>
+<td headers="jnlpname"><code>$$name</code></td>
+<td headers="jnlpvalue">The name of the JNLP file</td>
+</tr>
+<tr>
+<td headers="jnlpname"><code>$$context</code></td>
+<td headers="jnlpvalue">The base URL of the web application</td>
+</tr>
+<tr>
+<td headers="jnlpname"><code>$$site</code></td>
+<td headers="jnlpvalue">The web server address</td>
+</tr>
+<tr>
+<td headers="jnlpname"><code>$$hostname</code></td>
+<td headers="jnlpvalue">The name of the server</td>
+</tr>
+</thead>
+</table>
+<p>For example, suppose the <code>app2</code> example is deployed
+at <code>example.com</code>. The values of each substitution would
+be as follows:</p>
+<table border="1" summary="JNLP file substitutions" align="center">
+<thead>
+<tr>
+<th id="subname" align="left">Name</th>
+<th id="subvalue" align="left">Substituted value</th>
+</tr>
+<tr>
+<td headers="subname"><code>$$codebase</code></td>
+<td headers="subvalue"><code>http://example.com/app2/</code></td>
+</tr>
+<tr>
+<td headers="subname"><code>$$name</code></td>
+<td headers="subvalue"><code>pie.jnlp</code></td>
+</tr>
+<tr>
+<td headers="subname"><code>$$context</code></td>
+<td headers="subvalue"><code>http://example.com/app2</code></td>
+</tr>
+<tr>
+<td headers="subname"><code>$$site</code></td>
+<td headers="subvalue"><code>http://example.com</code></td>
+</tr>
+<tr>
+<td headers="subname"><code>$$hostname</code></td>
+<td headers="subvalue"><code>example.com</code></td>
+</tr>
+</thead>
+</table>
+<p>The <code>app2/pie.jnlp</code> and <code>app3/pie.jnlp</code>
+examples use only <code>$$codebase</code>.</p>
+<h2><a name="requests" id="requests"></a>Version, Extension, and
+Platform Requests</h2>
+<p>The JNLP specification supports requesting application resources
+with explicit version numbers or resources for certain locales,
+operating systems, and system architectures. This means that you
+can deploy an application that has different libraries for
+different operating systems or different resource files for
+different locales.</p>
+<p><code>JnlpDownloadServlet</code> provides support for special
+requests with two different mechanisms. The first is a scheme for
+naming resource files where locales, operating systems, and other
+parameters are embedded in the file name. The second mechanism
+involves an XML file that describes the parameters of resource
+files in the same directory.</p>
+<h3>File Naming Convention</h3>
+<p><code>JnlpDownloadServlet</code> enables you to specify
+information about files by embedding it in a file name. If the file
+name contains two underscores in a row, the file name is treated as
+containing attributes. A prefix letter specifies the attribute
+information, as shown here:</p>
+<table border="1" summary="File Name Convention Prefixes" align=
+"center">
+<thead>
+<tr>
+<th id="name" align="left">Prefix</th>
+<th id="value" align="left">Meaning</th>
+</tr>
+<tr>
+<td headers="name"><code>V</code></td>
+<td headers="value">Version number</td>
+</tr>
+<tr>
+<td headers="name"><code>O</code></td>
+<td headers="value">Operating system</td>
+</tr>
+<tr>
+<td headers="name"><code>A</code></td>
+<td headers="value">Architecture</td>
+</tr>
+<tr>
+<td headers="name"><code>L</code></td>
+<td headers="value">Locale</td>
+</tr>
+</thead>
+</table>
+<p>Only one version is allowed per file, but a file can be
+associated with multiple operating system, architecture, or locale
+attributes. For example, <i>application__V1.2__Len_US__Len.jar</i>
+means that the resource <code>application.jar</code> has a version
+of <code>1.2</code>, and associated locales of <code>en_US</code>
+and <code>en</code>.</p>
+<p>For example, consider a JNLP file that contains this resource
+line:</p>
+<pre>
+&lt;jar href="app-lib.jar" version="2.0" /&gt;
+</pre>
+<p>When Java Web Start encounters this line in the JNLP file, it
+sends a request to the server for version 2.0 of
+<code>app-lib.jar</code>. If you have placed a file
+<code>app-lib__V2.0.jar</code> in your web application,
+<code>JnlpDownloadServlet</code> returns it to the client as
+version 2.0 of <code>app-lib.jar</code>. Note how the actual file
+name in your web application gets remapped to be visible to the
+client as <code>app-lib.jar</code>.</p>
+<h3>XML Version File</h3>
+<p>The file naming convention can be cumbersome, especially if you
+have multiple resource files that each have multiple associations
+for operating systems, architectures, or locales.</p>
+<p><code>JnlpDownloadServlet</code> supports an alternate
+mechanism, where all attributes are described in a separate XML
+file. The servlet looks for a <code>version.xml</code> file in the
+same directory as the resource. The <code>version.xml</code> file
+contains information about the other files in the same
+directory.</p>
+<p>For example, the following <code>version.xml</code> file
+describes a resource that is available to a client as
+<code>application.jar</code>. The actual file is stored in the same
+directory as <code>application-1_2-us.jar</code>.</p>
+<pre>
+&lt;jnlp-versions&gt;
+  &lt;resource&gt;
+    &lt;pattern&gt;
+      &lt;name&gt;application.jar&lt;/name&gt;
+      &lt;version-id&gt;1.2&lt;/version-id&gt;
+      &lt;locale&gt;en_US&lt;/locale&gt;
+      &lt;locale&gt;en&lt;/locale&gt;
+    &lt;/pattern&gt;
+    &lt;file&gt;application-1_2-us.jar&lt;/file&gt;
+  &lt;/resource&gt;
+&lt;/jnlp-versions&gt;
+</pre>
+<p>The <code>app3</code> example shows how to respond to a
+versioned request for a resource using the XML version file. In
+particular, the JNLP file contains this resource line:</p>
+<pre>
+&lt;jar href="app-lib.jar" version="2.0" /&gt;
+</pre>
+<p>The WAR file contains the library, <code>app-lib.jar</code>, and
+this XML version file <code>version.xml</code> that describes the
+library:</p>
+<pre>
+&lt;jnlp-versions&gt;
+  &lt;resource&gt;
+    &lt;pattern&gt;
+      &lt;name&gt;app-lib.jar&lt;/name&gt;
+      &lt;version-id&gt;2.0&lt;/version-id&gt;
+    &lt;/pattern&gt;
+    &lt;file&gt;app-lib-2.0.jar&lt;/file&gt;
+  &lt;/resource&gt;
+&lt;/jnlp-versions&gt;
+</pre>
+<p>Note how the actual name of the file,
+<code>app-lib-2.0.jar</code>, is remapped so that the file name
+visible from the client is <code>app-lib.jar</code>.</p>
+<h2><a name="incremental" id="incremental"></a>Incremental Updates
+with JARDiff</h2>
+<p><code>JnlpDownloadServlet</code> generates and returns
+incremental updates to JAR files, if possible. If the
+<code>current-version-id</code> parameter is included in the
+request, and the servlet can find both a match on the
+<code>current-version-id</code> and the requested version, and the
+request is for a JAR file, then a JARDiff file is generated by the
+servlet. The JARDiff file is returned if its size is less than that
+of the requested version.</p>
+<p>The JARDiff file is generated and stored in a temporary
+directory that is specific to the web container. The servlet finds
+the temporary working directory using the
+<code>javax.servlet.context.tempdir</code> context attribute.</p>
+<h2><a name="pack200" id="pack200"></a>Faster Downloads with
+Pack200</h2>
+<p>Pack200 is an efficient compression technology for JAR files.
+Download and installation times for applications are important
+factors in how users perceive applications. Making your application
+resources as small as possible reduces the amount of time users
+must wait for your application to download.</p>
+<p><code>JnlpDownloadServlet</code> can supply resources for
+clients, such as Java Web Start, that support GZIP and Pack200
+downloads. Place <code>*.jar.pack.gz</code> or
+<code>*.jar.gz</code> files together with your original
+<code>*.jar</code> files on the server. For example,
+<code>JnlpDownloadServlet</code> chooses the best of the following
+files, based upon what the client supports:</p>
+<pre>
+pie.jar
+pie.jar.gz
+pie.jar.pack.gz
+</pre>
+<p>You can create Pack200 files using the <code>pack200</code> tool
+that is included with the Java Development Kit. The
+<code>app3</code> example creates a Pack200 version of the
+<code>pie.jar</code> file. Look at <code>build.xml</code> to see
+how the Pack200 file is created. Because <code>pie.jar</code> is
+simple, the Pack200 file is negligibly smaller; however, for a
+larger JAR file, the compression is much greater.</p>
+<h2><a name="other" id="other"></a>Other Features</h2>
+<p>JNLP substitutions, Pack200 support, and file attribute support
+are the most useful features of <code>JnlpDownloadServlet</code>.
+The servlet also supports a logging system and MIME type
+mapping.</p>
+<h3>Logging</h3>
+<p>The servlet has logging capabilities that enable you to monitor
+its behavior. Logging messages are generated in different
+categories:</p>
+<ul>
+<li><code>FATAL</code> means a malfunction or internal error
+occurred inside the servlet.</li>
+<li><code>WARNING</code> indicates an error processing some of the
+information in the WAR file or parsing the <code>version.xml</code>
+file.</li>
+<li><code>INFORMATIONAL</code> logs all requests, replies,
+directory scanning, and so on.</li>
+<li><code>DEBUG</code> displays detailed internal information about
+how a request is processed.</li>
+</ul>
+<p>Logging output is controlled by two servlet initialization
+parameters, <code>logLevel</code> and <code>logPath</code>. The log
+level can be set to either <code>NONE</code>, <code>FATAL</code>,
+<code>WARNING</code>, <code>INFORMATIONAL</code>, or
+<code>DEBUG</code>. The log path specifies a file where the output
+is written. If no path is specified, logging is done to the
+standard log for servlets (using
+<code>ServletContext.log()</code>). Here is an example:</p>
+<pre>
+&lt;servlet&gt;
+  &lt;servlet-name&gt;
+    JnlpDownloadServlet
+  &lt;/servlet-name&gt;
+  &lt;servlet-class&gt;
+    jnlp.sample.servlet.JnlpDownloadServlet
+  &lt;/servlet-class&gt;
+
+  &lt;init-param&gt;
+    &lt;param-name&gt;
+      logLevel
+    &lt;/param-name&gt;
+
+    &lt;param-value&gt;
+      DEBUG
+    &lt;/param-value&gt;
+  &lt;/init-param&gt;
+
+  &lt;init-param&gt;
+    &lt;param-name&gt;
+      logPath
+    &lt;/param-name&gt;
+
+    &lt;param-value&gt;
+      /logs/jnlpdownloadservlet.log
+    &lt;/param-value&gt;
+  &lt;/init-param&gt;
+
+&lt;/servlet&gt;
+</pre>
+<h3>MIME Types</h3>
+<p>The servlet treats JNLP and JAR files specially. Substitutions
+are made in JNLP files as desribed in <a href=
+"#substitutions">Substitutions</a>. A version-based request for a
+JAR file can result in the generation of an incremental update. The
+servlet uses extensions to determine if a file is a JNLP or JAR
+file. The default extension of JNLP files is <code>.jnlp</code> and
+for JAR files is <code>.jar</code>. These default extensions can be
+overwritten by the initialization parameters:
+<code>jnlp-extension</code> and <code>jar-extension</code>. Here is
+an example:</p>
+<pre>
+&lt;init-param&gt;
+  &lt;param-name&gt;
+    jnlp-extension
+  &lt;/param-name&gt;
+
+  &lt;param-value&gt;
+    .xjnlp
+  &lt;/param-value&gt;
+&lt;/init-param&gt;
+</pre>
+<p>The MIME type that is returned for a file is also based on its
+extension. The MIME type is looked up in the configuration files
+for the web container and the WAR file. If no mapping is specified,
+the default MIME types are assigned:</p>
+<table border="1" summary="Default MIME Types" align="center">
+<thead>
+<tr>
+<th id="extension" align="left">Extension</th>
+<th id="mimetype" align="left">Default MIME Type</th>
+</tr>
+<tr>
+<td headers="extension"><code>.jnlp</code></td>
+<td headers="mimetype">
+<code>application/x-java-jnlp-file</code></td>
+</tr>
+<tr>
+<td headers="extension"><code>.jar</code></td>
+<td headers="mimetype"><code>application/x-java-archive</code></td>
+</tr>
+<tr>
+<td headers="extension"><code>.jardiff</code></td>
+<td headers="mimetype">
+<code>application/x-java-archive-diff</code></td>
+</tr>
+</thead>
+</table>
+<p>To change the MIME type <code>JnlpDownloadServlet</code>
+returns, use the <code>&lt;mime-type&gt;</code> element in the
+<code>web.xml</code> file. Here is an example:</p>
+<pre>
+&lt;web-app&gt;
+   ...
+   &lt;mime-mapping&gt;
+      &lt;extension&gt;jnlp&lt;/extension&gt;
+      &lt;mime-type&gt;text/ascii&lt;/mime-type&gt;
+   &lt;/mime-mapping&gt;
+   ...
+&lt;/web-app&gt;
+</pre>
+<h2><a name="building" id="building"></a>Building
+<code>JnlpDownloadServlet</code></h2>
+<p>Most of the time, you will use <code>JnlpDownloadServlet</code>
+directly. In rare cases, you might want to add functionality to
+<code>JnlpDownloadServlet</code>. The full source code is
+available, and the build is relatively straightforward.</p>
+<p>You must have GNU <code>make</code>, a Java Development Kit
+(JDK), and you must define environment variables. Here is one
+example on a Linux system.</p>
+<pre>
+$ export CLASS_PATH=/home/edmond/Applications/apache-tomcat-7.0.2/lib/servlet-api.jar
+$ export FILE_SEPARATOR=:
+$ export TMPDIR=/tmp
+$ export SDK_HOME=/home/edmond/jdk1.7.0
+$ make
+.
+.
+.
+</pre>
+<p>The output of the build is <code>lib/jnlp-servlet.jar</code> and
+<code>lib/jardiff.jar</code>.</p>
+<h2><a name="reference" id="reference"></a>Reference</h2>
+<h3>More Information About ISO 8601 Time Stamps</h3>
+<p>The general format of a time stamp is:</p>
+<pre>
+   YYYY-MM-DD hh:mm:ss
+</pre>
+<p>The dashes, colons, and seconds are optional:</p>
+<pre>
+   YYYYMMDDhhmm
+</pre>
+<p>The hh is in 24-hour notation. By default, the local time zone
+is used. Universal Time (UTC), also known as GMT time, can be
+specified by appending the capital letter <i>Z</i> to a time:</p>
+<pre>
+     23:59:59Z or 235959Z
+</pre>
+<p>The strings <code>+hh:mm</code>, <code>+hhmm</code>, or
+<code>+hh</code> can be added to the time to indicate that the
+local time zone is <code>hh</code> hours and <code>mm</code>
+minutes ahead of UTC. For time zones west of the zero meridian,
+which are behind UTC, the notation <code>-hh:mm</code>,
+<code>-hhmm</code>, or <code>-hh</code> is used instead. For
+example, Central European Time (CET) is +0100 and U.S./Canadian
+Eastern Standard Time (EST) is -0500. The following strings all
+indicate the same point in time:</p>
+<pre>
+     12:00Z = 13:00+01:00 = 0700-0500
+</pre>
+<h3>Specification of the XML Version File</h3>
+<p>The complete document type definition (DTD) for the
+<code>version.xml</code> file is shown here:</p>
+<pre>
+&lt;!ELEMENT jnlp-versions &lt;resource*, platform*)&gt;
+&lt;!ELEMENT resource (pattern, file)&gt;
+&lt;!ELEMENT platform (pattern, file, product-version-id)&gt;
+&lt;!ELEMENT pattern (name, version-id, os*, arch*, locale*)&gt;
+&lt;!ELEMENT name (#PCDATA)&gt;
+&lt;!ELEMENT version-id (#PCDATA)&gt;
+&lt;!ELEMENT os (#PCDATA)&gt;
+&lt;!ELEMENT arch (#PCDATA)&gt;
+&lt;!ELEMENT locale (#PCDATA)&gt;
+&lt;!ELEMENT file (#PCDATA)&gt;
+&lt;!ELEMENT product-version-id (#PCDATA)&gt;
+</pre>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- USE THIS TEMPLATE WHEN ENHANCEMENTS ARE LENGTHY; YOU THEN WILL USE A
+   SEPARATE FILE TO DOCUMENT THE ENHANCEMENTS OF EACH VERSION CURRENTLY SUPPORTED
+   -->
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>AWT Enhancements in Java SE 7</title>
+<meta name="collection" content="reference" />
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>AWT Enhancements in Java SE 7</h1>
+<h2>The following enhancements are introduced:</h2>
+<p><b>Area</b>: API: AWT<br />
+<b>Standard/Platform</b>: Java SE 7<br />
+<b>Synopsis</b>: The <tt>java.awt.Cursor</tt> class contained a
+"protected static field" called "predefined." This field has been
+removed.</p>
+<p><b>Area</b>: API: AWT<br />
+<b>Standard/Platform</b>: Java SE 7<br />
+<b>Synopsis</b>: Color alpha values are now preserved by
+<tt>java.awt.Color.darker()</tt> and
+<tt>java.awt.Color.lighter()</tt> methods.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6783910">6783910</a></p>
+<p><b>Area</b>: API: AWT<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: Limited mixing of heavyweight (e.g. AWT) and
+lightweight (e.g. Swing) components is now officially supported.
+Details are available in the API specification (see the <a href=
+"../../../api/java/awt/Component.html">java.awt.Component</a>
+class specification and its "See Also" link), and the <a href=
+"http://www.oracle.com/technetwork/articles/java/mixing-components-433992.html">
+Mixing Heavyweight and Lightweight Components</a> article. If an
+application uses custom code to address the mixing issue and
+experiences problems with the built-in support for mixing, the
+feature can be turned off by specifying the
+<tt>-Dsun.awt.disableMixing=true</tt> system property.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4811096">4811096</a></p>
+<p><b>Area</b>: API: AWT<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: The mechanism used to detect whether the window
+manager supports a system tray (and therefore the <tt>TrayIcon</tt>
+API) has been changed. Instead of looking at the current window
+manager, the <a href=
+"http://standards.freedesktop.org/systemtray-spec/systemtray-spec-0.2.html">
+System Tray Protocol Specification</a> is used.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6438179">6438179</a></p>
+<p><b>Area</b>: API: AWT<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: In the JDK 7 release there are two AWT toolkits
+that are supported. <tt>WToolkit</tt> on Windows and
+<tt>XToolkit</tt> on Linux/Solaris. The <tt>MToolkit</tt>
+implementation on Linux/Solaris is no longer supported.</p>
+<p><b>Area</b>: API: AWT<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: With this fix, all <tt>java.awt.Window</tt>
+objects (not frames or dialogs) are regular top-level windows on
+X11. In the JDK 6 release, they were <tt>OverrideRedirect</tt>
+windows.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6380835">6380835</a></p>
+<p><b>Area</b>: API: AWT<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: Windows that enable the
+<tt>PERPIXEL_TRANSLUCENT</tt> kind of transparency by means of
+setting a non-opaque background color may not display heavyweight
+(e.g. AWT) child components correctly. AWT supports lightweight
+(e.g. Swing) components in per-pixel translucent windows only. More
+information on the difference between the two kinds of components
+can be found in the <tt>Component</tt> class specification and in
+the <a href=
+"http://www.oracle.com/technetwork/articles/java/mixing-components-433992.html">
+Mixing Heavyweight and Lightweight Components</a> article.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6802853">6802853</a></p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

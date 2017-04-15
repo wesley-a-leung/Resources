@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Image I/O API Guide: 3 - Writing Image I/O
+Applications</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<table summary="" width="100%">
+<tr>
+<td>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href=
+"imageio_guideTOC.fm.html">CONTENTS</a> | <a href=
+"apps.fm4.html">PREV</a> | <a href="apps.fm6.html">NEXT</a> 
+<!-- | <a href="copyright.fm.html">INDEX</a>  -->
+<!-- /font --></td>
+</tr>
+</table>
+<br />
+<h2><a name="a997099" id="a997099"><i>3.5</i> Handling
+Metadata</a></h2>
+<a name="a997356" id="a997356"><!-- --></a> Data stored in an image
+file that does not represent actual pixel values is referred to as
+metadata. <code>The javax.imageio.metadata</code> package contains
+classes and interfaces for accessing metadata.
+<p><a name="a997364" id="a997364"><!-- --></a> Metadata may contain
+complex, hierarchical structures. The Java XML Document Object
+Model (DOM) API is used to represent these structures, allowing
+developers to leverage their knowledge of these interfaces.</p>
+<p><a name="a997367" id="a997367"><!-- --></a> The Image I/O API
+differentiates between stream metadata, which is associated with
+all images stored in an image file, and image metadata which is
+associated with a single image. For image formats that contain a
+single image, only image metadata is used.</p>
+<p><a name="a997377" id="a997377"><!-- --></a> Metadata may be
+obtained by calling the <code>ImageReader.getStreamMetadata</code>
+and <code>getImageMetadata(int imageIndex)</code> methods. These
+return an object that implements the <code>IIOMetadata</code>
+interface. The actual class type of the returned object is up to
+the <code>ImageReader</code>, and will usually be a unique class
+used only by that reader. This object should be designed to store
+as much of the metadata allowed by the format as possible, as
+losslessly as possible. However, this fidelity to the
+specifications of the image format comes at a cost, as access to
+the metadata becomes format-specific.</p>
+<p><a name="a997385" id="a997385"><!-- --></a> In order to allow
+access to the metadata without the need for format-specific
+application code, <code>IIOMetadata</code> objects expose their
+internal information in the form of an XML DOM structure, which is
+essentially a tree of nodes of various types that may contain a set
+of attributes (<code>String</code> values accessed by name), and
+which may reference a set of child nodes.</p>
+<p><a name="a997462" id="a997462"><!-- --></a> A single plug-in may
+support multiple document formats, which are distinguished by a
+format name. Typically, at least two formats will be supported by a
+given plug-in. The first is a common, plug-in neutral format called
+<code>com.sun.imageio_1.0</code>, which is defined in the class
+comment for the <code>IIOMetadata</code> interface. The second will
+be a highly plug-in specific format that exposes all of the
+internal structure of the <code>IIOMetadata</code> object in the
+form of a DOM. The latter format is referred to as the native
+format of the plug-in; its name may be determined by calling the
+<code>getNativeMetadataFormatName</code> method of the
+<code>IIOMetadata</code> object returned by the reader (advanced
+users may call a method of the same name on the
+<code>ImageReaderSpi</code> object used to instantiate the reader.
+The latter approach is useful for selecting a plug-in based on its
+support for a particular format). The names of all of the supported
+document formats may be determined similarly by calling
+<code>getMetadataFormatNames</code>.</p>
+<p><a name="a997478" id="a997478"><!-- --></a> The contents of an
+<code>IIOMetadata</code> object may be accessed in the form of a
+tree of XML <code>Node</code> objects by calling its
+<code>getAsTree</code> method. This method takes a
+<code>String</code> argument which is the name of one of the
+document formats supported by the plug-in. This document may then
+be manipulated as a standard XML DOM tree.</p>
+<p><a name="a997656" id="a997656"><!-- --></a> As an example, to
+print the contents of an XML DOM tree, the following code may be
+used:</p>
+<pre>
+public void displayMetadata(Node root) {
+        displayMetadata(root, 0);
+}
+
+void indent(int level) {
+        for (int i = 0; i &lt; level; i++) {
+                System.out.print("  ");
+        }
+} 
+
+void displayMetadata(Node node, int level) {
+        indent(level); // emit open tag
+        System.out.print("&lt;" + node.getNodeName());
+        NamedNodeMap map = node.getAttributes();
+        if (map != null) { // print attribute values
+                int length = map.getLength();
+                for (int i = 0; i &lt; length; i++) {
+                        Node attr = map.item(i);
+                        System.out.print(" " + attr.getNodeName() +
+                                         "=\&#34;" + attr.getNodeValue() + "\&#34;");
+                }
+        }
+
+        Node child = node.getFirstChild();
+        if (child != null) {
+                System.out.println("&gt;"); // close current tag
+                while (child != null) { // emit child tags recursively
+                        displayMetadata(child, level + 1);
+                        child = child.getNextSibling();
+                }
+                indent(level); // emit close tag
+                System.out.println("&lt;/" + node.getNodeName() + "&gt;");
+        } else {
+                System.out.println(&#34;/&gt;&#34;);
+        }
+}
+
+</pre>
+<a name="a998078" id="a998078"><!-- --></a> Executing
+<code>displayMetadata</code> on the metadata from a PNG test image
+yields the output:
+<pre>
+&lt;com.sun.imageio.png_1.0&gt;
+  &lt;IHDR width="32" height="32" bitDepth="8" colorType="RGB"
+compressionMethod="deflate" filterMethod="adaptive" interlaceMethod="none"/&gt;
+  &lt;cHRM whitePointX="31270" whitePointY="32900" redX="64000" redY="33000"
+greenX="30000" greenY="60000" blueX="15000" blueY="6000"/&gt;
+  &lt;gAMA value="100000"/&gt;
+&lt;/com.sun.imageio.png_1.0&gt;
+</pre>
+<a name="a998094" id="a998094"><!-- --></a> We see that the image
+contains <code>IHDR</code>, <code>cHRM</code>, and
+<code>gAMA</code> chunks. The interpretation of the attribute
+values requires an understanding of the PNG format; however, it is
+still possible for an application that does not understand PNG
+internals to display the values and allow them to be edited
+interactively.<br />
+<h3><a name="a997442" id="a997442"><!-- --></a> <i>3.5.1</i> The
+<code>IIOMetadataFormat</code> Interface</h3>
+<a name="a997443" id="a997443"><!-- --></a>
+<p><a name="a997440" id="a997440"><!-- --></a> An
+<code>IIOMetadataFormat</code> object is used to describe the legal
+structure of a metadata document format. It constrains the types of
+nodes that may appear, the types of nodes that may be children of a
+node of a given type, the names and data types of the attributes
+that may appear at a node of a given type, and the audiotape of an
+<code>Object</code> value that may be stored at a node of a given
+type. In XML terms, the information provided by the
+<code>IIOMetadataFormat</code> interface is somewhere in between a
+DTD (Document Type Definition), which gives information about node
+types, children, and attributes, and an XML Schema, which provides
+detailed information about data types.</p>
+<p><a name="a997523" id="a997523"><!-- --></a> For simplicity, only
+a subset of legal DTD structures can be described by
+<code>IIOMetadataFormat</code>. For example, the children of a node
+may be defined in an <code>IIOMetadataFormat</code> as a sequence
+in which each child must appear once <code>(a, b, c)</code>, a
+sequence in which each child is optional <code>(a?, b?, c?)</code>,
+a choice of a single child <code>(a | b | c)</code>, or a
+repetition of a single node type <code>(a)*</code>, whereas a DTD
+allows many more combinations.</p>
+<p><a name="a998235" id="a998235"><!-- --></a> A node may not
+contain any textual data, but may contain a reference to an
+arbitrary <code>Object</code>. The <code>IIOMetadataFormat</code>
+indicates the class type and optionally the legal enumerated values
+or a range of values for the <code>Object</code>. Arrays are
+supported as well.</p>
+<p><a name="a997524" id="a997524"><!-- --></a> A DTD does not allow
+any attribute data types other than character strings; an XML
+Schema allows extremely complex data types to be built up from
+simpler ones. <code>IIOMetadataFormat</code> occupies a middle
+ground; it allows attributes to be constrained to belong to one of
+a predefined set of simple data types, including integers,
+floating-point decimals, and dates. Lists of these data types are
+also allowed.</p>
+<p><a name="a997520" id="a997520"><!-- --></a> Since an
+<code>IIOMetadataFormat</code> might be used to automatically
+construct a user interface for displaying and editing metadata,
+restricted the set of legal structures greatly simplifies the
+mapping between formats and user interface designs.</p>
+<br />
+<hr />
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href=
+"imageio_guideTOC.fm.html">CONTENTS</a> | <a href=
+"apps.fm4.html">PREV</a> | <a href="apps.fm6.html">NEXT</a> 
+<!-- | <a href="copyright.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>7 Scenarios</title>
+<link rel="stylesheet" type="text/css" href="../../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<table summary="" width="100%" border="0" cellspacing="2"
+cellpadding="0">
+<tr>
+<td><a href="jndiTOC.html">CONTENTS</a> | <a href=
+"jndi.6.html">PREV</a> | <a href="jndi.8.html">NEXT</a></td>
+</tr>
+</table>
+<h2 class="chapter"><a name="pgfId_998799" id="pgfId_998799"></a>7.
+Scenarios</h2>
+<p class="body"><a name="pgfId_998354" id="pgfId_998354"></a>This
+section outlines a few application scenarios to help illustrate the
+capabilities enabled by JNDI.</p>
+<div style="margin-left: 2em">
+<p>The examples below are not meant to be prescriptive. There are
+often several ways to solve a problem, and JNDI is designed with
+flexibility in mind.</p>
+<h3 class="section"><a name="pgfId_998356" id=
+"pgfId_998356"></a>7.1 User authentication</h3>
+<p class="body"><a name="pgfId_998357" id="pgfId_998357"></a>In
+secure systems, a user must authenticate himself to the computer,
+network, or service that he wishes to access. For example, logging
+into UNIX requires the user to supply a password. Similarly, use of
+SSL requires that the user supply his X.509 certificate. Such
+authentication information can be stored as attributes associated
+with each user in the directory. The system performing the
+authentication would look up the attribute (for example,
+&quot;password&quot;) of the user and verify the authenticity using
+the information supplied by the user.</p>
+<pre class="codeblock">
+ 
+DirContext ctx = new InitialDirContext();       
+Attribute attr = ctx.getAttributes(userName).get(&quot;password&quot;);
+String password = (String)attr.get();
+</pre>
+<h3 class="section"><a name="pgfId_998362" id=
+"pgfId_998362"></a>7.2 Electronic Mail</h3>
+<p class="body"><a name="pgfId_998363" id="pgfId_998363"></a>A
+useful feature of an electronic mail system is a directory service
+that provides a mapping between users and email addresses. This
+allows mail users to search for the email address of a particular
+user. This is analogous to searching for an individual's telephone
+number in the phone book in order to dial his phone number. For
+example, when I want to send mail to John Smith in my department, I
+search for &quot;John Smith&quot; in the directory using a
+&quot;search&quot; widget in the mail application. The widget
+returns to me five entries of John Smith, from which I select the
+one that is in a building on my site and use the email address
+attribute associated with that entry.</p>
+<pre class="codeblock">
+NamingEnumeration matches = deptCtx.search(&quot;user&quot;, new BasicAttributes(&quot;name&quot;, &quot;John Smith&quot;)); 
+// use matches to construct a selectable list for end-user
+while (matches.hasMore()) {
+    SearchResult item = (SearchResult) matches.next();
+    Attributes info = item.getAttributes();     
+    /* display attributes */
+    ...
+}
+</pre>
+<p class="body"><a name="pgfId_998375" id="pgfId_998375"></a>The
+directory could also be used by users to set up personalized
+address books. For example, once I have located John Smith's email
+address, I might not want to search the directory again each time I
+send him mail. Instead, I can create a personal subtree in the
+directory in which I maintain entries that I frequently use,
+possibly by creating links to the existing entries.</p>
+<div>
+<h3 class="section"><a name="pgfId_998376" id=
+"pgfId_998376"></a>7.3 Databases</h3>
+<p class="body"><a name="pgfId_998377" id=
+"pgfId_998377"></a>Database applications can use the directory to
+locate database servers. For example, a financial application needs
+to get the stock quotes from a stock quote server using JDBC. This
+application can enable the user to select the stock quote server
+based on specification of some attributes (such as coverage of
+which markets and frequency of quote updates). The application
+searches the directory for quote servers that meet these
+attributes, and then retrieves the &quot;location&quot; attribute
+(a JDBC URL) of the selected quote server and connects to it.</p>
+<pre class="codeblock">
+NamingEnumeration matches =     ctx.search(&quot;service/stockQuotes&quot;,
+                                        &quot;(&amp;(market=NASDAQ)(updateFreqency&lt;=300))&quot;, searchctls);        
+while (matches.hasMore()) {     
+           SearchResult item = (SearchResult)matches.next();    
+           Attribute location = item.getAttributes().get(&quot;location&quot;);         
+   ...
+}
+</pre></div>
+<div>
+<h3 class="section"><a name="pgfId_998386" id=
+"pgfId_998386"></a>7.4 Browsing</h3>
+<p class="body"><a name="pgfId_998387" id="pgfId_998387"></a>When
+using almost any kind of interactive application that asks a user
+to input names, the user's job is made easier if a namespace
+browser is available to him. The browser can either be built into
+the application and tailored to suit that application in
+particular, or it can be more general-purpose such as a typical web
+browser.</p>
+<p class="body"><a name="pgfId_998388" id="pgfId_998388"></a>A very
+simple example of a JNDI browser allows a user to &quot;walk&quot;
+through a namespace, viewing the atomic names at each step along
+the way. The browser prints a &quot;*&quot; to highlight the name
+of each <code>Context</code> , thus telling the user where he can
+go next. <a href="#pgfId_998391" class="footnote">1</a></p>
+<pre class="codeblock">
+// Start at the top -- the initial context.
+Context ctx = new InitialContext();
+while (ctx != null) {           // display one level
+    NamingEnumeration   items = ctx.list();
+    while (items.hasMoreElements()) {
+        NameClassPair item = (NameClassPair)items.next();
+        if (isContext(item.getClassName())) {
+            System.out.print(&quot;*&quot;);
+        } else {
+            System.out.print(&quot; &quot;);
+        }
+        System.out.println(&quot; &quot; + item.getName());
+    }
+    // Take the next step down into the namespace.
+    String target = input.readLine();
+    try {
+        ctx = (Context)ctx.lookup(target);
+    } catch (NamingException e) {
+        // handle error
+    } catch (ClassCastException e) {
+        // not a context; cannot traverse
+    }
+}
+</pre></div>
+<div>
+<h3 class="section"><a name="pgfId_998418" id=
+"pgfId_998418"></a>7.5 Network Printing</h3>
+<p class="body"><a name="pgfId_998419" id="pgfId_998419"></a>An
+important function of a printing service is to provide a means for
+its human users to easily discover and select printers in the
+network. An application that needs to print, or the machine on
+which it runs, should not have to be configured each time a new
+printer is added to the network. The scope of network access to
+printers may range from a workgroup to global. The printing service
+can use the directory to provide this capability.</p>
+<p class="body"><a name="pgfId_998420" id="pgfId_998420"></a>Assume
+that printers are represented by a <code>Printer</code> interface.
+One of the methods in it could be <code>print()</code> which, when
+given an <code>InputStream</code> , will read data from
+<code>InputStream</code> and print it on the printer represented by
+this instance of Printer.</p>
+<pre class="codeblock">
+interface Printer {    
+        void print(InputStream data) throws PrinterException;   
+        ...
+}
+</pre>
+<p class="body"><a name="pgfId_998425" id="pgfId_998425"></a>A user
+selects a printer using a logical printer name, either explicitly
+or through default settings. For example, the user might have
+specified a default printer to use for all his applications, which
+is overridden only when he explicitly specifies another printer to
+use. The application that is accepting the print request takes the
+printer name and looks it up in the directory service. The
+application expects to receive as the result an object that
+implements the <code>Printer</code> interface.</p>
+<pre class="codeblock">
+void myAppPrint(String printerName, String fileName) throws IOException {
+    try {
+        DirContext ctx = new InitialDirContext();
+        Printer prt = (Printer) ctx.lookup(printerName);
+        prt.print(new FileInputStream(fileName));
+    } catch (NamingException e){
+        System.err.println(&quot;Could not locate printer: &quot; + e);
+    } catch (ClassCastException e) {
+        System.err.println(printerName + &quot;does not name a printer&quot;);
+    }
+}
+</pre>
+<h4 class="subsection"><a name="pgfId_998438" id=
+"pgfId_998438"></a>7.5.1 Browsing and searching for printers</h4>
+<p class="body"><a name="pgfId_998439" id=
+"pgfId_998439"></a>Selecting a printer by explicitly giving its
+name is but one way of identifying a printer. The user can also use
+the directory to see the different printers available (browsing),
+or to search for printers with particular attributes. For example
+the user can ask the directory to list all the printers on the
+second floor of building 5 in the Mountain View campus, or search
+for all color laser printers with 600dpi resolution. From the
+application's perspective, just as <code>lookup()</code> returned a
+<code>Printer</code> object, the list and search operations also
+provide the same capability of returning <code>Printer</code>
+objects that the application could use to submit print
+requests.</p>
+</div>
+<hr align="left" />
+<div class="footnotes">
+<div class="footnote">
+<p class="Footnote"><span class="footnoteNumber">1.</span> <a name=
+"pgfId_998391" id="pgfId_998391"></a>The isContext() method used in
+the example is not part of JNDI. It is a method that must be
+provided by the application.</p>
+</div>
+</div>
+<p><a href="jndiTOC.html">CONTENTS</a> | <a href=
+"jndi.6.html">PREV</a> | <a href="jndi.8.html">NEXT</a></p>
+</div>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

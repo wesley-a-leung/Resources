@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Print Service API User Guide: 3 - Specifying Document
+Types</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<a href="JPSTOC.fm.html">CONTENTS</a> | <a href=
+"attributes.fm6.html">PREV</a> | <a href=
+"docflavor.fm1.html">NEXT</a><br />
+<a name="a996957" id="a996957"></a><u><strong>CHAPTER
+3</strong></u> <a name="a996958"></a>
+<h1>Specifying Document Types</h1>
+<!--
+<hr size="1" width="100%" align="left" noshade>
+-->
+<br />
+<br />
+<br />
+<a name="a996973" id="a996973"></a> From the user's perspective, a
+document can take many different forms, including: a PDF file, an
+image from a digital camera, an email, a word processor document,
+or a web page. Before printing a document of a particular format,
+the client needs to ensure that the printer can understand the
+format. Sometimes a printer can directly print documents of a given
+format: photo printers can directly print images of various
+formats, and PostScript printers can directly print a
+PostScript document. However, there are few printers that
+can directly print a wide range of formats; most printers require
+some higher-level software support to translate the source document
+into a format they can print.
+<p><a name="a996984" id="a996984"><!-- --></a> A printing API needs
+to provide a way to describe document types so that:</p>
+<ul>
+<li><a name="a997428" id="a997428"><!-- --></a> The printer can
+report what formats it can print.</li>
+<li><a name="a997434" id="a997434"><!-- --></a> The client can
+describe the format of the data it wants to print.</li>
+<li><a name="a997314" id="a997314"><!-- --></a> The client can
+describe the encoding of text data.</li>
+</ul>
+<a name="a996990" id="a996990"><!-- --></a> The Java Print
+Service API describes document types using the DocFlavor class. A
+DocFlavor is comprised of:
+<ul>
+<li><a name="a997457" id="a997457"><!-- --></a> A MIME type that
+tells the printer how to interpret the data.</li>
+<li><a name="a997459" id="a997459"><!-- --></a> A representation
+class name indicating the Java class that describes how the data is
+sent to the printer.</li>
+</ul>
+<a name="a997456" id="a997456"><!-- --></a> To describe an HTML
+page to a print service, a client might choose to use a DocFlavor
+with a MIME type string of &#34;text/html; charset=utf-16&#34; and
+a representation class name of &#34;java.io.InputStream&#34;. The
+client can obtain this DocFlavor in one of two ways:
+<ul>
+<li><a name="a997480" id="a997480"><!-- --></a> Construct a
+DocFlavor:DocFlavor htmlStreamFlavor = new DocFlavor("text/html;
+charset=utf-16", "java.io.InputStream");</li>
+<li><a name="a997468" id="a997468"><!-- --></a> Use the pre-defined
+instance that represents this type of
+DocFlavor:DocFlavor.INPUT_STREAM TEXT_HTML_UTF_16 . The Java Print
+Service API provides a set of pre-defined instances for common doc
+flavors as a convenience.</li>
+</ul>
+<a name="a998696" id="a998696"><!-- --></a> Because the HTML page
+contains text data, the MIME type String includes the text
+encoding, which is charset=utf-16 in this example. The client is
+responsible for accurately describing the print data to the print
+service. The section, <a href=
+"docflavor.fm1.html#a997577"><em>Client-Formatted Print
+Data</em></a>, explains how to properly construct a DocFlavor to
+accomplish this. If the text encoding is not included in the MIME
+type, unexpected results can occur, as explained in the section,
+<a href="docflavor.fm2.html#a1000346"><em>Importance of Character
+Encoding</em></a>. The client can allow the service to determine
+the format of data that the client supplies as a Java object. The
+<a href="docflavor.fm3.html#a997144"><em>Service-Formatted Print
+Data</em></a> section describes using a DocFlavor to represent
+service-formatted print data.
+<p>Keep in mand that, just because the <tt>DocFlavor</tt> API has a
+pre-declared doc flavor, this doesn't mean that an implementation
+of the particular flavor is available. For example, even if you use
+the pre-defined <tt>DocFlavor</tt> representing HTML text in
+UTF-16, you won't be able to print the HTML unless you have a print
+service that supports printing HTML. Again, it is the user's
+responsibility to ensure that a printer supports a particular
+format.</p>
+<hr />
+<a href="JPSTOC.fm.html">CONTENTS</a> | <a href=
+"attributes.fm6.html">PREV</a> | <a href=
+"docflavor.fm1.html">NEXT</a>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,4066 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en">
+<head>
+<meta http-equiv="Content-Type" content=
+"text/html; charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="GENERATOR" content=
+"Quadralay WebWorks Publisher Professional Edition 7.0.5.1025" />
+<meta name="TEMPLATEBASE" content="book-no-index" />
+<meta name="LASTUPDATED" content="Sat Aug 02 15:45:48 2008" />
+<title>Lookup Services</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<div class="a1"><a href="#skip" class="skiplink" title="Skip navigation bar">Skip navigation bar</a></div>
+<table width="100%" summary="">
+<tr>
+<td align="left"><a accesskey="c" href=
+"tutorialTOC.html">Contents</a> | <a accesskey="p" href=
+"connectors.html">Previous</a> | <a accesskey="n" href=
+"security.html">Next</a></td>
+<td align="right"><i>Java Management Extensions (JMX) Technology
+Tutorial</i></td>
+</tr>
+</table>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<a name="skip" id="skip"></a> <a name="wp874" id="wp874"></a>
+<h2 class="pChapNum">Chapter &#160; 4</h2>
+<a name="wp996923" id="wp996923"></a>
+<h2 class="pChapTitle">Lookup Services</h2>
+<a name="wp996927" id="wp996927"></a>
+<p class="pBody">The Java Management Extensions (JMX) specification
+defines three bindings to lookup services, using existing lookup
+technologies, as described in the following sections:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp1011999"
+id="wp1011999"></a>
+<div class="pBullet1">
+<ul>
+<li><a href="lookup.html#wp999517"><span style=
+"color: #3366CC">Section&#160; &quot;Initial
+Configuration&quot;</span></a> provides configuration information
+that applies to all three types of lookup service.</li>
+</ul>
+</div>
+<a name="wp1012000" id="wp1012000"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><a href="lookup.html#wp999728"><span style=
+"color: #3366CC">Section&#160; &quot;Service Location Protocol
+(SLP) Lookup Service&quot;</span></a> presents the SLP lookup
+example.</li>
+</ul>
+</div>
+<a name="wp1012001" id="wp1012001"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><a href="lookup.html#wp998474"><span style=
+"color: #3366CC">Section&#160; &quot;Jini Lookup
+Service&quot;</span></a> presents the Jini lookup example.</li>
+</ul>
+</div>
+<a name="wp1012002" id="wp1012002"></a>
+<div class="pBullet1Last">
+<ul>
+<li><a href="lookup.html#wp996900"><span style=
+"color: #3366CC">Section&#160; &quot;Java Naming and Directory
+Interface (JNDI) / LDAP Lookup Service&quot;</span></a> presents
+the JNDI/LDAP lookup example.</li>
+</ul>
+</div>
+</div>
+<a name="wp999788" id="wp999788"></a>
+<p class="pBody">The lookup services allow JMX technology clients
+to find and connect to connector servers that have registered with
+the lookup services.</p>
+<a name="wp999517" id="wp999517"></a>
+<h2 class="pHeading1">Initial Configuration</h2>
+<a name="wp999518" id="wp999518"></a>
+<p class="pBody">As shown simply in <a href=
+"connectors.html#wp1056865"><span style=
+"color: #3366CC">Section&#160; &quot;Accessing Standard and Dynamic
+MBeans via the RMI Connector&quot;</span></a>, if you are using
+remote method invocation (RMI) connectors, you can choose to use an
+external directory to register the connector server stubs you want
+to look up. The following cases are presented in the lookup service
+examples relating to RMI connectors:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp999513"
+id="wp999513"></a>
+<div class="pBullet1">
+<ul>
+<li>RMI connectors using one of the following external
+directories:</li>
+</ul>
+</div>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012011"
+id="wp1012011"></a>
+<div class="pBullet2">
+<ul>
+<li>An RMI registry, for RMI connectors implementing the default
+Java Remote Method Protocol (JRMP) transport</li>
+</ul>
+</div>
+<a name="wp1012012" id="wp1012012"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>CORBA Naming Service, for RMI connectors implementing the
+Internet Inter-ORB Protocol (IIOP) transport</li>
+</ul>
+</div>
+<a name="wp1012013" id="wp1012013"></a>
+<div class="pBullet2Last">
+<ul>
+<li>Lightweight Directory Access Protocol (LDAP), for both the IIOP
+and JRMP transports</li>
+</ul>
+</div>
+</div>
+<a name="wp1012014" id="wp1012014"></a>
+<div class="pBullet1Last">
+<ul>
+<li>RMI connectors without an external directory</li>
+</ul>
+</div>
+</div>
+<a name="wp999529" id="wp999529"></a>
+<p class="pBody">If you choose to register the RMI connector stubs
+in an external directory, some initial configuration is required,
+to set up your RMI registry, CORBA naming service or LDAP server.
+If you do not use an external directory, the RMI connector stub is
+encoded into the JMX service URL.</p>
+<a name="wp999609" id="wp999609"></a>
+<p class="pBody">The following sections describe the external
+directories that you can use in conjunction with the lookup service
+examples that use RMI connectors. These external directories are
+referred to when running the three examples of lookup services that
+are given in the subsequent sections in this chapter.</p>
+<a name="wp1007724" id="wp1007724"></a>
+<h3 class="pHeading2">External RMI Registry</h3>
+<a name="wp1022576" id="wp1022576"></a>
+<p class="pBody">To register the RMI connector server stubs in an
+external RMI registry, for use by connectors implementing the JRMP
+transport, perform the following actions:</p>
+<div class="pStep1">
+<ol class="pStep1">
+<li style="list-style: none"><a name="wp1054428" id=
+"wp1054428"></a></li>
+<li>Start the RMI registry on port 9999 of the local host. <a name=
+"wp999565" id="wp999565"></a>
+<p class="pBody">As was the case in <a href=
+"connectors.html#wp5529"><span style=
+"color: #3366CC">Chapter&#160;3, &quot;JMX
+Connectors&quot;</span></a>, the RMI registry is used to store the
+RMI connector stubs for RMI connectors implementing the JRMP
+transport.</p>
+<a name="wp999585" id="wp999585"></a>
+<p class="pBody"><code class="cCode">$</code> <span class=
+"cUserType">rmiregistry 9999 &amp;</span></p>
+<a name="wp1007743" id="wp1007743"></a></li>
+<li>For your convenience when typing commands, create an
+environment variable for the address of the RMI registry. <a name=
+"wp1016841" id="wp1016841"></a>
+<p class="pBody">To shorten the commands that you will type when
+you run the examples, set the service URL for the RMI registry as
+an environment variable, <code class="cCode">jndirmi</code>. In
+these examples, the service URL is given in JNDI form. See the API
+documentation for the <code class=
+"cCode">javax.management.remote.rmi</code> package for an
+explanation of JNDI form. If you want to run the external
+directories on a machine other than the local machine, you must
+specify that machine&#8217;s host name instead of localhost.</p>
+<a name="wp1007770" id="wp1007770"></a>
+<p class="pListEndingPara"><code class="cCode">$</code>
+<span class="cUserType">jndirmi=&quot;rmi://localhost:9999&quot;</span></p>
+</li>
+</ol>
+<a name="wp1007800" id="wp1007800"></a>
+<h3 class="pHeading2">External CORBA Naming Service</h3>
+<a name="wp1007801" id="wp1007801"></a>
+<p class="pBody">To register the RMI connector server stubs in an
+external CORBA naming service, for use by connectors implementing
+the IIOP transport, perform the following actions:</p>
+<div class="pStep1">
+<ol class="pStep1">
+<li style="list-style: none"><a name="wp1007759" id=
+"wp1007759"></a></li>
+<li>Start an Object Request Broker (ORB) daemon on port 7777 of the
+local host. <a name="wp999608" id="wp999608"></a>
+<p class="pBody">RMI connectors that implement the IIOP transport
+can use CORBA naming to identify the RMI connector stub.</p>
+<a name="wp999612" id="wp999612"></a>
+<p class="pBody"><code class="cCode">$</code> <span class=
+"cUserType">orbd -ORBInitialPort 7777 &amp;</span></p>
+<a name="wp1007812" id="wp1007812"></a></li>
+<li>For your convenience when typing commands, create an
+environment variable for the address of the CORBA naming service.
+<a name="wp1007821" id="wp1007821"></a>
+<p class="pBody">To shorten the commands that you type when you run
+the examples, set the service URL for the CORBA naming service as
+an environment variable, jndiiiop. In these examples, the service
+URL is given in JNDI form. If you want to run the external
+directories on a machine other than the local machine, you must
+specify that machine&#8217;s host name instead of localhost.</p>
+<a name="wp1007815" id="wp1007815"></a>
+<p class="pListEndingPara"><code class="cCode">$</code>
+<span class="cUserType">jndiiiop=&quot;iiop://localhost:7777&quot;</span></p>
+</li>
+</ol>
+<a name="wp1007836" id="wp1007836"></a>
+<h3 class="pHeading2">External LDAP Registry</h3>
+<a name="wp1007837" id="wp1007837"></a>
+<p class="pBody">To register the RMI connector server stubs in an
+external LDAP registry, for use by connectors implementing either
+of the JRMP or IIOP transports, perform the following actions:</p>
+<div class="pStep1">
+<ol class="pStep1">
+<li style="list-style: none"><a name="wp999649" id=
+"wp999649"></a></li>
+<li>Start an LDAP Server. <a name="wp1011195" id="wp1011195"></a>
+<p class="pBody">The LDAP server you use is your choice, although
+the schema for representing Java objects in an LDAP directory must
+be known to the server. See the relevant Request For Comments (RFC)
+document for details:</p>
+<a name="wp1011197" id="wp1011197"></a>
+<p class="pBody"><code class="cCode"><a href=
+"http://www.ietf.org/rfc/rfc2713.txt">http://www.ietf.org/rfc/rfc2713.txt</a></code></p>
+<a name="wp1003107" id="wp1003107"></a></li>
+<li>Create a domain component suffix. <a name="wp1007848" id=
+"wp1007848"></a>
+<p class="pBody">These examples require that you create the
+following domain component suffix:</p>
+<a name="wp999657" id="wp999657"></a>
+<p class="pBody"><code class="cCode">dc=Test</code></p>
+<a name="wp999658" id="wp999658"></a>
+<p class="pBody">See the documentation accompanying your LDAP
+server for details of how to configure the server and create this
+suffix.</p>
+<a name="wp999662" id="wp999662"></a></li>
+<li>For your convenience, set the following LDAP parameters as
+environment variables. <a name="wp999663" id="wp999663"></a>
+<p class="pBody">These variables are used to shorten the commands
+you type when starting the Server and Client classes in the lookup
+service examples that register RMI connector stubs in the external
+LDAP server.</p>
+<div class="pStep2">
+<ol class="pStep2">
+<li style="list-style: none"><a name="wp999668" id=
+"wp999668"></a></li>
+<li>The name of the machine running your LDAP server (<em style=
+"font-style: italic" class="cEmphasis">ldap_host</em>) <a name=
+"wp999671" id="wp999671"></a>
+<p class="pBody"><code class="cCode">$</code> <span class=
+"cUserType">ldaphost=</span><em class=
+"cEmphasis">ldap_host</em></p>
+<a name="wp999670" id="wp999670"></a></li>
+<li>The port the LDAP server is running on (<em style=
+"font-style: italic" class="cEmphasis">ldap_port</em>) <a name=
+"wp999674" id="wp999674"></a>
+<p class="pBody"><code class="cCode">$</code> <span style=
+"font-style: normal" class=
+"cUserType">ldapport=</span>ldap_port</p>
+<a name="wp999667" id="wp999667"></a></li>
+<li>The LDAP common name attribute, which in these examples is
+&#8220;Directory Manager&#8221; <a name="wp999675" id=
+"wp999675"></a>
+<p class="pBody"><code class="cCode">$</code> <span class=
+"cUserType">principal=&#8221;cn=Directory Manager&#8221;</span></p>
+<a name="wp999676" id="wp999676"></a></li>
+<li>The password required by your LDAP server <a name="wp999685"
+id="wp999685"></a>
+<p class="pBody">Supply the password for your LDAP server.</p>
+<a name="wp999686" id="wp999686"></a>
+<p class="pBody"><code class="cCode">$</code> <span class=
+"cUserType">credentials=</span><em class=
+"cEmphasis">your_ldap_password</em></p>
+<a name="wp999716" id="wp999716"></a></li>
+<li>The address of the LDAP server <a name="wp1007861" id=
+"wp1007861"></a>
+<p class="pBody">In this example, the service URL for the LDAP
+server is given in JNDI form and is identified by the variable
+jndildap.</p>
+<a name="wp999710" id="wp999710"></a>
+<p class="pListEndingPara"><code class="cCode">$</code>
+<span class="cUserType">jndildap=&quot;ldap://$ldaphost:$ldapport&quot;</span></p>
+</li>
+</ol>
+<a name="wp1013008" id="wp1013008"></a>
+<ul>
+<li>You are now ready to run the different lookup service
+examples.</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<a name="wp999728" id="wp999728"></a>
+<h2 class="pHeading1">Service Location Protocol (SLP) Lookup
+Service</h2>
+<a name="wp999020" id="wp999020"></a>
+<p class="pBody">The JMX technology specifies how to register RMI
+connectors with the SLP lookup service.</p>
+<a name="wp999778" id="wp999778"></a>
+<p class="pBody">The purpose of this example is to demonstrate how
+a JMX Remote API connector client can find and connect to a
+connector server that has registered with the SLP lookup service.
+This example performs the following operations:</p>
+<div style="margin-left: 2em" class="pList1"><a name="wp999301" id=
+"wp999301"></a>
+<div class="pList1">
+<ul>
+<li>The agent:</li>
+</ul>
+</div>
+<div style="margin-left: 2em" class="pList2"><a name="wp999826" id=
+"wp999826"></a>
+<div class="pList2">
+<ul>
+<li>Creates an MBean server</li>
+</ul>
+</div>
+<a name="wp999302" id="wp999302"></a>
+<div class="pList2Plus">
+<ul>
+<li>Gets a pointer to the SLP lookup service</li>
+</ul>
+</div>
+<a name="wp999303" id="wp999303"></a>
+<div class="pList2Plus">
+<ul>
+<li>Creates a connector server</li>
+</ul>
+</div>
+<a name="wp999815" id="wp999815"></a>
+<div class="pList2Last">
+<ul>
+<li>Registers the connector address with the SLP lookup
+service</li>
+</ul>
+</div>
+</div>
+<a name="wp999820" id="wp999820"></a>
+<div class="pList1Plus">
+<ul>
+<li>The client:</li>
+</ul>
+</div>
+<div style="margin-left: 2em" class="pList2"><a name="wp999831" id=
+"wp999831"></a>
+<div class="pList2">
+<ul>
+<li>Gets a pointer to the SLP lookup service</li>
+</ul>
+</div>
+<a name="wp999832" id="wp999832"></a>
+<div class="pList2Plus">
+<ul>
+<li>Looks for any connector servers registered in the SLP lookup
+service</li>
+</ul>
+</div>
+<a name="wp999837" id="wp999837"></a>
+<div class="pList2Plus">
+<ul>
+<li>Creates a JMX Remote API connector</li>
+</ul>
+</div>
+<a name="wp999838" id="wp999838"></a>
+<div class="pList2LastEnd">
+<ul>
+<li>Retrieves information about the MBeans in the MBean server</li>
+</ul>
+</div>
+</div>
+</div>
+<a name="wp1055700" id="wp1055700"></a>
+<p class="pBody">This example assumes that you are already familiar
+with <a href="http://www.ietf.org/rfc/rfc2614.txt">SLP
+technology</a>. The code provided for this example conforms to Sun
+Microsystems&#8217; implementation of SLP, as defined by RFC 2614
+(see <a href="http://www.ietf.org/rfc/rfc2614.txt"></a><a href=
+"http://www.ietf.org/rfc/rfc2614.txt">http://www.ietf.org/rfc/rfc2614.txt)</a>.
+Sun Microsystems&#8217; implementation of SLP is available in the
+Solaris operating environment in the directory<code class=
+"cCode">/usr/share/lib/slp</code>. If you are not running the
+Solaris operating environment, you must obtain a version of SLP
+that is compliant with RFC 2614, section 5. You can download the
+OpenSLP Java implementation from <a href=
+"http://www.openslp.org/">http://www.openslp.org/.</a></p>
+<a name="wp1055705" id="wp1055705"></a>
+<p class="pBody">The SLP lookup example is contained in the
+directory <em class="cEmphasis">work_dir</em><code class=
+"cCode">/jmx_examples/Lookup/slp</code>.</p>
+<div class="pStep1">
+<ol class="pStep1">
+<li style="list-style: none"><a name="wp999259" id=
+"wp999259"></a></li>
+<li>Open <em class="cEmphasis">work_dir</em><code class=
+"cCode">/jmx_examples/Lookup/slp</code>. <a name="wp999260" id=
+"wp999260"></a>
+<p class="pBody">Inside this directory, you will find the following
+files:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012024"
+id="wp1012024"></a>
+<div class="pBullet2">
+<ul>
+<li><code class="cCode">Server.java</code></li>
+</ul>
+</div>
+<a name="wp1012025" id="wp1012025"></a>
+<div class="pBullet2Plus">
+<ul>
+<li><code class="cCode">Client.java</code></li>
+</ul>
+</div>
+<a name="wp1012026" id="wp1012026"></a>
+<div class="pBullet2Last">
+<ul>
+<li><code class="cCode">README</code></li>
+</ul>
+</div>
+</div>
+<a name="wp999266" id="wp999266"></a></li>
+<li>Open both the <code class="cCode">*.java</code> files in a text
+editor. <a name="wp1013012" id="wp1013012"></a>
+<p class="pListEndingPara">These classes will be analyzed in the
+following sections.</p>
+</li>
+</ol>
+<a name="wp999246" id="wp999246"></a>
+<h3 class="pHeading2">Analyzing the Example Classes</h3>
+<a name="wp999256" id="wp999256"></a>
+<p class="pBody">The following sections analyze each of the classes
+used in the SLP lookup example, and explain how they perform the
+operations described above.</p>
+<hr class="pHr" />
+<div class="note"><a name="wp1000178" id="wp1000178"></a> <b>Note
+&#8211;</b> If you are using an implementation of SLP other than
+Sun Microsystems&#8217; implementation, you will have to modify
+<code class="cCode">Server.java</code> and <code class=
+"cCode">Client.java</code> to import your version of the SLP Java
+classes instead of the <code class="cCode">com.sun.slp</code>
+package. See RFC 2614, section 5.
+<hr class="pHr" />
+<a name="wp999306" id="wp999306"></a>
+<h4 class="pHeading3">Server.java</h4>
+<a name="wp1010980" id="wp1010980"></a>
+<p class="pBody">Due to its size, the SLP lookup service
+<code class="cCode">Server.java</code> class is shown as a series
+of code excerpts. For explanations of the SLP code used in this
+example, see RFC 2614 and the API documentation for SLP.</p>
+<a name="wp1010981" id="wp1010981"></a>
+<div class="pCodeCaption">CODE&#160;EXAMPLE&#160;4-1 SLP Lookup
+Service Example Class Server.java (Excerpt 1)</div>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1010989" id="wp1010989"> </a>
+public class Server {<a name="wp1011000" id="wp1011000"> </a>
+   public final static int <b class=
+"cBold">JMX_DEFAULT_LEASE = 300</b>;<a name="wp1013948" id=
+"wp1013948"> </a>
+   public final static String JMX_SCOPE = &quot;DEFAULT&quot;;<a name="wp1013949"
+id="wp1013949"> </a>
+<a name="wp1013950" id="wp1013950"> </a>
+   private final MBeanServer mbs;<a name="wp1010994" id=
+"wp1010994"> </a>
+   public Server() {<a name="wp1010995" id="wp1010995"> </a>
+       mbs = <b class=
+"cBold">MBeanServerFactory.createMBeanServer()</b>;<a name=
+"wp1010996" id="wp1010996"> </a>
+   }<a name="wp1010997" id="wp1010997"> </a>
+   <a name="wp1010998" id="wp1010998"> </a>
+[...]<a name="wp1010999" id="wp1010999"> </a>
+<a name="wp1011001" id="wp1011001"> </a>
+</pre></div>
+<a name="wp1010985" id="wp1010985"></a>
+<p class="pBody"><a href=
+"lookup.html#wp1010981">CODE&#160;EXAMPLE&#160;4-1</a> sets the
+default SLP lease <code class="cCode">JMX_DEFAULT_LEASE</code> to a
+default lease of 300 seconds, corresponding to the length of time
+the URL will be registered, and shows the initial creation of the
+MBean server <code class="cCode">mbs</code>.</p>
+<a name="wp1000503" id="wp1000503"></a>
+<p class="pBody">In code that is not shown here, you then define an
+SLP advertiser <code class="cCode">slpAdvertiser</code>, and an SLP
+service URL <code class="cCode">url</code>. The <code class=
+"cCode">slpAdvertiser</code> is used to register the service URL in
+the SLP lookup service. The <code class="cCode">SCOPE</code> and
+the <code class="cCode">agentName</code> are registered in SLP as
+lookup attributes.</p>
+<a name="wp1006345" id="wp1006345"></a>
+<div class="pCodeCaption">CODE&#160;EXAMPLE&#160;4-2 SLP Lookup
+Service Example Class Server.java (Excerpt 2)</div>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1011010" id="wp1011010"> </a>
+[...]<a name="wp1011191" id="wp1011191"> </a>
+<a name="wp1011012" id="wp1011012"> </a>
+   public static void register(JMXServiceURL jmxUrl, String name)<a name="wp1011013"
+id="wp1011013"> </a>
+     throws ServiceLocationException {<a name="wp1011014" id=
+"wp1011014"> </a>
+     <b class="cBold">ServiceURL serviceURL =</b><a name=
+"wp1011015" id="wp1011015"> </a>
+<b class=
+"cBold">          new ServiceURL(jmxUrl.toString(),</b><a name=
+"wp1011016" id="wp1011016"> </a>
+<b class=
+"cBold">                         JMX_DEFAULT_LEASE)</b>;<a name=
+"wp1011017" id="wp1011017"> </a>
+     debug(&quot;ServiceType is: &quot; + serviceURL.getServiceType());<a name="wp1011018"
+id="wp1011018"> </a>
+     Vector attributes = new Vector();<a name="wp1011019" id=
+"wp1011019"> </a>
+     Vector attrValues = new Vector();<a name="wp1011020" id=
+"wp1011020"> </a>
+     attrValues.add(JMX_SCOPE);<a name="wp1011021" id=
+"wp1011021"> </a>
+     ServiceLocationAttribute attr1 =<a name="wp1011022" id=
+"wp1011022"> </a>
+          new ServiceLocationAttribute(&quot;SCOPE&quot;, attrValues);<a name="wp1011023"
+id="wp1011023"> </a>
+     attributes.add(attr1);<a name="wp1011024" id="wp1011024"> </a>
+     attrValues.removeAllElements();<a name="wp1011025" id=
+"wp1011025"> </a>
+     <b class="cBold">attrValues.add(name);</b><a name="wp1011026"
+id="wp1011026"> </a>
+<b class="cBold">     ServiceLocationAttribute attr2 =</b><a name=
+"wp1011027" id="wp1011027"> </a>
+<b class=
+"cBold">          new ServiceLocationAttribute(&quot;AgentName&quot;, attrValues);</b><a name="wp1011028"
+id="wp1011028"> </a>
+     attributes.add(attr2);<a name="wp1011029" id="wp1011029"> </a>
+     final <b class="cBold">Advertiser</b> slpAdvertiser =<a name=
+"wp1011030" id="wp1011030"> </a>
+          ServiceLocationManager.getAdvertiser(Locale.US);<a name=
+"wp1011031" id="wp1011031"> </a>
+     slpAdvertiser.<b class=
+"cBold">register(serviceURL, attributes)</b>;<a name="wp1011032"
+id="wp1011032"> </a>
+     <a name="wp1011033" id="wp1011033"> </a>
+   } <a name="wp1011034" id="wp1011034"> </a>
+<a name="wp1011035" id="wp1011035"> </a>
+[...]<a name="wp1011036" id="wp1011036"> </a>
+<a name="wp1011192" id="wp1011192"> </a>
+</pre></div>
+<a name="wp1006344" id="wp1006344"></a>
+<p class="pBody"><a href=
+"lookup.html#wp1006345">CODE&#160;EXAMPLE&#160;4-2</a> shows the
+registration of the JMX connector server&#8217;s URL with the SLP
+lookup service.</p>
+<a name="wp1000656" id="wp1000656"></a>
+<p class="pBody">The JMX service URL <code class=
+"cCode">jmxUrl</code> is the address of the connector server, and
+is obtained by a call to the <code class=
+"cCode">getAddress()</code> method of <code class=
+"cCode">JMXConnectorServer</code> when the connector server is
+started.</p>
+<a name="wp1000660" id="wp1000660"></a>
+<p class="pBody">The SLP lookup attributes, namely the scope and
+the agent name under which the connector server address is to be
+registered (<code class="cCode">name</code>), are then specified by
+the SLP class <code class="cCode">ServiceLocationAttribute</code>.
+The <code class="cCode">AgentName</code> attribute is mandatory,
+but other optional attributes, such as <code class=
+"cCode">ProtocolType</code>, <code class="cCode">AgentHost</code>,
+and <code class="cCode">Property</code> can also be registered in
+the SLP lookup service.</p>
+<a name="wp1011042" id="wp1011042"></a>
+<p class="pBody">Finally, the JMX connector server address is
+registered in the SLP service with a call to the <code class=
+"cCode">register()</code> method of the <code class=
+"cCode">Advertiser</code> interface, with the <code class=
+"cCode">serviceURL</code> and the <code class=
+"cCode">attributes</code> passed in as parameters.</p>
+<a name="wp1011043" id="wp1011043"></a>
+<div class="pCodeCaption">CODE&#160;EXAMPLE&#160;4-3 SLP Lookup
+Service Example Class Server.java (Excerpt 3)</div>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1011121" id="wp1011121"> </a>
+[...]<a name="wp1014933" id="wp1014933"> </a>
+<a name="wp1014934" id="wp1014934"> </a>
+   public JMXConnectorServer rmi(String url) throws<a name=
+"wp1014935" id="wp1014935"> </a>
+     IOException,<a name="wp1014936" id="wp1014936"> </a>
+     JMException,<a name="wp1014937" id="wp1014937"> </a>
+     NamingException,<a name="wp1014938" id="wp1014938"> </a>
+     ClassNotFoundException,<a name="wp1014939" id=
+"wp1014939"> </a>
+     ServiceLocationException {<a name="wp1014940" id=
+"wp1014940"> </a>
+     JMXServiceURL jurl = new JMXServiceURL(url);<a name=
+"wp1014941" id="wp1014941"> </a>
+     final HashMap env = new HashMap();<a name="wp1014942" id=
+"wp1014942"> </a>
+     // Environment map attributes<a name="wp1014943" id=
+"wp1014943"> </a>
+     [...]<a name="wp1014944" id="wp1014944"> </a>
+<a name="wp1014945" id="wp1014945"> </a>
+ <a name="wp1014946" id="wp1014946"> </a>
+     <span class=
+"cUserType">JMXConnectorServer rmis =</span><a name="wp1014947" id=
+"wp1014947"> </a>
+<span class=
+"cUserType">        JMXConnectorServerFactory</span>.newJMXConnectorServer(jurl, env, mbs);<a name="wp1014948"
+id="wp1014948"> </a>
+     final String agentName = System.getProperty(&quot;agent.name&quot;,<a name="wp1014949"
+id="wp1014949"> </a>
+                                                 &quot;DefaultAgent&quot;);<a name="wp1014950"
+id="wp1014950"> </a>
+     start(rmis, agentName);<a name="wp1014951" id=
+"wp1014951"> </a>
+<a name="wp1014952" id="wp1014952"> </a>
+     return rmis;<a name="wp1014953" id="wp1014953"> </a>
+  }<a name="wp1014954" id="wp1014954"> </a>
+[...]<a name="wp1011154" id="wp1011154"> </a>
+<a name="wp1011162" id="wp1011162"> </a>
+</pre></div>
+<a name="wp1011126" id="wp1011126"></a>
+<p class="pBody"><a href=
+"lookup.html#wp1011043">CODE&#160;EXAMPLE&#160;4-3</a> shows the
+creation of an RMI connector server. The JMX service URL
+<code class="cCode">jurl</code> is constructed from the string
+<code style="font-style: normal" class="cCode">url</code> that is
+included in the command used to launch the <code class=
+"cCode">Server</code> at the command line. An RMI connector server
+named <code class="cCode">rmis</code> is then created with the
+system properties defined by the environment <code class=
+"cCode">map</code> and the address <code class=
+"cCode">jurl</code>.</p>
+<a name="wp1000825" id="wp1000825"></a>
+<p class="pBody">The connector server is then started, and the RMI
+connector server address is registered in the SLP lookup service
+under the name <code class="cCode">agentName</code>.</p>
+<a name="wp1011163" id="wp1011163"></a>
+<div class="pCodeCaption">CODE&#160;EXAMPLE&#160;4-4 SLP Lookup
+Service Example Class Server.java (Excerpt 4)</div>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1011169" id="wp1011169"> </a>
+[...]<a name="wp1011181" id="wp1011181"> </a>
+<a name="wp1011171" id="wp1011171"> </a>
+   public void start(JMXConnectorServer server, String agentName)<a name="wp1011172"
+id="wp1011172"> </a>
+      throws IOException, ServiceLocationException {<a name=
+"wp1011173" id="wp1011173"> </a>
+      server.start();<a name="wp1011174" id="wp1011174"> </a>
+      final JMXServiceURL address = server.getAddress();<a name=
+"wp1011175" id="wp1011175"> </a>
+      register(address,agentName);<a name="wp1011176" id=
+"wp1011176"> </a>
+   }<a name="wp1011177" id="wp1011177"> </a>
+   <a name="wp1011178" id="wp1011178"> </a>
+[...]<a name="wp1011179" id="wp1011179"> </a>
+<a name="wp1011180" id="wp1011180"> </a>
+</pre></div>
+<a name="wp1000504" id="wp1000504"></a>
+<p class="pBody"><a href=
+"lookup.html#wp1011163">CODE&#160;EXAMPLE&#160;4-4</a> shows the
+launching of the connector server <code class="cCode">server</code>
+and the registration of <code class="cCode">server</code> in the
+SLP lookup service with the given address <code class=
+"cCode">address</code>.</p>
+<a name="wp1004897" id="wp1004897"></a>
+<h4 class="pHeading3">Client.java</h4>
+<a name="wp1001444" id="wp1001444"></a>
+<p class="pBody">The SLP lookup service <code class=
+"cCode">Client.java</code> class is shown in <a href=
+"lookup.html#wp1011285">CODE&#160;EXAMPLE&#160;4-1</a>, <a href=
+"lookup.html#wp1008681">CODE&#160;EXAMPLE&#160;4-2</a>, and
+<a href="lookup.html#wp1008723">CODE&#160;EXAMPLE&#160;4-3</a>:</p>
+<a name="wp1011285" id="wp1011285"></a>
+<div class="pCodeCaption">CODE&#160;EXAMPLE&#160;4-1 SLP Lookup
+Service Example Class Client.java (Excerpt 1)</div>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1011291" id="wp1011291"> </a>
+public class Client {<a name="wp1015778" id="wp1015778"> </a>
+<a name="wp1015779" id="wp1015779"> </a>
+    public final static String JMX_SCOPE = &quot;DEFAULT&quot;;<a name="wp1015780"
+id="wp1015780"> </a>
+<a name="wp1015781" id="wp1015781"> </a>
+    public static Locator <span class=
+"cUserType">getLocator()</span> throws ServiceLocationException {<a name="wp1015782"
+id="wp1015782"> </a>
+      final Locator slpLocator =<a name="wp1015783" id=
+"wp1015783"> </a>
+          <span class=
+"cUserType">ServiceLocationManager.getLocator(Locale.US)</span>;<a name="wp1015784"
+id="wp1015784"> </a>
+      return slpLocator;<a name="wp1015785" id="wp1015785"> </a>
+    }<a name="wp1015786" id="wp1015786"> </a>
+    <a name="wp1015787" id="wp1015787"> </a>
+      public static List lookup(Locator slpLocator, String name)<a name="wp1015788"
+id="wp1015788"> </a>
+          throws IOException, ServiceLocationException {<a name=
+"wp1015789" id="wp1015789"> </a>
+<a name="wp1015790" id="wp1015790"> </a>
+  <a name="wp1015791" id="wp1015791"> </a>
+          final ArrayList list = new ArrayList();<a name=
+"wp1015792" id="wp1015792"> </a>
+          Vector scopes = new Vector();<a name="wp1015793" id=
+"wp1015793"> </a>
+<a name="wp1015794" id="wp1015794"> </a>
+          scopes.add(JMX_SCOPE);<a name="wp1015795" id=
+"wp1015795"> </a>
+          <span class="cUserType">String query = </span><a name=
+"wp1015796" id="wp1015796"> </a>
+<span class=
+"cUserType">              &quot;(&amp;(AgentName=&quot; + ((name!=null)?name:&quot;*&quot;) + &quot;))&quot;</span>;<a name="wp1015797"
+id="wp1015797"> </a>
+<a name="wp1015798" id="wp1015798"> </a>
+          <span class=
+"cUserType">ServiceLocationEnumeration result =</span><a name=
+"wp1015799" id="wp1015799"> </a>
+<span class=
+"cUserType">              slpLocator.findServices(new ServiceType(&quot;service:jmx&quot;),</span><a name="wp1015800"
+id="wp1015800"> </a>
+<span class=
+"cUserType">                                      scopes, query)</span>;<a name="wp1015801"
+id="wp1015801"> </a>
+<a name="wp1015802" id="wp1015802"> </a>
+          while(result.hasMoreElements()) {<a name="wp1015803" id=
+"wp1015803"> </a>
+                <span class=
+"cUserType">final ServiceURL surl = (ServiceURL) result.next()</span>;<a name="wp1015804"
+id="wp1015804"> </a>
+                <a name="wp1015805" id="wp1015805"> </a>
+<a name="wp1015806" id="wp1015806"> </a>
+             <span class=
+"cUserType">JMXServiceURL jmxUrl = new JMXServiceURL(surl.toString())</span>;<a name="wp1015807"
+id="wp1015807"> </a>
+             try {<a name="wp1015808" id="wp1015808"> </a>
+                  <span class=
+"cUserType">JMXConnector client =</span><a name="wp1015809" id=
+"wp1015809"> </a>
+<span class=
+"cUserType">                     JMXConnectorFactory.newJMXConnector(jmxUrl,null)</span>;<a name="wp1015810"
+id="wp1015810"> </a>
+                  if (client != null) list.add(client);<a name=
+"wp1015811" id="wp1015811"> </a>
+             } catch (IOException x ) { <a name="wp1015812" id=
+"wp1015812"> </a>
+             [...]<a name="wp1015813" id="wp1015813"> </a>
+             }<a name="wp1015814" id="wp1015814"> </a>
+          }<a name="wp1015815" id="wp1015815"> </a>
+      }<a name="wp1015816" id="wp1015816"> </a>
+      return list;<a name="wp1015817" id="wp1015817"> </a>
+    }<a name="wp1011328" id="wp1011328"> </a>
+<a name="wp1011330" id="wp1011330"> </a>
+</pre></div>
+<a name="wp1005321" id="wp1005321"></a>
+<p class="pBody"><a href=
+"lookup.html#wp1011285">CODE&#160;EXAMPLE&#160;4-1</a> first of all
+obtains the SLP service <code class="cCode">Locator</code> by
+calling the <code class="cCode">getLocator</code> method of the SLP
+class <code class="cCode">ServiceLocationManager</code>.
+<code class="cCode">Client</code> then retrieves all the connector
+servers registered in the SLP service under a given agent name, or
+under agent names that match a certain pattern. If no agent name is
+specified when the <code class="cCode">Client</code> is started,
+all agent names will be considered.</p>
+<a name="wp1005502" id="wp1005502"></a>
+<p class="pBody">A JMX technology service URL, <code class=
+"cCode">jmxUrl</code>, is generated for each of the agents
+retrieved by SLP, with each agent&#8217;s SLP service URL,
+<code class="cCode">surl</code>, passed as a parameter into the
+<code class="cCode">JMXServiceURL</code> instance. The URL
+<code class="cCode">jmxUrl</code> is then passed to the
+<code class="cCode">newJMXConnector()</code> method of <code class=
+"cCode">JMXConnectorFactory</code>, to create a new connector
+client named <code class="cCode">client</code> for each agent that
+is registered in the SLP service.</p>
+<a name="wp1005545" id="wp1005545"></a>
+<p class="pBody">The connector clients retrieved are stored in an
+array list called <code class="cCode">list</code>.</p>
+<a name="wp1008681" id="wp1008681"></a>
+<div class="pCodeCaption">CODE&#160;EXAMPLE&#160;4-2 SLP Lookup
+Service Example Class Client.java (Excerpt 2)</div>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1011331" id="wp1011331"> </a>
+<b class=
+"cBold">public static void listMBeans(MBeanServerConnection server)</b><a name="wp1011361"
+id="wp1011361"> </a>
+     throws IOException {<a name="wp1011337" id="wp1011337"> </a>
+<a name="wp1011338" id="wp1011338"> </a>
+     final Set names = server.queryNames(null,null);<a name=
+"wp1011339" id="wp1011339"> </a>
+     for (final Iterator i=names.iterator(); i.hasNext(); ) {<a name="wp1011340"
+id="wp1011340"> </a>
+          ObjectName name = (ObjectName)i.next();<a name=
+"wp1011341" id="wp1011341"> </a>
+          System.out.println(&quot;Got MBean: &quot;+name);<a name=
+"wp1011342" id="wp1011342"> </a>
+          try {<a name="wp1011343" id="wp1011343"> </a>
+               MBeanInfo info =<a name="wp1011344" id=
+"wp1011344"> </a>
+                  server.getMBeanInfo((ObjectName)name);<a name=
+"wp1011345" id="wp1011345"> </a>
+               MBeanAttributeInfo[] attrs = info.getAttributes();<a name="wp1011346"
+id="wp1011346"> </a>
+               if (attrs == null) continue;<a name="wp1011347" id=
+"wp1011347"> </a>
+               for (int j=0; j&lt;attrs.length; j++) {<a name=
+"wp1011348" id="wp1011348"> </a>
+                    try {<a name="wp1011349" id="wp1011349"> </a>
+                         Object o =<a name="wp1011350" id=
+"wp1011350"> </a>
+                         server.getAttribute(name,attrs[j].getName());<a name="wp1011351"
+id="wp1011351"> </a>
+                         System.out.println(&quot;\t\t&quot; + attrs[j].getName() +<a name="wp1011352"
+id="wp1011352"> </a>
+                         &quot; = &quot;+o);<a name="wp1011353" id=
+"wp1011353"> </a>
+                    } catch (Exception x) {<a name="wp1011354" id=
+"wp1011354"> </a>
+                         System.err.println(&quot;JmxClient failed to get &quot; +<a name="wp1011355"
+id="wp1011355"> </a>
+                                             attrs[j].getName() + x);<a name="wp1011356"
+id="wp1011356"> </a>
+                         x.printStackTrace(System.err);<a name=
+"wp1011357" id="wp1011357"> </a>
+                    }<a name="wp1011358" id="wp1011358"> </a>
+     }<a name="wp1011359" id="wp1011359"> </a>
+}<a name="wp1011360" id="wp1011360"> </a>
+<a name="wp1011365" id="wp1011365"> </a>
+</pre></div>
+<a name="wp1005540" id="wp1005540"></a>
+<p class="pBody">In <a href=
+"lookup.html#wp1008681">CODE&#160;EXAMPLE&#160;4-2</a>, a reference
+to the <code class="cCode">MBeanServerConnection</code> is
+retrieved for every connector client that is created from the
+connector server address stored in the SLP service. A list of all
+the MBeans and their attributes is retrieved.</p>
+<a name="wp1008723" id="wp1008723"></a>
+<div class="pCodeCaption">CODE&#160;EXAMPLE&#160;4-3 SLP Lookup
+Service Example Class Client.java (Excerpt 3)</div>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1011370" id="wp1011370"> </a>
+public static void main(String[] args) {<a name="wp1015956" id=
+"wp1015956"> </a>
+      try {<a name="wp1015957" id="wp1015957"> </a>
+           <span class=
+"cUserType">final String agentName = System.getProperty(&quot;agent.name&quot;)</span>;<a name="wp1015958"
+id="wp1015958"> </a>
+           <span class=
+"cUserType">final Locator slpLocator = getLocator()</span>;<a name=
+"wp1015959" id="wp1015959"> </a>
+           List l = lookup(slpLocator,agentName);<a name=
+"wp1015960" id="wp1015960"> </a>
+           int j = 1;<a name="wp1015961" id="wp1015961"> </a>
+           for (Iterator i=l.iterator();i.hasNext();j++) {<a name=
+"wp1015962" id="wp1015962"> </a>
+                JMXConnector c1 = (JMXConnector) i.next();<a name=
+"wp1015963" id="wp1015963"> </a>
+                if (c1 != null) {<a name="wp1015964" id=
+"wp1015964"> </a>
+                    try {<a name="wp1015965" id="wp1015965"> </a>
+                         c1.connect(env);<a name="wp1015966" id=
+"wp1015966"> </a>
+                    } catch (IOException x) {<a name="wp1015967"
+id="wp1015967"> </a>
+                         System.err.println (&quot;Connection failed: &quot; + x);<a name="wp1015968"
+id="wp1015968"> </a>
+                         x.printStackTrace(System.err);<a name=
+"wp1015969" id="wp1015969"> </a>
+                         continue;<a name="wp1015970" id=
+"wp1015970"> </a>
+                    }<a name="wp1015971" id="wp1015971"> </a>
+<a name="wp1015972" id="wp1015972"> </a>
+                    <span class=
+"cUserType">MBeanServerConnection conn =</span><a name="wp1015973"
+id="wp1015973"> </a>
+<span class=
+"cUserType">                         c1.getMBeanServerConnection()</span>;<a name="wp1015974"
+id="wp1015974"> </a>
+<a name="wp1015975" id="wp1015975"> </a>
+                    try {<a name="wp1015976" id="wp1015976"> </a>
+                         listMBeans(conn);<a name="wp1015977" id=
+"wp1015977"> </a>
+                    } catch (IOException x) {<a name="wp1015978"
+id="wp1015978"> </a>
+                         x.printStackTrace(System.err);<a name=
+"wp1015979" id="wp1015979"> </a>
+                    }<a name="wp1015980" id="wp1015980"> </a>
+                    try {<a name="wp1015981" id="wp1015981"> </a>
+                         c1.close();<a name="wp1015982" id=
+"wp1015982"> </a>
+                    } catch (IOException x) {<a name="wp1015983"
+id="wp1015983"> </a>
+                         x.printStackTrace(System.err);<a name=
+"wp1015984" id="wp1015984"> </a>
+                    }<a name="wp1015985" id="wp1015985"> </a>
+                }<a name="wp1015986" id="wp1015986"> </a>
+           }<a name="wp1015987" id="wp1015987"> </a>
+      } catch (Exception x) {<a name="wp1015988" id=
+"wp1015988"> </a>
+           x.printStackTrace(System.err);<a name="wp1015989" id=
+"wp1015989"> </a>
+      }<a name="wp1015990" id="wp1015990"> </a>
+}<a name="wp1011408" id="wp1011408"> </a>
+<a name="wp1011412" id="wp1011412"> </a>
+</pre></div>
+<a name="wp1008783" id="wp1008783"></a>
+<p class="pBody">In <a href=
+"lookup.html#wp1008723">CODE&#160;EXAMPLE&#160;4-3</a>, the
+<code class="cCode">agent.name</code> property is retrieved by
+calling the <code class="cCode">getProperty()</code> method of the
+<code class="cCode">System</code> class, and the SLP lookup service
+is found by calling the <code class="cCode">getLocator()</code>
+method of <code class="cCode">Locator</code>.</p>
+<a name="wp1024593" id="wp1024593"></a>
+<p class="pBody">All the agents named <code class=
+"cCode">agentName</code> are then looked up, and connections are
+made to the agents discovered. If no agent is specified, then all
+agents are lookup up. Connections are made to the MBean server
+created by <code class="cCode">Server</code>, and all the MBeans in
+it are listed, before the connection is closed down.</p>
+<a name="wp1024594" id="wp1024594"></a>
+<h3 class="pHeading2">Running the SLP Lookup Service Example</h3>
+<a name="wp1009264" id="wp1009264"></a>
+<p class="pBody">In addition to the actions you performed in
+<a href="lookup.html#wp999517"><span style=
+"color: #3366CC">Section&#160; &quot;Initial
+Configuration&quot;</span></a>, before you can run the lookup
+service examples that use the SLP, you must perform some further
+initial actions that are specific to this example. You can then
+start looking up connectors using SLP in conjunction with the two
+connectors supported by the JMX technology.</p>
+<a name="wp1010870" id="wp1010870"></a>
+<p class="pBody">When you run the examples, to help you keep track
+of which agent has been created with which transport, the agent
+names include a letter suffix that is the same as the lettering of
+the corresponding section. For example, the agent from <a href=
+"lookup.html#wp1010876"><span style=
+"color: #3366CC">Section&#160;a. &quot;RMI connector over JRMP,
+without an external directory&quot;</span></a> is called
+<code class="cCode">example-server-a</code>.</p>
+<a name="wp1008837" id="wp1008837"></a>
+<h4 class="pHeading3">Setting up the SLP Lookup Service
+Example</h4>
+<a name="wp1008838" id="wp1008838"></a>
+<p class="pBody">The following steps are required by all of the
+different transports you can run in this example.</p>
+<div class="pStep1">
+<ol class="pStep1">
+<li style="list-style: none"><a name="wp996930" id=
+"wp996930"></a></li>
+<li>For convenience when compiling and running the classes, define
+an additional environment variable. <a name="wp996968" id=
+"wp996968"></a>
+<p class="pBody">In addition to the common environment variables
+that were set in <a href="lookup.html#wp999517"><span style=
+"color: #3366CC">Section&#160; &quot;Initial
+Configuration&quot;</span></a>, you need to add the path to the SLP
+service. If you are using the Solaris operating environment, add
+the following variable:</p>
+<a name="wp1001457" id="wp1001457"></a>
+<p class="pBody"><code class="cCode">$</code> <span class=
+"cUserType">SLPLIB=/usr/share/lib/slp</span></p>
+<a name="wp1001461" id="wp1001461"></a>
+<p class="pBody">If you are using another platform, set
+<code class="cCode">SLPLIB</code> appropriately for the platform
+you are using.</p>
+<a name="wp996971" id="wp996971"></a></li>
+<li>Define and export the <code class="cCode">classp</code>
+environment variable. <a name="wp1001488" id="wp1001488"></a>
+<p class="pBody">This example requires a classpath that includes
+the Java archive (JAR) files for SLP.</p>
+<a name="wp996972" id="wp996972"></a>
+<p class="pBody"><code class="cCode">$</code> <span class=
+"cUserType">classp=$SLPLIB/slp.jar</span></p>
+<a name="wp997537" id="wp997537"></a></li>
+<li>Compile the example <code class="cCode">Client</code> and
+<code class="cCode">Server</code> classes. <a name="wp997538" id=
+"wp997538"></a>
+<p class="pBody">Type the following command:</p>
+<a name="wp997540" id="wp997540"></a>
+<p class="pBody"><code class="cCode">$</code> <span class=
+"cUserType">javac -d . -classpath $classp Server.java
+Client.java</span></p>
+<a name="wp996967" id="wp996967"></a></li>
+<li>Start the SLP daemon. <a name="wp997013" id="wp997013"></a>
+<p class="pBody">If you are using the Solaris operating
+environment, type the following command, which requires you to know
+your super user password:</p>
+<a name="wp997020" id="wp997020"></a>
+<p class="pBody"><code class="cCode">$</code> <span class=
+"cUserType">su root -c &quot;java -cp $SLPLIB/slpd.jar
+com.sun.slp.slpd &amp;&quot;</span></p>
+<a name="wp997014" id="wp997014"></a>
+<p class="pBody"><code class="cCode">Password:</code> <span class=
+"cUserType">[</span><em class="cEmphasis">type superuser
+password</em><span class="cUserType">]</span></p>
+<a name="wp1001495" id="wp1001495"></a>
+<p class="pListEndingPara">If you are not running a Solaris system,
+start the SLP daemon according to the implementation of SLP you are
+using.</p>
+</li>
+</ol>
+<a name="wp1008814" id="wp1008814"></a>
+<h4 class="pHeading3">Running the SLP Lookup Service Example</h4>
+<a name="wp1009282" id="wp1009282"></a>
+<p class="pBody">This example demonstrates the use of the SLP
+lookup service to look up RMI connector servers that use
+RMI&#8217;s default transport, JRMP, as well as the IIOP transport.
+In addition, as described in <a href=
+"lookup.html#wp999517"><span style="color: #3366CC">Section&#160;
+&quot;Initial Configuration&quot;</span></a>, different external
+directories are used to register the RMI connector stubs.</p>
+<a name="wp1009409" id="wp1009409"></a>
+<p class="pBody">The combinations of transports and external
+directories demonstrated here are:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp1012043"
+id="wp1012043"></a>
+<div class="pBullet1">
+<ul>
+<li>RMI connector over the JRMP transport, with:</li>
+</ul>
+</div>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012044"
+id="wp1012044"></a>
+<div class="pBullet2">
+<ul>
+<li>No external directory</li>
+</ul>
+</div>
+<a name="wp1012045" id="wp1012045"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>An RMI registry</li>
+</ul>
+</div>
+<a name="wp1012046" id="wp1012046"></a>
+<div class="pBullet2Last">
+<ul>
+<li>An LDAP registry</li>
+</ul>
+</div>
+</div>
+<a name="wp1012047" id="wp1012047"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>RMI connector over the IIOP transport, with:</li>
+</ul>
+</div>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012048"
+id="wp1012048"></a>
+<div class="pBullet2">
+<ul>
+<li>No external directory</li>
+</ul>
+</div>
+<a name="wp1012049" id="wp1012049"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>A CORBA naming service</li>
+</ul>
+</div>
+<a name="wp1012050" id="wp1012050"></a>
+<div class="pBullet2LastEnd">
+<ul>
+<li>An LDAP registry</li>
+</ul>
+</div>
+</div>
+</div>
+<a name="wp1013007" id="wp1013007"></a>
+<p class="pBody">Perform the following steps to run the
+example:</p>
+<div class="pStep1">
+<ol class="pStep1">
+<li style="list-style: none"><a name="wp1009386" id=
+"wp1009386"></a></li>
+<li>Start the <code class="cCode">Server</code>. <a name=
+"wp1008957" id="wp1008957"></a>
+<p class="pBody">The command you use to start the <code class=
+"cCode">Server</code> varies according to which external directory
+you are using. You can start one or more of the following instances
+of <code class="cCode">Server</code> with different transports and
+external registries before starting the <code class=
+"cCode">Client</code>.</p>
+<div class="pStep2">
+<ol class="pStep2">
+<li style="list-style: none"><a name="wp1010876" id=
+"wp1010876"></a></li>
+<li>RMI connector over JRMP, without an external directory <a name=
+"wp1011842" id="wp1011842"></a>
+<p class="pBody">Start <code class="cCode">Server</code> by typing
+the following command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1011843" id="wp1011843"> </a>
+<span class=
+"cUserType">$ java -classpath .:$classp -Ddebug=true \</span><a name="wp1013846"
+id="wp1013846"> </a>
+<span class=
+"cUserType">  -Dagent.name=example-server-a \</span><a name=
+"wp1013847" id="wp1013847"> </a>
+<span class=
+"cUserType">  -Durl =&quot;service:jmx:rmi://&quot; \</span><a name="wp1013848"
+id="wp1013848"> </a>
+<span class="cUserType">  slp.Server &amp;</span><a name=
+"wp1011851" id="wp1011851"> </a>
+<a name="wp1011852" id="wp1011852"> </a>
+</pre></div>
+<a name="wp1011844" id="wp1011844"></a>
+<p class="pBody">In this command:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012061"
+id="wp1012061"></a>
+<div class="pBullet2">
+<ul>
+<li><code class="cCode">debug</code> is set to true to provide more
+complete screen output when the <code class="cCode">Server</code>
+runs</li>
+</ul>
+</div>
+<a name="wp1012062" id="wp1012062"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The name of the agent to be created is <code class=
+"cCode">example-server-a</code></li>
+</ul>
+</div>
+<a name="wp1012063" id="wp1012063"></a>
+<div class="pBullet2Last">
+<ul>
+<li>The service URL specifies that the chosen connector is an RMI
+connector, running over the RMI default transport JRMP.</li>
+</ul>
+</div>
+</div>
+<a name="wp1008896" id="wp1008896"></a>
+<p class="pBody">When Server is launched, you will see confirmation
+of the creation of the RMI connector, and the registration of its
+URL in the SLP service.</p>
+<a name="wp1008897" id="wp1008897"></a></li>
+<li>RMI connector over JRMP, using an RMI registry as an external
+directory. <a name="wp1011651" id="wp1011651"></a>
+<p class="pBody">Start <code class="cCode">Server</code> by typing
+the following command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1011727" id="wp1011727"> </a>
+$ <span class=
+"cUserType">java -classpath .:$classp -Ddebug=true \</span><a name=
+"wp1011864" id="wp1011864"> </a>
+<span class=
+"cUserType">  -Dagent.name=example-server-b \</span><a name=
+"wp1011866" id="wp1011866"> </a>
+<span class=
+"cUserType">  -Durl=&quot;service:jmx:rmi:///jndi/${jndirmi}/server&quot; \</span><a name="wp1011867"
+id="wp1011867"> </a>
+<span class="cUserType">  slp.Server &amp;</span><a name=
+"wp1011868" id="wp1011868"> </a>
+<a name="wp1011869" id="wp1011869"> </a>
+</pre></div>
+<a name="wp1011653" id="wp1011653"></a>
+<p class="pBody">In this command:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012068"
+id="wp1012068"></a>
+<div class="pBullet2">
+<ul>
+<li>The name of the agent created is <code class=
+"cCode">example-server-b</code></li>
+</ul>
+</div>
+<a name="wp1012069" id="wp1012069"></a>
+<div class="pBullet2Last">
+<ul>
+<li>The service URL specifies the chosen connector as RMI over
+JRMP, and the external directory in which the RMI connector stub,
+server, is stored is the RMI registry you identified as jndirmi in
+<a href="lookup.html#wp999517"><span style=
+"color: #3366CC">Section&#160; &quot;Initial
+Configuration&quot;</span></a>.</li>
+</ul>
+</div>
+</div>
+<a name="wp1009103" id="wp1009103"></a>
+<p class="pBody">When <code class="cCode">Server</code> is
+launched, you will see confirmation of the creation of the RMI
+connector, and the registration of its URL in the SLP service.</p>
+<a name="wp1008906" id="wp1008906"></a></li>
+<li>RMI connector over JRMP, using LDAP as the external directory.
+<a name="wp1009412" id="wp1009412"></a>
+<p class="pBody">Start <code class="cCode">Server</code> by typing
+the following command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1011487" id="wp1011487"> </a>
+$ <span class=
+"cUserType">java -classpath .:$classp -Ddebug=true \</span><a name=
+"wp1011875" id="wp1011875"> </a>
+<span class=
+"cUserType">  -Dagent.name=example-server-c \</span><a name=
+"wp1011877" id="wp1011877"> </a>
+<span class=
+"cUserType">  -Durl=&quot;service:jmx:rmi:///jndi/${jndildap}/cn=x,dc=Test&quot; \</span><a name="wp1011878"
+id="wp1011878"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.principal=&quot;$principal&quot; \</span><a name="wp1011880"
+id="wp1011880"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.credentials=&quot;$credentials&quot; \</span><a name="wp1011881"
+id="wp1011881"> </a>
+<span class="cUserType">  slp.Server &amp;</span><a name=
+"wp1011882" id="wp1011882"> </a>
+<a name="wp1011771" id="wp1011771"> </a>
+</pre></div>
+<a name="wp1008913" id="wp1008913"></a>
+<p class="pBody">In this command:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1009159"
+id="wp1009159"></a>
+<div class="pBullet2">
+<ul>
+<li>The name of the agent created is <code class=
+"cCode">example-server-c</code></li>
+</ul>
+</div>
+<a name="wp1009167" id="wp1009167"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The service URL specifies the chosen connector as RMI over
+JRMP, and the external directory in which the RMI connector stub is
+stored is the LDAP server you identified as <code class=
+"cCode">jndildap</code> in <a href=
+"lookup.html#wp999517"><span style="color: #3366CC">Section&#160;
+&quot;Initial Configuration&quot;</span></a>.</li>
+</ul>
+</div>
+<a name="wp1009176" id="wp1009176"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The stub is registered in the <code class="cCode">Test</code>
+domain component in the LDAP server.</li>
+</ul>
+</div>
+<a name="wp1009189" id="wp1009189"></a>
+<div class="pBullet2Last">
+<ul>
+<li>The common name attribute <code class="cCode">principal</code>
+and password <code class="cCode">credentials</code> are given to
+gain access to the LDAP server.</li>
+</ul>
+</div>
+</div>
+<a name="wp1008917" id="wp1008917"></a>
+<p class="pBody">When <code class="cCode">Server</code> is
+launched, you will see confirmation of the creation of the RMI
+connector, and the registration of its URL in the SLP service under
+the agent name <code class="cCode">example-server-c</code>.</p>
+<a name="wp1009305" id="wp1009305"></a></li>
+<li>RMI connector over IIOP, without an external directory.
+<a name="wp1009419" id="wp1009419"></a>
+<p class="pBody">Start <code class="cCode">Server</code> by typing
+the following command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1009426" id="wp1009426"> </a>
+$ <span class=
+"cUserType">java -classpath .:$classp -Ddebug=true \</span><a name=
+"wp1011890" id="wp1011890"> </a>
+<span class=
+"cUserType">  -Dagent.name=example-server-d \</span><a name=
+"wp1011892" id="wp1011892"> </a>
+<span class=
+"cUserType">  -Durl=&quot;service:jmx:iiop://&quot; \</span><a name="wp1011893"
+id="wp1011893"> </a>
+<span class="cUserType">  slp.Server &amp;</span><a name=
+"wp1011894" id="wp1011894"> </a>
+<a name="wp1011895" id="wp1011895"> </a>
+</pre></div>
+<a name="wp1011774" id="wp1011774"></a>
+<p class="pBody">In this command:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1009452"
+id="wp1009452"></a>
+<div class="pBullet2">
+<ul>
+<li>The name of the agent created is <code class=
+"cCode">example-server-d</code></li>
+</ul>
+</div>
+<a name="wp1009457" id="wp1009457"></a>
+<div class="pBullet2Last">
+<ul>
+<li>The service URL specifies the chosen connector as RMI connector
+over IIOP.</li>
+</ul>
+</div>
+</div>
+<a name="wp1009310" id="wp1009310"></a>
+<p class="pBody">When the <code class="cCode">Server</code> is
+launched, you will see confirmation of the creation of the RMI
+connector, and the registration of its automatically generated URL
+in the SLP service.</p>
+<a name="wp1009311" id="wp1009311"></a></li>
+<li>RMI connector over IIOP, using CORBA naming as the external
+directory. <a name="wp1009473" id="wp1009473"></a>
+<p class="pBody">Start <code class="cCode">Server</code> by typing
+the following command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1009316" id="wp1009316"> </a>
+<span class=
+"cUserType">$ java -classpath .:$classp -Ddebug=true \</span><a name="wp1015198"
+id="wp1015198"> </a>
+<span class=
+"cUserType">  -Dagent.name=example-server-e \</span><a name=
+"wp1015199" id="wp1015199"> </a>
+<span class=
+"cUserType">  -Durl=&quot;service:jmx:iiop:///jndi/${jndiiiop}/server&quot; \</span><a name="wp1015200"
+id="wp1015200"> </a>
+<span class="cUserType">  slp.Server &amp;</span><a name=
+"wp1011910" id="wp1011910"> </a>
+<a name="wp1011901" id="wp1011901"> </a>
+</pre></div>
+<a name="wp1011783" id="wp1011783"></a>
+<p class="pBody">In this command:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1009511"
+id="wp1009511"></a>
+<div class="pBullet2">
+<ul>
+<li>The name of the agent created is <code class=
+"cCode">example-server-e</code></li>
+</ul>
+</div>
+<a name="wp1009508" id="wp1009508"></a>
+<div class="pBullet2Last">
+<ul>
+<li>The service URL specifies the chosen connector as RMI connector
+over IIOP. The external directory in which the RMI connector stub
+<code class="cCode">server</code> is stored is the CORBA naming
+service you identified as <code class="cCode">jndiiiop</code> in
+<a href="lookup.html#wp999517"><span style=
+"color: #3366CC">Section&#160; &quot;Initial
+Configuration&quot;</span></a></li>
+</ul>
+</div>
+</div>
+<a name="wp1009320" id="wp1009320"></a>
+<p class="pBody">When <code class="cCode">Server</code> is
+launched, you will see confirmation of the creation of the RMI
+connector, and the registration of its URL in the SLP service under
+the name <code class="cCode">example-server-e</code>.</p>
+<a name="wp1009321" id="wp1009321"></a></li>
+<li>RMI connector over IIOP, using LDAP as the external directory.
+<a name="wp1011517" id="wp1011517"></a>
+<p class="pBody">Start <code class="cCode">Server</code> by typing
+the following command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1011536" id="wp1011536"> </a>
+<span class=
+"cUserType">$ java -classpath .:$classp -Ddebug=true \</span><a name="wp1015209"
+id="wp1015209"> </a>
+<span class=
+"cUserType">  -Dagent.name=example-server-f \</span><a name=
+"wp1015210" id="wp1015210"> </a>
+<span class=
+"cUserType">  -Durl=&quot;service:jmx:iiop:///jndi/${jndildap}/cn=x,dc=Test&quot; \</span><a name="wp1015211"
+id="wp1015211"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.principal=&quot;$principal&quot; \</span><a name="wp1015212"
+id="wp1015212"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.credentials=&quot;$credentials&quot; \</span><a name="wp1015213"
+id="wp1015213"> </a>
+<span class="cUserType">  slp.Server &amp;</span><a name=
+"wp1011931" id="wp1011931"> </a>
+<a name="wp1011932" id="wp1011932"> </a>
+</pre></div>
+<a name="wp1011525" id="wp1011525"></a>
+<p class="pBody">In this command:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1009591"
+id="wp1009591"></a>
+<div class="pBullet2">
+<ul>
+<li>The name of the agent created is <code class=
+"cCode">example-server-f</code></li>
+</ul>
+</div>
+<a name="wp1009592" id="wp1009592"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The service URL specifies the chosen connector as RMI over
+IIOP, and the external directory in which the RMI connector stub is
+stored is the LDAP server you identified as <code class=
+"cCode">jndildap</code> in <a href=
+"lookup.html#wp999517"><span style="color: #3366CC">Section&#160;
+&quot;Initial Configuration&quot;</span></a>.</li>
+</ul>
+</div>
+<a name="wp1009596" id="wp1009596"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The stub is registered in the <code class="cCode">Test</code>
+domain component in the LDAP server.</li>
+</ul>
+</div>
+<a name="wp1009597" id="wp1009597"></a>
+<div class="pBullet2Last">
+<ul>
+<li>The common name attribute <code class="cCode">principal</code>
+and password <code class="cCode">credentials</code> are given to
+gain access to the LDAP server.</li>
+</ul>
+</div>
+</div>
+<a name="wp1009598" id="wp1009598"></a>
+<p class="pListEndingPara">When <code class="cCode">Server</code>
+is launched, you will see confirmation of the creation of the RMI
+connector, and the registration of its URL in the SLP service under
+the agent name <code class="cCode">example-server-f</code>.</p>
+</li>
+</ol>
+<a name="wp1009122" id="wp1009122"></a>
+<ul>
+<li>Start the <code class="cCode">Client</code>.</li>
+<li style="list-style: none"><a name="wp1009123" id=
+"wp1009123"></a>
+<p class="pBody">After starting the <code class=
+"cCode">Server</code> using the transport and external directory of
+your choice, start the <code class="cCode">Client</code>:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1013866" id="wp1013866"> </a>
+<code class="cCode">$ </code><span class=
+"cUserType">java -classpath .:$classp -Ddebug=true \</span><a name=
+"wp1017418" id="wp1017418"> </a>
+     <span class=
+"cUserType">-Djava.naming.security.principal=&quot;$principal&quot; \</span><a name="wp1017425"
+id="wp1017425"> </a>
+<span class=
+"cUserType">     -Djava.naming.security.credentials=&quot;$credentials&quot; \</span><a name="wp1017426"
+id="wp1017426"> </a>
+<span class="cUserType">     slp.Client</span><a name="wp1017399"
+id="wp1017399"> </a>
+<a name="wp1017430" id="wp1017430"> </a>
+</pre></div>
+<a name="wp1009125" id="wp1009125"></a>
+<p class="pBody">You will see output confirming the detection of
+the agents created by the <code class="cCode">Server</code> and
+registered in the lookup service. You will also see the
+identification and confirmation of the connection made to the
+agents.</p>
+<a name="wp1009126" id="wp1009126"></a>
+<p class="pBody">To look up a specific agent, type the following
+command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1011949" id="wp1011949"> </a>
+<span class=
+"cUserType">$ java -classpath .:$classp -Ddebug=true \&#160;</span><a name="wp1017456"
+id="wp1017456"> </a>
+<span class=
+"cUserType">     -Djava.naming.security.principal=&quot;$principal&quot; \</span><a name="wp1017457"
+id="wp1017457"> </a>
+<span class=
+"cUserType">     -Djava.naming.security.credentials=&quot;$credentials&quot; \</span><a name="wp1017458"
+id="wp1017458"> </a>
+<span class=
+"cUserType">     -Dagent.name=&quot;agentName&quot; \</span><a name="wp1017459"
+id="wp1017459"> </a>
+<span class="cUserType">    slp.Client</span><a name="wp1011957"
+id="wp1011957"> </a>
+<a name="wp1011951" id="wp1011951"> </a>
+</pre></div>
+<a name="wp1009129" id="wp1009129"></a>
+<p class="pListEndingPara">In the command shown above, <em class=
+"cEmphasis">agentName</em> is the name of the agent you want to
+look up. You can also specify a partial agent name by using
+<code class="cCode">*</code>; for example, <code class=
+"cCode">x*</code> for all agent names beginning with the letter
+x.</p>
+<a name="wp1015233" id="wp1015233"></a>
+<p class="pListEndingPara"></p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+<a name="wp998474" id="wp998474"></a>
+<h2 class="pHeading1">Jini Lookup Service</h2>
+<a name="wp1001743" id="wp1001743"></a>
+<p class="pBody">The purpose of this example is to demonstrate how
+a JMX technology connector client can find and connect to a
+connector server that has registered with the Jini lookup service.
+This example performs the following operations:</p>
+<div style="margin-left: 2em" class="pList1"><a name="wp1001744"
+id="wp1001744"></a>
+<div class="pList1">
+<ul>
+<li>The agent:</li>
+</ul>
+</div>
+<div style="margin-left: 2em" class="pList2"><a name="wp1001761"
+id="wp1001761"></a>
+<div class="pList2">
+<ul>
+<li>Creates an MBean server</li>
+</ul>
+</div>
+<a name="wp1001762" id="wp1001762"></a>
+<div class="pList2Plus">
+<ul>
+<li>Creates a connector server</li>
+</ul>
+</div>
+<a name="wp1001767" id="wp1001767"></a>
+<div class="pList2Last">
+<ul>
+<li>Registers the connector address with the Jini lookup
+service</li>
+</ul>
+</div>
+</div>
+<a name="wp1001771" id="wp1001771"></a>
+<div class="pList1Plus">
+<ul>
+<li>The client:</li>
+</ul>
+</div>
+<div style="margin-left: 2em" class="pList2"><a name="wp1001772"
+id="wp1001772"></a>
+<div class="pList2">
+<ul>
+<li>Gets a pointer to the Jini lookup service</li>
+</ul>
+</div>
+<a name="wp1001773" id="wp1001773"></a>
+<div class="pList2Plus">
+<ul>
+<li>Looks for any connector servers registered in the Jini lookup
+service</li>
+</ul>
+</div>
+<a name="wp1001777" id="wp1001777"></a>
+<div class="pList2Plus">
+<ul>
+<li>Creates a JMX Remote API connector</li>
+</ul>
+</div>
+<a name="wp1001778" id="wp1001778"></a>
+<div class="pList2LastEnd">
+<ul>
+<li>Retrieves information about the MBeans in the MBean server</li>
+</ul>
+</div>
+</div>
+</div>
+<a name="wp1013636" id="wp1013636"></a>
+<p class="pBody">The Jini lookup service example is contained in
+the directory <em class="cEmphasis">work_dir</em><code class=
+"cCode">/jmx_examples/Lookup/jini</code>.</p>
+<hr class="pHr" />
+<div class="note"><a name="wp1013642" id="wp1013642"></a> <b>Note
+&#8211;</b> These examples assume that you are already familiar
+with the Jini network technology. The documentation for the Jini
+network technology is available at <a href=
+"http://java.net/projects/jini">http://java.net/projects/jini</a>.
+You can download the Jini network technology from <a href=
+"http://java.net/projects/jini">http://java.net/projects/jini</a>.
+This example has been implemented using the Jini Technology Starter
+Kit Version 1.2.1_002.
+<hr class="pHr" />
+<div class="pStep1">
+<ol class="pStep1">
+<li style="list-style: none"><a name="wp999430" id=
+"wp999430"></a></li>
+<li>Open the <em class="cEmphasis">work_dir</em><code class=
+"cCode">/jmx_examples</code><code class="cCode">/Lookup/jini</code>
+directory. <a name="wp999431" id="wp999431"></a>
+<p class="pBody">Inside this directory, you will find the following
+files:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012082"
+id="wp1012082"></a>
+<div class="pBullet2">
+<ul>
+<li><code class="cCode">Server.java</code></li>
+</ul>
+</div>
+<a name="wp1012083" id="wp1012083"></a>
+<div class="pBullet2Plus">
+<ul>
+<li><code class="cCode">Client.java</code></li>
+</ul>
+</div>
+<a name="wp1012084" id="wp1012084"></a>
+<div class="pBullet2Plus">
+<ul>
+<li><code class="cCode">java.policy</code></li>
+</ul>
+</div>
+<a name="wp1012085" id="wp1012085"></a>
+<div class="pBullet2Plus">
+<ul>
+<li><code class="cCode">jini.properties.template</code></li>
+</ul>
+</div>
+<a name="wp1012086" id="wp1012086"></a>
+<div class="pBullet2Last">
+<ul>
+<li><code class="cCode">README</code></li>
+</ul>
+</div>
+</div>
+<a name="wp999434" id="wp999434"></a></li>
+<li>Open each of the files in a text editor. <a name="wp1013015"
+id="wp1013015"></a>
+<p class="pListEndingPara">These classes will be analyzed in the
+following sections.</p>
+</li>
+</ol>
+<a name="wp999481" id="wp999481"></a>
+<h3 class="pHeading2">Analyzing the Example Classes</h3>
+<a name="wp999486" id="wp999486"></a>
+<p class="pBody">The following sections analyze each of the classes
+used in the Jini lookup service example, and explain how they
+perform the operations described above.</p>
+<a name="wp999487" id="wp999487"></a>
+<h4 class="pHeading3">Server.java</h4>
+<a name="wp1001806" id="wp1001806"></a>
+<p class="pBody">Due to its size, the Jini lookup service
+<code class="cCode">Server.java</code> class is shown as a series
+of code excerpts.</p>
+<a name="wp1012087" id="wp1012087"></a>
+<div class="pCodeCaption">CODE&#160;EXAMPLE&#160;4-1 Jini Lookup
+Service Example Class Server.java (Excerpt 1)</div>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1012093" id="wp1012093"> </a>
+<a name="wp1012094" id="wp1012094"> </a>
+public class Server {<a name="wp1012096" id="wp1012096"> </a>
+   private final MBeanServer mbs;<a name="wp1012097" id=
+"wp1012097"> </a>
+   private static boolean debug = false;<a name="wp1012098" id=
+"wp1012098"> </a>
+   public Server() {<a name="wp1012099" id="wp1012099"> </a>
+     mbs = <b class=
+"cBold">MBeanServerFactory.createMBeanServer()</b>;<a name=
+"wp1012100" id="wp1012100"> </a>
+   }<a name="wp1012101" id="wp1012101"> </a>
+<a name="wp1012102" id="wp1012102"> </a>
+[...]<a name="wp1012103" id="wp1012103"> </a>
+<a name="wp1012104" id="wp1012104"> </a>
+</pre></div>
+<a name="wp1001824" id="wp1001824"></a>
+<p class="pBody"><a href=
+"lookup.html#wp1012087">CODE&#160;EXAMPLE&#160;4-1</a> shows the
+creation of an MBean server <code class="cCode">mbs</code>. As was
+the case for the SLP examples, the JMX service URL and the agent
+name are passed to <code class="cCode">Server</code> when it is
+launched at the command line.</p>
+<a name="wp1012111" id="wp1012111"></a>
+<div class="pCodeCaption">CODE&#160;EXAMPLE&#160;4-2 Jini Lookup
+Service Example Class Server.java (Excerpt 2)</div>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1012117" id="wp1012117"> </a>
+<a name="wp1012118" id="wp1012118"> </a>
+[...]<a name="wp1015241" id="wp1015241"> </a>
+<a name="wp1015242" id="wp1015242"> </a>
+   public JMXConnectorServer rmi(String url)<a name="wp1015243" id=
+"wp1015243"> </a>
+      throws IOException, JMException, ClassNotFoundException {<a name="wp1015244"
+id="wp1015244"> </a>
+      JMXServiceURL jurl = new JMXServiceURL(url);<a name=
+"wp1015245" id="wp1015245"> </a>
+      final HashMap env = new HashMap();<a name="wp1015246" id=
+"wp1015246"> </a>
+      // Environment map attributes<a name="wp1015247" id=
+"wp1015247"> </a>
+     [...]<a name="wp1015248" id="wp1015248"> </a>
+     JMXConnectorServer rmis =<a name="wp1015249" id=
+"wp1015249"> </a>
+        JMXConnectorServerFactory.newJMXConnectorServer(jurl, env, mbs);<a name="wp1015250"
+id="wp1015250"> </a>
+<a name="wp1015251" id="wp1015251"> </a>
+     final String agentName = System.getProperty(&quot;agent.name&quot;,<a name="wp1015252"
+id="wp1015252"> </a>
+                                                 &quot;DefaultAgent&quot;);<a name="wp1015253"
+id="wp1015253"> </a>
+<a name="wp1015254" id="wp1015254"> </a>
+     start(rmis,env,agentName);<a name="wp1015255" id=
+"wp1015255"> </a>
+<a name="wp1015256" id="wp1015256"> </a>
+     return rmis;<a name="wp1015257" id="wp1015257"> </a>
+   }<a name="wp1015258" id="wp1015258"> </a>
+   <a name="wp1015259" id="wp1015259"> </a>
+[...]<a name="wp1012142" id="wp1012142"> </a>
+<a name="wp1012143" id="wp1012143"> </a>
+</pre></div>
+<a name="wp1002084" id="wp1002084"></a>
+<p class="pBody"><a href=
+"lookup.html#wp1012111">CODE&#160;EXAMPLE&#160;4-2</a> shows the
+creation of an RMI connector server named <code class=
+"cCode">rmis</code>, using the system properties defined by the
+environment map <code class="cCode">env</code> and the address
+<code class="cCode">jurl</code>.</p>
+<a name="wp1002085" id="wp1002085"></a>
+<p class="pBody">The RMI connector server <code class=
+"cCode">rmis</code> is started. The RMI connector server address is
+registered in the Jini lookup service under the name <code class=
+"cCode">agentName</code>.</p>
+<a name="wp1006897" id="wp1006897"></a>
+<div class="pCodeCaption">CODE&#160;EXAMPLE&#160;4-3 Jini Lookup
+Service Example Class Server.java (Excerpt 3)</div>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1012156" id="wp1012156"> </a>
+[...]<a name="wp1012163" id="wp1012163"> </a>
+<a name="wp1012164" id="wp1012164"> </a>
+   public void start(<b class=
+"cBold">JMXConnectorServer server, Map env, String agentName</b>)<a name="wp1012165"
+id="wp1012165"> </a>
+      throws IOException, ClassNotFoundException {<a name=
+"wp1012166" id="wp1012166"> </a>
+      server.start();<a name="wp1012167" id="wp1012167"> </a>
+      final ServiceRegistrar registrar=getRegistrar();<a name=
+"wp1012168" id="wp1012168"> </a>
+      final <b class=
+"cBold">JMXConnector proxy = server.toJMXConnector(env);</b><a name="wp1012169"
+id="wp1012169"> </a>
+      <b class=
+"cBold">register</b>(registrar,proxy,agentName);<a name="wp1012170"
+id="wp1012170"> </a>
+   }<a name="wp1012171" id="wp1012171"> </a>
+   <a name="wp1012172" id="wp1012172"> </a>
+   public static ServiceRegistrar getRegistrar()<a name="wp1012173"
+id="wp1012173"> </a>
+      throws IOException, ClassNotFoundException,<a name=
+"wp1012174" id="wp1012174"> </a>
+         MalformedURLException {<a name="wp1012175" id=
+"wp1012175"> </a>
+      final String jurl =<a name="wp1012176" id="wp1012176"> </a>
+         System.getProperty(&quot;jini.lookup.url&quot;,&quot;jini://localhost&quot;);<a name="wp1012177"
+id="wp1012177"> </a>
+      final <b class=
+"cBold">LookupLocator lookup = new LookupLocator(jurl);</b><a name=
+"wp1012178" id="wp1012178"> </a>
+      final <b class=
+"cBold">ServiceRegistrar registrar = lookup.getRegistrar();</b><a name="wp1012179"
+id="wp1012179"> </a>
+      if (registrar instanceof Administrable)<a name="wp1012180"
+id="wp1012180"> </a>
+          debug(&quot;Registry is administrable.&quot;);<a name=
+"wp1012181" id="wp1012181"> </a>
+      return registrar;<a name="wp1012182" id="wp1012182"> </a>
+   }<a name="wp1012183" id="wp1012183"> </a>
+   <a name="wp1012184" id="wp1012184"> </a>
+   public static ServiceRegistration <b class=
+"cBold">register(ServiceRegistrar registrar,</b><a name="wp1012185"
+id="wp1012185"> </a>
+<b class=
+"cBold">                                              JMXConnector proxy, String name)</b><a name="wp1012186"
+id="wp1012186"> </a>
+      throws IOException {<a name="wp1012187" id="wp1012187"> </a>
+      Entry[] serviceAttrs = new Entry[] {<a name="wp1012188" id=
+"wp1012188"> </a>
+              new net.jini.lookup.entry.Name(name)<a name=
+"wp1012189" id="wp1012189"> </a>
+                       };<a name="wp1012190" id="wp1012190"> </a>
+                       <a name="wp1012191" id="wp1012191"> </a>
+      System.out.println(&quot;Registering proxy: AgentName=&quot; + name );<a name="wp1012192"
+id="wp1012192"> </a>
+      debug(&quot;&quot; + proxy);<a name="wp1012193" id=
+"wp1012193"> </a>
+      ServiceItem <b class=
+"cBold">srvcItem</b> = new ServiceItem(null, proxy, serviceAttrs);<a name="wp1012194"
+id="wp1012194"> </a>
+      ServiceRegistration srvcRegistration =<a name="wp1012195" id=
+"wp1012195"> </a>
+             registrar.register(srvcItem, Lease.ANY);<a name=
+"wp1012196" id="wp1012196"> </a>
+      debug(&quot;Registered ServiceID: &quot; +<a name="wp1012197"
+id="wp1012197"> </a>
+                              srvcRegistration.getServiceID().toString());<a name="wp1012198"
+id="wp1012198"> </a>
+      return <b class="cBold">srvcRegistration</b>;<a name=
+"wp1012199" id="wp1012199"> </a>
+   }<a name="wp1012200" id="wp1012200"> </a>
+   <a name="wp1012201" id="wp1012201"> </a>
+[...]<a name="wp1012202" id="wp1012202"> </a>
+<a name="wp1012203" id="wp1012203"> </a>
+</pre></div>
+<a name="wp1002362" id="wp1002362"></a>
+<p class="pBody"><a href=
+"lookup.html#wp1006897">CODE&#160;EXAMPLE&#160;4-3</a> shows the
+creation of a connector server named <code class=
+"cCode">server</code> with the environment map <code class=
+"cCode">env</code> and the service URL <code class=
+"cCode">jurl</code>. The connector server instance server then gets
+a pointer to the Jini lookup service by calling the Jini lookup
+service method <code class=
+"cCode">LookupLocator.getRegistrar()</code>.</p>
+<a name="wp1002370" id="wp1002370"></a>
+<p class="pBody">The connector server is registered in the Jini
+lookup service in the form of a proxy, using the Jini lookup
+service locator <code class="cCode">registrar</code> and the agent
+name under which the connector server will be registered. The proxy
+is in fact a client stub for the connector server, obtained by a
+call to the <code class="cCode">toJMXConnector()</code> method of
+<code class="cCode">JMXConnectorServer</code>.</p>
+<a name="wp1002371" id="wp1002371"></a>
+<p class="pBody">The registration itself is performed by a call to
+the <code class="cCode">register()</code> method of the Jini lookup
+service class <code class="cCode">ServiceRegistrar</code>, with an
+array of service items.</p>
+<a name="wp999488" id="wp999488"></a>
+<h4 class="pHeading3">Client.java</h4>
+<a name="wp1002527" id="wp1002527"></a>
+<p class="pBody">The Jini lookup service example class <code class=
+"cCode">Client.java</code> is shown in <a href=
+"lookup.html#wp1012207">CODE&#160;EXAMPLE&#160;4-1</a>.</p>
+<a name="wp1012207" id="wp1012207"></a>
+<div class="pCodeCaption">CODE&#160;EXAMPLE&#160;4-1 Jini Lookup
+Service Example Class Client.java</div>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1012209" id="wp1012209"> </a>
+<a name="wp1012208" id="wp1012208"> </a>
+public class Client {<a name="wp1015266" id="wp1015266"> </a>
+<a name="wp1015267" id="wp1015267"> </a>
+   private static boolean debug = false;<a name="wp1015268" id=
+"wp1015268"> </a>
+   public static ServiceRegistrar getRegistrar()<a name="wp1015269"
+id="wp1015269"> </a>
+       throws IOException, ClassNotFoundException, MalformedURLException {<a name="wp1015270"
+id="wp1015270"> </a>
+       final String jurl =<a name="wp1015271" id="wp1015271"> </a>
+                  System.getProperty(&quot;jini.lookup.url&quot;,&quot;jini://localhost&quot;);<a name="wp1015272"
+id="wp1015272"> </a>
+       final LookupLocator lookup = new LookupLocator(jurl);<a name="wp1015273"
+id="wp1015273"> </a>
+       final ServiceRegistrar registrar = <span class=
+"cUserType">lookup.getRegistrar()</span>;<a name="wp1015274" id=
+"wp1015274"> </a>
+       if (registrar instanceof Administrable)<a name="wp1015275"
+id="wp1015275"> </a>
+               debug(&quot;Registry is administrable.&quot;);<a name="wp1015276"
+id="wp1015276"> </a>
+       return registrar;<a name="wp1015277" id="wp1015277"> </a>
+ }<a name="wp1015278" id="wp1015278"> </a>
+<a name="wp1015279" id="wp1015279"> </a>
+   public static List lookup(ServiceRegistrar registrar,<a name=
+"wp1015280" id="wp1015280"> </a>
+           String name) throws IOException {<a name="wp1015281" id=
+"wp1015281"> </a>
+       final ArrayList list = new ArrayList();<a name="wp1015282"
+id="wp1015282"> </a>
+       final Class[] classes = new Class[] {JMXConnector.class};<a name="wp1015283"
+id="wp1015283"> </a>
+       final Entry[] serviceAttrs = new Entry[] {<a name=
+"wp1015284" id="wp1015284"> </a>
+           new net.jini.lookup.entry.Name(name)<a name="wp1015285"
+id="wp1015285"> </a>
+   };<a name="wp1015286" id="wp1015286"> </a>
+   <a name="wp1015287" id="wp1015287"> </a>
+   ServiceTemplate template =<a name="wp1015288" id=
+"wp1015288"> </a>
+        new ServiceTemplate(null,classes,serviceAttrs);<a name=
+"wp1015289" id="wp1015289"> </a>
+   ServiceMatches matches =<a name="wp1015290" id="wp1015290"> </a>
+        registrar.lookup(template, Integer.MAX_VALUE);<a name=
+"wp1015291" id="wp1015291"> </a>
+   for(int i = 0; i &lt; matches.totalMatches; i++) {<a name=
+"wp1015292" id="wp1015292"> </a>
+        debug(&quot;Found Service: &quot; + matches.items[i].serviceID);<a name="wp1015293"
+id="wp1015293"> </a>
+        if (debug) {<a name="wp1015294" id="wp1015294"> </a>
+           if (matches.items[i].attributeSets != null) {<a name=
+"wp1015295" id="wp1015295"> </a>
+                   final Entry[] attrs = matches.items[i].attributeSets;<a name="wp1015296"
+id="wp1015296"> </a>
+                   for (int j = 0; j &lt; attrs.length ; j++) {<a name="wp1015297"
+id="wp1015297"> </a>
+                       debug(&quot;Attribute[&quot;+j+&quot;]=&quot; + attrs[j]);<a name="wp1015298"
+id="wp1015298"> </a>
+               }<a name="wp1015299" id="wp1015299"> </a>
+           }<a name="wp1015300" id="wp1015300"> </a>
+        }<a name="wp1015301" id="wp1015301"> </a>
+<a name="wp1015302" id="wp1015302"> </a>
+<a name="wp1015303" id="wp1015303"> </a>
+        if(matches.items[i].service != null) {<a name="wp1015304"
+id="wp1015304"> </a>
+            JMXConnector c = (JMXConnector)(matches.items[i].service);<a name="wp1015305"
+id="wp1015305"> </a>
+            debug(&quot;Found a JMXConnector: &quot; + c);<a name=
+"wp1015306" id="wp1015306"> </a>
+            list.add(c);<a name="wp1015307" id="wp1015307"> </a>
+        }<a name="wp1015308" id="wp1015308"> </a>
+   }<a name="wp1015309" id="wp1015309"> </a>
+   return list;<a name="wp1015310" id="wp1015310"> </a>
+}<a name="wp1015311" id="wp1015311"> </a>
+<a name="wp1015312" id="wp1015312"> </a>
+[...]<a name="wp1012264" id="wp1012264"> </a>
+<a name="wp1012265" id="wp1012265"> </a>
+</pre></div>
+<a name="wp1002721" id="wp1002721"></a>
+<p class="pBody"><a href=
+"lookup.html#wp1012207">CODE&#160;EXAMPLE&#160;4-1</a> shows how
+the connector client obtains a pointer to the Jini lookup service
+with a call to <code class="cCode">lookup.getRegistrar()</code>.
+The client then obtains the list of the connectors registered as
+entries in the Jini lookup service with the agent name <code class=
+"cCode">name</code>. Unlike in the SLP example, the agent name you
+pass to <code class="cCode">Client</code> when it is launched must
+be either an exact match of an existing agent name, or null, in
+which case the Jini lookup service will look up all the agents.</p>
+<a name="wp1032311" id="wp1032311"></a>
+<p class="pBody">Once the list of connectors has been obtained, in
+code that is not shown here, the client connects to the MBean
+server started by <code class="cCode">Server</code>, and retrieves
+the list of all the MBeans registered in it.</p>
+<a name="wp1032312" id="wp1032312"></a>
+<h4 class="pHeading3">java.policy</h4>
+<a name="wp1003023" id="wp1003023"></a>
+<p class="pBody">The <code class="cCode">java.policy</code> file is
+a Java technology security policy file, configured for this
+example.</p>
+<a name="wp1003019" id="wp1003019"></a>
+<h4 class="pHeading3">jini.properties.template</h4>
+<a name="wp1003022" id="wp1003022"></a>
+<p class="pBody">A template Jini networking technology properties
+file, to be configured for this example. Change
+@INSTALL_HOME_FOR_JINI@ and rename the file to <code class=
+"cCode">jini.properties</code>.</p>
+<a name="wp997715" id="wp997715"></a>
+<h3 class="pHeading2">Running the Jini Lookup Service Example</h3>
+<a name="wp1009711" id="wp1009711"></a>
+<p class="pBody">In addition to the actions you performed in
+<a href="lookup.html#wp999517"><span style=
+"color: #3366CC">Section&#160; &quot;Initial
+Configuration&quot;</span></a>, before you can run the lookup
+service examples that use the Jini lookup service, you must perform
+some further initial actions that are specific to this example. You
+can then start looking up connectors using the Jini network
+technology, in conjunction with the connector supported by the JMX
+technology.</p>
+<a name="wp1010885" id="wp1010885"></a>
+<p class="pBody">When you run the examples, to help you keep track
+of which agent has been created with which transport, the agent
+names include a letter suffix that is the same as the lettering of
+the corresponding section. For example, the agent from <a href=
+"lookup.html#wp1009793"><span style=
+"color: #3366CC">Section&#160;a. &quot;RMI connector over JRMP,
+without an external directory.&quot;</span></a> is called
+<code class="cCode">example-server-a</code>.</p>
+<a name="wp1009715" id="wp1009715"></a>
+<h4 class="pHeading3">Setting up the Jini Lookup Service
+Example</h4>
+<a name="wp1009716" id="wp1009716"></a>
+<p class="pBody">The following steps are required by all of the
+different transports you can run in this example.</p>
+<div class="pStep1">
+<ol class="pStep1">
+<li style="list-style: none"><a name="wp997794" id=
+"wp997794"></a></li>
+<li>For your convenience when compiling and running the example
+classes, define some additional environment variables. <a name=
+"wp997795" id="wp997795"></a>
+<p class="pBody">In addition to the common environment variables
+that you set in <a href="lookup.html#wp999517"><span style=
+"color: #3366CC">Section&#160; &quot;Initial
+Configuration&quot;</span></a> you can add the path to the Jini
+lookup service. The directory where you have installed the Jini
+networking technology is referred to as <em class=
+"cEmphasis">jini_dir</em>.</p>
+<a name="wp997796" id="wp997796"></a>
+<p class="pBody"><code class="cCode">$</code> <span class=
+"cUserType">JINI_HOME=</span><em class=
+"cEmphasis">jini_dir</em></p>
+<a name="wp997817" id="wp997817"></a>
+<p class="pBody"><code class="cCode">$</code> <span class=
+"cUserType">JINILIB=$JINI_HOME/lib</span></p>
+<a name="wp1002763" id="wp1002763"></a></li>
+<li>Define the <code class="cCode">classp</code> environment
+variable. <a name="wp1006240" id="wp1006240"></a>
+<p class="pBody">This example requires the JAR files for the Jini
+lookup services core and extensions.</p>
+<a name="wp1006241" id="wp1006241"></a>
+<p class="pBody"><code class="cCode">$</code> <span class=
+"cUserType">classp=$JINILIB/jini-core.jar:$JINILIB/jini-ext.jar</span></p>
+<a name="wp1002915" id="wp1002915"></a></li>
+<li>Create a <code class="cCode">jini.properties</code> file.
+<a name="wp1002809" id="wp1002809"></a>
+<p class="pBody">A properties file for Solaris, Linux, or Mac OS X
+platforms is provided
+in the same directory as the classes for this example. If you are
+not running a Solaris, Linux, or Mac OS X platform,
+you can obtain a properties file for
+your platform in the following directory:</p>
+<a name="wp1002814" id="wp1002814"></a>
+<p class="pBody"><span class=
+"cUserType">$JINI_HOME/example/launcher/jini12_&lt;</span><em class="cEmphasis">platform</em><span class="cUserType">&gt;.properties</span></p>
+<a name="wp1002817" id="wp1002817"></a></li>
+<li>Update the <code class="cCode">jini.properties</code> file.
+<a name="wp1002818" id="wp1002818"></a>
+<p class="pBody">You must complete the file to include all the
+necessary paths, host names and port numbers for your system. Even
+if you are not running a Solaris, Linux, or Mac OS X platform,
+you can use the template
+provided as a guide.</p>
+<a name="wp1002819" id="wp1002819"></a></li>
+<li>Start the Jini networking technology <code class=
+"cCode">StartService</code>. <a name="wp1002820" id=
+"wp1002820"></a>
+<p class="pBody"><code class="cCode">$</code> <span class=
+"cUserType">java -cp $JINILIB/jini-examples.jar
+com.sun.jini.example.launcher.StartService &amp;</span></p>
+<a name="wp1002822" id="wp1002822"></a>
+<p class="pBody">This will open the <code class=
+"cCode">StartService</code> graphical user interface.</p>
+<a name="wp1002823" id="wp1002823"></a></li>
+<li>Load your <code class="cCode">jini.properties</code> file into
+<code class="cCode">StartService</code>. <a name="wp1002824" id=
+"wp1002824"></a>
+<p class="pBody">Click on &#8216;File&#8217;, &#8216;Open Property
+File&#8217; and then select your properties file from within
+work_dir<code class="cCode">/jmx_examples</code>/Lookup/jini.</p>
+<a name="wp1002825" id="wp1002825"></a></li>
+<li>Start the Jini lookup services. <a name="wp1002826" id=
+"wp1002826"></a>
+<p class="pBody">Start the required Jini lookup services by
+clicking on the &#8216;Run&#8217; tab and then pressing the
+&#8216;START&#8217; button for each of the following:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012276"
+id="wp1012276"></a>
+<div class="pBullet2">
+<ul>
+<li>RMID</li>
+</ul>
+</div>
+<a name="wp1012277" id="wp1012277"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>WebServer</li>
+</ul>
+</div>
+<a name="wp1012278" id="wp1012278"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>Reggie</li>
+</ul>
+</div>
+<a name="wp1012279" id="wp1012279"></a>
+<div class="pBullet2Last">
+<ul>
+<li>LookupBrowser</li>
+</ul>
+</div>
+</div>
+<a name="wp1013022" id="wp1013022"></a>
+<p class="pBody">You will see confirmation that the services are
+running.</p>
+<a name="wp1002798" id="wp1002798"></a></li>
+<li>Compile the <code class="cCode">Client</code> and <code class=
+"cCode">Server</code> classes. <a name="wp997826" id=
+"wp997826"></a>
+<p class="pBody">Type the following command:</p>
+<a name="wp997835" id="wp997835"></a>
+<p class="pListEndingPara"><code class="cCode">$</code>
+<span class="cUserType">javac -d . -classpath $classp Server.java
+Client.java</span></p>
+</li>
+</ol>
+<a name="wp1009733" id="wp1009733"></a>
+<h4 class="pHeading3">Running the Jini Lookup Service Example</h4>
+<a name="wp1009740" id="wp1009740"></a>
+<p class="pBody">This example demonstrates the use of the Jini
+lookup service to look up RMI connector servers that use
+RMI&#8217;s default transport, JRMP, as well as the IIOP transport.
+In addition, as described in <a href=
+"lookup.html#wp999517"><span style="color: #3366CC">Section&#160;
+&quot;Initial Configuration&quot;</span></a>, different external
+directories are used to register the RMI connector stubs.</p>
+<a name="wp1012298" id="wp1012298"></a>
+<p class="pBody">The combinations of transports and external
+directories demonstrated here are:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp1012299"
+id="wp1012299"></a>
+<div class="pBullet1">
+<ul>
+<li>RMI connector over the JRMP transport, with:</li>
+</ul>
+</div>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012300"
+id="wp1012300"></a>
+<div class="pBullet2">
+<ul>
+<li>No external directory</li>
+</ul>
+</div>
+<a name="wp1012301" id="wp1012301"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>An RMI registry</li>
+</ul>
+</div>
+<a name="wp1012302" id="wp1012302"></a>
+<div class="pBullet2Last">
+<ul>
+<li>An LDAP registry</li>
+</ul>
+</div>
+</div>
+<a name="wp1012303" id="wp1012303"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>RMI connector over the IIOP transport, with:</li>
+</ul>
+</div>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012304"
+id="wp1012304"></a>
+<div class="pBullet2">
+<ul>
+<li>No external directory</li>
+</ul>
+</div>
+<a name="wp1012305" id="wp1012305"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>A CORBA naming service</li>
+</ul>
+</div>
+<a name="wp1012306" id="wp1012306"></a>
+<div class="pBullet2LastEnd">
+<ul>
+<li>An LDAP registry</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="pStep1">
+<ol class="pStep1">
+<li style="list-style: none"><a name="wp1009791" id=
+"wp1009791"></a></li>
+<li>Start the <code class="cCode">Server</code><b class=
+"cBold">.</b> <a name="wp1009792" id="wp1009792"></a>
+<p class="pBody">The command you use to start the <code class=
+"cCode">Server</code> varies according to which external directory
+you are using. You can start one or more of the following instances
+of <code class="cCode">Server</code> with different transports and
+external registries before starting the <code class=
+"cCode">Client</code>.</p>
+<div class="pStep2">
+<ol class="pStep2">
+<li style="list-style: none"><a name="wp1009793" id=
+"wp1009793"></a></li>
+<li>RMI connector over JRMP, without an external directory.
+<a name="wp1009794" id="wp1009794"></a>
+<p class="pBody">Start Server by typing the following command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1009799" id="wp1009799"> </a>
+<span class=
+"cUserType">$ java -classpath .:$classp -Ddebug=true \</span><a name="wp1015405"
+id="wp1015405"> </a>
+<span class=
+"cUserType">  -Dagent.name=example-server-a \</span><a name=
+"wp1015406" id="wp1015406"> </a>
+<span class=
+"cUserType">  -Durl=&quot;service:jmx:rmi://&quot; \</span><a name=
+"wp1015407" id="wp1015407"> </a>
+<span class=
+"cUserType">  -Djava.security.policy=java.policy \</span><a name=
+"wp1015408" id="wp1015408"> </a>
+<span class="cUserType">  jini.Server &amp;</span><a name=
+"wp1012317" id="wp1012317"> </a>
+<a name="wp1012322" id="wp1012322"> </a>
+</pre></div>
+<a name="wp1012318" id="wp1012318"></a>
+<p class="pBody">In this command:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012331"
+id="wp1012331"></a>
+<div class="pBullet2">
+<ul>
+<li><code class="cCode">debug</code> is set to <code class=
+"cCode">true</code> to provide more complete screen output when the
+<code class="cCode">Server</code> runs.</li>
+</ul>
+</div>
+<a name="wp1012332" id="wp1012332"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The security policy is provided, to allow access to the Jini
+lookup service.</li>
+</ul>
+</div>
+<a name="wp1012333" id="wp1012333"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The name of the agent to be created is <code class=
+"cCode">example-server-a</code>.</li>
+</ul>
+</div>
+<a name="wp1012334" id="wp1012334"></a>
+<div class="pBullet2Last">
+<ul>
+<li>The service URL specifies that the chosen connector is an RMI
+connector, running over the RMI default transport JRMP.</li>
+</ul>
+</div>
+</div>
+<a name="wp1009803" id="wp1009803"></a>
+<p class="pBody">When <code class="cCode">Server</code> is
+launched, you will see confirmation of the creation of the RMI
+connector, and the registration of its URL in the Jini lookup
+service.</p>
+<a name="wp1009804" id="wp1009804"></a></li>
+<li>RMI connector over JRMP, using an RMI registry as an external
+directory. <a name="wp1009805" id="wp1009805"></a>
+<p class="pBody">Start Server by typing the following command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1015669" id="wp1015669"> </a>
+<span class=
+"cUserType">$ java -classpath .:$classp -Ddebug=true \</span><a name="wp1015413"
+id="wp1015413"> </a>
+<span class=
+"cUserType">  -Dagent.name=example-server-b \</span><a name=
+"wp1015414" id="wp1015414"> </a>
+<span class=
+"cUserType">  -Durl=&quot;service:jmx:rmi:///jndi/${jndirmi}/server&quot; \</span><a name="wp1015415"
+id="wp1015415"> </a>
+<span class=
+"cUserType">  -Djava.security.policy=java.policy \</span><a name=
+"wp1015416" id="wp1015416"> </a>
+<span class="cUserType">  jini.Server &amp;</span><a name=
+"wp1012342" id="wp1012342"> </a>
+<a name="wp1012343" id="wp1012343"> </a>
+</pre></div>
+<a name="wp1012337" id="wp1012337"></a>
+<p class="pBody">In this command:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1009964"
+id="wp1009964"></a>
+<div class="pBullet2">
+<ul>
+<li>The security policy is provided, to allow access to the Jini
+lookup service.</li>
+</ul>
+</div>
+<a name="wp1012346" id="wp1012346"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The name of the agent created is <code class=
+"cCode">example-server-b</code>.</li>
+</ul>
+</div>
+<a name="wp1009966" id="wp1009966"></a>
+<div class="pBullet2Last">
+<ul>
+<li>The service URL specifies the chosen connector as RMI over
+JRMP, and the external directory in which the RMI connector stub,
+<code class="cCode">server</code>, is stored is the RMI registry
+you identified as <code class="cCode">jndirmi</code> in <a href=
+"lookup.html#wp999517"><span style="color: #3366CC">Section&#160;
+&quot;Initial Configuration&quot;</span></a>.</li>
+</ul>
+</div>
+</div>
+<a name="wp1009816" id="wp1009816"></a>
+<p class="pBody">When <code class="cCode">Server</code> is
+launched, you will see confirmation of the creation of the RMI
+connector, and the registration of its URL in the Jini lookup
+service.</p>
+<a name="wp1009817" id="wp1009817"></a></li>
+<li>RMI connector over JRMP, using LDAP as the external directory.
+<a name="wp1009818" id="wp1009818"></a>
+<p class="pBody">Start <code class="cCode">Server</code> by typing
+the following command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1015670" id="wp1015670"> </a>
+<span class=
+"cUserType">$ java -classpath .:$classp -Ddebug=true \</span><a name="wp1015421"
+id="wp1015421"> </a>
+<span class=
+"cUserType">  -Dagent.name=example-server-c \</span><a name=
+"wp1015422" id="wp1015422"> </a>
+<span class=
+"cUserType">  -Durl=&quot;service:jmx:rmi:///jndi/${jndildap}/cn=x,dc=Test&quot; \</span><a name="wp1015423"
+id="wp1015423"> </a>
+<span class=
+"cUserType">  -Djava.security.policy=java.policy \</span><a name=
+"wp1015424" id="wp1015424"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.principal=&quot;$principal&quot; \</span><a name="wp1015425"
+id="wp1015425"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.credentials=&quot;$credentials&quot; \</span><a name="wp1015426"
+id="wp1015426"> </a>
+<span class="cUserType">  jini.Server &amp;</span><a name=
+"wp1012358" id="wp1012358"> </a>
+<a name="wp1012350" id="wp1012350"> </a>
+</pre></div>
+<a name="wp1012349" id="wp1012349"></a>
+<p class="pBody">In this command:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012369"
+id="wp1012369"></a>
+<div class="pBullet2">
+<ul>
+<li>The security policy is provided, to allow access to the Jini
+lookup service.</li>
+</ul>
+</div>
+<a name="wp1012370" id="wp1012370"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The name of the agent created is <code class=
+"cCode">example-server-c</code>.The service URL specifies the
+chosen connector as RMI over JRMP, and the external directory in
+which the RMI connector stub is stored is the LDAP server you
+identified as <code class="cCode">jndildap</code> in <a href=
+"lookup.html#wp999517"><span style="color: #3366CC">Section&#160;
+&quot;Initial Configuration&quot;</span></a>.</li>
+</ul>
+</div>
+<a name="wp1012371" id="wp1012371"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The stub is registered in the <code class="cCode">Test</code>
+domain component in the LDAP server.</li>
+</ul>
+</div>
+<a name="wp1012372" id="wp1012372"></a>
+<div class="pBullet2Last">
+<ul>
+<li>The common name attribute <code class="cCode">principal</code>
+and password <code class="cCode">credentials</code> are given to
+gain access to the LDAP server.</li>
+</ul>
+</div>
+</div>
+<a name="wp1009834" id="wp1009834"></a>
+<p class="pBody">When <code class="cCode">Server</code> is
+launched, you will see confirmation of the creation of the RMI
+connector, and the registration of its URL in the Jini lookup
+service under the agent name <code class=
+"cCode">example-server-c</code>.</p>
+<a name="wp1009835" id="wp1009835"></a></li>
+<li>RMI connector over IIOP, without an external directory.
+<a name="wp1009836" id="wp1009836"></a>
+<p class="pBody">Start <code class="cCode">Server</code> by typing
+the following command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1015671" id="wp1015671"> </a>
+<span class=
+"cUserType">$ java -classpath .:$classp -Ddebug=true \</span><a name="wp1015431"
+id="wp1015431"> </a>
+<span class=
+"cUserType">  -Dagent.name=example-server-d \</span><a name=
+"wp1015432" id="wp1015432"> </a>
+<span class=
+"cUserType">  -Durl=&quot;service:jmx:iiop://&quot; \</span><a name="wp1015433"
+id="wp1015433"> </a>
+<span class=
+"cUserType">  -Djava.security.policy=java.policy \</span><a name=
+"wp1015434" id="wp1015434"> </a>
+<span class="cUserType">  jini.Server &amp;</span><a name=
+"wp1012382" id="wp1012382"> </a>
+<a name="wp1012383" id="wp1012383"> </a>
+</pre></div>
+<a name="wp1009842" id="wp1009842"></a>
+<p class="pBody">In this command:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012390"
+id="wp1012390"></a>
+<div class="pBullet2">
+<ul>
+<li>The security policy is provided, to allow access to the Jini
+lookup service</li>
+</ul>
+</div>
+<a name="wp1012391" id="wp1012391"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The name of the agent created is <code class=
+"cCode">example-server-d</code></li>
+</ul>
+</div>
+<a name="wp1012392" id="wp1012392"></a>
+<div class="pBullet2Last">
+<ul>
+<li>The service URL specifies the chosen connector as RMI connector
+over IIOP.</li>
+</ul>
+</div>
+</div>
+<a name="wp1009845" id="wp1009845"></a>
+<p class="pBody">When the <code class="cCode">Server</code> is
+launched, you will see confirmation of the creation of the RMI
+connector, and the registration of its automatically generated URL
+in the Jini lookup service.</p>
+<a name="wp1009846" id="wp1009846"></a></li>
+<li>RMI connector over IIOP, using CORBA naming as the external
+directory. <a name="wp1009847" id="wp1009847"></a>
+<p class="pBody">Start <code class="cCode">Server</code> by typing
+the following command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1015672" id="wp1015672"> </a>
+<span class=
+"cUserType">$ java -classpath .:$classp -Ddebug=true \</span><a name="wp1015439"
+id="wp1015439"> </a>
+<span class=
+"cUserType">  -Dagent.name=example-server-e \</span><a name=
+"wp1015440" id="wp1015440"> </a>
+<span class=
+"cUserType">  -Durl=&quot;service:jmx:iiop:///jndi/${jndiiiop}/server&quot; \</span><a name="wp1015441"
+id="wp1015441"> </a>
+<span class=
+"cUserType">  -Djava.security.policy=java.policy \</span><a name=
+"wp1015442" id="wp1015442"> </a>
+<span class="cUserType">  jini.Server &amp;</span><a name=
+"wp1012401" id="wp1012401"> </a>
+<a name="wp1012402" id="wp1012402"> </a>
+</pre></div>
+<a name="wp1012395" id="wp1012395"></a>
+<p class="pBody">In this command:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012409"
+id="wp1012409"></a>
+<div class="pBullet2">
+<ul>
+<li>The security policy is provided, to allow access to the Jini
+lookup service.</li>
+</ul>
+</div>
+<a name="wp1012410" id="wp1012410"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The name of the agent created is <code class=
+"cCode">example-server-e</code>.</li>
+</ul>
+</div>
+<a name="wp1012411" id="wp1012411"></a>
+<div class="pBullet2Last">
+<ul>
+<li>The service URL specifies the chosen connector as RMI connector
+over IIOP. The external directory in which the RMI connector stub,
+<code class="cCode">server</code>, is stored is the CORBA naming
+service you identified as <code class="cCode">jndiiiop</code> in
+<a href="lookup.html#wp999517"><span style=
+"color: #3366CC">Section&#160; &quot;Initial
+Configuration&quot;</span></a>.</li>
+</ul>
+</div>
+</div>
+<a name="wp1009859" id="wp1009859"></a>
+<p class="pBody">When <code class="cCode">Server</code> is
+launched, you will see confirmation of the creation of the RMI
+connector, and the registration of its URL in the Jini lookup
+service under the name <code class=
+"cCode">example-server-e</code>.</p>
+<a name="wp1009860" id="wp1009860"></a></li>
+<li>RMI connector over IIOP, using LDAP as the external directory.
+<a name="wp1009861" id="wp1009861"></a>
+<p class="pBody">Start Server by typing the following command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1015673" id="wp1015673"> </a>
+<span class=
+"cUserType">$ java -classpath .:$classp -Ddebug=true \</span><a name="wp1015451"
+id="wp1015451"> </a>
+<span class=
+"cUserType">  -Dagent.name=example-server-f \</span><a name=
+"wp1015452" id="wp1015452"> </a>
+<span class=
+"cUserType">  -Durl=&quot;service:jmx:iiop:///jndi/${jndildap}/cn=x,dc=Test&quot; \</span><a name="wp1015453"
+id="wp1015453"> </a>
+<span class=
+"cUserType">  -Djava.security.policy=java.policy \</span><a name=
+"wp1015454" id="wp1015454"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.principal=&quot;$principal&quot; \</span><a name="wp1015455"
+id="wp1015455"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.credentials=&quot;$credentials&quot; \</span><a name="wp1015456"
+id="wp1015456"> </a>
+<span class="cUserType">  jini.Server &amp;</span><a name=
+"wp1012421" id="wp1012421"> </a>
+<a name="wp1012422" id="wp1012422"> </a>
+</pre></div>
+<a name="wp1009869" id="wp1009869"></a>
+<p class="pBody">In this command:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012437"
+id="wp1012437"></a>
+<div class="pBullet2">
+<ul>
+<li>The security policy is provided, to allow access to the Jini
+lookup service.</li>
+</ul>
+</div>
+<a name="wp1012438" id="wp1012438"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The name of the agent created is <code class=
+"cCode">example-server-f</code>.</li>
+</ul>
+</div>
+<a name="wp1012439" id="wp1012439"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The service URL specifies the chosen connector as RMI over
+IIOP.</li>
+</ul>
+</div>
+<a name="wp1012440" id="wp1012440"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The external directory in which the RMI connector stub is
+stored is the LDAP server you identified as <code class=
+"cCode">jndildap</code> in <a href=
+"lookup.html#wp999517"><span style="color: #3366CC">Section&#160;
+&quot;Initial Configuration&quot;</span></a>.</li>
+</ul>
+</div>
+<a name="wp1012441" id="wp1012441"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The stub is registered in the <code class="cCode">Test</code>
+domain component in the LDAP server.</li>
+</ul>
+</div>
+<a name="wp1012442" id="wp1012442"></a>
+<div class="pBullet2Last">
+<ul>
+<li>The common name attribute <code class="cCode">principal</code>
+and password <code class="cCode">credentials</code> are given to
+gain access to the LDAP server.</li>
+</ul>
+</div>
+</div>
+<a name="wp1009877" id="wp1009877"></a>
+<p class="pListEndingPara">When <code class="cCode">Server</code>
+is launched, you will see confirmation of the creation of the RMI
+connector, and the registration of its URL in the Jini lookup
+service under the agent name <code class=
+"cCode">example-server-f</code>.</p>
+</li>
+</ol>
+<a name="wp1009878" id="wp1009878"></a>
+<ul>
+<li>Start the <code class="cCode">Client</code>.</li>
+<li style="list-style: none"><a name="wp1009879" id=
+"wp1009879"></a>
+<p class="pBody">After starting the <code class=
+"cCode">Server</code> using the transport and external directory of
+your choice, start the <code class="cCode">Client</code>:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1015674" id="wp1015674"> </a>
+$ <span class=
+"cUserType">java -classpath .:$classp -Ddebug=true \</span><a name=
+"wp1009881" id="wp1009881"> </a>
+<span class=
+"cUserType">  -Djava.security.policy=java.policy \</span><a name=
+"wp1012447" id="wp1012447"> </a>
+<span class="cUserType">  jini.Client</span><a name="wp1012448" id=
+"wp1012448"> </a>
+<a name="wp1012449" id="wp1012449"> </a>
+</pre></div>
+<a name="wp1012445" id="wp1012445"></a>
+<p class="pBody">You will see output confirming the detection of
+the agents created by the <code class="cCode">Server</code> and
+registered in the lookup service. You will also see the
+identification and confirmation of the connection made to the
+agents.</p>
+<a name="wp1009882" id="wp1009882"></a>
+<p class="pBody">To look up a specific agent, you can do so by
+typing the following command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1015675" id="wp1015675"> </a>
+$ <span class=
+"cUserType">java -classpath .:$classp -Ddebug=true \</span><a name=
+"wp1009885" id="wp1009885"> </a>
+<span class=
+"cUserType">  -Djava.security.policy=java.policy \</span><a name=
+"wp1012453" id="wp1012453"> </a>
+<span class="cUserType">  -Dagent.name=</span><em class=
+"cEmphasis">agentName</em><span class="cUserType"> \</span><a name=
+"wp1012454" id="wp1012454"> </a>
+<span class="cUserType">  jini.Client</span><a name="wp1012455" id=
+"wp1012455"> </a>
+<a name="wp1012456" id="wp1012456"> </a>
+</pre></div>
+<a name="wp1009886" id="wp1009886"></a>
+<p class="pListEndingPara">In the command shown above, <em class=
+"cEmphasis">agentName</em> is the name of the agent you want to
+look up. You can also specify a partial agent name by using
+<code class="cCode">*</code>; for example, <code class=
+"cCode">x*</code> for all agent names beginning with the letter
+<code class="cCode">x</code>.</p>
+<a name="wp1010047" id="wp1010047"></a>
+<p class="pListEndingPara"></p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+<a name="wp996900" id="wp996900"></a>
+<h2 class="pHeading1">Java Naming and Directory Interface (JNDI) /
+LDAP Lookup Service</h2>
+<a name="wp1003061" id="wp1003061"></a>
+<p class="pBody">JMX technology allows you to register RMI
+connectors with a JNDI lookup service using an LDAP registry as a
+back end. This example performs the following operations:</p>
+<div style="margin-left: 2em" class="pList1"><a name="wp1003062"
+id="wp1003062"></a>
+<div class="pList1">
+<ul>
+<li>The agent:</li>
+</ul>
+</div>
+<div style="margin-left: 2em" class="pList2"><a name="wp1003063"
+id="wp1003063"></a>
+<div class="pList2">
+<ul>
+<li>Creates an MBean server</li>
+</ul>
+</div>
+<a name="wp1003064" id="wp1003064"></a>
+<div class="pList2Plus">
+<ul>
+<li>Creates a connector server</li>
+</ul>
+</div>
+<a name="wp1003065" id="wp1003065"></a>
+<div class="pList2Last">
+<ul>
+<li>Registers the connector address with the LDAP server</li>
+</ul>
+</div>
+</div>
+<a name="wp1003066" id="wp1003066"></a>
+<div class="pList1Plus">
+<ul>
+<li>The client:</li>
+</ul>
+</div>
+<div style="margin-left: 2em" class="pList2"><a name="wp1003067"
+id="wp1003067"></a>
+<div class="pList2">
+<ul>
+<li>Gets a pointer to the JNDI/LDAP lookup Service</li>
+</ul>
+</div>
+<a name="wp1003068" id="wp1003068"></a>
+<div class="pList2Plus">
+<ul>
+<li>Looks for any connector servers registered in the JNDI/LDAP
+lookup service</li>
+</ul>
+</div>
+<a name="wp1003072" id="wp1003072"></a>
+<div class="pList2Plus">
+<ul>
+<li>Creates a JMX Remote API connector</li>
+</ul>
+</div>
+<a name="wp1003085" id="wp1003085"></a>
+<div class="pList2LastEnd">
+<ul>
+<li>Retrieves information about the MBeans in the MBean server</li>
+</ul>
+</div>
+</div>
+</div>
+<a name="wp1055504" id="wp1055504"></a>
+<p class="pBody">The JNDI/LDAP lookup example is contained in the
+directory <em class="cEmphasis">work_dir</em><code class=
+"cCode">/jmx_examples/Lookup/ldap</code>.</p>
+<div class="pStep1">
+<ol class="pStep1">
+<li style="list-style: none"><a name="wp999452" id=
+"wp999452"></a></li>
+<li>Open the <em class="cEmphasis">work_dir</em><code class=
+"cCode">/jmx_examples/Lookup/ldap</code> directory. <a name=
+"wp999453" id="wp999453"></a>
+<p class="pBody">Inside this directory, you will find the following
+files:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012501"
+id="wp1012501"></a>
+<div class="pBullet2">
+<ul>
+<li><code class="cCode">Server.java</code></li>
+</ul>
+</div>
+<a name="wp1014885" id="wp1014885"></a>
+<div class="pBullet2Plus">
+<ul>
+<li><code class="cCode">Client.java</code></li>
+</ul>
+</div>
+<a name="wp1014886" id="wp1014886"></a>
+<div class="pBullet2Plus">
+<ul>
+<li><code class="cCode">jmx-schema.txt</code></li>
+</ul>
+</div>
+<a name="wp1014887" id="wp1014887"></a>
+<div class="pBullet2Plus">
+<ul>
+<li><code class="cCode">60jmx-schema.ldif</code></li>
+</ul>
+</div>
+<a name="wp1012504" id="wp1012504"></a>
+<div class="pBullet2Last">
+<ul>
+<li><code class="cCode">README</code></li>
+</ul>
+</div>
+</div>
+<a name="wp999456" id="wp999456"></a></li>
+<li>Open the files in a text editor. <a name="wp1013026" id=
+"wp1013026"></a>
+<p class="pListEndingPara">These classes will be analyzed in the
+following sections.</p>
+</li>
+</ol>
+<a name="wp999476" id="wp999476"></a>
+<h3 class="pHeading2">Analyzing the Example Classes</h3>
+<a name="wp999480" id="wp999480"></a>
+<p class="pBody">The following sections analyze each of the classes
+used in the JNDI/LDAP lookup service example, and explain how they
+perform the operations described above.</p>
+<a name="wp999477" id="wp999477"></a>
+<h4 class="pHeading3">Server.java</h4>
+<a name="wp1003448" id="wp1003448"></a>
+<p class="pBody">Due to its size, the JNDI/LDAP lookup service
+<code class="cCode">Server.java</code> class is shown as a series
+of code excerpts.</p>
+<a name="wp1012505" id="wp1012505"></a>
+<div class="pCodeCaption">CODE&#160;EXAMPLE&#160;4-1 JNDI/LDAP
+Lookup Service Example Server.java (Excerpt 1)</div>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1012511" id="wp1012511"> </a>
+[...]<a name="wp1012513" id="wp1012513"> </a>
+<a name="wp1012514" id="wp1012514"> </a>
+public class Server {<a name="wp1012515" id="wp1012515"> </a>
+   public final static int JMX_DEFAULT_LEASE = 60;<a name=
+"wp1012516" id="wp1012516"> </a>
+   private static boolean debug = false;<a name="wp1012517" id=
+"wp1012517"> </a>
+   private final MBeanServer mbs;<a name="wp1012518" id=
+"wp1012518"> </a>
+   public Server() {<a name="wp1012519" id="wp1012519"> </a>
+      mbs = MBeanServerFactory.createMBeanServer();<a name=
+"wp1012520" id="wp1012520"> </a>
+   }<a name="wp1012521" id="wp1012521"> </a>
+<a name="wp1012522" id="wp1012522"> </a>
+  public static DirContext getRootContext() throws NamingException {<a name="wp1012523"
+id="wp1012523"> </a>
+      final Hashtable env = new Hashtable();<a name="wp1012524" id=
+"wp1012524"> </a>
+<a name="wp1012525" id="wp1012525"> </a>
+      final String factory =<a name="wp1012526" id=
+"wp1012526"> </a>
+        System.getProperty(Context.INITIAL_CONTEXT_FACTORY,<a name=
+"wp1012527" id="wp1012527"> </a>
+                           &quot;com.sun.jndi.ldap.LdapCtxFactory&quot;);<a name="wp1012528"
+id="wp1012528"> </a>
+      final String ldapServerUrl =<a name="wp1012529" id=
+"wp1012529"> </a>
+        System.getProperty(Context.PROVIDER_URL);<a name=
+"wp1012530" id="wp1012530"> </a>
+      final String ldapUser =<a name="wp1012531" id=
+"wp1012531"> </a>
+        System.getProperty(Context.SECURITY_PRINCIPAL,<a name=
+"wp1012532" id="wp1012532"> </a>
+                           &quot;cn=Directory Manager&quot;);<a name="wp1012533"
+id="wp1012533"> </a>
+      final String ldapPasswd =<a name="wp1012534" id=
+"wp1012534"> </a>
+        System.getProperty(Context.SECURITY_CREDENTIALS);<a name=
+"wp1012535" id="wp1012535"> </a>
+      debug(Context.PROVIDER_URL + &quot;=&quot; + ldapServerUrl);<a name="wp1012536"
+id="wp1012536"> </a>
+      debug(Context.SECURITY_PRINCIPAL + &quot;=&quot; + ldapUser);<a name="wp1012537"
+id="wp1012537"> </a>
+      if (debug) {<a name="wp1012538" id="wp1012538"> </a>
+                  System.out.print(Context.SECURITY_CREDENTIALS + &quot;=&quot;);<a name="wp1012539"
+id="wp1012539"> </a>
+                  final int len = (ldapPasswd==null)?0:ldapPasswd.length();<a name="wp1012540"
+id="wp1012540"> </a>
+                  for (int i=0;i&lt;len;i++) System.out.print(&quot;*&quot;);<a name="wp1012541"
+id="wp1012541"> </a>
+                  System.out.println();<a name="wp1012542" id=
+"wp1012542"> </a>
+      }<a name="wp1012543" id="wp1012543"> </a>
+      env.put(Context.INITIAL_CONTEXT_FACTORY,factory);<a name=
+"wp1012544" id="wp1012544"> </a>
+      env.put(Context.SECURITY_PRINCIPAL, ldapUser);<a name=
+"wp1012545" id="wp1012545"> </a>
+      if (ldapServerUrl != null)<a name="wp1012546" id=
+"wp1012546"> </a>
+           env.put(Context.PROVIDER_URL, ldapServerUrl);<a name=
+"wp1012547" id="wp1012547"> </a>
+      if (ldapPasswd != null)<a name="wp1012548" id=
+"wp1012548"> </a>
+           env.put(Context.SECURITY_CREDENTIALS, ldapPasswd);<a name="wp1012549"
+id="wp1012549"> </a>
+      InitialContext root = new InitialLdapContext(env,null);<a name="wp1012550"
+id="wp1012550"> </a>
+      return (DirContext)(root.lookup(&quot;&quot;));<a name=
+"wp1012551" id="wp1012551"> </a>
+  }<a name="wp1012552" id="wp1012552"> </a>
+  <a name="wp1012553" id="wp1012553"> </a>
+[...]<a name="wp1012554" id="wp1012554"> </a>
+<a name="wp1012561" id="wp1012561"> </a>
+</pre></div>
+<a name="wp1003756" id="wp1003756"></a>
+<p class="pBody"><a href=
+"lookup.html#wp1012505">CODE&#160;EXAMPLE&#160;4-1</a> shows the
+initial creation of an MBean server <code class="cCode">mbs</code>,
+and the obtention of a pointer to the root context of the LDAP
+directory tree in which the connector server address is to be
+registered. All the relevant LDAP access variables, such as the
+provider URL, the LDAP user name and the security credentials, are
+given here and passed into the environment map <code class=
+"cCode">env</code>. The environment map <code class=
+"cCode">env</code> is then passed as a parameter into a call to
+<code class="cCode">InitialLdapContext</code>, from which the
+initial LDAP context is obtained.</p>
+<a name="wp1007203" id="wp1007203"></a>
+<p class="pBody">Code that is omitted from <a href=
+"lookup.html#wp1012505">CODE&#160;EXAMPLE&#160;4-1</a> retrieves
+the agent name under which the connector will be registered in the
+LDAP server.</p>
+<a name="wp1007303" id="wp1007303"></a>
+<div class="pCodeCaption">CODE&#160;EXAMPLE&#160;4-2 JNDI/LDAP
+Lookup Service Example Server.java (Excerpt 2)</div>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+[...]<a name="wp1012560" id="wp1012560"> </a>
+<a name="wp1032416" id="wp1032416"> </a>
+public static void register(DirContext root,<a name="wp1035174" id=
+"wp1035174"> </a>
+                           JMXServiceURL jmxUrl,<a name="wp1035175"
+id="wp1035175"> </a>
+                           String name)<a name="wp1035176" id=
+"wp1035176"> </a>
+   throws NamingException, IOException {<a name="wp1035177" id=
+"wp1035177"> </a>
+<a name="wp1035178" id="wp1035178"> </a>
+   final String mydn = System.getProperty(&quot;dn&quot;,&quot;cn=&quot;+name);<a name="wp1035179"
+id="wp1035179"> </a>
+<a name="wp1035180" id="wp1035180"> </a>
+   debug(&quot;dn: &quot; + mydn );<a name="wp1035181" id=
+"wp1035181"> </a>
+<a name="wp1035182" id="wp1035182"> </a>
+   Object o = null;<a name="wp1035183" id="wp1035183"> </a>
+   try {<a name="wp1035184" id="wp1035184"> </a>
+       o = root.lookup(mydn);<a name="wp1035185" id=
+"wp1035185"> </a>
+   } catch (NameNotFoundException n) {<a name="wp1035186" id=
+"wp1035186"> </a>
+       Attributes attrs = new BasicAttributes();<a name="wp1035187"
+id="wp1035187"> </a>
+       Attribute objclass = new BasicAttribute(&quot;objectClass&quot;);<a name="wp1035188"
+id="wp1035188"> </a>
+       objclass.add(&quot;top&quot;);<a name="wp1035189" id=
+"wp1035189"> </a>
+       objclass.add(&quot;javaContainer&quot;);<a name="wp1035190"
+id="wp1035190"> </a>
+       objclass.add(&quot;jmxConnector&quot;);<a name="wp1035191"
+id="wp1035191"> </a>
+       attrs.put(objclass);<a name="wp1035192" id="wp1035192"> </a>
+       attrs.put(&quot;jmxAgentName&quot;, name);<a name=
+"wp1035193" id="wp1035193"> </a>
+       o = root.createSubcontext(mydn,attrs);<a name="wp1035194"
+id="wp1035194"> </a>
+   }<a name="wp1035195" id="wp1035195"> </a>
+   if (o == null) throw new NameNotFoundException();<a name=
+"wp1035196" id="wp1035196"> </a>
+   final Attributes attrs = root.getAttributes(mydn);<a name=
+"wp1035197" id="wp1035197"> </a>
+   final Attribute oc = attrs.get(&quot;objectClass&quot;);<a name=
+"wp1035198" id="wp1035198"> </a>
+   if (!oc.contains(&quot;jmxConnector&quot;)) {<a name="wp1035199"
+id="wp1035199"> </a>
+       final String msg = &quot;The supplied node [&quot; + mydn + <a name="wp1035200"
+id="wp1035200"> </a>
+         &quot;] does not contain the jmxConnector objectclass&quot;;<a name="wp1035201"
+id="wp1035201"> </a>
+       throw new NamingException(msg);<a name="wp1035202" id=
+"wp1035202"> </a>
+   }<a name="wp1035203" id="wp1035203"> </a>
+   <a name="wp1035204" id="wp1035204"> </a>
+   final Attributes newattrs = new BasicAttributes();<a name=
+"wp1035205" id="wp1035205"> </a>
+   newattrs.put(&quot;jmxAgentName&quot;,name);<a name="wp1035206"
+id="wp1035206"> </a>
+   newattrs.put(&quot;jmxServiceURL&quot;,jmxUrl.toString());<a name="wp1035207"
+id="wp1035207"> </a>
+   newattrs.put(&quot;jmxAgentHost&quot;,InetAddress.getLocalHost().getHostName());<a name="wp1035208"
+id="wp1035208"> </a>
+   newattrs.put(&quot;jmxProtocolType&quot;,jmxUrl.getProtocol());<a name="wp1035209"
+id="wp1035209"> </a>
+   newattrs.put(&quot;jmxExpirationDate&quot;,<a name="wp1035210"
+id="wp1035210"> </a>
+                getExpirationDate(JMX_DEFAULT_LEASE));<a name=
+"wp1035211" id="wp1035211"> </a>
+   root.modifyAttributes(mydn,DirContext.REPLACE_ATTRIBUTE,newattrs);<a name="wp1035212"
+id="wp1035212"> </a>
+}<a name="wp1032417" id="wp1032417"> </a>
+<a name="wp1032418" id="wp1032418"> </a>
+[...]<a name="wp1012666" id="wp1012666"> </a>
+<a name="wp1012667" id="wp1012667"> </a>
+</pre></div>
+<a name="wp1014012" id="wp1014012"></a>
+<p class="pBody"><a href=
+"lookup.html#wp1007303">CODE&#160;EXAMPLE&#160;4-2</a> shows the
+registration of JMX connector server service URL in the LDAP
+directory. The DN where the URL will be registered can be passed on
+the command line through the <code class="cCode">dn</code> System
+property, that is, <code class="cCode">-Ddn=</code><em class=
+"cEmphasis">mydn</em> (see later the commands used start the
+server). If the <code class="cCode">dn</code> System property is
+not specified, then you can use the DN: <code class=
+"cCode">cn=</code><em class="cEmphasis">name</em> where <em class=
+"cEmphasis">name</em> is the <code class="cCode">agentName</code>.
+Naturally, this is not mandatory. The location where the URL is
+registered does not really matter, because the client code never
+uses that DN directly, but instead performs an LDAP search to find
+the nodes which have an auxiliary <code class=
+"cCode">jmxConnector</code> <code class="cCode">ObjectClass</code>.
+What is important here is that each URL is registered in its own
+LDAP node. How to name these nodes is left to the LDAP
+administrator, who in this case is you. In this example, it is
+assumed that you have configured your LDAP server by creating a
+<code class="cCode">root</code> context under which the node
+<code class="cCode">cn=</code><em class="cEmphasis">name</em> can
+be created, and that this <code class="cCode">root</code> context
+has been passed to the LDAP initial context through the
+<code class="cCode">Context.PROVIDER_URL</code> property (see
+<a href=
+"lookup.html#wp1012505">CODE&#160;EXAMPLE&#160;4-1</a>).</p>
+<a name="wp1014009" id="wp1014009"></a>
+<p class="pBody">The code shown in <a href=
+"lookup.html#wp1007303">CODE&#160;EXAMPLE&#160;4-2</a> checks
+whether the node in which you will register the server URL already
+exists. If it does not, you try to create it (this will fail if the
+parent node does not exist). Since the <code class=
+"cCode">jmxConnector</code> <code class="cCode">ObjectClass</code>
+is a simple auxiliary class, you will use the <code class=
+"cCode">javaContainer ObjectClass</code> as structural class if you
+need to create a new context. Once again, this is completely
+optional. Any structural class to which the <code class=
+"cCode">jmxConnector</code> auxiliary class could be added would be
+acceptable. It then checks whether the node in which you will
+register the server already has the <code class=
+"cCode">jmxConnector</code> auxiliary class. If not, an exception
+is thrown.</p>
+<a name="wp1014431" id="wp1014431"></a>
+<p class="pBody">At this point you are sure that the node in which
+you will register the URL exists, and has the appropriate
+<code class="cCode">jmxConnector</code> auxiliary class. So you
+need only to replace the values of the attributes defined by JMX
+Remote API for LDAP lookup (see <code class=
+"cCode">jmx-schema.txt</code>):</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp1014744"
+id="wp1014744"></a>
+<div class="pBullet1">
+<ul>
+<li><code class="cCode">jmxServiceUrl</code>: contains the
+<code class="cCode">String</code> form of the server URL, as
+obtained from <code class="cCode">server.getAddress()</code> after
+the server was started</li>
+</ul>
+</div>
+<a name="wp1014745" id="wp1014745"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">jmxAgentName</code>: contains the JMX agent
+name</li>
+</ul>
+</div>
+<a name="wp1014746" id="wp1014746"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">jmxProtocolType</code>: contains the JMX
+protocol type, as returned by <code class=
+"cCode">jmxUrl.getProtocolType()</code></li>
+</ul>
+</div>
+<a name="wp1014747" id="wp1014747"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><code class="cCode">jmxAgentHost</code>: contains the name of
+the agent host</li>
+</ul>
+</div>
+<a name="wp1014748" id="wp1014748"></a>
+<div class="pBullet1Last">
+<ul>
+<li><code class="cCode">jmxExpirationDate</code>: contains the date
+at which the URL will be considered obsolete.</li>
+</ul>
+</div>
+</div>
+<a name="wp1012668" id="wp1012668"></a>
+<div class="pCodeCaption">CODE&#160;EXAMPLE&#160;4-3 JNDI/LDAP
+Lookup Service Example Server.java (Excerpt 3)</div>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1012674" id="wp1012674"> </a>
+[...]<a name="wp1015475" id="wp1015475"> </a>
+<a name="wp1015476" id="wp1015476"> </a>
+   public JMXConnectorServer rmi(String url)<a name="wp1015477" id=
+"wp1015477"> </a>
+     throws IOException, JMException,<a name="wp1015478" id=
+"wp1015478"> </a>
+        NamingException, ClassNotFoundException {<a name=
+"wp1015479" id="wp1015479"> </a>
+<a name="wp1015480" id="wp1015480"> </a>
+     JMXServiceURL jurl = new JMXServiceURL(url);<a name=
+"wp1015481" id="wp1015481"> </a>
+     final HashMap env = new HashMap();<a name="wp1015482" id=
+"wp1015482"> </a>
+     // Prepare the environment Map<a name="wp1015483" id=
+"wp1015483"> </a>
+    <a name="wp1015484" id="wp1015484"> </a>
+[...]<a name="wp1015485" id="wp1015485"> </a>
+<a name="wp1015486" id="wp1015486"> </a>
+     JMXConnectorServer <span class=
+"cUserType">rmis =</span><a name="wp1015487" id="wp1015487"> </a>
+<span class=
+"cUserType">        JMXConnectorServerFactory.newJMXConnectorServer(jurl, env, mbs)</span>;<a name="wp1015488"
+id="wp1015488"> </a>
+<a name="wp1015489" id="wp1015489"> </a>
+     final String agentName = System.getProperty(&quot;agent.name&quot;,<a name="wp1015490"
+id="wp1015490"> </a>
+                                                 &quot;DefaultAgent&quot;);<a name="wp1015491"
+id="wp1015491"> </a>
+     start(rmis,env,agentName);<a name="wp1015492" id=
+"wp1015492"> </a>
+     return rmis;<a name="wp1015493" id="wp1015493"> </a>
+   }<a name="wp1015494" id="wp1015494"> </a>
+    <a name="wp1015495" id="wp1015495"> </a>
+[...]<a name="wp1012698" id="wp1012698"> </a>
+<a name="wp1012699" id="wp1012699"> </a>
+</pre></div>
+<a name="wp1004115" id="wp1004115"></a>
+<p class="pBody">In <a href=
+"lookup.html#wp1012668">CODE&#160;EXAMPLE&#160;4-3</a>, a new RMI
+connector server named <code class="cCode">rmis</code> is created
+with the JMX service URL <code class="cCode">jurl</code> and the
+appropriate LDAP properties passed to its environment map
+<code class="cCode">env</code>. The connector server <code class=
+"cCode">rmis</code> is launched by calling <code class=
+"cCode">JMXConnectorServer.start()</code> and is registered in the
+LDAP server.</p>
+<a name="wp1012700" id="wp1012700"></a>
+<div class="pCodeCaption">CODE&#160;EXAMPLE&#160;4-4 JNDI/LDAP
+Lookup Service Example Server.java (Excerpt 4)</div>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1012706" id="wp1012706"> </a>
+[...]<a name="wp1012708" id="wp1012708"> </a>
+<a name="wp1012709" id="wp1012709"> </a>
+    public void start(JMXConnectorServer server, Map env, String agentName)<a name="wp1012710"
+id="wp1012710"> </a>
+       throws IOException, NamingException {<a name="wp1012711" id=
+"wp1012711"> </a>
+       <b class="cBold">server.start()</b>;<a name="wp1012712" id=
+"wp1012712"> </a>
+       final DirContext root=getRootContext();<a name="wp1012713"
+id="wp1012713"> </a>
+       final JMXServiceURL address = server.getAddress();<a name=
+"wp1012714" id="wp1012714"> </a>
+       <b class=
+"cBold">register(root,address,agentName)</b>;<a name="wp1012715"
+id="wp1012715"> </a>
+    }<a name="wp1012716" id="wp1012716"> </a>
+    <a name="wp1012717" id="wp1012717"> </a>
+[...]<a name="wp1012718" id="wp1012718"> </a>
+<a name="wp1012719" id="wp1012719"> </a>
+</pre></div>
+<a name="wp1004363" id="wp1004363"></a>
+<p class="pBody"><a href=
+"lookup.html#wp1012700">CODE&#160;EXAMPLE&#160;4-4</a> shows the
+creation of a JMX connector server <code class=
+"cCode">server</code>, the obtention of a pointer to the LDAP
+server root directory <code class="cCode">root</code> and the
+creation of a URL for <code class="cCode">server</code> named
+<code class="cCode">address</code>. The root directory, the URL and
+an agent name are passed as parameters to <code class=
+"cCode">register()</code> and are registered in the LDAP
+server.</p>
+<a name="wp1004117" id="wp1004117"></a>
+<h4 class="pHeading3">Client.java</h4>
+<a name="wp1004394" id="wp1004394"></a>
+<p class="pBody">The JNDI/LDAP lookup service <code class=
+"cCode">Client.java</code> class is shown in <a href=
+"lookup.html#wp1012720">CODE&#160;EXAMPLE&#160;4-1</a>.</p>
+<a name="wp1012720" id="wp1012720"></a>
+<div class="pCodeCaption">CODE&#160;EXAMPLE&#160;4-1 JNDI/LDAP
+Lookup Service Example Client.java</div>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1012726" id="wp1012726"> </a>
+[...]<a name="wp1017581" id="wp1017581"> </a>
+<a name="wp1017583" id="wp1017583"> </a>
+public class Client {<a name="wp1017584" id="wp1017584"> </a>
+<a name="wp1017585" id="wp1017585"> </a>
+   private static boolean debug = false;<a name="wp1017586" id=
+"wp1017586"> </a>
+<a name="wp1017587" id="wp1017587"> </a>
+   public static void listAttributes(DirContext root, String dn)<a name="wp1017588"
+id="wp1017588"> </a>
+     throws NamingException {<a name="wp1017589" id=
+"wp1017589"> </a>
+     final Attributes attrs = root.getAttributes(dn);<a name=
+"wp1017590" id="wp1017590"> </a>
+     System.out.println(&quot;dn: &quot; + dn);<a name="wp1017591"
+id="wp1017591"> </a>
+     System.out.println(&quot;attributes: &quot; + attrs);<a name=
+"wp1017592" id="wp1017592"> </a>
+   }<a name="wp1017593" id="wp1017593"> </a>
+   <a name="wp1017594" id="wp1017594"> </a>
+   public static DirContext getRootContext() throws NamingException {<a name="wp1017595"
+id="wp1017595"> </a>
+      final Hashtable env = new Hashtable();<a name="wp1017596" id=
+"wp1017596"> </a>
+      // Prepare environment map<a name="wp1017597" id=
+"wp1017597"> </a>
+      [...]<a name="wp1017598" id="wp1017598"> </a>
+      <a name="wp1017599" id="wp1017599"> </a>
+      InitialContext root = new InitialLdapContext(env,null);<a name="wp1017600"
+id="wp1017600"> </a>
+      return (DirContext)(root.lookup(&quot;&quot;));<a name=
+"wp1017601" id="wp1017601"> </a>
+   }<a name="wp1017602" id="wp1017602"> </a>
+   <a name="wp1017603" id="wp1017603"> </a>
+   // Confirm URL has not expired <a name="wp1017604" id=
+"wp1017604"> </a>
+  [...] <a name="wp1017605" id="wp1017605"> </a>
+<a name="wp1017606" id="wp1017606"> </a>
+   public static List lookup(DirContext root, String protocolType,<a name="wp1017607"
+id="wp1017607"> </a>
+                             String name)<a name="wp1017608" id=
+"wp1017608"> </a>
+      throws IOException, NamingException {<a name="wp1017609" id=
+"wp1017609"> </a>
+      final ArrayList list = new ArrayList();<a name="wp1017610"
+id="wp1017610"> </a>
+      String queryProtocol =<a name="wp1017611" id=
+"wp1017611"> </a>
+         (protocolType==null)?&quot;&quot;:&quot;(jmxProtocolType=&quot;+protocolType+&quot;)&quot;;<a name="wp1017612"
+id="wp1017612"> </a>
+      String query =<a name="wp1017613" id="wp1017613"> </a>
+          &quot;(&amp;&quot; + &quot;(objectClass=jmxConnector) &quot; +<a name="wp1017614"
+id="wp1017614"> </a>
+          &quot;(jmxServiceURL=*) &quot; +<a name="wp1017615" id=
+"wp1017615"> </a>
+          queryProtocol +<a name="wp1017616" id="wp1017616"> </a>
+          &quot;(jmxAgentName=&quot; + ((name!=null)?name:&quot;*&quot;) + &quot;))&quot;;<a name="wp1017617"
+id="wp1017617"> </a>
+<a name="wp1017618" id="wp1017618"> </a>
+      SearchControls ctrls = new SearchControls();<a name=
+"wp1017619" id="wp1017619"> </a>
+      ctrls.setSearchScope(SearchControls.SUBTREE_SCOPE);<a name=
+"wp1017620" id="wp1017620"> </a>
+      final NamingEnumeration results = root.search(&quot;&quot;, query, ctrls);<a name="wp1017621"
+id="wp1017621"> </a>
+      while (results.hasMore()) { <a name="wp1017622" id=
+"wp1017622"> </a>
+           final SearchResult r = (SearchResult) results.nextElement();<a name="wp1017623"
+id="wp1017623"> </a>
+           debug(&quot;Found node: &quot; + r.getName());<a name=
+"wp1017624" id="wp1017624"> </a>
+           final Attributes attrs = r.getAttributes();<a name=
+"wp1017625" id="wp1017625"> </a>
+           final Attribute attr = attrs.get(&quot;jmxServiceURL&quot;);<a name="wp1017626"
+id="wp1017626"> </a>
+           if (attr == null) continue;<a name="wp1017627" id=
+"wp1017627"> </a>
+           final Attribute exp = attrs.get(&quot;jmxExpirationDate&quot;);<a name="wp1017628"
+id="wp1017628"> </a>
+           if ((exp != null) &amp;&amp; hasExpired((String)exp.get())) {<a name="wp1017629"
+id="wp1017629"> </a>
+               System.out.print(r.getName() + &quot;: &quot;);<a name="wp1017630"
+id="wp1017630"> </a>
+               System.out.println(&quot;URL expired since: &quot; + exp.get());<a name="wp1017631"
+id="wp1017631"> </a>
+               continue;<a name="wp1017632" id="wp1017632"> </a>
+           }  <a name="wp1017633" id="wp1017633"> </a>
+           final String urlStr = (String)attr.get();<a name=
+"wp1017634" id="wp1017634"> </a>
+           if (urlStr.length() == 0) continue;<a name="wp1017635"
+id="wp1017635"> </a>
+<a name="wp1017636" id="wp1017636"> </a>
+   <a name="wp1017637" id="wp1017637"> </a>
+           debug(&quot;Found URL: &quot;+ urlStr);<a name=
+"wp1017638" id="wp1017638"> </a>
+<a name="wp1017639" id="wp1017639"> </a>
+   <a name="wp1017640" id="wp1017640"> </a>
+           final JMXServiceURL url = new JMXServiceURL(urlStr);<a name="wp1017641"
+id="wp1017641"> </a>
+           final JMXConnector conn =<a name="wp1017642" id=
+"wp1017642"> </a>
+               JMXConnectorFactory.newJMXConnector(url,null);<a name="wp1017643"
+id="wp1017643"> </a>
+           list.add(conn);<a name="wp1017644" id="wp1017644"> </a>
+           if (debug) listAttributes(root,r.getName());<a name=
+"wp1017645" id="wp1017645"> </a>
+      }<a name="wp1017646" id="wp1017646"> </a>
+<a name="wp1017647" id="wp1017647"> </a>
+      return list;<a name="wp1017648" id="wp1017648"> </a>
+<a name="wp1017649" id="wp1017649"> </a>
+   }  <a name="wp1017650" id="wp1017650"> </a>
+}<a name="wp1017651" id="wp1017651"> </a>
+<a name="wp1012798" id="wp1012798"> </a>
+</pre></div>
+<a name="wp1004747" id="wp1004747"></a>
+<p class="pBody">In <a href=
+"lookup.html#wp1012720">CODE&#160;EXAMPLE&#160;4-1</a>, the
+<code class="cCode">Client</code> firstly returns a pointer
+<code class="cCode">root</code> to the LDAP directory <code class=
+"cCode">DirContext</code>, then it searches through the directory
+for object classes of the type <code class=
+"cCode">jmxConnector</code>. The service URL and expiry date
+attributes, <code class="cCode">attr</code> and <code class=
+"cCode">exp</code> respectively, for the <code class=
+"cCode">jmxConnector</code> object classes are obtained,
+<code class="cCode">exp</code> is checked to make sure that the URL
+has not expired and a call is made to <code class=
+"cCode">JMXConnectorFactory</code> to create a new connector
+<code class="cCode">conn</code>. The connector <code class=
+"cCode">conn</code> is added to the list of connectors and is used
+to access the MBeans in the MBean server created by <code class=
+"cCode">Server</code>.</p>
+<a name="wp1003104" id="wp1003104"></a>
+<h4 class="pHeading3">jmx-schema.txt</h4>
+<a name="wp1003145" id="wp1003145"></a>
+<p class="pBody">The <code class="cCode">jmx-schema.txt</code> file
+is the LDAP schema file for the JMX Remote API.</p>
+<a name="wp1014860" id="wp1014860"></a>
+<h4 class="pHeading3">60jmx-schema.ldif</h4>
+<a name="wp1014863" id="wp1014863"></a>
+<p class="pBody">The <code class="cCode">60jmx-schema.ldif</code>
+file is an <code class="cCode">ldif</code> file corresponding to
+the LDAP schema file, <code class="cCode">jmx-schema.txt</code>,
+for JMX technology. If you are using Sun ONE Directory Server, this
+file can be copied directly to the <code class=
+"cCode">config/schema</code> directory of the Sun ONE Directory
+Server (see <a href="lookup.html#wp1010119"><span style=
+"color: #3366CC">Section&#160; &quot;Setting up the JNDI/LDAP
+Lookup Service Example&quot;</span></a>).</p>
+<a name="wp999479" id="wp999479"></a>
+<h3 class="pHeading2">Running the JNDI/LDAP Lookup Service
+Example</h3>
+<a name="wp1010115" id="wp1010115"></a>
+<p class="pBody">In addition to the actions you performed in
+<a href="lookup.html#wp999517"><span style=
+"color: #3366CC">Section&#160; &quot;Initial
+Configuration&quot;</span></a>, before you can run the lookup
+service examples that use the JNDI/LDAP lookup service, you must
+perform some further initial actions that are specific to this
+example. You can then start looking up connectors using the
+JNDI/LDAP network technology, in conjunction with the two
+connectors supported by the JMX technology.</p>
+<a name="wp1010896" id="wp1010896"></a>
+<p class="pBody">When you run the examples, to help you keep track
+of which agent has been created with which transport, the agent
+names include a letter suffix that is the same as the lettering of
+the corresponding section. For example, the agent from <a href=
+"lookup.html#wp1010147"><span style=
+"color: #3366CC">Section&#160;a. &quot;RMI connector over JRMP,
+without an external directory.&quot;</span></a> is called
+<code class="cCode">example-server-a</code>.</p>
+<a name="wp1010119" id="wp1010119"></a>
+<h4 class="pHeading3">Setting up the JNDI/LDAP Lookup Service
+Example</h4>
+<a name="wp1010120" id="wp1010120"></a>
+<p class="pBody">The following steps are required by all of the
+different connector/transport combinations you can run in this
+example.</p>
+<div class="pStep1">
+<ol class="pStep1">
+<li style="list-style: none"><a name="wp1006278" id=
+"wp1006278"></a></li>
+<li>Stop the LDAP server you started in <a href=
+"lookup.html#wp999517"><span style="color: #3366CC">Section&#160;
+&quot;Initial Configuration&quot;</span></a>. <a name="wp1003174"
+id="wp1003174"></a>
+<p class="pBody">Do this according to the type of LDAP server you
+are using.</p>
+<a name="wp1003143" id="wp1003143"></a></li>
+<li>Copy the JMX technology schema into your LDAP server&#8217;s
+<code class="cCode">schema</code> directory. <a name="wp1003157"
+id="wp1003157"></a>
+<p class="pBody">For example, if you are using Sun ONE Directory
+Server 5.0, you would type:</p>
+<a name="wp1003158" id="wp1003158"></a>
+<p class="pBody"><code class="cCode">$</code> <span class=
+"cUserType">cp 60jmx-schema.ldif
+/var/ds5/slapd-&lt;</span><em class=
+"cEmphasis">hostname</em><span class=
+"cUserType">&gt;/config/schema</span></p>
+<a name="wp1003165" id="wp1003165"></a>
+<p class="pBody">Otherwise, do this according to the type of LDAP
+server you are using.</p>
+<a name="wp1003162" id="wp1003162"></a></li>
+<li>Restart the LDAP server. <a name="wp1003163" id=
+"wp1003163"></a>
+<p class="pBody">Do this according to the type of LDAP server you
+are using.</p>
+<a name="wp1010300" id="wp1010300"></a></li>
+<li>Define the root under which the <code class=
+"cCode">Server</code> will register its service URL. <a name=
+"wp1010301" id="wp1010301"></a>
+<p class="pBody">You must provide the <code class=
+"cCode">Server</code> with the path to the domain component suffix
+<code class="cCode">dc=Test</code> that you created in <a href=
+"lookup.html#wp999517"><span style="color: #3366CC">Section&#160;
+&quot;Initial Configuration&quot;</span></a>.</p>
+<a name="wp1010305" id="wp1010305"></a>
+<p class="pBody"><code class="cCode">$</code> <span class=
+"cUserType">provider=&quot;ldap://$ldaphost:$ldapport/dc=Test&quot;</span></p>
+<a name="wp1015577" id="wp1015577"></a></li>
+<li>Compile the <code class="cCode">Client</code> and <code class=
+"cCode">Server</code> classes. <a name="wp998608" id=
+"wp998608"></a>
+<p class="pListEndingPara"><code class="cCode">$</code>
+<span class="cUserType">javac -d . Server.java
+Client.java</span></p>
+</li>
+</ol>
+<a name="wp1010131" id="wp1010131"></a>
+<h4 class="pHeading3">Running the JNDI/LDAP Lookup Service Example
+With an RMI Connector</h4>
+<a name="wp1010132" id="wp1010132"></a>
+<p class="pBody">This example demonstrates the use of the JNDI/LDAP
+lookup service to look up RMI connector servers that use
+RMI&#8217;s default transport, JRMP, as well as the IIOP transport.
+In addition, as described in <a href=
+"lookup.html#wp999517"><span style="color: #3366CC">Section&#160;
+&quot;Initial Configuration&quot;</span></a>, different external
+directories are used to register the RMI connector stubs.</p>
+<a name="wp1010136" id="wp1010136"></a>
+<p class="pBody">The combinations of transports and external
+directories demonstrated here are:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp1010137"
+id="wp1010137"></a>
+<div class="pBullet1">
+<ul>
+<li>RMI connector over the JRMP transport, with:</li>
+</ul>
+</div>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012813"
+id="wp1012813"></a>
+<div class="pBullet2">
+<ul>
+<li>No external directory</li>
+</ul>
+</div>
+<a name="wp1012814" id="wp1012814"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>An RMI registry</li>
+</ul>
+</div>
+<a name="wp1012815" id="wp1012815"></a>
+<div class="pBullet2Last">
+<ul>
+<li>An LDAP registry</li>
+</ul>
+</div>
+</div>
+<a name="wp1012816" id="wp1012816"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>RMI connector over the IIOP transport, with:</li>
+</ul>
+</div>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012817"
+id="wp1012817"></a>
+<div class="pBullet2">
+<ul>
+<li>No external directory</li>
+</ul>
+</div>
+<a name="wp1012818" id="wp1012818"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>A CORBA naming service</li>
+</ul>
+</div>
+<a name="wp1012819" id="wp1012819"></a>
+<div class="pBullet2LastEnd">
+<ul>
+<li>An LDAP registry</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="pStep1">
+<ol class="pStep1">
+<li style="list-style: none"><a name="wp1010145" id=
+"wp1010145"></a></li>
+<li>Start the <code class="cCode">Server</code>. <a name=
+"wp1010146" id="wp1010146"></a>
+<p class="pBody">The command you use to start the <code class=
+"cCode">Server</code> varies according to which external directory
+you are using. You can start one or more of the following instances
+of <code class="cCode">Server</code> with different transports and
+external registries before starting the <code class=
+"cCode">Client</code>.</p>
+<div class="pStep2">
+<ol class="pStep2">
+<li style="list-style: none"><a name="wp1010147" id=
+"wp1010147"></a></li>
+<li>RMI connector over JRMP, without an external directory.
+<a name="wp1010148" id="wp1010148"></a>
+<p class="pBody">Start <code class="cCode">Server</code> by typing
+the following command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1010149" id="wp1010149"> </a>
+<span class=
+"cUserType">$ java -classpath . -Ddebug=true \</span><a name=
+"wp1015590" id="wp1015590"> </a>
+<span class=
+"cUserType">  -Dagent.name=example-server-a \</span><a name=
+"wp1015591" id="wp1015591"> </a>
+<span class=
+"cUserType">  -Durl=&quot;service:jmx:rmi://&quot; \</span><a name=
+"wp1015592" id="wp1015592"> </a>
+<span class=
+"cUserType">  -Djava.naming.provider.url=&quot;$provider&quot; \</span><a name="wp1015593"
+id="wp1015593"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.principal=&quot;$principal&quot; \</span><a name="wp1015594"
+id="wp1015594"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.credentials=&quot;$credentials&quot; \</span><a name="wp1015595"
+id="wp1015595"> </a>
+<span class="cUserType">  jndi.Server &amp;</span><a name=
+"wp1012829" id="wp1012829"> </a>
+<a name="wp1012830" id="wp1012830"> </a>
+</pre></div>
+<a name="wp1010154" id="wp1010154"></a>
+<p class="pBody">In this command:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012841"
+id="wp1012841"></a>
+<div class="pBullet2">
+<ul>
+<li><code class="cCode">debug</code> is set to true to provide more
+complete screen output when the <code class="cCode">Server</code>
+runs.</li>
+</ul>
+</div>
+<a name="wp1012842" id="wp1012842"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The name of the agent to be created is <code class=
+"cCode">example-server-a</code>.</li>
+</ul>
+</div>
+<a name="wp1012843" id="wp1012843"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The URL, <code class="cCode">provider</code>, that points to
+the domain component suffix in which the agent will be registered,
+is given.</li>
+</ul>
+</div>
+<a name="wp1012844" id="wp1012844"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The common name attribute <code class="cCode">principal</code>
+and password <code class="cCode">credentials</code> are given to
+gain access to the LDAP server.</li>
+</ul>
+</div>
+<a name="wp1012845" id="wp1012845"></a>
+<div class="pBullet2Last">
+<ul>
+<li>The service URL specifies that the chosen connector is an RMI
+connector, running over the RMI default transport JRMP.</li>
+</ul>
+</div>
+</div>
+<a name="wp1010159" id="wp1010159"></a>
+<p class="pBody">When Server is launched, you will see confirmation
+of the creation of the RMI connector, and the registration of its
+URL in the JNDI/LDAP lookup service.</p>
+<a name="wp1010160" id="wp1010160"></a></li>
+<li>RMI connector over JRMP, using an RMI registry as an external
+directory. <a name="wp1010161" id="wp1010161"></a>
+<p class="pBody">Start <code class="cCode">Server</code> by typing
+the following command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1010166" id="wp1010166"> </a>
+<span class=
+"cUserType">$ java -classpath . -Ddebug=true \</span><a name=
+"wp1015600" id="wp1015600"> </a>
+<span class=
+"cUserType">  -Dagent.name=example-server-b \</span><a name=
+"wp1015601" id="wp1015601"> </a>
+<span class=
+"cUserType">  -Durl=&quot;service:jmx:rmi:///jndi/${jndirmi}/server&quot; \</span><a name="wp1015602"
+id="wp1015602"> </a>
+<span class=
+"cUserType">  -Djava.naming.provider.url=&quot;$provider&quot; \</span><a name="wp1015603"
+id="wp1015603"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.principal=&quot;$principal&quot; \</span><a name="wp1015604"
+id="wp1015604"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.credentials=&quot;$credentials&quot; \</span><a name="wp1015605"
+id="wp1015605"> </a>
+<span class="cUserType">  jndi.Server &amp;</span><a name=
+"wp1012855" id="wp1012855"> </a>
+<a name="wp1012856" id="wp1012856"> </a>
+</pre></div>
+<a name="wp1010167" id="wp1010167"></a>
+<p class="pBody">In this command:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012865"
+id="wp1012865"></a>
+<div class="pBullet2">
+<ul>
+<li>The name of the agent created is <code class=
+"cCode">example-server-b</code>.</li>
+</ul>
+</div>
+<a name="wp1012866" id="wp1012866"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The URL, <code class="cCode">provider</code>, that points to
+the domain component suffix in which the agent will be registered,
+is given.</li>
+</ul>
+</div>
+<a name="wp1012867" id="wp1012867"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The common name attribute <code class="cCode">principal</code>
+and password <code class="cCode">credentials</code> are given to
+gain access to the LDAP server.</li>
+</ul>
+</div>
+<a name="wp1012868" id="wp1012868"></a>
+<div class="pBullet2Last">
+<ul>
+<li>The service URL specifies the chosen connector as RMI over
+JRMP, and the external directory in which the RMI connector stub,
+<code class="cCode">server</code>, is stored is the RMI registry
+you identified as <code class="cCode">jndirmi</code> in <a href=
+"lookup.html#wp999517"><span style="color: #3366CC">Section&#160;
+&quot;Initial Configuration&quot;</span></a>.</li>
+</ul>
+</div>
+</div>
+<a name="wp1010174" id="wp1010174"></a>
+<p class="pBody">When <code class="cCode">Server</code> is
+launched, you will see confirmation of the creation of the RMI
+connector, and the registration of its URL in the JNDI/LDAP lookup
+service.</p>
+<a name="wp1010175" id="wp1010175"></a></li>
+<li>RMI connector over JRMP, using LDAP as the external directory.
+<a name="wp1010176" id="wp1010176"></a>
+<p class="pBody">Start <code class="cCode">Server</code> by typing
+the following command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1010386" id="wp1010386"> </a>
+<span class=
+"cUserType">$ java -classpath . -Ddebug=true \</span><a name=
+"wp1015610" id="wp1015610"> </a>
+<span class=
+"cUserType">  -Dagent.name=example-server-c \</span><a name=
+"wp1015611" id="wp1015611"> </a>
+<span class=
+"cUserType">  -Durl=&quot;service:jmx:rmi:///jndi/${jndildap}/cn=x,dc=Test&quot; \</span><a name="wp1015612"
+id="wp1015612"> </a>
+<span class=
+"cUserType">  -Djava.naming.provider.url=&quot;$provider&quot; \</span><a name="wp1015613"
+id="wp1015613"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.principal=&quot;$principal&quot; \</span><a name="wp1015614"
+id="wp1015614"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.credentials=&quot;$credentials&quot; \</span><a name="wp1015615"
+id="wp1015615"> </a>
+<span class="cUserType">  jndi.Server &amp;</span><a name=
+"wp1012879" id="wp1012879"> </a>
+<a name="wp1012880" id="wp1012880"> </a>
+</pre></div>
+<a name="wp1010185" id="wp1010185"></a>
+<p class="pBody">In this command:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1012889"
+id="wp1012889"></a>
+<div class="pBullet2">
+<ul>
+<li>The name of the agent created is <code class=
+"cCode">example-server-c</code>.</li>
+</ul>
+</div>
+<a name="wp1012890" id="wp1012890"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The URL, <code class="cCode">provider</code>, that points to
+the domain component suffix in which the agent will be registered,
+is given.</li>
+</ul>
+</div>
+<a name="wp1012891" id="wp1012891"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The common name attribute <code class="cCode">principal</code>
+and password <code class="cCode">credentials</code> are given to
+gain access to the LDAP server.</li>
+</ul>
+</div>
+<a name="wp1012892" id="wp1012892"></a>
+<div class="pBullet2Last">
+<ul>
+<li>The service URL specifies the chosen connector as RMI over
+JRMP, and the external directory in which the RMI connector stub is
+stored is the LDAP server you identified as <code class=
+"cCode">jndildap</code> in <a href=
+"lookup.html#wp999517"><span style="color: #3366CC">Section&#160;
+&quot;Initial Configuration&quot;</span></a>.</li>
+</ul>
+</div>
+</div>
+<a name="wp1010194" id="wp1010194"></a>
+<p class="pBody">When <code class="cCode">Server</code> is
+launched, you will see confirmation of the creation of the RMI
+connector, and the registration of its URL in the JNDI/LDAP lookup
+service under the agent name <code class=
+"cCode">example-server-c</code>.</p>
+<a name="wp1010195" id="wp1010195"></a></li>
+<li>RMI connector over IIOP, without an external directory.
+<a name="wp1010196" id="wp1010196"></a>
+<p class="pBody">Start <code class="cCode">Server</code> by typing
+the following command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1015620" id="wp1015620"> </a>
+<span class=
+"cUserType">$ java -classpath . -Ddebug=true \</span><a name=
+"wp1015691" id="wp1015691"> </a>
+<span class=
+"cUserType">  -Dagent.name=example-server-d \</span><a name=
+"wp1015621" id="wp1015621"> </a>
+<span class=
+"cUserType">  -Durl=&quot;service:jmx:iiop://&quot; \</span><a name="wp1015622"
+id="wp1015622"> </a>
+<span class=
+"cUserType">  -Djava.naming.provider.url=&quot;$provider&quot; \</span><a name="wp1015623"
+id="wp1015623"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.principal=&quot;$principal&quot; \</span><a name="wp1015624"
+id="wp1015624"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.credentials=&quot;$credentials&quot; \</span><a name="wp1015625"
+id="wp1015625"> </a>
+<span class="cUserType">  jndi.Server &amp;</span><a name=
+"wp1012902" id="wp1012902"> </a>
+<a name="wp1012903" id="wp1012903"> </a>
+</pre></div>
+<a name="wp1010202" id="wp1010202"></a>
+<p class="pBody">In this command:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1010204"
+id="wp1010204"></a>
+<div class="pBullet2">
+<ul>
+<li>The name of the agent created is <code class=
+"cCode">example-server-d</code>.</li>
+</ul>
+</div>
+<a name="wp1010488" id="wp1010488"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The URL, <code class="cCode">provider</code>, that points to
+the domain component suffix in which the agent will be registered,
+is given.</li>
+</ul>
+</div>
+<a name="wp1010489" id="wp1010489"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The common name attribute <code class="cCode">principal</code>
+and password <code class="cCode">credentials</code> are given to
+gain access to the LDAP server.</li>
+</ul>
+</div>
+<a name="wp1010205" id="wp1010205"></a>
+<div class="pBullet2Last">
+<ul>
+<li>The service URL specifies that the chosen connector is an RMI
+connector, running over IIOP.</li>
+</ul>
+</div>
+</div>
+<a name="wp1010206" id="wp1010206"></a>
+<p class="pBody">When the <code class="cCode">Server</code> is
+launched, you will see confirmation of the creation of the RMI
+connector, and the registration of its automatically generated URL
+in the JNDI/LDAP lookup service.</p>
+<a name="wp1010207" id="wp1010207"></a></li>
+<li>RMI connector over IIOP, using CORBA naming as the external
+directory. <a name="wp1010208" id="wp1010208"></a>
+<p class="pBody">Start <code class="cCode">Server</code> by typing
+the following command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1015636" id="wp1015636"> </a>
+<span class=
+"cUserType">$ java -classpath . -Ddebug=true \</span><a name=
+"wp1015692" id="wp1015692"> </a>
+<span class=
+"cUserType">  -Dagent.name=example-server-e \</span><a name=
+"wp1015637" id="wp1015637"> </a>
+<span class=
+"cUserType">  -Durl=&quot;service:jmx:iiop:///jndi/${jndiiiop}/server&quot; \</span><a name="wp1015638"
+id="wp1015638"> </a>
+<span class=
+"cUserType">  -Djava.naming.provider.url=&quot;$provider&quot; \</span><a name="wp1015639"
+id="wp1015639"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.principal=&quot;$principal&quot; \</span><a name="wp1015640"
+id="wp1015640"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.credentials=&quot;$credentials&quot; \</span><a name="wp1015641"
+id="wp1015641"> </a>
+<span class="cUserType">  jndi.Server &amp;</span><a name=
+"wp1012913" id="wp1012913"> </a>
+<a name="wp1012914" id="wp1012914"> </a>
+</pre></div>
+<a name="wp1010215" id="wp1010215"></a>
+<p class="pBody">In this command:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1010541"
+id="wp1010541"></a>
+<div class="pBullet2">
+<ul>
+<li>The name of the agent created is <code class=
+"cCode">example-server-e</code>.</li>
+</ul>
+</div>
+<a name="wp1010547" id="wp1010547"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The URL, <code class="cCode">provider</code>, that points to
+the domain component suffix in which the agent will be registered,
+is given.</li>
+</ul>
+</div>
+<a name="wp1010542" id="wp1010542"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The common name attribute <code class="cCode">principal</code>
+and password <code class="cCode">credentials</code> are given to
+gain access to the LDAP server.</li>
+</ul>
+</div>
+<a name="wp1010218" id="wp1010218"></a>
+<div class="pBullet2Last">
+<ul>
+<li>The service URL specifies the chosen connector as RMI connector
+over IIOP, and the external directory in which the RMI connector
+stub, server, is stored is the CORBA naming service you identified
+as <code class="cCode">jndiiiop</code> in <a href=
+"lookup.html#wp999517"><span style="color: #3366CC">Section&#160;
+&quot;Initial Configuration&quot;</span></a>.</li>
+</ul>
+</div>
+</div>
+<a name="wp1010222" id="wp1010222"></a>
+<p class="pBody">When <code class="cCode">Server</code> is
+launched, you will see confirmation of the creation of the RMI
+connector, and the registration of its URL in the JNDI/LDAP lookup
+service under the name <code class=
+"cCode">example-server-e</code>.</p>
+<a name="wp1010223" id="wp1010223"></a></li>
+<li>RMI connector over IIOP, using LDAP as the external directory.
+<a name="wp1010224" id="wp1010224"></a>
+<p class="pBody">Start <code class="cCode">Server</code> by typing
+the following command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1015650" id="wp1015650"> </a>
+<span class=
+"cUserType">$ java -classpath . -Ddebug=true \</span><a name=
+"wp1015693" id="wp1015693"> </a>
+<span class=
+"cUserType">  -Dagent.name=example-server-f \</span><a name=
+"wp1015651" id="wp1015651"> </a>
+<span class=
+"cUserType">  -Durl=&quot;service:jmx:iiop:///jndi/${jndildap}/cn=x,dc=Test&quot; \</span><a name="wp1015652"
+id="wp1015652"> </a>
+<span class=
+"cUserType">  -Djava.naming.provider.url=&quot;$provider&quot; \</span><a name="wp1015653"
+id="wp1015653"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.principal=&quot;$principal&quot; \</span><a name="wp1015654"
+id="wp1015654"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.credentials=&quot;$credentials&quot; \</span><a name="wp1015655"
+id="wp1015655"> </a>
+<span class="cUserType">  jndi.Server &amp;</span><a name=
+"wp1012939" id="wp1012939"> </a>
+<a name="wp1012929" id="wp1012929"> </a>
+</pre></div>
+<a name="wp1012917" id="wp1012917"></a>
+<p class="pBody">In this command:</p>
+<div style="margin-left: 2em" class="pBullet2"><a name="wp1010235"
+id="wp1010235"></a>
+<div class="pBullet2">
+<ul>
+<li>The name of the agent created is <code class=
+"cCode">example-server-f</code>.</li>
+</ul>
+</div>
+<a name="wp1010701" id="wp1010701"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The URL, <code class="cCode">provider</code>, that points to
+the domain component suffix in which the agent will be registered,
+is given.</li>
+</ul>
+</div>
+<a name="wp1010241" id="wp1010241"></a>
+<div class="pBullet2Plus">
+<ul>
+<li>The common name attribute <code class="cCode">principal</code>
+and password <code class="cCode">credentials</code> are given to
+gain access to the LDAP server.</li>
+</ul>
+</div>
+<a name="wp1010591" id="wp1010591"></a>
+<div class="pBullet2Last">
+<ul>
+<li>The service URL specifies the chosen connector as RMI over
+IIOP, and the external directory in which the RMI connector stub is
+stored is the LDAP server you identified as <code class=
+"cCode">jndildap</code> in <a href=
+"lookup.html#wp999517"><span style="color: #3366CC">Section&#160;
+&quot;Initial Configuration&quot;</span></a>.</li>
+</ul>
+</div>
+</div>
+<a name="wp1010242" id="wp1010242"></a>
+<p class="pListEndingPara">When <code class="cCode">Server</code>
+is launched, you will see confirmation of the creation of the RMI
+connector, and the registration of its URL in the JNDI/LDAP lookup
+service under the agent name <code class=
+"cCode">example-server-f</code>.</p>
+</li>
+</ol>
+<a name="wp1010243" id="wp1010243"></a>
+<ul>
+<li>Start the <code class="cCode">Client</code>.</li>
+<li style="list-style: none"><a name="wp1012945" id=
+"wp1012945"></a>
+<p class="pBody">After starting the <code class=
+"cCode">Server</code> using the transport and external directory of
+your choice, start the <code class="cCode">Client</code>:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1012946" id="wp1012946"> </a>
+$ <span class=
+"cUserType">java -classpath . -Ddebug=true \</span><a name=
+"wp1017678" id="wp1017678"> </a>
+<span class=
+"cUserType">  -Djava.naming.provider.url=&quot;$provider&quot; \</span><a name="wp1017680"
+id="wp1017680"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.principal=&quot;$principal&quot; \</span><a name="wp1017681"
+id="wp1017681"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.credentials=&quot;$credentials&quot; \</span><a name="wp1017682"
+id="wp1017682"> </a>
+<span class="cUserType">  jndi.Client</span><a name="wp1017683" id=
+"wp1017683"> </a>
+<a name="wp1012957" id="wp1012957"> </a>
+</pre></div>
+<a name="wp1012947" id="wp1012947"></a>
+<p class="pBody">You will see output confirming the detection of
+the agents created by the <code class="cCode">Server</code> and
+registered in the lookup service. You will also see the
+identification and confirmation of the connection made to the
+agents.</p>
+<a name="wp1010249" id="wp1010249"></a>
+<p class="pBody">To look up a specific agent, type the following
+command:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<a name="wp1010253" id="wp1010253"> </a>
+<code class="cCode">$ </code><span class=
+"cUserType">java -classpath . -Ddebug=true \</span><a name=
+"wp1017685" id="wp1017685"> </a>
+<span class=
+"cUserType">  -Djava.naming.provider.url=&quot;$provider&quot; \</span><a name="wp1017686"
+id="wp1017686"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.principal=&quot;$principal&quot; \</span><a name="wp1017687"
+id="wp1017687"> </a>
+<span class=
+"cUserType">  -Djava.naming.security.credentials=&quot;$credentials&quot; \</span><a name="wp1017688"
+id="wp1017688"> </a>
+<span class="cUserType">  -Dagent.name=agentName \</span><a name=
+"wp1017689" id="wp1017689"> </a>
+<span class="cUserType">  jndi.Client</span><a name="wp1012964" id=
+"wp1012964"> </a>
+<a name="wp1012965" id="wp1012965"> </a>
+</pre></div>
+<a name="wp1010254" id="wp1010254"></a>
+<p class="pListEndingPara">In the command shown above, <em class=
+"cEmphasis">agentName</em> is the name of the agent you want to
+look up. You can also specify a partial agent name by using *; for
+example, x* for all agent names beginning with the letter x.</p>
+<a name="wp1010729" id="wp1010729"></a>
+<p class="pListEndingPara"></p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+<a name="wp1005796" id="wp1005796"></a>
+<p class="pBody"></p>
+<a name="wp1013094" id="wp1013094"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013097" id="wp1013097"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013100" id="wp1013100"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013103" id="wp1013103"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013106" id="wp1013106"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013109" id="wp1013109"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013112" id="wp1013112"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013115" id="wp1013115"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013118" id="wp1013118"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013121" id="wp1013121"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013124" id="wp1013124"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013127" id="wp1013127"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013130" id="wp1013130"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013133" id="wp1013133"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013136" id="wp1013136"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013139" id="wp1013139"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013142" id="wp1013142"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013145" id="wp1013145"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013148" id="wp1013148"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013151" id="wp1013151"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013154" id="wp1013154"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013157" id="wp1013157"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013160" id="wp1013160"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013163" id="wp1013163"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013166" id="wp1013166"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013169" id="wp1013169"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013172" id="wp1013172"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013175" id="wp1013175"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013178" id="wp1013178"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013181" id="wp1013181"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013184" id="wp1013184"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013187" id="wp1013187"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013190" id="wp1013190"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013193" id="wp1013193"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013196" id="wp1013196"></a>
+<p class="pBodySmall"></p>
+<a name="wp1013199" id="wp1013199"></a>
+<p class="pBodySmall"></p>
+<br />
+<p><a accesskey="c" href="tutorialTOC.html">Contents</a> |
+<a accesskey="p" href="connectors.html">Previous</a> |
+<a accesskey="n" href="security.html">Next</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

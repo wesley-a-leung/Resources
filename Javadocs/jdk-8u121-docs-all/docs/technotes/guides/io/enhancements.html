@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Enhancements in Java I/O</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Enhancements in Java I/O</h1>
+<ul>
+<li><a href="#jdk8">Enhancements in JDK 8 Release</a></li>
+<li><a href="#jdk7">Enhancements in JDK 7 Release</a></li>
+<li><a href="#jdk6">Enhancements in JDK 6 Release</a></li>
+<li><a href="#jdk5.0">Enhancements in JDK 5.0 Release</a></li>
+<li><a href="#jdk1.4">Enhancements in J2SDK 1.4</a></li>
+<li><a href="#pre">Previous Enhancements</a></li>
+</ul>
+<hr />
+<h2><a name="jdk8" id="jdk8">Enhancements in JDK 8 Release</a></h2>
+<p>There are several improvements to the standard
+(<code>java.nio.charset.Charset</code>) and extended charset
+implementations. They include:</p>
+<ul>
+<li>
+  <p>New <code>SelectorProvider</code> implementation for Solaris based on the Solaris event port mechanism. This <code>SelectorProvider</code> may improve performance or scalability for some server workloads. The <code>/dev/poll SelectorProvider</code> continues to be the default. To use the Solaris event port mechanism, run with the system property <code>java.nio.channels.spi.Selector</code> set to the value <code>sun.nio.ch.EventPortSelectorProvider</code>.</p>
+</li>
+<li>
+  <p>Decrease in the size of
+    <tt>&lt;JDK_HOME&gt;/jre/lib/charsets.jar</tt> file</p>
+</li>
+<li>
+  <p>Performance improvement for the <code>java.lang.String(byte[],
+    *)</code> constructor and the
+  <code>java.lang.String.getBytes()</code> method.</p>
+</li>
+<!--
+<li>Implementation of the <code>sun.nio.cs.ArrayDecoder</code> and
+<code>sun.nio.cs.Encoder</code> API for the most frequently used doublebyte charsets to improve performance of the new String(byte[]) and String.getBytes() classes.</li>
+--></ul>
+<h2><a name="jdk7" id="jdk7">Enhancements in JDK 7 Release</a></h2>
+<p>The <a href=
+"../../../api/java/nio/file/package-summary.html"><code>java.nio.file</code></a>
+package and its related package, <a href=
+"../../../api/java/nio/file/attribute/package-summary.html"><code>java.nio.file.attribute</code></a>,
+provide comprehensive support for file I/O and for accessing the
+file system. A zip file system provider is also available in JDK 7.
+The following resources provide more information:</p>
+<ul>
+<li><a href=
+"http://docs.oracle.com/javase/tutorial/essential/io/file.html">File
+I/O (featuring NIO 2.0)</a> in the Java Tutorials; NIO stands for
+non-blocking I/O</li>
+<li><a href="fsp/filesystemprovider.html">Developing a Custom File
+System Provider</a></li>
+<li><a href="fsp/zipfilesystemprovider.html">Zip File System
+Provider</a></li>
+<li>The directory <code><em>&lt;Java
+home&gt;</em>/sample/nio/chatserver/</code> contains samples that
+demonstrate the new APIs contained in the
+<code>java.nio.file</code> package</li>
+<li>The directory <code><em>&lt;Java
+home&gt;</em>/demo/nio/zipfs/</code> contains samples that
+demonstrate the NIO.2 NFS (Network File System) file system</li>
+</ul>
+<p><b>In addition, the following enhancement is introduced:</b></p>
+<p><b>Area</b>: NIO<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: Prior to the JDK 7 release, direct buffers
+allocated using <tt>java.nio.ByteBuffer.allocateDirect(int)</tt>
+were aligned on a page boundary. In JDK 7, the implementation has
+changed so that direct buffers are no longer page aligned. This
+should reduce the memory requirements of applications that create
+lots of small buffers.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4837564">4837564</a></p>
+<h2><a name="jdk6" id="jdk6">Enhancements in JDK 6 Release</a></h2>
+<h3>java.io</h3>
+<p>One new class is provided:</p>
+<ul>
+<li><a href=
+"../../../api/java/io/Console.html"><code>Console</code></a> -
+Contains methods to access a character-based console device. The
+<code>readPassword()</code> methods disable echoing thus they are
+suitable for retrieval of sensitive data such as passwords. The
+method <a href=
+"../../../api/java/lang/System.html#console--"><code>System.console()</code></a>
+returns the unique console associated with the Java Virtual
+Machine.</li>
+</ul>
+<p>The following new methods were added to <a href=
+"../../../api/java/io/File.html"><code>File</code></a>:</p>
+<ul>
+<li>Methods to retrieve disk usage information:
+<ul>
+<li><a href=
+"../../../api/java/io/File.html#getTotalSpace--"><code>getTotalSpace()</code></a>
+returns the size of the partition in bytes</li>
+<li><a href=
+"../../../api/java/io/File.html#getFreeSpace--"><code>getFreeSpace()</code></a>
+returns the number of unallocated bytes in the partition</li>
+<li><a href=
+"../../../api/java/io/File.html#getUsableSpace--"><code>getUsableSpace()</code></a>
+returns the number of bytes available on the partition and includes
+checks for write permissions and other operating system
+restrictions</li>
+</ul>
+</li>
+<li>Methods to set or query file permissions:
+<ul>
+<li><a href=
+"../../../api/java/io/File.html#setWritable-boolean-boolean-"><code>
+setWritable(boolean writable, boolean ownerOnly)</code></a> and
+<a href=
+"../../../api/java/io/File.html#setWritable-boolean-"><code>setWritable(boolean
+writable)</code></a> set the owner's or everybody's write
+permission</li>
+<li><a href=
+"../../../api/java/io/File.html#setReadable-boolean-boolean-"><code>
+setReadable(boolean readable, boolean ownerOnly)</code></a> and
+<a href=
+"../../../api/java/io/File.html#setReadable-boolean-"><code>setReadable(boolean
+readable)</code></a> set the owner's or everybody's read
+permission</li>
+<li><a href=
+"../../../api/java/io/File.html#setExecutable-boolean-boolean-"><code>
+setExecutable(boolean executable, boolean ownerOnly)</code></a> and
+<a href=
+"../../../api/java/io/File.html#setExecutable-boolean-"><code>setExecutable(boolean
+executable)</code></a> set the owner's or everybody's execute
+permission</li>
+<li><a href=
+"../../../api/java/io/File.html#canExecute--"><code>canExecute()</code></a>
+tests the value of the execute permission</li>
+</ul>
+</li>
+</ul>
+<p>Constructors were added to the following class:</p>
+<ul>
+<li><a href=
+"../../../api/java/io/IOException.html"><code>IOException</code></a>
+supports exception chaining via the addition of the new
+constructors <a href=
+"../../../api/java/io/IOException.html#IOException-java.lang.String-java.lang.Throwable-">
+<code>IOException(String, Throwable)</code></a> and <a href=
+"../../../api/java/io/IOException.html#IOException-java.lang.Throwable-">
+<code>IOException(Throwable)</code></a>.</li>
+</ul>
+<p>The behavior of the following method was modified:</p>
+<ul>
+<li>The <a href=
+"../../../api/java/io/File.html#isFile--"><code>File.isFile()</code></a>
+Windows implementation has been modified to always return
+<code>false</code> for reserved device names such as CON, NUL, AUX,
+LPT, etc. Previously it returned <code>true</code>, which customers
+considered a bug because it was inconsistent with behavior for
+devices on UNIX.</li>
+</ul>
+<h3>java.nio</h3>
+<ul>
+<li>A new <a href=
+"../../../api/java/nio/channels/spi/SelectorProvider.html"><code>java.nio.channels.SelectorProvider</code></a>
+implementation that is based on the Linux epoll event notification
+facility is included. The epoll facility is available in the Linux
+2.6, and newer, kernels. The new epoll-based
+<code>SelectorProvider</code> implementation is more scalable than
+the traditional poll-based <code>SelectorProvider</code>
+implementation when there are thousands of <a href=
+"../../../api/java/nio/channels/SelectableChannel.html"><code>SelectableChannel</code></a>s
+registered with a <a href=
+"../../../api/java/nio/channels/Selector.html"><code>Selector</code></a>.
+The new <code>SelectorProvider</code> implementation will be used
+by default when the 2.6 kernel is detected. The poll-based
+<code>SelectorProvider</code> will be used when a pre-2.6 kernel is
+detected.</li>
+<li>The system property
+<code>sun.nio.ch.disableSystemWideOverlappingFileLockCheck</code>
+controls whether <a href=
+"../../../api/java/nio/channels/FileChannel.html#lock--"><code>java.nio.channels.FileChannel.lock()</code></a>
+checks whether regions are locked by other instances of
+<code>FileChannel</code>. Unless this system property is set to
+<code>true</code>, <code>FileChannel.lock()</code> will throw an
+<a href=
+"../../../api/java/nio/channels/OverlappingFileLockException.html"><code>
+OverlappingFileLockException</code></a> if an application attempts
+to lock a region that overlaps one that is locked by another
+instance of <code>FileChannel</code>. The system property exists to
+provide compatibility with previous releases which do not implement
+the JVM-wide overlapping file lock check.</li>
+</ul>
+<h2><a name="jdk5.0" id="jdk5.0">Enhancements in JDK 5.0
+Release</a></h2>
+<h3>java.nio</h3>
+<ul>
+<li>Class <a href=
+"../../../api/javax/net/ssl/SSLEngine.html"><code>javax.net.ssl.SSLEngine</code></a>
+was added. The existing J2SDK 1.4.0 secure communication
+infrastructure, <a href=
+"../../../api/javax/net/ssl/SSLSocket.html"><code>javax.net.ssl.SSLSocket</code></a>,
+was based on the I/O model of java.net.Socket. The
+<code>SSLEngine</code> class abstracts away the I/O model, and
+leaves developers free to secure communication pathways using
+alternate types of I/O. <code>SSLEngine</code> can be combined with
+the New I/O APIs to create implementations such as secure blocking
+or non-blocking <code>SocketChannel</code>s. For details see the
+<a href="../security/jsse/JSSERefGuide.html">JSSE Reference
+Guide</a>.</li>
+</ul>
+<h2><a name="jdk1.4" id="jdk1.4">Enhancements in Java SE 1.4</a></h2>
+<h3>java.io</h3>
+<ul>
+<li>In the <a href=
+"../../../api/java/io/FileInputStream.html"><code>FileInputStream</code></a>
+and <a href=
+"../../../api/java/io/FileOutputStream.html"><code>FileOutputStream</code></a>
+classes, <code>getChannel</code> methods have been added to return
+the underlying <code>FileChannel</code> object, and the
+<code>close</code> methods have been revised to close the
+underlying channel.</li>
+<li>Similarly, in the <a href=
+"../../../api/java/io/RandomAccessFile.html"><code>RandomAccessFile</code></a>
+class, a <code>getChannel</code> method has been added and the
+<code>close</code> method has been revised to close the underlying
+channel. The <code>RandomAccessFile</code> constructors now support
+the mode characters <tt>"s"</tt> and <tt>"d"</tt> to allow the
+specification, at file-open time, of synchronous writes or
+synchronous-data writes.</li>
+<li>In the <a href=
+"../../../api/java/io/InputStreamReader.html"><code>InputStreamReader</code></a>
+and <a href=
+"../../../api/java/io/OutputStreamWriter.html"><code>OutputStreamWriter</code></a>
+classes, constructors have been added that take a stream and a
+<code>Charset</code> object, and the <code>getEncoding</code>
+methods have been revised to return the historical name of the
+encoding being used. Constructors to <code>InputStreamReader</code>
+and <code>OutputStreamWriter</code> have been added that take
+existing <code>CharsetDecoder</code> and
+<code>CharsetEncoder</code> objects, respectively.</li>
+</ul>
+<h3>java.nio</h3>
+<ul>
+<li>The nio packages were added to supplement the I/O facilities
+provided the java.io package.</li>
+<li>Three new functions were added to the Java Native Interface
+(JNI) to support direct buffers. For information, see <a href=
+"../jni/jni-14.html">JNI Enhancements in v 1.4</a>.</li>
+</ul>
+<a name="pre" id="pre"></a>
+<h2>Previous Enhancements</h2>
+<ul>
+<li><a href="io-maj.html">Features of java.io.File</a> describes
+changes to the <code>java.io.File</code> class.</li>
+<li><a href="io-min.html">Other changes</a> describes modifications
+made to the <code>java.io</code> package.</li>
+<li><a href="io.html">Character Streams</a> discusses very early
+changes to the java.io class package to support character
+streams.</li>
+</ul>
+<!-- ============================================================== -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

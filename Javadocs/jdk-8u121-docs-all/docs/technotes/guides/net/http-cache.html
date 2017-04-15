@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>URLConnection Caching API</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>URLConnection caching API</h1>
+<p>HTTP is typically used for distributed information systems,
+where performance can be improved by the use of response caches.
+While HTTP proxy servers normally caches recently visited web
+resources, it is sometimes also desirable to have a local cache.
+Examples are browser caches.</p>
+<p>In Tiger, a new framework provides a way for protocol handlers
+to access a response caching mechanism implemented by the platform
+or by a third party.</p>
+<p>Here is the API:</p>
+<p>We have introduced three abstract classes in the java.net
+package. They are:</p>
+<ul>
+<li>ResponseCache</li>
+<li>CacheRequest</li>
+<li>CacheResponse</li>
+</ul>
+<p>A concrete subclass of ResponseCache represents the
+URLConnection cache itself. An instance of such a class can be
+registered with the system by calling ResponseCache.setDefault(),
+and the system will call this object in order to:</p>
+<ul>
+<li>store resource data which has been retrieved from an external
+source into the cache;</li>
+<li>try to fetch a requested resource that may have been stored in
+the cache.</li>
+</ul>
+<p>ResponseCache has two methods: get() returns a CacheResponse
+based on URI and request headers; and put() allows cache to decide
+if resource should be cached, returns a CacheRequest.</p>
+<p>A concrete subclass of CacheRequest is used to write an entry in
+the ResponseCache. Instances of such a class provide an
+OutputStream object which is called by protocol handlers to store
+the resource data into the cache, and also an abort() method which
+allows a cache store operation to be interrupted and abandoned.</p>
+<p>CacheRequest class has two methods: getBody() returns a stream
+for writing the request body into cache; and abort() abandons a
+cache write.</p>
+<p>A concrete subclass of CacheResponse returns an entry from the
+ResponseCache. Instances of such a class provide an InputStream
+that returns the entity body, and also a getHeaders() method which
+returns the associated response headers.</p>
+<p>CacheResponse class has two methods: getBody() returns a stream
+for reading the request body from cache; and getHeaders() returns
+the headers stored.</p>
+<img src="images/cache.gif" alt="Caching logic flow" />
+
+<p>The following example shows a simple file based caching.
+However, it is equally viable to use other mechanisms such as a
+database for caching.</p>
+<p>MyCacheResponse class is an implementation of CacheResponse.
+What it does is to take a file name and retrieve the HTTP response
+headers and body from it.</p>
+<pre class="codeblock">
+class MyCacheResponse extends CacheResponse {
+FileInputStream fis;
+Map&lt;String, List&lt;String&gt;&gt; headers;
+public MyCacheResponse(String filename) {
+        try {
+         fis = new FileInputStream(new File(filename));
+         ObjectInputStream ois = new ObjectInputStream (fis);
+         headers = (Map&lt;String, List&lt;String&gt;&gt;)  ois.readObject();
+   } catch (IOException ex) {
+        // handle exception
+   }
+}
+
+public InputStream getBody() throws IOException {
+   return fis;
+}
+
+ public Map getHeaders() throws IOException {
+   return headers;
+ }
+}
+</pre>
+<p>MyCacheRequest is an implementation of the CacheRequest. It
+takes a filename and the response headers and stores the headers in
+the file and also returns an outputstream directed to the same file
+so that any response body can be cached there.</p>
+<pre class="codeblock">
+class MyCacheRequest extends CacheRequest {
+FileOutputStream fos;
+public MyCacheRequest(String filename,
+   Map&lt;String, List&lt;String&gt;&gt; rspHeaders) {
+   try {
+        File file = new File(filename);
+        fos = new FileOutputStream(file);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(rspHeaders);
+   } catch (Exception ex) {
+        throw new RuntimeException(ex.getMessage());
+   }
+}
+public OutputStream getBody() throws IOException {
+   return fos;
+}
+
+public void abort() {
+   // we abandon the cache by close the stream,
+   // and delete the file
+   fos.close();
+   file.delete();
+ }
+}
+</pre>
+<p>Finally, we can tie it altogether with our implementation of the
+ResponseCache, it checks the URI for the network resource that is
+being retrieved or to be cached and returns the appropriate
+instantiations of our implementations of CacheResponse or
+CacheRequest. In this example, we only handles the case when the
+URI is equal to uri1 for retrieving from the cache, and for URI
+equals uri2 for storing to the cache. But it is easily expanded to
+handle a more complicated file based cache.</p>
+<pre class="codeblock">
+class MyResponseCache extends ResponseCache {
+ public CacheResponse
+ get(URI uri, String rqstMethod, Map rqstHeaders)
+   throws IOException {
+   // get the response from a cached file if available
+   if (uri.equals(ParseUtil.toURI(uri1))) {
+        return new MyCacheResponse(FNPrefix+&quot;file1.cache&quot;);
+   }
+   return null;
+
+public CacheRequest put(URI uri, URLConnection conn)
+   throws IOException {
+   // save cache to a file
+   // 1. serialize headers into file2.cache
+   // 2. write data to file2.cache
+   if (uri.equals(ParseUtil.toURI(uri2))) {
+       return new MyCacheRequest(OutFNPrefix+&quot;file2.cache&quot;,
+        conn.getHeaderFields());
+   }
+   return null;
+ }
+}
+</pre>
+<p>Once we have developed our own ResponseCache implementation, all
+left to be done is to register it and the JVM will use it.</p>
+<pre class="codeblock">
+public static void main(String args[]) throws Exception {
+        ......
+        ResponseCache.setDefault(new MyResponseCache());
+        HttpURLConnection http = (HttpURLConnection)url1.openConnection();
+        InputStream is = null;
+        ......
+}
+</pre>
+<p>There is no default implementation of URLConnection caching in
+the Java 2 Standard Edition. However, Java Plugin and Java WebStart
+do provide one out of the box.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

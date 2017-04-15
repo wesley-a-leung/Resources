@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Prepare to Submit a Bug Report</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:29Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="bugreports001.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="bugreports003.html">
+                Next</a><hr/><a id="CHDBFAEE" name="CHDBFAEE"/>
+<div id="JSTGD519">
+<h1><span>17.2</span> Prepare to Submit a Bug Report</h1>
+<p>Before submitting a bug report, consider the following recommendations:</p>
+<ul>
+<li>
+<p><b>First of all, test with the latest update release to see if the issue persists. Frequently, a bug report submitted for an older release is first suggested to test with the available latest update release or even an available latest EA (Early Access) release. The EA release may contain many new features and bug fixes.</b></p>
+</li>
+<li>
+<p>Collect as much relevant data as possible. For example, generate a thread-dump in the case of a deadlock, or locate the core file (where applicable) and <code dir="ltr">hs_err</code> file in the case of a crash. In every case, it is important to document the environment and the actions performed just before the problem is encountered.</p>
+</li>
+<li>
+<p>Where applicable, try to restore the original state and reproduce the problem using the documented steps. This helps to determine if the problem is reproducible or an intermittent issue.</p>
+</li>
+<li>
+<p>If the issue is reproducible, try to narrow down the problem. In some cases, a bug can be demonstrated with a small standalone test case. Bugs that are demonstrated by small test cases will typically be easy to diagnose when compared to test cases that consist of a large complex application.</p>
+</li>
+<li>
+<p><a href="http://bugs.java.com/bugdatabase/index.jsp">Search the bug database</a> to see if this bug or a similar bug has been reported. If the bug has already been reported, the bug report might have further information, such as the following:</p>
+<ul>
+<li>
+<p>If the bug has already been fixed, the release in which it was fixed.</p>
+</li>
+<li>
+<p>A workaround for the problem.</p>
+</li>
+<li>
+<p>Comments in the evaluation that explain, in further detail, the circumstances that cause the bug to arise.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>If you conclude that the bug has not already been reported, submit a new bug.</p>
+</li>
+</ul>
+<p>Before submitting a bug, verify that the environment where the problem arises is a supported configuration. See the <a href="http://www.oracle.com/technetwork/java/javase/certconfig-2095354.html">Supported System Configurations</a>.</p>
+<p>In addition to the system configurations, check the list of supported locales. See the <a href="http://www.oracle.com/technetwork/java/javase/java8locales-2095355.html">Supported Locales</a> web page.</p>
+<p>In the case of Oracle Solaris, check the recommended patch cluster for the operating system release to ensure that the recommended patches are installed.</p>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="bugreports001.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="bugreports003.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

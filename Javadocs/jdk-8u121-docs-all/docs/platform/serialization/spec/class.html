@@ -1,0 +1,452 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Object Serialization Specification: 4 - Class
+Descriptors</title>
+</head>
+<body bgcolor="#FFFFFF">
+<table summary="" width="100%">
+<tr>
+<td>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href="serialTOC.html">CONTENTS</a> |
+<a href="input.html">PREV</a> | <a href="version.html">NEXT</a> 
+<!-- | <a href="examples.html">INDEX</a>  -->
+<!-- /font --></td>
+<td align="right"><i>Java Object Serialization Specification<br />
+version 6.0</i></td>
+</tr>
+</table>
+<br />
+<a name="a60" id="a60"><!-- --></a>
+<h1>Class Descriptors</h1>
+<!--
+<hr size="1" width="100%" align="left" noshade>
+-->
+<br />
+<br />
+<br />
+<a name="a64" id="a64"><!-- --></a>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<table summary="" border="0">
+<tr valign="bottom">
+<td valign="bottom"><br />
+<u><b>CHAPTER 4</b></u></td>
+</tr>
+</table>
+<br />
+<a name="a5103" id="a5103"><!-- --></a> <b><i>Topics:</i></b>
+<ul>
+<li><a name="a5107" id="a5107"><!-- --></a> <a href=
+"class.html#a5082">The ObjectStreamClass Class</a></li>
+<li><a name="a5111" id="a5111"><!-- --></a> <a href=
+"class.html#a5419">Dynamic Proxy Class Descriptors</a></li>
+<li><a name="a5487" id="a5487"><!-- --></a> <a href=
+"class.html#a5421">Serialized Form</a></li>
+<li><a name="a5486" id="a5486"><!-- --></a> <a href=
+"class.html#a3127">The ObjectStreamField Class</a></li>
+<li><a name="a5115" id="a5115"><!-- --></a> <a href=
+"class.html#a5023">Inspecting Serializable Classes</a></li>
+<li><a name="a5119" id="a5119"><!-- --></a> <a href=
+"class.html#a4100">Stream Unique Identifiers</a></li>
+</ul>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<h2><a name="a5082" id="a5082"><i>4.1</i> The ObjectStreamClass
+Class</a></h2>
+<a name="a1052" id="a1052"><!-- --></a> The
+<code>ObjectStreamClass</code> provides information about classes
+that are saved in a Serialization stream. The descriptor provides
+the fully-qualified name of the class and its serialization version
+UID. A <code>SerialVersionUID</code> identifies the unique original
+class version for which this class is capable of writing streams
+and from which it can read.
+<p><a name="a5757" id="a5757"><!-- --></a></p>
+<pre>
+package java.io;
+
+public class ObjectStreamClass
+{
+    public static ObjectStreamClass lookup(Class cl);
+
+        public static ObjectStreamClass lookupAny(Class cl);
+
+    public String getName();
+
+    public Class forClass();
+
+    public ObjectStreamField[] getFields();
+
+    public long getSerialVersionUID();
+
+    public String toString();
+}
+</pre>
+<a name="a1066" id="a1066"><!-- --></a> The <code>lookup</code>
+method returns the <code>ObjectStreamClass</code> descriptor for
+the specified class in the virtual machine. If the class has
+defined <code>serialVersionUID</code> it is retrieved from the
+class. If the <code>serialVersionUID</code> is not defined by the
+class, it is computed from the definition of the class in the
+virtual machine. <em>I</em>f the specified class is not
+serializable or externalizable, <em>null</em> is returned.
+<p><a name="a5711" id="a5711"><!-- --></a> The
+<code>lookupAny</code> method behaves like the <code>lookup</code>
+method, except that it returns the descriptor for any class,
+regardless of whether it implements <code>Serializable</code>. The
+<code>serialVersionUID</code> of a class that does not implement
+<code>Serializable</code> is <em>0L.</em></p>
+<p><a name="a5751" id="a5751"><!-- --></a> The <code>getName</code>
+method returns the name of the class, in the same format that is
+used by the <code>Class.getName</code> method.</p>
+<p><a name="a4501" id="a4501"><!-- --></a> The
+<code>forClass</code> method returns the <code>Class</code> in the
+local virtual machine if one was found by
+<code>ObjectInputStream.resolveClass</code> method. Otherwise, it
+returns <em>null</em>.</p>
+<p><a name="a3133" id="a3133"><!-- --></a> The
+<code>getFields</code> method returns an array of
+<code>ObjectStreamField</code> objects that represent the
+serializable fields of this class.</p>
+<p><a name="a5019" id="a5019"><!-- --></a> The
+<code>getSerialVersionUID</code> method returns the
+<code>serialVersionUID</code> of this class. Refer to <a href=
+"class.html#a4100">Section&#160;4.6, &#34;Stream Unique
+Identifiers</a>.&#34; If not specified by the class, the value
+returned is a hash computed from the class&#39;s name, interfaces,
+methods, and fields using the Secure Hash Algorithm (SHA) as
+defined by the National Institute of Standards.</p>
+<p><a name="a3157" id="a3157"><!-- --></a></p>
+<p>The <code>toString</code> method returns a printable
+representation of the class descriptor including the name of the
+class and the <code>serialVersionUID</code>.</p>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<h2><a name="a5419" id="a5419"><i>4.2</i> Dynamic Proxy Class
+Descriptors</a></h2>
+<a name="a5420" id="a5420"><!-- --></a>
+<p>ObjectStreamClass descriptors are also used to provide
+information about dynamic proxy classes (e.g., classes obtained via
+calls to the getProxyClass method of java.lang.reflect.Proxy) saved
+in a serialization stream. A dynamic proxy class itself has no
+serializable fields and a serialVersionUID of 0L. In other words,
+when the Class object for a dynamic proxy class is passed to the
+static lookup method of ObjectStreamClass, the returned
+ObjectStreamClass instance will have the following properties:</p>
+<ul>
+<li><a name="a5422" id="a5422"><!-- --></a> Invoking its
+getSerialVersionUID method will return 0L.</li>
+<li><a name="a5423" id="a5423"><!-- --></a> Invoking its getFields
+method will return an array of length zero.</li>
+<li><a name="a5424" id="a5424"><!-- --></a> Invoking its getField
+method with any String argument will return null.</li>
+</ul>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<h2><a name="a5421" id="a5421"><i>4.3</i> Serialized Form</a></h2>
+<a name="a5425" id="a5425"><!-- --></a> The serialized form of an
+ObjectStreamClass instance depends on whether or not the Class
+object it represents is serializable, externalizable, or a dynamic
+proxy class.
+<p><a name="a5018" id="a5018"><!-- --></a></p>
+<p>When an <code>ObjectStreamClass</code> instance that does not
+represent a dynamic proxy class is written to the stream, it writes
+the class name and <code>serialVersionUID</code>, flags, and the
+number of fields. Depending on the class, additional information
+may be written:</p>
+<ul>
+<li><a name="a5020" id="a5020"><!-- --></a> For non-serializable
+classes, the number of fields is always zero. Neither the
+<code>SC_SERIALIZABLE</code> nor the <code>SC_EXTERNALIZABLE</code>
+flag bits are set.</li>
+<li><a name="a5529" id="a5529"><!-- --></a> For serializable
+classes, the <code>SC_SERIALIZABLE</code> flag is set, the number
+of fields counts the number of serializable fields and is followed
+by a descriptor for each serializable field. The descriptors are
+written in canonical order. The descriptors for primitive typed
+fields are written first sorted by field name followed by
+descriptors for the object typed fields sorted by field name. The
+names are sorted using <code>String.compareTo</code>. For details
+of the format, refer to <a href=
+"protocol.html#a10258">Section&#160;6.4, &#34;Grammar for the
+Stream Format</a>&#34;.</li>
+<li><a name="a5530" id="a5530"><!-- --></a> For externalizable
+classes, flags includes the <code>SC_EXTERNALIZABLE</code> flag,
+and the number of fields is always zero.</li>
+<li><a name="a5585" id="a5585"><!-- --></a> For enum types, flags
+includes the <code>SC_ENUM</code> flag, and the number of fields is
+always zero.</li>
+</ul>
+<a name="a5426" id="a5426"><!-- --></a> When an ObjectOutputStream
+serializes the ObjectStreamClass descriptor for a dynamic proxy
+class, as determined by passing its Class object to the
+isProxyClass method of java.lang.reflect.Proxy, it writes the
+number of interfaces that the dynamic proxy class implements,
+followed by the interface names. Interfaces are listed in the order
+that they are returned by invoking the getInterfaces method on the
+Class object of the dynamic proxy class.
+<p><a name="a5427" id="a5427"><!-- --></a></p>
+<p>The serialized representations of ObjectStreamClass descriptors
+for dynamic proxy classes and non-dynamic proxy classes are
+differentiated through the use of different typecodes
+(TC_PROXYCLASSDESC and TC_CLASSDESC, respectively); for a more
+detailed specification of the grammar, see <a href=
+"protocol.html#a10258">Section&#160;6.4, &#34;Grammar for the
+Stream Format</a>&#34;.</p>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<h2><a name="a3127" id="a3127"><i>4.4</i> The ObjectStreamField
+Class</a></h2>
+<a name="a5024" id="a5024"><!-- --></a> An
+<code>ObjectStreamField</code> represents a serializable field of a
+serializable class. The serializable fields of a class can be
+retrieved from the <code>ObjectStreamClass</code>.
+<p><a name="a5257" id="a5257"><!-- --></a> The special static
+serializable field, <code>serialPersistentFields</code>, is an
+array of <code>ObjectStreamField</code> components that is used to
+override the default serializable fields.</p>
+<p><a name="a5555" id="a5555"><!-- --></a></p>
+<pre>
+package java.io;
+
+public class ObjectStreamField implements Comparable {
+
+    public ObjectStreamField(String fieldName,
+                             Class fieldType);
+
+    public ObjectStreamField(String fieldName,
+                             Class fieldType,
+                             boolean unshared);
+
+    public String getName();
+
+    public Class getType();
+
+    public String getTypeString();
+
+    public char getTypeCode();
+
+    public boolean isPrimitive();
+
+    public boolean isUnshared();
+
+    public int getOffset();
+
+    protected void setOffset(int offset);
+
+    public int compareTo(Object obj);
+
+    public String toString();
+}
+</pre>
+<a name="a5045" id="a5045"><!-- --></a>
+<code>ObjectStreamField</code> objects are used to specify the
+serializable fields of a class or to describe the fields present in
+a stream. Its constructors accept arguments describing the field to
+represent: a string specifying the name of the field, a
+<code>Class</code> object specifying the type of the field, and a
+<code>boolean</code> flag (implicitly <code>false</code> for the
+two-argument constructor) indicating whether or not values of the
+represented field should be read and written as &#34;unshared&#34;
+objects if default serialization/deserialization is in use (see the
+descriptions of the <code>ObjectInputStream.readUnshared</code> and
+<code>ObjectOutputStream.writeUnshared</code> methods in sections
+<a href="input.html#a961">3.1</a> and <a href=
+"output.html#a933">2.1</a>, respectively).
+<p><a name="a5072" id="a5072"><!-- --></a> The <code>getName</code>
+method returns the name of the serializable field.</p>
+<p><a name="a5073" id="a5073"><!-- --></a> The <code>getType</code>
+method returns the type of the field.</p>
+<p><a name="a5572" id="a5572"><!-- --></a> The
+<code>getTypeString</code> method returns the type signature of the
+field.</p>
+<p><a name="a5573" id="a5573"><!-- --></a> The
+<code>getTypeCode</code> method returns a character encoding of the
+field type (<code>`B&#39;</code> for <code>byte</code>,
+<code>`C&#39;</code> for <code>char</code>, <code>`D&#39;</code>
+for <code>double</code>, <code>`F&#39;</code> for
+<code>float</code>, <code>`I&#39;</code> for <code>int</code>,
+<code>`J&#39;</code> for <code>long</code>, <code>`L&#39;</code>
+for non-array object types, <code>`S&#39;</code> for
+<code>short</code>, <code>`Z&#39;</code> for <code>boolean</code>,
+and <code>`[`</code> for arrays).</p>
+<p><a name="a5574" id="a5574"><!-- --></a> The
+<code>isPrimitive</code> method returns <code>true</code> if the
+field is of primitive type, or <code>false</code> otherwise.</p>
+<p><a name="a5575" id="a5575"><!-- --></a> The
+<code>isUnshared</code> method returns <code>true</code> if values
+of the field should be written as &#34;unshared&#34; objects, or
+<code>false</code> otherwise.</p>
+<p><a name="a5576" id="a5576"><!-- --></a> The
+<code>getOffset</code> method returns the offset of the field&#39;s
+value within instance data of the class defining the field.</p>
+<p><a name="a5577" id="a5577"><!-- --></a> The
+<code>setOffset</code> method allows <code>ObjectStreamField</code>
+subclasses to modify the offset value returned by the
+<code>getOffset</code> method.</p>
+<p><a name="a5578" id="a5578"><!-- --></a> The
+<code>compareTo</code> method compares
+<code>ObjectStreamFields</code> for use in sorting. Primitive
+fields are ranked as &#34;smaller&#34; than non-primitive fields;
+fields otherwise equal are ranked alphabetically.</p>
+<p><a name="a5074" id="a5074"><!-- --></a></p>
+<p>The <code>toString</code> method returns a printable
+representation with name and type.</p>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<h2><a name="a5023" id="a5023"><i>4.5</i> Inspecting Serializable
+Classes</a></h2>
+<a name="a4103" id="a4103"><!-- --></a> The program
+<em>serialver</em> can be used to find out if a class is
+serializable and to get its <code>serialVersionUID</code>. When
+invoked with the-show option, it puts up a simple user interface.
+To find out if a class is serializable and to find out its
+<em>serialVersionUID</em><code>,</code> enter its full class name,
+then press either the Enter or the Show button. The string printed
+can be copied and pasted into the evolved class.
+<p><a name="a5003" id="a5003"><!-- --></a></p>
+<p><img alt="serialver, Serial Version Inspector program" align=
+"middle" src="classa.gif" /> <a name="a4117" id="a4117">
+<!-- --></a></p>
+<p>When invoked on the command line with one or more class names,
+serialver prints the <code>serialVersionUID</code> for each class
+in a form suitable for copying into an evolving class. When invoked
+with no arguments, it prints a usage line.</p>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<h2><a name="a4100" id="a4100"><i>4.6</i> Stream Unique
+Identifiers</a></h2>
+<a name="a3128" id="a3128"><!-- --></a> Each versioned class must
+identify the original class version for which it is capable of
+writing streams and from which it can read. For example, a
+versioned class must declare:
+<p><a name="a3129" id="a3129"><!-- --></a></p>
+<pre>
+    private static final long serialVersionUID = 3487495895819393L;
+</pre>
+<a name="a5728" id="a5728"><!-- --></a>
+<p>The stream-unique identifier is a 64-bit hash of the class name,
+interface class names, methods, and fields. The value must be
+declared in all versions of a class except the first. It may be
+declared in the original class but is not required. The value is
+fixed for all compatible classes. If the SUID is not declared for a
+class, the value defaults to the hash for that class. The
+<code>serialVersionUID</code> for dynamic proxy classes and enum
+types always have the value <em>0L</em>. Array classes cannot
+declare an explicit <code>serialVersionUID</code>, so they always
+have the default computed value, but the requirement for matching
+<code>serialVersionUID</code> values is waived for array
+classes.</p>
+<hr noshade="noshade" size="1" />
+<b><a name="a5609" id="a5609">Note -</a></b> It is strongly
+recommended that all serializable classes explicitly declare
+<code>serialVersionUID</code> values, since the default
+<code>serialVersionUID</code> computation is highly sensitive to
+class details that may vary depending on compiler implementations,
+and can thus result in unexpected <code>serialVersionUID</code>
+conflicts during deserialization, causing deserialization to fail.
+<hr noshade="noshade" size="1" />
+<a name="a5441" id="a5441"><!-- --></a> The initial version of an
+<code>Externalizable</code> class must output a stream data format
+that is extensible in the future. The initial version of the method
+<code>readExternal</code> has to be able to read the output format
+of all future versions of the method <code>writeExternal</code>.
+<p><a name="a3169" id="a3169"><!-- --></a> The
+<code>serialVersionUID</code> is computed using the signature of a
+stream of bytes that reflect the class definition. The National
+Institute of Standards and Technology (NIST) Secure Hash Algorithm
+(SHA-1) is used to compute a signature for the stream. The first
+two 32-bit quantities are used to form a 64-bit hash. A
+<code>java.lang.DataOutputStream</code> is used to convert
+primitive data types to a sequence of bytes. The values input to
+the stream are defined by the Java Virtual Machine (VM)
+specification for classes. Class modifiers may include the
+<code>ACC_PUBLIC</code>, <code>ACC_FINAL</code>,
+<code>ACC_INTERFACE</code>, and <code>ACC_ABSTRACT</code> flags;
+other flags are ignored and do not affect
+<code>serialVersionUID</code> computation. Similarly, for field
+modifiers, only the <code>ACC_PUBLIC</code>,
+<code>ACC_PRIVATE</code>, <code>ACC_PROTECTED</code>,
+<code>ACC_STATIC</code>, <code>ACC_FINAL</code>,
+<code>ACC_VOLATILE</code>, and <code>ACC_TRANSIENT</code> flags are
+used when computing <code>serialVersionUID</code> values. For
+constructor and method modifiers, only the <code>ACC_PUBLIC</code>,
+<code>ACC_PRIVATE</code>, <code>ACC_PROTECTED</code>,
+<code>ACC_STATIC</code>, <code>ACC_FINAL</code>,
+<code>ACC_SYNCHRONIZED</code>, <code>ACC_NATIVE</code>,
+<code>ACC_ABSTRACT</code> and <code>ACC_STRICT</code> flags are
+used. Names and descriptors are written in the format used by the
+<code>java.io.DataOutputStream.writeUTF</code> method.</p>
+<p><a name="a5385" id="a5385"><!-- --></a> The sequence of items in
+the stream is as follows:</p>
+<p><a name="a5315" id="a5315"><!-- --></a></p>
+<ol>
+<li>The class name.</li>
+<li>The class modifiers written as a 32-bit integer.</li>
+<li>The name of each interface sorted by name.</li>
+<li>For each field of the class sorted by field name (except
+<code>private static</code> and <code>private transient</code>
+fields:
+<ol type="a">
+<li>The name of the field.</li>
+<li>The modifiers of the field written as a 32-bit integer.</li>
+<li>The descriptor of the field.</li>
+</ol>
+</li>
+<li>If a class initializer exists, write out the following:
+<ol type="a">
+<li>The name of the method, <code>&lt;clinit&gt;</code>.</li>
+<li>The modifier of the method,
+<code>java.lang.reflect.Modifier.STATIC</code>, written as a 32-bit
+integer.</li>
+<li>The descriptor of the method, <code>()V</code>.</li>
+</ol>
+</li>
+<li>For each non-<code>private</code> constructor sorted by method
+name and signature:
+<ol type="a">
+<li>The name of the method, <code>&lt;init&gt;</code>.</li>
+<li>The modifiers of the method written as a 32-bit integer.</li>
+<li>The descriptor of the method.</li>
+</ol>
+</li>
+<li>For each non-<code>private</code> method sorted by method name
+and signature:
+<ol type="a">
+<li>The name of the method.</li>
+<li>The modifiers of the method written as a 32-bit integer.</li>
+<li>The descriptor of the method.</li>
+</ol>
+</li>
+<li>The SHA-1 algorithm is executed on the stream of bytes produced
+by <code>DataOutputStream</code> and produces five 32-bit values
+<code>sha[0..4]</code>.</li>
+<li>The hash value is assembled from the first and second 32-bit
+values of the SHA-1 message digest. If the result of the message
+digest, the five 32-bit words <code>H0 H1 H2 H3 H4</code>, is in an
+array of five <code>int</code> values named <code>sha</code>, the
+hash value would be computed as follows:
+<pre>
+  long hash = ((sha[0] &gt;&gt;&gt; 24) &amp; 0xFF) |
+              ((sha[0] &gt;&gt;&gt; 16) &amp; 0xFF) &lt;&lt; 8 |
+              ((sha[0] &gt;&gt;&gt; 8) &amp; 0xFF) &lt;&lt; 16 |
+              ((sha[0] &gt;&gt;&gt; 0) &amp; 0xFF) &lt;&lt; 24 |
+              ((sha[1] &gt;&gt;&gt; 24) &amp; 0xFF) &lt;&lt; 32 |
+              ((sha[1] &gt;&gt;&gt; 16) &amp; 0xFF) &lt;&lt; 40 |
+              ((sha[1] &gt;&gt;&gt; 8) &amp; 0xFF) &lt;&lt; 48 |
+              ((sha[1] &gt;&gt;&gt; 0) &amp; 0xFF) &lt;&lt; 56;
+                         
+</pre></li>
+</ol>
+<br />
+<hr />
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href="serialTOC.html">CONTENTS</a> |
+<a href="input.html">PREV</a> | <a href="version.html">NEXT</a> 
+<!-- | <a href="examples.html">INDEX</a>  -->
+<!-- /font -->
+<hr />
+<font size="-1"><i><a href=
+"../../../legal/SMICopyright.html">Copyright</a> &#169; 2005, 2010,
+Oracle and/or its affiliates. All rights reserved.</i></font> 
+<!-- This HTML file was created with Quadralay WebWorks Publisher Professional Edition 7.0.2.1128 -->
+<!-- by Suzette Haines -->
+<!-- Last updated: Mon Nov 21 12:31:39 2005 -->
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Remote Method Invocation: 3 - RMI System
+Overview</title>
+</head>
+<body bgcolor="#FFFFFF">
+<a href="#skip" title="Skip navigation bar"></a>
+<table width="100%" summary="">
+<tr>
+<td><a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-arch.html">PREV</a> | <a href="rmi-arch3.html">NEXT</a></td>
+<td align="right"><i>Java Remote Method Invocation</i></td>
+</tr>
+</table>
+<br />
+<a name="skip" id="skip"></a>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<h2><a name="a5112" id="a5112"><i>3.1</i> Stubs and
+Skeletons</a></h2>
+<a name="a1491" id="a1491"><!-- --></a> RMI uses a standard
+mechanism (employed in RPC systems) for communicating with remote
+objects: <em>stubs</em> and <em>skeletons</em>. A stub for a remote
+object acts as a client&#39;s local representative or proxy for the
+remote object. The caller invokes a method on the local stub which
+is responsible for carrying out the method call on the remote
+object. In RMI, a stub for a remote object implements the same set
+of remote interfaces that a remote object implements.
+<p><a name="a5504" id="a5504"><!-- --></a> When a stub&#39;s method
+is invoked, it does the following:</p>
+<ul>
+<li><a name="a5505" id="a5505"><!-- --></a> initiates a connection
+with the remote JVM containing the remote object,</li>
+<li><a name="a5506" id="a5506"><!-- --></a> marshals (writes and
+transmits) the parameters to the remote JVM,</li>
+<li><a name="a5507" id="a5507"><!-- --></a> waits for the result of
+the method invocation,</li>
+<li><a name="a5508" id="a5508"><!-- --></a> unmarshals (reads) the
+return value or exception returned, and</li>
+<li><a name="a5509" id="a5509"><!-- --></a> returns the value to
+the caller.</li>
+</ul>
+<a name="a5513" id="a5513"><!-- --></a> The stub hides the
+serialization of parameters and the network-level communication in
+order to present a simple invocation mechanism to the caller.
+<p><a name="a5514" id="a5514"><!-- --></a> In the remote JVM, each
+remote object may have a corresponding skeleton (in Java 2
+platform-only environments, skeletons are not required). The
+skeleton is responsible for dispatching the call to the actual
+remote object implementation. When a skeleton receives an incoming
+method invocation it does the following:</p>
+<ul>
+<li><a name="a5519" id="a5519"><!-- --></a> unmarshals (reads) the
+parameters for the remote method,</li>
+<li><a name="a5521" id="a5521"><!-- --></a> invokes the method on
+the actual remote object implementation, and</li>
+<li><a name="a5522" id="a5522"><!-- --></a> marshals (writes and
+transmits) the result (return value or exception) to the
+caller.</li>
+</ul>
+<a name="a5520" id="a5520"><!-- --></a> In the Java 2 SDK, Standard
+Edition, v1.2 an additional stub protocol was introduced that
+eliminates the need for skeletons in Java 2 platform-only
+environments. Instead, generic code is used to carry out the duties
+performed by skeletons in JDK1.1. Stubs and skeletons are generated
+by the <code>rmic</code> compiler.
+<p><br /></p>
+<hr />
+<a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-arch.html">PREV</a> | <a href="rmi-arch3.html">NEXT</a>
+<hr />
+Copyright 1997, 2010, Oracle and/or its affiliates. All rights
+reserved.
+</body>
+</html>

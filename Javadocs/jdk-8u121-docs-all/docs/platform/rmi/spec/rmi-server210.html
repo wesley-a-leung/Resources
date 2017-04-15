@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Remote Method Invocation: 5 - Server Interfaces</title>
+</head>
+<body bgcolor="#FFFFFF">
+<a href="#skip" title="Skip navigation bar"></a>
+<table width="100%" summary="">
+<tr>
+<td><a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-server29.html">PREV</a> | <a href=
+"rmi-server211.html">NEXT</a></td>
+<td align="right"><i>Java Remote Method Invocation</i></td>
+</tr>
+</table>
+<br />
+<a name="skip" id="skip"></a>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<h2><a name="a4381" id="a4381"><i>5.9</i> The
+<code>RMIFailureHandler</code> Interface</a></h2>
+<a name="a4413" id="a4413"><!-- --></a> The
+<code>java.rmi.server.RMIFailureHandler</code> interface provides a
+method for specifying how the RMI runtime should respond when
+server socket creation fails (except during object export).
+<pre class="codeblock">
+package java.rmi.server;
+
+public interface RMIFailureHandler {
+
+        public boolean failure(Exception ex);
+}
+
+
+</pre>
+<a name="a4458" id="a4458"><!-- --></a> The <code>failure</code>
+method is invoked with the exception that prevented the RMI runtime
+from creating a <code>java.net.ServerSocket</code>. The method
+returns <code>true</code> if the runtime should attempt to retry
+and <code>false</code> otherwise.
+<p><a name="a6935" id="a6935"><!-- --></a> Before this method can
+be invoked, a failure handler needs to be registered via the
+<code>RMISocketFactory.setFailureHandler</code> call. If the
+failure handler is not set, the RMI runtime attempts to re-create
+the <code>ServerSocket</code> after waiting for a short period of
+time.</p>
+<p><a name="a7028" id="a7028"><!-- --></a> Note that the
+<code>RMIFailureHandler</code> is not called when
+<code>ServerSocket</code> creation fails upon initial export of the
+object. The <code>RMIFailureHandler</code> will be called when
+there is an attempt to create a <code>ServerSocket</code> after a
+failed accept on that <code>ServerSocket</code>.</p>
+<p><br /></p>
+<hr />
+<a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-server29.html">PREV</a> | <a href=
+"rmi-server211.html">NEXT</a>
+<hr />
+Copyright 1997, 2010, Oracle and/or its affiliates. All rights
+reserved.
+</body>
+</html>

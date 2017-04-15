@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=us-ascii" />
+
+<title>Advanced JGSS Security Programming</title>
+
+
+<link rel="stylesheet" type="text/css" href="../../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<!-- part II -->
+<h1><a name="PART2" id="PART2">Part II : Secure Communications using the Java SE Security API</a></h1>
+<p>This part shows you how to build applications that perform secure communications. The Java SE platform provides three standard APIs that allow applications to perform secure communications: The Java Generic Security Service (GSS), the Java SASL API, and the Java Secure Socket Extension (JSSE). When building an application, which of these APIs should you use? The answer depends on many factors, including requirements of the protocol or service, deployment infrastructure, and integration with other security services. For example, if you are building an LDAP client library, you would need to use the Java SASL API because use of SASL is part of LDAP's protocol definition. As an other example, if the service supports SSL, then the client application attempting to access the service would need to use JSSE.</p>
+<h2><a name="JGSS" id="JGSS"></a>Exercise 3: Using the Java Generic Security Service (GSS) API</h2>
+<h3>Goal of this exercise</h3>
+<p>
+The goal of this exercise is to learn how to use the Java GSS API &nbsp;to perform secure authentication and communication.</p>
+<a name="JGSSBG" id="JGSSBG"></a>
+<h3>Background for this exercise</h3>
+<p>The Generic Security Service API provides a uniform C-language interface to access various security services, such as authentication, message integrity, and message confidentiality. The Java GSS API provides the corresponding interface for Java applications.&nbsp; It allows applications to perform authentication and establish secure communication with the peer. One of the most common security service accessed via the GSS-API and Java GSS-API is Kerberos.</p>
+<h3>Resources for this Exercise</h3>
+<ul>
+<li><a href="../../../security/jgss/tutorials/index.html">The JAAS and Java GSS-API Tutorials</a></li>
+<li><a href="http://www.ietf.org/rfc/rfc2853.txt">Generic Security Service API Version 2: Java Bindings (RFC 2853)</a></li>
+<li>Java GSS javadocs: <a href="../../../../../api/org/ietf/jgss/package-summary.html">org.ietf.jgss</a>.</li>
+</ul>
+<h3>Overview of this Exercise</h3>
+<p>This exercise is a client-server application that demonstrates how to communicate securely using the Java GSS API. The client and server parts first authenticate to Kerberos, as shown in <a href="part1.html#JAAS">Exercise 1</a>. This stores the credentials in the subject. The application then executes an action that performs Java GSS operations (with Kerberos as the underlying GSS mechanism) inside of a <code>Subject.doAs</code> using the subject. The Java GSS Kerberos mechanism, because it is executing inside the <code>doAs</code>, obtains the Kerberos credentials from the subject, and uses them to authenticate with the peer and to exchange messages securely.</p>
+<h3>Steps to follow</h3>
+<ol>
+<li><p>Read the <a href="./src/GssServer.java"><code>GssServer.java</code></a> code.</p>
+<p>This code fragment defines the action to execute after the service principal has authenticated to the KDC. It replaces the <code>MyAction</code> in <a href="part1.html#JAAS">Exercise 1</a>. The code first creates an instance of <b><code>GSSManager</code></b>, which it uses to obtain its own credentials and to create an instance of <code>GSSContext</code>. It uses this context to perform authentication. Upon completing authentication, it accepts encrypted input from the client and uses the established security context to decrypt the data. It then uses the security context to encrypt a reply containing the original input and the date, and then sends it back to the client.</p>
+</li>
+<li>Compile the sample code.</li>
+<li><p>Read the <a href="src/GssClient.java"><code>GssClient.java.</code></a> code.</p>
+<p>This code fragment defines the action to execute after the client principal has authenticated to the KDC. It replaces the <code>MyAction</code> in <a href="part1.html#JAAS">Exercise 1</a>. The code first creates an instance of <b><code>GSSManager</code></b>, which it uses to obtain a principal name for the service that it is going to communicate with. It then creates an instance of <code>GSSContext</code> to perform authentication with the service. Upon completing authentication, it uses the established security context to encrypt a message, and sends it to the server. It then reads an encrypted message from the server and decodes it using the established security context.</p>
+</li>
+<li>Compile the sample code.</li>
+<li><p>Launch a new window and start the server:</p>
+<pre class="codeblock">
+% xterm &amp;
+% java -Djava.security.auth.login.config=jaas-krb5.conf GssServer
+</pre></li>
+<li><p>Run the client application. <code>GssClient</code> takes two parameters: the service name and the name of the server that the service is running on. For example, if the service is <code>host</code> running on the machine <code>j1hol-001</code>, you would enter the following:</p>
+<pre class="codeblock">
+% java -Djava.security.auth.login.config=jaas-krb5.conf GssClient host j1hol-001
+</pre>
+<p>When prompted for the password, enter <code>change_it</code>.</p>
+</li>
+<li><p>Observe the following output in the respective client and server applications' windows.</p>
+<p>Output for running GssServer example:</p>
+<pre class="codeblock">
+Authenticated principal: [host/j1hol-001@J1LABS.EXAMPLE.COM]
+Waiting for incoming connections..
+Got connection from client /192.0.2.102
+Context Established!
+Client principal is test@J1LABS.EXAMPLE.COM
+Server principal is host/j1hol-001@J1LABS.EXAMPLE.COM
+Mutual authentication took place!
+Received data "Hello There!" of length 12
+Confidentiality applied: true
+Sending: Hello There! Thu May 06 12:11:15 PDT 2005
+</pre>
+<p>Output for running GssClient example:</p>
+<pre class="codeblock">
+Kerberos password for test: change_it
+Authenticated principal: [test@J1LABS.EXAMPLE.COM]
+Connected to address j1hol-001/192.0.2.102
+Context Established!
+Client principal is test@J1LABS.EXAMPLE.COM
+Server principal is host@j1hol-001
+Mutual authentication took place!
+Sending message: Hello There!
+Will read token of size 93
+Received message: Hello There! Thu May 06 12:11:15 PDT 2005
+</pre></li>
+</ol>
+<h3>Summary</h3>
+<p>In this exercise, you learned how to write a client-server application that uses the Java GSS API to authenticate and communicate securely with each other.</p>
+<h3>Next Steps</h3>
+<ol>
+<li>Proceed to <a href="#SASL">Exercise 4</a> to learn how to write a client/server application that uses the Java SASL API to authenticate and communicate securely with each other.</li>
+<li>Proceed to <a href="#JSSE">Exercise 5</a> to learn how to write a client/server application that uses the JSSE to authenticate and communicate securely with each other.</li>
+<li>Proceed to <a href="part3.html#SSO">Exercise 6</a> to learn how to configure the sample programs that you have just used to achieve single sign-on in a Kerberos environment.</li>
+</ol>
+<hr />
+<h2><a name="SASL" id="SASL"></a>Exercise 4: Using the Java SASL API<br /></h2>
+<h3>Goal of this exercise</h3>
+<p>The goal of this exercise is to learn how to use the Java SASL API &nbsp;to perform secure authentication and communication.</p>
+<h3>Background for this exercise</h3>
+<p>Simple Authentication and Security Layer (SASL) specifies a challenge-response protocol in which data is exchanged between the client and the server for the purposes of authentication and (optional) establishment of a security layer on which to carry on subsequent communications. SASL allows different <em>mechanisms</em> to be used; each such mechanism is identified by a profile that defines the data to be exchanged and a name. SASL is used with connection-based protocols such as LDAPv3 and IMAPv4. SASL is described in <a href="http://www.ietf.org/rfc/rfc4422.txt">RFC 4422</a>.</p>
+<p>The Java SASL API defines an API for applications to use SASL in a mechanism-independent way. For example, if you are writing a library for a networking protocol that uses SASL, you can use the Java SASL API to generate the data to be exchanged with the peer. When the library is deployed, you can dynamically configure the mechanisms to use with the library.</p>
+<p>In addition to authentication, you can use SASL to negotiate a security layer to be used after authentication. But unlike the GSS-API, the properties of the security layer (such as whether you want integrity or confidentiality) is decided at negotiation time. (the GSS-API allows confidentiality to be turned on or off per message).</p>
+<h3>Resources for this exercise</h3>
+<ul>
+<li><a href="../../../security/sasl/sasl-refguide.html">The Java SASL API Programming and Deployment Guide</a></li>
+<li><a href="../../../../../api/javax/security/sasl/package-summary.html">The Java SASL API javadocs</a></li>
+<li><a href="http://www.ietf.org/rfc/rfc4422.txt">Simple Authentication and Security Layer (SASL) (RFC 4422)</a><br /></li>
+</ul>
+<h3>Overview of this exercise</h3>
+<p>This exercise is a client-server application that demonstrates how to communicate securely using the Java SASL API. The client and server parts first authenticate to Kerberos using <a href="part1.html#JAAS">Exercise 1</a>. This stores the credentials in the subject. The application then executes an action that performs Java SASL API operations (with Kerberos as the underlying SASL mechanism) inside of a <code>Subject.doAs</code> using the subject. The SASL/Kerberos mechanism, because it is executing inside the <code>doAs</code>, obtains the Kerberos credentials from the subject, and uses them to authenticate with the peer and to exchange messages securely.</p>
+<p>This example uses a simple protocol implemented by the <code><a href="src/AppConnection.java">AppConnection</a></code> class. This protocol exchanges authentication commands and data commands. Each command consists of a type (e.g., <code>AppConnection.AUTH_CMD</code>), the length of the data to follow, and the data itself. The data is a SASL buffer if it is for authentication or encrypted/integrity-protected application data; it is plain application data otherwise.</p>
+<h3>Steps to follow</h3>
+<ol>
+<li><p>Read the <a href="src/SaslTestServer.java"><code>SaslTestServer.java.</code></a> sample code.</p>
+<p>This code fragment defines the action to execute after the service principal has authenticated to the KDC. It replaces the <code>MyAction</code> in <a href="part1.html#JAAS">Exercise 1</a>. The server specifies the quality of protections (QOP) that it will support and then creates an instance of <code>SaslServer</code> to perform the authentication. The challenge-response protocol of SASL is performed in the while loop, with the server sending challenges to the client and processing the responses from the client. After authentication, the identity of the authenticated client can be obtained via a call to the <code>getAuthorizedID()</code> method. If a security layer was negotiated, the server can exchange data securely with the client.</p>
+</li>
+<li>Compile the sample code.</li>
+<li><p>Read the <a href="src/SaslTestClient.java"><code>SaslTestClient.java.</code></a> sample code.</p>
+<p>This code fragment defines the action to execute after the client principal has authenticated to the KDC. It replaces the <code>MyAction</code> in <a href="part1.html#JAAS">Exercise 1</a>. The program first specifies the quality of protections that it wants (in this case, confidentiality) and then creates an instance of <code>SaslClient</code> to use for authentication. It then checks whether the mechanism has an initial response and if so, gets the response by invoking the <code>evaluateChallenge()</code> method with an empty byte array. It then sends the response to the server to begin the authentication. The challenge-response protocol of SASL is performed in the while loop, with the client evaluating the challenges that it gets from the server and sending the server the corresponding
+responses to the challenges. After authentication, the client can proceed to communicate with the server using the negotiated security layer.</p>
+</li>
+<li>Compile the sample code.</li>
+<li><p>Launch a new window and start the server. <code>SaslTestServer</code> takes two parameters: the service name and the name of the server that the service is running on. For example, if the service is <code>host</code> running on the machine <code>j1hol-001</code>, you would enter the following:</p>
+<pre class="codeblock">
+% xterm &amp;
+% java -Djava.security.auth.login.config=jaas-krb5.conf SaslTestServer host j1hol-001
+</pre></li>
+<li><p>Run the client application. <code>SaslTestClient</code> takes two parameters: the service name and the name of the server that the service is running on. For example, if the service is <code>host</code> running on the machine <code>j1hol-001</code>, you would enter the following:</p>
+<pre class="codeblock">
+% java -Djava.security.auth.login.config=jaas-krb5.conf SaslTestClient host j1hol-001
+</pre>
+<p>Provide a secure password.</p>
+</li>
+<li><p>Observe the following output in the respective client and server applications' windows.</p>
+<p>Output for running the <code>SaslTestServer</code> example:</p>
+<pre class="codeblock">
+Authenticated principal: [host/j1hol-001@J1LABS.EXAMPLE.COM]
+Waiting for incoming connections...
+Got connection from client /192.0.2.102
+Client authenticated; authorized client is: test@J1LABS.EXAMPLE.COM
+Negotiated QOP: auth-conf
+Received: Hello There!
+Sending: Hello There! Fri May 07 15:32:37 PDT 2005
+Received data "Hello There!" of length 12
+</pre>
+<p>Output for running the <code>SaslTestClient</code> example (<i>password</i> will be replaced by the password that you provided):</p>
+<pre class="codeblock">
+Kerberos password for test: password
+Authenticated principal: [test@J1LABS.EXAMPLE.COM]
+Connected to address j1hol-001/192.0.2.102
+Client authenticated.
+Negotiated QOP: auth-conf
+Sending: Hello There!
+Received: Hello There! Fri May 07 15:32:37 PDT 2005
+</pre>
+</li>
+</ol>
+<h3>Summary</h3>
+<p>In this exercise, you learned how to write a client-server application that uses the Java SASL API to authenticate and communicate securely with each other.</p>
+<h3>Next Steps</h3>
+<ol>
+<li>Proceed to <a href="#JSSE">Exercise 5</a> to learn how to write a client/server application that uses the JSSE to authenticate and communicate securely with each other.</li>
+<li>Proceed to <a href="part3.html#SSO">Exercise 6</a> to learn how to configure the sample programs that you have just used to achieve single sign-on in a Kerberos environment.</li>
+</ol>
+<hr />
+<h2><a name="JSSE" id="JSSE"></a>Exercise 5: Using the Java Secure Socket Extension with Kerberos</h2>
+<h3>Goal of this exercise</h3>
+<p>The goal of this exercise is to learn how to use the JSSE API to perform secure authentication and communication using Kerberos cipher suites.</p>
+<h3>Background for this exercise</h3>
+<p>Secure Socket Layer (SSL) and Transport Layer Security (TLS) are the most widely used protocols for implementing cryptography on the Internet. TLS is the Internet standard evolved from SSL. SSL/TLS provides application-level protocols (such as HTTP and LDAP) with secure authentication and communication. For example, HTTPS is the resulting protocol of using HTTP over SSL/TLS. SSL/TLS is used not only for standard protocols such as HTTP, it is also widely used when building custom applications using custom protocols that need to communicate securely.</p>
+<p>SSL/TLS traditionally used certificate-based authentication and is commonly used for server-authentication. For example, when a Web client such as a browser accesses a secure Web site (server) on behalf of a user, the server sends its certificate to the browser so that the browser can verify the identity of the server. This ensures that the user does not divulge confidential information (such as credit card information) to a bogus server. Recently, a new standard allows the use of Kerberos with TLS. This means instead of using certificate-based authentication, an application can use Kerberos credentials and take advantage of the Kerberos infrastructure in the deployment environment. Using Kerberos cipher suites also provides automatic support for mutual authentication in which the client is also authenticated in addition to the server.</p>
+<p>The decision of whether to use Java GSS, Java SASL, or JSSE for a particular application often depends upon several factors, including (the protocols being used by) the services with which the application interacts, the deployment environment (PKI or Kerberos-based), and the application's security requirements. JSSE provides a secure end-to-end channel that takes care of the I/O and transport, while Java GSS and Java SASL provide encryption and integrity-protection on the data, but the application is responsible for transporting the secured data to its peer. Some details about factors for deciding when to use JSSE versus Java GSS are presented in the document, <a href="../../../security/jgss/tutorials/JGSSvsJSSE.html">When to use Java GSS vs. JSSE</a>.</p>
+<h3>Resources for this exercise</h3>
+<ul>
+<li><a href="../../../security/jsse/JSSERefGuide.html">Java Secure Socket Extension (JSSE) Reference Guide</a></li>
+<li>The JSSE javadocs: <code><a href="../../../../../api/javax/net/package-summary.html">javax.net</a></code> and <a href="../../../../../api/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+<li><a href="http://netscape.aol.com">The SSL Protocol version 3.0</a></li>
+<li><a href="http://www.ietf.org/rfc/rfc2246.txt">The TLS Protocol Version 1.0 (RFC 2246)</a></li>
+<li><a href="http://www.ietf.org/rfc/rfc2712.txt">Addition of Kerberos Cipher Suites to Transport Layer Security TLS (RFC 2712)</a></li>
+<li><a href="../../../security/jgss/tutorials/JGSSvsJSSE.html">When to use Java GSS vs. JSSE</a></li>
+</ul>
+<h3>Overview of this exercise</h3>
+<p>This exercise is a client-server application that demonstrates how to communicate securely using the JSSE and Kerberos cipher suites. The client and server parts first authenticate to Kerberos using <a href="part1.html#JAAS">Exercise 1</a>. This stores the credentials in the subject. The application then executes an action that performs JSSE operations (using a Kerberos cipher suite) inside of a <code>Subject.doAs</code> using the subject. The Kerberos cipher suite implementation, because it is executing inside the <code>doAs</code>, obtains the Kerberos credentials from the subject, and uses them to authenticate with the peer and to exchange messages securely. This example sends newline-terminated messages, encrypted using the negotiated cipher suite and integrity-protected, back and forth between client and server.</p>
+<p>According to the standard (RFC 2712) all Kerberos-enabled TLS applications use the same service name (<i>host</i>). That is why in this exercise, you do not need to explicitly supply the Kerberos service name.</p>
+<h3>Steps to follow</h3>
+<ol>
+<li><p>Read the <a href="src/JsseServer.java"><code>JsseServer.java</code></a> sample code.</p>
+<p>This code fragment defines the action to execute after the service principal has authenticated to the KDC. It replaces the <code>MyAction</code> in <a href="part1.html#JAAS">Exercise 1</a>. The server first creates an <code>SSLServerSocket</code>. This is analogous to an application creating a plain <code>ServerSocket</code> except an <code>SSLServerSocket</code> will provide automatic authentication, encryption and decryption, as needed. The server then sets the cipher suites that it wants to use. The server then runs in a loop, accepting connections from SSL clients, and reads and writes from the SSL socket. The server can find out the identities of the owners of socket by invoking the <code>getLocalPrincipal()</code> and <code>getPeerPrincipal()</code> methods.</p>
+</li>
+<li>Compile the sample code.</li>
+<li><p>Read the <a href="src/JsseClient.java"><code>JsseClient.java</code></a> sample code.</p>
+<p>This code fragment defines the action to execute after the client principal has authenticated to the KDC. It replaces the <code>MyAction</code> in <a href="part1.html#JAAS">Exercise 1</a>. The client first creates an <code>SSLSocket</code>. The client then sets the cipher suites that it wants to use. The client then exchanges messages with the server using the <code>SSLSocket</code> by reading and writing to the socket's input/output streams. The client can find out the identities of the owners of socket by invoking the <code>getLocalPrincipal()</code> and <code>getPeerPrincipal()</code> methods.</p>
+</li>
+<li>Compile the sample code.</li>
+<li><p>Launch a new window and start the server. <code>JsseServer</code> takes one parameter: the name of the server that the JSSE service is running on. For example, if it is running on the machine <code>j1hol-001</code>, you would enter the following:</p>
+<pre class="codeblock">
+% xterm &amp;
+% java -Djava.security.auth.login.config=jaas-krb5.conf JsseServer j1hol-001
+</pre></li>
+<li><p>Run the client application. <code>JsseClient</code> takes one parameter: the name of the server that the JSSE service is running on. For example, if the service is running on the machine <code>j1hol-001</code>, you would enter the following.</p>
+<pre class="codeblock">
+% java -Djava.security.auth.login.config=jaas-krb5.conf JsseClient j1hol-001
+</pre>
+<p>Provide a secure password.</p>
+</li>
+<li><p>Observe the following output in the respective client and server applications' windows.</p>
+<p>Output for running the <code>JsseServer</code> example:</p>
+<pre class="codeblock">
+Authenticated principal: [host/j1hol-001@J1LABS.EXAMPLE.COM]
+Waiting for incoming connections...
+Got connection from client /192.0.2.102
+Received: Hello There!
+Sending: Hello There! Fri May 07 15:32:37 PDT 2005
+Cipher suite in use: TLS_KRB5_WITH_3DES_EDE_CBC_SHA
+I am: host/j1hol-001@J1LABS.EXAMPLE.COM
+Client is: test@J1LABS.EXAMPLE.COM
+</pre>
+<p>Output for running the <code>JsseClient</code> example (<i>password</i> will be replaced by the password that you provided):</p>
+<pre class="codeblock">
+Kerberos password for test: password
+Authenticated principal: [test@J1LABS.EXAMPLE.COM]
+Sending: Hello There!
+Received: Hello There! Fri May 07 15:32:37 PDT 2005
+Cipher suite in use: TLS_KRB5_WITH_3DES_EDE_CBC_SHA
+I am: test@J1LABS.EXAMPLE.COM
+Server is: host/j1hol-001@J1LABS.EXAMPLE.COM
+</pre></li>
+</ol>
+<h3>Summary</h3>
+<p>In this exercise, you learned how to write a client-server application that uses JSSE to authenticate and communicate securely with each other, using Kerberos as the underlying authentication system.</p>
+<h3>Next Steps</h3>
+<p>Proceed to <a href="part3.html#SSO">Exercise 6</a> to learn how to configure the sample programs in Exercises 3, 4, and 5 to achieve single sign-on in a Kerberos environment.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Determine Where the Crash Occurred</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="crashes.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="crashes002.html">
+                Next</a><hr/><a id="CIHJABGA" name="CIHJABGA"/>
+<div id="JSTGD316">
+<h1><span>5.1</span> Determine Where the Crash Occurred</h1>
+<p>This section provides a number of examples which demonstrate how the error log can be used to find the cause of the crash, and suggests some tips for troubleshooting the problem depending on the cause.</p>
+<p>The error log header indicates the type of error and the problematic frame, while the thread stack indicates the current thread and stack trace. See <a href="felog003.html#BABFFJBB">Header Format</a>.</p>
+<p>The following are possible causes for the crash.</p>
+<ul>
+<li>
+<p><a href="#CIHBECGA">Crash in Native Code</a></p>
+</li>
+<li>
+<p><a href="#CIHDEIGG">Crash in Compiled Code</a></p>
+</li>
+<li>
+<p><a href="#CIHDDHCI">Crash in HotSpot Compiler Thread</a></p>
+</li>
+<li>
+<p><a href="#CIHDJEAE">Crash in VM Thread</a></p>
+</li>
+<li>
+<p><a href="#CIHDGFJA">Crash Due to Stack Overflow</a></p>
+</li>
+</ul>
+<a id="CIHBECGA" name="CIHBECGA"/>
+<div id="JSTGD317">
+<h2><span>5.1.1</span> Crash in Native Code</h2>
+<p>If the fatal error log indicates the problematic frame to be a native library, there might be a bug in native code or the Java Native Interface (JNI) library code. The crash could of course be caused by something else, but analysis of the library and any core file or crash dump is a good starting place. Consider the extract in <a href="#CIHIHHGE">Example 5-1</a> from the header of a fatal error log.</p>
+<div id="JSTGD318"><a id="CIHIHHGE" name="CIHIHHGE"/>
+<p>Example 5-1 Extract from the Header of a Fatal Error Log</p>
+<pre dir="ltr" xml:space="preserve">
+# An unexpected error has been detected by HotSpot Virtual Machine:
+#
+#  SIGSEGV (0xb) at pc=0x417789d7, pid=21139, tid=1024
+#
+# Java VM: Java HotSpot(TM) Server VM (6-beta2-b63 mixed mode)
+# Problematic frame:
+# C  [libApplication.so+0x9d7]
+</pre></div>
+
+<p>In this case a <code dir="ltr">SIGSEGV</code> occurred with a thread executing in the library <code dir="ltr">libApplication.so</code>.</p>
+<p>In some cases a bug in a native library manifests itself as a crash in Java VM code. Consider the crash in <a href="#CIHEFGBD">Example 5-2</a>, where a <code dir="ltr">JavaThread</code> fails while in the <code dir="ltr">_thread_in_vm</code> state (meaning that it is executing in Java VM code).</p>
+<div id="JSTGD319"><a id="CIHEFGBD" name="CIHEFGBD"/>
+<p>Example 5-2 Example for a Crash</p>
+<pre dir="ltr" xml:space="preserve">
+# An unexpected error has been detected by HotSpot Virtual Machine:
+#
+#  EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x08083d77, pid=3700, tid=2896
+#
+# Java VM: Java HotSpot(TM) Client VM (1.5-internal mixed mode)
+# Problematic frame:
+# V  [jvm.dll+0x83d77]
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00036960):  JavaThread "main" [_thread_in_vm, id=2896]
+ :
+Stack: [0x00040000,0x00080000),  sp=0x0007f9f8,  free space=254k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x83d77]
+C  [App.dll+0x1047]          &lt;========= C/native frame
+j  Test.foo()V+0
+j  Test.main([Ljava/lang/String;)V+0
+v  ~StubRoutines::call_stub
+V  [jvm.dll+0x80f13]
+V  [jvm.dll+0xd3842]
+V  [jvm.dll+0x80de4]
+V  [jvm.dll+0x87cd2]
+C  [java.exe+0x14c0]
+C  [java.exe+0x64cd]
+C  [kernel32.dll+0x214c7]
+ :
+</pre></div>
+
+<p>In this case, although the problematic frame is a VM frame, the thread stack shows that a native routine in <code dir="ltr">App.dll</code> has called into the VM (probably with JNI).</p>
+<p>The first step to solving a crash in a native library is to investigate the source of the native library where the crash occurred.</p>
+<ul>
+<li>
+<p>If the native library is provided by your application, then investigate the source code of your native library. A significant number of issues with JNI code can be identified by running the application with the <code dir="ltr">-Xcheck:jni</code> option added to the command line. See <a href="clopts002.html#CHDDEGBI">The -Xcheck:jni Option</a>.</p>
+</li>
+<li>
+<p>If the native library has been provided by another vendor and is used by your application, then file a bug report against this third-party application and provide the fatal error log information.</p>
+</li>
+<li>
+<p>If the native library where the crash occurred is part of the Java Runtime Environment (JRE) (for example awt.dll, net.dll, and so forth), then it is possible that you have encountered a library or API bug. If so, gather as much data as possible and submit a bug or report, indicating the library name. You can find JRE libraries in the jre/lib or jre/bin directories of the JRE distribution. See <a href="bugreports.html#submit_a_bug_report_tsg">Submit a Bug Report</a>.</p>
+</li>
+</ul>
+<p>You can troubleshoot a crash in a native application library by attaching the native debugger to the core file or crash dump, if it is available. Depending on the OS, the native debugger is <code dir="ltr">dbx</code>, <code dir="ltr">gdb</code>, or <code dir="ltr">windbg</code>. See <a href="tooldescr020.html#BABBHHIE">Native Operating System Tools</a>.</p>
+</div>
+
+<a id="CIHDEIGG" name="CIHDEIGG"/>
+<div id="JSTGD320">
+<h2><span>5.1.2</span> Crash in Compiled Code</h2>
+<p>If the fatal error log indicates that the crash occurred in compiled code, then it is possible that you have encountered a compiler bug that has resulted in incorrect code generation. You can recognize a crash in compiled code if the type of the problematic frame is <code dir="ltr">J</code> (meaning a compiled Java frame). <a href="#CIHGBGEJ">Example 5-3</a> shows such a crash.</p>
+<div id="JSTGD321"><a id="CIHGBGEJ" name="CIHGBGEJ"/>
+<p>Example 5-3 Crash in Compiled Code</p>
+<pre dir="ltr" xml:space="preserve">
+# An unexpected error has been detected by HotSpot Virtual Machine:
+#
+#  SIGSEGV (0xb) at pc=0x0000002a99eb0c10, pid=6106, tid=278546
+#
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (1.6.0-beta-b51 mixed mode)
+# Problematic frame:
+# J  org.foobar.Scanner.body()V
+#
+:
+Stack: [0x0000002aea560000,0x0000002aea660000),  sp=0x0000002aea65ddf0,
+  free space=1015k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+J  org.foobar.Scanner.body()V
+
+[error occurred during error reporting, step 120, id 0xb]
+</pre></div>
+
+<p><i>Note:</i> A complete thread stack is not available. The output line "error occurred during error reporting" means that a problem arose trying to obtain the stack trace (this might indicate stack corruption).</p>
+<p>It might be possible to temporarily work around the issue by switching the compiler (for example, by using the HotSpot Client VM instead of the HotSpot Server VM, or visa versa) or by excluding from compilation the method that provoked the crash. In this specific example it might not be possible to switch the compiler as it was taken from a 64-bit Server VM and hence it might not be feasible to switch to a 32-bit Client VM.</p>
+<p>For more information on possible workarounds, see <a href="crashes002.html#CIHDIBJA">Working Around Crashes in the HotSpot Compiler Thread or Compiled Code</a>.</p>
+</div>
+
+<a id="CIHDDHCI" name="CIHDDHCI"/>
+<div id="JSTGD322">
+<h2><span>5.1.3</span> Crash in HotSpot Compiler Thread</h2>
+<p>If the fatal error log output shows that the current thread is <code dir="ltr">JavaThread</code> named <code dir="ltr">CompilerThread0</code>, <code dir="ltr">CompilerThread1</code>, or <code dir="ltr">AdapterCompiler</code>, then it is possible that you have encountered a compiler bug. In this case it might be necessary to temporarily work around the issue by switching the compiler (for example, by using the HotSpot Client VM instead of the HotSpot Server VM, or visa versa), or by excluding from compilation the method that provoked the crash.</p>
+<p>For more information on possible workarounds, see <a href="crashes002.html#CIHDIBJA">Working Around Crashes in the HotSpot Compiler Thread or Compiled Code</a>.</p>
+</div>
+
+<a id="CIHDJEAE" name="CIHDJEAE"/>
+<div id="JSTGD323">
+<h2><span>5.1.4</span> Crash in VM Thread</h2>
+<p>If the fatal error log output shows that the current thread is <code dir="ltr">VMThread</code>, then look for the line containing <code dir="ltr">VM_Operation</code> in the <code dir="ltr">THREAD</code> section. <code dir="ltr">VMThread</code> is a special thread in the HotSpot VM. It performs special tasks in the VM such as garbage collection (GC). If the <code dir="ltr">VM_Operation</code> suggests that the operation is a GC, then it is possible that you have encountered an issue such as heap corruption.</p>
+<p>Besides a GC issue, it could equally be something else (such as a compiler or runtime bug) that leaves object references in the heap in an inconsistent or incorrect state. In this case, collect as much information as possible about the environment and try possible workarounds. If the issue is related to GC, you might be able to temporarily work around the issue by changing the GC configuration.</p>
+<p>For more information on possible workarounds, see <a href="crashes002.html#CIHEEBDG">Working Around Crashes during Garbage Collection</a>.</p>
+</div>
+
+<a id="CIHDGFJA" name="CIHDGFJA"/>
+<div id="JSTGD324">
+<h2><span>5.1.5</span> Crash Due to Stack Overflow</h2>
+<p>A stack overflow in Java language code will normally result in the offending thread throwing the <code dir="ltr">java.lang.StackOverflowError</code> exception. On the other hand, C and C++ write past the end of the stack and provoke a stack overflow. This is a fatal error which causes the process to terminate.</p>
+<p>In the HotSpot implementation, Java methods share stack frames with C/C++ native code, namely user native code and the virtual machine itself. Java methods generate code that checks whether stack space is available a fixed distance towards the end of the stack so that the native code can be called without exceeding the stack space. This distance towards the end of the stack is called "Shadow Pages". The size of the shadow pages is between 3 and 20 pages, depending on the platform. This distance is tunable, so that applications with native code needing more than the default distance can increase the shadow page size. The option to increase shadow pages is <code dir="ltr">-XX:StackShadowPages=</code><span>n</span>, where <span>n</span> is greater than the default stack shadow pages for the platform.</p>
+<p>If your application gets a segmentation fault without a core file or fatal error log file see <a href="felog.html#fatal_error_log_vm">Appendix A</a>, or a <code dir="ltr">STACK_OVERFLOW_ERROR</code> on Windows, or the message "An irrecoverable stack overflow has occurred", this indicates that the value of <code dir="ltr">StackShadowPages</code> was exceeded and more space is needed.</p>
+<p>If you increase the value of <code dir="ltr">StackShadowPages</code>, you might also need to increase the default thread stack size using the <code dir="ltr">-Xss</code> parameter. Increasing the default thread stack size might decrease the number of threads that can be created, so be careful in choosing a value for the thread stack size. The thread stack size varies by platform from 256 KB to 1024 KB.</p>
+<div id="JSTGD325"><a id="CIHEEADA" name="CIHEEADA"/>
+<p>Example 5-4 Stack Overflow Exception</p>
+<pre dir="ltr" xml:space="preserve">
+# An unexpected error has been detected by HotSpot Virtual Machine:
+#
+#  EXCEPTION_STACK_OVERFLOW (0xc00000fd) at pc=0x10001011, pid=296, tid=2940
+#
+# Java VM: Java HotSpot(TM) Client VM (1.6-internal mixed mode, sharing)
+# Problematic frame:
+# C  [App.dll+0x1011]
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x000367c0):  JavaThread "main" [_thread_in_native, id=2940]
+:
+Stack: [0x00040000,0x00080000),  sp=0x00041000,  free space=4k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [App.dll+0x1011]
+C  [App.dll+0x1020]
+C  [App.dll+0x1020]
+:
+C  [App.dll+0x1020]
+C  [App.dll+0x1020]
+...&lt;more frames&gt;...
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  Test.foo()V+0
+j  Test.main([Ljava/lang/String;)V+0
+v  ~StubRoutines::call_stub
+</pre></div>
+
+<p>You can interpret the following information from <a href="#CIHEEADA">Example 5-4</a>.</p>
+<ul>
+<li>
+<p>The exception is <code dir="ltr">EXCEPTION_STACK_OVERFLOW</code>.</p>
+</li>
+<li>
+<p>The thread state is <code dir="ltr">_thread_in_native,</code> which means that the thread is executing native or JNI code.</p>
+</li>
+<li>
+<p>In the stack information, the free space is only 4 KB (a single page on a Windows system). In addition, the stack pointer (<code dir="ltr">sp</code>) is at <code dir="ltr">0x00041000</code>, which is close to the end of the stack at <code dir="ltr">0x00040000</code>.</p>
+</li>
+<li>
+<p>The printout of the native frames shows that a recursive native function is the issue in this case. The output notation <code dir="ltr">...&lt;more frames&gt;...</code> indicates that additional frames exist but were not printed. The output is limited to 100 frames.</p>
+</li>
+</ul>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="crashes.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="crashes002.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

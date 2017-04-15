@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Diagnose Leaks in Native Code</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="memleaks004.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="performissues.html">
+                Next</a><hr/>
+<div id="JSTGD287"><a id="sthref46" name="sthref46"/>
+<h1><span>3.5</span> Diagnose Leaks in Native Code</h1>
+<p>Several techniques can be used to find and isolate native code memory leaks. In general there is no single ideal solution for all platforms. The following are some techniques to diagnose leaks in native code.</p>
+<ul>
+<li>
+<p><a href="#CIHGHAHF">Track All Memory Allocation and Free Calls</a></p>
+</li>
+<li>
+<p><a href="#CIHDEEHJ">Track All Memory Allocations in JNI Library</a></p>
+</li>
+<li>
+<p><a href="#CIHFGCIB">Track Memory Allocation with Operating System Support</a></p>
+</li>
+<li>
+<p><a href="#CIHJCBGJ">Find Leaks with dbx Debugger</a></p>
+</li>
+<li>
+<p><a href="#CIHEHJAG">Find Leaks with libumem Tool</a></p>
+</li>
+</ul>
+<a id="CIHGHAHF" name="CIHGHAHF"/>
+<div id="JSTGD288">
+<h2><span>3.5.1</span> Track All Memory Allocation and Free Calls</h2>
+<p>A very common practice is to track all allocation and free calls of the native allocations. This can be a fairly simple process or a very sophisticated one. Many products over the years have been built up around the tracking of native heap allocations and the use of that memory.</p>
+<p>Tools like IBM Rational Purify and the runtime checking functionality of Sun Studio <code dir="ltr">dbx</code> debugger can be used to find these leaks in normal native code situations and also find any access to native heap memory that represents assignments to uninitialized memory or accesses to freed memory. See <a href="#CIHJCBGJ">Find Leaks with dbx Debugger</a>.</p>
+<p>Not all these types of tools will work with Java applications that use native code, and usually these tools are platform-specific. Because the virtual machine dynamically creates code at runtime, these tools can wrongly interpret the code and fail to run at all, or give false information. Check with your tool vendor to ensure that the version of the tool works with the version of the virtual machine you are using.</p>
+<p>See <a href="http://sourceforge.net/">sourceforge</a> for many simple and portable native memory leak detecting examples. Most of these libraries and tools assume that you can recompile or edit the source of the application and place wrapper functions over the allocation functions. The more powerful of these tools allow you to run your application unchanged by interposing over these allocation functions dynamically. This is the case with the library <code dir="ltr">libumem.so</code> first introduced in Oracle Solaris 9 operating system update 3; see <a href="#CIHEHJAG">Find Leaks with libumem Tool</a>.</p>
+</div>
+
+<a id="CIHDEEHJ" name="CIHDEEHJ"/>
+<div id="JSTGD289">
+<h2><span>3.5.2</span> Track All Memory Allocations in JNI Library</h2>
+<p>If you write a JNI library, then consider creating a localized way to ensure that your library does not leak memory, by using a simple wrapper approach.</p>
+<p>The procedure in <a href="#CIHCBBAG">Example 3-7</a> is an easy localized allocation tracking approach for a JNI library. First, define the following lines in all source files.</p>
+<div id="JSTGD290"><a id="CIHCBBAG" name="CIHCBBAG"/>
+<p>Example 3-7 Define this Procedure in Source Files</p>
+<pre dir="ltr" xml:space="preserve">
+#include &lt;stdlib.h&gt;
+#define malloc(n) debug_malloc(n, __FILE__, __LINE__)
+#define free(p) debug_free(p, __FILE__, __LINE__)
+</pre></div>
+
+<p>Then you can use the functions in <a href="#CIHDGHGG">Example 3-8</a> to watch for leaks.</p>
+<div id="JSTGD291"><a id="CIHDGHGG" name="CIHDGHGG"/>
+<p>Example 3-8 Function to Watch Leaks</p>
+<pre dir="ltr" xml:space="preserve">
+/* Total bytes allocated */
+static int total_allocated;
+/* Memory alignment is important */
+typedef union { double d; struct {size_t n; char *file; int line;} s; } Site;
+void *
+debug_malloc(size_t n, char *file, int line) 
+{ 
+    char *rp;
+    rp = (char*)malloc(sizeof(Site)+n); 
+    total_allocated += n; 
+    ((Site*)rp)-&gt;s.n = n;
+    ((Site*)rp)-&gt;s.file = file;
+    ((Site*)rp)-&gt;s.line = line;
+    return (void*)(rp + sizeof(Site));
+}
+void 
+debug_free(void *p, char *file, int line)
+{
+    char *rp;
+    rp = ((char*)p) - sizeof(Site);
+    total_allocated -= ((Site*)rp)-&gt;s.n;
+    free(rp);
+}
+</pre></div>
+
+<p>The JNI library would then need to periodically (or at shutdown) check the value of the <code dir="ltr">total_allocated</code> variable to verify that it made sense. The preceding code could also be expanded to save in a linked list the allocations that remained and report where the leaked memory was allocated. This is a localized and portable way to track memory allocations in a single set of sources. You would need to ensure that <code dir="ltr">debug_free()</code> was called only with the pointer that came from <code dir="ltr">debug_malloc()</code>, and you would also need to create similar functions for <code dir="ltr">realloc()</code>, <code dir="ltr">calloc()</code>, <code dir="ltr">strdup()</code>, and so forth, if they were used.</p>
+<p>A more global way to look for native heap memory leaks would involve interposition of the library calls for the entire process.</p>
+</div>
+
+<a id="CIHFGCIB" name="CIHFGCIB"/>
+<div id="JSTGD292">
+<h2><span>3.5.3</span> Track Memory Allocation with Operating System Support</h2>
+<p>Most operating systems include some form of global allocation tracking support.</p>
+<ul>
+<li>
+<p>On Windows, search the <a href="http://msdn.microsoft.com/library">MSDN library</a> for debug support. The Microsoft C++ compiler has the <code dir="ltr">/Md</code> and <code dir="ltr">/Mdd</code> compiler options that will automatically include extra support for tracking memory allocation.</p>
+</li>
+<li>
+<p>Linux systems have tools such as <code dir="ltr">mtrace</code> and <code dir="ltr">libnjamd</code> to help in dealing with allocation tracking.</p>
+</li>
+<li>
+<p>Oracle Solaris operating system provides the <code dir="ltr">watchmalloc</code> tool. Oracle Solaris 9 operating system update 3 also introduced the <code dir="ltr">libumem</code> tool, see <a href="#CIHEHJAG">Find Leaks with libumem Tool</a>.</p>
+</li>
+</ul>
+</div>
+
+<a id="CIHJCBGJ" name="CIHJCBGJ"/>
+<div id="JSTGD293">
+<h2><span>3.5.4</span> Find Leaks with dbx Debugger</h2>
+<p>The <code dir="ltr">dbx</code> debugger includes the Runtime Checking (RTC) functionality, which can find leaks. The <code dir="ltr">dbx</code> debugger is part of Oracle Solaris Studio and also available for Linux.</p>
+<p><a href="#CIHJDAEA">Example 3-9</a> shows a sample <code dir="ltr">dbx</code> session.</p>
+<div id="JSTGD294"><a id="CIHJDAEA" name="CIHJDAEA"/>
+<p>Example 3-9 A Sample dbx Session</p>
+<pre dir="ltr" xml:space="preserve">
+$ <code dir="ltr"><span>dbx ${java_home}/bin/java</span></code>
+Reading java
+Reading ld.so.1
+Reading libthread.so.1
+Reading libdl.so.1
+Reading libc.so.1
+(dbx) <code dir="ltr"><span>dbxenv rtc_inherit on</span></code>
+(dbx) <code dir="ltr"><span>check -leaks</span></code>
+leaks checking - ON
+(dbx) <code dir="ltr"><span>run HelloWorld</span></code>
+Running: java HelloWorld 
+(process id 15426)
+Reading rtcapihook.so
+Reading rtcaudit.so
+Reading libmapmalloc.so.1
+Reading libgen.so.1
+Reading libm.so.2
+Reading rtcboot.so
+Reading librtc.so
+RTC: Enabling Error Checking...
+RTC: Running program...
+dbx: process 15426 about to exec("/net/bonsai.sfbay/export/home2/user/ws/j2se/build/solaris-i586/bin/java")
+dbx: program "/net/bonsai.sfbay/export/home2/user/ws/j2se/build/solaris-i586/bin/java"
+just exec'ed
+dbx: to go back to the original program use "debug $oprog"
+RTC: Enabling Error Checking...
+RTC: Running program...
+t@1 (l@1) stopped in main at 0x0805136d
+0x0805136d: main       :        pushl    %ebp
+(dbx) <code dir="ltr"><span>when dlopen libjvm { suppress all in libjvm.so; }</span></code>
+(2) when dlopen libjvm { suppress all in libjvm.so; }  
+(dbx) <code dir="ltr"><span>when dlopen libjava { suppress all in libjava.so; }</span></code>
+(3) when dlopen libjava { suppress all in libjava.so; }  
+(dbx) cont                                             
+Reading libjvm.so
+Reading libsocket.so.1
+Reading libsched.so.1
+Reading libCrun.so.1
+Reading libm.so.1
+Reading libnsl.so.1
+Reading libmd5.so.1
+Reading libmp.so.2
+Reading libhpi.so
+Reading libverify.so
+Reading libjava.so
+Reading libzip.so
+Reading en_US.ISO8859-1.so.3
+hello world
+hello world
+Checking for memory leaks...
+
+Actual leaks report    (actual leaks:           27  total size:      46851 bytes)
+
+  Total     Num of  Leaked     Allocation call stack
+  Size      Blocks  Block
+                    Address
+==========  ====== =========== =======================================
+     44376       4      -      calloc &lt; zcalloc 
+      1072       1  0x8151c70  _nss_XbyY_buf_alloc &lt; get_pwbuf &lt; _getpwuid &lt;
+                               GetJavaProperties &lt; Java_java_lang_System_initProperties &lt;
+                               0xa740a89a&lt; 0xa7402a14&lt; 0xa74001fc
+       814       1  0x8072518  MemAlloc &lt; CreateExecutionEnvironment &lt; main 
+       280      10      -      operator new &lt; Thread::Thread 
+       102       1  0x8072498  _strdup &lt; CreateExecutionEnvironment &lt; main 
+        56       1  0x81697f0  calloc &lt; Java_java_util_zip_Inflater_init &lt; 0xa740a89a&lt;
+                               0xa7402a6a&lt; 0xa7402aeb&lt; 0xa7402a14&lt; 0xa7402a14&lt; 0xa7402a14
+        41       1  0x8072bd8  main 
+        30       1  0x8072c58  SetJavaCommandLineProp &lt; main 
+        16       1  0x806f180  _setlocale &lt; GetJavaProperties &lt;
+                               Java_java_lang_System_initProperties &lt; 0xa740a89a&lt; 0xa7402a14&lt;
+                               0xa74001fc&lt; JavaCalls::call_helper &lt; os::os_exception_wrapper 
+        12       1  0x806f2e8  operator new &lt; instanceKlass::add_dependent_nmethod &lt;
+                               nmethod::new_nmethod &lt; ciEnv::register_method &lt;
+                               Compile::Compile #Nvariant 1 &lt; C2Compiler::compile_method &lt;
+                               CompileBroker::invoke_compiler_on_method &lt;
+                               CompileBroker::compiler_thread_loop 
+        12       1  0x806ee60  CheckJvmType &lt; CreateExecutionEnvironment &lt; main 
+        12       1  0x806ede8  MemAlloc &lt; CreateExecutionEnvironment &lt; main 
+        12       1  0x806edc0  main 
+         8       1  0x8071cb8  _strdup &lt; ReadKnownVMs &lt; CreateExecutionEnvironment &lt; main 
+         8       1  0x8071cf8  _strdup &lt; ReadKnownVMs &lt; CreateExecutionEnvironment &lt; main 
+</pre></div>
+
+<p>The output shows that the <code dir="ltr">dbx</code> debugger reports memory leaks if memory is not freed at the time the process is about to exit. However, memory that is allocated at initialization time and needed for the life of the process is often never freed in native code. Therefore, in such cases the <code dir="ltr">dbx</code> debugger can report memory leaks that are not leaks in reality.</p>
+<p><i>Note:</i> <a href="#CIHJDAEA">Example 3-9</a> used two <code dir="ltr">suppress</code> commands to suppress the leaks reported in the virtual machine, <code dir="ltr">libjvm.so</code> and the Java support library, <code dir="ltr">libjava.so</code>.</p>
+</div>
+
+<a id="CIHEHJAG" name="CIHEHJAG"/>
+<div id="JSTGD295">
+<h2><span>3.5.5</span> Find Leaks with libumem Tool</h2>
+<p>First introduced in Oracle Solaris 9 operating system update 3, the <code dir="ltr">libumem.so</code> library and the modular debugger <code dir="ltr">mdb</code> can be used to debug memory leaks. Before using <code dir="ltr">libumem</code>, you must preload the <code dir="ltr">libumem</code> library and set an environment variable as shown in <a href="#CIHJGDBI">Example 3-10</a>.</p>
+<div id="JSTGD296"><a id="CIHJGDBI" name="CIHJGDBI"/>
+<p>Example 3-10 Set an Environment Variable for libumem</p>
+<pre dir="ltr" xml:space="preserve">
+$ LD_PRELOAD=libumem.so
+$ export LD_PRELOAD
+$ UMEM_DEBUG=default
+$ export UMEM_DEBUG
+</pre></div>
+
+<p>Now, run the Java application, but stop it before it exits. <a href="#CIHGHCFJ">Example 3-11</a> uses <code dir="ltr">truss</code> to stop the process when it calls the <code dir="ltr">_exit</code> system call.</p>
+<div id="JSTGD297"><a id="CIHGHCFJ" name="CIHGHCFJ"/>
+<p>Example 3-11 Stop the Process</p>
+<pre dir="ltr" xml:space="preserve">
+$ truss -f -T _exit java MainClass <span>arguments</span>
+</pre></div>
+
+<p>At this point you can attach the <code dir="ltr">mdb</code> debugger, as shown in <a href="#CIHGHIDG">Example 3-12</a>.</p>
+<div id="JSTGD298"><a id="CIHGHIDG" name="CIHGHIDG"/>
+<p>Example 3-12 Attach mdb Debugger to the Process</p>
+<pre dir="ltr" xml:space="preserve">
+$ <code dir="ltr"><span>mdb -p </span></code><code dir="ltr"><span>pid</span></code>
+&gt;<code dir="ltr"><span>::findleaks</span></code>
+</pre></div>
+
+<p>The <code dir="ltr">::findleaks</code> command is the <code dir="ltr">mdb</code> command to find memory leaks. If a leak is found, this command prints the address of the allocation call, buffer address, and nearest symbol.</p>
+<p>It is also possible to get the stack trace for the allocation that resulted in the memory leak by dumping the <code dir="ltr">bufctl</code> structure. The address of this structure can be obtained from the output of the <code dir="ltr">::findleaks</code> command.</p>
+<p>See <a href="http://docs.oracle.com/docs/cd/E19424-01/820-4814/geogv/index.html">analyzing memory leaks using <code dir="ltr">libumem</code></a> for troubleshooting the cause for a memory leak.</p>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="memleaks004.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="performissues.html">
+                Next</a><hr/>
+
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

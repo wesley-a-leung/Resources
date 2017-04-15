@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Enhancements in Javadoc, Java SE 1.4.2</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Enhancements in Javadoc, Java SE 1.4.2</h1>
+
+<p>
+<!-- ==================== CONTENTS ============================== -->
+ This document describes the changes made to the Javadoc tool
+between versions 1.4.1 and 1.4.2.</p>
+<p>The changes listed below include the bug number and whether the
+fix was in the Javadoc tool front end ("tool") or standard doclet
+("stddoclet"). The term "regression" appears for features that
+regressed at some point -- for features that worked in 1.3.x, broke
+in 1.4.0 or 1.4.1, and have been fixed in 1.4.2.</p>
+<ul>
+<li><a href="#newfeatures">Notable New Features</a></li>
+<li><a href="#notablebugfixes">Notable Bug Fixes</a></li>
+<li><a href="#notableknownbugs">Notable Known Bugs</a></li>
+<li><a href="#featureandfixes">New Features and Bug Fixes</a>
+<ul type="disc">
+<li><a href="#commandlineoptions">Command Line Options</a></li>
+<li><a href="#tags">Tags</a></li>
+<li><a href="#badspec">Bad API Specifications</a></li>
+<li><a href="#html">HTML &amp; Javascript</a></li>
+<li><a href="#invalidhtml">Invalid HTML</a></li>
+<li><a href="#links">Links</a></li>
+<li><a href="#runningjavadoc">Running Javadoc</a></li>
+<li><a href="#messages">Error/Warning Messages</a></li>
+<li><a href="#accessibility">Accessibility</a></li>
+<li><a href="#docletapi">Doclet API</a></li>
+</ul>
+</li>
+</ul>
+<p><!-- ================== NEW FEATURES ====================== -->
+<a name="newfeatures" id="newfeatures"></a></p>
+<h2>Notable New Features</h2>
+<ul>
+<li>All known bugs related to the U.S. Government's Section 508
+requirements for accessibility have been fixed in this version.
+(<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4737558">4737558</a>,
+stddoclet)</li>
+<li>Include serialVersionUID in Serialized Form (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4525039">4525039</a>,
+stddoclet) <a name="inheritcomments" id="inheritcomments"></a></li>
+<li>Can now inherit comments from source files not being
+documented. Your code can automatically inherit comments from
+interfaces and classes whose source files are on -sourcepath but
+are <em>not</em> being passed in on the command line. For example,
+for J2SE, You can do this by unzipping the src.zip file that ships
+with the SDK (which does not contain all source files, however),
+and add its path to -sourcepath. When javadoc runs on your code, it
+will load the doc comments from those source files as needed. For
+example, if a class in your code implements java.lang.Comparable,
+the <code>compareTo(Object)</code> method you implement will
+inherit the doc comment from java.lang.Comparable. This feature was
+actually available in 1.4.1. (No bug number, tool)</li>
+<li>When using the <code>-link</code> (or
+<code>-linkoffline</code>) option, all <code>@see</code> and
+<code>{@link}</code> tags now create links to <em>excluded</em>
+classes. This fix greatly simplifies the ability to link to
+external classes and members. Previously, an external class needed
+to be either imported or fully qualified in a declaration in order
+for <code>@see</code> or <code>{@link}</code> to link to its
+documentation. Now, the only requirements are that the class be
+fully qualified and that its API docs appear on the path supplied
+by <code>-link</code>. (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4652655">4652655</a>,
+stddoclet)
+<p>Other new features are listed below.</p>
+</li>
+</ul>
+<a name="notablebugfixes" id="notablebugfixes"></a>
+<h2>Notable Bug Fixes</h2>
+<ul>
+<li>Links: Fixed @link of a fully-qualified program element to link
+to external classes with the <code>-link</code> option. (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4652655">4652655</a>, tool,
+REGRESSION)</li>
+<li>Links: Fixed missing internal links on return/parameter types
+when .java files are passd in (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4628281">4628281</a>,
+tool)</li>
+<li>Execution: Fixed so duplicate classes are documented (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4673477">4673477</a>, tool,
+REGRESSION)</li>
+<li>Serialized form: Fixed link anchors to classes in serialized
+form (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4521661">4521661</a>,
+stddoclet)</li>
+<li>Javascript: Internet Explorer Javascript load error when linked
+by -linkoffline (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4645058">4645058</a>,
+stddoclet, REGRESSION)</li>
+<li>HTML: Fixed so there is no diff when passing in package names
+or .java file names (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4506980">4506980</a>,
+stddoclet)
+<p>Other bug fixes are listed below.</p>
+</li>
+</ul>
+<!-- ================== KNOWN BUGS ====================== -->
+<a name="notableknownbugs" id="notableknownbugs"></a>
+<h2>Notable Known Bugs</h2>
+Bugs that can hang the Javadoc tool and highly noticeable bugs are
+listed here. You see a concise list of bugs listed at <a href=
+"http://www.oracle.com/technetwork/java/javase/relnotes-139182.html#javadoc">important
+new Javadoc bugs and regressions</a>, and can view listings from
+our database at <a href="http://www.oracle.com/technetwork/java/javase/index-136962.html">Important Bug
+Fixes and Changes</a>.
+<ul>
+<li>Javadoc hangs without any useful message if {@inheritDoc} is
+used in a member that cannot inherit a comment. (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4812240">4812240</a>,
+stddoclet) For example:
+<pre class="codeblock">
+public class C {
+    /** {@inheritDoc} */
+    public abstract void m() {
+    }
+}
+</pre></li>
+<li>Internet Explorer displays unnecessary horizontal scroll bar in
+the main content pane when frames are showing. A simple workaround
+is described in the bug report. (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4852280">4852280</a>,
+stddoclet)</li>
+</ul>
+<hr />
+<!-- ================== BUG FIXES ====================== -->
+<a name="featureandfixes" id="featureandfixes"></a>
+<h2>New Features and Bug Fixes</h2>
+All new features and bug fixes in 1.4.2 follow.
+<p><a name="commandlineoptions" id="commandlineoptions"></a>
+<b>Command Line Options</b></p>
+<ul>
+<li><b>New feature:</b> Added -packagesheader option for upper left
+frame (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4766385">4766385</a>,
+stddoclet)</li>
+<li><b>New feature:</b> Enable "-tag name" shortcut for "-tag
+name:a:name" (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4695326">4695326</a>,
+stddoclet)</li>
+<li><b>New feature:</b> Added -linksourcetab option to convert each
+tab to n spaces. This option is experimental and may change.
+(<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4510979">4510979</a>,
+stddoclet)</li>
+<li><b>New feature:</b> The -tag option now allows dash (-)
+separator for xdoclet tags like @ejb:bean (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4750173">4750173</a>,
+stddoclet)</li>
+<li><b>New feature:</b> New -keywords option adds member names as
+meta keyword tags to improve API search (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4764726">4764726</a>,
+stddoclet)</li>
+<li><b>New feature:</b> Added -Xwerror flag to exit nonzero if
+there are warnings. (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4099527">4099527</a>,
+tool)</li>
+<li>Bug fix: Fixed option -tag tagname:X:taghead so it no longer
+requires taghead (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4628181">4628181</a>,
+stddoclet)</li>
+<li>Bug fix: Documented -quiet option to quiet only the standard
+doclet messages (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4714350">4714350</a>,
+stddoclet). Opened a new bug <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4702454">4702454</a> to
+request that it quiet the javadoc tool messages as well.</li>
+<li>Bug fix: Moved documentation for -source option from doclet
+options to javadoc tool options -- it has always been a tool option
+(<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4760924">4760924</a>,
+stddoclet)</li>
+</ul>
+<a name="tags" id="tags"></a> <b>Tags</b>
+<ul>
+<li><b>New feature:</b> Javadoc now inherits @throws comments for
+runtime exceptions (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4679573">4679573</a>,
+stddoclet)</li>
+<li><b>New feature:</b> Javadoc now warns when first argument of
+@param is not parameter name (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4693440">4693440</a>,
+stddoclet)</li>
+<li>Bug fix: Now compares fully qualified exception names when
+inheriting @throws text (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4684827">4684827</a>,
+stddoclet)</li>
+<li>Bug fix: Fixed missing 'Throws' heading when followed only by
+auto-generated exceptions (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4530727">4530727</a>,
+stddoclet)</li>
+<li>Bug fix: Fixed broken @inheritDoc when inheriting from abstract
+superclass's interface (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4720974">4720974</a>,
+stddoclet)</li>
+</ul>
+<a name="badspec" id="badspec"></a> <b>API Specifications</b>
+<ul>
+<li><b>New feature:</b> Now includes serialVersionUID in Serialized
+Form (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4525039">4525039</a>
+stddoclet)</li>
+<li><b>New feature:</b> Can now inherit comments from source files
+not being documented. Your code can automatically inherit comments
+from interfaces and classes whose source files are on -sourcepath
+but are <em>not</em> being passed in on the command line. See
+<a href="#inheritcomments">example</a>. (No bug number, tool)</li>
+<li>Bug fix: Fixed missing inherited nested classes from summary
+table (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4638588">4638588</a>,
+stddoclet)</li>
+<li>Bug fix: Fixed so javadoc no longer incorrectly lists hidden
+fields (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4492178">4492178</a>,
+stddoclet)</li>
+<li>Bug fix: Added serializable superclass of non-public
+serializable class (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4671694">4671694</a>,
+stddoclet)</li>
+<li>Bug fix: No longer documents override of private method, such
+as createBufferStrategy (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4634891">4634891</a>,
+stddoclet)</li>
+</ul>
+<a name="html" id="html"></a> <b>HTML &amp; Javascript</b>
+<ul>
+<li><b>New feature:</b> Now includes javadoc version number and
+build in generated HTML comment (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4749707">4749707</a>,
+stddoclet)</li>
+<li>Bug fix: Added "#anchor" names back to links that point to
+classes in serialized form page (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4521661">4521661</a>,
+stddoclet, REGRESSION)</li>
+<li>Bug fix: Fixed Javascript IE load error when linked by
+-linkoffline (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4645058">4645058</a>,
+stddoclet, REGRESSION)</li>
+<li>Bug fix: Fixed so there is no diff when passing in package
+names or .java file names (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4506980">4506980</a>,
+stddoclet)</li>
+<li>Bug fix: Fixed invalid stylesheet.css file (font-size: normal)
+(<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4417174">4417174</a>,
+stddoclet)</li>
+<li>Bug fix: Fixed window title to not change when loading left
+frames (javascript, stddoclet) (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4747738">4747738</a>,
+stddoclet)</li>
+</ul>
+<a name="invalidhtml" id="invalidhtml"></a> <b>Invalid HTML</b>
+<ul>
+<li>Bug fix: Added missing whitespace in DOCTYPE declaration
+(<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4625400">4625400</a>,
+stddoclet)</li>
+<li>Bug fix: Fixed invalid HTML in frameset DTD and extra
+&lt;DL&gt; (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4275630">4275630</a>,
+stddoclet)</li>
+<li>Bug fix: Fixed &lt;NOFRAMES&gt;, which is not allowed outside
+&lt;FRAMESET&gt; element (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4753048">4753048</a>,
+stddoclet)</li>
+<li>Bug fix: Fixed wrong !DOCTYPE in index-all.html file (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4418115">4418115</a>,
+stddoclet)</li>
+<li>Bug fix: Fixed HTML table tags that were inserted in wrong
+place in package use page (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4415270">4415270</a>,
+stddoclet)</li>
+</ul>
+<a name="links" id="links"></a> <b>Links</b>
+<ul>
+<li>Bug fix: Internal links missing from return/param types when
+.java files passd in (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4628281">4628281</a>, tool,
+REGRESSION)</li>
+<li>Bug fix: Fixed @link of a fully-qualified program element to
+link to external classes with the <code>-link</code> option
+(<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4652655">4652655</a>, tool,
+REGRESSION)</li>
+<li>Bug fix: Fixed -link and -linkoffline to create proper relative
+links (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4720957">4720957</a>,
+stddoclet)</li>
+<li>Bug fix: The -linksource option no longer produces '\' in links
+when run on Windows (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4511110">4511110</a>,
+stddoclet)</li>
+<li>Bug fix: The label in {@link java.lang label} is no longer
+ignored when linking to a package name (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4524136">4524136</a>,
+stddoclet)</li>
+<li>Bug fix: @link tag no longer malformed when only newline exists
+between first and second arguments (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4739870">4739870</a>,
+stddoclet)</li>
+</ul>
+<a name="runningjavadoc" id="runningjavadoc"></a> <b>Running
+Javadoc</b>
+<ul>
+<li>Bug fix: No longer crashes when test file of unnamed package
+was included in source directory (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4670772">4670772</a>,
+tool)</li>
+<li>Bug fix: Fixed so duplicate classes are once again documented
+(<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4673477">4673477</a>, tool,
+REGRESSION)</li>
+<li>Bug fix: Empty jarfile on classpath: Fixed so empty jarfile in
+classpath no longer throws an exception (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4697113">4697113</a>,
+stddoclet)</li>
+<li>Bug fix: Files: When source and destination directories are the
+same, doc-files are no longer trashed (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4258405">4258405</a>,
+stddoclet)</li>
+</ul>
+<p><a name="messages" id="messages"></a> <b>Error/Warning
+Messages</b></p>
+<ul>
+<li>Bug fix: Improve unhelpful error message "foo.jar: Body tag
+missing from HTML" (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4691095">4691095</a>,
+stddoclet)</li>
+<li>Bug fix: Fixed so javadoc no longer reports errors when
+classpath jar files contain package.html files (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4697040">4697040</a>,
+stddoclet)</li>
+<li>Bug fix: Fixed erroneous "Parameter foo is documented more than
+once." warnings. (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4745855">4745855</a>,
+stddoclet)</li>
+<li>Bug fix: Now uses Messager printwriters inead of System.out and
+System.err (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4644257">4644257</a>,
+stddoclet)</li>
+</ul>
+<a name="accessibility" id="accessibility"></a>
+<b>Accessibility</b>
+<ul>
+<li>Bug fix: Add title description to links describing italic style
+as "interface" (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4714257">4714257</a>,
+stddoclet)</li>
+<li>Bug fix: Added ability to skip over nav bar for accessibility
+(<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4638136">4638136</a>,
+stddoclet)</li>
+<li>Bug fix: Added "summary" attribute to tables for accessibility
+(<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4637604">4637604</a>,
+<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4775148">4775148</a>,
+stddoclet)</li>
+<li>Bug fix: Added title attribute to &lt;FRAME&gt; tags for
+accessibility (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4636655">4636655</a>,
+stddoclet)</li>
+<li>Bug fix: Put &lt;H1&gt;, &lt;H2&gt;, &lt;H3&gt; in proper
+sequence (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4636667">4636667</a>,
+stddoclet)</li>
+<li>Bug fix: Add text equivalent of ASCII art in class tree for
+accessibility (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4706779">4706779</a>,
+stddoclet)</li>
+</ul>
+<a name="docletapi" id="docletapi"></a> <b>Doclet API</b>
+<ul>
+<li><b>New feature:</b> Extended Doclet API with holder() method in
+Tag interface (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4706525">4706525</a>,
+stddoclet)</li>
+<li>Bug fix: Doc objects are once again == comparable (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4731054">4731054</a>, tool,
+REGRESSION)</li>
+<li>Bug fix: Fixed bad ClassDoc for nested classes when built from
+.class files (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4694497">4694497</a>,
+tool)</li>
+<li>Bug fix: Clarified the specification for Doc.position()
+(<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4748246">4748246</a>,
+stddoclet)</li>
+<li>Bug fix: Clarified the specification for RootDoc classes()
+method (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4748234">4748234</a>,
+stddoclet)</li>
+<li>Bug fix: Clarified the specification for com.sun.javadoc.SeeTag
+(<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4754029">4754029</a>,
+stddoclet)</li>
+<li>Bug fix: Clarified the specification for
+PackageDoc.ordinaryClasses() needs clarification (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4748244">4748244</a>,
+stddoclet)</li>
+<li>Bug fix: Clarified the specification for "kind" in
+com.sun.javadoc.Doc (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4502589">4502589</a>,
+stddoclet)</li>
+<li>Bug fix: Clarified the specification for Doc.isClass() and all
+"class" references (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4748245">4748245</a>,
+stddoclet)</li>
+<li>Bug fix: Clarified the specification for "class" further
+(<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4763596">4763596</a>,
+stddoclet)</li>
+<li>Bug fix: Clarified the specification for
+PackageDoc.allClasses() method and the term "included" (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4748240">4748240</a>,
+stddoclet)</li>
+<li>Bug fix: Clarified the specification for
+ProgramElementDoc.qualifiedName() parameter list (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4621267">4621267</a>,
+stddoclet)</li>
+<li>Bug fix: Clarified the specification for RootDoc.classes() and
+PackageDoc.allClasses() (<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4748238">4748238</a>,
+stddoclet)</li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Hung Processes Tools</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr023.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr025.html">
+                Next</a><hr/><a id="BABHGAEE" name="BABHGAEE"/>
+<div id="JSTGD247">
+<h1>Hung Processes Tools</h1>
+<p><a href="#BABIFDCH">Table 2-3</a> summarizes the options and tools that can help in scenarios involving a hung or deadlocked process. These tools do not require any special options to start the application.</p>
+<p>The release of JDK 8 introduced Java Mission Control, Java Flight Recorder, and <code dir="ltr">jcmd</code> utility for diagnosing problems with JVM and Java applications. It is suggested to use the latest utility, <code dir="ltr">jcmd</code> instead of the previous <code dir="ltr">jstack</code>, <code dir="ltr">jinfo,</code> and <code dir="ltr">jmap</code> utilities for enhanced diagnostics and reduced performance overhead.</p>
+<div id="JSTGD248"><a id="sthref28" name="sthref28"/><a id="BABIFDCH" name="BABIFDCH"/>
+<p>Table 2-3 Hung Processes Tools</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="This table contains a list of tools and options for diagnosing problems between the application and the Java HotSpot VM in case of a hung process, with their descriptions." title="Hung Processes Tools" width="100%">
+<col width="31%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t10" valign="bottom">Tool or Option</th>
+<th align="left" id="r1c2-t10" valign="bottom">Description and Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t10" id="r2c1-t10">
+<p>Ctrl-Break handler</p>
+<p>(Control+\ or <code dir="ltr">kill -QUIT</code> <span>pid</span> on Oracle Solaris and Linux operating systems, and Control+Break on Windows)</p>
+</td>
+<td align="left" headers="r2c1-t10 r1c2-t10">
+<p>This key combination performs a thread dump as well as deadlock detection. The Ctrl-Break handler can optionally print a list of concurrent locks and their owners, as well as a heap histogram. See <a href="tooldescr019.html#BABCDJFE">Control+Break Handler</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t10" id="r3c1-t10">
+<p><code dir="ltr">jcmd</code> utility</p>
+</td>
+<td align="left" headers="r3c1-t10 r1c2-t10">
+<p>The jcmd utility is used to send diagnostic command requests to the JVM, where these requests are useful for controlling Java Flight Recordings. The JFRs are used to troubleshoot and diagnose flight recording events. See <a href="tooldescr006.html#BABEHABG">The jcmd Utility</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t10" id="r4c1-t10">
+<p><code dir="ltr">jdb</code> utility</p>
+</td>
+<td align="left" headers="r4c1-t10 r1c2-t10">
+<p>Debugger support includes attaching connectors, which allow <code dir="ltr">jdb</code> and other Java language debuggers to attach to a process. This can help show what each thread is doing at the time of a hang or deadlock. See <a href="tooldescr011.html#BABDHAHJ">The jdb Utility</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t10" id="r5c1-t10">
+<p><code dir="ltr">jhat</code> utility</p>
+</td>
+<td align="left" headers="r5c1-t10 r1c2-t10">
+<p>This utility provides a convenient means to browse the object topology in a heap dump. See <a href="tooldescr012.html#BABJGJBI">The jhat Utility</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t10" id="r6c1-t10">
+<p><code dir="ltr">jinfo</code> utility</p>
+</td>
+<td align="left" headers="r6c1-t10 r1c2-t10">
+<p>This utility can obtain configuration information from a Java process. See <a href="tooldescr013.html#BABDHFBE">The jinfo Utility</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t10" id="r7c1-t10">
+<p><code dir="ltr">jmap</code> utility</p>
+</td>
+<td align="left" headers="r7c1-t10 r1c2-t10">
+<p>This utility can obtain memory map information, including a heap histogram, from a Java process. On Oracle Solaris and Linux operating systems, the <code dir="ltr">-F</code> option can be used if the process is hung. See <a href="tooldescr014.html#BABGAFEG">The jmap Utility</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t10" id="r8c1-t10">
+<p><code dir="ltr">jsadebugd</code> daemon</p>
+<p>(Oracle Solaris and Linux operating systems only)</p>
+</td>
+<td align="left" headers="r8c1-t10 r1c2-t10">
+<p>The Serviceability Agent Debug Daemon (<code dir="ltr">jsadebugd</code>) attaches to a Java process or to a core file and acts as a debug server. See <a href="tooldescr032.html#CJGCCECD">The jsadebugd Daemon</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t10" id="r9c1-t10">
+<p><code dir="ltr">jstack</code> utility</p>
+</td>
+<td align="left" headers="r9c1-t10 r1c2-t10">
+<p>This utility can obtain Java and native stack information from a Java process. On Oracle Solaris and Linux operating systems the <code dir="ltr">-F</code> option can be used if the process is hung. See <a href="tooldescr016.html#BABFCHDE">The jstack Utility</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t10" id="r10c1-t10">
+<p>Native tools</p>
+</td>
+<td align="left" headers="r10c1-t10 r1c2-t10">
+<p>Each operating system has native tools and utilities that can be useful in hang or deadlock situations. See <a href="tooldescr020.html#BABBHHIE">Native Operating System Tools</a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr023.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr025.html">
+                Next</a><hr/>
+
+
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Orderly (and Abortive) Connection Release in Java</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Orderly Versus Abortive Connection Release in Java</h1>
+<p>This article covers the following topics:</p>
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#description">Description of the Problem</a></li>
+<li><a href="#how_to_avoid">How to Avoid the Problem</a></li>
+</ul>
+<h2><a name="overview" id="overview"></a>Overview</h2>
+<p>To ensure orderly or graceful release of TCP connections is a
+challenge with TCP networking applications. Abortive or ungraceful
+release may result if special care is not taken. In Java, an
+unexpected abortive release can manifest itself by the application
+receiving a <code>java.net.SocketException</code> when reading or
+writing to the socket. <code>read()</code> and <code>write()</code>
+normally return a numeric value indicating, respectively, the
+number of bytes received or sent. If an exception is received
+instead, this indicates the connection has been aborted and also
+that data may have been lost or discarded. This article explains
+what causes socket connections to be aborted and provides tips for
+avoiding the situation, except for the case where an application
+intends to abort the connection.</p>
+<p>&nbsp;</p>
+<h2><a name="description" id="description"></a>Description of the
+Problem</h2>
+<p>First, we need to distinguish the differences between an
+abortive and an orderly connection release. To understand this
+distinction we need to look at what happens at the TCP protocol
+level. It is helpful to imagine an established TCP connection as
+actually two separate, semi-independent streams of data. If the two
+peers are A and B, then one stream delivers data from A to B, and
+the other stream from B to A. An orderly release occurs in two
+stages. First one side (say A) decides to stop sending data and
+sends a <code>FIN</code> message across to B. When the TCP stack at
+B's side receives the <code>FIN</code> it knows that no more data
+is coming from A, and whenever B reads all preceding data off the
+socket, further reads will return the value <code>-1</code> to
+indicate end-of-file. This procedure is known as the TCP
+half-close, because only one half of the connection is closed. Not
+surprisingly, the procedure for the other half is exactly the same.
+B sends a <code>FIN</code> message to A, who eventually receives a
+<code>-1</code> after reading all preceding data sent by A off the
+socket.</p>
+<p>By contrast, an abortive close uses the RST (Reset) message. If
+either side issues an RST, this means the entire connection is
+aborted and the TCP stack can throw away any queued data which has
+not been sent or received by either application.</p>
+<p>So, how do Java applications perform orderly and abortive
+releases? Let's consider abortive releases first. A convention that
+has existed since the days of the original BSD sockets is that the
+&quot;linger&quot; socket option can be used to force an abortive
+connection release. Either application can call
+<code>Socket.setLinger</code> (true, 0) to tell the TCP stack that
+when this socket is closed, the abortive (RST) procedure is to be
+used. Setting the linger option has no immediate effect, except
+that when <code>Socket.close()</code> is called subsequently, the
+connection is aborted with an RST message. As we will see shortly,
+there are other ways that may cause a connection to be aborted, but
+this is the simplest way to make it happen.</p>
+<p>The <code>close()</code> method is also used to perform orderly
+release, as well as abortive. So, at its simplest, the difference
+between an orderly release and an abortive release could be as
+little as not setting the linger(0) option, described above, prior
+to calling <code>Socket.close()</code>. Take the example of two
+connected peers A and B: If A calls <code>Socket.close()</code>, a
+<code>FIN</code> message is sent from A to B; and when B calls
+<code>Socket.close()</code>, a <code>FIN</code> is sent from B to
+A. In fact, the default setting for the linger option is to not use
+abortive close; so if two applications terminate their connection
+just by using <code>Socket.close()</code>, then the outcome should
+be an orderly release. So what, then, is the problem?</p>
+<p>The problem is a slight mismatch between the semantics of
+<code>Socket.close()</code> and the TCP <code>FIN</code> message.
+Sending a TCP <code>FIN</code> message means &quot;I am finished
+sending&quot;, whereas <code>Socket.close()</code> means &quot;I am
+finished sending and receiving.&quot; When you call
+<code>Socket.close()</code>, clearly it is no longer possible to
+send data; nor, however, is it possible to receive data. So what
+happens, for example, when A attempts an orderly release by closing
+the socket, but B continues to send data? This is perfectly
+allowable in the TCP specification, because as far as TCP is
+concerned only one half of the connection has been closed. But
+since A's socket is closed there is nobody to read data if B should
+continue sending. In this situation A's TCP stack must send an RST
+to forcibly terminate the connection.</p>
+<p>Another common scenario, which may result in an unintended
+<code>SocketException</code>, is the following: Say A has sent data
+to B, but B closes the socket without reading all the data. In this
+situation, B's TCP stack knows that some data is effectively lost
+and it will forcibly terminate with RST rather than use the orderly
+<code>FIN</code> procedure. A will get a
+<code>SocketException</code> if it then tries to send or receive
+data from the socket.</p>
+<h2><a name="how_to_avoid" id="how_to_avoid"></a>How to avoid the
+problem</h2>
+<p>There are a number of simple ways to avoid being surprised by
+this problem.</p>
+<ol>
+<li>Structure data with a higher-level protocol. Protocols such as
+HTTP, which are built on top of TCP, deal with the issue by making
+it clear to both sides when it is safe to close the socket.</li>
+<li>Always consume data from a socket before closing it. This will
+help avoid the second scenario described above.</li>
+<li>Use <code>shutdownOutput()</code>. This method has the same
+effect as <code>close()</code> in that a <code>FIN</code> is sent
+to indicate that this peer has finished sending, but it is still
+possible to read from the socket until such time as the remote peer
+sends a <code>FIN</code> and end-of-file is read from the stream.
+Then the socket can be closed with
+<code>Socket.close()</code>.</li>
+</ol>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

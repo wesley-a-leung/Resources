@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Introduction to Java Access Bridge</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Introduction to Java Access Bridge</h1>
+
+<p><a href="../index.html">Java Accessibility Guide</a> &gt; <a href="index.html">Java Access Bridge Programmer's Guide for Assistive Technology Developers</a> &gt; Introduction to Java Access Bridge</p> 
+
+
+<p>The following topics are covered:</p>
+<ul>
+<li><a href="#jab-overview">Overview of Java Access Bridge</a></li>
+<li><a href="#jab-architecture">Architecture of Java Access Bridge</a></li>
+<li><a href="#jab-related-information">Related Information</a></li>
+</ul>
+
+<a id="jab-overview" name="jab-overview"></a>
+
+<h2>Overview of Java Access Bridge</h2>
+
+<p>Java Access Bridge is a technology that exposes the <a href=
+"../../../../api/javax/accessibility/package-summary.html">Java Accessibility API</a> in a Microsoft Windows DLL, enabling Java applications and applets that implement the Java Accessibility API to be visible to assistive technologies on Microsoft Windows systems. Java Accessibility API is part of <a href="http://www.oracle.com/technetwork/java/javase/downloads/downloads-jsp-138220.html">Java Accessibility Utilities</a>, which is a set of utility classes that help assistive technologies provide access to GUI toolkits that implement the Java Accessibility API.</p>
+
+<p>In order for existing assistive technologies available on Microsoft Windows systems to provide access to Java applications, they need some way to communicate with Java Accessibility Utilities. Java Access Bridge supports this communication.</p>
+
+<p>An assistive technology application running on Microsoft Windows (for example a screen reader) communicates with Java Access Bridge DLLs, which in turn communicates with the Java Virtual Machine through Java Access Bridge Java libraries. These Java libraries communicate with Java Accessibility Utilities. Java Accessibility Utilities collects information about what is happening in the Java application, which it forwards to the screen reader through Java Access Bridge.</p>
+
+<a id="jab-architecture" name="jab-architecture"></a>
+
+<h2>Architecture of Java Access Bridge</h2>
+
+<p>The following figure shows how Java Access Bridge and Java Accessibility Utilities components interact with each other:</p>
+
+<img src="img/jab-block-diagram.gif" alt="Description of Java Access Bridge Architecture Diagram follows" title="Description of Java Access Bridge Architecture Diagram follows" longdesc="img_text/jab-block-diagram.html" />
+
+<p><a href="img_text/jab-block-diagram.html">Description of Java Access Bridge Architecture Diagram</a></p>
+
+
+<p>Java Access Bridge provides a subset of the Java Accessibility API as a Windows DLL, <code>WindowsAccessBridge.dll</code>. Assistive technologies on Microsoft Windows load and link to this DLL. Java Access Bridge also provides a pair of DLLs, <code>JavaAccessBridge.dll</code> and <code>JAWTAccessBridge.dll</code>, that are loaded by the Java runtime. This pair of DLLs communicate with the application through the Java Accessibility API and through it, the user interface toolkit and components. The pair of DLLs also communicate with the application through Java Accessibility Utilities, a collection of classes that coalesce events and provide application life-cycle functionality to assistive technologies (and to Java Access Bridge, which acts as an assistive technology). The Java component to Java Access Bridge, a set of classes packaged into a JAR file, <code>access-bridge.jar</code>, manages communication between the DLLs loaded into the Java runtime and the other Java code in the Java runtime. This JAR file is loaded into the Java SE runtime through the <code>accessibility.properties</code> file and in turn loads the Java-side DLLs through Java Native Interfaces (JNI).</p>
+
+<p>The communication that Java Access Bridge enables between assistive technologies and Java applications through Java Accessibility Utilities is called inter-process communication. Java Access Bridge 2.0.2 and later provides 64-bit inter-process communication. This enables 64-bit and 32-bit assistive technologies to communicate with Java applications on a 64-bit Windows system. For more information about 64-bit support, see <a href="api.html#jab-api-changes-from-201">API Changes from 2.0.1</a> in <a href="api.html">Java Access Bridge API</a>.  Java Access Bridge 2.0.2 and later also provides 32-bit inter-process communication. This enables 32-bit assistive technologies to communicate with Java applications on a 32-bit Windows system.</p>
+
+
+<a id="jab-related-information" name="jab-related-information"></a>
+
+<h2>Related Information</h2>
+
+<p>For more information, visit the following:</p>
+<ul>
+<li><a href="http://www.oracle.com/technetwork/java/javase/tech/index-jsp-136191.html">Java SE Desktop Accessibility</a></li>
+<li><a href="../../../../api/javax/accessibility/package-summary.html">Java Accessibility API Specification</a></li>
+<li><a href="http://www.oracle.com/technetwork/java/javase/downloads/downloads-jsp-138220.html">Java Accessibility Utilities</a></li>
+
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

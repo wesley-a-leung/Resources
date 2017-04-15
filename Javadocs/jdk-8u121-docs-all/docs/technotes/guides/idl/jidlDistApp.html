@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java IDL: Distributed Application Concepts</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Distributed Application Concepts</h1>
+<p>Topics discussed in this section include:</p>
+<ul>
+<li><a href="#nTierApps">Multi-Tiered Applications</a></li>
+<li><a href="#client">User-Interface Tier</a></li>
+<li><a href="#server">Service (Server) Tier</a></li>
+<li><a href="#data">Data Store (Database) Tier</a></li>
+</ul>
+<h2><a name="nTierApps" id="nTierApps">Multi-Tiered
+Applications</a></h2>
+<p>Traditional enterprise applications are, for the most part,
+self-contained monolithic programs which have limited access to one
+another's procedures and data. They are usually cumbersome to build
+and expensive to maintain because even simple changes require the
+entire program to be recompiled and retested.</p>
+<p>By contrast, applications built using distributed objects such
+as CORBA naturally lend themselves to a multitiered architecture,
+fostering a neat separation of concerns. A three-tiered application
+has a user interface code layer, a computation code (or business
+logic) layer, and a database access layer. All interaction between
+the layers occurs via the interfaces that all CORBA objects must
+publish. The diagram below illustrates the transition from
+monolithic applications to multi-tiered, modular applications.</p>
+<img src="images/ntiertransition.gif" alt=
+"[ntiertransition image]" />
+<h2><a name="client" id="client">User-Interface Tier</a></h2>
+<p>The user-interface tier is the layer of user interaction. Its
+focus is on efficient user interface design and accessibility
+throughout your organization. The user interface tier can reside on
+the user's desktop, on your organization's intranet, or on the
+World Wide Web (Internet). Several user interface implementations
+may be deployed which access the same server. The UI tier usually
+invokes methods on the business logic tier and thus acts as a
+client of the business logic servers.</p>
+<h2><a name="server" id="server">Service (Server) Tier</a></h2>
+<p>The service, or business logic layer, is server-based code with
+which the client code interacts. The business logic layer is made
+up of business objects - CORBA objects that perform logical
+business functions such as inventory control, budget, sales orders,
+and billing. These objects invoke methods on Data Store tier
+objects.</p>
+<h2><a name="data" id="data">Data Store (Database) Tier</a></h2>
+<p>The data store layer is made up of objects that encapsulate
+database routines and interact directly with the DBMS product(s).
+For example, a hypothetical <code>get_Sales_Sum</code> method might
+be implemented to obtain data from a relational database via the
+appropriate SQL <code>SELECT</code> statements.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- USE THIS TEMPLATE WHEN ENHANCEMENTS ARE SHORT. THEN USE JUST
+   THIS FILE TO DOCUMENT ALL THE ENHANCEMENTS OF EACH VERSION CURRENTLY SUPPORTED.  
+-->
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Concurrency Utilities Enhancements in Java SE 8</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Concurrency Utilities Enhancements in Java SE 8</h1>
+
+
+
+<h2>New classes and interfaces in java.util.concurrent</h2>
+<p>
+The <code><a href="../../../api/java/util/concurrent/package-summary.html">java.util.concurrent</a></code> package contains two new interfaces and four new classes:
+</p>
+<ul>
+<li>Interface <code><a href="../../../api/java/util/concurrent/CompletableFuture.AsynchronousCompletionTask.html">CompletableFuture.AsynchronousCompletionTask</a></code>: A marker interface identifying asynchronous tasks produced by async methods.
+<li>Interface <code><a href="../../../api/java/util/concurrent/CompletionStage.html">CompletionStage&lt;T&gt;</a></code>: A stage of a possibly asynchronous computation, that performs an action or computes a value when another <code>CompletionStage</code> completes.
+<li>Class <code><a href="../../../api/java/util/concurrent/CompletableFuture.html">CompletableFuture&lt;T&gt;</a></code>: A <code>Future</code> that may be explicitly completed (setting its value and status), and may be used as a <code>CompletionStage</code>, supporting dependent functions and actions that trigger upon its completion.
+<li>Class <code><a href="../../../api/java/util/concurrent/ConcurrentHashMap.KeySetView.html">ConcurrentHashMap.KeySetView&lt;K,V&gt;</a></code>: A view of a <code>ConcurrentHashMap</code> as a <code>Set</code> of keys, in which additions may optionally be enabled by mapping to a common value.
+<li>Class <code><a href="../../../api/java/util/concurrent/CountedCompleter.html">CountedCompleter&lt;T&gt;</a></code>: A <code>ForkJoinTask</code> with a completion action performed when triggered and there are no remaining pending actions.
+<li>Class <code><a href="../../../api/java/util/concurrent/CompletionException.html">CompletionException</a></code>: Exception thrown when an error or other exception is encountered in the course of completing a result or task.
+</ul>
+
+
+
+<h2>New methods in java.util.concurrent.ConcurrentHashMap</h2>
+<p>
+The <a href="../collections/index.html">Collections Framework</a> has undergone a major revision in Java 8 to add aggregate operations based on the newly added <a href="../language/lambda_api_jdk8.html">streams facility</a> and <a href="../language/enhancements.html#javase8">lambda expressions</a>. As a result, the <a href="../../../api/java/util/concurrent/ConcurrentHashMap.html"><code>ConcurrentHashMap</code></a> class introduces over 30 new methods in this release. These include various <code>forEach</code> methods (<code>forEach</code>, <code>forEachKey</code>, <code>forEachValue</code>, and <code>forEachEntry</code>), search methods (<code>search</code>, <code>searchKeys</code>, <code>searchValues</code>, and <code>searchEntries</code>) and a large number of reduction methods (<code>reduce</code>, <code>reduceToDouble</code>, <code>reduceToLong</code> etc.)
+</p>
+
+
+<p>
+Other miscellaneous methods (<code>mappingCount</code> and <code>newKeySet</code>) have been added as well. As a result of the JDK 8 changes, <code>ConcurrentHashMap</code>s (and classes built from them) are now more useful as caches. These changes include methods to compute values for keys when they are not present, plus improved support for scanning (and possibly evicting) entries, as well as better support for maps with large numbers of elements.
+</p>
+
+
+<p>
+For complete details, see the 
+<code><a href="../../../api/java/util/concurrent/ConcurrentHashMap.html">java.util.concurrent.ConcurrentHashMap</a></code> API specification.
+</p>
+
+
+<h2>New classes in java.util.concurrent.atomic</h2>
+
+<p>
+Maintaining a single count, sum, etc. that is updated by possibly many threads
+is a common scalability problem. This release introduces scalable updatable variable
+support through 
+ a small set of new classes (<code>DoubleAccumulator</code>, <code>DoubleAdder</code>, <code>LongAccumulator</code>, <code>LongAdder</code>), which internally employ contention-reduction techniques that provide huge throughput improvements as compared to <code>Atomic</code> variables. This is made possible by relaxing atomicity guarantees in a way that is acceptable in most applications.
+</p>
+
+<ul>
+<li><code><a href="../../../api/java/util/concurrent/atomic/DoubleAccumulator.html">DoubleAccumulator</a></code>: One or more variables that together maintain a running double value updated using a supplied function.
+<li><code><a href="../../../api/java/util/concurrent/atomic/DoubleAdder.html">DoubleAdder</a></code>: One or more variables that together maintain an initially zero double sum.
+<li><code><a href="../../../api/java/util/concurrent/atomic/LongAccumulator.html">LongAccumulator</a></code>: One or more variables that together maintain a running long value updated using a supplied function.
+<li><code><a href="../../../api/java/util/concurrent/atomic/LongAdder.html">LongAdder</a></code>: One or more variables that together maintain an initially zero long sum.
+</ul>
+
+<h2>New methods in java.util.concurrent.ForkJoinPool</h2>
+
+<p>
+A static <code>commonPool()</code> method is now available and appropriate for most applications. The common pool is used by any <code>ForkJoinTask</code> that is not explicitly submitted to a specified pool. Using the common pool normally reduces resource usage (its threads are slowly reclaimed during periods of non-use, and reinstated upon subsequent use). 
+Two new methods (<code><a href="../../../api/java/util/concurrent/ForkJoinPool.html#getCommonPoolParallelism%28%29">getCommonPoolParallelism()</a></code> and <code><a href="../../../api/java/util/concurrent/ForkJoinPool.html#commonPool%28%29">commonPool()</a></code>) have been added, which return the targeted parallelism level of the common pool, or the common pool instance, respectively.
+</p>
+
+<h2>New class java.util.concurrent.locks.StampedLock</h2>
+<p>
+A new <code>StampedLock</code> class adds a capability-based lock with three modes for controlling read/write access (writing, reading, and optimistic reading). This class also supports methods that conditionally provide conversions across the three modes. 
+</p>
+
+<p>
+For complete details, see the <code><a href="../../../api/index.html?java/util/concurrent/package-summary.html">java.util.concurrent.StampedLock</a></code> API documentation.
+</p>
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

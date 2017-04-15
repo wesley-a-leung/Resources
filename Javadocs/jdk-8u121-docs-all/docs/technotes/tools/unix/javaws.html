@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>javaws</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T7:56:53Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Solaris, Linux, and OS X, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38209-05" name="partnum"/>
+<meta content="JSSOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="s7-web-start-tools.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="s8-management-tools.html">
+                Next</a><hr/>
+<div><a id="BABHGIBB" name="BABHGIBB"/>
+<div id="JSSOR728"><a id="BABJIFII" name="BABJIFII"/>
+<h1>javaws</h1>
+<p>Starts Java Web Start.</p>
+<div><a id="sthref270" name="sthref270"/>
+<h2>Synopsis</h2>
+<p><b>javaws</b> [ <i>run-options</i> ] <i>jnlp</i></p>
+<p><b>javaws</b> [ <i>control-options</i> ]</p>
+<dl>
+<dt><i>run-options</i></dt>
+<dd>
+<p>Command-line <code dir="ltr">run-options</code>. The <code dir="ltr">run-options</code> can be in any order. See <a href="#BABEGBJJ">Run-Options</a>.</p>
+</dd>
+<dt><i>jnlp</i></dt>
+<dd>
+<p>Either the path of or the Uniform Resource Locator (URL) of the Java Network Launching Protocol (JNLP) file.</p>
+</dd>
+<dt><i>control-options</i></dt>
+<dd>
+<p>Command-line <code dir="ltr">control-options</code>. The <code dir="ltr">control-options</code> can be in any order. See <a href="#BABDHEEE">Control-Options</a>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref271" name="sthref271"/>
+<h2>Description</h2>
+<p><b>Note:</b> The <code dir="ltr">javaws</code> command is not available on Oracle Solaris.</p>
+<p>The <code dir="ltr">javaws</code> command starts Java Web Start, which is the reference implementation of the JNLP. Java Web Start starts Java applications and applets hosted on a network.</p>
+<p>If a JNLP file is specified, then the <code dir="ltr">javaws</code> command starts the Java application or applet specified in the JNLP file.</p>
+<p>The <code dir="ltr">javaws</code> launcher has a set of options that are supported in the current release. However, the options may be removed in a future release.</p>
+</div>
+
+<div><a id="BABEGBJJ" name="BABEGBJJ"/><a id="BABJFDHA" name="BABJFDHA"/>
+<h2>Run-Options</h2>
+<dl>
+<dt>-offline</dt>
+<dd>
+<p>Runs Java Web Start in offline mode.</p>
+</dd>
+<dt>-Xnosplash</dt>
+<dd>
+<p>Does not display the initial splash screen.</p>
+</dd>
+<dt>-open <i>arguments</i></dt>
+<dd>
+<p>When specified, this option replaces the arguments in the JNLP file with <code dir="ltr">-open</code> <code dir="ltr">arguments</code>.</p>
+</dd>
+<dt>-print <i>arguments</i></dt>
+<dd>
+<p>When specified, this option replaces the arguments in the JNLP file with <code dir="ltr">-print</code> <code dir="ltr">arguments</code>.</p>
+</dd>
+<dt>-online</dt>
+<dd>
+<p>Uses online mode. This is the default behavior.</p>
+</dd>
+<dt>-wait</dt>
+<dd>
+<p>The <code dir="ltr">javaws</code> process does not exit until the application exits. This option does not function as described on Windows platforms.</p>
+</dd>
+<dt>-verbose</dt>
+<dd>
+<p>Displays additional output.</p>
+</dd>
+<dt>-J<i>option</i></dt>
+<dd>
+<p>Passes option to the Java Virtual Machine, where <code dir="ltr">option</code> is one of the options described on the reference page for the Java application launcher. For example, <code dir="ltr">-J-Xms48m</code> sets the startup memory to 48 MB. See <a href="java.html#CBBFHAJA"><code dir="ltr">java</code>(1)</a>.</p>
+</dd>
+<dt>-system</dt>
+<dd>
+<p>Runs the application from the system cache only.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="BABDHEEE" name="BABDHEEE"/><a id="BABFICDG" name="BABFICDG"/>
+<h2>Control-Options</h2>
+<dl>
+<dt>-viewer</dt>
+<dd>
+<p>Shows the cache viewer in the Java Control Panel.</p>
+</dd>
+<dt>-clearcache</dt>
+<dd>
+<p>Removes all non-installed applications from the cache.</p>
+</dd>
+<dt>-userConfig <i>property-name</i></dt>
+<dd>
+<p>Clears the specified deployment property.</p>
+</dd>
+<dt>-userConfig <i>property-name property-value</i></dt>
+<dd>
+<p>Sets the specified deployment property to the specified value.</p>
+</dd>
+<dt>-uninstall</dt>
+<dd>
+<p>Removes all applications from the cache.</p>
+</dd>
+<dt>-uninstall <i>jnlp</i></dt>
+<dd>
+<p>Removes the application from the cache.</p>
+</dd>
+<dt>-print <i>import-options</i> jnlp</dt>
+<dd>
+<p>Imports the application to the cache.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref272" name="sthref272"/>
+<h2>Import-Options</h2>
+<dl>
+<dt>-silent</dt>
+<dd>
+<p>Imports silently (with no user interface).</p>
+</dd>
+<dt>-system</dt>
+<dd>
+<p>Imports application to the system cache.</p>
+</dd>
+<dt>-codebase <i>url</i></dt>
+<dd>
+<p>Retrieves resources from the specified codebase.</p>
+</dd>
+<dt>-shortcut</dt>
+<dd>
+<p>Installs shortcuts if the user allows a prompt. This option has no effect unless the <code dir="ltr">-silent</code> option is also used.</p>
+</dd>
+<dt>-association</dt>
+<dd>
+<p>Installs associations if the user allows a prompt. This option has no effect unless the <code dir="ltr">-silent</code> option is also used.</p>
+</dd>
+</dl>
+</div>
+
+<p><b>Note:</b> The command <code dir="ltr">javaws -shortcut -uninstall</code> removes both association as well as the implementation.</p>
+<div><a id="sthref273" name="sthref273"/>
+<h2>Files</h2>
+<p>For information about the user and system cache and deployment.properties files, see Deployment Configuration File and Properties at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/jweb/jcp/properties.html">http://docs.oracle.com/javase/8/docs/technotes/guides/jweb/jcp/properties.html</a></code></p>
+</div>
+
+<div><a id="sthref274" name="sthref274"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p>Java Web Start at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/javaws/index.html">http://docs.oracle.com/javase/8/docs/technotes/guides/javaws/index.html</a></code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="s7-web-start-tools.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="s8-management-tools.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

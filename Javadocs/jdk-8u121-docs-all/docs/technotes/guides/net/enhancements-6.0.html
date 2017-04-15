@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+
+<style type="text/css">
+/*<![CDATA[*/
+
+p {margin-left: 18pt;}
+
+ul li, ul ul li {font-weight: normal;}
+pre             {margin-left: 42pt;}
+a               {font-weight: bold;}
+
+/*]]>*/
+</style>
+<title>Networking Features</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Networking Features and Enhancements</h1>
+<h2>in Java SE 6</h2>
+
+<h2>Enhancement to Network Interface</h2>
+<p>Provides a number of new methods for accessing state and
+configuration information relating to a system's network adapters.
+This includes information such as the broadcast address, subnet
+mask, MAC addresses, and MTU size. See <code><a href=
+"../../../api/java/net/NetworkInterface.html">java.net.NetworkInterface</a></code></p>
+<p>The new class <code><a href=
+"../../../api/java/net/InterfaceAddress.html">java.net.InterfaceAddress</a></code>
+encapsulates all information about a NetworkInterface's IP
+addresses, including the broadcast address, and subnet prefix
+length (subnet mask)</p>
+<h2>Support for Internationalized Domain Names</h2>
+<p>RFCs 3490, 3491, 3492, 3454 define a mechanism where domain
+names comprised of characters in alphabets other than US ASCII can
+be stored in the DNS. An algorithm is defined which provides a
+conversion from arbitrary Unicode strings to and from a "mangled"
+ASCII form. This feature provides a new class <code><a href=
+"../../../api/java/net/IDN.html">java.net.IDN</a></code>, which
+allows applications to do this conversion so that IDNs can be
+looked up via <code><a href=
+"../../../api/java/net/InetAddress.html">java.net.InetAddress</a>.</code></p>
+<h2>HTTP Negotiate authentication</h2>
+<p>This adds support for the "Negotiate" HTTP authentication scheme
+defined by Microsoft. Negotiate allows multiple underlying
+authentication mechanisms to be supported, and in each instance,
+one of these mechanisms is chosen for use. Currently, Kerberos is
+the only supported mechanism. This feature is described in more
+detail in the guide to <a href="http-auth.html">Http
+Authentication</a>.</p>
+<h2>Cross platform NTLM</h2>
+<p>Previously, the Microsoft defined NTLM authentication protocol
+for HTTP was only supported on Windows. Now, this protocol is
+supported on all platforms.</p>
+<h2>Default CookieManager implementation</h2>
+<p>The CookieHandler class was added in 1.5, but no implementation
+was provided in java.net. This feature provides a simple extensible
+implementation which separates the storage of cookies from the
+policy surrounding their acceptance. The default manager provides a
+number of standard policies and a simple in-memory storage
+mechanism. User defined policies and storage mechanisms can be used
+with this implementation. The following are the new classes related
+to this feature:</p>
+<ul>
+<li><code><a href=
+"../../../api/java/net/CookieManager.html">java.net.CookieManager</a></code></li>
+<li><code><a href=
+"../../../api/java/net/CookiePolicy.html">java.net.CookiePolicy</a></code></li>
+<li><code><a href=
+"../../../api/java/net/CookieStore.html">java.net.CookieStore</a></code></li>
+<li><code><a href=
+"../../../api/java/net/HttpCookie.html">java.net.HttpCookie</a></code></li>
+</ul>
+<h2>Light-weight HTTP server</h2>
+<p>This provides a simple set of classes and interfaces for
+building light-weight HTTP server applications. The feature defines
+<a href="../../../jre/api/net/httpserver/spec/index.html">two new
+packages</a> <code>com.sun.net.httpserver</code> and
+<code>com.sun.net.httpserver.spi.</code> The server supports HTTP
+and HTTPS.</p>
+<div id="footer">
+<!-- ****************  end body ****************** --></div>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

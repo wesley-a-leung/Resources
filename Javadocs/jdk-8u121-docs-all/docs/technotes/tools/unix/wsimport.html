@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>wsimport</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T7:56:54Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Solaris, Linux, and OS X, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38209-05" name="partnum"/>
+<meta content="JSSOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="wsgen.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="xjc.html">
+                Next</a><hr/>
+<div><a id="CIHGBCDC" name="CIHGBCDC"/>
+<div id="JSSOR740"><a id="CIHGBDII" name="CIHGBDII"/>
+<h1>wsimport</h1>
+<p>Generates JAX-WS portable artifacts that can be packaged in a web application archive (WAR) file and provides an Ant task.</p>
+<div><a id="sthref318" name="sthref318"/>
+<h2>Synopsis</h2>
+<p><b>wsimport</b> [ <i>options</i> ] <i>wsdl</i></p>
+<dl>
+<dt><i>options</i></dt>
+<dd>
+<p>The command-line options. See <a href="#CIHCHJAC">Options</a>.</p>
+</dd>
+<dt><i>wsdl</i></dt>
+<dd>
+<p>The file that contains the machine-readable description of how the web service can be called, what parameters it expects, and what data structures it returns.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref319" name="sthref319"/>
+<h2>Description</h2>
+<p>The <code dir="ltr">wsimport</code> command generates the following JAX-WS portable artifacts. These artifacts can be packaged in a WAR file with the WSDL and schema documents and the endpoint implementation to be deployed. The <code dir="ltr">wsimport</code> command also provides a <code dir="ltr">wsimport</code> Ant task, see the Tools tab of the Wsimport Ant Task page at<br/>
+<code dir="ltr"><a href="http://jax-ws.java.net/nonav/2.1.1/docs/wsimportant.html">http://jax-ws.java.net/nonav/2.1.1/docs/wsimportant.html</a></code></p>
+<ul>
+<li>
+<p>Service Endpoint Interface (SEI)</p>
+</li>
+<li>
+<p>Service</p>
+</li>
+<li>
+<p>Exception class is mapped from <code dir="ltr">wsdl:fault</code> (if any)</p>
+</li>
+<li>
+<p>Async Response Bean is derived from response <code dir="ltr">wsdl:message</code> (if any)</p>
+</li>
+<li>
+<p>JAXB generated value types (mapped java classes from schema types)</p>
+</li>
+</ul>
+<p>To start the <code dir="ltr">wsgen</code> command, do the following:</p>
+<p><b>Oracle Solaris/Linux</b>:</p>
+<pre dir="ltr" xml:space="preserve">
+/bin/wsimport.sh -help
+</pre>
+<p><b>Windows</b>:</p>
+<pre dir="ltr" xml:space="preserve">
+\bin\wsimport.bat -help
+</pre></div>
+
+<div><a id="CIHCHJAC" name="CIHCHJAC"/><a id="CIHGDHFI" name="CIHGDHFI"/>
+<h2>Options</h2>
+<dl>
+<dt>-d <i>directory</i></dt>
+<dd>
+<p>Specifies where to place generated output files.</p>
+</dd>
+<dt>-b <i>path</i></dt>
+<dd>
+<p>Specifies external JAX-WS or JAXB binding files. Multiple JAX-WS and JAXB binding files can be specified with the <code dir="ltr">-b</code> option. You can use these files to customize package names, bean names, and so on. For more information about JAX-WS and JAXB binding files, see the <span>Users Guide</span> tab of WSDL Customization at<br/>
+<code dir="ltr"><a href="http://jax-ws.java.net/nonav/2.1.1/docs/wsimportant.html">http://jax-ws.java.net/nonav/2.1.1/docs/wsimportant.html</a></code></p>
+</dd>
+<dt>-B <i>jaxbOption</i></dt>
+<dd>
+<p>Passes the <code dir="ltr">jaxbOption</code> option to the JAXB schema compiler.</p>
+</dd>
+<dt>-catalog</dt>
+<dd>
+<p>Specifies a catalog file to resolve external entity references. The <code dir="ltr">-catalog</code> option supports the TR9401, XCatalog, and OASIS XML Catalog formats. See the <span>Users Guide</span> tab of the Catalog Support page at<br/>
+<code dir="ltr"><a href="http://jax-ws.java.net/nonav/2.1.1/docs/catalog-support.html">http://jax-ws.java.net/nonav/2.1.1/docs/catalog-support.html</a></code></p>
+</dd>
+<dt>-extension</dt>
+<dd>
+<p>Allows vendor extensions. Use of extensions can result in applications that are not portable or that do not work with other implementations.</p>
+</dd>
+<dt>-help</dt>
+<dd>
+<p>Displays a help message for the <code dir="ltr">wsimport</code> command.</p>
+</dd>
+<dt>-httpproxy: <i>host</i>:<i>port</i></dt>
+<dd>
+<p>Specifies an HTTP proxy server. The default is 8080.</p>
+</dd>
+<dt>-keep</dt>
+<dd>
+<p>Keeps generated files.</p>
+</dd>
+<dt>-p <i>name</i></dt>
+<dd>
+<p>Specifies a target package <i>name</i> to override the WSDL and schema binding customizations, and the default algorithm defined in the specification.</p>
+</dd>
+<dt>-s <i>directory</i></dt>
+<dd>
+<p>Specifies where to place generated source files.</p>
+</dd>
+<dt>-verbose</dt>
+<dd>
+<p>Displays compiler messages.</p>
+</dd>
+<dt>-version</dt>
+<dd>
+<p>Prints release information.</p>
+</dd>
+<dt>-wsdllocation <i>location</i></dt>
+<dd>
+<p>Specifies the <code dir="ltr">@WebServiceClient.wsdlLocation</code> value.</p>
+</dd>
+<dt>-target</dt>
+<dd>
+<p>Generates code according to the specified JAX-WS specification version. Version 2.0 generates compliant code for the JAX-WS 2.0 specification.</p>
+</dd>
+<dt>-quiet</dt>
+<dd>
+<p>Suppresses the <code dir="ltr">wsimport</code> command output.</p>
+</dd>
+</dl>
+<p>Multiple <code dir="ltr">JAX-WS</code> and <code dir="ltr">JAXB</code> binding files can be specified using the <code dir="ltr">-b</code> option, and they can be used to customize various things such as package names and bean names. More information about <code dir="ltr">JAX-WS</code> and <code dir="ltr">JAXB</code> binding files can be found in the customization documentation at<br/>
+<code dir="ltr"><a href="https://jax-ws.java.net/nonav/2.1.2/docs/customizations.html">https://jax-ws.java.net/nonav/2.1.2/docs/customizations.html</a></code></p>
+</div>
+
+<div><a id="sthref320" name="sthref320"/>
+<h2>Nonstandard Options</h2>
+<dl>
+<dt>-XadditionalHeaders</dt>
+<dd>
+<p>Maps headers not bound to a request or response message to Java method parameters.</p>
+</dd>
+<dt>-Xauthfile <i>file</i></dt>
+<dd>
+<p>The WSDL URI that specifies the file that contains authorization information. This URI is in the following format:</p>
+<p>http://<i>user-name</i>:<code dir="ltr">password</code>@<i>host-name</i>/<i>web-service-name</i>&gt;?wsdl.</p>
+</dd>
+<dt>-Xdebug</dt>
+<dd>
+<p>Prints debugging information.</p>
+</dd>
+<dt>-Xno-addressing-databinding</dt>
+<dd>
+<p>Enables binding of W3C EndpointReferenceType to Java.</p>
+</dd>
+<dt>-Xnocompile</dt>
+<dd>
+<p>Does not compile the generated Java files.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref321" name="sthref321"/>
+<h2>Example</h2>
+<p>The following example generates the Java artifacts and compiles the artifacts by importing <code dir="ltr">http://stockquote.example.com/quote?wsdl</code></p>
+<pre dir="ltr" xml:space="preserve">
+wsimport -p stockquote http://stockquote.example.com/quote?wsdl
+</pre></div>
+
+<div><a id="sthref322" name="sthref322"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="wsgen.html#CHEEHCCA"><code dir="ltr">wsgen</code>(1)</a></p>
+</li>
+<li>
+<p>The Tools tab of Wsimport Ant Task page<br/>
+<code dir="ltr"><a href="http://jax-ws.java.net/nonav/2.1.1/docs/wsimportant.html">http://jax-ws.java.net/nonav/2.1.1/docs/wsimportant.html</a></code></p>
+</li>
+<li>
+<p>The <span>Users Guide</span> tab of Catalog Support page<br/>
+<code dir="ltr"><a href="http://jax-ws.java.net/nonav/2.1.1/docs/catalog-support.html">http://jax-ws.java.net/nonav/2.1.1/docs/catalog-support.html</a></code></p>
+</li>
+<li>
+<p>The <span>Users Guide</span> tab of WSDL Customization page<br/>
+<code dir="ltr"><a href="http://jax-ws.java.net/nonav/2.1.1/docs/wsimportant.html">http://jax-ws.java.net/nonav/2.1.1/docs/wsimportant.html</a></code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="wsgen.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="xjc.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

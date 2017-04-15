@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Print Service API User Guide: 5 - Printing and
+Streaming 2D Graphics</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<a href="JPSTOC.fm.html">CONTENTS</a> | <a href=
+"printing2d.fm1.html">PREV</a> | NEXT<br />
+<h2><a name="a999771" id="a999771">Using Service-Formatted
+Data</a></h2>
+<a name="a999772" id="a999772"><!-- --></a> You can print or stream
+2D graphics encapsulated in a Pageable or Printable object using a
+DocPrintJob and a service-formatted DocFlavor. A DocFlavor can
+represent any kind of data, including Java objects. An
+implementation of the Pageable or Printable interface is a Java
+object. As discussed in the <a href=
+"docflavor.fm.html#a996958"><em>Specifying Document Types</em></a>
+chapter, the Java Print Service API includes pre-defined DocFlavor
+object constants for print data in the form of a Java object. An
+application can look up print services or stream print services
+supporting this type of data, encapsulate the object in a Doc
+implemetation and submit it to the service in a DocPrintJob. The
+<a href="printing2d.fm2.html#a999853"><em>Printing the
+Service-Formatted Data</em></a> section demonstrates printing the
+data. The <a href="printing2d.fm2.html#a999490"><em>Streaming
+Service-Formatted Print Data</em></a> section demonstrates
+streaming the data. Registering for events on 2D graphics printing
+applications using DocPrintJob is done the same way as for document
+printing applications using DocPrintJob. See <a href=
+"printing.fm5.html#a998697"><em>Registering for Events</em></a> for
+more information.<br />
+<h3><a name="a999853" id="a999853"><!-- --></a> Printing the
+Service-Formatted Data</h3>
+<a name="a999854" id="a999854"><!-- --></a> To locate print
+services that can handle the service-formatted data, pass the
+appropriate service-formatted DocFlavor object constant to the
+lookupPrintServices method:
+<p><a name="a999868" id="a999868"><!-- --></a></p>
+<p><a name="a998830" id="a998830"><!-- --></a></p>
+<pre class="codeblock">
+PrintService []services =
+        PrintServiceLookup.lookupPrintServices(DocFlavor.SERVICE_FORMATTED.PRINTABLE,
+                                                        null);
+</pre>
+<a name="a999878" id="a999878"><!-- --></a> The printing
+application implements the Printable interface. To create the Doc,
+use SimpleDoc, passing this in for the printData, the
+service-formatted DocFlavor constant for the DocFlavor, and an
+optional attribute set:
+<p><a name="a999887" id="a999887"><!-- --></a></p>
+<pre class="codeblock">
+Doc  doc = new SimpleDoc(this, DocFlavor.SERVICE_FORMATTED.PRINTABLE, null);
+</pre>
+<a name="a1000035" id="a1000035"><!-- --></a> Create the
+DocPrintJob, and submit it to the service:
+<p><a name="a1000036" id="a1000036"><!-- --></a></p>
+<pre class="codeblock">
+DocPrintJob pj = service[0].createPrintJob();
+pj.print(doc);
+</pre>
+<a name="a1000043" id="a1000043"></a> See <a href= "Print2DGraphics.java"><em>Example: Print2DGraphics.java</em></a> for the complete application.<br />
+<h3><a name="a999490" id="a999490"><!-- --></a> Streaming
+Service-Formatted Print Data</h3>
+<a name="a999902" id="a999902"><!-- --></a> A stream print service
+can be used to export 2D graphics encapsulated in a Java object to
+another format. This example exports graphics in a Printable to
+Postscript:
+<p><a name="a999493" id="a999493"><!-- --></a></p>
+<pre class="codeblock">
+DocFlavor flavor = DocFlavor.SERVICE_FORMATTED.PRINTABLE
+StreamPrintServiceFactory []factories =
+        StreamPrintServiceFactory.lookupStreamPrintServiceFactories(flavor,
+                                                        "application/postscript"));
+if (factories.length == 0) {
+        System.err.println(&#34;No suitable factories&#34;);
+        System.exit(0);
+}
+try{
+        FileOutputStream fos = new FileOutputStream(&#34;out.ps&#34;);
+        StreamPrintService sps = factories[0].getPrintService(fos);
+}
+Doc  doc = new SimpleDoc(this, flavor, null);
+sps.createPrintJob().print(doc);
+</pre>
+<a name="a999763" id="a999763"></a> See <a href= "Print2DtoStream.java"><em>Example: Print2DtoStream.java</em></a> for the complete application
+<p>&nbsp;</p>
+<br />
+<hr />
+<a href="JPSTOC.fm.html">CONTENTS</a> | <a href=
+"printing2d.fm1.html">PREV</a> | NEXT
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

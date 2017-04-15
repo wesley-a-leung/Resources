@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>JAXP 1.3 Release Notes</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h2>Java API for XML Processing Release Notes</h2>
+
+<b>Specification Version:</b> 1.3<br />
+<b>Reference Implementation (RI) Version:</b> 1.3.0
+<p>This document contains installation instructions and other notes
+that may help you use this software library more effectively. See
+also the <a href="https://jaxp.java.net/">JAXP
+FAQ</a> for more information.</p>
+<p><b>Note:</b><br />
+If you are reading this page online, this is the most current
+version of the release notes. If this page was downloaded as part
+of the release bundle, please see the <a href="https://jaxp.java.net/">JAXP Documentation</a>
+page for the most current version of the release notes.</p>
+<h3>Contents</h3>
+<ul>
+<li><a href="#versions">Component Versions</a></li>
+<li><a href="#identifying">Identifying the JAR Files</a></li>
+<li><a href="#parsing">XML Parsing</a>
+<ul>
+<li><a href="#schema-limitations">Known Schema Processing
+Limitations</a></li>
+<li><a href="#migration">Known Migration Issues</a>
+<ul>
+<li><a href="#migrationFrom11">from JAXP 1.1</a></li>
+<li><a href="#migrationFrom12">from JAXP 1.2</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#xsltc">The Compiling XSLT Processor (XSLTC)</a>
+<ul>
+<li><a href="#loader">Custom Class Loader Issue</a></li>
+</ul>
+</li>
+<li><a href="#security">JWSDP Security Considerations</a></li>
+<li><a href="#changes">Changes in JAXP RI Versions</a></li>
+</ul>
+<h2><a name="versions" id="versions"></a><span class=
+"style2">Component Versions</span></h2>
+These versions of the relevant technologies have been incorporated
+into the reference implementation.
+<ul>
+<li><b>Xerces version 2.6.2 +</b> (Xerces version 2.6.2 with
+controlled bug fixes)</li>
+<li><b>XSLTC version 2.6.0 +</b> (XSLTC version 2.6.0 , with
+controlled bug fixes, based on the Xalan 2.6.0 release)</li>
+</ul>
+<h2><a name="identifying" id="identifying">Identifying the JAR
+Files</a></h2>
+<p>This release is contained in six JAR files:</p>
+<dl>
+<dt><b>jaxp-api.jar</b></dt>
+<dd>The <span class="Fixed">javax.xml.parsers</span>, <span class=
+"Fixed">javax.xml.transform</span>, <code>javax.xml.xpath</code>,
+<code>javax.xml.validation</code>, <code>javax.xml.datatype</code>,
+and <code>javax.xml.namespace</code> components of JAXP. These
+packages contain the APIs that give applications a consistent way
+to obtain instances of XML processing implementations.&nbsp; The
+<code>javax.xml.xpath</code> package supports the standard XPath
+API.</dd>
+<dt><b>sax.jar</b></dt>
+<dd>The APIs and helper classes for the Simple API for XML (SAX),
+used for serial access to XML data.&nbsp; The APIs support SAX
+version 2.0.2.</dd>
+<dt><b>dom.jar</b></dt>
+<dd>The APIs and helper classes for the Document Object Model
+(DOM), used to create an in-memory tree structure from the XML
+data.&nbsp; The APIs support DOM Level 3.</dd>
+<dt><b>xercesImpl.jar</b></dt>
+<dd>The implementation classes for the SAX and DOM parsers, as well
+as Xerces-specific implementations of the JAXP APIs..</dd>
+<dt>&nbsp;</dt>
+<dt><b>xalan.jar</b></dt>
+<dd>Contains XSLTC the compiling XSLT processor from the Xalan
+project.</dd>
+</dl>
+<h2><a name="parsing" id="parsing">XML Parsing</a></h2>
+<p>The information in this section pertains to the Xerces
+technology. The latest updates can be found at <a href=
+"https://jaxp.java.net">https://jaxp.java.net</a>. For
+information on known bugs and recent fixes in the latest Apache
+version, see <a href="http://xerces.apache.org/xerces2-j/releases.html">http://xml.apache.org/xerces2-j/releases.html</a>.&nbsp;</p>
+<h3><a name="schema-limitations" id="schema-limitations"></a>Known
+Schema Processing Limitations</h3>
+<p>This section discusses known schema processing bugs,
+limitations, and implementation-dependent operations.</p>
+<h4>Limitations</h4>
+These limitations specify known upper bounds on values.
+<ul>
+<li>Length, minLength, and maxLength facets are limited to the
+value 2147483647.<br />
+Items larger than this limit will not be validated correctly.<br />
+&nbsp;</li>
+<li>Year and seconds values in date/time datatypes are limited to
+the value 2147483647.<br />
+Items larger than this limit will not be validated correctly.</li>
+</ul>
+<h4>Implementation-Dependent Operations</h4>
+This implementation-dependent operation is not fully clarified by
+the W3C XML Schema specification (<a href=
+"http://www.w3.org/2001/XMLSchema">http://www.w3.org/2001/XMLSchema</a>).
+As a result, differing implementations exist.
+<ul>
+<li>The JAXP 1.2 reference implementation parser (Xerces 2.0.1),
+<tt>&lt;keyref&gt;</tt> Identity Constraints refers to
+<tt>&lt;key&gt;</tt> or <tt>&lt;unique&gt;</tt> identity
+constraints within the scope of the elements to which the
+<tt>&lt;keyref&gt;</tt> is attached, as defined in the XML Schema
+Part 1: Structures. (The introductory section of XML Schema, on the
+other hand, (XML Schema Part 0: Primer) contains an example with a
+<tt>&lt;keyref&gt;</tt> declared on an element used inside the
+element of its corresponding <tt>&lt;key&gt;</tt>. The discrepancy
+is noted here in an effort to avoid confusion.)</li>
+</ul>
+<h3><a name="migration" id="migration"></a>Known Migration
+Issues</h3>
+<p>This section covers known issues that arise when migrating from
+earlier versions of JAXP.<br /></p>
+<h4><a name="migrationFrom12" id="migrationFrom12"></a>Migrating
+from JAXP 1.2</h4>
+<p>JAXP 1.2 is built into JWSDP and J2EE 1.4. These sections of the
+Compatibility Guide cover the relevant migration issues:</p>
+<ul>
+<li><a href=
+"JAXP-Compatibility_150.html#entityResolver">IOException added to
+SAX EntityResolver API</a><br />
+This is a change to the SAX 2.0.1 API.</li>
+<li><a href="JAXP-Compatibility_150.html#addedMethods">Methods
+added to DOM interfaces</a><br />
+This is a change in the DOM Level 3 API.</li>
+<li><a href="JAXP-Compatibility_150.html#packageNames">Package Name
+Changes</a><br />
+This change affects applications that access
+implementation-specific features.</li>
+</ul>
+<h4><a name="migrationFrom11" id="migrationFrom11"></a>Migrating
+from JAXP 1.1</h4>
+<p>JAXP 1.1 is built into J2EE 1.3 and Java SE 1.4. For differences in
+functionality from JAXP 1.1, see the <a href=
+"JAXP-Compatibility_150.html">JAXP Compatibility Guide</a>.</p>
+<h2 class="style2">DOM Level 3 Implementation Notes</h2>
+<p>This section contains implementation notes for DOM Level 3 Core
+and DOM Level 3 Load and Save.</p>
+<h3>DOM Level 3 Core</h3>
+<p>Not implemented:</p>
+<ul>
+<li>DOMConfiguration "infoset" parameter - value "true" is not
+supported.</li>
+</ul>
+<p>Supported parameters:</p>
+<ul>
+<li>error-handler [ <em>DOMErrorHandler</em> ]</li>
+<li>resource-resolver [ <em>DOMResourceResolver</em> ]</li>
+<li>schema-type [ <em>String</em> ]</li>
+<li>schema-location [ <em>String</em> ]</li>
+<li>canonical-form [ <em>false</em> ]</li>
+<li>cdata-sections [ <em>true/false</em> ]</li>
+<li>comments [ <em>true/false</em> ]</li>
+<li>namespaces [ <em>true/false</em> ]</li>
+<li>entities [ <em>true/false</em> ]</li>
+<li>infoset [ <em>false</em> ]</li>
+<li>namespace-declarations [ <em>true</em> ]</li>
+<li>normalize-characters [ <em>false</em> ]</li>
+<li>split-cdata-sections [ <em>true/false</em> ]</li>
+<li>validate-if-schema [ <em>true/false</em> ]</li>
+<li>whitespace-in-element-content [ <em>true</em> ]</li>
+<li>datatype-normalization [ <em>true/false</em> ]</li>
+<li>validate [ <em>true/false</em> ] -- revalidation is supported
+only against XML Schemas. For more information, please refer to
+<a href="http://xerces.apache.org/xerces2-j/faq-dom.html">How to
+revalidate DOM in memory?</a> .</li>
+<li>validate-if-schema [ <em>true/false</em> ]</li>
+<li>check-character-normalization [ <em>false</em> ]</li>
+<li>well-formed [ <em>true/false</em> ]</li>
+<li>psvi [ <em>true/false</em> ] -- (NON-DOM) setting the value of
+this parameter to true will include PSVI information in the DOM
+tree. To access the information, cast dom.Element to
+org.apache.xerces.xs.ElementPSVI and dom.Attr to
+org.apache.xerces.xs.AttributePSVI.</li>
+</ul>
+<h3>DOM Level 3 Load and Save</h3>
+<p>Not supported:</p>
+<ul>
+<li>LSParser <a href=
+"http://www.w3.org/TR/2003/CR-DOM-Level-3-LS-20031107/load-save.html#LS-LSParser-parseWithContext">
+parserWithContext</a></li>
+<li>DOMImplementationLS <a href=
+"http://www.w3.org/TR/2003/CR-DOM-Level-3-LS-20031107/load-save.html#LS-DOMIMplementation">
+MODE_ASYNCHRONOUS</a></li>
+<li>LSSerializer - the following parameters are not supported:</li>
+<li style="list-style: none; display: inline">
+<ul>
+<li>ignore-unknown-character-denormalizations [ <em>true</em>
+]</li>
+<li>normalize-characters [ <em>true</em> ]</li>
+<li>well-formed [ <em>true</em> ]</li>
+</ul>
+</li>
+</ul>
+<h2><a name="xsltc" id="xsltc"></a><span class="style2">The
+Compiling XSLT Processor (XSLTC)</span></h2>
+<p>The XSLTC transformer generates a transformation engine, or
+<em>translet,</em> from an XSL stylesheet. This approach separates
+the interpretation of stylesheet instructions from their runtime
+application to XML data.</p>
+<p>XSLTC works by compiling a stylesheet into Java byte code
+(translets), which can then be used to perform XSLT
+transformations. This approach greatly improves the performance of
+XSLT transformations where a given stylesheet is compiled once and
+used many times. It also generates an extremely lightweight
+translet, because only the XSLT instructions that are actually used
+by the stylesheet are included.</p>
+<p><b>Note:</b><br />
+XSLT is supported by the JAXP transform package. See <a href="../../../../api/javax/xml/transform/package-summary.html">
+<code>javax.xml.transform</code></a> for details on accessing basic
+XSLT functionality in an implementation-independent manner.</p>
+<h3><a name="loader" id="loader"></a>Custom Class Loader Issue</h3>
+<p>A problem can occur when using a custom class loader with a
+transformation factory.</p>
+<p>Transformation factories in JAXP always prefer the use of the
+"context class loader" to the use of the "system class loader".
+Thus, if an application uses a custom class loader, it may need to
+set the custom class loader as the context class loader for
+transformation factory to use it. Setting a custom class loader on
+the current thread can be done as follows:</p>
+<pre>
+try {<br />  Thread currentThread = Thread.currentThread();<br />  currentThread.setContextClassLoader(customClassLoader);<br />}<br />catch (SecurityException e) {<br />  // ...<br />}
+</pre>
+<p>If the application is multi-threaded, the custom class loader
+may need to be set in all threads (every time a new thread is
+created). A security exception is thrown if an application does not
+have permission to set the context class loader.</p>
+<hr />
+<h2><a name="security" id="security"></a><span class="style2">JWSDP
+Security Considerations</span></h2>
+<p>When an application is running on a web server, such as the Java
+Web Services Developer Pack (JWSDP), with security enabled, the
+following permissions must be set:</p>
+<pre>
+permission java.io.FilePermission<br /><br />    "/${webserver.home}/common/endorsed/xercesImpl.jar", "read";<br />permission java.io.FilePermission<br />    "/${webserver.home}/common/endorsed/xalan.jar", "read";<br /><br />permission java.util.PropertyPermission<br />    "javax.xml.parser.SAXParserFactory", "read, write";<br />permission java.util.PropertyPermission<br />    "javax.xml.transform.TransformerFactory", "read, write";<br /><br />permission java.util.PropertyPermission "user.dir",        "read";<br />permission java.util.PropertyPermission "file.separator",  "read";<br />permission java.util.PropertyPermission "line.separator",  "read";<br />permission java.util.PropertyPermission "JavaClass.debug", "read";<br /><br />permission java.lang.RuntimePermission "createClassLoader";<br />permission java.lang.RuntimePermission "accessDeclaredMembers";<br />
+</pre>
+<p><b>Note:</b><br />
+If read permission is not set for <tt>xercesImpl.jar</tt>, a
+<tt>FactoryConfigurationError</tt> is thrown that says:<br />
+&nbsp;&nbsp;&nbsp;<span class="Fixed">Provider
+org.apache.xerces.jaxp.SAXParserFactoryImpl not found</span></p>
+<hr />
+<h2><a name="changes" id="changes">Changes in JAXP RI
+Versions</a></h2>
+<h3><a name="OneDotThree" id="OneDotThree"></a>Changes in JAXP RI
+version 1.3</h3>
+<ul>
+<li>Xerces version changed from 2.3.0 to&nbsp;2.6.2 (+ controlled
+bug fixes).</li>
+<li>The two XSL transformation engines available in the standalone
+version of JAXP 1.3 are Xalan interpretive and XSLTC (based on
+Xalan 2.6.0 (+ controlled bugfixes)).&nbsp; The JAXP 1.3 version
+included in Java SE 5 includes only the XSLTC transformer&nbsp; (based
+on Xalan 2.6.0 (+ controlled bug fixes)).<br /></li>
+<li>New features and functionality added, as described in the
+<a href="JAXP-Compatibility_150.html#new">What's New</a> section of
+the Compatibility Guide.</li>
+<li>A denial of service vulnerability was rectified by adding the
+system property <span class="Fixed">elementAttributeLimit</span>,
+which can be used to limit the number of attributes in a element.
+The default limit is 10,000 attributes for an element.</li>
+</ul>
+<h3><a name="OneDotTwoDotFour" id="OneDotTwoDotFour"></a>Changes in
+JAXP RI version 1.2.4</h3>
+<ul>
+<li>Fix for a Java SE 1.4.2 compilation bug in Xerces.</li>
+</ul>
+<h3><a name="a1.2.3" id="a1.2.3"></a>Changes in JAXP RI version
+1.2.3</h3>
+<ul>
+<li>Xerces version changed from 2.2.1 to 2.3.0 (+ controlled bug
+fixes). This version Includes many bug fixes.</li>
+<li>All Decimal value that should be invalid according to the
+Schema specification are now found by the parser (removing a 1.2.2
+limitation).</li>
+<li>Solved the problem of Xerces compilation under JDK 1.4.1.</li>
+<li>XML Schema loading performance improved dramatically (virtually
+cut in half).</li>
+</ul>
+<h3><a name="a1.2.2" id="a1.2.2"></a>Changes in JAXP RI version
+1.2.2</h3>
+<ul>
+<li>New properties were implemented for increased security, as
+described in the <a href=
+"JAXP-Compatibility_150.html#JAXP_security">Security Issue</a>
+section.</li>
+<li>Parser implementation changed from Xerces 2.0.1_04 to Xerces
+2.2.1 with controlled bug fixes.</li>
+<li>XSLT processor imlpementation changed from Xalan 2.3.1_01 to
+Xalan 2.4.1 with controlled bug fixes..</li>
+<li>XSLTC is included in this release.</li>
+</ul>
+<h3><a name="a1.2.1" id="a1.2.1"></a>Changes in JAXP Ri version
+1.2.1</h3>
+<p>Performance of Xerces parser improved significantly.</p>
+<p>XSLTC was not included as part of this release, which was
+destined solely for the J2EE platform.&nbsp;</p>
+<h3><a name="fcs0" id="fcs0"></a>Changes in JAXP RI version
+1.2.0-FCS</h3>
+The parser implementation changed from Xerces 2.0.0_01 to Xerces-J
+2.0.1_01<br />
+(Xerces 2.0.1 final with controlled bug fixes). The Xalan XSLT
+processor<br />
+implementation was updated to xalan-j 2.3.1_01 (Xalan version 2.3.1
+with<br />
+controlled bug fixes).
+<p>Finally, this release fully supports the proposed 1.2 JAXP
+specification,<br />
+which implements document validation using W3C XML Schema.</p>
+<h3><a name="ea2" id="ea2"></a>Changes In JAXP RI version
+1.2.0-EA2</h3>
+The parser implementation changed from Xerces 2.0.0 beta3 to
+Xerces-J 2.0.0_01 (Xerces 2.0.0 final with controlled bug fixes).
+The Xalan XSLT processor implementation was updated to xalan-j
+2.3.0_01 (Xalan version 2.3.0 with controlled bug fixes).
+<p>The Xalan XSLTC processor was also added in this release. (It is
+used to compile a stylesheet into a transformation engine
+(translet) that is ready to run.)</p>
+<p>This release fully supports the proposed 1.2 JAXP specification,
+which implements document validation using W3C XML Schema.</p>
+<h3><a name="ea1" id="ea1"></a>Changes in JAXP RI version
+1.2.0-EA1</h3>
+The parser implementation changed from Apache Crimson to Xerces 2
+version 2.0.0 beta3. The XSLT processor implementation was updated
+to Xalan classic version 2.2.D14.
+<p>The parser supports W3C XML Schema but does not support all
+aspects of the proposed JAXP 1.2 specification. In particular, the
+ability to enforce that an instance document conforms to a
+particular schema has not been implemented. However, the validation
+portions of the specification can be used along with schema hints
+in the instance document.</p>
+<p>&nbsp;</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

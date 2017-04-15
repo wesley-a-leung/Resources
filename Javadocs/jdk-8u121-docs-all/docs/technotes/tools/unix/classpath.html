@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Setting the Class Path</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="The class path is the path that the Java Runtime Environment (JRE) searches for classes and other resource files." name="description"/>
+<meta content="2016-01-08T7:56:52Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Solaris, Linux, and OS X, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38209-05" name="partnum"/>
+<meta content="JSSOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="findingclasses.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jdkfiles.html">
+                Next</a><hr/>
+<div id="JSSOR577"><a id="CBHHCGFB" name="CBHHCGFB"/>
+<h1><span>2</span> Setting the Class Path</h1>
+<a id="JSSOR578" name="JSSOR578"/>
+<p>The class path is the path that the Java Runtime Environment (JRE) searches for classes and other resource files.</p>
+<p>This chapter covers the following topics:</p>
+<ul>
+<li>
+<p><a href="#A1100592">Synopsis</a></p>
+</li>
+<li>
+<p><a href="#A1100617">Description</a></p>
+</li>
+<li>
+<p><a href="#BEHJBHCD">JDK Commands Class Path Options</a></p>
+</li>
+<li>
+<p><a href="#BEHCGBFB">CLASSPATH Environment Variable</a></p>
+</li>
+<li>
+<p><a href="#A1100762">Class Path Wild Cards</a></p>
+</li>
+<li>
+<p><a href="#BEHBDEEB">Class Path and Package Names</a></p>
+</li>
+</ul>
+<a id="A1100592" name="A1100592"/>
+<div id="JSSOR579">
+<h2>Synopsis</h2>
+<p>The class search path (class path) can be set using either the <code dir="ltr">-classpath</code> option when calling a JDK tool (the preferred method) or by setting the <code dir="ltr">CLASSPATH</code> environment variable. The <code dir="ltr">-classpath</code> option is preferred because you can set it individually for each application without affecting other applications and without other applications modifying its value.</p>
+<p><b>sdkTool -classpath</b> <i>classpath1:classpath2...</i></p>
+<p><b>setenv</b> <b>CLASSPATH</b> <i>classpath1:classpath2...</i></p>
+<dl>
+<dt>sdkTool</dt>
+<dd>
+<p>A command-line tool, such as <code dir="ltr">java</code>, <code dir="ltr">javac</code>, <code dir="ltr">javadoc</code>, or <code dir="ltr">apt</code>. For a listing, see JDK Tools and Utilities at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/index.html">http://docs.oracle.com/javase/8/docs/technotes/tools/index.html</a></code></p>
+</dd>
+<dt><i>classpath1:classpath2</i></dt>
+<dd>
+<p>Class paths to the JAR, zip or class files. Each class path should end with a file name or directory depending on what you are setting the class path to, as follows:</p>
+<ul>
+<li>
+<p>For a JAR or zip file that contains class files, the class path ends with the name of the zip or JAR file.</p>
+</li>
+<li>
+<p>For class files in an unnamed package, the class path ends with the directory that contains the class files.</p>
+</li>
+<li>
+<p>For class files in a named package, the class path ends with the directory that contains the root package, which is the first package in the full package name.</p>
+</li>
+</ul>
+<p>Multiple path entries are separated by semicolons with no spaces around the equals sign (=) in Windows and colons in Oracle Solaris.</p>
+<p>The default class path is the current directory. Setting the <code dir="ltr">CLASSPATH</code> variable or using the <code dir="ltr">-classpath</code> command-line option overrides that default, so if you want to include the current directory in the search path, then you must include a dot (<code dir="ltr">.</code>) in the new settings.</p>
+<p>Class path entries that are neither directories nor archives (.zip or JAR files) nor the asterisk (<code dir="ltr">*</code>) wildcard character are ignored.</p>
+</dd>
+</dl>
+</div>
+
+<a id="A1100617" name="A1100617"/>
+<div id="JSSOR580">
+<h2>Description</h2>
+<p>The class path tells the JDK tools and applications where to find third-party and user-defined classes that are not extensions or part of the Java platform. See The Extension Mechanism at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/extensions/index.html">http://docs.oracle.com/javase/8/docs/technotes/guides/extensions/index.html</a></code></p>
+<p>The class path needs to find any classes you have compiled with the <code dir="ltr">javac</code> compiler. The default is the current directory to conveniently enable those classes to be found.</p>
+<p>The JDK, the JVM and other JDK tools find classes by searching the Java platform (bootstrap) classes, any extension classes, and the class path, in that order. For details about the search strategy, see How Classes Are Found at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/findingclasses.html">http://docs.oracle.com/javase/8/docs/technotes/tools/findingclasses.html</a></code></p>
+<p>Class libraries for most applications use the extensions mechanism. You only need to set the class path when you want to load a class that is (a) not in the current directory or in any of its subdirectories, and (b) not in a location specified by the extensions mechanism.</p>
+<p>If you upgrade from an earlier release of the JDK, then your startup settings might include <code dir="ltr">CLASSPATH</code> settings that are no longer needed. You should remove any settings that are not application-specific, such as <code dir="ltr">classes.zip</code>. Some third-party applications that use the Java Virtual Machine (JVM) can modify your <code dir="ltr">CLASSPATH</code> environment variable to include the libraries they use. Such settings can remain.</p>
+<p>You can change the class path by using the <code dir="ltr">-classpath</code> or <code dir="ltr">-cp</code> option of some Java commands when you call the JVM or other JDK tools or by using the <code dir="ltr">CLASSPATH</code> environment variable. See <a href="#BEHJBHCD">JDK Commands Class Path Options</a>. Using the <code dir="ltr">-classpath</code> option is preferred over setting the <code dir="ltr">CLASSPATH</code> environment variable because you can set it individually for each application without affecting other applications and without other applications modifying its value. See <a href="#BEHCGBFB">CLASSPATH Environment Variable</a>.</p>
+<p>Classes can be stored in directories (folders) or in archive files. The Java platform classes are stored in rt.jar. For more details about archives and information about how the class path works, see <a href="#BEHBDEEB">Class Path and Package Names</a>.</p>
+<p><b>Note</b>: Some earlier releases of the JDK had a <code dir="ltr">&lt;jdk-dir&gt;/classes</code> entry in the default class path. That directory exists for use by the JDK software and should not be used for application classes. Application classes should be placed in a directory outside of the JDK directory hierarchy. That way, installing a new JDK does not force you to reinstall application classes. For compatibility with earlier releases, applications that use the <code dir="ltr">&lt;jdk-dir&gt;/classes</code> directory as a class library run in the current release, but there is no guarantee that they will run in future releases.</p>
+</div>
+
+<a id="BEHJBHCD" name="BEHJBHCD"/>
+<div id="JSSOR581">
+<h2>JDK Commands Class Path Options</h2>
+<p>The following commands have a <code dir="ltr">-classpath</code> option that replaces the path or paths specified by the <code dir="ltr">CLASSPATH</code> environment variable while the tool runs: <code dir="ltr">java</code>, <code dir="ltr">jdb</code>, <code dir="ltr">javac</code>, <code dir="ltr">javah</code> and <code dir="ltr">jdeps</code>.</p>
+<p>The <code dir="ltr">-classpath</code> option is the recommended option for changing class path settings, because each application can have the class path it needs without interfering with any other application.The <code dir="ltr">java</code> command also has a <code dir="ltr">-cp</code> option that is an abbreviation for <code dir="ltr">-classpath</code>.</p>
+<p>For very special cases, both the <code dir="ltr">java</code> and <code dir="ltr">javac</code> commands have options that let you change the path they use to find their own class libraries. Most users will never need to use those options.</p>
+</div>
+
+<a id="BEHCGBFB" name="BEHCGBFB"/>
+<div id="JSSOR582">
+<h2>CLASSPATH Environment Variable</h2>
+<p>As explained in <a href="#BEHJBHCD">JDK Commands Class Path Options</a>, the <code dir="ltr">-classpath</code> command-line option is preferred over the <code dir="ltr">CLASSPATH</code> environment variable. However, if you decide to use the <code dir="ltr">CLASSPATH</code> environment variable, this section explains how to set and clear it.</p>
+<div id="JSSOR583"><a id="sthref10" name="sthref10"/>
+<h3>Set CLASSPATH</h3>
+<p>In csh, the <i>CLASSPATH</i> environment variable is modified with the <code dir="ltr">setenv</code> command. The format is:</p>
+<pre dir="ltr" xml:space="preserve">
+setenv CLASSPATH path1:path2
+</pre>
+<p>In sh, the <code dir="ltr">CLASSPATH</code> environment variable can be modified with these commands:</p>
+<pre dir="ltr" xml:space="preserve">
+CLASSPATH = path1:path2:...
+export CLASSPATH
+</pre></div>
+
+<div id="JSSOR584"><a id="sthref11" name="sthref11"/>
+<h3>Clear CLASSPATH</h3>
+<p>If your <code dir="ltr">CLASSPATH</code> environment variable was set to a value that is not correct, or if your startup file or script is setting an incorrect path, then you can unset <code dir="ltr">CLASSPATH</code> with:</p>
+<pre dir="ltr" xml:space="preserve">
+unsetenv CLASSPATH
+</pre>
+<p>In sh, you would use:</p>
+<pre dir="ltr" xml:space="preserve">
+unset CLASSPATH
+</pre>
+<p>These commands unset <code dir="ltr">CLASSPATH</code> for the current shell only. You should also delete or modify your startup settings to ensure that you have the correct <code dir="ltr">CLASSPATH</code> settings in future sessions.</p>
+</div>
+
+<div id="JSSOR585"><a id="sthref12" name="sthref12"/>
+<h3>Change Startup Settings</h3>
+<p>If the CLASSPATH variable is set at system startup, then the place to look for it depends on your operating system:</p>
+<p>Windows 95 and 98: Examine <code dir="ltr">autoexec.bat</code> for the set command.</p>
+<p>Other (Windows NT, Windows 2000, ...): The CLASSPATH environment variable can be set with the System utility in the Control Panel.</p>
+<p>If the CLASSPATH variable is set at system startup, then the place to look for it depends on the shell you are running:</p>
+<p>The <code dir="ltr">csh</code>, <code dir="ltr">tcsh</code> <code dir="ltr">shells</code>: Examine your <code dir="ltr">.cshrc</code> file for the <code dir="ltr">setenv</code> command.</p>
+<p>The <code dir="ltr">sh</code>, <code dir="ltr">ksh</code> <code dir="ltr">shells</code>: Examine your <code dir="ltr">.profile</code> file for the <code dir="ltr">export</code> command.</p>
+</div>
+</div>
+
+<a id="A1100762" name="A1100762"/>
+<div id="JSSOR586">
+<h2>Class Path Wild Cards</h2>
+<p>Class path entries can contain the base name wildcard character (*), which is considered equivalent to specifying a list of all of the files in the directory with the extension <code dir="ltr">.jar</code> or <code dir="ltr">.JAR</code>. For example, the class path entry <code dir="ltr">mydir/*</code> specifies all JAR files in the directory named <code dir="ltr">mydir</code>. A class path entry consisting of * expands to a list of all the jar files in the current directory. Files are considered regardless of whether they are hidden (have names beginning with '.').</p>
+<p>A class path entry that contains an asterisk (*) does not match class files. To match both classes and JAR files in a single directory <code dir="ltr">mydir</code>, use either <code dir="ltr">mydir:mydir/*</code> or <code dir="ltr">mydir/*:mydir</code>. The order chosen determines whether the classes and resources in <code dir="ltr">mydir</code> are loaded before JAR files in <code dir="ltr">mydir</code> or vice versa.</p>
+<p>Subdirectories are not searched recursively. For example, <code dir="ltr">mydir/*</code> searches for JAR files only in <code dir="ltr">mydir</code>, not in <code dir="ltr">mydir/subdir1</code>, <code dir="ltr">mydir/subdir2</code>, and so on.</p>
+<p>The order in which the JAR files in a directory are enumerated in the expanded class path is not specified and may vary from platform to platform and even from moment to moment on the same machine. A well-constructed application should not depend upon any particular order. If a specific order is required, then the JAR files can be enumerated explicitly in the class path.</p>
+<p>Expansion of wild cards is done early, before the invocation of a program's main method, rather than late, during the class-loading process. Each element of the input class path that contains a wildcard is replaced by the (possibly empty) sequence of elements generated by enumerating the JAR files in the named directory. For example, if the directory <code dir="ltr">mydir</code> contains a.jar, b.jar, and c.jar, then the class path <code dir="ltr">mydir/*</code> is expanded into <code dir="ltr">mydir/a.jar:mydir/b.jar:mydir/c.jar</code>, and that string would be the value of the system property java.class.path.</p>
+<p>The <code dir="ltr">CLASSPATH</code> environment variable is not treated any differently from the <code dir="ltr">-classpath</code> or <code dir="ltr">-cp</code> options. Wild cards are honored in all of these cases. However, class path wild cards are not honored in the Class-Path jar-manifest header.</p>
+</div>
+
+<a id="BEHBDEEB" name="BEHBDEEB"/>
+<div id="JSSOR587">
+<h2>Class Path and Package Names</h2>
+<p>Java classes are organized into packages that are mapped to directories in the file system. But, unlike the file system, whenever you specify a package name, you specify the whole package name and never part of it. For example, the package name for <code dir="ltr">java.awt.Button</code> is always specified as <code dir="ltr">java.awt</code>.</p>
+<p>For example, suppose you want the JRE to find a class named <code dir="ltr">Cool.class</code> in the package <code dir="ltr">utility.myapp</code>. If the path to that directory is <code dir="ltr">/java/MyClasses/utility/myapp</code>, then you would set the class path so that it contains <code dir="ltr">/java/MyClasses</code>. To run that application, you could use the following <code dir="ltr">java</code> command:</p>
+<pre dir="ltr" xml:space="preserve">
+java -classpath /java/MyClasses utility.myapp.Cool
+</pre>
+<p>When the application runs, the JVM uses the class path settings to find any other classes defined in the <code dir="ltr">utility.myapp</code> package that are used by the <code dir="ltr">Cool</code> class.</p>
+<p>The entire package name is specified in the command. It is not possible, for example, to set the class path so it contains <code dir="ltr">/java/MyClasses/</code>utility and use the command <code dir="ltr">java myapp.Cool</code>. The class would not be found.</p>
+<p>You might wonder what defines the package name for a class. The answer is that the package name is part of the class and cannot be modified, except by recompiling the class.</p>
+<p>An interesting consequence of the package specification mechanism is that files that are part of the same package can exist in different directories. The package name is the same for each class, but the path to each file might start from a different directory in the class path.</p>
+<div id="JSSOR588"><a id="sthref13" name="sthref13"/>
+<h3>Folders and Archive Files</h3>
+<p>When classes are stored in a directory (folder), such as <code dir="ltr">/java/MyClasses/utility/myapp</code>, then the class path entry points to the directory that contains the first element of the package name. (in this case, <code dir="ltr">/java/MyClasses</code>, because the package name is utility.myapp).</p>
+<p>When classes are stored in an archive file (a <code dir="ltr">zi</code><code dir="ltr">p</code> or <code dir="ltr">JAR</code> file) the class path entry is the path to and including the zip or JAR file. For example, the command to use a class library that is in a <code dir="ltr">JAR</code> file as follows:</p>
+<pre dir="ltr" xml:space="preserve">
+java -classpath /java/MyClasses/myclasses.jar utility.myapp.Cool
+</pre></div>
+
+<div id="JSSOR589"><a id="sthref14" name="sthref14"/>
+<h3>Multiple Specifications</h3>
+<p>To find class files in the directory <code dir="ltr">/java/MyClasses</code> and classes in <code dir="ltr">/java/OtherClasses</code>, you would set the class path to the following. Note that the two paths are separated by a colon.</p>
+<pre dir="ltr" xml:space="preserve">
+java -classpath /java/MyClasses:/java/OtherClasses ...
+</pre></div>
+
+<div id="JSSOR590"><a id="sthref15" name="sthref15"/>
+<h3>Specification Order</h3>
+<p>The order in which you specify multiple class path entries is important. The Java interpreter will look for classes in the directories in the order they appear in the class path variable. In the previous example, the Java interpreter will first look for a needed class in the directory <code dir="ltr">/java/MyClasses</code>. Only when it does not find a class with the proper name in that directory will the interpreter look in the <code dir="ltr">/java/OtherClasses</code> directory.</p>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="findingclasses.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jdkfiles.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

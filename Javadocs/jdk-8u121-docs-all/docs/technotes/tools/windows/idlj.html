@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>idlj</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T8:11:41Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Windows, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38210-05" name="partnum"/>
+<meta content="JSWOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tnameserv.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="orbd.html">
+                Next</a><hr/>
+<div><a id="BGBIHGHI" name="BGBIHGHI"/>
+<div id="JSWOR711"><a id="BGBEEGCI" name="BGBEEGCI"/>
+<h1>idlj</h1>
+<p>Generates Java bindings for a specified Interface Definition Language (IDL) file.</p>
+<div><a id="sthref196" name="sthref196"/>
+<h2>Synopsis</h2>
+<p><b>idlj</b> [ <i>options</i> ] <i>idlfile</i></p>
+<dl>
+<dt><i>options</i></dt>
+<dd>
+<p>The command-line options. See <a href="#BGBFFEFE">Options</a>. Options can appear in any order, but must precede the <code dir="ltr">idlfile</code>.</p>
+</dd>
+<dt><i>idlfile</i></dt>
+<dd>
+<p>The name of a file that contains Interface Definition Language (IDL) definitions.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref197" name="sthref197"/>
+<h2>Description</h2>
+<p>The IDL-to-Java Compiler generates the Java bindings for a specified IDL file. For binding details, see Java IDL: IDL to Java Language Mapping at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/idl/mapping/jidlMapping.html">http://docs.oracle.com/javase/8/docs/technotes/guides/idl/mapping/jidlMapping.html</a></code></p>
+<p>Some earlier releases of the IDL-to-Java compiler were named <code dir="ltr">idltojava</code>.</p>
+<div><a id="sthref198" name="sthref198"/>
+<h3>Emit Client and Server Bindings</h3>
+<p>The following <code dir="ltr">idlj</code> command generates an IDL file named <code dir="ltr">My.idl</code> with client-side bindings.</p>
+<pre dir="ltr" xml:space="preserve">
+idlj My.idl
+</pre>
+<p>The previous syntax is equivalent to the following:</p>
+<pre dir="ltr" xml:space="preserve">
+idlj -fclient My.idl
+</pre>
+<p>The next example generates the server-side bindings, and includes the client-side bindings plus the skeleton, all of which are POA (Inheritance Model).</p>
+<pre dir="ltr" xml:space="preserve">
+idlg -fserver My.idl
+</pre>
+<p>If you want to generate both client and server-side bindings, then use one of the following (equivalent) commands:</p>
+<pre dir="ltr" xml:space="preserve">
+idlj -fclient -fserver My.idl
+idlj -fall My.idl
+</pre>
+<p>There are two possible server-side models: the Portal Servant Inheritance Model and the Tie Model. See <a href="#BGBBCDFD">Tie Delegation Model</a>.</p>
+<a id="JSWOR712" name="JSWOR712"/><a id="sthref199" name="sthref199"/>
+<p><b>Portable Servant Inheritance Model</b></p>
+<p>The default server-side model is the Portable Servant Inheritance Model. Given an interface <code dir="ltr">My</code> defined in <code dir="ltr">My.idl</code>, the file <code dir="ltr">MyPOA.java</code> is generated. You must provide the implementation for the <code dir="ltr">My</code> interface, and the <code dir="ltr">My</code> interface must inherit from the <code dir="ltr">MyPOA</code> class. <code dir="ltr">MyPOA.java</code> is a stream-based skeleton that extends the <code dir="ltr">org.omg.PortableServer.Servant</code> class at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/api/org/omg/PortableServer/Servant.html">http://docs.oracle.com/javase/8/docs/api/org/omg/PortableServer/Servant.html</a></code></p>
+<p>The <code dir="ltr">My</code> interface implements the <code dir="ltr">callHandler</code> interface and the operations interface associated with the IDL interface the skeleton implements.</p>
+<p>The <code dir="ltr">PortableServer</code> module for the Portable Object Adapter (POA) defines the native <code dir="ltr">Servant</code> type. See Portable Object Adapter (POA) at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/idl/POA.html">http://docs.oracle.com/javase/8/docs/technotes/guides/idl/POA.html</a></code></p>
+<p>In the Java programming language, the <code dir="ltr">Servant</code> type is mapped to the Java <code dir="ltr">org.omg.PortableServer.Servant</code> class. It serves as the base class for all POA servant implementations and provides a number of methods that can be called by the application programmer, and methods that are called by the POA and that can be overridden by the user to control aspects of servant behavior.</p>
+<p>Another option for the Inheritance Model is to use the <code dir="ltr">-oldImplBase</code> flag to generate server-side bindings that are compatible with releases of the Java programming language before Java SE 1.4. The -<code dir="ltr">oldImplBase</code> flag is nonstandard, and these APIs are deprecated. You would use this flag only for compatibility with existing servers written in Java SE 1.3. In that case, you would need to modify an existing make file to add the <code dir="ltr">-oldImplBase</code> flag to the <code dir="ltr">idlj</code> compiler. Otherwise POA-based server-side mappings are generated. To generate server-side bindings that are backward compatible, do the following:</p>
+<pre dir="ltr" xml:space="preserve">
+idlj -fclient -fserver -oldImplBase My.idl
+idlj -fall -oldImplBase My.idl
+</pre>
+<p>Given an interface <code dir="ltr">My</code> defined in <code dir="ltr">My.idl</code>, the file <code dir="ltr">_MyImplBase.java</code> is generated. You must provide the implementation for the <code dir="ltr">My</code> interface, and the <code dir="ltr">My</code> interface must inherit from the <code dir="ltr">_MyImplBase</code> class.</p>
+<a id="BGBBCDFD" name="BGBBCDFD"/><a id="JSWOR713" name="JSWOR713"/><a id="BGBJHCIC" name="BGBJHCIC"/>
+<p><b>Tie Delegation Model</b></p>
+<p>The other server-side model is called the Tie Model. This is a delegation model. Because it is not possible to generate ties and skeletons at the same time, they must be generated separately. The following commands generate the bindings for the Tie Model:</p>
+<pre dir="ltr" xml:space="preserve">
+idlj -fall My.idl
+idlj -fallTIE My.idl
+</pre>
+<p>For the <code dir="ltr">My</code> interface, the second command generates <code dir="ltr">MyPOATie.java</code>. The constructor to the <code dir="ltr">MyPOATie</code> class takes a delegate. In this example, using the default POA model, the constructor also needs a POA. You must provide the implementation for the delegate, but it does not have to inherit from any other class, only the interface <code dir="ltr">MyOperations</code>. To use it with the ORB, you must wrap your implementation within the <code dir="ltr">MyPOATie</code> class, for example:</p>
+<pre dir="ltr" xml:space="preserve">
+ORB orb = ORB.init(args, System.getProperties());
+ 
+// Get reference to rootpoa &amp; activate the POAManager
+POA rootpoa = (POA)orb.resolve_initial_references("RootPOA");
+rootpoa.the_POAManager().activate();
+ 
+// create servant and register it with the ORB
+MyServant myDelegate = new MyServant();
+myDelegate.setORB(orb); 
+ 
+// create a tie, with servant being the delegate.
+MyPOATie tie = new MyPOATie(myDelegate, rootpoa);
+ 
+// obtain the objectRef for the tie
+My ref = tie._this(orb);
+</pre>
+<p>You might want to use the Tie model instead of the typical Inheritance model when your implementation must inherit from some other implementation. Java allows any number of interface inheritance, but there is only one slot for class inheritance. If you use the inheritance model, then that slot is used up. With the Tie Model, that slot is freed up for your own use. The drawback is that it introduces a level of indirection: one extra method call occurs when a method is called.</p>
+<p>For server-side generation, Tie model bindings that are compatible with versions of the IDL to Java language mapping in versions earlier than Java SE 1.4.</p>
+<pre dir="ltr" xml:space="preserve">
+idlj -oldImplBase -fall My.idl
+idlj -oldImplBase -fallTIE My.idl
+</pre>
+<p>For the <code dir="ltr">My</code> interface, the this generates <code dir="ltr">My_Tie.java</code>. The constructor to the <code dir="ltr">My_Tie</code> class takes an <code dir="ltr">impl</code> object. You must provide the implementation for <code dir="ltr">impl</code>, but it does not have to inherit from any other class, only the interface <code dir="ltr">HelloOperations</code>. But to use it with the ORB, you must wrap your implementation within <code dir="ltr">My_Tie</code>, for example:</p>
+<pre dir="ltr" xml:space="preserve">
+ORB orb = ORB.init(args, System.getProperties());
+
+// create servant and register it with the ORB
+MyServant myDelegate = new MyServant();
+myDelegate.setORB(orb); 
+ 
+// create a tie, with servant being the delegate.
+MyPOATie tie = new MyPOATie(myDelegate);
+ 
+// obtain the objectRef for the tie
+My ref = tie._this(orb);
+</pre></div>
+
+<div><a id="sthref200" name="sthref200"/>
+<h3>Specify Alternate Locations for Emitted Files</h3>
+<p>If you want to direct the emitted files to a directory other than the current directory, then call the compiler this way: <code dir="ltr">i</code><code dir="ltr">dlj -td /altdir My.idl</code>.</p>
+<p>For the <code dir="ltr">My</code> interface, the bindings are emitted to <code dir="ltr">/altdir/My.java</code>, etc., instead of <code dir="ltr">./My.java</code>.</p>
+</div>
+
+<div><a id="sthref201" name="sthref201"/>
+<h3>Specify Alternate Locations for Include Files</h3>
+<p>If the <code dir="ltr">My.idl</code> file includes another <code dir="ltr">idl</code> file, <code dir="ltr">MyOther.idl</code>, then the compiler assumes that the <code dir="ltr">MyOther.idl</code> file resides in the local directory. If it resides in <code dir="ltr">/includes</code>, for example, then you call the compiler with the following command:</p>
+<pre dir="ltr" xml:space="preserve">
+idlj -i /includes My.idl
+</pre>
+<p>If <code dir="ltr">My.idl</code> also included <code dir="ltr">Another.idl</code> that resided in <code dir="ltr">/moreIncludes</code>, for example, then you call the compiler with the following command:</p>
+<pre dir="ltr" xml:space="preserve">
+idlj -i /includes -i /moreIncludes My.idl
+</pre>
+<p>Because this form of <code dir="ltr">include</code> can become long, another way to indicate to the compiler where to search for included files is provided. This technique is similar to the idea of an environment variable. Create a file named idl.config in a directory that is listed in your <code dir="ltr">CLASSPATH</code> variable. Inside of <code dir="ltr">idl.config</code>, provide a line with the following form:</p>
+<pre dir="ltr" xml:space="preserve">
+includes=/includes;/moreIncludes
+</pre>
+<p>The compiler will find this file and read in the includes list. Note that in this example the separator character between the two directories is a semicolon (;). This separator character is platform dependent. On the Windows platform, use a semicolon; on the Solaris, Linux, and OS X platforms, use a colon.</p>
+</div>
+
+<div><a id="sthref202" name="sthref202"/>
+<h3>Emit Bindings for Include Files</h3>
+<p>By default, only those interfaces, structures, and so on, that are defined in the <code dir="ltr">idl</code> file on the command line have Java bindings generated for them. The types defined in included files are not generated. For example, assume the following two <code dir="ltr">idl</code> files:</p>
+<pre dir="ltr" xml:space="preserve">
+My.idl file:
+ 
+#include &lt;MyOther.idl&gt;
+interface My
+{
+};
+ 
+MyOther.idl file:
+ 
+interface MyOther
+{
+};
+</pre>
+<p>There is a caveat to the default rule. Any <code dir="ltr">#include</code> statements that appear at the global scope are treated as described. These <code dir="ltr">#include</code> statements can be thought of as import statements. The <code dir="ltr">#include</code> statements that appear within an enclosed scope are treated as true <code dir="ltr">#include</code> statements, which means that the code within the included file is treated as though it appeared in the original file and, therefore, Java bindings are emitted for it. Here is an example:</p>
+<pre dir="ltr" xml:space="preserve">
+My.idl file:
+ 
+#include &lt;MyOther.idl&gt;
+interface My
+{
+  #include &lt;Embedded.idl&gt;
+};
+ 
+MyOther.idl file:
+ 
+interface MyOther
+{
+};
+ 
+Embedded.idl
+ 
+enum E {one, two, three};
+</pre>
+<p>Run <code dir="ltr">idlj My.idl</code> to generate the following list of Java files. Notice that <code dir="ltr">MyOther.java</code> is not generated because it is defined in an import-like <code dir="ltr">#include</code>. But <code dir="ltr">E.java</code> was generated because it was defined in a true <code dir="ltr">#include</code>. Notice that because the <code dir="ltr">Embedded.idl</code> file is included within the scope of the interface <code dir="ltr">My</code>, it appears within the scope of <code dir="ltr">My</code> (in <code dir="ltr">MyPackage</code>). If the <code dir="ltr">-emitAll</code> flag had been used, then all types in all included files would have been emitted.</p>
+<pre dir="ltr" xml:space="preserve">
+./MyHolder.java
+./MyHelper.java
+./_MyStub.java
+./MyPackage
+./MyPackage/EHolder.java
+./MyPackage/EHelper.java
+./MyPackage/E.java
+./My.java
+</pre></div>
+
+<div><a id="sthref203" name="sthref203"/>
+<h3>Insert Package Prefixes</h3>
+<p>Suppose that you work for a company named ABC that has constructed the following IDL file:</p>
+<pre dir="ltr" xml:space="preserve">
+Widgets.idl file:
+ 
+module Widgets
+{
+  interface W1 {...};
+  interface W2 {...};
+};
+</pre>
+<p>If you run this file through the IDL-to-Java compiler, then the Java bindings for W1 and W2 are placed within the <code dir="ltr">Widgets</code> package. There is an industry convention that states that a company's packages should reside within a package named <code dir="ltr">com.&lt;company name&gt;</code>. To follow this convention, the package name should be <code dir="ltr">com.abc.Widgets</code>. To place this package prefix onto the Widgets module, execute the following:</p>
+<pre dir="ltr" xml:space="preserve">
+idlj -pkgPrefix Widgets com.abc Widgets.idl
+</pre>
+<p>If you have an IDL file that includes Widgets.idl, then the <code dir="ltr">-pkgPrefix</code> flag must appear in that command also. If it does not, then your IDL file will be looking for a <code dir="ltr">Widgets</code> package rather than a <code dir="ltr">com.abc.Widgets</code> package.</p>
+<p>If you have a number of these packages that require prefixes, then it might be easier to place them into the idl.config file described previously. Each package prefix line should be of the form: <code dir="ltr">PkgPrefix.&lt;type&gt;=&lt;prefix&gt;</code>. The line for the previous example would be <code dir="ltr">PkgPrefix.Widgets=com.abc</code>. This option does not affect the Repository ID.</p>
+</div>
+
+<div><a id="sthref204" name="sthref204"/>
+<h3>Define Symbols Before Compilation</h3>
+<p>You might need to define a symbol for compilation that is not defined within the IDL file, perhaps to include debugging code in the bindings. The command <code dir="ltr">idlj -d MYDEF My.idl</code> is equivalent to putting the line <code dir="ltr">#define MYDEF</code> inside My.idl.</p>
+</div>
+
+<div><a id="sthref205" name="sthref205"/>
+<h3>Preserve Preexisting Bindings</h3>
+<p>If the Java binding files already exist, then the <code dir="ltr">-keep</code> flag keeps the compiler from overwriting them. The default is to generate all files without considering that they already exist. If you have customized those files (which you should not do unless you are very comfortable with their contents), then the <code dir="ltr">-keep</code> option is very useful. The command <code dir="ltr">idlj -keep My.idl</code> emits all client-side bindings that do not already exist.</p>
+</div>
+
+<div><a id="sthref206" name="sthref206"/>
+<h3>View Compilation Progress</h3>
+<p>The IDL-to-Java compiler generates status messages as it progresses through its phases of execution. Use the <code dir="ltr">-v</code> option to activate the verbose mode: <code dir="ltr">idlj -v My.idl</code>.</p>
+<p>By default the compiler does not operate in verbose mode</p>
+</div>
+
+<div><a id="sthref207" name="sthref207"/>
+<h3>Display Version Information</h3>
+<p>To display the build version of the IDL-to-Java compiler, specify the <code dir="ltr">-version</code> option on the command-line: <code dir="ltr">idlj -version</code>.</p>
+<p>Version information also appears within the bindings generated by the compiler. Any additional options appearing on the command-line are ignored.</p>
+</div>
+</div>
+
+<div><a id="BGBFFEFE" name="BGBFFEFE"/><a id="BGBGBDHA" name="BGBGBDHA"/>
+<h2>Options</h2>
+<dl>
+<dt>-d <i>symbol</i></dt>
+<dd>
+<p>This is equivalent to the following line in an IDL file:</p>
+<pre dir="ltr" xml:space="preserve">
+#define <i>symbol</i>
+</pre></dd>
+<dt>-demitAll</dt>
+<dd>
+<p>Emit all types, including those found in <code dir="ltr">#include</code> files.</p>
+</dd>
+<dt>-fside</dt>
+<dd>
+<p>Defines what bindings to emit. The <code dir="ltr">side</code> parameter can be <code dir="ltr">client</code>, <code dir="ltr">server</code>, <code dir="ltr">serverTIE</code>, <code dir="ltr">all</code>, or <code dir="ltr">allTIE</code>. The <code dir="ltr">-fserverTIE</code> and <code dir="ltr">-fallTIE</code> options cause delegate model skeletons to be emitted. Defaults to <code dir="ltr">-fclient</code> when the flag is not specified.</p>
+</dd>
+<dt>-i <i>include-path</i></dt>
+<dd>
+<p>By default, the current directory is scanned for included files. This option adds another directory.</p>
+</dd>
+<dt>-i <i>keep</i></dt>
+<dd>
+<p>If a file to be generated already exists, then do not overwrite it. By default it is overwritten.</p>
+</dd>
+<dt>-noWarn</dt>
+<dd>
+<p>Suppress warning messages.</p>
+</dd>
+<dt>-oldImplBase</dt>
+<dd>
+<p>Generates skeletons compatible with pre-1.4 JDK ORBs. By default, the POA Inheritance Model server-side bindings are generated. This option provides backward-compatibility with earlier releases of the Java programming language by generating server-side bindings that are <code dir="ltr">ImplBase</code> Inheritance Model classes.</p>
+</dd>
+<dt>-pkgPrefix <span>type</span> <span>prefix</span></dt>
+<dd>
+<p>Wherever <code dir="ltr">type</code> is encountered at file scope, prefix the generated Java package name with <code dir="ltr">prefix</code> for all files generated for that type. The type is the simple name of either a top-level module, or an IDL type defined outside of any module.</p>
+</dd>
+<dt>-pkgTranslate <span>type</span> <span>package</span></dt>
+<dd>
+<p>Whenever the module name type is encountered in an identifier, replace it in the identifier with package for all files in the generated Java package. Note that <code dir="ltr">pkgPrefix</code> changes are made first. The type value is the simple name of either a top-level module, or an IDL type defined outside of any module and must match the full package name exactly.</p>
+<p>If more than one translation matches an identifier, then the longest match is chosen as shown in the following example:</p>
+<p><b>Command</b>:</p>
+<pre dir="ltr" xml:space="preserve">
+pkgTranslate type pkg -pkgTranslate type2.baz pkg2.fizz
+</pre>
+<p><b>Resulting Translation</b>:</p>
+<pre dir="ltr" xml:space="preserve">
+type =&gt; pkg
+type.ext =&gt; pkg.ext
+type.baz =&gt; pkg2.fizz
+type2.baz.pkg =&gt; pkg2.fizz.pkg
+</pre>
+<p>The following package names <code dir="ltr">org</code>, <code dir="ltr">org</code>.o<code dir="ltr">mg</code>, or any subpackages of <code dir="ltr">org.omg</code> cannot be translated. Any attempt to translate these packages results in uncompilable code, and the use of these packages as the first argument after <code dir="ltr">-pkgTranslate</code> is treated as an error.</p>
+</dd>
+<dt>-skeletonName <i>xxx%yyy</i></dt>
+<dd>
+<p>Use <code dir="ltr">xxx%yyy</code> as the pattern for naming the skeleton. The defaults are: <code dir="ltr">%POA</code> for the <code dir="ltr">POA</code> base class (<code dir="ltr">-fserver</code> or <code dir="ltr">-fall</code>), and <code dir="ltr">_%ImplBase</code> for the <code dir="ltr">oldImplBase</code> class (-<code dir="ltr">oldImplBase</code>) and (<code dir="ltr">-fserver</code> or <code dir="ltr">-fall</code>)).</p>
+</dd>
+<dt>-td <i>dir</i></dt>
+<dd>
+<p>Use <i>dir</i> for the output directory instead of the current directory.</p>
+</dd>
+<dt>-tieName <span>xxx%yyy</span></dt>
+<dd>
+<p>Use <code dir="ltr">xxx%yyy</code> according to the pattern. The defaults are: <code dir="ltr">%POA</code> for the <code dir="ltr">POA</code> base class (<code dir="ltr">-fserverTie or -fallTie</code>), and <code dir="ltr">_%Tie</code> for the <code dir="ltr">oldImplBase</code> tie class (-<code dir="ltr">oldImplBase</code>) and (<code dir="ltr">-fserverTie</code> or <code dir="ltr">-fallTie</code>))</p>
+</dd>
+<dt>-nowarn, -verbose</dt>
+<dd>
+<p>Displays release information and terminates.</p>
+</dd>
+<dt>-version</dt>
+<dd>
+<p>Displays release information and terminates.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref208" name="sthref208"/>
+<h2>Restrictions</h2>
+<p>Escaped identifiers in the global scope cannot have the same spelling as IDL primitive types, <code dir="ltr">Object</code>, or <code dir="ltr">ValueBase</code>. This is because the symbol table is preloaded with these identifiers. Allowing them to be redefined would overwrite their original definitions. Possible permanent restriction.</p>
+<p>The <code dir="ltr">fixed</code> IDL type is not supported.</p>
+</div>
+
+<div><a id="sthref209" name="sthref209"/>
+<h2>Known Problems</h2>
+<p>No import is generated for global identifiers. If you call an unexported local <code dir="ltr">impl</code> object, then you do get an exception, but it seems to be due to a <code dir="ltr">NullPointerException</code> in the <code dir="ltr">ServerDelegate</code> DSI code.</p>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tnameserv.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="orbd.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

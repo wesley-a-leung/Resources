@@ -1,0 +1,809 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Use of JAAS Login Utility and Java GSS-API for Secure
+Message Exchanges</title>
+<link rel="stylesheet" type="text/css" href="../../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<table summary="" width="550">
+<tr>
+<td align="left" valign="middle"><a href="LoginSample.html" target=
+"_top"><img src="images/PreviousArrow.gif" width="26" height="26"
+align="middle" border="0" alt="Previous Tutorial" /></a> <a href=
+"index.html" target="_top"><img src="images/TOCIcon.gif" width="26"
+height="26" align="middle" border="0" alt=
+"Tutorials Introduction and TOC" /></a> <a href="MoreToDo.html"
+target="_top"><img src="images/NextArrow.gif" width="26" height=
+"26" align="middle" border="0" alt="Next Tutorial" /></a></td>
+</tr>
+</table>
+<hr />
+
+<h1>Use of JAAS Login Utility and Java GSS-API for Secure Message
+Exchanges</h1>
+
+<br />
+<br />
+<p>This tutorial presents two sample applications to demonstrate
+the use of the Java GSS-API. This API permits secure exchanges of
+messages between communicating applications. Here are the sample
+client and server applications you'll need for this tutorial:</p>
+<ul>
+<li><a href="SampleClient.java"><code>SampleClient</code></a></li>
+<li><a href="SampleServer.java"><code>SampleServer</code></a></li>
+</ul>
+<hr />
+<b>Note:</b> This tutorial uses the same client and server
+applications as the <a href="BasicClientServer.html">Use of Java
+GSS-API for Secure Message Exchanges Without JAAS Programming</a>
+tutorial. In that tutorial, JAAS (Java Authentication and
+Authorization Service) programming is not required. Instead, you
+let the underlying mechanism decide how to get credentials.
+<hr />
+This tutorial uses policy files and a more complex login
+configuration file. The programs are run with a security manager;
+as a result, security-sensitive operations are not allowed unless
+the required permissions were explicitly granted. This tutorial
+also demonstrates how JAAS authorization adds <i>user-centric</i>
+access control that applies control based on <i>who</i> is running
+the code--not just on what code is running.
+<p>Contents:</p>
+<ul>
+<li><a href="#Before">Before You Start: Recommended
+Reading</a></li>
+<li><a href="#Overview">Overview of the Client And Server
+Applications</a></li>
+<li><a href="#KerbNames">Kerberos User and Service Principal
+Names</a></li>
+<li><a href="#TheLCF">The Login Configuration File</a></li>
+<li><a href="#ThePFs">The Policy Files</a></li>
+<li><a href="#RunProgs">Running the SampleClient and
+<code>SampleServer</code> Programs</a></li>
+</ul>
+<br />
+<br />
+<br />
+<a name="Before" id="Before"></a>
+<h2>Before You Start: Recommended Reading</h2>
+In this Java GSS-API tutorial, the first step is JAAS
+authentication. Previous tutorials demonstrated the use of JAAS for
+user authentication and authorization, and presented examples of
+policy files and of login configuration files (specifying the
+underlying authentication technology to be used) that JAAS
+requires. Applications in the JAAS introductory tutorials, <a href=
+"AcnOnly.html">JAAS Authentication</a> and <a href=
+"AcnAndAzn.html">JAAS Authorization</a>, made direct calls to JAAS
+methods. The <a href="LoginSample.html">Use of JAAS Login
+Utility</a> tutorial showed the use of a utility program that frees
+the application from having to do this. The client and server
+applications in the current tutorial also use the same utility
+program, so we recommend you <b>read the login utility tutorial
+first</b>.
+<p>As with all tutorials in this series, the underlying technology
+used to support authentication and secure communication for the
+applications in this tutorial is Kerberos. See <a href=
+"KerberosReq.html">Kerberos Requirements</a>.</p>
+<p><a name="Overview" id="Overview"></a></p>
+<h2>Overview of the Client and Server Applications</h2>
+<p>The applications for this tutorial are named
+<code>SampleClient</code> and <code>SampleServer</code>.</p>
+<p>Each is invoked by executing the Login utility supplied with
+this tutorial and passing it as arguments the name of the
+application (<code>SampleClient</code> or
+<code>SampleServer</code>), followed by the arguments needed by the
+application. The Login utility uses a JAAS LoginContext to
+authenticate the user using Kerberos. Finally, the Login utility
+invokes the <code>main</code> method of the application class, in
+our case either <code>SampleClient</code> or
+<code>SampleServer</code>, and passes the application its
+arguments.</p>
+<p>Here is a summary of execution of the <code>SampleClient</code>
+and <code>SampleServer</code> applications:</p>
+<ol>
+<li>Run the <code>SampleServer</code> application by running the
+Login utility and passing it as arguments the name
+"<code>SampleServer</code>" followed by the arguments for the
+<code>SampleServer</code> program. The Login utility prompts you
+for the password for the principal that <code>SampleServer</code>
+should run as. (See <a href="#KerbNames">Kerberos User and Service
+Principal Names</a>.) After authentication is complete,
+<code>SampleServer</code> is run it:
+<ol>
+<li>Reads its argument, the port number that it should listen on
+for client connections.</li>
+<li>Creates a ServerSocket for listening for client connections on
+that port.</li>
+<li>Listens for a connection.</li>
+</ol>
+</li>
+<li>Run the <code>SampleClient</code> application (possibly on a
+different machine), by running the Login utility and passing it as
+arguments the name "<code>SampleClient</code>" followed by the
+arguments for the <code>SampleClient</code> program. The Login
+utility prompts you for your Kerberos name and password. After
+authentication is complete, <code>SampleClient</code> is run. It
+<ol>
+<li>Reads its arguments: (1) The name of the Kerberos principal
+that represents <code>SampleServer</code>. (See <a href=
+"#KerbNames">Kerberos User and Service Principal Names</a>.), (2)
+the name of the host (machine) on which <code>SampleServer</code>
+is running, and (3) the port number on which
+<code>SampleServer</code> listens for client connections.</li>
+<li>Attempts a socket connection with the
+<code>SampleServer</code>, using the host and port it was passed as
+arguments.</li>
+</ol>
+</li>
+<li>The socket connection is accepted by <code>SampleServer</code>
+and both applications initialize a DataInputStream and a
+DataOutputStream from the socket input and output streams, to be
+used for future data exchanges.</li>
+<li><code>SampleClient</code> and <code>SampleServer</code> each
+instantiate a GSSContext and establish a shared context that will
+enable subsequent secure data exchanges.</li>
+<li><code>SampleClient</code> and <code>SampleServer</code> can now
+securely exchange messages.</li>
+<li>When <code>SampleClient</code> and <code>SampleServer</code>
+are done exchanging messages, they perform clean-up
+operations.</li>
+</ol>
+<hr />
+<b>Note:</b> Refer to "The <code>SampleClient</code> and
+<code>SampleServer</code> Code" section of the <a href=
+"BasicClientServer.html">Use of Java GSS-API for Secure Message
+Exchanges Without JAAS Programming</a> tutorial for a full
+discussion of the code used in this tutorial.
+<hr />
+<a name="KerbNames" id="KerbNames"></a>
+<h2>Kerberos User and Service Principal Names</h2>
+<p>Since the underlying authentication and secure communication
+technology used by this tutorial is Kerberos V5, we use
+Kerberos-style <a href="glossary.html">principal</a> names wherever
+a user or service is called for.</p>
+<p>For example, when you run <code>SampleClient</code> you are
+asked to provide your <b>user name</b>. Your Kerberos-style user
+name is simply the user name you were assigned for Kerberos
+authentication. It consists of a base user name (like "mjones")
+followed by an "@" and your realm (like
+"mjones@KRBNT-OPERATIONS.EXAMPLE.COM").</p>
+<p>A server program like <code>SampleServer</code> is typically
+considered to offer a "service" and to be run on behalf of a
+particular "<b>service principal</b>." A service principal name for
+<code>SampleServer</code> is needed in several places:</p>
+<ul>
+<li>When you run <code>SampleServer</code> you must log in as the
+appropriate service principal. The login configuration file for
+this tutorial actually specifies the service principal name (as an
+option to the Krb5LoginModule), so the JAAS authentication (done by
+the Login utility) just asks you to specify the password for that
+service principal. If you specify the correct password, the
+authentication is successful, a Subject is created containing a
+Principal with the service principal name, and that Subject is
+associated with a new access control context. The
+subsequently-executed code (the <code>SampleServer</code> code) is
+considered to be executed on behalf of the specified
+principal.</li>
+<li>When you run <code>SampleClient</code>, one of the arguments is
+the service principal name. This is needed so
+<code>SampleClient</code> can initiate establishment of a security
+context with the appropriate service.</li>
+<li>The client and server policy files each require a
+ServicePermission with name equal to the service principal name and
+action equal to "initiate" or "accept" (for initiating or accepting
+establishment of a security context).</li>
+</ul>
+<p>Throughout this document, and in the accompanying login
+configuration file and policy files,</p>
+<pre>
+service_principal@your_realm
+</pre>
+is used as a placeholder to be replaced by the actual name to be
+used in your environment. <i>Any</i> Kerberos principal can
+actually be used for the service principal name. So <b>for the
+purposes of trying out this tutorial, you could use your user name
+as both the client user name and the service principal name.</b>
+<p>In a production environment, system administrators typically
+like servers to be run as specific principals only and may assign a
+particular name to be used. Often the Kerberos-style service
+principal name assigned is of the form</p>
+<pre>
+service_name/machine_name@realm; 
+</pre>
+<p>For example, an nfs service run on a machine named "raven" in
+the realm named "KRBNT-OPERATIONS.EXAMPLE.COM" could have the
+service principal name</p>
+<pre>
+nfs/raven@KRBNT-OPERATIONS.EXAMPLE.COM
+</pre>
+<p>Such multi-component names are not required, however.
+Single-component names, just like those of user principals, can be
+used. For example, an installation might use the same ftp service
+principal <code>ftp@realm</code> for all ftp servers in that realm,
+while another installation might have different ftp principals for
+different ftp servers, such as <code>ftp/host1@realm</code> and
+<code>ftp/host2@realm</code> on machines <code>host1</code> and
+<code>host2</code>, respectively.</p>
+<h3>When the Realm is Required in Principal Names</h3>
+<p>If the realm of a user or service principal name is the default
+realm (see <a href="KerberosReq.html">Kerberos Requirements</a>),
+you can leave off the realm when you are logging into Kerberos
+(that is, when you are prompted for your username). Thus, for
+example, if your user name is
+"mjones@KRBNT-OPERATIONS.EXAMPLE.COM", and you run
+<code>SampleClient</code>, when it requests your user name you
+could just specify "mjones", leaving off the realm. The name is
+interpreted in the context of being a Kerberos principal name and
+the default realm is appended, as needed.</p>
+<p>You can also leave off the realm if a principal name will be
+converted to a GSSName by a GSSManager <code>createName</code>
+method. For example, when you run <code>SampleClient</code>, one of
+the arguments is the server service principal name. You can specify
+the name without including the realm, because
+<code>SampleClient</code> passes the name to such a
+<code>createName</code> method, which appends the default realm as
+needed.</p>
+<p>It is recommended that you always include realms when principal
+names are used in login configuration files and policy files,
+because the behavior of the parsers for such files may be
+implementation-dependent; they may or may not append the default
+realm before such names are utilized and subsequent actions may
+fail if there is no realm in the name.</p>
+<a name="TheLCF" id="TheLCF"></a>
+<h2>The Login Configuration File</h2>
+<p>Whenever JAAS is used, a login configuration is required to
+specify the desired authentication technology. (See <a href=
+"LoginConfigFile.html">JAAS Login Configuration File</a> for more
+information about what a login configuration file is.) Both
+<code>SampleClient</code> and <code>SampleServer</code> can use the
+same login configuration file, if that file contains two entries,
+one entry for the client side and one for the server side.</p>
+<p>The <a href="csLogin.conf">csLogin.conf</a> login configuration
+file used for this tutorial is the following:</p>
+<pre>
+<b>SampleClient</b> {
+  com.sun.security.auth.module.Krb5LoginModule required;
+};
+
+<b>SampleServer</b> {
+  com.sun.security.auth.module.Krb5LoginModule required storeKey=true 
+    principal="service_principal@your_realm";
+};
+</pre>
+<p>Note that the name for each entry matches the respective class
+names for our two top-level applications, <code>SampleClient</code>
+and <code>SampleServer</code>. Recall that this is also the name
+that is passed to the Login utility that performs JAAS operations
+for the application. That utility expects the name of the entry to
+be looked up in your login configuration file to be the same as the
+name it is passed.</p>
+<p>Both entries specify that Sun's Kerberos V5 LoginModule must be
+used to successfully authenticate the user. The Krb5LoginModule
+succeeds only if the attempt to log in to the Kerberos KDC as a
+specified entity is successful. In the case of
+<code>SampleClient</code>, the user will be prompted for their name
+and password. In the case of <code>SampleServer</code>, a name is
+already supplied in this login configuration file (the specified
+principal, as described below) and the user running
+<code>SampleServer</code> is just asked for the password for the
+entity specified by that name. They must specify the correct
+password in order for authentication to succeed.</p>
+<p>The <code>SampleServer</code> entry
+<b><code>storeKey=true</code></b> indicates that a secret key
+should be calculated from the password provided during login and it
+should be stored in the private credentials of the Subject created
+as a result of login. This key is subsequently utilized during
+mutual authentication when establishing a security context between
+<code>SampleClient</code> and <code>SampleServer</code>.</p>
+<p>The Krb5LoginModule has a <b><code>principal</code></b> option
+that can be used to specify that only the specified principal
+(entity/user) should be logged in for the given program. Here, the
+<code>SampleClient</code> entry does not specify a principal
+(although it could, if desired), so the user is prompted for a user
+name and password and anyone with a valid user name and password
+can run <code>SampleClient</code>. <code>SampleServer</code>, on
+the other hand, indicates a particular principal because system
+administrators usually like servers to be run as specific
+principals only. In this case, the user running
+<code>SampleServer</code> is prompted for that principal's password
+and must supply the correct one in order for authentication to
+succeed.</p>
+<p>Note that you must replace "service_principal@your_realm" with
+the name of the service principal that represents
+<code>SampleServer</code>. (See <a href="#KerbNames">Kerberos User
+and Service Principal Names</a>.)</p>
+<p>For information about all the possible options that can be
+passed to Krb5LoginModule, see the <a href=
+"../../../../../jre/api/security/jaas/spec/com/sun/security/auth/module/Krb5LoginModule.html">
+Krb5LoginModule documentation</a>.</p>
+<a name="ThePFs" id="ThePFs"></a>
+<h2>The Policy Files</h2>
+<p>The policy file used when running <code>SampleClient</code> is
+<a href="client.policy">client.policy</a>, and the policy file used
+when running <code>SampleServer</code> is <a href=
+"server.policy">server.policy</a>. Their contents are described
+below.</p>
+<h3>The Client Policy File</h3>
+<p><a name="LoginPerms" id="LoginPerms"></a></p>
+<h3>Permissions Required by the Login utility Classes</h3>
+<p>A number of permissions are required by the classes in
+<code>Login.java</code> (Login and MyAction). As recommended in the
+<a href="LoginSample.html">previous tutorial</a> on the use of
+Login, we create a <code>Login.jar</code> JAR file containing the
+<code>Login.class</code> and <code>MyAction.class</code> files and
+in the <code>client.policy</code> policy file we grant
+<code>Login.jar AllPermission</code>:</p>
+<pre>
+grant codebase "file:./Login.jar" {
+   permission java.security.AllPermission;
+};
+</pre>
+<h3>Permissions Required by <code>SampleClient</code></h3>
+<p>The <code>SampleClient</code> code does two types of operations
+for which permissions are required. It</p>
+<ul>
+<li>opens a socket connection with the host machine running the
+<code>SampleServer</code> application.</li>
+<li>initiates establishment of a security context with
+<code>SampleServer</code>.</li>
+</ul>
+<p>The permission required to open a socket connection is</p>
+<pre>
+permission java.net.SocketPermission "*", "connect";
+</pre>
+<p>You may replace the "*" with the hostname or IP address of the
+machine that <code>SampleServer</code> will be running on.</p>
+<p>The permission(s) required to initiate establishment of a
+security context will depend on the underlying mechanism. This
+tutorial uses Kerberos as the underlying mechanism, and for that
+two <code>javax.security.auth.kerberos.ServicePermission</code>s
+are required. A ServicePermission contains a service principal name
+and an action (or list of actions). To initiate establishment of a
+security context, you need two ServicePermissions with action
+"initiate", whose names specify:</p>
+<ul>
+<li>the service principal name for the ticket granting service for
+your realm. Granting this permission essentially allows the use of
+Kerberos as a client.</li>
+<li>the service principal name representing
+<code>SampleServer</code>. (See <a href="#KerbNames">Kerberos User
+and Service Principal Names</a>.) Granting this permission allows
+you to interact with the service, <code>SampleServer</code>, using
+Kerberos.</li>
+</ul>
+<p>We want to grant the permissions to a specific authenticated
+user executing <code>SampleClient</code>, so we specify both the
+<code>SampleClient</code> code location (in
+<code>SampleClient.jar</code>) and a Principal designation
+indicating the user name and realm for the user (you, the person
+who will run <code>SampleClient</code>). (See <a href=
+"AcnAndAzn.html#UserPFStmts">How Do You Make Principal-Based Policy
+File Statements?</a> in the second tutorial of this series for
+information on policy file <code>grant</code> statements that
+include Principal designations.)</p>
+<p>Here is the basic form for the <code>grant</code> statement:</p>
+<pre>
+  grant CodeBase "file:./SampleClient.jar", 
+    Principal javax.security.auth.kerberos.KerberosPrincipal 
+        "your_user_name@your_realm" {
+
+    permission java.net.SocketPermission "*", "connect";
+
+    permission javax.security.auth.kerberos.ServicePermission
+        "krbtgt/your_realm@your_realm", 
+        "initiate";
+
+    permission javax.security.auth.kerberos.ServicePermission
+        "service_principal@your_realm", 
+        "initiate";
+};
+</pre>
+<p>You must substitute your Kerberos user name (complete with "@"
+and realm) for "<code>your_user_name@your_realm</code>". For
+example, if your user name is "mjones" and your realm is
+"KRBNT-OPERATIONS.EXAMPLE.COM", you would use
+"mjones@KRBNT-OPERATIONS.EXAMPLE.COM" (complete with the
+quotes).</p>
+<p>You must also substitute your realm in
+"krbtgt/your_realm@your_realm" and <a href="#KerbNames">the service
+principal name for the service principal representing the
+server</a> for "<code>service_principal@your_realm</code>". Suppose
+the former is
+"krbtgt/KRBNT-OPERATIONS.EXAMPLE.COM@KRBNT-OPERATIONS.EXAMPLE.COM"
+and the latter is
+"sample/raven.example.com@KRBNT-OPERATIONS.EXAMPLE.COM", and your
+user name is as specified in the previous paragraph. Then the
+<code>grant</code> statement would be</p>
+<pre>
+grant CodeBase "file:./SampleClient.jar", 
+    Principal javax.security.auth.kerberos.KerberosPrincipal 
+        "mjones@KRBNT-OPERATIONS.EXAMPLE.COM" {
+
+    permission java.net.SocketPermission "*", "connect";
+
+    permission javax.security.auth.kerberos.ServicePermission
+        "krbtgt/KRBNT-OPERATIONS.EXAMPLE.COM@KRBNT-OPERATIONS.EXAMPLE.COM", 
+        "initiate";
+
+    permission javax.security.auth.kerberos.ServicePermission
+        "sample/raven.example.com@KRBNT-OPERATIONS.EXAMPLE.COM", 
+        "initiate";
+};
+</pre>
+<h3>The Server Policy File</h3>
+<h3>Permissions Required by the Login Utility Classes</h3>
+<p>The <code>grant</code> statement in the server policy file for
+the Login classes is exactly the same as the one in the client
+policy file, as described in <a href="#LoginPerms">Permissions
+Required by the Login Utility Classes</a>:</p>
+<pre>
+grant codebase "file:./Login.jar" {
+   permission java.security.AllPermission;
+};
+</pre>
+<h3>Permissions Required by <code>SampleServer</code></h3>
+<p>The <code>SampleServer</code> code does two types of operations
+for which permissions are required. It</p>
+<ul>
+<li>accepts socket connections.</li>
+<li>accepts establishment of a security context, that is, it is the
+"acceptor" for security context establishment.</li>
+</ul>
+<p>The permission required to accept socket connections is</p>
+<pre>
+permission java.net.SocketPermission "*", "accept";
+</pre>
+<p>You may replace the "*" with the hostname or IP address of the
+machine that <code>SampleClient</code> will be running on.</p>
+<p>The permission required to accept establishment of a security
+context is</p>
+<pre>
+permission javax.security.auth.kerberos.ServicePermission
+    "service_principal@your_realm", 
+    "accept";
+</pre>
+where "service_principal@your_realm" is <a href="#KerbNames">the
+Kerberos name of the service principal that represents
+<code>SampleServer</code></a>.
+<p>We want to grant the permissions to a specific authenticated
+user executing <code>SampleServer</code> (the service principal
+considered to represent <code>SampleServer</code>), so we specify
+both the <code>SampleServer</code> code location (in
+<code>SampleServer.jar</code>) and a Principal designation
+indicating the service principal. Suppose this name is
+"sample/raven.example.com@KRBNT-OPERATIONS.EXAMPLE.COM". Then the
+<code>grant</code> statement would be</p>
+<pre>
+  grant CodeBase "file:./SampleServer.jar" 
+    Principal javax.security.auth.kerberos.KerberosPrincipal 
+        "sample/raven.example.com@KRBNT-OPERATIONS.EXAMPLE.COM" {
+
+    permission java.net.SocketPermission "*", "accept";
+
+    permission javax.security.auth.kerberos.ServicePermission
+        "sample/raven.example.com@KRBNT-OPERATIONS.EXAMPLE.COM", "accept";
+};
+</pre>
+<a name="RunProgs" id="RunProgs"></a>
+<h2>Running the <code>SampleClient</code> and
+<code>SampleServer</code> Programs</h2>
+<p>To execute the <code>SampleClient</code> and
+<code>SampleServer</code> programs, do the following:</p>
+<ul>
+<li><a href="#PrepSS">Prepare <code>SampleServer</code> for
+Execution</a></li>
+<li><a href="#PrepSC">Prepare <code>SampleClient</code> for
+Execution</a></li>
+<li><a href="#ExecSS">Execute <code>SampleServer</code></a></li>
+<li><a href="#ExecSC">Execute <code>SampleClient</code></a></li>
+</ul>
+<a name="PrepSS" id="PrepSS"></a>
+<h3>Prepare <code>SampleServer</code> for Execution</h3>
+<p>To prepare <code>SampleServer</code> for execution, do the
+following:</p>
+<ol>
+<li>Copy the following files into a directory accessible by the
+machine on which you will run <code>SampleServer</code>:
+<ul>
+<li>The <a href="Login.java">Login.java</a> source file.</li>
+<li>The <a href="SampleServer.java">SampleServer.java</a> source
+file.</li>
+<li>The <a href="csLogin.conf">csLogin.conf</a> login configuration
+file.</li>
+<li>The <a href="server.policy">server.policy</a> policy file.</li>
+</ul>
+</li>
+<li>Replace "service_principal@your_realm" in
+<code>csLogin.conf</code> with <a href="#KerbNames">the name of the
+service principal representing <code>SampleServer</code></a>.</li>
+<li>In both places it appears, replace
+"service_principal@your_realm" in <code>server.policy</code> with
+the Kerberos name of the service principal that represents
+<code>SampleServer</code>. (The same name as that used in the login
+configuration file.)</li>
+<li>Compile <code>Login.java</code> and
+<code>SampleServer.java</code>:
+<pre>
+javac Login.java SampleServer.java
+</pre>
+<p>Note that <code>Login.java</code> contains two classes and thus
+compiling <code>Login.java</code> creates <code>Login.class</code>
+and <code>MyAction.class</code>.</p>
+</li>
+<li>Create a JAR file named <code>Login.jar</code> containing
+<code>Login.class and MyAction.class</code>:
+<pre>
+jar -cvf Login.jar Login.class MyAction.class
+</pre></li>
+<li>Create a JAR file named <code>SampleServer.jar</code>
+containing <code>SampleServer.class</code>:
+<pre>
+jar -cvf SampleServer.jar SampleServer.class
+</pre></li>
+</ol>
+<a name="PrepSC" id="PrepSC"></a>
+<h3>Prepare <code>SampleClient</code> for Execution</h3>
+<p>To prepare <code>SampleClient</code> for execution, do the
+following:</p>
+<ol>
+<li>Copy the following files into a directory accessible by the
+machine on which you will run <code>SampleClient</code>:
+<ul>
+<li>The <a href="Login.java">Login.java</a> source file.</li>
+<li>The <a href="SampleClient.java">SampleClient.java</a> source
+file.</li>
+<li>The <a href="csLogin.conf">csLogin.conf</a> login configuration
+file.</li>
+<li>The <a href="client.policy">client.policy</a> policy file.</li>
+</ul>
+</li>
+<li>Replace parts of <code>client.policy</code>:
+<ul>
+<li>replace "your_user_name@your_realm" with your user name and
+realm.</li>
+<li>replace <code>your_realm</code> in
+"krbtgt/your_realm@your_realm" with your realm.</li>
+<li>replace "service_principal@your_realm" with <a href=
+"#KerbNames">the Kerberos name of the service principal that
+represents <code>SampleServer</code></a>.</li>
+</ul>
+</li>
+<li>Compile <code>Login.java</code> and
+<code>SampleClient.java</code>:
+<pre>
+javac Login.java SampleClient.java
+</pre></li>
+<li>Create a JAR file named <code>Login.jar</code> containing
+<code>Login.class and MyAction.class</code>:
+<pre>
+jar -cvf Login.jar Login.class MyAction.class
+</pre></li>
+<li>Create a JAR file named <code>SampleClient.jar</code>
+containing <code>SampleClient.class</code>:
+<pre>
+jar -cvf SampleClient.jar SampleClient.class
+</pre></li>
+</ol>
+<a name="ExecSS" id="ExecSS"></a>
+<h3>Execute <code>SampleServer</code></h3>
+<p>It is important to execute <code>SampleServer</code> before
+<code>SampleClient</code> because <code>SampleClient</code> will
+try to make a socket connection to <code>SampleServer</code> and
+that will fail if <code>SampleServer</code> is not yet running and
+accepting socket connections.</p>
+<p>To execute <code>SampleServer</code>, be sure to run it on the
+machine it is expected to be run on. This machine name (host name)
+is specified as an argument to <code>SampleClient</code>. The
+service principal name appears in several places, including the
+login configuration file and the policy files.</p>
+<p>Go to the directory in which you have prepared
+<code>SampleServer</code> for execution. Execute the
+<code>Login</code> class, specifying</p>
+<ul>
+<li>by an appropriate <code>-classpath</code> clause that classes
+should be searched for in the <code>Login.jar</code> and
+<code>SampleServer.jar</code> JAR files,</li>
+<li>by <code>-Djava.security.manager</code> that a security manager
+should be installed,</li>
+<li>by <code>-Djava.security.krb5.realm=&lt;your_realm&gt;</code>
+that your Kerberos realm is the one specified. For example, if your
+realm is "KRBNT-OPERATIONS.EXAMPLE.COM" you'd put
+<code>-Djava.security.krb5.realm=KRBNT-OPERATIONS.EXAMPLE.COM</code>.</li>
+<li>by <code>-Djava.security.krb5.kdc=&lt;your_kdc&gt;</code> that
+your Kerberos KDC is the one specified. For example, if your KDC is
+"samplekdc.example.com" you'd put
+<code>-Djava.security.krb5.kdc=samplekdc.example.com</code>.</li>
+<li>by <code>-Djava.security.policy=server.policy</code> that the
+policy file to be used is <code>server.policy</code>, and</li>
+<li>by <code>-Djava.security.auth.login.config=csLogin.conf</code>
+that the login configuration file to be used is
+<code>csLogin.conf</code>.</li>
+</ul>
+<p>You pass the name of your application (in this case,
+"<code>SampleServer</code>") as an argument to Login. You then add
+as arguments any arguments required by your application, which in
+the case of <code>SampleServer</code> is a single argument
+specifying the port number to be used for listening for client
+connections. Choose a high port number unlikely to be used for
+anything else. An example would be something like 4444.</p>
+<p>Below are the full commands to use for both Microsoft Windows
+and Solaris, Linux, and Mac OS X systems.
+The only difference is that on Microsoft Windows
+systems you use semicolons to separate classpath items, while you
+use colons for that purpose on Solaris, Linux, and Mac OS X systems.</p>
+<p><b>Important: In these commands, you must replace
+<code>&lt;port_number&gt;</code> with an appropriate port number,
+<code>&lt;your_realm&gt;</code> with your Kerberos realm, and
+<code>&lt;your_kdc&gt;</code> with your Kerberos KDC.</b></p>
+<p>Here is the command for Microsoft Windows systems:</p>
+<pre>
+java -classpath Login.jar;SampleServer.jar 
+ -Djava.security.manager 
+ -Djava.security.krb5.realm=&lt;your_realm&gt; 
+ -Djava.security.krb5.kdc=&lt;your_kdc&gt; 
+ -Djava.security.policy=server.policy 
+ -Djava.security.auth.login.config=csLogin.conf 
+ Login SampleServer &lt;port_number&gt;
+</pre>
+<p>Here is the command for Solaris, Linux, and Mac OS X systems:</p>
+<pre>
+java -classpath Login.jar:SampleServer.jar 
+ -Djava.security.manager 
+ -Djava.security.krb5.realm=&lt;your_realm&gt; 
+ -Djava.security.krb5.kdc=&lt;your_kdc&gt; 
+ -Djava.security.policy=server.policy 
+ -Djava.security.auth.login.config=csLogin.conf 
+ Login SampleServer &lt;port_number&gt;
+</pre>
+<p>Type the full command on one line. Multiple lines are used here
+for legibility. If the command is too long for your system, you may
+need to place it in a .bat file (for Microsoft Windows) or a .sh
+file (for Solaris, Linux, and Mac OS X) and then run that file
+to execute the command.</p>
+<p>You will be prompted for the Kerberos password for the service
+principal. The underlying Kerberos authentication mechanism
+specified in the login configuration file will log the service
+principal into Kerberos. Once authentication is successfully
+completed, the <code>SampleServer</code> code will be executed on
+behalf of the service principal. It will listen for socket
+connections on the specified port.</p>
+<p>For login troubleshooting suggestions, see <a href=
+"Troubleshooting.html">Troubleshooting</a>.</p>
+<a name="ExecSC" id="ExecSC"></a>
+<h3>Execute <code>SampleClient</code></h3>
+<p>To execute <code>SampleClient</code>, go to the directory in
+which you have prepared <code>SampleClient</code> for execution.
+Then execute the <code>Login</code> class, specifying</p>
+<ul>
+<li>by an appropriate <code>-classpath</code> clause that classes
+should be searched for in the <code>Login.jar</code> and
+<code>SampleClient.jar</code> JAR files,</li>
+<li>by <code>-Djava.security.manager</code> that a security manager
+should be installed,</li>
+<li>by <code>-Djava.security.krb5.realm=&lt;your_realm&gt;</code>
+that your Kerberos realm is the one specified.</li>
+<li>by <code>-Djava.security.krb5.kdc=&lt;your_kdc&gt;</code> that
+your Kerberos KDC is the one specified.</li>
+<li>by <code>-Djava.security.policy=client.policy</code> that the
+policy file to be used is <code>client.policy</code>, and</li>
+<li>by <code>-Djava.security.auth.login.config=csLogin.conf</code>
+that the login configuration file to be used is
+<code>csLogin.conf</code>.</li>
+</ul>
+<p>Pass to Login the name of your application
+("<code>SampleClient</code>") followed by the arguments required by
+<code>SampleClient</code>. The <code>SampleClient</code> arguments
+are (1) <a href="#KerbNames">the Kerberos name of the service
+principal that represents <code>SampleServer</code></a>, (2) the
+name of the host (machine) on which <code>SampleServer</code> is
+running, and (3) the port number on which <code>SampleServer</code>
+is listening for client connections.</p>
+<p>Below are the full commands to use for both Microsoft Windows
+and Solaris, Linux, and Mac OS X systems.</p>
+<p><b>Important: In these commands, you must replace
+<code>&lt;service_principal&gt;</code>, <code>&lt;host&gt;</code>,
+<code>&lt;port_number&gt;</code>, <code>&lt;your_realm&gt;</code>,
+and <code>&lt;your_kdc&gt;</code> with appropriate values</b> (and
+note that the port number must be the same as the port number
+passed as an argument to <code>SampleServer</code>). These values
+need not be placed in quotes.</p>
+<p>Here is the command for Microsoft Windows systems:</p>
+<pre>
+java -classpath Login.jar;SampleClient.jar 
+ -Djava.security.manager 
+ -Djava.security.krb5.realm=&lt;your_realm&gt; 
+ -Djava.security.krb5.kdc=&lt;your_kdc&gt; 
+ -Djava.security.policy=client.policy 
+ -Djava.security.auth.login.config=csLogin.conf 
+ Login SampleClient &lt;service_principal&gt; &lt;host&gt; &lt;port_number&gt;
+</pre>
+<p>Here is the command for Solaris, Linux, and Mac OS X systems:</p>
+<pre>
+java -classpath Login.jar:SampleClient.jar 
+ -Djava.security.manager 
+ -Djava.security.krb5.realm=&lt;your_realm&gt; 
+ -Djava.security.krb5.kdc=&lt;your_kdc&gt; 
+ -Djava.security.policy=client.policy 
+ -Djava.security.auth.login.config=csLogin.conf 
+ Login SampleClient &lt;service_principal&gt; &lt;host&gt; &lt;port_number&gt;
+</pre>
+<p>Type the full command on one line. Multiple lines are used here
+for legibility. As with the command for executing
+<code>SampleServer</code>, if the command is too long to type
+directly into your command window, place it in a .bat file
+(Microsoft Windows) or a .sh file (Solaris, Linux, and Mac OS X)
+and then execute that
+file.</p>
+<p>When prompted, type your Kerberos user name and password. The
+underlying Kerberos authentication mechanism specified in the login
+configuration file will log you into Kerberos. Once authentication
+is successfully completed, the <code>SampleClient</code> code will
+be executed on behalf of you. It will request a socket connection
+with <code>SampleServer</code>. Once <code>SampleServer</code>
+accepts the connection, <code>SampleClient</code> and
+<code>SampleServer</code> establish a shared context and then
+exchange messages as described in this tutorial.</p>
+<p>For login troubleshooting suggestions, see <a href=
+"Troubleshooting.html">Troubleshooting</a>.</p>
+<br />
+<hr />
+<table summary="" width="550">
+<tr>
+<td align="left" valign="middle"><a href="LoginSample.html" target=
+"_top"><img src="images/PreviousArrow.gif" width="26" height="26"
+align="middle" border="0" alt="Previous Tutorial" /></a> <a href=
+"index.html" target="_top"><img src="images/TOCIcon.gif" width="26"
+height="26" align="middle" border="0" alt=
+"Tutorials Introduction and TOC" /></a> <a href="MoreToDo.html"
+target="_top"><img src="images/NextArrow.gif" width="26" height=
+"26" align="middle" border="0" alt="Next Tutorial" /></a></td>
+</tr>
+</table>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

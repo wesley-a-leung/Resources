@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Print Service API User Guide: 4 - Printing and
+Streaming Documents</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<a href="JPSTOC.fm.html">CONTENTS</a> | <a href=
+"printing.fm2.html">PREV</a> | <a href=
+"printing.fm4.html">NEXT</a><br />
+<h2><a name="a998941" id="a998941">Obtaining a Print Job</a></h2>
+<a name="a998949" id="a998949"><!-- --></a> A print job is a
+submitted print request and includes one or more pieces of print
+data and a set of processing instructions. The Java Print Service
+represents a print job with the DocPrintJob object. Whether you are
+sending print data to a stream or to a printer, you create a print
+job in the same way: by calling createPrintJob on the service:
+<p><a name="a998479" id="a998479"><!-- --></a></p>
+<pre class="codeblock">
+   DocPrintJob pj = pservices[0].createPrintJob();
+</pre>
+<a name="a998986" id="a998986"><!-- --></a> An application obtains
+a print job from a service because the service only creates print
+jobs that are capable of handling data that the particular service
+can accept.
+<p><a name="a998475" id="a998475"><!-- --></a> The DocPrintJob
+interface provides the print method, which takes a
+PrintRequestAttributeSet parameter and a Doc encapsulating the
+print data and the doc flavor:</p>
+<p><a name="a998495" id="a998495"><!-- --></a></p>
+<pre class="codeblock">
+   pj.print(doc, aset);
+</pre>
+<a name="a998991" id="a998991"><!-- --></a> The next section
+discusses creating a Doc.<br />
+<hr />
+<a href="JPSTOC.fm.html">CONTENTS</a> | <a href=
+"printing.fm2.html">PREV</a> | <a href="printing.fm4.html">NEXT</a>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

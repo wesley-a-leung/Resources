@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Summary of Security Tools</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h2>Summary of Tools for Java Platform Security</h2>
+<b>Last Modified: <em>28 July, 2006</em></b><br />
+<p>Below is a summary of the following security tools, with links
+to the more detailed documentation: <a href="#keytool">keytool</a>,
+<a href="#jar">jar</a>, <a href="#jarsigner">jarsigner</a>,
+<a href="#policytool">Policy Tool</a>, <a href="#kinit">kinit</a>,
+<a href="#klist">klist</a>, and <a href="#ktab">ktab</a>. All of
+these tools are command-line tools with the exception of <b>Policy
+Tool</b>, which has a graphical user interface.</p>
+<h2>The Tools</h2>
+<a name="keytool" id="keytool"></a>
+<h3><b>keytool</b> (<a href=
+"../../tools/unix/keytool.html">Solaris, Linux, or Mac OS X</a>) (<a href=
+"../../tools/windows/keytool.html">Windows</a>)</h3>
+<p>Use <b>keytool</b> to manage your keystore, for example to</p>
+<ul>
+<li>create public/private key pairs</li>
+<li>issue certificate requests (which you send to the appropriate
+Certification Authority)</li>
+<li>import certificate replies (obtained from the Certification
+Authority you contacted)</li>
+<li>designate public keys belonging to other parties as
+trusted</li>
+<li>copy entries between two keystores</li>
+</ul>
+<p>Keys and certificates are used to digitally sign your
+applications and applets (see <b>jarsigner</b> below). A
+<i>keystore</i> is a protected database that holds keys and
+certificates for an enterprise. Access to a keystore is guarded by
+a password (defined at the time the keystore is created, by the
+person who creates the keystore, and changeable only when providing
+the current password). In addition, each private key in a keystore
+can be guarded by its own password.</p>
+<a name="jar" id="jar"></a>
+<h3><b>jar</b> (<a href="../../tools/unix/jar.html">Solaris, Linux, or Mac OS X</a>) (<a href=
+"../../tools/windows/jar.html">Windows</a>)</h3>
+<p>Use the <b>jar</b> tool to create JAR files.</p>
+<p>The Java ARchive (JAR) file format enables you to bundle
+multiple files into a single archive file. Typically a JAR file
+will contain the class files and auxiliary resources associated
+with applets and applications. When you want to "digitally sign"
+code, you use the <b>jar</b> tool to place it in a JAR file and the
+<b>jarsigner</b> tool to sign the JAR file (after generating or
+importing appropriate keys into your keystore using
+<b>keytool</b>).</p>
+<a name="jarsigner" id="jarsigner"></a>
+<h3><b>jarsigner</b> (<a href=
+"../../tools/unix/jarsigner.html">Solaris, Linux, or Mac OS X</a>)
+(<a href="../../tools/windows/jarsigner.html">Windows</a>)</h3>
+<p>Use the <b>jarsigner</b> tool to sign JAR files, or to verify
+signatures on signed JAR files.</p>
+<p>The <b>jarsigner</b> tool accesses a keystore that is created
+and managed by <b>keytool</b>, when it needs to find the private
+key and its associated certificate chain to use when signing a JAR
+file. Since accesses to the keystore and to private keys are
+protected by passwords, only people who know the passwords will be
+able to access the key and use it to sign a JAR file. The
+<b>jarsigner</b> tool prompts for needed passwords.</p>
+<a name="policytool" id="policytool"></a>
+<h3><b>Policy Tool</b> (<a href=
+"../../tools/unix/policytool.html">Solaris, Linux, or Mac OS X</a>)
+(<a href="../../tools/windows/policytool.html">Windows</a>)</h3>
+<p>Use the <b>Policy Tool</b> (invoked by using the
+<code>policytool</code> command) to create and modify the external
+policy configuration files that define your installation's security
+policy.</p>
+<p>The policy is described in the <a href=
+"spec/security-spec.doc.html"><b>Security Architecture
+Specification</b></a>. Further information is provided in <a href=
+"PolicyFiles.html"><b>Default Policy Implementation and Policy File
+Syntax</b></a>.</p>
+<p>This tool has a graphical user interface, so you select buttons
+and other options rather than type in commands as for the other
+tools. Please read the <a href="PolicyGuide.html">Policy Tool Users
+Guide</a> for details.</p>
+<a name="kinit" id="kinit"></a>
+<h3>kinit (<a href=
+"../../tools/windows/kinit.html">Windows</a>)</h3>
+<p>kinit is used to obtain and cache Kerberos ticket-granting
+tickets. This tool is similar in functionality to the kinit tool
+commonly found in other Kerberos implementations, such as SEAM and
+MIT Reference implementations.</p>
+<p>The user must be registered as a principal with the Key
+Distribution Center (KDC) prior to running kinit.</p>
+<p><b>Solaris</b> - Equivalent functionality is available for
+Solaris users via the kinit tool that is part of the Solaris
+operating environment. <!-- For example, for Solaris 8, see
+       <a href="http://docs.sun.com/?q=kinit&p=/doc/806-0624/6j9vek58d&a=view">kinit reference page</a>. --></p>
+<p><b>Linux</b> - Equivalent functionality is available for Linux
+users via the kinit tool in any Kerberos 5 installation.</p>
+<a name="klist" id="klist"></a>
+<h3>klist (<a href=
+"../../tools/windows/klist.html">Windows</a>)</h3>
+<p>klist is a command-line tool that allows the user to view
+entries in the local credentials cache and key table.</p>
+<p><b>Solaris</b> - Equivalent functionality is available for
+Solaris users via the klist tool that is part of the Solaris
+operating environment. <!--   For example, for Solaris 10, see
+       <a href="http://docs.sun.com/?q=kinit&p=/doc/806-0624/6j9vek58e&a=view">klist reference page</a>. 
+          
+          --></p>
+<p><b>Linux</b> - Equivalent functionality is available for Linux
+users via the klist tool in any Kerberos 5 installation.</p>
+<a name="ktab" id="ktab"></a>
+<h3>ktab (<a href="../../tools/windows/ktab.html">Windows</a>)</h3>
+<p>ktab is a command-line tool that allows the user to manage the
+principal names and service keys stored in a local key table.
+Principal and key pairs listed in the keytab allow services running
+on a host to authenticate themselves to the Key Distribution Center
+(KDC). Before a server can be setup to use Kerberos, the user must
+setup a keytab on the host running the server. Note that any
+updates made to the keytab using ktab do not affect the Kerberos
+database. If you change the keys in the keytab, you must also make
+the corresponding changes to the Kerberos database. Also note that
+the command line options are <i>not</i> case-sensitive.</p>
+<p><b>Solaris</b> - Equivalent functionality is available for
+Solaris users via the ktutil or kadmin tool that is part of Solaris
+operating environment.</p>
+<p><b>Linux</b> - Equivalent functionality is available for Linux
+users via the ktutil or kadmin tool in any Kerberos 5
+installation.</p>
+<!--
+          href="http://web.mit.edu/kerberos/krb5-1.4/krb5-1.4/doc/krb5-admin.html#Keytabs"><span class="diff-new">
+          
+          -->
+<h2>Examples of Use of the Tools</h2>
+Examples of the use of several of these security tools can be found
+in the <a href=
+"http://docs.oracle.com/javase/tutorial/security/index.html"><b>Security</b></a>
+trail of the <a href=
+"http://docs.oracle.com/javase/tutorial/"><b>Java
+Tutorials</b></a>. <!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

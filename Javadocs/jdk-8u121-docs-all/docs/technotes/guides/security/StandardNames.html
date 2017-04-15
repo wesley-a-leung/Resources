@@ -1,0 +1,2841 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Standard Algorithm Name Documentation</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<!-- ==================================================== -->
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Java Cryptography Architecture<br />
+Standard Algorithm Name Documentation for JDK 8</h1>
+
+<ul>
+<li><a href="#provider">Standard Names</a>
+<ul>
+<li><a href=
+"#AlgorithmParameterGenerator"><code>AlgorithmParameterGenerator</code>
+Algorithms</a></li>
+<li><a href="#AlgorithmParameters"><code>AlgorithmParameters</code>
+Algorithms</a></li>
+<li><a href="#CertificateFactory"><code>CertificateFactory</code>
+Types</a></li>
+<li><a href="#CertPathBuilder"><code>CertPathBuilder</code>
+Algorithms</a></li>
+<li><a href="#CertPathEncodings">CertPath Encodings</a></li>
+<li class="toc"><a href=
+"#CertPathValidator"><code>CertPathValidator</code>
+Algorithms</a></li>
+<li><a href="#CertStore"><code>CertStore</code> Types</a></li>
+<li><a href="#Cipher"><code>Cipher</code> (Encryption)
+Algorithms</a></li>
+<li><a href="#Configuration"><code>Configuration</code>
+Types</a></li>
+<li><a href="#Exemption">Exemption Mechanisms</a></li>
+<li><a href="#GSSAPI">GSSAPI Mechanisms</a></li>
+<li><a href="#KeyAgreement"><code>KeyAgreement</code>
+Algorithms</a></li>
+<li><a href="#KeyFactory"><code>KeyFactory</code>
+Algorithms</a></li>
+<li><a href="#KeyGenerator"><code>KeyGenerator</code>
+Algorithms</a></li>
+<li><a href="#KeyManagerFactory"><code>KeyManagerFactory</code>
+Algorithms</a></li>
+<li><a href="#KeyPairGenerator"><code>KeyPairGenerator</code>
+Algorithms</a></li>
+<li><a href="#KeyStore"><code>KeyStore</code> Types</a></li>
+<li><a href="#Mac"><code>Mac</code> Algorithms</a></li>
+<li><a href="#MessageDigest"><code>MessageDigest</code>
+Algorithms</a></li>
+<li><a href="#Policy"><code>Policy</code> Types</a></li>
+<li><a href="#SaslClient"><code>SaslClient</code>
+Mechanisms</a></li>
+<li><a href="#SaslServer"><code>SaslServer</code>
+Mechanisms</a></li>
+<li><a href="#SecretKeyFactory"><code>SecretKeyFactory</code>
+Algorithms</a></li>
+<li><a href="#SecureRandom"><code>SecureRandom</code> Number
+Generation (RNG) Algorithms</a></li>
+<li><a href="#Service">Service Attributes</a></li>
+<li><a href="#Signature"><code>Signature</code> Algorithms</a></li>
+<li><a href="#SSLContext"><code>SSLContext</code>
+Algorithms</a></li>
+<li><a href="#TrustManagerFactory"><code>TrustManagerFactory</code>
+Algorithms</a></li>
+<li><a href="#XMLSignature">XML Signature
+(<code>XMLSignatureFactory</code>/<code>KeyInfoFactory</code>/<code>TransformService)</code>
+Mechanisms</a></li>
+<li><a href="#TransformService">XML Signature Transform
+(<code>TransformService</code>) Algorithms</a></li>
+<li><a href="#ciphersuites">JSSE Cipher Suite Names</a></li>
+<li><a href="#jssenames">Additional JSSE Standard Names</a></li>
+</ul>
+</li>
+<li><a href="#alg">Algorithms</a>
+<ul>
+<li><a href="#spectemp">Specification Template</a></li>
+<li><a href="#algspec">Algorithm Specifications</a></li>
+</ul>
+</li>
+<li><a href="#impl">Implementation Requirements</a></li>
+</ul>
+<hr />
+<p><b>Note:</b> The <a href="SunProviders.html">Oracle Providers
+Documentation</a> contains specific provider and algorithm
+information.</p>
+<hr />
+<h2><a name="provider" id="provider">Standard Names</a></h2>
+<p>The JDK Security API requires and uses a set of standard names
+for algorithms, certificate and keystore types. This specification
+establishes the following names as standard names.</p>
+<p>In some cases naming conventions are given for forming names
+that are not explicitly listed, to facilitate name consistency
+across provider implementations. Items in angle brackets (such as
+<code>&lt;digest&gt;</code> and <code>&lt;encryption&gt;</code>)
+are placeholders to be replaced by a specific message digest,
+encryption algorithm, or other name.</p>
+<hr style=
+"margin-left: 24pt; margin-top: 12pt;margin-bottom: 3pt;" />
+<p style="margin-bottom: 9pt; margin-top: 9pt;"><b>Note:</b>
+Standard names are not case-sensitive.</p>
+<hr style=
+"margin-left: 24pt; margin-top: 3pt;margin-bottom: 12pt;" />
+<p>This document includes corresponding lists of standard names
+relevant to the following security subareas:</p>
+<ul>
+<li><a href="certpath/CertPathProgGuide.html"><b>Java PKI
+Programmer's Guide</b></a></li>
+<li><a href="jsse/JSSERefGuide.html"><b>JSSE Reference
+Guide</b></a></li>
+<li>For standard name specifications, See <a href=
+"#alg">Algorithms</a>.</li>
+<li><a href="crypto/CryptoSpec.html"><b>Cryptography
+Architecture</b></a></li>
+<li><a href="jgss/tutorials/index.html"><b>Single Sign-on Using
+Kerberos in Java</b></a></li>
+<li><a href="sasl/sasl-refguide.html"><b>The Java SASL API
+Programming and Deployment Guide</b></a></li>
+<li><a href="xmldsig/overview.html"><b>The XML Digital Signature
+API Specification</b></a></li>
+</ul>
+<!-- ==================================================== -->
+<h2><a name="AlgorithmParameterGenerator" id=
+"AlgorithmParameterGenerator"><code>AlgorithmParameterGenerator</code>
+Algorithms</a></h2>
+<p>The algorithm names in this section can be specified when
+generating an instance of
+<code>AlgorithmParameterGenerator</code>.</p>
+<table align="center" border="5" cellpadding="5" frame="border"
+width="90%" summary="AlgorithmParameterGenerator Algorithms">
+<thead>
+<tr>
+<th id="h1">Algorithm Name</th>
+<th id="h2">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1">DiffieHellman</td>
+<td headers="h2">Parameters for use with the Diffie-Hellman algorithm.</td>
+</tr>
+<tr>
+<td headers="h1">DSA</td>
+<td headers="h2">Parameters for use with the Digital Signature Algorithm.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="AlgorithmParameters" id=
+"AlgorithmParameters"><code>AlgorithmParameters</code>
+Algorithms</a></h2>
+<p>The algorithm names in this section can be specified when
+generating an instance of <code>AlgorithmParameters</code>.</p>
+<table align="center" border="5" cellpadding="5" frame="border"
+width="90%" summary="AlgorithemParameters Algorithms">
+<thead>
+<tr>
+<th id="h101">Algorithm Name</th>
+<th id="h102">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h101">AES</td>
+<td headers="h102">Parameters for use with the AES algorithm.</td>
+</tr>
+<tr>
+<td headers="h101">Blowfish</td>
+<td headers="h102">Parameters for use with the Blowfish algorithm.</td>
+</tr>
+<tr>
+<td headers="h101">DES</td>
+<td headers="h102">Parameters for use with the DES algorithm.</td>
+</tr>
+<tr>
+<td headers="h101">DESede</td>
+<td headers="h102">Parameters for use with the DESede algorithm.</td>
+</tr>
+<tr>
+<td headers="h101">DiffieHellman</td>
+<td headers="h102">Parameters for use with the DiffieHellman algorithm.</td>
+</tr>
+<tr>
+<td headers="h101">DSA</td>
+<td headers="h102">Parameters for use with the Digital Signature Algorithm.</td>
+</tr>
+<tr>
+<td headers="h101">OAEP</td>
+<td headers="h102">Parameters for use with the OAEP algorithm.</td>
+</tr>
+<tr>
+<td headers="h101">PBEWith&lt;digest&gt;And&lt;encryption&gt;</td>
+<td headers="h102">Parameters for use with the
+PBEWith&lt;digest&gt;And&lt;encryption&gt; algorithm. Examples:
+<b>PBEWithMD5AndDES</b>, and <b>PBEWithHmacSHA256AndAES_128</b>.</td>
+</tr>
+<tr>
+<td headers="h101">PBE</td>
+<td headers="h102">Parameters for use with the PBE algorithm. <i>This name should
+not be used, in preference to the more specific PBE-algorithm names
+previously listed.</i></td>
+</tr>
+<tr>
+<td headers="h101">RC2</td>
+<td headers="h102">Parameters for use with the RC2 algorithm.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="CertificateFactory" id=
+"CertificateFactory"><code>CertificateFactory</code> Types</a></h2>
+<p>The type in this section can be specified when generating an
+instance of <code>CertificateFactory</code>.</p>
+<table align="center" border="5" cellpadding="5" frame="border"
+width="90%" summary="CertificateFactory Types">
+<thead>
+<tr>
+<th id="h201">Type</th>
+<th id="h202">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h201">X.509</td>
+<td headers="h202">The certificate type defined in X.509, also available via
+<a href="http://www.ietf.org/rfc/rfc3280.txt">RFC 3280</a></td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="CertPathBuilder" id=
+"CertPathBuilder"><code>CertPathBuilder</code> Algorithms</a></h2>
+<p>The algorithm in this section can be specified when generating
+an instance of <code>CertPathBuilder</code>.</p>
+<table align="center" border="5" cellpadding="5" frame="border"
+width="90%" summary="CertPathBuilder Algorithms">
+<thead>
+<tr>
+<th id="h301">Algorithm Name</th>
+<th id="h302">Description</th>
+</tr>
+</thead>
+<tr>
+<td headers="h301">PKIX</td>
+<td headers="h302">The PKIX certification path validation algorithm as defined in
+the <a href="#Service">ValidationAlgorithm service attribute</a>.
+The output of <code>CertPathBuilder</code> instances implementing
+this algorithm is a certification path validated against the PKIX
+validation algorithm.</td>
+</tr>
+</table>
+<!-- ==================================================== -->
+<h2><a name="CertPathEncodings" id="CertPathEncodings">CertPath
+Encodings</a></h2>
+<p>The following encodings may be passed to the
+<code>getEncoded</code> method of <code>CertPath</code> or the
+<code>generateCertPath(InputStream inStream, String
+encoding)</code> method of <code>CertificateFactory</code>.</p>
+<table align="center" border="5" cellpadding="5" frame="border"
+width="90%" summary="CertPath Encodings">
+<thead>
+<tr>
+<th id="h401">Encoding</th>
+<th id="h402">Description</th>
+</tr>
+</thead>
+<tr>
+<td headers="h401">PKCS7</td>
+<td headers="h402">A PKCS#7 SignedData object, with the only significant field
+being certificates. In particular, the signature and the contents
+are ignored. If no certificates are present, a zero-length
+<code>CertPath</code> is assumed. Warning: PKCS#7 does not maintain
+the order of certificates in a certification path. This means that
+if a <code>CertPath</code> is converted to PKCS#7 encoded bytes and
+then converted back, the order of the certificates may change,
+potentially rendering the <code>CertPath</code> invalid. Users
+should be aware of this behavior. See <a href=
+"http://www.rfc-editor.org/rfc/rfc2315.txt">PKCS #7: Cryptographic Message Syntax</a> for
+details on PKCS7.</td>
+</tr>
+<tr>
+<td headers="h401">PkiPath</td>
+<td headers="h402">an ASN.1 DER encoded sequence of certificates, defined as
+follows:
+<pre class="codeblock">
+    PkiPath ::= SEQUENCE OF Certificate
+</pre>
+Within the sequence, the order of certificates is such that the
+subject of the first certificate is the issuer of the second
+certificate, and so on. Each certificate in <code>PkiPath</code>
+shall be unique. No certificate may appear more than once in a
+value of <code>Certificate</code> in <code>PkiPath</code>. The
+<code>PkiPath</code> format is defined in defect report 279 against
+X.509 (2000) and is incorporated into Technical Corrigendum 1 (DTC
+2) for the ITU-T Recommendation X.509 (2000). See <a href=
+"http://www.itu.int/rec/T-REC-X.509/en">the ITU web site</a> for
+details.</td>
+</tr>
+</table>
+<!-- ==================================================== -->
+<h2><a name="CertPathValidator" id=
+"CertPathValidator"><code>CertPathValidator</code>
+Algorithms</a></h2>
+<p>The algorithm in this section can be specified when generating
+an instance of <code>CertPathValidator</code>.</p>
+<table align="center" border="5" cellpadding="5" frame="border"
+width="90%" summary="CertPathValidator Algorithms">
+<thead>
+<tr>
+<th id="h501">Algorithm Name</th>
+<th id="h502">Description</th>
+</tr>
+</thead>
+<tr>
+<td headers="h501">PKIX</td>
+<td headers="h502">The PKIX certification path validation algorithm as defined in
+the <a href="#Service">ValidationAlgorithm service
+attribute</a>.</td>
+</tr>
+</table>
+<!-- ==================================================== -->
+<h2><a name="CertStore" id="CertStore"><code>CertStore</code>
+Types</a></h2>
+<p>The type in this section can be specified when generating an
+instance of <code>CertStore</code>.</p>
+<table align="center" border="5" cellpadding="5" frame="border"
+width="90%" summary="CertStore Types">
+<thead>
+<tr>
+<th id="h601">Type</th>
+<th id="h602">Description</th>
+</tr>
+</thead>
+<tr>
+<td headers="h601">Collection</td>
+<td headers="h602">A <code>CertStore</code> implementation that retrieves
+certificates and CRLs from a <code>Collection</code>. This type of
+<code>CertStore</code> is particularly useful in applications where
+certificates or CRLs are received in a bag or some sort of
+attachment, such as with a signed email message or in an SSL
+negotiation.</td>
+</tr>
+<tr>
+<td headers="h601">LDAP</td>
+<td headers="h602">A <code>CertStore</code> implementation that fetches
+certificates and CRLs from an LDAP directory using the schema
+defined in the <a href="#Service">LDAPSchema service
+attribute</a>.</td>
+</tr>
+</table>
+<!-- ==================================================== -->
+<a name="Cipher" id="Cipher"></a>
+<h2><code>Cipher</code> (Encryption) Algorithms</h2>
+<!-- ==================================================== -->
+<h3>Cipher Algorithm Names</h3>
+<p>The following names can be specified as the <i>algorithm</i>
+component in a <a href=
+"crypto/CryptoSpec.html#trans">transformation</a> when requesting
+an instance of <code>Cipher</code>.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="Cipher Algorithm Names">
+<thead>
+<tr>
+<th id="h701">Algorithm Name</th>
+<th id="h702">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h701">AES</td>
+<td headers="h702">
+<p>Advanced Encryption Standard as specified by NIST in <a href=
+"http://csrc.nist.gov/publications/PubsFIPS.html">FIPS 197</a>.
+Also known as the Rijndael algorithm by Joan Daemen and Vincent
+Rijmen, AES is a 128-bit block cipher supporting keys of 128, 192,
+and 256 bits.</p>
+<p>To use the AES cipher with only one valid key size, use the
+format AES_&lt;n&gt;, where &lt;n&gt; can be 128, 192, or 256.</p>
+</td>
+</tr>
+<tr>
+<td headers="h701">AESWrap</td>
+<td headers="h702">
+<p>The AES key wrapping algorithm as described in <a href=
+"http://www.ietf.org/rfc/rfc3394.txt">RFC 3394</a>.</p>
+<p>To use the AESWrap cipher with only one valid key size, use the
+format AESWrap_&lt;n&gt;, where &lt;n&gt; can be 128, 192, or
+256.</p>
+</td>
+</tr>
+<tr>
+<td headers="h701">ARCFOUR</td>
+<td headers="h702">A stream cipher believed to be fully interoperable with the RC4
+cipher developed by Ron Rivest. For more information, see K.
+Kaukonen and R. Thayer, "A Stream Cipher Encryption Algorithm
+'Arcfour'", Internet Draft (expired), <a href=
+"https://tools.ietf.org/id/draft-kaukonen-cipher-arcfour-03.txt">
+draft-kaukonen-cipher-arcfour-03.txt</a>.</td>
+</tr>
+<tr>
+<td headers="h701">Blowfish</td>
+<td headers="h702">The <a href="http://www.schneier.com/blowfish.html">Blowfish
+block cipher</a> designed by Bruce Schneier.</td>
+</tr>
+<tr>
+<td headers="h701">DES</td>
+<td headers="h702">The Digital Encryption Standard as described in <a href=
+"http://csrc.nist.gov/publications/fips/fips46-3/fips46-3.pdf">FIPS PUB
+46-3</a>.</td>
+</tr>
+<tr>
+<td headers="h701">DESede</td>
+<td headers="h702">Triple DES Encryption (also known as DES-EDE, 3DES, or
+Triple-DES). Data is encrypted using the DES algorithm three
+separate times. It is first encrypted using the first subkey, then
+decrypted with the second subkey, and encrypted with the third
+subkey.</td>
+</tr>
+<tr>
+<td headers="h701">DESedeWrap</td>
+<td headers="h702">The DESede key wrapping algorithm as described in <a href=
+"http://www.ietf.org/rfc/rfc3217.txt">RFC 3217</a> .</td>
+</tr>
+<tr>
+<td headers="h701">ECIES</td>
+<td headers="h702">Elliptic Curve Integrated Encryption Scheme</td>
+</tr>
+<tr>
+<td headers="h701">PBEWith&lt;digest&gt;And&lt;encryption&gt;
+PBEWith&lt;prf&gt;And&lt;encryption&gt;</td>
+<td headers="h702">The password-based encryption algorithm found in (PKCS5), using
+the specified message digest (&lt;digest&gt;) or pseudo-random
+function (&lt;prf&gt;) and encryption algorithm
+(&lt;encryption&gt;). Examples:
+<ul>
+<li><b>PBEWithMD5AndDES</b>: The password-based encryption
+algorithm as defined in <a href=
+"http://www.emc.com/emc-plus/rsa-labs/standards-initiatives/pkcs-5-password-based-cryptography-standard.htm">RSA Laboratories,
+"PKCS #5: Password-Based Encryption Standard," version 1.5, Nov
+1993</a>. Note that this algorithm implies <a href=
+"#cbcMode"><i>CBC</i></a> as the cipher mode and <a href=
+"#pkcs5Pad"><i>PKCS5Padding</i></a> as the padding scheme and
+cannot be used with any other cipher modes or padding schemes.</li>
+<li><b>PBEWithHmacSHA256AndAES_128</b>: The password-based encryption
+algorithm as defined in <a href=
+"http://www.rfc-editor.org/rfc/rfc2898.txt">RSA Laboratories,
+"PKCS #5: Password-Based Cryptography Standard," version 2.0, September 2000 </a>.</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td headers="h701">RC2</td>
+<td headers="h702">Variable-key-size encryption algorithms developed by Ron Rivest
+for RSA Data Security, Inc.</td>
+</tr>
+<tr>
+<td headers="h701">RC4</td>
+<td headers="h702">Variable-key-size encryption algorithms developed by Ron Rivest
+for RSA Data Security, Inc. (See note prior for ARCFOUR.)</td>
+</tr>
+<tr>
+<td headers="h701">RC5</td>
+<td headers="h702">Variable-key-size encryption algorithms developed by Ron Rivest
+for RSA Data Security, Inc.</td>
+</tr>
+<tr>
+<td headers="h701">RSA</td>
+<td headers="h702">The RSA encryption algorithm as defined in <a href=
+"http://www.rfc-editor.org/rfc/rfc2437.txt">PKCS #1</a></td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h3>Cipher Algorithm Modes</h3>
+<p>The following names can be specified as the <i>mode</i>
+component in a <a href=
+"crypto/CryptoSpec.html#trans">transformation</a> when requesting
+an instance of <code>Cipher</code>.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="Cipher Algorithm Modes">
+<thead>
+<tr>
+<th id="h801">Algorithm Name</th>
+<th id="h802">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h801">NONE</td>
+<td headers="h802">No mode.</td>
+</tr>
+<tr>
+<td headers="h801"><a name="cbcMode" id="cbcMode">CBC</a></td>
+<td headers="h802">Cipher Block Chaining Mode, as defined in <a href=
+"http://csrc.nist.gov/publications/fips/fips81/fips81.htm">FIPS PUB
+81</a>.</td>
+</tr>
+<tr>
+<td headers="h801">CCM</td>
+<td headers="h802">Counter/CBC Mode, as defined in <a href=
+"http://csrc.nist.gov/publications/nistpubs/800-38C/SP800-38C_updated-July20_2007.pdf">
+NIST Special Publication SP 800-38C</a>.</td>
+</tr>
+<tr>
+<td headers="h801">CFB, CFBx</td>
+<td headers="h802">Cipher Feedback Mode, as defined in <a href=
+"http://csrc.nist.gov/publications/fips/fips81/fips81.htm">FIPS PUB
+81</a>.<br />
+<br />
+Using modes such as CFB and OFB, block ciphers can encrypt data in
+units smaller than the cipher's actual block size. When requesting
+such a mode, you may optionally specify the number of bits to be
+processed at a time by appending this number to the mode name as
+shown in the <i>"DES/CFB8/NoPadding"</i> and <i>"DES/OFB32/PKCS5Padding"</i> transformations. If no such number
+is specified, a provider-specific default is used. (For example,
+the SunJCE provider uses a default of 64 bits for DES.) Thus, block
+ciphers can be turned into byte-oriented stream ciphers by using an
+8-bit mode such as CFB8 or OFB8.</td>
+</tr>
+<tr>
+<td headers="h801">CTR</td>
+<td headers="h802">A simplification of OFB, Counter mode updates the input block
+as a counter.</td>
+</tr>
+<tr>
+<td headers="h801">CTS</td>
+<td headers="h802">Cipher Text Stealing, as described in Bruce Schneier's book
+<i>Applied Cryptography-Second Edition</i>, John Wiley and Sons,
+1996.</td>
+</tr>
+<tr>
+<td headers="h801">ECB</td>
+<!-- new -->
+<td headers="h802">Electronic Codebook Mode, as defined in <a href=
+"http://csrc.nist.gov/publications/fips/fips81/fips81.htm">FIPS PUB
+81</a> (generally this mode should not be used for multiple blocks of data).</td>
+</tr>
+<tr>
+<td headers="h801">GCM</td>
+<td headers="h802">Galois/Counter Mode, as defined in <a href=
+"http://csrc.nist.gov/publications/nistpubs/800-38D/SP-800-38D.pdf">
+NIST Special Publication SP 800-38D</a>.</td>
+</tr>
+<tr>
+<td headers="h801">OFB, OFBx</td>
+<td headers="h802">Output Feedback Mode, as defined in <a href=
+"http://csrc.nist.gov/publications/fips/fips81/fips81.htm">FIPS PUB
+81</a>.<br />
+<br />
+Using modes such as CFB and OFB, block ciphers can encrypt data in
+units smaller than the cipher's actual block size. When requesting
+such a mode, you may optionally specify the number of bits to be
+processed at a time by appending this number to the mode name as
+shown in the "<i>DES/CFB8/NoPadding</i>" and
+"<i>DES/OFB32/PKCS5Padding</i>" transformations. If no such number
+is specified, a provider-specific default is used. (For example,
+the SunJCE provider uses a default of 64 bits for DES.) Thus, block
+ciphers can be turned into byte-oriented stream ciphers by using an
+8-bit mode such as CFB8 or OFB8.</td>
+</tr>
+<tr>
+<td headers="h801">PCBC</td>
+<td headers="h802">Propagating Cipher Block Chaining, as defined by <a href=
+"http://web.mit.edu/kerberos/">Kerberos V4</a>.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h3>Cipher Algorithm Padding</h3>
+<p>The following names can be specified as the <i>padding</i>
+component in a <a href=
+"crypto/CryptoSpec.html#trans">transformation</a> when requesting
+an instance of <code>Cipher</code>.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="Cipher Algorithm Padding">
+<thead>
+<tr>
+<th id="h901">Algorithm Name</th>
+<th id="h902">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h901">NoPadding</td>
+<td headers="h902">No padding.</td>
+</tr>
+<tr>
+<td headers="h901">ISO10126Padding</td>
+<td headers="h902">This padding for block ciphers is described in <a href=
+"http://www.w3.org/TR/xmlenc-core/#sec-Alg-Block">5.2 Block
+Encryption Algorithms</a> in the W3C's "XML Encryption Syntax and
+Processing" document.</td>
+</tr>
+<tr>
+<td headers="h901">OAEPPadding, OAEPWith&lt;digest&gt;And&lt;mgf&gt;Padding</td>
+<td headers="h902">Optimal Asymmetric Encryption Padding scheme defined in PKCS1,
+where &lt;digest&gt; should be replaced by the message digest and
+&lt;mgf&gt; by the mask generation function. Examples:
+<b>OAEPWithMD5AndMGF1Padding</b> and
+<b>OAEPWithSHA-512AndMGF1Padding</b>.<br />
+<br />
+If <code>OAEPPadding</code> is used, <code>Cipher</code> objects
+are initialized with a
+<code>javax.crypto.spec.OAEPParameterSpec</code> object to supply
+values needed for OAEPPadding.</td>
+</tr>
+<tr>
+<td headers="h901">PKCS1Padding</td>
+<td headers="h902">The padding scheme described in <a href=
+"http://www.rfc-editor.org/rfc/rfc2437.txt">PKCS #1</a>, used
+with the RSA algorithm.</td>
+</tr>
+<tr>
+<td headers="h901"><a name="pkcs5Pad" id="pkcs5Pad">PKCS5Padding</a></td>
+<td headers="h902">The padding scheme described in <a href=
+"http://www.emc.com/emc-plus/rsa-labs/standards-initiatives/pkcs-5-password-based-cryptography-standard.htm">RSA Laboratories,
+"PKCS #5: Password-Based Encryption Standard," version 1.5,
+November 1993</a>.</td>
+</tr>
+<tr>
+<td headers="h901">SSL3Padding</td>
+<td headers="h902">The padding scheme defined in the SSL Protocol Version 3.0,
+November 18, 1996, section 5.2.3.2 (CBC block cipher):
+<pre class="codeblock">
+    block-ciphered struct {
+        opaque content[SSLCompressed.length];
+        opaque MAC[CipherSpec.hash_size];
+        uint8 padding[
+            GenericBlockCipher.padding_length];
+        uint8 padding_length;
+    } GenericBlockCipher;
+</pre>
+The size of an instance of a GenericBlockCipher must be a multiple
+of the block cipher's block length.<br />
+<br />
+The padding length, which is always present, contributes to the
+padding, which implies that if:
+<pre class="codeblock">
+    sizeof(content) + sizeof(MAC) % block_length = 0, 
+</pre>
+padding has to be (block_length - 1) bytes long, because of the
+existence of <code>padding_length</code>.<br />
+<br />
+This makes the padding scheme similar (but not quite) to
+PKCS5Padding, where the padding length is encoded in the padding
+(and ranges from 1 to block_length). With the SSL scheme, the
+sizeof(padding) is encoded in the always present
+<code>padding_length</code> and therefore ranges from 0 to
+block_length-1.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="Configuration" id=
+"Configuration"><code>Configuration</code> Types</a></h2>
+<p>The type in this section can be specified when generating an
+instance of
+<code>javax.security.auth.login.Configuration</code>.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="Configuration Types">
+<thead>
+<tr>
+<th id="h1001">Type</th>
+<th id="h1002">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1001">JavaLoginConfig</td>
+<td headers="h1002">The default Configuration implementation from the SUN provider,
+as described in the <a href=
+"jaas/tutorials/LoginConfigFile.html">ConfigFile class
+specification</a>. <!--  old bad link
+        ../../../api/security/jaas/spec/com/sun/security/auth/login/ConfigFile.html"
+        
+        -->
+ This type accepts <code>java.security.URIParameter</code> as a
+valid <code>Configuration.Parameter</code> type. If this parameter
+is not specified, then the configuration information is loaded from
+the sources described in the ConfigFile class specification. If
+this parameter is specified, the configuration information is
+loaded solely from the specified URI.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<a name="Exemption" id="Exemption"></a>
+<h2>Exemption Mechanisms</h2>
+<p>The following exemption mechanism names can be specified in the
+permission policy file that accompanies an application considered
+"exempt" from cryptographic restrictions.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="Exemption Mechanisms">
+<thead>
+<tr>
+<th id="h1101">Algorithm Name</th>
+<th id="h1102">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1101">KeyEscrow</td>
+<td headers="h1102">An encryption system with a backup decryption capability that
+allows authorized persons (users, officers of an organization, and
+government officials), under certain prescribed conditions, to
+decrypt ciphertext with the help of information supplied by one or
+more trusted parties who hold special data recovery keys.</td>
+</tr>
+<tr>
+<td headers="h1101">KeyRecovery</td>
+<td headers="h1102">A method of obtaining the secret key used to lock encrypted
+data. One use is as a means of providing fail-safe access to a
+corporation's own encrypted information in times of disaster.</td>
+</tr>
+<tr>
+<td headers="h1101">KeyWeakening</td>
+<td headers="h1102">A method in which a part of the key can be escrowed or
+recovered.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<a name="GSSAPI" id="GSSAPI"></a>
+<h2>GSSAPI Mechanisms</h2>
+<p>The following mechanisms can be specified when using GSSAPI.
+Note that Object Identifiers (OIDs) are specified instead of names
+to be consistent with the GSSAPI standard.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="GSSAPI Mechanisms">
+<thead>
+<tr>
+<th id="h1201">Mechanism OID</th>
+<th id="h1202">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1201">1.2.840.113554.1.2.2</td>
+<td headers="h1202">The Kerberos v5 GSS-API mechanism defined in <a href=
+"http://www.ietf.org/rfc/rfc4121.txt">RFC 4121</a>.</td>
+</tr>
+<tr>
+<td headers="h1201">1.3.6.1.5.5.2</td>
+<td headers="h1202">The Simple and Protected GSS-API Negotiation (SPNEGO) mechanism
+defined in <a href="http://www.ietf.org/rfc/rfc4178.txt">RFC
+4178</a>.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<a name="KeyAgreement" id="KeyAgreement"></a>
+<h2><code>KeyAgreement</code> Algorithms</h2>
+<p>The following algorithm names can be specified when requesting
+an instance of <code>KeyAgreement</code>.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="KeyAgreement Algorithms">
+<thead>
+<tr>
+<th id="h1301">Algorithm Name</th>
+<th id="h1302">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1301">DiffieHellman</td>
+<td headers="h1302">Diffie-Hellman Key Agreement as defined in <a href=
+"http://www.emc.com/emc-plus/rsa-labs/standards-initiatives/pkcs-3-diffie-hellman-key-agreement-standar.htm">PKCS #3:
+Diffie-Hellman Key-Agreement Standard, RSA Laboratories, version
+1.4, November 1993</a>.</td>
+</tr>
+<tr>
+<td headers="h1301">ECDH</td>
+<td headers="h1302">Elliptic Curve Diffie-Hellman as defined in ANSI X9.63 and as
+described in <a href="http://www.ietf.org/rfc/rfc3278.txt">RFC
+3278</a>: "Use of Elliptic Curve Cryptography (ECC) Algorithms in
+Cryptographic Message Syntax (CMS)."</td>
+</tr>
+<tr>
+<td headers="h1301">ECMQV</td>
+<td headers="h1302">Elliptic Curve Menezes-Qu-Vanstone.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="KeyFactory" id="KeyFactory"><code>KeyFactory</code>
+Algorithms</a></h2>
+<p><i>(Except as noted, these classes create keys for which
+<a href="../../../api/java/security/Key.html#getAlgorithm--"><code>Key.getAlgorithm()</code></a>
+returns the standard algorithm name.)</i></p>
+<p>The algorithm names in this section can be specified when
+generating an instance of <code>KeyFactory</code>.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="KeyFactory Algorithms">
+<thead>
+<tr>
+<th id="h1401">Algorithm Name</th>
+<th id="h1402">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1401">DiffieHellman</td>
+<td headers="h1402">Keys for the Diffie-Hellman KeyAgreement algorithm.
+<p>Note: <code>key.getAlgorithm()</code> will return "DH" instead
+of "DiffieHellman".</p>
+</td>
+</tr>
+<tr>
+<td headers="h1401">DSA</td>
+<td headers="h1402">Keys for the Digital Signature Algorithm.</td>
+</tr>
+<tr>
+<td headers="h1401">RSA</td>
+<td headers="h1402">Keys for the RSA algorithm (Signature/Cipher).</td>
+</tr>
+<tr>
+<td headers="h1401">EC</td>
+<td headers="h1402">Keys for the Elliptic Curve algorithm.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<a name="KeyGenerator" id="KeyGenerator"></a>
+<h2><code>KeyGenerator</code> Algorithms</h2>
+<p>The following algorithm names can be specified when requesting
+an instance of <code>KeyGenerator</code>.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="KeyGenerator Algorithms">
+<thead>
+<tr>
+<th id="h1501">Algorithm Name</th>
+<th id="h1502">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1501">AES</td>
+<td headers="h1502">Key generator for use with the AES algorithm.</td>
+</tr>
+<tr>
+<td headers="h1501">ARCFOUR</td>
+<td headers="h1502">Key generator for use with the ARCFOUR (RC4) algorithm.</td>
+</tr>
+<tr>
+<td headers="h1501">Blowfish</td>
+<td headers="h1502">Key generator for use with the Blowfish algorithm.</td>
+</tr>
+<tr>
+<td headers="h1501">DES</td>
+<td headers="h1502">Key generator for use with the DES algorithm.</td>
+</tr>
+<tr>
+<td headers="h1501">DESede</td>
+<td headers="h1502">Key generator for use with the DESede (triple-DES)
+algorithm.</td>
+</tr>
+<tr>
+<td headers="h1501">HmacMD5</td>
+<td headers="h1502">Key generator for use with the HmacMD5 algorithm.</td>
+</tr>
+<tr>
+<td headers="h1501">HmacSHA1<br />
+HmacSHA224<br />
+HmacSHA256<br />
+HmacSHA384<br />
+HmacSHA512</td>
+<td headers="h1502">Keys generator for use with the various flavors of the HmacSHA
+algorithms.</td>
+</tr>
+<tr>
+<td headers="h1501">RC2</td>
+<td headers="h1502">Key generator for use with the RC2 algorithm.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="KeyManagerFactory" id=
+"KeyManagerFactory"><code>KeyManagerFactory</code>
+Algorithms</a></h2>
+<p>The algorithm name in this section can be specified when
+generating an instance of <code>KeyManagerFactory</code>.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="KeyManagerFactory Algorithms">
+<thead>
+<tr>
+<th id="h1601">Algorithm Name</th>
+<th id="h1602">Description</th>
+</tr>
+</thead>
+<tbody><!--
+<tr>
+<td>SunX509</td>
+<td>
+See the <a href="SunProviders.html#SunJSSEProvider">Sun Providers
+Documentation</a>.
+</td>
+</tr>
+-->
+<tr>
+<td headers="h1601">PKIX</td>
+<td headers="h1602">A factory for <code>X509ExtendedKeyManager</code>s that manage
+X.509 certificate-based key pairs for local side authentication
+according to the rules defined by the IETF PKIX working group in
+<a href="http://www.ietf.org/rfc/rfc3280.txt">RFC 3280</a> or its
+successor. The <code>KeyManagerFactory</code> must support
+initialization using the class
+<code>javax.net.ssl.KeyStoreBuilderParameters</code>.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="KeyPairGenerator" id=
+"KeyPairGenerator"><code>KeyPairGenerator</code>
+Algorithms</a></h2>
+<p><i>(Except as noted, these classes create keys for which
+<a href="../../../api/java/security/Key.html#getAlgorithm--"><code>Key.getAlgorithm()</code></a>
+returns the standard algorithm name.)</i></p>
+<p>The algorithm names in this section can be specified when
+generating an instance of <code>KeyPairGenerator</code>.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="KeyPairGenerator Algorithms">
+<thead>
+<tr>
+<th id="h1701">Algorithm Name</th>
+<th id="h1702">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1701">DiffieHellman</td>
+<td headers="h1702">Generates keypairs for the Diffie-Hellman KeyAgreement
+algorithm.
+<p>Note: <code>key.getAlgorithm()</code> will return "DH" instead
+of "DiffieHellman".</p>
+</td>
+</tr>
+<tr>
+<td headers="h1701">DSA</td>
+<td headers="h1702">Generates keypairs for the Digital Signature Algorithm.</td>
+</tr>
+<tr>
+<td headers="h1701">RSA</td>
+<td headers="h1702">Generates keypairs for the RSA algorithm
+(Signature/Cipher).</td>
+</tr>
+<tr>
+<td headers="h1701">EC</td>
+<td headers="h1702">Generates keypairs for the Elliptic Curve algorithm.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<a name="KeyStore" id="KeyStore"></a>
+<h2><code>KeyStore</code> Types</h2>
+<p>The types in this section can be specified when generating an
+instance of <code>KeyStore</code>.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="KeyStore Types">
+<thead>
+<tr>
+<th id="h1801">Type</th>
+<th id="h1802">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1801">jceks</td>
+<td headers="h1802">The <a href=
+"crypto/CryptoSpec.html#KeystoreImplementation">proprietary
+keystore</a> implementation provided by the SunJCE provider.</td>
+</tr>
+<tr>
+<td headers="h1801">jks</td>
+<td headers="h1802">The <a href=
+"crypto/CryptoSpec.html#KeystoreImplementation">proprietary
+keystore</a> implementation provided by the SUN provider.</td>
+</tr>
+<tr>
+<td headers="h1801">dks</td>
+<td headers="h1802">A domain keystore is a collection of keystores presented as a
+single logical keystore. It is specified by configuration data
+whose syntax is described in <a href=
+"../../../api/java/security/DomainLoadStoreParameter.html">DomainLoadStoreParameter</a>.</td>
+</tr>
+<tr>
+<td headers="h1801">pkcs11</td>
+<td headers="h1802">A keystore backed by a PKCS #11 token.</td>
+</tr>
+<tr>
+<td headers="h1801">pkcs12</td>
+<td headers="h1802">The transfer syntax for personal identity information as
+defined in <a href=
+"http://www.emc.com/emc-plus/rsa-labs/standards-initiatives/pkcs12-personal-information-exchange-syntax-standard.htm">PKCS #12</a>.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<a name="Mac" id="Mac"></a>
+<h2><code>Mac</code> Algorithms</h2>
+<p>The following algorithm names can be specified when requesting
+an instance of <code>Mac</code>.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="Mac Algorithms">
+<thead>
+<tr>
+<th id="h1901">Algorithm Name</th>
+<th id="h1902">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h1901">HmacMD5</td>
+<td headers="h1902">The HMAC-MD5 keyed-hashing algorithm as defined in <a href=
+"http://www.ietf.org/rfc/rfc2104.txt">RFC 2104</a> "HMAC:
+Keyed-Hashing for Message Authentication" (February 1997).</td>
+</tr>
+<tr>
+<td headers="h1901">HmacSHA1<br />
+HmacSHA224<br />
+HmacSHA256<br />
+HmacSHA384<br />
+HmacSHA512<br /></td>
+<td headers="h1902">The HmacSHA* algorithms as defined in <a href=
+"http://www.ietf.org/rfc/rfc2104.txt">RFC 2104</a> "HMAC:
+Keyed-Hashing for Message Authentication" (February 1997) with
+<code>SHA-*</code> as the message digest algorithm.</td>
+</tr>
+<tr>
+<td headers="h1901">PBEWith&lt;mac&gt;</td>
+<td headers="h1902">Mac for use with the <a href=
+"http://www.rfc-editor.org/rfc/rfc2898.txt">PKCS #5 v 2.0</a>
+password-based message authentication standard, where &lt;mac&gt;
+is a Message Authentication Code algorithm name. Example:
+<b>PBEWithHmacSHA1</b>.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="MessageDigest" id=
+"MessageDigest"><code>MessageDigest</code> Algorithms</a></h2>
+<p>The algorithm names in this section can be specified when
+generating an instance of <code>MessageDigest</code>.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="MessageDigest Algorithms">
+<thead>
+<tr>
+<th id="h2001">Algorithm Name</th>
+<th id="h2002">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h2001">MD2</td>
+<td headers="h2002">The MD2 message digest algorithm as defined in <a href=
+"http://www.ietf.org/rfc/rfc1319.txt">RFC 1319</a>.</td>
+</tr>
+<tr>
+<td headers="h2001">MD5</td>
+<td headers="h2002">The MD5 message digest algorithm as defined in <a href=
+"http://www.ietf.org/rfc/rfc1321.txt">RFC 1321</a>.</td>
+</tr>
+<tr>
+<td headers="h2001">SHA-1<br />
+SHA-224<br />
+SHA-256<br />
+SHA-384<br />
+SHA-512<br /></td>
+<td headers="h2002">Hash algorithms defined in the <a href=
+"http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf">FIPS
+PUB 180-4</a>.<br />
+<br />
+Secure hash algorithms - SHA-1, SHA-224, SHA-256, SHA-384, SHA-512
+- for computing a condensed representation of electronic data
+(message). When a message of any length less than 2^64 bits (for
+SHA-1, SHA-224, and SHA-256) or less than 2^128 (for SHA-384 and
+SHA-512) is input to a hash algorithm, the result is an output
+called a message digest. A message digest ranges in length from 160
+to 512 bits, depending on the algorithm.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="Policy" id="Policy"><code>Policy</code> Types</a></h2>
+<p>The type in this section can be specified when generating an
+instance of <code>Policy</code>.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="Policy Types">
+<thead>
+<tr>
+<th id="h2101">Type</th>
+<th id="h2102">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h2101">JavaPolicy</td>
+<td headers="h2102">The default Policy implementation from the SUN provider, as
+described in the <a href="PolicyFiles.html">PolicyFile</a> guide.
+This type accepts <code>java.security.URIParameter</code> as a
+valid <code>Policy.Parameter</code> type. If this parameter is not
+specified, then the policy information is loaded from the sources
+described in the <a href="PolicyFiles.html#DefaultLocs">Default
+Policy File Locations</a> section of the PolicyFile guide. If this
+parameter is specified, the policy information is loaded solely
+from the specified URI.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="SaslClient" id="SaslClient"><code>SaslClient</code>
+Mechanisms</a></h2>
+<p>The mechanisms in this section can be specified when generating
+an instance of <code>SaslClient</code>.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="SaslClient Mechanisms">
+<thead>
+<tr>
+<th id="h2201">Mechanism</th>
+<th id="h2202">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h2201">CRAM-MD5</td>
+<td headers="h2202">See <a href="http://www.ietf.org/rfc/rfc2195.txt">RFC 2195</a>.
+This mechanism supports a hashed user name/password authentication
+scheme.</td>
+</tr>
+<tr>
+<td headers="h2201">DIGEST-MD5</td>
+<td headers="h2202">See <a href="http://www.ietf.org/rfc/rfc2831.txt">RFC 2831</a>.
+This mechanism defines how HTTP Digest Authentication can be used
+as a SASL mechanism.</td>
+</tr>
+<tr>
+<td headers="h2201">EXTERNAL</td>
+<td headers="h2202">See <a href="http://www.ietf.org/rfc/rfc2222.txt">RFC 2222</a>.
+This mechanism obtains authentication information from an external
+channel (such as TLS or IPsec).</td>
+</tr>
+<tr>
+<td headers="h2201">GSSAPI</td>
+<td headers="h2202">See <a href="http://www.ietf.org/rfc/rfc2222.txt">RFC 2222</a>.
+This mechanism uses the GSSAPI for obtaining authentication
+information. It supports Kerberos v5 authentication.</td>
+</tr>
+<tr>
+<td headers="h2201">PLAIN</td>
+<td headers="h2202">See <a href="http://www.ietf.org/rfc/rfc2595.txt">RFC 2595</a>.
+This mechanism supports cleartext user name/password
+authentication.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="SaslServer" id="SaslServer"><code>SaslServer</code>
+Mechanisms</a></h2>
+<p>The mechanisms in this section can be specified when generating
+an instance of <code>SaslServer</code>.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="SaslServer Mechanisms">
+<thead>
+<tr>
+<th id="h2301">Mechanism</th>
+<th id="h2302">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h2301">CRAM-MD5</td>
+<td headers="h2302">See <a href="http://www.ietf.org/rfc/rfc2195.txt">RFC 2195</a>.
+This mechanism supports a hashed user name/password authentication
+scheme.</td>
+</tr>
+<tr>
+<td headers="h2301">DIGEST-MD5</td>
+<td headers="h2302">See <a href="http://www.ietf.org/rfc/rfc2831.txt">RFC 2831</a>.
+This mechanism defines how HTTP Digest Authentication can be used
+as a SASL mechanism.</td>
+</tr>
+<tr>
+<td headers="h2301">GSSAPI</td>
+<td headers="h2302">See <a href="http://www.ietf.org/rfc/rfc2222.txt">RFC 2222</a>.
+This mechanism uses the GSSAPI for obtaining authentication
+information. It supports Kerberos v5 authentication.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<a name="SecretKeyFactory" id="SecretKeyFactory"></a>
+<h2><code>SecretKeyFactory</code> Algorithms</h2>
+<p>The following algorithm names can be specified when requesting
+an instance of <code>SecretKeyFactory</code>.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="SecretKeyFactory Algorithms">
+<thead>
+<tr>
+<th id="h2401">Algorithm Name</th>
+<th id="h2402">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h2401">AES</td>
+<td headers="h2402">Constructs secret keys for use with the AES algorithm.</td>
+</tr>
+<tr>
+<td headers="h2401">ARCFOUR</td>
+<td headers="h2402">Constructs secret keys for use with the ARCFOUR algorithm.</td>
+</tr>
+<tr>
+<td headers="h2401">DES</td>
+<td headers="h2402">Constructs secrets keys for use with the DES algorithm.</td>
+</tr>
+<tr>
+<td headers="h2401">DESede</td>
+<td headers="h2402">Constructs secrets keys for use with the DESede (Triple-DES)
+algorithm.</td>
+</tr>
+<tr>
+<td headers="h2401">
+PBEWith<em>&lt;digest&gt;</em>And<em>&lt;encryption&gt;</em><br />
+PBEWith<em>&lt;prf&gt;</em>And<em>&lt;encryption&gt;</em></td>
+<td headers="h2402">Secret-key factory for use with PKCS5 password-based
+encryption, where <em>&lt;digest&gt;</em> is a message digest,
+<em>&lt;prf&gt;</em> is a pseudo-random function, and
+<em>&lt;encryption&gt;</em> is an encryption algorithm.
+<p>Examples:</p>
+<ul>
+<li>PBEWithMD5AndDES (PKCS #5, 1.5),</li>
+<li>PBEWithHmacSHA256AndAES_128 (PKCS #5, 2.0)</li>
+</ul>
+Note: These all use only the low order 8 bits of each password
+character.</td>
+</tr>
+<tr>
+<td headers="h2401">PBKDF2With<em>&lt;prf&gt;</em></td>
+<td headers="h2402">Password-based key-derivation algorithm found in <a href=
+"http://www.rfc-editor.org/rfc/rfc2898.txt">PKCS #5 2.0</a> using the
+specified pseudo-random function (<em>&lt;prf&gt;</em>). Example:
+PBKDF2WithHmacSHA256.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="SecureRandom" id=
+"SecureRandom"><code>SecureRandom</code> Number Generation
+Algorithms</a></h2>
+<p>The algorithm name in this section can be specified when
+generating an instance of <code>SecureRandom</code>.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="SecureRandom Number Generation Algorithms">
+<thead>
+<tr>
+<th id="h2501">Algorithm Name</th>
+<th id="h2502">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h2501">NativePRNG</td>
+<td headers="h2502">Obtains random numbers from the underlying native OS. No
+assertions are made as to the blocking nature of generating these
+numbers.</td>
+</tr>
+<tr>
+<td headers="h2501">NativePRNGBlocking</td>
+<td headers="h2502">Obtains random numbers from the underlying native OS, blocking
+if necessary. For example, <code>/dev/random</code> on UNIX-like
+systems.</td>
+</tr>
+<tr>
+<td headers="h2501">NativePRNGNonBlocking</td>
+<td headers="h2502">Obtains random numbers from the underlying native OS, without
+blocking to prevent applications from excessive stalling. For
+example, <code>/dev/urandom</code> on UNIX-like systems.</td>
+</tr>
+<tr>
+<td headers="h2501">PKCS11</td>
+<td headers="h2502">Obtains random numbers from the underlying installed and
+configured PKCS11 library.</td>
+</tr>
+<tr>
+<td headers="h2501">SHA1PRNG</td>
+<td headers="h2502">The name of the pseudo-random number generation (PRNG)
+algorithm supplied by the SUN provider. This algorithm uses SHA-1
+as the foundation of the PRNG. It computes the SHA-1 hash over a
+true-random seed value concatenated with a 64-bit counter which is
+incremented by 1 for each operation. From the 160-bit SHA-1 output,
+only 64 bits are used.</td>
+</tr>
+<tr>
+<td headers="h2501">Windows-PRNG</td>
+<td headers="h2502">Obtains random numbers from the underlying Windows OS.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="Service" id="Service">Service Attributes</a></h2>
+<p>A cryptographic service is always associated with a particular
+algorithm or type. For example, a digital signature service is
+always associated with a particular algorithm (for example, DSA),
+and a <code>CertificateFactory</code> service is always associated
+with a particular certificate type (for example, X.509).</p>
+<p>The attributes in this section are for cryptographic services.
+The service attributes can be used as filters for selecting
+providers.</p>
+<p>Both the attribute name and value are case-insensitive.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="Service Attributes">
+<thead>
+<tr>
+<th id="h2601">Attribute</th>
+<th id="h2602">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h2601">KeySize</td>
+<td headers="h2602">The maximum key size that the provider supports for the
+cryptographic service.</td>
+</tr>
+<tr>
+<td headers="h2601">ImplementedIn</td>
+<td headers="h2602">Whether the implementation for the cryptographic service is
+done by software or hardware. The value of this attribute is
+"software" or "hardware".</td>
+</tr>
+<tr>
+<td headers="h2601">ValidationAlgorithm</td>
+<td headers="h2602">The name of the specification that defines the certification
+path validation algorithm that an implementation of
+<code>CertPathBuilder</code> or <code>CertPathValidator</code>
+supports. RFCs should be specified as "RFC#" (ex: "RFC3280") and
+Internet Drafts as the name of the draft (ex:
+"draft-ietf-pkix-rfc2560bis-01.txt"). Values for this attribute
+that are specified as selection criteria to the
+<code>Security.getProviders</code> method will be compared using
+the <code>String.equalsIgnoreCase</code> method. All PKIX
+implementations of <code>CertPathBuilder</code> and
+<code>CertPathValidator</code> should provide a value for this
+attribute.</td>
+</tr>
+<tr>
+<td headers="h2601">LDAPSchema</td>
+<td headers="h2602">The name of the specification that defines the LDAP schema that
+an implementation of an LDAP <code>CertStore</code> uses to
+retrieve certificates and CRLs. The format and semantics of this
+attribute is the same as described for the ValidationAlgorithm
+attribute. All LDAP implementations of <code>CertStore</code>
+should provide a value for this attribute.</td>
+</tr>
+</tbody>
+</table>
+<p>For example:</p>
+<pre class="codeblock">
+   map.put("KeyPairGenerator.DSA",
+            "sun.security.provider.DSAKeyPairGenerator");
+        map.put("KeyPairGenerator.DSA KeySize", "1024");
+        map.put("KeyPairGenerator.DSA ImplementedIn", "Software");
+</pre>
+<!-- ==================================================== -->
+<a name="Signature" id="Signature"></a>
+<h2><code>Signature</code> Algorithms</h2>
+<p>The algorithm names in this section can be specified when
+generating an instance of <code>Signature</code>.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="Signature Algorithms">
+<thead>
+<tr>
+<th id="h2701">Algorithm Name</th>
+<th id="h2702">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h2701">NONEwithRSA</td>
+<td headers="h2702">The RSA signature algorithm, which does not use a digesting
+algorithm (for example, MD5/SHA1) before performing the RSA
+operation. For more information about the RSA Signature algorithms,
+see <a href="http://www.rfc-editor.org/rfc/rfc2437.txt">PKCS
+#1</a>.</td>
+</tr>
+<tr>
+<td headers="h2701">MD2withRSA<br />
+MD5withRSA<br /></td>
+<td headers="h2702">The MD2/MD5 with RSA Encryption signature algorithm, which uses
+the MD2/MD5 digest algorithm and RSA to create and verify RSA
+digital signatures as defined in <a href=
+"http://www.rfc-editor.org/rfc/rfc2437.txt">PKCS #1</a>.</td>
+</tr>
+<tr>
+<td headers="h2701">SHA1withRSA<br />
+SHA224withRSA<br />
+SHA256withRSA<br />
+SHA384withRSA<br />
+SHA512withRSA<br /></td>
+<td headers="h2702">The signature algorithm with SHA-* and the RSA encryption
+algorithm as defined in the OSI Interoperability Workshop, using
+the padding conventions described in <a href=
+"http://www.rfc-editor.org/rfc/rfc2437.txt">PKCS #1</a>.</td>
+</tr>
+<tr>
+<td headers="h2701">NONEwithDSA</td>
+<td headers="h2702">The Digital Signature Algorithm as defined in <a href=
+"http://csrc.nist.gov/publications/fips/archive/fips186-2/fips186-2.pdf">FIPS PUB
+186-2</a>. The data must be exactly 20 bytes in length. This
+algorithm is also known as rawDSA.</td>
+</tr>
+<tr>
+<td headers="h2701">SHA1withDSA<br />
+SHA224withDSA<br />
+SHA256withDSA</td>
+<td headers="h2702">The DSA signature algorithms that use the SHA-1, SHA-224, or
+SHA-256 digest algorithms to create and verify digital signatures
+as defined in <a href=
+"http://csrc.nist.gov/publications/fips/fips186-3/fips_186-3.pdf">FIPS
+PUB 186-3</a>.</td>
+</tr>
+<tr>
+<td headers="h2701">NONEwithECDSA<br />
+SHA1withECDSA<br />
+SHA224withECDSA<br />
+SHA256withECDSA<br />
+SHA384withECDSA<br />
+SHA512withECDSA<br />
+<i>(ECDSA)</i><br /></td>
+<td headers="h2702" valign="top">The ECDSA signature algorithms as defined in ANSI
+X9.62. <!-- as defined in <a
+        href="http://csrc.nist.gov/publications/fips/index.html"> FIPS
+        PUB 186</a>. -->
+<p><b>Note:</b>"ECDSA" is an ambiguous name for the "SHA1withECDSA"
+algorithm and should not be used. The formal name "SHA1withECDSA"
+should be used instead.</p>
+</td>
+</tr>
+<tr>
+<td headers="h2701">&lt;digest&gt;with&lt;encryption&gt;</td>
+<td headers="h2702">Use this to form a name for a signature algorithm with a
+particular message digest (such as MD2 or MD5) and algorithm (such
+as RSA or DSA), just as was done for the explicitly defined
+standard names in this section (MD2withRSA, and so on).
+<p>For the new signature schemes defined in <a href=
+"http://www.rfc-editor.org/rfc/rfc2437.txt">PKCS #1 v 2.0</a>,
+for which the &lt;digest&gt;with&lt;encryption&gt; form is
+insufficient,
+<b>&lt;digest&gt;with&lt;encryption&gt;and&lt;mgf&gt;</b> can be
+used to form a name. Here, &lt;mgf&gt; should be replaced by a mask
+generation function such as MGF1. Example:
+<b>MD5withRSAandMGF1</b>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="SSLContext" id="SSLContext"><code>SSLContext</code>
+Algorithms</a></h2>
+<p>The algorithm names in this section can be specified when
+generating an instance of <code>SSLContext</code>.</p>
+<!-- <p>The <code>protocol</code> name parameter passed to the
+<code>getInstance</code> method of <code>SSLContext</code> supports a
+named secure socket protocol and optionally a named purpose separated
+from the protocol name by a '/' character.  -->
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="SSLContext Algorithms">
+<thead>
+<tr>
+<th id="h2801">Algorithm Name</th>
+<th id="h2802">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h2801">SSL</td>
+<td headers="h2802">Supports some version of SSL; may support other versions</td>
+</tr>
+<tr>
+<td headers="h2801">SSLv2</td>
+<td headers="h2802">Supports SSL version 2 or later; may support other
+versions</td>
+</tr>
+<tr>
+<td headers="h2801">SSLv3</td>
+<td headers="h2802">Supports SSL version 3; may support other versions</td>
+</tr>
+<tr>
+<td headers="h2801">TLS</td>
+<td headers="h2802">Supports some version of TLS; may support other versions</td>
+</tr>
+<tr>
+<td headers="h2801">TLSv1</td>
+<td headers="h2802">Supports <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC
+2246: TLS version 1.0</a> ; may support other versions</td>
+</tr>
+<tr>
+<td headers="h2801">TLSv1.1</td>
+<td headers="h2802">Supports <a href="http://www.ietf.org/rfc/rfc4346.txt">RFC
+4346: TLS version 1.1</a> ; may support other versions</td>
+</tr>
+<tr>
+<td headers="h2801">TLSv1.2</td>
+<td headers="h2802">Supports <a href="http://www.ietf.org/rfc/rfc5246.txt">RFC
+5246: TLS version 1.2</a> ; may support other versions</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="TrustManagerFactory" id=
+"TrustManagerFactory"><code>TrustManagerFactory</code>
+Algorithms</a></h2>
+<p>The algorithm name in this section can be specified when
+generating an instance of <code>TrustManagerFactory</code>.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="TrustManagerFactory Algorithms">
+<thead>
+<tr>
+<th id="h2901">Algorithm Name</th>
+<th id="h2902">Description</th>
+</tr>
+</thead>
+<tbody><!--
+<tr>
+<td>SunX509</td>
+<td>
+See the <a href="SunProviders.html#SunJSSEProvider">Sun Providers
+Documentation</a>.
+</td>
+</tr>
+-->
+<tr>
+<td headers="h2901">PKIX</td>
+<td headers="h2902">A factory for <code>X509ExtendedTrustManager</code> objects
+that validate certificate chains according to the rules defined by
+the IETF PKIX working group in <a href=
+"http://www.ietf.org/rfc/rfc3280.txt">RFC 3280</a> or its
+successor. The <code>TrustManagerFactory</code> must support
+initialization using the class
+<code>javax.net.ssl.CertPathTrustManagerParameters</code>.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<a name="XMLSignature" id="XMLSignature"></a>
+<h2>XML Signature
+(<code>XMLSignatureFactory</code>/<code>KeyInfoFactory</code>/<code>TransformService</code>)
+Mechanisms</h2>
+<p>The mechanism in this section can be specified when generating
+an instance of <code>XMLSignatureFactory</code>,
+<code>KeyInfoFactory</code>, or <code>TransformService</code>. The
+mechanism identifies the XML processing mechanism that an
+implementation uses internally to parse and generate XML signature
+and KeyInfo structures. Also, note that each
+<code>TransformService</code> instance supports a specific
+transform algorithm in addition to a mechanism. The standard names
+for the transform algorithms are defined in the next section.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="XML Signature Mechanisms">
+<thead>
+<tr>
+<th id="h3001">Mechanism</th>
+<th id="h3002">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h3001">DOM</td>
+<td headers="h3002">The Document Object Model. See <a href=
+"xmldsig/overview.html#DOM_Mechanism_Requirements">DOM Mechanism
+Requirements</a> for additional requirements for DOM
+implementations.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<a name="TransformService" id="TransformService"></a>
+<h2>XML Signature Transform (<code>TransformService</code>)
+Algorithms</h2>
+<p>The algorithms in this section can be specified when generating
+an instance of <code>TransformService</code>. Note that URIs are
+specified instead of names to be consistent with the XML Signature
+standard. API constants have been defined for each of these URIs,
+and these are listed in parentheses after each URI in the table
+that follows.</p>
+<table border="5" cellpadding="5" frame="border" width="90%"
+summary="XML Signature Transform Algorithms">
+<thead>
+<tr>
+<th id="h3101">Algorithm URI</th>
+<th id="h3102">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h3101">http://www.w3.org/TR/2001/REC-xml-c14n-20010315
+(<code>CanonicalizationMethod.INCLUSIVE</code>)</td>
+<td headers="h3102">The <a href=
+"http://www.w3.org/TR/2001/REC-xml-c14n-20010315">Canonical XML
+(without comments)</a> canonicalization algorithm.</td>
+</tr>
+<tr>
+<td headers="h3101">http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments
+(<code>CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS</code>)</td>
+<td headers="h3102">The <a href=
+"http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments">Canonical
+XML with comments</a> canonicalization algorithm.</td>
+</tr>
+<tr>
+<td headers="h3101">http://www.w3.org/2001/10/xml-exc-c14n#
+(<code>CanonicalizationMethod.EXCLUSIVE</code>)</td>
+<td headers="h3102">The <a href=
+"http://www.w3.org/TR/2002/REC-xml-exc-c14n-20020718/#">Exclusive
+Canonical XML (without comments)</a> canonicalization
+algorithm.</td>
+</tr>
+<tr>
+<td headers="h3101">http://www.w3.org/2001/10/xml-exc-c14n#WithComments
+(<code>CanonicalizationMethod.EXCLUSIVE_WITH_COMMENTS</code>)</td>
+<td headers="h3102">The <a href=
+"http://www.w3.org/TR/2002/REC-xml-exc-c14n-20020718/#WithComments">
+Exclusive Canonical XML with comments</a> canonicalization
+algorithm.</td>
+</tr>
+<tr>
+<td headers="h3101">http://www.w3.org/2000/09/xmldsig#base64
+(<code>Transform.BASE64</code>)</td>
+<td headers="h3102">The <a href=
+"http://www.w3.org/TR/xmldsig-core/#sec-Base-64">Base64</a>
+transform algorithm.</td>
+</tr>
+<tr>
+<td headers="h3101">http://www.w3.org/2000/09/xmldsig#enveloped-signature
+(<code>Transform.ENVELOPED</code>)</td>
+<td headers="h3102">The <a href=
+"http://www.w3.org/TR/xmldsig-core/#sec-EnvelopedSignature">Enveloped
+Signature</a> transform algorithm.</td>
+</tr>
+<tr>
+<td headers="h3101">http://www.w3.org/TR/1999/REC-xpath-19991116
+(<code>Transform.XPATH</code>)</td>
+<td headers="h3102">The <a href=
+"http://www.w3.org/TR/xmldsig-core/#sec-XPath">XPath</a> transform
+algorithm.</td>
+</tr>
+<tr>
+<td headers="h3101">http://www.w3.org/2002/06/xmldsig-filter2
+(<code>Transform.XPATH2</code>)</td>
+<td headers="h3102">The <a href=
+"http://www.w3.org/TR/2002/REC-xmldsig-filter2-20021108/">XPath
+Filter 2</a> transform algorithm.</td>
+</tr>
+<tr>
+<td headers="h3101">http://www.w3.org/TR/1999/REC-xslt-19991116
+(<code>Transform.XSLT</code>)</td>
+<td headers="h3102">The <a href=
+"http://www.w3.org/TR/xmldsig-core/#sec-XSLT">XSLT</a> transform
+algorithm.</td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<h2><a name="ciphersuites" id="ciphersuites">JSSE Cipher Suite
+Names</a></h2>
+<a name="SupportedCipherSuites" id="SupportedCipherSuites"></a>
+<p>The following list contains the standard JSSE cipher suite
+names. Over time, various groups have added additional cipher
+suites to the SSL/TLS namespace. Some JSSE cipher suite names were
+defined before TLSv1.0 was finalized, and were therefore given the
+<code>SSL_</code> prefix. The names mentioned in the TLS RFCs
+prefixed with <code>TLS_</code> are functionally equivalent to the
+JSSE cipher suites prefixed with <code>SSL_</code>.</p>
+<!-- PLEASE MAKE SURE TO EDIT THE TABLE BY HAND SO THAT ITS STRUCTURE AND
+EDITIBILITY IS PRESERVED. DO not USE AN HTML EDITOR -->
+<ul>
+<li>SSL_DH_anon_EXPORT_WITH_DES40_CBC_SHA</li>
+<li>SSL_DH_anon_EXPORT_WITH_RC4_40_MD5</li>
+<li>SSL_DH_anon_WITH_3DES_EDE_CBC_SHA</li>
+<li>TLS_DH_anon_WITH_AES_128_CBC_SHA</li>
+<li>TLS_DH_anon_WITH_AES_128_CBC_SHA256</li>
+<li>TLS_DH_anon_WITH_AES_128_GCM_SHA256</li>
+<li>TLS_DH_anon_WITH_AES_256_CBC_SHA</li>
+<li>TLS_DH_anon_WITH_AES_256_CBC_SHA256</li>
+<li>TLS_DH_anon_WITH_AES_256_GCM_SHA384</li>
+<li>TLS_DH_anon_WITH_CAMELLIA_128_CBC_SHA</li>
+<li>TLS_DH_anon_WITH_CAMELLIA_128_CBC_SHA256</li>
+<li>TLS_DH_anon_WITH_CAMELLIA_256_CBC_SHA</li>
+<li>TLS_DH_anon_WITH_CAMELLIA_256_CBC_SHA256</li>
+<li>SSL_DH_anon_WITH_DES_CBC_SHA</li>
+<li>SSL_DH_anon_WITH_RC4_128_MD5</li>
+<li>TLS_DH_anon_WITH_SEED_CBC_SHA</li>
+<li>SSL_DH_DSS_EXPORT_WITH_DES40_CBC_SHA</li>
+<li>SSL_DH_DSS_WITH_3DES_EDE_CBC_SHA</li>
+<li>TLS_DH_DSS_WITH_AES_128_CBC_SHA</li>
+<li>TLS_DH_DSS_WITH_AES_128_CBC_SHA256</li>
+<li>TLS_DH_DSS_WITH_AES_128_GCM_SHA256</li>
+<li>TLS_DH_DSS_WITH_AES_256_CBC_SHA</li>
+<li>TLS_DH_DSS_WITH_AES_256_CBC_SHA256</li>
+<li>TLS_DH_DSS_WITH_AES_256_GCM_SHA384</li>
+<li>TLS_DH_DSS_WITH_CAMELLIA_128_CBC_SHA</li>
+<li>TLS_DH_DSS_WITH_CAMELLIA_128_CBC_SHA256</li>
+<li>TLS_DH_DSS_WITH_CAMELLIA_256_CBC_SHA</li>
+<li>TLS_DH_DSS_WITH_CAMELLIA_256_CBC_SHA256</li>
+<li>SSL_DH_DSS_WITH_DES_CBC_SHA</li>
+<li>TLS_DH_DSS_WITH_SEED_CBC_SHA</li>
+<li>SSL_DH_RSA_EXPORT_WITH_DES40_CBC_SHA</li>
+<li>SSL_DH_RSA_WITH_3DES_EDE_CBC_SHA</li>
+<li>TLS_DH_RSA_WITH_AES_128_CBC_SHA</li>
+<li>TLS_DH_RSA_WITH_AES_128_CBC_SHA256</li>
+<li>TLS_DH_RSA_WITH_AES_128_GCM_SHA256</li>
+<li>TLS_DH_RSA_WITH_AES_256_CBC_SHA</li>
+<li>TLS_DH_RSA_WITH_AES_256_CBC_SHA256</li>
+<li>TLS_DH_RSA_WITH_AES_256_GCM_SHA384</li>
+<li>TLS_DH_RSA_WITH_CAMELLIA_128_CBC_SHA</li>
+<li>TLS_DH_RSA_WITH_CAMELLIA_128_CBC_SHA256</li>
+<li>TLS_DH_RSA_WITH_CAMELLIA_256_CBC_SHA</li>
+<li>TLS_DH_RSA_WITH_CAMELLIA_256_CBC_SHA256</li>
+<li>SSL_DH_RSA_WITH_DES_CBC_SHA</li>
+<li>TLS_DH_RSA_WITH_SEED_CBC_SHA</li>
+<li>SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA</li>
+<li>SSL_DHE_DSS_EXPORT1024_WITH_DES_CBC_SHA</li>
+<li>SSL_DHE_DSS_EXPORT1024_WITH_RC4_56_SHA</li>
+<li>SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA</li>
+<li>TLS_DHE_DSS_WITH_AES_128_CBC_SHA</li>
+<li>TLS_DHE_DSS_WITH_AES_128_CBC_SHA256</li>
+<li>TLS_DHE_DSS_WITH_AES_128_GCM_SHA256</li>
+<li>TLS_DHE_DSS_WITH_AES_256_CBC_SHA</li>
+<li>TLS_DHE_DSS_WITH_AES_256_CBC_SHA256</li>
+<li>TLS_DHE_DSS_WITH_AES_256_GCM_SHA384</li>
+<li>TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA</li>
+<li>TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA256</li>
+<li>TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA</li>
+<li>TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA256</li>
+<li>SSL_DHE_DSS_WITH_DES_CBC_SHA</li>
+<li>SSL_DHE_DSS_WITH_RC4_128_SHA</li>
+<li>TLS_DHE_DSS_WITH_SEED_CBC_SHA</li>
+<li>TLS_DHE_PSK_WITH_3DES_EDE_CBC_SHA</li>
+<li>TLS_DHE_PSK_WITH_AES_128_CBC_SHA</li>
+<li>TLS_DHE_PSK_WITH_AES_128_CBC_SHA256</li>
+<li>TLS_DHE_PSK_WITH_AES_128_GCM_SHA256</li>
+<li>TLS_DHE_PSK_WITH_AES_256_CBC_SHA</li>
+<li>TLS_DHE_PSK_WITH_AES_256_CBC_SHA384</li>
+<li>TLS_DHE_PSK_WITH_AES_256_GCM_SHA384</li>
+<li>TLS_DHE_PSK_WITH_NULL_SHA</li>
+<li>TLS_DHE_PSK_WITH_NULL_SHA256</li>
+<li>TLS_DHE_PSK_WITH_NULL_SHA384</li>
+<li>TLS_DHE_PSK_WITH_RC4_128_SHA</li>
+<li>SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA</li>
+<li>SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA</li>
+<li>TLS_DHE_RSA_WITH_AES_128_CBC_SHA</li>
+<li>TLS_DHE_RSA_WITH_AES_128_CBC_SHA256</li>
+<li>TLS_DHE_RSA_WITH_AES_128_GCM_SHA256</li>
+<li>TLS_DHE_RSA_WITH_AES_256_CBC_SHA</li>
+<li>TLS_DHE_RSA_WITH_AES_256_CBC_SHA256</li>
+<li>TLS_DHE_RSA_WITH_AES_256_GCM_SHA384</li>
+<li>TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA</li>
+<li>TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA256</li>
+<li>TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA</li>
+<li>TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA256</li>
+<li>SSL_DHE_RSA_WITH_DES_CBC_SHA</li>
+<li>TLS_DHE_RSA_WITH_SEED_CBC_SHA</li>
+<li>TLS_ECDH_anon_WITH_3DES_EDE_CBC_SHA</li>
+<li>TLS_ECDH_anon_WITH_AES_128_CBC_SHA</li>
+<li>TLS_ECDH_anon_WITH_AES_256_CBC_SHA</li>
+<li>TLS_ECDH_anon_WITH_NULL_SHA</li>
+<li>TLS_ECDH_anon_WITH_RC4_128_SHA</li>
+<li>TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA</li>
+<li>TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA</li>
+<li>TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256</li>
+<li>TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256</li>
+<li>TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA</li>
+<li>TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384</li>
+<li>TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384</li>
+<li>TLS_ECDH_ECDSA_WITH_NULL_SHA</li>
+<li>TLS_ECDH_ECDSA_WITH_RC4_128_SHA</li>
+<li>TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA</li>
+<li>TLS_ECDH_RSA_WITH_AES_128_CBC_SHA</li>
+<li>TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256</li>
+<li>TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256</li>
+<li>TLS_ECDH_RSA_WITH_AES_256_CBC_SHA</li>
+<li>TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384</li>
+<li>TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384</li>
+<li>TLS_ECDH_RSA_WITH_NULL_SHA</li>
+<li>TLS_ECDH_RSA_WITH_RC4_128_SHA</li>
+<li>TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA</li>
+<li>TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA</li>
+<li>TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256</li>
+<li>TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256</li>
+<li>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA</li>
+<li>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384</li>
+<li>TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384</li>
+<li>TLS_ECDHE_ECDSA_WITH_NULL_SHA</li>
+<li>TLS_ECDHE_ECDSA_WITH_RC4_128_SHA</li>
+<li>TLS_ECDHE_PSK_WITH_3DES_EDE_CBC_SHA</li>
+<li>TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA</li>
+<li>TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA256</li>
+<li>TLS_ECDHE_PSK_WITH_AES_256_CBC_SHA</li>
+<li>TLS_ECDHE_PSK_WITH_AES_256_CBC_SHA384</li>
+<li>TLS_ECDHE_PSK_WITH_NULL_SHA</li>
+<li>TLS_ECDHE_PSK_WITH_NULL_SHA256</li>
+<li>TLS_ECDHE_PSK_WITH_NULL_SHA384</li>
+<li>TLS_ECDHE_PSK_WITH_RC4_128_SHA</li>
+<li>TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA</li>
+<li>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA</li>
+<li>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256</li>
+<li>TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</li>
+<li>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA</li>
+<li>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384</li>
+<li>TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384</li>
+<li>TLS_ECDHE_RSA_WITH_NULL_SHA</li>
+<li>TLS_ECDHE_RSA_WITH_RC4_128_SHA</li>
+<li>TLS_EMPTY_RENEGOTIATION_INFO_SCSV <small><sup><b><a href=
+"#footnote">*</a></b></sup></small></li>
+<li>SSL_FORTEZZA_DMS_WITH_FORTEZZA_CBC_SHA</li>
+<li>SSL_FORTEZZA_DMS_WITH_NULL_SHA</li>
+<li>TLS_KRB5_EXPORT_WITH_DES_CBC_40_MD5</li>
+<li>TLS_KRB5_EXPORT_WITH_DES_CBC_40_SHA</li>
+<li>TLS_KRB5_EXPORT_WITH_RC2_CBC_40_MD5</li>
+<li>TLS_KRB5_EXPORT_WITH_RC2_CBC_40_SHA</li>
+<li>TLS_KRB5_EXPORT_WITH_RC4_40_MD5</li>
+<li>TLS_KRB5_EXPORT_WITH_RC4_40_SHA</li>
+<li>TLS_KRB5_WITH_3DES_EDE_CBC_MD5</li>
+<li>TLS_KRB5_WITH_3DES_EDE_CBC_SHA</li>
+<li>TLS_KRB5_WITH_DES_CBC_MD5</li>
+<li>TLS_KRB5_WITH_DES_CBC_SHA</li>
+<li>TLS_KRB5_WITH_IDEA_CBC_MD5</li>
+<li>TLS_KRB5_WITH_IDEA_CBC_SHA</li>
+<li>TLS_KRB5_WITH_RC4_128_MD5</li>
+<li>TLS_KRB5_WITH_RC4_128_SHA</li>
+<li>TLS_PSK_WITH_3DES_EDE_CBC_SHA</li>
+<li>TLS_PSK_WITH_AES_128_CBC_SHA</li>
+<li>TLS_PSK_WITH_AES_128_CBC_SHA256</li>
+<li>TLS_PSK_WITH_AES_128_GCM_SHA256</li>
+<li>TLS_PSK_WITH_AES_256_CBC_SHA</li>
+<li>TLS_PSK_WITH_AES_256_CBC_SHA384</li>
+<li>TLS_PSK_WITH_AES_256_GCM_SHA384</li>
+<li>TLS_PSK_WITH_NULL_SHA</li>
+<li>TLS_PSK_WITH_NULL_SHA256</li>
+<li>TLS_PSK_WITH_NULL_SHA384</li>
+<li>TLS_PSK_WITH_RC4_128_SHA</li>
+<li>SSL_RSA_EXPORT_WITH_DES40_CBC_SHA</li>
+<li>SSL_RSA_EXPORT_WITH_RC2_CBC_40_MD5</li>
+<li>SSL_RSA_EXPORT_WITH_RC4_40_MD5</li>
+<li>SSL_RSA_EXPORT1024_WITH_DES_CBC_SHA</li>
+<li>SSL_RSA_EXPORT1024_WITH_RC4_56_SHA</li>
+<li>SSL_RSA_FIPS_WITH_3DES_EDE_CBC_SHA</li>
+<li>SSL_RSA_FIPS_WITH_DES_CBC_SHA</li>
+<li>TLS_RSA_PSK_WITH_3DES_EDE_CBC_SHA</li>
+<li>TLS_RSA_PSK_WITH_AES_128_CBC_SHA</li>
+<li>TLS_RSA_PSK_WITH_AES_128_CBC_SHA256</li>
+<li>TLS_RSA_PSK_WITH_AES_128_GCM_SHA256</li>
+<li>TLS_RSA_PSK_WITH_AES_256_CBC_SHA</li>
+<li>TLS_RSA_PSK_WITH_AES_256_CBC_SHA384</li>
+<li>TLS_RSA_PSK_WITH_AES_256_GCM_SHA384</li>
+<li>TLS_RSA_PSK_WITH_NULL_SHA</li>
+<li>TLS_RSA_PSK_WITH_NULL_SHA256</li>
+<li>TLS_RSA_PSK_WITH_NULL_SHA384</li>
+<li>TLS_RSA_PSK_WITH_RC4_128_SHA</li>
+<li>SSL_RSA_WITH_3DES_EDE_CBC_SHA</li>
+<li>TLS_RSA_WITH_AES_128_CBC_SHA</li>
+<li>TLS_RSA_WITH_AES_128_CBC_SHA256</li>
+<li>TLS_RSA_WITH_AES_128_GCM_SHA256</li>
+<li>TLS_RSA_WITH_AES_256_CBC_SHA</li>
+<li>TLS_RSA_WITH_AES_256_CBC_SHA256</li>
+<li>TLS_RSA_WITH_AES_256_GCM_SHA384</li>
+<li>TLS_RSA_WITH_CAMELLIA_128_CBC_SHA</li>
+<li>TLS_RSA_WITH_CAMELLIA_128_CBC_SHA256</li>
+<li>TLS_RSA_WITH_CAMELLIA_256_CBC_SHA</li>
+<li>TLS_RSA_WITH_CAMELLIA_256_CBC_SHA256</li>
+<li>SSL_RSA_WITH_DES_CBC_SHA</li>
+<li>SSL_RSA_WITH_IDEA_CBC_SHA</li>
+<li>SSL_RSA_WITH_NULL_MD5</li>
+<li>SSL_RSA_WITH_NULL_SHA</li>
+<li>TLS_RSA_WITH_NULL_SHA256</li>
+<li>SSL_RSA_WITH_RC4_128_MD5</li>
+<li>SSL_RSA_WITH_RC4_128_SHA</li>
+<li>TLS_RSA_WITH_SEED_CBC_SHA</li>
+<li>TLS_SRP_SHA_DSS_WITH_3DES_EDE_CBC_SHA</li>
+<li>TLS_SRP_SHA_DSS_WITH_AES_128_CBC_SHA</li>
+<li>TLS_SRP_SHA_DSS_WITH_AES_256_CBC_SHA</li>
+<li>TLS_SRP_SHA_RSA_WITH_3DES_EDE_CBC_SHA</li>
+<li>TLS_SRP_SHA_RSA_WITH_AES_128_CBC_SHA</li>
+<li>TLS_SRP_SHA_RSA_WITH_AES_256_CBC_SHA</li>
+<li>TLS_SRP_SHA_WITH_3DES_EDE_CBC_SHA</li>
+<li>TLS_SRP_SHA_WITH_AES_128_CBC_SHA</li>
+<li>TLS_SRP_SHA_WITH_AES_256_CBC_SHA</li>
+</ul>
+<p><small><a name="footnote" id="footnote">*</a>
+<code>TLS_EMPTY_RENEGOTIATION_INFO_SCSV</code> is a new
+pseudo-cipher suite to support RFC 5746. Read the <a href=
+"jsse/JSSERefGuide.html#tlsRenegotiation" target="_blank">Transport
+Layer Security (TLS) Renegotiation Issue</a> section of the JSEE
+Reference Guide for more information.</small></p>
+<!-- ==================================================== -->
+<h2><a name="jssenames" id="jssenames">Additional JSSE Standard
+Names</a></h2>
+<p>The <code>keyType</code> parameter passed to the
+<code>chooseClientAlias</code>, <code>chooseServerAlias</code>,
+<code>getClientAliases</code>, and <code>getServerAliases</code>
+methods of <code>X509KeyManager</code> specifies the public key
+types. Each row of the table that follows lists the standard name
+that should be used for <code>keyType</code>, given the specified
+certificate type.</p>
+<table border="1" cellspacing="1" cellpadding="4" width="80%"
+summary="Additional JSSE Standard Names">
+<tbody>
+<tr>
+<th id="h3201">Name</th>
+<th id="h3202">Certificate Type</th>
+</tr>
+<tr>
+<td headers="h3201">RSA</td>
+<td headers="h3202">RSA</td>
+</tr>
+<tr>
+<td headers="h3201">DSA</td>
+<td headers="h3202">DSA</td>
+</tr>
+<tr>
+<td headers="h3201">DH_RSA</td>
+<td headers="h3202">Diffie-Hellman with RSA signature</td>
+</tr>
+<tr>
+<td headers="h3201">DH_DSA</td>
+<td headers="h3202">Diffie-Hellman with DSA signature</td>
+</tr>
+<tr>
+<td headers="h3201">EC</td>
+<td headers="h3202">Elliptic Curve</td>
+</tr>
+<tr>
+<td headers="h3201">EC_EC</td>
+<td headers="h3202">Elliptic Curve with ECDSA signature</td>
+</tr>
+<tr>
+<td headers="h3201">EC_RSA</td>
+<td headers="h3202">Elliptic Curve with RSA signature</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>protocols</code> parameter passed to the
+<code>setEnabledProtocols</code> method of <code>SSLSocket</code>
+specifies the protocol versions to be enabled for use on the
+connection. The table that follows lists the standard names that
+can be passed to <code>setEnabledProtocols</code> or that may be
+returned by the <code>SSLSocket getSupportedProtocols</code> and
+<code>getEnabledProtocols</code> methods.</p>
+<table border="1" cellspacing="1" cellpadding="4" width="80%"
+summary="list of protocols parameter">
+<tbody>
+<tr>
+<th id="h3301">Name</th>
+<th id="h3302">Protocol</th>
+</tr>
+<tr>
+<td headers="h3301">SSLv2</td>
+<td headers="h3302">SSL version 2 protocol</td>
+</tr>
+<tr>
+<td headers="h3301">SSLv3</td>
+<td headers="h3302">SSL version 3 protocol</td>
+</tr>
+<tr>
+<td headers="h3301">TLSv1</td>
+<td headers="h3302">TLS version 1.0 protocol (defined in <a href=
+"http://www.ietf.org/rfc/rfc2246.txt">RFC 2246)</a></td>
+</tr>
+<tr>
+<td headers="h3301">TLSv1.1</td>
+<td headers="h3302">TLS version 1.1 protocol (defined in <a href=
+"http://www.ietf.org/rfc/rfc4346.txt">RFC 4346)</a></td>
+</tr>
+<tr>
+<td headers="h3301">TLSv1.2</td>
+<td headers="h3302">TLS version 1.2 protocol (defined in <a href=
+"http://www.ietf.org/rfc/rfc5246.txt">RFC 5246)</a></td>
+</tr>
+<tr>
+<td headers="h3301">SSLv2Hello</td>
+<td headers="h3302">Currently, the SSLv3, TLSv1, and TLSv1.1 protocols allow you to
+send SSLv3, TLSv1, and TLSv1.1 hellos encapsulated in an SSLv2
+format hello. For more details on the reasons for allowing this
+compatibility in these protocols, see Appendix E in the appropriate
+RFCs (previously listed).<br />
+<br />
+Note that some SSL/TLS servers do not support the v2 hello format
+and require that client hellos conform to the SSLv3 or TLSv1 client
+hello formats.<br />
+<br />
+The SSLv2Hello option controls the SSLv2 encapsulation. If
+SSLv2Hello is disabled on the client, then all outgoing messages
+will conform to the SSLv3/TLSv1 client hello format. If SSLv2Hello
+is disabled on the server, then all incoming messages must conform
+to the SSLv3/TLSv1 client hello format.<br /></td>
+</tr>
+</tbody>
+</table>
+<p>The <code>authType</code> parameter passed to the
+<code>checkClientTrusted</code> and <code>checkServerTrusted</code>
+methods of <code>X509TrustManager</code> indicates the
+authentication type. The table that follows specifies what standard
+names should be used for the client or server certificate
+chains.</p>
+<table border="1" cellspacing="1" cellpadding="4" width="80%"
+summary="list of authType parameters">
+<tbody>
+<tr>
+<th id="h3401">Client or Server Certificate Chain</th>
+<th id="h3402">Authentication Type Standard Name</th>
+</tr>
+<tr>
+<td headers="h3401">Client</td>
+<td headers="h3402">Determined by the actual certificate used. For instance, if
+RSAPublicKey is used, the <code>authType</code> should be
+"RSA".</td>
+</tr>
+<tr>
+<td headers="h3401">Server</td>
+<td headers="h3402">The key exchange algorithm portion of the cipher suites
+represented as a String, such as "RSA" or "DHE_DSS". Note: For some
+exportable cipher suites, the key exchange algorithm is determined
+at runtime during the handshake. For instance, for
+TLS_RSA_EXPORT_WITH_RC4_40_MD5, the <code>authType</code> should be
+"RSA_EXPORT" when an ephemeral RSA key is used for the key
+exchange, and "RSA" when the key from the server certificate is
+used. Or it can take the value "UNKNOWN".</td>
+</tr>
+</tbody>
+</table>
+<p>The JDK 8 release supports endpoint identification algorithms
+for TLS 1.2. The algorithm name can be passed to the
+<code>setEndpointIdentificationAlgorithm()</code> method of
+<code>javax.net.ssl.SSLParameters</code>. The following table shows
+the currently recognized names.</p>
+<table border="1" cellspacing="1" cellpadding="4" width="80%"
+summary="Endpoint Identification Algorithm Names">
+<tbody>
+<tr>
+<th id="h3501">Endpoint Identification<br />
+Algorithm Name</th>
+<th id="h3502">Specification</th>
+</tr>
+<tr>
+<td headers="h3501">HTTPS</td>
+<td headers="h3502"><a href=
+"http://www.ietf.org/rfc/rfc2818.txt">http://www.ietf.org/rfc/rfc2818.txt</a></td>
+</tr>
+<tr>
+<td headers="h3501">LDAPS</td>
+<td headers="h3502"><a href=
+"http://www.ietf.org/rfc/rfc2830.txt">http://www.ietf.org/rfc/rfc2830.txt</a></td>
+</tr>
+</tbody>
+</table>
+<!-- ==================================================== -->
+<hr />
+<h2><a name="alg" id="alg">Algorithms</a></h2>
+<p>This section specifies details concerning some of the algorithms
+defined in this document. Any provider supplying an implementation
+of the listed algorithms must comply with the specifications in
+this section.</p>
+<p>To add a new algorithm not specified here, you should first
+survey other people or companies supplying provider packages to see
+if they have already added that algorithm, and, if so, use the
+definitions they published, if available. Otherwise, you should
+create and make available a template, similar to those found in
+this section, with the specifications for the algorithm you
+provide.</p>
+<h2><a name="spectemp" id="spectemp">Specification
+Template</a></h2>
+<p>The following table shows the fields of the algorithm
+specifications.</p>
+<table border="1" cellpadding="2" cellspacing="2" summary=
+"algorithm specifications">
+<thead>
+<tr>
+<th id="h3601"><b>Field</b></th>
+<th id="h3602"><b>Description</b></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td headers="h3601" width="23%">Name</td>
+<td headers="h3602" width="77%">The name by which the algorithm is known. This is
+the name passed to the <code>getInstance</code> method (when
+requesting the algorithm), and returned by the
+<code>getAlgorithm</code> method to determine the name of an
+existing algorithm object. These methods are in the relevant engine
+classes: <code><a href="#Signature">Signature</a></code>,
+<code><a href="#MessageDigest">MessageDigest</a></code>,
+<code><a href="#KeyPairGenerator">KeyPairGenerator</a></code>, and
+<code><a href=
+"#AlgorithmParameterGenerator">AlgorithmParameterGenerator</a></code>
+.</td>
+</tr>
+<tr>
+<td headers="h3601" width="23%">Type</td>
+<td headers="h3602" width="77%">The type of algorithm: <code>Signature</code>,
+<code>MessageDigest</code>, <code>KeyPairGenerator</code>, or
+<code>AlgorithmParameterGenerator</code>.</td>
+</tr>
+<tr>
+<td headers="h3601" width="23%">Description</td>
+<td headers="h3602" width="77%">General notes about the algorithm, including any
+standards implemented by the algorithm, applicable patents, and so
+on.</td>
+</tr>
+<tr>
+<td headers="h3601" width="23%"><code>KeyPair</code> Algorithm
+(<i>optional</i>)</td>
+<td headers="h3602" width="77%">The keypair algorithm for this algorithm.</td>
+</tr>
+<tr>
+<td headers="h3601" width="23%">Keysize (<i>optional</i>)</td>
+<td headers="h3602" width="77%">For a keyed algorithm or key generation algorithm:
+the valid keysizes.</td>
+</tr>
+<tr>
+<td headers="h3601" width="23%">
+<p>Size (<i>optional</i>)</p>
+</td>
+<td headers="h3602" width="77%">For an algorithm parameter generation algorithm:
+the valid "sizes" for algorithm parameter generation.</td>
+</tr>
+<tr>
+<td headers="h3601" width="23%">
+<p>Parameter Defaults (<i>optional</i>)</p>
+</td>
+<td headers="h3602" width="77%">For a key generation algorithm: the default
+parameter values.</td>
+</tr>
+<tr>
+<td headers="h3601" width="23%">
+<p><code>Signature</code> Format (<i>optional</i>)</p>
+</td>
+<td headers="h3602" width="77%">For a <code>Signature</code> algorithm, the format
+of the signature, that is, the input and output of the verify and
+sign methods, respectively.</td>
+</tr>
+</tbody>
+</table>
+<h2><a name="algspec" id="algspec">Algorithm
+Specifications</a></h2>
+<h3>SHA-1 Message Digest Algorithm</h3>
+<table border="1" cellpadding="0" cellspacing="2" width="95%"
+summary="SHA-1 Message Digest specification">
+<tbody>
+<tr>
+<th id="h3701">Field</th>
+<th id="h3702">Description</th>
+<th id="h3703"></th>
+</tr>
+<tr>
+<td headers="h3701" width="28%"><b>Name</b></td>
+<td headers="h3702" width="72%">SHA-1</td>
+</tr>
+<tr>
+<td headers="h3701" width="28%"><b>Type</b></td>
+<td headers="h3702" width="72%"><code>MessageDigest</code></td>
+</tr>
+<tr>
+<td headers="h3701" valign="top" width="28%"><b>Description</b></td>
+<td headers="h3702" width="72%">The message digest algorithm as defined in <a href=
+"http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf">NIST's
+FIPS 180-4</a>. The output of this algorithm is a 160-bit
+digest.</td>
+</tr>
+</tbody>
+</table>
+<h3>SHA-256 Message Digest Algorithm</h3>
+<table border="1" cellpadding="0" cellspacing="2" width="95%"
+summary="SHA-256 Message Digest specification">
+<tbody>
+<tr>
+<th id="h3801">Field</th>
+<th id="h3802">Description</th>
+<th id="h3803"></th>
+</tr>
+<tr>
+<td headers="h3801" width="28%"><b>Name</b></td>
+<td headers="h3802" width="72%">SHA-256</td>
+</tr>
+<tr>
+<td headers="h3801" width="28%"><b>Type</b></td>
+<td headers="h3802" width="72%"><code>MessageDigest</code></td>
+</tr>
+<tr>
+<td headers="h3801" valign="top" width="28%"><b>Description</b></td>
+<td headers="h3802" width="72%">The message digest algorithm as defined in <a href=
+"http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf">NIST's
+FIPS 180-4</a>. The output of this algorithm is a 256-bit
+digest.</td>
+</tr>
+</tbody>
+</table>
+<h3>MD2 Message Digest Algorithm</h3>
+<table border="1" cellpadding="0" cellspacing="2" width="95%"
+summary="MD2 Message Digest Algorithm">
+<tbody>
+<tr>
+<th id="h3901">Field</th>
+<th id="h3902">Description</th>
+<th id="h3903"></th>
+</tr>
+<tr>
+<td headers="h3901" width="28%"><b>Name</b></td>
+<td headers="h3902" width="72%">MD2</td>
+</tr>
+<tr>
+<td headers="h3901" width="28%">&nbsp;<b>Type</b></td>
+<td headers="h3902" width="72%"><code>MessageDigest</code></td>
+</tr>
+<tr>
+<td headers="h3901" valign="top" width="28%"><b>Description</b></td>
+<td headers="h3902" width="72%">The message digest algorithm as defined in <a href=
+"http://www.ietf.org/rfc/rfc1319.txt">RFC 1319</a>. The output of
+this algorithm is a 128-bit (16 byte) digest.</td>
+</tr>
+</tbody>
+</table>
+<h3>MD5 Message Digest Algorithm</h3>
+<table border="1" cellpadding="0" cellspacing="2" width="95%"
+summary="Md5 Message Digest Algorithm">
+<tbody>
+<tr>
+<th id="h4001">Field</th>
+<th id="h4002">Description</th>
+<th id="h4003"></th>
+</tr>
+<tr>
+<td headers="h4001" width="28%"><b>Name</b></td>
+<td headers="h4002" width="72%">MD5</td>
+</tr>
+<tr>
+<td headers="h4001" width="28%"><b>Type</b></td>
+<td headers="h4002" width="72%"><code>MessageDigest</code></td>
+</tr>
+<tr>
+<td headers="h4001" valign="top" width="28%"><b>Description</b></td>
+<td headers="h4002" width="72%">The message digest algorithm as defined in <a href=
+"http://www.ietf.org/rfc/rfc1321.txt">RFC 1321</a>. The output of
+this algorithm is a 128-bit (16 byte) digest.</td>
+</tr>
+</tbody>
+</table>
+<h3>The Digital Signature Algorithm</h3>
+<table border="1" cellpadding="0" cellspacing="2" width="95%"
+summary="Digital Signature Algorithm">
+<tbody>
+<tr>
+<th id="h4101">Field</th>
+<th id="h4102">Description</th>
+<th id="h4103"></th>
+</tr>
+<tr>
+<td headers="h4101" width="28%"><b>Name</b></td>
+<td headers="h4102" width="72%">SHA1withDSA</td>
+</tr>
+<tr>
+<td headers="h4101" width="28%"><b>Type</b></td>
+<td headers="h4102" width="72%"><code>Signature</code></td>
+</tr>
+<tr>
+<td headers="h4101" valign="top" width="28%"><b>Description</b></td>
+<td headers="h4102" width="72%">This algorithm is the signature algorithm described
+in <a href="http://csrc.nist.gov/publications/PubsFIPS.html">NIST
+FIPS 186</a>, using DSA with the SHA-1 message digest
+algorithm.</td>
+</tr>
+<tr>
+<td headers="h4101" width="28%"><b><code>KeyPair</code> Algorithm</b></td>
+<td headers="h4102" width="72%">DSA</td>
+</tr>
+<tr>
+<td headers="h4101" valign="top" width="28%"><b>Signature Format</b></td>
+<td headers="h4102" width="72%">ASN.1 sequence of two INTEGER values:
+<code>r</code> and <code>s</code>, in that order:<br />
+<code>SEQUENCE ::= { r INTEGER, s INTEGER }</code></td>
+</tr>
+</tbody>
+</table>
+<h3>RSA-based Signature Algorithms, with MD2, MD5 or SHA-1</h3>
+<table border="1" cellpadding="0" cellspacing="2" width="95%"
+summary="RSA-based Signature Algorithms">
+<tbody>
+<tr>
+<th id="h4201">Field</th>
+<th id="h4202">Description</th>
+<th id="h4203"></th>
+</tr>
+<tr>
+<td headers="h4201" width="28%"><b>Names</b></td>
+<td headers="h4202" width="72%">MD2withRSA, MD5withRSA and SHA1withRSA</td>
+</tr>
+<tr>
+<td headers="h4201" width="28%"><b>Type</b></td>
+<td headers="h4202" width="72%"><code>Signature</code></td>
+</tr>
+<tr>
+<td headers="h4201" valign="top" width="28%"><b>Description</b></td>
+<td headers="h4202" width="72%">These are the signature algorithms that use the
+MD2, MD5, and SHA-1 message digest algorithms (respectively) with
+RSA encryption.</td>
+</tr>
+<tr>
+<td headers="h4201" width="28%"><b><code>KeyPair</code> Algorithm</b></td>
+<td headers="h4202" width="72%">RSA</td>
+</tr>
+<tr>
+<td headers="h4201" valign="top" width="28%"><b>Signature Format</b></td>
+<td headers="h4202" width="72%">DER-encoded PKCS1 block as defined in <a href=
+"http://www.rfc-editor.org/rfc/rfc2437.txt">RSA Laboratories,
+PKCS #1</a>. The data encrypted is the digest of the data
+signed.</td>
+</tr>
+</tbody>
+</table>
+<h3>DSA KeyPair Generation Algorithm</h3>
+<table border="1" cellpadding="0" cellspacing="2" width="95%"
+summary="DSA KeyPair Generation Algorithm">
+<tbody>
+<tr>
+<th id="h4301">Field</th>
+<th id="h4302">Description</th>
+<th id="h4303"></th>
+</tr>
+<tr>
+<td headers="h4301" height="23" width="28%"><b>Name</b></td>
+<td headers="h4302" height="23" width="72%">DSA</td>
+</tr>
+<tr>
+<td headers="h4301" height="23" width="28%"><b>Type</b></td>
+<td headers="h4302" height="23" width="72%"><code>KeyPairGenerator</code></td>
+</tr>
+<tr>
+<td headers="h4301" height="42" valign="top" width="28%"><b>Description</b></td>
+<td headers="h4302" height="42" width="72%">This algorithm is the key pair
+generation algorithm described <a href=
+"http://csrc.nist.gov/publications/PubsFIPS.html">NIST FIPS 186</a>
+for DSA.</td>
+</tr>
+<tr>
+<td headers="h4301" height="41" width="28%"><b>Keysize</b></td>
+<td headers="h4302" height="41" width="72%">The length, in bits, of the modulus
+<code>p</code>. This must be a multiple of 64, ranging from 512 to
+1024 (inclusive), or 2048. The default keysize is 1024.</td>
+</tr>
+<tr>
+<td headers="h4301" height="23" valign="top" width="28%"><b>Parameter
+Defaults</b></td>
+<td headers="h4302" height="23" width="72%">
+<p>The following are the default parameter values for keysizes of
+512, 768, and 1024 bits:</p>
+<p><strong>512-bit Key Parameters</strong></p>
+<pre class="codeblock">
+SEED =
+b869c82b 35d70e1b 1ff91b28 e37a62ec dc34409b
+
+counter = 123
+
+p =
+fca682ce 8e12caba 26efccf7 110e526d b078b05e decbcd1e b4a208f3
+ae1617ae 01f35b91 a47e6df6 3413c5e1 2ed0899b cd132acd 50d99151
+bdc43ee7 37592e17
+
+q =
+962eddcc 369cba8e bb260ee6 b6a126d9 346e38c5
+
+g =
+678471b2 7a9cf44e e91a49c5 147db1a9 aaf244f0 5a434d64 86931d2d
+14271b9e 35030b71 fd73da17 9069b32e 2935630e 1c206235 4d0da20a
+6c416e50 be794ca4
+</pre>
+<p><strong>768-bit key parameters</strong></p>
+<pre class="codeblock">
+SEED =
+77d0f8c4 dad15eb8 c4f2f8d6 726cefd9 6d5bb399
+
+counter = 263
+
+p =
+e9e64259 9d355f37 c97ffd35 67120b8e 25c9cd43 e927b3a9 670fbec5
+d8901419 22d2c3b3 ad248009 3799869d 1e846aab 49fab0ad 26d2ce6a
+22219d47 0bce7d77 7d4a21fb e9c270b5 7f607002 f3cef839 3694cf45
+ee3688c1 1a8c56ab 127a3daf
+
+q =
+9cdbd84c 9f1ac2f3 8d0f80f4 2ab952e7 338bf511
+
+g =
+30470ad5 a005fb14 ce2d9dcd 87e38bc7 d1b1c5fa cbaecbe9 5f190aa7
+a31d23c4 dbbcbe06 17454440 1a5b2c02 0965d8c2 bd2171d3 66844577
+1f74ba08 4d2029d8 3c1c1585 47f3a9f1 a2715be2 3d51ae4d 3e5a1f6a
+7064f316 933a346d 3f529252
+</pre>
+<p><strong>1024-bit key parameters</strong></p>
+<pre class="codeblock">
+SEED =
+8d515589 4229d5e6 89ee01e6 018a237e 2cae64cd
+
+counter = 92
+
+p =
+fd7f5381 1d751229 52df4a9c 2eece4e7 f611b752 3cef4400 c31e3f80
+b6512669 455d4022 51fb593d 8d58fabf c5f5ba30 f6cb9b55 6cd7813b
+801d346f f26660b7 6b9950a5 a49f9fe8 047b1022 c24fbba9 d7feb7c6
+1bf83b57 e7c6a8a6 150f04fb 83f6d3c5 1ec30235 54135a16 9132f675
+f3ae2b61 d72aeff2 2203199d d14801c7
+
+q =
+9760508f 15230bcc b292b982 a2eb840b f0581cf5
+
+g =
+f7e1a085 d69b3dde cbbcab5c 36b857b9 7994afbb fa3aea82 f9574c0b
+3d078267 5159578e bad4594f e6710710 8180b449 167123e8 4c281613
+b7cf0932 8cc8a6e1 3c167a8b 547c8d28 e0a3ae1e 2bb3a675 916ea37f
+0bfa2135 62f1fb62 7a01243b cca4f1be a8519089 a883dfe1 5ae59f06
+928b665e 807b5525 64014c3b fecf492a
+</pre>
+<p>The following are the default values for larger DSA key sizes
+identified by (L,N) pairs:</p>
+<p><strong>(L,N) = (2048, 256)</strong></p>
+<pre class="codeblock">
+SEED =
+b0b44176 01b59cbc 9d8ac8f9 35cadaec 4f5fbb2f 23785609 ae466748
+d9b5a536
+
+counter = 497
+
+p =
+95475cf5 d93e596c 3fcd1d90 2add02f4 27f5f3c7 210313bb 45fb4d5b
+b2e5fe1c bd678cd4 bbdd84c9 836be1f3 1c077772 5aeb6c2f c38b85f4
+8076fa76 bcd8146c c89a6fb2 f706dd71 9898c208 3dc8d896 f84062e2
+c9c94d13 7b054a8d 8096adb8 d5195239 8eeca852 a0af12df 83e475aa
+65d4ec0c 38a9560d 5661186f f98b9fc9 eb60eee8 b030376b 236bc73b
+e3acdbd7 4fd61c1d 2475fa30 77b8f080 467881ff 7e1ca56f ee066d79
+506ade51 edbb5443 a563927d bc4ba520 08674617 5c888592 5ebc64c6
+14790677 3496990c b714ec66 7304e261 faee33b3 cbdf008e 0c3fa906
+50d97d39 09c9275b f4ac86ff cb3d03e6 dfc8ada5 934242dd 6d3bcca2
+a406cb0b
+
+q =
+f8183668 ba5fc5bb 06b5981e 6d8b795d 30b8978d 43ca0ec5 72e37e09
+939a9773
+
+g =
+42debb9d a5b3d88c c956e087 87ec3f3a 09bba5f4 8b889a74 aaf53174
+aa0fbe7e 3c5b8fcd 7a53bef5 63b0e985 60328960 a9517f40 14d3325f
+c7962bf1 e049370d 76d1314a 76137e79 2f3f0db8 59d095e4 a5b93202
+4f079ecf 2ef09c79 7452b077 0e135078 2ed57ddf 794979dc ef23cb96
+f1830619 65c4ebc9 3c9c71c5 6b925955 a75f94cc cf1449ac 43d586d0
+beee4325 1b0b2287 349d68de 0d144403 f13e802f 4146d882 e057af19
+b6f6275c 6676c8fa 0e3ca271 3a3257fd 1b27d063 9f695e34 7d8d1cf9
+ac819a26 ca9b04cb 0eb9b7b0 35988d15 bbac6521 2a55239c fc7e58fa
+e38d7250 ab9991ff bc971340 25fe8ce0 4c4399ad 96569be9 1a546f49
+78693c7a
+</pre>
+<p><strong>(L,N) = (2048, 224)</strong></p>
+<pre class="codeblock">
+SEED =
+58423608 0cfa43c0 9b023541 35f4cc51 98a19efa da08bd86 6d601ba4
+
+counter = 2666
+
+p =
+8f7935d9 b9aae9bf abed887a cf4951b6 f32ec59e 3baf3718 e8eac496
+1f3efd36 06e74351 a9c41833 39b809e7 c2ae1c53 9ba7475b 85d011ad
+b8b47987 75498469 5cac0e8f 14b33608 28a22ffa 27110a3d 62a99345
+3409a0fe 696c4658 f84bdd20 819c3709 a01057b1 95adcd00 233dba54
+84b6291f 9d648ef8 83448677 979cec04 b434a6ac 2e75e998 5de23db0
+292fc111 8c9ffa9d 8181e733 8db792b7 30d7b9e3 49592f68 09987215
+3915ea3d 6b8b4653 c633458f 803b32a4 c2e0f272 90256e4e 3f8a3b08
+38a1c450 e4e18c1a 29a37ddf 5ea143de 4b66ff04 903ed5cf 1623e158
+d487c608 e97f211c d81dca23 cb6e3807 65f822e3 42be484c 05763939
+601cd667
+
+q =
+baf696a6 8578f7df dee7fa67 c977c785 ef32b233 bae580c0 bcd5695d
+
+g =
+16a65c58 20485070 4e7502a3 9757040d 34da3a34 78c154d4 e4a5c02d
+242ee04f 96e61e4b d0904abd ac8f37ee b1e09f31 82d23c90 43cb642f
+88004160 edf9ca09 b32076a7 9c32a627 f2473e91 879ba2c4 e744bd20
+81544cb5 5b802c36 8d1fa83e d489e94e 0fa0688e 32428a5c 78c478c6
+8d0527b7 1c9a3abb 0b0be12c 44689639 e7d3ce74 db101a65 aa2b87f6
+4c6826db 3ec72f4b 5599834b b4edb02f 7c90e9a4 96d3a55d 535bebfc
+45d4f619 f63f3ded bb873925 c2f224e0 7731296d a887ec1e 4748f87e
+fb5fdeb7 5484316b 2232dee5 53ddaf02 112b0d1f 02da3097 3224fe27
+aeda8b9d 4b2922d9 ba8be39e d9e103a6 3c52810b c688b7e2 ed4316e1
+ef17dbde
+</pre></td>
+</tr>
+</tbody>
+</table>
+<h3>RSA KeyPair Generation Algorithm</h3>
+<table border="1" cellpadding="0" cellspacing="2" width="95%"
+summary="RSA KeyPair Generation Algorithm">
+<tbody>
+<tr>
+<th id="h4401">Field</th>
+<th id="h4402">Description</th>
+<th id="h4403"></th>
+</tr>
+<tr>
+<td headers="h4401" width="28%"><b>Names</b></td>
+<td headers="h4402" width="72%">RSA</td>
+</tr>
+<tr>
+<td headers="h4401" width="28%"><b>Type</b></td>
+<td headers="h4402" width="72%"><code>KeyPairGenerator</code></td>
+</tr>
+<tr>
+<td headers="h4401" valign="top" width="28%"><b>Description</b></td>
+<td headers="h4402" width="72%">This algorithm is the key pair generation algorithm
+described in <a href=
+"http://www.rfc-editor.org/rfc/rfc2437.txt">PKCS #1</a>.</td>
+</tr>
+<tr>
+<td headers="h4401" valign="top" width="28%"><b>Strength</b></td>
+<td headers="h4402" width="72%">Any integer that is a multiple of 8, greater than
+or equal to 512.</td>
+</tr>
+</tbody>
+</table>
+<h3>DSA Parameter Generation Algorithm</h3>
+<table border="1" cellpadding="0" cellspacing="2" width="95%"
+summary="DSA Parameter Generation Algorithm">
+<tbody>
+<tr>
+<th id="h4501">Field</th>
+<th id="h4502">Description</th>
+<th id="h4503"></th>
+</tr>
+<tr>
+<td headers="h4501" width="28%"><b>Names</b></td>
+<td headers="h4502" width="72%">DSA</td>
+</tr>
+<tr>
+<td headers="h4501" width="28%"><b>Type</b></td>
+<td headers="h4502" width="72%"><code>AlgorithmParameterGenerator</code></td>
+</tr>
+<tr>
+<td headers="h4501" valign="top" width="28%"><b>Description</b></td>
+<td headers="h4502" width="72%">This algorithm is the parameter generation
+algorithm described in <a href=
+"http://csrc.nist.gov/publications/PubsFIPS.html">NIST FIPS 186</a>
+for DSA.</td>
+</tr>
+<tr>
+<td headers="h4501" valign="top" width="28%"><b>Strength</b></td>
+<td headers="h4502" width="72%">
+<p>The length, in bits, of the modulus <code>p</code>. This must be
+a multiple of 64, ranging from from 512 to 1024 (inclusive), or
+2048. The default keysize is 1024.</p>
+<p>Alternatively, generate DSA parameters with the <code><a href=
+"../../../api/java/security/spec/DSAGenParameterSpec.html">DSAGenParameterSpec</a></code>
+class. Note that this class supports the latest version of DSA
+standard, <a href=
+"http://csrc.nist.gov/publications/fips/fips186-3/fips_186-3.pdf">FIPS
+PUB 186-3</a>, and only allows certain length of prime P and Q to
+be used. Valid sizes for length of prime P and sub-prime Q in bits
+are as follows:</p>
+<ul>
+<li>(1024, 160)</li>
+<li>(2048, 224)</li>
+<li>(2048, 256)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<br />
+<hr />
+<!-- ==================================================== -->
+<h2><a name="impl" id="impl">Implementation Requirements</a></h2>
+<p>This section defines the security algorithm requirements for JDK
+8 implementations. These requirements are intended to improve the
+interoperability of JDK 8 implementations and applications that use
+these algorithms.</p>
+<p>Note that the requirements in this section are <b>not</b> a
+measure of the strength or security of the algorithm. For example,
+recent advances in cryptanalysis have found weaknesses in the
+strength of the MD5 MessageDigest algorithm. It is your
+responsibility to determine whether the algorithm meets the
+security requirements of your application.</p>
+<p>Every implementation of the JDK 8 platform must support the
+specified algorithms in the table that follows. These requirements
+do not apply to 3rd party providers. Consult the release
+documentation for your implementation to see if any other
+algorithms are supported.</p>
+<table border="5" frame="border" align="center" width="90%"
+cellpadding="5" summary=
+"Recommended algorithms for Java Crytpography and PKI">
+<thead>
+<tr>
+<th id="h4601">Class</th>
+<th id="h4602">Algorithm Name(s)</th>
+</tr>
+</thead>
+<tbody>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>AlgorithmParameterGenerator</code><br />
+Implementations must support the key sizes in parentheses.</td>
+<td headers="h4602">DiffieHellman (1024)<br />
+DSA (1024)<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>AlgorithmParameters</code></td>
+<td headers="h4602">AES<br />
+DES<br />
+DESede<br />
+DiffieHellman<br />
+DSA<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>CertificateFactory</code></td>
+<td headers="h4602">X.509<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>CertPath</code> Encodings</td>
+<td headers="h4602">PKCS7<br />
+PkiPath<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>CertPathBuilder</code></td>
+<td headers="h4602">PKIX<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>CertPathValidator</code></td>
+<td headers="h4602">PKIX<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>CertStore</code></td>
+<td headers="h4602">Collection<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>Cipher</code><br />
+The algorithms are specified as <a href=
+"crypto/CryptoSpec.html#trans">transformations</a>. Implementations
+must support the key sizes in parentheses.</td>
+<td headers="h4602">AES/CBC/NoPadding (128)<br />
+AES/CBC/PKCS5Padding (128)<br />
+AES/ECB/NoPadding (128)<br />
+AES/ECB/PKCS5Padding (128)<br />
+DES/CBC/NoPadding (56)<br />
+DES/CBC/PKCS5Padding (56)<br />
+DES/ECB/NoPadding (56)<br />
+DES/ECB/PKCS5Padding (56)<br />
+DESede/CBC/NoPadding (168)<br />
+DESede/CBC/PKCS5Padding (168)<br />
+DESede/ECB/NoPadding (168)<br />
+DESede/ECB/PKCS5Padding (168)<br />
+RSA/ECB/PKCS1Padding (1024, 2048)<br />
+RSA/ECB/OAEPWithSHA-1AndMGF1Padding (1024, 2048)<br />
+RSA/ECB/OAEPWithSHA-256AndMGF1Padding (1024, 2048)<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>Configuration</code> <a href="#impl">[1]</a></td>
+<td headers="h4602"></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>KeyAgreement</code></td>
+<td headers="h4602">DiffieHellman<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>KeyFactory</code></td>
+<td headers="h4602">DiffieHellman<br />
+DSA<br />
+RSA<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>KeyGenerator</code><br />
+Implementations must support the key sizes in parentheses.</td>
+<td headers="h4602">AES (128)<br />
+DES (56)<br />
+DESede (168)<br />
+HmacSHA1<br />
+<!-- HmacSHA224<br /> -->
+HmacSHA256<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>KeyPairGenerator</code><br />
+Implementations must support the key sizes in parentheses.</td>
+<td headers="h4602">DiffieHellman (1024)<br />
+DSA (1024)<br />
+RSA (1024, 2048)<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>KeyStore</code></td>
+<td headers="h4602">PKCS12<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>Mac</code></td>
+<td headers="h4602">HmacMD5<br />
+HmacSHA1<br />
+<!-- HmacSHA224<br /> -->
+HmacSHA256<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>MessageDigest</code></td>
+<td headers="h4602">MD5<br />
+SHA-1<br />
+<!-- SHA-224<br /> -->
+SHA-256<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>Policy</code> <a href="#impl">[1]</a></td>
+<td headers="h4602"></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>SecretKeyFactory</code></td>
+<td headers="h4602">DES<br />
+DESede<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>SecureRandom</code> <a href="#impl">[1]</a></td>
+<td headers="h4602"></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>Signature</code></td>
+<td headers="h4602">SHA1withDSA<br />
+SHA1withRSA<br />
+<!-- SHA224withRSA<br /> -->
+SHA256withRSA<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4601"><code>SSLContext</code></td>
+<td headers="h4602">TLSv1 <a href="#footnote">[2]</a></td>
+</tr>
+</tbody>
+</table>
+<p>[1] No specific <code>Configuration</code> type,
+<code>Policy</code> type or <code>SecureRandom</code> algorithm is
+required; however, an implementation-specific default must be
+provided.</p>
+<p>[2] A TLSv1 implementation must support the cipher suite
+SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA as defined in <a href=
+"http://www.ietf.org/rfc/rfc2246.txt">RFC 2246</a> and the special
+signaling cipher suite TLS_EMPTY_RENEGOTIATION_INFO_SCSV for safe
+renegotiation as defined in <a href=
+"http://www.ietf.org/rfc/rfc5746.txt">RFC 5746</a>.</p>
+<h2>XML Signature Algorithms</h2>
+<p>Every implementation of the JDK 8 platform must support the
+specified XML Signature algorithms in the table that follows. These
+requirements do not apply to 3rd party providers. Consult the
+release documentation for your implementation to see if any other
+algorithms are supported.</p>
+<table border="5" frame="border" align="center" width="90%"
+cellpadding="5" summary="XML Signature Algorithms">
+<thead>
+<tr>
+<th id="h4701">Class</th>
+<th id="h4702">Algorithm Name(s)</th>
+</tr>
+</thead>
+<tbody>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4701"><code>TransformService</code></td>
+<td headers="h4702">http://www.w3.org/2001/10/xml-exc-c14n#
+(<code>CanonicalizationMethod.EXCLUSIVE</code>)<br />
+http://www.w3.org/TR/2001/REC-xml-c14n-20010315
+(<code>CanonicalizationMethod.INCLUSIVE</code>)<br />
+http://www.w3.org/2000/09/xmldsig#base64
+(<code>Transform.BASE64</code>)<br />
+http://www.w3.org/2000/09/xmldsig#enveloped-signature
+(<code>Transform.ENVELOPED</code>)<br /></td>
+</tr>
+<!-- ==================================================== -->
+<tr>
+<td headers="h4701"><code>XMLSignatureFactory</code></td>
+<td headers="h4702">DOM</td>
+</tr>
+<!-- ==================================================== --></tbody>
+</table>
+<!-- ==================================================== -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

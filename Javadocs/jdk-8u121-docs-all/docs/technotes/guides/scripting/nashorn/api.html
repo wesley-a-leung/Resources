@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>The Nashorn Java API</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1044" name="generator"/>
+<meta content="This chapter describes how to access Java from a script interpreted by the Nashorn engine." name="description"/>
+<meta content="2015-02-12T14:37:36Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Nashorn User's Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E41835-02" name="partnum"/>
+<meta content="JSNUG" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Nashorn User's Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="intro.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="javafx.html">
+                Next</a><hr/>
+<div id="JSNUG112"><a id="sthref17" name="sthref17"/>
+<h1><span>2</span> The Nashorn Java API</h1>
+<a id="JSNUG113" name="JSNUG113"/>
+<p>This chapter describes how to access Java from a script interpreted by the Nashorn engine.</p>
+<p>The sections in this chapter contain examples of script statements interpreted by the Nashorn engine in interactive language shell mode. This interactive shell is started by running the <code dir="ltr">jjs</code> command without any scripts passed to it. This is useful for trying things out, but the main purpose of the Nashorn Java API is to write Java applications as scripts that can be interpreted by the Nashorn engine.</p>
+<div id="JSNUG114"><a id="sthref18" name="sthref18"/>
+<h2>Accessing Java Classes</h2>
+<p>There are two approaches to access packages and classes using Nashorn: the traditional approach is to use the <code dir="ltr">Packages</code> global object, and the recommended approach is to use the <code dir="ltr">Java</code> global object. This section describes both approaches.</p>
+<p>The predefined top-level <code dir="ltr">Packages</code> object enables you to access Java packages and classes using their fully qualified names, as if they are properties of the <code dir="ltr">Packages</code> object. The following example shows how you can access the <code dir="ltr">MyPackage</code> package and its <code dir="ltr">MyClass</code> class if <code dir="ltr">MyPackage.jar</code> is in your class path:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs&gt; <b>Packages.MyPackage</b>
+[JavaPackage MyPackage]
+jjs&gt; <b>Packages.MyPackage.MyClass</b>
+[JavaClass MyPackage.MyClass]
+</pre>
+<p>Accessing standard Java packages and classes is more straightforward than accessing custom packages and classes. For your convenience, there are global objects defined for each of the standard Java packages: <code dir="ltr">com</code>, <code dir="ltr">edu</code>, <code dir="ltr">java</code>, <code dir="ltr">javafx</code>, <code dir="ltr">javax</code>, and <code dir="ltr">org</code>. They have aliases that correspond to properties of the <code dir="ltr">Packages</code> object. The following example shows how you can access the <code dir="ltr">java.lang</code> package and the <code dir="ltr">java.lang.System</code> class:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs&gt; <b>java.lang</b>
+[JavaPackage java.lang]
+jjs&gt; <b>typeof java.lang</b>
+object
+jjs&gt; <b>java.lang.System</b>
+[JavaClass java.lang.System]
+jjs&gt; <b>typeof java.lang.System</b>
+function
+</pre>
+<p>As you can see from the previous example, Nashorn interprets Java packages as <code dir="ltr">JavaPackage</code> objects, and Java classes as <code dir="ltr">JavaClass</code> function objects, which can be used as constructors for the classes. For more information about instantiating a class, see <a href="#CDEJGHJD">Creating Java Objects</a>.</p>
+<p>The traditional approach for accessing Java packages and classes is intuitive and straightforward, but at the same time, it can be inefficient, limited, and error-prone for the following reasons:</p>
+<ul>
+<li>
+<p>Each property access has a cost, so accessing a package or class in a deep hierarchy can be slow.</p>
+</li>
+<li>
+<p>There is no special syntax for creating Java arrays. You must use the <code dir="ltr">java.lang.reflect.Array</code> class as a workaround.</p>
+</li>
+<li>
+<p>If you misspell a class name, Nashorn assumes that you provided a package name, and interprets it as a <code dir="ltr">JavaPackage</code> object instead of a <code dir="ltr">JavaClass</code> function object. You might not be aware of this until an error is thrown when you attempt to use it as a class. To avoid this, use the <code dir="ltr">typeof</code> operator to conditionally test that the construct you are trying to access is interpreted as a function object. The following example shows how this conditional check works:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs&gt; <b>typeof java.lang.System == "function"</b>
+true
+jjs&gt; <b>typeof java.lang.Zyztem == "function"</b>
+false
+</pre></li>
+</ul>
+<p>To avoid the disadvantages of the approach previously described, Nashorn defines the <code dir="ltr">Java</code> global object that has several functions for working with Java classes. The <code dir="ltr">Java.type()</code> function takes a string with the fully qualified Java class name, and returns the corresponding <code dir="ltr">JavaClass</code> function object. The following example shows how you can access the <code dir="ltr">java.lang.System</code> class:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs&gt; <b>Java.type("java.lang.System")</b>
+[JavaClass java.lang.System]
+</pre>
+<p>Similar to importing classes in Java, it is a good practice to declare variables of <code dir="ltr">JavaClass</code> type at the beginning of a script. The following example shows how you can declare the <code dir="ltr">System</code> variable and give it a value of the <code dir="ltr">java.lang.System</code> class:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs&gt; <b>var System = Java.type("java.lang.System")</b>
+jjs&gt; <b>System</b>
+[JavaClass java.lang.System]
+</pre></div>
+
+<a id="CDEJGHJD" name="CDEJGHJD"/>
+<div id="JSNUG115">
+<h2>Creating Java Objects</h2>
+<p>To instantiate a class, pass the <code dir="ltr">JavaClass</code> function object to the <code dir="ltr">new</code> operator. Nashorn invokes the corresponding constructor based on the arguments passed to the function. The following example shows how you can instantiate the <code dir="ltr">java.util.HashMap</code> class with the default initial capacity and with the initial capacity set to 100:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs&gt; <b>var HashMap = Java.type("java.util.HashMap")</b>
+jjs&gt; <b>var mapDef = new HashMap()</b>
+jjs&gt; <b>var map100 = new HashMap(100)</b>
+</pre></div>
+
+<div id="JSNUG116"><a id="sthref19" name="sthref19"/>
+<h2>Accessing Class and Instance Members</h2>
+<p>You can use the standard dot notation to access static fields, methods, and inner classes as follows:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs&gt; <b>Java.type("java.lang.Math").PI</b>
+3.141592653589793
+jjs&gt; <b>Java.type("java.lang.System").currentTimeMillis()</b>
+1375813353330
+jjs&gt; <b>Java.type("java.util.Map").Entry</b>
+[JavaClass java.util.Map$Entry]
+</pre>
+<p>An inner class can also be accessed using internal representation with the dollar sign (<code dir="ltr">$</code>) as the separator, or a dot, which is consistent with Java:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs&gt; <b>Java.type("java.util.Map$Entry")</b>
+[JavaClass java.util.Map$Entry]
+jjs&gt; <b>Java.type("java.util.Map.Entry")</b>
+[JavaClass java.util.Map$Entry]
+</pre>
+<p>To invoke an instance method or access an instance field of an object, use the dot operator, similar to how it is done in Java. The following example shows how you can call the <code dir="ltr">toUpperCase()</code> method on a <code dir="ltr">String</code> object:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs&gt; <b>var String = Java.type("java.lang.String")</b>
+jjs&gt; <b>var str = new String("Hello")</b>
+jjs&gt; str
+Hello
+jjs&gt; <b>var upper = str.toUpperCase()</b>
+jjs&gt; <b>upper</b>
+HELLO
+</pre>
+<p>Nashorn also supports member access using the bracket notation, where you specify the name of the member as a string between brackets (<code dir="ltr">[]</code>) that immediately follow the class (in case of a static member) or object (in case of an instance member). This method is defined by the ECMAScript as an alternative to the dot notation, and is not intuitive for Java developers. However, it can be used to resolve method overload ambiguity. By default, Nashorn uses the overloaded method that best matches the arguments, and this is not always what you expect. For example, if you want to print a <code dir="ltr">double</code> value, you must use the <code dir="ltr">java.lang.System.out.println(double)</code> method overload, as shown in the following example:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs&gt; <b>Java.type("java.lang.System").out.println(10)</b>
+10
+jjs&gt; <b>Java.type("java.lang.System").out["println(double)"](10)</b>
+10.0
+</pre></div>
+
+<a id="CDEEGAIF" name="CDEEGAIF"/>
+<div id="JSNUG117">
+<h2>Using JavaBeans</h2>
+<p>Nashorn enables you to treat accessor and mutator methods in JavaBeans as equivalent JavaScript properties. The name of the property is the name of the JavaBean method without the <code dir="ltr">get</code> or <code dir="ltr">set</code> suffix, and starts with a lowecase letter. For example you can call the <code dir="ltr">getYear()</code> and <code dir="ltr">setYear()</code> methods in a <code dir="ltr">java.util.Date</code> object using the <code dir="ltr">year</code> property as follows:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs&gt; <b>var Date = Java.type("java.util.Date")</b>
+jjs&gt; <b>var date = new Date()</b>
+jjs&gt; <b>date.year + 1900</b>
+2013
+jjs&gt; <b>date.year = 2014 - 1900</b>
+114
+jjs&gt; <b>date.year + 1900</b>
+2014
+</pre></div>
+
+<div id="JSNUG118"><a id="sthref20" name="sthref20"/>
+<h2>Working with Java Arrays</h2>
+<p>To access a Java array class, pass to the <code dir="ltr">Java.type()</code> function the type of objects that comprise the array followed by a pair of brackets (similar to Java syntax). The following example shows how you can access a Java array of integers and a Java array of <code dir="ltr">String</code> objects:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs&gt; <b>Java.type("int[]")</b>
+[JavaClass [I]
+jjs&gt; <b>Java.type("java.lang.String[]")</b>
+[JavaClass [Ljava.lang.String;]
+</pre>
+<p>After you have the array type object, you can use it to instantiate an array as you do any other class. You can access array entries by their indexes, and use the dot or bracket notation to access members (similar to Java syntax), as shown in the following example:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs&gt; <b>var IntArrayType = Java.type("int[]")</b>
+jjs&gt; <b>var arr = new IntArrayType(10)</b>
+jjs&gt; <b>arr[1] = 123</b>
+123
+jjs&gt; <b>arr[2] = 321</b>
+321
+jjs&gt; <b>arr[1] + arr[2]</b>
+444
+jjs&gt; <b>arr[10]</b>
+java.lang.ArrayIndexOutOfBoundsException: Array index out of range: 10
+jjs&gt; <b>arr.length</b>
+10
+</pre>
+<p>If you have an existing JavaScript array, you can convert it to a Java array using the <code dir="ltr">Java.to()</code> function. The following example shows how you can convert a JavaScript array of strings <code dir="ltr">"a"</code>, <code dir="ltr">"b"</code>, and <code dir="ltr">"c"</code>, to a <code dir="ltr">java.lang.String[]</code> array with the same values:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs&gt; <b>var jsArr = ["a","b","c"]</b>
+jjs&gt; <b>var strArrType = Java.type("java.lang.String[]")</b>
+jjs&gt; <b>var javaArr = Java.to(jsArr, strArrType)</b>
+jjs&gt; <b>javaArr.class</b>
+class [Ljava.lang.String;
+jjs&gt; <b>javaArr[0]</b>
+a
+</pre>
+<p>You can iterate through a Java array's indexes and values using the <code dir="ltr">for</code> and <code dir="ltr">for each</code> statements as follows:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs&gt; <b>for (var i in javaArr) print(i)</b>
+0
+1
+2
+jjs&gt; <b>for each (var i in javaArr) print(i)</b>
+a
+b
+c
+</pre></div>
+
+<div id="JSNUG119"><a id="sthref21" name="sthref21"/>
+<h2>Working with Java Strings</h2>
+<p>Strings are interpreted by Nashorn as <code dir="ltr">java.lang.String</code> objects. However, if you concatenate two strings you get an instance of the <code dir="ltr">jdk.nashorn.internal.runtime.ConsString</code> class. This is not a problem for most scripts, because both classes implement the <code dir="ltr">java.lang.CharSequence</code> interface, but in some cases, Nashorn passes the <code dir="ltr">ConsString</code> object when a method expects a <code dir="ltr">java.lang.Object</code> argument. To avoid this, use the <code dir="ltr">String()</code> function to ensure that the string is a Java <code dir="ltr">String</code> object, as shown in the following example:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs&gt; <b>var a = "abc"</b>
+jjs&gt; <b>a.class</b>
+class java.lang.String
+jjs&gt; <b>var b = a + "def"</b>
+jjs&gt; <b>b.class</b>
+class jdk.nashorn.internal.runtime.ConsString
+jjs&gt; <b>var c = String(b)</b>
+jjs&gt; <b>c.class</b>
+class java.lang.String
+</pre></div>
+
+<div id="JSNUG120"><a id="sthref22" name="sthref22"/>
+<h2>Working with Java Numbers</h2>
+<p>Nashorn interprets numbers as <code dir="ltr">java.lang.Double</code>, <code dir="ltr">java.lang.Long</code>, or <code dir="ltr">java.lang.Integer</code> objects, depending on the computation performed. You can use the <code dir="ltr">Number()</code> function to force a number to be a <code dir="ltr">Double</code> object, as shown in the following example:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs&gt; <b>var intNum = 10</b>
+jjs&gt; <b>intNum.class</b>
+class java.lang.Integer
+jjs&gt; <b>var dblNum = Number(intNum)</b>
+jjs&gt; <b>dblNum.class</b>
+class java.lang.Double
+</pre></div>
+
+<div id="JSNUG121"><a id="sthref23" name="sthref23"/>
+<h2>Working with Java Collections</h2>
+<p>Nashorn interprets Java collections as arrays. You can access collection elements using the index in brackets (<code dir="ltr">[]</code>) and iterate over the values of a collection using the <code dir="ltr">for each</code> statement, as shown in the following example:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs&gt; <b>var ArrayList = Java.type("java.util.ArrayList")</b>
+jjs&gt; <b>var alist = new ArrayList()</b>
+jjs&gt; <b>alist.add("a")</b>
+true
+jjs&gt; <b>alist.add("b")</b>
+true
+jjs&gt; <b>alist.add("c")</b>
+true
+jjs&gt; <b>alist[1]</b>
+b
+jjs&gt; <b>for each (var i in alist) print(i)</b>
+a
+b
+c
+</pre>
+<p>Unlike other collections, to iterate over keys and values in a map, you must use the <code dir="ltr">keySet()</code> and <code dir="ltr">values()</code> methods. The following example shows how you can create a <code dir="ltr">HashMap</code> object and iterate over its keys and values:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs&gt; <b>var HashMap = Java.type("java.util.HashMap")</b>
+jjs&gt; <b>var hm = new HashMap()</b>
+jjs&gt; <b>hm.put("name", "Bob")</b>
+jjs&gt; <b>hm.put("age", 40)</b>
+jjs&gt; <b>hm.put("weight", 180)</b>
+jjs&gt; <b>for each (var i in hm.keySet()) print(i)</b>
+weight
+age
+name
+jjs&gt; <b>for each (var i in hm.values()) print(i)</b>
+180
+40
+Bob
+</pre></div>
+
+<a id="CDEDGBIF" name="CDEDGBIF"/>
+<div id="JSNUG122">
+<h2>Extending Java Classes</h2>
+<p>You can extend a class using the <code dir="ltr">Java.extend()</code> function that takes a Java type as the first argument and method implementations (in the form of JavaScript functions) as the other arguments. <a href="#CDEFGJBD">Example 2-1</a> shows a script that extends the <code dir="ltr">java.lang.Runnable</code> interface and uses it to construct a new <code dir="ltr">java.lang.Thread</code> object.</p>
+<div id="JSNUG123"><a id="CDEFGJBD" name="CDEFGJBD"/>
+<p>Example 2-1 Extending a Java Class</p>
+<pre dir="ltr" xml:space="preserve">
+var Run = Java.type("java.lang.Runnable");
+var MyRun = Java.extend(Run, {
+    run: function() {
+        print("Run in separate thread");
+    }
+});
+var Thread = Java.type("java.lang.Thread");
+var th = new Thread(new MyRun());
+</pre></div>
+
+<p>Nashorn can automatically extend single abstract method (SAM) classes if you provide the function for implementing the method as the argument to the constructor. <a href="#CDEHEEHG">Example 2-2</a> shows a script that extends the <code dir="ltr">java.lang.Runnable</code> interface and uses it to construct a new <code dir="ltr">java.lang.Thread</code> object, but it uses fewer lines of code than in <a href="#CDEFGJBD">Example 2-1</a>, because the <code dir="ltr">Java.extend()</code> function is called automatically for a SAM class.</p>
+<div id="JSNUG124"><a id="CDEHEEHG" name="CDEHEEHG"/>
+<p>Example 2-2 Extending a Java SAM Class</p>
+<pre dir="ltr" xml:space="preserve">
+var Thread = Java.type("java.lang.Thread")
+var th = new Thread(function() print("Run in a separate thread"))
+</pre></div>
+
+<p>For more information about the capabilities of the <code dir="ltr">Java.extend()</code> function, see <i>Java Scripting Programmer's Guide</i> at <code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/scripting/prog_guide/index.html">http://docs.oracle.com/javase/8/docs/technotes/guides/scripting/prog_guide/index.html</a></code></p>
+</div>
+
+<a id="classfilter_introduction" name="classfilter_introduction"/>
+<div id="JSNUG125">
+<h2>Restricting Script Access to Specified Java Classes</h2>
+<p>The <code dir="ltr">jdk.nashorn.api.scripting.ClassFilter</code> interface, <code dir="ltr"><a href="https://docs.oracle.com/javase/8/docs/jdk/api/nashorn/jdk/api/scripting/ClassFilter.html">https://docs.oracle.com/javase/8/docs/jdk/api/nashorn/jdk/api/scripting/ClassFilter.html</a></code>, enables you to restrict access to specified Java classes from scripts run by a Nashorn script engine. Applications that embed Nashorn, in particular, server-side JavaScript frameworks, often have to run scripts from untrusted sources and therefore must limit access to Java APIs. These applications can implement the <code dir="ltr">ClassFilter</code> interface to restrict Java class access to a subset of Java classes. To do so, client applications must use Nashorn APIs to instantiate the Nashorn script engine.</p>
+<a id="classfilter_using" name="classfilter_using"/>
+<div id="JSNUG126">
+<h3>Using Class Filters</h3>
+<p>To use a class filter, implement the <code dir="ltr">ClassFilter</code> interface and define the method <code dir="ltr">boolean exposeToScripts(String)</code>. The <code dir="ltr">String</code> argument is the name of the Java class or package that the Nashorn script engine encounters when it runs a script. Define the method <code dir="ltr">exposeToScripts</code> such that it returns <code dir="ltr">false</code> for those classes and packages you want to prevent scripts from accessing. Then, create a Nashron script engine with with your class filter with the method <code dir="ltr">NashornScriptEngineFactory.getScriptEngine(ClassFilter)</code> or <code dir="ltr">NashornScriptEngineFactory.getScriptEngine(String[], ClassLoader, ClassFilter)</code>.</p>
+</div>
+
+<a id="classfilter_reflection" name="classfilter_reflection"/>
+<div id="JSNUG127">
+<h3>Restricting Access to Java Reflection APIs</h3>
+<p>If you are using a security manager, then Nashorn allows a script to use the Java Reflection APIs (for example, the <code dir="ltr">java.lang.reflect</code> and <code dir="ltr">java.lang.invoke</code> packages) only if the script has the <code dir="ltr">nashorn.javaReflection</code> run time permission. If you are using a class filter, then Nashorn prevents access to Java Reflection APIs even when a security manager is not present. Note that you do not need to use a class filter if the Java Reflection APIs are available because a script can use the <code dir="ltr">Class.forName(String)</code> to circumvent the class filter.</p>
+</div>
+
+<a id="classfilter_example" name="classfilter_example"/>
+<div id="JSNUG128">
+<h3>Example of Using the ClassFilter Interface</h3>
+<p>The following example demonstrates the <code dir="ltr">ClassFilter</code> interface:</p>
+<div id="JSNUG129"><a id="sthref24" name="sthref24"/>
+<p>Example 2-3 MyClassFilterTest.java</p>
+<pre dir="ltr" xml:space="preserve">
+import javax.script.ScriptEngine;
+import jdk.nashorn.api.scripting.ClassFilter;
+import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
+ 
+public class MyClassFilterTest {
+ 
+  class MyCF implements ClassFilter {
+    @Override
+    public boolean exposeToScripts(String s) {
+      if (s.compareTo("java.io.File") == 0) return false;
+      return true;
+    }
+  }
+ 
+  public void testClassFilter() {
+ 
+    final String script =
+      "print(java.lang.System.getProperty(\"java.home\"));" +
+      "print(\"Create file variable\");" +
+      "var File = Java.type(\"java.io.File\");";
+ 
+    NashornScriptEngineFactory factory = new NashornScriptEngineFactory();
+ 
+    ScriptEngine engine = factory.getScriptEngine(
+      new MyClassFilterTest.MyCF());
+    try {
+      engine.eval(script);
+    } catch (Exception e) {
+      System.out.println("Exception caught: " + e.toString());
+    }
+  }
+ 
+  public static void main(String[] args) {
+    MyClassFilterTest myApp = new MyClassFilterTest();
+    myApp.testClassFilter();
+  }
+}
+</pre></div>
+
+<p>This example prints the following:</p>
+<pre dir="ltr" xml:space="preserve">
+C:\Java\jre8
+Create file variable
+Exception caught: java.lang.RuntimeException: java.lang.ClassNotFoundException:
+java.io.File
+</pre>
+<p>The <code dir="ltr">MyClassFilterTest.java</code> example does the following:</p>
+<ol>
+<li>
+<p>Implements the <code dir="ltr">ClassFilter</code> with the inner class <code dir="ltr">MyCF</code> by defining the method <code dir="ltr">exposeToScripts</code>. In this example, the method <code dir="ltr">exposeToScripts</code> returns false if its <code dir="ltr">String</code> argument is <code dir="ltr">java.io.File</code>; otherwise it returns <code dir="ltr">true</code>.</p>
+</li>
+<li>
+<p>Creates a Nashorn script engine, <code dir="ltr">engine</code>, with the method <code dir="ltr">NashornScriptEngineFactory.getScriptEngine(ClassFilter)</code>. The example invokes <code dir="ltr">getScriptEgnine</code> with an instance of <code dir="ltr">MyCF</code>.</p>
+</li>
+<li>
+<p>Runs the following script with the Nashorn script engine <code dir="ltr">engine</code>:</p>
+<pre dir="ltr" xml:space="preserve">
+print(java.lang.System.getProperty(\"java.home\"));
+print(\"Create file variable\");
+var File = Java.type(\"java.io.File\");
+</pre>
+<p>The class filter in <code dir="ltr">engine</code> checks each Java package and class in the script. When the class filter encounters the class <code dir="ltr">java.io.File</code>, the class filter returns <code dir="ltr">false</code>, and the <code dir="ltr">Java.type</code> function throws a <code dir="ltr">ClassNotFoundException</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="intro.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="javafx.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

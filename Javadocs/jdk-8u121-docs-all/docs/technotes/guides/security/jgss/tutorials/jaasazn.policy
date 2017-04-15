@@ -1,0 +1,26 @@
+/** Java 2 Access Control Policy for the JaasAzn Application **/
+
+
+/** Code-Based Access Control Policy for JaasAzn **/
+
+grant codebase "file:./JaasAzn.jar" {
+
+   permission javax.security.auth.AuthPermission 
+                    "createLoginContext.JaasSample";
+   permission javax.security.auth.AuthPermission "doAsPrivileged";
+};
+
+
+/** User-Based Access Control Policy for the SampleAction class
+ ** instantiated by JaasAzn 
+ **/
+
+grant	codebase "file:./SampleAction.jar",
+    Principal javax.security.auth.kerberos.KerberosPrincipal 
+        "your_user_name@your_realm"  {
+
+   permission java.util.PropertyPermission "java.home", "read";
+   permission java.util.PropertyPermission "user.home", "read";
+   permission java.io.FilePermission "foo.txt", "read";
+};
+

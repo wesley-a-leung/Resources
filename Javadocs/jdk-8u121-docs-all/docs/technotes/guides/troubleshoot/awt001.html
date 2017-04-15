@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Debug Tips for AWT</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="awt.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="awt002.html">
+                Next</a><hr/><a id="CIHGAAFA" name="CIHGAAFA"/>
+<div id="JSTGD395">
+<h1><span>10.1</span> Debug Tips for AWT</h1>
+<p>This section provides some helpful tips to be aware of when debugging issues related to AWT.</p>
+<p>To dump the AWT component hierarchy, press Control+Shift+F1.</p>
+<p>If the application hangs, get a stack trace by pressing Control+Break on Windows (which sends the SIGBREAK signal) or Control+\ on Oracle Solaris and Linux operating systems (which sends the SIGQUIT signal).</p>
+<p>To trace X11 errors on Oracle Solaris and Linux operating systems, set the <code dir="ltr">sun.awt.noisyerrorhandler</code> system property to <code dir="ltr">true</code>. In Java SE 6 and earlier releases, the <code dir="ltr">NOISY_AWT</code> environment variable was used for this purpose.</p>
+<p>Prior to Java SE 8, exceptions thrown in the AWT Event Dispatch Thread (EDT) could be caught by setting the system property <code dir="ltr">sun.awt.exception.handler</code> to the name of the class that implements the <code dir="ltr">public void handle(Throwable)</code> method. This mechanism has been updated in Java SE 8 to use the standard <a href="http://download.oracle.com/javase/8/docs/api/java/lang/Thread.UncaughtExceptionHandler.html"><code dir="ltr">Thread.UncaughtExceptionHandler</code></a> interface.</p>
+<p>Loggers can produce helpful output when debugging AWT problems. For information on using loggers, see the <a href="../logging/overview.html">Java Logging Overview</a> documentation and the <a href="../../../api/java/util/logging/package-summary.html"><code dir="ltr">java.util.logging</code> package</a> description.</p>
+<p>The following loggers are available:</p>
+<br/>
+<code dir="ltr">java.awt</code><br/>
+<code dir="ltr">java.awt.focus</code><br/>
+<code dir="ltr">java.awt.event</code><br/>
+<code dir="ltr">java.awt.mixing</code><br/>
+<code dir="ltr">sun.awt</code><br/>
+<code dir="ltr">sun.awt.windows</code><br/>
+<code dir="ltr">sun.awt.X11</code></div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="awt.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="awt002.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

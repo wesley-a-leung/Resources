@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Java Console, Tracing, and Logging</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1044" name="generator"/>
+<meta content="This topic describes the Java Console, a debugging aid that redirects any System.out and System.err to the console window. The console is available for applets running with Java Plug-in and applications running with Java Web Start." name="description"/>
+<meta content="2015-02-16T9:50:5Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Deployment Guide, Release 8u40" name="doctitle"/>
+<meta content="Release 8u40" name="relnum"/>
+<meta content="E50259-02" name="partnum"/>
+<meta content="JSDPG" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Deployment Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="properties.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="part_security.html">
+                Next</a><hr/>
+<div id="JSDPG830"><a id="BABIEFCH" name="BABIEFCH"/>
+<h1><span>22</span> Java Console, Tracing, and Logging</h1>
+<a id="JSDPG831" name="JSDPG831"/>
+<p>This topic describes the Java Console, a debugging aid that redirects any System.out and System.err to the console window. The console is available for applets running with Java Plug-in and applications running with Java Web Start.</p>
+<p>This topic includes the following sections:</p>
+<ul>
+<li>
+<p><a href="#A1148009">Debugging Options in the Java Console</a></p>
+</li>
+<li>
+<p><a href="#A1150932">Tracing and Logging</a></p>
+</li>
+</ul>
+<a id="A1148009" name="A1148009"/>
+<div id="JSDPG832">
+<h2><span>22.1</span> Debugging Options in the Java Console</h2>
+<p><a href="#GIJGHJJJ">Figure 22-1</a> shows the options that are available in the Java Console for debugging applets and Java Web Start applications.</p>
+<div id="JSDPG833"><a id="GIJGHJJJ" name="GIJGHJJJ"/>
+<p><b><i>Figure 22-1 Java Console</i></b></p>
+<img alt="Description of Figure 22-1 follows" longdesc="img_text/java-console-1.htm" src="img/java-console-1.gif"/><br/>
+<a href="img_text/java-console-1.html" id="sthref398" name="sthref398">Description of "Figure 22-1 Java Console"</a><br/>
+<br/></div>
+
+<p>An option is selected by typing its letter or number when the Java Console window has focus. The options are described in <a href="#GIJIGFHF">Table 22-1</a>.</p>
+<div id="JSDPG834"><a id="sthref399" name="sthref399"/><a id="GIJIGFHF" name="GIJIGFHF"/>
+<p>Table 22-1 Java Console Debugging Options</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="Debugging options available in the Java Console." title="Java Console Debugging Options" width="100%">
+<col width="11%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t2" valign="bottom">Key</th>
+<th align="left" id="r1c2-t2" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r2c1-t2">
+<p>c:</p>
+</td>
+<td align="left" headers="r2c1-t2 r1c2-t2">
+<p>Clears the Java Console window.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r3c1-t2">
+<p>f:</p>
+</td>
+<td align="left" headers="r3c1-t2 r1c2-t2">
+<p>Triggers finalization on the objects in the finalization queue and then displays memory information. <i>Memory</i> refers to the current heap size used by the JRE. <i>Free</i> is the available memory that is free in the heap. The percent <i>(xx%)</i> is the free memory as a percent of the total heap size.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r4c1-t2">
+<p>g:</p>
+</td>
+<td align="left" headers="r4c1-t2 r1c2-t2">
+<p>Triggers garbage collection and displays memory information as described above.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r5c1-t2">
+<p>h:</p>
+</td>
+<td align="left" headers="r5c1-t2 r1c2-t2">
+<p>Displays help message, which is being described here.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r6c1-t2">
+<p>l:</p>
+</td>
+<td align="left" headers="r6c1-t2 r1c2-t2">
+<p>Displays a list of the cached <code dir="ltr">ClassLoader</code> objects in the Java Plug-in. Classes are cached to avoid having to load them again when returning to previously-visited pages. When a page is visited the first time, a <code dir="ltr">ClassLoader</code> object will be created and all of the classes that are downloaded will be cached in that object. These objects are created and cached according to their <code dir="ltr">codebase</code>. To identify a <code dir="ltr">ClassLoader</code> object, the "classloader list" displays the <code dir="ltr">codebase</code> for that object. Additional information displayed with a <code dir="ltr">ClassLoader</code> object includes <code dir="ltr">zombie</code>, <code dir="ltr">cache</code> and <code dir="ltr">info</code>. <code dir="ltr">zombie = true</code> indicates that a <code dir="ltr">ClassLoader</code> object is not being used (i.e., the applet is not currently loaded on the page). <code dir="ltr">cache = true</code> indicates that the applet should be cached, while <code dir="ltr">false</code> indicates that the applet will be destroyed when the page is left. <code dir="ltr">info</code> is a value used for debugging.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r7c1-t2">
+<p>m:</p>
+</td>
+<td align="left" headers="r7c1-t2 r1c2-t2">
+<p>Displays heap memory usage as described above.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r8c1-t2">
+<p>o:</p>
+</td>
+<td align="left" headers="r8c1-t2 r1c2-t2">
+<p>Triggers logging, which directs output from the Java Plug-in Console to a log file.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r9c1-t2">
+<p>p:</p>
+</td>
+<td align="left" headers="r9c1-t2 r1c2-t2">
+<p>Reloads the proxy configuration.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r10c1-t2">
+<p>q:</p>
+</td>
+<td align="left" headers="r10c1-t2 r1c2-t2">
+<p>Causes the Java Console to disapper from the main screen.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r11c1-t2">
+<p>r:</p>
+</td>
+<td align="left" headers="r11c1-t2 r1c2-t2">
+<p>Reloads the policy configuration.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r12c1-t2">
+<p>s:</p>
+</td>
+<td align="left" headers="r12c1-t2 r1c2-t2">
+<p>Prints out the system properties. This is mostly for debugging.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r13c1-t2">
+<p>t:</p>
+</td>
+<td align="left" headers="r13c1-t2 r1c2-t2">
+<p>Prints out all the existing thread groups. The first group shown is <code dir="ltr">Group main</code>. <code dir="ltr">ac</code> stands for <i>active count</i>; it is the total number of active threads in a thread group and its child thread groups. <code dir="ltr">agc</code> stands for <i>active group count</i>; it is the number of active child thread groups of a thread group. <code dir="ltr">pri</code> stands for <i>priority</i>; it is the priority of a thread group. Following <code dir="ltr">Group main</code>, other thread groups will be shown as <code dir="ltr">Group &lt;</code><i>name</i><code dir="ltr">&gt;</code>, where <i>name</i> is the URL associated with an applet. Individual listings of threads will show the thread name, the thread priority, <code dir="ltr">alive</code> if the thread is alive or <code dir="ltr">destroyed</code> if the thread is in the process of being destroyed, and <code dir="ltr">daemon</code> if the thread is a daemon thread.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r14c1-t2">
+<p>x:</p>
+</td>
+<td align="left" headers="r14c1-t2 r1c2-t2">
+<p>This removes (destroys) all <code dir="ltr">ClassLoader</code> objects in the cache.</p>
+<p>Modified jar files will be downloaded from the server when a page with an applet is refreshed or revisited if you first do this: type "x" in the Java Console to clear the Classloader cache.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r15c1-t2">
+<p>0-5:</p>
+</td>
+<td align="left" headers="r15c1-t2 r1c2-t2">
+<p>This sets the trace-level options as described in <a href="#A1150932">Section 22.2, "Tracing and Logging"</a><a href="#A1150932">Section 22.2, "Tracing and Logging."</a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+
+<a id="A1150932" name="A1150932"/>
+<div id="JSDPG835">
+<h2><span>22.2</span> Tracing and Logging</h2>
+<p>Tracing is a facility to redirect any output in the Java Console to a trace file. Similar to tracing, logging is a facility to redirect any output in the Java Console to a log file using the Java Logging API.</p>
+<div id="JSDPG836"><a id="sthref400" name="sthref400"/>
+<h3><span>22.2.1</span> Tracing</h3>
+<p>Tracing for Java Plug-in and Java Web Start can be turned on by setting the property <code dir="ltr">deployment.trace</code> property to <code dir="ltr">true</code>. This property turns on all tracing facilities inside Java Plug-in and Java Web Start. To enable more fine-grained tracing, the <code dir="ltr">deployment.trace.level</code> property can be used. The <code dir="ltr">deployment.trace.level</code> property can have one of the following values:</p>
+<ul>
+<li>
+<p>basic</p>
+</li>
+<li>
+<p>cache</p>
+</li>
+<li>
+<p>net</p>
+</li>
+<li>
+<p>security</p>
+</li>
+<li>
+<p>ext</p>
+</li>
+<li>
+<p>liveconnect</p>
+</li>
+<li>
+<p>drs</p>
+</li>
+</ul>
+<p>To use all of the tracing levels, set <code dir="ltr">deployment.trace.level</code> to <code dir="ltr">all</code>.</p>
+<p>To enable tracing while running, you can set trace-level options (0-5) in the Java Console, with the following meanings:</p>
+<ul>
+<li>
+<p>0: off</p>
+</li>
+<li>
+<p>1: basic</p>
+</li>
+<li>
+<p>2: network, cache, and basic</p>
+</li>
+<li>
+<p>3: security, network and basic</p>
+</li>
+<li>
+<p>4: extension, security, network and basic</p>
+</li>
+<li>
+<p>5: LiveConnect, extension, security, network, temp, basic, and Deployment Rule Set</p>
+</li>
+</ul>
+<p>See <a href="#A1148009">Section 22.1, "Debugging Options in the Java Console"</a> for information.</p>
+<p>Another way to set fine-grained tracing is through the Java Control Panel. For example, to enable tracing for everything (option 5 above), enter the following options in the "Java Run Time Parameters" textfield:</p>
+<pre dir="ltr" xml:space="preserve">
+-Ddeployment.trace=true
+-Ddeployment.trace.level=all
+</pre>
+<p>See <a href="jcp.html#CEGCEAHH">Section 20.3.2, "Java Runtime Parameters"</a> for more information.</p>
+<p>Tracing set through the Control Panel takes effect when Java Plug-in or Java Web Start is launched, but changes made through the Control Panel while Java Plug-in or Java Web Start is running has no effect until restarted.</p>
+</div>
+
+<div id="JSDPG837"><a id="sthref401" name="sthref401"/>
+<h3><span>22.2.2</span> Logging</h3>
+<p>To enable logging perform the following actions:</p>
+<ul>
+<li>
+<p>Open Java Control Panel</p>
+</li>
+<li>
+<p>Click <b>Advanced</b> tab.</p>
+</li>
+<li>
+<p>Select <b>Enable Logging</b> under the <b>Debugging</b> option</p>
+</li>
+</ul>
+</div>
+
+<div id="JSDPG838"><a id="sthref402" name="sthref402"/>
+<h3><span>22.2.3</span> File Names</h3>
+<ul>
+<li>
+<p><code dir="ltr">plugin&lt;random-number&gt;.trace</code> - Name of the trace file for Java Plug-in.</p>
+</li>
+<li>
+<p><code dir="ltr">plugin&lt;random-number&gt;.log</code> - Name of the log file for Java Plug-in.</p>
+</li>
+<li>
+<p><code dir="ltr">javaws&lt;random-number&gt;.trace</code> - Name fo the trace file for Java Web Start.</p>
+</li>
+<li>
+<p><code dir="ltr">javaws&lt;random-number&gt;.log</code> - Name of the log file for Java Web Start.</p>
+</li>
+<li>
+<p><code dir="ltr">jcp.trace</code> - Name of the trace file that is created when the Java Control Panel is run.</p>
+</li>
+</ul>
+<p><code dir="ltr">&lt;random-number&gt;</code> is a number that is generated when the file is created.</p>
+</div>
+
+<div id="JSDPG839"><a id="sthref403" name="sthref403"/>
+<h3><span>22.2.4</span> File Locations</h3>
+<p>The default location (directory) of the trace and log files is:</p>
+<ul>
+<li>
+<p><code dir="ltr">&lt;user.home&gt;/.java/deployment/log</code> on Solaris and Linux</p>
+</li>
+<li>
+<p><code dir="ltr">~/Library/Application Support/Oracle/Java/Deployment/log</code> on OS X</p>
+</li>
+<li>
+<p><code dir="ltr">&lt;User Application Data Folder&gt;\Sun\Java\Deployment\log</code> on Windows</p>
+</li>
+</ul>
+<p>If the environment variable <code dir="ltr">USER_JPI_PROFILE</code> is set to <code dir="ltr">&lt;user plugin home&gt;</code> then the trace and log files will be written to:</p>
+<ul>
+<li>
+<p><code dir="ltr">&lt;user plugin home&gt;/.java/deployment/log</code> on Solaris and Linux</p>
+</li>
+<li>
+<p><code dir="ltr">&lt;user plugin home&gt;/Library/Application Support/Oracle/Java/Deployment/log</code> on OS X</p>
+</li>
+<li>
+<p><code dir="ltr">&lt;user plugin home&gt;\Sun\Java\Deployment\log</code> on Windows</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="properties.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="part_security.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

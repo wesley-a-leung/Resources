@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>OS X Platform Install FAQ</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This page answers frequently asked questions about the JDK and JRE for OS X computers." name="description"/>
+<meta content="2016-01-06T16:14:50Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Installation Guide for OpenJDK on Solaris, Linux, OS X, and Windows, Release 8u71" name="doctitle"/>
+<meta content="Release 8u71" name="relnum"/>
+<meta content="E50307-05" name="partnum"/>
+<meta content="no_value_supplied" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Installation Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="mac_jre.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="mac_preferences.html">
+                Next</a><hr/>
+<div><a id="CHDJEDDB" name="CHDJEDDB"/>
+<h1><span>12</span> OS X Platform Install FAQ</h1>
+<p>This page answers frequently asked questions about the JDK and JRE for OS X computers.</p>
+<p>The page has these topics:</p>
+<ul>
+<li>
+<p><a href="#A1096845">"Should I install the JRE or the JDK?"</a></p>
+</li>
+<li>
+<p><a href="#A1096953">"How do I install JavaFX?"</a></p>
+</li>
+<li>
+<p><a href="#A1096978">"How do I find out which version of Java is the system default?"</a></p>
+</li>
+<li>
+<p><a href="#A1097080">"How do I clear the Java cache?"</a></p>
+</li>
+<li>
+<p><a href="#A1097399">"How are Java updates managed on OS X?"</a></p>
+</li>
+<li>
+<p><a href="#A1097743">"How do I uninstall Java?"</a></p>
+</li>
+<li>
+<p><a href="#A1097886">"I have installed Java for OS X 2012-006 and Apple Java 6 can no longer be used for applets or Web Start. How do I get it back?"</a></p>
+</li>
+<li>
+<p><a href="#A1098031">"After installing Java for OS X 2012-006, can I continue to use Apple's Java 6 alongside the OS X JDK or JRE for Java 8?"</a></p>
+</li>
+<li>
+<p><a href="#osxfaq_restore_6">"Can I restore Apple Java 6 after uninstalling Oracle Java 7?"</a></p>
+</li>
+<li>
+<p><a href="#osxfaq_gatekeeper_blocking">"I am running Mountain Lion (OS X 10.8) or later and Gatekeeper is blocking an app from launching. What is going on?"</a></p>
+</li>
+<li>
+<p><a href="#osxfaq_java_pref_app">"What happened to the Java Preferences app in Application -&gt; Utilities?"</a></p>
+</li>
+<li>
+<p><a href="#osxfaq_jre_not_listed">"I have Oracle's version of the JRE installed, but it is not listed in Java Preferences"</a></p>
+</li>
+<li>
+<p><a href="#osxfaq_java_cmd_line">"I have Oracle's version of the JRE installed, but when I try to run the java command from the command line, it does not work"</a></p>
+</li>
+</ul>
+<p>See <a href="install_overview.html#CJAGAACB">JDK 8 and JRE 8 Installation Start Here</a> for general information about installing JDK 8 and JRE 8.</p>
+<a id="A1096845" name="A1096845"/>
+<div>
+<h2>Should I install the JRE or the JDK?</h2>
+<p>If you plan to <i>run</i> Java applications, install the Java Runtime Environment (JRE). The JRE is also referred to as Oracle Java. Once you have installed the JRE, you can launch Java applets and applications by double-clicking JAR files, JNLP files, and via the browser. Note that 32-bit browsers, such as Firefox in 32-bit mode, and Chrome, are not supported by the JRE.</p>
+<p>If you plan to <i>write</i> Java applications, install the Java Development Kit (JDK).</p>
+</div>
+
+<a id="A1096953" name="A1096953"/>
+<div>
+<h2>How do I install JavaFX?</h2>
+<p>The JavaFX SDK and Runtime are included in the installation of the JDK and JRE respectively, and they are integrated into the same directory structure. For information on how to work with JavaFX, see <code dir="ltr"><a href="http://docs.oracle.com/javase/8/javase-clienttechnologies.htm">http://docs.oracle.com/javase/8/javase-clienttechnologies.htm</a></code>.</p>
+</div>
+
+<a id="A1096978" name="A1096978"/>
+<div>
+<h2>How do I find out which version of Java is the system default?</h2>
+<p>A: If you have not yet installed Apple's Java OS X 2012-006 update, then you are still using a version of Apple Java 6 that includes the plug-in and the Java Preferences app. See <a href="mac_preferences.html#BABHEJEC">"Note for Users of OS X that Include Apple Java 6 Plug-in"</a>.</p>
+<p>When you launch a Java application by clicking a JNLP file, or through the browser, it uses the installed JRE. Only one JRE can be installed. For more information, see <a href="mac_jre.html#A1097025">"Determining the Installed Version of the JRE"</a>.</p>
+<p>When you run a Java application from the command line, it uses the default JDK. If you do not develop Java applications, you do not need to worry about this. For more information, see <a href="mac_jdk.html#A1096875">"Determining the Default Version of the JDK"</a>.</p>
+</div>
+
+<a id="A1097080" name="A1097080"/>
+<div>
+<h2>How do I clear the Java cache?</h2>
+<p>A: Follow these steps:</p>
+<ol>
+<li>
+<p>From System Preferences, launch the Java Control Panel by clicking the Java icon in the <b>Other</b> section.</p>
+</li>
+<li>
+<p>From the <b>Java Control Panel</b>, click <b>Settings</b> in the <span>Temporary Internet Files</span> section of the <span>General</span> tab.</p>
+</li>
+<li>
+<p>In the <span>Temporary Files Settings</span> window, click <b>Delete File</b>.</p>
+</li>
+<li>
+<p>From the <span>Delete Files and Applications</span> dialog, select <b>Cached Applications and Applets</b> and click <b>OK</b> to clear those files from the cache.</p>
+</li>
+</ol>
+<p>To clear the applet and Web Start cache from a <span>Terminal</span> window, use the following command (note escaped space character):</p>
+<pre dir="ltr" xml:space="preserve">
+% rm -rf ~/Library/Application\ Support/Oracle/Java/Deployment/cache
+</pre></div>
+
+<a id="A1097399" name="A1097399"/>
+<div>
+<h2>How are Java updates managed on OS X?</h2>
+<p>Every time you launch a Java applet or a Java Web Start application, the system first launches your program and then, in the background (so that performance of your Java application is not impacted), it determines if it has checked in the last 7 days for a Java update.</p>
+<p>If an update is available, a <span>Software Update</span> window appears.</p>
+<p>Select <b>Install Update</b> which displays a <span>Downloading update progress bar</span>.</p>
+<p>After the download has completed, a window pops up, asking if you want to install and relaunch. Once the update is installed, the application will be relaunched. You might want to finish your work before clicking <b>Install and Relaunch</b>.</p>
+<p>At the end of the installation process, the installer notifies you if Java content is disabled in web browsers, and provides instructions for enabling it. If you previously chose to hide some of the security prompts for applets and Java Web Start applications, the installer provides an option for restoring the prompts. After the update is installed, the application is relaunched. If viewing an applet, the browser is relaunched.</p>
+<p>Note that, if the application or applet does not automatically relaunch, be sure to manually relaunch so you can take advantage of the latest JRE.</p>
+<p>If you choose <b>Skip This Version</b>, but later decide to check for an update, you can launch the Java Control Panel by clicking the Java icon in System Preferences. Go to the <b>Update</b> tab to initiate an update check.</p>
+<p>If you choose <b>Remind Me Later</b>, you will be reminded of the update the next time you run Java.</p>
+</div>
+
+<a id="A1097743" name="A1097743"/>
+<div>
+<h2>How do I uninstall Java?</h2>
+<p>Depending on your installation, see the related link:</p>
+<ul>
+<li>
+<p><a href="mac_jre.html#A1096890">"Uninstalling the JRE"</a></p>
+</li>
+<li>
+<p><a href="mac_jdk.html#A1096903">"Uninstalling the JDK"</a></p>
+</li>
+</ul>
+</div>
+
+<a id="A1097886" name="A1097886"/>
+<div>
+<h2>I have installed Java for OS X 2012-006 and Apple Java 6 can no longer be used for applets or Web Start. How do I get it back?</h2>
+<p>The Java for OS X 2012-006 update from Apple uninstalls the Apple-provided Java applet plug-in from all web browsers. You can download the latest version of Java from <code dir="ltr"><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a></code>, which has improved security, reliability and compatibility.</p>
+<p>If you prefer to continue using Apple's Java 6 plug-in, you can follow the steps provided in <code dir="ltr"><a href="http://support.apple.com/kb/HT5559?viewlocale=en_US&amp;locale=en_US">http://support.apple.com/kb/HT5559?viewlocale=en_US&amp;locale=en_US</a></code></p>
+</div>
+
+<a id="A1098031" name="A1098031"/>
+<div>
+<h2>After installing Java for OS X 2012-006, can I continue to use Apple's Java 6 alongside the OS X JDK or JRE for Java 8?</h2>
+<p>If you want to continue to develop with Java 6 in a Terminal window you can modify the startup script for your favorite command environment. For bash, use this:</p>
+<pre dir="ltr" xml:space="preserve">
+$ export JAVA_HOME=`/usr/libexec/java_home -v 1.6`
+</pre>
+<p>Some applications use <code dir="ltr">/usr/bin/java</code> to invoke Java. After installing Java for OS X 2012-006, <code dir="ltr">/usr/bin/java</code> will find the newest JDK installed, and will use that for all of the Java related command line tools in <code dir="ltr">/usr/bin</code>. You may need to modify those applications to find Java 6, or contact the developer for a newer version of the application.</p>
+</div>
+
+<a id="osxfaq_restore_6" name="osxfaq_restore_6"/>
+<div>
+<h2>Can I restore Apple Java 6 after uninstalling Oracle Java 7?</h2>
+<p>Go back to Apple Java 6 using the following instructions:</p>
+<ol>
+<li>
+<p>Uninstall Oracle Java 7 by deleting the plug-in file. From a Terminal window enter:</p>
+<p><code dir="ltr">% sudo rm -rf /Library/Internet Plug-Ins/JavaAppletPlugin.plugin</code></p>
+</li>
+<li>
+<p>Create a symlink using the following command, entered on a single line:</p>
+<p><code dir="ltr">% sudo ln -s /System/Library/Java/Support/CoreDeploy.bundle/Contents/JavaAppletPlugin</code></p>
+</li>
+</ol>
+</div>
+
+<a id="osxfaq_gatekeeper_blocking" name="osxfaq_gatekeeper_blocking"/>
+<div>
+<h2>I am running Mountain Lion (OS X 10.8) or later and Gatekeeper is blocking an app from launching. What is going on?</h2>
+<p>Gatekeeper, introduced in Mountain Lion (OS X 10.8), is designed to prevent potentially malicious apps from launching. When you attempt to launch an app that doesn't meet certain criteria, Gatekeeper will block the launch. To override this, you can modify Gatekeeper's default settings, or explicitly right/control-click the application and choose <b>Open</b>.</p>
+<p>To create a Java application that will launch without interruption under the default Gatekeeper settings, the app must be bundled with a JRE, use Oracle's launcher stub, and be signed with an Apple Developer ID. For more information on creating an app that satisfies these requirements, see Packaging a Java App for Distribution on OS X:</p>
+<p><code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/deploy/package_for_mac.html">http://docs.oracle.com/javase/8/docs/technotes/guides/deploy/package_for_mac.html</a></code></p>
+</div>
+
+<a id="osxfaq_java_pref_app" name="osxfaq_java_pref_app"/>
+<div>
+<h2>What happened to the Java Preferences app in Application -&gt; Utilities?</h2>
+<p>The Java Preferences app was part of Apple Java installation and is not used by Oracle Java. Therefore, OS X releases from Apple that do not include Apple Java will not include Java Preferences.</p>
+<p>One of the functions of Java Preferences was to set the current version of the JRE. Under Oracle Java, only a single version of the JRE can be installed at a time. For more information, see <a href="mac_jre.html#CHDGECEB">JRE 8 Installation for OS X</a>.</p>
+<p>To access the Java Control Panel, click the Java icon in the System Preferences panel. If the Java icon is not present (under the <b>Other</b> category) in System Preferences, you do not have an Oracle JRE installed.</p>
+</div>
+
+<a id="osxfaq_jre_not_listed" name="osxfaq_jre_not_listed"/>
+<div>
+<h2>I have Oracle's version of the JRE installed, but it is not listed in Java Preferences</h2>
+<p>This is correct. The JRE will not show up in the Java Preferences list unless you install the full JDK.</p>
+</div>
+
+<a id="osxfaq_java_cmd_line" name="osxfaq_java_cmd_line"/>
+<div>
+<h2>I have Oracle's version of the JRE installed, but when I try to run the java command from the command line, it does not work</h2>
+<p>Installing a JRE from Oracle does not update <code dir="ltr">java -version</code> symlinks or add the <code dir="ltr">java</code> command to your path. For this functionality, you must install the full JDK.</p>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="mac_jre.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="mac_preferences.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

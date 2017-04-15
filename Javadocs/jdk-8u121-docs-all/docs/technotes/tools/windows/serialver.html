@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>serialver</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T8:11:41Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Windows, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38210-05" name="partnum"/>
+<meta content="JSWOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="rmid.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="s5-idl-rmi-iiop.html">
+                Next</a><hr/>
+<div><a id="CCHFEHEC" name="CCHFEHEC"/>
+<div id="JSWOR708"><a id="CCHBJAGJ" name="CCHBJAGJ"/>
+<h1>serialver</h1>
+<p>Returns the serial version UID for specified classes.</p>
+<div><a id="sthref182" name="sthref182"/>
+<h2>Synopsis</h2>
+<p><b>serialver</b> [ <i>options</i> ] [ <i>classnames</i> ]</p>
+<dl>
+<dt><i>options</i></dt>
+<dd>
+<p>The command-line options. See <a href="#CCHGBBDC">Options</a>.</p>
+</dd>
+<dt><i>classnames</i></dt>
+<dd>
+<p>The classes for which the <code dir="ltr">serialVersionUID</code> is to be returned.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref183" name="sthref183"/>
+<h2>Description</h2>
+<p>The <code dir="ltr">serialver</code> command returns the <code dir="ltr">serialVersionUID</code> for one or more classes in a form suitable for copying into an evolving class. When called with no arguments, the <code dir="ltr">serialver</code> command prints a usage line.</p>
+</div>
+
+<div><a id="CCHGBBDC" name="CCHGBBDC"/><a id="CCHIBGJA" name="CCHIBGJA"/>
+<h2>Options</h2>
+<dl>
+<dt>-classpath <i>path-files</i></dt>
+<dd>
+<p>Sets the search path for application classes and resources. Separate classes and resources with a colon (:).</p>
+</dd>
+<dt>-show</dt>
+<dd>
+<p>Displays a simple user interface. Enter the full class name and press either the <b>Enter</b> key or the <b>Show</b> button to display the <code dir="ltr">serialVersionUID</code>.</p>
+</dd>
+<dt>-J<i>option</i></dt>
+<dd>
+<p>Passes <code dir="ltr">option</code> to the Java Virtual Machine, where option is one of the options described on the reference page for the Java application launcher. For example, <code dir="ltr">-J-Xms48m</code> sets the startup memory to 48 MB. See <a href="java.html#CBBFHAJA"><code dir="ltr">java</code>(1)</a>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref184" name="sthref184"/>
+<h2>Notes</h2>
+<p>The <code dir="ltr">serialver</code> command loads and initializes the specified classes in its virtual machine, and by default, it does not set a security manager. If the <code dir="ltr">serialver</code> command is to be run with untrusted classes, then a security manager can be set with the following option:</p>
+<pre dir="ltr" xml:space="preserve">
+-J-Djava.security.manager
+</pre>
+<p>When necessary, a security policy can be specified with the following option:</p>
+<pre dir="ltr" xml:space="preserve">
+-J-Djava.security.policy=&lt;policy file&gt;
+</pre></div>
+
+<div><a id="sthref185" name="sthref185"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="policytool.html#BABBBCFE"><code dir="ltr">policytool</code>(1)</a></p>
+</li>
+<li>
+<p>The <code dir="ltr">java.io.ObjectStream</code> class description at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/api/java/io/ObjectStreamClass.html">http://docs.oracle.com/javase/8/docs/api/java/io/ObjectStreamClass.html</a></code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="rmid.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="s5-idl-rmi-iiop.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

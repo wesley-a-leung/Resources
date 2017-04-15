@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Signals Used in Oracle Solaris and Linux</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="signals005.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="clibissues.html">
+                Next</a><hr/>
+<div id="JSTGD356"><a id="sthref55" name="sthref55"/>
+<h1>Signals Used in Oracle Solaris and Linux</h1>
+<div id="JSTGD357"><a id="sthref56" name="sthref56"/><a id="CIHBHCFE" name="CIHBHCFE"/>
+<p>Table 7-2 Signals Used on Oracle Solaris and Linux</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="This table lists the signals that are used on Solaris OS and Linux." title="Signals Used on Oracle Solaris and Linux" width="100%">
+<col width="31%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t3" valign="bottom">Signal</th>
+<th align="left" id="r1c2-t3" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r2c1-t3">
+<p><code dir="ltr">SIGSEGV</code>, <code dir="ltr">SIGBUS</code>, <code dir="ltr">SIGFPE</code>, <code dir="ltr">SIGPIPE</code>, <code dir="ltr">SIGILL</code></p>
+</td>
+<td align="left" headers="r2c1-t3 r1c2-t3">
+<p>These signals are used in the implementation for implicit null check, and so forth.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r3c1-t3">
+<p><code dir="ltr">SIGQUIT</code></p>
+</td>
+<td align="left" headers="r3c1-t3 r1c2-t3">
+<p>This signal is used to dump Java stack traces to the standard error stream. (Optional)</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r4c1-t3">
+<p><code dir="ltr">SIGTERM</code>, <code dir="ltr">SIGINT</code>, <code dir="ltr">SIGHUP</code></p>
+</td>
+<td align="left" headers="r4c1-t3 r1c2-t3">
+<p>These signals are used to support the shutdown hook mechanism (<code dir="ltr">java.lang.Runtime.addShutdownHook</code>) when the VM is terminated abnormally. (Optional)</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r5c1-t3">
+<p><code dir="ltr">SIGUSR1</code></p>
+</td>
+<td align="left" headers="r5c1-t3 r1c2-t3">
+<p>This signal is used in the implementation of the <code dir="ltr">java.lang.Thread.interrupt</code> method. Not used starting with Oracle Solaris 10 reserved on Linux. (Configurable)</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r6c1-t3">
+<p><code dir="ltr">SIGUSR2</code></p>
+</td>
+<td align="left" headers="r6c1-t3 r1c2-t3">
+<p>This signal is used internally. Not used starting with Oracle Solaris 10 operating system. (Configurable)</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t3" id="r7c1-t3">
+<p><code dir="ltr">SIGABRT</code></p>
+</td>
+<td align="left" headers="r7c1-t3 r1c2-t3">
+<p>The HotSpot VM does not handle this signal. Instead it calls the <code dir="ltr">abort</code> function after fatal error handling. If an application uses this signal then it should terminate the process to preserve the expected semantics.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p>Signals tagged as "optional" are not used when the <code dir="ltr">-Xrs</code> option is specified to reduce signal usage. With this option fewer signals are used, although the VM installs its own signal handler for essential signals such as <code dir="ltr">SIGSEGV</code>. Specifying this option means that the shutdown hook mechanism will not execute if the process receives a <code dir="ltr">SIGQUIT</code>, <code dir="ltr">SIGTERM</code>, <code dir="ltr">SIGINT</code>, or <code dir="ltr">SIGHUP</code>. Shutdown hooks will execute, as expected, if the VM terminates normally (that is, when the last non-daemon thread completes or the <code dir="ltr">System.exit</code> method is invoked).</p>
+<p>On Oracle Solaris 8 and 9 operating system, signals tagged as "configurable" are substituted when the <code dir="ltr">-XX:+UseAltSigs</code> option is specified to use alternative signals. Starting with Oracle Solaris 10 operating system, this option is ignored, as the operating system reserves two additional signals (called <code dir="ltr">SIGJVM1</code> and <code dir="ltr">SIGJVM2</code>).</p>
+<p>On Linux, the handler for <code dir="ltr">SIGUSR1</code> cannot be overridden. <code dir="ltr">SIGUSR2</code> is used to implement suspend and resume. However it is possible to specify an alternative signal to be used instead of <code dir="ltr">SIGUSR2</code>. This is done by specifying the <code dir="ltr">_JAVA_SR_SIGNUM</code> environment variable. If this environment variable is set, it must be set to a value larger than the maximum of <code dir="ltr">SIGSEGV</code> and <code dir="ltr">SIGBUS</code>.</p>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="signals005.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="clibissues.html">
+                Next</a><hr/>
+
+
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

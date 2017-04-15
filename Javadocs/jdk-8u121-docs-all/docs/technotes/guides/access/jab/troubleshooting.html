@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Troubleshooting Java Access Bridge</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head><body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Troubleshooting Java Access Bridge</h1>
+
+<p><a href="../index.html">Java Accessibility Guide</a> &gt; <a href="index.html">Java Access Bridge Programmer's Guide for Assistive Technology Developers</a> &gt; Troubleshooting Java Access Bridge</p> 
+
+<p>This section describes known problems of and usage tips for those developing Assistive Technology applications for Java Access Bridge.</p>
+
+<a id="known-problems" name="known-problems"></a>
+
+<h2>Known Problems</h2>
+
+<h3>Re-Registering Menu Events Generates Duplicate Copies</h3>
+<p>If you register a menu event, unregister it, and then register it again, Java Access Bridge will generate duplicate copies of the menu event.</p>
+
+<h3>MenuDeselected Events Generated When Menu is Closed</h3>
+<p>You will not receive MenuCanceled (or PopupMenuCanceled) events. To determine that a menu has been closed, look for MenuDeselected events.</p>
+
+
+<a id="usage-tips" name="usage-tips"></a>
+
+<h2>Usage Tips</h2>
+
+<h3>Determining Changes in Menu Item Selection</h3>
+<p>Use State PropertyChange events to determine changes in menu item selection (for example, when the user uses the arrow buttons or keys to go up or down within a menu).</p>
+
+<h3>Tracking Values of GUI Elements</h3>
+<p>Use the AccessibleValue support and Value PropertyChange events to track the values of GUI elements like sliders and scroll bars.</p>
+
+<h3>Determining Selected Items</h3>
+<p>Use the AccessibleSelection support to determine which items are selected in containers that contain items such as lists and tables. This is more efficient than enumerating all of the children and examining their StateSet attribute to see if the Selected value is among them.</p>
+
+<h3>Obtaining Java Access Bridge Testing Tools</h3>
+
+<p>The Java Access Bridge testing tools Java Monkey and Java Ferret are not shipped with the JDK. These tools are included in Java Access Bridge 2.0.2. Download this version from <a href="http://www.oracle.com/technetwork/java/javase/downloads/jab-2-0-2-download-354311.html">Java Access Bridge Downloads</a>.</p>
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

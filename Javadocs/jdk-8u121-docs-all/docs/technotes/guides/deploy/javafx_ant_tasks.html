@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>JavaFX Ant Tasks</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1044" name="generator"/>
+<meta content="This chapter shows how to use Ant to package JavaFX application." name="description"/>
+<meta content="2015-02-16T9:50:4Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Deployment Guide, Release 8u40" name="doctitle"/>
+<meta content="Release 8u40" name="relnum"/>
+<meta content="E50259-02" name="partnum"/>
+<meta content="JSDPG" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Deployment Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="packager.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="javafx_ant_task_reference.html">
+                Next</a><hr/>
+<div id="JSDPG177"><a id="CIACDJHC" name="CIACDJHC"/>
+<h1><span>10</span> JavaFX Ant Tasks</h1>
+<a id="JSDPG647" name="JSDPG647"/>
+<p>This chapter shows how to use Ant to package JavaFX application.</p>
+<p>JavaFX Ant tasks and the JavaFX Packager tool are currently the only supported ways to package JavaFX applications. This includes supported versions of the NetBeans IDE, which build JavaFX applications with JavaFX Ant tasks.</p>
+<p>This page contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CIAIAGHI">Requirements to Run JavaFX Ant Tasks</a></p>
+</li>
+<li>
+<p><a href="#CIADAIAI">JavaFX Ant Elements</a></p>
+</li>
+<li>
+<p><a href="#CIAEIAGE">Using JavaFX Ant Tasks</a></p>
+</li>
+<li>
+<p><a href="#CIAEBEDD">Ant Script Examples</a></p>
+</li>
+</ul>
+<p>See also the following two Ant Task Reference sections:</p>
+<ul>
+<li>
+<p><a href="javafx_ant_task_reference.html#CIAJGAFH">JavaFX Ant Task Reference</a></p>
+</li>
+<li>
+<p><a href="javafx_ant_task_reference.html#CACCABFF">JavaFX Ant Helper Parameter Reference</a></p>
+</li>
+</ul>
+<a id="CIAIAGHI" name="CIAIAGHI"/>
+<div id="JSDPG198">
+<h2><span>10.1</span> Requirements to Run JavaFX Ant Tasks</h2>
+<p>The ant-javafx.jar file is required to use these tasks. It is located in the following locations:</p>
+<ul>
+<li>
+<p>In JDK 7 Update 6 or later, it is located in <i>jdk_home</i>/lib</p>
+</li>
+<li>
+<p>In a standalone JavaFX installation, it is located in <i>javafx-sdk-home</i>/lib</p>
+</li>
+</ul>
+</div>
+
+<a id="CIADAIAI" name="CIADAIAI"/>
+<div id="JSDPG199">
+<h2><span>10.2</span> JavaFX Ant Elements</h2>
+<p>There are two categories of Ant elements for JavaFX. Each of the following elements is described in <a href="javafx_ant_task_reference.html#CIAJGAFH">JavaFX Ant Task Reference</a>.</p>
+<a id="JSDPG525" name="JSDPG525"/><a id="sthref65" name="sthref65"/>
+<p><b>JavaFX Ant Tasks</b></p>
+<p>These elements accomplish the following tasks:</p>
+<ul>
+<li>
+<p>Creating double-clickable JAR files</p>
+</li>
+<li>
+<p>Creating an HTML page and deployment descriptor for Web Start applications or applications embedded in a web page</p>
+</li>
+<li>
+<p>Digitally signing an application, when necessary</p>
+</li>
+<li>
+<p>Converting CSS files to binary format</p>
+</li>
+<li>
+<p>Assembling self-contained application packages</p>
+</li>
+</ul>
+<p>See <a href="javafx_ant_task_reference.html#CIAJGAFH">JavaFX Ant Task Reference</a>. For general information about packaging for JavaFX applications, see <a href="packaging.html#BABFECGG">Chapter 5, "Packaging Basics"</a> and <a href="self-contained-packaging.html#BCGIBBCI">Chapter 7, "Self-Contained Application Packaging."</a></p>
+<a id="JSDPG526" name="JSDPG526"/><a id="sthref66" name="sthref66"/>
+<p><b>Ant Helper Parameters</b></p>
+<p>These elements are used by the JavaFX tasks. They are listed and described in <a href="javafx_ant_task_reference.html#CACCABFF">JavaFX Ant Helper Parameter Reference</a>.</p>
+</div>
+
+<a id="CIAEIAGE" name="CIAEIAGE"/>
+<div id="JSDPG200">
+<h2><span>10.3</span> Using JavaFX Ant Tasks</h2>
+<p>To use the JavaFX Ant tasks in the your Ant script, you must load their definitions. An example is shown in the build.xml file in <a href="#CIAFCHDI">Example 10-1</a>:</p>
+<div id="JSDPG201"><a id="CIAFCHDI" name="CIAFCHDI"/>
+<p>Example 10-1 Load JavaFX Ant Task Definitions</p>
+<pre dir="ltr" xml:space="preserve">
+&lt;project name="JavaFXSample" default="default" basedir="."
+         <b>xmlns:fx="javafx:com.sun.javafx.tools.ant</b>"&gt;
+    &lt;target name="default"&gt;
+        &lt;taskdef resource="com/sun/javafx/tools/ant/antlib.xml"      
+                uri="javafx:com.sun.javafx.tools.ant"
+                classpath=".:path/to/sdk/lib/ant-javafx.jar"/&gt;    
+    &lt;/target&gt;
+&lt;/project&gt;
+</pre></div>
+
+<p>Notes about <a href="#CIAFCHDI">Example 10-1</a>:</p>
+<ul>
+<li>
+<p>Ensure that you declare the fx: namespace, shown in bold in <a href="#CIAFCHDI">Example 10-1</a>, because short names for some of JavaFX tasks are the same as those used for some system tasks.</p>
+</li>
+<li>
+<p>The current directory (".") is added to the classpath to simplify customization using drop-in resources. See <a href="self-contained-packaging.html#BCGICFDB">Section 7.3.3, "Customizing the Package Using Drop-In Resources."</a></p>
+</li>
+</ul>
+<p>Once JavaFX Ant task definitions are loaded, the <code dir="ltr">javafx.ant.version</code> property can be used to check the version of Ant tasks APIs. Use the following list for version numbers:</p>
+<ul>
+<li>
+<p>Version 1.0: shipped in the JavaFX 2.0 SDK</p>
+</li>
+<li>
+<p>Version 1.1: shipped in the JavaFX 2.1 SDK</p>
+</li>
+<li>
+<p>Version 1.2: shipped in the JavaFX 2.2 SDK and JDK 7 Update 6</p>
+</li>
+</ul>
+</div>
+
+<a id="CIAEBEDD" name="CIAEBEDD"/>
+<div id="JSDPG202">
+<h2><span>10.4</span> Ant Script Examples</h2>
+<p>This section covers the following topics:</p>
+<ul>
+<li>
+<p><a href="#CHDFHGDE">Section 10.4.1, "Deploying the JavaFX Hello World Example"</a></p>
+</li>
+<li>
+<p><a href="#CHDBGIJG">Section 10.4.2, "Deploying the JavaFX Hello World Example as a Self-Contained Application"</a></p>
+</li>
+<li>
+<p><a href="#CHDFJIGF">Section 10.4.3, "Deploying a JavaFX Application with External JAR Files"</a></p>
+</li>
+<li>
+<p><a href="#CHDFDGBI">Section 10.4.4, "Overriding JVM Options for Self-Contained Applications"</a></p>
+</li>
+</ul>
+<a id="CHDFHGDE" name="CHDFHGDE"/>
+<div id="JSDPG680">
+<h3><span>10.4.1</span> Deploying the JavaFX Hello World Example</h3>
+<p>Follow these steps to deploy the JavaFX Hello World example as a JAR file with an Ant script:</p>
+<ol>
+<li>
+<p>Create a directory to contain the example application. These steps use the directory <code dir="ltr">C:\example</code>.</p>
+</li>
+<li>
+<p>Save <a href="#hello_world_source">Example 10-2</a> as <code dir="ltr">C:\example\src\HelloWorld.java</code>:</p>
+<div id="JSDPG681"><a id="hello_world_source" name="hello_world_source"/>
+<p>Example 10-2 HelloWorld.java</p>
+<pre dir="ltr" xml:space="preserve">
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+ 
+public class HelloWorld extends Application {
+    
+    @Override
+    public void start(Stage primaryStage) {
+        Button btn = new Button();
+        btn.setText("Say 'Hello World'");
+        btn.setOnAction(new EventHandler&lt;ActionEvent&gt;() {
+ 
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Hello World!");
+            }
+        });
+        
+        StackPane root = new StackPane();
+        root.getChildren().add(btn);
+ 
+        Scene scene = new Scene(root, 300, 250);
+ 
+        primaryStage.setTitle("Hello World!");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+ public static void main(String[] args) {
+        launch(args);
+    }
+}
+</pre></div>
+</li>
+<li>
+<p>Save <a href="#ant_hello_world_example">Example 10-3</a> as <code dir="ltr">C:\example\build.xml</code>:</p>
+<div id="JSDPG682"><a id="ant_hello_world_example" name="ant_hello_world_example"/>
+<p>Example 10-3 Ant Script to Deploy JavaFX Hello World Example</p>
+<pre dir="ltr" xml:space="preserve">
+&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+ 
+&lt;project name="JavaFX Hello World Example" default="default" basedir="."
+  xmlns:fx="javafx:com.sun.javafx.tools.ant"&gt;
+ 
+  &lt;property name="JAVA_HOME" value="C:\\Java\\jdk1.8.0"/&gt;
+  &lt;property name="build.src.dir" value="src"/&gt;
+  &lt;property name="build.classes.dir" value="classes"/&gt;
+  &lt;property name="build.dist.dir" value="dist"/&gt;
+ 
+  &lt;target name="default" depends="clean,compile"&gt;
+ 
+    &lt;taskdef resource="com/sun/javafx/tools/ant/antlib.xml"
+      uri="javafx:com.sun.javafx.tools.ant"
+      classpath="${JAVA_HOME}/lib/ant-javafx.jar"/&gt;
+ 
+      &lt;fx:application id="HelloWorldID"
+        name="JavaFXHelloWorldApp"
+        mainClass="HelloWorld"/&gt;
+ 
+      &lt;fx:resources id="appRes"&gt;
+        &lt;fx:fileset dir="${build.dist.dir}" includes="HelloWorld.jar"/&gt;
+      &lt;/fx:resources&gt;
+ 
+      &lt;fx:jar destfile="${build.dist.dir}/HelloWorld.jar"&gt;
+        &lt;fx:application refid="HelloWorldID"/&gt;
+        &lt;fx:resources refid="appRes"/&gt;
+        &lt;fileset dir="${build.classes.dir}"/&gt;
+      &lt;/fx:jar&gt;
+ 
+      &lt;fx:deploy width="300" height="250"
+        outdir="." embedJNLP="true"
+        outfile="helloworld"&gt;
+ 
+        &lt;fx:application refId="HelloWorldID"/&gt;
+ 
+        &lt;fx:resources refid="appRes"/&gt;
+ 
+        &lt;fx:info title="JavaFX Hello World Application"
+          vendor="Oracle Corporation"/&gt;
+ 
+      &lt;/fx:deploy&gt;
+ 
+  &lt;/target&gt;
+ 
+  &lt;target name="clean"&gt;
+    &lt;mkdir dir="${build.classes.dir}"/&gt;
+    &lt;mkdir dir="${build.dist.dir}"/&gt;
+
+    &lt;delete&gt;
+      &lt;fileset dir="${build.classes.dir}" includes="**/*"/&gt;
+      &lt;fileset dir="${build.dist.dir}" includes="**/*"/&gt;
+    &lt;/delete&gt;
+ 
+  &lt;/target&gt;
+ 
+  &lt;target name="compile" depends="clean"&gt;
+ 
+    &lt;javac includeantruntime="false"
+      srcdir="${build.src.dir}"
+      destdir="${build.classes.dir}"
+      fork="yes"
+      executable="${JAVA_HOME}/bin/javac"
+      source="1.8"
+      debug="on"&gt;
+    &lt;/javac&gt;
+  &lt;/target&gt;
+ 
+&lt;/project&gt;
+</pre></div>
+</li>
+<li>
+<p>In the file <code dir="ltr">build.xml</code>, specify the location of the JDK installed in your computer by changing the value of the <code dir="ltr">JAVA_HOME</code> property. Change the highlighted text to the full path of your JDK:</p>
+<pre dir="ltr" xml:space="preserve">
+&lt;property name="JAVA_HOME" value="<b>C:\\Java\\jdk1.8.0</b>"/&gt;
+</pre></li>
+<li>
+<p>At a command-line prompt, change directory to <code dir="ltr">C:\example</code>. Run the following command to compile, build, and deploy the JavaFX HelloWorld example:</p>
+<pre dir="ltr" xml:space="preserve">
+ant
+</pre></li>
+<li>
+<p>To run the example, at a command-line prompt, change directory to <code dir="ltr">C:\example\dist</code> and run the following command:</p>
+<pre dir="ltr" xml:space="preserve">
+java -jar HelloWorld.jar
+</pre></li>
+</ol>
+</div>
+
+<a id="CHDBGIJG" name="CHDBGIJG"/>
+<div id="JSDPG683">
+<h3><span>10.4.2</span> Deploying the JavaFX Hello World Example as a Self-Contained Application</h3>
+<p>To deploy the JavaFX Hello World example as a self-contained application, add the attribute <code dir="ltr">nativeBundles="all"</code> to the element <code dir="ltr">&lt;fx:deploy&gt;</code> to the <code dir="ltr">build.xml</code> script:</p>
+<pre dir="ltr" xml:space="preserve">
+&lt;fx:deploy width="300" height="250"
+  outdir="." embedJNLP="true"
+  outfile="helloworld"
+  <b>nativeBundles="all"</b>&gt;
+</pre>
+<p>Compile, build, and deploy the JavaFX Hello World example as described in the previous section. The Ant script creates all applicable self-contained application packages and stores them in the directory <code dir="ltr">C:\example\bundles\JavaFXHelloWorldApp</code>. (The name <code dir="ltr">JavaFXHelloWorldApp</code> is the value of the <code dir="ltr">name</code> attribute of the <code dir="ltr">&lt;fx:application&gt;</code> element.) If you are deploying the JavaFX Hello World example with Windows, for example, the Ant script creates an application named <code dir="ltr">C:\example\bundles\JavaFXHelloWorldApp\JavaFXHelloWorldApp.exe</code> that you can run by double-clicking it in a file browser.</p>
+<p>You can customize how your Ant script creates self-contained applications. See <a href="self-contained-packaging.html#BCGIBBCI">Chapter 7, "Self-Contained Application Packaging."</a></p>
+</div>
+
+<a id="CHDFJIGF" name="CHDFJIGF"/>
+<div id="JSDPG684">
+<h3><span>10.4.3</span> Deploying a JavaFX Application with External JAR Files</h3>
+<p>The Ensemble8 sample application requires Apache Lucene. The following steps show you how to deploy the Ensemble8 sample application as a self-contained application and include the Apache Lucene JAR files in it.</p>
+<ol>
+<li>
+<p>Download the JDK Demos and Samples for your operating system from the following page:</p>
+<p><code dir="ltr"><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a></code></p>
+<p>Unzip the file that you downloaded. The Ensemble8 sample is contained in the directory <code dir="ltr">demo/javafx_samples/src/Ensemble8</code>.</p>
+</li>
+<li>
+<p>Replace the contents of the file <code dir="ltr">demo/javafx_samples/src/Ensemble8/build.xml</code> with <a href="#CHDDHEEE">Example 10-4</a>:</p>
+<div id="JSDPG685"><a id="CHDDHEEE" name="CHDDHEEE"/>
+<p>Example 10-4 Ant Script to Deploy Ensemble8 Sample Application</p>
+<pre dir="ltr" xml:space="preserve">
+&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+ 
+&lt;project name="Ensemble8 JavaFX Demo Application" default="default" basedir="."
+  xmlns:fx="javafx:com.sun.javafx.tools.ant"&gt;
+ 
+  &lt;property name="JAVA_HOME" value="C:\\Java\\jdk1.8.0"/&gt;
+ 
+  &lt;path id="CLASSPATH"&gt;
+    &lt;pathelement location="lib/lucene-core-3.2.0.jar"/&gt;
+    &lt;pathelement location="lib/lucene-grouping-3.2.0.jar"/&gt;
+    &lt;pathelement path="classes"/&gt;
+  &lt;/path&gt;
+  
+  &lt;property name="build.src.dir" value="src"/&gt;
+  &lt;property name="build.classes.dir" value="classes"/&gt;
+  &lt;property name="build.dist.dir" value="dist"/&gt;
+ 
+  &lt;target name="default" depends="clean,compile"&gt;
+ 
+    &lt;taskdef resource="com/sun/javafx/tools/ant/antlib.xml"
+      uri="javafx:com.sun.javafx.tools.ant"
+      classpath="${JAVA_HOME}/lib/ant-javafx.jar"/&gt;
+ 
+      &lt;fx:application id="ensemble8"
+        name="Ensemble8"
+        mainClass="ensemble.EnsembleApp"/&gt;
+ 
+      &lt;fx:resources id="appRes"&gt;
+        &lt;fx:fileset dir="${build.dist.dir}" includes="ensemble8.jar"/&gt;
+        &lt;fx:fileset dir="lib"/&gt;
+        &lt;fx:fileset dir="${build.classes.dir}"/&gt;
+      &lt;/fx:resources&gt;
+ 
+      &lt;fx:jar destfile="${build.dist.dir}/ensemble8.jar"&gt;
+        &lt;fx:application refid="ensemble8"/&gt;
+        &lt;fx:resources refid="appRes"/&gt;
+      &lt;/fx:jar&gt;
+ 
+      &lt;fx:deploy outdir="." embedJNLP="true"
+        outfile="ensemble8"
+        nativeBundles="all"&gt;
+ 
+        &lt;fx:application refId="ensemble8"/&gt;
+ 
+        &lt;fx:resources refid="appRes"/&gt;
+ 
+        &lt;fx:info title="Ensemble8 JavaFX Demo Application"
+          vendor="Oracle Corporation"/&gt;
+ 
+      &lt;/fx:deploy&gt;
+ 
+  &lt;/target&gt;
+ 
+  &lt;target name="clean"&gt;
+    &lt;mkdir dir="${build.classes.dir}"/&gt;
+    &lt;mkdir dir="${build.dist.dir}"/&gt;
+ 
+    &lt;delete&gt;
+      &lt;fileset dir="${build.classes.dir}" includes="**/*"/&gt;
+      &lt;fileset dir="${build.dist.dir}" includes="**/*"/&gt;
+    &lt;/delete&gt;
+ 
+  &lt;/target&gt;
+ 
+  &lt;target name="compile" depends="clean"&gt;
+ 
+    &lt;javac includeantruntime="false"
+      srcdir="${build.src.dir}"
+      destdir="${build.classes.dir}"
+      fork="yes"
+      executable="${JAVA_HOME}/bin/javac"
+      source="1.8"
+      debug="on"
+      classpathref="CLASSPATH"&gt;
+    &lt;/javac&gt;
+    
+    &lt;!-- Copy resources to build.classes.dir --&gt;
+    
+      &lt;copy todir="${build.classes.dir}"&gt;
+        &lt;fileset dir="src/app/resources"/&gt;
+        &lt;fileset dir="src/generated/resources"/&gt;
+        &lt;fileset dir="src/samples/resources"/&gt;
+      &lt;/copy&gt;
+    
+  &lt;/target&gt;
+ 
+&lt;/project&gt;
+</pre></div>
+
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+After the Ant script compiles the sample application, it copies resources contained in the <code dir="ltr">src</code> directory to the directory that contains the compiled Java class files:
+<pre dir="ltr" xml:space="preserve">
+      &lt;copy todir="${build.classes.dir}"&gt;
+        &lt;fileset dir="src/app/resources"/&gt;
+        &lt;fileset dir="src/generated/resources"/&gt;
+        &lt;fileset dir="src/samples/resources"/&gt;
+      &lt;/copy&gt;
+</pre>
+<p>The following lines from the Ant script include the Apache Lucerne JAR files (which are contained in the <code dir="ltr">lib</code> directory):</p>
+<pre dir="ltr" xml:space="preserve">
+      &lt;fx:resources id="appRes"&gt;
+        &lt;fx:fileset dir="${build.dist.dir}"
+          includes="ensemble8.jar"/&gt;
+        &lt;fx:fileset dir="lib"/&gt;
+        &lt;fx:fileset dir="${build.classes.dir}"/&gt;
+      &lt;/fx:resources&gt;
+ 
+      &lt;fx:jar destfile="${build.dist.dir}/ensemble8.jar"&gt;
+        &lt;fx:application refid="ensemble8"/&gt;
+        &lt;fx:resources refid="appRes"/&gt;
+      &lt;/fx:jar&gt;
+</pre></td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</li>
+<li>
+<p>In the file <code dir="ltr">build.xml</code>, specify the location of the JDK installed in your computer by changing the value of the <code dir="ltr">JAVA_HOME</code> property. Change the highlighted text to the full path of your JDK:</p>
+<pre dir="ltr" xml:space="preserve">
+&lt;property name="JAVA_HOME" value="<b>C:\\Java\\jdk1.8.0</b>"/&gt;
+</pre></li>
+<li>
+<p>At a command-line prompt, change directory to <code dir="ltr">demo/javafx_samples/src/Ensemble8</code>. Run the following command to compile, build, and deploy the Ensemble8 sample application:</p>
+<pre dir="ltr" xml:space="preserve">
+ant
+</pre></li>
+<li>
+<p>To run the Ensemble8 sample application, run one of the applications contained in <code dir="ltr">demo/javafx_samples/src/Ensemble8/bundles/Ensemble8</code>.</p>
+</li>
+</ol>
+</div>
+
+<a id="CHDFDGBI" name="CHDFDGBI"/>
+<div id="JSDPG686">
+<h3><span>10.4.4</span> Overriding JVM Options for Self-Contained Applications</h3>
+<p>You can override JVM options in your self-contained applications by specifying them in a preferences node, then setting the name of this node in the <code dir="ltr">app.preferences.id</code> system property. The following example overrides the <code dir="ltr">-Xms</code> and <code dir="ltr">-Xmx</code> JVM options specified in <a href="javafx_ant_task_reference.html#CACIDHED">&lt;fx:jvmuserarg&gt;</a> elements. To verify that these options have been overridden, the application displays the initial and maximum sizes of the memory allocation pool (based on the values of the <code dir="ltr">-Xms</code> and <code dir="ltr">-Xmx</code> options). See <a href="packaging.html#CEGBCJEB">Specifying User JVM Arguments</a> for more information about specifying JVM options.</p>
+<ol>
+<li>
+<p>Create a directory to contain the example application. These steps use the directory <code dir="ltr">C:\memexample</code>.</p>
+</li>
+<li>
+<p>Save <a href="#CHDCDBGC">Example 10-5</a> as <code dir="ltr">C:\memexample\src\MemoryExamplePreferences.java</code>.</p>
+<p>The following statement retrieves the <code dir="ltr">java.util.prefs.Preferences</code> node that stores the values of the options <code dir="ltr">-Xms</code> and <code dir="ltr">-Xmx</code> in your computer:</p>
+<pre dir="ltr" xml:space="preserve">
+prefs = Preferences.userRoot().node(System.getProperty("app.preferences.id")).node("JVMUserOptions");
+</pre>
+<p>The name of this node is <code dir="ltr">app.preferences.id/JVMUserOptions</code>. The value of the <code dir="ltr">app.preferences.id</code> property is the value of the <code dir="ltr">id</code> attribute of the <a href="javafx_ant_task_reference.html#CIAGCAFH">&lt;fx:application&gt;</a> element. In this example, the value of <code dir="ltr">app.preferences.id</code> is <code dir="ltr">MemoryTestAppID</code>. When you run a self-contained application, the launcher program sets the system property automatically. However, if you run the class directly, you must specify the value of <code dir="ltr">app.preferences.id</code> as a system property. For example, if you run this class from the command line, you would specify the value of <code dir="ltr">app.preferences.id</code> as follows:</p>
+<pre dir="ltr" xml:space="preserve">
+java -cp classes -Dapp.preferences.id=MemoryTestAppID
+</pre>
+<p>Note that in this example, the Ant build script runs the <code dir="ltr">MemoryTestPreferences</code> class for you and sets the value of the <code dir="ltr">app.preferences.id</code> property.</p>
+<p>For example, if you are using Microsoft Windows, then this class creates a preferences node named <code dir="ltr">Computer\HKEY_CURRENT_USER\Software\JavaSoft\Prefs\MemoryTestAppID\JVMUserOptions</code> in the Windows registry.</p>
+<div id="JSDPG687"><a id="CHDCDBGC" name="CHDCDBGC"/>
+<p>Example 10-5 MemoryExamplePreferences.java</p>
+<pre dir="ltr" xml:space="preserve">
+import java.util.prefs.Preferences;
+ 
+public class MemoryTestPreferences {
+  private Preferences prefs;
+ 
+  public void setPreferences() {
+ 
+    // This will define a node in which the preferences can be stored
+    prefs = Preferences.userRoot().node(System.getProperty("app.preferences.id")).node("JVMUserOptions");
+ 
+    // now set the values
+    prefs.put("-Xmx", "2048m");
+    prefs.put("-Xms", "2048m");
+ 
+  }
+ 
+  public static void main(String[] args) {
+    MemoryTestPreferences myPrefs = new MemoryTestPreferences();
+    myPrefs.setPreferences();
+  }
+}
+</pre></div>
+</li>
+<li>
+<p>Save <a href="#CHDBAEIE">Example 10-6</a> as <code dir="ltr">C:\memexample\src\MemoryExample.java</code>:</p>
+<div id="JSDPG688"><a id="CHDBAEIE" name="CHDBAEIE"/>
+<p>Example 10-6 MemoryExample.java</p>
+<pre dir="ltr" xml:space="preserve">
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.stage.Stage;
+ 
+import java.lang.management.ManagementFactory;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
+ 
+public class MemoryTest extends Application {
+ 
+    @Override
+    public void start(Stage primaryStage) {
+        String startMemory = Long.toString(Runtime.getRuntime().totalMemory());
+        String maxMemory = Long.toString(Runtime.getRuntime().maxMemory());
+ 
+        System.out.println("Start memory: " + startMemory);
+ 
+        System.out.println("Max memory: " + maxMemory);
+ 
+        final Label startMemoryLabel = new Label("Start memory: ");
+        TextField startMemoryTextField = new TextField(startMemory);
+        startMemoryTextField.setPromptText(startMemory);
+ 
+        Label maxMemoryLabel = new Label("Max memory: ");
+        final TextField maxMemoryTextField = new TextField(maxMemory);
+        maxMemoryTextField.setPromptText(maxMemory);
+ 
+        Label jvmArgumentsLabel = new Label("JVM Arguments");
+        ListView&lt;String&gt; jvmArguments = new ListView&lt;&gt;(FXCollections.observableArrayList(ManagementFactory.getRuntimeMXBean().getInputArguments()));
+        jvmArguments.setPrefSize(450, 150);
+ 
+        Button btn = new Button();
+        btn.setText("Update Preferences");
+        btn.setOnAction(event -&gt; {
+            Preferences prefs = Preferences.userRoot().node(System.getProperty("app.preferences.id")).node("JVMUserOptions");
+            String start = startMemoryTextField.getText();
+            if (start == null || start.isEmpty()) {
+                prefs.remove("-Xms");
+            } else {
+                prefs.put("-Xms", start);
+            }
+ 
+            String max = maxMemoryTextField.getText();
+            if (max == null || max.isEmpty()) {
+                prefs.remove("-Xmx");
+            } else {
+                prefs.put("-Xmx", max);
+            }
+ 
+            try {
+                prefs.flush();
+            } catch (BackingStoreException e) {
+                e.printStackTrace();
+            }
+        });
+ 
+ 
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+        grid.getColumnConstraints().setAll(
+                new ColumnConstraints(Region.USE_PREF_SIZE, Region.USE_COMPUTED_SIZE, Region.USE_PREF_SIZE, Priority.NEVER, HPos.RIGHT, false),
+                new ColumnConstraints(Region.USE_PREF_SIZE, Region.USE_COMPUTED_SIZE, Integer.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true)
+        );
+ 
+        grid.addRow(0, startMemoryLabel, startMemoryTextField);
+        grid.addRow(1, maxMemoryLabel, maxMemoryTextField);
+        grid.addRow(2, jvmArgumentsLabel, jvmArguments);
+        grid.add(btn, 1, 3);
+        grid.setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+ 
+ 
+        Scene scene = new Scene(grid);
+ 
+        primaryStage.setTitle("Memory test");
+        primaryStage.sizeToScene();
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+ 
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
+</pre></div>
+</li>
+<li>
+<p>Save <a href="#CHDCBHHI">Example 10-7</a> as <code dir="ltr">C:\memexample\build.xml</code>.</p>
+<p>This Ant script compiles and runs the MemoryTestPreferences class, and sets the value of the <code dir="ltr">app.preferences.id</code> property:</p>
+<pre dir="ltr" xml:space="preserve">
+        &lt;java fork="true" jvm="${env.JAVA_HOME}\bin\java"
+              classname="MemoryTestPreferences" classpath="${build.classes.dir}"&gt;
+            &lt;sysproperty key="app.preferences.id" value="MemoryTestAppID"/&gt;
+        &lt;/java&gt;
+</pre>
+<div id="JSDPG689"><a id="CHDCBHHI" name="CHDCBHHI"/>
+<p>Example 10-7 Ant Script for Memory Test Example</p>
+<pre dir="ltr" xml:space="preserve">
+&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+ 
+&lt;project name="JavaFX Hello World Example" default="default" basedir="."
+         xmlns:fx="javafx:com.sun.javafx.tools.ant"&gt;
+ 
+    &lt;property environment="env"/&gt;
+    &lt;property name="env.JAVA_HOME" value="C:\\Java\\jdk1.8.0"/&gt;
+    &lt;property name="build.src.dir" value="src"/&gt;
+    &lt;property name="build.classes.dir" value="classes"/&gt;
+    &lt;property name="build.dist.dir" value="dist"/&gt;
+ 
+    &lt;target name="default" depends="clean,compile"&gt;
+ 
+        &lt;taskdef resource="com/sun/javafx/tools/ant/antlib.xml"
+                 uri="javafx:com.sun.javafx.tools.ant"
+                 classpath="${env.JAVA_HOME}/lib/ant-javafx.jar"/&gt;
+ 
+      &lt;fx:application id="MemoryTestAppID"
+                        name="JavaFXMemoryTestApp"
+                        mainClass="MemoryTest"/&gt;
+ 
+        &lt;fx:resources id="appRes"&gt;
+            &lt;fx:fileset dir="${build.dist.dir}" includes="MemoryTest.jar"/&gt;
+        &lt;/fx:resources&gt;
+ 
+        &lt;fx:jar destfile="${build.dist.dir}/MemoryTest.jar"&gt;
+        &lt;fx:application refid="MemoryTestAppID"/&gt;
+            &lt;fx:resources refid="appRes"/&gt;
+            &lt;fileset dir="${build.classes.dir}"/&gt;
+        &lt;/fx:jar&gt;
+ 
+        &lt;fx:deploy width="300" height="250"
+                   outdir="." embedJNLP="true"
+                   outfile="memorytest"
+                   nativeBundles="image"&gt;
+ 
+            &lt;fx:platform&gt;
+                &lt;fx:jvmuserarg name="-Xms" value="31m"/&gt;
+                &lt;fx:jvmuserarg name="-Xmx" value="64m"/&gt;
+            &lt;/fx:platform&gt;
+ 
+        &lt;fx:application refId="MemoryTestAppID"/&gt;
+ 
+            &lt;fx:resources refid="appRes"/&gt;
+ 
+            &lt;fx:info title="JavaFX Hello World Application"
+                     vendor="Oracle Corporation"/&gt;
+ 
+        &lt;/fx:deploy&gt;
+ 
+    &lt;/target&gt;
+ 
+    &lt;target name="clean"&gt;
+        &lt;mkdir dir="${build.classes.dir}"/&gt;
+        &lt;mkdir dir="${build.dist.dir}"/&gt;
+ 
+        &lt;delete&gt;
+            &lt;fileset dir="${build.classes.dir}" includes="**/*"/&gt;
+            &lt;fileset dir="${build.dist.dir}" includes="**/*"/&gt;
+        &lt;/delete&gt;
+ 
+    &lt;/target&gt;
+ 
+    &lt;target name="compile" depends="clean"&gt;
+ 
+        &lt;javac includeantruntime="false"
+               srcdir="${build.src.dir}"
+               destdir="${build.classes.dir}"
+               fork="yes"
+               executable="${env.JAVA_HOME}/bin/javac"
+               source="1.8"
+               debug="on"&gt;
+        &lt;/javac&gt;
+ 
+        &lt;!-- Set preferences --&gt;
+ 
+        &lt;java fork="true" jvm="${env.JAVA_HOME}\bin\java"
+              classname="MemoryTestPreferences" classpath="${build.classes.dir}"&gt;
+            &lt;sysproperty key="app.preferences.id" value="MemoryTestAppID"/&gt;
+        &lt;/java&gt;
+    &lt;/target&gt;
+ 
+    &lt;target name="jar" depends="compile"&gt;
+        &lt;jar destfile="dist/MemoryTest.jar"
+             basedir="classes"/&gt;
+    &lt;/target&gt;
+ 
+&lt;/project&gt;
+</pre></div>
+</li>
+<li>
+<p>In the file <code dir="ltr">build.xml</code>, specify the location of the JDK installed in your computer by changing the value of the <code dir="ltr">JAVA_HOME</code> property. Change the highlighted text to the full path of your JDK:</p>
+<pre dir="ltr" xml:space="preserve">
+&lt;property name="JAVA_HOME" value="<b>C:\\Java\\jdk1.8.0</b>"/&gt;
+</pre></li>
+<li>
+<p>At a command-line prompt, change directory to <code dir="ltr">C:\memexample</code>. Run the following command to compile, build, and deploy this example:</p>
+<pre dir="ltr" xml:space="preserve">
+ant
+</pre></li>
+<li>
+<p>To run the Memory Test application, run one of the applications contained in <code dir="ltr">C:\memexample\bundles\bundles/JavaFXMemoryTestApp</code>.</p>
+<p>In addition to the initial and maximum sizes of the memory allocation pool, the example displays the JVM arguments that it uses:</p>
+<pre dir="ltr" xml:space="preserve">
+-Djava.library.path=C:\memexample\bundles\JavaFXMemoryTestApp\app\
+-Dapp.preferences.id=MemoryTestAppID
+-Xms2048m
+-Xmx2048m
+</pre>
+<p>Note that the Ant build script uses <a href="javafx_ant_task_reference.html#CACIDHED">&lt;fx:jvmuserarg&gt;</a> elements to specify the initial and maximum sizes of the memory allocation pool as 31m and 64m, respectively. However, the Ant script in this example runs another program that stores the preferred values of 2048m and 2048m in the <code dir="ltr">Preferences</code> node before the application is run, so those values are used instead.</p>
+</li>
+</ol>
+<p>The <code dir="ltr">UserJvmOptionsService</code> API offers an alternative method for setting JVM options for self-contained applications. This API can be called from the application to get the current settings and to update the settings for the next time that the application is started. See <a href="jvm_options_api.html#BGBDIEED">Chapter 15, "Customizing JVM Options in Self-Contained Applications"</a> for information.</p>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="packager.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="javafx_ant_task_reference.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

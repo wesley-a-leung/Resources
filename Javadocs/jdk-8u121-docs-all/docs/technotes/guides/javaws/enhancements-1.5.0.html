@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Enhancements to Java Web Start in J2SE 5.0</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Enhancements to<br />
+Java Web Start in J2SE 5.0</h1>
+<ul>
+<li>Elimination of Application Manager: The J2SE 5.0 release no
+longer contains the Application Manager. Its major functionality is
+now contained in the Java Control Panel (see item 3 below) and the
+JNLP Cache Viewer (see item 4 below). The remaining functionality
+viewing web pages containing JNLP links is better served by a web
+browser.</li>
+<li>Elimination of Developer Bundle: Java Web Start is now fully
+integrated into the JRE and the JDK. The items which were
+previously contained in a separate developer bundle are now
+contained in the JDK. The documentation which was previously
+contained in the developers bundle is now available online. The JDK
+now contains a samples directory with sample source code to four
+Java Web Start applications, a sample JRE installer, and the JNLP
+download servlet. The JDK now also contains
+<code>jardiff.jar</code>, <code>jnlp.jar</code>, and
+<code>jnlp-servlet.jar</code>.</li>
+<li>JNLP Cache Viewer: The JNLP Cache Viewer replaces the
+functionality of the Application Manager's &quot;downloaded
+Applications&quot; view. Now all applications, applets, libraries
+and installers are shown. Available applications can be launched
+online or offline, removed, or restored from the web. All JNLP
+files are now kept in the cache (even those without
+<code>href</code> parameters).</li>
+<li>System Cache: Java Web Start now contains both system and user
+caches. The system administrator can now pre-load applications and
+shared libraries into the system cache so that multiple users can
+share the same resources.</li>
+<li>Import Facility: Java Web Start now contains an import
+facility. This can be used for CD installs, where code is initially
+loaded from one location and then updated from another. It can also
+be used to pre-install applications and libraries in either the
+user or system cache without running the applications.</li>
+<li>Desktop Integration: (1) Desktop integration of applications
+has been extended to GNOME and enhanced to allow an application's
+JNLP file to specify what integration to do. The JNLP file can now
+suggest desktop and/or menu and specify submenu names. (2) On
+Windows and on Solaris, Linux, or Mac OS X running GNOME 2.0 or above,
+Java Web Start
+applications can now register themselves to be the primary handler
+for specific MIME types and extensions on the desktop or file
+system (but not as links in web pages). (3) Now other related
+content HTML links, native content, and related JNLP applications
+can be included in the desktop integration of an application.</li>
+<li>API Enhancements: The JNLP API has been extended to contain an
+Extended Service and a Single Instance Service. The Extended
+Service contains file IO APIs not available in the original spec.
+The Single Instance Service provides a mechanism whereby
+applications can insure that multiple invocations of the same
+application will cause new arguments to be passed to the original
+instance. This avoids the overhead of relaunching Java. Note that
+the Single Instance behavior will only be enabled after the
+application calls the Single Instance API in the JNLP
+application.</li>
+<li>VM arguments: A JNLP file can now request arbitrary arguments
+to the virtual machine. Previous JNLP applications could only use
+the <code>initial-heap-size</code> and <code>max-heap-size</code>
+arguments to the J2SE element; now a <code>java-vm-args</code>
+argument has been added. Java Web Start will honor the requests for
+any normal java and -X arguments that it considers
+&quot;safe&quot;. A list of all such arguments will be included
+with each release so that the JNLP Spec does not need to
+change.</li>
+<li>A JNLP applications running in a sandbox can now print with
+full support using the Java Printing APIs: Whenever the JNLP
+application tries to print, Java Web Start will pop up a security
+dialog asking the user for permission for the application to print.
+This provides JNLP applications with complete printing support;
+previously they could only use JNLP printing APIs. This is similar
+to the applet printing behaviour in Java Plug-in.<br /></li>
+</ul>
+<p>&nbsp;</p>
+<!-- Body text ends here -->
+<!-- ============================================================== -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

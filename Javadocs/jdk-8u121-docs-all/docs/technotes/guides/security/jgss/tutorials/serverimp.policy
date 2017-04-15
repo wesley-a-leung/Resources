@@ -1,0 +1,24 @@
+grant CodeBase "file:./Login.jar" {
+        permission java.security.AllPermission;
+};
+
+grant CodeBase "file:./SampleServerImp.jar" 
+	Principal javax.security.auth.kerberos.KerberosPrincipal 
+		"service_principal@your_realm" {
+
+	permission java.net.SocketPermission "*", "accept";
+
+	permission javax.security.auth.kerberos.ServicePermission
+		"service_principal@your_realm", "accept";
+
+	permission javax.security.auth.AuthPermission "doAsPrivileged";
+};
+
+grant CodeBase "file:./ReadFileAction.jar" 
+	Principal javax.security.auth.kerberos.KerberosPrincipal 
+		"your_user_name@your_realm" {
+
+	permission java.io.FilePermission 
+		"data/your_user_name_info.txt", "read";
+};
+

@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<meta name="generator" content=
+"HTML Tidy for Windows (vers 12 April 2005), see www.w3.org" />
+<title>How Classes are Found</title>
+<meta name="collection" content="reference" />
+<link rel="stylesheet" type="text/css" href="../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>How Classes are Found</h1>
+<ul>
+<li><a href="#javalauncher">How the Java Launcher Finds Classes</a>
+<ul>
+<li><a href="#bootclass">How the Java Launcher Finds Bootstrap
+Classes</a></li>
+<li><a href="#extclass">How the Java Launcher Finds Extension
+Classes</a></li>
+<li><a href="#userclass">How the Java Launcher Finds User
+Classes</a></li>
+<li><a href="#jarclass">How the Java Launcher Finds JAR-class-path
+Classes</a></li>
+</ul>
+</li>
+<li><a href="#srcfiles">How Javac and Javadoc Find Classes</a></li>
+<li><a href="#loader">Class Loading and Security Policies</a></li>
+</ul>
+<p><a name="javalauncher" id="javalauncher"></a></p>
+<h2>How the Java Launcher Finds Classes</h2>
+<p>The Java launcher, <b>java</b>, initiates the Java virtual
+machine. The virtual machine searches for and loads classes in this
+order:</p>
+<ul>
+<li><b>Bootstrap classes</b> - Classes that comprise the Java
+platform, including the classes in <code>rt.jar</code> and several
+other important jar files.</li>
+<li><b>Extension classes</b> - Classes that use the Java Extension
+mechanism. These are bundled as <code>.jar</code> files located in
+the extensions directory.</li>
+<li><b>User classes</b> - Classes defined by developers and third
+parties that do not take advantage of the extension mechanism. You
+identify the location of these classes using the
+<tt>-classpath</tt> option on the command line (the preferred
+method) or by using the CLASSPATH environment variable. (See
+<b>Setting the Classpath</b> for <a href=
+"windows/classpath.html">Windows</a> or <a href=
+"unix/classpath.html">Unix</a>.)</li>
+</ul>
+<p>In effect, these three search paths are joined to form a simple
+class path. This is similar to the "flat" class path previously
+used, but the current model has some important differences:</p>
+<ul>
+<li>It is relatively difficult to accidentally "hide" or omit the
+bootstrap classes.</li>
+<li>In general, you only have to specify the location of user
+classes. Bootstrap classes and extension classes are found
+"automatically".</li>
+<li>The tools classes are now in a separate archive
+(<tt>tools.jar</tt>) and can only be used if included in the user
+class path (to be explained shortly).</li>
+</ul>
+<p><a name="bootclass" id="bootclass"></a></p>
+<h3>How the Java Launcher Finds Bootstrap Classes</h3>
+<p>Bootstrap classes are the classes that implement the Java 2
+Platform. Bootstrap classes are in the <code>rt.jar</code> and
+several other jar files in the <code>jre/lib</code> directory.
+These archives are specified by the value of the bootstrap class
+path which is stored in the <code>sun.boot.class.path</code> system
+property. This system property is for reference only, and should
+not be directly modified.</p>
+<p>It is very unlikely that you will need to redefine the bootstrap
+class path. The nonstandard option, <b>-Xbootclasspath</b>, allows
+you to do so in those rare cicrcumstances in which it is necessary
+to use a different set of core classes.</p>
+<p>Note that the classes which implement the Java 2 SDK tools are
+in a separate archive from the bootstrap classes. The tools archive
+is the SDK's<code>/lib/tools.jar</code> file. The development tools
+add this archive to the user class path when invoking the launcher.
+However, this augmented user class path is only used to execute the
+tool. The tools that process source code, <b>javac</b> and
+<b>javadoc</b>, use the original class path, not the augmented
+version. (For more information, see <a href="#srcfiles">How Javac
+and Javadoc Find Classes</a>, below.)</p>
+<p><a name="extclass" id="extclass"></a></p>
+<h3>How the Java Launcher Finds Extension Classes</h3>
+<p>Extension classes are classes which extend the Java platform.
+Every <code>.jar</code> file in the extension directory,
+<tt>jre/lib/ext</tt>, is assumed to be an extension and is loaded
+using the <a href="../guides/extensions/index.html">Java Extension
+Framework</a>. Loose class files in the extension directory will
+not be found. They must be contained in a <tt>.jar</tt> file (or
+<tt>.zip</tt> file). There is no option provided for changing the
+location of the extension directory.<br /></p>
+<p>If the <tt>jre/lib/ext</tt> directory contains multiple
+<code>.jar</code> files, and those files contain classes with the
+same name, such as:</p>
+<p><code>smart-extension1_0.jar contains class
+smart.extension.Smart<br />
+smart-extension1_1.jar contains class
+smart.extension.Smart<br /></code></p>
+<p>the class that actually gets loaded is undefined.</p>
+<p><a name="userclass" id="userclass"></a></p>
+<h3>How the Java Launcher Finds User Classes</h3>
+<p>User classes are classes which build on the Java platform. To
+find user classes, the launcher refers to the <i>user class
+path</i> -- a list of directories, JAR archives, and ZIP archives
+which contain class files.</p>
+<p>A class file has a subpath name that reflects the class's
+fully-qualified name. For example, if the class
+<code>com.mypackage.MyClass</code> is stored under
+<code>/myclasses</code>, then <code>/myclasses</code> must be in
+the user class path and the full path to the class file must be
+/<code>myclasses/com/mypackage/MyClass.class</code>. If the class
+is stored in an archive named <code>myclasses.jar</code>, then
+<code>myclasses.jar</code> must be in the user class path, and the
+class file must be stored in the archive as
+<code>com/mypackage/MyClass.class</code>.</p>
+<p>The user class path is specified as a string, with a colon
+(<b><code>:</code></b>) separating the class path entries on
+Solaris, and a semi-colon (<b><code>;</code></b>) separating
+entries on Microsoft Windows systems. The <b>java</b> launcher puts
+the user class path string in the <code>java.class.path</code>
+system property. The possible sources of this value are:</p>
+<ul>
+<li>The default value, "<b><code>.</code></b>", meaning that user
+class files are all the class files in the current directory (or
+under it, if in a package).</li>
+<li>The value of the <b>CLASSPATH</b> environment variable, which
+overrides the default value.</li>
+<li>The value of the <b>-cp</b> or <b>-classpath</b> command line
+option, which overrides both the default value and the
+<b>CLASSPATH</b> value.</li>
+<li>The JAR archive specified by the <b>-jar</b> option, which
+overrides all other values. If this option is used, all user
+classes must come from the specified archive.</li>
+</ul>
+<p><a name="jarclass" id="jarclass"></a></p>
+<h3>How the Java Launcher Finds JAR-class-path Classes</h3>
+<p>A JAR file usually contains a "manifest" -- a file which lists
+the contents of the JAR. The manifest can define a JAR-class-path,
+which further extends the class path (but only while loading
+classes from that JAR). Classes accessed by a JAR-class-path are
+found in the following order:</p>
+<ul>
+<li>In general, classes referenced by a JAR-class-path entry are
+found as though they were part of the JAR file. The JAR files that
+appear in the JAR-class-path are searched after any earlier class
+path entries, and before any entries that appear later in the class
+path.</li>
+<li>However, if the JAR-class-path points to a JAR file that was
+already searched (for example, an extension, or a JAR file that was
+listed earlier in the class path) then that JAR file will not be
+searched again. (This optimization improves efficiency and prevents
+circular searches.) Such a JAR file is searched at the point that
+it appears, earlier in the class path.</li>
+<li>If a JAR file is installed as an extension, then any
+JAR-class-path it defines is ignored. All the classes required by
+an extension are presumed to be part of the SDK or to have
+themselves been installed as extensions.</li>
+</ul>
+<p><a name="srcfiles" id="srcfiles"></a></p>
+<h2>How Javac and JavaDoc Find Classes</h2>
+<p>The <b>javac</b> and <b>javadoc</b> tools use class files in two
+distinct ways:</p>
+<ul>
+<li>Like any Java application, <b>javac</b> and <b>javadoc</b> must
+load various class files in order to run.</li>
+<li>To process the source code they operate on, <b>javac</b> and
+<b>javadoc</b> must obtain information on object types used in the
+source code.</li>
+</ul>
+<p>The class files used to resolve source code references are
+mostly the same class files used to run <b>javac</b> and
+<b>javadoc</b>. But there are some important exceptions:</p>
+<ul>
+<li>Both <b>javac</b> and <b>javadoc</b> often resolve references
+to classes and interfaces that having nothing to do with the
+implementation of <b>javac</b> or <b>javadoc</b>. Information on
+referenced user classes and interfaces may be present in the form
+of class files, source code files, or both.</li>
+<li>The tools classes in <code>tools.jar</code> are only used to
+run <b>javac</b> and <b>javadoc</b>. The tools classes are not used
+to resolve source code references unless <code>tools.jar</code> is
+in the user class path.</li>
+<li>A programmer may want to resolve boot class or extension class
+references using an alternative Java platform implementation. Both
+<b>javac</b> and <b>javadoc</b> support this with their
+<b>-bootclasspath</b> and <b>-extdirs</b> options. Use of these
+options does not modify the set of class files used to run the
+<b>javac</b> or <b>javadoc</b> tools themselves.</li>
+</ul>
+<p>If a referenced class is defined in both a class file and source
+file, <b>javadoc</b> always uses the source file (javadoc never
+compiles source files). In the same situation <b>javac</b> uses
+class files, but automatically recompiles any class files it
+determines to be out of date. The rules for automatic recompilation
+are documented in the <b>javac</b> document for <a href=
+"windows/javac.html">Windows</a> or <a href=
+"unix/javac.html">Unix</a>.</p>
+<p>By default, <b>javac</b> and <b>javadoc</b> search the user
+class path for both class files and source code files. If the
+<b>-sourcepath</b> option is specified, <b>javac</b> and
+<b>javadoc</b> search for source files only on the specified source
+file path, while still searching the user class path for class
+files.</p>
+<p><a name="loader" id="loader"></a></p>
+<h2>Class Loading and Security Policies</h2>
+<p>To be used, a class or interface must be loaded by a class
+loader. Use of a particular class loader determines a security
+policy associated with the class loader.</p>
+<p>A program can load a class or interface by calling the
+<b>loadClass</b> method of a class loader object. But usually a
+program loads a class or interface simply by referring to it. This
+invokes an internal class loader, which can apply a security policy
+to extension and user classes. If the security policy has not been
+enabled, all classes are "trusted". Even if the security policy is
+enabled, it does not apply to bootstrap classes, which are always
+"trusted."</p>
+<p>When enabled, security policy is configured by system and user
+policy files. The Java 2 SDK includes a system policy file that
+grants "trusted" status to extension classes and places basic
+restrictions on user classes.</p>
+<p>To enable or configure the security policy, refer to <a href=
+"../guides/security/index.html">Security Features</a>.</p>
+<p><b>Note:</b> Some security programming techniques that worked
+with the Java 1.1 platform are incompatible with the class loading
+model of the Java 2 Platform.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>jcmd</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T7:56:54Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Solaris, Linux, and OS X, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38209-05" name="partnum"/>
+<meta content="JSSOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="s11-troubleshooting_tools.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jinfo.html">
+                Next</a><hr/>
+<div><a id="CIHDBJEI" name="CIHDBJEI"/>
+<div id="JSSOR743"><a id="CIHEEDIB" name="CIHEEDIB"/>
+<h1>jcmd</h1>
+<p>Sends diagnostic command requests to a running Java Virtual Machine (JVM).</p>
+<div><a id="sthref328" name="sthref328"/>
+<h2>Synopsis</h2>
+<p><b>jcmd</b> [<b>-l</b>|<b>-h</b>|<b>-help</b>]</p>
+<p><b>jcmd</b> <i>pid</i>|<i>main-class</i> <b>PerfCounter.print</b></p>
+<p><b>jcmd</b> <i>pid</i>|<i>main-class</i> <b>-f</b> <i>filename</i></p>
+<p><b>jcmd</b> <i>pid</i>|<i>main-class</i> <i>command</i>[ <i>arguments</i>]</p>
+</div>
+
+<div><a id="sthref329" name="sthref329"/>
+<h2>Description</h2>
+<p>The <code dir="ltr">jcmd</code> utility is used to send diagnostic command requests to the JVM. It must be used on the same machine on which the JVM is running, and have the same effective user and group identifiers that were used to launch the JVM.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td style="text-align:left">
+<p><b>Note:</b></p>
+To invoke diagnostic commands from a remote machine or with different identifiers, you can use the <code dir="ltr">com.sun.management.DiagnosticCommandMBean</code> interface. For more information about the <code dir="ltr">DiagnosticCommandMBean</code> interface, see the API documentation at <code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/jre/api/management/extension/com/sun/management/DiagnosticCommandMBean.html">http://docs.oracle.com/javase/8/docs/jre/api/management/extension/com/sun/management/DiagnosticCommandMBean.html</a></code></td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>If you run <code dir="ltr">jcmd</code> without arguments or with the <code dir="ltr">-l</code> option, it prints the list of running Java process identifiers with the main class and command-line arguments that were used to launch the process. Running <code dir="ltr">jcmd</code> with the <code dir="ltr">-h</code> or <code dir="ltr">-help</code> option prints the tool's help message.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td style="text-align:left">
+<p><b>Note:</b></p>
+The <code dir="ltr">jcmd</code> utility can be used to dynamically interact with Java Flight Recorder (JFR) in a JVM that is already running. You can use it to unlock commercial features, enable/start/stop flight recordings, and obtain various status messages from the system. For a list of examples, see the Java Flight Recorder Runtime Guide at <code dir="ltr"><a href="http://docs.oracle.com/javacomponents/jmc.htm">http://docs.oracle.com/javacomponents/jmc.htm</a></code></td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>If you specify the processes identifier (<i>pid</i>) or the main class (<i>main-class</i>) as the first argument, <code dir="ltr">jcmd</code> sends the diagnostic command request to the Java process with the specified identifier or to all Java processes with the specified name of the main class. You can also send the diagnostic command request to all available Java processes by specifying <code dir="ltr">0</code> as the process identifier. Use one of the following as the diagnostic command request:</p>
+<dl>
+<dt>Perfcounter.print</dt>
+<dd>
+<p>Prints the performance counters available for the specified Java process. The list of performance counters might vary with the Java process.</p>
+</dd>
+<dt>-f <i>filename</i></dt>
+<dd>
+<p>The name of the file from which to read diagnostic commands and send them to the specified Java process. Used only with the <code dir="ltr">-f</code> option. Each command in the file must be written on a single line. Lines starting with a number sign (<code dir="ltr">#</code>) are ignored. Processing of the file ends when all lines have been read or when a line containing the <code dir="ltr">stop</code> keyword is read.</p>
+</dd>
+<dt><i>command</i> [<i>arguments</i>]</dt>
+<dd>
+<p>The command to be sent to the specified Java process. The list of available diagnostic commands for a given process can be obtained by sending the <code dir="ltr">help</code> command to this process. Each diagnostic command has its own set of arguments. To see the description, syntax, and a list of available arguments for a command, use the name of the command as the argument for the <code dir="ltr">help</code> command.</p>
+<p><b>Note:</b> If any arguments contain spaces, you must surround them with single or double quotation marks (<code dir="ltr">'</code> or <code dir="ltr">"</code>). In addition, you must escape single or double quotation marks with a backslash (<code dir="ltr">\</code>) to prevent the operating system shell from processing quotation marks. Alternatively, you can surround these arguments with single quotation marks and then with double quotation marks (or with double quotation marks and then with single quotation marks).</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="CIHBHCDB" name="CIHBHCDB"/><a id="CIHJJEIE" name="CIHJJEIE"/>
+<h2>Options</h2>
+<p>Options are mutually exclusive.</p>
+<dl>
+<dt>-f <i>filename</i></dt>
+<dd>
+<p>Reads commands from the specified file. This option can be used only if you specify the process identifier or the main class as the first argument. Each command in the file must be written on a single line. Lines starting with a number sign (<code dir="ltr">#</code>) are ignored. Processing of the file ends when all lines have been read or when a line containing the <code dir="ltr">stop</code> keyword is read.</p>
+</dd>
+<dt>-h</dt>
+<dt>-help</dt>
+<dd>
+<p>Prints a help message.</p>
+</dd>
+<dt>-l</dt>
+<dd>
+<p>Prints the list of running Java processes identifiers with the main class and command-line arguments.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref330" name="sthref330"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="jps.html#CHDGHCGB"><code dir="ltr">jps</code>(1)</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="s11-troubleshooting_tools.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jinfo.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

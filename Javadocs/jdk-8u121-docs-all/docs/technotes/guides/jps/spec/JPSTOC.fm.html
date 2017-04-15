@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Print Service API User Guide: -</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<a href="JPSTOC.fm.html">CONTENTS</a> | <a href=
+"jpsTitle.fm.html">PREV</a> | <a href=
+"jpsOverview.fm.html">NEXT</a><br />
+<h2><a href="jpsOverview.fm.html">1. Introduction</a></h2>
+<dl>
+<dd><a href="jpsOverview.fm1.html"><b>History of Printing on the
+Java Platform</b></a></dd>
+<dd><a href="jpsOverview.fm2.html"><b>What the Java Print Service
+API Offers</b></a></dd>
+<dd><a href="jpsOverview.fm3.html"><b>Java Print Service
+Architecture</b></a>
+<dl>
+<dd><b><a href="jpsOverview.fm3.html#a998713">The javax.print
+Package</a></b>
+<dl>
+<dd><b><a href="jpsOverview.fm3.html#a998585">Discover Print
+Services</a></b></dd>
+<dd><b><a href="jpsOverview.fm3.html#a999672">Specify the Print Data
+Format</a></b></dd>
+<dd><b><a href="jpsOverview.fm3.html#a998604">Create Print
+Jobs</a></b></dd>
+</dl>
+</dd>
+<dd><b><a href="jpsOverview.fm3.html#a998393">The javax.print.event
+Package</a></b></dd>
+</dl>
+</dd>
+<dd><a href="jpsOverview.fm4.html"><b>How Applications Use the Java
+Print Service</b></a>
+<dl>
+<dd><b><a href="jpsOverview.fm4.html#a998638">A Basic
+Example</a></b></dd>
+</dl>
+</dd>
+</dl>
+<h2><a href="attributes.fm.html">2. Attributes</a></h2>
+<dl>
+<dd><a href="attributes.fm1.html"><b>Attribute Categories and
+Values</b></a></dd>
+<dd><a href="attributes.fm2.html"><b>Attribute Roles</b></a></dd>
+<dd><a href="attributes.fm3.html"><b>Attribute Sets</b></a></dd>
+<dd><a href="attributes.fm4.html"><b>How to Specify
+Attributes</b></a></dd>
+<dd><a href="attributes.fm5.html"><b>Standard Attributes</b></a>
+<dl>
+<dd><b><a href=
+"attributes.fm5.html#a1000918">OrientationRequested</a></b></dd>
+<dd><b><a href="attributes.fm5.html#a997296">Copies</a></b></dd>
+<dd><b><a href="attributes.fm5.html#a1000214">Media</a></b>
+<dl>
+<dd><b><a href="attributes.fm5.html#a997389">MediaSize</a></b></dd>
+<dd><b><a href=
+"attributes.fm5.html#a997393">MediaPrintableArea</a></b></dd>
+</dl>
+</dd>
+<dd><b><a href=
+"attributes.fm5.html#a997419">Destination</a></b></dd>
+<dd><b><a href=
+"attributes.fm5.html#a997448">SheetCollate</a></b></dd>
+<dd><b><a href="attributes.fm5.html#a997461">Sides</a></b></dd>
+<dd><b><a href="attributes.fm5.html#a997478">Fidelity</a></b></dd>
+</dl>
+</dd>
+<dd><a href="attributes.fm6.html"><b>Uses of JPS
+Attributes</b></a></dd>
+</dl>
+<h2><a href="docflavor.fm.html#a996958">3. Specifying Document
+Types</a></h2>
+<dl>
+<dd><a href="docflavor.fm1.html"><b>Client-Formatted Print
+Data</b></a>
+<dl>
+<dd><b><a href="docflavor.fm1.html#a997684">MIME Types for
+Preformatted Data</a></b>
+<dl>
+<dd><b><a href="docflavor.fm1.html#a998469">Text Data</a></b></dd>
+<dd><b><a href="docflavor.fm1.html#a999079">Page Description
+Language Documents</a></b></dd>
+<dd><b><a href="docflavor.fm1.html#a999556">Image Data</a></b></dd>
+<dd><b><a href="docflavor.fm1.html#a997874">Autosense Print
+Data</a></b></dd>
+</dl>
+</dd>
+<dd><b><a href="docflavor.fm1.html#a997680">Representation
+Classes</a></b></dd>
+</dl>
+</dd>
+<dd><a href="docflavor.fm2.html"><b>Importance of Character
+Encoding</b></a></dd>
+<dd><a href="docflavor.fm3.html"><b>Service-Formatted Print
+Data</b></a></dd>
+<dd><a href="docflavor.fm4.html"><b>How to Use
+DocFlavor</b></a></dd>
+</dl>
+<h2><a href="printing.fm.html#a996958">4. Printing and Streaming
+Documents</a></h2>
+<dl>
+<dd><a href="printing.fm1.html"><b>StreamPrintService Versus
+PrintService</b></a></dd>
+<dd><a href="printing.fm2.html"><b>Locating Services</b></a>
+<dl>
+<dd><b><a href="printing.fm2.html#a998927">Discovering Print
+Services</a></b></dd>
+<dd><b><a href="printing.fm2.html#a999433">Discovering Stream Print
+Services</a></b></dd>
+</dl>
+</dd>
+<dd><a href="printing.fm3.html"><b>Obtaining a Print
+Job</b></a></dd>
+<dd><a href="printing.fm4.html"><b>Creating a Doc</b></a></dd>
+<dd><a href="printing.fm5.html"><b>Registering for Events</b></a>
+<dl>
+<dd><b><a href="printing.fm5.html#a999518">Print Service
+Events</a></b></dd>
+<dd><b><a href="printing.fm5.html#a999530">Print Job Events</a></b>
+<dl>
+<dd><b><a href=
+"printing.fm5.html#a999542">PrintJobAttributeListener</a></b></dd>
+<dd><b><a href=
+"printing.fm5.html#a999544">PrintJobListener</a></b></dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dd><a href="printing.fm6.html"><b>Submitting the Print Job</b></a>
+<dl>
+<dd><b><a href="printing.fm6.html#a1000147">Submitting the Print Job
+to the Printer</a></b></dd>
+<dd><b><a href="printing.fm6.html#a1000151">Submitting the Print Job
+to the Stream</a></b></dd>
+</dl>
+</dd>
+<dd><a href="printing.fm7.html"><b>Print Service
+Providers</b></a></dd>
+</dl>
+<h2><a href="printing2d.fm.html#a996958">5. Printing and Streaming
+2D Graphics</a></h2>
+<dl>
+<dd><a href="printing2d.fm.html"><b>Using PrinterJob to Print or
+Stream Graphics</b></a>
+<dl>
+<dd><b><a href="printing2d.fm1.html#a999379">Printing 2D
+Graphics</a></b></dd>
+<dd><b><a href="printing2d.fm1.html#a999400">Streaming 2D
+Graphics</a></b></dd>
+</dl>
+</dd>
+<dd><a href="printing2d.fm2.html"><b>Using Service-Formatted
+Data</b></a>
+<dl>
+<dd><b><a href="printing2d.fm2.html#a999853">Printing the
+Service-Formatted Data</a></b></dd>
+<dd><b><a href="printing2d.fm2.html#a999490">Streaming
+Service-Formatted Print Data</a></b></dd>
+</dl>
+</dd>
+</dl>
+<h2><a href="PrintPS.java">A. Example: PrintPS.java</a></h2>
+<h2><a href="PrintGIFtoStream.java">B. Example: PrintGIFtoStream.java</a></h2>
+<h2><a href="Print2DPrinterJob.java">C. Example: Print2DPrinterJob.java</a></h2>
+<h2><a href="Print2DGraphics.java">D. Example: Print2DGraphics.java</a></h2>
+<h2><a href="Print2DtoStream.java">E. Example: Print2DtoStream.java</a></h2>
+<h2><a href="PrintGIF.java">F. Example: PrintGIF.java</a></h2>
+<h2><a href="jps_glossaryapp.fm.html#a1035348">G. Java Print Service Glossary</a></h2>
+<br />
+<hr />
+<a href="JPSTOC.fm.html">CONTENTS</a> | <a href=
+"jpsTitle.fm.html">PREV</a> | <a href=
+"jpsOverview.fm.html">NEXT</a>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

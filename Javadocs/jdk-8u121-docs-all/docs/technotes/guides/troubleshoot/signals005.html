@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Console Handlers</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="signals004.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="signals006.html">
+                Next</a><hr/><a id="CIHHGHBB" name="CIHHGHBB"/>
+<div id="JSTGD354">
+<h1>Console Handlers</h1>
+<p>The Java HotSpot VM registers console events as shown in <a href="#CIHBIJDJ">Table 7-1</a>.</p>
+<div id="JSTGD355"><a id="sthref54" name="sthref54"/><a id="CIHBIJDJ" name="CIHBIJDJ"/>
+<p>Table 7-1 Console Events</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="This table lists console events, corresponding signals and usage." title="Console Events" width="100%">
+<col width="31%"/>
+<col width="16%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t2" valign="bottom">Console Event</th>
+<th align="left" id="r1c2-t2" valign="bottom">Signal</th>
+<th align="left" id="r1c3-t2" valign="bottom">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r2c1-t2">
+<p><code dir="ltr">CTRL_C_EVENT</code></p>
+</td>
+<td align="left" headers="r2c1-t2 r1c2-t2">
+<p><code dir="ltr">SIGINT</code></p>
+</td>
+<td align="left" headers="r2c1-t2 r1c3-t2">
+<p>This event and signal is used to terminate a process. (Optional)</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r3c1-t2">
+<p><code dir="ltr">CTRL_CLOSE_EVENT</code><br/>
+<code dir="ltr">CTRL_LOGOFF_EVENT</code><br/>
+<code dir="ltr">CTRL_SHUTDOWN_EVENT</code></p>
+</td>
+<td align="left" headers="r3c1-t2 r1c2-t2">
+<p><code dir="ltr">SIGTERM</code></p>
+</td>
+<td align="left" headers="r3c1-t2 r1c3-t2">
+<p>This event and signal is used by the shutdown hook mechanism when the VM is terminated abnormally. (Optional)</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r4c1-t2">
+<p><code dir="ltr">CTRL_BREAK_EVENT</code></p>
+</td>
+<td align="left" headers="r4c1-t2 r1c2-t2">
+<p><code dir="ltr">SIGBREAK</code></p>
+</td>
+<td align="left" headers="r4c1-t2 r1c3-t2">
+<p>This event and signal is used to dump Java stack traces at the standard error stream. (Optional)</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p>If an application must register its own console handler, then the <code dir="ltr">-Xrs</code> option can be used. With this option, shutdown hooks are not run on <code dir="ltr">SIGTERM</code> (with above mapping of events) and thread dump support is not available on <code dir="ltr">SIGBREAK</code> (with above mapping of the Control+Break event).</p>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="signals004.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="signals006.html">
+                Next</a><hr/>
+
+
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

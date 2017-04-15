@@ -1,0 +1,77 @@
+#
+# Copyright (c) 2004, Oracle and/or its affiliates. All rights reserved.
+# ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+#
+
+# ==============================================================================
+#
+#  Example of a secure RMI connector (subject delegation).
+#
+#  This example uses:
+#
+#  - the password authenticator based on the JMXAuthenticator interface for
+#    user authentication,
+#  - the file access controller based on the MBeanServerForwarder interface
+#    for user access level authorization,
+#  - the subject delegation feature: the connection is authenticated using
+#    "username" as principal but the operations and hence the authorization
+#    checks are performed on behalf of the "delegate" principal. The policy
+#    file grants permission to the principal "username" to perform operations
+#    on behalf of the principal "delegate".
+#
+# ==============================================================================
+#
+# In order to compile and run the example, make a copy of this README file, and
+# then simply cut and paste all the commands as needed into a terminal window.
+#
+# This README makes the assumption that you are running under Java SE 6 on Unix,
+# you are familiar with the JMX technology, and with the bourne shell or korn
+# shell syntax.
+#
+# All the commands below are defined using Unix korn shell syntax.
+#
+# If you are not running Unix and korn shell you are expected to be able to
+# adapt these commands to your favorite OS and shell environment.
+#
+
+# Compile Java classes
+#
+# * Server.java: creates an MBeanServer and creates and starts a secure RMI
+#                connector server (JRMP).
+#
+# * Client.java: creates a secure RMI connector (JRMP), creates and registers
+#                a Simple standard MBean and performs operations on it
+#                using a delegation subject.
+#
+# * ClientListener.java: implements a generic notification listener.
+#
+# * SimpleStandard.java: implements the Simple standard MBean.
+#
+# * SimpleStandardMBean.java: the management interface exposed by the Simple
+#                             standard MBean.
+#
+
+javac mbeans/SimpleStandard.java \
+      mbeans/SimpleStandardMBean.java \
+      server/Server.java \
+      client/Client.java \
+      client/ClientListener.java
+
+# Start the RMI registry:
+#
+
+export CLASSPATH=server ; rmiregistry 9999 &
+
+# Start the Server:
+#
+
+java -classpath server:mbeans \
+     -Djava.security.policy=config/java.policy \
+     Server &
+
+# Start the Client:
+#
+
+java -classpath client:server:mbeans Client
+
+# ==============================================================================

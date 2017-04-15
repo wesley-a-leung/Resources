@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Properties on Oracle Solaris and Linux</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:29Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="java2d-props.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="java2d-props002.html">
+                Next</a><hr/><a id="CIHEHDHD" name="CIHEHDHD"/>
+<div id="JSTGD583">
+<h1>Properties on Oracle Solaris and Linux</h1>
+<p><a href="#CIHGGCJB">Table B-1</a> describes the default values of some useful properties on Oracle Solaris and Linux platforms.</p>
+<div id="JSTGD584"><a id="sthref87" name="sthref87"/><a id="CIHGGCJB" name="CIHGGCJB"/>
+<p>Table B-1 Default Java 2D Properties on Oracle Solaris and Linux</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="This table describes default values of Java 2D properties on Solaris OS and Linux." title="Default Java 2D Properties on Oracle Solaris and Linux" width="100%">
+<col width="*"/>
+<col width="8%"/>
+<col width="8%"/>
+<col width="13%"/>
+<col width="19%"/>
+<col width="19%"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t2" valign="bottom">Setup</th>
+<th align="left" id="r1c2-t2" valign="bottom">DGA</th>
+<th align="left" id="r1c3-t2" valign="bottom">SHM</th>
+<th align="left" id="r1c4-t2" valign="bottom">Pixmaps</th>
+<th align="left" id="r1c5-t2" valign="bottom">OnScreen</th>
+<th align="left" id="r1c6-t2" valign="bottom">OffScreen</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r2c1-t2">
+<p>Oracle Solaris SPARC with DGA support</p>
+</td>
+<td align="left" headers="r2c1-t2 r1c2-t2">
+<p>On</p>
+</td>
+<td align="left" headers="r2c1-t2 r1c3-t2">
+<p>On</p>
+</td>
+<td align="left" headers="r2c1-t2 r1c4-t2">
+<p>Off</p>
+</td>
+<td align="left" headers="r2c1-t2 r1c5-t2">
+<p>DGA/Software</p>
+</td>
+<td align="left" headers="r2c1-t2 r1c6-t2">
+<p>Software</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r3c1-t2">
+<p>Oracle Solaris SPARC with no DGA, Oracle Solaris x86, Linux, SunRay, VNC</p>
+</td>
+<td align="left" headers="r3c1-t2 r1c2-t2">
+<p>Off</p>
+</td>
+<td align="left" headers="r3c1-t2 r1c3-t2">
+<p>On</p>
+</td>
+<td align="left" headers="r3c1-t2 r1c4-t2">
+<p>On</p>
+</td>
+<td align="left" headers="r3c1-t2 r1c5-t2">
+<p>X11/MITSHM</p>
+</td>
+<td align="left" headers="r3c1-t2 r1c6-t2">
+<p>Shared/Server Pixmaps</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r4c1-t2">
+<p>J2SE 1.4 or greater: Remote X server, ssh</p>
+</td>
+<td align="left" headers="r4c1-t2 r1c2-t2">
+<p>Off</p>
+</td>
+<td align="left" headers="r4c1-t2 r1c3-t2">
+<p>Off</p>
+</td>
+<td align="left" headers="r4c1-t2 r1c4-t2">
+<p>On</p>
+</td>
+<td align="left" headers="r4c1-t2 r1c5-t2">
+<p>X11</p>
+</td>
+<td align="left" headers="r4c1-t2 r1c6-t2">
+<p>Server Pixmaps</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r5c1-t2">
+<p>J2SE 1.3.1 or less: Remote X server, ssh</p>
+</td>
+<td align="left" headers="r5c1-t2 r1c2-t2">
+<p>Off</p>
+</td>
+<td align="left" headers="r5c1-t2 r1c3-t2">
+<p>Off</p>
+</td>
+<td align="left" headers="r5c1-t2 r1c4-t2">
+<p>Off</p>
+</td>
+<td align="left" headers="r5c1-t2 r1c5-t2">
+<p>X11</p>
+</td>
+<td align="left" headers="r5c1-t2 r1c6-t2">
+<p>Software</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p>The following list explains how to change the defaults.</p>
+<ul>
+<li>
+<p>The X11 pipeline is the default pipeline for Oracle Solaris and Linux. Change this default as follows:</p>
+<ul>
+<li>
+<p><code dir="ltr">-Dsun.java2d.opengl=true</code>  Attempt to enable the OpenGL pipeline.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>The use of DGA is controlled as follows:</p>
+<ul>
+<li>
+<p><code dir="ltr">NO_J2D_DGA unset</code>  Use DGA, if available.</p>
+</li>
+<li>
+<p><code dir="ltr">NO_J2D_DGA set</code>  Disable the use of DGA.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>MIT Shared Memory Extension (SHM) is controlled as follows:</p>
+<ul>
+<li>
+<p>To use SHM, if available, specify either one of the following properties:</p>
+<p><code dir="ltr">NO_J2D_MITSHM unset</code></p>
+<p><code dir="ltr">J2D_USE_MITSHM=true</code></p>
+</li>
+<li>
+<p>To <b>not</b> use SHM, specify either one of the following properties:</p>
+<p><code dir="ltr">NO_J2D_MITSHM set</code></p>
+<p><code dir="ltr">J2D_USE_MITSHM=false</code></p>
+</li>
+</ul>
+</li>
+<li>
+<p>The general use of pixmaps is controlled as follows:</p>
+<ul>
+<li>
+<p><code dir="ltr">-Dsun.java2d.pmoffscreen unset</code>  Use pixmaps if DGA is not available.</p>
+</li>
+<li>
+<p><code dir="ltr">-Dsun.java2d.pmoffscreen=true</code>  Force the use of pixmaps.</p>
+</li>
+<li>
+<p><code dir="ltr">-Dsun.java2d.pmoffscreen=false</code>  Disable the use of pixmaps.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>The use of Shared and Server pixmaps is controlled as follows:</p>
+<ul>
+<li>
+<p><code dir="ltr">J2D_PIXMAPS unset</code>  Use both types.</p>
+</li>
+<li>
+<p><code dir="ltr">J2D_PIXMAPS=shared</code>  Use only shared memory pixmaps.</p>
+</li>
+<li>
+<p><code dir="ltr">J2D_PIXMAPS=sserver</code>  Use only server-side pixmaps.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>The choice of default visual is controlled as follows:</p>
+<ul>
+<li>
+<p><code dir="ltr">FORCEDEFVIS</code> unset (default)  Use the best visual available.</p>
+</li>
+<li>
+<p><code dir="ltr">FORCEDEFVIS</code> set to a hexadecimal value  Use the visual whose ID is the hexadecimal value.</p>
+</li>
+<li>
+<p><code dir="ltr">FORCEDEFVIS</code> set to any other value  Use the default visual.</p>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="java2d-props.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="java2d-props002.html">
+                Next</a><hr/>
+
+
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

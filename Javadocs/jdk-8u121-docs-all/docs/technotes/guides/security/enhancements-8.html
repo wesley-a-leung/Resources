@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Security Enhancements in JDK 8</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>JDK 8 Security Enhancements</h1>
+
+<!-- Add this back when we have more than one 8u release.
+<p>The following topics are covered:</p>
+
+<ul>
+  <li><a href="#javase8">Enhancements in Java SE 8</a></li>
+</ul>
+
+<h2><a name="javase8">Enhancements in Java SE 8</a></h2>
+-->
+<p>The JDK 8 release adds the following features and
+enhancements:</p>
+<ul>
+<li>
+<p><strong>TLS 1.1 and TLS 1.2 Enabled by Default</strong>: The
+<code>SunJSSE</code> provider enables the protocols TLS 1.1 and TLS
+1.2 on the client by default. See <a href=
+"SunProviders.html#SunJSSE_Protocols">Protocols</a>. Configure
+which <code>SunJSSE</code> protocols are enabled with the new
+system property <code>jdk.tls.client.protocols</code>. See <a href=
+"jsse/JSSERefGuide.html#InstallationAndCustomization">Customizing
+JSSE</a>.</p>
+</li>
+<li>
+<p><strong>Limited doPrivileged</strong>: A version of the method
+<a href=
+"../../../api/java/security/AccessController.html#doPrivileged-java.security.PrivilegedAction-java.security.AccessControlContext-java.security.Permission...-">
+<code>AccessController.doPrivileged</code></a> has been added that
+enables code to assert a subset of its privileges, without
+preventing the full traversal of the stack to check for other
+permissions. See the section <a href=
+"doprivileged.html#asserting_a_subset_of_privileges">Asserting a
+Subset of Privileges</a> in <a href="doprivileged.html">API for
+Privileged Blocks</a> and <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7083329">RFE
+7083329</a>.</p>
+</li>
+<li>
+<p><b>Stronger Algorithms for Password-Based Encryption</b>:
+Several AES-based Password-Based Encryption (PBE) algorithms, such
+as PBEWithSHA256AndAES_128 and PBEWithSHA512AndAES_256, have been
+added to the SunJCE provider. See <a href=
+"SunProviders.html">Oracle Providers Documentation</a>, <a href=
+"http://openjdk.java.net/jeps/121">JEP 121</a>, and <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6383200">RFE
+6383200</a>.</p>
+</li>
+<li>
+<p><b>SSL/TLS Server Name Indication (SNI) Extension Support in
+JSSE Server:</b> The SNI extension is a feature that extends the
+SSL/TLS protocols to indicate what server name the client is
+attempting to connect to during handshaking. Servers can use server
+name indication information to decide if specific
+<code>SSLSocket</code> or <code>SSLEngine</code> instances should
+accept a connection. SunJSSE has enabled SNI extension for client
+applications by default in JDK 7. JDK 8 supports the SNI extension
+for server applications.</p>
+<p>See the following sections in the JSSE Reference Guide for a
+general description with links to new class descriptions and
+examples:</p>
+<ul>
+<li><a href="jsse/JSSERefGuide.html#SNIExtension">Server Name
+Indication (SNI) Extension</a></li>
+<li><a href=
+"jsse/JSSERefGuide.html#SNIServerName">
+The SNIServerName Class</a></li>
+<li><a href=
+"jsse/JSSERefGuide.html#SNIMatcher">                              
+The SNIMatcher Class</a></li>
+<li><a href=
+"jsse/JSSERefGuide.html#SNIHostName">
+The SNIHostName Class</a></li>
+</ul>
+<p>See also <a href="http://openjdk.java.net/jeps/114">JEP
+114</a>.</p>
+</li>
+<li>
+  <p><strong>Support  AEAD algorithms</strong>: The SunJCE provider is enhanced to support AES/GCM/NoPadding cipher implementation as well as GCM algorithm parameters. The SunJSSE provider is enhanced to support AEAD mode based cipher suites. See <a href="SunProviders.html">Oracle Providers Documentation</a>, <a href="http://openjdk.java.net/jeps/115">JEP 115</a>.</p>
+</li>
+<li>
+<p><b>KeyStore Enhancements:</b> A new command option
+<code>-importpassword</code> is added to the keytool utility, to
+accept a password and store it securely as a secret key. A new
+class, <code><a href=
+"../../../api/java/security/DomainLoadStoreParameter.html">java.security.DomainLoadStoreParameter</a></code>
+is added to support <strong><code>DKS</code></strong> keystore
+type. Other new classes such as <code><a href=
+"../../../api/java/security/PKCS12Attribute.html">java.security.PKCS12Attribute</a></code>
+are added and other security APIs are modified to support KeyStore
+enhancements.</p>
+<p>See <a href="overview/jsoverview.html">Java Security Overview
+documentation</a>.</p>
+<p>See also <a href="http://openjdk.java.net/jeps/166">JEP 166</a>
+and <a href=
+"http://bugs.java.com/view_bug.do?bug_id=8005408">JDK-8005408</a>.</p>
+</li>
+<li>
+<p><b>SHA-224 Message Digests</b>: The cryptographic algorithms in
+JDK 8 have been enhanced with the SHA-224 variant of the SHA-2
+family of message-digest implementations. See <a href=
+"SunProviders.html">Oracle Providers Documentation</a>, <a href=
+"StandardNames.html">Standard Algorithm Name Documentation</a>,
+<a href="p11guide.html">PKCS#11 Reference Guide</a>, <a href=
+"http://openjdk.java.net/jeps/130">JEP 130</a>, and <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4963723">RFE
+4963723</a>.</p>
+</li>
+<li>
+<p><strong>Enhanced Support for NSA Suite B Cryptography</strong>:
+This includes the following:</p>
+<ul>
+<li>OID registration for NSA Suite B cryptography algorithms</li>
+<li>SUN provider: Support for 2048-bit DSA key pair generation and
+additional signature algorithms for 2048-bit DSA keys such as
+SHA224withDSA and SHA256withDSA.</li>
+<li>SunJCE provider: Lifting of the keysize restriction from 1024
+to 2048 for Diffie-Hellman (DH).</li>
+</ul>
+<p>See <a href="SunProviders.html">Oracle Providers
+Documentation</a>, <a href="StandardNames.html">Standard Algorithm
+Name Documentation</a>, and <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7044060">RFE
+7044060</a>.</p>
+</li>
+<li>
+<p><b>Better Support for High Entropy Random Number Generation:</b>
+The <code>SecureRandom</code> class provides the generation of
+cryptographically strong random numbers used for private or public
+keys, ciphers, signed messages, and so on. Some
+<code>SecureRandom</code> implementations are better than others.
+The <code>getInstanceStrong()</code> method was introduced in JDK
+8, which returns an instance of the strongest
+<code>SecureRandom</code> implementation available on each
+platform. It should be used in cases when you need to create a
+high-value and long-lived secret, such as an RSA private and public
+key pair.</p>
+<p>For more information, see the <a href=
+"crypto/CryptoSpec.html#SecureRandom">SecureRandom section of the
+JCA Reference Guide</a> and the <a href=
+"../../../api/java/security/SecureRandom.html">SecureRandom API
+Specification</a>.</p>
+<p>Other changes to <code>SecureRandom</code> include:</p>
+<ul>
+<li>For UNIX-like platforms, two new implementations were
+introduced which provide blocking and non-blocking behavior:
+NativePRNGBlocking and NativePRNGNonBlocking.</li>
+<li>SHA1PRNG and NativePRNG were fixed to properly respect the
+<code>SecureRandom</code> seed source properties in the
+<code>java.security</code> file. (The obscure workaround using
+<code>file:///dev/urandom</code> and
+<code>file:/dev/./urandom</code> is no longer required.)</li>
+</ul>
+<p>For details about changes to random number generation, see
+<a href="http://openjdk.java.net/jeps/123">JEP 123</a>.</p>
+</li>
+<li>
+<p><b>New <code>PKIXRevocationChecker</code> Class</b>: The
+<tt><a href=
+"../../../api/java/security/cert/PKIXRevocationChecker.html">PKIXRevocationChecker</a></tt>
+class checks the revocation status of certificates with the PKIX
+algorithm. It supports best-effort checking, end-entity certificate
+checking, and mechanism-specific options and parameters. See
+<a href=
+"certpath/CertPathProgGuide.html#PKIXRevocationChecker">Check
+Revocation Status of Certificates with PKIXRevocationChecker
+Class</a> in the <a href="certpath/CertPathProgGuide.html">Java PKI
+Programmer's Guide</a>, <a href=
+"http://openjdk.java.net/jeps/124">JEP 124</a>, and <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6854712">RFE
+6854712</a>.</p>
+</li>
+<li>
+<p><b>64-bit PKCS11 for Windows</b>: The PKCS 11 provider support
+for Windows has been expanded to include 64-bit. See the <a href=
+"p11guide.html#Requirements">2.1 Requirements</a> section of the
+<a href="p11guide.html">JDK 8 PKCS#11 Reference Guide</a>, <a href=
+"http://openjdk.java.net/jeps/131">JEP 131</a>, and <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6880559">RFE
+6880559</a>.</p>
+</li>
+<li>
+<p><strong>New rcache Types in Kerberos 5 Replay Caching</strong>:
+Two new rcache types are added to Kerberos 5. Type <tt>none</tt>
+means no rcache at all, and type <tt>dfl</tt> means the DFL style
+file-based rcache. Also, the acceptor requested subkey is now
+supported. They are configured using the
+<tt>sun.security.krb5.rcache</tt> and
+<tt>sun.security.krb5.acceptor.subkey</tt> system properties. 
+<!--See <a href="http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8001326">RFE 8001326</a>. --></p>
+</li>
+<li>
+<p><b>Protocol Transition and Constrained Delegation for Kerberos
+5</b>: Kerberos 5 protocol transition and constrained delegation
+are supported within the same realm in JDK 8. See <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6355584">RFE
+6355584</a>.</p>
+</li>
+<li>
+<p><strong>Weak Encryption Disabled by Default</strong>: The
+DES-related Kerberos 5 encryption types are not supported by
+default. These encryption types can be enabled by adding
+<code>allow_weak_crypto=true</code> in the <code>krb5.conf</code>
+file, but DES-related encryption types are considered highly
+insecure and should be avoided. See <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8012679">RFE
+8012679</a>.</p>
+</li>
+<li>
+<p><strong>Unbound SASL for the GSS-API/Kerberos 5
+mechanism</strong>: The <code><a href=
+"../../../jre/api/security/jaas/spec/com/sun/security/auth/module/Krb5LoginModule.html">
+Krb5LoginModule</a></code> principal value in a JAAS configuration
+file can be set to asterisk (*) on the acceptor side to denote an
+unbound acceptor. This means that the initiator can access the
+server using any service principal name if the acceptor has the
+long term secret keys to that service. The name can be retrieved by
+the acceptor using the <code><a href=
+"../../../api/org/ietf/jgss/GSSContext.html#getTargName--">GSSContext.getTargName()</a></code>
+method after the context is established. See <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8001104">RFE
+8001104</a>.</p>
+</li>
+<li>
+<p><strong>SASL service for multiple host names</strong>: When
+creating a SASL server, the server name can be set to null to
+denote an unbound server, which means a client can request for the
+service using any server name. After a context is established, the
+server can retrieve the name as a negotiated property with the key
+name <code>SASL.BOUND_SERVER_NAME</code>. See <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7110803">RFE
+7110803</a>.</p>
+</li>
+<li>
+  <p><strong>JNI bridge to native JGSS on Mac OS X</strong>: JNI
+    bridge to native JGSS is now supported on Mac OS X. Set the system
+    property <code>sun.security.jgss.native</code> to <code>true</code>
+    to enable it. See <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8010192">RFE
+      8010192</a>.</p>
+</li>
+<li>
+  <p><strong>Support stronger ephemeral DH keys in the SunJSSE provider</strong>:  Make ephemeral DH key match the length of the certificate key  during SSL/TLS handshaking in the SunJSSE provider.  A new system  property, <code>jdk.tls.ephemeralDHKeySize</code>, is defined to customize the  ephemeral DH key sizes.  The minimum acceptable DH key size is 1024 bits,  except for exportable cipher suites or legacy mode  (<code>jdk.tls.ephemeralDHKeySize=legacy</code>). See <a href="jsse/JSSERefGuide.html#customizing_dh_keys">Customizing Size of Ephemeral DH Keys</a> and <a href="http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6956398">RFE 6956398</a>. </p>
+</li>
+<li>  
+  <p><strong>Support cipher suites preference customization in JSSE</strong>: By default, the  SunJSSE provider honors the client's cipher suite preference.   However, the behavior can be changed to respect the server's cipher  suite preference by calling <code>SSLParameters.setUseCipherSuitesOrder(true)</code>  in the server. See <a href="jsse/JSSERefGuide.html#cipher_suite_preference">Cipher Suite Preference</a> and <a href="http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7188657">RFE 7188657</a>. </p>
+</li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

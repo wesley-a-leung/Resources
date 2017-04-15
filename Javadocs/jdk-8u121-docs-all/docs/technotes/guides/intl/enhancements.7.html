@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Internationalization Enhancements in Java SE 7</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Internationalization Enhancements in Java SE 7</h1>
+<p>The Internationalization enhancements for Java SE 7 include the
+following:</p>
+<ul>
+<li><a href="#scripts600">New Scripts and Characters from Unicode
+6.0.0</a></li>
+<li><a href="#currency">Extensible Support for ISO 4217 Currency
+Codes</a></li>
+<li><a href="#category">Category Locale Support</a></li>
+<li><a href="#bcp47">Locale Class Supports BCP47 and UTR35</a></li>
+<li><a href="#numericShaper">New NumericShaper Methods</a></li>
+<li><a href="#regex">Unicode 6.0 Support in Regular Expressions
+API</a></li>
+</ul>
+<h2><a name="scripts600" id="scripts600">New Scripts and Characters
+from Unicode 6.0.0</a></h2>
+<p>Early versions of the Java SE 7 release added support for
+Unicode 5.1.0. The final version of the Java SE 7 release supports
+Unicode 6.0.0. <a href="http://www.unicode.org/versions/Unicode6.0.0/">Unicode 6.0.0</a> is
+a major version of the Unicode Standard and adds support for over
+2000 additional characters, as well as support for properties and
+data files.</p>
+<p>The Java Tutorial has a new section that discusses <a href=
+"http://docs.oracle.com/javase/tutorial/i18n/text/unicode.html">Unicode</a>.</p>
+<h2><a name="currency" id="currency">Extensible Support for ISO
+4217 Currency Codes</a></h2>
+<p>Currencies are identified by their <a href="http://www.currency-iso.org/">ISO 4217</a> codes. These codes maintained by an external agency
+and are released independent of the Java SE platform. As of Java SE
+7, it is possible to accommodate new currencies without requiring a
+new release of the JDK.</p>
+<p>To supersede the default currency at runtime, create a
+properties file named
+<code>&lt;JAVA_HOME&gt;/lib/currency.properties</code>. This file
+contains the key/value pairs of the ISO 3166 country code, and the
+ISO 4217 currency data. The value part consists of three
+comma-separated ISO 4217 currency values: an alphabetic code, a
+numeric code, and a minor unit. Any lines beginning with the hash
+character, <code>#</code>, are treated as comment lines. For
+example:</p>
+<pre class="codeblock">
+# Sample currency property for Japan
+JP=JPZ,999,0
+</pre>
+<p>The new API for this feature includes the following methods, all
+in the <code>Currency</code> class:</p>
+<ul>
+<li><a href=
+"../../../api/java/util/Currency.html#getAvailableCurrencies--">getAvailableCurrencies</a>
+&ndash; Returns the set of available currencies.</li>
+<li><a href=
+"../../../api/java/util/Currency.html#getNumericCode--">getNumericCode</a>
+&ndash; Returns the ISO 4217 numeric code of this currency</li>
+<li><a href=
+"../../../api/java/util/Currency.html#getDisplayName--">getDisplayName</a>
+&ndash; Gets the name suitable for displaying this currency for the
+default locale.</li>
+<li><a href=
+"../../../api/java/util/Currency.html#getDisplayName-java.util.Locale-">
+getDisplayName(Locale)</a> &ndash; Gets the name suitable for
+displaying the specified locale.</li>
+</ul>
+<h2><a name="category" id="category">Category Locale
+Support</a></h2>
+<p>The default locale can be independently set for two types of
+uses: the <em>format</em> setting is used for formatting resources,
+and the <em>display</em> setting is used in menus and dialogs. The
+new <a href=
+"../../../api/java/util/Locale.html#getDefault-java.util.Locale.Category-">
+getDefault(Locale.Category)</a> method takes a
+<code>Locale.Category</code> parameter. Passing the
+<code>FORMAT</code> enum to the method returns the default locale
+for formatting resources. Similarly, passing the
+<code>DISPLAY</code> enum returns the default locale used by the
+UI. The <a href=
+"../../../api/java/util/Locale.html#setDefault-java.util.Locale.Category-java.util.Locale-">
+setDefault(Locale.Category, Locale)</a> method is used to set the
+locale for the specified category. The no-argument
+<code>getDefault</code> method returns the <code>DISPLAY</code>
+default value.</p>
+<p>On Microsoft Windows, these default values are initialized
+according to the "Standard and Formats" and "Display Language"
+settings in the Windows control panel.</p>
+<h2><a name="bcp47" id="bcp47">Locale Class Supports BCP47 and
+UTR35</a></h2>
+<p>The <code>Locale</code> class has been updated to implement
+identifiers interchangeable with BCP 47 (IETF BCP 47, "Tags for
+Identifying Languages"), with support for the LDML (UTS#35,
+"Unicode Locale Data Markup Language") BCP 47-compatible extensions
+for locale data exchange.</p>
+<p>The following nested classes have been added to the
+<code>Locale</code> class in this release:</p>
+<ul>
+<li><a href=
+"../../../api/java/util/Locale.Builder.html">Locale.Builder</a> can
+be used to create a <code>Locale</code> instance and to configure
+that instance using setter methods.</li>
+</ul>
+<p>The following methods have been added to the <code>Locale</code>
+class:</p>
+<ul>
+<li><a href=
+"../../../api/java/util/Locale.html#getExtensionKeys--">getExtensionKeys()</a></li>
+<li><a href=
+"../../../api/java/util/Locale.html#getExtension-char-">getExtension(char)</a></li>
+<li><a href=
+"../../../api/java/util/Locale.html#getUnicodeLocaleType-java.lang.String-">
+getUnicodeLocaleType(String</a></li>
+<li><a href=
+"../../../api/java/util/Locale.html#getUnicodeLocaleKeys--">getUnicodeLocaleKeys()</a></li>
+<li><a href=
+"../../../api/java/util/Locale.html#getUnicodeLocaleAttributes--">getUnicodeLocaleAttributes()</a></li>
+<li><a href=
+"../../../api/java/util/Locale.html#forLanguageTag-java.lang.String-">
+forLanguageTag(String)</a></li>
+<li><a href=
+"../../../api/java/util/Locale.html#toLanguageTag--">toLanguageTag()</a></li>
+<li><a href=
+"../../../api/java/util/Locale.html#getScript--">getScript()</a></li>
+<li><a href=
+"../../../api/java/util/Locale.html#getDisplayScript--">getDisplayScript()</a></li>
+<li><a href=
+"../../../api/java/util/Locale.html#getDisplayScript-java.util.Locale-">
+getDisplayScript(Locale)</a></li>
+</ul>
+<p>The following constants have been added to the
+<code>LOCALE</code> class:</p>
+<ul>
+<li><a href=
+"../../../api/java/util/Locale.html#UNICODE_LOCALE_EXTENSION">UNICODE_LOCALE_EXTENSION</a></li>
+<li><a href=
+"../../../api/java/util/Locale.html#PRIVATE_USE_EXTENSION">PRIVATE_USE_EXTENSION</a></li>
+</ul>
+<p>For more information, see the <a href=
+"http://docs.oracle.com/javase/tutorial/i18n/locale/create.html">Creating
+a Locale</a> and <a href=
+"http://docs.oracle.com/javase/tutorial/i18n/locale/extensions.html">
+BCP 47 Extensions</a> lessons in the <a href=
+"http://docs.oracle.com/javase/tutorial/">Java Tutorial</a>.</p>
+<h2><a name="numericShaper" id="numericShaper">New NumericShaper
+Methods</a></h2>
+<p>The <code>NumericShaper</code> class is used to convert Latin-1
+(European) digits to other Unicode decimal digits. For the Java SE
+7 release, the <a href=
+"../../../api/java/awt/font/NumericShaper.Range.html">NumericShaper.Range</a>
+enum has been added to represent a Unicode range of a script having
+its own decimal digits. The following methods, using the
+<code>NumericShaper.Range</code> enum have been added to the Java
+SE 7 release:</p>
+<ul>
+<li><a href=
+"../../../api/java/awt/font/NumericShaper.html#getShaper-java.awt.font.NumericShaper.Range-">
+getShaper(NumericShaper.Range)</a> - returns a shaper for the
+provided Unicode range.</li>
+<li><a href=
+"../../../api/java/awt/font/NumericShaper.html#getContextualShaper-java.util.Set-">
+getContextualShaper(Set&lt;NumericShaper.Range&gt;)</a> - returns a
+contextual shaper for the provided Unicode range(s). The shaper
+assumes European as the starting context.</li>
+<li><a href=
+"../../../api/java/awt/font/NumericShaper.html#getContextualShaper-java.util.Set-java.awt.font.NumericShaper.Range-">
+getContextualShaper(Set&lt;NumericShaper.Range&gt;
+NumericShaper.Range)</a> - returns a contextual shaper for the
+provided Unicode range(s). The shaper uses the
+<code>defaultContext</code> as the starting context.</li>
+<li><a href=
+"../../../api/java/awt/font/NumericShaper.html#shape-char:A-int-int-java.awt.font.NumericShaper.Range-">
+shape(char[], int, int, NumericShaper.Range)</a> - converts the
+digits in the text that occur between start and start + count,
+using the provided context.</li>
+</ul>
+<p>For more information, see the <a href=
+"http://docs.oracle.com/javase/tutorial/i18n/text/shapedDigits.html">
+Converting Latin Digits to Other Unicode Digits</a> lesson in the
+<a href="http://docs.oracle.com/javase/tutorial/">Java
+Tutorial</a>.</p>
+<h2><a name="regex" id="regex">Unicode 6.0 Support in Regular
+Expressions API</a></h2>
+<p>The Regular Expressions pattern matching functionality has been
+expanded to support Unicode 6.0. You can match Unicode code points
+using either the <code>\u</code> or the <code>\x</code> escape
+sequence.</p>
+<p>The <a href=
+"http://docs.oracle.com/javase/tutorial/essential/regex/unicode.html">
+Unicode Support</a> page in the <a href=
+"http://docs.oracle.com/javase/tutorial/index.html">Java
+Tutorial</a> has more information.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

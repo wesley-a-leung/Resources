@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Access Control Lists</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Access Control Abstractions</h1>
+<h2 align="center"><i>Last Modified: 30 April 2001</i></h2>
+<hr />
+<h2>java.security.acl</h2>
+<hr />
+<h2>Introduction</h2>
+<p>An Access Control List (ACL) is a data structure that guards
+access to resources. The <i>java.security.acl</i> package provides
+the interface to such a data structure and the
+<i>sun.security.acl</i> package provides a default implementation
+of the interfaces specified in the <i>java.security.acl</i>
+package.</p>
+<p>Note: This API is not used internally for JDK system security.
+It was introduced in JDK 1.1, and remains for backwards
+compatibility. It may undergo substantial revision and extension or
+even replacement in future releases. This document describes the
+current interfaces.</p>
+<p>An ACL can be thought of as a data structure with multiple ACL
+entries. Each ACL entry, of interface type AclEntry, contains a set
+of permissions associated with a particular principal. (A principal
+represents an entity such as an individual user or a group).
+Additionally, each ACL entry is specified as being either positive
+or negative. If positive, the permissions are to be granted to the
+associated principal. If negative, the permissions are to be
+denied.</p>
+<p>An access control list is independent of the authentication
+scheme used to verify the validity of the principal. It is also
+independent of the encryption scheme used to transmit the data
+across the network. The ACL is consulted after the authentication
+phase. After the principal is verified to be an authenticated user
+in the system, the principal might access resources. For each such
+resource, the principal might or might not be granted access
+depending on the permissions that are granted to the principal in
+the ACL that guards the resource. The ACL itself is independent of
+the resource that it guards. The ACL can be consulted to find the
+list of permissions a particular principal has or to find out
+whether or not a principal is granted a particular permission.</p>
+<h2>ACL structure</h2>
+<p>An ACL is an object that implements the
+<i>java.security.acl.Acl</i> interface. Each <i>Acl</i> is a list
+of <i>AclEntry</i> objects. Each <i>AclEntry</i> associates a
+<i>Principal</i> or a <i>Group</i> object to a list of
+<i>Permission</i> objects. (Note: Group is a subclass of
+Principal.) Each <i>AclEntry</i> can also be designated as a
+positive entry or a negative entry. A positive entry grants the
+list of permissions in the entry to the principal or group and a
+negative entry denies the list of permissions to the principal or
+group.</p>
+<h2>Calculation of granted permissions</h2>
+<p>When calculating the net permissions a principal is granted, the
+following rules are used.</p>
+<ol>
+<li>Each principal or group can have at most one positive ACL entry
+and one negative entry; that is, multiple positive or negative ACL
+entries are not allowed for any principal or group.</li>
+<li>If there is no entry for a particular principal or a group,
+then the principal or the group has the null permission set.</li>
+<li>The net group positive permission set for a principal is the
+union of all the positive permissions of each group that the
+principal belongs to.</li>
+<li>The net group negative permission set for a principal is the
+union of all the negative permissions of each group that the
+principal belongs to.</li>
+<li>If there is a positive entry that grants a principal or a group
+a particular permission and a negative entry that denies the
+principal or group the same permission, then that permission is
+removed from both the positive permissions set and the negative
+permissions set.</li>
+<li>Individual permissions (permissions granted or denied to a
+specific principal) always override the Group permissions.
+Specifically, individual negative permissions (specific denial of
+permissions) override the group's positive permissions. And
+individual positive permissions override the group's negative
+permissions.</li>
+<li>Assume that the positive permission set of all the groups that
+the principal belongs to is g1 and the negative permission set of
+all the groups that the principal belongs to is g2. Also assume
+that the individual positive permission set for the principal is p1
+and the individual negative permission set for the principal is p2.
+Then the resulting permissions that the principal is granted are
+(p1 + (g1 - p2)) - (p2 + (g2 - p1)).</li>
+</ol>
+<h2>Example permission calculations</h2>
+<p>Assume that a principal P belongs to groups G1 and G2. The table
+below shows 5 columns using some examples of permissions given to
+G1, G2 and P. The resulting permissions granted to P are shown in
+the last column.</p>
+<table summary="example permissions calculations" cellspacing="0"
+cellpadding="0">
+<thead>
+<tr>
+<th id="h1"></th>
+<th id="h2">Group G1 Permissions</th>
+<th id="h3">Group G2 Permissions</th>
+<th id="h4">Union (G1, G2) perms</th>
+<th id="h5">Individual Permissions</th>
+<th id="h6">Resulting Permissions</th>
+<td headers="h1"></td>
+</tr>
+</thead>
+<tr>
+<th id="h7">Positive</th>
+<td headers="h1" align="center">A</td>
+<td headers="h2" align="center">B</td>
+<td headers="h3" align="center">A+B</td>
+<td headers="h4" align="center">C</td>
+<td headers="h5" align="center">A+B+C</td>
+</tr>
+<tr>
+<th id="h8">Negative</th>
+<td headers="h1" align="center">null set</td>
+<td headers="h2" align="center">null set</td>
+<td headers="h3" align="center">null set</td>
+<td headers="h4" align="center">null set</td>
+<td headers="h5" align="center">A+B+C</td>
+</tr>
+<tr>
+<td headers="h1"><br /></td>
+</tr>
+<tr>
+<th id="h9">Positive</th>
+<td headers="h1" align="center">A</td>
+<td headers="h2" align="center">B</td>
+<td headers="h3" align="center">B</td>
+<td headers="h4" align="center">C</td>
+<td headers="h5" align="center">B+C</td>
+</tr>
+<tr>
+<th id="h10">Negative</th>
+<td headers="h1" align="center">-C</td>
+<td headers="h2" align="center">-A</td>
+<td headers="h3" align="center">-C</td>
+<td headers="h4" align="center">null set</td>
+<td headers="h5" align="center">B+C</td>
+</tr>
+<tr>
+<td headers="h1"><br /></td>
+</tr>
+<tr>
+<th id="h11">Positive</th>
+<td headers="h1" align="center">A</td>
+<td headers="h2" align="center">B</td>
+<td headers="h3" align="center">A+B</td>
+<td headers="h4" align="center">C</td>
+<td headers="h5" align="center">B+C</td>
+</tr>
+<tr>
+<th id="h12">Negative</th>
+<td headers="h1" align="center">null set</td>
+<td headers="h2" align="center">null set</td>
+<td headers="h3" align="center">null set</td>
+<td headers="h4" align="center">-A</td>
+<td headers="h5" align="center">B+C</td>
+</tr>
+<tr>
+<td headers="h1"><br /></td>
+</tr>
+<tr>
+<th id="h13">Positive</th>
+<td headers="h1" align="center">A</td>
+<td headers="h2" align="center">C</td>
+<td headers="h3" align="center">A</td>
+<td headers="h4" align="center">B</td>
+<td headers="h5" align="center">B</td>
+</tr>
+<tr>
+<th id="h14">Negative</th>
+<td headers="h1" align="center">-C</td>
+<td headers="h2" align="center">-B</td>
+<td headers="h3" align="center">-B</td>
+<td headers="h4" align="center">-A</td>
+<td headers="h5" align="center">B</td>
+</tr>
+</table>
+<p><br /></p>
+<h2>Example usage</h2>
+<pre>
+/* Note: This sample program is meant just as an example
+ * of the types of things that can be done with an
+ * implementation of the java.security.acl interfaces. 
+ * This example uses the implementation supplied by the 
+ * sun.security.acl package. Please note that sun.* classes 
+ * are unsupported and subject to change.
+*/
+
+import java.security.Principal;
+import java.security.acl.*;
+import sun.security.acl.*;
+import java.util.Enumeration;
+
+public class AclEx {
+
+  public static void main(String argv[])  
+    throws Exception
+  {
+
+    Principal p1 = new PrincipalImpl("user1");
+    Principal p2 = new PrincipalImpl("user2");
+    Principal owner = new PrincipalImpl("owner");
+ 
+    Permission read = new PermissionImpl("READ");
+    Permission write = new PermissionImpl("WRITE");
+ 
+    System.out.println("Creating a new group with two members: user1 and
+user2");
+    Group g = new GroupImpl("group1");
+    g.addMember(p1);
+    g.addMember(p2);
+ 
+    // 
+    // create a new acl with the name "exampleAcl" 
+    // 
+    System.out.println("Creating a new Acl named 'exampleAcl'");
+    Acl acl = new AclImpl(owner, "exampleAcl"); 
+ 
+    // 
+    // Allow group all permissions 
+    // 
+    System.out.println("Creating a new Acl Entry in exampleAcl for the
+group, ");
+    System.out.println("  with read &amp; write permissions");
+    AclEntry entry1 = new AclEntryImpl(g); 
+    entry1.addPermission(read); 
+    entry1.addPermission(write); 
+    acl.addEntry(owner, entry1); 
+ 
+    // 
+    // Take away WRITE permissions for  
+    // user1. All others in groups still have 
+    // WRITE privileges. 
+    // 
+    System.out.println("Creating a new Acl Entry in exampleAcl for user1");
+    System.out.println("  without write permission");
+    AclEntry entry2 = new AclEntryImpl(p1); 
+    entry2.addPermission(write); 
+    entry2.setNegativePermissions(); 
+    acl.addEntry(owner, entry2);         
+ 
+    // 
+    // This enumeration is an enumeration of  
+    // Permission interfaces. It should return 
+    // only "READ" permission. 
+    Enumeration e1 = acl.getPermissions(p1); 
+    System.out.println("Permissions for user1 are:");
+    while (e1.hasMoreElements()) {
+        System.out.println("  " + e1.nextElement());
+        };
+ 
+    // 
+    // This enumeration should have "READ" and"WRITE"  
+    // permissions. 
+    Enumeration e2 = acl.getPermissions(p2); 
+    System.out.println("Permissions for user2 are:");
+    while (e2.hasMoreElements()) {
+        System.out.println("  " + e2.nextElement());
+        };
+
+    // This should return false. 
+    boolean b1 = acl.checkPermission(p1, write); 
+    System.out.println("user1 has write permission: " + b1);
+     
+    // This should all return true; 
+    boolean b2 = acl.checkPermission(p1, read); 
+    boolean b3 = acl.checkPermission(p2, read); 
+    boolean b4 = acl.checkPermission(p2, write); 
+    System.out.println("user1 has read permission: " + b2);
+    System.out.println("user2 has read permission: " + b3);
+    System.out.println("user2 has write permission: " + b4);
+  }
+}
+</pre>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

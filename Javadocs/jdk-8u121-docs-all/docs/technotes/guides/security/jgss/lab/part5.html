@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<meta http-equiv="content-type" content=
+"text/html; charset=utf-8" />
+<title>Advanced JGSS Security Programming</title>
+<link rel="stylesheet" type="text/css" href="../../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1><a name="PART5" id="PART5">Part V : Secure
+Authentication Using SPNEGO Java GSS Mechanism</a></h1>
+<h2><a name="SPNEGO" id="SPNEGO"></a>Exercise 8: Using the Java
+Generic Security Services (GSS) API with SPNEGO</h2>
+
+<p>Java GSS is a framework that can support multiple security
+mechanisms; a way to negotiate a security mechanism underneath
+GSS-API is needed. This is available via SPNEGO.</p>
+<p>SPNEGO is standardized at IETF in <a href=
+"http://www.ietf.org/rfc/rfc4178.txt">RFC 4178.</a> It is a
+pseudo-security mechanism used to negotiate an underlying security
+mechanism. It provides the flexibility for client and server to
+securely negotiate a common GSS security mechanism.</p>
+<p>Microsoft makes heavy use of SPNEGO. SPNEGO can be used to
+inter-operate with Microsoft Server over HTTP, to support
+HTTP-based cross-platform authentication via the Negotiate
+Protocol.</p>
+<p>Currently, when using Java GSS with Kerberos, we specify the
+Kerberos OID as follows:</p>
+<pre class="codeblock">
+Oid krb5Oid = new Oid("1.2.840.113554.1.2.2");
+</pre>
+<p>In order to use SPNEGO, you only need to specify the
+SPNEGO OID as follows:</p>
+<pre class="codeblock">
+Oid spnegoOid = new Oid("1.3.6.1.5.5.2");
+</pre>
+<p>Then you can use the SPNEGO OID when creating a
+<code>GSSCredential</code>, <code>GSSContext</code>, etc.</p>
+
+<h3>Goal of this exercise</h3>
+<p>Currently the only security mechansim available with Java GSS is
+Kerberos. The goal of this exercise is to learn how to use other
+Java GSS mechanisms, such as the Simple and Protected GSS-API Negotiation
+Mechanism (SPNEGO), to secure the association.</p>
+
+<h3>Steps to follow</h3>
+<ol>
+<li><p>Read the <a href=
+"src/GssSpNegoClient.java"><code>GssSpNegoClient.java</code></a> code.</p></li>
+<li><p>Compile the sample code:</p>
+<pre class="codeblock">
+% javac GssSpNegoClient.java
+</pre></li>
+<li><p>Read the <a href=
+"src/GssSpNegoServer.java"><code>src/GssSpNegoServer.java</code></a> code.</p></li>
+
+<li><p>Compile the sample code:</p>
+<pre class="codeblock">
+% javac GssSpNegoServer.java
+</pre></li>
+
+<li><p>Launch a new window and start the server:</p>
+<pre class="codeblock">
+% xterm &amp;
+% java -Djava.security.auth.login.config=jaas-krb5.conf GssSpNegoServer
+</pre></li>
+<li><p>Run the client application. <code>GssSpNegoClient</code> takes two
+parameters: the service name and the name of the server that the
+service is running on. For example, if the service is
+<code>host</code> running on the machine <code>j1hol-001</code>, use the following (provide a secure password when prompted):</p>
+<pre class="codeblock">
+% java -Djava.security.auth.login.config=jaas-krb5.conf \
+GssSpNegoClient host j1hol-001
+</pre></li>
+</ol>
+<p>Sample output for running <code>GssSpNegoServer</code>:</p>
+<pre class="codeblock">
+Authenticated principal: [host/j1hol-001@J1LABS.EXAMPLE.COM]
+Waiting for incoming connections...
+Got connection from client /129.145.128.102
+SPNEGO Negotiated Mechanism = 1.2.840.113554.1.2.2 Kerberos V5
+Context Established!
+Client principal is test@J1LABS.EXAMPLE.COM
+Server principal is
+host/j1hol-001@J1LABS.EXAMPLE.COM
+Mutual authentication took place!
+Received data "Hello There!" of length 12
+Confidentiality applied: true
+Sending: Hello There! Thu May 06 12:11:15 PDT 2005
+</pre>
+
+<p>Sample output for running <code>GssSpNegoClient</code> (<i>password</i> is replaced with the password you provided before):</p>
+<pre class="codeblock">
+Kerberos password for test: password
+Authenticated principal: [test@J1LABS.EXAMPLE.COM]
+Connected to address j1hol-001/129.145.128.102
+SPNEGO Negotiated Mechanism = 1.2.840.113554.1.2.2 Kerberos V5
+Context Established!
+Client principal is test@J1LABS.EXAMPLE.COM
+Server principal is host@j1hol-001
+Mutual authentication took place!
+Sending message: Hello There!
+Will read token of size 93
+Received message: Hello There! Thu May 06 12:11:15 PDT 2005
+</pre>
+
+<h3>Summary</h3>
+<p>In this exercise, you learned
+how to write a client-server application that uses the Java GSS API
+with SPNEGO to negotiate an underlying security mechanism, such as
+Kerberos, and communicate securely using Kerberos as the underlying
+authentication system.</p>
+<hr />
+<p><b>NOTE:</b> Microsoft has implemented certain variations of the
+SPNEGO protocol, hence to inter-operate with Microsoft, we have
+added a separate mode via a new system property
+<code>sun.security.spnego.msinterop</code>. This property is enabled to <code>true</code>
+by default. To disable it, you need to explicitly set this property
+to <code>false</code>. To enable SPNEGO debugging, you can set the system
+property <code>sun.security.spnego.debug=true</code>.</p>
+<hr />
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Underscores in Numeric Literals</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Underscores in Numeric Literals</h1>
+
+<p>In Java SE 7 and later, any number of underscore characters
+(<code>_</code>) can appear anywhere between digits in a numerical
+literal. This feature enables you, for example, to separate groups
+of digits in numeric literals, which can improve the readability of
+your code.</p>
+<p>For instance, if your code contains numbers with many digits,
+you can use an underscore character to separate digits in groups of
+three, similar to how you would use a punctuation mark like a
+comma, or a space, as a separator.</p>
+<p>The following example shows other ways you can use the
+underscore in numeric literals:</p>
+<pre>
+long creditCardNumber = 1234_5678_9012_3456L;
+long socialSecurityNumber = 999_99_9999L;
+float pi =      3.14_15F;
+long hexBytes = 0xFF_EC_DE_5E;
+long hexWords = 0xCAFE_BABE;
+long maxLong = 0x7fff_ffff_ffff_ffffL;
+byte nybbles = 0b0010_0101;
+long bytes = 0b11010010_01101001_10010100_10010010;
+</pre>
+<p>You can place underscores only between digits; you cannot place
+underscores in the following places:</p>
+<ul>
+<li>At the beginning or end of a number</li>
+<li>Adjacent to a decimal point in a floating point literal</li>
+<li>Prior to an <code>F</code> or <code>L</code> suffix</li>
+<li>In positions where a string of digits is expected</li>
+</ul>
+<p>The following examples demonstrate valid and invalid underscore
+placements (which are highlighted) in numeric literals:</p>
+<pre>
+<strong>float pi1 = 3_.1415F;      // Invalid; cannot put underscores adjacent to a decimal point
+float pi2 = 3._1415F;      // Invalid; cannot put underscores adjacent to a decimal point
+long socialSecurityNumber1
+  = 999_99_9999_L;         // Invalid; cannot put underscores prior to an L suffix</strong>
+
+int x1 = _52;              // This is an identifier, not a numeric literal
+int x2 = 5_2;              // OK (decimal literal)
+<strong>int x3 = 52_;              // Invalid; cannot put underscores at the end of a literal</strong>
+int x4 = 5_______2;        // OK (decimal literal)
+
+<strong>int x5 = 0_x52;            // Invalid; cannot put underscores in the 0x radix prefix</strong>
+<strong>int x6 = 0x_52;            // Invalid; cannot put underscores at the beginning of a number</strong>
+int x7 = 0x5_2;            // OK (hexadecimal literal)
+<strong>int x8 = 0x52_;            // Invalid; cannot put underscores at the end of a number</strong>
+
+int x9 = 0_52;             // OK (octal literal)
+int x10 = 05_2;            // OK (octal literal)
+<strong>int x11 = 052_;            // Invalid; cannot put underscores at the end of a number</strong>
+</pre>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

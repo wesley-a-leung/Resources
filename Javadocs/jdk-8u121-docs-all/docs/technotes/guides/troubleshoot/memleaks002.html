@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Understand the OutOfMemoryError Exception</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="memleaks001.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="memleaks003.html">
+                Next</a><hr/><a id="CIHHJDJE" name="CIHHJDJE"/>
+<div id="JSTGD275">
+<h1><span>3.2</span> Understand the OutOfMemoryError Exception</h1>
+<p>One common indication of a memory leak is the <code dir="ltr">java.lang.OutOfMemoryError</code> exception. Usually, this error is thrown when there is insufficient space to allocate an object in the Java heap. In this case, The garbage collector cannot make space available to accommodate a new object, and the heap cannot be expanded further. Also, this error may be thrown when there is insufficient native memory to support the loading of a Java class. In a rare instance, a <code dir="ltr">java.lang.OutOfMemoryError</code> may be thrown when an excessive amount of time is being spent doing garbage collection and little memory is being freed.</p>
+<p>When a <code dir="ltr">java.lang.OutOfMemoryError</code> exception is thrown, a stack trace is also printed.</p>
+<p>The <code dir="ltr">java.lang.OutOfMemoryError</code> exception can also be thrown by native library code when a native allocation cannot be satisfied (for example, if swap space is low).</p>
+<p>An early step to diagnose an <code dir="ltr">OutOfMemoryError</code> exception is to determine the cause of the exception. Was it thrown because the Java heap is full, or because the native heap is full? To help you find the cause, the text of the exception includes a detail message at the end, as shown in the following exceptions.</p>
+<div><a id="tahiti1149887" name="tahiti1149887"/>
+<div>
+<dl>
+<dt><span><a id="sthref39" name="sthref39"/>Exception in thread <span>thread_name</span>: java.lang.OutOfMemoryError: Java heap space</span> </dt>
+<dd>
+<div><span>Cause:</span> The detail message <span>Java heap space</span> indicates object could not be allocated in the Java heap. This error does not necessarily imply a memory leak. The problem can be as simple as a configuration issue, where the specified heap size (or the default size, if it is not specified) is insufficient for the application.
+<p>In other cases, and in particular for a long-lived application, the message might be an indication that the application is unintentionally holding references to objects, and this prevents the objects from being garbage collected. This is the Java language equivalent of a memory leak. <i>Note:</i> The APIs that are called by an application could also be unintentionally holding object references.</p>
+<p>One other potential source of this error arises with applications that make excessive use of finalizers. If a class has a <code dir="ltr">finalize</code> method, then objects of that type do not have their space reclaimed at garbage collection time. Instead, after garbage collection, the objects are queued for finalization, which occurs at a later time. In the Oracle Sun implementation, finalizers are executed by a daemon thread that services the finalization queue. If the finalizer thread cannot keep up, with the finalization queue, then the Java heap could fill up and this type of <code dir="ltr">OutOfMemoryError</code> exception would be thrown. One scenario that can cause this situation is when an application creates high-priority threads that cause the finalization queue to increase at a rate that is faster than the rate at which the finalizer thread is servicing that queue.</p>
+</div>
+</dd>
+<dd>
+<div><span>Action:</span> You can find more information about how to monitor objects for which finalization is pending in <a href="memleaks004.html#CIHCDBJB">Monitor the Objects Pending Finalization</a>.</div>
+</dd>
+</dl>
+</div>
+
+<a id="tahiti1150092" name="tahiti1150092"/>
+<div>
+<dl>
+<dt><span><a id="sthref40" name="sthref40"/>Exception in thread <span>thread_name</span>: java.lang.OutOfMemoryError: GC Overhead limit exceeded</span> </dt>
+<dd>
+<div><span>Cause:</span> The detail message "GC overhead limit exceeded" indicates that the garbage collector is running all the time and Java program is making very slow progress. After a garbage collection, if the Java process is spending more than approximately 98% of its time doing garbage collection and if it is recovering less than 2% of the heap and has been doing so far the last 5 (compile time constant) consecutive garbage collections, then a <code dir="ltr">java.lang.OutOfMemoryError</code> is thrown. This exception is typically thrown because the amount of live data barely fits into the Java heap having little free space for new allocations.</div>
+</dd>
+<dd>
+<div><span>Action:</span> Increase the heap size. The <code dir="ltr">java.lang.OutOfMemoryError</code> exception for <b>GC Overhead limit exceeded</b> can be turned off with the command line flag <code dir="ltr">-XX:-UseGCOverheadLimit</code>.</div>
+</dd>
+</dl>
+</div>
+
+<div>
+<dl>
+<dt><span><a id="sthref41" name="sthref41"/>Exception in thread <span>thread_name</span>: java.lang.OutOfMemoryError: Requested array size exceeds VM limit</span> </dt>
+<dd>
+<div><span>Cause:</span> The detail message "Requested array size exceeds VM limit" indicates that the application (or APIs used by that application) attempted to allocate an array that is larger than the heap size. For example, if an application attempts to allocate an array of 512 MB but the maximum heap size is 256 MB then <code dir="ltr">OutOfMemoryError</code> will be thrown with the reason Requested array size exceeds VM limit.</div>
+</dd>
+<dd>
+<div><span>Action:</span> Usually the problem is either a configuration issue (heap size too small), or a bug that results in an application attempting to create a huge array (for example, when the number of elements in the array is computed using an algorithm that computes an incorrect size).</div>
+</dd>
+</dl>
+</div>
+
+<a id="tahiti1150517" name="tahiti1150517"/>
+<div>
+<dl>
+<dt><span><a id="sthref42" name="sthref42"/>Exception in thread <span>thread_name</span>: java.lang.OutOfMemoryError: Metaspace</span> </dt>
+<dd>
+<div><span>Cause:</span> Java class metadata (the virtual machines internal presentation of Java class) is allocated in native memory (referred to here as metaspace). If metaspace for class metadata is exhausted, a <code dir="ltr">java.lang.OutOfMemoryError</code> exception with a detail <code dir="ltr">MetaSpace</code> is thrown. The amount of metaspace that can be used for class metadata is limited by the parameter <code dir="ltr">MaxMetaSpaceSize</code>, which is specified on the command line. When the amount of native memory needed for a class metadata exceeds <code dir="ltr">MaxMetaSpaceSize</code>, a <code dir="ltr">java.lang.OutOfMemoryError</code> exception with a detail <code dir="ltr">MetaSpace</code> is thrown.</div>
+</dd>
+<dd>
+<div><span>Action:</span> If <code dir="ltr">MaxMetaSpaceSize</code>, has been set on the command-line, increase its value. <code dir="ltr">MetaSpace</code> is allocated from the same address spaces as the Java heap. Reducing the size of the Java heap will make more space available for <code dir="ltr">MetaSpace</code>. This is only a correct trade-off if there is an excess of free space in the Java heap. See the following action for <b>Out of swap space</b> detailed message.</div>
+</dd>
+</dl>
+</div>
+
+<a id="tahiti1150955" name="tahiti1150955"/>
+<div>
+<dl>
+<dt><span><a id="sthref43" name="sthref43"/>Exception in thread <span>thread_name</span>: java.lang.OutOfMemoryError: request <span>size</span> bytes for <span>reason</span>. Out of swap space?</span> </dt>
+<dd>
+<div><span>Cause:</span> The detail message "request <span>size</span> bytes for <span>reason</span>. Out of swap space?" appears to be an <code dir="ltr">OutOfMemoryError</code> exception. However, the Java HotSpot VM code reports this apparent exception when an allocation from the native heap failed and the native heap might be close to exhaustion. The message indicates the size (in bytes) of the request that failed and the reason for the memory request. Usually the reason is the name of the source module reporting the allocation failure, although sometimes it is the actual reason.</div>
+</dd>
+<dd>
+<div><span>Action:</span> When this error message is thrown, the VM invokes the fatal error handling mechanism (that is, it generates a fatal error log file, which contains useful information about the thread, process, and system at the time of the crash). In the case of native heap exhaustion, the heap memory and memory map information in the log can be useful. For more information about understanding the fatal error log file, see <a href="felog.html#fatal_error_log_vm">Appendix A</a>.
+<p>If this type of the <code dir="ltr">OutOfMemoryError</code> exception is thrown, you might need to use troubleshooting utilities on the operating system to diagnose the issue further. For more information about tools available for various operating systems, see <a href="tooldescr020.html#BABBHHIE">Native Operating System Tools</a>.</p>
+</div>
+</dd>
+</dl>
+</div>
+
+<div>
+<dl>
+<dt><span><a id="sthref44" name="sthref44"/>Exception in thread <span>thread_name</span>: java.lang.OutOfMemoryError: Compressed class space</span> </dt>
+<dd>
+<div><span>Cause:</span> On 64-bit platforms a pointer to class metadata can be represented by a 32-bit offset (with <code dir="ltr">UseCompressedOops</code>). This is controlled by the command line flag <code dir="ltr">UseCompressedClassPointers</code> (on by default). If the <code dir="ltr">UseCompressedClassPointers</code> is used, the amount of space available for class metadata is fixed at the amount <code dir="ltr">CompressedClassSpaceSize</code>. If the space needed for <code dir="ltr">UseCompressedClassPointers</code> exceeds <code dir="ltr">CompressedClassSpaceSize</code>, a <code dir="ltr">java.lang.OutOfMemoryError</code> with detail <b>Compressed class space</b> is thrown.</div>
+</dd>
+<dd>
+<div><span>Action:</span> Increase <code dir="ltr">CompressedClassSpaceSize</code> to turn off <code dir="ltr">UseCompressedClassPointers</code>. <i>Note:</i> There are bounds on the acceptable size of <code dir="ltr">CompressedClassSpaceSize</code>. For example <code dir="ltr">-XX: CompressedClassSpaceSize=4g</code>, exceeds acceptable bounds will result in a message such as
+<p><code dir="ltr">CompressedClassSpaceSize</code> of 4294967296 is invalid; must be between 1048576 and 3221225472.</p>
+<p><b>Note:</b> There is more than one kind of class metadata - <code dir="ltr">klass</code> metadata and other metadata. Only <code dir="ltr">klass</code> metadata is stored in the space bounded by <code dir="ltr">CompressedClassSpaceSize</code>. The other metadata is stored in <code dir="ltr">Metaspace</code>.</p>
+</div>
+</dd>
+</dl>
+</div>
+
+<a id="tahiti1151140" name="tahiti1151140"/>
+<div>
+<dl>
+<dt><span><a id="sthref45" name="sthref45"/>Exception in thread <span>thread_name</span>: java.lang.OutOfMemoryError: <span>reason</span> <span>stack_trace_with_native_method</span></span> </dt>
+<dd>
+<div><span>Cause:</span> If the detail part of the error message is "<span>reason</span> <span>stack_trace_with_native_method</span>" and a stack trace is printed in which the top frame is a native method, then this is an indication that a native method has encountered an allocation failure. The difference between this and the previous message is that the allocation failure was detected in a Java Native Interface (JNI) or native method rather than in the JVM code.</div>
+</dd>
+<dd>
+<div><span>Action:</span> If this type of the <code dir="ltr">OutOfMemoryError</code> exception is thrown, you might need to use native utilities of the OS to further diagnose the issue. For more information about tools available for various operating systems, see <a href="tooldescr020.html#BABBHHIE">Native Operating System Tools</a>.</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="memleaks001.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="memleaks003.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

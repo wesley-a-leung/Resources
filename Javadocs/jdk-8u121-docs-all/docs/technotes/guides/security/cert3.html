@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>X.509 certificates</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>X.509 Certificates and Certificate Revocation Lists (CRLs)</h1>
+
+<dl>
+<dd><a href="#intro">In One Sentence: What is a
+Certificate?</a></dd>
+<dd><a href="#apps">What Applications use Certificates?</a></dd>
+<dd><a href="#whereFrom">How do I get a Certificate?</a></dd>
+<dd><a href="#inside">What is Inside an X.509 Certificate?</a></dd>
+<dd><a href="#apis">What Java API Can Be Used to Access and Manage
+Certificates?</a></dd>
+<dd><a href="#tools">What Java Tool Can Generate, Display, Import,
+and Export X.509 Certificates?</a></dd>
+</dl>
+<hr />
+<h2><a name="intro" id="intro">In One Sentence: What is a
+Certificate?</a></h2>
+<p>A <b>public-key certificate</b> is a digitally signed statement
+from one entity, saying that the public key (and some other
+information) of another entity has some specific value.</p>
+<p>Let us expand on some of the key terms used in this
+sentence:</p>
+<dl>
+<dt><i>Public Keys</i></dt>
+<dd>These are numbers associated with a particular entity, and are
+intended to be known to everyone who needs to have trusted
+interactions with that entity. Public keys are used to verify
+signatures.</dd>
+<dt><i>Digitally Signed</i></dt>
+<dd>If some data is <i>digitally signed</i> it has been stored with
+the "identity" of an entity, and a signature that proves that
+entity knows about the data. The data is rendered unforgeable by
+signing with the entitys' private key.</dd>
+<dt><i>Identity</i></dt>
+<dd>A known way of addressing an entity. In some systems the
+identity is the public key, in others it can be anything from a
+UNIX UID to an Email address to an X.509 Distinguished Name.</dd>
+<dt><i>Signature</i></dt>
+<dd>A signature is computed over some data using the private key of
+an entity (the signer).</dd>
+<dt><i>Private Keys</i></dt>
+<dd>These are numbers, each of which is supposed to be known only
+to the particular entity whose private key it is (that is, it's
+supposed to be kept secret). Private and public keys exist in pairs
+in all public key cryptography systems (also referred to as "public
+key crypto systems"). In a typical public key crypto system, such
+as DSA, a private key corresponds to exactly one public key.
+Private keys are used to compute signatures.</dd>
+<dt><i>Entity</i></dt>
+<dd>An entity is a person, organization, program, computer,
+business, bank, or something else you are trusting to some
+degree.</dd>
+</dl>
+<p>Basically, public key cryptography requires access to users'
+public keys. In a large-scale networked environment it is
+impossible to guarantee that prior relationships between
+communicating entities have been established or that a trusted
+repository exists with all used public keys. Certificates were
+invented as a solution to this public key distribution problem. Now
+a <i>Certification Authority</i> (CA) can act as a <i>Trusted Third
+Party</i>. CAs are entities (e.g., businesses) that are trusted to
+sign (issue) certificates for other entities. It is assumed that
+CAs will only create valid and reliable certificates as they are
+bound by legal agreements. There are many public Certification
+Authorities, such as <a href=
+"http://www.verisign.com">VeriSign</a>, <a href=
+"http://www.thawte.com">Thawte</a>, <a href=
+"http://www.entrust.com">Entrust</a>, and so on. You can also run
+your own Certification Authority using products such as the
+Netscape/Microsoft Certificate Servers or the Entrust CA product
+for your organization.</p>
+<hr />
+<h2><a name="apps" id="apps">What Applications use
+Certificates?</a></h2>
+<p>Probably the most widely visible application of X.509
+certificates today is in web browsers (such as Mozilla Firefox and
+Microsoft Internet Explorer) that support the TLS protocol. TLS
+(Transport Layer Security) is a security protocol that provides
+privacy and authentication for your network traffic. These browsers
+can only use this protocol with web servers that support TLS.</p>
+<p>Other technologies that rely on X.509 certificates include:</p>
+<ul>
+<li>Various code-signing schemes, such as signed Java ARchives, and
+Microsoft Authenticode.</li>
+<li>Various secure E-Mail standards, such as PEM and S/MIME.</li>
+<li>E-Commerce protocols, such as SET.</li>
+</ul>
+<hr />
+<h2><a name="whereFrom" id="whereFrom">How do I Get a
+Certificate?</a></h2>
+<p>There are two basic techniques used to get certificates:</p>
+<ol>
+<li>you can create one yourself (using the right tools, such as
+<a href="#tools">keytool</a>), or</li>
+<li>you can ask a Certification Authority to issue you one (either
+directly or using a tool such as <b>keytool</b> to generate the
+request).</li>
+</ol>
+The main inputs to the certificate creation process are:
+<ul>
+<li>Matched <i>public and private keys</i>, generated using some
+special tools (such as <a href="#tools">keytool</a>), or a browser.
+<strong>Only the public key is ever shown to anyone else.</strong>
+The private key is used to sign data; if someone knows your private
+key, they can masquerade as you ... perhaps forging legal documents
+attributed to you!</li>
+</ul>
+<ul>
+<li>You need to provide <i>information about the entity being
+certified</i> (e.g., you). This normally includes information such
+as your name and organizational address. If you ask a CA to issue a
+certificate for you, you will normally need to provide proof to
+show correctness of the information.</li>
+</ul>
+<p>If you are asking a CA to issue you a certificate, you provide
+your public key and some information about you. You'll use a tool
+(such as <a href="#tools">keytool</a> or a browser that supports
+Certificate Signing Request generation). to digitally sign this
+information, and send it to the CA. The CA will then generate the
+certificate and return it.</p>
+<p>If you're generating the certificate yourself, you'll take that
+same information, add a little more (dates during which the
+certificate is valid, a serial number), and just create the
+certificate using some tool (such as <a href="#tools">keytool</a>).
+Not everyone will accept self-signed certificates; one part of the
+value provided by a CA is to serve as a neutral and trusted
+introduction service, based in part on their verification
+requirements, which are openly published in their Certification
+Service Practices (CSP).</p>
+<hr />
+<h2><a name="inside" id="inside">What's Inside an X.509
+Certificate?</a></h2>
+<p>The X.509 standard defines what information can go into a
+certificate, and describes how to write it down (the data format).
+All X.509 certificates have the following data, in addition to the
+signature:</p>
+<dl>
+<dt><b>Version</b></dt>
+<dd>This identifies which version of the X.509 standard applies to
+this certificate, which affects what information can be specified
+in it. Thus far, three versions are defined.</dd>
+<dt><b>Serial Number</b></dt>
+<dd>The entity that created the certificate is responsible for
+assigning it a serial number to distinguish it from other
+certificates it issues. This information is used in numerous ways,
+for example when a certificate is revoked its serial number is
+placed in a Certificate Revocation List (CRL).</dd>
+<dt><b>Signature Algorithm Identifier</b></dt>
+<dd>This identifies the algorithm used by the CA to sign the
+certificate.</dd>
+<dt><b>Issuer Name</b></dt>
+<dd>The X.500 name of the entity that signed the certificate. This
+is normally a CA. Using this certificate implies trusting the
+entity that signed this certificate. (Note that in some cases, such
+as <i>root or top-level</i> CA certificates, the issuer signs its
+own certificate.)</dd>
+<dt><b>Validity Period</b></dt>
+<dd>Each certificate is valid only for a limited amount of time.
+This period is described by a start date and time and an end date
+and time, and can be as short as a few seconds or almost as long as
+a century. The validity period chosen depends on a number of
+factors, such as the strength of the private key used to sign the
+certificate or the amount one is willing to pay for a certificate.
+This is the expected period that entities can rely on the public
+value, if the associated private key has not been compromised.</dd>
+<dt><b>Subject Name</b></dt>
+<dd>The name of the entity whose public key the certificate
+identifies. This name uses the X.500 standard, so it is intended to
+be unique across the Internet. This is the Distinguished Name (DN)
+of the entity, for example,
+<pre>
+    CN=Java Duke, OU=Java Software Division, O=Sun Microsystems Inc, C=US
+</pre>
+(These refer to the subject's Common Name, Organizational Unit,
+Organization, and Country.)</dd>
+<dt><b>Subject Public Key Information</b></dt>
+<dd>This is the public key of the entity being named, together with
+an algorithm identifier which specifies which public key crypto
+system this key belongs to and any associated key parameters.</dd>
+</dl>
+<p><i>X.509 Version 1</i> has been available since 1988, is widely
+deployed, and is the most generic.</p>
+<p><i>X.509 Version 2</i> introduced the concept of subject and
+issuer unique identifiers to handle the possibility of reuse of
+subject and/or issuer names over time. Most certificate profile
+documents strongly recommend that names not be reused, and that
+certificates should not make use of unique identifiers. Version 2
+certificates are not widely used.</p>
+<p><i>X.509 Version 3</i> is the most recent (1996) and supports
+the notion of extensions, whereby anyone can define an extension
+and include it in the certificate. Some common extensions in use
+today are: <i>KeyUsage</i> (limits the use of the keys to
+particular purposes such as "signing-only") and
+<i>AlternativeNames</i> (allows other identities to also be
+associated with this public key, e.g. DNS names, Email addresses,
+IP addresses). Extensions can be marked <i>critical</i> to indicate
+that the extension should be checked and enforced/used. For
+example, if a certificate has the KeyUsage extension marked
+critical and set to "keyCertSign" then if this certificate is
+presented during SSL communication, it should be rejected, as the
+certificate extension indicates that the associated private key
+should only be used for signing certificates and not for SSL
+use.</p>
+<p>All the data in a certificate is encoded using two related
+standards called ASN.1/DER. <i>Abstract Syntax Notation 1</i>
+describes data. The <i>Definite Encoding Rules</i> describe a
+single way to store and transfer that data. People have been known
+to describe this combination simultaneously as "powerful and
+flexible" and as "cryptic and awkward".</p>
+<p>The <a href="http://datatracker.ietf.org/wg/pkix/charter/">IETF PKIX</a>
+working group is in the process of defining standards for the
+Internet Public Key Infrastructure. We are closely following their
+work, and support the <i>X.509 Certificate and CRL Profile</i>,
+which is specified in <a href=
+"http://www.ietf.org/rfc/rfc3280.txt">RFC 3280</a>.</p>
+<hr />
+<a name="apis" id="apis"></a>
+<h2><a name="API" id="API">What Java API Can Be Used to Access and
+Manage Certificates?</a></h2>
+The Certificate API, found in the <a href=
+"../../../api/java/security/cert/package-summary.html"><code>java.security.cert</code></a>
+package, includes the following:
+<ul>
+<li>the <b>CertificateFactory</b> class defines the functionality
+of a certificate factory, which is used to generate certificate,
+certificate revocation list (CRL), and certification path objects
+from their encoding.</li>
+<li>the <b>Certificate</b> class is an abstract class for managing
+a variety of certificates. It is an abstraction for certificates
+that have different formats but important common uses. For example,
+different types of certificates, such as X.509 and PGP, share
+general certificate functionality (like encoding and verifying) and
+some types of information like public key.</li>
+<li>the <b>CRL</b> class is an abstract class for managing a
+variety of Certificate Revocation Lists (CRLs).</li>
+<li>the <b>X509Certificate</b> class is an abstract class for X.509
+Certificates. It provides a standard way to access all the
+attributes of an X.509 certificate.</li>
+<li>the <b>X509Extension</b> interface is an interface for an X.509
+extension. The extensions defined for X.509 v3 certificates and v2
+CRLs (Certificate Revocation Lists) provide mechanisms for
+associating additional attributes with users or public keys, such
+as for managing the certification hierarchy, and for managing CRL
+distribution.</li>
+<li>the <b>X509CRL</b> class is an abstract class for an X.509
+Certificate Revocation List (CRL). A CRL is a time-stamped list
+identifying revoked certificates. It is signed by a Certification
+Authority (CA) and made freely available in a public
+repository.</li>
+<li>the <b>X509CRLEntry</b> class is an abstract class for a CRL
+entry.</li>
+</ul>
+In JDK 1.4, new classes were added to support building and
+validating chains of certificates, or certification paths. These
+classes are described in further detail in the <a href=
+"certpath/CertPathProgGuide.html">PKI Programmer's Guide</a>.
+<hr />
+<h2><a name="tools" id="tools">What Java Tool Can Generate,
+Display, Import, and Export X.509 Certificates?</a></h2>
+There is a tool named <b>keytool</b> ( <a href=
+"../../tools/unix/keytool.html">for Solaris, Linux, or Mac OS X</a>)
+( <a href=
+"../../tools/windows/keytool.html">for Windows</a> ) that can be
+used to create public/private key pairs and self-signed X.509 v3
+certificates, and to manage keystores. Keys and certificates are
+used to digitally sign your Java applications and applets (see the
+<b>jarsigner</b> (<a href="../../tools/unix/jarsigner.html">for
+Solaris, Linux, or Mac OS X</a>)
+(<a href="../../tools/windows/jarsigner.html">for
+Windows</a>) tool).
+<p>A <i>keystore</i> is a protected database that holds keys and
+certificates. Access to a keystore is guarded by a password
+(defined at the time the keystore is created, by the person who
+creates the keystore, and changeable only when providing the
+current password). In addition, each private key in a keystore can
+be guarded by its own password.</p>
+<p>Using <b>keytool</b>, it is possible to display, import, and
+export X.509 v1, v2, and v3 certificates stored as files, and to
+generate new self-signed v3 certificates. For examples, see the
+"EXAMPLES" section of the keytool documentation ( <a href=
+"../../tools/unix/keytool.html#keytool_examples">for Solaris, Linux,
+or Mac OS X</a> ) (
+<a href="../../tools/windows/keytool.html#keytool_examples">for Windows</a>
+).</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

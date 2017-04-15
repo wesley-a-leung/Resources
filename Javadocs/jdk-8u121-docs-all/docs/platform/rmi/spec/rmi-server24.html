@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Remote Method Invocation: 5 - Server Interfaces</title>
+</head>
+<body bgcolor="#FFFFFF">
+<a href="#skip" title="Skip navigation bar"></a>
+<table width="100%" summary="">
+<tr>
+<td><a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-server23.html">PREV</a> | <a href=
+"rmi-server25.html">NEXT</a></td>
+<td align="right"><i>Java Remote Method Invocation</i></td>
+</tr>
+</table>
+<br />
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<a name="skip" id="skip"></a>
+<h2><a name="a7080" id="a7080"><i>5.3</i> The
+<code>UnicastRemoteObject</code> Class</a></h2>
+<a name="a7079" id="a7079"><!-- --></a> The class
+<code>java.rmi.server.UnicastRemoteObject</code> provides support
+for creating and exporting remote objects. The class implements a
+remote server object with the following characteristics:
+<ul>
+<li><a name="a690" id="a690"><!-- --></a> References to such
+objects are valid only for, at most, the life of the process that
+creates the remote object.</li>
+<li><a name="a691" id="a691"><!-- --></a> Communication with the
+remote object uses a TCP transport.</li>
+<li><a name="a692" id="a692"><!-- --></a> Invocations, parameters,
+and results use a stream protocol for communicating between client
+and server.</li>
+</ul>
+<pre class="codeblock">
+package java.rmi.server;
+
+public class UnicastRemoteObject extends RemoteServer {
+
+        protected UnicastRemoteObject()
+                throws java.rmi.RemoteException {...}
+        protected UnicastRemoteObject(int port)
+                throws java.rmi.RemoteException {...}
+        protected UnicastRemoteObject(int port, 
+                                      RMIClientSocketFactory csf,
+                                      RMIServerSocketFactory ssf)
+                throws java.rmi.RemoteException {...}
+
+        public Object clone()
+                throws java.lang.CloneNotSupportedException {...}
+        public static RemoteStub exportObject(java.rmi.Remote obj)
+                throws java.rmi.RemoteException {...}
+        public static Remote exportObject(java.rmi.Remote obj, int port)
+                throws java.rmi.RemoteException {...}
+        public static Remote exportObject(Remote obj, int port,
+                                          RMIClientSocketFactory csf,
+                                          RMIServerSocketFactory ssf)
+                throws java.rmi.RemoteException {...}
+        public static boolean unexportObject(java.rmi.Remote obj,
+                                             boolean force)
+                throws java.rmi.NoSuchObjectException {...}
+}
+
+
+</pre>
+<br />
+<h3><a name="a2175" id="a2175"><!-- --></a> <i>5.3.1</i>
+Constructing a New Remote Object</h3>
+<a name="a2177" id="a2177"><!-- --></a> A remote object
+implementation (one that implements one or more remote interfaces)
+must be created and exported. Exporting a remote object makes that
+object available to accept incoming calls from clients. For a
+remote object implementation that is exported as a
+<code>UnicastRemoteObject</code>, the exporting involves listening
+on a TCP port (note that more than one remote object can accept
+incoming calls on the same port, so listening on a new port is not
+always necessary). A remote object implementation can extend the
+class <code>UnicastRemoteObject</code> to make use of its
+constructors that export the object, or it can extend some other
+class (or none at all) and export the object via
+<code>UnicastRemoteObject</code>&#39;s <code>exportObject</code>
+methods.
+
+<p><a name="a7810" id="a7810"><!-- --></a>The constructor that takes no arguments creates and exports a remote object on an anonymous (or arbitrary) port, chosen at runtime. The second form of the constructor takes a single argument, <em>port</em>, that specifies the port number on which the remote object accepts incoming calls. The third constructor creates and exports a remote object that accepts incoming calls on the specified <em>port</em> via a <code>ServerSocket</code> created from the <code>RMIServerSocketFactory</code>; clients will make connections to the remote object via <code>Socket</code>s supplied from the <code>RMIClientSocketFactory</code>.</p>
+
+<p>Note that if you export a remote object without specifying a socket factory, or if you export the object with a version of the method <code>UnicastRemoteObject.exportObject</code> or the constructor <code>UnicastRemoteObject</code> that does not contain parameters of type <code>RMIClientSocketFactory</code> and <code>RMIServerSocketFactory</code>), then the remote object is exported to all local addresses. To export a remote object to a specific address, see the section <a href="rmi-server29.html">RMI Socket Factories</a>.</p>   
+
+<p><br /></p>
+<h3><a name="a728" id="a728"><!-- --></a> <i>5.3.2</i> Exporting an
+Implementation Not Extended From <code>RemoteObject</code></h3>
+<a name="a562" id="a562"><!-- --></a>
+An&#160;<code>exportObject</code> method (any of the forms) is used
+to export a simple peer-to-peer remote object that is not
+implemented by extending the <code>UnicastRemoteObject</code>
+class. The first form of the <code>exportObject</code> method takes
+a single parameter, <em>obj</em>, which is the remote object that
+will accept incoming RMI calls; this <code>exportObject</code>
+method exports the object on an anonymous (or arbitrary) port,
+chosen at runtime. The second <code>exportObject</code> method
+takes two parameters, both the remote object, <em>obj</em>, and
+<em>port</em>, the port number on which the remote object accepts
+incoming calls. The third <code>exportObject</code> method exports
+the object, <em>obj</em>, with the specified
+<code>RMIClientSocketFactory</code>, <em>csf</em>, and
+<code>RMIServerSocketFactory</code>, <em>ssf</em>, on the specified
+<em>port</em>.
+<p><a name="a8714" id="a8714"><!-- --></a> The
+<code>exportObject</code> method returns a <code>Remote</code> stub
+which is the stub object for the remote object, <code>obj</code>,
+that is passed in place of the remote object in an RMI call.</p>
+<p><br /></p>
+<h3><a name="a6811" id="a6811"><!-- --></a> <i>5.3.3</i> Passing a
+<code>UnicastRemoteObject</code> in an RMI Call</h3>
+<a name="a6812" id="a6812"><!-- --></a> As stated above, when an
+exported object of type <code>UnicastRemoteObject</code> is passed
+as a parameter or return value in an RMI call, the object is
+replaced by the remote object&#39;s stub. An exported remote object
+implementation remains in the virtual machine in which it was
+created and does not move (even by value) from that virtual
+machine. In other words, an exported remote object is passed by
+reference in an RMI call; exported remote object implementations
+cannot be passed by value.
+<p><br /></p>
+<h3><i>5.3.4</i> Serializing a
+<code>UnicastRemoteObject</code></h3>
+<a name="a6786" id="a6786"><!-- --></a> Information contained in
+<code>UnicastRemoteObject</code> is transient and is not saved if
+an object of that type is written to a user-defined
+<code>ObjectOutputStream</code> (for example, if the object is
+written to a file using serialization). An object that is an
+instance of a user-defined subclass of
+<code>UnicastRemoteObject</code>, however, may have non-transient
+data that can be saved when the object is serialized.
+<p><a name="a6802" id="a6802"><!-- --></a> When a
+<code>UnicastRemoteObject</code> is read from an
+<code>ObjectInputStream</code> using
+<code>UnicastRemoteObject</code>&#39;s <code>readObject</code>
+method, the remote object is automatically exported to the RMI
+runtime so that it may receive RMI calls. If exporting the object
+fails for some reason, deserializing the object will terminate with
+an exception.</p>
+<p><br /></p>
+<h3><a name="a7837" id="a7837"><!-- --></a> <i>5.3.5</i>
+Unexporting a <code>UnicastRemoteObject</code></h3>
+<a name="a7890" id="a7890"><!-- --></a> The
+<code>unexportObject</code> method makes the remote object,
+<em>obj</em>, unavailable for incoming calls. If the force
+parameter is true, the object is forcibly unexported even if there
+are pending calls to the remote object or the remote object still
+has calls in progress. If the force parameter is false, the object
+is only unexported if there are no pending or in-progress calls to
+the object. If the object is successfully unexported, the RMI
+runtime removes the object from its internal tables. Unexporting
+the object in this forcible manner may leave clients holding stale
+remote references to the remote object. This method throws
+<code>java.rmi.NoSuchObjectException</code> if the object was not
+previously exported to the RMI runtime.
+<p><br /></p>
+<h3><i>5.3.6</i> The <code>clone</code> method</h3>
+<a name="a8116" id="a8116"><!-- --></a> Objects are only cloneable
+using the Java programming language&#39;s default mechanism if they
+support the <code>java.lang.Cloneable</code> interface. The class
+<code>java.rmi.server.UnicastRemoteObject</code> does not implement
+this interface, but does implement the <code>clone</code> method so
+that if subclasses need to implement <code>Cloneable</code>, the
+remote object will be capable of being cloned properly. The
+<code>clone</code> method can be used by a subclass to create a
+cloned remote object with initially the same contents, but is
+exported to accept remote calls and is distinct from the original
+object.
+<p><br /></p>
+<hr />
+<a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-server23.html">PREV</a> | <a href="rmi-server25.html">NEXT</a>
+<hr />
+Copyright 1997, 2010, Oracle and/or its affiliates. All rights
+reserved.
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+<head>
+
+<title>Troubleshooting Security</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Troubleshooting Security</h1>
+
+<p>If you want to monitor security access, you can set the <code>java.security.debug</code> System property. To see a list of all debugging options, use the <code>help</code> setting:</p>
+
+<pre>
+java -Djava.security.debug=help
+</pre>
+
+<p><strong>Note</strong>:</p>
+<ul>
+<li><p>Separate multiple options with a comma.</p></li>
+<li><p>For more information, on 
+debugging utilities please visit <a href="jsse/JSSERefGuide.html#Debug">JSSE Reference Guide</a>.</p></li>
+</ul>
+<p>The following table lists <code>java.security.debug</code> options and links to further information about each option:</p>
+
+<table border="1" cellspacing="0" cellpadding="3" summary="java.security.debug options">
+
+<tr>
+  <th id="h1">Option</th>
+  <th id="h2">Description</th>
+  <th id="h3">Further Information</th>
+</tr>
+
+<tr>
+<td headers="h1"><code>all</code></td>
+<td headers="h2">Turn on all debugging</td>
+<td headers="h3">&nbsp;</td>
+</tr>
+<tr>
+<td headers="h1"><code>access</code></td>
+<td headers="h2">
+<p>Print all results from the <code><a href=
+"../../../api/java/security/AccessController.html#checkPermission-java.security.Permission-">
+AccessController.checkPermission</a></code> method.</p>
+<p>You can use the following options with the <code>access</code>
+option:</p>
+<ol>
+<li><code>stack</code>: Include stack trace</li>
+<li><code>domain</code>: Dump all domains in context</li>
+<li><code>failure</code>: Before throwing exception, dump stack and
+domain that do not have permission</li>
+</ol>
+<p>You can use the following options with the <code>stack</code>
+and <code>domain</code> options:</p>
+<ol>
+<li><code>permission=<em>&lt;classname&gt;</em></code>: Only dump
+output if specified permission is being checked</li>
+<li><code>codebase=<em>&lt;URL&gt;</em></code>: Only dump output if
+specified codebase is being checked</li>
+</ol>
+</td>
+<td headers="h3">
+<ul>
+<li><a href="permissions.html">Permissions</a></li>
+</ul>
+</td>
+</tr>
+
+
+<tr>
+  <td headers="h1"><code>certpath</code></td>
+  <td headers="h2">Turns on debugging for the PKIX <code><a href=
+"../../../api/java/security/cert/CertPathValidator.html">CertPathValidator</a></code> and <code><a href=
+"../../../api/java/security/cert/CertPathBuilder.html">CertPathBuilder</a></code>
+implementations. You can use the <code>ocsp</code> option with the certpath option for OCSP protocol tracing.
+    A hexadecimal dump of the OCSP request and response bytes is displayed. </td>
+                    
+  <td headers="h3">
+    <ul>
+      <li><a href="certpath/CertPathProgGuide.html">Java PKI Programmer's Guide</a></li>
+    </ul>
+  </td>
+  
+</tr>
+
+<tr>
+<td headers="h1"><code>combiner</code></td>
+<td headers="h2"><code><a href=
+"../../../api/javax/security/auth/SubjectDomainCombiner.html">SubjectDomainCombiner</a></code>
+debugging</td>
+<td headers="h3">
+<ul>
+<li><a href="permissions.html">Permissions</a></li>
+</ul>
+</td>
+</tr>
+<tr>
+<td headers="h1"><code>gssloginconfig</code></td>
+<td headers="h2">Java GSS (Generic Security Services) login configuration file
+debugging</td>
+<td headers="h3">
+<ul>
+<li><a href="jgss/jgss-features.html">Java Generic Security
+Services: (Java GSS) and Kerberos</a></li>
+<li><a href="jgss/tutorials/index.html">Introduction to JAAS and
+Java GSS-API Tutorials</a></li>
+<li><code><a href=
+"../../../api/javax/security/auth/login/Configuration.html">javax.security.auth.login.Configuration</a></code>:
+A Configuration object is responsible for specifying which
+<code><a href=
+"../../../api/javax/security/auth/spi/LoginModule.html">LoginModules</a></code>
+should be used for a particular application, and in what order the
+<code>LoginModules</code> should be invoked.</li>
+<li><a href="jgss/tutorials/LoginConfigFile.html">JAAS Login
+Configuration File</a></li>
+<li><a href="jgss/lab/index.html">Advanced Security Programming in
+Java SE Authentication, Secure Communication and Single
+Sign-On</a></li>
+</ul>
+</td>
+</tr>
+<tr>
+<td headers="h1"><code>configfile</code></td>
+<td headers="h2">JAAS (Java Authentication and Authorization Service)
+configuration file loading</td>
+<td headers="h3">
+<ul>
+<li><a href="jaas/JAASRefGuide.html">Java Authentication and
+Authorization Service (JAAS) Reference Guide</a></li>
+<li><a href="jgss/tutorials/ClientServer.html">Use of JAAS Login
+Utility and Java GSS-API for Secure Message Exchanges</a></li>
+</ul>
+</td>
+</tr>
+<tr>
+<td headers="h1"><code>configparser</code></td>
+<td headers="h2">JAAS configuration file parsing</td>
+<td headers="h3">
+<ul>
+<li><a href="jaas/JAASRefGuide.html">Java Authentication and
+Authorization Service (JAAS) Reference Guide</a></li>
+<li><a href="jgss/tutorials/ClientServer.html">Use of JAAS Login
+Utility and Java GSS-API for Secure Message Exchanges</a></li>
+</ul>
+</td>
+</tr>
+<tr>
+<td headers="h1"><code>jar</code></td>
+<td headers="h2">JAR file verification</td>
+<td headers="h3">
+<ul>
+<li><a href=
+"http://docs.oracle.com/javase/tutorial/deployment/jar/verify.html">
+Verifying Signed JAR Files</a> from The Java Tutorials</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td headers="h1"><code>logincontext</code></td>
+<td headers="h2"><code><a href=
+"../../../api/javax/security/auth/login/LoginContext.html">LoginContext</a></code>
+results</td>
+<td headers="h3">
+<ul>
+<li><a href="permissions.html">Permissions</a></li>
+</ul>
+</td>
+</tr>
+<tr>
+<td headers="h1"><code>policy</code></td>
+<td headers="h2">Loading and granting permissions with policy file</td>
+<td headers="h3">
+<ul>
+<li><a href=
+"http://docs.oracle.com/javase/tutorial/security/tour2/step3.html">Set
+up the Policy File to Grant the Required Permissions (Controlling
+Applications)</a> from The Java Tutorials</li>
+<li><a href=
+"http://docs.oracle.com/javase/tutorial/security/tour1/step2.html">Set
+up a Policy File to Grant the Required Permission (Controlling
+Applets)</a> from The Java Tutorials</li>
+<li><a href="../../tools/unix/policytool.html">policytool
+(Solaris, Unix, or Mac OS X)</a></li>
+<li><a href="../../tools/windows/policytool.html">policytool
+(Windows)</a></li>
+<li><a href="PolicyFiles.html">Default Policy Implementation and
+Policy File Syntax</a></li>
+</ul>
+</td>
+</tr>
+<tr>
+<td headers="h1"><code>provider</code></td>
+<td headers="h2">Security provider debugging</td>
+<td headers="h3">
+<ul>
+<li><a href=
+"http://docs.oracle.com/javase/tutorial/essential/environment/security.html">
+The Security Manager</a> from The Java Tutorials</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td headers="h1"><code>scl</code></td>
+<td headers="h2">Permissions <a href=
+"../../../api/java/security/SecureClassLoader.html">SecureClassLoader</a>
+assigns</td>
+<td headers="h3">
+<ul>
+<li><a href="permissions.html">Permissions</a></li>
+</ul>
+</td>
+</tr>
+</table>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

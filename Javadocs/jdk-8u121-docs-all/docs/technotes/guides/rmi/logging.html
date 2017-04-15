@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java RMI Implementation Logging</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+&nbsp;
+
+<h1>Java RMI Implementation Logging</h1>
+
+<!-- Body text begins here -->
+<p>The Java Remote Method Invocation (Java RMI)
+implementation uses the <a href="../logging/index.html">Logging
+APIs</a> to provide implementation logging output. The <a href=
+"../logging/overview.html#a1.8">logging configuration file</a> and
+programmatic API (<a href=
+"../../../api/java/util/logging/package-summary.html"><code>java.util.logging</code></a>)
+can be used to configure Java RMI implementation logging.</p>
+<p>The <code>java.rmi.server.logCalls</code> system property and
+the <a href="sunrmiproperties.html">implementation-specific
+<code>sun.rmi.*</code> logging properties</a> that were recognized
+by previous JDK versions still function to set the default levels
+for the Java RMI implementation <code>Logger</code> objects and to
+cause their output to be directed to <code>System.err</code> as
+with earlier versions.</p>
+<p>The table below shows the names of the <code>Logger</code>
+objects used by the Java RMI implementation and how they correspond
+to the logging properties supported by previous versions.</p>
+<p>Note that the Java RMI implementation supports a logging
+category, client-side call logging, which is analogous to the
+server-side call logging activated by the
+<code>java.rmi.server.logCalls</code> property. Client-side call
+logging is output to the <code>Logger</code> named
+<code>sun.rmi.client.call</code>.</p>
+<table cellspacing="0" cellpadding="2" border="1" summary=
+"The table below shows the names of the Logger objects used by the RMI implementation and how they correspond to the logging properties supported by previous versions.">
+<tr>
+<th id="header1" align="center">System Property
+Name</th>
+<th id="header2" align="center">Logger
+Name</th>
+<th id="header3" align="center">Information
+Logged</th>
+</tr>
+<tr>
+<td headers="header1"><code>java.rmi.server.logCalls</code></td>
+<td headers="header2"><code>sun.rmi.server.call</code></td>
+<td headers="header3">server-side remote calls and exceptions</td>
+</tr>
+<tr>
+<td headers="header1"><code>sun.rmi.server.logLevel</code></td>
+<td headers="header2"><code>sun.rmi.server.ref</code></td>
+<td headers="header3">server-side remote reference activity</td>
+</tr>
+<tr>
+<td headers="header1"><code>sun.rmi.client.logCalls</code></td>
+<td headers="header2"><code>sun.rmi.client.call</code></td>
+<td headers="header3">client-side remote calls and exceptions</td>
+</tr>
+<tr>
+<td headers="header1"><code>sun.rmi.client.logLevel</code></td>
+<td headers="header2"><code>sun.rmi.client.ref</code></td>
+<td headers="header3">client-side remote reference activity</td>
+</tr>
+<tr>
+<td headers="header1"><code>sun.rmi.dgc.logLevel</code></td>
+<td headers="header2"><code>sun.rmi.dgc</code></td>
+<td headers="header3">distributed garbage collection activity</td>
+</tr>
+<tr>
+<td headers="header1"><code>sun.rmi.loader.logLevel</code></td>
+<td headers="header2"><code>sun.rmi.loader</code></td>
+<td headers="header3">activity of default
+<code>RMIClassLoader</code> provider</td>
+</tr>
+<tr>
+<td headers="header1"><code>sun.rmi.transport.logLevel</code></td>
+<td headers="header2"><code>sun.rmi.transport.misc</code></td>
+<td headers="header3">transport-layer activity</td>
+</tr>
+<tr>
+<td headers="header1">
+<code>sun.rmi.transport.tcp.logLevel</code></td>
+<td headers="header2"><code>sun.rmi.transport.tcp</code></td>
+<td headers="header3">TCP binding and connection activity</td>
+</tr>
+<tr>
+<td headers="header1">
+<code>sun.rmi.transport.proxy.logLevel</code></td>
+<td headers="header2"><code>sun.rmi.transport.proxy</code></td>
+<td headers="header3">HTTP tunnelling activity</td>
+</tr>
+<tr>
+<td headers="header1">(none)</td>
+<td headers="header2"><code>sun.rmi.runtime</code></td>
+<td headers="header3">miscellaneous runtime activity</td>
+</tr>
+</table>
+<p>For both the <code>sun.rmi.client.call</code> and the
+<code>sun.rmi.server.call</code> <code>Logger</code>s, exceptions
+thrown from remote calls are logged at the level
+<code>Level.FINE</code>, and each remote call is logged at the
+level <code>Level.FINER</code>. Setting the
+<code>java.rmi.server.logCalls</code> or
+<code>sun.rmi.client.logCalls</code> system properties to the value
+<code>"true"</code> causes the corresponding <code>Logger</code> to
+be set to the level <code>Level.FINER</code>.</p>
+<p>For the <code>sun.rmi.*</code> logging properties that have
+names ending in <code>".logLevel"</code>, a value of
+<code>"BRIEF"</code> causes the corresponding <code>Logger</code>
+to be set to the level <code>Level.FINE</code>, and a value of
+<code>"VERBOSE"</code> causes the corresponding <code>Logger</code>
+to be set to the level <code>Level.FINER</code>. Use of the logging
+configuration file is now preferred over the use of these
+<code>sun.rmi.*</code> system properties for logging. 
+<!-- Body text ends here --></p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

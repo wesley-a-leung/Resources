@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- USE THIS TEMPLATE WHEN ENHANCEMENTS ARE LENGTHY; YOU THEN WILL USE A
+   SEPARATE FILE TO DOCUMENT THE ENHANCEMENTS OF EACH VERSION CURRENTLY SUPPORTE
+D
+   -->
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Enhancements to the JavaBeans API in Java SE 6.0</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<!-- REMEMBER TO CHANGE TITLE VALUE ABOVE -->
+<h1>Enhancements to the JavaBeans
+Component API in Java SE 6.0</h1>
+<h2><a name="package_beans" id="package_beans">java.beans</a></h2>
+<a href="#MajorFixes">Major Features</a><br />
+<a href="#fixedBugs">Fixed Bugs</a>
+<hr />
+<h2><a name="MajorFixes" id="MajorFixes">Major Features</a></h2>
+<h3>The <code>@ConstructorProperties</code> annotation</h3>
+<p>The <a href="../../../api/java/beans/ConstructorProperties.html">
+<code>@ConstructorProperties</code></a> annotation was introduced
+in Java SE 6.0 to show how the parameters of annotated constructor
+correspond to an object's properties. Previously, the constructor
+<code>DefaultPersistenceDelegate(String[]
+constructorPropertyNames)</code> was used for the same goal, but
+was not an appropriate approach for library classes.</p>
+<p>Technically, an annotation is used for copying beans with
+read-only properties. In the following code example the
+<code>Food</code> properties are read-only.</p>
+<pre>
+public class Food {
+     private final int varieties;
+     private final String country;
+     
+     <strong>@ConstructorProperties({&quot;varieties&quot;, &quot;country&quot;})
+</strong>     public Point(int varieties, String country) {
+         this.varieties = varieties;
+         this.country = country;
+     }
+     public int getVarieties() {
+         return this.varieties;
+     }
+     public String getCountry() {
+         return this.country;
+     }
+}
+</pre>
+<p>To create a <code>vegetable</code> object with the same
+properties that the <code>fruit</code> object has, use the
+following code:</p>
+<pre>
+Food fruit = new Food (5, &quot;Argentina&quot;);
+Food vegetable = new Food (fruit.getVarieties(), fruit.getCountry());
+</pre>
+Defining the annotation accomplishes two goals:
+<ul>
+<li>Eliminates the need for the developer to explicitly use the
+<code>DefaultPersistenceDelegate</code> class.</li>
+<li>Describes the relationship between a constructor parameter and
+a property, but not an operational logic, therefore the annotation
+can be applied to both bean related areas, such as Long Term
+Persistence, and to non-beans related areas, such JMX.</li>
+</ul>
+<h2><a name="fixedBugs" id="fixedBugs">Fixed Bugs</a></h2>
+<h3>The EventHandler class</h3>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6179222">6179222</a>:
+Possible a <code>NullPointerException</code> error with the
+<code>EventHandler</code> class</h3>
+<p>The NPR exception was thrown by the <code>EventHandler</code>
+class. The <code>create</code> method of the
+<code>EventHandler</code> class checks the <code>null</code> value,
+and javadoc is corrected accordingly.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6204552">6204552</a>: The
+EventHandler documentation and exception handling problems</h3>
+<p>Documentation on the <code>EventHandler</code> class of the
+<code>eventPropertyName</code> argument did not clearly explain
+waht the argument supports. Information about what the
+<code>eventProperName</code> property is capable of is included in
+the documentation for the <a href="../../../api/java/beans/EventHandler.html#create-java.lang.Class-java.lang.Object-java.lang.String-java.lang.String-java.lang.String-">
+<code>create</code></a> method.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6210265">6210265</a>: The
+<code>EventHandler</code> class should not cache the
+<code>Method</code> object</h3>
+<p>The method search is improved, and the method is prevented from
+being cached in the <code>EventHandler</code> class field.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6271692">6271692</a>: The
+target property of the <code>EventHandler</code> class did support
+same syntax as the event property</h3>
+<p>The target property syntax is fixed and now supports an
+arbitrary number of methods or properties. This was accomplished by
+separating each property or method with a &quot;.&quot;.</p>
+<p>&nbsp;</p>
+<h3>The <code>XMLEncoder</code> class</h3>
+<p>The following fixes were performed to improve the long-term
+persistence process.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6245149">6245149</a>: The
+<code>java.beans.XMLEncoder</code> class does not encode
+<code>java.net.URI</code> objects</h3>
+<p>The <code>Statement</code> class could not access a member of
+the <code>java.net.URI</code> class with modifiers private. In JDK
+6.0 an appropriate <code>PersistenceDelegate</code> is provided to
+solve this problem.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=4921212">4921212</a>: The
+<code>XMLEncoder</code> class does not encode <code>null</code>
+entries in <code>HashMap</code> objects</h3>
+<p>A null <code>Key</code> entry of the <code>HashMap</code> object
+was not included into the XML output. The fix includes a null
+<code>Key</code> entry to the XML file.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6256805">6256805</a>: The
+<code>XMLEncoder</code> class emits invalid XML</h3>
+<p>The <code>XMLEncoder</code> class produces an XML output only
+for valid XML characters. A new <code>code</code> attribute was
+introduced for a character element. The <code>code</code> contains
+a hexadecimal value if it starts with &quot;#&quot;. Otherwise it
+contains a decimal value.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=5015403">5015403</a>: The
+<code>XMLEncoder</code> class does not encode enumerations
+correctly</h3>
+<p>The <code>XMLEncoder</code> class was not serializing an
+enumeration correctly. The <code>EnumPersistenceDelegate</code>
+class, a new persistence delegate, was introduced to support the
+serialization of enum classes.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=4741757">4741757</a>: The
+<code>XMLEncoder</code> class ignores persistence delegates when
+used with Java Web Start</h3>
+<p>A <code>DefaultPersistenceDelegate</code> class for some classes
+was created improperly. As a result the hack that adds field access
+for properties and breaking JavaBeans specification was detected.
+The performed fix removes the hack that was intended for the
+following classes: <code>java.awt.Dimension</code>,
+<code>java.awt.Point</code>, and
+<code>java.awt.Rectangle</code>.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6338070">6338070</a>: The
+<code>XMLDecoder</code> class ignores statements made to owner
+unless the <code>read()</code> method is called</h3>
+<p>Initially the XMLDecoder class was created with lazy
+initialization. The fix enables parsing in the <code>close()</code>
+method if a file is not parsed by the <code>readObject()</code>
+method.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6341798">6341798</a>: The
+<code>XMLDecoder</code> class fails when using Turkish Locale</h3>
+<p>The <code>XMLDecoder</code> class did not function correctly
+when reading an English XML file on a machine with the locale set
+to Turkish. To fix this bug the <code>toLowerCase</code> and
+<code>toUpperCase</code> methods are invoked in the English
+locale.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6437265">6437265</a>: Some
+<code>Component</code> object is missing during xml
+serializing</h3>
+<p><code>Container</code> objects were not serialized. The fix adds
+special behavior to the persistence delegate for containers with
+<code>BorderLayout</code>.</p>
+<p>&nbsp;</p>
+&nbsp;
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

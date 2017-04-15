@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>jdeps</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T7:56:53Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Solaris, Linux, and OS X, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38209-05" name="partnum"/>
+<meta content="JSSOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="jdb.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="s2-security-tools.html">
+                Next</a><hr/>
+<div><a id="BACEHAGD" name="BACEHAGD"/>
+<div id="JSSOR690">
+<h1>jdeps</h1>
+<p>Java class dependency analyzer.</p>
+<div><a id="sthref119" name="sthref119"/>
+<h2>Synopsis</h2>
+<p><b>jdeps</b> [<i>options</i>] <i>classes</i> ...</p>
+<dl>
+<dt><i>options</i></dt>
+<dd>
+<p>Command-line options. See <a href="#BACCCJEH">Options</a>.</p>
+</dd>
+<dt><i>classes</i></dt>
+<dd>
+<p>Name of the classes to analyze. You can specify a class that can be found in the class path, by its file name, a directory, or a JAR file.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref120" name="sthref120"/>
+<h2>Description</h2>
+<p>The <code dir="ltr">jdeps</code> command shows the package-level or class-level dependencies of Java class files. The input class can be a path name to a <code dir="ltr">.class</code> file, a directory, a JAR file, or it can be a fully qualified class name to analyze all class files. The options determine the output. By default, <code dir="ltr">jdeps</code> outputs the dependencies to the system output. It can generate the dependencies in DOT language (see the <code dir="ltr">-dotoutput</code> option).</p>
+</div>
+
+<div><a id="BACCCJEH" name="BACCCJEH"/>
+<h2>Options</h2>
+<dl>
+<dt>-dotoutput &lt;<i>dir</i>&gt;</dt>
+<dd>
+<p>Destination directory for DOT file output. If specified, <code dir="ltr">jdeps</code> will generate one dot file per each analyzed archive named &lt;<i>archive-file-name</i>&gt;.dot listing the dependencies, and also a summary file named summary.dot listing the dependencies among the archives.</p>
+</dd>
+<dt>-s</dt>
+<dt>-summary</dt>
+<dd>
+<p>Prints dependency summary only.</p>
+</dd>
+<dt>-v</dt>
+<dt>-verbose</dt>
+<dd>
+<p>Prints all class-level dependencies.</p>
+</dd>
+<dt>-verbose:package</dt>
+<dd>
+<p>Prints package-level dependencies excluding dependencies within the same archive.</p>
+</dd>
+<dt>-verbose:class</dt>
+<dd>
+<p>Prints class-level dependencies excluding dependencies within the same archive.</p>
+</dd>
+<dt>-cp &lt;<i>path</i>&gt;</dt>
+<dt>-classpath &lt;<i>path</i>&gt;</dt>
+<dd>
+<p>Specifies where to find class files.</p>
+<p>See also <a href="classpath.html#CBHHCGFB">Setting the Class Path</a>.</p>
+</dd>
+<dt>-p &lt;<i>pkg name</i>&gt;</dt>
+<dt>-package &lt;<i>pkg name</i>&gt;</dt>
+<dd>
+<p>Finds dependencies in the specified package. You can specify this option multiple times for different packages. The <code dir="ltr">-p</code> and <code dir="ltr">-e</code> options are mutually exclusive.</p>
+</dd>
+<dt>-e &lt;<i>regex</i>&gt;</dt>
+<dt>-regex &lt;<i>regex</i>&gt;</dt>
+<dd>
+<p>Finds dependencies in packages matching the specified regular expression pattern. The <code dir="ltr">-p</code> and <code dir="ltr">-e</code> options are mutually exclusive.</p>
+</dd>
+<dt>-include &lt;<i>regex</i>&gt;</dt>
+<dd>
+<p>Restricts analysis to classes matching pattern. This option filters the list of classes to be analyzed. It can be used together with <code dir="ltr">-p</code> and <code dir="ltr">-e</code> which apply pattern to the dependencies.</p>
+</dd>
+<dt>-jdkinternals</dt>
+<dd>
+<p>Finds class-level dependences in JDK internal APIs. By default, it analyzes all classes specified in the <code dir="ltr">-classpath</code> option and in input files unless you specified the <code dir="ltr">-include</code> option. You cannot use this option with the <code dir="ltr">-p</code>, <code dir="ltr">-e</code>, and <code dir="ltr">-s</code> options.</p>
+<p><b>Warning</b>: JDK internal APIs may not be accessible in upcoming releases.</p>
+</dd>
+<dt>-P</dt>
+<dt>-profile</dt>
+<dd>
+<p>Shows profile or the file containing a package.</p>
+</dd>
+<dt>-apionly</dt>
+<dd>
+<p>Restricts analysis to APIs, for example, dependences from the signature of <code dir="ltr">public</code> and <code dir="ltr">protected</code> members of public classes including field type, method parameter types, returned type, and checked exception types.</p>
+</dd>
+<dt>-R</dt>
+<dt>-recursive</dt>
+<dd>
+<p>Recursively traverses all dependencies.</p>
+</dd>
+<dt>-version</dt>
+<dd>
+<p>Prints version information.</p>
+</dd>
+<dt>-h</dt>
+<dt>-?</dt>
+<dt>-help</dt>
+<dd>
+<p>Prints help message for <code dir="ltr">jdeps</code>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref121" name="sthref121"/>
+<h2>Examples</h2>
+<p>Analyzing the dependencies of Notepad.jar.</p>
+<pre dir="ltr" xml:space="preserve">
+$ jdeps demo/jfc/Notepad/Notepad.jar
+ 
+demo/jfc/Notepad/Notepad.jar -&gt; /usr/java/jre/lib/rt.jar
+   &lt;unnamed&gt; (Notepad.jar)
+      -&gt; java.awt                                           
+      -&gt; java.awt.event                                     
+      -&gt; java.beans                                         
+      -&gt; java.io                                            
+      -&gt; java.lang                                          
+      -&gt; java.net                                           
+      -&gt; java.util                                          
+      -&gt; java.util.logging                                  
+      -&gt; javax.swing                                        
+      -&gt; javax.swing.border                                 
+      -&gt; javax.swing.event                                  
+      -&gt; javax.swing.text                                   
+      -&gt; javax.swing.tree                                   
+      -&gt; javax.swing.undo  
+</pre>
+<p>Use -P or -profile option to show on which profile that Notepad depends.</p>
+<pre dir="ltr" xml:space="preserve">
+$ jdeps -profile demo/jfc/Notepad/Notepad.jar 
+demo/jfc/Notepad/Notepad.jar -&gt; /usr/java/jre/lib/rt.jar (Full JRE)
+   &lt;unnamed&gt; (Notepad.jar)
+      -&gt; java.awt                                           Full JRE
+      -&gt; java.awt.event                                     Full JRE
+      -&gt; java.beans                                         Full JRE
+      -&gt; java.io                                            compact1
+      -&gt; java.lang                                          compact1
+      -&gt; java.net                                           compact1
+      -&gt; java.util                                          compact1
+      -&gt; java.util.logging                                  compact1
+      -&gt; javax.swing                                        Full JRE
+      -&gt; javax.swing.border                                 Full JRE
+      -&gt; javax.swing.event                                  Full JRE
+      -&gt; javax.swing.text                                   Full JRE
+      -&gt; javax.swing.tree                                   Full JRE
+      -&gt; javax.swing.undo                                   Full JRE
+</pre>
+<p>Analyzing the immediate dependencies of a specific class in a given classpath, for example the <code dir="ltr">com.sun.tools.jdeps.Main</code> class in the tools.jar file.</p>
+<pre dir="ltr" xml:space="preserve">
+$ jdeps -cp lib/tools.jar com.sun.tools.jdeps.Main
+lib/tools.jar -&gt; /usr/java/jre/lib/rt.jar
+   com.sun.tools.jdeps (tools.jar)
+      -&gt; java.io                                            
+      -&gt; java.lang 
+</pre>
+<p>Use the <code dir="ltr">-verbose:class</code> option to find class-level dependencies or use the <code dir="ltr">-v</code> or <code dir="ltr">-verbose</code> option to include dependencies from the same JAR file.</p>
+<pre dir="ltr" xml:space="preserve">
+$ jdeps -verbose:class -cp lib/tools.jar com.sun.tools.jdeps.Main
+ 
+lib/tools.jar -&gt; /usr/java/jre/lib/rt.jar
+   com.sun.tools.jdeps.Main (tools.jar)
+      -&gt; java.io.PrintWriter                                
+      -&gt; java.lang.Exception                                
+      -&gt; java.lang.Object                                   
+      -&gt; java.lang.String                                   
+      -&gt; java.lang.System 
+</pre>
+<p>Use the <code dir="ltr">-R</code> or <code dir="ltr">-recursive</code> option to analyze the transitive dependencies of the <code dir="ltr">com.sun.tools.jdeps.Main</code> class.</p>
+<pre dir="ltr" xml:space="preserve">
+$ jdeps -R -cp lib/tools.jar com.sun.tools.jdeps.Main
+lib/tools.jar -&gt; /usr/java/jre/lib/rt.jar
+   com.sun.tools.classfile (tools.jar)
+      -&gt; java.io                                            
+      -&gt; java.lang                                          
+      -&gt; java.lang.reflect                                  
+      -&gt; java.nio.charset                                   
+      -&gt; java.nio.file                                      
+      -&gt; java.util                                          
+      -&gt; java.util.regex                                    
+   com.sun.tools.jdeps (tools.jar)
+      -&gt; java.io                                            
+      -&gt; java.lang                                          
+      -&gt; java.nio.file                                      
+      -&gt; java.nio.file.attribute                            
+      -&gt; java.text                                          
+      -&gt; java.util                                          
+      -&gt; java.util.jar                                      
+      -&gt; java.util.regex                                    
+      -&gt; java.util.zip                                      
+/usr/java/jre/lib/jce.jar -&gt; /usr/java/jre/lib/rt.jar
+   javax.crypto (jce.jar)
+      -&gt; java.io                                            
+      -&gt; java.lang                                          
+      -&gt; java.lang.reflect                                  
+      -&gt; java.net                                           
+      -&gt; java.nio                                           
+      -&gt; java.security                                      
+      -&gt; java.security.cert                                 
+      -&gt; java.security.spec                                 
+      -&gt; java.util                                          
+      -&gt; java.util.concurrent                               
+      -&gt; java.util.jar                                      
+      -&gt; java.util.regex                                    
+      -&gt; java.util.zip                                      
+      -&gt; javax.security.auth                                
+      -&gt; sun.security.jca                                   JDK internal API (rt.jar)
+      -&gt; sun.security.util                                  JDK internal API (rt.jar)
+   javax.crypto.spec (jce.jar)
+      -&gt; java.lang                                          
+      -&gt; java.security.spec                                 
+      -&gt; java.util                                          
+/usr/java/jre/lib/rt.jar -&gt; /usr/java/jre/lib/jce.jar
+   java.security (rt.jar)
+      -&gt; javax.crypto
+</pre>
+<p>Generate dot files of the dependencies of Notepad demo.</p>
+<pre dir="ltr" xml:space="preserve">
+$ jdeps -dotoutput dot demo/jfc/Notepad/Notepad.jar
+</pre>
+<p><code dir="ltr">jdeps</code> will create one dot file for each given JAR file named &lt;<i>filename</i>&gt;.dot in the dot directory specified in the <code dir="ltr">-dotoutput</code> option, and also a summary file named summary.dot that will list the dependencies among the JAR files</p>
+<pre dir="ltr" xml:space="preserve">
+$ cat dot/Notepad.jar.dot 
+digraph "Notepad.jar" {
+    // Path: demo/jfc/Notepad/Notepad.jar
+   "&lt;unnamed&gt;"                                        -&gt; "java.awt";
+   "&lt;unnamed&gt;"                                        -&gt; "java.awt.event";
+   "&lt;unnamed&gt;"                                        -&gt; "java.beans";
+   "&lt;unnamed&gt;"                                        -&gt; "java.io";
+   "&lt;unnamed&gt;"                                        -&gt; "java.lang";
+   "&lt;unnamed&gt;"                                        -&gt; "java.net";
+   "&lt;unnamed&gt;"                                        -&gt; "java.util";
+   "&lt;unnamed&gt;"                                        -&gt; "java.util.logging";
+   "&lt;unnamed&gt;"                                        -&gt; "javax.swing";
+   "&lt;unnamed&gt;"                                        -&gt; "javax.swing.border";
+   "&lt;unnamed&gt;"                                        -&gt; "javax.swing.event";
+   "&lt;unnamed&gt;"                                        -&gt; "javax.swing.text";
+   "&lt;unnamed&gt;"                                        -&gt; "javax.swing.tree";
+   "&lt;unnamed&gt;"                                        -&gt; "javax.swing.undo";
+}
+ 
+$ cat dot/summary.dot
+digraph "summary" {
+   "Notepad.jar"                  -&gt; "rt.jar";
+}
+</pre></div>
+
+<div><a id="sthref122" name="sthref122"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="javap.html#BEHDBJHJ"><code dir="ltr">javap</code>(1)</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="jdb.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="s2-security-tools.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Security Architecture: -</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<table summary="" width="100%">
+<tr>
+<td>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href=
+"security-specTOC.fm.html">CONTENTS</a> | <a href=
+"security-specTOC.fm.html">PREV</a> | <a href=
+"security-spec.doc1.html">NEXT</a> 
+<!-- | <a href="security-spec.doc.html">INDEX</a>  -->
+<!-- /font --></td>
+</tr>
+</table>
+<br />
+<h2>Table of Contents</h2>
+<dl>
+<dd><br />
+<a href="security-spec.doc1.html"><b><font size=
+"+2">1</font></b></a> <b><a href=
+"security-spec.doc1.html#a21150"><font size=
+"+2">Introduction</font></a></b>
+<dl>
+<dd><b>1.1 <a href="security-spec.doc1.html#a18313">The Original
+Sandbox Model</a></b></dd>
+<dd><b>1.2 <a href="security-spec.doc1.html#a18314">Evolving the
+Sandbox Model</a></b></dd>
+</dl>
+</dd>
+<dd><br />
+<a href="security-spec.doc2.html"><b><font size=
+"+2">2</font></b></a> <b><a href=
+"security-spec.doc2.html#a19853"><font size="+2">New Protection
+Mechanisms -- Overview of Basic Concepts</font></a></b></dd>
+<dd><br />
+<a href="security-spec.doc3.html"><b><font size=
+"+2">3</font></b></a> <b><a href=
+"security-spec.doc3.html#a19802"><font size="+2">Permissions and
+Security Policy</font></a></b>
+<dl>
+<dd><b>3.1 <a href="security-spec.doc3.html#a17001">The Permission
+Classes</a></b>
+<dl>
+<dd><b>3.1.1 <a href=
+"security-spec.doc3.html#a19902">java.security.Permission</a></b></dd>
+<dd><b>3.1.2 <a href=
+"security-spec.doc3.html#a19905">java.security.PermissionCollection</a></b></dd>
+<dd><b>3.1.3 <a href=
+"security-spec.doc3.html#a19911">java.security.Permissions</a></b></dd>
+<dd><b>3.1.4 <a href=
+"security-spec.doc3.html#a22515">java.security.UnresolvedPermission</a></b></dd>
+<dd><b>3.1.5 <a href=
+"security-spec.doc3.html#a19913">java.io.FilePermission</a></b></dd>
+<dd><b>3.1.6 <a href=
+"security-spec.doc3.html#a19915">java.net.SocketPermission</a></b></dd>
+<dd><b>3.1.7 <a href=
+"security-spec.doc3.html#a20057">java.security.BasicPermission</a></b></dd>
+<dd><b>3.1.8 <a href=
+"security-spec.doc3.html#a20107">java.util.PropertyPermission</a></b></dd>
+<dd><b>3.1.9 <a href=
+"security-spec.doc3.html#a20113">java.lang.RuntimePermission</a></b></dd>
+<dd><b>3.1.10 <a href=
+"security-spec.doc3.html#a20327">java.awt.AWTPermission</a></b></dd>
+<dd><b>3.1.11 <a href=
+"security-spec.doc3.html#a20353">java.net.NetPermission</a></b></dd>
+<dd><b>3.1.12 <a href=
+"security-spec.doc3.html#a26158">java.lang.reflect.ReflectPermission</a></b></dd>
+<dd><b>3.1.13 <a href=
+"security-spec.doc3.html#a26159">java.io.SerializablePermission</a></b></dd>
+<dd><b>3.1.14 <a href=
+"security-spec.doc3.html#a26196">java.security.SecurityPermission</a></b></dd>
+<dd><b>3.1.15 <a href=
+"security-spec.doc3.html#a26221">java.security.AllPermission</a></b></dd>
+<dd><b>3.1.16 <a href=
+"security-spec.doc3.html#AuthPermission">javax.security.auth.AuthPermission</a></b></dd>
+<dd><b>3.1.17 <a href="security-spec.doc3.html#a22640">Discussion of
+Permission Implications</a></b></dd>
+<dd><b>3.1.18 <a href="security-spec.doc3.html#a20211">How To Create
+New Types of Permissions</a></b></dd>
+</dl>
+</dd>
+<dd><b>3.2 <a href=
+"security-spec.doc3.html#a25999">java.security.CodeSource</a></b></dd>
+<dd><b>3.3 <a href=
+"security-spec.doc3.html#a20128">java.security.Policy</a></b>
+<dl>
+<dd><b>3.3.1 <a href="security-spec.doc3.html#a20131">Policy File
+Format</a></b></dd>
+<dd><b>3.3.2 <a href="security-spec.doc3.html#a25970">Property
+Expansion in Policy Files</a></b></dd>
+<dd><b>3.3.3 <a href="security-spec.doc3.html#a20265">General
+Expansion in Policy Files</a></b></dd>
+<dd><b>3.3.4 <a href="security-spec.doc3.html#a20264">Assigning
+Permissions</a></b></dd>
+<dd><b>3.3.5 <a href="security-spec.doc3.html#a23883">Default System
+and User Policy Files</a></b></dd>
+<dd><b>3.3.6 <a href="security-spec.doc3.html#a27428">Customizing
+Policy Evaluation</a></b></dd>
+</dl>
+</dd>
+<dd><b>3.4 <a href=
+"security-spec.doc3.html#a28292">java.security.GeneralSecurityException</a></b></dd>
+</dl>
+</dd>
+<dd><br />
+<a href="security-spec.doc4.html"><b><font size=
+"+2">4</font></b></a> <b><a href=
+"security-spec.doc4.html#a20389"><font size="+2">Access Control
+Mechanisms and Algorithms</font></a></b>
+<dl>
+<dd><b>4.1 <a href=
+"security-spec.doc4.html#a21491">java.security.ProtectionDomain</a></b></dd>
+<dd><b>4.2 <a href=
+"security-spec.doc4.html#a17119">java.security.AccessController</a></b>
+<dl>
+<dd><b>4.2.1 <a href="security-spec.doc4.html#a24646">Algorithm for
+Checking Permissions</a></b></dd>
+<dd><b>4.2.2 <a href="security-spec.doc4.html#a20573">Handling
+Privileges</a></b></dd>
+</dl>
+</dd>
+<dd><b>4.3 <a href="security-spec.doc4.html#a21495">Inheritence of
+Access Control Context</a></b></dd>
+<dd><b>4.4 <a href=
+"security-spec.doc4.html#a22405">java.security.AccessControlContext</a></b></dd>
+</dl>
+</dd>
+<dd><br />
+<a href="security-spec.doc5.html"><b><font size=
+"+2">5</font></b></a> <b><a href=
+"security-spec.doc5.html#a20588"><font size="+2">Secure Class
+Loading</font></a></b>
+<dl>
+<dd><b>5.1 <a href="security-spec.doc5.html#a28488">Class Loader
+Class Hierarchies</a></b></dd>
+<dd><b>5.2 <a href="security-spec.doc5.html#a28414">The Primordial
+Class Loader</a></b></dd>
+<dd><b>5.3 <a href="security-spec.doc5.html#a28657">Class Loader
+Delegation</a></b></dd>
+<dd><b>5.4 <a href="security-spec.doc5.html#a28633">Class Resolution
+Algorithm</a></b></dd>
+</dl>
+</dd>
+<dd><br />
+<a href="security-spec.doc6.html"><b><font size=
+"+2">6</font></b></a> <b><a href=
+"security-spec.doc6.html#a19349"><font size="+2">Security
+Management</font></a></b>
+<dl>
+<dd><b>6.1 <a href="security-spec.doc6.html#a28400">Managing Applets
+and Applications</a></b></dd>
+<dd><b>6.2 <a href="security-spec.doc6.html#a28195">SecurityManager
+versus AccessController</a></b></dd>
+<dd><b>6.3 <a href="security-spec.doc6.html#a18540">Auxiliary
+Tools</a></b>
+<dl>
+<dd><b>6.3.1 <a href="security-spec.doc6.html#a27533">The Key and
+Certificate Management Tool</a></b></dd>
+<dd><b>6.3.2 <a href=
+"security-spec.doc6.html#a21952">PolicyTool</a></b></dd>
+<dd><b>6.3.3 <a href="security-spec.doc6.html#a21611">The JAR
+Signing and Verification Tool</a></b></dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dd><br />
+<a href="security-spec.doc7.html"><b><font size=
+"+2">7</font></b></a> <b><a href=
+"security-spec.doc7.html#a28311"><font size="+2">GuardedObject and
+SignedObject</font></a></b>
+<dl>
+<dd><b>7.1 <a href=
+"security-spec.doc7.html#a28312">java.security.GuardedObject and
+java.security.Guard</a></b></dd>
+<dd><b>7.2 <a href=
+"security-spec.doc7.html#a28356">java.security.SignedObject</a></b></dd>
+</dl>
+</dd>
+<dd><br />
+<a href="security-spec.doc8.html"><b><font size=
+"+2">8</font></b></a> <b><a href=
+"security-spec.doc8.html#a21605"><font size="+2">Discussion and
+Future Directions</font></a></b>
+<dl>
+<dd><b>8.1 <a href="security-spec.doc8.html#a20670">Resource
+Consumption Management</a></b></dd>
+<dd><b>8.2 <a href="security-spec.doc8.html#a28250">Arbitrary
+Grouping of Permissions</a></b></dd>
+<dd><b>8.3 <a href="security-spec.doc8.html#a28253">Object-Level
+Protection</a></b></dd>
+<dd><b>8.4 <a href="security-spec.doc8.html#a28269">Subdividing
+Protection Domains</a></b></dd>
+<dd><b>8.5 <a href="security-spec.doc8.html#a28211">Running Applets
+with Signed Content</a></b></dd>
+</dl>
+</dd>
+<dd><br />
+<a href="security-spec.doc9.html"><b><font size=
+"+2">9</font></b></a> <b><a href=
+"security-spec.doc9.html#a21417"><font size=
+"+2">Summary</font></a></b></dd>
+<dd><br />
+<a href="security-spec.doc10.html"><b><font size=
+"+2">10</font></b></a> <b><a href=
+"security-spec.doc10.html#a22214"><font size=
+"+2">Acknowledgments</font></a></b></dd>
+<dd><br />
+<a href="security-spec.doc11.html"><b><font size=
+"+2">11</font></b></a> <b><a href=
+"security-spec.doc11.html#a18136"><font size=
+"+2">References</font></a></b></dd>
+<dd><br />
+<a href="security-spec.doc12.html"><b><font size=
+"+2">12</font></b></a> <b><a href=
+"security-spec.doc12.html#a18723"><font size="+2">Revision
+History</font></a></b></dd>
+</dl>
+<br />
+<hr />
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href=
+"security-specTOC.fm.html">CONTENTS</a> | <a href=
+"security-specTOC.fm.html">PREV</a> | <a href=
+"security-spec.doc1.html">NEXT</a> 
+<!-- | <a href="security-spec.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

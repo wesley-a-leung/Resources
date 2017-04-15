@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>JDBC 4.2</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>JDBC 4.2</h1>
+
+<p>JDBC 4.2, which is part of Java SE 8, introduces the following
+features:</p>
+<ul>
+<li>Addition of REF_CURSOR support.</li>
+<li>Addition of <code>java.sql.DriverAction</code> Interface</li>
+<li>Addition of the <code>java.sql.SQLType</code> Interface</li>
+<li>Addition of the <code>java.sql.JDBCType</code> Enum</li>
+<li>Add Support for large update counts</li>
+<li>Changes to the existing interfaces</li>
+<li>Rowset 1.2: Lists the enhancements for JDBC RowSet. </li>
+</ul>
+<h2>Addition of REF_CURSOR Support</h2>
+<p>The REF_CURSOR data type is supported by several databases. To return a REF_CURSOR from a stored procedure, use the method <code>CallableStatement.registerOutParameter</code> and specify <code>Types.REF_CURSOR</code> as the data type to be returned.
+To retrieve the ResultSet instance representing the REF_CURSOR, invoke the method the method <code>CallablStatement.getObject</code>, and specify <code>ResultSet</code> as the data type to which to convert the returned object. The returned result set is a forward, read-only result set. </p>
+<p>If you invoke the method <code>registerOutParameter</code> and specify <code>Types.REF_CURSOR</code> as the data type to be returned, and the JDBC driver does not support this data type, a <code>SQLFeatureNotSupportedException</code> is thrown.</p>
+<p>The following example obtains a ResultSet instance from a REF_CURSOR with the <code>CallableStatement</code> class:</p>
+<pre class="codeblock">
+CallableStatement cstmt = conn.prepareCall("{callmySproc(?)}");
+cstmt.registerOutParameter(1, Types.REF_CURSOR);
+cstmt.executeQuery();
+ResultSet rs = cstmt.getObject(1, ResultSet.class);
+while(rs.next()){
+System.out.println("Name="+ rs.getString(1));
+}
+</pre>
+<p>To determine if a JDBC Driver supports REF_CURSOR, invoke the method <code>DatabaseMetaData.supportsRefCursors</code>.</p>
+
+<h2>Addition of the <a href="../../../api/java/sql/DriverAction.html"><code>java.sql.DriverAction</code></a> Interface</h2>
+<p>This is an interface that any class that implements the <a href="../../../api/java/sql/Driver.html"><code>java.sql.Driver</code></a> must implement if it wants to be notified by the DriverManager class. The JDBC driver's static initialization block must invoke the method <code>DriverManager.registerDriver(java.sql.Driver, java.sql.DriverAction)</code> to inform DriverManager class of which DriverAction implementation to invoke when the JDBC driver is deregistered. The method <code>DriverManager.deregisterDriver</code> requires a permission, if a <code>SecurityManager</code> is enabled.</p>
+
+<h2>Addition of the <a href="../../../api/java/sql/SQLType.html"><code>java.sql.SQLType</code></a> Interface</h2>
+<p>This interface is used to create an object that identifies a generic SQL type, called JDBC type or a vendor specific data type.</p>
+
+<h2>Addition of the <a href="../../../api/java/sql/JDBCType.html"><code>java.sql.JDBCType</code></a> Enum</h2>
+<p>This enum identifies generic SQL Types, called JDBC Types. Use <code>JDBCType</code> in place of the constants defined in Types.java.</p>
+
+<h2>Add support for large update counts</h2>
+<p>JDBC methods returned only <code>int</code> value for the update count. As datasets continue to grow, this caused problems. Thus methods have been added to the <a href="../../../api/java/sql/Statement.html"><code>Statement</code></a> class that return a <code>long</code> value for the update count. These methods should be used when the returned row count exceeds the constant <code>Integer.MAX_VALUE</code>.</p>
+
+<h2>Changes to the existing interfaces</h2>
+<p>Methods have been added to or clarified for the following interfaces. The following is the list of enhanced interfaces:</p>
+<ul>
+<li><a href="../../../api/java/sql/Driver.html"><code>java.sql.Driver</code></a></li>
+<li><a href="../../../api/java/sql/DriverManager.html"><code>java.sql.DriverManager</code></a></li>
+<li><a href="../../../api/java/sql/DatabaseMetaData.html"><code>java.sql.DatabaseMetaData</code></a></li>
+<li><a href="../../../api/java/sql/Date.html"><code>java.sql.Date</code></a></li>
+<li><a href="../../../api/java/sql/Time.html"><code>java.sql.Time</code></a></li>
+<li><a href="../../../api/java/sql/Timestamp.html"><code>java.sql.TimeStamp</code></a></li>
+<li><a href="../../../api/java/sql/Statement.html"><code>java.sql.Statement</code></a></li>
+<li><a href="../../../api/java/sql/CallableStatement.html"><code>java.sql.CallableStatement</code></a></li>
+<li><a href="../../../api/java/sql/PreparedStatement.html"><code>java.sql.PreparedStatement</code></a></li>
+<li><a href="../../../api/java/sql/ResultSet.html"><code>java.sql.ResultSet</code></a></li>
+<li><a href="../../../api/java/sql/SQLInput.html"><code>java.sql.SQLInput</code></a></li>
+<li><a href="../../../api/java/sql/SQLOutput.html"><code>java.sql.SQLOutput</code></a></li>
+<li><a href="../../../api/java/sql/Types.html"><code>java.sql.Types</code></a></li>
+<li><a href="../../../api/javax/sql/DataSource.html"><code>javax.sql.DataSource</code></a> and <a href="../../../api/javax/sql/XADataSource.html"><code>javax.sql.XADataSource</code></a></li>
+<li><a href="../../../api/java/sql/SQLXML.html"><code>java.sql.SQLXML</code></a></li>
+</ul>
+<h2> RowSets 1.2: Lists the enhancements JDBC RowSet.</h2>
+<p>The following lists the interfaces and classes enhanced or clarified for RowSet1.2:</p>
+<ul>
+<li><a href="../../../api/javax/sql/rowset/BaseRowSet.html"><code>javax.sql.rowset.BaseRowSet</code></a></li>
+<li><a href="../../../api/javax/sql/rowset/CachedRowSet.html"><code>javax.sql.rowset.CachedRowSet</code></a></li>
+<li><a href="../../../api/javax/sql/rowset/Predicate.html"><code>javax.sql.rowset.Predicate</code></a></li>
+<li><a href="../../../api/javax/sql/rowset/JdbcRowSet.html"><code>javax.sql.rowset.JdbcRowSet</code></a></li>
+<li><a href="../../../api/javax/sql/rowset/RowSetMetaDataImpl.html"><code>javax.sql.rowset.RowSetMetaDataImpl</code></a></li>
+<li><a href="../../../api/javax/sql/rowset/spi/SyncFactory.html"><code>javax.sql.rowset.spi.SyncFactory</code></a></li>
+<li><a href="../../../api/javax/sql/rowset/serial/SerialArray.html"><code>javax.sql.rowset.serial.SerialArray</code></a></li>
+<li><a href="../../../api/javax/sql/rowset/serial/SerialBlob.html"><code>javax.sql.rowset.serial.SerialBlob</code></a></li>
+<li><a href="../../../api/javax/sql/rowset/serial/SerialClob.html"><code>javax.sql.rowset.serial.SerialClob</code></a></li>
+<li><a href="../../../api/javax/sql/rowset/serial/SerialDatalink.html"><code>javax.sql.rowset.serial.SerialDatalink</code></a></li>
+<li><a href="../../../api/javax/sql/rowset/serial/SerialJavaObject.html"><code>javax.sql.rowset.serial.SerialJavaObject</code></a></li>
+<li><a href="../../../api/javax/sql/rowset/serial/SerialRef.html"><code>javax.sql.rowset.serial.SerialRef</code></a></li>
+<li><a href="../../../api/javax/sql/rowset/serial/SerialStruct.html"><code>javax.sql.rowset.serial.SerialStruct</code></a></li>
+</ul>
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

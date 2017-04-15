@@ -1,0 +1,359 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<meta http-equiv="Content-Type" content=
+"text/html; charset=utf-8" />
+<title>Supported Calendars</title>
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Supported Calendars<br /></h1>
+<!-- Body text begins here -->
+<p>This page documents supported calendar systems.</p>
+
+<h2><a name="introduction" id="introduction"></a>1. Introduction</h2>
+
+<p><a href=
+"../../../api/java/util/Calendar.html"><code>Calendar</code></a> is
+an abstract base class for converting between a <a href=
+"../../../api/java/util/Date.html"><code>Date</code></a> object and
+a set of integer fields such as <code>YEAR</code>,
+<code>MONTH</code>, <code>DAY</code>, <code>HOUR</code>, and so on.
+Subclasses of <code>Calendar</code> interpret a <code>Date</code>
+according to the rules of a specific calendar system. The platform
+provides one public concrete subclass of <code>Calendar</code>:
+<a href=
+"../../../api/java/util/GregorianCalendar.html"><code>GregorianCalendar</code></a>.
+<a name="calendar_instantiation" id=
+"calendar_instantiation"></a>The factory method,
+<code>Calendar.getInstance</code>, returns the concrete calendar
+system implementation for the given <code>Locale</code>. The
+following are supported calendar systems:<br />
+<br /></p>
+<table bgcolor="#FFFFFF" border="1" cellpadding="3" cellspacing="0"
+width="80%" summary="Supported Calendar Systems">
+<tbody>
+<tr>
+<th id="h1" bgcolor="#CCCCFF" valign="middle">
+<code>Locale</code><br /></th>
+<th id="h2" bgcolor="#CCCCFF" valign="middle">Calendar System<br /></th>
+<th id="h3" bgcolor="#CCCCFF" valign="middle">Since (JRE
+version)<br /></th>
+</tr>
+<tr>
+<td headers="h1" valign="middle">th_TH (with any variant)<br /></td>
+<td headers="h2" valign="middle">Thai Buddhist calendar<br /></td>
+<td headers="h3" align="center" valign="middle">1.4<br /></td>
+</tr>
+<tr>
+<td headers="h1" valign="middle">ja_JP_JP<br /></td>
+<td headers="h2" valign="middle">Japanese imperial calendar<br /></td>
+<td headers="h3" align="center" valign="middle">1.6<br /></td>
+</tr>
+<tr>
+<td headers="h1" valign="top">Any except above <code>Locale</code>s<br /></td>
+<td headers="h2" valign="top">Gregorian calendar
+(<code>GregorianCalendar</code>)<br /></td>
+<td headers="h3" align="center" valign="top">1.1<br /></td>
+</tr>
+</tbody>
+</table>
+<br />
+<hr />
+<h2><a name="thaibuddhist" id="thaibuddhist"></a>2. Thai Buddhist
+Calendar<br /></h2>
+In Thailand, the Gregorian calendar system is used with the
+<i>Buddhist Era</i>-based year numbering. In Buddhist Era
+(<span lang="th" xml:lang="th">&#3614;&#3640;&#3607;&#3608;&#3624;&#3633;&#3585;&#3619;&#3634;&#3594;</span>) or B.E.
+(<span lang="th" xml:lang="th">&#3614;.&#3624;.</span>) for short, year 1
+corresponds to BCE (BC)&nbsp; 543 (Julian). Therefore, Gregorian
+year + 543 is the B.E. year value.<br />
+<br />
+The <code>Calendar.getInstance</code> method returns a Thai
+Buddhist calendar instance if a Thai locale is specified, which is
+determined by its language and country values. This Thai Buddhist
+calendar implementation supports dates accurately from B.E. 2484
+(1941 Gregorian). The historical calendar system transitions are
+not supported by the implementation. The <code>Calendar.ERA</code>
+value for Buddhist Era is 1.<br />
+<hr />
+<h2><a name="japanese" id="japanese"></a>3. Japanese Imperial
+Calendar</h2>
+In Japan, the Gregorian calendar system is used with the imperial
+era-based year numbering. An imperial era starts from an emperor's
+ascension and its year number is reset to 1 with a new era name.
+The first year of an imperial era is not in sync with the Gregorian
+year boundaries, and any day could be the first day of an imperial
+era. For example, the current era started from January 8, 1989
+(Gregorian). However, the month and the day of month numberings are
+in sync with the Gregorian calendar system.<br />
+<br />
+The <code>Calendar.getInstance</code> method returns a Japanese
+imperial calendar instance if ja_JP_JP locale is specified. This
+implementation supports the eras since <i>Meiji</i> with the
+following transition dates.<br />
+<br />
+<table border="1" cellpadding="3" cellspacing="1" width="100%"
+summary="Japanese Imperial Calendar">
+<tbody>
+<tr>
+<th id="h101" bgcolor="#CCCCFF" valign="middle">Era Name<br />
+(in Japanese)<br /></th>
+<th id="h102" align="center" bgcolor="#CCCCFF" valign="top"><a name=
+"JapaneseEraAbbreviations" id=
+"JapaneseEraAbbreviations"></a>Era<br />
+Abbr.<br /></th>
+<th id="h103" bgcolor="#CCCCFF" valign="middle"><b><code>ERA<br /></code>
+field value</b><br /></th>
+<th id="h104" bgcolor="#CCCCFF" valign="middle">Transition date and
+time<br />
+(Gregorian)<br /></th>
+</tr>
+<tr>
+<td headers="h101" valign="top"><big>- (</big><span lang="ja" xml:lang=
+"ja">&#35199;&#26278;</span><big>)</big><br /></td>
+<td headers="h102" align="center" valign="top">-<br /></td>
+<td headers="h103" align="center" valign="top">0<br /></td>
+<td headers="h104" valign="top">-<br /></td>
+</tr>
+<tr>
+<td headers="h101" valign="top">Meiji (<span lang="ja" xml:lang=
+"ja">&#26126;&#27835;</span>)<br /></td>
+<td headers="h102" align="center" valign="top">M<br /></td>
+<td headers="h103" align="center" valign="top">1<br /></td>
+<td headers="h104" valign="top">1868-01-01 00:00:00 local time<br /></td>
+</tr>
+<tr>
+<td headers="h101" valign="top">Taisho (<span lang="ja" xml:lang=
+"ja">&#22823;&#27491;</span>)<br /></td>
+<td headers="h102" align="center" valign="top">T<br /></td>
+<td headers="h103" align="center" valign="top">2<br /></td>
+<td headers="h104" valign="top">1912-07-30 00:00:00 local time<br /></td>
+</tr>
+<tr>
+<td headers="h101" valign="top">Showa (<span lang="ja" xml:lang=
+"ja">&#26157;&#21644;</span>)<br /></td>
+<td headers="h102" align="center" valign="top">S<br /></td>
+<td headers="h103" align="center" valign="top">3<br /></td>
+<td headers="h104" valign="top">1926-12-25 00:00:00 local time<br /></td>
+</tr>
+<tr>
+<td headers="h101" valign="top">Heisei (<span lang="ja" xml:lang=
+"ja">&#24179;&#25104;</span>)<br /></td>
+<td headers="h102" align="center" valign="top">H<br /></td>
+<td headers="h103" align="center" valign="top">4<br /></td>
+<td headers="h104" valign="top">1989-01-08 00:00:00 local time<br /></td>
+</tr>
+</tbody>
+</table>
+<br />
+Before <i>Meiji</i>, the Gregorian year numbering is supported.
+Unlike <code>GregorianCalendar</code>, the Japanese imperial
+calendar implementation doesn't support any Julian to Gregorian
+transition, and the year numbering before Gregorian 1 is 0, -1, -2,
+..., not 1, 2, 3, ... Strictly speaking, the Gregorian calendar is
+in use from 1873 <i>(Meiji</i> 5) and other calendar systems were
+used before that year. However, the implementation defines the
+first day of <i>Meiji</i> as January 1, 1868, which is not
+historically accurate. The Japanese decrees related to calendar
+systems don't specify how to deal with time zones outside of Japan.
+The implementation assumes that era transitions occur at midnight
+in local time in any time zone.<br />
+<br />
+In the Calendar API, some fields are in sync with the year value
+for the era transitions and therefore handle irregular rules in the
+first year of an imperial era. The following table shows those
+fields.<br />
+<br />
+<table border="1" cellpadding="3" cellspacing="1" width="100%"
+summary="Calendar fields in sync with year value">
+<tbody>
+<tr>
+<th id="h201" bgcolor="#CCCCFF" valign="top">Calendar field<br /></th>
+<th id="h202" bgcolor="#CCCCFF" valign="top">Description<br /></th>
+</tr>
+<tr>
+<td headers="h201" valign="middle"><code><a href=
+"../../../api/java/util/Calendar.html#WEEK_OF_YEAR">WEEK_OF_YEAR</a><br />
+</code></td>
+<td headers="h202" valign="top">To determine the first <code>WEEK_OF_YEAR</code>
+of year 1 in each era, the same rules as determining the first week
+by the first day of week and minimal days in the first week values
+are applied. For example, if the first day of week is
+<code>SUNDAY</code> and the minimal days in the first week is 1,
+the <code>WEEK_OF_YEAR</code> value of 1926-12-18 is 51 of
+<i>Taisho</i> 15 and the value of 1926-12-25 is 1 of <i>Showa</i>
+1.<br /></td>
+</tr>
+<tr>
+<td headers="h201" valign="middle"><code><a href=
+"../../../api/java/util/Calendar.html#DAY_OF_YEAR">DAY_OF_YEAR</a><br />
+</code></td>
+<td headers="h202" valign="top">The <code>DAY_OF_YEAR</code> value of the first
+day of each era is 1. For example, looking at the transition
+between the <i>Showa</i> and <i>Heisei</i> eras, the last day of
+the <i>Showa</i> era <i>(Showa</i> 64.01.07, gregorian value
+1989-01-07) is 7 and the next day, which is the first day of the
+<i>Heisei</i> era (<i>Heisei</i> 1.01.08), is 1. The
+<code>getLeastMaximum</code> method returns the minimum value of
+all year 1 lengths in days.<br /></td>
+</tr>
+</tbody>
+</table>
+<br />
+<hr size="2" width="100%" />
+<h2>4. Formatting and Parsing Non-GregorianCalendar Dates</h2>
+A <a href=
+"../../../api/java/text/DateFormat.html"><code>DateFormat</code></a>
+instance has a <code>Calendar</code> instance for internal
+date-time conversions based on the given <code>Locale</code> or the
+default one. <a href="#calendar_instantiation">The same rule</a> is
+applied for creating a <code>Calendar</code> instance. For example,
+if ja_JP_JP locale is specified, the
+<code>DateFormat.getDateInstance</code> method returns a
+<code>DateFormat</code> instance that handles Japanese imperial
+calendar dates. The following&nbsp; code:<br />
+<pre style="codeblock">
+DateFormat df = DateFormat.getDateInstance(DateFormat.FULL,<br />                                          &nbsp;new Locale("ja", "JP", "JP"));<br />System.out.println(df.format(new Date()));
+</pre>
+will produce the output, like:<br />
+<pre style="codeblock">
+<span lang="ja" xml:lang="ja">&#24179;&#25104;17&#24180;10&#26376;25&#26085;</span>
+</pre>
+Also, the <code>DateFormat.parse</code> method parses a date string
+with an imperial era. The following code:<br />
+<pre style="codeblock">
+System.out.println(df.parse("<span lang="ja" xml:lang=
+"ja">&#24179;&#25104;&#20803;&#24180;10&#26376;25&#26085;</span>"));<br />
+</pre>
+will produce the output in the Asia/Tokyo time zone:<br />
+<pre style="codeblock">
+Wed Oct 25 00:00:00 JST 1989<br />
+</pre>
+Note that a <code>Date</code> object returned by the
+<code>DateFormat.parse</code> method represents a corresponding
+Gregorian date. To convert a <code>Date</code> to a Japanese
+imperial date, the <code>Calendar.setTime</code> method must be
+used with the given <code>Date</code>.<br />
+<br />
+In <code>SimpleDateFormat</code>, the following rules are applied
+for the Thai Buddhist and Japanese imperial calendar systems.<br />
+<br />
+<table bgcolor="#FFFFFF" border="1" cellpadding="3" cellspacing="1"
+width="100%" summary=
+"SimpleDateFormat rules for Thai Buddhist and Japanese imperial calendars">
+<tbody>
+<tr>
+<th id="h301" align="center" bgcolor="#CCCCFF" valign="top"><b>Calendar
+system<br /></b></th>
+<th id="h302" align="center" bgcolor="#CCCCFF" valign="top"><b>Pattern
+Letter<br /></b></th>
+<th id="h303" align="center" bgcolor="#CCCCFF" valign="top">
+<b>Description<br /></b></th>
+</tr>
+<tr>
+<td headers="h301">Thai Buddhist</td>
+<td headers="h302" align="center" valign="top"><code>G<br /></code></td>
+<td headers="h303" valign="top">The number of pattern letters doesn't affect
+displayed era names.<br /></td>
+</tr>
+<tr>
+<td headers="h301">Thai Buddhist</td>
+<td headers="h302" align="center" valign="top"><code>y<br /></code></td>
+<td headers="h303" valign="top">The same rule of the number of pattern letters as
+<code>GregorianCalendar</code> is applied.<br /></td>
+</tr>
+<tr>
+<td headers="h301">Japanese imperial</td>
+<td headers="h302" align="center" valign="top"><code>G<br /></code></td>
+<td headers="h303" valign="top">For formatting, if the number of pattern letters
+is 4 or more, the long era names (e.g., "<span lang="ja" xml:lang=
+"ja">&#24179;&#25104;</span>") are used. Otherwise, the <a href=
+"#JapaneseEraAbbreviations">abbreviations</a> (e.g., "H") are used.
+For parsing, both the long era names and abbreviations are
+accepted.<br /></td>
+</tr>
+<tr>
+<td headers="h301">Japanese imperial</td>
+<td headers="h302" align="center" valign="top"><code>y<br /></code></td>
+<td headers="h303" valign="top">For formatting, if the number of pattern letters
+is 4 or more, the first year of an era is formatted as the locale
+specific representation, such as "<span lang="ja" xml:lang=
+"ja">&#20803;</span>" in Japanese locale.&nbsp; Other year values are
+displayed as numbers. The 2- and 4-digit rules of
+<code>GregorianCalendar</code> date formatting are not applied. For
+parsing, both the locale specific representation and the number
+representation are accepted.<br /></td>
+</tr>
+</tbody>
+</table>
+<br />
+If the variant element is "TH" in Thai locale, the Thai digits are
+used for the date-time formatting. For example, the following
+code:<br />
+<pre style="codeblock">
+DateFormat df = DateFormat.getDateInstance(DateFormat.FULL,<br />                                          &nbsp;new Locale("th", "TH", "TH"));<br />System.out.println(df.format(new Date()));
+</pre>
+will produce the output, like:<br />
+<span lang="th" xml:lang="th">&#3623;&#3633;&#3609;&#3629;&#3633;&#3591;&#3588;&#3634;&#3619;&#3607;&#3637;&#3656; &#3666;&#3669; &#3605;&#3640;&#3621;&#3634;&#3588;&#3617; &#3614;.&#3624;. &#3666;&#3669;&#3668;&#3672;</span><br />
+<hr size="2" width="100%" />
+<h2>5. Serialization Considerations</h2>
+When a <code>Calendar</code> object returned by the
+<code>Calendar.getInstance</code> factory method is serialized and
+sent to another JVM, deserialization of the object fails if the
+destination JVM does not support the same <code>Calendar</code>
+subclass that has been used to create the serialized
+<code>Calendar</code> object. Please make sure that the same
+<code>Calendar</code> subclasses are supported in JVMs where you
+would like to exchange serialized <code>Calendar</code>
+objects.<br />
+<br />
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

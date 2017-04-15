@@ -1,0 +1,1326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Use of Java GSS-API for Secure Message Exchanges Without
+JAAS Programming</title>
+<link rel="stylesheet" type="text/css" href="../../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<table summary="" width="550">
+<tr>
+<td align="left" valign="middle"><a href="index.html" target=
+"_top"><img src="images/TOCIcon.gif" width="26" height="26" align=
+"middle" border="0" alt="Tutorials Introduction and TOC" /></a>
+<a href="AcnOnly.html" target="_top"><img src=
+"images/NextArrow.gif" width="26" height="26" align="middle"
+border="0" alt="Next Tutorial" /></a></td>
+</tr>
+</table>
+<hr />
+<h1>Use of Java GSS-API for Secure Message Exchanges Without JAAS
+Programming</h1>
+
+<p>This tutorial presents two sample applications demonstrating the
+use of the Java GSS-API for secure exchanges of messages between
+communicating applications, in this case a client application and a
+server application.</p>
+
+<p>Java GSS-API uses what is called a "security mechanism" to
+provide these services. The GSS-API implementation contains support for the
+Kerberos V5 mechanism in addition to any other vendor-specific
+choices. The Kerberos V5 mechanism is used for this tutorial.</p>
+
+<p>In order to perform authentication between the client and server
+and to establish cryptographic keys for secure communication, a
+GSS-API mechanism needs access to certain credentials for the local
+entity on each side of the connection. In our case, the credential
+used on the client side consists of a Kerberos ticket, and on the
+server side, it consists of a long-term Kerberos secret key.
+Kerberos tickets can optionally include the host address and IPv4
+and IPv6 host addresses are both supported. Java GSS-API requires
+that the mechanism obtain these credentials from the Subject
+associated with the thread's access control context.</p>
+
+<p>To populate a Subject with such credentials, client and server
+applications typically will first perform JAAS authentication using
+a Kerberos module. The <a href="AcnOnly.html">JAAS
+Authentication</a> tutorial demonstrates how to do this. The
+<a href="AcnAndAzn.html">JAAS Authorization</a> tutorial then
+demonstrates how to associate the authenticated Subject with the
+thread's access control context. A utility has also been written as
+a convenience to automatically perform those operations on your
+behalf. The <a href="LoginSample.html">Use of JAAS Login
+Utility</a> tutorial demonstrates how to use the Login utility.</p>
+<p>For this tutorial, we will not have the client and server
+perform JAAS authentication, nor will we have them use the Login
+utility. Instead, we will rely on setting the system property
+<code>javax.security.auth.useSubjectCredsOnly</code> to
+<code>false</code>, which allows us to relax the restriction of
+requiring a GSS mechanism to obtain necessary credentials from an
+existing <a href="glossary.html">Subject</a>, set up by JAAS. See
+<a href="#useSub">The useSubjectCredsOnly System Property</a>.</p>
+<p>Note: This is a simplified introductory tutorial. For example,
+we do not include any policy files or run the sample code using a
+security manager. In real life, code using Java GSS-API should be
+run with a security manager, so that security-sensitive operations
+would not be allowed unless the required permissions were
+explicitly granted.</p>
+<p>There is another tutorial, <a href="ClientServer.html">Use of
+JAAS Login Utility and Java GSS-API for Secure Message
+Exchanges</a>, that is just like the tutorial you are reading
+except that it utilizes the Login utility, policy files, and a more
+complex login configuration file (A <a href=
+"LoginConfigFile.html">login configuration file</a>, required
+whenever JAAS authentication is done, specifies the desired
+authentication module).</p>
+<p>As with all tutorials in this series, the underlying technology
+used to support authentication and secure communication for the
+applications in this tutorial is Kerberos V5. See <a href=
+"KerberosReq.html">Kerberos Requirements</a>.</p>
+<ul>
+<li><a href="#Overview">Overview of the Client And Server
+Applications</a></li>
+<li><a href="#Progs">The SampleClient and SampleServer
+Code</a></li>
+<li><a href="#KerbNames">Kerberos User and Service Principal
+Names</a></li>
+<li><a href="#TheLCF">The Login Configuration File</a></li>
+<li><a href="#useSub">The useSubjectCredsOnly System
+Property</a></li>
+<li><a href="#RunProgs">Running the SampleClient and SampleServer
+Programs</a></li>
+</ul>
+<p>If you want to first see the tutorial code in action, you can
+skip directly to <a href="#RunProgs">Running the SampleClient and
+SampleServer Programs</a> and then go back to the other sections to
+learn more.<a name="Overview" id="Overview"></a></p>
+
+<h2>Overview of the Client And Server Applications</h2>
+<p>The applications for this tutorial are named SampleClient and
+SampleServer.</p>
+<p>Here is a summary of execution of the SampleClient and
+SampleServer applications:</p>
+<ol>
+<li>Run the SampleServer application. SampleServer
+<ol>
+<li>Reads its argument, the port number that it should listen on
+for client connections.</li>
+<li>Creates a ServerSocket for listening for client connections on
+that port.</li>
+<li>Listens for a connection.</li>
+</ol>
+</li>
+<li>Run the SampleClient application (possibly on a different
+machine). SampleClient
+<ol>
+<li>Reads its arguments: (1) The name of the Kerberos principal
+that represents SampleServer. (See <a href="#KerbNames">Kerberos
+User and Service Principal Names</a>.), (2) the name of the host
+(machine) on which SampleServer is running, and (3) the port number
+on which SampleServer listens for client connections.</li>
+<li>Attempts a socket connection with the SampleServer, using the
+host and port it was passed as arguments.</li>
+</ol>
+</li>
+<li>The socket connection is accepted by SampleServer and both
+applications initialize a DataInputStream and a DataOutputStream
+from the socket input and output streams, to be used for future
+data exchanges.</li>
+<li>SampleClient and SampleServer each instantiate a GSSContext and
+follow a protocol for establishing a shared context that will
+enable subsequent secure data exchanges.</li>
+<li>SampleClient and SampleServer can now securely exchange
+messages.</li>
+<li>When SampleClient and SampleServer are done exchanging
+messages, they perform clean-up operations.</li>
+</ol>
+<p>The actual code and further details are presented in the
+following sections.</p>
+<a name="Progs" id="Progs"></a>
+<h2>The SampleClient and SampleServer Code</h2>
+<p>The entire code for both the <a href=
+"SampleClient.java">SampleClient</a> and <a href=
+"SampleServer.java">SampleServer</a> programs resides in their
+<code>main</code> methods and can be broken down into the following
+subparts:</p>
+<ol>
+<li><a href="#GetArgs">Obtain the Command-Line Arguments</a></li>
+<li><a href="#SocketConn">Establish a Socket Connection for
+Transfers Between SampleClient and SampleServer</a></li>
+<li><a href="#EstContext">Establish a Security Context</a></li>
+<li><a href="#ExchangeMsgs">Securely Exchange Messages</a></li>
+<li><a href="#Cleanup">Clean Up</a></li>
+</ol>
+<p>Note: The Java GSS-API classes utilized by these programs
+(GSSManager, GSSContext, GSSName, GSSCredential, MessageProp, and
+Oid) are found in the <code>org.ietf.jgss</code> package. <a name=
+"GetArgs" id="GetArgs"></a></p>
+<h3>Obtaining the Command-Line Arguments</h3>
+<p>The first thing both our client and server <code>main</code>
+methods do is read the command-line arguments.</p>
+<h4>Arguments Read By SampleClient</h4>
+<p>SampleClient expects three arguments:</p>
+<ol>
+<li>A service principal name -- The name of the Kerberos principal
+that represents SampleServer. (See <a href="#KerbNames">Kerberos
+User and Service Principal Names</a>.)</li>
+<li>A host name -- The machine on which SampleServer is
+running.</li>
+<li>A port number -- The port number of the port on which
+SampleServer listens for connections.</li>
+</ol>
+<p>Here is the code for reading the command-line arguments:</p>
+<pre class="codeblock">if (args.length &lt; 3) {
+    System.out.println("Usage: java &lt;options&gt; Login SampleClient "
+       + " &lt;servicePrincipal&gt; &lt;hostName&gt; &lt;port&gt;");
+    System.exit(-1);
+}
+
+String server = args[0];
+String hostName = args[1];
+int port = Integer.parseInt(args[2]);</pre>
+<h4>Argument Read By SampleServer</h4>
+<p>SampleServer expects just one argument:</p>
+<ul>
+<li>A local port number -- The port number used by SampleServer for
+listening for connections with clients. This number should be the
+same as the port number specified when running the SampleClient
+program.</li>
+</ul>
+<p>Here is the code for reading the command-line argument:</p>
+<pre class="codeblock">if (args.length != 1) {
+    System.out.println(
+        "Usage: java &lt;options&gt; Login SampleServer &lt;localPort&gt;");
+    System.exit(-1);
+}
+
+int localPort = Integer.parseInt(args[0]);</pre>
+<a name="SocketConn" id="SocketConn"></a>
+<h3>Establishing a Socket Connection for Message Exchanges</h3>
+<p>Java GSS-API provides methods for creating and interpreting
+tokens (opaque byte data). The tokens contain messages to be
+securely exchanged between two peers, but the method of actual
+token transfer is up to the peers. For our SampleClient and
+SampleServer applications, we establish a socket connection between
+the client and server and exchange data using the socket input and
+output streams.</p>
+<h4>SampleClient Code For Socket Connection</h4>
+<p>SampleClient was passed as arguments the name of the host
+machine SampleServer is running on, as well as the port number on
+which SampleServer will be listening for connections, so
+SampleClient has all it needs to establish a socket connection with
+SampleServer. It uses the following code to set up the connection
+and initialize a DataInputStream and a DataOutputStream for future
+data exchanges:</p>
+<pre class="codeblock">Socket socket = new Socket(hostName, port);
+
+DataInputStream inStream = 
+  new DataInputStream(socket.getInputStream());
+DataOutputStream outStream = 
+  new DataOutputStream(socket.getOutputStream());
+
+System.out.println("Connected to server " 
+   + socket.getInetAddress());</pre>
+<h4>SampleServer Code For Socket Connection</h4>
+<p>The SampleServer application was passed as an argument the port
+number to be used for listening for connections from clients. It
+creates a ServerSocket for listening on that port:</p>
+<pre class="codeblock">ServerSocket ss = new ServerSocket(localPort);</pre>
+<p>The ServerSocket can then wait for and accept a connection from
+a client, and then initialize a DataInputStream and a
+DataOutputStream for future data exchanges with the client :</p>
+<pre class="codeblock">Socket socket = ss.accept();
+
+DataInputStream inStream =
+    new DataInputStream(socket.getInputStream());
+DataOutputStream outStream = 
+    new DataOutputStream(socket.getOutputStream());
+
+System.out.println("Got connection from client "
+    + socket.getInetAddress());</pre>
+<p>The <code>accept</code> method waits until a client (in our
+case, SampleClient) requests a connection on the host and port of
+the SampleServer, which SampleClient does via</p>
+<pre class="codeblock">Socket socket = new Socket(hostName, port);</pre>
+<p>When the connection is requested and established, the
+<code>accept</code> method returns a new Socket object bound to a
+new port. The server can communicate with the client over this new
+socket and continue to listen for other client connection requests
+on the ServerSocket bound to the original port. Thus, a server
+program typically has a loop which can handle multiple connection
+requests.</p>
+<p>The basic loop structure for our SampleServer is the
+following:</p>
+<pre class="codeblock">while (true) {
+
+    Socket socket = ss.accept();
+
+    <em>&lt;Establish input and output streams for the connection&gt;</em>; 
+    <em>&lt;Establish a context with the client&gt;</em>; 
+    <em>&lt;Exchange messages with the client&gt;</em>;
+    <em>&lt;Clean up&gt;</em>;
+}</pre>
+<p>Client connections are queued at the original port, so with this
+program structure used by SampleServer, the interaction with the
+first client making a connection has to complete before the next
+connection can be accepted. The server could actually service
+multiple clients simultaneously through the use of threads - one
+thread per client connection, as in</p>
+<pre class="codeblock">while (true) {
+    <em>&lt;accept a connection&gt;</em>;
+    <em>&lt;create a thread to handle the client&gt;</em>;
+}
+</pre>
+<a name="EstContext" id="EstContext"></a>
+<h3>Establishing a Security Context</h3>
+<p>Before two applications can use Java GSS-API to securely
+exchange messages between them, they must establish a joint
+security context using their credentials. (Note: In the case of
+SampleClient, the credentials were established when the Login
+utility authenticated the user on whose behalf the SampleClient was
+run, and similarly for SampleServer.) The security context
+encapsulates shared state information that might include, for
+example, cryptographic keys. One use of such keys might be to
+encrypt messages to be exchanged, if encryption is requested.</p>
+<p>As part of the security context establishment, the context
+initiator (in our case, SampleClient) is authenticated to the
+acceptor (SampleServer), and may require that the acceptor also be
+authenticated back to the initiator, in which case we say that
+"mutual authentication" took place.</p>
+<p>Both applications create and use a <b>GSSContext</b> object to
+establish and maintain the shared information that makes up the
+security context.</p>
+<p>The instantiation of the context object is done differently by
+the context initiator and the context acceptor. After the initiator
+instantiates a GSSContext, it may choose to set various context
+options that will determine the characteristics of the desired
+security context, for example, specifying whether or not mutual
+authentication should take place. After all the desired
+characteristics have been set, the initiator calls the
+<code>initSecContext</code> method, which produces a token required
+by the acceptor's <code>acceptSecContext</code> method.</p>
+<p>While Java GSS-API methods exist for preparing tokens to be
+exchanged between applications, <i>it is the responsibility of the
+applications to actually transfer the tokens between them.</i> So
+after the initiator has received a token from its call to
+<code>initSecContext</code>, it sends that token to the acceptor.
+The acceptor calls <code>acceptSecContext</code>, passing it the
+token. The <code>acceptSecContext</code> method may in turn return
+a token. If it does, the acceptor should send that token to the
+initiator, which should then call <code>initSecContext</code> again
+and pass it this token. Each time <code>initSecContext</code> or
+<code>acceptSecContext</code> returns a token, the application that
+called the method should send the token to its peer and that peer
+should pass the token to its appropriate method
+(<code>acceptSecContext</code> or <code>initSecContext</code>).
+This continues until the context is fully established (which is the
+case when the context's <code>isEstablished</code> method returns
+<code>true</code>).</p>
+<p>The context establishment code for our sample applications is
+described in the following:</p>
+<ul>
+<li><a href="#SCFullContextEst">Context Establishment by
+SampleClient</a></li>
+<li><a href="#SSFullContextEst">Context Establishment by
+SampleServer</a></li>
+</ul>
+<a name="SCFullContextEst" id="SCFullContextEst"></a>
+<h3>Context Establishment by SampleClient</h3>
+<p>In our client/server scenario, SampleClient is the context
+initiator. Here are the basic steps it takes to establish a
+security context. It</p>
+<ol>
+<li><a href="#SCContextInst">Instantiates a GSSContext.</a></li>
+<li><a href="#SCSetOptions">Sets the desired optional features on
+the context.</a></li>
+<li><a href="#SCContextEstLoop">Loops</a> while the context is not
+yet established, each time calling <code>initSecContext</code>,
+sending any returned token to SampleServer, and receiving a token
+(if any) from SampleServer.</li>
+</ol>
+<a name="SCContextInst" id="SCContextInst"></a>
+<h3>SampleClient GSSContext Instantiation</h3>
+<p>A <b>GSSContext</b> is created by instantiating a
+<b>GSSManager</b> and then calling one of its
+<code>createContext</code> methods. The GSSManager class serves as
+a factory for other important GSS API classes. It can create
+instances of classes implementing the GSSContext, GSSCredential,
+and GSSName interfaces.</p>
+<p>SampleClient obtains an instance of the default GSSManager
+subclass by calling the GSSManager static method
+<code>getInstance</code>:</p>
+<pre class="codeblock">GSSManager manager = GSSManager.getInstance();</pre>
+<p>The default GSSManager subclass is one whose
+<code>create*</code> methods (<code>createContext</code>, etc.)
+return classes whose implementations support Kerberos as the
+underlying technology.</p>
+<p>The GSSManager factory method for creating a context on the
+initiator's side has the following signature:</p>
+<pre class="codeblock">GSSContext createContext(GSSName peer, Oid mech, 
+            GSSCredential myCred, int lifetime);</pre>
+<p>The arguments are described below, followed by the complete call
+to <code>createContext</code>.</p>
+<h4>The <code>GSSName peer</code> Argument</h4>
+<p>The peer in our client/server paradigm is the server. For the
+<code>peer</code> argument, we need a <b>GSSName</b> for the
+service principal representing the server. (See <a href=
+"#KerbNames">Kerberos User and Service Principal Names</a>.) A
+String for the service principal name is passed as the first
+argument to SampleClient, which places the argument into its local
+String variable named <code>server</code>. The GSSManager
+<code>manager</code> is used to instantiate a GSSName by calling
+one of its <code>createName</code> methods. SampleClient calls the
+<code>createName</code> method with the following signature:</p>
+
+<pre class="codeblock">GSSName createName(String nameStr, Oid nameType);</pre>
+
+<p>SampleClient passes the <code>server</code> String for the
+<code>nameStr</code> argument.</p>
+<p>The second argument is an <b>Oid</b>. An Oid represents a
+Universal Object Identifier. Oids are hierarchically
+globally-interpretable identifiers used within the GSS-API
+framework to identify mechanisms and name types. The structure and
+encoding of Oids is defined in the ISOIEC-8824 and ISOIEC-8825
+standards. The Oid passed to the <code>createName</code> method is
+specifically a name type Oid (not a mechanism Oid).</p>
+<p>In GSS-API, string names are often mapped from a
+mechanism-independent format into a mechanism-specific format.
+Usually, an Oid specifies what name format the string is in so that
+the mechanism knows how to do this mapping. Passing in a
+<code>null</code> Oid indicates that the name is already in a
+native format that the mechanism uses. This is the case for the
+<code>server</code> String; it is in the appropriate format for a
+Kerberos Version 5 name. Thus, SampleClient passes a
+<code>null</code> for the Oid. Here is the call:</p>
+
+<pre class="codeblock">GSSName serverName = manager.createName(server, null);</pre>
+
+<h4>The <code>Oid mech</code> Argument</h4>
+
+<p>The second argument to the GSSManager <code>createContext</code>
+method is an Oid representing the mechanism to be used for the
+authentication between the client and the server during context
+establishment and for subsequent secure communication between
+them.</p>
+<p>Our tutorial will use Kerberos V5 as the security mechanism. The
+Oid for the Kerberos V5 mechanism is defined in <a href=
+"http://www.ietf.org/rfc/rfc1964.txt">RFC 1964</a> as
+"1.2.840.113554.1.2.2" so we create such an Oid:</p>
+
+<pre class="codeblock">Oid krb5Oid = new Oid("1.2.840.113554.1.2.2");</pre>
+
+<p>SampleClient passes <code>krb5Oid</code> as the second argument
+to <code>createContext</code>.</p>
+
+<h4>The <code>GSSCredential myCred</code> Argument</h4>
+<p>The third argument to the GSSManager <code>createContext</code>
+method is a <b>GSSCredential</b> representing the caller's
+credentials. If you pass <code>null</code> for this argument, as
+SampleClient does, the default credentials are used.</p>
+<h4>The <code>int lifetime</code> Argument</h4>
+<p>The final argument to the GSSManager <code>createContext</code>
+method is an <code>int</code> specifying the desired lifetime, in
+seconds, for the context that is created. SampleClient passes
+<code>GSSContext.DEFAULT_LIFETIME</code> to request a default
+lifetime.</p>
+<h4>The Complete createContext Call</h4>
+<p>Now that we have all the required arguments, here is the call
+SampleClient makes to create a GSSContext:</p>
+<pre class="codeblock">GSSContext context = 
+    manager.createContext(serverName,
+                          krb5Oid,
+                          null,
+                          GSSContext.DEFAULT_LIFETIME);</pre>
+<a name="SCSetOptions" id="SCSetOptions"></a>
+
+<h4>SampleClient Setting of Desired Options</h4>
+
+<p>After instantiating a context, and prior to actually
+establishing the context with the context acceptor, the context
+initiator may choose to set various options that determine the
+desired security context characteristics. Each such option is set
+by calling a <code>request</code> method on the instantiated
+context. Most <code>request</code> methods take a
+<code>boolean</code> argument for indicating whether or not the
+feature is requested. It is not always possible for a request to be
+satisfied, so whether or not it was can be determined after context
+establishment by calling one of the <code>get</code> methods.</p>
+<p>SampleClient requests the following:</p>
+<ol>
+<li><b>Mutual authentication</b>. The context initiator is always
+authenticated to the acceptor. If the initiator requests mutual
+authentication, then the acceptor is also authenticated to the
+initiator.</li>
+<li><b>Confidentiality</b>. Requesting confidentiality means that
+you request the <i>enabling</i> of encryption for the context
+method named <code>wrap</code>. Encryption is actually used only if
+the MessageProp object passed to the <code>wrap</code> method
+requests privacy.</li>
+<li><b>Integrity</b>. This requests integrity for the
+<code>wrap</code> and <code>getMIC</code> methods. When integrity
+is requested, a cryptographic tag known as a Message Integrity Code
+(MIC) will be generated when calling those methods. When
+<code>getMIC</code> is called, the generated MIC appears in the
+returned token. When <code>wrap</code> is called, the MIC is
+packaged together with the message (the original message or the
+result of encrypting the message, depending on whether
+confidentiality was applied) all as part of one token. You can
+subsequently verify the MIC against the message to ensure that the
+message has not been modified in transit.</li>
+</ol>
+<p>The SampleClient code for making these requests on the
+GSSException <code>context</code> is the following:</p>
+
+<pre class="codeblock">context.requestMutualAuth(true);  // Mutual authentication
+context.requestConf(true);  // Will use encryption later
+context.requestInteg(true); // Will use integrity later</pre>
+
+<p>Note: When using the default GSSManager implementation and the
+Kerberos mechanism, these requests will always be granted.</p>
+<a name="SCContextEstLoop" id="SCContextEstLoop"></a>
+
+<h3>SampleClient Context Establishment Loop</h3>
+
+<p>After SampleClient has instantiated a GSSContext and specified
+the desired context options, it can actually establish the security
+context with SampleServer. To do so, SampleClient has a loop. Each
+loop iteration</p>
+<ol>
+<li>Calls the context's <code>initSecContext</code> method. If this
+is the first call, the method is passed a <code>null</code> token.
+Otherwise, it is passed the token most recently sent to
+SampleClient by SampleServer (a token generated by a SampleServer
+call to <code>acceptSecContext</code>).</li>
+<li>Sends the token returned by <code>initSecContext</code> (if
+any) to SampleServer. The first call to <code>initSecContext</code>
+always produces a token. The last call might not return a
+token.</li>
+<li>Checks to see if the context is established. If not,
+SampleClient receives another token from SampleServer and then
+starts the next loop iteration.</li>
+</ol>
+<p>The tokens returned by <code>initSecContext</code> or received
+from SampleServer are placed in a byte array. Tokens should be
+treated by SampleClient and SampleServer as opaque data to be
+passed between them and interpreted by Java GSS-API methods.</p>
+<p>The <code>initSecContext</code> arguments are a byte array
+containing a token, the starting offset into that array of where
+the token begins, and the token length. For the first call,
+SampleClient passes a null token, since no token has yet been
+received from SampleServer.</p>
+<p>To exchange tokens with SampleServer, SampleClient uses the
+DataInputStream <code>inStream</code> and DataOutputStream
+<code>outStream</code> it previously set up using the input and
+output streams for the socket connection made with SampleServer.
+Note that whenever a token is written, the number of bytes in the
+token is written first, followed by the token itself. The reasons
+are discussed in the introduction to the <a href=
+"#SCandSSMsgExchanges">The SampleClient and SampleServer Message
+Exchanges</a> section.</p>
+<p>Here is the SampleClient context establishment loop, followed by
+code displaying information about who the client and server are and
+whether or not mutual authentication actually took place:</p>
+<pre class="codeblock">byte[] token = new byte[0];
+
+while (!context.isEstablished()) {
+
+    // token is ignored on the first call
+    token = context.<b>initSecContext</b>(token, 0, token.length);
+
+    // Send a token to the server if one was generated by
+    // initSecContext
+    if (token != null) {
+        System.out.println("Will send token of size "
+                   + token.length + " from initSecContext.");
+        outStream.writeInt(token.length);
+        outStream.write(token);
+        outStream.flush();
+    }
+
+    // If the client is done with context establishment
+    // then there will be no more tokens to read in this loop
+    if (!context.isEstablished()) {
+        token = new byte[inStream.readInt()];
+        System.out.println("Will read input token of size "
+                   + token.length
+                   + " for processing by initSecContext");
+        inStream.readFully(token);
+    }
+}
+
+System.out.println("Context Established! ");
+System.out.println("Client is " + context.getSrcName());
+System.out.println("Server is " + context.getTargName());
+if (context.getMutualAuthState())
+    System.out.println("Mutual authentication took place!");</pre>
+    
+<a name="SSFullContextEst" id="SSFullContextEst"></a>
+
+<h3>Context Establishment by SampleServer</h3>
+<p>In our client/server scenario, SampleServer is the context
+acceptor. Here are the basic steps it takes to establish a security
+context. It</p>
+<ol>
+<li><a href="#SSContextInst">Instantiates a GSSContext.</a></li>
+<li><a href="#SSContextEstLoop">Loops</a> while the context is not
+yet established, each time receiving a token from SampleClient,
+calling <code>acceptSecContext</code> and passing it the token, and
+sending any returned token to SampleClient.</li>
+</ol>
+<a name="SSContextInst" id="SSContextInst"></a>
+<h3>SampleServer GSSContext Instantiation</h3>
+<p>As described in <a href="#SCContextInst">SampleClient GSSContext
+Instantiation</a>, a GSSContext is created by instantiating a
+GSSManager and then calling one of its <code>createContext</code>
+methods.</p>
+<p>Like SampleClient, SampleServer obtains an instance of the
+default GSSManager subclass by calling the GSSManager static method
+<code>getInstance</code>:</p>
+
+<pre class="codeblock">GSSManager manager = GSSManager.getInstance();</pre>
+
+<p>The GSSManager factory method for creating a context on the
+acceptor's side has the following signature:</p>
+
+<pre class="codeblock">GSSContext createContext(GSSCredential myCred);</pre>
+
+<p>If you pass <code>null</code> for the GSSCredential argument, as
+SampleServer does, the default credentials are used. The context is
+instantiated via the following:</p>
+
+<pre class="codeblock">GSSContext context = manager.createContext((GSSCredential)null);</pre>
+
+<a name="SSContextEstLoop" id="SSContextEstLoop"></a>
+<h3>SampleServer Context Establishment Loop</h3>
+<p>After SampleServer has instantiated a GSSContext, it can
+establish the security context with SampleClient. To do so,
+SampleServer has a loop that continues until the context is
+established. Each loop iteration does the following:</p>
+<ol>
+<li>Receives a token from SampleClient. This token is the result of
+a SampleClient <code>initSecContext</code> call.</li>
+<li>Calls the context's <code>acceptSecContext</code> method,
+passing it the token just received.</li>
+<li>If <code>acceptSecContext</code> returns a token, then
+SampleServer sends this token to SampleClient and then starts the
+next loop iteration if the context is not yet established.</li>
+</ol>
+<p>The tokens returned by <code>acceptSecContext</code> or received
+from SampleClient are placed in a byte array.</p>
+<p>The <code>acceptSecContext</code> arguments are a byte array
+containing a token, the starting offset into that array of where
+the token begins, and the token length.</p>
+<p>To exchange tokens with SampleClient, SampleServer uses the
+DataInputStream <code>inStream</code> and DataOutputStream
+<code>outStream</code> it previously set up using the input and
+output streams for the socket connection made with
+SampleClient.</p>
+<p>Here is the SampleServer context establishment loop:</p>
+
+<pre class="codeblock">byte[] token = null;
+
+while (!context.isEstablished()) {
+
+    token = new byte[inStream.readInt()];
+    System.out.println("Will read input token of size "
+       + token.length
+       + " for processing by acceptSecContext");
+    inStream.readFully(token);
+    
+    token = context.<b>acceptSecContext</b>(token, 0, token.length);
+    
+    // Send a token to the peer if one was generated by
+    // acceptSecContext
+    if (token != null) {
+        System.out.println("Will send token of size "
+           + token.length
+           + " from acceptSecContext.");
+        outStream.writeInt(token.length);
+        outStream.write(token);
+        outStream.flush();
+    }
+}
+
+System.out.print("Context Established! ");
+System.out.println("Client is " + context.getSrcName());
+System.out.println("Server is " + context.getTargName());
+if (context.getMutualAuthState())
+    System.out.println("Mutual authentication took place!");</pre>
+    
+<a name="ExchangeMsgs" id="ExchangeMsgs"></a>
+<h3>Exchanging Messages Securely</h3>
+<p>Once a security context has been established between
+SampleClient and SampleServer, they can use the context to securely
+exchange messages.</p>
+<ul>
+<li><a href="#MsgPrepMethods">GSSContext Methods for Message
+Exchange</a></li>
+<li><a href="#SCandSSMsgExchanges">The SampleClient and
+SampleServer Message Exchanges</a></li>
+</ul>
+<a name="MsgPrepMethods" id="MsgPrepMethods"></a>
+<h3>GSSContext Methods for Message Exchange</h3>
+<p>Two types of methods exist for preparing messages for secure
+exchange: <code>wrap</code> and <code>getMIC</code>. There are
+actually two <code>wrap</code> methods (and two <code>getMIC</code>
+methods), where the differences between the two are the indication
+of where the input message is (a byte array or an input stream) and
+where the output should go (to a byte array return value or to an
+output stream).</p>
+<p>These methods for preparing messages for exchange, and the
+corresponding methods for interpretation by the peer of the
+resulting tokens, are described below.</p>
+<h3>wrap</h3>
+<p>The <code>wrap</code> method is the primary method for message
+exchanges.</p>
+<p>The signature for the <code>wrap</code> method called by
+SampleClient is the following:</p>
+
+<pre class="codeblock">byte[] wrap (byte[] inBuf, int offset, interface len, 
+                MessageProp msgProp)</pre>
+                
+<p>You pass <code>wrap</code> a message (in <code>inBuf</code>),
+the offset into <code>inBuf</code> where the message begins
+(<code>offset</code>), and the length of the message
+(<code>len</code>). You also pass a MessageProp, which is used to
+indicate the desired QOP (Quality-of-Protection) and to specify
+whether or not privacy (encryption) is desired. A QOP value selects
+the cryptographic integrity and encryption (if requested)
+algorithm(s) to be used. The algorithms corresponding to various
+QOP values are specified by the provider of the underlying
+mechanism. For example, the values for Kerberos V5 are defined in
+<a href="http://www.ietf.org/rfc/rfc1964.txt">RFC 1964</a> in
+section 4.2. It is common to specify 0 as the QOP value to request
+the default QOP.</p>
+<p>The <code>wrap</code> method returns a token containing the
+message and a cryptographic Message Integrity Code (MIC) over it.
+The message placed in the token will be encrypted if the
+MessageProp indicates privacy is desired. You do not need to know
+the format of the returned token; it should be treated as opaque
+data. You send the returned token to your peer application, which
+calls the <code>unwrap</code> method to "unwrap" the token to get
+the original message and to verify its integrity.</p>
+<h3>getMIC</h3>
+<p>If you simply want to get a token containing a cryptographic
+Message Integrity Code (MIC) for a supplied message, you call
+<code>getMIC</code>. A sample reason you might want to do this is
+to confirm with your peer that you both have the same data, by just
+transporting a MIC for that data without incurring the cost of
+transporting the data itself to each other.</p>
+<p>The signature for the <code>getMIC</code> method called by
+SampleServer is the following:</p>
+
+<pre class="codeblock">byte[] getMIC (byte[] inMsg, int offset, int len,
+            MessageProp msgProp)</pre>
+            
+<p>You pass <code>getMIC</code> a message (in <code>inMsg</code>),
+the offset into <code>inMsg</code> where the message begins
+(<code>offset</code>), and the length of the message
+(<code>len</code>). You also pass a <b>MessageProp</b>, which is
+used to indicate the desired QOP (Quality-of-Protection). It is
+common to specify 0 as the QOP value to request the default
+QOP.</p>
+<p>If you have a token created by <code>getMIC</code> and the
+message used to calculate the MIC (or a message purported to be the
+message on which the MIC was calculated), you can call the
+<code>verifyMIC</code> method to verify the MIC for the message. If
+the verification is successful (that is, if a GSSException is not
+thrown), it proves that the message is exactly the same as it was
+when the MIC was calculated. A peer receiving a message from an
+application typically expects a MIC as well, so that they can
+verify the MIC and be assured the message has not been modified or
+corrupted in transit. Note: If you know ahead of time that you will
+want the MIC as well as the message then it is more convenient to
+use the <code>wrap</code> and <code>unwrap</code> methods. But
+there could be situations where the message and the MIC are
+received separately.</p>
+<p>The signature for the <code>verifyMIC</code> corresponding to
+the <code>getMIC</code> shown above is</p>
+
+<pre class="codeblock">void verifyMIC (byte[] inToken, int tokOffset, int tokLen,
+        byte[] inMsg, int msgOffset, int msgLen,
+        MessageProp msgProp);</pre>
+        
+<p>This verifies the MIC contained in the <code>inToken</code> (of
+length <code>tokLen</code>, starting at offset
+<code>tokOffset</code>) over the message contained in
+<code>inMsg</code> (of length <code>msgLen</code>, starting at
+offset <code>msgOffset</code>). The MessageProp is used by the
+underlying mechanism to return information to the caller, such as
+the QOP indicating the strength of protection that was applied to
+the message.</p>
+<a name="SCandSSMsgExchanges" id="SCandSSMsgExchanges"></a>
+<h3>The SampleClient and SampleServer Message Exchanges</h3>
+<p>The message exchanges between SampleClient and SampleServer are
+summarized below, followed by the coding details.</p>
+<p>These steps are the "standard" steps used for verifying a
+GSS-API client and server. A group at MIT has written a GSS-API
+client and a GSS-API server that have become fairly popular test
+programs for checking interoperability between different
+implementations of the GSS-API library. (These GSS-API sample
+applications can be downloaded as a part of the Kerberos
+distribution available from MIT at <a href="http://web.mit.edu/kerberos/">http://web.mit.edu/kerberos</a>.)
+This client and server from MIT follow the protocol that once the
+context is established, the client sends a message across and it
+expects back the MIC on that message. If you implement a GSS-API
+library, it is common practice to test it by running either the
+client or server using your library implementation against a
+corresponding peer server or client that uses another GSS-API
+library implementation. If both library implementations conform to
+the standards, then the two peers will be able to communicate
+successfully.</p>
+<p>One implication of testing your client or server against ones
+written in C (like the MIT ones) is the way tokens must be
+exchanged. C implementations of GSS-API do not include stream-based
+methods. In the absence of stream-based methods on your peer, when
+you write a token you must first write the number of bytes and then
+write the token. Similarly, when you are reading a token, you first
+read the number of bytes and then read the token. This is what
+SampleClient and SampleServer do.</p>
+<p>Here is the summary of the SampleClient and SampleServer message
+exchanges:</p>
+<ol>
+<li>SampleClient calls <code>wrap</code> to encrypt and calculate a
+MIC for a message.</li>
+<li>SampleClient sends the token returned from <code>wrap</code> to
+SampleServer.</li>
+<li>SampleServer calls <code>unwrap</code> to obtain the original
+message and verify its integrity.</li>
+<li>SampleServer calls <code>getMIC</code> to calculate a MIC on
+the decrypted message.</li>
+<li>SampleServer sends the token returned by <code>getMIC</code>
+(which contains the MIC) to SampleClient.</li>
+<li>SampleClient calls <code>verifyMIC</code> to verify that the
+MIC sent by SampleServer is a valid MIC for the original
+message.</li>
+</ol>
+<h3>SampleClient Code to Encrypt the Message and Send It</h3>
+<p>The SampleClient code for encrypting a message, calculating a
+MIC for it, and sending the result to SampleServer is the
+following:</p>
+
+<pre class="codeblock">byte[] messageBytes = "Hello There!\0".getBytes();
+
+/*
+ * The first MessageProp argument is 0 to request
+ * the default Quality-of-Protection.
+ * The second argument is true to request
+ * privacy (encryption of the message).
+ */
+MessageProp prop =  new MessageProp(0, true);
+
+/*
+ * Encrypt the data and send it across. Integrity protection
+ * is always applied, irrespective of encryption.
+ */
+token = context.<b>wrap</b>(messageBytes, 0, messageBytes.length, 
+    prop);
+System.out.println("Will send wrap token of size " 
+    + token.length);
+outStream.writeInt(token.length);
+outStream.write(token);
+outStream.flush();</pre>
+
+<h3>SampleServer Code to Unwrap Token, Calculate MIC, and Send
+It</h3>
+
+<p>The following SampleServer code reads the wrapped token sent by
+SampleClient and "unwraps" it to obtain the original message and
+have its integrity verified. The unwrapping in this case includes
+decryption since the message was encrypted.</p>
+<p>Note: Here the integrity check is expected to succeed. But note
+that in general if an integrity check fails it signifies that the
+message was changed in transit. If the <code>unwrap</code> method
+encounters an integrity check failure, it throws a GSSException
+with major error code GSSException.BAD_MIC.</p>
+
+<pre class="codeblock">/*
+ * Create a MessageProp which unwrap will use to return 
+ * information such as the Quality-of-Protection that was 
+ * applied to the wrapped token, whether or not it was 
+ * encrypted, etc. Since the initial MessageProp values
+ * are ignored, it doesn't matter what they are set to.
+ */
+MessageProp prop = new MessageProp(0, false);
+
+/* 
+ * Read the token. This uses the same token byte array 
+ * as that used during context establishment.
+ */
+token = new byte[inStream.readInt()];
+System.out.println("Will read token of size " 
+    + token.length);
+inStream.readFully(token);
+
+byte[] bytes = context.<b>unwrap</b>(token, 0, token.length, prop);
+String str = new String(bytes);
+System.out.println("Received data \""
+    + str + "\" of length " + str.length());
+System.out.println("Encryption applied: "
+    + prop.getPrivacy());</pre>
+    
+<p>Next, SampleServer generates a MIC for the decrypted message and
+sends it to SampleClient. This is not really necessary but simply
+illustrates generating a MIC on the decrypted message, which should
+be exactly the same as the original message SampleClient wrapped
+and sent to SampleServer. When SampleServer generates this and
+sends it to SampleClient, and SampleClient verifies it, this proves
+to SampleClient that the decrypted message SampleServer has is in
+fact exactly the same as the original message from
+SampleClient.</p>
+
+<pre class="codeblock">/*
+ * First reset the QOP of the MessageProp to 0
+ * to ensure the default Quality-of-Protection
+ * is applied.
+ */
+prop.setQOP(0);
+
+token = context.<b>getMIC</b>(bytes, 0, bytes.length, prop);
+
+System.out.println("Will send MIC token of size " 
+                   + token.length);
+outStream.writeInt(token.length);
+outStream.write(token);
+outStream.flush();</pre>
+
+<h3>SampleClient Code to Verify the MIC</h3>
+
+<p>The following SampleClient code reads the MIC calculated by
+SampleServer on the decrypted message and then verifies that the
+MIC is a MIC for the original message, proving that the decrypted
+message SampleServer has is the same as the original message:</p>
+
+<pre class="codeblock">token = new byte[inStream.readInt()];
+System.out.println("Will read token of size " + token.length);
+inStream.readFully(token);
+
+/* 
+ * Recall messageBytes is the byte array containing
+ * the original message and prop is the MessageProp 
+ * already instantiated by SampleClient.
+ */
+context.<b>verifyMIC</b>(token, 0, token.length, 
+          messageBytes, 0, messageBytes.length,
+          prop);
+
+System.out.println("Verified received MIC for message.");</pre>
+
+<a name="Cleanup" id="Cleanup"></a>
+
+<h3>Clean Up</h3>
+When SampleClient and SampleServer have finished exchanging
+messages, they need to perform cleanup operations. Both contain the
+following code to
+<ul>
+<li>close the socket connection and</li>
+<li>release system resources and cryptographic information stored
+in the context object and then invalidate the context.</li>
+</ul>
+
+<pre class="codeblock">socket.close();
+context.dispose();</pre>
+
+<a name="KerbNames" id="KerbNames"></a>
+
+<h2>Kerberos User and Service Principal Names</h2>
+<p>Since the underlying authentication and secure communication
+technology used by this tutorial is Kerberos V5, we use
+Kerberos-style <a href="glossary.html">principal</a> names wherever
+a user or service is called for.</p>
+<p>For example, when you run SampleClient you are asked to provide
+your <b>user name</b>. Your Kerberos-style user name is simply the
+user name you were assigned for Kerberos authentication. It
+consists of a base user name (like "mjones") followed by an "@" and
+your realm (like "mjones@KRBNT-OPERATIONS.EXAMPLE.COM").</p>
+<p>A server program like SampleServer is typically considered to
+offer a "service" and to be run on behalf of a particular
+"<b>service principal</b>." A service principal name for
+SampleServer is needed in several places:</p>
+<ul>
+<li>When you run SampleServer, and SampleClient attempts a
+connection to it, the underlying Kerberos mechanism will attempt to
+authenticate to the Kerberos KDC. It prompts you to log in. You
+should log in as the appropriate service principal.</li>
+<li>When you run SampleClient, one of the arguments is the service
+principal name. This is needed so SampleClient can initiate
+establishment of a security context with the appropriate
+service.</li>
+<li>If the SampleClient and SampleServer programs were run with a
+security manager (they're not for this tutorial), the client and
+server policy files would each require a ServicePermission with
+name equal to the service principal name and action equal to
+"initiate" or "accept" (for initiating or accepting establishment
+of a security context).</li>
+</ul>
+<p>Throughout this document, and in the accompanying login
+configuration file,</p>
+
+<pre class="codeblock">service_principal@your_realm</pre>
+
+is used as a placeholder to be replaced by the actual name to be
+used in your environment. <i>Any</i> Kerberos principal can
+actually be used for the service principal name. So <b>for the
+purposes of trying out this tutorial, you could use your user name
+as both the client user name and the service principal name.</b>
+<p>In a production environment, system administrators typically
+like servers to be run as specific principals only and may assign a
+particular name to be used. Often the Kerberos-style service
+principal name assigned is of the form</p>
+
+<pre class="codeblock">service_name/machine_name@realm;</pre>
+
+<p>For example, an nfs service run on a machine named "raven" in
+the realm named "KRBNT-OPERATIONS.EXAMPLE.COM" could have the
+service principal name</p>
+
+<pre class="codeblock">nfs/raven@KRBNT-OPERATIONS.EXAMPLE.COM</pre>
+
+<p>Such multi-component names are not required, however.
+Single-component names, just like those of user principals, can be
+used. For example, an installation might use the same ftp service
+principal <code>ftp@realm</code> for all ftp servers in that realm,
+while another installation might have different ftp principals for
+different ftp servers, such as <code>ftp/host1@realm</code> and
+<code>ftp/host2@realm</code> on machines <code>host1</code> and
+<code>host2</code>, respectively.</p>
+<h3>When the Realm is Required in Principal Names</h3>
+<p>If the realm of a user or service principal name is the default
+realm (see <a href="KerberosReq.html">Kerberos Requirements</a>),
+you can leave off the realm when you are logging into Kerberos
+(that is, when you are prompted for your username). Thus, for
+example, if your user name is
+"mjones@KRBNT-OPERATIONS.EXAMPLE.COM", and you run SampleClient,
+when it requests your user name you could just specify "mjones",
+leaving off the realm. The name is interpreted in the context of
+being a Kerberos principal name and the default realm is appended,
+as needed.</p>
+<p>You can also leave off the realm if a principal name will be
+converted to a GSSName by a GSSManager <code>createName</code>
+method. For example, when you run SampleClient, one of the
+arguments is the server service principal name. You can specify the
+name without including the realm, because SampleClient passes the
+name to such a <code>createName</code> method, which appends the
+default realm as needed.</p>
+<p>It is recommended that you always include realms when principal
+names are used in login configuration files and policy files,
+because the behavior of the parsers for such files may be
+implementation-dependent; they may or may not append the default
+realm before such names are utilized and subsequent actions may
+fail if there is no realm in the name.</p>
+<a name="TheLCF" id="TheLCF"></a>
+<h2>The Login Configuration File</h2>
+<p>For this tutorial, we are letting the underlying Kerberos
+mechanism obtain credentials of the users running SampleClient and
+SampleServer, rather than invoking JAAS methods directly (as in the
+<a href="AcnOnly.html">JAAS Authentication</a> and <a href=
+"AcnAndAzn.html">JAAS Authorization</a> tutorials) or indirectly
+(for example, via the Login utility described in the <a href=
+"LoginSample.html">Use of JAAS Login Utility</a> tutorial and in
+the <a href="ClientServer.html">Use of JAAS Login Utility and Java
+GSS-API for Secure Message Exchanges</a> tutorial).</p>
+<p>The default Kerberos mechanism implementation supplied by Sun
+Microsystems actually prompts for a Kerberos name and password and
+authenticates the specified user (or service) to the Kerberos KDC.
+The mechanism relies on JAAS to perform this authentication.</p>
+<p>JAAS supports a pluggable authentication framework, meaning that
+any type of authentication module can be plugged under a calling
+application. A login configuration specifies the login module to be
+used for a particular application. The default JAAS implementation
+from Sun Microsystems requires that the login configuration
+information be specified in a file. (Note: Some other vendors might
+not have file-based implementations.) See <a href=
+"LoginConfigFile.html">JAAS Login Configuration File</a> for
+information as to what a login configuration file is, what it
+contains, and how to specify which login configuration file should
+be used.</p>
+<p>For this tutorial, the Kerberos login module
+<code>com.sun.security.auth.module.Krb5LoginModule</code> is
+specified in the configuration file. This login module prompts for
+a Kerberos name and password and attempts to authenticate to the
+Kerberos KDC.</p>
+<p>Both SampleClient and SampleServer can use the same login
+configuration file, if that file contains two entries, one entry
+for the client side and one for the server side.</p>
+<p>The <a href="bcsLogin.conf">bcsLogin.conf</a> login
+configuration file used for this tutorial is the following:</p>
+
+<pre class="codeblock"><b>com.sun.security.jgss.initiate</b>  {
+  com.sun.security.auth.module.Krb5LoginModule required;
+};
+
+<b>com.sun.security.jgss.accept</b>  {
+  com.sun.security.auth.module.Krb5LoginModule required storeKey=true 
+};</pre>
+
+<p>Entries with these two names
+(<code>com.sun.security.jgss.initiate</code> and
+<code>com.sun.security.jgss.accept</code>) are used by Sun
+implementations of GSS-API mechanisms when they need new
+credentials. Since the mechanism used in this tutorial is the
+Kerberos V5 mechanism, a Kerberos login module will need to be
+invoked in order to obtain these credentials. Thus we list
+Krb5LoginModule as a required module in these entries. The
+<code>com.sun.security.jgss.initiate</code> entry specifies the
+configuration for the client side and the
+<code>com.sun.security.jgss.accept</code> entry for the server
+side.</p>
+<p>The Krb5LoginModule succeeds only if the attempt to log in to
+the Kerberos KDC as a specified entity is successful. When running
+SampleClient or SampleServer, the user will be prompted for a name
+and password.</p>
+<p>The SampleServer entry <b><code>storeKey=true</code></b>
+indicates that a secret key should be calculated from the password
+provided during login and it should be stored in the private
+credentials of the Subject created as a result of login. This key
+is subsequently utilized during mutual authentication when
+establishing a security context between SampleClient and
+SampleServer.</p>
+<p>For information about all the possible options that can be
+passed to Krb5LoginModule, see the <a href=
+"../../../../../jre/api/security/jaas/spec/com/sun/security/auth/module/Krb5LoginModule.html">
+Krb5LoginModule documentation</a>.</p>
+<a name="useSub" id="useSub"></a>
+<h2>The useSubjectCredsOnly System Property</h2>
+<p>For this tutorial, we set the system property
+<code>javax.security.auth.useSubjectCredsOnly</code> to
+<code>false</code>, which allows us to relax the usual restriction
+of requiring a GSS mechanism to obtain necessary credentials from
+an existing <a href="glossary.html">Subject</a>, set up by JAAS.
+When this restriction is relaxed, it allows the mechanism to obtain
+credentials from some vendor-specific location. For example, some
+vendors might choose to use the operating system's cache if one
+exists, while others might choose to read from a protected file on
+disk.</p>
+<p>When this restriction is relaxed, Sun Microsystem's Kerberos
+mechanism still looks for the credentials in the Subject associated
+with the thread's access control context, but if it doesn't find
+any there, it performs JAAS authentication using a Kerberos module
+to obtain new ones. The Kerberos module prompts you for a Kerberos
+principal name and password. Note that Kerberos mechanism
+implementations from other vendors may behave differently when this
+property is set to <code>false</code>. Consult their documentation
+to determine their implementation's behavior.</p>
+<a name="RunProgs" id="RunProgs"></a>
+<h2>Running the SampleClient and SampleServer Programs</h2>
+<p>To execute the SampleClient and SampleServer programs, do the
+following:</p>
+<ul>
+<li><a href="#PrepSS">Prepare SampleServer for Execution</a></li>
+<li><a href="#PrepSC">Prepare SampleClient for Execution</a></li>
+<li><a href="#ExecSS">Execute SampleServer</a></li>
+<li><a href="#ExecSC">Execute SampleClient</a></li>
+</ul>
+<a name="PrepSS" id="PrepSS"></a>
+<h3>Prepare SampleServer for Execution</h3>
+<p>To prepare SampleServer for execution, do the following:</p>
+<ol>
+<li>Copy the following files into a directory accessible by the
+machine on which you will run SampleServer:
+<ul>
+<li>The <a href="SampleServer.java">SampleServer.java</a> source
+file.</li>
+<li>The <a href="bcsLogin.conf">bcsLogin.conf</a> login
+configuration file.</li>
+</ul>
+</li>
+<li>Compile <code>SampleServer.java</code>:
+
+<pre class="codeblock">javac SampleServer.java</pre>
+
+</li>
+</ol>
+<a name="PrepSC" id="PrepSC"></a>
+<h3>Prepare SampleClient for Execution</h3>
+<p>To prepare SampleClient for execution, do the following:</p>
+<ol>
+<li>Copy the following files into a directory accessible by the
+machine on which you will run SampleClient:
+<ul>
+<li>The <a href="SampleClient.java">SampleClient.java</a> source
+file.</li>
+<li>The <a href="bcsLogin.conf">bcsLogin.conf</a> login
+configuration file.</li>
+</ul>
+</li>
+<li>Compile <code>SampleClient.java</code>:
+<pre class="codeblock">javac SampleClient.java</pre></li>
+</ol>
+<a name="ExecSS" id="ExecSS"></a>
+
+<h3>Execute SampleServer</h3>
+
+<p>It is important to execute SampleServer before SampleClient
+because SampleClient will try to make a socket connection to
+SampleServer and that will fail if SampleServer is not yet running
+and accepting socket connections.</p>
+<p>To execute SampleServer, be sure to run it on the machine it is
+expected to be run on. This machine name (host name) is specified
+as an argument to SampleClient. The service principal name appears
+in several places, including the login configuration file and the
+policy files.</p>
+<p>Go to the directory in which you have prepared SampleServer for
+execution. Execute SampleServer, specifying</p>
+<ul>
+<li>by <code>-Djava.security.krb5.realm=&lt;your_realm&gt;</code>
+that your Kerberos realm is the one specified. For example, if your
+realm is "KRBNT-OPERATIONS.EXAMPLE.COM" you'd put
+<code>-Djava.security.krb5.realm=KRBNT-OPERATIONS.EXAMPLE.COM</code>.</li>
+<li>by <code>-Djava.security.krb5.kdc=&lt;your_kdc&gt;</code> that
+your Kerberos KDC is the one specified. For example, if your KDC is
+"samplekdc.example.com" you'd put
+<code>-Djava.security.krb5.kdc=samplekdc.example.com</code>.</li>
+<li>by <code>-Djavax.security.auth.useSubjectCredsOnly=false</code>
+that the underlying mechanism can decide how to get credentials.
+See <a href="#useSub">The useSubjectCredsOnly System
+Property</a>.</li>
+<li>by <code>-Djava.security.auth.login.config=bcsLogin.conf</code>
+that the login configuration file to be used is
+<code>bcsLogin.conf</code>.</li>
+</ul>
+<p>The only argument required by SampleServer is one specifying the
+port number to be used for listening for client connections. Choose
+a high port number unlikely to be used for anything else. An
+example would be something like 4444.</p>
+<p>Below is the full command to use for both Microsoft Windows and
+Solaris, Linux, and Mac OS X systems.</p>
+<p><b>Important: In this command, you must replace
+<code>&lt;port_number&gt;</code> with an appropriate port number,
+<code>&lt;your_realm&gt;</code> with your Kerberos realm, and
+<code>&lt;your_kdc&gt;</code> with your Kerberos KDC.</b></p>
+<p>Here is the command:</p>
+
+<pre class="codeblock">java -Djava.security.krb5.realm=&lt;your_realm&gt; 
+ -Djava.security.krb5.kdc=&lt;your_kdc&gt; 
+ -Djavax.security.auth.useSubjectCredsOnly=false
+ -Djava.security.auth.login.config=bcsLogin.conf 
+ SampleServer &lt;port_number&gt;</pre>
+ 
+<p>The full command should appear on one line
+(or, on Solaris, Linux, or Mac OS X systems,
+on multiple lines where each line but the last is terminated with "
+\" indicating that there is more to come). Multiple lines are used
+here just for legibility. Since this command is very long, you may
+need to place it in a .bat file (for Windows) or a .sh file (for
+Solaris, Linux, or Mac OS X) and then run that file to execute
+the command.</p>
+<p>The <code>SampleServer</code> code will listen for socket
+connections on the specified port. When prompted, type the Kerberos
+name and password for the service principal. The underlying
+Kerberos authentication mechanism specified in the login
+configuration file will log the service principal into
+Kerberos.</p>
+<p>For login troubleshooting suggestions, see <a href=
+"Troubleshooting.html">Troubleshooting</a>.</p>
+<a name="ExecSC" id="ExecSC"></a>
+<h3>Execute SampleClient</h3>
+<p>To execute SampleClient, first go to the directory in which you
+have prepared SampleClient for execution. Execute SampleClient,
+specifying</p>
+<ul>
+<li>by <code>-Djava.security.krb5.realm=&lt;your_realm&gt;</code>
+that your Kerberos realm is the one specified.</li>
+<li>by <code>-Djava.security.krb5.kdc=&lt;your_kdc&gt;</code> that
+your Kerberos KDC is the one specified.</li>
+<li>by <code>-Djavax.security.auth.useSubjectCredsOnly=false</code>
+that the underlying mechanism can decide how to get
+credentials.</li>
+<li>by <code>-Djava.security.auth.login.config=bcsLogin.conf</code>
+that the login configuration file to be used is
+<code>bcsLogin.conf</code>.</li>
+</ul>
+<p>The SampleClient arguments are (1) <a href="#KerbNames">the
+Kerberos name of the service principal that represents
+SampleServer</a>, (2) the name of the host (machine) on which
+SampleServer is running, and (3) the port number on which
+SampleServer is listening for client connections.</p>
+<p>Below is the full command to use for both Windows and 
+Solaris, Linux, and Mac OS X systems.</p>
+<p><b>Important: In this command, you must replace
+<code>&lt;service_principal&gt;</code>, <code>&lt;host&gt;</code>,
+<code>&lt;port_number&gt;</code>, <code>&lt;your_realm&gt;</code>,
+and <code>&lt;your_kdc&gt;</code> with appropriate values</b> (and
+note that the port number must be the same as the port number
+passed as an argument to SampleServer). These values need not be
+placed in quotes.</p>
+<p>Here is the command:</p>
+
+<pre class="codeblock">java -Djava.security.krb5.realm=&lt;your_realm&gt; 
+ -Djava.security.krb5.kdc=&lt;your_kdc&gt; 
+ -Djavax.security.auth.useSubjectCredsOnly=false
+ -Djava.security.auth.login.config=bcsLogin.conf 
+ SampleClient &lt;service_principal&gt; &lt;host&gt; &lt;port_number&gt;</pre>
+ 
+<p>Type the full command on one line. Multiple lines are used here
+for legibility. As with the command for executing SampleServer, if
+the command is too long to type directly into your command window,
+place it in a .bat file (Windows) or a .sh file (Solaris, Linux,
+and Mac OS X) and then execute that file.</p>
+<p>When prompted, type your Kerberos user name and password. The
+underlying Kerberos authentication mechanism specified in the login
+configuration file will log you into Kerberos. The SampleClient
+code requests a socket connection with SampleServer. Once
+SampleServer accepts the connection, SampleClient and SampleServer
+establish a shared context and then exchange messages as described
+in this tutorial.</p>
+<p>For login troubleshooting suggestions, see <a href=
+"Troubleshooting.html">Troubleshooting</a>.</p>
+<hr />
+<table summary="" width="550">
+<tr>
+<td align="left" valign="middle"><a href="index.html" target=
+"_top"><img src="images/TOCIcon.gif" width="26" height="26" align=
+"middle" border="0" alt="Tutorials Introduction and TOC" /></a>
+<a href="AcnOnly.html" target="_top"><img src=
+"images/NextArrow.gif" width="26" height="26" align="middle"
+border="0" alt="Next Tutorial" /></a></td>
+</tr>
+</table>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+
+/* 
+
+This stylesheet formats /guides/index.html pages.
+
+*/
+
+
+p, li {margin-top: 18pt;
+   margin-bottom: 9pt;
+   margin-left: 30pt;
+	  }
+
+ul li,
+ol li {margin-top: 2pt;
+       margin-bottom: 2pt;
+       margin-left: 16pt;
+	  font-weight: bold;
+      }
+	 
+ol li {font-weight: normal;}
+	    
+ul ul li {list-style-type: circle;
+	     margin-bottom: 2pt;
+          margin-left: -2pt;
+		font-weight: bold;
+      }
+	 
+ol ol li {list-style-type: lower-roman;
+	     margin-bottom: 2pt;
+          margin-left: -2pt;
+		font-weight: normal;
+      }
+
+h2 { margin-top: 18pt;
+	margin-bottom: 9pt;
+     margin-left: 2pt;
+     font-size:133%;
+	font-family: serif;
+     font-weight: bold;
+    }
+
+h3 {margin-top: 10 pt;
+    margin-bottom: 9pt;
+    margin-left: 20pt;
+    font-size: 120%;
+
+    }
+
+code, pre, tt {font-size: 125%}
+		
+.windows   {display: none; }
+.unix      {display: none;}
+.helvetica {font-family: sans-serif;}
+.indent-1  {margin-left: 46pt;}
+.indent-2  {margin-left: 66pt;}
+
+

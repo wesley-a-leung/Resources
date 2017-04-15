@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Remote Method Invocation: - Exceptions In RMI</title>
+</head>
+<body bgcolor="#FFFFFF">
+<a href="#skip" title="Skip navigation bar"></a>
+<table width="100%" summary="">
+<tr>
+<td><a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-exceptions3.html">PREV</a> | <a href=
+"rmi-exceptions5.html">NEXT</a></td>
+<td align="right"><i>Java Remote Method Invocation</i></td>
+</tr>
+</table>
+<br />
+<a name="skip" id="skip"></a>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<h2><a name="a5112" id="a5112"><i>A.3</i> Exceptions or Errors
+During Return</a></h2>
+<a name="a5102" id="a5102"><!-- --></a><br />
+<br />
+<table border="1" cellpadding="5" summary=
+"Exceptions or Errors During Return">
+<tr>
+<th>Exception<br /></th>
+<th>Context<br /></th>
+</tr>
+<tr valign="top">
+<td>
+<p><code>java.rmi.UnmarshalException</code></p>
+</td>
+<td>
+<p>Corrupted stream leads to either an I/O or protocol error
+when:</p>
+<dl>
+<dd>
+<ul>
+<li>Marshaling return header</li>
+</ul>
+</dd>
+</dl>
+<dl>
+<dd>
+<ul>
+<li>Checking return type</li>
+</ul>
+</dd>
+</dl>
+<dl>
+<dd>
+<ul>
+<li>Checking return code</li>
+</ul>
+</dd>
+</dl>
+<dl>
+<dd>
+<ul>
+<li>Unmarshaling return</li>
+</ul>
+</dd>
+</dl>
+<p>Return value class not found.</p>
+</td>
+</tr>
+<tr valign="top">
+<td>
+<p><code>java.rmi.UnexpectedException</code></p>
+</td>
+<td>
+<p>An exception not mentioned in the method signature occurred
+(excluding runtime exceptions). The
+<code>UnexpectedException</code> exception object contains the
+underlying exception that was thrown by the server.</p>
+</td>
+</tr>
+<tr valign="top">
+<td>
+<p><code>java.rmi.ServerError</code></p>
+</td>
+<td>
+<p>Any error that occurs while the server is executing a remote
+method. The <code>ServerError</code> exception object contains the
+underlying error that was thrown by the server,</p>
+</td>
+</tr>
+<tr valign="top">
+<td>
+<p><code>java.rmi.ServerException</code></p>
+</td>
+<td>
+<p>This exception is thrown as a result of a remote method
+invocation when a <code>RemoteException</code> is thrown while
+processing the invocation on the server, either while unmarshalling
+the arguments or executing the remote method itself. For examples,
+see <a href="rmi-exceptions5.html">Section&#160;A.3.1,
+&#34;Possible Causes of java.rmi.ServerException&#34;</a>.</p>
+</td>
+</tr>
+<tr valign="top">
+<td>
+<p><code>java.rmi.ServerRuntimeException</code></p>
+<p><em>note: this exception is deprecated as of</em> Java 2 SDK,
+Standard Edition, v1.2</p>
+</td>
+<td>
+<p>This exception is not thrown by servers running Java 2 SDK,
+Standard Edition, v1.2-compatible versions. A
+<code>RuntimeException</code> is propagated to clients intact.</p>
+</td>
+</tr>
+</table>
+<br />
+<hr />
+<a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-exceptions3.html">PREV</a> | <a href=
+"rmi-exceptions5.html">NEXT</a>
+<hr />
+<font size="-1"><i><a href=
+"../../../legal/SMICopyright.html">Copyright</a> &copy; 1997, 2010,
+Oracle and/or its affiliates. All rights reserved.</i></font> 
+<!-- by Susan Snyder -->
+<!-- Last updated: 1/16/05 -->
+</body>
+</html>

@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Security Enhancements in JDK 7</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>JDK 7 Security Enhancements</h1>
+
+
+<p>The following topics are covered:</p>
+
+<ul>
+  <li><a href="#javase7u4">Enhancements in JDK 7 Update 4</a></li>
+  <li><a href="#javase7u2">Enhancements in JDK 7 Update 2</a></li>
+  <li><a href="#javase7">Enhancements in JDK 7</a></li>
+</ul>  
+
+<h2><a name="javase7u4">Enhancements in JDK 7 Update 4</a></h2>
+
+<p><b>Area</b>: JCE<br />
+<b>Synopsis</b>: The <code>Apple</code> provider has been introduced, which implements a <code>java.security.KeyStore</code> that provides access to the Mac OS X Keychain. This is part of RFE <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7113349">JDK-7113349</a>, the JDK port for Mac OS X. See the section <a href="SunProviders.html#Apple">The <code>Apple</code> Provider</a> in <a href="SunProviders.html">Java Cryptography Architecture Oracle Providers Documentation</a></p>
+
+<p><b>SPARC T4 specific crypto optimizations in the security area</b></p>
+<p>SPARC T4 contains on-chip(native) cryptographic implementations. These implementations can be accessed by Java applications utilizing either SunPKCS11-Solaris provider (available since Java SE 5.0 release) or OracleUcrypto Provider (new in 7u4 release).</p>
+<p>The new OracleUcrypto Service Provider accesses the underlying native(T4) crypto library without going through the PKCS11 layer and is configured by default to be the most preferred provider for Solaris OS.</p>
+<p>See <a href="SunProviders.html#OracleUcrypto">Java Cryptography Architecture Oracle Providers Documentation</a>.</p>
+
+<h2><a name="javase7u2">Enhancements in JDK 7 Update 2</a></h2>
+
+<p><strong>Area</strong>: Java Cryptography Extension<br />
+<strong>Synopsis:</strong> Public key certificates containing Elliptic Curve Cryptography (ECC) keys are parsed correctly by the <code>SunPKCS11</code> JCE security provider on Solaris 11. See <a href="http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7054637">7054637</a>.</p>
+
+<h2><a name="javase7">Enhancements in JDK 7</a></h2>
+
+<p>The JDK 7 release adds the following features:</p>
+
+<ul>
+
+  <li><p><b>Elliptic Curve Cryptography (ECC)</b>: A new native provider has been added to the Java SE 7 release that provides several ECC-based algorithms (ECDSA/ECDH). For more information, see <a href="SunProviders.html#SunEC">The SunEC Provider's Supported Algorithms</a> section in the <a href="SunProviders.html">Java Cryptography Architecture Oracle Providers Documentation</a>.</p></li>
+
+  <li><p><b>CertPath Algorithm Disabling</b>: Weak cryptographic algorithms can now be disabled. For example, the MD2 digest algorithm is no longer considered secure. The Java SE 7 release provides a mechanism for denying the use of specific algorithms in certification path processing and TLS handshaking. See <a href="certpath/CertPathProgGuide.html#AppD">Appendix D: Disabling Cryptographic Algorithms</a> in <a href="certpath/CertPathProgGuide.html">Java PKI Programmer's Guide</a> and <a href="jsse/JSSERefGuide.html#DisabledAlgorithms">Disabled Cryptographic Algorithms</a> in <a href="jsse/JSSERefGuide.html">Java Secure Socket Extension (JSSE) Reference Guide</a> for more information.</p></li>
+
+  <li><p><b>JSSE (SSL/TLS)</b>:</p>
+    
+    <ul>
+      
+      <li><p><b>TLS 1.1</b>: The SunJSSE provider now supports TLS 1.1 as described in <a href="http://www.ietf.org/rfc/rfc4346.txt">RFC 4346</a>. The most important update is protection against cipher block chaining (CBC) attacks.</p></li>
+      
+      <li><p><b>TLS 1.2</b>: The SunJSSE provider now supports TLS 1.2 as described in <a href="http://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>. Among other things, it specifies different internal hashing algorithms, adds new cipher suites, and contains improved flexibility, particularly for negotiation of cryptographic algorithms.</p></li>
+      
+      <li><p><b>Weak cipher suites deprecated</b>: Per <a href="http://www.ietf.org/rfc/rfc4346.txt">RFC 4346</a>, <a href="http://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>, and <a href="http://www.ietf.org/rfc/rfc5469.txt">RFC 5469</a>, some cipher suites have been made obsolete and should not be used. These obsolete suites are all disabled by default in <code>SunJSSE</code>. For details, consult the cipher lists in the section <a href="SunProviders.html#SunJSSEProvider">The <code>SunJSSE</code> Provider</a> in <a href="SunProviders.html">Java Cryptography Architecture Oracle Providers Documentation</a>.</p></li>
+      
+    </ul>
+
+  </li>
+
+  <li><p><b>Connection-sensitive trust management</b>: Both trust managers and key managers now have the ability to examine parameters of the TLS connection, specifically the <code>SSLSession</code> under construction, during the handshake. For example, a trust manager might restrict the types of certificates used based on the list of valid signature algorithms.</p></li>
+
+  <li><b>Endpoint verification</b>: An endpoint identification algorithm can be specified to verify that a remote computer's host address matches its supplied certificate. Although this type of verification was previously performed for the HTTPS protocol (see <a href="../../../api/javax/net/ssl/HttpsURLConnection.html"><code>HttpsURLConnection</code></a> and <a href="../../../api/javax/net/ssl/HostnameVerifier.html"><code>HostnameVerifier</code></a>), such verification can now be optionally performed at the TLS level.</li>
+
+  <li><p><b>TLS renegotiation</b>: Java SE supports <a href="http://www.ietf.org/rfc/rfc5746.txt">RFC 5746</a>, which fixes a renegotiation issue in the TLS protocol. See the section <a href="jsse/JSSERefGuide.html#tlsRenegotiation">Transport Layer Security (TLS) Renegotiation Issue</a> in <a href="jsse/JSSERefGuide.html">Java Secure Socket Extension (JSSE) Reference Guide</a>.</p></li>
+  
+  <li><p><b>SSLv2Hello disabled by default on the client</b>: In Java SE 7, SSLv2Hello is removed from the default enabled protocol list on the client.</p></li>
+  
+  <li><p><b>Algorithm disabling</b>: Weak cryptographic algorithms can now be disabled, as previously described.</p></li>
+  
+  <li><p><b>Server Name Indication (SNI) for JSSE client</b>: The Java SE 7 release supports the Server Name Indication (SNI) extension in the JSSE client. SNI is described in <a href="http://www.ietf.org/rfc/rfc4366.txt">RFC 4366</a>. This enables TLS clients to connect to virtual servers.</p></li>
+  
+  <li><p><b>Tighter checking of EncryptedPreMasterSecret version numbers</b>: Java SE 7 tightens version number checking during TLS 1.1 and TLS 1.2 handshaking. See <a href="SunProviders.html#TighterCheckingEncryptedPreMasterSecret">Tighter Checking of EncryptedPreMasterSecret Version Numbers</a> in <a href="SunProviders.html">Java Cryptography Architecture Oracle Providers Documentation</a> for more information.</p></li>
+
+</ul>
+
+<p>In addition, the following enhancements are added:</p>
+
+<p><b>Area</b>: Security<br />
+<b>Standard/Platform</b>: Java SE 7<br />
+<b>Synopsis</b>: Security algorithm requirement have been defined
+for Java SE 7 that provide a list of algorithms that all
+implementations of Java SE 7 must support. The class summary of
+applicable classes (ex: <tt>java.security.Signature</tt>) has been
+updated to include the implementation requirements. Also, all of
+the requirements are listed in the <a href="StandardNames.html#impl">
+Implementation Requirements</a> section of the Standard Algorithms
+document.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=5001004">5001004</a></p>
+
+<p><b>Area</b>: API: JSSE<br />
+<b>Standard/Platform</b>: Java SE 7<br />
+<b>Synopsis</b>: In previous releases, except for the default
+algorithm, there was no standard algorithm name for
+<tt>KeyManagerFactory</tt>. In the Java SE 7 release, "PKIX" is
+exported as the standard algorithm name for
+<tt>KeymanagerFactory</tt>. The "PKIX" <tt>KeyManagerFactory</tt>
+algorithm is defined as:<br />
+A factory for X509ExtendedKeyManagers that manages X.509
+certificate-based key pairs for the local side authentication
+according to the rules defined by the IETF PKIX working group in
+RFC 3280 or its successor. The <tt>KeyManagerFactory</tt> must
+support initialization using the class
+<tt>javax.net.ssl.KeyStoreBuilderParameters</tt>.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7022855">7022855</a></p>
+
+<p><b>Area</b>: API: JSSE<br />
+<b>Standard/Platform</b>: Java SE 7<br />
+<b>Synopsis</b>: Support for TLS 1.2 has been added to the SunJSSE
+provider.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6916074">6916074</a></p>
+
+<p><b>Area</b>: JSSE<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: The TLS renegotiation fix has been implemented.
+Please see <a href=
+"http://blog.g-sec.lu/2009/11/tls-sslv3-renegotiation-vulnerability.html">
+TLS/SSLv3 Renegotiation Vulnerability Explained</a> and <a href=
+"http://www.educatedguesswork.org/2009/11/understanding_the_tls_renegoti.html">
+Understanding the TLS Renegotiation Attack</a> for more information.</p>
+
+<p><b>Area</b>: JSSE<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: Support for the Server Name Indication (SNI)
+extension has been added to the JSSE client in the SunJSSE
+provider.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6985179">6985179</a></p>
+
+<p><b>Area</b>: SASL<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: NTLM is now supported as a SASL mechanism on both
+the client and server side. Only the authentication layer is
+implemented, and there is no privacy or integrations protection in
+communication.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6911951">6911951</a></p>
+
+<p><b>Area</b>: Security<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: The implementation of PKIX has been enhanced to
+include an option to reject certificates if the corresponding key
+is not strong enough, for example MD2 hash functions or any RA key
+with key size less than 1024.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6792180">6792180</a></p>
+
+<p><b>Area</b>: API: JSSE<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: Support for TLS 1.1 has been added to the SunJSSE
+provider, and the SSLv2Hello "pseudo protocol" is no longer active
+by default in the SunJSSE provider.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4873188">4873177</a></p>
+
+<p><b>Area</b>: JGSS<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: Java now reads a keytab file whenever that keytab
+file changes. The file can be empty or nonexistent when the
+application that uses the file is started.</p>
+
+<p><b>Area</b>: JGSS<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: A default configuration file is now provided for
+JGSS with default <tt>krb5.conf</tt> settings for Windows and *nix
+systems. This makes deploying a JGSS/krb5 program very easy,
+especially for deploying Java applets.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6483218">6483218</a>,
+<a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6785456">6785456</a>,
+<a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6552334">6552334</a></p>
+
+<p><b>Area</b>: JCE<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: SunPKCS11 provider now supports Raw RSA
+encryption, for example,
+<tt>Cipher.getInstance("RSA/ECB/NoPadding")</tt> calls, when the
+underlying PKCS11 library supports CKM-RSA_X_509 mechanism. In
+addition, SunPKCS11 provider recognizes "RSA" as an alias for the
+"RSA/ECB/PKCS1Padding" transformation when requesting a
+<tt>Cipher</tt> object.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6994008">6994008</a></p>
+
+<p><b>Area</b>: JCE<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: The SunPKCS11 provider now supports ECB, CBC modes
+with PKCS5Padding for certain block ciphers. To be more specific,
+it supports the following transformations for
+<tt>Cipher.getInstance(...)</tt> calls when the corresponding
+PKCS11 mechanism is supported by the underlying PKCS11 library:<br/>
+<code>DES, DESede, AES, and Blowfish with CBC mode and PKCS5Padding<br/>
+DES, DESede, AES with ECB mode and PKCS5Padding<br/>
+DES, DESede, AES with ECB mode and NoPadding</code><br/>
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4898461">4898461</a>
+
+<p><b>Area</b>: JCE<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: The SunPKCS11 provider now supports AES encryption
+with Counter mode (CTR), (for example,
+<tt>Cipher.getInstance("AES/CTR/NoPadding")</tt> calls) when the
+underlying PKCS11 library supports CKM_AES_CTR mechanism.<br />
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6604496">6604496</a></p>
+
+<p><b>Area</b>: JCE<br />
+<b>Standard/Platform</b>: JDK 7<br />
+<b>Synopsis</b>: Given that the relevant Solaris bug (i.e. 6306708
+"CKM_SSL3_KEY_AND_MAC_DERIVE returns incorrect cipher keys for
+exportable ciphersuites") has been addressed in the Solaris 10
+update 5 release, the SunPKCS11 provider no longer disables the
+following two mechanisms by default:<br/>
+<code>CKM_SSL3_KEY_AND_MAC_DERIVE<br/>
+CKM_TLS_KEY_AND_MAC_DERIVE</code><br/>
+<b>RFE</b>: <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7036252">7036252</a></p>
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

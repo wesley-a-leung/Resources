@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>klist</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T8:11:41Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Windows, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38210-05" name="partnum"/>
+<meta content="JSWOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="kinit.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="ktab.html">
+                Next</a><hr/>
+<div><a id="BABCEFBA" name="BABCEFBA"/>
+<div id="JSWOR700">
+<h1>klist</h1>
+<p>Enables you to view entries in the local credentials cache and key table.</p>
+<div><a id="sthref164" name="sthref164"/>
+<h2>Synopsis</h2>
+<p>klist [ [-c] [-f] [-e] [-a [-n]] ] [-k [-t] [-K] ] [<i>name</i>] [-help]]</p>
+</div>
+
+<div><a id="klist_description" name="klist_description"/>
+<h2>Description</h2>
+<p>The <code dir="ltr">klist</code> tool displays the entries in the local credentials cache and key table. After you modify the credentials cache with the <code dir="ltr">kinit</code> tool or modify the keytab with the <code dir="ltr">ktab</code> tool, the only way to verify the changes is to view the contents of the credentials cache or keytab using the <code dir="ltr">klist</code> tool. The <code dir="ltr">klist</code> tool does not change the Kerberos database.</p>
+</div>
+
+<div><a id="klist_commands" name="klist_commands"/>
+<h2>Commands</h2>
+<dl>
+<dt>-c</dt>
+<dd>
+<p>List the credential cache entries. The following are the options for credential cache entries:</p>
+<dl>
+<dt>-f</dt>
+<dd>
+<p>Show credential flags.</p>
+</dd>
+<dt>-e</dt>
+<dd>
+<p>Show the encryption type.</p>
+</dd>
+<dt>-a</dt>
+<dd>
+<p>Show addresses.</p>
+</dd>
+<dt>-n</dt>
+<dd>
+<p>If the <code dir="ltr">-a</code> option is specified, do not reverse resolve addresses.</p>
+</dd>
+</dl>
+</dd>
+<dt>-k</dt>
+<dd>
+<p>List the keytab entries. The following are the options for keytab entries:</p>
+<dl>
+<dt>-t</dt>
+<dd>
+<p>Show keytab entry timestamps.</p>
+</dd>
+<dt>-K</dt>
+<dd>
+<p>Show keytab entry DES keys.</p>
+</dd>
+</dl>
+</dd>
+<dt><span>name</span></dt>
+<dd>
+<p>Specifies the credential cache name or the keytab name. If the name is not specified, the <code dir="ltr">klist</code> tool uses default values for the cache name and keytab. The <code dir="ltr">kinit</code> documentation lists these default values.</p>
+</dd>
+<dt>-help</dt>
+<dd>
+<p>Displays instructions.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref165" name="sthref165"/>
+<h2>Examples</h2>
+<p>List entries in the keytable specified including keytab entry timestamps and DES keys:</p>
+<pre dir="ltr" xml:space="preserve">
+klist -k -t -K FILE:\temp\mykrb5cc
+</pre>
+<p>List entries in the credentials cache specified including credentials flag and address list:</p>
+<pre dir="ltr" xml:space="preserve">
+klist -c -f FILE:\temp\mykrb5cc
+</pre></div>
+
+<div><a id="klist_see_also" name="klist_see_also"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="kinit.html#BIIIGIGE"><code dir="ltr">kinit</code>(1)</a></p>
+</li>
+<li>
+<p><a href="ktab.html#BAJGHDIB"><code dir="ltr">ktab</code>(1)</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="kinit.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="ktab.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Miscellaneous changes to java.net</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Miscellaneous changes to java.net worth mentioning:</h1>
+<h2>Noteworthy bug fixes:</h2>
+<ul>
+<li><b>InetAddress</b><br />
+A bug existed in JDK 1.0.2 where one could not create an InetAddress
+out of a IP address String (for example, "192.0.2.1") if a
+corresponding host name (for example, "www.example.com") could not
+be found. This resulted in an UnknownHostException. The bug is
+fixed in JDK 1.1. Additionally, when an InetAddress is created from
+an IP address, the corresponding hostname is not looked up until
+specifically requested (via InetAddress.getHostName()), as a
+performance enhancement.</li>
+<li><b>ServerSocket/DatagramSocket close()</b><br />
+A bug existed in JDK 1.0.2 where the <code>close()</code> method of
+ServerSocket and DatagramSocket were <code>synchronized</code>. The
+result was that if one thread were blocked indefinitely in
+DatagramSocket.receive() or ServerSocket.accept(), another thread
+couldn't break the blocking thread out by calling close(). This is
+fixed in JDK1.1 by making the close() methods unsynchronized.</li>
+<li><b>URLConnection</b><br />
+There was a bug in JDK 1.0.2 where the methods on URLConnection:
+<ul>
+<li>setRequestProperty()</li>
+<li>getRequestProperty()</li>
+<li>getHeaderField()</li>
+<li>getHeaderFieldInt()</li>
+<li>getContentLength()</li>
+<li>getDate()</li>
+</ul>
+etc, did not work. These are fixed in JDK 1.1.</li>
+</ul>
+<h2>Binding to local port/address:</h2>
+<ul>
+<li><b>Socket, ServerSocket, DatagramSocket</b><br />
+These classes has overloaded constructors for binding to a specific
+local address and port. This is useful and necessary for
+applications like proxy servers that operate on multi-homed
+machines, and need particular control over which network interfaces
+are used.</li>
+</ul>
+<h2>MulticastSocket:</h2>
+<ul>
+<li>The MulticastSocket class was moved from package sun.net into
+the core API of java.net.</li>
+</ul>
+<h2>HttpURLConnection:</h2>
+<ul>
+<li>JDK1.1 introduces a new class, HttpURLConnection which extends
+URLConnection, and provides additional functionality specific to
+HTTP:</li>
+<li>Ability to use all of the request methods with HTTP/1.1, like:
+<ul>
+<li>GET</li>
+<li>POST</li>
+<li>PUT</li>
+<li>HEAD</li>
+<li>TRACE</li>
+<li>DELETE</li>
+<li>OPTIONS</li>
+</ul>
+</li>
+<li>Control over whether to follow HTTP redirects.</li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

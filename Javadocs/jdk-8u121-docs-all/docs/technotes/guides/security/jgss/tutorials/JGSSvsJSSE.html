@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>When to use Java GSS-API vs. JSSE</title>
+<link rel="stylesheet" type="text/css" href="../../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>When to use Java GSS-API vs. JSSE</h1>
+
+<br />
+<p>Java GSS-API and JSSE provide you with the same basic set of
+security features:</p>
+<ol>
+<li>Client-server authentication</li>
+<li>Encryption and integrity protection of transmitted data</li>
+</ol>
+<p>However, there are some key difference between the two. This
+document lists some of them to help you decide which might be more
+appropriate in your environment:</p>
+<ol>
+<li><b>Kerberos Single Sign-On Support</b>
+<p>In the Java 2 Standard Edition, GSS-API contains support for
+Kerberos as a mandatory security mechanism. This means that if your
+desktop has Kerberos support, you can write Java GSS-API based
+applications that never prompt the user for a password.</p>
+<p>At present JSSE does not support cipher suites to use
+Kerberos-based authentication. Support for such a cipher suite is
+dependent on its standarization in the TLS protocol at the Internet
+Engineering Task Force (IETF).</p>
+</li>
+<li><b>Communications API</b>
+<p>JSSE supports a socket-based API. JSSE sockets extend the socket
+classes found in <code>java.net</code> and JSSE socket factories
+extend the socket factories found in <code>javax.net</code>. Thus,
+if your application is written such that its security needs to be
+configured via a socket factory, then JSSE might be more
+appropriate for you. JSSE sockets need to use some reliable
+transport. Typically, implementations use TCP.</p>
+<p>Java GSS-API, on the other hand, is a token-based API that
+relies on the application to do the communication. This means that
+the application can use TCP sockets, UDP datagrams, or any other
+channel that will allow it to transport Java GSS-API generated
+tokens. If your application has varying communication protocol
+needs, then Java GSS-API might be more appropriate for you. Java
+GSS-API can read and write its tokens using input and output
+streams. However, you will need to set up the streams yourself.</p>
+</li>
+<li><b>Credential Delegation</b>
+<p>Java GSS-API allows the client to delegate its credentials to
+the server when using Kerberos. If your application will be
+deployed in a multi-tier environment where intermediaries need to
+impersonate clients when talking to backend layers, Java GSS-API
+might be more appropriate for you.</p>
+</li>
+<li><b>Selective Encryption</b>
+<p>Because Java GSS-API is token-based, you can choose to
+selectively encrypt certain messages but not all. If your
+application needs to intersperse plaintext and ciphertext messages,
+Java GSS-API might be more appropriate for you.</p>
+</li>
+<li><b>Protocol Requirements</b>
+<p>JSSE provides an implementation of the TLS protocol defined in
+RFC 2246. Java GSS-API provides an implementation of the GSS-API
+framework defined in RFC 2853, as well as an implementation of the
+Kerberos Version 5 mechanism defined in RFC 1964. (On Microsoft
+Windows platforms, this may be known as SSPI with Kerberos.) Some
+servers such as HTTPS servers will require you to use TLS, in which
+case JSSE will be appropriate for you. Other servers such as LDAP
+servers using SASL might need GSS-API with Kerberos, in which case
+Java GSS-API will be appropriate for you.</p>
+</li>
+</ol>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

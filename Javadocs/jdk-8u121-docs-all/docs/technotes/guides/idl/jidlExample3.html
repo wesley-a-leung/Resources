@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java IDL: Example with Callback Object</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Java IDL: Example with Callback Object</h1>
+<p>Client programs often react to changes or updates that occur in
+a server. For example, a client graph or spreadsheet program might
+need to be updated with each stock price update on a stock market
+server. The client has two options in this scenario:</p>
+<ul>
+<li>Periodically ask for the stock price via a method request on
+the stock server. This is known as the "polling" or "pull"
+model.</li>
+<li>Ask to be notified by the server whenever a price change
+occurs. This option is referred to as a "callback" or the "push"
+model.</li>
+</ul>
+<p>The example in this document illustrates how a client program
+can pass a callback object to a server, and the server can then
+callback to notify changes to the client. At this time, we have
+provided the code for an extension of a simple application. Notes
+about simplifying the application are contained within the
+code.</p>
+<p>This document provides the code for:</p>
+<ul>
+<li>The <a href="#IDL">IDL</a> for an example program with a
+callback.</li>
+<li>A <a href="#server">server</a> implementation that callsback to
+a client.</li>
+<li>A <a href="#client">client</a> that sends a callback object
+reference to a server.</li>
+<li>An implementation of the <a href=
+"#listener"><tt>Listener</tt></a>.</li>
+<li>An implementation of the <a href=
+"#messageserver"><tt>MessageServer</tt></a>.</li>
+</ul>
+<p><a href="#instructions">Instructions</a> for compiling and
+running the example are also provided.</p>
+<h1>Callback Example: Intermediate Level</h1>
+<a name="IDL" id="IDL"></a>
+<h2>Writing the IDL file</h2>
+<p>For the example application, the file <tt>callback.idl</tt>
+looks like this:</p>
+<pre class="codeblock">
+interface Listener {
+        void message(in string msg);
+};
+
+interface MessageServer {
+        void register(in Listener lt);
+};
+</pre>
+<a name="server" id="server"></a>
+<h2>Writing the Server Code</h2>
+<p>For the example application, the <tt>Server.java</tt> file looks
+like as follows.</p>
+<pre class="codeblock">
+import org.omg.CORBA.ORB;
+import org.omg.PortableServer.POA;
+import org.omg.PortableServer.POAHelper;
+import org.omg.CosNaming.NameComponent;
+import org.omg.CosNaming.NamingContext;
+import org.omg.CosNaming.NamingContextHelper;
+
+public class Server {
+
+    public static void main(String[] args) {
+        try {
+            //create and initialize the ORB
+            Properties props = System.getProperties();
+            props.put("org.omg.CORBA.ORBInitialPort", "1050");
+            //<strong>Replace MyHost with the name of the host on which you are running the server</strong>
+            props.put("org.omg.CORBA.ORBInitialHost", "<em>&lt;MyHost&gt;</em>");
+            ORB orb = ORB.init(args, props);
+            System.out.println("Initialized ORB");
+
+            //Instantiate Servant and create reference
+            POA rootPOA = POAHelper.narrow(
+                orb.resolve_initial_references("RootPOA"));
+            MessageServerImpl msImpl = new MessageServerImpl();
+            rootPOA.activate_object(msImpl);
+            MessageServer msRef = MessageServerHelper.narrow(
+                rootPOA.servant_to_reference(msImpl));
+
+            //Bind reference with NameService
+            NamingContext namingContext = NamingContextHelper.narrow(
+                orb.resolve_initial_references("NameService"));
+            System.out.println("Resolved NameService");
+            NameComponent[] nc = { new NameComponent("MessageServer", "") };
+            namingContext.rebind(nc, msRef);
+
+            //Activate rootpoa
+            rootPOA.the_POAManager().activate();
+
+            //Start readthread and wait for incoming requests
+            System.out.println("Server ready and running ....");
+            
+            //REMOVE THE NEXT LINE FOR THE SIMPLER EXAMPLE
+            msImpl.startReadThread();
+            
+            orb.run();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+</pre>
+<a name="messageserver" id="messageserver"></a>
+<h2>Writing the MessageServer Implementation</h2>
+<p>The file registers new clients, accepts messages, then relays
+the messages to the registered clients. For the example
+application, the file <tt>MessageServerImpl.java</tt> looks like
+the following example.</p>
+<pre class="codeblock">
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Vector;
+import java.util.Iterator;
+
+public class MessageServerImpl extends MessageServerPOA {
+
+    private Vector clients = new Vector();
+    private ReadThread rt = null;
+
+    public MessageServerImpl() {
+        rt = new ReadThread(this);
+    }
+
+    public void register(Listener lt) {
+        clients.add(lt);
+    }
+
+    public void startReadThread() {
+        rt.start();
+    }
+
+    public void message(String msg) {
+        Iterator it = clients.iterator();
+        while (it.hasNext()) {
+            Listener lt = (Listener) it.next();
+            lt.message(msg);
+            //FOR THE SIMPLER EXAMPLE, ADD A SIMPLE
+            //MESSAGE TO BE CALLED BACK, FOR EXAMPLE,
+            //SLEEP FOR 30 SECONDS, THEN SEND THE TIME
+        }
+    }
+}
+
+//EXCLUDE THIS CLASS FOR THE SIMPLER EXAMPLE
+class ReadThread extends Thread {
+
+    MessageServerImpl msImpl = null;
+
+    public ReadThread(MessageServerImpl msImpl) {
+        this.msImpl = msImpl;
+    }
+
+    public void run() {
+        BufferedReader br = new BufferedReader(
+            new InputStreamReader(System.in));
+
+        try {
+            for (;;) {
+                System.out.print("message &gt; ");
+                String msg = br.readLine();
+                msImpl.message(msg);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+</pre>
+<a name="client" id="client"></a>
+<h2>Writing the Client Code</h2>
+<p>For the example application, the file <tt>Client.java</tt> file
+looks like the following example. <a name="clientprop" id=
+"clientprop"></a></p>
+<pre class="codeblock">
+import java.util.Properties;
+import org.omg.CORBA.ORB;
+import org.omg.PortableServer.POA;
+import org.omg.PortableServer.POAHelper;
+import org.omg.CosNaming.NameComponent;
+import org.omg.CosNaming.NamingContext;
+import org.omg.CosNaming.NamingContextHelper;
+
+public class Client {
+
+    public static void main(String[] args) {
+        try {
+        
+            //initialize orb
+            Properties props = System.getProperties();
+            props.put("org.omg.CORBA.ORBInitialPort", "1050");
+            //<strong>Replace MyHost with the name of the host on which you are running the server</strong>
+            props.put("org.omg.CORBA.ORBInitialHost", "<em>&lt;MyHost&gt;</em>");
+            ORB orb = ORB.init(args, props);
+            System.out.println("Initialized ORB");
+
+            //Instantiate Servant and create reference
+            POA rootPOA = POAHelper.narrow(
+                orb.resolve_initial_references("RootPOA"));
+            ListenerImpl listener  = new ListenerImpl();
+            rootPOA.activate_object(listener);
+            Listener ref = ListenerHelper.narrow(
+                rootPOA.servant_to_reference(listener));
+
+            //Resolve MessageServer
+            MessageServer msgServer = MessageServerHelper.narrow(
+                orb.string_to_object("corbaname:iiop:1.2@localhost:1050#MessageServer"));
+
+            //Register listener reference (callback object) with MessageServer
+            msgServer.register(ref);
+            System.out.println("Listener registered with MessageServer");
+
+            //Activate rootpoa
+            rootPOA.the_POAManager().activate();
+
+            //Wait for messages
+            System.out.println("Wait for incoming messages");
+            orb.run();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+</pre>
+<a name="listener" id="listener"></a>
+<h2>Writing the Listener Implementation</h2>
+<p>When the Listener identifies that a message has been received
+from the server, it displays the message on the client. For the
+example application, the <tt>ListenerImpl.java</tt> file looks like
+the following example.</p>
+<pre class="codeblock">
+public class ListenerImpl extends ListenerPOA {
+
+    public void message(String msg) {
+        System.out.println("Message from server : " + msg);
+    }
+}
+</pre>
+<a name="instructions" id="instructions"></a>
+<h2>Instructions for compiling and running the example</h2>
+To run the example application, you would follow these instructions
+on the <strong>SERVER</strong> machine:
+<ol>
+<li>If you've run the example previously, remove any existing
+generated files. In the UNIX operating environment, this command
+would be as follows:
+<pre class="codeblock">
+rm -rf ./classes ./orb.db
+</pre></li>
+<li>Generate the stubs and skeletons. First, you need to create the
+directory where the stubs and skeletons will reside, then run the
+<tt>idlj</tt> compiler to generate the stubs and skeletons. This
+command would look like this:
+<pre class="codeblock">
+mkdir -p ./classes
+&lt;<em>path_to_java</em>&gt;/bin/idlj -fall -td ./classes callback.idl
+</pre></li>
+<li>Compile the <tt>.java</tt> files, as follows:
+<pre class="codeblock">
+&lt;<em>path_to_java</em>&gt;/bin/javac -classpath ./classes -d ./classes *.java
+</pre></li>
+<li>Start the <tt>orbd</tt> naming service, as follows:
+<pre class="codeblock">
+&lt;<em>path_to_java</em>&gt;/bin/orbd -ORBInitialPort 1050 -ORBInitialHost &lt;<em>host_name</em>&gt; &amp;
+</pre></li>
+<li>Run the server, as follows:
+<pre class="codeblock">
+&lt;<em>path_to_java</em>&gt;/bin/java -classpath ./classes Server -ORBInitialPort 1050
+</pre></li>
+</ol>
+<p>After you have started the server, you will see output such as
+the following in the terminal window:</p>
+<pre class="codeblock">
+Initialized ORB
+Resolved NameService
+Server ready and running ....
+message &gt; 
+</pre>
+<p>At this prompt, you will send messages to the client, but first
+you need to start the client application. From the
+<strong>CLIENT</strong> terminal, follow these steps to run the
+client. <strong>Make sure that you used the host name on which the
+server is running in the <a href="#clientprop">properties</a>
+section of the client code.</strong></p>
+<pre class="codeblock">
+&lt;<em>path_to_java</em>&gt;/bin/java -classpath ./classes Client -ORBInitialPort 1050 
+</pre>
+<p>The output from the client will display in a format similar to
+this:</p>
+<pre class="codeblock">
+Initialized ORB
+Listener registered with MessageServer
+Wait for incoming messages
+</pre>
+<p>To display the functionality of using a callback, you would
+enter a data on the server terminal, at the prompt, and it will
+display on all client terminals. This could be anything where
+clients are interested in some notifications.</p>
+<p>One example is a football game score where clients are notified
+whenever the score changes.</p>
+<pre class="codeblock">
+message &gt; Niners TD. Niners 7 - Giants 0
+message &gt; Giants TD. Niners 7 - Giants 7
+message &gt; Niners TD. Niners 14 - Giants 7
+</pre>
+<p>When messages such as those shown above are sent, the client
+display looks similar to the following:</p>
+<pre class="codeblock">
+Wait for incoming messages
+Message from server : Niners TD. Niners 7 - Giants 0
+Message from server : Giants TD. Niners 7 - Giants 7
+Message from server : Niners TD. Niners 14 - Giants 7
+</pre>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

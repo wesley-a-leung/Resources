@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Virtual Machine Technology</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Java Virtual Machine Technology</h1>
+
+<!-- Body text begins here -->
+<p>The JDK provides one or more implementations of the
+Java virtual machine (VM):</p>
+<ul>
+<li>On platforms typically used for client applications, the JDK
+comes with a VM implementation called the <b>Java HotSpot
+Client VM</b> (<i>client VM</i>). The client VM is tuned for
+reducing start-up time and memory footprint. It can be invoked by
+using the <code>-client</code> command-line option when launching
+an application.</li>
+<li style="list-style: none"><br /></li>
+<li>On all platforms, the JDK comes with an implementation of the
+Java virtual machine called the <b>Java HotSpot Server VM</b>
+(<i>server VM</i>). The server VM is designed for maximum program
+execution speed. It can be invoked by using the
+<code>-server</code> command-line option when launching an
+application.<br /></li>
+</ul>
+<p>Some features of Java HotSpot technology, common to both VM
+implementations, are the following.</p>
+<ul>
+<li><em>Adaptive compiler</em> - Applications are launched using a
+standard interpreter, but the code is then analyzed as it runs to
+detect performance bottlenecks, or "hot spots". The Java HotSpot
+VMs compile those performance-critical portions of the code for a
+boost in performance, while avoiding unnecessary compilation of
+seldom-used code (most of the program). The Java HotSpot VMs also
+use the adaptive compiler to decide, on the fly, how best to
+optimize compiled code with techniques such as in-lining. The
+runtime analysis performed by the compiler allows it to eliminate
+guesswork in determining which optimizations will yield the largest
+performance benefit.</li>
+<li><em>Rapid memory allocation and garbage collection</em> - Java
+HotSpot technology provides for rapid memory allocation for
+objects, and it offers a choice of fast, efficient,
+state-of-the-art garbage collectors.</li>
+<li><em>Thread synchronization</em> - The Java programming language
+allows for use of multiple, concurrent paths of program execution
+(called "threads"). Java HotSpot technology provides a
+thread-handling capability that is designed to scale readily for
+use in large, shared-memory multiprocessor servers.</li>
+</ul>
+
+<h2>Tools</h2>
+
+<ul>
+
+  <li>Some operating characteristics of the Java HotSpot VM can be
+controlled by the use of command-line flags. See the documentation for the Java application launcher for <a href=
+"../../tools/windows/java.html">Microsoft&nbsp;Windows</a> or <a href="../../tools/unix/java.html">Solaris, Linux, or OS X</a>.</li>
+
+  <li><a href="gctuning/index.html">Java HotSpot Virtual Machine Garbage Collection Tuning Guide</a> describes the garbage collectors included with the Java HotSpot VM and helps you decide which garbage collector can best optimize the performance of your application, especially if it handles large amounts of data (multiple gigabytes), has many threads, and has high transaction rates.</li>
+
+</ul>
+
+<a name="features" id="features"></a>
+<h2>Enhancements</h2>
+<ul>
+<li><a href="enhancements-8.html">Java Virtual Machine Enhancements
+in Java SE 8 and JDK 8</a></li>
+
+<li><a href="enhancements-7.html">Java Virtual Machine Enhancements
+in JDK 7</a></li>
+
+<li>Enhancements in JDK 6:
+<ul>
+<li><a href="dtrace.html">DTrace Probes</a></li>
+<li>Garbage Collection Enhancements
+<ul>
+<li><a href="par-compaction-6.html">Parallel Compaction</a></li>
+<li><a href="cms-6.html">Concurrent Mark Sweep Collector
+Enhancements</a></li>
+</ul>
+</li>
+<li><a href="performance-enhancements-7.html">Performance
+Enhancements</a></li>
+</ul>
+</li>
+<li>Enhancements in JDK 5.0:
+<ul>
+<li><a href="class-data-sharing.html">Class Data Sharing</a></li>
+<li><a href="server-class.html">Server-Class Machine
+Detection</a></li>
+<li><a href="gc-ergonomics.html">Garbage Collection
+Ergonomics</a></li>
+<li><a href="thread-priorities.html">Thread Priority
+Changes</a></li>
+</ul>
+</li>
+<li>Enhancements in JDK 1.4:
+<ul>
+<li><a href="enhancements-1.4.html">Virtual Machine Enhancements in
+JDK 1.4.2, 1.4.1 and 1.4.0</a></li>
+</ul>
+</li>
+</ul>
+<h2>More Information</h2>
+<ul>
+<li><a href="../performance/index.html">Performance
+Improvements</a></li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

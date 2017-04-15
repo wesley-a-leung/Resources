@@ -1,0 +1,518 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Appendix A: Service Provider Example</title>
+<link rel="stylesheet" type="text/css" href="../../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<a href="spicover.frame.html">[Top]</a> <a href=
+"jndispi.fm.html">[Prev]</a> <a href="legend.frame.html">[Next]</a>
+<a href="changes.fm.html">[Bottom]</a><br />
+<p><a name="a1000406" id="a1000406"></a></p>
+
+<h1>Appendix A: Service Provider Example</h1>
+
+<p><a name="a998649" id="a998649"></a> This appendix contains a
+simple service provider. It implements a flat namespace (with no
+federation support). It shows how to produce a context
+implementation by providing all the methods in the
+<code>Context</code> interface.</p>
+<p><a name="a1002115" id="a1002115"></a> An instance of this
+context is bound directly as the initial context. This example
+provides the corresponding <code>InitialContextFactory</code>
+definition.</p>
+<p><a name="a998665" id="a998665"></a></p>
+<a name="a998650" id="a998650"></a>
+<h2>A.1 Simple Flat Context</h2>
+<a name="a998752" id="a998752"></a>
+<h3>A.1.1 Context Implementation</h3>
+<pre class="codeblock">
+/* 
+ * @(#)FlatCtx.java     1.3 99/07/26
+ * 
+ * Copyright (c) 1997, 1999, Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *   - Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *
+ *   - Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *
+ *   - Neither the name of Oracle nor the names of its
+ *     contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ */
+package examples.spi.flat;
+
+import javax.naming.*;
+import java.util.*;
+
+/**
+ * A sample service provider that implements a flat namespace in memory.
+ */
+
+class FlatCtx implements Context {
+    Hashtable myEnv;
+    private Hashtable bindings = new Hashtable(11);
+    static NameParser myParser = new FlatNameParser();
+
+    FlatCtx(Hashtable environment) {
+        myEnv = (environment != null)
+            ? (Hashtable)(environment.clone()) 
+            : null;
+    }
+
+    public Object lookup(String name) throws NamingException {
+        if (name.equals("")) {
+            // Asking to look up this context itself.  Create and return
+            // a new instance with its own independent environment.
+            return (new FlatCtx(myEnv));
+        }
+        Object answer = bindings.get(name);
+        if (answer == null) {
+            throw new NameNotFoundException(name + " not found");
+        }
+        return answer;
+    }
+
+    public Object lookup(Name name) throws NamingException {
+        // Flat namespace; no federation; just call string version
+        return lookup(name.toString()); 
+    }
+
+    public void bind(String name, Object obj) throws NamingException {
+        if (name.equals("")) {
+            throw new InvalidNameException("Cannot bind empty name");
+        }
+        if (bindings.get(name) != null) {
+            throw new NameAlreadyBoundException(
+                    "Use rebind to override");
+        }
+        bindings.put(name, obj);
+    }
+
+    public void bind(Name name, Object obj) throws NamingException {
+        // Flat namespace; no federation; just call string version
+        bind(name.toString(), obj);
+    }
+
+    public void rebind(String name, Object obj) throws NamingException {
+        if (name.equals("")) {
+            throw new InvalidNameException("Cannot bind empty name");
+        }
+        bindings.put(name, obj);
+    }
+
+    public void rebind(Name name, Object obj) throws NamingException {
+        // Flat namespace; no federation; just call string version
+        rebind(name.toString(), obj);
+    }
+
+    public void unbind(String name) throws NamingException {
+        if (name.equals("")) {
+            throw new InvalidNameException("Cannot unbind empty name");
+        }
+        bindings.remove(name);
+    }
+
+    public void unbind(Name name) throws NamingException {
+        // Flat namespace; no federation; just call string version
+        unbind(name.toString());
+    }
+
+    public void rename(String oldname, String newname)
+            throws NamingException {
+        if (oldname.equals("") || newname.equals("")) {
+            throw new InvalidNameException("Cannot rename empty name");
+        }
+
+        // Check if new name exists
+        if (bindings.get(newname) != null) {
+            throw new NameAlreadyBoundException(newname +
+                                                " is already bound");
+        }
+
+        // Check if old name is bound
+        Object oldBinding = bindings.remove(oldname);
+        if (oldBinding == null) {
+            throw new NameNotFoundException(oldname + " not bound");
+        }
+
+        bindings.put(newname, oldBinding);
+    }
+
+    public void rename(Name oldname, Name newname)
+            throws NamingException {
+        // Flat namespace; no federation; just call string version
+        rename(oldname.toString(), newname.toString());
+    }
+
+    public NamingEnumeration list(String name)
+            throws NamingException {
+        if (name.equals("")) {
+            // listing this context
+            return new FlatNames(bindings.keys());
+        } 
+
+        // Perhaps `name' names a context
+        Object target = lookup(name);
+        if (target instanceof Context) {
+            return ((Context)target).list("");
+        }
+        throw new NotContextException(name + " cannot be listed");
+    }
+
+    public NamingEnumeration list(Name name)
+            throws NamingException {
+        // Flat namespace; no federation; just call string version
+        return list(name.toString());
+    }
+
+    public NamingEnumeration listBindings(String name)
+            throws NamingException {
+        if (name.equals("")) {
+            // listing this context
+            return new FlatBindings(bindings.keys());
+        } 
+
+        // Perhaps `name' names a context
+        Object target = lookup(name);
+        if (target instanceof Context) {
+            return ((Context)target).listBindings("");
+        }
+        throw new NotContextException(name + " cannot be listed");
+    }
+
+    public NamingEnumeration listBindings(Name name)
+            throws NamingException {
+        // Flat namespace; no federation; just call string version
+        return listBindings(name.toString());
+    }
+
+    public void destroySubcontext(String name) throws NamingException {
+        throw new OperationNotSupportedException(
+                "FlatCtx does not support subcontexts");
+    }
+
+    public void destroySubcontext(Name name) throws NamingException {
+        // Flat namespace; no federation; just call string version
+        destroySubcontext(name.toString());
+    }
+
+    public Context createSubcontext(String name)
+            throws NamingException {
+        throw new OperationNotSupportedException(
+                "FlatCtx does not support subcontexts");
+    }
+
+    public Context createSubcontext(Name name) throws NamingException {
+        // Flat namespace; no federation; just call string version
+        return createSubcontext(name.toString());
+    }
+
+    public Object lookupLink(String name) throws NamingException {
+        // This flat context does not treat links specially
+        return lookup(name);
+    }
+
+    public Object lookupLink(Name name) throws NamingException {
+        // Flat namespace; no federation; just call string version
+        return lookupLink(name.toString());
+    }
+
+    public NameParser getNameParser(String name)
+            throws NamingException {
+        return myParser;
+    }
+
+    public NameParser getNameParser(Name name) throws NamingException {
+        // Flat namespace; no federation; just call string version
+        return getNameParser(name.toString());
+    }
+
+    public String composeName(String name, String prefix)
+            throws NamingException {
+        Name result = composeName(new CompositeName(name),
+                                  new CompositeName(prefix));
+        return result.toString();
+    }
+
+    public Name composeName(Name name, Name prefix)
+            throws NamingException {
+        Name result = (Name)(prefix.clone());
+        result.addAll(name);
+        return result;
+    }
+
+    public Object addToEnvironment(String propName, Object propVal)
+            throws NamingException {
+        if (myEnv == null) {
+            myEnv = new Hashtable(5, 0.75f);
+        } 
+        return myEnv.put(propName, propVal);
+    }
+
+    public Object removeFromEnvironment(String propName) 
+            throws NamingException {
+        if (myEnv == null)
+            return null;
+
+        return myEnv.remove(propName);
+    }
+
+    public Hashtable getEnvironment() throws NamingException {
+        if (myEnv == null) {
+            // Must return non-null
+            return new Hashtable(3, 0.75f);
+        } else {
+            return (Hashtable)myEnv.clone();
+        }
+    }
+
+    public String getNameInNamespace() throws NamingException {
+        return ""; 
+    }
+
+    public void close() throws NamingException {
+        myEnv = null;
+        bindings = null;
+    }
+
+    // Class for enumerating name/class pairs
+    class FlatNames implements NamingEnumeration {
+        Enumeration names;
+
+        FlatNames (Enumeration names) {
+            this.names = names;
+        }
+
+        public boolean hasMoreElements() {
+            return names.hasMoreElements();
+        }
+
+        public boolean hasMore() throws NamingException {
+            return hasMoreElements();
+        }
+
+        public Object nextElement() {
+            String name = (String)names.nextElement();
+            String className = bindings.get(name).getClass().getName();
+            return new NameClassPair(name, className);
+        }
+
+        public Object next() throws NamingException {
+            return nextElement();
+        }
+        public void close() {
+        }
+    }
+
+    // Class for enumerating bindings
+    class FlatBindings implements NamingEnumeration {
+        Enumeration names;
+
+        FlatBindings (Enumeration names) {
+            this.names = names;
+        }
+
+        public boolean hasMoreElements() {
+            return names.hasMoreElements();
+        }
+
+        public boolean hasMore() throws NamingException {
+            return hasMoreElements();
+        }
+
+        public Object nextElement() {
+            String name = (String)names.nextElement();
+            return new Binding(name, bindings.get(name));
+        }
+
+        public Object next() throws NamingException {
+            return nextElement();
+        }
+        public void close() {
+        }
+    }
+};
+
+<br /><a name="a998651" id="a998651"> </a>
+
+</pre>
+<a name="a998652" id="a998652"></a>
+<h3>A.1.2 Name Parser</h3>
+<pre class="codeblock">
+/*
+ * @(#)FlatNameParser.java      1.3 99/07/26
+ *
+ * Copyright (c) 1997, 1999, Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *   - Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *
+ *   - Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *
+ *   - Neither the name of Oracle nor the names of its
+ *     contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+package examples.spi.flat;
+
+import javax.naming.NameParser;
+import javax.naming.Name;
+import javax.naming.CompoundName;
+import javax.naming.NamingException;
+import java.util.Properties;
+
+class FlatNameParser implements NameParser {
+
+    static Properties syntax = new Properties();
+    static {
+        syntax.put("jndi.syntax.direction", "flat");
+        syntax.put("jndi.syntax.ignorecase", "false");
+    }
+    public Name parse(String name) throws NamingException {
+        return new CompoundName(name, syntax);
+    }
+}
+
+
+</pre>
+<a name="a1002465" id="a1002465"></a>
+<h3>A.1.3 Initial Context Factory</h3>
+<pre class="codeblock">
+/*
+ * @(#)FlatInitCtxFactory.java  1.3 99/07/26
+ *
+ * Copyright (c) 1997, 1999, Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *   - Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *
+ *   - Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *
+ *   - Neither the name of Oracle nor the names of its
+ *     contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+package examples.spi.flat;
+
+import java.util.Hashtable;
+import javax.naming.Context;
+import javax.naming.spi.InitialContextFactory;
+
+public class FlatInitCtxFactory implements InitialContextFactory {
+
+    public Context getInitialContext(Hashtable env) {
+        return new FlatCtx(env);
+    }
+}
+
+</pre>
+<br />
+<a href="spicover.frame.html">[Top]</a> <a href=
+"jndispi.fm.html">[Prev]</a> <a href="legend.frame.html">[Next]</a>
+<a href="changes.fm.html">[Bottom]</a><br />
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

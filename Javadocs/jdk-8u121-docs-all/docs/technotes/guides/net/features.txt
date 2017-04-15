@@ -1,0 +1,72 @@
+
+NETWORKING FEATURES SUMMARY FOR 1.4 RELEASE
+ 
+
+IPv6
+
+This enables using IPv6 in TCP and UDP-based applications, including  
+multicast, and will support most end-user applications in use today.
+
+Unconnected/Unbound Socket Support
+
+Allows more flexible socket creation, binding, and connection. Enables
+manipulation of socket options before connection. Example, you can now
+open a socket with timeout.
+
+There is a subclass of java.net.Socket which provides security through
+encryption.  The mechanism is called the Java Secure Socket Extension
+(JSSE). The <A HREF="../relativeLink/../security/jsse/JSSEUsersGuide.html"> Java
+Secure Socket Extension </A> (JSSE) has been integrated into the J2SE
+v 1.4 and provides encryption for data sent via sockets.
+
+UDP Connection
+
+The connect function with UDP will register the destination address
+with the OS, which will enable asynchronous errors to be returned on
+the UDP socket. The implementation and behaviour of ICMP port
+unreachable varies widely between different OSes. We worked around
+many of the differences and presented a uniform behaviour as much as
+possible across platforms.
+
+URI
+
+This is a new class in Merlin. It allows URI construction and parsing
+without the presence of a protocol handler, which is not possible with
+the URL class. URI class is compliant with RFC 2396.
+
+FTP Protocol Handler
+
+Significant overhaul to make it conform as much as possible to the
+current standards (RFC 1738 & 959).
+
+JNDI DNS SP Support in InetAddress
+
+This enables applications to configure a pure Java name service provider. In 
+this case to use a DNS name service provider through JNDI.
+
+URLEncoder and URLDecoder Improvements
+
+The default character set is now UTF8. We also added APIs to enable 
+applications to use other character encoding/decoding schemes.
+
+TCP Out-of-Band Data
+
+Limited support for TCP urgent data is provided in order to support
+certain legacy applications. It is possible to send urgent data on
+any TCP socket. However, only partial support for receiving urgent data
+is provided.
+
+SOCKS
+
+Full V5 (RFC 1928) & V4 TCP support with autonegociation with the
+proxy of which version to use.
+
+NetworkInterface
+
+This is a new class in Merlin. It allows enumeration of interfaces and
+addresses.
+
+Other Major Improvements
+
+Improved Http streaming, request and response headers processing, and
+error handling.

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>jstatd</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T7:56:54Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Solaris, Linux, and OS X, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38209-05" name="partnum"/>
+<meta content="JSSOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="jstat.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jmc.html">
+                Next</a><hr/>
+<div><a id="BABHHDIB" name="BABHHDIB"/>
+<div id="JSSOR735"><a id="BABEHFHF" name="BABEHFHF"/>
+<h1>jstatd</h1>
+<p>Monitors Java Virtual Machines (JVMs) and enables remote monitoring tools to attach to JVMs. This command is experimental and unsupported.</p>
+<div><a id="sthref297" name="sthref297"/>
+<h2>Synopsis</h2>
+<p><b>jstatd</b> [ <i>options</i> ]</p>
+<dl>
+<dt><i>options</i></dt>
+<dd>
+<p>The command-line options. See <a href="#BABGDCJC">Options</a>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref298" name="sthref298"/>
+<h2>Description</h2>
+<p>The <code dir="ltr">jstatd</code> command is an RMI server application that monitors for the creation and termination of instrumented Java HotSpot VMs and provides an interface to enable remote monitoring tools to attach to JVMs that are running on the local host.</p>
+<p>The <code dir="ltr">jstatd</code> server requires an RMI registry on the local host. The <code dir="ltr">jstatd</code> server attempts to attach to the RMI registry on the default port, or on the port you specify with the <code dir="ltr">-p</code> <code dir="ltr">port</code> option. If an RMI registry is not found, then one is created within the <code dir="ltr">jstatd</code> application that is bound to the port that is indicated by the <code dir="ltr">-p</code> <code dir="ltr">port</code> option or to the default RMI registry port when the <code dir="ltr">-p</code> <code dir="ltr">port</code> option is omitted. You can stop the creation of an internal RMI registry by specifying the <code dir="ltr">-nr</code> option.</p>
+</div>
+
+<div><a id="BABGDCJC" name="BABGDCJC"/><a id="BABHGJAG" name="BABHGJAG"/>
+<h2>Options</h2>
+<dl>
+<dt>-nr</dt>
+<dd>
+<p>Does not attempt to create an internal RMI registry within the <code dir="ltr">jstatd</code> process when an existing RMI registry is not found.</p>
+</dd>
+<dt>-p <i>port</i></dt>
+<dd>
+<p>The port number where the RMI registry is expected to be found, or when not found, created if the <code dir="ltr">-nr</code> option is not specified.</p>
+</dd>
+<dt>-n <span>rminame</span></dt>
+<dd>
+<p>Name to which the remote RMI object is bound in the RMI registry. The default name is <code dir="ltr">JStatRemoteHost</code>. If multiple <code dir="ltr">jstatd</code> servers are started on the same host, then the name of the exported RMI object for each server can be made unique by specifying this option. However, doing so requires that the unique server name be included in the monitoring client's <code dir="ltr">hostid</code> and <code dir="ltr">vmid</code> strings.</p>
+</dd>
+<dt>-J<i>option</i></dt>
+<dd>
+<p>Passes <code dir="ltr">option</code> to the JVM, where option is one of the <code dir="ltr">options</code> described on the reference page for the Java application launcher. For example, <code dir="ltr">-J-Xms48m</code> sets the startup memory to 48 MB. See <a href="java.html#CBBFHAJA"><code dir="ltr">java</code>(1)</a>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref299" name="sthref299"/>
+<h2>Security</h2>
+<p>The <code dir="ltr">jstatd</code> server can only monitor JVMs for which it has the appropriate native access permissions. Therefore, the <code dir="ltr">jstatd</code> process must be running with the same user credentials as the target JVMs. Some user credentials, such as the root user in Solaris, Linux, and OS X operating systems, have permission to access the instrumentation exported by any JVM on the system. A <code dir="ltr">jstatd</code> process running with such credentials can monitor any JVM on the system, but introduces additional security concerns.</p>
+<p>The <code dir="ltr">jstatd</code> server does not provide any authentication of remote clients. Therefore, running a <code dir="ltr">jstatd</code> server process exposes the instrumentation export by all JVMs for which the <code dir="ltr">jstatd</code> process has access permissions to any user on the network. This exposure might be undesirable in your environment, and therefore, local security policies should be considered before you start the <code dir="ltr">jstatd</code> process, particularly in production environments or on networks that are not secure.</p>
+<p>The <code dir="ltr">jstatd</code> server installs an instance of <code dir="ltr">RMISecurityPolicy</code> when no other security manager is installed, and therefore, requires a security policy file to be specified. The policy file must conform to Default Policy Implementation and Policy File Syntax at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/security/PolicyFiles.html">http://docs.oracle.com/javase/8/docs/technotes/guides/security/PolicyFiles.html</a></code></p>
+<p>The following policy file allows the <code dir="ltr">jstatd</code> server to run without any security exceptions. This policy is less liberal than granting all permissions to all code bases, but is more liberal than a policy that grants the minimal permissions to run the <code dir="ltr">jstatd</code> server.</p>
+<pre dir="ltr" xml:space="preserve">
+grant codebase "file:${java.home}/../lib/tools.jar" {   
+    permission java.security.AllPermission;
+};
+</pre>
+<p>To use this policy setting, copy the text into a file called <code dir="ltr">jstatd.all.policy</code> and run the <code dir="ltr">jstatd</code> server as follows:</p>
+<pre dir="ltr" xml:space="preserve">
+jstatd -J-Djava.security.policy=jstatd.all.policy
+</pre>
+<p>For sites with more restrictive security practices, it is possible to use a custom policy file to limit access to specific trusted hosts or networks, though such techniques are subject to IP address spoofing attacks. If your security concerns cannot be addressed with a customized policy file, then the safest action is to not run the <code dir="ltr">jstatd</code> server and use the <code dir="ltr">jstat</code> and <code dir="ltr">jps</code> tools locally.</p>
+</div>
+
+<div><a id="sthref300" name="sthref300"/>
+<h2>Remote Interface</h2>
+<p>The interface exported by the <code dir="ltr">jstatd</code> process is proprietary and guaranteed to change. Users and developers are discouraged from writing to this interface.</p>
+</div>
+
+<div><a id="sthref301" name="sthref301"/>
+<h2>Examples</h2>
+<p>The following are examples of the <code dir="ltr">jstatd</code> command. The <code dir="ltr">jstatd</code> scripts automatically start the server in the background</p>
+<div><a id="sthref302" name="sthref302"/>
+<h3>Internal RMI Registry</h3>
+<p>This example shows how to start a <code dir="ltr">jstatd</code> session with an internal RMI registry. This example assumes that no other server is bound to the default RMI registry port (port 1099).</p>
+<pre dir="ltr" xml:space="preserve">
+jstatd -J-Djava.security.policy=all.policy
+</pre></div>
+
+<div><a id="sthref303" name="sthref303"/>
+<h3>External RMI Registry</h3>
+<p>This example starts a <code dir="ltr">jstatd</code> session with a external RMI registry.</p>
+<pre dir="ltr" xml:space="preserve">
+rmiregistry&amp;
+jstatd -J-Djava.security.policy=all.policy
+</pre>
+<p>This example starts a <code dir="ltr">jstatd</code> session with an external RMI registry server on port 2020.</p>
+<pre dir="ltr" xml:space="preserve">
+jrmiregistry 2020&amp;
+jstatd -J-Djava.security.policy=all.policy -p 2020
+</pre>
+<p>This example starts a <code dir="ltr">jstatd</code> session with an external RMI registry on port 2020 that is bound to <code dir="ltr">AlternateJstatdServerName</code>.</p>
+<pre dir="ltr" xml:space="preserve">
+rmiregistry 2020&amp;
+jstatd -J-Djava.security.policy=all.policy -p 2020
+    -n AlternateJstatdServerName
+</pre></div>
+
+<div><a id="sthref304" name="sthref304"/>
+<h3>Stop the Creation of an In-Process RMI Registry</h3>
+<p>This example starts a <code dir="ltr">jstatd</code> session that does not create an RMI registry when one is not found. This example assumes an RMI registry is already running. If an RMI registry is not running, then an error message is displayed.</p>
+<pre dir="ltr" xml:space="preserve">
+jstatd -J-Djava.security.policy=all.policy -nr
+</pre></div>
+
+<div><a id="sthref305" name="sthref305"/>
+<h3>Enable RMI Logging</h3>
+<p>This example starts a <code dir="ltr">jstatd</code> session with RMI logging capabilities enabled. This technique is useful as a troubleshooting aid or for monitoring server activities.</p>
+<pre dir="ltr" xml:space="preserve">
+jstatd -J-Djava.security.policy=all.policy
+    -J-Djava.rmi.server.logCalls=true
+</pre></div>
+</div>
+
+<div><a id="sthref306" name="sthref306"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="java.html#CBBFHAJA"><code dir="ltr">java</code>(1)</a></p>
+</li>
+<li>
+<p><a href="jps.html#CHDGHCGB"><code dir="ltr">jps</code>(1)</a></p>
+</li>
+<li>
+<p><a href="jstat.html#BEHBBBDJ"><code dir="ltr">jstat</code>(1)</a></p>
+</li>
+<li>
+<p><a href="rmiregistry.html#CHDEDDIE"><code dir="ltr">rmiregistry</code>(1)</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="jstat.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jmc.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

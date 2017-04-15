@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title></title>
+<link rel="stylesheet" type="text/css" href="../../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<a href="spicover.frame.html">[Top]</a> <a href=
+"legend.frame.html">[Prev]</a> [Next] [Bottom]<br />
+<p><a name="a150244" id="a150244"></a></p>
+
+<h1>Appendix C: JNDI Change History</h1>
+
+<a name="a151997" id="a151997"></a>
+<h1>JNDI 1.2: JNDI Changes Since JNDI 1.1</h1>
+<ul>
+<li style="list-style: none"><a name="a152001" id=
+"a152001"></a></li>
+<li>Added <code>javax.naming.event</code> package. <a name=
+"a152002" id="a152002"></a></li>
+<li>Added <code>javax.naming.ldap</code> package. <a name="a152004"
+id="a152004"></a></li>
+<li>Added support for configuration using resource files. See
+Chapter 6 of the <strong>JNDI API</strong> document.</li>
+</ul>
+<a name="a152008" id="a152008"></a>
+<h2>API-related Changes</h2>
+<ul>
+<li style="list-style: none"><a name="a152003" id=
+"a152003"></a></li>
+<li>Added <code>NamingEnumeration.close()</code> for cancelling or
+terminating enumerations. <a name="a152014" id="a152014"></a></li>
+<li>Added <code>ReferralException.getReferralContext(Hashtable
+env)</code> and <code>ReferralException.retryReferral()</code> to
+allow creation and retry of referral context with different
+environment properties. <a name="a152015" id="a152015"></a></li>
+<li>Clarified how context methods that accept <code>Name</code>
+argument should deal with <code>CompositeName</code> and
+non<code>CompositeName</code> arguments. Specifically, instances of
+<code>CompositeName</code> are treated as composite name, while al
+l others are treated as compound name. <a name="a152016" id=
+"a152016"></a></li>
+<li>Added <code>Context.getNameInNamespace()</code> for retrieving
+the full name of a context within its own namespace. <a name=
+"a152018" id="a152018"></a></li>
+<li>Clarified definition of the class factory location of a
+<code>Reference</code> object. Specifically, the location is a
+codebase, which consists of a list space-separated URLs. <a name=
+"a152019" id="a152019"></a></li>
+<li>Added support for ordered multivalued attributes to
+<code>Attribute</code> and <code>BasicAttribute</code>. <a name=
+"a152053" id="a152053"></a></li>
+<li>Added <code>BasicAttributes.equals()</code> and
+<code>BasicAttributes.hashCode()</code>. <a name="a152020" id=
+"a152020"></a></li>
+<li>Redefined semantics of
+<code>DirContext.getSchemaClassDefinition()</code> so that it
+returns a context that contains the <code>DirContext</code> objects
+of class definitions, rather than returning one (arbitrary) class
+definition. <a name="a152037" id="a152037"></a></li>
+<li>Added protected
+<code>InitialContext</code>/<code>InitialDirContext</code>
+constructors to allow lazy initialization. Useful for subclass
+implementations.</li>
+</ul>
+<a name="a152011" id="a152011"></a>
+<h2>SPI-related Changes</h2>
+<ul>
+<li style="list-style: none"><a name="a152061" id=
+"a152061"></a></li>
+<li>Added
+<code>StateFactory</code>/<code>NamingManager.getStateToBind()</code>,
+analogous to
+<code>ObjectFactory</code>/<code>NamingManager.getObjectInstance()</code>,
+for transforming an object's state before the object is bound in
+the naming/directory service. <a name="a152060" id=
+"a152060"></a></li>
+<li>Added interfaces <code>DirObjectFactory</code> and
+<code>DirStateFactory</code> to better support service providers
+that implement the <code>DirContext</code> interface. Added
+<code>DirectoryManager.getObjectInstance()</code> and
+<code>DirectoryManager.getStateToStore()</code> to use these
+interfaces. <a name="a152009" id="a152009"></a></li>
+<li>Refined definition of
+<code>NamingManager.getObjectInstance()</code> to not treat URL
+strings specially. Instead, the URL should be wrapped inside a
+<code>Reference</code> whose <code>RefAddr</code> type is "URL".
+<a name="a152058" id="a152058"></a></li>
+<li>Made <code>ResolveResult</code> implement
+<code>Serializable</code>. <a name="a152073" id="a152073"></a></li>
+<li>Defined a special form of <code>Reference</code> called a next
+naming system (nns) reference for supporting "dynamic federation".
+This reference has a <code>RefAddr</code> type of "nns" and a
+content consisting of the resolved object. <a name="a152085" id=
+"a152085"></a></li>
+<li>Added the string constant <code>NamingManager.CPE</code> which
+names a property set by
+<code>NamingManager.getContinuationContext()</code>/<code>DirectoryManager.getContinuationContext()</code>.
+The value of this property is an instance of
+<code>CannotProceedException</code>. This is useful to service
+providers that implement federation by chaining the CPEs. <a name=
+"a152100" id="a152100"></a></li>
+<li>Defined a convention for service providers to use when naming
+environment properties. See Section 6.1.</li>
+</ul>
+<br />
+<a href="spicover.frame.html">[Top]</a> <a href=
+"legend.frame.html">[Prev]</a> [Next] [Bottom]<br />
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

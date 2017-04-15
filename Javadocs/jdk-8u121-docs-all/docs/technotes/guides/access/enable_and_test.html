@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Enabling and Testing Java Access Bridge</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Enabling and Testing Java Access Bridge</h1>
+
+<p><a href="index.html">Java Accessibility Guide</a> &gt; Enabling and Testing Java Access Bridge</p>
+
+<p>Java Access Bridge is a technology that enables Java applications and applets that implement the Java Accessibility API to be visible to assistive technologies on Microsoft Windows systems. See <a href="http://www.oracle.com/technetwork/java/javase/tech/index-jsp-136191.html">Java SE Desktop Accessibility</a> for more information.</p>
+
+<p>The following topics are covered:</p>
+
+<ul>
+  <li><a href="#enabling_and_disabling_jab">Enabling and Disabling Java Access Bridge</a>
+    <ul>
+      <li><a href="#enabling_jab">Enabling Java Access Bridge</a></li>
+      <li><a href="#disabling_jab">Disabling Java Access Bridge</a></li>
+    </ul>
+  </li>
+  
+  <li><a href="#testing_jab">Testing Java Access Bridge</a></li>
+  <li><a href="#testing_tools">Obtaining Java Access Bridge Testing Tools</a></li>
+  <li><a href="#troubleshooting">Troubleshooting</a></li>
+  
+</ul>
+
+
+<h2><a name="enabling_and_disabling_jab">Enabling and Disabling Java Access Bridge</a></h2>
+
+<p>Java Access Bridge is included with Java SE Runtime Environment (JRE) Release 7 Update 6 (7u6) and later. Java Access Bridge 2.0.3 is included with JRE 7u6. By default, Java Access Bridge is not enabled.</p>
+
+<h3><a name="enabling_jab">Enabling Java Access Bridge</a></h3>
+
+<p>To enable Java Access Bridge, run the following command (where <code>%JRE_HOME%</code> is the directory of your JRE):</p>
+
+<pre>%JRE_HOME%\bin\jabswitch -enable</pre>
+
+<p>Alternatively, in Windows Vista and later, you can enable Java Access Bridge through the Control Panel:</p>
+
+<ol>
+  <li>Go to <strong>Start</strong> &gt; <strong>Control Panel</strong> &gt; <strong>Ease of Access</strong> &gt; <strong>Ease of Access Center</strong>. Alternatively, press Windows logo key+u to access the Ease of Access Center.</li>
+  <li>Select <strong>Use the computer without a display</strong>.</li>
+  <li>In the section <strong>Other programs installed</strong>, select the check box <strong>Enable Java Access Bridge</strong> (you may have to scroll down).</li>
+</ol>
+
+<p><strong>Note</strong>: After enabling Java Access Bridge, you must restart your assistive technology software and Java applications that use the <a href="../../../api/javax/accessibility/package-summary.html">accessibility API</a>.</p>   
+
+<h3><a name="disabling_jab">Disabling Java Access Bridge</a></h3>
+
+<p>To disable Java Access Bridge, run the following command:</p>
+
+<pre>%JRE_HOME%\bin\jabswitch -disable</pre>
+
+<p><strong>Note</strong>: You cannot disable Java Access Bridge through the Windows Ease of Access Center.</p>
+
+<h2><a name="testing_jab">Testing Java Access Bridge</a></h2>
+
+<p>To test Java Access Bridge, follow these steps:</p>
+
+<ol>
+  <li>Ensure that Java Access Bridge is enabled.</li>
+  <li>Install an assistive technology product that supports Java Access Bridge such as one of the following products:
+    <ul>
+      <li><a href="http://www.freedomscientific.com/products/fs/jaws-product-page.asp">JAWS</a></li>
+      <li><a href="http://www.nvaccess.org/">NonVisual Desktop Access (NVDA)</a></li>
+      <li><a href="http://www.yourdolphin.com/supernova">SuperNova</a></li>
+      <li><a href="http://www.gwmicro.com/Window-Eyes/">Window-Eyes</a></li>
+      <li><a href="http://www.aisquared.com/zoomtext">ZoomText</a></li>
+    </ul>
+  </li>
+  <li>Run a Java application that uses the <a href="../../../api/javax/accessibility/package-summary.html">accessibility API</a> such as the <a href="http://docs.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html#swingset2"> SwingSet2</a> demonstration program. Ensure that your assistive technology product works properly with the Java application.</li>
+</ol>
+
+<h2><a name="testing_tools">Obtaining Java Access Bridge Testing Tools</a></h2>
+
+<p>The Java Access Bridge testing tools Java Monkey and Java Ferret are not shipped with the JDK. These tools are included in Java Access Bridge 2.0.2. Download this version from <a href="http://www.oracle.com/technetwork/java/javase/downloads/jab-2-0-2-download-354311.html">Java Access Bridge Downloads</a>.</p>
+
+<h2><a name="troubleshooting">Troubleshooting</a></h2>
+
+<h3>Using Assistive Technologies on 64-Bit Operating Systems</h3>
+
+<p>The following lists the minimum version requirements of some assistive technologies for 64-bit operating systems:</p>
+
+<ul>
+  <li><strong>JAWS</strong>: Version 13 and later</li>
+  <li><strong>NVDA</strong>: Version 2011.3 and later</li>
+  <li><strong>SuperNova</strong>: Version 13 and later</li>
+  <li><strong>Window-Eyes</strong>: Version 8.2 and later</li>
+  <li><strong>ZoomText</strong>: Version 10.1.5 and later</li>
+</ul>
+
+<p><strong>Note</strong>: It is recommend that you install both the 32-bit and 64-bit versions of the JRE. The 32-bit version only adds support for 32-bit assistive technology, and the 64-bit version only adds support for 64-bit assistive technology.</p>
+
+<h3>Using Java Access Bridge with Only the Private JRE</h3>
+
+<p>The JDK contains a private JRE. This is required to run tools included with the JDK.  If you do not install the public JRE either as an option when installing the JDK or by installing the JRE by itself, and you intend to use the private JRE of the JDK, you will need to manually copy files as specified in the following table:</p>
+
+<table border="1" summary="Dynamic-link library (DLL) files to copy from private JRE to Windows directory">
+<caption>Dynamic-Link Library (DLL) Files to Copy from Private JRE to Windows Directory</caption>
+<thead>
+  <tr>
+    <th id="h1">JDK</th>
+    <th id="h2">Windows Operating System</th>
+    <th id="h3">File to Copy</th>
+    <th id="h4">Destination Directory</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td headers="h1">32-bit</td>
+    <td headers="h2">32-bit</td>
+    <td headers="h3"><code><em>&lt;path to the JDK install directory&gt;</em>\jre\bin\WindowsAccessBridge.dll</code></td>
+    <td headers="h4"><code>C:\Windows\System32</code></td>
+  </tr>
+  <tr>
+    <td headers="h1">32-bit</td>
+    <td headers="h2">64-bit</td>
+    <td headers="h3"><code><em>&lt;path to the JDK install directory&gt;</em>\jre\bin\WindowsAccessBridge-32.dll</code></td>
+    <td headers="h4"><code>C:\Windows\SysWOW64</code></td>
+  </tr>
+  <tr>
+    <td headers="h1">64-bit</td>
+    <td headers="h2">64-bit</td>
+    <td headers="h3"><code><em>&lt;path to the JDK install directory&gt;</em>\jre\bin\WindowsAccessBridge-64.dll</code></td>
+    <td headers="h4"><code>C:\Windows\System32</code></td>
+  </tr>
+</tbody>
+</table>
+        
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

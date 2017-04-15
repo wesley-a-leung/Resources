@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Monitoring Tools</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr024.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr026.html">
+                Next</a><hr/><a id="BABFCEEB" name="BABFCEEB"/>
+<div id="JSTGD249">
+<h1>Monitoring Tools</h1>
+<p>The tools listed in the <a href="#BABFCEHE">Table 2-4</a> are designed for monitoring applications that are running.</p>
+<p>The release of JDK 8 introduced Java Mission Control, Java Flight Recorder, and <code dir="ltr">jcmd</code> utility for diagnosing problems with JVM and Java applications. It is suggested to use the latest utility, <code dir="ltr">jcmd</code> instead of the previous <code dir="ltr">jstack</code>, <code dir="ltr">jinfo,</code> and <code dir="ltr">jmap</code> utilities for enhanced diagnostics and reduced performance overhead.</p>
+<div id="JSTGD250"><a id="sthref29" name="sthref29"/><a id="BABFCEHE" name="BABFCEHE"/>
+<p>Table 2-4 Monitoring Tools</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="This table contains a list of tools and options for monitoring running applications and detect problems that occur between the application and the Java HotSpot VM, with their descriptions." title="Monitoring Tools" width="100%">
+<col width="31%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t11" valign="bottom">Tool or Option</th>
+<th align="left" id="r1c2-t11" valign="bottom">Description and Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r2c1-t11">
+<p>Java Mission Control</p>
+</td>
+<td align="left" headers="r2c1-t11 r1c2-t11">
+<p>Java Mission Control (JMC) is a new JDK profiling and diagnostic tools platform for HotSpot JVM. It s a tool suite basic monitoring, managing, and production time profiling and diagnostics with high performance. Java Mission Control minimizes the performance overhead that's usually an issue with profiling tools. See <a href="tooldescr002.html#BABIBBDE">Java Mission Control</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r3c1-t11">
+<p>jcmd utility</p>
+</td>
+<td align="left" headers="r3c1-t11 r1c2-t11">
+<p>The jcmd utility is used to send diagnostic command requests to the JVM, where these requests are useful for controlling Java Flight Recordings. The JFRs are used to troubleshoot and diagnose JVM and Java Applications with flight recording events. See <a href="tooldescr006.html#BABEHABG">The jcmd Utility</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r4c1-t11">
+<p>Java VisualVM</p>
+</td>
+<td align="left" headers="r4c1-t11 r1c2-t11">
+<p>This utility provides a visual interface for viewing detailed information about Java applications while they are running on a Java Virtual Machine. This information can be used in troubleshooting local and remote applications, as well as for profiling local applications. See <a href="tooldescr010.html#BABEEIFH">Java VisualVM</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r5c1-t11">
+<p>JConsole utility</p>
+</td>
+<td align="left" headers="r5c1-t11 r1c2-t11">
+<p>This utility is a monitoring tool that is based on Java Management Extensions (JMX). The tool uses the built-in JMX instrumentation in the Java Virtual Machine to provide information about performance and resource consumption of running applications. See <a href="tooldescr009.html#BABDCICF">JConsole</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r6c1-t11">
+<p><code dir="ltr">jmap</code> utility</p>
+</td>
+<td align="left" headers="r6c1-t11 r1c2-t11">
+<p>This utility can obtain memory map information, including a heap histogram, from a Java process, a core file, or a remote debug server. See <a href="tooldescr014.html#BABGAFEG">The jmap Utility</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r7c1-t11">
+<p><code dir="ltr">jps</code> utility</p>
+</td>
+<td align="left" headers="r7c1-t11 r1c2-t11">
+<p>This utility lists the instrumented Java HotSpot VMs on the target system. The utility is very useful in environments where the VM is embedded, that is, it is started using the JNI Invocation API rather than the <code dir="ltr">java</code> launcher. See <a href="tooldescr015.html#BABHCEDC">The jps Utility</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r8c1-t11">
+<p><code dir="ltr">jstack</code> utility</p>
+</td>
+<td align="left" headers="r8c1-t11 r1c2-t11">
+<p>This utility can obtain Java and native stack information from a Java process. On Oracle Solaris and Linux operating systems the utility can alos get the information from a core file or a remote debug server. See <a href="tooldescr016.html#BABFCHDE">The jstack Utility</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r9c1-t11">
+<p><code dir="ltr">jstat</code> utility</p>
+</td>
+<td align="left" headers="r9c1-t11 r1c2-t11">
+<p>This utility uses the built-in instrumentation in Java to provide information about performance and resource consumption of running applications. The tool can be used when diagnosing performance issues, especially those related to heap sizing and garbage collection. See <a href="tooldescr017.html#BABCDBEA">The jstat Utility</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r10c1-t11">
+<p><code dir="ltr">jstatd</code> daemon</p>
+</td>
+<td align="left" headers="r10c1-t11 r1c2-t11">
+<p>This tool is a Remote Method Invocation (RMI) server application that monitors the creation and termination of instrumented Java Virtual Machines and provides an interface to allow remote monitoring tools to attach to VMs running on the local host. See <a href="tooldescr033.html#CJGHGBFD">The jstatd Daemon</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r11c1-t11">
+<p><code dir="ltr">visualgc</code> utility</p>
+</td>
+<td align="left" headers="r11c1-t11 r1c2-t11">
+<p>This utility provides a graphical view of the garbage collection system. As with <code dir="ltr">jstat</code>, it uses the built-in instrumentation of Java HotSpot VM. See <a href="tooldescr018.html#BABCDEBE">The visualgc Tool</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t11" id="r12c1-t11">
+<p>Native tools</p>
+</td>
+<td align="left" headers="r12c1-t11 r1c2-t11">
+<p>Each operating system has native tools and utilities that can be useful for monitoring purposes. For example, the dynamic tracing (DTrace) capability introduced in Oracle Solaris 10 operating system performs advanced monitoring. See <a href="tooldescr020.html#BABBHHIE">Native Operating System Tools</a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr024.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr026.html">
+                Next</a><hr/>
+
+
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

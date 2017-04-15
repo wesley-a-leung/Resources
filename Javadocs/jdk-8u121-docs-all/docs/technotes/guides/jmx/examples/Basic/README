@@ -1,0 +1,74 @@
+#
+# Copyright (c) 2004, Oracle and/or its affiliates. All rights reserved.
+# ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+#
+
+# ==============================================================================
+# 
+#  JMX Tutorial Example
+#
+#  The aim of this example is to show the basic use of the JMX technology. It
+#  shows the use of standard and dynamic MBeans, and how to perform operations
+#  locally and remotely, through the RMI connector. In this example both the
+#  SimpleStandard MBean and the SimpleDynamic MBean expose the same management
+#  interface.
+#
+# ==============================================================================
+#
+# In order to compile and run the example, make a copy of this README file, and
+# then simply cut and paste all the commands as needed into a terminal window.
+#
+# This README makes the assumption that you are running under Java SE 6 on Unix,
+# you are familiar with the JMX technology, and with the bourne shell or korn
+# shell syntax.
+#
+# All the commands below are defined using Unix korn shell syntax.
+#
+# If you are not running Unix and korn shell you are expected to be able to
+# adapt these commands to your favorite OS and shell environment.
+#
+
+# Compile Java classes
+#
+# * Server.java: creates an MBeanServer,
+#                registers a SimpleStandard MBean on the local MBeanServer,
+#                registers a SimpleDynamic MBean on the local MBeanServer,
+#                performs local operations on both MBeans,
+#                creates and starts an RMI connector server (JRMP).
+#
+# * Client.java: creates an RMI connector (JRMP),
+#                registers a SimpleStandard MBean on the remote MBeanServer,
+#                registers a SimpleDynamic MBean on the remote MBeanServer,
+#                performs remote operations on both MBeans,
+#                closes the RMI connector.
+#
+# * ClientListener.java: implements a generic notification listener.
+#
+# * SimpleStandard.java: implements the Simple standard MBean.
+#
+# * SimpleStandardMBean.java: the management interface exposed
+#                             by the Simple standard MBean.
+#
+# * SimpleDynamic.java: implements the Simple dynamic MBean.
+#
+
+javac *.java
+
+# Start the RMI registry:
+#
+
+rmiregistry 9999 &
+
+# Start the Server (follow the server's execution steps
+#                   until it prompts you to start the
+#                   client on a different shell window)
+#
+
+java -classpath . Server
+
+# Start the Client (on a different shell window)
+#
+
+java -classpath . Client
+
+# ==============================================================================

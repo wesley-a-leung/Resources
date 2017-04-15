@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>orbd</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T8:11:41Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Windows, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38210-05" name="partnum"/>
+<meta content="JSWOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="idlj.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="servertool.html">
+                Next</a><hr/>
+<div><a id="CIHGDGGE" name="CIHGDGGE"/>
+<div id="JSWOR714"><a id="CIHCHGGA" name="CIHCHGGA"/>
+<h1>orbd</h1>
+<p>Enables clients to locate and call persistent objects on servers in the CORBA environment.</p>
+<div><a id="sthref210" name="sthref210"/>
+<h2>Synopsis</h2>
+<p><b>orbd</b> [ <i>options</i> ]</p>
+<dl>
+<dt><i>options</i></dt>
+<dd>
+<p>Command-line options. See <a href="#CIHCBHHJ">Options</a>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref211" name="sthref211"/>
+<h2>Description</h2>
+<p>The <code dir="ltr">orbd</code> command enables clients to transparently locate and call persistent objects on servers in the CORBA environment. The Server Manager included with the orbd tool is used to enable clients to transparently locate and call persistent objects on servers in the CORBA environment. The persistent servers, while publishing the persistent object references in the naming service, include the port number of the ORBD in the object reference instead of the port number of the server. The inclusion of an ORBD port number in the object reference for persistent object references has the following advantages:</p>
+<ul>
+<li>
+<p>The object reference in the naming service remains independent of the server life cycle. For example, the object reference could be published by the server in the Naming Service when it is first installed, and then, independent of how many times the server is started or shut down, the ORBD returns the correct object reference to the calling client.</p>
+</li>
+<li>
+<p>The client needs to look up the object reference in the naming service only once, and can keep reusing this reference independent of the changes introduced due to server life cycle.</p>
+</li>
+</ul>
+<p>To access the ORBD Server Manager, the server must be started using <code dir="ltr">servertool</code>, which is a command-line interface for application programmers to register, unregister, start up, and shut down a persistent server. For more information on the Server Manager, see <a href="#CIHHEEHF">Server Manager</a>.</p>
+<p>When <code dir="ltr">orbd</code> starts, it also starts a naming service. For more information about the naming service. See <a href="#starting">Start and Stop the Naming Service</a>.</p>
+</div>
+
+<div><a id="CIHCBHHJ" name="CIHCBHHJ"/><a id="CIHCHAHI" name="CIHCHAHI"/>
+<h2>Options</h2>
+<dl>
+<dt>-ORBInitialPort <i>nameserverport</i></dt>
+<dd>
+<p>Required. Specifies the port on which the name server should be started. After it is started, <code dir="ltr">orbd</code> listens for incoming requests on this port. On Oracle Solaris software, you must become the root user to start a process on a port below 1024. For this reason, Oracle recommends that you use a port number above or equal to 1024.</p>
+</dd>
+</dl>
+<div><a id="sthref212" name="sthref212"/>
+<h3>Nonrequired Options</h3>
+<dl>
+<dt>-port <i>port</i></dt>
+<dd>
+<p>Specifies the activation port where ORBD should be started, and where ORBD will be accepting requests for persistent objects. The default value for this port is 1049. This port number is added to the port field of the persistent Interoperable Object References (IOR).</p>
+</dd>
+<dt>-defaultdb <i>directory</i></dt>
+<dd>
+<p>Specifies the base where the ORBD persistent storage directory, <code dir="ltr">orb.db</code>, is created. If this option is not specified, then the default value is <code dir="ltr">./orb.db</code>.</p>
+</dd>
+<dt>-serverPollingTime <i>milliseconds</i></dt>
+<dd>
+<p>Specifies how often ORBD checks for the health of persistent servers registered through <code dir="ltr">servertool</code>. The default value is 1000 ms. The value specified for <code dir="ltr">milliseconds</code> must be a valid positive integer.</p>
+</dd>
+<dt>-serverStartupDelay milliseconds</dt>
+<dd>
+<p>Specifies how long ORBD waits before sending a location forward exception after a persistent server that is registered through <code dir="ltr">servertool</code> is restarted. The default value is 1000 ms. The value specified for <code dir="ltr">milliseconds</code> must be a valid positive integer.</p>
+</dd>
+<dt>-J<i>option</i></dt>
+<dd>
+<p>Passes <code dir="ltr">option</code> to the Java Virtual Machine, where <code dir="ltr">option</code> is one of the options described on the reference page for the Java application launcher. For example, <code dir="ltr">-J-Xms48m</code> sets the startup memory to 48 MB. See <a href="java.html#CBBFHAJA"><code dir="ltr">java</code>(1)</a>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="starting" name="starting"/>
+<h3>Start and Stop the Naming Service</h3>
+<p>A naming service is a CORBA service that allows CORBA objects to be named by means of binding a name to an object reference. The name binding can be stored in the naming service, and a client can supply the name to obtain the desired object reference.</p>
+<p>Before running a client or a server, you will start ORBD. ORBD includes a persistent naming service and a transient naming service, both of which are an implementation of the COS Naming Service.</p>
+<p>The Persistent Naming Service provides persistence for naming contexts. This means that this information is persistent across service shutdowns and startups, and is recoverable in the event of a service failure. If ORBD is restarted, then the Persistent Naming Service restores the naming context graph, so that the binding of all clients' and servers' names remains intact (persistent).</p>
+<p>For backward compatibility, <code dir="ltr">tnameserv</code>, a Transient Naming Service that shipped with earlier releases of the JDK, is also included in this release of Java SE. A transient naming service retains naming contexts as long as it is running. If there is a service interruption, then the naming context graph is lost.</p>
+<p>The <code dir="ltr">-ORBInitialPort</code> argument is a required command-line argument for <code dir="ltr">orbd</code>, and is used to set the port number on which the naming service runs. The following instructions assume you can use port 1050 for the Java IDL Object Request Broker Daemon. When using Oracle Solaris software, you must become a root user to start a process on a port lower than 1024. For this reason, it is recommended that you use a port number above or equal to 1024. You can substitute a different port when necessary.</p>
+<p>To start <code dir="ltr">orbd</code> from a Solaris, Linux, or OS X command shell, enter:</p>
+<pre dir="ltr" xml:space="preserve">
+orbd -ORBInitialPort 1050&amp;
+</pre>
+<p>From an MS-DOS system prompt (Windows), enter:</p>
+<pre dir="ltr" xml:space="preserve">
+start orbd -ORBInitialPort 1050
+</pre>
+<p>Now that ORBD is running, you can run your server and client applications. When running the client and server applications, they must be made aware of the port number (and machine name, when applicable) where the Naming Service is running. One way to do this is to add the following code to your application:</p>
+<pre dir="ltr" xml:space="preserve">
+Properties props = new Properties();
+props.put("org.omg.CORBA.ORBInitialPort", "1050");
+props.put("org.omg.CORBA.ORBInitialHost", "MyHost");
+ORB orb = ORB.init(args, props);
+</pre>
+<p>In this example, the naming service is running on port 1050 on host <code dir="ltr">MyHost</code>. Another way is to specify the port number and/or machine name when running the server or client application from the command line. For example, you would start your <code dir="ltr">HelloApplication</code> with the following command line:</p>
+<pre dir="ltr" xml:space="preserve">
+java HelloApplication -ORBInitialPort 1050 -ORBInitialHost MyHost
+</pre>
+<p>To stop the naming service, use the relevant operating system command, such as <code dir="ltr">pkill</code> <code dir="ltr">orbd</code> on Oracle Solaris, or <b>Ctrl+C</b> in the DOS window in which <code dir="ltr">orbd</code> is running. Note that names registered with the naming service can disappear when the service is terminated because of a transient naming service. The Java IDL naming service will run until it is explicitly stopped.</p>
+<p>For more information about the naming service included with ORBD, see Naming Service at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/idl/jidlNaming.html">http://docs.oracle.com/javase/8/docs/technotes/guides/idl/jidlNaming.html</a></code></p>
+</div>
+</div>
+
+<div><a id="CIHHEEHF" name="CIHHEEHF"/>
+<h2>Server Manager</h2>
+<p>To access the ORBD Server Manager and run a persistent server, the server must be started with <code dir="ltr">servertool</code>, which is a command-line interface for application programmers to register, unregister, start up, and shut down a persistent server. When a server is started using <code dir="ltr">servertool</code>, it must be started on the same host and port on which <code dir="ltr">orbd</code> is executing. If the server is run on a different port, then the information stored in the database for local contexts will be invalid and the service will not work properly.</p>
+<p>See Java IDL: The "Hello World" Example at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/idl/jidlExample.html">http://docs.oracle.com/javase/8/docs/technotes/guides/idl/jidlExample.html</a></code></p>
+<p>In this example, you run the <code dir="ltr">idlj</code> compiler and <code dir="ltr">javac</code> compiler as shown in the tutorial. To run the ORBD Server Manager, follow these steps for running the application:</p>
+<p>Start <code dir="ltr">orbd</code>.</p>
+<p>Solaris, Linux, or OS X command shell, enter: <code dir="ltr">orbd -ORBInitialPort 1050</code>.</p>
+<p>MS-DOS system prompt (Windows), enter: <code dir="ltr">s</code><code dir="ltr">tart orbd -ORBInitialPort 105</code><code dir="ltr">0</code>.</p>
+<p>Port 1050 is the port on which you want the name server to run. The <code dir="ltr">-ORBInitialPort</code> option is a required command-line argument. When using Oracle Solaris software, you must become a root user to start a process on a port below 1024. For this reason, it is recommended that you use a port number above or equal to 1024.</p>
+<p>Start the <code dir="ltr">servertool</code>: <code dir="ltr">servertool -ORBInitialPort 1050</code>.</p>
+<p>Make sure the name server (<code dir="ltr">orbd</code>) port is the same as in the previous step, for example, <code dir="ltr">-ORBInitialPort 1050.</code> The <code dir="ltr">servertool</code> must be started on the same port as the name server.</p>
+<p>In the <code dir="ltr">servertool</code> command line interface, start the <code dir="ltr">Hello</code> server from the <code dir="ltr">servertool</code> prompt:</p>
+<pre dir="ltr" xml:space="preserve">
+servertool  &gt; register -server HelloServer -classpath . -applicationName
+                HelloServerApName
+</pre>
+<p>The <code dir="ltr">servertool</code> registers the server, assigns it the name <code dir="ltr">HelloServerApName</code>, and displays its server ID with a listing of all registered servers.Run the client application from another terminal window or prompt:</p>
+<pre dir="ltr" xml:space="preserve">
+java HelloClient -ORBInitialPort 1050 -ORBInitialHost localhost
+</pre>
+<p>For this example, you can omit <code dir="ltr">-ORBInitialHost localhost</code> because the name server is running on the same host as the <code dir="ltr">Hello</code> client. If the name server is running on a different host, then use the -<code dir="ltr">ORBInitialHost nameserverhost</code> option to specify the host on which the IDL name server is running.Specify the name server (<code dir="ltr">orbd</code>) port as done in the previous step, for example, <code dir="ltr">-ORBInitialPort 1050</code>. When you finish experimenting with the ORBD Server Manager, be sure to shut down or terminate the name server (<code dir="ltr">orbd</code>) and <code dir="ltr">servertool</code>. To shut down <code dir="ltr">orbd</code> from am MS-DOS prompt, select the window that is running the server and enter <b>Ctrl+C</b> to shut it down.</p>
+<p>To shut down <code dir="ltr">orbd</code> from an Oracle Solaris shell, find the process, and terminate with the <code dir="ltr">kill</code> command. The server continues to wait for invocations until it is explicitly stopped. To shut down the <code dir="ltr">servertool</code>, type <b>quit</b> and press the <b>Enter</b> key.</p>
+</div>
+
+<div><a id="sthref213" name="sthref213"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="servertool.html#BHBBBEHA"><code dir="ltr">servertool</code>(1)</a></p>
+</li>
+<li>
+<p>Naming Service at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/idl/jidlNaming.html">http://docs.oracle.com/javase/8/docs/technotes/guides/idl/jidlNaming.html</a></code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="idlj.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="servertool.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

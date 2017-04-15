@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+4860346:  Add X500Principal based methods to CertPath classes
+4874770:  API support for indirect CRLs
+4959744:  Deprecate X509Certificate.getSubjectDN() & co
+        [Not deprecated, but discourage its use]
+4503627:  Make class java.security.cert.PolicyQualifierInfo non-final
+- more on RFC 3280 compliance
+- PKCS 12 & 11 keystores [similar as JSSE enhancements doc or reference to it]
+- configuring PKIX trust manager for JSSE [same as JSSE doc or reference to it]
+
+-->
+<!--[Targeted for programmers.]-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>PKI Enhancements in Java SE 5</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<hr size="3" noshade="noshade" width="100%" />
+
+<h1>Public Key Infrastructure (PKI) Enhancements<br />
+for Java SE 5</h1>
+
+<hr size="3" noshade="noshade" width="100%" />
+<h2><a name="INTRO" id="INTRO">1. Introduction</a></h2>
+<p>This document describes the PKI enhancements that have been made
+to <a href="http://www.oracle.com/technetwork/java/javase/index-jsp-135232.html">Java SE 5.0</a>
+and how to use them.</p>
+<p>The following PKI enhancements were made in version 5.0 of the
+JavaSE platform:</p>
+<ul>
+<li><a href="#OCSP">On-Line Certificate Service Protocol
+(OCSP)</a></li>
+<li><a href="#CRL">API support for indirect certificate revocation
+lists (CRLs)</a></li>
+<li><a href="#NAMES">Clarified distinguished name usage in CertPath
+API</a></li>
+<li><a href="#PKIX">Passed PKIX RFC 3280 compliance test
+suite</a></li>
+<li><a href="#POL">Made java.security.cert.PolicyQualifierInfo
+non-final</a></li>
+<li><a href="#CACERTS">Added more CA certificates</a></li>
+<li><a href="#PKCS11">PKCS#11 Support</a></li>
+<li><a href="#PKCS12">Enhanced PKCS#12 implementation</a></li>
+<li><a href="#CERTPATH">Enhanced TrustManager support</a></li>
+</ul>
+<a name="OCSP" id="OCSP"></a>
+<h2>On-Line Certificate Service Protocol (OCSP)</h2>
+Client-side support for the On-Line Certificate Status Protocol
+(OCSP) as defined in <a href=
+"http://www.ietf.org/rfc/rfc2560.txt">RFC 2560</a> has been added
+in this release. OCSP checking is controlled by the following five,
+new security properties:
+<table summary="" border="1" cellpadding="3" width="600">
+<tr>
+<td><b>Property Name</b></td>
+<td><b>Description</b></td>
+</tr>
+<tr>
+<td><tt>ocsp.enable</tt></td>
+<td>This property's value is either true or false. If true, OCSP
+checking is enabled when doing certificate revocation checking; if
+false or not set, OCSP checking is disabled.</td>
+</tr>
+<tr>
+<td><tt>ocsp.responderURL</tt></td>
+<td>This property's value is a URL that identifies the location of
+the OCSP responder. Here is an example.
+<pre>
+ocsp.responderURL=http://ocsp.example.net:80
+</pre>
+<p>By default, the location of the OCSP responder is determined
+implicitly from the certificate being validated. The property is
+used when the Authority Information Access extension (defined in
+RFC 3280) is absent from the certificate or when it requires
+overriding.</p>
+</td>
+</tr>
+<tr>
+<td><tt>ocsp.responderCertSubjectName</tt></td>
+<td>This property's value is the subject name of the OCSP
+responder's certificate. Here is an example.
+<pre>
+ocsp.responderCertSubjectName="CN=OCSP Responder, O=XYZ Corp"
+</pre>
+<p>By default, the certificate of the OCSP responder is that of the
+issuer of the certificate being validated. This property identifies
+the certificate of the OCSP responder when the default does not
+apply. Its value is a string distinguished name (defined in RFC
+2253) which identifies a certificate in the set of certificates
+supplied during cert path validation. In cases where the subject
+name alone is not sufficient to uniquely identify the certificate,
+then both the <tt>ocsp.responderCertIssuerName</tt> and
+<tt>ocsp.responderCertSerialNumber</tt> properties must be used
+instead. When this property is set, then those two properties are
+ignored.</p>
+</td>
+</tr>
+<tr>
+<td><tt>ocsp.responderCertIssuerName</tt></td>
+<td>This property's value is the issuer name of the OCSP
+responder's certificate. Here is an example.
+<pre>
+ocsp.responderCertIssuerName="CN=Enterprise CA, O=XYZ Corp"
+</pre>
+<p>By default, the certificate of the OCSP responder is that of the
+issuer of the certificate being validated. This property identifies
+the certificate of the OCSP responder when the default does not
+apply. Its value is a string distinguished name (defined in RFC
+2253) which identifies a certificate in the set of certificates
+supplied during cert path validation. When this property is set
+then the <tt>ocsp.responderCertSerialNumber</tt> property must also
+be set. Note that this property is ignored when the
+<tt>ocsp.responderCertSubjectName</tt> property has been set.</p>
+</td>
+</tr>
+<tr>
+<td><tt>ocsp.responderCertSerialNumber</tt></td>
+<td>This property's value is the serial number of the OCSP
+responder's certificate Here is an example.
+<pre>
+ocsp.responderCertSerialNumber=2A:FF:00
+</pre>
+<p>By default, the certificate of the OCSP responder is that of the
+issuer of the certificate being validated. This property identifies
+the certificate of the OCSP responder when the default does not
+apply. Its value is a string of hexadecimal digits (colon or space
+separators may be present) which identifies a certificate in the
+set of certificates supplied during cert path validation. When this
+property is set then the <tt>ocsp.responderCertIssuerName</tt>
+property must also be set. Note that this property is ignored when
+the <tt>ocsp.responderCertSubjectName</tt> property has been
+set.</p>
+</td>
+</tr>
+</table>
+<p>These properties may be set either staticly in the Java
+runtime's <tt>$JAVA_HOME/jre/lib/security/java.security</tt> file,
+or dynamically using the
+<tt>java.security.Security.setProperty()</tt> method.</p>
+<p>By default, OCSP checking is not enabled. It is enabled by
+setting the <tt>ocsp.enable</tt> property to <tt>"true"</tt>. Use
+of the remaining properties is optional. Note that enabling OCSP
+checking only has an effect if revocation checking has also been
+enabled. Revocation checking is enabled via the <tt><a href=
+"../../../api/java/security/cert/PKIXParameters.html#setRevocationEnabled-boolean-">
+PKIXParameters.setRevocationEnabled()</a></tt> method.</p>
+<p>OCSP checking works in conjunction with Certificate Revocation
+Lists (CRLs) during revocation checking. Below is a summary of the
+interaction of OCSP and CRLs. Failover to CRLs occurs only if an
+OCSP problem is encountered. Failover does not occur if the OCSP
+responder confirms either that the certificate has been revoked or
+that it has not been revoked.</p>
+<table summary="" border="1" cellpadding="3" width="600">
+<tr>
+<td><b>PKIXParameters RevocationEnabled (default=true)</b></td>
+<td><b><tt>ocsp.enable</tt> (default=false)</b></td>
+<td><b>Behavior</b></td>
+</tr>
+<tr>
+<td>true</td>
+<td>true</td>
+<td>Revocation checking using OCSP,<br />
+failover to using CRLs</td>
+</tr>
+<tr>
+<td>true</td>
+<td>false</td>
+<td>Revocation checking using CRLs only</td>
+</tr>
+<tr>
+<td>false</td>
+<td>true</td>
+<td>No revocation checking</td>
+</tr>
+<tr>
+<td>false</td>
+<td>false</td>
+<td>No revocation checking</td>
+</tr>
+</table>
+<p>See the <a href="certpath/CertPathProgGuide.html">Java
+Certification Path API Programming Guide</a> for details about
+revocation checking and Certificate Revocation Lists.</p>
+<p>
+<!--The OCSP checker has been integrated into the current PKI cert
+path validation mechanism to ensure compatibility with CRLs.
+By default, OCSP checking is not enabled.
+Failover to CRLs occurs only if an OCSP problem is encountered. Failover does 
+not occur if the OCSP responder confirms either that the certificate has been 
+revoked or that it has not been revoked.
+<P>
+Please refer to the OCSP documentation for details on using OCSP in Java SE 5.
+-->
+ <a name="CRL" id="CRL"></a></p>
+<h2>API Support for Indirect Certificate Revocation Lists
+(CRLs)</h2>
+Indirect CRLs are certificate revocation lists that include entries
+for certificates from issuers other than the CRL issuer. In Java SE 5,
+two changes were made to the CertPath API to better support
+indirect CRLs.
+<p>The <tt><a href=
+"../../../api/java/security/cert/X509CRL.html">java.security.cert.X509CRL</a></tt>
+class has a method, <tt><a href=
+"../../../api/java/security/cert/X509CRL.html#getRevokedCertificate-java.math.BigInteger-">
+getRevokedCertificate(BigInteger)</a></tt>, for getting a CRL entry
+given a certificate's serial number. However, for an indirect CRL,
+the serial number does not uniquely identify a certificate. In Java SE
+5, an overloaded form of <tt><a href=
+"../../../api/java/security/cert/X509CRL.html#getRevokedCertificate-java.security.cert.X509Certificate-">
+getRevokedCertificate()</a></tt> was added for getting a CRL entry
+given a certificate.</p>
+<p>Prior to Java SE 5, the <tt><a href=
+"../../../api/java/security/cert/X509CRLEntry.html">java.security.cert.X509CRLEntry</a></tt>
+class did not have any method for obtaining the issuer of the
+certificate described by the CRL entry. In Java SE 5, a method,
+<tt><a href=
+"../../../api/java/security/cert/X509CRLEntry.html#getCertificateIssuer--">
+getCertificateIssuer()</a></tt>, was added to address this gap.</p>
+<h2><a name="NAMES" id="NAMES">Clarified Distinguished Name Usage
+in CertPath API</a></h2>
+The CertPath API has constructors and methods that accept byte
+arrays and strings to represent distinguished names. However, in
+some classes, it lacked similar overloaded forms that accept
+<a href=
+"../../../api/javax/security/auth/x500/X500Principal.html"><tt>X500Principal</tt></a>
+to represent distinguished names. Use of <tt>X500Principal</tt> to
+represent a distinguished name is preferred because it is more
+efficient and suitably typed. The following methods were added to
+the CertPath API.
+<ul>
+<li><tt>java.security.cert.TrustAnchor<br /></tt>
+<pre>
+<tt>public TrustAnchor(X500Principal caPrincipal, PublicKey pubKey,
+    byte[] nameConstraints);
+public final X500Principal getCA();
+</tt>
+</pre></li>
+<li><tt>java.security.cert.X509CertSelector<br /></tt>
+<pre>
+<tt>public X500Principal getIssuer();
+public void setIssuer(X500Principal issuer);
+public X500Principal getSubject();
+public void setSubject(X500Principal subject);
+</tt>
+</pre></li>
+<li><tt>java.security.cert.X509CRLSelector</tt>
+<pre>
+<tt>public void setIssuers(Collection&lt;X500Principal&gt; issuers);
+public void addIssuer(X500Principal issuer);
+public Collection&lt;X500Principal&gt; getIssuers();
+</tt>
+</pre></li>
+</ul>
+<p>The methods <a href=
+"../../../api/java/security/cert/X509Certificate.html#getSubjectDN--">
+<tt>getSubjectDN()</tt></a> and <a href=
+"../../../api/java/security/cert/X509Certificate.html#getIssuerDN--">
+<tt>getIssuerDN()</tt></a> in the <tt>X509Certificate</tt> class
+and <a href=
+"../../../api/java/security/cert/X509CRL.html#getIssuerDN--"><tt>getIssuerDN()</tt></a>
+in the <tt>X509CRL</tt> class are problematic because their
+specifications say that they return a distinguished name without
+being specific about its format. Consequently, different
+implementations may return implementation-specific objects,
+resulting in applications that have poor interoperability or are
+non-portable. Use of these methods are strongly discouraged.
+Instead, applications should use the methods that return an
+instance of <a href=
+"../../../api/javax/security/auth/x500/X500Principal.html"><tt>X500Principal</tt></a>.</p>
+<ul>
+<li><a href=
+"../../../api/java/security/cert/X509Certificate.html#getSubjectX500Principal--">
+<tt>getSubjectX500Principal()</tt></a></li>
+<li><a href=
+"../../../api/java/security/cert/X509Certificate.html#getIssuerX500Principal--">
+<tt>getIssuerX500Principal()</tt></a></li>
+<li><a href=
+"../../../api/java/security/cert/X509CRL.html#getIssuerPrincipal--">
+<tt>getIssuerX500Principal()</tt></a>.</li>
+</ul>
+<a name="PKIX" id="PKIX"></a>
+<h2>Passed PKIX Complaince Test Suite</h2>
+The CertPath implementation in the SUN provider in Java SE 5 passed
+the <a href=
+"http://csrc.nist.gov/pki/testing/x509paths.html">Public Key
+Interoperability Test Suite (PKITS)</a>.
+<h2><a name="POL" id="POL">Made
+java.security.cert.PolicyQualifierInfo non-final</a></h2>
+Prior to Java SE 5, <tt>java.security.cert.PolicyQualifierInfo</tt>
+was a final class. This prevented users from creating subclasses
+and adding methods that return fields of different types of policy
+qualifiers. In Java SE 5, this class was made non-final, but the
+following methods were made final to preserve the class'
+immutability contract.
+<pre>
+public final String getPolicyQualifierId()
+public final byte[] getEncoded()
+public final byte[] getPolicyQualifier()
+</pre>
+<a name="CACERTS" id="CACERTS"></a>
+<h2>Added More CA Certificates</h2>
+The following CA (Certification Authority) certificates were added
+to the <tt>cacerts</tt> file in the <tt>lib/security</tt> directory
+of the Java installation.
+<pre>
+  Alias name: equifaxsecureebusinessca1
+  Owner: CN=Equifax Secure eBusiness CA-1, O=Equifax Secure Inc., C=US
+
+  Alias name: equifaxsecureca
+  Owner: OU=Equifax Secure Certificate Authority, O=Equifax, C=US
+
+  Alias name: geotrustglobalca
+  Owner: CN=GeoTrust Global CA, O=GeoTrust Inc., C=US
+   
+  Alias name: equifaxsecureglobalebusinessca1
+  Owner: CN=Equifax Secure Global eBusiness CA-1, O=Equifax Secure Inc., C=US
+  
+  Alias name: equifaxsecureebusinessca2
+  Owner: OU=Equifax Secure eBusiness CA-2, O=Equifax Secure, C=US
+
+  Alias name: verisignclass1g3ca
+  Owner: CN=VeriSign Class 1 Public Primary Certification Authority - G3, OU="(c)
+  1999 VeriSign, Inc. - For authorized use only", OU=VeriSign Trust Network, 
+  O="VeriSign, Inc.", C=US
+  Issuer: CN=VeriSign Class 1 Public Primary Certification Authority - G3, OU="(c) 
+  1999 VeriSign, Inc. 
+  - For authorized use only", OU=VeriSign Trust Network, O="VeriSign, Inc.", C=US
+
+  Alias name: verisignclass2g2ca
+  Owner: OU=VeriSign Trust Network, OU="(c) 1998 VeriSign, Inc. - For authorized 
+  use only", OU=Class 2 
+  Public Primary Certification Authority - G2, O="VeriSign, Inc.", C=US
+  Issuer: OU=VeriSign Trust Network, OU="(c) 1998 VeriSign, Inc. - For authorized
+  use only", OU=Class 2 Public Primary Certification Authority - G2, O="VeriSign,
+  Inc.", C=US
+
+  Alias name: verisignclass3g3ca
+  Owner: CN=VeriSign Class 3 Public Primary Certification Authority - G3, OU="(c)
+  1999 VeriSign, Inc. - For authorized use only", OU=VeriSign Trust Network, 
+  O="VeriSign, Inc.", C=US
+  Issuer: CN=VeriSign Class 3 Public Primary Certification Authority - G3, OU="(c) 
+  1999 VeriSign, Inc. 
+  - For authorized use only", OU=VeriSign Trust Network, O="VeriSign, Inc.", C=US
+
+  Alias name: verisignclass1g2ca
+  Owner: OU=VeriSign Trust Network, OU="(c) 1998 VeriSign, Inc. - For authorized 
+  use only", OU=Class 1 
+  Public Primary Certification Authority - G2, O="VeriSign, Inc.", C=US
+  Issuer: OU=VeriSign Trust Network, OU="(c) 1998 VeriSign, Inc. - For authorized
+  use only", OU=Class 1 Public Primary Certification Authority - G2, O="VeriSign,
+  Inc.", C=US
+
+  Alias name: verisignclass2g3ca
+  Owner: CN=VeriSign Class 2 Public Primary Certification Authority - G3, OU="(c)
+  1999 VeriSign, Inc. - For authorized use only", OU=VeriSign Trust Network, 
+  O="VeriSign, Inc.", C=US
+  Issuer: CN=VeriSign Class 2 Public Primary Certification Authority - G3, OU="(c) 
+  1999 VeriSign, Inc. 
+  - For authorized use only", OU=VeriSign Trust Network, O="VeriSign, Inc.", C=US
+
+  Alias name: verisignclass3g2ca
+  Owner: OU=VeriSign Trust Network, OU="(c) 1998 VeriSign, Inc. - For authorized 
+  use only", OU=Class 3 
+  Public Primary Certification Authority - G2, O="VeriSign, Inc.", C=US
+  Issuer: OU=VeriSign Trust Network, OU="(c) 1998 VeriSign, Inc. - For authorized
+  use only", OU=Class 3 Public Primary Certification Authority - G2, O="VeriSign,
+  Inc.", C=US
+    
+</pre>
+<a name="PKCS11" id="PKCS11"></a>
+<h2>PKCS#11 Support</h2>
+<p>The Cryptographic Token Interface Standard, PKCS#11, is a
+standard that defines native programming interfaces to
+cryptographic tokens, such as hardware cryptographic accelerators
+and Smartcards. In Java SE 5, support was added for <a href="http://www.rsa.com:80/rsalabs/pkcs/pkcs-11/">PKCS#11. This
+means that PKI applications can use PKCS#11 tokens (such as
+Smartcards) as keystores. See the</a> <a href=
+"p11guide.html">PKCS#11 Guide</a> for more information on how to
+use PKCS#11 tokens as keystores.</p>
+<h2><a name="PKCS12" id="PKCS12">Enhanced PKCS#12
+Implementation</a></h2>
+<p><a href="http://www.rsa.com:80/rsalabs/pkcs/pkcs-12/">PKCS#12</a>
+(Personal Information Exchange Syntax Standard) specifies a
+portable format for storage and/or transport of a user's private
+keys, certificates, miscellaneous secrets, and other items. Java SE
+1.4.x provided read-only support for PKCS#12 keystores, and only
+for a small number of protection algorithms. The enhanced PKCS#12
+keystore in Java SE 5 supports more protection algorithms (such as
+those supported by popular browsers) and also writing/updates to
+the keystore. This improves interoperability of PKCS#12 keystores
+imported/exported by Java SE, browsers, and other security
+applications.<a name="CERTPATH" id="CERTPATH"></a></p>
+<h2><a href="http://www.rsa.com:80/rsalabs/pkcs/pkcs-12/">Enhanced
+TrustManager Support</a></h2>
+<p>By default, the SunJSSE provider in Java SE 5 uses a X509
+PKIX-compliant trust manager. See the <a href=
+"jsse/JSSERefGuide.html#CERTPATH">What's New</a> in the JSSE
+Reference Guide for details.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

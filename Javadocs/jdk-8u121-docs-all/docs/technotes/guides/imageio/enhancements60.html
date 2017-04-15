@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- USE THIS TEMPLATE WHEN ENHANCEMENTS ARE LENGTHY; YOU THEN WILL USE A
+   SEPARATE FILE TO DOCUMENT THE ENHANCEMENTS OF EACH VERSION CURRENTLY SUPPORTED
+   -->
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Image I/O Enhancements in Java SE 6.0</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Image I/O Enhancements in Java SE
+6.0</h1>
+<a href="#features">Major Features</a><br />
+<ul>
+<li><a href="#gif">A writer plug-in for the GIF image
+format</a></li>
+<li><a href="#filtering">New methods for file formats
+filtering</a></li>
+</ul>
+<a href="#fixes">Fixed Bugs</a><br />
+<ul>
+<li><a href="#fixDoc">API and doc changes</a></li>
+<li><a href="#fixBMP">BMP plugin improvements</a></li>
+<li><a href="#fixPerf">Performance and resource management</a></li>
+<li><a href="#fixRobust">Robustness</a></li>
+<li><a href="#fixQuality">Quality</a></li>
+<li><a href="#fixMisc">Miscellaneous</a></li>
+</ul>
+<h2><a name="features" id="features">Major Features</a></h2>
+<h3><a name="gif" id="gif">A writer plug-in for the GIF file
+format</a></h3>
+<p>While reading capabilities for the GIF file format have been
+available since Java SE 1.4, the
+<code>com.sun.media.imageio.plugins.gif</code> package lacked a
+writer. The newly added GIF image writer enables writing images
+which satisfy the following requirements:</p>
+<ul>
+<li>The number of bands is 1</li>
+<li>The number of bits per sample is not greater than 8</li>
+<li>The size of a color component is not greater than 8</li>
+</ul>
+<p>Additionally, the GIF images writer supports the animated GIF
+images creation through the standard methods defined in the
+<a href="../../../api/javax/imageio/ImageWriter.html"><code>ImageWriter</code></a>
+class. See more details about the GIF images writer in the <a href=
+"../../../api/javax/imageio/package-summary.html#gif_plugin_notes">Standard
+plug-in for GIF image format notes</a>.</p>
+<h3><a name="filtering" id="filtering">New methods for file formats
+filtering</a></h3>
+Two new methods were introduced in the <a href=
+"../../../api/javax/imageio/ImageIO.html"><code>ImageIO</code></a>
+class that obtain file suffixes to be filtered. The <a href=
+"../../../api/javax/imageio/ImageIO.html#getReaderFileSuffixes--"><code>
+getReaderFileSuffixes()</code></a> and <a href=
+"../../../api/javax/imageio/ImageIO.html#getWriterFileSuffixes--"><code>
+getWriterFileSuffixes</code></a> methods return an array of
+<code>Strings</code> listing all of the file suffixes associated
+with the formats recognized by the current set of registered
+readers and writers.
+<h2><a name="fixes" id="fixes">Fixed Bugs</a></h2>
+<h3><a name="fixDoc" id="fixDoc">API and doc changes</a></h3>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=4953566"><strong>4953566</strong></a>
+The <code>mark()</code> or <code>reset()</code> methods of the
+<code>ImageInputStream class</code> do not work properly with PNG
+<code>ImageReader</code>:</h3>
+<p>The following note was added to the
+<code>ImageInputStream</code> class specification to clarify that
+<code>ImageReader</code> classes are allowed to call the
+<code>flushBefore()</code> as part of the decoding process:</p>
+<p>Note that it is valid for an ImageReader to call flushBefore as
+part of a read operation. Therefore, if an application calls the
+mark prior to passing that stream to an ImageReader, the
+application should not assume that the marked position will remain
+valid after the read operation has completed.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=5068322"><strong>5068322</strong></a>
+The <code>javax.imageio.plugins.jpeg.JPEGQTable.toString()</code>
+method produces incorrect description:</h3>
+The <code>toString()</code> method of the <code>JPEGQTable</code>
+class in the package <code>javax.imageio.plugins.jpeg</code> was
+supposed to return a <code>String</code> object containing the
+values of the table, but instead repeated only the first line of
+the table. The performed fix eliminate this error.
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6359957"><strong>6359957</strong></a>
+Wrong doc URL reference for PNG specification:</h3>
+<p>The link to the PNG specification in the <a href=
+"../../../api/javax/imageio/metadata/package-summary.html" target=
+"classFrame">javax.imageio.metadata</a> package was corrected to
+the following URL:</p>
+<p><a href=
+"http://www.libpng.org/pub/png/spec/">http://www.libpng.org/pub/png/spec/</a></p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6457035"><strong>6457035</strong></a>
+javadoc for <code>ImageInputStreamImpl.read()</code> method is
+missing:</h3>
+The <code>ImageInputStreamImpl.java</code> file had a missing '*'
+character at the beginning of the javadoc for the abstract
+<code>read()</code> method definition.The fix fills in the missing
+character.
+<h3><a name="fixBMP" id="fixBMP">BMP plugin improvements</a></h3>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6294920">6294920</a> The
+<code>BMPImageReader</code> class fails to read
+<code>3BYTE_BGR</code> images encoded using BMP Writer with
+<code>BI_JPEG</code> compression:</h3>
+<p>While attempting to write an image of the <code>BI_JPEG</code>
+compression type, the <code>java.io.EOFException</code> was thrown
+by the <code>BMPImageReader</code> class. The problem was that the
+<code>BMPImageReader</code> class did not process embedded images
+both of <code>BI_JPEG</code> and <code>BI_PNG</code> types. To
+resolve this problem, the embedded image handling is moved to
+separate code.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6297016">6297016</a> Output
+BMP image is distorted when writing <code>TYPE_3BYTE_BGR</code>
+buffered image with <code>BI_BITFIELDS</code> compression:</h3>
+<p>While attempting to write a buffered image of the
+<code>TYPE_3BYTE_BGR</code> type to a file using the
+<code>BMPWriter</code> class and the <code>BI_BITFIELDS</code>
+compression type, the output image was distorted and unusable. This
+problem was caused by the bitfileds masks which were applied to a
+bmp image. However, an image data layout was not changed according
+to the BMP format requirements. To fix this problem the
+<code>writePixels()</code> method is used to copy image data
+correctly.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=5076878">5076878</a>
+ImageIO BMP Writer writes 32 bit files for 24 bit images:</h3>
+<p>The <code>ImageIO.write</code> method presented a BMP file as a
+32 bit image even if the source image had 24 bits per pixel
+presentation. The fix enables the <code>writePixels</code>
+procedure whenever the number of bits per pixel is smaller than the
+size of a databuffer type (for example, with
+<code>TYPE_INT_RGB,</code> the actual number of bits per pixel is
+24 while the size of the databuffer type is 32).</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6332480">6332480</a> The
+<code>BMPReader</code> class fails to read the
+<code>TYPE_BYTE_GRAY</code> image encoded by the
+<code>BMPWriter</code> class with <code>BI_RLE8</code>
+compression:</h3>
+<p>The <code>BMPReader</code> class did not properly read the
+<code>TYPE_BYTE_GRAY</code> image written with the
+<code>BMPWriter</code> class using the <code>BI_RLE8</code>
+compression. The problem was that the RLE decoding procedures (both
+RLE4 and RLE8) mistakenly used the width of the destination region
+instead of the height to calculate the range of image lines for
+copying. The performed fix uses the height of the destination
+region to calculate the range.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6399660">6399660</a> Using
+subsampling with compression alters the colors for some of the
+image types for BMP:</h3>
+<p>While using all the supported compression types for BMP,
+different affects on image were detected including blurring, a
+different color appearance, and slight image corruption. The
+performed fix separates processing BI_RGB compression and BI_RGB
+compression as follows:</p>
+<ul>
+<li>For BI_RGB compression the BGR order of raster data should be
+used (except the case of 16bpp images where RGB data order is
+defined by the BMP spec)</li>
+<li>For BI_BITFIELDS compression the order of raster data should be
+defined using corresponding masks. The RGB order of raster data is
+used for the default bitfields masks.</li>
+</ul>
+<h3><a name="fixPerf" id="fixPerf">Performance and resource
+management</a></h3>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6299405"><strong>6299405</strong></a>
+The <code>ImageInputStreamImpl</code> class still uses the
+<code>finalize()</code> method which causes the
+<code>java.lang.OutOfMemoryError</code>:</h3>
+<p>The <code>finalize()</code> method had to be emptied and its
+functionality (closing the stream) must be replaced with a more
+prompt mechanism. The finalize() method cannot be easily emptied at
+the <code>ImageInputStreamImpl</code> level, since third-party IISI
+subclasses may rely on the <code>finalize()</code> method calling
+their <code>close()</code> method as per the spec. However, for
+<code>ImageInputStreamImpl</code> subclasses under Oracle control, the
+<code>finalize()</code> methods can be emptied. The Java2D Disposer
+mechanism is used instead.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6266748"><strong>6266748</strong></a>
+The <code>JPEGImageWriter.write()</code> method makes a copy of the
+raster:</h3>
+<p>The write() method of the <code>JPEGImageWriter</code> class
+contained memory-inefficient code. The suggested fix helps to
+improve performance for simple rendered images.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6336804"><strong>6336804</strong></a>
+The <code>javax.imageio.ImageIO</code> class can handle leaks in
+some methods:</h3>
+<p>Some of the <code>read()</code> and <code>write()</code>
+convenience methods in the <code>javax.imageio.ImageIO</code> class
+did not properly close streams and dispose reader or writer
+instances in a try and finally blocks. As a fix the appropriate
+notes were added to each method's javadocs indicating whether it is
+the caller's responsibility to close the provided stream or
+not.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6347575"><strong>6347575</strong></a>
+FileImageInputStream.readInt() and similar methods are
+inefficient:</h3>
+Calling the <code>read()</code> method of the
+<code>FileImageInputStream</code> 4x was much more expensive than
+making a single call to the <code>read(byte[])</code> method with a
+cached byte array. This fact had a profound impact on performance
+of reading small PNG and other images. The fixes were performed for
+the <code>readShort()</code> and <code>readInt()</code> methods of
+the <code>ImageInputStreamImpl</code> class.
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6348744"><strong>6348744</strong></a>
+The <code>PNGImageReader</code> class should skip metadata if the
+<code>ignoreMetadata</code> flag has the <code>true</code>
+value:</h3>
+<p>Before JDK 6, the <code>PNGImageReader</code> class read all
+image metadata, even if the <code>ignoreMetadata</code> flag was
+set. The fix reduces overhead and improves performance when reading
+small PNG images by skipping metadata blocks if the
+<code>ignoreMetadata</code> flag is <code>true</code>.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6354056"><strong>6354056</strong></a>
+The <code>JPEGImageReader</code> class could be optimized:</h3>
+<p>The JPEG image reader copied decoded data into memory, but not
+in an optimized way. The performed fix improves this operation by
+using the <code>memcpy()</code> method instead of copying one byte
+at a time.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6354112"><strong>6354112</strong></a>
+Increase compiler optimization level for <code>libjpeg</code> to
+improve runtime performance:</h3>
+<p>The <code>libjpeg</code> library in the JDK was built with
+default compiler optimization flags. The values of these flags are
+increased to a higher level to enable the native IJG JPEG libraries
+to run faster.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6404011"><strong>6404011</strong></a>
+IllegalArgumentException: &quot;Invalid ICC Profile Data&quot; when
+reading a certain JPEG image:</h3>
+<p>This bug was an unchecked exception and could cause a system
+crash on some platforms. The fix catches the
+<code>IllegalArgumentException</code>, which is thrown by
+ICC_Profile, and handles images without taking into account invalid
+color profiles.</p>
+<h3><a name="fixRobust" id="fixRobust">Robustness</a></h3>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6291034"><strong>6291034</strong></a>
+The <code>IFileCacheImageInputStream</code> and
+<code>FileCacheImageOutputStream</code> should avoid using the
+<code>File.deleteOnExit</code> method:</h3>
+Both the <code>FileCacheImageInputStream</code> and
+<code>FileCacheImageOutputStream</code> classes used the
+functionality of the <code>deleteOnExit</code> method of the
+<code>File</code> class. The fix has replaced the
+File.deleteOnExit() functionality with the shutdown hook that
+closes streams that are still open before the VM shutdown.
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=4892630"><strong>4892630</strong></a>
+The <code>ImageReader</code> class does not validate the image
+index which is passed to some of the methods:</h3>
+<p>The <code>getWidth(imgIndex)</code>,
+<code>getHeight(imgIndex)</code>, and
+<code>getAspectRatio(imgIndex)</code> methods of the
+<code>ImageReader</code> class did not throw the
+<code>IndexOutOfBoundsException</code> if the given PNG image index
+was out of range. The performed fix resolves this issue by throwing
+the exception appropriately.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=4895547"><strong>4895547</strong></a>
+<code>JPEGImageMetadata</code> obtained from reader throws
+<code>NullPointerException</code> when calling the
+<code>mergeTree()</code> method:</h3>
+<p>The list of parent attributes did not contain attributes related
+to the child node and this fact caused the
+<code>NullPointerException</code> in the
+<code>MarkerSegment.getAttributeValue()</code> method while trying
+to get child related attribute. The performed fix obtains the
+attribute list from the child node.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=4528643"><strong>4528643</strong></a>
+Native JPEG code makes JNI calls in scope of
+GetPrimitiveArrayCritical:</h3>
+<p>Running any application that reads or writes JPEG images with
+the non-standard <code>-Xcheck:jni</code> flag caused the following
+error in several methods of the <code>JPEGImageReader</code>
+class:</p>
+<pre>
+Calling other JNI functions in the scope of Get/ReleasePrimitiveArrayCritical or Get/ReleaseStringCritical
+</pre>
+<p>In the fix, the affected methods are surrounded with the
+RELEASE/GET_ARRAYS macros.&nbsp;</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=5076692"><strong>5076692</strong></a>
+Installed Extensions Image I/O reader-writer plug-ins unusable in
+applet context:</h3>
+The problem was that the <code>imageio</code> registry
+initialization code did not have read access to jars in the
+<code>java.ext.dirs</code> when the registry code was called from
+applet context. Therefore, the <code>imageio</code> plugins
+installed to <code>java.ext.dirs</code> were not available in case
+of applets. The fix idea is to register plugins from
+<code>java.ext.dirs</code> in the privileged action block.
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6342404"><strong>6342404</strong></a>
+The <code>ImageIO</code> plugin failure causes all readers to
+fail:</h3>
+<p>Removing an <code>ImageIO</code> plugin's code from the
+classpath, but still including an entry for the plugin's
+ImageReader in META-INF/services made using any of the ImageIO
+plugins impossible. To fix this bug, a 'try and catch' block was
+added to the
+<code>IIORegistry.registerApplicationClasspathSpis()</code> method
+to catch the <code>ServiceConfigurationError</code>.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6395551"><strong>6395551</strong></a>
+Setting the destination type to type specifier returned by
+redr.getImageTypes() throws exception for JPG:</h3>
+<p>The problem was that a new <code>ColorSpace</code> instance was
+re-created for embedded color profiles whenever an image header was
+read. In addition, there was no means for correct comparison of
+<code>ColorSpace</code> and <code>ICC_Profile</code> classes. This
+omission made comparing instances of
+<code>ImageTypeSpecifier</code> class impossible. The proposed
+workaround for this problem is as follows: to detect the case when
+the <code>iccCS</code> instance contains the same profile data as a
+newly read. If so, the 'old' instance is left; otherwise (if the
+profile data seems to be different) a new color space instance is
+created for the embedded color profile.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6399616"><strong>6399616</strong></a>
+PIT: <code>JPGReader</code> throws an exception when using the
+<code>TYPE_CUSTOM TypeSpecifier</code> returned by the
+<code>Reader.getImageTypes</code> method:</h3>
+<p>The regression was caused by the fix for <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4705399"><strong>4705399</strong></a>,
+where color conversion was removed
+(<code>JPEGImageReader.java</code> lines 783 -786) because it
+caused extra color conversion for images with embedded color
+profiles. However, this conversion was required when the
+destination type defined different color spaces for images that do
+not contain embedded profiles. The fix for this case converts image
+data from sRGB (produced by the decoder) to the color space used in
+the destination image.</p>
+<h3><a name="fixQuality" id="fixQuality">Quality</a></h3>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=5028259"><strong>5028259</strong></a>
+Setting the destination image type for jpeg images increases the
+size of the result file:</h3>
+<p>If the write parameter with the destination type was used
+explicitly to write a jpeg image, then the size of the result file
+was bigger than if the same destination type was used implicitly.
+The problem was revealed when the destination type was specified
+but the corresponding metadata object was not specified. The fix
+creates the metadata object using the given destination type in
+order to build a SOF marker object, which will be used to change
+the default values of the <code>QtableSelectors</code>.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=4881314"><strong>4881314</strong></a>
+<code>ImageIO</code> does not correctly read certain standard JPG
+files:</h3>
+The <code>ImageIO</code> incorrectly reads some JPG files. The
+result was a red or green image that looked like a photographic
+negative. The fix eliminates color space conversion for EXIF
+images. To detect EXIF images, the check for the APP1 marker in the
+image header is added.
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=5098176"><strong>5098176</strong></a>
+Some PNG images fail to load with the <code>ImageIO</code>
+class:</h3>
+The <code>PNGImageReader</code> failed to create the
+<code>ImageTypeSpecifier</code> instance corresponding to the
+indexed PNG image if the length of the image palette in smaller
+than 2 bitDepth. To avoid this limitation new palette arrays of the
+appropriate power of 2 size were created. These arrays are padded
+with the last value from original arrays in order to avoid the
+appearance of colors that do not exist in the original palette.
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6372769"><strong>6372769</strong></a>
+The <code>ImageIO.read</code> method improperly decodes Nikon
+Jpegs:</h3>
+<p>The <code>ImageIO</code> jpeg reader performed extra color
+conversion if an image contained the embedded color profile. The
+bug was fixed by removing the extra color conversion operation.</p>
+<h3><a name="fixMisc" id="fixMisc">Miscellaneous</a></h3>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=4972087"><strong>4972087</strong></a>
+<code>Quality Desc</code> and <code>Quality Values</code> arrays
+are of the same length for JPG:</h3>
+<p>The <code>JPEGImageWriteParam</code> class was updated so that
+the <code>getCompressionQualityValues()</code> method returns an
+array whose length is one larger than the array returned by
+<code>getCompressionQualityDescriptions()</code>, as per the
+specification.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6195593"><strong>6195593</strong></a>
+REGRESSION: The <code>javax/imageio/IRPTest.java</code> file
+fails:</h3>
+<p>The problem was caused by the fix for the bug <a href=
+"http://bugs.java.com/view_bug.do?bug_id=5039494"><strong>5039494</strong></a>.
+Starting with this fix, the
+<code>ImageReader.computeRegion()</code> method was used to
+calculate the destination region. In order to avoid discrepancies
+between calculated destination regions and destinations offset from
+the parameter, the <code>destinationOffset</code> is updated
+according to the calculated values.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6304433"><strong>6304433</strong></a>
+Test bug: the regression test for the bug 6291034 fails on all
+platforms:</h3>
+<p>The regression test failure was caused by the creation of an
+output image file. This file was created after counting the
+existing files in the work directory and was not deleted on
+regression test finish. So, after regression test execution, the
+work directory always contained one extra file, although all
+temporary files were deleted upon VM exit. The solution is to use
+byte array input or output streams instead of file input or output
+streams in order to avoid creating extra files in the work
+directory.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6356926"><strong>6356926</strong></a>
+PIT: The regression test
+<code>javax/imageio/stream/DeleteOnExit.sh</code> is failing:</h3>
+<p>The problem was caused by the fix for the bug <a href=
+"http://bugs.java.com/view_bug.do?bug_id=6299405"><strong>6299405</strong></a>.
+The affected code is fixed and the corresponding comment has been
+added.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6459309"><strong>6459309</strong></a>
+The <code>NoAPP0Test.java</code> regression test failed on all
+platforms:</h3>
+<p>The difference in pixel values is caused by using new version of
+sRGB profile that was updated as part of fix for 6279846. New
+profile was integrated in the b92 build.</p>
+<h3><a href=
+"http://bugs.java.com/view_bug.do?bug_id=6363748"><strong>6363748</strong></a>
+The <code>close()</code> method of the
+<code>FileCacheImageInputStream</code> class fails:</h3>
+<p>The problem was caused by the fix for the bug <a href=
+"http://bugs.java.com/view_bug.do?bug_id=6299405"><strong>6299405</strong></a>.
+As a part of that fix the
+<code>FileCacheImageInputStream.close()</code> method was changed
+so that it nulled out its reference to the cache object. To
+eliminate this issue the <code>FCIIS.read()</code> method is
+updated to call the <code>checkClosed()</code> method as it is
+supposed to do.</p>
+<p>&nbsp;</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

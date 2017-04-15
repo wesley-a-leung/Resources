@@ -1,0 +1,1008 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>5 Overview of the Interface</title>
+<meta name="collection" content="reference" />
+<link rel="stylesheet" type="text/css" href="../../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<table summary="" width="100%" border="0" cellspacing="2"
+cellpadding="0">
+<tr>
+<td><a href="jndiTOC.html">CONTENTS</a> | <a href=
+"jndi.4.html">PREV</a> | <a href="jndi.6.html">NEXT</a></td>
+</tr>
+</table>
+<h2 class="chapter"><a name="pgfId_998631" id="pgfId_998631"></a>5.
+Overview of the Interface</h2>
+<p class="body"><a name="pgfId_997932" id="pgfId_997932"></a>The
+JNDI API is contained in four packages:</p>
+<div style="margin-left: 2em">
+<ul>
+<li class="bullet"><a name="pgfId_998721" id=
+"pgfId_998721"></a><code>javax.naming</code> contains classes and
+interfaces for accessing naming services</li>
+<li class="bullet"><a name="pgfId_998728" id=
+"pgfId_998728"></a><code>javax.naming.directory</code> extends the
+core <code>javax.naming</code> package to provide access to
+directories</li>
+<li class="bullet"><a name="pgfId_998744" id=
+"pgfId_998744"></a><code>javax.naming.event</code> contains classes
+and interfaces for supporting event notification in naming and
+directory services</li>
+<li class="bullet"><a name="pgfId_998745" id=
+"pgfId_998745"></a><code>javax.naming.ldap</code> contains classes
+and interfaces for supporting LDAP v3 extensions and controls</li>
+</ul>
+</div>
+<p class="body"><a name="pgfId_998729" id="pgfId_998729"></a>The
+JNDI service provider interface is contained one package:</p>
+<div style="margin-left: 2em">
+<ul>
+<li class="bullet"><a name="pgfId_998765" id=
+"pgfId_998765"></a><code>javax.naming.spi</code> contains classes
+and interfaces that allow various naming and directory service
+providers to be dynamically plugged in beneath the JNDI API (see
+the JNDI SPI document for details)</li>
+</ul>
+</div>
+<p class="body"><a name="pgfId_997933" id="pgfId_997933"></a>The
+following sections provide an overview of the JNDI API. For more
+details on the API, see the corresponding javadoc.</p>
+<div>
+<h3 class="section"><a name="pgfId_997937" id=
+"pgfId_997937"></a>5.1 The Naming Package --
+<code>javax.naming</code> <a href="#pgfId_997936" class=
+"footnote">1</a></h3>
+<h3 class="section"><a href="#pgfId_997936" class=
+"footnote"><img src="javax.naming-0.gif" alt=
+"The javax.naming package. The information in this graphic is available in the API documentation."
+width="591" height="405" align="bottom" border="0" /></a></h3>
+<p><font size="-1">(exception classes are not shown)</font></p>
+<h4 class="subsection"><a name="pgfId_997944" id=
+"pgfId_997944"></a>5.1.1 Contexts</h4>
+<p class="body"><a name="pgfId_997945" id=
+"pgfId_997945"></a><code>Context</code> is the core interface that
+specifies a naming context. It defines basic operations such as
+adding a name-to-object binding, looking up the object bound to a
+specified name, listing the bindings, removing a name-to-object
+binding, creating and destroying subcontexts of the same type,
+<em>etc.</em></p>
+<pre class="codeblock">
+public interface Context {
+    public Object lookup(Name name) throws NamingException;
+    public void bind(Name name, Object obj) throws NamingException;
+    public void rebind(Name name, Object obj) throws NamingException;
+    public void unbind(Name name) throws NamingException;
+    public void rename(Name old, Name new) throws NamingException;
+    public NamingEnumeration listBindings(Name name) throws NamingException;
+    ...
+    public Context createSubcontext(Name name) throws NamingException;
+    public void destroySubcontext(Name name) throws NamingException;
+    ...
+};
+</pre>
+<p class="body"><a name="pgfId_997959" id="pgfId_997959"></a>Every
+naming method in <code>Context</code> takes a name as an argument.
+The operation defined by the method is performed on the
+<code>Context</code> object that is obtained by implicitly
+resolving the name. If the name is empty (&quot;&quot;) the
+operation is performed directly on the context itself. The name of
+an object can be a composite name reflecting the arrangement of the
+namespaces used to refer to the object. Of course, the client is
+not exposed to any naming service implementation. In fact, a new
+type of naming service can be introduced without requiring the
+application to be modified or even disrupted if it is running.</p>
+<p class="body">&nbsp;</p>
+<h4 class="subsection"><a name="pgfId_999065" id=
+"pgfId_999065"></a>5.1.2 The Initial Context</h4>
+<p class="body"><a name="pgfId_997960" id="pgfId_997960"></a>In
+JNDI, every name is relative to a context. There is no notion of
+&quot;absolute names.&quot; An application can bootstrap by
+obtaining its first context of class <code>InitialContext</code>
+:</p>
+<pre class="codeblock">
+public class InitialContext implements Context {
+    public InitialContext()...;
+    ...
+}
+</pre>
+<p class="body"><a name="pgfId_997965" id="pgfId_997965"></a>The
+initial context contains a variety of bindings that hook up the
+client to useful and shared contexts from one or more naming
+systems, such as the namespace of URLs or the root of DNS.</p>
+<p class="body">&nbsp;</p>
+<h4 class="subsection"><a name="pgfId_999071" id=
+"pgfId_999071"></a>5.1.3 Names</h4>
+<p class="body"><a name="pgfId_997966" id="pgfId_997966"></a>The
+<code>Name</code> interface represents a generic name--an ordered
+sequence of components. Each <code>Context</code> method that takes
+a <code>Name</code> argument has a counterpart that takes the name
+as a <code>String</code> instead. The versions using
+<code>Name</code> are useful for applications that need to
+manipulate names: composing them, comparing components, and so on.
+The versions using <code>String</code> are likely to be more useful
+for simple applications, such as those that simply read in a name
+and look up the corresponding object. The <code>String</code> name
+parameter represents a composite name. The <code>Name</code>
+parameter can represent a <em>composite name</em> or a <em>compound
+name</em> .</p>
+<p class="body"><a name="pgfId_1002230" id="pgfId_1002230"></a>The
+<code>CompositeName</code> class represents a sequence of names
+(atomic or compound) from multiple namespaces. If the
+<code>Name</code> parameter supplied to a method of the
+<code>Context</code> class is an instance of
+<code>CompositeName</code> , the name represents a composite
+name.</p>
+<p class="body"><a name="pgfId_1002231" id="pgfId_1002231"></a>If
+the <code>Name</code> parameter supplied to a method of the
+<code>Context</code> class is <em>not</em> an instance of
+<code>CompositeName</code> , the name represents a compound name,
+which can be represented by the <code>CompoundName</code> class or
+some other implementation class. The <code>CompoundName</code>
+class represents hierarchical names from a single namespace. A
+context's name parser can be used to manipulate compound names in
+the syntax associated with that particular context:</p>
+<pre class="codeblock">
+<code>public interface Context {</code>
+<code>    ...</code>
+<code>    public NameParser getNameParser(Name name) throws NamingException;</code>
+<code>    ...</code>
+<code>}</code>
+</pre>
+<p class="body"><a name="pgfId_997974" id="pgfId_997974"></a>A
+namespace browser is an example of the kind of application that
+might need to manipulate names syntactically at this level. Most
+other applications will work with strings or composite names.</p>
+<p>&nbsp;</p>
+<h4 class="subsection"><a name="pgfId_997976" id=
+"pgfId_997976"></a>5.1.4 Bindings</h4>
+<p class="body"><a name="pgfId_997977" id=
+"pgfId_997977"></a><code>Context.lookup()</code> is the most
+commonly used operation. The context implementation can return an
+object of whatever class is required by the Java application. For
+example, a client might use the name of a printer to look up the
+corresponding <code>Printer</code> object, and then print to it
+directly:</p>
+<pre class="codeblock">
+Printer printer = (Printer) ctx.lookup(&quot;treekiller&quot;);
+printer.print(report);
+</pre>
+<p class="body"><a name="pgfId_997980" id=
+"pgfId_997980"></a><code>Context.listBindings()</code> returns an
+enumeration of name-to-object bindings, each binding represented by
+an object of class <code>Binding</code> . A binding is a tuple
+containing the name of the bound object, the name of the object's
+class, and the object itself.</p>
+<p class="body"><a name="pgfId_997981" id="pgfId_997981"></a>The
+<code>Context.list()</code> method is similar to
+<code>listBindings()</code> , except that it returns an enumeration
+of <code>NameClassPair</code> objects. Each
+<code>NameClassPair</code> contains an object's name and the name
+of the object's class. The <code>list()</code> method is useful for
+applications such as browsers that wish to discover information
+about the objects bound within a context, but don't need all of the
+actual objects. Although <code>listBindings()</code> provides all
+of the same information, it is potentially a much more expensive
+operation.</p>
+<pre class="codeblock">
+public class NameClassPair ... {
+    public String getName() ...;
+    public String getClassName() ...;
+    ...
+}
+public class Binding extends NameClassPair {
+    public Object getObject() ...;
+    ...
+}
+</pre>
+<h4 class="subsection"><a name="pgfId_997994" id=
+"pgfId_997994"></a>5.1.5 References</h4>
+<p class="body"><a name="pgfId_997995" id=
+"pgfId_997995"></a>Different <code>Context</code> implementations
+are able to bind different kinds of objects natively. A
+particularly useful object that should be supported by any
+general-purpose context implementation is the
+<code>Reference</code> class. A reference represents an object that
+exists outside of the directory. References are used to give JNDI
+clients the illusion that objects of arbitrary classes are able to
+be bound in naming or directory services--such as X.500--that do
+not have native support for objects in the Java programming
+language.</p>
+<p class="body"><a name="pgfId_1002259" id="pgfId_1002259"></a>When
+the result of an operation such as <code>Context.lookup()</code> or
+<code>Binding.getObject()</code> is a <code>Reference</code>
+object, JNDI attempts to convert the reference into the object that
+it represents before returning it to the client. A particularly
+significant instance of this occurs when a reference representing a
+<code>Context</code> of one naming system is bound to a name in a
+different naming system. This is how multiple independent naming
+systems are joined together into the JNDI composite namespace.
+Details of how this mechanism operates are provided in the JNDI SPI
+document.</p>
+<p class="body"><a name="pgfId_1002260" id=
+"pgfId_1002260"></a>Objects that are able to be represented by a
+reference should implement the <code>Referenceable</code>
+interface. Its single method -- <code>getReference()</code> --
+returns the object's reference. When such an object is bound to a
+name in any context, the context implementation might store the
+reference in the underlying system if the object itself cannot be
+stored natively.</p>
+<p class="body"><a name="pgfId_997998" id="pgfId_997998"></a>Each
+reference may contain the name of the class of the object that it
+represents, and may also contain the location (typically a URL)
+where the class file for that object can be found. In addition, a
+reference contains a sequence of objects of class
+<code>RefAddr</code> . Each <code>RefAddr</code> in turn contains a
+&quot;type&quot; string and some addressing data, generally a
+string or a byte array.</p>
+<p class="body"><a name="pgfId_997999" id="pgfId_997999"></a>A
+specialization of <code>Reference</code> called a
+<code>LinkRef</code> is used to add &quot;symbolic&quot; links into
+the JNDI namespace. It contains the name of a JNDI object. By
+default, these links are followed whenever JNDI names are
+resolved.</p>
+<p>&nbsp;</p>
+<h4 class="subsection"><a name="pgfId_998933" id=
+"pgfId_998933"></a>5.1.6 Referrals</h4>
+<p class="body"><a name="pgfId_998934" id="pgfId_998934"></a>Some
+naming/directory services support the notion of <em>referrals</em>
+for redirecting a client's request to another server. The JNDI
+client can request that referrals be automatically followed, be
+ignored, or be processed manually.</p>
+<p class="body"><a name="pgfId_998935" id="pgfId_998935"></a>The
+abstract class <code>ReferralException</code> is used to represent
+a referral:</p>
+<pre class="codeblock">
+public abstract class ReferralException extends NamingException {
+    public abstract Context getReferralContext() throws NamingException;
+    ...
+    public abstract Object getReferralInfo();
+    public abstract void retryReferral();
+    public abstract boolean skipReferral();
+}
+</pre>
+<p class="body"><a name="pgfId_998946" id="pgfId_998946"></a>When a
+referral is encountered and the client has requested that referrals
+not be ignored or automatically followed, a
+<code>ReferralException</code> is thrown. The
+<code>getReferralInfo()</code> method provides information--in a
+format appropriate to the service provider--about where the
+referral leads. The application is not required to examine this
+information; however, it might choose to present it to a human user
+to help him determine whether to follow the referral or not.
+<code>skipReferral()</code> allows the application to discard a
+referral and continue to the next referral (if any).</p>
+<p class="body"><a name="pgfId_998947" id="pgfId_998947"></a>To
+continue the operation, the application re-invokes the method on
+the referral context using the same arguments it supplied to the
+original method.</p>
+<p>&nbsp;</p>
+<h3 class="section"><a name="pgfId_998973" id=
+"pgfId_998973"></a>5.2 The Directory Package --
+<code>javax.naming.directory</code> <a href="#pgfId_999039" class=
+"footnote">2</a></h3>
+<p>&nbsp;</p>
+<p><img src="javax.naming.directory-0.gif" alt=
+"The javax.naming.directory package." /></p>
+<font size="-1">(exception classes are not
+shown)</font>
+<h4 class="subsection"><a name="pgfId_998010" id=
+"pgfId_998010"></a>5.2.1 Directory Objects</h4>
+<p class="body"><a name="pgfId_998011" id="pgfId_998011"></a>The
+<code>DirContext</code> interface enables the directory capability
+by defining methods for examining and updating attributes
+associated with a directory object.</p>
+<pre class="codeblock">
+public interface DirContext extends Context {
+    public Attributes getAttributes(Name name)
+                 throws NamingException;
+    public Attributes getAttributes(Name name, String[] attrIds)
+                 throws NamingException;
+    ...
+    public void modifyAttributes(Name name, int modOp, Attributes attrs)
+                 throws NamingException;
+    public void modifyAttributes(Name name, ModificationItem[] mods)
+                 throws NamingException;
+    ...
+}
+</pre>
+<p class="body"><a name="pgfId_998039" id="pgfId_998039"></a>The
+<code>getAttributes()</code> operations on a directory return some
+or all of its attributes. Attributes are modified using two forms
+of <code>modifyAttributes()</code> . Both forms make use of a
+&quot;modification operation,&quot; one of:</p>
+<pre class="codeblock">
+ADD_ATTRIBUTE
+REPLACE_ATTRIBUTE
+REMOVE_ATTRIBUTE
+</pre>
+<p class="body"><a name="pgfId_998043" id="pgfId_998043"></a>The
+<code>ADD_ATTRIBUTE</code> operation adds values to an attribute if
+that attribute already exists, while the
+<code>REPLACE_ATTRIBUTE</code> operation discards any pre-existing
+values. The first form of <code>modifyAttributes()</code> performs
+the specified operation on each element of a set of attributes. The
+second form takes an array of objects of class
+<code>ModificationItem</code> :</p>
+<pre class="codeblock">
+public class ModificationItem {
+    public ModificationItem(int modOp, Attribute attr) ...;
+    ...
+}
+</pre>
+<p class="body"><a name="pgfId_998048" id="pgfId_998048"></a>Each
+operation is performed on its corresponding attribute in the order
+specified. When possible, a context implementation should perform
+each call to <code>modifyAttributes()</code> as an atomic
+operation.</p>
+</div>
+<div>
+<h4 class="subsection"><a name="pgfId_999083" id=
+"pgfId_999083"></a>5.2.2 Attributes</h4>
+<p class="body"><a name="pgfId_999116" id="pgfId_999116"></a>A
+directory object contains a set of zero or more
+<code>Attribute</code> objects. Each attribute is denoted by a
+string identifier and can have zero or more values of any type.</p>
+<pre class="codeblock">
+public interface Attribute ... {
+    ...
+    public String getID();
+    public Object get(int n) throws NamingException;
+    public boolean isOrdered();
+    public NamingEnumeration getAll()
+           throws NamingException;
+    ...
+}
+</pre>
+<p class="body"><a name="pgfId_999095" id="pgfId_999095"></a>An
+attribute's values can be ordered or unordered. If the values are
+unordered, no duplicates are allowed. If the values are ordered,
+duplicates are allowed.</p>
+<p class="body"><a name="pgfId_999126" id=
+"pgfId_999126"></a>Attributes are grouped into a collection by
+using the <code>Attributes</code> interface.</p>
+<pre class="codeblock">
+public interface Attributes ... {
+    ...
+    public Attribute get(String attrID);
+    public NamingEnumeration getIDs();
+    public NamingEnumeration getAll();
+    public Attribute put(Attribute attr);
+    public Attribute remove(String attrID);
+    ...
+}
+</pre>
+<p class="body"><a name="pgfId_999151" id="pgfId_999151"></a>JNDI
+provides implementations for these two interfaces,
+<code>BasicAttribute</code> and <code>BasicAttributes</code> , for
+convenience. Service providers and applications are free to use
+their own implementations.</p>
+<p class="body"><a name="pgfId_999158" id="pgfId_999158"></a>Note
+that updates to <code>Attributes</code> and <code>Attribute</code>
+, such as adding or removing an attribute or its value, do not
+affect the corresponding representation in the directory. Updates
+to the directory can only be effected by using
+<code>DirContext.modifyAttributes()</code> .</p>
+<p class="body">&nbsp;</p>
+<h4 class="subsection"><a name="pgfId_998049" id=
+"pgfId_998049"></a>5.2.3 Directory Objects as Naming Contexts</h4>
+<p class="body"><a name="pgfId_998050" id="pgfId_998050"></a>The
+<code>DirContext</code> interface also behaves as a naming context
+by extending the <code>Context</code> interface. This means that
+any directory object can also provide a naming context. In addition
+to a directory object keeping a variety of information about a
+person, for example, it is also a natural naming context for
+resources associated with that person: a person's printers, file
+system, calendar, <em>etc.</em></p>
+<p class="body"><a name="pgfId_999053" id="pgfId_999053"></a>Hybrid
+operations perform certain naming and directory operations in a
+single atomic operation:</p>
+<pre class="codeblock">
+public interface DirContext extends Context {
+    ...
+    public void bind(Name name, Object obj, Attributes attrs)
+           throws NamingException;
+    ...
+}
+</pre>
+<p class="body"><a name="pgfId_998063" id="pgfId_998063"></a>Other
+hybrid operations that are provided are <code>rebind()</code> and
+<code>createSubcontext()</code> that accept an additional
+<code>Attributes</code> argument.</p>
+</div>
+<div>
+<h4 class="subsection"><a name="pgfId_998065" id=
+"pgfId_998065"></a>5.2.4 The Initial Context</h4>
+<p class="body"><a name="pgfId_999057" id="pgfId_999057"></a>An
+application that is performing directory operations can use
+<code>InitialDirContext</code> instead of
+<code>javax.naming.InitialContext</code> to create its initial
+context:</p>
+<pre class="codeblock">
+ 
+public class InitialDirContext 
+       extends InitialContext implements DirContext {
+    public InitialDirContext() ...;
+    ...
+}
+</pre>
+<p class="body"><a name="pgfId_999055" id="pgfId_999055"></a>It can
+then invoke any method in the <code>Context</code> or
+<code>DirContext</code> interface on the initial context.</p>
+</div>
+<div>
+<h4 class="subsection"><a name="pgfId_999054" id=
+"pgfId_999054"></a>5.2.5 Searches</h4>
+<p class="body"><a name="pgfId_998066" id="pgfId_998066"></a>The
+<code>DirContext</code> interface supports content-based searching
+of directories. In the simplest and most common form of usage, the
+application specifies a set of attributes -- possibly with specific
+values -- to match. It then invokes the
+<code>DirContext.search()</code> method on the directory object,
+which returns the matching directory objects along with the
+requested attributes.</p>
+<pre class="codeblock">
+public interface DirContext extends Context {
+    ...
+    public NamingEnumeration search(Name name, Attributes matchingAttributes)
+                 throws NamingException;
+    public NamingEnumeration search(Name name,
+                                    Attributes matchingAttributes,
+                                    String[] attributesToReturn)
+                 throws NamingException;
+    ...
+}
+</pre>
+<p class="body"><a name="pgfId_998079" id="pgfId_998079"></a>The
+results of the search are returned as a
+<code>NamingEnumeration</code> containing an enumeration of objects
+of class <code>SearchResult</code> :</p>
+<pre class="codeblock">
+public class SearchResult extends Binding {
+    ...
+    public Attributes getAttributes() ...;
+}
+</pre>
+<p class="body"><a name="pgfId_998085" id="pgfId_998085"></a>In the
+more sophisticated case, it is possible to specify a search filter
+and to provide controlling information such as the scope of the
+search and the maximum size of the results. The search filter
+specifies a syntax that follows Internet RFC 2254 for LDAP. The
+<code>SearchControls</code> argument specifies such things as the
+scope of the search: this can include a single directory object,
+all of its children, or all of its descendants in the directory
+hierarchy.</p>
+<pre class="codeblock">
+public interface DirContext extends Context {
+    ...
+    public NamingEnumeration search(Name name, 
+                                    String filter,
+                                    SearchControls ctls)
+           throws NamingException;
+ 
+    public NamingEnumeration search(Name name,
+                                    String filter,
+                                    Object[] filterArgs,
+                                    SearchControls ctls)
+                throws NamingException;
+        ...
+}
+</pre>
+<h4 class="subsection"><a name="pgfId_998100" id=
+"pgfId_998100"></a>5.2.6 Schema</h4>
+<p class="body"><a name="pgfId_998101" id="pgfId_998101"></a>A
+schema describes the rules that define the structure of a namespace
+and the attributes stored within it. The granularity of the schema
+can range from a single schema that is associated with the entire
+namespace, to a per-attribute, fine-grained schema description.</p>
+<p class="body"><a name="pgfId_998102" id=
+"pgfId_998102"></a>Because schemas can be expressed as an
+information tree, it is natural to use for this purpose the naming
+and directory interfaces already defined in JNDI. This is powerful
+because the schema part of a namespace is accessible to
+applications in a uniform way. A browser, for example, can access
+information in the schema tree just as though it were accessing any
+other directory objects.</p>
+<p class="body"><a name="pgfId_998103" id=
+"pgfId_998103"></a>Applications can retrieve the schema associated
+with a directory object when the underlying context implementation
+provides the appropriate support.</p>
+<p class="body"><a name="pgfId_999370" id=
+"pgfId_999370"></a><code>DirContext.getSchema()</code> is used to
+retrieve the root of the schema tree associated with a directory
+object. The root has children such as &quot;ClassDefinition&quot;,
+&quot;AttributeDefinition&quot;, and &quot;SyntaxDefinition&quot;,
+each denoting the kind of definition being described. The schema
+root and its descendents are objects of type
+<code>DirContext</code> . The
+<code>DirContext.getSchemaClassDefinition()</code> method returns a
+<code>DirContext</code> that contains class descriptions about a
+particular directory object.</p>
+<pre class="codeblock">
+public interface DirContext extends Context {
+        ...
+        public DirContext getSchema(Name name)
+                throws NamingException;
+
+        public DirContext getSchemaClassDefinition(Name name)
+                throws NamingException;
+        ...
+}
+</pre>
+<p class="body"><a name="pgfId_998904" id="pgfId_998904"></a>In
+addition, the schema associated with any attribute can be accessed
+using the <code>Attribute.getAttributeDefinition()</code> and
+<code>getAttributeSyntaxDefinition()</code> methods.</p>
+<pre class="codeblock">
+ 
+public interface Attribute ... {
+    ...
+    public DirContext getAttributeDefinition() throws NamingException;
+    public DirContext getAttributeSyntaxDefinition() 
+    throws NamingException;
+    ...
+}
+</pre>
+<p class="body"><a name="pgfId_998128" id=
+"pgfId_998128"></a>The following diagram shows the different
+associations for accessing schema information.</p>
+<div>
+<h4 class="FigureTitle"><a name="pgfId_998248" id=
+"pgfId_998248"></a><a name="a41679"></a>Example mapping Directory to
+Schema</h4>
+<p><map name="jndi-5" id="jndi-5"></map><img src="jndi-5.gif" alt=
+"Example mapping Directory to Schema" usemap="#jndi-5" width="505"
+height="361" align="bottom" ismap="ismap" border="0" /></p>
+<p>&nbsp;</p>
+</div>
+<h3 class="section"><a name="pgfId_999204" id=
+"pgfId_999204"></a>5.3 The Event Package --
+<code>javax.naming.event</code> <a href="#pgfId_999203" class=
+"footnote">3</a></h3>
+<p><img src="javax.naming.event-0.gif" alt=
+"The javax.naming.event package. The information in this graphic is available in the &lt;a href=" />API
+documentation." WIDTH="769" HEIGHT="258" ALIGN="BOTTOM" BORDER="0"
+&gt;</p>
+<p class="body"><a name="pgfId_999189" id="pgfId_999189"></a>The
+<code>javax.naming.event</code> package contains classes and
+interfaces for supporting event notification in naming and
+directory services.</p>
+<p class="body">&nbsp;</p>
+<h4 class="subsection"><a name="pgfId_999297" id=
+"pgfId_999297"></a>5.3.1 Naming Events</h4>
+<p class="body"><a name="pgfId_999265" id="pgfId_999265"></a>A
+<code>NamingEvent</code> represents an event that is generated by a
+naming/directory service.</p>
+<pre class="codeblock">
+public class NamingEvent extends java.util.EventObject {
+    ...
+    public int getType();
+    public Binding getOldBinding();
+    public Binding getNewBinding();
+    ...
+}
+</pre>
+<p class="body"><a name="pgfId_999327" id="pgfId_999327"></a>The
+event's type identifies the type of event. The
+<code>NamingEvent</code> class defines four types of events:</p>
+<ol>
+<li><code>OBJECT_ADDED</code></li>
+<li><code>OBJECT_REMOVED</code></li>
+<li><code>OBJECT_RENAMED</code></li>
+<li><code>OBJECT_CHANGED</code></li>
+</ol>
+<p class="body"><a name="pgfId_999333" id="pgfId_999333"></a>These
+types can be placed into two categories:</p>
+<div style="margin-left: 2em">
+<ul>
+<li class="bullet"><a name="pgfId_999301" id=
+"pgfId_999301"></a>Those that affect the namespace
+(add/remove/rename an object)</li>
+<li class="bullet"><a name="pgfId_999311" id=
+"pgfId_999311"></a>Those that affect an object's contents</li>
+</ul>
+</div>
+<p class="body"><a name="pgfId_999312" id="pgfId_999312"></a>In
+addition to the event's type, a <code>NamingEvent</code> contains
+other information about the change, such as information about the
+object before and after the change.</p>
+<p>&nbsp;</p>
+<h4 class="subsection"><a name="pgfId_999266" id=
+"pgfId_999266"></a>5.3.2 Naming Listeners</h4>
+<p class="body"><a name="pgfId_999272" id="pgfId_999272"></a>A
+<em>naming listener</em> is an object that registers for
+<code>NamingEvent</code> s. It is represented by the interface
+<code>NamingListener</code> . Each category of
+<code>NamingEvent</code> is handled by a corresponding subtype of
+<code>NamingListener</code> . The
+<code>NamespaceChangeListener</code> interface represents a
+listener interested in namespace changes, while the
+<code>ObjectChangeListener</code> represents a listener interested
+in changes to an object's contents. A listener implementation might
+implement one or both of these interfaces, depending on the types
+of events it is interested in.</p>
+<p>&nbsp;</p>
+<h4 class="subsection"><a name="pgfId_999273" id=
+"pgfId_999273"></a>5.3.3 Event Registration and Deregistration</h4>
+<p class="body"><a name="pgfId_999425" id="pgfId_999425"></a>The
+<code>EventContext</code> and <code>EventDirContext</code>
+interfaces extend the <code>Context</code> and
+<code>DirContext</code> interfaces, respectively, to support event
+registration and deregistration.</p>
+<pre class="codeblock">
+public interface EventContext extends Context {
+    ...
+    public void addNamingListener(Name target,
+                                  int scope,
+                                  NamingListener l)
+           throws NamingException;
+    public void removeNamingListener(NamingListener l)
+           throws NamingException;
+    public boolean targetMustExist()
+           throws NamingException;
+}
+</pre>
+<p class="body"><a name="pgfId_999466" id="pgfId_999466"></a>Like
+methods in the corresponding <code>Context</code> interface,
+<code>addNamingListener()</code> has an overload that accepts a
+<code>String</code> name argument. The name parameter is referred
+to as the <em>target</em> . The scope parameter specifies whether
+the registration is for the object named by the target, the
+immediate children of the context named by the target, or the
+entire subtree rooted at the object named by the target.</p>
+<p class="body"><a name="pgfId_999517" id="pgfId_999517"></a>It is
+possible to register interest in a target that does not exist, but
+there might be limitations in the extent to which this can be
+supported by the service provider and underlying protocol/service.
+An application can use the method <code>targetMustExist()</code> to
+check whether an <code>EventContext</code> supports registration of
+nonexistent targets.</p>
+<pre class="codeblock">
+public interface EventDirContext extends EventContext, DirContext {
+    public void addNamingListener(Name target,
+                                  String filter, 
+                                  SearchControls ctls, 
+                                  NamingListener l)
+                throws NamingException;
+    public void addNamingListener(Name target,
+                                  String filter,
+                                  Object[] filterArgs,
+                                  SearchControls ctls,
+                                  NamingListener l)
+                throws NamingException;
+    ...
+}
+</pre>
+<p class="body"><a name="pgfId_999459" id="pgfId_999459"></a>The
+<code>EventDirContext</code> interface extends the
+<code>EventContext</code> and <code>DirContext</code> interfaces to
+allow a listener to register interest in objects identified using
+search filters (Internet RFC 2254).</p>
+<p class="body"><a name="pgfId_999552" id="pgfId_999552"></a>Like
+methods in the corresponding <code>DirContext</code> interface,
+<code>addNamingListener()</code> methods have overloads that accept
+a <code>String</code> name argument.</p>
+<p class="body"><a name="pgfId_999572" id="pgfId_999572"></a>The
+<code>EventContext/EventDirContext</code> instance on which the
+<code>addNamingListener()</code> method is invoked is the <em>event
+source</em> of the events that are (potentially) generated. When
+the registered listener invokes <code>getSource()</code> or
+<code>getEventContext()</code> on a <code>NamingEvent</code> , the
+result will be this <code>EventContext</code> /
+<code>EventDirContext</code> instance.</p>
+<p class="body"><a name="pgfId_999581" id="pgfId_999581"></a>For
+example, suppose a listener makes the following registration:</p>
+<pre class="codeblock">
+NamespaceChangeListener listener = ...; 
+src.addNamingListener(&quot;x&quot;, SUBTREE_SCOPE, listener);
+</pre>
+<p class="body"><a name="pgfId_999586" id="pgfId_999586"></a>When
+an object named &quot;x/y&quot; is subsequently deleted, the
+corresponding <code>NamingEvent</code> ( <code>evt</code> )
+delivered to <code>listener</code> must contain <code>src</code> as
+its event source. The following will both be true:</p>
+<pre class="codeblock">
+evt.getEventContext() == src
+evt.getOldBinding().getName().equals(&quot;x/y&quot;)
+</pre></div>
+<div>
+<h4 class="subsection"><a name="pgfId_999277" id=
+"pgfId_999277"></a>5.3.4 Exception Handling</h4>
+<p class="body"><a name="pgfId_999407" id="pgfId_999407"></a>When a
+listener registers for events with a context, the context might
+need to do some internal processing in order to collect information
+required to generate the events. The context, for example, might
+need to make a request to the server to register interest in
+changes on the server that will eventually be translated into
+events. If an error occurs that prevents information about the
+events from being collected, the listener will never be notified of
+the events. When such an error occurs, a
+<code>NamingExceptionEvent</code> is fired to notify the listener,
+and the listener is automatically deregistered.</p>
+<p class="body"><a name="pgfId_999653" id="pgfId_999653"></a>The
+base <code>NamingListener</code> interface defines a
+<code>namingExceptionThrown()</code> method so that a listener can
+be notified of such an error.</p>
+<pre class="codeblock">
+public interface NamingListener extends java.util.EventListener {
+    public void namingExceptionThrown(NamingExceptionEvent evt);
+}
+</pre>
+<h3 class="section"><a name="pgfId_999241" id=
+"pgfId_999241"></a>5.4 The LDAP Package --
+<code>javax.naming.ldap</code> <a href="#pgfId_999240" class=
+"footnote">4</a></h3>
+<p><img src="javax.naming.ldap-0.gif" alt=
+"The javax.naming.ldap package. The information in the graphic is available in the API documentation." /></p>
+<p>&nbsp;</p>
+<p class="body"><a name="pgfId_999251" id="pgfId_999251"></a>The
+<code>javax.naming.ldap</code> package contains classes and
+interfaces for using LDAP v3-specific features that are not already
+covered by the more generic <code>javax.naming.directory</code>
+package. In fact, the majority of JNDI applications that use LDAP
+will find the <code>javax.naming.directory</code> package
+sufficient, and will not need to use this package at all. This
+package is primarily for those applications that need to use
+extended operations, controls, or unsolicited notifications.</p>
+</div>
+<div>
+<h4 class="subsection"><a name="pgfId_999666" id=
+"pgfId_999666"></a>5.4.1 Extended Operations</h4>
+<p class="body"><a name="pgfId_999820" id="pgfId_999820"></a>In
+addition to specifying well-defined operations such as search and
+modify, the LDAP v3 protocol (Internet RFC 2251) specifies a way of
+transmitting yet-to-be defined operations between the LDAP client
+and server. These operations are referred to as <em>extended
+operations</em> . An extended operation may be defined by a
+standards organization such as the IETF or by a vendor.</p>
+<p class="body"><a name="pgfId_999870" id="pgfId_999870"></a>The
+<code>LdapContext</code> interface defines a method for executing
+an extended operation:</p>
+<pre class="codeblock">
+public interface LdapContext extends DirContext {
+    public ExtendedResponse extendedOperation(ExtendedRequest request)
+           throws NamingException;
+    ...
+}
+</pre>
+<p class="body"><a name="pgfId_999711" id="pgfId_999711"></a>The
+<code>ExtendedRequest</code> interface represents the argument to
+an extended operation, while the <code>ExtendedResponse</code>
+interface represents the result of the extended operation. An
+<code>ExtendedRequest</code> or <code>ExtendedResponse</code>
+consists of an identifier that identifies the extended operation
+and a byte array containing the ASN.1 BER encoded contents of the
+request/response.</p>
+<p class="body"><a name="pgfId_999716" id="pgfId_999716"></a>An
+application typically does not deal directly with the
+<code>ExtendedRequest</code> / <code>ExtendedResponse</code>
+interfaces. Instead, it deals with classes that implement these
+interfaces. The application gets these classes either as part of a
+repertoire of extended operations standardized through the IETF, or
+from directory vendors for vendor-specific extended operations. The
+request classes should have constructors that accept arguments in a
+type-safe and user-friendly manner, while the response classes
+should have access methods for getting the data of the response in
+a type-safe and user-friendly manner. Internally, the
+request/response classes deal with encoding and decoding BER
+values.</p>
+<p class="body"><a name="pgfId_999723" id="pgfId_999723"></a>For
+example, suppose an LDAP server supports a &quot;get time&quot;
+extended operation. It would supply classes such as
+<code>GetTimeRequest</code> and <code>GetTimeResponse</code> , so
+that applications can use this feature. An application would use
+these classes as follows:</p>
+<pre class="codeblock">
+GetTimeResponse resp =
+   (GetTimeResponse)lctx.extendedOperation(new GetTimeRequest());
+long time = resp.getTime();
+</pre>
+<p>&nbsp;</p>
+<h4 class="subsection"><a name="pgfId_999282" id=
+"pgfId_999282"></a>5.4.2 Controls</h4>
+<p class="body"><a name="pgfId_999883" id="pgfId_999883"></a>The
+LDAP v3 protocol (Internet RFC 2251) allows any request or response
+to be augmented by yet-to-be defined modifiers. These modifiers are
+referred to as <em>controls</em> . Controls that are sent with
+requests are called <em>request controls</em> and those that are
+sent with responses are called <em>response controls</em> . A
+control may be defined by a standards organization such as the IETF
+or by a vendor. There is not necessarily a pairing between request
+controls and response controls.</p>
+<p class="body"><a name="pgfId_1000114" id="pgfId_1000114"></a>JNDI
+classifies request controls into two categories:</p>
+<div style="margin-left: 2em">
+<ul>
+<li class="bullet"><a name="pgfId_1000115" id=
+"pgfId_1000115"></a><em>connection</em> request controls: those
+that affect how a connection is created</li>
+<li class="bullet"><a name="pgfId_1000116" id=
+"pgfId_1000116"></a><em>context</em> request controls: those that
+affect context methods</li>
+</ul>
+</div>
+<p class="body"><a name="pgfId_1000117" id=
+"pgfId_1000117"></a>Connection request controls are used whenever a
+connection needs to be established or re-established with an LDAP
+server. Context request controls are used when all other LDAP
+operations are sent to the LDAP server. The reason for this
+distinction is because JNDI is a high-level API that does not deal
+directly with connections. It is the job of service providers to do
+any necessary connection management. Hence, a single connection
+might be shared by multiple context instances, and a service
+provider is free to use its own algorithms to conserve connection
+and network usage. Thus, when a method is invoked on the context
+instance, the service provider might need to do some connection
+management in addition to performing the corresponding LDAP
+operations. For connection management, it uses the connection
+request controls, while for the normal LDAP operations, it uses the
+context request controls.</p>
+<p class="body"><a name="pgfId_999913" id="pgfId_999913"></a>The
+<code>LdapContext</code> interface defines methods for dealing with
+controls:</p>
+<pre class="codeblock">
+public interface LdapContext extends DirContext { 
+    public void reconnect(Control[] connCtls) throws NamingException; 
+    public Control[] getConnectControls() throws NamingException; 
+    ... 
+    public LdapContext newInstance(Control[] reqCtls)
+           throws NamingException; 
+    public void setRequestControls(Control[] reqCtls) 
+           throws NamingException; 
+    public Control[] getRequestControls() throws NamingException; 
+    ... 
+    public Control[] getResponseControls() throws NamingException; 
+}
+</pre>
+<p class="body"><a name="pgfId_1000286" id="pgfId_1000286"></a>The
+<code>Control</code> interface represents a control. It consists of
+an identifier that identifies the control and a byte array
+containing the ASN.1 BER encoded contents of the control.</p>
+<p class="body"><a name="pgfId_1000152" id=
+"pgfId_1000152"></a>Connection request controls are initialized
+using the initial context constructor and are inherited by contexts
+that are derived from a context. <code>reconnect()</code> is used
+to change the connection request controls of a context. A context's
+connection request controls are retrieved using
+<code>getConnectControls()</code> .</p>
+<p class="body"><a name="pgfId_1000010" id=
+"pgfId_1000010"></a>Context request controls are initialized using
+<code>newInstance()</code> and changed using
+<code>setRequestControls()</code> . <code>newInstance()</code> is a
+convenience method for creating a new instance of a context for the
+purposes of multithreaded access. For example, if multiple threads
+want to use different context request controls, each thread may use
+this method to get its own copy of this context and set/get context
+request controls without having to synchronize with other
+threads.</p>
+<p class="body"><a name="pgfId_1000195" id=
+"pgfId_1000195"></a>Unlike connection request controls, context
+request controls are <em>not</em> inherited by context instances
+that are derived from a context. Derived context instances are
+initialized with no context request controls. You must set the
+request controls of a derived context instance explicitly using
+<code>setRequestControls()</code> . A context's context request
+controls are retrieved using <code>getRequestControls()</code>
+.</p>
+<p>&nbsp;</p>
+<h4 class="subsection"><a name="pgfId_999672" id=
+"pgfId_999672"></a>5.4.3 The Initial Context</h4>
+<p class="body"><a name="pgfId_999673" id="pgfId_999673"></a>An
+application that is performing LDAP extended operations or controls
+can use <code>InitialLdapContext</code> instead of
+<code>javax.naming.InitialContext</code> or
+<code>javax.naming.directory.InitialDirContext</code> to create its
+initial context:</p>
+<pre class="codeblock">
+public class InitialLdapContext extends InitialDirContext implements LdapContext { 
+    public InitialDirContext() ...; 
+    public InitialDirContext(Hashtable env, Control[] connCtls) ...; 
+}
+</pre>
+<p class="body"><a name="pgfId_999679" id="pgfId_999679"></a>It can
+then invoke any method in the <code>Context</code> ,
+<code>DirContext</code> , or <code>LdapContext</code> interfaces on
+the initial context. By using the constructor that accepts a
+<code>connCtls</code> argument, the application can specify
+controls to be used when establishing a connection with the LDAP
+server.</p>
+<p>&nbsp;</p>
+<h4 class="subsection"><a name="pgfId_1000295" id=
+"pgfId_1000295"></a>5.4.4 Unsolicited Notifications</h4>
+<p class="body"><a name="pgfId_1000293" id="pgfId_1000293"></a>In
+addition to the normal request/response style of interaction
+between the client and server, the LDAP v3 protocol also specifies
+<em>unsolicited notifications</em> --messages that are sent from
+the server to the client asynchronously, not in response to any
+client request.</p>
+<p class="body"><a name="pgfId_1000308" id="pgfId_1000308"></a>JNDI
+supports unsolicited notifications using the event model embodied
+in the <code>javax.naming.event</code> package. It defines an
+<code>UnsolicitedNotificationEvent</code> class and a corresponding
+<code>UnsolicitedNotificationListener</code> interface. An
+application registers to receive
+<code>UnsolicitedNotificationEvent</code> s by supplying an
+<code>UnsolicitedNotificationListener</code> to
+<code>EventContext.addNamingListener()</code> .</p>
+</div>
+<hr align="left" />
+<div class="footnotes">
+<div class="footnote">
+<p class="Footnote"><font size="-1"><span class=
+"footnoteNumber">1.</span></font> <a name="pgfId_997936" id=
+"pgfId_997936"></a><font size="-1">See <a href=
+"legend.html">Appendix C</a> for legend of class
+diagram.</font></p>
+</div>
+<div class="footnote">
+<p class="Footnote"><font size="-1"><span class=
+"footnoteNumber">2.</span></font> <a name="pgfId_999039" id=
+"pgfId_999039"></a><font size="-1">See <a href=
+"legend.html">Appendix C</a> for legend of class
+diagram.</font></p>
+</div>
+<div class="footnote">
+<p class="Footnote"><font size="-1"><span class=
+"footnoteNumber">3.</span></font> <a name="pgfId_999203" id=
+"pgfId_999203"></a><font size="-1">See <a href=
+"legend.html">Appendix C</a> for legend of class
+diagram.</font></p>
+</div>
+<div class="footnote">
+<p class="Footnote"><font size="-1"><span class=
+"footnoteNumber">4.</span></font> <a name="pgfId_999240" id=
+"pgfId_999240"></a><font size="-1">See <a href=
+"legend.html">Appendix C</a> for legend of class
+diagram.</font></p>
+</div>
+</div>
+<p><a href="jndiTOC.html">CONTENTS</a> | <a href=
+"jndi.4.html">PREV</a> | <a href="jndi.6.html">NEXT</a></p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

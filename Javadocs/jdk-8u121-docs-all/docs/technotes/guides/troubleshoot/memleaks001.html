@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Debug a Memory Leak Using Java Flight Recorder</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="memleaks.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="memleaks002.html">
+                Next</a><hr/><a id="CIHCAEIH" name="CIHCAEIH"/>
+<div id="JSTGD268">
+<h1><span>3.1</span> Debug a Memory Leak Using Java Flight Recorder</h1>
+<p>The Java Flight Recorder (JFR) is a commercial feature. You can use it for free on developer desktops or laptops, and for evaluation purposes in test, development, and production environments. However, to enable JFR <b>on a production server, you must have a commercial license</b>. Using the Java Mission Control (JMC) for other purposes on the JDK <b>does not require a commercial license</b>.</p>
+<p>For more details about the JFR commercial features and availability, see the <a href="http://www.oracle.com/technetwork/java/javase/terms/products/index.html">product documentation</a>.</p>
+<p>For more details about the JFR commercial license, see the <a href="http://www.oracle.com/technetwork/java/javase/terms/license/index.html">license agreement</a>.</p>
+<p>The following sections show figures and describe how to debug a memory leak using Java Flight Recorder.</p>
+<ul>
+<li>
+<p><a href="#CIHCIEFF">Detect a Memory Leak</a></p>
+</li>
+<li>
+<p><a href="#CIHHGDJH">Find the Leaking Class</a></p>
+</li>
+<li>
+<p><a href="#CIHDBIFJ">Find the Leak</a></p>
+</li>
+</ul>
+<a id="CIHCIEFF" name="CIHCIEFF"/>
+<div id="JSTGD269">
+<h2><span>3.1.1</span> Detect a Memory Leak</h2>
+<p>Detecting a slow memory leak can be hard. A typical symptom is that the application becomes slower after running for a long time due to frequent garbage collections. Eventually, <code dir="ltr">OutOfmemoryErrors</code> may be seen. However, memory leaks can be detected early, even before a problem occurs using Java Flight Recordings.</p>
+<p>Watch if the live set of your application is increasing over time. The live set is the amount of Java heap that is used after an Old Collection (all objects that are not live have been garbage collected). The live set can be inspected in many ways - run with the <code dir="ltr">-verbosegc</code> option, or connect to the JVM using the JMC JMX Console and look at <code dir="ltr">com.sun.management.GarbageCollectorAggregator MBean</code>. However, another easy approach is to take a flight recording.</p>
+<p>Enable <b>Heap Statistics</b> when starting your recording, which triggers an old collection at the start and at the end of the recording. This may cause a slight latency in the application. However, <b>Heap Statistics</b> generates an accurate live set information. If you suspect a rather quick memory leak, take a profiling recording that runs over, for example, an hour. Click <b>Memory</b> tab and select the <b>Garbage Collections</b> tab to inspect the first and the last old collections as shown in <a href="#CIHJCCEI">Figure 3-1</a>.</p>
+<div id="JSTGD270"><a id="CIHJCCEI" name="CIHJCCEI"/>
+<p><b><i>Figure 3-1 Debug Memory Leaks - Garbage Collection Tab</i></b></p>
+<img alt="Description of Figure 3-1 follows" longdesc="img_text/jfr-gc-collectors.htm" src="img/jfr-gc-collectors.png"/><br/>
+<a href="img_text/jfr-gc-collectors.html" id="sthref36" name="sthref36">Description of "Figure 3-1 Debug Memory Leaks - Garbage Collection Tab"</a><br/>
+<br/></div>
+
+<p>Select the first old collection as shown in <a href="#CIHJCCEI">Figure 3-1</a> to look at the heap data and heap usage after GC. In this recording, it is 34.10 MB. Now look at the same data from the last old collection in the list and see if the live set has grown. Before taking the recording, you must allow the application to start and reach a stable state.</p>
+<p>If the leak is slower, you can take a shorter 5-minute recording. Then take another recording, for example 24 hours later (depending on how fast you suspect the memory leak). Obviously, your live set may go up and down, but if you see a steady increase over time, then you could have a memory leak.</p>
+</div>
+
+<a id="CIHHGDJH" name="CIHHGDJH"/>
+<div id="JSTGD271">
+<h2><span>3.1.2</span> Find the Leaking Class</h2>
+<p>After you have your recording showing the leak, you can look at <b>Object Statistics</b>. Look at one long recording, then look at which classes grew the most in heap usage over the recording. If you took several recordings at intervals, then compare the heap contents section and see what object types have increased the most between the recordings, as shown in <a href="#CIHIBAEJ">Figure 3-2</a>.</p>
+<div id="JSTGD272"><a id="CIHIBAEJ" name="CIHIBAEJ"/>
+<p><b><i>Figure 3-2 Debug Memory Leaks - Find Leaking Class</i></b></p>
+<img alt="Description of Figure 3-2 follows" longdesc="img_text/jfr-memory-leak.htm" src="img/jfr-memory-leak.png"/><br/>
+<a href="img_text/jfr-memory-leak.html" id="sthref37" name="sthref37">Description of "Figure 3-2 Debug Memory Leaks - Find Leaking Class"</a><br/>
+<br/></div>
+
+<p>Especially, watch the classes that are not part of the standard library. For example, you will often see <code dir="ltr">Char</code> arrays as one of the top growers. This is due to many <code dir="ltr">Strings</code> being allocated; therefore, watch out for objects that keep these <code dir="ltr">Strings</code> alive. If you have a class that has 10 <code dir="ltr">Strings</code> as members, then the object itself will not use too much heap. The heap will be used by the <code dir="ltr">Strings</code>, which mostly contains pointers to the <code dir="ltr">Char</code> arrays. Therefore, it is good to sort on the number of instances and not the size of the objects. If one of your application class has many instances, then it may very well be those objects that keep other objects alive.</p>
+</div>
+
+<a id="CIHDBIFJ" name="CIHDBIFJ"/>
+<div id="JSTGD273">
+<h2><span>3.1.3</span> Find the Leak</h2>
+<p>Finding the actual leak can be difficult One thing to do when you have come this far is to dump an <a href="tooldescr008.html#BABGIIGB">HPROF</a> and inspect the Java heap using <a href="tooldescr012.html#BABJGJBI">The jhat Utility</a> to find out how the suspect objects are kept alive. You can also use the JMC plug-in, JOverflow for looking at the reference chains in the HPROF dump.</p>
+<p>Some additional information can be found using Flight Recordings.</p>
+<p>Look at the <b>Allocations</b> subtab as shown in <a href="#CIHJCAGI">Figure 3-3</a>, for some samples of where objects were allocated.</p>
+<div id="JSTGD274"><a id="CIHJCAGI" name="CIHJCAGI"/>
+<p><b><i>Figure 3-3 Debug Memory Leaks - Allocations tab</i></b></p>
+<img alt="Description of Figure 3-3 follows" longdesc="img_text/jfr-find-leak.htm" src="img/jfr-find-leak.png"/><br/>
+<a href="img_text/jfr-find-leak.html" id="sthref38" name="sthref38">Description of "Figure 3-3 Debug Memory Leaks - Allocations tab"</a><br/>
+<br/></div>
+
+<p>If you except a specific class leak, look at the <b>Allocation in new TLAB</b> tab. Check the class samples being allocated. If the leak is slow, there may be a few allocations of this object and may be no samples. Also, it may be that only a specific allocation site is leading to a leak. To summarize, this is not guaranteed to lead you to the right allocation stack trace for the leak, but it may give vital clues.</p>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="memleaks.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="memleaks002.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

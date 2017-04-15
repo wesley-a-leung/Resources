@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Strings in switch Statements</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Strings in switch Statements</h1>
+
+<p>In the JDK 7 release, you can use a <code>String</code> object
+in the expression of a <code>switch</code> statement:</p>
+<pre>
+public String getTypeOfDayWithSwitchStatement(String dayOfWeekArg) {
+     String typeOfDay;
+     switch (dayOfWeekArg) {
+         case "Monday":
+             typeOfDay = "Start of work week";
+             break;
+         case "Tuesday":
+         case "Wednesday":
+         case "Thursday":
+             typeOfDay = "Midweek";
+             break;
+         case "Friday":
+             typeOfDay = "End of work week";
+             break;
+         case "Saturday":
+         case "Sunday":
+             typeOfDay = "Weekend";
+             break;
+         default:
+             throw new IllegalArgumentException("Invalid day of the week: " + dayOfWeekArg);
+     }
+     return typeOfDay;
+}
+</pre>
+<p>The <code>switch</code> statement compares the
+<code>String</code> object in its expression with the expressions
+associated with each <code>case</code> label as if it were using
+the <code>String.equals</code> method; consequently, the comparison
+of <code>String</code> objects in <code>switch</code> statements is
+case sensitive. The Java compiler generates generally more
+efficient bytecode from <code>switch</code> statements that use
+<code>String</code> objects than from chained
+<code>if-then-else</code> statements.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

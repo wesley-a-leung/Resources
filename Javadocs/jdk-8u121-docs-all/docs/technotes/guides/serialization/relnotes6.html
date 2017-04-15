@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Serialization Release Notes</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+&nbsp;
+
+<h1>Serialization Changes and Enhancements<br />
+in Java SE Development Kit 6</h1>
+
+<!-- Body text begins here -->
+The following are enhancements to serialization in Java SE
+Development Kit 6 (JDK). For a summary of enhancements in previous
+releases, see <a href="relnotes.html"><b>Enhancements in Previous
+Releases</b></a>.
+<dl>
+<dt><b><code>java.io.ObjectStreamClass.lookupAny</code></b></dt>
+<dd>In previous releases, it was difficult to programmatically
+obtain an <code>ObjectStreamClass</code> instance for a
+non-serializable <code>Class</code>, although doing so can be
+desirable when customizing the stream format for class descriptors
+(see <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4413615">4413615</a> for
+more information). The new method <a href=
+"../../../api/java/io/ObjectStreamClass.html#lookupAny-java.lang.Class-">
+<tt>ObjectStreamClass.lookupAny</tt></a> can now be used for this
+purpose.</dd>
+<dt><b>Bug fix: delayed garbage collection</b></dt>
+<dd>In previous releases, bug <a href=
+"http://bugs.java.com/view_bug.do?bug_id=6232010">6232010</a> could
+cause serializable classes and subclasses of
+<code>ObjectOutputStream</code> and <code>ObjectInputStream</code>
+to be strongly referenced long after their use in a serialization
+operation, thus possibly delaying garbage collection of their
+defining class loaders indefinitely. Internal caches in the
+serialization implementation have been restructured to fix this
+bug.</dd>
+</dl>
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

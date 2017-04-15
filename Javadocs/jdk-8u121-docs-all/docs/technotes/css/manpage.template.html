@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang=
+"en-US">
+<head>
+<!-- BEGIN STANDARD HEADER -->
+<title>JDK Man Page Template</title>
+<!-- BEGIN BODY -->
+<link rel="stylesheet" type="text/css" href="../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1><code>Command Name</code> - followed by More Descriptive
+Command Title</h1>
+<!-- The following bullets are all links to sections of the man page -->
+<ul>
+<li><a href="#synopsis">Synopsis</a></li>
+<li><a href="#parameters">Parameters</a></li>
+<li><a href="#description">Description</a></li>
+<li><a href="#options">Options</a></li>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#seealso">See Also</a></li>
+</ul>
+<h2><a name="synopsis" id="synopsis">SYNOPSIS</a></h2>
+<pre>
+   <b>commandname</b> [ options ] [ sourcefiles ] [ classes ] [ @argfiles ]
+</pre>
+<h2><a name="parameters" id="parameters">PARAMETERS</a></h2>
+<p>For example, you could introduce items like the following, as
+required.</p>
+<ul>
+<li>Options may be in any order. For a discussion of parameters
+that apply to a specific option, see <a href="#options">OPTIONS</a>
+below.</li>
+<li>sourcefiles
+<ul>
+<li>Zero or more source files to be processed.</li>
+<li>@files - One or more files that list source files or other
+options</li>
+</ul>
+</li>
+</ul>
+<h2><a name="description" id="description">DESCRIPTION</a></h2>
+<p>Generally, what does a user do with this tool?</p>
+<p>For what purpose was this tool developed?</p>
+<p>You could state general differences in use/functionality for
+each OS (operating system) we support.</p>
+<h2><a name="options" id="options">OPTIONS</a></h2>
+<p>Place your introduction here. Then, if you have different
+categories of options, use multiple level 3 headings to create
+sub-sections as necessary. Options should be listed alphabetically
+within a sub-section.</p>
+<p>Following are a few option examples from the
+<code>jconsole</code> and <code>apt</code> man pages. They are
+divided into three sub-sections, just to give an example of what
+sub-sections look like.</p>
+<h3><code>jconsole</code> Options</h3>
+<dl>
+<dt><code>-interval</code><i>=n</i></dt>
+<dd>Set the update interval to <i>n</i> seconds (default is 4
+seconds).</dd>
+<dt><code>-notile</code>&nbsp;</dt>
+<dd>Do not tile windows initially (for two or more
+connections).</dd>
+<dt><code>-pluginpath</code>&nbsp; <i>plugins</i></dt>
+<dd>Specify a list of directories or JAR files which are searched
+for JConsole plugins. The <i>plugins</i> path should contain a
+provider-configuration file named:<br />
+<pre>
+&nbsp;&nbsp;&nbsp;META-INF/services/com.sun.tools.jconsole.JConsolePlugin
+</pre>
+<p>containing one line for each plugin specifying the fully
+qualified class name of the class implementing the <a href="#synopsis">
+com.sun.tools.jconsole.JConsolePlugin</a> class.</p>
+</dd>
+<dt><code>-version</code>&nbsp;</dt>
+<dd>Output version information and exit.</dd>
+<dt><code>-help</code>&nbsp;</dt>
+<dd>Output help message and exit.</dd>
+<dt><code>-J&lt;flag&gt;</code>&nbsp;</dt>
+<dd>Pass &lt;flag&gt; to the Java virtual machine on which jconsole
+is run.</dd>
+</dl>
+<h3><code>apt</code> Specific Options</h3>
+<dl>
+<dt><code>-s</code> <i>dir</i></dt>
+<dd>Specify the directory root under which processor-generated
+source files will be placed; files are placed in subdirectories
+based on package namespace.</dd>
+<dt><code>-nocompile</code></dt>
+<dd>Do not compile source files to class files.</dd>
+<dt><code>-print</code></dt>
+<dd>Print out textual representation of specified types; perform no
+annotation processing or compilation.</dd>
+<dt><code>-A</code>[<i>key</i>[<code>=</code><i>val</i>]]</dt>
+<dd>Options to pass to annotation processors -- these are not
+interpreted by <code>apt</code> directly, but are made available
+for use by individual processors</dd>
+<dt><code>-factorypath</code> <i>path</i></dt>
+<dd>Specify where to find annotation processor factories; if this
+option is used, the classpath is <i>not</i> searched for
+factories.</dd>
+<dt><code>-factory</code> <i>classname</i></dt>
+<dd>Name of annotation processor factory to use; bypasses default
+discovery process</dd>
+</dl>
+<h3><code>apt</code> Options shared with <code>javac</code></h3>
+<dl>
+<dt><code>-d</code> <i>dir</i></dt>
+<dd>Specify where to place processor and javac generated class
+files</dd>
+<dt><code>-cp</code> <i>path</i> or <code>-classpath</code>
+<i>path</i></dt>
+<dd>Specify where to find user class files and annotation processor
+factories. If <code>-factorypath</code> is given, the classpath is
+not searched for factories.</dd>
+</dl>
+<p>Consult the javac(1) man page for information on
+<code>javac</code> options.</p>
+<h2><a name="usage" id="usage">USAGE</a></h2>
+<p>Use this section to briefly mention some common ways a developer
+might use this tool.</p>
+<h2><a name="examples" id="examples">EXAMPLES</a></h2>
+<p>Here are some examples of starting <b>jstatd</b>. Note that the
+<b>jstatd</b> scripts automatically start the server in the
+background.</p>
+<h3><a name="simple" id="simple">Using Internal RMI
+Registry</a></h3>
+<p>This example demonstrates starting <b>jstatd</b> with an
+internal RMI registry. This example assumes that no other server is
+bound to the default RMI Registry port (port 1099).</p>
+<pre>
+jstatd -J-Djava.security.policy=all.policy
+</pre>
+<h3><a name="with-RMI-registry" id="with-RMI-registry">Using
+External RMI Registry</a></h3>
+<p>This example demonstrates starting <b>jstatd</b> with a external
+RMI registry.</p>
+<pre>
+rmiregistry&amp;
+jstatd -J-Djava.security.policy=all.policy
+</pre>
+<p>This example demonstrates starting <b>jstatd</b> with an
+external RMI registry server on port 2020.</p>
+<pre>
+rmiregistry 2020&amp;
+jstatd -J-Djava.security.policy=all.policy -p 2020
+</pre>
+<p>This example demonstrates starting <b>jstatd</b> with an
+external RMI registry on port 2020, bound to name
+AlternateJstatdServerName.</p>
+<pre>
+rmiregistry 2020&amp;
+jstatd -J-Djava.security.policy=all.policy -p 2020 -n AlternateJstatdServerName
+</pre>
+<h3><a name="prevent-RMI-registry" id=
+"prevent-RMI-registry">Inhibiting creation of an in-process RMI
+registry</a></h3>
+<p>This example demonstrates starting <b>jstatd</b> such that it
+will not create a RMI registry if one is not found. This example
+assumes an RMI registry is already running. If it is not, an
+appropriate error message is emitted.</p>
+<pre>
+jstatd -J-Djava.security.policy=all.policy -nr
+</pre>
+<h3><a name="troubleshooting" id="troubleshooting">Enabling RMI
+logging capabilities.</a></h3>
+<p>This example demonstrates starting <b>jstatd</b> with RMI
+logging capabilities enabled. This technique is useful as a
+troubleshooting aid or for monitoring server activities.</p>
+<pre>
+jstatd -J-Djava.security.policy=all.policy -J-Djava.rmi.server.logCalls=true
+</pre>
+<h2><a name="seealso" id="seealso">SEE ALSO</a></h2>
+<p>Following is a SEE ALSO section taken from the
+<code>jstatd</code> man page.</p>
+<ul>
+<li><a href="#synopsis">java</a> - the Java Application Launcher</li>
+<li><a href="#synopsis">jps</a> - the Java Process Status Application</li>
+<li><a href="#synopsis">jstat</a> - the Java Virtual Machine Statistics Monitoring Tool</li>
+<li><a href="#synopsis">rmiregistry</a> - the Java Remote Object Registry</li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

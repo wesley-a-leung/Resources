@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Windows Online Installation and Java Update FAQ</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This page lists and answers frequently asked questions related to Windows online installation and Java Update." name="description"/>
+<meta content="2016-01-06T16:14:50Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Installation Guide for OpenJDK on Solaris, Linux, OS X, and Windows, Release 8u71" name="doctitle"/>
+<meta content="Release 8u71" name="relnum"/>
+<meta content="E50307-05" name="partnum"/>
+<meta content="no_value_supplied" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Installation Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="windows_server_jre.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="config.html">
+                Next</a><hr/>
+<div><a id="CHDFIAHH" name="CHDFIAHH"/>
+<h1><span>19</span> Windows Online Installation and Java Update FAQ</h1>
+<p>This page lists and answers frequently asked questions related to Windows online installation and Java Update.</p>
+<p>This page contains these topics:</p>
+<ul>
+<li>
+<p><a href="#CHDGHEHA">"I downloaded the installer and it is only 846KB. Why is it so small?"</a></p>
+</li>
+<li>
+<p><a href="#A1096960">"I had the Java Control Panel open for Java Update and the About tab showed the version of the JRE installed in my computer. Then I ran Java Update, and the version of the JRE that the Java Control Panel is showing has not changed. Why is this?"</a></p>
+</li>
+<li>
+<p><a href="#A1096998">"Netscape/Mozilla is not working correctly with Java Plug-in. Why?"</a></p>
+</li>
+<li>
+<p><a href="#A1097040">"I try to install on the D:\ drive and Java Update is still installing files onto the C:\ drive. Why?"</a></p>
+</li>
+<li>
+<p><a href="#A1097078">"How can I uninstall the Java Update version I just installed?"</a></p>
+</li>
+<li>
+<p><a href="#A1097140">"After the JRE bootstrap installer is downloaded and executed, why does the message "This installer cannot proceed with the current Internet Connection settings of your system. In your Windows Control Panel, please check Internet Options -&gt; Connections to make sure the settings and proxy information are correct." appear?"</a></p>
+</li>
+<li>
+<p><a href="#A1097241">"I found two processes  jucheck.exe and jusched.exe  running in the background of my system after installing JRE. Is there a way to shut them down?"</a></p>
+</li>
+<li>
+<p><a href="#A1097291">"After Java Update updates my system, my browser still uses the Microsoft Virtual Machine (VM), or an earlier version of the Java VM, to run applets. What is wrong?"</a></p>
+</li>
+<li>
+<p><a href="#A1097332">"When I click the Update Now button from the Java Control Panel, it complains about the system being "offline." What does that mean?"</a></p>
+</li>
+<li>
+<p><a href="#A1097377">"I followed the instructions to install a specific version of the JRE. After the installation, a message popped-up from system tray saying an update is available for download. What should I do?"</a></p>
+</li>
+<li>
+<p><a href="#A1097419">"I encountered the error "Error 1606: Could not access network location file MSI/CAB and still fail after immediate retry." when running the Java SE installer. What does it mean?"</a></p>
+</li>
+<li>
+<p><a href="#A1097457">"I encountered the error "This installation package could not be opened. Contact the application vendor to verify that this is a valid Windows Installer package." when running the Java SE installer."</a></p>
+</li>
+<li>
+<p><a href="#A1097602">"I encountered the error "Error 1722. There is a problem with this Windows installer package. A program run as part of the setup did not finish as expected. Contact your support personnel or package vendor.""</a></p>
+</li>
+</ul>
+<p>See <a href="install_overview.html#CJAGAACB">"JDK 8 and JRE 8 Installation Start Here"</a> for general information about installing JDK 8 and JRE 8.</p>
+<a id="CHDGHEHA" name="CHDGHEHA"/>
+<div>
+<h2>I downloaded the installer and it is only 846KB. Why is it so small?</h2>
+<p>A: The Windows Online Installer for the JRE will download more installer files based on system configuration. Using this installer helps users avoid downloading unnecessary files.</p>
+</div>
+
+<a id="A1096960" name="A1096960"/>
+<div>
+<h2>I had the Java Control Panel open for Java Update and the About tab showed the version of the JRE installed in my computer. Then I ran Java Update, and the version of the JRE that the Java Control Panel is showing has not changed. Why is this?</h2>
+<p>A: You need to close and restart the Java Control Panel to get the updated Control Panel.</p>
+</div>
+
+<a id="A1096998" name="A1096998"/>
+<div>
+<h2>Netscape/Mozilla is not working correctly with Java Plug-in. Why?</h2>
+<p>A: First close all the browsers sessions. If this does not work, reboot the system and try again.</p>
+</div>
+
+<a id="A1097040" name="A1097040"/>
+<div>
+<h2>I try to install on the D:\ drive and Java Update is still installing files onto the C:\ drive. Why?</h2>
+<p>A: Regardless of whether an alternate target directory was selected, Java Update needs to install some update files on the Windows system drive.</p>
+</div>
+
+<a id="A1097078" name="A1097078"/>
+<div>
+<h2>How can I uninstall the Java Update version I just installed?</h2>
+<p>If you want to uninstall the JRE, use the "Add/Remove Programs" utility in the Microsoft Windows Control Panel (select <b>Start</b>, then <b>Settings</b>, then <b>Control Panel</b> to get to "Add/Remove Programs").</p>
+</div>
+
+<a id="A1097140" name="A1097140"/>
+<div>
+<h2>After the JRE bootstrap installer is downloaded and executed, why does the message "This installer cannot proceed with the current Internet Connection settings of your system. In your Windows Control Panel, please check Internet Options -&gt; Connections to make sure the settings and proxy information are correct." appear?</h2>
+<p>A: The JRE bootstrap installer uses the system Internet Connection settings to connect to the web for downloading extra files. If you are behind a firewall and require proxy settings, make sure the proxy settings in Internet Options/Internet Properties are set up properly (select <b>Start</b>, then <b>Control Panel</b>, then <b>Internet Options/Internet Properties</b>, then <b>Connections</b>, then <b>LAN Settings</b>)</p>
+<p>If you can browser the external web (for example, outside the firewall) with Internet Explorer, then your proxy settings are properly set up. The installer does not understand the proxy settings specified in Netscape/Mozilla.</p>
+</div>
+
+<a id="A1097241" name="A1097241"/>
+<div>
+<h2>I found two processes  jucheck.exe and jusched.exe  running in the background of my system after installing JRE. Is there a way to shut them down?</h2>
+<p>A: <code dir="ltr">jusched.exe</code> is the scheduler process of Java Update; <code dir="ltr">jucheck.exe</code> is the process for checking/performing updates in Java Update. These processes run automatically and transparently to users. To shutdown these processes, simply uncheck the "Check for Updates Automatically" check box in the Update tab of Java Control Panel.</p>
+</div>
+
+<a id="A1097291" name="A1097291"/>
+<div>
+<h2>After Java Update updates my system, my browser still uses the Microsoft Virtual Machine (VM), or an earlier version of the Java VM, to run applets. What is wrong?</h2>
+<p>If you installed the JRE through the Custom option but unchecked the browser selections, you may run into this situation. To fix the problem, go to the Browser tab in Java Control Panel and check the browsers that you want to run the newly installed version of Java.</p>
+</div>
+
+<a id="A1097332" name="A1097332"/>
+<div>
+<h2>When I click the Update Now button from the Java Control Panel, it complains about the system being "offline." What does that mean?</h2>
+<p>A: Java Update can only be run if the system is connected to the network. A system that is not connected to the network is referred to as being "offline." When the Update Now button is clicked, it will check the online/offline status of your system. If your system is not currently connected to the network or dial-up networking is disconnected, the error message will show up. Check that your system is currently connected to the network and try it again.</p>
+</div>
+
+<a id="A1097377" name="A1097377"/>
+<div>
+<h2>I followed the instructions to install a specific version of the JRE. After the installation, a message popped-up from system tray saying an update is available for download. What should I do?</h2>
+<p>A: The message is part of the Java Auto Update mechanism, which detects at user login time if a newer version of the JRE is available for download. You may simply click on the system tray Java Update icon to download and install the update.</p>
+</div>
+
+<a id="A1097419" name="A1097419"/>
+<div>
+<h2>I encountered the error "Error 1606: Could not access network location file MSI/CAB and still fail after immediate retry." when running the Java SE installer. What does it mean?</h2>
+<p>A: This problem occurs when the server is too busy or when the network is too congested to serve the file. Please retry by running the installer again.</p>
+</div>
+
+<a id="A1097457" name="A1097457"/>
+<div>
+<h2>I encountered the error "This installation package could not be opened. Contact the application vendor to verify that this is a valid Windows Installer package." when running the Java SE installer.</h2>
+<p>A: There are several possible reasons:</p>
+<ul>
+<li>
+<p>Network connection fails.</p>
+</li>
+<li>
+<p>Download manager software interrupts the download process.</p>
+</li>
+<li>
+<p>Another application, such as an anti-virus application, may interrupt the installation process.</p>
+</li>
+</ul>
+<p>To address these problems, ensure third-party downloader applications are turned off and the network connection is configured properly. Also, if a proxy is in use, make sure that proxy authentication is turned off.</p>
+</div>
+
+<a id="A1097602" name="A1097602"/>
+<div>
+<h2>I encountered the error "Error 1722. There is a problem with this Windows installer package. A program run as part of the setup did not finish as expected. Contact your support personnel or package vendor."</h2>
+<p>A: See <code dir="ltr"><a href="http://www.java.com/en/download/help/error_1722.xml">http://www.java.com/en/download/help/error_1722.xml</a></code>. If you encounter any other errors or issues, you can go to <code dir="ltr"><a href="http://www.java.com/en/download/help/index.xml">http://www.java.com/en/download/help/index.xml</a></code>, which contains solutions for issues you might encounter when downloading and installing Java on your system. In particular, you can search for solutions by error number; searching for "Error 1722" returns a solution to this issue.</p>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="windows_server_jre.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="config.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

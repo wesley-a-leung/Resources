@@ -1,0 +1,8 @@
+// In this example, for simplicity, we will use a policy file that
+// gives global permission to anyone from anywhere. Do not use this
+// policy file in a production environment.
+
+grant {
+	permission java.net.SocketPermission "*", "accept,resolve";
+};
+

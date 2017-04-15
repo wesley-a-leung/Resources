@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title></title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Java&trade; Virtual Machine Enhancements</h1>
+
+<h2>Enhancements in Java SE 1.4.2</h2>
+<ul>
+<li style="list-style: none"><a name="runtime" id=
+"runtime"></a></li>
+<li><b>Runtime Performance</b>
+<p>The following are enhancements to runtime performance in 1.4.2.
+Also see <a href=
+"http://www.oracle.com/technetwork/java/javase/relnotes-139182.html#vm">Virtual Machine
+release notes</a> for issues.</p>
+<ul>
+<li>The interpreter-only Itanium version of 1.4.1 has been enhanced
+by the addition of the server compiler. Performance is up to thirty
+times faster than for 1.4.1.</li>
+<li>The performance of applications that make heavy use of
+Class.forName and related methods has been significantly
+improved.</li>
+<li>Java Native Interface usage checking via the -Xcheck:jni switch
+is more extensive and robust than in 1.4.1.</li>
+<li>Third-party memory managers now work properly when using JVMPI
+and JVMDI.</li>
+</ul>
+<p><a name="clienthotspot" id="clienthotspot"></a></p>
+</li>
+<li><b>Client HotSpot Compiler</b>
+<p>The following are enhancements to the client HotSpot compiler in
+1.4.2. Also see <a href=
+"http://www.oracle.com/technetwork/java/javase/relnotes-139182.html#vm">Virtual Machine
+release notes</a> for issues.</p>
+<ul>
+<li>Improvements in compile speed and footprint.</li>
+</ul>
+<p><a name="serverhotspot" id="serverhotspot"></a></p>
+</li>
+<li><b>Server HotSpot Compiler</b>
+<p>The following are enhancements to the server HotSpot compiler in
+1.4.2. Also see <a href=
+"http://www.oracle.com/technetwork/java/javase/relnotes-139182.html#vm">Virtual Machine
+release notes</a> for issues.</p>
+<ul>
+<li>Use of SSE and SSE2 instructions on IA32 platforms when they
+are supported by the processor and operating system.</li>
+<li>Faster integer division by constants.</li>
+<li>Faster floating-point division by powers of 2.</li>
+<li>Faster NullPointerException handling.</li>
+</ul>
+</li>
+</ul>
+<h2>Enhancements in Java SE 1.4.1</h2>
+<ul>
+<li>Java SE 1.4.1 is available in versions that support the 64-bit
+Intel Itanium processor on Linux Red Hat 7.2 and Windows XP 64-bit
+edition. Look for the downloads for these versions on the Java SE
+1.4.1 <a href="http://www.oracle.com/technetwork/java/javase/index.html">download
+page</a>.
+<p>In this release, these 64-bit versions have the following
+limitations.</p>
+<ul>
+<li>Applications can be run only in interpreted mode. The platform
+will run in interpreted mode by default, with no need to supply the
+<tt>-Xint</tt> flag on the command line when launching an
+application. When using the 64-bit versions of the Java SE 1.4.1
+platform, the command <tt>java&nbsp;MyApp</tt> will launch and
+execute MyApp by interpreting the bytecode. Java
+HotSpot-technology-based dynamic compilers for 64-bit support is
+planned for a future release of the Java SE platform.</li>
+<li>The 64-bit versions of Java SE 1.4.1 do not include the Java
+Plug-in and Java Web Start products.</li>
+<li>The 64-bit versions of Java SE 1.4.1 do not have an installer
+application. These versions are available only as a tar
+bundle.</li>
+</ul>
+The 32-bit versions of the Java SE 1.4.1 will not work on Intel
+Itanium machines.</li>
+<li>A deadlock detection utility has been added to the Java HotSpot
+VM. The utility is invoked by a Ctrl+\ on the command line while an
+application is running. The utility detects Java-platform-level
+deadlocks, including locking done from the Java Native Interface
+(JNI), the Java Virtual Machine Profiler Interface (JVMPI), and
+Java Virtual Machine Debug Interface (JVMDI).
+<p>When invoked, the utility displays a thread dump to standard out
+and indicates any Java-platform-level deadlocks it detects. Refer
+to this <a href="sample-output.html">sample output</a>. If the
+application is deadlocked because two or more threads are involved
+in a cylce to acquire monitors, then the list of such threads and
+monitors involved in the deadlocks are displayed. Note, however,
+that this will not find deadlocks involving threads waiting on
+monitors on which no signal will be forthcoming.</p>
+</li>
+</ul>
+<h2>Enhancements in Java SE 1.4.0</h2>
+<ul>
+<li><b><a href="signal-chaining.html">Signal chaining</a></b></li>
+<li><b><a href="error-handling.html">Error-reporting
+mechanism</a></b></li>
+<li>The new <tt>-Xloggc:</tt><var>file</var> option reports on each
+garbage-collection event, as with <tt>-verbose:gc</tt>, but logs
+this data to <var>file</var>. In addition to the information
+<tt>-verbose:gc</tt> provides, each reported event is preceeded by
+the time (in seconds) since the first garbage-collection
+event.</li>
+<li>Beginning with J2SDK 1.4.0, the Classic Virtual Machine is no
+longer shipped as part of the Java 2 SDK. (On Solaris platforms,
+the Classic VM was removed in J2SDK 1.3.0.) If you have been
+running your applications on the Classic VM by using the
+<tt>-classic</tt> command-line option, you will need to use either
+the Java HotSpot Client VM (invoked by default or by using the
+<tt>-client</tt> option) or Java HotSpot Server VM (invoked with
+the <tt>-server</tt> option). Attempting to launch an application
+with the <tt>-classic</tt> option will result in this message:
+<tt>Error: Classic VM no longer supported</tt>.
+<p><a name="a64bit" id="a64bit"></a></p>
+</li>
+<li>The Solaris-SPARC platform edition of J2SDK 1.4.0 will support 64-bit operation on
+64-bit Sparc-v9 platforms when using the Java HotSpot Server VM.
+With a 64-bit address space, more than four gigabytes of heap
+memory is available. The Java HotSpot Server VM includes support
+for both 32-bit and 64-bit operations, and users can select either
+32-bit or 64-bit operation by using command-line flags
+<tt>-d32</tt> or <tt>-d64</tt>, respectively.
+<ul>
+<li>Users of the <a href="../jni/index.html">Java Native
+Interface</a> will need to recompile their code to be able to run
+it on the 64-bit VM.</li>
+<li>There is no 64-bit support for the Java HotSpot Client VM. Only
+the Java HotSpot Server VM provides for optional 64-bit
+operation.</li>
+<li>Users must install 64-bit Solaris support in order to run the
+virtual machine in 64-bit mode.</li>
+<li>On older Sparcv9 systems, users must modify the file
+<tt>/platform/sun4u/boot.conf</tt> in order to enable 64-bit
+programs. See the text in the <tt>boot.conf</tt> file for more
+information.</li>
+</ul>
+</li>
+<li>The new <tt>-Xcheck:jni</tt> command-line option performs
+additional checks for Java Native Interface (JNI) functions.
+Specifically, the Java Virtual Machine validates the parameters
+passed to the JNI function as well as the runtime environment data
+before processing the JNI request. Any invalid data encountered
+indicates a problem in the native code, and the Java Virtual
+Machine will terminate with a fatal error in such cases. Expect a
+performance degradation when this option is used.</li>
+<li>The Java SE 1.4.0 platform accepts class file versions in the
+range 45.3 to 48.0.</li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

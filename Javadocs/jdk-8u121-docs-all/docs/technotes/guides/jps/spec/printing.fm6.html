@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Print Service API User Guide: 4 - Printing and
+Streaming Documents</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<a href="JPSTOC.fm.html">CONTENTS</a> | <a href=
+"printing.fm5.html">PREV</a> | <a href=
+"printing.fm7.html">NEXT</a><br />
+<h2><a name="a999512" id="a999512">Submitting the Print
+Job</a></h2>
+<a name="a999057" id="a999057"><!-- --></a> Once you have the Doc
+and DocPrintJob, you can call the DocPrintJob object&#39;s print
+method to submit the document to the service. The <a href=
+"printing.fm6.html#a1000147"><em>Submitting the Print Job to the
+Printer</em></a> section completes the printin g example. The
+<a href="printing.fm6.html#a1000151"><em>Submitting the Print Job to
+the Stream</em></a> section completes the streaming example.<br />
+<h3><a name="a1000147" id="a1000147"><!-- --></a> Submitting the
+Print Job to the Printer</h3>
+<a name="a998693" id="a998693"><!-- --></a> This section completes
+the printing application explained in this chapter. This example
+prints five copies of a PostScript document, double-sided on A4
+paper, and stapled.
+<p><a name="a1000191" id="a1000191"><!-- --></a></p>
+<p><a name="a998409" id="a998409"><!-- --></a></p>
+<pre class="codeblock">
+       DocFlavor psFlavor = DocFlavor.INPUT_STREAM.POSTSCRIPT;
+        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+        aset.add(new Copies(2));
+        aset.add(MediaSizeName.ISO_A4);
+        aset.add(Sides.TWO_SIDED_LONG_EDGE);
+        aset.add(Finishings.STAPLE);
+        PrintService[] pservices = PrintServiceLookup.lookupPrintServices(psFlavor,
+                                                        aset);
+        if (services.length &gt; 0) {
+                DocPrintJob pj = pservices[0].createPrintJob();
+                try {
+                        FileInputStream fis = new FileInputStream(&#34;example.ps&#34;);
+                        Doc doc = new SimpleDoc(fis, psFlavor, null);
+                        pj.print(doc, aset);
+                } catch (IOException e) {
+                        System.err.println(e);
+                } catch (PrintException e) {
+                        System.err.println(e);
+                }
+        }
+</pre>
+<a name="a999093" id="a999093"></a> See <a href= "PrintPS.java"><em>Example: PrintPS.java</em></a>
+for the complete application.<br />
+<h3><a name="a1000151" id="a1000151"><!-- --></a> Submitting the
+Print Job to the Stream</h3>
+<a name="a1000192" id="a1000192"><!-- --></a> This section
+completes the streaming example explained in this chapter. This
+example converts a GIF document to PostScript and embeds the
+specified printing attributes into the PostScript document.
+<p><a name="a1000220" id="a1000220"><!-- --></a></p>
+<p><a name="a1000195" id="a1000195"><!-- --></a></p>
+<pre class="codeblock">
+       DocFlavor flavor = DocFlavor.INPUT_STREAM.GIF;
+        String psMimeType = DocFlavor.BYTE_ARRAY.POSTSCRIPT.getMimeType();
+        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+        aset.add(new Copies(2));
+        aset.add(MediaSizeName.ISO_A4);
+        aset.add(Sides.TWO_SIDED_LONG_EDGE);
+        aset.add(Finishings.STAPLE);
+        StreamPrintServiceFactory[] factories =
+                StreamPrintServiceFactory.lookupStreamPrintServiceFactories(
+                                flavor, psMimeType);
+        if(factories.length==0) {
+                System.err.println(&#34;No suitable factories&#34;);
+                System.exit(0);
+        }
+        try {
+                FileInputStream fis = new FileInputStream(&#34;java2dlogo.gif&#34;);
+                String filename = &#34;newfile.ps&#34;;
+                FileOutputStream fos = new FileOutputSteam(filename);
+                StreamPrintService sps= factories[0].getPrintService(fos);
+                DocPrintJob pj = sps.createPrintJob();
+                Doc doc = new SimpleDoc(fos, psFlavor, aset);
+                pj.print(doc, aset);
+        } catch (IOException e) {
+                System.err.println(e);
+        } catch (PrintException e) {
+                System.err.println(e);
+        }
+}
+</pre>
+See <a href= "PrintGIFtoStream.java"><em>Example: PrintGIFtoStream.java</em></a> for the complete application.
+<p>&nbsp;</p>
+<hr />
+<a href="JPSTOC.fm.html">CONTENTS</a> | <a href=
+"printing.fm5.html">PREV</a> | <a href="printing.fm7.html">NEXT</a>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

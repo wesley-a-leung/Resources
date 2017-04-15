@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Remote Method Invocation: 8 - Stub/Skeleton
+Interfaces</title>
+</head>
+<body bgcolor="#FFFFFF">
+<a href="#skip" title="Skip navigation bar"></a>
+<table width="100%" summary="">
+<tr>
+<td><a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-stubs26.html">PREV</a> | <a href=
+"rmi-dgc2a.html">NEXT</a></td>
+<td align="right"><i>Java Remote Method Invocation</i></td>
+</tr>
+</table>
+<br />
+<a name="skip" id="skip"></a>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<h2><a name="a6598" id="a6598"><i>8.6</i> The
+<code>Operation</code> Class</a></h2>
+<a name="a5255" id="a5255"><!-- --></a> The class
+<code>Operation</code> holds a description of a method in the Java
+programming language for a remote object.
+<hr noshade="noshade" size="1" />
+<b><a name="a6742" id="a6742">Note -</a></b> The
+<code>Operation</code> interface is deprecated as of the Java 2
+SDK, Standard Edition, v1.2. The 1.2 stub protocol no longer uses
+the old <code>RemoteRef.invoke</code> method which takes an
+<code>Operation</code> as one of its arguments. As of the Java 2
+SDK, Standard Edition, v1.2, stubs now use the new
+<code>invoke</code> method which does not require
+<code>Operation</code> as a parameter.
+<hr noshade="noshade" size="1" />
+<pre>
+package java.rmi.server;
+
+public class Operation {
+        public Operation(String op) {...}
+        public String getOperation() {...}
+        public String toString() {...}
+}
+
+
+</pre>
+<a name="a6280" id="a6280"><!-- --></a> An <code>Operation</code>
+object is typically constructed with the method signature.
+<p><a name="a6601" id="a6601"><!-- --></a> The method
+<code>getOperation</code> returns the contents of the operation
+descriptor (the value with which it was initialized).</p>
+<p><a name="a6278" id="a6278"><!-- --></a> The method
+<code>toString</code> also returns the string representation of the
+operation descriptor (typically the method signature).</p>
+<p><br /></p>
+<hr />
+<a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-stubs26.html">PREV</a> | <a href="rmi-dgc2a.html">NEXT</a>
+<hr />
+<font size="-1"><i><a href=
+"../../../legal/SMICopyright.html">Copyright</a> &copy; 1997, 2010,
+Oracle and/or its affiliates. All rights reserved.</i></font> 
+<!-- by Susan Snyder -->
+<!-- Last updated: 1/16/05 -->
+</body>
+</html>

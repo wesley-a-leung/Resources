@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Preferences API Design FAQ</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Preferences API Design FAQ</h1>
+<h2><a name="prefs-design-faq" id="prefs-design-faq"></a>Design
+FAQ</h2>
+<p>Following is a collection of frequently asked questions
+concerning the design of the Preferences API.</p>
+<ol>
+<li><b>How does this Preferences API relate to Properties API?</b>
+<p>It is intended to replace most common uses of Properties,
+rectifying many of its deficiencies, while retaining its light
+weight. When using Properties, the programmer must explicitly
+specify a pathname for each properties file, but there is no
+standard location or naming convention. Properties files are
+"brittle", as they are hand-editable but easily corrupted by
+careless editing. Support for non-string data types in properties
+is non-existent. Properties cannot easily be used with a
+persistence mechanism other than the file system. In sum, the
+Properties facility does not scale.</p>
+</li>
+<li><b>How does Preferences API relate to JNDI?</b>
+<p>Like JNDI, it provides back-end neutral access to persistent
+key-value data. JNDI, however, is far more powerful, and
+correspondingly heavyweight. JNDI is appropriate for enterprise
+applications that need its power. Preferences API is intended as a
+simple, ubiquitous, back-end neutral preferences-management
+facility, enabling <b>any</b> Java application to easily tailor its
+behavior to user preferences and maintain small amounts of state
+from run to run.</p>
+</li>
+<li><b>Why do all of the <code>get</code> methods require the
+caller to pass in a default?</b>
+<p>This forces the application authors to provide reasonable
+default values, so that applications have a reasonable chance of
+running even if the repository is unavailable.</p>
+</li>
+<li><b>How was it decided which methods should throw
+<code>BackingStoreException</code>?</b>
+<p>Only methods whose semantics absolutely require the ability to
+communicate with the backing store throw this exception. Typical
+applications will have no need to call these methods. As long as
+these methods are avoided, applications will be able to run even if
+the backing store is unavailable, which was an explicit design
+goal.</p>
+</li>
+<li><b>Why doesn't this API provide stronger guarantees concerning
+concurrent access by multiple VMs? Similarly, why doesn't the API
+allow multiple Preferences updates to be combined into a single
+"transaction", with all or nothing semantics?</b>
+<p>While the API does provide rudimentary persistent data storage,
+it is not intended as a substitute for a database. It is critical
+that it be possible to implement this API atop standard
+preference/configuration repositories, most of which do not provide
+database-like guarantees and functionality. Such repositories have
+proven adequate for the purposes for which this API is
+intended.</p>
+</li>
+<li><b>Why does this API have case-sensitive keys and node-names,
+while other APIs playing in a similar space (such as the Microsoft
+Windows Registry and LDAP) do not?</b>
+<p>In the Java programming universe, case-sensitive String keys are
+ubiquitous. In particular, they are provided by the Properties
+class, which this API is intended to replace. It is not uncommon
+for people to use Properties in a fashion that demands
+case-sensitivity. For example, Java package names (which are
+case-sensitive) are sometimes used as keys. It is recognized that
+this design decision complicates the life of the systems programmer
+who implements Preferences atop a backing store with
+case-insensitive keys, but this is considered an acceptable price
+to pay, as far more programmers will use the Preferences API than
+will implement it.</p>
+</li>
+<li><b>Why doesn't this API use the Java 2 Collections
+Framework?</b>
+<p>This API is designed for a very particular purpose, and is
+optimized for that purpose. In the absence of generic types (see
+<a href="http://jcp.org/en/jsr/detail?id=14">JSR-14</a>), the API
+would be less convenient for typical users. It would lack
+compile-time type safety, if forced to conform to the <tt>Map</tt>
+API. Also, it is not anticipated that interoperability with other
+Map implementations will be required (though it would be
+straightforward to implement an adapter class if this assumption
+turned out to be wrong). Preferences API is, by design, so similar
+to Map that programmers familiar with the latter should have no
+difficulties using the former.</p>
+</li>
+<li><b>Why don't the put and remove methods return the old
+values?</b>
+<p>It is desirable that both of these methods be executable even if
+the backing store is unavailable. This would not be possible if
+they were required to return the old value. Further, it would have
+negative performance impact if the API were implemented atop some
+common back-end data stores.</p>
+</li>
+<li><b>Why does the API permit, but not require, stored
+defaults?</b>
+<p>This functionality is required in enterprise settings for
+scalable, cost-effective administration of preferences across the
+enterprise, but would be overkill in a self-administered
+single-user setting.</p>
+</li>
+<li><b>Why doesn't this API contain methods to read and write
+arbitrary serializable objects?</b>
+<p>Serialized objects are somewhat fragile: if the version of the
+program that reads such a property differs from the version that
+wrote it, the object may not deserialize properly (or at all). It
+is not impossible to store serialized objects using this API, but
+we do not encourage it, and have not provided a convenience
+method.</p>
+</li>
+<li><b>Why is <code>Preferences</code> an abstract class rather
+than an interface?</b>
+<p>It was decided that the ability to add new methods in an upward
+compatible fashion outweighed the disadvantage that Preferences
+cannot be used as a "mixin" (That is to say, arbitrary classes
+cannot also be made to serve as Preferences objects.) Also, this
+obviates the need for a separate class for the static methods.
+(Interfaces cannot contain static methods.)</p>
+</li>
+</ol>
+<!-- Body text ends here -->
+<!-- ============================================================== -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

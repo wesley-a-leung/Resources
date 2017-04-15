@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Collect Core Dumps</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:29Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="bugreports003.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="appendix.html">
+                Next</a><hr/><a id="CHDJJAJE" name="CHDJJAJE"/>
+<div id="JSTGD531">
+<h1><span>17.4</span> Collect Core Dumps</h1>
+<p>This section explains how to generate and collect core dumps (also known as crash dumps). A core dump or a crash dump is a memory snapshot of a running process. A core dump can be automatically created by the operating system when a fatal or unhandled error (for example, signal or system exception) occurs. Alternatively, a core dump can be forced by means of system-provided command-line utilities. Sometimes a core dump is useful when diagnosing a process that appears to be hung; the core dump may reveal information about the cause of the hang.</p>
+<p>When collecting a core dump, be sure to gather other information about the environment so that the core file can be analyzed (for example, OS version, patch information, and the fatal error log).</p>
+<p>Core dumps do not usually contain all the memory pages of the crashed or hung process. With each of the operating systems discussed here, the text (or code) pages of the process are not included in core dumps. But to be useful, a core dump must consist of pages of heap and stack as a minimum. Collecting non-truncated good core dump files is essential for postmortem analysis of the crash.</p>
+<p>The following sections describe scenarios for collecting core dumps.</p>
+<ul>
+<li>
+<p><a href="#CHDIEHDJ">Collect Core Dumps on Oracle Solaris</a></p>
+</li>
+<li>
+<p><a href="#CHDHDCJD">Collect Core Dumps on Linux</a></p>
+</li>
+<li>
+<p><a href="#CHDGGGCH">Reasons for Not Getting a Core File</a></p>
+</li>
+<li>
+<p><a href="#CHDHIHBJ">Collect Crash Dumps on Windows</a></p>
+</li>
+</ul>
+<a id="CHDIEHDJ" name="CHDIEHDJ"/>
+<div id="JSTGD532">
+<h2><span>17.4.1</span> Collect Core Dumps on Oracle Solaris</h2>
+<p>With the Oracle Solaris operating system, unhandled signals such as a segmentation violation, illegal instruction, and so forth, result in a core dump. By default, the core dump is created in the current working directory of the process and the name of the core dump file is core. The user can configure the location and name of the core dump using the core file administration utility, <code dir="ltr">coreadm</code>. This procedure is fully described in the man page for the <code dir="ltr">coreadm</code> utility.</p>
+<p>The <code dir="ltr">ulimit</code> utility is used to get or set the limitations on the system resources available to the current shell and its descendants. Use the <code dir="ltr">ulimit -c</code> command to check or set the core file size limit. Make sure that the limit is set to <code dir="ltr">unlimited</code>; otherwise the core file could be truncated.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+<code dir="ltr">ulimit</code> is a Bash shell built-in command; on a C shell, use the <code dir="ltr">limit</code> command.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>Ensure that any scripts that are used to launch the VM or your application do not disable core dump creation.</p>
+<p>The <code dir="ltr">gcore</code> utility can be used to get a core image of running processes. This utility accepts a process id (pid) of the process for which you want to force core dump.</p>
+<p>To get the list of Java processes running on the machine, you can use any of the following commands:</p>
+<ul>
+<li>
+<p><code dir="ltr">ps -ef | grep java</code></p>
+</li>
+<li>
+<p><code dir="ltr">pgrep java</code></p>
+</li>
+<li>
+<p><code dir="ltr">jps</code></p>
+</li>
+</ul>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+The <code dir="ltr">jps</code> command-line utility does not perform name matching (that is, looking for "java" in the process command name) and so it can list Java VM embedded processes as well as the Java processes.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>The following are two methods to collect core dumps on Oracle Solaris.</p>
+<ul>
+<li>
+<p><b>ShowMessageBoxOnError option on Oracle Solaris:</b></p>
+<p>A Java process can be started with the <code dir="ltr">-XX:+ShowMessageBoxOnError</code> command-line option. When a fatal error is encountered, the process prints a message to standard error and waits for a <code dir="ltr">yes</code> or <code dir="ltr">no</code> response from standard input. <a href="#CHDFDJFD">Example 17-1</a> shows the output when an unexpected signal occurs.</p>
+<div id="JSTGD533"><a id="CHDFDJFD" name="CHDFDJFD"/>
+<p>Example 17-1 Unexpected Signal Error on Solaris</p>
+<pre dir="ltr" xml:space="preserve">
+=======================================================================
+Unexpected Error
+-----------------------------------------------------------------------
+SIGSEGV (0xb) at pc=0xfeba31ac, pid=8677, tid=2
+Do you want to debug the problem?
+To debug, run 'dbx - 8677'; then switch to thread 2
+Enter 'yes' to launch dbx automatically (PATH must include dbx)
+Otherwise, press RETURN to abort...
+=======================================================================
+</pre></div>
+
+<p>Before answering <code dir="ltr">yes</code> or pressing RETURN (Enter), use the <code dir="ltr">gcore</code> utility to force a core dump. Then you can type <code dir="ltr">yes</code> to launch the <code dir="ltr">dbx</code> debugger.</p>
+</li>
+<li>
+<p><b>Suspend a process with truss utility:</b></p>
+<p>In situations where it is not possible to specify the <code dir="ltr">-XX:+ShowMessageBoxOnError</code> option, you might be able to use the <code dir="ltr">truss</code> utility. This Oracle Solaris operating system utility is used to trace system calls and signals. You can use this utility to suspend the process when it reaches a specific function or system call.</p>
+<p>The command in <a href="#CHDEJBHB">Example 17-2</a> shows how to use the <code dir="ltr">truss</code> utility to suspend a process when the <code dir="ltr">exit</code> system call is executed (in other words, the process is about to exit).</p>
+<div id="JSTGD534"><a id="CHDEJBHB" name="CHDEJBHB"/>
+<p>Example 17-2 Use truss Utility to Suspend a Process</p>
+<pre dir="ltr" xml:space="preserve">
+$ truss -t \!all -s \!all -T exit -p pid
+</pre></div>
+
+<p>When the process calls <code dir="ltr">exit</code>, it will be suspended. At this point, you can attach the debugger to the process or call <code dir="ltr">gcore</code> to force a core dump.</p>
+</li>
+</ul>
+</div>
+
+<a id="CHDHDCJD" name="CHDHDCJD"/>
+<div id="JSTGD535">
+<h2><span>17.4.2</span> Collect Core Dumps on Linux</h2>
+<p>On the Linux operating system, unhandled signals such as segmentation violation, illegal instruction, and so forth, result in a core dump. By default, the core dump is created in the current working directory of the process and the name of the core dump file is core.<span>pid</span>, where <span>pid</span> is the process id of the crashed Java process.</p>
+<p>The <code dir="ltr">ulimit</code> utility is used to get or set the limitations on the system resources available to the current shell and its descendants. Use the <code dir="ltr">ulimit -c</code> command to check or set the core file size limit. Make sure that the limit is set to <code dir="ltr">unlimited</code>; otherwise the core file could be truncated.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+<code dir="ltr">ulimit</code> is a Bash shell built-in command; on a C shell, use the <code dir="ltr">limit</code> command.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>Ensure that any scripts that are used to launch the VM or your application do not disable core dump creation.</p>
+<p>You can use the <code dir="ltr">gcore</code> command in the <code dir="ltr">gdb</code> (GNU Debugger) interface to get a core image of a running process. This utility accepts the pid of the process for which you want to force the core dump.</p>
+<p>To get the list of Java processes running on the machine, you can use any of the following commands:</p>
+<ul>
+<li>
+<p><code dir="ltr">ps -ef | grep java</code></p>
+</li>
+<li>
+<p><code dir="ltr">pgrep java</code></p>
+</li>
+<li>
+<p><code dir="ltr">jps</code></p>
+</li>
+</ul>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+The <code dir="ltr">jps</code> command-line utility does not perform name matching (that is, looking for "java" in the process command name) and so it can list Java VM embedded processes as well as the Java processes.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>The following is one option to collect core dumps on Linux.</p>
+<ul>
+<li>
+<p><b>ShowMessageBoxOnError option in Linux:</b></p>
+<p>A Java process can be started with the <code dir="ltr">-XX:+ShowMessageBoxOnError</code> command-line option. When a fatal error is encountered, the process prints a message to standard error and waits for a <code dir="ltr">yes</code> or <code dir="ltr">no</code> response from standard input. <a href="#CHDHCDEJ">Example 17-3</a> shows the output when an unexpected signal occurs.</p>
+<div id="JSTGD536"><a id="CHDHCDEJ" name="CHDHCDEJ"/>
+<p>Example 17-3 Unexpected Signal Error in Linux</p>
+<pre dir="ltr" xml:space="preserve">
+=======================================================================
+Unexpected Error
+-----------------------------------------------------------------------
+SIGSEGV (0xb) at pc=0x06232e5f, pid=11185, tid=8194
+Do you want to debug the problem?
+To debug, run 'gdb /proc/11185/exe 11185'; then switch to thread 8194
+Enter 'yes' to launch gdb automatically (PATH must include gdb)
+Otherwise, press RETURN to abort...
+=======================================================================
+</pre></div>
+
+<p>Type <code dir="ltr">yes</code> to launch the <code dir="ltr">gdb</code> (GNU Debugger) interface, as suggested by the error report shown above. In the <code dir="ltr">gdb</code> prompt, you can give the <code dir="ltr">gcore</code> command. This command creates a core dump of the debugged process with the name core.<span>pid</span>, where <span>pid</span> is the process ID of the crashed process. Make sure that the <code dir="ltr">gdb gcore</code> command is supported in your versions of <code dir="ltr">gdb</code>. Look for <code dir="ltr">help gcore</code> in the <code dir="ltr">gdb</code> command prompt.</p>
+</li>
+</ul>
+</div>
+
+<a id="CHDGGGCH" name="CHDGGGCH"/>
+<div id="JSTGD537">
+<h2><span>17.4.3</span> Reasons for Not Getting a Core File</h2>
+<p>The following list explains the major reasons that a core file might not be generated. This list pertains to both Oracle Solaris and Linux operating systems, unless specified otherwise.</p>
+<ul>
+<li>
+<p>The current user does not have permission to write in the current working directory of the process.</p>
+</li>
+<li>
+<p>The current user has write permission on the current working directory, but there is already a file named core that has read-only permission.</p>
+</li>
+<li>
+<p>The current directory does not have enough space or there is no space left.</p>
+</li>
+<li>
+<p>The current directory has a subdirectory named core.</p>
+</li>
+<li>
+<p>The current working directory is remote. It might be mapped by NFS (Network File System), and NFS failed just at the time the core dump was about to be created.</p>
+</li>
+<li>
+<p>Oracle Solaris operating system only: The <code dir="ltr">coreadm</code> tool has been used to configure the directory and name of the core file, but any of the above reasons apply for the configured directory or filename.</p>
+</li>
+<li>
+<p>The core file size limit is too low. Check your core file limit using the <code dir="ltr">ulimit -c</code> command (Bash shell) or the <code dir="ltr">limit -c</code> command (C shell). If the output from this command is not unlimited, the core dump file size might not be large enough. If this is the case, you will get truncated core dumps or no core dump at all. In addition, ensure that any scripts that are used to launch the VM or your application do not disable core dump creation.</p>
+</li>
+<li>
+<p>The process is running a <code dir="ltr">setuid</code> program and therefore the operating system will not dump core unless it is configured explicitly.</p>
+</li>
+<li>
+<p>Java specific: If the process received <code dir="ltr">SIGSEGV</code> or <code dir="ltr">SIGILL</code> but no core dump, it is possible that the process handled it. For example, HotSpot VM uses the <code dir="ltr">SIGSEGV</code> signal for legitimate purposes, such as throwing <code dir="ltr">NullPointerException</code>, deoptimization, and so forth. The signal is unhandled by the Java VM only if the current instruction (PC) falls outside Java VM generated code. These are the only cases in which HotSpot dumps core.</p>
+</li>
+<li>
+<p>Java specific: The JNI Invocation API was used to create the VM. The standard Java launcher was not used. The custom Java launcher program handled the signal by just consuming it and produced the log entry silently. This situation has occurred with certain Application Servers and Web Servers. These Java VM embedding programs transparently attempt to restart (fail over) the system after an abnormal termination. In this case, the fact that a core dump is not produced is a feature and not a bug.</p>
+</li>
+</ul>
+</div>
+
+<a id="CHDHIHBJ" name="CHDHIHBJ"/>
+<div id="JSTGD538">
+<h2><span>17.4.4</span> Collect Crash Dumps on Windows</h2>
+<p>On Windows operating system there are three types of crash dumps:</p>
+<ul>
+<li>
+<p>Dr. Watson logfile, which is a text error log file that includes faulting stack trace and a few other details.</p>
+</li>
+<li>
+<p>User minidump, which can be considered a "partial" core dump. It is not a complete core dump, because it does not contain all the useful memory pages of the process.</p>
+</li>
+<li>
+<p>Dr. Watson full-dump, which is equivalent to a Unix core dump. This dump contains most memory pages of the process (except for code pages).</p>
+</li>
+</ul>
+<p>When an unexpected exception occurs on Windows, the action taken depends on two values in the following registry key:</p>
+<pre dir="ltr" xml:space="preserve">
+\\HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\AeDebug
+</pre>
+<p>The two values are named <code dir="ltr">Debugger</code> and <code dir="ltr">Auto</code>. The <code dir="ltr">Auto</code> value indicates if the debugger specified in the value of the <code dir="ltr">Debugger</code> entry starts automatically when an application error occurs.</p>
+<ul>
+<li>
+<p>A value of <code dir="ltr">0</code> for <code dir="ltr">Auto</code> means that the system displays a message box notifying the user when an application error occurs.</p>
+</li>
+<li>
+<p>A value of <code dir="ltr">1</code> for <code dir="ltr">Auto</code> means that the debugger starts automatically.</p>
+</li>
+</ul>
+<p>The value of <code dir="ltr">Debugger</code> is the debugger command that is to be used to debug program errors.</p>
+<p>When a program error occurs, Windows examines the <code dir="ltr">Auto</code> value and if the value is <code dir="ltr">0</code> it executes the command in the <code dir="ltr">Debugger</code> value. If the value for <code dir="ltr">Debugger</code> is a valid command, a message box is created with two buttons: <b>OK</b> and <b>Cancel</b>. If the user clicks <b>OK</b>, the program is terminated. If the user clicks <b>Cancel</b>, the specified debugger is started. If the value for the <code dir="ltr">Auto</code> entry is set to <code dir="ltr">1</code> and the value for the <code dir="ltr">Debugger</code> entry specifies the command for a valid debugger, the system automatically starts the debugger and does not generate a message box.</p>
+<p>The following are two ways to collect crash dump on Windows.</p>
+<ul>
+<li>
+<p><b>Configure Dr.Watson:</b></p>
+<p>The Dr. Watson debugger is used to create crash dump files. By default, the Dr. Watson debugger (drwtsn32.exe) is installed into the Windows system folder (<span>%SystemRoot%</span>\System32).</p>
+<p>To install Dr. Watson as the postmortem debugger, run the following command:</p>
+<pre dir="ltr" xml:space="preserve">
+drwtsn32 -i
+</pre>
+<p>To configure name and location of crash dump files, run <code dir="ltr">drwtsn32</code> without any options.</p>
+<p>In the Dr. Watson GUI window, make sure that the <b>Create Crash Dump File</b> check box is selected and that the crash dump file path and log file path are configured in their respective text fields.</p>
+<p>Dr. Watson may be configured to create a full dump using the registry. The registry key is shown in <a href="#CHDBEGBF">Example 17-4</a>.</p>
+<div id="JSTGD539"><a id="CHDBEGBF" name="CHDBEGBF"/>
+<p>Example 17-4 Registry Key to Create a Full Dump</p>
+<pre dir="ltr" xml:space="preserve">
+System Key: [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\DrWatson]
+Entry Name: CreateCrashDump
+Value: (0 = disabled, 1 = enabled)
+</pre></div>
+
+<p><i>Note:</i> If the application handles the exception, then the registry-configured debugger is not invoked. In that case it might be appropriate to use the <code dir="ltr">-XX:+ShowMessageBoxOnError</code> command-line option to force the process to wait for user intervention on fatal error conditions.</p>
+</li>
+<li>
+<p><b>Force a crash dump:</b></p>
+<p>On the Windows operating system, the <code dir="ltr">userdump</code> command-line utility can be used to force a Dr. Watson dump of a running process. The <code dir="ltr">userdump</code> utility does not ship with Windows but instead is released as a component of the OEM Support Tools package.</p>
+<p>An alternative way to force a crash dump is to use the <code dir="ltr">windbg</code> debugger. The main advantage of using <code dir="ltr">windbg</code> is that it can attach to a process in a non-invasive manner (that is, read-only). Normally Windows terminates a process after a crash dump is obtained but with the non-invasive attach it is possible to obtain a crash dump and let the process continue. To attach the debugger non-invasively requires selecting the <b>Attach to Process</b> option and the <b>Noninvasive</b> checkbox.</p>
+<p>When the debugger is attached, a crash dump can be obtained using the command shown in <a href="#CHDIDEDD">Example 17-5</a>.</p>
+<div id="JSTGD540"><a id="CHDIDEDD" name="CHDIDEDD"/>
+<p>Example 17-5 Get a Crash Dump</p>
+<pre dir="ltr" xml:space="preserve">
+.dump /f crash.dmp
+</pre></div>
+
+<p>The <code dir="ltr">windbg</code> debugger is included in the "Debugging Tools for Windows" download.</p>
+<p>An additional utility in this download is the <code dir="ltr">dumpchk.exe</code> utility, which can verify that a memory dump file has been created correctly.</p>
+<p>Both <code dir="ltr">userdump.exe</code> and <code dir="ltr">windbg</code> require the pid of the process. The <code dir="ltr">userdump -p</code> command lists the process and program for all processes. This is useful if you know that the application is started with the <code dir="ltr">java.exe</code> launcher. However, if a custom launcher is used (embedded VM), it might be difficult to recognize the process. In that case you can use the <code dir="ltr">jps</code> command-line utility as it lists the pids of the Java processes only.</p>
+<p>As with Oracle Solaris and Linux operating systems, you can also use the <code dir="ltr">-XX:+ShowMessageBoxOnError</code> command-line option on Windows. When a fatal error is encountered, the process shows a message box and waits for a <code dir="ltr">yes</code> or <code dir="ltr">no</code> response from the user.</p>
+<p>Before clicking <b>Yes</b> or <b>No</b>, you can use the <code dir="ltr">userdump.exe</code> utility to generate the Dr. Watson dump for the Java process. This utility can also be used in cases when the process appears to be hung.</p>
+</li>
+</ul>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="bugreports003.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="appendix.html">
+                Next</a><hr/>
+
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

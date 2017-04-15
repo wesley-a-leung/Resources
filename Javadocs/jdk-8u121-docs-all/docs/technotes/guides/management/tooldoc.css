@@ -1,0 +1,13 @@
+body { background-color: white }
+p { margin-left: 0.5in }
+pre { margin-left: 0.75in }
+li, li pre, li p { margin-left: 0.25in }
+dt { margin-left: 0.5in }
+dd { margin-left: 0.75in; margin-top: 0.1in; margin-bottom: 0.1in }
+
+th { font-family:Arial,Helvetica,sans-serif; background: #cccccc }
+td { font-family:Arial,Helvetica,sans-serif; font-size: 80% }
+td code { font-family:Courier New, Courier, monospace; font-size: 100% }
+caption { font-family:Arial,Helvetica,sans-serif; font-weight: bold; margin-bottom: 1em }
+
+

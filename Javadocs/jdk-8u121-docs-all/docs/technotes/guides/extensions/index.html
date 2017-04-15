@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>The Extension Mechanism</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>The Extension Mechanism for Support of Optional Packages</h1>
+<p><strong>This feature has been deprecated and will be removed in a future release.</strong></p>
+
+<!-- Body text begins here -->
+<p>Optional packages are packages of classes (and any associated
+native code) that application developers can use to extend the
+functionality of the core platform. The extension mechanism allows
+the Java virtual machine (VM) to use the classes of the optional
+extension in much the same way as the VM uses classes in the Java
+Platform. The extension mechanism also provides a way for needed
+optional packages to be retrieved from specified URLs when they are
+not already installed in the JDK or JRE.</p>
+<h2>Overview</h2>
+<p><a href="extensions.html">Overview</a> - What optional packages
+are and how to use them.</p>
+<h2>API Specification</h2>
+<p>The following classes play a role in the extension
+mechanism:</p>
+<ul>
+<li><a href=
+"../../../api/java/lang/ClassLoader.html"><b>java.lang.ClassLoader</b></a></li>
+<li><a href=
+"../../../api/java/lang/Package.html"><b>java.lang.Package</b></a></li>
+<li><a href=
+"../../../api/java/lang/Thread.html"><b>java.lang.Thread</b></a></li>
+<li><a href=
+"../../../api/java/net/JarURLConnection.html"><b>java.net.JarURLConnection</b></a></li>
+<li><a href=
+"../../../api/java/net/URLClassLoader.html"><b>java.net.URLClassLoader</b></a></li>
+<li><a href=
+"../../../api/java/security/SecureClassLoader.html"><b>java.security.SecureClassLoader</b></a></li>
+</ul>
+<p>See also the <a href="spec.html#relatedapis">Related APIs</a>
+section of the mechanism specification for notes on these APIs.</p>
+<h2>Tutorials and Programmer's Guides</h2>
+<p>Located on the Java Software website:</p>
+<ul>
+<li><b><a href="http://docs.oracle.com/javase/tutorial/ext/">The
+Extension Mechanism</a></b> trail of the Java Tutorial.</li>
+</ul>
+<h2>API Enhancements</h2>
+<p>For details, see <a href=
+"enhancements.html">Enhancements.</a></p>
+<!-- 
+<p>Enhancements to the 
+extension mechanism in version 1.3 included an 
+extended set of manifest attributes that can be used for 
+checking vendor and versioning information of installed optional packages. 
+If an applet requires an optional package that isn't installed, or that 
+is installed but has the wrong version number or is not from 
+the appropriate vendor, the Java Plug-in can download the 
+needed extension from a specified URL.  For more information, 
+see <a href=versioning.html><b>Optional-Package Versioning</b></a>.
+-->
+<h2>More Information</h2>
+<p><a href="spec.html">Extension Mechanism Architecture</a> - Notes
+on the extension mechanism API and how optional packages use the
+Jar file format.</p>
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

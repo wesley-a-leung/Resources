@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Dynamic code downloading using Java RMI</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Dynamic code downloading using Java RMI<br />
+(Using the java.rmi.server.codebase Property)</h1>
+<hr />
+<p>This tutorial is organized as follows:</p>
+<ol>
+<li><a href="#section1">Starting out</a></li>
+<li><a href="#section2">What is a codebase?</a></li>
+<li><a href="#section3">How does it work?</a></li>
+<li><a href="#section4">Using codebase in Java RMI for more than
+just stub downloading</a></li>
+<li><a href="#section5">Command-line examples</a></li>
+<li><a href="#section6">Troubleshooting tips</a></li>
+</ol>
+<hr />
+<a name="section1" id="section1"></a>
+<h2>1.0 Starting out</h2>
+<p>One of the most significant capabilities of the Java
+platform is the ability to dynamically download Java software from
+any Uniform Resource Locator (URL) to a virtual machine (VM)
+running in a separate process, usually on a different physical
+system. The result is that a remote system can run a program, for
+example an applet, which has never been installed on its disk. For
+the first few sections of this document, codebase with regard to
+applets will be discussed in order to help describe codebase with
+regard to Java Remote Method Invocation (Java RMI).</p>
+<p>For example, a VM running from within a web browser can download
+the bytecodes for subclasses of <code>java.applet.Applet</code> and
+any other classes needed by that applet. The system on which the
+browser is running has most likely never run this applet before,
+nor installed it on its disk. Once all the necessary classes have
+been downloaded from the server, the browser can start the
+execution of the applet program using the local resources of the
+system on which the client browser is running.</p>
+<p>Java RMI takes advantage of this capability to download and
+execute classes and on systems where those classes have never been
+installed on disk. Using the Java RMI API any VM, not only those in
+browsers, can download any Java class file including specialized
+Java RMI stub classes, which enable the execution of method calls
+on a remote server using the server system's resources.</p>
+<p>The notion of a codebase originates from the use of <code class=
+"Code">ClassLoader</code>s in the Java programming language. When a
+Java program uses a <code class="Code">ClassLoader</code>, that
+class loader needs to know the location(s) from which it should be
+allowed to load classes. Usually, a class loader is used in
+conjunction with an HTTP server that is serving up compiled classes
+for the Java platform. Most likely, the first <code class=
+"Code">ClassLoader</code>/codebase pairing that you came into
+contact with was the <code class="Code">AppletClassLoader</code>,
+and the &quot;codebase&quot; part of the <code class=
+"Code">&lt;applet&gt;</code> HTML tag, so this tutorial will assume
+that you have some experience with Java RMI programming, as well as
+writing HTML files that contain applet tags. For example, the HTML
+source will contain something like:</p>
+<pre class="codeblock">
+&lt;applet height=100 width=100 codebase=&quot;myclasses/&quot; code=&quot;My.class&quot;&gt;
+        &lt;param name=&quot;ticker&quot;&gt;
+&lt;/applet&gt;
+</pre>
+<p><a name="section2" id="section2"></a></p>
+<h2>2.0 What is a codebase?</h2>
+<p>A codebase can be defined as a source, or a place, from which to
+load classes into a virtual machine. For example, if you invited a
+new friend over for dinner, you would need to give that friend
+directions to the place where you lived, so that he or she could
+locate your house. Similarly, you can think of a codebase as the
+directions that you give to a VM, so it can find your [potentially
+remote] classes.</p>
+<p>You can think of your <code class="Code">CLASSPATH</code> as a
+&quot;local codebase&quot;, because it is the list of places on
+disk from which you load local classes. When loading classes from a
+local disk-based source, your <code class="Code">CLASSPATH</code>
+variable is consulted. Your <code class="Code">CLASSPATH</code> can
+be set to take either relative or absolute path names to
+directories and/or archives of class files. So just as <code class=
+"Code">CLASSPATH</code> is a kind of &quot;local codebase&quot;,
+the codebase used by applets and remote objects can be thought of
+as a &quot;remote codebase&quot;. <a name="section3" id=
+"section3"></a></p>
+<h2>3.0 How does it work?</h2>
+<h3>3.1 How codebase is used in applets</h3>
+<p>To interact with an applet, that applet and any classes that it
+needs to run must be accessible by remote clients. While applets
+can be accessed from &quot;<code>ftp://</code>&quot; or local
+&quot;<code>file:///</code>&quot; URLs, they are usually accessed
+from a remote HTTP server.</p>
+<ol>
+<li>The client browser requests an applet class that is not found
+in the client's <code class="Code">CLASSPATH</code></li>
+<li>The class definition of the applet (and any other class(es)
+that it needs) is downloaded from the server to the client using
+HTTP</li>
+<li>The applet executes on the client</li>
+</ol>
+<img src="images/codebase-1.gif" alt=
+"illustrates three steps above" />
+<p>Figure 1: Downloading applets</p>
+
+<p>The applet's codebase is always relative to the URL of the HTML
+page in which the <code class="Code">&lt;applet&gt;</code> tag is
+contained.</p>
+<h3>3.2 How codebase is used in Java RMI</h3>
+<p>Using Java RMI, applications can create remote objects that
+accept method calls from clients in other VMs. In order for a
+client to call methods on a remote object, the client must have a
+way to communicate with the remote object. Rather than having to
+program the client to speak the remote object's protocol, Java RMI
+uses special classes called stubs that can be downloaded to the
+client that are used to communicate with (make method calls on) the
+remote object. The <code>java.rmi.server.codebase</code> property
+value represents one or more URL locations from which these stubs
+(and any classes needed by the stubs) can be downloaded.</p>
+<p>Like applets, the classes needed to execute remote method calls
+can be downloaded from &quot;<code class=
+"Code">file:///</code>&quot; URLs, but like applets, a
+&quot;<code class="Code">file:///</code>&quot; URL generally
+requires that the client and the server reside on the same physical
+host, unless the file system referred to by the URL is made
+available using some other protocol, such as NFS.</p>
+<p>Generally, the classes needed to execute remote method calls
+should be made accessible from a network resource, such as an HTTP
+or FTP server.</p>
+<img src="images/codebase-2.gif" alt=
+"illustrates the first 5 steps of the stub downloadling process, as listed below" />
+<p>Figure 2: Downloading Java RMI stubs</p>
+
+<ol>
+<li>The remote object's codebase is specified by the remote
+object's server by setting the
+<code>java.rmi.server.codebase</code> property. The Java RMI server
+registers a remote object, bound to a name, with the Java RMI
+registry. The codebase set on the server VM is annotated to the
+remote object reference in the Java RMI registry.</li>
+<li>The Java RMI client requests a reference to a named remote
+object. The reference (the remote object's stub instance) is what
+the client will use to make remote method calls to the remote
+object.</li>
+<li>The Java RMI registry returns a reference (the stub instance)
+to the requested class. If the class definition for the stub
+instance can be found locally in the client's <code class=
+"Code">CLASSPATH</code> , which is always searched before the
+codebase, the client will load the class locally. However, if the
+definition for the stub is not found in the client's
+<code>CLASSPATH</code>, the client will attempt to retrieve the
+class definition from the remote object's codebase.</li>
+<li>The client requests the class definition from the codebase. The
+codebase the client uses is the URL that was annotated to the stub
+instance when the stub class was loaded by the registry. Back in
+step 1, the annotated stub for the exported object was then
+registered with the Java RMI registry bound to a name.</li>
+<li>The class definition for the stub (and any other class(es) that
+it needs) is downloaded to the client.
+<dl>
+<dd><b>Note:</b> <i>Steps 4 and 5 are the sames steps that the
+registry took to load the remote object class, when the remote
+object was bound to a name in (registered with) the Java RMI
+registry. When the registry attempted to load the remote object's
+stub class, it requested the class definition from the codebase
+associated with that remote object.</i></dd>
+</dl>
+</li>
+<li>Now the client has all the information that it needs to invoke
+remote methods on the remote object. The stub instance acts as a
+proxy to the remote object that exists on the server; so unlike the
+applet which uses a codebase to execute code in its local VM, the
+Java RMI client uses the remote object's codebase to execute code
+in another, potentially remote VM, as illustrated in Figure 3:</li>
+</ol>
+<img src="images/codebase-3.gif" alt=
+"illustrates the final step of the above procedure" />
+<p>Figure 3: Java RMI client making a remote method call</p>
+
+<a name="section4" id="section4"></a>
+<h2>4.0 Using codebase in Java RMI for more than just stub
+downloading</h2>
+<p>In addition to downloading stubs and their associated classes to
+clients, the <code class="Code">java.rmi.server.codebase</code>
+property can be used to specify a location from which any class,
+not only stubs, can be downloaded.</p>
+<p>When a client makes a method call to a remote object, the method
+that it calls could be written to accept no arguments or a number
+of arguments. There are three distinct cases that may occur, based
+on the data type(s) of the method argument(s).</p>
+<p>In the first case, all of the method parameters (and return
+value) are primitive data types, so the remote object knows how to
+interpret them as method parameters, and there is no need to check
+its <code class="Code">CLASSPATH</code> or any codebase.</p>
+<p>In the second case, at least one remote method parameter or the
+return value is an object, for which the remote object can find the
+class definition locally in its <code class=
+"Code">CLASSPATH</code>.</p>
+<p>In the third case (shown as Step 6, in Figure 4), the remote
+method receives an object instance, for which the remote object
+cannot find the class definition locally in its
+<code>CLASSPATH</code>. This type of remote method call is
+illustrated in Figure 4. The class of the object sent by the client
+will be a subtype of the declared parameter type. A subtype is
+either:</p>
+<ul>
+<li>An implementation of the interface that is declared as the
+method parameter (or return) type</li>
+<li>A subclass of the class that is declared as the method
+parameter (or return) type</li>
+</ul>
+<img src="images/codebase-4.gif" alt=
+"Illustrates passing an unknown subtype as a method parameter, as described above and below." />
+<p>Figure 4: Java RMI client making a remote method call, passing
+an unknown subtype as a method parameter</p>
+
+<p>7. Like the applet's codebase, the client-specified codebase is
+used to download <code class="Code">Remote</code> classes,
+non-remote classes, and interfaces to other VMs. If the
+<code>codebase</code> property is set on the client application,
+then that codebase is annotated to the subtype instance when the
+subtype class is loaded by the client. If the codebase is not set
+on the client, the remote object will mistakenly use its own
+codebase. <a name="section5" id="section5"></a></p>
+<h2>5.0 Command-line examples</h2>
+<p>In the case of an applet, the applet codebase value is embedded
+in an HTML page, as we saw in the HTML example in the first section
+of this tutorial.</p>
+<p>In the case of Java RMI codebase, rather than having a reference
+to the class embedded in an HTML page, the client first contacts
+the Java RMI registry for a reference to the remote object. Because
+the remote object's codebase can refer to any URL, not just one
+that is relative to a known URL, the value of the Java RMI codebase
+must be an absolute URL to the location of the stub class and any
+other classes needed by the stub class. This value of the
+<code>codebase</code> property can refer to:</p>
+<ul>
+<li>The URL of a directory in which the classes are organized in
+package-named sub-directories</li>
+<li>The URL of a JAR file in which the classes are organized in
+package-named directories</li>
+<li>A space-delimited string containing multiple instances of JAR
+files and/or directories that meet the criteria above</li>
+</ul>
+<p><b>Note:</b> When the <code>codebase</code> property value is
+set to the URL of a <i>directory</i>, the value must be terminated
+by a &quot;/&quot;.</p>
+<h3>Examples</h3>
+<p>If the location of your downloadable classes is on an HTTP
+server named &quot;webvector&quot;, in the directory
+&quot;export&quot; (under the web root), your <code>codebase</code>
+property setting might look like this:</p>
+<pre class="codeblock">
+        -Djava.rmi.server.codebase=http://webvector/export/
+</pre>
+<p>If the location of your downloadable classes is on an HTTP
+server named &quot;webline&quot;, in a JAR file named
+&quot;mystuff.jar&quot;, in the directory &quot;public&quot; (under
+the web root), your <code>codebase</code> property setting might
+look like this:</p>
+<pre class="codeblock">
+        -Djava.rmi.server.codebase=http://webline/public/mystuff.jar
+</pre>
+<p>Now let's suppose that the location of your downloadable classes
+has been split between two JAR files, &quot;myStuff.jar&quot; and
+&quot;myOtherStuff.jar&quot;. If these JAR files are located on
+different servers (named &quot;webfront&quot; and
+&quot;webwave&quot;), your <code>codebase</code> property setting
+might look like this:</p>
+<pre class="codeblock">
+        -Djava.rmi.server.codebase=&quot;http://webfront/myStuff.jar http://webwave/myOtherStuff.jar&quot;
+</pre>
+<p><a name="section6" id="section6"></a></p>
+<h2>6.0 Troubleshooting tips</h2>
+<p>Any serializable class, including Java RMI stubs, can be
+downloaded if your Java RMI programs are configured properly. Here
+are the conditions under which dynamic stub downloading will
+work:</p>
+<ol>
+<li type="A">The stub class and any of the classes that the stub
+relies on are served up from a URL reachable from the client.</li>
+<li type="A">The <code class="Code">java.rmi.server.codebase</code>
+property has been set on the server program (or in the case of
+activation, the &quot;setup&quot; program) that makes the call to
+<code class="Code">bind</code> or <code class="Code">rebind</code>,
+such that:
+<ul>
+<li>The value of the <code>codebase</code> property is the URL in
+step A
+<p>and</p>
+</li>
+<li>If the URL specified as the value of the <code>codebase</code>
+property is a directory, it must end in a trailing
+&quot;/&quot;</li>
+</ul>
+<p><a name="sixStepC" id="sixStepC"></a></p>
+</li>
+<li type="A">The <code class="Code">rmiregistry</code> cannot find
+the stub class or any of the classes that the stub relies on in its
+<code class="Code">CLASSPATH</code>. This is so the codebase gets
+annotated to the stub when the registry does its class load of the
+stub, as a result of calls to <code class="Code">bind</code> or
+<code class="Code">rebind</code> in the server or setup code.</li>
+<li type="A">The client has installed a <code class=
+"Code">SecurityManager</code> that allows the stub to be
+downloaded. This means that the client must also have a properly configured
+security policy file.</li>
+</ol>
+<p>There are two common problems associated with the <code class=
+"Code">java.rmi.server.codebase</code> property, which are
+discussed next.</p>
+<h3 class="Heading2">6.1 If you encounter a problem running your
+Java RMI server</h3>
+<p>The first problem you might encounter is the receipt of a
+<code class="Code">ClassNotFoundException</code> when attempting to
+<code class="Code">bind</code> or <code class="Code">rebind</code>
+a remote object to a name in the registry. This exception is
+usually due to a malformed <code class="Code">codebase</code>
+property, resulting in the registry not being able to locate the
+remote object's stubs or other classes needed by the stub.</p>
+<p>It is important to note that the remote object's stub implements
+all the same interfaces as the remote object itself, so those
+interfaces, as well as any other custom classes declared as method
+parameters or return values, must also be available for download
+from the specified codebase.</p>
+<p>Most frequently, this exception is thrown as a result of
+omitting the trailing slash from the URL value of the property.
+Other reasons would include: the value of the property is not a
+URL; the path to the classes specified in the URL is incorrect or
+misspelled; the stub class or any other necessary classes are not
+all available from the specified URL.</p>
+<p>The exception that you may encounter in such a case would look
+like this:</p>
+<pre class="codeblock">
+java.rmi.ServerException: RemoteException occurred in server thread; nested exception is: 
+        java.rmi.UnmarshalException: error unmarshalling arguments; nested exception is:
+        java.lang.ClassNotFoundException: examples.callback.MessageReceiverImpl_Stub
+java.rmi.UnmarshalException: error unmarshalling arguments; nested exception is:
+        java.lang.ClassNotFoundException: examples.callback.MessageReceiverImpl_Stub
+java.lang.ClassNotFoundException: examples.callback.MessageReceiverImpl_Stub
+        at sun.rmi.transport.StreamRemoteCall.exceptionReceivedFromServer(Compiled Code)
+        at sun.rmi.transport.StreamRemoteCall.executeCall(Compiled Code)
+        at sun.rmi.server.UnicastRef.invoke(Compiled Code)
+        at sun.rmi.registry.RegistryImpl_Stub.rebind(Compiled Code)
+        at java.rmi.Naming.rebind(Compiled Code)
+        at examples.callback.MessageReceiverImpl.main(Compiled Code)
+RemoteException occurred in server thread; nested exception is:
+        java.rmi.UnmarshalException: error unmarshalling arguments; nested exception is: 
+        java.lang.ClassNotFoundException: examples.callback.MessageReceiverImpl_Stub
+</pre>
+<h3 class="Heading2">6.2 If you encounter a problem running your
+Java RMI client</h3>
+<p>The second problem you could encounter is the receipt of a
+<code class="Code">ClassNotFoundException</code> when attempting to
+<code class="Code">lookup</code> a remote object in the registry.
+If you receive this exception in a stacktrace resulting from an
+attempt to run your Java RMI client code, then your problem is the
+<code class="Code">CLASSPATH</code> with which your Java RMI
+registry was started. See <a href="#sixStepC">requirement C in
+section 6.0</a>. Here is what the exception will look like:</p>
+<pre class="codeblock">
+java.rmi.UnmarshalException: Return value class not found; nested exception is:
+        java.lang.ClassNotFoundException: MyImpl_Stub
+        at sun.rmi.registry.RegistryImpl_Stub.lookup(RegistryImpl_Stub.java:109
+        at java.rmi.Naming.lookup(Naming.java:60)
+        at RmiClient.main(MyClient.java:28)
+</pre>
+<hr />
+<p><!-- Body text ends here --></p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

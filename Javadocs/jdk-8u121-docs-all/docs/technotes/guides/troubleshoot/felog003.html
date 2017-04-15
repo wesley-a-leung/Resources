@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Header Format</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:29Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="felog002.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="felog004.html">
+                Next</a><hr/><a id="BABFFJBB" name="BABFFJBB"/>
+<div id="JSTGD546">
+<h1>Header Format</h1>
+<p>The header section at the beginning of every fatal error log file contains a brief description of the problem. The header is also printed to standard output and may show up in the application's output log.</p>
+<p>The header includes a link to the HotSpot Virtual Machine Error Reporting Page, where the user can submit a bug report.</p>
+<div id="JSTGD547"><a id="BABEJBCA" name="BABEJBCA"/>
+<p>Example A-1 Sample Header from a Crash</p>
+<pre dir="ltr" xml:space="preserve">
+#
+# An unexpected error has been detected by Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x417789d7, pid=21139, tid=1024
+#
+# Java VM: Java HotSpot(TM) Client VM (1.6.0-rc-b63 mixed mode, sharing)
+# Problematic frame:
+# C  [libNativeSEGV.so+0x9d7]
+
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+#
+</pre></div>
+
+<p><a href="#BABEJBCA">Example A-1</a> shows that the VM crashed on an unexpected signal.</p>
+<p>The next line describes the signal type, program counter (pc) that caused the signal, process ID and thread ID, as shown in <a href="#BABJCBIH">Example A-2</a>.</p>
+<div id="JSTGD548"><a id="BABJCBIH" name="BABJCBIH"/>
+<p>Example A-2 Header Format Second Line</p>
+<pre dir="ltr" xml:space="preserve">
+#  SIGSEGV (0xb) at pc=0x417789d7, pid=21139, tid=1024
+      |      |           |             |         +--- thread id
+      |      |           |             +------------- process id
+      |      |           +--------------------------- program counter
+      |      |                                        (instruction pointer)
+      |      +--------------------------------------- signal number
+      +---------------------------------------------- signal name
+</pre></div>
+
+<p>The next line contains the VM version (Client VM or Server VM), an indication whether the application was run in mixed or interpreted mode, and an indication whether class file sharing was enabled as shown in <a href="#BABIBGDB">Example A-3</a>.</p>
+<div id="JSTGD549"><a id="BABIBGDB" name="BABIBGDB"/>
+<p>Example A-3 Header Format Third Line</p>
+<pre dir="ltr" xml:space="preserve">
+# Java VM: Java HotSpot(TM) Client VM (1.6.0-rc-b63 mixed mode, sharing)
+</pre></div>
+
+<p>The next information is the function frame that caused the crash, as shown in <a href="#BABEDJIE">Example A-4</a>.</p>
+<div id="JSTGD550"><a id="BABEDJIE" name="BABEDJIE"/>
+<p>Example A-4 Header Format Fourth Line</p>
+<pre dir="ltr" xml:space="preserve">
+# Problematic frame:
+# C  [libNativeSEGV.so+0x9d7]
+  |              +-- Same as pc, but represented as library name and offset.
+  |                  For position-independent libraries (JVM and most shared
+  |                  libraries), it is possible to inspect the instructions
+  |                  that caused the crash without a debugger or core file
+  |                  by using a disassembler to dump instructions near the
+  |                  offset.
+  +----------------- Frame type
+</pre></div>
+
+<p>In this example, the "C" frame type indicates a native C frame. <a href="#BABCJFFD">Table A-1</a> shows the possible frame types.</p>
+<div id="JSTGD551"><a id="sthref68" name="sthref68"/><a id="BABCJFFD" name="BABCJFFD"/>
+<p>Table A-1 Frame Types</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="This table contains a list of possible frame types and their descriptions." title="Frame Types" width="100%">
+<col width="21%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t5" valign="bottom">Frame Type</th>
+<th align="left" id="r1c2-t5" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r2c1-t5">
+<p>C</p>
+</td>
+<td align="left" headers="r2c1-t5 r1c2-t5">
+<p>Native C frame</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r3c1-t5">
+<p>j</p>
+</td>
+<td align="left" headers="r3c1-t5 r1c2-t5">
+<p>Interpreted Java frame</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r4c1-t5">
+<p>V</p>
+</td>
+<td align="left" headers="r4c1-t5 r1c2-t5">
+<p>VM frame</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r5c1-t5">
+<p>v</p>
+</td>
+<td align="left" headers="r5c1-t5 r1c2-t5">
+<p>VM-generated stub frame</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r6c1-t5">
+<p>J</p>
+</td>
+<td align="left" headers="r6c1-t5 r1c2-t5">
+<p>Other frame types, including compiled Java frames</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p>Internal errors will cause the VM error handler to generate a similar error dump. However, the header format is different. Examples of internal errors are <code dir="ltr">guarantee()</code> failure, assertion failure, <code dir="ltr">ShouldNotReachHere()</code>, and so forth. <a href="#BABJEDIB">Example A-5</a> shows the header format for an internal error.</p>
+<div id="JSTGD552"><a id="BABJEDIB" name="BABJEDIB"/>
+<p>Example A-5 Header Format for an Internal Error</p>
+<pre dir="ltr" xml:space="preserve">
+#
+# An unexpected error has been detected by HotSpot Virtual Machine:
+#
+# Internal Error (4F533F4C494E55583F491418160E43505000F5), pid=10226, tid=16384
+#
+# Java VM: Java HotSpot(TM) Client VM (1.6.0-rc-b63 mixed mode)
+</pre></div>
+
+<p>In the above header, there is no signal name or signal number. Instead the second line now contains <code dir="ltr">Internal Error</code> and a long hexadecimal string. This hexadecimal string encodes the source module and line number where the error was detected. In general this "error string" is useful only to engineers working on the HotSpot Virtual Machine.</p>
+<p>The error string encodes a line number and therefore it changes with each code change and release. A crash with a given error string in one release (for example, 1.6.0) might not correspond to the same crash in an update release (for example, 1.6.0_01), even if the strings match.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+Do not assume that a workaround or solution that worked in one situation associated with a given error string will work in another situation associated with that same error string. Note the following facts:
+<ul>
+<li>
+<p>Errors with the same root cause might have different error strings.</p>
+</li>
+<li>
+<p>Errors with the same error string might have completely different root causes.</p>
+</li>
+</ul>
+<p>Therefore, the error string should not be used as the sole criterion when troubleshooting bugs.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="felog002.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="felog004.html">
+                Next</a><hr/>
+
+
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

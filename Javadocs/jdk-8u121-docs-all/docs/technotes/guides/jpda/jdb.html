@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Platform Debugger Architecture</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<a name="top" id="top"></a>
+<h1>Java Platform Debugger Architecture</h1>
+<p>As a demonstration of the Java Debug Interface (JDI), we are
+providing source code for the <b>jdb</b> debugger.</p>
+<h2>jdb man pages</h2>
+<a href="../../tools/windows/jdb.html"><b>jdb</b> man pages for
+Windows</a>
+<p><a href="../../tools/unix/jdb.html"><b>jdb</b> man pages for
+Solaris, Linux, or Mac OS X</a></p>
+<h2>Invoking jdb</h2>
+<p>The <b>jdb</b> sample can be run by executing:</p>
+<pre class="codeblock">
+   java tty.TTY &lt;options&gt;.. &lt;class-name&gt;<br />
+</pre>
+where &lt;class-name&gt; is the name you would normally place on
+the <code>java</code> command line. The <code>-help</code> option
+provides information on options. Note: Be sure that the
+<tt>lib/tools.jar</tt> file is on the class path used to invoke
+<tt>tty.TTY</tt>. (The <tt>tools.jar</tt> file includes the
+<a href="examples.html#SETUP">JDI Library</a>.) The compiled
+<b>jdb</b> class files must also be on the class path.
+<p>For more information on invoking and connecting see <a href=
+"conninv.html">Connection and Invocation Details</a>, and
+particularly the section on <b>jdb</b>.</p>
+<h2>Source for jdb</h2>
+Full source code for <b>jdb</b> is included as part of the example
+code in the Java SE demo package that you can download from the
+<a href=
+"http://www.oracle.com/technetwork/java/javase/downloads/index.html">
+Java SE Downloads</a> page. The <code>lib/jpda</code> directory is
+included in <code>examples.jar</code>. (Use <tt>jar xvf
+examples.jar</tt> to extract the contents of
+<tt>examples.jar</tt>.) Note: this file also includes the source
+for <a href="javadt.html"><code>javadt</code></a>. Source code of
+these example applications is included to provide concrete examples
+for debugger developers. Example code may be used, modified and
+redistributed by debugger developers providing they adhere to the
+terms in the copyright notice.
+<p><b>jdb</b> uses the following packages (found in the
+<code>examples.jar</code> file):</p>
+<dl>
+<dt><code>tty</code></dt>
+<dd>Application code</dd>
+<dt><code>expr</code></dt>
+<dd>Expression processing code</dd>
+</dl>
+<h2>Building jdb</h2>
+To completely rebuild the <b>jdb</b> classes from the provided
+source files, you need only to compile them. No special options are
+required, aside from those which set your classpath to include the
+<a href="examples.html#SETUP">JDI Library</a>. However, if want to
+modify the expression parser in the file <code>Expr.jj</code>, you
+will need the <a href="http://javacc.java.net/">JavaCC Parser
+Generator</a>. <!-- end main page content -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

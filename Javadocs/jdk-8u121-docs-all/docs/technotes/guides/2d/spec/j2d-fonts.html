@@ -1,0 +1,1559 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en">
+<head>
+<meta http-equiv="Content-Type" content=
+"text/html; charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="GENERATOR" content=
+"Quadralay WebWorks Publisher Professional Edition 7.0.2.1128" />
+<meta name="TEMPLATEBASE" content="book-no-index" />
+<meta name="LASTUPDATED" content="Tue Oct 15 15:09:38 2002" />
+<title>Fonts and Text Layout</title>
+<link rel="Previous" href="j2d-geom.html" />
+<link rel="Next" href="j2d-image.html" />
+<link rel="Index" href="j2d-print.html" />
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<table width="100%" summary="">
+<tr>
+<td align="left"><a accesskey="c" href=
+"j2d-bookTOC.html">Contents</a> | <a accesskey="p" href=
+"j2d-geom.html">Previous</a> | <a accesskey="n" href=
+"j2d-image.html">Next</a></td>
+</tr>
+</table>
+<a name="wp73057" id="wp73057"></a>
+<h2 class="pChapNum">Chapter &#160; &#160;4</h2>
+<a name="wp73059" id="wp73059"></a>
+<h2 class="pChapTitle">Fonts and Text Layout</h2>
+<a name="wp73060" id="wp73060"></a>
+<p class="pBody">You can use the Java 2D API transformation
+and drawing mechanisms with text strings. In addition, the Java 2D
+API provides text-related classes that support fine-grain font
+control and sophisticated text layout. These include an enhanced
+<code class="cCode">Font</code> class and the new <code class=
+"cCode">TextLayout</code> class.</p>
+<a name="wp72736" id="wp72736"></a>
+<p class="pBody">This chapter focuses on the new font and text
+layout capabilities supported through interfaces and classes in
+<code class="cCode">java.awt</code>, and <code class=
+"cCode">java.awt.font</code>. For more information
+about using these features, see the <a href="http://docs.oracle.com/javase/tutorial/2d/text/index.html">Working with Text APIs</a> lesson in the Java Tutorials.</p>
+<a name="wp74367" id="wp74367"></a>
+<p class="pBody">For information about text analysis and
+internationalization, refer to the <code class=
+"cCode">java.text</code> documentation and the &#8220;Writing
+Global Programs&#8221; track in the Java Tutorial. For information
+about using the text layout mechanisms implemented in Swing, see
+the <code class="cCode">java.awt.swing.text</code> documentation
+and &#8220;Using the JFC/Swing Packages&#8221; in the Java
+Tutorial.</p>
+<a name="wp62190" id="wp62190"></a>
+<h2 class="pHeading1">4.1 Interfaces and Classes</h2>
+<a name="wp68561" id="wp68561"></a>
+<p class="pBody">The following tables list the key font and text
+layout interfaces and classes. Most of these interfaces and classes
+are part of the <code class="cCode">java.awt.font</code> package.
+Some, like <code class="cCode">Font</code>, are part of the
+<code class="cCode">java.awt</code> package to maintain backward
+compatibility with earlier versions of the JDK.</p>
+<a name="wp66739" id="wp66739"></a>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left">
+<table border="0" cellpadding="7" id="wp62425" summary=
+"Font and Text Layout Interfaces">
+<thead>
+<tr align="center">
+<th id="h101"><a name="wp62425__1" id="wp62425__1"></a>
+<div class="pCellHeading">Interface</div>
+</th>
+<th id="h102"><a name="wp62427" id="wp62427"></a>
+<div class="pCellHeading">Description</div>
+</th>
+</tr>
+</thead>
+<tr align="left">
+<td headers="h101" align="left" valign="top"><a name="wp62429" id="wp62429"></a>
+<div class="pCellBody"><code class=
+"cCode">MultipleMaster</code></div>
+</td>
+<td headers="h102" align="left" valign="top"><a name="wp62542" id="wp62542"></a>
+<div class="pCellBody">Represents Type 1 Multiple Master fonts.
+Implemented by <code class="cCode">Font</code> objects that are
+multiple master fonts to enable access to multiple master design
+controls.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h101" align="left" valign="top"><a name="wp62433" id="wp62433"></a>
+<div class="pCellBody"><code class="cCode">OpenType</code></div>
+</td>
+<td headers="h102" align="left" valign="top"><a name="wp62546" id="wp62546"></a>
+<div class="pCellBody">Represents Open Type and True Type fonts.
+Implemented by <code class="cCode">Font</code> objects that are
+Open Type or True Type fonts to enable access to the font&#8217;s
+<code class="cCode">sfnt</code> tables.</div>
+</td>
+</tr>
+</table>
+</div>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<a name="wp66742" id="wp66742"></a>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left">
+<table border="0" cellpadding="7" id="wp62935" summary=
+"Font and Text Layout Classes">
+<thead>
+<tr align="center">
+<th id="h201"><a name="wp62935__1" id="wp62935__1"></a>
+<div class="pCellHeading">Class</div>
+</th>
+<th id="h202"><a name="wp62937" id="wp62937"></a>
+<div class="pCellHeading">Description</div>
+</th>
+</tr>
+</thead>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp63043" id="wp63043"></a>
+<div class="pCellBody"><code class="cCode">Font</code></div>
+<a name="wp74785" id="wp74785"></a>
+<div class="pCellBody">(<code class="cCode">java.awt)</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp63045" id="wp63045"></a>
+<div class="pCellBody">Represents an instance of a font face from
+the collection of font faces available on the host system. Supports
+the specification of detailed font information and provides access
+to information about the font and its glyphs.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp73090" id="wp73090"></a>
+<div class="pCellBody">FontRenderContext</div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp73092" id="wp73092"></a>
+<div class="pCellBody">Encapsulates the information necessary to
+correctly measure text.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp63078" id="wp63078"></a>
+<div class="pCellBody"><code class=
+"cCode">GlyphJustificationInfo</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp63080" id="wp63080"></a>
+<div class="pCellBody">Represents information about the
+justification properties of a glyph, such as weight, priority,
+absorb, and limit.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp63430" id="wp63430"></a>
+<div class="pCellBody"><code class=
+"cCode">GlyphMetrics</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp63432" id="wp63432"></a>
+<div class="pCellBody">Provides metrics for a single glyph.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp62968" id="wp62968"></a>
+<div class="pCellBody"><code class="cCode">GlyphVector</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp62970" id="wp62970"></a>
+<div class="pCellBody">A collection of glyphs and their
+positions.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp63442" id="wp63442"></a>
+<div class="pCellBody"><code class=
+"cCode">GraphicAttribute</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp63444" id="wp63444"></a>
+<div class="pCellBody">Base class for a <code class=
+"cCode">TextLayout</code> attribute that specifies a graphic to be
+embedded within text. Implemented by <code class=
+"cCode">ShapeGraphicAttribute</code> and <code class=
+"cCode">ImageGraphicAttribute</code>, which enable <code class=
+"cCode">Shapes</code> and <code class="cCode">Images</code> to be
+embedded in a <code class="cCode">TextLayout</code>. Can be
+subclassed to implement custom character replacement
+graphics.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp63452" id="wp63452"></a>
+<div class="pCellBody"><code class=
+"cCode">ImageGraphicAttribute</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp63454" id="wp63454"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">GraphicAttribute</code></div>
+<a name="wp66689" id="wp66689"></a>
+<div class="pCellBody">A <code class=
+"cCode">GraphicsAttribute</code> used to draw <code class=
+"cCode">Images</code> within a <code class=
+"cCode">TextLayout</code>.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp63456" id="wp63456"></a>
+<div class="pCellBody"><code class=
+"cCode">LineBreakMeasurer</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp63458" id="wp63458"></a>
+<div class="pCellBody">Breaks a block of text that spans multiple
+lines into<br />
+<code class="cCode">TextLayout</code> objects that fit within a
+specified line length.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp73120" id="wp73120"></a>
+<div class="pCellBody">LineMetrics</div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp73122" id="wp73122"></a>
+<div class="pCellBody">Provides access to the font metrics needed
+to lay out characters along a line and to lay out a set of lines.
+These metrics include ascent, descent, leading, height, and
+baseline information.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp63460" id="wp63460"></a>
+<div class="pCellBody"><code class=
+"cCode">ShapeGraphicAttribute</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp66688" id="wp66688"></a>
+<div class="pCellBody">Extends: <code class=
+"cCode">GraphicAttribute</code></div>
+<a name="wp63462" id="wp63462"></a>
+<div class="pCellBody">A <code class=
+"cCode">GraphicsAttribute</code> used to draw <code class=
+"cCode">Shapes</code> within a <code class=
+"cCode">TextLayout</code>.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp73072" id="wp73072"></a>
+<div class="pCellBody"><code class=
+"cCode">TextAttribute</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp73074" id="wp73074"></a>
+<div class="pCellBody">Defines attribute keys and values used for
+text rendering.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp62988" id="wp62988"></a>
+<div class="pCellBody"><code class="cCode">TextHitInfo</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp62990" id="wp62990"></a>
+<div class="pCellBody">Represents hit test information for
+characters in a <code class="cCode">TextLayout</code>.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp63000" id="wp63000"></a>
+<div class="pCellBody"><code class="cCode">TextLayout</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp63002" id="wp63002"></a>
+<div class="pCellBody">Implements: <code class=
+"cCode">Cloneable</code></div>
+<a name="wp63003" id="wp63003"></a>
+<div class="pCellBody">Provides an immutable graphical
+representation of styled character data, including bidirectional
+text.</div>
+</td>
+</tr>
+</table>
+</div>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<a name="wp62220" id="wp62220"></a>
+<h2 class="pHeading1">4.2 Font Concepts</h2>
+<a name="wp72771" id="wp72771"></a>
+<p class="pBody">The <code class="cCode">Font</code> class has been
+enhanced to support the specification of detailed font information
+and enable the use of sophisticated typographic features.</p>
+<a name="wp61786" id="wp61786"></a>
+<p class="pBody">A <code class="cCode">Font</code> object
+represents an instance of a font face from the collection of font
+faces available on the system. Examples of common font faces
+include <code class="cCode">Helvetica Bold</code> and <code class=
+"cCode">Courier Bold Italic</code>.</p>
+<a name="wp68534" id="wp68534"></a>
+<p class="pBody">Three names are associated with a <code class=
+"cCode">Font</code>&#8212;its logical name, family name, and font
+face name:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp68535"
+id="wp68535"></a>
+<div class="pBullet1">
+<ul>
+<li>A <code class="cCode">Font</code> object&#8217;s <em class=
+"cEmphasis">logical name</em> is a name mapped onto one of the
+specific fonts available on the platform. When specifying a <code class=
+"cCode">Font</code>, you should use the
+<em class="cEmphasis">font face name</em> instead of the logical
+name.You can get the logical name from the <code class=
+"cCode">Font</code> by calling <code class="cCode">getName</code>.
+To get a list of the logical names that are mapped onto the
+specific fonts available on a platform, call <code class=
+"cCode">java.awt.Toolkit.getFontList</code>.</li>
+</ul>
+</div>
+<a name="wp68533" id="wp68533"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>A <code class="cCode">Font</code> object&#8217;s <em class=
+"cEmphasis">family name</em> is the name of the font family that
+determines the typographic design across several faces, such as
+Helvetica. You retrieve the family name through the <code class=
+"cCode">getFamily</code> method.</li>
+</ul>
+</div>
+<a name="wp68536" id="wp68536"></a>
+<div class="pBullet1Last">
+<ul>
+<li>A <code class="cCode">Font</code> objects&#8217; <em class=
+"cEmphasis">font face name</em> refers to an actual font installed
+on the system. This is the name you should use when specifying a
+font in JDK. It&#8217;s often referred to as just the
+<em class="cEmphasis">font name</em>. You can retrieve the font
+name by calling <code class="cCode">getFontName</code>. To
+determine which font faces are available on the system, you can
+call <code class=
+"cCode">GraphicsEnvironment.getAllFonts</code>.</li>
+</ul>
+</div>
+</div>
+<a name="wp73181" id="wp73181"></a>
+<p class="pBody">You can access information about a <code class=
+"cCode">Font</code> through the <code class=
+"cCode">getAttributes</code> method. A <code class=
+"cCode">Font</code>&#8217;s attributes include its name, size,
+transform, and font features such as weight and posture.</p>
+<a name="wp73239" id="wp73239"></a>
+<p class="pBody">A <code class="cCode">LineMetrics</code> object
+encapsulates the measurement information associated with a
+<code class="cCode">Font</code>, such as its ascent, descent, and
+leading:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp73240"
+id="wp73240"></a>
+<div class="pBullet1">
+<ul>
+<li>A<em class="cEmphasis">scent</em> is the distance from the
+baseline to the ascender line. This distance represents the typical
+height of capital letters, but some characters might extend above
+the ascender line.</li>
+</ul>
+</div>
+<a name="wp69526" id="wp69526"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><em class="cEmphasis">Descent</em> is the distance from the
+baseline to the descender line. The lowest point of most characters
+will fall within the descent, but some characters might extend
+below the descender line.</li>
+</ul>
+</div>
+<a name="wp69531" id="wp69531"></a>
+<div class="pBullet1Last">
+<ul>
+<li><em class="cEmphasis">Leading</em> is the recommended distance
+from the bottom of the descender line to the top of the next
+line.</li>
+</ul>
+</div>
+</div>
+<a name="wp69518" id="wp69518"></a>
+<p class="pBody"></p>
+<div align="left"><img src="images/fontmetrics6.gif" height="161"
+width="478" alt="The previous context describes this graphic."
+border="0" hspace="0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp69504" id="wp69504"></a>
+<div class="pFigureCaption">Figure 4-1 Line Metrics<br />
+<br /></div>
+<a name="wp73260" id="wp73260"></a>
+<p class="pBody">This information is used to properly position
+characters along a line, and to position lines relative to one
+another. You can access these line metrics through the <code class=
+"cCode">getAscent</code>, <code class="cCode">getDescent</code>,
+and <code class="cCode">getLeading</code> methods. You can also
+access information about a <code class="cCode">Font</code>&#8217;s
+height, baseline, and underline and strikethrough characteristics
+through <code class="cCode">LineMetrics</code>.</p>
+<a name="wp73261" id="wp73261"></a>
+<h2 class="pHeading1">4.3 Text Layout Concepts</h2>
+<a name="wp68804" id="wp68804"></a>
+<p class="pBody">Before a piece of text can be displayed, it must
+be properly shaped and positioned using the appropriate glyphs and
+ligatures. This process is referred to as <em class=
+"cEmphasis">text layout</em>. The text layout process involves:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp74549"
+id="wp74549"></a>
+<div class="pBullet1">
+<ul>
+<li>Shaping text using the appropriate glyphs and ligatures.</li>
+</ul>
+</div>
+<a name="wp74550" id="wp74550"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>Properly ordering the text.</li>
+</ul>
+</div>
+<a name="wp74551" id="wp74551"></a>
+<div class="pBullet1Last">
+<ul>
+<li>Measuring and positioning the text.</li>
+</ul>
+</div>
+</div>
+<a name="wp74574" id="wp74574"></a>
+<p class="pBody">The information used to lay out text is also
+necessary for performing text operations such as caret positioning,
+hit detection, and highlighting.</p>
+<a name="wp74587" id="wp74587"></a>
+<p class="pBody">To develop software that can be deployed in
+international markets, text must be laid out in different languages
+in a way that conforms to the rules of the appropriate writing
+system.</p>
+<a name="wp74588" id="wp74588"></a>
+<h3 class="pHeading2">4.3.1 Shaping Text</h3>
+<a name="wp73366" id="wp73366"></a>
+<p class="pBody">A <em class="cEmphasis">glyph</em> is the visual
+representation of one or more characters. The shape, size, and
+position of a glyph is dependent on its context. Many different
+glyphs can be used to represent a single character or combination
+of characters, depending on the font and style.</p>
+<a name="wp73367" id="wp73367"></a>
+<p class="pBody">For example, in handwritten cursive text, a
+particular character can take on different shapes depending on how
+it is connected to adjacent characters.</p>
+<a name="wp73368" id="wp73368"></a>
+<p class="pBody">In some writing systems, particularly Arabic, the
+context of a glyph must always be taken into account. Unlike in
+English, cursive forms are mandatory in Arabic; it is unacceptable
+to present text without using cursive forms.</p>
+<a name="wp73369" id="wp73369"></a>
+<p class="pBody">Depending on the context, these cursive forms can
+differ radically in shape. For example, the Arabic letter
+<em class="cEmphasis">heh</em> has the four cursive forms shown in
+<a href="j2d-fonts.html#wp73395">Figure&#160;4-2</a>.</p>
+<a name="wp73393" id="wp73393"></a>
+<p class="pBody"></p>
+<div align="left"><img src="images/j2d-fonts3.gif" height="105"
+width="358" alt=
+"Illustration of unconnected, connect on right, connect on both sides and connect on left cursive forms in Arabic."
+border="0" hspace="0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp73395" id="wp73395"></a>
+<div class="pFigureCaption">Figure 4-2 Cursive Forms in
+Arabic<br />
+<br /></div>
+<a name="wp73396" id="wp73396"></a>
+<p class="pBody">Although these four forms are quite different from
+one another, such cursive shape-changing is not fundamentally
+different from cursive writing in English.</p>
+<a name="wp73449" id="wp73449"></a>
+<p class="pBody">In some contexts, two glyphs can change shape even
+more radically and merge to form a single glyph. This type of
+merged glyph is called a <em class="cEmphasis">ligature</em>. For
+example, most English fonts contain the ligature <em class=
+"cEmphasis">fi</em> shown in <a href=
+"j2d-fonts.html#wp73408">Figure&#160;4-3</a>. The merged glyph
+takes into account the overhang on the letter <em class=
+"cEmphasis">f</em> and combines the characters in a natural-looking
+way, instead of simply letting the letters collide.</p>
+<a name="wp73406" id="wp73406"></a>
+<p class="pBody"></p>
+<div align="left"><img src="images/j2d-fonts7.gif" height="88"
+width="358" alt="The previous context describes this graphic."
+border="0" hspace="0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp73408" id="wp73408"></a>
+<div class="pFigureCaption">Figure 4-3 English Ligatures<br />
+<br /></div>
+<a name="wp73409" id="wp73409"></a>
+<p class="pBody">Ligatures are also used in Arabic and the use of
+some ligatures is mandatory&#8212;it is unacceptable to present
+certain character combinations without using the appropriate
+ligature. When ligatures are formed from Arabic characters, the
+shapes change even more radically than they do in English. For
+example, <a href="j2d-fonts.html#wp73421">Figure&#160;4-4</a>
+illustrates how two Arabic characters are combined into a single
+ligature when they appear together.</p>
+<a name="wp73419" id="wp73419"></a>
+<p class="pBody"></p>
+<div align="left"><img src="images/j2d-fonts8.gif" height="99"
+width="358" alt="The previous context describes this graphic."
+border="0" hspace="0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp73421" id="wp73421"></a>
+<div class="pFigureCaption">Figure 4-4 Arabic Ligatures<br />
+<br /></div>
+<a name="wp73474" id="wp73474"></a>
+<h3 class="pHeading2">4.3.2 Ordering Text</h3>
+<a name="wp73475" id="wp73475"></a>
+<p class="pBody">In the Java programming language, text is
+encoded using Unicode character encoding. Text that uses Unicode
+character encoding is stored in memory in <em class=
+"cEmphasis">logical order</em>. Logical order is the order in which
+characters and words are read and written. The logical order is not
+necessarily the same as the <em class="cEmphasis">visual
+order</em>, the order in which the corresponding glyphs are
+displayed.</p>
+<a name="wp73476" id="wp73476"></a>
+<p class="pBody">The visual order for glyphs in a particular
+writing system (script) is called the <em class="cEmphasis">script
+order</em>. For example, the script order for Roman text is
+left-to-right and the script order for Arabic and Hebrew is
+right-to-left.</p>
+<a name="wp73477" id="wp73477"></a>
+<p class="pBody">Some writing systems have rules in addition to
+script order for arranging glyphs and words on lines of text. For
+example, Arabic and Hebrew numbers run left to right, even though
+the letters run right to left. (This means that Arabic and Hebrew,
+even with no embedded English text, are truly bidirectional.)</p>
+<a name="wp73478" id="wp73478"></a>
+<p class="pBody">A writing system&#8217;s visual order must be
+maintained even when languages are mixed together. This is
+illustrated in <a href=
+"j2d-fonts.html#wp73488">Figure&#160;4-5</a>, which displays an
+Arabic phrase embedded in an English sentence.</p>
+<a name="wp73482" id="wp73482"></a>
+<p class="pBody"><b class="cBold">Note:</b> In this and subsequent
+examples, Arabic and Hebrew text is represented by uppercase
+letters and spaces are represented by underscores. Each
+illustration contains two parts: a representation of the characters
+stored in memory (the characters in logical order) followed by a
+representation of how those characters are displayed (the
+characters in visual order). The numbers below the character boxes
+indicate the insertion offsets.</p>
+<a name="wp73734" id="wp73734"></a>
+<p class="pBody"></p>
+<div align="left"><img src="images/fig44.gif" alt=
+"The previous context describes this graphic." border="0" hspace=
+"0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp73488" id="wp73488"></a>
+<div class="pFigureCaption">Figure 4-5 Bidirectional Text<br />
+<br /></div>
+<a name="wp73489" id="wp73489"></a>
+<p class="pBody">Even though they are part of an English sentence,
+the Arabic words are displayed in the Arabic script order,
+right-to-left. Because the italicized Arabic word is logically
+after the Arabic in plain text, it is visually to the left of the
+plain text.</p>
+<a name="wp73490" id="wp73490"></a>
+<p class="pBody">When a line with a mixture of left-to-right and
+right-to-left text is displayed, the <em class="cEmphasis">base
+direction</em> is significant. The base direction is the script
+order of the predominant writing system. For example, if the text
+is primarily English with some embedded Arabic, then the base
+direction is left-to-right. If the text is primarily Arabic with
+some embedded English or numbers, then the base direction is
+right-to-left.</p>
+<a name="wp73491" id="wp73491"></a>
+<p class="pBody">The base direction determines the order in which
+segments of text with a common direction are displayed. In the
+example shown in <a href=
+"j2d-fonts.html#wp73488">Figure&#160;4-5</a>, the base direction is
+left-to-right. There are three directional runs in this example:
+the English text at the beginning of the sentence runs left to
+right, the Arabic text runs right to left, and the period runs left
+to right.</p>
+<a name="wp73495" id="wp73495"></a>
+<p class="pBody">Graphics are often embedded in the flow of text.
+These inline graphics behave like glyphs in terms of how they
+affect the text flow and line wrapping. Such inline graphics need
+to be positioned using the same bidirectional layout algorithm so
+that they appear in the proper location in the flow of
+characters.</p>
+<a name="wp73496" id="wp73496"></a>
+<p class="pBody">For more information about the precise algorithm
+used to order glyphs within a line, see the description of the
+Bidirectional Algorithm in The Unicode Standard, Version 2.0,
+Section 3.11.</p>
+<a name="wp63651" id="wp63651"></a>
+<h3 class="pHeading2">4.3.3 Measuring and Positioning Text</h3>
+<a name="wp63656" id="wp63656"></a>
+<p class="pBody">Unless you are working with a monospace font,
+different characters in a font have different widths. This means
+that all positioning and measuring of text has to take into account
+exactly which characters are used, not just how many. For example,
+to right-align a column of numbers displayed in a proportional
+font, you can&#8217;t simply use extra spaces to position the text.
+To properly align the column, you need to know the exact width of
+each number so that you can adjust accordingly.</p>
+<a name="wp63660" id="wp63660"></a>
+<p class="pBody">Text is often displayed using multiple fonts and
+styles, such as bold or italic. In this case, even the same
+character can have different shapes and widths, depending on how it
+is styled. To properly position, measure, and render text, you need
+to keep track of each individual character <em class=
+"cEmphasis">and</em> the style applied to that character.
+Fortunately, <code class="cCode">TextLayout</code> does this for
+you.</p>
+<a name="wp63663" id="wp63663"></a>
+<p class="pBody">To properly display text in languages such as
+Hebrew and Arabic, each individual character needs to be measured
+and positioned within the context of neighboring characters.
+Because the shapes and positions of the characters can change
+depending on the context, measuring and positioning such text
+without taking the context into account produces unacceptable
+results.</p>
+<a name="wp68590" id="wp68590"></a>
+<h3 class="pHeading2">4.3.4 Supporting Text Manipulation</h3>
+<a name="wp69042" id="wp69042"></a>
+<p class="pBody">To allow the user to edit the text that is
+displayed, you must be able to:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp69045"
+id="wp69045"></a>
+<div class="pBullet1">
+<ul>
+<li>Display a caret that indicates where new characters will be
+inserted when the user enters text.</li>
+</ul>
+</div>
+<a name="wp69048" id="wp69048"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>Move the caret and insertion point in response to user
+input.</li>
+</ul>
+</div>
+<a name="wp69058" id="wp69058"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>Detect user selections (hit detection).</li>
+</ul>
+</div>
+<a name="wp69243" id="wp69243"></a>
+<div class="pBullet1Last">
+<ul>
+<li>Highlight selected text.</li>
+</ul>
+</div>
+</div>
+<a name="wp68895" id="wp68895"></a>
+<h4 class="pHeading3">4.3.4.1 Displaying Carets</h4>
+<a name="wp68896" id="wp68896"></a>
+<p class="pBody">In editable text, a <em class=
+"cEmphasis">caret</em> is used to graphically represent the current
+insertion point, the position in the text where new characters will
+be inserted. Typically, a caret is shown as a blinking vertical bar
+between two glyphs. New characters are inserted and displayed at
+the caret&#39;s location.</p>
+<a name="wp68897" id="wp68897"></a>
+<p class="pBody">Calculating the caret position can be complicated,
+particularly for bidirectional text. Insertion offsets on
+directional boundaries have two possible caret positions because
+the two glyphs that correspond to the character offset are not
+displayed adjacent to one another. This is illustrated in <a href=
+"j2d-fonts.html#wp68918">Figure&#160;4-6</a>. In this figure, the
+carets are shown as square brackets to indicate the glyph to which
+the caret corresponds.</p>
+<a name="wp68916" id="wp68916"></a>
+<p class="pBody"></p>
+<div align="left"><img src="images/fig79.gif" alt=
+"The previous context describes this graphic." border="0" hspace=
+"0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp68918" id="wp68918"></a>
+<div class="pFigureCaption">Figure 4-6 Dual Carets<br />
+<br /></div>
+<a name="wp68919" id="wp68919"></a>
+<p class="pBody">Character offset 8 corresponds to the location
+after the _ and before the <em class="cEmphasis">A</em>. If the
+user enters an Arabic character, its glyph is displayed to the
+right of (before) the <em class="cEmphasis">A</em>; if the user
+enters an English character, its glyph is displayed to the right of
+(after) the _.</p>
+<a name="wp73866" id="wp73866"></a>
+<p class="pBody">To handle this situation, some systems display
+dual carets, a strong (primary) caret and a weak (secondary) caret.
+The strong caret indicates where an inserted character will be
+displayed when that character&#39;s direction is the same as the
+base direction of the text. The weak caret shows where an inserted
+character will be displayed when the character&#39;s direction is
+the opposite of the base direction. <code class=
+"cCode">TextLayout</code> automatically supports dual carets;
+<code class="cCode">JTextComponent</code> does not.</p>
+<a name="wp68922" id="wp68922"></a>
+<p class="pBody">When you&#8217;re working with bidirectional text,
+you can&#8217;t simply add the widths of the glyphs before a
+character offset to calculate the caret position. If you did, the
+caret would be drawn in the wrong place, as shown in <a href=
+"j2d-fonts.html#wp68932">Figure&#160;4-7</a>.</p>
+<a name="wp68930" id="wp68930"></a>
+<p class="pBody"></p>
+<div align="left"><img src="images/fig610.gif" alt=
+"The previous context describes this graphic." border="0" hspace=
+"0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp68932" id="wp68932"></a>
+<div class="pFigureCaption">Figure 4-7 Caret Drawn
+Incorrectly<br />
+<br /></div>
+<a name="wp69215" id="wp69215"></a>
+<p class="pBody">For the caret to be properly positioned, the
+widths of the glyphs to the left of the offset need to be added and
+the current context taken into account. Unless the context is taken
+into account, the glyph metrics won&#8217;t necessarily match the
+display. (The context can affect which glyphs are used.)</p>
+<a name="wp73930" id="wp73930"></a>
+<h4 class="pHeading3">4.3.4.2 Moving Carets</h4>
+<a name="wp73931" id="wp73931"></a>
+<p class="pBody">All text editors allow the user to move the caret
+with the arrow keys. Users expect the caret to move in the
+direction of the pressed arrow key. In left-to-right text, moving
+the insertion offset is simple: the right arrow key increases the
+insertion offset by one and the left arrow key decreases it by one.
+In bidirectional text or in text with ligatures, this behavior
+would cause the caret to jump across glyphs at direction boundaries
+and move in the reverse direction within different directional
+runs.</p>
+<a name="wp68945" id="wp68945"></a>
+<p class="pBody">To move the caret smoothly through bidirectional
+text, you need to take into account the direction of the text runs.
+You can&#8217;t simply increment the insertion offset when the
+right arrow key is pressed and decrement it when the left arrow key
+is pressed. If the current insertion offset is within a run of
+right-to-left characters, the right arrow key should decrease the
+insertion offset, and the left arrow key should increase it.</p>
+<a name="wp68949" id="wp68949"></a>
+<p class="pBody">Moving the caret across a directional boundary is
+even more complicated. <a href=
+"j2d-fonts.html#wp68955">Figure&#160;4-8</a> illustrates what
+happens when a directional boundary is crossed when the user is
+navigating with the arrow key. Stepping three positions to the
+right in the displayed text corresponds to moving to the character
+offsets 7, 19, then 18.</p>
+<a name="wp68953" id="wp68953"></a>
+<p class="pBody"></p>
+<div align="left"><img src="images/fig1211.gif" alt=
+"The previous context describes this graphic." border="0" hspace=
+"0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp68955" id="wp68955"></a>
+<div class="pFigureCaption">Figure 4-8 Caret Movement<br />
+<br /></div>
+<a name="wp68956" id="wp68956"></a>
+<p class="pBody">Certain glyphs should never have a caret between
+them; instead, the caret should move as though the glyphs
+represented a single character. For example, there should never be
+a caret between an <em class="cEmphasis">o</em> and an umlaut if
+they are represented by two separate characters. (See The Unicode
+Standard, Version 2.0, Chapter 5, for more information.)</p>
+<a name="wp73936" id="wp73936"></a>
+<p class="pBody"><code class="cCode">TextLayout</code> provides
+methods <code class="cCode">(getNextRightHit</code> and
+<code class="cCode">getNextLeftHit</code>) that enable you to
+easily move the caret smoothly through bidirectional text.</p>
+<a name="wp68966" id="wp68966"></a>
+<h4 class="pHeading3">4.3.4.3 Hit Testing</h4>
+<a name="wp69108" id="wp69108"></a>
+<p class="pBody">Often, a location in device space must be
+converted to a text offset. For example, when a user clicks the
+mouse on selectable text, the location of the mouse is converted to
+a text offset and used as one end of the selection range.
+Logically, this is the inverse of positioning a caret.</p>
+<a name="wp69116" id="wp69116"></a>
+<p class="pBody">When you&#8217;re working with bidirectional text,
+a single visual location in the display can correspond to two
+different offsets in the source text, as shown in <a href=
+"j2d-fonts.html#wp68981">Figure&#160;4-9</a>.</p>
+<a name="wp68979" id="wp68979"></a>
+<p class="pBody"></p>
+<div align="left"><img src="images/fig912.gif" alt=
+"The previous context describes this graphic." border="0" hspace=
+"0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp68981" id="wp68981"></a>
+<div class="pFigureCaption">Figure 4-9 Hit Testing Bidirectional
+Text<br />
+<br /></div>
+<a name="wp69131" id="wp69131"></a>
+<p class="pBody">Because a single visual location can correspond to
+two different offsets, hit testing bidirectional text isn&#8217;t
+just a matter of measuring glyph widths until the glyph at the
+correct location is found and then mapping that position back to a
+character offset. Detecting the side that the hit was on helps
+distinguish between the two alternatives.</p>
+<a name="wp73769" id="wp73769"></a>
+<p class="pBody">You can perform hit testing using <code class=
+"cCode">TextLayout.hitTestChar</code>. Hit information is
+encapsulated in a <code class="cCode">TextHitInfo</code> object and
+includes information about the side that the hit was on.</p>
+<a name="wp68983" id="wp68983"></a>
+<h4 class="pHeading3">4.3.4.4 Highlighting Selections</h4>
+<a name="wp68984" id="wp68984"></a>
+<p class="pBody">A selected range of characters is represented
+graphically by a highlight region, an area in which glyphs are
+displayed with inverse video or against a different background
+color.</p>
+<a name="wp68991" id="wp68991"></a>
+<p class="pBody">Highlight regions, like carets, are more
+complicated for bidirectional text than for monodirectional text.
+In bidirectional text, a contiguous range of characters might not
+have a contiguous highlight region when displayed. Conversely, a
+highlight region showing a visually contiguous range of glyphs
+might not correspond to a single, contiguous range of
+characters.</p>
+<a name="wp68992" id="wp68992"></a>
+<p class="pBody">This results in two strategies for highlighting
+selections in bidirectional text:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp68993"
+id="wp68993"></a>
+<div class="pBullet1">
+<ul>
+<li><em class="cEmphasis">Logical highlighting</em> &#8212;with
+logical highlighting, the selected characters are always contiguous
+in the text model, and the highlight region is allowed to be
+discontiguous. For an example of logical highlighting, see <a href=
+"j2d-fonts.html#wp69006">Figure&#160;4-10</a>.</li>
+</ul>
+</div>
+<a name="wp68997" id="wp68997"></a>
+<div class="pBullet1Last">
+<ul>
+<li><em class="cEmphasis">Visual highlighting</em>&#8212;with
+visual highlighting, there might be more than one range of selected
+characters, but the highlight region is always contiguous. For an
+example of visual highlighting, see <a href=
+"j2d-fonts.html#wp69012">Figure&#160;4-11</a>.</li>
+</ul>
+</div>
+</div>
+<a name="wp69004" id="wp69004"></a>
+<p class="pBody"></p>
+<div align="left"><img src="images/fig1013.gif" alt=
+"Illustration of logical highlighting (contiguous characters)"
+border="0" hspace="0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp69006" id="wp69006"></a>
+<div class="pFigureCaption">Figure 4-10 Logical Highlighting
+(contiguous characters)<br />
+<br /></div>
+<a name="wp69010" id="wp69010"></a>
+<p class="pBody"></p>
+<div align="left"><img src="images/fig1114.gif" alt=
+"Illustration of visual highlighting (contiguous highlight region)"
+border="0" hspace="0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp69012" id="wp69012"></a>
+<div class="pFigureCaption">Figure 4-11 Visual Highlighting
+(contiguous highlight region)<br />
+<br /></div>
+<a name="wp74466" id="wp74466"></a>
+<p class="pBody">Logical highlighting is simpler to implement,
+since the selected characters are always contiguous in the
+text.</p>
+<a name="wp74467" id="wp74467"></a>
+<h3 class="pHeading2">4.3.5 Performing Text Layout in a Java
+Application</h3>
+<a name="wp74473" id="wp74473"></a>
+<p class="pBody">Depending on which Java APIs you use, you
+can have as little or as much control over text layout as you
+need:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp74474"
+id="wp74474"></a>
+<div class="pBullet1">
+<ul>
+<li>If you just want to display a block of text or need an editable
+text control, you can use <code class=
+"cCode">JTextComponent</code>, which will perform the text layout
+for you. <code class="cCode">JTextComponent</code> is designed to
+handle the needs of most international applications and supports
+bidirectional text For more information about <code class=
+"cCode">JTextComponent</code>, see &#8220;Using the JFC/Swing
+Packages&#8221; in the Java Tutorial.</li>
+</ul>
+</div>
+<a name="wp74475" id="wp74475"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>If you want to display a simple text string, you can call
+<code class="cCode">Graphics2D.drawString</code> and let Java
+2D lay out the string for you. You can also use <code class=
+"cCode">drawString</code> to render styled strings and strings that
+contain bidirectional text. For more information about rendering
+text through <code class="cCode">Graphics2D</code>, see <a href=
+"j2d-awt.html#wp68381">&#8220;Rendering Graphics Primitives&#8221;</a>.</li>
+</ul>
+</div>
+<a name="wp74476" id="wp74476"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>If you want to implement your own text editing routines, you
+can use <code class="cCode">TextLayout</code> to manage text
+layout, highlighting, and hit detection. The facilities provided by
+<code class="cCode">TextLayout</code> handle most common cases,
+including text strings with mixed fonts, mixed languages, and
+bidirectional text. For more information about using TextLayout,
+see <a href="j2d-fonts.html#wp74623">&#8220;Managing Text
+Layout&#8221;</a>.</li>
+</ul>
+</div>
+<a name="wp74477" id="wp74477"></a>
+<div class="pBullet1Last">
+<ul>
+<li>If you want total control over how text is shaped and
+positioned, you can construct your own <code class=
+"cCode">GlyphVectors</code> using <code class="cCode">Font</code>
+and then render them through <code class="cCode">Graphics2D</code>.
+For more information about implementing your own text layout
+mechanism, see <a href="j2d-fonts.html#wp66677">&#8220;Implementing
+a Custom Text Layout Mechanism&#8221;</a>.</li>
+</ul>
+</div>
+</div>
+<a name="wp74620" id="wp74620"></a>
+<p class="pBody">Generally, you do not need to perform text layout
+operations yourself. For most applications, <code class=
+"cCode">JTextComponent</code> is the best solution for displaying
+static and editable text. However, <code class=
+"cCode">JTextComponent</code> does not support the display of dual
+carets or discontiguous selections in bidirectional text. If your
+application requires these features, or you prefer to implement
+your own text editing routines, you can use the Java 2D text layout
+APIs.</p>
+<a name="wp74623" id="wp74623"></a>
+<h2 class="pHeading1">4.4 Managing Text Layout</h2>
+<a name="wp67703" id="wp67703"></a>
+<p class="pBody">The <code class="cCode">TextLayout</code> class
+supports text that contains multiple styles and characters from
+different writing systems, including Arabic and Hebrew. (Arabic and
+Hebrew are particularly difficult to display because you must
+reshape and reorder the text to achieve an acceptable
+representation.)</p>
+<a name="wp67659" id="wp67659"></a>
+<p class="pBody"><code class="cCode">TextLayout</code> simplifies
+the process of displaying and measuring text even if you are
+working with English-only text. By using <code class=
+"cCode">TextLayout</code>, you can achieve high-quality typography
+with no extra effort.</p>
+<a name="wp74904" id="wp74904"></a>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left">
+<table border="0" cellpadding="7" id="wp67656" summary=
+"Text Layout Performance">
+<thead>
+<tr align="center">
+<th id="h301"><a name="wp67656__1" id="wp67656__1"></a>
+<div class="pCellHeading">Text Layout Performance</div>
+</th>
+</tr>
+</thead>
+<tr align="left">
+<td headers="h301" align="left" valign="top"><a name="wp68644" id="wp68644"></a>
+<div class="pCellBody"><code class="cCode">TextLayout</code> is
+designed so that there is no significant performance impact when
+it&#8217;s used to display simple, monodirectional text. There is
+some additional processing overhead when <code class=
+"cCode">TextLayout</code> is used to display Arabic or Hebrew text.
+However, it&#8217;s typically on the order of microseconds per
+character and is dominated by the execution of normal drawing
+code.</div>
+</td>
+</tr>
+</table>
+</div>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<a name="wp65533" id="wp65533"></a>
+<p class="pBody">The <code class="cCode">TextLayout</code> class
+manages the positioning and ordering of glyphs for you. You can use
+<code class="cCode">TextLayout</code> to:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp65535"
+id="wp65535"></a>
+<div class="pBullet1">
+<ul>
+<li>Lay out monodirectional and bidirectional text</li>
+</ul>
+</div>
+<a name="wp73543" id="wp73543"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>Display and move carets</li>
+</ul>
+</div>
+<a name="wp65524" id="wp65524"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>Perform hit testing on text</li>
+</ul>
+</div>
+<a name="wp65525" id="wp65525"></a>
+<div class="pBullet1Last">
+<ul>
+<li>Highlight text selections</li>
+</ul>
+</div>
+</div>
+<a name="wp67682" id="wp67682"></a>
+<p class="pBody">In some situations, you might want to compute the
+text layout yourself, so that you can control exactly which glyphs
+are used and where they are placed. Using information such as glyph
+sizes, kerning tables, and ligature information, you can construct
+your own algorithms for computing the text layout, bypassing the
+system&#8217;s layout mechanism. For more information, see <a href=
+"j2d-fonts.html#wp66677">&#8220;Implementing a Custom Text Layout
+Mechanism&#8221;</a>.</p>
+<a name="wp67652" id="wp67652"></a>
+<h3 class="pHeading2">4.4.1 Laying Out Text</h3>
+<a name="wp67708" id="wp67708"></a>
+<p class="pBody"><code class="cCode">TextLayout</code>
+automatically lays out text, including bidirectional (BIDI) text,
+with the correct shaping and ordering. To correctly shape and order
+the glyphs representing a line of text, <code class=
+"cCode">TextLayout</code> must know the full context of the
+text:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp67714"
+id="wp67714"></a>
+<div class="pBullet1">
+<ul>
+<li>If the text fits on a single line, such as a single-word label
+for a button or a line in a dialog box, you can construct a
+<code class="cCode">TextLayout</code> directly from the text.</li>
+</ul>
+</div>
+<a name="wp67715" id="wp67715"></a>
+<div class="pBullet1Last">
+<ul>
+<li>If you have more text than can fit on a single line or want to
+break text on a single line into tabbed segments, you cannot
+construct a <code class="cCode">TextLayout</code> directly. You
+must use a <code class="cCode">LineBreakMeasurer</code> to provide
+sufficient context.</li>
+</ul>
+</div>
+</div>
+<a name="wp67814" id="wp67814"></a>
+<p class="pBody">The base direction of the text is normally set by
+an attribute (style) on the text. If that attribute is missing,
+<code class="cCode">TextLayout</code> follows the Unicode
+bidirectional algorithm and derives the base direction from the
+initial characters in the paragraph.</p>
+<a name="wp63814" id="wp63814"></a>
+<h3 class="pHeading2">4.4.2 Displaying Dual Carets</h3>
+<a name="wp69369" id="wp69369"></a>
+<p class="pBody"><code class="cCode">TextLayout</code> maintains
+caret information such as the caret <code class=
+"cCode">Shape</code>, position, and angle. You can use this
+information to easily display carets in both monodirectional and
+bidirectional text. When you&#8217;re drawing carets for
+bidirectional text, using <code class="cCode">TextLayout</code>
+ensures that the carets will be positioned correctly.</p>
+<a name="wp69399" id="wp69399"></a>
+<p class="pBody"><code class="cCode">TextLayout</code> provides
+default caret <code class="cCode">Shapes</code> and automatically
+supports dual carets. For italic and oblique glyphs, <code class=
+"cCode">TextLayout</code> produces angled carets, as shown in
+<a href="j2d-fonts.html#wp69408">Figure&#160;4-12</a>. These caret
+positions are also used as the boundaries between glyphs for
+highlighting and hit testing, which helps produce a consistent user
+experience.</p>
+<a name="wp69406" id="wp69406"></a>
+<p class="pBody"></p>
+<div align="left"><img src="images/fig85.gif" alt=
+"The previous context describes this graphic." border="0" hspace=
+"0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp69408" id="wp69408"></a>
+<div class="pFigureCaption">Figure 4-12 Angled Carets<br />
+<br /></div>
+<a name="wp67933" id="wp67933"></a>
+<p class="pBody">Given an insertion offset, the <code class=
+"cCode">getCaretShapes</code> method returns a two-element array of
+<code class="cCode">Shapes</code>: element 0 contains the strong
+caret and element 1 contains the weak caret, if one exists. To
+display dual carets, you simply draw both caret <code class=
+"cCode">Shapes</code>; the carets will be automatically be rendered
+in the correct positions.</p>
+<a name="wp69421" id="wp69421"></a>
+<p class="pBody">If you want to use custom caret <code class=
+"cCode">Shapes</code>, you can retrieve the position and angle of
+the carets from the <code class="cCode">TextLayout</code> and draw
+them yourself.</p>
+<a name="wp69356" id="wp69356"></a>
+<p class="pBody">In the following example, the default strong and
+weak caret <code class="cCode">Shapes</code> are drawn in different
+colors. This is a common way to differentiate dual carets.</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+Shape[] caretShapes = layout.getCaretShapes(hit);<a name="wp66048"
+id="wp66048"> </a>
+g2.setColor(PRIMARY_CARET_COLOR); <a name="wp66049" id=
+"wp66049"> </a>
+g2.draw(caretShapes[0]);<a name="wp66050" id="wp66050"> </a>
+if (caretShapes[1] != null){  <a name="wp66051" id="wp66051"> </a>
+  g2.setColor(SECONDARY_CARET_COLOR); <a name="wp66052" id=
+"wp66052"> </a>
+  g2.draw(caretShapes[1]); <a name="wp66053" id="wp66053"> </a>
+}<a name="wp67827" id="wp67827"> </a>
+</pre></div>
+<a name="wp74427" id="wp74427"></a>
+<h3 class="pHeading2">4.4.3 Moving the Caret</h3>
+<a name="wp74429" id="wp74429"></a>
+<p class="pBody">You can also use <code class=
+"cCode">TextLayout</code> to determine the resulting insertion
+offset when a user presses the left or right arrow key. Given a
+<code class="cCode">TextHitInfo</code> object that represents the
+current insertion offset, the <code class=
+"cCode">getNextRightHit</code> method returns a <code class=
+"cCode">TextHitInfo</code> object that represents the correct
+insertion offset if the right arrow key is pressed. The
+<code class="cCode">getNextLeftHit</code> method provides the same
+information for the left arrow key.</p>
+<a name="wp68359" id="wp68359"></a>
+<p class="pBody">In the following example, the current insertion
+offset is moved in response to a right arrow key.</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+TextHitInfo newInsertionOffset =             layout.getNextRightHit(insertionOffset); <a name="wp68360"
+id="wp68360"> </a>
+if (newInsertionOffset != null) { <a name="wp68361" id=
+"wp68361"> </a>
+  Shape[] caretShapes =   <a name="wp68362" id="wp68362"> </a>
+          layout.getCaretShapes(newInsertionOffset);<a name=
+"wp68363" id="wp68363"> </a>
+  // draw carets<a name="wp68364" id="wp68364"> </a>
+  ...<a name="wp74012" id="wp74012"> </a>
+  insertionOffset = newInsertionOffset;<a name="wp74630" id=
+"wp74630"> </a>
+}<a name="wp68387" id="wp68387"> </a>
+</pre></div>
+<a name="wp68373" id="wp68373"></a>
+<h3 class="pHeading2">4.4.4 Hit Testing</h3>
+<a name="wp68092" id="wp68092"></a>
+<p class="pBody"><code class="cCode">TextLayout</code> provides a
+simple mechanism for hit testing text. The <code class=
+"cCode">hitTestChar</code> method takes <em class=
+"cEmphasis">x</em> and <em class="cEmphasis">y</em> coordinates
+from the mouse as arguments and returns a <code class=
+"cCode">TextHitInfo</code> object. The <code class=
+"cCode">TextHitInfo</code> contains the insertion offset for the
+specified position and the side that the hit was on. The insertion
+offset is the offset closest to the hit: if the hit is past the end
+of the line, the offset at the end of the line is returned.</p>
+<a name="wp69476" id="wp69476"></a>
+<p class="pBody">In the following example, <code class=
+"cCode">hitTestChar</code> is called on a <code class=
+"cCode">TextLayout</code> and then <code class=
+"cCode">getInsertIndex</code> is used to retrieve the offset.</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+TextHitInfo hit = layout.hitTestChar(x, y);<a name="wp68093" id=
+"wp68093"> </a>
+int insertIndex = hit.getInsertIndex();<a name="wp68094" id=
+"wp68094"> </a>
+</pre></div>
+<a name="wp68115" id="wp68115"></a>
+<h3 class="pHeading2">4.4.5 Highlighting Selections</h3>
+<a name="wp68159" id="wp68159"></a>
+<p class="pBody">You can get a <code class="cCode">Shape</code>
+that represents the highlight region from the <code class=
+"cCode">TextLayout</code>. <code class="cCode">TextLayout</code>
+automatically takes the context into account when calculating the
+dimensions of the highlight region. <code class=
+"cCode">TextLayout</code> supports both logical and visual
+highlighting.</p>
+<a name="wp68271" id="wp68271"></a>
+<p class="pBody">In the following example, the highlight region is
+filled with the highlight color and then the <code class=
+"cCode">TextLayout</code> is drawn over the filled region. This is
+one simple way to display highlighted text.</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+Shape highlightRegion = layout.getLogicalHighlightShape(hit1,      hit2); <a name="wp68272"
+id="wp68272"> </a>
+graphics.setColor(HIGHLIGHT_COLOR); <a name="wp68273" id=
+"wp68273"> </a>
+graphics.fill(highlightRegion); <a name="wp68274" id=
+"wp68274"> </a>
+graphics.drawString(layout, 0, 0);<a name="wp68275" id=
+"wp68275"> </a>
+</pre></div>
+<a name="wp63976" id="wp63976"></a>
+<h3 class="pHeading2">4.4.6 Querying Layout Metrics</h3>
+<a name="wp63978" id="wp63978"></a>
+<p class="pBody"><code class="cCode">TextLayout</code> provides
+access to graphical metrics for the entire range of text it
+represents. Metrics available from <code class=
+"cCode">TextLayout</code> include the ascent, descent, leading,
+advance, visible advance, and the bounding rectangle.</p>
+<a name="wp63985" id="wp63985"></a>
+<p class="pBody">More than one <code class="cCode">Font</code> can
+be associated with a <code class="cCode">TextLayout</code>:
+different style runs can use different fonts. The ascent and
+descent values for a <code class="cCode">TextLayout</code> are the
+maximum values of all of the fonts used in the <code class=
+"cCode">TextLayout</code>. The computation of the <code class=
+"cCode">TextLayout</code>&#39;s leading is more complicated;
+it&#8217;s not just the maximum leading value.</p>
+<a name="wp63988" id="wp63988"></a>
+<p class="pBody">The advance of a <code class=
+"cCode">TextLayout</code> is its length: the distance from the left
+edge of the leftmost glyph to the right edge of the rightmost
+glyph. The advance is sometimes referred to as the <em class=
+"cEmphasis">total advance</em>. The <em class="cEmphasis">visible
+advance</em> is the length of the <code class=
+"cCode">TextLayout</code> without its trailing whitespace.</p>
+<a name="wp66438" id="wp66438"></a>
+<p class="pBody">The bounding box of a <code class=
+"cCode">TextLayout</code> encloses all of the text in the layout.
+It includes all the visible glyphs and the caret boundaries. (Some
+of these might hang over the origin or origin + advance). The
+bounding box is relative to the origin of the <code class=
+"cCode">TextLayout</code>, not to any particular screen
+position.</p>
+<a name="wp66419" id="wp66419"></a>
+<p class="pBody">In the following example, the text in a
+<code class="cCode">TextLayout</code> is drawn within the
+layout&#8217;s bounding box.</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+graphics.drawString(layout, 0, 0); <a name="wp63991" id=
+"wp63991"> </a>
+Rectangle2D bounds = layout.getBounds(); <a name="wp63992" id=
+"wp63992"> </a>
+graphics.drawRect(bounds.getX()-1, bounds.getY()-1, <a name=
+"wp63993" id="wp63993"> </a>
+         bounds.getWidth()+2, bounds.getHeight()+2);<a name=
+"wp63994" id="wp63994"> </a>
+</pre></div>
+<a name="wp64005" id="wp64005"></a>
+<h3 class="pHeading2">4.4.7 Drawing Text Across Multiple Lines</h3>
+<a name="wp64007" id="wp64007"></a>
+<p class="pBody"><code class="cCode">TextLayout</code> can also be
+used to display a piece of text that spans multiple lines. For
+example, you might take a paragraph of text, line-wrap the text to
+a certain width, and display the paragraph as multiple lines of
+text.</p>
+<a name="wp66482" id="wp66482"></a>
+<p class="pBody">To do this, you do not directly create the
+<code class="cCode">TextLayouts</code> that represent each line of
+text&#8212;<code class="cCode">LineBreakMeasurer</code> generates
+them for you. Bidirectional ordering cannot always be performed
+correctly unless all of the text in a paragraph is available.
+<code class="cCode">LineBreakMeasurer</code> encapsulates enough
+information about the context to produce correct <code class=
+"cCode">TextLayouts</code>.</p>
+<a name="wp64011" id="wp64011"></a>
+<p class="pBody">When text is displayed across multiple lines, the
+length of the lines is usually determined by the width of the
+display area. Line breaking (line wrapping) is the process of
+determining where lines begin and end, given a graphical width in
+which the lines must fit.</p>
+<a name="wp66480" id="wp66480"></a>
+<p class="pBody">The most common strategy is to place as many words
+on each line as will fit. This strategy is implemented in
+<code class="cCode">LineBreakMeasurer</code>. Other more complex
+line break strategies use hyphenation, or attempt to minimize the
+differences in line length within paragraphs. The Java 2D
+API does not provide implementations of these strategies.</p>
+<a name="wp64020" id="wp64020"></a>
+<p class="pBody">To break a paragraph of text into lines, you
+construct a <code class="cCode">LineBreakMeasurer</code> with the
+entire paragraph and then call <code class=
+"cCode">nextLayout</code> to step through the text and generate
+<code class="cCode">TextLayouts</code> for each line.</p>
+<a name="wp64022" id="wp64022"></a>
+<p class="pBody">To do this, <code class=
+"cCode">LineBreakMeasurer</code> maintains an offset within the
+text. Initially, the offset is at the beginning of the text. Each
+call to <code class="cCode">nextLayout</code> moves the offset by
+the character count of the <code class="cCode">TextLayout</code>
+that was created. When this offset reaches the end of the text,
+<code class="cCode">nextLayout</code> returns <code class=
+"cCode">null</code>.</p>
+<a name="wp66620" id="wp66620"></a>
+<p class="pBody">The visible advance of each <code class=
+"cCode">TextLayout</code> that the <code class=
+"cCode">LineBreakMeasurer</code> creates doesn&#8217;t exceed the
+specified line width. By varying the width you specify when you
+call <code class="cCode">nextLayout</code>, you can break text to
+fit complicated areas, such as an HTML page with images in fixed
+positions or tab-stop fields. You can also pass in a <code class=
+"cCode">BreakIterator</code> to tell <code class=
+"cCode">LineBreakMeasurer</code> where valid breakpoints are; if
+you don&#39;t supply one the <code class=
+"cCode">BreakIterator</code> for the default locale is used.</p>
+<a name="wp66516" id="wp66516"></a>
+<p class="pBody">In the following example, a bilingual text segment
+is drawn line by line. The lines are aligned to either to the left
+margin or right margin, depending on whether the base text
+direction is left-to-right or right-to-left.</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+Point2D pen = initialPosition; <a name="wp64025" id="wp64025"> </a>
+LineBreakMeasurer measurer = new LineBreakMeasurer(styledText, myBreakIterator);<a name="wp64026"
+id="wp64026"> </a>
+while (true) {<a name="wp64028" id="wp64028"> </a>
+  TextLayout layout = measurer.nextLayout(wrappingWidth);<a name=
+"wp64029" id="wp64029"> </a>
+  if (layout == null) break;<a name="wp64030" id="wp64030"> </a>
+    pen.y += layout.getAscent(); <a name="wp64031" id=
+"wp64031"> </a>
+    float dx = 0;<a name="wp64032" id="wp64032"> </a>
+    if (layout.isLeftToRight())<a name="wp64033" id="wp64033"> </a>
+      dx = wrappingWidth - layout.getAdvance(); <a name="wp64034"
+id="wp64034"> </a>
+    layout.draw(graphics, pen.x + dx, pen.y); <a name="wp64035" id=
+"wp64035"> </a>
+    pen.y += layout.getDescent() + layout.getLeading();<a name=
+"wp64036" id="wp64036"> </a>
+}<a name="wp66541" id="wp66541"> </a>
+</pre></div>
+<a name="wp66677" id="wp66677"></a>
+<h2 class="pHeading1">4.5 Implementing a Custom Text Layout
+Mechanism</h2>
+<a name="wp67334" id="wp67334"></a>
+<p class="pBody">The <code class="cCode">GlyphVector</code> class
+provides a way to display the results of custom layout mechanisms.
+A <code class="cCode">GlyphVector</code> object can be thought of
+as the output of an algorithm that takes a string and computes
+exactly how the string should be displayed. The system has a
+built-in algorithm and the Java 2D API lets advanced clients
+define their own algorithms.</p>
+<a name="wp72890" id="wp72890"></a>
+<p class="pBody">A <code class="cCode">GlyphVector</code> object is
+basically an array of glyphs and glyph locations. Glyphs are used
+instead of characters to provide total control over layout
+characteristics such as kerning and ligatures. For example, when
+displaying the string &#8220;final&#8221;, you might want to
+replace the leading fi substring with the ligature <em class=
+"cEmphasis">fi</em><em class="cEmphasis">.</em> In this case, the
+<code class="cCode">GlyphVector</code> object will have fewer
+glyphs than the number of characters in the original string.</p>
+<a name="wp72925" id="wp72925"></a>
+<p class="pBody"><a href=
+"j2d-fonts.html#wp67409">Figure&#160;4-13</a> and <a href=
+"j2d-fonts.html#wp67469">Figure&#160;4-14</a> illustrate how
+<code class="cCode">GlyphVector</code> objects are used by layout
+mechanisms. <a href="j2d-fonts.html#wp67409">Figure&#160;4-13</a>
+shows the default layout mechanism. When <code class=
+"cCode">drawString</code> is called on a <code class=
+"cCode">String</code>, the built-in layout algorithm:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp72938"
+id="wp72938"></a>
+<div class="pBullet1">
+<ul>
+<li>Uses the current <code class="cCode">Font</code> in the
+<code class="cCode">Graphics2D</code> context to determine which
+glyphs to use.</li>
+</ul>
+</div>
+<a name="wp72941" id="wp72941"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>Calculates where each glyph should be placed.</li>
+</ul>
+</div>
+<a name="wp72944" id="wp72944"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>Stores the resulting glyph and position information in a
+<code class="cCode">GlyphVector</code>.</li>
+</ul>
+</div>
+<a name="wp72945" id="wp72945"></a>
+<div class="pBullet1Last">
+<ul>
+<li>Passes the <code class="cCode">GlyphVector</code> to a glyph
+rendering routine that does the actual drawing.</li>
+</ul>
+</div>
+</div>
+<a name="wp74913" id="wp74913"></a>
+<p class="pBody"></p>
+<div align="right"><img src="images/j2d-fontsa.gif" height="130"
+width="467" alt="The previous context describes this graphic."
+border="0" hspace="0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp67409" id="wp67409"></a>
+<div class="pFigureCaption">Figure 4-13 Using the Built-in Layout
+Algorithm<br />
+<br /></div>
+<a name="wp67413" id="wp67413"></a>
+<p class="pBody"><a href=
+"j2d-fonts.html#wp67469">Figure&#160;4-14</a> shows the process for
+using a custom layout algorithm. To use a custom layout algorithm,
+you must assemble all of the information necessary to lay out the
+text. The basic process is the same:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp72962"
+id="wp72962"></a>
+<div class="pBullet1">
+<ul>
+<li>Using the <code class="cCode">Font</code>, determine which
+glyphs to use</li>
+</ul>
+</div>
+<a name="wp72965" id="wp72965"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>Determine where to place the glyphs</li>
+</ul>
+</div>
+<a name="wp72968" id="wp72968"></a>
+<div class="pBullet1Last">
+<ul>
+<li>Store this layout information in a <code class=
+"cCode">GlyphVector</code></li>
+</ul>
+</div>
+</div>
+<a name="wp72970" id="wp72970"></a>
+<p class="pBody">To render the text, you pass the <code class=
+"cCode">GlyphVector</code> to <code class=
+"cCode">drawString</code>, which in turn passes it to the glyph
+renderer. In <a href="j2d-fonts.html#wp67469">Figure&#160;4-14</a>,
+the custom layout algorithm replaces the fi substring with the
+ligature <em class="cEmphasis">fi</em>.</p>
+<a name="wp74918" id="wp74918"></a>
+<p class="pBody"></p>
+<div align="right"><img src="images/j2d-fonts2.gif" height="136"
+width="466" alt="using a custom layout algorithm" border="0"
+hspace="0" vspace="0" /></div>
+<p class="pBody"></p>
+<a name="wp67469" id="wp67469"></a>
+<div class="pFigureCaption">Figure 4-14 Using a Custom Layout
+Algorithm<br />
+<br /></div>
+<a name="wp74065" id="wp74065"></a>
+<h2 class="pHeading1">4.6 Creating Font Derivations</h2>
+<a name="wp74066" id="wp74066"></a>
+<p class="pBody">Using the <code class=
+"cCode">Font.deriveFont</code> methods, you can create a new
+<code class="cCode">Font</code> object with different attributes
+from an existing <code class="cCode">Font</code> object. Often, a
+transform is applied to the existing <code class=
+"cCode">Font</code> to create a new derived <code class=
+"cCode">Font</code>. To do this, you:</p>
+<div style="margin-left: 2em" class="pList1"><a name="wp74067" id=
+"wp74067"></a>
+<div class="pList1">
+<ul>
+<li>Create a <code class="cCode">Font</code> object.,</li>
+</ul>
+</div>
+<a name="wp74068" id="wp74068"></a>
+<div class="pList1Plus">
+<ul>
+<li>Create the <code class="cCode">AffineTransform</code> you want
+to apply to the <code class="cCode">Font</code>.</li>
+</ul>
+</div>
+<a name="wp74069" id="wp74069"></a>
+<div class="pList1Last">
+<ul>
+<li>Call <code class="cCode">Font.deriveFont</code>, passing in the
+<code class="cCode">AffineTransform</code>.</li>
+</ul>
+</div>
+</div>
+<a name="wp74070" id="wp74070"></a>
+<p class="pBody">In this way, you could easily create a
+<code class="cCode">Font</code> in a custom size or a skewed
+version of an existing <code class="cCode">Font</code>.</p>
+<a name="wp74071" id="wp74071"></a>
+<p class="pBody">In the following code excerpt, an <code class=
+"cCode">AffineTransform</code> is applied to create a skewed
+version of the font Helvetica. The new derived font is then used to
+render a string.</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+        // Create a transformation for the font.<a name="wp74072"
+id="wp74072"> </a>
+AffineTransform fontAT = new AffineTransform();<a name="wp74073"
+id="wp74073"> </a>
+fontAT.setToShear(-1.2, 0.0);<a name="wp74074" id="wp74074"> </a>
+// Create a Font Object.<a name="wp74075" id="wp74075"> </a>
+Font theFont = new Font(&quot;Helvetica&quot;, Font.PLAIN, 1);<a name="wp74076"
+id="wp74076"> </a>
+// Derive a new font using the shear transform<a name="wp74077" id=
+"wp74077"> </a>
+theDerivedFont = theFont.deriveFont(fontAT);<a name="wp74078" id=
+"wp74078"> </a>
+// Add the derived font to the Graphics2D context<a name="wp74079"
+id="wp74079"> </a>
+g2.setFont(theDerivedFont);<a name="wp74080" id="wp74080"> </a>
+// Render a string using the derived font<a name="wp74081" id=
+"wp74081"> </a>
+g2.drawString(&#8220;Java&#8221;, 0.0f, 0.0f);<a name="wp74082" id=
+"wp74082"> </a>
+</pre></div>
+<a name="wp74062" id="wp74062"></a>
+<p class="pBody"></p>
+<p>&#160;</p>
+<hr class="pHr" />
+<table width="100%" summary="">
+<tr>
+<td align="left"><a accesskey="c" href=
+"j2d-bookTOC.html">Contents</a> | <a accesskey="p" href=
+"j2d-geom.html">Previous</a> | <a accesskey="n" href=
+"j2d-image.html">Next</a></td>
+</tr>
+</table>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

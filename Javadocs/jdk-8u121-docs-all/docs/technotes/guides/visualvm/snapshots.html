@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java VisualVM</title>
+<meta name="collection" content="reference" />
+<meta http-equiv="content-type" content=
+"text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<!--stopindex-->
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Java VisualVM</h1>
+<!-- ============ -->
+<!-- MAIN CONTENT -->
+<!-- ============ -->
+<h2>Working with Snapshots</h2>
+<p>Java VisualVM enables you to take snapshots of application data
+and save the snapshots to your local system. Snapshots are a
+convenient way to capture data about an application because after a
+snapshot is saved it can be opened and viewed at any time. The
+target application does not need to be running to view the
+snapshot. Snapshots can also be sent and viewed by other
+people.</p>
+<h2>Snapshot Types</h2>
+<p>Snapshots are basically archives of data captured at a point in
+time that can then be opened in Java VisualVM. You can take and
+save the following types of snapshots:</p>
+<h3>Profiler Snapshots</h3>
+<p>Profiler snapshots capture profiling data at the moment the
+snapshot is taken. You can take a profiler snapshot at any time
+during a profiling session. When you take a profiler snapshot, a
+node representing the snapshot appears below the application node
+in the Applications window and a temporary snapshot file is written
+to your local system in the Java VisualVM userdir.</p>
+<p>Java VisualVM can take the following types of profiler
+snapshots</p>
+<ul>
+<li><b>Memory Snapshot.</b> A memory snapshot captures profiling
+data on allocated objects. You can take a memory snapshot when you
+are using the profiler to analyze memory usage.</li>
+<li><b>CPU Snapshot.</b> A CPU snapshot captures data on the
+performance of the application. You can take a CPU snapshot when
+you are using the profiler to analyze application performance.</li>
+</ul>
+<p>Screenshot of memory profiling snapshot</p>
+<img src="images/profiler-memory-snapshot.png" style=
+"border:1px solid;" alt="screenshot of memory profiling snapshot"
+title="screenshot of memory profiling snapshot" />
+<p>Screenshot of CPU profiling snapshot</p>
+<img src="images/profiler-cpu-snapshot.png" style=
+"border:1px solid;" alt="screenshot of CPU profiling snapshot"
+title="screenshot of CPU profiling snapshot" />
+<p>If you want to view a profiler snapshot later, the snapshot must
+be explicitly saved to your local system, either as a profiler
+snapshot or archived in an application snapshot.</p>
+<h4>Taking Profiler Snapshots</h4>
+<p>You can take a profiler snapshot during a profiling session.
+When you take a memory or CPU snapshot, the snapshot opens in the
+application's tab in the main window.</p>
+<p>To take a snapshot, do one of the following:</p>
+<ul>
+<li>Click the Take Snapshot of Collected Results button in the
+Profiler tab</li>
+<li>Right-click the application node and choose Profiler
+Snapshot.</li>
+</ul>
+<p>The snapshot toolbar enables you to do the following:</p>
+<ul>
+<li><b>Save Snapshot to Custom File.</b> Click to save snapshot as
+Snapshot file (<tt>.nps</tt> to your local system).</li>
+<li><b>Save Current View to Image.</b> Click to save snapshot as an
+image (<tt>.png</tt> to your local system)</li>
+<li><b>Find in Results.</b> Click to find a search term in the
+profiling results.</li>
+<li><b>Find Next Occurence.</b> Click to find next occurrence of
+search term</li>
+<li><b>Find Previous Occurence.</b> Click to find previous
+occurrence of search term</li>
+</ul>
+<h3>Application Snapshots</h3>
+<p>An application snapshot captures the collected heap dumps,
+thread dumps and profiler snapshots of an application at the moment
+the snapshot is taken. An application snapshot also captures
+general information about the Java Virtual Machine (JVM).</p>
+<p>You take an application snapshot by right-clicking an
+application node in the Applications window and choosing
+Application Snapshot from the popup menu. Application snapshots are
+persisted between Java VisualVM sessions.</p>
+<p>When you take an application snapshot:</p>
+<ul>
+<li>An application snapshot node appears under the Snapshots node
+in the Applications window</li>
+<li>Application data is saved in a folder in the the
+<tt>repository/snapshots</tt> folder in the Java VisualVM user
+dir</li>
+</ul>
+<p>Application snapshots are listed under the Snapshots node in the
+Applications window. Expand the application snapshot node to view
+the contents of the snapshot.</p>
+<img src="images/application-snapshot-appwindow.png" style=
+"border:1px solid;" alt=
+"screenshot of Applications window showing application snapshots"
+title=
+"screenshot of Applications window showing application snapshots" />
+<p>After you take an application snapshot, you can view and modify
+the contents by expanding the application snapshot node in the
+Applications window. You can right-click an application snapshot
+node or any of the items listed under the application snapshot node
+to open the popup menu where you can choose to open, save, rename
+and delete the item. You can then save the application snapshot as
+a single application snapshot archive (<tt>.apps</tt>) to your
+local system.</p>
+<p>The Overview tab of an application snapshot captures data about
+the JVM software.</p>
+<img src="images/application-snapshot-overview.png" style=
+"border:1px solid;" alt=
+"screenshot of Overview tab of an application snapshot" title=
+"screenshot of Overview tab of an application snapshot" />
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

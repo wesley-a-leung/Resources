@@ -1,0 +1,661 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>JNDI/COS Naming Service Provider</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>COS Naming Service Provider for the<br />
+Java Naming and Directory Interface (JNDI)</h1>
+<p><i>Table of Contents</i></p>
+<ul>
+<li><a href="#INTRO">Introduction</a></li>
+<li><a href="#CONF">Conformance</a></li>
+<li><a href="#PROP">Environment Properties</a></li>
+<li><a href="#ORB">ORB Initialization</a></li>
+<li><a href="#ROOT">Root Naming Context Initialization</a></li>
+<li><a href="#URL">Names and URLs</a></li>
+<li><a href="#API">API Mapping</a></li>
+<li><a href="#CORBA">Converting CORBA Programs to use JNDI</a></li>
+<li><a href="#SEC">Security Considerations</a></li>
+</ul>
+<hr />
+<p><a name="INTRO" id="INTRO"></a></p>
+<h2>Introduction</h2>
+<p>The Common Object Services (COS) Name Server is the name server
+for storing Common Object Request Broker Architecture (CORBA)
+object references. It can be accessed from CORBA applications by
+using the COS Naming package (org.omg.CORBA.CosNaming).</p>
+<p>The JNDI/COS naming service provider implements the
+<tt>javax.naming.Context</tt> interface on top of the COS Naming
+package in order to allow applications to use JNDI to access the
+COS Name Server. JNDI can also be used to access other naming and
+directory services, in addition to the COS Name Server, thereby
+offering the CORBA application one interface for accessing
+different naming and directory services.</p>
+<p>This document describes the features of the COS naming service
+provider and contains details of how JNDI is mapped to the COS
+naming package.</p>
+<hr />
+<p><a name="CONF" id="CONF"></a></p>
+<h2>Conformance</h2>
+<p>The COS naming service provider for JNDI uses <a href=
+"../idl/index.html">Java IDL</a>, the Java programming language mapping to the industry
+standard Object Management Group Interface Definition Language (OMG
+IDL). In particular, it uses the <a href=
+"../idl/jidlNaming.html">COS Naming Service</a>.</p>
+<p>The complete specification for COS Naming can be obtained from
+<a href="http://www.omg.org/">OMG</a>.</p>
+<p>The syntax of names conforms to the <a href=
+"ftp://ftp.omg.org/pub/docs/ptc/99-12-03.pdf">Interoperable Naming
+Service (INS) specification (99-12-03)</a>, with backward
+compatibility support for the previous version of INS, <a href=
+"ftp://ftp.omg.org/pub/docs/orbos/98-10-11.pdf">OMG TC Document
+orbos/98-10-11</a>. This is described in <a href="#URL">Names and
+URLs</a>.</p>
+<hr />
+<p><a name="PROP" id="PROP"></a></p>
+<h2>Environment Properties</h2>
+<p>The following JNDI environment properties are relevant for the
+COS naming service provider. See the <a href=
+"../../../api/javax/naming/InitialContext.html#ENVIRONMENT">JNDI
+documentation</a> for a description of how properties are
+initialized using the environment properties, system properties,
+applet parameters, and resource files.</p>
+<pre class="codeblock">
+<b>java.naming.factory.initial</b>
+</pre>
+<p>This property is used to select the COS naming service provider;
+it's not actually used by the provider itself. It specifies the
+class name of the initial context factory for the provider.</p>
+<p>For example:</p>
+<pre class="codeblock">
+env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.cosnaming.CNCtxFactory");
+</pre>
+<p>This property must be set if you are using the COS naming
+service as the initial context. The only exception is if you supply
+only URLs to the initial context, in which case, you don't need to
+specify this property. See <a href="#URL">Names and URLs</a> for
+details.</p>
+<a name="URLPROP" id="URLPROP"></a>
+<pre class="codeblock">
+java.naming.provider.url
+</pre>
+<p>This property is used to configure the root naming context
+and/or the Object Request Broker (ORB). Its value is the string
+representation of a URL.</p>
+<p>If this property is not specified, then the ORB is initialized
+using the <a href="#ORBPROP"><tt>java.naming.corba.orb</tt></a>
+property, the <a href="#APPPROP"><tt>java.naming.applet</tt></a>
+property, or <a href="#OTHERPROP">other ORB initialization
+properties</a>. The root naming context is obtained by invoking</p>
+<pre class="codeblock">
+orb.resolve_initial_references("NameService");
+</pre>
+<p>If the URL scheme is one of "IOR", "corbaname", or "corbaloc",
+as specified in the <a href=
+"ftp://ftp.omg.org/pub/docs/ptc/99-12-03.pdf">INS specification
+(99-12-03)</a>, then the root naming context is that named by the
+URL. The ORB is initialized using the <a href=
+"#ORBPROP"><tt>java.naming.corba.orb</tt></a> property, the
+<a href="#APPPROP"><tt>java.naming.applet</tt></a> property, or
+<a href="#OTHERPROP">other ORB initialization properties</a>.</p>
+<p>If the URL scheme is either "iiop" or "iiopname", then the host
+and port fields of the URL are used to initialize the ORB. An
+"iiopname" URL must conform to the now obsolete <a href=
+"ftp://ftp.omg.org/pub/docs/orbos/98-10-11.pdf">INS specification
+(98-10-11)</a>. It has the form:</p>
+<pre class="codeblock">
+iiopname://[&lt;addr_list&gt;][/&lt;cosnaming_name&gt;]
+</pre>
+<p>The "iiop" URL scheme is supported for backward compatibility
+with an older version of the INS specification. It has the
+form:</p>
+<pre class="codeblock">
+iiop://[&lt;host&gt;[:&lt;port&gt;]][/&lt;cosnaming_name&gt;]
+</pre>
+<p>For both "iiop" and "iiopname" URLs, if <tt>&lt;host&gt;</tt> is
+not specified, then it defaults to "localhost" for an application
+and the applet's host for an applet. If <tt>&lt;port&gt;</tt> is
+not specified, then it defaults to 9999 for "iiopname", and 900 for
+"iiop". The root naming context is obtained by invoking the
+following method on the ORB:</p>
+<pre class="codeblock">
+orb.resolve_initial_references("NameService");
+</pre>
+<p>If <tt>&lt;cosnaming_name&gt;</tt> is nonempty, then the root
+naming context is the naming context named by
+<tt>cosnaming_name</tt>.</p>
+<p>If the URL scheme is not one of "iiop", "iiopname", "IOR",
+"corbaname", or "corbaloc", then the URL must name a location that
+contains the stringified IOR of the root naming context. For
+example, if the property contains <tt>"file:/nsdir/ior"</tt>, then
+the file <tt>/nsdir/ior</tt> must contain a stringified IOR. The
+URL scheme can be any for which there is a corresponding URL
+protocol handler ( <a href=
+"../../../api/java/net/URLStreamHandler.html"><tt>java.net.URLStreamHandler</tt></a>).
+See the <tt><a href=
+"../../../api/java/net/URL.html">java.net.URL</a></tt> class for
+details. The stringified IOR is read from the data stream
+corresponding to the URL by using a character encoding of ISO
+Latin-1. The stringified IOR is the first line in the stream that
+contains the prefix "IOR:". For example, if the URL scheme is
+"http", then the headers in the stream are skipped and the first
+line that contains the prefix "IOR:" is returned as the IOR.</p>
+<p>When the property specifies a stringified IOR or the location of
+one, the root naming context is that named by the stringified IOR.
+The ORB is initialized using the <a href=
+"#ORBPROP"><tt>java.naming.corba.orb</tt></a> property, the
+<a href="#APPPROP"><tt>java.naming.applet</tt></a> property, or
+<a href="#OTHERPROP">other ORB initialization properties</a>.</p>
+<a name="ORBPROP" id="ORBPROP"></a>
+<pre class="codeblock">
+java.naming.corba.orb
+</pre>
+<p>This property specifies the ORB that the program is using. When
+the JNDI COS naming service provider needs to use an ORB, for
+example, to look up the "NameService" initial reference or to turn
+a stringified IOR into an object reference, it will use this
+ORB.</p>
+<p>In an application you can set this property as follows:</p>
+<pre class="codeblock">
+ORB orb = ORB.init(args, null);
+Hashtable env = new Hashtable(5, 0.75f);
+env.put("java.naming.corba.orb", orb);
+...
+    
+</pre>
+In an applet, you can set it as follows:
+<pre class="codeblock">
+public class MyApplet extends Applet {
+
+    public someInitMethod() {
+        ORB orb = ORB.init(this, null);
+        Hashtable env = new Hashtable(5, 0.75f);
+        env.put("java.naming.corba.orb", orb);
+        ...
+    }
+...
+}
+    
+</pre>
+<p>If this property is not set, then the <a href=
+"#URLPROP"><tt>java.naming.provider.url</tt></a> property, the
+<a href="#APPPROP"><tt>java.naming.applet</tt></a> property, or
+<a href="#OTHERPROP">the ORB initialization properties</a> are used
+to initialize the ORB.</p>
+<a name="APPPROP" id="APPPROP"></a>
+<pre class="codeblock">
+java.naming.applet
+</pre>
+<p>This property specifies the applet that the program is using. It
+is used to initialize the ORB to be used by the COS naming service
+provider. Its parameters are used for setting JNDI-related
+properties; see the <a href=
+"../../../api/javax/naming/InitialContext.html#ENVIRONMENT">JNDI
+documentation</a> for details.</p>
+<pre class="codeblock">
+public class MyApplet extends Applet {
+
+    public someInitMethod() {
+        Hashtable env = new Hashtable(5, 0.75f);
+        env.put("java.naming.applet", this);
+        ...
+    }
+...
+}
+    
+</pre>
+<pre class="codeblock">
+<b>java.naming.factory.state</b>
+</pre>
+<p>A colon-separated list of the fully qualified class names of
+state factory classes used to get an object's state for storing
+given the object itself. You can use this mechanism to transform an
+object into forms that can be stored into a COS name server. The
+COS name server supports storing CORBA objects.</p>
+<p>A state factory that transforms a <tt>java.rmi.Remote</tt> into
+a CORBA object is supplied by default. This factory is useful for
+applications that use <a href="http://www.oracle.com/technetwork/java/rmi-iiop-139743.html">RMI-IIOP</a>. You can
+supply other factories to affect the transformation of other
+objects into CORBA objects for storing. See <a href=
+"../../../api/javax/naming/spi/NamingManager.html#getStateToBind-java.lang.Object-javax.naming.Name-javax.naming.Context-java.util.Hashtable-">
+<tt>javax.naming.spi.NamingManager.getStateToBind()</tt></a> for
+details.</p>
+<pre class="codeblock">
+<b>java.naming.factory.object</b>
+</pre>
+<p>A colon-separated list of the fully qualified class names of
+object factory classes for transforming a CORBA object. You can use
+this mechanism to transform an object into forms expected by the
+application. For example, a specialized object factory could do the
+appropriate narrowing to return an object of the expected type. See
+<a href=
+"../../../api/javax/naming/spi/NamingManager.html#getObjectInstance-java.lang.Object-javax.naming.Name-javax.naming.Context-java.util.Hashtable-">
+<tt>javax.naming.spi.NamingManager.getObjectInstance()</tt></a> for
+details.</p>
+<pre class="codeblock">
+<b>java.naming.batchsize</b>
+</pre>
+<p>Specifies the batch size to use in
+<tt>CosNaming::BindingIterator.next_n</tt> when getting the results
+of a <tt>list()</tt>/<tt>listBindings()</tt>. The default is "100."
+For example, the following sets the batch size to be 24.</p>
+<pre class="codeblock">
+    
+env.put(Context.BATCHSIZE, "24");
+</pre>
+<a name="OTHERPROP" id="OTHERPROP"><b>ORB initialization
+properties</b></a>
+<p>You can specify CORBA related properties such as those with the
+"<tt>org.omg.CORBA</tt>." prefix as properties. Properties of type
+<tt>String</tt> are used to initialize the ORB.</p>
+<hr />
+<p><a name="ORB" id="ORB"></a></p>
+<h2>ORB Initialization</h2>
+<p>The properties that affect which ORB is used and how the ORB is
+initialized are:</p>
+<ul>
+<li>
+<pre class="codeblock">
+java.naming.corba.orb
+</pre></li>
+<li>
+<pre class="codeblock">
+java.naming.applet
+</pre></li>
+<li>
+<pre class="codeblock">
+java.naming.provider.url
+</pre></li>
+<li><tt>org.omg.CORBA.*</tt> and other ORB-specific properties of
+type <tt>String</tt></li>
+</ul>
+The following algorithm is used to determine which ORB is used:
+<ol>
+<li>If <tt>java.naming.corba.orb</tt> has been set, then its value
+(an ORB) is used.</li>
+<li>Otherwise, the provider will internally initialize and use an
+ORB as follows:
+<dl>
+<dd>a) Any <tt>org.omg.CORBA.*</tt> properties and properties of
+type <tt>String</tt> are extracted and used as part of the
+<tt>Properties</tt> argument to the <tt>ORB.init()</tt> method. You
+can use this mechanism to specify, for example, the ORB
+implementation or host to use.</dd>
+<dd>b) If <tt>java.naming.provider.url</tt> has been set and it
+contains a URL of scheme "iiop" or "iiopname", then the host and
+port number specified in the URL are used as part of the
+<tt>Properties</tt> argument to the <tt>ORB.init()</tt> method,
+overriding any <tt>org.omg.CORBA.ORBInitialHost</tt> and
+<tt>org.omg.CORBA.ORBInitialPort</tt> properties set up in
+(a).</dd>
+<dd>c) The <tt>Properties</tt> instance constructed in (a) and (b)
+are passed to <tt>ORB.init()</tt> along with the <tt>Applet</tt>
+instance in <tt>java.naming.applet</tt> property, or an empty
+<tt>String[]</tt> if <tt>java.naming.applet</tt> was not
+supplied.</dd>
+</dl>
+</li>
+</ol>
+<p>If the properties employed in steps (a), (b) and (c) contain no
+relevant information for initializing the ORB, then the Java IDL
+implementation's defaults are used. Typically that means port 900
+on the local host for an application, and port 900 on the applet
+host for an applet are used. Note that when the ORB is initialized
+using <tt>ORB.init()</tt>, its arguments are checked in the
+following order: (from <tt>org.omg.CORBA.ORB</tt> javadoc)</p>
+<ol>
+<li>Check in <tt>Applet</tt> parameter or application string array,
+if any</li>
+<li>Check in properties parameter, if any</li>
+<li>Check in the <tt>System</tt> properties (currently applications
+only)</li>
+<li>Fall back on a hardcoded default behavior (use the Java IDL
+implementation)</li>
+</ol>
+<hr />
+<p><a name="ROOT" id="ROOT"></a></p>
+<h2>Root Naming Context Initialization</h2>
+<p>The root naming context is initialized either using the <a href=
+"#URLPROP"><tt>java.naming.provider.url</tt></a> property or by a
+<tt>resolve_initial_references()</tt> call on the ORB. If the
+<tt>java.naming.provider.url</tt> property is set but contains
+neither an "iiop" or "iiopname" URL, then it is assumed to contain
+a stringified IOR, a "corbaname" or "corbaloc" URL of an IOR, or a
+URL containing the location of a stringified IOR. The IOR is used
+to obtain the root naming context and must be that of a CORBA
+object of type <tt>CosNaming::NamingContext</tt>.</p>
+<p>If the <tt>java.naming.provider.url</tt> has not been set, then
+the root naming context is obtained by invoking the following
+method on the ORB:</p>
+<pre class="codeblock">
+        orb.resolve_initial_references("NameService");
+</pre>
+<hr />
+<p><a name="URL" id="URL"></a></p>
+<h2>Names and URLs</h2>
+<p><b><tt>String</tt> Names</b></p>
+<p><tt>String</tt> names accepted by the
+<tt>java.naming.Context</tt> methods are <a href=
+"../../../api/javax/naming/CompositeName.html">JNDI composite
+names</a> in which each component is the stringified form of a
+<tt>CosNaming::NameComponent</tt>.</p>
+<p>A <tt>CosNaming::Name</tt> contains a sequence of
+<tt>CosNaming::NameComponent</tt>. The stringified form of a
+component is the concatenation of the component's id, the kind
+separator character ('.'), and the component's kind. The occurrence
+of any meta characters ('.', '/', or '\') in either the id or kind
+is escaped using the escape character ('\'). The stringified form
+of a <tt>CosNaming::Name</tt> is defined in Section 3.5 of the
+<a href="ftp://ftp.omg.org/pub/docs/ptc/99-12-03.pdf">INS
+specification (99-12-03)</a>.</p>
+<p>The <a href="../../../api/javax/naming/CompositeName.html">JNDI
+composite name syntax</a> is very similar to, but not identical to,
+the INS syntax. There are minor differences with respect to the
+treatment of escape and quote characters. If you want to use names
+with the precise INS syntax, then you should use the overloads that
+accept a <tt>Name</tt> argument instead of a <tt>String</tt>
+argument. The <tt>Name</tt> argument should be a value returned by
+<tt>nameParser.parse()</tt>, where <tt>nameParser</tt> is a value
+obtained from the COS naming service provider. See the <a href=
+"#PARSE">Name Parsing</a> section.</p>
+<p><b>URL String Names</b></p>
+<p>The URL form of a <tt>CosNaming::Name</tt> is defined in the INS
+specification.</p>
+<p><tt>corbaname:&lt;corbaloc_obj&gt;["#"
+&lt;cosnaming_name&gt;]</tt></p>
+where <tt>&lt;corbaloc_obj&gt;</tt> is
+<p><tt>&lt;corbaloc_obj&gt; = &lt;obj_addr_list&gt; ["/"
+&lt;key_string&gt;]</tt></p>
+and <tt>&lt;obj_addr_list&gt;</tt> is a list of addresses as
+defined in a "corbaloc" URL and <tt>&lt;key_string&gt;</tt> is a
+key string as defined in a "corbaloc" URL.
+<tt>&lt;cosnaming_name&gt;</tt> is the stringified form of an INS
+name (see <a href="#PARSE">Name Parsing</a>).
+<p>For backward compatibility with older versions of the INS, the
+following URL schemes are also supported.</p>
+<tt>iiopname://[&lt;addr_list&gt;][/&lt;cosnaming_name&gt;]</tt>
+<p>where <tt>&lt;addr_list&gt;</tt> specifies a list of host/port
+pairs. If <tt>&lt;port&gt;</tt> is not specified, then it defaults
+to 9999. <tt>&lt;cosnaming_name&gt;</tt> is the stringified form of
+an INS name.</p>
+<p>
+<tt>iiop://&lt;host&gt;[:&lt;port&gt;][/&lt;cosnaming_name&gt;]</tt></p>
+<p>If <tt>&lt;port&gt;</tt> is not supplied, then it defaults to
+900. <tt>&lt;cosnaming_name&gt;</tt> is the stringified form of an
+INS name.</p>
+<p>When you supply an "iiop" or "iiopname" URL to the initial
+context in this way, the ORB supplied to the initial context is
+used if its <tt>string_to_object()</tt> method supports the
+<a href="ftp://ftp.omg.org/pub/docs/ptc/99-12-03.pdf">99-12-03 INS
+specification</a>. Otherwise, the ORB is ignored and the server and
+port designations in the URL are used to create an ORB. The value
+of the <tt>java.naming.factory.initial</tt> property is ignored for
+the purposes of resolving the URL.</p>
+<p>Note that this rule is <em>not</em> used when you supply a
+"corbaname" URL to the initial context. For a "corbaname" URL, the
+ORB supplied to the initial context is used because the ORB is
+needed to resolve the "corbaname" URL. <b>Name Objects</b></p>
+<p>The <tt>Name</tt> argument to a <tt>Context</tt> method is
+treated as a sequence of strings, each representing a stringified
+<tt>CosNaming::NameComponent</tt>.</p>
+<p><b><a name="PARSE" id="PARSE">Name Parsing</a></b></p>
+<p>The COS naming service provider supports names in the syntax
+specified in the INS specification. In short, the syntax is that
+components are left-to-right slash ('/') separated and
+case-sensitive. The id and kind of each component are separated by
+the period character ('.').</p>
+<p>Here is a code fragment that uses the name parser from the COS
+naming service provider to eventually do a lookup using an INS
+name.</p>
+<pre class="codeblock">
+String insName = ...;
+InitialContext ctx = new InitialContext(env);   // env contains init properties
+NameParser parser = ctx.getNameParser("");      // parser for INS names
+Name name = parser.parse(insName);              // get parsed INS name
+Object obj = ctx.lookup(name);                  // do lookup
+</pre>
+<hr />
+<p><a name="API" id="API"></a></p>
+<h2>API Mapping</h2>
+<p>The COS name server supports only naming operations. The COS
+naming service provider maps the <tt>javax.naming.Context</tt>
+methods to use the appropriate COS Naming calls.</p>
+<pre class="codeblock">
+<b>addToEnvironment()</b>
+</pre>
+<p>Records change to environment property but does not reinitialize
+ORB.</p>
+<pre class="codeblock">
+<b>bind()</b>
+</pre>
+<p>Binds an object to the specified name.</p>
+<p>If the object being bound is an
+<tt>org.omg.CosNaming.NamingContext</tt>, then
+<tt>CosNaming::NamingContext.bind_context</tt> is used. If it is an
+<tt>org.omg.CORBA.Object</tt>, then
+<tt>CosNaming::NamingContext.bind</tt> is used. The binding of any
+other type of object is not supported unless the object can be
+converted into an <tt>org.omg.CORBA.Object</tt> using the state
+factory mechanism described next.</p>
+<p>Before the bind is performed on the naming server, the COS
+naming service provider uses
+<tt>javax.naming.spi.NamingManager.getStateToBind()</tt> to allow
+the object to be transformed into a <tt>org.omg.CORBA.Object</tt>.
+The <tt>getStateToBind()</tt> method uses the state factories
+available to the COS naming service provider. If the state factory
+accepts a <tt>java.rmi.Remote</tt> object, then it is responsible
+for obtaining the object's RMI-IIOP stub and connecting it to the
+ORB associated with the context. The connected stub is the object
+that will be bound in the naming server.</p>
+<p>By default, the COS naming service provider supplies and uses a
+state factory that transforms an object implementing the
+<tt>java.rmi.Remote</tt> interface to an
+<tt>org.omg.CORBA.Object</tt> following the requirements described
+above. This factory uses the utilities in the
+<tt>javax.rmi.CORBA</tt> package. You can supply additional state
+factories to transform objects into CORBA objects.</p>
+<pre class="codeblock">
+<b>close()</b>
+</pre>
+<p>Releases any internal data structures used.</p>
+<pre class="codeblock">
+<b>composeName()</b>
+</pre>
+<p>Concatenates the supplied name to the prefix.</p>
+<pre class="codeblock">
+<b>createSubcontext()</b>
+</pre>
+<p>Uses <tt>CosNaming::NamingContext.bind_new_context</tt> to
+create and bind a new context.</p>
+<pre class="codeblock">
+<b>destroySubcontext()</b>
+</pre>
+<p>Uses <tt>CosNaming::NamingContext.destroy</tt> to destroy the
+named context. Then uses <tt>CosNaming::NamingContext.unbind</tt>
+to remove the binding.</p>
+<pre class="codeblock">
+<b>getEnvironment()</b>
+</pre>
+<p>Returns the environment of this context.</p>
+<pre class="codeblock">
+<b>getNameInNamespace()</b>
+</pre>
+<p>Returns the INS name of this context relative to the root of the
+Cos Naming namespace.</p>
+<pre class="codeblock">
+<b>getNameParser()</b>
+</pre>
+<p>Returns a name parser for parsing INS names.</p>
+<pre class="codeblock">
+<b>lookup()
+lookupLink()</b>
+</pre>
+<p>Uses <tt>CosNaming::NamingContext.resolve</tt> to lookup the
+name. It returns a CORBA object reference except when the reference
+is that of a <tt>CosNaming::NamingContext</tt>, in which case a
+<tt>Context</tt> object is returned instead.
+<tt>NamingManager.getObjectInstance()</tt> is called before the
+object is returned in case the application or user has supplied
+object factories.</p>
+<pre class="codeblock">
+<b>list()
+listBindings()</b>
+</pre>
+<p>Uses <tt>CosNaming::NamingContext.resolve</tt> to get the object
+reference for the context, and then uses
+<tt>CosNaming::BindingIterator</tt> and helper classes to iterate
+through the context. The objects bound to the names are obtained by
+calling <tt>CosNaming::NamingContext.resolve</tt> on them.
+<tt>NamingManager.getObjectInstance()</tt> is called before the
+object is returned in case the application or user has supplied
+object factories.</p>
+<pre class="codeblock">
+<b>removeFromEnvironment()</b>
+</pre>
+<p>Removes the specified property from the environment but does not
+otherwise update the context.</p>
+<pre class="codeblock">
+<b>rebind()</b>
+</pre>
+<p>If the object being bound is an
+<tt>org.omg.CosNaming.NamingContext</tt>, then
+<tt>CosNaming::NamingContext.rebind_context</tt> is used. If it is
+an <tt>org.omg.CORBA.Object</tt>, then
+<tt>CosNaming::NamingContext.rebind</tt> is used. See
+<tt>bind()</tt> for details on the use of state factories to
+transform the argument into an <tt>org.omg.CORBA.Object</tt>.</p>
+<pre class="codeblock">
+<b>rename()</b>
+</pre>
+<p>This method is implemented using <tt>bind()</tt> followed by
+<tt>unbind()</tt>. It is not atomic.</p>
+<pre class="codeblock">
+<b>unbind()</b>
+</pre>
+<p>Uses <tt>CosNaming::NamingContext.unbind</tt> to unbind the
+object.</p>
+<hr />
+<p><a name="CORBA" id="CORBA"></a></p>
+<h2>Converting CORBA Programs to use JNDI</h2>
+<p>This section explains how to modify your Java IDL program to use
+JNDI. The explanation uses the Java IDL sample programs
+<tt>helloClient.java</tt> and <tt>helloServer.java</tt>.</p>
+<ol>
+<li>Generate the stubs from the IDL file.
+<pre class="codeblock">
+# idltojava -fclient -fserver hello.idl
+</pre>
+<p>This creates the client (<tt>helloClient.java</tt>) and server
+(<tt>helloServer.java</tt>) skeletons, and a directory containing
+common code (e.g. <tt>HelloApp/*.java</tt>).</p>
+</li>
+<li>Fill in the code for the client and server programs.</li>
+<li>Modify (or copy the client and server files) to use JNDI
+instead of COS Naming directly.
+<ul>
+<li>Replace the import to use <tt>javax.naming.*;</tt>
+<p>Delete:</p>
+<pre class="codeblock">
+import org.omg.CosNaming.*;
+import org.omg.CosNaming.NamingContextPackage.*;
+</pre>
+Add:
+<pre class="codeblock">
+import javax.naming.*;
+</pre></li>
+<li>Replace how you get the initial reference to "NameService" with
+<tt>InitialContext</tt>, supplying the initial context the ORB
+being used by the current application.
+<p>Delete:</p>
+<pre class="codeblock">
+org.omg.CORBA.Object objRef = 
+   orb.resolve_initial_references("NameService");
+NamingContext ncRef = NamingContextHelper.narrow(objRef);
+</pre>
+<p>Add:</p>
+<pre class="codeblock">
+Hashtable env = new Hashtable(5, 0.75f);
+env.put("java.naming.corba.orb", orb);
+Context ic = new InitialContext(env);
+</pre></li>
+<li>Replace the call to <tt>resolve()</tt> to use
+<tt>lookup()</tt>.
+<p>Delete:</p>
+<pre class="codeblock">
+// resolve the Object Reference in Naming
+NameComponent nc = new NameComponent("Hello", "");
+NameComponent path[] = {nc};
+hello helloRef = helloHelper.narrow(ncRef.resolve(path));
+</pre>
+Add:
+<pre class="codeblock">
+// resolve the Object Reference using JNDI
+hello helloRef = 
+helloHelper.narrow((org.omg.CORBA.Object)ic.lookup("Hello"));
+</pre></li>
+</ul>
+</li>
+</ol>
+<hr />
+<p><a name="SEC" id="SEC"></a></p>
+<h2>Security Considerations</h2>
+<p>When a security manager has been installed, you must grant to
+the application using JNDI and the COS naming service provider the
+following permissions:</p>
+<pre class="codeblock">
+permission java.net.SocketPermission "host[:port]", "connect";
+</pre>
+<p>For each host/port identified in the
+<tt>java.naming.factory.initial</tt> property, in URL string names
+supplied to context methods, in ORB initialization parameters and
+properties, and in object references.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

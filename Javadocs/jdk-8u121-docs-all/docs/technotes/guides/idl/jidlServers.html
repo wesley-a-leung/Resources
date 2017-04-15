@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java IDL: Developing Servers</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Developing Servers</h1>
+<p><i>This document was not updated for this release</i></p>
+<p>This topic introduces Java&nbsp;IDL support for servers of both
+persistent and transient CORBA objects.</p>
+<p>
+<!--***************TRANSIENT AND PERSISTENT OBJECTS*************--></p>
+<h2><a name="transient_persistent">Transient and Persistent
+Objects</a></h2>
+<p>A persistent CORBA object lives until it is explicitly
+destroyed. If a client has a reference to a persistent CORBA
+object, that reference can be used even if the object's server is
+not running -- an ORB daemon, ORBD, will start the server when the
+ORB receives an invocation on the object.</p>
+<p>Starting with J2SE 1.4, Java IDL includes a Portable Object
+Adapter (POA), Object Request Broker Daemon (ORBD), and the
+<tt>servertool</tt>. These features enable <a href=
+"#persistent">persistent object servers</a> to be written using
+Java IDL!</p>
+<p>By contrast, a <a href="#transient">transient CORBA object</a>
+has the same lifetime as the execution of the server process that
+creates it. When a server terminates, its transient objects
+disappear with it and any object references held by the client
+become invalid. Transient objects are often used to effect
+asynchronous, or callback communication between applications and
+objects. For example, suppose a timing service notifies a client
+application when an interval expires; it could do so as
+follows:</p>
+<ul>
+<li>The timing service defines an interface for a notifier object
+that includes an <tt>interval_expired()</tt> operation.</li>
+<li>The timing service requires that a client pass a notifier
+object to the timing service's <tt>set_interval()</tt>
+operation.</li>
+<li>The timing service client application implements a transient
+object that implements the notifier interface.</li>
+<li>The client application creates and passes a notifier object to
+the timing service.</li>
+<li>When the interval expires, the timing service invokes the
+notifier object's <tt>interval_expired()</tt> operation.</li>
+</ul>
+<p>The arrangement, in other words, is much like a callback in
+procedural programming.</p>
+<!--*******************PERSISTENT OBJECT SERVERS *****************-->
+<a name="persistent" id="persistent"></a>
+<h2>Persistent Object Servers</h2>
+<p>Starting with J2SE 1.4, Java IDL includes a Portable Object
+Adapter (POA), Object Request Broker Daemon (ORBD), and the
+<tt>servertool</tt>. These features enable persistent object
+servers to be written using Java IDL! The tutorial <a href=
+"jidlExample2.html">Hello World with persistent server</a> provides
+a version of the "Hello World" application that utilizes a
+persistent object server. <a name="transient" id=
+"transient"></a></p>
+<h2>Transient Object Servers</h2>
+The <a href="jidlExample.html">Hello World example</a> includes a
+transient object server.
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

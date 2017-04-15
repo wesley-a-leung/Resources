@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Java HotSpot VM Command-Line Options</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:29Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="clopts.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="clopts002.html">
+                Next</a><hr/><a id="CHDJEIHC" name="CHDJEIHC"/>
+<div id="JSTGD594">
+<h1>Java HotSpot VM Command-Line Options</h1>
+<p>Command-line options that are prefixed with <code dir="ltr">-XX</code> are specific to the Java HotSpot Virtual Machine. Many of these options are important for performance tuning and diagnostic purposes, and are therefore described in this appendix. For information on all possible <code dir="ltr">-XX</code> options, see the <a href="http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html">Java HotSpot VM Options</a>.</p>
+<p>You can dynamically set, unset, or change the value of certain Java VM flags for a specified Java process using the <code dir="ltr">jinfo -flag</code> command. See <a href="tooldescr013.html#BABDHFBE">The jinfo Utility</a> and the <a href="tooldescr009.html#BABDCICF">JConsole</a> utility.</p>
+<p>For a complete list of these flags, use the <b>MBeans</b> tab of the JConsole utility. See the list of values for the <code dir="ltr">DiagnosticOptions</code> attribute of the <code dir="ltr">HotSpotDiagnostic</code> MBean, which is in the <code dir="ltr">com.sun.management</code> domain. The following are the flags:</p>
+<ul>
+<li>
+<p><code dir="ltr">HeapDumpOnOutOfMemoryError</code></p>
+</li>
+<li>
+<p><code dir="ltr">HeapDumpPath</code></p>
+</li>
+<li>
+<p><code dir="ltr">PrintGC</code></p>
+</li>
+<li>
+<p><code dir="ltr">PrintGCDetails</code></p>
+</li>
+<li>
+<p><code dir="ltr">PrintGCTimeStamps</code></p>
+</li>
+<li>
+<p><code dir="ltr">PrintClassHistogram</code></p>
+</li>
+<li>
+<p><code dir="ltr">PrintConcurrentLocks</code></p>
+</li>
+</ul>
+<div><a id="CHDFDIJI" name="CHDFDIJI"/>
+<h2>The -XX:HeapDumpOnOutOfMemoryError Option</h2>
+<p>This option tells the Java HotSpot VM to generate a heap dump when an allocation from the Java heap or the permanent generation cannot be satisfied. There is no overhead in running with this option, so it can be useful for production systems where the <code dir="ltr">OutOfMemoryError</code> exception takes a long time to surface.</p>
+<p>You can also specify this option at runtime with the <b>MBeans</b> tab in the <a href="tooldescr009.html#BABDCICF">JConsole</a> utility.</p>
+<p>The heap dump is in HPROF binary format, and so it can be analyzed using any tools that can import this format. For example, the <code dir="ltr">jhat</code> tool can be used to do rudimentary analysis of the dump. For more information on the <code dir="ltr">jhat</code> tool, see <a href="tooldescr012.html#BABJGJBI">The jhat Utility</a>.</p>
+<p><a href="#CHDFBAJD">Example D-1</a> shows the result of running out of memory with this flag set.</p>
+<div id="JSTGD595"><a id="CHDFBAJD" name="CHDFBAJD"/>
+<p>Example D-1 Sample Code for Running Out of Memory</p>
+<pre dir="ltr" xml:space="preserve">
+$ <code dir="ltr"><span>java -XX:+HeapDumpOnOutOfMemoryError -mn256m -mx512m ConsumeHeap</span></code>
+java.lang.OutOfMemoryError: Java heap space
+Dumping heap to java_pid2262.hprof ...
+Heap dump file created [531535128 bytes in 14.691 secs]
+Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
+        at ConsumeHeap$BigObject.(ConsumeHeap.java:22)
+        at ConsumeHeap.main(ConsumeHeap.java:32)
+</pre></div>
+
+<p>The <code dir="ltr">ConsumeHeap</code> fills up the Java heap and runs out of memory. When the <code dir="ltr">java.lang.OutOfMemoryError</code> exception is thrown, a heap dump file is created. In this case the file is 507 MB and is created with the name java_pid2262.hprof in the current directory.</p>
+<p>By default the heap dump is created in a file called java_pid<span>pid</span>.hprof in the working directory of the VM, as in the example above. You can specify an alternative file name or directory with the <code dir="ltr">-XX:HeapDumpPath=</code> option. For example <code dir="ltr">-XX:HeapDumpPath=/disk2/dumps</code> will cause the heap dump to be generated in the /disk2/dumps directory.</p>
+</div>
+
+<div><a id="CHDFEJBB" name="CHDFEJBB"/>
+<h2>The -XX:OnError Option</h2>
+<p>When a fatal error occurs, the Java HotSpot VM can optionally execute a user-supplied script or command. The script or command is specified using the <code dir="ltr">-XX:OnError=</code><span>string</span> command-line option, where <span>string</span> is a single command, or a list of commands separated by semicolons. Within this string, all occurrences of <code dir="ltr">%p</code> are replaced with the current PID, and all occurrences of <code dir="ltr">%%</code> are replaced by a single <code dir="ltr">%</code>. The following examples demonstrate how this option can be used when launching a Java application named MyApp with the <code dir="ltr">java</code> launcher.</p>
+<ul>
+<li>
+<p><code dir="ltr"><span>java -XX:OnError="pmap %p" MyApp</span></code></p>
+<p>On Oracle Solaris operating system the <code dir="ltr">pmap</code> command displays information about the address space of a process. In the example above, if a fatal error occurs, the <code dir="ltr">pmap</code> command is executed to display the address space of the current process.</p>
+</li>
+<li>
+<p><code dir="ltr"><span>java -XX:OnError="cat hs_err_pid%p.log | mail support@acme.com" MyApp</span></code></p>
+<p>In the example above, the contents of the fatal error log file are mailed to a support alias when a fatal error is encountered.</p>
+</li>
+<li>
+<p><code dir="ltr"><span>java -XX:OnError="gcore %p; dbx - %p" MyApp</span></code></p>
+<p>On Oracle Solaris operating system the <code dir="ltr">gcore</code> command creates a core image of the specified process, and the <code dir="ltr">dbx</code> command launches the debugger. In the example above, the <code dir="ltr">gcore</code> command is executed to create the core image of the current process, and the debugger is started to attach to the process when an unexpected error is encountered.</p>
+</li>
+<li>
+<p><code dir="ltr"><span>java -XX:OnError="gdb - %p" MyApp</span></code></p>
+<p>On Linux the <code dir="ltr">gdb</code> command launches the debugger. In the example above, the <code dir="ltr">gdb</code> debugger is launched and attached to the current process when an unexpected error is encountered.</p>
+</li>
+<li>
+<p><code dir="ltr"><span>java -XX:OnError="userdump.exe %p" MyApp</span></code></p>
+<p>On Windows the <code dir="ltr">userdump.exe</code> utility creates a crash dump of the specified process. The utility does not ship with Windows and should be downloaded from the Microsoft website as a part of the Microsoft OEM Support Tools package.</p>
+<p>In the above example, the <code dir="ltr">userdump.exe</code> utility is executed to create a core dump of the current process in case of a fatal error.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+The example assumes that the path to the <code dir="ltr">userdump.exe</code> utility is defined in the <code dir="ltr">PATH</code> variable.</td>
+</tr>
+<tr>
+<td align="left">Tip
+<p>If you do not have the <code dir="ltr">userdump.exe</code> utility installed, the Dr. Watson debugger can be configured as the post-mortem debugger so that a crash dump is created when an unexpected error is encountered.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</li>
+</ul>
+<p>For more information on creating crash dumps on Windows, see <a href="bugreports004.html#CHDHIHBJ">Collect Crash Dumps on Windows</a>.</p>
+</div>
+
+<div><a id="CHDJIEHH" name="CHDJIEHH"/>
+<h2>The -XX:ShowMessageBoxOnError Option</h2>
+<p>When this option is set and a fatal error is encountered, the HotSpot VM will display information about the fatal error and prompt the user to specify whether the native debugger is to be launched. In the case of Oracle Solaris and Linux operating systems, the output and prompt are sent to the application console (standard input and standard output). In the case of Windows, a Windows message box pops up.</p>
+<p><a href="#CHDFIHFC">Example D-2</a> shows a fatal error encountered on a Linux system.</p>
+<div id="JSTGD601"><a id="CHDFIHFC" name="CHDFIHFC"/>
+<p>Example D-2 Fatal Error on a Linux System</p>
+<pre dir="ltr" xml:space="preserve">
+==============================================================================
+Unexpected Error
+------------------------------------------------------------------------------
+SIGSEGV (0xb) at pc=0x2000000001164db1, pid=10791, tid=1026
+
+Do you want to debug the problem?
+
+To debug, run 'gdb /proc/10791/exe 10791'; then switch to thread 1026
+Enter 'yes' to launch gdb automatically (PATH must include gdb)
+Otherwise, press RETURN to abort...
+==============================================================================
+</pre></div>
+
+<p>In this case a <code dir="ltr">SIGSEGV</code> error has occurred and the user is prompted to specify whether the <code dir="ltr">gdb</code> debugger is to be launched to attach to the process. If the user enters <code dir="ltr">y</code> or <code dir="ltr">yes</code>, <code dir="ltr">gdb</code> will be launched (assuming it is set in the <code dir="ltr">PATH</code> variable).</p>
+<p>On Oracle Solaris operating system the message is similar to the above except that the user is prompted to start the <code dir="ltr">dbx</code> debugger.</p>
+<p>On Windows a message box is displayed. If the user clicks <b>Yes</b>, the VM will attempt to start the default debugger. This debugger is configured by a registry setting which is described in <a href="bugreports004.html#CHDHIHBJ">Collect Crash Dumps on Windows</a>. If Microsoft Visual Studio is installed, the default debugger is typically configured to be <code dir="ltr">msdev.exe</code>.</p>
+<p>In the above example the output includes the PID (<code dir="ltr">pid=10791</code>) and also the thread ID (<code dir="ltr">tid=1026</code>). If the debugger is launched, one of the initial steps in the debugger might be to select the thread and obtain its stack trace.</p>
+<p>As the process is waiting for a response it is possible to use other tools to obtain a crash dump or query the state of the process. On Oracle Solaris operating system, for example, a core dump can be obtained using the <code dir="ltr">gcore</code> utility.</p>
+<p>On Windows a Dr. Watson crash dump can be obtained using the <code dir="ltr">userdump</code> or <code dir="ltr">windbg</code> programs. The <code dir="ltr">windbg</code> utility is included in Microsoft's Debugging Tools for Windows and is described in <a href="bugreports004.html#CHDHIHBJ">Collect Crash Dumps on Windows</a>. In <code dir="ltr">windbg</code>, select the <b>Attach to a Process</b> menu option, which displays the list of processes and prompts for the PID. The HotSpot VM displays a message box, which includes the PID. Once selected the <code dir="ltr">.dump /f</code> command can be used to force a crash dump. <a href="#CHDCJIHF">Figure D-1</a> is an example crash dump created in a file named <code dir="ltr">crash.dump</code>.</p>
+<div id="JSTGD602"><a id="CHDCJIHF" name="CHDCJIHF"/>
+<p><b><i>Figure D-1 Example of a Crash Dump Created by windbg</i></b></p>
+<img alt="Description of Figure D-1 follows" longdesc="img_text/crash-dump-windbg.htm" src="img/crash-dump-windbg.gif"/><br/>
+<a href="img_text/crash-dump-windbg.html" id="sthref88" name="sthref88">Description of "Figure D-1 Example of a Crash Dump Created by windbg"</a><br/>
+<br/></div>
+
+<p>In general the <code dir="ltr">-XX:+ShowMessageBoxOnError</code> option is more useful in a development environment where debugger tools are available. The <code dir="ltr">-XX:OnError</code> option is more suitable for production environments where a fixed sequence of commands or scripts are executed when a fatal error is encountered.</p>
+</div>
+
+<div><a id="CHDHGIDJ" name="CHDHGIDJ"/>
+<h2>Other -XX Options</h2>
+<p>Several other <code dir="ltr">-XX</code> command-line options can be useful in troubleshooting:</p>
+<ul>
+<li>
+<p><code dir="ltr"><span>-XX:OnOutOfMemoryError</span></code><code dir="ltr"><span>=string</span></code></p>
+<p>This option can be used to specify a command or script to execute when an <code dir="ltr">OutOfMemoryError</code> exception is thrown.</p>
+</li>
+<li>
+<p><code dir="ltr"><span>-XX:ErrorFile</span></code><code dir="ltr"><span>=filename</span></code></p>
+<p>This option can be used to specify a location for the fatal error log file, see <a href="felog001.html#BABIDHJC">Location of Fatal Error Log</a>.</p>
+</li>
+<li>
+<p><code dir="ltr"><span>-xx:HeapDumpPath</span></code><code dir="ltr"><span>=path</span></code></p>
+<p>This option can be used to specify a location for the heap dump, see <a href="#CHDFDIJI">The -XX:HeapDumpOnOutOfMemoryError Option</a>.</p>
+</li>
+<li>
+<p><code dir="ltr"><span>-XX:MaxPermSize</span></code><code dir="ltr"><span>=size</span></code></p>
+<p>This option can be used to specify the size of the permanent generation memory, see <a href="memleaks002.html#tahiti1150092">Exception in thread <span>thread_name</span>: java.lang.OutOfMemoryError: GC Overhead limit exceeded</a>.</p>
+</li>
+<li>
+<p><code dir="ltr"><span>-XX:+PrintCommandLineFlags</span></code></p>
+<p>This option can be used to print all the VM command-line flags, see <a href="bugreports003.html#CHDCAAAD">Collect Data for a Bug Report</a>.</p>
+</li>
+<li>
+<p><code dir="ltr"><span>-XX:+PrintConcurrentLocks</span></code></p>
+<p>This option can be used to cause the Control+Break handler to print a list of concurrent locks owned by each thread.</p>
+</li>
+<li>
+<p><code dir="ltr"><span>-XX:+PrintClassHistogram</span></code></p>
+<p>This option can be used to cause the Control+Break handler to print a heap histogram.</p>
+</li>
+<li>
+<p><code dir="ltr"><span>-XX:+PrintGCDetails</span></code> and<code dir="ltr"><span>-XX:+PrintGCTimeStamps</span></code></p>
+<p>These options can be used to print detailed information about garbage collection, see <a href="clopts002.html#CHDJIIFF">The -verbose:gc Option</a>.</p>
+</li>
+<li>
+<p><code dir="ltr"><span>-XX:+UseAltSigs</span></code></p>
+<p>On Oracle Solaris 8 and 9 operating system, this option can be used to instruct the HotSpot VM to use alternate signals to <code dir="ltr">SIGUSR1</code> and <code dir="ltr">SIGUSR2</code>, see <a href="signals001.html#CIHBBDED">Handle Signals on Oracle Solaris and Linux</a>.</p>
+</li>
+<li>
+<p><code dir="ltr"><span>-XX:+UseConcMarkSweepGC</span></code> , <code dir="ltr"><span>-XX:+UseSerialGC</span></code> and <code dir="ltr"><span>-XX:+UseParallelGC</span></code></p>
+<p>These options can be used to specify the garbage collection policy to be used, see <a href="crashes002.html#CIHEEBDG">Working Around Crashes during Garbage Collection</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="clopts.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="clopts002.html">
+                Next</a><hr/>
+
+
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

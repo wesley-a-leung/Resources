@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Security Architecture: -</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<table summary="" width="100%">
+<tr>
+<td>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href=
+"security-specTOC.fm.html">CONTENTS</a> | <a href=
+"security-spec.doc7.html">PREV</a> | <a href=
+"security-spec.doc9.html">NEXT</a> 
+<!-- | <a href="security-spec.doc.html">INDEX</a>  -->
+<!-- /font --></td>
+</tr>
+</table>
+<br />
+<h2><a name="a21605" id="a21605"><i>8</i> Discussion and Future
+Directions</a></h2>
+<br />
+<h3><a name="a20670" id="a20670"><!-- --></a> <i>8.1</i> Resource
+Consumption Management</h3>
+<a name="a28214" id="a28214"><!-- --></a> Resource consumption
+management is relatively easy to implement in some cases (e.g., to
+limit the number of windows any application can pop up at any one
+time), while it can be quite hard to implement efficiently in other
+cases (e.g., to limit memory or file system usage). We plan to
+coherently address such issues in the future.<br />
+<h3><a name="a28250" id="a28250"><!-- --></a> <i>8.2</i> Arbitrary
+Grouping of Permissions</h3>
+<a name="a28251" id="a28251"><!-- --></a> Sometimes it is
+convenient to group a number of permissions together and use a
+short-hand name to refer to them. For example, if we would like to
+have a permission called &#34;SuperPermission&#34; to include (and
+imply) both FilePermission(&#34;-&#34;, &#34;read,write&#34;) and
+SocketPermission(&#34;*&#34;, &#34;connect,accept&#34;),
+technically we can use the class Permissions or a similar class to
+implement this super permission by using the <code>add</code>
+methods to add the required permissions. And such grouping can be
+arbitrarily complicated.
+<p><a name="a28252" id="a28252"><!-- --></a> The more difficult
+issues are the following. First, to understand what actual
+permissions one is granting when giving out such a super
+permission, either a fixed and named permission class is created to
+denote a statically specified group of permissions, or the member
+permissions need to be spelled out in the policy file. Second,
+processing the policy (file) can become more complicated because
+the grouped permissions may need to be expanded. Moreover, nesting
+of grouped permission increases complexity even more.</p>
+<br />
+<h3><a name="a28253" id="a28253"><!-- --></a> <i>8.3</i>
+Object-Level Protection</h3>
+<a name="a28254" id="a28254"><!-- --></a> Given the object-oriented
+nature of the Java programming language, it is conceivable that
+developers will benefit from a set of appropriate object-level
+protection mechanisms that (1) goes beyond the natural protection
+provided by the Java programming language and that (2) supplements
+the thread-based access control mechanism.
+<p><a name="a28255" id="a28255"><!-- --></a> One such mechanism is
+SignedObject. Parallel to this primitive, we will provide
+SealedObject that uses encryption to hide the content of an object.
+(Due to current U.S. export control regulations on the use of
+encryption, the SealedObject class will likely be provided separate
+from the SDK.)</p>
+<p><a name="a28256" id="a28256"><!-- --></a> GuardedObject is a
+general way to enforce access control at a per class/object per
+method level. This method, however, should be used only
+selectively, partly because this type of control can be difficult
+to administer at a high level.</p>
+<br />
+<h3><a name="a28269" id="a28269"><!-- --></a> <i>8.4</i>
+Subdividing Protection Domains</h3>
+<a name="a28270" id="a28270"><!-- --></a> A potentially useful
+concept not currently implemented is that of &#34;subdomains.&#34;
+A subdomain is one that is enclosed in another. A subdomain would
+not have more permissions or privileges than the domain of which it
+is a subpart. A domain could be created, for example, to
+selectively further limit what a program can do.
+<p><a name="a28271" id="a28271"><!-- --></a> Often a domain is
+thought of as supporting inheritance: a subdomain would
+automatically inherit the parent domain&#39;s security attributes,
+except in certain cases where the parent further restricts the
+subdomain explicitly. Relaxing a subdomain by right amplification
+is a possibility with the notion of trusted code.</p>
+<p><a name="a28272" id="a28272"><!-- --></a> For convenience, we
+can think of the system domain as a single, big collection of all
+system code. For better protection, though, system code should be
+run in multiple system domains, where each domain protects a
+particular type of resource and is given a special set of rights.
+For example, if file system code and network system code run in
+separate domains, where the former has no rights to the networking
+resources and the latter has no rights to the file system
+resources, the risks and consequence of an error or security flaw
+in one system domain is more likely to be confined within its
+boundary.</p>
+<br />
+<h3><a name="a28211" id="a28211"><!-- --></a> <i>8.5</i> Running
+Applets with Signed Content</h3>
+<a name="a20671" id="a20671"><!-- --></a> The JAR and Manifest
+specifications on code signing allow a very flexible format.
+Classes within the same archive can be signed with different keys,
+and a class can be unsigned, signed with one key, or signed with
+multiple keys. Other resources within the archive, such as audio
+clips and graphic images, can also be signed or unsigned, just like
+classes can.
+<p><a name="a20672" id="a20672"><!-- --></a> This flexibility
+brings about the issue of interpretation. The following questions
+need to be answered, especially when keys are treated
+differently:</p>
+<pre>
+1. Should images and audios be required to be signed with the
+   same key if any class in the archive is signed?
+2. If images and audios are signed with different keys, can
+   they be placed in the same appletviewer (or browser page),
+   or should they be sent to different viewers for processing?
+</pre>
+<a name="a20679" id="a20679"><!-- --></a> These questions are not
+easy to answer, and require consistency across platforms and
+products to be the most effective. Our intermediate approach is to
+provide a simple answer -- all images and audio clips are forwarded
+to be processed within the same applet classloader, whether they
+are signed or not. This temporary solution will be improved once a
+consensus is reached.
+<p><a name="a22305" id="a22305"><!-- --></a> Moreover, if a digital
+signature cannot be verified because the bytecode content of a
+class file does not match the signed hash value in the JAR, a
+security exception is thrown, as the original intention of the JAR
+author is clearly altered. Previously, there was a suggestion to
+run such code as untrusted. This idea is undesirable because the
+applet classloader allows the loading of code signed by multiple
+parties. This means that accepting a partially modified JAR file
+would allow an untrusted piece of code to run together with and
+access other code through the same classloader.</p>
+<br />
+<hr />
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href=
+"security-specTOC.fm.html">CONTENTS</a> | <a href=
+"security-spec.doc7.html">PREV</a> | <a href=
+"security-spec.doc9.html">NEXT</a> 
+<!-- | <a href="security-spec.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

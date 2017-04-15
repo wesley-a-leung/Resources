@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Appendix C: JNDI Change History</title>
+<link rel="stylesheet" type="text/css" href="../../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Appendix C: JNDI Change History</h1>
+<table summary="" width="100%" border="0" cellspacing="2"
+cellpadding="0">
+<tr>
+<td><a href="jndiTOC.html">CONTENTS</a> | <a href=
+"legend.html">PREV</a> | NEXT</td>
+</tr>
+</table>
+<p>Appendix 4:</p>
+<a name="pgfId_150244" id=
+"pgfId_150244"></a>
+<div>
+<h2 class="Heading1"><a name="pgfId_151997" id=
+"pgfId_151997"></a>JNDI 1.2: Changes Since JNDI 1.1</h2>
+<div>
+<h2 class="Heading1"></h2>
+</div>
+<ul>
+<li class="Bulleted"><a name="pgfId_152001" id=
+"pgfId_152001"></a>Added <code>javax.naming.event</code>
+package.</li>
+<li class="Bulleted"><a name="pgfId_152002" id=
+"pgfId_152002"></a>Added <code>javax.naming.ldap</code>
+package.</li>
+<li class="Bulleted"><a name="pgfId_152004" id=
+"pgfId_152004"></a>Added support for configuration using resource
+files. See Chapter 6 of the JNDI API document.</li>
+</ul>
+<div>
+<h3 class="Heading2"><a name="pgfId_152008" id=
+"pgfId_152008"></a>API-related Changes</h3>
+<ul>
+<li class="Bulleted"><a name="pgfId_152003" id=
+"pgfId_152003"></a>Added <code>NamingEnumeration.close()</code> for
+cancelling or terminating enumerations.</li>
+<li class="Bulleted"><a name="pgfId_152014" id=
+"pgfId_152014"></a>Added
+<code>ReferralException.getReferralContext(Hashtable env)</code>
+and <code>ReferralException.retryReferral()</code> to allow
+creation and retry of referral context with different environment
+properties.</li>
+<li class="Bulleted"><a name="pgfId_152015" id=
+"pgfId_152015"></a>Clarified how context methods that accept
+<code>Name</code> argument should deal with
+<code>CompositeName</code> and non <code>CompositeName</code>
+arguments. Specifically, instances of <code>CompositeName</code>
+are treated as composite name, while all others are treated as
+compound name.</li>
+<li class="Bulleted"><a name="pgfId_152016" id=
+"pgfId_152016"></a>Added <code>Context.getNameInNamespace()</code>
+for retrieving the full name of a context within its own
+namespace.</li>
+<li class="Bulleted"><a name="pgfId_152018" id=
+"pgfId_152018"></a>Clarified definition of the class factory
+location of a <code>Reference</code> object. Specifically, the
+location is a codebase, which consists of a list space-separated
+URLs.</li>
+<li class="Bulleted"><a name="pgfId_152019" id=
+"pgfId_152019"></a>Added support for ordered multivalued attributes
+to <code>Attribute</code> and <code>BasicAttribute</code> .</li>
+<li class="Bulleted"><a name="pgfId_152053" id=
+"pgfId_152053"></a>Added <code>BasicAttributes.equals()</code> and
+<code>BasicAttributes.hashCode()</code> .</li>
+<li class="Bulleted"><a name="pgfId_152020" id=
+"pgfId_152020"></a>Redefined semantics of
+<code>DirContext.getSchemaClassDefinition()</code> so that it
+returns a context that contains the <code>DirContext</code> objects
+of class definitions, rather than returning one (arbitrary) class
+definition.</li>
+<li class="Bulleted"><a name="pgfId_152037" id=
+"pgfId_152037"></a>Added protected <code>InitialContext</code> /
+<code>InitialDirContext</code> constructors to allow lazy
+initialization. Useful for subclass implementations.</li>
+</ul>
+</div>
+<div>
+<h3 class="Heading2"><a name="pgfId_152011" id=
+"pgfId_152011"></a>SPI-related Changes</h3>
+<ul>
+<li class="Bulleted"><a name="pgfId_152061" id=
+"pgfId_152061"></a>Added <code>StateFactory</code> /
+<code>NamingManager.getStateToBind()</code> , analogous to
+<code>ObjectFactory</code> /
+<code>NamingManager.getObjectInstance()</code> , for transforming
+an object's state before the object is bound in the
+naming/directory service.</li>
+<li class="Bulleted"><a name="pgfId_152060" id=
+"pgfId_152060"></a>Added interfaces <code>DirObjectFactory</code>
+and <code>DirStateFactory</code> to better support service
+providers that implement the <code>DirContext</code> interface.
+Added <code>DirectoryManager.getObjectInstance()</code> and
+<code>DirectoryManager.getStateToStore()</code> to use these
+interfaces.</li>
+<li class="Bulleted"><a name="pgfId_152009" id=
+"pgfId_152009"></a>Refined definition of
+<code>NamingManager.getObjectInstance()</code> to not treat URL
+strings specially. Instead, the URL should be wrapped inside a
+<code>Reference</code> whose <code>RefAddr</code> type is
+&quot;URL&quot;.</li>
+<li class="Bulleted"><a name="pgfId_152058" id=
+"pgfId_152058"></a>Made <code>ResolveResult</code> implement
+<code>Serializable</code> .</li>
+<li class="Bulleted"><a name="pgfId_152073" id=
+"pgfId_152073"></a>Defined a special form of <code>Reference</code>
+called a next naming system (nns) reference for supporting
+&quot;dynamic federation&quot;. This reference has a
+<code>RefAddr</code> type of &quot;nns&quot; and a content
+consisting of the resolved object.</li>
+<li class="Bulleted"><a name="pgfId_152085" id=
+"pgfId_152085"></a>Added the string constant
+<code>NamingManager.CPE</code> which names a property set by
+<code>NamingManager.getContinuationContext()</code> /
+<code>DirectoryManager.getContinuationContext()</code> . The value
+of this property is an instance of
+<code>CannotProceedException</code> . This is useful to service
+providers that implement federation by chaining the CPEs.</li>
+<li class="Bulleted"><a name="pgfId_152100" id=
+"pgfId_152100"></a>Defined a convention for service providers to
+use when naming environment properties. See Section 6.1.</li>
+</ul>
+<p><br />
+<a href="jndiTOC.html">CONTENTS</a> | <a href=
+"legend.html">PREV</a> | NEXT</p>
+</div>
+</div>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

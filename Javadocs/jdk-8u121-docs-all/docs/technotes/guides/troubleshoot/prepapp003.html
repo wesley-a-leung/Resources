@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Gather Relevant Data</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:27Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="prepapp002.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr.html">
+                Next</a><hr/><a id="CEGHACDF" name="CEGHACDF"/>
+<div id="JSTGD112">
+<h1><span>1.3</span> Gather Relevant Data</h1>
+<p>If your application runs into a problem and you want to debug the problem further, make sure that you collect any relevant data before restarting the system, especially if restarting will remove previous files.</p>
+<p>The following are important files to gather:</p>
+<ul>
+<li>
+<p>Core files for crash issues.</p>
+</li>
+<li>
+<p><code dir="ltr">hs_err</code> printed text file for Java crashes.</p>
+</li>
+<li>
+<p>Log files: Java and application logs.</p>
+</li>
+<li>
+<p>Java heap dumps for <code dir="ltr">-XX:+HeapDumpOnOutOfMemoryError</code>.</p>
+</li>
+<li>
+<p>Java flight recordings (if enabled) - If the problem didn't terminate the application, dump the continuous recordings.</p>
+</li>
+</ul>
+<p>If the application has stopped responding, then gather the following files.</p>
+<ul>
+<li>
+<p>Stack traces: Take several stack traces using <code dir="ltr">jcmd &lt;pid&gt; Thread.print</code> before restarting the system.</p>
+</li>
+<li>
+<p>Dump flight recordings (if enabled).</p>
+</li>
+<li>
+<p>Force a core file: If the application can't be closed properly, then stop the application and force a core file using <code dir="ltr">kill -6 &lt;pid&gt;</code> on Linux or Solaris systems.</p>
+</li>
+</ul>
+<div id="JSTGD113"><a id="sthref9" name="sthref9"/>
+<h2><span>1.3.1</span> Make a Java Application Easier to Debug</h2>
+<p>Using a logging framework is a good way to enable future debugging. If you run into problems in a specific module, you should be able to enable logging in that module. It is also good to specify different levels of logging, for example info, debug and trace. For details about how to use the <code dir="ltr">java.util.logging</code> framework, see <a href="../logging/index.html">Java Logging Technology</a>.</p>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="prepapp002.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr.html">
+                Next</a><hr/>
+
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

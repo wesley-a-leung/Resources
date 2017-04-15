@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Nashorn and JavaFX</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1044" name="generator"/>
+<meta content="This chapter describes how to create and run JavaFX applications using scripts interpreted by the Nashorn engine. It is assumed that you are familiar with JavaFX." name="description"/>
+<meta content="2015-02-12T14:37:36Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Nashorn User's Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E41835-02" name="partnum"/>
+<meta content="JSNUG" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Nashorn User's Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="api.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="shell.html">
+                Next</a><hr/>
+<div id="JSNUG130"><a id="CEGEJAFB" name="CEGEJAFB"/>
+<h1><span>3</span> Nashorn and JavaFX</h1>
+<a id="JSNUG131" name="JSNUG131"/>
+<p>This chapter describes how to create and run JavaFX applications using scripts interpreted by the Nashorn engine. It is assumed that you are familiar with JavaFX. For more information, see the JavaFX documentation at <code dir="ltr"><a href="http://docs.oracle.com/javase/8/javafx/">http://docs.oracle.com/javase/8/javafx/</a></code></p>
+<p>You can interpret a JavaFX script application with Nashorn using the <code dir="ltr">jjs</code> command with the <code dir="ltr">-fx</code> option. For example, the following command invokes Nashorn to interpret the <code dir="ltr">JavaFXscript.js</code> file:</p>
+<pre dir="ltr" xml:space="preserve">
+jjs -fx JavaFXscript.js
+</pre>
+<p>For more information about <code dir="ltr">jjs</code>, see the tool's reference page at <code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/windows/jjs.html">http://docs.oracle.com/javase/8/docs/technotes/tools/windows/jjs.html</a></code></p>
+<p>A JavaFX script application is similar to the Java equivalent, but Nashorn enables you to simplify many of the JavaFX constructs. Typically, a JavaFX script application contains only the <code dir="ltr">start()</code> function, which is equivalent to the <code dir="ltr">start()</code> method in its Java counterpart. It can also contain the <code dir="ltr">init()</code> and <code dir="ltr">stop()</code> functions.</p>
+<p><a href="#CEGBDFEC">Example 3-1</a> contains the source code for a simple JavaFX application that displays a button, which when clicked prints <code dir="ltr">"Hello World!"</code> to standard output.</p>
+<div id="JSNUG132"><a id="CEGBDFEC" name="CEGBDFEC"/>
+<p>Example 3-1 JavaFX Application (HelloWorld.java)</p>
+<pre dir="ltr" xml:space="preserve">
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+
+public class HelloWorld extends Application {
+    public static void main(String[] args) {
+        launch(args);
+    }
+    
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("Hello World!");
+        Button btn = new Button();
+        btn.setText("Say 'Hello World'");
+        btn.setOnAction(new EventHandler&lt;ActionEvent&gt;() {
+ 
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Hello World!");
+            }
+        });
+        
+        StackPane root = new StackPane();
+        root.getChildren().add(btn);
+        primaryStage.setScene(new Scene(root, 300, 250));
+        primaryStage.show();
+    }
+}
+</pre></div>
+
+<p><a href="#CEGEIEEJ">Example 3-2</a> contains the source code for a JavaFX script application that corresponds to the Java code in <a href="#CEGBDFEC">Example 3-1</a>.</p>
+<div id="JSNUG133"><a id="CEGEIEEJ" name="CEGEIEEJ"/>
+<p>Example 3-2 JavaFX Script Application (HelloWorld.js)</p>
+<pre dir="ltr" xml:space="preserve">
+var Button = javafx.scene.control.Button;
+var StackPane = javafx.scene.layout.StackPane;
+var Scene = javafx.scene.Scene;
+
+function start(primaryStage) {
+    primaryStage.title = "Hello World!";
+    var button = new Button();
+    button.text = "Say 'Hello World'";
+    button.onAction = function() print("Hello World!");
+    var root = new StackPane();
+    root.children.add(button);
+    primaryStage.scene = new Scene(root, 300, 250);
+    primaryStage.show();
+}
+</pre></div>
+
+<p>Both <a href="#CEGBDFEC">Example 3-1</a> and <a href="#CEGEIEEJ">Example 3-2</a> produce the same result: a window titled <b>Hello World!</b> with a button labeled <b>Say 'Hello World'</b>.</p>
+<p>Analyzing the two preceding examples, you can see how Nashorn enables you to simplify Java code when you write a JavaFX application as a script:</p>
+<ul>
+<li>
+<p>There is no need to declare variable types, import packages, use annotations, specify the class name, and implement its <code dir="ltr">main()</code> method.</p>
+</li>
+<li>
+<p>Only the JavaFX classes that are instantiated must be declared.</p>
+</li>
+<li>
+<p>JavaBeans do not require the <code dir="ltr">get</code> and <code dir="ltr">set</code> prefixes, and are treated as JavaScript properties instead of as Java methods. For more information, see <a href="api.html#CDEEGAIF">Using JavaBeans</a>.</p>
+</li>
+<li>
+<p>Implementing the <code dir="ltr">javafx.event.EventHandler</code> interface does not require you to specify the implemented method explicitly. Because <code dir="ltr">handle()</code> is the only method, Nashorn automatically applies the provided function to the method. For more information, see <a href="api.html#CDEDGBIF">Extending Java Classes</a>.</p>
+</li>
+</ul>
+<p>The JavaFX primary stage is available to Nashorn as a global property <code dir="ltr">$STAGE</code>. This global property enables you to treat the whole script as one <code dir="ltr">start()</code> function (you can still add the <code dir="ltr">init()</code> and <code dir="ltr">stop()</code> functions). <a href="#CEGCGCIF">Example 3-3</a> contains the source code for a simplified version of the JavaFX script application from <a href="#CEGEIEEJ">Example 3-2</a>.</p>
+<div id="JSNUG134"><a id="CEGCGCIF" name="CEGCGCIF"/>
+<p>Example 3-3 Simpler Version of the JavaFX Script Application (HelloWorldSimple.js)</p>
+<pre dir="ltr" xml:space="preserve">
+var Button = javafx.scene.control.Button;
+var StackPane = javafx.scene.layout.StackPane;
+var Scene = javafx.scene.Scene;
+
+$STAGE.title = "Hello World!";
+var button = new Button();
+button.text = "Say 'Hello World'";
+button.onAction = function() print("Hello World!");
+var root = new StackPane();
+root.children.add(button);
+$STAGE.scene = new Scene(root, 300, 250);
+$STAGE.show();
+</pre></div>
+
+<p>In most cases, you should only add the classes that you instantiate or use to access static fields. However, for prototyping purposes, Nashorn predefines a set of scripts that can be loaded to import groups of JavaFX packages and classes. You can load a script using the <code dir="ltr">load()</code> function that takes a string with the name of the script. The following table lists the predefined script objects that are available for inclusion:</p>
+<div>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="This table lists predefined scripts that can be loaded to import various JavaFX packages and classes" title="Predefined JavaFX Scripts With Imports" width="100%">
+<col width="*"/>
+<col width="50%"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t2" valign="bottom">This script ...</th>
+<th align="left" id="r1c2-t2" valign="bottom">Imports ...</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r2c1-t2">fx:base.js</td>
+<td align="left" headers="r2c1-t2 r1c2-t2"><br/>
+javafx.stage.Stage<br/>
+javafx.scene.Scene<br/>
+javafx.scene.Group<br/>
+javafx/beans<br/>
+javafx/collections<br/>
+javafx/events<br/>
+javafx/util</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r3c1-t2">fx:graphics.js</td>
+<td align="left" headers="r3c1-t2 r1c2-t2"><br/>
+javafx/animation<br/>
+javafx/application<br/>
+javafx/concurrent<br/>
+javafx/css<br/>
+javafx/geometry<br/>
+javafx/print<br/>
+javafx/scene<br/>
+javafx/stage</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r4c1-t2">fx:controls.js</td>
+<td align="left" headers="r4c1-t2 r1c2-t2"><br/>
+javafx/scene/chart<br/>
+javafx/scene/control</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r5c1-t2">fx:fxml.js</td>
+<td align="left" headers="r5c1-t2 r1c2-t2">javafx/fxml</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r6c1-t2">fx:web.js</td>
+<td align="left" headers="r6c1-t2 r1c2-t2">javafx/scene/web</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r7c1-t2">fx:media.js</td>
+<td align="left" headers="r7c1-t2 r1c2-t2">javafx/scene/media</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r8c1-t2">fx:swing.js</td>
+<td align="left" headers="r8c1-t2 r1c2-t2">javafx/embed/swing</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t2" id="r9c1-t2">fx:swt.js</td>
+<td align="left" headers="r9c1-t2 r1c2-t2">javafx/embed/swt</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p><a href="#CEGGACGH">Example 3-4</a> contains the source code of the simplified JavaFX script application from <a href="#CEGCGCIF">Example 3-3</a> with <code dir="ltr">load()</code> functions used to import the necessary packages and classes.</p>
+<div id="JSNUG135"><a id="CEGGACGH" name="CEGGACGH"/>
+<p>Example 3-4 JavaFX Script Application with Loaded Scripts</p>
+<pre dir="ltr" xml:space="preserve">
+load("fx:base.js");
+load("fx:controls.js");
+load("fx:graphics.js");
+
+$STAGE.title = "Hello World!";
+var button = new Button();
+button.text = "Say 'Hello World'";
+button.onAction = function() print("Hello World!");
+var root = new StackPane();
+root.children.add(button);
+$STAGE.scene = new Scene(root, 300, 250);
+$STAGE.show();
+</pre></div>
+
+<p>For more examples of JavaFX script applications, see <a href="fxamples.html#CHDGADCA">Appendix A, "JavaFX Script Application Examples"</a>.</p>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="api.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="shell.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

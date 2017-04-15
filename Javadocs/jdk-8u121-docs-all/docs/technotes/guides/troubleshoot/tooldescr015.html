@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>The jps Utility</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr014.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr016.html">
+                Next</a><hr/><a id="BABHCEDC" name="BABHCEDC"/>
+<div id="JSTGD208">
+<h1><span>2.15</span> The jps Utility</h1>
+<p>The <code dir="ltr">jps</code> utility lists every instrumented Java HotSpot VM for the current user on the target system. The utility is very useful in environments where the VM is embedded, that is; where it is started using the JNI Invocation API rather than the <code dir="ltr">java</code> launcher. In these environments, it is not always easy to recognize the Java processes in the process list.</p>
+<p>For more details on the <code dir="ltr">jps</code> utility, see the <a href="../../tools/unix/jps.html"><code dir="ltr">jps</code> command man page</a>.</p>
+<p><a href="#BABDHBFI">Example 2-26</a> demonstrates the usage of the <code dir="ltr">jps</code> utility.</p>
+<div id="JSTGD209"><a id="BABDHBFI" name="BABDHBFI"/>
+<p>Example 2-26 How to Use jps Utility</p>
+<pre dir="ltr" xml:space="preserve">
+$ <code dir="ltr"><span>jps</span></code>
+16217 MyApplication
+16342 jps
+</pre></div>
+
+<p>The utility lists the virtual machines for which the user has access rights. This is determined by access-control mechanisms specific to the operating system. On Oracle Solaris operating system, for example, if a non-root user executes the <code dir="ltr">jps</code> utility, then the output is a list of the virtual machines that were started with that user's uid.</p>
+<p>In addition to listing the PID, the utility provides options to output the arguments passed to the application's <code dir="ltr">main</code> method, the complete list of VM arguments, and the full package name of the application's <code dir="ltr">main</code> class. The <code dir="ltr">jps</code> utility can also list processes on a remote system if the remote system is running the <code dir="ltr">jstatd</code> daemon.</p>
+<p>If you are running several Java Web Start applications on a system, they tend to look the same, as shown in <a href="#BABGFIAA">Example 2-27</a>.</p>
+<div id="JSTGD210"><a id="BABGFIAA" name="BABGFIAA"/>
+<p>Example 2-27 Java Web Start Applications</p>
+<pre dir="ltr" xml:space="preserve">
+$ <code dir="ltr"><span>jps</span></code>
+1271 jps
+     1269 Main
+     1190 Main
+</pre></div>
+
+<p>In this case, use <code dir="ltr">jps -m</code> to distinguish them, as shown in <a href="#BABIEFIJ">Example 2-28</a>.</p>
+<div id="JSTGD211"><a id="BABIEFIJ" name="BABIEFIJ"/>
+<p>Example 2-28 Distinguish Java Web Start Applications with jps Utility</p>
+<pre dir="ltr" xml:space="preserve">
+$ <code dir="ltr"><span>jps -m</span></code>
+1271 jps -m
+     1269 Main http://bugster.central.sun.com/bugster.jnlp
+     1190 Main http://webbugs.sfbay/IncidentManager/incident.jnlp
+</pre></div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr014.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr016.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

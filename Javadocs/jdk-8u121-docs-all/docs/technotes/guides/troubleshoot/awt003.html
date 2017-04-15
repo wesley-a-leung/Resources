@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Key Events</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="awt002.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="awt004.html">
+                Next</a><hr/><a id="CIHJCADB" name="CIHJCADB"/>
+<div id="JSTGD398">
+<h1><span>10.3</span> Key Events</h1>
+<p>This section describes issues related to handling key events.</p>
+<p>The following keyboard issues are currently unresolved:</p>
+<ul>
+<li>
+<p>On some non-English keyboards certain accented keys are engraved on the keytop and therefore are primary layer characters. Nevertheless, they cannot be used for mnemonics because there is no corresponding Java keycode.</p>
+</li>
+<li>
+<p>Changing the default locale at runtime does not change the text that is displayed for the menu accelerator keys.</p>
+</li>
+<li>
+<p>On a standard 109-key Japanese keyboard, the yen key and the backslash key both generate a backslash, because they have the same character code for the <code dir="ltr">WM_CHAR</code> message. AWT should distinguish them. This will be fixed in a future release.</p>
+</li>
+</ul>
+<p>The following keyboard issues concern the Oracle Solaris 10 and Linux x86 systems.</p>
+<ul>
+<li>
+<p>Keyboard input in these systems is usually based on the X keyboard extension (XKB) of the X Window System. Users can configure one keyboard layout (for instance, Danish: <code dir="ltr">dk</code>) or several layouts to switch between (for example, <code dir="ltr">us</code> and <code dir="ltr">dk</code>).</p>
+</li>
+<li>
+<p>With some keyboard layouts, for instance <code dir="ltr">sk</code>, <code dir="ltr">hu</code>, and <code dir="ltr">cz</code>, pressing the decimal separator on the numeric keypad not only enters a delimiter but also deletes the previous character. This is due to a native bug. A workaround is to use two layouts, for example, <code dir="ltr">us</code> and <code dir="ltr">sk</code>. In this case the numeric keypad works correctly in both layouts.</p>
+</li>
+<li>
+<p>On UNIX systems that support dynamic keyboard changes, a running Java application does not recognize such a change. For instance, changing the keyboard from US to German does not change the keyboard mapping. Although the X server detects the change and sends out a <code dir="ltr">MappingNotify</code> event to interested clients, AWT does not refresh its notion of the keycode-keysym mapping.</p>
+</li>
+</ul>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="awt002.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="awt004.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

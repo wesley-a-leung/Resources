@@ -1,0 +1,371 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>FIPS 140 Compliant Mode for SunJSSE</title>
+<meta http-equiv="Content-Type" content=
+"text/html; charset=utf-8" />
+<meta content="MSHTML 6.00.5730.11" name="GENERATOR" />
+<meta content="NeoOffice 2.1" name="GENERATOR" />
+<meta content="20070427;10435600" name="CREATED" />
+<meta content="20070427;13164100" name="CHANGED" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="Pragma" content="no-cache" />
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>FIPS 140 Compliant Mode for SunJSSE</h1>
+<p>In Sun's Java SE implementation version 6 or later, the SunJSSE
+provider, which contains the SSL/TLS implementation, can be
+configured to operate in a FIPS 140 compliant mode instead of its
+default mode. This document describes the FIPS 140 compliant mode
+(subsequently called "FIPS mode").</p>
+<h2>Configuring SunJSSE for FIPS Mode</h2>
+<p>SunJSSE is configured in FIPS mode by associating it with an
+appropriate FIPS 140 certified cryptographic provider that supplies
+the implementations for all cryptographic algorithms required by
+SunJSSE. This can be done in one of the following ways:</p>
+<ol>
+<li>
+<p>edit the file
+<code>${java.home}/lib/security/java.security</code> and modify the
+line that lists <code>com.sun.net.ssl.internal.ssl.Provider</code>
+to list the provider name of the FIPS 140 certified cryptographic
+provider. For example if the name of the cryptographic provider is
+<code>SunPKCS11-NSS</code>, change the line from</p>
+<pre style="MARGIN-BOTTOM: 0.2in">
+  security.provider.4=com.sun.net.ssl.internal.ssl.Provider
+</pre>
+<p>to</p>
+<pre style="MARGIN-BOTTOM: 0.2in">
+  security.provider.4=com.sun.net.ssl.internal.ssl.Provider SunPKCS11-NSS
+</pre>
+<p style="MARGIN-BOTTOM: 0in">The class for the provider of the
+given name must also be listed as a security provider in the
+<code>java.security</code> file.</p>
+</li>
+<li>
+<p style="MARGIN-BOTTOM: 0in">at runtime, call the constructor of
+the SunJSSE provider that takes a
+<code>java.security.Provider</code> object as a parameter. For
+example, if the variable <code>cryptoProvider</code> is a reference
+to the cryptographic provider, call <code>new
+com.sun.net.ssl.internal.ssl.Provider(cryptoProvider)</code>.</p>
+</li>
+<li>
+<p>at runtime, call the constructor of the SunJSSE provider that
+takes a String object as a parameter. For example if the
+cryptographic provider is called <code>SunPKCS11-NSS</code> call
+<code>new
+com.sun.net.ssl.internal.ssl.Provider("SunPKCS11-NSS")</code>. A
+provider with the specified name must be one of the configured
+security providers.</p>
+</li>
+</ol>
+<p>Within a given Java process, SunJSSE can be used either in FIPS
+mode or in default mode, but not both at the same time. Once
+SunJSSE has been initialized, it is not possible to change the
+mode. This means that if one of the runtime configuration options
+is used (option 2 or 3), the configuration must take place before
+any SSL/TLS operation.</p>
+<p>Note that only the specified configured provider will be used by
+the SunJSSE for any and all cryptographic operations. All other
+cryptographic providers including those included with the Java SE
+implementation will be ignored and not used.</p>
+<h2>Difference Between FIPS Mode and Default Mode</h2>
+<p>In FIPS mode, SunJSSE behaves in a way identical to default
+mode, except for the following differences.</p>
+<p>In FIPS mode:</p>
+<ul>
+<li>
+<p style="MARGIN-BOTTOM: 0in">SunJSSE will perform all
+cryptographic operations using the cryptographic provider that was
+configured as described above. This includes symmetric and
+asymmetric encryption, signature generation and verification,
+message digests and message authentication codes, key generation
+and key derivation, random number generation, etc.</p>
+</li>
+<li>
+<p style="MARGIN-BOTTOM: 0in">If the configured cryptographic
+provider reports any error by throwing an exception, SunJSSE will
+abort the current operation and propagate the exception to the
+application.</p>
+</li>
+<li>
+<p style="MARGIN-BOTTOM: 0in">If the configured cryptographic
+provider believes it had a critical error such as a self test
+failure per FIPS guidelines, it needs to remain in an error state
+until it is re-initialized. The application using the SunJSSE
+configured with the FIPS cryptographic module will have to be
+restarted. This ensures that the FIPS module will not allow
+critical errors to compromise security.</p>
+</li>
+<li>
+<p style="MARGIN-BOTTOM: 0in">Only TLS 1.0 and later can be used.
+SSL 2.0 and SSL 3.0 are not available. Any attempt to enable SSL
+2.0 or 3.0 will fail with an exception.</p>
+</li>
+<li>
+<p>The list of ciphersuites is limited to those that utilize
+appropriate algorithms. The current list of possible ciphersuites
+is given below. Any attempt to enable a ciphersuite not on the list
+will fail with an exception.</p>
+</li>
+</ul>
+<h3>Ciphersuites Usable in FIPS Mode</h3>
+<p>The following is the current list of ciphersuites which can be
+used by SunJSSE in FIPS mode with their names and the id as
+assigned in the TLS protocol provided that the configured
+cryptographic FIPS module supports the necessary algorithms. Note
+that although SunJSSE uses the prefix <code>SSL_</code> in the name
+of some of these ciphersuites, this is for compatibility with
+earlier versions of the specification only. In FIPS mode, SunJSSE
+will always use TLS 1.0 or later and implement the ciphersuites as
+required by those specifications.</p>
+<dl>
+<dd>
+<table summary="cipher suites used in FIPS mode " cellspacing="0" cellpadding="2" width="450" >
+<tbody>
+<tr>
+<th id="h1">Name</th>
+<th id="h2">Id</th>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>SSL_RSA_WITH_3DES_EDE_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0x000a</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0x0016</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_RSA_WITH_AES_128_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0x002f</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_DHE_DSS_WITH_AES_128_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0x0032</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_DHE_RSA_WITH_AES_128_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0x0033</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_RSA_WITH_AES_256_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0x0035</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_DHE_DSS_WITH_AES_256_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0x0038</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_DHE_RSA_WITH_AES_256_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0x0039</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0xC003</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0xC004</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0xC005</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0xC008</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0xC009</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0xC00A</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0xC00D</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_ECDH_RSA_WITH_AES_128_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0xC00E</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_ECDH_RSA_WITH_AES_256_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0xC00F</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0xC012</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0xC013</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0xC014</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_ECDH_anon_WITH_3DES_EDE_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0xC017</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_ECDH_anon_WITH_AES_128_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0xC018</p>
+</td>
+</tr>
+<tr>
+<td headers="h1" width="377">
+<p>TLS_ECDH_anon_WITH_AES_256_CBC_SHA</p>
+</td>
+<td headers="h2" width="65">
+<p>0xC019</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<h2>Conclusion</h2>
+<p>When SunJSSE is configured in FIPS 140 compliant mode together
+with an appropriate FIPS 140 certified cryptographic provider, for
+example Network Security Services (NSS) in its FIPS mode, SunJSSE
+is FIPS 140 compliant.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

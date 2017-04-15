@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Transitioning to 1.5 Doclet API</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Transitioning to 1.5 Doclet API</h1>
+
+<h2>Introduction Notes</h2>
+It is assumed that the doclet developer has read the documentation
+on <a href="../../language/index.html">new 1.5 language
+features</a> and is aware of the doclet changes required to support
+the new features. This document only assists the developer in
+making those changes. It does not define all the new language
+features in 1.5.
+<h2>Indicate That Your Doclet Supports 1.5 Source</h2>
+Class com.sun.javadoc.Doclet has a new method that allows doclets
+to indicate which version of Java Programming Language is
+supported:
+<p><a href=
+"../../../../jdk/api/javadoc/doclet/com/sun/javadoc/Doclet.html#languageVersion--">
+Doclet.languageVersion()</a></p>
+<p>By default, this method returns LanguageVersion.JAVA_1_1. You
+should override this method and return
+LanguageVersion.JAVA_1_5.</p>
+<h2>Ensure That Your Doclet Handles Primitives Properly</h2>
+Given a Type, most doclets distinguish between classes and
+primitives by using the following check:
+<pre class="codeblock">
+   // If true, Type must be a primitive
+   Type.asClassDoc() == null
+</pre>
+In 1.5, this no longer works because there are other non-classdoc
+types besides primitives. For example, the asClassDoc method would
+return null for annotation types as well. You should find all
+occurances of ?Type.asClassDoc() == null? and replace it with
+Type.isPrimitive().
+<h2>Use ClassDoc.superclassType() Instead of
+ClassDoc.superclass()</h2>
+ClassDoc.superclass() cannot accommodate certain generic type
+constructs. The superclassType() method should be used instead.
+<h2>Use ClassDoc.interfaceTypes() Instead of
+ClassDoc.interfaces()</h2>
+ClassDoc.interfaces() cannot accommodate certain generic type
+constructs. The interfaceTypes() method should be used instead.
+<h2>Type Parameters</h2>
+When processing ClassDocs and ExecutableMemberDocs, call method
+typeParameters() to retrieve the formal type parameters. Each
+parameter can be processed in a similar way that regular types are
+processes. The only difference is that type parameters have bounds
+that need to be documented. The bounds are retrieved by calling
+TypeVariable.bounds().
+<p>Here is the interface that represents a type variable:</p>
+<p><a href=
+"../../../../jdk/api/javadoc/doclet/com/sun/javadoc/TypeVariable.html">
+com.sun.javadoc.TypeVariable</a></p>
+<p>Here is the algorithm that the standard doclet uses to process
+type parameters:</p>
+<pre class="codeblock">
+if (type.asTypeVariable()!= null) {
+    Doc owner = type.asTypeVariable().owner();
+    if (owner instanceof ClassDoc) {
+        // Generate Link to type Parameter
+    } else {
+        // No need to link method type parameters.
+        // Append the name of the type parameter
+    }
+           
+    Type[] bounds = type.asTypeVariable().bounds();
+    if (! linkInfo.excludeTypeBounds) {
+        for (int i = 0; i &lt; bounds.length; i++) {
+            // If i greater than 0, append " &amp; ".  Otherwise, append " extends "
+            // Generate a link to the bound
+        }
+    }
+}
+</pre>
+<h2>Param Tags For Type Parameters</h2>
+A doclet retrieves @param tags from constructors and methods by
+calling ExecutableMemberDoc.paramTags(). Since classes,
+constructors and methods can have type parameters, the @param tag
+may be used to document these type parameters. They are
+distinguished by having angle brackets around the names. For
+example:
+<pre class="codeblock">
+/**
+ * @param &lt;E&gt; the type parameter for this class.
+ */
+public class Foo&lt;E&gt;
+</pre>
+To retrieve these type parameter @param tags, call ClassDoc.
+typeParamTags() or ExecutableMemberDoc.typeParamTags().
+<p>Type parameter tags can be distinguished from regular parameter
+tags by calling ParamTag.isTypeParameter().</p>
+<h2>Annotation Types</h2>
+An annotation type is distinguished from classes and interfaces by
+calling the isAnnotationType() method. Here is the interface that
+represents an annotation type:
+<p><a href=
+"../../../../jdk/api/javadoc/doclet/com/sun/javadoc/AnnotationTypeDoc.html">
+com.sun.javadoc.AnnotationTypeDoc</a></p>
+<p>Retrieve the annotation type elements by calling method
+elements(). There are two types of elements:</p>
+<ul>
+<li>An optional element. If the user does not specify a value for
+this element, it is set to a specified default value.</li>
+<li>A required element. The user must specify a value for this
+element when using the annotation.</li>
+</ul>
+There is no way to retrieve an exactly list of optional and
+required elements from the doclet API. The doclet must manually
+interate through the array of elements and check the default value
+is null. If it is null, the element is required.
+<h2>Annotation Type Usage</h2>
+When processing a ProgramElementDoc, the annotation() method should
+be called to retrieve the annotations used. Here is the interface
+that encapsulates annoation usage information:
+<p><a href=
+"../../../../jdk/api/javadoc/doclet/com/sun/javadoc/AnnotationDesc.html">
+com.sun.javadoc.AnnotationDesc</a></p>
+<p>Iterate through the list of AnnotationDesc objects and process
+each one. Here is the algorithm that the standard doclet uses to
+process AnnotationDesc objects:</p>
+<pre class="codeblock">
+for (int i = 0; i &lt; descList.length; i++) {
+    AnnotationTypeDoc annotationDoc = descList[i].annotationType();
+    if (/**annotationDoc does not have @documented annotation**/){
+        // ONLY document annotations if they have @documented.
+        continue;
+    }
+    // Generate a link to the annotation.  Start with the ?@? character&gt;
+    AnnotationDesc.ElementValuePair[] pairs =  
+        descList[i].elementValues();           
+    if (pairs.length &gt; 0) {
+        // Append '(' to indicate start of element list&gt;
+        for (int j = 0; j &lt; pairs.length; j++) {
+              if (j &gt; 0) {
+                // Append ',' to separate previous element from the next&gt;
+            }
+            // Generate a link to the annotation element&gt;
+            // Append '=' to separate element name from value&gt;
+            AnnotationValue annotationValue = pairs[j].value();
+            List annotationTypeValues = new ArrayList();
+            if (annotationValue.value() instanceof 
+                     AnnotationValue[]) {
+                 AnnotationValue[] annotationArray =
+                 (AnnotationValue[]) annotationValue.value();
+                 for (int k = 0; k &lt; annotationArray.length; k++) {                             
+                    annotationTypeValues.add(annotationArray[k]);
+                 }
+           } else {
+               annotationTypeValues.add(annotationValue);
+           }
+           // Append '{' if this is an array of values
+           for (Iterator iter = 
+               annotationTypeValues.iterator();
+               iter.hasNext(); ) {
+               // Append string representation of value
+               // Append ?,? if there is more to append
+           }
+           // Append '}' if this is an array of values
+       }
+       // Append ')' if this is an array of values
+    }
+}
+</pre>
+Here is a sample of this output:
+<p><a href=
+"../../../../api/java/lang/annotation/Target.html">java.lang.annotation.Target</a></p>
+<p>An annotation value can be any of the following:</p>
+<ul>
+<li>Type</li>
+<li>Array Type</li>
+<li>Primitive</li>
+<li>Nested Annotation</li>
+<li>MemberDoc</li>
+<li>String</li>
+</ul>
+Here is the algorithm that the standard doclet uses to convert an
+annotation to a string:
+<pre class="codeblock">
+if (annotationValue.value() instanceof Type) {
+    Type type = (Type) annotationValue.value();
+    if (type.asClassDoc() != null) {
+        LinkInfoImpl linkInfo = new LinkInfoImpl(
+           LinkInfoImpl.CONTEXT_ANNOTATION, type);
+        linkInfo.label = (type.asClassDoc().isIncluded() ?
+            type.typeName() :
+            type.qualifiedTypeName()) + type.dimension() + ".class ";
+        return getLink(linkInfo);
+    } else {
+        return type.typeName() + type.dimension() + ".class";
+    }
+} else if (annotationValue.value() instanceof AnnotationDesc) {
+    // Handle nested annotations using recursion.
+    List list = getAnnotations(
+        new AnnotationDesc[]{(AnnotationDesc) annotationValue.value()},
+            false);
+    StringBuffer buf = new StringBuffer();
+    for (Iterator iter = list.iterator(); iter.hasNext(); ) {
+        buf.append(iter.next());  
+    }
+    return buf.toString();
+} else if (annotationValue.value() instanceof MemberDoc) {
+    // Simply link to the member being references in the annotation.
+    return getDocLink(LinkInfoImpl.CONTEXT_ANNOTATION,
+        (MemberDoc) annotationValue.value(),
+        ((MemberDoc) annotationValue.value()).name(), false);
+} else {
+    return annotationValue.toString();
+}   
+</pre>
+<h2>Enums</h2>
+An enum is distinguished from classes and interfaces by calling the
+isEnum() method. To retrieve the list of enum constants to be
+documented, call the enumConstants() method. The enum constants are
+returned as an array of FieldDoc objects. An enum constant can be
+distinguished from a regular field by calling isEnumConstant().
+<p>Here is a sample of Enum documentation:</p>
+<p><a href=
+"../../../../api/java/lang/management/MemoryType.html">java.lang.management.MemoryType.html</a></p>
+<h2>Varable Arguments</h2>
+When processing an ExecutableMemberDoc, call isVarArg() to
+determine if the last constructor/method parameter is a var arg. If
+it is, the last parameter requires special handling. Here is the
+extra code that the standard doclet executes for var args:
+<pre class="codeblock">
+if (isVarArg) {
+    if (type.dimension().length() &gt; 2) {
+        // Doclet API returns var args as array.
+        // Strip out the first [] from the var arg.
+        // Append type.dimension().substring(2)
+    }
+    // Append "..."
+} else {
+    // Append type.dimension()
+}
+</pre>
+This code should be inserted in the place where you normally
+document array dimensions. Please note the comment that var args
+are returned as arrays by the doclet API. We strip out the first
+?[]? because it is just a part of the internal representation of
+the var arg and should not appear in the documetation.
+<h2>Wild Cards</h2>
+Here is the interface that represents the wild card type:
+<p><a href=
+"../../../../jdk/api/javadoc/doclet/com/sun/javadoc/WildcardType.html">
+com.sun.javadoc.WildcardType</a></p>
+<p>When a wild card is encountered, iterate through the lists of
+extends and super bounds. Process each bound the same way you would
+process a regular type. Here is the algorithm the standard doclet
+uses to process wild cards:</p>
+<pre class="codeblock">
+if (type.asWildcardType() != null) {
+    WildcardType wildcardType = type.asWildcardType();
+    Type[] extendsBounds = wildcardType.extendsBounds();
+    for (int i = 0; i &lt; extendsBounds.length; i++) {
+        // If i greater than 0, append " , ".  Otherwise, append " extends "
+        // Generate link to extendsBounds[i])
+    }
+    Type[] superBounds = wildcardType.superBounds();
+    for (int i = 0; i &lt; superBounds.length; i++) {
+        // If i greater than 0, append " , ".  Otherwise, append " super "
+        // Generate link to superBounds[i])
+    } 
+}
+</pre>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

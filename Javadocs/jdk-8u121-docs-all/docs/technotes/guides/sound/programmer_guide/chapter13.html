@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Chapter 13: Introduction to the Service Provider
+Interfaces</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<p><small><a href="contents.html">&lt; Contents</a></small></p>
+<h1>Chapter 13: Introduction to the Service Provider
+Interfaces</h1>
+<p>&nbsp;</p>
+<table summary="" width="80%" border="1" align="center"
+cellpadding="5" cellspacing="0">
+<tr>
+<td>
+<h2><u>Note</u></h2>
+<p>For version 5.0, new constructors for <code><a href=
+"../../../../api/javax/sound/sampled/AudioFormat.html">AudioFormat</a></code>,
+<code><a href=
+"../../../../api/javax/sound/sampled/AudioFileFormat.html">AudioFileFormat</a></code>,
+and <code><a href=
+"../../../../api/javax/sound/midi/MidiFileFormat.html">MidiFileFormat</a></code>
+allow the description of more advanced formats.<br /></p>
+</td>
+</tr>
+</table>
+<br />
+<h2><a name="what" id="what"></a>What Are Services?</h2>
+<p>Services are units of sound-handling functionality that are
+automatically available when an application program makes use of an
+implementation of the Java Sound API. They consist of objects that
+do the work of reading, writing, mixing, processing, and converting
+audio and MIDI data. An implementation of the Java Sound API
+generally supplies a basic set of services, but mechanisms are also
+included in the API to support the development of new sound
+services by third-party developers (or by the vendor of the
+implementation itself). These new services can be "plugged into" an
+existing installed implementation to expand its functionality
+without requiring a new release. In the Java Sound API
+architecture, third-party services are integrated into the system
+in such a way that an application program's interface to them is
+the same as the interface to the "built-in" services. In some
+cases, application developers who use the
+<code>javax.sound.sampled</code> and <code>javax.sound.midi</code>
+packages might not even be aware that they are employing
+third-party services.</p>
+<p>Examples of potential third-party, sampled-audio services
+include:</p>
+<ul>
+<li>Sound file readers and writers</li>
+<li>Converters that translate between different audio data
+formats</li>
+<li>New audio mixers and input/output devices, whether implemented
+purely in software, or in hardware with a software interface</li>
+</ul>
+Third-party MIDI services might consist of:
+<ul>
+<li>MIDI file readers and writers</li>
+<li>Readers for various types of soundbank files (which are often
+specific to particular synthesizers)</li>
+<li>MIDI-controlled sound synthesizers, sequencers, and I/O ports,
+whether implemented purely in software, or in hardware with a
+software interface</li>
+</ul>
+<h2><a name="how" id="how"></a>How Services Work</h2>
+<p>The <code>javax.sound.sampled</code> and
+<code>javax.sound.midi</code> packages provide functionality to
+application developers who wish to include sound services in their
+application programs. These packages are for <em>consumers</em> of
+sound services, providing interfaces to get information about,
+control, and access audio and MIDI services. In addition, the Java
+Sound API also supplies two packages that define abstract classes
+to be used by <em>providers</em> of sound services: the
+<code>javax.sound.sampled.spi</code> and
+<code>javax.sound.midi.spi</code> packages.</p>
+<p>Developers of new sound services implement concrete subclasses
+of the appropriate classes in the SPI packages. These subclasses,
+along with any additional classes required to support the new
+service, are placed in a Java
+Archive (JAR) archive file with a description of the included
+service or services. When this JAR file is installed in the user's
+<code>CLASSPATH</code>, the runtime system automatically makes the
+new service available, extending the functionality of the
+Java platform's runtime system.</p>
+<p>Once the new service is installed, it can be accessed just like
+any previously installed service. Consumers of services can get
+information about the new service, or obtain instances of the new
+service class itself, by invoking methods of the
+<code>AudioSystem</code> and <code>MidiSystem</code> classes (in
+the <code>javax.sound.sampled</code> and
+<code>javax.sound.midi</code> packages, respectively) to return
+information about the new services, or to return instances of new
+or existing service classes themselves. Application programs need
+not&mdash;and should not&mdash;reference the classes in the SPI
+packages (and their subclasses) directly to make use of the
+installed services.</p>
+<p>For example, suppose a hypothetical service provider called Acme
+Software, Inc. is interested in supplying a package that allows
+application programs to read a new format of sound file (but one
+whose audio data is in a standard data format). The SPI class
+<code>AudioFileReader</code> can be subclassed into a class called,
+say, <code>AcmeAudioFileReader</code>. In the new subclass, Acme
+would supply implementations of all the methods defined in
+<code>AudioFileReader</code>; in this case there are only two
+methods (with argument variants), <code>getAudioFileFormat</code>
+and <code>getAudioInputStream</code>. Then when an application
+program attempted to read a sound file that happened to be in
+Acme's file format, it would invoke methods of the
+<code>AudioSystem</code> class in <code>javax.sound.sampled</code>
+to access the file and information about it. The methods
+<code>AudioSystem.getAudioInputStream</code> and
+<code>AudioSystem.getAudioFileFormat</code> provide a standard API
+to read audio streams; with the <code>AcmeAudioFileReader</code>
+class installed, this interface is extended to support the new file
+type transparently. Application developers don't need direct access
+to the newly registered SPI classes: the <code>AudioSystem</code>
+object methods pass the query on to the installed
+<code>AcmeAudioFileReader</code> class.</p>
+<p>What's the point of having these "factory" classes? Why not
+permit the application developer to get access directly to newly
+provided services? That is a possible approach, but having all
+management and instantiation of services pass through gatekeeper
+system objects shields the application developer from having to
+know anything about the identity of installed services. Application
+developers just use services of value to them, perhaps without even
+realizing it. At the same time this architecture permits service
+providers to effectively manage the available resources in their
+packages.</p>
+<p>Often the use of new sound services is transparent to the
+application program. For example, imagine a situation where an
+application developer wants to read in a stream of audio from a
+file. Assuming that <code>thePathName</code> identifies an audio
+input file, the program does this:</p>
+<pre>
+    File theInFile = new File(thePathName);
+    AudioInputStream theInStream = AudioSystem.getAudioInputStream(theInFile); 
+</pre>
+Behind the scenes, the <code>AudioSystem</code> determines what
+installed service can read the file and asks it to supply the audio
+data as an <code>AudioInputStream</code> object. The developer
+might not know or even care that the input audio file is in some
+new file format (such as Acme's), supported by installed
+third-party services. The program's first contact with the stream
+is through the <code>AudioSystem</code> object, and all its
+subsequent access to the stream and its properties are through the
+methods of <code>AudioInputStream</code>. Both of these are
+standard objects in the <code>javax.sound.sampled</code> API; the
+special handling that the new file format may require is completely
+hidden.
+<h2><a name="how_providers" id="how_providers"></a>How Providers
+Prepare New Services</h2>
+<p>Service providers supply their new services in specially
+formatted JAR files, which are to be installed in a directory on
+the user's system where the Java runtime will find them. JAR files
+are archive files, each containing sets of files that might be
+organized in hierarchical directory structures within the archive.
+Details about the preparation of the class files that go into these
+archives are discussed in Chapters 14 and 15, which describe the
+specifics of the audio and MIDI SPI packages; here we'll just give
+an overview of the process of JAR file creation.</p>
+<p>The JAR file for a new service or services should contain a
+class file for each service supported in the JAR file. Following
+the Java platform's convention, each class file has the name of the
+newly defined class, which is a concrete subclass of one of the
+abstract service provider classes. The JAR file also must include
+any supporting classes required by the new service implementation.
+So that the new service or services can be located by the runtime
+system's service provider mechanism, the JAR file must also contain
+special files (described below) that map the SPI class names to the
+new subclasses being defined.</p>
+<p>To continue from our example above, say Acme Software, Inc. is
+distributing a package of new sampled-audio services. Let's suppose
+this package consists of two new services:</p>
+<ul>
+<li>The <code>AcmeAudioFileReader</code> class, which was mentioned
+above, and which is a subclass of <code>AudioFileReader</code></li>
+<li>A subclass of <code>AudioFileWriter</code> called
+<code>AcmeAudioFileWriter</code>, which will write sound files in
+Acme's new format</li>
+</ul>
+Starting from an arbitrary directory&mdash;let's call it
+<code>/devel</code>&mdash;where we want to do the build, we create
+subdirectories and put the new class files in them, organized in
+such a manner as to give the desired pathname by which the new
+classes will be referenced:
+<pre>
+    com/acme/AcmeAudioFileReader.class
+    com/acme/AcmeAudioFileWriter.class
+</pre>
+In addition, for each new SPI class being subclassed, we create a
+mapping file in a specially named directory
+<code>META-INF/services</code>. The name of the file is the name of
+the SPI class being subclassed, and the file contains the names of
+the new subclasses of that SPI abstract class.
+<p>We create the file</p>
+<p>
+<code>META-INF/services/javax.sound.sampled.spi.AudioFileReader</code>,
+which consists of</p>
+<pre>
+    # Providers of sound file-reading services 
+    # (a comment line begins with a pound sign)
+    com.acme.AcmeAudioFileReader
+</pre>
+<p>and also the file</p>
+<p>
+<code>META-INF/services/javax.sound.sampled.spi.AudioFileWriter,</code>
+which consists of</p>
+<pre>
+   # Providers of sound file-writing services 
+    com.acme.AcmeAudioFileWriter
+</pre>
+<p>Now we run <code>jar</code> from any directory with the command
+line:</p>
+<pre>
+jar cvf acme.jar -C /devel .
+</pre>
+The <code>-C</code> option causes <code>jar</code> to switch to the
+<code>/devel</code> directory, instead of using the directory in
+which the command is executed. The final period argument instructs
+<code>jar</code> to archive all the contents of that directory
+(namely, <code>/devel</code>), but not the directory itself.
+<p>This run will create the file <code>acme.jar</code> with the
+contents:</p>
+<pre>
+com/acme/AcmeAudioFileReader.class
+com/acme/AcmeAudioFileWriter.class
+META-INF/services/javax.sound.sampled.spi.AudioFileReader
+META-INF/services/javax.sound.sampled.spi.AudioFileWriter
+META-INF/Manifest.mf
+</pre>
+The file <code>Manifest.mf,</code> which is generated by the
+<code>jar</code> utility itself, is a list of all the files
+contained in the archive.
+<h2><a name="how_users" id="how_users"></a>How Users Install New
+Services</h2>
+<p>For end users (or system administrators) who wish to get access
+to a new service through their application programs, installation
+is simple. They place the provided JAR file in a directory in their
+<code>CLASSPATH.</code> Upon execution, the Java runtime will find
+the referenced classes when needed.</p>
+<p>It's not an error to install more than one provider for the same
+service. For example, two different service providers might supply
+support for reading the same type of sound file. In such a case,
+the system arbitrarily chooses one of the providers. Users who care
+which provider is chosen should install only the desired one.</p>
+<p>&nbsp;</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

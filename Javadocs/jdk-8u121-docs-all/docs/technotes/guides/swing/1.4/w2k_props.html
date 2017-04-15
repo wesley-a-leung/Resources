@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Windows Desktop Property Support</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Windows Desktop Property Support</h1>
+<p>This feature involves two areas:</p>
+<ul>
+<li><a href="#more">Honor More User Preferences</a>
+<ul>
+<li><a href="#color">Color Properties</a></li>
+<li><a href="#geometry">Geometry Properties</a></li>
+<li><a href="#font">Font Properties</a></li>
+<li><a href="#effect">Visual Effect Properties</a></li>
+<li><a href="#audio">Audio Feedback Properties</a></li>
+<li><a href="#input">Input Properties</a></li>
+</ul>
+</li>
+<li><a href="#dynamic">Respond to Dynamic Changes</a></li>
+</ul>
+<h2><a name="more" id="more">Honor More User Preferences</a></h2>
+<p>On the Windows platform, users may customize their GUIs via
+the&quot;Properties&quot; option off the desktop's popup menu. In
+order to ensure the Swing Windows Look and Feel properly implements
+the user's visual and behavioral preferences, it must obtain the
+values of these UI properties from the system registry. The values
+for these properties will be retrievable from the
+<code>getDesktopProperty()</code> method on <a href=
+"../../../../api/java/awt/Toolkit.html">java.awt.Toolkit</a>.</p>
+<p>Most of the properties accessible via this method are specific
+to the Windows platform and hence have a &quot;win.&quot; prefix.
+The list of supported Windows property names can be obtained
+programmaticallyby querying the &quot;win.propNames&quot;
+property:</p>
+<pre>
+     String propnames[] = (String[])Toolkit.getDefaultToolkit().getDesktopProperty(&quot;win.propNames&quot;);
+     System.out.println(&quot;Supported windows property names:&quot;);
+         for(int i = 0; i &lt; propnames.length; i++) {
+             System.out.println(propnames[i]);
+         }
+</pre>
+<p>Properties which are supported on all platforms begin with an
+&quot;awt.&quot; prefix.</p>
+<p>Programs do not need to access these properties directly; the
+Windows look and feel will automatically read and interpret these
+properties to provide proper visuals and behavior for the
+components.</p>
+<h3><a name="color" id="color">Color Properties</a></h3>
+<table summary="color properties" border="1">
+<tr>
+<th id="h1">
+<p align="center"><b>User Preference</b></p>
+</th>
+<th id="h2">
+<p align="center"><b>Java Property Name</b></p>
+</th>
+<th id="h3">
+<p align="center"><b>Type</b></p>
+</th>
+</tr>
+<tr>
+<td headers="h1">3D Object Background</td>
+<td headers="h2">&quot;win.3d.backgroundColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">3D Object Highlight</td>
+<td headers="h2">&quot;win.3d.highlightColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">3D Object Light Highlight</td>
+<td headers="h2">&quot;win.3d.lightColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">3D Object Shadow</td>
+<td headers="h2">&quot;win.3d.shadowColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">Active Title Bar color1</td>
+<td headers="h2">&quot;win.frame.activeCaptionColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">Active Title Bar color2</td>
+<td headers="h2">&quot;win.frame.activeCaptionGradientColor&quot;(TBI)</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">Active Title Bar font color</td>
+<td headers="h2">&quot;win.frame.captionTextColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">Active Window Border color</td>
+<td headers="h2">&quot;win.frame.activeBorderColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">Application Background color</td>
+<td headers="h2">&quot;win.mdi.backgroundColor&quot;</td>
+<td headers="h3">java.lang.Color</td>
+</tr>
+<tr>
+<td headers="h1">Desktop color</td>
+<td headers="h2">&quot;win.desktop.backgroundColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">Inactive Title Bar color1</td>
+<td headers="h2">&quot;win.frame.inactiveCaptionColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">Inactive Title Bar color2</td>
+<td headers="h2">&quot;win.frame.inactiveCaptionGradientColor&quot;(TBI)</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">Inactive Title Bar font color</td>
+<td headers="h2">&quot;win.frame.inactiveCaptionTextColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">Inactive Window Border color</td>
+<td headers="h2">&quot;win.frame.inactiveBorderColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">Menu color</td>
+<td headers="h2">&quot;win.menu.backgroundColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">Menu font color</td>
+<td headers="h2">&quot;win.menu.textColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">Message Box font color</td>
+<td headers="h2">&quot;win.frame.textColor?????&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">Selected Items color</td>
+<td headers="h2">&quot;win.item.highlightColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">Selected Items font color</td>
+<td headers="h2">&quot;win.item.highlightTextColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">ToolTip color</td>
+<td headers="h2">&quot;win.tooltip.backgroundColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">ToolTip font color</td>
+<td headers="h2">&quot;win.tooltip.textColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">Window color</td>
+<td headers="h2">&quot;win.frame.backgroundColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">Window font color</td>
+<td headers="h2">&quot;win.frame.textColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+<tr>
+<td headers="h1">Hot tracking color</td>
+<td headers="h2">&quot;win.item.hotTrackedColor&quot;</td>
+<td headers="h3">java.awt.Color</td>
+</tr>
+</table>
+<h3><a name="geometry" id="geometry">Geometry Properties</a></h3>
+<table summary="geometry properties" border="1">
+<tr>
+<th id="h101">
+<p align="center"><b>User Preference</b></p>
+</th>
+<th id="h102">
+<p align="center"><b>Java Property Name</b></p>
+</th>
+<th id="h103">
+<p align="center"><b>Type</b></p>
+</th>
+</tr>
+<tr>
+<td headers="h101">Active Title Bar size</td>
+<td headers="h102">&quot;win.frame.captionHeight&quot;</td>
+<td headers="h103">java.lang.Integer</td>
+</tr>
+<tr>
+<td headers="h101">Active Window Border size</td>
+<td headers="h102">&quot;win.frame.sizingBorderWidth&quot;</td>
+<td headers="h103">java.lang.Integer</td>
+</tr>
+<tr>
+<td headers="h101">Caption Buttons size</td>
+<td headers="h102">&quot;win.frame.captionButtonHeight&quot;<br />
+&quot;win.frame.captionButtonWidth&quot;<br />
+win.frame.captionHeight&quot;</td>
+<td headers="h103">java.lang.Integer</td>
+</tr>
+<tr>
+<td headers="h101">Icon size</td>
+<td headers="h102">&quot;win.icon.hspacing&quot;<br />
+&quot;win.icon.vspacing&quot;???</td>
+<td headers="h103">java.lang.Integer</td>
+</tr>
+<tr>
+<td headers="h101">Icon horizontal spacing</td>
+<td headers="h102">&quot;win.icon.hspacing&quot;</td>
+<td headers="h103">java.lang.Integer</td>
+</tr>
+<tr>
+<td headers="h101">Icon vertical spacing</td>
+<td headers="h102">&quot;win.icon.vspacing&quot;</td>
+<td headers="h103">java.lang.Integer</td>
+</tr>
+<tr>
+<td headers="h101">Inactive Title Bar size</td>
+<td headers="h102">&quot;win.frame.captionButtonHeight&quot;<br />
+&quot;win.frame.captionButtonWidth&quot;<br />
+&quot;win.frame.captionHeight&quot;</td>
+<td headers="h103">java.lang.Integer</td>
+</tr>
+<tr>
+<td headers="h101">Inactive Window Border size</td>
+<td headers="h102">&quot;win.frame.sizingBorderWidth&quot;</td>
+<td headers="h103">java.lang.Integer</td>
+</tr>
+<tr>
+<td headers="h101">Menu font size</td>
+<td headers="h102">&quot;win.menu.font&quot;<br />
+&quot;win.menu.height&quot;</td>
+<td headers="h103">java.lang.Integer</td>
+</tr>
+<tr>
+<td headers="h101">Menu Size</td>
+<td headers="h102">&quot;win.menu.height&quot;<br />
+&quot;win.menu.buttonWidth&quot;</td>
+<td headers="h103">java.awt.Integer</td>
+</tr>
+<tr>
+<td headers="h101">Palette Title size</td>
+<td headers="h102">&quot;win.frame.smallCaptionHeight&quot;<br />
+&quot;win.frame.smallCaptionButtonHeight&quot;<br />
+&quot;win.frame.smallCaptionButtonWidth&quot;</td>
+<td headers="h103">java.lang.Integer</td>
+</tr>
+<tr>
+<td headers="h101">Scrollbar width</td>
+<td headers="h102">&quot;win.scrollbar.width&quot;</td>
+<td headers="h103">java.lang.Integer</td>
+</tr>
+<tr>
+<td headers="h101">Scrollbar height</td>
+<td headers="h102">&quot;win.scrollbar.height&quot;</td>
+<td headers="h103">java.lang.Integer</td>
+</tr>
+<tr>
+<td headers="h101">Selected Items size</td>
+<td headers="h102">&quot;win.menu.height&quot;<br />
+&quot;win.menu.buttonWidth&quot;</td>
+<td headers="h103">java.lang.Integer</td>
+</tr>
+</table>
+<h3><a name="font" id="font">Font Properties</a></h3>
+<table summary="font properties" border="1">
+<tr>
+<th id="h201">
+<p align="center"><b>User Preference</b></p>
+</th>
+<th id="h202">
+<p align="center"><b>Java Property Name</b></p>
+</th>
+<th id="h203">
+<p align="center"><b>Type</b></p>
+</th>
+</tr>
+<tr>
+<td headers="h201">Active Title Bar font</td>
+<td headers="h202">&quot;win.frame.captionFont&quot;</td>
+<td headers="h203">java.awt.Font</td>
+</tr>
+<tr>
+<td headers="h201">Icon font</td>
+<td headers="h202">&quot;win.icon.font&quot;</td>
+<td headers="h203">java.awt.Font</td>
+</tr>
+<tr>
+<td headers="h201">Inactive Title Bar font</td>
+<td headers="h202">&quot;win.frame.captionFont&quot;</td>
+<td headers="h203">java.awt.Font</td>
+</tr>
+<tr>
+<td headers="h201">Menu font</td>
+<td headers="h202">&quot;win.menu.font&quot;</td>
+<td headers="h203">java.awt.Font</td>
+</tr>
+<tr>
+<td headers="h201">Message Box font</td>
+<td headers="h202">&quot;win.messagebox.font&quot;</td>
+<td headers="h203">java.awt.Font</td>
+</tr>
+<tr>
+<td headers="h201">Palette Title font</td>
+<td headers="h202">&quot;win.frame.smallCaptionFont&quot;</td>
+<td headers="h203">java.awt.Font</td>
+</tr>
+<tr>
+<td headers="h201">Selected Items font</td>
+<td headers="h202">&quot;win.menu.font&quot;</td>
+<td headers="h203">java.awt.Font</td>
+</tr>
+<tr>
+<td headers="h201">ToolTip font</td>
+<td headers="h202">&quot;win.tooltip.font&quot;</td>
+<td headers="h203">java.awt.Font</td>
+</tr>
+</table>
+<h4>Font Compatibility</h4>
+<p>Now Swing programs running in the Windows look and feel will
+render with the system font set by the user instead of a
+Java-defined font. Since this may cause compatibility problems for
+programs which depend on the old behavior (because of geometry
+issues, localization dependencies on particular font glyphs, etc.),
+a runtime property has been provided to allow this feature to be
+turned off as necessary:</p>
+<pre>
+     java <b>-Dswing.useSystemFontSettings=false</b> MyJavaProgram
+</pre>
+<h3><a name="effect" id="effect">Visual Effect Properties</a></h3>
+<table summary="visual effect properties" border="1">
+<tr>
+<th id="h301">
+<p align="center"><b>User Preference</b></p>
+</th>
+<th id="h302">
+<p align="center"><b>Java Property Name</b></p>
+</th>
+<th id="h303">
+<p align="center"><b>Type</b></p>
+</th>
+</tr>
+<tr>
+<td headers="h301">Icon title wrapping</td>
+<td headers="h302">&quot;win.icon.titleWrappingOn&quot;</td>
+<td headers="h303">java.lang.Boolean</td>
+</tr>
+<tr>
+<td headers="h301">Window Drag effects</td>
+<td headers="h302">&quot;win.frame.fullWindowDragOn&quot;</td>
+<td headers="h303">java.lang.Boolean</td>
+</tr>
+<tr>
+<td headers="h301">Keyboard Navigation Display</td>
+<td headers="h302">&quot;win.menu.keyboardCuesOn&quot;(TBI)</td>
+<td headers="h303">java.lang.Boolean</td>
+</tr>
+<tr>
+<td headers="h301">Hot tracking on toolbars/menubars</td>
+<td headers="h302">&quot;win.item.hotTrackingOn&quot;</td>
+<td headers="h303">java.lang.Boolean</td>
+</tr>
+<tr>
+<td headers="h301">Title Bar Gradients</td>
+<td headers="h302">&quot;win.frame.captionGradientsOn&quot;</td>
+<td headers="h303">java.lang.Boolean</td>
+</tr>
+</table>
+<h3><a name="audio" id="audio">Audio-feedback Properties</a></h3>
+<table summary="audio-feedback properties" border="1">
+<tr>
+<th id="h401">
+<p align="center"><b>User Preference</b></p>
+</th>
+<th id="h402">
+<p align="center"><b>Java Property Name</b></p>
+</th>
+<th id="h403">
+<p align="center"><b>Type</b></p>
+</th>
+</tr>
+<tr>
+<td headers="h401">Default sound</td>
+<td headers="h402">&quot;win.sound.default&quot;</td>
+<td headers="h403">java.lang.Runnable</td>
+</tr>
+<tr>
+<td headers="h401">Close sound</td>
+<td headers="h402">&quot;win.sound.close&quot;</td>
+<td headers="h403">java.lang.Runnable</td>
+</tr>
+<tr>
+<td headers="h401">Maximize sound</td>
+<td headers="h402">&quot;win.sound.maximize&quot;</td>
+<td headers="h403">java.lang.Runnable</td>
+</tr>
+<tr>
+<td headers="h401">Minimize sound</td>
+<td headers="h402">&quot;win.sound.minimize&quot;</td>
+<td headers="h403">java.lang.Runnable</td>
+</tr>
+<tr>
+<td headers="h401">Menu Command sound</td>
+<td headers="h402">&quot;win.sound.menuCommand&quot;</td>
+<td headers="h403">java.lang.Runnable</td>
+</tr>
+<tr>
+<td headers="h401">Menu Popup sound</td>
+<td headers="h402">&quot;win.sound.menuPopup&quot;</td>
+<td headers="h403">java.lang.Runnable</td>
+</tr>
+<tr>
+<td headers="h401">Open sound</td>
+<td headers="h402">&quot;win.sound.open&quot;</td>
+<td headers="h403">java.lang.Runnable</td>
+</tr>
+<tr>
+<td headers="h401">Restore Down sound</td>
+<td headers="h402">&quot;win.sound.restoreDown&quot;</td>
+<td headers="h403">java.lang.Runnable</td>
+</tr>
+<tr>
+<td headers="h401">Restore Up sound</td>
+<td headers="h402">&quot;win.sound.restoreUp&quot;</td>
+<td headers="h403">java.lang.Runnable</td>
+</tr>
+<tr>
+<td headers="h401">System Asterisk sound</td>
+<td headers="h402">&quot;win.sound.asterisk&quot;</td>
+<td headers="h403">java.lang.Runnable</td>
+</tr>
+<tr>
+<td headers="h401">System Exclamation sound</td>
+<td headers="h402">&quot;win.sound.exclamation&quot;</td>
+<td headers="h403">java.lang.Runnable</td>
+</tr>
+<tr>
+<td headers="h401">System Exit sound</td>
+<td headers="h402">&quot;win.sound.exit&quot;</td>
+<td headers="h403">java.lang.Runnable</td>
+</tr>
+<tr>
+<td headers="h401">System Hand sound</td>
+<td headers="h402">&quot;win.sound.hand&quot;</td>
+<td headers="h403">java.lang.Runnable</td>
+</tr>
+<tr>
+<td headers="h401">System Question sound</td>
+<td headers="h402">&quot;win.sound.question&quot;</td>
+<td headers="h403">java.lang.Runnable</td>
+</tr>
+<tr>
+<td headers="h401">System Start sound</td>
+<td headers="h402">&quot;win.sound.start&quot;</td>
+<td headers="h403">java.lang.Runnable</td>
+</tr>
+</table>
+<h4>Dynamic Changes to Sounds</h4>
+<p>Note that the object returned for a sound property is simply a
+<code>Runnable</code> that plays the current audio clip for that
+property. This means that there is no need for watching for dynamic
+changes to sound properties because the sound's property value is a
+live link to the current sound setting.</p>
+<h3><a name="input" id="input">Input Properties</a></h3>
+<table summary="input properties" border="1">
+<tr>
+<th id="h501">
+<p align="center"><b>User Preference</b></p>
+</th>
+<th id="h502">
+<p align="center"><b>Java Property Name</b></p>
+</th>
+<th id="h503">
+<p align="center"><b>Type</b></p>
+</th>
+</tr>
+<tr>
+<td headers="h501">Double click interval</td>
+<td headers="h502">&quot;awt.multiClickInterval&quot;</td>
+<td headers="h503">java.lang.Integer</td>
+</tr>
+<tr>
+<td headers="h501">Cursor blink rate</td>
+<td headers="h502">&quot;awt.cursorBlinkRate&quot;(TBI)</td>
+<td headers="h503">java.lang.Integer</td>
+</tr>
+</table>
+<h2><a name="dynamic" id="dynamic">Respond to Dynamic
+Changes</a></h2>
+<p>In JDK 1.3, AWT added the ability to register for notification
+when one of these desktop property values changes. This is
+supported via the <code>addPropertyChangeListener()</code> method
+on <a href=
+"../../../../api/java/awt/Toolkit.html">java.awt.Toolkit</a>.
+Swing's Windows Look and Feel will use this mechanism to watch for
+dynamic property change events on visual properties, and update the
+GUI by uninstalling and reinstalling the UI delegates in order for
+the components to have the most up-to-date visual property values.
+This dynamic behavior will automatically occur for all Swing
+programs running the Windows look and feel.</p>
+<p>This mechanism will update GUI components by traversing the GUI
+hierarchy (starting with <code>Frame.getFrames()</code> and
+traversing all windows/containers/components from there). If a
+client has any undisplayable components when this occurs (see the
+<code>isDisplayable()</code> method on <a href=
+"../../../../api/java/awt/Component.html">java.awt.Component</a>
+for a definition of when a component is displayable), those
+components will not update automatically and it will be the client
+program's responsibility to update the UI on those components to
+ensure their Look and Feel is up-to-date. For example, this occurs
+in the SwingSet2 demo because demo panels are created but not added
+to the GUI heirarchy until they are selected from the demo's
+tabbedpane. Therefore, before the newly selected demo panel is
+added to the hierarchy, its UI is updated to ensure it has the most
+current property settings:</p>
+<pre>
+    fragment from SwingSet2.java:  // Ensure panel's UI is current before making visible
+    JComponent currentDemoPanel = demo.getDemoPanel();
+    <b>SwingUtilities.updateComponentTreeUI(currentDemoPanel);</b>
+    // Replace current demo with newly selected demo
+    demoPanel.removeAll();
+    demoPanel.add(currentDemoPanel, BorderLayout.CENTER);
+</pre>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

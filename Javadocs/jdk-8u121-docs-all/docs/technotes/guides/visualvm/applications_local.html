@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java VisualVM</title>
+<meta name="collection" content="reference" />
+<meta http-equiv="content-type" content=
+"text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<!--stopindex-->
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Java VisualVM - Working with Local Applications</h1>
+<!-- ============ -->
+<!-- MAIN CONTENT -->
+<!-- ============ -->
+<p>When you start Java VisualVM, a node for each local Java
+application is displayed under the Local node in the Applications
+window. You can expand an application node to see the profiler
+snapshots, thread dumps and heap dumps of the application.
+Right-clicking an application node or sub-node invokes a popup menu
+enabling you to choose various actions.<br />
+<b>Note:</b> The list of local applications always includes Java
+VisualVM.</p>
+<img src="images/applications-window-menu.png" style=
+"border:1px solid;" alt=
+"screenshot of VisualVM Applications window showing popup menu options"
+title=
+"screenshot of VisualVM Applications window showing popup menu options" />
+<p>A local application node generally has the following items
+available in the popup menu.</p>
+<ul>
+<li><b>Open.</b> Opens the tab for the application in the main
+window where you can view application data.</li>
+<li><b>Thread Dump.</b> Takes a thread dump for the
+application.</li>
+<li><b>Heap Dump.</b> Takes a heap dump for the application.</li>
+<li><b>Profile.</b> Opens the Profiler sub-tab for the application
+where you can choose to profile the application. (Note that even
+though Java VisualVM appears in the application tree, Java VisualVM
+cannot profile itself).</li>
+<li><b>Profiler Snapshot.</b> Creates a snapshot of the results
+from the profiling session. The snapshot opens in the main window
+and a node for the snapshot appears under the application node.
+This command is only available when Java VisualVM is profiling the
+application.</li>
+<li><b>Application Snapshot.</b> Creates an application snapshot
+containing all application dumps and snapshots. A node for the
+application snapshot appears under the Snapshots node.</li>
+<li><b>Enable Heap Dump on OOME.</b> Select this if you want Java
+VisualVM to automatically take a heap dump when the application
+encounters an OutOfMemoryException.</li>
+</ul>
+<p>You can perform the following tasks directly from the popup
+menu.</p>
+<p><b>View Application Data</b></p>
+<p>Java VisualVM displays data about each running local application
+in a dedicated tab in the main window. Each application tab has
+sub-tabs where information about that application is displayed.</p>
+<p>To open the application tab, right-click the application node in
+the Applications window and choose Open. (Alternatively,
+double-click the application node.) When you click Open, the
+Overview tab of the application tab opens in the main window.</p>
+<p>The application tab for a local application has the following
+sub-tabs:</p>
+<ul>
+<li><b>Overview.</b> For more, see <a href=
+"overview_tab.html">Viewing Application Overview</a></li>
+<li><b>Monitor.</b> For more, see <a href=
+"monitor_tab.html">Monitoring an Application</a></li>
+<li><b>Threads.</b> For more, see <a href="threads.html">Monitoring
+Application Threads</a></li>
+<li><b>Profiler.</b> For more, see <a href=
+"profiler.html">Profiling Applications</a></li>
+</ul>
+<p>Additional tabs and sub-tabs may be visible depending on the
+installed plugins.</p>
+<p><b>Take a Thread Dump</b></p>
+<p>You can use Java VisualVM to take a thread dump to capture
+information about the active application threads at the time you
+take the thread dump. When you take a thread dump, the thread dump
+opens in a sub-tab of the application in the main window. A node
+for the thread dump appears under the application node in the
+Applications window.</p>
+<p>You can take a thread dump in the following ways:</p>
+<ul>
+<li>Right-click the application node in the Applications window and
+choose Thread Dump.</li>
+<li>Click the Thread Dump button in the Threads tab of the
+application tab.</li>
+</ul>
+<p>When you take a thread dump, the thread dump opens in a sub-tab
+of the application in the main window. A node for the thread dump
+appears under the application node.</p>
+<p>For more about working with application threads, see the
+following document:</p>
+<ul>
+<li><a href="threads.html">Monitoring Application Threads</a></li>
+</ul>
+<p><b>Take a Heap Dump</b></p>
+<p>You can take a heap dump of a local application to capture a
+snapshot of the objects on the heap.</p>
+<p>You can take a heap dump in the following ways:</p>
+<ul>
+<li>Right-click the application node in the Applications window and
+choose Heap Dump.</li>
+<li>Click the Heap Dump button in the Monitor tab of the
+application tab.</li>
+</ul>
+<p>When you take a heap dump, the heap dump opens in a sub-tab of
+the application in the main window. A node for the heap dump
+appears under the application node.</p>
+<p>For more about working with the heap, see the following
+document:</p>
+<ul>
+<li><a href="heapdump.html">Browsing a Heap Dump</a></li>
+</ul>
+<p><b>Profile an Application</b></p>
+<p>Java VisualVM includes a profiler that enables you to analyze
+the performance and memory usage of a local application. You can
+profile an application without restarting it. To start a profiling
+session, right-click the application node and choosing Profile from
+the popup menu to open the profiling tab.<br />
+<b>Note:</b> Java VisualVM cannot be used to Profile itself.</p>
+<p>For more see the following document:</p>
+<ul>
+<li><a href="profiler.html">Profiling Applications</a></li>
+</ul>
+<p><b>Take Snapshots</b></p>
+<p>Java VisualVM enables you to take snapshots that capture
+application data at the time the snapshot is taken. You can save
+snapshots to your local system and then examine them later or send
+them to others.</p>
+<p>Java VisualVM enables you to take the following types of
+snapshots:</p>
+<ul>
+<li><b>Profiler snapshots.</b> A profiler snapshot captures the
+profiling data at the moment the snapshot is takes. The snapshot is
+either a memory snapshot or a CPU snapshot. You can take a profiler
+snapshot only when you are profiling an application.</li>
+<li><b>Application snapshots.</b> An application snapshot is an
+archive that contains all the heap dumps, thread dumps and
+snapshots that are listed below the application node.</li>
+</ul>
+<p>For more see the following document:</p>
+<ul>
+<li><a href="snapshots.html">Working with Snapshots</a></li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

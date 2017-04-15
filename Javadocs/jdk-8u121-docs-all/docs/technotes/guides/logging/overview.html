@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Logging Overview</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Java Logging Overview</h1>
+<i>Last update Nov 26 2001</i> <!-- Body text begins here -->
+<p><a href="#a1.0">1.0 Java Logging Overview</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#a1.1">1.1 Overview of Control
+Flow</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a1.2">1.2 Log Levels</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a1.3">1.3 Loggers</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a1.4">1.4 Logging
+Methods</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a1.5">1.5 Handlers</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a1.6">1.6 Formatters</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a1.7">1.7 The
+LogManager</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a1.8">1.8 Configuration
+File</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a1.9">1.9 Default
+Configuration</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a1.10">1.10 Dynamic
+Configuration Updates</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a1.11">1.11 Native
+Methods</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a1.12">1.12 XML DTD</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a1.13">1.13 Unique Message
+IDs</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a1.14">1.14 Security</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a1.15">1.15 Configuration
+Management</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a1.16">1.16 Packaging</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a1.17">1.17
+Localization</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a1.18">1.18 Remote Access and
+Serialization</a><br />
+<a href="#a2.0">2.0 Examples</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a2.1">2.1 Simple Use</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a2.2">2.2 Changing the
+Configuration</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a2.3">2.3 Simple Use, Ignoring
+Global Configuration</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp; <a href="#a2.4">2.4 Sample XML
+Output</a><br />
+<a href="#a3.0">3.0 Appendix A: DTD for XMLFormatter
+Output</a><br /></p>
+<h2><a name="a1.0" id="a1.0">1.0 Java Logging Overview</a></h2>
+<p>The logging APIs are described in detail in the <a href=
+"../../../api/java/util/logging/package-summary.html">Java SE API
+Specification</a>. The goal of this document is to provide an
+overview of key elements.</p>
+<h3><a name="a1.1" id="a1.1">1.1 Overview of Control Flow</a></h3>
+<p>Applications make logging calls on <i>Logger</i> objects.
+Loggers are organized in a hierarchical namespace and child Loggers
+may inherit some logging properties from their parents in the
+namespace.</p>
+<p>Applications make logging calls on <i>Logger</i> objects. These
+Logger objects allocate <i>LogRecord</i> objects which are passed
+to <i>Handler</i> objects for publication. Both Loggers and
+Handlers may use logging <i>Levels</i> and (optionally)
+<i>Filters</i> to decide if they are interested in a particular
+<i>LogRecord</i>. When it is necessary to publish a LogRecord
+externally, a Handler can (optionally) use a <i>Formatter</i> to
+localize and format the message before publishing it to an I/O
+stream.</p>
+<img src="logging1.gif" alt=
+"The previous context describes this graphic" />
+<p>Each Logger keeps track of a set of output Handlers. By default
+all Loggers also send their output to their parent Logger. But
+Loggers may also be configured to ignore Handlers higher up the
+tree.</p>
+<p>Some Handlers may direct output to other Handlers. For example,
+the <i>MemoryHandler</i> maintains an internal ring buffer of
+<i>LogRecords</i> and on trigger events it publishes its LogRecords
+through a target Handler. In such cases, any formatting is done by
+the last Handler in the chain.</p>
+<img src="logging2.gif" alt=
+"The previous context describes this graphic" />
+<p>The APIs are structured so that calls on the Logger APIs can be
+cheap when logging is disabled. If logging is disabled for a given
+log level, then the Logger can make a cheap comparison test and
+return. If logging is enabled for a given log level, the Logger is
+still careful to minimize costs before passing the LogRecord into
+the Handlers. In particular, localization and formatting (which are
+relatively expensive) are deferred until the Handler requests them.
+For example, a MemoryHandler can maintain a circular buffer of
+LogRecords without having to pay formatting costs.</p>
+<h3><a name="a1.2" id="a1.2">1.2 Log Levels</a></h3>
+<p>Each log message has an associated log <i>Level</i>. The Level
+gives a rough guide to the importance and urgency of a log message.
+Log level objects encapsulate an integer value, with higher values
+indicating higher priorities.</p>
+<p>The <tt>Level</tt> class defines seven standard log levels,
+ranging from FINEST (the lowest priority, with the lowest value) to
+SEVERE (the highest priority, with the highest value).</p>
+<h3><a name="a1.3" id="a1.3">1.3 Loggers</a></h3>
+<p>As stated earlier, client code sends log requests to Logger
+objects. Each logger keeps track of a log level that it is
+interested in, and discards log requests that are below this
+level.</p>
+<p>Loggers are normally named entities, using dot-separated names
+such as &quot;java.awt&quot;. The namespace is hierarchical and is
+managed by the LogManager. The namespace should typically be
+aligned with the Java packaging namespace, but is not required to
+follow it slavishly. For example, a Logger called
+&quot;java.awt&quot; might handle logging requests for classes in
+the java.awt package, but it might also handle logging for classes
+in sun.awt that support the client-visible abstractions defined in
+the java.awt package.</p>
+<p>In addition to named Loggers, it is also possible to create
+anonymous Loggers that don't appear in the shared namespace. See
+section <a href="#a1.14">1.14</a>.</p>
+<p>Loggers keep track of their parent loggers in the logging
+namespace. A logger's parent is its nearest extant ancestor in the
+logging namespace. The root Logger (named "") has no parent.
+Anonymous loggers are all given the root logger as their parent.
+Loggers may inherit various attributes from their parents in the
+logger namespace. In particular, a logger may inherit:</p>
+<ul>
+<li>Logging level. If a Logger's level is set to be null then the
+Logger will use an effective Level that will be obtained by walking
+up the parent tree and using the first non-null Level.</li>
+<li>Handlers. By default a Logger will log any output messages to
+its parent's handlers, and so on recursively up the tree.</li>
+<li>Resource bundle names. If a logger has a null resource bundle
+name, then it will inherit any resource bundle name defined for its
+parent, and so on recursively up the tree.</li>
+</ul>
+<h3><a name="a1.4" id="a1.4">1.4 Logging Methods</a></h3>
+<p>The Logger class provides a large set of convenience methods for
+generating log messages. For convenience, there are methods for
+each logging level, named after the logging level name. Thus rather
+than calling &quot;logger.log(Level.WARNING,...&quot; a developer
+can simply call the convenience method
+&quot;logger.warning(...&quot;</p>
+<p>There are two different styles of logging methods, to meet the
+needs of different communities of users.</p>
+<p>First, there are methods that take an explicit source class name
+and source method name. These methods are intended for developers
+who want to be able to quickly locate the source of any given
+logging message. An example of this style is:</p>
+<pre class="codeblock">
+void warning(String sourceClass, String sourceMethod, String msg);
+</pre>
+<p>Second, there are a set of methods that do not take explicit
+source class or source method names. These are intended for
+developers who want easy-to-use logging and do not require detailed
+source information.</p>
+<pre class="codeblock">
+void warning(String msg);
+</pre>
+<p>For this second set of methods, the Logging framework will make
+a &quot;best effort&quot; to determine which class and method
+called into the logging framework and will add this information
+into the LogRecord. However, it is important to realize that this
+automatically inferred information may only be approximate. The
+latest generation of virtual machines perform extensive
+optimizations when JITing and may entirely remove stack frames,
+making it impossible to reliably locate the calling class and
+method.</p>
+<h3><a name="a1.5" id="a1.5">1.5 Handlers</a></h3>
+<p>Java SE provides the following Handlers:</p>
+<ul>
+<li><i>StreamHandler:</i> A simple handler for writing formatted
+records to an OutputStream.</li>
+<li><i>ConsoleHandler:</i> A simple handler for writing formatted
+records to System.err</li>
+<li><i>FileHandler:</i> A handler that writes formatted log records
+either to a single file, or to a set of rotating log files.</li>
+<li><i>SocketHandler:</i> A handler that writes formatted log
+records to remote TCP ports.</li>
+<li><i>MemoryHandler:</i> A handler that buffers log records in
+memory.</li>
+</ul>
+<p>It is fairly straightforward to develop new Handlers. Developers
+requiring specific functionality can either develop a Handler from
+scratch or subclass one of the provided Handlers.</p>
+<h3><a name="a1.6" id="a1.6">1.6 Formatters</a></h3>
+Java SE also includes two standard Formatters:
+<ul>
+<li><i>SimpleFormatter</i>: Writes brief &quot;human-readable&quot;
+summaries of log records.</li>
+<li><i>XMLFormatter</i>: Writes detailed XML-structured
+information.</li>
+</ul>
+<p>As with Handlers, it is fairly straightforward to develop new
+Formatters.</p>
+<h3><a name="a1.7" id="a1.7">1.7 The LogManager</a></h3>
+There is a global LogManager object that keeps track of global
+logging information. This includes:
+<ul>
+<li>A hierarchical namespace of named Loggers.</li>
+<li>A set of logging control properties read from the configuration
+file. See section <a href="#a1.8">1.8</a>.</li>
+</ul>
+<p>There is a single LogManager object that can be retrieved using
+the static LogManager.getLogManager method. This is created during
+LogManager initialization, based on a system property. This
+property allows container applications (such as EJB containers) to
+substitute their own subclass of LogManager in place of the default
+class.</p>
+<h3><a name="a1.8" id="a1.8">1.8 Configuration File</a></h3>
+<p>The logging configuration can be initialized using a logging
+configuration file that will be read at startup. This logging
+configuration file is in standard java.util.Properties format.</p>
+<p>Alternatively, the logging configuration can be initialized by
+specifying a class that can be used for reading initialization
+properties. This mechanism allows configuration data to be read
+from arbitrary sources, such as LDAP, JDBC, etc. See the <a href=
+"../../../api/java/util/logging/LogManager.html">LogManager API
+Specification</a> for details.</p>
+<p>There is a small set of global configuration information. This
+is specified in the description of the LogManager class and
+includes a list of root-level Handlers to install during
+startup.</p>
+<p>The initial configuration may specify levels for particular
+loggers. These levels are applied to the named logger and any
+loggers below it in the naming hierarchy. The levels are applied in
+the order they are defined in the configuration file.</p>
+<p>The initial configuration may contain arbitrary properties for
+use by Handlers or by subsystems doing logging. By convention these
+properties should use names starting with the name of the handler
+class or the name of the main Logger for the subsystem.</p>
+<p>For example, the MemoryHandler uses a property
+&quot;java.util.logging.MemoryHandler.size&quot; to determine the
+default size for its ring buffer.</p>
+<h3><a name="a1.9" id="a1.9">1.9 Default Configuration</a></h3>
+<p>The default logging configuration that ships with the JRE is
+only a default, and can be overridden by ISVs, system admins, and
+end users.</p>
+<p>The default configuration makes only limited use of disk space.
+It doesn't flood the user with information, but does make sure to
+always capture key failure information.</p>
+<p>The default configuration establishes a single handler on the
+root logger for sending output to the console.</p>
+<h3><a name="a1.10" id="a1.10">1.10 Dynamic Configuration
+Updates</a></h3>
+Programmers can update the logging configuration at run time in a
+variety of ways:
+<ul>
+<li>FileHandlers, MemoryHandlers, and PrintHandlers can all be
+created with various attributes.</li>
+<li>New Handlers can be added and old ones removed.</li>
+<li>New Loggers can be created and can be supplied with specific
+Handlers.</li>
+<li>Levels can be set on target Handlers.</li>
+</ul>
+<h3><a name="a1.11" id="a1.11">1.11 Native Methods</a></h3>
+There are no native APIs for logging.
+<p>Native code that wishes to use the Java Logging mechanisms
+should make normal JNI calls into the Java Logging APIs.</p>
+<h3><a name="a1.12" id="a1.12">1.12 XML DTD</a></h3>
+<p>The XML DTD used by the XMLFormatter is specified in <a href=
+"#a3.0">Appendix A</a>.</p>
+The DTD is designed with a &quot;&lt;log&gt;&quot; element as the
+top-level document. Individual log records are then written as
+&quot;&lt;record&gt;&quot; elements.
+<p>Note that in the event of JVM crashes it may not be possible to
+cleanly terminate an XMLFormatter stream with the appropriate
+closing &lt;/log&gt;. Therefore tools that are analyzing log
+records should be prepared to cope with un-terminated streams.</p>
+<h3><a name="a1.13" id="a1.13">1.13 Unique Message IDs</a></h3>
+<p>The Java Logging APIs do not provide any direct support for
+unique message IDs. Those applications or subsystems requiring
+unique message IDs should define their own conventions and include
+the unique IDs in the message strings as appropriate.</p>
+<h3><a name="a1.14" id="a1.14">1.14 Security</a></h3>
+<p>The principal security requirement is that untrusted code should
+not be able to change the logging configuration. Specifically, if
+the logging configuration has been set up to log a particular
+category of information to a particular Handler, then untrusted
+code should not be able to prevent or disrupt that logging.</p>
+<p>A new security permission LoggingPermission is defined to
+control updates to the logging configuration.</p>
+<p>Trusted applications are given the appropriate LoggingPermission
+so they can call any of the logging configuration APIs. Untrusted
+applets are a different story. Untrusted applets can create and use
+named Loggers in the normal way, but they are not allowed to change
+logging control settings, such as adding or removing handlers, or
+changing log levels. However, untrusted applets are able to create
+and use their own &quot;anonymous&quot; loggers, using
+Logger.getAnonymousLogger. These anonymous Loggers are not
+registered in the global namespace and their methods are not
+access-checked, allowing even untrusted code to change their
+logging control settings.</p>
+<p>The logging framework does not attempt to prevent spoofing. The
+sources of logging calls cannot be determined reliably, so when a
+LogRecord is published that claims to be from a particular source
+class and source method, it may be a fabrication. Similarly,
+formatters such as the XMLFormatter do not attempt to protect
+themselves against nested log messages inside message strings.
+Thus, a spoof LogRecord might contain a spoof set of XML inside its
+message string to make it look as if there was an additional XML
+record in the output.</p>
+<p>In addition, the logging framework does not attempt to protect
+itself against denial of service attacks. Any given logging client
+can flood the logging framework with meaningless messages in an
+attempt to conceal some important log message.</p>
+<h3><a name="a1.15" id="a1.15">1.15 Configuration
+Management</a></h3>
+<p>The APIs are structured so that an initial set of configuration
+information is read as properties from a configuration file. The
+configuration information may then be changed programatically by
+calls on the various logging classes and objects.</p>
+<p>In addition, there are methods on LogManager that allow the
+configuration file to be re-read. When this happens, the
+configuration file values will override any changes that have been
+made programatically.</p>
+<h3><a name="a1.16" id="a1.16">1.16 Packaging</a></h3>
+<p>All of the logging class are in the java.* part of the
+namespace, in the java.util.logging package.</p>
+<h3><a name="a1.17" id="a1.17">1.17 Localization</a></h3>
+<p>Log messages may need to be localized.</p>
+<p>Each Logger may have a Resource Bundle name associated with it.
+The corresponding Resource Bundle can be used to map between raw
+message strings and localized message strings.</p>
+<p>Normally localization will be performed by Formatters. As a
+convenience, the formatter class provides a formatMessage method
+that provides some basic localization and formatting support.</p>
+<h3><a name="a1.18" id="a1.18">1.18 Remote Access and
+Serialization</a></h3>
+<p>As with most Java platform APIs, the logging APIs are designed
+for use inside a single address space. All calls are intended to be
+local. However, it is expected that some Handlers will want to
+forward their output to other systems. There are a variety of ways
+of doing this:</p>
+<p>Some Handlers (such as the SocketHandler) may write data to
+other systems using the XMLFormatter. This provides a simple,
+standard, inter-change format that can be parsed and processed on a
+variety of systems.</p>
+<p>Some Handlers may wish to pass LogRecord objects over RMI. The
+LogRecord class is therefore serializable. However there is a
+problem in how to deal with the LogRecord parameters. Some
+parameters may not be serializable and other parameters may have
+been designed to serialize much more state than is required for
+logging. To avoid these problems the LogRecord class has a custom
+writeObject method that converts the parameters to strings (using
+Object.toString()) before writing them out. See the <a href=
+"../../../api/java/util/logging/LogRecord.html">LogRecord API
+Specification</a> for details.</p>
+<p>Most of the logging classes are not intended to be serializable.
+Both Loggers and Handlers are stateful classes that are tied into a
+specific virtual machine. In this respect they are analogous to the
+java.io classes, which are also not serializable.</p>
+<h2><a name="a2.0" id="a2.0">2.0 Examples</a></h2>
+<h3><a name="a2.1" id="a2.1">2.1 Simple Use</a></h3>
+<p>The following is a small program that performs logging using the
+default configuration.</p>
+<p>This program relies on the root handlers that were established
+by the LogManager based on the configuration file. It creates its
+own Logger object and then makes calls to that Logger object to
+report various events.</p>
+<pre class="codeblock">
+package com.wombat;
+import java.util.logging.*;
+
+public class Nose{
+    // Obtain a suitable logger.
+    private static Logger logger = Logger.getLogger(&quot;com.wombat.nose&quot;);
+    public static void main(String argv[]) {
+        // Log a FINE tracing message
+        logger.fine(&quot;doing stuff&quot;);
+        try{
+            Wombat.sneeze();
+        } catch (Exception ex) {
+            // Log the exception
+            logger.log(Level.WARNING, &quot;trouble sneezing&quot;, ex);
+        }
+        logger.fine(&quot;done&quot;);
+    }
+}
+</pre>
+<h3><a name="a2.2" id="a2.2">2.2 Changing the
+Configuration</a></h3>
+<p>Here's a small program that dynamically adjusts the logging
+configuration to send output to a specific file and to get lots of
+information on wombats. The pattern &quot;%t&quot; means the system
+temporary directory.</p>
+<pre class="codeblock">
+public static void main(String[] args) {
+    Handler fh = new FileHandler(&quot;%t/wombat.log&quot;);
+    Logger.getLogger(&quot;&quot;).addHandler(fh);
+    Logger.getLogger(&quot;com.wombat&quot;).setLevel(Level.FINEST);
+    ...
+}
+</pre>
+<h3><a name="a2.3" id="a2.3">2.3 Simple Use, Ignoring Global
+Configuration</a></h3>
+<p>Here's a small program that sets up its own logging Handler and
+ignores the global configuration.</p>
+<pre class="codeblock">
+package com.wombat;
+
+import java.util.logging.*;
+
+public class Nose {
+    private static Logger logger = Logger.getLogger(&quot;com.wombat.nose&quot;);
+    private static FileHandler fh = new FileHandler(&quot;mylog.txt&quot;);
+    public static void main(String argv[]) {
+        // Send logger output to our FileHandler.
+        logger.addHandler(fh);
+        // Request that every detail gets logged.
+        logger.setLevel(Level.ALL);
+        // Log a simple INFO message.
+        logger.info(&quot;doing stuff&quot;);
+        try {
+            Wombat.sneeze();
+        } catch (Exception ex) {
+            logger.log(Level.WARNING, &quot;trouble sneezing&quot;, ex);
+        }
+        logger.fine(&quot;done&quot;);
+    }
+}
+</pre>
+<h3><a name="a2.4" id="a2.4">2.4 Sample XML Output</a></h3>
+Here's a small sample of what some XMLFormatter XML output looks
+like:
+<pre class="codeblock">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;
+&lt;!DOCTYPE log SYSTEM &quot;logger.dtd&quot;&gt;
+&lt;log&gt;
+&lt;record&gt;
+  &lt;date&gt;2000-08-23 19:21:05&lt;/date&gt;
+  &lt;millis&gt;967083665789&lt;/millis&gt;
+  &lt;sequence&gt;1256&lt;/sequence&gt;
+  &lt;logger&gt;kgh.test.fred&lt;/logger&gt;
+  &lt;level&gt;INFO&lt;/level&gt;
+  &lt;class&gt;kgh.test.XMLTest&lt;/class&gt;
+  &lt;method&gt;writeLog&lt;/method&gt;
+  &lt;thread&gt;10&lt;/thread&gt;
+  &lt;message&gt;Hello world!&lt;/message&gt;
+&lt;/record&gt;
+&lt;/log&gt;
+</pre>
+<h2><a name="a3.0" id="a3.0">3.0 Appendix A: DTD for XMLFormatter
+Output</a></h2>
+<pre class="codeblock">
+&lt;!-- DTD used by the java.util.logging.XMLFormatter --&gt;
+&lt;!-- This provides an XML formatted log message. --&gt;
+
+&lt;!-- The document type is &quot;log&quot; which consists of a sequence
+of record elements --&gt;
+&lt;!ELEMENT log (record*)&gt;
+
+&lt;!-- Each logging call is described by a record element. --&gt;
+&lt;!ELEMENT record (date, millis, sequence, logger?, level,
+class?, method?, thread?, message, key?, catalog?, param*, exception?)&gt;
+
+&lt;!-- Date and time when LogRecord was created in ISO 8601 format --&gt;
+&lt;!ELEMENT date (#PCDATA)&gt;
+
+&lt;!-- Time when LogRecord was created in milliseconds since
+midnight January 1st, 1970, UTC. --&gt;
+&lt;!ELEMENT millis (#PCDATA)&gt;
+
+&lt;!-- Unique sequence number within source VM. --&gt;
+&lt;!ELEMENT sequence (#PCDATA)&gt;
+
+&lt;!-- Name of source Logger object. --&gt;
+&lt;!ELEMENT logger (#PCDATA)&gt;
+
+&lt;!-- Logging level, may be either one of the constant
+names from java.util.logging.Level (such as &quot;SEVERE&quot;
+or &quot;WARNING&quot;) or an integer value such as &quot;20&quot;. --&gt;
+&lt;!ELEMENT level (#PCDATA)&gt;
+
+&lt;!-- Fully qualified name of class that issued
+logging call, e.g. &quot;javax.marsupial.Wombat&quot;. --&gt;
+&lt;!ELEMENT class (#PCDATA)&gt;
+
+&lt;!-- Name of method that issued logging call.
+It may be either an unqualified method name such as
+&quot;fred&quot; or it may include argument type information
+in parenthesis, for example &quot;fred(int,String)&quot;. --&gt;
+&lt;!ELEMENT method (#PCDATA)&gt;
+
+&lt;!-- Integer thread ID. --&gt;
+&lt;!ELEMENT thread (#PCDATA)&gt;
+
+&lt;!-- The message element contains the text string of a log message. --&gt;
+&lt;!ELEMENT message (#PCDATA)&gt;
+
+&lt;!-- If the message string was localized, the key element provides
+the original localization message key. --&gt;
+&lt;!ELEMENT key (#PCDATA)&gt;
+
+&lt;!-- If the message string was localized, the catalog element provides
+the logger's localization resource bundle name. --&gt;
+&lt;!ELEMENT catalog (#PCDATA)&gt;
+
+&lt;!-- If the message string was localized, each of the param elements
+provides the String value (obtained using Object.toString())
+of the corresponding LogRecord parameter. --&gt;
+&lt;!ELEMENT param (#PCDATA)&gt;
+
+&lt;!-- An exception consists of an optional message string followed
+by a series of StackFrames. Exception elements are used
+for Java exceptions and other java Throwables. --&gt;
+&lt;!ELEMENT exception (message?, frame+)&gt;
+
+&lt;!-- A frame describes one line in a Throwable backtrace. --&gt;
+&lt;!ELEMENT frame (class, method, line?)&gt;
+
+&lt;!-- an integer line number within a class's source file. --&gt;
+&lt;!ELEMENT line (#PCDATA)&gt;
+</pre>
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,764 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>JNLP API Examples</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<p><small><a href="contents.html">&lt; Contents</a></small></p>
+<h1>JNLP API Examples</h1>
+<p><br />
+This chapter includes the following topics:</p>
+<ul>
+<li><a href="#Introduction">Introduction</a></li>
+<li><a href="#BasicService">Using the <code>BasicService</code>
+Service</a></li>
+<li><a href="#ClipboardService">Using the
+<code>ClipboardService</code> Service</a></li>
+<li><a href="#DownloadService">Using the
+<code>DownloadService</code> Service</a></li>
+<li><a href="#DownloadService2">Using the
+<code>DownloadService2</code> Service</a></li>
+<li><a href="#DownloadServiceListener">Implementing the
+<code>DownloadServiceListener</code> Service</a></li>
+<li><a href="#FileOpenService">Using the
+<code>FileOpenService</code> Service</a></li>
+<li><a href="#FileSaveService">Using the
+<code>FileSaveService</code> Service</a></li>
+<li><a href="#IntegrationService">Using the
+<code>IntegrationService</code> Service</a></li>
+<li><a href="#PrintService">Using the <code>PrintService</code>
+Service</a></li>
+<li><a href="#PersistenceService">Using the
+<code>PersistenceService</code> Service</a></li>
+<li><a href="#FileContents">Using
+<code>FileContents</code></a></li>
+<li><a href="#JNLPRandomAccessFile">Using a
+<code>JNLPRandomAccessFile</code></a></li>
+<li><a href="#SingleInstanceService">Using the
+<code>SingleInstanceService</code> Service</a></li>
+<li><a href="#ExtendedService">Using the
+<code>ExtendedService</code> Service</a></li>
+</ul>
+<h2><a name="Introduction" id="Introduction"></a>Introduction</h2>
+<p>The JNLP API is designed to provide additional information to
+the application that would otherwise not be available using the
+standard Java(TM) Platform Standard Edition API. The following code
+examples show how the following services can be used:
+<tt>BasicService</tt>, <tt>ClipboardService</tt>,
+<tt>DownloadService</tt>, <tt>FileOpenService</tt>,
+<tt>FileSaveService</tt>, <tt>PrintService</tt>, and
+<tt>PersistenceService</tt>.</p>
+<p>The public classes and interfaces in the JNLP API are included
+in the <tt>jnlp.jar</tt> file. This JAR file must be included in
+the classpath when compiling source files that use the JNLP API.
+For example on Windows:</p>
+<p><tt>javac -classpath .;jnlp.jar *.java</tt></p>
+<p>The <tt>jnlp.jar</tt> file is included in the JNLP Developers
+Pack.<br />
+&nbsp;</p>
+<h2><a name="BasicService" id="BasicService"></a>Using the
+<code>BasicService</code> Service</h2>
+<p>The <a href=
+"../../../../jre/api/javaws/jnlp/index.html"><code>javax.jnlp.BasicService</code></a>
+service provides a set of methods for querying and interacting with
+the environment similar to what the <tt>AppletContext</tt> provides
+for a Java Applet.</p>
+<p>The <tt>showURL</tt> method uses the JNLP API to direct the
+default browser on the platform to show the given URL. The method
+returns true if the request succeeds, otherwise false.</p>
+<p><tt><b>import</b> javax.jnlp.*;</tt><br />
+<tt>&nbsp;&nbsp; ...</tt></p>
+<p><b><tt><em>&nbsp;&nbsp; // Method to show a
+URL</em></tt></b><br />
+<tt>&nbsp;&nbsp; boolean showURL(URL url) {</tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>try</b> {</tt><br />
+<b><tt><em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// Lookup the javax.jnlp.BasicService object</em></tt></b><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+BasicService bs =
+(BasicService)ServiceManager.lookup("javax.jnlp.BasicService");</tt><br />
+
+<b><tt><em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// Invoke the showDocument method</em></tt></b><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<b>return</b> bs.showDocument(url);</tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+<b>catch</b>(UnavailableServiceException ue) {</tt><br />
+<b><tt><em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// Service is not supported</em></tt></b><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<b>return</b> false;</tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt><br />
+<tt>&nbsp;&nbsp;&nbsp; }</tt></p>
+<h2><a name="ClipboardService" id="ClipboardService"></a>Using the
+<code>ClipboardService</code> Service</h2>
+<p>The <tt><a href=
+"../../../../jre/api/javaws/jnlp/index.html">javax.jnlp.ClipboardService</a></tt>
+service provides methods for accessing the shared system-wide
+clipboard, even for applications that are running in the restricted
+execution environment.</p>
+<p>Java Web Start will warn the user of the potential security risk
+of letting an untrusted application access potentially confidential
+information stored in the clipboard, or overwriting contents stored
+in the clipboard.</p>
+<p><tt><b>import</b> javax.jnlp;</tt><br />
+<tt>&nbsp;&nbsp;&nbsp; ...</tt></p>
+<p><tt>&nbsp;&nbsp;&nbsp; <b>private</b> ClipboardService
+cs;</tt></p>
+<p><tt>&nbsp;&nbsp;&nbsp; <b>try</b> {</tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cs =
+(ClipboardService)ServiceManager.lookup</tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+("javax.jnlp.ClipboardService");</tt><br />
+<tt>&nbsp;&nbsp;&nbsp; } <b>catch</b> (UnavailableServiceException
+e) {</tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cs =
+null;</tt><br />
+<tt>&nbsp;&nbsp;&nbsp; }</tt></p>
+<p><tt>&nbsp;&nbsp;&nbsp; <b>if</b> (cs != null) {</tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b><em>// set the
+system clipboard contents to a string selection</em></b></tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; StringSelection ss =
+new StringSelection("Java Web Start!");</tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cs.setContents(ss);</tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b><em>// get the
+contents of the system clipboard and print them</em></b></tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Transferable tr =
+cs.getContents();</tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>if</b>
+(tr.isDataFlavorSupported(DataFlavor.stringFlavor)) {</tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<b>try</b> {</tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+String s =
+(String)tr.getTransferData(DataFlavor.stringFlavor);</tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+System.out.println("Clipboard contents: " + s);</tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+} <b>catch</b> (Exception e) {</tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+e.printStackTrace();</tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</tt><br />
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt><br />
+<tt>&nbsp;&nbsp;&nbsp; }</tt></p>
+<h2><a name="DownloadService" id="DownloadService"></a>Using the
+<code>DownloadService</code> Service</h2>
+<p>The <a href=
+"../../../../jre/api/javaws/jnlp/index.html"><code>javax.jnlp.DownloadService</code></a>
+service allows an application to control how its own resources are
+cached.</p>
+<p>The service allows an application to determine which of its
+resources are cached, to force resources to be cached, and to
+remove resources from the cache.</p>
+<pre>
+<tt>
+</tt>import javax.jnlp.*; 
+    ... 
+
+    DownloadService ds; 
+
+    <b>try</b> { 
+        ds = (DownloadService)ServiceManager.lookup("javax.jnlp.DownloadService"); 
+    } <b>catch</b> (UnavailableServiceException e) { 
+        ds = null; 
+    } 
+
+    <b>if</b> (ds != null) { 
+
+        <b>try</b> { 
+            <em><b>// determine if a particular resource is cached</b></em>
+            URL url = 
+                    new URL("http://www.example.com/draw.jar"); 
+            boolean cached = ds.isResourceCached(url, "1.0"); 
+            <em><b>// remove the resource from the cache </b></em>
+            <b>if</b> (cached) { 
+                ds.removeResource(url, "1.0"); 
+            } 
+            <em><b>// reload the resource into the cache </b></em>
+            DownloadServiceListener dsl = ds.getDefaultProgressWindow(); 
+            ds.loadResource(url, "1.0", dsl); 
+        } <b>catch</b> (Exception e) { 
+            e.printStackTrace(); 
+        } 
+    } <tt>
+</tt>
+</pre>
+<h2><a name="DownloadService2" id="DownloadService2"></a>Using the
+<code>DownloadService2</code> Service</h2>
+<p>The <a href=
+"../../../../jre/api/javaws/jnlp/index.html"><code>javax.jnlp.DownloadService2</code></a>
+service, introduced in the Java SE 6 update 18 release, provides
+the following methods:</p>
+<ul>
+<li><code>getCachedResources</code> &ndash; Lists cached resources
+that match the given version, URL and resource type.</li>
+<li><code>getUpdateAvailableResources</code> &ndash; Checks and
+lists resources for which updates are available. If an application
+uses the version download protocol, specify a version in the
+<code>DownloadService2.ResourceSpec</code>. If not, specify a null
+value for version.</li>
+</ul>
+<p>An instance of the <code>DownloadService2.ResourceSpec</code>
+class specifies details about the resource to be checked.</p>
+<pre>
+import javax.jnlp.*;
+...
+DownloadService2 service = (DownloadService2)
+                        ServiceManager.lookup("javax.jnlp.DownloadService2");
+
+// create a new instance of ResourceSpec. In this example: 
+// - resource is downloaded from a directory on <code>http://foo.bar.com:8080</code>
+// - version is 2. [0-9]+
+// - resource type is JAR 
+ResourceSpec spec = new ResourceSpec("http://foo.bar.com:8080/.*", 2.*, service.JAR)
+
+// returns all cached resources that match the given ResourceSpec  
+ResourceSpec results[] = service.getCachedResources(spec);
+
+// returns all resources for which an update is available on the 
+// server <code>http://foo.bar.com:8080</code>.
+results = service.getUpdateAvailableResources(spec);
+</pre>
+<h2><a name="DownloadServiceListener" id=
+"DownloadServiceListener"></a>Implementing the
+<code>DownloadServiceListener</code> Service</h2>
+<p>The <a href=
+"../../../../jre/api/javaws/jnlp/index.html"><code>javax.jnlp.DownloadServiceListener</code></a>
+service provides methods to specify a customized loading progress
+indicator that indicates the progress of an application's download.
+See the <a href=
+"../../deploy/customized_loading.html#JSDPG730">Implementing
+a Customized Loading Progress Indicator</a> topic for more
+information.</p>
+<h2><a name="FileOpenService" id="FileOpenService"></a>Using the
+<code>FileOpenService</code> Service</h2>
+<p>The <a href=
+"../../../../jre/api/javaws/jnlp/index.html"><code>javax.jnlp.FileOpenService</code></a>
+service provides methods for importing files from the local disk,
+even for applications that are running in the restricted execution
+environment.</p>
+<p>This interface is designed to provide the same kind of of disk
+access to potentially untrusted Web-deployed applications that a
+Web developer has when using HTML.&nbsp; HTML forms support the
+inclusion of files by displaying a file open dialog.</p>
+<pre>
+<tt>
+</tt><b>import</b> javax.jnlp.*; 
+    ... 
+
+    FileOpenService fos; 
+
+    <b>try</b> { 
+        fos = (FileOpenService)ServiceManager.lookup("javax.jnlp.FileOpenService"); 
+    } <b>catch</b> (UnavailableServiceException e) { 
+        fos = null; 
+    } 
+
+    <b>if</b> (fos != null) { 
+        <b>try</b> { 
+            <em><b>// ask user to select a file through this service </b></em>
+            FileContents fc = fos.openFileDialog(null, null); 
+            <em><b>// ask user to select multiple files through this service </b></em>
+            FileContents[] fcs = fos.openMultiFileDialog(null, null); 
+        } <b>catch</b> (Exception e) { 
+            e.printStackTrace(); 
+        } 
+    } <tt>
+</tt>
+</pre>
+<h2><a name="FileSaveService" id="FileSaveService"></a>Using the
+<code>FileSaveService</code> Service</h2>
+<p>The <a href=
+"../../../../jre/api/javaws/jnlp/index.html"><code>javax.jnlp.FileSaveService</code></a>
+service provides methods for exporting files to the local disk,
+even for applications that are running in the restricted execution
+environment.</p>
+<p>This interface is designed to provide the same level of disk
+access to potentially untrusted Web-deployed applications that a
+Web browser provides for contents that it is displaying.&nbsp; Most
+browsers provide a Save As... dialog as part of their user
+interface.</p>
+<pre>
+<tt>
+</tt><b>import</b> javax.jnlp.*; 
+    ... 
+
+    FileSaveService fss; 
+    FileOpenService fos; 
+
+    <b>try</b> { 
+        fos = (FileOpenService)ServiceManager.lookup("javax.jnlp.FileOpenService"); 
+        fss = (FileSaveService)ServiceManager.lookup 
+                                   ("javax.jnlp.FileSaveService"); 
+    } <b>catch</b> (UnavailableServiceException e) { 
+        fss = null; 
+        fos = null; 
+    } 
+
+    <b>if</b> (fss != null &amp;&amp; fos != null) { 
+        <b>try</b> { 
+            <em><b>// get a file with FileOpenService </b></em>
+            FileContents fc = fos.openFileDialog(null, null); 
+            <em><b>// one way to save a file </b></em>
+            FileContents newfc = fss.saveFileDialog(null, null, 
+            fc.getInputStream(), "newFileName.txt"); 
+            <em><b>// another way to save a file </b></em>
+            FileContents newfc2 = fss.saveAsFileDialog(null, null, fc); 
+
+        } <b>catch</b> (Exception e) { 
+            e.printStackTrace(); 
+        } 
+    } <tt>
+</tt>
+</pre>
+<p>Also see <a href="#FileContents">Using
+<code>FileContents</code></a>.</p>
+<h2><a name="IntegrationService" id="IntegrationService"></a>Using
+the <code>IntegrationService</code> Service</h2>
+<p>The <a href=
+"../../../../jre/api/javaws/jnlp/index.html"><code>javax.jnlp.IntegrationService</code></a>
+service, introduced in the Java SE 6 update 18 release, provides
+methods for programmatic management of shortcuts. By using this
+service, an application can perform the following operations:</p>
+<ul>
+<li>An application can create a desktop shortcut.</li>
+<li>An application can create a menu shortcut.</li>
+<li>An application can query and delete shortcuts.</li>
+<li>An application can create, query, and delete associations of an
+application with a mime-type or file extensions.</li>
+</ul>
+<pre>
+import javax.jnlp.*;
+...
+
+IntegrationService is = null;
+try {
+    is = (IntegrationService) ServiceManager.lookup("javax.jnlp.IntegrationService");
+} catch(UnavailableServiceException use){
+    ...
+}
+
+// creates a desktop and system menu shortcut; returns true if the shortcuts 
+// were created successfully
+boolean result = is.requestShortcut(true, true, null);
+
+//removes all shortcuts for application
+result = is.removeShortcuts();
+
+// checks to see if there are shortcuts for the application
+result = is.hasMenuShortcut() &amp;&amp; is.hasDesktopShortcut());
+
+// associates the application with the specified mime-type and file extensions
+String mime = "x-application/aaa";
+String [] exts = {"aaa", "abc"};
+result = is.requestAssociation(mime, exts);
+
+// checks if the application is associated with the specified mime-type and file extensions
+result = is.hasAssociation(mime, exts);
+
+// removes association between the application and the specified mime-type and file extensions
+is.removeAssociation(mime, exts);
+</pre>
+<h2><a name="PrintService" id="PrintService"></a>Using the
+<code>PrintService</code> Service</h2>
+<p>The <a href=
+"../../../../jre/api/javaws/jnlp/index.html"><code>javax.jnlp.PrintService</code></a>
+service provides methods for access to printing, even for
+applications that are running in the restricted execution
+environment.</p>
+<p>Using this service, an application can submit a print job. Java
+Web Start will then show this request to the user and, if accepted,
+queue the request to the printer.</p>
+<p>In Java Web Start 5.0, you can now directly use the Java
+Printing APIs, and Java Web Start will pop up a security dialog
+asking the user to grant <code>PrintPermission</code> if the
+application is running in a sandbox. There is no need to use the
+JNLP Printing APIs anymore. You can have full access to the Java
+Printing APIs in any JNLP application.</p>
+<pre>
+<tt>
+</tt><b>import</b> javax.jnlp.*; 
+    ... 
+
+    PrintService ps; 
+
+    <b>try</b> { 
+        ps = (PrintService)ServiceManager.lookup("javax.jnlp.PrintService"); 
+    } <b>catch</b> (UnavailableServiceException e) { 
+        ps = null; 
+    } 
+
+    <b>if</b> (ps != null) { 
+        <b>try</b> { 
+             
+            <em><b>// get the default PageFormat</b></em>
+            PageFormat pf = ps.getDefaultPage(); 
+
+            <em><b>// ask the user to customize the PageFormat</b></em>
+            PageFormat newPf = ps.showPageFormatDialog(pf); 
+
+            <em><b>// print the document with the PageFormat above</b></em>
+            ps.print(new DocToPrint()); 
+           
+        } <b>catch</b> (Exception e) { 
+            e.printStackTrace(); 
+        } 
+    } 
+
+    <em><b>// Code to construct the Printable Document</b></em>
+    <b>class</b> DocToPrint <b>implements</b> Printable {
+        <b>public</b> int print(Graphics g, PageFormat pageformat, int PageIndex){
+            <em><b>// code to generate what you want to print</b></em>   
+        }
+    }<tt>
+</tt>
+</pre>
+<h2><a name="PersistenceService" id="PersistenceService"></a>Using
+the <code>PersistenceService</code> Service</h2>
+<p>The&nbsp; <a href=
+"../../../../jre/api/javaws/jnlp/index.html"><code>javax.jnlp.PersistenceService</code></a>
+service provides methods for storing data locally on the client
+system, even for applications that are running in the restricted
+execution environment.</p>
+<p>The service is designed to be somewhat similar to that which the
+cookie mechanism provides to HTML-based applications.&nbsp; Cookies
+allow a small amount of data to be stored locally on the client
+system.&nbsp; That data can be securely managed by the browser and
+can only be retrieved by HTML pages which originate from the same
+URL as the page that stored the data.</p>
+<pre>
+<tt>
+</tt><b>import</b> javax.jnlp.*; 
+    ... 
+
+    PersistenceService ps; 
+    BasicService bs; 
+
+    <b>try</b> { 
+        ps = (PersistenceService)ServiceManager.lookup("javax.jnlp.PersistenceService"); 
+        bs = (BasicService)ServiceManager.lookup("javax.jnlp.BasicService"); 
+    } <b>catch</b> (UnavailableServiceException e) { 
+        ps = null; 
+        bs = null; 
+    } 
+
+    <b>if</b> (ps != null &amp;&amp; bs != null) { 
+
+        <b>try</b> { 
+            <em><b>// find all the muffins for our URL</b></em>
+            URL codebase = bs.getCodeBase(); 
+            String [] muffins = ps.getNames(url); 
+
+            <em><b>// get the attributes (tags) for each of these muffins. 
+            // update the server's copy of the data if any muffins 
+            // are dirty </b></em>
+            int [] tags = new int[muffins.length]; 
+            URL [] muffinURLs = new URL[muffins.length]; 
+            <b>for</b> (int i = 0; i &lt; muffins.length; i++) { 
+                muffinURLs[i] = new URL(codebase.toString() + muffins[i]); 
+                tags[i] = ps.getTag(muffinURLs[i]); 
+                <em><b>// update the server if anything is tagged DIRTY </b></em>
+                <b>if</b> (tags[i] == PersistenceService.DIRTY) { 
+                    doUpdateServer(muffinURLs[i]); 
+                } 
+            } 
+
+            <em><b>// read in the contents of a muffin and then delete it </b></em>
+            FileContents fc = ps.get(muffinURLs[0]); 
+            long maxsize = fc.getMaxLength(); 
+            byte [] buf = new byte[fc.getLength()]; 
+            InputStream is = fc.getInputStream(); 
+            long pos = 0; 
+            <b>while</b>((pos = is.read(buf, pos, buf.length - pos)) &gt; 0) { 
+                <em><b>// just loop </b></em>
+            } 
+            is.close(); 
+
+            ps.delete(muffinURLs[0]); 
+
+            <em><b>// re-create the muffin and repopulate its data </b></em>
+            ps.create(muffinURLs[0], maxsize); 
+            fc = ps.get(muffinURLs[0]); 
+            <em><b>// don't append </b></em>
+            OutputStream os = fc.getOutputStream(false); 
+            os.write(buf); 
+            os.close(); 
+
+        } <b>catch</b> (Exception e) { 
+            e.printStackTrace(); 
+        } 
+    } 
+
+   <b>void</b> doUpdateServer(URL url) { 
+        <em><b>// update the server's copy of the persistent data 
+        // represented by the given URL </b></em>
+        ... 
+        ps.setTag(url, PersistenceService.CACHED); 
+   } <tt>
+</tt>
+</pre>
+<h2><a name="FileContents" id="FileContents"></a>Using
+<code>FileContents</code></h2>
+<p><tt><a href=
+"../../../../jre/api/javaws/jnlp/index.html">javax.jnlp.FileContents</a></tt>
+objects encapsulate the name and contents of a file.&nbsp; An
+object of this class is used by the <tt>FileOpenService,</tt>
+<tt>FileSaveService</tt> and <tt>PersistenceService</tt>. Here is
+an example of how an instance of a <tt>FileContents</tt> can be
+used to read from and write to a file:</p>
+<pre>
+<tt>
+</tt><b>import</b> javax.jnlp.*; 
+    ... 
+
+    FileOpenService fos; 
+
+    <em><b>//Initialize fos (see Using the FileOpenService Service example) </b></em>
+    ... 
+
+    <b>if</b> (fos != null) { 
+
+        <b>try</b> { 
+
+            <em><b>// get a FileContents object to work with from the 
+            // FileOpenService </b></em>
+            FileContents fc = fos.openFileDialog(null, null); 
+
+            <em><b>// get the InputStream from the file and read a few bytes </b></em>
+            byte [] buf = new byte[fc.getLength()]; 
+            InputStream is = fc.getInputStream(); 
+            int pos = 0; 
+            <b>while</b> ((pos = is.read(buf, pos, buf.length - pos)) &gt; 0) { 
+                <em><b>// just loop </b></em>
+            } 
+            is.close(); 
+
+            <em><b>// get the OutputStream and write the file back out </b></em>
+            <b>if</b> (fc.canWrite()) { 
+               <em><b>// don't append </b></em>
+               OutputStream os = fc.getOutputStream(false); 
+               os.write(buf); 
+            } 
+
+        } <b>catch</b> (Exception e) { 
+            e.printStackTrace(); 
+        } 
+    } <tt>
+</tt>
+</pre>
+<h2><a name="JNLPRandomAccessFile" id=
+"JNLPRandomAccessFile"></a>Using a
+<code>JNLPRandomAccessFile</code></h2>
+<p>Instances of <tt><a href=
+"../../../../jre/api/javaws/jnlp/index.html">javax.jnlp.JNLPRandomAccessFile</a></tt>
+support both reading and writing to a random access file.&nbsp; A
+random access file behaves like a large array of bytes stored in
+the file system.&nbsp; Here is an example of how an instance of a
+<code>JNLPRandomAccessFile</code> can be used to write to a random
+access file:</p>
+<pre>
+<tt>
+</tt><b>import</b> javax.jnlp.*; 
+    ... 
+
+    FileOpenService fos; 
+
+    <em><b>//Initialize fos (see Using the FileOpenService Service example) </b></em>
+    ... 
+
+    <b>if</b> (fos != null) { 
+        <b>try</b> { 
+           <em><b>// ask the user to choose a file to open </b></em>
+           FileContents fc = fos.openFileDialog(null, null); 
+
+           <em><b>// attempt to increase the maximum file length </b></em>
+           long grantedLength = fc.getLength(); 
+           <b>if</b> (grantedLength + 1024 &gt; fc.getMaxLength()) { 
+               <em><b>// attempt to increase the maximum file size defined by 
+               // the client </b></em>
+               grantedLength = fc.setMaxLength(grantedLength + 1024); 
+           } 
+
+           <em><b>// if we were able to increase the maximum allowable file size, 
+           // get a JNLPRandomAccessFile representation of the file, and 
+           // write to it </b></em>
+           <b>if</b> (fc.getMaxSize() &gt; fc.getLength() &amp;&amp; fc.canWrite()) { 
+               JNLPRandomAccessFile raf = fc.getRandomAccessFile("rw"); 
+               raf.seek(raf.length() - 1); 
+               raf.writeUTF("Java Web Start!"); 
+               raf.close(); 
+           } 
+        } <b>catch</b> (Exception e) { 
+            e.printStackTrace(); 
+        } 
+    } <tt>
+</tt>
+</pre>
+<h2><a name="SingleInstanceService" id=
+"SingleInstanceService"></a>Using the
+<code>SingleInstanceService</code> Service</h2>
+<p>The <tt><a href=
+"../../../../jre/api/javaws/jnlp/index.html">javax.jnlp.SingleInstanceService</a></tt>
+provides a set of methods for applications to register themselves
+as singletons, and to register listener(s) for handling arguments
+passed in from different instances of applications.</p>
+<pre>
+<tt>
+</tt><b>import</b> javax.jnlp.*; 
+    ... 
+
+    SingleInstanceService sis; 
+
+    ... 
+
+    <b>try</b> { 
+        sis = 
+(SingleInstanceService)ServiceManager.lookup("javax.jnlp.SingleInstanceService");
+    } <b>catch</b> (UnavailableServiceException e) { sis=null; }
+
+    ...
+
+    <em><b>
+    // Register the single instance listener at the start of your application
+    </b></em>
+    SISListener sisL = new SISListener();
+    sis.addSingleInstanceListener(sisL);
+
+    ...
+    
+    <em><b>
+    // Remember to remove the listener before your application exits
+    </b></em>
+    sis.removeSingleInstanceListener(sisL);
+    System.exit(0);
+
+    <em><b>
+    // Implement the SingleInstanceListener for your application
+    </b></em>
+    <b>class</b> SISListener <b>implements</b> SingleInstanceListener {
+        <b>public void</b> newActivation(String[] params) {
+            <em><b>
+            // your code to handle the new arguments here
+            </b></em>
+            ...
+        }
+    }
+
+</pre>
+<h2><a name="ExtendedService" id="ExtendedService"></a>Using an
+<code>ExtendedService</code> Service</h2>
+<p>The <tt><a href=
+"../../../../jre/api/javaws/jnlp/index.html">javax.jnlp.ExtendedService</a></tt>
+provides additional support to the current JNLP API. It allows
+applications to open specific file(s) in the client's file
+system.</p>
+<pre>
+<tt>
+</tt><b>import</b> javax.jnlp.*; 
+    ... 
+
+    ExtendedService es; 
+
+    ... 
+
+    <b>try</b> { 
+        es = 
+(ExtendedService)ServiceManager.lookup("javax.jnlp.ExtendedService");
+    } <b>catch</b> (UnavailableServiceException e) { es=null; }
+
+    ...
+
+    <em><b>
+    // Open a specific file in the local machine
+    </b></em>
+    File a = new File("c:\somefile.txt");
+
+    ...
+    
+    <em><b>
+    // Java Web Start will pop up a dialog asking the user to grant permission
+    // to read/write the file c:\somefile.txt
+    </b></em>
+    FileContents fc_a = es.openFile(a);
+
+    <em><b>
+    // You can now use the FileContents object to read/write the file
+    </b></em>
+    ...
+
+    <em><b>
+    // Open a specific set of files in the local machine
+    </b></em>
+    File[2] fArray = new File[2];
+    
+    fArray[0] = a;
+    fArray[1] = new File("c:\anotherFile.txt");
+
+    <em><b>
+    // Java Web Start will pop up a dialog asking the user to grant permission
+    // to read/write files in fArray
+    </b></em>
+    FileContents[] fc_Array = es.OpenFiles(fArray);
+
+    <em><b>
+    // You can now read/write the set of files in fc_Array using the
+    // FileContents objects
+    </b></em>
+    }
+
+</pre>
+<p>For detailed information on using <code>javaws</code>, see the
+<tt>javaws</tt> man page
+(<a href="../../../tools/unix/javaws.html">Solaris, Linux, Mac OS X</a> or
+<a href="../../../tools/windows/javaws.html">Windows</a>).</p>
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

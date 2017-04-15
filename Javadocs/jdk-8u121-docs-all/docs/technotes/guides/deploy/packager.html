@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>The Java Packager Tool</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1044" name="generator"/>
+<meta content="The Java Packager tool can be used to compile, package, sign, and deploy Java and JavaFX applications from the command line. It can be used as an alternative to an Ant task or building the applications in an IDE." name="description"/>
+<meta content="2015-02-16T9:50:4Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Deployment Guide, Release 8u40" name="doctitle"/>
+<meta content="Release 8u40" name="relnum"/>
+<meta content="E50259-02" name="partnum"/>
+<meta content="JSDPG" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Deployment Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="package_for_mac.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="javafx_ant_tasks.html">
+                Next</a><hr/>
+<div id="JSDPG143"><a id="CCHIHIIJ" name="CCHIHIIJ"/>
+<h1><span>9</span> The Java Packager Tool</h1>
+<a id="JSDPG543" name="JSDPG543"/>
+<p>The Java Packager tool can be used to compile, package, sign, and deploy Java and JavaFX applications from the command line. It can be used as an alternative to an Ant task or building the applications in an IDE.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+The Java Packager tool is not available for the Solaris platform.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>You can access reference information about the Java Packager tool in the <a href="../../tools/windows/javapackager.html">Tools Guide for Windows</a> or the <a href="../../tools/unix/javapackager.html">Tools Guide for Solaris, Linux, or OS</a> X. If you have set an environment variable for the path to the tool in your JDK installation, you can also enter <code dir="ltr">javapackager</code> at the command line for information.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Tip:</b></p>
+For Windows installations, add the path to the <code dir="ltr">javapackager</code> command to the <code dir="ltr">PATH</code> environment variable. The <code dir="ltr">javapackager.jar</code> file is located in the <code dir="ltr">bin</code> directory of the JDK installation.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>The <code dir="ltr">javapackager</code> command has several component task commands, described in <a href="#CHDHEJJC">Table 9-1</a>. The command-line options depend on which task command you are using, as described in the <code dir="ltr">javapackager</code> reference documentation for <a href="../../tools/windows/javapackager.html">Windows</a> or for <a href="../../tools/unix/javapackager.html">Solaris, Linux, or OS X</a>.</p>
+<div id="JSDPG545"><a id="sthref64" name="sthref64"/><a id="CHDHEJJC" name="CHDHEJJC"/>
+<p>Table 9-1 Task Commands in the Java Packager Tool</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="This table contains a description of each of the javafxpackager task commands, with links to the appropriate sectin of the reference pages." title="Task Commands in the Java Packager Tool" width="100%">
+<col width="31%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t4" valign="bottom">Task Command</th>
+<th align="left" id="r1c2-t4" valign="bottom">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t4" id="r2c1-t4">
+<p>javapackager -createbss</p>
+</td>
+<td align="left" headers="r2c1-t4 r1c2-t4">
+<p>Converts a CSS file into binary form</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t4" id="r3c1-t4">
+<p>javapackager -createjar</p>
+</td>
+<td align="left" headers="r3c1-t4 r1c2-t4">
+<p>Produces a JAR file according to other parameters specified as options.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t4" id="r4c1-t4">
+<p>javapackager -deploy</p>
+</td>
+<td align="left" headers="r4c1-t4 r1c2-t4">
+<p>Assembles the application package for redistribution. By default, the deploy task generates the base application package. It can also generate self-contained application packages, if requested.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t4" id="r5c1-t4">
+<p>javapackager -makeall</p>
+</td>
+<td align="left" headers="r5c1-t4 r1c2-t4">
+<p>Compiles source code and combines the <code dir="ltr">-createjar</code> and <code dir="ltr">-deploy</code> commands, with simplified options.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t4" id="r6c1-t4">
+<p>javapackager -signJar</p>
+</td>
+<td align="left" headers="r6c1-t4 r1c2-t4">
+<p>Digitally signs JAR files and attaches a certificate.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="package_for_mac.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="javafx_ant_tasks.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

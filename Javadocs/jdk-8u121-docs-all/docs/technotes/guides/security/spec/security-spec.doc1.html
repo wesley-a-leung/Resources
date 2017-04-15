@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Security Architecture: -</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<table summary="" width="100%">
+<tr>
+<td>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href=
+"security-specTOC.fm.html">CONTENTS</a> | <a href=
+"security-spec.doc.html">PREV</a> | <a href=
+"security-spec.doc2.html">NEXT</a> 
+<!-- | <a href="security-spec.doc.html">INDEX</a>  -->
+<!-- /font --></td>
+</tr>
+</table>
+<br />
+<h2><a name="a21150" id="a21150"><i>1</i> Introduction</a></h2>
+<a name="a21151" id="a21151"><!-- --></a> Since the inception of
+Java technology, there has been strong and growing interest around
+the security of the Java platform as well as new security issues
+raised by the deployment of Java technology.
+<p><a name="a19099" id="a19099"><!-- --></a> From a technology
+provider&#39;s point of view, Java security includes two
+aspects:</p>
+<ul>
+<li><a name="a19100" id="a19100"><!-- --></a> Provide the Java
+platform as a secure, ready-built platform on which to run
+Java-enabled applications in a secure fashion.</li>
+<li><a name="a19106" id="a19106"><!-- --></a> Provide security
+tools and services implemented in the Java programming language
+that enable a wider range of security-sensitive applications, for
+example, in the enterprise world.</li>
+</ul>
+<a name="a25283" id="a25283"><!-- --></a> This document discusses
+issues related to the first aspect, where the customers for such
+technologies include vendors that bundle or embed Java technology
+in their products (such as browsers and operating systems).<br />
+<h3><a name="a18313" id="a18313"><!-- --></a> <i>1.1</i> The
+Original Sandbox Model</h3>
+<a name="a18289" id="a18289"><!-- --></a> The original security
+model provided by the Java platform is known as the sandbox model,
+which existed in order to provide a very restricted environment in
+which to run untrusted code obtained from the open network. The
+essence of the sandbox model is that local code is trusted to have
+full access to vital system resources (such as the file system)
+while downloaded remote code (an applet) is not trusted and can
+access only the limited resources provided inside the sandbox. This
+sandbox model is illustrated in the figure below.
+<p><a name="a16452" id="a16452"><!-- --></a></p>
+<img alt="The previous context describes this graphic."
+src="security-spec.doc.anc4.gif" />
+<p><a name="a16461" id="a16461"><!-- --></a> The sandbox model was
+deployed through the Java Development Kit (JDK), and was generally
+adopted by applications built with JDK 1.0, including Java-enabled
+web browsers.</p>
+<p><a name="a16468" id="a16468"><!-- --></a> Overall security is
+enforced through a number of mechanisms. First of all, the language
+is designed to be type-safe and easy to use. The hope is that the
+burden on the programmer is such that the likelihood of making
+subtle mistakes is lessened compared with using other programming
+languages such as C or C++. Language features such as automatic
+memory management, garbage collection, and range checking on
+strings and arrays are examples of how the language helps the
+programmer to write safe code.</p>
+<p><a name="a16496" id="a16496"><!-- --></a> Second, compilers and
+a bytecode verifier ensure that only legitimate Java bytecodes are
+executed. The bytecode verifier, together with the Java Virtual
+Machine, guarantees language safety at run time.</p>
+<p><a name="a16541" id="a16541"><!-- --></a> Moreover, a
+classloader defines a local name space, which can be used to ensure
+that an untrusted applet cannot interfere with the running of other
+programs.</p>
+<p><a name="a16503" id="a16503"><!-- --></a> Finally, access to
+crucial system resources is mediated by the Java Virtual Machine
+and is checked in advance by a SecurityManager class that restricts
+the actions of a piece of untrusted code to the bare minimum.</p>
+<p><a name="a18306" id="a18306"><!-- --></a> JDK 1.1 introduced the
+concept of a &#34;signed applet&#34;, as illustrated by the figure
+below. In that release, a correctly digitally signed applet is
+treated as if it is trusted local code if the signature key is
+recognized as trusted by the end system that receives the applet.
+Signed applets, together with their signatures, are delivered in
+the JAR (Java Archive) format. In JDK 1.1, unsigned applets still
+run in the sandbox.</p>
+<p><a name="a22321" id="a22321"><!-- --></a></p>
+<img alt="The previous context describes this graphic" src=
+"security-spec.doc.anc3.gif" />
+<br />
+<h3><a name="a18314" id="a18314"><!-- --></a> <i>1.2</i> Evolving
+the Sandbox Model</h3>
+<a name="a18301" id="a18301"><!-- --></a> The new Java SE Platform
+Security Architecture, illustrated in the figure below, is
+introduced primarily for the following purposes.
+<p><a name="a22333" id="a22333"><!-- --></a></p>
+<img alt="See long description" longdesc=
+"security-spec.txt" src="security-spec.doc.anc9.gif" />
+<a href="security-spec.txt" title="Long description for">[D]</a>
+<p><a name="a22325" id="a22325"><!-- --></a></p>
+<ul>
+<li><a name="a16298" id="a16298"><!-- --></a> Fine-grained access
+control.</li>
+</ul>
+<a name="a16300" id="a16300"><!-- --></a> This capability existed
+in the JDK from the beginning, but to use it, the application
+writer had to do substantial programming (e.g., by subclassing and
+customizing the SecurityManager and ClassLoader classes). The
+HotJava browser 1.0 is such an application, as it allows the
+browser user to choose from a small number of different security
+levels.
+<p><a name="a22625" id="a22625"><!-- --></a> However, such
+programming is extremely security-sensitive and requires
+sophisticated skills and in-depth knowledge of computer security.
+The new architecture will make this exercise simpler and safer.</p>
+<ul>
+<li><a name="a16304" id="a16304"><!-- --></a> Easily configurable
+security policy.</li>
+</ul>
+<a name="a16306" id="a16306"><!-- --></a> Once again, this
+capability existed previously in the JDK but was not easy to use.
+Moreover, writing security code is not straightforward, so it is
+desirable to allow application builders and users to configure
+security policies without having to program.
+<ul>
+<li><a name="a16310" id="a16310"><!-- --></a> Easily extensible
+access control structure.</li>
+</ul>
+<a name="a29339" id="a29339"><!-- --></a> Up to JDK 1.1, in order
+to create a new access permission, you had to add a new
+<code>check</code> method to the SecurityManager class. The new
+architecture allows typed permissions (each representing an access
+to a system resource) and automatic handling of all permissions
+(including yet-to-be-defined permissions) of the correct type. No
+new method in the SecurityManager class needs to be created in most
+cases. (In fact, we have so far not encountered a situation where a
+new method must be created.)
+<ul>
+<li><a name="a16316" id="a16316"><!-- --></a> Extension of security
+checks to all Java programs, including applications as well as
+applets.</li>
+</ul>
+<a name="a16318" id="a16318"><!-- --></a> There is no longer a
+built-in concept that all local code is trusted. Instead, local
+code (e.g., non-system code, application packages installed on the
+local file system) is subjected to the same security control as
+applets, although it is possible, if desired, to declare that the
+policy on local code (or remote code) be the most liberal, thus
+enabling such code to effectively run as totally trusted. The same
+principle applies to signed applets and any Java application.
+<p><a name="a19718" id="a19718"><!-- --></a> Finally, an implicit
+goal is to make internal adjustment to the design of security
+classes (including the SecurityManager and ClassLoader classes) to
+reduce the risks of creating subtle security holes in future
+programming.</p>
+<p><a name="a21519" id="a21519"><!-- --></a></p>
+<br />
+<hr />
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href=
+"security-specTOC.fm.html">CONTENTS</a> | <a href=
+"security-spec.doc.html">PREV</a> | <a href=
+"security-spec.doc2.html">NEXT</a> 
+<!-- | <a href="security-spec.doc.html">INDEX</a>  -->
+<!-- /font -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

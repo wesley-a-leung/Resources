@@ -1,0 +1,315 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en">
+<head>
+<meta http-equiv="Content-Type" content=
+"text/html; charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="GENERATOR" content=
+"Quadralay WebWorks Publisher Professional Edition 7.0.5.1025" />
+<meta name="TEMPLATEBASE" content="book-no-index" />
+<meta name="LASTUPDATED" content="Sat Aug 02 15:56:56 2008" />
+<title>JMX Architecture</title>
+<link rel="Table of Contents" href="JMXoverviewTOC.html" />
+<link rel="Previous" href="intro.html" />
+<link rel="Next" href="instrumentation.html" />
+<link rel="Index" href="appendixA.html" />
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<div class="a1"><a href="#skip" class="skiplink" title="Skip navigation bar">Skip navigation bar</a></div>
+<table width="100%" summary="">
+<tr>
+<td align="left"><a accesskey="c" href=
+"JMXoverviewTOC.html">Contents</a> | <a accesskey="p" href=
+"intro.html">Previous</a> | <a accesskey="n" href=
+"instrumentation.html">Next</a></td>
+</tr>
+</table>
+<a name="skip" id="skip"></a> <a name="wp996881" id="wp996881"></a>
+<h2 class="pChapNum">Chapter &#160; 2</h2>
+<a name="wp996882" id="wp996882"></a>
+<h2 class="pChapTitle">JMX Architecture</h2>
+<a name="wp998064" id="wp998064"></a>
+<p class="pBody">JMX technology provides a standard API for
+management and monitoring of resources. The API includes remote
+access, so a remote management application can manage and monitor
+applications, systems, and networks. This chapter outlines JMX
+architecture in the following sections:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp1001634"
+id="wp1001634"></a>
+<div class="pBullet1">
+<ul>
+<li><a href="architecture.html#wp1001607"><span style=
+"color: #3366CC">&quot;Architecture Outline&quot;</span></a></li>
+</ul>
+</div>
+<a name="wp1001623" id="wp1001623"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><a href="architecture.html#wp998959"><span style=
+"color: #3366CC">&quot;Instrumenting Resources Using
+MBeans&quot;</span></a></li>
+</ul>
+</div>
+<a name="wp1001627" id="wp1001627"></a>
+<div class="pBullet1Plus">
+<ul>
+<li><a href="architecture.html#wp998962"><span style=
+"color: #3366CC">&quot;Creating a JMX Agent&quot;</span></a></li>
+</ul>
+</div>
+<a name="wp1001631" id="wp1001631"></a>
+<div class="pBullet1Last">
+<ul>
+<li><a href="architecture.html#wp999066"><span style=
+"color: #3366CC">&quot;Managing Resources
+Remotely&quot;</span></a></li>
+</ul>
+</div>
+</div>
+<a name="wp1001607" id="wp1001607"></a>
+<h2 class="pHeading1">Architecture Outline</h2>
+<a name="wp998140" id="wp998140"></a>
+<p class="pBody">JMX technology is defined by two closely related
+specifications developed through the Java Community Process (JCP)
+as Java Specification Request (JSR) 3 and JSR 160:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp998854"
+id="wp998854"></a>
+<div class="pBullet1">
+<ul>
+<li><em class="cEmphasis">JSR 3, Java Management Extensions
+Instrumentation and Agent Specification</em></li>
+</ul>
+</div>
+<a name="wp998855" id="wp998855"></a>
+<div class="pBullet1Last">
+<ul>
+<li><em class="cEmphasis">JSR 160, Java Management Extensions
+Remote API</em></li>
+</ul>
+</div>
+</div>
+<a name="wp998925" id="wp998925"></a>
+<p class="pBody">The following table shows that the management
+architecture can be broken down into three levels. The first two
+levels shown in the table, instrumentation and agent,</p>
+<a name="wp998952" id="wp998952"></a>
+<p class="pBody">Java VM are defined by JSR 3. The remote
+management level is defined by JSR 160.</p>
+<div align="left">
+<div class="pTableCaption">
+TABLE&#160;2-1&#160;&#160;&#8211;&#160;&#160;JMX Technology
+Architecture</div>
+<table border="1" cellpadding="7" id="wp998928" summary=
+"architecture">
+<caption><a name="wp998928__1" id="wp998928__1"></a></caption>
+<thead>
+<tr align="center">
+<th id="h101"><a name="wp998932" id="wp998932"></a>
+<div style="text-align: left" class="pTableHead">Level</div>
+</th>
+<th id="h102"><a name="wp998934" id="wp998934"></a>
+<div style="text-align: left" class="pTableHead">Description</div>
+</th>
+</tr>
+</thead>
+<tr align="left">
+<td headers="h101" align="left" valign="top"><a name="wp998936" id="wp998936"></a>
+<div class="pTableText">Instrumentation</div>
+</td>
+<td headers="h102" align="left" valign="top"><a name="wp998938" id="wp998938"></a>
+<div class="pTableText">Resources, such as applications, devices,
+or services, are instrumented using Java objects called Managed
+Beans (MBeans). MBeans expose their management interfaces, composed
+of attributes and operations, through a JMX agent for remote
+management and monitoring.</div>
+<a name="wp998939" id="wp998939"></a>
+<div class="pTableText">&#160;</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h101" align="left" valign="top"><a name="wp998941" id="wp998941"></a>
+<div class="pTableText">Agent</div>
+</td>
+<td headers="h102" align="left" valign="top"><a name="wp998943" id="wp998943"></a>
+<div class="pTableText">The main component of a JMX agent is the
+MBean server. This is a core managed object server in which MBeans
+are registered. A JMX agent also includes a set of services for
+handling MBeans. JMX agents directly control resources and make
+them available to remote management agents.</div>
+<a name="wp998944" id="wp998944"></a>
+<div class="pTableText">&#160;</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h101" align="left" valign="top"><a name="wp998946" id="wp998946"></a>
+<div class="pTableText">Remote Management</div>
+</td>
+<td headers="h102" align="left" valign="top"><a name="wp998948" id="wp998948"></a>
+<div class="pTableText">Protocol adaptors and standard connectors
+make a JMX agent accessible from remote management applications
+outside the agent&#8217;s Java Virtual Machine (Java VM).</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBody"></p>
+<a name="wp998959" id="wp998959"></a>
+<h2 class="pHeading1">Instrumenting Resources Using MBeans</h2>
+<a name="wp998960" id="wp998960"></a>
+<p class="pBody">To manage resources using JMX technology, you must
+first instrument the resources in the Java programming language.
+You use Java objects known as MBeans to implement the access to the
+instrumentation of resources. MBeans must follow the design
+patterns and interfaces defined in the specification. This ensures
+that all MBeans provide the instrumentation of managed resources in
+a standardized way.</p>
+<a name="wp998977" id="wp998977"></a>
+<p class="pBody">Once a resource has been instrumented by MBeans,
+it can be managed through a JMX agent. MBeans do not require
+knowledge of the JMX agent with which they will operate.</p>
+<a name="wp998982" id="wp998982"></a>
+<p class="pBody">MBeans are designed to be flexible, simple, and
+easy to implement. Developers of applications, systems, and
+networks can make their products manageable in a standard way
+without having to understand or invest in complex management
+systems. Existing resources can be made manageable with minimum
+effort.</p>
+<a name="wp998985" id="wp998985"></a>
+<p class="pBody">In addition, the instrumentation level specifies a
+notification mechanism. This allows MBeans to generate and
+propagate notification events to components of the other
+levels.</p>
+<a name="wp998962" id="wp998962"></a>
+<h2 class="pHeading1">Creating a JMX Agent</h2>
+<a name="wp999017" id="wp999017"></a>
+<p class="pBody">A JMX agent is a standard management agent that
+directly controls resources and makes them available to remote
+management applications. JMX agents are usually located on the same
+machine as the resources they control, but this is not a
+requirement.</p>
+<a name="wp999022" id="wp999022"></a>
+<p class="pBody">The core component of a JMX agent is the MBean
+server, a managed object server in which MBeans are registered. A
+JMX agent also includes a set of services to manage MBeans, and at
+least one communications adaptor or connector to allow access by a
+management application.</p>
+<a name="wp999018" id="wp999018"></a>
+<p class="pBody">When you implement a JMX agent, you do not need to
+know the semantics or functions of the resources that it will be
+used to manage. In fact, a JMX agent does not even need to know
+which resources it will serve, because any resource instrumented in
+compliance with the JMX specification can use any JMX agent that
+offers the services it requires. Similarly, the agent does not need
+to know the functions of the management applications that will
+access it.</p>
+<a name="wp999066" id="wp999066"></a>
+<h2 class="pHeading1">Managing Resources Remotely</h2>
+<a name="wp999080" id="wp999080"></a>
+<p class="pBody">JMX API instrumentation can be accessed in many
+different ways, either through existing management protocols such
+as the Simple Network Management Protocol (SNMP), or through
+proprietary protocols. The MBean server relies on protocol adaptors
+and connectors to make a JMX agent accessible from management
+applications outside the agent&#8217;s Java Virtual Machine (Java
+VM).</p>
+<a name="wp999071" id="wp999071"></a>
+<p class="pBody">Each adaptor provides a view through a specific
+protocol of all MBeans registered in the MBean server. For example,
+an HTML adaptor could display an MBean in a Web browser.</p>
+<a name="wp999089" id="wp999089"></a>
+<p class="pBody">Connectors provide a manager-side interface that
+handles the communication between manager and JMX agent. Each
+connector provides the same remote management interface though a
+different protocol. When a remote management application uses this
+interface, it can connect to a JMX agent transparently through the
+network, regardless of the protocol.</p>
+<a name="wp999125" id="wp999125"></a>
+<p class="pBody">JMX technology provides a standard solution for
+exporting JMX API instrumentation to remote applications, based on
+Remote Method Invocation (RMI). In addition, the JMX Remote API
+defines an optional protocol based directly on TCP sockets, called
+the JMX Messaging Protocol (JMXMP). An implementation of the JMX
+Remote API does not have to support this optional protocol. The
+Java SE platform does not include the optional protocol. See
+<a href="appendixA.html#wp1002189"><span style=
+"color: #3366CC">Appendix&#160;A, &quot;JMX Technology
+Versions&quot;</span></a> for further information.</p>
+<a name="wp998484" id="wp998484"></a>
+<p class="pBody">The JMX Remote API specification describes how you
+can advertise and find JMX agents using existing discovery and
+lookup infrastructures. Examples of how to do this are provided and
+are described in the <em class="cEmphasis">Java Management
+Extensions (JMX) Technology Tutorial</em>. The specification does
+not define its own discovery and lookup service. The use of
+existing discovery and lookup services is optional: alternatively
+you can encode the addresses of your JMX API agents in the form of
+URLs, and communicate these URLs to the manager.</p>
+<a name="wp998488" id="wp998488"></a>
+<p class="pBody"></p>
+<a name="wp998489" id="wp998489"></a>
+<p class="pBody"></p>
+<a name="wp998490" id="wp998490"></a>
+<p class="pBody"></p>
+<a name="wp998068" id="wp998068"></a>
+<p class="pBody"></p>
+<a name="wp997103" id="wp997103"></a>
+<p class="pBody"></p>
+<p>&#160;</p>
+<hr class="pHr" />
+<table width="100%" summary="">
+<tr>
+<td align="left"><a accesskey="c" href=
+"JMXoverviewTOC.html">Contents</a> | <a accesskey="p" href=
+"intro.html">Previous</a> | <a accesskey="n" href=
+"instrumentation.html">Next</a></td>
+</tr>
+</table>
+<p>&#160;</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

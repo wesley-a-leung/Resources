@@ -1,0 +1,339 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>enhancements</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h2 align="center">&nbsp;</h2>
+<h2 align="center">Java Web Start enhancements in version 6</h2>
+<h2 align="center"><br /></h2>
+<ul>
+<li>
+<p>JNLP Specification addition of the &lt;update&gt; element with
+its &quot;policy&quot; and &quot;check&quot; attributes.</p>
+</li>
+</ul>
+<p style="margin-left: 0.42in">The new &lt;update&gt; element with
+its &quot;policy&quot; and &quot;check&quot; attributes is now
+supported. The update element describes the applications
+preferences on how Java Web Start should check for updates on the
+web, and what to do when it is known before launching that an
+update is available.<br />
+In the previous versions of Java Web Start, the
+&lt;offline-allowed&gt; element was overloaded to mean two
+things.&nbsp; First, it meant that the application was allowed to
+run in &quot;offline&quot; mode. (An application can be run in
+offline mode either from the command line by adding the
+&quot;-offline&quot; argument, or from the Cache Viewer.)&nbsp;
+Second, it meant that attempts to check for update before launching
+an application (when not run in offline mode) could time out.&nbsp;
+When a check for update times out, the application would be
+launched from the cache while the update check continued in the
+background.<br />
+With the advent of the &lt;update&gt; element and its check
+attribute in 6.0, the &lt;offline-allowed&gt; element no longer has
+this second meaning.&nbsp; The default values:&nbsp; &lt;update
+check=&quot;timeout&quot;/&gt;.&nbsp; which is the same behavior as
+previous versions where &lt;offline-allowed&gt; was
+specified.&nbsp; For the behavior that previously used whenever
+&lt;offline-allowed&gt; was omitted, you need to specify &lt;update
+check=&quot;always&quot;/&gt;. A third value &lt;update
+check=&quot;background&quot;/&gt; can be specified to always
+immediately launch from the cache while spawning a check for update
+in the background.&nbsp;&nbsp;&nbsp; The second attribute,
+&quot;policy&quot;, is used to determine what to do when it is
+known before starting the application that there is an update
+available.&nbsp; You can either always get the update, or prompt
+the user. The policy attribute values can be either
+&quot;always&quot; (this is default) , &quot;prompt-update&quot; or
+&quot;prompt-run&quot;.</p>
+<ul>
+<li>
+<p>JNLP Specification relaxation of requirements for the
+DownloadService API.</p>
+</li>
+</ul>
+<p style="margin-left: 0.42in">In the previous versions, the URLs
+passed as arguments to all of the APIs were restricted to be URLs
+to resources listed in the jnlp file(s) of the running
+application.&nbsp; This restriction is changed such that there are
+no restrictions for signed and trusted code, and the restriction on
+untrusted code is not that it be listed in the jnlp file(s), but
+only that it be from the same codebase.<br />
+Further, URLs to jnlp file(s) themselves are allowed, so that
+calling DownloadService.removeResource() can now be used to remove
+a whole application from the cache, and
+DownloadService.loadResource() can be used to import an
+application.<br />
+One effect of this change is that resources not listed in any jnlp
+file can now be used in an application.&nbsp; For example, after
+determining the locale is set to en_xx, an application can then
+load resources_en_xx.jar using the DownloadService, without listing
+all the available resource jars in the jnlp file. (Allowing you to
+dynamically add support for more locales without changing the jnlp
+file).</p>
+<ul>
+<li>
+<p>Implementation of a SocketService</p>
+</li>
+</ul>
+<p style="margin-left: 0.42in; margin-bottom: 0in">Another
+significant specification change is a clarification in the
+definition of the sandbox, that it is only the default sandbox, and
+that the implementation is free to prompt the user to allow actions
+that wouldn't be allowed by the sandbox.&nbsp; You already saw in
+1.5.0 that this was done for printing, so that just by using the
+normal printing api in awt, you could expand the sandbox to allow
+the application to access the printer (if the user agreed). In 6.0
+this is also done for socket connections, so that if an untrusted
+application attempts to connect to a url, the user can be prompted
+to allow the connection.</p>
+<ul>
+<li>
+<p>New &lt;java&gt; element in jnlp file to replace &lt;j2se&gt;
+element.</p>
+</li>
+</ul>
+<p style="margin-left: 0.42in">For jnlp files that will be used
+only with Java Web Start version 6.0 or later, the &lt;java&gt;
+element can be used to replace the &lt;j2se&gt; tag.&nbsp; (This is
+mainly because the Java Platform Standard Edition is no longer
+called j2se.)&nbsp; For backward compatibility, the &lt;j2se&gt;
+tag will continue to work.&nbsp; The &lt;java&gt; element will be
+identical to the &lt;j2se&gt; element..</p>
+<ul>
+<li>
+<p>The &lt;association&gt; element now may contain the &lt;icon&gt;
+and &lt;description&gt; sub-elements.</p>
+</li>
+</ul>
+<p style="margin-left: 0.42in">When creating file extension and
+mime type associations with your Java Web Start application, you
+can now specify a separate icon to be used for each association (as
+opposed to using the default icon for the application).&nbsp; Now,
+you can also specify a description.</p>
+<ul>
+<li>
+<p>Jar Indexing is fully supported now, and the JNLPClassLoader is
+now an instance of the URLClassLoader.</p>
+</li>
+</ul>
+<p style="margin-left: 0.42in">The JNLPClassLoader was rewritten to
+extend URLClassLoader.&nbsp; This gives several powerful
+advantages.&nbsp;<br />
+First, Jar Indexing is now fully supported.&nbsp; If you have
+several jar files, and create a jar index in the main jar file that
+indexes all the jar files, you can then mark each additional jar as
+lazy, and it will not be downloaded until and unless a resource or
+class in it is referenced.&nbsp; This makes the old part and
+package elements unnecessary for insuring that lazy jars are not
+downloaded prematurely.<br />
+Second, since the JNLPClassLoader now extends URLClassLoader, an
+Application can call getURLs() to get a list of the jar elements
+that are listed in the jnlp files (or have been downloaded using
+the DownloadService API, even if not listed in any jnlp file, see
+above).<br />
+Finally, the URL returned for calls to ClassLoader.getResource() is
+now the proper JAR URL of the item on the net.&nbsp; In previous
+versions, this URL returned was a jar url of the file url item in
+the cache.&nbsp; By extending URLClassLoader, the cached location
+(if it exists) is meaningless, and it allows Java Web Start to
+operate without caching.</p>
+<ul>
+<li>
+<p>Enhanced icon support.</p>
+</li>
+</ul>
+<p style="margin-left: 0.42in">Java Web Start now supports two new
+icon formats, &quot;.png&quot;, and &quot;.ico&quot;.&nbsp; This
+allows you to specify an icon that will not need to be translated
+into a different format depending on its use.&nbsp; You can also
+now specify kind=&quot;shortcut&quot;, and Java Web Start will now
+honor the width and height hints. This means if you specify:<br />
+&lt;icon kind=&quot;shortcut&quot;
+href=&quot;menushortcut.ico&quot; width=&quot;16&quot;
+height=&quot;16&quot;/&gt;<br />
+&lt;icon kind=&quot;shortcut&quot;
+href=&quot;desktopshortcut.ico&quot; width=&quot;32&quot;
+height=&quot;32&quot;/&gt;<br />
+you can specify separate images for any desktop and menu shortcuts
+that are created.&nbsp; (note: for desktop shortcuts, Java Web
+Start will use the icon whose size is closer to 32X32, and for menu
+shortcuts Java Web Start will use the icon whose size is closer to
+16X16 )</p>
+<ul>
+<li>
+<p>Enhanced support for Add/Remove program entries on Windows.</p>
+</li>
+</ul>
+<p style="margin-left: 0.42in">The Windows Add/Remove program
+entries for Java Web Start applications will now include the
+publisher, publisher web site, install date, and application icon
+from the information block of the jnlp file.</p>
+<ul>
+<li>
+<p>Desktop shortcut tooltips.</p>
+</li>
+</ul>
+<p style="margin-left: 0.42in">Desktop shortcuts created by Java
+Web Start will now use the &lt;description&gt; element in the jnlp
+file to create a toolkit describing the application.</p>
+<ul>
+<li>
+<p>JNLPDownloadServlet enhancements.</p>
+</li>
+</ul>
+<p style="margin-left: 0.42in">The JnlpDownloadServlet now contains
+both a $$hostname and a $$site macro. The $$hostname macro is
+expanded to contain the host name. The $$site macro is expanded to
+contain the web site address without the WAR context portion.</p>
+<ul>
+<li>
+<p>The list of safe vm args and safe properties has been
+expanded.</p>
+</li>
+</ul>
+<p style="margin-left: 0.42in">See the developers guide for the
+current list of safe properties and vm args.</p>
+<ul>
+<li>
+<p>Several Command Line Interface (CLI) items have been changed or
+added. See the developers guide for the current Javaws CLI.</p>
+</li>
+</ul>
+<h3 align="center">Enhancements Common to Java Web Start and Java
+Plug-in</h3>
+<ul>
+<li>
+<p>All dialogs have been redesigned to be more user friendly.</p>
+</li>
+</ul>
+<p style="margin-left: 0.42in">All of the dialogs and screens shown
+by Java Web Start and Java Plug-in have been redesigned with help
+from the User Experience team to be more user friendly, intuitive,
+and accessible.</p>
+<ul>
+<li>
+<p>DownloadEngine and cache consolidation and redesign.</p>
+</li>
+</ul>
+<p style="margin-left: 0.42in">The entire caching mechanism and
+download engine has been redesigned and consolidated between Java
+Web Start and Java Plug-in.&nbsp;<br />
+This brings several new features to Java Web Start, previously
+available only in Java Plug-in and vice versa.</p>
+<ul>
+<li>
+<p style="margin-bottom: 0in">Caching can be disabled now entirely
+via the Java Control Panel.<br /></p>
+</li>
+<li>The cache max size set in the JCP is now honored in Java Web
+Start, and a cleanup thread may be started by Java Web Start to
+removed LRU items from the cache when it is approaching the max
+size set by the user.</li>
+</ul>
+<ul>
+<li>The &quot;cache-control: no-cache&quot; HTTP header is now
+supported. &quot;no-cache&quot; means cached contents cannot be
+used without re-validation. When the no-cache directive is used ,
+an update check is always made to make sure the cached content is
+the same as the server copy pointed to, by the resource URL. If so,
+cached copy can be used. If not, server copy will be downloaded.
+Expiration field is ignored, which means that even if the cached
+resource is not expired yet, update check will still be
+performed.</li>
+</ul>
+<ul>
+<li>The expiration-date will be honored.&nbsp; If a downloaded
+resource contains an expiration date, it will not be used after
+that date.</li>
+</ul>
+<p style="margin-left: 0.42in">Note: The format of the cache is
+completely changed and should never be assumed.&nbsp; Any existing
+code that assumed the previous format of the cache, for either Java
+Web Start or Java Plug-in will no longer work.&nbsp; Existing
+applications in the Java Web Start cache will be upgraded and
+converted to the new cache format the first time you run a Java Web
+Start application, or if you launch the cache viewer using
+&quot;javaws -viewer&quot;. Likewise, the system cache will be
+upgraded and converted to the new format the first time you launch
+Java Web Start in system mode, or if you just launch &quot;javaws
+-system&quot;.</p>
+<ul>
+<li>
+<p>The Java Console is now excluded from modality.</p>
+</li>
+</ul>
+<p style="margin-left: 0.42in">By using the new modality features
+added by AWT in Java 6, you can interact with the Java Console even
+when the Application displays a modal Dialog.</p>
+<ul>
+<li>
+<p>New support for OCSP/CRL</p>
+</li>
+</ul>
+<p style="margin-left: 0.42in">Java Web Start and Java Java Plug-in
+support CRL (Certificate Revocation Lists) and OCSP (Online
+Certificate Status Protocol) for verifying the certificates.</p>
+<ul>
+<li>
+<p>New Support for SSL/TSL</p>
+</li>
+</ul>
+<p style="margin-left: 0.42in">An Option has been added to the Java
+Control Panel to select the default SSL handshaking protocol.<br />
+The default is set to SSLv3 and SSLv2, but then user or enterprise
+can change it to TSL.<br />
+<br />
+<br />
+<br /></p>
+<p style="margin-bottom: 0in"><br /></p>
+<p style="margin-left: 0.42in; margin-bottom: 0in"><br /></p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

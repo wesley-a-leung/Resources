@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Code Overview: AudioSystem.java</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<p><small><a href="contents.html">&lt; Contents</a></small></p>
+<h1>Appendix 1: Code Overview: <code>AudioSystem.java</code></h1>
+<p>For the benefit of service providers and API implementers, a
+brief overview of the Java Sound source code is provided.</p>
+<p><code>javax.sound.sampled.AudioSystem</code> is the entry point
+to JavaSound for obtaining resources; i.e., mixers, lines, etc. And
+each method of <code>AudioSystem</code> involves getting the
+providers of some service&mdash;<code>MixerProvider[]</code>,
+<code>FormatConversionProvider[]</code>,
+<code>AudioFileReader[]</code>, or <code>AudioFileWriter[]</code>.
+Then the method goes on to obtain some specific information or
+perform some task. There is much similarity in how these methods
+work. Let us take a look at how <code>getMixerInfo()</code>
+works.</p>
+<p>The following is a sequence diagram of
+<code>getMixerInfo()</code> in <code>AudioSystem.java</code>:</p>
+<p align="center"><img alt=
+"Sequence diagram of getMixerInfo() in AudioSystem.java" src=
+"images/MixerInfo-2a.gif" width="1186" height="705" /></p>
+<p align="left"><code>getMixerInfo()</code> in
+<code>AudioSystem</code> first calls
+<code>getMixerProviders()</code>, a <code>private static</code>
+method of <code>AudioSystem</code>. The first thing that
+<code>getMixerProviders()</code> does is attempt to load
+<code>sun.misc.Service</code>. If an exception is thrown, it means
+that a pre-1.3 JRE is in use and there is no service provider
+lookup mechanism present. If an exception is thrown, then
+<code>sun.media.sound.DefaultServices</code> is used to obtain
+service providers (not depicted in above diagram). If the 1.3
+mechanims is present, then <code>getJDK13Serives()</code> is called
+(shown above) with
+<code>&quot;javax.sound.sampled.spi.MixerProvider&quot;</code> as
+the argument.</p>
+<p align="left"><code>getJDK13Services()</code> is another
+<code>private static</code> method of <code>AudioSystem</code>. It
+attempts to the load the class for
+<code>&quot;com.sun.media.sound.JDK13Services&quot;</code>, and if
+it succeeds it set <code>Class jdk13Services</code> equal to it. A
+bit of trickery is then performed by using
+<code>Class.getMethod()</code> to get the
+<code>getProviders()</code> method of <code>jdk13Services</code>,
+which is returned as object <code>Method m</code>. The method is
+then invoked, which has the effect of invoking
+<code>getProviders(&quot;javax.sound.sampled.spi.MixerProvider&quot;)</code>
+on <code>JDK13Services</code>. This in turn uses the
+<code>providers()</code> method of <code>sun.misc.Service</code> to
+return a vector of mixer providers, <code>MixerProvider[]</code>.
+The <code>getMixerInfo()</code> method of
+<code>MixerProvider</code> is then called on each element of the
+vector to return info (<code>Mixer.info</code>) for all mixers of
+all mixer providers.</p>
+<p align="left">Other services are handled in a similar way. For
+instance, <code>getTargetEncodings()</code> calls
+<code>getFormatConversionProviders()</code>,
+<code>getAudioFileFormat()</code> calls
+<code>getAudioFileReaders()</code>, etc., which are similarly
+structured to <code>getMixerProviders()</code>.</p>
+<p>&nbsp;</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Image I/O API Guide: 3 - Writing Image I/O
+Applications</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<table summary="" width="100%">
+<tr>
+<td>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href=
+"imageio_guideTOC.fm.html">CONTENTS</a> | <a href=
+"apps.fm3.html">PREV</a> | <a href="apps.fm5.html">NEXT</a> 
+<!-- | <a href="copyright.fm.html">INDEX</a>  -->
+<!-- /font --></td>
+</tr>
+</table>
+<br />
+<h2><a name="a996927" id="a996927"><i>3.4</i> The
+<code>ImageWriter</code> Class</a></h2>
+<p><a name="a997001" id="a997001"><!-- --></a>Just as we obtained a
+list of <code>ImageReader</code>s for a particular format using a
+method from the <code>ImageIO</code> class, we can obtain a list of
+<code>ImageWriter</code>s:</p>
+<pre class="codeblock">
+Iterator writers = ImageIO.getImageWritersByFormatName(&#34;png&#34;);
+ImageWriter writer = (ImageWriter)writers.next();
+
+</pre>
+<p><a name="a997034" id="a997034"><!-- --></a>Once an
+<code>ImageWriter</code> has been obtained, its destination must be
+set to an <code>ImageOutputStream</code>:</p>
+<pre class="codeblock">
+File f = new File(&#34;c:\images\myimage.png&#34;);
+ImageOutputStream ios = ImageIO.createImageOutputStream(f);
+writer.setOutput(ios);
+
+</pre>
+<p><a name="a997041" id="a997041"><!-- --></a>Finally, the image may
+be written to the output stream:</p>
+<pre class="codeblock">
+BufferedImage bi;
+writer.write(bi);
+</pre>
+<br />
+<h3><a name="a997015" id="a997015"><!-- --></a> <i>3.4.1</i>
+Writing Multiple Images</h3>
+<p><a name="a997103" id="a997103"><!-- --></a>The
+<code>IIOImage</code> class is use to store references to an image,
+one or more thumbnail images, and metadata (non-image data)
+associated with the image. Metadata will be discussed below; for
+now, we will simply pass <code>null</code> as the value for the
+metadata-related parameters.</p>
+<p><a name="a997148" id="a997148"><!-- --></a>The
+<code>ImageWriter</code> class contains a <code>write</code> method
+that creates a new file from an <code>IIOImage</code>, and a
+<code>writeInsert</code> method that adds an <code>IIOImage</code>
+to an existing file . By calling the two in sequence a multi-image
+file may be written:</p>
+<pre class="codeblock">
+BufferedImage first_bi, second_bi;
+IIOImage first_IIOImage = new IIOImage(first_bi, null, null);
+IIOImage second_IIOImage = new IIOImage(second_bi, null, null);
+writer.write(null, first_IIOImage, null);
+if (writer.canInsertImage(1)) {
+        writer.writeInsert(1, second_IIOImage, null);
+} else {
+        System.err.println(&#34;Writer can&#39;t append a second image!&#34;);
+}
+
+</pre>
+<br />
+<hr />
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href=
+"imageio_guideTOC.fm.html">CONTENTS</a> | <a href=
+"apps.fm3.html">PREV</a> | <a href="apps.fm5.html">NEXT</a> 
+<!-- | <a href="copyright.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>rmid</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T7:56:53Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Solaris, Linux, and OS X, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38209-05" name="partnum"/>
+<meta content="JSSOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="rmiregistry.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="serialver.html">
+                Next</a><hr/>
+<div><a id="CIHIFGAB" name="CIHIFGAB"/>
+<div id="JSSOR707"><a id="CIHCJFEI" name="CIHCJFEI"/>
+<h1>rmid</h1>
+<p>Starts the activation system daemon that enables objects to be registered and activated in a Java Virtual Machine (JVM).</p>
+<div><a id="sthref174" name="sthref174"/>
+<h2>Synopsis</h2>
+<p><b>rmid</b> [<i>options</i>]</p>
+<dl>
+<dt><i>options</i></dt>
+<dd>
+<p>The command-line options. See <a href="#CIHDCGEF">Options</a>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref175" name="sthref175"/>
+<h2>Description</h2>
+<p>The <code dir="ltr">rmid</code> command starts the activation system daemon. The activation system daemon must be started before activatable objects can be either registered with the activation system or activated in a JVM. For details on how to write programs that use activatable objects, the <i>Using Activation</i> tutorial at <code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/rmi/activation/overview.html">http://docs.oracle.com/javase/8/docs/technotes/guides/rmi/activation/overview.html</a></code></p>
+<p>Start the daemon by executing the <code dir="ltr">rmid</code> command and specifying a security policy file, as follows:</p>
+<pre dir="ltr" xml:space="preserve">
+rmid -J-Djava.security.policy=rmid.policy
+</pre>
+<p>When you run Oracle's implementation of the <code dir="ltr">rmid</code> command, by default you must specify a security policy file so that the <code dir="ltr">rmid</code> command can verify whether or not the information in each <code dir="ltr">ActivationGroupDesc</code> is allowed to be used to start a JVM for an activation group. Specifically, the command and options specified by the <code dir="ltr">CommandEnvironment</code> and any properties passed to an <code dir="ltr">ActivationGroupDesc</code> constructor must now be explicitly allowed in the security policy file for the <code dir="ltr">rmid</code> command. The value of the <code dir="ltr">sun.rmi.activation.execPolicy</code> property dictates the policy that the <code dir="ltr">rmid</code> command uses to determine whether or not the information in an <code dir="ltr">ActivationGroupDesc</code> can be used to start a JVM for an activation group. For more information see the description of the <a href="#CIHFIFBC">-J-Dsun.rmi.activation.execPolicy=<i>policy</i></a> option.</p>
+<p>Executing the <code dir="ltr">rmid</code> command starts the Activator and an internal registry on the default port1098 and binds an <code dir="ltr">ActivationSystem</code> to the name <code dir="ltr">java.rmi.activation.ActivationSystem</code> in this internal registry.</p>
+<p>To specify an alternate port for the registry, you must specify the <code dir="ltr">-port</code> option when you execute the <code dir="ltr">rmid</code> command. For example, the following command starts the activation system daemon and a registry on the registry's default port, 1099.</p>
+<pre dir="ltr" xml:space="preserve">
+rmid -J-Djava.security.policy=rmid.policy -port 1099
+</pre></div>
+
+<div><a id="sthref176" name="sthref176"/>
+<h2>Start RMID on Demand</h2>
+<p>An alternative to starting <code dir="ltr">rmid</code> from the command line is to configure <code dir="ltr">inetd</code> (Oracle Solaris) or <code dir="ltr">xinetd</code> (Linux) to start <code dir="ltr">rmid</code> on demand.</p>
+<p>When RMID starts, it attempts to obtain an inherited channel (inherited from <code dir="ltr">inetd</code>/<code dir="ltr">xinetd</code>) by calling the <code dir="ltr">System.inheritedChannel</code> method. If the inherited channel is null or not an instance of <code dir="ltr">java.nio.channels.ServerSocketChannel</code>, then RMID assumes that it was not started by <code dir="ltr">inetd</code>/<code dir="ltr">xinetd</code>, and it starts as previously described.</p>
+<p>If the inherited channel is a <code dir="ltr">ServerSocketChannel</code> instance, then RMID uses the <code dir="ltr">java.net.ServerSocket</code> obtained from the <code dir="ltr">ServerSocketChannel</code> as the server socket that accepts requests for the remote objects it exports: The registry in which the <code dir="ltr">java.rmi.activation.ActivationSystem</code> is bound and the <code dir="ltr">java.rmi.activation.Activator</code> remote object. In this mode, RMID behaves the same as when it is started from the command line, except in the following cases:</p>
+<ul>
+<li>
+<p>Output printed to <code dir="ltr">System.err</code> is redirected to a file. This file is located in the directory specified by the <code dir="ltr">java.io.tmpdir</code> system property (typically <code dir="ltr">/var/tmp</code> or <code dir="ltr">/tmp</code>) with the prefix <code dir="ltr">rmid-err</code> and the suffix <code dir="ltr">tmp</code>.</p>
+</li>
+<li>
+<p>The <code dir="ltr">-port</code> option is not allowed. If this option is specified, then RMID exits with an error message.</p>
+</li>
+<li>
+<p>The <code dir="ltr">-log</code> option is required. If this option is not specified, then RMID exits with an error message</p>
+</li>
+</ul>
+<p>See the man pages for <code dir="ltr">inetd</code> (Oracle Solaris) or <code dir="ltr">xinetd</code> (Linux) for details on how to configure services to be started on demand.</p>
+</div>
+
+<div><a id="CIHDCGEF" name="CIHDCGEF"/><a id="CIHIHJHB" name="CIHIHJHB"/>
+<h2>Options</h2>
+<dl>
+<dt>-C<i>option</i></dt>
+<dd>
+<p>Specifies an option that is passed as a command-line argument to each child process (activation group) of the <code dir="ltr">rmid</code> command when that process is created. For example, you could pass a property to each virtual machine spawned by the activation system daemon:</p>
+<pre dir="ltr" xml:space="preserve">
+rmid -C-Dsome.property=value
+</pre>
+<p>This ability to pass command-line arguments to child processes can be useful for debugging. For example, the following command enables server-call logging in all child JVMs.</p>
+<pre dir="ltr" xml:space="preserve">
+rmid -C-Djava.rmi.server.logCalls=true
+</pre></dd>
+<dt>-J<i>option</i></dt>
+<dd>
+<p>Specifies an option that is passed to the Java interpreter running RMID. For example, to specify that the <code dir="ltr">rmid</code> command use a policy file named <code dir="ltr">rmid.policy</code>, the <code dir="ltr">-J</code> option can be used to define the <code dir="ltr">java.security.policy</code> property on the <code dir="ltr">rmid</code> command line, for example:</p>
+<pre dir="ltr" xml:space="preserve">
+rmid -J-Djava.security.policy-rmid.policy
+</pre></dd>
+<dd><a id="CIHFIFBC" name="CIHFIFBC"/></dd>
+<dt>-J-Dsun.rmi.activation.execPolicy=<i>policy</i></dt>
+<dd>
+<p>Specifies the policy that RMID employs to check commands and command-line options used to start the JVM in which an activation group runs. Please note that this option exists only in Oracle's implementation of the Java RMI activation daemon. If this property is not specified on the command line, then the result is the same as though <code dir="ltr">-J-Dsun.rmi.activation.execPolicy=default</code> were specified. The possible values of <code dir="ltr">policy</code> can be <code dir="ltr">default</code>, <code dir="ltr">policyClassName</code>, or <code dir="ltr">none</code>.</p>
+<ul>
+<li>
+<p>default</p>
+<p>The <code dir="ltr">default</code> or unspecified value <code dir="ltr">execPolicy</code> allows the <code dir="ltr">rmid</code> command to execute commands with specific command-line options only when the <code dir="ltr">rmid</code> command was granted permission to execute those commands and options in the security policy file that the <code dir="ltr">rmid</code> command uses. Only the default activation group implementation can be used with the default execution policy.</p>
+<p>The <code dir="ltr">rmid</code> command starts a JVM for an activation group with the information in the group's registered activation group descriptor, an <code dir="ltr">ActivationGroupDesc</code>. The group descriptor specifies an optional <code dir="ltr">ActivationGroupDesc.CommandEnvironment</code> that includes the command to execute to start the activation group and any command-line options to be added to the command line. By default, the <code dir="ltr">rmid</code> command uses the <code dir="ltr">java</code> command found in <code dir="ltr">java.home</code>. The group descriptor also contains properties overrides that are added to the command line as options defined as: <code dir="ltr">-D&lt;property&gt;=&lt;value&gt;</code>.The <code dir="ltr">com.sun.rmi.rmid.ExecPermission</code> permission grants the <code dir="ltr">rmid</code> command permission to execute a command that is specified in the group descriptor's <code dir="ltr">CommandEnvironment</code> to start an activation group. The <code dir="ltr">com.sun.rmi.rmid.ExecOptionPermission</code> permission enables the <code dir="ltr">rmid</code> command to use command-line options, specified as properties overrides in the group descriptor or as options in the <code dir="ltr">CommandEnvironment</code> when starting the activation group.When granting the <code dir="ltr">rmid</code> command permission to execute various commands and options, the permissions <code dir="ltr">ExecPermission</code> and <code dir="ltr">ExecOptionPermission</code> must be granted to all code sources.</p>
+<p><b>ExecPermission</b></p>
+<p>The <code dir="ltr">ExecPermission</code> class represents permission for the <code dir="ltr">rmid</code> command to execute a specific command to start an activation group.</p>
+<p><b>Syntax</b>: The name of an <code dir="ltr">ExecPermission</code> is the path name of a command to grant the <code dir="ltr">rmid</code> command permission to execute. A path name that ends in a slash (/) and an asterisk (*) indicates that all of the files contained in that directory where slash is the file-separator character, <code dir="ltr">File.separatorChar</code>. A path name that ends in a slash (/) and a minus sign (-) indicates all files and subdirectories contained in that directory (recursively). A path name that consists of the special token <code dir="ltr">&lt;&lt;ALL FILES&gt;&gt;</code> matches any file.</p>
+<p>A path name that consists of an asterisk (*) indicates all the files in the current directory. A path name that consists of a minus sign (-) indicates all the files in the current directory and (recursively) all files and subdirectories contained in the current directory.</p>
+<p><b>ExecOptionPermission</b></p>
+<p>The <code dir="ltr">ExecOptionPermission</code> class represents permission for the <code dir="ltr">rmid</code> command to use a specific command-line option when starting an activation group. The name of an <code dir="ltr">ExecOptionPermission</code> is the value of a command-line option.</p>
+<p><b>Syntax</b>: Options support a limited wild card scheme. An asterisk signifies a wild card match, and it can appear as the option name itself (matches any option), or an asterisk (*) can appear at the end of the option name only when the asterisk (*) follows a dot (.) or an equals sign (=).</p>
+<p>For example: <code dir="ltr">*</code> or <code dir="ltr">-Dmydir.*</code> or <code dir="ltr">-Da.b.c=*</code> is valid, but <code dir="ltr">*mydir</code> or <code dir="ltr">-Da*b</code> or <code dir="ltr">ab*</code> is not.</p>
+<p><b>Policy file for rmid</b></p>
+<p>When you grant the <code dir="ltr">rmid</code> command permission to execute various commands and options, the permissions <code dir="ltr">ExecPermission</code> and <code dir="ltr">ExecOptionPermission</code> must be granted to all code sources (universally). It is safe to grant these permissions universally because only the <code dir="ltr">rmid</code> command checks these permissions.</p>
+<p>An example policy file that grants various execute permissions to the <code dir="ltr">rmid</code> command is:</p>
+<pre dir="ltr" xml:space="preserve">
+grant {
+    permission com.sun.rmi.rmid.ExecPermission
+        "/files/apps/java/jdk1.7.0/solaris/bin/java";
+ 
+    permission com.sun.rmi.rmid.ExecPermission
+        "/files/apps/rmidcmds/*";
+ 
+    permission com.sun.rmi.rmid.ExecOptionPermission
+        "-Djava.security.policy=/files/policies/group.policy";
+ 
+    permission com.sun.rmi.rmid.ExecOptionPermission
+        "-Djava.security.debug=*";
+ 
+    permission com.sun.rmi.rmid.ExecOptionPermission
+        "-Dsun.rmi.*";
+};
+</pre>
+<p>The first permission granted allows the <code dir="ltr">rmid</code> command to execute the 1.7.0 release of the <code dir="ltr">java</code> command, specified by its explicit path name. By default, the version of the <code dir="ltr">java</code> command found in <code dir="ltr">java.home</code> is used (the same one that the <code dir="ltr">rmid</code> command uses), and does not need to be specified in the policy file. The second permission allows the <code dir="ltr">rmid</code> command to execute any command in the directory <code dir="ltr">/files/apps/rmidcmds</code>.</p>
+<p>The third permission granted, an <code dir="ltr">ExecOptionPermission</code>, allows the <code dir="ltr">rmid</code> command to start an activation group that defines the security policy file to be <code dir="ltr">/files/policies/group.policy</code>. The next permission allows the <code dir="ltr">java.security.debug property</code> to be used by an activation group. The last permission allows any property in the <code dir="ltr">sun.rmi property</code> name hierarchy to be used by activation groups.</p>
+<p>To start the <code dir="ltr">rmid</code> command with a policy file, the <code dir="ltr">java.security.policy</code> property needs to be specified on the <code dir="ltr">rmid</code> command line, for example:</p>
+<p><code dir="ltr">rmid -J-Djava.security.policy=rmid.policy</code>.</p>
+</li>
+<li>
+<p>&lt;policyClassName&gt;</p>
+<p>If the default behavior is not flexible enough, then an administrator can provide, when starting the <code dir="ltr">rmid</code> command, the name of a class whose <code dir="ltr">checkExecCommand</code> method is executed to check commands to be executed by the <code dir="ltr">rmid</code> command.</p>
+<p>The <code dir="ltr">policyClassName</code> specifies a public class with a public, no-argument constructor and an implementation of the following <code dir="ltr">checkExecCommand</code> method:</p>
+<pre dir="ltr" xml:space="preserve">
+ public void checkExecCommand(ActivationGroupDesc desc, String[] command)
+        throws SecurityException;
+</pre>
+<p>Before starting an activation group, the <code dir="ltr">rmid</code> command calls the policy's <code dir="ltr">checkExecCommand</code> method and passes to it the activation group descriptor and an array that contains the complete command to start the activation group. If the <code dir="ltr">checkExecCommand</code> throws a <code dir="ltr">SecurityException</code>, then the <code dir="ltr">rmid</code> command does not start the activation group and an <code dir="ltr">ActivationException</code> is thrown to the caller attempting to activate the object.</p>
+</li>
+<li>
+<p>none</p>
+<p>If the <code dir="ltr">sun.rmi.activation.execPolicy</code> property value is <code dir="ltr">none</code>, then the <code dir="ltr">rmid</code> command does not perform any validation of commands to start activation groups.</p>
+</li>
+</ul>
+</dd>
+<dt>-log <i>dir</i></dt>
+<dd>
+<p>Specifies the name of the directory the activation system daemon uses to write its database and associated information. The log directory defaults to creating a log, in the directory in which the <code dir="ltr">rmid</code> command was executed.</p>
+</dd>
+<dt>-port <i>port</i></dt>
+<dd>
+<p>Specifies the port the registry uses. The activation system daemon binds the <code dir="ltr">ActivationSystem</code>, with the name <code dir="ltr">java.rmi.activation.ActivationSystem</code>, in this registry. The <code dir="ltr">ActivationSystem</code> on the local machine can be obtained using the following <code dir="ltr">Naming.lookup</code> method call:</p>
+<pre dir="ltr" xml:space="preserve">
+import java.rmi.*; 
+    import java.rmi.activation.*;
+ 
+    ActivationSystem system; system = (ActivationSystem)
+    Naming.lookup("//:port/java.rmi.activation.ActivationSystem");
+</pre></dd>
+<dt>-stop</dt>
+<dd>
+<p>Stops the current invocation of the <code dir="ltr">rmid</code> command for a port specified by the <code dir="ltr">-port</code> option. If no port is specified, then this option stops the <code dir="ltr">rmid</code> invocation running on port 1098.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref177" name="sthref177"/>
+<h2>Environment Variables</h2>
+<dl>
+<dt>CLASSPATH</dt>
+<dd>
+<p>Used to provide the system a path to user-defined classes. Directories are separated by colons, for example: <code dir="ltr">.:/usr/local/java/classes</code>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref178" name="sthref178"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="java.html#CBBFHAJA"><code dir="ltr">java</code>(1)</a></p>
+</li>
+<li>
+<p><a href="classpath.html#CBHHCGFB">Setting the Class Path</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="rmiregistry.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="serialver.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

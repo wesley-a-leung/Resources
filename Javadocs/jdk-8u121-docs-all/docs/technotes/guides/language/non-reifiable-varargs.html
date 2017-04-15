@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Improved Compiler Warnings When Using Non-Reifiable Formal
+Parameters with Varargs Methods</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Improved Compiler Warnings and Errors When Using Non-Reifiable
+Formal Parameters with Varargs Methods</h1>
+
+<p>This page covers the following topics:</p>
+<ul>
+<li><a href="#heap_pollution">Heap Pollution</a></li>
+<li><a href="#varargs_nonreifiable_args">Variable Arguments Methods
+and Non-Reifiable Formal Parameters</a></li>
+<li><a href="#vulnerabilities">Potential Vulnerabilities of Varargs
+Methods with Non-Reifiable Formal Parameters</a></li>
+<li><a href="#suppressing">Suppressing Warnings from Varargs
+Methods with Non-Reifiable Formal Parameters</a></li>
+</ul>
+<!-- **************************************** -->
+<h2><a name="heap_pollution" id="heap_pollution">Heap
+Pollution</a></h2>
+<p>Most parameterized types, such as
+<code>ArrayList&lt;Number&gt;</code> and
+<code>List&lt;String&gt;</code>, are <em>non-reifiable types</em>.
+A non-reifiable type is a type that is <em>not</em> completely
+available at runtime. At compile time, non-reifiable types undergo
+a process called type erasure during which the compiler removes
+information related to type parameters and type arguments. This
+ensures binary compatibility with Java libraries and applications
+that were created before generics. Because type erasure removes
+information from parameterized types at compile-time, these types
+are non-reifiable.</p>
+<p><em>Heap pollution</em> occurs when a variable of a
+parameterized type refers to an object that is not of that
+parameterized type. This situation can only occur if the program
+performed some operation that would give rise to an unchecked
+warning at compile-time. An <em>unchecked warning</em> is generated
+if, either at compile-time (within the limits of the compile-time
+type checking rules) or at runtime, the correctness of an operation
+involving a parameterized type (for example, a cast or method call)
+cannot be verified.</p>
+<p>Consider the following example:</p>
+<pre>
+    List l = new ArrayList&lt;Number&gt;();
+    List&lt;String&gt; ls = l;       // unchecked warning
+    l.add(0, new Integer(42)); // another unchecked warning
+    String s = ls.get(0);      // ClassCastException is thrown
+</pre>
+<p>During type erasure, the types
+<code>ArrayList&lt;Number&gt;</code> and
+<code>List&lt;String&gt;</code> become <code>ArrayList</code> and
+<code>List</code>, respectively.</p>
+<p>The variable <code>ls</code> has the parameterized type
+<code>List&lt;String&gt;</code>. When the <code>List</code>
+referenced by <code>l</code> is assigned to <code>ls</code>, the
+compiler generates an unchecked warning; the compiler is unable to
+determine at compile time, and moreover knows that the JVM will not
+be able to determine at runtime, if <code>l</code> refers to a
+<code>List&lt;String&gt;</code> type; it does not. Consequently,
+heap pollution occurs.</p>
+<p>As a result, at compile time, the compiler generates another
+unchecked warning at the <code>add</code> statement. The compiler
+is unable to determine if the variable <code>l</code> refers to a
+<code>List&lt;String&gt;</code> type or a
+<code>List&lt;Integer&gt;</code> type (and another heap pollution
+situation occurs). However, the compiler does not generate a
+warning or error at the <code>get</code> statement. This statement
+is valid; it is calling the <code>List&lt;String&gt;.get</code>
+method to retrieve a <code>String</code> object. Instead, at
+runtime, the <code>get</code> statement throws a
+<code>ClassCastException</code>.</p>
+<p>In detail, a heap pollution situation occurs when the
+<code>List</code> object <code>l</code>, whose static type is
+<code>List&lt;Number&gt;</code>, is assigned to another
+<code>List</code> object, <code>ls</code>, that has a different
+static type, <code>List&lt;String&gt;</code>. However, the compiler
+still allows this assignment. It must allow this assignment to
+preserve backwards compatibility with versions of Java SE that do
+not support generics. Because of type erasure,
+<code>List&lt;Number&gt;</code> and <code>List&lt;String&gt;</code>
+both become <code>List</code>. Consequently, the compiler allows
+the assignment of the object <code>l</code>, which has a raw type
+of <code>List</code>, to the object <code>ls</code>.</p>
+<p>Furthermore, a heap pollution situation occurs when the
+<code>l.add</code> method is called. The static type second formal
+parameter of the <code>add</code> method is <code>String</code>,
+but this method is called with an actual parameter of a different
+type, <code>Integer</code>. However, the compiler still allows this
+method call. Because of type erasure, the type of the second formal
+parameter of the <code>add</code> method (which is defined as
+<code>List&lt;E&gt;.add(int,E)</code>) becomes <code>Object</code>.
+Consequently, the compiler allows this method call because, after
+type erasure, the <code>l.add</code> method can add any object of
+type <code>Object</code>, including an object of
+<code>Integer</code> type, which is a subtype of
+<code>Object</code>.</p>
+<!-- **************************************** -->
+<h2><a name="varargs_nonreifiable_args" id=
+"varargs_nonreifiable_args">Variable Arguments Methods and
+Non-Reifiable Formal Parameters</a></h2>
+<p>Consider the method <code>ArrayBuilder.addToList</code> in the
+following example. It is a variable arguments (also known as
+varargs) method that adds the objects of type <code>T</code>
+contained in the <code>elements</code> varargs formal parameter to
+the <code>List</code> <code>listArg</code>:</p>
+<pre>
+import java.util.*;
+
+public class ArrayBuilder {
+
+  public static &lt;T&gt; void addToList (List&lt;T&gt; listArg, T... elements) {
+    for (T x : elements) {
+      listArg.add(x);
+    }
+  }
+
+  public static void faultyMethod(List&lt;String&gt;... l) {
+    Object[] objectArray = l;  // Valid
+    objectArray[0] = Arrays.asList(new Integer(42));
+    String s = l[0].get(0);    // ClassCastException thrown here
+  }
+
+}
+</pre>
+<pre>
+import java.util.*;
+
+public class HeapPollutionExample {
+
+  public static void main(String[] args) {
+
+    List&lt;String&gt; stringListA = new ArrayList&lt;String&gt;();
+    List&lt;String&gt; stringListB = new ArrayList&lt;String&gt;();
+
+    ArrayBuilder.addToList(stringListA, "Seven", "Eight", "Nine");
+    ArrayBuilder.addToList(stringListA, "Ten", "Eleven", "Twelve");
+    List&lt;List&lt;String&gt;&gt; listOfStringLists = new ArrayList&lt;List&lt;String&gt;&gt;();
+    ArrayBuilder.addToList(listOfStringLists, stringListA, stringListB);
+
+    ArrayBuilder.faultyMethod(Arrays.asList("Hello!"), Arrays.asList("World!"));
+  }
+}
+</pre>
+<p>The Java SE 7 compiler generates the following warning for the
+definition of the method <code>ArrayBuilder.addToList</code>:</p>
+<pre>
+warning: [varargs] Possible heap pollution from parameterized vararg type T
+</pre>
+<p>When the compiler encounters a varargs method, it translates the
+varargs formal parameter into an array. However, the Java
+programming language does not permit the creation of arrays of
+parameterized types. In the method
+<code>ArrayBuilder.addToList</code>, the compiler translates the
+varargs formal parameter <code>T... elements</code> to the formal
+parameter <code>T[] elements</code>, an array. However, because of
+type erasure, the compiler converts the varargs formal parameter to
+<code>Object[] elements</code>. Consequently, there is a
+possibility of heap pollution. See the next section, <a href=
+"#vulnerabilities">Potential Vulnerabilities of Varargs Methods
+with Non-Reifiable Formal Parameters</a>, for more information.</p>
+<p><strong>Note</strong>: The Java SE 5 and 6 compilers generate
+this warning when the <code>ArrayBuilder.addToList</code> is
+called; in this example, the warning is generated for the class
+<code>HeapPollutionExample</code>. These compilers do not generate
+the warning at the declaration site. However, the Java SE 7
+generates the warning at both the declaration site and the call
+site (unless the warnings are preempted with annotations; see
+<a href="#suppressing">Suppressing Warnings from Varargs Methods
+with Non-Reifiable Formal Parameters</a> for more information). The
+advantage of generating a warning when a compiler encounters a
+varargs method that has a non-reifiable varargs formal parameter at
+the declaration site as opposed to the call site is that there is
+only one declaration site; there are potentially many call
+sites.</p>
+<!-- **************************************** -->
+<h2><a name="vulnerabilities" id="vulnerabilities">Potential
+Vulnerabilities of Varargs Methods with Non-Reifiable Formal
+Parameters</a></h2>
+<p>The method <code>ArrayBuilder.faultyMethod</code> shows why the
+compiler warns you about these kinds of methods. The first
+statement of this method assigns the varargs formal parameter
+<code>l</code> to the <code>Object</code> array
+<code>objectArgs</code>:</p>
+<pre>
+    Object[] objectArray = l;
+</pre>
+<p>This statement can potentially introduce heap pollution. A value
+that does match the parameterized type of the varargs formal
+parameter <code>l</code> can be assigned to the variable
+<code>objectArray</code>, and thus can be assigned to
+<code>l</code>. However, the compiler does not generate an
+unchecked warning at this statement. The compiler has already
+generated a warning when it translated the varargs formal parameter
+<code>List&lt;String&gt;... l</code> to the formal parameter
+<code>List[] l</code>. This statement is valid; the variable
+<code>l</code> has the type <code>List[]</code>, which is a subtype
+of <code>Object[]</code>.</p>
+<p>Consequently, the compiler does not issue a warning or error if
+you assign a <code>List</code> object of any type to any array
+component of the <code>objectArray</code> array as shown by this
+statement:</p>
+<pre>
+    objectArray[0] = Arrays.asList(new Integer(42));
+</pre>
+<p>This statement assigns to the first array component of the
+<code>objectArray</code> array with a <code>List</code> object that
+contains one object of type <code>Integer</code>.</p>
+<p>Suppose you call the <code>ArrayBuilder.makeArray</code> method
+with the following statement:</p>
+<pre>
+    ArrayBuilder.faultyMethod(Arrays.asList("Hello!"), Arrays.asList("World!"));
+</pre>
+<p>At runtime, the JVM throws a <code>ClassCastException</code> at
+the following statement:</p>
+<pre>
+    String s = l[0].get(0);    // ClassCastException thrown here
+</pre>
+<p>The object stored in the first array component of the variable
+<code>l</code> has the type <code>List&lt;Integer&gt;</code>, but
+this statement is expecting an object of type
+<code>List&lt;String&gt;</code>.</p>
+<!-- **************************************** -->
+<h2><a name="suppressing" id="suppressing">Suppressing Warnings
+from Varargs Methods with Non-Reifiable Formal Parameters</a></h2>
+<p>If you declare a varargs method that has parameterized
+parameters, and you ensure that the body of the method does not
+throw a <code>ClassCastException</code> or other similar exception
+due to improper handling of the varargs formal parameter (as shown
+in the <code>ArrayBuilder.faultyMethod</code> method), you can
+suppress the warning that the compiler generates for these kinds of
+varargs methods by using one of the following options:</p>
+<ul>
+<li>
+<p>Add the following annotation to static and non-constructor
+method declarations:</p>
+<pre>
+@SafeVarargs
+</pre>
+<p>Unlike the <code>@SuppressWarnings</code> annotation, the
+<code>@SafeVarargs</code> annotation is a documented part of the
+method's contract; this annotation asserts that the implementation
+of the method will not improperly handle the varargs formal
+parameter.</p>
+</li>
+<li>
+<p>Add the following annotation to the method declaration:</p>
+<pre>
+@SuppressWarnings({"unchecked", "varargs"})
+</pre>
+<p>Unlike the <code>@SafeVarargs</code> annotation, the
+<code>@SuppressWarnings("varargs")</code> does not suppress
+warnings generated from the method's call site.</p>
+</li>
+<li>
+<p>Use the compiler option <code>-Xlint:varargs</code>.</p>
+</li>
+</ul>
+<p>For example, the following version of the
+<code>ArrayBuilder</code> class has two additional methods,
+<code>addToList2</code> and <code>addToList3</code>:</p>
+<pre>
+public class ArrayBuilder {
+
+  public static &lt;T&gt; void addToList (List&lt;T&gt; listArg, T... elements) {
+    for (T x : elements) {
+      listArg.add(x);
+    }
+  }
+
+  <strong>@SuppressWarnings({"unchecked", "varargs"})</strong>
+  public static &lt;T&gt; void addToList2 (List&lt;T&gt; listArg, T... elements) {
+    for (T x : elements) {
+      listArg.add(x);
+    }
+  }
+
+  <strong>@SafeVarargs</strong>
+  public static &lt;T&gt; void addToList3 (List&lt;T&gt; listArg, T... elements) {
+    for (T x : elements) {
+      listArg.add(x);
+    }
+  }
+
+  // ...
+
+}
+</pre>
+<pre>
+public class HeapPollutionExample {
+
+  // ...
+
+  public static void main(String[] args) {
+
+    // ...
+
+    ArrayBuilder.addToList(listOfStringLists, stringListA, stringListB);
+    <strong>ArrayBuilder.addToList2(listOfStringLists, stringListA, stringListB);</strong>
+    <strong>ArrayBuilder.addToList3(listOfStringLists, stringListA, stringListB);</strong>
+
+    // ...
+
+  }
+}
+</pre>
+<p>The Java compiler generates the following warnings for this
+example:</p>
+<ul>
+<li><strong><code>addToList</code></strong>:
+<ul>
+<li>At the method's declaration: <code>[unchecked] Possible heap
+pollution from parameterized vararg type T</code></li>
+<li>When the method is called: <code>[unchecked] unchecked generic
+array creation for varargs parameter of type
+List&lt;String&gt;[]</code></li>
+</ul>
+</li>
+<li><strong><code>addToList2</code></strong>: When the method is
+called (no warning is generated at the method's declaration):
+<code>[unchecked] unchecked generic array creation for varargs
+parameter of type List&lt;String&gt;[]</code></li>
+<li><strong><code>addToList3</code></strong>: No warnings are
+generated either at the method's declaration or when it is
+called.</li>
+</ul>
+<p><strong>Note</strong>: In Java SE 5 and 6, it is the
+responsibility of the programmer who calls a varargs method that
+has a non-reifiable varargs formal parameter to determine whether
+heap pollution would occur. However, if this programmer did not
+write such a method, he or she cannot easily determine this. In
+Java SE 7, it is the responsibility of the programmer who
+<em>writes</em> these kinds of varargs methods to ensure that they
+properly handle the varargs formal parameter and ensure heap
+pollution does not occur.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

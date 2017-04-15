@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- USE THIS TEMPLATE WHEN ENHANCEMENTS ARE LENGTHY; YOU THEN WILL USE A
+   SEPARATE FILE TO DOCUMENT THE ENHANCEMENTS OF EACH VERSION CURRENTLY SUPPORTED
+   -->
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Tools Enhancements in JDK 8</title>
+<meta name="collection" content="reference" />
+<link rel="stylesheet" type="text/css" href="../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Tools Enhancements in JDK 8</h1>
+
+<p><a href="index.html">JDK Tools and Utilities</a></p>
+
+<p><strong>Note</strong>: Some of the following features require a commercial license for use in production. To learn more about commercial features and how to enable them please visit <a href="http://www.oracle.com/technetwork/java/javaseproducts/">Oracle Java SE Advanced &amp; Suite Products</a>.</p>
+
+<p><b>The following enhancements were introduced in JDK 8u40:</b></p>
+
+<ul>
+  <li><p><code>java</code> tool:</p>
+    <ul>
+
+      <li><p>The <code>-XX:+CheckEndorsedAndExtDirs</code> has been added because the endorsed-standards override mechanism (<a href="https://bugs.openjdk.java.net/browse/JDK-8065675">JDK-8065675</a>) and the extension mechanism (<a href="https://bugs.openjdk.java.net/browse/JDK-8065702">JDK-8065702</a>) have been deprecated. The option helps identify any existing uses of these mechanisms and is supported in JDK 7u80 and JDK 8u40. See <a href="https://bugs.openjdk.java.net/browse/JDK-8064667">JDK-8064667</a>.</p></li>
+      
+      <li><p>Prior to JDK 8u40, if you want to use Java Flight Recorder (JFR) and create a flight recording for a particular Java application, you must specify both the <code>-XX:+UnlockCommercialFeatures</code> and <code>-XX:+FlightRecorder</code> when launching the application. In JDK 8u40, you do not have to specify these options at the command line. JFR offers a variety of ways to unlock commercial features and enable JFR during the runtime of an application. These include <code>java</code> command line options, <code>jcmd</code> diagnostic commands, and Graphical User Interface (GUI) controls within Java Mission Control. This flexibility enables you to provide the appropriate options at startup, or interact with JFR later, after the JVM is already running. See the Java Flight Recorder Runtime Guide at the <a href="https://docs.oracle.com/javacomponents/">Java Components</a> page.</p></li>
+      
+      <li><p>The option <code>-XX:StartFlightRecording=<em>parameter</em>=<em>value</em></code> has a new parameter, <code>dumponexit={true|false}</code>, which specifies whether a dump file of JFR data should be generated when the JVM terminates in a controlled manner.</p></li>
+  
+      <li><p>The options related to Restricted Transactional Memory (RTM) are no longer experimental. These options include <code>-XX:RTMAbortRatio=<em>abort_ratio</em></code>, <code>-XX:RTMRetryCount=<em>number_of_retries</em></code>, <code>-XX:+UseRTMDeopt</code>, and <code>-XX:+UseRTMLocking</code>. See <a href="https://bugs.openjdk.java.net/browse/JDK-8054376">JDK-8054376</a>.</p></li>
+
+      <li><p>Application Class Data Sharing (AppCDS) has been introduced in this update release. AppCDS extends CDS (see <a href="../guides/vm/class-data-sharing.html">Class Data Sharing</a>) to enable classes from the standard extensions directories and the application class path to be placed in the shared archive. This is a commercial feature and is no longer considered experimental (contrary to what is specified in the <code>java</code> tool documentation). See the option <code>-XX:+UseAppCDS</code> and <a href="https://bugs.openjdk.java.net/browse/JDK-8054376">JDK-8054376</a>.</p></li>
+
+      <li><p>The options <code>-XX:+ResourceManagement</code> and <code>-XX:ResourceManagementSampleInterval=<em>value</em></code> have been added. Resource Management is a commercial feature.</p></li> 
+
+      <li><p>Additional information about large pages has been added. Large Pages, also known as huge pages, are memory pages that are significantly larger than the standard memory page size. Large pages optimize processor Translation-Lookaside Buffers. The Linux options  <code>-XX:+UseHugeTLBFS</code>, <code>-XX:+UseSHM</code>, and <code>-XX:+UseTransparentHugePages</code> have been documented. See <a href="https://bugs.openjdk.java.net/browse/JDK-8040180">JDK-8040180</a>.</p></li>
+
+      <li><p>The option <code>-XX:ObjectAlignmentInBytes=<em>alignment</em></code> has been documented. See <a href="https://bugs.openjdk.java.net/browse/JDK-8040176">JDK-8040176</a>.</p></li>
+
+    </ul>
+  </li>
+  <li><p><code>jjs</code> tool:</p>
+    <ul>
+    
+      <li><p>The option <code>--optimistic-types=[true|false]</code> has been added. It enables or disables optimistic type assumptions with deoptimizing recompilation. See <a href="https://bugs.openjdk.java.net/browse/JDK-8042946">JDK-8042946</a>.</p></li>
+
+      <li><p>The option <code>--language=[es5]</code> has been added to the <code>jjs</code> tool. It specifies the ECMAScript language version. See <a href="https://bugs.openjdk.java.net/browse/JDK-8046038">JDK-8046038</a>.</p></li>     
+
+    </ul>
+  </li>
+  <li><p><code>javapackager</code> tool:</p>
+    <ul>
+
+      <li><p>New arguments are available for OS X bundlers. The <code>mac.CFBundleVersion</code> argument identifies the internal version number to be used. The <code>mac.dmg.simple</code> argument indicates if DMG customization steps that depend on executing AppleScript code are skipped. See <a href="https://bugs.openjdk.java.net/browse/JDK-8043060">JDK-8043060</a>.</p></li>
+
+    </ul>
+  </li>
+  
+  <li><p><code>jcmd</code> tool:</p>
+    <ul>
+    
+      <li><p>You can use the <code>jcmd</code> tool to dynamically interact with Java Flight Recorder (JFR) in a JVM that is already running. You can use it to unlock commercial features, enable/start/stop flight recordings, and obtain various status messages from the system. For a list of examples, see the Java Flight Recorder Runtime Guide at the <a href="https://docs.oracle.com/javacomponents/">Java Components</a> page.</p></li>
+    </ul>
+  </li>    
+  <li><p><code>jstat</code> tool:</p>
+    <ul>
+
+      <li><p>The <code>jstat</code> tool has been updated with information about compressed class space (a special part of metaspace). See <a href="https://bugs.openjdk.java.net/browse/JDK-8040079">JDK-8040079</a>.</p></li>
+
+    </ul>
+  </li>
+</ul>
+
+<p><b>The following enhancements were introduced in JDK 8u20:</b></p>
+
+<ul>
+  <li><p>The <code>javafxpackager</code> tool has been renamed to <code><a href="index.html#javapackager">javapackager</a></code>. This tool has been enhanced with new arguments for self-contained application bundlers. See <a href="https://bugs.openjdk.java.net/browse/JDK-8041516">JDK-8041516</a>.</p></li>
+  
+  <li><p>Enhancements related to the <a href="index.html#java"><code>java</code></a> launcher tool:</p>
+    <ul>
+      <li><p>Experimental JIT compiler options related to Restricted Transactional Memory (RTM) have been added. See <a href="https://bugs.openjdk.java.net/browse/JDK-8031320">JDK-8031320</a>.</p></li>
+      <li><p>Options related to string deduplication have been added. See <a href="https://bugs.openjdk.java.net/browse/JDK-8029075">JDK-8029075</a>.</p></li>
+      <li><p>Options related to Advanced Encryption Standard (AES) intrinsics have been added. See <a href="https://bugs.openjdk.java.net/browse/JDK-8034899">JDK-8034899</a>.</p></li>
+      <li><p>Rarely used combinations of garbage collection options have been deprecated. See <a href="https://bugs.openjdk.java.net/browse/JDK-8026909">JDK-8026909</a>.</p></li>
+    </ul>
+  </li>
+</ul>
+
+<p><b>The following enhancements were introduced in JDK 8:</b></p>
+<ul>
+<li>
+<p>The <code>jjs</code> command was introduced, which invokes the
+Nashorn engine either in interactive shell mode, or to interpret
+script files. For more information, see the <a href=
+"../guides/scripting/nashorn/index.html">Nashorn User's
+Guide</a>.</p>
+</li>
+<li>
+<p>The <code>java</code> command is capable of launching JavaFX
+applications, provided that the JavaFX application is packaged
+correctly. See <a href="findingclasses.html">How Classes are
+Found</a>.</p>
+</li>
+<li>
+<p>The <tt>java</tt> command man page (both nroff and HTML) has
+been completely reworked. The advanced options are now divided into
+Runtime, Compiler, Garbage Collection, and Serviceability,
+according to the area that they affect. Several previously missing
+options are now described. There is also a section for options that
+were deprecated or removed since the previous release.</p>
+</li>
+<li>
+<p>The new <tt>jdeps</tt> command-line tool allows the developer to
+analyze class files to determine package-level or class-level
+dependencies. See <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8003562">JDK-8003562</a>.</p>
+</li>
+<li>
+<p>JDK 8 provides remote access to diagnostic commands which were
+previously accessible only locally via the <tt>jcmd</tt> tool.
+Remote access is provided using the Java Management Extensions
+(JMX), so diagnostic commands are exposed to a platform MBean
+registered to the platform MBean server. The MBean is the
+<tt>com.sun.management.DiagnosticCommandMBean</tt> interface. See
+the <tt>jcmd</tt> documentation for <a href=
+"unix/jcmd.html">
+Solaris, Linux, and OS X</a> or <a href=
+"windows/jcmd.html">
+Windows</a>.<br />
+<br /></p>
+</li>
+<li>
+<p>The <code>jarsigner</code> tool contains a new option
+<code>-tsapolicyid</code> which enables you to request a signed
+time stamp from a Time Stamping Authority and attach it to a signed
+JAR file. See <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8009636">JDK-8009636</a></p>
+</li>
+<li>
+<p>You can obtain the names of the formal parameters of any method
+or constructor with the method <a href=
+"../../api/java/lang/reflect/Executable.html#getParameters()"><code>
+java.lang.reflect.Executable.getParameters</code></a>. However,
+<code>.class</code> files do not store formal parameter names by
+default. To store formal parameter names in a particular
+<code>.class</code> file, and thus enable the Reflection API to
+retrieve formal parameter names, compile the source file with the
+<code>-parameters</code> option of the <code>javac</code> compiler.
+See <!-- todojdk8 --> <!--
+<a href="http://docs.oracle.com/javase/tutorial/reflect/member/methodparameterreflection.html">Obtaining Names of Method Parameters</a> and
+-->
+<a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8004727">JDK-8004727</a>.</p>
+</li>
+<li>
+<p>The type rules for binary comparisons in the Java Language
+Specification (JLS) Section 15.21 will now be correctly enforced by
+<tt>javac</tt>. Since JDK5, <tt>javac</tt> has accepted some
+programs with Object-primitive comparisons that are incorrectly
+typed according to JLS 15.21. These comparisons will now be
+correctly identified as type errors. See <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8013357">JDK-8013357</a>.</p>
+</li>
+<li>
+<p>The <tt>apt</tt> tool and its associated API contained in the
+package <tt>com.sun.mirror</tt> have been removed in this release.
+Use the options available in the <tt><a href=
+"index.html#javac">javac</a></tt> tool and the APIs contained in
+the packages <a href=
+"../../api/javax/annotation/processing/package-summary.html"><code>javax.annotation.processing</code></a>
+and <a href=
+"../../api/javax/lang/model/package-summary.html"><code>javax.lang.model</code></a>
+to process annotations. See <a href=
+"http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7041249">JDK-7041249</a></p>
+</li>
+</ul>
+<p>For enhancements pertaining to the <tt>javadoc</tt> tool, see
+the <a href="../guides/javadoc/whatsnew-8.html">What's New</a> page
+for Javadoc.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

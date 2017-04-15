@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Manual Installation and Registration of Java Plugin for Linux</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This page describes how to install and register the Java plugin." name="description"/>
+<meta content="2016-01-06T16:14:50Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Installation Guide for OpenJDK on Solaris, Linux, OS X, and Windows, Release 8u71" name="doctitle"/>
+<meta content="Release 8u71" name="relnum"/>
+<meta content="E50307-05" name="partnum"/>
+<meta content="no_value_supplied" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Installation Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="linux_server_jre.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="mac_jdk.html">
+                Next</a><hr/>
+<div><a id="CACCAFFG" name="CACCAFFG"/>
+<h1><span>9</span> Manual Installation and Registration of Java Plugin for Linux</h1>
+<p>This page describes how to install and register the Java plugin.</p>
+<p>This page has these topics:</p>
+<ul>
+<li>
+<p><a href="#A1097908">"Plugin Installation"</a></p>
+</li>
+<li>
+<p><a href="#CACEEBDF">"Notes"</a></p>
+</li>
+</ul>
+<p>See <a href="install_overview.html#CJAGAACB">"JDK 8 and JRE 8 Installation Start Here"</a> for general information about installing JDK 8 and JRE 8.</p>
+<a id="A1097908" name="A1097908"/>
+<div>
+<h2>Plugin Installation</h2>
+<p>When you install the Java platform, the Java plugin file is included as part of that install. If you want to use Java within Firefox, you need to manually create a symbolic link from the plugin file in the release to one of the locations that Firefox expects. To make the plugin available to all users, create the link inside of the Firefox application's directory, in the <code dir="ltr">plugins</code> subdirectory. Alternatively, you can create the symbolic link in your home directory, in <code dir="ltr">~/.mozilla/plugins</code>. In the remainder of this document, the text, "<i>Firefox plugins directory</i>", implies either of these locations.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td style="text-align:left">
+<p><b>Note:</b></p>
+For Firefox version 21 and higher, you must create the symbolic link in your home directory, <code dir="ltr">~/.mozilla/plugins</code>. Beginning with Firefox version 21, creating the symbolic link in the <code dir="ltr">plugins</code> subdirectory of the Firefox application's directory is not supported.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>This release provides the Next-Generation Java plugin. If you have been using the classic plugin, see <a href="#CACEEBDF">"Notes"</a> for further information.</p>
+<p>The location of the plugin file for Linux varies according to the processor architecture of the underlying platform, as shown in the following table.</p>
+<div>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="Table shows, for each Linux processor architecture the location of the corresponding plugin." width="100%">
+<col width="29%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th id="r1c1-t3" style="text-align:left" valign="bottom">Processor Architecture</th>
+<th id="r1c2-t3" style="text-align:left" valign="bottom">Location of File</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td headers="r1c1-t3" id="r2c1-t3" style="text-align:left">32-bit</td>
+<td headers="r2c1-t3 r1c2-t3" style="text-align:left">j<code dir="ltr">re1.8.0</code><code dir="ltr"><span>version</span></code><code dir="ltr">/lib/i386/libnpjp2.so</code></td>
+</tr>
+<tr align="left" valign="top">
+<td headers="r1c1-t3" id="r3c1-t3" style="text-align:left">64-bit</td>
+<td headers="r3c1-t3 r1c2-t3" style="text-align:left"><code dir="ltr">jre1.8.0_</code><code dir="ltr"><span>version</span></code><code dir="ltr">/lib/amd64/libnpjp2.so</code></td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p>If you are using a 32-bit Firefox, you should use the 32-bit Java Plugin (from the <code dir="ltr">lib/i386</code> directory). To determine which version of Firefox you are running, launch the application, and select the menu item <b>Help</b> &gt; <b>About Mozilla Firefox</b>. At the bottom of the window is a version string line that contains either "Linux i686" (32-bit) or "Linux x86_64" (64-bit).</p>
+<p>To install the Java Plugin follow these steps:</p>
+<ol>
+<li>
+<p>Exit Firefox.</p>
+</li>
+<li>
+<p>Uninstall any previous installations of Java Plugin.</p>
+<p>Only one Java Plugin can be used at a time. When you want to use a different plugin, or version of a plugin, remove the symbolic links to any other versions and create a fresh symbolic link to the new one.</p>
+<p>Remove the symbolic links (or move them to another directory) to <code dir="ltr">javaplugin-oji.so</code> and <code dir="ltr">libnpjp2.so</code> from the Firefox <code dir="ltr">plugins</code> directory.</p>
+</li>
+<li>
+<p>Create a symbolic link to the Java Plugin in the Firefox <code dir="ltr">plugins</code> directory.</p>
+<p>For a 32-bit plugin:</p>
+<pre dir="ltr" xml:space="preserve">
+$ cd  <i>Firefox</i>/plugins
+$ ln -s <i>JRE</i>/lib/i386/libnpjp2.so . 
+</pre>
+<p>For a 64-bit plugin:</p>
+<pre dir="ltr" xml:space="preserve">
+$ cd <i>Firefox</i>/plugins
+$ ln -s <i>JRE</i>/lib/amd64/libnpjp2.so .
+
+</pre></li>
+<li>
+<p>Start the Firefox Browser.</p>
+</li>
+<li>
+<p>Type <code dir="ltr">about:plugins</code> in the <span>Location</span> bar to confirm that the Java Plugin is loaded. Alternatively, click the <b>Tools</b> menu to confirm that Java Console is there.</p>
+</li>
+</ol>
+</div>
+
+<a id="CACEEBDF" name="CACEEBDF"/>
+<div>
+<h2>Notes</h2>
+<p>The classic plugin file was located here:</p>
+<pre dir="ltr" xml:space="preserve">
+<i>JRE</i>/plugin/i386/javaplugin-oji.so
+</pre>
+<p>This file should no longer be used and all symbolic links to it should be removed.</p>
+<p>See <code dir="ltr"><a href="http://www.oracle.com/technetwork/java/javase/certconfig-2095354.html#browsers">http://www.oracle.com/technetwork/java/javase/certconfig-2095354.html#browsers</a></code> for a list of supported browsers.</p>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="linux_server_jre.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="mac_jdk.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

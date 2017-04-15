@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Getting Started with Java IDL: Developing a Client
+Application</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Getting Started with Java IDL: Developing a
+Client Application</h1>
+<p>This topic introduces the basics of writing a CORBA <a href=
+"../jidlGlossary.html#client">client</a> application. Included in
+this lesson are:</p>
+<ol>
+<li><a href="#create">Creating HelloClient.java</a></li>
+<li><a href="#understand">Understanding HelloClient.java</a></li>
+<li><a href="#compile">Compiling HelloClient.java</a></li>
+</ol>
+<!--********************************************-->
+<h2><a name="create" id="create">Creating HelloClient.java</a></h2>
+<p>To create <tt>HelloClient.java</tt>,</p>
+<ol>
+<li>Start your text editor and create a file named
+<tt>HelloClient.java</tt> in your main project directory,
+<tt>Hello</tt>.</li>
+<li>Enter the following code for <tt>HelloClient.java</tt> in the
+text file. The following section, <a href=
+"#understand">Understanding HelloClient.java</a>, explains each
+line of code in some detail.
+<p><em><strong>HelloClient.java</strong></em></p>
+<pre class="codeblock">
+// <a href="../examplelicense.html">Copyright and License</a> 
+&nbsp;
+import HelloApp.*;
+import org.omg.CosNaming.*;
+import org.omg.CosNaming.NamingContextPackage.*;
+import org.omg.CORBA.*;
+
+public class HelloClient
+{
+  static Hello helloImpl;
+
+  public static void main(String args[])
+    {
+      try{
+        // create and initialize the ORB
+        ORB orb = ORB.init(args, null);
+
+        // get the root naming context
+        org.omg.CORBA.Object objRef = 
+            orb.resolve_initial_references("NameService");
+        // Use NamingContextExt instead of NamingContext. This is 
+        // part of the Interoperable naming Service.  
+        NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
+ 
+        // resolve the Object Reference in Naming
+        String name = "Hello";
+        helloImpl = HelloHelper.narrow(ncRef.resolve_str(name));
+
+        System.out.println("Obtained a handle on server object: " + helloImpl);
+        System.out.println(helloImpl.sayHello());
+        helloImpl.shutdown();
+
+        } catch (Exception e) {
+          System.out.println("ERROR : " + e) ;
+          e.printStackTrace(System.out);
+          }
+    }
+
+}
+&nbsp;
+</pre></li>
+<li>Save and close <tt>HelloClient.java</tt>.</li>
+</ol>
+<h2><a name="understand" id="understand">Understanding
+HelloClient.java</a></h2>
+<p>This section explains each line of <tt>HelloClient.java</tt>,
+describing what the code does, as well as why it is needed for this
+application.</p>
+<h3><a name="setup" id="setup">Performing Basic Setup</a></h3>
+<p>The basic shell of a CORBA client is the same as many Java
+applications:&nbsp;You import required library packages, declare
+the application class, define a <tt>main</tt> method, and handle
+exceptions.</p>
+<h4><a name="import" id="import">Importing Required
+Packages</a></h4>
+<p>First, we import the packages required for the client class:</p>
+<pre class="codeblock">
+import HelloApp.*; // the package containing our stubs
+import org.omg.CosNaming.*; // HelloClient will use the Naming Service
+import org.omg.CosNaming.NamingContextPackage.*;
+import org.omg.CORBA.*; // All CORBA applications need these classes
+</pre>
+<h4><a name="class" id="class">Declaring the Client Class</a></h4>
+<p>The next step is to declare the client class:</p>
+<pre class="codeblock">
+public class HelloClient
+{
+  // The main() method goes here.
+}
+</pre>
+<h4><a name="main" id="main">Defining a <tt>main()</tt>
+Method</a></h4>
+<p>Every Java application needs a <tt>main()</tt> method. It is
+declared within the scope of the <tt>HelloClient</tt> class, as
+follows:</p>
+<pre class="codeblock">
+  public static void main(String args[])
+  {
+    // The try-catch block goes here.
+  }
+</pre>
+<h4><a name="except" id="except">Handling CORBA System
+Exceptions</a></h4>
+<p>Because all CORBA programs can throw CORBA system exceptions at
+runtime, all of the <tt>main()</tt> functionality is placed within
+a try-catch block. CORBA programs throw system exceptions whenever
+trouble occurs during any of the processes (marshaling,
+unmarshaling, upcall) involved in invocation.</p>
+<p>Our exception handler simply prints the name of the exception
+and its stack trace to standard output so you can see what kind of
+thing has gone wrong.</p>
+<p>The try-catch block is set up inside <tt>main()</tt>,</p>
+<pre class="codeblock">
+    try{
+    
+      // Add the rest of the HelloClient code here.
+    
+    } catch(Exception e) {
+        System.out.println("ERROR : " + e);
+        e.printStackTrace(System.out);
+      }
+</pre>
+<!--******************************************-->
+<h3><a name="orb" id="orb">Creating an ORB Object</a></h3>
+<p>A CORBA client needs a local ORB object to perform all of its
+marshaling and <a href="../jidlGlossary.html#IIOP">IIOP</a> work.
+Every client instantiates an <tt>org.omg.CORBA.ORB</tt> object and
+<a href="../jidlInitialization.html">initializes</a> it by passing
+to the object certain information about itself.</p>
+<p>The ORB variable is declared and initialized inside the
+try-catch block.</p>
+<pre class="codeblock">
+        ORB orb = ORB.init(args, null);
+</pre>
+<p>The call to the ORB's <tt>init()</tt> method passes in your
+application's command line arguments, allowing you to set certain
+properties at runtime. 
+<!--**********************************************--></p>
+<h3><a name="hello" id="hello">Finding the Hello Server</a></h3>
+<p>Now that the application has an ORB, it can ask the ORB to
+locate the actual service it needs, in this case the Hello server.
+There are a number of ways for a CORBA client to get an initial
+object reference; our client application will use the COS Naming
+Service specified by OMG and provided with Java&nbsp;IDL. See
+<a href="GSstring.html">Using Stringified Object References</a> for
+information on how to get an initial object reference when there is
+no naming service available.</p>
+<p>The two options for Naming Services are <tt>orbd</tt>
+(<a href="../../../tools/unix/orbd.html">Solaris, Linux, or Mac OS X</a> or
+<a href="../../../tools/windows/orbd.html">Windows</a>), which
+is a daemon process containing a Bootstrap Service, a Transient
+Naming Service, a Persistent Naming Service, and a Server Manager,
+and <tt><a href="../jidlNaming.html">tnameserv</a></tt>, a
+transient naming service. This example uses <tt>orbd</tt>.</p>
+<h4><a name="rootnc" id="rootnc">Obtaining the Initial Naming
+Context</a></h4>
+<p>The first step in using the naming service is to get the
+<a href="../jidlGlossary.html#initial__naming__context">initial
+naming context</a>. In the try-catch block, below your ORB
+initialization, you call <tt>orb.resolve_initial_references()</tt>
+to get an object reference to the name server:</p>
+<pre class="codeblock">
+        org.omg.CORBA.Object objRef = 
+            orb.resolve_initial_references("NameService");
+</pre>
+<p>The string "NameService" is defined for all CORBA ORBs. When you
+pass in that string, the ORB returns the initial naming context, an
+object reference to the name service. The string "NameService"
+indicates:</p>
+<ul>
+<li>The persistent naming service will be used when using ORBD as
+the naming service.</li>
+<li>The transient naming service will be used when using
+<tt>tnameserv</tt> as the naming service.</li>
+</ul>
+<p>The string "TNameService" indicates that the transient naming
+service will be used when ORBD is the naming service. In this
+example, we are using the persistent naming service that is a part
+of <tt>orbd</tt>.</p>
+<h4><a name="narrow" id="narrow">Narrowing the Object
+Reference</a></h4>
+<p>As with all CORBA object references, <tt>objRef</tt> is a
+generic CORBA object. To use it as a <tt>NamingContextExt</tt>
+object, you must narrow it to its proper type.</p>
+<pre class="codeblock">
+        NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
+</pre>
+<p>Here we see the use of an <tt>idlj</tt>-generated helper class,
+similar in function to <tt>HelloHelper</tt>. The <tt>ncRef</tt>
+object is now an <tt>org.omg.CosNaming.NamingContextExt</tt> and
+you can use it to access the naming service and find other
+services. You will do that in the next step.</p>
+<p>The <tt>NamingContextExt</tt> object is new to J2SE v.1.4, and
+is part of the <a href="../INStutorial.html">Interoperable Naming
+Service</a>.</p>
+<h4><a name="hello__1" id="hello__1">Resolve the Object Reference
+in Naming</a></h4>
+<p>To publish a reference in the Naming Service to the
+<tt>Hello</tt> object implementing the <tt>Hello</tt> interface,
+you first need an identifying string for the <tt>Hello</tt>
+object.</p>
+<pre class="codeblock">
+      String name = "Hello";
+</pre>
+<p>Finally, we pass <tt>name</tt> to the naming service's
+<tt>resolve_str()</tt> method to get an object reference to the
+Hello server and narrow it to a <tt>Hello</tt> object:</p>
+<pre class="codeblock">
+        helloImpl = HelloHelper.narrow(ncRef.resolve-str(name));
+        System.out.println("Obtained a handle on server object: " + helloImpl);     
+</pre>
+<p>Here you see the <tt>HelloHelper</tt> helper class at work. The
+<tt>resolve-str()</tt> method returns a generic CORBA object as you
+saw above when locating the name service itself. Therefore, you
+immediately narrow it to a <tt>Hello</tt> object, which is the
+object reference you need to perform the rest of your work. Then,
+you send a message to the screen confirming that the object
+reference has been obtained. 
+<!--**************************************************--></p>
+<h3><a name="invoke" id="invoke">Invoking the <tt>sayHello()</tt>
+Operation</a></h3>
+<p>CORBA invocations look like a method call on a local object. The
+complications of marshaling parameters to the wire, routing them to
+the server-side ORB, unmarshaling, and placing the upcall to the
+server method are completely transparent to the client programmer.
+Because so much is done for you by generated code, invocation is
+really the easiest part of CORBA programming.</p>
+<p>Finally, we print the results of the invocation to standard
+output and explicitly shutdown the ORB:</p>
+<pre class="codeblock">
+        System.out.println(helloImpl.sayHello());
+        helloImpl.shutdown();
+</pre>
+<!--**************************************************-->
+<h2><a name="compile" id="compile">Compiling
+HelloClient.java</a></h2>
+<p>Now we will compile <tt>HelloClient.java</tt> so that we can
+correct any errors before continuing with this tutorial.</p>
+<p>Windows users note that you should substitute backslashes (\)
+for the slashes (/) in all paths in this document.</p>
+<p>To compile <tt>HelloClient.java</tt>,</p>
+<ol>
+<li>Change to the <tt>Hello</tt> directory.</li>
+<li>Run the Java compiler on <tt>HelloClient.java</tt>:
+<pre class="codeblock">
+javac HelloClient.java HelloApp/*.java
+</pre></li>
+<li>Correct any errors in your file and recompile if
+necessary.</li>
+<li>The <tt>HelloClient.class</tt> is generated to the
+<tt>Hello</tt> directory.</li>
+</ol>
+<h3><a name="running" id="running">Running the Client
+Application</a></h3>
+Running the Hello World application is covered in <a href=
+"GScompile.html">Running the Hello World Application</a>. 
+<!--**************************************-->
+<h2><a name="information" id="information">For More
+Information</a></h2>
+<dl>
+<dt><a href="../jidlClients.html">Developing Clients</a></dt>
+<dd>Covers topics of interest to CORBA client programmers</dd>
+<dt><a href="../jidlExceptions.html#systemexceptions">Exceptions:
+System Exceptions</a></dt>
+<dd>Explains how CORBA system exceptions work and provides details
+on the minor codes of Java&nbsp;IDL's system exceptions</dd>
+<dt><a href="../jidlNaming.html">Naming Service</a></dt>
+<dd>Covers the COS Naming Service in greater detail</dd>
+</dl>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

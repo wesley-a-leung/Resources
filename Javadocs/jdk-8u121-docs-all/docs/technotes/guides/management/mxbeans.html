@@ -1,0 +1,638 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<meta http-equiv="Content-type" content=
+"text/html; charset=utf-8" />
+<title>Using the Platform MBean Server and Platform MXBeans - Java
+SE Monitoring and Management Guide</title>
+<meta name="robots" content="index,follow" />
+<meta name="robots" content="index,follow" />
+<meta name="date" content="2006-10-01" />
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%"
+summary="">
+<tr>
+<td headers="h1" colspan="5"></td>
+</tr>
+<tr>
+<td headers="h1"></td>
+<td headers="h2" style="width: 60%">&nbsp;</td>
+<td headers="h3"><a href="jconsole.html"><img style="padding-right: 3px" src=
+"graphics/prev.gif" border="0" alt="previous" />Previous</a></td>
+<td headers="h4"><a href="toc.html">Contents</a></td>
+<td headers="h5"></td>
+<td headers="h6"><a href="snmp.html">Next<img style="padding-left: 3px" src=
+"graphics/next.gif" border="0" alt="next" /></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+<table summary="">
+<tr>
+<td width="100%" valign="top"><!--startindex-->
+<div class="maincontent"><a name="mxbeans" id=
+"mxbeans"></a>Chapter&nbsp;4
+<h1>Using the Platform MBean Server and Platform MXBeans</h1>
+<p>This chapter introduces the MBean server and the MXBeans that
+are provided as part of the Java Platform, Standard Edition (Java
+SE platform), which can be used for monitoring and management
+purposes. Java Management Extensions (JMX) technology MBeans and
+MBean servers were introduced briefly in <a href=
+"overview.html">Chapter&nbsp;1, Overview of Java SE Monitoring and
+Management</a>. More information about the JMX technology can be
+found in the <a href="../jmx/index.html">
+JMX Technology documentation</a> for the Java SE platform.</p>
+<a name="gentextid-1746" id="gentextid-1746"></a>
+<h2>Using the Platform MBean Server</h2>
+<p>An MBean server is a repository of MBeans that provides
+management applications access to MBeans. Applications do not
+access MBeans directly, but instead access them through the MBean
+server via their unique <tt>ObjectName</tt>. An MBean server
+implements the interface <tt>javax.management.MBeanServer</tt>.&nbsp;</p>
+<p>The <i>platform MBean server</i> was introduced in the Java SE 
+5.0, and is an MBean server that is
+built into the Java Virtual Machine (Java VM). The platform MBean
+server can be shared by all managed components that are running in
+the Java VM. You access the platform MBean server using the
+<tt>java.lang.management.ManagementFactory</tt> method
+<tt>getPlatformMBeanServer</tt>. Of course, you can also create
+your own MBean server using the
+<tt>javax.management.MBeanServerFactory</tt> class. However, there
+is generally no need for more than one MBean server, so using the
+platform MBean server is recommended.</p>
+<a name="gdfbj" id="gdfbj"></a>
+<h2>Accessing Platform MXBeans</h2>
+<p>A <i>platform MXBean</i>, is an MBean for monitoring and
+managing the Java VM. Each MXBean encapsulates a part of the VM
+functionality. A full list of the MXBeans that are provided with
+the platform is provided in <a href=
+"overview.html#gdeuk">Table&nbsp;1-1</a> in <a href=
+"overview.html">Chapter&nbsp;1, Overview of Java SE Monitoring and
+Management</a>.</p>
+<p>A management application can access platform MXBeans in three
+different ways.</p>
+<ul>
+<li>
+<p>Direct access, via the <tt>ManagementFactory</tt> class.</p>
+</li>
+<li>
+<p>Direct access, via an MXBean proxy.</p>
+</li>
+<li>
+<p>Indirect access, via the <tt>MBeanServerConnection</tt>
+class.</p>
+</li>
+</ul>
+<p>These three ways of accessing the platform MXBeans are described
+in the next three sections.</p>
+<a name="gdfap" id="gdfap"></a>
+<h3>Accessing Platform MXBeans via the <tt>ManagementFactory</tt>
+Class</h3>
+<p>An application can make direct calls to the methods of a
+platform MXBean that is running in the same Java VM as itself. To
+make direct calls, you can use the static methods of the
+<tt>ManagementFactory</tt> class. <tt>ManagementFactory</tt> has
+accessor methods for each of the different platform MXBeans, such
+as, <tt>getClassLoadingMXBean()</tt>,
+<tt>getGarbageCollectorMXBeans()</tt>, <tt>getRuntimeMXBean()</tt>,
+and so on. In cases where there are more than one platform MXBean,
+the method returns a list of the platform MXBeans found.</p>
+<p>For example, <a href="#gdfar">Example&nbsp;4-1</a> uses the
+static method of <tt>ManagementFactory</tt> to get the platform
+MXBean <tt>RuntimeMXBean</tt>, and then gets the vendor name from
+the platform MXBean.</p>
+<a name="gdfar" id="gdfar"></a>Example&nbsp;4-1 Accessing a
+Platform MXBean via the <tt>ManagementFactory</tt> Class
+<pre class="codeblock">
+RuntimeMXBean mxbean = ManagementFactory.getRuntimeMXBean();
+String vendor = mxbean.getVmVendor(); 
+</pre>
+<a name="gdfaz" id="gdfaz"></a>
+<h3>Accessing Platform MXBeans via an MXBean Proxy</h3>
+<p>An application can also call platform MXBean methods via an
+MXBean proxy. To do so, you must construct an MXBean proxy instance
+that forwards the method calls to a given MBean server by calling
+the static method
+<tt>ManagementFactory.newPlatformMXBeanProxy()</tt>. An application
+typically constructs a proxy to obtain remote access to a platform
+MXBean of another Java VM.</p>
+<p>For example, <a href="#gdfby">Example&nbsp;4-2</a> performs
+exactly the same operation as <a href=
+"#gdfar">Example&nbsp;4-1</a>, but this time uses an MXBean
+proxy.</p>
+<a name="gdfby" id="gdfby"></a>Example&nbsp;4-2 Accessing a
+Platform MXBean via an MXBean Proxy
+<pre class="codeblock">
+MBeanServerConnection mbs;
+...
+// Get a MBean proxy for RuntimeMXBean interface
+RuntimeMXBean proxy =
+    ManagementFactory.newPlatformMXBeanProxy(mbs,
+                                             ManagementFactory.RUNTIME_MXBEAN_NAME,
+                                             RuntimeMXBean.class);
+// Get standard attribute "VmVendor"
+String vendor = proxy.getVmVendor();
+</pre>
+<a name="gdfao" id="gdfao"></a>
+<h3>Accessing Platform MXBeans via the
+<tt>MBeanServerConnection</tt> Class</h3>
+<p>An application can indirectly call platform MXBean methods
+through an <tt>MBeanServerConnection</tt> that connects to the
+platform MBean server of another running Java VM. You use the
+<tt>MBeanServerConnection</tt> class's <tt>getAttribute()</tt>
+method to get an attribute of a platform MXBean, providing the
+MBean's <tt>ObjectName</tt> and the attribute name as
+parameters.</p>
+<p>For example, <a href="#gdfas">Example&nbsp;4-3</a> performs the
+same job as <a href="#gdfar">Example&nbsp;4-1</a> and <a href=
+"#gdfby">Example&nbsp;4-2</a>, but uses an indirect call through
+<tt>MBeanServerConnection</tt>.</p>
+<a name="gdfas" id="gdfas"></a>Example&nbsp;4-3 Accessing a
+Platform MXBean via the <tt>MBeanServerConnection</tt> Class
+<pre class="codeblock">
+MBeanServerConnection mbs;
+...
+try {
+  ObjectName oname = new ObjectName(ManagementFactory.RUNTIME_MXBEAN_NAME);
+  // Get standard attribute "VmVendor"
+  String vendor = (String) mbs.getAttribute(oname, "VmVendor");
+} catch (....) {
+  // Catch the exceptions thrown by ObjectName constructor
+  // and MBeanServer.getAttribute method
+  ...
+}
+</pre>
+<a name="gdfbk" id="gdfbk"></a>
+<h2>Using Oracle JDK's Platform Extension</h2>
+<p>Java VMs can extend the management interface by defining
+interfaces for platform-specific measurements and management
+operations. The static factory methods in the
+<tt>ManagementFactory</tt> class will return the MBeans with the
+platform extension.</p>
+<p>The <tt>com.sun.management</tt> package contains Oracle JDK's platform extensions. The following sections provide examples of how to access a platform-specific attribute from Oracle JDK's implementation of the <tt>OperatingSystemMXBean</tt>.</p>
+<a name="gdfbt" id="gdfbt"></a>
+<h3>Accessing MXBean Attributes Directly</h3>
+<p><a href="#gdfcf">Example&nbsp;4-4</a> illustrates direct access
+to one of Oracle JDK's MXBean interfaces.</p>
+<a name="gdfcf" id="gdfcf"></a>Example&nbsp;4-4 Accessing an MXBean
+Attribute Directly
+<pre class="codeblock">
+com.sun.management.OperatingSystemMXBean mxbean =
+  (com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+
+// Get the number of processors
+int numProcessors = mxbean.getAvailableProcessors();
+
+// Get the Oracle JDK-specific attribute Process CPU time
+long cpuTime = mxbean.getProcessCpuTime();
+</pre>
+<a name="gdfcb" id="gdfcb"></a>
+<h3>Accessing MXBean Attributes via
+<tt>MBeanServerConnection</tt></h3>
+<p><a href="#gdfbq">Example&nbsp;4-5</a> illustrates access to one
+of Oracle JDK's MXBean interfaces via the
+<tt>MBeanServerConnection</tt> class.</p>
+<a name="gdfbq" id="gdfbq"></a>Example&nbsp;4-5 Accessing an MXBean
+Attribute via <tt>MBeanServerConnection</tt>
+<pre class="codeblock">
+MBeanServerConnection mbs;
+
+// Connect to a running Java VM (or itself) and get MBeanServerConnection
+// that has the MXBeans registered in it
+...
+
+try {
+    // Assuming the OperatingSystem MXBean has been registered in mbs
+    ObjectName oname = new ObjectName(ManagementFactory.OPERATING_SYSTEM_MXBEAN_NAME);
+
+    // Get standard attribute "Name"
+    String vendor = (String) mbs.getAttribute(oname, "Name");
+
+    // Check if this MXBean contains Oracle JDK's extension
+    if (mbs.isInstanceOf(oname, "com.sun.management.OperatingSystemMXBean")) {
+        // Get platform-specific attribute "ProcessCpuTime"
+        long cpuTime = (Long) mbs.getAttribute(oname, "ProcessCpuTime");
+    }
+} catch (....) {
+    // Catch the exceptions thrown by ObjectName constructor
+    // and MBeanServer methods
+    ...
+}
+</pre>
+<a name="gdfbw" id="gdfbw"></a>
+<h2>Monitoring Thread Contention and CPU Time</h2>
+<p>The <tt>ThreadMXBean</tt> platform MXBean provides support for
+monitoring thread contention and thread Central Processing Unit
+(CPU) time.</p>
+<p>The Oracle JDK's HotSpot VM supports thread contention monitoring. You
+use the
+<tt>ThreadMXBean.isThreadContentionMonitoringSupported()</tt>
+method to determine if a Java VM supports thread contention
+monitoring. Thread contention monitoring is disabled by default.
+Use the <tt>setThreadContentionMonitoringEnabled()</tt> method to
+enable it.</p>
+<p>The Oracle JDK's HotSpot VM supports the measurement of thread CPU time
+on most platforms. The CPU time provided by this interface has
+nanosecond precision but not necessarily nanosecond accuracy.</p>
+<p>You use the <tt>isThreadCpuTimeSupported()</tt> method to
+determine if a Java VM supports the measurement of the CPU time for
+any thread. You use <tt>isCurrentThreadCpuTimeSupported()</tt> to
+determine if a Java VM supports the measurement of the CPU time for
+the current thread. A Java VM that supports CPU time measurement
+for any thread will also support that for the current thread.</p>
+<p>A Java VM can disable thread CPU time measurement. You use the
+<tt>isThreadCpuTimeEnabled()</tt> method to determine if thread CPU
+time measurement is enabled . You use the
+<tt>setThreadCpuTimeEnabled()</tt> method to enable or disable the
+measurement of thread CPU time.</p>
+<a name="gdgsw" id="gdgsw"></a>
+<h2>Managing the Operating System</h2>
+<p>The <tt>OperatingSystem</tt> platform MXBean allows you to
+access certain operating system resource information, such as the
+following.</p>
+<ul>
+<li>
+<p>Process CPU time.</p>
+</li>
+<li>
+<p>Amount of total and free physical memory.</p>
+</li>
+<li>
+<p>Amount of committed virtual memory (that is, the amount of
+virtual memory guaranteed to be available to the running
+process).</p>
+</li>
+<li>
+<p>Amount of total and free swap space.</p>
+</li>
+<li>
+<p>Number of open file descriptors (only for Solaris, Linux, or Mac OS X platforms).</p>
+</li>
+</ul>
+<p>When the Operating System MXBean in the MBeans tab is selected
+in JConsole, you see all the attributes and operations including
+the platform extension. You can monitor the changes of a numerical
+attribute over time by double-clicking the value field of the
+attribute.</p>
+<a name="gdeul" id="gdeul"></a>
+<h2>Logging Management</h2>
+<p>The Java SE platform provides a special MXBean for logging
+purposes, the <tt>LoggingMXBean</tt> interface.</p>
+<p>The <tt>LoggingMXBean</tt> enables you to perform the following
+tasks.</p>
+<ul>
+<li>
+<p>Get the name of the log level associated with the specified
+logger.</p>
+</li>
+<li>
+<p>Get the list of currently registered loggers.</p>
+</li>
+<li>
+<p>Get the name of the parent for the specified logger.</p>
+</li>
+<li>
+<p>Set the specified logger to the specified new level.</p>
+</li>
+</ul>
+<p>The unique <tt>ObjectName</tt> of the <tt>LoggingMXBean</tt> is
+<tt>java.util.logging:type=Logging</tt>. This object name is stored
+in <tt>LogManager.LOGGING_MXBEAN_NAME</tt>.</p>
+<p>There is a single global instance of the <tt>LoggingMXBean</tt>,
+which you can get by calling
+<tt>LogManager.getLoggingMXBean()</tt>.</p>
+<p>The <tt>Logging</tt> MXBean defines a <tt>LoggerNames</tt>
+attribute describing the list of logger names. To find the list of
+loggers in your application, you can select the Logging MXBean
+under the <tt>java.util.logging</tt> domain in the MBeans tab, and
+double-click on the value field of the <tt>LoggerNames</tt>
+attribute. The Logging MXBean also supports two operations.</p>
+<ul>
+<li>
+<p><tt>getLoggerLevel</tt>: Returns the log level of a given
+logger.</p>
+</li>
+<li>
+<p><tt>setLoggerLevel</tt>: Sets the log level of a given logger to
+a new level.</p>
+</li>
+</ul>
+<p>These operations take a logger name as the first parameter. To
+change the level of a logger, enter the logger name in the first
+parameter and the name of the level it should be set to in the
+second parameter of the <tt>setLoggerLevel</tt> operation.</p>
+<a name="gdfba" id="gdfba"></a>
+<h2>Detecting Low Memory</h2>
+<p>Memory use is an important attribute of the memory system. It
+can be indicative of the following problems.</p>
+<ul>
+<li>
+<p>Excessive memory consumption by an application.</p>
+</li>
+<li>
+<p>An excessive workload imposed on the automatic memory management
+system.</p>
+</li>
+<li>
+<p>Potential memory leakages.</p>
+</li>
+</ul>
+<p>There are two kinds of memory thresholds you can use to detect
+low memory conditions: a <i>usage threshold</i> and a <i>collection
+usage threshold</i>. You can detect low memory conditions using
+either of these thresholds with <i>polling</i> or <i>threshold
+notification</i>. All these concepts are described in the next
+sections.</p>
+<a name="gdfbx" id="gdfbx"></a>
+<h3>Memory Thresholds</h3>
+<p>A memory pool can have two kinds of memory thresholds: a usage
+threshold and a collection usage threshold. Either one of these
+thresholds may not be supported by a particular memory pool. The
+values for the usage threshold and collection usage threshold can
+both be set using the MBeans tab in JConsole.</p>
+<a name="gdfav" id="gdfav"></a>
+<h4>Usage Threshold</h4>
+<p>The usage threshold is a manageable attribute of some memory
+pools. It enables you to monitor memory use with a low overhead.
+Setting the threshold to a positive value enables a memory pool to
+perform usage threshold checking. Setting the usage threshold to
+zero disables usage threshold checking. The default value is
+supplied by the Java VM.</p>
+<p>A Java VM performs usage threshold checking on a memory pool at
+the most appropriate time, typically during garbage collection.
+Each memory pool increments a usage threshold count whenever the
+usage crosses the threshold.</p>
+<p>You use the <tt>isUsageThresholdSupported()</tt> method to
+determine whether a memory pool supports a usage threshold, since a
+usage threshold is not appropriate for some memory pools. For
+example, in a generational garbage collector (such as the one in
+the HotSpot VM; see <a href="jconsole.html#gddzt">Garbage
+Collection</a> in <a href="jconsole.html">Chapter&nbsp;3, Using
+JConsole</a>), most of the objects are allocated in the young
+generation, from the Eden memory pool. The Eden pool is designed to
+be filled up. Garbage collecting the Eden memory pool will free
+most of its memory space since it is expected to contain mostly
+short-lived objects that are unreachable at garbage collection
+time. So, it is not appropriate for the Eden memory pool to support
+a usage threshold.</p>
+<a name="gdfbu" id="gdfbu"></a>
+<h4>Collection Usage Threshold</h4>
+<p>The collection usage threshold is a manageable attribute of some
+garbage-collected memory pools. After a Java VM has performed
+garbage collection on a memory pool, some memory in the pool will
+still be in use. The collection usage threshold allows you to set a
+value for this memory. You use the
+<tt>isCollectionUsageThresholdSupported()</tt> method of
+<tt>MemoryPoolMXBean</tt> to determine if the pool supports a
+collection usage threshold.</p>
+<p>A Java VM may check the collection usage threshold on a memory
+pool when it performs garbage collection. Set the collection usage
+threshold to a positive value to enable checking. Set the
+collection usage threshold to zero (the default) to disable
+checking.</p>
+<p>The usage threshold and collection usage threshold can be set in
+the MBeans tab of JConsole.</p>
+<a name="gdfvy" id="gdfvy"></a>
+<h4>Memory MXBean</h4>
+<p>The various memory thresholds can be managed via the platform
+<tt>MemoryMXBean</tt>. The <tt>MemoryMXBean</tt> defines the
+following four attributes.</p>
+<ul>
+<li>
+<p><tt>HeapMemoryUsage</tt>: A read-only attribute describing the
+current heap memory usage.</p>
+</li>
+<li>
+<p><tt>NonHeapMemoryUsage</tt>: A read-only attribute describing
+non-heap memory usage.</p>
+</li>
+<li>
+<p><tt>ObjectPendingFinalizationCount</tt>: A read-only attribute
+describing the number of objects pending for finalization.</p>
+</li>
+<li>
+<p><tt>Verbose</tt>: A boolean attribute describing the Garbage
+Collection (GC) verbose tracing setting. This can be set
+dynamically. The GC verbose traces will be displayed at the
+location specified when you start the Java VM. The default location
+for GC verbose output of the Hotspot VM is <tt>stdout</tt>.</p>
+</li>
+</ul>
+<p>The Memory MXBean supports one operation, <tt>gc</tt>, for
+explicit garbage collection requests.</p>
+<p>Details of the Memory MXBean interface are defined in the
+<tt>java.lang.management.MemoryMXBean</tt> specification.</p>
+<a name="gdgrk" id="gdgrk"></a>
+<h4>Memory Pool MXBean</h4>
+<p>The <tt>MemoryPoolMXBean</tt> platform MXBean defines a set of
+operations to manage memory thresholds.</p>
+<ul>
+<li>
+<p><tt>getUsageThreshold()</tt></p>
+</li>
+<li>
+<p><tt>setUsageThreshold(long threshold)</tt></p>
+</li>
+<li>
+<p><tt>isUsageThresholdExceeded()</tt></p>
+</li>
+<li>
+<p><tt>isUsageThresholdSupported()</tt></p>
+</li>
+<li>
+<p><tt>getCollectionUsageThreshold()</tt></p>
+</li>
+<li>
+<p><tt>setCollectionUsageThreshold(long threshold)</tt></p>
+</li>
+<li>
+<p><tt>isCollectionUsageThresholdSupported()</tt></p>
+</li>
+<li>
+<p><tt>isCollectionUsageThresholdExceeded()</tt></p>
+</li>
+</ul>
+<p>Each memory pool may have two kinds of memory thresholds for low
+memory detection support: a usage threshold and a collection usage
+threshold. Either one of these thresholds might not be supported by
+a particular memory pool. For more information, see the API
+reference documentation for the <tt>MemoryPoolMXBean</tt>
+class.</p>
+<a name="gdfbv" id="gdfbv"></a>
+<h3>Polling</h3>
+<p>An application can continuously monitor its memory usage by
+calling either the <tt>getUsage()</tt> method for all memory pools
+or the <tt>isUsageThresholdExceeded()</tt> method for memory pools
+that support a usage threshold.</p>
+<p><a href="#gdfay">Example&nbsp;4-6</a> has a thread dedicated to
+task distribution and processing. At every interval, it determines
+whether it should receive and process new tasks based on its memory
+usage. If the memory usage exceeds its usage threshold, it
+redistributes outstanding tasks to other VMs and stops receiving
+new tasks until the memory usage returns below the threshold.</p>
+<a name="gdfay" id="gdfay"></a>Example&nbsp;4-6 Using Polling
+<pre class="codeblock">
+pool.setUsageThreshold(myThreshold);
+....
+boolean lowMemory = false;
+while (true) {
+  if (pool.isUsageThresholdExceeded()) {
+    lowMemory = true;
+    redistributeTasks();  // redistribute tasks to other VMs
+    stopReceivingTasks();  // stop receiving new tasks
+  } else {
+    if (lowMemory) { // resume receiving tasks
+      lowMemory = false;
+      resumeReceivingTasks();
+    }
+    // processing outstanding task
+    ...
+  }
+  // sleep for sometime
+  try {
+    Thread.sleep(sometime);
+  } catch (InterruptedException e) {
+    ...
+  }
+}      
+</pre>
+<p><a href="#gdfay">Example&nbsp;4-6</a> does not differentiate the
+case in which the memory usage has temporarily dropped below the
+usage threshold from the case in which the memory usage remains
+above the threshold between two iterations. You can use the usage
+threshold count returned by <tt>getUsageThresholdCount()</tt> to
+determine if the memory usage has returned below the threshold
+between two polls.</p>
+<p>To test the collection usage threshold instead, you use the
+<tt>isCollectionUsageThresholdSupported()</tt>,
+<tt>isCollectionThresholdExceeded()</tt> and
+<tt>getCollectionUsageThreshold()</tt> methods in the same way as
+above.</p>
+<a name="gdfbf" id="gdfbf"></a>
+<h3>Threshold Notifications</h3>
+<p>When the <tt>MemoryMXBean</tt> detects that a memory pool has
+reached or exceeded its usage threshold, it emits a <i>usage
+threshold exceeded</i> notification. The <tt>MemoryMXBean</tt> will
+not issue another usage threshold exceeded notification until the
+usage has fallen below the threshold and then exceeded it again.
+Similarly, when the memory usage after garbage collection exceeds
+the collection usage threshold, the <tt>MemoryMXBean</tt> emits a
+collection usage threshold exceeded notification.</p>
+<p><a href="#gdfaq">Example&nbsp;4-7</a> implements the same logic
+as <a href="#gdfay">Example&nbsp;4-6</a>, but uses usage threshold
+notification to detect low memory conditions. Upon receiving a
+notification, the listener notifies another thread to perform
+actions such as redistributing outstanding tasks, refusing to
+accept new tasks, or allowing new tasks to be accepted again.</p>
+<p>In general, you should design the <tt>handleNotification</tt>
+method to do a minimal amount of work, to avoid causing delay in
+delivering subsequent notifications. You should perform
+time-consuming actions in a separate thread. Since multiple threads
+can concurrently invoke the notification listener, the listener
+should synchronize the tasks it performs properly.</p>
+<a name="gdfaq" id="gdfaq"></a>Example&nbsp;4-7 Using Threshold
+Notifications
+<pre class="codeblock">
+class MyListener implements javax.management.NotificationListener {
+  public void handleNotification(Notification notification, Object handback)  {
+    String notifType = notification.getType();
+    if (notifType.equals(MemoryNotificationInfo.MEMORY_THRESHOLD_EXCEEDED)) {
+      // potential low memory, redistribute tasks to other VMs &amp; stop receiving new tasks.
+      lowMemory = true;
+      notifyAnotherThread(lowMemory);
+    }
+  }
+}
+
+// Register MyListener with MemoryMXBean
+MemoryMXBean mbean = ManagementFactory.getMemoryMXBean();
+NotificationEmitter emitter = (NotificationEmitter) mbean;
+MyListener listener = new MyListener();
+emitter.addNotificationListener(listener, null, null);
+</pre>
+<p>Assuming this memory pool supports a usage threshold, you can
+set the threshold to some value (representing a number of bytes),
+above which the application will not accept new tasks.</p>
+<pre class="codeblock">
+pool.setUsageThreshold(myThreshold);
+</pre>
+<p>After this point, usage threshold detection is enabled and
+<tt>MyListener</tt> will handle notification.</p>
+</div>
+<!--stopindex-->
+<!-- END CENTRAL COLUMN COMPONENTS --></td>
+</tr>
+<!-- BEGIN SPACER ROW -->
+<tr>
+<td><img src="css/a.gif" width="780" height="1" border="0" alt=
+"" /></td>
+</tr>
+<!-- END SPACER ROW -->
+<tr>
+<td><!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%"
+summary="">
+<tr valign="bottom">
+<td headers="h101"></td>
+<td headers="h102" style="width: 60%"></td>
+<td headers="h103"><a href="jconsole.html"><img style="padding-right: 3px" src=
+"graphics/prev.gif" border="0" alt="previous" />Previous</a></td>
+<td headers="h104"><a href="toc.html">Contents</a></td>
+<td headers="h105"></td>
+<td headers="h106"><a href="snmp.html">Next<img style="padding-left: 3px" src=
+"graphics/next.gif" border="0" alt="next" /></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW --></td>
+</tr>
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

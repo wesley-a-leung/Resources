@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Introduction</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1044" name="generator"/>
+<meta content="This chapter provides introductory information about the Nashorn engine and how it can be used to interpret JavaScript code in a Java application or from the command line." name="description"/>
+<meta content="2015-02-12T14:37:36Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Nashorn User's Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E41835-02" name="partnum"/>
+<meta content="JSNUG" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Nashorn User's Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="preface.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="api.html">
+                Next</a><hr/>
+<script type="text/javascript">
+
+</script> <script type="text/javascript">
+// 
+function footdisplay(footnum,footnote) {
+    var msg = window.open('', 'NewWindow' + footnum,
+        'directories=no,height=120,location=no,menubar=no,resizable=yes,' +
+        'scrollbars=yes,status=no,toolbar=no,width=598');
+    msg.document.open('text/html');
+    msg.document.write('&lt;!DOCTYPE html ');
+    msg.document.write('PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" ');
+
+    msg.document.write('"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;');
+    msg.document.write('&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;&lt;head&gt;&lt;title&gt;');
+    msg.document.write('Footnote ' + footnum);
+    msg.document.write('&lt;\/title&gt;&lt;meta http-equiv="Content-Type" ');
+    msg.document.write('content="text/html; charset=utf-8" /&gt;');
+    msg.document.write('&lt;meta http-equiv="Content-Script-Type" ');
+    msg.document.write('content="text/javascript" /&gt;');
+    msg.document.write('&lt;style type="text/css"&gt; &lt;![CDATA[ ');
+    msg.document.write('h1 {text-align: center; font-size: 14pt;}');
+    msg.document.write('fieldset {border: none;}');
+    msg.document.write('form {text-align: center;}');
+    msg.document.write(' ]]\u003e &lt;\/style&gt;');
+    msg.document.write('&lt;\/head&gt;&lt;body&gt;&lt;h1&gt;Footnote ' + footnum + '&lt;\/h1&gt;&lt;p&gt;');
+    msg.document.write(footnote);
+    msg.document.write('&lt;\/p&gt;&lt;form action="" method="post"&gt;&lt;fieldset&gt;');
+    msg.document.write('&lt;input type="button" value="OK" ');
+    msg.document.write('onclick="window.close();" /&gt;');
+    msg.document.write('&lt;\/fieldset&gt;&lt;\/form&gt;&lt;\/body&gt;&lt;\/html&gt;');
+    msg.document.close();
+    msg.focus();
+}
+// 
+</script> <noscript>
+<p>The script content on this page is for navigation purposes only and does not alter the content in any way.</p>
+</noscript>
+<div id="JSNUG107"><a id="sthref8" name="sthref8"/>
+<h1><span>1</span> Introduction</h1>
+<a id="JSNUG108" name="JSNUG108"/>
+<p>This chapter provides introductory information about the Nashorn engine and how it can be used to interpret JavaScript code in a Java application or from the command line.</p>
+<p>The Nashorn engine is an implementation of the ECMAScript Edition 5.1 Language Specification<a href="#sthref9" id="sthref9" name="sthref9" onclick="footdisplay(1,&quot;\u003ccode dir=\&quot;ltr\&quot;\u003e\u003ca target=\&quot;intro\&quot; href=\&quot;http://www.ecma-international.org/publications/standards/Ecma-262.html\&quot;\u003ehttp://www.ecma-international.org/publications/standards/Ecma-262.html\u003c/a\u003e\u003c/code\u003e&quot;)"><sup>Foot1</sup></a>. It was fully developed in the Java language as part of the Nashorn project<a href="#sthref10" id="sthref10" name="sthref10" onclick="footdisplay(2,&quot;\u003ccode dir=\&quot;ltr\&quot;\u003e\u003ca target=\&quot;intro\&quot; href=\&quot;http://openjdk.java.net/projects/nashorn/\&quot;\u003ehttp://openjdk.java.net/projects/nashorn/\u003c/a\u003e\u003c/code\u003e&quot;)"><sup>Foot2</sup></a>. The code is based on the new features of the Da Vinci Machine<a href="#sthref11" id="sthref11" name="sthref11" onclick="footdisplay(3,&quot;\u003ccode dir=\&quot;ltr\&quot;\u003e\u003ca target=\&quot;intro\&quot; href=\&quot;http://openjdk.java.net/projects/mlvm/\&quot;\u003ehttp://openjdk.java.net/projects/mlvm/\u003c/a\u003e\u003c/code\u003e&quot;)"><sup>Foot3</sup></a>, which is the reference implementation of Java Specification Request (JSR) 292: Supporting Dynamically Typed Languages on the Java Platform<a href="#sthref12" id="sthref12" name="sthref12" onclick="footdisplay(4,&quot;\u003ccode dir=\&quot;ltr\&quot;\u003e\u003ca target=\&quot;intro\&quot; href=\&quot;http://jcp.org/en/jsr/detail?id=292\&quot;\u003ehttp://jcp.org/en/jsr/detail?id=292\u003c/a\u003e\u003c/code\u003e&quot;)"><sup>Foot4</sup></a>.</p>
+<p>The Nashorn engine is included in the Java SE Development Kit (JDK). You can invoke Nashorn from a Java application using the Java Scripting API to interpret embedded scripts, or you can pass the script to the <code dir="ltr">jjs</code> or <code dir="ltr">jrunscript</code> tool.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+Nashorn is the only JavaScript engine included in the JDK. However, you can use any script engine compliant with JSR 223: Scripting for the Java Platform<a href="#sthref13" id="sthref13" name="sthref13" onclick="footdisplay(1,&quot;\u003ccode dir=\&quot;ltr\&quot;\u003e\u003ca target=\&quot;intro\&quot; href=\&quot;http://jcp.org/en/jsr/detail?id=223\&quot;\u003ehttp://jcp.org/en/jsr/detail?id=223\u003c/a\u003e\u003c/code\u003e&quot;)"><sup>Foot1</sup></a>, or implement your own. For more information, see <i>Java Scripting Programmer's Guide</i> at <code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/scripting/prog_guide/index.html">http://docs.oracle.com/javase/8/docs/technotes/guides/scripting/prog_guide/index.html</a></code></td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p><sup>Footnote1</sup><code dir="ltr"><a href="http://jcp.org/en/jsr/detail?id=223">http://jcp.org/en/jsr/detail?id=223</a></code></p>
+</div>
+<div id="JSNUG109"><a id="sthref14" name="sthref14"/>
+<h2>Invoking Nashorn from Java Code</h2>
+<p>To invoke Nashorn in your Java application, create an instance of the Nashorn engine using the Java Scripting API.</p>
+<p>To get an instance of the Nashorn engine:</p>
+<ol>
+<li>
+<p>Import the <code dir="ltr">javax.script</code> package.</p>
+<p>The Java Scripting API is composed of classes and interfaces in this package. For more information about the <code dir="ltr">javax.script</code> package, see the specification at <code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/api/javax/script/package-summary.html">http://docs.oracle.com/javase/8/docs/api/javax/script/package-summary.html</a></code></p>
+</li>
+<li>
+<p>Create a <code dir="ltr">ScriptEngineManager</code> object.</p>
+<p>The <code dir="ltr">ScriptEngineManager</code> class is the starting point for the Java Scripting API. A <code dir="ltr">ScriptEngineManager</code> object is used to instantiate <code dir="ltr">ScriptEngine</code> objects and maintain global variable values shared by them.</p>
+</li>
+<li>
+<p>Get a <code dir="ltr">ScriptEngine</code> object from the manager using the <code dir="ltr">getEngineByName()</code> method.</p>
+<p>This method takes one <code dir="ltr">String</code> argument with the name of the script engine. To get an instance of the Nashorn engine, pass in <code dir="ltr">"nashorn"</code>. Alternatively, you can use any of the following: <code dir="ltr">"Nashorn"</code>, <code dir="ltr">"javascript"</code>, <code dir="ltr">"JavaScript"</code>, <code dir="ltr">"js"</code>, <code dir="ltr">"JS"</code>, <code dir="ltr">"ecmascript"</code>, <code dir="ltr">"ECMAScript"</code>.</p>
+</li>
+</ol>
+<p>After you have the Nashorn engine instance, you can use it to evaluate statements and script files, set variables, and so on. <a href="#CHDGJBHD">Example 1-1</a> provides simple Java application code that evaluates a <code dir="ltr">print("Hello, World!");</code> statement using Nashorn.</p>
+<div id="JSNUG110"><a id="CHDGJBHD" name="CHDGJBHD"/>
+<p>Example 1-1 Evaluating a Script Statement Using Nashorn (EvalScript.java)</p>
+<pre dir="ltr" xml:space="preserve">
+import javax.script.*;
+
+public class EvalScript {
+    public static void main(String[] args) throws Exception {
+        // create a script engine manager
+        ScriptEngineManager factory = new ScriptEngineManager();
+        // create a Nashorn script engine
+        ScriptEngine engine = factory.getEngineByName("nashorn");
+        // evaluate JavaScript statement
+        try {
+            engine.eval("print('Hello, World!');");
+        } catch (final ScriptException se) { se.printStackTrace(); }
+    }
+}
+</pre></div>
+
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+The <code dir="ltr">eval()</code> method throws a <code dir="ltr">ScriptException</code> that must be handled properly.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>For more information about using scripts in Java code, see <i>Java Scripting Programmer's Guide</i> at <code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/scripting/prog_guide/index.html">http://docs.oracle.com/javase/8/docs/technotes/guides/scripting/prog_guide/index.html</a></code></p>
+</div>
+
+<div id="JSNUG111"><a id="sthref16" name="sthref16"/>
+<h2>Invoking Nashorn from the Command Line</h2>
+<p>There are two command-line tools that can be used to invoke the Nashorn engine:</p>
+<ul>
+<li>
+<p><code dir="ltr">jrunscript</code></p>
+<p>This is a generic command that invokes any available script engine compliant with JSR 223. By default, without any options, <code dir="ltr">jrunscript</code> invokes the Nashorn engine, because it is the default script engine in the JDK.</p>
+<p>For more information about <code dir="ltr">jrunscript</code>, see the tool's reference page at <code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/windows/jrunscript.html">http://docs.oracle.com/javase/8/docs/technotes/tools/windows/jrunscript.html</a></code></p>
+</li>
+<li>
+<p><code dir="ltr">jjs</code></p>
+<p>This is the recommended tool, created specifically for Nashorn. To evaluate a script file using Nashorn, pass the name of the script file to the <code dir="ltr">jjs</code> tool. To launch an interactive shell that interprets statements passed in using standard input, start the <code dir="ltr">jjs</code> tool without specifying any script files.</p>
+<p>For more information about <code dir="ltr">jjs</code>, see the tool's reference page at <code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/tools/windows/jjs.html">http://docs.oracle.com/javase/8/docs/technotes/tools/windows/jjs.html</a></code></p>
+</li>
+</ul>
+</div>
+</div>
+
+
+<br/>
+<p style="text-decoration:underline">Footnote Legend</p>
+Footnote1:<code dir="ltr"><a href="http://www.ecma-international.org/publications/standards/Ecma-262.html">http://www.ecma-international.org/publications/standards/Ecma-262.html</a></code><br/>
+Footnote2:<code dir="ltr"><a href="http://openjdk.java.net/projects/nashorn/">http://openjdk.java.net/projects/nashorn/</a></code><br/>
+Footnote3:<code dir="ltr"><a href="http://openjdk.java.net/projects/mlvm/">http://openjdk.java.net/projects/mlvm/</a></code><br/>
+Footnote4:<code dir="ltr"><a href="http://jcp.org/en/jsr/detail?id=292">http://jcp.org/en/jsr/detail?id=292</a></code><br/><a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="preface.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="api.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

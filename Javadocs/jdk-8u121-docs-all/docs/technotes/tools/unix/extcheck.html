@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>extcheck</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T7:56:52Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Solaris, Linux, and OS X, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38209-05" name="partnum"/>
+<meta content="JSSOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="appletviewer.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jar.html">
+                Next</a><hr/>
+<div><a id="CIHJGIJG" name="CIHJGIJG"/>
+<div id="JSSOR613"><a id="CIHDBECG" name="CIHDBECG"/>
+<h1>extcheck</h1>
+<p>Detects version conflicts between a target Java Archive (JAR) file and currently installed extension JAR files.</p>
+<div><a id="sthref34" name="sthref34"/>
+<h2>Synopsis</h2>
+<p><b>extcheck</b> [<i>options</i>] <i>targetfile.jar</i></p>
+<dl>
+<dt><i>options</i></dt>
+<dd>
+<p>The command-line options. See <a href="#CIHFIJBG">Options</a>.</p>
+</dd>
+<dt><i>targetfile.jar</i></dt>
+<dd>
+<p>The target JAR file against which the currently installed extension JAR files are compared to detect version conflicts.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref35" name="sthref35"/>
+<h2>Description</h2>
+<p>The <code dir="ltr">extcheck</code> command checks a specified JAR file for title and version conflicts with any extensions installed in the Java SE SDK. Before installing an extension, you can use this utility to see whether the same or a more recent version of the extension is already installed.</p>
+<p>The <code dir="ltr">extcheck</code> command compares the Specification-title and Specification-version headers in the manifest of the <code dir="ltr">targetfile.jar</code> file against the corresponding headers in all JAR files currently installed in the extension directory. By default, the extension directory is <code dir="ltr">jre/lib/ext</code> on Oracle Solaris and <code dir="ltr">\jre\lib\ext</code> on Windows. The <code dir="ltr">extcheck</code> command compares version numbers in the same way as the <code dir="ltr">java.lang.Package.isCompatibleWith</code> method.</p>
+<p>If no conflict is detected, then the return code is 0.</p>
+<p>If the manifest of any JAR file in the extensions directory has the same <code dir="ltr">Specification-title</code> and the same or a newer <code dir="ltr">Specification-version</code> number, then a non-zero error code is returned. A non-zero error code is also returned when <code dir="ltr">targetfile.jar</code> does not have the <code dir="ltr">Specification-title</code> or <code dir="ltr">Specification-version</code> attributes in its manifest file.</p>
+</div>
+
+<div><a id="CIHFIJBG" name="CIHFIJBG"/><a id="CIHFIBGE" name="CIHFIBGE"/>
+<h2>Options</h2>
+<dl>
+<dt>-verbose</dt>
+<dd>
+<p>Lists JAR files in the extension directory as they are checked. Additionally, manifest attributes of the target JAR file and any conflicting JAR files are also reported.</p>
+</dd>
+<dt>-J<i>option</i></dt>
+<dd>
+<p>Passes <i>option</i> to the Java Virtual Machine (JVM), where option is one of the options described on the reference page for the Java launcher. For example, <code dir="ltr">-J-Xms48m</code> sets the startup memory to 48 MB. See <a href="java.html#CBBFHAJA"><code dir="ltr">java</code>(1)</a>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref36" name="sthref36"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="jar.html#BGBEJEEG"><code dir="ltr">jar</code>(1)</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="appletviewer.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jar.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

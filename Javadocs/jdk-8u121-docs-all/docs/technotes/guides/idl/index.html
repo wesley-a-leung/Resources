@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+
+<style type="text/css">
+/*<![CDATA[*/
+
+ul li, ul ul li {font-weight: normal;}
+a               {font-weight: bold;}
+h3 {margin-left: 30pt;}
+
+/*]]>*/
+</style>
+<title>Java IDL-related APIs and Developer Guides</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Java IDL (CORBA)</h1>
+<br />
+<p>Java IDL technology adds CORBA (Common Object Request Broker
+Architecture) capability to the Java platform, providing
+standards-based interoperability and connectivity. Java IDL enables
+distributed Web-enabled Java applications to transparently invoke
+operations on remote network services using the industry standard
+IDL (Object Management Group Interface Definition Language) and
+IIOP (Internet Inter-ORB Protocol) defined by the Object Management
+Group. Runtime components include a Java ORB for distributed
+computing using IIOP communication.</p>
+<!-- ***************************************** -->
+<h2>Overview</h2>
+<ul>
+<li><a href="corba.html">CORBA and the Java Programming
+Language</a></li>
+<li><a href="jidlDistApp.html">Distributed Application
+Concepts</a></li>
+<li><a href="jidlGlossary.html">Glossary</a></li>
+<li><a href="POA.html">POA - Portable Object Adapter</a></li>
+<li><a href="PI.html">Portable
+Interceptors</a>&nbsp;&nbsp;<i>Advanced Topic</i></li>
+<li><a href="INStutorial.html">INS - Interoperable Naming
+Service</a></li>
+</ul>
+<!-- ***************************************** -->
+<h2>API Specification</h2>
+<ul>
+<li class="xli">package <a href=
+"../../../api/org/omg/CORBA/package-summary.html">org.omg.CORBA</a>
+- provides the mapping of the OMG CORBA APIs to the Java[tm]
+programming language</li>
+<li class="xli">package <a href=
+"../../../api/org/omg/CosNaming/package-summary.html">org.omg.CosNaming</a>
+- provides the naming service for Java IDL</li>
+<li class="xli">package <a href=
+"../../../api/org/omg/PortableServer/package-summary.html">org.omg.PortableServer</a>
+- provides classes and interfaces for making the server side of
+your applications portable across multivendor ORBs</li>
+<li class="xli">package <a href=
+"../../../api/org/omg/PortableInterceptor/package-summary.html">org.omg.PortableInterceptor</a>
+- provides a mechanism to register ORB hooks through which ORB
+services can intercept the normal flow of execution of the ORB</li>
+<li class="xli">package <a href=
+"../../../api/org/omg/DynamicAny/package-summary.html">org.omg.DynamicAny</a>
+- provides classes and interfaces to enable <tt>Any</tt> values to
+be dynamically interpreted (traversed) and constructed through
+<tt>DynAny</tt> objects</li>
+<li class="xli"><a href=
+"../../../api/org/omg/CORBA/ORB.html">org.omg.CORBA.ORB</a> -
+provides APIs for the CORBA Object Request Broker features</li>
+</ul>
+<!-- ***************************************** -->
+<h2>Tutorials and Programmer's Guides</h2>
+<p>Most of the tutorials are variations on the basic distributed
+"Hello World" application.</p>
+<h3>Introductory-Level Tutorials</h3>
+<p>The following documents provide introductory-level information
+on creating applications that use Java IDL. All use the POA-server
+side model. The differences are in the server implementations.</p>
+<p>In order to best understand the material, progress through the
+examples in the order presented here.</p>
+<ul>
+<li class="xli"><a href="GShome.html">Introductory "Hello World"
+example</a> using Java IDL technology</li>
+<li class="xli"><a href="jidlExample.html">"Hello World"
+example</a> with a transient server (same code as above example,
+less descriptive material)</li>
+<li class="xli"><a href="jidlExample2.html">"Hello World"
+example</a> with a persistent server</li>
+</ul>
+<p>Other server-side models may be created using JavaSE. If you'd
+like to use other server- side models, refer to these tutorials.
+Both of these tutorials use a transient server implementation.</p>
+<ul>
+<li class="xli"><a href="jidlTieServer.html">"Hello World"
+example</a> with a POA-Tie (Delegation) server-side model</li>
+<li class="xli"><a href="jidlImplBaseServer.html">"Hello World"
+example</a> with an ImplBase (Inheritance) server-side model</li>
+</ul>
+<h3>Intermediate-Level Tutorials</h3>
+<p>The tutorials listed in this section are for developers who
+understand the material in the introductory-level tutorials, and
+are looking for more complex material.</p>
+<ul>
+<li><a href="INStutorial.html">Using the Interoperable Naming
+Service</a></li>
+<li><a target="AuxWindow" href=
+"http://www.oracle.com/technetwork/articles/javase/corba-137639.html">
+CORBA Programming with Java SE: Programming Transient and
+Persistent Servers</a></li>
+</ul>
+<h3>Advanced-Level Tutorials</h3>
+<p>These tutorials are for experienced developers. The descriptive
+material is reduced, the sample code is commented for better
+understanding of the material.</p>
+<ul>
+<li><a href="PI.html">Portable Interceptors</a></li>
+<li><a href="servantactivator.html">Using Servant
+Activators</a></li>
+<li><a href="servantlocators.html">Using Servant Locators</a></li>
+<li><a href="adapteractivator.html">Using Adapter
+Activators</a></li>
+</ul>
+<!-- ***************************************** -->
+<h3>Programming Guides</h3>
+<ul>
+<li><a href="jidlExceptions.html">Exceptions</a></li>
+<li><a href="jidlInitialization.html">Initialization</a></li>
+<li><a href="jidlNaming.html">Naming Service</a></li>
+<li><a href="jidlDSI.html">Dynamic Skeleton Interface</a></li>
+<li><a href="mapping/jidlMapping.html">Mapping IDL to the Java
+Programming Language</a></li>
+</ul>
+<h3>Additional Sample Applications</h3>
+<ul>
+<li><a href="jidlSampleCode.html">Sample Code for Hello World</a>
+provides the code for all created and generated files used in the
+<a href="jidlExample.html">POA server-side model tutorial</a></li>
+<li><a href="INStutorial.html">Example: Interoperable Naming
+Service</a></li>
+<li><a href="jidlExample3.html">Example: Callback Objects</a></li>
+</ul>
+<!-- ***************************************** -->
+<h2>API Enhancements</h2>
+<ul>
+<li><a href="jidlChanges.html">Changes in CORBA (Java IDL, Java
+RMI-IIOP) Java SE 1.4 and later and Java SE 5.0</a></li>
+</ul>
+<!-- ***************************************** -->
+<h2>Tools</h2>
+<ul>
+<li class="xli">the IDL-to-Java compiler, <tt>idlj</tt> (<a href=
+"../../tools/unix/idlj.html">Solaris, Linux, or Mac OS X</a> or <a href=
+"../../tools/windows/idlj.html">Windows</a></li>
+<li class="xli"><tt>orbd</tt> (<a href=
+"../../tools/unix/orbd.html">Solaris, Linux, or Mac OS X</a> or <a href=
+"../../tools/windows/orbd.html">Windows) - a daemon process
+containing a Bootstrap Service, a Transient Naming Service, a
+Persistent Naming Service, and a Server Manager</a></li>
+<li class="xli"><a href=
+"../../tools/windows/orbd.html"><tt>servertool</tt> (</a><a href=
+"../../tools/windows/orbd.html"></a><a href=
+"../../tools/unix/servertool.html">Solaris, Linux, or Mac OS X</a> or <a href=
+"../../tools/windows/servertool.html">Windows</a>) - the
+ease-of-use interface for application programmers to register,
+unregister, startup, and shutdown a server.</li>
+<li class="xli"><tt>tnameserv</tt> (<a href=
+"../../tools/unix/tnameserv.html">Solaris, Linux, or Mac OS X</a> or <a href=
+"../../tools/windows/tnameserv.html">Windows</a>) - the Transient
+Java IDL Naming Service (provided for backward compatibility)</li>
+</ul>
+<!--***************************************** -->
+<h2>More Information</h2>
+<p>The <a href=
+"http://www.oracle.com/technetwork/java/javase/tech/index-jsp-138209.html">
+CORBA Home Page</a></p>
+<p>The <i><a href="http://www.omg.org/">OMG</a></i> is the official
+source of information for all CORBA and IIOP related information.
+Please see the <a href=
+"http://www.omg.org/cgi-bin/doc?formal/99-10-07">CORBA 2.3.1
+Specification</a> for more information.</p>
+<p>For more information on which OMG specifications are implemented
+in this release of the Java platform, see the <a href=
+"compliance.html">compliance</a> document.</p>
+<p>For information on product limitations in this release of the
+Java IDL/RMI-IIOP technologies, see <a href="limitations.html">Java
+IDL Product Limitations</a>.</p>
+<p>For questions, check the <a href="jidlFAQ.html">Java IDL
+FAQ</a>.</p>
+<p><!-- Body text ends here --></p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

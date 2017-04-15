@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+
+<style type="text/css">
+/*<![CDATA[*/
+
+ul li, ul ul li {font-weight: normal;}
+a               {font-weight: bold;}
+
+/*]]>*/
+</style>
+<title>Java Platform Debugger Architecture (JPDA)</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Java Platform Debugger Architecture (JPDA)</h1>
+
+<!-- Body text begins here -->
+<p>The Java Platform Debugger Architecture (JPDA) consists of three
+interfaces designed for use by debuggers in development
+environments for desktop systems. The Java Virtual Machine Tools
+Interface (JVM TI) defines the services a VM must provide for
+debugging. The Java Debug Wire Protocol (JDWP) defines the format
+of information and requests transferred between the process being
+debugged and the debugger front end, which implements the Java
+Debug Interface (JDI). The Java Debug Interface defines information
+and requests at the user code level.</p>
+<h2>Enhancements</h2>
+<ul>
+<li><a href="enhancements1.6.html">JPDA Enhancements in Java SE
+6</a></li>
+<li><a href="enhancements1.5.html">JPDA Enhancements in Java SE
+5.0</a></li>
+<li><a href="enhancements1.4.html">JPDA Enhancements in Java SE
+1.4</a></li>
+</ul>
+<h2>Design</h2>
+<ul>
+<li><b><a href="jpda.html">JPDA Overview</a></b></li>
+<li style="list-style: none; display: inline">
+<ul>
+<li><b><a href="jpda.html#modularity">Modularity</a></b></li>
+<li><b><a href="jpda.html#walk-through">Walk-through</a></b></li>
+<li><b><a href="jpda.html#porting">Porting</a></b></li>
+</ul>
+</li>
+<li><b><a href="architecture.html">Architecture
+Structure</a></b></li>
+<li style="list-style: none; display: inline">
+<ul>
+<li><b><a href="architecture.html">Structure Overview</a></b></li>
+<li><b><a href=
+"architecture.html#components">Components</a></b></li>
+<li><b><a href="architecture.html#interfaces">Debugger
+Interfaces</a></b></li>
+</ul>
+<div style="margin-left: 2em">
+<ul>
+<li><b><a href="architecture.html#jvmti">Java Virtual Machine Tool
+Interface</a></b></li>
+</ul>
+<ul>
+<li><b><a href="architecture.html#jdwp">Java Debugger Wire
+Protocol</a></b></li>
+<li><b><a href="architecture.html#jdi">Java Debug
+Interface</a></b></li>
+</ul>
+</div>
+</li>
+</ul>
+<h2>Interface Reference</h2>
+<ul>
+<li><b>Java Virtual Machine Tool Interface (JVM TI)</b></li>
+<li style="list-style: none; display: inline">
+<ul>
+<li style="list-style: none; display: inline">
+<p>NOTE: JVMPI, the experimental Java Virtual Machine Profiling
+Interface has removed. It has been replaced by JVM TI.</p>
+</li>
+<li><b><a href="../jvmti/index.html">Specification</a></b><br />
+<br /></li>
+</ul>
+</li>
+<li style="margin-bottom: 0em;"><b>Java Virtual Machine Debug
+Interface (JVMDI)</b></li>
+<li style="list-style: none; display: inline">
+<div style="margin-left: 2em">
+<p>JVMDI has been removed. It has been replaced by JVM TI.</p>
+</div>
+</li>
+<li><b>Java Debug Wire Protocol (JDWP)</b></li>
+<li style="list-style: none; display: inline">
+<ul>
+<li><b><a href="jdwp-spec.html">Specification</a></b><br />
+<br /></li>
+</ul>
+</li>
+<li><b>Java Debug Wire Protocol Interface</b></li>
+<li style="list-style: none; display: inline">
+<ul>
+<li><b><a href="jdwpTransport.html">Specification</a></b><br />
+<br /></li>
+</ul>
+</li>
+<li><b>Java Debug Interface (JDI)</b></li>
+<li style="list-style: none; display: inline">
+<ul>
+<li><b><a href=
+"../../../jdk/api/jpda/jdi/index.html">Specification</a></b></li>
+</ul>
+</li>
+</ul>
+<h2>Implementation</h2>
+<ul>
+<li><b><a href="conninv.html">Connection and Invocation
+Details</a></b></li>
+</ul>
+<h2>More Information</h2>
+<ul>
+<li><a href=
+"http://www.oracle.com/technetwork/java/javase/tech/faqs-jsp-142584.html">
+Java Platform Debugger Architecture - FAQs</a></li>
+</ul>
+<h2>Examples</h2>
+<ul>
+<li><b><a href="examples.html">Example JDI
+Applications</a></b></li>
+</ul>
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

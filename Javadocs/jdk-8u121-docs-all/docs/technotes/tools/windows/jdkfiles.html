@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>JDK and JRE File Structure</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This chapter introduces the JDK directories and the files they contain. The file structure of the JRE is identical to the structure of the jre directory in the JDK." name="description"/>
+<meta content="2016-01-08T8:11:39Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Windows, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38210-05" name="partnum"/>
+<meta content="JSWOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="classpath.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="intro.html">
+                Next</a><hr/>
+<div id="JSWOR591"><a id="sthref16" name="sthref16"/>
+<h1><span>3</span> JDK and JRE File Structure</h1>
+<a id="JSWOR592" name="JSWOR592"/>
+<p>This chapter introduces the JDK directories and the files they contain. The file structure of the JRE is identical to the structure of the <code dir="ltr">jre</code> directory in the JDK.</p>
+<p>This chapter covers the following topics:</p>
+<ul>
+<li>
+<p><a href="#A1098669">Demos and Samples</a></p>
+</li>
+<li>
+<p><a href="#A1097730">Development Files and Directories</a></p>
+</li>
+<li>
+<p><a href="#A1097756">Additional Files and Directories</a></p>
+</li>
+</ul>
+<a id="A1098669" name="A1098669"/>
+<div id="JSWOR593">
+<h2>Demos and Samples</h2>
+<p>Demos and samples that show you how to program for the Java platform are available as a separate download at the Java SE Downloads page at<br/>
+<code dir="ltr"><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a></code></p>
+<p>These are available as separate <code dir="ltr">.tar.z</code> compressed packages and <code dir="ltr">.tar.gz</code> compressed binaries. Similar to other 64-bit bundles on Oracle Solaris, the 64-bit demos and samples bundles on Oracle Solaris require that the 32-bit demos and samples bundles to also be installed.</p>
+</div>
+
+<a id="A1097730" name="A1097730"/>
+<div id="JSWOR594">
+<h2>Development Files and Directories</h2>
+<p>This section describes the most important files and directories required to develop applications for the Java platform. Some of the directories that are not required include Java source code and C header files. See <a href="#A1097756">Additional Files and Directories</a>.</p>
+<pre dir="ltr" xml:space="preserve">
+jdk1.8.0
+     bin
+          java*
+          javac*
+          javap*
+          javah*
+          javadoc*
+     lib
+          tools.jar
+          dt.jar
+     jre
+          bin
+               java*
+          lib
+               applet
+               ext
+                    jfxrt.jar
+                    localdata.jar
+               fonts
+               security
+               sparc
+                    server
+                    client
+               rt.jar
+               charsets.jar
+</pre>
+<p>Assuming the JDK software is installed at <code dir="ltr">/jdk1.8.0</code>, here are some of the most important directories:</p>
+<dl>
+<dt>/jdk1.8.0</dt>
+<dd>
+<p>Root directory of the JDK software installation. Contains copyright, license, and README files. Also contains <code dir="ltr">src.zip</code>, the archive of source code for the Java platform.</p>
+</dd>
+<dt>/jdk1.8.0/bin</dt>
+<dd>
+<p>Executables for all the development tools contained in the JDK. The <code dir="ltr">PATH</code> environment variable should contain an entry for this directory.</p>
+</dd>
+<dt>/jdk1.8.0/lib</dt>
+<dd>
+<p>Files used by the development tools. Includes <code dir="ltr">tools.jar</code>, which contains non-core classes for support of the tools and utilities in the JDK. Also includes <code dir="ltr">dt.jar</code>, the <code dir="ltr">DesignTime</code> archive of <code dir="ltr">BeanInfo</code> files that tell interactive development environments (IDEs) how to display the Java components and how to let the developer customize them for an application.</p>
+</dd>
+<dt>/jdk1.8.0/jre</dt>
+<dd>
+<p>Root directory of the Java Runtime Environment (JRE) used by the JDK development tools. The runtime environment is an implementation of the Java platform. This is the directory referred to by the <code dir="ltr">java.home</code> system property.</p>
+</dd>
+<dt>/jdk1.8.0/jre/bin</dt>
+<dd>
+<p>Executable files for tools and libraries used by the Java platform. The executable files are identical to files in <code dir="ltr">/jdk1.8.0/bin</code>. The java launcher tool serves as an application launcher (and replaced the earlier <code dir="ltr">jre</code> command that shipped with 1.1 releases of the JDK). This directory does not need to be in the <code dir="ltr">PATH</code> environment variable.</p>
+</dd>
+<dt>/jdk1.8.0/jre/lib</dt>
+<dd>
+<p>Code libraries, property settings, and resource files used by the JRE. For example <code dir="ltr">rt.jar</code> contains the bootstrap classes, which are the run time classes that comprise the Java platform core API, and <code dir="ltr">charsets.jar</code> contains the character-conversion classes. Aside from the <code dir="ltr">ext</code> subdirectory, there are several additional resource subdirectories not described here.</p>
+</dd>
+<dt>/jdk1.8.0/jre/lib/ext</dt>
+<dd>
+<p>Default installation directory for extensions to the Java platform. This is where the <code dir="ltr">JavaHelp</code> JAR file goes when it is installed, for example. This directory includes the <code dir="ltr">jfxrt.jar</code> file, which contains the JavaFX runtime libraries and the <code dir="ltr">localedata.jar</code> file, which contains the locale data for the <code dir="ltr">java.text</code> and <code dir="ltr">java.util</code> packages. See The Extension Mechanism at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/extensions/index.html">http://docs.oracle.com/javase/8/docs/technotes/guides/extensions/index.html</a></code></p>
+</dd>
+<dt>/jdk1.8.0/jre/lib/security</dt>
+<dd>
+<p>Contains files used for security management. These include the security policy <code dir="ltr">java.policy</code> and security properties <code dir="ltr">java.security</code> files.</p>
+</dd>
+<dt>/jdk1.8.0/jre/lib/sparc</dt>
+<dd>
+<p>Contains the <code dir="ltr">.so</code> (shared object) files used by the Oracle Solaris release of the Java platform.</p>
+</dd>
+<dt>/jdk1.8.0/jre/lib/sparc/client</dt>
+<dd>
+<p>Contains the <code dir="ltr">.so</code> file used by the Java HotSpot VM client, which is implemented with Java HotSpot VM technology. This is the default Java Virtual Machine (JVM).</p>
+</dd>
+<dt>/jdk1.8.0/jre/lib/sparc/server</dt>
+<dd>
+<p>Contains the <code dir="ltr">.so</code> file used by the Java HotSpot VM server.</p>
+</dd>
+<dt>/jdk1.8.0/jre/lib/applet</dt>
+<dd>
+<p>JAR files that contain support classes for applets can be placed in the <code dir="ltr">lib/applet/</code> directory. This reduces startup time for large applets by allowing applet classes to be preloaded from the local file system by the applet class loader and provides the same protections as though they had been downloaded over the Internet.</p>
+</dd>
+<dt>/jdk1.8.0/jre/lib/fonts</dt>
+<dd>
+<p>Font files used by the platform.</p>
+</dd>
+</dl>
+</div>
+
+<a id="A1097756" name="A1097756"/>
+<div id="JSWOR595">
+<h2>Additional Files and Directories</h2>
+<p>This section describes the directory structure for Java source code, C header files, and other additional directories and files.</p>
+<pre dir="ltr" xml:space="preserve">
+jdk1.8.0
+     db
+     include
+     man
+     src.zip
+</pre>
+<dl>
+<dt>/jdk1.8.0/src.zip</dt>
+<dd>
+<p>Archive that contains the source code for the Java platform.</p>
+</dd>
+<dt>/jdk1.8.0/db</dt>
+<dd>
+<p>Contains Java DB. See Java DB Technical Documentation at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javadb/">http://docs.oracle.com/javadb/</a></code></p>
+</dd>
+<dt>/jdk1.8.0/include</dt>
+<dd>
+<p>C-language header files that support native-code programming with the Java Native Interface and the Java Virtual Machine (JVM) Debugger Interface. See Java Native Interface at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/jni/index.html">http://docs.oracle.com/javase/8/docs/technotes/guides/jni/index.html</a></code></p>
+<p>See also Java Platform Debugger Architecture (JPDA) at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/jpda/index.html">http://docs.oracle.com/javase/8/docs/technotes/guides/jpda/index.html</a></code></p>
+</dd>
+<dt>/jdk1.8.0/man</dt>
+<dd>
+<p>Contains man pages for the JDK tools.</p>
+</dd>
+</dl>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="classpath.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="intro.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,1267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>DTrace Probes in HotSpot VM</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<!-- Test -->
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>DTrace Probes in HotSpot VM</h1>
+<ul>
+<li><a href="#Dtrace_Probes_in_HotSpot">Overview</a></li>
+<li><a href="#The_HotSpot_i_Provider">The <i>hotspot</i>
+Provider</a>
+<ul>
+<li><a href="#VM_Lifecycle_Probes">VM Lifecycle Probes</a></li>
+<li><a href="#Thread_Lifecycle_Probes">Thread Lifecycle
+Probes</a></li>
+<li><a href="#Classloading_Probes">Classloading Probes</a></li>
+<li><a href="#Garbage_Collection_Probes">Garbage Collection
+Probes</a></li>
+<li><a href="#Method_Compilation_Probes">Method Compilation
+Probes</a></li>
+<li><a href="#Monitor_Probes">Monitor Probes</a></li>
+<li><a href="#Application_Tracking_Probes">Application Tracking
+Probes</a></li>
+</ul>
+</li>
+<li><a href="#The_HotSpot_jni_i_Provider">The <i>hotspot_jni</i>
+Provider</a></li>
+<li><a href="#Reference">Reference</a></li>
+</ul>
+<h2><a name="Dtrace_Probes_in_HotSpot" id=
+"Dtrace_Probes_in_HotSpot"></a> Overview</h2>
+<p>With the introduction of DTrace on Solaris 10, DTrace support
+has been added to the Java SE 6 HotSpot VM. The <i>hotspot</i> and
+<i>hotspot_jni</i> providers make available probes that can be used
+to monitor JVM internal state and activities as well as the Java
+application that is running. All of the probes are USDT probes and
+are accessed using the process-id of the JVM process. The probe
+details are listed in the next section, and the API is provided in
+the reference section.</p>
+<h2><a name="The_HotSpot_i_Provider" id=
+"The_HotSpot_i_Provider"></a> The <i>hotspot</i> Provider</h2>
+<p>The <i>hotspot</i> provider makes available probes that can be
+used to track the lifespan of the VM, thread start and stop events,
+GC and memory pool statistics, method compilations, and monitor
+activity. With a startup flag, additional probes are enabled which
+can be used to monitor the running Java program, such as method
+enter and return probes, and object allocations. All of the
+<i>hotspot</i> probes originate in the VM library
+(<b>libjvm.so</b>), so they are also provided from programs which
+embed the VM.</p>
+<p>Many of the probes in the provider have arguments that can be
+examined to provide further details on the state of the VM. Many of
+these probes' arguments are opaque IDs which can be used to link
+probe firings to each other, however strings and other data are
+also provided. When string values are provided, they are always
+present as a pair: a pointer to unterminated modified UTF-8 data
+(see <a href="http://docs.oracle.com/javase/specs/">JVM spec</a>
+:4.4.7) , and a length value which indicates the extent of that
+data. Because the string data (even when none of the characters are
+outside the ASCII range) is not guaranteed to be terminated by a
+NUL character, it is necessary to use the length-terminated
+<tt>copyinstr()</tt> intrinsic to read the string data from the
+process.</p>
+<h3><a name="VM_Lifecycle_Probes" id="VM_Lifecycle_Probes"></a> VM
+Life-cycle Probes</h3>
+<p>The probes that relate to the VM life-cycle are indicated below.
+None have any arguments at this time.</p>
+<table border="1" cellpadding="0" cellspacing="1" summary=
+"Probes that relate to the VM life-cycle">
+<tr>
+<th id="h1">Probe</th>
+<th id="h2">Description</th>
+</tr>
+<tr>
+<td headers="h1" align="center" bgcolor="#FFFFCC"><tt>vm-init-begin</tt></td>
+<td headers="h2" bgcolor="#FFFFCC">Probe that fires just as the VM
+initialization begins</td>
+</tr>
+<tr>
+<td headers="h1" align="center" bgcolor="#FFFFFF"><tt>vm-init-end</tt></td>
+<td headers="h2" bgcolor="#FFFFFF">Probe that fires when the VM initialization
+finishes, and the VM is ready to start running application
+code</td>
+</tr>
+<tr>
+<td headers="h1" align="center" bgcolor="#FFFFCC"><tt>vm-shutdown</tt></td>
+<td headers="h2" bgcolor="#FFFFCC">Probe that fires as the VM is shutting down
+due to program termination or an error</td>
+</tr>
+</table>
+<h3><a name="Thread_Lifecycle_Probes" id=
+"Thread_Lifecycle_Probes"></a> Thread Lifecycle Probes</h3>
+<p>Two probes are available for tracking thread start and stop
+events.</p>
+<table border="1" cellpadding="0" cellspacing="1" summary=
+"Probes available for tracking thread start and stop events">
+<tr>
+<th id="h101">Probe</th>
+<th id="h102">Description</th>
+</tr>
+<tr>
+<td headers="h101" align="center" bgcolor="#FFFFCC"><tt>thread-start</tt></td>
+<td headers="h102" bgcolor="#FFFFCC">Probe that fires when a thread is started.
+Provides the arguments listed below</td>
+</tr>
+<tr>
+<td headers="h101" align="center" bgcolor="#FFFFFF"><tt>thread-stop</tt></td>
+<td headers="h102" bgcolor="#FFFFFF">Probe that fires when the thread has
+completed. Provides the arguments listed below</td>
+</tr>
+</table>
+<p>Each of these probes has the following arguments:</p>
+<table border="1" cellpadding="0" cellspacing="1" summary=
+"Arguments for thread-start and thread-stop">
+<tr>
+<th id="h201">Probe Arguments</th>
+<th id="h202">Description</th>
+</tr>
+<tr>
+<td headers="h201" align="center" bgcolor="#FFFFCC"><tt>args[0]</tt></td>
+<td headers="h202" bgcolor="#FFFFCC">A pointer to UTF-8 string data which contains
+the thread name</td>
+</tr>
+<tr>
+<td headers="h201" align="center" bgcolor="#FFFFFF"><tt>args[1]</tt></td>
+<td headers="h202" bgcolor="#FFFFFF">The length of the thread name data (in
+bytes)</td>
+</tr>
+<tr>
+<td headers="h201" align="center" bgcolor="#FFFFCC"><tt>args[2]</tt></td>
+<td headers="h202" bgcolor="#FFFFCC">The Java thread ID. This is the value that
+will match other HotSpot VM probes which contain a thread
+argument</td>
+</tr>
+<tr>
+<td headers="h201" align="center" bgcolor="#FFFFFF"><tt>args[3]</tt></td>
+<td headers="h202" bgcolor="#FFFFFF">The native/OS thread ID. This is the ID
+assigned by the host operating system</td>
+</tr>
+<tr>
+<td headers="h201" align="center" bgcolor="#FFFFCC"><tt>args[4]</tt></td>
+<td headers="h202" bgcolor="#FFFFCC">A boolean value which indicates if this
+thread is a daemon or not. A value of 0 indicates a non-daemon
+thread</td>
+</tr>
+</table>
+<h3><a name="Classloading_Probes" id="Classloading_Probes"></a>
+Classloading Probes</h3>
+<p>Two probes are available for tracking class loading and
+unloading activity.</p>
+<table border="1" cellpadding="0" cellspacing="1" summary=
+"Probes available for tracking class loading and unloading activity">
+<tr>
+<th id="h301">Probe</th>
+<th id="h302">Description</th>
+</tr>
+<tr>
+<td headers="h301" align="center" bgcolor="#FFFFCC"><tt>class-loaded</tt></td>
+<td headers="h302" bgcolor="#FFFFCC">Probe that fires when a class has been
+loaded</td>
+</tr>
+<tr>
+<td headers="h301" align="right" bgcolor="#FFFFFF"><tt>class-unloaded</tt></td>
+<td headers="h302" align="center" bgcolor="#FFFFFF">Probe that fires when a class
+has been unloaded from the system</td>
+</tr>
+</table>
+<p>Each of these probes has the following arguments:</p>
+<table border="1" cellpadding="0" cellspacing="1" summary=
+"Arguments for class-loaded and class-unloaded">
+<tr>
+<th id="h401">Probe Arguments</th>
+<th id="h402">Description</th>
+</tr>
+<tr>
+<td headers="h401" align="center" bgcolor="#FFFFCC"><tt>args[0]</tt></td>
+<td headers="h402" bgcolor="#FFFFCC">A pointer to UTF-8 string data which contains
+the name of the class that was loaded</td>
+</tr>
+<tr>
+<td headers="h401" align="center" bgcolor="#FFFFFF"><tt>args[1]</tt></td>
+<td headers="h402" bgcolor="#FFFFFF">The length of the class name data (in
+bytes)</td>
+</tr>
+<tr>
+<td headers="h401" align="center" bgcolor="#FFFFCC"><tt>args[2]</tt></td>
+<td headers="h402" bgcolor="#FFFFCC">The class loader ID, which is a unique
+identifier for a class loader in the VM. This is the class loader
+that loaded the class</td>
+</tr>
+<tr>
+<td headers="h401" align="center" bgcolor="#FFFFFF"><tt>args[3]</tt></td>
+<td headers="h402" bgcolor="#FFFFFF">A boolean value which indicates if the class
+is a shared class (if the class was loaded from the shared
+archive)</td>
+</tr>
+</table>
+<h3><a name="Garbage_Collection_Probes" id=
+"Garbage_Collection_Probes"></a> Garbage Collection Probes</h3>
+<p>Probes are available that can be used to measure the duration of
+a system-wide garbage collection cycle (for those garbage
+collectors that have a defined begin and end). Each memory pool can
+be tracked independently. The probes for individual pools pass the
+memory manager's name, the pool name, and pool usage information at
+both the begin and end of pool collection.</p>
+<p>The provided GC-related probes are:</p>
+<table border="1" cellpadding="0" cellspacing="1" summary=
+"GC-relaged probes">
+<tr>
+<th id="h501">Probe</th>
+<th id="h502">Description</th>
+</tr>
+<tr>
+<td headers="h501" align="center" bgcolor="#FFFFCC"><tt>gc-begin</tt></td>
+<td headers="h502" bgcolor="#FFFFCC">Probe that fires when a system-wide
+collection is about to start. It's one argument (arg[0]) is a
+boolean value which indicates if this is to be a Full GC.</td>
+</tr>
+<tr>
+<td headers="h501" align="center" bgcolor="#FFFFFF"><tt>gc-end</tt></td>
+<td headers="h502" bgcolor="#FFFFFF">Probe that fires when a system-wide
+collection has completed. No arguments.</td>
+</tr>
+<tr>
+<td headers="h501" align="center" bgcolor="#FFFFCC">
+<tt>mem-pool-gc-begin</tt></td>
+<td headers="h502" bgcolor="#FFFFCC">Probe that fires when an individual memory
+pool is about to be collected. Provides the arguments listed
+below</td>
+</tr>
+<tr>
+<td headers="h501" align="center" bgcolor="#FFFFFF"><tt>mem-pool-gc-end</tt></td>
+<td headers="h502" bgcolor="#FFFFFF">Probe that fires after an individual memory
+pool has been collected. Provides the arguments listed below</td>
+</tr>
+</table>
+<p>Memory pool probe arguments:</p>
+<table border="1" cellpadding="0" cellspacing="1" summary=
+"Memory pool probe arguments">
+<tr>
+<th id="h601">Probe Arguments</th>
+<th id="h602">Description</th>
+</tr>
+<tr>
+<td headers="h601" align="center" bgcolor="#FFFFCC"><tt>args[0]</tt></td>
+<td headers="h602" bgcolor="#FFFFCC">A pointer to UTF-8 string data which contains
+the name of the manager which manages this memory pool</td>
+</tr>
+<tr>
+<td headers="h601" align="center" bgcolor="#FFFFFF"><tt>args[1]</tt></td>
+<td headers="h602" bgcolor="#FFFFFF">The length of the manager name data (in
+bytes)</td>
+</tr>
+<tr>
+<td headers="h601" align="center" bgcolor="#FFFFCC"><tt>args[2]</tt></td>
+<td headers="h602" bgcolor="#FFFFCC">A pointer to UTF-8 string data which contains
+the name of the memory pool</td>
+</tr>
+<tr>
+<td headers="h601" align="center" bgcolor="#FFFFFF"><tt>args[3]</tt></td>
+<td headers="h602" bgcolor="#FFFFFF">The length of the memory pool name data (in
+bytes)</td>
+</tr>
+<tr>
+<td headers="h601" align="center" bgcolor="#FFFFCC"><tt>args[4]</tt></td>
+<td headers="h602" bgcolor="#FFFFCC">The initial size of the memory pool (in
+bytes)</td>
+</tr>
+<tr>
+<td headers="h601" align="center" bgcolor="#FFFFFF"><tt>args[5]</tt></td>
+<td headers="h602" bgcolor="#FFFFFF">The amount of memory in use in the memory
+pool (in bytes)</td>
+</tr>
+<tr>
+<td headers="h601" align="center" bgcolor="#FFFFCC"><tt>args[6]</tt></td>
+<td headers="h602" bgcolor="#FFFFCC">The number of committed pages in the memory
+pool</td>
+</tr>
+<tr>
+<td headers="h601" align="center" bgcolor="#FFFFFF"><tt>args[7]</tt></td>
+<td headers="h602" bgcolor="#FFFFFF">The maximum size of the memory pool</td>
+</tr>
+</table>
+<h3><a name="Method_Compilation_Probes" id=
+"Method_Compilation_Probes"></a> Method Compilation Probes</h3>
+<p>Probes are available to indicate which methods are being
+compiled and by which compiler. Probes are also available to track
+the installing and uninstalling of compiled methods.</p>
+<p>Probes that mark the begin and end of method compilation:</p>
+<table border="1" cellpadding="0" cellspacing="1" summary=
+"Probes that mark the begin and end of method compilation">
+<tr>
+<th id="h701">Probe</th>
+<th id="h702">Description</th>
+</tr>
+<tr>
+<td headers="h701" align="center" bgcolor="#FFFFCC">
+<tt>method-compile-begin</tt></td>
+<td headers="h702" bgcolor="#FFFFCC">Probe that fires as method compilation
+begins. Provides the arguments listed below</td>
+</tr>
+<tr>
+<td headers="h701" align="center" bgcolor="#FFFFFF">
+<tt>method-compile-end</tt></td>
+<td headers="h702" bgcolor="#FFFFFF">Probe that fires when method compilation
+completes. In addition to the arguments listed below,
+<tt>argv[8]</tt> is a boolean value which indicates if the
+compilation was successful</td>
+</tr>
+</table>
+<p>Method compilation probe arguments:</p>
+<table border="1" cellpadding="0" cellspacing="1" summary=
+"Method compilation probe arguments">
+<tr>
+<th id="h801">Probe Arguments</th>
+<th id="h802">Description</th>
+</tr>
+<tr>
+<td headers="h801" align="center" bgcolor="#FFFFCC"><tt>args[0]</tt></td>
+<td headers="h802" bgcolor="#FFFFCC">A pointer to UTF-8 string data which contains
+the name of the compiler which is compiling this method</td>
+</tr>
+<tr>
+<td headers="h801" align="center" bgcolor="#FFFFFF"><tt>args[1]</tt></td>
+<td headers="h802" bgcolor="#FFFFFF">The length of the compiler name data (in
+bytes)</td>
+</tr>
+<tr>
+<td headers="h801" align="center" bgcolor="#FFFFCC"><tt>args[2]</tt></td>
+<td headers="h802" bgcolor="#FFFFCC">A pointer to UTF-8 string data which contains
+the name of the class of the method being compiled</td>
+</tr>
+<tr>
+<td headers="h801" align="center" bgcolor="#FFFFFF"><tt>args[3]</tt></td>
+<td headers="h802" bgcolor="#FFFFFF">The length of the class name data (in
+bytes)</td>
+</tr>
+<tr>
+<td headers="h801" align="center" bgcolor="#FFFFCC"><tt>args[4]</tt></td>
+<td headers="h802" bgcolor="#FFFFCC">A pointer to UTF-8 string data which contains
+the name of the method being compiled</td>
+</tr>
+<tr>
+<td headers="h801" align="center" bgcolor="#FFFFFF"><tt>args[5]</tt></td>
+<td headers="h802" bgcolor="#FFFFFF">The length of the method name data (in
+bytes)</td>
+</tr>
+<tr>
+<td headers="h801" align="center" bgcolor="#FFFFCC"><tt>args[6]</tt></td>
+<td headers="h802" bgcolor="#FFFFCC">A pointer to UTF-8 string data which contains
+the signature of the method being compiled</td>
+</tr>
+<tr>
+<td headers="h801" align="center" bgcolor="#FFFFFF"><tt>args[7]</tt></td>
+<td headers="h802" bgcolor="#FFFFFF">The length of the signature data (in
+bytes)</td>
+</tr>
+</table>
+<p>When compiled methods are installed for execution or
+uninstalled, the following probes are fired:</p>
+<table border="1" cellpadding="0" cellspacing="1" summary=
+"Probes fired when compiled methods are installed for execution or uninstalled">
+<tr>
+<th id="h901">Probe</th>
+<th id="h902">Description</th>
+</tr>
+<tr>
+<td headers="h901" align="center" bgcolor="#FFFFCC">
+<tt>compiled-method-load</tt></td>
+<td headers="h902" bgcolor="#FFFFCC">Probe that fires when a compiled method is
+installed. In addition to the arguments listed below,
+<tt>argv[6]</tt> contains a pointer to the compiled code, and
+<tt>argv[7]</tt> is the size of the compiled code</td>
+</tr>
+<tr>
+<td headers="h901" align="center" bgcolor="#FFFFFF">
+<tt>compiled-method-unload</tt></td>
+<td headers="h902" bgcolor="#FFFFFF">Probe that fires when a compiled method is
+uninstalled. Provides the arguments listed below</td>
+</tr>
+</table>
+<p>Compiled method loading probe arguments:</p>
+<table border="1" cellpadding="0" cellspacing="1" summary=
+"Compiled method loading probe arguments">
+<tr>
+<th id="h1001">Probe Arguments</th>
+<th id="h1002">Description</th>
+</tr>
+<tr>
+<td headers="h1001" align="center" bgcolor="#FFFFCC"><tt>args[0]</tt></td>
+<td headers="h1002" bgcolor="#FFFFCC">A pointer to UTF-8 string data which contains
+the name of the class of the method being installed</td>
+</tr>
+<tr>
+<td headers="h1001" align="center" bgcolor="#FFFFFF"><tt>args[1]</tt></td>
+<td headers="h1002" bgcolor="#FFFFFF">The length of the class name data (in
+bytes)</td>
+</tr>
+<tr>
+<td headers="h1001" align="center" bgcolor="#FFFFCC"><tt>args[2]</tt></td>
+<td headers="h1002" bgcolor="#FFFFCC">A pointer to UTF-8 string data which contains
+the name of the method being installed</td>
+</tr>
+<tr>
+<td headers="h1001" align="center" bgcolor="#FFFFFF"><tt>args[3]</tt></td>
+<td headers="h1002" bgcolor="#FFFFFF">The length of the method name data (in
+bytes)</td>
+</tr>
+<tr>
+<td headers="h1001" align="center" bgcolor="#FFFFCC"><tt>args[4]</tt></td>
+<td headers="h1002" bgcolor="#FFFFCC">A pointer to UTF-8 string data which contains
+the signature of the method being installed</td>
+</tr>
+<tr>
+<td headers="h1001" align="center" bgcolor="#FFFFFF"><tt>args[5]</tt></td>
+<td headers="h1002" bgcolor="#FFFFFF">The length of the signature data (in
+bytes)</td>
+</tr>
+</table>
+<h3><a name="Monitor_Probes" id="Monitor_Probes"></a> Monitor
+Probes</h3>
+<p>As the Java application runs, threads will enter and exit
+monitors, wait on monitors, and perform notifications. Probes are
+available for all wait and notification events, as well as for
+contended monitor entry and exit events. A contended monitor entry
+is the situation where a thread attempts to enter a monitor when
+another thread is already in the monitor. A contended monitor exit
+event occurs when a thread leaves a monitor and other threads are
+waiting to enter to the monitor. Thus, contended enter and
+contended exit events may not match up to each other in relation to
+the thread that encounters these events, though it is expected that
+a contended exit from one thread should match up to a contended
+enter on another thread (the thread waiting to enter the
+monitor).</p>
+<p>All monitor events provide the thread ID, a monitor ID, and the
+type of the class of the object as arguments. It is expected that
+the thread and the class will help map back to the Java program,
+while the monitor ID can provide matching information between probe
+firings.</p>
+<p>Since the existence of these probes in the VM causes performance
+degradation, they will only fire if the VM flag
+<tt>-XX:+ExtendedDTraceProbes</tt> is set on the java command line.
+This flag can be turned on and off dynamically at runtime by using
+the <tt>jinfo</tt> utility.</p>
+<p>If the above flag is off, the monitor probes are still present
+in the probe listing obtainable from dtrace, but will remain
+dormant and will never fire. It is intended that this restriction
+be removed in future releases of the VM, where these probes will be
+enabled all the time with no impact to performance.</p>
+<p>The available probes:</p>
+<table border="1" cellpadding="0" cellspacing="1" summary=
+"Monitor probes">
+<tr>
+<th id="h1101">Probe</th>
+<th id="h1102">Description</th>
+</tr>
+<tr>
+<td headers="h1101" align="center" bgcolor="#FFFFCC">
+<tt>monitor-contended-enter</tt></td>
+<td headers="h1102" bgcolor="#FFFFCC">Probe that fires as a thread attempts to
+enter a contended monitor</td>
+</tr>
+<tr>
+<td headers="h1101" align="right" bgcolor="#FFFFFF">
+<tt>monitor-contended-entered</tt></td>
+<td headers="h1102" bgcolor="#FFFFFF">Probe that fires when a thread successfully
+enters the contended monitor</td>
+</tr>
+<tr>
+<td headers="h1101" align="center" bgcolor="#FFFFCC">
+<tt>monitor-contended-exit</tt></td>
+<td headers="h1102" bgcolor="#FFFFCC">Probe that fires when a thread leaves a
+monitor and other threads are waiting to enter</td>
+</tr>
+<tr>
+<td headers="h1101" align="center" bgcolor="#FFFFFF"><tt>monitor-wait</tt></td>
+<td headers="h1102" bgcolor="#FFFFFF">Probe that fires as a thread begins a wait on
+a monitor via Object.wait(). The probe has an additional argument,
+args[4] which is a 'long' value which indicates the timeout being
+used.</td>
+</tr>
+<tr>
+<td headers="h1101" align="center" bgcolor="#FFFFCC"><tt>monitor-waited</tt></td>
+<td headers="h1102" bgcolor="#FFFFCC">Probe that fires when a thread completes an
+Object.wait().</td>
+</tr>
+<tr>
+<td headers="h1101" align="center" bgcolor="#FFFFFF"><tt>monitor-notify</tt></td>
+<td headers="h1102" bgcolor="#FFFFFF">Probe that fires when a thread calls
+Object.notify() to notify waiters on a monitor</td>
+</tr>
+<tr>
+<td headers="h1101" align="center" bgcolor="#FFFFCC">
+<tt>monitor-notifyAll</tt></td>
+<td headers="h1102" bgcolor="#FFFFCC">Probe that fires when a thread calls
+Object.notifyAll() to notify waiters on a monitor</td>
+</tr>
+</table>
+<p>Monitor probe arguments:</p>
+<table border="1" cellpadding="0" cellspacing="1" summary=
+"Monitor probe arguments">
+<tr>
+<th id="h1201">Probe Arguments</th>
+<th id="h1202">Description</th>
+</tr>
+<tr>
+<td headers="h1201" align="center" bgcolor="#FFFFCC"><tt>args[0]</tt></td>
+<td headers="h1202" bgcolor="#FFFFCC">The Java thread identifier for the thread
+performing the monitor operation</td>
+</tr>
+<tr>
+<td headers="h1201" align="center" bgcolor="#FFFFFF"><tt>args[1]</tt></td>
+<td headers="h1202" bgcolor="#FFFFFF">A unique, but opaque identifier for the
+specific monitor that the action is performed upon</td>
+</tr>
+<tr>
+<td headers="h1201" align="center" bgcolor="#FFFFCC"><tt>args[2]</tt></td>
+<td headers="h1202" bgcolor="#FFFFCC">A pointer to UTF-8 string data which contains
+the class name of the object being acted upon</td>
+</tr>
+<tr>
+<td headers="h1201" align="center" bgcolor="#FFFFFF"><tt>args[3]</tt></td>
+<td headers="h1202" bgcolor="#FFFFFF">The length of the class name data (in
+bytes)</td>
+</tr>
+</table>
+<h3><a name="Application_Tracking_Probes" id=
+"Application_Tracking_Probes"></a> Application Tracking Probes</h3>
+<p>A few probes are provided to allow fine-grained examination of
+Java thread execution. These consist of probes that fire anytime a
+method is entered or returned from, as well as a probe that fires
+whenever a Java object has been allocated.</p>
+<p>Since the existence of these probes in the VM causes performance
+degradation, they will only fire if the VM has the
+<tt>ExtendedDTraceProbes</tt> flag enabled. By default the probes
+are all present in any listing of the probes in the VM, but are
+dormant without the appropriate flag. It is intended that this
+restriction be removed in future releases of the VM, where these
+probes will be enabled all the time with no impact to
+performance.</p>
+<p>The method entry and return probes:</p>
+<table border="1" cellpadding="0" cellspacing="1" summary=
+"Method entry and return probes">
+<tr>
+<th id="h1301">Probe</th>
+<th id="h1302">Description</th>
+</tr>
+<tr>
+<td headers="h1301" align="center" bgcolor="#FFFFCC"><tt>method-entry</tt></td>
+<td headers="h1302" bgcolor="#FFFFCC">Probe that fires when a method is being
+entered.</td>
+</tr>
+<tr>
+<td headers="h1301" align="center" bgcolor="#FFFFFF"><tt>method-return</tt></td>
+<td headers="h1302" bgcolor="#FFFFFF">Probe that fires when a method returns,
+either normally or due to an exception.</td>
+</tr>
+</table>
+<p>Method probe arguments:</p>
+<table border="1" cellpadding="0" cellspacing="1" summary=
+"Method probe arguments">
+<tr>
+<th id="h1401">Probe Arguments</th>
+<th id="h1402">Description</th>
+</tr>
+<tr>
+<td headers="h1401" align="center" bgcolor="#FFFFCC"><tt>args[0]</tt></td>
+<td headers="h1402" bgcolor="#FFFFCC">The Java thread ID of the thread that is
+entering or leaving the method</td>
+</tr>
+<tr>
+<td headers="h1401" align="center" bgcolor="#FFFFFF"><tt>args[1]</tt></td>
+<td headers="h1402" bgcolor="#FFFFFF">A pointer to UTF-8 string data which contains
+the name of the class of the method</td>
+</tr>
+<tr>
+<td headers="h1401" align="center" bgcolor="#FFFFCC"><tt>args[2]</tt></td>
+<td headers="h1402" bgcolor="#FFFFCC">The length of the class name data (in
+bytes)</td>
+</tr>
+<tr>
+<td headers="h1401" align="center" bgcolor="#FFFFFF"><tt>args[3]</tt></td>
+<td headers="h1402" bgcolor="#FFFFFF">A pointer to UTF-8 string data which contains
+the name of the method</td>
+</tr>
+<tr>
+<td headers="h1401" align="center" bgcolor="#FFFFCC"><tt>args[4]</tt></td>
+<td headers="h1402" bgcolor="#FFFFCC">The length of the method name data (in
+bytes)</td>
+</tr>
+<tr>
+<td headers="h1401" align="center" bgcolor="#FFFFFF"><tt>args[5]</tt></td>
+<td headers="h1402" bgcolor="#FFFFFF">A pointer to UTF-8 string data which contains
+the signature of the method</td>
+</tr>
+<tr>
+<td headers="h1401" align="center" bgcolor="#FFFFCC"><tt>args[6]</tt></td>
+<td headers="h1402" bgcolor="#FFFFCC">The length of the signature data (in
+bytes)</td>
+</tr>
+</table>
+<p>The available allocation probe:</p>
+<table border="1" cellpadding="0" cellspacing="1" summary=
+"Allocation probe">
+<tr>
+<th id="h1501">Probe</th>
+<th id="h1502">Description</th>
+</tr>
+<tr>
+<td headers="h1501" align="center" bgcolor="#FFFFCC"><tt>object-alloc</tt></td>
+<td headers="h1502" bgcolor="#FFFFCC">Probe that fires when any object is
+allocated, provided that the <tt>ExtendedDTraceProbes</tt> flag is
+enabled.</td>
+</tr>
+</table>
+<p>The object allocation probe has the following arguments:</p>
+<table border="1" cellpadding="0" cellspacing="1" summary=
+"Allocation probe arguments">
+<tr>
+<th id="h1601">Probe Arguments</th>
+<th id="h1602">Description</th>
+</tr>
+<tr>
+<td headers="h1601" align="center" bgcolor="#FFFFCC"><tt>args[0]</tt></td>
+<td headers="h1602" bgcolor="#FFFFCC">The Java thread ID of the thread that is
+allocating the object</td>
+</tr>
+<tr>
+<td headers="h1601" align="center" bgcolor="#FFFFFF"><tt>args[1]</tt></td>
+<td headers="h1602" bgcolor="#FFFFFF">A pointer to UTF-8 string data which contains
+the class name of the object being allocated</td>
+</tr>
+<tr>
+<td headers="h1601" align="center" bgcolor="#FFFFCC"><tt>args[2]</tt></td>
+<td headers="h1602" bgcolor="#FFFFCC">The length of the class name data (in
+bytes)</td>
+</tr>
+<tr>
+<td headers="h1601" align="center" bgcolor="#FFFFFF"><tt>args[3]</tt></td>
+<td headers="h1602" bgcolor="#FFFFFF">The size of the object being allocated</td>
+</tr>
+</table>
+<h2><a name="The_HotSpot_jni_i_Provider" id=
+"The_HotSpot_jni_i_Provider"></a> The <i>hotspot_jni</i>
+Provider</h2>
+<p>In order to call from native code to Java code, due to embedding
+of the VM in an application or execution of native code within a
+Java application, the native code must make a call through the JNI
+interface. The JNI interface provides a number of methods for
+invoking Java code and examining the state of the VM. DTrace probes
+are provided at the entry point and return point for each of these
+methods. The probes are provided by the <i>hotspot_jni</i>
+provider. The name of the probe is the name of the JNI method,
+appended with "-entry" for entry probes, and "-return" for return
+probes. The arguments available at each entry probe are the
+arguments that were provided to the function (with the exception of
+the Invoke* methods, which omit the arguments that are passed to
+the Java method). The return probes have the return value of the
+method as an argument (if available).</p>
+<h2><a name="Reference" id="Reference"></a> Reference</h2>
+<pre>
+provider hotspot {
+  probe vm-init-begin();
+  probe vm-init-end();
+  probe vm-shutdown();
+  probe class-loaded(
+      char* class_name, uintptr_t class_name_len, uintptr_t class_loader_id, bool is_shared);
+  probe class-unloaded(
+      char* class_name, uintptr_t class_name_len, uintptr_t class_loader_id, bool is_shared);
+  probe gc-begin(bool is_full);
+  probe gc-end();
+  probe mem-pool-gc-begin(
+      char* mgr_name, uintptr_t mgr_name_len, char* pool_name, uintptr_t pool_name_len, 
+      uintptr_t initial_size, uintptr_t used, uintptr_t committed, uintptr_t max_size);
+  probe mem-pool-gc-end(
+      char* mgr_name, uintptr_t mgr_name_len, char* pool_name, uintptr_t pool_name_len, 
+      uintptr_t initial_size, uintptr_t used, uintptr_t committed, uintptr_t max_size);
+  probe thread-start(
+      char* thread_name, uintptr_t thread_name_length, 
+      uintptr_t java_thread_id, uintptr_t native_thread_id, bool is_daemon);
+  probe thread-stop(
+      char* thread_name, uintptr_t thread_name_length, 
+      uintptr_t java_thread_id, uintptr_t native_thread_id, bool is_daemon);
+  probe method-compile-begin(
+      char* class_name, uintptr_t class_name_len, 
+      char* method_name, uintptr_t method_name_len,
+      char* signature, uintptr_t signature_len);
+  probe method-compile-end(
+      char* class_name, uintptr_t class_name_len, 
+      char* method_name, uintptr_t method_name_len,
+      char* signature, uintptr_t signature_len,
+      bool is_success);
+  probe compiled-method-load(
+      char* class_name, uintptr_t class_name_len, 
+      char* method_name, uintptr_t method_name_len,
+      char* signature, uintptr_t signature_len,
+      void* code, uintptr_t code_size);
+  probe compiled-method-unload(
+      char* class_name, uintptr_t class_name_len, 
+      char* method_name, uintptr_t method_name_len,
+      char* signature, uintptr_t signature_len);
+  probe monitor-contended-enter(
+      uintptr_t java_thread_id, uintptr_t monitor_id, 
+      char* class_name, uintptr_t class_name_len);
+  probe monitor-contended-entered(
+      uintptr_t java_thread_id, uintptr_t monitor_id, 
+      char* class_name, uintptr_t class_name_len);
+  probe monitor-contended-exit(
+      uintptr_t java_thread_id, uintptr_t monitor_id, 
+      char* class_name, uintptr_t class_name_len);
+  probe monitor-wait(
+      uintptr_t java_thread_id, uintptr_t monitor_id, 
+      char* class_name, uintptr_t class_name_len,
+      uintptr_t timeout);
+  probe monitor-waited(
+      uintptr_t java_thread_id, uintptr_t monitor_id, 
+      char* class_name, uintptr_t class_name_len);
+  probe monitor-notify(
+      uintptr_t java_thread_id, uintptr_t monitor_id, 
+      char* class_name, uintptr_t class_name_len);
+  probe monitor-notifyAll(
+      uintptr_t java_thread_id, uintptr_t monitor_id, 
+      char* class_name, uintptr_t class_name_len);
+  probe method-entry(
+      uintptr_t java_thread_id, char* class_name, uintptr_t class_name_len,
+      char* method_name, uintptr_t method_name_len,
+      char* signature, uintptr_t signature_len);
+  probe method-return(
+      uintptr_t java_thread_id, char* class_name, uintptr_t class_name_len,
+      char* method_name, uintptr_t method_name_len,
+      char* signature, uintptr_t signature_len);
+  probe object-alloc(
+      uintptr_t java_thread_id, char* class_name, uintptr_t class_name_len,
+      uintptr_t size);
+};
+
+provider hotspot_jni {
+  probe AllocObject-entry(void*, void*);
+  probe AllocObject-return(void*);
+  probe AttachCurrentThreadAsDaemon-entry(void*, void**, void*);
+  probe AttachCurrentThreadAsDaemon-return(uint32_t);
+  probe AttachCurrentThread-entry(void*, void**, void*);
+  probe AttachCurrentThread-return(uint32_t);
+  probe CallBooleanMethodA-entry(void*, void*, uintptr_t);
+  probe CallBooleanMethodA-return(uintptr_t);
+  probe CallBooleanMethod-entry(void*, void*, uintptr_t);
+  probe CallBooleanMethod-return(uintptr_t);
+  probe CallBooleanMethodV-entry(void*, void*, uintptr_t);
+  probe CallBooleanMethodV-return(uintptr_t);
+  probe CallByteMethodA-entry(void*, void*, uintptr_t);
+  probe CallByteMethodA-return(char);
+  probe CallByteMethod-entry(void*, void*, uintptr_t);
+  probe CallByteMethod-return(char);
+  probe CallByteMethodV-entry(void*, void*, uintptr_t);
+
+  probe CallByteMethodV-return(char);
+  probe CallCharMethodA-entry(void*, void*, uintptr_t);
+  probe CallCharMethodA-return(uint16_t);
+  probe CallCharMethod-entry(void*, void*, uintptr_t);
+  probe CallCharMethod-return(uint16_t);
+  probe CallCharMethodV-entry(void*, void*, uintptr_t);
+  probe CallCharMethodV-return(uint16_t);
+  probe CallDoubleMethodA-entry(void*, void*, uintptr_t);
+  probe CallDoubleMethodA-return(double);
+  probe CallDoubleMethod-entry(void*, void*, uintptr_t);
+  probe CallDoubleMethod-return(double);
+  probe CallDoubleMethodV-entry(void*, void*, uintptr_t);
+  probe CallDoubleMethodV-return(double);
+  probe CallFloatMethodA-entry(void*, void*, uintptr_t);
+  probe CallFloatMethodA-return(float);
+  probe CallFloatMethod-entry(void*, void*, uintptr_t);
+  probe CallFloatMethod-return(float);
+  probe CallFloatMethodV-entry(void*, void*, uintptr_t);
+  probe CallFloatMethodV-return(float);
+  probe CallIntMethodA-entry(void*, void*, uintptr_t);
+  probe CallIntMethodA-return(uint32_t);
+  probe CallIntMethod-entry(void*, void*, uintptr_t);
+  probe CallIntMethod-return(uint32_t);
+  probe CallIntMethodV-entry(void*, void*, uintptr_t);
+  probe CallIntMethodV-return(uint32_t);
+  probe CallLongMethodA-entry(void*, void*, uintptr_t);
+  probe CallLongMethodA-return(uintptr_t);
+  probe CallLongMethod-entry(void*, void*, uintptr_t);
+  probe CallLongMethod-return(uintptr_t);
+  probe CallLongMethodV-entry(void*, void*, uintptr_t);
+  probe CallLongMethodV-return(uintptr_t);
+  probe CallNonvirtualBooleanMethodA-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualBooleanMethodA-return(uintptr_t);
+  probe CallNonvirtualBooleanMethod-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualBooleanMethod-return(uintptr_t);
+  probe CallNonvirtualBooleanMethodV-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualBooleanMethodV-return(uintptr_t);
+  probe CallNonvirtualByteMethodA-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualByteMethodA-return(char);
+  probe CallNonvirtualByteMethod-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualByteMethod-return(char);
+  probe CallNonvirtualByteMethodV-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualByteMethodV-return(char);
+  probe CallNonvirtualCharMethodA-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualCharMethodA-return(uint16_t);
+  probe CallNonvirtualCharMethod-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualCharMethod-return(uint16_t);
+  probe CallNonvirtualCharMethodV-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualCharMethodV-return(uint16_t);
+  probe CallNonvirtualDoubleMethodA-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualDoubleMethodA-return(double);
+  probe CallNonvirtualDoubleMethod-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualDoubleMethod-return(double);
+  probe CallNonvirtualDoubleMethodV-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualDoubleMethodV-return(double);
+  probe CallNonvirtualFloatMethodA-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualFloatMethodA-return(float);
+  probe CallNonvirtualFloatMethod-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualFloatMethod-return(float);
+  probe CallNonvirtualFloatMethodV-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualFloatMethodV-return(float);
+  probe CallNonvirtualIntMethodA-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualIntMethodA-return(uint32_t);
+  probe CallNonvirtualIntMethod-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualIntMethod-return(uint3t);
+  probe CallNonvirtualIntMethodV-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualIntMethodV-return(uint32_t);
+  probe CallNonvirtualLongMethodA-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualLongMethodA-return(uintptr_t);
+  probe CallNonvirtualLongMethod-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualLongMethod-return(uintptr_t);
+  probe CallNonvirtualLongMethodV-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualLongMethodV-return(uintptr_t);
+  probe CallNonvirtualObjectMethodA-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualObjectMethodA-return(void*);
+  probe CallNonvirtualObjectMethod-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualObjectMethod-return(void*);
+  probe CallNonvirtualObjectMethodV-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualObjectMethodV-return(void*);
+  probe CallNonvirtualShortMethodA-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualShortMethodA-return(uint16_t);
+  probe CallNonvirtualShortMethod-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualShortMethod-return(uint16_t);
+  probe CallNonvirtualShortMethodV-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualShortMethodV-return(uint16_t);
+  probe CallNonvirtualVoidMethodA-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualVoidMethodA-return();
+  probe CallNonvirtualVoidMethod-entry(void*, void*, void*, uintptr_t);
+  probe CallNonvirtualVoidMethod-return();
+  probe CallNonvirtualVoidMethodV-entry(void*, void*, void*, uintptr_t);  
+  probe CallNonvirtualVoidMethodV-return();
+  probe CallObjectMethodA-entry(void*, void*, uintptr_t);
+  probe CallObjectMethodA-return(void*);
+  probe CallObjectMethod-entry(void*, void*, uintptr_t);
+  probe CallObjectMethod-return(void*);
+  probe CallObjectMethodV-entry(void*, void*, uintptr_t);
+  probe CallObjectMethodV-return(void*);
+  probe CallShortMethodA-entry(void*, void*, uintptr_t);
+  probe CallShortMethodA-return(uint16_t);
+  probe CallShortMethod-entry(void*, void*, uintptr_t);
+  probe CallShortMethod-return(uint16_t);
+  probe CallShortMethodV-entry(void*, void*, uintptr_t);
+  probe CallShortMethodV-return(uint16_t);
+  probe CallStaticBooleanMethodA-entry(void*, void*, uintptr_t);
+  probe CallStaticBooleanMethodA-return(uintptr_t);
+  probe CallStaticBooleanMethod-entry(void*, void*, uintptr_t);
+  probe CallStaticBooleanMethod-return(uintptr_t);
+  probe CallStaticBooleanMethodV-entry(void*, void*, uintptr_t);
+  probe CallStaticBooleanMethodV-return(uintptr_t);
+  probe CallStaticByteMethodA-entry(void*, void*, uintptr_t);
+  probe CallStaticByteMethodA-return(char);
+  probe CallStaticByteMethod-entry(void*, void*, uintptr_t);
+  probe CallStaticByteMethod-return(char);
+  probe CallStaticByteMethodV-entry(void*, void*, uintptr_t);
+  probe CallStaticByteMethodV-return(char);
+  probe CallStaticCharMethodA-entry(void*, void*, uintptr_t);
+  probe CallStaticCharMethodA-return(uint16_t);
+  probe CallStaticCharMethod-entry(void*, void*, uintptr_t);
+  probe CallStaticCharMethod-return(uint16_t);
+  probe CallStaticCharMethodV-entry(void*, void*, uintptr_t);
+  probe CallStaticCharMethodV-return(uint16_t);
+  probe CallStaticDoubleMethodA-entry(void*, void*, uintptr_t);
+  probe CallStaticDoubleMethodA-return(double);
+  probe CallStaticDoubleMethod-entry(void*, void*, uintptr_t);
+  probe CallStaticDoubleMethod-return(double);
+  probe CallStaticDoubleMethodV-entry(void*, void*, uintptr_t);
+  probe CallStaticDoubleMethodV-return(double);
+  probe CallStaticFloatMethodA-entry(void*, void*, uintptr_t);
+  probe CallStaticFloatMethodA-return(float);
+  probe CallStaticFloatMethod-entry(void*, void*, uintptr_t);
+  probe CallStaticFloatMethod-return(float);
+  probe CallStaticFloatMethodV-entry(void*, void*, uintptr_t);
+  probe CallStaticFloatMethodV-return(float);
+  probe CallStaticIntMethodA-entry(void*, void*, uintptr_t);
+  probe CallStaticIntMethodA-return(uint32_t);
+  probe CallStaticIntMethod-entry(void*, void*, uintptr_t);
+  probe CallStaticIntMethod-return(uint32_t);
+  probe CallStaticIntMethodentry(void*, void*, uintptr_t);
+  probe CallStaticIntMethodV-return(uint32_t);
+  probe CallStaticLongMethodA-entry(void*, void*, uintptr_t);
+  probe CallStaticLongMethodA-return(uintptr_t);
+  probe CallStaticLongMethod-entry(void*, void*, uintptr_t);
+  probe CallStaticLongMethod-return(uintptr_t);
+  probe CallStaticLongMethodV-entry(void*, void*, uintptr_t);
+  probe CallStaticLongMethodV-return(uintptr_t);
+  probe CallStaticObjectMethodA-entry(void*, void*, uintptr_t);
+  probe CallStaticObjectMethodA-return(void*);
+  probe CallStaticObjectMethod-entry(void*, void*, uintptr_t);
+  probe CallStaticObjectMethod-return(void*);
+  probe CallStaticObjectMethodV-entry(void*, void*, uintptr_t);
+  probe CallStaticObjectMethodV-return(void*);
+  probe CallStaticShortMethodA-entry(void*, void*, uintptr_t);
+  probe CallStaticShortMethodA-return(uint16_t);
+  probe CallStaticShortMethod-entry(void*, void*, uintptr_t);
+  probe CallStaticShortMethod-return(uint16_t);
+  probe CallStaticShortMethodV-entry(void*, void*, uintptr_t);
+  probe CallStaticShortMethodV-return(uint16_t);
+  probe CallStaticVoidMethodA-entry(void*, void*, uintptr_t);
+  probe CallStaticVoidMethodA-return();
+  probe CallStaticVoidMethod-entry(void*, void*, uintptr_t);
+  probe CallStaticVoidMethod-return(); 
+  probe CallStaticVoidMethodV-entry(void*, void*, uintptr_t);  
+  probe CallStaticVoidMethodV-return();
+  probe CallVoidMethodA-entry(void*, void*, uintptr_t);  
+  probe CallVoidMethodA-return();
+  probe CallVoidMethod-entry(void*, void*, uintptr_t);  
+  probe CallVoidMethod-return(); 
+  probe CallVoidMethodV-entry(void*, void*, uintptr_t);  
+  probe CallVoidMethodV-return();
+  probe CreateJavaVM-entry(void**, void**, void*);
+  probe CreateJavaVM-return(uint32_t);
+  probe DefineClass-entry(void*, const char*, void*, char, uintptr_t);
+  probe DefineClass-return(void*);
+  probe DeleteGlobalRef-entry(void*, void*);
+  probe DeleteGlobalRef-return();
+  probe DeleteLocalRef-entry(void*, void*);
+  probe DeleteLocalRef-return();
+  probe DeleteWeakGlobalRef-entry(void*, void*);
+  probe DeleteWeakGlobalRef-return();
+  probe DestroyJavaVM-entry(void*);
+  probe DestroyJavaVM-return(uint32_t);
+  probe DetachCurrentThread-entry(void*);
+  probe DetachCurrentThread-return(uint32_t);
+  probe EnsureLocalCapacity-entry(void*, uint32_t);
+  probe EnsureLocalCapacity-return(uint32_t);
+  probe ExceptionCheck-entry(void*);
+  probe ExceptionCheck-return(uintptr_t);
+  probe ExceptionClear-entry(void*);
+  probe ExceptionClear-return();
+  probe ExceptionDescribe-entry(void*);  
+  probe ExceptionDescribe-return();
+  probe ExceptionOccurred-entry(void*);
+  probe ExceptionOccurred-return(void*);
+  probe FatalError-entry(void* env, const char*);
+  probe FindClass-entry(void*, const char*);
+  probe FindClass-return(void*);
+  probe FromReflectedField-entry(void*, void*);
+  probe FromReflectedField-return(uintptr_t);
+  probe FromReflectedMethod-entry(void*, void*);
+  probe FromReflectedMethod-return(uintptr_t);
+  probe GetArrayLength-entry(void*, void*);
+  probe GetArrayLength-return(uintptr_t);
+  probe GetBooleanArrayElements-entry(void*, void*, uintptr_t*);
+  probe GetBooleanArrayElements-return(uintptr_t*);
+  probe GetBooleanArrayRegion-entry(void*, void*, uintptr_t, uintptr_t, uintptr_t*);
+  probe GetBooleanArrayRegion-return();
+  probe GetBooleanField-entry(void*, void*, uintptr_t);
+  probe GetBooleanField-return(uintptr_t);
+  probe GetByteArrayElements-entry(void*, void*, uintptr_t*);
+  probe GetByteArrayElements-return(char*);
+  probe GetByteArrayRegion-entry(void*, void*, uintptr_t, uintptr_t, char*);
+  probe GetByteArrayRegion-return();
+  probe GetByteField-entry(void*, void*, uintptr_t);
+  probe GetByteField-return(char);
+  probe GetCharArrayElements-entry(void*, void*, uintptr_t*);
+  probe GetCharArrayElements-return(uint16_t*);
+  probe GetCharArrayRegion-entry(void*, void*, uintptr_t, uintptr_t, uint16_t*);
+  probe GetCharArrayRegion-return();
+  probe GetCharField-entry(void*, void*, uintptr_t);
+  probe GetCharField-return(uint16_t);
+  probe GetCreatedJavaVMs-eintptr_t*);
+  probe GetCreatedJavaVMs-return(uintptr_t);
+  probe GetCreateJavaVMs-entry(void*, uintptr_t, uintptr_t*);
+  probe GetCreateJavaVMs-return(uint32_t);
+  probe GetDefaultJavaVMInitArgs-entry(void*);
+  probe GetDefaultJavaVMInitArgs-return(uint32_t);
+  probe GetDirectBufferAddress-entry(void*, void*);
+  probe GetDirectBufferAddress-return(void*);
+  probe GetDirectBufferCapacity-entry(void*, void*);
+  probe GetDirectBufferCapacity-return(uintptr_t);
+  probe GetDoubleArrayElements-entry(void*, void*, uintptr_t*);
+  probe GetDoubleArrayElements-return(double*);
+  probe GetDoubleArrayRegion-entry(void*, void*, uintptr_t, uintptr_t, double*);
+  probe GetDoubleArrayRegion-return();
+  probe GetDoubleField-entry(void*, void*, uintptr_t);
+  probe GetDoubleField-return(double);
+  probe GetEnv-entry(void*, void*, void*);
+  probe GetEnv-return(uint32_t);
+  probe GetFieldID-entry(void*, void*, const char*, const char*);
+  probe GetFieldID-return(uintptr_t);
+  probe GetFloatArrayElements-entry(void*, void*, uintptr_t*);
+  probe GetFloatArrayElements-return(float*);
+  probe GetFloatArrayRegion-entry(void*, void*, uintptr_t, uintptr_t, float*);
+  probe GetFloatArrayRegion-return();
+  probe GetFloatField-entry(void*, void*, uintptr_t);
+  probe GetFloatField-return(float);
+  probe GetIntArrayElements-entry(void*, void*, uintptr_t*);
+  probe GetIntArrayElements-return(uint32_t*);
+  probe GetIntArrayRegion-entry(void*, void*, uintptr_t, uintptr_t, uint32_t*);
+  probe GetIntArrayRegion-return();
+  probe GetIntField-entry(void*, void*, uintptr_t);
+  probe GetIntField-return(uint32_t);
+  probe GetJavaVM-entry(void*, void**);
+  probe GetJavaVM-return(uint32_t);
+  probe GetLongArrayElements-entry(void*, void*, uintptr_t*);
+  probe GetLongArrayElements-return(uintptr_t*);
+  probe GetLongArrayRegion-entry(void*, void*, uintptr_t, uintptr_t, uintptr_t*);
+  probe GetLongArrayRegion-return();
+  probe GetLongField-entry(void*, void*, uintptr_t);
+  probe GetLongField-return(uintptr_t);
+  probe GetMethodID-entry(void*, void*, const char*, const char*);
+  probe GetMethodID-return(uintptr_t);
+  probe GetObjectArrayElement-entry(void*, void*, uintptr_t);
+  probe GetObjectArrayElement-return(void*);
+  probe GetObjectClass-entry(void*, void*);
+  probe GetObjectClass-return(void*);
+  probe GetObjectField-entry(void*, void*, uintptr_t);
+  probe GetObjectField-return(void*);
+  probe GetObjectRefType-entry(void*, void*);
+  probe GetObjectRefType-return(void*);
+  probe GetPrimitiveArrayCritical-entry(void*, void*, uintptr_t*);
+  probe GetPrimitiveArrayCritical-return(void*);
+  probe GetShortArrayElements-entry(void*, void*, uintptr_t*);
+  probe GetShortArrayElements-return(uint16_t*);
+  probe GetShortArrayRegion-entry(void*, void*, uintptr_t, uintptr_t, uint16_t*);
+  probe GetShortArrayRegion-return();
+  probe GetShortField-entry(void*, void*, uintptr_t);
+  probe GetShortField-return(uint16_t);
+  probe GetStaticBooleanField-entry(void*, void*, uintptr_t);
+  probe GetStaticBooleanField-return(uintptr_t);
+  probe GetStaticByteField-entry(void*, void*, uintptr_t);
+  probe GetStaticByteField-return(char);
+  probe GetStaticCharField-entry(void*, void*, uintptr_t);
+  probe GetStaticCharField-return(uint16_t);
+  probe GetStaticDoubleField-entry(void*, void*, uintptr_t);
+  probe GetStaticDoubleField-return(double);
+  probe GetStaticFieldID-entry(void*, void*, const char*, const char*);
+  probe GetStaticFieldID-return(uintptr_t);
+  probe GetStaticFloatField-entry(void*, void*, uintptr_t);
+  probe GetStaticFloatField-return(float);
+  probe GetStaticIntField-entry(void*, void*, uintptr_t);
+  probe GetStaticIntField-return(uint32_t);
+  probe GetStaticLongField-entry(void*, void*, uintptr_t);
+  probe GetStaticLongField-return(uintptr_t);
+  probe GetStaticMethodID-entry(void*, void*, const char*, const char*);
+  probe GetStaticMethodID-return(uintptr_t);
+  probe GetStaticObjectField-entry(void*, void*, uintptr_t);
+  probe GetStaticObjectField-return(void*);
+  probe GetStaticShortField-entry(void*, void*, uintptr_t);
+  probe GetStaticShortField-return(uint16_t);
+  pro GetStringChars-entry(void*, void*, uintptr_t*);
+  probe GetStringChars-return(const uint16_t*);
+  probe GetStringCritical-entry(void*, void*, uintptr_t*);
+  probe GetStringCritical-return(const uint16_t*);
+  probe GetStringLength-entry(void*, void*);
+  probe GetStringLength-return(uintptr_t);
+  probe GetStringRegion-entry(void*, void*, uintptr_t, uintptr_t, uint16_t*);
+  probe GetStringRegion-return();
+  probe GetStringUTFChars-entry(void*, void*, uintptr_t*);
+  probe GetStringUTFChars-return(const char*);
+  probe GetStringUTFLength-entry(void*, void*);
+  probe GetStringUTFLength-return(uintptr_t);
+  probe GetStringUTFRegion-entry(void*, void*, uintptr_t, uintptr_t, char*);
+  probe GetStringUTFRegion-return();
+  probe GetSuperclass-entry(void*, void*);
+  probe GetSuperclass-return(void*);
+  probe GetVersion-entry(void*);
+  probe GetVersion-return(uint32_t);
+  probe IsAssignableFrom-entry(void*, void*, void*);
+  probe IsAssignableFrom-return(uintptr_t);
+  probe IsInstanceOf-entry(void*, void*, void*);
+  probe IsInstanceOf-return(uintptr_t);
+  probe IsSameObject-entry(void*, void*, void*);
+  probe IsSameObject-return(uintptr_t);
+  probe MonitorEnter-entry(void*, void*);
+  probe MonitorEnter-return(uint32_t);
+  probe MonitorExit-entry(void*, void*);
+  probe MonitorExit-return(uint32_t);
+  probe NewBooleanArray-entry(void*, uintptr_t);
+  probe NewBooleanArray-return(void*);
+  probe NewByteArray-entry(void*, uintptr_t);
+  probe NewByteArray-return(void*);
+  probe NewCharArray-entry(void*, uintptr_t);
+  probe NewCharArray-return(void*);
+  probe NewDirectByteBuffer-entry(void*, void*, uintptr_t);
+  probe NewDirectByteBuffer-return(void*);
+  probe NewDoubleArray-entry(void*, uintptr_t);
+  probe NewDoubleArray-return(void*);
+  probe NewFloatArray-entry(void*, uintptr_t);
+  probe NewFloatArray-return(void*);
+  probe NewGlobalRef-entry(void*, void*);
+  probe NewGlobalRef-return(void*);
+  probe NewIntArray-entry(void*, uintptr_t);
+  probe NewIntArray-return(void*);
+  probe NewLocalRef-entry(void*, void*);
+  probe NewLocalRef-return(void*);
+  probe NewLongArray-entry(void*, uintptr_t);
+  probe NewLongArray-return(void*);
+  probe NewObjectA-entry(void*, void*, uintptr_t);  
+  probe NewObjectA-return(void*);
+  probe NewObjectArray-entry(void*, uintptr_t, void*, void*);
+  probe NewObjectArray-return(void*);
+  probe NewObject-entry(void*, void*, uintptr_t); 
+  probe NewObject-return(void*);
+  probe NewObjectV-entry(void*, void*, uintptr_t);  
+  probe NewObjectV-return(void*);
+  probe NewShortArray-entry(void*, uintptr_t);
+  probe NewShortArray-return(void*);
+  probe NewString-entry(void*, const uint16_t*, uintptr_t);
+  probe NewString-return(void*);
+  probe NewStringUTF-entry(void*, const char*);
+  probe NewStringUTF-return(void*);
+  probe NewWeakGlobalRef-entry(void*, void*);
+  probe NewWeakGlobalRef-return(void*);
+  probe PopLocalFrame-entry(void*, void*);
+  probe PopLocalFrame-return(void*);
+  probe PushLocalFrame-entry(void*, uint32_t);
+  probe PushLocalFrame-return(uint32_t);
+  probe RegisterNatives-entry(void*, void*, const void*, uint32_t);  
+  probe RegisterNatives-return(uint32_t);
+  probe ReleaseBooleanArrayElements-entry(void*, void*, uintptr_t*, uint32_t);
+  probe ReleaseBooleanArrayElements-return();
+  probe ReleaseByteArrayElements-entry(void*, void*, char*, uint32_t);
+  probe ReleaseByteArrayElements-return();
+  probe ReleaseCharArrayElements-entry(void*, void*, uint16_t*, uint32_t);
+  probe ReleaseCharArrayElements-return();
+  probe ReleaseDoubleArrayElements-entry(void*, void*, double*, uint32_t);
+  probe ReleaseDoubleArrayElements-return();
+  probe ReleaseFloatArrayElements-entry(void*, void*, float*, uint32_t);
+  probe ReleaseFloatArrayElements-return();
+  probe ReleaseIntArrayElements-entry(void*, void*, uint32_t*, uint32_t);
+  probe ReleaseIntArrayElements-return();
+  probe ReleaseLongArrayElements-entry(void*, void*, uintptr_t*, uint32_t);
+  probe ReleaseLongArrayElements-return();
+  probe ReleaseObjectArrayElements-entry(void*, void*, void**, uint32_t);
+  probe ReleaseObjectArrayElements-return();
+  probe Releasey(void*, void*, void*, uint32_t);
+  probe ReleasePrimitiveArrayCritical-return();
+  probe ReleaseShortArrayElements-entry(void*, void*, uint16_t*, uint32_t);
+  probe ReleaseShortArrayElements-return();
+  probe ReleaseStringChars-entry(void*, void*, const uint16_t*);
+  probe ReleaseStringChars-return();
+  probe ReleaseStringCritical-entry(void*, void*, const uint16_t*);
+  probe ReleaseStringCritical-return();
+  probe ReleaseStringUTFChars-entry(void*, void*, const char*);
+  probe ReleaseStringUTFChars-return();
+  probe SetBooleanArrayRegion-entry(void*, void*, uintptr_t, uintptr_t, const uintptr_t*);
+  probe SetBooleanArrayRegion-return();
+  probe SetBooleanField-entry(void*, void*, uintptr_t, uintptr_t);
+  probe SetBooleanField-return();
+  probe SetByteArrayRegion-entry(void*, void*, uintptr_t, uintptr_t, const char*);
+  probe SetByteArrayRegion-return();
+  probe SetByteField-entry(void*, void*, uintptr_t, char);
+  probe SetByteField-return();
+  probe SetCharArrayRegion-entry(void*, void*, uintptr_t, uintptr_t, const uint16_t*);
+  probe SetCharArrayRegion-return();
+  probe SetCharField-entry(void*, void*, uintptr_t, uint16_t);
+  probe SetCharField-return();
+  probe SetDoubleArrayRegion-entry(void*, void*, uintptr_t, uintptr_t, const double*);
+  probe SetDoubleArrayRegion-return();
+  probe SetDoubleField-entry(void*, void*, uintptr_t, double);
+  probe SetDoubleField-return();
+  probe SetFloatArrayRegion-entry(void*, void*, uintptr_t, uintptr_t, const float*);
+  probe SetFloatArrayRegion-return();
+  probe SetFloatField-entry(void*, void*, uintptr_t, float);
+  probe SetFloatField-return();
+  probe SetIntArrayRegion-entry(void*, void*, uintptr_t, uintptr_t, const uint32_t*);
+  probe SetIntArrayRegion-return();
+  probe SetIntField-entry(void*, void*, uintptr_t, uint32_t);
+  probe SetIntField-return();
+  probe SetLongArrayRegion-entry(void*, void*, uintptr_t, uintptr_t, const uintptr_t*);
+  probe SetLongArrayRegion-return();
+  probe SetLongField-entry(void*, void*, uintptr_t, uintptr_t);
+  probe SetLongField-return();
+  probe SetObjectArrayElement-entry(void*, void*, uintptr_t, void*);
+  probe SetObjectArrayElement-return();
+  probe SetObjectField-entry(void*, void*, uintptr_t, void*);
+  probe SetObjectField-return();
+  probe SetShortArrayRegion-entry(void*, void*, uintptr_t, uintptr_t, const uint16_t*);
+  probe SetShortArrayRegion-return();
+  probe SetShortField-entry(void*, void*, uintptr_t, uint16_t);
+  probe SetShortField-return();
+  probe SetStaticBooleanField-entry(void*, void*, uintptr_t, uintptr_t);
+  probe SetStaticBooleanField-return();
+  probe SetStaticByteField-entry(void*, void*, uintptr_t, char);
+  probe SetStaticByteField-return();
+  probe SetStaticCharField-entry(void*, void*, uintptr_t, uint16_t);
+  probe SetStaticCharField-return();
+  probe SetStaticDoubleField-entry(void*, void*, uintptr_t, double);
+  probe SetStaticDoubleField-return();
+  probe SetStaticFloatField-entry(void*, void*, uintptr_t, float);
+  probe SetStaticFloatField-return();
+  probe SetStaticIntField-entry(void*, void*, uintptr_t, uint32_t);
+  probe SetStaticIntField-return();
+  probe SetStaticLongField-entry(void*, void*, uintptr_t, uintptr_t);
+  probe SetStaticLongField-return();
+  probe SetStaticObjectField-entry(void*, void*, uintptr_t, void*);
+  probe SetStaticObjectField-return();
+  probe SetStaticShortField-entry(void*, void*, uintptr_t, uint16_t);
+  probe SetStaticShortField-return();
+  probe Throw-entry(void*, void*);
+  probe ThrowNew-entry(void*, void*, const char*);  
+  probe ThrowNew-return(uint32_t);
+  probe Throw-return(uint32_t);
+  probe ToReflectedField-entry(void*, void*, uintptr_t, uintptr_t);
+  probe ToReflectedField-return(void*);
+  probe ToReflectedMethod-entry(void*, void*, uintptr_t, uintptr_t);
+  probe ToReflectedMethod-return(void*);
+  probe UnregisterNatives-entry(void*, void*);  
+  probe UnregisterNatives-return(uint32_t);
+};
+</pre>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

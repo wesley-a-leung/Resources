@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<meta name="generator" content="HTML Tidy, see www.w3.org" />
+<title>V1.4 JavaBeans API Enhancements</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>API Enhancements to the JavaBeans Component API in v1.4</h1>
+<!-- Body text begins here -->
+<p>This document describes changes to the <tt>java.beans</tt>
+package that were introduced in Java SE 1.4:</p>
+<ul>
+<li><a href="#ltp">New API for Long-Term Persistence</a></li>
+<li><a href="#othernew">Other API Additions</a></li>
+<li><a href="#introspector">Changes to the Introspector</a></li>
+<li><a href="#gc">Garbage Collection and Custom Attributes</a></li>
+</ul>
+<br />
+<h2><a name="ltp" id="ltp">New API for Long-Term
+Persistence</a></h2>
+<p>To support long-term persistence, the following classes were
+added:</p>
+<p align="center"></p>
+<table summary="new API for Long-Term Persistance">
+<thead>
+<tr>
+<th id="h1"><em>Class</em></th>
+<th id="h2"><em>Description</em></th>
+</tr>
+<tr valign="top">
+<td headers="h1"><a href=
+"../../../api/java/beans/Statement.html"><code>Statement</code></a></td>
+<td headers="h2">An object that represents a method call, possibly with
+arguments, upon an object. For example:
+<code>a.setFoo(b)</code>.</td>
+</tr>
+<tr valign="top">
+<td headers="h1"><a href=
+"../../../api/java/beans/Expression.html"><code>Expression</code></a></td>
+<td headers="h2">A statement that returns a result. For example:
+<code>a.getFoo()</code>.</td>
+</tr>
+<tr valign="top">
+<td headers="h1"><a href=
+"../../../api/java/beans/XMLDecoder.html"><code>XMLDecoder</code></a></td>
+<td headers="h2">Reads XML documents that were created using
+<code>XMLEncoder</code>.</td>
+</tr>
+<tr valign="top">
+<td headers="h1"><a href=
+"../../../api/java/beans/Encoder.html"><code>Encoder</code></a></td>
+<td headers="h2">Uses persistence delegates to break an object graph down into a
+series of <code>Statement</code>s and <code>Expression</code>s that
+can be used to recreate it.</td>
+</tr>
+<tr valign="top">
+<td headers="h1"><a href=
+"../../../api/java/beans/XMLEncoder.html"><code>XMLEncoder</code></a></td>
+<td headers="h2">An <code>Encoder</code> that produces statements and
+expressions in an XML encoding.</td>
+</tr>
+<tr valign="top">
+<td headers="h1"><a href=
+"../../../api/java/beans/PersistenceDelegate.html"><code>PersistenceDelegate</code></a></td>
+<td headers="h2">An abstract class that defines objects that can express the
+state of another object using the public methods of that object's
+class.</td>
+</tr>
+<tr valign="top">
+<td headers="h1"><a href=
+"../../../api/java/beans/DefaultPersistenceDelegate.html"><code>DefaultPersistenceDelegate</code></a></td>
+<td headers="h2">The persistence delegate used, by default, for beans.</td>
+</tr>
+</thead>
+</table>
+<p>See <a href="index.html">JavaBeans Component API</a> for links
+to where you can find more information about long-term
+persistence.<br /></p>
+<h2><a name="othernew" id="othernew">Other API Additions</a></h2>
+<p>The following classes were also added in v1.4:</p>
+<p align="center"></p>
+<table summary="other classes added in v1.4">
+<thead>
+<tr>
+<th id="h101"><em>Class</em></th>
+<th id="h102"><em>Description</em></th>
+</tr>
+<tr valign="top">
+<td headers="h101"><a href=
+"../../../api/java/beans/EventHandler.html"><code>EventHandler</code></a></td>
+<td headers="h102">Provides support for dynamically generating event listeners
+that have a small footprint and can be saved automatically by the
+persistence scheme.</td>
+</tr>
+<tr valign="top">
+<td headers="h101"><a href=
+"../../../api/java/beans/ExceptionListener.html"><code>ExceptionListener</code></a></td>
+<td headers="h102">Defines a listener to be notified when a exception was thrown
+but then recovered from. You can register an exception listener on
+an <code>XMLEncoder</code> or <code>XMLDecoder</code> object to be
+notified when the object encounters a recoverable problem while
+writing or reading a bean.</td>
+</tr>
+<tr valign="top">
+<td headers="h101"><a href=
+"../../../api/java/beans/PropertyChangeListenerProxy.html"><code>PropertyChangeListenerProxy</code></a></td>
+<td headers="h102">A proxy that implements <code>PropertyChangeListener</code> and
+serves to group another <code>PropertyChangeListener</code> (the
+real event handler) with a specific property; the proxy forwards
+property change events to the real event handler.</td>
+</tr>
+<tr valign="top">
+<td headers="h101"><a href=
+"../../../api/java/beans/VetoableChangeListenerProxy.html"><code>VetoableChangeListenerProxy</code></a></td>
+<td headers="h102">A proxy that implements <code>VetoableChangeListener</code> and
+serves to group another <code>VetoableChangeListener</code> (the
+real event handler) with a specific constrained property; the proxy
+forwards vetoable property change events to the real event
+handler.</td>
+</tr>
+</thead>
+</table>
+<p>The following classes have additional methods:</p>
+<ul>
+<li>The <a href=
+"../../../api/java/beans/PropertyChangeSupport.html"><code>PropertyChangeSupport</code></a>
+class now contains a no-argument method to get all the registered
+property change listeners: <a href=
+"../../../api/java/beans/PropertyChangeSupport.html#getPropertyChangeListeners--">
+<code>getPropertyChangeListeners</code></a>.</li>
+<li>Similarly, the <a href=
+"../../../api/java/beans/VetoableChangeSupport.html"><code>VetoableChangeSupport</code></a>
+class now contains a no-argument method to get all the registered
+vetoable change listeners: <a href=
+"../../../api/java/beans/VetoableChangeSupport.html#getVetoableChangeListeners--">
+<code>getVetoableChangeListeners</code></a>.</li>
+</ul>
+<br />
+<h2><a name="introspector" id="introspector">Changes to the
+Introspector</a></h2>
+The <a href=
+"../../../api/java/beans/Introspector.html"><code>Introspector</code></a>
+class has been reimplemented, and its performance has improved. The
+new implementation has caused the following changes in the behavior
+of the introspector:
+<ul>
+<li><code>FeatureDescriptor</code>s are now shared on a
+per-<code>BeanInfo</code> basis, rather than copied when the
+<code>BeanInfo</code> is returned. This change improves the
+performance of the <code>getBeanInfo</code> method. It also means
+that when an attribute/value in a <code>FeatureDescriptor</code>
+changes, that change is persistent among <code>getBeanInfo</code>
+invocations as long as the <code>BeanInfo</code> is not garbage
+collected. (Garbage collection of <code>BeanInfo</code>s is
+described in <a href="#gc">Garbage Collection and Custom
+Attributes</a>.)</li>
+<li>The <code>getBeanInfo</code> methods no longer create a copy of
+the requested <code>BeanInfo</code>. Instead, they cache the
+<code>BeanInfo</code> and return it. If necessary, you can get the
+old behavior by storing a reference to the returned
+<code>BeanInfo</code> and using the <code>flushFromCaches</code>
+method to flush the bean's class from the introspector's
+cache.</li>
+<li>If the <code>instantiate</code> method can't instantiate a
+particular class using the sibling or bootstrap class loader, it
+now tries to load the class using the current thread's class
+loader.</li>
+</ul>
+<br />
+<h2><a name="gc" id="gc">Garbage Collection and Custom
+Attributes</a></h2>
+<p>As of v 1.4, a <code>BeanInfo</code> can be garbage collected
+when no direct references to it exist and the system is low on
+memory. This is implemented in the <code>Introspector</code> by
+wrapping <code>BeanInfo</code>s in <code>SoftReference</code>s.</p>
+<p>The possibility of garbage collection affects how you store
+custom attributes inside <code>BeanInfo</code>s. If a particular
+<code>BeanInfo</code> is garbage collected, then the next time you
+invoke <code>Introspector.getBeanInfo</code> to get the
+<code>BeanInfo</code>, the returned object won't contain any custom
+attributes.</p>
+<p>To avoid this problem, if you store custom attributes inside a
+<code>BeanInfo</code> you must ensure that the
+<code>BeanInfo</code> is correctly initialized with those
+attributes every time you retrieve the <code>BeanInfo</code>. The
+following is an example of initializing a <code>BeanInfo</code>
+class with a custom property in the bean descriptor. The code would
+be similar for a custom attribute in a property descriptor, method
+descriptor, or event set descriptor.</p>
+<pre class="codeblock">
+BeanInfo beanInfo = getBeanInfo(SomeBean.class);
+BeanDescriptor beanDescriptor = beanInfo.getBeanDescriptor();
+
+/*
+ * Before using the BeanInfo, check to see if our custom
+ * property has been initialized.  (Even if we initialized
+ * it before, if the BeanInfo has been garbage collected,
+ * then we need to initialize it again.)  Since our custom
+ * property's value could be null, we define another property
+ * to tell us if the custom property is initialized.
+ */
+if (beanDescriptor.getValue("myProperty_init") == null) {
+    beanDescriptor.setValue("myProperty", someValue);
+    beanDescriptor.setValue("myProperty_init", Boolean.TRUE);
+}
+</pre>
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

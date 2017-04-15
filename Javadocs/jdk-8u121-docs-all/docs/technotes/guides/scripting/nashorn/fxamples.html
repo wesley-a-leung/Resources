@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>JavaFX Script Application Examples</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1044" name="generator"/>
+<meta content="This appendix provides examples of JavaFX script applications." name="description"/>
+<meta content="2015-02-12T14:37:36Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Nashorn User's Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E41835-02" name="partnum"/>
+<meta content="JSNUG" name="docid"/>
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Nashorn User's Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="shell.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<hr/>
+<div id="JSNUG145"><a id="CHDGADCA" name="CHDGADCA"/>
+<h1><span>A</span> JavaFX Script Application Examples</h1>
+<a id="JSNUG146" name="JSNUG146"/>
+<p>This appendix provides examples of JavaFX script applications.</p>
+<p>For more information about writing JavaFX applications as scripts interpreted by the Nashorn engine, see <a href="javafx.html#CEGEJAFB">Chapter 3, "Nashorn and JavaFX"</a>.</p>
+<div id="JSNUG147"><a id="sthref30" name="sthref30"/>
+<p>Example A-1 JavaFX 3-D</p>
+<p>This example demonstrates how a complex task (in this case, rendering 3-D graphics with JavaFX) can be done with relatively little code using the Nashorn script engine capabilities. When you run this example, a window with three green shapes is shown: a box, a sphere, and a cylinder.</p>
+<pre dir="ltr" xml:space="preserve">
+load("fx:base.js");
+load("fx:controls.js");
+load("fx:graphics.js");
+
+var material = new PhongMaterial();
+material.diffuseColor = Color.LIGHTGREEN;
+material.specularColor = Color.rgb(30, 30, 30);
+
+var meshView = Java.to([
+    new Box(200, 200, 200),
+    new Sphere(100),
+    new Cylinder(100, 200)
+], "javafx.scene.shape.Shape3D[]");
+
+for (var i = 0; i != 3; i++) {
+    meshView[i].material = material;
+    meshView[i].translateX = (i + 1) * 220;
+    meshView[i].translateY = 200;
+    meshView[i].translateZ = 20;
+    meshView[i].drawMode = DrawMode.FILL;
+    meshView[i].cullFace = CullFace.BACK;
+};
+
+var pointLight = new PointLight(Color.WHITE);
+pointLight.translateX = 800;
+pointLight.translateY = -200;
+pointLight.translateZ = -1000;
+
+var root = new Group(meshView);
+root.children.add(pointLight);
+
+var scene = new Scene(root, 800, 400, true);
+scene.fill = Color.rgb(127, 127, 127);
+scene.camera = new PerspectiveCamera(false);
+$STAGE.scene = scene;
+$STAGE.show();
+</pre></div>
+
+<div id="JSNUG148"><a id="sthref31" name="sthref31"/>
+<p>Example A-2 JavaFX Animation</p>
+<p>This example demonstrates how to create a JavaFX animation using the Nashorn script engine capabilities. When you run this example, a window with colorful circles moving around is shown.</p>
+<pre dir="ltr" xml:space="preserve">
+load("fx:base.js");
+load("fx:controls.js");
+load("fx:graphics.js");
+ 
+var WIDTH = 500;
+var HEIGHT = 600;
+var animation;
+ 
+function setup(primaryStage) {
+ var root = new Group();
+ primaryStage.resizable = false;
+ var scene = new Scene(root, WIDTH, HEIGHT);
+ scene.title = "Colourful Circles";
+ primaryStage.scene = scene;
+ 
+ // create first list of circles
+ var layer1 = new Group();
+ for(var i = 0; i &lt; 15; i++) {
+  var circle = new Circle(200, Color.web("white", 0.05));
+  circle.strokeType = StrokeType.OUTSIDE;
+  circle.stroke = Color.web("white", 0.2);
+  circle.strokeWidth = 4;
+  layer1.children.add(circle);
+ }
+ 
+ // create second list of circles
+ var layer2 = new Group();
+ for(var i = 0; i &lt; 20; i++) {
+  var circle = new Circle(70, Color.web("white", 0.05));
+  circle.strokeType = StrokeType.OUTSIDE;
+  circle.stroke = Color.web("white", 0.1);
+  circle.strokeWidth = 2;
+  layer2.children.add(circle);
+ }
+ 
+ // create third list of circles
+ var layer3 = new Group();
+ for(var i = 0; i &lt; 10; i++) {
+  var circle = new Circle(150, Color.web("white", 0.05));
+  circle.strokeType = StrokeType.OUTSIDE;
+  circle.stroke = Color.web("white", 0.16);
+  circle.strokeWidth = 4;
+  layer3.children.add(circle);
+ }
+ 
+ // set a blur effect on each layer
+ layer1.effect = new BoxBlur(30, 30, 3);
+ layer2.effect = new BoxBlur(2, 2, 2);
+ layer3.effect = new BoxBlur(10, 10, 3);
+ 
+ // create a rectangle size of window with colored gradient
+ var colors = new Rectangle(WIDTH, HEIGHT,
+   new LinearGradient(0, 1, 1, 0, true, CycleMethod.NO_CYCLE,
+      new Stop(0,   Color.web("#f8bd55")),
+      new Stop(0.14, Color.web("#c0fe56")),
+      new Stop(0.28, Color.web("#5dfbc1")),
+      new Stop(0.43, Color.web("#64c2f8")),
+      new Stop(0.57, Color.web("#be4af7")),
+      new Stop(0.71, Color.web("#ed5fc2")),
+      new Stop(0.85, Color.web("#ef504c")),
+      new Stop(1,   Color.web("#f2660f"))));
+ colors.blendMode = BlendMode.OVERLAY;
+ 
+ // create main content
+ var group = new Group(new Rectangle(WIDTH, HEIGHT, Color.BLACK),
+        layer1, 
+        layer2,
+        layer3,
+        colors);
+ var clip = new Rectangle(WIDTH, HEIGHT);
+ clip.smooth = false;
+ group.clip = clip;
+ root.children.add(group);
+ 
+ // create list of all circles
+ var allCircles = new java.util.ArrayList();
+ allCircles.addAll(layer1.children);
+ allCircles.addAll(layer2.children);
+ allCircles.addAll(layer3.children);
+ 
+ // Create a animation to randomly move every circle in allCircles
+ animation = new Timeline();
+ for each (var circle in allCircles) {
+  animation.getKeyFrames().addAll(
+     new KeyFrame(Duration.ZERO, // set start position at 0s
+         new KeyValue(circle.translateXProperty(),
+Math.random() * WIDTH),
+         new KeyValue(circle.translateYProperty(),
+Math.random() * HEIGHT)),
+     new KeyFrame(new Duration(20000), // set end position at 20s
+         new KeyValue(circle.translateXProperty(),
+Math.random() * WIDTH),
+         new KeyValue(circle.translateYProperty(),
+Math.random() * HEIGHT))
+     );
+ }
+ animation.autoReverse = true;
+ animation.cycleCount = Animation.INDEFINITE;
+}
+ 
+function stop() {
+ animation.stop();
+}
+ 
+function play() {
+ animation.play();
+}
+ 
+function start(primaryStage) {
+ setup(primaryStage);
+ primaryStage.show();
+ play();
+}
+</pre></div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="shell.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

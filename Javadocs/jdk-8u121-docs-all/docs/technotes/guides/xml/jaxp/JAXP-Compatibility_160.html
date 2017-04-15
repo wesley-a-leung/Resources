@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>JAXP Compatibility</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>JAXP Compatibility Guide for Java SE 6 Platform</h1>
+<h2>Contents</h2>
+<ul>
+<li>
+<p style="margin-bottom: 0in"><a href="#new">What's New</a></p>
+</li>
+<li>
+<p style="margin-bottom: 0in"><a href="#dom">DOM Level 3</a></p>
+<ul>
+<li>
+<p style="margin-bottom: 0in"><a href="#addedMethods">Methods added
+to DOM interfaces</a></p>
+</li>
+<li>
+<p style="margin-bottom: 0in"><a href="#preserving">Preserving the
+XML format</a></p>
+</li>
+</ul>
+</li>
+<li>
+<p style="margin-bottom: 0in"><a href="#SAX">SAX 2.0.2</a></p>
+</li>
+<li>
+<p style="margin-bottom: 0in"><a href="#invokingXSLT">Invoking
+XSLT</a></p>
+<ul>
+<li>
+<p style="margin-bottom: 0in"><a href="#xsltXpath">Programmatic
+Access to Xalan XPath</a></p>
+</li>
+</ul>
+</li>
+<li>
+<p style="margin-bottom: 0in"><a href="#packageNames">Package Name
+Changes</a></p>
+<ul>
+<li>
+<p style="margin-bottom: 0in"><a href="#packageNamesWhy">What
+Changed, and Why</a></p>
+</li>
+</ul>
+</li>
+<li>
+<p><a href="#JAXP_security">Security Issue Posed by Nested Entity
+Definitions</a></p>
+</li>
+</ul>
+<h2>Introduction</h2>
+<p>The Java Platform, Standared Edition 1.4 (Java SE 1.4) included the
+<i>Crimson</i> reference implementation for JAXP 1.1. The Java
+platform, Standard Edition 6 (Java SE 6) includes a
+reference implementation for JAXP 1.4 based on the Apache
+<i>Xerces</i> library.</p>
+<p>Because these implementations come from entirely different
+codebases, and because the JAXP standard has evolved from 1.1 to
+1.4, there are some subtle differences between the <span lang=
+"en-US" xml:lang="en-US">implementations</span>, even they both
+conform to the JAXP standard. These two factors combine to create
+the compatibility issues described in this guide.</p>
+<h2><a name="new" id="new"></a>What's New</h2>
+<p>See <a href="ReleaseNotes_160.html">Release Notes</a>.</p>
+<h2><a name="dom" id="dom"></a>DOM Level 3</h2>
+<p>While the reference implementation in Java SE 1.4 supported the DOM
+Level 2 API, the implementation in Java SE 6 supports the DOM Level 3
+family of APIs. This section covers the impact of those changes on
+programs that used the JAXP 1.1 reference implementation:</p>
+<ul>
+<li>
+<p style="margin-bottom: 0in"><a href="#addedMethods">Methods added
+to DOM interfaces</a></p>
+</li>
+<li>
+<p><a href="#preserving">Preserving the XML format</a></p>
+</li>
+</ul>
+<p>For more information, see the complete list of changes in the
+DOM Level 3 <a href=
+"http://www.w3.org/TR/DOM-Level-3-Core/changes.html">Changes</a>
+appendix.</p>
+<h3><a name="addedMethods" id="addedMethods"></a>Methods added to
+DOM interfaces</h3>
+<p>In DOM level 3, additional methods were defined in the following
+interfaces:</p>
+<ul>
+<li>
+<p style="margin-bottom: 0in">Attr</p>
+</li>
+<li>
+<p style="margin-bottom: 0in">Document</p>
+</li>
+<li>
+<p style="margin-bottom: 0in">DOMImplementation</p>
+</li>
+<li>
+<p style="margin-bottom: 0in">Element</p>
+</li>
+<li>
+<p style="margin-bottom: 0in">Entity</p>
+</li>
+<li>
+<p style="margin-bottom: 0in">Node</p>
+</li>
+<li>
+<p>Text</p>
+</li>
+</ul>
+<p>The added methods only affect applications that implement the
+interfaces directly, and only when the application is recompiled.
+Applications that use the factory methods to obtain implementation
+classes for these interfaces will have no problems.</p>
+<h3><a name="preserving" id="preserving"></a>Preserving the XML
+format</h3>
+<p>These changes affect an application that reads in XML data into
+a DOM, makes modifications, and then writes it out in a way that
+preserves the original formatting.</p>
+<p>In JAXP 1.1, extraneous whitespace was automatically removed on
+input, and a single property (<code>ignoringLexicalInfo</code>) was
+set to <code>false</code> to preserve entity nodes and CDATA nodes,
+for example. Including the additional nodes made the DOM somewhat
+more complex to process, but because they were there, adding
+whitespace output (indentation and newlines) produced highly
+readable, formatted version of the XML data which closely
+approximated the input.</p>
+<p>In JAXP 1.4, there are four APIs that the application uses to
+determine how much lexical (formatting) information is available to
+process, using the following <code>DocumentBuilderFactory</code>
+methods:</p>
+<ul>
+<li>
+<p style="margin-bottom: 0in">
+<b><code>setCoalescing()</code></b><br />
+To convert CDATA nodes to Text node and append<br />
+to an adjacent Text node (if any).</p>
+</li>
+<li>
+<p style="margin-bottom: 0in">
+<b><code>setExpandEntityReferences()</code></b><br />
+To expand entity reference nodes.</p>
+</li>
+<li>
+<p style="margin-bottom: 0in">
+<b><code>setIgnoringComments()</code></b><br />
+To ignore comments.</p>
+</li>
+<li>
+<p><b><code>setIgnoringElementContentWhitespace()</code></b><br />
+To ignore whitespace that is not a significant part<br />
+of element content.</p>
+</li>
+</ul>
+<p>The default values for all of these properties is
+<code>false</code>, which preserves all the lexical information
+necessary to reconstruct the incoming document in its original
+form. Setting them all to <code>true</code> lets you construct the
+simplest possible DOM, so the application can focus on the data's
+semantic content, without having to worry about lexical syntax
+details.</p>
+<p><strong>Note:</strong><br />
+When adding new nodes, the application must add any indentation and
+newline formatting that is needed for readability, since it is not
+provided automatically.</p>
+<h2><a name="SAX" id="SAX"></a><a name="SAX2" id="SAX2"></a>SAX
+2.0.2</h2>
+<p><a name="SAX1" id="SAX1"></a>Following are the changes made
+between SAX 2.0.0 and SAX 2.0.2 that might affect
+compatibility.</p>
+<ul>
+<li>
+<p style="margin-bottom: 0in">
+<code>DeclHandler.externalEntityDecl</code> now requires the parser
+to return the absolute system identifier for consistency with
+<code>DTDHandler.unparsedEntityDecl</code>.&nbsp; This may cause
+some incompatibilities.</p>
+</li>
+<li>
+<p>In SAX 2.0.1, an application can set <code>ErrorHandler</code>,
+<code>EntityResolver</code>, <code>ContentHandler</code>, or
+<code>DTDHandler</code> to <code>null</code>. This is a relaxation
+of the previous restriction in SAX 2.0, which generated a
+<code>NullPointerException</code> (NPE) in such circumstances.</p>
+<p>So the following code is legal in JAXP 1.3:</p>
+<pre style="margin-right: 0.39in">
+SAXParserFactory spf = SAXParserFactory.newInstance();
+SAXParser sp = spf.newSAXParser();
+XMLReader reader = sp.getXMLReader();
+reader.setErrorHandler(null);
+reader.setContentHandler(null);
+reader.setEntityResolver(null);
+reader.setDTDHandler(null);
+</pre></li>
+<li>
+<p><a name="entityResolver" id="entityResolver"></a>The
+<code>resolveEntity()</code> method in the
+<code>EntityResolver</code> API now throws
+<code>IOException</code>, as well as <code>SAXException</code>.
+(Before, it only threw <code>SAXException</code>.)</p>
+<p>The vast majority of applications are unaffected by this change,
+because the <code>DefaultHandler</code> implementation class has
+been modified to declare the additional exception, and very few
+applications use the <code>DefaultHandler</code> in such a way that
+they will run into a problem.</p>
+<p>The only way an application can be affected is if it overrides
+the <code>resolveEntity()</code> method and <em>also</em> invokes
+<code>super.resolveEntity()</code>. In that case, the application
+won't compile in Java SE 5 until the method is modified to handle the
+IOExceptions that <code>super.resolveEntity()</code> could
+throw.</p>
+</li>
+<li>
+<p style="margin-bottom: 0in">The following new features are
+recognized :</p>
+<ul>
+<li>
+<p style="margin-bottom: 0in">
+<code>http://xml.org/sax/features/external-general-entities</code><br />
+
+To include external general entities.</p>
+</li>
+<li>
+<p>
+<code>http://xml.org/sax/features/external-parameter-entities<br /></code>To
+include external parameter entities and the external DTD
+subset.&nbsp;</p>
+</li>
+</ul>
+<p>and the following new property:</p>
+<ul>
+<li>
+<p><code>http://xml.org/sax/properties/xml-string<br /></code>To
+get the string of characters associated with the current event.</p>
+</li>
+</ul>
+<p>For a complete list of Xerces features and properties, see
+<a href=
+"http://xerces.apache.org/xerces2-j/features.html">http://xerces.apache.org/xerces2-j/features.html</a>
+and <a href=
+"http://xerces.apache.org/xerces2-j/properties.html">http://xerces.apache.org/xerces2-j/properties.html</a>.</p>
+</li>
+</ul>
+<p style="margin-left: 0.42in"><strong>Note:</strong><br />
+One point of compatibility is also worth mentioning. Namespace
+recognition was turned off by default in Java SE 1.4 (JAXP 1.1). For
+backward compatibility, that policy is continued in Java SE 6 (JAXP
+1.4). However, namespace recognition is turned <em>on</em> by
+default in the official SAX implementation at <a href=
+"http://www.saxproject.org/">www.saxproject.org</a>. While not
+strictly a compatibility issue from the standpoint of JAXP, it is
+an issue that sometimes comes as a surprise.</p>
+<h2><a name="invokingXSLT" id="invokingXSLT"></a>Using XSLT</h2>
+<p>Code that uses the standard JAXP APIs to create and access an
+XSL transformer does not need to be changed. The output will be the
+same, but will in general be produced much faster, since the XSLTC
+compiling transformer will be used by default, instead of the
+interpreting Xalan transformer.</p>
+<p><strong>Note:</strong><br />
+There may be no significant difference between Xalan and XSLTC
+performance for a single run on a small data set, as when you are
+developing and testing an XSL stylesheet. But there is a major
+performance benefit when using XSLTC on anything larger.</p>
+<h3><a name="xsltXpath" id="xsltXpath"></a>Programmatic Access to
+Xalan XPath</h3>
+<p>JAXP 1.4 provides the standard XPath API for evaluating XPath
+expressions. We encourage users to use this API. Xalan-interpretive
+is not included in the reference implementation. If an application
+explicitly uses the Xalan XPath API to evaluate a standalone XPath
+expression (one that is not part of an XSLT stylesheet), you'll
+need to download and install the Apache libraries for Xalan.</p>
+<h2><a name="packageNames" id="packageNames"></a>Package Name
+Changes</h2>
+<p>This change does not affect applications that confine themselves
+to using the standard JAXP APIs. But applications that access
+implementation-specific features of the XML processors defined in
+JAXP versions prior to 1.3 will have to be modified.</p>
+<p>The change has several effects on previous applications:</p>
+<ol>
+<li>
+<p style="margin-bottom: 0in">The property-values that were used to
+access the internal implementations must be changed.</p>
+</li>
+<li>
+<p style="margin-bottom: 0in">Applications that used internal APIs
+that from the Xalan implementation classes must change the import
+statements that gave them access to those APIs.</p>
+</li>
+<li>
+<p>Applications that used internal APIs from the Crimson
+implementation must be <span lang="en-US" xml:lang=
+"en-US">re-coded</span> -- ideally, by using newer JAXP APIs or, if
+necessary, by using Xerces APIs.</p>
+</li>
+</ol>
+<h3><a name="packageNamesWhy" id="packageNamesWhy"></a>What
+Changed, and Why</h3>
+<p>In Java SE 1.4, the fact that JAXP was built into the Java platform
+was a mixed blessing. On the one hand, an application could rely on
+that fact that it was there. On the other, most applications needed
+features and bug fixes that were available in later versions.</p>
+<p>But adding new <span lang="en-US" xml:lang=
+"en-US">libraries</span> had no effect, because internal classes
+always take precedence over the classpath. The solution for that
+problem in 1.4 was to use the endorsed standards mechanism.
+However, that was a new mechanism, and one which frequently placed
+an additional burden on the end user, as well as the application
+developer.</p>
+<p>The solution since JAXP 1.3 is to change the package names of
+the Apache libraries used in the implementation. That change lets a
+user reference newer Apache libraries in the classpath, so
+application developers can use them in the same way that would use
+any other additions to the Java platform.</p>
+<p>The new names given to the Apache packages in the JAXP 1.3
+reference implementation are shown below:</p>
+<dl>
+<dd>
+<p><strong>Changes in JAXP package names</strong></p>
+<table summary="Changes in JAXP package names" border="1"
+cellpadding="2" cellspacing="2">
+<tr>
+<th id="h1">
+<p>JAXP 1.1</p>
+</th>
+<th id="h2">
+<p>Since JAXP 1.3</p>
+</th>
+</tr>
+<tr>
+<td headers="h1">
+<p><code>org.apache.crimson</code></p>
+</td>
+<td headers="h2">
+<p><code>-/-<br />
+com.sun.org.apache.xerces.internal</code></p>
+</td>
+</tr>
+<tr>
+<td headers="h1">
+<p><code>org.apache.xml</code></p>
+</td>
+<td headers="h2">
+<p><code>com.sun.org.apache.xml.internal</code></p>
+</td>
+</tr>
+</table>
+<p><strong>Changes in XSLT package names</strong></p>
+<table summary="Changes in XSLT package names" border="1"
+cellpadding="2" cellspacing="2">
+<tr>
+<th id="h101">
+<p>JAXP 1.1</p>
+</th>
+<th id="h102">
+<p>Since JAXP 1.3</p>
+</th>
+</tr>
+<tr>
+<td headers="h101">
+<p><code>org.apache.xalan<br />
+org.apache.xpath<br />
+org.apache.xalan.xsltc</code></p>
+</td>
+<td headers="h102">
+<p><code>com.sun.org.apache.xalan.internal<br />
+com.sun.org.apache.xpath.internal<br />
+com.sun.org.apache.xalan.internal.xsltc</code></p>
+</td>
+</tr>
+</table>
+</dd>
+</dl>
+<h3><a name="xslt" id="xslt"></a><a name="JAXP_security" id=
+"JAXP_security"></a>Security Issue Posed by Nested Entity
+Definitions</h3>
+<p>While XML does not allow recursive entity definitions, it does
+permit nested entity definitions, which produces the potential for
+Denial of Service attacks on a server which accepts XML data from
+external sources. For example, a SOAP document like the following
+that has very deeply nested entity definitions can consume 100% of
+CPU time and large amounts of memory in entity expansions:</p>
+<pre style="margin-left: 0.39in; margin-right: 0.39in">
+&lt;?xml version=&quot;1.0&quot; encoding =&quot;UTF-8&quot;?&gt;
+ &lt;!DOCTYPE foobar[
+ &lt;!ENTITY x100 &quot;foobar&quot;&gt;
+ &lt;!ENTITY  x99 &quot;&amp;x100;&amp;x100;&quot;&gt;
+ &lt;!ENTITY  x98 &quot;&amp;x99;&amp;x99;&quot;&gt;
+ ...
+ &lt;!ENTITY   x2 &quot;&amp;x3;&amp;x3;&quot;&gt;
+ &lt;!ENTITY   x1 &quot;&amp;x2;&amp;x2;&quot;&gt;
+ ]&gt;
+&lt;SOAP-ENV:Envelope xmlns:SOAP-ENV=...&gt;
+&lt;SOAP-ENV:Body&gt;
+&lt;ns1:aaa xmlns:ns1=&quot;urn:aaa&quot; SOAP-ENV:encodingStyle=&quot;...&quot;&gt;
+&lt;foobar xsi:type=&quot;xsd:string&quot;&gt;&amp;x1;&lt;/foobar&gt;
+&lt;/ns1:aaa&gt;
+&lt;/SOAP-ENV:Body&gt;
+&lt;/SOAP-ENV:Envelope&gt; 
+</pre>
+<p>A system that doesn't take in external XML data need not be
+concerned with the issue, but one that does can utilize one of the
+following safeguards to prevent the problem:</p>
+<dl>
+<dd>
+<dl>
+<dt><b>New system property to limit entity expansion</b></dt>
+<dd>The <tt>entityExpansionLimit</tt> system property lets existing
+applications constrain the total number of entity expansions
+without recompiling the code. The parser throws a fatal error once
+it has reached the entity expansion limit. (By default, the limit
+is set to 64000.)<br />
+<br />
+To set the entity expansion limit using the system property, use an
+option like the following on the java command line:
+<tt>-DentityExpansionLimit=100000</tt></dd>
+<dt><br /></dt>
+<dt><b>New parser property to disallow DTDs</b></dt>
+<dd style="margin-bottom: 0.2in">The application can also set the
+<tt>http://apache.org/xml/features/disallow-doctype-decl</tt>
+parser property to true. A fatal error is then thrown if the
+incoming XML document contains a DOCTYPE declaration. (The default
+value for this property is false.) This property is typically
+useful for SOAP based applications where a SOAP message must not
+contain a Document Type Declaration.</dd>
+<dt><b>New feature for Secure Processing</b></dt>
+<dd style="margin-bottom: 0.2in">JAXP 1.3 includes a new <a href=
+"../../../../api/javax/xml/XMLConstants.html#FEATURE_SECURE_PROCESSING">
+secure processing feature</a> in which an application can configure
+the <a href=
+"../../../../api/javax/xml/parsers/SAXParserFactory.html#setFeature-java.lang.String-boolean-">
+SAXParserFactory</a> or <a href=
+"../../../../api/javax/xml/parsers/DocumentBuilderFactory.html#setFeature-java.lang.String-boolean-">
+DocumentBuilderFactory</a> to get an XML processor that behaves in
+a secured fashion.&nbsp; Setting this feature to true sets the
+entity expansion limit to 64000.&nbsp; Note that the default limit
+can be increased using the <code>entityExpansionLimit</code> system
+property.</dd>
+<dd style="margin-bottom: 0.2in"><br />
+<br /></dd>
+</dl>
+</dd>
+</dl>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

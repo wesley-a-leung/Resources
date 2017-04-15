@@ -1,0 +1,1009 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Web Start - Frequently Asked Questions (FAQ)</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<dl>
+<dt style="margin-bottom: 0.5cm"><a name="top" id="top"></a><br />
+<br /></dt>
+</dl>
+<h1>Java Web Start version 6</h1>
+<h1>Frequently Asked Questions (FAQ)</h1>
+<hr />
+<h2>FAQ Update (March 2006)</h2>
+<h2>General Questions</h2>
+<ol>
+<li><a href="#s101">What is Java Web Start?</a></li>
+<li><a href="#s102">Where do I get more information?</a></li>
+<li><a href="#s103">Why should I use Java Web Start?</a></li>
+<li><a href="#s104">How can I launch applications with Java Web
+Start?</a></li>
+<li><a href="#s105">Does it matter how I launch an
+application?</a></li>
+<li><a href="#s106">What are the system requirements for Java Web
+Start?</a></li>
+<li><a href="#s107">What platforms does Java Web Start run
+on?</a></li>
+<li><a href="#s108">What are the server requirements for Java Web
+Start?</a></li>
+<li><a href="#s109">Is Java Web Start based on a standard?</a></li>
+<li><a href="#s110">Can I implement my own Java Web Start?</a></li>
+<li><a href="#s111">What are the supported browsers?</a></li>
+<li><a href="#s112">Is there a comprehensive list of online
+resources for Java Web Start?</a></li>
+<li><a href="#s113">Can I deploy any application with Java Web
+Start?</a></li>
+<li><a href="#s114">Is Java Web Start a software distribution
+mechanism like Marimba and MS SMS?</a></li>
+<li><a href="#s115">Is Java Web Start an application
+installer?</a></li>
+<li><a href="#s116">What version of the Java platform does Java Web
+Start work with?</a></li>
+<li><a href="#s117">How does Java Web Start relate to Java Plug-in
+Technology (applets)?</a></li>
+</ol>
+<h2>Technical Questions</h2>
+<ol>
+<li><a href="#s201">Do I need to change my application to work with
+Java Web Start?</a></li>
+<li><a href="#s202">Is there a migration path from applets to
+applications?</a></li>
+<li><a href="#s203">Is there a way to pass VM arguments to the Java
+Runtime?</a></li>
+<li><a href="#s204">I don't want to rely on a server timestamp. How
+can I specify a versioned JAR and how can I get incremental updates
+of JARs?</a></li>
+<li><a href="#s205">Are JAR files shared between
+applications?</a></li>
+<li><a href="#s206">How can I provide my own splash
+screen?</a></li>
+<li><a href="#s207">How can I save the application state on the
+local system?</a></li>
+<li><a href="#s208">My application requires a specific version of
+the JRE. How do I specify this my JNLP file?</a></li>
+<li><a href="#s209">Can I rely on Class-Path in the manifest
+file?</a></li>
+<li><a href="#s210">Can I use Java Web Start even if my Application
+depends on or uses native code?</a></li>
+<li><a href="#s211">How can I load resources within my application
+using Class.forName and ClassLoader.getSystemClassLoader?</a></li>
+<li><a href="#s212">How can I launch Java Web Start from the
+command line?</a></li>
+<li><a href="#s213">How do I use multiple JAR files signed by
+different certificates?</a></li>
+<li><a href="#s214">How do I detect if Java Web Start is
+installed?</a></li>
+<li><a href="#s215">Why does my browser shows JNLP file as plain
+text.</a></li>
+<li><a href="#s216">Why does Java Web Start always reload JAR files
+from IIS server?</a></li>
+<li><a href="#s217">Can I use Pack200 compression with the
+JnlpDownloadServlet?</a></li>
+<li><a href="#s218">What is the best way to ensure only one
+instance of my app is run?</a></li>
+<li><a href="#s219">When will properties set in the jnlp file get
+set?</a></li>
+<li><a href="#s220">What causes the file not found message for the
+downloaded jnlp file?</a></li>
+<li><a href="#s221">How can I use signed jars (such as JCE
+extensions) signed for other purposes?</a></li>
+<li><a href="#s222">Why can't I use the Association feature on some
+linux platforms with Gnome?</a></li>
+<li><a href="#s223">How do I set up my server to broadcast the jnlp
+mime type?</a></li>
+<li><a href="#s224">How do I set up my server to use the
+JnlpDownloadServlet?</a></li>
+<li><a href="#s225">How are Applications uniquely
+identified?</a></li>
+<li><a href="#s226">How do I create multiple
+file-extension/mime-type associations with a JNLP
+application?</a></li>
+<li><a href="#s227">Why does FindClass() sometimes fail when called
+from native code?</a></li>
+</ol>
+<h2>Security Questions</h2>
+<ol>
+<li><a href="#s301">How secure is Java Web Start?</a></li>
+<li><a href="#s302">What is a secure sandbox?</a></li>
+<li><a href="#s303">How is the Java Web Start secure sandbox more
+flexible than the applet sandbox?</a></li>
+<li><a href="#s304">How can I enable my application to gain
+unrestricted access to the system?</a></li>
+<li><a href="#s305">Is there support for encrypted download of JAR
+files?</a></li>
+<li><a href="#s306">Can I use NTLM authentication with Java Web
+Start?</a></li>
+<li><a href="#s307">Can I use HTTPS protocol with Java Web
+Start?</a></li>
+<li><a href="#s308">Are there online resources to learn more about
+the security tools?</a></li>
+</ol>
+<h2>Known Bugs</h2>
+<ol>
+<li><a href="#s401">4825415: Web Start desktop integration and
+security dialogs disappear in 1.4.2</a></li>
+<li><a href="#s402">4491398: Dependent DLL resource
+problem</a></li>
+<li><a href="#s403">5008460: Web Start fails if path contains
+spaces and TraceSecurity is turned on.</a></li>
+<li><a href="#s404">5074087: If related-content is specified w/o a
+title on Windows, application cannot start.</a></li>
+<li><a href="#s405">5074524: First jar of unsigned extension must
+be downloaded eagerly</a></li>
+<li><a href="#s406">5047548: Lazy downloading of parts with
+packages is broken</a></li>
+<li><a href="#s407">5074526: ExtenededService file APIs show
+security dialog even if app is signed</a></li>
+<li><a href="#s408">4925768: No support for system level shortcuts
+in Gnome.</a></li>
+<li><a href="#s409">5072969: Startup errors causing Web Start to
+appear to hang</a></li>
+<li><a href="#s410">5074530: Web Start not picking up the correct
+JRE.</a></li>
+</ol>
+<h2>March 2006 Updates:</h2>
+<h2>General Questions</h2>
+<div style="margin-left: 2em;">
+<p><a name="s101" id="s101"></a><b>What is Java Web Start?</b></p>
+<p>Java Web Start provides a platform-independent, secure, and
+robust deployment technology. It enables developers to deploy
+full-featured applications to end-users by making the applications
+available on a standard web server. With any web browser, end-users
+can launch the applications and be confident they always have the
+most-recent version.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s102" id="s102"></a><b>Where do I get more
+information?</b></p>
+<p>Look at the online documentation for <a href="../../javaws">Java
+Web Start</a> .</p>
+<p>If you are a developer, go to the <a href=
+"../../javaws/developersguide/contents.html">Developer's
+Guide</a> for detailed technical information on how to deploy
+applications using Java Web Start.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s103" id="s103"></a><b>Why should I use Java Web
+Start?</b></p>
+<p>It's an easy, robust, and secure way to deploy applications
+directly from the web. Developers can make applications readily
+available via the web. In addition, Java Web Start provides Java
+runtime environment (JRE) management capabilities, it's easy to set
+up, it's browser-independent, and it's an efficient way to deploy
+web application solutions.</p>
+<p>Users can easily access applications much as they would a web
+page--without a separate installation step. From the desktop, users
+can access and use Java applications, using a richer and more
+responsive user interface than is available on a web page. And,
+once a Java Web Start based application is installed, users simply
+click to run the application whenever needed.</p>
+<p>Users do not need to manually update applications because each
+time they launch an application, it is transparently updated from
+the web--so they always use the most recent version
+available.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s104" id="s104"></a><b>How can I launch applications
+with Java Web Start?</b></p>
+<p>You initially launch a new application by clicking on a link
+from a web page.</p>
+<p>If you use an application frequently, create a shortcut from
+your desktop or from the Start Menu by allowing Java Web Start to
+place an icon on your desktop. Java Web Start may ask if you would
+like to create<br />
+shortcuts or an entry in the Start Menu. If you say
+&quot;yes,&quot; all future launches of the application can start
+without a browser.</p>
+<p>Java Web Start also provides an Application Cache Viewer which
+you can launch from the Java Control Panel.&nbsp; The Cache Viewer
+enables you to directly launch applications you have
+downloaded.</p>
+<p>You can also launch an application from a command prompt by
+typing &ldquo;javaws &lt;jnlp_url&gt;&rdquo; where &lt;jnlp_url is
+a url to the jnlp file of the application.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s105" id="s105"></a><b>Does it matter how I launch an
+application?</b></p>
+<p>No, applications launch in the same manner no matter which
+method you use: from a web page, from the shortcut on the desktop,
+from the Start menu, or through the Java Application Cache
+Viewer.</p>
+<p>Java Web Start always checks to see if a newer version of the
+application is available for use and automatically downloads it if
+so.</p>
+<p>If the application you are using has not been digitally signed,
+Java Web Start will launch it in a restricted and secure execution
+environment. An application that is not signed, or one that you do
+not trust, will never be run with unrestricted access to your local
+system or network.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s106" id="s106"></a><b>What are the system requirements
+for Java Web Start?</b></p>
+<p>Any client system that supports the Java version 1.2.2 or higher
+can use Java Web Start. Java Web Start works with virtually all
+browsers.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s107" id="s107"></a><b>What platforms does Java Web
+Start run on?</b></p>
+<p>Sun Microsystems provides versions for Windows
+98/NT/2000/XP/2003, Solaris Operating Environment (SPARC and Intel
+editions) and Linux/i486. <a href=
+"https://developer.apple.com/java">Apple</a> provides a version for
+their OS X release.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s108" id="s108"></a><b>What are the server requirements
+for Java Web Start?</b></p>
+<p>Java Web Start uses HTTP for communication between the client
+and the server. You can use a standard web server to host an
+application. If you require additional services, such as
+version-based downloading, incremental updates, or pack200
+compression for your applications, the web server will need to
+support servlets or Java Server Pages. A sample servlet
+implementing these features is provided in the samples directory of
+the JDK.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s109" id="s109"></a><b>Is Java Web Start based on a
+standard?</b></p>
+<p>Yes. Java Web Start 1.5.0 is the product-quality reference
+implementation of Java Network Launching Protocol (JNLP)
+technology, which was developed through the Java Community
+Process.&nbsp; JNLP is specification number JSR 056.&nbsp; Other
+platform vendors are encouraged to port Java Web Start to their
+platform or implement the specification.</p>
+<p>For more information, see the <a href=
+"http://jcp.org/en/jsr/detail?id=56">JNLP
+specification</a>.&nbsp;<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s110" id="s110"></a><b>Can I implement my own Java Web
+Start?</b></p>
+<p>The underlying technology for Java Web Start, the Java Network
+Launching Protocol and API is being developed through the Java
+Community Process, so you can implement this protocol in any
+product. However additional licensing and terms must be met to
+implement any JCP technology including the JNLP technology.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s111" id="s111"></a><b>What are the supported
+browsers?</b></p>
+<p>Java Web Start supports primarily Internet Explorer 4 or higher
+and Mozilla. However any browser can launch JNLP files if you have
+set the MIME-type association correctly. Java Web Start uses the
+browser's settings and may launch a browser to show a URL; this
+feature may not work with unsupported browsers.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s112" id="s112"></a><b>Is there a comprehensive list of
+online resources for Java Web Start?</b></p>
+<ul>
+<li>
+<p style="margin-bottom: 0cm">
+<a href="../../javaws/index.html">Java Web Start documentation page</a></p>
+</li>
+<li>
+<p style="margin-bottom: 0cm">:
+<a href= "../../javaws/developersguide/contents.html">Developer's Guide</a></p>
+</li>
+<li>
+<p style="margin-bottom: 0cm">Java Web Start Discussion Forums:
+<a href=
+"https://forums.oracle.com/forums/main.jspa;jsessionid=8d92100330d6aa8049a290ae492cbc99eba0087d1e9a.e38NbN0LchiOci0LbhqSc3yQa30Se0?categoryID=84">
+Oracle Forum Home</a></p>
+</li>
+<li>
+<p>JSR-56: <a href=
+"http://jcp.org/en/jsr/detail?id=56">http://jcp.org/en/jsr/detail?id=56</a></p>
+</li>
+</ul>
+<p><a href="#top">Back to top</a></p>
+<p><a name="s113" id="s113"></a><b>Can I deploy any application
+with Java Web Start?</b></p>
+<p>Java Web Start is an application launcher for Java applications
+that are written to be web-deployed.</p>
+<p>An application must be delivered in a set of JAR files and all
+application resources, such as images, configuration files, and
+native libraries must be included in the JAR files. The resources
+must be looked up using the method
+<tt>ClassLoader.getResource()</tt> or an equivalent method. Java
+Web Start only transfers JAR files from the web server to the
+client.</p>
+<p>If an application is written to run in a restricted execution
+environment (sandbox), then access to disk is not permitted and the
+application may only connect to the host on which it resides.<br />
+<a href="#top">Back to top</a></p>
+<p><b>Is Java Web Start a software distribution mechanism like
+Marimba and MS SMS?</b></p>
+<p>Java Web Start is an application launcher for Java applications.
+It allows easy distribution of full-featured applications based on
+the Java platform from a web server to a client machine with
+minimal user interaction.</p>
+<p>The software distribution technology is only one aspect of Java
+Web Start. It also provides security, updates to the applications,
+ease-of-use for end users, and flexibility for developers when they
+create the applications.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s115" id="s115"></a><a name="s114" id="s114"></a><b>Is
+Java Web Start an application installer?</b></p>
+<p>Java Web Start is an application launcher for Java applications
+that are written to be web-deployed. Java Web Start caches
+resources locally on the disk, but also provides a secure execution
+environment and a virtually transparent updating facility for
+applications. The end user does not need to manually initiate a
+software update because the application is updated each time it is
+used.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s116" id="s116"></a><b>What version of the Java
+platform does Java Web Start work with?</b></p>
+<p>Java Web Start launches only applications written for the Java
+platform versions 1.2.2 and higher.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s117" id="s117"></a><b>How does Java Web Start relate
+to Java Plug-in Technology (applets)?</b></p>
+<p>The two approaches are very similar. The key difference is in
+the user experience. If the Java application/applet needs to
+interact with a web page and be tightly bound to a web browser,
+then applets may be the solution. On the other hand, if browser
+independence is important, then Java Web Start is the deployment
+platform of choice. There are a number of other differences, but
+this is the fundamental difference.</p>
+<p>Java Plug-in technology enables users to run Java applets inside
+a browser.</p>
+<p>Java Web Start enables users to download full-featured
+applications with any browser. Once they have downloaded and
+launched an application, the browser can be closed, while the
+application continues working. The application does not depend on
+an open browser to function. The browser can be shut down or you
+can go to a different web page and the application will continue
+running.<br />
+<a href="#top">Back to top</a></p>
+</div>
+<!-- End General QAs section -->
+<!-- =============================================================== -->
+<!-- Begin Technical QAs section -->
+<h2>Technical Questions</h2>
+<div style="margin-left: 2em;">
+<p><a name="s201" id="s201"></a><b>Do I need to change my
+application to work with Java Web Start?</b></p>
+<p>If your application is written to the Java 2 platform, and is
+delivered as a set of JAR files, there should be no need to revise
+your application.&nbsp; Make sure that your application retrieves
+all its resources (such as images and resource bundles) from a JAR
+file, since Java Web Start launches an application by invoking the
+<tt>public static void main(String[] args)</tt> method.</p>
+<p>If your application needs unrestricted access to the system,
+(for example, network or disk access), you will need to sign your
+code.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s202" id="s202"></a><b>Is there a migration path from
+applets to applications?</b>&nbsp;</p>
+<p>Java Web Start is primarily designed for application deployment.
+You specify all requirements for your application in the JNLP file,
+and off you go. It does provide the ability to launch applets in
+much the same way as the traditional AppletViewer. The built-in
+AppletViewer provides an easy migration path for existing applets
+that want to take advantage of Java Web Start. However, it is not
+intended to be a full implementation of the Plug-In. The Plug-In is
+the primary launching vehicle for applets. The built-in
+AppletViewer in Java Web Start has&nbsp; limitations, for example,
+you cannot specify class files as resources and it does not accept
+policy files.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s203" id="s203"></a><b>Is there a way to pass VM
+arguments to the Java Runtime?</b></p>
+<p>Java Web Start allows certain JVM flags to be set with the
+<code>java-vm-args</code> attribute of the <tt>j2se</tt> element
+(see <a href=
+"../../javaws/developersguide/syntax.html#resources">Developer's
+Guide</a>). Allowing the complete set could compromise security as
+well as limit portability across different platforms and
+implementations. You can set the maximum and initial heap size
+using the initial-heap-size and max-heap-size attributes of the
+j2se element, for example:</p>
+<p>&lt;j2se version=&quot;...&quot;
+max-heap-size=&quot;100M&quot;/&gt;</p>
+<p><a href="#top">Back to top</a></p>
+<p><a name="s204" id="s204"></a><b>I don't want to rely on a server
+timestamp. How can I specify a versioned JAR and how can I get
+incremental updates of JARs?</b></p>
+<p>Java Web Start supports versioned JARs and incremental updates.
+You can specify exact versions of the JAR files you want, instead
+of relying on timestamp information to determine if an update is
+available. Using version IDs also allows you to provide incremental
+updates from one version to another. See the <a href=
+"http://jcp.org/en/jsr/detail?id=56">JNLP Specification</a> or the
+<a href="../../javaws/developersguide/contents.html">
+Developer's Guide</a> for details.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s205" id="s205"></a><b>Are JAR files shared between
+applications?</b></p>
+<p>Each JAR file that a JNLP Client (such as Java Web Start)
+downloads, is uniquely identified with a URL. If two JNLP files use
+the same URL, then the resource will only be downloaded once and
+shared. This is similar to the caching implementations used by web
+browsers.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s206" id="s206"></a><b>How can I provide my own splash
+screen?</b></p>
+<p>Java Web Start needs to put up the initial splash screen while
+Java is loading. For subsequent access, you can specify an image
+file to use for the splash screen in the JNLP file with the tag</p>
+<pre style="margin-bottom: 0.5cm">
+&lt;icon href=&quot;mysplash.jpg&quot; kind=&quot;splash&quot;/&gt; 
+</pre>
+<p>where <code>mysplash.jpg</code> is the image file for your
+splash screen.&nbsp; The first time your application runs, it will
+use the standard splash screen. After that, it will use the image
+you provide.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s207" id="s207"></a><b>How can I save the application
+state on the local system?</b></p>
+<p>A sandboxed application can store state using the
+<tt>PersistenceService</tt> API. This API is similar to cookies for
+HTML pages. Thus, it is a secure way to store persistent
+information on the client computer.&nbsp; For more information,
+see:</p>
+<ul>
+<li>
+<p style="margin-bottom: 0cm"><a href=
+"http://jcp.org/en/jsr/detail?id=56">JNLP Specification</a></p>
+</li>
+<li>
+<p><a href="../../javaws/developersguide/contents.html">Java Web Start
+Developers Guide</a></p>
+</li>
+</ul>
+<p><a href="#top">Back to top</a></p>
+<p><a name="s208" id="s208"></a><b>My application requires a
+specific version of the JRE. How do I specify this my JNLP
+file?</b></p>
+<p>The tag &lt;j2se version=&quot;versionNum&quot;&gt; specifies a
+platform version, where versionNum is 1.2, 1.3, 1.4, or 1.5.</p>
+<p>You can request a specific product version by including a vendor
+URL in the href attribute. For Oracle's JREs, the URL is <a href="http://javadl.sun.com/webapps/jawsautodl/AutoDL/j2se">http://javadl.sun.com/webapps/jawsautodl/AutoDL/j2se</a>
+For example, the following J2SE tag will request any Sun 1.3.1
+implementation:</p>
+<pre>
+&lt;j2se version=&quot;1.3.1*&quot; href=&quot;<a href="http://javadl.sun.com/webapps/jawsautodl/AutoDL/j2se">http://javadl.sun.com/webapps/jawsautodl/AutoDL/j2se</a>&quot;/&gt;
+ 
+</pre>
+<p>You can see all the versions of the installed JREs in the Java
+tab of the Java Control Panel.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s209" id="s209"></a><b>Can I rely on Class-Path in the
+manifest file?</b></p>
+<p>Java Web Start does not support the Class-Path entry in the
+manifest file. The Class-Path attribute is entirely file-centric,
+whereas Java Web Start and JNLP is web-centric, i.e., based on
+URLs. Thus, the two models do not merge easily.</p>
+<p>Instead of relying on the Class-Path entry, you can list
+multiple JAR files in the JNLP file, for example:</p>
+<pre>
+&lt;resources&gt;
+ &lt;jar href=&quot;A.jar&quot;/&gt;
+ &lt;jar href=&quot;B.jar&quot;/&gt;
+&lt;/resources&gt;
+</pre>
+<p>In a JNLP file, you can factor out dependencies on a set of JAR
+files to another JNLP file using the <tt>&lt;extension... &gt;</tt>
+element. Thus, you can achieve the same kind of re-usability and
+ease of maintenance as you do with the Class-Path entry. This
+feature is described in the specification.</p>
+<p>JNLP also implements a just-in-time downloading mechanism,
+similar to applets. For each resource in a JNLP file, you can
+specify which parts should be eagerly or lazily downloaded.&nbsp;
+Eagerly loaded resources are loaded before the application is
+launched, lazily loaded resources later.&nbsp; Default is eager
+download. Furthermore, the specification includes an API for which
+you can programatically query Java Web Start about which resources
+are available and request them to be downloaded. Thus, you can
+write download/network aware applications.</p>
+<p>See the <a href="http://jcp.org/en/jsr/detail?id=56">JNLP
+specification</a> for more information.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s210" id="s210"></a><b>Can I use Java Web Start even if
+my application depends on or uses native code?</b></p>
+<p>You can use Java Web Start to deploy Java Technology-based
+applications that depend on native code such as DLLs and SOs. Use
+the <tt>&lt;nativelib ...&gt;</tt> element to specify required
+native libraries. See the <a href=
+"../../javaws/developersguide/contents.html">Developer's Guide</a> for
+details.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s211" id="s211"></a><b>How can I load resources within
+my application using Class.forName and
+ClassLoader.getSystemClassLoader?</b></p>
+<p>Java Web Start uses a user-level classloader to load all the
+application resources specified in the JNLP file. This classloader
+implements the security model and the downloading model defined by
+the JNLP specification. This is no different than how the
+AppletViewer or the Java Plug-In works.</p>
+<p>This has the, unfortunate, side-effect that
+<tt>Class.forName</tt> will not find any resources that are defined
+in the JNLP file. The same is true for looking up resources and
+classes using the system class loader
+(<tt>ClassLoader.getSystemClassLoader</tt>).</p>
+<p>To find application resources in Java Web Start, use the
+classloader that loaded your application, for example use the
+following call in the in the application;s main thread:</p>
+<p><tt>this.getClass().getClassLoader();</tt></p>
+<p>You can also use:</p>
+<p><tt>Thread.getCurrent().getContextClassLoader();</tt><br />
+<a href="#top">Back to top</a></p>
+<p><a name="s212" id="s212"></a><b>How can I launch Java Web Start
+from the command line?</b></p>
+<p>You can launch Java Web Start from the command line as
+follows:</p>
+<pre style="margin-bottom: 0.5cm">
+javaws [options] <i>your-app-JNLP-URL</i>
+</pre>
+<p>where your-app-JNLP-URL is the location of your application's
+JNLP file.&nbsp; For example, the following command starts the <a href="http://docs.oracle.com/javase/tutorial/deployment/webstart/examplesIndex.html#DynamicTreeDemol">Dynamic Tree Demo</a> application (from the Java Tutorials):</p>
+<pre style="margin-bottom: 0.5cm">
+javaws http://docs.oracle.com/javase/tutorialJWS/deployment/webstart/ex6/webstart_ComponentArch_DynamicTreeDemo/dynamictree-webstart.jnlp 
+</pre>
+<p>For complete command line syntax see: the <a href=
+"../../javaws/developersguide/contents.html">Developer's
+Guide</a><br />
+<a href="#top">Back to top</a></p>
+<p><a name="s213" id="s213"></a><b>How do I use multiple JAR files
+signed by different certificates?</b></p>
+<p>The JNLP 1.0 specification requires all JAR files used in a JNLP
+file to be signed by the same certificate. This restriction avoids
+requiring the user to accept multiple certificates from the same
+source, and enables Java Web Start to know if the user has accepted
+all certificates used for an application.</p>
+<p>However, Java Web Start can use multiple JAR files signed by
+different certificates, by using the component extension mechanism
+and multiple JNLP files.&nbsp; The only requirement is that the JAR
+files contain code from different packages.&nbsp; So, instead of
+the following:</p>
+<pre>
+&lt;jar href=&quot;myjar1.jar&quot;/&gt;
+&lt;jar href=&quot;jh.jar&quot;/&gt; 
+</pre>
+<p>Use the following:</p>
+<pre>
+&lt;jar href=&quot;myjar1.jar&quot;/&gt;
+&lt;extension name=&quot;Java Help&quot; href=&quot;help.jnlp&quot;/&gt; 
+</pre>
+<p>Then add a <tt>help.jnlp</tt> file with the following
+contents:</p>
+<pre>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+ &lt;jnlp spec=&quot;1.0+&quot;
+codebase=&quot;http://ws503&quot; href=&quot;Help.jnlp&quot;&gt;
+ &lt;information&gt;
+&lt;title&gt;JavaHelp&lt;/title&gt;
+&lt;vendor&gt;Sun Microsystems, Inc.&lt;/vendor&gt;
+ &lt;/information&gt;
+&lt;resources&gt;
+&lt;jar href=&quot;jh.jar&quot;/&gt;
+&lt;/resources&gt;
+ &lt;component-desc/&gt;
+&lt;/jnlp&gt; 
+</pre>
+<p><a href="#top">Back to top</a></p>
+<p><a name="s214" id="s214"></a><b>How do I detect if Java Web
+Start is installed?</b></p>
+<p>You can write a short JavaScript or VBScript to detect if Java
+Web Start is installed. See the <a href=
+"../../javaws/developersguide/contents.html">Developer's Guide</a> for
+details.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s215" id="s215"></a><b>Why does my browser shows JNLP
+file as plain text ?</b></p>
+<p>This is most likely happening because your web server is not
+aware of the proper MIME type for JNLP files. Java Web Start
+requires only one change to your web server, that is creating an
+association between the file extension, typically jnlp, and the
+MIME type, <tt>application/x-java-jnlp-file</tt>. The steps for
+doing this vary depending upon the web server you are using.</p>
+<p>Furthermore, if your corporation uses a proxy server, ensure
+that the update versions of the files are returned, by updating the
+time stamp of the resources on the web server such that the proxies
+will update their caches.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s216" id="s216"></a><b>Why does Java Web Start always
+reload JAR files from IIS server?</b></p>
+<p>If a timestamp of the file on the IIS server is in the future
+IIS returns current-time as last-modified time. This makes Java Web
+Start to reload the JARs since time-stamp is always newer.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s217" id="s217"></a><b>Can I use Pack200 compression
+with the JnlpDownloadServlet?</b></p>
+<p>Yes. The JnlpDownloadServlet
+distributed in the samples directory of the JDK now supports
+Pack200. If you deploy yourfile.jar along with
+yourfile.jar.pack.gz the packed file will be downloaded when the
+client is running Java Web Start 1.5.0 or
+later.<b><br /></b><a href="#top">Back to
+top</a></p>
+<p><a name="s218" id="s218"></a><b>What is the best way to ensure
+only one instance of my application is run?</b></p>
+<p>Use the SingleInstanceService
+to register as a singleton as soon as your application starts up.
+Re-invoking your application before it is registered as a singleton
+will cause another Java VM to start up.</p>
+<p>Make sure to unregister before
+your program exits.<b><br /></b><a href="#top">Back to top</a></p>
+<p><a name="s219" id="s219"></a><b>When will properties set in the
+jnlp file get set?</b></p>
+<p>Normally, properties in the
+jnlp file will not be set until the first resource listed in that
+jnlp file is loaded. This insures the properties are set before any
+of your code is run, however some properties need to be set before
+other packages are loaded. Some properties are considered to be
+&ldquo;secure&rdquo; by Java Web Start, and, when found in the main
+jnlp file, will be passed as arguments to the invoking VM
+(-Dname=value).</p>
+<p>The list of
+&ldquo;secure&rdquo; properties for this version can be found in
+the <a href="../../javaws/developersguide/syntax.html">Developer's
+Guide</a> <b><br /></b><a href="#top">Back to
+top</a></p>
+<p><a name="s220" id="s220"></a><b>What causes the file not found
+message for the downloaded jnlp file?</b></p>
+<p>You click on a jnlp file, and Internet Explorer downloads the
+file, then launches Java Web Start, but you get the message:
+&ldquo;Could not load file/URL specified: C:\Documents and
+Settings\...\application[1].jnlp&rdquo;.</p>
+<p>This problem is specific to
+Internet Explorer. Although this can be caused by a full cache, or
+turning off the cache in IE, it is usually caused by a no-cache
+directive coming from either the web server or the proxy server. IE
+will honor this directive, and not write the jnlp file to disk, so
+Java Web Start cannot find it. This frequently happens when
+upgrading a tomcat based server. Later versions set the no-cache
+directive by default for any resource that is within a
+security-constraint in web.xml. Try taking the relevant URI out of
+the security constraint in web.xml. <b><br /></b><a href=
+"#top">Back to top</a></p>
+<p><a name="s221" id="s221"></a><b>How can I use signed jars (such
+as JCE extensions) signed for other purposes?</b></p>
+<p>Beginning with Java Web Start
+1.5.0, you can multiply sign the jar, adding code signing
+certificates over another existing certificate chain. With previous
+versions, you would either have to run the jar as a component
+extension w/o all-permissions, or strip the existing certificates
+before adding code signing certificates. (which in many cases
+rendered the package inoperable.)<b><br /></b><a href=
+"#top">Back to top</a></p>
+<p><a name="s222" id="s222"></a><b>Why can't I use the Association
+feature on some linux platforms with Gnome?</b></p>
+<p>The association feature specifically requires libgnomevsf-2.so.
+If this library is not present, associations are not
+supported.<b><br /></b><a href="#top">Back to
+top</a></p>
+<p><a name="s223" id="s223"></a><b>How do I set up my server to
+broadcast the jnlp mime type?</b></p>
+<p>Each web server has a specific way in which to add MIME types.
+For example, for the Apache web server you must add the following
+line to the <tt>.mime.types</tt> configuration file:</p>
+<p><tt>application/x-java-jnlp-file JNLP</tt></p>
+<p>Check the documentation for the specifics of your web server.
+<b><br /></b><a href="#top">Back to
+top</a></p>
+<p><a name="s224" id="s224"></a><b>How do I set up my server to use
+the JnlpDownloadServlet?</b></p>
+<p>See the <a href=
+"downloadservletguide.html#using">Developers Guide</a> section on using the servlet. The application
+need not be packaged in a Web Archive.<b><br /></b><a href=
+"#top">Back to top</a></p>
+<p><a name="s225" id="s225"></a><b>How are Applications uniquely
+identified?</b></p>
+<p>An application is normally
+identified by it's href (the url to it's jnlp file.) If there is no
+href to the jnlp file, it is identified by the href to it's main
+jar file. If multiple applications share the same main jar file,
+they must contain an href, or they will be treated as the same
+app.</p>
+<p>In version 1.5.0 and beyond,
+the Java Application Cache Viewer, will show all applications, even
+those w/o an href. The Viewer can only launch an application
+online, if it has an href. Without an href, it can launch offline
+if the jnlp file allows (contains
+&lt;offline-allowed&gt;)</p>
+<p>In previous versions, the
+Application Manager will only show those applications with an
+href.</p>
+<p>The same thing applies to
+creating shortcuts. In 1.5.0 you can only create a shortcut to
+launch online if there is an href, and can only create an offline
+shortcut if &lt;offline-allowed&gt; is specified. In 1.4.2, you can
+only create shortcuts to applications with an
+href.<br /><a href="#top">Back to
+top</a></p>
+<p><a name="s226" id="s226"></a><b>How do I create multiple
+file-extension/mime-type associations with a JNLP
+application?</b></p>
+<p>When creating multiple
+file-extension/mime-type associations with your JNLP application,
+it's recommended that you use multiple association tags. Also, both
+the file-extension and mime-type must be specified for each
+association tag. For example:</p>
+<pre>
+    &lt;association extensions="aaa" mime-type="x-application/aaa"/&gt;
+    &lt;association extensions="bbb" mime-type="x-application/bbb"/&gt;
+</pre>
+<a href="#top">Back to top</a>
+<p><a name="s227" id="s227"></a><b>Why does FindClass() sometimes
+fail when called from native code?</b></p>
+<p>When jni code that may be
+called on the EventDispatch Thread calls findClass() then it may
+fail. For more information, see the <a href=
+"../../jni/spec/functions.html#FindClass">FindClass</a> function.</p>
+</div>
+<!-- End Technical QAs section -->
+<!-- =============================================================== -->
+<!-- Begin Security QAs section -->
+<h2>Security Questions</h2>
+<div style="margin-left: 2em;">
+<p><a name="s301" id="s301"></a><b>How secure is Java Web
+Start?</b></p>
+<p>Security is a key consideration of the Java Web Start
+design.&nbsp; In Java Web Start all applications are launched by
+default in a secure &quot;sandbox.&quot;<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s302" id="s302"></a><b>What is a secure
+sandbox?</b></p>
+<p>Applications in the secure sandbox have restricted access to
+local computing resources such as the disk and network.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s303" id="s303"></a><b>How is the Java Web Start secure
+sandbox more flexible than the applet sandbox?</b></p>
+<p>All applications, by default, are run in a sandboxed
+environment, similar to the applet sandbox. However, Java Web Start
+provides a secure API that enables an application to import and
+export files from the local disk under the user's control. The API
+includes dialog boxes for operations such as saving a file and
+opening a file that are actually rendered by Java Web Start, and
+not by the application itself.</p>
+<p>This sandbox design is similar to what you can do with HTML. A
+file input field in an HTML form enables a user to pick a file from
+the local disk and submit the name (excluding path) and
+content&nbsp; to the web server. Similarly, most browsers support
+the 'Save as...' option.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s304" id="s304"></a><b>How can I enable my application
+to gain unrestricted access to the system?</b></p>
+<p>An application requesting unrestricted system access must be
+digitally signed. The first time a user launches such an
+application, a security dialog box will appear. Before running the
+application, Java Web Start will prompt the user to accept the
+digital certificate. After the user has accepted the certificate,
+subsequent invocations will not show the security dialog box.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s305" id="s305"></a><b>Is there support for encrypted
+download of JAR files?</b></p>
+<p>Support for encrypting data transferred from the server to the
+client is very important. This is an important point on our issue
+list, and we will definitely make sure that HTTPS libraries will
+work with applications that are launched with Java Web Start. The
+HTTPS support might be in an optional package that you need to
+specify that your application depends on.</p>
+<p>Encrypting the JAR files transferred from the server to the
+client may not be necessary. The reason is, even if the class files
+where encrypted on the wire, they will have to be decrypted on the
+client side and stored to disk, so the JVM will be able to load the
+classes. Thus, it could be fairly simple for a cracker to get
+around the encryption of the JAR files.</p>
+<p>Instead, what is important for JAR files is that they can be
+signed, so the user can be absolutely sure that the application is
+from the vendor he expect it to be from. This is already
+supported.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s306" id="s306"></a><b>Can I use NTLM authentication
+with Java Web Start?</b></p>
+<p>NTLM support was added to Java 1.4.2 on Windows platforms only.
+You can use NTLM authentication with Java Web Start in 1.4.2 and
+beyond. The JAuthenticator dialog may contain some misleading text
+when using NTLM with Java Web Start 1.4.2, but this is fixed in
+Java Web Start 1.5.0.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s307" id="s307"></a><b>Can I use HTTPS protocol with
+Java Web Start?</b></p>
+<p>HTTPS support was added to
+Java in version 1.4. You can use use HTTPS protocol for Java Web
+Start resources starting in version 1.2, but may encounter one of
+several problems that were addressed in Java Web Start 1.4.2. It is
+recommended to use at least Java Web Start 1.4.2 if using HTTPS
+protocol.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s308" id="s308"></a><b>Are there other online resources
+to learn more about the security tools?</b></p>
+<p>See the following:</p>
+<ul>
+<li>
+<p style="margin-bottom: 0cm"><a href=
+"http://docs.oracle.com/javase/tutorial/deployment/jar/signing.html">
+Signing JAR Files</a></p>
+</li>
+<li>
+<p><a href="../../deploy/client-security.html">Setting the Security Level of the Java Client</a> in <a href="../../deploy/index.html">Java Platform, Standard Edition Deployment Guide</a>.</p>
+</li>
+</ul>
+<p><a href="#top">Back to top</a></p>
+</div>
+<!-- End Security QAs section -->
+<!-- =============================================================== -->
+<!-- Begin Known Bugs QAs section -->
+<h2>Known Bugs</h2>
+<div style="margin-left: 2em;">
+<p><a name="s401" id="s401"></a><b>4825415: Web Start desktop
+integration and security dialogs disappear in 1.4.2</b></p>
+<p style="font-weight: medium">In version 1.4.2 only.</p>
+<p style="font-weight: medium">This is the problem where the
+desktop integration dialog fights for focus with a modal dialog
+displayed by the application, or the dialog is lost behind another
+application window.</p>
+<p>This is fixed in versions
+1.4.2_06 and 1.5<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s402" id="s402"></a><b>4491398: Dependent DLL resource
+problem</b></p>
+<p style="font-weight: medium">In all versions.</p>
+<p>If you have multiple native
+libraries, you must load each library with System.LoadLibrary,
+before loading any other that references it. This may become
+impossible if libraries have circular dependancies.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s403" id="s403"></a><b>5008460: Web Start fails if path
+contains spaces and TraceSecurity is turned on.</b></p>
+<p>In versions 1.2 and 1.4.2</p>
+<p>If TraceSecurity is turned on, you may get an exception on
+Windows platforms if there is a space in the path to the cache
+directory. If you have this problem turn off the TraceSecurity
+debugging switch (&lt;property name=&rdquo;javaws.debug.0&rdquo;
+name=&rdquo;-TraceSecurity&rdquo; /&gt;.</p>
+<p>This is fixed in version
+1.5.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s404" id="s404"></a><b>5074087: If related-content is
+specified w/o a title on Windows, application cannot start.</b></p>
+<p style="font-weight: medium">In version 1.5.0.</p>
+<p>In the specification of the
+jnlp file, it is legal to specify a related-content element without
+a title sub-element. However if this is done on windows platforms,
+an exception will be thrown when the shortcut to the related
+content is installed, and the program cannot be run. To work around
+this problem, always include a title for related-content
+elements.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s405" id="s405"></a><b>5074524: First jar of unsigned
+extension must be downloaded eagerly.</b></p>
+<p style="font-weight: medium">In all versions.</p>
+<p>If a component extension is
+used, the first jar in it will be download eagerly, even if it is
+marked lazy.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s406" id="s406"></a><b>5047548: Lazy downloading of
+parts with packages is broken.</b></p>
+<p style="font-weight: medium">In all versions.</p>
+<p>If you use the part and
+package mechanisms to declare what packages are included in what
+jar files, you should be able to skip downloading of any lazy jars
+so declared, when accessing a non-existent resource not in any of
+the declared packages. This does not work, and without Jar Indexing
+implemented, there is no way to prevent all jars from being
+downloaded.<br />
+<a href="#top">Back to top</a></p>
+<p style="font-weight: medium"><a name="s407" id=
+"s407"></a><b>5074526: ExtenededService file APIs show security
+dialog even if app is signed</b>.</p>
+<p style="font-weight: medium">In version 1.5.0.</p>
+<p>When using the FileOpen
+Service, the security dialog will only show if the application does
+not have file access permissions. This is not true with the new
+ExtendedService OpenFile, and OpenFiles methods, the security
+dialog shows anyway.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s408" id="s408"></a><b>4925768: No support for system
+level shortcuts in Gnome.</b></p>
+<p style="font-weight: medium">In version 1.5.0.</p>
+<p>When importing applications
+into the system cache with -shortcut, or running the Cache Viewer
+in system mode and creating shortcuts. The shortcuts should be
+created for all users. This works in Windows, but not on Solaris, Linux,
+or Mac OS X with Gnome.<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s409" id="s409"></a><b>5072969: Startup errors causing
+Web Start to appear to hang.</b></p>
+<p style="font-weight: medium">In all versions.</p>
+<p style="font-weight: medium">If an Exception or other Throwable
+is not caught by Java Web Start. The main run method may terminate
+without calling System.exit(). This makes application appear to
+hang (sometimes with DownloadProgress window showing with no
+progress).</p>
+<p>In 1.4.2 this can happen when the Application or Java Web Start
+throws an Error (such as a NoSuchMethodError). You may need to turn
+on logging to a file and run with &lt;property
+name=&rdquo;javaws.debug.0&rdquo;
+value=&rdquo;+TraceIgnoredExceptions&rdquo; /&gt; to see the
+Error.</p>
+<p>In 1.5.0 this is only known to happen if static code in the
+applications main class throws an Error (such as a
+NoSuchMethodError).<br />
+<a href="#top">Back to top</a></p>
+<p><a name="s410" id="s410"></a><b>5074530: Web Start not picking
+up the correct JRE.</b></p>
+<p style="font-weight: medium">In all versions.</p>
+<p style="font-weight: medium">When Java Web Start finds multiple
+JRE's that satisfy the requirements of the j2se elements version
+attribute in the jnlp file, it should always use the latest
+matching version.</p>
+<p style="font-weight: medium">In 1.4.2 it will usually just use
+the first matching version found.</p>
+<p>In 1.5.0 it will usually use
+the latest version, but under some specific circumstances will
+still use an earlier one.<br />
+<a href="#top">Back to top</a></p>
+</div>
+<p><br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br /></p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

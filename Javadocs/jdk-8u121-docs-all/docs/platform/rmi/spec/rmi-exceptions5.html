@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Remote Method Invocation: - Exceptions In RMI</title>
+</head>
+<body bgcolor="#FFFFFF">
+<a href="#skip" title="Skip navigation bar"></a>
+<table width="100%" summary="">
+<tr>
+<td><a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-exceptions4.html">PREV</a> | <a href=
+"rmi-exceptions6.html">NEXT</a></td>
+<td align="right"><i>Java Remote Method Invocation</i></td>
+</tr>
+</table>
+<br />
+<a name="skip" id="skip"></a>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<h2><a name="a5112" id="a5112"></a> <i>A.3.1</i> Possible Causes of
+<code>java.rmi.ServerException</code></h2>
+<a name="a4942" id="a4942"><!-- --></a> These are some of the
+underlying exceptions which can occur on the server when the server
+is itself executing a remote method invocation. These exceptions
+are wrapped in a <code>java.rmi.ServerException</code>; that is the
+<code>java.rmi.ServerException</code> contains the original
+exception for the client to extract. These exceptions are wrapped
+by <code>ServerException</code> so that the client will know that
+its own remote method invocation on the server did not fail, but
+that a secondary remote method invocation made by the server
+failed.<br />
+<br />
+<table border="1" cellpadding="5" summary="Exceptions">
+<tr>
+<th>Exception<br /></th>
+<th>Context<br /></th>
+</tr>
+<tr valign="top">
+<td>
+<p><code>java.rmi.server.SkeletonMismatchException</code></p>
+<p><em>note: this exception is deprecated as of the</em> Java 2
+SDK, Standard Edition, v1.2</p>
+</td>
+<td>
+<p>Hash mismatch of stub and skeleton.</p>
+</td>
+</tr>
+<tr valign="top">
+<td>
+<p><code>java.rmi.UnmarshalException</code></p>
+</td>
+<td>
+<p>I/O error unmarshaling call header. I/O error unmarshaling
+arguments. Invalid method number or method hash.</p>
+</td>
+</tr>
+<tr valign="top">
+<td>
+<p><code>java.rmi.MarshalException</code></p>
+</td>
+<td>
+<p>Protocol error marshaling return.</p>
+</td>
+</tr>
+<tr valign="top">
+<td>
+<p><code>java.rmi.RemoteException</code></p>
+</td>
+<td>
+<p>A <code>RemoteException</code> occurring as a result of a remote
+invocation by the server.</p>
+</td>
+</tr>
+</table>
+<p><br /></p>
+<hr />
+<a href="rmiTOC.html">CONTENTS</a> | <a href=
+"rmi-exceptions4.html">PREV</a> | <a href=
+"rmi-exceptions6.html">NEXT</a>
+<hr />
+<font size="-1"><i><a href=
+"../../../legal/SMICopyright.html">Copyright</a> &copy; 1997, 2010,
+Oracle and/or its affiliates. All rights reserved.</i></font> 
+<!-- by Susan Snyder -->
+<!-- Last updated: 1/16/05 -->
+</body>
+</html>

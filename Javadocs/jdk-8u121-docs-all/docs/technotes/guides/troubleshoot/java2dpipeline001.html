@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Oracle Solaris and Linux: X11 Pipeline</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="java2dpipeline.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="java2dpipeline002.html">
+                Next</a><hr/><a id="BABEGFED" name="BABEGFED"/>
+<div id="JSTGD430">
+<h1><span>11.1</span> Oracle Solaris and Linux: X11 Pipeline</h1>
+<p>On Unix platforms the default pipeline is the X11 pipeline. This pipeline uses the X protocol for rendering to the screen or to certain types of offscreen images, such as <code dir="ltr">VolatileImages</code>, or "compatible" images (images that are created with the <code dir="ltr">GraphicsConfiguration.createCompatibleImage()</code> method). Such types of images can be put into X11 pixmaps for improved performance, especially in the case of the Remote X server.</p>
+<p>In addition, in certain cases Java 2D uses X server extensions, for example, the MIT X shared memory extension, or Direct Graphics Access extension, Double-buffer extension for double-buffering when using the <code dir="ltr">BufferStrategy</code> API.</p>
+<p>An additional pipeline, the OpenGL pipeline, might offer greater performance in some configurations.</p>
+<p>The following are X11 pipeline properties to troubleshoot.</p>
+<ul>
+<li>
+<p><a href="#BABICHDA">X11 Pipeline Pixmaps Properties</a></p>
+</li>
+<li>
+<p><a href="#BABGGBIG">X11 Pipeline MIT Shared Memory Extension</a></p>
+</li>
+<li>
+<p><a href="#BABEEBEA">Oracle Solaris on SPARC: DGA Support</a></p>
+</li>
+<li>
+<p><a href="#BABBCDJJ">Oracle Solaris on SPARC - Change Java 2D Default Visual</a></p>
+</li>
+</ul>
+<a id="BABICHDA" name="BABICHDA"/>
+<div id="JSTGD431">
+<h2><span>11.1.1</span> X11 Pipeline Pixmaps Properties</h2>
+<p>Java 2D by default uses X11 pixmaps for storing or caching certain types of offscreen images. Only the following types of images can be stored in pixmaps:</p>
+<ul>
+<li>
+<p>Opaque images, in which case <code dir="ltr">ColorModel.getTransparency()</code> returns <code dir="ltr">Transparency.OPAQUE</code></p>
+</li>
+<li>
+<p>1-bit transparent images (also known as sprites, <code dir="ltr">Transparency.BITMASK</code>)</p>
+</li>
+</ul>
+<p>The advantage of using pixmaps for storing images is that they can be put into the framebuffer's Video memory at the driver's discretion, which improves the speed at which these pixmaps can be copied to the screen or another pixmap.</p>
+<p>The use of pixmaps typically results in better performance. However, in certain cases, the opposite is true. Such cases typically involve the use of operations which cannot be performed using the X protocol, such as antialiasing, alpha compositing, and transforms that are more complex than simple translation transforms.</p>
+<p>For these operations the X11 pipeline must do the rendering using the built-in software renderer. In most cases this includes reading the contents of the pixmap to a system memory (over the network in the case of remote X server), performing the rendering, and then sending the pixels back to the pixmap. Such operations could result in extremely poor performance, especially if the X server is remote.</p>
+<p>The following are two cases to disable the use of X11 pipeline.</p>
+<ol>
+<li>
+<p><b>Disable X11 pipeline pixmaps</b>:</p>
+<p>To disable the use of pixmaps by Java2D, pass the following property to the Java VM: <code dir="ltr">-Dsun.java2d.pmoffscreen=false</code>.</p>
+</li>
+<li>
+<p><b>Disable X11 pipeline shared memory pixmaps:</b></p>
+<p>To minimize the effect of such operations requiring reading of pixels from a pixmap on overall performance, the X11 pipeline uses shared memory pixmaps for storing images which are often read from. <i>Note:</i> The shared memory pixmaps can only be used in the case of a local X server.</p>
+<p>The advantage of using shared memory pixmaps is that the pipeline can get direct access to the pixels in the pipeline bypassing the X11 protocol, which results in better performance.</p>
+<p>By default an image is stored in a normal X server pixmap, but it can be later moved to a shared memory pixmap if the pipeline detects excessive reading from such an image. The image can be moved back to a server pixmap if it is copied from often enough.</p>
+<p>The pipeline allows two ways of controlling the use of shared memory pixmaps: either disabling them, or forcing all images to be always stored in shared memory pixmaps.</p>
+<ul>
+<li>
+<p>To disable shared memory pixmaps, set the <code dir="ltr">J2D_PIXMAPS</code> environment variable to <code dir="ltr">server</code>. This is the default in remote X server case.</p>
+</li>
+<li>
+<p>To force all pixmaps to be created in shared memory, set <code dir="ltr">J2D_PIXMAPS</code> to <code dir="ltr">shared</code>.</p>
+</li>
+</ul>
+<p>First try forcing the shared memory pixmaps, as it often improves performance. However, with certain video board/driver configurations it may be necessary to disable the shared memory pixmaps to avoid rendering artifacts or crashes.</p>
+</li>
+</ol>
+</div>
+
+<a id="BABGGBIG" name="BABGGBIG"/>
+<div id="JSTGD432">
+<h2><span>11.1.2</span> X11 Pipeline MIT Shared Memory Extension</h2>
+<p>By default, the Java 2D X11 pipeline uses the MIT Shared Memory Extension (MIT SHM). This extension allows a faster exchange of data between the client (the Java application) and the X server, and this can significantly improve the performance of Java applications.</p>
+<p>The following are two ways to improve the performance of Java application.</p>
+<ul>
+<li>
+<p><b>Increase X Server and Java 2D shared memory:</b></p>
+<p>On Oracle Solaris operating system releases 8 and earlier it was sometimes necessary to increase the amount of shared memory available to the system (and to X server in particular) as the default was too low, resulting in poor rendering performance. Increasing the amount of shared memory and shared memory segments can result in better performance.</p>
+<p>To change the default settings on Oracle Solaris operating system, edit the /etc/system file, changing the <code dir="ltr">shmsys:shminfo_*</code> settings, as shown in <a href="#BABCGBED">Example 11-1</a>. <i>Note:</i> This is not needed on Oracle Solaris 9 and newer.</p>
+<div id="JSTGD433"><a id="BABCGBED" name="BABCGBED"/>
+<p>Example 11-1 System File Settings</p>
+<pre dir="ltr" xml:space="preserve">
+set shmsys:shminfo_shmmax=10000000
+set shmsys:shminfo_shmni=200
+set shmsys:shminfo_shminfo=150
+</pre></div>
+
+<p>On Linux this setting can be configured by editing the /proc/sys/kernel/shm* files.</p>
+</li>
+<li>
+<p><b>Disable X11 pipeline shared memory extension:</b></p>
+<p>In case of problems (such as crashes, or rendering artifacts) with older X servers and Shared Memory Extension, it is useful to be able to disable the extension. To disable the use of MIT SHM, set the <code dir="ltr">J2D_USE_MITSHM</code> environment variable to <code dir="ltr">false</code>.</p>
+</li>
+</ul>
+</div>
+
+<a id="BABEEBEA" name="BABEEBEA"/>
+<div id="JSTGD434">
+<h2><span>11.1.3</span> Oracle Solaris on SPARC: DGA Support</h2>
+<p>On SPARC hardware, if the framebuffer supports Sun's DGA (Direct Graphics Access) X server extension, and Java 2D has a corresponding module for accessing the framebuffer, DGA will be used for rendering to the screen.</p>
+<p>All offscreen images will reside in Java heap memory, and Java 2D's software-only rendering pipeline is used for rendering to them. This is different from a typical UNIX configuration, where X11 pixmaps are used for offscreen images.</p>
+<p>The following are use cases that describe how to detect DGA extension support and disable/enable DGA.</p>
+<ul>
+<li>
+<p><b>DGA extension for rending</b>:</p>
+<p>To detect if the DGA extension is used for rendering to the screen, run any Java application which does some rendering or displays a GUI, and check if a /tmp/wg* file was created when the application started. Exit the application and verify that the file has been deleted. If this is the case, then on this system Java 2D is using DGA.</p>
+</li>
+<li>
+<p><b>Typical DGA Issues:</b></p>
+<p>Since DGA allows direct access to the framebuffer's video memory, the typical problems include corruption outside of window bounds, complete system, and X server lock-ups.</p>
+</li>
+<li>
+<p><b>Enable or Disable DGA:</b></p>
+<p>If it is determined that DGA is being used, the first thing to try is to disable it. This can be done by setting the <code dir="ltr">NO_J2D_DGA</code> environment variable to <code dir="ltr">true</code>. This forces the default UNIX path to use only X11 for rendering to the screen, and pixmaps for accelerating offscreen images.</p>
+<p>Sometimes, it could be beneficial to enable the use of pixmaps, while also using DGA for rendering to the screen. To force the use of pixmaps for accelerating offscreen images, set the following property when starting the application: <code dir="ltr">-Dsun.java2d.pmoffscreen=true</code>.</p>
+</li>
+</ul>
+</div>
+
+<a id="BABBCDJJ" name="BABBCDJJ"/>
+<div id="JSTGD435">
+<h2><span>11.1.4</span> Oracle Solaris on SPARC - Change Java 2D Default Visual</h2>
+<p>On certain video boards on the SPARC platform, more than one visual can be available from the X server. By default Java 2D tries to select the best visual, where "best" is typically a higher-bit depth visual. For example, on some Oracle Solaris operating system releases the default X11 visual is 8-bit PseudoColor, although 24-bit visual is also available. In such cases Java 2D will select a 24-bit TrueColor visual as the default for Java windows.</p>
+<p>While it is possible to create a Java top-level window with a <code dir="ltr">GraphicsConfiguration</code> object corresponding to a different visual, in some cases it is necessary to make Java use a different default visual instead. This can be done by setting the <code dir="ltr">FORCEDEFVIS</code> environment variable. It can be set to <code dir="ltr">true</code> to force the use of the default X server visual (even if it is not the best one), or it can be set to a hexadecimal number corresponding to the visual ID as reported by tools like <code dir="ltr">xdpyinfo</code>.</p>
+<p>To determine your X server default visual, execute the <code dir="ltr">xdpyinfo</code> command and look at the <code dir="ltr">default visual id</code> field.</p>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="java2dpipeline.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="java2dpipeline002.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

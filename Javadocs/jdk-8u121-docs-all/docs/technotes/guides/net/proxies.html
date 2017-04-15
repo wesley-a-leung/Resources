@@ -1,0 +1,640 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Networking and Proxies</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Java Networking and Proxies</h1>
+<h2>1) Introduction</h2>
+<p>In today's networking environments, particularly corporate ones,
+application developers have to deal with proxies almost as often as
+system administrators. In some cases the application should use the
+system default settings, in other cases it will we want to have a
+very tight control over what goes through which proxy, and,
+somewhere in the middle, most applications will be happy to
+delegate the decision to their users by providing them with a GUI
+to set the proxy settings, as is the case in most browsers.</p>
+<p>In any case, a development platform, like Java, should provide
+mechanisms to deal with these proxies that are both powerful and
+flexible. Unfortunately, until recently, the Java platform wasn't
+very flexible in that department. But all that changed in Java SE 5.0
+as new API have been introduced to address this shortcoming, and
+the purpose of this document is to provide an in-depth explanation of
+all these APIs and mechanisms, the old ones, which are still valid,
+as well as the new ones.</p>
+<h2>2) System Properties</h2>
+<p>Up until Java SE 1.4 system properties were the only way to set
+proxy servers within the Java networking API for any of the
+protocol handlers. To make matters more complicated, the names of
+these properties have changed from one release to another and some
+of them are now obsolete even if they are still supported for
+compatibility's sake.</p>
+<p>The major limitation of using system properties is that they are
+an &ldquo;all or nothing&rdquo; switch. Meaning that once a proxy
+has been set for a particular protocol, it will affect all
+connections for that protocol. It's a VM wide behavior.</p>
+<p>There are 2 main ways to set system properties:</p>
+<ul>
+<li>As a command line option when invoking the VM</li>
+<li>Using the <code>System.setProperty(String, String)</code>
+method, assuming, of course that you have permission to do so.</li>
+</ul>
+<p>Now, let's take a look, protocol by protocol, at the properties
+you can use to set proxies. All proxies are defined by a host name
+and a port number. The later is optional as, if it is not
+specified, a standard default port will be used.</p>
+<h3>2.1) HTTP</h3>
+<p>There are 3 properties you can set to specify the proxy that
+will be used by the http protocol handler:</p>
+<ul>
+<li><code>http.proxyHost</code>: the host name of the proxy
+server</li>
+<li><code>http.proxyPort</code>: the port number, the default value
+being 80.</li>
+<li><code>http.nonProxyHosts</code>:a list of hosts that should be
+reached directly, bypassing the proxy. This is a list of patterns
+separated by '|'. The patterns may start or end with a '*' for
+wildcards. Any host matching one of these patterns will be reached
+through a direct connection instead of through a proxy.</li>
+</ul>
+<p>Let's look at a few examples assuming we're trying to execute
+the main method of the GetURL class:</p>
+<pre class="codeblock">
+$ java -Dhttp.proxyHost=webcache.example.com GetURL
+</pre>
+<p>All http connections will go through the proxy server at
+<code>webcache.example.com</code> listening on port 80 (we didn't
+specify any port, so the default one is used).</p>
+<pre class="codeblock">
+$ java -Dhttp.proxyHost=webcache.example.com -Dhttp.proxyPort=8080
+-Dhttp.nonProxyHosts=&rdquo;localhost|host.example.com&rdquo; GetURL
+</pre>
+<p>In that second example, the proxy server will still be at
+<code>webcache.example.com</code>, but this time listening on port
+8080. Also, the proxy won't be used when connecting to either
+<code>localhost</code> or <code>host.example.com</code>.</p>
+<p>As mentioned earlier, these settings affect all http connections
+during the entire lifetime of the VM invoked with these options.
+However it is possible, using the System.setProperty() method, to
+have a slightly more dynamic behavior.</p>
+<p>Here is a code excerpt showing how this can be done:</p>
+<pre class="codeblock">
+//Set the http proxy to webcache.example.com:8080
+
+System.setProperty("http.proxyHost", "webcache.example.com");
+System.setProperty("http.proxyPort", "8080");
+
+// Next connection will be through proxy.
+URL url = new URL("http://java.example.org/");
+InputStream in = url.openStream();
+
+// Now, let's 'unset' the proxy.
+System.clearProperty("http.proxyHost");
+
+// From now on http connections will be done directly.
+</pre>
+<p>This works reasonably well, but it
+can get tricky if your application is multi-threaded. Remember,
+system properties are &ldquo;VM wide&rdquo; settings, so all
+threads are affected. Which means that the code in one thread
+could, as a side effect, render the code in an other thread
+inoperative.</p>
+<h3>2.2) HTTPS</h3>
+<p>The https (http over SSL) protocol handler has its own set of
+properties:</p>
+<ul>
+<li>https.proxyHost</li>
+<li>https.proxyPort</li>
+</ul>
+<p>As you probably guessed these work in the exact same manner as
+their http counterparts, so we won't go into much detail except to
+mention that the default port number, this time, is 443 and that
+for the "non proxy hosts" list, the HTTPS protocol handler will use
+the same as the http handler (i.e.
+<code>http.nonProxyHosts</code>).</p>
+<h3>2.3) FTP</h3>
+<p>Settings for the FTP protocol handler follow the same rules as
+for http, the only difference is that each property name is now
+prefixed with '<code>ftp</code>.' instead of
+'<code>http.</code>'</p>
+<p>Therefore the system properties are:</p>
+<ul>
+<li><code>ftp.proxHost</code></li>
+<li><code>ftp.proxyPort</code></li>
+<li><code>ftp.nonProxyHosts</code></li>
+</ul>
+<p>Note that, this time, there is a separate property for the "non
+proxy hosts" list. Also, as for http, the default port number value
+is 80. It should be noted that when going through a proxy, the FTP
+protocol handler will actually use HTTP to issue commands to the
+proxy server, which explains why this is the same default port
+number.</p>
+<p>Let's examine a quick example:</p>
+<pre class="codeblock">
+$ java -Dhttp.proxyHost=webcache.example.com
+-Dhttp.proxyPort=8080 -Dftp.proxyHost=webcache.example.com -Dftp.proxyPort=8080 GetURL
+</pre>
+<p>Here, both the HTTP and the FTP protocol handlers will use the
+same proxy server at webcache.example.com:8080.</p>
+<h3>2.4) SOCKS</h3>
+<p>The SOCKS protocol, as defined in RFC 1928, provides a framework
+for client server applications to safely traverse a firewall both
+at the TCP and UDP level. In that sense it is a lot more generic
+than higher level proxies (like HTTP or FTP specific proxies). Java SE
+5.0 provides SOCKS support for client TCP sockets.</p>
+<p>There are 2 system properties related to SOCKS:</p>
+<ul>
+<li><code>socksProxyHost</code> for the host name of the SOCKS
+proxy server</li>
+<li><code>socksProxyPort</code> for the port number, the default
+value being 1080</li>
+</ul>
+<p>Note that there is no dot ('.') after the prefix this time. This
+is for historical reasons and to ensure backward compatibility.
+Once a SOCKS proxy is specified in this manner, all TCP connections
+will be attempted through the proxy.</p>
+<p>Example:</p>
+<pre class="codeblock">
+$ java -DsocksProxyHost=socks.example.com GetURL
+</pre>
+<p>Here, during the execution of the code, every outgoing TCP
+socket will go through the SOCKS proxy server at
+<code>socks.example.com:1080</code>.</p>
+<p>Now, what happens when both a SOCKS proxy and a HTTP proxy are
+defined? Well the rule is that settings for higher level protocols,
+like HTTP or FTP, take precedence over SOCKS settings. So, in that
+particular case, when establishing a HTTP connection, the SOCKS
+proxy settings will be ignored and the HTTP proxy will be
+contacted. Let's look at an example:</p>
+<pre class="codeblock">
+$ java -Dhttp.proxyHost=webcache.example.com -Dhttp.proxyPort=8080
+-DsocksProxyHost=socks.example.com GetURL
+</pre>
+<p>Here, an http URL will go through
+<code>webcache.example.com:8080</code> because the http settings
+take precedence. But what about an ftp URL? Since no specific proxy
+settings were assigned for FTP, and since FTP is on top of TCP,
+then FTP connections will be attempted through the SOCKS proxy
+server at <code>socks.example.com:1080</code>. If an FTP proxy
+had been specified, then that proxy would have been used
+instead.</p>
+<h2>3) Proxy class</h2>
+<p>As we have seen, the system properties are powerful, but not
+flexible. The "all or nothing" behavior was justly deemed too
+severe a limitation by most developers. That's why it was decided
+to introduce a new, more flexible, API in Java SE 5.0 so that it would
+be possible to have connection based proxy settings.</p>
+<p>The core of this new API is the Proxy class which represents a
+proxy definition, typically a type (http, socks) and a socket
+address. There are, as of Java SE 5.0, 3 possible types:</p>
+<ul>
+<li><code>DIRECT</code> which represents a direct connection, or
+absence of proxy.</li>
+<li><code>HTTP</code> which represents a proxy using the HTTP
+protocol.</li>
+<li><code>SOCKS</code> which represents proxy using either SOCKS v4
+or v5.</li>
+</ul>
+<p>So, in order to create an HTTP proxy object you would call:</p>
+<pre class="codeblock">
+SocketAddress addr = new
+InetSocketAddress("webcache.example.com", 8080);
+Proxy proxy = new Proxy(Proxy.Type.HTTP, addr);
+</pre>
+<p>Remember, this new proxy object represents a proxy
+<b>definition</b>, nothing more. How do we use such an object? A
+new <code>openConnection()</code> method has been added to the URL
+class and takes a Proxy as an argument, it works the same way as
+<code>openConnection()</code> with no arguments, except it forces
+the connection to be established through the specified proxy,
+ignoring all other settings, including the system properties
+mentioned above.</p>
+<p>So completing the previous example, we can now add:</p>
+<pre class="codeblock">
+URL url = new URL("http://java.example.org/");
+URLConnection conn = url.openConnection(proxy);
+</pre>
+<p>Simple, isn't it?</p>
+<p>The same mechanism can be used to specify that a particular URL
+has to be reached directly, because it's on the intranet for
+example. That's where the DIRECT type comes into play. But, you
+don't need to create a proxy instance with the DIRECT type, all you
+have to do is use the NO_PROXY static member:</p>
+<pre class="codeblock">
+URL url2 = new URL("http://infos.example.com/");
+URLConnection conn2 = url2.openConnection(Proxy.NO_PROXY);
+</pre>
+<p>Now, this guarantees you that this specific URL will be
+retrieved though a direct connection bypassing any other proxy
+settings, which can be convenient.</p>
+<p>Note that you can force a URLConnection to go through a SOCKS
+proxy as well:</p>
+<pre class="codeblock">
+SocketAddress addr = new InetSocketAddress("socks.example.com", 1080);
+Proxy proxy = new Proxy(Proxy.Type.SOCKS, addr);
+URL url = new URL("ftp://ftp.gnu.org/README");
+URLConnection conn = url.openConnection(proxy);
+</pre>
+<p>That particular FTP connection will be attempted though the
+specified SOCKS proxy. As you can see, it's pretty
+straightforward.</p>
+<p>Last, but not least, you can also specify a proxy for individual
+TCP sockets by using the newly introduced socket constructor:</p>
+<pre class="codeblock">
+SocketAddress addr = new InetSocketAddress("socks.example.com", 1080);
+Proxy proxy = new Proxy(Proxy.Type.SOCKS, addr);
+Socket socket = new Socket(proxy);
+InetSocketAddress dest = new InetSocketAddress("server.example.org", 1234);
+socket.connect(dest);
+</pre>
+<p>Here the socket will try to connect to its destination address
+(server.example.org:1234) through the specified SOCKS proxy.</p>
+<p>As for URLs, the same mechanism can be used to ensure that a
+direct (i.e. not through any proxy) connection should be attempted
+no matter what the global settings are:</p>
+<pre class="codeblock">
+Socket socket = new Socket(Proxy.NO_PROXY);<br />socket.connect(new InetAddress("localhost", 1234));
+</pre>
+<p>Note that this new constructor, as of Java SE 5.0, accepts only 2
+types of proxy: SOCKS or DIRECT (i.e. the NO_PROXY instance).</p>
+<h2>4) ProxySelector</h2>
+<p>As you can see, with Java SE 5.0, the developer gains quite a bit
+of control and flexibility when it comes to proxies. Still, there
+are situations where one would like to decide which proxy to use
+dynamically, for instance to do some load balancing between
+proxies, or depending on the destination, in which case the API
+described so far would be quite cumbersome. That's where the
+ProxySelector comes into play.</p>
+<p>In a nutshell the ProxySelector is a piece of code that will
+tell the protocol handlers which proxy to use, if any, for any
+given URL. For example, consider the following code:</p>
+<pre class="codeblock">
+URL url = new URL("http://java.example.org/index.html");
+URLConnection conn = url.openConnection();
+InputStream in = conn.getInputStream();
+</pre>
+<p>At that point the HTTP protocol handler is invoked and it will
+query the proxySelector. The dialog might go something like
+that:</p>
+<b>Handler</b>: Hey dude, I'm trying to reach java.example.org,
+should I use a proxy?<br />
+<b>ProxySelector</b>: Which protocol do you intend to use?<br />
+<b>Handler</b>: http, of course!<br />
+<b>ProxySelector</b>: On the default port?<br />
+<b>Handler</b>: Let me check.... Yes, default port.<br />
+<b>ProxySelector</b>: I see. Then you shall use
+webcache.example.com on port 8080 as a proxy.<br />
+<b>Handler</b>: Thanks. &lt;pause&gt; Dude,
+webcache.example.com:8080 doesn't seem to be responding! Any other
+option?<br />
+<b>ProxySelector</b>: Dang! OK, try webcache2.example.com, on port
+8080 as well.<br />
+<b>Handler</b>: Sure. Seems to be working. Thanks.<br />
+<b>ProxySelector</b>: No sweat. Bye.
+<p>Of course I'm embellishing a bit, but you get the idea.</p>
+<p>The best thing about the ProxySelector is that it is plugable!
+Which means that if you have needs that are not covered by the
+default one, you can write a replacement for it and plug it in!</p>
+<p>So what is a ProxySelector? Let's take a look at the class
+definition:</p>
+<pre class="codeblock">
+public abstract class ProxySelector {
+        public static ProxySelector getDefault();
+        public static void setDefault(ProxySelector ps);
+        public abstract List&lt;Proxy&gt; select(URI uri);
+        public abstract void connectFailed(URI uri,
+                SocketAddress sa, IOException ioe);
+}
+</pre>
+<p>As we can see, ProxySelector is an abstract class with 2 static
+methods to set, or get, the default implementation, and 2 instance
+methods that will be used by the protocol handlers to determine
+which proxy to use or to notify that a proxy seems to be
+unreachable. If you want to provide your own ProxySelector, all you
+have to do is extend this class, provide an implementation for
+these 2 instance methods then call ProxySelector.setDefault()
+passing an instance of your new class as an argument. At this point
+the protocol handlers, like http or ftp, will query the new
+ProxySelector when trying to decide what proxy to use.</p>
+<p>Before we see in details how to write such a ProxySelector,
+let's talk about the default one. Java SE 5.0 provides a default
+implementation which enforces backward compatibility. In other
+terms, the default ProxySelector will check the system properties
+described earlier to determine which proxy to use. However, there
+is a new, optional feature: On recent Windows systems and on Gnome
+2.x platforms it is possible to tell the default ProxySelector to
+use the system proxy settings (both recent versions of Windows and
+Gnome 2.x let you set proxies globally through their user
+interface). If the system property
+<code>java.net.useSystemProxies</code> is set to true (by default
+it is set to false for compatibility sake), then the default
+ProxySelector will try to use these settings. You can set that
+system property on the command line, or you can edit the JRE
+installation file <code>lib/net.properties</code>, that way you
+have to change it only once on a given system.</p>
+<p>Now let's examine how to write, and install, a new
+ProxySelector.</p>
+<p>Here is what we want to achieve: We're pretty happy with the
+default ProxySelector behavior, except when it comes to http and
+https. On our network we have more than one possible proxy for
+these protocols and we'd like our application to try them in
+sequence (i.e.: if the first one doesn't respond, then try
+the second one and so on). Even more, if one of them fails too many
+time, we'll remove it from the list in order to optimize things a
+bit.</p>
+<p>All we need to do is subclass
+<code>java.net.ProxySelector</code> and provide implementations for
+both the <code>select()</code> and <code>connectFailed()</code>
+methods.</p>
+<p>The <code>select()</code> method is called by the protocol
+handlers before trying to connect to a destination. The argument
+passed is a URI describing the resource (protocol, host and port
+number). The method will then return a List of Proxies. For
+instance the following code:</p>
+<pre class="codeblock">
+URL url = new URL("http://java.example.org/index.html");
+InputStream in = url.openStream();
+</pre>
+<p>will trigger the following pseudo-call in the protocol
+handler:</p>
+<pre class="codeblock">
+List&lt;Proxy&gt; l = ProxySelector.getDefault().select(new URI("http://java.example.org/"));
+</pre>
+<p>In our implementation, all we'll have to do is check that the
+protocol from the URI is indeed http (or https), in which case we
+will return the list of proxies, otherwise we just delegate to the
+default one. To do that, we'll need, in the constructor, to store a
+reference to the old default, because ours will become the
+default.</p>
+<p>So it is starting to look like this:</p>
+<pre class="codeblock">
+public class MyProxySelector extends ProxySelector {
+        ProxySelector defsel = null;
+        MyProxySelector(ProxySelector def) {
+                defsel = def;
+        }
+        
+        public java.util.List&lt;Proxy&gt; select(URI uri) {
+                if (uri == null) {
+                        throw new IllegalArgumentException("URI can't be null.");
+                }
+                String protocol = uri.getScheme();
+                if ("http".equalsIgnoreCase(protocol) ||
+                        "https".equalsIgnoreCase(protocol)) {
+                        ArrayList&lt;Proxy&gt; l = new ArrayList&lt;Proxy&gt;();
+                        // Populate the ArrayList with proxies
+                        return l;
+                }
+                if (defsel != null) {
+                        return defsel.select(uri);
+                } else {
+                        ArrayList&lt;Proxy&gt; l = new ArrayList&lt;Proxy&gt;();
+                        l.add(Proxy.NO_PROXY);
+                        return l;
+                }
+        }
+}
+</pre>
+<p>First note the constructor that keeps a reference to the old
+default selector. Second, notice the check for illegal argument in
+the select() method in order to respect the specifications.
+Finally, notice how the code defers to the old default, if there
+was one, when necessary. Of course, in this example, I didn't
+detail how to populate the ArrayList, as it not of particular
+interest, but the complete code is available in the appendix if
+you're curious.</p>
+<p>As it is, the class is incomplete since we didn't provide an
+implementation for the <code>connectFailed()</code> method. That's
+our very next step.</p>
+<p>The <code>connectFailed()</code> method is called by the
+protocol handler whenever it failed to connect to one of the
+proxies returned by the <code>select()</code> method. 3 arguments
+are passed: the URI the handler was trying to reach, which should
+be the one used when <code>select()</code> was called, the
+<code>SocketAddress</code> of the proxy that the handler was trying
+to contact and the IOException that was thrown when trying to
+connect to the proxy. With that information, we'll just do the
+following: If the proxy is in our list, and it failed 3 times or
+more, we'll just remove it from our list, making sure it won't be
+used again in the future. So the code is now:</p>
+<pre class="codeblock">
+public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+        if (uri == null || sa == null || ioe == null) {
+            throw new IllegalArgumentException("Arguments can't be null.");
+        }
+        InnerProxy p = proxies.get(sa); 
+        if (p != null) {
+                if (p.failed() &gt;= 3)
+                   proxies.remove(sa);
+        } else {
+                if (defsel != null)
+                    defsel.connectFailed(uri, sa, ioe);
+        }
+}
+</pre>
+<p>Pretty straightforward isn't it. Again we have to check the
+validity of the arguments (specifications again). The only thing we
+do take into account here is the SocketAddress, if it's one of the
+proxies in our list, then we do deal with it, otherwise we defer,
+again, to the default selector.</p>
+<p>Now that our implementation is, mostly, complete, all we have to
+do in the application is to register it and we're done:</p>
+<pre class="codeblock">
+public static void main(String[] args) {
+        MyProxySelector ps = new MyProxySelector(ProxySelector.getDefault());
+        ProxySelector.setDefault(ps);
+        // rest of the application
+}
+</pre>
+<p>Of course, I simplified things a bit for the sake of clarity, in
+particular you've probably noticed I didn't do much Exception
+catching, but I'm confident you can fill in the blanks.</p>
+<p>It should be noted that both Java Plugin and Java Webstart do
+replace the default ProxySelector with a custom one to integrate
+better with the underlying platform or container (like the web
+browser). So keep in mind, when dealing with ProxySelector, that
+the default one is typically specific to the underlying platform
+and to the JVM implementation. That's why it is a good idea, when
+providing a custom one, to keep a reference to the older one, as
+we've done in the above example, and use it when necessary.</p>
+<h2>5) Conclusion</h2>
+<p>As we have now established Java SE 5.0 provides quite a number of
+ways to deal with proxies. From the very simple (using the system
+proxy settings) to the very flexible (changing the ProxySelector,
+albeit for experienced developers only), including the per
+connection selection courtesy of the Proxy class.</p>
+<h2>Appendix</h2>
+<p>Here is the full source of the ProxySelector we developed in this document. Keep in mind that this was written for educational purposes only, and was therefore kept pretty simple on purpose.</p>
+<pre class="codeblock">
+import java.net.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.io.IOException;
+
+public class MyProxySelector extends ProxySelector {
+        // Keep a reference on the previous default
+    ProxySelector defsel = null;
+        
+        /*
+         * Inner class representing a Proxy and a few extra data
+         */
+        class InnerProxy {
+        Proxy proxy;
+                SocketAddress addr;
+                // How many times did we fail to reach this proxy?
+                int failedCount = 0;
+                
+                InnerProxy(InetSocketAddress a) {
+                        addr = a;
+                        proxy = new Proxy(Proxy.Type.HTTP, a);
+                }
+                
+                SocketAddress address() {
+                        return addr;
+                }
+                
+                Proxy toProxy() {
+                        return proxy;
+                }
+                
+                int failed() {
+                        return ++failedCount;
+                }
+        }
+        
+        /*
+         * A list of proxies, indexed by their address.
+         */
+        HashMap&lt;SocketAddress, InnerProxy&gt; proxies = new HashMap&lt;SocketAddress, InnerProxy&gt;();
+
+        MyProxySelector(ProxySelector def) {
+          // Save the previous default
+          defsel = def;
+          
+          // Populate the HashMap (List of proxies)
+          InnerProxy i = new InnerProxy(new InetSocketAddress(&quot;webcache1.example.com&quot;, 8080));
+          proxies.put(i.address(), i);
+          i = new InnerProxy(new InetSocketAddress(&quot;webcache2.example.com&quot;, 8080));
+          proxies.put(i.address(), i);
+          i = new InnerProxy(new InetSocketAddress(&quot;webcache3.example.com&quot;, 8080));
+          proxies.put(i.address(), i);
+          }
+          
+          /*
+           * This is the method that the handlers will call.
+           * Returns a List of proxy.
+           */
+          public java.util.List&lt;Proxy&gt; select(URI uri) {
+                // Let's stick to the specs. 
+                if (uri == null) {
+                        throw new IllegalArgumentException(&quot;URI can't be null.&quot;);
+                }
+                
+                /*
+                 * If it's a http (or https) URL, then we use our own
+                 * list.
+                 */
+                String protocol = uri.getScheme();
+                if ("http".equalsIgnoreCase(protocol) ||
+                        "https".equalsIgnoreCase(protocol)) {
+                        ArrayList&lt;Proxy&gt; l = new ArrayList&lt;Proxy&gt;();
+                        for (InnerProxy p : proxies.values()) {
+                          l.add(p.toProxy());
+                        }
+                        return l;
+                }
+                
+                /*
+                 * Not HTTP or HTTPS (could be SOCKS or FTP)
+                 * defer to the default selector.
+                 */
+                if (defsel != null) {
+                        return defsel.select(uri);
+                } else {
+                        ArrayList&lt;Proxy&gt; l = new ArrayList&lt;Proxy&gt;();
+                        l.add(Proxy.NO_PROXY);
+                        return l;
+                }
+        }
+        
+        /*
+         * Method called by the handlers when it failed to connect
+         * to one of the proxies returned by select().
+         */
+        public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+                // Let's stick to the specs again.
+                if (uri == null || sa == null || ioe == null) {
+                        throw new IllegalArgumentException("Arguments can't be null.");
+                }
+                
+                /*
+                 * Let's lookup for the proxy 
+                 */
+                InnerProxy p = proxies.get(sa); 
+                        if (p != null) {
+                                /*
+                                 * It's one of ours, if it failed more than 3 times
+                                 * let's remove it from the list.
+                                 */
+                                if (p.failed() &gt;= 3)
+                                        proxies.remove(sa);
+                        } else {
+                                /*
+                                 * Not one of ours, let's delegate to the default.
+                                 */
+                                if (defsel != null)
+                                  defsel.connectFailed(uri, sa, ioe);
+                        }
+     }
+}
+</pre>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

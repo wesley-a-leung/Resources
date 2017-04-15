@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Chapter 10: Transmitting and Receiving MIDI Messages</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<p><small><a href="contents.html">&lt; Contents</a></small></p>
+<h1>Chapter 10: Transmitting and Receiving MIDI Messages</h1>
+<h2><a name="understanding" id="understanding"></a>Understanding
+Devices, Transmitters, and Receivers</h2>
+<p><a name="a120461" id="a120461"></a> The Java Sound API specifies
+a message-routing architecture for MIDI data that's flexible and
+easy to use, once you understand how it works. The system is based
+on a module-connection design: distinct modules, each of which
+performs a specific task, can be interconnected (networked),
+enabling data to flow from one module to another.</p>
+<p><a name="a121778" id="a121778"></a> The base module in the Java
+Sound API's messaging system is <code>MidiDevice</code> (a Java
+language interface). <code>MidiDevices</code> include sequencers
+(which record, play, load, and edit sequences of time-stamped MIDI
+messages), synthesizers (which generate sounds when triggered by
+MIDI messages), and MIDI input and output ports, through which data
+comes from and goes to external MIDI devices. The functionality
+typically required of MIDI ports is described by the base
+<code>MidiDevice</code> interface. The <code>Sequencer</code> and
+<code>Synthesizer</code> interfaces extend the
+<code>MidiDevice</code> interface to describe the additional
+functionality characteristic of MIDI sequencers and synthesizers,
+respectively. Concrete classes that function as sequencers or
+synthesizers should implement these interfaces.</p>
+<p><a name="a121816" id="a121816"></a> A <code>MidiDevice</code>
+typically owns one or more ancillary objects that implement the
+<code>Receiver</code> or <code>Transmitter</code> interfaces. These
+interfaces represent the "plugs" or "portals" that connect devices
+together, permitting data to flow into and out of them. By
+connecting a <code>Transmitter</code> of one
+<code>MidiDevice</code> to a <code>Receiver</code> of another, you
+can create a network of modules in which data flows from one to
+another.</p>
+<p><a name="a121833" id="a121833"></a> The <code>MidiDevice</code>
+interface includes methods for determining how many transmitter and
+receiver objects the device can support concurrently, and other
+methods for accessing those objects. A MIDI output port normally
+has at least one <code>Receiver</code> through which the outgoing
+messages may be received; similarly, a synthesizer normally
+responds to messages sent to its <code>Receiver</code> or
+<code>Receivers</code>. A MIDI input port normally has at least one
+<code>Transmitter</code>, which propagates the incoming messages. A
+full-featured sequencer supports both <code>Receivers</code>, which
+receive messages during recording, and <code>Transmitters</code>,
+which send messages during playback.</p>
+<p><a name="a120470" id="a120470"></a> The <code>Transmitter</code>
+interface includes methods for setting and querying the receivers
+to which the transmitter sends its <code>MidiMessages</code>.
+Setting the receiver establishes the connection between the two.
+The <code>Receiver</code> interface contains a method that sends a
+<code>MidiMessage</code> to the receiver. Typically, this method is
+invoked by a <code>Transmitter</code>. Both the
+<code>Transmitter</code> and <code>Receiver</code> interfaces
+include a <code>close</code> method that frees up a previously
+connected transmitter or receiver, making it available for a
+different connection.</p>
+<p><a name="a120474" id="a120474"></a> We'll now examine how to use
+transmitters and receivers. Before getting to the typical case of
+connecting two devices (such as hooking a sequencer to a
+synthesizer), we'll examine the simpler case where you send a MIDI
+message directly from your application program to a device.
+Studying this simple scenario should make it easier to understand
+how the Java Sound API arranges for sending MIDI messages between
+two devices.</p>
+<a name="sending" id="sending"></a>
+<h2>Sending a Message to a Receiver without Using a
+Transmitter</h2>
+<p><a name="a121187" id="a121187"></a> Let's say you want to create
+a MIDI message from scratch and then send it to some receiver. You
+can create a new, blank <code>ShortMessage</code> and then fill it
+with MIDI data using the following <code>ShortMessage</code>
+method:</p>
+<pre>
+void setMessage(int command, int channel, int data1,
+         int data2) 
+                 
+</pre>
+<p><a name="a121197" id="a121197"></a> Once you have a message
+ready to send, you can send it to a <code>Receiver</code> object,
+using this <code>Receiver</code> method:</p>
+<pre>
+void send(MidiMessage message, long timeStamp)
+</pre>
+<p><a name="a121199" id="a121199"></a> The time-stamp argument will
+be explained momentarily. For now, we'll just mention that its
+value can be set to -1 if you don't care about specifying a precise
+time. In this case, the device receiving the message will try to
+respond to the message as soon as possible.</p>
+<p><a name="a121753" id="a121753"></a> An application program can
+obtain a receiver for a <code>MidiDevice</code> by invoking the
+device's <code>getReceiver</code> method. If the device can't
+provide a receiver to the program (typically because all the
+device's receivers are already in use), a
+<code>MidiUnavailableException</code> is thrown. Otherwise, the
+receiver returned from this method is available for immediate use
+by the program. When the program has finished using the receiver,
+it should call the receiver's <code>close</code> method. If the
+program attempts to invoke methods on a receiver after calling
+<code>close</code>, an <code>IllegalStateException</code> may be
+thrown.</p>
+<p><a name="a121858" id="a121858"></a> As a concrete simple example
+of sending a message without using a transmitter, let's send a Note
+On message to the default receiver, which is typically associated
+with a device such as the MIDI output port or a synthesizer. We do
+this by creating a suitable <code>ShortMessage</code> and passing
+it as an argument to <code>Receiver's</code> <code>send</code>
+method:</p>
+<pre>
+  ShortMessage myMsg = new ShortMessage();
+  // Start playing the note Middle C (60), 
+  // moderately loud (velocity = 93).
+  myMsg.setMessage(ShortMessage.NOTE_ON, 0, 60, 93);
+  long timeStamp = -1;
+  Receiver       rcvr = MidiSystem.getReceiver();
+  rcvr.send(myMsg, timeStamp);
+  
+</pre>
+<p><a name="a120504" id="a120504"></a> This code uses a static
+integer field of <code>ShortMessage</code>, namely,
+<code>NOTE_ON</code>, for use as the MIDI message's status byte.
+The other parts of the MIDI message are given explicit numeric
+values as arguments to the <code>setMessage</code> method. The zero
+indicates that the note is to be played using MIDI channel number
+1; the 60 indicates the note Middle C; and the 93 is an arbitrary
+key-down velocity value, which typically indicates that the
+synthesizer that eventually plays the note should play it somewhat
+loudly. (The MIDI specification leaves the exact interpretation of
+velocity up to the synthesizer's implementation of its current
+instrument.) This MIDI message is then sent to the receiver with a
+time stamp of -1. We now need to examine exactly what the time
+stamp parameter means, which is the subject of the next
+section.</p>
+<a name="understanding_time" id="understanding_time"></a>
+<h2>Understanding Time Stamps</h2>
+<p><a name="a120509" id="a120509"></a> Chapter 8, "<a href=
+"chapter8.html">Overview of the MIDI Package</a>," explained that
+the MIDI specification has different parts. One part describes MIDI
+"wire" protocol (messages sent between devices in real time), and
+another part describes Standard MIDI Files (messages stored as
+events in "sequences"). In the latter part of the specification,
+each event stored in a standard MIDI file is tagged with a timing
+value that indicates when that event should be played. By contrast,
+messages in MIDI wire protocol are always supposed to be processed
+immediately, as soon as they're received by a device, so they have
+no accompanying timing values.</p>
+<p><a name="a120511" id="a120511"></a> The Java Sound API adds an
+additional twist. It comes as no surprise that timing values are
+present in the <code>MidiEvent</code> objects that are stored in
+sequences (as might be read from a MIDI file), just as in the
+Standard MIDI Files specification. But in the Java Sound API, even
+the messages sent between devices&mdash;in other words, the
+messages that correspond to MIDI wire protocol&mdash;can be given
+timing values, known as <em>time stamps</em>. It is these time
+stamps that concern us here. (The timing values in
+<code>MidiEvent</code> objects are discussed in detail in Chapter
+11, "<a href="chapter11.html">Playing, Recording, and Editing MIDI
+Sequences</a>.")</p>
+<a name="a120517" id="a120517"></a>
+<h3>Time Stamps on Messages Sent to Devices</h3>
+<p><a name="a120519" id="a120519"></a> The time stamp that can
+optionally accompany messages sent between devices in the Java
+Sound API is quite different from the timing values in a standard
+MIDI file. The timing values in a MIDI file are often based on
+musical concepts such as beats and tempo, and each event's timing
+measures the time elapsed since the previous event. In contrast,
+the time stamp on a message sent to a device's
+<code>Receiver</code> object always measures absolute time in
+microseconds. Specifically, it measures the number of microseconds
+elapsed since the device that owns the receiver was opened.</p>
+<p><a name="a120521" id="a120521"></a> This kind of time stamp is
+designed to help compensate for latencies introduced by the
+operating system or by the application program. It's important to
+realize that these time stamps are used for minor adjustments to
+timing, not to implement complex queues that can schedule events at
+completely arbitrary times (as <code>MidiEvent</code> timing values
+do).</p>
+<p><a name="a122050" id="a122050"></a> The time stamp on a message
+sent to a device (through a <code>Receiver</code>) can provide
+precise timing information to the device. The device might use this
+information when it processes the message. For example, it might
+adjust the event's timing by a few milliseconds to match the
+information in the time stamp. On the other hand, not all devices
+support time stamps, so the device might completely ignore the
+message's time stamp.</p>
+<p><a name="a122051" id="a122051"></a> Even if a device supports
+time stamps, it might not schedule the event for exactly the time
+that you requested. You can't expect to send a message whose time
+stamp is very far in the future and have the device handle it as
+you intended, and you certainly can't expect a device to correctly
+schedule a message whose time stamp is in the past! It's up to the
+device to decide how to handle time stamps that are too far off in
+the future or are in the past. The sender doesn't know what the
+device considers to be too far off, or whether the device had any
+problem with the time stamp. This ignorance mimics the behavior of
+external MIDI hardware devices, which send messages without ever
+knowing whether they were received correctly. (MIDI wire protocol
+is unidirectional.)</p>
+<p><a name="a120527" id="a120527"></a> Some devices send
+time-stamped messages (via a <code>Transmitter</code>). For
+example, the messages sent by a MIDI input port might be stamped
+with the time the incoming message arrived at the port. On some
+systems, the event-handling mechanisms cause a certain amount of
+timing precision to be lost during subsequent processing of the
+message. The message's time stamp allows the original timing
+information to be preserved.</p>
+<p><a name="a122114" id="a122114"></a> To learn whether a device
+supports time stamps, invoke the following method of
+<code>MidiDevice</code>:</p>
+<pre>
+    long getMicrosecondPosition()
+</pre>
+<p><a name="a120531" id="a120531"></a> This method returns -1 if
+the device ignores time stamps. Otherwise, it returns the device's
+current notion of time, which you as the sender can use as an
+offset when determining the time stamps for messages you
+subsequently send. For example, if you want to send a message with
+a time stamp for five milliseconds in the future, you can get the
+device's current position in microseconds, add 5000 microseconds,
+and use that as the time stamp. Keep in mind that the
+<code>MidiDevice's</code> notion of time always places time zero at
+the time the device was opened.</p>
+<p><a name="a120533" id="a120533"></a> Now, with all that
+explanation of time stamps as a background, let's return to the
+<code>send</code> method of <code>Receiver</code>:</p>
+<pre>
+void send(MidiMessage message, long timeStamp)
+</pre>
+<p><a name="a122131" id="a122131"></a> The <code>timeStamp</code>
+argument is expressed in microseconds, according to the receiving
+device's notion of time. If the device doesn't support time stamps,
+it simply ignores the <code>timeStamp</code> argument. You aren't
+required to time-stamp the messages you send to a receiver. You can
+use -1 for the <code>timeStamp</code> argument to indicate that you
+don't care about adjusting the exact timing; you're just leaving it
+up to the receiving device to process the message as soon as it
+can. However, it's not advisable to send -1 with some messages and
+explicit time stamps with other messages sent to the same receiver.
+Doing so is likely to cause irregularities in the resultant
+timing.</p>
+<a name="a122132" id="a122132"></a>
+<h2>Connecting Transmitters to Receivers</h2>
+<p><a name="a120542" id="a120542"></a> We've seen how you can send
+a MIDI message directly to a receiver, without using a transmitter.
+Now let's look at the more common case, where you aren't creating
+MIDI messages from scratch, but are simply connecting devices
+together so that one of them can send MIDI messages to the
+other.</p>
+<a name="a120544" id="a120544"></a>
+<h3>Connecting to a Single Device</h3>
+<p><a name="a120546" id="a120546"></a> The specific case we'll take
+as our first example is connecting a sequencer to a synthesizer.
+After this connection is made, starting the sequencer running will
+cause the synthesizer to generate audio from the events in the
+sequencer's current sequence. For now, we'll ignore the process of
+loading a sequence from a MIDI file into the sequencer. Also, we
+won't go into the mechanism of playing the sequence. Loading and
+playing sequences is discussed in detail in Chapter 11, "<a href=
+"chapter11.html">Playing, Recording, and Editing MIDI
+Sequences</a>." Loading instruments into the synthesizer is
+discussed in Chapter 12, "<a href="chapter12.html">Synthesizing
+Sound</a>." For now, all we're interested in is how to make the
+connection between the sequencer and the synthesizer. This will
+serve as an illustration of the more general process of connecting
+one device's transmitter to another device's receiver.</p>
+<p><a name="a121529" id="a121529"></a> For simplicity, we'll use
+the default sequencer and the default synthesizer. (See Chapter 9,
+"<a href="chapter9.html">Accessing MIDI System Resources</a>," for
+more about default devices and how to access non-default
+devices.)</p>
+<pre>
+    Sequencer          seq;
+    Transmitter         seqTrans;
+    Synthesizer         synth;
+    Receiver         synthRcvr;
+    try {
+          seq     = MidiSystem.getSequencer();
+          seqTrans = seq.getTransmitter();
+          synth   = MidiSystem.getSynthesizer();
+          synthRcvr = synth.getReceiver(); 
+          seqTrans.setReceiver(synthRcvr);      
+    } catch (MidiUnavailableException e) {
+          // handle or throw exception
+    }
+        
+</pre>
+<p><a name="a122180" id="a122180"></a> An implementation might
+actually have a single object that serves as both the default
+sequencer and the default synthesizer. In other words, the
+implementation might use a class that implements both the
+<code>Sequencer</code> interface and the <code>Synthesizer</code>
+interface. In that case, it probably wouldn't be necessary to make
+the explicit connection that we did in the code above. For
+portability, though, it's safer not to assume such a configuration.
+If desired, you can test for this condition, of course:</p>
+<pre>
+if (seq instanceof Synthesizer)
+</pre>
+<p><a name="a122187" id="a122187"></a> although the explicit
+connection above should work in any case.</p>
+<a name="a120569" id="a120569"></a>
+<h3>Connecting to More than One Device</h3>
+<p><a name="a121563" id="a121563"></a> The previous code example
+illustrated a one-to-one connection between a transmitter and a
+receiver. But, what if you need to send the same MIDI message to
+multiple receivers? For example, suppose you want to capture MIDI
+data from an external device to drive the internal synthesizer
+while simultaneously recording the data to a sequence. This form of
+connection, sometimes referred to as "fan out" or as a "splitter,"
+is straightforward. The following statements show how to create a
+fan-out connection, through which the MIDI messages arriving at the
+MIDI input port are sent to both a <code>Synthesizer</code> object
+and a <code>Sequencer</code> object. We assume you've already
+obtained and opened the three devices: the input port, sequencer,
+and synthesizer. (To obtain the input port, you'll need to iterate
+over all the items returned by
+<code>MidiSystem.getMidiDeviceInfo</code>.)</p>
+<pre>
+    Synthesizer  synth;
+    Sequencer    seq;
+    MidiDevice   inputPort;
+    // [obtain and open the three devices...]
+    Transmitter   inPortTrans1, inPortTrans2;
+    Receiver            synthRcvr;
+    Receiver            seqRcvr;
+    try {
+          inPortTrans1 = inputPort.getTransmitter();
+          synthRcvr = synth.getReceiver(); 
+          inPortTrans1.setReceiver(synthRcvr);
+          inPortTrans2 = inputPort.getTransmitter();
+          seqRcvr = seq.getReceiver(); 
+          inPortTrans2.setReceiver(seqRcvr);
+    } catch (MidiUnavailableException e) {
+          // handle or throw exception
+    }
+        
+</pre>
+<p><a name="a122225" id="a122225"></a> This code introduces a dual
+invocation of the <code>MidiDevice.getTransmitter</code> method,
+assigning the results to <code>inPortTrans1</code> and
+<code>inPortTrans2</code>. As mentioned earlier, a device can own
+multiple transmitters and receivers. Each time
+<code>MidiDevice.getTransmitter()</code> is invoked for a given
+device, another transmitter is returned, until no more are
+available, at which time an exception will be thrown.</p>
+<p><a name="a122228" id="a122228"></a> To learn how many
+transmitters and receivers a device supports, you can use the
+following <code>MidiDevice</code> method:</p>
+<pre>
+    int getMaxTransmitters()
+    int <code>getMaxReceivers</code>()
+        
+</pre>
+<p><a name="a122227" id="a122227"></a> These methods return the
+total number owned by the device, not the number currently
+available.</p>
+<p><a name="a120602" id="a120602"></a> A transmitter can transmit
+MIDI messages to only one receiver at a time. (Every time you call
+<code>Transmitter's setReceiver</code> method, the existing
+<code>Receiver</code>, if any, is replaced by the newly specified
+one. You can tell whether the transmitter currently has a receiver
+by invoking <code>Transmitter.getReceiver</code>.) However, if a
+device has multiple transmitters, it can send data to more than one
+device at a time, by connecting each transmitter to a different
+receiver, as we saw in the case of the input port above.</p>
+<p><a name="a122286" id="a122286"></a> Similarly, a device can use
+its multiple receivers to receive from more than one device at a
+time. The multiple-receiver code that's required is
+straightforward, being directly analogous to the
+multiple-transmitter code above. It's also possible for a single
+receiver to receive messages from more than one transmitter at a
+time.</p>
+<a name="a120605" id="a120605"></a>
+<h3>Closing Connections</h3>
+<p><a name="a120607" id="a120607"></a> Once you're done with a
+connection, you can free up its resources by invoking the
+<code>close</code> method for each transmitter and receiver that
+you've obtained. The <code>Transmitter</code> and
+<code>Receiver</code> interfaces each have a <code>close</code>
+method. Note that invoking <code>Transmitter.setReceiver</code>
+doesn't close the transmitter's current receiver. The receiver is
+left open, and it can still receive messages from any other
+transmitter that's connected to it.</p>
+<p><a name="a122314" id="a122314"></a> If you're also done with the
+devices, you can similarly make them available to other application
+programs by invoking <code>MidiDevice.close()</code>. Closing a
+device automatically closes all its transmitters and receivers.</p>
+<p>&nbsp;</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

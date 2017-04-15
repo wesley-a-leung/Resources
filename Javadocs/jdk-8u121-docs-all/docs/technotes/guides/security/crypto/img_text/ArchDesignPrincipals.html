@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Description of Figure Example of How Application Retrieves "AES" Cipher Instance / Architecture of Service Provider Interface</title>
+
+<link rel="stylesheet" type="text/css" href="../../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Description of Figure Example of How Application Retrieves "AES" Cipher Instance / Architecture of Service Provider Interface</h1>
+
+<p>Link to figure <a href="../CryptoSpec.html#example-of-how-application-retrieves-aes-cipher-intstance_image">Example of How Application Retrieves "AES" Cipher Instance</a> in <a href="../CryptoSpec.html">Java Cryptography Architecture (JCA) Reference Guide</a>
+
+<p>Link to figure <a href="../HowToImplAProvider.html#example-of-how-application-retrieves-aes-cipher-intstance_image">Architecture of Service Provider Interface</a> in <a href="../HowToImplAProvider.html">How to Implement a Provider in the Java Cryptography
+Architecture</a></p>
+
+
+
+<p>This figure consists of five boxes:</p>
+
+<ul>
+  <li><p>Application: This box contains the following pseudocode:</p>
+  <pre>c:Cipher.getInstance("AES");</pre>
+  </li>
+  <li><p>JCA/JCE: This box contains the following list:</p>
+    <ul>
+      <li>Signature</li>
+      <li>Message Digest</li>
+      <li>Key Script Generator</li>
+      <li>Key Factory</li>
+      <li>Algorithm Parameters</li>
+      <li>Cipher</li>
+      <li>Key Agreement</li>
+      <li>Key Generator</li>
+      <li>Secret Key Factory</li>
+      <li>MAC</li>
+    </ul>
+  </li>
+  <li><p>CSP, CSP2, CSP3: These boxes represent cryptographic service providers</p></li>
+  <li><p>The fifth box represents CSP3. It contains the following headers and pseudocode:</p>
+    <ul>
+      <li><p>Provider.class</p>
+      <pre>"Cipher.AES" -&gt; "com.foo.AESCipher"</pre></li>
+      <li><p>com.foo.AESCipher.class</p>
+<pre>package com.foo:
+  class AESCipher extends CipherSPi {
+    .
+    .
+    .
+  }</pre>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+
+<p>Arrows connect the boxes as follows:</p>
+
+<ul>
+  <li>From Application to JCA/JCE</li>
+  <li>From JCA/JCE to CSP1, CSP2, and CSP3 (the arrow branches)</li>
+</ul>
+
+<p>A dotted line connects CSP3 to the headings Provider.class and com.foo.AESCipher.class</p>
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

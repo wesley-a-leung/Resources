@@ -1,0 +1,1259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en">
+<head>
+<meta http-equiv="Content-Type" content=
+"text/html; charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="GENERATOR" content=
+"Quadralay WebWorks Publisher Professional Edition 7.0.5.1025" />
+<meta name="TEMPLATEBASE" content="book-no-index" />
+<meta name="LASTUPDATED" content="Sat Aug 02 15:45:58 2008" />
+<title>Security</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<a href="#skip" title="Skip navigation bar">Skip navigation bar</a>
+<table summary="" id="layout" width="100%">
+<tr>
+<td align="left"><a accesskey="c" href=
+"tutorialTOC.html">Contents</a> | <a accesskey="p" href=
+"lookup.html">Previous</a> | Next</td>
+<td align="right"><i>Java Management Extensions (JMX) Technology
+Tutorial</i></td>
+</tr>
+</table>
+<hr size="8" width="35%" align="left" noshade="noshade" />
+<a name="skip" id="skip"></a> <a name="wp874" id="wp874"></a>
+<h2>Chapter &#160; 5</h2>
+<a name="wp997030" id="wp997030"></a>
+<h2>Security</h2>
+<a name="wp996730" id="wp996730"></a>
+<p>This chapter gives examples of how to set up the
+JMX technology security features, as described in the following
+sections:</p>
+<a name="wp1003791"
+id="wp1003791"></a>
+
+<ul>
+<li><a href="security.html#wp997044">Section&#160; &quot;Simple
+Security&quot;</a> presents examples of connectors that
+implement straightforward security based on password authentication
+and file access control.</li>
+</ul>
+
+<a name="wp1003792" id="wp1003792"></a>
+
+<ul>
+<li><a href="security.html#wp997056">Section&#160; &quot;Subject
+Delegation&quot;</a> presents examples of connectors that
+use the subject delegation model to perform operations on a given
+authenticated connection on behalf of several different
+identities.</li>
+</ul>
+
+<a name="wp1009581" id="wp1009581"></a>
+
+<ul>
+<li><a href="security.html#wp997065">Section&#160; &quot;Fine-Grained
+Security&quot;</a> presents examples of connectors that
+implement more sophisticated security mechanisms, in which
+permission to perform individual operations is controlled.</li>
+</ul>
+
+
+<p><b>Caution:</b></p>
+
+<ul>
+  <li>Applications should prompt the user to enter
+passwords rather than expecting the user to provide them on the
+command line.</li>
+  <li>Use secure authentication mechanisms in production
+systems. In particular, use both <a href="../../management/agent.html#gdepp">SSL client
+certificates</a> to authenticate the client host and password authentication for user management. See the topics <a href="../../management/agent.html#gdemv">Using SSL</a> and
+<a href="../../management/agent.html#ldap">Using LDAP Authentication</a> for more information.</li>
+</ul>
+
+
+<a name="wp997044" id="wp997044"></a>
+<h2>Simple Security</h2>
+<a name="wp1027581" id="wp1027581"></a>
+<p>The simplest type of security you can use with the
+JMX technology is based upon encryption, user name and password
+authentication, and file access control.</p>
+<a name="wp997047" id="wp997047"></a>
+<h3>RMI Connectors With Simple Security</h3>
+<a name="wp997112" id="wp997112"></a>
+<p>You can find an example of an RMI connector with
+simple security in the directory <em class=
+"cEmphasis">work_dir</em><code class=
+"cCode">/jmx_examples/Security/simple</code>.</p>
+
+<ol>
+<li>Open the <em>work_dir</em><code class=
+"cCode">/jmx_examples</code><code class=
+"cCode">/Security/simple</code> directory<b>.</b>
+<a name="wp997119" id="wp997119"></a>
+<p>Inside this directory you will find the following
+directories:</p>
+<a name="wp1073624"
+id="wp1073624"></a>
+
+<ul>
+<li><code>/server</code>, containing the
+file<code>Server.java</code></li>
+</ul>
+
+<a name="wp1003828" id="wp1003828"></a>
+
+<ul>
+<li><code>/config</code>, containing the security
+configuration files:</li>
+</ul>
+
+<a name="wp1003829"
+id="wp1003829"></a>
+
+<ul>
+<li><code>access.properties</code></li>
+</ul>
+
+<a name="wp1003830" id="wp1003830"></a>
+
+<ul>
+<li><code>keystore</code></li>
+</ul>
+
+<a name="wp1003833" id="wp1003833"></a>
+
+<ul>
+<li><code>password.properties</code></li>
+</ul>
+
+<a name="wp1003831" id="wp1003831"></a>
+
+<ul>
+<li><code>truststore</code></li>
+</ul>
+
+
+<a name="wp1003832" id="wp1003832"></a>
+
+<ul>
+<li><code>/mbeans</code>, containing the following
+files:</li>
+</ul>
+
+<a name="wp1003834"
+id="wp1003834"></a>
+
+<ul>
+<li><code>SimpleStandardMBean.java</code></li>
+</ul>
+
+<a name="wp1003835" id="wp1003835"></a>
+
+<ul>
+<li><code>SimpleStandard.java</code></li>
+</ul>
+
+
+<a name="wp1003836" id="wp1003836"></a>
+
+<ul>
+<li><code>/client</code>, containing the following
+files:</li>
+</ul>
+
+<a name="wp1003837"
+id="wp1003837"></a>
+
+<ul>
+<li><code>Client.java</code></li>
+</ul>
+
+<a name="wp1003838" id="wp1003838"></a>
+
+<ul>
+<li><code>ClientListener.java</code></li>
+</ul>
+
+
+
+<a name="wp1000178" id="wp1000178"></a></li>
+<li>Open all the <code>*.java</code> and <code class=
+"cCode">*.properties</code> files in a text editor <a name=
+"wp1003839" id="wp1003839"></a>
+<p>These files will be analyzed in the
+following sections.</p>
+</li>
+</ol>
+<a name="wp997331" id="wp997331"></a>
+<h4>Server.java</h4>
+<a name="wp997178" id="wp997178"></a>
+<p>The <code>Server.java</code> class
+is shown in <a href=
+"security.html#wp1003992">CODE&#160;EXAMPLE&#160;5-1</a>.</p>
+<a name="wp1003992" id="wp1003992"></a>
+CODE&#160;EXAMPLE&#160;5-1 RMI Connector
+Example (Simple Security) Class Server.java
+
+<pre>
+<a name="wp1003998" id="wp1003998"> </a>
+public class Server {<a name="wp1005694" id="wp1005694"> </a>
+<a name="wp1005695" id="wp1005695"> </a>
+  public static void main(String[] args) {<a name="wp1005696" id=
+"wp1005696"> </a>
+  try {<a name="wp1005697" id="wp1005697"> </a>
+       MBeanServer mbs = MBeanServerFactory.createMBeanServer();<a name="wp1005698"
+id="wp1005698"> </a>
+<a name="wp1005699" id="wp1005699"> </a>
+       HashMap env = new HashMap();<a name="wp1005700" id=
+"wp1005700"> </a>
+<a name="wp1005701" id="wp1005701"> </a>
+       SslRMIClientSocketFactory<b class=
+"cBold"> csf =</b> <a name="wp1005702" id="wp1005702"> </a>
+                  <b class=
+"cBold">new SslRMIClientSocketFactory()</b>;<a name="wp1070825" id=
+"wp1070825"> </a>
+       Ssl<b class=
+"cBold">RMIServerSocketFactory ssf =</b> <a name="wp1070826" id=
+"wp1070826"> </a>
+                  <b class=
+"cBold">new SslRMIServerSocketFactory()</b>;<a name="wp1070827" id=
+"wp1070827"> </a>
+       env.put(RMIConnectorServer.<a name="wp1005706" id=
+"wp1005706"> </a>
+                  RMI_CLIENT_SOCKET_FACTORY_ATTRIBUTE,csf);<a name=
+"wp1005707" id="wp1005707"> </a>
+       env.put(RMIConnectorServer.<a name="wp1005708" id=
+"wp1005708"> </a>
+                  RMI_SERVER_SOCKET_FACTORY_ATTRIBUTE,ssf);<a name=
+"wp1005709" id="wp1005709"> </a>
+<a name="wp1005710" id="wp1005710"> </a>
+       <b class=
+"cBold">env.put(&quot;jmx.remote.x.password.file&quot;,</b><a name=
+"wp1005711" id="wp1005711"> </a>
+<b class=
+"cBold">                 &quot;config&quot; + File.separator + &quot;password.properties&quot;)</b>;<a name="wp1005712"
+id="wp1005712"> </a>
+       <b class=
+"cBold">env.put(&quot;jmx.remote.x.access.file&quot;,</b><a name=
+"wp1005713" id="wp1005713"> </a>
+<b class=
+"cBold">                 &quot;config&quot; + File.separator + &quot;access.properties&quot;)</b>;<a name="wp1005714"
+id="wp1005714"> </a>
+<a name="wp1005715" id="wp1005715"> </a>
+       JMXServiceURL url = new JMXServiceURL(<a name="wp1005716"
+id="wp1005716"> </a>
+        &quot;service:jmx:rmi:///jndi/rmi://localhost:9999/server&quot;);<a name="wp1005717"
+id="wp1005717"> </a>
+         JMXConnectorServer cs =<a name="wp1005718" id=
+"wp1005718"> </a>
+            JMXConnectorServerFactory.newJMXConnectorServer(url, <a name="wp1005719"
+id="wp1005719"> </a>
+                                                            env, <a name="wp1005720"
+id="wp1005720"> </a>
+                                                            mbs);<a name="wp1005721"
+id="wp1005721"> </a>
+       cs.start();<a name="wp1005722" id="wp1005722"> </a>
+     } catch (Exception e) {<a name="wp1005723" id=
+"wp1005723"> </a>
+       e.printStackTrace();<a name="wp1005724" id="wp1005724"> </a>
+     }<a name="wp1005725" id="wp1005725"> </a>
+  }<a name="wp1005726" id="wp1005726"> </a>
+}<a name="wp1004191" id="wp1004191"> </a>
+<a name="wp1004196" id="wp1004196"> </a>
+</pre>
+<a name="wp1004153" id="wp1004153"></a>
+<p>The <code>Server</code> class shown
+in <a href="security.html#wp1003992">CODE&#160;EXAMPLE&#160;5-1</a>
+creates an MBean server <code>mbs</code>, and
+populates an environment map <code>env</code> with a
+secure RMI client socket factory <code>csf</code>, a
+secure RMI server socket factory <code>ssf</code>,
+and the properties files <code class=
+"cCode">password.properties</code> and <code class=
+"cCode">access.properties</code>.</p>
+<a name="wp997899" id="wp997899"></a>
+<p>The properties file <code class=
+"cCode">password.properties</code> contains a username and password
+and is accessed using the JMX Remote API interface <code class=
+"cCode">JMXAuthenticator</code>. Using the property <code class=
+"cCode">jmx.remote.x.</code><code class=
+"cCode">password.file</code> is the same as creating a
+password-based <code>JMXAuthenticator</code> and
+passing it into the environment map through the <code class=
+"cCode">jmx.remote.authenticator</code> property.</p>
+<a name="wp1011555" id="wp1011555"></a>
+<p>The properties file <code class=
+"cCode">access.properties</code> contains a username and a level of
+access permission that can be either <code class=
+"cCode">readwrite</code> or <code>readonly</code>.
+This represents the level of access this user can have to MBean
+server operations. This file-based access control is implemented
+using the JMX technology interface <code class=
+"cCode">MBeanServerForwarder</code>, which wraps the real MBean
+server inside an access controller MBean server. The access
+controller MBean server only forwards requests to the real MBean
+server after performing the appropriate checks.</p>
+<a name="wp997393" id="wp997393"></a>
+<p><code>Server</code> creates a JMX
+service URL, named <code>url</code>, for an RMI
+connector that will operate over the default JRMP transport, and
+register an RMI connector stub in an RMI registry on port
+<code>9999</code> of the local host.</p>
+<a name="wp997308" id="wp997308"></a>
+<p>The MBean server <code>mbs</code>,
+the environment map env and the service URL <code class=
+"cCode">url</code> are all passed to <code class=
+"cCode">JMXConnectorServer</code> to create a new, secure JMX
+connector server named <code>cs</code>.</p>
+<a name="wp1005491" id="wp1005491"></a>
+<h4>SimpleStandardMBean.java</h4>
+<a name="wp1005489" id="wp1005489"></a>
+<p>The <code>SimpleStandardMBean</code>
+class defines the same straightforward MBean interface as was used
+in <a href="connectors.html#wp5529">Chapter&#160;3, &quot;JMX
+Connectors&quot;</a>.</p>
+<a name="wp997093" id="wp997093"></a>
+<h4>SimpleStandard.java</h4>
+<a name="wp997309" id="wp997309"></a>
+<p>The <code>SimpleStandard</code>
+class defines the same straightforward MBean as was used in
+<a href="connectors.html#wp5529">Chapter&#160;3, &quot;JMX
+Connectors&quot;</a>.</p>
+<a name="wp997100" id="wp997100"></a>
+<h4>ClientListener.java</h4>
+<a name="wp997323" id="wp997323"></a>
+<p>The <code>ClientListener</code>
+class defines the same straightforward notification listener as was
+used in <a href="connectors.html#wp5529">Chapter&#160;3, &quot;JMX
+Connectors&quot;</a>.</p>
+<a name="wp997102" id="wp997102"></a>
+<h4>Client.java</h4>
+<a name="wp997359" id="wp997359"></a>
+<p>The <code>Client.java</code> class
+is shown in <a href=
+"security.html#wp1004197">CODE&#160;EXAMPLE&#160;5-1</a>.</p>
+<a name="wp1004197" id="wp1004197"></a>
+CODE&#160;EXAMPLE&#160;5-1 RMI Connector
+Example (Simple Security) Class Client.java
+
+<pre>
+<a name="wp1013255" id="wp1013255"> </a>
+public class Client {<a name="wp1013301" id="wp1013301"> </a>
+<a name="wp1013302" id="wp1013302"> </a>
+  public static void main(String[] args) {<a name="wp1013303" id=
+"wp1013303"> </a>
+  try {<a name="wp1013304" id="wp1013304"> </a>
+      HashMap env = new HashMap();<a name="wp1013305" id=
+"wp1013305"> </a>
+<a name="wp1013306" id="wp1013306"> </a>
+      String[] credentials = new String[] { &quot;username&quot; , &quot;password&quot; };<a name="wp1013307"
+id="wp1013307"> </a>
+      env.put(&quot;jmx.remote.credentials&quot;, credentials);<a name="wp1013308"
+id="wp1013308"> </a>
+      JMXServiceURL url = new JMXServiceURL(<a name="wp1013309" id=
+"wp1013309"> </a>
+         &quot;service:jmx:rmi:///jndi/rmi://localhost:9999/server&quot;);      <a name="wp1013310"
+id="wp1013310"> </a>
+      JMXConnector jmxc = JMXConnectorFactory.connect(url, env);<a name="wp1013311"
+id="wp1013311"> </a>
+      MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();<a name="wp1013312"
+id="wp1013312"> </a>
+      String domains[] = mbsc.getDomains();<a name="wp1013313" id=
+"wp1013313"> </a>
+      for (int i = 0; i &lt; domains.length; i++) {<a name=
+"wp1013314" id="wp1013314"> </a>
+         System.out.println(&quot;Domain[&quot; + i + &quot;] = &quot; + domains[i]);<a name="wp1013315"
+id="wp1013315"> </a>
+      }<a name="wp1013316" id="wp1013316"> </a>
+      <a name="wp1013317" id="wp1013317"> </a>
+      ObjectName mbeanName = <a name="wp1013318" id=
+"wp1013318"> </a>
+          new ObjectName(&quot;MBeans:type=SimpleStandard&quot;);<a name="wp1013319"
+id="wp1013319"> </a>
+      mbsc.createMBean(&quot;SimpleStandard&quot;, mbeanName, null, null);<a name="wp1013320"
+id="wp1013320"> </a>
+      // Perform MBean operations<a name="wp1013321" id=
+"wp1013321"> </a>
+      [...]<a name="wp1013322" id="wp1013322"> </a>
+     <a name="wp1013323" id="wp1013323"> </a>
+      mbsc.removeNotificationListener(mbeanName, listener);<a name=
+"wp1013324" id="wp1013324"> </a>
+      mbsc.unregisterMBean(mbeanName);<a name="wp1013325" id=
+"wp1013325"> </a>
+      jmxc.close();<a name="wp1013326" id="wp1013326"> </a>
+    }  catch (Exception e) {<a name="wp1013327" id=
+"wp1013327"> </a>
+      e.printStackTrace();<a name="wp1013328" id="wp1013328"> </a>
+    }<a name="wp1013329" id="wp1013329"> </a>
+  }<a name="wp1013330" id="wp1013330"> </a>
+}<a name="wp1013299" id="wp1013299"> </a>
+<a name="wp1013287" id="wp1013287"> </a>
+</pre>
+<a name="wp997822" id="wp997822"></a>
+<p>The <code>Client</code> class shown
+in <a href="security.html#wp1004197">CODE&#160;EXAMPLE&#160;5-1</a>
+populates an environment map <code>env</code> with a
+set of credentials, namely the <code>username</code>
+and <code>password</code> expected by the
+<code>Server</code>. These credentials are then given
+to an instance of <code>JMXConnector</code> named
+<code>jmxc</code> when the service URL of the
+connector stub and the environment map are passed to <code class=
+"cCode">JMXConnectorFactory.connect()</code>. Through <code class=
+"cCode">jmxc</code>, the <code>Client</code> connects
+to the MBean server started by <code>Server</code>,
+and performs MBean operations.</p>
+<a name="wp998207" id="wp998207"></a>
+<p>When the connection is established, the
+credentials supplied in the environment map <code class=
+"cCode">env</code> are sent to the server. The server then calls
+the <code>authenticate()</code> method of the
+<code>JMXAuthenticator</code> interface, passing the
+client credentials as parameters. The <code class=
+"cCode">authenticate()</code> method authenticates the client and
+returns a subject that contains the set of principals upon which
+the access control checks will be performed.</p>
+<a name="wp997110" id="wp997110"></a>
+<h3>Running the RMI Connector Example With Simple
+Security</h3>
+<a name="wp997111" id="wp997111"></a>
+<p>To run the RMI connector example with simple
+security, perform the following steps:</p>
+<a name="wp1073735" id="wp1073735"></a>
+<ol>
+<li><p>Run the RMI connector example:</p>
+
+<pre>
+$ javac<a name="wp1073740" id=
+"wp1073740"> </a>
+      mbeans/SimpleStandard.java \<a name=
+"wp1074882" id="wp1074882"> </a>
+      mbeans/SimpleStandardMBean.java \<a name=
+"wp1074883" id="wp1074883"> </a>
+      server/Server.java \<a name=
+"wp1074884" id="wp1074884"> </a>
+      client/Client.java \<a name=
+"wp1074885" id="wp1074885"> </a>
+      client/ClientListener.java<a name=
+"wp1004317" id="wp1004317"> </a>
+<a name="wp1004324" id="wp1004324"> </a>
+</pre>
+<a name="wp997841" id="wp997841"></a></li>
+
+<li>Start an RMI registry on port <b>9999</b> of the
+local host.
+
+<pre>
+<a name="wp998232" id="wp998232"> </a>
+<code>$ </code>export CLASSPATH=server ; rmiregistry 9999 &amp;<a name="wp1016378"
+id="wp1016378"> </a>
+<a name="wp1016377" id="wp1016377"> </a>
+</pre>
+<a name="wp1016372" id="wp1016372"></a></li>
+
+<li>Start the <code>Server</code>.
+
+<pre>
+<a name="wp1016373" id="wp1016373"> </a>
+<code class=
+"cCode">$ </code>java -classpath server:mbeans \<a name="wp1073756"
+id="wp1073756"> </a>
+     -Djavax.net.ssl.keyStore=config/keystore \<a name="wp1074685"
+id="wp1074685"> </a>
+     -Djavax.net.ssl.keyStorePassword=password \<a name="wp1074686"
+id="wp1074686"> </a>
+     Server &amp;<a name="wp1016380" id="wp1016380"> </a>
+</pre>
+
+<a name="wp1016374" id="wp1016374"></a>
+
+<p>You will see confirmation of the creation of the
+MBean server and of the RMI connector.</p>
+
+<a name="wp1003505" id="wp1003505"></a></li>
+
+<li>Start the <code>Client</code>.
+
+<pre>
+<a name="wp1003506" id="wp1003506"> </a>
+<code class=
+"cCode">$</code>java -classpath client:server:mbeans \<a name=
+"wp1074692" id="wp1074692"> </a>
+     -Djavax.net.ssl.trustStore=config/truststore \<a name=
+"wp1074693" id="wp1074693"> </a>
+     -Djavax.net.ssl.trustStorePassword=trustword \<a name=
+"wp1074694" id="wp1074694"> </a>
+     Client<a name="wp1017959" id="wp1017959"> </a>
+<a name="wp1017955" id="wp1017955"> </a>
+</pre>
+<a name="wp1003507" id="wp1003507"></a>
+
+
+<p>You will see confirmation of the
+creation of the connector client, the various MBean operations
+followed by the closure of the connection.</p>
+<a name="wp998089" id="wp998089"></a>
+
+</li>
+</ol>
+
+<p>As you can see, all the above appears to proceed
+in exactly the same manner as the basic RMI connector example shown
+in <a href="connectors.html#wp5529">Chapter&#160;3, &quot;JMX
+Connectors&quot;</a>. However, if you were to open
+<code>password.properties</code> and change the
+password, you would see a <code class=
+"cCode">java.lang.SecurityException</code> when you launched the
+<code>Client</code>, and the connection would
+fail.</p>
+
+<a name="wp999457" id="wp999457"></a>
+
+<a name="wp997056" id="wp997056"></a>
+
+<h2>Subject Delegation</h2>
+<a name="wp997058" id="wp997058"></a>
+<p>If your implementation requires the client end of
+the connection to perform different operations on behalf of
+multiple users or applications, using the security mechanisms
+demonstrated in <a href="security.html#wp997044">Section&#160; &quot;Simple
+Security&quot;</a>, each different user would require one
+secure connection for every operation it performs. If you expect
+your connector clients to interact with numerous users, you can
+reduce the load on your system by implementing <em class=
+"cEmphasis">subject delegation</em>. Subject delegation establishes
+a single secure connection for a user, and this connection can be
+used to perform related operations on behalf of any number of
+users. The connection itself is made by an <em class=
+"cEmphasis">authenticated</em> user. If the authenticated user has
+been granted a <code class=
+"cCode">SubjectDelegationPermission</code> that allows it to act on
+behalf of another user, then operations can be performed over the
+connection on behalf of that user.</p>
+<a name="wp997059" id="wp997059"></a>
+<h3>Secure RMI Connectors With Subject
+Delegation</h3>
+<a name="wp1000510" id="wp1000510"></a>
+<p>You can find an example of a secure RMI connector
+that implements subject delegation in the directory <em class=
+"cEmphasis">work_dir</em><code class=
+"cCode">/jmx_examples/Security/subject_delegation</code>.</p>
+
+<ol>
+<li>Open the <em>work_dir</em><code class=
+"cCode">/jmx_examples</code><code class=
+"cCode">/Security/subject_delegation</code> directory <a name=
+"wp1000512" id="wp1000512"></a>
+<p>Inside this directory you will find the following
+directories:</p>
+<a name="wp1004599"
+id="wp1004599"></a>
+
+<ul>
+<li><code>/server</code>, containing the file
+<code>Server.java</code>:</li>
+</ul>
+
+<a name="wp1004601" id="wp1004601"></a>
+
+<ul>
+<li><code>/config</code>, containing the security
+configuration files:</li>
+</ul>
+
+<a name="wp1004602"
+id="wp1004602"></a>
+
+<ul>
+<li><code>access.properties</code></li>
+</ul>
+
+<a name="wp1004603" id="wp1004603"></a>
+
+<ul>
+<li><code>java.policy</code></li>
+</ul>
+
+<a name="wp1004604" id="wp1004604"></a>
+
+<ul>
+<li><code>password.properties</code></li>
+</ul>
+
+
+<a name="wp1004605" id="wp1004605"></a>
+
+<ul>
+<li><code>/mbeans</code>, containing the following
+files:</li>
+</ul>
+
+<a name="wp1004606"
+id="wp1004606"></a>
+
+<ul>
+<li><code>SimpleStandardMBean.java</code></li>
+</ul>
+
+<a name="wp1004607" id="wp1004607"></a>
+
+<ul>
+<li><code>SimpleStandard.java</code></li>
+</ul>
+
+
+<a name="wp1004608" id="wp1004608"></a>
+
+<ul>
+<li><code>/client</code>, containing the following
+files:</li>
+</ul>
+
+<a name="wp1004609"
+id="wp1004609"></a>
+
+<ul>
+<li><code>Client.java</code></li>
+</ul>
+
+<a name="wp1004610" id="wp1004610"></a>
+
+<ul>
+<li><code>ClientListener.java</code></li>
+</ul>
+
+
+
+<a name="wp1000508" id="wp1000508"></a></li>
+<li>Open all the <code>*.java</code> and <code class=
+"cCode">*.properties</code> files in a text editor <a name=
+"wp1004611" id="wp1004611"></a>
+<p>These files will be analyzed in the
+following sections.</p>
+</li>
+</ol>
+<a name="wp997060" id="wp997060"></a>
+<h4>Server.java</h4>
+<a name="wp1000555" id="wp1000555"></a>
+<p>The <code>Server.java</code> class
+is shown in <a href=
+"security.html#wp1004612">CODE&#160;EXAMPLE&#160;5-1</a>:</p>
+<a name="wp1004612" id="wp1004612"></a>
+CODE&#160;EXAMPLE&#160;5-1 Secure RMI
+Connector (Subject Delegation) Example Class Server.java
+
+<pre>
+<a name="wp1004617" id="wp1004617"> </a>
+public class Server {<a name="wp1006008" id="wp1006008"> </a>
+<a name="wp1006009" id="wp1006009"> </a>
+   public static void main(String[] args) {<a name="wp1006010" id=
+"wp1006010"> </a>
+     try {<a name="wp1006011" id="wp1006011"> </a>
+          MBeanServer mbs = MBeanServerFactory.createMBeanServer();<a name="wp1006012"
+id="wp1006012"> </a>
+          HashMap env = new HashMap();<a name="wp1006013" id=
+"wp1006013"> </a>
+          env.put(&quot;jmx.remote.x.password.file&quot;,<a name=
+"wp1006014" id="wp1006014"> </a>
+                  &quot;config&quot; + File.separator + &quot;password.properties&quot;);<a name="wp1006015"
+id="wp1006015"> </a>
+          env.put(&quot;jmx.remote.x.access.file&quot;,<a name=
+"wp1006016" id="wp1006016"> </a>
+                  &quot;config&quot; + File.separator + &quot;access.properties&quot;);<a name="wp1006017"
+id="wp1006017"> </a>
+<a name="wp1006018" id="wp1006018"> </a>
+          JMXServiceURL url = new JMXServiceURL(<a name="wp1006019"
+id="wp1006019"> </a>
+             &quot;service:jmx:rmi:///jndi/rmi://localhost:9999/server&quot;);<a name="wp1006020"
+id="wp1006020"> </a>
+          JMXConnectorServer cs =<a name="wp1006021" id=
+"wp1006021"> </a>
+              JMXConnectorServerFactory.newJMXConnectorServer(url, env, mbs);<a name="wp1006022"
+id="wp1006022"> </a>
+          cs.start();<a name="wp1006023" id="wp1006023"> </a>
+     } catch (Exception e) {<a name="wp1006024" id=
+"wp1006024"> </a>
+          e.printStackTrace();<a name="wp1006025" id=
+"wp1006025"> </a>
+     }<a name="wp1006026" id="wp1006026"> </a>
+   }<a name="wp1006027" id="wp1006027"> </a>
+}<a name="wp1004643" id="wp1004643"> </a>
+<a name="wp1004644" id="wp1004644"> </a>
+</pre>
+<a name="wp1000861" id="wp1000861"></a>
+<p><a href=
+"security.html#wp1004612">CODE&#160;EXAMPLE&#160;5-1</a> begins
+with the creation of an MBean server <code class=
+"cCode">mbs</code>, and the population of an environment map
+<code>env</code> with a password file and an access
+file, called <code>password.properties</code> and
+<code>access.properties</code> respectively:</p>
+<a name="wp1004651"
+id="wp1004651"></a>
+
+<ul>
+<li>The password file contains a username and password combination
+that is used to authenticate users that try to make
+connections.</li>
+</ul>
+
+<a name="wp1004648" id="wp1004648"></a>
+
+<ul>
+<li>The access file contains a user name and access level
+combination that is used to authorize access to the MBeans in the
+MBean server. The access level is either readwrite or
+readonly.</li>
+</ul>
+
+
+<a name="wp1000878" id="wp1000878"></a>
+<p>The <code>Server</code> then creates
+a connector server named <code>cs</code>, and starts
+it in exactly the same way as in the previous RMI connector
+examples.</p>
+<a name="wp1019573" id="wp1019573"></a>
+<h4>java.policy</h4>
+<a name="wp1019596" id="wp1019596"></a>
+<p>The <code>java.policy</code> file
+grants to <code>username</code> a <code class=
+"cCode">SubjectDelegationPermission</code> so it can perform
+operations on behalf of the user <code class=
+"cCode">delegate</code>, an instance of <code class=
+"cCode">JMXPrincipal</code> created by the <code class=
+"cCode">Client</code> class. The <code class=
+"cCode">java.policy</code> file is required when launching the
+<code>Server</code> class.</p>
+<a name="wp1000562" id="wp1000562"></a>
+<h4>SimpleStandardMBean.java</h4>
+<a name="wp1000563" id="wp1000563"></a>
+<p>The <code>SimpleStandardMBean</code>
+class defines the same straightforward MBean interface as was used
+in the previous examples.</p>
+<a name="wp1005519" id="wp1005519"></a>
+<h4>SimpleStandard.java</h4>
+<a name="wp1005520" id="wp1005520"></a>
+<p>The <code>SimpleStandard</code>
+class defines the same straightforward MBean as was used in the
+previous examples.</p>
+<a name="wp1000567" id="wp1000567"></a>
+<h4>ClientListener.java</h4>
+<a name="wp1000556" id="wp1000556"></a>
+<p>The <code>ClientListener</code>
+class defines the same straightforward notification listener as was
+used in the previous examples.</p>
+<a name="wp998359" id="wp998359"></a>
+<h4>Client.java</h4>
+<a name="wp1000930" id="wp1000930"></a>
+<p>The <code>Client.java</code> class
+is shown in <a href=
+"security.html#wp1004675">CODE&#160;EXAMPLE&#160;5-1</a>:</p>
+<a name="wp1004675" id="wp1004675"></a>
+CODE&#160;EXAMPLE&#160;5-1 Secure RMI
+Connector (Subject Delegation) Example Class Client.java
+
+<pre>
+<a name="wp1004765" id="wp1004765"> </a>
+public class Client {<a name="wp1004766" id="wp1004766"> </a>
+<a name="wp1004767" id="wp1004767"> </a>
+  public static void main(String[] args) {<a name="wp1004768" id=
+"wp1004768"> </a>
+    try {<a name="wp1004769" id="wp1004769"> </a>
+         HashMap env = new HashMap();<a name="wp1004770" id=
+"wp1004770"> </a>
+         <b class=
+"cBold">String[] credentials = new String[] { &quot;username&quot; , &quot;password&quot; }</b>;<a name="wp1004771"
+id="wp1004771"> </a>
+         <b class=
+"cBold">env.put(&quot;jmx.remote.credentials&quot;, credentials)</b>;<a name="wp1004772"
+id="wp1004772"> </a>
+         JMXServiceURL url = new JMXServiceURL(<a name="wp1004773"
+id="wp1004773"> </a>
+            &quot;service:jmx:rmi:///jndi/rmi://localhost:9999/server&quot;);<a name="wp1004774"
+id="wp1004774"> </a>
+         JMXConnector jmxc = JMXConnectorFactory.connect(url, env);<a name="wp1004776"
+id="wp1004776"> </a>
+         <b>Subject delegationSubject =</b><a name=
+"wp1004777" id="wp1004777"> </a>
+<b>            new Subject(true,</b><a name=
+"wp1004778" id="wp1004778"> </a>
+<b class=
+"cBold">                Collections.singleton(new JMXPrincipal(&quot;delegate&quot;)),</b><a name="wp1004779"
+id="wp1004779"> </a>
+<b>                Collections.EMPTY_SET,</b><a name=
+"wp1004780" id="wp1004780"> </a>
+<b class=
+"cBold">                Collections.EMPTY_SET)</b>;<a name="wp1004781"
+id="wp1004781"> </a>
+<a name="wp1004782" id="wp1004782"> </a>
+         <b>MBeanServerConnection mbsc =</b><a name=
+"wp1004783" id="wp1004783"> </a>
+<b class=
+"cBold">            jmxc.getMBeanServerConnection(delegationSubject)</b>;<a name="wp1004784"
+id="wp1004784"> </a>
+         String domains[] = mbsc.getDomains();<a name="wp1004785"
+id="wp1004785"> </a>
+         ObjectName mbeanName =<a name="wp1004786" id=
+"wp1004786"> </a>
+            new ObjectName(&quot;MBeans:type=SimpleStandard&quot;);<a name="wp1004787"
+id="wp1004787"> </a>
+         mbsc.createMBean(&quot;SimpleStandard&quot;, mbeanName, null, null);<a name="wp1004788"
+id="wp1004788"> </a>
+         // Perform MBean operations<a name="wp1004789" id=
+"wp1004789"> </a>
+         //<a name="wp1004790" id="wp1004790"> </a>
+<a name="wp1006148" id="wp1006148"> </a>
+[...]<a name="wp1006149" id="wp1006149"> </a>
+         mbsc.removeNotificationListener(mbeanName, listener);<a name="wp1004791"
+id="wp1004791"> </a>
+         mbsc.unregisterMBean(mbeanName);<a name="wp1004792" id=
+"wp1004792"> </a>
+         jmxc.close();<a name="wp1004793" id="wp1004793"> </a>
+     } catch (Exception e) {<a name="wp1004794" id=
+"wp1004794"> </a>
+         e.printStackTrace();<a name="wp1004795" id=
+"wp1004795"> </a>
+     }<a name="wp1004796" id="wp1004796"> </a>
+  }<a name="wp1004797" id="wp1004797"> </a>
+}<a name="wp1004753" id="wp1004753"> </a>
+<a name="wp1004801" id="wp1004801"> </a>
+</pre>
+<a name="wp1004758" id="wp1004758"></a>
+<p><a href=
+"security.html#wp1004675">CODE&#160;EXAMPLE&#160;5-1</a> begins
+with the creation of an environment map <code class=
+"cCode">env</code> that is populated with a user name <code class=
+"cCode">username</code> and a password <code class=
+"cCode">password</code>. These strings match the user name and
+password stored in the <code class=
+"cCode">password.properties</code> file that is held by the
+<code>Server</code> to authenticate users accessing
+the connector server.</p>
+<a name="wp1001266" id="wp1001266"></a>
+<p>A JMX technology connector client <code class=
+"cCode">jmxc</code> is created in the same way as in the previous
+RMI connector examples, with the user name and password passed into
+the environment map <code>env</code>.</p>
+<a name="wp1001300" id="wp1001300"></a>
+<p>The <code>Client</code> then creates
+an instance of <code>Subject</code>, called
+<code>delegationSubject</code>, with a <code class=
+"cCode">Principal</code> that is an instance of <code class=
+"cCode">JMXPrincipal</code>, named <code class=
+"cCode">delegate</code>.</p>
+<a name="wp1001332" id="wp1001332"></a>
+<p>An MBean server connection, named <code class=
+"cCode">mbsc</code>, is created by calling the <code class=
+"cCode">getMBeanServerConnection()</code> method of <code class=
+"cCode">JMXConnector</code>, with <code class=
+"cCode">delegationSubject</code> passed in as a parameter. This
+MBean server connection therefore allows operations to be performed
+on the remote MBean server on behalf of the principals stored in
+the <code>delegationSubject</code>, which in this
+example is the <code>JMXPrincipal</code> named
+<code>delegate</code>.</p>
+<a name="wp1001360" id="wp1001360"></a>
+<p>The example continues by creating and registering
+the <code>SimpleStandard</code> MBean in the MBean
+server, and performing operations on it, in exactly the same way as
+in the previous examples.</p>
+<a name="wp1001471" id="wp1001471"></a>
+<h3>Running the Secure RMI Connector Example With
+Subject Delegation</h3>
+<a name="wp1001472" id="wp1001472"></a>
+<p>To run the secure RMI connector example with
+subject delegation, perform the following steps:</p>
+
+<ol>
+  <li>Run the secure RMI connector example:
+
+<pre>
+$ javac  mbeans/SimpleStandard.java \<a name=
+"wp1075326" id="wp1075326"> </a>
+  mbeans/SimpleStandardMBean.java \<a name=
+"wp1004815" id="wp1004815"> </a>
+  server/Server.java \<a name=
+"wp1004816" id="wp1004816"> </a>
+  client/Client.java \<a name=
+"wp1004817" id="wp1004817"> </a>
+  client/ClientListener.java<a name=
+"wp1004818" id="wp1004818"> </a>
+<a name="wp1004819" id="wp1004819"> </a>
+</pre>
+<a name="wp1001393" id="wp1001393"></a>
+
+</li>
+
+
+<li>Start an RMI registry on port <b>9999</b> of the
+local host.
+<pre>$ export CLASSPATH=server ; rmiregistry 9999 &amp;</pre>
+<a name="wp1002356" id="wp1002356"></a></li>
+
+<li>Start the <code>Server</code>.
+
+
+<pre>
+$ java -classpath server:mbeans \<a name=
+"wp1001396" id="wp1001396"> </a>
+  -Djava.security.policy=config/java.policy Server &amp;<a name="wp1004823"
+id="wp1004823"> </a>
+<a name="wp1004824" id="wp1004824"> </a>
+</pre>
+<a name="wp1001397" id="wp1001397"></a>
+<p>You will see confirmation of the creation of the
+MBean server, the initialization of the environment map, the
+creation of the RMI connector, and the registration of the
+connector in the MBean server.</p>
+<a name="wp1001398" id="wp1001398"></a></li>
+
+<li>Start the <code>Client</code>.
+<a name="wp1001399" id=
+"wp1001399"></a>
+<pre>$java -classpath client:server:mbeans Client</pre>
+<a name="wp1001400" id="wp1001400"></a>
+<p>You will see confirmation of the
+creation of the connector client, the creation of the delegation
+subject, the connection to the MBean server and the various MBean
+operations followed by the closure of the connection.</p>
+<a name="wp1001815" id="wp1001815"></a>
+
+<a name="wp997065" id="wp997065"></a>
+
+</li>
+</ol>
+
+
+<h2>Fine-Grained Security</h2>
+<a name="wp1002215" id="wp1002215"></a>
+<p>You can implement a more fine-grained level of
+security in your connectors by managing user access through the
+Java Authentication and Authorization Service (JAAS) and Java
+platform Standard Edition (Java SE) Security Architecture. JAAS and
+Java SE security is based on the use of security managers and
+policy files to allocate different levels of access to different
+users. Consequently, you can decide more precisely which users are
+allowed to perform which operations.</p>
+<a name="wp1002258" id="wp1002258"></a>
+<p>The two examples in this section are very similar
+to those shown in <a href="security.html#wp997044">Section&#160; &quot;Simple
+Security&quot;</a>, with the difference being that the
+simple, file-based access control has been replaced by policy-based
+access control.</p>
+<a name="wp1001853" id="wp1001853"></a>
+<h3>RMI Connectors With Fine-Grained
+Security</h3>
+<a name="wp1001854" id="wp1001854"></a>
+<p>You can find an example of an RMI connector with
+fine-grained security in the directory <em class=
+"cEmphasis">work_dir</em><code class=
+"cCode">/jmx_examples/Security/fine_grained</code>.</p>
+
+<ol>
+<li>Open <em>work_dir</em><code class=
+"cCode">/jmx_examples</code><b class=
+"cBold">/Security/fine_grained</b>. <a name="wp1001856" id=
+"wp1001856"></a>
+<p>Inside this directory you will find the following
+directories:</p>
+<a name="wp1074305"
+id="wp1074305"></a>
+
+<ul>
+<li><code>/server</code>, containing the
+file<code>Server.java</code></li>
+</ul>
+
+<a name="wp1005068" id="wp1005068"></a>
+
+<ul>
+<li><code>/config</code>, containing the security
+configuration files:</li>
+</ul>
+
+<a name="wp1005069"
+id="wp1005069"></a>
+
+<ul>
+<li><code>java.policy</code></li>
+</ul>
+
+<a name="wp1005070" id="wp1005070"></a>
+
+<ul>
+<li><code>keystore</code></li>
+</ul>
+
+<a name="wp1005071" id="wp1005071"></a>
+
+<ul>
+<li><code>password.properties</code></li>
+</ul>
+
+<a name="wp1005072" id="wp1005072"></a>
+
+<ul>
+<li><code>truststore</code></li>
+</ul>
+
+
+<a name="wp1005073" id="wp1005073"></a>
+
+<ul>
+<li><code>/mbeans</code>, containing the following
+files:</li>
+</ul>
+
+<a name="wp1005074"
+id="wp1005074"></a>
+
+<ul>
+<li><code>SimpleStandard.java</code></li>
+</ul>
+
+<a name="wp1005075" id="wp1005075"></a>
+
+<ul>
+<li><code>SimpleStandardMBean.java</code></li>
+</ul>
+
+
+<a name="wp1005076" id="wp1005076"></a>
+
+<ul>
+<li><code>/client</code>, containing the following
+files:</li>
+</ul>
+
+<a name="wp1005077"
+id="wp1005077"></a>
+
+<ul>
+<li><code>ClientListener.java</code></li>
+</ul>
+
+<a name="wp1005078" id="wp1005078"></a>
+
+<ul>
+<li><code>Client.java</code></li>
+</ul>
+
+
+
+<a name="wp1001872" id="wp1001872"></a></li>
+
+<li>Open all the <code>*.java</code> and <code class=
+"cCode">*.properties</code> files in a text editor. The files will be analyzed in the following
+sections.<a name=
+"wp1001905" id="wp1001905"></a>
+</li>
+</ol>
+
+
+<h4>Server.java</h4>
+<a name="wp1001895" id="wp1001895"></a>
+<p>The <code>Server.java</code> class
+used in this example is very similar to the one used in the RMI
+connector example with simple security. The only difference is that
+there is no <code>access.properties</code> file to
+map into the environment map in the fine-grained example.
+Otherwise, the two classes are identical.</p>
+<a name="wp1046649" id="wp1046649"></a>
+<h4>java.policy</h4>
+
+<pre>
+<a name="wp1074915" id="wp1074915"> </a>
+</pre>
+<a name="wp1076293" id="wp1076293"></a>
+<p>The <code>java.policy</code> file
+grants the following permissions:</p>
+<a name="wp1046707"
+id="wp1046707"></a>
+
+<ul>
+<li>All permissions to the <code>server</code> code
+base, so that the connector server can create the connectors, and
+then perform the operations requested by remote user calls</li>
+</ul>
+
+<a name="wp1046708" id="wp1046708"></a>
+
+<ul>
+<li><code>MBeanTrustPermission</code> to the
+<code>mbeans</code> code base, allowing trusted
+MBeans to register in the MBean server</li>
+</ul>
+
+<a name="wp1046709" id="wp1046709"></a>
+
+<ul>
+<li>Permission to perform the various MBean and MBean server
+operations for the user represented by a <code class=
+"cCode">JMXPrincipal</code> named <code class=
+"cCode">username.</code></li>
+</ul>
+
+
+<a name="wp1001938" id="wp1001938"></a>
+<h4>SimpleStandardMBean.java</h4>
+<a name="wp1001939" id="wp1001939"></a>
+<p>The <code>SimpleStandardMBean</code>
+class defines the same straightforward MBean interface as was used
+in the previous examples.</p>
+<a name="wp1005539" id="wp1005539"></a>
+<h4>SimpleStandard.java</h4>
+<a name="wp1005540" id="wp1005540"></a>
+<p>The <code>SimpleStandard</code>
+class defines the same straightforward MBean as was used in the
+previous examples.</p>
+<a name="wp1001940" id="wp1001940"></a>
+<h4>ClientListener.java</h4>
+<a name="wp1001941" id="wp1001941"></a>
+<p>The <code>ClientListener</code>
+class defines the same straightforward notification listener as as
+was used in the previous examples.</p>
+<a name="wp1001948" id="wp1001948"></a>
+<h4>Client.java</h4>
+<a name="wp1002200" id="wp1002200"></a>
+<p>The <code>Client.java</code> class
+is exactly the same as the one used in the RMI connector example
+with simple security.</p>
+<a name="wp1001949" id="wp1001949"></a>
+<h3>Running the RMI Connector Example With
+Fine-Grained Security</h3>
+<a name="wp1002267" id="wp1002267"></a>
+<p>To run the RMI connector example with fine-grained
+security, perform the following steps:</p>
+
+<ol>
+<li>Run the RMI connector example:
+
+<pre>
+$ javac<a name="wp1074405" id=
+"wp1074405"> </a>
+      mbeans/SimpleStandard.java \<a name=
+"wp1074931" id="wp1074931"> </a>
+      mbeans/SimpleStandardMBean.java \<a name=
+"wp1074932" id="wp1074932"> </a>
+      server/Server.java \<a name=
+"wp1074933" id="wp1074933"> </a>
+      client/Client.java \<a name=
+"wp1074934" id="wp1074934"> </a>
+      client/ClientListener.java<a name=
+"wp1005159" id="wp1005159"> </a>
+<a name="wp1005160" id="wp1005160"> </a>
+</pre>
+
+<a name="wp1002313" id="wp1002313"></a></li>
+
+<li>Start an RMI registry on port <b>9999</b> of the
+local host. <a name="wp1002283" id="wp1002283"></a>
+<pre>$ export CLASSPATH=server ; rmiregistry 9999 &amp;</pre>
+
+<a name="wp1002326" id="wp1002326"></a></li>
+
+<li>Start the <code>Server</code>.
+
+<pre>
+<code>$ </code>java -classpath server:mbeans \<a name=
+"wp1021439" id="wp1021439"> </a>
+     -Djavax.net.ssl.keyStore=config/keystore \<a name="wp1074743"
+id="wp1074743"> </a>
+     -Djavax.net.ssl.keyStorePassword=password \<a name="wp1074744"
+id="wp1074744"> </a>
+     -Djava.security.manager \<a name=
+"wp1021442" id="wp1021442"> </a>
+     -Djava.security.policy=config/java.policy \<a name="wp1021443"
+id="wp1021443"> </a>
+     Server &amp;<a name="wp1005165"
+id="wp1005165"> </a>
+<a name="wp1005166" id="wp1005166"> </a>
+</pre>
+<a name="wp1002286" id="wp1002286"></a>
+
+<p>You will see confirmation of the initialization of
+the environment map, the creation of the MBean server and of the
+RMI connector.</p>
+<a name="wp1021452" id="wp1021452"></a></li>
+
+<li>Start the <code>Client</code>.
+
+<pre>
+<a name="wp1021453" id="wp1021453"> </a>
+$ java -classpath client:server:mbeans \<a name=
+"wp1021471" id="wp1021471"> </a>
+     -Djavax.net.ssl.trustStore=config/truststore \<a name="wp1074749"
+id="wp1074749"> </a>
+     -Djavax.net.ssl.trustStorePassword=trustword \<a name="wp1074750"
+id="wp1074750"> </a>
+     Client<a name="wp1021465" id=
+"wp1021465"> </a>
+<a name="wp1021466" id="wp1021466"> </a>
+</pre>
+<a name="wp1021467" id="wp1021467"></a>
+<p>You will see confirmation of the
+creation of the connector client, the connection to the RMI server
+and the various MBean operations followed by the closure of the
+connection.</p>
+<a name="wp1002613" id="wp1002613"></a>
+</li>
+</ol>
+
+<a name="wp1002570" id="wp1002570"></a>
+
+<br />
+<p><a accesskey="c" href="tutorialTOC.html">Contents</a> |
+<a accesskey="p" href="lookup.html">Previous</a> | Next</p>
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

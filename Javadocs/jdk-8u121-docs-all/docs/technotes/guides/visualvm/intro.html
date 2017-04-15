@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java VisualVM</title>
+<meta name="collection" content="reference" />
+<meta http-equiv="content-type" content=
+"text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<!--stopindex-->
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Java VisualVM</h1>
+<!-- ============ -->
+<!-- MAIN CONTENT -->
+<!-- ============ -->
+<!-- =============== Introduction =============== -->
+<h2>Introduction to Java VisualVM</h2>
+<p>Java VisualVM is a tool that provides a visual interface for
+viewing detailed information about Java technology-based
+applications (Java applications) while they are running on a Java
+Virtual Machine (JVM). Java VisualVM organizes JVM data that is
+retrieved by the Java Development Kit (JDK) tools and presents the
+information in a way that enables you to quickly view data on
+multiple Java applications. You can view data on local applications
+and applications that are running on remote hosts. You can also
+capture data about the JVM software and save the data to your local
+system, and view the data later or share the data with others.</p>
+<p>In order to benefit from all Java VisualVM's features, you
+should run the Java Platform, Standard Edition (Java SE) version
+6.</p>
+<h2>Starting Java VisualVM</h2>
+<p>Java VisualVM is bundled with JDK version 6 update 7 or greater.
+Once you have installed an appropriate JDK version, navigate to
+your JDK software's <span class="style1">bin</span> directory and
+double-click the Java VisualVM executable. On Windows this
+directory will be the following:</p>
+<p><tt>C:\Program
+Files\Java\jdk1.6.0_<em>update-number</em>\bin</tt></p>
+<p>Alternatively, navigate to your JDK software's <span class=
+"style1">bin</span> directory and type the following command at the
+command (shell) prompt:</p>
+<p><tt>jvisualvm</tt></p>
+<p>The first time that you launch Java VisualVM you are prompted to
+accept a license agreement.</p>
+<h3>Java VisualVM Userdir</h3>
+<p>On Windows, the default location for the Java VisualVM
+<tt>userdir</tt> is the following:</p>
+<p><tt>C:\Documents and Settings\<i>&lt;USER&gt;</i>\Application
+Data\.visualvm\<em>JDK_update-number</em></tt></p>
+<p>To find the location of your Java VisualVM <tt>userdir</tt>,
+choose Help &gt; About from the main menu and click Details in the
+About Java VisualVM window.</p>
+<h2>Java VisualVM Windows</h2>
+<p>When you start Java VisualVM, the main Java VisualVM window
+opens. The main Java VisualVM window is divided into two
+windows.</p>
+<img src="images/vvm-start.png" alt=
+"screenshot of VisualVM window with Start screen" title=
+"screenshot of VisualVM window with Start screen" />
+<p>When you first start Java VisualVM, the Applications window is
+visible in the left side of the window and the Start Page is
+visible in the right side in the main window. The Start Page
+contains links to Java VisualVM documentation web pages and
+additional resources.<br />
+<b>Note:</b> The Start Page opens by default each time you start
+Java VisualVM. You can open the Start Page at any time by choosing
+Help &gt; Start Page from the main menu. You can also hide the
+Start page by unchecking the &quot;Show On Startup&quot;
+check-box.</p>
+<h3>Applications Window</h3>
+<p>The Applications window opens in the left side of the main Java
+VisualVM window when you launch the application. The Applications
+window is the main point of entry for exploring the details of
+running applications. The Applications window uses a tree structure
+to enable you to quickly view the applications running on the local
+machine and any connected remote machines. You can also access core
+dumps (Solaris/Linux) and saved snapshots from the Applications
+window.</p>
+<p>Right-clicking a node in the Applications window opens a popup
+menu that enables you to perform actions related to that node,
+including opening application tabs, taking heap and thread dumps
+and opening snapshots in the main window.</p>
+<p>For more details about how to use the Applications window to
+view and save data, see the following pages:</p>
+<ul>
+<li><a href="applications_window.html">Using the Applications
+Window</a></li>
+<li><a href="applications_local.html">Working with Local
+Applications</a></li>
+<li><a href="applications_remote.html">Working with Remote
+Applications</a></li>
+<li><a href="coredumps.html">Working with VM Coredumps</a></li>
+<li><a href="snapshots.html">Working with Snapshots</a></li>
+</ul>
+<h3>Main Window</h3>
+<p>Detailed information about applications is displayed in the main
+window. When you view data about an application, each application
+is represented by a tab in the main window that enables you to
+easily view and navigate the data. Saved thread dumps and heap
+dumps are also opened in the main window.</p>
+<p>For information about the application data that can be displayed
+in the main window, see the following pages:</p>
+<ul>
+<li><a href="overview_tab.html">Application Overview Tab</a></li>
+<li><a href="monitor_tab.html">Monitoring an Application in the
+Monitor Tab</a></li>
+<li><a href="threads.html">Monitoring Threads in the Threads
+Tab</a></li>
+<li><a href="heapdump.html">Browsing a Heap Dump</a></li>
+<li><a href="profiler.html">Profiling an Application in the
+Profiler Tab</a> (local applications only)</li>
+</ul>
+<h2>Java VisualVM Plugins</h2>
+<p>You can add functionality to Java VisualVM by using the Plugins
+manager to install plugins from the Java VisualVM Plugins Center.
+You can also extend the functionality of Java VisualVM by
+developing your own plugins that can then be added to an update
+center.</p>
+<p>For example, installing the Java VisualVM-MBeans plugin adds an
+<a href="http://visualvm.java.net/mbeans_tab.html">MBeans tab</a>
+to the application tab that enables you to <a href="../management/jconsole.html#gdeap">
+monitor and manage MBeans</a> from within Java VisualVM.</p>
+<p><b>To install a Java VisualVM plugin:</b></p>
+<ol>
+<li>Choose Tools &gt; Plugins from the main menu.</li>
+<li>In the Available Plugins tab, select the Install checkbox for
+the plugin. Click Install.</li>
+<li>Step through and complete the plugin installer.<br /></li>
+</ol>
+<img src="images/vvm-plugins-window.png" alt=
+"screenshot of Plugins window" title=
+"Screenshot of Plugins window" />
+<p>For more information about creating Java VisualVM plugins, see
+the following documents:</p>
+<ul>
+<!--<li><a href="plugins.html">Working with VisualVM Plugins</a></li>-->
+<li><a href="http://visualvm.java.net/api-quickstart.html">Getting
+Started Extending Java VisualVM</a></li>
+</ul>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

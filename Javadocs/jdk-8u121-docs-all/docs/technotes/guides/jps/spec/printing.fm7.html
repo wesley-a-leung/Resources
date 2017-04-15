@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Print Service API User Guide: 4 - Printing and
+Streaming Documents</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<a href="JPSTOC.fm.html">CONTENTS</a> | <a href=
+"printing.fm6.html">PREV</a> | <a href=
+"printing2d.fm.html">NEXT</a><br />
+<h2><a name="a999569" id="a999569">Print Service Providers</a></h2>
+<a name="a1000839" id="a1000839"><!-- --></a> Print Service
+Providers are third parties that write an implementation of the
+abstract class PrintServiceLookup and install it according to the
+SPI JAR file specification.
+<p><a name="a1000840" id="a1000840"><!-- --></a> This class
+provides a standardized API for looking up instances of print
+services. For example an IPP print service provider, a JINI lookup
+service, or a JNDI-based directory service may each be
+implementations of this class which can return PrintServices.</p>
+<p><a name="a999576" id="a999576"><!-- --></a> The API is
+reasonably simple and generally requires implementation of the
+PrintServiceLookup class, and the PrintService interface, and
+DocPrintJob. The PrintService should also support the events
+defined by the Java Print Service API.</p>
+<p><a name="a999577" id="a999577"><!-- --></a> How much more code
+there is depends on the document types that are supported. If a
+printer wants to be able to print a JPEG image and the printer
+already has such capability in hardware, its little more than a
+case of properly spooling the data. However, to print 2D graphics,
+a class that can turn the graphics calls into a printer-formatted
+raster is a significant body of work.</p>
+<p><a name="a998231" id="a998231"><!-- --></a></p>
+<br />
+<hr />
+<a href="JPSTOC.fm.html">CONTENTS</a> | <a href=
+"printing.fm6.html">PREV</a> | <a href=
+"printing2d.fm.html">NEXT</a>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

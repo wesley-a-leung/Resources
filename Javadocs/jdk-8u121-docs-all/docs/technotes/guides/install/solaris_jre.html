@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>JRE 8 Installation on the Oracle Solaris Operating System</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This page describes how to install JRE 8 on Oracle Solaris operating systems." name="description"/>
+<meta content="2016-01-06T16:14:50Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Installation Guide for OpenJDK on Solaris, Linux, OS X, and Windows, Release 8u71" name="doctitle"/>
+<meta content="Release 8u71" name="relnum"/>
+<meta content="E50307-05" name="partnum"/>
+<meta content="no_value_supplied" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Installation Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="solaris_jdk.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="solaris_server_jre.html">
+                Next</a><hr/>
+<div><a id="CHDFEEHC" name="CHDFEEHC"/>
+<h1><span>4</span> JRE 8 Installation on the Oracle Solaris Operating System</h1>
+<p>This page describes how to install JRE 8 on Oracle Solaris operating systems.</p>
+<p>The page contains these topics:</p>
+<ul>
+<li>
+<p><a href="#B1096854">"System Requirements"</a></p>
+</li>
+<li>
+<p><a href="#B1099051">"Installation Instructions Notation"</a></p>
+</li>
+<li>
+<p><a href="#A1096992">"JRE 8 Installation Instructions for Oracle Solaris 11 using IPS packages"</a></p>
+</li>
+<li>
+<p><a href="#B1097833">"Manual JRE 8 Installation Instructions"</a></p>
+</li>
+</ul>
+<a id="B1096854" name="B1096854"/>
+<div>
+<h2>System Requirements</h2>
+<p>This version of the JRE is supported on the Oracle Solaris 10 Update 9 or later OS, Oracle Solaris 11 Express OS, and Oracle Solaris 11 OS. For supported processors and browsers, see <code dir="ltr"><a href="http://www.oracle.com/technetwork/java/javase/certconfig-2095354.html">http://www.oracle.com/technetwork/java/javase/certconfig-2095354.html</a></code>.</p>
+</div>
+
+<a id="B1099051" name="B1099051"/>
+<div>
+<h2>Installation Instructions Notation</h2>
+<p>For any text on this page containing the following notation, you must substitute the appropriate JRE update version number for the notation.</p>
+<pre dir="ltr" xml:space="preserve">
+<i>version</i>
+</pre>
+<p>For example, if you are installing update JRE 8 update release 1, the following string representing the name of the bundle:</p>
+<pre dir="ltr" xml:space="preserve">
+jre-8u<i>version</i>-solaris-sparcv9.tar.gz
+</pre>
+<p>becomes:</p>
+<pre dir="ltr" xml:space="preserve">
+jre-8u1-solaris-sparcv9.tar.gz
+</pre>
+<p>Note that, as in the preceding example, the <code dir="ltr"><span>version</span></code> number is sometimes preceded with the letter <code dir="ltr">u</code>, for example, <code dir="ltr">8u1</code>, and sometimes it is preceded with an underscore, for example, <code dir="ltr">jre1.8.0_01</code>.</p>
+</div>
+
+<a id="A1096992" name="A1096992"/>
+<div>
+<h2>JRE 8 Installation Instructions for Oracle Solaris 11 using IPS packages</h2>
+<p>To install JRE 8 on Oracle Solaris 11, install the <code dir="ltr">jre-8</code> package:</p>
+<ol>
+<li>
+<p>Make sure the <code dir="ltr">jre-8</code> package is available from your IPS publisher.</p>
+<pre dir="ltr" xml:space="preserve">
+$ pkg list -a jre-8
+
+NAME (PUBLISHER)        VERSION                    IFO
+developer/java/jre-8    1.8.0.0-0.183.0.0.0.0.0    ---
+</pre>
+<p>If you see an "i" in the I column, then the package is already installed.</p>
+<p>This package is available from the <code dir="ltr">solaris</code> publisher at <code dir="ltr">pkg.oracle.com</code> and also from other publisher origins. If you see a message that no such package is found, use the <code dir="ltr">pkg</code> <code dir="ltr">publisher</code> command to check your publisher origin and contact your system administrator or Oracle Support representative.</p>
+</li>
+<li>
+<p>Make sure you have permission to install IPS packages.</p>
+<ul>
+<li>
+<p>Use the profiles command to list the rights profiles that are assigned to you. If you have the Software Installation rights profile, you can use the <code dir="ltr">pfexec</code> command to install and update packages.</p>
+<pre dir="ltr" xml:space="preserve">
+$ pfexec pkg install jre-8
+</pre>
+<p>Other rights profiles also provide installation privilege, such as System Administrator rights profile.</p>
+</li>
+<li>
+<p>Depending on the security policy at your site, you might be able to use the <code dir="ltr">sudo</code> command with your user password to execute a privileged command.</p>
+<pre dir="ltr" xml:space="preserve">
+$ sudo pkg install jre-8
+</pre></li>
+<li>
+<p>Use the <code dir="ltr">roles</code> command to list the roles that are assigned to you. If you have the root role, you can use the <code dir="ltr">su</code> command with the root password to assume the root role.</p>
+<pre dir="ltr" xml:space="preserve">
+# pkg install jre-8
+</pre></li>
+</ul>
+</li>
+</ol>
+</div>
+
+<a id="B1097833" name="B1097833"/>
+<div>
+<h2>Manual JRE 8 Installation Instructions</h2>
+<p>The following table lists the options available for downloading the JRE 8 release on the Oracle Solaris platform.</p>
+<div>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="For each supported architecture, table lists the file or files to download, and whether anyone or the root user can install the files." width="100%">
+<col width="*"/>
+<col width="25%"/>
+<col width="25%"/>
+<thead>
+<tr align="left" valign="top">
+<th id="r1c1-t2" style="text-align:left" valign="bottom">Download File(s)</th>
+<th id="r1c2-t2" style="text-align:left" valign="bottom">Architecture</th>
+<th id="r1c3-t2" style="text-align:left" valign="bottom">Who Can Install</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td headers="r1c1-t2" id="r2c1-t2" style="text-align:left"><code dir="ltr">jre-8u</code><code dir="ltr"><span>version</span></code><code dir="ltr">-solaris-sparcv9.tar.gz</code></td>
+<td headers="r2c1-t2 r1c2-t2" style="text-align:left">64-bit SPARC</td>
+<td headers="r2c1-t2 r1c3-t2" style="text-align:left">anyone</td>
+</tr>
+<tr align="left" valign="top">
+<td headers="r1c1-t2" id="r3c1-t2" style="text-align:left"><code dir="ltr">jre-8u</code><code dir="ltr"><span>version</span></code><code dir="ltr">-solaris-x64.tar.gz</code></td>
+<td headers="r3c1-t2 r1c2-t2" style="text-align:left">64-bit x64, EM64T</td>
+<td headers="r3c1-t2 r1c3-t2" style="text-align:left">anyone</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p>You can install a JRE archive binary in any location that you can write to. It will not displace the system version of the Java platform provided by the Oracle Solaris OS.</p>
+<p>Follow these steps to install:</p>
+<ol>
+<li>
+<p>Download the bundle.</p>
+<p>Before the file can be downloaded, you must accept the license agreement. The archive binaries can be installed by anyone in any location that you can write to.</p>
+<p>The <code dir="ltr">.tar.gz</code> archive file (also called a tarball) is a file that can be simultaneously uncompressed and extracted in one step.</p>
+</li>
+<li>
+<p>Change directory to the location where you want the JRE to be installed.</p>
+</li>
+<li>
+<p>Move the <code dir="ltr">.tar.gz</code> archive binaries to the current directory.</p>
+</li>
+<li>
+<p>Unpack the tarball and install the JRE:</p>
+<ul>
+<li>
+<p>On SPARC processors:</p>
+<pre dir="ltr" xml:space="preserve">
+% gzip -dc jre-8u<i>version</i>-solaris-sparcv9.tar.gz | tar xf -
+</pre></li>
+<li>
+<p>On x64/EM64T processors:</p>
+<pre dir="ltr" xml:space="preserve">
+% gzip -dc jre-8u<i>version</i>-solaris-x64.tar.gz | tar xf -
+</pre></li>
+</ul>
+</li>
+</ol>
+<p>The JRE is installed in a directory called <code dir="ltr">jre1.8.0_</code><code dir="ltr"><span>version</span></code> in the current directory. For example, for the JRE 8 update 1 release, the directory is named: <code dir="ltr">jre1.8.0_01</code>.</p>
+<p>The JRE documentation is a separate download. See <code dir="ltr"><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html#docs">http://www.oracle.com/technetwork/java/javase/downloads/index.html#docs</a></code>.</p>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="solaris_jdk.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="solaris_server_jre.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

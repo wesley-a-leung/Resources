@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Image I/O API Guide: 3 - Writing Image I/O
+Applications</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<table summary="" width="100%">
+<tr>
+<td>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href=
+"imageio_guideTOC.fm.html">CONTENTS</a> | <a href=
+"apps.fm2.html">PREV</a> | <a href="apps.fm4.html">NEXT</a> 
+<!-- | <a href="copyright.fm.html">INDEX</a>  -->
+<!-- /font --></td>
+</tr>
+</table>
+<br />
+<h2><a name="a996895" id="a996895"><i>3.3</i>
+<code>ImageReader</code></a></h2>
+<p><a name="a996896" id="a996896"><!-- --></a>Rather than using the
+<code>ImageIO</code> class to perform the entire decoding
+operation, an application may use the <code>ImageIO</code> class to
+obtain an <code>ImageReader</code> object that may be used to
+perform the read:</p>
+<pre class="codeblock">
+Iterator readers = ImageIO.getImageReadersByFormatName(&#34;gif&#34;);
+ImageReader reader = (ImageReader)readers.next();
+</pre>
+<p><a name="a996898" id="a996898"><!-- --></a>Readers may also be
+retrieved based on file contents, file suffix, or MIME type. The
+mechanism for locating and instantiating the reader makes use of
+the <code>javax.imageio.spi.ImageReaderSpi</code> class, which
+allows information about a reader plug-in to be retrieved without
+actually instantiating the plug-in. The notion of &#34;service
+provider interfaces&#34; (SPIs) is described in detail in the
+following chapter.</p>
+<p><a name="a996899" id="a996899"><!-- --></a>Once a reader has
+been obtained, it must be supplied with an input source. Most
+readers are able to read from an <code>ImageInputStream</code>,
+which is a special input source that is defined by the Image I/O
+API. A special input source is used in order to make it simple for
+reader and writers to work with both file and streaming I/O.</p>
+<p><a name="a996900" id="a996900"><!-- --></a> Obtaining an
+<code>ImageInputStream</code> is straightforward. Given an input
+source in the form of a <code>File</code> or
+<code>InputStream</code>, an <code>ImageInputStream</code> is
+produced by the call:</p>
+<pre class="codeblock">
+Object source; // File or InputStream
+ImageInputStream iis = ImageIO.createImageInputStream(source);
+</pre>
+<p><a name="a996902" id="a996902"><!-- --></a>Once a source has been
+obtained, it may be attached to the reader by calling:</p>
+<pre class="codeblock">
+reader.setInput(iis, true);
+</pre>
+<p><a name="a996904" id="a996904"><!-- --></a>The second parameter
+should be set to false if the source file contains multiple images
+and the application is not guaranteed to read them in order. For
+file formats that allow only a single image to be stored in a file,
+it is always legal to pass in a value of true.</p>
+<p><a name="a996905" id="a996905"><!-- --></a>Once the reader has
+its input source set, we can use it to obtain information about the
+image without necessarily causing image data to be read into
+memory. For example, calling <code>reader.getImageWidth(0)</code>
+allows us to obtain the width of the first image stored in the
+file. A well-written plug-in will attempt to decode only as much of
+the file as is necessary to determine the image width, without
+reading any pixels.</p>
+<p><a name="a998336" id="a998336"><!-- --></a> To read the image,
+the application may call <code>reader.read(imageIndex)</code>,
+where <code>imageIndex</code> is the index of the image within the
+file. This produces the same result as if it had called
+<code>ImageIO.read</code>, as shown above.</p>
+<br />
+<h3><a name="a998328" id="a998328"><!-- --></a> <i>3.3.1</i>
+<code>ImageReadParam</code></h3>
+<p><a name="a998329" id="a998329"><!-- --></a>More control may be
+obtained by supplying the <code>read</code> method with an
+additional parameter of type <code>ImageReadParam</code>. An
+<code>ImageReadParam</code> allows the application to specify a
+destination image in which the decoded image data should be stored,
+allowing better control over memory use. It also allows a region of
+interest to be specified, as well as subsampling factors that may
+be used to obtain a scaled-down version of the image.</p>
+<p><a name="a996907" id="a996907"><!-- --></a> When a source region
+is set, the reader plug-in will attempt to decode only the desired
+region, to the extent that the file format allows partial decoding.
+In any case, no pixels outside the region will appear in the
+output. This capability makes it possible to work with extremely
+large images in a limited amount of memory.</p>
+<p><a name="a996908" id="a996908"><!-- --></a> For example, to
+decode only the upper-left quadrant of the image, the application
+first obtains an <code>ImageReadParam</code> that is suitable for
+use with the reader:</p>
+<pre class="codeblock">
+ImageReadParam param = reader.getDefaultReadParam();
+</pre>
+<a name="a996910" id="a996910"><!-- --></a> Next, the source region
+of interest is set on the <code>ImageReadParam</code>:
+<pre class="codeblock">
+import java.awt.Rectangle;
+int imageIndex = 0;
+int half_width = reader.getImageWidth(imageIndex)/2;
+int half_height = reader.getImageHeight(imageIndex)/2;
+Rectangle rect = new Rectangle(0, 0, half_width, half_height); 
+param.setSourceRegion(rect);
+</pre>
+<p><a name="a996913" id="a996913"><!-- --></a>Finally, the image is
+read using the <code>ImageReadParam</code>:</p>
+<pre class="codeblock">
+BufferedImage bi = reader.read(imageIndex, param);
+</pre>
+<p><a name="a996915" id="a996915"><!-- --></a>The result is a new
+<code>BufferedImage</code> whose width and height are equal to half
+those of the original image (rounding down if the image had an odd
+width or height).</p>
+<p><a name="a996916" id="a996916"><!-- --></a> The lower-right
+quadrant of the image may then be read into the same
+<code>BufferedImage</code> that was created to hold the upper-left
+quadrant, overwriting the previous pixel data:</p>
+<pre class="codeblock">
+param.setDestination(bi);
+rect = new Rectangle(half_width, half_height, half_width, half_height); 
+param.setSourceRegion(rect);
+BufferedImage bi2 = reader.read(0, param);
+if (bi == bi2) {
+        System.out.println(&#34;The same BufferedImage was used!&#34;);
+} else {
+        System.out.println(&#34;This can&#39;t happen!&#34;);
+}
+</pre>
+<p><a name="a996918" id="a996918"><!-- --></a>In practice, the
+application could simply call <code>reader.read(0, param)</code>
+without assigning the result anywhere, knowing that the pixels will
+be written into the existing <code>BufferedImage</code>
+<code>bi</code>.</p>
+<p><a name="a996919" id="a996919"><!-- --></a> As another example,
+to read every third pixel of the image, resulting in an image
+one-ninth the size of the original, subsampling factors may be set
+in the <code>ImageReadParam</code>:</p>
+<pre class="codeblock">
+param = reader.getDefaultImageParam();
+param.setSourceSubsampling(3, 3, 0, 0);
+BufferedImage bi3 = reader.read(0, param);
+</pre>
+<br />
+<h3><a name="a998349" id="a998349"><!-- --></a> <i>3.3.2</i>
+<code>IIOParamController</code></h3>
+<p><a name="a998350" id="a998350"><!-- --></a>A plug-in may
+optionally supply an <code>IIOParamController</code> object that
+may be used to set up an <code>IIOReadParam</code> (or
+<code>IIOWriteParam</code>) using a graphical user interface (GUI),
+or any other interface. A reader plug-in may attach an
+<code>IIOParamController</code> to any <code>ImageReadParam</code>
+objects that it creates:</p>
+<pre class="codeblock">
+ImageReadParam param = reader.getDefaultImageParam();
+IIOParamController controller = param.getController();
+if (controller != null) {
+        controller.activate(param);
+}
+</pre>
+<p><a name="a998380" id="a998380"><!-- --></a>When the
+controller&#39;s <code>activate</code> method is called, it
+displays the GUI and handles user events such as slider movements
+and button presses. Typically the interface will contain an
+&#34;OK&#34; or &#34;Apply&#34; button, which when pressed will
+cause the activate method to return. The controller is responsible
+for calling methods on its associated <code>ImageReadParam</code>
+to update its state, either in response to each GUI event, or all
+at once prior to returning from <code>activate</code>.</p>
+<h3><a name="a998353" id="a998353"><!-- --></a> <i>3.3.3</i>
+Reading From Multi-Image Files</h3>
+<p><a name="a997115" id="a997115"><!-- --></a>All the methods in the
+<code>ImageReader</code> class that deal with images take an
+<code>imageIndex</code> parameter. This parameter allows access to
+any of the images in a multi-image file.</p>
+<p><a name="a997116" id="a997116"><!-- --></a>The
+<code>ImageReader.getNumImages</code> method returns the number of
+images that are stored in the input file. This method takes a
+boolean parameter, <code>allowSearch</code>. Some image formats,
+notably GIF, do not provide any way to determine the number of
+images without reading the entire file. Since this may be costly,
+setting <code>allowSearch</code> to <code>false</code> will allow
+the reader to return a value of <code>-1</code> instead of the
+actual number of images. If the parameter is <code>true</code>, the
+reader will always return the actual number of images.</p>
+<p><a name="a997120" id="a997120"><!-- --></a> Even if the number
+of images is not known by the application, it is still possible to
+call <code>read(imageIndex)</code>; if the index is too large, the
+method will throw an <code>IndexOutOfBoundsException</code>. Thus,
+the application can request images with increasing indices until it
+receives an exception.</p>
+<br />
+<h3><a name="a997104" id="a997104"><!-- --></a> <i>3.3.4</i>
+Reading &#34;Thumbnail&#34; Images</h3>
+<p><a name="a997105" id="a997105"><!-- --></a>Some image formats
+allow a small preview image (or multiple previews) to be stored
+alongside the main image. These &#34;thumbnail&#34; images are
+useful for identifying image files quickly, without the need to
+decode the entire image.</p>
+<p><a name="a997109" id="a997109"><!-- --></a> Applications can
+determine how many thumbnail images associated with a particular
+image are available by calling:</p>
+<pre class="codeblock">
+reader.getNumThumbnails(imageIndex);
+</pre>
+<p><a name="a997128" id="a997128"><!-- --></a> If a thumbnail image is
+present, it can be retrieved by calling:</p>
+<pre class="codeblock">
+int thumbailIndex = 0;
+BufferedImage bi;
+bi = reader.readThumbnail(imageIndex, thumbnailIndex);
+</pre>
+<br />
+<hr />
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href=
+"imageio_guideTOC.fm.html">CONTENTS</a> | <a href=
+"apps.fm2.html">PREV</a> | <a href="apps.fm4.html">NEXT</a> 
+<!-- | <a href="copyright.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

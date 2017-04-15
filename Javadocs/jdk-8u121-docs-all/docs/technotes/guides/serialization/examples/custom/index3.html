@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Using Serialization with a Custom Data Format</title>
+<link rel="stylesheet" type="text/css" href="../../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h2>Using Serialization with a Custom Data Format</h2>
+<h3>Abstract</h3>
+<p>Demonstrates how to use the <tt>writeObject</tt> and
+<tt>readObject</tt> methods to encode a custom data format. When
+there is a large amount of persistent data, that data should be
+stored in a convenient, condensed format, such as the one used in
+this example.</p>
+<p>This example uses a triangular array, a symmetrical,
+2-dimensional array. During serialization only half of the array is
+saved. This example serializes half of the array in
+<tt>writeObject</tt>, then restores the whole array in
+<tt>readObject</tt> by deserializing half of the array and copying
+to restore the other half of the array.</p>
+<p>This example differs from the <a href=
+"../altimpl/index3.html">Using Serialization and the Serializable
+Fields API Example</a> in that this example does not support
+versioning. In addition, because this example does not use an
+<tt>Externalizable</tt> interface, superclasses are not a
+consideration.</p>
+<img src="../images/bg2.gif" alt="blue bar" width="190" height=
+"2" />
+<h3>Additional Information</h3>
+<dl>
+<dd><a href="sources.html">Source Files</a></dd>
+<dd><a href="torun.html">Running the Example</a></dd>
+<dd><a href="../index.html">List of Examples</a></dd>
+</dl>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

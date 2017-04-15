@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>jrunscript</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T8:11:41Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Windows, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38210-05" name="partnum"/>
+<meta content="JSWOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="s12-scripting-tools.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jjs.html">
+                Next</a><hr/>
+<div><a id="BABCGEJJ" name="BABCGEJJ"/>
+<div id="JSWOR750"><a id="BABIFIFB" name="BABIFIFB"/>
+<h1>jrunscript</h1>
+<p>Runs a command-line script shell that supports interactive and batch modes. This command is experimental and unsupported.</p>
+<div><a id="sthref343" name="sthref343"/>
+<h2>Synopsis</h2>
+<p><b>jrunscript</b> [<i>options</i>] [<i>arguments</i>]</p>
+<dl>
+<dt><i>options</i></dt>
+<dd>
+<p>The command-line options. See <a href="#BABIJJHJ">Options</a>.</p>
+</dd>
+<dt><i>arguments</i></dt>
+<dd>
+<p>Arguments, when used, follow immediately after options or the command name. See <a href="#BABHHIAE">Arguments</a>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref344" name="sthref344"/>
+<h2>Description</h2>
+<p>The <code dir="ltr">jrunscript</code> command is a language-independent command-line script shell. The <code dir="ltr">jrunscript</code> command supports both an interactive (read-eval-print) mode and a batch (<code dir="ltr">-f</code> option) mode of script execution. By default, JavaScript is the language used, but the <code dir="ltr">-l</code> option can be used to specify a different language. By using Java to scripting language communication, the <code dir="ltr">jrunscript</code> command supports an exploratory programming style.</p>
+</div>
+
+<div><a id="BABIJJHJ" name="BABIJJHJ"/><a id="BABJHBGD" name="BABJHBGD"/>
+<h2>Options</h2>
+<dl>
+<dt>-classpath <i>path</i></dt>
+<dd>
+<p>Indicate where any class files are that the script needs to access.</p>
+</dd>
+<dt>-cp <i>path</i></dt>
+<dd>
+<p>Same as <code dir="ltr">-classpath</code> <code dir="ltr"><span>path</span></code>..</p>
+</dd>
+<dt>-D<i>name</i>=<i>value</i></dt>
+<dd>
+<p>Sets a Java system property.</p>
+</dd>
+<dt>-J<i>flag</i></dt>
+<dd>
+<p>Passes <code dir="ltr">flag</code> directly to the Java Virtual Machine where the <code dir="ltr">jrunscript</code> command is running.</p>
+</dd>
+<dt>-I <i>language</i></dt>
+<dd>
+<p>Uses the specified scripting language. By default, JavaScript is used. To use other scripting languages, you must specify the corresponding script engine's JAR file with the <code dir="ltr">-cp</code> or <code dir="ltr">-classpath</code> option.</p>
+</dd>
+<dt>-e <i>script</i></dt>
+<dd>
+<p>Evaluates the specified script. This option can be used to run one-line scripts that are specified completely on the command line.</p>
+</dd>
+<dt>-encoding <i>encoding</i></dt>
+<dd>
+<p>Specifies the character encoding used to read script files.</p>
+</dd>
+<dt>-f <i>script-file</i></dt>
+<dd>
+<p>Evaluates the specified script file (batch mode).</p>
+</dd>
+<dt>-f -</dt>
+<dd>
+<p>Reads and evaluates a script from standard input (interactive mode).</p>
+</dd>
+<dt>-help</dt>
+<dd>
+<p>Displays a help message and exits.</p>
+</dd>
+<dt>-?</dt>
+<dd>
+<p>Displays a help message and exits.</p>
+</dd>
+<dt>-q</dt>
+<dd>
+<p>Lists all script engines available and exits.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="BABHHIAE" name="BABHHIAE"/><a id="BABGIDJI" name="BABGIDJI"/>
+<h2>Arguments</h2>
+<p>If arguments are present and if no <code dir="ltr">-e</code> or <code dir="ltr">-f</code> option is used, then the first argument is the script file and the rest of the arguments, if any, are passed to the script. If arguments and <code dir="ltr">-e</code> or the <code dir="ltr">-f</code> option are used, then all arguments are passed to the script. If arguments, <code dir="ltr">-e</code> and <code dir="ltr">-f</code> are missing, then interactive mode is used. Script arguments are available to a script in an engine variable named <code dir="ltr">arguments</code> of type <code dir="ltr">String</code> array.</p>
+</div>
+
+<div><a id="sthref345" name="sthref345"/>
+<h2>Examples</h2>
+<div><a id="sthref346" name="sthref346"/>
+<h3>Execute Inline Scripts</h3>
+<pre dir="ltr" xml:space="preserve">
+jrunscript -e "print('hello world')"
+jrunscript -e "cat('http://www.example.com')"
+</pre></div>
+
+<div><a id="sthref347" name="sthref347"/>
+<h3>Use Specified Language and Evaluate the Script File</h3>
+<pre dir="ltr" xml:space="preserve">
+jrunscript -l js -f test.js
+</pre></div>
+
+<div><a id="sthref348" name="sthref348"/>
+<h3>Interactive Mode</h3>
+<pre dir="ltr" xml:space="preserve">
+jrunscript
+js&gt; print('Hello World\n');
+Hello World
+js&gt; 34 + 55
+89.0
+js&gt; t = new java.lang.Thread(function() { print('Hello World\n'); })
+Thread[Thread-0,5,main]
+js&gt; t.start()
+js&gt; Hello World
+ 
+js&gt;
+</pre></div>
+
+<div><a id="sthref349" name="sthref349"/>
+<h3>Run Script File with Script Arguments</h3>
+<p>The test.js file is the script file. The <code dir="ltr">arg1</code>, <code dir="ltr">arg2</code> and <code dir="ltr">arg3</code> arguments are passed to the script. The script can access these arguments with an arguments array.</p>
+<pre dir="ltr" xml:space="preserve">
+jrunscript test.js arg1 arg2 arg3
+</pre></div>
+</div>
+
+<div><a id="sthref350" name="sthref350"/>
+<h2>See Also</h2>
+<p>If JavaScript is used, then before it evaluates a user defined script, the <code dir="ltr">jrunscript</code> command initializes certain built-in functions and objects, which are documented in the API Specification for jrunscript JavaScript built-ins:</p>
+<p><code dir="ltr"><a href="http://docs.oracle.com/javase/7/docs/technotes/tools/share/jsdocs/overview-summary.html">http://docs.oracle.com/javase/7/docs/technotes/tools/share/jsdocs/overview-summary.html</a></code></p>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="s12-scripting-tools.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="jjs.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

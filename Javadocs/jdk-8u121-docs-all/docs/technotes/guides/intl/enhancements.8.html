@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Internationalization Enhancements in JDK 8</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Internationalization Enhancements in JDK 8</h1>
+<p>The Internationalization enhancements for JDK 8 include the
+following:</p>
+<ul>
+<li><a href="#unicode">Unicode Enhancements</a></li>
+<li><a href="#cldr">Adoption of Unicode CLDR Data and the <tt>java.locale.providers</tt> System Property</a></li>
+<li><a href="#api">New <tt>Calendar</tt> and <tt>Locale</tt> APIs</a></li>
+<li><a href="#rbcp">Ability to Install a Custom Resource Bundle as an Extension</a></li>
+</ul>
+
+<h2><a name="unicode" id="unicode">Unicode Enhancements</a></h2>
+
+<p>The JDK 8 release includes support for <a href="http://www.unicode.org/versions/Unicode6.2.0/">Unicode 6.2.0</a>. Since the release of JDK 7, which supported Unicode 6.0, the Unicode 6.1.0 and 6.2.0 specs introduced the following new features that are now included in JDK 8:</p>
+<ul>
+<li>733 new characters including Turkish Lira sign</li>
+<li>7 new scripts:<br />
+<br />
+<ul>
+      <li>Meroitic Hieroglyphs</li>
+      <li>Meroitic Cursive</li>
+      <li>Sora Sompeng</li>
+      <li>Chakma</li>
+      <li>Sharada</li>
+      <li>Takri</li>
+      <li>Miao</li>
+</ul>
+<br />
+<li>11 new blocks - including 7 blocks for the new scripts listed above and 4 blocks for the following existing scripts:<br />
+<br />
+<ul>
+      <li>Arabic Extended-A</li>
+      <li>Sundanese Supplement</li>
+      <li>Meetei Mayek Extensions</li>
+      <li>Arabic Mathematical Alphabetical Symbols</li>
+</ul>
+</ul>
+
+<p>The Java Tutorial has a section that discusses <a href="http://docs.oracle.com/javase/tutorial/i18n/text/unicode.html">Unicode</a>.</p>
+
+
+<h2><a name="cldr" id="cldr">Adoption of Unicode CLDR Data and the <tt>java.locale.providers</tt> System Property</a></h2>
+<p>
+The Unicode Consortium has released the <a href="http://cldr.unicode.org/index" target="_blank">Common Locale Data Repository (CLDR)</a> project to "support the world's languages, with the largest and most extensive standard repository of locale data available." The CLDR is becoming the de-facto standard for locale data.</p>
+<p>
+The CLDR's XML-based locale data has been incorporated into the JDK 8 release, however it is disabled by default.</p>
+<p>There are now four distinct sources for locale data:</p>
+<ul>
+<li><tt>CLDR</tt> represents the locale data provided by the Unicode CLDR project.</li>
+<li><tt>HOST</tt> represents the current user's customization of the underlying operating system's settings. It works only with the user's default locale, and the customizable settings may vary depending on the OS, but primarily Date, Time, Number, and Currency formats are supported.</li>
+<li><tt>SPI</tt> represents the locale sensitive services implemented in the installed SPI providers.</li>
+<li><tt>JRE</tt> represents the locale data that is compatible with the prior JRE releases.</li>
+</ul>
+<p>
+To select the desired locale data source, use the <tt>java.locale.providers</tt> system property, listing the data sources in the preferred order. For example:</p>
+<pre class="codeblock">
+java.locale.providers=HOST,SPI,CLDR,JRE
+</pre>
+<p>
+The default behavior is equivalent to the following setting:</p>
+<pre class="codeblock">
+java.locale.providers=JRE,SPI
+</pre>
+<p>
+For further information, see the API specification page for <tt>java.util.spi.LocaleServiceProvider</tt> and the "JDK 8 and JRE 8 Supported Locales" page, which becomes available after the release of Oracle JDK 8. <!-- No link is yet available for this page. --></p>
+
+
+<h2><a name="api" id="api">New <tt>Calendar</tt> and <tt>Locale</tt> APIs</a></h2>
+<p>As the <a href="http://cldr.unicode.org/" target="_blank">Unicode Common Locale Data Repository</a> (CLDR) project continues to evolve, the Java SE API is updated. The JDK 8 release includes two new classes, several new methods, and a new return value for an existing static method:</p>
+
+<ul>
+<li>The <a href="../../../api/java/text/DecimalFormatSymbols.html#getInstance-java.util.Locale-" target="_blank">DecimalFormatSymbols.getInstance(Locale)</a> static method is now able to recognize <tt>Locale.UNICODE_LOCALE_EXTENSION</tt> for the numbering system.</li>
+
+<li>Two new abstract classes for service providers are added to the <tt>java.util.spi</tt> package. The <a href="../../../api/java/util/spi/CalendarDataProvider.html" target="_blank">CalendarDataProvider</a> abstract class provides localized week parameters. The <a href="../../../api/java/util/spi/CalendarNameProvider.html" target="_blank">CalendarNameProvider</a> abstract class provides field values names for displaying a calendar's name. This class recognizes the following calendar type strings:
+<ul>
+<li>"gregory" - Gregorian/Julian hybrid</li>
+<li>"buddhist" - Thai Buddhist</li>
+<li>"japanese" - Japanese Imperial</li>
+</ul>
+</li>
+
+<li>The new method, <a href="../../../api/java/util/spi/LocaleServiceProvider.html#isSupportedLocale-java.util.Locale-" target="_blank">LocaleServiceProvider.html#isSupportedLocale(Locale)</a>, returns true if the specified locale is supported by the locale service provider.</li>
+
+<li>The new <a href="../../../api/java/util/Calendar.html#getCalendarType--" target="_blank">Calendar.getCalendarType()</a> method returns the calendar type string ("gregory", "buddhist", "japanese").</li>
+
+<li>New style specifiers, used by the <tt>Calendar.getDisplayName</tt> and <tt>Calendar.getDisplayNames</tt> methods, determine the format of the <tt>Calendar</tt> name:
+<ul>
+<li><a href="../../../api/java/util/Calendar.html#SHORT_FORMAT" target="_blank">Calendar.SHORT_FORMAT</a></li>
+<li><a href="../../../api/java/util/Calendar.html#LONG_FORMAT" target="_blank">Calendar.LONG_FORMAT</a></li>
+<li><a href="../../../api/java/util/Calendar.html#SHORT_STANDALONE" target="_blank">Calendar.SHORT_STANDALONE</a></li>
+<li><a href="../../../api/java/util/Calendar.html#LONG_STANDALONE" target="_blank">Calendar.LONG_STANDALONE</a></li>
+</ul>
+</li>
+
+<li>Two new <tt>Locale</tt> methods for dealing with a locale's (optional) extensions:
+<ul>
+<li><a href="../../../api/java/util/Locale.html#hasExtensions--" target="_blank">Locale.hasExtensions()</a></li>
+<li><a href="../../../api/java/util/Locale.html#stripExtensions--" target="_blank">Locale.stripExtensions()</a></li>
+</ul>
+For more information, see <a href="http://docs.oracle.com/javase/tutorial/i18n/locale/extensions.html" target="_blank">BCP 47 Extensions</a> in the Java Tutorial.
+</li>
+
+<li>Two new <tt>Locale.filter</tt> methods return a list of <tt>Locale</tt> instances that match the specified criteria, as defined in RFC 4647:
+<ul>
+<li><a href="../../../api/java/util/Locale.html#filter-java.util.List-java.util.Collection-" target="_blank">Locale.filter(List&lt;Local.LanguageRange&gt;, Collection&lt;Locale&gt;)</a></li>
+<li><a href="../../../api/java/util/Locale.html#filter-java.util.List-java.util.Collection-java.util.Locale.FilteringMode-" target="_blank">Locale.filter(List&lt;Locale.LanguageRange&gt;, Collection&lt;Locale&gt;, Locale.FilteringMode)</a></li>
+</ul>
+</li>
+
+<li>Two new <tt>Locale.filterTags</tt> methods return a list of language tags that match the specified criteria, as defined in RFC 4647:
+<ul>
+<li><a href="../../../api/java/util/Locale.html#filterTags-java.util.List-java.util.Collection-" target="_blank">Locale.filterTags(List&lt;Locale.LanguageRange&gt;, Collection&lt;String&gt;)</a></li>
+<li><a href="../../../api/java/util/Locale.html#filterTags-java.util.List-java.util.Collection-java.util.Locale.FilteringMode-" target="_blank">Locale.filterTags(List&lt;Locale.LanguageRange&gt;, Collection&lt;String&gt;, Locale.FilteringMode)</a></li>
+</ul>
+</li>
+
+<li>Two new <tt>lookup</tt> methods return the best-matching locale or language tag using the lookup mechanism defined in RFC 4647:
+<ul>
+<li><a href="../../../api/java/util/Locale.html#lookup-java.util.List-java.util.Collection-" target="_blank">Locale.lookup(List&lt;Local.LanguageRange&gt;, Collection)</a></li>
+<li><a href="../../../api/java/util/Locale.html#lookupTag-java.util.List-java.util.Collection-" target="_blank">Locale.lookupTag(List&lt;Locale.LanguageRange&gt;, Collection&lt;String&gt;)</a></li>
+</ul>
+</li>
+
+</ul>
+
+<h2><a name="rbcp">Ability to Install a Custom Resource Bundle as an Extension</a></h2>
+
+<p>JDK 8 introduces the <a href="../../../api/java/util/spi/ResourceBundleControlProvider.html" target="_blank"><code>java.util.spi.ResourceBundleControlProvider</code></a> interface, which is a service provider interface (SPI). SPIs enable you to create extensible applications, which are those that you can extend easily without modifying their original code base. This SPI enables you to change how the method <a href="../../../api/java/util/ResourceBundle.html#getBundle-java.lang.String-java.util.Locale-"><code>ResourceBundle getBundle(String baseName, Locale targetLocale)</code></a> loads resource bundles. Note that this method does not require an instance of the <a href="../../../api/java/util/ResourceBundle.Control.html"><code>ResourceBundle.Control</code></a> class.  An installed implementation of the <code>ResourceBundleControlProvider</code> SPI replaces the default <code>ResourceBundle.Control</code> class, which defines the default bundle loading process. See <a href="http://docs.oracle.com/javase/tutorial/i18n/serviceproviders/resourcebundlecontrolprovider.html">Installing a Custom Resource Bundle as an Extension</a> for more information.</p>
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

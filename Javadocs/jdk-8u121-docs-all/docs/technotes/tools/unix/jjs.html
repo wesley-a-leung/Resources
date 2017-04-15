@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>jjs</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T7:56:54Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Solaris, Linux, and OS X, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38209-05" name="partnum"/>
+<meta content="JSSOR" name="docid"/>
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="jrunscript.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<hr/>
+<div><a id="BCFBFGGH" name="BCFBFGGH"/>
+<div id="JSSOR751">
+<h1>jjs</h1>
+<p>Invokes the Nashorn engine.</p>
+<div><a id="sthref356" name="sthref356"/>
+<h2>Synopsis</h2>
+<pre dir="ltr" xml:space="preserve">
+<b>jjs</b> [<i>options</i>] [<i>script-files</i>] [-- <i>arguments</i>]
+</pre>
+<dl>
+<dt><i>options</i></dt>
+<dd>
+<p>One or more options of the <code dir="ltr">jjs</code> command, separated by spaces. For more information, see <a href="#BCEJFCGF">Options</a>.</p>
+</dd>
+<dt><i>script-files</i></dt>
+<dd>
+<p>One or more script files which you want to interpret using Nashorn, separated by spaces. If no files are specified, an interactive shell is started.</p>
+</dd>
+<dt><i>arguments</i></dt>
+<dd>
+<p>All values after the double hyphen marker (<code dir="ltr">--</code>) are passed through to the script or the interactive shell as arguments. These values can be accessed by using the <code dir="ltr">arguments</code> property (see <a href="#BCFFEDJE">Example 3</a>).</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref357" name="sthref357"/>
+<h2>Description</h2>
+<p>The <code dir="ltr">jjs</code> command-line tool is used to invoke the Nashorn engine. You can use it to interpret one or several script files, or to run an interactive shell.</p>
+</div>
+
+<div><a id="BCEJFCGF" name="BCEJFCGF"/>
+<h2>Options</h2>
+<p>The options of the <code dir="ltr">jjs</code> command control the conditions under which scripts are interpreted by Nashorn.</p>
+<dl>
+<dt>-cp <i>path</i></dt>
+<dt>-classpath <i>path</i></dt>
+<dd>
+<p>Specifies the path to the supporting class files To set multiple paths, the option can be repeated, or you can separate each path with a colon (:).</p>
+</dd>
+<dt>-D<i>name</i>=<i>value</i></dt>
+<dd>
+<p>Sets a system property to be passed to the script by assigning a value to a property name. The following example shows how to invoke Nashorn in interactive mode and assign <code dir="ltr">myValue</code> to the property named <code dir="ltr">myKey</code>:</p>
+<pre dir="ltr" xml:space="preserve">
+&gt;&gt; <b>jjs -DmyKey=myValue</b>
+jjs&gt; <b>java.lang.System.getProperty("myKey")</b>
+myValue
+jjs&gt;
+</pre>
+<p>This option can be repeated to set multiple properties.</p>
+</dd>
+<dt>-doe</dt>
+<dt>--dump-on-error</dt>
+<dd>
+<p>Provides a full stack trace when an error occurs. By default, only a brief error message is printed.</p>
+</dd>
+<dt>-fv</dt>
+<dt>--fullversion</dt>
+<dd>
+<p>Prints the full Nashorn version string.</p>
+</dd>
+<dt>-fx</dt>
+<dd>
+<p>Launches the script as a JavaFX application.</p>
+</dd>
+<dt>-h</dt>
+<dt>-help</dt>
+<dd>
+<p>Prints the list of options and their descriptions.</p>
+</dd>
+<dt>--language=[es5]</dt>
+<dd>
+<p>Specifies the ECMAScript language version. The default version is ES5.</p>
+</dd>
+<dt>-ot</dt>
+<dt>--optimistic-types=[true|false]</dt>
+<dd>
+<p>Enables or disables optimistic type assumptions with deoptimizing recompilation. Running with optimistic types will yield higher final speed, but may increase warmup time.</p>
+</dd>
+<dt>-scripting</dt>
+<dd>
+<p>Enables shell scripting features.</p>
+</dd>
+<dt>-strict</dt>
+<dd>
+<p>Enables strict mode, which enforces stronger adherence to the standard (ECMAScript Edition 5.1), making it easier to detect common coding errors.</p>
+</dd>
+<dt>-t=<i>zone</i></dt>
+<dt>-timezone=<i>zone</i></dt>
+<dd>
+<p>Sets the specified time zone for script execution. It overrides the time zone set in the OS and used by the <code dir="ltr">Date</code> object.</p>
+</dd>
+<dt>-v</dt>
+<dt>-version</dt>
+<dd>
+<p>Prints the Nashorn version string.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref358" name="sthref358"/>
+<h2>Examples</h2>
+<dl>
+<dd><a id="JSSOR752" name="JSSOR752"/><a id="sthref359" name="sthref359"/></dd>
+<dt>Example 1 - Running a Script with Nashorn</dt>
+<dd>
+<pre dir="ltr" xml:space="preserve">
+jjs script.js
+</pre></dd>
+<dd><a id="JSSOR753" name="JSSOR753"/><a id="sthref360" name="sthref360"/></dd>
+<dt>Example 2 - Running Nashorn in Interactive Mode</dt>
+<dd>
+<pre dir="ltr" xml:space="preserve">
+&gt;&gt; <b>jjs</b>
+jjs&gt; <b>println("Hello, World!")</b>
+Hello, World!
+jjs&gt; <b>quit()</b>
+&gt;&gt;
+</pre></dd>
+<dd><a id="JSSOR754" name="JSSOR754"/><a id="BCFFEDJE" name="BCFFEDJE"/></dd>
+<dt>Example 3 - Passing Arguments to Nashorn</dt>
+<dd>
+<pre dir="ltr" xml:space="preserve">
+&gt;&gt; <b>jjs -- a b c</b>
+jjs&gt; <b>arguments.join(", ")</b>
+a, b, c
+jjs&gt;
+</pre></dd>
+</dl>
+</div>
+
+<div><a id="sthref361" name="sthref361"/>
+<h2>See Also</h2>
+<p><code dir="ltr">jrunscript</code></p>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="jrunscript.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

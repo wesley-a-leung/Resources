@@ -1,0 +1,290 @@
+a.ahead {
+  FONT-SIZE: 75%;
+  COLOR: black;
+  FONT-FAMILY: Arial, Helvetica, sans-serif;
+  TEXT-DECORATION: none
+}
+
+a.ahead:visited {
+  FONT-SIZE: 75%; 
+  COLOR: black; 
+  FONT-FAMILY: Arial, Helvetica, sans-serif; 
+  TEXT-DECORATION: none
+}
+
+a.atext {
+  FONT-SIZE: 100%;
+  COLOR: black; 
+  FONT-FAMILY: Arial, Helvetica, sans-serif; 
+  FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+
+a.atext:visited {
+  FONT-SIZE: 100%;
+  COLOR: black; 
+  FONT-FAMILY: Arial, Helvetica, sans-serif; 
+  FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+
+a:hover { 
+  TEXT-DECORATION:underline 
+}
+
+.table {
+  border-collapse: collapse;
+  border: 0px;
+}
+
+.tablerows {
+  width: 100%;
+  height: 100%;
+  border: 0px;
+  border-collapse: separate;
+  border-spacing: 0px;
+}
+
+.tdbody {
+  border-collapse: separate;
+  border: 1px solid white;
+  PADDING-RIGHT: 0.4em;
+  PADDING-LEFT: 0.4em;
+  VERTICAL-ALIGN: middle;
+  LINE-HEIGHT: 90%;
+  HEIGHT: 1.9em;
+  TEXT-ALIGN: center;
+}
+
+td.tdhead > a, td.tdleftside > a, td.tdrightside > a {
+  text-decoration: underline;
+}
+
+.tdhead {
+  border: 2px solid white;
+  PADDING-RIGHT: 0.5em;
+  VERTICAL-ALIGN:middle;
+  TEXT-ALIGN: right;
+/*  
+  BORDER-TOP-WIDTH: 0px;
+  PADDING-RIGHT: 0.5em;
+  BORDER-LEFT-WIDTH: 0px;
+  BORDER-BOTTOM-WIDTH: 0px;
+  VERTICAL-ALIGN:middle;
+  TEXT-ALIGN: right;
+  BORDER-RIGHT-WIDTH: 0px
+*/
+}
+
+.tdleftside {
+  border-color: black;
+  border-style: solid;
+  BORDER-TOP-WIDTH: 2px;
+  PADDING-LEFT: 0.25em;
+  PADDING-RIGHT: 0.25em;
+  BORDER-LEFT-WIDTH: 2px;
+  BORDER-BOTTOM-WIDTH: 2px;
+  VERTICAL-ALIGN: middle;
+  TEXT-ALIGN: left;
+  BORDER-RIGHT: 0px solid white;
+}
+
+.tdrightside {
+  border-left: 0px;
+  border-right: 2px solid black;
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  PADDING-RIGHT: 0.25em;
+  PADDING-LEFT: 0.25em;
+  VERTICAL-ALIGN: middle;
+  TEXT-ALIGN: center
+}
+
+/***********************************************/
+/* Layout div styles                           */
+/***********************************************/
+
+#pageNav{
+        float: left;
+        /* clear: both; */
+        width:178px;
+        padding: 0px;
+        background-color: #F5f7f7;
+        border-right: 1px solid #cccccc;
+        border-bottom: 1px solid #cccccc;
+        font: small Verdana,sans-serif;
+}
+
+#feature{
+        float: left;
+        /* clear: both; */
+}
+
+#content{
+        padding: 0px 10px 0px 0px;
+        margin:0px 0px 0px 178px;
+        border-left: 1px solid #ccd2d2;
+}
+
+/***********************************************/
+/* HTML tag styles                             */
+/***********************************************/
+
+body {
+        font-family: Arial,sans-serif;
+        color: #333333;
+        line-height: 1.166;
+        margin: 0px;
+        padding: 0px;
+
+}
+
+/******* hyperlink and anchor tag styles *******/
+
+a:hover {
+        text-decoration: underline;
+}
+
+/************** header tag styles **************/
+
+h1 {
+  text-align: center;
+}
+
+h2 {
+ font: bold 100% Arial,sans-serif;
+ color: #333333;
+ margin: 0px;
+ padding: 0px;
+}
+
+h3 {
+ font: bold 100% Arial,sans-serif;
+ color: #334d55;
+ margin: 0px;
+ padding: 0px;
+}
+
+h4 {
+ font: 100% Arial,sans-serif;
+ color: #333333;
+ margin: 0px;
+ padding: 0px;
+}
+
+h5 {
+ font: 100% Arial,sans-serif;
+ color: #334d55;
+ margin: 0px;
+ padding: 0px;
+}
+
+/************** feature styles *****************/
+
+.feature {
+        padding: 0px 0px 10px 10px;
+        font-size: 100%;
+        min-height: 200px;
+        height: 200px;
+}
+html>body .feature {height: auto;}
+
+.feature h3 {
+        font: bold 175% Arial,sans-serif;
+        color: #000000;
+        padding: 30px 0px 5px 0px;
+}
+
+.feature img {
+        float: left;
+        padding: 0px 10px 0px 0px;
+}
+
+
+/*************** story styles ******************/
+
+.story {
+        padding: 10px 0px 0px 10px;
+        font-size: 100%;
+}
+
+.story h3{
+        font: bold 125% Arial,sans-serif;
+        color: #000000;
+}
+
+.story p {
+        padding: 0px 0px 10px 0px;
+}
+
+.story a {
+        font:  Arial,sans-serif;
+}
+
+.story a:hover {
+                text-decoration: underline;
+}
+
+.story a.capsule{
+        font: bold 1em Arial,sans-serif;
+        color: #005FA9;
+        display:block;
+        padding-bottom: 5px;
+}
+
+.story a.capsule:hover{
+        text-decoration: underline;
+}
+
+.story a.notHref {
+        text-decoration: none;
+}
+
+td.storyLeft{
+        padding-right: 12px;
+}
+
+.storyLeft a {
+        font: bold 100% Arial,sans-serif;
+}
+
+/************* relatedLinks styles **************/
+
+/*
+
+.relatedLinks{
+        margin: 0px;
+        padding: 0px 0px 10px 10px;
+        border-bottom: 1px solid #cccccc;
+        font: 90% Verdana,sans-serif;
+
+}
+
+.relatedLinks a{
+        display: block;
+        text-decoration: none;
+}
+
+.relatedLinksHeader {
+        padding: 10px 0px 2px 0px; 
+        font: bold 100% Arial,sans-serif;
+}
+
+*/
+
+.relatedLinks {
+  margin: 0px;
+  padding: 0px 0px 10px 10px;
+  border-bottom: 1px solid #cccccc;
+  font: 90% Verdana,sans-serif;
+}
+
+.relatedLinks ul {
+  margin: 0px 0px 0px 17px;
+  padding: 0px 0px 0px 0px;
+  list-style-position: outside;
+  list-style-type:dot;
+} 
+
+.relatedLinksHeader {
+  padding: 10px 0px 2px 0px; 
+  font: bold 100% Arial,sans-serif;
+}

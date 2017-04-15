@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Type Inference for Generic Instance Creation</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1>Type Inference for Generic Instance Creation</h1>
+
+<p>You can replace the type arguments required to invoke the
+constructor of a generic class with an empty set of type parameters
+(<code>&lt;&gt;</code>) as long as the compiler can infer the type
+arguments from the context. This pair of angle brackets is
+informally called the <em>diamond</em>.</p>
+<p>For example, consider the following variable declaration:</p>
+<pre>
+Map&lt;String, List&lt;String&gt;&gt; myMap = new HashMap&lt;String, List&lt;String&gt;&gt;();
+</pre>
+<p>In Java SE 7, you can substitute the parameterized type of the
+constructor with an empty set of type parameters
+(<code>&lt;&gt;</code>):</p>
+<pre>
+Map&lt;String, List&lt;String&gt;&gt; myMap = new HashMap&lt;&gt;();
+</pre>
+<p>Note that to take advantage of automatic type inference during
+generic class instantiation, you must specify the diamond. In the
+following example, the compiler generates an unchecked conversion
+warning because the <code>HashMap()</code> constructor refers to
+the <code>HashMap</code> raw type, not the <code>Map&lt;String,
+List&lt;String&gt;&gt;</code> type:</p>
+<pre>
+Map&lt;String, List&lt;String&gt;&gt; myMap = new HashMap(); // unchecked conversion warning
+</pre>
+<p>Java SE 7 supports limited type inference for generic instance
+creation; you can only use type inference if the parameterized type
+of the constructor is obvious from the context. For example, the
+following example does not compile:</p>
+<pre>
+List&lt;String&gt; list = new ArrayList&lt;&gt;();
+list.add("A");
+
+  // The following statement should fail since addAll expects
+  // Collection&lt;? extends String&gt;
+
+list.addAll(new ArrayList&lt;&gt;());
+</pre>
+<p>Note that the diamond often works in method calls; however, it
+is suggested that you use the diamond primarily for variable
+declarations.</p>
+<p>In comparison, the following example compiles:</p>
+<pre>
+// The following statements compile:
+
+List&lt;? extends String&gt; list2 = new ArrayList&lt;&gt;();
+list.addAll(list2);
+</pre>
+<!-- ************************************************* -->
+<h2><a name="type-inference-constructors" id=
+"type-inference-constructors">Type Inference and Generic
+Constructors of Generic and Non-Generic Classes</a></h2>
+<p>Note that constructors can be generic (in other words, declare
+their own formal type parameters) in both generic and non-generic
+classes. Consider the following example:</p>
+<pre>
+class MyClass&lt;X&gt; {
+  &lt;T&gt; MyClass(T t) {
+    // ...
+  }
+}
+</pre>
+<p>Consider the following instantiation of the class
+<code>MyClass</code>, which is valid in Java SE 7 and prior
+releases:</p>
+<pre>
+new MyClass&lt;Integer&gt;("")
+</pre>
+<p>This statement creates an instance of the parameterized type
+<code>MyClass&lt;Integer&gt;</code>; the statement explicitly
+specifies the type <code>Integer</code> for the formal type
+parameter, <code>X</code>, of the generic class
+<code>MyClass&lt;X&gt;</code>. Note that the constructor for this
+generic class contains a formal type parameter, <code>T</code>. The
+compiler infers the type <code>String</code> for the formal type
+parameter, <code>T</code>, of the constructor of this generic class
+(because the actual parameter of this constructor is a
+<code>String</code> object).</p>
+<p>Compilers from releases prior to Java SE 7 are able to infer the
+actual type parameters of generic constructors, similar to generic
+methods. However, the compiler in Java SE 7 can infer the actual
+type parameters <em>of the generic class being instantiated</em> if
+you use the diamond (<code>&lt;&gt;</code>). Consider the following
+example which is valid for Java SE 7 and later:</p>
+<pre>
+MyClass&lt;Integer&gt; myObject = new MyClass&lt;&gt;("");
+</pre>
+<p>In this example, the compiler infers the type
+<code>Integer</code> for the formal type parameter, <code>X</code>,
+of the generic class <code>MyClass&lt;X&gt;</code>. It infers the
+type <code>String</code> for the formal type parameter,
+<code>T</code>, of the constructor of this generic class.</p>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

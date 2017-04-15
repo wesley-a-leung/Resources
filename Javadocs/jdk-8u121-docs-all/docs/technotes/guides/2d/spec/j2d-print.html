@@ -1,0 +1,1237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en">
+<head>
+<meta http-equiv="Content-Type" content=
+"text/html; charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="GENERATOR" content=
+"Quadralay WebWorks Publisher Professional Edition 7.0.2.1128" />
+<meta name="TEMPLATEBASE" content="book-no-index" />
+<meta name="LASTUPDATED" content="Tue Oct 15 15:13:09 2002" />
+<title>Printing</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<table summary="" id="layout" width="100%">
+<tr>
+<td align="left"><a accesskey="c" href=
+"j2d-bookTOC.html">Contents</a> | <a accesskey="p" href=
+"j2d-color.html">Previous</a> | Next</td>
+</tr>
+</table>
+<a name="wp418228" id="wp418228"></a>
+<h2 class="pChapNum">Chapter &#160; &#160;7</h2>
+<a name="wp418231" id="wp418231"></a>
+<h2 class="pChapTitle">Printing</h2>
+<a name="wp417927" id="wp417927"></a>
+<p class="pBody">The Java Printing API enables applications to:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp417928"
+id="wp417928"></a>
+<div class="pBullet1">
+<ul>
+<li>Print all AWT and Java 2D graphics, including composited
+graphics and images.</li>
+</ul>
+</div>
+<a name="wp417929" id="wp417929"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>Control document-composition functions such as soft collating,
+reverse order printing, and booklet printing.</li>
+</ul>
+</div>
+<a name="wp417930" id="wp417930"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>Invoke printer-specific functions such as duplex (two-sided)
+printing and stapling.</li>
+</ul>
+</div>
+<a name="wp417931" id="wp417931"></a>
+<div class="pBullet1Last">
+<ul>
+<li>Print on all platforms, including Windows and Solaris. This
+includes printers directly attached to the computer as well as
+those that the platform software is able to access using network
+printing protocols.</li>
+</ul>
+</div>
+</div>
+<a name="wp420589" id="wp420589"></a>
+<a name="wp418393" id="wp418393"></a>
+<h2 class="pHeading1">7.1 Interfaces and Classes</h2>
+<a name="wp421129" id="wp421129"></a>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left">
+<table summary="interface and description" border="0" cellpadding="7">
+<thead>
+<tr align="center">
+<th id="h101"><a name="wp418427" id="wp418427"></a>
+<div class="pCellHeading">Interface</div>
+</th>
+<th id="h102"><a name="wp418429" id="wp418429"></a>
+<div class="pCellHeading">Description</div>
+</th>
+</tr>
+</thead>
+<tr align="left">
+<td headers="h101" align="left" valign="top"><a name="wp418415" id="wp418415"></a>
+<div class="pCellBody"><code class="cCode">Printable</code></div>
+</td>
+<td headers="h102" align="left" valign="top"><a name="wp418441" id="wp418441"></a>
+<div class="pCellBody">The <code class="cCode">Printable</code>
+interface is implemented by each <em class="cEmphasis">page
+painter</em>, the application class(es) called by the printing
+system to render a page. The system calls the page painter&#8217;s
+<code class="cCode">print</code> method to request that a page be
+rendered.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h101" align="left" valign="top"><a name="wp418411" id="wp418411"></a>
+<div class="pCellBody"><code class="cCode">Pageable</code></div>
+</td>
+<td headers="h102" align="left" valign="top"><a name="wp418449" id="wp418449"></a>
+<div class="pCellBody">The <code class="cCode">Pageable</code>
+interface is implemented by a document that is to be printed by the
+printing system. Through the <code class="cCode">Pageable</code>
+methods, the system can determine the number of pages in the
+document, the format to use for each page, and the page painter to
+use to render each page.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h101" align="left" valign="top"><a name="wp418407" id="wp418407"></a>
+<div class="pCellBody"><code class=
+"cCode">PrinterGraphics</code></div>
+</td>
+<td headers="h102" align="left" valign="top"><a name="wp418457" id="wp418457"></a>
+<div class="pCellBody">The <code class="cCode">Graphics2D</code>
+objects that a page painter uses to render a page implement the
+<code class="cCode">PrinterGraphics</code> interface. This enables
+an application to get the <code class="cCode">PrinterJob</code>
+object that is controlling the printing.</div>
+</td>
+</tr>
+</table>
+</div>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<a name="wp417944" id="wp417944"></a>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left">
+<table summary="class and description" border="0" cellpadding="7">
+<thead>
+<tr align="center">
+<th id="h201"><a name="wp418472" id="wp418472"></a>
+<div class="pCellHeading">Class</div>
+</th>
+<th id="h202"><a name="wp418474" id="wp418474"></a>
+<div class="pCellHeading">Description</div>
+</th>
+</tr>
+</thead>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp418476" id="wp418476"></a>
+<div class="pCellBody"><code class="cCode">Book</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp418478" id="wp418478"></a>
+<div class="pCellBody">Implements: <code class=
+"cCode">Pageable</code></div>
+<a name="wp418510" id="wp418510"></a>
+<div class="pCellBody">Represents a document in which pages can
+have different page formats and page painters. This class uses the
+<code class="cCode">Pageable</code> interface to interact with a
+<code class="cCode">PrinterJob</code>.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp418485" id="wp418485"></a>
+<div class="pCellBody"><code class="cCode">PageFormat</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp418516" id="wp418516"></a>
+<div class="pCellBody">Describes the size and orientation of a page
+to be printed, as well as the <code class="cCode">Paper</code> used
+to print it. For example, <em class="cEmphasis">portrait</em> and
+<em class="cEmphasis">landscape</em> paper orientations are
+represented by <code class="cCode">PageFormat</code>.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp418489" id="wp418489"></a>
+<div class="pCellBody"><code class="cCode">Paper</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp418524" id="wp418524"></a>
+<div class="pCellBody">Describes the physical characteristics of a
+piece of paper.</div>
+</td>
+</tr>
+<tr align="left">
+<td headers="h201" align="left" valign="top"><a name="wp418493" id="wp418493"></a>
+<div class="pCellBody"><code class="cCode">PrinterJob</code></div>
+</td>
+<td headers="h202" align="left" valign="top"><a name="wp418532" id="wp418532"></a>
+<div class="pCellBody">The principal class that controls printing.
+The application calls <code class="cCode">PrinterJob</code> methods
+to set up a job, display a print dialog to the user (optional), and
+to print the pages in the job.</div>
+</td>
+</tr>
+</table>
+</div>
+<div style=
+"color: #000000; font-size: 10pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<a name="wp417953" id="wp417953"></a>
+<h2 class="pHeading1">7.2 Printing Concepts</h2>
+<a name="wp420599" id="wp420599"></a>
+<p class="pBody">The Java Printing API is based on a <em class=
+"cEmphasis">callback</em> printing model in which the printing
+system, not the application, controls when pages are printed. The
+application provides information about the document to be printed
+and the printing system asks the application to render each page as
+it needs them.</p>
+<a name="wp420653" id="wp420653"></a>
+<p class="pBody">The printing system might request that a
+particular page be rendered more than once or request that pages be
+rendered out of order. The application must be able to generate the
+proper page image, no matter which page the printing system
+requests. In this respect, the printing system is similar to the
+window toolkit, which can request components to repaint at any
+time, in any order.</p>
+<a name="wp420654" id="wp420654"></a>
+<p class="pBody">The callback printing model is more flexible than
+traditional application-driven printing models and supports
+printing on a wider range of systems and printers. For example, if
+a printer stacks output pages in reverse order, the printing system
+can ask the application to generate pages in reverse order so that
+the final stack is in proper reading order.</p>
+<a name="wp420602" id="wp420602"></a>
+<p class="pBody">This model also enables applications to print to a
+bitmap printer from computers that don&#8217;t have enough memory
+or disk space to buffer a full-page bitmap. In this situation, a
+page is printed as a series of small bitmaps or <em class=
+"cEmphasis">bands</em>. For example, if only enough memory to
+buffer one tenth of a page is available, the page is divided into
+ten bands. The printing system asks the application to render each
+page ten times, once to fill each band. The application does not
+need to be aware of the number or size of the bands; it simply must
+be able to render each page when requested.</p>
+<a name="wp420680" id="wp420680"></a>
+<h3 class="pHeading2">7.2.1 Supporting Printing</h3>
+<a name="wp420710" id="wp420710"></a>
+<p class="pBody">An application has to perform two tasks to support
+printing:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp420725"
+id="wp420725"></a>
+<div class="pBullet1">
+<ul>
+<li>Job control&#8212;initiating and managing the print job.</li>
+</ul>
+</div>
+<a name="wp420734" id="wp420734"></a>
+<div class="pBullet1Last">
+<ul>
+<li>Imaging&#8212;rendering each page when the printing system
+requests it.</li>
+</ul>
+</div>
+</div>
+<a name="wp420756" id="wp420756"></a>
+<h4 class="pHeading3">7.2.1.1 Job Control</h4>
+<a name="wp420777" id="wp420777"></a>
+<p class="pBody">The user often initiates printing by clicking a
+button or selecting a menu item in an application. When a print
+operation is triggered by the user, the application creates a
+<code class="cCode">PrinterJob</code> object and uses it to manage
+the printing process.</p>
+<a name="wp420807" id="wp420807"></a>
+<p class="pBody">The application is responsible for setting up the
+print job, displaying print dialogs to the user, and starting the
+printing process.</p>
+<a name="wp420758" id="wp420758"></a>
+<h4 class="pHeading3">7.2.1.2 Imaging</h4>
+<a name="wp420736" id="wp420736"></a>
+<p class="pBody">When a document is printed, the application has to
+render each page when the printing system requests it. To support
+this mechanism, the application provides a <em class=
+"cEmphasis">page painter</em> that implements the <code class=
+"cCode">Printable</code> interface. When the printing system needs
+a page rendered, it calls the page painter&#8217;s <code class=
+"cCode">print</code> method.</p>
+<a name="wp420899" id="wp420899"></a>
+<p class="pBody">When a page painter&#8217;s <code class=
+"cCode">print</code> method is called, it is passed a <code class=
+"cCode">Graphics</code> context to use to render the page image. It
+is also passed a <code class="cCode">PageFormat</code> object that
+specifies the geometric layout of the page, and an integer
+<em class="cEmphasis">page index</em> that identifies the ordinal
+position of the page in the print job.</p>
+<a name="wp420607" id="wp420607"></a>
+<p class="pBody">The printing system supports both <code class=
+"cCode">Graphics</code> and <code class="cCode">Graphics2D</code>
+rendering, To print Java 2D <code class=
+"cCode">Shapes</code>, <code class="cCode">Text</code>, and
+<code class="cCode">Images</code>, you cast the <code class=
+"cCode">Graphics</code> object passed into the <code class=
+"cCode">print</code> method to a <code class=
+"cCode">Graphics2D</code>.</p>
+<a name="wp420859" id="wp420859"></a>
+<p class="pBody">To print documents in which the pages use
+different page painters and have different formats, you use a
+<em class="cEmphasis">pageable job</em>. To create a pageable job,
+you can use the <code class="cCode">Book</code> class or your own
+implementation of the <code class="cCode">Pageable</code>
+interface. To implement simple printing operations, you do not need
+to use a pageable print job; <code class="cCode">Printable</code>
+can be used as long as all of the pages share the same page format
+and painter.</p>
+<a name="wp420933" id="wp420933"></a>
+<h3 class="pHeading2">7.2.2 Page Painters</h3>
+<a name="wp420934" id="wp420934"></a>
+<p class="pBody">The principal job of a page painter is to render a
+page using the graphics context that is provided by the printing
+system. A page painter implements the <code class=
+"cCode">Printable</code>.<code class="cCode">print</code>
+method:</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+<code class=
+"cCode">public int print(Graphics g, PageFormat pf, int pageIndex) </code><a name="wp420935"
+id="wp420935"> </a>
+</pre></div>
+<a name="wp420936" id="wp420936"></a>
+<p class="pBody">The graphics context passed to the <code class=
+"cCode">print</code> method is either an instance of <code class=
+"cCode">Graphics</code> or <code class="cCode">Graphics2D</code>,
+depending on the packages loaded in your Java Virtual Machine. To
+use <code class="cCode">Graphics2D</code> features, you can cast
+the <code class="cCode">Graphics</code> object to a <code class=
+"cCode">Graphics2D</code>. The <code class="cCode">Graphics</code>
+instance passed to <code class="cCode">print</code> also implements
+the <code class="cCode">PrinterGraphics</code> interface.</p>
+<a name="wp420937" id="wp420937"></a>
+<p class="pBody">The <code class="cCode">PageFormat</code> passed
+to a <code class="cCode">Printable</code> describes the geometry of
+the page being printed. The coordinate system of the graphics
+context passed to <code class="cCode">print</code> is fixed to the
+page: the origin of the coordinate system is at the upper left
+corner of the paper, <em class="cEmphasis">X</em> increases to the
+right, <em class="cEmphasis">Y</em> increases downward, and the
+units are 1/72 inch. If the page is in portrait orientation, the
+x-axis aligns with the paper&#8217;s &#8220;width,&#8221; while the
+y-axis aligns with the paper&#8217;s &#8220;height.&#8221;
+(Normally, but not always, a paper&#8217;s height exceeds its
+width.) If the page is in landscape orientation, the roles are
+reversed: the x-axis aligns with the paper&#8217;s
+&#8220;height&#8221; and the y-axis with its
+&#8220;width.&#8221;</p>
+<a name="wp420938" id="wp420938"></a>
+<p class="pBody">Because many printers cannot print on the entire
+paper surface, the <code class="cCode">PageFormat</code> specifies
+the <em class="cEmphasis">imageable area</em> of the page: this is
+the portion of the page in which it&#8217;s safe to render. The
+specification of the imageable area does not alter the coordinate
+system; it is provided so that the contents of the page can be
+rendered so that they don&#8217;t extend into the area where the
+printer can&#8217;t print.</p>
+<a name="wp420939" id="wp420939"></a>
+<p class="pBody">The graphics context passed to <code class=
+"cCode">print</code> has a clip region that describes the portion
+of the imageable area that should be drawn. It is always safe to
+draw the entire page into the context; the printing system will
+handle the necessary clipping. However, to eliminate the overhead
+of drawing portions of the page that won&#8217;t be printed, you
+can use the clipping region to limit the areas that you render. To
+get the clipping region from the graphics context, call
+<code class="cCode">Graphics.getClip</code>. You are strongly
+encouraged to use the clip region to reduce the rendering
+overhead.</p>
+<a name="wp420940" id="wp420940"></a>
+<p class="pBody">It is sometimes desirable to launch the entire
+printing operation &#8220;in the background&#8221; so that a user
+can continue to interact with the application while pages are being
+rendered. To do this, call <code class=
+"cCode">PrinterJob.print</code> in a separate thread.</p>
+<a name="wp420941" id="wp420941"></a>
+<p class="pBody">If possible, you should avoid graphics operations
+that require knowledge of the previous image contents, such as
+<code class="cCode">copyArea</code>, <code class=
+"cCode">setXOR</code>, and compositing. These operations can slow
+rendering and the results might be inconsistent.</p>
+<a name="wp417961" id="wp417961"></a>
+<h3 class="pHeading2">7.2.3 Printable Jobs and Pageable Jobs</h3>
+<a name="wp417963" id="wp417963"></a>
+<p class="pBody">A <code style="font-style: normal" class=
+"cCode">Printable</code> job provides the simplest way to print.
+Only one page painter is used; the application provides a single
+class that implements the <code class="cCode">Printable</code>
+interface. When it&#8217;s time to print, the printing system calls
+the page painter&#8217;s <code class="cCode">print</code> method to
+render each page. The pages are requested in order, starting with
+page index 0. However, the page painter might be asked to render
+each page several times before it advances to the next page. When
+the last page has been printed, the page painter&#8217;s print
+method returns NO_SUCH_PAGE.</p>
+<a name="wp419828" id="wp419828"></a>
+<p class="pBody">In a <code class="cCode">Printable</code> job:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp418567"
+id="wp418567"></a>
+<div class="pBullet1">
+<ul>
+<li>All pages use the same page painter and <code class=
+"cCode">PageFormat</code>. If a print dialog is presented, it will
+not display the number of pages in the document because that
+information is not available to the printing system.</li>
+</ul>
+</div>
+<a name="wp418568" id="wp418568"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>The printing system always asks the page painter to print each
+page in indexed order, starting with the page at index 0. No pages
+are skipped. For example, if a user asks to print pages 2 and 3 of
+a document, the page painter will be called with indices 0, 1, and
+2. The printing system might request that a page be rendered
+multiple times before moving to the next page.</li>
+</ul>
+</div>
+<a name="wp417966" id="wp417966"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>The page painter informs the printing system when the end of
+the document has been reached.</li>
+</ul>
+</div>
+<a name="wp417967" id="wp417967"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>All page painters are called in the same thread.</li>
+</ul>
+</div>
+<a name="wp417968" id="wp417968"></a>
+<div class="pBullet1Last">
+<ul>
+<li>Some printing systems might not be able to achieve the ideal
+output. For example, the stack of pages emerging from the printer
+might be in the wrong order, or the pages might not be collated if
+multiple copies are requested.</li>
+</ul>
+</div>
+</div>
+<a name="wp417969" id="wp417969"></a>
+<p class="pBody">A <code style="font-style: normal" class=
+"cCode">Pageable</code> job is more flexible than a <code class=
+"cCode">Printable</code> job. Unlike the pages in a <code class=
+"cCode">Printable</code> job, pages in a <code class=
+"cCode">Pageable</code> job can differ in layout and
+implementation. To manage a <code class="cCode">Pageable</code>
+job, you can use the <code class="cCode">Book</code> class or
+implement your own <code class="cCode">Pageable</code> class.
+Through the <code class="cCode">Pageable</code>, the printing
+system can determine the number of pages to print, the page painter
+to use for each page, and the <code class="cCode">PageFormat</code>
+to use for each page. Applications that need to print documents
+that have a planned structure and format should use <code class=
+"cCode">Pageable</code> jobs.</p>
+<a name="wp419829" id="wp419829"></a>
+<p class="pBody">In a <code class="cCode">Pageable</code> job:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp417970"
+id="wp417970"></a>
+<div class="pBullet1">
+<ul>
+<li>Different pages can use different page painters and
+<code class="cCode">PageFormats</code>.</li>
+</ul>
+</div>
+<a name="wp417971" id="wp417971"></a>
+<div class="pBullet1Plus">
+<ul>
+<li>The printing system can ask page painters to print pages in an
+arbitrary order and some pages might be skipped. For example, if a
+user asks to print pages 2 and 3 of a document, the page painter
+will be called with indices 1 and 2 and page index 0 will be
+skipped.</li>
+</ul>
+</div>
+<a name="wp420244" id="wp420244"></a>
+<div class="pBullet1Last">
+<ul>
+<li><code class="cCode">Pageable</code> jobs do not need to know in
+advance how many pages are in the document. However, unlike
+<code class="cCode">Printable</code> jobs, they must be able to
+render pages in any order. There might be gaps in the sequencing
+and the printing system might request that a page be rendered
+multiple times before moving to the next page. For example, a
+request to print pages 2 and 3 of a document might result in a
+sequence of calls that request pages with indices 2,2,1,1, and
+1.</li>
+</ul>
+</div>
+</div>
+<a name="wp420247" id="wp420247"></a>
+<h3 class="pHeading2">7.2.4 Typical Life-Cycle of a PrinterJob</h3>
+<a name="wp420223" id="wp420223"></a>
+<p class="pBody">An application steers the <code class=
+"cCode">PrinterJob</code> object through a sequence of steps to
+complete a printing job. The simplest sequence used by an
+application is:</p>
+<div style="margin-left: 2em" class="pList1"><a name="wp417976" id=
+"wp417976"></a>
+<div class="pList1">
+<ul>
+<li>Get a new <code class="cCode">PrinterJob</code> object by
+calling <code class="cCode">PrinterJob.getPrinterJob</code>.</li>
+</ul>
+</div>
+<a name="wp417977" id="wp417977"></a>
+<div class="pList1Plus">
+<ul>
+<li>Determine what <code class="cCode">PageFormat</code> to use for
+printing. A default <code class="cCode">PageFormat</code> can be
+obtained by calling <code class="cCode">defaultPage</code> or you
+can invoke <code class="cCode">pageDialog</code> to present a
+dialog box that allows the user to specify a format.</li>
+</ul>
+</div>
+<a name="wp417978" id="wp417978"></a>
+<div class="pList1Plus">
+<ul>
+<li>Specify the characteristics of the job to be printed to the
+<code class="cCode">PrinterJob</code>. For a <code class=
+"cCode">Printable</code> job, call <code class=
+"cCode">setPrintable</code>; for a <code class=
+"cCode">Pageable</code> job, call <code class=
+"cCode">setPageable</code>. Note that a <code class=
+"cCode">Book</code> object is ideal for passing to <code class=
+"cCode">setPageable</code>.</li>
+</ul>
+</div>
+<a name="wp417979" id="wp417979"></a>
+<div class="pList1Plus">
+<ul>
+<li>Specify additional print job properties, such as the number of
+copies to print or the name of the job to print on the banner
+page.</li>
+</ul>
+</div>
+<a name="wp417980" id="wp417980"></a>
+<div class="pList1Plus">
+<ul>
+<li>Call <code class="cCode">printDialog</code> to present a dialog
+box to the user. This is optional. The contents and appearance of
+this dialog can vary across different platforms and printers. On
+most platforms, the user can use this dialog to change the printer
+selection. If the user cancels the print job, the <code class=
+"cCode">printDialog</code> method returns <code class=
+"cCode">FALSE</code>.</li>
+</ul>
+</div>
+<a name="wp420961" id="wp420961"></a>
+<div class="pList1Last">
+<ul>
+<li>Call <code class="cCode">Printerjob.print</code> to print the
+job. This method in turn calls <code class="cCode">print</code> on
+the appropriate page painters.</li>
+</ul>
+</div>
+</div>
+<a name="wp420962" id="wp420962"></a>
+<p class="pBody">A job can be interrupted during printing if:</p>
+<div style="margin-left: 2em" class="pBullet1"><a name="wp420963"
+id="wp420963"></a>
+<div class="pBullet1">
+<ul>
+<li>A <code class="cCode">PrinterException</code> is
+thrown&#8212;the exception is caught by the <code class=
+"cCode">print</code> method and the job is halted. A page painter
+throws a <code class="cCode">PrinterException</code> if it detects
+a fatal error.</li>
+</ul>
+</div>
+<a name="wp417984" id="wp417984"></a>
+<div class="pBullet1Last">
+<ul>
+<li><code class="cCode">PrinterJob.cancel</code> is
+called&#8212;the printing loop is terminated and the job is
+canceled. The <code class="cCode">cancel</code> method can be
+called from a separate thread that displays a dialog box and allows
+the user to cancel printing by clicking a button in the box.</li>
+</ul>
+</div>
+</div>
+<a name="wp417985" id="wp417985"></a>
+<p class="pBody">Pages generated before a print job is stopped
+might or might not be printed.</p>
+<a name="wp417986" id="wp417986"></a>
+<p class="pBody">The print job is usually not finished when the
+<code class="cCode">print</code> method returns. Work is typically
+still being done by a printer driver, print server, or the printer
+itself. The state of the <code class="cCode">PrinterJob</code>
+object might not reflect the state of the actual job being
+printed.</p>
+<a name="wp420329" id="wp420329"></a>
+<p class="pBody">Because the state of a <code class=
+"cCode">PrinterJob</code> changes during its life cycle, it is
+illegal to invoke certain methods at certain times. For example,
+calling <code class="cCode">setPageable</code> after you&#8217;ve
+called <code class="cCode">print</code> makes no sense. When
+illegal calls are detected, the <code class=
+"cCode">PrinterJob</code> throws a <code class=
+"cCode">java.lang.IllegalStateException</code>.</p>
+<a name="wp417988" id="wp417988"></a>
+<h3 class="pHeading2">7.2.5 Dialogs</h3>
+<a name="wp417989" id="wp417989"></a>
+<p class="pBody">The Java Printing API requires that applications
+invoke user-interface dialogs explicitly. These dialogs might be
+provided by the platform software (such as Windows) or by a
+JDK implementation. For interactive
+applications, it is customary to use such dialogs. For production
+printing applications, however, dialogs are not necessary. For
+example, you wouldn&#8217;t want to display a dialog when
+automatically generating and printing a nightly database report. A
+print job that requires no user interaction is sometimes called a
+<em class="cEmphasis">silent</em> print job.</p>
+<a name="wp417990" id="wp417990"></a>
+<h4 class="pHeading3">7.2.5.1 Page setup dialog</h4>
+<a name="wp417991" id="wp417991"></a>
+<p class="pBody">You can allow the user to alter the page setup
+information contained in a <code class="cCode">PageFormat</code> by
+displaying a page setup dialog. To display the page setup dialog,
+you call <code class="cCode">PrinterJob.pageDialog</code>. The page
+setup dialog is initialized using the parameter passed to
+<code class="cCode">pageDialog</code>. If the user clicks the OK
+button in the dialog, the <code class="cCode">PageFormat</code>
+instance is cloned, altered to reflect the user&#8217;s selections,
+and then returned. If the user cancels the dialog, <code class=
+"cCode">pageDialog</code> returns the original unaltered
+<code class="cCode">PageFormat</code>.</p>
+<a name="wp417993" id="wp417993"></a>
+<h4 class="pHeading3">7.2.5.2 Print dialog</h4>
+<a name="wp417994" id="wp417994"></a>
+<p class="pBody">Typically, an application presents a print dialog
+to the user when a print menu item or button is activated. To
+display this print dialog, you call the <code class=
+"cCode">PrinterJob&#8217;s printDialog</code> method. The
+user&#8217;s choices in the dialog are constrained based on the
+number and format of the pages in the <code class=
+"cCode">Printable</code> or <code class="cCode">Pageable</code>
+that have been furnished to the <code class=
+"cCode">PrinterJob</code>. If the user clicks OK in the print
+dialog, <code class="cCode">printDialog</code> returns <code class=
+"cCode">TRUE</code>. If the user cancels the print dialog,
+<code class="cCode">FALSE</code> is returned and the print job
+should be considered abandoned.</p>
+<a name="wp418013" id="wp418013"></a>
+<h2 class="pHeading1">7.3 Printing with Printables</h2>
+<a name="wp420973" id="wp420973"></a>
+<p class="pBody">To provide basic printing support:</p>
+<div style="margin-left: 2em" class="pList1"><a name="wp420976" id=
+"wp420976"></a>
+<div class="pList1">
+<ul>
+<li>Implement the <code class="cCode">Printable</code> interface to
+provide a page painter that can render each page to be
+printed.</li>
+</ul>
+</div>
+<a name="wp420983" id="wp420983"></a>
+<div class="pList1Plus">
+<ul>
+<li>Create a <code class="cCode">PrinterJob</code>.</li>
+</ul>
+</div>
+<a name="wp420984" id="wp420984"></a>
+<div class="pList1Plus">
+<ul>
+<li>Call <code class="cCode">setPrintable</code> to tell the
+<code class="cCode">PrinterJob</code> how to print your
+document.</li>
+</ul>
+</div>
+<a name="wp420986" id="wp420986"></a>
+<div class="pList1Last">
+<ul>
+<li>Call <code class="cCode">print</code> on the <code class=
+"cCode">PrinterJob</code> object to start the job.</li>
+</ul>
+</div>
+</div>
+<a name="wp418014" id="wp418014"></a>
+<p class="pBody">In the following example, a <code class=
+"cCode">Printable</code> job is used to print five pages, each of
+which displays a green page number. Job control is managed in the
+<code class="cCode">main</code> method, which obtains and controls
+the <code class="cCode">PrinterJob</code>. Rendering is performed
+in the page painter&#8217;s <code class="cCode">print</code>
+method.</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+import java.awt.*; import java.awt.print.*;<a name="wp418015" id=
+"wp418015"> </a>
+public class SimplePrint implements Printable <a name="wp418016"
+id="wp418016"> </a>
+{   <a name="wp419941" id="wp419941"> </a>
+  private static Font fnt = new Font(&quot;Helvetica&quot;,Font.PLAIN,24);<a name="wp418632"
+id="wp418632"> </a>
+  <a name="wp418017" id="wp418017"> </a>
+  public static void main(String[] args) <a name="wp418760" id=
+"wp418760"> </a>
+  {     <a name="wp418639" id="wp418639"> </a>
+    // Get a PrinterJob     <a name="wp418644" id="wp418644"> </a>
+    PrinterJob job = PrinterJob.getPrinterJob();     <a name=
+"wp418647" id="wp418647"> </a>
+    // Specify the Printable is an instance of SimplePrint<a name=
+"wp418658" id="wp418658"> </a>
+    job.setPrintable(new SimplePrint());     <a name="wp418666" id=
+"wp418666"> </a>
+    // Put up the dialog box     <a name="wp418677" id=
+"wp418677"> </a>
+    if (job.printDialog()) <a name="wp418678" id="wp418678"> </a>
+    {   <a name="wp418713" id="wp418713"> </a>
+      // Print the job if the user didn&#39;t cancel printing <a name="wp418682"
+id="wp418682"> </a>
+      try { job.print(); }<a name="wp418683" id="wp418683"> </a>
+      catch (Exception e)<a name="wp418684" id="wp418684"> </a>
+        { /* handle exception */ }<a name="wp418685" id=
+"wp418685"> </a>
+    }     <a name="wp418724" id="wp418724"> </a>
+    System.exit(0);   <a name="wp418686" id="wp418686"> </a>
+  }<a name="wp418731" id="wp418731"> </a>
+<a name="wp418687" id="wp418687"> </a>
+  public int print(Graphics g, PageFormat pf, int pageIndex)<a name="wp418690"
+id="wp418690"> </a>
+  throws PrinterException <a name="wp418732" id="wp418732"> </a>
+  {     <a name="wp418691" id="wp418691"> </a>
+    // pageIndex 0 to 4 corresponds to page numbers 1 to 5.<a name=
+"wp418692" id="wp418692"> </a>
+    if (pageIndex &gt;= 5) return Printable.NO_SUCH_PAGE;   <a name="wp418745"
+id="wp418745"> </a>
+    g.setFont(fnt);     <a name="wp418747" id="wp418747"> </a>
+    g.setColor(Color.green);     <a name="wp418746" id=
+"wp418746"> </a>
+    g.drawString(&quot;Page &quot; + (pageIndex+1), 100, 100);     <a name="wp418695"
+id="wp418695"> </a>
+    return Printable.PAGE_EXISTS;   <a name="wp418702" id=
+"wp418702"> </a>
+  } <a name="wp418703" id="wp418703"> </a>
+}<a name="wp418704" id="wp418704"> </a>
+</pre></div>
+<a name="wp418019" id="wp418019"></a>
+<h3 class="pHeading2">7.3.1 Using Graphics2D for Rendering</h3>
+<a name="wp421000" id="wp421000"></a>
+<p class="pBody">You can invoke <code class=
+"cCode">Graphics2D</code> functions in you page painter&#8217;s
+print method by first casting the <code class=
+"cCode">Graphics</code> context to a <code class=
+"cCode">Graphics2D</code>.</p>
+<a name="wp420997" id="wp420997"></a>
+<p class="pBody">In the following example, the page numbers are
+rendered using a red-green gradient. To do this, a <code class=
+"cCode">GradientPaint</code> is set in the <code class=
+"cCode">Graphics2D</code> context.</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+import java.awt.*; import java.awt.print.*;<a name="wp418020" id=
+"wp418020"> </a>
+public class SimplePrint2D implements Printable <a name="wp418021"
+id="wp418021"> </a>
+{   <a name="wp418786" id="wp418786"> </a>
+  private static Font fnt = new Font(&quot;Helvetica&quot;,Font.PLAIN,24);<a name="wp418787"
+id="wp418787"> </a>
+  <a name="wp418788" id="wp418788"> </a>
+  private Paint pnt = new GradientPaint(100f, 100f, Color.red,                                            136f, 100f, Color.green, true);<a name="wp418789"
+id="wp418789"> </a>
+  <a name="wp418022" id="wp418022"> </a>
+  public static void main(String[] args) <a name="wp418793" id=
+"wp418793"> </a>
+  {     <a name="wp418792" id="wp418792"> </a>
+    // Get a PrinterJob     <a name="wp418794" id="wp418794"> </a>
+    PrinterJob job = PrinterJob.getPrinterJob();     <a name=
+"wp418795" id="wp418795"> </a>
+    // Specify the Printable is an instance of SimplePrint2D<a name="wp418871"
+id="wp418871"> </a>
+    job.setPrintable(new SimplePrint2D());     <a name="wp418873"
+id="wp418873"> </a>
+    // Put up the dialog box     <a name="wp418872" id=
+"wp418872"> </a>
+    if (job.printDialog()) <a name="wp418800" id="wp418800"> </a>
+    {   <a name="wp418890" id="wp418890"> </a>
+      // Print the job if the user didn&#39;t cancel printing <a name="wp418801"
+id="wp418801"> </a>
+      try { job.print(); }          <a name="wp418802" id=
+"wp418802"> </a>
+      catch (Exception e) { /* handle exception */ }     <a name=
+"wp418803" id="wp418803"> </a>
+    }     <a name="wp418808" id="wp418808"> </a>
+  System.exit(0);   <a name="wp418809" id="wp418809"> </a>
+  }<a name="wp418810" id="wp418810"> </a>
+<a name="wp418023" id="wp418023"> </a>
+  public int print(Graphics g, PageFormat pf, int pageIndex)<a name="wp418817"
+id="wp418817"> </a>
+  throws PrinterException <a name="wp418818" id="wp418818"> </a>
+  {     <a name="wp418821" id="wp418821"> </a>
+    // pageIndex 0 to 4 corresponds to page numbers 1 to 5.<a name=
+"wp418822" id="wp418822"> </a>
+    if (pageIndex &gt;= 5) return Printable.NO_SUCH_PAGE;<a name=
+"wp418827" id="wp418827"> </a>
+    Graphics2D g2 = (Graphics2D) g;<a name="wp418834" id=
+"wp418834"> </a>
+    // Use the font defined above<a name="wp420398" id=
+"wp420398"> </a>
+    g2.setFont(fnt);<a name="wp418837" id="wp418837"> </a>
+    // Use the gradient color defined above<a name="wp420391" id=
+"wp420391"> </a>
+    g2.setPaint(pnt);<a name="wp418840" id="wp418840"> </a>
+    g2.drawString(&quot;Page &quot; + (pageIndex+1), 100f, 100f);<a name="wp418846"
+id="wp418846"> </a>
+    return Printable.PAGE_EXISTS;   <a name="wp418785" id=
+"wp418785"> </a>
+  } <a name="wp418784" id="wp418784"> </a>
+}<a name="wp418783" id="wp418783"> </a>
+</pre></div>
+<a name="wp418024" id="wp418024"></a>
+<h3 class="pHeading2">7.3.2 Printing a File</h3>
+<a name="wp421029" id="wp421029"></a>
+<p class="pBody">When a page painter&#8217;s print method is
+invoked several times for the same page, it must generate the same
+output each time.</p>
+<a name="wp421046" id="wp421046"></a>
+<p class="pBody">There are many ways to ensure that repeated
+requests to render a page yield the same output. For example, to
+ensure that the same output is generated each time the printing
+system requests a particular page of a text file, page painter
+could either store and reuse file pointers for each page or store
+the actual page data.</p>
+<a name="wp418025" id="wp418025"></a>
+<p class="pBody">In the following example, a &#8220;listing&#8221;
+of a text file is printed. The name of the file is passed as an
+argument to the <code class="cCode">main</code> method. The
+<code class="cCode">PrintListingPainter</code> class stores the
+file pointer in effect at the beginning of each new page it is
+asked to render. When the same page is rendered again, the file
+pointer is reset to the remembered position.</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+import java.awt.*; <a name="wp418027" id="wp418027"> </a>
+import java.awt.print.*; <a name="wp418927" id="wp418927"> </a>
+import java.io.*;<a name="wp418928" id="wp418928"> </a>
+<a name="wp418028" id="wp418028"> </a>
+public class PrintListing <a name="wp419260" id="wp419260"> </a>
+{   <a name="wp418929" id="wp418929"> </a>
+  public static void main(String[] args) <a name="wp418930" id=
+"wp418930"> </a>
+  {     <a name="wp418931" id="wp418931"> </a>
+    // Get a PrinterJob<a name="wp418932" id="wp418932"> </a>
+    PrinterJob job = PrinterJob.getPrinterJob();<a name="wp418933"
+id="wp418933"> </a>
+    // Ask user for page format (e.g., portrait/landscape)<a name=
+"wp418940" id="wp418940"> </a>
+    PageFormat pf = job.pageDialog(job.defaultPage());<a name=
+"wp418943" id="wp418943"> </a>
+    // Specify the Printable is an instance of<a name="wp418946"
+id="wp418946"> </a>
+    // PrintListingPainter; also provide given PageFormat<a name=
+"wp418954" id="wp418954"> </a>
+    job.setPrintable(new PrintListingPainter(args[0]), pf);<a name=
+"wp418961" id="wp418961"> </a>
+    // Print 1 copy   <a name="wp418964" id="wp418964"> </a>
+    job.setCopies(1);     <a name="wp418967" id="wp418967"> </a>
+    // Put up the dialog box     <a name="wp418970" id=
+"wp418970"> </a>
+    if (job.printDialog()) <a name="wp418973" id="wp418973"> </a>
+    {<a name="wp419290" id="wp419290"> </a>
+      // Print the job if the user didn&#39;t cancel printing<a name="wp418976"
+id="wp418976"> </a>
+      try { job.print(); }<a name="wp418979" id="wp418979"> </a>
+      catch (Exception e) { /* handle exception */ }     <a name=
+"wp418982" id="wp418982"> </a>
+    }     <a name="wp418985" id="wp418985"> </a>
+    System.exit(0);   <a name="wp418988" id="wp418988"> </a>
+  } <a name="wp418991" id="wp418991"> </a>
+}<a name="wp418992" id="wp418992"> </a>
+<a name="wp418993" id="wp418993"> </a>
+class PrintListingPainter implements Printable <a name="wp418029"
+id="wp418029"> </a>
+{<a name="wp418994" id="wp418994"> </a>
+  private RandomAccessFile raf;   <a name="wp418995" id=
+"wp418995"> </a>
+  private String fileName;   <a name="wp419004" id="wp419004"> </a>
+  private Font fnt = new Font(&quot;Helvetica&quot;, Font.PLAIN, 10);<a name="wp419007"
+id="wp419007"> </a>
+  private int rememberedPageIndex = -1;   <a name="wp419010" id=
+"wp419010"> </a>
+  private long rememberedFilePointer = -1;   <a name="wp419013" id=
+"wp419013"> </a>
+  private boolean rememberedEOF = false;<a name="wp419016" id=
+"wp419016"> </a>
+  <a name="wp418030" id="wp418030"> </a>
+  public PrintListingPainter(String file) <a name="wp419019" id=
+"wp419019"> </a>
+  { <a name="wp419020" id="wp419020"> </a>
+    fileName = file;     <a name="wp419021" id="wp419021"> </a>
+    try<a name="wp419024" id="wp419024"> </a>
+    { <a name="wp419030" id="wp419030"> </a>
+      // Open file      <a name="wp419027" id="wp419027"> </a>
+      raf = new RandomAccessFile(file, &quot;r&quot;);     <a name=
+"wp419035" id="wp419035"> </a>
+    } <a name="wp419038" id="wp419038"> </a>
+    catch (Exception e) { rememberedEOF = true; }   <a name=
+"wp419281" id="wp419281"> </a>
+  }<a name="wp419044" id="wp419044"> </a>
+<a name="wp418031" id="wp418031"> </a>
+  public int print(Graphics g, PageFormat pf, int pageIndex)<a name="wp419045"
+id="wp419045"> </a>
+  throws PrinterException <a name="wp419046" id="wp419046"> </a>
+  {<a name="wp419049" id="wp419049"> </a>
+  try <a name="wp419052" id="wp419052"> </a>
+  { <a name="wp419053" id="wp419053"> </a>
+    // For catching IOException     <a name="wp419054" id=
+"wp419054"> </a>
+    if (pageIndex != rememberedPageIndex) <a name="wp419055" id=
+"wp419055"> </a>
+    { <a name="wp419056" id="wp419056"> </a>
+      // First time we&#39;ve visited this page<a name="wp419057"
+id="wp419057"> </a>
+      rememberedPageIndex = pageIndex;  <a name="wp419060" id=
+"wp419060"> </a>
+      // If encountered EOF on previous page, done <a name=
+"wp419063" id="wp419063"> </a>
+      if (rememberedEOF) return Printable.NO_SUCH_PAGE;<a name=
+"wp419066" id="wp419066"> </a>
+      // Save current position in input file<a name="wp419071" id=
+"wp419071"> </a>
+      rememberedFilePointer = raf.getFilePointer();<a name=
+"wp419076" id="wp419076"> </a>
+    } <a name="wp419079" id="wp419079"> </a>
+    else raf.seek(rememberedFilePointer);<a name="wp419245" id=
+"wp419245"> </a>
+    g.setColor(Color.black);     <a name="wp418032" id=
+"wp418032"> </a>
+    g.setFont(fnt); <a name="wp419082" id="wp419082"> </a>
+        int x = (int) pf.getImageableX() + 10;<a name="wp420411"
+id="wp420411"> </a>
+        int y = (int) pf.getImageableY() + 12;    <a name=
+"wp420412" id="wp420412"> </a>
+    // Title line     <a name="wp419085" id="wp419085"> </a>
+    g.drawString(&quot;File: &quot; + fileName + &quot;, page: &quot; +                                          (pageIndex+1),  x, y);<a name="wp419088"
+id="wp419088"> </a>
+    // Generate as many lines as will fit in imageable area<a name=
+"wp419091" id="wp419091"> </a>
+    y += 36;<a name="wp419092" id="wp419092"> </a>
+    while (y + 12 &lt; pf.getImageableY()+pf.getImageableHeight())<a name="wp419093"
+id="wp419093"> </a>
+    {<a name="wp419236" id="wp419236"> </a>
+      String line = raf.readLine();<a name="wp419099" id=
+"wp419099"> </a>
+      if (line == null)<a name="wp419100" id="wp419100"> </a>
+      { <a name="wp419102" id="wp419102"> </a>
+        rememberedEOF = true;<a name="wp419101" id="wp419101"> </a>
+        break; <a name="wp419103" id="wp419103"> </a>
+                }<a name="wp420419" id="wp420419"> </a>
+        g.drawString(line, x, y); <a name="wp419104" id=
+"wp419104"> </a>
+        y += 12;     <a name="wp419105" id="wp419105"> </a>
+      }<a name="wp419106" id="wp419106"> </a>
+      return Printable.PAGE_EXISTS;    <a name="wp419136" id=
+"wp419136"> </a>
+    } <a name="wp419342" id="wp419342"> </a>
+    catch (Exception e) { return Printable.NO_SUCH_PAGE;}<a name=
+"wp419343" id="wp419343"> </a>
+  } <a name="wp419344" id="wp419344"> </a>
+}<a name="wp418923" id="wp418923"> </a>
+</pre></div>
+<a name="wp418034" id="wp418034"></a>
+<h2 class="pHeading1">7.4 Printing with Pageables and Books</h2>
+<a name="wp418035" id="wp418035"></a>
+<p class="pBody"><code class="cCode">Pageable</code> jobs are
+suited for applications that build an explicit representation of a
+document, page by page. The <code class="cCode">Book</code> class
+is a convenient way to use <code class="cCode">Pageables</code>,
+but you can also build your own <code class="cCode">Pageable</code>
+structures if <code class="cCode">Book</code> does not suit your
+needs. This section shows you how to use <code class=
+"cCode">Book</code>.</p>
+<a name="wp418036" id="wp418036"></a>
+<p class="pBody">Although slightly more involved, <code class=
+"cCode">Pageable</code> jobs are preferred over <code class=
+"cCode">Printable</code> jobs because the printing system has more
+flexibility. A major advantage of <code class=
+"cCode">Pageables</code> is that the number of pages in the
+document is usually known and can be displayed to the user in the
+print dialog box. This helps the user to confirm that the job is
+specified correctly or to select a range of pages for printing.</p>
+<a name="wp418037" id="wp418037"></a>
+<p class="pBody">A <code class="cCode">Book</code> represents a
+collection of pages. The pages in a book do not have to share the
+same size, orientation, or page painter. For example, a
+<code class="cCode">Book</code> might contain two letter size pages
+in portrait orientation and a letter size page in landscape
+orientation.</p>
+<a name="wp418038" id="wp418038"></a>
+<p class="pBody">When a <code class="cCode">Book</code> is first
+constructed, it is empty. To add pages to a <code class=
+"cCode">Book</code>, you use the <code class="cCode">append</code>
+method. This method takes a <code class="cCode">PageFormat</code>
+object that defines the page&#8217;s size, printable area, and
+orientation and a page painter that implements the <code class=
+"cCode">Printable</code> interface.</p>
+<a name="wp418039" id="wp418039"></a>
+<p class="pBody">Multiple pages in a <code class=
+"cCode">Book</code> can share the same page format and painter. The
+<code class="cCode">append</code> method is overloaded to enable
+you to add a series of pages that have the same attributes by
+specifying a third parameter, the number of pages.</p>
+<a name="wp420434" id="wp420434"></a>
+<p class="pBody">If you don&#8217;t know the total number of pages
+in a <code class="cCode">Book</code>, you can pass <code class=
+"cCode">UNKNOWN_NUMBER_OF_PAGES</code> to the <code class=
+"cCode">append</code> method. The printing system will then call
+your page painters in order of increasing page index until one of
+them returns <code class="cCode">NO_SUCH_PAGE</code>.</p>
+<a name="wp418041" id="wp418041"></a>
+<p class="pBody">The <code class="cCode">setPage</code> method can
+be used to change a page&#8217;s page format or painter. The page
+to be changed is identified by a page index that indicates the
+page&#8217;s location in the <code class="cCode">Book</code>.</p>
+<a name="wp418042" id="wp418042"></a>
+<p class="pBody">You call <code class="cCode">setPageable</code>
+and pass in the <code class="cCode">Book</code> to prepare the
+print job. The <code class="cCode">setPageable</code> and
+<code class="cCode">setPrintable</code> methods are mutually
+exclusive; that is, you should call one or the other but not both
+when preparing the <code class="cCode">PrinterJob</code>.</p>
+<a name="wp421072" id="wp421072"></a>
+<h3 class="pHeading2">7.4.1 Using a Pageable Job</h3>
+<a name="wp418043" id="wp418043"></a>
+<p class="pBody">In the following example, a <code class=
+"cCode">Book</code> is used to reproduce the first simple printing
+example. (Because this case is so simple, there is little benefit
+in using a <code class="cCode">Pageable</code> job instead of a
+<code class="cCode">Printable</code> job, but it illustrates the
+basics of using a <code class="cCode">Book</code>.) Note that you
+still have to implement the <code class="cCode">Printable</code>
+interface and perform page rendering in the page painter&#8217;s
+<code class="cCode">print</code> method.</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+import java.awt.*; <a name="wp418044" id="wp418044"> </a>
+import java.awt.print.*;<a name="wp419365" id="wp419365"> </a>
+<a name="wp418045" id="wp418045"> </a>
+public class SimplePrintBook implements Printable <a name=
+"wp419461" id="wp419461"> </a>
+{   <a name="wp419368" id="wp419368"> </a>
+  private static Font fnt = new Font(&quot;Helvetica&quot;,Font.PLAIN,24);<a name="wp419369"
+id="wp419369"> </a>
+  public static void main(String[] args) <a name="wp418046" id=
+"wp418046"> </a>
+  {     <a name="wp419371" id="wp419371"> </a>
+    // Get a PrinterJob     <a name="wp419372" id="wp419372"> </a>
+    PrinterJob job = PrinterJob.getPrinterJob();     <a name=
+"wp419375" id="wp419375"> </a>
+    // Set up a book     <a name="wp419376" id="wp419376"> </a>
+    Book bk = new Book();     <a name="wp419377" id=
+"wp419377"> </a>
+    bk.append(new SimplePrintBook(), job.defaultPage(), 5);     <a name="wp419378"
+id="wp419378"> </a>
+    // Pass the book to the PrinterJob     <a name="wp419379" id=
+"wp419379"> </a>
+    job.setPageable(bk);     <a name="wp419380" id="wp419380"> </a>
+    // Put up the dialog box     <a name="wp419381" id=
+"wp419381"> </a>
+    if (job.printDialog()) <a name="wp419382" id="wp419382"> </a>
+    {<a name="wp419429" id="wp419429"> </a>
+      // Print the job if the user didn&#39;t cancel printing <a name="wp419383"
+id="wp419383"> </a>
+      try { job.print(); }          <a name="wp419384" id=
+"wp419384"> </a>
+      catch (Exception e) { /* handle exception */ }     <a name=
+"wp419385" id="wp419385"> </a>
+    }     <a name="wp419458" id="wp419458"> </a>
+    System.exit(0);   <a name="wp419459" id="wp419459"> </a>
+  }<a name="wp419460" id="wp419460"> </a>
+<a name="wp418047" id="wp418047"> </a>
+  public int print(Graphics g, PageFormat pf, int pageIndex)<a name="wp419393"
+id="wp419393"> </a>
+  throws PrinterException <a name="wp419395" id="wp419395"> </a>
+  {     <a name="wp419394" id="wp419394"> </a>
+    g.setFont(fnt);     <a name="wp419403" id="wp419403"> </a>
+    g.setColor(Color.green);     <a name="wp419396" id=
+"wp419396"> </a>
+    g.drawString(&quot;Page &quot; + (pageIndex+1), 100, 100);     <a name="wp419397"
+id="wp419397"> </a>
+    return Printable.PAGE_EXISTS;   <a name="wp419398" id=
+"wp419398"> </a>
+  }<a name="wp419399" id="wp419399"> </a>
+}<a name="wp419400" id="wp419400"> </a>
+</pre></div>
+<a name="wp418048" id="wp418048"></a>
+<h3 class="pHeading2">7.4.2 Using Multiple Page Painters</h3>
+<a name="wp421071" id="wp421071"></a>
+<p class="pBody">In the following example, two different page
+painters are used: one for a cover page and one for content pages.
+The cover page is printed in landscape mode and the contents pages
+are printed in portrait mode.</p>
+<div class="pPreformatted">
+<pre class="pPreformatted">
+import java.awt.*; <a name="wp418049" id="wp418049"> </a>
+import java.awt.print.*;<a name="wp419544" id="wp419544"> </a>
+<a name="wp418050" id="wp418050"> </a>
+public class PrintBook <a name="wp419545" id="wp419545"> </a>
+{<a name="wp419546" id="wp419546"> </a>
+  public static void main(String[] args) <a name="wp418051" id=
+"wp418051"> </a>
+  {     <a name="wp419551" id="wp419551"> </a>
+    // Get a PrinterJob     <a name="wp419554" id="wp419554"> </a>
+    PrinterJob job = PrinterJob.getPrinterJob();     <a name=
+"wp419561" id="wp419561"> </a>
+    // Create a landscape page format    <a name="wp419566" id=
+"wp419566"> </a>
+    PageFormat pfl = job.defaultPage();  <a name="wp419571" id=
+"wp419571"> </a>
+    pfl.setOrientation(PageFormat.LANDSCAPE);     <a name=
+"wp419576" id="wp419576"> </a>
+    // Set up a book     <a name="wp419581" id="wp419581"> </a>
+    Book bk = new Book();     <a name="wp419586" id=
+"wp419586"> </a>
+    bk.append(new PaintCover(), pfl);     <a name="wp419591" id=
+"wp419591"> </a>
+    bk.append(new PaintContent(), job.defaultPage(), 2);     <a name="wp419596"
+id="wp419596"> </a>
+    // Pass the book to the PrinterJob     <a name="wp419601" id=
+"wp419601"> </a>
+    job.setPageable(bk);     <a name="wp419606" id="wp419606"> </a>
+    // Put up the dialog box     <a name="wp419611" id=
+"wp419611"> </a>
+    if (job.printDialog()) <a name="wp419626" id="wp419626"> </a>
+    { <a name="wp419627" id="wp419627"> </a>
+      // Print the job if the user didn&#39;t cancel printing<a name="wp419628"
+id="wp419628"> </a>
+      try { job.print(); } <a name="wp419635" id="wp419635"> </a>
+      catch (Exception e) { /* handle exception */ }     <a name=
+"wp419657" id="wp419657"> </a>
+    }     <a name="wp419658" id="wp419658"> </a>
+  System.exit(0);   <a name="wp419659" id="wp419659"> </a>
+  } <a name="wp419664" id="wp419664"> </a>
+}<a name="wp419665" id="wp419665"> </a>
+<a name="wp419695" id="wp419695"> </a>
+class PaintCover implements Printable <a name="wp418052" id=
+"wp418052"> </a>
+{   <a name="wp419696" id="wp419696"> </a>
+  Font fnt = new Font(&quot;Helvetica-Bold&quot;, Font.PLAIN, 72);<a name="wp419697"
+id="wp419697"> </a>
+ <a name="wp418053" id="wp418053"> </a>
+  public int print(Graphics g, PageFormat pf, int pageIndex)<a name="wp419703"
+id="wp419703"> </a>
+  throws PrinterException <a name="wp419700" id="wp419700"> </a>
+  {     <a name="wp419706" id="wp419706"> </a>
+    g.setFont(fnt);     <a name="wp419709" id="wp419709"> </a>
+    g.setColor(Color.black);     <a name="wp419714" id=
+"wp419714"> </a>
+         int yc = (int) (pf.getImageableY() +               pf.getImageableHeight()/2);<a name="wp420468"
+id="wp420468"> </a>
+    g.drawString(&quot;Widgets, Inc.&quot;, 72, yc+36);     <a name="wp419719"
+id="wp419719"> </a>
+    return Printable.PAGE_EXISTS;   <a name="wp419724" id=
+"wp419724"> </a>
+  } <a name="wp419729" id="wp419729"> </a>
+}<a name="wp419732" id="wp419732"> </a>
+class PaintContent implements Printable <a name="wp418054" id=
+"wp418054"> </a>
+{   <a name="wp419733" id="wp419733"> </a>
+  public int print(Graphics g, PageFormat pf, int pageIndex)<a name="wp419734"
+id="wp419734"> </a>
+  throws PrinterException <a name="wp419737" id="wp419737"> </a>
+  {    <a name="wp419740" id="wp419740"> </a>
+    Graphics2D g2 = (Graphics2D) g;     <a name="wp419741" id=
+"wp419741"> </a>
+    int useRed = 0;     <a name="wp419744" id="wp419744"> </a>
+   int xo = (int) pf.getImageableX();<a name="wp419750" id=
+"wp419750"> </a>
+        int yo = (int) pf.getImageableY(); <a name="wp420474" id=
+"wp420474"> </a>
+    // Fill page with circles or squares, alternating red &amp; green<a name="wp420479"
+id="wp420479"> </a>
+        for (int x = 0; x+28 &lt; pf.getImageableWidth(); x += 36)<a name="wp420473"
+id="wp420473"> </a>
+    for (int y = 0; y+28 &lt; pf.getImageableHeight(); y += 36)<a name="wp419758"
+id="wp419758"> </a>
+    { <a name="wp419759" id="wp419759"> </a>
+      if (useRed == 0) g.setColor(Color.red);<a name="wp419770" id=
+"wp419770"> </a>
+      else g.setColor(Color.green);<a name="wp419775" id=
+"wp419775"> </a>
+      useRed = 1 - useRed;<a name="wp419780" id="wp419780"> </a>
+      if (pageIndex % 2 == 0) g.drawRect(xo+x+4, yo+y+4, 28, 28);<a name="wp419785"
+id="wp419785"> </a>
+      else g.drawOval(xo+x+4, yo+y+4, 28, 28);<a name="wp419814"
+id="wp419814"> </a>
+    }     <a name="wp419363" id="wp419363"> </a>
+    return   Printable.PAGE_EXISTS;   <a name="wp419362" id=
+"wp419362"> </a>
+  } <a name="wp419361" id="wp419361"> </a>
+}<a name="wp419360" id="wp419360"> </a>
+</pre></div>
+<a name="wp418055" id="wp418055"></a>
+<p class="pBody"></p>
+<p>&#160;</p>
+<hr class="pHr" />
+<table summary="" width="100%">
+<tr>
+<td align="left"><a accesskey="c" href=
+"j2d-bookTOC.html">Contents</a> | <a accesskey="p" href=
+"j2d-color.html">Previous</a> | Next</td>
+</tr>
+</table>
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,1523 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Frequently Asked Questions - RMI and Object
+Serialization</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+&nbsp;
+
+<h1>Frequently Asked Questions<br />
+Java RMI and Object Serialization</h1>
+
+<hr width="100%" />
+<h2>Java RMI</h2>
+<h3>Very Frequent Questions</h3>
+<ul>
+<li><a href="#domain">A.1 Why do I get an exception for an
+unexpected hostname and/or port number when I call
+<code>Naming.lookup</code>?</a></li>
+<li><a href="#codebase">A.2 Do I have to install the
+<code>_Stub</code> file in the client's <code>CLASSPATH</code>? I
+thought it could be downloaded.</a></li>
+<li><a href="#classserver">A.3 Does Java Remote Method Invocation
+(Java RMI) require me to use an HTTP server?</a></li>
+<li><a href="#wrongcodebase">A.4 Why am I getting a
+<code>ClassNotFoundException</code>?</a></li>
+<li><a href="#customsocketreuse">A.5 Why does the Java RMI
+implementation create so many sockets when my application uses
+custom socket factories; or why are stubs (using a custom socket
+factory) that refer to the same remote object not equal; or why
+does the Java RMI implementation not reuse server-side ports when I
+use a custom server socket factory?</a></li>
+</ul>
+<h3>Debugging Java RMI programs</h3>
+<ul>
+<li><a href="#debug">B.1 Will there be debugging mechanisms built
+into Java RMI?</a></li>
+<li><a href="#debugwin">B.2 I am having a problem debugging my
+program on Windows 95. Any suggestions?</a></li>
+<li><a href="#mismatch">B.3 Why do I get a
+<code>java.lang.ClassMismatchError</code> while running my
+program?</a></li>
+<li><a href="#array">B.4 I am sending an array of remote objects
+and receive an <code>ArrayStoreException</code>. What's going
+on?</a></li>
+<li><a href="#deadlock">B.5 I have local objects that are
+synchronized. When I make them remote, my application hangs. What's
+the problem?</a></li>
+<li><a href="#regpath">B.6 I am getting a
+<code>ClassNotFoundException</code> for my stub class when I try to
+register a remote object in the registry. What's
+happening?</a></li>
+<li><a href="#serverdied">B.7 My server died. Can I get a trace of
+the server activity?</a></li>
+<li><a href="#properties">B.8 Where can I find a list of system
+properties that might be useful for implementing and debugging Java
+RMI applications?</a></li>
+</ul>
+<h3>Networking</h3>
+<ul>
+<li><a href="#netcontact">C.1 How do Java RMI clients contact
+remote Java RMI servers?</a></li>
+<li><a href="#netunknownhost">C.2 Why does my remote method or
+"callback" routine fail with a nested
+<code>java.net.UnknownHostException</code>?</a></li>
+<li><a href="#netfqdn">C.3 My server <em>is</em> using a fully
+qualified domain name or IP address, so why do I still get an
+<code>UnknownHostException</code>?</a></li>
+<li><a href="#netmultihomed">C.4 I am using the latest release of
+the JDK and I have a host that has multiple IP addresses. Java RMI
+is choosing the wrong IP address for its server hostname, how do I
+work around this problem?</a></li>
+<li><a href="#nethostname">C.5 How does Java RMI obtain a server
+hostname in each of the versions of the JDK?</a></li>
+<li><a href="#bind">C.6 Why do <code>Naming.bind</code> and
+<code>Naming.lookup</code> take an extraordinarily long time on
+Windows?</a></li>
+<li><a href="#standalone">C.7 How do I use Java RMI on a Windows 95
+standalone machine, not connected to the network?</a></li>
+<li><a href="#addrinuse">C.8 Why do I get the exception
+"<code>java.net.SocketException: Address already in use</code>"
+when I try to run the registry?</a></li>
+<li><a href="#firewall">C.9 How can I use Java RMI through a
+firewall?</a></li>
+<li><a href="#firewallOut">C.10 How can I make outgoing Java RMI
+calls through a local firewall?</a></li>
+<li><a href="#firewallIn">C.11 How can I receive incoming Java RMI
+calls through a local firewall?</a></li>
+<li><a href="#firewallBoth">C.12 So what do I have to do to get
+Java RMI to operate through two firewalls?</a></li>
+<li><a href="#servlet">C.13 Is it possible to replace the
+java-rmi.cgi script that comes with the JDK distribution with a
+servlet?</a></li>
+</ul>
+<h3>Using Java RMI to achieve X (for some X)</h3>
+<ul>
+<li><a href="#notify">D.1 Is there a way to get automatic
+notification as soon as a remote virtual machine fails?</a></li>
+<li><a href="#newvm">D.2 From within a virtual machine, can a new
+virtual machine be spawned on a remote machine?</a></li>
+<li><a href="#unref">D.3 Is it possible for a remote object to be
+notified when all clients disconnect?</a></li>
+<li><a href="#noexit">D.4 Why doesn't my server program exit when
+all clients disconnect?</a></li>
+<li><a href="#leases">D.5 How does the distributed garbage
+collector detect a client that disconnects? Is it advisable to use
+<code>System.exit</code> for graceful client termination?</a></li>
+<li><a href="#leases2">D.6 How can my server tell when a client
+crashes?</a></li>
+<li><a href="#fastleases">D.7 The <code>unreferenced()</code>
+method doesn't get called until ten minutes after I have stopped
+using the remote object! How can I shorten this delay?</a></li>
+<li><a href="#crashnotif">D.8 Why can't I get an immediate
+notification when a client crashes?</a></li>
+<li><a href="#rmicbatch">D.9 How do I run the <code>rmic</code>
+command in a DOS batch file?</a></li>
+<li><a href="#getclient">D.10 In a remote object implementation,
+how can I find the host name of the caller of a remote
+method?</a></li>
+<li><a href="#inout">D.11 Does RMI handle "out" and "inout"
+parameters (like CORBA)?</a></li>
+<li><a href="#caststub">D.12 Normally in the Java programming
+language, it is possible to cast an interface instance to an
+instance of the class from which it was created and use the result.
+Why doesn't this work in Java RMI?</a></li>
+</ul>
+<h3>How does RMI work with X (for some X)</h3>
+<ul>
+<li><a href="#browsersupport">E.1 What if my browser does not
+support the Java SE version that I need?</a></li>
+<li><a href="#observer">E.2 Can I implement remote
+observer/observable objects in Java RMI?</a></li>
+</ul>
+<h3>Internals, resources, and performance</h3>
+<ul>
+<li><a href="#connection">F.1 At what point is there a "live"
+connection between the client and the server and how are
+connections managed?</a></li>
+<li><a href="#replace">F.2 Does the Java platform replace all
+remote objects with their stubs during a remote method
+invocation?</a></li>
+<li><a href="#nosockets">F.3 Is it possible to write a new
+transport layer for Java RMI which does not use sockets? As a
+follow-up question, how about a transport layer that uses non-TCP
+based sockets?</a></li>
+<li><a href="#polling">F.4 I notice the registry continues to use
+CPU resources, as if it were polling rather than blocking on a
+<code>select()</code> call. Is the registry implemented by
+polling?</a></li>
+<li><a href="#numsockets">F.5 Is there only one socket connection
+between a client process and the server, no matter how many stubs
+exist in that client process?</a></li>
+</ul>
+<h3>Miscellaneous</h3>
+<ul>
+<li><a href="#license">G.1 What are the licensing issues
+surrounding the use of Java RMI?</a></li>
+<li><a href="#stdinput">G.2 I have a single-threaded program that
+waits on standard input for a user command which will initiate an
+Java RMI call. However, my remote object cannot service this
+incoming remote call as the program appears to be blocked on
+standard input. What's the problem?</a></li>
+<li><a href="#passbycopy">G.3 I am copying array elements to my
+remote server and changing the values, but the incremented values
+are not copied back to the client. Why?</a></li>
+<li><a href="#staticinit">G.4 Am I allowed to have static fields in
+a remote interface?</a></li>
+<li><a href="#registry">G.5 I locate the registry, but then it
+seems that it's not there, what's happening?</a></li>
+</ul>
+<h2>Object Serialization</h2>
+<ol>
+<li><a href="#whyserial">Why must classes implement
+<code>Serializable</code> in order to be written to an
+<code>ObjectOutputStream</code>?</a></li>
+<li><a href="#whichserial">Which JDK system classes are marked
+serializable?</a></li>
+<li><a href="#awt">I am having problems deserializing AWT
+components. How can I make this work?</a></li>
+<li><a href="#encryption">Does object serialization support
+encryption?</a></li>
+<li><a href="#random">The object serialization classes are stream
+oriented. How do I write objects to a random-access file?</a></li>
+<li><a href="#local">When a local object is serialized and passed
+as a parameter in a Java RMI call, are the bytecodes for the local
+object's methods also passed? What about object coherency, if the
+remote virtual machine (VM) application "keeps" the object
+handle?</a></li>
+<li><a href="#nofile">How can I create an
+<code>ObjectInputStream</code> from an
+<code>ObjectOutputStream</code> without a file in between?</a></li>
+<li><a href="#handle">I create an object and then send it across
+the net using the <code>writeObject</code> method and receive it
+using the <code>readObject</code> method. If I then change the
+value of a field in the object and send it as before, the object
+that the <code>readObject</code> method returns appears to be the
+same as the first object and does not reflect the new value of the
+field. Should I be experiencing this behavior?</a></li>
+<li><a href="#serialthread">Are there any plans to support the
+serialization of thread objects?</a></li>
+<li><a href="#diff">Can I compute
+diff(serial(x),serial(y))?</a></li>
+<li><a href="#zip">Can I compress the serial representation of my
+objects using my own zip and unzip methods?</a></li>
+<li><a href="#compress">Can I execute methods on compressed
+versions of my objects, for example
+isempty(zip(serial(x)))?</a></li>
+<li><a href="#font">If I try to serialize a font or image object
+and then try to reconstitute it in a different VM, my application
+dies. Why?</a></li>
+<li><a href="#tree">How do I serialize a tree of objects?</a></li>
+<li><a href="#serialsuper">If class A does not implement
+<code>Serializable</code> but a subclass B implements
+<code>Serializable</code>, will the fields of class A be serialized
+when B is serialized?</a></li>
+</ol>
+<hr width="75%" />
+<h2>Java RMI</h2>
+<h3><a name="domain" id="domain">A.1 Why do I get an exception for
+an unexpected hostname and/or port number when I call
+<code>Naming.lookup</code>?</a></h3>
+The hostname and port number you see in the exception trace
+represent the address on which the looked-up server believes it is
+listening. While the Java Remote Method Invocation (Java RMI)
+server can theoretically be on any host, it is usually the same
+host as that on which the registry is running, and on a different
+port.
+<p>Even if the server is mistaken about its hostname or IP address
+(or has a hostname that simply isn't resolvable by clients), it
+will still export all of its objects using that mistaken hostname,
+but you will see an exception every time you try to receive one of
+those objects.</p>
+<p>The hostname which you specified in <code>Naming.lookup</code>
+to locate the registry has no effect on the hostname which is
+already embedded in the remote reference to the server.</p>
+<p>Usually, the mysterious hostname is the unqualified hostname of
+the server, or a private name unknown to the client's nameservice,
+or (in the case of Windows platforms) the server's
+Network-&gt;Identification-&gt;Machine Name.</p>
+<p>The appropriate workaround is to set the system property
+<code>java.rmi.server.hostname</code> when starting the server. The
+value of the property should be the externally reachable hostname
+(or IP address) of the server -- whatever works when specified as
+the host-part in <code>Naming.lookup</code> is good enough.</p>
+<p>For more detail, see the questions on <a href=
+"#netunknownhost">callbacks</a> and <a href="#netfqdn">fully
+qualified domain names</a>.</p>
+<h3><a name="codebase" id="codebase">A.2 Do I have to install the
+<code>_Stub</code> file in the client's <code>CLASSPATH</code>? I
+thought it could be downloaded.</a></h3>
+A stub class can be downloaded, if the server that is exporting the
+remote object annotates the marshalled stub instance with the
+<code>java.rmi.server.codebase</code> property, which indicates the
+location from where the stub class can be loaded. You should set
+the <code>java.rmi.server.codebase</code> property on the server
+exporting a remote object. While remote clients could set this
+property, they would then be limited to only getting remote objects
+from the specified codebase. You should not assume that any client
+VM will have specified a codebase that resolves to the location of
+your object.
+<p>When a remote object is marshalled by Java RMI (whether as an
+argument to a remote call or as a return value), the codebase for
+the stub class is retrieved by Java RMI and used to annotate the
+serialized stub. When the stub is unmarshalled, the codebase is
+used to load the stub classfile using the
+<code>RMIClassLoader</code>, <em>unless</em> the class can already
+be found in the <code>CLASSPATH</code> or by the context
+classloader for the receiving object, such as an applet
+codebase.</p>
+<p>If the <code>_Stub</code> class was loaded by an
+<code>RMIClassLoader</code>, then Java RMI already knows which
+codebase to use for its annotation. If the <code>_Stub</code> class
+was loaded from the <code>CLASSPATH</code>, then there is no
+obvious codebase, and Java RMI consults the
+<code>java.rmi.server.codebase</code> system property to find the
+codebase. If the system property is not set, then the stub is
+marshalled with a null codebase, which means that it cannot be used
+unless the client has a matching copy of the <code>_Stub</code>
+classfile in the client's <code>CLASSPATH</code>.</p>
+<p>It is easy to forget to specify the codebase property. One way
+to detect this error is to start the <code>rmiregistry</code>
+separately and without access to the application classes. This will
+force <code>Naming.rebind</code> to fail if the codebase is
+omitted.</p>
+<p>For more information on the
+<code>java.rmi.server.codebase</code> property, please take a look
+at our tutorial, <i><a href="codebase.html">Dynamic code
+downloading using Java RMI (Using the
+<code>java.rmi.server.codebase</code> Property)</a></i>.</p>
+<h3><a name="classserver" id="classserver">A.3 Does Java RMI
+require me to use an HTTP server?</a></h3>
+<p>No. You can set your <code>java.rmi.server.codebase</code> property
+to use any valid URL protocol, such as <code>file</code> or
+<code>ftp</code>. Using an HTTP server just makes your life simpler
+by providing an automated mechanism for class file downloading.</p>
+<h3><a name="wrongcodebase" id="wrongcodebase">A.4 Why am I getting
+a <code>ClassNotFoundException</code>?</a></h3>
+Most likely the <code>java.rmi.server.codebase</code> property has
+not been set (or has not been set correctly) on a VM that is
+exporting your remote object(s). Please take a look at our
+tutorial, <i><a href="codebase.html">Dynamic code downloading using
+Java RMI (Using the <code>java.rmi.server.codebase</code>
+Property)</a></i>.
+<h3><a name="customsocketreuse" id="customsocketreuse">A.5 Why does
+the Java RMI implementation create so many sockets when my
+application uses custom socket factories; or why are stubs (using a
+custom socket factory) that refer to the same remote object not
+equal; or why does the Java RMI implementation not reuse
+server-side ports when I use a custom server socket
+factory?</a></h3>
+The Java RMI implementation attempts to reuse open sockets where
+possible for remote invocations. When a remote method is invoked on
+a stub that uses a custom socket factory, the Java RMI
+implementation will reuse an open connection (if any) as long as
+that socket was created by an equivalent socket factory. Since
+client socket factories are serialized to clients, a single client
+may have several distinct copies of the same logical socket
+factory. To ensure that the Java RMI implementation will reuse
+sockets created by custom socket factories, make sure your custom
+client socket factory classes implement the <code>hashCode</code>
+and <code>equals</code> methods appropriately. If the client socket
+factory does not implement these methods correctly, another
+ramification is that stubs (using the client socket factory) that
+refer to the same remote object will not be equal.
+<p>The Java RMI implementation attempts to reuse server-side ports
+as well. It will only do so if there is an existing server socket
+for the port created by an equivalent socket factory. Make sure the
+server socket factory class implements the <code>hashCode</code>
+and <code>equals</code> methods too.</p>
+<p>If your socket factory has no instance state, a trivial
+implementation of the <code>hashCode</code> and <code>equals</code>
+methods are the following:</p>
+<pre class="codeblock">
+    public int hashCode() { return 57; }
+    public boolean equals(Object o) { return this.getClass() == o.getClass() }
+</pre>
+<h3><a name="debug" id="debug">B.1 Will there be debugging
+mechanisms built into Java RMI?</a></h3>
+Java RMI supports a simple call-logging facility for debugging. But
+there are no current plans to support a full-featured, interactive,
+remote debugger.
+<h3><a name="debugwin" id="debugwin">B.2 I am having a problem
+debugging my program on Windows 95. Any suggestions?</a></h3>
+The <code>javaw</code> command throws away output to
+<code>stdout</code> and <code>stderr</code>, so for debugging
+purposes it is better to run the <code>java</code> command in a
+separate window so that you can see reported errors. To do this,
+execute a command like the following:
+<pre class="codeblock">
+        start java EchoImpl
+</pre>
+<p>It is advised not to use the <code>javaw</code> command during
+development. To watch the server activity, start the server with
+<code>-Djava.rmi.server.logCalls=true</code>.</p>
+<h3><a name="mismatch" id="mismatch">B.3 Why do I get a
+<code>java.lang.ClassMismatchError</code> while running my
+program?</a></h3>
+You probably modified one or more classes that were being used by
+Java RMI programs while your program was running. Try restarting
+all Java RMI applications (including
+<code>java.rmi.registry.RegistryImpl</code>). This should clear
+things up.
+<h3><a name="array" id="array">B.4 I am sending an array of remote
+objects and receive an <code>ArrayStoreException</code>. What's
+going on?</a></h3>
+Java RMI replaces the remote objects with the stub and therefore
+the type of the array must be that of the interface. The code would
+look like:
+<pre class="codeblock">
+   FooRemote[] f = new FooRemote[10];
+   for (int i = 0; i &lt; f.length; i++) {
+      f[i] = new FooRemoteImpl();
+   }
+</pre>
+<p>Now Java RMI can put the stub into each cell of the array
+without an exception on the remote call.</p>
+<h3><a name="deadlock" id="deadlock">B.5 I have local objects that
+are synchronized. When I make them remote, my application hangs.
+What's the problem?</a></h3>
+What you encountered was distributed deadlock. In the local VM
+case, the VM can tell that the calling object "A" owns the lock and
+will allow the call back to "A" to proceed. In the distributed
+case, no such determination can be made, so the result is deadlock.
+<p>Distributed objects behave differently than local objects. If
+you simply reuse a local implementation without handling locking
+and failure, you will probably get unpredictable results.</p>
+<h3><a name="regpath" id="regpath">B.6 I am getting a
+<code>ClassNotFoundException</code> for my stub class when I try to
+register a remote object in the registry. What's
+happening?</a></h3>
+<p>When you make a call to the registry to bind an object, the
+registry actually binds a reference to the stub for the remote
+object. In order to instantiate a stub object, the registry VM
+needs to be able to load its class definition. The VM (in this case
+the server VM) that sends the serialized forms of a stub in a
+remote method call to the registry is responsible for annotating
+the stub with the location from which its classes can be
+downloaded. If stubs are not annotated properly, Java RMI will
+throw a <code>ClassNotFoundException</code> when it tries to
+instantiate the stub.</p>
+<p>To annotate classes properly, the server needs to set the value
+of the <code>java.rmi.server.codebase</code> property value to the
+location(s) of the stub classes. Java RMI will automatically
+annotate the serialized form of outgoing object instances with the
+value of the <code>java.rmi.server.codebase</code> property.</p>
+<p>NOTE: It is possible (and in a small number of environments
+appropriate) to enable the <tt>rmiregistry</tt> to unmarshal stub
+objects by placing all relevant stub class files in the CLASSPATH
+of the <tt>rmiregistry</tt>. However, the <tt>rmiregistry</tt> does
+not have to download stub classes. If stub classes are available
+locally, it will use those classes. Using the
+<tt>rmiregistry</tt>'s CLASSPATH for stub deployment requires that
+all VMs that reference a stub instance obtained from that registry
+have the stub's class file installed locally (in the VM's
+CLASSPATH).</p>
+<p>For example, if the registry loads stub classes from its
+CLASSPATH, when the registry sends serialized stub objects to other
+VMs, those serialized objects will be annotated with the value of
+the registry's <code>java.rmi.server.codebase</code> property
+(which will almost always be null). If the VMs receiving serialized
+stub objects from the registry do not have the class files for
+those stubs installed locally then those VMs are likely to throw a
+<code>ClassNotFoundException</code>.</p>
+<p>Instead, if classes are downloaded dynamically from a server
+VM's <code>java.rmi.server.codebase</code> annotation, only the
+<i>server</i> VM needs to have the stub classes in its CLASSPATH.
+With this approach, application deployment is simpler and it is
+possible to introduce new stub versions into a running distributed
+system.</p>
+<p>For more information on dynamic code downloading in Java RMI,
+please see the tutorial, <i><a href="codebase.html">Dynamic code
+downloading using Java RMI (Using the
+<code>java.rmi.server.codebase</code>)</a></i>.</p>
+<h3><a name="serverdied" id="serverdied">B.7 My server died. Can I
+get a trace of the server activity?</a></h3>
+To get a trace of the server activity, start the server as follows:
+<pre class="codeblock">
+    java -Djava.rmi.server.logCalls=true YourServerImpl
+</pre>
+where <code>YourServerImpl</code> is the name of your server. If
+your server has hung, you can get a monitor dump and thread dump by
+doing a <tt>ctrl-\</tt> on the Solaris Operating System
+(Solaris OS) and a <tt>ctrl-break</tt> on Windows platforms.
+<h3><a name="properties" id="properties">B.8 Where can I find a
+list of system properties that might be useful for implementing and
+debugging Java RMI applications?</a></h3>
+<a href="javarmiproperties.html">Properties that begin with
+<b>"<code>java.rmi.</code>"</b></a> are elements of the public
+specification and are documented in the <a href=
+"../../../platform/rmi/spec/rmiTOC.html"><i>Java RMI
+Specification</i></a>.
+<p><a href="sunrmiproperties.html">Properties that begin with
+<b>"<code>sun.rmi.</code>"</b></a> are only supported by certain
+versions of the JDK. While these <b>"<code>sun.rmi.*</code>"</b>
+properties can be quite useful for debugging and tuning at runtime,
+please note that they are not considered part of the public API,
+and their use is subject to change (or may be removed completely)
+in future versions of the implementation.</p>
+<h3><a name="netcontact" id="netcontact">C.1 How do Java RMI
+clients contact remote Java RMI servers?</a></h3>
+<img src="images/faqArt1-1.gif" height="366" width="443" align=
+"left" alt=
+"Illustrates the means by which Java RMI clients contact remote Java RMI servers, as discussed below." />
+<p>For an Java RMI client to contact a remote Java RMI server, the
+client must first hold a reference to the server. The
+<code>Naming.lookup</code> method call is the most common mechanism
+by which clients initially obtain references to remote servers.
+Remote references may be obtained by other means, for example: all
+remote method calls can return remote references. This is what
+<code>Naming.lookup</code> does; it uses a well-known stub to make
+a remote method call to the <code>rmiregistry</code>, which sends
+back the remote reference to the object requested by the
+<code>lookup</code> method.</p>
+<p>Every remote reference contains a server hostname and port
+number that allow clients to locate the VM that is serving a
+particular remote object. Once a Java RMI client has a remote
+reference, the client will use the hostname and port provided in
+the reference to open a socket connection to the remote server.</p>
+<p>Please note that with Java RMI the terms <i>client</i> and
+<i>server</i> can refer to the same program. A Java program that
+acts as a Java RMI server contains an exported remote object. A
+Java RMI client is a program that invokes one or more methods on a
+remote object in another virtual machine. If a VM performs both of
+these functions, it may be referred to as an RMI client and a Java
+RMI server.</p>
+<h3><a name="netunknownhost" id="netunknownhost">C.2 Why does my
+remote method or "callback" routine fail with a nested
+<code>java.net.UnknownHostException</code>?</a></h3>
+<p>Java RMI may default to using an unresolvable server hostname (for
+example: unqualified names, Windows Internet Naming Service (WINS)
+names, or unqualified DHCP names). When a Java RMI client invokes a
+remote method using a reference that contains an unresolvable
+server hostname, the client will throw an
+<code>UnknownHostException</code>.</p>
+<p>In order to generate functional remote references, Java RMI
+servers must be able to supply a fully qualified hostname or IP
+address that is resolvable from all Java RMI clients (an example of
+a fully qualified hostname is <samp>foo.bar.com</samp>). If a Java
+RMI program provides a remote callback operation, then that program
+serves a Java RMI object and consequently, must be able to
+determine a resolvable hostname to use as its server hostname in
+the remote references it passes to Java RMI clients. VMs that make
+calls to applets that serve remote objects may throw
+<code>UnknownHostException</code>s because the applet has failed to
+provide a usable server hostname.</p>
+<p>If your Java RMI application throws an
+<code>UnknownHostException</code>, you can look at the resulting
+stack trace to see if the hostname that the client is using to
+contact its remote server is incorrect or not fully qualified. If
+necessary, you can set the <code>java.rmi.server.hostname</code>
+property on the server to the correct IP address or hostname of the
+server machine and Java RMI will use this property's value to
+generate remote references to the server.</p>
+<h3><a name="netfqdn" id="netfqdn">C.3 My server <em>is</em> using
+a fully qualified domain name or IP address, so why do I still get
+an <code>UnknownHostException</code>?</a></h3>
+Depending on the configuration of your network's name service, a
+fully qualified hostname that is recognized on one Java RMI host
+may not be resolvable from another Java RMI host. Some examples
+where this situation may arise are:
+<ul>
+<li>Misconfigured DHCP servers may set the fully qualified domain
+name of Java RMI server machines to be the domain name of the
+resolver domain instead of the domain in which the Java RMI server
+actually resides. In this case, Java RMI clients outside the
+server's DHCP domain will be unable to contact the server, because
+of its incorrect domain name.</li>
+<li>The server machine is on a network that is configured to use
+WINS. Hosts that are only registered under WINS may not be
+reachable by hosts that rely solely upon DNS.</li>
+<li>The Java RMI client and server reside on opposite sides of a
+firewall. If your Java RMI client lies outside a firewall and the
+server resides inside it, the client will not be able to make any
+remote calls to the server. If the Java RMI client lies inside the
+firewall, you will need to <i><a href=
+"../../../platform/rmi/spec/rmi-arch6.html">configure the Java RMI
+client</a></i> to contact the server using HTTP.</li>
+</ul>
+<h3><a name="netmultihomed" id="netmultihomed">C.4 I am using the
+latest release of the JDK and I have a host that has multiple IP
+addresses. Java RMI is choosing the wrong IP address for its server
+hostname. How do I work around this problem?</a></h3>
+Set the <code>java.rmi.server.hostname</code> property to the
+correct IP address of the Java RMI server machine. You can also
+specify that your server use a fully qualified hostname obtained
+from a name service by setting the property:
+<pre class="codeblock">
+    java.rmi.server.useLocalHostname=true
+</pre>
+<h3><a name="nethostname" id="nethostname">C.5 How does Java RMI
+obtain a server hostname?</a></h3>
+<p>Java RMI will use an IP address or a fully qualified domain name
+to identify a machine that serves a remote object. Server hostnames
+are initialized to the value obtained by performing the following
+actions:</p>
+<ol>
+<li>By default, Java RMI uses the IP address of the server host as
+the server name for remote references.</li>
+<li>If the property <code>java.rmi.server.hostname</code> is set,
+Java RMI will use its value as the server hostname, and will not
+attempt to find a fully qualified domain name through any other
+method. This property takes precedence over all other means of
+finding a Java RMI server name.</li>
+<li>If the property <code>java.rmi.server.useLocalHostname</code>
+is set to <code>true</code> (by default, the value of this property
+is <code>false</code>), Java RMI applies the following routine to
+obtain a hostname for the Java RMI server:
+<ol>
+<li>If the value returned by the
+<code>InetAddress.getLocalHost().getHostName()</code> method
+contains a "." character, then Java RMI will assume that this value
+is the server's fully qualified domain name and will use it as the
+server hostname.</li>
+<li>Otherwise, Java RMI will spawn a thread to query the local name
+service for the fully qualified domain name of the Java RMI server.
+If the name service takes too long to return, or the name service
+returns but its response does not contain a "." then Java RMI will
+use the server's IP address obtained from
+<code>InetAddress.getLocalHost().getHostAddress()</code>.</li>
+</ol>
+Users can override the default time (10 seconds or 10000
+milliseconds) that Java RMI will look for a fully qualified domain
+name by setting the following property:<br />
+<code>sun.rmi.transport.tcp.localHostnameTimeOut</code>=<i>timeOutMillis</i><br />
+
+where <i>timeOutMillis</i> is the time that Java RMI will wait in
+milliseconds. For example:
+<pre class="codeblock">
+            java -Dsun.rmi.transport.tcp.localHostnameTimeOut=2000 MyServerApp
+        
+</pre></li>
+</ol>
+When using activatable remote objects, it is recommended that Java
+RMI servers set the value of the
+<code>java.rmi.server.useLocalHostname</code> property to
+<code>true</code>. In general, hostnames are more stable than IP
+addresses. Activatable remote objects tend to last longer than
+transient remote objects (for example,&nbsp; surviving a reboot). A
+Java RMI client will be more likely to locate a remote object over
+a long period of time if it uses a qualified hostname rather than
+an explicit IP address.
+<h3><a name="bind" id="bind">C.6 Why do <code>Naming.bind</code>
+and <code>Naming.lookup</code> take an extraordinarily long time on
+Windows platforms?</a></h3>
+Most likely, your host's networking setup is incorrect. Java RMI
+uses the Java API networking classes, in particular
+<code>java.net.InetAddress</code>, which will cause TCP/IP host
+name lookups - both host to address mapping and address to hostname
+mapping (the <code>InetAddress</code> class does this for security
+reasons). On Windows platforms, the lookup functions are performed
+by the native socket library, so the delays are happening not in
+Java RMI, but in the libraries. If your host is set up to use DNS,
+then it is usually a problem with the DNS server not knowing about
+the hosts involved in communication, and what you are experiencing
+are DNS lookup timeouts. Try specifying all the involved
+hostnames/addresses in the local file
+<code>\winnt\system32\drivers\etc\hosts</code> or
+<code>\windows\hosts</code>. The format of a typical host file is:
+<pre class="codeblock">
+    IPAddress     Machine Name
+</pre>
+e.g.:
+<pre class="codeblock">
+    192.0.2.61   homer
+</pre>
+This should dramatically cut down the time it takes to make the
+first lookup.
+<h3><a name="standalone" id="standalone">C.7 How do I use Java RMI
+on a Windows 95 standalone machine, not connected to the
+network?</a></h3>
+To get Java RMI working on a Windows 95 machine that is not on a
+network, TCP/IP must be configured. One way to accomplish this is
+to configure an unused COM port as a dedicated PPP or SLIP
+connection. Then disable DHCP and manually configure an IP address
+(e.g. <code>192.168.1.1</code>). You should then find that from a
+DOS Shell, you can ping yourself (for example, <kbd>ping</kbd>
+<var>mymachine</var>). You should now be able to use Java RMI on
+the machine.
+<h3><a name="addrinuse" id="addrinuse">C.8 Why do I get the
+exception "<code>java.net.SocketException: Address already in
+use</code>" when I try to run the registry?</a></h3>
+This exception means that the port that the
+<code>RegistryImpl</code> uses (by default 1099) is already in use.
+You may have another registry running on your machine and will need
+to stop it.
+<h3><a name="firewall" id="firewall">C.9 How can I use Java RMI
+through a firewall?</a></h3>
+It depends on whether you need to traverse a firewall for <a href=
+"#firewallOut">outgoing calls</a> or for <a href=
+"#firewallIn">incoming calls</a>.
+<h3><a name="firewallOut" id="firewallOut">C.10 How can I make
+outgoing Java RMI calls through a local firewall?</a></h3>
+There are three main methods: HTTP tunnelling, SOCKS, and
+downloaded socket factories.
+<h4>HTTP tunnelling</h4>
+This well-worn method is popular since it requires almost no setup,
+and works quite well in firewalled environments which permit you to
+handle HTTP through a proxy, but disallow regular outbound TCP
+connections.
+<p>If Java RMI fails to make a normal (or SOCKS) connection to the
+intended server, and it notices that a HTTP proxy server is
+configured, it will attempt to tunnel Java RMI requests through
+that proxy server, one at a time.</p>
+<p>There are two forms of HTTP tunnelling, tried in order. The
+first is <em>http-to-port</em>; the second is
+<em>http-to-cgi</em>.</p>
+<p>In http-to-port tunneling, Java RMI attempts a HTTP POST request
+to a <code>http:</code> URL directed at the exact hostname and port
+number of the target server. The HTTP request contains a single
+Java RMI request. If the HTTP proxy accepts this URL, it will
+forward the POST request to the listening Java RMI server, which
+will recognize the request and unwrap it. The result of the call is
+wrapped in a HTTP reply, which is returned through the same
+proxy.</p>
+<p>Often, HTTP proxies will refuse to proxy requests to unusual
+port numbers. In this case, Java RMI will fall back to http-to-cgi
+tunneling. The Java RMI request is encapsulated in a HTTP POST
+request as before, but the request URL is of the form
+<code>http://<em>hostname</em>:80/cgi-bin/java-rmi.cgi?port=<em>n</em></code>
+(where <em>hostname</em> and <em>n</em> are the hostname and port
+number of the intended server). There must be a HTTP server
+listening on port 80 on the server host, which will run the
+<code>java-rmi.cgi</code> script (supplied with the JDK), which
+will in turn forward the request to a Java RMI server listening on
+port <em>n</em>. Java RMI can unwrap a HTTP-tunneled request
+without help from a http server, CGI script, or any other external
+entity. So, if the client's HTTP proxy can connect directly to the
+server's port, then you don't need a <code>java-rmi.cgi</code>
+script at all.</p>
+<p>To trigger the use of HTTP tunneling, the standard system
+property <code>http.proxyHost</code> must be set to the hostname of
+the local HTTP proxy. (There are reports that some Navigator
+versions do not set this property.)</p>
+<p>The major disadvantage of HTTP tunneling is that it does not
+permit inward calls or multiplexed connections. A secondary
+disadvantage is that the http-to-cgi method opens a dramatic
+security hole on the server side, since without modification it
+will redirect any incoming request to any port.</p>
+<h4>SOCKS</h4>
+The default implementation of sockets in the JDK will use a
+<i><a href="http://ss5.sourceforge.net/">SOCKS server</a></i> if
+available and configured. The system property
+<code>socksProxyHost</code> must have been set to the hostname of
+the SOCKS server; if the port number of the SOCKS server is not
+1080, it must be specified in the <code>socksProxyPort</code>
+property.
+<p>This approach would appear to be the most generally useful
+solution. As yet, <code>ServerSockets</code> do not use SOCKS, so
+incoming calls must use another mechanism.</p>
+<h4>Downloaded socket factories</h4>
+This allows the server to specify
+the socket factory that the clients must use. See the tutorial <i><a href=
+"socketfactory/index.html">Using Custom Socket Factories with Java
+RMI</a></i> for details.
+<p>The disadvantage of this approach is that the traversal of the
+firewall must be done by code provided by the Java RMI server side,
+which does not necessarily know how that traversal must be done,
+nor does it automatically have sufficient privilege to traverse the
+firewall.</p>
+<h3><a name="firewallIn" id="firewallIn">C.11 How can I receive
+incoming Java RMI calls through a local firewall?</a></h3>
+There are three main methods: known ports, transport-level bridges,
+and application-level proxies.
+<h4>Known Ports</h4>
+<p>If the exported objects are all exported on a known port on a known
+host, then that host and port can be explicitly permitted at the
+firewall. Normally, Java RMI asks for port 0 (which is code for
+"any port"). In the JDK, there is an extra argument to the
+<code>exportObject</code> method to specify the exact port number.</p>
+<p>This approach has the disadvantage that it requires the
+assistance of the network administrator responsible for the local
+firewall. If the exported object is being run in a different
+location (because code was downloaded to that site), then the local
+firewall may be run by network administrators who don't know who
+you are.</p>
+<h4>Transport-level bridges</h4>
+A transport-level bridge is a program that reads bytes from one TCP
+connection and writes them to another (and vice versa) without
+knowing or caring what the bytes represent.
+<p>The idea here is to export objects in such a way that anyone
+outside the firewall who wants to call remote methods on that
+object instead contacts a different port (perhaps on a different
+machine). That different port has a running program which makes a
+second connection to the real server and then pumps bytes each
+way.</p>
+<p>The tricky part is convincing the client to connect to the
+bridge. A downloadable socket factory can do
+this efficiently; otherwise, it is possible to set the
+<code>java.rmi.server.hostname</code> property to name the bridge
+host and arrange for port numbers to be the same.</p>
+<h4>Application-level proxies</h4>
+This approach is quite a bit of work, but leads to a very secure
+arrangement. A proxy program runs on a firewall host (one which can
+be accessed from outside as well as inside). When an internal
+server intends to make an exported object available to the world,
+it contacts the proxy server and gives it a remote reference. The
+proxy server creates a proxy object (a new remote object residing
+in the proxy server) which implements the same remote interfaces as
+the original. The proxy server returns a remote reference for the
+new proxy object to the internal server, which communicates it to
+the outside world (somehow).
+<p>When an outsider makes a call on the proxy, the proxy
+immediately forwards the call to its original object on the
+internal server. The use of the proxy is transparent to the
+outsider (but not to the internal server, who has to decide whether
+to pass the original reference or the proxy reference when talking
+to anyone).</p>
+<p>Needless to say, this requires considerable setup and the
+cooperation of the local network administrators.</p>
+<h3><a name="firewallBoth" id="firewallBoth">C.12 So what do I have
+to do to get Java RMI to operate through two firewalls?</a></h3>
+First of all, what cooperation can you expect from the client-side
+firewall?
+<p>In the most pessimistic case, the client-side firewall allows
+<em>no</em> direct TCP connections and has only a HTTP proxy server
+so that firewalled clients can "surf the web". In this case, your
+server host will receive connections at port 80 containing Java RMI
+requests embedded in HTTP requests. You can use a HTTP server with
+the <code>java-rmi.cgi</code> program, or you can run the Java RMI
+server directly on port 80. <em>Either way, the server cannot use
+callback objects exported by the clients.</em>.</p>
+<p>A more optimistic case is that the client can make direct
+connections to the server but cannot receive incoming connections
+from the server. In this case, callback objects are not normally
+possible either.</p>
+<p>The most conservative approach, assuming no help from the client
+firewall administrators, is:</p>
+<ul>
+<li>Avoid using callback objects</li>
+<li>Run your servers on `public' ports such as 80, 81, 8001, or
+443</li>
+<li>If the servers are not running on port 80, either:
+<ul>
+<li>Put a CGI-capable HTTP server on port 80 using the
+<code>java-rmi.cgi</code> script; or</li>
+<li>Run a port redirector (such as <code>DeleGate</code>) on port
+80, which will accept connections and immediately connect to the
+real server port to pass bytes back and forth. This will cause
+<code>getClientHost()</code> to return misleading information, so
+don't make the Registry available through this method unless it's
+on a different host.</li>
+</ul>
+</li>
+</ul>
+<h3><a name="servlet" id="servlet">C.13 Is it possible to replace
+the <code>java-rmi.cgi</code> script that comes with the JDK
+distribution with a servlet?</a></h3>
+We've provided an <i><a href=
+"archives/rmiservlethandler.zip">example</a></i> that demonstrates
+how to implement the <code>java-rmi.cgi</code> script using a
+servlet. The example also explains how to run a remote object
+inside a servlet VM.
+<p>Note: If you do not understand the role that
+<code>java-rmi.cgi</code> plays in tunnelling remote method calls
+over HTTP, please see the FAQ question regarding <a href=
+"#firewallOut">HTTP tunnelling</a> in Java RMI.</p>
+<h3><a name="notify" id="notify">D.1 Is there a way to get
+automatic notification as soon as a remote VM fails?</a></h3>
+Not at this time.
+<h3><a name="newvm" id="newvm">D.2 From within a virtual machine,
+can a new virtual machine be spawned on a remote machine?</a></h3>
+The JDK includes object activation, and there are <i><a href=
+"activation/overview.html">several tutorials</a></i> explaining how
+to use it.
+<h3><a name="unref" id="unref">D.3 Is it possible for a remote
+object to be notified when all clients disconnect?</a></h3>
+Yes. Your remote object will need to implement the <a href=
+"../../../api/java/rmi/server/Unreferenced.html"><code>java.rmi.server.Unreferenced</code></a>
+interface (in addition to any other necessary interfaces). Java RMI
+will provide the notification by calling the
+<code>unreferenced</code> method when all clients disconnect. Your
+implementation of the <code>unreferenced</code> method will
+determine what action your remote object should take upon receiving
+such a notification. However, if there is a reference in the
+registry, then the <code>Unreferenced.unreferenced</code> method
+will never be called.
+<h3><a name="noexit" id="noexit">D.4 Why doesn't my server program
+exit when all clients disconnect?</a></h3>
+In Java RMI, a server VM should exit if there are
+<ul>
+<li>No outstanding client-held references to the remote objects in
+VM, and</li>
+<li>No non-daemon threads executing in the VM.</li>
+</ul>
+However, just because there are no local or remote references to a
+remote object does not mean the object will be garbage collected in
+a timely fashion. It does mean that the remote object's memory can
+be collected to satisfy a memory allocation that would otherwise
+fail (with an <code>OutOfMemoryError</code>).
+<p>Although the Java API does not specify the timeliness of
+collection anyway, there is a particular reason for the what can
+seem like indefinitely delayed collection of remote objects. Under the covers, the Java RMI runtime
+holds a weak reference to exported remote objects in a table (to
+keep track of local as well as remote references to the object).
+The only weak reference mechanism available in the JDK VM uses
+a non-aggressive, caching collection policy (well-suited for a
+browser), so objects that are only "weakly reachable" will not get
+collected until the local GC decides that it really needs that
+memory to satisfy another allocation. For an idle server, this
+could never happen. But if memory is needed, an unreferenced server
+object will be collected.</p>
+<p>The Java SE platform includes a new infrastructure that Java RMI
+will use to reduce significantly the number of conditions under
+which this problem occurs.</p>
+<h3><a name="leases" id="leases">D.5 How does the distributed
+garbage collector detect a client that disconnects? Is it advisable
+to use <code>System.exit</code> for graceful client
+termination?</a></h3>
+When the Java RMI runtime in a client VM detects that a remote
+object is no longer referenced locally, it asynchronously notifies
+the server relatively quickly so that the server can update the
+object's referenced set accordingly. The distributed garbage
+collector uses a lease associated with each client-held remote
+object reference, and renews leases to remote objects while the
+client still holds such references. The purpose of the lease
+renewal mechanism is to allow the server to detect the
+<i>abnormal</i> termination of clients, so that a server does not
+hold on to a remote object forever because of a client that was not
+able to send the appropriate "unreferenced" message before it
+stopped running. In this context, a client invoking
+<code>System.exit()</code> is considered abnormal termination,
+because it does not allow the RMI runtime to send the appropriate
+"unreferenced" messages to the server. Executing
+<code>System.runFinalizersOnExit</code> in the client before
+termination is not sufficient, because not all of the necessary
+processing is handled in a finalizer; i.e. the "unreferenced"
+message will not get sent to the server. (Using
+"runFinalizersOnExit" is generally ill-advised and deadlock-prone
+anyway.)
+<p>If you need to use <code>System.exit()</code> to terminate a
+client VM, to ensure that remote references held in that VM are
+cleaned up in a more timely fashion, you should make sure that
+there are no remote references still reachable. Explicitly null any
+local references to make them unreachable from running threads. It
+also may help to run a full garbage collection and to run
+finalizers before exiting:</p>
+<pre class="codeblock">
+    System.gc();
+    System.runFinalization();
+</pre>
+<h3><a name="leases2" id="leases2">D.6 How can my server tell when
+a client crashes?</a></h3>
+If you wait for the client's lease to run out, and the
+<code>unreferenced()</code> method will then be called by the Java
+RMI implementation (remember that the registry is also a client for
+this purpose, since it holds references for all its bindings).
+<p>If a client is holding a remote reference, it also holds a lease
+for that reference, which must be renewed (by contacting the server
+and making a <code>dirty()</code> call). When the final lease for
+an exported object has expired or closed, the object is considered
+unreferenced, and (if it implements
+<code>java.rmi.Unreferenced</code>) its <code>unreferenced()</code>
+method will be invoked.</p>
+<p>If two or more clients have references to the same remote
+object, the <code>unreferenced()</code> method will not be called
+until all of them have expired their leases on it. Consequently, if
+you are using this technique to track individual clients, each
+client must have a reference to its own <code>Unreferenced</code>
+object.</p>
+<h3><a name="fastleases" id="fastleases">D.7 The
+<code>unreferenced()</code> method doesn't get called until ten
+minutes after I have stopped using the remote object! How can I
+shorten this delay?</a></h3>
+The lease expiration time is specified by the server, where it can
+be set using a system property,
+<code>java.rmi.dgc.leaseValue</code>, whose value is in
+milliseconds. To set this to a shorter time (for example: 30
+seconds), start the server like this:
+<pre class="codeblock">
+    java -Djava.rmi.dgc.leaseValue=30000 ServerMain
+</pre>
+<p>The default value is 600000 milliseconds (or 10 minutes).</p>
+<p>The client will renew each lease when it is halfway expired. If
+the lease interval is too short, the client will waste a lot of
+network bandwidth needlessly renewing its lease. If the lease
+interval is much too short, the client will be unable to renew the
+lease in time, and the exported object may be deleted as a
+result.</p>
+<p>Future releases of Java RMI may invalidate remote references if
+they fail to renew their leases (in order to preserve referential
+integrity); you should not rely on being able to use stale
+references to remote objects.</p>
+<p>Note that you'll only have to wait for the timeout if the client
+machine crashes. If the client has some control when the disconnect
+occurs, it can send out the DGC clean call quickly, making the use
+of <code>Unreferenced</code> quite timely. You can help this
+process along by nulling out any references the client may have to
+the remote object and then calling <code>System.gc()</code>.</p>
+<h3><a name="crashnotif" id="crashnotif">D.8 Why can't I get an
+immediate notification when a client crashes?</a></h3>
+Because nothing the server does can distinguish a crashed host from
+a network delay.
+<p>If or when the crashed client later restarts and contacts the
+server, the server can infer that the client has lost its state. If
+a TCP connection is held open between the client and the server
+throughout their interaction, then the server can detect the client
+reboot when a later attempt to write to the connection fails
+(including the hourly TCP keepalive packet, if enabled). However,
+Java RMI is designed not to require such permanent connections, as
+it impairs scalability and doesn't help very much.</p>
+<p>Given that it is absolutely impossible to instantly determine
+when a network peer crashes or becomes otherwise unavailable, you
+must decide how your application should behave when a peer stops
+responding.</p>
+<p>The major tools you have for this task are timeouts and resets.
+After a timeout, you may conclude that a peer is unreachable, but
+the peer must be aware of the timeout so that it gives up trying to
+reach you. The leasing mechanism is designed to do this
+semi-automatically.</p>
+<p>A reset is a purge of existing state held for a peer. For
+example, a client may cause a reset when it first registers with
+its server, causing the server to discard any previous state held
+for that client (having deduced that the client has restarted
+without memory of the previous, dead, session).</p>
+<p>Frequently, the aim is to have and maintain a definitive list of
+clients at the server, and to keep it up-to-date without error or
+failure. Since failure and delay can happen at any time in a
+networked system, some degree of error in the list must be
+anticipated. If a lease or other mechanism is used to enforce a
+timeout, then the problem of resource leakage is solved. If the
+problem of stale data is more serious -- that is, if it would
+interfere with correct operation -- then it must be explicitly
+purged in cases where it would otherwise have an effect.</p>
+<p>For example, if a business object is locked for editing by a
+human, and the session dies, then the lock must be broken somehow.
+In this case, the lock would need a timeout, but if the same human
+logs in immediately and expects not to have to wait for the timeout
+to expire, the new session must either take over the lock or assert
+that the user holds no locks (allowing the server to safely kill
+the lock).</p>
+<h3><a name="rmicbatch" id="rmicbatch">D.9 How do I run the
+<code>rmic</code> command in a DOS batch file?</a></h3>
+In a DOS batch file, you have to insert the command
+<code>call</code> before the executable in order for control to
+return to the batch file. For example:
+<pre class="codeblock">
+    call rmic ClientHandler
+    call rmic Server
+    call rmic ServerHandler
+    call rmic Client
+</pre>
+<h3><a name="getclient" id="getclient">D.10 In a remote object
+implementation, how can I find the host name of the caller of a
+remote method?</a></h3>
+The <code>java.rmi.server.RemoteServer.getClientHost</code> method
+returns the client host for the current invocation on the current
+thread.
+<h3><a name="inout" id="inout">D.11 Does Java RMI handle "out" and
+"inout" parameters (like CORBA)?</a></h3>
+Java RMI does not support "out" or "inout" parameters, just like
+the rest of the core Java programming language. All remote calls
+are methods of a remote object. Local objects are passed by copy
+and remote objects are passed by reference to a stub. For more
+details, see <i><a href=
+"../../../platform/rmi/spec/rmi-objmodel7.html">Parameter Passing
+in Remote Method Invocation</a></i> in the Java RMI Specification.
+<h3><a name="caststub" id="caststub">D.12 Normally in the Java
+programming language, it is possible to cast an interface instance
+to an instance of the class from which it was created and use the
+result. Why doesn't this work in Java RMI?</a></h3>
+In Java RMI the client sees only a stub for the original object.
+The stub implements only the remote interfaces and their remote
+methods and cannot be cast back to the original implementation
+class because it's just a stub.
+<p>So, you cannot pass a remote object reference from a server to a
+client, and then send it back to the server and be able to cast it
+back to the original implementation class. You can, though, use the
+remote object reference on the server to make a remote call to the
+object.</p>
+<p>If you need to find the implementation class again, you'll need
+to keep a table that maps the remote reference to the
+implementation class.</p>
+<h3><a name="browsersupport" id="browsersupport">E.1 What if my
+browser does not support the JDK or Java SE version I
+need?</a></h3>
+Try using the <a href="http://www.oracle.com/technetwork/java/plugin-137649.html">Java
+Plug-in</a> for browsers that do not support the JDK or Java SE
+version you need.
+<h3><a name="observer" id="observer">E.2 Can I implement remote
+observer/observable objects in Java RMI?</a></h3>
+What you can do is "wrap" <code>java.util.Observable</code> and
+<code>java.util.Observer</code> with new interfaces (you could call
+them <code>RemoteObservable</code> and
+<code>RemoteObserver</code>). In these new interfaces, make each of
+the methods throw <code>java.rmi.RemoteException</code>. Then, your
+remote objects can implement these interfaces.
+<p>Note that since the "wrapped" non-remote object does not extend
+<code>java.rmi.server.UnicastRemoteObject</code>, you will need to
+explicitly export the object using the <code>exportObject</code>
+method of <code>UnicastRemoteObject</code>. In doing this though,
+you lose the <code>java.rmi.server.RemoteObject</code>
+implementations of the <code>equals</code>, <code>hashCode</code>,
+and <code>toString</code> methods.</p>
+<h3><a name="connection" id="connection">F.1 At what point is there
+a "live" connection between the client and the server and how are
+connections managed?</a></h3>
+When a client does a "lookup" operation, a connection is made to
+the <code>rmiregistry</code> on the specified host. In general, a
+new connection may or may not be created for a remote call.
+Connections are cached by the Java RMI transport for future use, so
+if a connection is free to the right destination for a remote call,
+then it is used. A client cannot explicitly close a connection to a
+server, since connections are managed at the Java RMI transport
+level. Connections will time out if they are unused for a period of
+time.
+<h3><a name="replace" id="replace">F.2 Does the Java platform
+replace all remote objects with their stubs during a remote method
+invocation?</a></h3>
+The JRMP and Java RMI-IIOP implementations will replace each remote
+object with a corresponding stub (of the same protocol), even deep
+inside graphs of serializable objects.
+<h3><a name="nosockets" id="nosockets">F.3 Is it possible to write
+a new transport layer for Java RMI which does not use sockets? As a
+follow-up question, how about a transport layer that uses
+non-TCP-based sockets?</a></h3>
+We have designed the transport interfaces so that different
+implementations of these interfaces can be used by Java RMI. In
+earlier releases, this abstraction was used for our purposes and
+was not exposed for general use. Now, in the JDK, Java RMI supports
+<i><a href="socketfactory/index.html">client and server socket
+factories</a></i> that can be used to make Java RMI calls over
+non-TCP-based sockets.
+<h3><a name="polling" id="polling">F.4 I notice the registry
+continues to use CPU resources, as if it were polling rather than
+blocking on a <code>select()</code> call. Is the registry
+implemented by polling?</a></h3>
+Java RMI does not poll on select calls. There is a thread that
+wakes up every so often and polls the table of exported remote
+objects. This "reap" thread is used for the purposes of the
+distributed garbage collector.
+<h3><a name="numsockets" id="numsockets">F.5 Is there only one
+socket connection between a client process and the server, no
+matter how many stubs exist in that client process?</a></h3>
+Java RMI reuses the socket connections between client and server
+whenever possible. The current implementation creates additional
+sockets on demand when they are needed. For example, if the
+existing socket is in use by a call then a new socket is created
+for the new call. Typically, there are at least two sockets open
+since the distributed garbage collector needs to make remote calls
+when remote objects are returned from the server. If a cached
+connection remains unused for a period of time, the connection is
+closed.
+<h3><a name="license" id="license">G.1 What are the licensing
+issues surrounding the use of Java RMI?</a></h3>
+Java RMI is part of the Java SE platform and as such is subject to
+the licensing terms of Java SE.
+<h3><a name="stdinput" id="stdinput">G.2 I have a single-threaded
+program that waits on standard input for a user command which will
+initiate a Java RMI call. However, my remote object cannot service
+this incoming remote call as the program appears to be blocked on
+standard input. What's the problem?</a></h3>
+This is a known problem, not with Java RMI, but with the thread
+that reads standard input. The thread does not yield on the
+blocking read, but instead stays running, hardly letting the
+listener get any cycles. We have tried two workarounds that seem
+successful: set the main thread (the one reading standard input) to
+a lower priority, or yield while bytes are not available in the
+stream before actually reading it.
+<h3><a name="passbycopy" id="passbycopy">G.3 I am copying array
+elements to my remote server and changing the values, but the
+incremented values are not copied back to the client. Why?</a></h3>
+Non-remote objects are passed by copy, so if you want to have the
+new values of the array reflected in the client, you will have to
+send them back as a return argument.
+<h3><a name="staticinit" id="staticinit">G.4 Am I allowed to have
+static fields in a remote interface?</a></h3>
+Yes. An initializer is run in each VM that loads the remote
+interface, creating a new static variable with the specified
+values. So, you have a <em>separate</em> copy of this static
+variable in each VM that loads the remote interface.
+<h3><a name="registry" id="registry">G.5 I locate the registry, but
+then it seems that it's not there, what's happening?</a></h3>
+The method <code>LocateRegistry.getRegistry(String host)</code>
+does not contact the registry on the host, but rather just looks up
+the host to make sure it exists. So, even though this method
+succeeded, this does not necessarily mean that a registry is
+running on the specified host. It just returns a stub that can then
+access the registry.
+<hr />
+<h2>Object Serialization</h2>
+<h3>1. <a name="whyserial" id="whyserial"></a><b>Why must classes
+implement <code>Serializable</code> in order to be written to an
+<code>ObjectOutputStream</code>?</b></h3>
+The decision to require that classes implement the
+<code>java.io.Serializable</code> interface was not made lightly.
+The design called for a balance between the needs of developers and
+the needs of the system to be able to provide a predictable and
+safe mechanism. The most difficult design constraint to satisfy was
+the safety and security of classes for the Java programming
+language.
+<p>If classes were to be marked as being serializable the design
+team worried that a developer, either out of forgetfulness,
+laziness, or ignorance might not declare a class as being
+<code>Serializable</code> and then make that class useless for RMI
+or for purposes of persistence. We worried that the requirement
+would place on a developer the burden of knowing how a class was to
+be used by others in the future, an essentially unknowable
+condition. Indeed, our preliminary design, as reflected in the
+alpha API, concluded that the default case for a class ought to be
+that the objects in the class be serializable. We changed our
+design only after considerations of security and correctness
+convinced us that the default had to be that an object not be
+serialized.</p>
+<h4>Security restrictions</h4>
+The first consideration that caused us to change the default
+behavior of objects had to do with security, and in particular in
+the privacy of fields declared to be private, package protected, or
+protected. The Java platform restricts access to such fields for
+either read or write to a subset of the objects within the runtime.
+<p>No such restriction can be made on an object once it has been
+serialized; the stream of bytes that is the result of object
+serialization can be read and altered by any object that has access
+to that stream. This allows any object access to the state of a
+serialized object, which can violate the privacy guarantees users
+of the language expect. Further, the bytes in the stream can be
+altered in arbitrary ways, allowing the reconstruction of an object
+that was never created within the protections of a Java platform.
+There are cases in which the re-creation of such an object could
+compromise not only the privacy guarantees expected by users of the
+Java platform, but the integrity of the platform itself.</p>
+<p>These violations cannot be guarded against, since the whole idea
+of serialization is to allow an object to be converted into a form
+that can be moved outside of the Java platform (and therefore
+outside of the privacy and integrity guarantees of that
+environment) and then be brought back into the environment.
+Requiring objects to be declared serializable does mean that the
+class designer must make an active decision to allow the
+possibility of such a breach in privacy or integrity. A developer
+who does not know about serialization should not be open to
+compromise because of this lack of knowledge. In addition, we would
+hope that the developer who declares a class to be serializable
+does so after some thought about the possible consequences of that
+declaration.</p>
+<p>Note that this sort of security problem is not one that can be
+dealt with by the mechanism of a security manager. Since
+serialization is intended to allow the transport of an object from
+one virtual machine to some other (either over space, as it is used
+in RMI, or over time, as when the stream is saved to a file), the
+mechanisms used for security need to be independent of the runtime
+environment of any particular virtual machine. We wanted to avoid
+as much as possible the problem of being able to serialize an
+object in one virtual machine and not being able to deserialize
+that object in some other virtual machine. Since the security
+manager is part of the runtime environment, using the security
+manager for serialization would have violated this requirement.</p>
+<h4>Forcing a conscious decision</h4>
+While security concerns were the first reason for considering the
+design change, a reason that we feel is at least as convincing is
+that serialization should only be added to a class after some
+design consideration. It is far too easy to design a class that
+falls apart under serialization and re-construction. By requiring a
+class designer to declare support for the serialization interface,
+we hoped that the designer would also give some thought to the
+process of serializing that class.
+<p>Examples are easy to cite. Many classes deal with information
+that only makes sense in the context of the runtime in which the
+particular object exists; examples of such information include file
+handles, open socket connections, security information, etc. Such
+data can be dealt with easily by simply declaring the fields as
+<code>transient</code>, but such a declaration is only necessary if
+the object is going to be serialized. A novice (or forgetful, or
+hurried) programmer might neglect to mark fields as
+<code>transient</code> in much the same way he or she might neglect
+to mark the class as implementing the <code>Serializable</code>
+interface. Such a case should not lead to incorrect behavior; the
+way to avoid this is to not serialize objects not marked as
+implementing <code>Serializable</code>.</p>
+<p>Another example of this sort is the "simple" object that is the
+root of a graph that spans a large number of objects. Serializing
+such an object could result in serializing lots of others, since
+serialization works over an entire graph. Doing something like this
+should be a conscious decision, not one that happens by
+default.</p>
+<p>The need for this sort of thought was brought home to us in the
+group when we were going through the base Java API class libraries,
+marking the system classes as serializable (where appropriate). We
+had originally thought that this would be a fairly simple process,
+and that most of the system classes could just be marked as
+implementing <code>Serializable</code> and then use the default
+implementation with no other changes. What we found was that this
+was far less often the case than we had suspected. In a large
+number of the classes, careful thought had to be given to whether
+or not a field should be marked as <code>transient</code> or
+whether it made sense to serialize the class at all.</p>
+<p>Of course, there is no way to guarantee that a programmer or
+class designer is actually going to think about these issues when
+marking a class as serializable. However, by requiring the class to
+declare itself as implementing the <code>Serializable</code>
+interface we do require that some thought be given by the
+programmer. Having serialization be the default state of an object
+would mean that lack of thought could cause bad effects in a
+program, something that the overall design of the Java platform has
+attempted to avoid.</p>
+<h3>2. <a name="whichserial" id="whichserial"></a><b>Which JDK 
+system classes are marked serializable?</b></h3>
+<i>Removed. This information is readily available from the API
+documentation generated by the <code>javadoc</code> tool.</i>
+<h3>3. <a name="awt" id="awt"></a><b>I am having problems
+deserializing JDK AWT components. How can I make this
+work?</b></h3>
+When you serialize AWT widgets, also serialized are the Peer
+objects that map the AWT functions to the local window system. When
+you deserialize (reconstitute) the AWT widgets, the old Peers are
+re-created, but they are out of date. Peers are native to the local
+window system and contain pointers to data structures in the local
+address space, and therefore cannot be moved.
+<p>As a work around, you should first remove the top-level widget
+from its container (so the widgets are no longer "live"). The peers
+are discarded at this point and you will save only the AWT widget
+state. When you later deserialize and read the widgets back in, add
+the top level widget to the frame to make the AWT widgets appear.
+You may need to add a <code>show</code> call.</p>
+<p>AWT widgets are serializable. The
+<code>java.awt.Component</code> class implements
+<code>Serializable</code>.</p>
+<h3>4. <a name="encryption" id="encryption"></a><b>Does object
+serialization support encryption?</b></h3>
+Object serialization does not contain any encryption/decryption in
+itself. It writes to and reads from standard streams in the Java
+API, so it can be coupled with any available encryption technology.
+Object serialization can be used in many different ways. Other than
+just writing and reading to and from files, it can also be used for
+Java RMI to communicate between hosts.
+<p>RMI's use of serialization leaves encryption and decryption to
+the lower network transport. We expect that when a secure channel
+is needed the network connections will be made using SSL or the
+like (see <i><a href="socketfactory/SSLInfo.html">Using RMI with
+SSL</a></i>).</p>
+<h3>5. <a name="random" id="random"></a><b>The object serialization
+classes are stream oriented. How do I write objects to a
+random-access file?</b></h3>
+Currently there is no direct way to write objects to a
+random-access file.
+<p>You can use <code>ByteArrayInputStream</code> and
+<code>ByteArrayOutputStream</code> objects as intermediate places
+to write and read bytes to and from the random access file and
+create <code>ObjectInputStream</code>s and
+<code>ObjectOutputStream</code>s from the byte streams to transport
+the objects. You just have to make sure that you have the entire
+object in the byte stream or reading/writing the object will
+fail.</p>
+<p>For example, <code>java.io.ByteArrayOutputStream</code> can be
+used to receive the bytes of <code>ObjectOutputStream</code>. From
+it you can get a result in the form of a byte array. That in turn
+can be used with <code>ByteArrayInputStream</code> as input to an
+<code>ObjectInput</code> stream.</p>
+<h3>6. <a name="local" id="local"></a><b>When a local object is
+serialized and passed as a parameter in a Java RMI call, are the
+bytecodes for the local object's methods also passed? What about
+object coherency, if the remote VM application "keeps" the object
+handle?</b></h3>
+The bytecodes for a local object's methods are not passed directly
+in the <code>ObjectOutputStream</code>, but the object's class may
+need to be loaded by the receiver if the class is not already
+available locally. The class files themselves are not serialized,
+just the names of the classes. All classes must be able to be
+loaded during deserialization using the normal class loading
+mechanisms. For applets, this means they are loaded by the
+<code>AppletClassLoader</code>.
+<p>There are no coherency guarantees for local objects passed to a
+remote VM since such objects are passed by copying their contents
+(a true pass-by-value).</p>
+<h3>7. <a name="nofile" id="nofile"></a><b>How can I create an
+<code>ObjectInputStream</code> from an
+<code>ObjectOutputStream</code> without a file in between?</b></h3>
+<code>ObjectOutputStream</code> and <code>ObjectInputStream</code>
+work to/from any stream object. You could use a
+<code>ByteArrayOutputStream</code> and then get the array and
+insert it into a <code>ByteArrayInputStream</code>. You could also
+use the piped stream classes as well. Any <code>java.io</code>
+class that extends the <code>OutputStream</code> and
+<code>InputStream</code> classes can be used.
+<h3>8. <a name="handle" id="handle"></a><b>I create an object and
+then send it across the net using the <code>writeObject</code>
+method and receive it using the <code>readObject</code> method. If
+I then change the value of a field in the object and send it as
+before, the object that the <code>readObject</code> method returns
+appears to be the same as the first object and does not reflect the
+new value of the field. Should I be experiencing this
+behavior?</b></h3>
+The <code>ObjectOutputStream</code> class keeps track of each
+object it serializes and sends only the handle if that object is
+seen again. This is the way it deals with graphs of objects. The
+corresponding <code>ObjectInputStream</code> keeps track of all of
+the objects it has created and their handles so when the handle is
+seen again it can return the same object. Both output and input
+streams keep this state until they are freed.
+<p>Alternatively, the <code>ObjectOutputStream</code> class
+implements a <code>reset</code> method that discards the memory of
+having sent an object, so sending an object again will make a
+copy.</p>
+<h3>9. <a name="serialthread" id="serialthread"></a><b>Are there
+any plans to support the serialization of thread objects?</b></h3>
+Threads will NOT be serializable. In the present implementation, if
+you attempt to serialize and then deserialize a thread, there is NO
+explicit allocation of a new native thread or stack; all that
+happens is that the object is allocated system resources with none
+of the native implementation. In short, it just won't work and will
+fail in unpredictable ways.
+<p>The difficulty with threads is that they have so much state
+which is intricately tied into the virtual machine that it is
+difficult or impossible to re-establish the context somewhere else.
+For example, saving the VM call stack is insufficient because if
+there were native methods that had called C procedures that in turn
+called code for the Java platform, there would be an incredible mix
+of Java programming language constructs and C pointers to deal
+with. Also, serializing the stack would imply serializing any
+object reachable from any stack variable.</p>
+<p>If a thread were resumed in the same VM, it would be sharing a
+lot of state with the original thread, and would therefore fail in
+unpredictable ways if both threads were running at once, just like
+two C threads trying to share a stack. When deserialized in a
+separate VM, it's hard to tell what might happen.</p>
+<h3>10. <a name="diff" id="diff"></a><b>Can I compute
+diff(serial(x),serial(y))?</b></h3>
+The diff will produce the same stream each time the same object is
+serialized. You will need to create a new
+<code>ObjectOutputStream</code> to serialize each object.
+<h3>11. <a name="zip" id="zip"></a><b>Can I compress the serial
+representation of my objects using my own zip and unzip
+methods?</b></h3>
+<code>ObjectOutputStream</code> produces an
+<code>OutputStream</code>; if your zip object extends the
+<code>OutputStream</code> class there is no problem compressing it.
+<h3>12. <a name="compress" id="compress"></a><b>Can I execute
+methods on compressed versions of my objects, for example
+isempty(zip(serial(x)))?</b></h3>
+This is not really viable for arbitrary objects because of the
+encoding of objects. For a particular object (such as a String) you
+can compare the resulting bit streams. The encoding is stable, in
+that every time the same object is encoded it is encoded to the
+same set of bits.
+<h3>13. <a name="font" id="font"></a><b>If I try to serialize a
+font or image object and then try to reconstitute it in a different
+VM, my application dies. Why?</b></h3>
+<i>Removed. Fonts are now serializable, but images are not.</i>
+<h3>14. <a name="tree" id="tree"></a><b>How do I serialize a tree
+of objects?</b></h3>
+<p>Here's a brief example that shows how to serialize a tree of
+objects.</p>
+<pre class="codeblock">
+import java.io.*;
+
+class tree implements java.io.Serializable {
+    public tree left;
+    public tree right;
+    public int id;
+    public int level;
+
+    private static int count = 0;
+
+    public tree(int depth) {
+        id = count++;
+        level = depth;
+        if (depth &gt; 0) {
+            left = new tree(depth-1);
+            right = new tree(depth-1);
+        }
+    }
+
+    public void print(int levels) {
+        for (int i = 0; i &lt; level; i++)
+            System.out.print("  ");
+        System.out.println("node " + id);
+
+        if (level &lt;= levels &amp;&amp; left != null)
+            left.print(levels);
+
+        if (level &lt;= levels &amp;&amp; right != null)
+            right.print(levels);
+    }
+
+
+    public static void main (String argv[]) {
+
+        try {
+            /* Create a file to write the serialized tree to. */
+            FileOutputStream ostream = new FileOutputStream("tree.tmp");
+            /* Create the output stream */
+            ObjectOutputStream p = new ObjectOutputStream(ostream);
+
+            /* Create a tree with three levels. */
+            tree base = new tree(3);
+
+            p.writeObject(base); // Write the tree to the stream.
+            p.flush();
+            ostream.close();    // close the file.
+            
+            /* Open the file and set to read objects from it. */
+            FileInputStream istream = new FileInputStream("tree.tmp");
+            ObjectInputStream q = new ObjectInputStream(istream);
+            
+            /* Read a tree object, and all the subtrees */
+            tree new_tree = (tree)q.readObject();
+
+            new_tree.print(3);  // Print out the top 3 levels of the tree
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+}
+</pre>
+<h3>15. <a name="serialsuper" id="serialsuper"></a><b>If class A
+does not implement <code>Serializable</code> but a subclass B
+implements <code>Serializable</code>, will the fields of class A be
+serialized when B is serialized?</b></h3>
+Only the fields of <code>Serializable</code> objects are written
+out and restored. The object may be restored only if class A has a
+no-arg constructor that will initialize the fields of
+non-serializable supertypes. If the subclass has access to the
+state of the superclass it can implement <code>writeObject</code>
+and <code>readObject</code> to save and restore that state.
+<hr />
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Java Image I/O API Guide: 4 - Writing Image I/O
+Plug-ins</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<table summary="" width="100%">
+<tr>
+<td>
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href=
+"imageio_guideTOC.fm.html">CONTENTS</a> | <a href=
+"extending.fm1.html">PREV</a> | <a href=
+"extending.fm3.html">NEXT</a> 
+<!-- | <a href="copyright.fm.html">INDEX</a>  -->
+<!-- /font --></td>
+</tr>
+</table>
+<br />
+<h2><a name="a996925" id="a996925"><i>4.2</i> Embedding Plug-ins in
+JAR Files</a></h2>
+<a name="a996941" id="a996941"><!-- --></a> Since a plug-in
+consists of several classes, the JAR file mechanism is used to
+allow them to be combined into a single file. In addition to class
+files, JAR files may contain additional files used to describe
+their contents. In particular, a JAR file may contain a
+<code>META-INF/services</code> directory that is used to list any
+service providers that are contained in the file. For each service
+provider interface that is implemented by a class stored in the JAR
+file, a file whose name is the fully-qualified class name of the
+service provider interface is placed within the
+<code>services</code> directory. The file should contain the
+fully-qualified class names of the implementation classes present
+in the JAR file, one per line. For example, if the JAR file
+contains a service provider class named
+<code>com.mycompany.mypackage.MyImageReaderSpi</code>, which
+implements the <code>javax.imageio.spi.ImageReaderSpi</code>
+interface, there should be a file named
+<code>META-INF/services/javax.imageio.spi.ImageReaderSpi</code>
+containing the line
+<code>com.mycompany.mypackage.MyImageReaderSpi</code>.
+<p><a name="a996951" id="a996951"><!-- --></a> The Image I/O API
+will automatically examine any JAR files that are found on the
+class path, and identify those that contain Image I/O plug-ins. For
+each plug-in found, a single instance of its service provider class
+will be instantiated and stored in a run-time registry class,
+<code>javax.iamgeio.spi.IIORegistry</code>.</p>
+<p><a name="a996964" id="a996964"><!-- --></a> JAR files on the
+application class path (i.e., the path set using the
+<code>CLASSPATH</code> variable), or elsewhere (e.g., available via
+a network URL) may be loaded by the application. They are not
+loaded by default in order to minimize startup time.</p>
+<p><a name="a999336" id="a999336"><!-- --></a> The
+<code>javax.imageio.spi.IIORegistry</code> class may also be used
+at run-time to deregister installed plug-ins and to register new
+ones. In particular, it is possible to use a
+<code>ClassLoader</code> to load a plug-in over the network, which
+may then be registered and used exactly like a locally installed
+plug-in.</p>
+<p><a name="a999353" id="a999353"><!-- --></a> Most applications
+should not need to deal directly with the registry. Instead, they
+may make use of convenience methods contained within the
+<code>javax.imageio.ImageIO</code> class that search for
+appropriate plug-ins automatically.</p>
+<br />
+<hr />
+<!-- Bug in Communicator w/font: NavBar text disappears for Times 14pt pref. -->
+<!-- font size="-1" --><a href=
+"imageio_guideTOC.fm.html">CONTENTS</a> | <a href=
+"extending.fm1.html">PREV</a> | <a href=
+"extending.fm3.html">NEXT</a> 
+<!-- | <a href="copyright.fm.html">INDEX</a>  -->
+<!-- /font -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

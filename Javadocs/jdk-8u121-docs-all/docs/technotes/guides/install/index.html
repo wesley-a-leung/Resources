@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Java Platform, Standard Edition Installation Guide for OpenJDK on Solaris, Linux, OS X, and Windows, Release 8u71</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="How to install Java SE 8 Development Kit (JDK) and Runtime Environment (JRE) on Oracle Solaris, Linux, OS X, and Microsoft Windows computers" name="description"/>
+<meta content="2016-01-06T16:14:50Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Installation Guide for OpenJDK on Solaris, Linux, OS X, and Windows, Release 8u71" name="doctitle"/>
+<meta content="Release 8u71" name="relnum"/>
+<meta content="E50307-05" name="partnum"/>
+<meta content="no_value_supplied" name="docid"/>
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Installation Guide</b><br/>
+
+<a href="loe.html">
+                Next</a><hr/>
+<h1>Contents</h1>
+<h2><a href="loe.html">List of Examples</a></h2>
+<h2><a href="lot.html">List of Tables</a></h2>
+<h2><a href="title.html">Title and Copyright Information</a></h2>
+<h2><a href="preface.html#sthref2">Preface</a></h2>
+<ul style="list-style-type:none">
+<li><a href="preface.html#BABHDCGG">Audience</a></li>
+<li><a href="preface.html#BABIHEDH">Documentation Accessibility</a></li>
+<li><a href="preface.html#BABJDDDF">Conventions</a></li>
+</ul>
+<h2><a href="install_overview.html#CJAGAACB"><span>1</span> JDK 8 and JRE 8 Installation Start Here</a></h2>
+<ul style="list-style-type:none">
+<li><a href="install_overview.html#A1012444">Oracle Solaris Operating System</a></li>
+<li><a href="install_overview.html#A1096936">Microsoft Windows</a></li>
+<li><a href="install_overview.html#A1097144">Linux</a></li>
+<li><a href="install_overview.html#A1097257">OS X</a></li>
+</ul>
+<h2><a href="install_enhancements.html#CHDJBBGJ"><span>2</span> Installer Enhancements in JDK 8</a></h2>
+<ul style="list-style-type:none">
+<li><a href="install_enhancements.html#CHDJCHDG">Oracle Solaris OS</a></li>
+<li><a href="install_enhancements.html#E1096849">Microsoft Windows</a></li>
+<li><a href="install_enhancements.html#E1096869">Linux</a></li>
+<li><a href="install_enhancements.html#A1100521">OS X</a></li>
+</ul>
+<h2><a href="solaris_jdk.html#CHDBJEFD"><span>3</span> JDK 8 Installation on the Oracle Solaris Operating System</a></h2>
+<ul style="list-style-type:none">
+<li><a href="solaris_jdk.html#A1096854">System Requirements</a></li>
+<li><a href="solaris_jdk.html#A1099051">Installation Instructions Notation</a></li>
+<li><a href="solaris_jdk.html#CHDGJCFH">JDK 8 Installation Instructions for Oracle Solaris 11 using IPS packages</a></li>
+<li><a href="solaris_jdk.html#A1097833">Manual JDK 8 Installation Instructions</a>
+<ul style="list-style-type:none">
+<li><a href="solaris_jdk.html#CHDDCEDD">Installation of Oracle Solaris Archive Binaries (<code dir="ltr">.tar.gz</code>)</a></li>
+<li><a href="solaris_jdk.html#CHDBDEFD">Installation of Oracle Solaris SVR4 Packages (<code dir="ltr">.tar.Z</code>)</a></li>
+</ul>
+</li>
+<li><a href="solaris_jdk.html#CHDEFJDA">Selecting the Default Java Platform</a>
+<ul style="list-style-type:none">
+<li><a href="solaris_jdk.html#sthref4">Default Java Platform</a></li>
+<li><a href="solaris_jdk.html#sthref5">PATH Setting</a></li>
+</ul>
+</li>
+</ul>
+<h2><a href="solaris_jre.html#CHDFEEHC"><span>4</span> JRE 8 Installation on the Oracle Solaris Operating System</a></h2>
+<ul style="list-style-type:none">
+<li><a href="solaris_jre.html#B1096854">System Requirements</a></li>
+<li><a href="solaris_jre.html#B1099051">Installation Instructions Notation</a></li>
+<li><a href="solaris_jre.html#A1096992">JRE 8 Installation Instructions for Oracle Solaris 11 using IPS packages</a></li>
+<li><a href="solaris_jre.html#B1097833">Manual JRE 8 Installation Instructions</a></li>
+</ul>
+<h2><a href="solaris_server_jre.html#CFHIDFHC"><span>5</span> Server JRE 8 Installation on the Oracle Solaris Operating System</a></h2>
+<ul style="list-style-type:none">
+<li><a href="solaris_server_jre.html#D1096831">System Requirements</a></li>
+<li><a href="solaris_server_jre.html#D1096849">Server JRE Installation Instructions</a>
+<ul style="list-style-type:none">
+<li><a href="solaris_server_jre.html#sthref6">Installation Instruction Notation</a></li>
+<li><a href="solaris_server_jre.html#sthref7">Installation</a></li>
+</ul>
+</li>
+</ul>
+<h2><a href="linux_jdk.html#BJFGGEFG"><span>6</span> JDK Installation for Linux Platforms</a></h2>
+<ul style="list-style-type:none">
+<li><a href="linux_jdk.html#A1096829">System Requirements</a></li>
+<li><a href="linux_jdk.html#A1098871">JDK 8 Installation Instructions</a>
+<ul style="list-style-type:none">
+<li><a href="linux_jdk.html#BABBHGIA">Installation Instructions Notation and Files</a></li>
+<li><a href="linux_jdk.html#BJFJJEFG">Installation of the 64-bit JDK on Linux Platforms</a></li>
+<li><a href="linux_jdk.html#BJFJHFDD">Installation of the 64-bit JDK on RPM-based Linux Platforms</a></li>
+<li><a href="linux_jdk.html#BJFCDAIB">Installation of the 32-bit JDK on Linux Platforms</a></li>
+<li><a href="linux_jdk.html#BJFIFIEG">Installation of the 32-bit JDK on RPM-based Linux Platforms</a></li>
+</ul>
+</li>
+<li><a href="linux_jdk.html#A1097130">General Installation Notes</a>
+<ul style="list-style-type:none">
+<li><a href="linux_jdk.html#sthref8">Root Access</a></li>
+<li><a href="linux_jdk.html#sthref9">Overwriting Files</a></li>
+<li><a href="linux_jdk.html#sthref10">System Preferences</a></li>
+</ul>
+</li>
+</ul>
+<h2><a href="linux_jre.html#CFHBJIIG"><span>7</span> JRE Installation for Linux Platforms</a></h2>
+<ul style="list-style-type:none">
+<li><a href="linux_jre.html#A1096830">System Requirements</a></li>
+<li><a href="linux_jre.html#A1096865">JRE 8 Installation Instructions</a>
+<ul style="list-style-type:none">
+<li><a href="linux_jre.html#BABCCAJA">Installation Instruction Notation and Files</a></li>
+<li><a href="linux_jre.html#CFHIEGAA">Installation of the 64-bit JRE on Linux Platforms</a></li>
+<li><a href="linux_jre.html#CFHBHAGI">Installation of the 64-bit JRE on RPM-based Linux Platforms</a></li>
+<li><a href="linux_jre.html#CFHFJFDJ">Installation of the 32-bit JRE on Linux Platforms</a></li>
+<li><a href="linux_jre.html#CFHHEHIF">Installation of the 32-bit JRE on RPM-based Linux Platforms</a></li>
+</ul>
+</li>
+<li><a href="linux_jre.html#A1096897">General Installation Notes</a>
+<ul style="list-style-type:none">
+<li><a href="linux_jre.html#sthref11">Root Access</a></li>
+<li><a href="linux_jre.html#sthref12">Overwriting Files</a></li>
+<li><a href="linux_jre.html#sthref13">System Preferences</a></li>
+</ul>
+</li>
+</ul>
+<h2><a href="linux_server_jre.html#CACJHCDD"><span>8</span> Server JRE 8 Installation for Linux Platforms</a></h2>
+<ul style="list-style-type:none">
+<li><a href="linux_server_jre.html#A1096831">System Requirements</a></li>
+<li><a href="linux_server_jre.html#A1096849">Server JRE Installation Instructions</a>
+<ul style="list-style-type:none">
+<li><a href="linux_server_jre.html#sthref14">Installation Instruction Notation</a></li>
+<li><a href="linux_server_jre.html#sthref15">Installation</a></li>
+</ul>
+</li>
+<li><a href="linux_server_jre.html#A1096869">General Installation Notes</a>
+<ul style="list-style-type:none">
+<li><a href="linux_server_jre.html#sthref16">Root Access</a></li>
+<li><a href="linux_server_jre.html#sthref17">Overwriting Files</a></li>
+<li><a href="linux_server_jre.html#sthref18">System Preferences</a></li>
+</ul>
+</li>
+</ul>
+<h2><a href="linux_plugin.html#CACCAFFG"><span>9</span> Manual Installation and Registration of Java Plugin for Linux</a></h2>
+<ul style="list-style-type:none">
+<li><a href="linux_plugin.html#A1097908">Plugin Installation</a></li>
+<li><a href="linux_plugin.html#CACEEBDF">Notes</a></li>
+</ul>
+<h2><a href="mac_jdk.html#CHDBADCG"><span>10</span> JDK 8 Installation for OS X</a></h2>
+<ul style="list-style-type:none">
+<li><a href="mac_jdk.html#A1096827">System Requirements</a></li>
+<li><a href="mac_jdk.html#A1096855">JDK Installation Instructions</a></li>
+<li><a href="mac_jdk.html#A1096875">Determining the Default Version of the JDK</a></li>
+<li><a href="mac_jdk.html#A1096903">Uninstalling the JDK</a></li>
+</ul>
+<h2><a href="mac_jre.html#CHDGECEB"><span>11</span> JRE 8 Installation for OS X</a></h2>
+<ul style="list-style-type:none">
+<li><a href="mac_jre.html#A1098497">System Requirements</a></li>
+<li><a href="mac_jre.html#A1096856">JRE Downloaded File</a></li>
+<li><a href="mac_jre.html#pre_8u40_post_8u40">Installing JRE Version Prior to 8u40 or 8u45 and Later</a></li>
+<li><a href="mac_jre.html#jre_8u40_osx">Installing JRE 8u40</a></li>
+<li><a href="mac_jre.html#A1097025">Determining the Installed Version of the JRE</a></li>
+<li><a href="mac_jre.html#A1096890">Uninstalling the JRE</a></li>
+</ul>
+<h2><a href="mac_install_faq.html#CHDJEDDB"><span>12</span> OS X Platform Install FAQ</a></h2>
+<ul style="list-style-type:none">
+<li><a href="mac_install_faq.html#A1096845">Should I install the JRE or the JDK?</a></li>
+<li><a href="mac_install_faq.html#A1096953">How do I install JavaFX?</a></li>
+<li><a href="mac_install_faq.html#A1096978">How do I find out which version of Java is the system default?</a></li>
+<li><a href="mac_install_faq.html#A1097080">How do I clear the Java cache?</a></li>
+<li><a href="mac_install_faq.html#A1097399">How are Java updates managed on OS X?</a></li>
+<li><a href="mac_install_faq.html#A1097743">How do I uninstall Java?</a></li>
+<li><a href="mac_install_faq.html#A1097886">I have installed Java for OS X 2012-006 and Apple Java 6 can no longer be used for applets or Web Start. How do I get it back?</a></li>
+<li><a href="mac_install_faq.html#A1098031">After installing Java for OS X 2012-006, can I continue to use Apple's Java 6 alongside the OS X JDK or JRE for Java 8?</a></li>
+<li><a href="mac_install_faq.html#osxfaq_restore_6">Can I restore Apple Java 6 after uninstalling Oracle Java 7?</a></li>
+<li><a href="mac_install_faq.html#osxfaq_gatekeeper_blocking">I am running Mountain Lion (OS X 10.8) or later and Gatekeeper is blocking an app from launching. What is going on?</a></li>
+<li><a href="mac_install_faq.html#osxfaq_java_pref_app">What happened to the Java Preferences app in Application -&gt; Utilities?</a></li>
+<li><a href="mac_install_faq.html#osxfaq_jre_not_listed">I have Oracle's version of the JRE installed, but it is not listed in Java Preferences</a></li>
+<li><a href="mac_install_faq.html#osxfaq_java_cmd_line">I have Oracle's version of the JRE installed, but when I try to run the java command from the command line, it does not work</a></li>
+</ul>
+<h2><a href="mac_preferences.html#BABHEJEC"><span>13</span> Note for Users of OS X that Include Apple Java 6 Plug-in</a></h2>
+<h2><a href="windows_system_requirements.html#BABHGIJF"><span>14</span> Windows System Requirements for JDK and JRE</a></h2>
+<ul style="list-style-type:none">
+<li><a href="windows_system_requirements.html#A1097393">32-bit Platforms</a>
+<ul style="list-style-type:none">
+<li><a href="windows_system_requirements.html#BABBGHIH">Processor Requirements</a></li>
+<li><a href="windows_system_requirements.html#BABJJBJI">Disk Space Requirements</a></li>
+<li><a href="windows_system_requirements.html#BABIJDDB">Memory Requirements</a></li>
+</ul>
+</li>
+<li><a href="windows_system_requirements.html#A1097784">64-bit Platforms</a>
+<ul style="list-style-type:none">
+<li><a href="windows_system_requirements.html#BABIFDGD">Processor Requirements</a></li>
+<li><a href="windows_system_requirements.html#BABFBCEE">Disk Space Requirements</a></li>
+<li><a href="windows_system_requirements.html#BABHCGGA">Memory Requirements</a></li>
+</ul>
+</li>
+</ul>
+<h2><a href="windows_jdk_install.html#CHDEBCCJ"><span>15</span> JDK Installation for Microsoft Windows</a></h2>
+<ul style="list-style-type:none">
+<li><a href="windows_jdk_install.html#A1096923">System Requirements</a></li>
+<li><a href="windows_jdk_install.html#A1097272">Installation Instructions Notation</a></li>
+<li><a href="windows_jdk_install.html#A1097936">Installation Instructions</a>
+<ul style="list-style-type:none">
+<li><a href="windows_jdk_install.html#CHDBJHIC">Downloading the Installer</a></li>
+<li><a href="windows_jdk_install.html#CHDBEDGA">Running the JDK Installer</a></li>
+<li><a href="windows_jdk_install.html#sthref20">Java Start Menu</a></li>
+<li><a href="windows_jdk_install.html#CHDHHBDD">Installing the JDK Silently</a></li>
+<li><a href="windows_jdk_install.html#BABGDJFH">Updating the PATH Environment Variable</a></li>
+<li><a href="windows_jdk_install.html#CHDCHGCE">Starting to Use the JDK</a></li>
+</ul>
+</li>
+<li><a href="windows_jdk_install.html#A1098149">Uninstalling the JDK</a></li>
+<li><a href="windows_jdk_install.html#A1098183">Installed Directory Tree</a></li>
+<li><a href="windows_jdk_install.html#CHDCCBFJ">Installation Troubleshooting</a>
+<ul style="list-style-type:none">
+<li><a href="windows_jdk_install.html#CHDEAIFI">Corrupt Cabinet File</a></li>
+<li><a href="windows_jdk_install.html#CHDICDGC">System Error During Decompression</a></li>
+<li><a href="windows_jdk_install.html#CHDBBCDB">Program Cannot Be Run in DOS Mode</a></li>
+<li><a href="windows_jdk_install.html#CHDJCCEG">Private Versus Public JRE</a></li>
+<li><a href="windows_jdk_install.html#CHDEADII">Source Files in Notepad</a></li>
+<li><a href="windows_jdk_install.html#CHDEABAE">Characters That Are Not Part of the System Code Page</a></li>
+</ul>
+</li>
+</ul>
+<h2><a href="windows_jre_install.html#CHDEDHAJ"><span>16</span> JRE Installation for Microsoft Windows</a></h2>
+<ul style="list-style-type:none">
+<li><a href="windows_jre_install.html#A1096933">System Requirements</a></li>
+<li><a href="windows_jre_install.html#A1098865">Proxy Settings and Authentication</a></li>
+<li><a href="windows_jre_install.html#A1097282">Installation Instructions Notation</a></li>
+<li><a href="windows_jre_install.html#A1099373">Installation Instructions</a>
+<ul style="list-style-type:none">
+<li><a href="windows_jre_install.html#CHDFBCGI">Downloading the Installer</a></li>
+<li><a href="windows_jre_install.html#CHDCHIDI">Running the Installer</a></li>
+</ul>
+</li>
+<li><a href="windows_jre_install.html#uninstalling_the_jre_windows">Uninstalling the JRE</a></li>
+<li><a href="windows_jre_install.html#CHDCJDFJ">Java Start Menu</a></li>
+<li><a href="windows_jre_install.html#A1100356">Java Plug-in</a></li>
+<li><a href="windows_jre_install.html#A1100264">Java Web Start</a>
+<ul style="list-style-type:none">
+<li><a href="windows_jre_install.html#CHDJCHDE">Upgrading from Previous Versions</a></li>
+<li><a href="windows_jre_install.html#CHDFHDHA">Uninstallation</a></li>
+</ul>
+</li>
+<li><a href="windows_jre_install.html#A1100763">Java Update Feature</a></li>
+<li><a href="windows_jre_install.html#A1134077">Option to Disable the "JRE out of date" Warning</a>
+<ul style="list-style-type:none">
+<li><a href="windows_jre_install.html#A1100726">Silent Installation</a></li>
+</ul>
+</li>
+<li><a href="windows_jre_install.html#A1100993">Installation of JRE on 64-Bit Windows Computers</a>
+<ul style="list-style-type:none">
+<li><a href="windows_jre_install.html#CHDEHGFD">Verifying Your Version of Windows</a></li>
+<li><a href="windows_jre_install.html#CHDHIGDI">Verifying Your Browser</a></li>
+<li><a href="windows_jre_install.html#CHDEDDFA">Choosing Which JRE Installer to Download</a></li>
+</ul>
+</li>
+</ul>
+<h2><a href="windows_installer_options.html#CJADIAHE"><span>17</span> Windows JRE Installer Options</a></h2>
+<ul style="list-style-type:none">
+<li><a href="windows_installer_options.html#A1097175">Introduction</a></li>
+<li><a href="windows_installer_options.html#CJAJGEHA">Command-Line Installation</a></li>
+<li><a href="windows_installer_options.html#static_installation">Static Installation</a></li>
+<li><a href="windows_installer_options.html#A1097528">Creating a Log File</a></li>
+</ul>
+<h2><a href="windows_server_jre.html#CFHGHHFJ"><span>18</span> Server JRE Installation for Microsoft Windows</a></h2>
+<ul style="list-style-type:none">
+<li><a href="windows_server_jre.html#A1096882">System Requirements</a></li>
+<li><a href="windows_server_jre.html#A1096972">Installation Instructions Notation</a></li>
+<li><a href="windows_server_jre.html#A1097054">Installation Instructions</a></li>
+</ul>
+<h2><a href="windows_install_faq.html#CHDFIAHH"><span>19</span> Windows Online Installation and Java Update FAQ</a></h2>
+<ul style="list-style-type:none">
+<li><a href="windows_install_faq.html#CHDGHEHA">I downloaded the installer and it is only 846KB. Why is it so small?</a></li>
+<li><a href="windows_install_faq.html#A1096960">I had the Java Control Panel open for Java Update and the About tab showed the version of the JRE installed in my computer. Then I ran Java Update, and the version of the JRE that the Java Control Panel is showing has not changed. Why is this?</a></li>
+<li><a href="windows_install_faq.html#A1096998">Netscape/Mozilla is not working correctly with Java Plug-in. Why?</a></li>
+<li><a href="windows_install_faq.html#A1097040">I try to install on the D:\ drive and Java Update is still installing files onto the C:\ drive. Why?</a></li>
+<li><a href="windows_install_faq.html#A1097078">How can I uninstall the Java Update version I just installed?</a></li>
+<li><a href="windows_install_faq.html#A1097140">After the JRE bootstrap installer is downloaded and executed, why does the message "This installer cannot proceed with the current Internet Connection settings of your system. In your Windows Control Panel, please check Internet Options -&gt; Connections to make sure the settings and proxy information are correct." appear?</a></li>
+<li><a href="windows_install_faq.html#A1097241">I found two processes  jucheck.exe and jusched.exe  running in the background of my system after installing JRE. Is there a way to shut them down?</a></li>
+<li><a href="windows_install_faq.html#A1097291">After Java Update updates my system, my browser still uses the Microsoft Virtual Machine (VM), or an earlier version of the Java VM, to run applets. What is wrong?</a></li>
+<li><a href="windows_install_faq.html#A1097332">When I click the Update Now button from the Java Control Panel, it complains about the system being "offline." What does that mean?</a></li>
+<li><a href="windows_install_faq.html#A1097377">I followed the instructions to install a specific version of the JRE. After the installation, a message popped-up from system tray saying an update is available for download. What should I do?</a></li>
+<li><a href="windows_install_faq.html#A1097419">I encountered the error "Error 1606: Could not access network location file MSI/CAB and still fail after immediate retry." when running the Java SE installer. What does it mean?</a></li>
+<li><a href="windows_install_faq.html#A1097457">I encountered the error "This installation package could not be opened. Contact the application vendor to verify that this is a valid Windows Installer package." when running the Java SE installer.</a></li>
+<li><a href="windows_install_faq.html#A1097602">I encountered the error "Error 1722. There is a problem with this Windows installer package. A program run as part of the setup did not finish as expected. Contact your support personnel or package vendor."</a></li>
+</ul>
+<h2><a href="config.html#installing_with_config_file"><span>20</span> Installing With a Configuration File</a></h2>
+<ul style="list-style-type:none">
+<li><a href="config.html#using_config_file">Using a Configuration File</a></li>
+<li><a href="config.html#config_file_options">Configuration File Options</a></li>
+<li><a href="config.html#sample_config_file">Sample Configuration File</a></li>
+<li><a href="config.html#system_runtime_config_file">System Runtime Configuration File</a></li>
+</ul>
+<a href="loe.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Troubleshooting</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1044" name="generator"/>
+<meta content="This topic provides troubleshooting tips to try if you encounter any problems deploying your Java or JavaFX applications." name="description"/>
+<meta content="2015-02-16T9:50:5Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Deployment Guide, Release 8u40" name="doctitle"/>
+<meta content="Release 8u40" name="relnum"/>
+<meta content="E50259-02" name="partnum"/>
+<meta content="JSDPG" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Deployment Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="other_features.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="enhancements-7.html">
+                Next</a><hr/>
+<div id="JSDPG516"><a id="CEGBHDIH" name="CEGBHDIH"/>
+<h1><span>33</span> Troubleshooting</h1>
+<a id="JSDPG639" name="JSDPG639"/>
+<p>This topic provides troubleshooting tips to try if you encounter any problems deploying your Java or JavaFX applications.</p>
+<p>This topic contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#A1224086">Running Applications</a></p>
+</li>
+<li>
+<p><a href="#A1213382">Development Process Issues</a></p>
+</li>
+<li>
+<p><a href="#A1215576">Runtime Issues</a></p>
+</li>
+</ul>
+<a id="A1224086" name="A1224086"/>
+<div id="JSDPG640">
+<h2><span>33.1</span> Running Applications</h2>
+<p>Use the following checklist if you have trouble running applications after they are packaged:</p>
+<ul>
+<li>
+<p>Verify that you have a supported environment.</p>
+</li>
+<li>
+<p>Check the <a href="http://www.oracle.com/technetwork/java/javase/jdk-relnotes-index-2162236.html">release notes</a> for known issues.</p>
+</li>
+</ul>
+<p>If the tips in the following sections do not help to resolve the issue, then the following actions are suggested:</p>
+<ul>
+<li>
+<p>Ask experts in the Java and <a href="https://community.oracle.com/community/java/javafx/javafx_2.0_and_later">JavaFX Forums</a>.</p>
+</li>
+<li>
+<p>File a <a href="https://bugs.openjdk.java.net/">bug to JIRA</a>.</p>
+<p>Describe in detail what you are trying to do, and what exactly does not work as expected. If possible, share a test case to reproduce the problem. Be sure to include information about your environment and your Java and JavaFX versions.</p>
+</li>
+</ul>
+</div>
+
+<a id="A1213382" name="A1213382"/>
+<div id="JSDPG632">
+<h2><span>33.2</span> Development Process Issues</h2>
+<ul>
+<li>
+<p>Verify that you are using the latest version of the packaging tools.</p>
+</li>
+<li>
+<p><code dir="ltr">javapackager</code> command fails:</p>
+<ul>
+<li>
+<p>Ensure that the JDK bin folder, where the <code dir="ltr">javapackager</code> tool is located, is on the <code dir="ltr">PATH</code>.</p>
+</li>
+<li>
+<p>Ensure that <i>JAVA_HOME</i> is set.</p>
+</li>
+<li>
+<p>On OS X, the problem could be due to simultaneous use of Apple's JDK 6 and Oracle's JDK 7 or JDK 8. To work around this issue, set <i>JAVA_HOME</i> and add it to the path:</p>
+<ul>
+<li>
+<p><code dir="ltr">export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_06.jdk/Contents/Home</code></p>
+</li>
+<li>
+<p><code dir="ltr">export PATH=$JAVA_HOME/bin:$PATH</code></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Packaging self-contained applications:</p>
+<ul>
+<li>
+<p>If the package format you are trying to build depends on third-party tools, then make sure they are available on the <code dir="ltr">PATH</code>.</p>
+</li>
+<li>
+<p>Set <code dir="ltr">verbose="true"</code> in the <code dir="ltr"><a href="javafx_ant_task_reference.html#CIABIFCI">&lt;fx:deploy&gt;</a></code> task or pass <code dir="ltr">"-v"</code> to <code dir="ltr">javapackager</code> to get verbose build output.</p>
+</li>
+<li>
+<p>Set the environment variable <code dir="ltr">JAVAFX_ANT_DEBUG</code> to <code dir="ltr">true</code> to get additional details and keep intermediate build artifacts.</p>
+</li>
+<li>
+<p>If drop-in custom resources are not used, then verify that the JavaFX Ant task definitions are loaded with the correct classpath, typically with "." at the beginning. See <a href="javafx_ant_tasks.html#CIAEIAGE">Section 10.3, "Using JavaFX Ant Tasks."</a></p>
+</li>
+</ul>
+</li>
+<li>
+<p>Packaging self-contained applications on remote systems:</p>
+<ul>
+<li>
+<p>If packaging tools are executed on a remote system (for example, Jenkins, Hudson, and other build systems) to produce the artifact, then it is important to have same user logged on a desktop system. If using the same user login is not possible, you can create a custom .dmg bundle using the following steps:</p>
+</li>
+</ul>
+<ol>
+<li>
+<p>Create a .dmg image from manual build</p>
+</li>
+<li>
+<p>Convert the .dmg file to a read-write form</p>
+</li>
+<li>
+<p>Remove the content of you application folder, but keep the top level app directory</p>
+</li>
+<li>
+<p>Add the dmg to the build</p>
+</li>
+<li>
+<p>At the build time, mount it, copy .app contents to the image, then convert .dmg to a compressed read only form</p>
+</li>
+</ol>
+</li>
+<li>
+<p>NetBeans issues:</p>
+<ul>
+<li>
+<p>Ensure you are using NetBeans 7.2 or later. To use JavaFX features, you need NetBeans 8.0 or later.</p>
+</li>
+<li>
+<p>If a <b>Clean and Build</b> fails to build the sample application or double-clicking some or all of the files results in an error, check that the JavaFX platform is enabled properly in NetBeans.</p>
+</li>
+<li>
+<p>To get more insight into the build process, enable verbose output by clicking the <b>Tools</b> icon in the build output window.</p>
+</li>
+<li>
+<p>To build self-contained applications, ensure that the required third-party tools are added to the <code dir="ltr">PATH</code> before you start NetBeans. See <a href="self-contained-packaging.html#A1324980">Section 7.4, "Installable Packages."</a></p>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<a id="A1215576" name="A1215576"/>
+<div id="JSDPG633">
+<h2><span>33.3</span> Runtime Issues</h2>
+<p>Basic checklist:</p>
+<ul>
+<li>
+<p>Verify that you have the latest version of Java installed (Java 8 or later).</p>
+</li>
+<li>
+<p>For JavaFX applictions, before trying to troubleshoot your application, ensure the JavaFX samples run properly.</p>
+<ol>
+<li>
+<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Download the JavaFX samples zip file</a>.</p>
+</li>
+<li>
+<p>Double-click the JAR file, the JNLP file, and the HTML file for at least one sample to ensure it runs correctly.</p>
+</li>
+</ol>
+</li>
+<li>
+<p>Validate that the <code dir="ltr">java</code> process is using your JRE installed location.</p>
+</li>
+<li>
+<p>If you have a 64-bit system, you might be using either a 32 -or 64-bit version of Java. The best way to avoid problems caused by unexpected use of an older version of the JRE is to keep both 32- and 64-bit versions of Java up to date.</p>
+</li>
+</ul>
+<div id="JSDPG634"><a id="sthref481" name="sthref481"/>
+<h3><span>33.3.1</span> Standalone Execution</h3>
+<ul>
+<li>
+<p>Run the same application from the command line as<br/>
+<code dir="ltr">java -jar MyApp.jar</code></p>
+<p>This way you can see actual exceptions and trace messages, if any.</p>
+</li>
+<li>
+<p>Pass <code dir="ltr">-Djavafx.verbose=true</code> to enable verbose output from the embedded launcher.</p>
+</li>
+<li>
+<p>If your application starts slowly, then it could be due to network configuration. Try disabling the autoproxy configuration by passing <code dir="ltr">-Djavafx.autoproxy.disable=true</code> to see if it helps.</p>
+</li>
+</ul>
+</div>
+
+<div id="JSDPG635"><a id="sthref482" name="sthref482"/>
+<h3><span>33.3.2</span> Self-Contained Applications</h3>
+<ul>
+<li>
+<p>Run the native launcher from the console window to see trace messages and so on.</p>
+<ul>
+<li>
+<p>On OS X, the launcher is <code dir="ltr">MyApp.app/Contents/MacOS/JavaAppLauncher</code></p>
+</li>
+<li>
+<p>On Windows, you must pass the <code dir="ltr">/Debug</code> option to the launcher to open a window to see the trace messages.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>You can pass debug options to your application with <code dir="ltr"><a href="javafx_ant_task_reference.html#CIAHJIJG">&lt;fx:jvmarg&gt;</a></code> or <a href="javafx_ant_task_reference.html#CIAHCIFJ">&lt;fx:property&gt;</a> at package time. Examples:</p>
+<ul>
+<li>
+<p>To list all classes loaded, add the following to your <code dir="ltr"><a href="javafx_ant_task_reference.html#CIABIFCI">&lt;fx:deploy&gt;</a></code> task:</p>
+<pre dir="ltr" xml:space="preserve">
+&lt;fx:jvmarg value="-verbose:class"/&gt;
+</pre></li>
+<li>
+<p>To debug:</p>
+<pre dir="ltr" xml:space="preserve">
+&lt;fx:jvmarg value="-agentlib:jdwp=transport=
+    dt_socket,address=4000,server=y,suspend=y"/&gt; 
+</pre>
+<p>This instructs the agent to suspend after the JVM is initialized and wait for a debugger to connect on port 4000.</p>
+</li>
+<li>
+<p>To profile in Netbeans 7.2 on Mac OS X:</p>
+<pre dir="ltr" xml:space="preserve">
+&lt;fx:jvmarg value="-agentpath:/Applications/NetBeans/NetBeans
+    7.2.app/Contents/Resources/NetBeans/profiler/lib/deployed/jdk16/
+    mac/libprofilerinterface.jnilib=/Applications/NetBeans/NetBeans 
+    7.2.app/Contents/Resources/NetBeans/profiler/lib,5140"/&gt;
+</pre>
+<p>This will stop the application after it is loaded until the profiler is attached. Consult the documentation on your profiler for exact values to pass.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Review the tips for troubleshooting standalone applications.</p>
+</li>
+<li>
+<p>OS X: if other users cannot run your application, then ensure it is signed. See <a href="self-contained-packaging.html#BCGJFCAI">Section 7.3.5.1, "OS X."</a>)</p>
+<ul>
+<li>
+<p>To validate signing, use</p>
+<pre dir="ltr" xml:space="preserve">
+codesign -v -d --verbose=4 MyApp.app
+</pre></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<div id="JSDPG636"><a id="sthref483" name="sthref483"/>
+<h3><span>33.3.3</span> Web Start</h3>
+<ul>
+<li>
+<p>If you rebuilt the application but do not see changes in the runtime, exit the application and use the following steps to clear the Java cache:</p>
+<ol>
+<li>
+<p>Run <code dir="ltr">javaws -viewer</code> from the command line, or open Java Control Panel manually (for example, by choosing Java in Windows Control Panel).</p>
+</li>
+<li>
+<p>In the Java Control Panel, in the Temporary Internet Files section, click <b>Settings</b>, then click <b>Delete Files</b>.</p>
+</li>
+<li>
+<p>Select <b>Cached Applications and Applets</b> and click OK.</p>
+</li>
+</ol>
+</li>
+<li>
+<p>If the application fails with an error, then check the process list to see what <code dir="ltr">java</code> process is actually used to run it. Ensure it comes from the correct location.</p>
+</li>
+<li>
+<p>Consult the <a href="../troubleshoot/index.html">Java SE Troubleshooting Guide</a> for tips on how to troubleshoot generic Java Web Start problems.</p>
+</li>
+</ul>
+</div>
+
+<div id="JSDPG637"><a id="sthref484" name="sthref484"/>
+<h3><span>33.3.4</span> Applications Embedded in the Browser</h3>
+<ul>
+<li>
+<p>Validate your version of Java at <code dir="ltr"><a href="http://java.com">http://java.com</a></code>.</p>
+</li>
+<li>
+<p>Check the JavaScript error console for errors.</p>
+</li>
+<li>
+<p>Try a different browser. See if the problem is common to the system or is browser-specific.</p>
+<p>Remember that not all browsers are supported. For example, Chrome on OS X is not supported.</p>
+</li>
+<li>
+<p>Find out the architecture of the browser you are using. Most of the browsers are 32-bit even if you are using a 64-bit platform.</p>
+<p>Install/upgrade 32-bit Java and JavaFX runtimes to resolve the problem.</p>
+</li>
+<li>
+<p>Review the browser's list of installed plugins.</p>
+<ul>
+<li>
+<p>There should be only one Java Plugin in the list. For JavaFX 2.2 and Java 7 update 6 the correct plugin is version 10.6.*.</p>
+</li>
+<li>
+<p>On Windows, there should be only one Deployment Toolkit plugin, and it should be the same or a higher version than that of the Java Plugin.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Safari 6 on OS X if the <code dir="ltr">file://</code> protocol is used:</p>
+<ul>
+<li>
+<p>According to default Safari 6 policy, "no <code dir="ltr">file://</code> is allowed to open any local resources that might run code". This means that Java and JavaFX applications will not load and appear to get stuck on the spinning wheel.</p>
+</li>
+<li>
+<p>Run a local web server or disable local file restrictions. To do this, enable the Develop menu, then check the <b>Disable Local File Restrictions</b> menu item.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>See the <a href="../troubleshoot/index.html">Java SE Troubleshooting Guide</a> for tips on how to troubleshoot generic Java plug-in problems.</p>
+</li>
+</ul>
+</div>
+
+<div id="JSDPG648"><a id="sthref485" name="sthref485"/>
+<h3><span>33.3.5</span> Disabling the Autoproxy Configuration in the Code</h3>
+<p>By default, JavaFX application proxy settings are taken from the current browser if the application is embedded into a web page, or system proxy settings are used. Sometimes SOCKS proxy settings, specified in the <code dir="ltr">System.setProxy</code> are ignored.</p>
+<p>If you need to disable the automatic proxy configuration in the application, specify a <code dir="ltr">JavaFX-Feature-Proxy</code> manifest entry in the <code dir="ltr">fx:jar</code> with the <code dir="ltr">None</code> as a value as in the following example.</p>
+<pre dir="ltr" xml:space="preserve">
+&lt;manifest&gt;
+    &lt;attribute name="JavaFX-Feature-Proxy" value="None"/&gt;
+ &lt;/manifest&gt;
+</pre>
+<p>After you enter the <code dir="ltr">JavaFX-Feature-Proxy</code> manifest, the network stack will not be initialized prior to application code gets executed and you can set socks properties in the code.</p>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="other_features.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="enhancements-7.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Networking Release Notes</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Networking Release Notes</h1>
+The following are known bugs and other networking issues for Java SE 1.4.2.
+<ul>
+<li>In releases prior to 1.4.2, it was possible to create an
+invalid URL instance such as the following: <code>new URL
+(&quot;http://www.example.com:-1/index.html&quot;)</code>.
+Specifying a port number of <code>-1</code> is not valid. However,
+in previous releases the <code>-1</code> was stripped off when
+sending such URLS with HTTP commands. In 1.4.2, the <code>-1</code>
+is left in the URL and this may cause problems for some HTTP
+servers or proxies. Applications should not create URL instances
+with a <code>-1</code> port number. Assuming the <code>-1</code>
+refers to the default port in this example, the correct way to
+create this URL is <code>new URL
+(&quot;http://www.example.com/index.html&quot;)</code>. This note
+only applies to the single argument URL constructor.</li>
+</ul>
+<ul>
+<li>On Microsoft Windows 98/ME, a read timeout set using
+<tt>Socket.setSoTimeout</tt> or an accept timeout set using
+<tt>ServerSocket.setSoTimeout</tt> may result in a timeout that is
+500ms later than expected. This issue is observable with all Java SE
+releases and stems from a Microsoft Windows 98/ME bug. A patch for
+Microsoft Windows 98/ME is obtainable through the following page on
+the Microsoft website: <a href=
+"http://support.microsoft.com/default.aspx?scid=KB;EN-US;Q257821&amp;">
+http://support.microsoft.com/default.aspx?scid=KB;EN-US;Q257821&amp;</a></li>
+</ul>
+<ul>
+<li>Prior to Java SE 1.4.1 the
+<tt>java.net.InetAddress.getLocalHost()</tt> would cache the lookup
+of the IP address of the local machine for the entire session of
+the application. This behaviour poses a problem for applications
+running on machines that are connected to the internet via a
+dial-up connection or machines that acquired their addresses
+through DHCP. This has been corrected in 1.4.1 so that the local IP
+address is no longer cached. <tt>InetAddress.getLocalHost()</tt>
+will return the correct IP address for dial-up connections as well
+as for DHCP. See bug <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4211819">4211819</a>.</li>
+</ul>
+<ul>
+<li>Prior to Java SE 1.4.1, the http/https protocol handlers would not
+redirect correctly from a http URL to a https URL (and vice versa).
+In particular, the redirect was attempted using the original URL
+scheme. This has been fixed in 1.4.1. by returning the server
+responses for such redirects (from http to https or https to http)
+to the application. Therefore, it is the applications
+responsibility to check the response code and recognize it as a
+redirect. The Location header field value can be checked for the
+redirect information, and then the application must decide whether
+or not to follow the redirect using the new protocol. See bug
+<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4620571">4620571</a>.</li>
+</ul>
+<ul>
+<li>Prior to Java SE 1.4 the <tt>java.net.URLConnection</tt> class
+would handle errors from http servers inconsistently. In particular
+the <tt>getInputStream</tt> or other methods would throw a
+FileNotFoundException if the http server returned a response code
+&gt;= 400 and the request was for a resource of a known file type.
+<p>This has been corrected in 1.4 so that an IOException is thrown
+for any http error from the server and a specific exception of
+FileNotFoundExeption when the resource is not found (ie: 404 or 410
+response codes). The exception is thrown irrespective of the file
+type.</p>
+<p>Applications that assumed an exception would not be thrown when
+an http error is returned from the server need to be aware of this
+change in 1.4 - see <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4160499">4160499</a>.</p>
+<p>Related to this issue is that
+<tt>HttpURLConnection.getErrorStream()</tt> method can now been
+used to read the error page from the http server when a http error
+is returned from the server. Previously <tt>getErrorStream()</tt>
+always returned <tt>null</tt>.</p>
+</li>
+</ul>
+<ul>
+<li>Prior to Java SE 1.4 the <tt>InetAddress.toString()</tt> would
+perform a lookup via the name service if the hostname wasn't
+previously resolved. This is no longer the case in 1.4 and
+<tt>toString</tt> will return immediately. If the hostname is not
+resolved the returned string will contain the dotted IP address
+only.
+<p>Applications that depend on <tt>toString()</tt> returning a
+string with the resolved hostname should be aware of this
+correction in 1.4 - see <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4239141">4239141</a>.</p>
+</li>
+</ul>
+<ul>
+<li>Prior to Java SE 1.4 if <tt>InetAddress.getByName</tt> if a lookup
+to the name service failed then all subsequent lookups of that
+hostname would fail for the lifetime of the virtual machine. This
+arose because negative lookups were always cached. This has changed
+in 1.4 so that by default if a lookup fails it's possible for a
+subsequent lookup to succeed. This is particularly important in
+dial-up environments or environments where the name service is not
+reliable.
+<p>Applications that depend on behaviour where subsequent lookups
+always failed need to be aware of this issue - see <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4256129">4256129</a>. In
+addition the caching of negative lookups can be controlled by the
+<tt>networkaddress.cache.negative.ttl</tt> property in the
+<tt>java.security</tt> file.</p>
+</li>
+</ul>
+<ul>
+<li>Java SE 1.4 introduces a new exception <a href=
+"../../../api/java/net/PortUnreachableException.html"><tt>java.net.PortUnreachableException</tt></a>.
+This exception <em>may</em> be thrown by
+<tt>DatagramSocket.send</tt> or <tt>DatagramSocket.receive</tt> if
+the DatagramSocket is connected (via the connect method) and an
+ICMP port unreachable is received to indicate that the remote
+application is not running. The PortUnreachableException serves as
+a useful indication for some UDP based protocols.
+<p>The following lists the known issues with
+PortUnreachableException:-</p>
+<ol>
+<li>On Solaris 8 if IPv6 is enabled then ICMP port unreachable
+packets from IPv4 hosts will appear to be discarded. This is a
+Solaris 8 bug and is tracked as bug 4422658.</li>
+<li>On some Microsoft Windows releases (specifically Windows 98 and
+Windows NT) ICMP port unreachable packets are incorrectly discarded
+by the operating system and thus the PortUnreachableException is
+not thrown. As this time we are not aware of any Windows Sockets
+updates from Microsoft to fix this issue.</li>
+<li>On Linux if UDP packets are sent to the loopback address and no
+UDP applicatiob to bound to the destination port no ICMP port
+unreachable indication is received and thus no
+PortUnreachableException is thrown. This is a Linux kernel issue
+and we are not aware of a patch at this time.</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li>On many Linux installations <tt>InetAddress.getLocalHost()</tt>
+may return an InetAddress representing the loopback address
+(127.0.0.1). This stems from many Linux installations configuring
+/etc/hosts to map the hostname to the loopback address. If the host
+has a static IP address then the <tt>/etc/hosts</tt> file should be
+corrected to map the hostname to the host address.
+<p>If DHCP is used in conjunction with dynamic DNS then there are
+two options (i) change the name service search order in
+<tt>/etc/nsswitch.conf</tt> to use dns before the hosts file (ie:
+"hosts: dns files"), or (ii) configure InetAddress to use the DNS
+name service provider instead of the default provider
+(<tt>-Dsun.net.spi.nameservice.provider.1=dns,sun</tt>). This issue
+is being tracked in <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4665037">4665037</a>.</p>
+</li>
+</ul>
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

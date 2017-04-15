@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>wsgen</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T8:11:41Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Windows, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38210-05" name="partnum"/>
+<meta content="JSWOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="schemagen.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="wsimport.html">
+                Next</a><hr/>
+<div><a id="CHEEHCCA" name="CHEEHCCA"/>
+<div id="JSWOR739"><a id="CHEEIICI" name="CHEEIICI"/>
+<h1>wsgen</h1>
+<p>Reads a web service endpoint implementation (SEI) class and generates all of the required artifacts for web service deployment, and invocation.</p>
+<div><a id="sthref309" name="sthref309"/>
+<h2>Synopsis</h2>
+<p><b>wsgen</b> [ <i>options</i> ] <i>SEI</i></p>
+<dl>
+<dt><i>options</i></dt>
+<dd>
+<p>The command-line options. See <a href="#CHEIACHD">Options</a>.</p>
+</dd>
+<dt><i>SEI</i></dt>
+<dd>
+<p>The web service endpoint implementation class (SEI) to be read.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref310" name="sthref310"/>
+<h2>Description</h2>
+<p>The <code dir="ltr">wsgen</code> command generates JAX-WS portable artifacts used in JAX-WS web services. The tool reads a web service endpoint class and generates all the required artifacts for web service deployment and invocation. JAXWS 2.1.1 RI also provides a <code dir="ltr">wsgen</code> Ant task, see the <span>Tools</span> tab of the JAX-WS (wsgen) page at<br/>
+<code dir="ltr"><a href="http://jax-ws.java.net/nonav/2.1.1/docs/wsgenant.html">http://jax-ws.java.net/nonav/2.1.1/docs/wsgenant.html</a></code></p>
+<p>To start the <code dir="ltr">wsgen</code> command, do the following:</p>
+<pre dir="ltr" xml:space="preserve">
+set JAXWS_HOME=c:\pathto\jaxws-ri
+%JAXWS_HOME%\bin\wsgen.bat -help
+</pre></div>
+
+<div><a id="CHEIACHD" name="CHEIACHD"/><a id="CHEIAGJC" name="CHEIAGJC"/>
+<h2>Options</h2>
+<dl>
+<dt>-classpath <i>path</i></dt>
+<dd>
+<p>The location of the input class files.</p>
+</dd>
+<dt>-cp <i>path</i></dt>
+<dd>
+<p>The location of the input class files.</p>
+</dd>
+<dt>-d <i>directory</i></dt>
+<dd>
+<p>The location for where to place generated output files.</p>
+</dd>
+<dt>-extension</dt>
+<dd>
+<p>Allow vendor extensions. Use of extensions can result in applications that are not portable or that do not work with other implementations.</p>
+</dd>
+<dt>-help</dt>
+<dd>
+<p>Displays a help message about the <code dir="ltr">wsgen</code> command.</p>
+</dd>
+<dt>-keep</dt>
+<dd>
+<p>Keeps the generated files.</p>
+</dd>
+<dt>-r <i>directory</i></dt>
+<dd>
+<p>Uses this option with the <code dir="ltr">-wsdl</code> option to specify where to place generated resource files such as WSDLs.</p>
+</dd>
+<dt>-s <i>directory</i></dt>
+<dd>
+<p>The location for where to place generated source files.</p>
+</dd>
+<dt>-verbose</dt>
+<dd>
+<p>Displays compiler messages.</p>
+</dd>
+<dt>-version</dt>
+<dd>
+<p>Prints release information.</p>
+</dd>
+<dt>-wsdl [ :protocol ]</dt>
+<dd>
+<p>An optional command that generates a WSDL file to review before endpoint deployment. The WSDL files contains a machine-readable description of how the service can be called, what parameters it expects, and what data structures it returns.</p>
+<p>By default the <code dir="ltr">wsgen</code> command does not generate a WSDL file. The <code dir="ltr">protocol</code> value is optional and is used to specify what protocol should be used for the WSDL binding (<code dir="ltr">wsdl:binding</code>). Valid protocols are <code dir="ltr">soap1.1</code> and <code dir="ltr">Xsoap1.2</code>. The default is <code dir="ltr">soap1.1</code>. The <code dir="ltr">Xsoap1.2</code> protocol is not standard and can only be used with the <code dir="ltr">-extension</code> option.</p>
+</dd>
+<dt>-servicename <i>name</i></dt>
+<dd>
+<p>Used only with the <code dir="ltr">-wsdl</code> option to specify a particular WSDL service (<code dir="ltr">wsdl:service</code>) name to be generated in the WSDL, for example: <code dir="ltr">-servicename "{http://mynamespace/}MyService"</code>.</p>
+</dd>
+<dt>-portname <i>name</i></dt>
+<dd>
+<p>Used only with the <code dir="ltr">-wsdl</code> option to specify a particular WSDL port (<code dir="ltr">wsdl:port</code>) name to be generated in the WSDL, for example: <code dir="ltr">-portname "{http://mynamespace/}MyPort"</code>.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref311" name="sthref311"/>
+<h2>Examples</h2>
+<p>The following example generates the wrapper classes for <code dir="ltr">StockService</code> with <code dir="ltr">@WebService</code> annotations inside stock directory.</p>
+<pre dir="ltr" xml:space="preserve">
+wsgen -d stock -cp myclasspath stock.StockService
+</pre>
+<p>The following example generates a SOAP 1.1 WSDL and schema for the <code dir="ltr">stock.StockService</code> class with <code dir="ltr">@WebService</code> annotations.</p>
+<pre dir="ltr" xml:space="preserve">
+wsgen -wsdl -d stock -cp myclasspath stock.StockService
+</pre>
+<p>The following example generates a SOAP 1.2 WSDL.</p>
+<pre dir="ltr" xml:space="preserve">
+wsgen -wsdl:Xsoap1.2 -d stock -cp myclasspath stock.StockService 
+</pre>
+<p><b>Note:</b> You do not have to generate WSDL at development time because the JAXWS run time environment generates a WSDL for you when you deploy your service.</p>
+</div>
+
+<div><a id="sthref312" name="sthref312"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="wsimport.html#CIHGBCDC"><code dir="ltr">wsimport</code>(1)</a></p>
+</li>
+<li>
+<p><span>The Tools</span> tab of the JAX-WS (wsgen) page<br/>
+<code dir="ltr"><a href="http://jax-ws.java.net/nonav/2.1.1/docs/wsgenant.html">http://jax-ws.java.net/nonav/2.1.1/docs/wsgenant.html</a></code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="schemagen.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="wsimport.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

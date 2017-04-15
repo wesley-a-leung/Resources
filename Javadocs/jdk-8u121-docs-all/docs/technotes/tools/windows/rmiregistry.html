@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>rmiregistry</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1075" name="generator"/>
+<meta content="This document contains reference information for the tools that are installed with Java Development Kit (JDK)." name="description"/>
+<meta content="2016-01-08T8:11:41Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Tools Reference for Oracle JDK on Windows, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E38210-05" name="partnum"/>
+<meta content="JSWOR" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Tools Reference</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="rmic.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="rmid.html">
+                Next</a><hr/>
+<div><a id="CHDEDDIE" name="CHDEDDIE"/>
+<div id="JSWOR706"><a id="CHDEEAFJ" name="CHDEEAFJ"/>
+<h1>rmiregistry</h1>
+<p>Starts a remote object registry on the specified port on the current host.</p>
+<div><a id="sthref174" name="sthref174"/>
+<h2>Synopsis</h2>
+<p><b>rmiregistry</b> [ <i>port</i> ]</p>
+<dl>
+<dt><i>port</i></dt>
+<dd>
+<p>The number of a <code dir="ltr">port</code> on the current host at which to start the remote object registry.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref175" name="sthref175"/>
+<h2>Description</h2>
+<p>The <code dir="ltr">rmiregistry</code> command creates and starts a remote object registry on the specified port on the current host. If the port is omitted, then the registry is started on port 1099. The <code dir="ltr">rmiregistry</code> command produces no output and is typically run in the background, for example:</p>
+<pre dir="ltr" xml:space="preserve">
+rmiregistry &amp;
+</pre>
+<p>A remote object registry is a bootstrap naming service that is used by RMI servers on the same host to bind remote objects to names. Clients on local and remote hosts can then look up remote objects and make remote method invocations.</p>
+<p>The registry is typically used to locate the first remote object on which an application needs to call methods. That object then provides application-specific support for finding other objects.</p>
+<p>The methods of the <code dir="ltr">java.rmi.registry.LocateRegistry</code> class are used to get a registry operating on the local host or local host and port.</p>
+<p>The URL-based methods of the <code dir="ltr">java.rmi.Naming</code> class operate on a registry and can be used to look up a remote object on any host and on the local host. Bind a simple name (string) to a remote object, rebind a new name to a remote object (overriding the old binding), unbind a remote object, and list the URL bound in the registry.</p>
+</div>
+
+<div><a id="sthref176" name="sthref176"/>
+<h2>Options</h2>
+<dl>
+<dt>-J</dt>
+<dd>
+<p>Used with any Java option to pass the option following the <code dir="ltr">-J</code> (no spaces between the <code dir="ltr">-J</code> and the option) to the Java interpreter.</p>
+</dd>
+</dl>
+</div>
+
+<div><a id="sthref177" name="sthref177"/>
+<h2>See Also</h2>
+<ul>
+<li>
+<p><a href="java.html#CBBFHAJA"><code dir="ltr">java</code>(1)</a></p>
+</li>
+<li>
+<p><code dir="ltr">java.rmi.registry.LocateRegistry</code> class description at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/api/java/rmi/registry/LocateRegistry.html">http://docs.oracle.com/javase/8/docs/api/java/rmi/registry/LocateRegistry.html</a></code></p>
+</li>
+<li>
+<p><code dir="ltr">java.rmi.Naming class description</code> at<br/>
+<code dir="ltr"><a href="http://docs.oracle.com/javase/8/docs/api/java/rmi/Naming.html">http://docs.oracle.com/javase/8/docs/api/java/rmi/Naming.html</a></code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="rmic.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="rmid.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

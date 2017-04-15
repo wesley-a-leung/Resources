@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Applying the Factory Pattern to Java RMI</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+
+<h1><b>Applying the Factory Pattern to Java RMI</b></h1>
+
+<p>What is a "factory" and why would you want to use one? A
+factory, in this context, is a piece of software that implements
+one of the "factory" design patterns. In general, a factory
+implementation is useful when you need one object to control the
+creation of and/or access to other objects.By using a factory in
+Java Remote Method Invocation (Java RMI), you can reduce the
+number of objects that you need to register with the Java RMI
+registry.</p>
+<h2>Examples of Factories in the Real World:</h2>
+<h3>The Bank</h3>
+<p>When you go to the bank to make a deposit to your account, you
+<i>don't</i> walk up to a vault, pull out a drawer with your name
+on it, drop in your money, shut the drawer and leave. Think about
+how you originally established, or <i>opened</i>, the account. You
+probably went to the bank, spoke with an Account Manager, and
+signed some papers. In return, they gave you some checks, a
+passbook, or a bank card so you could access your account in the
+future.</p>
+<p>The Account Manager is an example of a factory. The person or
+Automated Teller Machine (ATM) that acts as account manager
+controls the creation of and/or access to individual accounts.</p>
+<h3>The Library</h3>
+Let's think about how a book, compact disk, or video tape gets from
+the library shelf into your home. Before you can check out any
+material, you must first get a library card from the librarian. In
+this case, the librarian could be viewed as a <i>library card</i>
+factory because the librarian controls the creation of new library
+card instances.
+<p>Once you have a library card, you can go into the library, and
+without any further fuss, just walk out with all your materials,
+right? Of course not. Before you can walk out of the library
+without setting off the alarm system, you must <i>check out</i> the
+book, CD, or video tape you wish to take home. So you present your
+library card to, you guessed it, the librarian, who will use your
+card to access the library database to see if you owe any late
+fees, and to register these new materials as having been leased to
+you. In this case, the librarian could be seen as a <i>book</i>
+factory because the librarian controls your access to the
+books.</p>
+<h2>How Does a Factory Work in Java RMI?</h2>
+<p>Just like any other Java RMI program, there are a few basic
+players: a server that produces one or more remote objects, each of
+which implements a remote interface; a client that accesses a name
+server (the <code>rmiregistry</code>) to get a reference to one of
+the remote objects; and the <code>rmiregistry</code>, which
+facilitates the client's initial contact with the server.</p>
+<p>For the picture below and the steps that follow, you may make
+the following assumptions:</p>
+<ul>
+<li>There are two remote interfaces that the client understands,
+<code>Factory</code> and <code>Product</code></li>
+<li>The <code>FactoryImpl</code> implements the
+<code>Factory</code> interface and the <code>ProductImpl</code>
+implements the <code>Product</code> interface</li>
+</ul>
+<img src="images/Factory-1.gif" alt=
+"Illustrates the 6 actions listed below." />
+<ol>
+<li style="list-style: none"><br /></li>
+<li>The <code>FactoryImpl</code> registers, or is registered, with
+the <code>rmiregistry</code></li>
+<li>The client requests a reference to a <code>Factory</code></li>
+<li>The <code>rmiregistry</code> returns a remote reference to a
+<code>FactoryImpl</code></li>
+<li>The client invokes a remote method on the
+<code>FactoryImpl</code> to obtain a remote reference to a
+<code>ProductImpl</code></li>
+<li>The <code>FactoryImpl</code> returns a remote reference to an
+existing <code>ProductImpl</code> or to one that it just created,
+based on the client request</li>
+<li>The client invokes a remote method on the
+<code>ProductImpl</code></li>
+</ol>
+<br />
+&nbsp;
+<h2>How Could the Bank and Library be Implemented in Java RMI?</h2>
+<h3>The Bank</h3>
+<p>In code, <code>AccountManager</code> would be a remote interface
+with one or more remote methods. These methods would return objects
+that implement the <code>Account</code> interface. In a similar
+fashion, <code>Account</code> would be an interface that declared
+all of the operations a person could perform on an account
+instance, such as depositing or withdrawing money, getting an
+account balance, or listing the most recent account
+transactions.</p>
+<p>In Java RMI, only the instance of the
+<code>AccountManager</code> implementation would be registered with
+the Java RMI registry. The <code>AccountManager</code>
+implementation would be the factory, returning remote references to
+(or serialized instances of) <code>Account</code> implementations,
+like your savings account.</p>
+<h3>The Library</h3>
+<p>In the library example, the <code>Librarian</code> would be a
+remote interface with one or more methods that would return objects
+that implement the <code>LibraryCard</code> interface. In addition,
+the <code>Librarian</code> interface would have methods to allow
+you access to books, CDs, or videotapes that implemented the
+<code>Loanable</code> interface.</p>
+<p>In Java RMI, only the instance of the <code>Librarian</code>
+implementation would be registered with the Java RMI registry. The
+<code>Librarian</code> implementation would be the factory,
+returning remote references to (or serialized instances of)
+<code>LibraryCard</code> implementations and <code>Loanable</code>
+object implementations.</p>
+<p>While the bank and library examples presented here may not be
+entirely complete they are not designed to be complete, but rather
+instructionally useful in describing the factory pattern in Java
+RMI.</p>
+<br />
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

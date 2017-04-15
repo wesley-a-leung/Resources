@@ -1,0 +1,1907 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xml:lang=
+"en-US">
+<head>
+<title>Swing Changes and New Features</title>
+<link rel="stylesheet" type="text/css" href="../../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Swing Changes and New Features for Java&trade; 2 SDK, Standard
+Edition, v 1.4</h1>
+<!-- Body text begins here -->
+<h2>Changes Specific to releases 1.4.1 and 1.4.2</h2>
+<p>This document contains information relevant to all 1.4.*
+releases. For information specific to 1.4.1 and 1.4.2, see <a href=
+"Post1.4.html">Swing Changes Since Java 2 SDK, Standard
+Edition, v 1.4</a>.</p>
+<h2>Major Changes</h2>
+<p>Certain features, typically ones that have a large impact on
+Swing, have been extensively written up in separate documents. The
+following link to these documents:</p>
+<ul>
+<li><a href="Post1.4.html#xp">Windows XP look and feel</a></li>
+<li><a href="Post1.4.html#gtk">GTK+ look and feel</a></li>
+<li><a href="pb.html">Support for indeterminate progress
+bars</a></li>
+<li><a href="tabbedPane.html"><code>JTabbedPane</code> with
+scrollable tabs</a></li>
+<li><a href="spinner.html"><code>JSpinner</code></a></li>
+<li><a href=
+"ftf.html"><code>JFormattedTextField</code></a></li>
+<li><a href="popup.html"><code>Popup</code> and
+<code>PopupFactory</code></a></li>
+<li><a href="../../../../api/java/awt/doc-files/FocusSpec.html">New
+Focus Model Specification</a> and <a href=
+"../../awt/1.4/focusAPIChanges.html">Javadoc</a></li>
+<li><a href="windows.html">Windows look and feel
+update.</a></li>
+<li><a href="dnd.html">The new Drag and Drop
+architecture.</a></li>
+</ul>
+<h2>Minor Changes</h2>
+<p>Each section contains changes for a set of related classes. Most
+of the sections are focused on the classes that are part of a
+single Swing component like <code>JEditorPane</code> or
+<code>JTable</code>. Each API change is associated with a link to a
+report on the <a href="http://bugs.java.com/">Bug Database</a> ,
+where you'll find the original bug or RFE ("request for
+enhancement") that motivated the change. In this document you'll
+also find the following information for each API change:</p>
+<ul>
+<li>The method signatures with a link to the Javadoc for new
+methods or methods whose semantics have changed.</li>
+<li>A brief description of the overall change and how to take
+advantage of it. You'll probably find this same material in the
+evaluation section of the bug/rfe report.</li>
+<li>If the API change corrects a long standing bug or provides a
+missing feature - suggestions about how to migrate typical
+workarounds or extensions to the new feature.</li>
+<li>Nearly all changes (even bugfixes!) introduce some kind of
+incompatibility. We've done our best to predict these
+incompatibilities and provide advice about how to avoid them.</li>
+</ul>
+<h3>Sections</h3>
+<ul>
+<li><a href="#Box"><code>Box</code></a></li>
+<li><a href="#JButton"><code>JButton</code></a></li>
+<li><a href="#JComboBox"><code>JComboBox</code></a></li>
+<li><a href="#JFileChooser"><code>JFileChooser</code></a></li>
+<li><a href="#JInternalFrame"><code>JInternalFrame</code></a></li>
+<li><a href="#JList"><code>JList</code></a></li>
+<li><a href="#JOptionPane"><code>JOptionPane</code></a></li>
+<li><a href="#JPopupMenu"><code>JPopupMenu</code></a></li>
+<li><a href="#JPanel"><code>JPanel</code></a></li>
+<li><a href="#JRootPane"><code>JRootPane</code></a></li>
+<li><a href="#JScrollBar"><code>JScrollBar</code></a></li>
+<li><a href="#JScrollPane"><code>JScrollPane</code></a></li>
+<li><a href="#JTabbedPane"><code>JTabbedPane</code></a></li>
+<li><a href="#JTable"><code>JTable</code></a></li>
+<li><a href="#JTextComponent"><code>JTextComponent</code></a></li>
+<li><a href="#JTree"><code>JTree</code></a></li>
+<li><a href="#RepaintManager"><code>RepaintManager</code></a></li>
+<li><a href="#SpringLayout"><code>SpringLayout</code></a></li>
+<li><a href="#Miscellaneous">Miscellaneous</a></li>
+<li><a href="#KnownBugs">Known Bugs</a></li>
+</ul>
+<hr />
+<h2><a name="Box" id="Box">Box</a></h2>
+<h3>Box now descends from JComponent</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4304100">4304100</a>.</p>
+<p>Historically, the superclass for <code>Box</code> has been
+<code>Component</code>. Since <code>Box</code> did not descend from
+<code>JComponent</code>, you could not use it like a normal Swing
+component, for example, you couldn't set the borders, or issue
+<code>revalidate</code>. Not only this, but changing visibility, or
+other similiar visual properties, on a standard Swing component
+typically triggers a <code>repaint</code> or
+<code>revalidate</code>, but <code>Box</code> did not conform to
+this behavior. As of this release, <a href=
+"../../../../api/javax/swing/Box.html"><code>Box</code></a> and
+<a href=
+"../../../../api/javax/swing/Box.Filler.html"><code>Box.Filler</code></a>
+now descend from the <code>JComponent</code> superclass and
+therefore behave more like standard Swing components.</p>
+<h3>BoxLayout Now Supports Right-to-Left and Bottom-to-Top
+Component Orientations</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4140833">4140833</a>.</p>
+<p><code>BoxLayout</code> did not consider the
+<code>ComponentOrientation</code> of the <code>Container</code> it
+is laying out. Other AWT layout managers were made to do this when
+the <code>ComponentOrientation</code> feature was added in JDK 1.2.
+Adding this feature to <a href=
+"../../../../api/javax/swing/BoxLayout.html"><code>BoxLayout</code></a>
+makes it useful for programs that support Middle East locales.
+Because <code>BoxLayout</code> is also used internally by other
+Swing components, such as <code>JOptionPane</code>,
+<code>JToolBar</code> and <code>JMenuBar</code>, adding this
+feature is also necessary for these components to support <a href=
+"../../../../api/java/awt/ComponentOrientation.html"><code>ComponentOrientation</code></a>.</p>
+<p>To support this functionality, the constants <a href=
+"../../../../api/javax/swing/BoxLayout.html#LINE_AXIS"><code>LINE_AXIS</code></a>
+and <a href=
+"../../../../api/javax/swing/BoxLayout.html#PAGE_AXIS"><code>PAGE_AXIS</code></a>,
+and the constructor, <a href=
+"../../../../api/javax/swing/BoxLayout.html#BoxLayout-java.awt.Container-int-">
+<code>BoxLayout(Container, int)</code></a>, were added to <a href=
+"../../../../api/javax/swing/BoxLayout.html"><code>BoxLayout</code></a>.</p>
+<p>There were also changes to several methods in <a href=
+"../../../../api/javax/swing/SizeRequirements.html"><code>SizeRequirements</code></a>:</p>
+<ul>
+<li><a href=
+"../../../../api/javax/swing/SizeRequirements.html#calculateTiledPositions-int-javax.swing.SizeRequirements-javax.swing.SizeRequirements:A-int:A-int:A-boolean-">
+<code>calculateTiledPositions(int,SizeRequirements,SizeRequirements[],int[],int[],boolean)</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/SizeRequirements.html#calculateTiledPositions-int-javax.swing.SizeRequirements-javax.swing.SizeRequirements:A-int:A-int:A-">
+<code>calculateTiledPositions(int,SizeRequirements,SizeRequirements[],int[],int[])</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/SizeRequirements.html#calculateAlignedPositions-int-javax.swing.SizeRequirements-javax.swing.SizeRequirements:A-int:A-int:A-boolean-">
+<code>calculateAlignedPositions(int,SizeRequirements,SizeRequirements[],int[],int[],boolean)</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/SizeRequirements.html#calculateAlignedPositions-int-javax.swing.SizeRequirements-javax.swing.SizeRequirements:A-int:A-int:A-">
+<code>calculateAlignedPositions(int,SizeRequirements,SizeRequirements[],int[],int[])</code></a></li>
+</ul>
+<hr />
+<h2><a name="JButton" id="JButton">JButton</a></h2>
+<h3><a name="bug4659800" id="bug4659800">Default Button Follows the
+Focus on Windows LAF</a></h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4659800">4659800</a>.</p>
+<p>With this bug, introduced in 1.4.0, the default button did not
+always follow the focus. This has been fixed in 1.4.1.</p>
+<h3>New Control of Highlighted Characters</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4138746">4138746</a>.</p>
+<p><a href=
+"../../../../api/javax/swing/AbstractButton.html"><code>AbstractButton</code></a>
+and <a href=
+"../../../../api/javax/swing/JLabel.html"><code>JLabel</code></a> both
+allow the developer to set a character, called the mnemonic, that
+can be used to perform an action when typed at the keyboard. The
+javadoc for these methods states that the first case-insensitive
+occurrence of the character is decorated. While this suits most
+developers, often times a different occurrence of the character
+needs to be highlighted. For example: in Notepad, 'a' is the
+accelerator for <b>Save As</b>, but the second 'a' is decorated.
+Developers need a way to be able to specify this.</p>
+<p>This is solved with the new <a href=
+"../../../../api/javax/swing/AbstractButton.html#setDisplayedMnemonicIndex-int-">
+<code>AbstractButton.setDisplayedMnemonicIndex</code></a> and
+<a href=
+"../../../../api/javax/swing/JLabel.html#setDisplayedMnemonicIndex-int-">
+<code>JLabel.setDisplayedMnemonicIndex</code></a> methods. Once you
+have specified a mnemonic, via the <code>setMnemonic</code> or
+<code>setDisplayedMnemonic</code> methods, you can then change the
+character that is highlighted via the
+<code>setDisplayedMnemonicIndex</code> method. There are also new
+<a href=
+"../../../../api/javax/swing/AbstractButton.html#getDisplayedMnemonicIndex--">
+<code>AbstractButton.getDisplayedMnemonicIndex</code></a> and
+<a href=
+"../../../../api/javax/swing/JLabel.html#getDisplayedMnemonicIndex--"><code>
+JLabel.getDisplayedMnemonicIndex</code></a> methods. Finally,
+<a href=
+"../../../../api/javax/swing/plaf/basic/BasicGraphicsUtils.html#drawStringUnderlineCharAt-java.awt.Graphics-java.lang.String-int-int-int-">
+<code>drawStringUnderlineCharAt</code></a> has been added to
+<a href=
+"../../../../api/javax/swing/plaf/basic/BasicGraphicsUtils.html"><code>
+javax.swing.plaf.basic.BasicGraphicsUtils</code></a>.<br />
+<br /></p>
+<h3>AbstractButton.configurePropertiesFromAction Now Honors
+ACTION_COMMAND_KEY Property</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4457940">4457940</a>.</p>
+<p>Previously, the <a href=
+"../../../../api/javax/swing/AbstractButton.html"><code>AbstractButton</code></a>
+methods <a href=
+"../../../../api/javax/swing/AbstractButton.html#configurePropertiesFromAction-javax.swing.Action-">
+<code>configurePropertiesFromAction(Action)</code></a> and
+<code>configurePropertiesFromAction(Action, String[])</code> did
+not honor the <code>ACTION_COMMAND_KEY</code> property. That has
+now been addressed. This affects the javadoc for the
+<code>configurePropertiesFromAction</code> methods in the following
+subclasses of <code>AbstractButton</code>:</p>
+<ul>
+<li><code>JButton.configurePropertiesFromAction(Action)</code></li>
+<li><code>JMenu.configurePropertiesFromAction(Action)</code></li>
+<li>
+<code>JCheckBox.configurePropertiesFromAction(Action)</code></li>
+<li>
+<code>JRadioButton.configurePropertiesFromAction(Action)</code></li>
+</ul>
+<hr />
+<h2><a name="JComboBox" id="JComboBox">JComboBox</a></h2>
+<h3><a name="PopupMenuListener" id=
+"PopupMenuListener"></a>PopupMenuListener Added to JComboBox</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4287690">4287690</a>.</p>
+<p>Many developers have requested support for listeners to be
+notified when a combo box's drop down menu is popped up, dismissed,
+or canceled. Applications could use these listeners to lazily
+populate the combo box's model with items.</p>
+<p>This feature wasn't provided in earlier versions of Swing
+because there was some, probably academic, concern about supporting
+a listener for a feature (the drop down menu) that some look and
+feel implementations might not provide. All of the look and feels
+that are shipped with Java, and all of the ones we've come across,
+do use a drop down menu to show all of the combo box items. Some
+developers have resorted to non-portable hacks to get the menu
+state change notifications.</p>
+<p>For this release, we added a <a href=
+"../../../../api/javax/swing/event/PopupMenuListener.html"><code>PopupMenuListener</code></a>
+to <a href=
+"../../../../api/javax/swing/JComboBox.html"><code>JComboBox</code></a>.
+So long as the underlying look and feel supports an item menu, this
+listener can be used to perform actions before and after the combo
+box menu appears. Several new <code>JComboBox</code> methods were
+required to support this feature:</p>
+<pre>
+    public void <a href=
+"../../../../api/javax/swing/JComboBox.html#addPopupMenuListener-javax.swing.event.PopupMenuListener-">addPopupMenuListener(PopupMenuListener l)</a>
+    public void <a href=
+"../../../../api/javax/swing/JComboBox.html#removePopupMenuListener-javax.swing.event.PopupMenuListener-">removePopupMenuListener(PopupMenuListener l)</a>
+    public void <a href=
+"../../../../api/javax/swing/JComboBox.html#firePopupMenuWillBecomeVisible--">firePopupMenuWillBecomeVisible()</a>
+    public void <a href=
+"../../../../api/javax/swing/JComboBox.html#firePopupMenuWillBecomeInvisible--">firePopupMenuWillBecomeInvisible()</a>
+    public void <a href=
+"../../../../api/javax/swing/JComboBox.html#firePopupMenuCanceled--">firePopupMenuCanceled()</a>
+</pre>
+<br />
+<h3>JComboBox Now Supports Prototype Cell for Lists</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4231298">4231298</a>.</p>
+<p><a href=
+"../../../../api/javax/swing/JComboBox.html"><code>JComboBox</code></a>
+previously configured a renderer for every item it displayed. For
+large lists this could take quite a while. Instead, developers
+needed the ability to specify a prototype that all cells match, so
+that the prototype is only checked once instead of every cell. For
+this release, <a href=
+"../../../../api/javax/swing/JComboBox.html#getPrototypeDisplayValue--">
+<code>getPrototypeDisplayValue</code></a> and <a href=
+"../../../../api/javax/swing/JComboBox.html#setPrototypeDisplayValue-java.lang.Object-">
+<code>setPrototypeDisplayValue</code></a> have been added to
+<a href=
+"../../../../api/javax/swing/JComboBox.html"><code>JComboBox</code></a>.<br />
+
+<br /></p>
+<h3>Javadoc for JComboBox and Related Classes Has Improved
+Documentation</h3>
+<p>The bugtraq report that corresponds to this change is <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4394300">4394300</a>.</p>
+<p>Previously, public API for <code>JComboBox</code> and its UI
+delegates contained javadoc which described the details of its
+implementation. Refactoring and bug fixing over the course of its
+history had made this javadoc out of date. The javadoc has been
+checked and revised so that it describes the behavior of the method
+rather than the implementation details. Also, some of the javadoc
+for "protected" methods and fields which should really have been
+private have been removed so that overriding or calling these
+methods are not encouraged.</p>
+<p>The doc has been changed for <a href=
+"../../../../api/javax/swing/JComboBox.html"><code>JComboBox</code></a>,
+<a href=
+"../../../../api/javax/swing/ComboBoxModel.html"><code>ComboBoxModel</code></a>,
+<a href=
+"../../../../api/javax/swing/MutableComboBoxModel.html"><code>MutableComboBoxModel</code></a>,
+<a href=
+"../../../../api/javax/swing/plaf/basic/BasicComboBoxUI.html"><code>javax.swing.plaf.basic.BasicComboBoxUI</code></a>,
+<a href=
+"../../../../api/javax/swing/plaf/basic/ComboPopup.html"><code>javax.swing.plaf.basic.ComboPopup</code></a>,
+and <a href=
+"../../../../api/javax/swing/plaf/basic/BasicComboPopup.html"><code>javax.swing.plaf.basic.BasicComboPopup</code></a>.<br />
+
+<br /></p>
+<hr />
+<h2><a name="JFileChooser" id="JFileChooser">JFileChooser</a></h2>
+<h3>JFileChooser Windows Look and Feel Improved</h3>
+<p>The bugtraq report that corresponds to this change is <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4290709">4290709</a>.</p>
+<p>Although Swing's <code>JFileChooser</code> closely resembles the
+Microsoft Windows common file dialog under the Windows look and
+feel, there are several deficiencies for which we have received
+complaints. In particular, the Microsoft Windows aesthetics guide
+mentions the following:</p>
+<p>If you cannot use the [common] Open and Save As dialog boxes,
+you should incorporate the following features into your open and
+save dialog boxes to ensure that they are consistent with the
+shell, the Windows accessories, and other applications:</p>
+<ul>
+<li>Support the same namespace hierarchy as the shell; that is,
+Desktop should be at the root of the hierarchy, followed by all
+folders and objects on the desktop, including My Computer, My
+Network, and so on. [...]</li>
+<li>Support shortcuts (also known as shell links). [...]</li>
+<li>Display filenames with the corresponding icons and filename
+extensions removed, as the shell does.</li>
+<li>Allow the user to browse the network hierarchy directly.</li>
+<li>Make sure that all of your dialog boxes (not just your open and
+save dialog boxes) use only nonbold fonts. [...]</li>
+</ul>
+<p>The first four points are not possible in Swing without
+additional API support from the AWT. The AWT common file dialog is
+also currently an unacceptable solution for the following
+reasons:</p>
+<ul>
+<li>It cannot be embedded into a frame or dialog like
+JFileChooser.</li>
+<li>Filename filter is not implemented and is difficult to
+implement on Windows.</li>
+</ul>
+<p>The new functionality is accomplished by adding the following
+public methods to the <a href=
+"../../../../api/javax/swing/filechooser/FileSystemView.html"><code>javax.swing.filechooser.FileSystemView</code></a>
+class, providing file and directory information beyond the scope of
+the <code>File</code> class:</p>
+<pre>
+    public boolean <a href=
+"../../../../api/javax/swing/filechooser/FileSystemView.html#isTraversable-java.io.File-">isTraversable(File f)</a>
+    public String <a href=
+"../../../../api/javax/swing/filechooser/FileSystemView.html#getSystemDisplayName-java.io.File-">getSystemDisplayName(File f)</a>
+    public String <a href=
+"../../../../api/javax/swing/filechooser/FileSystemView.html#getSystemTypeDescription-java.io.File-">getSystemTypeDescription</a>
+    public Icon <a href=
+"../../../../api/javax/swing/filechooser/FileSystemView.html#getSystemIcon-java.io.File-">getSystemIcon(File f)</a>
+    public boolean <a href=
+"../../../../api/javax/swing/filechooser/FileSystemView.html#isParent-java.io.File-java.io.File-">isParent(File folder, File file)</a>
+    public File <a href=
+"../../../../api/javax/swing/filechooser/FileSystemView.html#getChild-java.io.File-java.lang.String-">getChild(File parent, String filename)</a>
+    public boolean <a href=
+"../../../../api/javax/swing/filechooser/FileSystemView.html#isFileSystem-java.io.File-">isFileSystem(File f)</a>
+    public boolean <a href=
+"../../../../api/javax/swing/filechooser/FileSystemView.html#isFileSystemRoot-java.io.File-">isFileSystemRoot(File dir)</a>
+    public boolean <a href=
+"../../../../api/javax/swing/filechooser/FileSystemView.html#isDrive-java.io.File-">isDrive(File dir)</a>
+    public boolean <a href=
+"../../../../api/javax/swing/filechooser/FileSystemView.html#isFloppyDrive-java.io.File-">isFloppyDrive(File dir)</a>
+    public boolean <a href=
+"../../../../api/javax/swing/filechooser/FileSystemView.html#isComputerNode-java.io.File-">isComputerNode(File dir)</a>
+    public File <a href=
+"../../../../api/javax/swing/filechooser/FileSystemView.html#createFileSystemRoot-java.io.File-">createFileSystemRoot(File f)</a>
+    public File[] <a href=
+"../../../../api/javax/swing/filechooser/FileSystemView.html#getRoots--">getRoots()</a>
+</pre>
+<p>The <code>isTraversable</code> method has been removed from
+<code>javax.swing.plaf.basic.BasicFileChooserUI.BasicFileView</code>
+so that the superclass's implementation is used.</p>
+<p><a href=
+"../../../../api/javax/swing/plaf/metal/MetalFileChooserUI.html#createListSelectionListener-javax.swing.JFileChooser-">
+<code>createListSelectionListener</code></a> has been added to
+<a href=
+"../../../../api/javax/swing/plaf/metal/MetalFileChooserUI.html"><code>
+javax.swing.plaf.metal.MetalFileChooserUI</code></a>.</p>
+<p>Also, <a href=
+"../../../../api/javax/swing/plaf/basic/BasicDirectoryModel.html"><code>
+javax.swing.plaf.basic.BasicDirectoryModel</code></a> has the
+following changes:</p>
+<pre>
+    public void <a href=
+"../../../../api/javax/swing/plaf/basic/BasicDirectoryModel.html#intervalAdded-javax.swing.event.ListDataEvent-">intervalAdded(ListDataEvent e)</a>
+    public void <a href=
+"../../../../api/javax/swing/plaf/basic/BasicDirectoryModel.html#intervalRemoved-javax.swing.event.ListDataEvent-">intervalRemoved(ListDataEvent e)</a>
+    public void <a href=
+"../../../../api/javax/swing/plaf/basic/BasicDirectoryModel.html#renameFile-java.io.File-java.io.File-">renameFile(File oldFile, File newFile)</a>
+</pre>
+<br />
+<br />
+<h3>New Ability to Specify Characteristics of Open Directory Button
+in JFileChooser</h3>
+<p>The bugtraq report that corresponds to this change is <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4318785">4318785</a>.</p>
+<p>Look and feels need the ability to specify the text, tooltip
+text, and mnemonic for the button used to open a directory in
+<code>JFileChooser</code>.</p>
+<p>To support this, several constants and methods were added to
+<a href=
+"../../../../api/javax/swing/plaf/basic/BasicFileChooserUI.html"><code>
+plaf.basic.BasicFileChooserUI</code></a>:</p>
+<pre>
+    protected int <a href=
+"../../../../api/javax/swing/plaf/basic/BasicFileChooserUI.html#directoryOpenButtonMnemonic">directoryOpenButtonMnemonic = 0;</a>
+    protected String <a href=
+"../../../../api/javax/swing/plaf/basic/BasicFileChooserUI.html#directoryOpenButtonText">directoryOpenButtonText = null</a>
+    protected String <a href=
+"../../../../api/javax/swing/plaf/basic/BasicFileChooserUI.html#directoryOpenButtonToolTipText">directoryOpenButtonToolTipText = null</a>
+    protected boolean <a href=
+"../../../../api/javax/swing/plaf/basic/BasicFileChooserUI.html#isDirectorySelected--">isDirectorySelected()</a>
+    protected void <a href=
+"../../../../api/javax/swing/plaf/basic/BasicFileChooserUI.html#setDirectorySelected-boolean-">setDirectorySelected(boolean b)</a>
+    protected File <a href=
+"../../../../api/javax/swing/plaf/basic/BasicFileChooserUI.html#getDirectory--">getDirectory()</a>
+    protected void <a href=
+"../../../../api/javax/swing/plaf/basic/BasicFileChooserUI.html#setDirectory-java.io.File-">setDirectory(File f)</a>
+</pre>
+<h3><a name="bug4218431" id="bug4218431">Multiple File Selection
+Supported</a></h3>
+<p>The bugtraq report that corresponds to this change is <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4218431">4218431</a>.</p>
+<p>Multiple file selection was added to <code>JFileChooser</code>
+in the 1.4 release, but the javadoc for <a href=
+"../../../../api/javax/swing/JFileChooser.html#setMultiSelectionEnabled-boolean-">
+<code>setMultiSelectionEnabled</code></a> wasn't updated until the
+1.4.1 release.</p>
+<hr />
+<h2><a name="JInternalFrame" id=
+"JInternalFrame">JInternalFrame</a></h2>
+<h3>JInternalFrame Now Truncates Titles That are Too Long</h3>
+<p>The bugtraq report that corresponds to this change is <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4134077">4134077</a>.</p>
+<p>Previously, the title of an internal frame would not be clipped
+if it was too long. This would lead to the title displaying over
+parts of the icons, as well no visual feedback to the user that the
+title had been clipped. To solve this, <a href=
+"../../../../api/javax/swing/plaf/basic/BasicInternalFrameTitlePane.html#getTitle-java.lang.String-java.awt.FontMetrics-int-">
+<code>BasicInternalFrameTitlePane.getTitle</code></a> was
+added.</p>
+<h3>JInternalFrame Titles in Windows Look and Feel May Now be
+Rendered with a Gradient</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4389209">4389209</a>.</p>
+<p>To implement this correctly, we needed to create a class,
+<code>com.sun.java.swing.plaf.windows.WindowsInternalFrameTitlePane</code>,
+which extended <a href=
+"../../../../api/javax/swing/plaf/basic/BasicInternalFrameTitlePane.html">
+<code>javax.swing.plaf.basic.BasicInternalFrameTitlePane</code></a>,
+but overrode the paint routine to render the gradient when
+appropriate. The best way to get code-reuse was to break out the
+portion of the paint method which paints just the background and
+override just that in <code>WindowsInternalFrameTitlePane</code>.
+The method <a href=
+"../../../../api/javax/swing/plaf/basic/BasicInternalFrameTitlePane.html#paintTitleBackground-java.awt.Graphics-">
+<code>paintTitleBackground</code></a> was added to
+<code>javax.swing.plaf.basic.BasicInternalFrameTitlePane</code>.</p>
+<hr />
+<h2><a name="JTextComponent" id=
+"JTextComponent">JTextComponent</a></h2>
+<h3><a name="JEditorPane.tooltip" id="JEditorPane.tooltip"></a>New
+Support for Tooltips for Images in JEditorPane</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4252169">4252169</a>.</p>
+<p>In previous releases it was not possible for <a href=
+"../../../../api/javax/swing/text/html/ImageView.html"><code>ImageView</code></a>
+(the <code>View</code> responsible for rendering images in a
+<a href=
+"../../../../api/javax/swing/JEditorPane.html"><code>JEditorPane</code></a>)
+to show tooltip text because there was no way for a
+<code>View</code> to influence the tooltip text that is displayed
+for a <a href=
+"../../../../api/javax/swing/text/JTextComponent.html"><code>JTextComponent</code></a>.
+In this release, if the <code>JTextComponent</code> doesn't have a
+tooltip, then the view under the mouse is asked to provide one. If
+that <code>View</code> corresponds to an HTML element with an ALT
+attribute, then the tooltip text is the value of that
+attribute.</p>
+<p>To make it possible for <code>View</code>s to affect the tooltip
+text, a number of methods were needed. <a href=
+"../../../../api/javax/swing/plaf/TextUI.html#getToolTipText-javax.swing.text.JTextComponent-java.awt.Point-">
+<code>getToolTipText</code></a> was added to <a href=
+"../../../../api/javax/swing/plaf/TextUI.html"><code>javax.swing.plaf.TextUI</code></a>
+so that it is possible to get the tooltip text for a particular
+location. <a href=
+"../../../../api/javax/swing/text/JTextComponent.html"><code>JTextComponent</code></a>'s
+<a href=
+"../../../../api/javax/swing/text/JTextComponent.html#getToolTipText-java.awt.event.MouseEvent-">
+<code>getToolTipText</code></a> method then forwards to the
+<code>TextUI</code>, assuming a tooltip was not set on the
+<code>JTextComponent</code>.</p>
+<p><a href=
+"../../../../api/javax/swing/text/View.html#getToolTipText-float-float-java.awt.Shape-">
+<code>getToolTipText</code></a> was also added to <a href=
+"../../../../api/javax/swing/text/View.html"><code>javax.swing.text.View</code></a>.
+The default implementation of <code>View.getToolTipText</code> will
+forward the request to the <code>View</code>'s child at the given
+location. To make it easy to determine the child at a particular
+location, <a href=
+"../../../../api/javax/swing/text/View.html#getViewIndex-float-float-java.awt.Shape-">
+<code>getViewIndex</code></a> was added to <code>View</code>.</p>
+<p>The <code>View</code> implementation invokes
+<code>getViewIndex</code> and then <code>getToolTipText</code> on
+the child <code>View</code>. <a href=
+"../../../../api/javax/swing/text/html/ImageView.html"><code>ImageView</code></a>
+then overrides <a href=
+"../../../../api/javax/swing/text/html/ImageView.html#getToolTipText-float-float-java.awt.Shape-">
+<code>getToolTipText</code></a> and returns the value from the ALT
+attribute of its <code>AttributeSet</code>.</p>
+<h3>ImageView Class is Now Public</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4233811">4233811</a>.</p>
+<p>The package private class <a href=
+"../../../../api/javax/swing/text/html/ImageView.html"><code>javax.swing.text.html.ImageView</code></a>
+is now public so that it can be extended.<br />
+<br /></p>
+<h3><a name="JTextComponent.HyperlinkEvent" id=
+"JTextComponent.HyperlinkEvent">New HyperlinkEvent Read-Only
+elementOffset Property</a></h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4182124">4182124</a>.</p>
+<p>The HTML package exposes a way for developers to determine when
+the mouse moves over a link via the <a href=
+"../../../../api/javax/swing/event/HyperlinkEvent.html"><code>HyperlinkEvent</code></a>
+and <a href=
+"../../../../api/javax/swing/event/HyperlinkListener.html"><code>HyperlinkListener</code></a>
+classes. Often times developers need a way to extract information
+from the document when the <code>HyperlinkListener</code> is
+notified. There was previously no way for a developer to determine
+the position in the document a <code>HyperlinkEvent</code>
+represents. To remedy this the constructor <a href=
+"../../../../api/javax/swing/event/HyperlinkEvent.html#HyperlinkEvent-java.lang.Object-javax.swing.event.HyperlinkEvent.EventType-java.net.URL-java.lang.String-javax.swing.text.Element-">
+<code>HyperlinkEvent(Object, EventType, URL, String,
+Element)</code></a> and the method <a href=
+"../../../../api/javax/swing/event/HyperlinkEvent.html#getSourceElement--">
+<code>getSourceElement</code></a> were added to <a href=
+"../../../../api/javax/swing/event/HyperlinkEvent.html"><code>HyperlinkEvent</code></a>.</p>
+<p><code>HTMLFrameHyperlinkEvent</code> extends
+<code>HyperlinkEvent</code>, which already defines the method
+<a href=
+"../../../../api/javax/swing/event/HyperlinkEvent.html#getSourceElement--">
+<code>getSourceElement</code></a>. Since the superclass now defines
+this method, the <code>getSourceElement</code> javadoc was removed
+from <code>HTMLFrameHyperlinkEvent</code> (the method is now
+inherited):</p>
+<h3>HTML Parser Change: Whitespace Reporting</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4241788">4241788</a>.</p>
+<p>The semantics of the HTML parser ( <a href=
+"../../../../api/javax/swing/text/html/parser/Parser.html"><code>javax.swing.text.html.parser.Parser</code></a>)
+have slightly changed to better match that of the browser
+(Netscape and Internet Explorer). While no API was changed, those using the parser may
+notice a slight difference in the reporting of whitespace. Here is
+how things have changed: if <code>strict</code> (an instance
+variable of <code>javax.swing.text.html.parser.Parser</code>) ==
+<code>false</code> (the default) an instance variable is used to
+try and mimic the behavior of Netscape and Explorer.</p>
+<p>The problematic scenarios are:</p>
+<pre>
+'&lt;b&gt;blah &lt;i&gt; &lt;strike&gt; foo'
+</pre>
+<p>which can be treated as:</p>
+<pre>
+'&lt;b&gt;blah &lt;i&gt;&lt;strike&gt;foo'
+</pre>
+<p>as well as:</p>
+<pre>
+'&lt;p&gt;&lt;a href="xx"&gt; &lt;em&gt;Using&lt;/em&gt;&lt;/a&gt;&lt;/p&gt;'
+</pre>
+<p>which appears to be treated as:</p>
+<pre>
+'&lt;p&gt;&lt;a href="xx"&gt;&lt;em&gt;Using&lt;/em&gt;&lt;/a&gt;&lt;/p&gt;'
+</pre>
+<p>When a tag that breaks flow, or trailing whitespace is
+encountered an instance variable is set to true. From then on, all
+whitespace is ignored. The instance variable is set back to false
+the first time a non whitespace character is encountered.</p>
+<h3>Improved Support for Writing HTML Forms</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4200439">4200439</a>.</p>
+<p>The HTML support provided in the JDK has never correctly supported writing out form
+elements. This was due, in large part, to the way that forms were
+modeled. To better match the document object model (see <a href=
+"http://www.w3.org/DOM/">DOM</a> at <a href=
+"http://www.w3.org">www.w3.org</a>) we have changed how the forms
+are modeled internally. Previously, any attributes of a form would
+be stored in the <code>attributeSet</code> of all of the children
+character elements. As of this release, an element is created to
+represent the form, better matching that of the HTML file itself.
+This allows for better modeling of the form, as well as consistent
+writing of the form.</p>
+<p>This affects developers that relied on forms being handled
+loosely. As an example, we would previously treat the following
+invalid HTML:</p>
+<pre>
+&lt;table&gt;
+&lt;form&gt;
+&lt;/table&gt;
+&lt;/form&gt;
+</pre>
+<p>as:</p>
+<pre>
+&lt;form&gt;
+&lt;table&gt;
+&lt;/table&gt;
+&lt;/form&gt;
+</pre>
+<p>With this release, we instead treat it as:</p>
+<pre>
+&lt;table&gt;
+&lt;form&gt;
+&lt;/form&gt;
+&lt;/table&gt;
+</pre>
+<br />
+<h3>Static DefaultPainter in
+<code>javax.swing.text.DefaultHighlighter</code> Class is Now
+<code>Final</code></h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4328938">4328938</a>.</p>
+<p>Prior to this release, the static field <a href=
+"../../../../api/javax/swing/text/DefaultHighlighter.html#DefaultPainter">
+<code>DefaultPainter</code></a> of <a href=
+"../../../../api/javax/swing/text/DefaultHighlighter.html"><code>javax.swing.text.DefaultHighlighter</code></a>
+was not final. This was a potential security problem. For this
+release, it is now <code>Final</code>.<br />
+<br /></p>
+<h3>PlainDocument Constructor is Now Public</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4220001">4220001</a>.</p>
+<p>Prior to this release, the <a href=
+"../../../../api/javax/swing/text/PlainDocument.html#PlainDocument-javax.swing.text.AbstractDocument.Content-">
+<code>PlainDocument(AbstractDocument.Content)</code></a>
+constructor was protected. This meant that developers wishing to
+use the constructor had to subclass. This constructor was intended
+to be public, and is now public in this release.</p>
+<h3>JEditorPane.scrollToReference Method is Now Public</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4304676">4304676</a>.</p>
+<p><a href=
+"../../../../api/javax/swing/JEditorPane.html#scrollToReference-java.lang.String-">
+<code>JEditorPane.scrollToReference</code></a> was protected for no
+good reason. This method is intended to be useful without having to
+subclass, as such it has been made public in this release.</p>
+<h3>Document.getText Method Now Allows for Partial Returns</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4156650">4156650</a>.</p>
+<p>For efficiently accessing the content of a text document,
+<a href=
+"../../../../api/javax/swing/text/Document.html"><code>Document</code></a>
+defines the method <a href=
+"../../../../api/javax/swing/text/Document.html#getText-int-int-javax.swing.text.Segment-">
+<code>getText(int, int, Segment)</code></a>. Unfortunately, there
+has been no way for the caller to determine if the receiver could
+efficiently satisfy the request. For example, <a href=
+"../../../../api/javax/swing/text/GapContent.html"><code>GapContent</code></a>
+could efficiently implement the request as long as the request
+didn't span the last edited spot of the document (the gap). To
+facilitate efficient access of the content, the methods <a href=
+"../../../../api/javax/swing/text/Segment.html#setPartialReturn-boolean-">
+<code>setPartialReturn</code></a> and <a href=
+"../../../../api/javax/swing/text/Segment.html#isPartialReturn--"><code>
+isPartialReturn</code></a> have been added to <a href=
+"../../../../api/javax/swing/text/Segment.html"><code>Segment</code></a>.
+The current semantics of <code>Document.getText</code> still hold,
+but for more efficient use callers should invoke
+<code>segment.setPartialReturn(true)</code> and be prepared to get
+back a portion of the document at a time.<br /></p>
+<h3>JEditorPane Now Provides HTML Accessibility Support</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4303259">4303259</a>.</p>
+<p>Assistive technologies for people with disabilities require
+programmatic access to the contents of <a href=
+"../../../../api/javax/swing/JEditorPane.html"><code>JEditorPane</code></a>
+using the Accessibility API. Previously, the only access was to
+hypertext links. This API change provided accessibility to all HTML
+components using the Accessibility API.</p>
+<p><a href=
+"../../../../api/javax/swing/text/html/HTMLEditorKit.html"><code>javax.swing.text.html.HTMLEditorKit</code></a>
+now implements <a href=
+"../../../../api/javax/accessibility/Accessible.html"><code>javax.accessibility.Accessible</code></a>.</p>
+<p><code>JEditorPane</code> now implements <a href=
+"../../../../api/javax/swing/JEditorPane.html#getAccessibleContext--"><code>
+getAccessibleContext()</code></a>.<br />
+<br /></p>
+<h3>Further Support for New AbstractDocument.replace Method</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4458513">4458513</a>.</p>
+<p>As part of <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4431047">RFE 4431047</a>, a
+<a href=
+"../../../../api/javax/swing/text/AbstractDocument.html#replace-int-int-java.lang.String-javax.swing.text.AttributeSet-">
+<code>replace</code></a> method was added to <a href=
+"../../../../api/javax/swing/text/AbstractDocument.html"><code>AbstractDocument</code></a>.
+In order to allow this method to call <a href=
+"../../../../api/javax/swing/text/AbstractDocument.html#remove-int-int-">
+<code>remove</code></a> and <a href=
+"../../../../api/javax/swing/text/AbstractDocument.html#insertString-int-java.lang.String-javax.swing.text.AttributeSet-">
+<code>insertString</code></a> (the only methods defined in the
+interface for mutating a <code>Document</code>), the restrictions
+on when <a href=
+"../../../../api/javax/swing/text/AbstractDocument.html#writeLock--"><code>
+writeLock</code></a> may be invoked have been relaxed. This allows
+<code>replace</code> to be compatible with old versions of
+<code>AbstractDocument</code> that only override
+<code>remove</code> and <code>insertString</code>.</p>
+<hr />
+<h2><a name="JOptionPane" id="JOptionPane">JOptionPane</a></h2>
+<h3>New showInputDialog Methods</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4226644">4226644</a>.</p>
+<p>Prior to this release, if programs wished to display a simple
+input dialog containing a textfield with a default string, they had
+to invoke the complex <code>JOptionPane.showInputDialog</code>
+method which requires seven parameters. Two new methods, <a href=
+"../../../../api/javax/swing/JOptionPane.html#showInputDialog-java.lang.Object-java.lang.Object-">
+<code>showInputDialog(Object, Object)</code></a>, and <a href=
+"../../../../api/javax/swing/JOptionPane.html#showInputDialog-java.awt.Component-java.lang.Object-java.lang.Object-">
+<code>showInputDialog(Component, Object, Object)</code></a>, make
+it more convenient to create and display simple input dialogs.</p>
+<h3>JOptionPane Now Supports ComponentOrientation</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4265463">4265463</a>.</p>
+<p><a href=
+"../../../../api/javax/swing/JOptionPane.html"><code>JOptionPane</code></a>
+needed to support right-to-left layout. This was a bug fix and no
+actual API was required, however, the class spec for <a href=
+"../../../../api/javax/swing/JOptionPane.html"><code>JOptionPane</code></a>
+and <a href=
+"../../../../api/javax/swing/plaf/basic/BasicOptionPaneUI.html"><code>javax.swing.plaf.basic.BasicOptionPane</code></a>
+have been updated.</p>
+<h3><a name="showConfirmDialog" id="showConfirmDialog">JOptionPane
+now uses Non-Resizable Dialogs</a></h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4829588">4829588</a>.</p>
+<p>As of release 1.4.0, <code>JOptionPane</code> is changed to use
+non-resizable dialogs. As a result, the dialogs displayed by many
+<code>JOptionPane</code> methods have slightly changed. The first
+two changes are desirable:</p>
+<ul>
+<li>The dialogs are, obviously, no longer resizable.</li>
+<li>The dialogs no longer show the system menu icon (that typically
+appears in the upper-left corner of the dialog on a left-to-right
+system).</li>
+</ul>
+A side effect of this change appears in the handling of extra-long
+text. Previously, long text was clipped, showing "..." at the end,
+as the dialog was restricted to the size of the screen. Now,
+extra-long text can cause the dialog to be sized larger than the
+screen in order to accomodate all of the text. Keep watching bug
+<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4829588">4829588</a> to see
+how this undesirable behavior is resolved.
+<hr />
+<h2><a name="JPopupMenu" id="JPopupMenu">JPopupMenu</a></h2>
+<h3><a name="bug4632782" id="bug4632782">JPopupMenu and
+Focus</a></h3>
+<p>As of this release, showing a <code>JPopupMenu</code> causes
+focus to transfer to the parent <code>JRootPane</code>. This was
+done so that <code>JPopupMenu</code>s would support keyboard
+traversal ( <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4212563">4212563</a>). This
+may cause problems for applications that are doing validation on
+focus lost. If this affects you, it is recommended that in the
+<code>focusLost</code> notification you check the temporary
+property of the <code>FocusEvent</code> and, if <code>true</code>,
+do nothing. In situations where you don't want
+<code>JPopupMenu</code> to grab focus, there is unfortunately no
+way to disable this in the current release. In release 1.4.1 the
+decision to transfer focus is based on the focusability of the
+<code>JPopupMenu</code>. Refer to bug <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4632782">4632782</a> for
+details.</p>
+<h3>JPopupMenu Now Supports Key Bindings</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4212563">4212563</a>.</p>
+<p>Previously, <a href=
+"../../../../api/javax/swing/JPopupMenu.html"><code>JPopupMenu</code></a>
+didn't support key bindings. The arrow keys, mnemonics, the enter
+key, and escape did not work with a <code>JPopupMenu</code> unless
+it was used as part of a compound component (like a
+<code>JMenu</code> or a <code>JComboBox</code>).</p>
+<p>This behavior can be traced to the fact that
+<code>JPopupMenu</code> did not always gain focus, and could
+therefore not get <code>KeyEvents</code>. It was previously not
+possible for light weight toolkits, such as Swing, to request focus
+and indicate that the focus change was temporary. The new focus
+architecture solved this problem, and Swing can now request a
+temporary focus change. Fixing this bug required making the
+<code>JPopupMenu</code> get focus so that the key bindings can be
+processed. Consumers that had previously not expected focus changes
+need to update their code to check the temporary property of the
+<a href=
+"../../../../api/java/awt/event/FocusEvent.html"><code>FocusEvent</code>s</a>.</p>
+<h3>JPopupMenu.setVisible(true) Now Throws HeadlessException in
+Headless Mode</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4401222">4401222</a>.</p>
+<p>When the new headless mode was introduced, <a href=
+"../../../../api/javax/swing/JPopupMenu.html#setVisible-boolean-"><code>
+JPopupMenu.setVisible(true)</code></a> was implemented to throw
+<code>NullPointerException</code> when called in headless mode. It
+has now been fixed to throw <code>HeadlessException</code> instead,
+to indicate that this operation cannot be performed in headless
+mode.</p>
+<hr />
+<h2><a name="JPanel" id="JPanel">JPanel</a></h2>
+<h3>New setUI, getUI Methods</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4226238">4226238</a>.</p>
+<p>The <a href=
+"../../../../api/javax/swing/JPanel.html#setUI-javax.swing.plaf.PanelUI-">
+<code>setUI</code></a>/<a href=
+"../../../../api/javax/swing/JPanel.html#getUI--"><code>getUI</code></a>
+methods were not implemented for <a href=
+"../../../../api/javax/swing/JPanel.html"><code>JPanel</code></a>,
+even though its look and feel is defined by pluggable look and feel
+(plaf). See <a href=
+"../../../../api/javax/swing/plaf/basic/BasicPanelUI.html"><code>javax.swing.plaf.basic.BasicPanelUI.java</code></a>,
+for example.</p>
+<hr />
+<h2><a name="JTabbedPane" id="JTabbedPane">JTabbedPane</a></h2>
+<h3>JTabbedPane and Focus</h3>
+<p>The new focus specification states that focus requests on
+components that are not showing will fail. This can have subtle
+side effects. One such side effect is that requesting focus from a
+<code>ChangeListener</code> associated with a
+<code>JTabbedPane</code> may fail. At the same time, the
+<code>ChangeListener</code> is notified that the component is not
+currently visible and therefore the focus request fails in the same
+situation that it probably worked under the previous release. If
+you are running into this situation with <code>JTabbedPane</code>
+it is suggested you make the component visible before requesting
+focus. Other situations may require different approaches.</p>
+<h3>New indexAtLocation Method in JTabbedPane</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4241787">4241787</a>.</p>
+<p>Prior to this change, there was no way for client programs to
+convert a coordinate location to a particular tab in a tabbedpane.
+This made it difficult to implement special event handling on a
+<code>JTabbedPane</code> (like popping up a menu over a tab).</p>
+<p>The method <a href=
+"../../../../api/javax/swing/JTabbedPane.html#indexAtLocation-int-int-">
+indexAtLocation</a> has been added to <a href=
+"../../../../api/javax/swing/JTabbedPane.html"><code>JTabbedPane</code></a>.</p>
+<h3>New Mnemonic Support for Accessing Tabs in JTabbedPane</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4284674">4284674</a>.</p>
+<p>The panes of a <a href=
+"../../../../api/javax/swing/JTabbedPane.html"><code>JTabbedPane</code></a>
+did not previously allow for mnemonics. To facilitate this, the
+methods <a href=
+"../../../../api/javax/swing/JTabbedPane.html#getDisplayedMnemonicIndexAt-int-">
+<code>getDisplayedMnemonicIndexAt</code></a> and <a href=
+"../../../../api/javax/swing/JTabbedPane.html#setDisplayedMnemonicIndexAt-int-int-">
+<code>setDisplayedMnemonicIndexAt</code></a> have been added.</p>
+<h3>Exceptions Thrown by JTabbedPane Now Consistent</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4287053">4287053</a>.</p>
+<p>The <a href=
+"../../../../api/javax/swing/JTabbedPane.html"><code>JTabbedPane</code></a>
+class is a container that has many methods which take an integer
+index as a parameter. Unfortunately, these methods weren't
+inconsistent with their approach to throwing exceptions (some
+methods check/throw, some don't). Additionally, the javadoc was in
+error - it stated that an <code>IllegalParameterException</code>
+was thrown when in fact an
+<code>ArrayIndexOutOfBoundsException</code> was thrown (by the
+underlying <code>Vector</code>).</p>
+<p>Any method which takes an index that must be in the valid range
+from 0 to tabCount-1 now documents that it throws an
+<code>IndexOutOfBoundsException</code> (note: the underlying code
+continues to throw <code>ArrayIndexOutOfBoundsException</code> for
+compatibility reasons).</p>
+<p>The following doc change:</p>
+<pre>
+    * @exception IndexOutOfBoundsException if index is out of range
+    *       (index &lt; 0 || index &gt;= tab count)
+</pre>
+will be applied to the following <a href=
+"../../../../api/javax/swing/JTabbedPane.html"><code>JTabbedPane</code></a>
+methods:
+<pre>
+    public String <a href=
+"../../../../api/javax/swing/JTabbedPane.html#getTitleAt-int-">getTitleAt(int index)</a>
+    public Icon <a href=
+"../../../../api/javax/swing/JTabbedPane.html#getIconAt-int-">getIconAt(int index)</a>
+    public Icon <a href=
+"../../../../api/javax/swing/JTabbedPane.html#getDisabledIconAt-int-">getDisabledIconAt(int index)</a>
+    public String <a href=
+"../../../../api/javax/swing/JTabbedPane.html#getToolTipTextAt-int-">getToolTipTextAt(int index)</a>
+    public Color <a href=
+"../../../../api/javax/swing/JTabbedPane.html#getBackgroundAt-int-">getBackgroundAt(int index)</a>
+    public Color <a href=
+"../../../../api/javax/swing/JTabbedPane.html#getForegroundAt-int-">getForegroundAt(int index)</a>
+    public boolean <a href=
+"../../../../api/javax/swing/JTabbedPane.html#isEnabledAt-int-">isEnabledAt(int index)</a>
+    public Component <a href=
+"../../../../api/javax/swing/JTabbedPane.html#getComponentAt-int-">getComponentAt(int index)</a>
+    public int <a href=
+"../../../../api/javax/swing/JTabbedPane.html#getDisplayedMnemonicIndexAt-int-">getDisplayedMnemonicIndexAt(int index)</a>
+    public Rectangle <a href=
+"../../../../api/javax/swing/JTabbedPane.html#getBoundsAt-int-">getBoundsAt(int index)</a>
+    public void <a href=
+"../../../../api/javax/swing/JTabbedPane.html#setTitleAt-int-java.lang.String-">setTitleAt(int index, String title)</a>
+    public void <a href=
+"../../../../api/javax/swing/JTabbedPane.html#setIconAt-int-javax.swing.Icon-">setIconAt(int index, Icon icon)</a>
+    public void <a href=
+"../../../../api/javax/swing/JTabbedPane.html#setDisabledIconAt-int-javax.swing.Icon-">setDisabledIconAt(int index, Icon icon)</a>
+    public void <a href=
+"../../../../api/javax/swing/JTabbedPane.html#setToolTipTextAt-int-java.lang.String-">setToolTipTextAt(int index, String toolTipText)</a>
+    public void <a href=
+"../../../../api/javax/swing/JTabbedPane.html#setForegroundAt-int-java.awt.Color-">setForegroundAt(int index, Color foreground)</a>
+    public void <a href=
+"../../../../api/javax/swing/JTabbedPane.html#setBackgroundAt-int-java.awt.Color-">setBackgroundAt(int index, Color background)</a>
+    public void <a href=
+"../../../../api/javax/swing/JTabbedPane.html#setEnabledAt-int-boolean-">setEnabledAt(int index, boolean enabled)</a>
+    public void <a href=
+"../../../../api/javax/swing/JTabbedPane.html#setComponentAt-int-java.awt.Component-">setComponentAt(int index, Component component)</a>
+    public void <a href=
+"../../../../api/javax/swing/JTabbedPane.html#setDisplayedMnemonicIndexAt-int-int-">setDisplayedMnemonicIndexAt(int tabIndex, int mnemonicIndex)</a>
+</pre>
+<p>The same exception handling will be added to the following
+methods which previously did nothing:</p>
+<pre>
+    public void <a href=
+"../../../../api/javax/swing/JTabbedPane.html#setSelectedIndex-int-">setSelectedIndex(int index)</a>
+    public void <a href=
+"../../../../api/javax/swing/JTabbedPane.html#remove-int-">remove(int index)</a>
+</pre>
+<hr />
+<h2><a name="JTable" id="JTable">JTable</a></h2>
+<h3>DefaultTableModel.moveRow Specification Clarified</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4144295">4144295</a>.</p>
+<p>In JDK 1.3, the <code>moveRow</code> method in <a href=
+"../../../../api/javax/swing/table/DefaultTableModel.html"><code>DefaultTableModel</code></a>
+was documented in such a way that it did not clearly define whether
+the row at <code>startIndex</code> or the row at
+<code>endIndex</code> row would end up at <code>toIndex</code>. By
+inference from the examples, it appears that the
+<code>startIndex</code> should end up at <code>toIndex</code> when
+moving rows downward and the <code>endIndex</code> should end up at
+<code>toIndex</code> when moving rows upward.</p>
+<p>That said, the implementation of <a href=
+"../../../../api/javax/swing/table/DefaultTableModel.html#moveRow-int-int-int-">
+<code>moveRow</code></a> had a bug such that whenever the number of
+rows being moved was more than one - the rows would end up in
+somewhat arbitrary positions and would not even be contiguous after
+the move. Bug 4144295 noted that the implementation did not even
+perform the example in its specification: the <code>moveRow(1, 3,
+5)</code> example in practice left the vector in the following
+state:</p>
+<pre>
+a|C|e|B|D|f|g|h|i|j|k
+</pre>
+The new implementation makes the observation that this operation is
+a simple rotation of elements between bounds that can be calculated
+from the inputs.
+<p>Since the previous implementation did not work we have taken the
+opportunity to simplify the definition to one where the
+<code>startIndex</code> is always moved to the
+<code>toIndex</code>, with all other elements appearing after
+<code>toIndex</code> in the same order that they were originally.
+Note that this performs the same operation as the previous
+implementation in the only case where it worked - when a single row
+was being moved.</p>
+<p>The new implementation does not throw an exception when
+<code>endIndex</code> is less than <code>startIndex</code> - it
+does nothing instead having satisfied the implied contract to move
+all rows, <code>r</code>, where <code>startIndex &lt;= r &lt;=
+endIndex</code>.</p>
+<h3>Typing into a JTable Now Transfers Focus to the Cell</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4274963">4274963</a>.</p>
+<p>The Excel application automatically gives focus to underlying
+editors when a user presses an alphanumeric key. We have received
+over 200 JDC votes requesting that we offer this behavior in
+<a href=
+"../../../../api/javax/swing/JTable.html"><code>JTable</code></a>.
+While we can't change the default behavior for reasons of backwards
+compatibility, in this release we have added the new property,
+<code>surrendersFocusOnKeystroke</code>, to address this request.
+The new methods <a href=
+"../../../../api/javax/swing/JTable.html#setSurrendersFocusOnKeystroke-boolean-">
+<code>setSurrendersFocusOnKeystroke</code></a> and <a href=
+"../../../../api/javax/swing/JTable.html#getSurrendersFocusOnKeystroke--">
+<code>getSurrendersFocusOnKeystrok</code></a> support this feature.
+The default behavior remains unchanged.</p>
+<h3>DefaultTableModel Now Allows a Null For Name Argument</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4474094">4474094</a>.</p>
+<p>The methods <a href=
+"../../../../api/javax/swing/table/DefaultTableModel.html#addColumn-java.lang.Object-">
+<code>DefaultTableModel.addColumn(Object)</code></a> and <a href=
+"../../../../api/javax/swing/table/DefaultTableModel.html#addColumn-java.lang.Object-java.util.Vector-">
+<code>DefaultTableModel.addColumn(Object, Vector)</code></a> did
+not previously allow <code>null</code> for the <code>name</code>
+argument - they threw an <code>IllegalArgumentException</code>. As
+it is possible to set the column name to <code>null</code> via
+other means (using constructors, or directly manipulating the
+field), the <code>addColumn</code> methods now also allows a
+<code>null</code> value.</p>
+<hr />
+<h2><a name="JTree" id="JTree">JTree</a></h2>
+<h3>DefaultTreeModel Now Allows a Null Root</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4264897">4264897</a>.</p>
+<p><a href=
+"../../../../api/javax/swing/tree/DefaultTreeModel.html"><code>DefaultTreeModel</code></a>
+now allows a <code>null</code> root node . Previously, the javadoc
+for <code>TreeModel</code> specified that a <code>null</code> root
+was valid, but <code>DefaultTreeModel</code> would not allow one.
+<code>DefaultTreeModel</code> now allows setting a
+<code>null</code> root, as well as a <code>null</code> root in the
+constructor. The javadoc for <a href=
+"../../../../api/javax/swing/tree/DefaultTreeModel.html#setRoot-javax.swing.tree.TreeNode-">
+<code>setRoot</code></a> has been revised to reflect the
+change.</p>
+<h3>Added First Letter Navigation to JTree</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4284709">4284709</a>.</p>
+<p>Often times users wish to navigate to cells in a
+<code>JTree</code> using alphanumeric keys. To facilitate this, a
+method named <a href=
+"../../../../api/javax/swing/JTree.html#getNextMatch-java.lang.String-int-javax.swing.text.Position.Bias-">
+<code>getNextMatch</code></a> has been added to <a href=
+"../../../../api/javax/swing/JTree.html"><code>JTree</code></a>.
+<a href=
+"../../../../api/javax/swing/plaf/basic/BasicTreeUI.html"><code>BasicTreeUI</code></a>
+installs a <code>KeyListener</code> that invokes this method as
+keys are typed on the keyboard.</p>
+<a name="bug4308384" id="bug4308384"></a>
+<hr />
+<h2><a name="JList" id="JList">JList</a></h2>
+<h3>ListDataEvent.toString Now Provides Useful Information</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4134085">4134085</a>.</p>
+<p>Developers often rely on the <code>toString</code> method for
+useful debugging information. Unfortunately <a href=
+"../../../../api/javax/swing/event/ListDataEvent.html"><code>ListDataEvent</code></a>'s
+<a href=
+"../../../../api/javax/swing/event/ListDataEvent.html#toString--"><code>
+toString</code></a> method did not really provide anything useful.
+For this release, it has been changed to return something
+useful.</p>
+<h3>JList Now Supports First Letter Key Navigation</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4284709">4284709</a>.</p>
+<p>Often times users wish to navigate to cells in a <a href=
+"../../../../api/javax/swing/JList.html"><code>JList</code></a> using
+alphanumeric keys. To facilitate this, <a href=
+"../../../../api/javax/swing/JList.html#getNextMatch-java.lang.String-int-javax.swing.text.Position.Bias-">
+<code>getNextMatch</code></a> was added to <code>JList</code>.
+<a href=
+"../../../../api/javax/swing/plaf/basic/BasicListUI.html"><code>BasicListUI</code></a>
+will then install a <code>KeyListener</code> that will invoke this
+method as keys are typed to update the selection.</p>
+<h3><a name="bug4460016" id="bug4460016">JList Items May Now be
+Arranged Horizontally</a></h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4460016">4460016</a>.</p>
+<p><code>JList</code> previously only allowed laying out its cells
+vertically, that is:</p>
+<pre>
+1
+2
+3
+4
+</pre>
+<p>Numerous users have asked for the ability to lay out the list
+horizontally, something like:</p>
+<pre>
+1  3
+2  4
+</pre>
+or
+<pre>
+1  2
+3  4
+</pre>
+<p>To achieve this, three constants are added to
+<code>JList</code>, <a href=
+"../../../../api/javax/swing/JList.html#VERTICAL"><code>VERTICAL</code></a>,
+<a href=
+"../../../../api/javax/swing/JList.html#VERTICAL_WRAP"><code>VERTICAL_WRAP</code></a>,
+and <a href=
+"../../../../api/javax/swing/JList.html#HORIZONTAL_WRAP"><code>HORIZONTAL_WRAP</code></a>.
+The methods <a href=
+"../../../../api/javax/swing/JList.html#getLayoutOrientation--"><code>getLayoutOrientation</code></a>
+and <a href=
+"../../../../api/javax/swing/JList.html#setLayoutOrientation-int-"><code>
+setLayoutOrientation</code></a> are also added to <a href=
+"../../../../api/javax/swing/JList.html"><code>JList</code></a>. The
+javadoc for the <code>JList</code> methods <a href=
+"../../../../api/javax/swing/JList.html#getScrollableTracksViewportHeight--">
+<code>getScrollableTracksViewportHeight</code></a>, <a href=
+"../../../../api/javax/swing/JList.html#getScrollableTracksViewportWidth--">
+<code>getScrollableTracksViewportWidth</code></a>, <a href=
+"../../../../api/javax/swing/JList.html#getScrollableBlockIncrement-java.awt.Rectangle-int-int-">
+<code>getScrollableBlockIncrement</code></a>, and <a href=
+"../../../../api/javax/swing/JList.html#getPreferredScrollableViewportSize--">
+<code>getPreferredScrollableViewportSize</code></a> are updated
+accordingly. Likewise, the javadoc for <a href=
+"../../../../api/javax/swing/plaf/basic/BasicListUI.html#getPreferredSize-javax.swing.JComponent-">
+<code>getPreferredSize</code></a> in <a href=
+"../../../../api/javax/swing/plaf/basic/BasicListUI.html"><code>javax.swing.plaf.basic.BasicListUI</code></a>
+is updated.</p>
+<hr />
+<h2><a name="Miscellaneous" id=
+"Miscellaneous">Miscellaneous</a></h2>
+<h3>Two default settings in Metal look and feel have changed</h3>
+<p>Two default settings have changed in the Metal look and
+feel:</p>
+<ul>
+<li>The foreground color for <code>JLabel</code> has changed from
+dark blue to black.</li>
+<li>The font for <code>DefaultListCellRenderer</code> has changed
+from normal to bold.</li>
+</ul>
+<h3><a name="bug4759306" id=
+"bug4759306">JColorChooser.setPreviewPanel doesn't remove the old
+one</a></h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4759306">4759306</a>.</p>
+<p>When calling this method the default PreviewPanel was not
+removed from the colorChooser, though the new panel was added. This
+resulted in strange artifacts. This has been fixed in release
+1.4.2.</p>
+<h3><a name="bug4668511" id="bug4668511">Deadlock in JColorChooser
+Fixed</a></h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4668511">4668511</a>.</p>
+<p>This bug when encountered in 1.4.0, caused a deadlock that would
+hang the entire application. This has been fixed in 1.4.1.</p>
+<h3>JFrame.setDefaultCloseOperation Can Now Throw
+SecurityException</h3>
+<p>As of release 1.4.1, the <a href=
+"../../../../api/javax/swing/JFrame.html#setDefaultCloseOperation-int-">
+<code>setDefaultCloseOperation</code></a> method in
+<code>JFrame</code> may now throw
+<code>SecurityException</code>.</p>
+<h3><a name="bug4668963" id="bug4668963">Metal Can Now Pick up Font
+Sizes from the Desktop on Microsoft Windows</a></h3>
+<p>The bugtraq reports that correspond to this change are: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4419964">4419964</a> and
+<a href=
+"http://bugs.java.com/view_bug.do?bug_id=4668963">4668963</a>.</p>
+<p>Prior to this release, the <code>DefaultMetalTheme</code>
+ignored the font size information from the Windows desktop. As of
+release 1.4.1, <code>DefaultMetalTheme</code> can use the font
+sizes specified in the Windows desktop. This can be disabled using
+the system property <code>swing.useSystemFontSettings</code>. An
+additional part of this bug is that our Windows look and feel was
+picking up the wrong fonts for a handful of components; this has
+been fixed.</p>
+<h3><a name="bug4615396" id="bug4615396">Some Locales Will Honor
+Font Size Only from the Desktop on Windows</a></h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4615396">4615396</a>.</p>
+<p>On Microsoft Windows, with the <code>WindowsLookAndFeel</code>,
+in certain locales we only honor font size from the desktop. This
+has been addressed in 1.4.1.</p>
+<h3>Document Which Properties a Look and Feel May Ignore</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4420209">4420209</a>.</p>
+<p>Some look and feel implementations may ignore certain properties
+which affect the look and feel. With this release, the
+documentation for certain methods has been modified to indicate
+that these properties may be ignored by some look and feels. Also,
+the class spec for <a href=
+"../../../../api/javax/swing/UIManager.html"><code>UIManager</code></a>
+and the documentation for the <a href=
+"../../../../api/javax/swing/plaf/metal/package-summary.html"><code>javax.swing.plaf.metal</code></a>
+package were modified to specify that the Java look and feel is the
+default look and feel. This modification affects only
+documentation.</p>
+<p>The affected methods are:</p>
+<ul>
+<li><a href=
+"../../../../api/javax/swing/AbstractButton.html"><code>javax.swing.AbstractButton</code></a>
+<ul>
+<li><a href=
+"../../../../api/javax/swing/AbstractButton.html#isFocusPainted--"><code>
+public boolean isFocusPainted()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/AbstractButton.html#setFocusPainted-boolean-">
+<code>public void setFocusPainted(boolean b)</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/AbstractButton.html#isRolloverEnabled--"><code>
+public boolean isRolloverEnabled()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/AbstractButton.html#setRolloverEnabled-boolean-">
+<code>public void setRolloverEnabled(boolean b)</code></a></li>
+</ul>
+</li>
+<li><a href=
+"../../../../api/javax/swing/JButton.html"><code>javax.swing.JButton</code></a>
+<ul>
+<li><a href=
+"../../../../api/javax/swing/JButton.html#isDefaultButton--"><code>public
+boolean isDefaultButton()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JButton.html#isDefaultCapable--"><code>public
+boolean isDefaultCapable()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JButton.html#setDefaultCapable-boolean-"><code>
+public void setDefaultCapable(boolean
+defaultCapable)</code></a></li>
+</ul>
+</li>
+<li><a href=
+"../../../../api/javax/swing/JCheckBox.html"><code>javax.swing.JCheckBox</code></a>
+<ul>
+<li><a href=
+"../../../../api/javax/swing/JCheckBox.html#isBorderPaintedFlat--"><code>
+public boolean isBorderPaintedFlat()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JCheckBox.html#setBorderPaintedFlat-boolean-">
+<code>public void setBorderPaintedFlat(boolean b)</code></a></li>
+</ul>
+</li>
+<li><a href=
+"../../../../api/javax/swing/JColorChooser.html"><code>javax.swing.JColorChooser</code></a>
+<ul>
+<li><a href=
+"../../../../api/javax/swing/JColorChooser.html#getDragEnabled--"><code>
+public boolean getDragEnabled()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JColorChooser.html#setDragEnabled-boolean-">
+<code>public void setDragEnabled(boolean b)</code></a></li>
+</ul>
+</li>
+<li><a href=
+"../../../../api/javax/swing/JComboBox.html"><code>javax.swing.JComboBox</code></a>
+<ul>
+<li><a href=
+"../../../../api/javax/swing/JComboBox.html#isLightWeightPopupEnabled--">
+<code>public boolean isLightWeightPopupEnabled()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JComboBox.html#setLightWeightPopupEnabled-boolean-">
+<code>public void setLightWeightPopupEnabled(boolean
+aFlag)</code></a></li>
+</ul>
+</li>
+<li><a href=
+"../../../../api/javax/swing/JFileChooser.html"><code>javax.swing.JFileChooser</code></a>
+<ul>
+<li><a href=
+"../../../../api/javax/swing/JFileChooser.html#getDragEnabled--"><code>
+public boolean getDragEnabled()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JFileChooser.html#setDragEnabled-boolean-">
+<code>public void setDragEnabled(boolean b)</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JFileChooser.html#getControlButtonsAreShown--">
+<code>public boolean getControlButtonsAreShown()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JFileChooser.html#setControlButtonsAreShown-boolean-">
+<code>public void setControlButtonsAreShown(boolean
+b)</code></a></li>
+</ul>
+</li>
+<li><a href=
+"../../../../api/javax/swing/JInternalFrame.html"><code>javax.swing.JInternalFrame</code></a>
+<ul>
+<li><a href=
+"../../../../api/javax/swing/JInternalFrame.html#isIconifiable--"><code>
+public boolean isIconifiable()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JInternalFrame.html#setIconifiable-boolean-">
+<code>public void setIconifiable(boolean b)</code></a></li>
+</ul>
+</li>
+<li><a href=
+"../../../../api/javax/swing/JList.html"><code>javax.swing.JList</code></a>
+<ul>
+<li><a href=
+"../../../../api/javax/swing/JList.html#getDragEnabled--"><code>public
+boolean getDragEnabled()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JList.html#setDragEnabled-boolean-"><code>
+public void setDragEnabled(boolean b)</code></a></li>
+</ul>
+</li>
+<li><a href=
+"../../../../api/javax/swing/JPopupMenu.html"><code>javax.swing.JPopupMenu</code></a>
+<ul>
+<li><a href=
+"../../../../api/javax/swing/JPopupMenu.html#isLightWeightPopupEnabled--">
+<code>public boolean isLightWeightPopupEnabled()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JPopupMenu.html#setLightWeightPopupEnabled-boolean-">
+<code>public void setLightWeightPopupEnabled(boolean
+aFlag)</code></a></li>
+</ul>
+</li>
+<li><a href=
+"../../../../api/javax/swing/JProgressBar.html"><code>javax.swing.JProgressBar</code></a>
+<ul>
+<li><a href=
+"../../../../api/javax/swing/JProgressBar.html#isStringPainted--"><code>
+public boolean isStringPainted()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JProgressBar.html#setStringPainted-boolean-">
+<code>public void setStringPainted(boolean b)</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JProgressBar.html#isIndeterminate--"><code>
+public boolean isIndeterminate()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JProgressBar.html#setIndeterminate-boolean-">
+<code>public void setIndeterminate(boolean
+newValue)</code></a></li>
+</ul>
+</li>
+<li><a href=
+"../../../../api/javax/swing/JSplitPane.html"><code>javax.swing.JSplitPane</code></a>
+<ul>
+<li><a href=
+"../../../../api/javax/swing/JSplitPane.html#isOneTouchExpandable--"><code>
+public boolean isOneTouchExpandable()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JSplitPane.html#setOneTouchExpandable-boolean-">
+<code>public void setOneTouchExpandable(boolean
+newValue)</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JSplitPane.html#isContinuousLayout--"><code>
+public boolean isContinuousLayout()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JSplitPane.html#setContinuousLayout-boolean-">
+<code>public void setContinuousLayout(boolean
+newContinuousLayout)</code></a></li>
+</ul>
+</li>
+<li><a href=
+"../../../../api/javax/swing/JTable.html"><code>javax.swing.JTable</code></a>
+<ul>
+<li><a href=
+"../../../../api/javax/swing/JTable.html#getDragEnabled--"><code>public
+boolean getDragEnabled()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JTable.html#setDragEnabled-boolean-"><code>
+public void setDragEnabled(boolean b)</code></a></li>
+</ul>
+</li>
+<li><a href=
+"../../../../api/javax/swing/text/JTextComponent.html"><code>javax.swing.text.JTextComponent</code></a>
+<ul>
+<li><a href=
+"../../../../api/javax/swing/text/JTextComponent.html#getDragEnabled--">
+<code>public boolean getDragEnabled()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/text/JTextComponent.html#setDragEnabled-boolean-">
+<code>public void setDragEnabled(boolean b)</code></a></li>
+</ul>
+</li>
+<li><a href=
+"../../../../api/javax/swing/JToolBar.html"><code>javax.swing.JToolBar</code></a>
+<ul>
+<li><a href=
+"../../../../api/javax/swing/JToolBar.html#isFloatable--"><code>public
+boolean isFloatable()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JToolBar.html#setFloatable-boolean-"><code>
+public void setFloatable(boolean b)</code></a></li>
+</ul>
+</li>
+<li><a href=
+"../../../../api/javax/swing/JTree.html"><code>javax.swing.JTree</code></a>
+<ul>
+<li><a href=
+"../../../../api/javax/swing/JTree.html#getDragEnabled--"><code>public
+boolean getDragEnabled()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JTree.html#setDragEnabled-boolean-"><code>
+public void setDragEnabled(boolean b)</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JTree.html#getShowsRootHandles--"><code>public
+boolean getShowsRootHandles()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JTree.html#setShowsRootHandles-boolean-"><code>
+public void setShowsRootHandles(boolean newValue)</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JTree.html#getScrollsOnExpand--"><code>public
+boolean getScrollsOnExpand()</code></a></li>
+<li><a href=
+"../../../../api/javax/swing/JTree.html#setScrollsOnExpand-boolean-"><code>
+public void setScrollsOnExpand(boolean newValue)</code></a></li>
+</ul>
+</li>
+</ul>
+<h3>SwingConstants Now Define NEXT and PREVIOUS</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4134085">4175466</a>.</p>
+<p><a href=
+"../../../../api/javax/swing/SwingConstants.html"><code>SwingConstants</code></a>
+defines constants that are used throughout Swing. A common UI
+operation is to locate the next/previous item in a sequence; as
+such, <code>SwingConstants</code> now defines constants for
+<a href="../../../../api/javax/swing/SwingConstants.html#NEXT"><code>NEXT</code></a>
+and <a href=
+"../../../../api/javax/swing/SwingConstants.html#PREVIOUS"><code>PREVIOUS</code></a>.</p>
+<h3>New Way to Process Bindings for Swing Components from a
+non-Swing Component</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4344900">4344900</a>.</p>
+<p>Swing has an elaborate infrastructure to support associating
+actions with particular key strokes. This means that when the user
+types a character the action executes. The processing of these
+events is triggered from within <a href=
+"../../../../api/javax/swing/JComponent.html#processKeyEvent-java.awt.event.KeyEvent-">
+<code>JComponent.processKeyEvent</code></a>
+(<code>processKeyEvent</code> is overridden from
+<code>java.awt.Component</code>). As the processing of these
+actions occurs within <code>JComponent</code>, there was previously
+no way for developers to process bindings from within
+non-<code>JComponent</code> subclasses that get focus. To
+facilitate this, a <a href=
+"../../../../api/javax/swing/SwingUtilities.html#processKeyBindings-java.awt.event.KeyEvent-">
+<code>processKeyBindings</code></a> method was added to <a href=
+"../../../../api/javax/swing/SwingUtilities.html"><code>SwingUtilities</code></a>.</p>
+<h3><a name="bug4290988" id="bug4290988">Auditory Feedback for
+Swing Components</a></h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4290988">4290988</a>.</p>
+<p><b>Note:</b> Due to a handful of bugs in the sound package we
+default to playing no sounds. If you would like to turn on sounds,
+you can do the following:</p>
+<pre>
+    UIManager.put("AuditoryCues.playList",
+        UIManager.get("AuditoryCues.allAuditoryCues"));
+</pre>
+<p>Previously, Swing components did not provide the same auditory
+feedback as native components on many platforms. MALF2, a set of
+modifications to Swing's PLAFs, is primarily intended for use as an
+output-only, non-speech audio user feedback mechanism. The MALF2
+project is important from the perspective of Swing/JFC and the Java
+platform's goal of tight user interface integration with the
+underlying platform. The MALF2 project ensures that a user's
+experience with a native application and a Swing/JFC application is
+identical with regard to the auditory user feedback.</p>
+<p>The implementation centers around adding API to <a href=
+"../../../../api/javax/swing/plaf/basic/BasicLookAndFeel.html"><code>BasicLookAndFeel</code></a>
+to support loading an <code>ActionMap</code> containing
+<code>Action</code>s that play sounds. Various
+<code><i>Basic</i>ComponentUI</code> implementations then invoke
+<code>actionPerformed</code> on the <code>Action</code> at the
+appropriate time to play the sound. For example, <a href=
+"../../../../api/javax/swing/plaf/basic/BasicMenuItemUI.html"><code>BasicMenuItemUI</code></a>
+uses <a href=
+"../../../../api/javax/swing/plaf/basic/BasicMenuItemUI.html#doClick-javax.swing.MenuSelectionManager-">
+<code>doClick</code></a> to perform the action. While
+<code>BasicLookAndFeel</code> plays sounds using the Java Sound
+API, subclasses can use an alternative method. For example,
+<code>WindowsLookAndFeel</code> maps the Strings to
+<code>Runnable</code>s by way of <a href=
+"../../../../api/java/awt/Toolkit.html#getDesktopProperty-java.lang.String-">
+<code>Toolkit.getDefaultToolkit().getDesktopProperty()</code></a>,
+to provide integration with the sounds provided by Windows.</p>
+<p>The <code>ActionMap</code> containing the sounds can be accessed
+via <a href=
+"../../../../api/javax/swing/plaf/basic/BasicLookAndFeel.html#getAudioActionMap--">
+<code>BasicLookAndFeel.getAudioActionMap</code></a>. When
+<code>getAudioActionMap</code> is first invoked, it performs the
+following:</p>
+<ol>
+<li>The default entry <code>auditoryCues.cueList</code> (an
+<code>Object[]</code>) is used to determine a list of sounds to
+load.</li>
+<li>Each entry in the array is passed to
+<code>createAudioAction</code> to obtain the <code>Action</code>
+responsible for playing the sound.</li>
+<li>The <code>Object</code> passed into <a href=
+"../../../../api/javax/swing/plaf/basic/BasicLookAndFeel.html#createAudioAction-java.lang.Object-">
+<code>BasicLookAndFeel.createAudioAction</code></a> is used to look
+up a path to a sound file from the defaults table that can be
+loaded by Java Sound.</li>
+<li>When one of the <code>BasicComponentUI</code>s classes wishes
+to play a sound, it invokes <a href=
+"../../../../api/javax/swing/plaf/basic/BasicLookAndFeel.html#playSound-javax.swing.Action-">
+<code>BasicLookAndFeel.playSound</code></a>, passing in the
+<code>Action</code>.</li>
+<li><code>BasicLookAndFeel.playSound</code> invokes
+<code>actionPerformed</code> on the <code>Action</code> if the name
+of the <code>Action</code> is contained in the defaults entry
+<code>AuditoryCues.playList</code>.</li>
+</ol>
+<p>This architecture allows the developer numerous ways to
+customize the sounds that are played:</p>
+<ul>
+<li>The sounds associated with a particular <code>JComponent</code>
+can be manipulated by changing the <code>Action</code> in the
+<code>ActionMap</code> associated with the <code>JComponent</code>,
+eg:
+<pre>
+ActionMap map = menuItem.getActionMap();
+map.put("MenuItem.commandSound", differentActionToPlaySound);
+</pre></li>
+<li>The sounds used by all <code>Component</code>s of a particular
+type can be changed by manipulating the defaults table, eg:
+<pre>
+UIManager.put("MenuItem.commandSound", "pathToNewSoundFild");
+</pre></li>
+<li>Developers creating a custom look and feel may override one of
+the <code>BasicLookAndFeel</code> methods to load the sounds in an
+alternative manner, or perhaps play the sounds in a different
+way.</li>
+</ul>
+<p>Alternatively, the set of sounds to be played can be manipulated
+by way of the defaults entry <code>AuditoryCues.playList</code>.
+This <code>Object</code> array contains the keys in the defaults
+table indicating which sounds to play.
+<code>MetalLookAndFeel</code> defines this to be:</p>
+<pre>
+<code>new Object[]  {"OptionPane.errorSound", 
+          "OptionPane.informationSound",
+          "OptionPane.questionSound",
+          "OptionPane.warningSound" }</code>
+        
+</pre>
+This has the effect of turning on only the sounds that
+<code>JOptionPane</code> supports.
+<h3>JMenu Updated to Work with New Focus Architecture</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4371580">4371580</a>.</p>
+<p>The new focus architecture introduced via RFE <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4290675">4290675</a> allows
+for developers to request a temporary focus change. The request is
+done through the protected <a href=
+"../../../../api/java/awt/Component.html"><code>Component</code></a>
+methods <a href=
+"../../../../api/java/awt/Component.html#requestFocus-boolean-"><code>requestFocus(boolean)</code></a>
+or <a href=
+"../../../../api/java/awt/Component.html#requestFocusInWindow-boolean-">
+<code>requestFocusInWindow(boolean)</code></a>. These two methods
+are protected as they are not meant for general use, but only for
+implementors of lightweight toolkits, such as Swing. Swing is
+architected in such a way that code in different packages needs to
+temporarily request focus; as such, the parent class of all Swing
+Components, <a href=
+"../../../../api/javax/swing/JComponent.html"><code>JComponent</code></a>,
+needs to expose <a href=
+"../../../../api/javax/swing/JComponent.html#requestFocus-boolean-"><code>
+requestFocus(boolean)</code></a> and <a href=
+"../../../../api/javax/swing/JComponent.html#requestFocusInWindow-boolean-">
+<code>requestFocusInWindow</code></a> as public.</p>
+<h3>New Support for Changing ComponentOrientation in Tree of
+Components</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4337186">4337186</a>.</p>
+<p>With the bulk of the Swing components paying attention to their
+<a href=
+"../../../../api/java/awt/ComponentOrientation.html"><code>ComponentOrientation</code></a>
+property, we now need two features to make it easier to manage the
+<code>ComponentOrientation</code> settings of an entire hierarchy
+of components. It should be easy to set entire hierarchies of
+components to a consistent <code>ComponentOrientation</code>
+setting using the new <a href=
+"../../../../api/javax/swing/SwingUtilities.html"><code>SwingUtilities</code></a>
+method <code>applyComponentOrientation(Component c,
+ComponentOrientation o)</code>.</p>
+<h3>New Access to Desktop Properties</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4290973">4290973</a>.</p>
+<p>As part of the Windows look and feel update, a method was added
+to <a href=
+"../../../../api/javax/swing/LookAndFeel.html"><code>LookAndFeel</code></a>,
+<a href=
+"../../../../api/javax/swing/LookAndFeel.html#getDesktopPropertyValue-java.lang.String-java.lang.Object-">
+<code>getDesktopPropertyValue</code></a>, to facilitate accessing
+desktop properties.</p>
+<h3>New Method to Offset Rectangle by Component's Insets</h3>
+<p>This was actually added as part of the update to <a href=
+"../../../../api/javax/swing/JProgressBar.html"><code>JProgressBar</code></a>
+to support an indeterminate state. The bugtraq report that
+corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4290973">4290717</a>.</p>
+<p>The new method is <a href=
+"../../../../api/javax/swing/SwingUtilities.html#calculateInnerArea-javax.swing.JComponent-java.awt.Rectangle-">
+<code>calculateInnerArea(Component, Rectangle)</code></a> has been
+added to <a href=
+"../../../../api/javax/swing/SwingUtilities.html"><code>SwingUtilities</code></a>.</p>
+<h3><a name="mouseWheel" id="mouseWheel">New API for Mouse
+Wheels</a></h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4356268">4356268</a>.</p>
+<p>Wheel mice, with a scroll wheel as a middle mouse button, are
+increasingly popular. This proposal provides for built-in Java
+support for scrolling via the mouse wheel, as well as a new wheel
+event listener so developers can customize mouse wheel
+behavior.</p>
+<p>A new class, <a href=
+"../../../../api/java/awt/event/MouseWheelListener.html"><code>MouseWheelListener</code></a>,
+and a new interface, <a href=
+"../../../../api/java/awt/event/MouseWheelEvent.html"><code>MouseWheelEvent</code></a>,
+have been added. The constant, <a href=
+"../../../../api/java/awt/AWTEvent.html#MOUSE_WHEEL_EVENT_MASK"><code>MOUSE_WHEEL_EVENT_MASK</code></a>
+has been added to <a href=
+"../../../../api/java/awt/AWTEvent.html"><code>AWTEvent</code></a>.
+<a href=
+"../../../../api/java/awt/AWTEventMulticaster.html"><code>AWTEventMulticaster</code></a>
+has three new methods: <a href=
+"../../../../api/java/awt/AWTEventMulticaster.html#mouseWheelMoved-java.awt.event.MouseWheelEvent-">
+<code>mouseWheelMoved</code></a>, <a href=
+"../../../../api/java/awt/AWTEventMulticaster.html#add-java.awt.event.MouseWheelListener-java.awt.event.MouseWheelListener-">
+<code>add</code></a>, and <a href=
+"../../../../api/java/awt/AWTEventMulticaster.html#remove-java.awt.event.MouseWheelListener-java.awt.event.MouseWheelListener-">
+<code>remove</code></a>. <a href=
+"../../../../api/java/awt/Component.html"><code>Component</code></a>
+has two new methods: <a href=
+"../../../../api/java/awt/Component.html#addMouseWheelListener-java.awt.event.MouseWheelListener-">
+<code>addMouseWheelListener</code></a>, and <a href=
+"../../../../api/java/awt/Component.html#removeMouseWheelListener-java.awt.event.MouseWheelListener-">
+<code>removeMouseWheelListener</code></a>. <a href=
+"../../../../api/java/awt/ScrollPane.html"><code>ScrollPane</code></a>
+also has two new methods: <a href=
+"../../../../api/java/awt/ScrollPane.html#setWheelScrollingEnabled-boolean-">
+<code>setWheelScrollingEnabled</code></a> and <a href=
+"../../../../api/java/awt/ScrollPane.html#isWheelScrollingEnabled--"><code>
+isWheelScrollingEnabled</code></a>. Finally, <a href=
+"../../../../api/java/awt/Robot.html"><code>Robot</code></a> has the
+new method <a href=
+"../../../../api/java/awt/Robot.html#mouseWheel-int-"><code>mouseWheel</code></a>.</p>
+<h3>JFrame, JDialog, and JApplet No Longer Override
+processKeyEvent</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4462408">4462408</a>.</p>
+<p>Swing supports the option of registering key bindings on
+<code>JComponent</code>s. In previous releases it was necessary for
+Swing top level components ( <a href=
+"../../../../api/javax/swing/JFrame.html"><code>JFrame</code></a>,
+<a href=
+"../../../../api/javax/swing/JDialog.html"><code>JDialog</code></a>,
+and <a href=
+"../../../../api/javax/swing/JApplet.html"><code>JApplet</code></a>)
+to override <code>processKeyEvent</code> (defined in <a href=
+"../../../../api/java/awt/Component.html"><code>java.awt.Component</code></a>)
+to activate these bindings if the focus was ever on one of these
+top level components. With the addition of <a href=
+"../../../../api/java/awt/KeyEventPostProcessor.html"><code>java.awt.KeyEventPostProcessor</code></a>
+and Swing taking advantage of this ( <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4389332">RFE 4389332</a>),
+it is no longer necessary for these methods to be overridden in the
+Swing top level components. As of this release, these methods have
+been removed at the top level and are now inherited.</p>
+<h3>Document Headless Exceptions for JWindow Constructors</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4483258">4483258</a>.</p>
+<p>Though the headless mode was added to this release, two <a href=
+"../../../../api/javax/swing/JWindow.html"><code>JWindow</code></a>
+constructors did not indicate that <code>HeadlessException</code>
+may be thrown. This has been fixed in the doc for <a href=
+"../../../../api/javax/swing/JWindow.html#JWindow-java.awt.Window-java.awt.GraphicsConfiguration-">
+<code>Window(Window, GraphicsConfiguration)</code></a> and <a href=
+"../../../../api/javax/swing/JWindow.html#JWindow-java.awt.GraphicsConfiguration-">
+<code>JWindow(GraphicsConfiguration)</code></a>.</p>
+<h3><a name="bug4532517" id="bug4532517">Known Input Verifier
+Bug</a></h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4532517">4532517</a>.</p>
+<p>We've recently found an input verifier bug that has been causing
+problems for some of our users. Under 1.4, the
+<code>shouldYieldFocus</code> method does not allow side-effects
+such as popping up an <code>OptionPane</code>.</p>
+<p>We do have the following workaround:</p>
+<pre>
+    public boolean shouldYieldFocus(JComponent input) {
+      if (verify(input)) {
+        return true;
+      }
+
+      // According to the documentation, should yield focus is allowed to cause
+      // side effects.  So temporarily remove the input verifier on the text
+      // field.
+      input.setInputVerifier(null);
+      System.out.println("Removed input verifier");
+
+      // Pop up the message dialog.
+      String message = "Roll over the 'JButton1' with mouse pointer "
+        + "after closing this dialog.\nIt sometimes behaves correctly "
+        + "for the first time\n but repeating action brings incorrect "
+        + "behaviour of button.";
+      JOptionPane.showMessageDialog(null, message , "invalid value", 
+        JOptionPane.WARNING_MESSAGE);
+      System.out.println("Showed message.");
+
+      // Reinstall the input verifier.
+      input.setInputVerifier(this);
+      System.out.println("Reinstalled input verifier");
+
+      // Tell whomever called us that we don't want to yield focus.
+      return false;
+    }
+
+     
+</pre>
+<h2><a name="KnownBugs" id="KnownBugs">Known Bugs</a></h2>
+<h3><a name="bug4628933" id="bug4628933">Focus Bug When
+Simultaneously Running Windows and a Remote Display
+Application</a></h3>
+In certain circumstances showing a heavy weight Window that is not
+focusable causes focus to be lost. This specifically happens when
+running flavors of Windows and a remote display application, such
+as Reflection-X, at the same time. Note that this bug was filed
+against release 1.4, but is fixed in 1.4.1. Refer to bug <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4628933">4628933</a> for
+details.
+<hr />
+<h2><a name="JRootPane" id="JRootPane">JRootPane</a></h2>
+<h3>New Multi Implementation of RootPaneUI</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4338458">4338458</a>.</p>
+<p>The classes in <code>javax.swing.plaf.multi</code> are used to
+multiplex between multiple look and feels. This is typically used
+by assistive technologies that use an auxiliary look and feel to
+provide additional information, such as auditory information. There
+is currently no implementation in multi for <code>RootPaneUI</code>
+which makes using an auxiliary look and feel problematic.</p>
+<p>The new class <a href=
+"../../../../api/javax/swing/plaf/multi/MultiRootPaneUI.html"><code>javax.swing.plaf.multi.MultiRootPaneUI</code></a>
+has been added.</p>
+<h3>Support for Look and Feels to Provide Window Decorations</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4290471">4290471</a>.</p>
+<p>AWT recently provided API such that <code>Window</code>s may be
+undecorated. That is, when undecorated is true, the <a href=
+"../../../../api/java/awt/Window.html"><code>Window</code></a> will
+not render any widgets for closing, moving, or resizing. As such,
+Swing has made it possible for the look and feel to render
+decorations for Windows.</p>
+<p>This feature is primarily supported in <a href=
+"../../../../api/javax/swing/JRootPane.html"><code>javax.swing.JRootPane</code></a>,
+but we encourage developers to use the switches provided in
+<a href="../../../../api/javax/swing/JFrame.html"><code>javax.swing.JFrame</code></a>
+and <a href=
+"../../../../api/javax/swing/JDialog.html"><code>javax.swing.JDialog</code></a>.</p>
+<p>The following changes were made to <a href=
+"../../../../api/javax/swing/JRootPane.html"><code>JRootPane</code></a>:</p>
+<pre>
+    public static final int <a href=
+"../../../../api/javax/swing/JRootPane.html#NONE">NONE</a>;
+    public static final int <a href=
+"../../../../api/javax/swing/JRootPane.html#FRAME">FRAME</a>;
+    public static final int <a href=
+"../../../../api/javax/swing/JRootPane.html#PLAIN_DIALOG">PLAIN_DIALOG</a>;
+    public static final int <a href=
+"../../../../api/javax/swing/JRootPane.html#INFORMATION_DIALOG">INFORMATION_DIALOG</a>;
+    public static final int <a href=
+"../../../../api/javax/swing/JRootPane.html#ERROR_DIALOG">ERROR_DIALOG</a>;
+    public static final int <a href=
+"../../../../api/javax/swing/JRootPane.html#COLOR_CHOOSER_DIALOG">COLOR_CHOOSER_DIALOG</a>;
+    public static final int <a href=
+"../../../../api/javax/swing/JRootPane.html#FILE_CHOOSER_DIALOG">FILE_CHOOSER_DIALOG</a>;
+    public static final int <a href=
+"../../../../api/javax/swing/JRootPane.html#QUESTION_DIALOG">QUESTION_DIALOG</a>;
+    public static final int <a href=
+"../../../../api/javax/swing/JRootPane.html#WARNING_DIALOG">WARNING_DIALOG</a>;
+
+    public void <a href=
+"../../../../api/javax/swing/JRootPane.html#setWindowDecorationStyle-int-">setWindowDecorationStyle(int style)</a>
+    public int <a href=
+"../../../../api/javax/swing/JRootPane.html#getWindowDecorationStyle--">getWindowDecorationStyle()</a>
+</pre>
+<p>Not all look and feels support the window decoration style; the
+method <a href=
+"../../../../api/javax/swing/LookAndFeel.html#getSupportsWindowDecorations--">
+<code>getSupportsWindowDecorations</code></a> has been added to
+<a href=
+"../../../../api/javax/swing/LookAndFeel.html"><code>javax.swing.LookAndFeel</code></a>
+to provide a way for look and feels to indicate whether they
+support this behavior.</p>
+<p>The methods, <a href=
+"../../../../api/javax/swing/JFrame.html#isDefaultLookAndFeelDecorated--">
+<code>isDefaultLookAndFeelDecorated()</code></a>, and <a href=
+"../../../../api/javax/swing/JFrame.html#setDefaultLookAndFeelDecorated-boolean-">
+setDefaultLookAndFeelDecorated</a> have been added to <a href=
+"../../../../api/javax/swing/JFrame.html"><code>JFrame</code></a>.</p>
+<p>The methods, <a href=
+"../../../../api/javax/swing/JDialog.html#isDefaultLookAndFeelDecorated--">
+<code>isDefaultLookAndFeelDecorated()</code></a>, and <a href=
+"../../../../api/javax/swing/JDialog.html#setDefaultLookAndFeelDecorated-boolean-">
+setDefaultLookAndFeelDecorated</a> have also been added to <a href=
+"../../../../api/javax/swing/JDialog.html"><code>JDialog</code></a>.</p>
+<hr />
+<h2><a name="JScrollBar" id="JScrollBar">JScrollBar</a></h2>
+<h3>JScrollBar Now Overrides setUI</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4213298">4213298</a>.</p>
+<p><a href=
+"../../../../api/javax/swing/JScrollBar.html"><code>JScrollBar</code></a>
+did not previously override the <a href=
+"../../../../api/javax/swing/JScrollBar.html#setUI-javax.swing.plaf.ScrollBarUI-">
+<code>setUI</code></a> method. For this release, it has been
+changed to conform to this behavior.</p>
+<hr />
+<h2><a name="JScrollPane" id="JScrollPane">JScrollPane</a></h2>
+<h3><a name="bug4356268" id="bug4356268">JScrollPane Supports New
+MouseWheelListener</a></h3>
+<p>This was implemented as part of the mouse wheel support. This
+section only documents the changes to <code>JScrollPane</code>, for
+details of the other changes refer to this <a href=
+"#mouseWheel">section</a>. The bugtraq report that corresponds to
+this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4356268">4356268</a>.</p>
+<p>The methods <a href=
+"../../../../api/javax/swing/JScrollPane.html#isWheelScrollingEnabled--">
+<code>isWheelScrollingEnabled</code></a> and <a href=
+"../../../../api/javax/swing/JScrollPane.html#setWheelScrollingEnabled-boolean-">
+<code>setWheelScrollingEnabled</code></a> were added to <a href=
+"../../../../api/javax/swing/JScrollPane.html"><code>JScrollPane</code></a>.</p>
+<p>A new protected inner class, <a href=
+"../../../../api/javax/swing/plaf/basic/BasicScrollPaneUI.MouseWheelHandler.html">
+<code>MouseWheelHandler</code></a>, was added to <a href=
+"../../../../api/javax/swing/plaf/basic/BasicScrollPaneUI.html"><code>javax.swing.plaf.basic.BasicScrollPaneUI</code></a>.
+The relevant method in this inner class is <a href=
+"../../../../api/javax/swing/plaf/basic/BasicScrollPaneUI.MouseWheelHandler.html#mouseWheelMoved-java.awt.event.MouseWheelEvent-">
+<code>mouseWheelMoved</code></a>. Finally, the new method <a href=
+"../../../../api/javax/swing/plaf/basic/BasicScrollPaneUI.html#createMouseWheelListener--">
+<code>createMouseWheelListener</code></a> has been added to
+<code>BasicScrollPaneUI</code>.</p>
+<hr />
+<h2><a name="RepaintManager" id=
+"RepaintManager">RepaintManager</a></h2>
+<h3>New VolatileImage Support</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4363288">4363288</a>.</p>
+<p>The Java 2D team has implemented a new <a href=
+"../../../../api/java/awt/image/VolatileImage.html"><code>VolatileImage</code></a>
+mechanism that has the ability to take advantage of hardware
+acceleration for <code>Image</code> graphics and blit-to-screen
+operations.</p>
+<p>By default, Swing uses double-buffering to paint the contents of
+GUI components (by rendering into an offscreen image and then
+copying that image to the screen) and has been changed to take
+advantage of the new <code>VolatileImage</code> support.</p>
+<p>The double buffer that Swing uses to do painting is obtained
+from the <a href=
+"../../../../api/javax/swing/RepaintManager.html"><code>RepaintManager</code></a>
+by using the method <a href=
+"../../../../api/javax/swing/RepaintManager.html#getOffscreenBuffer-java.awt.Component-int-int-">
+<code>getOffscreenBuffer</code></a>. Since a
+<code>VolatileImage</code> object requires special handling (to
+test for failure conditions), we could not simply change this
+method to return a <code>VolatileImage</code> since there may be
+existing code out there that invokes this method and does not
+implement this additional handling. Therefore, we have added a
+method, <a href=
+"../../../../api/javax/swing/RepaintManager.html#getVolatileOffscreenBuffer-java.awt.Component-int-int-">
+<code>getVolatileOffscreenBuffer</code></a>, to
+<code>javax.swing.RepaintManager</code> to specifically return a
+<code>VolatileImage</code> object.</p>
+<hr />
+<h2><a name="SpringLayout" id="SpringLayout">SpringLayout</a></h2>
+<h3>New SpringLayout Class</h3>
+<p>The bugtraq report that corresponds to this change is: <a href=
+"http://bugs.java.com/view_bug.do?bug_id=4290203">4290203</a>.</p>
+<p>This release introduces the new layout manager, <a href=
+"../../../../api/javax/swing/SpringLayout.html"><code>SpringLayout</code></a>.</p>
+<p>See <a href=
+"http://docs.oracle.com/javase/tutorial/uiswing/layout/spring.html">
+How to Use SpringLayout</a> in <i>The Java Tutorial</i> for
+examples of using <code>SpringLayout</code>.</p>
+<!-- Body text ends here -->
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

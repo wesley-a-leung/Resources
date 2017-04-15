@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>Blacklist Jar Feature</title>
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<h1>Blacklist Jar Feature</h1>
+	            
+<p>
+Support for blacklisting signed jar files has been added to 6u14. A blacklist is a
+list of signed jars that contain serious security vulnerabilities that can be 
+exploited by untrusted applets or applications. A system-wide blacklist will be 
+distributed with each JRE release. Java Plugin and Web Start will consult this 
+blacklist and refuse to load any class or resource contained in a jar file that's 
+on the blacklist. By default, blacklist checking is enabled. The  
+<code>deployment.security.blacklist.check</code> deployment configuration property 
+can be used to toggle this behavior. The blacklist is updated using the property 
+deployment.blacklist.url which defaults to https://javadl-esd-secure.oracle.com/update/blacklist.
+
+</p>
+
+<p>
+The blacklist entries are the union of the blacklist files pointed to by the
+<code>deployment.system.security.blacklist</code> and
+<code>deployment.user.security.blacklist</code> properties. By default,
+<code>deployment.system.security.blacklist</code> points to the
+<code>blacklist</code> file in the <code>jre/lib/security</code> directory,
+and <code>deployment.user.security.blacklist</code> points to a blacklist file
+that contains additional entries added by a user.
+</p>
+
+<p>
+The blacklist is a text file with the following format:
+</p>
+<pre>
+    attribute : value
+</pre>
+
+<p>
+Each jar file on the blacklist is identified by the  
+<code>x-Digest-Manifest</code> attribute where  
+<code>x</code> is the name of the  
+<code>MessageDigest</code> algorithm, and the value is the base64 encoded 
+hash value of the Manifest. Comments are denoted by lines starting with
+the # (number) symbol.
+</p>
+
+<p>
+Here is an example:
+</p>
+<pre>
+    # Buggy Utilities, version 1.0
+    SHA1-Digest-Manifest : QONXbQg+EtNOguIOAgpUUOadhv8=
+    # Malware Inc., version 99.99
+    SHA-256-Digest-Manifest : SewaudBCZ3iXt1KX0BeFHpQiiM1xYLtvLw3Ow2RJfcs=
+</pre>
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Postmortem Diagnostics Tools</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" name="generator"/>
+<meta content="This guide helps you to troubleshoot issues that might occur with Java Client applications created on the Java Platform, Standard Edition (Java SE) and Java HotSpot VM." name="description"/>
+<meta content="2014-12-22T14:9:28Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Troubleshooting Guide, Release 8" name="doctitle"/>
+<meta content="Release 8" name="relnum"/>
+<meta content="E54483-02" name="partnum"/>
+<meta content="JSTGD" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Troubleshooting Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr022.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr024.html">
+                Next</a><hr/><a id="BABEFHCI" name="BABEFHCI"/>
+<div id="JSTGD245">
+<h1>Postmortem Diagnostics Tools</h1>
+<p><a href="#BABIEHBC">Table 2-2</a> summarizes the options and tools that are designed for postmortem diagnostics. If an application crashes, these options and tools can be used to obtain additional information, either at the time of the crash or later using information from the crash dump.</p>
+<div id="JSTGD246"><a id="sthref27" name="sthref27"/><a id="BABIEHBC" name="BABIEHBC"/>
+<p>Table 2-2 Postmortem Diagnostics Tools</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="This table contains a list of tools and options for post-mortem diagnostics of problems between the application and the Java HotSpot VM, with their descriptions." title="Postmortem Diagnostics Tools" width="100%">
+<col width="31%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t9" valign="bottom">Tool or Option</th>
+<th align="left" id="r1c2-t9" valign="bottom">Description and Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t9" id="r2c1-t9">
+<p>Fatal Error Log</p>
+</td>
+<td align="left" headers="r2c1-t9 r1c2-t9">
+<p>When an irrecoverable (fatal) error occurs, an error log is created. This file contains much information obtained at the time of the fatal error. In many cases it is the first item to examine when a crash occurs. See <a href="felog.html#fatal_error_log_vm">Appendix A</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t9" id="r3c1-t9">
+<p><code dir="ltr">-XX:+HeapDumpOnOutOfMemoryError</code> option</p>
+</td>
+<td align="left" headers="r3c1-t9 r1c2-t9">
+<p>This command-line option specifies the generation of a heap dump when the VM detects a native out-of-memory error. See <a href="clopts001.html#CHDFDIJI">The -XX:HeapDumpOnOutOfMemoryError Option</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t9" id="r4c1-t9">
+<p><code dir="ltr">-XX:OnError</code> option</p>
+</td>
+<td align="left" headers="r4c1-t9 r1c2-t9">
+<p>This command-line option specifies a sequence of user-supplied scripts or commands to be executed when a fatal error occurs. For example, on Windows, this option can execute a command to force a crash dump. This option is very useful on systems where a post-mortem debugger is not configured. See <a href="clopts001.html#CHDFEJBB">The -XX:OnError Option</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t9" id="r5c1-t9">
+<p><code dir="ltr">-XX:+ShowMessageBoxOnError</code> option</p>
+</td>
+<td align="left" headers="r5c1-t9 r1c2-t9">
+<p>This command-line option suspends a process when a fatal error occurs. Depending on the user response, the option can launch the native debugger (for example, <code dir="ltr">dbx</code>, <code dir="ltr">gdb</code>, <code dir="ltr">msdev</code>) to attach to the VM. See <a href="clopts001.html#CHDJIEHH">The -XX:ShowMessageBoxOnError Option</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t9" id="r6c1-t9">
+<p>Other <code dir="ltr">-XX</code> options</p>
+</td>
+<td align="left" headers="r6c1-t9 r1c2-t9">
+<p>Several other <code dir="ltr">-XX</code> command-line options can be useful in troubleshooting. See <a href="clopts001.html#CHDHGIDJ">Other -XX Options</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t9" id="r7c1-t9">
+<p>Java VisualVM</p>
+<p>(postmortem use on Oracle Solaris and Linux operating systems only)</p>
+</td>
+<td align="left" headers="r7c1-t9 r1c2-t9">
+<p>This utility can analyze a core dump by providing a readable display of the core dump in the form of a heap dump and a thread dump, as well as overview information (for example, JVM arguments and system properties. See <a href="tooldescr010.html#BABEEIFH">Java VisualVM</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t9" id="r8c1-t9">
+<p><code dir="ltr">jdb</code> utility</p>
+</td>
+<td align="left" headers="r8c1-t9 r1c2-t9">
+<p>Debugger support includes an <code dir="ltr">AttachingConnector</code>, which allows <code dir="ltr">jdb</code> and other Java language debuggers to attach to a core file. This can be useful when trying to understand what each thread was doing at the time of a crash. See <a href="tooldescr011.html#BABDHAHJ">The jdb Utility</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t9" id="r9c1-t9">
+<p><code dir="ltr">jhat</code> utility</p>
+</td>
+<td align="left" headers="r9c1-t9 r1c2-t9">
+<p>This utility provides a convenient means to browse the object topology in a heap dump. See <a href="tooldescr012.html#BABJGJBI">The jhat Utility</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t9" id="r10c1-t9">
+<p><code dir="ltr">jinfo</code> utility</p>
+<p>(postmortem use on Oracle Solaris and Linux operating systems only)</p>
+</td>
+<td align="left" headers="r10c1-t9 r1c2-t9">
+<p>This utility can obtain configuration information from a core file obtained from a crash or from a core file obtained using the <code dir="ltr">gcore</code> utility. See <a href="tooldescr013.html#BABDHFBE">The jinfo Utility</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t9" id="r11c1-t9">
+<p><code dir="ltr">jmap</code> utility</p>
+<p>(postmortem use on Oracle Solaris and Linux operating systems only)</p>
+</td>
+<td align="left" headers="r11c1-t9 r1c2-t9">
+<p>This utility can obtain memory map information, including a heap histogram, from a core file obtained from a crash or from a core file obtained using the <code dir="ltr">gcore</code> utility. See <a href="tooldescr014.html#BABGAFEG">The jmap Utility</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t9" id="r12c1-t9">
+<p><code dir="ltr">jsadebugd</code> daemon</p>
+<p>(Oracle Solaris and Linux operating systems only)</p>
+</td>
+<td align="left" headers="r12c1-t9 r1c2-t9">
+<p>The Serviceability Agent Debug Daemon (<code dir="ltr">jsadebugd</code>) attaches to a Java process or to a core file and acts as a debug server. See <a href="tooldescr032.html#CJGCCECD">The jsadebugd Daemon</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t9" id="r13c1-t9">
+<p><code dir="ltr">jstack</code> utility</p>
+</td>
+<td align="left" headers="r13c1-t9 r1c2-t9">
+<p>This utility can obtain Java and native stack information from a Java process. On Oracle Solaris and Linux operating systems the utility can also get the information from a core file or a remote debug server. See <a href="tooldescr016.html#BABFCHDE">The jstack Utility</a>.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t9" id="r14c1-t9">
+<p>Native tools</p>
+</td>
+<td align="left" headers="r14c1-t9 r1c2-t9">
+<p>Each operating system has native tools and utilities that can be used for postmortem diagnosis. See <a href="tooldescr020.html#BABBHHIE">Native Operating System Tools</a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr022.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="tooldescr024.html">
+                Next</a><hr/>
+
+
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>

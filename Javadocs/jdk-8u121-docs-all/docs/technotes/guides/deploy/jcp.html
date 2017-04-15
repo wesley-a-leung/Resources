@@ -1,0 +1,951 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en">
+<head>
+<meta content="text/html; charset=us-ascii" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="text/javascript" http-equiv="Content-Script-Type"/>
+<title>Java Control Panel</title>
+<meta content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1044" name="generator"/>
+<meta content="This topic describes the Java Control Panel, which is used to control how Java and JavaFX applications that are embedded in a browser or are launched from a browser run on your computer." name="description"/>
+<meta content="2015-02-16T9:50:5Z" name="date"/>
+<meta content="noarchive" name="robots"/>
+<meta content="Java Platform, Standard Edition Deployment Guide, Release 8u40" name="doctitle"/>
+<meta content="Release 8u40" name="relnum"/>
+<meta content="E50259-02" name="partnum"/>
+<meta content="JSDPG" name="docid"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="../../../technotes/css/guide.css" />
+</head>
+<body>
+<!-- STATIC HEADER -->
+
+<!-- header start -->
+<div id="javaseheader">
+<div id="javaseheaderlogo">
+<img src="../../../images/javalogo.gif"
+alt="Java logo" />
+</div>
+<div id="javaseheaderindex">
+
+<a href=
+"../../../index.html">Documentation Contents</a>
+</div>
+<div class="clear"></div>
+</div>
+
+<!-- header end -->
+
+
+<b>Java Platform, Standard Edition Deployment Guide</b><br/>
+
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="part_jcp.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="properties.html">
+                Next</a><hr/>
+<div id="JSDPG748"><a id="CEGJJDDJ" name="CEGJJDDJ"/>
+<h1><span>20</span> Java Control Panel</h1>
+<a id="JSDPG749" name="JSDPG749"/>
+<p>This topic describes the Java Control Panel, which is used to control how Java and JavaFX applications that are embedded in a browser or are launched from a browser run on your computer. The settings in the Java Control Panel are not used by standalone and self-contained applications.</p>
+<p>The Java Control Panel provides the following capabilities:</p>
+<ul>
+<li>
+<p>View and delete temporary files used by the Java Plug-in, which runs Java applications that are embedded in a browser, and by Java Web Start, which enables you to run Java applications over the network.</p>
+</li>
+<li>
+<p>Update your version of the Java platform so that you always have the latest Java Runtime Environment (JRE).</p>
+</li>
+<li>
+<p>Set runtime parameters.</p>
+</li>
+<li>
+<p>Manage certificates.</p>
+</li>
+<li>
+<p>View an active deployment rule set.</p>
+</li>
+<li>
+<p>Manage the exception site list.</p>
+</li>
+<li>
+<p>Set options for debugging, applet handling, and other functions.</p>
+</li>
+</ul>
+<p>The Java Control Panel includes the following tabs:</p>
+<ul>
+<li>
+<p><a href="#A1152512">General</a></p>
+</li>
+<li>
+<p><a href="#A1152586">Update</a></p>
+</li>
+<li>
+<p><a href="#A1152655">Java</a></p>
+</li>
+<li>
+<p><a href="#A1152831">Security</a></p>
+</li>
+<li>
+<p><a href="#A1153011">Advanced</a></p>
+</li>
+</ul>
+<a id="A1152512" name="A1152512"/>
+<div id="JSDPG750">
+<h2><span>20.1</span> General</h2>
+<p><a href="#CEGIDIHD">Figure 20-1</a> shows the General tab.</p>
+<div id="JSDPG751"><a id="CEGIDIHD" name="CEGIDIHD"/>
+<p><b><i>Figure 20-1 Java Control Panel General Tab</i></b></p>
+<img alt="Description of Figure 20-1 follows" longdesc="img_text/jcp_general_tab.htm" src="img/jcp_general_tab.png"/><br/>
+<a href="img_text/jcp_general_tab.html" id="sthref317" name="sthref317">Description of "Figure 20-1 Java Control Panel General Tab"</a><br/>
+<br/></div>
+
+<p>The General tab contains the following sections: About, Network Settings, and Temporary Internet Files. This tab also indicates if Java is enabled in the browser, which is controlled in the Security tab.</p>
+<div id="JSDPG752"><a id="sthref318" name="sthref318"/>
+<h3><span>20.1.1</span> About</h3>
+<p>The about section provides information about the version of Java that you are running. Click <b>About</b> to view version information for the latest JRE installed on the computer.</p>
+</div>
+
+<div id="JSDPG753"><a id="sthref319" name="sthref319"/>
+<h3><span>20.1.2</span> Network Settings</h3>
+<p>The Network Settings section enables you to configure your connection to the network. Click <b>Network Settings</b> to show the Network Settings dialog, which offers the following choices:</p>
+<a id="JSDPG754" name="JSDPG754"/><a id="sthref320" name="sthref320"/>
+<p><b>Use browser settings</b></p>
+<p>Select this option to use the browser default proxy settings. This is the default setting.</p>
+<a id="JSDPG755" name="JSDPG755"/><a id="sthref321" name="sthref321"/>
+<p><b>Use proxy server</b></p>
+<p>Select this option to provide the address and port number of the proxy server that you want to use. The option to bypass the proxy server for local addresses is available.</p>
+<p>To provide separate addresses for different protocols, click <b>Advanced</b>. You can also specify address that bypass the proxy server.</p>
+<a id="JSDPG756" name="JSDPG756"/><a id="sthref322" name="sthref322"/>
+<p><b>Use automatic proxy configuration script</b></p>
+<p>Select this option to specify the URL for the JavaScript file (.js or .pac extension) that contains the <code dir="ltr">FindProxyForURL</code> function. <code dir="ltr">FindProxyForURL</code> has the logic to determine the proxy server to use for a connection request.</p>
+<a id="JSDPG757" name="JSDPG757"/><a id="sthref323" name="sthref323"/>
+<p><b>Direct Connection</b></p>
+<p>Select this option if you do not want to use a proxy.</p>
+</div>
+
+<div id="JSDPG758"><a id="sthref324" name="sthref324"/>
+<h3><span>20.1.3</span> Temporary Internet Files</h3>
+<p>The Temporary Internet Files section enables you to manage files that are cached for applications that are embedded in a web page or launched from a web page.</p>
+<p>Click <b>Settings</b> to show the Temporary Files Settings dialog from which you can perform the following actions:</p>
+<ul>
+<li>
+<p>Specify if you want to keep temporary files on your computer.</p>
+</li>
+<li>
+<p>Specify the location where temporary files are kept.</p>
+</li>
+<li>
+<p>Specify the compression level for JAR files.</p>
+</li>
+<li>
+<p>Specify the amount of disk space for storing temporary files.</p>
+</li>
+<li>
+<p>Delete temporary files by pressing the <b>Delete Files</b> button, which shows the Delete Temporary Files dialog. From this dialog, you can specify the files that you want to delete:</p>
+<ul>
+<li>
+<p>Trace and Log Files</p>
+</li>
+<li>
+<p>Cached Applications and Applets</p>
+</li>
+<li>
+<p>Installed Applications and Applets</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Restore default settings for the Temporary Files Settings dialog by pressing the <b>Restore Defaults</b> button.</p>
+</li>
+</ul>
+<p>Click <b>View</b> to show the Java Cache Viewer dialog. This dialog enables you to list applications, resources, and deleted applications stored in the Java cache. In addition, you can perform the following actions:</p>
+<ul>
+<li>
+<p>Run and visit the Web page of applications.</p>
+</li>
+<li>
+<p>View the JNLP file of applications and resources.</p>
+</li>
+</ul>
+</div>
+</div>
+
+<a id="A1152586" name="A1152586"/>
+<div id="JSDPG759">
+<h2><span>20.2</span> Update</h2>
+<p>The Update tab is available on Microsoft Windows and OS X for both the 32-bit and 64-bit versions of the JRE, and only for users with Administrative privileges. On Microsoft Windows, if the JRE is installed and this panel is not available, launch the Java Control Panel directly from the command line (<code dir="ltr"><span>&lt;JRE installation directory&gt;</span></code><code dir="ltr">\bin\javacpl.exe</code>). <a href="#CEGHBDCC">Figure 20-2</a> shows the Update tab.</p>
+<div id="JSDPG760"><a id="CEGHBDCC" name="CEGHBDCC"/>
+<p><b><i>Figure 20-2 Java Control Panel Update Tab</i></b></p>
+<img alt="Description of Figure 20-2 follows" longdesc="img_text/jcp_update_tab.htm" src="img/jcp_update_tab.png"/><br/>
+<a href="img_text/jcp_update_tab.html" id="sthref325" name="sthref325">Description of "Figure 20-2 Java Control Panel Update Tab"</a><br/>
+<br/></div>
+
+<p>The Update tab is used with the Java Update Scheduler (<code dir="ltr">jusched.exe</code>) to provide the latest Java updates to the end user. This tab enables you to automatically or manually update all JREs (including 32-bit and 64-bit versions) installed on your system.</p>
+<div id="JSDPG761"><a id="sthref326" name="sthref326"/>
+<h3><span>20.2.1</span> Update Tab Options</h3>
+<p>The Update tab provides the following options:</p>
+<ul>
+<li>
+<p>Automatic update: Available only on Microsoft Windows, and set by default</p>
+</li>
+<li>
+<p>Manual update</p>
+</li>
+</ul>
+<p>Select <b>Check for Updates Automatically</b> to have your JRE updated automatically on a schedule that you set. From the <b>Notify Me</b> drop-down list, choose to be notified either before the update is downloaded, or after the updated is downloaded but before the update is installed.</p>
+<p>Click <b>Advanced</b> to set up the schedule for updates. To set how often the system checks for updates, choose <b>Daily</b>, <b>Weekly</b>, or <b>Monthly</b>. The default is monthly. For daily updates, you can select the time of the day for the update. For weekly updates, you can select the day of the week and the time of the day. For monthly updates, you can select the day of the week and the time of the day. Monthly updates check weekly and notify you within 30 days that an update is available, however, if an update is considered critical you are notified within a week of its release.</p>
+<p>To immediately update your JRE at any time, click <b>Update Now</b>.</p>
+</div>
+
+<div id="JSDPG762"><a id="sthref327" name="sthref327"/>
+<h3><span>20.2.2</span> Java Update Scheduler</h3>
+<p>On Microsoft Windows platforms, the Java Update Scheduler, <code dir="ltr">jusched.exe</code>, is used to launch automatic updates when the option to update automatically is selected in the Update tab. <code dir="ltr">jusched.exe</code> runs as a background process that launches the Update Manager at predefined intervals set by the user using the <b>Advanced</b> button of the Update tab. The Update Manager coordinates the update process.</p>
+<p><code dir="ltr">jusched.exe</code> is launched when the user reboots the computer after installing the JDK or JRE. It is normally transparent to the user, but can be viewed in the Processes tab of the Windows Task Manager. If you do not want the scheduler to run, use the <b>End Process</b> button of the Processes tab to kill the process.</p>
+</div>
+</div>
+
+<a id="A1152655" name="A1152655"/>
+<div id="JSDPG763">
+<h2><span>20.3</span> Java</h2>
+<p><a href="#CEGJJGEI">Figure 20-3</a> shows the Java tab.</p>
+<div id="JSDPG764"><a id="CEGJJGEI" name="CEGJJGEI"/>
+<p><b><i>Figure 20-3 Java Control Panel Java Tab</i></b></p>
+<img alt="Description of Figure 20-3 follows" longdesc="img_text/jcp_java_tab.htm" src="img/jcp_java_tab.png"/><br/>
+<a href="img_text/jcp_java_tab.html" id="sthref328" name="sthref328">Description of "Figure 20-3 Java Control Panel Java Tab"</a><br/>
+<br/></div>
+
+<p>Click <b>View</b> to show the Java Runtime Environment Settings dialog, which provides information on the JREs that are installed on your system, and enables you to choose the JREs that you want to use to run applications that are embedded in a web page or launched from a browser.</p>
+<div id="JSDPG765"><a id="sthref329" name="sthref329"/>
+<h3><span>20.3.1</span> Java Runtime Environment Settings</h3>
+<p>The Java Runtime Environment Settings dialog has two tabs, <b>User</b> and <b>System</b>. Both tabs show a table that contains information on the JREs that are installed on your system. The User tab shows all of the registered JREs and JREs that the user has added. The System tab shows the JRE that was used to start the Java Control Panel.</p>
+<p>Each row in the table represents a Java Runtime Environment (JRE) that is installed in your computer. The following information is provided for each JRE:</p>
+<ul>
+<li>
+<p><b>Platform</b>: The version of the JRE</p>
+</li>
+<li>
+<p><b>Product</b>: The full version number of the JRE, including the update number</p>
+</li>
+<li>
+<p><b>Location</b>: The URL that Java Update Scheduler uses to launch automatic updates</p>
+</li>
+<li>
+<p><b>Path</b>: The full path to the JRE</p>
+</li>
+<li>
+<p><b>Runtime Parameters</b>: Optional custom options used to override the Java Plug-in default startup parameters</p>
+</li>
+<li>
+<p><b>Enabled</b>: Flag that indicates which of the JRE versions are considered when running an application using Java Plug-in or Java Web Start. Settings in the Java Control Panel do not apply to standalone or self-contained applications. If the check box for a JRE is not selected, then Java Plug-in and Java Web Start will not use the JRE to launch Java applications. However, the current JRE might be used even if it is not marked as enabled.</p>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+If Java content in the browser is disabled in the Security tab of the Java Control Panel, enabling the JRE in the Java Runtime Environment Settings dialog has no effect. See <a href="#A1152831">Section 20.4, "Security"</a> for information on the <b>Enable Java Content in the Browser</b> option.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</li>
+</ul>
+<p>To change the information for a JRE in the User tab, click the cell in the table and edit the value. The information in the System tab cannot be edited.</p>
+<p>In the User tab, the following functions are available:</p>
+<ul>
+<li>
+<p>Click <b>Find</b> to launch the <b>JRE Finder</b>. Use this utility to search for JREs that are installed on your computer and add them to the table.</p>
+</li>
+<li>
+<p>Click <b>Add</b> to manually add a JRE to the table. A new row is added to the table. Fill in the values for <b>Platform</b>, <b>Product</b>, <b>Path</b>, <b>Runtime Parameters</b>, and <b>Enabled</b>.</p>
+</li>
+<li>
+<p>Click <b>Remove</b> to remove the selected JRE from the table.</p>
+</li>
+</ul>
+<p>The table always has at least one entry, which is the most recently installed JRE. This is the JRE that is associated with the Java Control Panel.</p>
+<p>Microsoft Windows shows all of the JREs that are installed on a computer. The Java Control Panel finds the JREs by looking in the registry. On Solaris, Linux, and OS X, the JRE that Java Web Start or Java Plug-in is using to deploy applications is the JRE that is considered registered. Therefore, use the <b>Find</b>, <b>Add</b>, and <b>Remove</b> buttons to change which JREs are listed in the table. On OS X, only the currently installed JRE is displayed, JDKs are not included.</p>
+<p>For Solaris, Linux, or OS X, only version 5.0 or higher should be added. For Microsoft Windows, where all JREs are found in the registry, version 1.3.1 or higher is shown.</p>
+</div>
+
+<a id="CEGCEAHH" name="CEGCEAHH"/>
+<div id="JSDPG766">
+<h3><span>20.3.2</span> Java Runtime Parameters</h3>
+<p>You can override the Java Plug-in default startup parameters by specifying custom options in the <b>Runtime Parameters</b> column for a JRE. With the exception of setting <code dir="ltr">classpath</code> and <code dir="ltr">cp</code>, the syntax is the same as that used with parameters for the <code dir="ltr">java</code> command line invocation. See the java command for a full list of command line options:</p>
+<p><code dir="ltr">java</code> command: <a href="../../tools/windows/java.html">Windows</a>, <a href="../../tools/unix/java.html">Solaris, Linux, or OS X</a>.</p>
+<p>The following sections provide examples of Java runtime parameters.</p>
+<div id="JSDPG767"><a id="sthref330" name="sthref330"/>
+<h4><span>20.3.2.1</span> Setting <code dir="ltr">classpath</code> and <code dir="ltr">cp</code></h4>
+<p>The following format should be used for setting <code dir="ltr">classpath</code> and <code dir="ltr">cp</code> in Java Plug-in. It differs slightly from the <code dir="ltr">java</code> command line format, which uses a space instead of the equal (<code dir="ltr">=</code>) sign.</p>
+<pre dir="ltr" xml:space="preserve">
+-classpath=&lt;path&gt;
+-cp=&lt;path&gt;
+</pre></div>
+
+<div id="JSDPG768"><a id="sthref331" name="sthref331"/>
+<h4><span>20.3.2.2</span> Enabling and Disabling Assertion Support</h4>
+<p>To enable assertion support, use the following system property:</p>
+<pre dir="ltr" xml:space="preserve">
+-[ enableassertions | ea ][:&lt;package name&gt;"..." | : &lt;class name&gt; ]
+</pre>
+<p>To disable assertion in the Java Plug-in, use the following property:</p>
+<pre dir="ltr" xml:space="preserve">
+-[ disableassertions | da ][:&lt;package name&gt;"..." | : &lt;class name&gt; ]
+</pre>
+<p>Assertion is disabled in Java Plug-in code by default. The effect of assertion is determined during Java Plug-in startup. If you change the assertion settings in the Java Plug-in Control Panel, you must restart the browser for the new settings to take effect.</p>
+<p>Because Java code in Java Plug-in also has built-in assertion, it is possible to enable the assertion in Java Plug-in code using the following parameter:</p>
+<pre dir="ltr" xml:space="preserve">
+-[ enableassertions | ea ]:sun.plugin
+</pre></div>
+
+<div id="JSDPG769"><a id="sthref332" name="sthref332"/>
+<h4><span>20.3.2.3</span> Tracing and Logging Support</h4>
+<p>Tracing is a facility to redirect any output in the Java Console to a trace file (<code dir="ltr">plugin&lt;random-number&gt;.trace</code> or <code dir="ltr">javaws&lt;random-number&gt;.trace</code>). Use the following parameters to turn on tracing:</p>
+<pre dir="ltr" xml:space="preserve">
+-Ddeployment.trace=true
+-Ddeployment.trace.option=basic|net|security|ext|liveconnect
+</pre>
+<p>If you do not want to use the default trace file name, use the following parameter to specify a different name:</p>
+<pre dir="ltr" xml:space="preserve">
+-Ddeployment.trace.filename=&lt;tracefilename&gt;
+</pre>
+<p>Similar to tracing, logging is a facility to redirect any output in the Java Console to a log file <code dir="ltr">(plugin&lt;random-number&gt;.log</code> or <code dir="ltr">javaws&lt;random-number&gt;.log</code>) using the Java Logging API. Use the following parameter to turn on logging:</p>
+<pre dir="ltr" xml:space="preserve">
+-Ddeployment.logging=true
+</pre>
+<p>If you do not want to use the default log file name, use the following parameter to specify a different name:</p>
+<pre dir="ltr" xml:space="preserve">
+-Ddeployment.log.filename=&lt;logfilename&gt;
+</pre>
+<p>Furthermore, if you do not want to overwrite the trace and log files each session, you can use the following parameter:</p>
+<pre dir="ltr" xml:space="preserve">
+-Ddeployment.outputfiles.overwrite=false
+</pre>
+<p>Tracing and logging set through the Java Control Panel take effect when the Plug-in is launched. However, changes made through the Java Control Panel while a Plug-in is running have no effect until a restart.</p>
+</div>
+
+<div id="JSDPG770"><a id="sthref333" name="sthref333"/>
+<h4><span>20.3.2.4</span> Debugging Applets in Java Plug-in</h4>
+<p>The following parameters are used when debugging applets in the Java Plug-in:</p>
+<pre dir="ltr" xml:space="preserve">
+-Djava.compiler=NONE
+-Xnoagent
+-Xdebug
+-Xrunjdwp:transport=dt_shmem,address=&lt;connect-address&gt;,server=y,suspend=n
+</pre>
+<p>The <code dir="ltr">&lt;connect-address&gt;</code> can be any string, for example, <code dir="ltr">2502</code>, which is used by the Java Debugger (<code dir="ltr">jdb</code>) later to connect to the JVM.</p>
+</div>
+
+<div id="JSDPG771"><a id="sthref334" name="sthref334"/>
+<h4><span>20.3.2.5</span> Default Connection Timeout</h4>
+<p>The default network timeout value for all HTTP connections is two minutes. You can override this setting by using the following parameter:</p>
+<pre dir="ltr" xml:space="preserve">
+-Dsun.net.client.defaultConnectTimeout=&lt;value in milliseconds&gt;
+</pre>
+<p>Another networking property that you can set is <code dir="ltr">sun.net.client.defaultReadTimeout</code>, as shown in the following example:</p>
+<pre dir="ltr" xml:space="preserve">
+-Dsun.net.client.defaultReadTimeout=&lt;value in milliseconds&gt;
+</pre>
+<div align="center">
+<div><br/>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="groups" summary="" width="80%">
+<tbody>
+<tr>
+<td align="left">
+<p><b>Note:</b></p>
+Java Plug-in does not set <code dir="ltr">sun.net.client.defaultReadTimeout</code> by default. If you want to set it, do so through the Java Runtime Parameters as shown above.</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+<p>The following networking parameters can also be used to set the connect and read timeout values for the protocol handlers used by <code dir="ltr">java.net.URLConnection</code>. The default value set by the protocol handlers is <code dir="ltr">-1</code>, which means there is no timeout set.</p>
+<ul>
+<li>
+<p><code dir="ltr">sun.net.client.defaultConnectTimeout</code> specifies the timeout in milliseconds to establish the connection to the host. For example, for HTTP connections, it is the timeout when establishing the connection to the HTTP server. For FTP connections it is the timeout when establishing the connection to FTP servers.</p>
+</li>
+<li>
+<p><code dir="ltr">sun.net.client.defaultReadTimeout</code> specifies the timeout in milliseconds when reading from an input stream when a connection is established to a resource.</p>
+</li>
+</ul>
+<p>For the official description of these properties, see <a href="../net/properties.html">Networking Properties</a>.</p>
+</div>
+</div>
+</div>
+
+<a id="A1152831" name="A1152831"/>
+<div id="JSDPG772">
+<h2><span>20.4</span> Security</h2>
+<p><a href="#CEGEGCGC">Figure 20-4</a> shows the Security tab.</p>
+<div id="JSDPG773"><a id="CEGEGCGC" name="CEGEGCGC"/>
+<p><b><i>Figure 20-4 Java Control Panel Security Tab</i></b></p>
+<img alt="Description of Figure 20-4 follows" longdesc="img_text/jcp_security_tab.htm" src="img/jcp_security_tab.png"/><br/>
+<a href="img_text/jcp_security_tab.html" id="sthref335" name="sthref335">Description of "Figure 20-4 Java Control Panel Security Tab"</a><br/>
+<br/></div>
+
+<p>To prevent any Java application from running in a browser or being launched from a browser, make sure that the <b>Enable Java content in the browser</b> option is not selected. This option is selected by default.</p>
+<a id="CEGHDEEE" name="CEGHDEEE"/>
+<div id="JSDPG774">
+<h3><span>20.4.1</span> Security Level</h3>
+<p>The security level determines the criteria used to allow or block a Java application from running within a browser or being launched from a browser. As the security level is increased, more restrictions are placed on allowing an application to run, and stronger warnings are issued to the user.</p>
+<p>The default security level setting is High. The available settings are:</p>
+<ul>
+<li>
+<p>Very High - Applications that are signed with a valid certificate that is located in the Signer CA keystore, and include the Permissions attribute in the manifest for the main JAR file are allowed to run with security prompts. All other applications are blocked.</p>
+</li>
+<li>
+<p>High - Applications that are signed with a valid certificate that is located in the Signer CA keystore, and include the Permissions attribute in the manifest for the main JAR file are allowed to run with security prompts. Applications are also allowed to run with security prompts when the revocation status of the certificate cannot be checked. All other applications are blocked.</p>
+</li>
+</ul>
+<p>See <a href="deployment_flow.html#BABEDHCC">Chapter 24, "Rich Internet Application Deployment Process"</a> for information on how the decision to run or block an application is made.</p>
+<p>The Security Level setting affects plug-in applets, Java Web Start applications, embedded JavaFX applications, and access to the native deployment toolkit plug-ins. This setting does not affect standalone or self-contained Java applications.</p>
+<p>For more information, see <a href="client-security.html#A1153002">Section 23.1, "Setting the Security Level of the Java Client."</a></p>
+</div>
+
+<div id="JSDPG775"><a id="sthref336" name="sthref336"/>
+<h3><span>20.4.2</span> Exception Site List</h3>
+<p>The exception site list contains a list of URLs that host RIAs that users want to run even if the RIAs are normally blocked by security checks. RIAs from the sites listed are allowed to run with applicable security prompts. Click <b>Edit Site List</b> to add, edit, and remove items.</p>
+<p>See <a href="exception_site_list.html#CIHIHJJE">Chapter 29, "Exception Site List"</a> for more information.</p>
+</div>
+
+<div id="JSDPG776"><a id="sthref337" name="sthref337"/>
+<h3><span>20.4.3</span> Deployment Rule Set</h3>
+<p>If an active deployment rule set is installed on the system, the link <b>View the active Deployment Rule Set</b> is shown before the <b>Manage Certificates</b> button. Click the link to view the rule set. For information on the certificate used to sign the rule set, click the <b>View Certificate Details</b> link in the <span>Deployment Rule Set - More Information</span> window.</p>
+<p>When a rule set is available, the rules determine if a RIA is run without security prompts, run with security prompts, or blocked. For more information on deployment rules, see <a href="deployment_rules.html#CIHBCFAJ">Chapter 28, "Deployment Rule Set"</a>. For more information on security prompts, see <a href="client-security.html#A1155120">Section 23.5, "Security Dialogs."</a></p>
+</div>
+
+<a id="CEGDBHJC" name="CEGDBHJC"/>
+<div id="JSDPG777">
+<h3><span>20.4.4</span> Restore Security Prompts</h3>
+<p>An option to hide a prompt in the future is included in some security prompts that are shown when an application starts. To insure the continued security of your system, it is recommended that you periodically restore the prompts that were hidden. Seeing the prompts again provides an opportunity to review the applications and ensure that you still want them to run.</p>
+<p>To restore the prompts that were previously hidden, click <b>Restore Security Prompts</b>. When asked to confirm the selection, click <b>Restore All</b>. The next time an application is started, the security prompt for that application is shown.</p>
+</div>
+
+<div id="JSDPG778"><a id="sthref338" name="sthref338"/>
+<h3><span>20.4.5</span> Manage Certificates</h3>
+<p>User-level and system-level certificates used to sign RIAs that you run can be managed by clicking <b>Manage Certificates</b>. From the Certificates dialog, you can import, export, remove, and view the details for certificates. Information is provided for the following types of certificates:</p>
+<ul>
+<li>
+<p>Trusted Certificates - Certificates for signed RIAs that are trusted.</p>
+</li>
+<li>
+<p>Secure Site - Certificates for secure sites.</p>
+</li>
+<li>
+<p>Signer CA - Certificates of Certificate Authorities (CAs) who issue the certificates to the signers of trusted certificates.</p>
+</li>
+<li>
+<p>Secure Site CA - Certificates of CAs who issue the certificates for secure sites.</p>
+</li>
+<li>
+<p>Client Authentication - Certificates used by a client to authenticate itself to a server.</p>
+</li>
+</ul>
+<div id="JSDPG779"><a id="sthref339" name="sthref339"/>
+<h4><span>20.4.5.1</span> User-Level Certificates</h4>
+<p>You can export, import, remove, and view the details of user-level certificates using the buttons provided in the Certificates dialog. To export, remove, or view the details, first select a certificate from the list.</p>
+<p>The following table shows the default location of the <code dir="ltr">keystore</code> files.</p>
+<div id="JSDPG780"><a id="sthref340" name="sthref340"/><a id="sthref341" name="sthref341"/>
+<p>Table 20-1 Default Keystore Location</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="This table identifies the default location of the keystore files for each supported operating system." title="Default Keystore Location" width="100%">
+<col width="31%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t4" valign="bottom">Operating System</th>
+<th align="left" id="r1c2-t4" valign="bottom">Location</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t4" id="r2c1-t4">
+<p>Solaris, Linux, OS X</p>
+</td>
+<td align="left" headers="r2c1-t4 r1c2-t4">
+<p><code dir="ltr">${user.home}/.java/deployment/security</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t4" id="r3c1-t4">
+<p>Microsoft Windows</p>
+</td>
+<td align="left" headers="r3c1-t4 r1c2-t4">
+<p><code dir="ltr">${deployment.user.home}\security</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p>For example, the default location on Microsoft Windows 7 for user <code dir="ltr">jsmith</code> is</p>
+<pre dir="ltr" xml:space="preserve">
+C:\Users\jsmith\AppData\LocalLow\Sun\Java\Deployment\security
+</pre>
+<p>To specify a user-level keystore in a location other than the default location, set properties in the user-level <code dir="ltr">deployment.properties</code> file. See <a href="properties.html#CHDEIEHA">Chapter 21, "Deployment Configuration File and Properties"</a> for information on configuration properties. The following table describes the property to set for each type of certificate.</p>
+<div id="JSDPG781"><a id="sthref342" name="sthref342"/><a id="sthref343" name="sthref343"/>
+<p>Table 20-2 Properties for User-Level Keystore Locations</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="This table identifies properties that can be set to specify the use of a keystore in a location other than the default location." title="Properties for User-Level Keystore Locations" width="100%">
+<col width="31%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t5" valign="bottom">Certificate Type</th>
+<th align="left" id="r1c2-t5" valign="bottom">Property Name</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r2c1-t5">
+<p>Trusted Certificates</p>
+</td>
+<td align="left" headers="r2c1-t5 r1c2-t5">
+<p><code dir="ltr">deployment.user.security.trusted.certs</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r3c1-t5">
+<p>Secure site</p>
+</td>
+<td align="left" headers="r3c1-t5 r1c2-t5">
+<p><code dir="ltr">deployment.user.security.trusted.jssecerts</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r4c1-t5">
+<p>Signer CA</p>
+</td>
+<td align="left" headers="r4c1-t5 r1c2-t5">
+<p><code dir="ltr">deployment.user.security.trusted.cacerts</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r5c1-t5">
+<p>Secure site CA</p>
+</td>
+<td align="left" headers="r5c1-t5 r1c2-t5">
+<p><code dir="ltr">deployment.user.security.trusted.jssecacerts</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t5" id="r6c1-t5">
+<p>Client Authentication</p>
+</td>
+<td align="left" headers="r6c1-t5 r1c2-t5">
+<p><code dir="ltr">deployment.user.security.trusted.clientcerts</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+
+<div id="JSDPG782"><a id="sthref344" name="sthref344"/>
+<h4><span>20.4.5.2</span> System-Level Certificates</h4>
+<p>You can export and view the details of system-level certificates using the buttons provided in the Certificates dialog. System-level certificates cannot be imported or removed by an end user.</p>
+<p>Trusted, Secure Site, and Client Authentication certificate <code dir="ltr">keystore</code> files do not exist by default. The following table shows the default location for the Signer CA keystore file.</p>
+<div id="JSDPG783"><a id="sthref345" name="sthref345"/><a id="sthref346" name="sthref346"/>
+<p>Table 20-3 Default Location for the Signer CA Keystore</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="This table identifies the default location for the system-level Signer CA keystore file." title="Default Location for the Signer CA Keystore" width="100%">
+<col width="31%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t6" valign="bottom">IOperating System</th>
+<th align="left" id="r1c2-t6" valign="bottom">Location</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t6" id="r2c1-t6">
+<p>Solaris, Linux, or OS X</p>
+</td>
+<td align="left" headers="r2c1-t6 r1c2-t6">
+<p><code dir="ltr">$JAVA_HOME/lib/security/cacerts</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t6" id="r3c1-t6">
+<p>Microsoft Windows</p>
+</td>
+<td align="left" headers="r3c1-t6 r1c2-t6">
+<p><code dir="ltr">$JAVA_HOME\lib\security\cacerts</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p>The following table shows the default location for the Secure Site CA keystore.</p>
+<div id="JSDPG784"><a id="sthref347" name="sthref347"/><a id="sthref348" name="sthref348"/>
+<p>Table 20-4 Default Location for the Secure Site CA Keystore</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="This table identifies the default location for the system-level Secure Site CA keystore file." title="Default Location for the Secure Site CA Keystore" width="100%">
+<col width="31%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t7" valign="bottom">Operating System</th>
+<th align="left" id="r1c2-t7" valign="bottom">Location</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r2c1-t7">
+<p>Solaris, Linux, or OS X</p>
+</td>
+<td align="left" headers="r2c1-t7 r1c2-t7">
+<p><code dir="ltr">$JAVA_HOME/lib/security/jssecacerts</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t7" id="r3c1-t7">
+<p>Microsoft Windows</p>
+</td>
+<td align="left" headers="r3c1-t7 r1c2-t7">
+<p><code dir="ltr">$JAVA_HOME\lib\security\jssecacerts</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+
+<p>To specify a system-level keystore in a location other than the default location, set properties in the system-level <code dir="ltr">deployment.properties</code> file. The System-Level <code dir="ltr">deployment.properties</code> file does not exist by default. See <a href="properties.html#CHDEIEHA">Chapter 21, "Deployment Configuration File and Properties"</a> for information on the system-level file and configuration properties. The following table describes the property to set for each type of certificate.</p>
+<div id="JSDPG785"><a id="sthref349" name="sthref349"/><a id="sthref350" name="sthref350"/>
+<p>Table 20-5 Properties for System-Level Keystore Locations</p>
+<table border="1" cellpadding="3" cellspacing="0" dir="ltr" frame="hsides" rules="rows" summary="This table identifies the properties to set in the system-level properties file to specify the location of a keystore file based on the type of certificate." title="Properties for System-Level Keystore Locations" width="100%">
+<col width="31%"/>
+<col width="*"/>
+<thead>
+<tr align="left" valign="top">
+<th align="left" id="r1c1-t8" valign="bottom">Certificate Type</th>
+<th align="left" id="r1c2-t8" valign="bottom">Property Name</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r2c1-t8">
+<p>Trusted Certificates</p>
+</td>
+<td align="left" headers="r2c1-t8 r1c2-t8">
+<p><code dir="ltr">deployment.system.security.trusted.certs</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r3c1-t8">
+<p>Secure site</p>
+</td>
+<td align="left" headers="r3c1-t8 r1c2-t8">
+<p><code dir="ltr">deployment.system.security.trusted.jssecerts</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r4c1-t8">
+<p>Signer CA</p>
+</td>
+<td align="left" headers="r4c1-t8 r1c2-t8">
+<p><code dir="ltr">deployment.system.security.trusted.cacerts</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r5c1-t8">
+<p>Secure site CA</p>
+</td>
+<td align="left" headers="r5c1-t8 r1c2-t8">
+<p><code dir="ltr">deployment.system.security.trusted.jssecacerts</code></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" headers="r1c1-t8" id="r6c1-t8">
+<p>Client Authentication</p>
+</td>
+<td align="left" headers="r6c1-t8 r1c2-t8">
+<p><code dir="ltr">deployment.system.security.trusted.clientcerts</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br/></div>
+</div>
+</div>
+</div>
+
+<a id="A1153011" name="A1153011"/>
+<div id="JSDPG786">
+<h2><span>20.5</span> Advanced</h2>
+<p><a href="#CEGIAECG">Figure 20-5</a> and <a href="#CEGBDAFB">Figure 20-6</a> show the options available in the Advanced tab on Microsoft Windows.</p>
+<div id="JSDPG787"><a id="CEGIAECG" name="CEGIAECG"/>
+<p><b><i>Figure 20-5 Java Control Panel Advanced Tab, Part 1</i></b></p>
+<img alt="Description of Figure 20-5 follows" longdesc="img_text/jcp_advanced_tab1.htm" src="img/jcp_advanced_tab1.png"/><br/>
+<a href="img_text/jcp_advanced_tab1.html" id="sthref351" name="sthref351">Description of "Figure 20-5 Java Control Panel Advanced Tab, Part 1"</a><br/>
+<br/></div>
+
+<div id="JSDPG788"><a id="CEGBDAFB" name="CEGBDAFB"/>
+<p><b><i>Figure 20-6 Java Control Panel Advanced Tab, Part 2</i></b></p>
+<img alt="Description of Figure 20-6 follows" longdesc="img_text/jcp_advanced_tab2.htm" src="img/jcp_advanced_tab2.png"/><br/>
+<a href="img_text/jcp_advanced_tab2.html" id="sthref352" name="sthref352">Description of "Figure 20-6 Java Control Panel Advanced Tab, Part 2"</a><br/>
+<br/></div>
+
+<p>This tab includes options for Debugging, Java console, Default Java for browsers, Shortcut Creation, JNLP File/MIME Association, Application Installation, Secure Execution Environment, Mixed code security verification, Certificate revocation checks, Advanced Security Settings, and Miscellaneous.</p>
+<div id="JSDPG789"><a id="sthref353" name="sthref353"/>
+<h3><span>20.5.1</span> Debugging</h3>
+<p>You can enable tracing and logging.</p>
+</div>
+
+<div id="JSDPG790"><a id="sthref354" name="sthref354"/>
+<h3><span>20.5.2</span> Java Console</h3>
+<p>The following choices are available:</p>
+<ul>
+<li>
+<p>Show the console</p>
+</li>
+<li>
+<p>Hide the console (default)</p>
+</li>
+<li>
+<p>Do not start the console</p>
+</li>
+</ul>
+</div>
+
+<div id="JSDPG791"><a id="sthref355" name="sthref355"/>
+<h3><span>20.5.3</span> Default Java for Browsers</h3>
+<p>The following choices are available, both are selected by default:</p>
+<ul>
+<li>
+<p>Microsoft Internet Explorer</p>
+</li>
+<li>
+<p>Mozilla Family</p>
+</li>
+</ul>
+<p>This option is ignored in current versions of Internet Explorer and Firefox, which automatically find and use the latest installed version of the JRE.</p>
+<p>For older browsers, this option enables settings in your browser that enable you to use the JRE installed in your computer.</p>
+<p>For example, if you enable this option for Microsoft Internet Explorer, then the option <b>Use JRE</b> <span>&lt;version number&gt;</span> <b>for</b> <span>&lt;applet&gt;</span> <code dir="ltr">(requires restart)</code> is available, where <i>&lt;version number&gt;</i> is the version of the JRE installed in your computer. (Find this option by going to <b>Tools</b>, then <b>Internet Options</b>, then click the tab <b>Advanced</b>.)</p>
+<p>In addition, if you enable this option for Mozilla Family, and your browser is Firefox, then the extension <b>Java Console</b> <span>&lt;version number&gt;</span> appears in the <b>Add-ons</b> list, where <i>&lt;version number&gt;</i> is the version of the JRE installed in your computer. (Access the <b>Add-ons</b> list from the <b>Tools</b> menu in the menu bar.)</p>
+</div>
+
+<div id="JSDPG792"><a id="sthref356" name="sthref356"/>
+<h3><span>20.5.4</span> Shortcut Creation</h3>
+<p>This option provides the following choices for Java Web Start for creating shortcuts on the desktop, select only one:</p>
+<ul>
+<li>
+<p>Always allow</p>
+</li>
+<li>
+<p>Always allow if hinted</p>
+</li>
+<li>
+<p>Prompt user</p>
+</li>
+<li>
+<p>Prompt user if hinted (default)</p>
+</li>
+<li>
+<p>Never allow</p>
+</li>
+</ul>
+</div>
+
+<div id="JSDPG793"><a id="sthref357" name="sthref357"/>
+<h3><span>20.5.5</span> JNLP File/MIME Association</h3>
+<p>This option enables you to associate files with the JNLP MIME type. The following choices are available, select only one:</p>
+<ul>
+<li>
+<p>Always allow</p>
+</li>
+<li>
+<p>Prompt user (default)</p>
+</li>
+<li>
+<p>Never allow</p>
+</li>
+</ul>
+</div>
+
+<div id="JSDPG794"><a id="sthref358" name="sthref358"/>
+<h3><span>20.5.6</span> Application Installation</h3>
+<p>The following choices are available, select only one:</p>
+<ul>
+<li>
+<p>Install if hinted (default)</p>
+</li>
+<li>
+<p>Install if shortcut created</p>
+</li>
+<li>
+<p>Install if hinted and shortcut</p>
+</li>
+<li>
+<p>Never install</p>
+</li>
+</ul>
+<p>A Java application or applet that is launched with Java Web Start can either be installed or cached on the client computer. If the Java application is cached, then Java Web Start stores the entire application in its cache; the application is removed from the client computer when Java Web Start empties its cache. If the Java application is installed, then the application has an entry in the Add or Remove Programs applet in Windows Control Panel.</p>
+<p>A Java application or applet can specify if it prefers to be cached or installed; if the Java application specifies that it prefers to be installed, then it is <i>hinted</i>. By default, Java applications that are hinted are installed on the client computer. You can also specify that a Java application is installed if it creates a shortcut on the client computer's desktop.</p>
+</div>
+
+<div id="JSDPG795"><a id="sthref359" name="sthref359"/>
+<h3><span>20.5.7</span> Secure Execution Environment</h3>
+<p>The following choices are available, more than one can be selected:</p>
+<ul>
+<li>
+<p>Allow user to grant permissions to signed content</p>
+</li>
+<li>
+<p>Show sandbox warning banner</p>
+</li>
+<li>
+<p>Allow user to accept JNLP security requests</p>
+</li>
+<li>
+<p>Don't prompt for client certificate selection when no certificates or only one exists</p>
+</li>
+<li>
+<p>Warn if site certificate does not match hostname</p>
+</li>
+<li>
+<p>Show site certificate from server even if it is valid (not checked by default)</p>
+</li>
+</ul>
+</div>
+
+<div id="JSDPG796"><a id="sthref360" name="sthref360"/>
+<h3><span>20.5.8</span> Mixed code (sandboxed vs. trusted) security verification</h3>
+<p>The following choices are available, select only one:</p>
+<ul>
+<li>
+<p>Enable - show warning if needed (selected by default)</p>
+</li>
+<li>
+<p>Enable - hide warning and run with protections</p>
+</li>
+<li>
+<p>Enable - hide warning and don't run untrusted code</p>
+</li>
+<li>
+<p>Disable verification (not recommended)</p>
+</li>
+</ul>
+<p>For more information, see <a href="mixed_code.html#CHDECHIC">Chapter 27, "Mixing Privileged Code and Sandbox Code."</a></p>
+</div>
+
+<a id="CEGHDDJD" name="CEGHDDJD"/>
+<div id="JSDPG797">
+<h3><span>20.5.9</span> Perform certificate revocation checks on</h3>
+<p>Before a signed applet or Java Web Start application is run, the certificates used to sign the JAR file can be checked to ensure that none have been revoked. You can have all certificates checked, or only the certificate from the publisher of the app. If a certificate has been revoked, any RIA that is signed with the certificate is not allowed to run. This check can be disabled, but that is not recommended. The following choices are available, select only on:</p>
+<ul>
+<li>
+<p>Publisher's certificate only</p>
+</li>
+<li>
+<p>All certificates in the chain of trust (selected by default)</p>
+</li>
+<li>
+<p>Do not check (not recommended)</p>
+</li>
+</ul>
+</div>
+
+<a id="CEGGHAFG" name="CEGGHAFG"/>
+<div id="JSDPG798">
+<h3><span>20.5.10</span> Check for certificate revocation using</h3>
+<p>The following options indicate what to use to determine if a certificate has been revoked, select only one:</p>
+<ul>
+<li>
+<p>Certificate Revocations Lists (CRLs)</p>
+</li>
+<li>
+<p>Online Certificate Status Protocol (OCSP)</p>
+</li>
+<li>
+<p>Both CRLs and OCSP (selected by default)</p>
+</li>
+</ul>
+<p>If Do Not Check is selected for <a href="#CEGHDDJD">Perform certificate revocation checks on</a>, this setting is ignored.</p>
+</div>
+
+<div id="JSDPG799"><a id="sthref361" name="sthref361"/>
+<h3><span>20.5.11</span> Advanced Security Settings</h3>
+<p>The following choices are available, more than one can be selected:</p>
+<ul>
+<li>
+<p>Use certificates and keys in browser keystore</p>
+</li>
+<li>
+<p>Enable blacklist revocation check</p>
+</li>
+<li>
+<p>Enable caching password for authentication</p>
+</li>
+<li>
+<p>Use SSL 2.0 compatible ClientHello format (not checked by default)</p>
+</li>
+<li>
+<p>Use TLS 1.0</p>
+</li>
+<li>
+<p>Use TLS 1.1</p>
+</li>
+<li>
+<p>Use TLS 1.2</p>
+</li>
+</ul>
+</div>
+
+<a id="CEGBIHHD" name="CEGBIHHD"/>
+<div id="JSDPG800">
+<h3><span>20.5.12</span> Miscellaneous</h3>
+<p>The following choices are available, none are checked by default:</p>
+<ul>
+<li>
+<p>Place Java icon in system tray</p>
+</li>
+<li>
+<p>Suppress sponsor offers when installing or updating Java</p>
+<p>Select this option if you do not want to be provided with offers from sponsors during the installation or update process.</p>
+</li>
+</ul>
+</div>
+
+<div id="JSDPG801"><a id="sthref362" name="sthref362"/>
+<h3><span>20.5.13</span> Command to launch default browser (Solaris, Linux, or OS X only)</h3>
+<p>Enables you to specify the location of the default browser to be launched.</p>
+</div>
+</div>
+</div>
+<a href="toc.html">
+                Contents</a>&nbsp;&nbsp;&nbsp;<a href="part_jcp.html">
+                Previous</a>&nbsp;&nbsp;&nbsp;<a href="properties.html">
+                Next</a><hr/>
+
+
+
+
+
+<!--  footer start -->
+<div id="javasefooter">
+<div class="hr">
+<hr /></div>
+<div id="javasecopyright">
+<img id="oraclelogofooter" src=
+"../../../images/oraclelogo.gif" alt="Oracle and/or its affiliates"
+border="0" width="100" height="29" name=
+"oraclelogofooter" />
+
+<a href="../../../legal/cpyr.html">Copyright
+&#169;</a> 1993, 2015, Oracle and/or its affiliates. All rights
+reserved.</div>
+<div id="javasecontactus">
+<a href=
+"http://docs.oracle.com/javase/feedback.html">Contact
+Us</a>
+</div>
+</div>
+<!-- footer end -->
+
+<!-- STATIC FOOTER -->
+
+</body>
+</html>
