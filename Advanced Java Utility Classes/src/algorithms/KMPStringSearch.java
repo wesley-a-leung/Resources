@@ -115,7 +115,7 @@ public class KMPStringSearch {
             j = dfa[txt.charAt(i)][j];
         }
         if (j == m) return i - m;    // found
-        return n;                    // not found
+        return -1;                    // not found
     }
 
     /**
@@ -136,7 +136,7 @@ public class KMPStringSearch {
             j = dfa[text[i]][j];
         }
         if (j == m) return i - m;    // found
-        return n;                    // not found
+        return -1;                    // not found
     }
 }
 
