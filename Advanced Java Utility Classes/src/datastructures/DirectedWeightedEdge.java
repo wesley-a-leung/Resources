@@ -23,7 +23,7 @@ package datastructures;
  *  @author Kevin Wayne
  */
 
-public class DirectedEdge { 
+public class DirectedWeightedEdge { 
     private final int v;
     private final int w;
     private final double weight;
@@ -38,7 +38,7 @@ public class DirectedEdge {
      *    is a negative integer
      * @throws IllegalArgumentException if {@code weight} is {@code NaN}
      */
-    public DirectedEdge(int v, int w, double weight) {
+    public DirectedWeightedEdge(int v, int w, double weight) {
         if (v < 0) throw new IllegalArgumentException("Vertex names must be nonnegative integers");
         if (w < 0) throw new IllegalArgumentException("Vertex names must be nonnegative integers");
         if (Double.isNaN(weight)) throw new IllegalArgumentException("Weight is NaN");

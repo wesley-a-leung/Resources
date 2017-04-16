@@ -1,7 +1,7 @@
 package algorithms;
 
 import datastructures.Digraph;
-import datastructures.DirectedEdge;
+import datastructures.DirectedWeightedEdge;
 import datastructures.EdgeWeightedDigraph;
 import datastructures.Queue;
 import datastructures.Stack;
@@ -116,7 +116,7 @@ public class DepthFirstOrder {
         marked[v] = true;
         pre[v] = preCounter++;
         preorder.enqueue(v);
-        for (DirectedEdge e : G.adj(v)) {
+        for (DirectedWeightedEdge e : G.adj(v)) {
             int w = e.to();
             if (!marked[w]) {
                 dfs(G, w);

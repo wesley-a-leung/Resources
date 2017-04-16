@@ -23,7 +23,7 @@ package datastructures;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class Edge implements Comparable<Edge> { 
+public class WeightedEdge implements Comparable<WeightedEdge> { 
 
     private final int v;
     private final int w;
@@ -40,7 +40,7 @@ public class Edge implements Comparable<Edge> {
      *         is a negative integer
      * @throws IllegalArgumentException if {@code weight} is {@code NaN}
      */
-    public Edge(int v, int w, double weight) {
+    public WeightedEdge(int v, int w, double weight) {
         if (v < 0) throw new IllegalArgumentException("vertex index must be a nonnegative integer");
         if (w < 0) throw new IllegalArgumentException("vertex index must be a nonnegative integer");
         if (Double.isNaN(weight)) throw new IllegalArgumentException("Weight is NaN");
@@ -92,7 +92,7 @@ public class Edge implements Comparable<Edge> {
      *         argument edge
      */
     @Override
-    public int compareTo(Edge that) {
+    public int compareTo(WeightedEdge that) {
         return Double.compare(this.weight, that.weight);
     }
 

@@ -15,7 +15,7 @@ package datastructures;
 /**
  *  The {@code EdgeWeightedDigraph} class represents a edge-weighted
  *  digraph of vertices named 0 through <em>V</em> - 1, where each
- *  directed edge is of type {@link DirectedEdge} and has a real-valued weight.
+ *  directed edge is of type {@link DirectedWeightedEdge} and has a real-valued weight.
  *  It supports the following two primary operations: add a directed edge
  *  to the digraph and iterate over all of edges incident from a given vertex.
  *  It also provides
@@ -40,7 +40,7 @@ public class EdgeWeightedDigraph {
 
     private final int V;                // number of vertices in this digraph
     private int E;                      // number of edges in this digraph
-    private Bag<DirectedEdge>[] adj;    // adj[v] = adjacency list for vertex v
+    private Bag<DirectedWeightedEdge>[] adj;    // adj[v] = adjacency list for vertex v
     private int[] indegree;             // indegree[v] = indegree of vertex v
     
     /**
@@ -54,9 +54,9 @@ public class EdgeWeightedDigraph {
         this.V = V;
         this.E = 0;
         this.indegree = new int[V];
-        adj = (Bag<DirectedEdge>[]) new Bag[V];
+        adj = (Bag<DirectedWeightedEdge>[]) new Bag[V];
         for (int v = 0; v < V; v++)
-            adj[v] = new Bag<DirectedEdge>();
+            adj[v] = new Bag<DirectedWeightedEdge>();
     }
 
     /**
@@ -71,11 +71,11 @@ public class EdgeWeightedDigraph {
             this.indegree[v] = G.indegree(v);
         for (int v = 0; v < G.V(); v++) {
             // reverse so that adjacency list is in same order as original
-            Stack<DirectedEdge> reverse = new Stack<DirectedEdge>();
-            for (DirectedEdge e : G.adj[v]) {
+            Stack<DirectedWeightedEdge> reverse = new Stack<DirectedWeightedEdge>();
+            for (DirectedWeightedEdge e : G.adj[v]) {
                 reverse.push(e);
             }
-            for (DirectedEdge e : reverse) {
+            for (DirectedWeightedEdge e : reverse) {
                 adj[v].add(e);
             }
         }
@@ -112,7 +112,7 @@ public class EdgeWeightedDigraph {
      * @throws IllegalArgumentException unless endpoints of edge are between {@code 0}
      *         and {@code V-1}
      */
-    public void addEdge(DirectedEdge e) {
+    public void addEdge(DirectedWeightedEdge e) {
         int v = e.from();
         int w = e.to();
         validateVertex(v);
@@ -130,7 +130,7 @@ public class EdgeWeightedDigraph {
      * @return the directed edges incident from vertex {@code v} as an Iterable
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
-    public Iterable<DirectedEdge> adj(int v) {
+    public Iterable<DirectedWeightedEdge> adj(int v) {
         validateVertex(v);
         return adj[v];
     }
@@ -168,10 +168,10 @@ public class EdgeWeightedDigraph {
      *
      * @return all edges in this edge-weighted digraph, as an iterable
      */
-    public Iterable<DirectedEdge> edges() {
-        Bag<DirectedEdge> list = new Bag<DirectedEdge>();
+    public Iterable<DirectedWeightedEdge> edges() {
+        Bag<DirectedWeightedEdge> list = new Bag<DirectedWeightedEdge>();
         for (int v = 0; v < V; v++) {
-            for (DirectedEdge e : adj(v)) {
+            for (DirectedWeightedEdge e : adj(v)) {
                 list.add(e);
             }
         }
@@ -189,7 +189,7 @@ public class EdgeWeightedDigraph {
         s.append(V + " " + E + NEWLINE);
         for (int v = 0; v < V; v++) {
             s.append(v + ": ");
-            for (DirectedEdge e : adj[v]) {
+            for (DirectedWeightedEdge e : adj[v]) {
                 s.append(e + "  ");
             }
             s.append(NEWLINE);

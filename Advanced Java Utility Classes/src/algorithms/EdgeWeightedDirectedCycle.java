@@ -1,6 +1,6 @@
 package algorithms;
 
-import datastructures.DirectedEdge;
+import datastructures.DirectedWeightedEdge;
 import datastructures.EdgeWeightedDigraph;
 import datastructures.Stack;
 
@@ -42,9 +42,9 @@ import datastructures.Stack;
  */
 public class EdgeWeightedDirectedCycle {
     private boolean[] marked;             // marked[v] = has vertex v been marked?
-    private DirectedEdge[] edgeTo;        // edgeTo[v] = previous edge on path to v
+    private DirectedWeightedEdge[] edgeTo;        // edgeTo[v] = previous edge on path to v
     private boolean[] onStack;            // onStack[v] = is vertex on the stack?
-    private Stack<DirectedEdge> cycle;    // directed cycle (or null if no such cycle)
+    private Stack<DirectedWeightedEdge> cycle;    // directed cycle (or null if no such cycle)
 
     /**
      * Determines whether the edge-weighted digraph {@code G} has a directed cycle and,
@@ -54,7 +54,7 @@ public class EdgeWeightedDirectedCycle {
     public EdgeWeightedDirectedCycle(EdgeWeightedDigraph G) {
         marked  = new boolean[G.V()];
         onStack = new boolean[G.V()];
-        edgeTo  = new DirectedEdge[G.V()];
+        edgeTo  = new DirectedWeightedEdge[G.V()];
         for (int v = 0; v < G.V(); v++)
             if (!marked[v]) dfs(G, v);
 
@@ -66,7 +66,7 @@ public class EdgeWeightedDirectedCycle {
     private void dfs(EdgeWeightedDigraph G, int v) {
         onStack[v] = true;
         marked[v] = true;
-        for (DirectedEdge e : G.adj(v)) {
+        for (DirectedWeightedEdge e : G.adj(v)) {
             int w = e.to();
 
             // short circuit if directed cycle found
@@ -80,9 +80,9 @@ public class EdgeWeightedDirectedCycle {
 
             // trace back directed cycle
             else if (onStack[w]) {
-                cycle = new Stack<DirectedEdge>();
+                cycle = new Stack<DirectedWeightedEdge>();
 
-                DirectedEdge f = e;
+                DirectedWeightedEdge f = e;
                 while (f.from() != w) {
                     cycle.push(f);
                     f = edgeTo[f.from()];
@@ -111,7 +111,7 @@ public class EdgeWeightedDirectedCycle {
      * @return a directed cycle (as an iterable) if the edge-weighted digraph
      *    has a directed cycle, and {@code null} otherwise
      */
-    public Iterable<DirectedEdge> cycle() {
+    public Iterable<DirectedWeightedEdge> cycle() {
         return cycle;
     }
 
@@ -122,8 +122,8 @@ public class EdgeWeightedDirectedCycle {
         // edge-weighted digraph is cyclic
         if (hasCycle()) {
             // verify cycle
-            DirectedEdge first = null, last = null;
-            for (DirectedEdge e : cycle()) {
+            DirectedWeightedEdge first = null, last = null;
+            for (DirectedWeightedEdge e : cycle()) {
                 if (first == null) first = e;
                 if (last != null) {
                     if (last.to() != e.from()) {

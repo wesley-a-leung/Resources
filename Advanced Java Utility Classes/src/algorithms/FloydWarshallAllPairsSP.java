@@ -1,7 +1,7 @@
 package algorithms;
 
 import datastructures.AdjMatrixEdgeWeightedDigraph;
-import datastructures.DirectedEdge;
+import datastructures.DirectedWeightedEdge;
 import datastructures.EdgeWeightedDigraph;
 import datastructures.Stack;
 
@@ -46,7 +46,7 @@ import datastructures.Stack;
 public class FloydWarshallAllPairsSP {
     private boolean hasNegativeCycle;  // is there a negative cycle?
     private double[][] distTo;         // distTo[v][w] = length of shortest v->w path
-    private DirectedEdge[][] edgeTo;   // edgeTo[v][w] = last edge on shortest v->w path
+    private DirectedWeightedEdge[][] edgeTo;   // edgeTo[v][w] = last edge on shortest v->w path
 
     /**
      * Computes a shortest paths tree from each vertex to to every other vertex in
@@ -57,7 +57,7 @@ public class FloydWarshallAllPairsSP {
     public FloydWarshallAllPairsSP(AdjMatrixEdgeWeightedDigraph G) {
         int V = G.V();
         distTo = new double[V][V];
-        edgeTo = new DirectedEdge[V][V];
+        edgeTo = new DirectedWeightedEdge[V][V];
 
         // initialize distances to infinity
         for (int v = 0; v < V; v++) {
@@ -68,7 +68,7 @@ public class FloydWarshallAllPairsSP {
 
         // initialize distances using edge-weighted digraph's
         for (int v = 0; v < G.V(); v++) {
-            for (DirectedEdge e : G.adj(v)) {
+            for (DirectedWeightedEdge e : G.adj(v)) {
                 distTo[e.from()][e.to()] = e.weight();
                 edgeTo[e.from()][e.to()] = e;
             }
@@ -113,7 +113,7 @@ public class FloydWarshallAllPairsSP {
      * @return a negative cycle as an iterable of edges,
      * or {@code null} if there is no such cycle
      */
-    public Iterable<DirectedEdge> negativeCycle() {
+    public Iterable<DirectedWeightedEdge> negativeCycle() {
         for (int v = 0; v < distTo.length; v++) {
             // negative cycle in v's predecessor graph
             if (distTo[v][v] < 0.0) {
@@ -171,14 +171,14 @@ public class FloydWarshallAllPairsSP {
      * @throws UnsupportedOperationException if there is a negative cost cycle
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
-    public Iterable<DirectedEdge> path(int s, int t) {
+    public Iterable<DirectedWeightedEdge> path(int s, int t) {
         validateVertex(s);
         validateVertex(t);
         if (hasNegativeCycle())
             throw new UnsupportedOperationException("Negative cost cycle exists");
         if (!hasPath(s, t)) return null;
-        Stack<DirectedEdge> path = new Stack<DirectedEdge>();
-        for (DirectedEdge e = edgeTo[s][t]; e != null; e = edgeTo[s][e.from()]) {
+        Stack<DirectedWeightedEdge> path = new Stack<DirectedWeightedEdge>();
+        for (DirectedWeightedEdge e = edgeTo[s][t]; e != null; e = edgeTo[s][e.from()]) {
             path.push(e);
         }
         return path;
@@ -190,7 +190,7 @@ public class FloydWarshallAllPairsSP {
         // no negative cycle
         if (!hasNegativeCycle()) {
             for (int v = 0; v < G.V(); v++) {
-                for (DirectedEdge e : G.adj(v)) {
+                for (DirectedWeightedEdge e : G.adj(v)) {
                     int w = e.to();
                     for (int i = 0; i < G.V(); i++) {
                         if (distTo[i][w] > distTo[i][v] + e.weight()) {

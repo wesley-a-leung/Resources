@@ -1,6 +1,6 @@
 package algorithms;
 
-import datastructures.Edge;
+import datastructures.WeightedEdge;
 import datastructures.EdgeWeightedGraph;
 import datastructures.FlowEdge;
 import datastructures.FlowNetwork;
@@ -117,7 +117,7 @@ public class StoerWagnerMinCut {
      */
     private void validate(EdgeWeightedGraph G) {
         if (G.V() < 2) throw new IllegalArgumentException("number of vertices of G is less than 2");
-        for (Edge e : G.edges()) {
+        for (WeightedEdge e : G.edges()) {
             if (e.weight() < 0) throw new IllegalArgumentException("edge " + e + " has negative weight");
         }
     }
@@ -211,13 +211,13 @@ public class StoerWagnerMinCut {
             int v = pq.delMax();
             cp.s = cp.t;
             cp.t = v;
-            for (Edge e : G.adj(v)) {
+            for (WeightedEdge e : G.adj(v)) {
                 int w = e.other(v);
                 if (pq.contains(w)) pq.increaseKey(w, pq.keyOf(w) + e.weight());
             }
         }
         cp.weight = 0.0;
-        for (Edge e : G.adj(cp.t)) {
+        for (WeightedEdge e : G.adj(cp.t)) {
             cp.weight += e.weight();
         }
         return cp;
@@ -236,13 +236,13 @@ public class StoerWagnerMinCut {
     private EdgeWeightedGraph contractEdge(EdgeWeightedGraph G, int s, int t) {
         EdgeWeightedGraph H = new EdgeWeightedGraph(G.V());
         for (int v = 0; v < G.V(); v++) {
-            for (Edge e : G.adj(v)) {
+            for (WeightedEdge e : G.adj(v)) {
                 int w = e.other(v);
                 if (v == s && w == t || v == t && w == s) continue;
                 if (v < w) {
-                    if (w == t)      H.addEdge(new Edge(v, s, e.weight()));
-                    else if (v == t) H.addEdge(new Edge(w, s, e.weight()));
-                    else             H.addEdge(new Edge(v, w, e.weight()));
+                    if (w == t)      H.addEdge(new WeightedEdge(v, s, e.weight()));
+                    else if (v == t) H.addEdge(new WeightedEdge(w, s, e.weight()));
+                    else             H.addEdge(new WeightedEdge(v, w, e.weight()));
                 }
             }
         }
@@ -263,7 +263,7 @@ public class StoerWagnerMinCut {
         double value = Double.POSITIVE_INFINITY;
         for (int s = 0, t = 1; t < G.V(); t++) {
             FlowNetwork F = new FlowNetwork(G.V());
-            for (Edge e : G.edges()) {
+            for (WeightedEdge e : G.edges()) {
                 int v = e.either(), w = e.other(v);
                 F.addEdge(new FlowEdge(v, w, e.weight()));
                 F.addEdge(new FlowEdge(w, v, e.weight()));
