@@ -42,6 +42,7 @@ import datastructures.Graph;
  */
 public class DepthFirstSearch {
     private boolean[] marked;    // marked[v] = is there an s-v path?
+    private int[] depth;      // depth[v] = depth of vertex v
     private int count;           // number of vertices connected to s
 
     /**
@@ -53,19 +54,33 @@ public class DepthFirstSearch {
      */
     public DepthFirstSearch(Graph G, int s) {
         marked = new boolean[G.V()];
+        depth = new int[G.V()];
+        for (int v = 0; v < G.V(); v++)
+            depth[v] = -1;
         validateVertex(s);
-        dfs(G, s);
+        dfs(G, s, 0);
     }
 
     // depth first search from v
-    private void dfs(Graph G, int v) {
+    private void dfs(Graph G, int v, int i) {
         count++;
         marked[v] = true;
         for (int w : G.adj(v)) {
             if (!marked[w]) {
-                dfs(G, w);
+                dfs(G, w, i+1);
             }
         }
+    }
+    
+    /**
+     * Returns the depth of vertex {@code v} from the source vertex {@code s}
+     * @param v the vertex
+     * @return the depth of a vertex
+     * @throws IllegalArgumentException unless {@code 0 <= v < V}
+     */
+    public int depthOf(int v) {
+        validateVertex(v);
+        return depth[v];
     }
 
     /**

@@ -53,6 +53,7 @@ import datastructures.Stack;
 public class DepthFirstPaths {
     private boolean[] marked;    // marked[v] = is there an s-v path?
     private int[] edgeTo;        // edgeTo[v] = last edge on s-v path
+    private int[] depth;      // depth[v] = depth of vertex v
     private final int s;         // source vertex
 
     /**
@@ -64,18 +65,22 @@ public class DepthFirstPaths {
     public DepthFirstPaths(Graph G, int s) {
         this.s = s;
         edgeTo = new int[G.V()];
+        depth = new int[G.V()];
+        for (int v = 0; v < G.V(); v++)
+            depth[v] = -1;
         marked = new boolean[G.V()];
         validateVertex(s);
-        dfs(G, s);
+        dfs(G, s, 0);
     }
 
     // depth first search from v
-    private void dfs(Graph G, int v) {
+    private void dfs(Graph G, int v, int i) {
         marked[v] = true;
+        depth[v] = i;
         for (int w : G.adj(v)) {
             if (!marked[w]) {
                 edgeTo[w] = v;
-                dfs(G, w);
+                dfs(G, w, i+1);
             }
         }
     }
@@ -89,6 +94,17 @@ public class DepthFirstPaths {
     public boolean hasPathTo(int v) {
         validateVertex(v);
         return marked[v];
+    }
+    
+    /**
+     * Returns the depth of vertex {@code v} from the source vertex {@code s}
+     * @param v the vertex
+     * @return the depth of a vertex
+     * @throws IllegalArgumentException unless {@code 0 <= v < V}
+     */
+    public int depthOf(int v) {
+        validateVertex(v);
+        return depth[v];
     }
 
     /**

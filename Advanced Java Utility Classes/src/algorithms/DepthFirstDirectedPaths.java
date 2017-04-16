@@ -52,6 +52,7 @@ import datastructures.Stack;
 public class DepthFirstDirectedPaths {
     private boolean[] marked;  // marked[v] = true if v is reachable from s
     private int[] edgeTo;      // edgeTo[v] = last edge on path from s to v
+    private int[] depth;      // depth[v] = depth of vertex v
     private final int s;       // source vertex
 
     /**
@@ -63,19 +64,35 @@ public class DepthFirstDirectedPaths {
     public DepthFirstDirectedPaths(Digraph G, int s) {
         marked = new boolean[G.V()];
         edgeTo = new int[G.V()];
+        depth = new int[G.V()];
+        for (int v = 0; v < G.V(); v++)
+            depth[v] = -1;
         this.s = s;
         validateVertex(s);
-        dfs(G, s);
+        dfs(G, s, 0);
     }
 
-    private void dfs(Digraph G, int v) { 
+    // depth first search from v
+    private void dfs(Digraph G, int v, int i) {
         marked[v] = true;
+        depth[v] = i;
         for (int w : G.adj(v)) {
             if (!marked[w]) {
                 edgeTo[w] = v;
-                dfs(G, w);
+                dfs(G, w, i+1);
             }
         }
+    }
+    
+    /**
+     * Returns the depth of vertex {@code v} from the source vertex {@code s}
+     * @param v the vertex
+     * @return the depth of a vertex
+     * @throws IllegalArgumentException unless {@code 0 <= v < V}
+     */
+    public int depthOf(int v) {
+        validateVertex(v);
+        return depth[v];
     }
 
     /**
