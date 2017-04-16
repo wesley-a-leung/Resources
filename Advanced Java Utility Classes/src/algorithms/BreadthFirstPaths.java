@@ -80,8 +80,6 @@ public class BreadthFirstPaths {
         edgeTo = new int[G.V()];
         validateVertex(s);
         bfs(G, s);
-
-        assert check(G, s);
     }
 
     /**
@@ -101,7 +99,6 @@ public class BreadthFirstPaths {
         validateVertices(sources);
         bfs(G, sources);
     }
-
 
     // breadth-first search from a single source
     private void bfs(Graph G, int s) {
@@ -185,41 +182,6 @@ public class BreadthFirstPaths {
             path.push(x);
         path.push(x);
         return path;
-    }
-
-
-    // check optimality conditions for single source
-    private boolean check(Graph G, int s) {
-
-        // check that the distance of s = 0
-        if (distTo[s] != 0) {
-            return false;
-        }
-
-        // check that for each edge v-w dist[w] <= dist[v] + 1
-        // provided v is reachable from s
-        for (int v = 0; v < G.V(); v++) {
-            for (int w : G.adj(v)) {
-                if (hasPathTo(v) != hasPathTo(w)) {
-                    return false;
-                }
-                if (hasPathTo(v) && (distTo[w] > distTo[v] + 1)) {
-                    return false;
-                }
-            }
-        }
-
-        // check that v = edgeTo[w] satisfies distTo[w] = distTo[v] + 1
-        // provided v is reachable from s
-        for (int w = 0; w < G.V(); w++) {
-            if (!hasPathTo(w) || w == s) continue;
-            int v = edgeTo[w];
-            if (distTo[w] != distTo[v] + 1) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     // throw an IllegalArgumentException unless {@code 0 <= v < V}
