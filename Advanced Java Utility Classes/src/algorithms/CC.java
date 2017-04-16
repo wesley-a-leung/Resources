@@ -31,7 +31,7 @@ package algorithms;
  *
  ******************************************************************************/
 
-import datastructures.Edge;
+import datastructures.WeightedEdge;
 import datastructures.EdgeWeightedGraph;
 import datastructures.Graph;
 
@@ -120,7 +120,7 @@ public class CC {
         marked[v] = true;
         id[v] = count;
         size[count]++;
-        for (Edge e : G.adj(v)) {
+        for (WeightedEdge e : G.adj(v)) {
             int w = e.other(v);
             if (!marked[w]) {
                 dfs(G, w);

@@ -1,6 +1,6 @@
 package algorithms;
 
-import datastructures.DirectedEdge;
+import datastructures.DirectedWeightedEdge;
 import datastructures.EdgeWeightedDigraph;
 
 /******************************************************************************
@@ -94,16 +94,16 @@ public class AssignmentProblem {
         int s = 2*n, t = 2*n+1;
         for (int i = 0; i < n; i++) {
             if (xy[i] == UNMATCHED)
-                G.addEdge(new DirectedEdge(s, i, 0.0));
+                G.addEdge(new DirectedWeightedEdge(s, i, 0.0));
         }
         for (int j = 0; j < n; j++) {
             if (yx[j] == UNMATCHED)
-                G.addEdge(new DirectedEdge(n+j, t, py[j]));
+                G.addEdge(new DirectedWeightedEdge(n+j, t, py[j]));
         }
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (xy[i] == j) G.addEdge(new DirectedEdge(n+j, i, 0.0));
-                else            G.addEdge(new DirectedEdge(i, n+j, reducedCost(i, j)));
+                if (xy[i] == j) G.addEdge(new DirectedWeightedEdge(n+j, i, 0.0));
+                else            G.addEdge(new DirectedWeightedEdge(i, n+j, reducedCost(i, j)));
             }
         }
 
@@ -111,7 +111,7 @@ public class AssignmentProblem {
         DijkstraSP spt = new DijkstraSP(G, s);
 
         // augment along alternating path
-        for (DirectedEdge e : spt.pathTo(t)) {
+        for (DirectedWeightedEdge e : spt.pathTo(t)) {
             int i = e.from(), j = e.to() - n;
             if (i < n) {
                 xy[i] = j;

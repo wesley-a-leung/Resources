@@ -29,7 +29,7 @@ package algorithms;
  *
  ******************************************************************************/
 
-import datastructures.DirectedEdge;
+import datastructures.DirectedWeightedEdge;
 import datastructures.EdgeWeightedDigraph;
 import datastructures.Queue;
 import datastructures.Stack;
@@ -59,11 +59,11 @@ import datastructures.Stack;
  */
 public class BellmanFordSP {
     private double[] distTo;               // distTo[v] = distance  of shortest s->v path
-    private DirectedEdge[] edgeTo;         // edgeTo[v] = last edge on shortest s->v path
+    private DirectedWeightedEdge[] edgeTo;         // edgeTo[v] = last edge on shortest s->v path
     private boolean[] onQueue;             // onQueue[v] = is v currently on the queue?
     private Queue<Integer> queue;          // queue of vertices to relax
     private int cost;                      // number of calls to relax()
-    private Iterable<DirectedEdge> cycle;  // negative cycle (or null if no such cycle)
+    private Iterable<DirectedWeightedEdge> cycle;  // negative cycle (or null if no such cycle)
 
     /**
      * Computes a shortest paths tree from {@code s} to every other vertex in
@@ -74,7 +74,7 @@ public class BellmanFordSP {
      */
     public BellmanFordSP(EdgeWeightedDigraph G, int s) {
         distTo  = new double[G.V()];
-        edgeTo  = new DirectedEdge[G.V()];
+        edgeTo  = new DirectedWeightedEdge[G.V()];
         onQueue = new boolean[G.V()];
         for (int v = 0; v < G.V(); v++)
             distTo[v] = Double.POSITIVE_INFINITY;
@@ -95,7 +95,7 @@ public class BellmanFordSP {
 
     // relax vertex v and put other endpoints on queue if changed
     private void relax(EdgeWeightedDigraph G, int v) {
-        for (DirectedEdge e : G.adj(v)) {
+        for (DirectedWeightedEdge e : G.adj(v)) {
             int w = e.to();
             if (distTo[w] > distTo[v] + e.weight()) {
                 distTo[w] = distTo[v] + e.weight();
@@ -127,7 +127,7 @@ public class BellmanFordSP {
      * @return a negative cycle reachable from the soruce vertex {@code s} 
      *    as an iterable of edges, and {@code null} if there is no such cycle
      */
-    public Iterable<DirectedEdge> negativeCycle() {
+    public Iterable<DirectedWeightedEdge> negativeCycle() {
         return cycle;
     }
 
@@ -180,13 +180,13 @@ public class BellmanFordSP {
      *         from the source vertex {@code s}
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
-    public Iterable<DirectedEdge> pathTo(int v) {
+    public Iterable<DirectedWeightedEdge> pathTo(int v) {
         validateVertex(v);
         if (hasNegativeCycle())
             throw new UnsupportedOperationException("Negative cost cycle exists");
         if (!hasPathTo(v)) return null;
-        Stack<DirectedEdge> path = new Stack<DirectedEdge>();
-        for (DirectedEdge e = edgeTo[v]; e != null; e = edgeTo[e.from()]) {
+        Stack<DirectedWeightedEdge> path = new Stack<DirectedWeightedEdge>();
+        for (DirectedWeightedEdge e = edgeTo[v]; e != null; e = edgeTo[e.from()]) {
             path.push(e);
         }
         return path;
@@ -202,7 +202,7 @@ public class BellmanFordSP {
         // has a negative cycle
         if (hasNegativeCycle()) {
             double weight = 0.0;
-            for (DirectedEdge e : negativeCycle()) {
+            for (DirectedWeightedEdge e : negativeCycle()) {
                 weight += e.weight();
             }
             if (weight >= 0.0) {
@@ -226,7 +226,7 @@ public class BellmanFordSP {
 
             // check that all edges e = v->w satisfy distTo[w] <= distTo[v] + e.weight()
             for (int v = 0; v < G.V(); v++) {
-                for (DirectedEdge e : G.adj(v)) {
+                for (DirectedWeightedEdge e : G.adj(v)) {
                     int w = e.to();
                     if (distTo[v] + e.weight() < distTo[w]) {
                         return false;
@@ -237,7 +237,7 @@ public class BellmanFordSP {
             // check that all edges e = v->w on SPT satisfy distTo[w] == distTo[v] + e.weight()
             for (int w = 0; w < G.V(); w++) {
                 if (edgeTo[w] == null) continue;
-                DirectedEdge e = edgeTo[w];
+                DirectedWeightedEdge e = edgeTo[w];
                 int v = e.from();
                 if (w != e.to()) return false;
                 if (distTo[v] + e.weight() != distTo[w]) {

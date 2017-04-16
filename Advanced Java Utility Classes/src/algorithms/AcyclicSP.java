@@ -1,6 +1,6 @@
 package algorithms;
 
-import datastructures.DirectedEdge;
+import datastructures.DirectedWeightedEdge;
 import datastructures.EdgeWeightedDigraph;
 import datastructures.Stack;
 
@@ -45,7 +45,7 @@ import datastructures.Stack;
  */
 public class AcyclicSP {
     private double[] distTo;         // distTo[v] = distance  of shortest s->v path
-    private DirectedEdge[] edgeTo;   // edgeTo[v] = last edge on shortest s->v path
+    private DirectedWeightedEdge[] edgeTo;   // edgeTo[v] = last edge on shortest s->v path
 
 
     /**
@@ -58,7 +58,7 @@ public class AcyclicSP {
      */
     public AcyclicSP(EdgeWeightedDigraph G, int s) {
         distTo = new double[G.V()];
-        edgeTo = new DirectedEdge[G.V()];
+        edgeTo = new DirectedWeightedEdge[G.V()];
 
         validateVertex(s);
 
@@ -71,13 +71,13 @@ public class AcyclicSP {
         if (!topological.hasOrder())
             throw new IllegalArgumentException("Digraph is not acyclic.");
         for (int v : topological.order()) {
-            for (DirectedEdge e : G.adj(v))
+            for (DirectedWeightedEdge e : G.adj(v))
                 relax(e);
         }
     }
 
     // relax edge e
-    private void relax(DirectedEdge e) {
+    private void relax(DirectedWeightedEdge e) {
         int v = e.from(), w = e.to();
         if (distTo[w] > distTo[v] + e.weight()) {
             distTo[w] = distTo[v] + e.weight();
@@ -116,11 +116,11 @@ public class AcyclicSP {
      *         as an iterable of edges, and {@code null} if no such path
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
-    public Iterable<DirectedEdge> pathTo(int v) {
+    public Iterable<DirectedWeightedEdge> pathTo(int v) {
         validateVertex(v);
         if (!hasPathTo(v)) return null;
-        Stack<DirectedEdge> path = new Stack<DirectedEdge>();
-        for (DirectedEdge e = edgeTo[v]; e != null; e = edgeTo[e.from()]) {
+        Stack<DirectedWeightedEdge> path = new Stack<DirectedWeightedEdge>();
+        for (DirectedWeightedEdge e = edgeTo[v]; e != null; e = edgeTo[e.from()]) {
             path.push(e);
         }
         return path;

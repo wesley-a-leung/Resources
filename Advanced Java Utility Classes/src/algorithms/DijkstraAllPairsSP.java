@@ -1,6 +1,6 @@
 package algorithms;
 
-import datastructures.DirectedEdge;
+import datastructures.DirectedWeightedEdge;
 import datastructures.EdgeWeightedDigraph;
 
 /******************************************************************************
@@ -58,7 +58,7 @@ public class DijkstraAllPairsSP {
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      * @throws IllegalArgumentException unless {@code 0 <= t < V}
      */
-    public Iterable<DirectedEdge> path(int s, int t) {
+    public Iterable<DirectedWeightedEdge> path(int s, int t) {
         validateVertex(s);
         validateVertex(t);
         return all[s].pathTo(t);
