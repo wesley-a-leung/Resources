@@ -109,7 +109,7 @@ public class BoyerMooreStringSearch {
             }
             if (skip == 0) return i;    // found
         }
-        return n;                       // not found
+        return -1;                       // not found
     }
 
 
@@ -135,6 +135,6 @@ public class BoyerMooreStringSearch {
             }
             if (skip == 0) return i;    // found
         }
-        return n;                       // not found
+        return -1;                       // not found
     }
 }
