@@ -157,7 +157,6 @@ public class BST<Key extends Comparable<Key>, Value> {
             return;
         }
         root = put(root, key, val);
-        assert check();
     }
 
     private Node put(Node x, Key key, Value val) {
@@ -179,7 +178,6 @@ public class BST<Key extends Comparable<Key>, Value> {
     public void deleteMin() {
         if (isEmpty()) throw new NoSuchElementException("Symbol table underflow");
         root = deleteMin(root);
-        assert check();
     }
 
     private Node deleteMin(Node x) {
@@ -197,7 +195,6 @@ public class BST<Key extends Comparable<Key>, Value> {
     public void deleteMax() {
         if (isEmpty()) throw new NoSuchElementException("Symbol table underflow");
         root = deleteMax(root);
-        assert check();
     }
 
     private Node deleteMax(Node x) {
@@ -217,7 +214,6 @@ public class BST<Key extends Comparable<Key>, Value> {
     public void delete(Key key) {
         if (key == null) throw new IllegalArgumentException("argument to delete() is null");
         root = delete(root, key);
-        assert check();
     }
 
     private Node delete(Node x, Key key) {

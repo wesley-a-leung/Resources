@@ -190,7 +190,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
 
         root = put(root, key, val);
         root.color = BLACK;
-        // assert check();
+        
     }
 
     // insert the key-value pair in the subtree rooted at h
@@ -228,7 +228,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
 
         root = deleteMin(root);
         if (!isEmpty()) root.color = BLACK;
-        // assert check();
+        
     }
 
     // delete the key-value pair with the minimum key rooted at h
@@ -257,7 +257,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
 
         root = deleteMax(root);
         if (!isEmpty()) root.color = BLACK;
-        // assert check();
+        
     }
 
     // delete the key-value pair with the maximum key rooted at h
@@ -293,7 +293,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
 
         root = delete(root, key);
         if (!isEmpty()) root.color = BLACK;
-        // assert check();
+        
     }
 
     // delete the key-value pair with the given key rooted at h
