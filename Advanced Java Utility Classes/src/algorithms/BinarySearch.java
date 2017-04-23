@@ -27,7 +27,7 @@ package algorithms;
 
 /**
  *  The {@code BinarySearch} class provides a static method for binary
- *  searching for an integer in a sorted array of integers.
+ *  searching for an element in a sorted array.
  *  <p>
  *  The <em>indexOf</em> operations takes logarithmic time in the worst case.
  *  <p>
@@ -47,18 +47,18 @@ public class BinarySearch {
     /**
      * Returns the index of the specified key in the specified array.
      *
-     * @param  a the array of integers, must be sorted in ascending order
+     * @param  a the array, must be sorted in ascending order
      * @param  key the search key
      * @return index of key in array {@code a} if present; {@code -1} otherwise
      */
-    public static int indexOf(int[] a, int key) {
+    public static Comparable indexOf(Comparable[] a, Comparable key) {
         int lo = 0;
         int hi = a.length - 1;
         while (lo <= hi) {
             // Key is in a[lo..hi] or not present.
             int mid = lo + (hi - lo) / 2;
-            if      (key < a[mid]) hi = mid - 1;
-            else if (key > a[mid]) lo = mid + 1;
+            if      (key.compareTo(a[mid]) < 0) hi = mid - 1;
+            else if (key.compareTo(a[mid]) > 0) lo = mid + 1;
             else return mid;
         }
         return -1;
