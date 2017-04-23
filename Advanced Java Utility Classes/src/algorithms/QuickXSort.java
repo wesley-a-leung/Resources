@@ -22,6 +22,14 @@ package algorithms;
  *  array using an optimized version of quicksort (using Bentley-McIlroy
  *  3-way partitioning, Tukey's ninther, and cutoff to insertion sort).
  *  <p>
+ *  Best Case: <em>N</em>
+ *  <p>
+ *  Average Case: <em>N</em> log <em>N</em>
+ *  <p>
+ *  Worse Case: <em>N</em> log <em>N</em>
+ *  <p>
+ *  Space: <em>N</em> log <em>N</em>
+ *  <p>
  *  For additional documentation, see <a href="http://algs4.cs.princeton.edu/21elementary">Section 2.1</a> of
  *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
  *
