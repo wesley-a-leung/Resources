@@ -28,13 +28,13 @@ package algorithms;
  *  The {@code BinaryInsertion} class provides a static method for sorting an
  *  array using an optimized binary insertion sort with half exchanges.
  *  <p>
- *  This implementation makes ~ n lg n compares for any array of length n.
- *  However, in the worst case, the running time is quadratic because the
- *  number of array accesses can be proportional to n^2 (e.g, if the array
- *  is reverse sorted). As such, it is not suitable for sorting large
- *  arrays (unless the number of inversions is small).
+ *  Best Case: <em>N</em>
  *  <p>
- *  The sorting algorithm is stable and uses O(1) extra memory.
+ *  Average Case: <em>N</em> log <em>N</em>
+ *  <p>
+ *  Worse Case: <em>N</em>^2
+ *  <p>
+ *  Space: <em>1</em>
  *  <p>
  *  For additional documentation, see <a href="http://algs4.cs.princeton.edu/21elementary">Section 2.1</a> of
  *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
