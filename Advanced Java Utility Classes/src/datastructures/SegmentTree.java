@@ -56,6 +56,7 @@ public class SegmentTree {
         if (size == 1) {
             heap[v].sum = array[from];
             heap[v].min = array[from];
+            heap[v].gcd = array[from];
         } else {
             //Build childs
             build(2 * v, from, size / 2);
@@ -64,6 +65,7 @@ public class SegmentTree {
             heap[v].sum = heap[2 * v].sum + heap[2 * v + 1].sum;
             //min = min of the children
             heap[v].min = Math.min(heap[2 * v].min, heap[2 * v + 1].min);
+            heap[v].gcd = gcd(heap[2 * v].gcd, heap[2 * v + 1].gcd);
         }
     }
 
@@ -139,7 +141,31 @@ public class SegmentTree {
 
         return Integer.MAX_VALUE;
     }
+    
+    public int gcdQ(int from, int to) {
+        return gcdQ(1, from, to);
+    }
 
+    private int gcdQ(int v, int from, int to) {
+        Node n = heap[v];
+
+        if (contains(from, to, n.from, n.to)) {
+            return heap[v].gcd;
+        }
+
+        if (intersects(from, to, n.from, n.to)) {
+            propagate(v);
+            int leftGCD = gcdQ(2 * v, from, to);
+            int rightGCD = gcdQ(2 * v + 1, from, to);
+            return gcd(leftGCD, rightGCD);
+        }
+        
+        return array[from];
+    }
+
+    private int gcd (int a, int b) {
+    	return b == 0 ? a : gcd (b, a % b);
+    }
 
     /**
      * Range Update Operation.
@@ -187,6 +213,7 @@ public class SegmentTree {
 
             n.sum = heap[2 * v].sum + heap[2 * v + 1].sum;
             n.min = Math.min(heap[2 * v].min, heap[2 * v + 1].min);
+            n.gcd = gcd(heap[2 * v].gcd, heap[2 * v + 1].gcd);
         }
     }
 
@@ -206,6 +233,7 @@ public class SegmentTree {
         n.pendingVal = value;
         n.sum = n.size() * value;
         n.min = value;
+        n.gcd = value;
         array[n.from] = value;
 
     }
@@ -222,9 +250,10 @@ public class SegmentTree {
     }
 
     //The Node class represents a partition range of the array.
-    static class Node {
+    private class Node {
         int sum;
         int min;
+        int gcd;
         //Here We store the value that will be propagated lazily
         Integer pendingVal = null;
         int from;
