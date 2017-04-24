@@ -26,7 +26,7 @@
  *
  ******************************************************************************/
 
-package datastructures;
+package datastructures.string;
 
 /**
  *  The {@code SuffixArrayX} class represents a suffix array of a string of
