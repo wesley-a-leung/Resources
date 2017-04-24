@@ -1,4 +1,6 @@
-package datastructures;
+package datastructures.string;
+
+import datastructures.Queue;
 
 /******************************************************************************
  *  Compilation:  javac TST.java

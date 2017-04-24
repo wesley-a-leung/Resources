@@ -1,4 +1,4 @@
-package datastructures;
+package datastructures.math;
 
 /**
  * Created by ricardodpsx@gmail.com on 4/01/15.

@@ -1,4 +1,4 @@
-package datastructures;
+package datastructures.math;
 
 /**
  *  @author Wesley Leung
