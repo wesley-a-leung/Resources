@@ -166,11 +166,22 @@ public class SuffixArrayX {
      */
     public int lcp(int i) {
         if (i < 1 || i >= n) throw new IndexOutOfBoundsException();
-        return lcp(index[i], index[i-1]);
+        return lcpPrivate(index[i], index[i-1]);
     }
-
-    // longest common prefix of text[i..n) and text[j..n)
-    private int lcp(int i, int j) {
+    
+    /**
+     * Longest common prefix of text[i..n) and text[j..n) where <em>i</em> and <em>j</em> represent the
+     * <em>i</em>th and <em>j</em>th smallest suffixes
+     * @param i an integer between 0 and <em>n</em>-1
+     * @param j an integer between 0 and <em>n</em>-1
+     * @return the length of the longest common prefix of text[i..n) and text[j..n) 
+     */
+    public int lcp(int i, int j) {
+    	if (i < 0 || i >= n || j < 0 || j >= n) throw new IndexOutOfBoundsException();
+    	return lcpPrivate(index[i], index[j]);
+    }
+    
+    private int lcpPrivate(int i, int j) {
         int length = 0;
         while (i < n && j < n) {
             if (text[i] != text[j]) return length;
@@ -180,6 +191,7 @@ public class SuffixArrayX {
         }
         return length;
     }
+
 
     /**
      * Returns the <em>i</em>th smallest suffix as a string.
