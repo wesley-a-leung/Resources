@@ -78,4 +78,19 @@ public class DirectedWeightedEdge {
     public String toString() {
         return v + "->" + w + " " + String.format("%5.2f", weight);
     }
+    
+    @Override
+    public int hashCode() {
+    	return toString().hashCode();
+    }
+    
+    @Override
+	public boolean equals(Object o) {
+    	if (o == this) return true;
+        if (!(o instanceof DirectedWeightedEdge)) {
+            return false;
+        }
+        DirectedWeightedEdge e = (DirectedWeightedEdge) o;
+		return e.from() == v && e.to() == w && e.weight() == weight;
+	}
 }

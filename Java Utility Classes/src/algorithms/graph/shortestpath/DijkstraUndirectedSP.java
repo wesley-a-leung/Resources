@@ -64,8 +64,6 @@ public class DijkstraUndirectedSP {
                 relax(e, v);
         }
 
-        // check optimality conditions
-        assert check(G, s);
     }
 
     // relax edge e and update pq if changed
