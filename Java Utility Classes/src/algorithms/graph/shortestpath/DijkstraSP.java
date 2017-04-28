@@ -93,8 +93,6 @@ public class DijkstraSP {
                 relax(e);
         }
 
-        // check optimality conditions
-        assert check(G, s);
     }
 
     // relax edge e and update pq if changed

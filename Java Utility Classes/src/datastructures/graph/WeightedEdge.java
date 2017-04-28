@@ -104,4 +104,19 @@ public class WeightedEdge implements Comparable<WeightedEdge> {
     public String toString() {
         return String.format("%d-%d %.5f", v, w, weight);
     }
+    
+    @Override
+    public int hashCode() {
+    	return toString().hashCode();
+    }
+    
+    @Override
+	public boolean equals(Object o) {
+    	if (o == this) return true;
+        if (!(o instanceof WeightedEdge)) {
+            return false;
+        }
+        WeightedEdge e = (WeightedEdge) o;
+		return e.v == v && e.w == w && e.weight() == weight;
+	}
 }
