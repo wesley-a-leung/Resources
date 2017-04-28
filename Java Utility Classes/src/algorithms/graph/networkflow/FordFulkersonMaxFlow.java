@@ -75,9 +75,6 @@ public class FordFulkersonMaxFlow {
 
             value += bottle;
         }
-
-        // check optimality conditions
-        assert check(G, s, t);
     }
 
     /**
