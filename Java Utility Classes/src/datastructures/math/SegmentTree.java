@@ -105,6 +105,43 @@ public class SegmentTree {
 
         return 0;
     }
+    
+    /**
+     * Range Min Query
+     * 
+     * Time-Complexity: O(log(n))
+     *
+     * @param  from from index
+     * @param  to to index
+     * @return Min
+     */
+    public int rMinQ(int from, int to) {
+        return rMinQ(1, from, to);
+    }
+
+    private int rMinQ(int v, int from, int to) {
+        Node n = heap[v];
+
+
+        //If you did a range update that contained this node, you can infer the Min value without going down the tree
+        if (n.pendingVal != null && contains(n.from, n.to, from, to)) {
+            return n.pendingVal;
+        }
+
+        if (contains(from, to, n.from, n.to)) {
+            return heap[v].min;
+        }
+
+        if (intersects(from, to, n.from, n.to)) {
+            propagate(v);
+            int leftMin = rMinQ(2 * v, from, to);
+            int rightMin = rMinQ(2 * v + 1, from, to);
+
+            return Math.min(leftMin, rightMin);
+        }
+
+        return Integer.MAX_VALUE;
+    }
 
     /**
      * Range Max Query
