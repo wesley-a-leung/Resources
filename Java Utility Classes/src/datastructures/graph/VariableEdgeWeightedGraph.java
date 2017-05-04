@@ -52,7 +52,7 @@ import datastructures.Stack;
  *
  *  @author Wesley Leung
  */
-public class VariableWeightedGraph {
+public class VariableEdgeWeightedGraph {
     private static final String NEWLINE = System.getProperty("line.separator");
 
     private final int V;
@@ -66,7 +66,7 @@ public class VariableWeightedGraph {
      * @param  V the number of vertices
      * @throws IllegalArgumentException if {@code V < 0}
      */
-    public VariableWeightedGraph(int V) {
+    public VariableEdgeWeightedGraph(int V) {
         if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
         this.V = V;
         this.E = 0;
@@ -82,7 +82,7 @@ public class VariableWeightedGraph {
      *
      * @param  G the edge-weighted graph to copy
      */
-    public VariableWeightedGraph(VariableWeightedGraph G) {
+    public VariableEdgeWeightedGraph(VariableEdgeWeightedGraph G) {
         this(G.V());
         this.E = G.E();
         for (int v = 0; v < G.V(); v++) {
