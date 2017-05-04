@@ -4,8 +4,7 @@ import java.util.ArrayList;
 
 import datastructures.IndexMinPQ;
 import datastructures.Stack;
-import datastructures.graph.DirectedWeightedEdge;
-import datastructures.graph.VariableWeightedGraph;
+import datastructures.graph.VariableEdgeWeightedGraph;
 import datastructures.graph.WeightedEdge;
 
 /**
@@ -43,7 +42,7 @@ public class DijkstraUndirectedVariableSP {
      * @throws IllegalArgumentException if an edge weight is negative
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      */
-    public DijkstraUndirectedVariableSP(VariableWeightedGraph G, int s) {
+    public DijkstraUndirectedVariableSP(VariableEdgeWeightedGraph G, int s) {
         for (WeightedEdge e : G.edges()) {
             if (e.weight() < 0)
                 throw new IllegalArgumentException("edge " + e + " has negative weight");
@@ -156,7 +155,7 @@ public class DijkstraUndirectedVariableSP {
     // check optimality conditions:
     // (i) for all edges e = v-w:            distTo[w] <= distTo[v] + e.weight()
     // (ii) for all edge e = v-w on the SPT: distTo[w] == distTo[v] + e.weight()
-    private boolean check(VariableWeightedGraph G, int s) {
+    private boolean check(VariableEdgeWeightedGraph G, int s) {
 
         // check that edge weights are nonnegative
         for (WeightedEdge e : G.edges()) {
