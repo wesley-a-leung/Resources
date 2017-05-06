@@ -1,7 +1,7 @@
 package algorithms.graph.networkflow;
 
 import datastructures.graph.DirectedWeightedEdge;
-import datastructures.graph.EdgeWeightedDigraph;
+import datastructures.graph.WeightedDigraph;
 import algorithms.graph.shortestpath.DijkstraSP;
 
 /******************************************************************************
@@ -91,7 +91,7 @@ public class AssignmentProblem {
     private void augment() {
 
         // build residual graph
-        EdgeWeightedDigraph G = new EdgeWeightedDigraph(2*n+2);
+        WeightedDigraph G = new WeightedDigraph(2*n+2);
         int s = 2*n, t = 2*n+1;
         for (int i = 0; i < n; i++) {
             if (xy[i] == UNMATCHED)

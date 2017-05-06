@@ -2,7 +2,7 @@ package algorithms.graph.cycle;
 
 import datastructures.Stack;
 import datastructures.graph.DirectedWeightedEdge;
-import datastructures.graph.EdgeWeightedDigraph;
+import datastructures.graph.WeightedDigraph;
 import algorithms.graph.search.TopologicalOrder;
 
 /******************************************************************************
@@ -52,7 +52,7 @@ public class EdgeWeightedDirectedCycle {
      * if so, finds such a cycle.
      * @param G the edge-weighted digraph
      */
-    public EdgeWeightedDirectedCycle(EdgeWeightedDigraph G) {
+    public EdgeWeightedDirectedCycle(WeightedDigraph G) {
         marked  = new boolean[G.V()];
         onStack = new boolean[G.V()];
         edgeTo  = new DirectedWeightedEdge[G.V()];
@@ -64,7 +64,7 @@ public class EdgeWeightedDirectedCycle {
     }
 
     // check that algorithm computes either the topological order or finds a directed cycle
-    private void dfs(EdgeWeightedDigraph G, int v) {
+    private void dfs(WeightedDigraph G, int v) {
         onStack[v] = true;
         marked[v] = true;
         for (DirectedWeightedEdge e : G.adj(v)) {

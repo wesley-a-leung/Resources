@@ -1,7 +1,7 @@
 package algorithms.graph.networkflow;
 
 import datastructures.IndexMaxPQ;
-import datastructures.graph.EdgeWeightedGraph;
+import datastructures.graph.WeightedGraph;
 import datastructures.graph.WeightedEdge;
 import datastructures.graph.networkflow.FlowEdge;
 import datastructures.graph.networkflow.FlowNetwork;
@@ -102,7 +102,7 @@ public class StoerWagnerMinCut {
      * @throws IllegalArgumentException if the number of vertices of {@code G}
      *             is less than {@code 2} or if anny edge weight is negative
      */
-    public StoerWagnerMinCut(EdgeWeightedGraph G) {
+    public StoerWagnerMinCut(WeightedGraph G) {
         V = G.V();
         validate(G);
         minCut(G, 0);
@@ -116,7 +116,7 @@ public class StoerWagnerMinCut {
      * @throws IllegalArgumentException if the number of vertices of {@code G}
      *             is less than {@code 2} or if any edge weight is negative
      */
-    private void validate(EdgeWeightedGraph G) {
+    private void validate(WeightedGraph G) {
         if (G.V() < 2) throw new IllegalArgumentException("number of vertices of G is less than 2");
         for (WeightedEdge e : G.edges()) {
             if (e.weight() < 0) throw new IllegalArgumentException("edge " + e + " has negative weight");
@@ -172,7 +172,7 @@ public class StoerWagnerMinCut {
      * @param G the edge-weighted graph
      * @param a the starting vertex
      */
-    private void minCut(EdgeWeightedGraph G, int a) {
+    private void minCut(WeightedGraph G, int a) {
         UF uf = new UF(G.V());
         boolean[] marked = new boolean[G.V()];
         cut = new boolean[G.V()];
@@ -202,7 +202,7 @@ public class StoerWagnerMinCut {
      * @param cp the previous cut-of-the-phase
      * @return the cut-of-the-phase
      */
-    private CutPhase minCutPhase(EdgeWeightedGraph G, boolean[] marked, CutPhase cp) {
+    private CutPhase minCutPhase(WeightedGraph G, boolean[] marked, CutPhase cp) {
         IndexMaxPQ<Double> pq = new IndexMaxPQ<Double>(G.V());
         for (int v = 0; v < G.V(); v++) {
             if (v != cp.s && !marked[v]) pq.insert(v, 0.0);
@@ -234,8 +234,8 @@ public class StoerWagnerMinCut {
      * @return a new edge-weighted graph for which the edges incidents on the
      *         vertices {@code s} and {@code t} were contracted
      */
-    private EdgeWeightedGraph contractEdge(EdgeWeightedGraph G, int s, int t) {
-        EdgeWeightedGraph H = new EdgeWeightedGraph(G.V());
+    private WeightedGraph contractEdge(WeightedGraph G, int s, int t) {
+        WeightedGraph H = new WeightedGraph(G.V());
         for (int v = 0; v < G.V(); v++) {
             for (WeightedEdge e : G.adj(v)) {
                 int w = e.other(v);
@@ -256,7 +256,7 @@ public class StoerWagnerMinCut {
      * @param G the edge-weighted graph
      * @return {@code true} if optimality conditions are fine
      */
-    private boolean check(EdgeWeightedGraph G) {
+    private boolean check(WeightedGraph G) {
 
         // compute min st-cut for all pairs s and t
         // shortcut: s must appear on one side of global mincut,

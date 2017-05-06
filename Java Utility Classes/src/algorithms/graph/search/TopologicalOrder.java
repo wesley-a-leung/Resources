@@ -1,7 +1,7 @@
 package algorithms.graph.search;
 
 import datastructures.graph.Digraph;
-import datastructures.graph.EdgeWeightedDigraph;
+import datastructures.graph.WeightedDigraph;
 import algorithms.graph.cycle.DirectedCycle;
 import algorithms.graph.cycle.EdgeWeightedDirectedCycle;
 
@@ -87,7 +87,7 @@ public class TopologicalOrder {
      * order and, if so, finds such an order.
      * @param G the edge-weighted digraph
      */
-    public TopologicalOrder(EdgeWeightedDigraph G) {
+    public TopologicalOrder(WeightedDigraph G) {
         EdgeWeightedDirectedCycle finder = new EdgeWeightedDirectedCycle(G);
         if (!finder.hasCycle()) {
             DepthFirstOrder dfs = new DepthFirstOrder(G);
