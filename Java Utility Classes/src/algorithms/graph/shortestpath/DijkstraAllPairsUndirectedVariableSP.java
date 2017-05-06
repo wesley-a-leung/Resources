@@ -1,6 +1,6 @@
 package algorithms.graph.shortestpath;
 
-import datastructures.graph.VariableEdgeWeightedGraph;
+import datastructures.graph.VariableWeightedGraph;
 import datastructures.graph.WeightedEdge;
 
 /******************************************************************************
@@ -43,7 +43,7 @@ public class DijkstraAllPairsUndirectedVariableSP {
      * @throws IllegalArgumentException if an edge weight is negative
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      */
-    public DijkstraAllPairsUndirectedVariableSP(VariableEdgeWeightedGraph G) {
+    public DijkstraAllPairsUndirectedVariableSP(VariableWeightedGraph G) {
         all  = new DijkstraUndirectedVariableSP[G.V()];
         for (int v = 0; v < G.V(); v++)
             all[v] = new DijkstraUndirectedVariableSP(G, v);

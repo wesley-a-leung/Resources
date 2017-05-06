@@ -2,7 +2,7 @@ package algorithms.graph.shortestpath;
 
 import datastructures.Stack;
 import datastructures.graph.DirectedWeightedEdge;
-import datastructures.graph.EdgeWeightedDigraph;
+import datastructures.graph.WeightedDigraph;
 import algorithms.graph.search.TopologicalOrder;
 
 /******************************************************************************
@@ -57,7 +57,7 @@ public class AcyclicSP {
      * @throws IllegalArgumentException if the digraph is not acyclic
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      */
-    public AcyclicSP(EdgeWeightedDigraph G, int s) {
+    public AcyclicSP(WeightedDigraph G, int s) {
         distTo = new double[G.V()];
         edgeTo = new DirectedWeightedEdge[G.V()];
 

@@ -3,7 +3,7 @@ package algorithms.graph.shortestpath;
 import datastructures.IndexMinPQ;
 import datastructures.Stack;
 import datastructures.graph.DirectedWeightedEdge;
-import datastructures.graph.EdgeWeightedDigraph;
+import datastructures.graph.WeightedDigraph;
 
 /******************************************************************************
  *  Compilation:  javac DijkstraSP.java
@@ -69,7 +69,7 @@ public class DijkstraSP {
      * @throws IllegalArgumentException if an edge weight is negative
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      */
-    public DijkstraSP(EdgeWeightedDigraph G, int s) {
+    public DijkstraSP(WeightedDigraph G, int s) {
         for (DirectedWeightedEdge e : G.edges()) {
             if (e.weight() < 0)
                 throw new IllegalArgumentException("edge " + e + " has negative weight");
@@ -153,7 +153,7 @@ public class DijkstraSP {
     // check optimality conditions:
     // (i) for all edges e:            distTo[e.to()] <= distTo[e.from()] + e.weight()
     // (ii) for all edge e on the SPT: distTo[e.to()] == distTo[e.from()] + e.weight()
-    private boolean check(EdgeWeightedDigraph G, int s) {
+    private boolean check(WeightedDigraph G, int s) {
 
         // check that edge weights are nonnegative
         for (DirectedWeightedEdge e : G.edges()) {

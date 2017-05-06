@@ -5,7 +5,7 @@ import java.util.HashSet;
 
 import datastructures.MinPQ;
 import datastructures.graph.DirectedWeightedPath;
-import datastructures.graph.VariableEdgeWeightedDigraph;
+import datastructures.graph.VariableWeightedDigraph;
 import datastructures.graph.DirectedWeightedEdge;
 
 /**
@@ -17,12 +17,12 @@ import datastructures.graph.DirectedWeightedEdge;
 public class YenDirectedKSP {
 	private final int source;
 	private final int sink;
-	private VariableEdgeWeightedDigraph G;
+	private VariableWeightedDigraph G;
 	private final int V;
 	private ArrayList<DirectedWeightedPath> paths;
 	MinPQ<DirectedWeightedPath> pq;
 	
-	public YenDirectedKSP(VariableEdgeWeightedDigraph G, int source, int sink) {
+	public YenDirectedKSP(VariableWeightedDigraph G, int source, int sink) {
 		this.G = G;
 		this.V = G.V();
 		this.source = source;

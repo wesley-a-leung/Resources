@@ -6,7 +6,7 @@ import java.util.HashSet;
 import datastructures.MinPQ;
 import datastructures.graph.WeightedEdge;
 import datastructures.graph.WeightedPath;
-import datastructures.graph.VariableEdgeWeightedGraph;
+import datastructures.graph.VariableWeightedGraph;
 
 /**
  *  The {@code YenKSP} class represents a data type for solving the
@@ -17,12 +17,12 @@ import datastructures.graph.VariableEdgeWeightedGraph;
 public class YenKSP {
 	private final int source;
 	private final int sink;
-	private VariableEdgeWeightedGraph G;
+	private VariableWeightedGraph G;
 	private final int V;
 	private ArrayList<WeightedPath> paths;
 	MinPQ<WeightedPath> pq;
 	
-	public YenKSP(VariableEdgeWeightedGraph G, int source, int sink) {
+	public YenKSP(VariableWeightedGraph G, int source, int sink) {
 		this.G = G;
 		this.V = G.V();
 		this.source = source;

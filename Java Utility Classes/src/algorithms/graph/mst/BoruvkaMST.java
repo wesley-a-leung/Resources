@@ -1,7 +1,7 @@
 package algorithms.graph.mst;
 
 import datastructures.Bag;
-import datastructures.graph.EdgeWeightedGraph;
+import datastructures.graph.WeightedGraph;
 import datastructures.graph.WeightedEdge;
 import algorithms.math.UF;
 
@@ -42,7 +42,7 @@ public class BoruvkaMST {
      * Compute a minimum spanning tree (or forest) of an edge-weighted graph.
      * @param G the edge-weighted graph
      */
-    public BoruvkaMST(EdgeWeightedGraph G) {
+    public BoruvkaMST(WeightedGraph G) {
         UF uf = new UF(G.V());
 
         // repeat at most log V times or until we have V-1 edges
@@ -102,7 +102,7 @@ public class BoruvkaMST {
     }
 
     // check optimality conditions (takes time proportional to E V lg* V)
-    private boolean check(EdgeWeightedGraph G) {
+    private boolean check(WeightedGraph G) {
 
         // check weight
         double totalWeight = 0.0;

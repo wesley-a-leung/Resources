@@ -4,7 +4,7 @@ import datastructures.Queue;
 import datastructures.Stack;
 import datastructures.graph.Digraph;
 import datastructures.graph.DirectedWeightedEdge;
-import datastructures.graph.EdgeWeightedDigraph;
+import datastructures.graph.WeightedDigraph;
 
 /******************************************************************************
  *  Compilation:  javac DepthFirstOrder.java
@@ -87,7 +87,7 @@ public class DepthFirstOrder {
      * Determines a depth-first order for the edge-weighted digraph {@code G}.
      * @param G the edge-weighted digraph
      */
-    public DepthFirstOrder(EdgeWeightedDigraph G) {
+    public DepthFirstOrder(WeightedDigraph G) {
         pre    = new int[G.V()];
         post   = new int[G.V()];
         postorder = new Queue<Integer>();
@@ -112,7 +112,7 @@ public class DepthFirstOrder {
     }
 
     // run DFS in edge-weighted digraph G from vertex v and compute preorder/postorder
-    private void dfs(EdgeWeightedDigraph G, int v) {
+    private void dfs(WeightedDigraph G, int v) {
         marked[v] = true;
         pre[v] = preCounter++;
         preorder.enqueue(v);

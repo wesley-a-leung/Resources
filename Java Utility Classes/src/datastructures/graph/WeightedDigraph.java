@@ -1,7 +1,6 @@
 package datastructures.graph;
 
-import java.util.HashSet;
-
+import datastructures.Bag;
 import datastructures.Stack;
 
 /******************************************************************************
@@ -17,7 +16,7 @@ import datastructures.Stack;
  ******************************************************************************/
 
 /**
- *  The {@code VariableEdgeWeightedDigraph} class represents a variable/mutable edge-weighted
+ *  The {@code WeightedDigraph} class represents a edge-weighted
  *  digraph of vertices named 0 through <em>V</em> - 1, where each
  *  directed edge is of type {@link DirectedWeightedEdge} and has a real-valued weight.
  *  It supports the following two primary operations: add a directed edge
@@ -25,24 +24,27 @@ import datastructures.Stack;
  *  It also provides
  *  methods for returning the number of vertices <em>V</em> and the number
  *  of edges <em>E</em>. Parallel edges and self-loops are permitted.
- *  In addition, the edges can be removed and stored.
  *  <p>
  *  This implementation uses an adjacency-lists representation, which 
- *  is a vertex-indexed array of HashSet objects.
+ *  is a vertex-indexed array of {@link Bag} objects.
  *  All operations take constant time (in the worst case) except
  *  iterating over the edges incident from a given vertex, which takes
  *  time proportional to the number of such edges.
+ *  <p>
+ *  For additional documentation,
+ *  see <a href="http://algs4.cs.princeton.edu/44sp">Section 4.4</a> of
+ *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
  *
- *  @author Wesley Leung
+ *  @author Robert Sedgewick
+ *  @author Kevin Wayne
  */
-public class VariableEdgeWeightedDigraph {
+public class WeightedDigraph {
     private static final String NEWLINE = System.getProperty("line.separator");
 
     private final int V;                // number of vertices in this digraph
     private int E;                      // number of edges in this digraph
-    private HashSet<DirectedWeightedEdge>[] adj;    // adj[v] = adjacency list for vertex v
+    private Bag<DirectedWeightedEdge>[] adj;    // adj[v] = adjacency list for vertex v
     private int[] indegree;             // indegree[v] = indegree of vertex v
-    private HashSet<DirectedWeightedEdge> removed;
     
     /**
      * Initializes an empty edge-weighted digraph with {@code V} vertices and 0 edges.
@@ -50,15 +52,14 @@ public class VariableEdgeWeightedDigraph {
      * @param  V the number of vertices
      * @throws IllegalArgumentException if {@code V < 0}
      */
-    public VariableEdgeWeightedDigraph(int V) {
+    public WeightedDigraph(int V) {
         if (V < 0) throw new IllegalArgumentException("Number of vertices in a Digraph must be nonnegative");
         this.V = V;
         this.E = 0;
         this.indegree = new int[V];
-        adj = (HashSet<DirectedWeightedEdge>[]) new HashSet[V];
-        removed = new HashSet<DirectedWeightedEdge>();
+        adj = (Bag<DirectedWeightedEdge>[]) new Bag[V];
         for (int v = 0; v < V; v++)
-            adj[v] = new HashSet<DirectedWeightedEdge>();
+            adj[v] = new Bag<DirectedWeightedEdge>();
     }
 
     /**
@@ -66,7 +67,7 @@ public class VariableEdgeWeightedDigraph {
      *
      * @param  G the edge-weighted digraph to copy
      */
-    public VariableEdgeWeightedDigraph(VariableEdgeWeightedDigraph G) {
+    public WeightedDigraph(WeightedDigraph G) {
         this(G.V());
         this.E = G.E();
         for (int v = 0; v < G.V(); v++)
@@ -123,34 +124,7 @@ public class VariableEdgeWeightedDigraph {
         indegree[w]++;
         E++;
     }
-    
-    /**
-     * Removes the directed edge from {@code e} from this edge-weighted digraph.
-     *
-     * @param  e the edge
-     * @throws IllegalArgumentException unless endpoints of edge are between {@code 0}
-     *         and {@code V-1}
-     */
-    public void removeEdge(DirectedWeightedEdge e) {
-    	int v = e.from();
-        int w = e.to();
-        validateVertex(v);
-        validateVertex(w);
-        removed.add(e);
-        adj[v].remove(e);
-        indegree[w]--;
-        E--;
-    }
-    
-    /**
-     * Restores all the edges removed from this edge-weighted digraph.
-     */
-    public void restoreEdges() {
-    	for (DirectedWeightedEdge e: removed) {
-            addEdge(e);
-    	}
-    	removed.clear();
-    }
+
 
     /**
      * Returns the directed edges incident from vertex {@code v}.
@@ -198,7 +172,7 @@ public class VariableEdgeWeightedDigraph {
      * @return all edges in this edge-weighted digraph, as an iterable
      */
     public Iterable<DirectedWeightedEdge> edges() {
-        HashSet<DirectedWeightedEdge> list = new HashSet<DirectedWeightedEdge>();
+        Bag<DirectedWeightedEdge> list = new Bag<DirectedWeightedEdge>();
         for (int v = 0; v < V; v++) {
             for (DirectedWeightedEdge e : adj(v)) {
                 list.add(e);

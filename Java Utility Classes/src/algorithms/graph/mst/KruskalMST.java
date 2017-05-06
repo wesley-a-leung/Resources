@@ -2,7 +2,7 @@ package algorithms.graph.mst;
 
 import datastructures.MinPQ;
 import datastructures.Queue;
-import datastructures.graph.EdgeWeightedGraph;
+import datastructures.graph.WeightedGraph;
 import datastructures.graph.WeightedEdge;
 import algorithms.math.UF;
 
@@ -43,7 +43,7 @@ public class KruskalMST {
      * Compute a minimum spanning tree (or forest) of an edge-weighted graph.
      * @param G the edge-weighted graph
      */
-    public KruskalMST(EdgeWeightedGraph G) {
+    public KruskalMST(WeightedGraph G) {
         // more efficient to build heap by passing array of edges
         MinPQ<WeightedEdge> pq = new MinPQ<WeightedEdge>();
         for (WeightedEdge e : G.edges()) {
@@ -85,7 +85,7 @@ public class KruskalMST {
     }
     
     // check optimality conditions (takes time proportional to E V lg* V)
-    private boolean check(EdgeWeightedGraph G) {
+    private boolean check(WeightedGraph G) {
 
         // check total weight
         double total = 0.0;

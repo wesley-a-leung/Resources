@@ -1,6 +1,6 @@
 package algorithms.graph.components;
 
-import datastructures.graph.EdgeWeightedGraph;
+import datastructures.graph.WeightedGraph;
 import datastructures.graph.Graph;
 import datastructures.graph.WeightedEdge;
 
@@ -60,7 +60,7 @@ public class ConnectedComponents {
      *
      * @param G the edge-weighted graph
      */
-    public ConnectedComponents(EdgeWeightedGraph G) {
+    public ConnectedComponents(WeightedGraph G) {
         marked = new boolean[G.V()];
         id = new int[G.V()];
         size = new int[G.V()];
@@ -85,7 +85,7 @@ public class ConnectedComponents {
     }
 
     // depth-first search for an EdgeWeightedGraph
-    private void dfs(EdgeWeightedGraph G, int v) {
+    private void dfs(WeightedGraph G, int v) {
         marked[v] = true;
         id[v] = count;
         size[count]++;

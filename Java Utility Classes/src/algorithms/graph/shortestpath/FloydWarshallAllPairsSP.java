@@ -1,9 +1,9 @@
 package algorithms.graph.shortestpath;
 
 import datastructures.Stack;
-import datastructures.graph.AdjMatrixEdgeWeightedDigraph;
+import datastructures.graph.AdjMatrixWeightedDigraph;
 import datastructures.graph.DirectedWeightedEdge;
-import datastructures.graph.EdgeWeightedDigraph;
+import datastructures.graph.WeightedDigraph;
 import algorithms.graph.cycle.EdgeWeightedDirectedCycle;
 
 /******************************************************************************
@@ -55,7 +55,7 @@ public class FloydWarshallAllPairsSP {
      * some pair of vertices, it computes a negative cycle.
      * @param G the edge-weighted digraph
      */
-    public FloydWarshallAllPairsSP(AdjMatrixEdgeWeightedDigraph G) {
+    public FloydWarshallAllPairsSP(AdjMatrixWeightedDigraph G) {
         int V = G.V();
         distTo = new double[V][V];
         edgeTo = new DirectedWeightedEdge[V][V];
@@ -119,7 +119,7 @@ public class FloydWarshallAllPairsSP {
             // negative cycle in v's predecessor graph
             if (distTo[v][v] < 0.0) {
                 int V = edgeTo.length;
-                EdgeWeightedDigraph spt = new EdgeWeightedDigraph(V);
+                WeightedDigraph spt = new WeightedDigraph(V);
                 for (int w = 0; w < V; w++)
                     if (edgeTo[v][w] != null)
                         spt.addEdge(edgeTo[v][w]);
@@ -186,7 +186,7 @@ public class FloydWarshallAllPairsSP {
     }
 
     // check optimality conditions
-    private boolean check(AdjMatrixEdgeWeightedDigraph G) {
+    private boolean check(AdjMatrixWeightedDigraph G) {
 
         // no negative cycle
         if (!hasNegativeCycle()) {

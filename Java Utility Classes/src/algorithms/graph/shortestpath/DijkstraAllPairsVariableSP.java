@@ -1,8 +1,8 @@
 package algorithms.graph.shortestpath;
 
 import datastructures.graph.DirectedWeightedEdge;
-import datastructures.graph.EdgeWeightedDigraph;
-import datastructures.graph.VariableEdgeWeightedDigraph;
+import datastructures.graph.WeightedDigraph;
+import datastructures.graph.VariableWeightedDigraph;
 
 /******************************************************************************
  *  Compilation:  javac DijkstraAllPairsSP.java
@@ -44,7 +44,7 @@ public class DijkstraAllPairsVariableSP {
      * @throws IllegalArgumentException if an edge weight is negative
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      */
-    public DijkstraAllPairsVariableSP(VariableEdgeWeightedDigraph G) {
+    public DijkstraAllPairsVariableSP(VariableWeightedDigraph G) {
         all  = new DijkstraVariableSP[G.V()];
         for (int v = 0; v < G.V(); v++)
             all[v] = new DijkstraVariableSP(G, v);

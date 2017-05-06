@@ -3,7 +3,7 @@ package algorithms.graph.shortestpath;
 import datastructures.Queue;
 import datastructures.Stack;
 import datastructures.graph.DirectedWeightedEdge;
-import datastructures.graph.EdgeWeightedDigraph;
+import datastructures.graph.WeightedDigraph;
 import algorithms.graph.cycle.EdgeWeightedDirectedCycle;
 
 /**
@@ -44,7 +44,7 @@ public class BellmanFordSP {
      * @param s the source vertex
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      */
-    public BellmanFordSP(EdgeWeightedDigraph G, int s) {
+    public BellmanFordSP(WeightedDigraph G, int s) {
         distTo  = new double[G.V()];
         edgeTo  = new DirectedWeightedEdge[G.V()];
         onQueue = new boolean[G.V()];
@@ -66,7 +66,7 @@ public class BellmanFordSP {
     }
 
     // relax vertex v and put other endpoints on queue if changed
-    private void relax(EdgeWeightedDigraph G, int v) {
+    private void relax(WeightedDigraph G, int v) {
         for (DirectedWeightedEdge e : G.adj(v)) {
             int w = e.to();
             if (distTo[w] > distTo[v] + e.weight()) {
@@ -106,7 +106,7 @@ public class BellmanFordSP {
     // by finding a cycle in predecessor graph
     private void findNegativeCycle() {
         int V = edgeTo.length;
-        EdgeWeightedDigraph spt = new EdgeWeightedDigraph(V);
+        WeightedDigraph spt = new WeightedDigraph(V);
         for (int v = 0; v < V; v++)
             if (edgeTo[v] != null)
                 spt.addEdge(edgeTo[v]);
@@ -169,7 +169,7 @@ public class BellmanFordSP {
     //     or 
     // (ii)  for all edges e = v->w:            distTo[w] <= distTo[v] + e.weight()
     // (ii') for all edges e = v->w on the SPT: distTo[w] == distTo[v] + e.weight()
-    private boolean check(EdgeWeightedDigraph G, int s) {
+    private boolean check(WeightedDigraph G, int s) {
 
         // has a negative cycle
         if (hasNegativeCycle()) {

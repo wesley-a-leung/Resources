@@ -2,7 +2,7 @@ package algorithms.graph.mst;
 
 import datastructures.IndexMinPQ;
 import datastructures.Queue;
-import datastructures.graph.EdgeWeightedGraph;
+import datastructures.graph.WeightedGraph;
 import datastructures.graph.WeightedEdge;
 import algorithms.math.UF;
 
@@ -83,7 +83,7 @@ public class PrimMST {
      * Compute a minimum spanning tree (or forest) of an edge-weighted graph.
      * @param G the edge-weighted graph
      */
-    public PrimMST(EdgeWeightedGraph G) {
+    public PrimMST(WeightedGraph G) {
         edgeTo = new WeightedEdge[G.V()];
         distTo = new double[G.V()];
         marked = new boolean[G.V()];
@@ -99,7 +99,7 @@ public class PrimMST {
     }
 
     // run Prim's algorithm in graph G, starting from vertex s
-    private void prim(EdgeWeightedGraph G, int s) {
+    private void prim(WeightedGraph G, int s) {
         distTo[s] = 0.0;
         pq.insert(s, distTo[s]);
         while (!pq.isEmpty()) {
@@ -109,7 +109,7 @@ public class PrimMST {
     }
 
     // scan vertex v
-    private void scan(EdgeWeightedGraph G, int v) {
+    private void scan(WeightedGraph G, int v) {
         marked[v] = true;
         for (WeightedEdge e : G.adj(v)) {
             int w = e.other(v);
@@ -152,7 +152,7 @@ public class PrimMST {
 
 
     // check optimality conditions (takes time proportional to E V lg* V)
-    private boolean check(EdgeWeightedGraph G) {
+    private boolean check(WeightedGraph G) {
 
         // check weight
         double totalWeight = 0.0;
