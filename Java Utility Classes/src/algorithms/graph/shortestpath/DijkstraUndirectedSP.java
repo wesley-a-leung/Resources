@@ -1,5 +1,7 @@
 package algorithms.graph.shortestpath;
 
+import java.util.ArrayList;
+
 import datastructures.IndexMinPQ;
 import datastructures.Stack;
 import datastructures.graph.WeightedGraph;
@@ -124,7 +126,30 @@ public class DijkstraUndirectedSP {
         }
         return path;
     }
-
+    
+    /**
+     * Returns a shortest path from the source vertex {@code s} to vertex {@code v}.
+     *
+     * @param  v the destination vertex
+     * @return a shortest path from the source vertex {@code s} to vertex {@code v}
+     *         as an ArrayList of edges, and {@code null} if no such path
+     * @throws IllegalArgumentException unless {@code 0 <= v < V}
+     */
+    public ArrayList<WeightedEdge> pathList(int v) {
+        validateVertex(v);
+        if (!hasPathTo(v)) return null;
+        Stack<WeightedEdge> path = new Stack<WeightedEdge>();
+        int x = v;
+        for (WeightedEdge e = edgeTo[v]; e != null; e = edgeTo[x]) {
+            path.push(e);
+            x = e.other(x);
+        }
+        ArrayList<WeightedEdge> list = new ArrayList<WeightedEdge>();
+        while (!path.isEmpty()) {
+        	list.add(path.pop());
+        }
+        return list;
+    }
 
     // check optimality conditions:
     // (i) for all edges e = v-w:            distTo[w] <= distTo[v] + e.weight()

@@ -1,5 +1,7 @@
 package algorithms.graph.shortestpath;
 
+import java.util.ArrayList;
+
 import datastructures.IndexMinPQ;
 import datastructures.Stack;
 import datastructures.graph.DirectedWeightedEdge;
@@ -147,6 +149,28 @@ public class DijkstraSP {
             path.push(e);
         }
         return path;
+    }
+    
+    /**
+     * Returns a shortest path from the source vertex {@code s} to vertex {@code v}.
+     *
+     * @param  v the destination vertex
+     * @return a shortest path from the source vertex {@code s} to vertex {@code v}
+     *         as an ArrayList of edges, and {@code null} if no such path
+     * @throws IllegalArgumentException unless {@code 0 <= v < V}
+     */
+    public ArrayList<DirectedWeightedEdge> pathList(int v) {
+        validateVertex(v);
+        if (!hasPathTo(v)) return null;
+        Stack<DirectedWeightedEdge> path = new Stack<DirectedWeightedEdge>();
+        for (DirectedWeightedEdge e = edgeTo[v]; e != null; e = edgeTo[e.from()]) {
+            path.push(e);
+        }
+        ArrayList<DirectedWeightedEdge> list = new ArrayList<DirectedWeightedEdge>();
+        while (!path.isEmpty()) {
+        	list.add(path.pop());
+        }
+        return list;
     }
 
 

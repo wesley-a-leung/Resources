@@ -480,12 +480,12 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
      */
     private int rank(Node n, Value val) {
     	if (n == null) {
-            return -1;
+            return 0;
         }
 
         if (n.val.compareTo(val) == 0) {
             int temp = rank(n.left, val);
-            if (temp == -1) {
+            if (temp == 0) {
                 return size(n.left) + 1;
             } else {
                 return temp;
@@ -494,7 +494,7 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
             return rank(n.left, val);
         } else {
             int temp = rank(n.right, val);
-            if (temp == -1) {
+            if (temp == 0) {
                 return temp;
             } else {
                 return size(n.left) + 1 + temp;
