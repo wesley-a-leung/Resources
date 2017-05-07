@@ -121,6 +121,17 @@ public class ConnectedComponents {
         validateVertex(v);
         return size[id[v]];
     }
+    
+    /**
+     * Returns the number of vertices in the connected component of id {@code id}.
+     *
+     * @param  v the vertex
+     * @return the number of vertices in the connected component of id {@code id}
+     * @throws IllegalArgumentException unless {@code 0 <= id < size.length}
+     */
+    public int sizeOfId(int id) {
+        return size[id];
+    }
 
     /**
      * Returns the number of connected components in the graph {@code G}.

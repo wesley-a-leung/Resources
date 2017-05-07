@@ -29,8 +29,6 @@ package datastructures.graph;
  *  
  ******************************************************************************/
 
-import java.util.NoSuchElementException;
-
 import datastructures.Bag;
 import datastructures.Stack;
 
