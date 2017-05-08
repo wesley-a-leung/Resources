@@ -75,7 +75,7 @@ public class BoruvkaMST {
         }
 
         // check optimality conditions
-        assert check(G);
+        // assert check(G);
     }
 
     /**

@@ -64,7 +64,7 @@ public class KruskalMST {
         }
 
         // check optimality conditions
-        assert check(G);
+        // assert check(G);
     }
 
     /**
