@@ -73,6 +73,7 @@ public class BreadthFirstSinglePath {
 
         while (!q.isEmpty()) {
             int v = q.dequeue();
+            if (v == f) return;
             for (int w : G.adj(v)) {
                 if (!marked[w]) {
                     edgeTo[w] = v;
