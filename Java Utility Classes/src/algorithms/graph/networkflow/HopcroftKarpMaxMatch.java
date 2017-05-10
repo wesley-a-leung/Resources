@@ -144,8 +144,6 @@ public class HopcroftKarpMaxMatch {
             if (bipartition.color(v) && !marked[v]) inMinVertexCover[v] = true;
             if (!bipartition.color(v) && marked[v]) inMinVertexCover[v] = true;
         }
-
-        assert certifySolution(G);
     }
 
     // string representation of augmenting path (chop off last vertex)
