@@ -9,8 +9,8 @@ public class FenwickTree2D {
 
     int[][] array;
 
-    public FenwickTree2D(int size) {
-        array = new int[size + 1][size + 1];
+    public FenwickTree2D(int sizeX, int sizeY) {
+        array = new int[sizeX + 1][sizeY + 1];
     }
 
     /**
@@ -33,7 +33,6 @@ public class FenwickTree2D {
            }
            indX -= (indX & -indX);
         }
-
         return sum;
     }
 
@@ -49,7 +48,7 @@ public class FenwickTree2D {
      * @return sum
      */
     public int rsq(int x1, int y1, int x2, int y2) {
-        return rsq(x2, y2) + rsq(x1, y1) - rsq(x1, y2) - rsq(x2, y1);
+        return rsq(x2, y2) + rsq(x1 - 1, y1 - 1) - rsq(x1 - 1, y2) - rsq(x2, y1 - 1);
     }
 
     /**
@@ -66,7 +65,7 @@ public class FenwickTree2D {
     	int y = indY;
         while (indX < array.length) {
         	indY = y;
-        	while (indY <= array[indX].length) {
+        	while (indY < array[indX].length) {
         		array[indX][indY] += value;
         		indY += (indY & -indY);
         	}
@@ -74,7 +73,11 @@ public class FenwickTree2D {
         }
     }
 
-    public int size() {
+    public int sizeX() {
         return array.length - 1;
+    }
+    
+    public int sizeY() {
+    	return array[0].length - 1;
     }
 }
