@@ -47,12 +47,9 @@ public class FenwickTree {
      */
     public int rsq(int ind) {
         int sum = 0;
-        while (ind > 0) {
-            sum += array[ind];
-            //Extracting the portion up to the first significant one of the binary representation of 'ind' and decrementing ind by that number
-            ind -= ind & (-ind);
+        for (int x = ind; x > 0; x -= (x & -x)) {
+        	sum += array[x];
         }
-
         return sum;
     }
 
@@ -81,11 +78,9 @@ public class FenwickTree {
      * @param  value value
      */
     public void update(int ind, int value) {
-        while (ind < array.length) {
-            array[ind] += value;
-            //Extracting the portion up to the first significant one of the binary representation of 'ind' and incrementing ind by that number
-            ind += ind & (-ind);
-        }
+    	for (int x = ind; x < array.length; x += (x & -x)) {
+    		array[x] += value;
+    	}
     }
 
     public int size() {
