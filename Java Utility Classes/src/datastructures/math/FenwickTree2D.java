@@ -24,14 +24,10 @@ public class FenwickTree2D {
      */
     public int rsq(int indX, int indY) {
         int sum = 0;
-        int y = indY;
-        while (indX > 0) {
-           indY = y;
-           while (indY > 0) {
-        	   sum += array[indX][indY];
-        	   indY -= (indY & -indY);
-           }
-           indX -= (indX & -indX);
+        for (int x = indX; x > 0; x -= (x & -x)) {
+        	for (int y = indY; y > 0; y -= (y & -y)) {
+        		sum += array[x][y];
+        	}
         }
         return sum;
     }
@@ -62,15 +58,11 @@ public class FenwickTree2D {
      * @param  value value
      */
     public void update(int indX, int indY, int value) {
-    	int y = indY;
-        while (indX < array.length) {
-        	indY = y;
-        	while (indY < array[indX].length) {
-        		array[indX][indY] += value;
-        		indY += (indY & -indY);
-        	}
-            indX += (indX & -indX);
-        }
+    	for (int x = indX; x < array.length; x += (x & -x)) {
+    		for (int y = indY; y < array[x].length; y += (y & -y)) {
+    			array[x][y] += value;
+    		}
+    	}
     }
 
     public int sizeX() {
