@@ -1,5 +1,15 @@
 package algorithms.string;
 
+/**
+ * Class that uses dynamic programming to compute the minimum
+ * edit distance between 2 string in O(NM) time where N is the
+ * length of the first string and M is the length of the second
+ * string
+ * 
+ * It uses space of O(NM)
+ * 
+ * @author Wesley Leung
+ */
 public class MinimumEditDistance {
 	
 	// This class should not be instantiated
@@ -34,10 +44,7 @@ public class MinimumEditDistance {
 					int replace = dp[i - 1][j - 1] + 1;
 					int insert = dp[i - 1][j] + 1;
 					int delete = dp[i][j - 1] + 1;
-	 
-					int min = replace > insert ? insert : replace;
-					min = delete > min ? min : delete;
-					dp[i][j] = min;
+					dp[i][j] = Math.min(replace, Math.min(insert, delete));
 				}
 			}
 		}
