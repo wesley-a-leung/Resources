@@ -11,12 +11,14 @@ public class Knapsack {
 	 * a maximum of {@code N} weight
 	 * 
 	 * Takes time proportional to <em>NM</em> where <em>N</em> is the number of 
-	 * items and <em>M</em> is the size of the knapsack
+	 * items and <em>M</em> is the size of the knapsack.
+	 * 
+	 * Take space proportional to <em>M</em>.
 	 * 
 	 * @param M Size of the knapsack
 	 * @param weight Array of the weights of the items
 	 * @param value Array of the values of the items
-	 * @return The maximum value of the knapsack
+	 * @return the maximum value of the knapsack
 	 */
 	public static int solve(int M, int[] weight, int[] value) {
 		int[] dp = new int[M + 1];

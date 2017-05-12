@@ -13,11 +13,13 @@ public class CoinChange {
 	 * 
 	 * Take time proportional to <em>NM</em> where <em>N</em> is the
 	 * amount of dollars and <em>M</em> is the number of different
-	 * coin values
+	 * coin values.
 	 * 
-	 * @param N      Dollars
-	 * @param coins  Array of coin values
-	 * @return       The number of ways to make change
+	 * Take space proportional to <em>N</em>.
+	 * 
+	 * @param N      dollars
+	 * @param coins  array of coin values
+	 * @return       the number of ways to make change
 	 */
 	public static int solve(int N, int[] coins) {
 		int[] dp = new int[N + 1];
