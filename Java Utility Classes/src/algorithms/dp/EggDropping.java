@@ -11,11 +11,13 @@ public class EggDropping {
 	 * eggs, assuming eggs cannot be reused if broken.
 	 * 
 	 * Takes time proportional to <em>NK</em> where <em>N</em> is the number of 
-	 * eggs and <em>K</em> is the number of floors
+	 * eggs and <em>K</em> is the number of floors.
 	 * 
-	 * @param N Number of Eggs
-	 * @param K Number of Floors
-	 * @return The number of trials required
+	 * Take space proportional to <em>NK</em>.
+	 * 
+	 * @param N number of Eggs
+	 * @param K number of Floors
+	 * @return the number of trials required
 	 */
 	public static int solve(int N, int K) {
 		int[][] dp = new int[N + 1][K + 1];
