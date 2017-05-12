@@ -18,29 +18,29 @@ public class EggDropping {
 	 * @return The number of trials required
 	 */
 	public static int solve(int N, int K) {
-		int[][] eggFloor = new int[N + 1][K + 1];
+		int[][] dp = new int[N + 1][K + 1];
 		int res;
 
 		// We need one trial for one floor and 0 trials for 0 floors
 		for (int i = 1; i <= N; i++) {
-			eggFloor[i][0] = 0;
-			eggFloor[i][1] = 1;
+			dp[i][0] = 0;
+			dp[i][1] = 1;
 		}
 
 		// We always need i trials for one egg and i floors.
 		for (int i = 1; i <= K; i++)
-			eggFloor[1][i] = i;
+			dp[1][i] = i;
 
 		for (int i = 2; i <= N; i++) {
 			for (int j = 2; j <= K; j++) {
-				eggFloor[i][j] = Integer.MAX_VALUE;
+				dp[i][j] = Integer.MAX_VALUE;
 				for (int x = 1; x <= j; x++) {
-					res = 1 + Math.max(eggFloor[i - 1][x - 1], eggFloor[i][j - x]);
-					if (res < eggFloor[i][j])
-						eggFloor[i][j] = res;
+					res = 1 + Math.max(dp[i - 1][x - 1], dp[i][j - x]);
+					if (res < dp[i][j])
+						dp[i][j] = res;
 				}
 			}
 		}
-		return eggFloor[N][K];
+		return dp[N][K];
 	}
 }
