@@ -1,4 +1,4 @@
-package algorithms.math;
+package datastructures.math;
 
 /******************************************************************************
  *  Compilation:  javac UF.java

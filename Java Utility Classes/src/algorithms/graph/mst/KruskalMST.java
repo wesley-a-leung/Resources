@@ -3,8 +3,8 @@ package algorithms.graph.mst;
 import datastructures.MinPQ;
 import datastructures.Queue;
 import datastructures.graph.WeightedGraph;
+import datastructures.math.UF;
 import datastructures.graph.WeightedEdge;
-import algorithms.math.UF;
 
 /**
  *  The {@code KruskalMST} class represents a data type for computing a

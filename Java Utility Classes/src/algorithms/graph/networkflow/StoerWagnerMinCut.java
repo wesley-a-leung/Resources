@@ -5,7 +5,7 @@ import datastructures.graph.WeightedGraph;
 import datastructures.graph.WeightedEdge;
 import datastructures.graph.networkflow.FlowEdge;
 import datastructures.graph.networkflow.FlowNetwork;
-import algorithms.math.UF;
+import datastructures.math.UF;
 
 /******************************************************************************
  *  Compilation:  javac GlobalMincut.java

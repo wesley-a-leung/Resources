@@ -3,8 +3,8 @@ package algorithms.graph.mst;
 import datastructures.IndexMinPQ;
 import datastructures.Queue;
 import datastructures.graph.WeightedGraph;
+import datastructures.math.UF;
 import datastructures.graph.WeightedEdge;
-import algorithms.math.UF;
 
 /******************************************************************************
  *  Compilation:  javac PrimMST.java
