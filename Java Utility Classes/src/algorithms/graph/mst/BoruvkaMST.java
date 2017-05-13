@@ -2,8 +2,8 @@ package algorithms.graph.mst;
 
 import datastructures.Bag;
 import datastructures.graph.WeightedGraph;
+import datastructures.math.UF;
 import datastructures.graph.WeightedEdge;
-import algorithms.math.UF;
 
 /**
  *  The {@code BoruvkaMST} class represents a data type for computing a
