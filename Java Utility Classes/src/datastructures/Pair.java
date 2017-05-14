@@ -32,7 +32,7 @@ public class Pair<Item, Item2> {
 	
     @Override
     public int hashCode() {
-        return 31 * (first.hashCode() + second.hashCode());
+        return 31 * first.hashCode() + second.hashCode();
     }
 	
     @Override
