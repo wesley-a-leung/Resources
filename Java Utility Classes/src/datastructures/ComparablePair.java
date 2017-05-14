@@ -32,7 +32,7 @@ public class ComparablePair<Item extends Comparable<Item>, Item2 extends Compara
 	
     @Override
     public int hashCode() {
-        return 31 * (first.hashCode() + second.hashCode());
+        return 31 * first.hashCode() + second.hashCode();
     }
 	
     @Override
