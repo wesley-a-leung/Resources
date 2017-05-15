@@ -54,19 +54,19 @@ public class Mo {
 	public int query(int i) {
 		return ans[i];
 	}
-
+	
 	private void update(int i) {
 		cnt[i]++;
 		if (cnt[i] == 1)
 			res++;
 	}
-
+	
 	private void remove(int i) {
 		cnt[i]--;
 		if (cnt[i] == 0)
 			res--;
 	}
-
+	
 	public class Query implements Comparable<Query> {
 		int l, r, index;
 
@@ -75,7 +75,7 @@ public class Mo {
 			this.r = r;
 			this.index = index;
 		}
-
+		
 		@Override
 		public int compareTo(Query o) {
 			if ((l - 1) / sz != (o.l - 1) / sz)
