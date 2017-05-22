@@ -1,12 +1,11 @@
 package algorithms.dp;
 
-public class CoinChange {
-	
+public class MinimumCoinChange {
 	// This class should not be instantiated
-	private CoinChange() {}
+	private MinimumCoinChange() {}
 	
 	/**
-	 * Static method to determine the number of ways to make change
+	 * Static method to determine the minimum number of coins to make change
 	 * for {@code N} dollars given the coin values specified in the
 	 * {@code coins} array. Each coin can be used an infinite amount
 	 * of times.
@@ -19,14 +18,20 @@ public class CoinChange {
 	 * 
 	 * @param N      dollars
 	 * @param coins  array of coin values
-	 * @return       the number of ways to make change
+	 * @return       the minimum number of coins to make change
 	 */
 	public static int solve(int N, int[] coins) {
 		int[] dp = new int[N + 1];
-		dp[0] = 1;
-		for (int i = 0; i < coins.length; i++) {
-			for (int j = 1; j <= N; j++) {
-				if (coins[i] <= j) dp[j] += dp[j - coins[i]];
+		dp[0] = 0;
+		for (int i = 1; i <= N; i++) {
+			dp[i] = Integer.MAX_VALUE;
+		}
+		for (int i = 1; i <= N; i++) {
+			for (int j = 0; j < coins.length; j++) {
+				if (coins[j] <= i) {
+					int prev = dp[i - coins[j]];
+					if (prev != Integer.MAX_VALUE && prev + 1 < dp[i]) dp[i] = prev + 1;
+				}
 			}
 		}
 		return dp[N];
