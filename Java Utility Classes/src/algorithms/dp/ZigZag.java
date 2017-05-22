@@ -9,10 +9,10 @@ public class ZigZag {
 	 * A zigzag sequence alternates between increasing and decreasing (it can start
 	 * with either).
 	 * 
-	 * Take time proportional to <em>N</em> where N is the length of the original
+	 * Takes time proportional to <em>N</em> where N is the length of the original
 	 * sequence.
 	 * 
-	 * Take space proportional to 2<em>N</em>.
+	 * Takes space proportional to 2<em>N</em>.
 	 * 
 	 * @param sequence the array of integers to check
 	 * @return the length of the longest zigzag subsequence

@@ -8,10 +8,10 @@ public class MaximumNonConsecutiveSubsequence {
 	 * Static method for determining the maximum value of a non consecutive subsequence
 	 * (no 2 elements chosen may be next to each other.
 	 * 
-	 * Take time proportional to <em>N</em> where N is the length of the original
+	 * Takes time proportional to <em>N</em> where N is the length of the original
 	 * sequence.
 	 * 
-	 * Take space proportional to <em>N</em>.
+	 * Takes space proportional to <em>N</em>.
 	 * 
 	 * @param sequence the array of integers to check
 	 * @return the maximum value of a non consecutive subsequence

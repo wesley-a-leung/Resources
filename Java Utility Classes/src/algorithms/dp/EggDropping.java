@@ -13,7 +13,7 @@ public class EggDropping {
 	 * Takes time proportional to <em>NK</em> where <em>N</em> is the number of 
 	 * eggs and <em>K</em> is the number of floors.
 	 * 
-	 * Take space proportional to <em>NK</em>.
+	 * Takes space proportional to <em>NK</em>.
 	 * 
 	 * @param N number of Eggs
 	 * @param K number of Floors
