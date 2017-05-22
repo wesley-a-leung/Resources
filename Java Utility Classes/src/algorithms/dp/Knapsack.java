@@ -13,7 +13,7 @@ public class Knapsack {
 	 * Takes time proportional to <em>NM</em> where <em>N</em> is the number of 
 	 * items and <em>M</em> is the size of the knapsack.
 	 * 
-	 * Take space proportional to <em>M</em>.
+	 * Takes space proportional to <em>M</em>.
 	 * 
 	 * @param M Size of the knapsack
 	 * @param weight Array of the weights of the items

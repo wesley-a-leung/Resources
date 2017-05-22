@@ -11,11 +11,11 @@ public class CoinChange {
 	 * {@code coins} array. Each coin can be used an infinite amount
 	 * of times.
 	 * 
-	 * Take time proportional to <em>NM</em> where <em>N</em> is the
+	 * Takes time proportional to <em>NM</em> where <em>N</em> is the
 	 * amount of dollars and <em>M</em> is the number of different
 	 * coin values.
 	 * 
-	 * Take space proportional to <em>N</em>.
+	 * Takes space proportional to <em>N</em>.
 	 * 
 	 * @param N      dollars
 	 * @param coins  array of coin values
