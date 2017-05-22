@@ -6,7 +6,7 @@ public class MaximumNonConsecutiveSubsequence {
 	
 	/** 
 	 * Static method for determining the maximum value of a non consecutive subsequence
-	 * (no 2 elements chosen may be next to each other.
+	 * (no 2 elements chosen may be next to each other).
 	 * 
 	 * Takes time proportional to <em>N</em> where N is the length of the original
 	 * sequence.
@@ -27,5 +27,5 @@ public class MaximumNonConsecutiveSubsequence {
 																	// then we should skip index i and use i-1 instead
 		} // for i
 		return dp[sequence.length-1];
-	} // OptimiseDonationsDP method
+	}
 }
