@@ -21,29 +21,26 @@ public class MinimumEditDistanceX {
 		
 		int[][] dp = new int[2][len2 + 1];
 		
-		int s = 1;
-		
 		for (int i = 0; i <= len1; i++) {
-			s = 1 - s;
 			for (int j = 0; j <= len2; j++) {
 				if (i == 0) {
-					dp[s][j] = j;
+					dp[i%2][j] = j;
 				} else if (j == 0) {
-					dp[s][j] = i;
+					dp[i%2][j] = i;
 				} else if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
-					dp[s][j] = dp[1 - s][j - 1];
+					dp[i%2][j] = dp[1 - i%2][j - 1];
 				} else {
-					int replace = dp[1 - s][j - 1] + 1;
-					int insert = dp[1 - s][j] + 1;
-					int delete = dp[s][j - 1] + 1;
+					int replace = dp[1 - i%2][j - 1] + 1;
+					int insert = dp[1 - i%2][j] + 1;
+					int delete = dp[i%2][j - 1] + 1;
 	 
 					int min = replace > insert ? insert : replace;
 					min = delete > min ? min : delete;
-					dp[s][j] = min;
+					dp[i%2][j] = min;
 				}
 			}
 		}
-		return dp[s][len2];
+		return dp[len1%2][len2];
 	}
 }
 
