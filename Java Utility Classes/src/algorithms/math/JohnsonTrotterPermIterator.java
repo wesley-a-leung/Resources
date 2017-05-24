@@ -2,6 +2,10 @@ package algorithms.math;
 
 import java.util.Iterator;
 
+/**
+ * 0-based integer permutations iterator 
+ *
+ */
 public class JohnsonTrotterPermIterator implements Iterator<int[]> {
 	private int[] next = null;
 	private final int n;
