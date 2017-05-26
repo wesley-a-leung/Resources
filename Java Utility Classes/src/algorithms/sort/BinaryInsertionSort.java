@@ -71,7 +71,7 @@ public class BinaryInsertionSort {
                 a[j] = a[j-1];
             a[lo] = v;
         }
-        assert isSorted(a);
+        // assert isSorted(a);
     }
 
 
