@@ -41,12 +41,12 @@ using namespace std;
 struct FenwickTree {
 private:
 	int* array;
-	int length;
+	int size;
 
 public:
 	FenwickTree(int size) {
-		this->length = size + 1;
-		array = new int[length];
+		this->size = size;
+		array = new int[size + 1];
 	}
 
     /**
@@ -91,13 +91,13 @@ public:
      * @param  value value
      */
 	void update(int ind, int value) {
-		for (int x = ind; x < length; x += (x & -x)) {
+		for (int x = ind; x <= size; x += (x & -x)) {
 			array[x] += value;
 		}
 	}
 
-	int size() {
-		return length - 1;
+	int getSize() {
+		return size;
 	}
 };
 
