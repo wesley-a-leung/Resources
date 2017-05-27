@@ -1,35 +1,7 @@
 package datastructures.graph;
 
-/******************************************************************************
- *  Compilation:  javac Digraph.java
- *  Execution:    java Digraph filename.txt
- *  Dependencies: Bag.java In.java StdOut.java
- *  Data files:   http://algs4.cs.princeton.edu/42digraph/tinyDG.txt
- *                http://algs4.cs.princeton.edu/42digraph/mediumDG.txt
- *                http://algs4.cs.princeton.edu/42digraph/largeDG.txt  
- *
- *  A graph, implemented using an array of lists.
- *  Parallel edges and self-loops are permitted.
- *
- *  % java Digraph tinyDG.txt
- *  13 vertices, 22 edges
- *  0: 5 1 
- *  1: 
- *  2: 0 3 
- *  3: 5 2 
- *  4: 3 2 
- *  5: 4 
- *  6: 9 4 8 0 
- *  7: 6 9
- *  8: 6 
- *  9: 11 10 
- *  10: 12 
- *  11: 4 12 
- *  12: 9 
- *  
- ******************************************************************************/
+import java.util.HashSet;
 
-import datastructures.Bag;
 import datastructures.Stack;
 
 /**
@@ -51,6 +23,7 @@ import datastructures.Stack;
  *
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
+ *  @author Wesley Leung
  */
 
 public class Digraph {
@@ -58,7 +31,8 @@ public class Digraph {
 
     private final int V;           // number of vertices in this digraph
     private int E;                 // number of edges in this digraph
-    private Bag<Integer>[] adj;    // adj[v] = adjacency list for vertex v
+    private HashSet<Integer>[] adj;    // adj[v] = adjacency list for vertex v
+    private HashSet<DirectedEdge> removed;
     private int[] indegree;        // indegree[v] = indegree of vertex v
     
     /**
@@ -72,9 +46,10 @@ public class Digraph {
         this.V = V;
         this.E = 0;
         indegree = new int[V];
-        adj = (Bag<Integer>[]) new Bag[V];
+        adj = (HashSet<Integer>[]) new HashSet[V];
+        removed = new HashSet<DirectedEdge>();
         for (int v = 0; v < V; v++) {
-            adj[v] = new Bag<Integer>();
+            adj[v] = new HashSet<Integer>();
         }
     }
 
@@ -138,6 +113,41 @@ public class Digraph {
         adj[v].add(w);
         indegree[w]++;
         E++;
+    }
+    
+    /**
+     * Removes the directed edge from {@code e} from this edge-weighted digraph.
+     *
+     * @param  v the start vertex in the edge
+     * @param  w the end vertex in the edge
+     * @throws IllegalArgumentException unless endpoints of edge are between {@code 0}
+     *         and {@code V-1}
+     */
+    public void removeEdge(int v, int w) {
+        validateVertex(v);
+        validateVertex(w);
+        removed.add(new DirectedEdge(v, w));
+        adj[v].remove(w);
+        indegree[w]--;
+        E--;
+    }
+    
+    /**
+     * Restores all the edges removed from this edge-weighted digraph.
+     */
+    public void restoreEdges() {
+    	for (DirectedEdge e: removed) {
+            addEdge(e.from, e.to);
+    	}
+    	removed.clear();
+    }
+    
+    /**
+     * Clears the edges removed from this digraph so they can no longer
+     * be restored
+     */
+    public void clearRemoved() {
+    	removed.clear();
     }
 
     /**
@@ -210,5 +220,30 @@ public class Digraph {
             s.append(NEWLINE);
         }
         return s.toString();
+    }
+    
+    public static class DirectedEdge {
+    	public int from;
+    	public int to;
+    	
+    	public DirectedEdge(int v, int w) {
+    		this.from = v;
+    		this.to= w;
+    	}
+    	
+		@Override
+		public int hashCode() {
+			return 31 * from + to;
+		}
+    		
+		@Override
+		public boolean equals(Object o) {
+			if (o == this) return true;
+		    if (!(o instanceof DirectedEdge)) {
+		        return false;
+		    }
+		    DirectedEdge e = (DirectedEdge) o;
+			return e.from == from && e.to == to;
+		}
     }
 }

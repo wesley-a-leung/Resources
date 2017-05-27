@@ -6,7 +6,7 @@ import java.util.HashSet;
 import datastructures.MinPQ;
 import datastructures.graph.WeightedEdge;
 import datastructures.graph.WeightedPath;
-import datastructures.graph.VariableWeightedGraph;
+import datastructures.graph.WeightedGraph;
 
 /**
  *  The {@code YenKSP} class represents a data type for solving the
@@ -17,12 +17,12 @@ import datastructures.graph.VariableWeightedGraph;
 public class YenKSP {
 	private final int source;
 	private final int sink;
-	private VariableWeightedGraph G;
+	private WeightedGraph G;
 	private final int V;
 	private ArrayList<WeightedPath> paths;
 	MinPQ<WeightedPath> pq;
 	
-	public YenKSP(VariableWeightedGraph G, int source, int sink) {
+	public YenKSP(WeightedGraph G, int source, int sink) {
 		this.G = G;
 		this.V = G.V();
 		this.source = source;
@@ -31,7 +31,7 @@ public class YenKSP {
 		validateVertex(sink);
 		this.paths = new ArrayList<WeightedPath>();
 		pq = new MinPQ<WeightedPath>();
-		paths.add(new WeightedPath(new DijkstraUndirectedVariableSP(G, source).pathList(sink)));
+		paths.add(new WeightedPath(new DijkstraUndirectedSP(G, source).pathList(sink)));
 	}
 	
 	private void find(int k) {
@@ -66,7 +66,7 @@ public class YenKSP {
 				}
 				last = e.other(last);
 			}
-			DijkstraUndirectedVariableSP sp = new DijkstraUndirectedVariableSP(G, spurNode);
+			DijkstraUndirectedSP sp = new DijkstraUndirectedSP(G, spurNode);
 			WeightedPath spurPath = new WeightedPath(sp.pathList(sink));
 			WeightedPath totalPath = new WeightedPath();
 			totalPath.addAll(rootPath);

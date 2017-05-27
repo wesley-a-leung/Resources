@@ -5,7 +5,7 @@ import java.util.HashSet;
 
 import datastructures.MinPQ;
 import datastructures.graph.DirectedWeightedPath;
-import datastructures.graph.VariableWeightedDigraph;
+import datastructures.graph.WeightedDigraph;
 import datastructures.graph.DirectedWeightedEdge;
 
 /**
@@ -17,12 +17,12 @@ import datastructures.graph.DirectedWeightedEdge;
 public class YenDirectedKSP {
 	private final int source;
 	private final int sink;
-	private VariableWeightedDigraph G;
+	private WeightedDigraph G;
 	private final int V;
 	private ArrayList<DirectedWeightedPath> paths;
 	MinPQ<DirectedWeightedPath> pq;
 	
-	public YenDirectedKSP(VariableWeightedDigraph G, int source, int sink) {
+	public YenDirectedKSP(WeightedDigraph G, int source, int sink) {
 		this.G = G;
 		this.V = G.V();
 		this.source = source;
@@ -31,7 +31,7 @@ public class YenDirectedKSP {
 		validateVertex(sink);
 		this.paths = new ArrayList<DirectedWeightedPath>();
 		pq = new MinPQ<DirectedWeightedPath>();
-		paths.add(new DirectedWeightedPath(new DijkstraVariableSP(G, source).pathList(sink)));
+		paths.add(new DirectedWeightedPath(new DijkstraSP(G, source).pathList(sink)));
 	}
 	
 	private void find(int k) {
@@ -66,7 +66,7 @@ public class YenDirectedKSP {
 				}
 				last = e.to();
 			}
-			DijkstraVariableSP sp = new DijkstraVariableSP(G, spurNode);
+			DijkstraSP sp = new DijkstraSP(G, spurNode);
 			DirectedWeightedPath spurPath = new DirectedWeightedPath(sp.pathList(sink));
 			DirectedWeightedPath totalPath = new DirectedWeightedPath();
 			totalPath.addAll(rootPath);
