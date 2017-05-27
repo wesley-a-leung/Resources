@@ -1,1 +1,0 @@
-/java/re/jdk/1.5.0/latest/binaries/solaris-sparc/bin/javac -classpath /java/re/jdk/1.5.0/latest/binaries/solaris-sparc/lib/tools.jar ToDoTaglet.java UnderlineTaglet.java ToDoTagletWithInline.java $1

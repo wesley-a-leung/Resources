@@ -1,2 +1,0 @@
-UML Sequence diagram shows how a client and a server normally make a TCP
-connection with ServerSocket and Socket classes.

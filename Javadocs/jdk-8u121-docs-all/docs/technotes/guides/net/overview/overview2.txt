@@ -1,2 +1,0 @@
-UML Sequence diagram show how a datagram packet is sent with
-DatagramPacket and DatagramSocket classes.

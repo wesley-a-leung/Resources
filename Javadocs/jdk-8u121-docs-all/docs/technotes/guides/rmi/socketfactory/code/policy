@@ -1,8 +1,0 @@
-/*
- * Only grant permissions to the local class path (the current directory).
- */
-grant codeBase "file:." {
-
-    permission java.net.SocketPermission "*:1024-", "connect,accept";
-
-};

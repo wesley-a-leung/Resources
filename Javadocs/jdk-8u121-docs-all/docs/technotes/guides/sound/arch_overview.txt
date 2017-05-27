@@ -1,1 +1,0 @@
-The top interface is Line. Subinterfaces of Line are Port, Mixer, DataLine and GroupLine. Subinterfaces of DataLine are SourceDataLine, TargetDataLine and Clip.
