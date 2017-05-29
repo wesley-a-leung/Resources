@@ -1,5 +1,7 @@
 package algorithms.search;
 
+import java.util.List;
+
 import datastructures.Pair;
 
 /**
@@ -135,6 +137,125 @@ public class BinarySearch {
     }
     
     public static Pair<Integer, Integer> equalRange(Comparable[] a, int start, int end, Comparable key) {
+    	return new Pair<Integer, Integer>(lowerBound(a, start, end, key), upperBound(a, start, end, key));
+    }
+    
+    //*********************** LIST METHODS ********************************//
+    
+    /**
+     * Returns the index of the specified key in the specified list.
+     *
+     * @param  a the list, must be sorted in ascending order
+     * @param  start the inclusive start index
+     * @return index of key in list {@code a} if present; {@code -1} otherwise
+     */
+    public static int indexOf(List<Comparable> a, Comparable key) {
+    	return indexOf(a, 0, a.size(), key);
+    }
+    
+    /**
+     * Returns the index of the specified key in the specified list between indices {@code start} (inclusive)
+     * and {@code end} (exclusive).
+     *
+     * @param  a the list, must be sorted in ascending order
+     * @param  start the inclusive start index
+     * @param  end the exclusive end index
+     * @param  key the search key
+     * @return index of key in list {@code a} if present; {@code -1} otherwise
+     */
+    public static int indexOf(List<Comparable> a, int start, int end, Comparable key) {
+        int lo = start;
+        int hi = end - 1;
+        while (lo <= hi) {
+            // Key is in a[lo..hi] or not present.
+            int mid = lo + (hi - lo) / 2;
+            int cmp = key.compareTo(a.get(mid));
+            if      (cmp < 0) hi = mid - 1;
+            else if (cmp > 0) lo = mid + 1;
+            else return mid;
+        }
+        return -1;
+    }
+    
+    /**
+     * Returns the index of the first element that is not less than the key 
+     * in the specified list.
+     *
+     * @param  a the list, must be sorted in ascending order
+     * @param  key the search key
+     * @return index of first element not less than key in list {@code a};
+     * {@code a.size()} if key is larger than the largest element
+     */
+    public static int lowerBound(List<Comparable> a, Comparable key) {
+    	return lowerBound(a, 0, a.size(), key);
+    }
+    
+    /**
+     * Returns the index of the first element that is not less than the key 
+     * in the specified list between indices {@code start} (inclusive)
+     * and {@code end} (exclusive).
+     *
+     * @param  a the list, must be sorted in ascending order
+     * @param  start the inclusive start index
+     * @param  end the exclusive end index
+     * @param  key the search key
+     * @return index of first element not less than key in list {@code a};
+     * {@code end} if key is larger than the largest element
+     */
+    public static int lowerBound(List<Comparable> a, int start, int end, Comparable key) {
+    	int lo = start;
+    	int hi = end;
+    	while (lo < hi) {
+    		int mid = lo + (hi - lo) / 2;
+    		int cmp = key.compareTo(a.get(mid));
+    		if (cmp <= 0) hi = mid;
+    		else lo = mid + 1;
+    	}
+    	return lo;
+    }
+    
+    /**
+     * Returns the index of the first element that is greater than the key 
+     * in the specified list.
+     *
+     * @param  a the list, must be sorted in ascending order
+     * @param  key the search key
+     * @return index of first element greater than key in list {@code a};
+     * {@code a.size()} if key is larger than or equal to the largest element
+     */
+    public static int upperBound(List<Comparable> a, Comparable key) {
+    	return upperBound(a, 0, a.size(), key);
+    }
+    
+    /**
+     * Returns the index of the first element that is greater than the key 
+     * in the specified list between indices {@code start} (inclusive)
+     * and {@code end} (exclusive).
+     *
+     * @param  a the list, must be sorted in ascending order
+     * @param  start the inclusive start index
+     * @param  end the exclusive end index
+     * @param  key the search key
+     * @return index of first element greater than key in list {@code a};
+     * {@code end} if key is larger than or equal to the largest element
+     */
+    public static int upperBound(List<Comparable> a, int start, int end, Comparable key) {
+    	int lo = start;
+    	int hi = end;
+    	while (lo < hi) {
+    		int mid = lo + (hi - lo) / 2;
+    		int cmp = key.compareTo(a.get(mid));
+    		if (cmp >= 0) lo = mid + 1;
+    		else hi = mid;
+    	}
+    	return lo;
+    }
+    
+    public static Pair<Integer, Integer> equalRange(List<Comparable> a, Comparable key) {
+    	return equalRange(a, 0, a.size(), key);
+    }
+    
+    public static Pair<Integer, Integer> equalRange(List<Comparable> a, int start, int end, Comparable key) {
     	return new Pair<Integer, Integer>(lowerBound(a, start, end, key), upperBound(a, start, end, key));
     }
 }
