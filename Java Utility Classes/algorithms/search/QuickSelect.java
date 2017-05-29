@@ -24,6 +24,7 @@ public class QuickSelect {
     /**
      * Returns the {@code K}th smallest element 
      * @param a the array to be sorted
+     * @return the {@code K}th smallest element
      */
     public Comparable find (int k, int beg, int end, Comparable[] a) {
 		int i = median(a, beg, end, k);
