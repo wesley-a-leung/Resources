@@ -1,2 +1,2 @@
 # Resources
-Utility Classes and Javadocs
+Utility Classes and PDFs
