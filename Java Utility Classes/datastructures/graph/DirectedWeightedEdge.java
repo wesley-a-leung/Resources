@@ -81,7 +81,9 @@ public class DirectedWeightedEdge {
     
     @Override
     public int hashCode() {
-    	return toString().hashCode();
+    	int result = 31 * v + w;
+    	result = 31 * result + (int) (new Double(weight).hashCode() ^ (new Double(weight).hashCode() >>> 32));
+    	return result;
     }
     
     @Override
