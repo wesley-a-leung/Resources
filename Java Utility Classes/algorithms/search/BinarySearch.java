@@ -1,5 +1,7 @@
 package algorithms.search;
 
+import datastructures.Pair;
+
 /******************************************************************************
  *  Compilation:  javac BinarySearch.java
  *  Execution:    java BinarySearch whitelist.txt < input.txt
@@ -52,7 +54,7 @@ public class BinarySearch {
      * @return index of key in array {@code a} if present; {@code -1} otherwise
      */
     public static int indexOf(Comparable[] a, Comparable key) {
-    	return indexOf(a, key, 0, a.length);
+    	return indexOf(a, 0, a.length, key);
     }
     
     /**
@@ -65,7 +67,7 @@ public class BinarySearch {
      * @param  key the search key
      * @return index of key in array {@code a} if present; {@code -1} otherwise
      */
-    public static int indexOf(Comparable[] a, Comparable key, int start, int end) {
+    public static int indexOf(Comparable[] a, int start, int end, Comparable key) {
         int lo = start;
         int hi = end - 1;
         while (lo <= hi) {
@@ -89,7 +91,7 @@ public class BinarySearch {
      * {@code a.length} if key is larger than the largest element
      */
     public static int lowerBound(Comparable[] a, Comparable key) {
-    	return lowerBound(a, key, 0, a.length);
+    	return lowerBound(a, 0, a.length, key);
     }
     
     /**
@@ -98,13 +100,13 @@ public class BinarySearch {
      * and {@code end} (exclusive).
      *
      * @param  a the array, must be sorted in ascending order
-     * @param  key the search key
      * @param  start the inclusive start index
      * @param  end the exclusive end index
+     * @param  key the search key
      * @return index of first element not less than key in array {@code a};
      * {@code end} if key is larger than the largest element
      */
-    public static int lowerBound(Comparable[] a, Comparable key, int start, int end) {
+    public static int lowerBound(Comparable[] a, int start, int end, Comparable key) {
     	int lo = start;
     	int hi = end;
     	while (lo < hi) {
@@ -126,7 +128,7 @@ public class BinarySearch {
      * {@code a.length} if key is larger than or equal to the largest element
      */
     public static int upperBound(Comparable[] a, Comparable key) {
-    	return upperBound(a, key, 0, a.length);
+    	return upperBound(a, 0, a.length, key);
     }
     
     /**
@@ -135,13 +137,13 @@ public class BinarySearch {
      * and {@code end} (exclusive).
      *
      * @param  a the array, must be sorted in ascending order
-     * @param  key the search key
      * @param  start the inclusive start index
      * @param  end the exclusive end index
+     * @param  key the search key
      * @return index of first element greater than key in array {@code a};
      * {@code end} if key is larger than or equal to the largest element
      */
-    public static int upperBound(Comparable[] a, Comparable key, int start, int end) {
+    public static int upperBound(Comparable[] a, int start, int end, Comparable key) {
     	int lo = start;
     	int hi = end;
     	while (lo < hi) {
@@ -151,6 +153,14 @@ public class BinarySearch {
     		else hi = mid;
     	}
     	return lo;
+    }
+    
+    public static Pair<Integer, Integer> equalRange(Comparable[] a, Comparable key) {
+    	return equalRange(a, 0, a.length, key);
+    }
+    
+    public static Pair<Integer, Integer> equalRange(Comparable[] a, int start, int end, Comparable key) {
+    	return new Pair<Integer, Integer>(lowerBound(a, start, end, key), upperBound(a, start, end, key));
     }
 
 }
