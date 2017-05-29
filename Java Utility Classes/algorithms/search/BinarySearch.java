@@ -48,19 +48,109 @@ public class BinarySearch {
      * Returns the index of the specified key in the specified array.
      *
      * @param  a the array, must be sorted in ascending order
+     * @param  start the inclusive start index
+     * @return index of key in array {@code a} if present; {@code -1} otherwise
+     */
+    public static int indexOf(Comparable[] a, Comparable key) {
+    	return indexOf(a, key, 0, a.length);
+    }
+    
+    /**
+     * Returns the index of the specified key in the specified array between indices {@code start} (inclusive)
+     * and {@code end} (exclusive).
+     *
+     * @param  a the array, must be sorted in ascending order
+     * @param  start the inclusive start index
+     * @param  end the exclusive end index
      * @param  key the search key
      * @return index of key in array {@code a} if present; {@code -1} otherwise
      */
-    public static Comparable indexOf(Comparable[] a, Comparable key) {
-        int lo = 0;
-        int hi = a.length - 1;
+    public static int indexOf(Comparable[] a, Comparable key, int start, int end) {
+        int lo = start;
+        int hi = end - 1;
         while (lo <= hi) {
             // Key is in a[lo..hi] or not present.
             int mid = lo + (hi - lo) / 2;
-            if      (key.compareTo(a[mid]) < 0) hi = mid - 1;
-            else if (key.compareTo(a[mid]) > 0) lo = mid + 1;
+            int cmp = key.compareTo(a[mid]);
+            if      (cmp < 0) hi = mid - 1;
+            else if (cmp > 0) lo = mid + 1;
             else return mid;
         }
         return -1;
     }
+    
+    /**
+     * Returns the index of the first element that is not less than the key 
+     * in the specified array.
+     *
+     * @param  a the array, must be sorted in ascending order
+     * @param  key the search key
+     * @return index of first element not less than key in array {@code a};
+     * {@code a.length} if key is larger than the largest element
+     */
+    public static int lowerBound(Comparable[] a, Comparable key) {
+    	return lowerBound(a, key, 0, a.length);
+    }
+    
+    /**
+     * Returns the index of the first element that is not less than the key 
+     * in the specified array between indices {@code start} (inclusive)
+     * and {@code end} (exclusive).
+     *
+     * @param  a the array, must be sorted in ascending order
+     * @param  key the search key
+     * @param  start the inclusive start index
+     * @param  end the exclusive end index
+     * @return index of first element not less than key in array {@code a};
+     * {@code end} if key is larger than the largest element
+     */
+    public static int lowerBound(Comparable[] a, Comparable key, int start, int end) {
+    	int lo = start;
+    	int hi = end;
+    	while (lo < hi) {
+    		int mid = lo + (hi - lo) / 2;
+    		int cmp = key.compareTo(a[mid]);
+    		if (cmp <= 0) hi = mid;
+    		else lo = mid + 1;
+    	}
+    	return lo;
+    }
+    
+    /**
+     * Returns the index of the first element that is greater than the key 
+     * in the specified array.
+     *
+     * @param  a the array, must be sorted in ascending order
+     * @param  key the search key
+     * @return index of first element greater than key in array {@code a};
+     * {@code a.length} if key is larger than or equal to the largest element
+     */
+    public static int upperBound(Comparable[] a, Comparable key) {
+    	return upperBound(a, key, 0, a.length);
+    }
+    
+    /**
+     * Returns the index of the first element that is greater than the key 
+     * in the specified array between indices {@code start} (inclusive)
+     * and {@code end} (exclusive).
+     *
+     * @param  a the array, must be sorted in ascending order
+     * @param  key the search key
+     * @param  start the inclusive start index
+     * @param  end the exclusive end index
+     * @return index of first element greater than key in array {@code a};
+     * {@code end} if key is larger than or equal to the largest element
+     */
+    public static int upperBound(Comparable[] a, Comparable key, int start, int end) {
+    	int lo = start;
+    	int hi = end;
+    	while (lo < hi) {
+    		int mid = lo + (hi - lo) / 2;
+    		int cmp = key.compareTo(a[mid]);
+    		if (cmp >= 0) lo = mid + 1;
+    		else hi = mid;
+    	}
+    	return lo;
+    }
+
 }
