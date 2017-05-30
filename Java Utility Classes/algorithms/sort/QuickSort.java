@@ -36,7 +36,7 @@ package algorithms.sort;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class QuickXSort {
+public class QuickSort {
 
     // cutoff to insertion sort, must be >= 1
     private static final int INSERTION_SORT_CUTOFF = 8;
@@ -45,7 +45,7 @@ public class QuickXSort {
     private static final int MEDIAN_OF_3_CUTOFF = 40;
 
     // This class should not be instantiated.
-    private QuickXSort() { }
+    private QuickSort() { }
 
     /**
      * Rearranges the array in ascending order, using the natural order.
