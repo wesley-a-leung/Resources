@@ -45,11 +45,11 @@ import java.util.Comparator;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class MergeXSort {
+public class MergeSort {
     private static final int CUTOFF = 7;  // cutoff to insertion sort
 
     // This class should not be instantiated.
-    private MergeXSort() { }
+    private MergeSort() { }
 
     private static void merge(Comparable[] src, Comparable[] dst, int lo, int mid, int hi) {
 
