@@ -93,7 +93,7 @@ public class BoyerMooreStringSearch {
      *
      * @param  txt the text string
      * @return the index of the first occurrence of the pattern string
-     *         in the text string; n if no such match
+     *         in the text string; -1 if no such match
      */
     public int search(String txt) {
         int m = pat.length();
@@ -119,7 +119,7 @@ public class BoyerMooreStringSearch {
      *
      * @param  text the text string
      * @return the index of the first occurrence of the pattern string
-     *         in the text string; n if no such match
+     *         in the text string; -1 if no such match
      */
     public int search(char[] text) {
         int m = pattern.length;

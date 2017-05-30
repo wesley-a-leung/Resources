@@ -103,7 +103,7 @@ public class KMPStringSearch {
      *
      * @param  txt the text string
      * @return the index of the first occurrence of the pattern string
-     *         in the text string; N if no such match
+     *         in the text string; -1 if no such match
      */
     public int search(String txt) {
 
@@ -124,7 +124,7 @@ public class KMPStringSearch {
      *
      * @param  text the text string
      * @return the index of the first occurrence of the pattern string
-     *         in the text string; N if no such match
+     *         in the text string; -1 if no such match
      */
     public int search(char[] text) {
 
