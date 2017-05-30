@@ -3,7 +3,7 @@ package datastructures.math;
 import java.util.Arrays;
 
 /**
- * The {@code SegmentTree} class is an structure for efficient search of cummulative data.
+ * The {@code SegmentTree} class is an structure for efficient search of cumulative data.
  * It performs  Range Minimum/Maximum Query, Range Sum Query, and Greatest Common Divisor Query in O(log(n)) time.
  * It can be easily customizable to support Range Multiplication Query etc.
  * <p>

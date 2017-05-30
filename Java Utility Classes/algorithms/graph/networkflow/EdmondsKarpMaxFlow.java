@@ -5,12 +5,12 @@ import datastructures.graph.networkflow.FlowEdge;
 import datastructures.graph.networkflow.FlowNetwork;
 
 /**
- *  The {@code FordFulkerson} class represents a data type for computing a
+ *  The {@code EdmondsKarpMaxFlow} class represents a data type for computing a
  *  <em>maximum st-flow</em> and <em>minimum st-cut</em> in a flow
  *  network.
  *  <p>
  *  This implementation uses the <em>Ford-Fulkerson</em> algorithm with
- *  the <em>shortest augmenting path</em> heuristic.
+ *  the <em>Edmonds-Karp shortest augmenting path</em> heuristic.
  *  The constructor takes time proportional to <em>E V</em> (<em>E</em> + <em>V</em>)
  *  in the worst case and extra space (not including the network)
  *  proportional to <em>V</em>, where <em>V</em> is the number of vertices
@@ -31,7 +31,7 @@ import datastructures.graph.networkflow.FlowNetwork;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class FordFulkersonMaxFlow {
+public class EdmondsKarpMaxFlow {
     private static final double FLOATING_POINT_EPSILON = 1E-11;
 
     private final int V;          // number of vertices
@@ -51,7 +51,7 @@ public class FordFulkersonMaxFlow {
      * @throws IllegalArgumentException if {@code s == t}
      * @throws IllegalArgumentException if initial flow is infeasible
      */
-    public FordFulkersonMaxFlow(FlowNetwork G, int s, int t) {
+    public EdmondsKarpMaxFlow(FlowNetwork G, int s, int t) {
         V = G.V();
         validate(s);
         validate(t);
