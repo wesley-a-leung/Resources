@@ -111,7 +111,7 @@ public class RabinKarpStringSearch {
      *
      * @param  txt the text string
      * @return the index of the first occurrence of the pattern string
-     *         in the text string; n if no such match
+     *         in the text string; -1 if no such match
      */
     public int search(String txt) {
         int n = txt.length(); 
