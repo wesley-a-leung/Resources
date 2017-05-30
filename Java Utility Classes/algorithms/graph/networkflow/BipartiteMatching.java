@@ -98,7 +98,7 @@ public class BipartiteMatching {
         }
 
         // solve the maximum flow problem
-        FordFulkersonMaxFlow maxflow = new FordFulkersonMaxFlow(H, s, t);
+        EdmondsKarpMaxFlow maxflow = new EdmondsKarpMaxFlow(H, s, t);
 
         // get the cardinality of the maximum matching (guaranteed to be an integer)
         cardinality = (int) maxflow.value();

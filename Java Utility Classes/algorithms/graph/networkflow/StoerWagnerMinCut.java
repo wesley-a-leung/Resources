@@ -269,7 +269,7 @@ public class StoerWagnerMinCut {
                 F.addEdge(new FlowEdge(v, w, e.weight()));
                 F.addEdge(new FlowEdge(w, v, e.weight()));
             }
-            FordFulkersonMaxFlow maxflow = new FordFulkersonMaxFlow(F, s, t);
+            EdmondsKarpMaxFlow maxflow = new EdmondsKarpMaxFlow(F, s, t);
             value = Math.min(value, maxflow.value());
         }
         if (Math.abs(weight - value) > FLOATING_POINT_EPSILON) {
