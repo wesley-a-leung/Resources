@@ -222,28 +222,26 @@ public class Digraph {
         return s.toString();
     }
     
-    public static class DirectedEdge {
-    	public int from;
-    	public int to;
-    	
-    	public DirectedEdge(int v, int w) {
-    		this.from = v;
-    		this.to= w;
-    	}
-    	
+	public class DirectedEdge {
+		public int from;
+		public int to;
+
+		public DirectedEdge(int v, int w) {
+			this.from = v;
+			this.to = w;
+		}
+
 		@Override
 		public int hashCode() {
 			return 31 * from + to;
 		}
-    		
+
 		@Override
 		public boolean equals(Object o) {
 			if (o == this) return true;
-		    if (!(o instanceof DirectedEdge)) {
-		        return false;
-		    }
-		    DirectedEdge e = (DirectedEdge) o;
+			if (!(o instanceof DirectedEdge)) return false;
+			DirectedEdge e = (DirectedEdge) o;
 			return e.from == from && e.to == to;
 		}
-    }
+	}
 }
