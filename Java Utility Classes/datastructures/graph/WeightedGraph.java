@@ -1,35 +1,11 @@
 package datastructures.graph;
 
-import java.util.HashSet;
+import datastructures.Bag;
 import datastructures.Stack;
 
-/******************************************************************************
- *  Compilation:  javac EdgeWeightedGraph.java
- *  Execution:    java EdgeWeightedGraph filename.txt
- *  Dependencies: Bag.java Edge.java In.java StdOut.java
- *  Data files:   http://algs4.cs.princeton.edu/43mst/tinyEWG.txt
- *                http://algs4.cs.princeton.edu/43mst/mediumEWG.txt
- *                http://algs4.cs.princeton.edu/43mst/largeEWG.txt
- *
- *  An edge-weighted undirected graph, implemented using adjacency lists.
- *  Parallel edges and self-loops are permitted.
- *
- *  % java EdgeWeightedGraph tinyEWG.txt 
- *  8 16
- *  0: 6-0 0.58000  0-2 0.26000  0-4 0.38000  0-7 0.16000  
- *  1: 1-3 0.29000  1-2 0.36000  1-7 0.19000  1-5 0.32000  
- *  2: 6-2 0.40000  2-7 0.34000  1-2 0.36000  0-2 0.26000  2-3 0.17000  
- *  3: 3-6 0.52000  1-3 0.29000  2-3 0.17000  
- *  4: 6-4 0.93000  0-4 0.38000  4-7 0.37000  4-5 0.35000  
- *  5: 1-5 0.32000  5-7 0.28000  4-5 0.35000  
- *  6: 6-4 0.93000  6-0 0.58000  3-6 0.52000  6-2 0.40000
- *  7: 2-7 0.34000  1-7 0.19000  0-7 0.16000  5-7 0.28000  4-7 0.37000
- *
- ******************************************************************************/
-
 /**
- *  The {@code WeightedGraph} class represents a variable/mutable edge-weighted
- *  graph of vertices named 0 through <em>V</em> - 1, where each
+ *  The {@code WeightedGraph} class represents an edge-weighted
+ *  graph of vertices named 0 through <em>V</em> – 1, where each
  *  undirected edge is of type {@link WeightedEdge} and has a real-valued weight.
  *  It supports the following two primary operations: add an edge to the graph,
  *  iterate over all of the edges incident to a vertex. It also provides
@@ -38,7 +14,6 @@ import datastructures.Stack;
  *  By convention, a self-loop <em>v</em>-<em>v</em> appears in the
  *  adjacency list of <em>v</em> twice and contributes two to the degree
  *  of <em>v</em>.
- *  In addition, the edges can be removed and stored.
  *  <p>
  *  This implementation uses an adjacency-lists representation, which 
  *  is a vertex-indexed array of {@link Bag} objects.
@@ -52,15 +27,13 @@ import datastructures.Stack;
  *
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
- *  @author Wesley Leung
  */
 public class WeightedGraph {
     private static final String NEWLINE = System.getProperty("line.separator");
 
     private final int V;
     private int E;
-    private HashSet<WeightedEdge>[] adj;
-    private HashSet<WeightedEdge> removed;
+    private Bag<WeightedEdge>[] adj;
     
     /**
      * Initializes an empty edge-weighted graph with {@code V} vertices and 0 edges.
@@ -72,10 +45,9 @@ public class WeightedGraph {
         if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
         this.V = V;
         this.E = 0;
-        adj = (HashSet<WeightedEdge>[]) new HashSet[V];
-        removed = new HashSet<WeightedEdge>();
+        adj = (Bag<WeightedEdge>[]) new Bag[V];
         for (int v = 0; v < V; v++) {
-            adj[v] = new HashSet<WeightedEdge>();
+            adj[v] = new Bag<WeightedEdge>();
         }
     }
 
@@ -125,7 +97,7 @@ public class WeightedGraph {
     }
 
     /**
-     * Adds the undirected edge {@code e} to this edge-weighted graph.
+     * Adds the undirected weighted edge {@code e} to this edge-weighted graph.
      *
      * @param  e the edge
      * @throws IllegalArgumentException unless both endpoints are between {@code 0} and {@code V-1}
@@ -139,48 +111,12 @@ public class WeightedGraph {
         adj[w].add(e);
         E++;
     }
-    
-    /**
-     * Removes the edge from {@code e} from this edge-weighted graph.
-     *
-     * @param  e the edge
-     * @throws IllegalArgumentException unless endpoints of edge are between {@code 0}
-     *         and {@code V-1}
-     */
-    public void removeEdge(WeightedEdge e) {
-    	int v = e.either();
-        int w = e.other(v);
-        validateVertex(v);
-        validateVertex(w);
-        removed.add(e);
-        adj[v].remove(e);
-        adj[w].remove(e);
-        E--;
-    }
-    
-    /**
-     * Restores all the edges removed from this edge-weighted graph.
-     */
-    public void restoreEdges() {
-    	for (WeightedEdge e: removed) {
-            addEdge(e);
-    	}
-    	removed.clear();
-    }
-    
-    /**
-     * Clears the edges removed from this edge-weighted graph so they can no longer
-     * be restored
-     */
-    public void clearRemoved() {
-    	removed.clear();
-    }
 
     /**
-     * Returns the edges incident on vertex {@code v}.
+     * Returns the weighted edges incident on vertex {@code v}.
      *
      * @param  v the vertex
-     * @return the edges incident on vertex {@code v} as an Iterable
+     * @return the weighted edges incident on vertex {@code v} as an Iterable
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
     public Iterable<WeightedEdge> adj(int v) {
@@ -203,12 +139,12 @@ public class WeightedGraph {
     /**
      * Returns all edges in this edge-weighted graph.
      * To iterate over the edges in this edge-weighted graph, use foreach notation:
-     * {@code for (Edge e : G.edges())}.
+     * {@code for (WeightedEdge e : G.edges())}.
      *
      * @return all edges in this edge-weighted graph, as an iterable
      */
     public Iterable<WeightedEdge> edges() {
-    	HashSet<WeightedEdge> list = new HashSet<WeightedEdge>();
+        Bag<WeightedEdge> list = new Bag<WeightedEdge>();
         for (int v = 0; v < V; v++) {
             int selfLoops = 0;
             for (WeightedEdge e : adj(v)) {

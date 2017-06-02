@@ -79,12 +79,11 @@ public class WeightedPath implements Comparable<WeightedPath>, Iterable<Weighted
 	}
 
 	@Override
-	public int compareTo(WeightedPath o) {
-		if (length > o.length) {
-			return 1;
-		} else if (length < o.length) {
-			return -1;
-		}
+	public int compareTo(WeightedPath p) {
+		if (length > p.length) return 1;
+		else if (length < p.length) return -1;
+		if (shortest > p.shortest) return 1;
+		else if (shortest < p.shortest) return -1;
 		return 0;
 	}
 

@@ -80,12 +80,11 @@ public class DirectedWeightedPath implements Comparable<DirectedWeightedPath>, I
 	}
 
 	@Override
-	public int compareTo(DirectedWeightedPath o) {
-		if (length > o.length) {
-			return 1;
-		} else if (length < o.length) {
-			return -1;
-		}
+	public int compareTo(DirectedWeightedPath p) {
+		if (length > p.length) return 1;
+		else if (length < p.length) return -1;
+		if (shortest > p.shortest) return 1;
+		else if (shortest < p.shortest) return -1;
 		return 0;
 	}
 

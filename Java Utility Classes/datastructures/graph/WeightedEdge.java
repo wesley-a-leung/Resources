@@ -1,14 +1,5 @@
 package datastructures.graph;
 
-/******************************************************************************
- *  Compilation:  javac Edge.java
- *  Execution:    java Edge
- *  Dependencies: StdOut.java
- *
- *  Immutable weighted edge.
- *
- ******************************************************************************/
-
 /**
  *  The {@code Edge} class represents a weighted edge in an 
  *  {@link WeightedGraph}. Each edge consists of two integers
