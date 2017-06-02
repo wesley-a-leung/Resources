@@ -1,4 +1,4 @@
-package datastructures.math;
+package algorithms.math;
 
 public class Matrix {
 	// return n-by-n identity matrix I
