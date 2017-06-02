@@ -1,14 +1,5 @@
 package datastructures.graph;
 
-/******************************************************************************
- *  Compilation:  javac DirectedEdge.java
- *  Execution:    java DirectedEdge
- *  Dependencies: StdOut.java
- *
- *  Immutable weighted directed edge.
- *
- ******************************************************************************/
-
 /**
  *  The {@code DirectedEdge} class represents a weighted edge in an 
  *  {@link WeightedDigraph}. Each edge consists of two integers

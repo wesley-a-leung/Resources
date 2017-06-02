@@ -1,8 +1,8 @@
 package datastructures.graph;
 
-import java.util.HashSet;
-
+import datastructures.Bag;
 import datastructures.Stack;
+
 
 /**
  *  The {@code Graph} class represents an undirected graph of vertices
@@ -26,15 +26,13 @@ import datastructures.Stack;
  *
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
- *  @author Wesley Leung
  */
 public class Graph {
     private static final String NEWLINE = System.getProperty("line.separator");
 
     private final int V;
     private int E;
-    private HashSet<Integer>[] adj;
-    private HashSet<Edge> removed;
+    private Bag<Integer>[] adj;
     
     /**
      * Initializes an empty graph with {@code V} vertices and 0 edges.
@@ -47,10 +45,9 @@ public class Graph {
         if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
         this.V = V;
         this.E = 0;
-        adj = (HashSet<Integer>[]) new HashSet[V];
-        removed = new HashSet<Edge>();
+        adj = (Bag<Integer>[]) new Bag[V];
         for (int v = 0; v < V; v++) {
-            adj[v] = new HashSet<Integer>();
+            adj[v] = new Bag<Integer>();
         }
     }
 
@@ -112,41 +109,6 @@ public class Graph {
         adj[v].add(w);
         adj[w].add(v);
     }
-    
-    /**
-     * Removes the edge from from this graph.
-     *
-     * @param  v one vertex in the edge
-     * @param  w the other vertex in the edge
-     * @throws IllegalArgumentException unless endpoints of edge are between {@code 0}
-     *         and {@code V-1}
-     */
-    public void removeEdge(int v, int w) {
-        validateVertex(v);
-        validateVertex(w);
-        removed.add(new Edge(v, w));
-        adj[v].remove(w);
-        adj[w].remove(v);
-        E--;
-    }
-    
-    /**
-     * Restores all the edges removed from this graph.
-     */
-    public void restoreEdges() {
-    	for (Edge e: removed) {
-            addEdge(e.v, e.w);
-    	}
-    	removed.clear();
-    }
-    
-    /**
-     * Clears the edges removed from this graph so they can no longer
-     * be restored
-     */
-    public void clearRemoved() {
-    	removed.clear();
-    }
 
 
     /**
@@ -192,27 +154,4 @@ public class Graph {
         }
         return s.toString();
     }
-    
-	public class Edge {
-		public int v;
-		public int w;
-
-		public Edge(int v, int w) {
-			this.v = Math.min(v, w);
-			this.w = Math.max(v, w);
-		}
-
-		@Override
-		public int hashCode() {
-			return 31 * v + w;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (o == this) return true;
-			if (!(o instanceof Edge)) return false;
-			Edge e = (Edge) o;
-			return e.v == v && e.w == w;
-		}
-	}
 }

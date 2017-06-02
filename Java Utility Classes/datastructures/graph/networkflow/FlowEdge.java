@@ -1,14 +1,5 @@
 package datastructures.graph.networkflow;
 
-/******************************************************************************
- *  Compilation:  javac FlowEdge.java
- *  Execution:    java FlowEdge
- *  Dependencies: StdOut.java
- *
- *  Capacitated edge with a flow in a flow network.
- *
- ******************************************************************************/
-
 /**
  *  The {@code FlowEdge} class represents a capacitated edge with a 
   * flow in a {@link FlowNetwork}. Each edge consists of two integers
