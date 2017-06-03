@@ -28,7 +28,7 @@ using namespace std;
  * <p>
  * This means that array[40] has cumulative information of 8 array items.
  * But We still need to know the cumulative data bellow array[40 - 8 = 32]
- * 32 is  100000 in binnary, and the portion up to the least significant one is 32 itself!
+ * 32 is  100000 in binary, and the portion up to the least significant one is 32 itself!
  * So array[32] has information of 32 items, and We are done!
  * <p>
  * So cummulative data of array[1...40] = array[40] + array[32]
