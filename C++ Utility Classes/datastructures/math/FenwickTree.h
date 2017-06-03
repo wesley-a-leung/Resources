@@ -8,6 +8,8 @@
 #ifndef DATASTRUCTURES_MATH_FENWICKTREE_H_
 #define DATASTRUCTURES_MATH_FENWICKTREE_H_
 
+#include <bits/stdc++.h>;
+
 using namespace std;
 
 /**
