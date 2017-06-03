@@ -93,7 +93,7 @@ private:
 
 public:
 	void init(int size, int* array, int rev) {
-		rev = new Node[rev];
+		rev = new Node*[rev];
 		arr = new int[size + 1];
 		for (int i = 1; i <= size; i++) {
 			arr[i] = array[i - 1];
