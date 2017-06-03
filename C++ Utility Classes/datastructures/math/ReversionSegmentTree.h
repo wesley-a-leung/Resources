@@ -108,10 +108,14 @@ public:
 		revInd++;
 	}
 
-	int query(int type, int ql, int qr) {
-		if (type == 1) return query(rev[revInd], 1, N, ql, qr).pre;
+	int maxPSA(int type, int ql, int qr) {
+		return query(rev[revInd], 1, N, ql, qr).pre;
+	}
+
+	int maxSSA(int ql, int qr) {
 		return query(rev[revInd], 1, N, ql, qr).suf;
 	}
+
 	void revert(int x) {
 		rev[++revInd] = rev[x];
 	}
