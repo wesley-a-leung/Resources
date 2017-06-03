@@ -8,6 +8,8 @@
 #ifndef DATASTRUCTURES_MATH_WEIGHTEDUF_H_
 #define DATASTRUCTURES_MATH_WEIGHTEDUF_H_
 
+#include <bits/stdc++.h>;
+
 using namespace std;
 
 struct WeightedUF {
