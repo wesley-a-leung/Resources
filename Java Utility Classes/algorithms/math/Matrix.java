@@ -93,4 +93,25 @@ public class Matrix {
 				y[j] += a[i][j] * x[i];
 		return y;
 	}
+	
+	// matrix power (ans = a^x)
+	public static double[][] pow(double[][] a, long x) {
+		int m = a.length;
+		int n = a[0].length;
+		double[][] ans = new double[m][n];
+		boolean flag = false;
+		while (x > 0) {
+			if (x % 2 == 1) {
+				if (!flag) {
+					ans = a;
+					flag = true;
+				} else {
+					ans = multiply(ans, a);
+				}
+			}
+			a = multiply(a, a);
+			x /= 2;
+		}
+		return ans;
+	}
 }
