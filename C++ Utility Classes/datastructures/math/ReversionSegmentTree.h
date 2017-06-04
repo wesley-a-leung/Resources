@@ -65,27 +65,27 @@ private:
 	int revInd = 0;
 	int N;
 
-	Node* build(int l, int r) {
-		if (l == r) return new Node(arr[l]);
-		int m = (l + r) >> 1;
-		return new Node(build(l , m), build(m + 1, r));
+	Node* build(int cL, int cR) {
+		if (cL == cR) return new Node(arr[cL]);
+		int m = (cL + cR) >> 1;
+		return new Node(build(cL , m), build(m + 1, cR));
 	}
 
-	Node* update(Node* cur, int l, int r, int ind) {
-		if (l <= ind && ind <= r) {
-			if (l == r) return new Node(arr[l]);
-			int m = (l + r) >> 1;
-			return new Node(update(cur->left, l, m, ind), update(cur->right, m + 1, r, ind));
+	Node* update(Node* cur, int cL, int cR, int ind) {
+		if (cL <= ind && ind <= cR) {
+			if (cL == cR) return new Node(arr[cL]);
+			int m = (cL + cR) >> 1;
+			return new Node(update(cur->left, cL, m, ind), update(cur->right, m + 1, cR, ind));
 		}
 		return cur;
 	}
 
-	Query query(Node* cur, int l, int r, int ql, int qr) {
-		if (l > qr || r < ql) return Query();
-		if (l >= ql && r <= qr) return Query(cur->pre, cur->suf, cur->sum);
-		int m = (l + r) >> 1;
-		Query left = query(cur->left, l, m, ql, qr);
-		Query right = query(cur->right, m + 1, r, ql, qr);
+	Query query(Node* cur, int cL, int cR, int l, int r) {
+		if (cL > r || cR < l) return Query();
+		if (cL >= l && cR <= r) return Query(cur->pre, cur->suf, cur->sum);
+		int m = (cL + cR) >> 1;
+		Query left = query(cur->left, cL, m, l, r);
+		Query right = query(cur->right, m + 1, cR, l, r);
 		if (left.isNull) return right;
 		if (right.isNull) return left;
 		return Query(left, right);
@@ -108,12 +108,12 @@ public:
 		revInd++;
 	}
 
-	int maxPSA(int type, int ql, int qr) {
-		return query(rev[revInd], 1, N, ql, qr).pre;
+	int maxPSA(int l, int r) {
+		return query(rev[revInd], 1, N, l, r).pre;
 	}
 
-	int maxSSA(int ql, int qr) {
-		return query(rev[revInd], 1, N, ql, qr).suf;
+	int maxSSA(int l, int r) {
+		return query(rev[revInd], 1, N, l, r).suf;
 	}
 
 	void revert(int x) {
