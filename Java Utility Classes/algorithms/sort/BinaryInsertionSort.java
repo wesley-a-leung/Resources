@@ -1,5 +1,6 @@
 package algorithms.sort;
 
+
 /******************************************************************************
  *  Compilation:  javac BinaryInsertion.java
  *  Execution:    java BinaryInsertion < input.txt

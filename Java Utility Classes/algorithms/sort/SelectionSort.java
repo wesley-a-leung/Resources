@@ -1,5 +1,6 @@
 package algorithms.sort;
 
+
 import java.util.Comparator;
 
 /**
@@ -29,9 +30,9 @@ public class SelectionSort {
                 if (less(a[j], a[min])) min = j;
             }
             exch(a, i, min);
-            assert isSorted(a, 0, i);
+            // assert isSorted(a, 0, i);
         }
-        assert isSorted(a);
+        // assert isSorted(a);
     }
 
     /**
