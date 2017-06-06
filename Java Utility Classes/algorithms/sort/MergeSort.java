@@ -1,5 +1,6 @@
 package algorithms.sort;
 
+
 /******************************************************************************
  *  Compilation:  javac MergeX.java
  *  Execution:    java MergeX < input.txt

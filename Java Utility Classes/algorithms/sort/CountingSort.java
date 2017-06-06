@@ -1,5 +1,6 @@
 package algorithms.sort;
 
+
 /**
  *  The {@code Counting Sort} class provides static methods for sorting an
  *  array using counting sort. This sorting algorithm only works with integer values.
@@ -20,10 +21,32 @@ public class CountingSort {
     private CountingSort() { }
 
     /**
+     * Primitive int array method
      * Rearranges the array in ascending order, using the natural order.
      * @param a the array to be sorted
      */
     public static void sort(int[] a) {
+    	int max = 0;
+		for (int x : a)
+			max = Math.max(max, x);
+		int[] count = new int[max + 1];
+		for (int x : a)
+			count[x]++;
+		for (int i = 1; i < count.length; i++)
+			count[i] += count[i - 1];
+		int[] b = new int[a.length];
+		for (int i = 0; i < a.length; i++)
+			b[--count[a[i]]] = a[i];
+		for (int i = 0; i < a.length; i++)
+			a[i] = b[i];
+    }
+    
+    /**
+     * Integer wrapper class method
+     * Rearranges the array in ascending order, using the natural order.
+     * @param a the array to be sorted
+     */
+    public static void sort(Integer[] a) {
     	int max = 0;
 		for (int x : a)
 			max = Math.max(max, x);

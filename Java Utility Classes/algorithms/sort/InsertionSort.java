@@ -1,5 +1,6 @@
 package algorithms.sort;
 
+
 import java.util.Comparator;
 
 /**
@@ -55,7 +56,7 @@ public class InsertionSort {
                 exch(a, j, j-1);
             }
         }
-        assert isSorted(a, lo, hi);
+        // assert isSorted(a, lo, hi);
     }
 
     /**
@@ -69,9 +70,9 @@ public class InsertionSort {
             for (int j = i; j > 0 && less(a[j], a[j-1], comparator); j--) {
                 exch(a, j, j-1);
             }
-            assert isSorted(a, 0, i, comparator);
+            // assert isSorted(a, 0, i, comparator);
         }
-        assert isSorted(a, comparator);
+        // assert isSorted(a, comparator);
     }
 
     /**
@@ -87,7 +88,7 @@ public class InsertionSort {
                 exch(a, j, j-1);
             }
         }
-        assert isSorted(a, lo, hi, comparator);
+        // assert isSorted(a, lo, hi, comparator);
     }
 
 

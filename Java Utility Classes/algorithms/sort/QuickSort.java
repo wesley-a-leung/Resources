@@ -1,5 +1,6 @@
 package algorithms.sort;
 
+
 /******************************************************************************
  *  Compilation:  javac QuickX.java
  *  Execution:    java QuickX < input.txt
