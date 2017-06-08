@@ -16,7 +16,7 @@ import datastructures.graph.WeightedGraph;
  *  where the edge weights are nonnegative.
  *  @author Wesley Leung
  */  
-public class YenKSP {
+public class YenUndirectedKSP {
 	private final int source;
 	private final int sink;
 	private WeightedGraph G;
@@ -29,7 +29,7 @@ public class YenKSP {
 	private WeightedEdge[] edgeTo;
 	private IndexMinPQ<Double> ipq;
 	
-	public YenKSP(WeightedGraph G, int source, int sink) {
+	public YenUndirectedKSP(WeightedGraph G, int source, int sink) {
 		this.G = G;
 		this.V = G.V();
 		validateVertex(source);

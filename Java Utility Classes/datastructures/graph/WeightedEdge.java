@@ -106,9 +106,7 @@ public class WeightedEdge implements Comparable<WeightedEdge> {
     @Override
 	public boolean equals(Object o) {
     	if (o == this) return true;
-        if (!(o instanceof WeightedEdge)) {
-            return false;
-        }
+        if (!(o instanceof WeightedEdge)) return false;
         WeightedEdge e = (WeightedEdge) o;
 		return e.v == v && e.w == w && e.weight() == weight;
 	}

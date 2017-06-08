@@ -33,8 +33,8 @@ import datastructures.graph.WeightedDigraph;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class DijkstraAllPairsSP {
-    private DijkstraSP[] all;
+public class DijkstraAllPairsDirectedSP {
+    private DijkstraDirectedSP[] all;
 
     /**
      * Computes a shortest paths tree from each vertex to to every other vertex in
@@ -43,10 +43,10 @@ public class DijkstraAllPairsSP {
      * @throws IllegalArgumentException if an edge weight is negative
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      */
-    public DijkstraAllPairsSP(WeightedDigraph G) {
-        all  = new DijkstraSP[G.V()];
+    public DijkstraAllPairsDirectedSP(WeightedDigraph G) {
+        all  = new DijkstraDirectedSP[G.V()];
         for (int v = 0; v < G.V(); v++)
-            all[v] = new DijkstraSP(G, v);
+            all[v] = new DijkstraDirectedSP(G, v);
     }
 
     /**

@@ -4,7 +4,7 @@ import datastructures.Queue;
 import datastructures.Stack;
 import datastructures.graph.DirectedWeightedEdge;
 import datastructures.graph.WeightedDigraph;
-import algorithms.graph.cycle.EdgeWeightedDirectedCycle;
+import algorithms.graph.cycle.DirectedWeightedCycle;
 
 /**
  *  The {@code BellmanFordSP} class represents a data type for solving the
@@ -111,7 +111,7 @@ public class BellmanFordSP {
             if (edgeTo[v] != null)
                 spt.addEdge(edgeTo[v]);
 
-        EdgeWeightedDirectedCycle finder = new EdgeWeightedDirectedCycle(spt);
+        DirectedWeightedCycle finder = new DirectedWeightedCycle(spt);
         cycle = finder.cycle();
     }
 

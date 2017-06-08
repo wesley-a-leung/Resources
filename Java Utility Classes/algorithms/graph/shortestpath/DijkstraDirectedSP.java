@@ -24,7 +24,7 @@ import datastructures.graph.WeightedDigraph;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class DijkstraSP {
+public class DijkstraDirectedSP {
     private double[] distTo;          // distTo[v] = distance  of shortest s->v path
     private DirectedWeightedEdge[] edgeTo;    // edgeTo[v] = last edge on shortest s->v path
     private IndexMinPQ<Double> pq;    // priority queue of vertices
@@ -38,7 +38,7 @@ public class DijkstraSP {
      * @throws IllegalArgumentException if an edge weight is negative
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      */
-    public DijkstraSP(WeightedDigraph G, int s) {
+    public DijkstraDirectedSP(WeightedDigraph G, int s) {
         distTo = new double[G.V()];
         edgeTo = new DirectedWeightedEdge[G.V()];
 
