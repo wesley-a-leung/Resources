@@ -5,17 +5,6 @@ import datastructures.graph.DirectedWeightedEdge;
 import datastructures.graph.WeightedDigraph;
 import algorithms.graph.search.TopologicalOrder;
 
-/******************************************************************************
- *  Compilation:  javac EdgeWeightedDirectedCycle.java
- *  Execution:    java EdgeWeightedDirectedCycle V E F
- *  Dependencies: EdgeWeightedDigraph.java DirectedEdge.java Stack.java
- *
- *  Finds a directed cycle in an edge-weighted digraph.
- *  Runs in O(E + V) time.
- *
- *
- ******************************************************************************/
-
 /**
  *  The {@code EdgeWeightedDirectedCycle} class represents a data type for 
  *  determining whether an edge-weighted digraph has a directed cycle.
@@ -41,7 +30,7 @@ import algorithms.graph.search.TopologicalOrder;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class EdgeWeightedDirectedCycle {
+public class DirectedWeightedCycle {
     private boolean[] marked;             // marked[v] = has vertex v been marked?
     private DirectedWeightedEdge[] edgeTo;        // edgeTo[v] = previous edge on path to v
     private boolean[] onStack;            // onStack[v] = is vertex on the stack?
@@ -52,7 +41,7 @@ public class EdgeWeightedDirectedCycle {
      * if so, finds such a cycle.
      * @param G the edge-weighted digraph
      */
-    public EdgeWeightedDirectedCycle(WeightedDigraph G) {
+    public DirectedWeightedCycle(WeightedDigraph G) {
         marked  = new boolean[G.V()];
         onStack = new boolean[G.V()];
         edgeTo  = new DirectedWeightedEdge[G.V()];
@@ -60,7 +49,7 @@ public class EdgeWeightedDirectedCycle {
             if (!marked[v]) dfs(G, v);
 
         // check that digraph has a cycle
-        assert check();
+        // assert check();
     }
 
     // check that algorithm computes either the topological order or finds a directed cycle

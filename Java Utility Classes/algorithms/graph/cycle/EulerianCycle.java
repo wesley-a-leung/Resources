@@ -5,21 +5,6 @@ import datastructures.Stack;
 import datastructures.graph.Graph;
 import algorithms.graph.search.BreadthFirstPaths;
 
-/******************************************************************************
- *  Compilation:  javac EulerianCycle.java
- *  Execution:    java  EulerianCycle V E
- *  Dependencies: Graph.java Stack.java StdOut.java
- *
- *  Find an Eulerian cycle in a graph, if one exists.
- *
- *  Runs in O(E + V) time.
- *
- *  This implementation is tricker than the one for digraphs because
- *  when we use edge v-w from v's adjacency list, we must be careful
- *  not to use the second copy of the edge from w's adjaceny list.
- *
- ******************************************************************************/
-
 /**
  *  The {@code EulerianCycle} class represents a data type
  *  for finding an Eulerian cycle or path in a graph.

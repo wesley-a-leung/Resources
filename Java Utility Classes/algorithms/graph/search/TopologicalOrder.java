@@ -3,7 +3,7 @@ package algorithms.graph.search;
 import datastructures.graph.Digraph;
 import datastructures.graph.WeightedDigraph;
 import algorithms.graph.cycle.DirectedCycle;
-import algorithms.graph.cycle.EdgeWeightedDirectedCycle;
+import algorithms.graph.cycle.DirectedWeightedCycle;
 
 /******************************************************************************
  *  Compilation:  javac Topoological.java
@@ -49,7 +49,7 @@ import algorithms.graph.cycle.EdgeWeightedDirectedCycle;
  *  the <em>order</em> operation takes time proportional to <em>V</em>.
  *  <p>
  *  See {@link DirectedCycle}, {@link DirectedCycleX}, and
- *  {@link EdgeWeightedDirectedCycle} to compute a
+ *  {@link DirectedWeightedCycle} to compute a
  *  directed cycle if the digraph is not a DAG.
  *  See {@link TopologicalX} for a nonrecursive queue-based algorithm
  *  to compute a topological order of a DAG.
@@ -88,7 +88,7 @@ public class TopologicalOrder {
      * @param G the edge-weighted digraph
      */
     public TopologicalOrder(WeightedDigraph G) {
-        EdgeWeightedDirectedCycle finder = new EdgeWeightedDirectedCycle(G);
+        DirectedWeightedCycle finder = new DirectedWeightedCycle(G);
         if (!finder.hasCycle()) {
             DepthFirstOrder dfs = new DepthFirstOrder(G);
             order = dfs.reversePost();

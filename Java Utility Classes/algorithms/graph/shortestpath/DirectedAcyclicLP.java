@@ -5,69 +5,48 @@ import datastructures.graph.DirectedWeightedEdge;
 import datastructures.graph.WeightedDigraph;
 import algorithms.graph.search.TopologicalOrder;
 
-/******************************************************************************
- *  Compilation:  javac AcyclicSP.java
- *  Execution:    java AcyclicSP V E
- *  Dependencies: EdgeWeightedDigraph.java DirectedEdge.java Topological.java
- *  Data files:   http://algs4.cs.princeton.edu/44sp/tinyEWDAG.txt
- *
- *  Computes shortest paths in an edge-weighted acyclic digraph.
- *
- *  % java AcyclicSP tinyEWDAG.txt 5
- *  5 to 0 (0.73)  5->4  0.35   4->0  0.38   
- *  5 to 1 (0.32)  5->1  0.32   
- *  5 to 2 (0.62)  5->7  0.28   7->2  0.34   
- *  5 to 3 (0.61)  5->1  0.32   1->3  0.29   
- *  5 to 4 (0.35)  5->4  0.35   
- *  5 to 5 (0.00)  
- *  5 to 6 (1.13)  5->1  0.32   1->3  0.29   3->6  0.52   
- *  5 to 7 (0.28)  5->7  0.28   
- *
- ******************************************************************************/
-
 /**
- *  The {@code AcyclicSP} class represents a data type for solving the
- *  single-source shortest paths problem in edge-weighted directed acyclic
- *  graphs (DAGs). The edge weights can be positive, negative, or zero.
+ *  The {@code AcyclicLP} class represents a data type for solving the
+ *  single-source longest paths problem in edge-weighted directed
+ *  acyclic graphs (DAGs). The edge weights can be positive, negative, or zero.
  *  <p>
  *  This implementation uses a topological-sort based algorithm.
  *  The constructor takes time proportional to <em>V</em> + <em>E</em>,
  *  where <em>V</em> is the number of vertices and <em>E</em> is the number of edges.
  *  Afterwards, the {@code distTo()} and {@code hasPathTo()} methods take
  *  constant time and the {@code pathTo()} method takes time proportional to the
- *  number of edges in the shortest path returned.
+ *  number of edges in the longest path returned.
  *  <p>
- *  For additional documentation,    
- *  see <a href="http://algs4.cs.princeton.edu/44sp">Section 4.4</a> of    
+ *  For additional documentation,   
+ *  see <a href="http://algs4.cs.princeton.edu/44sp">Section 4.4</a> of   
  *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne. 
  *
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class AcyclicSP {
-    private double[] distTo;         // distTo[v] = distance  of shortest s->v path
-    private DirectedWeightedEdge[] edgeTo;   // edgeTo[v] = last edge on shortest s->v path
-
+public class DirectedAcyclicLP {
+    private double[] distTo;          // distTo[v] = distance  of longest s->v path
+    private DirectedWeightedEdge[] edgeTo;    // edgeTo[v] = last edge on longest s->v path
 
     /**
-     * Computes a shortest paths tree from {@code s} to every other vertex in
+     * Computes a longest paths tree from {@code s} to every other vertex in
      * the directed acyclic graph {@code G}.
      * @param G the acyclic digraph
      * @param s the source vertex
      * @throws IllegalArgumentException if the digraph is not acyclic
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      */
-    public AcyclicSP(WeightedDigraph G, int s) {
+    public DirectedAcyclicLP(WeightedDigraph G, int s) {
         distTo = new double[G.V()];
         edgeTo = new DirectedWeightedEdge[G.V()];
 
         validateVertex(s);
 
         for (int v = 0; v < G.V(); v++)
-            distTo[v] = Double.POSITIVE_INFINITY;
+            distTo[v] = Double.NEGATIVE_INFINITY;
         distTo[s] = 0.0;
 
-        // visit vertices in toplogical order
+        // relax vertices in toplogical order
         TopologicalOrder topological = new TopologicalOrder(G);
         if (!topological.hasOrder())
             throw new IllegalArgumentException("Digraph is not acyclic.");
@@ -77,20 +56,20 @@ public class AcyclicSP {
         }
     }
 
-    // relax edge e
+    // relax edge e, but update if you find a *longer* path
     private void relax(DirectedWeightedEdge e) {
         int v = e.from(), w = e.to();
-        if (distTo[w] > distTo[v] + e.weight()) {
+        if (distTo[w] < distTo[v] + e.weight()) {
             distTo[w] = distTo[v] + e.weight();
             edgeTo[w] = e;
         }       
     }
 
     /**
-     * Returns the length of a shortest path from the source vertex {@code s} to vertex {@code v}.
+     * Returns the length of a longest path from the source vertex {@code s} to vertex {@code v}.
      * @param  v the destination vertex
-     * @return the length of a shortest path from the source vertex {@code s} to vertex {@code v};
-     *         {@code Double.POSITIVE_INFINITY} if no such path
+     * @return the length of a longest path from the source vertex {@code s} to vertex {@code v};
+     *         {@code Double.NEGATIVE_INFINITY} if no such path
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
     public double distTo(int v) {
@@ -107,13 +86,13 @@ public class AcyclicSP {
      */
     public boolean hasPathTo(int v) {
         validateVertex(v);
-        return distTo[v] < Double.POSITIVE_INFINITY;
+        return distTo[v] > Double.NEGATIVE_INFINITY;
     }
 
     /**
-     * Returns a shortest path from the source vertex {@code s} to vertex {@code v}.
+     * Returns a longest path from the source vertex {@code s} to vertex {@code v}.
      * @param  v the destination vertex
-     * @return a shortest path from the source vertex {@code s} to vertex {@code v}
+     * @return a longest path from the source vertex {@code s} to vertex {@code v}
      *         as an iterable of edges, and {@code null} if no such path
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */

@@ -80,9 +80,7 @@ public class DirectedWeightedEdge {
     @Override
 	public boolean equals(Object o) {
     	if (o == this) return true;
-        if (!(o instanceof DirectedWeightedEdge)) {
-            return false;
-        }
+        if (!(o instanceof DirectedWeightedEdge)) return false;
         DirectedWeightedEdge e = (DirectedWeightedEdge) o;
 		return e.from() == v && e.to() == w && e.weight() == weight;
 	}

@@ -1,7 +1,7 @@
 package algorithms.graph.components;
 
 import datastructures.graph.Digraph;
-import algorithms.graph.search.DirectedDFS;
+import algorithms.graph.search.DirectedDepthFirstSearch;
 
 /******************************************************************************
  *  Compilation:  javac TransitiveClosure.java
@@ -57,16 +57,16 @@ import algorithms.graph.search.DirectedDFS;
  *  @author Kevin Wayne
  */
 public class TransitiveClosure {
-    private DirectedDFS[] tc;  // tc[v] = reachable from v
+    private DirectedDepthFirstSearch[] tc;  // tc[v] = reachable from v
 
     /**
      * Computes the transitive closure of the digraph {@code G}.
      * @param G the digraph
      */
     public TransitiveClosure(Digraph G) {
-        tc = new DirectedDFS[G.V()];
+        tc = new DirectedDepthFirstSearch[G.V()];
         for (int v = 0; v < G.V(); v++)
-            tc[v] = new DirectedDFS(G, v);
+            tc[v] = new DirectedDepthFirstSearch(G, v);
     }
 
     /**

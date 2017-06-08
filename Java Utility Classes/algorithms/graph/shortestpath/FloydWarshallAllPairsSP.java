@@ -4,23 +4,7 @@ import datastructures.Stack;
 import datastructures.graph.AdjMatrixWeightedDigraph;
 import datastructures.graph.DirectedWeightedEdge;
 import datastructures.graph.WeightedDigraph;
-import algorithms.graph.cycle.EdgeWeightedDirectedCycle;
-
-/******************************************************************************
- *  Compilation:  javac FloydWarshall.java
- *  Execution:    java FloydWarshall V E
- *  Dependencies: AdjMatrixEdgeWeightedDigraph.java
- *
- *  Floyd-Warshall all-pairs shortest path algorithm.
- *
- *  % java FloydWarshall 100 500
- *
- *  Should check for negative cycles during triple loop; otherwise
- *  intermediate numbers can get exponentially large.
- *  Reference: "The Floyd-Warshall algorithm on graphs with negative cycles"
- *  by Stefan Hougardy
- *
- ******************************************************************************/
+import algorithms.graph.cycle.DirectedWeightedCycle;
 
 /**
  *  The {@code FloydWarshall} class represents a data type for solving the
@@ -123,7 +107,7 @@ public class FloydWarshallAllPairsSP {
                 for (int w = 0; w < V; w++)
                     if (edgeTo[v][w] != null)
                         spt.addEdge(edgeTo[v][w]);
-                EdgeWeightedDirectedCycle finder = new EdgeWeightedDirectedCycle(spt);
+                DirectedWeightedCycle finder = new DirectedWeightedCycle(spt);
                 assert finder.hasCycle();
                 return finder.cycle();
             }

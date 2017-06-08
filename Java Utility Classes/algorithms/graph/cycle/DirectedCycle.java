@@ -4,24 +4,6 @@ import datastructures.Stack;
 import datastructures.graph.Digraph;
 import algorithms.graph.search.TopologicalOrder;
 
-/******************************************************************************
- *  Compilation:  javac DirectedCycle.java
- *  Execution:    java DirectedCycle input.txt
- *  Dependencies: Digraph.java Stack.java StdOut.java In.java
- *  Data files:   http://algs4.cs.princeton.edu/42digraph/tinyDG.txt
- *                http://algs4.cs.princeton.edu/42digraph/tinyDAG.txt
- *
- *  Finds a directed cycle in a digraph.
- *  Runs in O(E + V) time.
- *
- *  % java DirectedCycle tinyDG.txt 
- *  Directed cycle: 3 5 4 3 
- *
- *  %  java DirectedCycle tinyDAG.txt 
- *  No directed cycle
- *
- ******************************************************************************/
-
 /**
  *  The {@code DirectedCycle} class represents a data type for 
  *  determining whether a digraph has a directed cycle.
@@ -89,7 +71,7 @@ public class DirectedCycle {
                 }
                 cycle.push(w);
                 cycle.push(v);
-                assert check();
+                // assert check();
             }
         }
         onStack[v] = false;

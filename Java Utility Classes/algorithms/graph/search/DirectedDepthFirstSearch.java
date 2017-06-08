@@ -43,7 +43,7 @@ import datastructures.graph.Digraph;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class DirectedDFS {
+public class DirectedDepthFirstSearch {
     private boolean[] marked;  // marked[v] = true if v is reachable
                                // from source (or sources)
     private int count;         // number of vertices reachable from s
@@ -55,7 +55,7 @@ public class DirectedDFS {
      * @param s the source vertex
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      */
-    public DirectedDFS(Digraph G, int s) {
+    public DirectedDepthFirstSearch(Digraph G, int s) {
         marked = new boolean[G.V()];
         validateVertex(s);
         dfs(G, s);
@@ -69,7 +69,7 @@ public class DirectedDFS {
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      *         for each vertex {@code s} in {@code sources}
      */
-    public DirectedDFS(Digraph G, Iterable<Integer> sources) {
+    public DirectedDepthFirstSearch(Digraph G, Iterable<Integer> sources) {
         marked = new boolean[G.V()];
         validateVertices(sources);
         for (int v : sources) {

@@ -2,7 +2,7 @@ package algorithms.graph.networkflow;
 
 import datastructures.graph.DirectedWeightedEdge;
 import datastructures.graph.WeightedDigraph;
-import algorithms.graph.shortestpath.DijkstraSP;
+import algorithms.graph.shortestpath.DijkstraDirectedSP;
 
 /******************************************************************************
  *  Compilation:  javac AssignmentProblem.java
@@ -109,7 +109,7 @@ public class AssignmentProblem {
         }
 
         // compute shortest path from s to every other vertex
-        DijkstraSP spt = new DijkstraSP(G, s);
+        DijkstraDirectedSP spt = new DijkstraDirectedSP(G, s);
 
         // augment along alternating path
         for (DirectedWeightedEdge e : spt.pathTo(t)) {

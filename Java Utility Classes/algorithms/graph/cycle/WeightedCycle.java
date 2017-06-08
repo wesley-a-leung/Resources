@@ -1,12 +1,13 @@
 package algorithms.graph.cycle;
 
 import datastructures.Stack;
-import datastructures.graph.Graph;
+import datastructures.graph.WeightedEdge;
+import datastructures.graph.WeightedGraph;
 
 /**
- *  The {@code Cycle} class represents a data type for 
- *  determining whether an undirected graph has a cycle.
- *  The <em>hasCycle</em> operation determines whether the graph has
+ *  The {@code WeightedCycle} class represents a data type for 
+ *  determining whether an undirected weighted weighted graph has a cycle.
+ *  The <em>hasCycle</em> operation determines whether the weighted graph has
  *  a cycle and, if so, the <em>cycle</em> operation returns one.
  *  <p>
  *  This implementation uses depth-first search.
@@ -17,24 +18,22 @@ import datastructures.graph.Graph;
  *  the <em>cycle</em> operation takes time proportional
  *  to the length of the cycle.
  *  <p>
- *  For additional documentation, see <a href="http://algs4.cs.princeton.edu/41graph">Section 4.1</a>   
- *  of <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
  *
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class Cycle {
+public class WeightedCycle {
     private boolean[] marked;
     private int[] edgeTo;
     private Stack<Integer> cycle;
 
     /**
-     * Determines whether the undirected graph {@code G} has a cycle and,
+     * Determines whether the undirected weighted graph {@code G} has a cycle and,
      * if so, finds such a cycle.
      *
-     * @param G the undirected graph
+     * @param G the undirected weighted graph
      */
-    public Cycle(Graph G) {
+    public WeightedCycle(WeightedGraph G) {
         if (hasSelfLoop(G)) return;
         if (hasParallelEdges(G)) return;
         marked = new boolean[G.V()];
@@ -45,11 +44,12 @@ public class Cycle {
     }
 
 
-    // does this graph have a self loop?
+    // does this weighted graph have a self loop?
     // side effect: initialize cycle to be self loop
-    private boolean hasSelfLoop(Graph G) {
+    private boolean hasSelfLoop(WeightedGraph G) {
         for (int v = 0; v < G.V(); v++) {
-            for (int w : G.adj(v)) {
+        	for (WeightedEdge e: G.adj(v)) {
+            	int w = e.other(v);
                 if (v == w) {
                     cycle = new Stack<Integer>();
                     cycle.push(v);
@@ -61,15 +61,16 @@ public class Cycle {
         return false;
     }
 
-    // does this graph have two parallel edges?
+    // does this weighted graph have two parallel edges?
     // side effect: initialize cycle to be two parallel edges
-    private boolean hasParallelEdges(Graph G) {
+    private boolean hasParallelEdges(WeightedGraph G) {
         marked = new boolean[G.V()];
 
         for (int v = 0; v < G.V(); v++) {
 
             // check for parallel edges incident to v
-            for (int w : G.adj(v)) {
+            for (WeightedEdge e: G.adj(v)) {
+            	int w = e.other(v);
                 if (marked[w]) {
                     cycle = new Stack<Integer>();
                     cycle.push(v);
@@ -81,7 +82,8 @@ public class Cycle {
             }
 
             // reset so marked[v] = false for all v
-            for (int w : G.adj(v)) {
+            for (WeightedEdge e: G.adj(v)) {
+            	int w = e.other(v);
                 marked[w] = false;
             }
         }
@@ -89,26 +91,27 @@ public class Cycle {
     }
 
     /**
-     * Returns true if the graph {@code G} has a cycle.
+     * Returns true if the weighted graph {@code G} has a cycle.
      *
-     * @return {@code true} if the graph has a cycle; {@code false} otherwise
+     * @return {@code true} if the weighted graph has a cycle; {@code false} otherwise
      */
     public boolean hasCycle() {
         return cycle != null;
     }
 
      /**
-     * Returns a cycle in the graph {@code G}.
-     * @return a cycle if the graph {@code G} has a cycle,
+     * Returns a cycle in the weighted graph {@code G}.
+     * @return a cycle if the weighted graph {@code G} has a cycle,
      *         and {@code null} otherwise
      */
     public Iterable<Integer> cycle() {
         return cycle;
     }
 
-    private void dfs(Graph G, int u, int v) {
+    private void dfs(WeightedGraph G, int u, int v) {
         marked[v] = true;
-        for (int w : G.adj(v)) {
+        for (WeightedEdge e: G.adj(v)) {
+        	int w = e.other(v);
 
             // short circuit if cycle already found
             if (cycle != null) return;
