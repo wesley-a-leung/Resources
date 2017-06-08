@@ -1,9 +1,11 @@
 package datastructures.math;
 
+import java.util.ArrayList;
+
 public class ReversionSegmentTree {
 	private int[] arr;
 	private int size;
-	private Node[] rev;
+	private ArrayList<Node> rev;
 	private int revInd = 0;
 	
 	private static class Node {
@@ -24,13 +26,13 @@ public class ReversionSegmentTree {
 		}
 	}
 	
-	public ReversionSegmentTree(int size, int[] array, int rev) {
-		this.rev = new Node[rev];
+	public ReversionSegmentTree(int size, int[] array) {
 		this.arr = new int[size + 1];
 		for (int i = 1; i <= size; i++) {
 			arr[i] = array[i - 1];
 		}
-		this.rev[0] = build(1, size);
+		rev.add(build(1, size));
+		revInd++;
 		this.size = size;
 	}
 	
@@ -46,8 +48,7 @@ public class ReversionSegmentTree {
 	
 	public void update(int ind, int val) {
 		arr[ind] = val;
-		rev[revInd + 1] = update(rev[revInd], 1, arr.length - 1, ind);
-		revInd++;
+		rev.add(update(rev.get(revInd++), 1, arr.length - 1, ind));
 	}
 	
 	private Node update(Node cur, int cL, int cR, int ind) {
@@ -60,11 +61,11 @@ public class ReversionSegmentTree {
 	}
 	
 	public int maxPSA(int l, int r) {
-		return query(rev[revInd], 1, arr.length - 1, l, r).pre;
+		return query(rev.get(revInd), 1, arr.length - 1, l, r).pre;
 	}
 	
 	public int maxSSA(int l, int r) {
-		return query(rev[revInd], 1, arr.length - 1, l, r).suf;
+		return query(rev.get(revInd), 1, arr.length - 1, l, r).suf;
 	}
 	
 	private Query query(Node cur, int cL, int cR, int l, int r) {
@@ -79,7 +80,8 @@ public class ReversionSegmentTree {
 	}
 	
 	public void revert(int x) {
-		rev[++revInd] = rev[x];
+		rev.add(rev.get(x));
+		revInd++;
 	}
 	
 	private static class Query {
