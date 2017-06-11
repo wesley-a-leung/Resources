@@ -13,7 +13,7 @@ package datastructures.math;
  *  Afterwards, <em>union</em>, <em>find</em>, and <em>connected</em> take
  *  logarithmic time (in the worst case) and <em>count</em> takes constant
  *  time. Moreover, the amortized time per <em>union</em>, <em>find</em>,
- *  and <em>connected</em> operation has inverse Ackermann complexity (N + M lg * N).
+ *  and <em>connected</em> operation has inverse Ackermann complexity.
  *  <p>
  *  For additional documentation, see <a href="http://algs4.cs.princeton.edu/15uf">Section 1.5</a> of
  *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.

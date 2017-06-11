@@ -1,16 +1,6 @@
 package datastructures.geometry;
 
-/******************************************************************************
- *  Compilation:  javac Point2D.java
- *  Execution:    java Point2D x0 y0 n
- *  Dependencies: StdDraw.java StdRandom.java
- *
- *  Immutable point data type for points in the plane.
- *
- ******************************************************************************/
-
 import java.util.Comparator;
-
 
 /**
  *  The {@code Point} class is an immutable data type to encapsulate a
