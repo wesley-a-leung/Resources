@@ -53,15 +53,11 @@ public:
      * @return the component identifier for the component containing site {@code p}
      */
     int find(int p) {
-        int root = p;
-        while (root != parent[root])
-            root = parent[root];
-        while (p != root) {
-            int newp = parent[p];
-            parent[p] = root;
-            p = newp;
+        while (p != parent[p]) {
+            parent[p] = parent[parent[p]];    // path compression by halving
+            p = parent[p];
         }
-        return root;
+        return p;
     }
 
    /**
