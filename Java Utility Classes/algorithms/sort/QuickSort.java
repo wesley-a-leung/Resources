@@ -1,23 +1,5 @@
 package algorithms.sort;
 
-
-/******************************************************************************
- *  Compilation:  javac QuickX.java
- *  Execution:    java QuickX < input.txt
- *  Dependencies: StdOut.java StdIn.java
- *  Data files:   http://algs4.cs.princeton.edu/23quicksort/tiny.txt
- *                http://algs4.cs.princeton.edu/23quicksort/words3.txt
- *  
- *  Uses the Bentley-McIlroy 3-way partitioning scheme,
- *  chooses the partitioning element using Tukey's ninther,
- *  and cuts off to insertion sort.
- *
- *  Reference: Engineering a Sort Function by Jon L. Bentley
- *  and M. Douglas McIlroy. Softwae-Practice and Experience,
- *  Vol. 23 (11), 1249-1265 (November 1993).
- *
- ******************************************************************************/
-
 /**
  *  The {@code QuickX} class provides static methods for sorting an
  *  array using an optimized version of quicksort (using Bentley-McIlroy

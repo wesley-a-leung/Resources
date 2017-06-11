@@ -1,6 +1,5 @@
 package algorithms.sort;
 
-
 /**
  *  The {@code Counting Sort} class provides static methods for sorting an
  *  array using counting sort. This sorting algorithm only works with integer values.
