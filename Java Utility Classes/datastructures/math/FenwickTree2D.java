@@ -1,7 +1,7 @@
 package datastructures.math;
 
 /**
- * Memory usage:  O(n^2)
+ * Memory usage:  O(nm)
  *
  * @author Wesley Leung
  */
@@ -16,7 +16,7 @@ public class FenwickTree2D {
     /**
      * Range Sum Query
      * <p>
-     * Time-Complexity:    O(log(n)^2)
+     * Time-Complexity:    O(log(nm))
      *
      * @param  indX x index
      * @param  indY y index
@@ -36,7 +36,7 @@ public class FenwickTree2D {
     /**
      * Range Sum Query
      * <p>
-     * Time-Complexity:    O(log(n)^2)
+     * Time-Complexity:    O(log(nm))
      *
      * @param  x1 top index
      * @param  y1 left index
@@ -53,7 +53,7 @@ public class FenwickTree2D {
      * Update the array at [indX][indY] and all the affected regions above ind.
      * ind is 1-indexed
      * <p>
-     * Time-Complexity:    O(log(n)^2)
+     * Time-Complexity:    O(log(nm))
      *
      * @param  indX   x index
      * @param  indY   y index

@@ -5,11 +5,11 @@ package algorithms.sort;
  *  array using an optimized version of quicksort (using Bentley-McIlroy
  *  3-way partitioning, Tukey's ninther, and cutoff to insertion sort).
  *  <p>
- *  Best Case: <em>N</em>
+ *  Best Case: <em>N</em> log <em>N</em>
  *  <p>
  *  Average Case: <em>N</em> log <em>N</em>
  *  <p>
- *  Worse Case: <em>N</em> log <em>N</em>
+ *  Worse Case: <em>N</em>^2
  *  <p>
  *  Space: <em>N</em> log <em>N</em>
  *  <p>
