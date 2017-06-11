@@ -82,7 +82,7 @@ package datastructures.math;
  *  operations take logarithmic time (in the worst case) and the
  *  <em>count</em> operation takes constant time.
  *  Moreover, the amortized time per <em>union</em>, <em>find</em>,
- *  and <em>connected</em> operation has inverse Ackermann complexity.
+ *  and <em>connected</em> operation has inverse Ackermann complexity (N + M lg * N).
  *  For alternate implementations of the same API, see
  *  {@link QuickUnionUF}, {@link QuickFindUF}, and {@link WeightedQuickUnionUF}.
  *
