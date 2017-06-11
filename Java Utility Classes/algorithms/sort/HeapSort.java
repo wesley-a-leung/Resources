@@ -1,29 +1,5 @@
 package algorithms.sort;
 
-
-/******************************************************************************
- *  Compilation:  javac Heap.java
- *  Execution:    java Heap < input.txt
- *  Dependencies: StdOut.java StdIn.java
- *  Data files:   http://algs4.cs.princeton.edu/24pq/tiny.txt
- *                http://algs4.cs.princeton.edu/24pq/words3.txt
- *  
- *  Sorts a sequence of strings from standard input using heapsort.
- *
- *  % more tiny.txt
- *  S O R T E X A M P L E
- *
- *  % java Heap < tiny.txt
- *  A E E L M O P R S T X                 [ one string per line ]
- *
- *  % more words3.txt
- *  bed bug dad yes zoo ... all bad yet
- *
- *  % java Heap < words3.txt
- *  all bad bed bug dad ... yes yet zoo   [ one string per line ]
- *
- ******************************************************************************/
-
 /**
  *  The {@code Heap} class provides a static methods for heapsorting
  *  an array.

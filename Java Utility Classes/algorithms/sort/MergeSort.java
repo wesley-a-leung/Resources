@@ -1,30 +1,5 @@
 package algorithms.sort;
 
-
-/******************************************************************************
- *  Compilation:  javac MergeX.java
- *  Execution:    java MergeX < input.txt
- *  Dependencies: StdOut.java StdIn.java
- *  Data files:   http://algs4.cs.princeton.edu/22mergesort/tiny.txt
- *                http://algs4.cs.princeton.edu/22mergesort/words3.txt
- *   
- *  Sorts a sequence of strings from standard input using an
- *  optimized version of mergesort.
- *   
- *  % more tiny.txt
- *  S O R T E X A M P L E
- *
- *  % java MergeX < tiny.txt
- *  A E E L M O P R S T X                 [ one string per line ]
- *    
- *  % more words3.txt
- *  bed bug dad yes zoo ... all bad yet
- *  
- *  % java MergeX < words3.txt
- *  all bad bed bug dad ... yes yet zoo    [ one string per line ]
- *
- ******************************************************************************/
-
 import java.util.Comparator;
 
 /**
