@@ -4,7 +4,7 @@ package algorithms.sort;
  *  The {@code BinaryInsertion} class provides a static method for sorting an
  *  array using an optimized binary insertion sort with half exchanges.
  *  <p>
- *  Best Case: <em>N</em>
+ *  Best Case: <em>N</em> log <em>N</em>
  *  <p>
  *  Average Case: <em>N</em> log <em>N</em>
  *  <p>

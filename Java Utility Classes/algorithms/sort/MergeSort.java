@@ -3,7 +3,7 @@ package algorithms.sort;
 import java.util.Comparator;
 
 /**
- *  The {@code MergeX} class provides static methods for sorting an
+ *  The {@code MergeSort} class provides static methods for sorting an
  *  array using an optimized version of mergesort.
  *  <p>
  *  Best Case: <em>N</em> log <em>N</em>
@@ -42,28 +42,23 @@ public class MergeSort {
         // postcondition: dst[lo .. hi] is sorted subarray
     }
 
-    private static void sort(Comparable[] src, Comparable[] dst, int lo, int hi) {
+    private static void sort(Comparable[] src, Comparable[] dst, int lo, int hi, boolean flag) {
         // if (hi <= lo) return;
         if (hi <= lo + CUTOFF) { 
             insertionSort(dst, lo, hi);
             return;
         }
         int mid = lo + (hi - lo) / 2;
-        sort(dst, src, lo, mid);
-        sort(dst, src, mid+1, hi);
+        sort(dst, src, lo, mid, !flag);
+        sort(dst, src, mid+1, hi, !flag);
 
         // if (!less(src[mid+1], src[mid])) {
         //    for (int i = lo; i <= hi; i++) dst[i] = src[i];
         //    return;
         // }
 
-        // using System.arraycopy() is a bit faster than the above loop
-        if (!less(src[mid+1], src[mid])) {
-            System.arraycopy(src, lo, dst, lo, hi - lo + 1);
-            return;
-        }
-
-        merge(src, dst, lo, mid, hi);
+        if (flag) merge(src, dst, lo, mid, hi);
+        else merge(src, dst, lo, mid, hi);
     }
 
     /**
@@ -72,7 +67,7 @@ public class MergeSort {
      */
     public static void sort(Comparable[] a) {
         Comparable[] aux = a.clone();
-        sort(aux, a, 0, a.length-1);  
+        sort(aux, a, 0, a.length-1, true);  
     }
 
     // sort from a[lo] to a[hi] using insertion sort
@@ -117,7 +112,7 @@ public class MergeSort {
      */
     public static void sort(Object[] a, Comparator comparator) {
         Object[] aux = a.clone();
-        sort(aux, a, 0, a.length-1, comparator);
+        sort(aux, a, 0, a.length-1, comparator, true);
     }
 
     private static void merge(Object[] src, Object[] dst, int lo, int mid, int hi, Comparator comparator) {
@@ -136,23 +131,17 @@ public class MergeSort {
     }
 
 
-    private static void sort(Object[] src, Object[] dst, int lo, int hi, Comparator comparator) {
+    private static void sort(Object[] src, Object[] dst, int lo, int hi, Comparator comparator, boolean flag) {
         // if (hi <= lo) return;
         if (hi <= lo + CUTOFF) { 
             insertionSort(dst, lo, hi, comparator);
             return;
         }
         int mid = lo + (hi - lo) / 2;
-        sort(dst, src, lo, mid, comparator);
-        sort(dst, src, mid+1, hi, comparator);
-
-        // using System.arraycopy() is a bit faster than the above loop
-        if (!less(src[mid+1], src[mid], comparator)) {
-            System.arraycopy(src, lo, dst, lo, hi - lo + 1);
-            return;
-        }
-
-        merge(src, dst, lo, mid, hi, comparator);
+        sort(dst, src, lo, mid, comparator, !flag);
+        sort(dst, src, mid+1, hi, comparator, !flag);
+        if (flag) merge(src, dst, lo, mid, hi, comparator);
+        else merge(dst, src, lo, mid, hi, comparator);
     }
 
     // sort from a[lo] to a[hi] using insertion sort
