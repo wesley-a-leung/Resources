@@ -42,23 +42,28 @@ public class MergeSort {
         // postcondition: dst[lo .. hi] is sorted subarray
     }
 
-    private static void sort(Comparable[] src, Comparable[] dst, int lo, int hi, boolean flag) {
+    private static void sort(Comparable[] src, Comparable[] dst, int lo, int hi) {
         // if (hi <= lo) return;
         if (hi <= lo + CUTOFF) { 
             insertionSort(dst, lo, hi);
             return;
         }
         int mid = lo + (hi - lo) / 2;
-        sort(dst, src, lo, mid, !flag);
-        sort(dst, src, mid+1, hi, !flag);
+        sort(dst, src, lo, mid);
+        sort(dst, src, mid+1, hi);
 
         // if (!less(src[mid+1], src[mid])) {
         //    for (int i = lo; i <= hi; i++) dst[i] = src[i];
         //    return;
         // }
 
-        if (flag) merge(src, dst, lo, mid, hi);
-        else merge(src, dst, lo, mid, hi);
+        // using System.arraycopy() is a bit faster than the above loop
+        if (!less(src[mid+1], src[mid])) {
+            System.arraycopy(src, lo, dst, lo, hi - lo + 1);
+            return;
+        }
+
+        merge(src, dst, lo, mid, hi);
     }
 
     /**
@@ -67,7 +72,7 @@ public class MergeSort {
      */
     public static void sort(Comparable[] a) {
         Comparable[] aux = a.clone();
-        sort(aux, a, 0, a.length-1, true);  
+        sort(aux, a, 0, a.length-1);  
     }
 
     // sort from a[lo] to a[hi] using insertion sort
@@ -112,7 +117,7 @@ public class MergeSort {
      */
     public static void sort(Object[] a, Comparator comparator) {
         Object[] aux = a.clone();
-        sort(aux, a, 0, a.length-1, comparator, true);
+        sort(aux, a, 0, a.length-1, comparator);
     }
 
     private static void merge(Object[] src, Object[] dst, int lo, int mid, int hi, Comparator comparator) {
@@ -131,17 +136,22 @@ public class MergeSort {
     }
 
 
-    private static void sort(Object[] src, Object[] dst, int lo, int hi, Comparator comparator, boolean flag) {
+    private static void sort(Object[] src, Object[] dst, int lo, int hi, Comparator comparator) {
         // if (hi <= lo) return;
         if (hi <= lo + CUTOFF) { 
             insertionSort(dst, lo, hi, comparator);
             return;
         }
         int mid = lo + (hi - lo) / 2;
-        sort(dst, src, lo, mid, comparator, !flag);
-        sort(dst, src, mid+1, hi, comparator, !flag);
-        if (flag) merge(src, dst, lo, mid, hi, comparator);
-        else merge(dst, src, lo, mid, hi, comparator);
+        sort(dst, src, lo, mid, comparator);
+        sort(dst, src, mid+1, hi, comparator);
+        // using System.arraycopy() is a bit faster than the above loop
+        if (!less(src[mid+1], src[mid], comparator)) {
+            System.arraycopy(src, lo, dst, lo, hi - lo + 1);
+            return;
+        }
+
+        merge(src, dst, lo, mid, hi, comparator);
     }
 
     // sort from a[lo] to a[hi] using insertion sort
