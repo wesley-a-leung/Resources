@@ -1,25 +1,5 @@
 package datastructures;
 
-/******************************************************************************
- *  Compilation:  javac MaxPQ.java
- *  Execution:    java MaxPQ < input.txt
- *  Dependencies: StdIn.java StdOut.java
- *  Data files:   http://algs4.cs.princeton.edu/24pq/tinyPQ.txt
- *  
- *  Generic max priority queue implementation with a binary heap.
- *  Can be used with a comparator instead of the natural order,
- *  but the generic Key type must still be Comparable.
- *
- *  % java MaxPQ < tinyPQ.txt 
- *  Q X P (6 left on pq)
- *
- *  We use a one-based array to simplify parent and child calculations.
- *
- *  Can be optimized by replacing full exchanges with half exchanges 
- *  (ala insertion sort).
- *
- ******************************************************************************/
-
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -104,7 +84,7 @@ public class MaxPQ<Key> implements Iterable<Key> {
             pq[i+1] = keys[i];
         for (int k = n/2; k >= 1; k--)
             sink(k);
-        assert isMaxHeap();
+        // assert isMaxHeap();
     }
       
 
@@ -141,7 +121,7 @@ public class MaxPQ<Key> implements Iterable<Key> {
 
     // helper function to double the size of the heap array
     private void resize(int capacity) {
-        assert capacity > n;
+        // assert capacity > n;
         Key[] temp = (Key[]) new Object[capacity];
         for (int i = 1; i <= n; i++) {
             temp[i] = pq[i];
@@ -163,7 +143,7 @@ public class MaxPQ<Key> implements Iterable<Key> {
         // add x, and percolate it up to maintain heap invariant
         pq[++n] = x;
         swim(n);
-        assert isMaxHeap();
+        // assert isMaxHeap();
     }
 
     /**
@@ -179,7 +159,7 @@ public class MaxPQ<Key> implements Iterable<Key> {
         sink(1);
         pq[n+1] = null;     // to avoid loiterig and help with garbage collection
         if ((n > 0) && (n == (pq.length - 1) / 4)) resize(pq.length / 2);
-        assert isMaxHeap();
+        // assert isMaxHeap();
         return max;
     }
 

@@ -292,7 +292,7 @@ public class IndexFibonacciMinPQ<Key> implements Iterable<Integer> {
 	private boolean greater(Key n, Key m) {
 		if (n == null) return false;
 		if (m == null) return true;
-		return comp.compare(n,  m) > 0;
+		return comp.compare(n,  m) >= 0;
 	}
 	
 	//Assuming root1 holds a greater key than root2, root2 becomes the new root
