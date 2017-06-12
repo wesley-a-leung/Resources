@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Comparator;
 
-/*
+/**
  *  The FibonacciMinPQ class represents a priority queue of generic keys.
  *  It supports the usual insert and delete-the-minimum operations, 
  *  along with the merging of two heaps together.
@@ -161,7 +161,7 @@ public class FibonacciMinPQ<Key> implements Iterable<Key> {
 	private boolean greater(Key n, Key m) {
 		if (n == null) return false;
 		if (m == null) return true;
-		return comp.compare(n,m) > 0;
+		return comp.compare(n,m) >= 0;
 	}
 	
 	//Assuming root1 holds a greater key than root2, root2 becomes the new root
@@ -316,5 +316,4 @@ public class FibonacciMinPQ<Key> implements Iterable<Key> {
 			return ((Comparable<Key>) key1).compareTo(key2);
 		}
 	}
-	
 }

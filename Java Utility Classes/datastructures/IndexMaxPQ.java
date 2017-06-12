@@ -1,14 +1,5 @@
 package datastructures;
 
-/******************************************************************************
- *  Compilation:  javac IndexMaxPQ.java
- *  Execution:    java IndexMaxPQ
- *  Dependencies: StdOut.java
- *
- *  Maximum-oriented indexed PQ implementation using a binary heap.
- *
- ******************************************************************************/
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -147,7 +138,7 @@ public class IndexMaxPQ<Key extends Comparable<Key>> implements Iterable<Integer
         exch(1, n--);
         sink(1);
 
-        assert pq[n+1] == min;
+        // assert pq[n+1] == min;
         qp[min] = -1;        // delete
         keys[min] = null;    // to help with garbage collection
         pq[n+1] = -1;        // not needed

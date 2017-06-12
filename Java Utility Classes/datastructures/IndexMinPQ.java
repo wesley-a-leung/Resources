@@ -1,14 +1,5 @@
 package datastructures;
 
-/******************************************************************************
- *  Compilation:  javac IndexMinPQ.java
- *  Execution:    java IndexMinPQ
- *  Dependencies: StdOut.java
- *
- *  Minimum-oriented indexed PQ implementation using a binary heap.
- *
- ******************************************************************************/
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -149,7 +140,7 @@ public class IndexMinPQ<Key extends Comparable<Key>> implements Iterable<Integer
         int min = pq[1];
         exch(1, n--);
         sink(1);
-        assert min == pq[n+1];
+        // assert min == pq[n+1];
         qp[min] = -1;        // delete
         keys[min] = null;    // to help with garbage collection
         pq[n+1] = -1;        // not needed
