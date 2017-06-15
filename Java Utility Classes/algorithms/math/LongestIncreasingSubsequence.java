@@ -7,7 +7,7 @@ public class LongestIncreasingSubsequence {
 	private LongestIncreasingSubsequence() {}
 	
 	/** 
-	 * Static method for determining the length of the longest increasing subsequence.
+	 * Static method for determining the length of the longest increasing subsequence (allowing for skips)
 	 * 
 	 * Takes time proportional to <em>N</em> log <em>N</em> where N is the length of the sequence.
 	 * 
@@ -26,5 +26,6 @@ public class LongestIncreasingSubsequence {
 			if (i == len) len++;
 		}
 		return len;
-	} 
+	}
+
 }
