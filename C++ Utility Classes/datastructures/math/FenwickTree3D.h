@@ -30,7 +30,13 @@ public:
         this->sizeX = sizeX;
         this->sizeY = sizeY;
         this->sizeZ = sizeZ;
-        array = new int[sizeX + 1][sizeY + 1][sizeZ + 1];
+        array = new int**[sizeX + 1];
+        for (int i = 0; i <= sizeX; i++) {
+            array[i] = new int*[sizeY];
+            for (int j = 0; j <= sizeY; j++) {
+                array[i][j] = new int[sizeZ];
+            }
+        }
     }
 
     /**
