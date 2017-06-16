@@ -45,7 +45,7 @@ private:
     int size;
 
 public:
-    int* array;
+    int *array;
     FenwickTree(int size) {
         this->size = size;
         array = new int[size + 1];
