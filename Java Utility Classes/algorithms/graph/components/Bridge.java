@@ -25,10 +25,10 @@ public class Bridge {
     private int cnt;          // counter
     private int[] pre;        // pre[v] = order in which dfs examines v
     private int[] low;        // low[v] = lowest preorder of any vertex connected to v
-    private boolean[][] bm;		  // bridge matrix
+    private boolean[][] bm;          // bridge matrix
 
     public Bridge(Graph G) {
-    	bm = new boolean[G.V()][G.V()];
+        bm = new boolean[G.V()][G.V()];
         low = new int[G.V()];
         pre = new int[G.V()];
         for (int v = 0; v < G.V(); v++)
@@ -51,7 +51,7 @@ public class Bridge {
                 dfs(G, v, w);
                 low[v] = Math.min(low[v], low[w]);
                 if (low[w] == pre[w]) {
-                	bm[v][w] = true;
+                    bm[v][w] = true;
                     bridges++;
                 }
             }
@@ -63,6 +63,6 @@ public class Bridge {
     }
     
     public boolean isBridge(int v, int w) {
-    	return bm[v][w];
+        return bm[v][w];
     }
 }

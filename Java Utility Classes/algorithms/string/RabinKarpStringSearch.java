@@ -131,7 +131,7 @@ public class RabinKarpStringSearch {
             // match
             int offset = i - m + 1;
             if ((patHash == txtHash) && check(txt, offset))
-            	return offset;
+                return offset;
         }
 
         // no match

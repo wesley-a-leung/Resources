@@ -48,8 +48,8 @@ public class WeightedCycle {
     // side effect: initialize cycle to be self loop
     private boolean hasSelfLoop(WeightedGraph G) {
         for (int v = 0; v < G.V(); v++) {
-        	for (WeightedEdge e: G.adj(v)) {
-            	int w = e.other(v);
+            for (WeightedEdge e: G.adj(v)) {
+                int w = e.other(v);
                 if (v == w) {
                     cycle = new Stack<Integer>();
                     cycle.push(v);
@@ -70,7 +70,7 @@ public class WeightedCycle {
 
             // check for parallel edges incident to v
             for (WeightedEdge e: G.adj(v)) {
-            	int w = e.other(v);
+                int w = e.other(v);
                 if (marked[w]) {
                     cycle = new Stack<Integer>();
                     cycle.push(v);
@@ -83,7 +83,7 @@ public class WeightedCycle {
 
             // reset so marked[v] = false for all v
             for (WeightedEdge e: G.adj(v)) {
-            	int w = e.other(v);
+                int w = e.other(v);
                 marked[w] = false;
             }
         }
@@ -111,7 +111,7 @@ public class WeightedCycle {
     private void dfs(WeightedGraph G, int u, int v) {
         marked[v] = true;
         for (WeightedEdge e: G.adj(v)) {
-        	int w = e.other(v);
+            int w = e.other(v);
 
             // short circuit if cycle already found
             if (cycle != null) return;

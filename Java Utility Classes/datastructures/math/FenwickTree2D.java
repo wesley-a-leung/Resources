@@ -23,12 +23,12 @@ public class FenwickTree2D {
      * @return sum
      */
     public int rsq(int indX, int indY) {
-    	// assert indX > 0 && indY > 0;
+        // assert indX > 0 && indY > 0;
         int sum = 0;
         for (int x = indX; x > 0; x -= (x & -x)) {
-        	for (int y = indY; y > 0; y -= (y & -y)) {
-        		sum += array[x][y];
-        	}
+            for (int y = indY; y > 0; y -= (y & -y)) {
+                sum += array[x][y];
+            }
         }
         return sum;
     }
@@ -45,7 +45,7 @@ public class FenwickTree2D {
      * @return sum
      */
     public int rsq(int x1, int y1, int x2, int y2) {
-    	// assert x2 >= x1 && y2 >= y1 && x1 > 0 && y1 > 0;
+        // assert x2 >= x1 && y2 >= y1 && x1 > 0 && y1 > 0;
         return rsq(x2, y2) + rsq(x1 - 1, y1 - 1) - rsq(x1 - 1, y2) - rsq(x2, y1 - 1);
     }
 
@@ -60,12 +60,12 @@ public class FenwickTree2D {
      * @param  value value
      */
     public void update(int indX, int indY, int value) {
-    	// assert indX > 0 && indY > 0;
-    	for (int x = indX; x < array.length; x += (x & -x)) {
-    		for (int y = indY; y < array[x].length; y += (y & -y)) {
-    			array[x][y] += value;
-    		}
-    	}
+        // assert indX > 0 && indY > 0;
+        for (int x = indX; x < array.length; x += (x & -x)) {
+            for (int y = indY; y < array[x].length; y += (y & -y)) {
+                array[x][y] += value;
+            }
+        }
     }
 
     public int sizeX() {
@@ -73,6 +73,6 @@ public class FenwickTree2D {
     }
     
     public int sizeY() {
-    	return array[0].length - 1;
+        return array[0].length - 1;
     }
 }

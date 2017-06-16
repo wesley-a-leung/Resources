@@ -24,14 +24,14 @@ public class FenwickTree3D {
      * @return sum
      */
     public int rsq(int indX, int indY, int indZ) {
-    	// assert indX > 0 && indY > 0 && indZ > 0;
+        // assert indX > 0 && indY > 0 && indZ > 0;
         int sum = 0;
         for (int x = indX; x > 0; x -= (x & -x)) {
-        	for (int y = indY; y > 0; y -= (y & -y)) {
-        		for (int z = indZ; z > 0; z -= (z & -z)) {
-        			sum += array[x][y][z];
-        		}
-        	}
+            for (int y = indY; y > 0; y -= (y & -y)) {
+                for (int z = indZ; z > 0; z -= (z & -z)) {
+                    sum += array[x][y][z];
+                }
+            }
         }
         return sum;
     }
@@ -50,11 +50,11 @@ public class FenwickTree3D {
      * @return sum
      */
     public int rsq(int x1, int y1, int z1, int x2, int y2, int z2) {
-    	// assert x2 >= x1 && y2 >= y1 && z2 >= z1 && x1 > 0 && y1 > 0 && z1 > 0;
-    	return rsq(x2, y2, z2) 
-    			- rsq(x1 - 1, y2, z2) - rsq(x2, y1 - 1, z2) - rsq(x2, y2, z1 - 1)
-    			+ rsq(x1 - 1, y1 - 1, z2) + rsq(x1 - 1, y2, z1 - 1) + rsq(x2, y1 - 1, z1 - 1)
-    			- rsq(x1 - 1, y1 - 1, z1 - 1);
+        // assert x2 >= x1 && y2 >= y1 && z2 >= z1 && x1 > 0 && y1 > 0 && z1 > 0;
+        return rsq(x2, y2, z2) 
+                - rsq(x1 - 1, y2, z2) - rsq(x2, y1 - 1, z2) - rsq(x2, y2, z1 - 1)
+                + rsq(x1 - 1, y1 - 1, z2) + rsq(x1 - 1, y2, z1 - 1) + rsq(x2, y1 - 1, z1 - 1)
+                - rsq(x1 - 1, y1 - 1, z1 - 1);
     }
 
     /**
@@ -69,14 +69,14 @@ public class FenwickTree3D {
      * @param  value value
      */
     public void update(int indX, int indY, int indZ, int value) {
-    	// assert indX > 0 && indY > 0 && indZ > 0;
-    	for (int x = indX; x < array.length; x += (x & -x)) {
-    		for (int y = indY; y < array[x].length; y += (y & -y)) {
-    			for (int z = indZ; z < array[x][y].length; z += (z & -z)) {
-    				array[x][y][z] += value;
-    			}
-    		}
-    	}
+        // assert indX > 0 && indY > 0 && indZ > 0;
+        for (int x = indX; x < array.length; x += (x & -x)) {
+            for (int y = indY; y < array[x].length; y += (y & -y)) {
+                for (int z = indZ; z < array[x][y].length; z += (z & -z)) {
+                    array[x][y][z] += value;
+                }
+            }
+        }
     }
 
     public int sizeX() {
@@ -84,10 +84,10 @@ public class FenwickTree3D {
     }
     
     public int sizeY() {
-    	return array[0].length - 1;
+        return array[0].length - 1;
     }
     
     public int sizeZ() {
-    	return array[0][0].length - 1;
+        return array[0][0].length - 1;
     }
 }

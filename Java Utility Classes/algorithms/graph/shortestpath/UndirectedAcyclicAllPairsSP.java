@@ -20,16 +20,16 @@ import datastructures.graph.WeightedGraph;
  *
  */
 public class UndirectedAcyclicAllPairsSP {
-	private double distTo[]; // stores the distance from an arbitrary root
-	private WeightedLCA LCA;
-	
-	public UndirectedAcyclicAllPairsSP(WeightedGraph G) {
-		distTo = new double[G.V()];
-		LCA = new WeightedLCA(G); // will handle the illegal argument exception for acyclic graph
-		bfs(G, 0);
-	}
-	
-	private void bfs(WeightedGraph G, int s) {
+    private double distTo[]; // stores the distance from an arbitrary root
+    private WeightedLCA LCA;
+    
+    public UndirectedAcyclicAllPairsSP(WeightedGraph G) {
+        distTo = new double[G.V()];
+        LCA = new WeightedLCA(G); // will handle the illegal argument exception for acyclic graph
+        bfs(G, 0);
+    }
+    
+    private void bfs(WeightedGraph G, int s) {
         Queue<Integer> q = new Queue<Integer>();
         boolean[] marked = new boolean[G.V()];
         distTo[s] = 0;
@@ -39,7 +39,7 @@ public class UndirectedAcyclicAllPairsSP {
         while (!q.isEmpty()) {
             int v = q.dequeue();
             for (WeightedEdge e: G.adj(v)) {
-            	int w = e.other(v);
+                int w = e.other(v);
                 if (!marked[w]) {
                     distTo[w] = distTo[v] + e.weight();
                     marked[w] = true;
@@ -48,8 +48,8 @@ public class UndirectedAcyclicAllPairsSP {
             }
         }
     }
-	
-	/**
+    
+    /**
      * Returns the length of a shortest path from vertex {@code s} to vertex {@code t}.
      * @param  s the source vertex
      * @param  t the destination vertex
@@ -57,13 +57,13 @@ public class UndirectedAcyclicAllPairsSP {
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      * @throws IllegalArgumentException unless {@code 0 <= t < V}
      */
-	public double dist(int s, int t) {
-		validateVertex(s);
-		validateVertex(t);
-		return distTo[s] + distTo[t] - 2 * distTo[LCA.lca(s, t)];
-	}
-	
-	private void validateVertex(int v) {
+    public double dist(int s, int t) {
+        validateVertex(s);
+        validateVertex(t);
+        return distTo[s] + distTo[t] - 2 * distTo[LCA.lca(s, t)];
+    }
+    
+    private void validateVertex(int v) {
         int V = distTo.length;
         if (v < 0 || v >= V)
             throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));

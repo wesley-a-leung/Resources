@@ -17,81 +17,81 @@ import datastructures.graph.WeightedGraph;
  *  @author Wesley Leung
  */  
 public class YenUndirectedKSP {
-	private final int source;
-	private final int sink;
-	private WeightedGraph G;
-	private final int V;
-	private ArrayList<WeightedPath> paths;
-	private MinPQ<WeightedPath> pq;
-	private HashSet<WeightedEdge> removedEdges = new HashSet<WeightedEdge>();
-	HashSet<Integer> removedVerticies = new HashSet<Integer>();
-	private double[] distTo;
-	private WeightedEdge[] edgeTo;
-	private IndexMinPQ<Double> ipq;
-	
-	public YenUndirectedKSP(WeightedGraph G, int source, int sink) {
-		this.G = G;
-		this.V = G.V();
-		validateVertex(source);
-		validateVertex(sink);
-		this.source = source;
-		this.sink = sink;
-		this.paths = new ArrayList<WeightedPath>();
-		pq = new MinPQ<WeightedPath>();
-		paths.add(dijkstraSP(source, sink));
-	}
-	
-	private void find(int k) {
-		if (paths.get(k - 1) == null || paths.get(k - 1).size() == 0) {
-			paths.add(new WeightedPath());
-			return;
-		}
-		int spurNode = source;
-		for (int i = 0; i < paths.get(k - 1).size(); i++) {
-			WeightedPath rootPath = new WeightedPath();
-			removedEdges.clear();
-			removedVerticies.clear();
-			for (int j = 0; j < i; j++) {
-				rootPath.add(paths.get(k - 1).get(j));
-			}
-			for (WeightedPath p: paths) {
-				if (p.size() < rootPath.size()) continue;
-				WeightedPath pPath = new WeightedPath();
-				for (int j = 0; j < i && j < p.size(); j++) {
-					pPath.add(p.get(j));
-				}
-				if (rootPath.equals(pPath) || rootPath.size() == 0) {
-					removedEdges.add(p.get(i));
-				}
-			}
-			int last = source;
-			removedVerticies.add(source);
-			for (WeightedEdge e: rootPath) {
-				removedVerticies.add(e.other(last));
-				last = e.other(last);
-			}
-			WeightedPath spurPath = dijkstraSP(spurNode, sink);
-			WeightedPath totalPath = new WeightedPath();
-			totalPath.addAll(rootPath);
-			totalPath.addAll(spurPath);
-			if (totalPath.length() > 0 && spurPath != null) pq.insert(totalPath);
-			spurNode = paths.get(k - 1).get(i).other(spurNode);
-		}
-		if (pq.isEmpty()) paths.add(new WeightedPath());
-		else paths.add(pq.delMin());
-	}
-	
-	public WeightedPath KSP(int K) {
-		if (K >= paths.size()) {
-			for (int k = paths.size(); k <= K; k++) {
-				find(k);
-			}
-		}
-		return paths.get(K);
-	}
-	
-	private WeightedPath dijkstraSP(int s, int t) {
-		distTo = new double[G.V()];
+    private final int source;
+    private final int sink;
+    private WeightedGraph G;
+    private final int V;
+    private ArrayList<WeightedPath> paths;
+    private MinPQ<WeightedPath> pq;
+    private HashSet<WeightedEdge> removedEdges = new HashSet<WeightedEdge>();
+    HashSet<Integer> removedVerticies = new HashSet<Integer>();
+    private double[] distTo;
+    private WeightedEdge[] edgeTo;
+    private IndexMinPQ<Double> ipq;
+    
+    public YenUndirectedKSP(WeightedGraph G, int source, int sink) {
+        this.G = G;
+        this.V = G.V();
+        validateVertex(source);
+        validateVertex(sink);
+        this.source = source;
+        this.sink = sink;
+        this.paths = new ArrayList<WeightedPath>();
+        pq = new MinPQ<WeightedPath>();
+        paths.add(dijkstraSP(source, sink));
+    }
+    
+    private void find(int k) {
+        if (paths.get(k - 1) == null || paths.get(k - 1).size() == 0) {
+            paths.add(new WeightedPath());
+            return;
+        }
+        int spurNode = source;
+        for (int i = 0; i < paths.get(k - 1).size(); i++) {
+            WeightedPath rootPath = new WeightedPath();
+            removedEdges.clear();
+            removedVerticies.clear();
+            for (int j = 0; j < i; j++) {
+                rootPath.add(paths.get(k - 1).get(j));
+            }
+            for (WeightedPath p: paths) {
+                if (p.size() < rootPath.size()) continue;
+                WeightedPath pPath = new WeightedPath();
+                for (int j = 0; j < i && j < p.size(); j++) {
+                    pPath.add(p.get(j));
+                }
+                if (rootPath.equals(pPath) || rootPath.size() == 0) {
+                    removedEdges.add(p.get(i));
+                }
+            }
+            int last = source;
+            removedVerticies.add(source);
+            for (WeightedEdge e: rootPath) {
+                removedVerticies.add(e.other(last));
+                last = e.other(last);
+            }
+            WeightedPath spurPath = dijkstraSP(spurNode, sink);
+            WeightedPath totalPath = new WeightedPath();
+            totalPath.addAll(rootPath);
+            totalPath.addAll(spurPath);
+            if (totalPath.length() > 0 && spurPath != null) pq.insert(totalPath);
+            spurNode = paths.get(k - 1).get(i).other(spurNode);
+        }
+        if (pq.isEmpty()) paths.add(new WeightedPath());
+        else paths.add(pq.delMin());
+    }
+    
+    public WeightedPath KSP(int K) {
+        if (K >= paths.size()) {
+            for (int k = paths.size(); k <= K; k++) {
+                find(k);
+            }
+        }
+        return paths.get(K);
+    }
+    
+    private WeightedPath dijkstraSP(int s, int t) {
+        distTo = new double[G.V()];
         edgeTo = new WeightedEdge[G.V()];
 
         validateVertex(s);
@@ -106,8 +106,8 @@ public class YenUndirectedKSP {
         while (!ipq.isEmpty()) {
             int v = ipq.delMin();
             for (WeightedEdge e : G.adj(v)) {
-            	if (removedEdges.contains(e) || removedVerticies.contains(e.other(v))) continue;
-            	relax(e, v);
+                if (removedEdges.contains(e) || removedVerticies.contains(e.other(v))) continue;
+                relax(e, v);
             }
         }
         if(edgeTo[t] == null) return null;
@@ -119,11 +119,11 @@ public class YenUndirectedKSP {
         }
         WeightedPath ret = new WeightedPath();
         while (!path.isEmpty()) {
-        	ret.add(path.pop());
+            ret.add(path.pop());
         }
         return ret;
-	}
-	
+    }
+    
     private void relax(WeightedEdge e, int v) {
         int w = e.other(v);
         if (distTo[w] > distTo[v] + e.weight()) {
@@ -133,9 +133,9 @@ public class YenUndirectedKSP {
             else                ipq.insert(w, distTo[w]);
         }
     }
-	
-	
-	
+    
+    
+    
     // throw an IllegalArgumentException unless {@code 0 <= v < V}
     private void validateVertex(int v) {
         if (v < 0 || v >= V)

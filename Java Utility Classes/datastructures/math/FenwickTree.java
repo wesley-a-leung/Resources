@@ -46,10 +46,10 @@ public class FenwickTree {
      * @return sum
      */
     public int rsq(int ind) {
-    	// assert ind > 0;
+        // assert ind > 0;
         int sum = 0;
         for (int x = ind; x > 0; x -= (x & -x)) {
-        	sum += array[x];
+            sum += array[x];
         }
         return sum;
     }
@@ -66,7 +66,7 @@ public class FenwickTree {
      * @return sum
      */
     public int rsq(int a, int b) {
-    	// assert b >= a && a > 0 && b > 0;
+        // assert b >= a && a > 0 && b > 0;
         return rsq(b) - rsq(a - 1);
     }
 
@@ -80,10 +80,10 @@ public class FenwickTree {
      * @param  value value
      */
     public void update(int ind, int value) {
-    	// assert ind > 0;
-    	for (int x = ind; x < array.length; x += (x & -x)) {
-    		array[x] += value;
-    	}
+        // assert ind > 0;
+        for (int x = ind; x < array.length; x += (x & -x)) {
+            array[x] += value;
+        }
     }
 
     public int size() {

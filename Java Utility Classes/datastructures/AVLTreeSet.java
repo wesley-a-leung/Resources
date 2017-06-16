@@ -93,20 +93,20 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
      *         and {@code false} otherwise
      * @throws IllegalArgumentException if {@code val} is {@code null}
      */
-	public boolean contains(Value val) {
-		return contains(root, val);
-	}
+    public boolean contains(Value val) {
+        return contains(root, val);
+    }
 
-	// auxiliary method for contains
-	private boolean contains(Node n, Value val) {
-		if (n == null)
-			return false;
-		else if (val.compareTo(n.val) < 0)
-			return contains(n.left, val);
-		else if (val.compareTo(n.val) > 0)
-			return contains(n.right, val);
-		return true;
-	}
+    // auxiliary method for contains
+    private boolean contains(Node n, Value val) {
+        if (n == null)
+            return false;
+        else if (val.compareTo(n.val) < 0)
+            return contains(n.left, val);
+        else if (val.compareTo(n.val) > 0)
+            return contains(n.right, val);
+        return true;
+    }
 
     /**
      * Inserts the specified value into the symbol table, allowing for duplicates.
@@ -442,19 +442,19 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
     }
 
     private Value select(Node x, int k) {
-    	if (x == null) {
-	        return null;
-	    }
+        if (x == null) {
+            return null;
+        }
 
-	    int rank = size(x.left) + 1;
+        int rank = size(x.left) + 1;
 
-	    if (rank == k) {
-	        return x.val;
-	    } else if (rank > k) {
-	        return select(x.left, k);
-	    } else {
-	        return select(x.right, k - rank);
-	    }
+        if (rank == k) {
+            return x.val;
+        } else if (rank > k) {
+            return select(x.left, k);
+        } else {
+            return select(x.right, k - rank);
+        }
     }
 
     /**
@@ -479,7 +479,7 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
      * @return the number of values in the subtree less than val
      */
     private int rank(Node n, Value val) {
-    	if (n == null) {
+        if (n == null) {
             return 0;
         }
 
