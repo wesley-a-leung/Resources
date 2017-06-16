@@ -14,9 +14,9 @@ using namespace std;
 
 struct WeightedUF {
 private:
-	int* parent;
-	int* size;
-	int count;
+    int* parent;
+    int* size;
+    int count;
 
 public:
     /**
@@ -79,7 +79,7 @@ public:
      * @return the size of the component containing p
      */
     int getSize(int p) {
-    	return size[find(p)];
+        return size[find(p)];
     }
 
     /**

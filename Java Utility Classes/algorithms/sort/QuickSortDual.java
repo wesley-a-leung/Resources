@@ -4,8 +4,8 @@ package algorithms.sort;
  * QuickSort with dual pivot.
  */
 public class QuickSortDual {
-	
-	private static final int INSERTION_SORT_CUTOFF = 8;
+    
+    private static final int INSERTION_SORT_CUTOFF = 8;
 
     // quicksort the array a[] using dual-pivot quicksort
     public static void sort(Comparable[] a) {

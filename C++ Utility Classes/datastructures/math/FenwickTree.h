@@ -42,14 +42,14 @@ using namespace std;
  */
 struct FenwickTree {
 private:
-	int size;
+    int size;
 
 public:
-	int* array;
-	FenwickTree(int size) {
-		this->size = size;
-		array = new int[size + 1];
-	}
+    int* array;
+    FenwickTree(int size) {
+        this->size = size;
+        array = new int[size + 1];
+    }
 
     /**
      * Range Sum query from 1 to ind
@@ -60,13 +60,13 @@ public:
      * @param  ind index
      * @return sum
      */
-	int rsq(int ind) {
-		int sum = 0;
-		for (int x = ind; x > 0; x -= (x & -x)) {
-			sum += array[x];
-		}
-		return sum;
-	}
+    int rsq(int ind) {
+        int sum = 0;
+        for (int x = ind; x > 0; x -= (x & -x)) {
+            sum += array[x];
+        }
+        return sum;
+    }
 
     /**
      * Range Sum Query from a to b.
@@ -79,9 +79,9 @@ public:
      * @param  b right index
      * @return sum
      */
-	int rsq(int a, int b) {
-		return rsq(b) - rsq(a - 1);
-	}
+    int rsq(int a, int b) {
+        return rsq(b) - rsq(a - 1);
+    }
 
     /**
      * Update the array at ind and all the affected regions above ind.
@@ -92,15 +92,15 @@ public:
      * @param  ind   index
      * @param  value value
      */
-	void update(int ind, int value) {
-		for (int x = ind; x <= size; x += (x & -x)) {
-			array[x] += value;
-		}
-	}
+    void update(int ind, int value) {
+        for (int x = ind; x <= size; x += (x & -x)) {
+            array[x] += value;
+        }
+    }
 
-	int getSize() {
-		return size;
-	}
+    int getSize() {
+        return size;
+    }
 };
 
 #endif /* DATASTRUCTURES_MATH_FENWICKTREE_H_ */

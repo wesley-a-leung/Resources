@@ -107,16 +107,16 @@ public class SplayTree<Key extends Comparable<Key>, Value>  {
      * @return an iterator that iterates over the keys in order
      */
     public Iterable<Key> keys() {
-    	Queue<Key> order = new Queue<Key>();
-    	traverse(root, order);
-    	return order;
+        Queue<Key> order = new Queue<Key>();
+        traverse(root, order);
+        return order;
     }
     
     private void traverse(Node x, Queue<Key> order) {
-    	if (x == null) return;
-    	traverse(x.left, order);
-    	order.enqueue(x.key);
-    	traverse(x.right, order);
+        if (x == null) return;
+        traverse(x.left, order);
+        order.enqueue(x.key);
+        traverse(x.right, order);
     }
     
     

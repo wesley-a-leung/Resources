@@ -15,8 +15,8 @@ package algorithms.math;
  ******************************************************************************/
 
 public class EuclidGCD {
-	
-	/**
+    
+    /**
      * This class should not be instantiated.
      */
     private EuclidGCD() { }

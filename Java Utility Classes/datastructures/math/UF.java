@@ -165,7 +165,7 @@ public class UF {
      * @return the rank by size of the component containing p
      */
     public byte rank(int p) {
-    	return rank[find(p)];
+        return rank[find(p)];
     }
   
     /**

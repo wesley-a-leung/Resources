@@ -11,8 +11,8 @@ import java.util.TreeMap;
  *
  */
 public class TreeSort {
-	
-	// This class should not be instantiated.
+    
+    // This class should not be instantiated.
     private TreeSort() { }
 
     /**
@@ -20,17 +20,17 @@ public class TreeSort {
      * @param a the array to be sorted
      */
     public static void sort(Comparable[] a) {
-    	TreeMap<Comparable, Integer> tree = new TreeMap<Comparable, Integer>();
-    	for (Comparable x: a) {
-    		Integer count = tree.get(x);
-    		if (count == null) tree.put(x, 1);
-    		else tree.put(x, count + 1);
-    	}
-    	int i = 0;
-    	for (Map.Entry<Comparable, Integer> x: tree.entrySet()) {
-    		for (int j = 0; j < x.getValue(); j++) {
-    			a[i++] = x.getKey();
-    		}
-    	}
+        TreeMap<Comparable, Integer> tree = new TreeMap<Comparable, Integer>();
+        for (Comparable x: a) {
+            Integer count = tree.get(x);
+            if (count == null) tree.put(x, 1);
+            else tree.put(x, count + 1);
+        }
+        int i = 0;
+        for (Map.Entry<Comparable, Integer> x: tree.entrySet()) {
+            for (int j = 0; j < x.getValue(); j++) {
+                a[i++] = x.getKey();
+            }
+        }
     }
 }

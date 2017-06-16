@@ -177,8 +177,8 @@ public class SuffixArrayX {
      * @return the length of the longest common prefix of text[i..n) and text[j..n) 
      */
     public int lcp(int i, int j) {
-    	if (i < 0 || i >= n || j < 0 || j >= n) throw new IndexOutOfBoundsException();
-    	return lcpPrivate(index[i], index[j]);
+        if (i < 0 || i >= n || j < 0 || j >= n) throw new IndexOutOfBoundsException();
+        return lcpPrivate(index[i], index[j]);
     }
     
     private int lcpPrivate(int i, int j) {

@@ -93,16 +93,16 @@ public class Deque<Item> implements Iterable<Item> {
     public void addFirst(Item item) {
         n++;
         if (first == null) {
-        	Node<Item> newFirst = new Node<Item>();
-        	newFirst.item = item;
-        	first = newFirst;
-        	last = newFirst;
+            Node<Item> newFirst = new Node<Item>();
+            newFirst.item = item;
+            first = newFirst;
+            last = newFirst;
         } else {
-        	Node<Item> newFirst = new Node<Item>();
-        	newFirst.item = item;
-        	newFirst.next = first;
-        	first.prev = newFirst;
-        	first = newFirst;
+            Node<Item> newFirst = new Node<Item>();
+            newFirst.item = item;
+            newFirst.next = first;
+            first.prev = newFirst;
+            first = newFirst;
         }
     }
 
@@ -112,19 +112,19 @@ public class Deque<Item> implements Iterable<Item> {
      * @param  item the item to add
      */
     public void addLast(Item item) {
-    	n++;
-    	if (last == null) {
-    		Node<Item> newLast = new Node<Item>();
-    		newLast.item = item;
-    		first = newLast;
-    		last = newLast;
-    	} else {
-    		Node<Item> newLast = new Node<Item>();
-    		newLast.item = item;
-    		newLast.prev = last;
-    		last.next = newLast;
-    		last = newLast;
-    	}
+        n++;
+        if (last == null) {
+            Node<Item> newLast = new Node<Item>();
+            newLast.item = item;
+            first = newLast;
+            last = newLast;
+        } else {
+            Node<Item> newLast = new Node<Item>();
+            newLast.item = item;
+            newLast.prev = last;
+            last.next = newLast;
+            last = newLast;
+        }
     }
 
     /**

@@ -10,8 +10,8 @@ import datastructures.MinPQ;
  *
  */
 public class PriorityQueueSort {
-	
-	// This class should not be instantiated.
+    
+    // This class should not be instantiated.
     private PriorityQueueSort() { }
 
     /**
@@ -19,12 +19,12 @@ public class PriorityQueueSort {
      * @param a the array to be sorted
      */
     public static void sort(Comparable[] a) {
-    	MinPQ<Comparable> pq = new MinPQ<Comparable>();
-    	for (Comparable x: a) {
-    		pq.insert(x);
-    	}
-    	for (int i = 0; i < a.length; i++) {
-    		a[i] = pq.delMin();
-    	}
+        MinPQ<Comparable> pq = new MinPQ<Comparable>();
+        for (Comparable x: a) {
+            pq.insert(x);
+        }
+        for (int i = 0; i < a.length; i++) {
+            a[i] = pq.delMin();
+        }
     }
 }

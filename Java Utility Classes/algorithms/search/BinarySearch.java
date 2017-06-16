@@ -31,7 +31,7 @@ public class BinarySearch {
      * @return index of key in array {@code a} if present; {@code -1} otherwise
      */
     public static int indexOf(Comparable[] a, Comparable key) {
-    	return indexOf(a, 0, a.length, key);
+        return indexOf(a, 0, a.length, key);
     }
     
     /**
@@ -68,7 +68,7 @@ public class BinarySearch {
      * {@code a.length} if key is larger than the largest element
      */
     public static int lowerBound(Comparable[] a, Comparable key) {
-    	return lowerBound(a, 0, a.length, key);
+        return lowerBound(a, 0, a.length, key);
     }
     
     /**
@@ -84,15 +84,15 @@ public class BinarySearch {
      * {@code end} if key is larger than the largest element
      */
     public static int lowerBound(Comparable[] a, int start, int end, Comparable key) {
-    	int lo = start;
-    	int hi = end;
-    	while (lo < hi) {
-    		int mid = lo + (hi - lo) / 2;
-    		int cmp = key.compareTo(a[mid]);
-    		if (cmp <= 0) hi = mid;
-    		else lo = mid + 1;
-    	}
-    	return lo;
+        int lo = start;
+        int hi = end;
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            int cmp = key.compareTo(a[mid]);
+            if (cmp <= 0) hi = mid;
+            else lo = mid + 1;
+        }
+        return lo;
     }
     
     /**
@@ -105,7 +105,7 @@ public class BinarySearch {
      * {@code a.length} if key is larger than or equal to the largest element
      */
     public static int upperBound(Comparable[] a, Comparable key) {
-    	return upperBound(a, 0, a.length, key);
+        return upperBound(a, 0, a.length, key);
     }
     
     /**
@@ -121,23 +121,23 @@ public class BinarySearch {
      * {@code end} if key is larger than or equal to the largest element
      */
     public static int upperBound(Comparable[] a, int start, int end, Comparable key) {
-    	int lo = start;
-    	int hi = end;
-    	while (lo < hi) {
-    		int mid = lo + (hi - lo) / 2;
-    		int cmp = key.compareTo(a[mid]);
-    		if (cmp >= 0) lo = mid + 1;
-    		else hi = mid;
-    	}
-    	return lo;
+        int lo = start;
+        int hi = end;
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            int cmp = key.compareTo(a[mid]);
+            if (cmp >= 0) lo = mid + 1;
+            else hi = mid;
+        }
+        return lo;
     }
     
     public static Pair<Integer, Integer> equalRange(Comparable[] a, Comparable key) {
-    	return equalRange(a, 0, a.length, key);
+        return equalRange(a, 0, a.length, key);
     }
     
     public static Pair<Integer, Integer> equalRange(Comparable[] a, int start, int end, Comparable key) {
-    	return new Pair<Integer, Integer>(lowerBound(a, start, end, key), upperBound(a, start, end, key));
+        return new Pair<Integer, Integer>(lowerBound(a, start, end, key), upperBound(a, start, end, key));
     }
     
     //*********************** LIST METHODS ********************************//
@@ -150,7 +150,7 @@ public class BinarySearch {
      * @return index of key in list {@code a} if present; {@code -1} otherwise
      */
     public static int indexOf(List<Comparable> a, Comparable key) {
-    	return indexOf(a, 0, a.size(), key);
+        return indexOf(a, 0, a.size(), key);
     }
     
     /**
@@ -187,7 +187,7 @@ public class BinarySearch {
      * {@code a.size()} if key is larger than the largest element
      */
     public static int lowerBound(List<Comparable> a, Comparable key) {
-    	return lowerBound(a, 0, a.size(), key);
+        return lowerBound(a, 0, a.size(), key);
     }
     
     /**
@@ -203,15 +203,15 @@ public class BinarySearch {
      * {@code end} if key is larger than the largest element
      */
     public static int lowerBound(List<Comparable> a, int start, int end, Comparable key) {
-    	int lo = start;
-    	int hi = end;
-    	while (lo < hi) {
-    		int mid = lo + (hi - lo) / 2;
-    		int cmp = key.compareTo(a.get(mid));
-    		if (cmp <= 0) hi = mid;
-    		else lo = mid + 1;
-    	}
-    	return lo;
+        int lo = start;
+        int hi = end;
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            int cmp = key.compareTo(a.get(mid));
+            if (cmp <= 0) hi = mid;
+            else lo = mid + 1;
+        }
+        return lo;
     }
     
     /**
@@ -224,7 +224,7 @@ public class BinarySearch {
      * {@code a.size()} if key is larger than or equal to the largest element
      */
     public static int upperBound(List<Comparable> a, Comparable key) {
-    	return upperBound(a, 0, a.size(), key);
+        return upperBound(a, 0, a.size(), key);
     }
     
     /**
@@ -240,22 +240,22 @@ public class BinarySearch {
      * {@code end} if key is larger than or equal to the largest element
      */
     public static int upperBound(List<Comparable> a, int start, int end, Comparable key) {
-    	int lo = start;
-    	int hi = end;
-    	while (lo < hi) {
-    		int mid = lo + (hi - lo) / 2;
-    		int cmp = key.compareTo(a.get(mid));
-    		if (cmp >= 0) lo = mid + 1;
-    		else hi = mid;
-    	}
-    	return lo;
+        int lo = start;
+        int hi = end;
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            int cmp = key.compareTo(a.get(mid));
+            if (cmp >= 0) lo = mid + 1;
+            else hi = mid;
+        }
+        return lo;
     }
     
     public static Pair<Integer, Integer> equalRange(List<Comparable> a, Comparable key) {
-    	return equalRange(a, 0, a.size(), key);
+        return equalRange(a, 0, a.size(), key);
     }
     
     public static Pair<Integer, Integer> equalRange(List<Comparable> a, int start, int end, Comparable key) {
-    	return new Pair<Integer, Integer>(lowerBound(a, start, end, key), upperBound(a, start, end, key));
+        return new Pair<Integer, Integer>(lowerBound(a, start, end, key), upperBound(a, start, end, key));
     }
 }
