@@ -14,8 +14,8 @@ using namespace std;
 
 struct Node {
 public:
-    Node* left;
-    Node* right;
+    Node *left;
+    Node *right;
     int pre, suf, sum;
     Node(int val) {
         this->pre = val;
@@ -24,7 +24,7 @@ public:
         this->left = this->right = nullptr;
     }
 
-    Node(Node* l, Node* r) {
+    Node(Node *l, Node *r) {
         this->left = l;
         this->right = r;
         this->pre = max(l->pre, r->pre + l->sum);
@@ -60,18 +60,18 @@ public:
 
 struct SegmentTree {
 private:
-    Node** rev;
-    int* arr;
+    Node* *rev;
+    int *arr;
     int revInd = 0;
     int N;
 
-    Node* build(int cL, int cR) {
+    Node *build(int cL, int cR) {
         if (cL == cR) return new Node(arr[cL]);
         int m = (cL + cR) >> 1;
         return new Node(build(cL , m), build(m + 1, cR));
     }
 
-    Node* update(Node* cur, int cL, int cR, int ind) {
+    Node *update(Node *cur, int cL, int cR, int ind) {
         if (cL <= ind && ind <= cR) {
             if (cL == cR) return new Node(arr[cL]);
             int m = (cL + cR) >> 1;
@@ -80,7 +80,7 @@ private:
         return cur;
     }
 
-    Query query(Node* cur, int cL, int cR, int l, int r) {
+    Query query(Node *cur, int cL, int cR, int l, int r) {
         if (cL > r || cR < l) return Query();
         if (cL >= l && cR <= r) return Query(cur->pre, cur->suf, cur->sum);
         int m = (cL + cR) >> 1;
@@ -92,7 +92,7 @@ private:
     }
 
 public:
-    void init(int size, int* array, int rev) {
+    void init(int size, int *array, int rev) {
         rev = new Node*[rev];
         arr = new int[size + 1];
         for (int i = 1; i <= size; i++) {
