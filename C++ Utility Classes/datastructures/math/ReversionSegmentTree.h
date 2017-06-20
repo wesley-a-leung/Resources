@@ -12,55 +12,55 @@
 
 using namespace std;
 
-struct Node {
-public:
-    Node *left;
-    Node *right;
-    int pre, suf, sum;
-    Node(int val) {
-        this->pre = val;
-        this->suf = val;
-        this->sum = val;
-        this->left = this->right = nullptr;
-    }
+struct ReversionSegmentTree {
+    struct Node {
+    public:
+        Node *left;
+        Node *right;
+        int pre, suf, sum;
+        Node(int val) {
+            this->pre = val;
+            this->suf = val;
+            this->sum = val;
+            this->left = this->right = nullptr;
+        }
 
-    Node(Node *l, Node *r) {
-        this->left = l;
-        this->right = r;
-        this->pre = max(l->pre, r->pre + l->sum);
-        this->suf = max(l->suf + r->sum, r->suf);
-        this->sum = l->sum + r->sum;
-    }
-};
+        Node(Node *l, Node *r) {
+            this->left = l;
+            this->right = r;
+            this->pre = max(l->pre, r->pre + l->sum);
+            this->suf = max(l->suf + r->sum, r->suf);
+            this->sum = l->sum + r->sum;
+        }
+    };
 
-struct Query {
-public:
-    int pre, suf, sum;
-    bool isNull;
-    Query() {
-        this->pre = 0;
-        this->suf = 0;
-        this->sum = 0;
-        this->isNull = true;
-    }
-    Query(int pre, int suf, int sum) {
-        this->pre = pre;
-        this->suf = suf;
-        this->sum = sum;
-        this->isNull = false;
-    }
+    struct Query {
+    public:
+        int pre, suf, sum;
+        bool isNull;
+        Query() {
+            this->pre = 0;
+            this->suf = 0;
+            this->sum = 0;
+            this->isNull = true;
+        }
+        Query(int pre, int suf, int sum) {
+            this->pre = pre;
+            this->suf = suf;
+            this->sum = sum;
+            this->isNull = false;
+        }
 
-    Query(Query l, Query r) {
-        this->pre = max(l.pre, r.pre + l.sum);
-        this->suf = max(l.suf + r.sum, r.suf);
-        this->sum = l.sum + r.sum;
-        this->isNull = false;
-    }
-};
+        Query(Query l, Query r) {
+            this->pre = max(l.pre, r.pre + l.sum);
+            this->suf = max(l.suf + r.sum, r.suf);
+            this->sum = l.sum + r.sum;
+            this->isNull = false;
+        }
+    };
 
-struct SegmentTree {
 private:
-    Node* *rev;
+    vector<Node*> rev;
     int *arr;
     int revInd = 0;
     int N;
@@ -92,20 +92,27 @@ private:
     }
 
 public:
-    void init(int size, int *array, int rev) {
-        rev = new Node*[rev];
+    ReversionSegmentTree(int size, int *array) {
         arr = new int[size + 1];
         for (int i = 1; i <= size; i++) {
             arr[i] = array[i - 1];
         }
-        rev[0] = build(1, size);
+        rev.push_back(build(1, size));
+        N = size;
+    }
+
+    ReversionSegmentTree(int size) {
+        arr = new int[size + 1];
+        for (int i = 1; i <= size; i++) {
+            arr[i] = 0;
+        }
+        rev.push_back(build(1, size));
         N = size;
     }
 
     void update(int ind, int val) {
         arr[ind] = val;
-        rev[revInd + 1] = update(rev[revInd], 1, N, ind);
-        revInd++;
+        rev.push_back(update(rev[revInd++], 1, N, ind));
     }
 
     int maxPSA(int l, int r) {
@@ -117,7 +124,8 @@ public:
     }
 
     void revert(int x) {
-        rev[++revInd] = rev[x];
+        rev.push_back(rev[x]);
+        revInd++;
     }
 };
 

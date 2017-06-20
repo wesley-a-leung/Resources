@@ -32,14 +32,12 @@ public class ReversionSegmentTree {
             arr[i] = array[i - 1];
         }
         rev.add(build(1, size));
-        revInd++;
         this.size = size;
     }
     
     public ReversionSegmentTree(int size) {
         this.arr = new int[size + 1];
         rev.add(build(1, size));
-        revInd++;
         this.size = size;
     }
     

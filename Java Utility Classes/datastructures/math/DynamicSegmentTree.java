@@ -8,6 +8,7 @@ public class DynamicSegmentTree {
     private static class Node {
         public Node left, right;
         public int pre, suf, sum;
+        
         public Node(int val) {
             this.pre = val;
             this.suf = val;
@@ -23,17 +24,17 @@ public class DynamicSegmentTree {
         }
     }
     
+    public DynamicSegmentTree(int size) {
+        this.arr = new int[size + 1];
+        root = build(1, size);
+        this.size = size;
+    }
+    
     public DynamicSegmentTree(int size, int[] array) {
         this.arr = new int[size + 1];
         for (int i = 1; i <= size; i++) {
             arr[i] = array[i - 1];
         }
-        root = build(1, size);
-        this.size = size;
-    }
-    
-    public DynamicSegmentTree(int size) {
-        this.arr = new int[size + 1];
         root = build(1, size);
         this.size = size;
     }
