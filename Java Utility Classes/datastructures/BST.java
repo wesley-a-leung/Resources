@@ -1,30 +1,5 @@
 package datastructures;
 
-/******************************************************************************
- *  Compilation:  javac BST.java
- *  Execution:    java BST
- *  Dependencies: StdIn.java StdOut.java Queue.java
- *  Data files:   http://algs4.cs.princeton.edu/32bst/tinyST.txt  
- *
- *  A symbol table implemented with a binary search tree.
- * 
- *  % more tinyST.txt
- *  S E A R C H E X A M P L E
- *  
- *  % java BST < tinyST.txt
- *  A 8
- *  C 4
- *  E 12
- *  H 5
- *  L 11
- *  M 9
- *  P 10
- *  R 3
- *  S 0
- *  X 7
- *
- ******************************************************************************/
-
 import java.util.NoSuchElementException;
 
 /**

@@ -10,10 +10,6 @@
 
 #include <bits/stdc++.h>
 
-#define l(x) x << 1
-#define r(x) x << 1 | 1
-#define mid(x, y) x + (y - x) / 2
-
 using namespace std;
 
 struct LazySegmentTree {
@@ -28,10 +24,10 @@ private:
 
     void propogate(int cur) {
         if (tree[cur].lazy != 0) {
-            tree[l(cur)].maxVal += tree[cur].lazy;
-            tree[l(cur)].lazy += tree[cur].lazy;
-            tree[r(cur)].maxVal += tree[cur].lazy;
-            tree[r(cur)].lazy += tree[cur].lazy;
+            tree[cur * 2].maxVal += tree[cur].lazy;
+            tree[cur * 2].lazy += tree[cur].lazy;
+            tree[cur * 2 + 1].maxVal += tree[cur].lazy;
+            tree[cur * 2 + 1].lazy += tree[cur].lazy;
             tree[cur].lazy = 0;
         }
     }
@@ -43,9 +39,9 @@ private:
             tree[cur].maxVal = array[l];
             return;
         }
-        int m = mid(l, r);
-        build(l(cur), l , m);
-        build(r(cur), m + 1, r);
+        int m = l + (r - l) / 2;
+        build(cur * 2, l , m);
+        build(cur * 2 + 1, m + 1, r);
     }
 
     void update(int cur, int l, int r, int val) {
@@ -56,17 +52,17 @@ private:
             tree[cur].lazy += val;
             return;
         }
-        update(l(cur), l, r, val);
-        update(r(cur), l, r, val);
-        tree[cur].maxVal = max(tree[l(cur)].maxVal, tree[r(cur)].maxVal);
+        update(cur * 2, l, r, val);
+        update(cur * 2 + 1, l, r, val);
+        tree[cur].maxVal = max(tree[cur * 2].maxVal, tree[cur * 2 + 1].maxVal);
     }
 
     int rMaxQ(int cur, int l, int r) {
         if (tree[cur].l != tree[cur].r) propogate(cur);
         if (tree[cur].l > r || tree[cur].r < l) return 0;
         if (tree[cur].l >= l && tree[cur].r <= r) return tree[cur].maxVal;;
-        int left = rMaxQ(l(cur), l, r);
-        int right = rMaxQ(r(cur), l, r);
+        int left = rMaxQ(cur * 2, l, r);
+        int right = rMaxQ(cur * 2 + 1, l, r);
         return max(left, right);
     }
 

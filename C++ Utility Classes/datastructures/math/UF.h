@@ -123,7 +123,6 @@ public:
         }
         count++;
     }
-
 };
 
 #endif /* DATASTRUCTURES_MATH_UF_H_ */

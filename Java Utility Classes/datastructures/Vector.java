@@ -1,31 +1,5 @@
 package datastructures;
 
-/******************************************************************************
- *  Compilation:  javac Vector.java
- *  Execution:    java Vector
- *  Dependencies: StdOut.java
- *
- *  Implementation of a vector of real numbers.
- *
- *  This class is implemented to be immutable: once the client program
- *  initialize a Vector, it cannot change any of its fields
- *  (d or data[i]) either directly or indirectly. Immutability is a
- *  very desirable feature of a data type.
- *
- *  % java Vector
- *     x     = [ 1.0 2.0 3.0 4.0 ]
- *     y     = [ 5.0 2.0 4.0 1.0 ]
- *     z     = [ 6.0 4.0 7.0 5.0 ]
- *   10z     = [ 60.0 40.0 70.0 50.0 ]
- *    |x|    = 5.477225575051661
- *   <x, y>  = 25.0
- * 
- *
- *  Note that Vector is also the name of an unrelated Java library class
- *  in the package java.util.
- *
- ******************************************************************************/
-
 /**
  *  The {@code Vector} class represents a <em>d</em>-dimensional Euclidean vector.
  *  Vectors are immutable: their values cannot be changed after they are created.
