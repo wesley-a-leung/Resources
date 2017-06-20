@@ -1,20 +1,5 @@
 package datastructures;
 
-/******************************************************************************
- *  Compilation:  javac BTree.java
- *  Execution:    java BTree
- *  Dependencies: StdOut.java
- *
- *  B-tree.
- *
- *  Limitations
- *  -----------
- *   -  Assumes M is even and M >= 4
- *   -  should b be an array of children or list (it would help with
- *      casting to make it a list)
- *
- ******************************************************************************/
-
 /**
  *  The {@code BTree} class represents an ordered symbol table of generic
  *  key-value pairs.

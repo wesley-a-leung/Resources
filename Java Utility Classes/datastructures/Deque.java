@@ -1,18 +1,5 @@
 package datastructures;
 
-/******************************************************************************
- *  Compilation:  javac deque.java
- *  Execution:    java deque < input.txt
- *  Dependencies: StdIn.java StdOut.java
- *  Data files:   http://algs4.cs.princeton.edu/13stacks/tobe.txt  
- *
- *  A generic deque, implemented using a linked list.
- *
- *  % java deque < tobe.txt 
- *  to be or not to be (2 left on deque)
- *
- ******************************************************************************/
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
