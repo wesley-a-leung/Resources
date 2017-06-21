@@ -44,15 +44,6 @@ public class WeightedUF {
             size[i] = 1;
         }
     }
-
-    /**
-     * Returns the number of components.
-     *
-     * @return the number of components (between {@code 1} and {@code n})
-     */
-    public int count() {
-        return count;
-    }
   
     /**
      * Returns the component identifier for the component containing site {@code p}.
@@ -69,15 +60,16 @@ public class WeightedUF {
         }
         return p;
     }
-
-    // validate that p is a valid index
-    private void validate(int p) {
-        int n = parent.length;
-        if (p < 0 || p >= n) {
-            throw new IndexOutOfBoundsException("index " + p + " is not between 0 and " + (n-1));  
-        }
+    
+    /**
+     * Returns the number of components.
+     *
+     * @return the number of components (between {@code 1} and {@code n})
+     */
+    public int count() {
+        return count;
     }
-
+    
     /**
      * Returns true if the the two sites are in the same component.
      *
@@ -90,6 +82,16 @@ public class WeightedUF {
      */
     public boolean connected(int p, int q) {
         return find(p) == find(q);
+    }
+    
+    /**
+     * Returns the size of the component containing p
+     * 
+     * @param p the integer representing one site
+     * @return the size of the component containing p
+     */
+    public int size(int p) {
+        return size[find(p)];
     }
 
     /**
@@ -140,5 +142,13 @@ public class WeightedUF {
             size[rootP] -= size[rootQ];
         }
         count++;
+    }
+    
+    // validate that p is a valid index
+    private void validate(int p) {
+        int n = parent.length;
+        if (p < 0 || p >= n) {
+            throw new IndexOutOfBoundsException("index " + p + " is not between 0 and " + (n-1));  
+        }
     }
 }
