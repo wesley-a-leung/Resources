@@ -130,9 +130,6 @@ public class WeightedUF {
     public void disjoin(int p, int q) {
         int rootP = find(p);
         int rootQ = find(q);
-        if (rootP == rootQ) return;
-
-        // make smaller root point to larger one
         if (size[rootP] < size[rootQ]) {
             parent[rootP] = rootP;
             size[rootQ] -= size[rootP];
