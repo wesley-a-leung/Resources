@@ -1,7 +1,7 @@
 /*
- * LazySegmentTree.h
+ * SegmentTree.h
  *
- *  Created on: Jun 19, 2017
+ *  Created on: Jun 23, 2017
  *      Author: Wesley Leung
  */
 
@@ -12,7 +12,7 @@
 
 using namespace std;
 
-struct LazySegmentTree {
+struct SegmentTree {
     struct Node {
         int val, lazy;
     };
@@ -21,16 +21,6 @@ private:
     vector<Node> tree;
     int N;
     int *array;
-
-    void propogate(int cur) {
-        if (tree[cur].lazy != 0) {
-            tree[cur * 2].val += tree[cur].lazy;
-            tree[cur * 2].lazy += tree[cur].lazy;
-            tree[cur * 2 + 1].val += tree[cur].lazy;
-            tree[cur * 2 + 1].lazy += tree[cur].lazy;
-            tree[cur].lazy = 0;
-        }
-    }
 
     void build(int cur, int cL, int cR) {
         if (cL == cR) {
@@ -42,32 +32,30 @@ private:
         build(cur * 2 + 1, m + 1, cR);
     }
 
-    void update(int cur, int cL, int cR, int l, int r, int val) {
-        if (cL != cR) propogate(cur);
-        if (cL > r || cR < l) return;
-        if (cL >= l && cR <= r) {
+    void update(int cur, int cL, int cR, int ind, int val) {
+        if (cL > ind || cR < ind) return;
+        if (cL >= ind && cR <= ind) {
             tree[cur].val += val;
             tree[cur].lazy += val;
             return;
         }
         int m = cL + (cR - cL) / 2;
-        update(cur * 2, cL, m, l, r, val);
-        update(cur * 2 + 1, m + 1, cR, l, r, val);
+        update(cur * 2, cL, m, ind, val);
+        update(cur * 2 + 1, m + 1, cR, ind, val);
         tree[cur].val = max(tree[cur * 2].val, tree[cur * 2 + 1].val);
     }
 
-    int rMaxQ(int cur, int cL, int cR, int l, int r) {
-        if (cL != cR) propogate(cur);
-        if (cL > r || cR < l) return INT_MIN;
-        if (cL >= l && cR <= r) return tree[cur].val;
+    int rMaxQ(int cur, int cL, int cR, int ind) {
+        if (cL > ind || cR < ind) return INT_MIN;
+        if (cL >= ind && cR <= ind) return tree[cur].val;
         int m = cL + (cR - cL) / 2;
-        int left = rMaxQ(cur * 2, cL, m, l, r);
-        int right = rMaxQ(cur * 2 + 1, m + 1, cR, l, r);
+        int left = rMaxQ(cur * 2, cL, m, ind);
+        int right = rMaxQ(cur * 2 + 1, m + 1, cR, ind);
         return max(left, right);
     }
 
 public:
-    LazySegmentTree(int size, int *arr): tree(4 * size) {
+    SegmentTree(int size, int *arr): tree(4 * size) {
         array = new int[size + 1];
         for (int i = 1; i <= size; i++) {
             array[i] = arr[i - 1];
@@ -76,7 +64,7 @@ public:
         N = size;
     }
 
-    LazySegmentTree(int size): tree(4 * size) {
+    SegmentTree(int size): tree(4 * size) {
         array = new int[size + 1];
         for (int i = 1; i <= size; i++) {
             array[i] = 0;
@@ -85,12 +73,12 @@ public:
         N = size;
     }
 
-    void update(int l, int r, int val) {
-        update(1, 1, N, l, r, val);
+    void update(int ind, int val) {
+        update(1, 1, N, ind, val);
     }
 
-    int rMaxQ(int l, int r) {
-        return rMaxQ(1, 1, N, l, r);
+    int rMaxQ(int ind) {
+        return rMaxQ(1, 1, N, ind);
     }
 
     int size() {

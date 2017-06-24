@@ -3,8 +3,8 @@ package datastructures.math;
 import java.util.ArrayList;
 
 public class ReversionSegmentTree {
-    private int[] arr;
-    private int size;
+    private int[] array;
+    private int N;
     private ArrayList<Node> rev;
     private int revInd = 0;
     
@@ -26,57 +26,57 @@ public class ReversionSegmentTree {
         }
     }
     
-    public ReversionSegmentTree(int size, int[] array) {
-        this.arr = new int[size + 1];
+    public ReversionSegmentTree(int size, int[] arr) {
+        array = new int[size + 1];
         for (int i = 1; i <= size; i++) {
-            arr[i] = array[i - 1];
+            arr[i] = arr[i - 1];
         }
         rev.add(build(1, size));
-        this.size = size;
+        N = size;
     }
     
     public ReversionSegmentTree(int size) {
-        this.arr = new int[size + 1];
+        array = new int[size + 1];
         rev.add(build(1, size));
-        this.size = size;
+        N = size;
     }
     
     public int size() {
-        return this.size;
+        return N;
     }
     
     private Node build(int cL, int cR) {
-        if (cL == cR) return new Node(arr[cL]);
-        int m = (cL + cR) >> 1;
+        if (cL == cR) return new Node(array[cL]);
+        int m = cL + (cR - cL) / 2;
         return new Node(build(cL , m), build(m + 1, cR));
     }
     
     public void update(int ind, int val) {
-        arr[ind] = val;
-        rev.add(update(rev.get(revInd++), 1, arr.length - 1, ind));
+        array[ind] = val;
+        rev.add(update(rev.get(revInd++), 1, array.length - 1, ind));
     }
     
     private Node update(Node cur, int cL, int cR, int ind) {
         if (cL <= ind && ind <= cR) {
-            if (cL == cR) return new Node(arr[cL]);
-            int m = (cL + cR) >> 1;
+            if (cL == cR) return new Node(array[cL]);
+            int m = cL + (cR - cL) / 2;
             return new Node(update(cur.left, cL, m, ind), update(cur.right, m + 1, cR, ind));
         }
         return cur;
     }
     
     public int maxPSA(int l, int r) {
-        return query(rev.get(revInd), 1, arr.length - 1, l, r).pre;
+        return query(rev.get(revInd), 1, array.length - 1, l, r).pre;
     }
     
     public int maxSSA(int l, int r) {
-        return query(rev.get(revInd), 1, arr.length - 1, l, r).suf;
+        return query(rev.get(revInd), 1, array.length - 1, l, r).suf;
     }
     
     private Query query(Node cur, int cL, int cR, int l, int r) {
         if (cL > r || cR < l) return null;
         if (cL >= l && cR <= r) return new Query(cur.pre, cur.suf, cur.sum);
-        int m = (cL + cR) >> 1;
+        int m = cL + (cR - cL) / 2;
         Query left = query(cur.left, cL, m, l, r);
         Query right = query(cur.right, m + 1, cR, l, r);
         if (left == null) return right;

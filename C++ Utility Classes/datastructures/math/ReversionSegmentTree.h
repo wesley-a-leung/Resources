@@ -61,20 +61,20 @@ struct ReversionSegmentTree {
 
 private:
     vector<Node*> rev;
-    int *arr;
+    int *array;
     int revInd = 0;
     int N;
 
     Node *build(int cL, int cR) {
-        if (cL == cR) return new Node(arr[cL]);
-        int m = (cL + cR) >> 1;
+        if (cL == cR) return new Node(array[cL]);
+        int m = cL + (cR - cL) / 2;
         return new Node(build(cL , m), build(m + 1, cR));
     }
 
     Node *update(Node *cur, int cL, int cR, int ind) {
         if (cL <= ind && ind <= cR) {
-            if (cL == cR) return new Node(arr[cL]);
-            int m = (cL + cR) >> 1;
+            if (cL == cR) return new Node(array[cL]);
+            int m = cL + (cR - cL) / 2;
             return new Node(update(cur->left, cL, m, ind), update(cur->right, m + 1, cR, ind));
         }
         return cur;
@@ -83,7 +83,7 @@ private:
     Query query(Node *cur, int cL, int cR, int l, int r) {
         if (cL > r || cR < l) return Query();
         if (cL >= l && cR <= r) return Query(cur->pre, cur->suf, cur->sum);
-        int m = (cL + cR) >> 1;
+        int m = cL + (cR - cL) / 2;
         Query left = query(cur->left, cL, m, l, r);
         Query right = query(cur->right, m + 1, cR, l, r);
         if (left.isNull) return right;
@@ -92,26 +92,26 @@ private:
     }
 
 public:
-    ReversionSegmentTree(int size, int *array) {
-        arr = new int[size + 1];
+    ReversionSegmentTree(int size, int *arr) {
+        array = new int[size + 1];
         for (int i = 1; i <= size; i++) {
-            arr[i] = array[i - 1];
+            array[i] = arr[i - 1];
         }
         rev.push_back(build(1, size));
         N = size;
     }
 
     ReversionSegmentTree(int size) {
-        arr = new int[size + 1];
+        array = new int[size + 1];
         for (int i = 1; i <= size; i++) {
-            arr[i] = 0;
+            array[i] = 0;
         }
         rev.push_back(build(1, size));
         N = size;
     }
 
     void update(int ind, int val) {
-        arr[ind] = val;
+        array[ind] = val;
         rev.push_back(update(rev[revInd++], 1, N, ind));
     }
 
@@ -126,6 +126,10 @@ public:
     void revert(int x) {
         rev.push_back(rev[x]);
         revInd++;
+    }
+
+    int size() {
+        return N;
     }
 };
 
