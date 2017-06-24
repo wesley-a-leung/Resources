@@ -1,36 +1,9 @@
 package algorithms.geometry;
 
-/******************************************************************************
- *  Compilation:  javac GrahamaScan.java
- *  Execution:    java GrahamScan < input.txt
- *  Dependencies: Point2D.java
- *  Data files:   http://algs4.cs.princeton.edu/99hull/rs1423.txt
- *                http://algs4.cs.princeton.edu/99hull/kw1260.txt
- * 
- *  Create points from standard input and compute the convex hull using
- *  Graham scan algorithm.
- *
- *  May be floating-point issues if x- and y-coordinates are not integers.
- *
- *  % java GrahamScan < input100.txt 
- *  (7486.0, 422.0)
- *  (29413.0, 596.0)
- *  (32011.0, 3140.0)
- *  (30875.0, 28560.0)
- *  (28462.0, 32343.0)
- *  (15731.0, 32661.0)
- *  (822.0, 32301.0)
- *  (823.0, 15895.0)
- *  (1444.0, 10362.0)
- *  (4718.0, 4451.0)
- *
- ******************************************************************************/
-
 import java.util.Arrays;
 
 import datastructures.Stack;
 import datastructures.geometry.Point2D;
-
 
 /**
  *  The {@code GrahamScan} data type provides methods for computing the 
@@ -103,7 +76,7 @@ public class GrahamScanConvexHull {
             hull.push(a[i]);
         }
 
-        assert isConvex();
+        // assert isConvex();
     }
 
     /**
@@ -135,5 +108,4 @@ public class GrahamScanConvexHull {
         }
         return true;
     }
-
 }
