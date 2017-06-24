@@ -7,6 +7,13 @@ public class LazySegmentTree {
     
     private static class Node {
         public int val, lazy;
+        public Node(int val) {
+            this.val = val;
+        }
+        
+        public Node(Node left, Node right) {
+            this.val = Math.max(left.val, right.val);
+        }
     }
     
     public LazySegmentTree(int size, int[] arr) {
@@ -38,12 +45,13 @@ public class LazySegmentTree {
 
     private void build(int cur, int cL, int cR) {
         if (cL == cR) {
-            tree[cur].val = array[cL];
+            tree[cur] = new Node(array[cL]);
             return;
         }
         int m = cL + (cR - cL) / 2;
         build(cur * 2, cL , m);
         build(cur * 2 + 1, m + 1, cR);
+        tree[cur] = new Node(tree[cur * 2], tree[cur * 2 + 1]);
     }
 
     private void update(int cur, int cL, int cR, int l, int r, int val) {
