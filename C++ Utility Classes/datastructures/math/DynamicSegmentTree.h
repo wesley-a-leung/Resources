@@ -50,12 +50,12 @@ private:
         return cur;
     }
 
-    int rMaxQ(Node *cur, int cL, int cR, int ind) {
-        if (cL > ind || cR < ind) return INT_MIN;
-        if (cL >= ind && cR <= ind) return cur->val;
+    int rMaxQ(Node *cur, int cL, int cR, int l, int r) {
+        if (cL > r || cR < l) return INT_MIN;
+        if (cL >= l && cR <= r) return cur->val;
         int m = cL + (cR - cL) / 2;
-        int left = rMaxQ(cur->left, cL, m, ind);
-        int right = rMaxQ(cur->right, m + 1, cR, ind);
+        int left = rMaxQ(cur->left, cL, m, l, r);
+        int right = rMaxQ(cur->right, m + 1, cR, l, r);
         return max(left, right);
     }
 
@@ -83,8 +83,8 @@ public:
         root = update(root, 1, N, ind);
     }
 
-    int rMaxQ(int ind) {
-        return rMaxQ(root, 1, N, ind);
+    int rMaxQ(int l, int r) {
+        return rMaxQ(root, 1, N, l, r);
     }
 
     int size() {
