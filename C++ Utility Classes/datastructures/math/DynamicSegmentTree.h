@@ -17,16 +17,16 @@ struct DynamicSegmentTree {
     public:
         Node *left;
         Node *right;
-        int minVal;
+        int val;
         Node(int val) {
-            this->minVal = val;
+            this->val = val;
             this->left = this->right = nullptr;
         }
 
         Node(Node *l, Node *r) {
             this->left = l;
             this->right = r;
-            this->minVal = min(l->minVal, r->minVal);
+            this->val = max(l->val, r->val);
         }
     };
 
@@ -37,26 +37,26 @@ private:
 
     Node *build(int cL, int cR) {
         if (cL == cR) return new Node(array[cL]);
-        int m = (cL + cR) >> 1;
+        int m = cL + (cR - cL) / 2;
         return new Node(build(cL , m), build(m + 1, cR));
     }
 
     Node *update(Node *cur, int cL, int cR, int ind) {
         if (cL <= ind && ind <= cR) {
             if (cL == cR) return new Node(array[cL]);
-            int m = (cL + cR) >> 1;
+            int m = cL + (cR - cL) / 2;
             return new Node(update(cur->left, cL, m, ind), update(cur->right, m + 1, cR, ind));
         }
         return cur;
     }
 
-    int rMinQ(Node *cur, int cL, int cR, int l, int r) {
-        if (cL > r || cR < l) return INT_MAX;
-        if (cL >= l && cR <= r) return cur->minVal;
-        int m = (cL + cR) >> 1;
-        int left = rMinQ(cur->left, cL, m, l, r);
-        int right = rMinQ(cur->right, m + 1, cR, l, r);
-        return min(left, right);
+    int rMaxQ(Node *cur, int cL, int cR, int ind) {
+        if (cL > ind || cR < ind) return INT_MIN;
+        if (cL >= ind && cR <= ind) return cur->val;
+        int m = cL + (cR - cL) / 2;
+        int left = rMaxQ(cur->left, cL, m, ind);
+        int right = rMaxQ(cur->right, m + 1, cR, ind);
+        return max(left, right);
     }
 
 public:
@@ -83,8 +83,12 @@ public:
         root = update(root, 1, N, ind);
     }
 
-    int rMinQ(int l, int r) {
-        return rMinQ(root, 1, N, l, r);
+    int rMaxQ(int ind) {
+        return rMaxQ(root, 1, N, ind);
+    }
+
+    int size() {
+        return N;
     }
 };
 
