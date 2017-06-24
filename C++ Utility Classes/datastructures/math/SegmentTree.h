@@ -45,12 +45,12 @@ private:
         tree[cur].val = max(tree[cur * 2].val, tree[cur * 2 + 1].val);
     }
 
-    int rMaxQ(int cur, int cL, int cR, int ind) {
-        if (cL > ind || cR < ind) return INT_MIN;
-        if (cL >= ind && cR <= ind) return tree[cur].val;
+    int rMaxQ(int cur, int cL, int cR, int l, int r) {
+        if (cL > r || cR < l) return INT_MIN;
+        if (cL >= l && cR <= r) return tree[cur].val;
         int m = cL + (cR - cL) / 2;
-        int left = rMaxQ(cur * 2, cL, m, ind);
-        int right = rMaxQ(cur * 2 + 1, m + 1, cR, ind);
+        int left = rMaxQ(cur * 2, cL, m, l, r);
+        int right = rMaxQ(cur * 2 + 1, m + 1, cR, l, r);
         return max(left, right);
     }
 
@@ -77,8 +77,8 @@ public:
         update(1, 1, N, ind, val);
     }
 
-    int rMaxQ(int ind) {
-        return rMaxQ(1, 1, N, ind);
+    int rMaxQ(int l, int r) {
+        return rMaxQ(1, 1, N, l, r);
     }
 
     int size() {

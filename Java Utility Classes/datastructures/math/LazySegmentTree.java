@@ -6,7 +6,7 @@ public class LazySegmentTree {
     private int N;
     
     private static class Node {
-        public int maxVal, lazy;
+        public int val, lazy;
     }
     
     public LazySegmentTree(int size, int[] arr) {
@@ -28,9 +28,9 @@ public class LazySegmentTree {
     
     private void propogate(int cur) {
         if (tree[cur].lazy != 0) {
-            tree[cur * 2].maxVal += tree[cur].lazy;
+            tree[cur * 2].val += tree[cur].lazy;
             tree[cur * 2].lazy += tree[cur].lazy;
-            tree[cur * 2 + 1].maxVal += tree[cur].lazy;
+            tree[cur * 2 + 1].val += tree[cur].lazy;
             tree[cur * 2 + 1].lazy += tree[cur].lazy;
             tree[cur].lazy = 0;
         }
@@ -38,7 +38,7 @@ public class LazySegmentTree {
 
     private void build(int cur, int cL, int cR) {
         if (cL == cR) {
-            tree[cur].maxVal = array[cL];
+            tree[cur].val = array[cL];
             return;
         }
         int m = cL + (cR - cL) / 2;
@@ -50,14 +50,14 @@ public class LazySegmentTree {
         if (cL != cR) propogate(cur);
         if (cL > r || cR < l) return;
         if (cL >= l && cR <= r) {
-            tree[cur].maxVal += val;
+            tree[cur].val += val;
             tree[cur].lazy += val;
             return;
         }
         int m = cL + (cR - cL) / 2;
         update(cur * 2, cL, m, l, r, val);
         update(cur * 2 + 1, m + 1, cR, l, r, val);
-        tree[cur].maxVal = Math.max(tree[cur * 2].maxVal, tree[cur * 2 + 1].maxVal);
+        tree[cur].val = Math.max(tree[cur * 2].val, tree[cur * 2 + 1].val);
     }
     
     public void update(int l, int r, int val) {
@@ -67,7 +67,7 @@ public class LazySegmentTree {
     private int rMaxQ(int cur, int cL, int cR, int l, int r) {
         if (cL != cR) propogate(cur);
         if (cL > r || cR < l) return Integer.MIN_VALUE;
-        if (cL >= l && cR <= r) return tree[cur].maxVal;
+        if (cL >= l && cR <= r) return tree[cur].val;
         int m = cL + (cR - cL) / 2;
         int left = rMaxQ(cur * 2, cL, m, l, r);
         int right = rMaxQ(cur * 2 + 1, m + 1, cR, l, r);
