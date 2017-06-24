@@ -78,10 +78,10 @@ private:
     }
 
 public:
-    DynamicLazySegmentTree(int size, int *arr) {
+    DynamicLazySegmentTree(int size, int *arr, bool oneIndexed) {
         array = new int[size + 1];
         for (int i = 1; i <= size; i++) {
-            array[i] = arr[i - 1];
+            array[i] = arr[i - !oneIndexed];
         }
         root = build(1, size);
         N = size;

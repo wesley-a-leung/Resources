@@ -26,10 +26,10 @@ public class DynamicSegmentTree {
         N = size;
     }
     
-    public DynamicSegmentTree(int size, int[] arr) {
+    public DynamicSegmentTree(int size, int[] arr, boolean oneIndexed) {
         array = new int[size + 1];
         for (int i = 1; i <= size; i++) {
-            arr[i] = arr[i - 1];
+            array[i] = arr[i - (oneIndexed ? 0 : 1)];
         }
         root = build(1, size);
         N = size;

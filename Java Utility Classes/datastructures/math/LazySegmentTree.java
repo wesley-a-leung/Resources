@@ -16,10 +16,10 @@ public class LazySegmentTree {
         }
     }
     
-    public LazySegmentTree(int size, int[] arr) {
+    public LazySegmentTree(int size, int[] arr, boolean oneIndexed) {
         array = new int[size + 1];
         for (int i = 1; i <= size; i++) {
-            array[i] = arr[i - 1];
+            array[i] = arr[i - (oneIndexed ? 0 : 1)];
         }
         tree = new Node[4 * size];
         build(1, 1, size);
