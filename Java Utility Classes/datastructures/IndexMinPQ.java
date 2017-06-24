@@ -308,7 +308,10 @@ public class IndexMinPQ<Key extends Comparable<Key>> implements Iterable<Integer
         }
 
         public boolean hasNext()  { return !copy.isEmpty();                     }
-        public void remove()      { throw new UnsupportedOperationException();  }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
 
         public Integer next() {
             if (!hasNext()) throw new NoSuchElementException();
