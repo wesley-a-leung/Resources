@@ -3,7 +3,6 @@ package datastructures.graph;
 import datastructures.Bag;
 import datastructures.Stack;
 
-
 /**
  *  The {@code Graph} class represents an undirected graph of vertices
  *  named 0 through <em>V</em> – 1.
