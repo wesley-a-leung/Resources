@@ -5,15 +5,6 @@ import datastructures.Stack;
 import datastructures.graph.Graph;
 import algorithms.graph.search.BreadthFirstPaths;
 
-/******************************************************************************
- *  Compilation:  javac EulerianPath.java
- *  Execution:    java EulerianPath V E
- *  Dependencies: Graph.java Stack.java StdOut.java
- *
- *  Find an Eulerian path in a graph, if one exists.
- *
- ******************************************************************************/
-
 /**
  *  The {@code EulerianPath} class represents a data type
  *  for finding an Eulerian path in a graph.
