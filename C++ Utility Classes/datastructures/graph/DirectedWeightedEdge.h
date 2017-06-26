@@ -36,27 +36,27 @@ public:
         return w;
     }
 
-    bool operator == (const DirectedWeightedEdge &e) {
+    bool operator == (const DirectedWeightedEdge &e) const {
         return (v == e.v && w == e.w && weight == e.weight);
     }
 
-    bool operator != (const DirectedWeightedEdge &e) {
+    bool operator != (const DirectedWeightedEdge &e) const {
         return !(v == e.v && w == e.w && weight == e.weight);
     }
 
-    bool operator < (const DirectedWeightedEdge &e) {
+    bool operator < (const DirectedWeightedEdge &e) const {
         return (weight < e.weight);
     }
 
-    bool operator <= (const DirectedWeightedEdge &e) {
+    bool operator <= (const DirectedWeightedEdge &e) const {
         return (weight <= e.weight);
     }
 
-    bool operator > (const DirectedWeightedEdge &e) {
+    bool operator > (const DirectedWeightedEdge &e) const {
         return (weight > e.weight);
     }
 
-    bool operator >= (const DirectedWeightedEdge &e) {
+    bool operator >= (const DirectedWeightedEdge &e) const {
         return (weight > e.weight);
     }
 };
