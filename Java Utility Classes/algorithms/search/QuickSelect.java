@@ -1,7 +1,5 @@
 package algorithms.search;
 
-import java.util.Arrays;
-
 /**
  *  The {@code QuickSelect} class provides static methods for selecting the
  *  Kth smallest element in an array
@@ -10,7 +8,7 @@ import java.util.Arrays;
  *  <p>
  *  Average Case: <em>N</em>
  *  <p>
- *  Worse Case: <em>N</em>
+ *  Worse Case: <em>N^2</em>
  *  <p>
  *  Space: 1
  *
@@ -19,43 +17,68 @@ import java.util.Arrays;
 public class QuickSelect {
 
     // This class should not be instantiated.
-    private QuickSelect() { }
-
+    private QuickSelect() {}
+    
     /**
-     * Returns the {@code K}th smallest element 
+     * Returns the {@code K}th smallest element
+     * 
      * @param a the array to be sorted
+     * @param k the index to find
      * @return the {@code K}th smallest element
      */
-    public Comparable find (int k, int beg, int end, Comparable[] a) {
-        int i = median(a, beg, end, k);
-        if (i == k)
-            return a[i];
-        else if (i < k)
-            return find(k, i + 1, end, a);
-        return find(k - (a.length - i), beg, i, a);
+    public static Comparable select(Comparable[] a, int k) {
+        return select(a, 0, a.length - 1, k);
     }
 
-    private int median (Comparable[] a, int beg, int end, int k) {
-        if (end - beg + 1 <= 5) {
-            Arrays.sort(a, beg, end + 1);
-            return beg + k - 1;
+    /**
+     * Returns the {@code K}th smallest element
+     * 
+     * @param a the array to be sorted
+     * @param start the start index
+     * @param end the end index
+     * @param k the index to find
+     * @return the {@code K}th smallest element
+     */
+    public static Comparable select(Comparable[] a, int start, int end, int k) {
+        if (start == end) {
+            return a[start];
         }
 
-        for (int i = 0; i < (end + 1) / 5; i++) {
-            int left = 5 * i;
-            int right = left + 4;
-            if (right > end)
-                right = end;
-            int median = median(a, left, right, 3);
-            swap(a, median, i);
+        for (;;) {
+            int pivotIndex = randomPivot(start, end);
+            pivotIndex = partition(a, start, end, pivotIndex);
+
+            if (k == pivotIndex) {
+                return a[k];
+            } else if (k < pivotIndex) {
+                end = pivotIndex - 1;
+            } else {
+                start = pivotIndex + 1;
+            }
         }
-        return median(a, 0, (end + 1) / 5, (end + 1) / 10);
     }
     
-    private static void swap (Comparable[] a, int i, int j) {
+    private static int partition(Comparable[] a, int start, int end, int pivotIndex) {
+        Comparable pivotValue = a[pivotIndex];
+        swap(a, pivotIndex, end);
+        int storeIndex = start;
+        for (int i = start; i < end; i++) {
+            if (a[i].compareTo(pivotValue) < 0) {
+                swap(a, storeIndex, i);
+                storeIndex++;
+            }
+        }
+        swap(a, end, storeIndex);
+        return storeIndex;
+    }
+
+    private static void swap(Comparable[] a, int i, int j) {
         Comparable temp = a[i];
         a[i] = a[j];
         a[j] = temp;
     }
-
+    
+    private static int randomPivot(int start, int end) {
+        return start + (int) Math.floor(Math.random() * (end - start + 1));
+    }
 }

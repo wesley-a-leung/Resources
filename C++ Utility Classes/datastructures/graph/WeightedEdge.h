@@ -38,7 +38,7 @@ public:
         else throw new invalid_argument("Illegal endpoint");
     }
 
-    bool operator == (const WeightedEdge &e) {
+    bool operator == (const WeightedEdge &e) const {
         return (v == e.v && w == e.w && weight == e.weight);
     }
 
@@ -46,19 +46,19 @@ public:
         return !(v == e.v && w == e.w && weight == e.weight);
     }
 
-    bool operator < (const WeightedEdge &e) {
+    bool operator < (const WeightedEdge &e) const {
         return (weight < e.weight);
     }
 
-    bool operator <= (const WeightedEdge &e) {
+    bool operator <= (const WeightedEdge &e) const {
         return (weight <= e.weight);
     }
 
-    bool operator > (const WeightedEdge &e) {
+    bool operator > (const WeightedEdge &e) const {
         return (weight > e.weight);
     }
 
-    bool operator >= (const WeightedEdge &e) {
+    bool operator >= (const WeightedEdge &e) const {
         return (weight > e.weight);
     }
 };
