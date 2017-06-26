@@ -19,6 +19,6 @@ public class Pair<Item, Item2> {
         if (o == this) return true;
         if (!(o instanceof Pair)) return false;
         Pair p = (Pair) o;
-        return p.first.equals(first) && p.second.equals(second);
+        return first.equals(p.first) && second.equals(p.second);
     }
 }

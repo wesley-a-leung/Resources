@@ -19,7 +19,7 @@ public class ComparablePair<Item extends Comparable<Item>, Item2 extends Compara
         if (o == this) return true;
         if (!(o instanceof ComparablePair)) return false;
         ComparablePair p = (ComparablePair) o;
-        return p.first.equals(first) && p.second.equals(second);
+        return first.equals(p.first) && second.equals(p.second);
     }
 
     @Override
