@@ -613,5 +613,4 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
         if (contains(hi)) return rank(hi) - rank(lo) + 1;
         else return rank(hi) - rank(lo);
     }
-
 }
