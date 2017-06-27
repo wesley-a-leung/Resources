@@ -1,10 +1,10 @@
 package algorithms.graph.components;
 
+import datastructures.Stack;
 import datastructures.graph.Digraph;
-import algorithms.graph.search.DepthFirstOrder;
 
 /**
- *  The {@code KosarajuSharirSCC} class represents a data type for 
+ *  The {@code GabowSCC} class represents a data type for 
  *  determining the strong components in a digraph.
  *  The <em>id</em> operation determines in which strong component
  *  a given vertex lies; the <em>areStronglyConnected</em> operation
@@ -17,14 +17,14 @@ import algorithms.graph.search.DepthFirstOrder;
  *  identifier if and only if they are in the same strong component.
 
  *  <p>
- *  This implementation uses the Kosaraju-Sharir algorithm.
+ *  This implementation uses the Gabow's algorithm.
  *  The constructor takes time proportional to <em>V</em> + <em>E</em>
  *  (in the worst case),
  *  where <em>V</em> is the number of vertices and <em>E</em> is the number of edges.
  *  Afterwards, the <em>id</em>, <em>count</em>, and <em>areStronglyConnected</em>
  *  operations take constant time.
  *  For alternate implementations of the same API, see
- *  {@link TarjanSCC} and {@link GabowSCC}.
+ *  {@link KosarajuSharirSCC} and {@link TarjanSCC}.
  *  <p>
  *  For additional documentation,
  *  see <a href="http://algs4.cs.princeton.edu/42digraph">Section 4.2</a> of
@@ -33,40 +33,60 @@ import algorithms.graph.search.DepthFirstOrder;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class KosarajuSharirSCC {
-    private boolean[] marked;     // marked[v] = has vertex v been visited?
-    private int[] id;             // id[v] = id of strong component containing v
-    private int count;            // number of strongly-connected components
+public class GabowSCC {
+
+    private boolean[] marked;        // marked[v] = has v been visited?
+    private int[] id;                // id[v] = id of strong component containing v
+    private int[] preorder;          // preorder[v] = preorder of v
+    private int pre;                 // preorder number counter
+    private int count;               // number of strongly-connected components
+    private Stack<Integer> stack1;
+    private Stack<Integer> stack2;
+
 
     /**
      * Computes the strong components of the digraph {@code G}.
      * @param G the digraph
      */
-    public KosarajuSharirSCC(Digraph G) {
-
-        // compute reverse postorder of reverse graph
-        DepthFirstOrder dfs = new DepthFirstOrder(G.reverse());
-
-        // run DFS on G, using reverse postorder to guide calculation
+    public GabowSCC(Digraph G) {
         marked = new boolean[G.V()];
-        id = new int[G.V()];
-        for (int v : dfs.reversePost()) {
-            if (!marked[v]) {
-                dfs(G, v);
-                count++;
-            }
+        stack1 = new Stack<Integer>();
+        stack2 = new Stack<Integer>();
+        id = new int[G.V()]; 
+        preorder = new int[G.V()];
+        for (int v = 0; v < G.V(); v++)
+            id[v] = -1;
+
+        for (int v = 0; v < G.V(); v++) {
+            if (!marked[v]) dfs(G, v);
         }
 
         // check that id[] gives strong components
         assert check(G);
     }
 
-    // DFS on graph G
     private void dfs(Digraph G, int v) { 
         marked[v] = true;
-        id[v] = count;
+        preorder[v] = pre++;
+        stack1.push(v);
+        stack2.push(v);
         for (int w : G.adj(v)) {
             if (!marked[w]) dfs(G, w);
+            else if (id[w] == -1) {
+                while (preorder[stack2.peek()] > preorder[w])
+                    stack2.pop();
+            }
+        }
+
+        // found strong component containing v
+        if (stack2.peek() == v) {
+            stack2.pop();
+            int w;
+            do {
+                w = stack1.pop();
+                id[w] = count;
+            } while (w != v);
+            count++;
         }
     }
 
@@ -97,7 +117,7 @@ public class KosarajuSharirSCC {
      * Returns the component id of the strong component containing vertex {@code v}.
      * @param  v the vertex
      * @return the component id of the strong component containing vertex {@code v}
-     * @throws IllegalArgumentException unless {@code 0 <= s < V}
+     * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
     public int id(int v) {
         validateVertex(v);
