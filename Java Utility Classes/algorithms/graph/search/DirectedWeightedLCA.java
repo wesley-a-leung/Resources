@@ -8,7 +8,7 @@ import datastructures.graph.WeightedDigraph;
  * The {@code DirectedWeightedLCA} class represents a data structure for finding the
  * lowest common ancestor of 2 nodes in an acyclic digraph using heavy-light decomposition.
  * The constructor takes time proportional to <em>V</em> +  <em>E</em> and afterwards,
- * the {@code lca()} method takes <em>V</em> time to find the lowest common ancestor.
+ * the {@code lca()} method takes log <em>V</em> time to find the lowest common ancestor.
  * 
  * @author Wesley Leung
  */
