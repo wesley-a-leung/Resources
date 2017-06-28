@@ -16,10 +16,10 @@ using namespace std;
 
 class EdmondsKarpMaxFlow {
 private:
-    static const double FLOATING_POINT_EPSILON = 1E-11;
+    double FLOATING_POINT_EPSILON = 1E-10;
     int V;          // number of vertices
-    bool *marked;     // marked[v] = true iff s->v path in residual graph
-    FlowEdge* edgeTo;    // edgeTo[v] = last edge on shortest residual s->v path
+    bool *marked;     // marked[v] = true if s->v path in residual graph
+    FlowEdge **edgeTo;    // edgeTo[v] = last edge on shortest residual s->v path
     double value;         // current value of max flow
 
     // is there an augmenting path?
@@ -27,22 +27,24 @@ private:
     // this implementation finds a shortest augmenting path (fewest number of edges),
     // which performs well both in theory and in practice
     bool hasAugmentingPath(FlowNetwork *G, int s, int t) {
-        edgeTo = new FlowEdge*[G->V()];
-        marked = new bool*[G->V()];
-
+        edgeTo = new FlowEdge*[G->getV()];
+        marked = new bool[G->getV()];
+        for (int i = 0; i < G->getV(); i++) {
+            marked[i] = false;
+        }
         // breadth-first search
-        queue<int> q = new queue<int>();
+        queue<int> q;
         q.push(s);
         marked[s] = true;
         while (!q.empty() && !marked[t]) {
             int v = q.front();
             q.pop();
 
-            for (FlowEdge e : G->adj(v)) {
-                int w = e.other(v);
+            for (FlowEdge *e : G->adj(v)) {
+                int w = e->other(v);
 
                 // if residual capacity from v to w
-                if (e.residualCapacityTo(w) > 0) {
+                if (e->residualCapacityTo(w) > 0) {
                     if (!marked[w]) {
                         edgeTo[w] = e;
                         marked[w] = true;
@@ -58,12 +60,12 @@ private:
 
     // return excess flow at vertex v
     double excess(FlowNetwork *G, int v) {
-        double excess = 0.0;
-        for (FlowEdge e : G->adj(v)) {
-            if (v == e.from()) excess -= e.flow();
-            else               excess += e.flow();
+        double excessCapacity = 0.0;
+        for (FlowEdge *e : G->adj(v)) {
+            if (v == e->from()) excessCapacity -= e->getFlow();
+            else               excessCapacity += e->getFlow();
         }
-        return excess;
+        return excessCapacity;
     }
 
 
@@ -87,16 +89,15 @@ public:
         // while there exists an augmenting path, use it
         value = excess(G, t);
         while (hasAugmentingPath(G, s, t)) {
-
             // compute bottleneck capacity
             double bottle = numeric_limits<double>::infinity();
-            for (int v = t; v != s; v = edgeTo[v].other(v)) {
-                bottle = min(bottle, edgeTo[v].residualCapacityTo(v));
+            for (int v = t; v != s; v = edgeTo[v]->other(v)) {
+                bottle = min(bottle, edgeTo[v]->residualCapacityTo(v));
             }
 
             // augment flow
-            for (int v = t; v != s; v = edgeTo[v].other(v)) {
-                edgeTo[v].addResidualFlowTo(v, bottle);
+            for (int v = t; v != s; v = edgeTo[v]->other(v)) {
+                edgeTo[v]->addResidualFlowTo(v, bottle);
             }
 
             value += bottle;

@@ -30,7 +30,7 @@ using namespace std;
 struct FlowEdge {
 private:
     // to deal with floating-point roundoff errors
-    static const double FLOATING_POINT_EPSILON = 1E-10;
+    double FLOATING_POINT_EPSILON = 1E-10;
 
     int v;             // from
     int w;             // to
@@ -87,11 +87,11 @@ public:
      * Initializes a flow edge from another flow edge.
      * @param e the edge to copy
      */
-    FlowEdge(FlowEdge e) {
-        this->v         = e.v;
-        this->w         = e.w;
-        this->capacity  = e.capacity;
-        this->flow      = e.flow;
+    FlowEdge(FlowEdge *e) {
+        this->v         = e->v;
+        this->w         = e->w;
+        this->capacity  = e->capacity;
+        this->flow      = e->flow;
     }
 
     /**
