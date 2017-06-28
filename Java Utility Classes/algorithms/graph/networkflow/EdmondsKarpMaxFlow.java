@@ -56,7 +56,7 @@ public class EdmondsKarpMaxFlow {
         validate(s);
         validate(t);
         if (s == t)               throw new IllegalArgumentException("Source equals sink");
-        if (!isFeasible(G, s, t)) throw new IllegalArgumentException("Initial flow is infeasible");
+        // if (!isFeasible(G, s, t)) throw new IllegalArgumentException("Initial flow is infeasible");
 
         // while there exists an augmenting path, use it
         value = excess(G, t);

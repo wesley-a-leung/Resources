@@ -2,15 +2,6 @@ package datastructures.graph.networkflow;
 
 import datastructures.Bag;
 
-/******************************************************************************
- *  Compilation:  javac FlowNetwork.java
- *  Execution:    java FlowNetwork V E
- *  Dependencies: Bag.java FlowEdge.java
- *
- *  A capacitated flow network, implemented using adjacency lists.
- *
- ******************************************************************************/
-
 /**
  *  The {@code FlowNetwork} class represents a capacitated network
  *  with vertices named 0 through <em>V</em> - 1, where each directed

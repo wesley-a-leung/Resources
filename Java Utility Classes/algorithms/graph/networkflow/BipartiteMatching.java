@@ -5,18 +5,6 @@ import datastructures.graph.networkflow.FlowEdge;
 import datastructures.graph.networkflow.FlowNetwork;
 import algorithms.graph.cycle.BipartiteX;
 
-/******************************************************************************
- *  Compilation:  javac BipartiteMatchingToMaxflow.java
- *  Execution:    java BipartiteMatchingToMaxflow V1 V2 E
- *  Dependencies: FordFulkerson.java FlowNetwork.java FlowEdge.java
- *                BipartiteX.java
- *
- *  Find a maximum cardinality matching (and minimum cardinality vertex cover)
- *  in a bipartite graph. Solve by reducing to maximum flow.
- *
- *
- ******************************************************************************/
-
 /**
  *  The {@code BipartiteMatchingToMaxflow} class represents a data type for
  *  computing a <em>maximum (cardinality) matching</em> and a

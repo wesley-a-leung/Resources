@@ -1,16 +1,5 @@
 package algorithms.graph.networkflow;
 
-/******************************************************************************
- *  Compilation:  javac HopcroftKarp.java
- *  Execution:    java HopcroftKarp V1 V2 E
- *  Dependencies: FordFulkerson.java FlowNetwork.java FlowEdge.java
- *                BipartiteX.java
- *
- *  Find a maximum cardinality matching (and minimum cardinality vertex cover)
- *  in a bipartite graph using Hopcroft-Karp algorithm.
- *
- ******************************************************************************/
-
 import java.util.Iterator;
 
 import datastructures.Queue;
