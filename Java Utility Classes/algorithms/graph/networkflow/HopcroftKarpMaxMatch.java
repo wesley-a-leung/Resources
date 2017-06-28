@@ -247,7 +247,7 @@ public class HopcroftKarpMaxMatch {
      *
      * @return the number of edges in any maximum matching
      */
-    public int size() {
+    public int cardinality() {
         return cardinality;
     }
 
@@ -303,13 +303,13 @@ public class HopcroftKarpMaxMatch {
         for (int v = 0; v < V; v++) {
             if (mate(v) != -1) matchedVertices++;
         }
-        if (2*size() != matchedVertices) return false;
+        if (2*cardinality() != matchedVertices) return false;
 
         // check that size() is consistent with minVertexCover()
         int sizeOfMinVertexCover = 0;
         for (int v = 0; v < V; v++)
             if (inMinVertexCover(v)) sizeOfMinVertexCover++;
-        if (size() != sizeOfMinVertexCover) return false;
+        if (cardinality() != sizeOfMinVertexCover) return false;
 
         // check that mate() uses each vertex at most once
         boolean[] isMatched = new boolean[V];
