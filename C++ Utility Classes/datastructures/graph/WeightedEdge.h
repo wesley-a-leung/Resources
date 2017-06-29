@@ -42,7 +42,7 @@ public:
         return (v == e.v && w == e.w && weight == e.weight);
     }
 
-    bool operator != (const WeightedEdge &e) {
+    bool operator != (const WeightedEdge &e) const {
         return !(v == e.v && w == e.w && weight == e.weight);
     }
 
