@@ -1,4 +1,4 @@
-package algorithms.graph.networkflow;
+package algorithms.graph.linearprogramming;
 
 /**
  *  The {@code LinearProgramming} class represents a data type for solving a
