@@ -7,27 +7,6 @@ import datastructures.graph.networkflow.FlowEdge;
 import datastructures.graph.networkflow.FlowNetwork;
 import datastructures.math.UF;
 
-/******************************************************************************
- *  Compilation:  javac GlobalMincut.java
- *  Execution:    java  GlobalMincut filename.txt
- *  Dependencies: EdgeWeightedGraph.java Edge.java UF.java 
- *                IndexMaxPQ.java FlowNetwork.java FlowEdge.java 
- *                FordFulkerson.java In.java StdOut.java
- *  Data files:   http://algs4.cs.princeton.edu/43mst/tinyEWG.txt
- *                http://algs4.cs.princeton.edu/43mst/mediumEWG.txt
- *
- *  Computes a minimum cut using Stoer-Wagner's algorithm.
- *
- *  % java GlobalMincut tinyEWG.txt 
- *    Min cut: 5 
- *    Min cut weight = 0.9500000000000001
- *    
- *  % java GlobalMincut mediumEWG.txt 
- *    Min cut: 25 60 63 96 199 237 
- *    Min cut weight = 0.14021
- *
- ******************************************************************************/
-
 /**
  * The {@code GlobalMincut} class represents a data type for computing a
  * <em>global minimum cut</em> in an edge-weighted graph where the edge
