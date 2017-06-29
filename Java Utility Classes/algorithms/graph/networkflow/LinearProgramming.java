@@ -1,20 +1,5 @@
 package algorithms.graph.networkflow;
 
-/******************************************************************************
- *  Compilation:  javac LinearProgramming.java
- *  Execution:    java LinearProgramming m n
- *  Dependencies: StdOut.java
- *
- *  Given an m-by-n matrix A, an m-length vector b, and an
- *  n-length vector c, solve the  LP { max cx : Ax <= b, x >= 0 }.
- *  Assumes that b >= 0 so that x = 0 is a basic feasible solution.
- *
- *  Creates an (m+1)-by-(n+m+1) simplex tableaux with the 
- *  RHS in column m+n, the objective function in row m, and
- *  slack variables in columns m through m+n-1.
- *
- ******************************************************************************/
-
 /**
  *  The {@code LinearProgramming} class represents a data type for solving a
  *  linear program of the form { max cx : Ax &le; b, x &ge; 0 }, where A is a m-by-n

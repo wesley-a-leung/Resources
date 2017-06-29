@@ -4,16 +4,6 @@ import datastructures.graph.DirectedWeightedEdge;
 import datastructures.graph.WeightedDigraph;
 import algorithms.graph.shortestpath.DijkstraDirectedSP;
 
-/******************************************************************************
- *  Compilation:  javac AssignmentProblem.java
- *  Execution:    java AssignmentProblem n
- *  Dependencies: DijkstraSP.java DirectedEdge.java
- *
- *  Solve an n-by-n assignment problem in n^3 log n time using the
- *  successive shortest path algorithm.
- *
- ******************************************************************************/
-
 /**
  *  The {@code AssignmentProblem} class represents a data type for computing
  *  an optimal solution to an <em>n</em>-by-<em>n</em> <em>assignment problem</em>.

@@ -57,18 +57,10 @@ public:
     }
 
     vector<DirectedWeightedEdge*> edges() {
-        vector<WeightedEdge*> list;
+        vector<DirectedWeightedEdge*> list;
         for (int v = 0; v < V; v++) {
-            int selfLoops = 0;
-            for (WeightedEdge *e : adj(v)) {
-                if (e->other(v) > v) {
-                    list.push_back(e);
-                }
-                // only add one copy of each self loop (self loops will be consecutive)
-                else if (e->other(v) == v) {
-                    if (selfLoops % 2 == 0) list.push_back(e);
-                    selfLoops++;
-                }
+            for (DirectedWeightedEdge *e : adj(v)) {
+                list.push_back(e);
             }
         }
         return list;
