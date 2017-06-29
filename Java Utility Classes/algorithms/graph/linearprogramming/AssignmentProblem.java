@@ -1,4 +1,4 @@
-package algorithms.graph.networkflow;
+package algorithms.graph.linearprogramming;
 
 import datastructures.graph.DirectedWeightedEdge;
 import datastructures.graph.WeightedDigraph;

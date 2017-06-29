@@ -5,6 +5,22 @@ import java.util.NoSuchElementException;
 
 import stdlib.StdRandom;
 
+/**
+ *  The {@code RandomizedQueue} class represents a queue of generic items
+ *  that randomly selects items.
+ *  It supports the usual <em>enqueue</em> and <em>dequeue</em>
+ *  operations, along with methods for sampling a random item, 
+ *  testing if the queue is empty, and iterating through
+ *  the items in a random order.
+ *  <p>
+ *  This implementation uses a singly-linked list with a static nested class for
+ *  linked-list nodes. See {@link LinkedQueue} for the version from the
+ *  textbook that uses a non-static nested class.
+ *
+ *  @author Wesley Leung
+ *
+ *  @param <Item> the generic type of an item in this queue
+ */
 public class RandomizedQueue<Item> implements Iterable<Item> {
     private Item[] q; // queue elements
     private int n; // number of elements on queue
