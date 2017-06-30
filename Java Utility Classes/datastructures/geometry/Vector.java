@@ -207,7 +207,18 @@ public class Vector {
         if (this.magnitude() == 0.0) throw new ArithmeticException("Zero-vector has no direction");
         return this.times(1.0 / this.magnitude());
     }
-
+    
+    /**
+     * Returns the angle of this 2-D vector to horizontal.
+     * 
+     * 
+     * @return the angle of this 2-D vector to horizontal
+     * @throws IllegalArgumentException if this vector is not 2-dimensional
+     */
+    public double angle() {
+        if (this.d != 2) throw new IllegalArgumentException("Vector must be 2-dimensional");
+        return Math.atan2(this.data[1], this.data[0]);
+    }
 
     /**
      * Returns a string representation of this vector.
