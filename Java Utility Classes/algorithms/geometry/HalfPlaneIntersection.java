@@ -6,7 +6,7 @@ import datastructures.geometry.Point2D;
 import datastructures.geometry.Vector;
 
 public class HalfPlaneIntersection {
-    private static final double EPS = 1e-12;
+    private static final double EPS = 1e-15;
     private int N;
     private Line[] all;
     private Line[] L;
