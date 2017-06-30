@@ -35,6 +35,7 @@ public class QuickSort {
      * @param a the array to be sorted
      */
     public static void sort(Comparable[] a) {
+        // Collections.shuffle(Arrays.asList(a));
         sort(a, 0, a.length - 1);
     }
 

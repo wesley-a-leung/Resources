@@ -9,7 +9,7 @@ public class QuickSortDual {
 
     // quicksort the array a[] using dual-pivot quicksort
     public static void sort(Comparable[] a) {
-        //Collections.shuffle(Arrays.asList(a));
+        // Collections.shuffle(Arrays.asList(a));
         sort(a, 0, a.length - 1);
     }
 
