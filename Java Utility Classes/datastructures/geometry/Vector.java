@@ -1,4 +1,4 @@
-package datastructures;
+package datastructures.geometry;
 
 /**
  *  The {@code Vector} class represents a <em>d</em>-dimensional Euclidean vector.
@@ -67,7 +67,7 @@ public class Vector {
     }
 
     /**
-     * Returns the do product of this vector with the specified vector.
+     * Returns the dot product of this vector with the specified vector.
      *
      * @param  that the other vector
      * @return the dot product of this vector and that vector
@@ -79,6 +79,32 @@ public class Vector {
         for (int i = 0; i < d; i++)
             sum = sum + (this.data[i] * that.data[i]);
         return sum;
+    }
+    
+    /**
+     * Returns the 2-D cross product of this vector with the specified vector.
+     *
+     * @param  that the other vector
+     * @return the 2-D cross product of this vector and that vector
+     * @throws IllegalArgumentException if the two vectors are not 2-dimensional
+     */
+    public double cross2D(Vector that) {
+        if (this.d != 2 || that.d != 2) throw new IllegalArgumentException("Vectors must be 2-dimensional");
+        return this.data[0] * that.data[1] - this.data[1] * that.data[0];
+    }
+    
+    /**
+     * Returns the 3-D cross product of this vector with the specified vector.
+     *
+     * @param  that the other vector
+     * @return the 3-D cross product of this vector and that vector
+     * @throws IllegalArgumentException if the two vectors are not 3-dimensional
+     */
+    public Vector cross3D(Vector that) {
+        if (this.d != 3 || that.d != 3) throw new IllegalArgumentException("Vectors must be 3-dimensional");
+        return new Vector(this.data[1] * that.data[2] - this.data[2] * that.data[1],
+                          this.data[2] * that.data[0] - this.data[0] * that.data[2],
+                          this.data[0] * that.data[1] - this.data[1] * that.data[0]);
     }
 
     /**
@@ -195,10 +221,4 @@ public class Vector {
             s.append(data[i] + " ");
         return s.toString();
     }
-
-    /**
-     * Unit tests the {@code Vector} data type.
-     *
-     * @param args the command-line arguments
-     */
 }
