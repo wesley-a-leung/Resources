@@ -4,11 +4,11 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- *  The {@code AdjMatrixWeightedDigraph} class represents a edge-weighted
- *  digraph of vertices named 0 through <em>V</em> - 1, where each
- *  directed edge is of type {@link DirectedWeightedEdge} and has a real-valued weight.
- *  It supports the following two primary operations: add a directed edge
- *  to the digraph and iterate over all of edges incident from a given vertex.
+ *  The {@code AdjMatrixWeightedgraph} class represents a edge-weighted
+ *  graph of vertices named 0 through <em>V</em> - 1, where each
+ *   edge is of type {@link WeightedEdge} and has a real-valued weight.
+ *  It supports the following two primary operations: add a  edge
+ *  to the graph and iterate over all of edges incident from a given vertex.
  *  It also provides
  *  methods for returning the number of vertices <em>V</em> and the number
  *  of edges <em>E</em>. Parallel edges are disallowed; self-loops are permitted.
@@ -25,83 +25,84 @@ import java.util.NoSuchElementException;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class AdjMatrixWeightedDigraph {
+public class AdjMatrixWeightedGraph {
     private static final String NEWLINE = System.getProperty("line.separator");
 
     private final int V;
     private int E;
-    private DirectedWeightedEdge[][] adj;
+    private WeightedEdge[][] adj;
     
     /**
-     * Initializes an empty edge-weighted digraph with {@code V} vertices and 0 edges.
+     * Initializes an empty edge-weighted graph with {@code V} vertices and 0 edges.
      * @param V the number of vertices
      * @throws IllegalArgumentException if {@code V < 0}
      */
-    public AdjMatrixWeightedDigraph(int V) {
+    public AdjMatrixWeightedGraph(int V) {
         if (V < 0) throw new IllegalArgumentException("number of vertices must be nonnegative");
         this.V = V;
         this.E = 0;
-        this.adj = new DirectedWeightedEdge[V][V];
+        this.adj = new WeightedEdge[V][V];
     }
 
     /**
-     * Returns the number of vertices in the edge-weighted digraph.
-     * @return the number of vertices in the edge-weighted digraph
+     * Returns the number of vertices in the edge-weighted graph.
+     * @return the number of vertices in the edge-weighted graph
      */
     public int V() {
         return V;
     }
 
     /**
-     * Returns the number of edges in the edge-weighted digraph.
-     * @return the number of edges in the edge-weighted digraph
+     * Returns the number of edges in the edge-weighted graph.
+     * @return the number of edges in the edge-weighted graph
      */
     public int E() {
         return E;
     }
 
     /**
-     * Adds the directed edge {@code e} to the edge-weighted digraph (if there
+     * Adds the  edge {@code e} to the edge-weighted graph (if there
      * is not already an edge with the same endpoints).
      * @param e the edge
      */
-    public void addEdge(DirectedWeightedEdge e) {
-        int v = e.from();
-        int w = e.to();
+    public void addEdge(WeightedEdge e) {
+        int v = e.either();
+        int w = e.other(v);
         validateVertex(v);
         validateVertex(w);
         if (adj[v][w] == null) {
             E++;
             adj[v][w] = e;
+            adj[w][v] = e;
         }
     }
     
     /**
-     * Returns the directed weighted edge from v to w
+     * Returns the weighted edge between v and w
      * 
-     * @param v the from vertex
-     * @param w the to vertex
-     * @return the directed weighted edge from v to w, null if there is no edge
+     * @param v the first vertex
+     * @param w second vertex
+     * @return the weighted edge between v and w, null if there is no edge
      */
-    public DirectedWeightedEdge getEdge(int v, int w) {
+    public WeightedEdge getEdge(int v, int w) {
         validateVertex(v);
         validateVertex(w);
         return adj[v][w];
     }
 
     /**
-     * Returns the directed edges incident from vertex {@code v}.
+     * Returns the  edges incident from vertex {@code v}.
      * @param v the vertex
-     * @return the directed edges incident from vertex {@code v} as an Iterable
+     * @return the  edges incident from vertex {@code v} as an Iterable
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
-    public Iterable<DirectedWeightedEdge> adj(int v) {
+    public Iterable<WeightedEdge> adj(int v) {
         validateVertex(v);
         return new AdjIterator(v);
     }
 
     // support iteration over graph vertices
-    private class AdjIterator implements Iterator<DirectedWeightedEdge>, Iterable<DirectedWeightedEdge> {
+    private class AdjIterator implements Iterator<WeightedEdge>, Iterable<WeightedEdge> {
         private int v;
         private int w = 0;
 
@@ -109,7 +110,7 @@ public class AdjMatrixWeightedDigraph {
             this.v = v;
         }
 
-        public Iterator<DirectedWeightedEdge> iterator() {
+        public Iterator<WeightedEdge> iterator() {
             return this;
         }
 
@@ -121,7 +122,7 @@ public class AdjMatrixWeightedDigraph {
             return false;
         }
 
-        public DirectedWeightedEdge next() {
+        public WeightedEdge next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
@@ -134,7 +135,7 @@ public class AdjMatrixWeightedDigraph {
     }
 
     /**
-     * Returns a string representation of the edge-weighted digraph. This method takes
+     * Returns a string representation of the edge-weighted graph. This method takes
      * time proportional to <em>V</em><sup>2</sup>.
      * @return the number of vertices <em>V</em>, followed by the number of edges <em>E</em>,
      *   followed by the <em>V</em> adjacency lists of edges
@@ -144,7 +145,7 @@ public class AdjMatrixWeightedDigraph {
         s.append(V + " " + E + NEWLINE);
         for (int v = 0; v < V; v++) {
             s.append(v + ": ");
-            for (DirectedWeightedEdge e : adj(v)) {
+            for (WeightedEdge e : adj(v)) {
                 s.append(e + "  ");
             }
             s.append(NEWLINE);
