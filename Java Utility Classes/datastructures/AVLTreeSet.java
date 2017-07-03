@@ -442,19 +442,11 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
     }
 
     private Value select(Node x, int k) {
-        if (x == null) {
-            return null;
-        }
-
+        if (x == null) return null;
         int rank = size(x.left) + 1;
-
-        if (rank == k) {
-            return x.val;
-        } else if (rank > k) {
-            return select(x.left, k);
-        } else {
-            return select(x.right, k - rank);
-        }
+        if (rank == k) return x.val;
+        else if (rank > k) return select(x.left, k);
+        else return select(x.right, k - rank);
     }
 
     /**
@@ -479,27 +471,17 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
      * @return the number of values in the subtree less than val
      */
     private int rank(Node n, Value val) {
-        if (n == null) {
-            return 0;
-        }
-
+        if (n == null) return 0;
         if (n.val.compareTo(val) == 0) {
             int temp = rank(n.left, val);
-            if (temp == 0) {
-                return size(n.left) + 1;
-            } else {
-                return temp;
-            }
+            if (temp == 0) return size(n.left) + 1;
+            else return temp;
         } else if (val.compareTo(n.val) < 0) {
             return rank(n.left, val);
         } else {
             int temp = rank(n.right, val);
-            if (temp == 0) {
-                return temp;
-            } else {
-                return size(n.left) + 1 + temp;
-            }
-
+            if (temp == 0) return temp;
+            else return size(n.left) + 1 + temp;
         }
     }
 
