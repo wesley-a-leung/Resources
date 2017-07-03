@@ -443,10 +443,10 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
 
     private Value select(Node x, int k) {
         if (x == null) return null;
-        int rank = size(x.left) + 1;
-        if (rank == k) return x.val;
-        else if (rank > k) return select(x.left, k);
-        else return select(x.right, k - rank);
+        int t = size(x.left) + 1;
+        if (t == k) return x.val;
+        else if (t > k) return select(x.left, k);
+        else return select(x.right, k - t);
     }
 
     /**
