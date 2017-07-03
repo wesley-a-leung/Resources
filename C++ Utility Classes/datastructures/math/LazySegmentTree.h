@@ -40,6 +40,7 @@ private:
         int m = cL + (cR - cL) / 2;
         build(cur * 2, cL , m);
         build(cur * 2 + 1, m + 1, cR);
+        tree[cur].val = max(tree[cur * 2].val, tree[cur * 2 + 1].val);
     }
 
     void update(int cur, int cL, int cR, int l, int r, int val) {
