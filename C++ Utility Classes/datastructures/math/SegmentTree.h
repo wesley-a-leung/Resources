@@ -14,7 +14,7 @@ using namespace std;
 
 struct SegmentTree {
     struct Node {
-        int val, lazy;
+        int val;
     };
 
 private:
@@ -30,13 +30,13 @@ private:
         int m = cL + (cR - cL) / 2;
         build(cur * 2, cL , m);
         build(cur * 2 + 1, m + 1, cR);
+        tree[cur].val = max(tree[cur * 2].val, tree[cur * 2 + 1].val);
     }
 
     void update(int cur, int cL, int cR, int ind, int val) {
         if (cL > ind || cR < ind) return;
         if (cL >= ind && cR <= ind) {
-            tree[cur].val += val;
-            tree[cur].lazy += val;
+            tree[cur].val = val;
             return;
         }
         int m = cL + (cR - cL) / 2;
