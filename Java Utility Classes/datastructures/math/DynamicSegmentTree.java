@@ -47,7 +47,7 @@ public class DynamicSegmentTree {
     
     public void update(int ind, int val) {
         array[ind] = val;
-        root = update(root, 1, array.length - 1, ind);
+        root = update(root, 1, N, ind);
     }
     
     private Node update(Node cur, int cL, int cR, int ind) {
