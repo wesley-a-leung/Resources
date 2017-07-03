@@ -14,29 +14,18 @@ using namespace std;
 
 struct DynamicLazySegmentTree {
     struct Node {
-        Node *left = nullptr, *right = nullptr;
+        Node *left = nullptr;
+        Node *right = nullptr;
         int val = 0, lazy = 0;
-
-        Node(int val) {
-            this->val = val;
-        }
-
-        Node(Node *l, Node *r) {
-            this->left = l;
-            this->right = r;
-            this->val = max(l->val, r->val);
-        }
 
         void propogate() {
             if (this->lazy != 0) {
-                if (left != nullptr) {
-                    left->val += this->lazy;
-                    left->lazy += this->lazy;
-                }
-                if (right != nullptr) {
-                    right->val += this->lazy;
-                    right->lazy += this->lazy;
-                }
+                if (left == nullptr) left = new Node();
+                left->val += this->lazy;
+                left->lazy += this->lazy;
+                if (right == nullptr) right = new Node();
+                right->val += this->lazy;
+                right->lazy += this->lazy;
                 this->lazy = 0;
             }
         }
@@ -45,16 +34,9 @@ struct DynamicLazySegmentTree {
 private:
     Node *root;
     int N;
-    int *array;
-
-    Node *build(int cL, int cR) {
-        if (cL == cR) return new Node(array[cL]);
-        int m = cL + (cR - cL) / 2;
-        return new Node(build(cL , m), build(m + 1, cR));
-    }
 
     void update(Node *cur, int cL, int cR, int l, int r, int val) {
-        cur->propogate();
+        if (cL != cR) cur->propogate();
         if (cL > r || cR < l) return;
         if (cL >= l && cR <= r) {
             cur->val += val;
@@ -62,14 +44,16 @@ private:
             return;
         }
         int m = cL + (cR - cL) / 2;
+        if (cur->left == nullptr) cur->left = new Node();
         update(cur->left, cL, m, l, r, val);
+        if (cur->right == nullptr) cur->right = new Node();
         update(cur->right, m + 1, cR, l, r, val);
         cur->val = max(cur->left->val, cur->right->val);
     }
 
     int rMaxQ(Node *cur, int cL, int cR, int l, int r) {
-        cur->propogate();
-        if (cL > r || cR < l) return INT_MIN;
+        if (cur == nullptr || cL > r || cR < l) return 0;
+        if (cL != cR) cur->propogate();
         if (cL >= l && cR <= r) return cur->val;
         int m = cL + (cR - cL) / 2;
         int left = rMaxQ(cur->left, cL, m, l, r);
@@ -78,21 +62,8 @@ private:
     }
 
 public:
-    DynamicLazySegmentTree(int size, int *arr, bool oneIndexed) {
-        array = new int[size + 1];
-        for (int i = 1; i <= size; i++) {
-            array[i] = arr[i - !oneIndexed];
-        }
-        root = build(1, size);
-        N = size;
-    }
-
     DynamicLazySegmentTree(int size) {
-        array = new int[size + 1];
-        for (int i = 1; i <= size; i++) {
-            array[i] = 0;
-        }
-        root = build(1, size);
+        root = new Node();
         N = size;
     }
 

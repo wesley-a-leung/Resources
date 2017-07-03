@@ -74,7 +74,7 @@ public class LazySegmentTree {
 
     private int rMaxQ(int cur, int cL, int cR, int l, int r) {
         if (cL != cR) propogate(cur);
-        if (cL > r || cR < l) return Integer.MIN_VALUE;
+        if (cL > r || cR < l) return 0;
         if (cL >= l && cR <= r) return tree[cur].val;
         int m = cL + (cR - cL) / 2;
         int left = rMaxQ(cur * 2, cL, m, l, r);

@@ -14,7 +14,7 @@ using namespace std;
 
 struct SegmentTree {
     struct Node {
-        int val;
+        int val = 0;
     };
 
 private:
@@ -46,7 +46,7 @@ private:
     }
 
     int rMaxQ(int cur, int cL, int cR, int l, int r) {
-        if (cL > r || cR < l) return INT_MIN;
+        if (cL > r || cR < l) return 0;
         if (cL >= l && cR <= r) return tree[cur].val;
         int m = cL + (cR - cL) / 2;
         int left = rMaxQ(cur * 2, cL, m, l, r);

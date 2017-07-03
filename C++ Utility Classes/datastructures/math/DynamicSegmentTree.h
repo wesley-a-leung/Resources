@@ -15,43 +15,30 @@ using namespace std;
 struct DynamicSegmentTree {
     struct Node {
     public:
-        Node *left;
-        Node *right;
-        int val;
-        Node(int val) {
-            this->val = val;
-            this->left = this->right = nullptr;
-        }
-
-        Node(Node *l, Node *r) {
-            this->left = l;
-            this->right = r;
-            this->val = max(l->val, r->val);
-        }
+        Node *left = nullptr, *right = nullptr;
+        int val = 0;
     };
 
 private:
     Node *root;
-    int *array;
     int N;
 
-    Node *build(int cL, int cR) {
-        if (cL == cR) return new Node(array[cL]);
-        int m = cL + (cR - cL) / 2;
-        return new Node(build(cL , m), build(m + 1, cR));
-    }
-
-    Node *update(Node *cur, int cL, int cR, int ind) {
-        if (cL <= ind && ind <= cR) {
-            if (cL == cR) return new Node(array[cL]);
-            int m = cL + (cR - cL) / 2;
-            return new Node(update(cur->left, cL, m, ind), update(cur->right, m + 1, cR, ind));
-        }
-        return cur;
+    void update(Node *cur, int cL, int cR, int ind, int val) {
+       if (cL > ind || cR < ind) return;
+       if (cL >= ind && cR <= ind) {
+           cur->val += val;
+           return;
+       }
+       int m = cL + (cR - cL) / 2;
+       if (cur->left == nullptr) cur->left = new Node();
+       update(cur->left, cL, m, ind, val);
+       if (cur->right == nullptr) cur->right = new Node();
+       update(cur->right, m + 1, cR, ind, val);
+       cur->val = max(cur->left->val, cur->right->val);
     }
 
     int rMaxQ(Node *cur, int cL, int cR, int l, int r) {
-        if (cL > r || cR < l) return INT_MIN;
+        if (cur == nullptr || cL > r || cR < l) return 0;
         if (cL >= l && cR <= r) return cur->val;
         int m = cL + (cR - cL) / 2;
         int left = rMaxQ(cur->left, cL, m, l, r);
@@ -60,27 +47,13 @@ private:
     }
 
 public:
-    DynamicSegmentTree(int size, int *arr, bool oneIndexed) {
-        array = new int[size + 1];
-        for (int i = 1; i <= size; i++) {
-            array[i] = arr[i - !oneIndexed];
-        }
-        root = build(1, size);
-        N = size;
-    }
-
     DynamicSegmentTree(int size) {
-        array = new int[size + 1];
-        for (int i = 1; i <= size; i++) {
-            array[i] = 0;
-        }
-        root = build(1, size);
+        root = new Node();
         N = size;
     }
 
     void update(int ind, int val) {
-        array[ind] = val;
-        root = update(root, 1, N, ind);
+        update(root, 1, N, ind, val);
     }
 
     int rMaxQ(int l, int r) {
