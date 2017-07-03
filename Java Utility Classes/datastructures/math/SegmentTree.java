@@ -48,7 +48,7 @@ public class SegmentTree {
     private void update(int cur, int cL, int cR, int ind, int val) {
         if (cL > ind || cR < ind) return;
         if (cL >= ind && cR <= ind) {
-            tree[cur].val = val;
+            tree[cur].val += val;
             return;
         }
         int m = cL + (cR - cL) / 2;
