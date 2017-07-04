@@ -21,14 +21,14 @@ public class SegmentTree {
         for (int i = 1; i <= size; i++) {
             array[i] = arr[i - (oneIndexed ? 0 : 1)];
         }
-        tree = new Node[4 * size];
+        tree = new Node[((int) (2 * Math.pow(2.0, Math.ceil(Math.log((double) size) / Math.log(2.0)))))];
         build(1, 1, size);
         N = size;
     }
 
     public SegmentTree(int size) {
         array = new int[size + 1];
-        tree = new Node[4 * size];
+        tree = new Node[((int) (2 * Math.pow(2.0, Math.ceil(Math.log((double) size) / Math.log(2.0)))))];
         build(1, 1, size);
         N = size;
     }
