@@ -50,17 +50,17 @@ public class DynamicLazySegmentTree {
         cur.val = Math.max(cur.left.val, cur.right.val);
     }
     
-    public int rMaxQ(int l, int r) {
-        return rMaxQ(root, 1, N, l, r);
+    public int query(int l, int r) {
+        return query(root, 1, N, l, r);
     }
     
-    private int rMaxQ(Node cur, int cL, int cR, int l, int r) {
+    private int query(Node cur, int cL, int cR, int l, int r) {
         if (cur == null || cL > r || cR < l) return 0;
         if (cL != cR) cur.propogate();
         if (cL >= l && cR <= r) return cur.val;
         int m = cL + (cR - cL) / 2;
-        int left = rMaxQ(cur.left, cL, m, l, r);
-        int right = rMaxQ(cur.right, m + 1, cR, l, r);
+        int left = query(cur.left, cL, m, l, r);
+        int right = query(cur.right, m + 1, cR, l, r);
         return Math.max(left, right);
     }
 }

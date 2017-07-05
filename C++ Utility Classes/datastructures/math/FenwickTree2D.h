@@ -21,9 +21,9 @@ struct FenwickTree2D {
 private:
     int sizeX;
     int sizeY;
+    int **array;
 
 public:
-    int **array;
 
     FenwickTree2D(int sizeX, int sizeY) {
         this->sizeX = sizeX;
@@ -31,6 +31,9 @@ public:
         array = new int*[sizeX + 1];
         for (int i = 0; i <= sizeX; i++) {
             array[i] = new int[sizeY];
+            for (int j = 0; j <= sizeY; j++) {
+                array[i][j] = 0;
+            }
         }
     }
 

@@ -72,18 +72,18 @@ public class LazySegmentTree {
         update(1, 1, N, l, r, val);
     }
 
-    private int rMaxQ(int cur, int cL, int cR, int l, int r) {
+    private int query(int cur, int cL, int cR, int l, int r) {
         if (cL != cR) propogate(cur);
         if (cL > r || cR < l) return 0;
         if (cL >= l && cR <= r) return tree[cur].val;
         int m = cL + (cR - cL) / 2;
-        int left = rMaxQ(cur * 2, cL, m, l, r);
-        int right = rMaxQ(cur * 2 + 1, m + 1, cR, l, r);
+        int left = query(cur * 2, cL, m, l, r);
+        int right = query(cur * 2 + 1, m + 1, cR, l, r);
         return Math.max(left, right);
     }
 
-    public int rMaxQ(int l, int r) {
-        return rMaxQ(1, 1, N, l, r);
+    public int query(int l, int r) {
+        return query(1, 1, N, l, r);
     }
     
     public int size() {

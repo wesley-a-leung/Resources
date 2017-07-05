@@ -7,7 +7,7 @@ package datastructures.math;
  */
 public class FenwickTree2D {
 
-    int[][] array;
+    private int[][] array;
 
     public FenwickTree2D(int sizeX, int sizeY) {
         array = new int[sizeX + 1][sizeY + 1];
