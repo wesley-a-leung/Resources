@@ -94,32 +94,29 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
      * @throws IllegalArgumentException if {@code val} is {@code null}
      */
     public boolean contains(Value val) {
+        if (val == null) throw new IllegalArgumentException("argument to delete() is null");
         return contains(root, val);
     }
 
     // auxiliary method for contains
-    private boolean contains(Node n, Value val) {
-        if (n == null)
+    private boolean contains(Node x, Value val) {
+        if (x == null)
             return false;
-        else if (val.compareTo(n.val) < 0)
-            return contains(n.left, val);
-        else if (val.compareTo(n.val) > 0)
-            return contains(n.right, val);
+        else if (val.compareTo(x.val) < 0)
+            return contains(x.left, val);
+        else if (val.compareTo(x.val) > 0)
+            return contains(x.right, val);
         return true;
     }
 
     /**
      * Inserts the specified value into the symbol table, allowing for duplicates.
-     * Deletes the specified values from this symbol table if the specified value is {@code null}.
      * 
      * @param val the value
-     * @throws IllegalArgumentException if {@code key} is {@code null}
+     * @throws IllegalArgumentException if {@code val} is {@code null}
      */
     public void add(Value val) {
-        if (val == null) {
-            delete(val);
-            return;
-        }
+        if (val == null) throw new IllegalArgumentException("argument to delete() is null");
         root = add(root, val);
     }
     
@@ -140,8 +137,6 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
         else {
             x.right = add(x.right, val);
         }
-        x.size = 1 + size(x.left) + size(x.right);
-        x.height = 1 + Math.max(height(x.left), height(x.right));
         return balance(x);
     }
 
@@ -164,6 +159,7 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
             }
             x = rotateRight(x);
         }
+        update(x);
         return x;
     }
 
@@ -191,10 +187,8 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
         Node y = x.left;
         x.left = y.right;
         y.right = x;
-        y.size = x.size;
-        x.size = 1 + size(x.left) + size(x.right);
-        x.height = 1 + Math.max(height(x.left), height(x.right));
-        y.height = 1 + Math.max(height(y.left), height(y.right));
+        update(x);
+        update(y);
         return y;
     }
 
@@ -208,18 +202,26 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
         Node y = x.right;
         x.right = y.left;
         y.left = x;
-        y.size = x.size;
+        update(x);
+        update(y);
+        return y;
+    }
+    
+    /**
+     * Updates the size and height of the subtree.
+     *
+     * @param x the subtree
+     */
+    private void update(Node x) {
         x.size = 1 + size(x.left) + size(x.right);
         x.height = 1 + Math.max(height(x.left), height(x.right));
-        y.height = 1 + Math.max(height(y.left), height(y.right));
-        return y;
     }
 
     /**
      * Removes the specified value from the symbol table
      * 
      * @param val the value
-     * @throws IllegalArgumentException if {@code key} is {@code null}
+     * @throws IllegalArgumentException if {@code val} is {@code null}
      */
     public void delete(Value val) {
         if (val == null) throw new IllegalArgumentException("argument to delete() is null");
@@ -257,8 +259,6 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
                 x.left = y.left;
             }
         }
-        x.size = 1 + size(x.left) + size(x.right);
-        x.height = 1 + Math.max(height(x.left), height(x.right));
         return balance(x);
     }
 
@@ -281,13 +281,11 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
     private Node deleteMin(Node x) {
         if (x.left == null) return x.right;
         x.left = deleteMin(x.left);
-        x.size = 1 + size(x.left) + size(x.right);
-        x.height = 1 + Math.max(height(x.left), height(x.right));
         return balance(x);
     }
 
     /**
-     * Removes the largest key and associated value from the symbol table.
+     * Removes the largest value from the symbol table.
      * 
      * @throws NoSuchElementException if the symbol table is empty
      */
@@ -297,7 +295,7 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
     }
 
     /**
-     * Removes the largest key and associated value from the given subtree.
+     * Removes the largest value from the given subtree.
      * 
      * @param x the subtree
      * @return the updated subtree
@@ -305,8 +303,6 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
     private Node deleteMax(Node x) {
         if (x.right == null) return x.left;
         x.right = deleteMax(x.right);
-        x.size = 1 + size(x.left) + size(x.right);
-        x.height = 1 + Math.max(height(x.left), height(x.right));
         return balance(x);
     }
 
@@ -374,7 +370,7 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
 
     /**
      * Returns the node in the subtree with the largest value less than or equal
-     * to the given key.
+     * to the given value.
      * 
      * @param x the subtree
      * @param val the value
@@ -429,22 +425,23 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
     }
 
     /**
-     * Returns the kth smallest key in the symbol table.
+     * Returns the kth smallest value in the symbol table.
      * 
      * @param k the order statistic
-     * @return the kth smallest key in the symbol table
+     * @return the kth smallest value in the symbol table
      * @throws IllegalArgumentException unless {@code k} is between 0 and
      *             {@code size() -1 }
      */
     public Value select(int k) {
         if (k < 0 || k >= size()) throw new IllegalArgumentException("k is not in range 0-" + (size() - 1));
-        return select(root, k + 1);
+        return select(root, k + 1).val;
     }
-
-    private Value select(Node x, int k) {
+    
+    // auxiliary method for select
+    private Node select(Node x, int k) {
         if (x == null) return null;
         int t = size(x.left) + 1;
-        if (t == k) return x.val;
+        if (t == k) return x;
         else if (t > k) return select(x.left, k);
         else return select(x.right, k - t);
     }
@@ -470,18 +467,18 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
      * @param x the subtree
      * @return the number of values in the subtree less than val
      */
-    private int rank(Node n, Value val) {
-        if (n == null) return 0;
-        if (n.val.compareTo(val) == 0) {
-            int temp = rank(n.left, val);
-            if (temp == 0) return size(n.left) + 1;
+    private int rank(Node x, Value val) {
+        if (x == null) return -1;
+        if (val.compareTo(x.val) == 0) {
+            int temp = rank(x.left, val);
+            if (temp == -1) return size(x.left) + 1;
             else return temp;
-        } else if (val.compareTo(n.val) < 0) {
-            return rank(n.left, val);
+        } else if (val.compareTo(x.val) < 0) {
+            return rank(x.left, val);
         } else {
-            int temp = rank(n.right, val);
-            if (temp == 0) return temp;
-            else return size(n.left) + 1 + temp;
+            int temp = rank(x.right, val);
+            if (temp == -1) return temp;
+            else return size(x.left) + 1 + temp;
         }
     }
 
