@@ -22,9 +22,9 @@ private:
     int sizeX;
     int sizeY;
     int sizeZ;
+    int ***array;
 
 public:
-    int ***array;
 
     FenwickTree3D(int sizeX, int sizeY, int sizeZ) {
         this->sizeX = sizeX;
@@ -35,6 +35,9 @@ public:
             array[i] = new int*[sizeY];
             for (int j = 0; j <= sizeY; j++) {
                 array[i][j] = new int[sizeZ];
+                for (int k = 0; k <= sizeZ; k++) {
+                     array[i][j][k] = 0;
+                 }
             }
         }
     }

@@ -51,13 +51,13 @@ private:
         cur->val = max(cur->left->val, cur->right->val);
     }
 
-    int rMaxQ(Node *cur, int cL, int cR, int l, int r) {
+    int query(Node *cur, int cL, int cR, int l, int r) {
         if (cur == nullptr || cL > r || cR < l) return 0;
         if (cL != cR) cur->propogate();
         if (cL >= l && cR <= r) return cur->val;
         int m = cL + (cR - cL) / 2;
-        int left = rMaxQ(cur->left, cL, m, l, r);
-        int right = rMaxQ(cur->right, m + 1, cR, l, r);
+        int left = query(cur->left, cL, m, l, r);
+        int right = query(cur->right, m + 1, cR, l, r);
         return max(left, right);
     }
 
@@ -71,8 +71,8 @@ public:
         update(root, 1, N, l, r, val);
     }
 
-    int rMaxQ(int l, int r) {
-        return rMaxQ(root, 1, N, l, r);
+    int query(int l, int r) {
+        return query(root, 1, N, l, r);
     }
 
     int size() {

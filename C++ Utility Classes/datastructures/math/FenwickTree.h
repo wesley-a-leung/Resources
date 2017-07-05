@@ -43,12 +43,15 @@ using namespace std;
 struct FenwickTree {
 private:
     int size;
+    int *array;
 
 public:
-    int *array;
     FenwickTree(int size) {
         this->size = size;
         array = new int[size + 1];
+        for (int i = 0; i <= size; i++) {
+            array[i] = 0;
+        }
     }
 
     /**
