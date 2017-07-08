@@ -12,6 +12,12 @@
 
 using namespace std;
 
+class no_such_element_exception: public runtime_error {
+public:
+    no_such_element_exception(): runtime_error("No such element exists"){}
+    no_such_element_exception(string message): runtime_error(message){}
+};
+
 template <typename Value>
 struct AVLTreeSet {
     /**
@@ -415,11 +421,11 @@ public:
      *         {@code val} and a boolean of whether a value was found or not
      * @throws runtime_error if the symbol table is empty
      */
-    pair<Value, bool> floor(Value val) {
+    Value floor(Value val) {
         if (isEmpty()) throw runtime_error("called floor() with empty symbol table");
         Node *x = floor(root, val);
-        if (x == nullptr) return {val, false};
-        else return {x->val, true};
+        if (x == nullptr) throw no_such_element_exception("call to floor() resulted in no such value");
+        else return x->val;
     }
 
     /**
@@ -431,11 +437,11 @@ public:
      *         {@code val} and a boolean of whether a value was found or not
      * @throws runtime_error if the symbol table is empty
      */
-    pair<Value, bool> ceiling(Value val) {
+    Value ceiling(Value val) {
         if (isEmpty()) throw runtime_error("called ceiling() with empty symbol table");
         Node *x = ceiling(root, val);
-        if (x == nullptr) return {val, false};
-        else return {x->val, true};
+        if (x == nullptr) throw no_such_element_exception("call to ceiling() resulted in no such value");
+        else return x->val;
     }
 
     /**
