@@ -58,7 +58,7 @@ public class KosarajuSharirSCC {
         }
 
         // check that id[] gives strong components
-        assert check(G);
+        // assert check(G);
     }
 
     // DFS on graph G

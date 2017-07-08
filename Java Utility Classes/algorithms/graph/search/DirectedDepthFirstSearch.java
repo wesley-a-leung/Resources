@@ -2,29 +2,6 @@ package algorithms.graph.search;
 
 import datastructures.graph.Digraph;
 
-/******************************************************************************
- *  Compilation:  javac DirectedDFS.java
- *  Execution:    java DirectedDFS digraph.txt s
- *  Dependencies: Digraph.java Bag.java In.java StdOut.java
- *  Data files:   http://algs4.cs.princeton.edu/42digraph/tinyDG.txt
- *                http://algs4.cs.princeton.edu/42digraph/mediumDG.txt
- *                http://algs4.cs.princeton.edu/42digraph/largeDG.txt
- *
- *  Determine single-source or multiple-source reachability in a digraph
- *  using depth first search.
- *  Runs in O(E + V) time.
- *
- *  % java DirectedDFS tinyDG.txt 1
- *  1
- *
- *  % java DirectedDFS tinyDG.txt 2
- *  0 1 2 3 4 5
- *
- *  % java DirectedDFS tinyDG.txt 1 2 6
- *  0 1 2 3 4 5 6 8 9 10 11 12 
- *
- ******************************************************************************/
-
 /**
  *  The {@code DirectedDFS} class represents a data type for 
  *  determining the vertices reachable from a given source vertex <em>s</em>

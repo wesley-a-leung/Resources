@@ -57,7 +57,7 @@ public class TarjanSCC {
         }
 
         // check that id[] gives strong components
-        assert check(G);
+        // assert check(G);
     }
 
     private void dfs(Digraph G, int v) { 

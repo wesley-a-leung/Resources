@@ -6,39 +6,6 @@ import datastructures.graph.Digraph;
 import datastructures.graph.DirectedWeightedEdge;
 import datastructures.graph.WeightedDigraph;
 
-/******************************************************************************
- *  Compilation:  javac DepthFirstOrder.java
- *  Execution:    java DepthFirstOrder digraph.txt
- *  Dependencies: Digraph.java Queue.java Stack.java StdOut.java
- *                EdgeWeightedDigraph.java DirectedEdge.java
- *  Data files:   http://algs4.cs.princeton.edu/42digraph/tinyDAG.txt
- *                http://algs4.cs.princeton.edu/42digraph/tinyDG.txt
- *
- *  Compute preorder and postorder for a digraph or edge-weighted digraph.
- *  Runs in O(E + V) time.
- *
- *  % java DepthFirstOrder tinyDAG.txt
- *     v  pre post
- *  --------------
- *     0    0    8
- *     1    3    2
- *     2    9   10
- *     3   10    9
- *     4    2    0
- *     5    1    1
- *     6    4    7
- *     7   11   11
- *     8   12   12
- *     9    5    6
- *    10    8    5
- *    11    6    4
- *    12    7    3
- *  Preorder:  0 5 4 1 6 9 11 12 10 2 3 7 8 
- *  Postorder: 4 5 1 12 11 10 9 6 0 3 2 7 8 
- *  Reverse postorder: 8 7 2 3 0 6 9 10 11 12 1 5 4 
- *
- ******************************************************************************/
-
 /**
  *  The {@code DepthFirstOrder} class represents a data type for 
  *  determining depth-first search ordering of the vertices in a digraph

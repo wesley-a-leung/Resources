@@ -2,26 +2,6 @@ package algorithms.graph.search;
 
 import datastructures.graph.Graph;
 
-/******************************************************************************
- *  Compilation:  javac DepthFirstSearch.java
- *  Execution:    java DepthFirstSearch filename.txt s
- *  Dependencies: Graph.java StdOut.java
- *  Data files:   http://algs4.cs.princeton.edu/41graph/tinyG.txt
- *                http://algs4.cs.princeton.edu/41graph/mediumG.txt
- *
- *  Run depth first search on an undirected graph.
- *  Runs in O(E + V) time.
- *
- *  % java DepthFirstSearch tinyG.txt 0
- *  0 1 2 3 4 5 6 
- *  NOT connected
- *
- *  % java DepthFirstSearch tinyG.txt 9
- *  9 10 11 12 
- *  NOT connected
- *
- ******************************************************************************/
-
 /**
  *  The {@code DepthFirstSearch} class represents a data type for 
  *  determining the vertices connected to a given source vertex <em>s</em>
