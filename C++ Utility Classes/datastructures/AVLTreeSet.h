@@ -413,13 +413,12 @@ public:
     }
 
     /**
-     * Returns the largest value in the symbol table less than or equal to
-     * {@code val}.
+     * Returns the largest value in the symbol table less than or equal to {@code val}.
      *
      * @param val the value
-     * @return a pair containing the largest value in the symbol table less than or equal to
-     *         {@code val} and a boolean of whether a value was found or not
+     * @return the largest value in the symbol table less than or equal to {@code val}
      * @throws runtime_error if the symbol table is empty
+     * @throws no_such_element_exception if there is no value in the symbol table less than or equal to {@code val}
      */
     Value floor(Value val) {
         if (isEmpty()) throw runtime_error("called floor() with empty symbol table");
@@ -429,13 +428,12 @@ public:
     }
 
     /**
-     * Returns the smallest value in the symbol table greater than or equal to
-     * {@code val}.
+     * Returns the smallest value in the symbol table greater than or equal to {@code val}.
      *
      * @param val the value
-     * @return a pair containing the smallest value in the symbol table greater than or equal to
-     *         {@code val} and a boolean of whether a value was found or not
+     * @return a pair containing the smallest value in the symbol table greater than or equal to {@code val}
      * @throws runtime_error if the symbol table is empty
+     * @throws no_such_element_exception if there is no value in the symbol table greater than or equal to {@code val}
      */
     Value ceiling(Value val) {
         if (isEmpty()) throw runtime_error("called ceiling() with empty symbol table");
