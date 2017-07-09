@@ -32,6 +32,19 @@ class BreadthFirstSearch:
     def getEdgeTo(self, v):
         return self.__edgeTo[v]
 
+    def hasPathTo(self, v):
+        return self.__marked[v]
+
+    def pathTo(self, v):
+        if (not self.__hasPathTo(v)):
+            return None
+        path = []
+        x = v
+        while self.__distTo[x] != 0:
+            path.append(x)
+            x = self.__edgeTo[x]
+        return path[::-1]
+
 
 class DepthFirstSearch:
     __marked = []
@@ -57,3 +70,16 @@ class DepthFirstSearch:
 
     def getEdgeTo(self, v):
         return self.__edgeTo[v]
+
+    def hasPathTo(self, v):
+        return self.__marked[v]
+
+    def pathTo(self, v):
+        if (not self.__hasPathTo(v)):
+            return None
+        path = []
+        x = v
+        while self.__depth[x] != 0:
+            path.append(x)
+            x = self.__edgeTo[x]
+        return path[::-1]
