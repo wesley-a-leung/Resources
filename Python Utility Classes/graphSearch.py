@@ -2,10 +2,6 @@ from collections import deque
 
 
 class BreadthFirstSearch:
-    __marked = []
-    __distTo = []
-    __edgeTo = []
-
     def __init__(self, G, s):
         self.__marked = [False] * G.getV()
         self.__distTo = [float('inf')] * G.getV()
@@ -47,10 +43,6 @@ class BreadthFirstSearch:
 
 
 class DepthFirstSearch:
-    __marked = []
-    __depth = []
-    __edgeTo = []
-
     def __init__(self, G, s):
         self.__marked = [False] * G.getV()
         self.__depth = [-1] * G.getV()
