@@ -6,10 +6,10 @@ class Graph:
         for v in range(V):
             self.__adjList.append([])
 
-    def getV(self):
+    def V(self):
         return self.__V
 
-    def getE(self):
+    def E(self):
         return self.__E
 
     def addEdge(self, v, w):
@@ -31,10 +31,10 @@ class DictGraph:
         self.__adjList = {}
         self.__indegreeArr = {}
 
-    def getV(self):
+    def V(self):
         return self.__V
 
-    def getE(self):
+    def E(self):
         return self.__E
 
     def addEdge(self, v, w):

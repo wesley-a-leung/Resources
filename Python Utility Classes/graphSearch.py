@@ -3,9 +3,9 @@ from collections import deque
 
 class BreadthFirstSearch:
     def __init__(self, G, s):
-        self.__marked = [False] * G.getV()
-        self.__distTo = [float('inf')] * G.getV()
-        self.__edgeTo = [-1] * G.getV()
+        self.__marked = [False] * G.V()
+        self.__distTo = [float('inf')] * G.V()
+        self.__edgeTo = [-1] * G.V()
         self.__bfs(G, s)
 
     def __bfs(self, G, s):
@@ -44,9 +44,9 @@ class BreadthFirstSearch:
 
 class DepthFirstSearch:
     def __init__(self, G, s):
-        self.__marked = [False] * G.getV()
-        self.__depth = [-1] * G.getV()
-        self.__edgeTo = [-1] * G.getV()
+        self.__marked = [False] * G.V()
+        self.__depth = [-1] * G.V()
+        self.__edgeTo = [-1] * G.V()
         self.__dfs(G, s, 0)
 
     def __dfs(self, G, v, d):
