@@ -37,4 +37,16 @@ public class EuclidGCD {
         }
         return p;
     }
+    
+    // recursive implementation
+    /**
+     * Returns the greatest common divisor of 2 integers.
+     *
+     * @param  p the first integer
+     * @param  q the second integer
+     * @return greatest common divisor of {@code p} and {@code q}
+     */
+    public static int gcdRecursive(int p, int q) {
+        return q == 0 ? p : gcd(q, p % q);
+    }
 }
