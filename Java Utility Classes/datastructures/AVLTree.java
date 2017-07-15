@@ -3,7 +3,7 @@ package datastructures;
 import java.util.NoSuchElementException;
 
 /**
- *  The {@code AVLTreeST} class represents an ordered symbol table of
+ *  The {@code AVLTree} class represents an ordered symbol table of
  *  generic key-value pairs. It supports the usual <em>put</em>, <em>get</em>,
  *  <em>contains</em>, <em>delete</em>, <em>size</em>, and <em>is-empty</em>
  *  methods. It also provides ordered methods for finding the <em>minimum</em>,
@@ -212,8 +212,6 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
             x.val = val;
             return x;
         }
-        x.size = 1 + size(x.left) + size(x.right);
-        x.height = 1 + Math.max(height(x.left), height(x.right));
         return balance(x);
     }
 
@@ -236,6 +234,7 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
             }
             x = rotateRight(x);
         }
+        update(x);
         return x;
     }
 
@@ -263,10 +262,8 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
         Node y = x.left;
         x.left = y.right;
         y.right = x;
-        y.size = x.size;
-        x.size = 1 + size(x.left) + size(x.right);
-        x.height = 1 + Math.max(height(x.left), height(x.right));
-        y.height = 1 + Math.max(height(y.left), height(y.right));
+        update(x);
+        update(y);
         return y;
     }
 
@@ -280,11 +277,19 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
         Node y = x.right;
         x.right = y.left;
         y.left = x;
-        y.size = x.size;
+        update(x);
+        update(y);
+        return y;
+    }
+    
+    /**
+     * Updates the size and height of the subtree.
+     *
+     * @param x the subtree
+     */
+    private void update(Node x) {
         x.size = 1 + size(x.left) + size(x.right);
         x.height = 1 + Math.max(height(x.left), height(x.right));
-        y.height = 1 + Math.max(height(y.left), height(y.right));
-        return y;
     }
 
     /**
@@ -330,8 +335,6 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
                 x.left = y.left;
             }
         }
-        x.size = 1 + size(x.left) + size(x.right);
-        x.height = 1 + Math.max(height(x.left), height(x.right));
         return balance(x);
     }
 
@@ -354,8 +357,6 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
     private Node deleteMin(Node x) {
         if (x.left == null) return x.right;
         x.left = deleteMin(x.left);
-        x.size = 1 + size(x.left) + size(x.right);
-        x.height = 1 + Math.max(height(x.left), height(x.right));
         return balance(x);
     }
 
@@ -378,8 +379,6 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
     private Node deleteMax(Node x) {
         if (x.right == null) return x.left;
         x.right = deleteMax(x.right);
-        x.size = 1 + size(x.left) + size(x.right);
-        x.height = 1 + Math.max(height(x.left), height(x.right));
         return balance(x);
     }
 

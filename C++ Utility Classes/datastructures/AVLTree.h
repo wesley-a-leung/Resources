@@ -1,12 +1,12 @@
 /*
- * AVLTreeSet.h
+ * AVLTree.h
  *
- *  Created on: Jul 5, 2017
+ *  Created on: Jul 14, 2017
  *      Author: Wesley Leung
  */
 
-#ifndef DATASTRUCTURES_AVLTREESET_H_
-#define DATASTRUCTURES_AVLTREESET_H_
+#ifndef DATASTRUCTURES_AVLTREE_H_
+#define DATASTRUCTURES_AVLTREE_H_
 
 #include <bits/stdc++.h>
 
@@ -18,17 +18,19 @@ public:
     no_such_element_exception(string message): runtime_error(message){}
 };
 
-template <typename Value>
-struct AVLTreeSet {
+template <typename Key, typename Value>
+struct AVLTree {
     /**
      * Represents an inner node of the AVL tree.
      */
     struct Node {
     public:
+        Key key;
         Value val;
         int height, size;
         Node *left = nullptr, *right = nullptr;
-        Node(Value val, int height, int size) {
+        Node(Key key, Value val, int height, int size) {
+            this->key = key;
             this->val = val;
             this->size = size;
             this->height = height;
@@ -138,26 +140,39 @@ private:
         return x;
     }
 
-    // auxiliary function for contains
-    bool contains(Node *&x, Value val) {
-        if (x == nullptr) return false;
-        else if (val < x->val) return contains(x->left, val);
-        else if (val > x->val) return contains(x->right, val);
-        return true;
+    /**
+     * Returns value associated with the given key in the subtree.
+     *
+     * @param x the subtree
+     * @param key the key
+     * @return value associated with the given key in the subtree or
+     *         {@code null} if no such key
+     * @throws no_such_element_exception if there is no such key
+     */
+    Node *get(Node *&x, Key key) {
+        if (x == nullptr) return nullptr;
+        if (key < x->key) return get(x->left, key);
+        else if (key > x->key) return get(x->right, key);
+        else return x;
     }
 
     /**
-     * Inserts the specified value into the symbol table, allowing for duplicates.
-     * Deletes the specified value from this symbol table if the specified value is {@code null}.
+     * Inserts the key-value pair in the subtree. It overrides the old value
+     * with the new value if the symbol table already contains the specified key.
      *
      * @param x the subtree
+     * @param key the key
      * @param val the value
      * @return the subtree
      */
-    Node *add(Node *&x, Value val) {
-        if (x == nullptr) return new Node(val, 0, 1);
-        if (val < x->val) x->left = add(x->left, val);
-        else x->right = add(x->right, val);
+    Node *put(Node *&x, Key key, Value val) {
+        if (x == nullptr) return new Node(key, val, 0, 1);
+        if (key < x->key) x->left = put(x->left, key, val);
+        else if (key > x->key) x->right = put(x->right, key, val);
+        else {
+            x->val = val;
+            return x;
+        }
         return balance(x);
     }
 
@@ -208,16 +223,16 @@ private:
     }
 
     /**
-     * Removes the specified value and its associated value from the given
+     * Removes the specified key and its associated value from the given
      * subtree.
      *
      * @param x the subtree
-     * @param val the value
+     * @param key the key
      * @return the updated subtree
      */
-    Node *remove(Node *&x, Value val) {
-        if (val < x->val) x->left = remove(x->left, val);
-        else if (val > x->val) x->right = remove(x->right, val);
+    Node *remove(Node *&x, Key key) {
+        if (key < x->key) x->left = remove(x->left, key);
+        else if (key > x->key) x->right = remove(x->right, key);
         else {
             if (x->left == nullptr) return x->right;
             else if (x->right == nullptr) return x->left;
@@ -232,37 +247,37 @@ private:
     }
 
     /**
-     * Returns the node in the subtree with the largest value less than or equal
-     * to the given value.
+     * Returns the node in the subtree with the largest key less than or equal
+     * to the given key.
      *
      * @param x the subtree
-     * @param val the value
-     * @return the node in the subtree with the largest value less than or equal
-     *         to the given value
+     * @param key the key
+     * @return the node in the subtree with the largest key less than or equal
+     *         to the given key
      */
-    Node *floor(Node *&x, Value val) {
+    Node *floor(Node *&x, Key key) {
         if (x == nullptr) return nullptr;
-        if (val == x->val) return x;
-        if (val < x->val) return floor(x->left, val);
-        Node *y = floor(x->right, val);
+        if (key == x->key) return x;
+        if (key < x->key) return floor(x->left, key);
+        Node *y = floor(x->right, key);
         if (y != nullptr) return y;
         else return x;
     }
 
     /**
-     * Returns the node in the subtree with the smallest value greater than or
-     * equal to the given value.
+     * Returns the node in the subtree with the smallest key greater than or
+     * equal to the given key.
      *
      * @param x the subtree
-     * @param val the value
-     * @return the node in the subtree with the smallest value greater than or
-     *         equal to the given value
+     * @param key the key
+     * @return the node in the subtree with the smallest key greater than or
+     *         equal to the given key
      */
-    Node *ceiling(Node *&x, Value val) {
+    Node *ceiling(Node *&x, Key key) {
         if (x == nullptr) return nullptr;
-        if (val == x->val) return x;
-        if (val > x->val) return ceiling(x->right, val);
-        Node *y = ceiling(x->left, val);
+        if (key == x->key) return x;
+        if (key > x->key) return ceiling(x->right, key);
+        Node *y = ceiling(x->left, key);
         if (y != nullptr) return y;
         else return x;
     }
@@ -283,61 +298,53 @@ private:
     }
 
     /**
-     * Returns the number of values in the subtree less than val.
+     * Returns the number of keys in the subtree less than key.
      *
-     * @param val the value
+     * @param key the key
      * @param x the subtree
-     * @return the number of values in the subtree less than val
+     * @return the number of keys in the subtree less than key
      */
-    int getRank(Node *&x, Value val) {
-        if (x == nullptr) return -1;
-        if (val == x->val) {
-            int temp = getRank(x->left, val);
-            if (temp == -1) return size(x->left);
-            else return temp;
-        } else if (val < x->val) {
-            return getRank(x->left, val);
-        } else {
-            int temp = getRank(x->right, val);
-            if (temp == -1) return temp;
-            else return size(x->left) + 1 + temp;
-        }
+    int getRank(Key key, Node *&x) {
+        if (x == nullptr) return 0;
+        if (key < x->key) return getRank(key, x->left);
+        else if (key > x->key) return 1 + size(x->left) + getRank(key, x->right);
+        else return size(x->left);
     }
 
     /**
-     * Adds the values in the subtree to queue following an in-order traversal.
+     * Adds the key-value pairs in the subtree to queue following an in-order traversal.
      *
      * @param x the subtree
      * @param queue the queue
      */
-    void valuesInOrder(Node *&x, vector<Value> *queue) {
+    void keyValuePairsInOrder(Node *&x, vector<pair<Key, Value>> *queue) {
         if (x == nullptr) return;
-        valuesInOrder(x->left, queue);
-        queue->push_back(x->val);
-        valuesInOrder(x->right, queue);
+        keyValuePairsInOrder(x->left, queue);
+        queue->push_back({x->key, x->val});
+        keyValuePairsInOrder(x->right, queue);
     }
 
     /**
-     * Adds the values between {@code lo} and {@code hi} in the subtree
+     * Adds the key-value pairs between {@code lo} and {@code hi} in the subtree
      * to the {@code queue}.
      *
      * @param x the subtree
      * @param queue the queue
-     * @param lo the lowest value
-     * @param hi the highest value
+     * @param lo the lowest key
+     * @param hi the highest key
      */
-    void values(Node *&x, vector<Value> *queue, Value lo, Value hi) {
+    void keyValuePairs(Node *&x, vector<pair<Key, Value>> *queue, Key lo, Key hi) {
         if (x == nullptr) return;
-        if (lo < x->val) values(x->left, queue, lo, hi);
-        if (lo <= x->val && hi >= x->val) queue->push_back(x->val);
-        if (hi > x->val) values(x->right, queue, lo, hi);
+        if (lo < x->key) keyValuePairs(x->left, queue, lo, hi);
+        if (lo <= x->key && hi >= x->key) queue->push_back({x->key, x->val});
+        if (hi > x->key) keyValuePairs(x->right, queue, lo, hi);
     }
 
 public:
     /**
      * Initializes an empty symbol table.
      */
-    AVLTreeSet() {}
+    AVLTree() {}
 
     /**
      * Checks if the symbol table is empty.
@@ -349,9 +356,9 @@ public:
     }
 
     /**
-     * Returns the number values in the symbol table.
+     * Returns the number key-value pairs in the symbol table.
      *
-     * @return the number values pairs in the symbol table
+     * @return the number key-value pairs in the symbol table
      */
     int size() {
         return size(root);
@@ -369,33 +376,51 @@ public:
     }
 
     /**
-     * Checks if the symbol table contains the given value.
+     * Returns the value associated with the given key.
      *
-     * @param val the value
-     * @return {@code true} if the symbol table contains {@code val}
+     * @param key the key
+     * @return the value associated with the given key if the key is in the
+     *         symbol table
+     * @throws no_such_element_exception if no such key is in the symbol table
+     */
+    Value get(Key key) {
+        no_such_element_exception("no such key is in the symbol table");
+        Node *x = get(root, key);
+        return x->val;
+    }
+
+    /**
+     * Checks if the symbol table contains the given key.
+     *
+     * @param key the key
+     * @return {@code true} if the symbol table contains {@code key}
      *         and {@code false} otherwise
      */
-    bool contains(Value val) {
-        return contains(root, val);
+    bool contains(Key key) {
+        return get(root, key) != nullptr;
     }
 
     /**
-     * Inserts the specified value into the symbol table, allowing for duplicates.
+     * Inserts the specified key-value pair into the symbol table, overwriting
+     * the old value with the new value if the symbol table already contains the
+     * specified key.
      *
+     * @param key the key
      * @param val the value
      */
-    void add(Value val) {
-        root = add(root, val);
+    void put(Key key, Value val) {
+        root = put(root, key, val);
     }
 
     /**
-     * Removes the specified value from the symbol table
+     * Removes the specified key and its associated value from the symbol table
+     * (if the key is in the symbol table).
      *
-     * @param val the value
+     * @param key the key
      */
-    void remove(Value val) {
-        if (!contains(val)) return;
-        root = remove(root, val);
+    void remove(Key key) {
+        if (!contains(key)) return;
+        root = remove(root, key);
     }
 
     /**
@@ -415,124 +440,127 @@ public:
      */
     void removeMax() {
         if (isEmpty()) throw runtime_error("called removeMax() with empty symbol table");
-        root = deleteMax(root);
+        root = removeMax(root);
     }
 
     /**
-     * Returns the smallest value in the symbol table.
+     * Returns the smallest key in the symbol table and its associated value.
      *
-     * @return the smallest value in the symbol table
+     * @return the smallest key in the symbol table and its associated value
      * @throws runtime_error if the symbol table is empty
      */
-    Value getMin() {
+    pair<Key, Value> getMin() {
         if (isEmpty()) throw runtime_error("called getMin() with empty symbol table");
-        return getMin(root).val;
+        Node *x = getMin(root);
+        return {x->key, x->val};
     }
 
     /**
-     * Returns the largest value in the symbol table.
+     * Returns the largest key in the symbol table and its associated value.
      *
-     * @return the largest value in the symbol table
+     * @return the largest key in the symbol table and its associated value
      * @throws runtime_error if the symbol table is empty
      */
-    Value getMax() {
+    pair<Key, Value> getMax() {
         if (isEmpty()) throw runtime_error("called getMax() with empty symbol table");
-        return getMax(root).val;
+        Node *x = getMax(root);
+        return {x->key, x->val};
     }
 
     /**
-     * Returns the largest value in the symbol table less than or equal to {@code val}.
+     * Returns the largest key in the symbol table less than or equal to {@code key} and its associated value.
      *
-     * @param val the value
-     * @return the largest value in the symbol table less than or equal to {@code val}
+     * @param key the key
+     * @return the largest key in the symbol table less than or equal to {@code key} and its associated value
      * @throws runtime_error if the symbol table is empty
-     * @throws no_such_element_exception if there is no value in the symbol table less than or equal to {@code val}
+     * @throws no_such_element_exception if there is no key in the symbol table less than or equal to {@code key}
      */
-    Value floor(Value val) {
+    pair<Key, Value> floor(Key key) {
         if (isEmpty()) throw runtime_error("called floor() with empty symbol table");
-        Node *x = floor(root, val);
+        Node *x = floor(root, key);
         if (x == nullptr) throw no_such_element_exception("call to floor() resulted in no such value");
-        return x->val;
+        return {x->key, x->val};
     }
 
     /**
-     * Returns the smallest value in the symbol table greater than or equal to {@code val}.
+     * Returns the smallest key in the symbol table greater than or equal to {@code key} and its associated value.
      *
-     * @param val the value
-     * @return a pair containing the smallest value in the symbol table greater than or equal to {@code val}
+     * @param key the key
+     * @return a pair containing the smallest key in the symbol table greater than or equal to {@code key} and its associated value
      * @throws runtime_error if the symbol table is empty
-     * @throws no_such_element_exception if there is no value in the symbol table greater than or equal to {@code val}
+     * @throws no_such_element_exception if there is no key in the symbol table greater than or equal to {@code key}
      */
-    Value ceiling(Value val) {
+    pair<Key, Value> ceiling(Key key) {
         if (isEmpty()) throw runtime_error("called ceiling() with empty symbol table");
-        Node *x = ceiling(root, val);
+        Node *x = ceiling(root, key);
         if (x == nullptr) throw no_such_element_exception("call to ceiling() resulted in no such value");
-        return x->val;
+        return {x->key, x->val};
     }
 
     /**
-     * Returns the kth smallest value in the symbol table.
+     * Returns the kth smallest key in the symbol table and its associated value.
      *
      * @param k the order statistic
-     * @return the kth smallest value in the symbol table
+     * @return the kth smallest key in the symbol table and its associated value
      * @throws invalid_argument unless {@code k} is between 0 and
      *             {@code size() -1 }
      */
-    Value select(int k) {
+    pair<Key, Value> select(int k) {
         if (k < 0 || k >= size()) throw invalid_argument("k is not in range 0 to size");
-        return select(root, k)->val;
+        Node *x = select(root, k);
+        return {x->key, x->val};
     }
 
     /**
-     * Returns the number of values in the symbol table strictly less than
-     * {@code val}.
+     * Returns the number of keys in the symbol table strictly less than
+     * {@code key}.
      *
-     * @param val the value
-     * @return the number of values in the symbol table strictly less than
-     *         {@code val}
+     * @param key the key
+     * @return the number of keys in the symbol table strictly less than
+     *         {@code key}
      */
-    int getRank(Value val) {
-        return getRank(root, val);
+    int getRank(Key key) {
+        return getRank(key, root);
     }
 
     /**
-     * Returns all values in the symbol table following an in-order traversal.
+     * Returns all key-value pairs in the symbol table following an in-order traversal.
      *
-     * @return all values in the symbol table following an in-order traversal
+     * @return all key-value pairs in the symbol table following an in-order traversal
      */
-    vector<Value> values() {
-        vector<Value> queue;
-        valuesInOrder(root, &queue);
+    vector<pair<Key, Value>> keyValuePairs() {
+        vector<pair<Key, Value>> queue;
+        keyValuePairsInOrder(root, &queue);
         return queue;
     }
 
     /**
-     * Returns all values in the symbol table in the given range.
+     * Returns all key-value pairs in the symbol table in the given range.
      *
-     * @param lo the lowest value
-     * @param hi the highest value
-     * @return all value in the symbol table between {@code lo} (inclusive)
+     * @param lo the lowest key
+     * @param hi the highest key
+     * @return all key-value pairs in the symbol table between {@code lo} (inclusive)
      *         and {@code hi} (exclusive)
      */
-    vector<Value> values(Value lo, Value hi) {
-        vector<Value> queue;
-        values(root, &queue, lo, hi);
+    vector<pair<Key, Value>> keyValuePairs(Key lo, Key hi) {
+        vector<pair<Key, Value>> queue;
+        keyValuePairs(root, &queue, lo, hi);
         return queue;
     }
 
     /**
-     * Returns the number of values in the symbol table in the given range.
+     * Returns the number of keys in the symbol table in the given range.
      *
      * @param lo minimum endpoint
      * @param hi maximum endpoint
-     * @return the number of values in the symbol table between {@code lo}
+     * @return the number of keys in the symbol table between {@code lo}
      *         (inclusive) and {@code hi} (exclusive)
      */
-    int size(Value lo, Value hi) {
+    int size(Key lo, Key hi) {
         if (lo > hi) return 0;
         if (contains(hi)) return getRank(hi) - getRank(lo) + 1;
         else return getRank(hi) - getRank(lo);
     }
 };
 
-#endif /* DATASTRUCTURES_AVLTREESET_H_ */
+#endif /* DATASTRUCTURES_AVLTREE_H_ */
