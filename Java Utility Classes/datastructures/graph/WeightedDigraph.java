@@ -1,6 +1,7 @@
 package datastructures.graph;
 
-import datastructures.Bag;
+import java.util.ArrayList;
+
 import datastructures.Stack;
 
 /**
@@ -14,7 +15,7 @@ import datastructures.Stack;
  *  of edges <em>E</em>. Parallel edges and self-loops are permitted.
  *  <p>
  *  This implementation uses an adjacency-lists representation, which 
- *  is a vertex-indexed array of {@link Bag} objects.
+ *  is a vertex-indexed array of {@link ArrayList} objects.
  *  All operations take constant time (in the worst case) except
  *  iterating over the edges incident from a given vertex, which takes
  *  time proportional to the number of such edges.
@@ -31,7 +32,7 @@ public class WeightedDigraph {
 
     private final int V;                // number of vertices in this digraph
     private int E;                      // number of edges in this digraph
-    private Bag<DirectedWeightedEdge>[] adj;    // adj[v] = adjacency list for vertex v
+    private ArrayList<DirectedWeightedEdge>[] adj;    // adj[v] = adjacency list for vertex v
     private int[] indegree;             // indegree[v] = indegree of vertex v
     
     /**
@@ -45,9 +46,9 @@ public class WeightedDigraph {
         this.V = V;
         this.E = 0;
         this.indegree = new int[V];
-        adj = (Bag<DirectedWeightedEdge>[]) new Bag[V];
+        adj = (ArrayList<DirectedWeightedEdge>[]) new ArrayList[V];
         for (int v = 0; v < V; v++)
-            adj[v] = new Bag<DirectedWeightedEdge>();
+            adj[v] = new ArrayList<DirectedWeightedEdge>();
     }
 
     /**
@@ -121,7 +122,7 @@ public class WeightedDigraph {
      * @return the directed weighted edges incident from vertex {@code v} as an Iterable
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
-    public Iterable<DirectedWeightedEdge> adj(int v) {
+    public ArrayList<DirectedWeightedEdge> adj(int v) {
         validateVertex(v);
         return adj[v];
     }
@@ -159,8 +160,8 @@ public class WeightedDigraph {
      *
      * @return all edges in this edge-weighted digraph, as an iterable
      */
-    public Iterable<DirectedWeightedEdge> edges() {
-        Bag<DirectedWeightedEdge> list = new Bag<DirectedWeightedEdge>();
+    public ArrayList<DirectedWeightedEdge> edges() {
+        ArrayList<DirectedWeightedEdge> list = new ArrayList<DirectedWeightedEdge>();
         for (int v = 0; v < V; v++) {
             for (DirectedWeightedEdge e : adj(v)) {
                 list.add(e);

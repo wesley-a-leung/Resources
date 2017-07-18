@@ -16,7 +16,6 @@ using namespace std;
 
 class EdmondsKarpMaxFlow {
 private:
-    double FLOATING_POINT_EPSILON = 1E-10;
     int V;          // number of vertices
     bool *marked;     // marked[v] = true if s->v path in residual graph
     FlowEdge **edgeTo;    // edgeTo[v] = last edge on shortest residual s->v path
@@ -27,9 +26,8 @@ private:
     // this implementation finds a shortest augmenting path (fewest number of edges),
     // which performs well both in theory and in practice
     bool hasAugmentingPath(FlowNetwork *G, int s, int t) {
-        edgeTo = new FlowEdge*[G->getV()];
-        marked = new bool[G->getV()];
         for (int i = 0; i < G->getV(); i++) {
+            edgeTo[i] = nullptr;
             marked[i] = false;
         }
         // breadth-first search
@@ -77,15 +75,13 @@ public:
      * @param  G the flow network
      * @param  s the source vertex
      * @param  t the sink vertex
-     * @throws invalid_argument unless {@code 0 <= s < V}
-     * @throws invalid_argument unless {@code 0 <= t < V}
      * @throws invalid_argument if {@code s == t}
-     * @throws invalid_argument if initial flow is infeasible
      */
     EdmondsKarpMaxFlow(FlowNetwork *G, int s, int t) {
         V = G->getV();
         if (s == t)               throw invalid_argument("Source equals sink");
-
+        edgeTo = new FlowEdge*[G->getV()];
+        marked = new bool[G->getV()];
         // while there exists an augmenting path, use it
         value = excess(G, t);
         while (hasAugmentingPath(G, s, t)) {
@@ -119,7 +115,6 @@ public:
      * @param  v vertex
      * @return {@code true} if vertex {@code v} is on the {@code s} side of the micut;
      *         {@code false} otherwise
-     * @throws invalid_argument unless {@code 0 <= v < V}
      */
     bool inCut(int v)  {
         return marked[v];

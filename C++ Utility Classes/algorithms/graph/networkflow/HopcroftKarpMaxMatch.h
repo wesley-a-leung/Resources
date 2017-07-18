@@ -92,8 +92,6 @@ private:
      */
     bool hasAugmentingPath(Graph *G) {
         // shortest path distances
-        marked = new bool[V];
-        distTo = new int[V];
         for (int v = 0; v < V; v++) {
             marked[v] = false;
             distTo[v] = INT_MAX;
@@ -154,6 +152,8 @@ public:
         V = G->getV();
         cardinality = 0;
         mate = new int[V];
+        marked = new bool[V];
+        distTo = new int[V];
         for (int v = 0; v < V; v++)
             mate[v] = UNMATCHED;
 
