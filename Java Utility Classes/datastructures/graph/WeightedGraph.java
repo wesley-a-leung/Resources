@@ -1,6 +1,7 @@
 package datastructures.graph;
 
-import datastructures.Bag;
+import java.util.ArrayList;
+
 import datastructures.Stack;
 
 /**
@@ -16,7 +17,7 @@ import datastructures.Stack;
  *  of <em>v</em>.
  *  <p>
  *  This implementation uses an adjacency-lists representation, which 
- *  is a vertex-indexed array of {@link Bag} objects.
+ *  is a vertex-indexed array of {@link ArrayList} objects.
  *  All operations take constant time (in the worst case) except
  *  iterating over the edges incident to a given vertex, which takes
  *  time proportional to the number of such edges.
@@ -33,7 +34,7 @@ public class WeightedGraph {
 
     private final int V;
     private int E;
-    private Bag<WeightedEdge>[] adj;
+    private ArrayList<WeightedEdge>[] adj;
     
     /**
      * Initializes an empty edge-weighted graph with {@code V} vertices and 0 edges.
@@ -45,9 +46,9 @@ public class WeightedGraph {
         if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
         this.V = V;
         this.E = 0;
-        adj = (Bag<WeightedEdge>[]) new Bag[V];
+        adj = (ArrayList<WeightedEdge>[]) new ArrayList[V];
         for (int v = 0; v < V; v++) {
-            adj[v] = new Bag<WeightedEdge>();
+            adj[v] = new ArrayList<WeightedEdge>();
         }
     }
 
@@ -119,7 +120,7 @@ public class WeightedGraph {
      * @return the weighted edges incident on vertex {@code v} as an Iterable
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
-    public Iterable<WeightedEdge> adj(int v) {
+    public ArrayList<WeightedEdge> adj(int v) {
         validateVertex(v);
         return adj[v];
     }
@@ -143,8 +144,8 @@ public class WeightedGraph {
      *
      * @return all edges in this edge-weighted graph, as an iterable
      */
-    public Iterable<WeightedEdge> edges() {
-        Bag<WeightedEdge> list = new Bag<WeightedEdge>();
+    public ArrayList<WeightedEdge> edges() {
+        ArrayList<WeightedEdge> list = new ArrayList<WeightedEdge>();
         for (int v = 0; v < V; v++) {
             int selfLoops = 0;
             for (WeightedEdge e : adj(v)) {

@@ -1,6 +1,7 @@
 package datastructures.graph;
 
-import datastructures.Bag;
+import java.util.ArrayList;
+
 import datastructures.Stack;
 
 /**
@@ -11,7 +12,7 @@ import datastructures.Stack;
  *  Parallel edges and self-loops are permitted.
  *  <p>
  *  This implementation uses an adjacency-lists representation, which 
- *  is a vertex-indexed array of {@link Bag} objects.
+ *  is a vertex-indexed array of {@link ArrayList} objects.
  *  All operations take constant time (in the worst case) except
  *  iterating over the vertices adjacent from a given vertex, which takes
  *  time proportional to the number of such vertices.
@@ -23,13 +24,12 @@ import datastructures.Stack;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-
 public class Digraph {
     private static final String NEWLINE = System.getProperty("line.separator");
 
     private final int V;           // number of vertices in this digraph
     private int E;                 // number of edges in this digraph
-    private Bag<Integer>[] adj;    // adj[v] = adjacency list for vertex v
+    private ArrayList<Integer>[] adj;    // adj[v] = adjacency list for vertex v
     private int[] indegree;        // indegree[v] = indegree of vertex v
     
     /**
@@ -43,9 +43,9 @@ public class Digraph {
         this.V = V;
         this.E = 0;
         indegree = new int[V];
-        adj = (Bag<Integer>[]) new Bag[V];
+        adj = (ArrayList<Integer>[]) new ArrayList[V];
         for (int v = 0; v < V; v++) {
-            adj[v] = new Bag<Integer>();
+            adj[v] = new ArrayList<Integer>();
         }
     }
 
@@ -118,7 +118,7 @@ public class Digraph {
      * @return the vertices adjacent from vertex {@code v} in this digraph, as an iterable
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
-    public Iterable<Integer> adj(int v) {
+    public ArrayList<Integer> adj(int v) {
         validateVertex(v);
         return adj[v];
     }

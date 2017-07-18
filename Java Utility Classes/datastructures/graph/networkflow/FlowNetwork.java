@@ -1,6 +1,6 @@
 package datastructures.graph.networkflow;
 
-import datastructures.Bag;
+import java.util.ArrayList;
 
 /**
  *  The {@code FlowNetwork} class represents a capacitated network
@@ -13,7 +13,7 @@ import datastructures.Bag;
  *  of edges <em>E</em>. Parallel edges and self-loops are permitted.
  *  <p>
  *  This implementation uses an adjacency-lists representation, which 
- *  is a vertex-indexed array of {@link Bag} objects.
+ *  is a vertex-indexed array of {@link ArrayList} objects.
  *  All operations take constant time (in the worst case) except
  *  iterating over the edges incident to a given vertex, which takes
  *  time proportional to the number of such edges.
@@ -30,7 +30,7 @@ public class FlowNetwork {
 
     private final int V;
     private int E;
-    private Bag<FlowEdge>[] adj;
+    private ArrayList<FlowEdge>[] adj;
     
     /**
      * Initializes an empty flow network with {@code V} vertices and 0 edges.
@@ -41,9 +41,9 @@ public class FlowNetwork {
         if (V < 0) throw new IllegalArgumentException("Number of vertices in a Graph must be nonnegative");
         this.V = V;
         this.E = 0;
-        adj = (Bag<FlowEdge>[]) new Bag[V];
+        adj = (ArrayList<FlowEdge>[]) new ArrayList[V];
         for (int v = 0; v < V; v++)
-            adj[v] = new Bag<FlowEdge>();
+            adj[v] = new ArrayList<FlowEdge>();
     }
 
     /**
@@ -91,14 +91,14 @@ public class FlowNetwork {
      * @return the edges incident on vertex {@code v} as an Iterable
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
-    public Iterable<FlowEdge> adj(int v) {
+    public ArrayList<FlowEdge> adj(int v) {
         validateVertex(v);
         return adj[v];
     }
 
     // return list of all edges - excludes self loops
-    public Iterable<FlowEdge> edges() {
-        Bag<FlowEdge> list = new Bag<FlowEdge>();
+    public ArrayList<FlowEdge> edges() {
+        ArrayList<FlowEdge> list = new ArrayList<FlowEdge>();
         for (int v = 0; v < V; v++)
             for (FlowEdge e : adj(v)) {
                 if (e.to() != v)

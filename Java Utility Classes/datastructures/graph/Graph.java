@@ -1,6 +1,7 @@
 package datastructures.graph;
 
-import datastructures.Bag;
+import java.util.ArrayList;
+
 import datastructures.Stack;
 
 /**
@@ -15,7 +16,7 @@ import datastructures.Stack;
  *  of <em>v</em>.
  *  <p>
  *  This implementation uses an adjacency-lists representation, which 
- *  is a vertex-indexed array of {@link Bag} objects.
+ *  is a vertex-indexed array of {@link ArrayList} objects.
  *  All operations take constant time (in the worst case) except
  *  iterating over the vertices adjacent to a given vertex, which takes
  *  time proportional to the number of such vertices.
@@ -31,7 +32,7 @@ public class Graph {
 
     private final int V;
     private int E;
-    private Bag<Integer>[] adj;
+    private ArrayList<Integer>[] adj;
     
     /**
      * Initializes an empty graph with {@code V} vertices and 0 edges.
@@ -44,9 +45,9 @@ public class Graph {
         if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
         this.V = V;
         this.E = 0;
-        adj = (Bag<Integer>[]) new Bag[V];
+        adj = (ArrayList<Integer>[]) new ArrayList[V];
         for (int v = 0; v < V; v++) {
-            adj[v] = new Bag<Integer>();
+            adj[v] = new ArrayList<Integer>();
         }
     }
 
@@ -117,7 +118,7 @@ public class Graph {
      * @return the vertices adjacent to vertex {@code v}, as an iterable
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
-    public Iterable<Integer> adj(int v) {
+    public ArrayList<Integer> adj(int v) {
         validateVertex(v);
         return adj[v];
     }

@@ -35,7 +35,7 @@ public class EdmondsKarpMaxFlow {
     private static final double FLOATING_POINT_EPSILON = 1E-10;
 
     private final int V;          // number of vertices
-    private boolean[] marked;     // marked[v] = true iff s->v path in residual graph
+    private boolean[] marked;     // marked[v] = true if s->v path in residual graph
     private FlowEdge[] edgeTo;    // edgeTo[v] = last edge on shortest residual s->v path
     private double value;         // current value of max flow
   
@@ -99,7 +99,7 @@ public class EdmondsKarpMaxFlow {
         return marked[v];
     }
 
-    // throw an IllegalArgumentException if v is outside prescibed range
+    // throw an IllegalArgumentException if v is outside prescribed range
     private void validate(int v)  {
         if (v < 0 || v >= V)
             throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
