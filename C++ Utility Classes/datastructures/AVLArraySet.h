@@ -1,5 +1,5 @@
 /*
- * AVLTreeSet.h
+ * AVLArraySet.h
  *
  *  Created on: Jul 17, 2017
  *      Author: Wesley Leung
