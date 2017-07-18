@@ -304,10 +304,10 @@ private:
      * @param x the subtree
      * @return the number of keys in the subtree less than key
      */
-    int getRank(Key key, Node *&x) {
+    int getRank(Node *&x, Key key) {
         if (x == nullptr) return 0;
-        if (key < x->key) return getRank(key, x->left);
-        else if (key > x->key) return 1 + size(x->left) + getRank(key, x->right);
+        if (key < x->key) return getRank(x->left, key);
+        else if (key > x->key) return 1 + size(x->left) + getRank(x->right, key);
         else return size(x->left);
     }
 
@@ -520,7 +520,7 @@ public:
      *         {@code key}
      */
     int getRank(Key key) {
-        return getRank(key, root);
+        return getRank(root, key);
     }
 
     /**
