@@ -468,18 +468,9 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
      * @return the number of values in the subtree less than val
      */
     private int rank(Node x, Value val) {
-        if (x == null) return -1;
-        if (val.compareTo(x.val) == 0) {
-            int temp = rank(x.left, val);
-            if (temp == -1) return size(x.left);
-            else return temp;
-        } else if (val.compareTo(x.val) < 0) {
-            return rank(x.left, val);
-        } else {
-            int temp = rank(x.right, val);
-            if (temp == -1) return temp;
-            else return size(x.left) + 1 + temp;
-        }
+        if (x == null) return 0;
+        if (val.compareTo(x.val) <= 0) return rank(x.left, val);
+        else return 1 + size(x.left) + rank(x.right, val);
     }
 
     /**

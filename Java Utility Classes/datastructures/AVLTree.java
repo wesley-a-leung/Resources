@@ -540,7 +540,7 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
      */
     public int rank(Key key) {
         if (key == null) throw new IllegalArgumentException("argument to rank() is null");
-        return rank(key, root);
+        return rank(root, key);
     }
 
     /**
@@ -550,12 +550,10 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
      * @param x the subtree
      * @return the number of keys in the subtree less than key
      */
-    private int rank(Key key, Node x) {
+    private int rank(Node x, Key key) {
         if (x == null) return 0;
-        int cmp = key.compareTo(x.key);
-        if (cmp < 0) return rank(key, x.left);
-        else if (cmp > 0) return 1 + size(x.left) + rank(key, x.right);
-        else return size(x.left);
+        if (key.compareTo(x.key) <= 0) return rank(x.left, key);
+        else return 1 + size(x.left) + rank(x.right, key);
     }
 
     /**
