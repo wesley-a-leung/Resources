@@ -21,7 +21,7 @@ public:
 template <typename Key, typename Value>
 struct AVLArrayDynamicSegmentTree {
 private:
-    Key *KEY; // keys (storing indicies)
+    Key *KEY; // keys (storing indices)
     Key *LO; // lower bound of range
     Key *HI; // upper bound of range
     Value *VAL; // values
