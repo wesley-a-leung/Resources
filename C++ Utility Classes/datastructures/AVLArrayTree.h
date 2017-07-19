@@ -1,5 +1,5 @@
 /*
- * AVLTree.h
+ * AVLArrayTree.h
  *
  *  Created on: Jul 14, 2017
  *      Author: Wesley Leung
@@ -19,62 +19,26 @@ public:
 };
 
 template <typename Key, typename Value>
-struct AVLTree {
-    /**
-     * Represents an inner node of the AVL tree.
-     */
-    struct Node {
-    public:
-        Key key;
-        Value val;
-        int height, size;
-        Node *left = nullptr, *right = nullptr;
-        Node(Key key, Value val, int height, int size) {
-            this->key = key;
-            this->val = val;
-            this->size = size;
-            this->height = height;
-        }
-    };
-
+struct AVLArrayTree {
 private:
-    /**
-     * The root node.
-     */
-    Node *root = nullptr;
+    Key *KEY; // keys
+    Value *VAL; // values
+    int *HT; // height of subtree
+    int *SZ; // size of subtree
+    int *L; // index of left child
+    int *R; // index of right child
 
-    /**
-     * Returns the number of nodes in the subtree.
-     *
-     * @param x the subtree
-     *
-     * @return the number of nodes in the subtree
-     */
-    int size(Node *&x) {
-        if (x == nullptr) return 0;
-        return x->size;
-    }
-
-    /**
-     * Returns the height of the subtree.
-     *
-     * @param x the subtree
-     *
-     * @return the height of the subtree.
-     */
-    int height(Node *&x) {
-        if (x == nullptr) return -1;
-        return x->height;
-    }
+    int root;
+    int cnt;
 
     /**
      * Updates the size and height of the subtree.
      *
      * @param x the subtree
      */
-    void update(Node *&x) {
-        x->size = 1 + size(x->left) + size(x->right);
-        x->height = 1 + max(height(x->left), height(x->right));
+    void update(int x) {
+        SZ[x] = 1 + SZ[L[x]] + SZ[R[x]];
+        HT[x] = 1 + max(HT[L[x]], HT[R[x]]);
     }
 
     /**
@@ -87,8 +51,8 @@ private:
      * @param x the subtree
      * @return the balance factor of the subtree
      */
-    int balanceFactor(Node *&x) {
-        return height(x->left) - height(x->right);
+    int balanceFactor(int x) {
+        return HT[L[x]] - HT[R[x]];
     }
 
     /**
@@ -97,10 +61,10 @@ private:
      * @param x the subtree
      * @return the right rotated subtree
      */
-    Node *rotateRight(Node *&x) {
-        Node *y = x->left;
-        x->left = y->right;
-        y->right = x;
+    int rotateRight(int x) {
+        int y = L[x];
+        L[x] = R[y];
+        R[y] = x;
         update(x);
         update(y);
         return y;
@@ -112,10 +76,10 @@ private:
      * @param x the subtree
      * @return the left rotated subtree
      */
-    Node *rotateLeft(Node *&x) {
-        Node *y = x->right;
-        x->right = y->left;
-        y->left = x;
+    int rotateLeft(int x) {
+        int y = R[x];
+        R[x] = L[y];
+        L[y] = x;
         update(x);
         update(y);
         return y;
@@ -127,13 +91,13 @@ private:
      * @param x the subtree
      * @return the subtree with restored AVL property
      */
-    Node *balance(Node *&x) {
+    int balance(int x) {
         if (balanceFactor(x) < -1) {
-            if (balanceFactor(x->right) > 0) x->right = rotateRight(x->right);
+            if (balanceFactor(R[x]) > 0) R[x] = rotateRight(R[x]);
             x = rotateLeft(x);
         }
         else if (balanceFactor(x) > 1) {
-            if (balanceFactor(x->left) < 0) x->left = rotateLeft(x->left);
+            if (balanceFactor(L[x]) < 0) L[x] = rotateLeft(L[x]);
             x = rotateRight(x);
         }
         update(x);
@@ -149,10 +113,10 @@ private:
      *         {@code null} if no such key
      * @throws no_such_element_exception if there is no such key
      */
-    Node *get(Node *&x, Key key) {
-        if (x == nullptr) return nullptr;
-        if (key < x->key) return get(x->left, key);
-        else if (key > x->key) return get(x->right, key);
+    int get(int x, Key key) {
+        if (x == 0) return 0;
+        if (key < KEY[x]) return get(L[x], key);
+        else if (key > KEY[x]) return get(R[x], key);
         else return x;
     }
 
@@ -165,12 +129,20 @@ private:
      * @param val the value
      * @return the subtree
      */
-    Node *put(Node *&x, Key key, Value val) {
-        if (x == nullptr) return new Node(key, val, 0, 1);
-        if (key < x->key) x->left = put(x->left, key, val);
-        else if (key > x->key) x->right = put(x->right, key, val);
+    int put(int x, Key key, Value val) {
+        if (x == 0) {
+            KEY[cnt] = key;
+            VAL[cnt] = val;
+            HT[cnt] = 0;
+            SZ[cnt] = 1;
+            L[cnt] = 0;
+            R[cnt] = 0;
+            return cnt++;
+        }
+        if (key < KEY[x]) L[x] = put(L[x], key, val);
+        else if (key > KEY[x]) R[x] = put(R[x], key, val);
         else {
-            x->val = val;
+            VAL[x] = val;
             return x;
         }
         return balance(x);
@@ -182,9 +154,9 @@ private:
      * @param x the subtree
      * @return the updated subtree
      */
-    Node *removeMin(Node *&x) {
-        if (x->left == nullptr) return x->right;
-        x->left = removeMin(x->left);
+    int removeMin(int x) {
+        if (L[x] == 0) return R[x];
+        L[x] = removeMin(L[x]);
         return balance(x);
     }
 
@@ -194,9 +166,9 @@ private:
      * @param x the subtree
      * @return the updated subtree
      */
-    Node *removeMax(Node *&x) {
-        if (x->right == nullptr) return x->left;
-        x->right = removeMax(x->right);
+    int removeMax(int x) {
+        if (R[x] == 0) return L[x];
+        R[x] = removeMax(R[x]);
         return balance(x);
     }
 
@@ -206,9 +178,9 @@ private:
      * @param x the subtree
      * @return the node with the smallest value in the subtree
      */
-    Node *getMin(Node *&x) {
-        if (x->left == nullptr) return x;
-        return getMin(x->left);
+    int getMin(int x) {
+        if (L[x] == 0) return x;
+        return getMin(L[x]);
     }
 
     /**
@@ -217,9 +189,9 @@ private:
      * @param x the subtree
      * @return the node with the largest value in the subtree
      */
-    Node *getMax(Node *&x) {
-        if (x->right == nullptr) return x;
-        return getMax(x->right);
+    int getMax(int x) {
+        if (R[x] == 0) return x;
+        return getMax(R[x]);
     }
 
     /**
@@ -230,18 +202,17 @@ private:
      * @param key the key
      * @return the updated subtree
      */
-    Node *remove(Node *&x, Key key) {
-        if (key < x->key) x->left = remove(x->left, key);
-        else if (key > x->key) x->right = remove(x->right, key);
+    int remove(int x, Key key) {
+        if (key < KEY[x]) L[x] = remove(L[x], key);
+        else if (key > KEY[x]) R[x] = remove(R[x], key);
         else {
-            if (x->left == nullptr) return x->right;
-            else if (x->right == nullptr) return x->left;
+            if (L[x] == 0) return R[x];
+            else if (R[x] == 0) return L[x];
             else {
-                Node *y = x;
-                x = getMin(y->right);
-                x->right = removeMin(y->right);
-                x->left = y->left;
-                free(y);
+                int y = x;
+                x = getMin(R[y]);
+                R[x] = removeMin(R[y]);
+                L[x] = L[y];
             }
         }
         return balance(x);
@@ -256,12 +227,12 @@ private:
      * @return the node in the subtree with the largest key less than or equal
      *         to the given key
      */
-    Node *floor(Node *&x, Key key) {
-        if (x == nullptr) return nullptr;
-        if (key == x->key) return x;
-        if (key < x->key) return floor(x->left, key);
-        Node *y = floor(x->right, key);
-        if (y != nullptr) return y;
+    int floor(int x, Key key) {
+        if (x == 0) return 0;
+        if (key == KEY[x]) return x;
+        if (key < KEY[x]) return floor(L[x], key);
+        int y = floor(R[x], key);
+        if (y != 0) return y;
         else return x;
     }
 
@@ -274,12 +245,12 @@ private:
      * @return the node in the subtree with the smallest key greater than or
      *         equal to the given key
      */
-    Node *ceiling(Node *&x, Key key) {
-        if (x == nullptr) return nullptr;
-        if (key == x->key) return x;
-        if (key > x->key) return ceiling(x->right, key);
-        Node *y = ceiling(x->left, key);
-        if (y != nullptr) return y;
+    int ceiling(int x, Key key) {
+        if (x == 0) return 0;
+        if (key == KEY[x]) return x;
+        if (key > KEY[x]) return ceiling(R[x], key);
+        int y = ceiling(L[x], key);
+        if (y != 0) return y;
         else return x;
     }
 
@@ -290,11 +261,11 @@ private:
      * @param k the kth smallest value in the subtree
      * @return the node with value the kth smallest value in the subtree
      */
-    Node *select(Node *&x, int k) {
-        if (x == nullptr) return nullptr;
-        int t = size(x->left);
-        if (t > k) return select(x->left, k);
-        else if (t < k) return select(x->right, k - t - 1);
+    int select(int x, int k) {
+        if (x == 0) return 0;
+        int t = SZ[L[x]];
+        if (t > k) return select(L[x], k);
+        else if (t < k) return select(R[x], k - t - 1);
         return x;
     }
 
@@ -305,11 +276,11 @@ private:
      * @param x the subtree
      * @return the number of keys in the subtree less than key
      */
-    int getRank(Node *&x, Key key) {
-        if (x == nullptr) return 0;
-        if (key < x->key) return getRank(x->left, key);
-        else if (key > x->key) return 1 + size(x->left) + getRank(x->right, key);
-        else return size(x->left);
+    int getRank(int x, Key key) {
+        if (x == 0) return 0;
+        if (key < KEY[x]) return getRank(KEY[x], key);
+        else if (key > KEY[x]) return 1 + SZ[L[x]] + getRank(R[x], key);
+        else return SZ[L[x]];
     }
 
     /**
@@ -318,11 +289,11 @@ private:
      * @param x the subtree
      * @param queue the queue
      */
-    void keyValuePairsInOrder(Node *&x, vector<pair<Key, Value>> *queue) {
-        if (x == nullptr) return;
-        keyValuePairsInOrder(x->left, queue);
-        queue->push_back({x->key, x->val});
-        keyValuePairsInOrder(x->right, queue);
+    void keyValuePairsInOrder(int x, vector<pair<Key, Value>> *queue) {
+        if (x == 0) return;
+        keyValuePairsInOrder(L[x], queue);
+        queue->push_back({KEY[x], VAL[x]});
+        keyValuePairsInOrder(R[x], queue);
     }
 
     /**
@@ -334,18 +305,33 @@ private:
      * @param lo the lowest key
      * @param hi the highest key
      */
-    void keyValuePairs(Node *&x, vector<pair<Key, Value>> *queue, Key lo, Key hi) {
-        if (x == nullptr) return;
-        if (lo < x->key) keyValuePairs(x->left, queue, lo, hi);
-        if (lo <= x->key && hi >= x->key) queue->push_back({x->key, x->val});
-        if (hi > x->key) keyValuePairs(x->right, queue, lo, hi);
+    void keyValuePairs(int x, vector<pair<Key, Value>> *queue, Key lo, Key hi) {
+        if (x == 0) return;
+        if (lo < KEY[x]) keyValuePairs(L[x], queue, lo, hi);
+        if (lo <= KEY[x] && hi >= KEY[x]) queue->push_back({KEY[x], VAL[x]});
+        if (hi > KEY[x]) keyValuePairs(R[x], queue, lo, hi);
     }
 
 public:
     /**
-     * Initializes an empty symbol table.
+     * Initializes an empty symbol table with a fixed size.
+     *
+     * @param N the maximum size of the symbol table
      */
-    AVLTree() {}
+    AVLArrayTree(int N) {
+        KEY = new KEY[N];
+        VAL = new Value[N];
+        HT = new int[N];
+        SZ = new int[N];
+        L = new int[N];
+        R = new int[N];
+        root = 0;
+        HT[root] = -1;
+        SZ[root] = 0;
+        L[root] = 0;
+        R[root] = 0;
+        cnt = 1;
+    }
 
     /**
      * Checks if the symbol table is empty.
@@ -353,7 +339,7 @@ public:
      * @return {@code true} if the symbol table is empty.
      */
     bool isEmpty() {
-        return root == nullptr;
+        return root == 0;
     }
 
     /**
@@ -362,7 +348,7 @@ public:
      * @return the number key-value pairs in the symbol table
      */
     int size() {
-        return size(root);
+        return SZ[root];
     }
 
     /**
@@ -373,7 +359,7 @@ public:
      * @return the height of the internal AVL tree
      */
     int height() {
-        return height(root);
+        return HT[root];
     }
 
     /**
@@ -386,8 +372,8 @@ public:
      */
     Value get(Key key) {
         no_such_element_exception("no such key is in the symbol table");
-        Node *x = get(root, key);
-        return x->val;
+        int x = get(root, key);
+        return VAL[x];
     }
 
     /**
@@ -398,7 +384,7 @@ public:
      *         and {@code false} otherwise
      */
     bool contains(Key key) {
-        return get(root, key) != nullptr;
+        return get(root, key) != 0;
     }
 
     /**
@@ -452,8 +438,8 @@ public:
      */
     pair<Key, Value> getMin() {
         if (isEmpty()) throw runtime_error("called getMin() with empty symbol table");
-        Node *x = getMin(root);
-        return {x->key, x->val};
+        int x = getMin(root);
+        return {KEY[x], VAL[x]};
     }
 
     /**
@@ -464,8 +450,8 @@ public:
      */
     pair<Key, Value> getMax() {
         if (isEmpty()) throw runtime_error("called getMax() with empty symbol table");
-        Node *x = getMax(root);
-        return {x->key, x->val};
+        int x = getMax(root);
+        return {KEY[x], VAL[x]};
     }
 
     /**
@@ -478,9 +464,9 @@ public:
      */
     pair<Key, Value> floor(Key key) {
         if (isEmpty()) throw runtime_error("called floor() with empty symbol table");
-        Node *x = floor(root, key);
-        if (x == nullptr) throw no_such_element_exception("call to floor() resulted in no such value");
-        return {x->key, x->val};
+        int x = floor(root, key);
+        if (x == 0) throw no_such_element_exception("call to floor() resulted in no such value");
+        return {KEY[x], VAL[x]};
     }
 
     /**
@@ -493,9 +479,9 @@ public:
      */
     pair<Key, Value> ceiling(Key key) {
         if (isEmpty()) throw runtime_error("called ceiling() with empty symbol table");
-        Node *x = ceiling(root, key);
-        if (x == nullptr) throw no_such_element_exception("call to ceiling() resulted in no such value");
-        return {x->key, x->val};
+        int x = ceiling(root, key);
+        if (x == 0) throw no_such_element_exception("call to ceiling() resulted in no such value");
+        return {KEY[x], VAL[x]};
     }
 
     /**
@@ -508,8 +494,8 @@ public:
      */
     pair<Key, Value> select(int k) {
         if (k < 0 || k >= size()) throw invalid_argument("k is not in range 0 to size");
-        Node *x = select(root, k);
-        return {x->key, x->val};
+        int x = select(root, k);
+        return {KEY[x], VAL[x]};
     }
 
     /**

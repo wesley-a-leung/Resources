@@ -147,8 +147,8 @@ private:
     }
 
     /**
-     * Inserts the specified value into the symbol table, allowing for duplicates.
-     * Deletes the specified value from this symbol table if the specified value is {@code null}.
+     * Inserts the specified value into the set, allowing for duplicates.
+     * Deletes the specified value from this set if the specified value is {@code null}.
      *
      * @param x the subtree
      * @param val the value
@@ -327,23 +327,23 @@ private:
 
 public:
     /**
-     * Initializes an empty symbol table.
+     * Initializes an empty set.
      */
     AVLTreeSet() {}
 
     /**
-     * Checks if the symbol table is empty.
+     * Checks if the set is empty.
      *
-     * @return {@code true} if the symbol table is empty.
+     * @return {@code true} if the set is empty.
      */
     bool isEmpty() {
         return root == nullptr;
     }
 
     /**
-     * Returns the number values in the symbol table.
+     * Returns the number values in the set.
      *
-     * @return the number values pairs in the symbol table
+     * @return the number values pairs in the set
      */
     int size() {
         return size(root);
@@ -361,10 +361,10 @@ public:
     }
 
     /**
-     * Checks if the symbol table contains the given value.
+     * Checks if the set contains the given value.
      *
      * @param val the value
-     * @return {@code true} if the symbol table contains {@code val}
+     * @return {@code true} if the set contains {@code val}
      *         and {@code false} otherwise
      */
     bool contains(Value val) {
@@ -372,7 +372,7 @@ public:
     }
 
     /**
-     * Inserts the specified value into the symbol table, allowing for duplicates.
+     * Inserts the specified value into the set, allowing for duplicates.
      *
      * @param val the value
      */
@@ -381,7 +381,7 @@ public:
     }
 
     /**
-     * Removes the specified value from the symbol table
+     * Removes the specified value from the set
      *
      * @param val the value
      */
@@ -391,82 +391,82 @@ public:
     }
 
     /**
-     * Removes the smallest value from the symbol table.
+     * Removes the smallest value from the set.
      *
-     * @throws runtime_error if the symbol table is empty
+     * @throws runtime_error if the set is empty
      */
     void removeMin() {
-        if (isEmpty()) throw runtime_error("called removeMin() with empty symbol table");
+        if (isEmpty()) throw runtime_error("called removeMin() with empty set");
         root = removeMin(root);
     }
 
     /**
-     * Removes the largest value from the symbol table.
+     * Removes the largest value from the set.
      *
-     * @throws runtime_error if the symbol table is empty
+     * @throws runtime_error if the set is empty
      */
     void removeMax() {
-        if (isEmpty()) throw runtime_error("called removeMax() with empty symbol table");
+        if (isEmpty()) throw runtime_error("called removeMax() with empty set");
         root = removeMax(root);
     }
 
     /**
-     * Returns the smallest value in the symbol table.
+     * Returns the smallest value in the set.
      *
-     * @return the smallest value in the symbol table
-     * @throws runtime_error if the symbol table is empty
+     * @return the smallest value in the set
+     * @throws runtime_error if the set is empty
      */
     Value getMin() {
-        if (isEmpty()) throw runtime_error("called getMin() with empty symbol table");
+        if (isEmpty()) throw runtime_error("called getMin() with empty set");
         return getMin(root).val;
     }
 
     /**
-     * Returns the largest value in the symbol table.
+     * Returns the largest value in the set.
      *
-     * @return the largest value in the symbol table
-     * @throws runtime_error if the symbol table is empty
+     * @return the largest value in the set
+     * @throws runtime_error if the set is empty
      */
     Value getMax() {
-        if (isEmpty()) throw runtime_error("called getMax() with empty symbol table");
+        if (isEmpty()) throw runtime_error("called getMax() with empty set");
         return getMax(root).val;
     }
 
     /**
-     * Returns the largest value in the symbol table less than or equal to {@code val}.
+     * Returns the largest value in the set less than or equal to {@code val}.
      *
      * @param val the value
-     * @return the largest value in the symbol table less than or equal to {@code val}
-     * @throws runtime_error if the symbol table is empty
-     * @throws no_such_element_exception if there is no value in the symbol table less than or equal to {@code val}
+     * @return the largest value in the set less than or equal to {@code val}
+     * @throws runtime_error if the set is empty
+     * @throws no_such_element_exception if there is no value in the set less than or equal to {@code val}
      */
     Value floor(Value val) {
-        if (isEmpty()) throw runtime_error("called floor() with empty symbol table");
+        if (isEmpty()) throw runtime_error("called floor() with empty set");
         Node *x = floor(root, val);
         if (x == nullptr) throw no_such_element_exception("call to floor() resulted in no such value");
         return x->val;
     }
 
     /**
-     * Returns the smallest value in the symbol table greater than or equal to {@code val}.
+     * Returns the smallest value in the set greater than or equal to {@code val}.
      *
      * @param val the value
-     * @return a pair containing the smallest value in the symbol table greater than or equal to {@code val}
-     * @throws runtime_error if the symbol table is empty
-     * @throws no_such_element_exception if there is no value in the symbol table greater than or equal to {@code val}
+     * @return a pair containing the smallest value in the set greater than or equal to {@code val}
+     * @throws runtime_error if the set is empty
+     * @throws no_such_element_exception if there is no value in the set greater than or equal to {@code val}
      */
     Value ceiling(Value val) {
-        if (isEmpty()) throw runtime_error("called ceiling() with empty symbol table");
+        if (isEmpty()) throw runtime_error("called ceiling() with empty set");
         Node *x = ceiling(root, val);
         if (x == nullptr) throw no_such_element_exception("call to ceiling() resulted in no such value");
         return x->val;
     }
 
     /**
-     * Returns the kth smallest value in the symbol table.
+     * Returns the kth smallest value in the set.
      *
      * @param k the order statistic
-     * @return the kth smallest value in the symbol table
+     * @return the kth smallest value in the set
      * @throws invalid_argument unless {@code k} is between 0 and
      *             {@code size() -1 }
      */
@@ -476,11 +476,11 @@ public:
     }
 
     /**
-     * Returns the number of values in the symbol table strictly less than
+     * Returns the number of values in the set strictly less than
      * {@code val}.
      *
      * @param val the value
-     * @return the number of values in the symbol table strictly less than
+     * @return the number of values in the set strictly less than
      *         {@code val}
      */
     int getRank(Value val) {
@@ -488,9 +488,9 @@ public:
     }
 
     /**
-     * Returns all values in the symbol table following an in-order traversal.
+     * Returns all values in the set following an in-order traversal.
      *
-     * @return all values in the symbol table following an in-order traversal
+     * @return all values in the set following an in-order traversal
      */
     vector<Value> values() {
         vector<Value> queue;
@@ -499,11 +499,11 @@ public:
     }
 
     /**
-     * Returns all values in the symbol table in the given range.
+     * Returns all values in the set in the given range.
      *
      * @param lo the lowest value
      * @param hi the highest value
-     * @return all value in the symbol table between {@code lo} (inclusive)
+     * @return all value in the set between {@code lo} (inclusive)
      *         and {@code hi} (exclusive)
      */
     vector<Value> values(Value lo, Value hi) {
@@ -513,11 +513,11 @@ public:
     }
 
     /**
-     * Returns the number of values in the symbol table in the given range.
+     * Returns the number of values in the set in the given range.
      *
      * @param lo minimum endpoint
      * @param hi maximum endpoint
-     * @return the number of values in the symbol table between {@code lo}
+     * @return the number of values in the set between {@code lo}
      *         (inclusive) and {@code hi} (exclusive)
      */
     int size(Value lo, Value hi) {
