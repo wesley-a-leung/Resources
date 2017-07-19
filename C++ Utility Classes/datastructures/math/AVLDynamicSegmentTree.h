@@ -1,5 +1,5 @@
 /*
- * AVLArrayTree.h
+ * AVLDynamicSegmentTree.h
  *
  *  Created on: Jul 14, 2017
  *      Author: Wesley Leung
@@ -19,10 +19,13 @@ public:
 };
 
 template <typename Key, typename Value>
-struct AVLArrayTree {
+struct AVLDynamicSegmentTree {
 private:
-    Key *KEY; // keys
+    Key *KEY; // keys (storing indicies)
+    Key *LO; // lower bound of range
+    Key *HI; // upper bound of range
     Value *VAL; // values
+    Value *MIN; // minimum value (for range minimum query)
     int *HT; // height of subtree
     int *SZ; // size of subtree
     int *L; // index of left child
@@ -37,6 +40,9 @@ private:
      * @param x the subtree
      */
     void update(int x) {
+        MIN[x] = min(min(L[x] ? MIN[L[x]] : INT_MAX, R[x] ? MIN[R[x]] : INT_MAX), VAL[x]);
+        LO[x] = L[x] ? LO[L[x]] : KEY[x];
+        HI[x] = R[x] ? HI[R[x]] : KEY[x];
         SZ[x] = 1 + SZ[L[x]] + SZ[R[x]];
         HT[x] = 1 + max(HT[L[x]], HT[R[x]]);
     }
@@ -132,11 +138,15 @@ private:
     int put(int x, Key key, Value val) {
         if (x == 0) {
             KEY[cnt] = key;
+            LO[cnt] = key;
+            HI[cnt] = key;
             VAL[cnt] = val;
+            MIN[cnt] = val;
             HT[cnt] = 0;
             SZ[cnt] = 1;
             L[cnt] = 0;
             R[cnt] = 0;
+            update(x);
             return cnt++;
         }
         if (key < KEY[x]) L[x] = put(L[x], key, val);
@@ -312,15 +322,35 @@ private:
         if (hi > KEY[x]) keyValuePairs(R[x], queue, lo, hi);
     }
 
+    /**
+     * Queries the tree between {@code lo} and {@code hi} in the subtree.
+     *
+     * @param x the subtree
+     * @param lo the lower bound
+     * @param hi the upper bound
+     * @return the result of the query between {@code lo} (inclusive)
+     *         and {@code hi} (inclusive)
+     */
+    int query(int x, Key lo, Key hi) {
+        if (x == 0) return INT_MAX;
+        if (lo <= LO[x] && hi >= HI[x]) return MIN[x];
+        if (hi < KEY[x]) return query(L[x], lo, hi);
+        if (lo > KEY[x]) return query(R[x], lo, hi);
+        return min(min(L[x] ? query(L[x], lo, HI[L[x]]) : INT_MAX, R[x] ? query(R[x], LO[R[x]], hi) : INT_MAX), VAL[x]);
+    }
+
 public:
     /**
      * Initializes an empty symbol table with a fixed size.
      *
      * @param N the maximum size of the symbol table
      */
-    AVLArrayTree(int N) {
+    AVLDynamicSegmentTree(int N) {
         KEY = new Key[N];
+        LO = new Key[N];
+        HI = new Key[N];
         VAL = new Value[N];
+        MIN = new Value[N];
         HT = new int[N];
         SZ = new int[N];
         L = new int[N];
@@ -533,6 +563,18 @@ public:
         vector<pair<Key, Value>> queue;
         keyValuePairs(root, &queue, lo, hi);
         return queue;
+    }
+
+    /**
+     * Returns the result of the query in the given range.
+     *
+     * @param lo the lower bound
+     * @param hi the upper bound
+     * @return the result of the query between {@code lo} (inclusive)
+     *         and {@code hi} (inclusive)
+     */
+    int query(Key lo, Key hi) {
+        return query(root, lo, hi);
     }
 
     /**
