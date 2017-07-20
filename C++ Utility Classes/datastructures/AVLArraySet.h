@@ -273,10 +273,10 @@ private:
      * @param x the subtree
      * @param queue the queue
      */
-    void valuesInOrder(int x, vector<Value> *queue) {
+    void valuesInOrder(int x, vector<Value> &queue) {
         if (x == 0) return;
         valuesInOrder(L[x], queue);
-        queue->push_back(VAL[x]);
+        queue.push_back(VAL[x]);
         valuesInOrder(R[x], queue);
     }
 
@@ -289,10 +289,10 @@ private:
      * @param lo the lowest value
      * @param hi the highest value
      */
-    void values(int x, vector<Value> *queue, Value lo, Value hi) {
+    void values(int x, vector<Value> &queue, Value lo, Value hi) {
         if (x == 0) return;
         if (lo < VAL[x]) values(L[x], queue, lo, hi);
-        if (lo <= VAL[x] && hi >= VAL[x]) queue->push_back(VAL[x]);
+        if (lo <= VAL[x] && hi >= VAL[x]) queue.push_back(VAL[x]);
         if (hi > VAL[x]) values(R[x], queue, lo, hi);
     }
 
@@ -479,7 +479,7 @@ public:
      */
     vector<Value> values() {
         vector<Value> queue;
-        valuesInOrder(root, &queue);
+        valuesInOrder(root, queue);
         return queue;
     }
 
@@ -493,7 +493,7 @@ public:
      */
     vector<Value> values(Value lo, Value hi) {
         vector<Value> queue;
-        values(root, &queue, lo, hi);
+        values(root, queue, lo, hi);
         return queue;
     }
 

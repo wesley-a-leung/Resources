@@ -24,7 +24,6 @@ struct AVLDynamicSegmentTree {
      * Represents an inner node of the AVL tree.
      */
     struct Node {
-    public:
         Key key;
         Key lo;
         Key hi;
@@ -328,10 +327,10 @@ private:
      * @param x the subtree
      * @param queue the queue
      */
-    void keyValuePairsInOrder(Node *&x, vector<pair<Key, Value>> *queue) {
+    void keyValuePairsInOrder(Node *&x, vector<pair<Key, Value>> &queue) {
         if (x == nullptr) return;
         keyValuePairsInOrder(x->left, queue);
-        queue->push_back({x->key, x->val});
+        queue.push_back({x->key, x->val});
         keyValuePairsInOrder(x->right, queue);
     }
 
@@ -344,10 +343,10 @@ private:
      * @param lo the lowest key
      * @param hi the highest key
      */
-    void keyValuePairs(Node *&x, vector<pair<Key, Value>> *queue, Key lo, Key hi) {
+    void keyValuePairs(Node *&x, vector<pair<Key, Value>> &queue, Key lo, Key hi) {
         if (x == nullptr) return;
         if (lo < x->key) keyValuePairs(x->left, queue, lo, hi);
-        if (lo <= x->key && hi >= x->key) queue->push_back({x->key, x->val});
+        if (lo <= x->key && hi >= x->key) queue.push_back({x->key, x->val});
         if (hi > x->key) keyValuePairs(x->right, queue, lo, hi);
     }
 
@@ -412,8 +411,8 @@ public:
      * @throws no_such_element_exception if no such key is in the symbol table
      */
     Value get(Key key) {
-        no_such_element_exception("no such key is in the symbol table");
         Node *x = get(root, key);
+        if (x == nullptr) throw no_such_element_exception("no such key is in the symbol table");
         return x->val;
     }
 
@@ -558,7 +557,7 @@ public:
      */
     vector<pair<Key, Value>> keyValuePairs() {
         vector<pair<Key, Value>> queue;
-        keyValuePairsInOrder(root, &queue);
+        keyValuePairsInOrder(root, queue);
         return queue;
     }
 
@@ -572,7 +571,7 @@ public:
      */
     vector<pair<Key, Value>> keyValuePairs(Key lo, Key hi) {
         vector<pair<Key, Value>> queue;
-        keyValuePairs(root, &queue, lo, hi);
+        keyValuePairs(root, queue, lo, hi);
         return queue;
     }
 

@@ -1,6 +1,6 @@
 package datastructures;
 
-public class SplayTreeSet<Value extends Comparable<Value>>  {
+public class SplayTreeSet<Value extends Comparable<Value>> {
 
     private Node root;   // root of the BST
 
@@ -15,6 +15,8 @@ public class SplayTreeSet<Value extends Comparable<Value>>  {
             this.size = size;
         }
     }
+    
+    public SplayTreeSet() {}
 
     public boolean contains(Value val) {
         if (root == null) return false;
@@ -154,40 +156,40 @@ public class SplayTreeSet<Value extends Comparable<Value>>  {
    /***************************************************************************
     * Splay tree function.
     * **********************************************************************/
-    // splay value in the tree rooted at Node h. If a node with that value exists,
+    // splay value in the tree rooted at Node x. If a node with that value exists,
     //   it is splayed to the root of the tree. If it does not, the last node
     //   along the search path for the value is splayed to the root.
-    private Node splay(Node h, Value val) {
-        if (h == null) return null;
-        int cmp1 = val.compareTo(h.val);
+    private Node splay(Node x, Value val) {
+        if (x == null) return null;
+        int cmp1 = val.compareTo(x.val);
         if (cmp1 < 0) {
             // key not in tree, so we're done
-            if (h.left == null)  return h;
-            int cmp2 = val.compareTo(h.left.val);
+            if (x.left == null) return x;
+            int cmp2 = val.compareTo(x.left.val);
             if (cmp2 < 0) {
-                h.left.left = splay(h.left.left, val);
-                h = rotateRight(h);
+                x.left.left = splay(x.left.left, val);
+                x = rotateRight(x);
             } else if (cmp2 > 0) {
-                h.left.right = splay(h.left.right, val);
-                if (h.left.right != null) h.left = rotateLeft(h.left);
+                x.left.right = splay(x.left.right, val);
+                if (x.left.right != null) x.left = rotateLeft(x.left);
             }
-            if (h.left == null) return h;
-            else return rotateRight(h);
+            if (x.left == null) return x;
+            else return rotateRight(x);
         } else if (cmp1 > 0) { 
             // key not in tree, so we're done
-            if (h.right == null) return h;
-            int cmp2 = val.compareTo(h.right.val);
+            if (x.right == null) return x;
+            int cmp2 = val.compareTo(x.right.val);
             if (cmp2 < 0) {
-                h.right.left = splay(h.right.left, val);
-                if (h.right.left != null) h.right = rotateRight(h.right);
+                x.right.left = splay(x.right.left, val);
+                if (x.right.left != null) x.right = rotateRight(x.right);
             } else if (cmp2 > 0) {
-                h.right.right = splay(h.right.right, val);
-                h = rotateLeft(h);
+                x.right.right = splay(x.right.right, val);
+                x = rotateLeft(x);
             }
-            if (h.right == null) return h;
-            else return rotateLeft(h);
+            if (x.right == null) return x;
+            else return rotateLeft(x);
         } else {
-            return h;
+            return x;
         }
     }
 
@@ -216,22 +218,22 @@ public class SplayTreeSet<Value extends Comparable<Value>>  {
     }
     
     // right rotate
-    private Node rotateRight(Node h) {
-        Node x = h.left;
-        h.left = x.right;
-        x.right = h;
-        update(h);
+    private Node rotateRight(Node x) {
+        Node y = x.left;
+        x.left = y.right;
+        y.right = x;
         update(x);
-        return x;
+        update(y);
+        return y;
     }
 
     // left rotate
-    private Node rotateLeft(Node h) {
-        Node x = h.right;
-        h.right = x.left;
-        x.left = h;
-        update(h);
+    private Node rotateLeft(Node x) {
+        Node y = x.right;
+        x.right = y.left;
+        y.left = x;
         update(x);
-        return x;
+        update(y);
+        return y;
     }
 }

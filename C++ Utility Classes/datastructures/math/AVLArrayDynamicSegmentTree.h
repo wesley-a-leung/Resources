@@ -299,10 +299,10 @@ private:
      * @param x the subtree
      * @param queue the queue
      */
-    void keyValuePairsInOrder(int x, vector<pair<Key, Value>> *queue) {
+    void keyValuePairsInOrder(int x, vector<pair<Key, Value>> &queue) {
         if (x == 0) return;
         keyValuePairsInOrder(L[x], queue);
-        queue->push_back({KEY[x], VAL[x]});
+        queue.push_back({KEY[x], VAL[x]});
         keyValuePairsInOrder(R[x], queue);
     }
 
@@ -315,10 +315,10 @@ private:
      * @param lo the lowest key
      * @param hi the highest key
      */
-    void keyValuePairs(int x, vector<pair<Key, Value>> *queue, Key lo, Key hi) {
+    void keyValuePairs(int x, vector<pair<Key, Value>> &queue, Key lo, Key hi) {
         if (x == 0) return;
         if (lo < KEY[x]) keyValuePairs(L[x], queue, lo, hi);
-        if (lo <= KEY[x] && hi >= KEY[x]) queue->push_back({KEY[x], VAL[x]});
+        if (lo <= KEY[x] && hi >= KEY[x]) queue.push_back({KEY[x], VAL[x]});
         if (hi > KEY[x]) keyValuePairs(R[x], queue, lo, hi);
     }
 
@@ -401,8 +401,8 @@ public:
      * @throws no_such_element_exception if no such key is in the symbol table
      */
     Value get(Key key) {
-        no_such_element_exception("no such key is in the symbol table");
         int x = get(root, key);
+        if (x == 0) throw no_such_element_exception("no such key is in the symbol table");
         return VAL[x];
     }
 
@@ -547,7 +547,7 @@ public:
      */
     vector<pair<Key, Value>> keyValuePairs() {
         vector<pair<Key, Value>> queue;
-        keyValuePairsInOrder(root, &queue);
+        keyValuePairsInOrder(root, queue);
         return queue;
     }
 
@@ -561,7 +561,7 @@ public:
      */
     vector<pair<Key, Value>> keyValuePairs(Key lo, Key hi) {
         vector<pair<Key, Value>> queue;
-        keyValuePairs(root, &queue, lo, hi);
+        keyValuePairs(root, queue, lo, hi);
         return queue;
     }
 
