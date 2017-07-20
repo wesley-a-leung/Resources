@@ -39,11 +39,11 @@ public:
     }
 
     bool operator == (const WeightedEdge &e) const {
-        return (v == e.v && w == e.w && weight == e.weight);
+        return (((v == e.v && w == e.w) || (v == e.w && w == e.v)) && weight == e.weight);
     }
 
     bool operator != (const WeightedEdge &e) const {
-        return !(v == e.v && w == e.w && weight == e.weight);
+        return !(((v == e.v && w == e.w) || (v == e.w && w == e.v)) && weight == e.weight);
     }
 
     bool operator < (const WeightedEdge &e) const {
@@ -59,7 +59,7 @@ public:
     }
 
     bool operator >= (const WeightedEdge &e) const {
-        return (weight > e.weight);
+        return (weight >= e.weight);
     }
 };
 

@@ -57,7 +57,7 @@ public:
     }
 
     bool operator >= (const DirectedWeightedEdge &e) const {
-        return (weight > e.weight);
+        return (weight >= e.weight);
     }
 };
 
