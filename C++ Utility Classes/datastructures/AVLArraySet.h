@@ -20,6 +20,7 @@ public:
 
 template <typename Value>
 struct AVLArraySet {
+
 private:
     Value *VAL; // values
     int *HT; // height of subtree
@@ -28,7 +29,38 @@ private:
     int *R; // index of right child
 
     int root;
-    int cnt;
+    int ind; // current ind
+    int capacity; // capacity
+    const int INIT_CAPACITY = 4; // default capacity
+
+    /**
+     * Resizes the arrays and copies all the values
+     */
+    void resize() {
+        Value *NEW_VAL = new int[capacity * 2];
+        int *NEW_HT = new int[capacity * 2];
+        int *NEW_SZ = new int[capacity * 2];
+        int *NEW_L = new int[capacity * 2];
+        int *NEW_R = new int[capacity * 2];
+        for (int i = 0; i < capacity; i++) {
+            NEW_VAL[i] = VAL[i];
+            NEW_HT[i] = HT[i];
+            NEW_SZ[i] = SZ[i];
+            NEW_L[i] = L[i];
+            NEW_R[i] = R[i];
+        }
+        swap(NEW_VAL, VAL);
+        swap(NEW_HT, HT);
+        swap(NEW_SZ, SZ);
+        swap(NEW_L, L);
+        swap(NEW_R, R);
+        delete[](NEW_VAL);
+        delete[](NEW_HT);
+        delete[](NEW_SZ);
+        delete[](NEW_L);
+        delete[](NEW_R);
+        capacity *= 2;
+    }
 
     /**
      * Updates the size and height of the subtree.
@@ -112,8 +144,8 @@ private:
     }
 
     /**
-     * Inserts the specified value into the set, allowing for duplicates.
-     * Deletes the specified value from this set if the specified value is {@code null}.
+     * Inserts the specified value into the symbol table, allowing for duplicates.
+     * Deletes the specified value from this symbol table if the specified value is {@code null}.
      *
      * @param x the subtree
      * @param val the value
@@ -121,12 +153,13 @@ private:
      */
     int add(int x, Value val) {
         if (x == 0) {
-            VAL[cnt] = val;
-            HT[cnt] = 0;
-            SZ[cnt] = 1;
-            L[cnt] = 0;
-            R[cnt] = 0;
-            return cnt++;
+            if (ind >= capacity) resize();
+            VAL[ind] = val;
+            HT[ind] = 0;
+            SZ[ind] = 1;
+            L[ind] = 0;
+            R[ind] = 0;
+            return ind++;
         }
         if (val < VAL[x]) L[x] = add(L[x], val);
         else R[x] = add(R[x], val);
@@ -273,10 +306,10 @@ private:
      * @param x the subtree
      * @param queue the queue
      */
-    void valuesInOrder(int x, vector<Value> &queue) {
+    void valuesInOrder(int x, vector<Value> *queue) {
         if (x == 0) return;
         valuesInOrder(L[x], queue);
-        queue.push_back(VAL[x]);
+        queue->push_back(VAL[x]);
         valuesInOrder(R[x], queue);
     }
 
@@ -289,18 +322,36 @@ private:
      * @param lo the lowest value
      * @param hi the highest value
      */
-    void values(int x, vector<Value> &queue, Value lo, Value hi) {
+    void values(int x, vector<Value> *queue, Value lo, Value hi) {
         if (x == 0) return;
         if (lo < VAL[x]) values(L[x], queue, lo, hi);
-        if (lo <= VAL[x] && hi >= VAL[x]) queue.push_back(VAL[x]);
+        if (lo <= VAL[x] && hi >= VAL[x]) queue->push_back(VAL[x]);
         if (hi > VAL[x]) values(R[x], queue, lo, hi);
     }
 
 public:
     /**
-     * Initializes an empty set with a fixed size.
+     * Initializes an empty symbol table with an initial capacity of 4.
+     */
+    AVLArraySet() {
+        VAL = new Value[INIT_CAPACITY];
+        HT = new int[INIT_CAPACITY];
+        SZ = new int[INIT_CAPACITY];
+        L = new int[INIT_CAPACITY];
+        R = new int[INIT_CAPACITY];
+        root = 0;
+        HT[root] = -1;
+        SZ[root] = 0;
+        L[root] = 0;
+        R[root] = 0;
+        ind = 1;
+        capacity = INIT_CAPACITY;
+    }
+
+    /**
+     * Initializes an empty symbol table with a initial capacity.
      *
-     * @param N the maximum size of the set
+     * @param N the initial capacity of the symbol table
      */
     AVLArraySet(int N) {
         VAL = new Value[N];
@@ -313,22 +364,23 @@ public:
         SZ[root] = 0;
         L[root] = 0;
         R[root] = 0;
-        cnt = 1;
+        ind = 1;
+        capacity = N;
     }
 
     /**
-     * Checks if the set is empty.
+     * Checks if the symbol table is empty.
      *
-     * @return {@code true} if the set is empty.
+     * @return {@code true} if the symbol table is empty.
      */
     bool isEmpty() {
         return root == 0;
     }
 
     /**
-     * Returns the number values in the set.
+     * Returns the number values in the symbol table.
      *
-     * @return the number values pairs in the set
+     * @return the number values pairs in the symbol table
      */
     int size() {
         return SZ[root];
@@ -346,10 +398,10 @@ public:
     }
 
     /**
-     * Checks if the set contains the given value.
+     * Checks if the symbol table contains the given value.
      *
      * @param val the value
-     * @return {@code true} if the set contains {@code val}
+     * @return {@code true} if the symbol table contains {@code val}
      *         and {@code false} otherwise
      */
     bool contains(Value val) {
@@ -357,7 +409,7 @@ public:
     }
 
     /**
-     * Inserts the specified value into the set, allowing for duplicates.
+     * Inserts the specified value into the symbol table, allowing for duplicates.
      *
      * @param val the value
      */
@@ -366,7 +418,7 @@ public:
     }
 
     /**
-     * Removes the specified value from the set
+     * Removes the specified value from the symbol table
      *
      * @param val the value
      */
@@ -376,82 +428,82 @@ public:
     }
 
     /**
-     * Removes the smallest value from the set.
+     * Removes the smallest value from the symbol table.
      *
-     * @throws runtime_error if the set is empty
+     * @throws runtime_error if the symbol table is empty
      */
     void removeMin() {
-        if (isEmpty()) throw runtime_error("called removeMin() with empty set");
+        if (isEmpty()) throw runtime_error("called removeMin() with empty symbol table");
         root = removeMin(root);
     }
 
     /**
-     * Removes the largest value from the set.
+     * Removes the largest value from the symbol table.
      *
-     * @throws runtime_error if the set is empty
+     * @throws runtime_error if the symbol table is empty
      */
     void removeMax() {
-        if (isEmpty()) throw runtime_error("called removeMax() with empty set");
+        if (isEmpty()) throw runtime_error("called removeMax() with empty symbol table");
         root = removeMax(root);
     }
 
     /**
-     * Returns the smallest value in the set.
+     * Returns the smallest value in the symbol table.
      *
-     * @return the smallest value in the set
-     * @throws runtime_error if the set is empty
+     * @return the smallest value in the symbol table
+     * @throws runtime_error if the symbol table is empty
      */
     Value getMin() {
-        if (isEmpty()) throw runtime_error("called getMin() with empty set");
+        if (isEmpty()) throw runtime_error("called getMin() with empty symbol table");
         return VAL[getMin(root)];
     }
 
     /**
-     * Returns the largest value in the set.
+     * Returns the largest value in the symbol table.
      *
-     * @return the largest value in the set
-     * @throws runtime_error if the set is empty
+     * @return the largest value in the symbol table
+     * @throws runtime_error if the symbol table is empty
      */
     Value getMax() {
-        if (isEmpty()) throw runtime_error("called getMax() with empty set");
+        if (isEmpty()) throw runtime_error("called getMax() with empty symbol table");
         return VAL[getMax(root)];
     }
 
     /**
-     * Returns the largest value in the set less than or equal to {@code val}.
+     * Returns the largest value in the symbol table less than or equal to {@code val}.
      *
      * @param val the value
-     * @return the largest value in the set less than or equal to {@code val}
-     * @throws runtime_error if the set is empty
-     * @throws no_such_element_exception if there is no value in the set less than or equal to {@code val}
+     * @return the largest value in the symbol table less than or equal to {@code val}
+     * @throws runtime_error if the symbol table is empty
+     * @throws no_such_element_exception if there is no value in the symbol table less than or equal to {@code val}
      */
     Value floor(Value val) {
-        if (isEmpty()) throw runtime_error("called floor() with empty set");
+        if (isEmpty()) throw runtime_error("called floor() with empty symbol table");
         int x = floor(root, val);
         if (x == 0) throw no_such_element_exception("call to floor() resulted in no such value");
         return VAL[x];
     }
 
     /**
-     * Returns the smallest value in the set greater than or equal to {@code val}.
+     * Returns the smallest value in the symbol table greater than or equal to {@code val}.
      *
      * @param val the value
-     * @return a pair containing the smallest value in the set greater than or equal to {@code val}
-     * @throws runtime_error if the set is empty
-     * @throws no_such_element_exception if there is no value in the set greater than or equal to {@code val}
+     * @return a pair containing the smallest value in the symbol table greater than or equal to {@code val}
+     * @throws runtime_error if the symbol table is empty
+     * @throws no_such_element_exception if there is no value in the symbol table greater than or equal to {@code val}
      */
     Value ceiling(Value val) {
-        if (isEmpty()) throw runtime_error("called ceiling() with empty set");
+        if (isEmpty()) throw runtime_error("called ceiling() with empty symbol table");
         int x = ceiling(root, val);
         if (x == 0) throw no_such_element_exception("call to ceiling() resulted in no such value");
         return VAL[x];
     }
 
     /**
-     * Returns the kth smallest value in the set.
+     * Returns the kth smallest value in the symbol table.
      *
      * @param k the order statistic
-     * @return the kth smallest value in the set
+     * @return the kth smallest value in the symbol table
      * @throws invalid_argument unless {@code k} is between 0 and
      *             {@code size() -1 }
      */
@@ -461,11 +513,11 @@ public:
     }
 
     /**
-     * Returns the number of values in the set strictly less than
+     * Returns the number of values in the symbol table strictly less than
      * {@code val}.
      *
      * @param val the value
-     * @return the number of values in the set strictly less than
+     * @return the number of values in the symbol table strictly less than
      *         {@code val}
      */
     int getRank(Value val) {
@@ -473,36 +525,36 @@ public:
     }
 
     /**
-     * Returns all values in the set following an in-order traversal.
+     * Returns all values in the symbol table following an in-order traversal.
      *
-     * @return all values in the set following an in-order traversal
+     * @return all values in the symbol table following an in-order traversal
      */
     vector<Value> values() {
         vector<Value> queue;
-        valuesInOrder(root, queue);
+        valuesInOrder(root, &queue);
         return queue;
     }
 
     /**
-     * Returns all values in the set in the given range.
+     * Returns all values in the symbol table in the given range.
      *
      * @param lo the lowest value
      * @param hi the highest value
-     * @return all value in the set between {@code lo} (inclusive)
+     * @return all value in the symbol table between {@code lo} (inclusive)
      *         and {@code hi} (exclusive)
      */
     vector<Value> values(Value lo, Value hi) {
         vector<Value> queue;
-        values(root, queue, lo, hi);
+        values(root, &queue, lo, hi);
         return queue;
     }
 
     /**
-     * Returns the number of values in the set in the given range.
+     * Returns the number of values in the symbol table in the given range.
      *
      * @param lo minimum endpoint
      * @param hi maximum endpoint
-     * @return the number of values in the set between {@code lo}
+     * @return the number of values in the symbol table between {@code lo}
      *         (inclusive) and {@code hi} (exclusive)
      */
     int size(Value lo, Value hi) {

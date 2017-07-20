@@ -29,7 +29,42 @@ private:
     int *R; // index of right child
 
     int root;
-    int cnt;
+    int ind; // current index
+    int capacity; // capacity
+    const int INIT_CAPACITY = 4; // default capacity
+
+    /**
+     * Resizes the arrays and copies all the keys and values
+     */
+    void resize() {
+        Key *NEW_KEY = new int[capacity * 2];
+        Value *NEW_VAL = new int[capacity * 2];
+        int *NEW_HT = new int[capacity * 2];
+        int *NEW_SZ = new int[capacity * 2];
+        int *NEW_L = new int[capacity * 2];
+        int *NEW_R = new int[capacity * 2];
+        for (int i = 0; i < capacity; i++) {
+            NEW_KEY[i] = KEY[i];
+            NEW_VAL[i] = VAL[i];
+            NEW_HT[i] = HT[i];
+            NEW_SZ[i] = SZ[i];
+            NEW_L[i] = L[i];
+            NEW_R[i] = R[i];
+        }
+        swap(NEW_KEY, KEY);
+        swap(NEW_VAL, VAL);
+        swap(NEW_HT, HT);
+        swap(NEW_SZ, SZ);
+        swap(NEW_L, L);
+        swap(NEW_R, R);
+        delete[](NEW_KEY);
+        delete[](NEW_VAL);
+        delete[](NEW_HT);
+        delete[](NEW_SZ);
+        delete[](NEW_L);
+        delete[](NEW_R);
+        capacity *= 2;
+    }
 
     /**
      * Updates the size and height of the subtree.
@@ -131,13 +166,14 @@ private:
      */
     int put(int x, Key key, Value val) {
         if (x == 0) {
-            KEY[cnt] = key;
-            VAL[cnt] = val;
-            HT[cnt] = 0;
-            SZ[cnt] = 1;
-            L[cnt] = 0;
-            R[cnt] = 0;
-            return cnt++;
+            if (ind >= capacity) resize();
+            KEY[ind] = key;
+            VAL[ind] = val;
+            HT[ind] = 0;
+            SZ[ind] = 1;
+            L[ind] = 0;
+            R[ind] = 0;
+            return ind++;
         }
         if (key < KEY[x]) L[x] = put(L[x], key, val);
         else if (key > KEY[x]) R[x] = put(R[x], key, val);
@@ -314,9 +350,28 @@ private:
 
 public:
     /**
-     * Initializes an empty symbol table with a fixed size.
+     * Initializes an empty symbol table with an initial capacity of 4.
+     */
+    AVLArrayTree() {
+        KEY = new Key[INIT_CAPACITY];
+        VAL = new Value[INIT_CAPACITY];
+        HT = new int[INIT_CAPACITY];
+        SZ = new int[INIT_CAPACITY];
+        L = new int[INIT_CAPACITY];
+        R = new int[INIT_CAPACITY];
+        root = 0;
+        HT[root] = -1;
+        SZ[root] = 0;
+        L[root] = 0;
+        R[root] = 0;
+        ind = 1;
+        capacity = INIT_CAPACITY;
+    }
+
+    /**
+     * Initializes an empty symbol table with an initial capacity.
      *
-     * @param N the maximum size of the symbol table
+     * @param N the initial capacity of the symbol table
      */
     AVLArrayTree(int N) {
         KEY = new Key[N];
@@ -330,7 +385,8 @@ public:
         SZ[root] = 0;
         L[root] = 0;
         R[root] = 0;
-        cnt = 1;
+        ind = 1;
+        capacity = N;
     }
 
     /**
