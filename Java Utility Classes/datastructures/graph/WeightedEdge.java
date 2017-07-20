@@ -99,7 +99,7 @@ public class WeightedEdge implements Comparable<WeightedEdge> {
     @Override
     public int hashCode() {
         int result = 31 * Math.min(v, w) + Math.max(v, w);
-        result = 31 * result + (int) (new Double(weight).hashCode() ^ (new Double(weight).hashCode() >>> 32));
+        result = 31 * result + ((Double) weight).hashCode();
         return result;
     }
     
