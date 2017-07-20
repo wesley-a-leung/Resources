@@ -24,7 +24,6 @@ struct AVLTreeSet {
      * Represents an inner node of the AVL tree.
      */
     struct Node {
-    public:
         Value val;
         int height, size;
         Node *left = nullptr, *right = nullptr;
@@ -302,10 +301,10 @@ private:
      * @param x the subtree
      * @param queue the queue
      */
-    void valuesInOrder(Node *&x, vector<Value> *queue) {
+    void valuesInOrder(Node *&x, vector<Value> &queue) {
         if (x == nullptr) return;
         valuesInOrder(x->left, queue);
-        queue->push_back(x->val);
+        queue.push_back(x->val);
         valuesInOrder(x->right, queue);
     }
 
@@ -318,10 +317,10 @@ private:
      * @param lo the lowest value
      * @param hi the highest value
      */
-    void values(Node *&x, vector<Value> *queue, Value lo, Value hi) {
+    void values(Node *&x, vector<Value> &queue, Value lo, Value hi) {
         if (x == nullptr) return;
         if (lo < x->val) values(x->left, queue, lo, hi);
-        if (lo <= x->val && hi >= x->val) queue->push_back(x->val);
+        if (lo <= x->val && hi >= x->val) queue.push_back(x->val);
         if (hi > x->val) values(x->right, queue, lo, hi);
     }
 
@@ -494,7 +493,7 @@ public:
      */
     vector<Value> values() {
         vector<Value> queue;
-        valuesInOrder(root, &queue);
+        valuesInOrder(root, queue);
         return queue;
     }
 
@@ -508,7 +507,7 @@ public:
      */
     vector<Value> values(Value lo, Value hi) {
         vector<Value> queue;
-        values(root, &queue, lo, hi);
+        values(root, queue, lo, hi);
         return queue;
     }
 

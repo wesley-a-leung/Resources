@@ -14,7 +14,6 @@ using namespace std;
 
 struct DynamicSegmentTree {
     struct Node {
-    public:
         Node *left = nullptr, *right = nullptr;
         int val = 0;
     };

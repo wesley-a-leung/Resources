@@ -1,22 +1,24 @@
 package datastructures;
 
-public class SplayTree<Key extends Comparable<Key>, Value>  {
+public class SplayTree<Key extends Comparable<Key>, Value> {
 
     private Node root;   // root of the BST
 
     // BST helper node data type
     private class Node {
         private Key key;            // key
-        private Value value;        // associated data
+        private Value val;        // associated data
         private Node left, right;   // left and right subtrees
         private int size;
 
-        public Node(Key key, Value value, int size) {
-            this.key   = key;
-            this.value = value;
+        public Node(Key key, Value val, int size) {
+            this.key = key;
+            this.val = val;
             this.size = size;
         }
     }
+    
+    public SplayTree() {}
 
     public boolean contains(Key key) {
         return get(key) != null;
@@ -27,7 +29,7 @@ public class SplayTree<Key extends Comparable<Key>, Value>  {
     public Value get(Key key) {
         root = splay(root, key);
         int cmp = key.compareTo(root.key);
-        if (cmp == 0) return root.value;
+        if (cmp == 0) return root.val;
         else          return null;
     }
     
@@ -91,17 +93,17 @@ public class SplayTree<Key extends Comparable<Key>, Value>  {
    /***************************************************************************
     *  Splay tree insertion.
     ***************************************************************************/
-    public void put(Key key, Value value) {
+    public void put(Key key, Value val) {
         // splay key to root
         if (root == null) {
-            root = new Node(key, value, 1);
+            root = new Node(key, val, 1);
             return;
         }
         root = splay(root, key);
         int cmp = key.compareTo(root.key);
         // Insert new node at root
         if (cmp < 0) {
-            Node n = new Node(key, value, 1);
+            Node n = new Node(key, val, 1);
             n.left = root.left;
             n.right = root;
             root.left = null;
@@ -110,7 +112,7 @@ public class SplayTree<Key extends Comparable<Key>, Value>  {
         }
         // Insert new node at root
         else if (cmp > 0) {
-            Node n = new Node(key, value, 1);
+            Node n = new Node(key, val, 1);
             n.right = root.right;
             n.left = root;
             root.right = null;
@@ -119,7 +121,7 @@ public class SplayTree<Key extends Comparable<Key>, Value>  {
         }
         // It was a duplicate key. Simply replace the value
         else {
-            root.value = value;
+            root.val = val;
         }
         update(root);
     }
@@ -176,40 +178,40 @@ public class SplayTree<Key extends Comparable<Key>, Value>  {
    /***************************************************************************
     * Splay tree function.
     * **********************************************************************/
-    // splay key in the tree rooted at Node h. If a node with that key exists,
+    // splay key in the tree rooted at Node x. If a node with that key exists,
     //   it is splayed to the root of the tree. If it does not, the last node
     //   along the search path for the key is splayed to the root.
-    private Node splay(Node h, Key key) {
-        if (h == null) return null;
-        int cmp1 = key.compareTo(h.key);
+    private Node splay(Node x, Key key) {
+        if (x == null) return null;
+        int cmp1 = key.compareTo(x.key);
         if (cmp1 < 0) {
             // key not in tree, so we're done
-            if (h.left == null)  return h;
-            int cmp2 = key.compareTo(h.left.key);
+            if (x.left == null) return x;
+            int cmp2 = key.compareTo(x.left.key);
             if (cmp2 < 0) {
-                h.left.left = splay(h.left.left, key);
-                h = rotateRight(h);
+                x.left.left = splay(x.left.left, key);
+                x = rotateRight(x);
             } else if (cmp2 > 0) {
-                h.left.right = splay(h.left.right, key);
-                if (h.left.right != null) h.left = rotateLeft(h.left);
+                x.left.right = splay(x.left.right, key);
+                if (x.left.right != null) x.left = rotateLeft(x.left);
             }
-            if (h.left == null) return h;
-            else return rotateRight(h);
+            if (x.left == null) return x;
+            else return rotateRight(x);
         } else if (cmp1 > 0) { 
             // key not in tree, so we're done
-            if (h.right == null) return h;
-            int cmp2 = key.compareTo(h.right.key);
+            if (x.right == null) return x;
+            int cmp2 = key.compareTo(x.right.key);
             if (cmp2 < 0) {
-                h.right.left  = splay(h.right.left, key);
-                if (h.right.left != null) h.right = rotateRight(h.right);
+                x.right.left  = splay(x.right.left, key);
+                if (x.right.left != null) x.right = rotateRight(x.right);
             } else if (cmp2 > 0) {
-                h.right.right = splay(h.right.right, key);
-                h = rotateLeft(h);
+                x.right.right = splay(x.right.right, key);
+                x = rotateLeft(x);
             }
-            if (h.right == null) return h;
-            else return rotateLeft(h);
+            if (x.right == null) return x;
+            else return rotateLeft(x);
         } else {
-            return h;
+            return x;
         }
     }
 
@@ -238,22 +240,22 @@ public class SplayTree<Key extends Comparable<Key>, Value>  {
      }
      
      // right rotate
-     private Node rotateRight(Node h) {
-         Node x = h.left;
-         h.left = x.right;
-         x.right = h;
-         update(h);
+     private Node rotateRight(Node x) {
+         Node y = x.left;
+         x.left = y.right;
+         y.right = x;
          update(x);
-         return x;
+         update(y);
+         return y;
      }
 
      // left rotate
-     private Node rotateLeft(Node h) {
-         Node x = h.right;
-         h.right = x.left;
-         x.left = h;
-         update(h);
+     private Node rotateLeft(Node x) {
+         Node y = x.right;
+         x.right = y.left;
+         y.left = x;
          update(x);
-         return x;
+         update(y);
+         return y;
      }
 }

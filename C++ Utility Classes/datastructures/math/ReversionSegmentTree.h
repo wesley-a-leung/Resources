@@ -14,7 +14,6 @@ using namespace std;
 
 struct ReversionSegmentTree {
     struct Node {
-    public:
         Node *left;
         Node *right;
         int pre, suf, sum;
