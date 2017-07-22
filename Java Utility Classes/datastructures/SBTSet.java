@@ -2,7 +2,7 @@ package datastructures;
 
 import java.util.NoSuchElementException;
 
-public class AVLTreeSet<Value extends Comparable<Value>> {
+public class SBTSet<Value extends Comparable<Value>> {
 
     /**
      * The root node.
@@ -10,26 +10,24 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
     private Node root;
 
     /**
-     * This class represents an inner node of the AVL tree.
+     * This class represents an inner node of the tree.
      */
     private class Node {
         private Value val;       // the value
-        private int height;      // height of the subtree
         private int size;        // number of nodes in subtree
         private Node left;       // left subtree
         private Node right;      // right subtree
 
-        public Node(Value val, int height, int size) {
+        public Node(Value val, int size) {
             this.val = val;
             this.size = size;
-            this.height = height;
         }
     }
 
     /**
      * Initializes an empty symbol table.
      */
-    public AVLTreeSet() {
+    public SBTSet() {
     }
 
     /**
@@ -60,29 +58,6 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
     private int size(Node x) {
         if (x == null) return 0;
         return x.size;
-    }
-
-    /**
-     * Returns the height of the internal AVL tree. It is assumed that the
-     * height of an empty tree is -1 and the height of a tree with just one node
-     * is 0.
-     * 
-     * @return the height of the internal AVL tree
-     */
-    public int height() {
-        return height(root);
-    }
-
-    /**
-     * Returns the height of the subtree.
-     * 
-     * @param x the subtree
-     * 
-     * @return the height of the subtree.
-     */
-    private int height(Node x) {
-        if (x == null) return -1;
-        return x.height;
     }
 
     /**
@@ -126,43 +101,49 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
      * @return the subtree
      */
     private Node add(Node x, Value val) {
-        if (x == null) return new Node(val, 0, 1);
+        if (x == null) return new Node(val, 1);
         int cmp = val.compareTo(x.val);
         if (cmp < 0) x.left = add(x.left, val);
         else x.right = add(x.right, val);
-        return balance(x);
-    }
-
-    /**
-     * Restores the AVL tree property of the subtree.
-     * 
-     * @param x the subtree
-     * @return the subtree with restored AVL property
-     */
-    private Node balance(Node x) {
-        if (balanceFactor(x) < -1) {
-            if (balanceFactor(x.right) > 0) x.right = rotateRight(x.right);
-            x = rotateLeft(x);
-        } else if (balanceFactor(x) > 1) {
-            if (balanceFactor(x.left) < 0) x.left = rotateLeft(x.left);
-            x = rotateRight(x);
-        }
         update(x);
-        return x;
+        return maintain(x, cmp >= 0);
     }
 
     /**
-     * Returns the balance factor of the subtree. The balance factor is defined
-     * as the difference in height of the left subtree and right subtree, in
-     * this order. Therefore, a subtree with a balance factor of -1, 0 or 1 has
-     * the AVL property since the heights of the two child subtrees differ by at
-     * most one.
+     * Balances the tree by size.
      * 
      * @param x the subtree
-     * @return the balance factor of the subtree
+     * @param flag whether the left subtree should be compared or the right subtree:
+     *        {@code true} if the tree is right heavy, {@code false} if the tree is left heavy.
+     * @return the balanced subtree
      */
-    private int balanceFactor(Node x) {
-        return height(x.left) - height(x.right);
+    private Node maintain(Node x, boolean flag) {
+        if (flag) {
+            if (x.right == null) return x;
+            if (size(x.left) < size(x.right.left)) {
+                x.right = rotateRight(x.right);
+                x = rotateLeft(x);
+            } else if (size(x.left) < size(x.right.right)) {
+                x = rotateLeft(x);
+            } else {
+                return x;
+            }
+        } else {
+            if (x.left == null) return x;
+            if (size(x.right) < size(x.left.right)) {
+                x.left = rotateLeft(x.left);
+                x = rotateRight(x);
+            } else if (size(x.right) < size(x.left.left)) {
+                x = rotateRight(x);
+            } else {
+                return x;
+            }
+        }
+        x.left = maintain(x.left, false);
+        x.right = maintain(x.right, true);
+        x = maintain(x, true);
+        x = maintain(x, false);
+        return x;
     }
 
     /**
@@ -202,7 +183,6 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
      */
     private void update(Node x) {
         x.size = 1 + size(x.left) + size(x.right);
-        x.height = 1 + Math.max(height(x.left), height(x.right));
     }
 
     /**
@@ -239,7 +219,8 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
                 x.left = y.left;
             }
         }
-        return balance(x);
+        update(x);
+        return x;
     }
 
     /**
@@ -261,7 +242,8 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
     private Node deleteMin(Node x) {
         if (x.left == null) return x.right;
         x.left = deleteMin(x.left);
-        return balance(x);
+        update(x);
+        return x;
     }
 
     /**
@@ -283,7 +265,8 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
     private Node deleteMax(Node x) {
         if (x.right == null) return x.left;
         x.right = deleteMax(x.right);
-        return balance(x);
+        update(x);
+        return x;
     }
 
     /**
@@ -551,4 +534,3 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
         else return rank(hi) - rank(lo);
     }
 }
-

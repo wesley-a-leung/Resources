@@ -5,8 +5,8 @@
  *      Author: Wesley Leung
  */
 
-#ifndef DATASTRUCTURES_AVLTREE_H_
-#define DATASTRUCTURES_AVLTREE_H_
+#ifndef DATASTRUCTURES_AVLARRAYTREE_H_
+#define DATASTRUCTURES_AVLARRAYTREE_H_
 
 #include <bits/stdc++.h>
 
@@ -19,7 +19,7 @@ public:
 };
 
 template <typename Key, typename Value>
-struct AVLArrayTree {
+struct SBTArray {
 private:
     Key *KEY; // keys
     Value *VAL; // values
@@ -352,7 +352,7 @@ public:
     /**
      * Initializes an empty symbol table with an initial capacity of 4.
      */
-    AVLArrayTree() {
+    SBTArray() {
         KEY = new Key[INIT_CAPACITY];
         VAL = new Value[INIT_CAPACITY];
         HT = new int[INIT_CAPACITY];
@@ -373,7 +373,8 @@ public:
      *
      * @param N the initial capacity of the symbol table
      */
-    AVLArrayTree(int N) {
+    SBTArray(int N) {
+        N++; // zero node is never used
         KEY = new Key[N];
         VAL = new Value[N];
         HT = new int[N];
@@ -606,4 +607,4 @@ public:
     }
 };
 
-#endif /* DATASTRUCTURES_AVLTREE_H_ */
+#endif /* DATASTRUCTURES_AVLARRAYTREE_H_ */

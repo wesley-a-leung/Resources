@@ -1,12 +1,12 @@
 /*
- * AVLArrayDynamicSegmentTree.h
+ * SBTArrayDynamicSegmentTree.h
  *
- *  Created on: Jul 14, 2017
+ *  Created on: Jul 21, 2017
  *      Author: Wesley Leung
  */
 
-#ifndef DATASTRUCTURES_AVLARRAYDYNAMICSEGMENTTREE_H_
-#define DATASTRUCTURES_AVLARRAYDYNAMICSEGMENTTREE_H_
+#ifndef DATASTRUCTURES_MATH_SBTARRAYDYNAMICSEGMENTTREE_H_
+#define DATASTRUCTURES_MATH_SBTARRAYDYNAMICSEGMENTTREE_H_
 
 #include <bits/stdc++.h>
 
@@ -26,7 +26,6 @@ private:
     Key *HI; // upper bound of range
     Value *VAL; // values
     Value *MIN; // minimum value (for range minimum query)
-    int *HT; // height of subtree
     int *SZ; // size of subtree
     int *L; // index of left child
     int *R; // index of right child
@@ -45,7 +44,6 @@ private:
         Key *NEW_HI = new int[capacity * 2];
         Value *NEW_VAL = new int[capacity * 2];
         Value *NEW_MIN = new int[capacity * 2];
-        int *NEW_HT = new int[capacity * 2];
         int *NEW_SZ = new int[capacity * 2];
         int *NEW_L = new int[capacity * 2];
         int *NEW_R = new int[capacity * 2];
@@ -55,7 +53,6 @@ private:
             NEW_HI[i] = HI[i];
             NEW_VAL[i] = VAL[i];
             NEW_MIN[i] = MIN[i];
-            NEW_HT[i] = HT[i];
             NEW_SZ[i] = SZ[i];
             NEW_L[i] = L[i];
             NEW_R[i] = R[i];
@@ -65,7 +62,6 @@ private:
         swap(NEW_HI, HI);
         swap(NEW_VAL, VAL);
         swap(NEW_MIN, MIN);
-        swap(NEW_HT, HT);
         swap(NEW_SZ, SZ);
         swap(NEW_L, L);
         swap(NEW_R, R);
@@ -74,7 +70,6 @@ private:
         delete[](NEW_HI);
         delete[](NEW_VAL);
         delete[](NEW_MIN);
-        delete[](NEW_HT);
         delete[](NEW_SZ);
         delete[](NEW_L);
         delete[](NEW_R);
@@ -91,21 +86,6 @@ private:
         LO[x] = L[x] ? LO[L[x]] : KEY[x];
         HI[x] = R[x] ? HI[R[x]] : KEY[x];
         SZ[x] = 1 + SZ[L[x]] + SZ[R[x]];
-        HT[x] = 1 + max(HT[L[x]], HT[R[x]]);
-    }
-
-    /**
-     * Returns the balance factor of the subtree. The balance factor is defined
-     * as the difference in height of the left subtree and right subtree, in
-     * this order. Therefore, a subtree with a balance factor of -1, 0 or 1 has
-     * the AVL property since the heights of the two child subtrees differ by at
-     * most one.
-     *
-     * @param x the subtree
-     * @return the balance factor of the subtree
-     */
-    int balanceFactor(int x) {
-        return HT[L[x]] - HT[R[x]];
     }
 
     /**
@@ -139,21 +119,37 @@ private:
     }
 
     /**
-     * Restores the AVL tree property of the subtree.
+     * Balances the tree by size.
      *
      * @param x the subtree
-     * @return the subtree with restored AVL property
+     * @param flag whether the left subtree should be compared or the right subtree:
+     *        {@code true} if the tree is right heavy, {@code false} if the tree is left heavy.
+     * @return the balanced subtree
      */
-    int balance(int x) {
-        if (balanceFactor(x) < -1) {
-            if (balanceFactor(R[x]) > 0) R[x] = rotateRight(R[x]);
-            x = rotateLeft(x);
+    int maintain(int x, bool flag) {
+        if (flag) {
+            if (SZ[L[x]] < SZ[L[R[x]]]) {
+                R[x] = rotateRight(R[x]);
+                x = rotateLeft(x);
+            } else if (SZ[L[x]] < SZ[R[R[x]]]) {
+                x = rotateLeft(x);
+            } else {
+                return x;
+            }
+        } else {
+            if (SZ[R[x]] < SZ[R[L[x]]]) {
+                L[x] = rotateLeft(L[x]);
+                x = rotateRight(x);
+            } else if (SZ[R[x]] < SZ[L[L[x]]]) {
+                x = rotateRight(x);
+            } else {
+                return x;
+            }
         }
-        else if (balanceFactor(x) > 1) {
-            if (balanceFactor(L[x]) < 0) L[x] = rotateLeft(L[x]);
-            x = rotateRight(x);
-        }
-        update(x);
+        L[x] = maintain(L[x], false);
+        R[x] = maintain(R[x], true);
+        x = maintain(x, true);
+        x = maintain(x, false);
         return x;
     }
 
@@ -190,7 +186,6 @@ private:
             HI[ind] = key;
             VAL[ind] = val;
             MIN[ind] = val;
-            HT[ind] = 0;
             SZ[ind] = 1;
             L[ind] = 0;
             R[ind] = 0;
@@ -203,7 +198,8 @@ private:
             update(x);
             return x;
         }
-        return balance(x);
+        update(x);
+        return maintain(x, key > KEY[x]);
     }
 
     /**
@@ -215,7 +211,8 @@ private:
     int removeMin(int x) {
         if (L[x] == 0) return R[x];
         L[x] = removeMin(L[x]);
-        return balance(x);
+        update(x);
+        return x;
     }
 
     /**
@@ -226,8 +223,8 @@ private:
      */
     int removeMax(int x) {
         if (R[x] == 0) return L[x];
-        R[x] = removeMax(R[x]);
-        return balance(x);
+        update(x);
+        return x;
     }
 
     /**
@@ -273,7 +270,8 @@ private:
                 L[x] = L[y];
             }
         }
-        return balance(x);
+        update(x);
+        return x;
     }
 
     /**
@@ -397,12 +395,10 @@ public:
         HI = new Key[INIT_CAPACITY];
         VAL = new Value[INIT_CAPACITY];
         MIN = new Value[INIT_CAPACITY];
-        HT = new int[INIT_CAPACITY];
         SZ = new int[INIT_CAPACITY];
         L = new int[INIT_CAPACITY];
         R = new int[INIT_CAPACITY];
         root = 0;
-        HT[root] = -1;
         SZ[root] = 0;
         L[root] = 0;
         R[root] = 0;
@@ -416,17 +412,16 @@ public:
      * @param N the initial capacity of the symbol table
      */
     SBTArrayDynamicSegmentTree(int N) {
+        N++; // zero node is never used
         KEY = new Key[N];
         LO = new Key[N];
         HI = new Key[N];
         VAL = new Value[N];
         MIN = new Value[N];
-        HT = new int[N];
         SZ = new int[N];
         L = new int[N];
         R = new int[N];
         root = 0;
-        HT[root] = -1;
         SZ[root] = 0;
         L[root] = 0;
         R[root] = 0;
@@ -450,17 +445,6 @@ public:
      */
     int size() {
         return SZ[root];
-    }
-
-    /**
-     * Returns the height of the internal AVL tree. It is assumed that the
-     * height of an empty tree is -1 and the height of a tree with just one node
-     * is 0.
-     *
-     * @return the height of the internal AVL tree
-     */
-    int height() {
-        return HT[root];
     }
 
     /**
@@ -663,4 +647,4 @@ public:
     }
 };
 
-#endif /* DATASTRUCTURES_AVLARRAYDYNAMICSEGMENTTREE_H_ */
+#endif /* DATASTRUCTURES_MATH_SBTARRAYDYNAMICSEGMENTTREE_H_ */
