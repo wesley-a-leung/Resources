@@ -5,8 +5,8 @@
  *      Author: Wesley Leung
  */
 
-#ifndef DATASTRUCTURES_AVLTREE_H_
-#define DATASTRUCTURES_AVLTREE_H_
+#ifndef DATASTRUCTURES_AVLDYNAMICSEGMENTTREE_H_
+#define DATASTRUCTURES_AVLDYNAMICSEGMENTTREE_H_
 
 #include <bits/stdc++.h>
 
@@ -19,7 +19,7 @@ public:
 };
 
 template <typename Key, typename Value>
-struct AVLDynamicSegmentTree {
+struct SBTDynamicSegmentTree {
     /**
      * Represents an inner node of the AVL tree.
      */
@@ -371,7 +371,7 @@ public:
     /**
      * Initializes an empty symbol table.
      */
-    AVLDynamicSegmentTree() {}
+    SBTDynamicSegmentTree() {}
 
     /**
      * Checks if the symbol table is empty.
@@ -602,4 +602,4 @@ public:
     }
 };
 
-#endif /* DATASTRUCTURES_AVLTREE_H_ */
+#endif /* DATASTRUCTURES_AVLDYNAMICSEGMENTTREE_H_ */

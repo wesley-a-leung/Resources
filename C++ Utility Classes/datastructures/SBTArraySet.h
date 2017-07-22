@@ -1,12 +1,12 @@
 /*
- * AVLArraySet.h
+ * SBTArraySet.h
  *
- *  Created on: Jul 17, 2017
+ *  Created on: Jul 21, 2017
  *      Author: Wesley Leung
  */
 
-#ifndef DATASTRUCTURES_AVLARRAYSET_H_
-#define DATASTRUCTURES_AVLARRAYSET_H_
+#ifndef DATASTRUCTURES_SBTARRAYSET_H_
+#define DATASTRUCTURES_SBTARRAYSET_H_
 
 #include <bits/stdc++.h>
 
@@ -19,11 +19,10 @@ public:
 };
 
 template <typename Value>
-struct AVLArraySet {
+struct SBTArraySet {
 
 private:
     Value *VAL; // values
-    int *HT; // height of subtree
     int *SZ; // size of subtree
     int *L; // index of left child
     int *R; // index of right child
@@ -38,24 +37,20 @@ private:
      */
     void resize() {
         Value *NEW_VAL = new int[capacity * 2];
-        int *NEW_HT = new int[capacity * 2];
         int *NEW_SZ = new int[capacity * 2];
         int *NEW_L = new int[capacity * 2];
         int *NEW_R = new int[capacity * 2];
         for (int i = 0; i < capacity; i++) {
             NEW_VAL[i] = VAL[i];
-            NEW_HT[i] = HT[i];
             NEW_SZ[i] = SZ[i];
             NEW_L[i] = L[i];
             NEW_R[i] = R[i];
         }
         swap(NEW_VAL, VAL);
-        swap(NEW_HT, HT);
         swap(NEW_SZ, SZ);
         swap(NEW_L, L);
         swap(NEW_R, R);
         delete[](NEW_VAL);
-        delete[](NEW_HT);
         delete[](NEW_SZ);
         delete[](NEW_L);
         delete[](NEW_R);
@@ -69,21 +64,6 @@ private:
      */
     void update(int x) {
         SZ[x] = 1 + SZ[L[x]] + SZ[R[x]];
-        HT[x] = 1 + max(HT[L[x]], HT[R[x]]);
-    }
-
-    /**
-     * Returns the balance factor of the subtree. The balance factor is defined
-     * as the difference in height of the left subtree and right subtree, in
-     * this order. Therefore, a subtree with a balance factor of -1, 0 or 1 has
-     * the AVL property since the heights of the two child subtrees differ by at
-     * most one.
-     *
-     * @param x the subtree
-     * @return the balance factor of the subtree
-     */
-    int balanceFactor(int x) {
-        return HT[L[x]] - HT[R[x]];
     }
 
     /**
@@ -117,21 +97,37 @@ private:
     }
 
     /**
-     * Restores the AVL tree property of the subtree.
+     * Balances the tree by size.
      *
      * @param x the subtree
-     * @return the subtree with restored AVL property
+     * @param flag whether the left subtree should be compared or the right subtree:
+     *        {@code true} if the tree is right heavy, {@code false} if the tree is left heavy.
+     * @return the balanced subtree
      */
-    int balance(int x) {
-        if (balanceFactor(x) < -1) {
-            if (balanceFactor(R[x]) > 0) R[x] = rotateRight(R[x]);
-            x = rotateLeft(x);
+    int maintain(int x, bool flag) {
+        if (flag) {
+            if (SZ[L[x]] < SZ[L[R[x]]]) {
+                R[x] = rotateRight(R[x]);
+                x = rotateLeft(x);
+            } else if (SZ[L[x]] < SZ[R[R[x]]]) {
+                x = rotateLeft(x);
+            } else {
+                return x;
+            }
+        } else {
+            if (SZ[R[x]] < SZ[R[L[x]]]) {
+                L[x] = rotateLeft(L[x]);
+                x = rotateRight(x);
+            } else if (SZ[R[x]] < SZ[L[L[x]]]) {
+                x = rotateRight(x);
+            } else {
+                return x;
+            }
         }
-        else if (balanceFactor(x) > 1) {
-            if (balanceFactor(L[x]) < 0) L[x] = rotateLeft(L[x]);
-            x = rotateRight(x);
-        }
-        update(x);
+        L[x] = maintain(L[x], false);
+        R[x] = maintain(R[x], true);
+        x = maintain(x, true);
+        x = maintain(x, false);
         return x;
     }
 
@@ -155,7 +151,6 @@ private:
         if (x == 0) {
             if (ind >= capacity) resize();
             VAL[ind] = val;
-            HT[ind] = 0;
             SZ[ind] = 1;
             L[ind] = 0;
             R[ind] = 0;
@@ -163,7 +158,8 @@ private:
         }
         if (val < VAL[x]) L[x] = add(L[x], val);
         else R[x] = add(R[x], val);
-        return balance(x);
+        update(x);
+        return maintain(x, val >= VAL[x]);
     }
 
     /**
@@ -175,7 +171,8 @@ private:
     int removeMin(int x) {
         if (L[x] == 0) return R[x];
         L[x] = removeMin(L[x]);
-        return balance(x);
+        update(x);
+        return x;
     }
 
     /**
@@ -187,7 +184,8 @@ private:
     int removeMax(int x) {
         if (R[x] == 0) return L[x];
         R[x] = removeMax(R[x]);
-        return balance(x);
+        update(x);
+        return x;
     }
 
     /**
@@ -233,7 +231,8 @@ private:
                 L[x] = L[y];
             }
         }
-        return balance(x);
+        update(x);
+        return x;
     }
 
     /**
@@ -333,14 +332,12 @@ public:
     /**
      * Initializes an empty symbol table with an initial capacity of 4.
      */
-    AVLArraySet() {
+    SBTArraySet() {
         VAL = new Value[INIT_CAPACITY];
-        HT = new int[INIT_CAPACITY];
         SZ = new int[INIT_CAPACITY];
         L = new int[INIT_CAPACITY];
         R = new int[INIT_CAPACITY];
         root = 0;
-        HT[root] = -1;
         SZ[root] = 0;
         L[root] = 0;
         R[root] = 0;
@@ -353,15 +350,13 @@ public:
      *
      * @param N the initial capacity of the symbol table
      */
-    AVLArraySet(int N) {
+    SBTArraySet(int N) {
         N++; // zero node is never used
         VAL = new Value[N];
-        HT = new int[N];
         SZ = new int[N];
         L = new int[N];
         R = new int[N];
         root = 0;
-        HT[root] = -1;
         SZ[root] = 0;
         L[root] = 0;
         R[root] = 0;
@@ -385,17 +380,6 @@ public:
      */
     int size() {
         return SZ[root];
-    }
-
-    /**
-     * Returns the height of the internal AVL tree. It is assumed that the
-     * height of an empty tree is -1 and the height of a tree with just one node
-     * is 0.
-     *
-     * @return the height of the internal AVL tree
-     */
-    int height() {
-        return HT[root];
     }
 
     /**
@@ -565,4 +549,4 @@ public:
     }
 };
 
-#endif /* DATASTRUCTURES_AVLARRAYSET_H_ */
+#endif /* DATASTRUCTURES_SBTARRAYSET_H_ */
