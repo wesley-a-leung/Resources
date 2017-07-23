@@ -3,46 +3,7 @@ package algorithms.graph.mst;
 import datastructures.IndexMinPQ;
 import datastructures.Queue;
 import datastructures.graph.WeightedGraph;
-import datastructures.math.UF;
 import datastructures.graph.WeightedEdge;
-
-/******************************************************************************
- *  Compilation:  javac PrimMST.java
- *  Execution:    java PrimMST filename.txt
- *  Dependencies: EdgeWeightedGraph.java Edge.java Queue.java
- *                IndexMinPQ.java UF.java In.java StdOut.java
- *  Data files:   http://algs4.cs.princeton.edu/43mst/tinyEWG.txt
- *                http://algs4.cs.princeton.edu/43mst/mediumEWG.txt
- *                http://algs4.cs.princeton.edu/43mst/largeEWG.txt
- *
- *  Compute a minimum spanning forest using Prim's algorithm.
- *
- *  %  java PrimMST tinyEWG.txt 
- *  1-7 0.19000
- *  0-2 0.26000
- *  2-3 0.17000
- *  4-5 0.35000
- *  5-7 0.28000
- *  6-2 0.40000
- *  0-7 0.16000
- *  1.81000
- *
- *  % java PrimMST mediumEWG.txt
- *  1-72   0.06506
- *  2-86   0.05980
- *  3-67   0.09725
- *  4-55   0.06425
- *  5-102  0.03834
- *  6-129  0.05363
- *  7-157  0.00516
- *  ...
- *  10.46351
- *
- *  % java PrimMST largeEWG.txt
- *  ...
- *  647.66307
- *
- ******************************************************************************/
 
 /**
  *  The {@code PrimMST} class represents a data type for computing a
@@ -148,65 +109,5 @@ public class PrimMST {
         for (WeightedEdge e : edges())
             weight += e.weight();
         return weight;
-    }
-
-
-    // check optimality conditions (takes time proportional to E V lg* V)
-    private boolean check(WeightedGraph G) {
-
-        // check weight
-        double totalWeight = 0.0;
-        for (WeightedEdge e : edges()) {
-            totalWeight += e.weight();
-        }
-        if (Math.abs(totalWeight - weight()) > FLOATING_POINT_EPSILON) {
-            System.err.printf("Weight of edges does not equal weight(): %f vs. %f\n", totalWeight, weight());
-            return false;
-        }
-
-        // check that it is acyclic
-        UF uf = new UF(G.V());
-        for (WeightedEdge e : edges()) {
-            int v = e.either(), w = e.other(v);
-            if (uf.connected(v, w)) {
-                System.err.println("Not a forest");
-                return false;
-            }
-            uf.union(v, w);
-        }
-
-        // check that it is a spanning forest
-        for (WeightedEdge e : G.edges()) {
-            int v = e.either(), w = e.other(v);
-            if (!uf.connected(v, w)) {
-                System.err.println("Not a spanning forest");
-                return false;
-            }
-        }
-
-        // check that it is a minimal spanning forest (cut optimality conditions)
-        for (WeightedEdge e : edges()) {
-
-            // all edges in MST except e
-            uf = new UF(G.V());
-            for (WeightedEdge f : edges()) {
-                int x = f.either(), y = f.other(x);
-                if (f != e) uf.union(x, y);
-            }
-
-            // check that e is min weight edge in crossing cut
-            for (WeightedEdge f : G.edges()) {
-                int x = f.either(), y = f.other(x);
-                if (!uf.connected(x, y)) {
-                    if (f.weight() < e.weight()) {
-                        System.err.println("Edge " + f + " violates cut optimality conditions");
-                        return false;
-                    }
-                }
-            }
-
-        }
-
-        return true;
     }
 }
