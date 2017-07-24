@@ -70,7 +70,6 @@ package datastructures.math;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-
 public class UF {
 
     private int[] parent;  // parent[i] = parent of i
