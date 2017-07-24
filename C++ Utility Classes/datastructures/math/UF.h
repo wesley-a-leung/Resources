@@ -15,7 +15,7 @@ using namespace std;
 struct UF {
 private:
     int* parent;
-    int* rank;
+    char* rank; // equivalent to byte
     int count;
 
 public:
@@ -29,7 +29,7 @@ public:
     UF(int n) {
         count = n;
         parent = new int[n];
-        rank = new int[n];
+        rank = new char[n];
         for (int i = 0; i < n; i++) {
             parent[i] = i;
             rank[i] = 0;
@@ -77,7 +77,7 @@ public:
      * @return the rank by size of the component containing p
      */
     int getRank(int p) {
-        return rank[find(p)];
+        return (int) rank[find(p)];
     }
 
     /**

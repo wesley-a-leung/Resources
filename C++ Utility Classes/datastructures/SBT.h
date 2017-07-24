@@ -156,7 +156,7 @@ private:
      * @return the subtree
      */
     Node *put(Node *&x, Key key, Value val) {
-        if (x == nullptr) return new Node(key, val, 0, 1);
+        if (x == nullptr) return new Node(key, val, 1);
         if (key < x->key) x->left = put(x->left, key, val);
         else if (key > x->key) x->right = put(x->right, key, val);
         else {
