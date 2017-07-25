@@ -35,6 +35,7 @@ public:
             rank[i] = 0;
         }
     }
+
     /**
      * Returns the component identifier for the component containing site {@code p}.
      *
