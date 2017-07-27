@@ -41,7 +41,7 @@ private:
                 }
             }
         }
-        return level[t] < 0 ? false : true;
+        return level[t] != -1;
     }
 
     // v : current vertex
