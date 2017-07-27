@@ -11,6 +11,10 @@ package algorithms.string;
  * @author Wesley Leung
  */
 public class MinimumEditDistance {
+    // Penalty Value
+    private static final int REPLACE_PENALTY = 1;
+    private static final int INSERT_PENALTY = 1;
+    private static final int DELETE_PENALTY = 1;
     
     // This class should not be instantiated
     private MinimumEditDistance() {}
@@ -41,9 +45,9 @@ public class MinimumEditDistance {
                     //update dp value for +1 length
                     dp[i][j] = dp[i - 1][j - 1];
                 } else {
-                    int replace = dp[i - 1][j - 1] + 1;
-                    int insert = dp[i - 1][j] + 1;
-                    int delete = dp[i][j - 1] + 1;
+                    int replace = dp[i - 1][j - 1] + REPLACE_PENALTY;
+                    int insert = dp[i - 1][j] + INSERT_PENALTY;
+                    int delete = dp[i][j - 1] + DELETE_PENALTY;
                     dp[i][j] = Math.min(replace, Math.min(insert, delete));
                 }
             }
