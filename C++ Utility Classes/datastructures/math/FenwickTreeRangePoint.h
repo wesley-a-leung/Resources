@@ -1,30 +1,30 @@
 /*
- * FenwickTree.h
+ * FenwickTreeRangePoint.h
  *
- *  Created on: May 26, 2017
+ *  Created on: Jul 26, 2017
  *      Author: Wesley Leung
  */
 
-#ifndef DATASTRUCTURES_MATH_FENWICKTREE_H_
-#define DATASTRUCTURES_MATH_FENWICKTREE_H_
+#ifndef DATASTRUCTURES_MATH_FENWICKTREERANGEPOINT_H_
+#define DATASTRUCTURES_MATH_FENWICKTREERANGEPOINT_H_
 
-#include <bits/stdc++.h>;
+#include <bits/stdc++.h>
 
 using namespace std;
 
 /**
- * FenwickTree supporting point updates and range queries
+ * FenwickTree supporting range updates and point queries
  * Memory usage:  O(n)
  *
  * @author Wesley Leung
  */
-struct FenwickTree {
+struct FenwickTreeRangePoint {
 private:
     int size;
     int *array;
 
 public:
-    FenwickTree(int size) {
+    FenwickTreeRangePoint(int size) {
         this->size = size;
         array = new int[size + 1];
         for (int i = 0; i <= size; i++) {
@@ -50,21 +50,6 @@ public:
     }
 
     /**
-     * Range Sum Query from a to b.
-     * Search for the sum from array index from a to b
-     * a and b are 1-indexed
-     * <p>
-     * Time-Complexity:    O(log(n))
-     *
-     * @param  a left index
-     * @param  b right index
-     * @return sum
-     */
-    int rsq(int a, int b) {
-        return rsq(b) - rsq(a - 1);
-    }
-
-    /**
      * Update the array at ind and all the affected regions above ind.
      * ind is 1-indexed
      * <p>
@@ -79,9 +64,24 @@ public:
         }
     }
 
+    /**
+     * Update the array between a and b.
+     * ind is 1-indexed
+     * <p>
+     * Time-Complexity:    O(log(n))
+     *
+     * @param  a left index
+     * @param  b right index
+     * @param  value value
+     */
+    void update(int a, int b, int value) {
+        update(a, value);
+        update(b + 1, -value);
+    }
+
     int getSize() {
         return size;
     }
 };
 
-#endif /* DATASTRUCTURES_MATH_FENWICKTREE_H_ */
+#endif /* DATASTRUCTURES_MATH_FENWICKTREERANGEPOINT_H_ */
