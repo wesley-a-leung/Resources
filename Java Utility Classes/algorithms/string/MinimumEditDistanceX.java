@@ -28,9 +28,9 @@ public class MinimumEditDistanceX {
         for (int i = 0; i <= len1; i++) {
             for (int j = 0; j <= len2; j++) {
                 if (i == 0) {
-                    dp[i%2][j] = j;
+                    dp[i % 2][j] = j;
                 } else if (j == 0) {
-                    dp[i%2][j] = i;
+                    dp[i % 2][j] = i;
                 } else if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
                     dp[i % 2][j] = dp[1 - i % 2][j - 1];
                 } else {
