@@ -74,8 +74,6 @@ public:
     /**
      * Adds the edge {@code e} to the network.
      * @param e the edge
-     * @throws IndexOutOfBoundsException unless endpoints of edge are between
-     *         {@code 0} and {@code V-1}
      */
     void addEdge(FlowEdge *e) {
         int v = e->from();
@@ -90,7 +88,6 @@ public:
      * and from {@code v}).
      * @param v the vertex
      * @return the edges incident on vertex {@code v} as an Iterable
-     * @throws invalid_argument unless {@code 0 <= v < V}
      */
     vector<FlowEdge*> adj(int v) {
         return adjList[v];
