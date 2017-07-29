@@ -9,9 +9,59 @@
 #define DATASTRUCTURES_GRAPH_WEIGHTEDGRAPH_H_
 
 #include <bits/stdc++.h>
-#include <datastructures/graph/WeightedEdge.h>
 
 using namespace std;
+
+struct WeightedEdge {
+private:
+    int v, w;
+    double weight;
+
+public:
+    WeightedEdge(int v, int w, double weight) {
+        this->v = v;
+        this->w = w;
+        this->weight = weight;
+    }
+
+    double getWeight() {
+        return weight;
+    }
+
+    int either() {
+        return v;
+    }
+
+    int other(int vertex) {
+        if (vertex == v) return w;
+        else if (vertex == w) return v;
+        else throw new invalid_argument("Illegal endpoint");
+    }
+
+    bool operator == (const WeightedEdge &e) const {
+        return (((v == e.v && w == e.w) || (v == e.w && w == e.v)) && weight == e.weight);
+    }
+
+    bool operator != (const WeightedEdge &e) const {
+        return !(((v == e.v && w == e.w) || (v == e.w && w == e.v)) && weight == e.weight);
+    }
+
+    bool operator < (const WeightedEdge &e) const {
+        return (weight < e.weight);
+    }
+
+    bool operator <= (const WeightedEdge &e) const {
+        return (weight <= e.weight);
+    }
+
+    bool operator > (const WeightedEdge &e) const {
+        return (weight > e.weight);
+    }
+
+    bool operator >= (const WeightedEdge &e) const {
+        return (weight >= e.weight);
+    }
+};
 
 struct WeightedGraph {
 private:
