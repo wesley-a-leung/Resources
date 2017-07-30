@@ -15,7 +15,6 @@ using namespace std;
 
 class EdmondsKarpMaxFlow {
 private:
-    int V;          // number of vertices
     bool *marked;     // marked[v] = true if s->v path in residual graph
     FlowEdge **edgeTo;    // edgeTo[v] = last edge on shortest residual s->v path
     double value;         // current value of max flow
@@ -77,7 +76,6 @@ public:
      * @throws invalid_argument if {@code s == t}
      */
     EdmondsKarpMaxFlow(FlowNetwork *G, int s, int t) {
-        V = G->getV();
         if (s == t)               throw invalid_argument("Source equals sink");
         edgeTo = new FlowEdge*[G->getV()];
         marked = new bool[G->getV()];

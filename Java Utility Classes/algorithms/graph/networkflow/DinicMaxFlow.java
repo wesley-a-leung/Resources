@@ -10,7 +10,7 @@ import datastructures.graph.networkflow.FlowNetwork;
  * This implementation uses the concepts of level graph and flow blocking.
  * The constructor takes time proportional to <em>V</em><sup>2</sup><em>E</em>
  * in the worst case and extra space (not including the network)
- * proportional to <em>V</em>, where <em>V</em> is the number of vertices
+ * proportional to <em>V</em><sup>2</sup><em>E</em>, where <em>V</em> is the number of vertices
  * and <em>E</em> is the number of edges.
  * Afterwards, the {@code inCut()} and {@code value()} methods take
  * constant time.

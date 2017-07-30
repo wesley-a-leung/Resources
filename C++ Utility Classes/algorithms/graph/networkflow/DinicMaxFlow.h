@@ -15,7 +15,6 @@ using namespace std;
 
 class DinicMaxFlow {
 private:
-    int V;
     double value;
     int* level;
     int* start;
@@ -23,7 +22,7 @@ private:
     // is there an augmenting path?
     // this implementation finds a shortest augmenting path (fewest number of edges)
     bool hasAugmentingPath(FlowNetwork *G, int s, int t) {
-        for (int v = 0; v < V; v++) {
+        for (int v = 0; v < G->getV(); v++) {
             level[v] = -1;
         }
         level[s] = 0;
@@ -75,13 +74,12 @@ public:
      * @throws invalid_argument if {@code s == t}
      */
     DinicMaxFlow(FlowNetwork *G, int s, int t) {
-        V = G->getV();
         if (s == t) throw invalid_argument("Source equals sink");
-        level = new int[V];
-        start = new int[V];
+        level = new int[G->getV()];
+        start = new int[G->getV()];
         value = 0.0;
         while (hasAugmentingPath(G, s, t)) {
-            for (int v = 0; v < V; v++) {
+            for (int v = 0; v < G->getV(); v++) {
                 start[v] = 0;
             }
             double flow;
