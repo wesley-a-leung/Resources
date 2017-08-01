@@ -1,10 +1,20 @@
-package algorithms.graph.components;
+/*
+ * TarjanSCC.h
+ *
+ *  Created on: Aug 1, 2017
+ *      Author: Wesley Leung
+ */
 
-import datastructures.Stack;
-import datastructures.graph.Digraph;
+#ifndef ALGORITHMS_GRAPH_COMPONENTS_TARJANSCC_H_
+#define ALGORITHMS_GRAPH_COMPONENTS_TARJANSCC_H_
+
+#include <bits/stdc++.h>
+#include <datastructures/graph/Digraph.h>
+
+using namespace std;
 
 /**
- *  The {@code TarjanSCC} class represents a data type for 
+ *  The {@code TarjanSCC} class represents a data type for
  *  determining the strong components in a digraph.
  *  The <em>id</em> operation determines in which strong component
  *  a given vertex lies; the <em>areStronglyConnected</em> operation
@@ -33,36 +43,21 @@ import datastructures.graph.Digraph;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class TarjanSCC {
+class TarjanSCC {
+private:
+    bool *marked;            // marked[v] = has v been visited?
+    int *id;                 // id[v] = id of strong component containing v
+    int *low;                // low[v] = low number of v
+    int pre;                 // preorder number counter
+    int count;               // number of strongly-connected components
+    stack<int> s;
 
-    private boolean[] marked;        // marked[v] = has v been visited?
-    private int[] id;                // id[v] = id of strong component containing v
-    private int[] low;               // low[v] = low number of v
-    private int pre;                 // preorder number counter
-    private int count;               // number of strongly-connected components
-    private Stack<Integer> stack;
-
-
-    /**
-     * Computes the strong components of the digraph {@code G}.
-     * @param G the digraph
-     */
-    public TarjanSCC(Digraph G) {
-        marked = new boolean[G.V()];
-        stack = new Stack<Integer>();
-        id = new int[G.V()]; 
-        low = new int[G.V()];
-        for (int v = 0; v < G.V(); v++) {
-            if (!marked[v]) dfs(G, v);
-        }
-    }
-
-    private void dfs(Digraph G, int v) { 
+    void dfs(Digraph *G, int v) {
         marked[v] = true;
         low[v] = pre++;
         int min = low[v];
-        stack.push(v);
-        for (int w : G.adj(v)) {
+        s.push(v);
+        for (int w : G->adj(v)) {
             if (!marked[w]) dfs(G, w);
             if (low[w] < min) min = low[w];
         }
@@ -72,19 +67,37 @@ public class TarjanSCC {
         }
         int w;
         do {
-            w = stack.pop();
+            w = s.pop();
             id[w] = count;
-            low[w] = G.V();
+            low[w] = G->getV();
         } while (w != v);
         count++;
     }
 
+public:
+    /**
+     * Computes the strong components of the digraph {@code G}.
+     * @param G the digraph
+     */
+    TarjanSCC(Digraph *G) {
+        marked = new bool[G->getV()];
+        id = new int[G->getV()];
+        low = new int[G->getV()];
+        for (int v = 0; v < G->getV(); v++) {
+            marked[v] = false;
+        }
+        pre = 0;
+        count = 0;
+        for (int v = 0; v < G->getV(); v++) {
+            if (!marked[v]) dfs(G, v);
+        }
+    }
 
     /**
      * Returns the number of strong components.
      * @return the number of strong components
      */
-    public int count() {
+    int getCount() {
         return count;
     }
 
@@ -98,9 +111,7 @@ public class TarjanSCC {
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      * @throws IllegalArgumentException unless {@code 0 <= w < V}
      */
-    public boolean stronglyConnected(int v, int w) {
-        validateVertex(v);
-        validateVertex(w);
+    bool stronglyConnected(int v, int w) {
         return id[v] == id[w];
     }
 
@@ -110,15 +121,9 @@ public class TarjanSCC {
      * @return the component id of the strong component containing vertex {@code v}
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
-    public int id(int v) {
-        validateVertex(v);
+    int getId(int v) {
         return id[v];
     }
+};
 
-    // throw an IllegalArgumentException unless {@code 0 <= v < V}
-    private void validateVertex(int v) {
-        int V = marked.length;
-        if (v < 0 || v >= V)
-            throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
-    }
-}
+#endif /* ALGORITHMS_GRAPH_COMPONENTS_TARJANSCC_H_ */
