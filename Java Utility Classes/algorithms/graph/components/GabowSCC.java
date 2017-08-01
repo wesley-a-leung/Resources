@@ -60,9 +60,6 @@ public class GabowSCC {
         for (int v = 0; v < G.V(); v++) {
             if (!marked[v]) dfs(G, v);
         }
-
-        // check that id[] gives strong components
-        assert check(G);
     }
 
     private void dfs(Digraph G, int v) { 
@@ -122,18 +119,6 @@ public class GabowSCC {
     public int id(int v) {
         validateVertex(v);
         return id[v];
-    }
-
-    // does the id[] array contain the strongly connected components?
-    private boolean check(Digraph G) {
-        TransitiveClosure tc = new TransitiveClosure(G);
-        for (int v = 0; v < G.V(); v++) {
-            for (int w = 0; w < G.V(); w++) {
-                if (stronglyConnected(v, w) != (tc.reachable(v, w) && tc.reachable(w, v)))
-                    return false;
-            }
-        }
-        return true;
     }
 
     // throw an IllegalArgumentException unless {@code 0 <= v < V}

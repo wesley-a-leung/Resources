@@ -1,5 +1,7 @@
 package algorithms.graph.components;
 
+import java.util.HashSet;
+
 import datastructures.graph.Graph;
 
 /******************************************************************************
@@ -25,16 +27,17 @@ public class Bridge {
     private int cnt;          // counter
     private int[] pre;        // pre[v] = order in which dfs examines v
     private int[] low;        // low[v] = lowest preorder of any vertex connected to v
-    private boolean[][] bm;          // bridge matrix
+    private HashSet<Integer>[] bridgeList;  // adjacency bridge list
 
     public Bridge(Graph G) {
-        bm = new boolean[G.V()][G.V()];
+        bridgeList = new HashSet[G.V()];
         low = new int[G.V()];
         pre = new int[G.V()];
-        for (int v = 0; v < G.V(); v++)
+        for (int v = 0; v < G.V(); v++) {
             low[v] = -1;
-        for (int v = 0; v < G.V(); v++)
             pre[v] = -1;
+            bridgeList[v] = new HashSet<Integer>();
+        }
         
         for (int v = 0; v < G.V(); v++)
             if (pre[v] == -1)
@@ -51,7 +54,7 @@ public class Bridge {
                 dfs(G, v, w);
                 low[v] = Math.min(low[v], low[w]);
                 if (low[w] == pre[w]) {
-                    bm[v][w] = true;
+                    bridgeList[v].add(w);
                     bridges++;
                 }
             }
@@ -63,6 +66,6 @@ public class Bridge {
     }
     
     public boolean isBridge(int v, int w) {
-        return bm[v][w];
+        return bridgeList[v].contains(w);
     }
 }
