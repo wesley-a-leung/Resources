@@ -1,11 +1,21 @@
-package algorithms.graph.components;
+/*
+ * ConnectedComponents.h
+ *
+ *  Created on: Aug 1, 2017
+ *      Author: Wesley Leung
+ */
 
-import datastructures.graph.WeightedGraph;
-import datastructures.graph.Graph;
-import datastructures.graph.WeightedEdge;
+#ifndef ALGORITHMS_GRAPH_COMPONENTS_CONNECTEDCOMPONENTS_H_
+#define ALGORITHMS_GRAPH_COMPONENTS_CONNECTEDCOMPONENTS_H_
+
+#include <bits/stdc++.h>
+#include <datastructures/graph/Graph.h>
+#include <datastructures/graph/WeightedGraph.h>
+
+using namespace std;
 
 /**
- *  The {@code ConnectedComponents} class represents a data type for 
+ *  The {@code ConnectedComponents} class represents a data type for
  *  determining the connected components in an undirected graph.
  *  The <em>id</em> operation determines in which connected component
  *  a given vertex lies; the <em>connected</em> operation
@@ -26,28 +36,60 @@ import datastructures.graph.WeightedEdge;
  *  Afterwards, the <em>id</em>, <em>count</em>, <em>connected</em>,
  *  and <em>size</em> operations take constant time.
  *  <p>
- *  For additional documentation, see <a href="http://algs4.cs.princeton.edu/41graph">Section 4.1</a>   
+ *  For additional documentation, see <a href="http://algs4.cs.princeton.edu/41graph">Section 4.1</a>
  *  of <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
  *
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class ConnectedComponents {
-    private boolean[] marked;   // marked[v] = has vertex v been marked?
-    private int[] id;           // id[v] = id of connected component containing v
-    private int[] size;         // size[id] = number of vertices in given component
-    private int count;          // number of connected components
+class ConnectedComponents {
+private:
+    bool *marked;      // marked[v] = has vertex v been marked?
+    int *id;           // id[v] = id of connected component containing v
+    int *size;         // size[id] = number of vertices in given component
+    int count;         // number of connected components
 
+    // depth-first search for a Graph
+    void dfs(Graph *G, int v) {
+        marked[v] = true;
+        id[v] = count;
+        size[count]++;
+        for (int w : G->adj(v)) {
+            if (!marked[w]) {
+                dfs(G, w);
+            }
+        }
+    }
+
+    // depth-first search for an EdgeWeightedGraph
+    void dfs(WeightedGraph *G, int v) {
+        marked[v] = true;
+        id[v] = count;
+        size[count]++;
+        for (WeightedEdge *e : G->adj(v)) {
+            int w = e->other(v);
+            if (!marked[w]) {
+                dfs(G, w);
+            }
+        }
+    }
+
+public:
     /**
      * Computes the connected components of the undirected graph {@code G}.
      *
      * @param G the undirected graph
      */
-    public ConnectedComponents(Graph G) {
-        marked = new boolean[G.V()];
-        id = new int[G.V()];
-        size = new int[G.V()];
-        for (int v = 0; v < G.V(); v++) {
+    ConnectedComponents(Graph *G) {
+        marked = new bool[G->getV()];
+        id = new int[G->getV()];
+        size = new int[G->getV()];
+        for (int v = 0; v < G->getV(); v++) {
+            marked[v] = false;
+            size[v] = 0;
+        }
+        count = 0;
+        for (int v = 0; v < G->getV(); v++) {
             if (!marked[v]) {
                 dfs(G, v);
                 count++;
@@ -60,43 +102,22 @@ public class ConnectedComponents {
      *
      * @param G the edge-weighted graph
      */
-    public ConnectedComponents(WeightedGraph G) {
-        marked = new boolean[G.V()];
-        id = new int[G.V()];
-        size = new int[G.V()];
-        for (int v = 0; v < G.V(); v++) {
+    ConnectedComponents(WeightedGraph *G) {
+        marked = new bool[G->getV()];
+        id = new int[G->getV()];
+        size = new int[G->getV()];
+        for (int v = 0; v < G->getV(); v++) {
+            marked[v] = false;
+            size[v] = 0;
+        }
+        count = 0;
+        for (int v = 0; v < G->getV(); v++) {
             if (!marked[v]) {
                 dfs(G, v);
                 count++;
             }
         }
     }
-
-    // depth-first search for a Graph
-    private void dfs(Graph G, int v) {
-        marked[v] = true;
-        id[v] = count;
-        size[count]++;
-        for (int w : G.adj(v)) {
-            if (!marked[w]) {
-                dfs(G, w);
-            }
-        }
-    }
-
-    // depth-first search for an EdgeWeightedGraph
-    private void dfs(WeightedGraph G, int v) {
-        marked[v] = true;
-        id[v] = count;
-        size[count]++;
-        for (WeightedEdge e : G.adj(v)) {
-            int w = e.other(v);
-            if (!marked[w]) {
-                dfs(G, w);
-            }
-        }
-    }
-
 
     /**
      * Returns the component id of the connected component containing vertex {@code v}.
@@ -105,8 +126,7 @@ public class ConnectedComponents {
      * @return the component id of the connected component containing vertex {@code v}
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
-    public int id(int v) {
-        validateVertex(v);
+    int getId(int v) {
         return id[v];
     }
 
@@ -117,11 +137,10 @@ public class ConnectedComponents {
      * @return the number of vertices in the connected component containing vertex {@code v}
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
-    public int size(int v) {
-        validateVertex(v);
+    int getSize(int v) {
         return size[id[v]];
     }
-    
+
     /**
      * Returns the number of vertices in the connected component of id {@code id}.
      *
@@ -129,7 +148,7 @@ public class ConnectedComponents {
      * @return the number of vertices in the connected component of id {@code id}
      * @throws IllegalArgumentException unless {@code 0 <= id < size.length}
      */
-    public int sizeOfId(int id) {
+    int getSizeOfId(int id) {
         return size[id];
     }
 
@@ -138,7 +157,7 @@ public class ConnectedComponents {
      *
      * @return the number of connected components in the graph {@code G}
      */
-    public int count() {
+    int getCount() {
         return count;
     }
 
@@ -153,16 +172,9 @@ public class ConnectedComponents {
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      * @throws IllegalArgumentException unless {@code 0 <= w < V}
      */
-    public boolean connected(int v, int w) {
-        validateVertex(v);
-        validateVertex(w);
-        return id(v) == id(w);
+    bool connected(int v, int w) {
+        return getId(v) == getId(w);
     }
+};
 
-    // throw an IllegalArgumentException unless {@code 0 <= v < V}
-    private void validateVertex(int v) {
-        int V = marked.length;
-        if (v < 0 || v >= V)
-            throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
-    }
-}
+#endif /* ALGORITHMS_GRAPH_COMPONENTS_CONNECTEDCOMPONENTS_H_ */

@@ -46,8 +46,6 @@ public class DepthFirstOrder {
         marked    = new boolean[G.V()];
         for (int v = 0; v < G.V(); v++)
             if (!marked[v]) dfs(G, v);
-
-        assert check();
     }
 
     /**
@@ -140,31 +138,6 @@ public class DepthFirstOrder {
         for (int v : postorder)
             reverse.push(v);
         return reverse;
-    }
-
-
-    // check that pre() and post() are consistent with pre(v) and post(v)
-    private boolean check() {
-
-        // check that post(v) is consistent with post()
-        int r = 0;
-        for (int v : post()) {
-            if (post(v) != r) {
-                return false;
-            }
-            r++;
-        }
-
-        // check that pre(v) is consistent with pre()
-        r = 0;
-        for (int v : pre()) {
-            if (pre(v) != r) {
-                return false;
-            }
-            r++;
-        }
-
-        return true;
     }
 
     // throw an IllegalArgumentException unless {@code 0 <= v < V}
