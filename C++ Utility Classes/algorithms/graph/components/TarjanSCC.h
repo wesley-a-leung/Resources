@@ -67,7 +67,8 @@ private:
         }
         int w;
         do {
-            w = s.pop();
+            w = s.top();
+            s.pop();
             id[w] = count;
             low[w] = G->getV();
         } while (w != v);
