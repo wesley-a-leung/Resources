@@ -45,6 +45,8 @@ public class Bridge {
     }
 
     public int components() { return bridges + 1; }
+    
+    public int countBridges() { return bridges; }
 
     private void dfs(Graph G, int u, int v) {
         pre[v] = cnt++;
