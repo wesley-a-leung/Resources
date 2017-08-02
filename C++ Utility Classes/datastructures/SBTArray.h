@@ -556,7 +556,7 @@ public:
      *
      * @return all key-value pairs in the symbol table following an in-order traversal
      */
-    vector<pair<Key, Value>> keyValuePairs() {
+    vector<pair<Key, Value>> &keyValuePairs() {
         vector<pair<Key, Value>> queue;
         keyValuePairsInOrder(root, queue);
         return queue;
@@ -570,7 +570,7 @@ public:
      * @return all key-value pairs in the symbol table between {@code lo} (inclusive)
      *         and {@code hi} (exclusive)
      */
-    vector<pair<Key, Value>> keyValuePairs(Key lo, Key hi) {
+    vector<pair<Key, Value>> &keyValuePairs(Key lo, Key hi) {
         vector<pair<Key, Value>> queue;
         keyValuePairs(root, queue, lo, hi);
         return queue;

@@ -241,7 +241,7 @@ public:
      *
      * @return an iterator that iterates over the values in order
      */
-    vector<Value> values() {
+    vector<Value> &values() {
         vector<Value> order;
         traverse(root, order);
         return order;

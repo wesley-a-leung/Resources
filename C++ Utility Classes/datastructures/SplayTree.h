@@ -275,7 +275,7 @@ public:
      *
      * @return an iterator that iterates over the key-value pairs in order
      */
-    vector<pair<Key, Value>> keyValuePairs() {
+    vector<pair<Key, Value>> &keyValuePairs() {
         vector<pair<Key, Value>> order;
         traverse(root, order);
         return order;
