@@ -9,7 +9,6 @@
 #define ALGORITHMS_GRAPH_SHORTESTPATH_DIJKSTRADIRECTEDSP_H_
 
 #include <bits/stdc++.h>
-#include <datastructures/graph/DirectedWeightedEdge.h>
 #include <datastructures/graph/WeightedDigraph.h>
 
 using namespace std;
