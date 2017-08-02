@@ -92,7 +92,7 @@ public:
         E++;
     }
 
-    vector<DirectedWeightedEdge*> adj(int v) {
+    vector<DirectedWeightedEdge*> &adj(int v) {
         return adjList[v];
     }
 
@@ -104,7 +104,7 @@ public:
         return indegreeArr[v];
     }
 
-    vector<DirectedWeightedEdge*> edges() {
+    vector<DirectedWeightedEdge*> &edges() {
         vector<DirectedWeightedEdge*> list;
         for (int v = 0; v < V; v++) {
             for (DirectedWeightedEdge *e : adj(v)) {

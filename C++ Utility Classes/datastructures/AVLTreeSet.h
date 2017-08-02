@@ -491,7 +491,7 @@ public:
      *
      * @return all values in the set following an in-order traversal
      */
-    vector<Value> values() {
+    vector<Value> &values() {
         vector<Value> queue;
         valuesInOrder(root, queue);
         return queue;
@@ -505,7 +505,7 @@ public:
      * @return all value in the set between {@code lo} (inclusive)
      *         and {@code hi} (exclusive)
      */
-    vector<Value> values(Value lo, Value hi) {
+    vector<Value> &values(Value lo, Value hi) {
         vector<Value> queue;
         values(root, queue, lo, hi);
         return queue;
