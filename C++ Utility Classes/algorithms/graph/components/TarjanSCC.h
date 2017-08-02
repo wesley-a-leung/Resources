@@ -47,6 +47,7 @@ class TarjanSCC {
 private:
     bool *marked;            // marked[v] = has v been visited?
     int *id;                 // id[v] = id of strong component containing v
+    int *size;
     int *low;                // low[v] = low number of v
     int pre;                 // preorder number counter
     int count;               // number of strongly-connected components
@@ -70,6 +71,7 @@ private:
             w = s.top();
             s.pop();
             id[w] = count;
+            size[count]++;
             low[w] = G->getV();
         } while (w != v);
         count++;
@@ -83,9 +85,11 @@ public:
     TarjanSCC(Digraph *G) {
         marked = new bool[G->getV()];
         id = new int[G->getV()];
+        size = new int[G->getV()];
         low = new int[G->getV()];
         for (int v = 0; v < G->getV(); v++) {
             marked[v] = false;
+            size[v] = 0;
         }
         pre = 0;
         count = 0;
@@ -109,8 +113,6 @@ public:
      * @param  w the other vertex
      * @return {@code true} if vertices {@code v} and {@code w} are in the same
      *         strong component, and {@code false} otherwise
-     * @throws IllegalArgumentException unless {@code 0 <= v < V}
-     * @throws IllegalArgumentException unless {@code 0 <= w < V}
      */
     bool stronglyConnected(int v, int w) {
         return id[v] == id[w];
@@ -120,10 +122,27 @@ public:
      * Returns the component id of the strong component containing vertex {@code v}.
      * @param  v the vertex
      * @return the component id of the strong component containing vertex {@code v}
-     * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
     int getId(int v) {
         return id[v];
+    }
+
+    /**
+     * Returns the size of the strong component containing vertex {@code v}.
+     * @param  v the vertex
+     * @return the size of the strong component containing vertex {@code v}
+     */
+    int getSize(int v) {
+        return size[id[v]];
+    }
+
+    /**
+     * Returns the size of the specified id.
+     * @param  x the id number
+     * @return the size of the specified id
+          */
+    int getIdSize(int x) {
+        return size[x];
     }
 };
 

@@ -143,7 +143,7 @@ public:
      * @return a cycle if the graph {@code G} has a cycle,
      *         and {@code null} otherwise
      */
-    vector<int> getCycle() {
+    vector<int> &getCycle() {
         return cycle;
     }
 };
