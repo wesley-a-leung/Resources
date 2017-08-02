@@ -47,7 +47,7 @@ class TarjanSCC {
 private:
     bool *marked;            // marked[v] = has v been visited?
     int *id;                 // id[v] = id of strong component containing v
-    int *size;
+    int *size;               // size[x] = size of component x
     int *low;                // low[v] = low number of v
     int pre;                 // preorder number counter
     int count;               // number of strongly-connected components
@@ -140,7 +140,7 @@ public:
      * Returns the size of the specified id.
      * @param  x the id number
      * @return the size of the specified id
-          */
+     */
     int getIdSize(int x) {
         return size[x];
     }
