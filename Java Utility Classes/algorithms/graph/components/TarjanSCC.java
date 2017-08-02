@@ -37,6 +37,7 @@ public class TarjanSCC {
 
     private boolean[] marked;        // marked[v] = has v been visited?
     private int[] id;                // id[v] = id of strong component containing v
+    private int[] size;              // size[x] = size of component x
     private int[] low;               // low[v] = low number of v
     private int pre;                 // preorder number counter
     private int count;               // number of strongly-connected components
@@ -50,7 +51,8 @@ public class TarjanSCC {
     public TarjanSCC(Digraph G) {
         marked = new boolean[G.V()];
         stack = new Stack<Integer>();
-        id = new int[G.V()]; 
+        id = new int[G.V()];
+        size = new int[G.V()];
         low = new int[G.V()];
         for (int v = 0; v < G.V(); v++) {
             if (!marked[v]) dfs(G, v);
@@ -74,6 +76,7 @@ public class TarjanSCC {
         do {
             w = stack.pop();
             id[w] = count;
+            size[count]++;
             low[w] = G.V();
         } while (w != v);
         count++;
@@ -113,6 +116,24 @@ public class TarjanSCC {
     public int id(int v) {
         validateVertex(v);
         return id[v];
+    }
+    
+    /**
+     * Returns the size of the strong component containing vertex {@code v}.
+     * @param  v the vertex
+     * @return the size of the strong component containing vertex {@code v}
+     */
+    public int size(int v) {
+        return size[id[v]];
+    }
+
+    /**
+     * Returns the size of the specified id.
+     * @param  x the id number
+     * @return the size of the specified id
+     */
+    public int idSize(int x) {
+        return size[x];
     }
 
     // throw an IllegalArgumentException unless {@code 0 <= v < V}
