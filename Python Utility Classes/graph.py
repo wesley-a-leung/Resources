@@ -25,11 +25,12 @@ class Graph:
 
 
 class DictGraph:
-    def __init__(self, V):
-        self.__V = V
+    def __init__(self):
+        self.__V = 0
         self.__E = 0
         self.__adjList = {}
         self.__indegreeArr = {}
+        self.__verticies = set()
 
     def V(self):
         return self.__V
@@ -40,6 +41,9 @@ class DictGraph:
     def addEdge(self, v, w):
         self.__adjList[v] = self.__adjList.get(v, []) + [w]
         self.__adjList[w] = self.__adjList.get(w, []) + [v]
+        self.__verticies.add(v)
+        self.__verticies.add(w)
+        self.__V = len(self.__verticies)
         self.__E += 1
 
     def adj(self, v):
@@ -58,10 +62,10 @@ class Digraph:
             self.__adjList.append([])
         self.__indegreeArr = [0] * V
 
-    def getV(self):
+    def V(self):
         return self.__V
 
-    def getE(self):
+    def E(self):
         return self.__E
 
     def addEdge(self, v, w):
@@ -80,25 +84,32 @@ class Digraph:
 
 
 class DictDigraph:
-    def __init__(self, V):
-        self.__V = V
+    def __init__(self):
+        self.__V = 0
         self.__E = 0
         self.__adjList = {}
         self.__indegreeArr = {}
+        self.__verticies = set()
 
-    def getV(self):
+    def V(self):
         return self.__V
 
-    def getE(self):
+    def E(self):
         return self.__E
 
     def addEdge(self, v, w):
         self.__adjList[v] = self.__adjList.get(v, []) + [w]
         self.__indegreeArr[w] = self.__indegreeArr.get(w, 0) + 1
+        self.__verticies.add(v)
+        self.__verticies.add(w)
+        self.__V = len(self.__verticies)
         self.__E += 1
 
     def adj(self, v):
         return self.__adjList.get(v, [])
+
+    def verticies(self):
+        return self.__verticies
 
     def outdegree(self, v):
         return len(self.__adjList.get(v, []))
@@ -230,10 +241,10 @@ class WeightedDigraph:
             self.__adjList.append([])
         self.__indegreeArr = [0] * V
 
-    def getV(self):
+    def V(self):
         return self.__V
 
-    def getE(self):
+    def E(self):
         return self.__E
 
     def addEdge(self, e):
