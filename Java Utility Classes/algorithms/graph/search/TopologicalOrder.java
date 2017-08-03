@@ -5,34 +5,6 @@ import datastructures.graph.WeightedDigraph;
 import algorithms.graph.cycle.DirectedCycle;
 import algorithms.graph.cycle.DirectedWeightedCycle;
 
-/******************************************************************************
- *  Compilation:  javac Topoological.java
- *  Execution:    java  Topological filename.txt delimiter
- *  Dependencies: Digraph.java DepthFirstOrder.java DirectedCycle.java
- *                EdgeWeightedDigraph.java EdgeWeightedDirectedCycle.java
- *                SymbolDigraph.java
- *  Data files:   http://algs4.cs.princeton.edu/42digraph/jobs.txt
- *
- *  Compute topological ordering of a DAG or edge-weighted DAG.
- *  Runs in O(E + V) time.
- *
- *  % java Topological jobs.txt "/"
- *  Calculus
- *  Linear Algebra
- *  Introduction to CS
- *  Advanced Programming
- *  Algorithms
- *  Theoretical CS
- *  Artificial Intelligence
- *  Robotics
- *  Machine Learning
- *  Neural Networks
- *  Databases
- *  Scientific Computing
- *  Computational Biology
- *
- ******************************************************************************/
-
 /**
  *  The {@code Topological} class represents a data type for 
  *  determining a topological order of a directed acyclic graph (DAG).
