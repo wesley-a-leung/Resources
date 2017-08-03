@@ -1,6 +1,5 @@
-package algorithms.graph.components;
+package algorithms.graph.networkflow;
 
-import algorithms.graph.networkflow.EdmondsKarpMaxFlow;
 import datastructures.IndexMaxPQ;
 import datastructures.graph.WeightedGraph;
 import datastructures.graph.WeightedEdge;
