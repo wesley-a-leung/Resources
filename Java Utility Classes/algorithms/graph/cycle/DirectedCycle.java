@@ -2,7 +2,6 @@ package algorithms.graph.cycle;
 
 import datastructures.Stack;
 import datastructures.graph.Digraph;
-import algorithms.graph.search.TopologicalOrder;
 
 /**
  *  The {@code DirectedCycle} class represents a data type for 
