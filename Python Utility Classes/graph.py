@@ -80,7 +80,7 @@ class Digraph:
         return len(self.__adjList[v])
 
     def indegree(self, v):
-        return self.__indegree[v]
+        return self.__indegreeArr[v]
 
 
 class DictDigraph:
@@ -261,7 +261,7 @@ class WeightedDigraph:
         return len(self.__adjList[v])
 
     def indegree(self, v):
-        return self.__indegree[v]
+        return self.__indegreeArr[v]
 
     def edges(self):
         allEdges = []
