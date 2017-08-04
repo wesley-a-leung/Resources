@@ -1,9 +1,9 @@
-package algorithms.graph.networkflow;
+package algorithms.graph.matching;
 
 import datastructures.graph.Graph;
 import datastructures.graph.networkflow.FlowEdge;
 import datastructures.graph.networkflow.FlowNetwork;
-import algorithms.graph.cycle.BipartiteX;
+import algorithms.graph.networkflow.EdmondsKarpMaxFlow;
 
 /**
  *  The {@code BipartiteMatchingToMaxflow} class represents a data type for

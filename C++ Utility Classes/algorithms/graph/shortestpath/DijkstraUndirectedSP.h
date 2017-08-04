@@ -17,6 +17,7 @@ double *distTo;
 WeightedEdge **edgeTo;
 priority_queue<pair<double, int>, vector<pair<double, int>> , greater<pair<double, int>>> pq;
 
+// takes time proportional to E log E and space proportional to V
 void dijkstraSP(WeightedGraph *G, int s) {
     distTo = new double[G->getV()];
     edgeTo = new WeightedEdge *[G->getV()];

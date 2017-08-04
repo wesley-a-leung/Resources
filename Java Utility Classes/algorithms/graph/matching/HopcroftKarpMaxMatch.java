@@ -1,11 +1,10 @@
-package algorithms.graph.networkflow;
+package algorithms.graph.matching;
 
 import java.util.Iterator;
 
 import datastructures.Queue;
 import datastructures.Stack;
 import datastructures.graph.Graph;
-import algorithms.graph.cycle.BipartiteX;
 
 /**
  *  The {@code HopcroftKarp} class represents a data type for computing a

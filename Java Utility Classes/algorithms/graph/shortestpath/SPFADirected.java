@@ -1,34 +1,31 @@
 package algorithms.graph.shortestpath;
 
-import datastructures.IndexMinPQ;
+import datastructures.Deque;
 import datastructures.Stack;
 import datastructures.graph.DirectedWeightedEdge;
 import datastructures.graph.WeightedDigraph;
 
 /**
- *  The {@code DijkstraSP} class represents a data type for solving the
- *  single-source shortest paths problem in edge-weighted digraphs
- *  where the edge weights are nonnegative.
+ *  The {@code SPFA} class represents a data type for solving the
+ *  single-source shortest paths problem in edge-weighted digraphs with
+ *  no negative cycles. 
  *  <p>
- *  This implementation uses Dijkstra's algorithm with a binary heap.
- *  The constructor takes time proportional to <em>E</em> log <em>V</em>,
- *  where <em>V</em> is the number of vertices and <em>E</em> is the number of edges.
- *  Afterwards, the {@code distTo()} and {@code hasPathTo()} methods take
- *  constant time and the {@code pathTo()} method takes time proportional to the
- *  number of edges in the shortest path returned.
- *  <p>
- *  For additional documentation,    
- *  see <a href="http://algs4.cs.princeton.edu/44sp">Section 4.4</a> of    
- *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne. 
+ *  The Shortest Path Faster Algorithm is an improvement on the Bellman-Ford-Moore Algorithm.
+ *  This implementation uses the small label first technique.
+ *  The constructor takes time proportional to <em>V</em> (<em>V</em> + <em>E</em>)
+ *  in the worst case, and <em>E</em> on average, where <em>V</em> is the number of vertices
+ *  and <em>E</em> is the number of edges.
+ *  Afterwards, the {@code distTo()} and {@code hasPathTo()} methods take constant time;
+ *  the {@code pathTo()} method takes time proportional to the number of edges returned.
  *
- *  @author Robert Sedgewick
- *  @author Kevin Wayne
+ *  @author Wesley Leung
  */
-public class DijkstraDirectedSP {
+public class SPFADirected {
     private double[] distTo;          // distTo[v] = distance  of shortest s->v path
     private DirectedWeightedEdge[] edgeTo;    // edgeTo[v] = last edge on shortest s->v path
-    private IndexMinPQ<Double> pq;    // priority queue of vertices
-
+    private boolean[] inQueue;
+    private Deque<Integer> q;
+    
     /**
      * Computes a shortest-paths tree from the source vertex {@code s} to every other
      * vertex in the edge-weighted digraph {@code G}.
@@ -37,35 +34,34 @@ public class DijkstraDirectedSP {
      * @param  s the source vertex
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      */
-    public DijkstraDirectedSP(WeightedDigraph G, int s) {
+    public SPFADirected(WeightedDigraph G, int s) {
         distTo = new double[G.V()];
         edgeTo = new DirectedWeightedEdge[G.V()];
+        inQueue = new boolean[G.V()];
+        q = new Deque<Integer>();
 
         validateVertex(s);
 
         for (int v = 0; v < G.V(); v++)
             distTo[v] = Double.POSITIVE_INFINITY;
         distTo[s] = 0.0;
-
-        // relax vertices in order of distance from s
-        pq = new IndexMinPQ<Double>(G.V());
-        pq.insert(s, distTo[s]);
-        while (!pq.isEmpty()) {
-            int v = pq.delMin();
-            for (DirectedWeightedEdge e : G.adj(v))
-                relax(e);
-        }
-
-    }
-
-    // relax edge e and update pq if changed
-    private void relax(DirectedWeightedEdge e) {
-        int v = e.from(), w = e.to();
-        if (distTo[w] > distTo[v] + e.weight()) {
-            distTo[w] = distTo[v] + e.weight();
-            edgeTo[w] = e;
-            if (pq.contains(w)) pq.decreaseKey(w, distTo[w]);
-            else                pq.insert(w, distTo[w]);
+        inQueue[s] = true;
+        q.addLast(s);
+        while (!q.isEmpty()) {
+            int v = q.removeFirst();
+            inQueue[v] = false;
+            for (DirectedWeightedEdge e : G.adj(v)) {
+                int w = e.to();
+                if (distTo[w] > distTo[v] + e.weight()) {
+                    distTo[w] = distTo[v] + e.weight();
+                    edgeTo[w] = e;
+                    if (!inQueue[w]) {
+                        if (!q.isEmpty() && distTo[w] < distTo[q.peekFirst()]) q.addFirst(w);
+                        else q.addLast(w);
+                        inQueue[w] = true;
+                    }
+                }
+            }
         }
     }
 
@@ -119,4 +115,3 @@ public class DijkstraDirectedSP {
             throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
     }
 }
-

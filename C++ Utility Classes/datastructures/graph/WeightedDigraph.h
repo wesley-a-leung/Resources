@@ -105,13 +105,13 @@ public:
     }
 
     vector<DirectedWeightedEdge*> &edges() {
-        vector<DirectedWeightedEdge*> list;
+        vector<DirectedWeightedEdge*> *list = new vector<DirectedWeightedEdge*>;
         for (int v = 0; v < V; v++) {
             for (DirectedWeightedEdge *e : adj(v)) {
-                list.push_back(e);
+                list->push_back(e);
             }
         }
-        return list;
+        return *list;
     }
 };
 

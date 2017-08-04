@@ -7,14 +7,14 @@ import datastructures.graph.WeightedDigraph;
 import algorithms.graph.cycle.DirectedWeightedCycle;
 
 /**
- *  The {@code BellmanFordSP} class represents a data type for solving the
+ *  The {@code SPFANegativeCycle} class represents a data type for solving the
  *  single-source shortest paths problem in edge-weighted digraphs with
  *  no negative cycles. 
  *  The edge weights can be positive, negative, or zero.
  *  This class finds either a shortest path from the source vertex <em>s</em>
  *  to every other vertex or a negative cycle reachable from the source vertex.
  *  <p>
- *  This implementation uses the Bellman-Ford-Moore algorithm.
+ *  The Shortest Path Faster Algorithm is an improvement on the Bellman-Ford-Moore Algorithm.
  *  The constructor takes time proportional to <em>V</em> (<em>V</em> + <em>E</em>)
  *  in the worst case, where <em>V</em> is the number of vertices and <em>E</em>
  *  is the number of edges.
@@ -29,9 +29,9 @@ import algorithms.graph.cycle.DirectedWeightedCycle;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class BellmanFordSP {
+public class SPFANegativeCycle {
     private double[] distTo;               // distTo[v] = distance  of shortest s->v path
-    private DirectedWeightedEdge[] edgeTo;         // edgeTo[v] = last edge on shortest s->v path
+    private DirectedWeightedEdge[] edgeTo; // edgeTo[v] = last edge on shortest s->v path
     private boolean[] onQueue;             // onQueue[v] = is v currently on the queue?
     private Queue<Integer> queue;          // queue of vertices to relax
     private int cost;                      // number of calls to relax()
@@ -44,7 +44,7 @@ public class BellmanFordSP {
      * @param s the source vertex
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      */
-    public BellmanFordSP(WeightedDigraph G, int s) {
+    public SPFANegativeCycle(WeightedDigraph G, int s) {
         distTo  = new double[G.V()];
         edgeTo  = new DirectedWeightedEdge[G.V()];
         onQueue = new boolean[G.V()];
@@ -61,8 +61,6 @@ public class BellmanFordSP {
             onQueue[v] = false;
             relax(G, v);
         }
-
-        assert check(G, s);
     }
 
     // relax vertex v and put other endpoints on queue if changed
@@ -162,62 +160,6 @@ public class BellmanFordSP {
             path.push(e);
         }
         return path;
-    }
-
-    // check optimality conditions: either 
-    // (i) there exists a negative cycle reacheable from s
-    //     or 
-    // (ii)  for all edges e = v->w:            distTo[w] <= distTo[v] + e.weight()
-    // (ii') for all edges e = v->w on the SPT: distTo[w] == distTo[v] + e.weight()
-    private boolean check(WeightedDigraph G, int s) {
-
-        // has a negative cycle
-        if (hasNegativeCycle()) {
-            double weight = 0.0;
-            for (DirectedWeightedEdge e : negativeCycle()) {
-                weight += e.weight();
-            }
-            if (weight >= 0.0) {
-                return false;
-            }
-        }
-
-        // no negative cycle reachable from source
-        else {
-
-            // check that distTo[v] and edgeTo[v] are consistent
-            if (distTo[s] != 0.0 || edgeTo[s] != null) {
-                return false;
-            }
-            for (int v = 0; v < G.V(); v++) {
-                if (v == s) continue;
-                if (edgeTo[v] == null && distTo[v] != Double.POSITIVE_INFINITY) {
-                    return false;
-                }
-            }
-
-            // check that all edges e = v->w satisfy distTo[w] <= distTo[v] + e.weight()
-            for (int v = 0; v < G.V(); v++) {
-                for (DirectedWeightedEdge e : G.adj(v)) {
-                    int w = e.to();
-                    if (distTo[v] + e.weight() < distTo[w]) {
-                        return false;
-                    }
-                }
-            }
-
-            // check that all edges e = v->w on SPT satisfy distTo[w] == distTo[v] + e.weight()
-            for (int w = 0; w < G.V(); w++) {
-                if (edgeTo[w] == null) continue;
-                DirectedWeightedEdge e = edgeTo[w];
-                int v = e.from();
-                if (w != e.to()) return false;
-                if (distTo[v] + e.weight() != distTo[w]) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     // throw an IllegalArgumentException unless {@code 0 <= v < V}

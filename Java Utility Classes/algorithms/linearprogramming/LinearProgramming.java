@@ -1,4 +1,4 @@
-package algorithms.graph.linearprogramming;
+package algorithms.linearprogramming;
 
 /**
  *  The {@code LinearProgramming} class represents a data type for solving a
@@ -66,7 +66,7 @@ public class LinearProgramming {
         solve();
 
         // check optimality conditions
-        assert check(A, b, c);
+        // assert check(A, b, c);
     }
 
     // run simplex algorithm starting from initial BFS

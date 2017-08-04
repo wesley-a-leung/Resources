@@ -3,18 +3,8 @@ package algorithms.graph.shortestpath;
 import datastructures.graph.WeightedGraph;
 import datastructures.graph.WeightedEdge;
 
-/******************************************************************************
- *  Compilation:  javac DijkstraAllPairsSP.java
- *  Execution:    none
- *  Dependencies: EdgeWeightedDigraph.java Dijkstra.java
- *
- *  Dijkstra's algorithm run from each vertex. 
- *  Takes time proportional to E V log V and space proportional to EV.
- *
- ******************************************************************************/
-
 /**
- *  The {@code DijkstraAllPairsUndirectedSP} class represents a data type for solving the
+ *  The {@code DijkstraUndirectedAPSP} class represents a data type for solving the
  *  all-pairs shortest paths problem in edge-weighted graphs
  *  where the edge weights are nonnegative.
  *  <p>
@@ -33,17 +23,16 @@ import datastructures.graph.WeightedEdge;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class DijkstraAllPairsUndirectedSP {
+public class DijkstraUndirectedAPSP {
     private DijkstraUndirectedSP[] all;
 
     /**
      * Computes a shortest paths tree from each vertex to to every other vertex in
      * the edge-weighted graph {@code G}.
      * @param G the edge-weighted graph
-     * @throws IllegalArgumentException if an edge weight is negative
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      */
-    public DijkstraAllPairsUndirectedSP(WeightedGraph G) {
+    public DijkstraUndirectedAPSP(WeightedGraph G) {
         all  = new DijkstraUndirectedSP[G.V()];
         for (int v = 0; v < G.V(); v++)
             all[v] = new DijkstraUndirectedSP(G, v);

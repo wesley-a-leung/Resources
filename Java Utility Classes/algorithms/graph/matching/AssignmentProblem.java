@@ -1,4 +1,4 @@
-package algorithms.graph.linearprogramming;
+package algorithms.graph.matching;
 
 import datastructures.graph.DirectedWeightedEdge;
 import datastructures.graph.WeightedDigraph;
@@ -74,7 +74,7 @@ public class AssignmentProblem {
             assert isComplementarySlack();
             augment();
         }
-        assert certifySolution();
+        // assert certifySolution();
     }
 
     // find shortest augmenting path and upate

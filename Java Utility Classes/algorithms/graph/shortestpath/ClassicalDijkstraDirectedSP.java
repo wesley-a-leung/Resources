@@ -1,34 +1,28 @@
 package algorithms.graph.shortestpath;
 
-import datastructures.IndexMinPQ;
 import datastructures.Stack;
 import datastructures.graph.DirectedWeightedEdge;
 import datastructures.graph.WeightedDigraph;
 
 /**
- *  The {@code DijkstraSP} class represents a data type for solving the
+ *  The {@code ClassicalDijkstraSP} class represents a data type for solving the
  *  single-source shortest paths problem in edge-weighted digraphs
  *  where the edge weights are nonnegative.
  *  <p>
- *  This implementation uses Dijkstra's algorithm with a binary heap.
- *  The constructor takes time proportional to <em>E</em> log <em>V</em>,
+ *  This implementation uses the classical Dijkstra's algorithm.
+ *  The constructor takes time proportional to <em>V</em><sup>3</sup>,
  *  where <em>V</em> is the number of vertices and <em>E</em> is the number of edges.
  *  Afterwards, the {@code distTo()} and {@code hasPathTo()} methods take
  *  constant time and the {@code pathTo()} method takes time proportional to the
  *  number of edges in the shortest path returned.
- *  <p>
- *  For additional documentation,    
- *  see <a href="http://algs4.cs.princeton.edu/44sp">Section 4.4</a> of    
- *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne. 
  *
- *  @author Robert Sedgewick
- *  @author Kevin Wayne
+ *  @author Wesley Leung
  */
-public class DijkstraDirectedSP {
+public class ClassicalDijkstraDirectedSP {
     private double[] distTo;          // distTo[v] = distance  of shortest s->v path
     private DirectedWeightedEdge[] edgeTo;    // edgeTo[v] = last edge on shortest s->v path
-    private IndexMinPQ<Double> pq;    // priority queue of vertices
-
+    private boolean[] marked;
+    
     /**
      * Computes a shortest-paths tree from the source vertex {@code s} to every other
      * vertex in the edge-weighted digraph {@code G}.
@@ -37,9 +31,10 @@ public class DijkstraDirectedSP {
      * @param  s the source vertex
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      */
-    public DijkstraDirectedSP(WeightedDigraph G, int s) {
+    public ClassicalDijkstraDirectedSP(WeightedDigraph G, int s) {
         distTo = new double[G.V()];
         edgeTo = new DirectedWeightedEdge[G.V()];
+        marked = new boolean[G.V()];
 
         validateVertex(s);
 
@@ -47,25 +42,19 @@ public class DijkstraDirectedSP {
             distTo[v] = Double.POSITIVE_INFINITY;
         distTo[s] = 0.0;
 
-        // relax vertices in order of distance from s
-        pq = new IndexMinPQ<Double>(G.V());
-        pq.insert(s, distTo[s]);
-        while (!pq.isEmpty()) {
-            int v = pq.delMin();
-            for (DirectedWeightedEdge e : G.adj(v))
-                relax(e);
-        }
-
-    }
-
-    // relax edge e and update pq if changed
-    private void relax(DirectedWeightedEdge e) {
-        int v = e.from(), w = e.to();
-        if (distTo[w] > distTo[v] + e.weight()) {
-            distTo[w] = distTo[v] + e.weight();
-            edgeTo[w] = e;
-            if (pq.contains(w)) pq.decreaseKey(w, distTo[w]);
-            else                pq.insert(w, distTo[w]);
+        for (int v = 0; v < G.V() - 1; v++) {
+            int minV = -1;
+            for (int w = 0; w < G.V(); w++) {
+                if (!marked[w] && (minV == -1 || distTo[minV] > distTo[w])) minV = w;
+            }
+            marked[minV] = true;
+            for (DirectedWeightedEdge e : G.adj(minV)) {
+                int w = e.to();
+                if (distTo[w] > distTo[minV] + e.weight()) {
+                    distTo[w] = distTo[minV] + e.weight();
+                    edgeTo[w] = e;
+                }
+            }
         }
     }
 

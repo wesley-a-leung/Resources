@@ -13,7 +13,6 @@ package datastructures.graph;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-
 public class DirectedWeightedEdge implements Comparable<DirectedWeightedEdge> { 
     private final int v;
     private final int w;
