@@ -63,6 +63,18 @@ public:
     }
 };
 
+struct WeightedEdge_less {
+    const bool operator() (const WeightedEdge *a, const WeightedEdge *b) const {
+        return *a < *b;
+    }
+};
+
+struct WeightedEdge_greater {
+    const bool operator() (const WeightedEdge *a, const WeightedEdge *b) const {
+        return *a > *b;
+    }
+};
+
 struct WeightedGraph {
 private:
     int V;
