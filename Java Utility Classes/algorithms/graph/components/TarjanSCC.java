@@ -122,8 +122,10 @@ public class TarjanSCC {
      * Returns the size of the strong component containing vertex {@code v}.
      * @param  v the vertex
      * @return the size of the strong component containing vertex {@code v}
+     * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
     public int size(int v) {
+        validateVertex(v);
         return size[id[v]];
     }
 
@@ -131,8 +133,10 @@ public class TarjanSCC {
      * Returns the size of the specified id.
      * @param  x the id number
      * @return the size of the specified id
+     * @throws IllegalArgumentException unless {@code 0 <= x < count}
      */
     public int idSize(int x) {
+        if (x < 0 || x >= count) throw new IllegalArgumentException("component " + x + " is not between 0 and " + (count - 1));
         return size[x];
     }
 

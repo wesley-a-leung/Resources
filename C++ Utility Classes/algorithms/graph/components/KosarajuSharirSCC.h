@@ -1,10 +1,20 @@
-package algorithms.graph.components;
+/*
+ * KosarajuSharirSCC.h
+ *
+ *  Created on: Aug 4, 2017
+ *      Author: Wesley Leung
+ */
 
-import datastructures.graph.Digraph;
-import algorithms.graph.search.DepthFirstOrder;
+#ifndef ALGORITHMS_GRAPH_COMPONENTS_KOSARAJUSHARIRSCC_H_
+#define ALGORITHMS_GRAPH_COMPONENTS_KOSARAJUSHARIRSCC_H_
+
+#include <bits/stdc++.h>
+#include <datastructures/graph/Digraph.h>
+
+using namespace std;
 
 /**
- *  The {@code KosarajuSharirSCC} class represents a data type for 
+ *  The {@code KosarajuSharirSCC} class represents a data type for
  *  determining the strong components in a digraph.
  *  The <em>id</em> operation determines in which strong component
  *  a given vertex lies; the <em>areStronglyConnected</em> operation
@@ -33,26 +43,56 @@ import algorithms.graph.search.DepthFirstOrder;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class KosarajuSharirSCC {
-    private boolean[] marked;     // marked[v] = has vertex v been visited?
-    private int[] id;             // id[v] = id of strong component containing v
-    private int[] size;           // size[x] = size of component x
-    private int count;            // number of strongly-connected components
+class KosarajuSharirSCC {
+private:
+    bool *marked;           // marked[v] = has vertex v been visited?
+    int *id;                // id[v] = id of strong component containing v
+    int *size;              // size[x] = size of component x
+    int count;              // number of strongly-connected components
+    stack<int> reversePost; // stack storing reverse postorder of the digraph
 
+    void postOrder(Digraph *G, int v) {
+        marked[v] = true;
+        for (int w : G->adj(v)) {
+            if (!marked[w]) postOrder(G, w);
+        }
+        reversePost.push(v);
+    }
+
+    // DFS on graph G
+    void dfs(Digraph *G, int v) {
+        marked[v] = true;
+        id[v] = count;
+        size[count]++;
+        for (int w : G->adj(v)) {
+            if (!marked[w]) dfs(G, w);
+        }
+    }
+
+public:
     /**
      * Computes the strong components of the digraph {@code G}.
      * @param G the digraph
      */
-    public KosarajuSharirSCC(Digraph G) {
-
-        // compute reverse postorder of reverse graph
-        DepthFirstOrder dfs = new DepthFirstOrder(G.reverse());
-
-        // run DFS on G, using reverse postorder to guide calculation
-        marked = new boolean[G.V()];
-        id = new int[G.V()];
-        size = new int[G.V()];
-        for (int v : dfs.reversePost()) {
+    KosarajuSharirSCC(Digraph *G) {
+        marked = new bool[G->getV()];
+        id = new int[G->getV()];
+        size = new int[G->getV()];
+        count = 0;
+        Digraph *reverse = G->reverse();
+        for (int v = 0; v < reverse->getV(); v++) {
+            marked[v] = false;
+        }
+        for (int v = 0; v < reverse->getV(); v++) {
+            if (!marked[v]) postOrder(reverse, v);
+        }
+        for (int v = 0; v < G->getV(); v++) {
+            marked[v] = false;
+            size[v] = 0;
+        }
+        while (!reversePost.empty()) {
+            int v = reversePost.top();
+            reversePost.pop();
             if (!marked[v]) {
                 dfs(G, v);
                 count++;
@@ -60,21 +100,11 @@ public class KosarajuSharirSCC {
         }
     }
 
-    // DFS on graph G
-    private void dfs(Digraph G, int v) { 
-        marked[v] = true;
-        id[v] = count;
-        size[count]++;
-        for (int w : G.adj(v)) {
-            if (!marked[w]) dfs(G, w);
-        }
-    }
-
     /**
      * Returns the number of strong components.
      * @return the number of strong components
      */
-    public int count() {
+    int getCount() {
         return count;
     }
 
@@ -87,9 +117,7 @@ public class KosarajuSharirSCC {
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      * @throws IllegalArgumentException unless {@code 0 <= w < V}
      */
-    public boolean stronglyConnected(int v, int w) {
-        validateVertex(v);
-        validateVertex(w);
+    bool stronglyConnected(int v, int w) {
         return id[v] == id[w];
     }
 
@@ -99,19 +127,17 @@ public class KosarajuSharirSCC {
      * @return the component id of the strong component containing vertex {@code v}
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      */
-    public int id(int v) {
-        validateVertex(v);
+    int getId(int v) {
         return id[v];
     }
-    
+
     /**
      * Returns the size of the strong component containing vertex {@code v}.
      * @param  v the vertex
      * @return the size of the strong component containing vertex {@code v}
      * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
-    public int size(int v) {
-        validateVertex(v);
+    int getSize(int v) {
         return size[id[v]];
     }
 
@@ -121,15 +147,9 @@ public class KosarajuSharirSCC {
      * @return the size of the specified id
      * @throws IllegalArgumentException unless {@code 0 <= x < count}
      */
-    public int idSize(int x) {
-        if (x < 0 || x >= count) throw new IllegalArgumentException("component " + x + " is not between 0 and " + (count - 1));
+    int getIdSize(int x) {
         return size[x];
     }
+};
 
-    // throw an IllegalArgumentException unless {@code 0 <= v < V}
-    private void validateVertex(int v) {
-        int V = marked.length;
-        if (v < 0 || v >= V)
-            throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
-    }
-}
+#endif /* ALGORITHMS_GRAPH_COMPONENTS_KOSARAJUSHARIRSCC_H_ */
