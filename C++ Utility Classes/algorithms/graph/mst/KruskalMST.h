@@ -52,6 +52,7 @@ public:
      * @param G the edge-weighted graph
      */
     KruskalMST(WeightedGraph *G) {
+        weight = 0.0;
         // more efficient to build heap by passing array of edges
         priority_queue<WeightedEdge*, vector<WeightedEdge*>, WeightedEdge_greater> pq;
         for (WeightedEdge *e : G->edges()) {
