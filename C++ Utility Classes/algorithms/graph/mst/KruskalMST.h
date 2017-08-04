@@ -1,10 +1,18 @@
-package algorithms.graph.mst;
+/*
+ * KruskalMST.h
+ *
+ *  Created on: Aug 4, 2017
+ *      Author: Wesley Leung
+ */
 
-import datastructures.MinPQ;
-import datastructures.Queue;
-import datastructures.graph.WeightedGraph;
-import datastructures.math.UF;
-import datastructures.graph.WeightedEdge;
+#ifndef ALGORITHMS_GRAPH_MST_KRUSKALMST_H_
+#define ALGORITHMS_GRAPH_MST_KRUSKALMST_H_
+
+#include <bits/stdc++.h>
+#include <datastructures/graph/WeightedGraph.h>
+#include <datastructures/math/UF.h>
+
+using namespace std;
 
 /**
  *  The {@code KruskalMST} class represents a data type for computing a
@@ -12,7 +20,7 @@ import datastructures.graph.WeightedEdge;
  *  The edge weights can be positive, zero, or negative and need not
  *  be distinct. If the graph is not connected, it computes a <em>minimum
  *  spanning forest</em>, which is the union of minimum spanning trees
- *  in each connected component. The {@code weight()} method returns the 
+ *  in each connected component. The {@code weight()} method returns the
  *  weight of a minimum spanning tree and the {@code edges()} method
  *  returns its edges.
  *  <p>
@@ -33,31 +41,34 @@ import datastructures.graph.WeightedEdge;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class KruskalMST {
-    private double weight;                        // weight of MST
-    private Queue<WeightedEdge> mst = new Queue<WeightedEdge>();  // edges in MST
+class KruskalMST {
+private:
+    double weight;              // weight of MST
+    vector<WeightedEdge*> mst;  // edges in MST
 
+public:
     /**
      * Compute a minimum spanning tree (or forest) of an edge-weighted graph.
      * @param G the edge-weighted graph
      */
-    public KruskalMST(WeightedGraph G) {
+    KruskalMST(WeightedGraph *G) {
         // more efficient to build heap by passing array of edges
-        MinPQ<WeightedEdge> pq = new MinPQ<WeightedEdge>();
-        for (WeightedEdge e : G.edges()) {
-            pq.insert(e);
+        priority_queue<WeightedEdge*, vector<WeightedEdge*>, WeightedEdge_greater> pq;
+        for (WeightedEdge *e : G->edges()) {
+            pq.push(e);
         }
 
         // run greedy algorithm
-        UF uf = new UF(G.V());
-        while (!pq.isEmpty() && mst.size() < G.V() - 1) {
-            WeightedEdge e = pq.delMin();
-            int v = e.either();
-            int w = e.other(v);
+        UF uf(G->getV());
+        while (!pq.empty() && mst.size() < G->getV() - 1) {
+            WeightedEdge *e = pq.top();
+            pq.pop();
+            int v = e->either();
+            int w = e->other(v);
             if (!uf.connected(v, w)) { // v-w does not create a cycle
-                uf.union(v, w);  // merge v and w components
-                mst.enqueue(e);  // add edge e to mst
-                weight += e.weight();
+                uf.join(v, w);  // merge v and w components
+                mst.push_back(e);  // add edge e to mst
+                weight += e->getWeight();
             }
         }
     }
@@ -67,7 +78,7 @@ public class KruskalMST {
      * @return the edges in a minimum spanning tree (or forest) as
      *    an iterable of edges
      */
-    public Iterable<WeightedEdge> edges() {
+    vector<WeightedEdge*> &edges() {
         return mst;
     }
 
@@ -75,7 +86,9 @@ public class KruskalMST {
      * Returns the sum of the edge weights in a minimum spanning tree (or forest).
      * @return the sum of the edge weights in a minimum spanning tree (or forest)
      */
-    public double weight() {
+    double getWeight() {
         return weight;
     }
-}
+};
+
+#endif /* ALGORITHMS_GRAPH_MST_KRUSKALMST_H_ */

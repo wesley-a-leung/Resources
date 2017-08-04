@@ -33,8 +33,6 @@ import datastructures.graph.WeightedEdge;
  *  @author Kevin Wayne
  */
 public class PrimMST {
-    private static final double FLOATING_POINT_EPSILON = 1E-12;
-
     private WeightedEdge[] edgeTo;        // edgeTo[v] = shortest edge from tree vertex to non-tree vertex
     private double[] distTo;      // distTo[v] = weight of shortest such edge
     private boolean[] marked;     // marked[v] = true if v on tree, false otherwise
@@ -55,8 +53,6 @@ public class PrimMST {
         for (int v = 0; v < G.V(); v++)      // run from each vertex to find
             if (!marked[v]) prim(G, v);      // minimum spanning forest
 
-        // check optimality conditions
-        // assert check(G);
     }
 
     // run Prim's algorithm in graph G, starting from vertex s

@@ -33,8 +33,6 @@ import datastructures.graph.WeightedEdge;
  *  @author Kevin Wayne
  */
 public class BoruvkaMST {
-    private static final double FLOATING_POINT_EPSILON = 1E-12;
-
     private Bag<WeightedEdge> mst = new Bag<WeightedEdge>();    // edges in MST
     private double weight;                      // weight of MST
 
@@ -73,9 +71,6 @@ public class BoruvkaMST {
                 }
             }
         }
-
-        // check optimality conditions
-        // assert check(G);
     }
 
     /**
