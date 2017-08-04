@@ -6,7 +6,7 @@ import datastructures.graph.WeightedEdge;
 import datastructures.graph.WeightedGraph;
 
 /**
- * The {@code UndirectedAcyclicAllPairsSP} class represents a data type for solving
+ * The {@code UndirectedAcyclicAPSP} class represents a data type for solving
  * the all-pairs shortest paths problem in edge-weighted undirected acyclic
  * graphs. The edge weights can be positive, negative, or zero.
  * 
@@ -19,11 +19,11 @@ import datastructures.graph.WeightedGraph;
  * @author Wesley Leung
  *
  */
-public class UndirectedAcyclicAllPairsSP {
-    private double distTo[]; // stores the distance from an arbitrary root
+public class UndirectedAcyclicAPSP {
+    private double[] distTo; // stores the distance from an arbitrary root
     private WeightedLCA LCA;
     
-    public UndirectedAcyclicAllPairsSP(WeightedGraph G) {
+    public UndirectedAcyclicAPSP(WeightedGraph G) {
         distTo = new double[G.V()];
         LCA = new WeightedLCA(G); // will handle the illegal argument exception for acyclic graph
         bfs(G, 0);

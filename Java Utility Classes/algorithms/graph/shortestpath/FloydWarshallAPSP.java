@@ -7,7 +7,7 @@ import datastructures.graph.WeightedDigraph;
 import algorithms.graph.cycle.DirectedWeightedCycle;
 
 /**
- *  The {@code FloydWarshall} class represents a data type for solving the
+ *  The {@code FloydWarshallAPSP} class represents a data type for solving the
  *  all-pairs shortest paths problem in edge-weighted digraphs with
  *  no negative cycles.
  *  The edge weights can be positive, negative, or zero.
@@ -28,7 +28,7 @@ import algorithms.graph.cycle.DirectedWeightedCycle;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class FloydWarshallAllPairsSP {
+public class FloydWarshallAPSP {
     private boolean hasNegativeCycle;  // is there a negative cycle?
     private double[][] distTo;         // distTo[v][w] = length of shortest v->w path
     private DirectedWeightedEdge[][] edgeTo;   // edgeTo[v][w] = last edge on shortest v->w path
@@ -39,7 +39,7 @@ public class FloydWarshallAllPairsSP {
      * some pair of vertices, it computes a negative cycle.
      * @param G the edge-weighted digraph
      */
-    public FloydWarshallAllPairsSP(AdjMatrixWeightedDigraph G) {
+    public FloydWarshallAPSP(AdjMatrixWeightedDigraph G) {
         int V = G.V();
         distTo = new double[V][V];
         edgeTo = new DirectedWeightedEdge[V][V];
@@ -82,7 +82,6 @@ public class FloydWarshallAllPairsSP {
                 }
             }
         }
-        assert check(G);
     }
 
     /**
@@ -168,27 +167,7 @@ public class FloydWarshallAllPairsSP {
         }
         return path;
     }
-
-    // check optimality conditions
-    private boolean check(AdjMatrixWeightedDigraph G) {
-
-        // no negative cycle
-        if (!hasNegativeCycle()) {
-            for (int v = 0; v < G.V(); v++) {
-                for (DirectedWeightedEdge e : G.adj(v)) {
-                    int w = e.to();
-                    for (int i = 0; i < G.V(); i++) {
-                        if (distTo[i][w] > distTo[i][v] + e.weight()) {
-                            System.err.println("edge " + e + " is eligible");
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
+    
     // throw an IllegalArgumentException unless {@code 0 <= v < V}
     private void validateVertex(int v) {
         int V = distTo.length;

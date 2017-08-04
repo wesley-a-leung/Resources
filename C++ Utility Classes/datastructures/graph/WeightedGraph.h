@@ -101,21 +101,21 @@ public:
     }
 
     vector<WeightedEdge*> &edges() {
-        vector<WeightedEdge*> list;
+        vector<WeightedEdge*> *list = new vector<WeightedEdge*>;
         for (int v = 0; v < V; v++) {
             int selfLoops = 0;
             for (WeightedEdge *e : adj(v)) {
                 if (e->other(v) > v) {
-                    list.push_back(e);
+                    list->push_back(e);
                 }
                 // only add one copy of each self loop (self loops will be consecutive)
                 else if (e->other(v) == v) {
-                    if (selfLoops % 2 == 0) list.push_back(e);
+                    if (selfLoops % 2 == 0) list->push_back(e);
                     selfLoops++;
                 }
             }
         }
-        return list;
+        return *list;
     }
 };
 

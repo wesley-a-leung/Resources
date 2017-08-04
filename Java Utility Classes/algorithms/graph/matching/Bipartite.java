@@ -1,11 +1,11 @@
-package algorithms.graph.cycle;
+package algorithms.graph.matching;
 
-import datastructures.Queue;
 import datastructures.Stack;
 import datastructures.graph.Graph;
 
+
 /**
- *  The {@code BipartiteX} class represents a data type for 
+ *  The {@code Bipartite} class represents a data type for 
  *  determining whether an undirected graph is bipartite or whether
  *  it has an odd-length cycle.
  *  The <em>isBipartite</em> operation determines whether the graph is
@@ -13,31 +13,28 @@ import datastructures.graph.Graph;
  *  bipartition; if not, the <em>oddCycle</em> operation determines a
  *  cycle with an odd number of edges.
  *  <p>
- *  This implementation uses breadth-first search and is nonrecursive.
+ *  This implementation uses depth-first search.
  *  The constructor takes time proportional to <em>V</em> + <em>E</em>
  *  (in the worst case),
  *  where <em>V</em> is the number of vertices and <em>E</em> is the number of edges.
  *  Afterwards, the <em>isBipartite</em> and <em>color</em> operations
  *  take constant time; the <em>oddCycle</em> operation takes time proportional
  *  to the length of the cycle.
- *  See {@link Bipartite} for a recursive version that uses depth-first search.
+ *  See {@link BipartiteX} for a nonrecursive version that uses breadth-first
+ *  search.
  *  <p>
- *  For additional documentation,
- *  see <a href="http://algs4.cs.princeton.edu/41graph">Section 4.1</a>   
+ *  For additional documentation, see <a href="http://algs4.cs.princeton.edu/41graph">Section 4.1</a>   
  *  of <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
  *
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class BipartiteX {
-    private static final boolean WHITE = false;
-    private static final boolean BLACK = true;
-
+public class Bipartite {
     private boolean isBipartite;   // is the graph bipartite?
     private boolean[] color;       // color[v] gives vertices on one side of bipartition
     private boolean[] marked;      // marked[v] = true if v has been visited in DFS
     private int[] edgeTo;          // edgeTo[v] = last edge on path to v
-    private Queue<Integer> cycle;  // odd-length cycle
+    private Stack<Integer> cycle;  // odd-length cycle
 
     /**
      * Determines whether an undirected graph is bipartite and finds either a
@@ -45,57 +42,43 @@ public class BipartiteX {
      *
      * @param  G the graph
      */
-    public BipartiteX(Graph G) {
+    public Bipartite(Graph G) {
         isBipartite = true;
         color  = new boolean[G.V()];
         marked = new boolean[G.V()];
         edgeTo = new int[G.V()];
 
-        for (int v = 0; v < G.V() && isBipartite; v++) {
+        for (int v = 0; v < G.V(); v++) {
             if (!marked[v]) {
-                bfs(G, v);
+                dfs(G, v);
             }
         }
-        assert check(G);
+        // assert check(G);
     }
 
-    private void bfs(Graph G, int s) { 
-        Queue<Integer> q = new Queue<Integer>();
-        color[s] = WHITE;
-        marked[s] = true;
-        q.enqueue(s);
+    private void dfs(Graph G, int v) { 
+        marked[v] = true;
+        for (int w : G.adj(v)) {
 
-        while (!q.isEmpty()) {
-            int v = q.dequeue();
-            for (int w : G.adj(v)) {
-                if (!marked[w]) {
-                    marked[w] = true;
-                    edgeTo[w] = v;
-                    color[w] = !color[v];
-                    q.enqueue(w);
-                }
-                else if (color[w] == color[v]) {
-                    isBipartite = false;
+            // short circuit if odd-length cycle found
+            if (cycle != null) return;
 
-                    // to form odd cycle, consider s-v path and s-w path
-                    // and let x be closest node to v and w common to two paths
-                    // then (w-x path) + (x-v path) + (edge v-w) is an odd-length cycle
-                    // Note: distTo[v] == distTo[w];
-                    cycle = new Queue<Integer>();
-                    Stack<Integer> stack = new Stack<Integer>();
-                    int x = v, y = w;
-                    while (x != y) {
-                        stack.push(x);
-                        cycle.enqueue(y);
-                        x = edgeTo[x];
-                        y = edgeTo[y];
-                    }
-                    stack.push(x);
-                    while (!stack.isEmpty())
-                        cycle.enqueue(stack.pop());
-                    cycle.enqueue(w);
-                    return;
+            // found uncolored vertex, so recur
+            if (!marked[w]) {
+                edgeTo[w] = v;
+                color[w] = !color[v];
+                dfs(G, w);
+            } 
+
+            // if v-w create an odd-length cycle, find it
+            else if (color[w] == color[v]) {
+                isBipartite = false;
+                cycle = new Stack<Integer>();
+                cycle.push(w);  // don't need this unless you want to include start vertex twice
+                for (int x = v; x != w; x = edgeTo[x]) {
+                    cycle.push(x);
                 }
+                cycle.push(w);
             }
         }
     }
@@ -123,10 +106,9 @@ public class BipartiteX {
     public boolean color(int v) {
         validateVertex(v);
         if (!isBipartite)
-            throw new UnsupportedOperationException("Graph is not bipartite");
+            throw new UnsupportedOperationException("graph is not bipartite");
         return color[v];
     }
-
 
     /**
      * Returns an odd-length cycle if the graph is not bipartite, and
@@ -166,6 +148,7 @@ public class BipartiteX {
                 return false;
             }
         }
+
         return true;
     }
 
