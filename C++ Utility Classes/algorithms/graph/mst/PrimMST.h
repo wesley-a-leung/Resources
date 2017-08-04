@@ -75,7 +75,11 @@ public:
      * @param G the edge-weighted graph
      */
     PrimMST(WeightedGraph *G) {
+        weight = 0.0;
         marked = new bool[G->getV()];
+        for (int v = 0; v < G->getV(); v++) {
+            marked[v] = false;
+        }
         for (int v = 0; v < G->getV(); v++) {     // run Prim from all vertices to
             if (!marked[v]) prim(G, v);           // get a minimum spanning forest
         }
