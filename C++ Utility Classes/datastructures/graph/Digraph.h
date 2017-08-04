@@ -52,6 +52,16 @@ public:
     int indegree(int v) {
         return indegreeArr[v];
     }
+
+    Digraph *reverse() {
+        Digraph *reverse = new Digraph(V);
+        for (int v = 0; v < V; v++) {
+            for (int w : adj(v)) {
+                reverse->addEdge(w, v);
+            }
+        }
+        return reverse;
+    }
 };
 
 #endif /* DATASTRUCTURES_GRAPH_WEIGHTEDGRAPH_H_ */
