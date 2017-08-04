@@ -56,6 +56,7 @@ private:
 
     // run Prim's algorithm
     void prim(WeightedGraph *G, int s) {
+        scan(G, s);
         while (!pq.empty()) {                          // better to stop when mst has V-1 edges
             WeightedEdge *e = pq.top();                // smallest edge on pq
             pq.pop();
