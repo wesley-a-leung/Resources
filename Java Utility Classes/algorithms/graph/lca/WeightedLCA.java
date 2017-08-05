@@ -1,4 +1,4 @@
-package algorithms.graph.search;
+package algorithms.graph.lca;
 
 import algorithms.graph.cycle.WeightedCycle;
 import datastructures.graph.WeightedEdge;
