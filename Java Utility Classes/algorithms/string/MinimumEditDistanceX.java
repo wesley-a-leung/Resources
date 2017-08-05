@@ -40,11 +40,11 @@ public class MinimumEditDistanceX {
      
                     int min = replace > insert ? insert : replace;
                     min = delete > min ? min : delete;
-                    dp[i%2][j] = min;
+                    dp[i % 2][j] = min;
                 }
             }
         }
-        return dp[len1%2][len2];
+        return dp[len1 % 2][len2];
     }
 }
 
