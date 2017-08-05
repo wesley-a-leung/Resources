@@ -47,7 +47,7 @@ class TarjanSCC {
 private:
     bool *marked;            // marked[v] = has v been visited?
     int *id;                 // id[v] = id of strong component containing v
-    int *size;               // size[x] = size of component x
+    vector<int> size;        // size[x] = size of component x
     int *low;                // low[v] = low number of v
     int pre;                 // preorder number counter
     int count;               // number of strongly-connected components
@@ -67,6 +67,7 @@ private:
             return;
         }
         int w;
+        size.push_back(0);
         do {
             w = s.top();
             s.pop();
@@ -85,11 +86,9 @@ public:
     TarjanSCC(Digraph *G) {
         marked = new bool[G->getV()];
         id = new int[G->getV()];
-        size = new int[G->getV()];
         low = new int[G->getV()];
         for (int v = 0; v < G->getV(); v++) {
             marked[v] = false;
-            size[v] = 0;
         }
         pre = 0;
         count = 0;

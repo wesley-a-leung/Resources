@@ -47,7 +47,7 @@ class KosarajuSharirSCC {
 private:
     bool *marked;           // marked[v] = has vertex v been visited?
     int *id;                // id[v] = id of strong component containing v
-    int *size;              // size[x] = size of component x
+    vector<int> size;       // size[x] = size of component x
     int count;              // number of strongly-connected components
     stack<int> reversePost; // stack storing reverse postorder of the digraph
 
@@ -77,7 +77,6 @@ public:
     KosarajuSharirSCC(Digraph *G) {
         marked = new bool[G->getV()];
         id = new int[G->getV()];
-        size = new int[G->getV()];
         count = 0;
         Digraph *reverse = G->reverse();
         for (int v = 0; v < reverse->getV(); v++) {
@@ -88,12 +87,12 @@ public:
         }
         for (int v = 0; v < G->getV(); v++) {
             marked[v] = false;
-            size[v] = 0;
         }
         while (!reversePost.empty()) {
             int v = reversePost.top();
             reversePost.pop();
             if (!marked[v]) {
+                size.push_back(0);
                 dfs(G, v);
                 count++;
             }

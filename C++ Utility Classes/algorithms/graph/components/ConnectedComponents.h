@@ -46,7 +46,7 @@ class ConnectedComponents {
 private:
     bool *marked;      // marked[v] = has vertex v been marked?
     int *id;           // id[v] = id of connected component containing v
-    int *size;         // size[id] = number of vertices in given component
+    vector<int> size;  // size[id] = number of vertices in given component
     int count;         // number of connected components
 
     // depth-first search for a Graph
@@ -83,14 +83,13 @@ public:
     ConnectedComponents(Graph *G) {
         marked = new bool[G->getV()];
         id = new int[G->getV()];
-        size = new int[G->getV()];
         for (int v = 0; v < G->getV(); v++) {
             marked[v] = false;
-            size[v] = 0;
         }
         count = 0;
         for (int v = 0; v < G->getV(); v++) {
             if (!marked[v]) {
+                size.push_back(0);
                 dfs(G, v);
                 count++;
             }
