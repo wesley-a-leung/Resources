@@ -33,6 +33,12 @@ int minDistance(string word1, string word2) {
 
     int dp[2][len2 + 1];
 
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j <= len2; j++) {
+            dp[i][j] = 0;
+        }
+    }
+
     for (int i = 0; i <= len1; i++) {
         for (int j = 0; j <= len2; j++) {
             if (i == 0) {
