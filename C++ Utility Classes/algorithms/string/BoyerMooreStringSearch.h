@@ -1,61 +1,59 @@
-package algorithms.string;
-
-/**
- *  The {@code BoyerMoore} class finds the first occurrence of a pattern string
- *  in a text string.
- *  <p>
- *  This implementation uses the Boyer-Moore algorithm (with the bad-character
- *  rule, but not the strong good suffix rule). It takes time proportional to
- *  <em>N</em> + <em>M</em> in the worst case and space proportional to
- *  <em>N</em> + <em>M</em> + <em>R</em>, where <em>N</em> is the length of
- *  the text string, <em>M</em> is the length of the pattern, and <em>R</em>
- *  is the alphabet size.
- *  <p>
- *  For additional documentation,
- *  see <a href="http://algs4.cs.princeton.edu/53substring">Section 5.3</a> of
- *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
+/*
+ * BoyerMooreStringSearch.h
+ *
+ *  Created on: Aug 4, 2017
+ *      Author: Wesley Leung
  */
-public class BoyerMooreStringSearch {
-    private final int R;     // the radix
-    private int[] right;     // the bad-character skip array
 
-    private char[] pattern;  // store the pattern as a character array
-    private String pat;      // or as a string
+#ifndef ALGORITHMS_STRING_BOYERMOORESTRINGSEARCH_H_
+#define ALGORITHMS_STRING_BOYERMOORESTRINGSEARCH_H_
 
+#include <bits/stdc++.h>
+
+using namespace std;
+
+class BoyerMooreStringSearch {
+private:
+    int R;                    // the radix
+    int *right;               // the bad-character skip array
+    int m;                    // the length of the pattern
+    char *pattern = nullptr;  // store the pattern as a character array
+    string pat = "";          // or as a string
+
+public:
     /**
      * Preprocesses the pattern string.
      *
      * @param pat the pattern string
      */
-    public BoyerMooreStringSearch(String pat) {
-        this.R = 256;
-        this.pat = pat;
-
+    BoyerMooreStringSearch(string pat) {
+        this->R = 256;
+        this->pat = pat;
+        this->m = pat.length();
         // position of rightmost occurrence of c in the pattern
         right = new int[R];
         for (int c = 0; c < R; c++)
             right[c] = -1;
-        for (int j = 0; j < pat.length(); j++)
-            right[pat.charAt(j)] = j;
+        for (int j = 0; j < m; j++)
+            right[pat[j]] = j;
     }
 
     /**
      * Preprocesses the pattern string.
      *
      * @param pattern the pattern string
+     * @param m the length of the pattern
      * @param R the alphabet size
      */
-    public BoyerMooreStringSearch(char[] pattern, int R) {
-        this.R = R;
-        this.pattern = new char[pattern.length];
-        for (int j = 0; j < pattern.length; j++)
-            this.pattern[j] = pattern[j];
-
+    BoyerMooreStringSearch(char *pattern, int m, int R) {
+        this->R = R;
+        this->m = m;
+        this->pattern = pattern;
         // position of rightmost occurrence of c in the pattern
         right = new int[R];
         for (int c = 0; c < R; c++)
             right[c] = -1;
-        for (int j = 0; j < pattern.length; j++)
+        for (int j = 0; j < m; j++)
             right[pattern[j]] = j;
     }
 
@@ -67,15 +65,14 @@ public class BoyerMooreStringSearch {
      * @return the index of the first occurrence of the pattern string
      *         in the text string; -1 if no such match
      */
-    public int search(String txt) {
-        int m = pat.length();
+    int search(string txt) {
         int n = txt.length();
         int skip;
         for (int i = 0; i <= n - m; i += skip) {
             skip = 0;
             for (int j = m-1; j >= 0; j--) {
-                if (pat.charAt(j) != txt.charAt(i+j)) {
-                    skip = Math.max(1, j - right[txt.charAt(i+j)]);
+                if (pat[j] != txt[i+j]) {
+                    skip = max(1, j - right[txt[i+j]]);
                     break;
                 }
             }
@@ -90,18 +87,17 @@ public class BoyerMooreStringSearch {
      * in the text string.
      *
      * @param  text the text string
+     * @param  n the length of the text
      * @return the index of the first occurrence of the pattern string
      *         in the text string; -1 if no such match
      */
-    public int search(char[] text) {
-        int m = pattern.length;
-        int n = text.length;
+    int search(char *text, int n) {
         int skip;
         for (int i = 0; i <= n - m; i += skip) {
             skip = 0;
             for (int j = m-1; j >= 0; j--) {
                 if (pattern[j] != text[i+j]) {
-                    skip = Math.max(1, j - right[text[i+j]]);
+                    skip = max(1, j - right[text[i+j]]);
                     break;
                 }
             }
@@ -109,4 +105,6 @@ public class BoyerMooreStringSearch {
         }
         return -1;                      // not found
     }
-}
+};
+
+#endif /* ALGORITHMS_STRING_BOYERMOORESTRINGSEARCH_H_ */

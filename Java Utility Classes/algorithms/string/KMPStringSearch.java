@@ -5,7 +5,7 @@ package algorithms.string;
  *  in a text string.
  *  <p>
  *  This implementation uses a version of the Knuth-Morris-Pratt substring search
- *  algorithm. The version takes time as space proportional to
+ *  algorithm. The version takes time and space proportional to
  *  <em>N</em> + <em>M R</em> in the worst case, where <em>N</em> is the length
  *  of the text string, <em>M</em> is the length of the pattern, and <em>R</em>
  *  is the alphabet size.
@@ -84,11 +84,11 @@ public class KMPStringSearch {
             j = dfa[txt.charAt(i)][j];
         }
         if (j == m) return i - m;    // found
-        return -1;                    // not found
+        return -1;                   // not found
     }
 
     /**
-     * Returns the index of the first occurrrence of the pattern string
+     * Returns the index of the first occurrence of the pattern string
      * in the text string.
      *
      * @param  text the text string
@@ -105,7 +105,6 @@ public class KMPStringSearch {
             j = dfa[text[i]][j];
         }
         if (j == m) return i - m;    // found
-        return -1;                    // not found
+        return -1;                   // not found
     }
 }
-
