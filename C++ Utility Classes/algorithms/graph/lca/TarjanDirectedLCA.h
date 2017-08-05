@@ -42,7 +42,7 @@ private:
         }
         color[v] = BLACK;
         for (pair<int, int> q : queriesList[v]) {
-            if (color[q.first] == BLACK) answers[q.second] = ancestor[uf->find(v)];
+            if (color[q.first] == BLACK) answers[q.second] = ancestor[uf->find(q.first)];
         }
     }
 
