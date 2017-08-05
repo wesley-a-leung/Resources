@@ -1,38 +1,5 @@
 package algorithms.string;
 
-/******************************************************************************
- *  Compilation:  javac RabinKarp.java
- *  Execution:    java RabinKarp pat txt
- *  Dependencies: StdOut.java
- *
- *  Reads in two strings, the pattern and the input text, and
- *  searches for the pattern in the input text using the
- *  Las Vegas version of the Rabin-Karp algorithm.
- *
- *  % java RabinKarp abracadabra abacadabrabracabracadabrabrabracad
- *  pattern: abracadabra
- *  text:    abacadabrabracabracadabrabrabracad 
- *  match:                 abracadabra          
- *
- *  % java RabinKarp rab abacadabrabracabracadabrabrabracad
- *  pattern: rab
- *  text:    abacadabrabracabracadabrabrabracad 
- *  match:           rab                         
- *
- *  % java RabinKarp bcara abacadabrabracabracadabrabrabracad
- *  pattern: bcara
- *  text:         abacadabrabracabracadabrabrabracad 
- *
- *  %  java RabinKarp rabrabracad abacadabrabracabracadabrabrabracad
- *  text:    abacadabrabracabracadabrabrabracad
- *  pattern:                        rabrabracad
- *
- *  % java RabinKarp abacad abacadabrabracabracadabrabrabracad
- *  text:    abacadabrabracabracadabrabrabracad
- *  pattern: abacad
- *
- ******************************************************************************/
-
 import java.math.BigInteger;
 import java.util.Random;
 

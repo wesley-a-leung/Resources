@@ -4,13 +4,9 @@ import java.util.HashSet;
 
 import datastructures.graph.Graph;
 
-/******************************************************************************
- *  Compilation:  javac Bridge.java
- *  Execution:    java  Bridge V E
- *  Dependencies: Graph.java GraphGenerator.java
- *
- *  Identifies bridge edges and prints them out. This decomposes
- *  a directed graph into two-edge connected components.
+/**
+ *  Identifies bridge edges. This decomposes a directed graph into
+ *  two-edge connected components.
  *  Runs in O(E + V) time.
  *
  *  Key quantity:  low[v] = minimum DFS preorder number of v
@@ -19,9 +15,7 @@ import datastructures.graph.Graph;
  *
  *  Note: code assumes no parallel edges, e.g., two parallel edges
  *  would be (incorrectly) identified as bridges.
- *
- ******************************************************************************/
-
+ */
 public class Bridge {
     private int bridges;      // number of bridges
     private int cnt;          // counter

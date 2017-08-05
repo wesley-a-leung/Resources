@@ -13,6 +13,18 @@
 
 using namespace std;
 
+/**
+ *  Identifies bridge edges. This decomposes a directed graph into
+ *  two-edge connected components.
+ *  Runs in O(E + V) time.
+ *
+ *  Key quantity:  low[v] = minimum DFS preorder number of v
+ *  and the set of vertices w for which there is a back edge (x, w)
+ *  with x a descendant of v and w an ancestor of v.
+ *
+ *  Note: code assumes no parallel edges, e.g., two parallel edges
+ *  would be (incorrectly) identified as bridges.
+ */
 class Bridge {
 private:
     int bridges;      // number of bridges
