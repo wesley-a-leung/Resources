@@ -48,7 +48,7 @@ private:
     }
 
 public:
-    TarjanLCA(WeightedDigraph *G, vector<pair<int, int>> queries) : answers(queries.size()) {
+    TarjanDirectedWeightedLCA(WeightedDigraph *G, vector<pair<int, int>> queries) : answers(queries.size()) {
         color = new bool[G->getV()];
         ancestor = new int[G->getV()];
         queriesList = new vector<pair<int, int>>[G->getV()];

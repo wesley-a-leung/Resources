@@ -89,5 +89,4 @@ public:
     }
 };
 
-
 #endif /* ALGORITHMS_GRAPH_SEARCH_WEIGHTEDLCA_H_ */
