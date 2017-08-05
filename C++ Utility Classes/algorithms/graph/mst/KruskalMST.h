@@ -49,19 +49,20 @@ private:
 public:
     /**
      * Compute a minimum spanning tree (or forest) of an edge-weighted graph.
-     * @param G the edge-weighted graph
+     * @param V the number of vertices
+     * @param graphEdges the edges of the graph
      */
-    KruskalMST(WeightedGraph *G) {
+    KruskalMST(int V, vector<WeightedEdge*> &graphEdges) {
         weight = 0.0;
         // more efficient to build heap by passing array of edges
         priority_queue<WeightedEdge*, vector<WeightedEdge*>, WeightedEdge_greater> pq;
-        for (WeightedEdge *e : G->edges()) {
+        for (WeightedEdge *e : graphEdges) {
             pq.push(e);
         }
 
         // run greedy algorithm
-        UF uf(G->getV());
-        while (!pq.empty() && mst.size() < G->getV() - 1) {
+        UF uf(V);
+        while (!pq.empty() && mst.size() < V - 1) {
             WeightedEdge *e = pq.top();
             pq.pop();
             int v = e->either();
@@ -73,6 +74,12 @@ public:
             }
         }
     }
+
+    /**
+     * Compute a minimum spanning tree (or forest) of an edge-weighted graph.
+     * @param G the edge-weighted graph
+     */
+    KruskalMST(WeightedGraph *G) : KruskalMST(G->getV(), G->edges()) {}
 
     /**
      * Returns the edges in a minimum spanning tree (or forest).
