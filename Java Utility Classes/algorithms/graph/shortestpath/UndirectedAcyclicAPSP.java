@@ -1,6 +1,6 @@
 package algorithms.graph.shortestpath;
 
-import algorithms.graph.search.WeightedLCA;
+import algorithms.graph.lca.WeightedLCA;
 import datastructures.Queue;
 import datastructures.graph.WeightedEdge;
 import datastructures.graph.WeightedGraph;

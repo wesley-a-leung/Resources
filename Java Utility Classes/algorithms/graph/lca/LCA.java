@@ -1,24 +1,23 @@
-package algorithms.graph.search;
+package algorithms.graph.lca;
 
-import algorithms.graph.cycle.DirectedWeightedCycle;
-import datastructures.graph.DirectedWeightedEdge;
-import datastructures.graph.WeightedDigraph;
+import algorithms.graph.cycle.Cycle;
+import datastructures.graph.Graph;
 
 /**
- * The {@code DirectedWeightedLCA} class represents a data structure for finding the
- * lowest common ancestor of 2 nodes in an acyclic digraph using heavy-light decomposition.
+ * The {@code LCA} class represents a data structure for finding the
+ * lowest common ancestor of 2 nodes in an acyclic graph using heavy-light decomposition.
  * The constructor takes time proportional to <em>V</em> +  <em>E</em> and afterwards,
  * the {@code lca()} method takes log <em>V</em> time to find the lowest common ancestor.
  * 
  * @author Wesley Leung
  */
-public class DirectedWeightedLCA {
+public class LCA {
     private int[] depth, parent, chain, size, head;
     private int chainNum;
     
-    public DirectedWeightedLCA(WeightedDigraph G) {
-        DirectedWeightedCycle cycle = new DirectedWeightedCycle(G);
-        if (cycle.hasCycle()) throw new IllegalArgumentException("Weighted Digraph is not acyclic.");
+    public LCA(Graph G) {
+        Cycle cycle = new Cycle(G);
+        if (cycle.hasCycle()) throw new IllegalArgumentException("Graph is not acyclic.");
         depth = new int[G.V()];
         parent = new int[G.V()];
         chain = new int[G.V()];
@@ -31,12 +30,11 @@ public class DirectedWeightedLCA {
         hld(G, 0, -1);
     }
     
-    private void dfs(WeightedDigraph G, int v, int d, int prev) {
+    private void dfs(Graph G, int v, int d, int prev) {
         depth[v] = d;
         parent[v] = prev;
         size[v] = 1;
-        for (DirectedWeightedEdge e: G.adj(v)) {
-            int w = e.to();
+        for (int w: G.adj(v)) {
             if (w != prev) {
                 dfs(G, w, d + 1, v);
                 size[v] += size[w];
@@ -44,17 +42,15 @@ public class DirectedWeightedLCA {
         }
     }
     
-    private void hld(WeightedDigraph G, int v, int prev) {
+    private void hld(Graph G, int v, int prev) {
         if (head[chainNum] == -1) head[chainNum] = v;
         chain[v] = chainNum;
         int maxIndex = -1;
-        for (DirectedWeightedEdge e: G.adj(v)) {
-            int w = e.to();
+        for (int w: G.adj(v)) {
             if (w != prev && (maxIndex == -1 || size[maxIndex] < size[w])) maxIndex = w;
         }
         if (maxIndex != -1) hld(G, maxIndex, v);
-        for (DirectedWeightedEdge e: G.adj(v)) {
-            int w = e.to();
+        for (int w: G.adj(v)) {
             if (w != prev && w != maxIndex) {
                 chainNum++;
                 hld(G, w, v);

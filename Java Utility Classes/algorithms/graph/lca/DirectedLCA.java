@@ -1,23 +1,23 @@
-package algorithms.graph.search;
+package algorithms.graph.lca;
 
-import algorithms.graph.cycle.Cycle;
-import datastructures.graph.Graph;
+import algorithms.graph.cycle.DirectedCycle;
+import datastructures.graph.Digraph;
 
 /**
- * The {@code LCA} class represents a data structure for finding the
- * lowest common ancestor of 2 nodes in an acyclic graph using heavy-light decomposition.
+ * The {@code DirectedLCA} class represents a data structure for finding the
+ * lowest common ancestor of 2 nodes in an acyclic digraph using heavy-light decomposition.
  * The constructor takes time proportional to <em>V</em> +  <em>E</em> and afterwards,
  * the {@code lca()} method takes log <em>V</em> time to find the lowest common ancestor.
  * 
  * @author Wesley Leung
  */
-public class LCA {
+public class DirectedLCA {
     private int[] depth, parent, chain, size, head;
     private int chainNum;
     
-    public LCA(Graph G) {
-        Cycle cycle = new Cycle(G);
-        if (cycle.hasCycle()) throw new IllegalArgumentException("Graph is not acyclic.");
+    public DirectedLCA(Digraph G) {
+        DirectedCycle cycle = new DirectedCycle(G);
+        if (cycle.hasCycle()) throw new IllegalArgumentException("Digraph is not acyclic.");
         depth = new int[G.V()];
         parent = new int[G.V()];
         chain = new int[G.V()];
@@ -30,7 +30,7 @@ public class LCA {
         hld(G, 0, -1);
     }
     
-    private void dfs(Graph G, int v, int d, int prev) {
+    private void dfs(Digraph G, int v, int d, int prev) {
         depth[v] = d;
         parent[v] = prev;
         size[v] = 1;
@@ -42,7 +42,7 @@ public class LCA {
         }
     }
     
-    private void hld(Graph G, int v, int prev) {
+    private void hld(Digraph G, int v, int prev) {
         if (head[chainNum] == -1) head[chainNum] = v;
         chain[v] = chainNum;
         int maxIndex = -1;

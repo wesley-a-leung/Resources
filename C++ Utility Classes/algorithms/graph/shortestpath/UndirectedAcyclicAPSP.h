@@ -10,7 +10,7 @@
 
 #include <bits/stdc++.h>
 #include <datastructures/graph/Graph.h>
-#include <algorithms/graph/search/WeightedLCA.h>
+#include <algorithms/graph/lca/WeightedLCA.h>
 
 using namespace std;
 
