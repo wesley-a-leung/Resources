@@ -36,6 +36,10 @@ private:
     void bfs(WeightedGraph *G, int s) {
         queue<int> q;
         bool marked[G->getV()];
+        for (int v = 0; v < G->getV(); v++) {
+            marked[v] = false;
+            distTo[v] = numeric_limits<double>::infinity();
+        }
         distTo[s] = 0;
         marked[s] = true;
         q.push(s);

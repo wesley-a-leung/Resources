@@ -53,7 +53,7 @@ public class TarjanDirectedLCA {
         }
         color[v] = BLACK;
         for (Pair<Integer, Integer> q : queriesList[v]) {
-            if (color[q.first] == BLACK) answers[q.second] = ancestor[uf.find(v)];
+            if (color[q.first] == BLACK) answers[q.second] = ancestor[uf.find(q.first)];
         }
     }
     
