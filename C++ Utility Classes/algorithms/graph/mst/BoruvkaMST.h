@@ -50,22 +50,23 @@ private:
 public:
     /**
      * Compute a minimum spanning tree (or forest) of an edge-weighted graph.
-     * @param G the edge-weighted graph
+     * @param V the number of vertices
+     * @param graphEdges the edges of the graph
      */
-    BoruvkaMST(WeightedGraph *G) {
+    BoruvkaMST(int V, vector<WeightedEdge*> &graphEdges) {
         weight = 0.0;
-        closest = new WeightedEdge*[G->getV()];
-        UF uf(G->getV());
+        closest = new WeightedEdge*[V];
+        UF uf(V);
         // repeat at most log V times or until we have V-1 edges
-        for (int t = 1; t < G->getV() && mst.size() < G->getV() - 1; t = t + t) {
+        for (int t = 1; t < V && mst.size() < V - 1; t = t + t) {
 
-            for (int i = 0; i < G->getV(); i++) {
+            for (int i = 0; i < V; i++) {
                 closest[i] = nullptr;
             }
 
             // foreach tree in forest, find closest edge
             // if edge weights are equal, ties are broken in favor of first edge in G.edges()
-            for (WeightedEdge *e : G->edges()) {
+            for (WeightedEdge *e : graphEdges) {
                 int v = e->either(), w = e->other(v);
                 int i = uf.find(v), j = uf.find(w);
                 if (i == j) continue;   // same tree
@@ -74,7 +75,7 @@ public:
             }
 
             // add newly discovered edges to MST
-            for (int i = 0; i < G->getV(); i++) {
+            for (int i = 0; i < V; i++) {
                 WeightedEdge *e = closest[i];
                 if (e != nullptr) {
                     int v = e->either(), w = e->other(v);
@@ -88,6 +89,12 @@ public:
             }
         }
     }
+
+    /**
+     * Compute a minimum spanning tree (or forest) of an edge-weighted graph.
+     * @param G the edge-weighted graph
+     */
+    BoruvkaMST(WeightedGraph *G) : BoruvkaMST(G->getV(), G->edges()) {}
 
     /**
      * Returns the edges in a minimum spanning tree (or forest).
