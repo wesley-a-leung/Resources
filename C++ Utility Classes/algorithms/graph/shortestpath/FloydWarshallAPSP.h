@@ -22,7 +22,7 @@ void floydWarshallAPSP(int V, double **adj) {
     edgeTo = new DirectedWeightedEdge **[V];
     for (int i = 0; i < V; i++) {
         distTo[i] = new double[V];
-        edgeTo = new DirectedWeightedEdge *[V];
+        edgeTo[i] = new DirectedWeightedEdge *[V];
     }
 
     // initialize distances to infinity

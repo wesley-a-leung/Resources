@@ -1,5 +1,7 @@
 package algorithms.graph.mst;
 
+import java.util.ArrayList;
+
 import datastructures.Bag;
 import datastructures.graph.WeightedGraph;
 import datastructures.math.UF;
@@ -42,14 +44,14 @@ public class BoruvkaMST {
      */
     public BoruvkaMST(WeightedGraph G) {
         UF uf = new UF(G.V());
-
+        ArrayList<WeightedEdge> edges = G.edges();
         // repeat at most log V times or until we have V-1 edges
         for (int t = 1; t < G.V() && mst.size() < G.V() - 1; t = t + t) {
 
             // foreach tree in forest, find closest edge
             // if edge weights are equal, ties are broken in favor of first edge in G.edges()
             WeightedEdge[] closest = new WeightedEdge[G.V()];
-            for (WeightedEdge e : G.edges()) {
+            for (WeightedEdge e : edges) {
                 int v = e.either(), w = e.other(v);
                 int i = uf.find(v), j = uf.find(w);
                 if (i == j) continue;   // same tree

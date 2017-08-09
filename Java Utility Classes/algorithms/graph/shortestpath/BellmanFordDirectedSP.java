@@ -1,5 +1,6 @@
 package algorithms.graph.shortestpath;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import datastructures.Stack;
@@ -15,7 +16,7 @@ import datastructures.graph.WeightedDigraph;
  *  to every other vertex, or detects a negative cycle if there is one.
  *  <p>
  *  This implementation uses the Bellman-Ford-Moore algorithm.
- *  The constructor takes time proportional to <em>V</em> (<em>V</em> + <em>E</em>)
+ *  The constructor takes time proportional to <em>VE</em>
  *  in the worst case, where <em>V</em> is the number of vertices and <em>E</em>
  *  is the number of edges.
  *  Afterwards, the {@code distTo()} and {@code hasPathTo()} methods take constant time;
@@ -45,9 +46,10 @@ public class BellmanFordDirectedSP {
         for (int v = 0; v < G.V(); v++)
             distTo[v] = Double.POSITIVE_INFINITY;
         distTo[s] = 0.0;
-
+        
+        ArrayList<DirectedWeightedEdge> edges = G.edges();
         for (int i = 0; i < G.V() - 1; i++) {
-            for (DirectedWeightedEdge e : G.edges()) {
+            for (DirectedWeightedEdge e : edges) {
                 int v = e.from();
                 int w = e.to();
                 if (distTo[w] > distTo[v] + e.weight()) {
