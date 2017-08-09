@@ -127,7 +127,7 @@ public:
     }
 
     WeightedDigraph *reverse() {
-        WeightedDigraph *reverse = new Digraph(V);
+        WeightedDigraph *reverse = new WeightedDigraph(V);
         for (int v = 0; v < V; v++) {
             for (DirectedWeightedEdge *e : adj(v)) {
                 reverse->addEdge(new DirectedWeightedEdge(e->to(), e->from(), e->getWeight()));

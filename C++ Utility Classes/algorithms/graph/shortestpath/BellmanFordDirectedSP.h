@@ -24,8 +24,9 @@ void bellmanFordSP(WeightedDigraph *G, int s) {
         distTo[v] = numeric_limits<double>::infinity();
     }
     distTo[s] = 0.0;
+    vector<DirectedWeightedEdge*> edges = G->edges();
     for (int i = 0; i < G->getV() - 1; i++) {
-        for (DirectedWeightedEdge *e : G->edges()) {
+        for (DirectedWeightedEdge *e : edges) {
             int v = e->from();
             int w = e->to();
             if (distTo[w] > distTo[v] + e->getWeight()) {
