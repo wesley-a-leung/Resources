@@ -13,6 +13,24 @@
 
 using namespace std;
 
+/**
+ * The {@code DinicMaxFlow} class represents a data type for computing a
+ * <em>maximum st-flow</em> in a flow network.
+ * This implementation uses the concepts of level graph and flow blocking.
+ * The constructor takes time proportional to <em>V</em><sup>2</sup><em>E</em>
+ * in the worst case and extra space (not including the network)
+ * proportional to <em>V</em><sup>2</sup><em>E</em>, where <em>V</em> is the number of vertices
+ * and <em>E</em> is the number of edges.
+ * Afterwards, the {@code inCut()} and {@code value()} methods take
+ * constant time.
+ * <p>
+ * If the capacities and initial flow values are all integers, then this
+ * implementation guarantees to compute an integer-valued maximum flow.
+ * If the capacities and floating-point numbers, then floating-point
+ * roundoff error can accumulate.
+ *
+ * @author Wesley Leung
+ */
 class DinicMaxFlow {
 private:
     double value;
