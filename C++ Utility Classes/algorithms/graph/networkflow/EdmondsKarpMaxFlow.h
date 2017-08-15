@@ -13,6 +13,33 @@
 
 using namespace std;
 
+/**
+ *  The {@code EdmondsKarpMaxFlow} class represents a data type for computing a
+ *  <em>maximum st-flow</em> and <em>minimum st-cut</em> in a flow
+ *  network.
+ *  <p>
+ *  This implementation uses the <em>Ford-Fulkerson</em> algorithm with
+ *  the <em>Edmonds-Karp shortest augmenting path</em> heuristic.
+ *  The constructor takes time proportional to <em>E V</em> (<em>E</em> + <em>V</em>)
+ *  in the worst case and extra space (not including the network)
+ *  proportional to <em>V</em>, where <em>V</em> is the number of vertices
+ *  and <em>E</em> is the number of edges. In practice, the algorithm will
+ *  run much faster.
+ *  Afterwards, the {@code inCut()} and {@code value()} methods take
+ *  constant time.
+ *  <p>
+ *  If the capacities and initial flow values are all integers, then this
+ *  implementation guarantees to compute an integer-valued maximum flow.
+ *  If the capacities and floating-point numbers, then floating-point
+ *  roundoff error can accumulate.
+ *  <p>
+ *  For additional documentation,
+ *  see <a href="http://algs4.cs.princeton.edu/64maxflow">Section 6.4</a> of
+ *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
+ *
+ *  @author Robert Sedgewick
+ *  @author Kevin Wayne
+ */
 class EdmondsKarpMaxFlow {
 private:
     bool *marked;     // marked[v] = true if s->v path in residual graph
