@@ -269,13 +269,13 @@ public:
 
     // return list of all edges - excludes self loops
     vector<FlowEdge*> &edges() {
-        vector<FlowEdge*> list;
+        vector<FlowEdge*> *list = new vector<FlowEdge*>;
         for (int v = 0; v < V; v++)
             for (FlowEdge *e : adj(v)) {
                 if (e->to() != v)
-                    list.push_back(e);
+                    list->push_back(e);
             }
-        return list;
+        return *list;
     }
 };
 
