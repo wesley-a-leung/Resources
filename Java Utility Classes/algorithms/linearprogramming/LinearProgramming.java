@@ -36,7 +36,7 @@ public class LinearProgramming {
      * { max cx : Ax &le; b, x &ge; 0 }, where A is a m-by-n
      * matrix, b is an m-length vector, and c is an n-length vector.
      *
-     * @param  A the <em>m</em>-by-<em>b</em> matrix
+     * @param  A the <em>m</em>-by-<em>n</em> matrix
      * @param  b the <em>m</em>-length RHS vector
      * @param  c the <em>n</em>-length cost vector
      * @throws IllegalArgumentException unless {@code b[i] >= 0} for each {@code i}
