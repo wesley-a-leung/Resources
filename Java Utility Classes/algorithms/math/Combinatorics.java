@@ -25,21 +25,16 @@ public class Combinatorics {
 
     // O(log power)
     public static long pow(long base, long pow, long mod) {
-        if (pow == 0)
-            return 1;
-        if (pow == 1)
-            return base;
-        if (pow % 2 == 0)
-            return pow(base * base % mod, pow / 2, mod);
+        if (pow == 0) return 1;
+        if (pow == 1) return base;
+        if (pow % 2 == 0) return pow(base * base % mod, pow / 2, mod);
         return base * pow(base * base % mod, pow / 2, mod) % mod;
     }
 
     // O(min(k, n-k))
     public static long choose(int n, int k, long p) {
-        if (n < k)
-            return 0;
-        if (k > n - k)
-            k = n - k;
+        if (n < k) return 0;
+        if (k > n - k) k = n - k;
         long num = 1;
         long den = 1;
         for (int i = 0; i < k; i++)
@@ -50,8 +45,7 @@ public class Combinatorics {
     }
 
     public static long choose(long n, long k) {
-        if (k > n - k)
-            k = n - k;
+        if (k > n - k) k = n - k;
         long ret = 1;
         for (int i = 0; i < k; i++)
             ret = ret * (n - i) / (i + 1);
@@ -61,6 +55,26 @@ public class Combinatorics {
     // O(log P) if you precompute factorials
     public static long fastChoose(int n, int k, int p) {
         return divMod(divMod(factorial(n, p), factorial(k, p), p), factorial(n - k, p), p);
+    }
+    
+    // O(log B)
+    public static long mulMod(long a, long b, long mod) {
+        long x = 0, y = a % mod;
+        for (; b > 0; b /= 2) {
+            if (b % 2 == 0) x = (x + y) % mod;
+            y = (y * 2) % mod;
+        }
+        return x % mod;
+    }
+    
+    // O(log power)
+    public static long powMod(long base, long pow, long mod) {
+        long x = 1, y = base;
+        for (; pow > 0; pow /= 2) {
+            if (pow % 2 == 1) x = mulMod(x, y, mod);
+            y = mulMod(y, y, mod);
+        }
+        return x % mod;
     }
 
     // O(log P)
@@ -75,8 +89,7 @@ public class Combinatorics {
 
     // O(k)
     public static long permute(int n, int k) {
-        if (n < k)
-            return 0;
+        if (n < k) return 0;
         long ret = 1;
         for (int i = 0; i < k; i++)
             ret = (ret * (n - i));
@@ -84,8 +97,7 @@ public class Combinatorics {
     }
 
     public static long permute(int n, int k, long m) {
-        if (n < k)
-            return 0;
+        if (n < k) return 0;
         long ret = 1;
         for (int i = 0; i < k; i++)
             ret = (ret * (n - i)) % m;
@@ -138,8 +150,7 @@ public class Combinatorics {
 
     // O(n * k)
     public static long eulerian1(int n, int k, long m) {
-        if (k > n - 1 - k)
-            k = n - 1 - k;
+        if (k > n - 1 - k) k = n - 1 - k;
         long[][] dp = new long[n + 1][k + 1];
         for (int j = 1; j <= k; j++)
             dp[0][j] = 0;
