@@ -30,7 +30,7 @@ bool isPrime(unsigned long long n, int iterations) {
     srand(time(0));
     for (int i = 0; i < iterations; i++) {
         unsigned long long temp = s;
-        unsigned long long r = powMod(rand(), temp, n);
+        unsigned long long r = powMod(rand() % (n - 1) + 1, temp, n);
         while (temp != n - 1 && r != 1 && r != n - 1) {
             r = mulMod(r, r, n);
             temp *= 2;
