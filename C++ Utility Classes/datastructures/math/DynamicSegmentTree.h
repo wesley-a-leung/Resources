@@ -23,17 +23,17 @@ private:
     int N;
 
     void update(Node *cur, int cL, int cR, int ind, int val) {
-       if (cL > ind || cR < ind) return;
-       if (cL >= ind && cR <= ind) {
+        if (cL > ind || cR < ind) return;
+        if (cL >= ind && cR <= ind) {
            cur->val += val;
            return;
-       }
-       int m = cL + (cR - cL) / 2;
-       if (cur->left == nullptr) cur->left = new Node();
-       update(cur->left, cL, m, ind, val);
-       if (cur->right == nullptr) cur->right = new Node();
-       update(cur->right, m + 1, cR, ind, val);
-       cur->val = max(cur->left->val, cur->right->val);
+        }
+        int m = cL + (cR - cL) / 2;
+        if (cur->left == nullptr) cur->left = new Node();
+        update(cur->left, cL, m, ind, val);
+        if (cur->right == nullptr) cur->right = new Node();
+        update(cur->right, m + 1, cR, ind, val);
+        cur->val = max(cur->left->val, cur->right->val);
     }
 
     int query(Node *cur, int cL, int cR, int l, int r) {
