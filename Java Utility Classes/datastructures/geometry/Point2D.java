@@ -93,7 +93,7 @@ public final class Point2D implements Comparable<Point2D> {
      * Returns the angle between this point and that point.
      * @return the angle in radians (between –&pi; and &pi;) between this point and that point (0 if equal)
      */
-    private double angleTo(Point2D that) {
+    public double angleTo(Point2D that) {
         double dx = that.x - this.x;
         double dy = that.y - this.y;
         return Math.atan2(dy, dx);
