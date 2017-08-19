@@ -20,10 +20,12 @@ using namespace std;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-class Point2D {
+struct Point2D {
 public:
     double x;
     double y;
+
+    Point2D() {}
 
     /**
      * Initializes a new point (x, y).
