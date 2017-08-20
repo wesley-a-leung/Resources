@@ -25,7 +25,7 @@ public:
     double x;
     double y;
 
-    Point2D() {}
+    Point2D() {};
 
     /**
      * Initializes a new point (x, y).
