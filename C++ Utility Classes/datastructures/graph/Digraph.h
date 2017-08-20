@@ -62,6 +62,16 @@ public:
         }
         return reverse;
     }
+
+    vector<pair<int, int>> &edges() {
+        vector<pair<int, int>> *list = new vector<pair<int, int>>;
+        for (int v = 0; v < V; v++) {
+            for (int w : adj(v)) {
+                list->push_back(make_pair(v, w));
+            }
+        }
+        return *list;
+    }
 };
 
 #endif /* DATASTRUCTURES_GRAPH_WEIGHTEDGRAPH_H_ */

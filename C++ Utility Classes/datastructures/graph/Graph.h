@@ -46,6 +46,24 @@ public:
     int degree(int v) {
         return adjList[v].size();
     }
+
+    vector<pair<int, int>> &edges() {
+        vector<pair<int, int>> *list = new vector<pair<int, int>>;
+        for (int v = 0; v < V; v++) {
+            int selfLoops = 0;
+            for (int w : adj(v)) {
+                if (w > v) {
+                    list->push_back(make_pair(v, w));
+                }
+                // only add one copy of each self loop (self loops will be consecutive)
+                else if (w == v) {
+                    if (selfLoops % 2 == 0) list->push_back(make_pair(v, w));
+                    selfLoops++;
+                }
+            }
+        }
+        return *list;
+    }
 };
 
 #endif /* DATASTRUCTURES_GRAPH_WEIGHTEDGRAPH_H_ */
