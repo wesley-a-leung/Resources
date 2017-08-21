@@ -5,8 +5,8 @@
  *      Author: Wesley Leung
  */
 
-#ifndef DATASTRUCTURES_GRAPH_WEIGHTEDGRAPH_H_
-#define DATASTRUCTURES_GRAPH_WEIGHTEDGRAPH_H_
+#ifndef DATASTRUCTURES_GRAPH_DIGRAPH_H_
+#define DATASTRUCTURES_GRAPH_DIGRAPH_H_
 
 #include <bits/stdc++.h>
 
@@ -74,4 +74,4 @@ public:
     }
 };
 
-#endif /* DATASTRUCTURES_GRAPH_WEIGHTEDGRAPH_H_ */
+#endif /* DATASTRUCTURES_GRAPH_DIGRAPH_H_ */
