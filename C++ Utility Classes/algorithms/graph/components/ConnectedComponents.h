@@ -83,8 +83,10 @@ public:
     ConnectedComponents(Graph *G) {
         marked = new bool[G->getV()];
         id = new int[G->getV()];
+        size = new int[G->getV()];
         for (int v = 0; v < G->getV(); v++) {
             marked[v] = false;
+            size[v] = 0;
         }
         count = 0;
         for (int v = 0; v < G->getV(); v++) {
