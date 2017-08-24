@@ -82,7 +82,7 @@ public:
         ind = new int[queries.size()];
         uf1 = new UF(V);
         uf2 = new UF(V);
-        for (int i = 0; i < queries.size(); i++) {
+        for (int i = 0; i < edges.size(); i++) {
             flag[i] = -1;
         }
         curFlag = 0;
