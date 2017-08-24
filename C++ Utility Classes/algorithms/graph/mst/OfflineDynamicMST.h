@@ -29,7 +29,7 @@ public:
         stamp = 0;
         for (int i = 0; i < n; i++) {
             parent[i] = i;
-            vis[i] = 0;
+            vis[i] = -1;
             rank[i] = 0;
         }
     }
@@ -39,11 +39,8 @@ public:
     }
 
     int find(int p) {
-        while (p != parent[p]) {
-            parent[p] = parent[parent[p]];    // path compression by halving
-            p = parent[p];
-        }
-        return p;
+        prop(p);
+        return parent[p] == p ? p : parent[p] = find(parent[p]);
     }
 
     bool join(int p, int q) {
