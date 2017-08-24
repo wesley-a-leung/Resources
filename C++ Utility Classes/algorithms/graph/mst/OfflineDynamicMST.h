@@ -86,7 +86,7 @@ public:
         int v, w, cnt;
         double forest, mst, weight;
         // In practice, block size sqrt(queries.size()) seems to work okay (might actually be faster)
-        for (int l = 0, b = (int) (queries.size() / (sqrt(queries.size()) * sqrt((double) queries.size() / (double) edges.size()))), r; l < queries.size(); l += b) {
+        for (int l = 0, b = (int) (sqrt(queries.size()) * sqrt((double) edges.size() / (double) queries.size())), r; l < queries.size(); l += b) {
             r = min(l + b - 1, (int) queries.size() - 1);
             curFlag++;
             uf1->reset();
