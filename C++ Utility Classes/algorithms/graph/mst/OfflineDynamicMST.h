@@ -70,7 +70,7 @@ private:
     set<pair<double, int>> small, large;
 
 public:
-    OfflineDynamicMST(int V, vector<WeightedEdge*> &graphEdges, vector<pair<int, double>> &queries, double factor = 1.0) {
+    OfflineDynamicMST(int V, vector<WeightedEdge*> &graphEdges, vector<pair<int, double>> &queries) {
         for (int i = 0; i < graphEdges.size(); i++) {
             edges.push_back(graphEdges[i]);
             large.insert({graphEdges[i]->getWeight(), i});
@@ -85,7 +85,8 @@ public:
         curFlag = 0;
         int v, w, cnt;
         double forest, mst, weight;
-        for (int l = 0, b = (int) (sqrt(queries.size()) * factor), r; l < queries.size(); l += b) {
+        // In practice, block size sqrt(queries.size()) seems to work best
+        for (int l = 0, b = (int) (sqrt(queries.size()) * sqrt((double) queries.size() / (double) edges.size())), r; l < queries.size(); l += b) {
             r = min(l + b - 1, (int) queries.size() - 1);
             curFlag++;
             uf1->reset();
@@ -143,7 +144,7 @@ public:
         }
     }
 
-    OfflineDynamicMST(WeightedGraph *G, int Q, vector<pair<int, double>> &queries, double factor = 1.0) : OfflineDynamicMST(G->getV(), G->edges(), queries, factor) {}
+    OfflineDynamicMST(WeightedGraph *G, int Q, vector<pair<int, double>> &queries) : OfflineDynamicMST(G->getV(), G->edges(), queries) {}
 
     vector<double> &getAnswers() {
         return ans;
