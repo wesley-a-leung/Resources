@@ -16,7 +16,7 @@ struct Graph {
 private:
     int V;
     int E;
-    vector<int>* adjList;
+    vector<int> *adjList;
 
 public:
     Graph(int V) {

@@ -45,12 +45,12 @@ using namespace std;
  */
 class TarjanSCC {
 private:
-    bool *marked;            // marked[v] = has v been visited?
-    int *id;                 // id[v] = id of strong component containing v
-    vector<int> size;        // size[x] = size of component x
-    int *low;                // low[v] = low number of v
-    int pre;                 // preorder number counter
-    int count;               // number of strongly-connected components
+    bool *marked;                    // marked[v] = has v been visited?
+    int *id;                         // id[v] = id of strong component containing v
+    vector<vector<int>> component;   // component[i] = vertices in component i
+    int *low;                        // low[v] = low number of v
+    int pre;                         // preorder number counter
+    int count;                       // number of strongly-connected components
     stack<int> s;
 
     void dfs(Digraph *G, int v) {
@@ -67,12 +67,12 @@ private:
             return;
         }
         int w;
-        size.push_back(0);
+        component.push_back(vector<int>());
         do {
             w = s.top();
             s.pop();
             id[w] = count;
-            size[count]++;
+            component[count].push_back(w);
             low[w] = G->getV();
         } while (w != v);
         count++;
@@ -105,7 +105,6 @@ public:
         return count;
     }
 
-
     /**
      * Are vertices {@code v} and {@code w} in the same strong component?
      * @param  v one vertex
@@ -127,21 +126,41 @@ public:
     }
 
     /**
+     * Returns the vertices in the strong component with id {@code id}.
+     *
+     * @param id the id number
+     * @return the vertices in the strong component with id {@code id}
+     */
+    vector<int> &getComponentOfId(int id) {
+        return component[id];
+    }
+
+    /**
+     * Returns the vertices in the strong component containing vertex {@code v}.
+     *
+     * @param v the vertex
+     * @return the vertices in the strong component containing vertex {@code v}
+     */
+    vector<int> &getComponent(int v) {
+        return component[id[v]];
+    }
+
+    /**
      * Returns the size of the strong component containing vertex {@code v}.
      * @param  v the vertex
      * @return the size of the strong component containing vertex {@code v}
      */
     int getSize(int v) {
-        return size[id[v]];
+        return (int) component[id[v]].size();
     }
 
     /**
      * Returns the size of the specified id.
-     * @param  x the id number
+     * @param  id the id number
      * @return the size of the specified id
      */
-    int getIdSize(int x) {
-        return size[x];
+    int getIdSize(int id) {
+        return (int) component[id].size();
     }
 };
 

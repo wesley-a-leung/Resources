@@ -77,7 +77,7 @@ struct WeightedDigraph {
 private:
     int V;
     int E;
-    vector<DirectedWeightedEdge*>* adjList;
+    vector<DirectedWeightedEdge*> *adjList;
     int *indegreeArr;
 
 public:

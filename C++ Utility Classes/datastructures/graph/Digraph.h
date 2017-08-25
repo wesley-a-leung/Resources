@@ -16,7 +16,7 @@ struct Digraph {
 private:
     int V;
     int E;
-    vector<int>* adjList;
+    vector<int> *adjList;
     int *indegreeArr;
 
 public:

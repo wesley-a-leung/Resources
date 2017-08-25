@@ -44,16 +44,16 @@ using namespace std;
  */
 class ConnectedComponents {
 private:
-    bool *marked;      // marked[v] = has vertex v been marked?
-    int *id;           // id[v] = id of connected component containing v
-    vector<int> size;  // size[id] = number of vertices in given component
-    int count;         // number of connected components
+    bool *marked;                    // marked[v] = has vertex v been marked?
+    int *id;                         // id[v] = id of connected component containing v
+    vector<vector<int>> component;   // component[i] = vertices in component i
+    int count;                       // number of connected components
 
     // depth-first search for a Graph
     void dfs(Graph *G, int v) {
         marked[v] = true;
         id[v] = count;
-        size[count]++;
+        component[count].push_back(v);
         for (int w : G->adj(v)) {
             if (!marked[w]) {
                 dfs(G, w);
@@ -65,7 +65,7 @@ private:
     void dfs(WeightedGraph *G, int v) {
         marked[v] = true;
         id[v] = count;
-        size[count]++;
+        component[count].push_back(v);
         for (WeightedEdge *e : G->adj(v)) {
             int w = e->other(v);
             if (!marked[w]) {
@@ -89,7 +89,7 @@ public:
         count = 0;
         for (int v = 0; v < G->getV(); v++) {
             if (!marked[v]) {
-                size.push_back(0);
+                component.push_back(vector<int>());
                 dfs(G, v);
                 count++;
             }
@@ -110,7 +110,7 @@ public:
         count = 0;
         for (int v = 0; v < G->getV(); v++) {
             if (!marked[v]) {
-                size.push_back(0);
+                component.push_back(vector<int>());
                 dfs(G, v);
                 count++;
             }
@@ -122,10 +122,29 @@ public:
      *
      * @param  v the vertex
      * @return the component id of the connected component containing vertex {@code v}
-     * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
     int getId(int v) {
         return id[v];
+    }
+
+    /**
+     * Returns the vertices in the connected component with id {@code id}.
+     *
+     * @param id the id number
+     * @return the vertices in the connected component with id {@code id}
+     */
+    vector<int> &getComponentOfId(int id) {
+        return component[id];
+    }
+
+    /**
+     * Returns the vertices in the connected component containing vertex {@code v}.
+     *
+     * @param v the vertex
+     * @return the vertices in the connected component containing vertex {@code v}
+     */
+    vector<int> &getComponent(int v) {
+        return component[id[v]];
     }
 
     /**
@@ -133,10 +152,9 @@ public:
      *
      * @param  v the vertex
      * @return the number of vertices in the connected component containing vertex {@code v}
-     * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
     int getSize(int v) {
-        return size[id[v]];
+        return (int) component[id[v]].size();
     }
 
     /**
@@ -144,10 +162,9 @@ public:
      *
      * @param  v the vertex
      * @return the number of vertices in the connected component of id {@code id}
-     * @throws IllegalArgumentException unless {@code 0 <= id < size.length}
      */
     int getSizeOfId(int id) {
-        return size[id];
+        return (int) component[id].size();
     }
 
     /**
@@ -167,11 +184,9 @@ public:
      * @param  w the other vertex
      * @return {@code true} if vertices {@code v} and {@code w} are in the same
      *         connected component; {@code false} otherwise
-     * @throws IllegalArgumentException unless {@code 0 <= v < V}
-     * @throws IllegalArgumentException unless {@code 0 <= w < V}
      */
     bool connected(int v, int w) {
-        return getId(v) == getId(w);
+        return id[v] == id[v];
     }
 };
 
