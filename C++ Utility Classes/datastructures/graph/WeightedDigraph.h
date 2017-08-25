@@ -62,13 +62,13 @@ public:
 };
 
 struct DirectedWeightedEdge_less {
-    const bool operator() (const DirectedWeightedEdge *a, const DirectedWeightedEdge *b) const {
+    const bool operator ()(const DirectedWeightedEdge *a, const DirectedWeightedEdge *b) const {
         return *a < *b;
     }
 };
 
 struct DirectedWeightedEdge_greater {
-    const bool operator() (const DirectedWeightedEdge *a, const DirectedWeightedEdge *b) const {
+    const bool operator ()(const DirectedWeightedEdge *a, const DirectedWeightedEdge *b) const {
         return *a > *b;
     }
 };
