@@ -45,11 +45,11 @@ using namespace std;
  */
 class KosarajuSharirSCC {
 private:
-    bool *marked;           // marked[v] = has vertex v been visited?
-    int *id;                // id[v] = id of strong component containing v
-    vector<int> size;       // size[x] = size of component x
-    int count;              // number of strongly-connected components
-    stack<int> reversePost; // stack storing reverse postorder of the digraph
+    bool *marked;                    // marked[v] = has vertex v been visited?
+    int *id;                         // id[v] = id of strong component containing v
+    vector<vector<int>> component;   // size[x] = size of component x
+    int count;                       // number of strongly-connected components
+    stack<int> reversePost;          // stack storing reverse postorder of the digraph
 
     void postOrder(Digraph *G, int v) {
         marked[v] = true;
@@ -63,7 +63,7 @@ private:
     void dfs(Digraph *G, int v) {
         marked[v] = true;
         id[v] = count;
-        size[count]++;
+        component[count].push_back(v);
         for (int w : G->adj(v)) {
             if (!marked[w]) dfs(G, w);
         }
@@ -92,7 +92,7 @@ public:
             int v = reversePost.top();
             reversePost.pop();
             if (!marked[v]) {
-                size.push_back(0);
+                component.push_back(vector<int>());
                 dfs(G, v);
                 count++;
             }
@@ -113,8 +113,6 @@ public:
      * @param  w the other vertex
      * @return {@code true} if vertices {@code v} and {@code w} are in the same
      *         strong component, and {@code false} otherwise
-     * @throws IllegalArgumentException unless {@code 0 <= v < V}
-     * @throws IllegalArgumentException unless {@code 0 <= w < V}
      */
     bool stronglyConnected(int v, int w) {
         return id[v] == id[w];
@@ -124,30 +122,47 @@ public:
      * Returns the component id of the strong component containing vertex {@code v}.
      * @param  v the vertex
      * @return the component id of the strong component containing vertex {@code v}
-     * @throws IllegalArgumentException unless {@code 0 <= s < V}
      */
     int getId(int v) {
         return id[v];
     }
 
     /**
+     * Returns the vertices in the strong component with id {@code id}.
+     *
+     * @param id the id number
+     * @return the vertices in the strong component with id {@code id}
+     */
+    vector<int> &getComponentOfId(int id) {
+        return component[id];
+    }
+
+    /**
+     * Returns the vertices in the strong component containing vertex {@code v}.
+     *
+     * @param v the vertex
+     * @return the vertices in the strong component containing vertex {@code v}
+     */
+    vector<int> &getComponent(int v) {
+        return component[id[v]];
+    }
+
+    /**
      * Returns the size of the strong component containing vertex {@code v}.
      * @param  v the vertex
      * @return the size of the strong component containing vertex {@code v}
-     * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
     int getSize(int v) {
-        return size[id[v]];
+        return (int) component[id[v]].size();
     }
 
     /**
      * Returns the size of the specified id.
-     * @param  x the id number
+     * @param  id the id number
      * @return the size of the specified id
-     * @throws IllegalArgumentException unless {@code 0 <= x < count}
      */
-    int getIdSize(int x) {
-        return size[x];
+    int getIdSize(int id) {
+        return (int) component[id].size();
     }
 };
 

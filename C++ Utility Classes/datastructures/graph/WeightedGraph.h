@@ -79,7 +79,7 @@ struct WeightedGraph {
 private:
     int V;
     int E;
-    vector<WeightedEdge*>* adjList;
+    vector<WeightedEdge*> *adjList;
 
 public:
     WeightedGraph(int V) {
