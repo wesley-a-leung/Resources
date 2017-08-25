@@ -18,6 +18,7 @@ bool *marked;
 WeightedEdge **edgeTo;
 
 // takes time proportional to V ^ 2 and space proportional to V
+// does not work with negative weights
 void dijkstraSP(WeightedGraph *G, int s) {
     distTo = new double[G->getV()];
     edgeTo = new WeightedEdge *[G->getV()];
