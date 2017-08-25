@@ -13,6 +13,7 @@
 
 using namespace std;
 
+// DISCLAIMER: THIS IS UNTESTED. MAY ONLY BE USEFUL FOR FINDING THE MAX-FLOW VALUE, NOT THE FLOW OF THE ACTUAL EDGES.
 /**
  * The {@code PushRelableMaxFlow} class represents a data type for computing a
  * <em>maximum st-flow</em> in a flow network.
