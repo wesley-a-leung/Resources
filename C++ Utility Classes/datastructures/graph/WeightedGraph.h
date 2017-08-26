@@ -75,6 +75,14 @@ struct WeightedEdge_greater {
     }
 };
 
+bool WeightedEdge_p_cmp_less (WeightedEdge *a, WeightedEdge *b) {
+    return *a < *b;
+}
+
+bool WeightedEdge_p_cmp_greater (WeightedEdge *a, WeightedEdge *b) {
+    return *a > *b;
+}
+
 struct WeightedGraph {
 private:
     int V;
