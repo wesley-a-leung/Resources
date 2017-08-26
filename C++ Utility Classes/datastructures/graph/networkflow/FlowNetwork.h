@@ -214,7 +214,7 @@ struct FlowNetwork {
 private:
     int V;
     int E;
-    vector<FlowEdge*>* adjList;
+    vector<FlowEdge*> *adjList;
 
 public:
     /**
