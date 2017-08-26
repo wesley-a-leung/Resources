@@ -4,34 +4,6 @@ import datastructures.Queue;
 import datastructures.Stack;
 import datastructures.graph.Digraph;
 
-/******************************************************************************
- *  Compilation:  javac BreadthFirstDirectedPaths.java
- *  Execution:    java BreadthFirstDirectedPaths digraph.txt s
- *  Dependencies: Digraph.java Queue.java Stack.java
- *  Data files:   http://algs4.cs.princeton.edu/42digraph/tinyDG.txt
- *                http://algs4.cs.princeton.edu/42digraph/mediumDG.txt
- *                http://algs4.cs.princeton.edu/42digraph/largeDG.txt
- *
- *  Run breadth-first search on a digraph.
- *  Runs in O(E + V) time.
- *
- *  % java BreadthFirstDirectedPaths tinyDG.txt 3
- *  3 to 0 (2):  3->2->0
- *  3 to 1 (3):  3->2->0->1
- *  3 to 2 (1):  3->2
- *  3 to 3 (0):  3
- *  3 to 4 (2):  3->5->4
- *  3 to 5 (1):  3->5
- *  3 to 6 (-):  not connected
- *  3 to 7 (-):  not connected
- *  3 to 8 (-):  not connected
- *  3 to 9 (-):  not connected
- *  3 to 10 (-):  not connected
- *  3 to 11 (-):  not connected
- *  3 to 12 (-):  not connected
- *
- ******************************************************************************/
-
 /**
  *  The {@code BreadthDirectedFirstPaths} class represents a data type for finding
  *  shortest paths (number of edges) from a source vertex <em>s</em>

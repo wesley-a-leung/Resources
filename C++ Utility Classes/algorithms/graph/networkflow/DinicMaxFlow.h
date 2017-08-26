@@ -34,8 +34,8 @@ using namespace std;
 class DinicMaxFlow {
 private:
     double value;
-    int* level;
-    int* start;
+    int *level;
+    int *start;
 
     // is there an augmenting path?
     // this implementation finds a shortest augmenting path (fewest number of edges)
