@@ -14,7 +14,7 @@
 using namespace std;
 
 /**
- *  Identifies articulation points.
+ *  Identifies articulation points and bridges.
  *  This can be used to decompose a graph into biconnected components.
  *  Runs in O(E + V) time.
  */
