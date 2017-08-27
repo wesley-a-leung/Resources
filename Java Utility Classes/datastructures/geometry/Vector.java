@@ -47,17 +47,6 @@ public class Vector {
     }
 
     /**
-     * Returns the length of this vector.
-     *
-     * @return the dimension of this vector
-     * @deprecated Replaced by {@link #dimension()}.
-     */
-    @Deprecated
-    public int length() {
-        return d;
-    }
-
-    /**
      * Returns the dimension of this vector.
      *
      * @return the dimension of this vector
@@ -174,21 +163,6 @@ public class Vector {
      *
      * @param  alpha the scalar
      * @return the vector whose value is {@code (alpha * this)}
-     * @deprecated Replaced by {@link #scale(double)}.
-     */
-    @Deprecated
-    public Vector times(double alpha) {
-        Vector c = new Vector(d);
-        for (int i = 0; i < d; i++)
-            c.data[i] = alpha * data[i];
-        return c;
-    }
-
-    /**
-     * Returns the scalar-vector product of this vector and the specified scalar
-     *
-     * @param  alpha the scalar
-     * @return the vector whose value is {@code (alpha * this)}
      */
     public Vector scale(double alpha) {
         Vector c = new Vector(d);
@@ -205,7 +179,7 @@ public class Vector {
      */
     public Vector direction() {
         if (this.magnitude() == 0.0) throw new ArithmeticException("Zero-vector has no direction");
-        return this.times(1.0 / this.magnitude());
+        return this.scale(1.0 / this.magnitude());
     }
     
     /**
@@ -218,6 +192,18 @@ public class Vector {
     public double angle() {
         if (this.d != 2) throw new IllegalArgumentException("Vector must be 2-dimensional");
         return Math.atan2(this.data[1], this.data[0]);
+    }
+    
+    /**
+     * Returns a projection of this vector on that vector.
+     *
+     * @param that the vector that this vector is to be projected on
+     * @return a projection of this vector on that vector
+     * @throws IllegalArgumentException if the dimensions of the two vectors are not equal
+     */
+    public Vector projectionOn(Vector that) {
+        if (this.d != that.d) throw new IllegalArgumentException("Dimensions don't agree");
+        return that.scale(dot(that) / (that.magnitude() * that.magnitude()));
     }
 
     /**
