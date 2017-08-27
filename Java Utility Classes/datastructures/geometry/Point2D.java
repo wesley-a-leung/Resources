@@ -280,7 +280,7 @@ public final class Point2D implements Comparable<Point2D> {
         Point2D that = (Point2D) other;
         return this.x == that.x && this.y == that.y;
     }
-
+    
     /**
      * Return a string representation of this point.
      * @return a string representation of this point in the format (x, y)
@@ -298,6 +298,6 @@ public final class Point2D implements Comparable<Point2D> {
     public int hashCode() {
         int hashX = ((Double) x).hashCode();
         int hashY = ((Double) y).hashCode();
-        return 31*hashX + hashY;
+        return 31 * hashX + hashY;
     }
 }

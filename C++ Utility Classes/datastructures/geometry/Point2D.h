@@ -374,7 +374,7 @@ public:
 
 struct Point2D_hash {
     size_t operator ()(const Point2D &p) const {
-        return (hash<double> {}(p.x) << 31) ^ (hash<double> {}(p.y));
+        return 31 * hash<double> {}(p.x) + hash<double> {}(p.y);
     }
 };
 
