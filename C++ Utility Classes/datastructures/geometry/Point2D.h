@@ -372,4 +372,10 @@ public:
     bool distanceToOrderGe(Point2D &p, Point2D &q) { return distanceSquaredTo(p) >= distanceSquaredTo(q); }
 };
 
+struct Point2D_hash {
+    size_t operator ()(const Point2D &p) const {
+        return (hash<double> {}(p.x) << 31) ^ (hash<double> {}(p.y));
+    }
+};
+
 #endif /* DATASTRUCTURES_GEOMETRY_POINT2D_H_ */
