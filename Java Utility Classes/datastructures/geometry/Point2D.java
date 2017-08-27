@@ -123,6 +123,19 @@ public final class Point2D implements Comparable<Point2D> {
     public static double area2(Point2D a, Point2D b, Point2D c) {
         return (b.x-a.x)*(c.y-a.y) - (b.y-a.y)*(c.x-a.x);
     }
+    
+    /**
+     * Returns a point that is this point rotated theta radians around that point.
+     * 
+     * @param that the pivot point
+     * @param theta the angle in radians
+     * @return  
+     */
+    public Point2D rotate(Point2D that, double theta) {
+        double x = that.x + (this.x - that.x) * Math.cos(theta) - (this.y - that.y) * Math.sin(theta);
+        double y = that.y + (this.x - that.x) * Math.sin(theta) + (this.y - that.y) * Math.cos(theta);
+        return new Point2D(x, y);
+    }
 
     /**
      * Returns the Euclidean distance between this point and that point.
