@@ -68,7 +68,7 @@ private:
     }
 
 public:
-    LazySegmentTree(int size, int *arr, bool oneIndexed): tree((int) (2 * pow(2.0, ceil(log((double) size) / log(2.0))))) {
+    LazySegmentTree(int size, int *arr, bool oneIndexed): tree((int) (2 * pow(2.0, ceil(log2((double) size))))) {
         array = new int[size + 1];
         for (int i = 1; i <= size; i++) {
             array[i] = arr[i - !oneIndexed];
@@ -77,7 +77,7 @@ public:
         N = size;
     }
 
-    LazySegmentTree(int size): tree((int) (2 * pow(2.0, ceil(log((double) size) / log(2.0))))) {
+    LazySegmentTree(int size): tree((int) (2 * pow(2.0, ceil(log2((double) size))))) {
         array = new int[size + 1];
         for (int i = 1; i <= size; i++) {
             array[i] = 0;
