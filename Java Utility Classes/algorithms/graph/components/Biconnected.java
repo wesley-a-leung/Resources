@@ -16,7 +16,7 @@ public class Biconnected {
     private int bridges;
     private int[] low;
     private int[] pre;
-    private ArrayList<ArrayList<Pair<Integer, Integer>>> components;
+    private ArrayList<HashSet<Integer>> components;
     private int cnt;
     private boolean[] articulation;
     private HashSet<Integer>[] bridgeList;  // adjacency bridge list
@@ -27,7 +27,7 @@ public class Biconnected {
         pre = new int[G.V()];
         bridgeList = new HashSet[G.V()];
         articulation = new boolean[G.V()];
-        components = new ArrayList<ArrayList<Pair<Integer, Integer>>>();
+        components = new ArrayList<HashSet<Integer>>();
         s = new Stack<Pair<Integer, Integer>>();
         for (int v = 0; v < G.V(); v++) {
             low[v] = -1;
@@ -36,29 +36,38 @@ public class Biconnected {
         }
         for (int v = 0; v < G.V(); v++) {
             if (pre[v] == -1) dfs(G, v, v);
+            if (!s.isEmpty()) {
+                components.add(new HashSet<Integer>());
+                while (!s.isEmpty()) {
+                    components.get(components.size() - 1).add(s.peek().first);
+                    components.get(components.size() - 1).add(s.peek().second);
+                    s.pop();
+                }
+            }
         }
     }
 
-    private void dfs(Graph G, int u, int v) {
+    private void dfs(Graph G, int v, int prev) {
         int children = 0;
-        pre[v] = cnt++;
-        low[v] = pre[v];
+        pre[v] = low[v] = cnt++;
         for (int w : G.adj(v)) {
             if (pre[w] == -1) {
                 children++;
                 s.push(new Pair<Integer, Integer>(v, w));
-                dfs(G, v, w);
+                dfs(G, w, v);
                 // update low number
                 low[v] = Math.min(low[v], low[w]);
                 // non-root of DFS is an articulation point if low[w] >= pre[v]
-                if (low[w] >= pre[v] && u != v) {
+                if ((prev == v && children > 1) || (prev != v && low[w] >= pre[v])) {
                     articulation[v] = true;
-                    components.add(new ArrayList<Pair<Integer, Integer>>());
-                    while (s.peek().first != u && s.peek().second != v) {
-                        components.get(components.size() - 1).add(new Pair<Integer, Integer>(s.peek().first, s.peek().second));
+                    components.add(new HashSet<Integer>());
+                    while (s.peek().first != v && s.peek().second != w) {
+                        components.get(components.size() - 1).add(s.peek().first);
+                        components.get(components.size() - 1).add(s.peek().second);
                         s.pop();
                     }
-                    components.get(components.size() - 1).add(new Pair<Integer, Integer>(s.peek().first, s.peek().second));
+                    components.get(components.size() - 1).add(s.peek().first);
+                    components.get(components.size() - 1).add(s.peek().second);
                     s.pop();
                 }
                 if (low[w] == pre[w]) {
@@ -67,10 +76,11 @@ public class Biconnected {
                 }
             }
             // update low number - ignore reverse of edge leading to v
-            else if (w != u) low[v] = Math.min(low[v], pre[w]);
+            else if (w != prev && pre[w] < low[v]) {
+                low[v] = pre[w];
+                s.push(new Pair<Integer, Integer>(v, w));
+            }
         }
-        // root of DFS is an articulation point if it has more than 1 child
-        if (u == v && children > 1) articulation[v] = true;
     }
 
     // is vertex v an articulation point?
@@ -78,8 +88,16 @@ public class Biconnected {
         return articulation[v];
     }
     
-    public ArrayList<ArrayList<Pair<Integer, Integer>>> components() {
+    public ArrayList<HashSet<Integer>> components() {
         return components;
+    }
+    
+    public HashSet<Integer> getComponent(int id) {
+        return components.get(id);
+    }
+    
+    public int getSize(int id) {
+        return components.get(id).size();
     }
     
     public int countComponents() {
