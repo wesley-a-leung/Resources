@@ -112,9 +112,9 @@ public:
      *
      * @param that the pivot point
      * @param theta the angle in radians
-     * @return
+     * @return a point that is this point rotated theta radians around that point
      */
-    Point2D &rotate(Point2D that, double theta) {
+    Point2D &rotate(Point2D &that, double theta) {
         double x = that.x + (this->x - that.x) * cos(theta) - (this->y - that.y) * sin(theta);
         double y = that.y + (this->x - that.x) * sin(theta) + (this->y - that.y) * cos(theta);
         return *(new Point2D(x, y));
