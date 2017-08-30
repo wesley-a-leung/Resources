@@ -73,11 +73,11 @@ struct DirectedWeightedEdge_greater {
     }
 };
 
-bool DirectedWeightedEdge_p_cmp_less (DirectedWeightedEdge_greater *a, DirectedWeightedEdge_greater *b) {
+bool DirectedWeightedEdge_p_cmp_less (DirectedWeightedEdge *a, DirectedWeightedEdge *b) {
     return *a < *b;
 }
 
-bool DirectedWeightedEdge_p_cmp_greater (DirectedWeightedEdge_greater *a, DirectedWeightedEdge_greater *b) {
+bool DirectedWeightedEdge_p_cmp_greater (DirectedWeightedEdge *a, DirectedWeightedEdge *b) {
     return *a > *b;
 }
 

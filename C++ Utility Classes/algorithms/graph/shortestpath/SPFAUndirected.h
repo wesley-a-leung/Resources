@@ -16,10 +16,10 @@ using namespace std;
 double *distTo;
 WeightedEdge **edgeTo;
 bool *inQueue;
-deque<int> q;
 
 // takes time proportional to VE in the worst case and E on average and space proportional to V
 void spfa(WeightedGraph *G, int s) {
+    deque<int> q;
     distTo = new double[G->getV()];
     edgeTo = new WeightedEdge *[G->getV()];
     inQueue = new bool[G->getV()];

@@ -15,11 +15,11 @@ using namespace std;
 
 double *distTo;
 WeightedEdge **edgeTo;
-priority_queue<pair<double, int>, vector<pair<double, int>> , greater<pair<double, int>>> pq;
 
 // takes time proportional to E log E and space proportional to V
 // works with negative edges weights, but cannot detect negative cycles
 void dijkstraSP(WeightedGraph *G, int s) {
+    priority_queue<pair<double, int>, vector<pair<double, int>> , greater<pair<double, int>>> pq;
     distTo = new double[G->getV()];
     edgeTo = new WeightedEdge *[G->getV()];
     for (int v = 0; v < G->getV(); v++) {
