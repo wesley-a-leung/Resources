@@ -205,6 +205,32 @@ public class Vector {
         if (this.d != that.d) throw new IllegalArgumentException("Dimensions don't agree");
         return that.scale(dot(that) / (that.magnitude() * that.magnitude()));
     }
+    
+    /**
+     * Returns a vector that is this vector rotated theta radians around that vector.
+     *
+     * @param that vector representing the axis of rotation
+     * @param theta the angle in radians
+     * @return a vector that is this vector rotated theta radians around that vector
+     * @throws IllegalArgumentException if the dimensions of the two vectors are not equal
+     * @throws IllegalArgumentException if the two vectors are not 2-dimensional or 3-dimensional
+     */
+    public Vector rotate(Vector that, double theta) {
+        if (d == 2 && that.d == 2) {
+            Vector r = new Vector(2);
+            r.data[0] = that.data[0] + (data[0] - that.data[0]) * Math.cos(theta) - (data[1] - that.data[1]) * Math.sin(theta);
+            r.data[1] = that.data[1] + (data[0] - that.data[0]) * Math.sin(theta) + (data[1] - that.data[1]) * Math.cos(theta);
+            return r;
+        } else if (d == 3 && that.d == 3) {
+            Vector r = new Vector(3);
+            r = this.scale(Math.cos(theta)).plus(that.direction().cross3D(this).scale(Math.sin(theta))).plus(that.direction().scale(that.direction().dot(this)).scale(1.0 - Math.cos(theta)));
+            return r;
+        } else if (d == that.d) {
+            throw new IllegalArgumentException("Vectors must be 2-dimensional or 3-dimensional");
+        } else {
+            throw new IllegalArgumentException("Dimensions don't agree");
+        }
+    }
 
     /**
      * Returns a string representation of this vector.
