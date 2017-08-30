@@ -23,32 +23,33 @@ private:
     int bridges;
     int *low;
     int *pre;
-    vector<vector<pair<int, int>>> components;
+    vector<unordered_set<int>> components;
     int cnt;
     bool *articulation;
     unordered_set<int> *bridgeList;  // adjacency bridge list
     stack<pair<int, int>> s;
 
-    void dfs(Graph *G, int u, int v) {
+    void dfs(Graph *G, int v, int prev) {
         int children = 0;
-        pre[v] = cnt++;
-        low[v] = pre[v];
+        pre[v] = low[v] = cnt++;
         for (int w : G->adj(v)) {
             if (pre[w] == -1) {
                 children++;
                 s.push(make_pair(v, w));
-                dfs(G, v, w);
+                dfs(G, w, v);
                 // update low number
                 low[v] = min(low[v], low[w]);
                 // non-root of DFS is an articulation point if low[w] >= pre[v]
-                if (low[w] >= pre[v] && u != v) {
+                if ((prev == v && children > 1) || (prev != v && low[w] >= pre[v])) {
                     articulation[v] = true;
-                    components.push_back(vector<pair<int, int>>());
-                    while (s.top().first != u && s.top().second != v) {
-                        components.back().push_back(make_pair(s.top().first, s.top().second));
+                    components.push_back(unordered_set<int>());
+                    while (s.top().first != v && s.top().second != w) {
+                        components.back().insert(s.top().first);
+                        components.back().insert(s.top().second);
                         s.pop();
                     }
-                    components.back().push_back(make_pair(s.top().first, s.top().second));
+                    components.back().insert(s.top().first);
+                    components.back().insert(s.top().second);
                     s.pop();
                 }
                 if (low[w] == pre[w]) {
@@ -57,10 +58,11 @@ private:
                 }
             }
             // update low number - ignore reverse of edge leading to v
-            else if (w != u) low[v] = min(low[v], pre[w]);
+            else if (w != prev && pre[w] < low[v]) {
+                low[v] = pre[w];
+                s.push(make_pair(v, w));
+            }
         }
-        // root of DFS is an articulation point if it has more than 1 child
-        if (u == v && children > 1) articulation[v] = true;
     }
 
 public:
@@ -78,6 +80,14 @@ public:
         }
         for (int v = 0; v < G->getV(); v++) {
             if (pre[v] == -1) dfs(G, v, v);
+            if (!s.empty()) {
+                components.push_back(unordered_set<int>());
+                while (!s.empty()) {
+                    components.back().insert(s.top().first);
+                    components.back().insert(s.top().second);
+                    s.pop();
+                }
+            }
         }
     }
 
@@ -86,8 +96,16 @@ public:
         return articulation[v];
     }
 
-    vector<vector<int>> &getComponents() {
+    vector<unordered_set<int>> &getComponents() {
         return components;
+    }
+
+    unordered_set<int> &getComponent(int id) {
+        return components[id];
+    }
+
+    int getSize(int id) {
+        return components[id].size();
     }
 
     int countComponents() {
