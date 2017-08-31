@@ -296,7 +296,7 @@ public:
      */
     Vector &projectionOn(Vector &that) {
         if (d != that.d) throw invalid_argument("Dimensions don't agree");
-        return that.scale(dot(that) / (that.magnitude() * that.magnitude()));
+        return that.scale(dot(that) / that.dot(that));
     }
 
     /**
