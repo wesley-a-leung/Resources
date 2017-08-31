@@ -158,6 +158,68 @@ public final class Point2D implements Comparable<Point2D> {
         double dy = this.y - that.y;
         return dx*dx + dy*dy;
     }
+    
+    /**
+     * Is this point on the line segment pq?
+     * @param p one point of the line segment
+     * @param q the other point of the line segment
+     * @returns whether this point is on the line segment pq
+     */
+    public boolean onSegment(Point2D p, Point2D q) {
+        return x <= Math.max(p.x, q.x) && x >= Math.min(p.x, q.x) && y <= Math.max(p.y, q.y) && y >= Math.min(p.y, q.y);
+    }
+
+    /**
+     * Does line segment p1q1 intersect line segment p2q2?
+     *
+     * @param p1 one point of the first line segment
+     * @param q1 the other point of the first line segment
+     * @param p2 one point of the second line segment
+     * @param q2 the other point of the second line segment
+     * @return whether line segment p1q1 intersects line segment p2q2
+     */
+    public static boolean intersects(Point2D p1, Point2D q1, Point2D p2, Point2D q2) {
+        // Find the four orientations needed for general and special cases
+        int o1 = ccw(p1, q1, p2);
+        int o2 = ccw(p1, q1, q2);
+        int o3 = ccw(p2, q2, p1);
+        int o4 = ccw(p2, q2, q1);
+        // General case
+        if (o1 != o2 && o3 != o4) return true;
+        // Special Cases
+        // p1, q1 and p2 are colinear and p2 lies on segment p1q1
+        if (o1 == 0 && p2.onSegment(p1, q1)) return true;
+        // p1, q1 and p2 are colinear and q2 lies on segment p1q1
+        if (o2 == 0 && q2.onSegment(p1, q1)) return true;
+        // p2, q2 and p1 are colinear and p1 lies on segment p2q2
+        if (o3 == 0 && p1.onSegment(p2, q2)) return true;
+         // p2, q2 and q1 are colinear and q1 lies on segment p2q2
+        if (o4 == 0 && q1.onSegment(p2, q2)) return true;
+        return false; // Doesn't fall in any of the above cases
+    }
+
+    /**
+     * Calculates the point of intersection of 2 lines.
+     *
+     * @param p1 one point on the first line
+     * @param q1 the other point on the first line
+     * @param p2 one point on the second line
+     * @param q2 the other point on the second line
+     * @return the point of intersection of the 2 lines
+     * @throws RuntimeException if there is no point of intersection
+     */
+    public static Point2D intersection(Point2D p1, Point2D q1, Point2D p2, Point2D q2) {
+        double A1 = q1.y - p1.y;
+        double B1 = p1.x - q1.x;
+        double C1 = A1 * p1.x + B1 * p1.y;
+        double A2 = q2.y - p2.y;
+        double B2 = p2.x - q2.x;
+        double C2 = A2 * p2.x + B2 * p2.y;
+        double det = A1 * B2 - A2 * B1;
+        if (Math.abs(det) <= 1e-12) throw new RuntimeException("The lines do not intersect");
+        Point2D r = new Point2D((B2 * C1 - B1 * C2) / det, (A1 * C2 - A2 * C1) / det);
+        return r;
+    }
 
     /**
      * Compares two points by y-coordinate, breaking ties by x-coordinate.
