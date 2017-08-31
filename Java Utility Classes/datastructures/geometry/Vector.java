@@ -203,7 +203,7 @@ public class Vector {
      */
     public Vector projectionOn(Vector that) {
         if (this.d != that.d) throw new IllegalArgumentException("Dimensions don't agree");
-        return that.scale(dot(that) / (that.magnitude() * that.magnitude()));
+        return that.scale(dot(that) / that.dot(that));
     }
     
     /**
