@@ -33,15 +33,14 @@ public:
     }
 
     /**
-     * Range Sum query from 1 to ind
-     * ind is 1-indexed
+     * Value at index {@code ind}.
      * <p>
      * Time-Complexity:    O(log(n))
      *
      * @param  ind index
      * @return sum
      */
-    int rsq(int ind) {
+    int getValue(int ind) {
         int sum = 0;
         for (int x = ind; x > 0; x -= (x & -x)) {
             sum += array[x];

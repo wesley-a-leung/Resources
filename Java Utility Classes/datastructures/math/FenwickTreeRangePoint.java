@@ -15,15 +15,14 @@ public class FenwickTreeRangePoint {
     }
 
     /**
-     * Range Sum query at index ind
-     * ind is 1-indexed
+     * Value at index {@code ind}.
      * <p>
      * Time-Complexity:    O(log(n))
      *
      * @param  ind index
      * @return sum
      */
-    public int rsq(int ind) {
+    public int getValue(int ind) {
         int sum = 0;
         for (int x = ind; x > 0; x -= (x & -x)) {
             sum += array[x];
