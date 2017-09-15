@@ -276,15 +276,13 @@ public:
     }
 
     /**
-     * Returns the angle of this 2-D vector to horizontal.
+     * Returns the direction cosine of this angle in the ith dimension.
      *
-     *
-     * @return the angle of this 2-D vector to horizontal
-     * @throws IllegalArgumentException if this vector is not 2-dimensional
+     * @param i the direction number (0-indexed)
+     * @return the direction cosine of this angle in the ith dimension
      */
-    double angle() {
-        if (d != 2) throw invalid_argument("Vector must be 2-dimensional");
-        return atan2(data[1], data[0]);
+    double directionCosine(int i) {
+        return data[i] / magnitude();
     }
 
     /**
