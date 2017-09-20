@@ -18,7 +18,7 @@ public class HalfPlaneIntersection {
         public Line(Vector a, Vector b) {
             this.a = a;
             this.b = b;
-            this.rad = b.angle();
+            this.rad = Math.atan2(b.cartesian(1), b.cartesian(0));
         }
         
         public boolean onLeft(Vector v) {
