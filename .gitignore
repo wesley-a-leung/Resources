@@ -1,0 +1,8 @@
+**/*.class
+**/bin/
+**/Debug/
+**/HungarianMatchingCompact.h
+**/MaxFlowMinCostCompact.h
+**/DinicMaxFlowCompact.h
+**/Codebook.pdf
+**/codebook.tex

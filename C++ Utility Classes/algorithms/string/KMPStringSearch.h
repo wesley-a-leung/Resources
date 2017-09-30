@@ -1,10 +1,3 @@
-/*
- * KMPStringSearch.h
- *
- *  Created on: Aug 4, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_STRING_KMPSTRINGSEARCH_H_
 #define ALGORITHMS_STRING_KMPSTRINGSEARCH_H_
 

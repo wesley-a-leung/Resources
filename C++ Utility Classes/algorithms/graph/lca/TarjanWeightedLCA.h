@@ -1,10 +1,3 @@
-/*
- * TarjanWeightedLCA.h
- *
- *  Created on: Aug 4, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_GRAPH_LCA_TARJANLCA_H_
 #define ALGORITHMS_GRAPH_LCA_TARJANLCA_H_
 

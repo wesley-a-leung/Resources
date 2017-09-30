@@ -1,10 +1,3 @@
-/*
- * FenwickTreeRange.h
- *
- *  Created on: Jul 26, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef DATASTRUCTURES_MATH_FENWICKTREERANGE_H_
 #define DATASTRUCTURES_MATH_FENWICKTREERANGE_H_
 

@@ -66,7 +66,7 @@ public:
 
     /**
      * Returns the angle of this point in polar coordinates.
-     * @return the angle (in radians) of this point in polar coordiantes (between –&pi;/2 and &pi;/2)
+     * @return the angle (in radians) of this point in polar coordiantes (between -&pi;/2 and &pi;/2)
      */
     double theta() {
         return atan2(y, x);
@@ -74,7 +74,7 @@ public:
 
     /**
      * Returns the angle between this point and that point.
-     * @return the angle in radians (between –&pi; and &pi;) between this point and that point (0 if equal)
+     * @return the angle in radians (between -&pi; and &pi;) between this point and that point (0 if equal)
      */
     double angleTo(Point2D &that) {
         double dx = that.x - x;
@@ -83,11 +83,11 @@ public:
     }
 
     /**
-     * Returns true if a→b→c is a counterclockwise turn.
+     * Returns true if a->b->c is a counterclockwise turn.
      * @param a first point
      * @param b second point
      * @param c third point
-     * @return { -1, 0, +1 } if a→b→c is a { clockwise, collinear; counterclockwise } turn.
+     * @return { -1, 0, +1 } if a->b->c is a { clockwise, collinear; counterclockwise } turn.
      */
     static int ccw(Point2D &a, Point2D &b, Point2D &c) {
         double area2 = (b.x-a.x)*(c.y-a.y) - (b.y-a.y)*(c.x-a.x);
@@ -401,25 +401,25 @@ public:
     // Atan2 Order
 
     /**
-     * Compares two points by atan2() angle (between –&pi; and &pi;) with respect to this point.
+     * Compares two points by atan2() angle (between -&pi; and &pi;) with respect to this point.
      * Less than comparator.
      */
     bool atan2OrderLt(Point2D &q1, Point2D &q2) { return angleTo(q1) < angleTo(q2); }
 
     /**
-     * Compares two points by atan2() angle (between –&pi; and &pi;) with respect to this point.
+     * Compares two points by atan2() angle (between -&pi; and &pi;) with respect to this point.
      * Less than or equal to comparator.
      */
     bool atan2OrderLe(Point2D &q1, Point2D &q2) { return angleTo(q1) <= angleTo(q2); }
 
     /**
-     * Compares two points by atan2() angle (between –&pi; and &pi;) with respect to this point.
+     * Compares two points by atan2() angle (between -&pi; and &pi;) with respect to this point.
      * Greater than comparator.
      */
     bool atan2OrderGt(Point2D &q1, Point2D &q2) { return angleTo(q1) > angleTo(q2); }
 
     /**
-     * Compares two points by atan2() angle (between –&pi; and &pi;) with respect to this point.
+     * Compares two points by atan2() angle (between -&pi; and &pi;) with respect to this point.
      * Greater than or equal to comparator.
      */
     bool atan2OrderGe(Point2D &q1, Point2D &q2) { return angleTo(q1) >= angleTo(q2); }

@@ -1,10 +1,3 @@
-/*
- * DijkstraDirectedSP.h
- *
- *  Created on: Jul 8, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_GRAPH_SHORTESTPATH_DIJKSTRADIRECTEDSP_H_
 #define ALGORITHMS_GRAPH_SHORTESTPATH_DIJKSTRADIRECTEDSP_H_
 

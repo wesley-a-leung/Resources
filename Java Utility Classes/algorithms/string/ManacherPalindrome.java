@@ -1,18 +1,5 @@
 package algorithms.string;
 
-/******************************************************************************
- *  Compilation:  javac Manacher.java
- *  Execution:    java Manacher text
- *  Dependencies: StdOut.java
- *
- *  Computes the longest palindromic substring in linear time
- *  using Manacher's algorithm.
- *
- *  Credits: The code is lifted from the following excellent reference
- *  http://www.leetcode.com/2011/11/longest-palindromic-substring-part-ii.html
- *
- ******************************************************************************/
-
 public class ManacherPalindrome {
     private int[]  p;  // p[i] = length of longest palindromic substring of t, centered at i
     private String s;  // original string

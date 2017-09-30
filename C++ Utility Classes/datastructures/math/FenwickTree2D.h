@@ -1,10 +1,3 @@
-/*
- * FenwickTree2D.h
- *
- *  Created on: Jun 16, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef DATASTRUCTURES_MATH_FENWICKTREE2D_H_
 #define DATASTRUCTURES_MATH_FENWICKTREE2D_H_
 

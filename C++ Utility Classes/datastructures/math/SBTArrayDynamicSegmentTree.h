@@ -1,10 +1,3 @@
-/*
- * SBTArrayDynamicSegmentTree.h
- *
- *  Created on: Jul 21, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef DATASTRUCTURES_MATH_SBTARRAYDYNAMICSEGMENTTREE_H_
 #define DATASTRUCTURES_MATH_SBTARRAYDYNAMICSEGMENTTREE_H_
 

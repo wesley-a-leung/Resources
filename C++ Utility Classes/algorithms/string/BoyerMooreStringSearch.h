@@ -1,10 +1,3 @@
-/*
- * BoyerMooreStringSearch.h
- *
- *  Created on: Aug 4, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_STRING_BOYERMOORESTRINGSEARCH_H_
 #define ALGORITHMS_STRING_BOYERMOORESTRINGSEARCH_H_
 

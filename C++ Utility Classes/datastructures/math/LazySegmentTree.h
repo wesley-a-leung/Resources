@@ -1,10 +1,3 @@
-/*
- * LazySegmentTree.h
- *
- *  Created on: Jun 19, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef DATASTRUCTURES_MATH_LAZYSEGMENTTREE_H_
 #define DATASTRUCTURES_MATH_LAZYSEGMENTTREE_H_
 

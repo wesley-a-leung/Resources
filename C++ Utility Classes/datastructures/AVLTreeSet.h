@@ -1,10 +1,3 @@
-/*
- * AVLTreeSet.h
- *
- *  Created on: Jul 5, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef DATASTRUCTURES_AVLTREESET_H_
 #define DATASTRUCTURES_AVLTREESET_H_
 

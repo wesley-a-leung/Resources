@@ -1,10 +1,3 @@
-/*
- * DinicMaxFlow.h
- *
- *  Created on: Jul 17, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_GRAPH_NETWORKFLOW_DINICMAXFLOW_H_
 #define ALGORITHMS_GRAPH_NETWORKFLOW_DINICMAXFLOW_H_
 

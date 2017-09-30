@@ -1,10 +1,3 @@
-/*
- * HopcroftKarpMaxMatch.h
- *
- *  Created on: Jun 28, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_GRAPH_NETWORKFLOW_HOPCROFTKARPMAXMATCH_H_
 #define ALGORITHMS_GRAPH_NETWORKFLOW_HOPCROFTKARPMAXMATCH_H_
 

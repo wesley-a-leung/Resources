@@ -1,10 +1,3 @@
-/*
- * EggDropping.h
- *
- *  Created on: Aug 10, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_DP_EGGDROPPING_H_
 #define ALGORITHMS_DP_EGGDROPPING_H_
 

@@ -1,10 +1,3 @@
-/*
- * DynamicSegmentTree.h
- *
- *  Created on: Jun 17, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef DATASTRUCTURES_MATH_DYNAMICSEGMENTTREE_H_
 #define DATASTRUCTURES_MATH_DYNAMICSEGMENTTREE_H_
 

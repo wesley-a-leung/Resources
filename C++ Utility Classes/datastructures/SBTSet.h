@@ -1,10 +1,3 @@
-/*
- * SBTSet.h
- *
- *  Created on: Jul 21, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef DATASTRUCTURES_SBTSET_H_
 #define DATASTRUCTURES_SBTSET_H_
 

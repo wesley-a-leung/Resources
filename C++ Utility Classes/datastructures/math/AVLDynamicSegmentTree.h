@@ -1,10 +1,3 @@
-/*
- * AVLDynamicSegmentTree.h
- *
- *  Created on: Jul 14, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef DATASTRUCTURES_AVLDYNAMICSEGMENTTREE_H_
 #define DATASTRUCTURES_AVLDYNAMICSEGMENTTREE_H_
 

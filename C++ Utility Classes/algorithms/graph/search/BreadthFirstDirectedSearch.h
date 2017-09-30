@@ -1,10 +1,3 @@
-/*
- * BreadthFirstDirectedSearch.h
- *
- *  Created on: Jul 2, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_GRAPH_SEARCH_BREADTHFIRSTSEARCH_H_
 #define ALGORITHMS_GRAPH_SEARCH_BREADTHFIRSTSEARCH_H_
 

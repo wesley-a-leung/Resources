@@ -13,13 +13,15 @@ import java.util.Arrays;
  *
  */
 public class Mo {
-    private int n, m, sz, res;
+    private int n, m, sz, res, maxVal;
     private int[] cnt, a, ans;
 
     public Mo(int[] arr, int[][] queries) {
         n = arr.length;
+        maxVal = 0;
         for (int i = 1; i <= n; i++) {
             a[i] = arr[i - 1];
+            maxVal = Math.max(maxVal, arr[i - 1]);
         }
         m = queries.length;
         Query[] q = new Query[m];
@@ -27,7 +29,7 @@ public class Mo {
             q[i] = new Query(queries[i][0], queries[i][1], i);
         }
         Arrays.sort(q);
-        cnt = new int[1000001];
+        cnt = new int[maxVal + 1];
         ans = new int[m];
         int l = 1, r = 0;
         for (Query query : q) {
@@ -57,14 +59,12 @@ public class Mo {
     
     private void update(int i) {
         cnt[i]++;
-        if (cnt[i] == 1)
-            res++;
+        if (cnt[i] == 1) res++;
     }
     
     private void remove(int i) {
         cnt[i]--;
-        if (cnt[i] == 0)
-            res--;
+        if (cnt[i] == 0) res--;
     }
     
     public class Query implements Comparable<Query> {

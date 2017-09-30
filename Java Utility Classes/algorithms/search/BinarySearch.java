@@ -132,10 +132,30 @@ public class BinarySearch {
         return lo;
     }
     
+    /**
+     * Returns a pair containing the start (inclusive) and end (exclusive) indices
+     * of a given value.
+     *
+     * @param  a the array, must be sorted in ascending order
+     * @param  key the search key
+     * @return a pair containing the start (inclusive) and end (exclusive) indices
+     * of a given value
+     */
     public static Pair<Integer, Integer> equalRange(Comparable[] a, Comparable key) {
         return equalRange(a, 0, a.length, key);
     }
     
+    /**
+     * Returns a pair containing the start (inclusive) and end (exclusive) indices
+     * of a given value.
+     *
+     * @param  a the array, must be sorted in ascending order
+     * @param  start the inclusive start index
+     * @param  end the exclusive end index
+     * @param  key the search key
+     * @return a pair containing the start (inclusive) and end (exclusive) indices
+     * of a given value
+     */
     public static Pair<Integer, Integer> equalRange(Comparable[] a, int start, int end, Comparable key) {
         return new Pair<Integer, Integer>(lowerBound(a, start, end, key), upperBound(a, start, end, key));
     }
@@ -251,10 +271,30 @@ public class BinarySearch {
         return lo;
     }
     
+    /**
+     * Returns a pair containing the start (inclusive) and end (exclusive) indices
+     * of a given value.
+     *
+     * @param  a the array, must be sorted in ascending order
+     * @param  key the search key
+     * @return a pair containing the start (inclusive) and end (exclusive) indices
+     * of a given value
+     */
     public static Pair<Integer, Integer> equalRange(List<Comparable> a, Comparable key) {
         return equalRange(a, 0, a.size(), key);
     }
     
+    /**
+     * Returns a pair containing the start (inclusive) and end (exclusive) indices
+     * of a given value.
+     *
+     * @param  a the array, must be sorted in ascending order
+     * @param  start the inclusive start index
+     * @param  end the exclusive end index
+     * @param  key the search key
+     * @return a pair containing the start (inclusive) and end (exclusive) indices
+     * of a given value
+     */
     public static Pair<Integer, Integer> equalRange(List<Comparable> a, int start, int end, Comparable key) {
         return new Pair<Integer, Integer>(lowerBound(a, start, end, key), upperBound(a, start, end, key));
     }

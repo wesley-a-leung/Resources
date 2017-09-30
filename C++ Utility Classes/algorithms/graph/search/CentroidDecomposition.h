@@ -1,10 +1,3 @@
-/*
- * CentroidDecomposition.h
- *
- *  Created on: Jul 29, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_GRAPH_SEARCH_CENTROIDDECOMPOSITION_H_
 #define ALGORITHMS_GRAPH_SEARCH_CENTROIDDECOMPOSITION_H_
 

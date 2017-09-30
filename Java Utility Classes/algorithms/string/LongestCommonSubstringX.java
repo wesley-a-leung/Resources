@@ -14,10 +14,10 @@ public class LongestCommonSubstringX {
         for (int i = 1; i <= s1.length(); i++) {
             for (int j = 1; j <= s2.length(); j++) {
                 if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
-                    dp[i%2][j] = 1 + dp[1 - i%2][j - 1];
-                    if (dp[i%2][j] > maxLen) {
-                        maxLen = dp[i%2][j];
-                        start = i - dp[i%2][j];
+                    dp[i % 2][j] = 1 + dp[1 - i % 2][j - 1];
+                    if (dp[i % 2][j] > maxLen) {
+                        maxLen = dp[i % 2][j];
+                        start = i - dp[i % 2][j];
                     }
                 }
             }
