@@ -1,10 +1,3 @@
-/*
- * SPFADirected.h
- *
- *  Created on: Aug 4, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_GRAPH_SHORTESTPATH_SPFADIRECTED_H_
 #define ALGORITHMS_GRAPH_SHORTESTPATH_SPFADIRECTED_H_
 

@@ -1,10 +1,3 @@
-/*
- * PushRelabel.h
- *
- *  Created on: Jul 30, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_GRAPH_NETWORKFLOW_PUSHRELABELMAXFLOW_H_
 #define ALGORITHMS_GRAPH_NETWORKFLOW_PUSHRELABELMAXFLOW_H_
 

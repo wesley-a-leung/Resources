@@ -1,10 +1,3 @@
-/*
- * SplayTree.h
- *
- *  Created on: Jul 20, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef DATASTRUCTURES_SPLAYTREE_H_
 #define DATASTRUCTURES_SPLAYTREE_H_
 

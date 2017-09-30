@@ -1,10 +1,3 @@
-/*
- * XorSat.h
- *
- *  Created on: Jul 31, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_MATH_XORSAT_H_
 #define ALGORITHMS_MATH_XORSAT_H_
 

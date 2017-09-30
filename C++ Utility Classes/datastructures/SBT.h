@@ -1,10 +1,3 @@
-/*
- * SBT.h
- *
- *  Created on: Jul 21, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef DATASTRUCTURES_SBT_H_
 #define DATASTRUCTURES_SBT_H_
 

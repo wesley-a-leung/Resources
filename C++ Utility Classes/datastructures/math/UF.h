@@ -1,10 +1,3 @@
-/*
- * UF.h
- *
- *  Created on: May 27, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef DATASTRUCTURES_MATH_UF_H_
 #define DATASTRUCTURES_MATH_UF_H_
 
@@ -20,7 +13,7 @@ private:
 
 public:
     /**
-     * Initializes an empty union–find data structure with {@code n} sites
+     * Initializes an empty union-find data structure with {@code n} sites
      * {@code 0} through {@code n-1}. Each site is initially in its own
      * component.
      *

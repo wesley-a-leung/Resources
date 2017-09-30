@@ -22,7 +22,7 @@ public class QuickSelect {
     /**
      * Returns the {@code K}th smallest element
      * 
-     * @param a the array to be sorted
+     * @param a the array
      * @param k the index to find
      * @return the {@code K}th smallest element
      */
@@ -33,7 +33,7 @@ public class QuickSelect {
     /**
      * Returns the {@code K}th smallest element
      * 
-     * @param a the array to be sorted
+     * @param a the array
      * @param start the start index
      * @param end the end index
      * @param k the index to find

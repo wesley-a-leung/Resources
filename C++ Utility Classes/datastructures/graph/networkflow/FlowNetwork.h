@@ -1,10 +1,3 @@
-/*
- * FlowNetwork.h
- *
- *  Created on: Jun 27, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef DATASTRUCTURES_GRAPH_NETWORKFLOW_FLOWNETWORK_H_
 #define DATASTRUCTURES_GRAPH_NETWORKFLOW_FLOWNETWORK_H_
 

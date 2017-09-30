@@ -1,10 +1,3 @@
-/*
- * WeightedLCA.h
- *
- *  Created on: Jul 26, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_GRAPH_SEARCH_WEIGHTEDLCA_H_
 #define ALGORITHMS_GRAPH_SEARCH_WEIGHTEDLCA_H_
 

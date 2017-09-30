@@ -1,10 +1,3 @@
-/*
- * GaussianElimination.h
- *
- *  Created on: Jul 31, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_MATH_GAUSSIANELIMINATION_H_
 #define ALGORITHMS_MATH_GAUSSIANELIMINATION_H_
 

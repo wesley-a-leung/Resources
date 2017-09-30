@@ -1,10 +1,3 @@
-/*
- * ReversionSegmentTree.h
- *
- *  Created on: Jun 3, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef DATASTRUCTURES_MATH_REVERSIONSEGMENTTREE_H_
 #define DATASTRUCTURES_MATH_REVERSIONSEGMENTTREE_H_
 

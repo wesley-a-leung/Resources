@@ -4,6 +4,8 @@ package algorithms.sort;
  * Counts the number of inversions given an array. An inversion is two elements at index i and j,
  * such that i < j and A[i] > B[i].
  * 
+ * Takes <em>N</em> log <em>N</em> time to complete and <em>N</em> space.
+ * 
  * @author Wesley Leung
  *
  */

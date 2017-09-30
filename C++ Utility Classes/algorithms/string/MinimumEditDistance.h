@@ -1,10 +1,3 @@
-/*
- * MinimumEditDistance.h
- *
- *  Created on: Aug 5, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_STRING_MINIMUMEDITDISTANCE_H_
 #define ALGORITHMS_STRING_MINIMUMEDITDISTANCE_H_
 
@@ -19,11 +12,11 @@ const int DELETE_PENALTY = 1;
 
 /**
  * Uses dynamic programming to compute the minimum
- * edit distance between 2 string in O(NM) time where N is the
+ * edit distance between 2 strings in O(NM) time where N is the
  * length of the first string and M is the length of the second
- * string
+ * string.
  *
- * It uses space of O(NM)
+ * It uses space of O(NM).
  *
  * @author Wesley Leung
  */

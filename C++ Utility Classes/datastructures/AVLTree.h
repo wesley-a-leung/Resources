@@ -1,10 +1,3 @@
-/*
- * AVLTree.h
- *
- *  Created on: Jul 14, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef DATASTRUCTURES_AVLTREE_H_
 #define DATASTRUCTURES_AVLTREE_H_
 

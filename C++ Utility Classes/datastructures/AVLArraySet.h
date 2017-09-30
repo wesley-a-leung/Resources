@@ -1,10 +1,3 @@
-/*
- * AVLArraySet.h
- *
- *  Created on: Jul 17, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef DATASTRUCTURES_AVLARRAYSET_H_
 #define DATASTRUCTURES_AVLARRAYSET_H_
 

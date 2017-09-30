@@ -1,10 +1,3 @@
-/*
- * WeightedGraph.h
- *
- *  Created on: Jun 23, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef DATASTRUCTURES_GRAPH_WEIGHTEDGRAPH_H_
 #define DATASTRUCTURES_GRAPH_WEIGHTEDGRAPH_H_
 

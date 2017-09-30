@@ -1,10 +1,3 @@
-/*
- * JohnsonAPSP.h
- *
- *  Created on: Aug 8, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_GRAPH_SHORTESTPATH_JOHNSONAPSP_H_
 #define ALGORITHMS_GRAPH_SHORTESTPATH_JOHNSONAPSP_H_
 

@@ -1,10 +1,3 @@
-/*
- * SBTArraySet.h
- *
- *  Created on: Jul 21, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef DATASTRUCTURES_SBTARRAYSET_H_
 #define DATASTRUCTURES_SBTARRAYSET_H_
 

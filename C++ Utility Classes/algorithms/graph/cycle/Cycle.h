@@ -1,10 +1,3 @@
-/*
- * Cycle.h
- *
- *  Created on: Jun 28, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_GRAPH_CYCLE_CYCLE_H_
 #define ALGORITHMS_GRAPH_CYCLE_CYCLE_H_
 

@@ -1,10 +1,3 @@
-/*
- * EdmondsKarpMaxFlow.h
- *
- *  Created on: Jun 27, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_GRAPH_NETWORKFLOW_EDMONDSKARPMAXFLOW_H_
 #define ALGORITHMS_GRAPH_NETWORKFLOW_EDMONDSKARPMAXFLOW_H_
 

@@ -1,10 +1,3 @@
-/*
- * Biconnected.h
- *
- *  Created on: Aug 4, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_GRAPH_COMPONENTS_BICONNECTED_H_
 #define ALGORITHMS_GRAPH_COMPONENTS_BICONNECTED_H_
 

@@ -1,10 +1,3 @@
-/*
- * SBTArray.h
- *
- *  Created on: Jul 21, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef DATASTRUCTURES_SBTARRAY_H_
 #define DATASTRUCTURES_SBTARRAY_H_
 

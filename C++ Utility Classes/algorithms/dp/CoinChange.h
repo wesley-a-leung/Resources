@@ -1,10 +1,3 @@
-/*
- * CoinChange.h
- *
- *  Created on: Aug 10, 2017
- *      Author: Wesley Leung
- */
-
 #ifndef ALGORITHMS_DP_COINCHANGE_H_
 #define ALGORITHMS_DP_COINCHANGE_H_
 
