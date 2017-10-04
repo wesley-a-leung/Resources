@@ -7,7 +7,7 @@ using namespace std;
 
 const double EPS = 1e-9;
 
-// Finds a root of function f with derivative d based on initial guess x0
+// Finds a root of function f with derivative df based on initial guess x0
 double newton(double (*f)(double), double (*df)(double), double x0) {
     double cur = x0, next = x0;
     do {
@@ -17,7 +17,7 @@ double newton(double (*f)(double), double (*df)(double), double x0) {
     return next;
 }
 
-// Finds a root of function f with derivative d based on initial guess x0 by
+// Finds a root of function f with derivative df based on initial guess x0 by
 // repeating newton's approximation a specified number of times
 double newton(double (*f)(double), double (*df)(double), double x0, int iterations) {
     double cur = x0, next = x0;
