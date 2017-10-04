@@ -12,7 +12,7 @@ public class Newton {
         public abstract double eval(double x);
     }
 
-    // Finds a root of function f with derivative d based on initial guess x0
+    // Finds a root of function f with derivative df based on initial guess x0
     public static double newton(Function f, Function df, double x0) {
         double cur = x0, next = x0;
         do {
@@ -22,7 +22,7 @@ public class Newton {
         return next;
     }
 
-    // Finds a root of function f with derivative d based on initial guess x0 by
+    // Finds a root of function f with derivative df based on initial guess x0 by
     // repeating newton's approximation a specified number of times
     public static double newton(Function f, Function df, double x0, int iterations) {
         double cur = x0, next = x0;
