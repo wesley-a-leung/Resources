@@ -25,11 +25,8 @@ public class Newton {
     // Finds a root of function f with derivative df based on initial guess x0 by
     // repeating newton's approximation a specified number of times
     public static double newton(Function f, Function df, double x0, int iterations) {
-        double cur = x0, next = x0;
-        while (iterations-- > 0) {
-            cur = next;
-            next = cur - f.eval(cur) / df.eval(cur);
-        }
-        return next;
+        double cur = x0;
+        while (iterations--) cur = cur - f(cur) / df(cur);
+        return cur;
     }
 }
