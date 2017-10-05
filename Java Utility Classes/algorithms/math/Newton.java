@@ -26,7 +26,7 @@ public class Newton {
     // repeating newton's approximation a specified number of times
     public static double newton(Function f, Function df, double x0, int iterations) {
         double cur = x0;
-        while (iterations--) cur = cur - f(cur) / df(cur);
+        while (iterations-- > 0) cur = cur - f.eval(cur) / df.eval(cur);
         return cur;
     }
 }
