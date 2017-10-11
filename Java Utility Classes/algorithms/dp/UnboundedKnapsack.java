@@ -1,14 +1,14 @@
 package algorithms.dp;
 
-public class Knapsack {
+public class UnboundedKnapsack {
     
     // This class should not be instantiated
-    private Knapsack() {}
+    private UnboundedKnapsack() {}
     
     /**
-     * Static method for computing the maximum value that you can obtain from
-     * putting {@code N} elements in a knapsack of size {@code M} that can hold
-     * a maximum of {@code N} weight
+     * Method for computing the maximum value that you can obtain from
+     * putting {@code N} elements in a knapsack that can hold a maximum
+     * of {@code M} weight, allowing for repeated instances of items.
      * 
      * Takes time proportional to <em>NM</em> where <em>N</em> is the number of 
      * items and <em>M</em> is the size of the knapsack.
@@ -21,10 +21,11 @@ public class Knapsack {
      * @return the maximum value of the knapsack
      */
     public static int solve(int M, int[] weight, int[] value) {
+        int N = weight.length;
         int[] dp = new int[M + 1];
-        for (int i = 0; i < value.length; i++) {
-            for (int j = M; j >= 0; j--) {
-                if (j - weight[i] >= 0) dp[j] = Math.max(dp[j], dp[j - weight[i]] + value[i]);
+        for (int j = 0; j <= M; j++) {
+            for (int i = 0; i < N; i++) {
+                if (weight[i] <= j) dp[j] = Math.max(dp[j], dp[j - weight[i]] + value[i]);
             }
         }
         return dp[M];
