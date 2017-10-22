@@ -256,7 +256,7 @@ public:
     /**
      * Compares two points by x-coordinate. Less than or equal to comparator.
      */
-    static bool xOrderLe(Point2D &p, Point2D &q) { return p.x < q.x; }
+    static bool xOrderLe(Point2D &p, Point2D &q) { return p.x <= q.x; }
 
     /**
      * Compares two points by x-coordinate. Greater than comparator.
