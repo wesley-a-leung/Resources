@@ -312,7 +312,7 @@ public:
      */
     static bool rOrderGe(Point2D &p, Point2D &q) { return (p.x*p.x + p.y*p.y) >= (q.x*q.x + q.y*q.y); }
 
-    // Polar Order
+    // POLAR ORDER
 
     /**
      * Compares two points by polar angle (between 0 and 2&pi;) with respect to this point.
@@ -398,7 +398,7 @@ public:
         // Note: ccw() recomputes dx1, dy1, dx2, and dy2
     }
 
-    // Atan2 Order
+    // ATAN2 ORDER
 
     /**
      * Compares two points by atan2() angle (between -&pi; and &pi;) with respect to this point.
@@ -424,7 +424,7 @@ public:
      */
     bool atan2OrderGe(Point2D &q1, Point2D &q2) { return angleTo(q1) >= angleTo(q2); }
 
-    // DistanceTo Order
+    // DISTANCETO ORDER
 
     /**
      * Compares two points by distance to this point. Less than comparator.
