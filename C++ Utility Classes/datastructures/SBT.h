@@ -13,6 +13,7 @@ public:
 
 template <typename Key, typename Value>
 struct SBT {
+private:
     /**
      * Represents an inner node of the tree.
      */
@@ -28,7 +29,6 @@ struct SBT {
         }
     };
 
-private:
     /**
      * The root node.
      */
@@ -38,7 +38,6 @@ private:
      * Returns the number of nodes in the subtree.
      *
      * @param x the subtree
-     *
      * @return the number of nodes in the subtree
      */
     int size(Node *&x) {
@@ -128,8 +127,7 @@ private:
      *
      * @param x the subtree
      * @param key the key
-     * @return value associated with the given key in the subtree or
-     *         {@code null} if no such key
+     * @return value associated with the given key in the subtree or {@code nullptr} if no such key
      * @throws no_such_element_exception if there is no such key
      */
     Node *get(Node *&x, Key key) {
@@ -209,8 +207,7 @@ private:
     }
 
     /**
-     * Removes the specified key and its associated value from the given
-     * subtree.
+     * Removes the specified key and its associated value from the given subtree.
      *
      * @param x the subtree
      * @param key the key
@@ -235,13 +232,11 @@ private:
     }
 
     /**
-     * Returns the node in the subtree with the largest key less than or equal
-     * to the given key.
+     * Returns the node in the subtree with the largest key less than or equal to the given key.
      *
      * @param x the subtree
      * @param key the key
-     * @return the node in the subtree with the largest key less than or equal
-     *         to the given key
+     * @return the node in the subtree with the largest key less than or equal to the given key
      */
     Node *floor(Node *&x, Key key) {
         if (x == nullptr) return nullptr;
@@ -253,13 +248,11 @@ private:
     }
 
     /**
-     * Returns the node in the subtree with the smallest key greater than or
-     * equal to the given key.
+     * Returns the node in the subtree with the smallest key greater than or equal to the given key.
      *
      * @param x the subtree
      * @param key the key
-     * @return the node in the subtree with the smallest key greater than or
-     *         equal to the given key
+     * @return the node in the subtree with the smallest key greater than or equal to the given key
      */
     Node *ceiling(Node *&x, Key key) {
         if (x == nullptr) return nullptr;
@@ -356,8 +349,7 @@ public:
      * Returns the value associated with the given key.
      *
      * @param key the key
-     * @return the value associated with the given key if the key is in the
-     *         symbol table
+     * @return the value associated with the given key if the key is in the symbol table
      * @throws no_such_element_exception if no such key is in the symbol table
      */
     Value get(Key key) {
@@ -370,8 +362,7 @@ public:
      * Checks if the symbol table contains the given key.
      *
      * @param key the key
-     * @return {@code true} if the symbol table contains {@code key}
-     *         and {@code false} otherwise
+     * @return {@code true} if the symbol table contains {@code key} and {@code false} otherwise
      */
     bool contains(Key key) {
         return get(root, key) != nullptr;
@@ -489,12 +480,10 @@ public:
     }
 
     /**
-     * Returns the number of keys in the symbol table strictly less than
-     * {@code key}.
+     * Returns the number of keys in the symbol table strictly less than {@code key}.
      *
      * @param key the key
-     * @return the number of keys in the symbol table strictly less than
-     *         {@code key}
+     * @return the number of keys in the symbol table strictly less than {@code key}
      */
     int getRank(Key key) {
         return getRank(root, key);
@@ -516,8 +505,7 @@ public:
      *
      * @param lo the lowest key
      * @param hi the highest key
-     * @return all key-value pairs in the symbol table between {@code lo} (inclusive)
-     *         and {@code hi} (exclusive)
+     * @return all key-value pairs in the symbol table between {@code lo} (inclusive) and {@code hi} (exclusive)
      */
     vector<pair<Key, Value>> &keyValuePairs(Key lo, Key hi) {
         vector<pair<Key, Value>> queue;
@@ -530,8 +518,7 @@ public:
      *
      * @param lo minimum endpoint
      * @param hi maximum endpoint
-     * @return the number of keys in the symbol table between {@code lo}
-     *         (inclusive) and {@code hi} (exclusive)
+     * @return the number of keys in the symbol table between {@code lo} (inclusive) and {@code hi} (exclusive)
      */
     int size(Key lo, Key hi) {
         if (lo > hi) return 0;
