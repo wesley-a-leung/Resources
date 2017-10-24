@@ -13,6 +13,7 @@ public:
 
 template <typename Value>
 struct SBTSet {
+private:
     /**
      * Represents an inner node of the tree.
      */
@@ -26,7 +27,6 @@ struct SBTSet {
         }
     };
 
-private:
     /**
      * The root node.
      */
