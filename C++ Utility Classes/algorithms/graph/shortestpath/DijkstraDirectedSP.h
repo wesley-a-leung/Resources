@@ -12,7 +12,7 @@ DirectedWeightedEdge **edgeTo;
 // takes time proportional to E log E and space proportional to V
 // works with negative edges weights, but cannot detect negative cycles
 void dijkstraSP(WeightedDigraph *G, int s) {
-    priority_queue<pair<double, int>, vector<pair<double, int>> , greater<pair<double, int>>> pq;
+    priority_queue<pair<double, int>, vector<pair<double, int>>, greater<pair<double, int>>> pq;
     distTo = new double[G->getV()];
     edgeTo = new DirectedWeightedEdge *[G->getV()];
     for (int v = 0; v < G->getV(); v++) {
