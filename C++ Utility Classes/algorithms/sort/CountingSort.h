@@ -23,18 +23,13 @@ using namespace std;
  */
 void sort(int *a, int n) {
     int maxVal = 0;
-    for (int i = 0; i < n; i++)
-        maxVal = max(maxVal, a[i]);
+    for (int i = 0; i < n; i++) maxVal = max(maxVal, a[i]);
     int count[maxVal + 1];
-    for (int i = 0; i < n; i++)
-        count[a[i]]++;
-    for (int i = 1; i <= maxVal; i++)
-        count[i] += count[i - 1];
+    for (int i = 0; i < n; i++) count[a[i]]++;
+    for (int i = 1; i <= maxVal; i++) count[i] += count[i - 1];
     int b[n];
-    for (int i = 0; i < n; i++)
-        b[--count[a[i]]] = a[i];
-    for (int i = 0; i < n; i++)
-        a[i] = b[i];
+    for (int i = 0; i < n; i++) b[--count[a[i]]] = a[i];
+    for (int i = 0; i < n; i++) a[i] = b[i];
 }
 
 #endif /* ALGORITHMS_SORT_COUNTINGSORT_H_ */
