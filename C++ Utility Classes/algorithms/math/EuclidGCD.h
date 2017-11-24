@@ -31,7 +31,7 @@ int gcd(int p, int q) {
  * @return greatest common divisor of {@code p} and {@code q}
  */
 int gcdRec(int p, int q) {
-    return q == 0 ? p : gcd(q, p % q);
+    return q == 0 ? p : gcdRec(q, p % q);
 }
 
 #endif /* ALGORITHMS_MATH_EUCLIDGCD_H_ */
