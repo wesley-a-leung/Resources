@@ -25,6 +25,9 @@ using namespace std;
 int solve(int N, int M, int *coins) {
     int dp[N + 1];
     dp[0] = 1;
+    for (int i = 1; i <= N; i++) {
+        dp[i] = 0;
+    }
     for (int i = 0; i < M; i++) {
         for (int j = 1; j <= N; j++) {
             if (coins[i] <= j) dp[j] += dp[j - coins[i]];
