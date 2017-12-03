@@ -184,4 +184,41 @@ long long catalan(int n, long long p) {
     return choose(2 * n, n, p) * pow3(n + 1, p - 2, p) % p;
 }
 
+float floatPow(float base, int pow) {
+    if (pow == 0) return 1.0f;
+    if (pow == 1) return base;
+    if (pow % 2 == 0) return floatPow(base * base, pow / 2);
+    return base * floatPow(base * base, pow / 2);
+}
+
+float fastNthRoot(float x, int n) {
+    if (n == 0) return 1.0f;
+    float exp = 1.0f / n;
+    float xExp = exp * x;
+    int i = *(int*) &x; // float to int
+    i = 0x3f7a3bea + exp * (i - 0x3f7a3bea);
+    x = *(float*) &i; // int to float
+    if (n < 0) {
+        x = x * (1.0f - exp + xExp * floatPow(x, n)); // newton's approximation
+        x = x * (1.0f - exp + xExp * floatPow(x, n));
+        x = x * (1.0f - exp + xExp * floatPow(x, n));
+    } else {
+        x = x * (1.0f - exp + xExp / floatPow(x, -n)); // newton's approximation
+        x = x * (1.0f - exp + xExp / floatPow(x, -n));
+        x = x * (1.0f - exp + xExp / floatPow(x, -n));
+    }
+    return x;
+}
+
+float fastInvSqrt(float x) {
+    float xhalf = 0.5f * x;
+    int i = *(int*) &x;
+    i = 0x5f3759df - (i >> 1);
+    x = *(float*) &i;
+    x = x * (1.5f - (xhalf * x * x));
+    x = x * (1.5f - (xhalf * x * x));
+    x = x * (1.5f - (xhalf * x * x));
+    return x;
+}
+
 #endif /* ALGORITHMS_MATH_COMBINATORICS_H_ */
