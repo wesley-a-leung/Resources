@@ -5,7 +5,7 @@
 
 using namespace std;
 
-int maxSum, start, end;
+int maxSum, start, end; // inclusive
 
 /**
  * Computes the subarray with the maximum sum.
