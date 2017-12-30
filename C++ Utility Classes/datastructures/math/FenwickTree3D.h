@@ -10,12 +10,13 @@ using namespace std;
  *
  * @author Wesley Leung
  */
+template <typename T>
 struct FenwickTree3D {
 private:
     int sizeX;
     int sizeY;
     int sizeZ;
-    int ***array;
+    T ***array;
 
 public:
 
@@ -23,11 +24,11 @@ public:
         this->sizeX = sizeX;
         this->sizeY = sizeY;
         this->sizeZ = sizeZ;
-        array = new int**[sizeX + 1];
+        array = new T**[sizeX + 1];
         for (int i = 0; i <= sizeX; i++) {
-            array[i] = new int*[sizeY];
+            array[i] = new T*[sizeY];
             for (int j = 0; j <= sizeY; j++) {
-                array[i][j] = new int[sizeZ];
+                array[i][j] = new T[sizeZ];
                 for (int k = 0; k <= sizeZ; k++) {
                      array[i][j][k] = 0;
                  }
@@ -45,8 +46,8 @@ public:
      * @param  indZ z index
      * @return sum
      */
-    int rsq(int indX, int indY, int indZ) {
-        int sum = 0;
+    T rsq(int indX, int indY, int indZ) {
+        T sum = 0;
         for (int x = indX; x > 0; x -= (x & -x)) {
             for (int y = indY; y > 0; y -= (y & -y)) {
                 for (int z = indZ; z > 0; z -= (z & -z)) {
@@ -70,7 +71,7 @@ public:
      * @param  z2 back index
      * @return sum
      */
-    int rsq(int x1, int y1, int z1, int x2, int y2, int z2) {
+    T rsq(int x1, int y1, int z1, int x2, int y2, int z2) {
         return rsq(x2, y2, z2)
                 - rsq(x1 - 1, y2, z2) - rsq(x2, y1 - 1, z2) - rsq(x2, y2, z1 - 1)
                 + rsq(x1 - 1, y1 - 1, z2) + rsq(x1 - 1, y2, z1 - 1) + rsq(x2, y1 - 1, z1 - 1)
@@ -88,7 +89,7 @@ public:
      * @param  indZ   z index
      * @param  value value
      */
-    void update(int indX, int indY, int indZ, int value) {
+    void update(int indX, int indY, int indZ, T value) {
         for (int x = indX; x <= sizeX; x += (x & -x)) {
             for (int y = indY; y <= sizeY; y += (y & -y)) {
                 for (int z = indZ; z <= sizeZ; z += (z & -z)) {

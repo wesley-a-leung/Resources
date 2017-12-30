@@ -11,15 +11,16 @@ using namespace std;
  *
  * @author Wesley Leung
  */
+template <typename T>
 struct FenwickTreeRangePoint {
 private:
     int size;
-    int *array;
+    T *array;
 
 public:
     FenwickTreeRangePoint(int size) {
         this->size = size;
-        array = new int[size + 1];
+        array = new T[size + 1];
         for (int i = 0; i <= size; i++) {
             array[i] = 0;
         }
@@ -33,8 +34,8 @@ public:
      * @param  ind index
      * @return sum
      */
-    int getValue(int ind) {
-        int sum = 0;
+    T getValue(int ind) {
+        T sum = 0;
         for (int x = ind; x > 0; x -= (x & -x)) {
             sum += array[x];
         }
@@ -50,7 +51,7 @@ public:
      * @param  ind   index
      * @param  value value
      */
-    void update(int ind, int value) {
+    void update(int ind, T value) {
         for (int x = ind; x <= size; x += (x & -x)) {
             array[x] += value;
         }
@@ -66,7 +67,7 @@ public:
      * @param  b right index
      * @param  value value
      */
-    void update(int a, int b, int value) {
+    void update(int a, int b, T value) {
         update(a, value);
         update(b + 1, -value);
     }

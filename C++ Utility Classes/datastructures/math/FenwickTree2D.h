@@ -10,20 +10,21 @@ using namespace std;
  *
  * @author Wesley Leung
  */
+template <typename T>
 struct FenwickTree2D {
 private:
     int sizeX;
     int sizeY;
-    int **array;
+    T **array;
 
 public:
 
     FenwickTree2D(int sizeX, int sizeY) {
         this->sizeX = sizeX;
         this->sizeY = sizeY;
-        array = new int*[sizeX + 1];
+        array = new T*[sizeX + 1];
         for (int i = 0; i <= sizeX; i++) {
-            array[i] = new int[sizeY];
+            array[i] = new T[sizeY];
             for (int j = 0; j <= sizeY; j++) {
                 array[i][j] = 0;
             }
@@ -39,9 +40,8 @@ public:
      * @param  indY y index
      * @return sum
      */
-    int rsq(int indX, int indY) {
-        // assert indX > 0 && indY > 0;
-        int sum = 0;
+    T rsq(int indX, int indY) {
+        T sum = 0;
         for (int x = indX; x > 0; x -= (x & -x)) {
             for (int y = indY; y > 0; y -= (y & -y)) {
                 sum += array[x][y];
@@ -61,7 +61,7 @@ public:
      * @param  y2 right index
      * @return sum
      */
-    int rsq(int x1, int y1, int x2, int y2) {
+    T rsq(int x1, int y1, int x2, int y2) {
         return rsq(x2, y2) + rsq(x1 - 1, y1 - 1) - rsq(x1 - 1, y2) - rsq(x2, y1 - 1);
     }
 
@@ -75,7 +75,7 @@ public:
      * @param  indY   y index
      * @param  value value
      */
-    void update(int indX, int indY, int value) {
+    void update(int indX, int indY, T value) {
         for (int x = indX; x <= sizeX; x += (x & -x)) {
             for (int y = indY; y <= sizeY; y += (y & -y)) {
                 array[x][y] += value;
