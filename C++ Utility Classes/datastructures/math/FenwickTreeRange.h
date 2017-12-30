@@ -11,20 +11,21 @@ using namespace std;
  *
  * @author Wesley Leung
  */
+template <typename T>
 struct FenwickTreeRange {
 private:
     int size;
-    vector<int> array1, array2;
+    vector<T> array1, array2;
 
-    int rsq(vector<int> &array, int ind) {
-        int sum = 0;
+    T rsq(vector<T> &array, int ind) {
+        T sum = 0;
         for (int x = ind; x > 0; x -= (x & -x)) {
             sum += array[x];
         }
         return sum;
     }
 
-    void update(vector<int> &array, int ind, int value) {
+    void update(vector<T> &array, int ind, T value) {
         for (int x = ind; x <= size; x += (x & -x)) {
             array[x] += value;
         }
@@ -44,7 +45,7 @@ public:
      * @param  ind index
      * @return sum
      */
-    int rsq(int ind) {
+    T rsq(int ind) {
         return rsq(array1, ind) * ind - rsq(array2, ind);
     }
 
@@ -59,7 +60,7 @@ public:
      * @param  b right index
      * @return sum
      */
-    int rsq(int a, int b) {
+    T rsq(int a, int b) {
         return rsq(b) - rsq(a - 1);
     }
 
@@ -73,7 +74,7 @@ public:
      * @param  b right index
      * @param  value value
      */
-    void update(int a, int b, int value) {
+    void update(int a, int b, T value) {
         update(array1, a, value);
         update(array1, b + 1, -value);
         update(array2, a, value * (a - 1));
