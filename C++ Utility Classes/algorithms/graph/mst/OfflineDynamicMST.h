@@ -59,18 +59,19 @@ public:
     }
 };
 
+typedef double unit;
 class OfflineDynamicMST {
 private:
-    vector<double> ans;
+    vector<unit> ans;
     int *flag;
     int *ind;
     int curFlag;
     UF *uf1, *uf2;
     vector<WeightedEdge*> edges;
-    set<pair<double, int>> small, large;
+    set<pair<unit, int>> small, large;
 
 public:
-    OfflineDynamicMST(int V, vector<WeightedEdge*> &graphEdges, vector<pair<int, double>> &queries) {
+    OfflineDynamicMST(int V, vector<WeightedEdge*> &graphEdges, vector<pair<int, unit>> &queries) {
         for (int i = 0; i < graphEdges.size(); i++) {
             edges.push_back(graphEdges[i]);
             large.insert({graphEdges[i]->getWeight(), i});
@@ -84,7 +85,7 @@ public:
         }
         curFlag = 0;
         int v, w, cnt;
-        double forest, mst, weight;
+        unit forest, mst, weight;
         // In practice, block size sqrt(queries.size()) seems to work okay (might actually be faster)
         for (int l = 0, b = (int) (sqrt(queries.size()) * sqrt((double) edges.size() / (double) queries.size())), r; l < queries.size(); l += b) {
             r = min(l + b - 1, (int) queries.size() - 1);
@@ -100,7 +101,7 @@ public:
             }
             cnt = 0;
             uf2->reset();
-            for (pair<double, int> p : large) {
+            for (pair<unit, int> p : large) {
                 if (flag[p.second] != curFlag) {
                     v = edges[p.second]->either();
                     w = edges[p.second]->other(v);
@@ -108,7 +109,7 @@ public:
                 }
             }
             uf2->reset();
-            forest = 0.0;
+            forest = (unit) 0;
             for (int i = 0; i < cnt; i++) {
                 v = edges[ind[i]]->either();
                 w = edges[ind[i]]->other(v);
@@ -131,8 +132,8 @@ public:
                 large.insert({weight, queries[i].first});
                 small.insert({weight, queries[i].first});
                 uf1->reset();
-                mst = 0.0;
-                for (pair<double, int> p : small) {
+                mst = (unit) 0;
+                for (pair<unit, int> p : small) {
                     v = edges[p.second]->either();
                     w = edges[p.second]->other(v);
                     if (uf1->join(uf2->find(v), uf2->find(w))) {
@@ -144,9 +145,9 @@ public:
         }
     }
 
-    OfflineDynamicMST(WeightedGraph *G, int Q, vector<pair<int, double>> &queries) : OfflineDynamicMST(G->getV(), G->edges(), queries) {}
+    OfflineDynamicMST(WeightedGraph *G, int Q, vector<pair<int, unit>> &queries) : OfflineDynamicMST(G->getV(), G->edges(), queries) {}
 
-    vector<double> &getAnswers() {
+    vector<unit> &getAnswers() {
         return ans;
     }
 };

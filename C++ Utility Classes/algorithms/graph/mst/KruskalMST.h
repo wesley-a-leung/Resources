@@ -34,9 +34,10 @@ using namespace std;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
+typedef double unit;
 class KruskalMST {
 private:
-    double weight;              // weight of MST
+    unit weight;              // weight of MST
     vector<WeightedEdge*> mst;  // edges in MST
 
 public:
@@ -46,7 +47,7 @@ public:
      * @param graphEdges the edges of the graph
      */
     KruskalMST(int V, vector<WeightedEdge*> &graphEdges) {
-        weight = 0.0;
+        weight = (unit) 0;
         // more efficient to build heap by passing array of edges
         priority_queue<WeightedEdge*, vector<WeightedEdge*>, WeightedEdge_greater> pq;
         for (WeightedEdge *e : graphEdges) {
@@ -87,7 +88,7 @@ public:
      * Returns the sum of the edge weights in a minimum spanning tree (or forest).
      * @return the sum of the edge weights in a minimum spanning tree (or forest)
      */
-    double getWeight() {
+    unit getWeight() {
         return weight;
     }
 };

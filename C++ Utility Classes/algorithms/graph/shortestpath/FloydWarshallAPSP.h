@@ -6,22 +6,24 @@
 
 using namespace std;
 
-double **distTo;
+typedef double unit;
+
+unit **distTo;
 DirectedWeightedEdge ***edgeTo;
 
 // takes time proportional to V^3 and space proportional to V^2
-void floydWarshallAPSP(int V, double **adj) {
-    distTo = new double *[V];
+void floydWarshallAPSP(int V, unit **adj) {
+    distTo = new unit *[V];
     edgeTo = new DirectedWeightedEdge **[V];
     for (int i = 0; i < V; i++) {
-        distTo[i] = new double[V];
+        distTo[i] = new unit[V];
         edgeTo[i] = new DirectedWeightedEdge *[V];
     }
 
     // initialize distances to infinity
     for (int v = 0; v < V; v++) {
         for (int w = 0; w < V; w++) {
-            distTo[v][w] = numeric_limits<double>::infinity();
+            distTo[v][w] = numeric_limits<unit>::max();
         }
     }
 

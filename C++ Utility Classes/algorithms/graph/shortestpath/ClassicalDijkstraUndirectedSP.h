@@ -6,18 +6,20 @@
 
 using namespace std;
 
-double *distTo;
+typedef double unit;
+
+unit *distTo;
 bool *marked;
 WeightedEdge **edgeTo;
 
 // takes time proportional to V ^ 2 and space proportional to V
 // does not work with negative weights
 void dijkstraSP(WeightedGraph *G, int s) {
-    distTo = new double[G->getV()];
+    distTo = new unit[G->getV()];
     edgeTo = new WeightedEdge *[G->getV()];
     marked = new bool[G->getV()];
     for (int v = 0; v < G->getV(); v++) {
-        distTo[v] = numeric_limits<double>::infinity();
+        distTo[v] = numeric_limits<unit>::max();
         marked[v] = false;
     }
     distTo[s] = 0.0;

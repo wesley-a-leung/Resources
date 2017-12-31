@@ -34,10 +34,11 @@ using namespace std;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
+typedef double unit;
 class BoruvkaMST {
 private:
     vector<WeightedEdge*> mst;    // edges in MST
-    double weight;                // weight of MST
+    unit weight;                // weight of MST
     WeightedEdge **closest;
 
 public:
@@ -47,7 +48,7 @@ public:
      * @param graphEdges the edges of the graph
      */
     BoruvkaMST(int V, vector<WeightedEdge*> &graphEdges) {
-        weight = 0.0;
+        weight = (unit) 0;
         closest = new WeightedEdge*[V];
         UF uf(V);
         // repeat at most log V times or until we have V-1 edges
@@ -102,7 +103,7 @@ public:
      * Returns the sum of the edge weights in a minimum spanning tree (or forest).
      * @return the sum of the edge weights in a minimum spanning tree (or forest)
      */
-    double getWeight() {
+    unit getWeight() {
         return weight;
     }
 };

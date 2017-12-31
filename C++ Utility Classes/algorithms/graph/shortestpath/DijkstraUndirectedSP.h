@@ -6,29 +6,31 @@
 
 using namespace std;
 
-double *distTo;
+typedef double unit;
+
+unit *distTo;
 WeightedEdge **edgeTo;
 
 // takes time proportional to E log E and space proportional to V
 // works with negative edges weights, but cannot detect negative cycles
 void dijkstraSP(WeightedGraph *G, int s) {
-    priority_queue<pair<double, int>, vector<pair<double, int>>, greater<pair<double, int>>> pq;
-    distTo = new double[G->getV()];
+    priority_queue<pair<unit, int>, vector<pair<unit, int>>, greater<pair<unit, int>>> PQ;
+    distTo = new unit[G->getV()];
     edgeTo = new WeightedEdge *[G->getV()];
     for (int v = 0; v < G->getV(); v++) {
-        distTo[v] = numeric_limits<double>::infinity();
+        distTo[v] = numeric_limits<unit>::max();
     }
     distTo[s] = 0.0;
-    pq.push({distTo[s], s});
-    while (!pq.empty()) {
-        int v = pq.top().second;
-        pq.pop();
+    PQ.push({distTo[s], s});
+    while (!PQ.empty()) {
+        int v = PQ.top().second;
+        PQ.pop();
         for (WeightedEdge *e : G->adj(v)) {
             int w = e->other(v);
             if (distTo[w] > distTo[v] + e->getWeight()) {
                 distTo[w] = distTo[v] + e->getWeight();
                 edgeTo[w] = e;
-                pq.push({distTo[w], w});
+                PQ.push({distTo[w], w});
             }
         }
     }

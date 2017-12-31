@@ -7,6 +7,8 @@
 
 using namespace std;
 
+typedef double unit;
+
 /**
  * The {@code UndirectedAcyclicAPSP} class represents a data type for solving
  * the all-pairs shortest paths problem in edge-weighted undirected acyclic
@@ -23,7 +25,7 @@ using namespace std;
  */
 class UndirectedAcyclicAPSP {
 private:
-    double *distTo; // stores the distance from an arbitrary root
+    unit *distTo; // stores the distance from an arbitrary root
     WeightedLCA *LCA;
 
     void bfs(WeightedGraph *G, int s) {
@@ -31,7 +33,7 @@ private:
         bool marked[G->getV()];
         for (int v = 0; v < G->getV(); v++) {
             marked[v] = false;
-            distTo[v] = numeric_limits<double>::infinity();
+            distTo[v] = numeric_limits<unit>::max();
         }
         distTo[s] = 0;
         marked[s] = true;
@@ -53,7 +55,7 @@ private:
 
 public:
     UndirectedAcyclicAPSP(WeightedGraph *G) {
-        distTo = new double[G->getV()];
+        distTo = new unit[G->getV()];
         LCA = new WeightedLCA(G);
         bfs(G, 0);
     }
@@ -66,7 +68,7 @@ public:
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      * @throws IllegalArgumentException unless {@code 0 <= t < V}
      */
-    double dist(int s, int t) {
+    unit dist(int s, int t) {
         return distTo[s] + distTo[t] - 2 * distTo[LCA->lca(s, t)];
     }
 };
