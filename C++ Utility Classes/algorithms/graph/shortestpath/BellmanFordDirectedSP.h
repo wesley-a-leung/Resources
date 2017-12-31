@@ -6,15 +6,17 @@
 
 using namespace std;
 
-double *distTo;
+typedef double unit;
+
+unit *distTo;
 DirectedWeightedEdge **edgeTo;
 
 // takes time proportional to VE and space proportional to V
 void bellmanFordSP(WeightedDigraph *G, int s) {
-    distTo = new double[G->getV()];
+    distTo = new unit[G->getV()];
     edgeTo = new DirectedWeightedEdge *[G->getV()];
     for (int v = 0; v < G->getV(); v++) {
-        distTo[v] = numeric_limits<double>::infinity();
+        distTo[v] = numeric_limits<unit>::max();
     }
     distTo[s] = 0.0;
     vector<DirectedWeightedEdge*> edges = G->edges();
@@ -35,10 +37,10 @@ void bellmanFordSP(WeightedDigraph *G, int s) {
 }
 
 void bellmanFordSP(int V, vector<DirectedWeightedEdge*> &edges, int s) {
-    distTo = new double[V];
+    distTo = new unit[V];
     edgeTo = new DirectedWeightedEdge *[V];
     for (int v = 0; v < V; v++) {
-        distTo[v] = numeric_limits<double>::infinity();
+        distTo[v] = numeric_limits<unit>::max();
     }
     distTo[s] = 0.0;
     for (int i = 0; i < V - 1; i++) {

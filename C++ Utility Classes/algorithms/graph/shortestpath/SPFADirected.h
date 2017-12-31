@@ -6,18 +6,20 @@
 
 using namespace std;
 
-double *distTo;
+typedef double unit;
+
+unit *distTo;
 DirectedWeightedEdge **edgeTo;
 bool *inQueue;
 
 // takes time proportional to VE in the worst case and E on average and space proportional to V
 void spfa(WeightedDigraph *G, int s) {
     deque<int> q;
-    distTo = new double[G->getV()];
+    distTo = new unit[G->getV()];
     edgeTo = new DirectedWeightedEdge *[G->getV()];
     inQueue = new bool[G->getV()];
     for (int v = 0; v < G->getV(); v++) {
-        distTo[v] = numeric_limits<double>::infinity();
+        distTo[v] = numeric_limits<unit>::max();
         inQueue[v] = false;
     }
     distTo[s] = 0.0;

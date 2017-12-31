@@ -5,19 +5,20 @@
 
 using namespace std;
 
+typedef double unit;
 struct DirectedWeightedEdge {
 private:
     int v, w;
-    double weight;
+    unit weight;
 
 public:
-    DirectedWeightedEdge(int v, int w, double weight) {
+    DirectedWeightedEdge(int v, int w, unit weight) {
         this->v = v;
         this->w = w;
         this->weight = weight;
     }
 
-    double getWeight() {
+    unit getWeight() {
         return weight;
     }
 

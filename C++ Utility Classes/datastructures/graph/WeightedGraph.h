@@ -5,19 +5,20 @@
 
 using namespace std;
 
+typedef double unit;
 struct WeightedEdge {
 private:
     int v, w;
-    double weight;
+    unit weight;
 
 public:
-    WeightedEdge(int v, int w, double weight) {
+    WeightedEdge(int v, int w, unit weight) {
         this->v = v;
         this->w = w;
         this->weight = weight;
     }
 
-    double getWeight() {
+    unit getWeight() {
         return weight;
     }
 

@@ -32,27 +32,28 @@ using namespace std;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
+typedef double unit;
 class PrimMST {
 private:
-    double weight;       // total weight of MST
+    unit weight;       // total weight of MST
     vector<WeightedEdge*> mst;     // edges in the MST
     bool *marked;    // marked[v] = true if v on tree
-    priority_queue<WeightedEdge*, vector<WeightedEdge*>, WeightedEdge_greater> pq;      // edges with one endpoint in tree
+    priority_queue<WeightedEdge*, vector<WeightedEdge*>, WeightedEdge_greater> PQ;      // edges with one endpoint in tree
 
-    // add all edges e incident to v onto pq if the other endpoint has not yet been scanned
+    // add all edges e incident to v onto PQ if the other endpoint has not yet been scanned
     void scan(WeightedGraph *G, int v) {
         marked[v] = true;
         for (WeightedEdge *e : G->adj(v)) {
-            if (!marked[e->other(v)]) pq.push(e);
+            if (!marked[e->other(v)]) PQ.push(e);
         }
     }
 
     // run Prim's algorithm
     void prim(WeightedGraph *G, int s) {
         scan(G, s);
-        while (!pq.empty()) {                          // better to stop when mst has V-1 edges
-            WeightedEdge *e = pq.top();                // smallest edge on pq
-            pq.pop();
+        while (!PQ.empty()) {                          // better to stop when mst has V-1 edges
+            WeightedEdge *e = PQ.top();                // smallest edge on PQ
+            PQ.pop();
             int v = e->either(), w = e->other(v);      // two endpoints
             if (marked[v] && marked[w]) continue;      // lazy, both v and w already scanned
             mst.push_back(e);                          // add e to MST
@@ -68,7 +69,7 @@ public:
      * @param G the edge-weighted graph
      */
     PrimMST(WeightedGraph *G) {
-        weight = 0.0;
+        weight = (unit) 0;
         marked = new bool[G->getV()];
         for (int v = 0; v < G->getV(); v++) {
             marked[v] = false;
@@ -91,7 +92,7 @@ public:
      * Returns the sum of the edge weights in a minimum spanning tree (or forest).
      * @return the sum of the edge weights in a minimum spanning tree (or forest)
      */
-    double getWeight() {
+    unit getWeight() {
         return weight;
     }
 };

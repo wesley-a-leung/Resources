@@ -6,27 +6,29 @@
 
 using namespace std;
 
-double **distTo;
+typedef double unit;
+
+unit **distTo;
 DirectedWeightedEdge ***edgeTo;
 
 // takes time proportional to VE log E + VE and space proportional to V^2
 void johnsonAPSP(WeightedDigraph *G) {
-    distTo = new double *[G->getV()];
+    distTo = new unit *[G->getV()];
     edgeTo = new DirectedWeightedEdge **[G->getV()];
-    double h[G->getV() + 1];
+    unit h[G->getV() + 1];
     for (int i = 0; i < G->getV(); i++) {
-        distTo[i] = new double[G->getV()];
+        distTo[i] = new unit[G->getV()];
         edgeTo[i] = new DirectedWeightedEdge *[G->getV()];
     }
 
     vector<DirectedWeightedEdge*> edges = G->edges();
 
     for (int v = 0; v < G->getV(); v++) {
-        h[v] = numeric_limits<double>::infinity();
+        h[v] = numeric_limits<unit>::max();
         // add edge from dummy node to each node
         edges.push_back(new DirectedWeightedEdge(G->getV(), v, 0.0));
         for (int w = 0; w < G->getV(); w++) {
-            distTo[v][w] = numeric_limits<double>::infinity();
+            distTo[v][w] = numeric_limits<unit>::max();
         }
     }
 
@@ -51,7 +53,7 @@ void johnsonAPSP(WeightedDigraph *G) {
 
     // dijkstra from each node using the reweighted graph
     for (int s = 0; s < G->getV(); s++) {
-        priority_queue<pair<double, int>, vector<pair<double, int>> , greater<pair<double, int>>> pq;
+        priority_queue<pair<unit, int>, vector<pair<unit, int>> , greater<pair<unit, int>>> pq;
         distTo[s][s] = 0.0;
         pq.push({distTo[s][s], s});
         while (!pq.empty()) {
