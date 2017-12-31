@@ -1,5 +1,8 @@
 package datastructures;
 
+import datastructures.trees.BST;
+import datastructures.trees.RedBlackBST;
+
 /**
  *  The {@code SeparateChainingHashTable} class represents a symbol table of generic
  *  key-value pairs.
