@@ -16,8 +16,8 @@ using namespace std;
  */
 class HLD {
 private:
-    int *depth, *parent, *chain, *size, *head, *base, *vertex;
-    int chainNum, baseNum;
+    int *depth, *parent, *chain, *size, *head, *index, *vertex;
+    int chainNum, curInd;
 
     void dfs(Graph *G, int v, int d, int prev) {
         depth[v] = d;
@@ -34,8 +34,8 @@ private:
     void hld(Graph *G, int v, int prev) {
         if (head[chainNum] == -1) head[chainNum] = v;
         chain[v] = chainNum;
-        base[v] = baseNum;
-        vertex[baseNum++] = v;
+        index[v] = curInd;
+        vertex[curInd++] = v;
         int maxIndex = -1;
         for (int w: G->adj(v)) {
             if (w != prev && (maxIndex == -1 || size[maxIndex] < size[w])) maxIndex = w;
@@ -50,16 +50,16 @@ private:
     }
 
     int merge(int a, int b); // to be implemented
-    int query(int l, int r, bool reverse); // to be implemented;
+    int query(int l, int r, bool reverse); // to be implemented
 
     int queryUp(int v, int w, bool reverse, bool includeW) {
         int ans = 0;
         while (chain[v] != chain[w]) {
-            ans = reverse ? merge(ans, query(base[head[chain[v]]], base[v], reverse)) : merge(query(base[head[chain[v]]], base[v], reverse), ans);
+            ans = reverse ? merge(ans, query(index[head[chain[v]]], index[v], reverse)) : merge(query(index[head[chain[v]]], index[v], reverse), ans);
             v = parent[head[chain[v]]];
         }
         if (!includeW && v == w) return ans;
-        return reverse ? merge(ans, query(base[w] + !includeW, base[v], reverse)) : merge(query(base[w] + !includeW, base[v], reverse), ans);
+        return reverse ? merge(ans, query(index[w] + !includeW, index[v], reverse)) : merge(query(index[w] + !includeW, index[v], reverse), ans);
     }
 
 public:
@@ -69,10 +69,10 @@ public:
         chain = new int[G->getV()];
         size = new int[G->getV()];
         head = new int[G->getV()];
-        base = new int[G->getV()];
+        index = new int[G->getV()];
         vertex = new int[G->getV()];
         chainNum = 0;
-        baseNum = 1;
+        curInd = 1;
         for (int i = 0; i < G->getV(); i++) {
             head[i] = -1;
         }
