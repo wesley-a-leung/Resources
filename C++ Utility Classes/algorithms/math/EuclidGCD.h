@@ -19,7 +19,7 @@ int gcd(int p, int q) {
         q = p % q;
         p = temp;
     }
-    return p;
+    return abs(p);
 }
 
 // recursive implementation
@@ -31,7 +31,7 @@ int gcd(int p, int q) {
  * @return greatest common divisor of {@code p} and {@code q}
  */
 int gcdRec(int p, int q) {
-    return q == 0 ? p : gcdRec(q, p % q);
+    return q == 0 ? abs(p) : gcdRec(q, p % q);
 }
 
 #endif /* ALGORITHMS_MATH_EUCLIDGCD_H_ */
