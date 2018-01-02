@@ -35,7 +35,7 @@ public class EuclidGCD {
             q = p % q;
             p = temp;
         }
-        return p;
+        return Math.abs(p);
     }
     
     // recursive implementation
@@ -47,6 +47,6 @@ public class EuclidGCD {
      * @return greatest common divisor of {@code p} and {@code q}
      */
     public static int gcdRecursive(int p, int q) {
-        return q == 0 ? p : gcd(q, p % q);
+        return q == 0 ? Math.abs(p) : gcd(q, p % q);
     }
 }
