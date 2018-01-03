@@ -7,6 +7,7 @@ using namespace std;
 
 template <typename Comparable>
 class BinarySearch {
+public:
     /**
      * Returns the index of the specified key in the specified array between indices {@code start} (inclusive)
      * and {@code end} (exclusive).
