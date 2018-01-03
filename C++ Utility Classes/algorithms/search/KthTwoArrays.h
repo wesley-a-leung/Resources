@@ -63,7 +63,7 @@ public:
      * @param M the length of the second array
      * @return the median element of arrays A and B
      */
-    static Comparable findMedian(Comparable *A, int N, Comparable *B, int M) {
+    static double findMedian(Comparable *A, int N, Comparable *B, int M) {
         if ((N + M) % 2 == 1) return findKth(A, 0, N - 1, B, 0, M - 1, (N + M) / 2);
         else return (findKth(A, 0, N - 1, B, 0, M - 1, (N + M) / 2 - 1) + findKth(A, 0, N - 1, B, 0, M - 1, (N + M) / 2)) / 2.0;
     }
