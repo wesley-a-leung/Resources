@@ -13,15 +13,21 @@ import java.util.Arrays;
  *
  */
 public class Mo {
-    private int n, m, sz, res, maxVal;
-    private int[] cnt, a, ans;
+    private int n, m, sz, res = 0, maxVal = 0;
+    private int[] cnt, ans;
 
-    public Mo(int[] arr, int[][] queries) {
-        n = arr.length;
-        maxVal = 0;
-        for (int i = 1; i <= n; i++) {
-            a[i] = arr[i - 1];
-            maxVal = Math.max(maxVal, arr[i - 1]);
+    /**
+     * Computes the number of unique numbers, provided the queries are known beforehand.
+     *
+     * @param a the array (must contain only positive values)
+     * @param oneIndexed whether the array is 1-indexed or not
+     * @param queries the array of pairs containing the queries
+     */
+    public Mo(int[] a, boolean oneIndexed, int[][] queries) {
+        n = a.length;
+        sz = (int) Math.sqrt(n);
+        for (int i = 0; i < n; i++) {
+            maxVal = Math.max(maxVal, a[i + (oneIndexed ? 1 : 0)]);
         }
         m = queries.length;
         Query[] q = new Query[m];
@@ -31,7 +37,8 @@ public class Mo {
         Arrays.sort(q);
         cnt = new int[maxVal + 1];
         ans = new int[m];
-        int l = 1, r = 0;
+        int l = oneIndexed ? 1 : 0;
+        int r = l - 1;
         for (Query query : q) {
             while (r > query.r) {
                 remove(a[r]);
@@ -78,8 +85,7 @@ public class Mo {
         
         @Override
         public int compareTo(Query o) {
-            if ((l - 1) / sz != (o.l - 1) / sz)
-                return (l - 1) / sz - (o.l - 1) / sz;
+            if (l / sz != o.l / sz) return l / sz - o.l / sz;
             return r - o.r;
         }
     }
