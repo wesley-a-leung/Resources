@@ -7,14 +7,14 @@ using namespace std;
 
 class Mo {
 private:
-    int n, m, sz, res, maxVal = 0;
-    int *cnt, *a, *ans;
+    int n, m, sz, res = 0, maxVal = 0;
+    int *cnt, *ans;
 
     struct Query {
         int l, r, ind;
 
         bool operator < (const Query &q) const {
-            if ((l - 1) / sz != (q.l - 1) / sz) return (l - 1) / sz < (q.l - 1) / sz;
+            if (l / sz != q.l / sz) return l / sz < q.l / sz;
             return r < q.r;
         }
     } *q;
@@ -43,16 +43,16 @@ public:
     /**
      * Computes the number of unique numbers, provided the queries are known beforehand.
      *
-     * @param arr the array (must contain only positive values)
+     * @param a the array (must contain only positive values)
      * @param N the number of elements in the array
+     * @param oneIndexed whether the array is 1-indexed or not
      * @param queries the array of pairs containing the queries
      * @param Q the number of queries
      */
-    Mo(int *arr, int N, pair<int, int> *queries, int Q) {
-        a = new int[N];
-        for (int i = 1; i <= n; i++) {
-            a[i] = arr[i - 1];
-            maxVal = max(maxVal, arr[i - 1]);
+    Mo(int *a, int N, bool oneIndexed, pair<int, int> *queries, int Q) {
+        sz = (int) sqrt(n);
+        for (int i = 0; i < n; i++) {
+            maxVal = max(maxVal, a[i + oneIndexed]);
         }
         q = new Query[Q];
         for (int i = 0; i < Q; i++) {
@@ -63,7 +63,8 @@ public:
         sort(q, q + Q);
         cnt = new int[maxVal + 1];
         ans = new int[Q];
-        int l = 1, r = 0;
+        int l = oneIndexed;
+        int r = l - 1;
         for (int i = 0; i < Q; i++) {
             while (r > q[i].r) {
                 remove(a[r]);
