@@ -7,14 +7,14 @@ using namespace std;
 
 class Mo {
 private:
-    int n, m, sz, res = 0, maxVal = 0;
-    int *cnt, *ans;
+    int res;
+    int *a, *cnt, *ans;
 
     struct Query {
-        int l, r, ind;
+        int l, r, ind, block;
 
         bool operator < (const Query &q) const {
-            if (l / sz != q.l / sz) return l / sz < q.l / sz;
+            if (block != q.block) return block < q.block;
             return r < q.r;
         }
     } *q;
@@ -49,22 +49,31 @@ public:
      * @param queries the array of pairs containing the queries
      * @param Q the number of queries
      */
-    Mo(int *a, int N, bool oneIndexed, pair<int, int> *queries, int Q) {
-        sz = (int) sqrt(n);
-        for (int i = 0; i < n; i++) {
-            maxVal = max(maxVal, a[i + oneIndexed]);
+    Mo(int *arr, int N, bool oneIndexed, pair<int, int> *queries, int Q) {
+        int sz = (int) sqrt(N);
+        a = new int[N + oneIndexed];
+        cnt = new int[N];
+        int temp[N + oneIndexed];
+        for (int i = oneIndexed; i < N + oneIndexed; i++) {
+            temp[i] = arr[i];
+        }
+        sort(temp + oneIndexed, temp + N + oneIndexed);
+        int k = unique(temp + oneIndexed, temp + N + oneIndexed) - temp;
+        for (int i = 0; i < N; i++) {
+            a[i + oneIndexed] = lower_bound(temp + oneIndexed, temp + k + oneIndexed, arr[i + oneIndexed]) - temp - oneIndexed;
         }
         q = new Query[Q];
         for (int i = 0; i < Q; i++) {
             q[i].l = queries[i].first;
             q[i].r = queries[i].second;
             q[i].ind = i;
+            q[i].block = q[i].l / sz;
         }
         sort(q, q + Q);
-        cnt = new int[maxVal + 1];
         ans = new int[Q];
         int l = q[0].l;
         int r = l - 1;
+        res = 0;
         for (int i = 0; i < Q; i++) {
             while (l < q[i].l) {
                 remove(a[l]);
