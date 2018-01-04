@@ -66,7 +66,7 @@ private:
         return w;
     }
 
-    void check(int v) {
+    void update(int v) {
         if (vis[v] && --cnt[a[v]] == 0) res--;
         else if (!vis[v] && cnt[a[v]]++ == 0) res++;
         vis[v] = !vis[v];
@@ -78,24 +78,24 @@ private:
         res = 0;
         for (int i = 0; i < Q; i++) {
             while (l < q[i].l) {
-                check(vertex[l]);
+                update(vertex[l]);
                 l++;
             }
             while (l > q[i].l) {
                 l--;
-                check(vertex[l]);
+                update(vertex[l]);
             }
             while (r < q[i].r) {
                 r++;
-                check(vertex[r]);
+                update(vertex[r]);
             }
             while (r > q[i].r) {
-                check(vertex[r]);
+                update(vertex[r]);
                 r--;
             }
-            if (q[i].lca != vertex[l] && q[i].lca != vertex[r]) check(q[i].lca);
+            if (q[i].lca != vertex[l] && q[i].lca != vertex[r]) update(q[i].lca);
             ans[q[i].ind] = res;
-            if (q[i].lca != vertex[l] && q[i].lca != vertex[r]) check(q[i].lca);
+            if (q[i].lca != vertex[l] && q[i].lca != vertex[r]) update(q[i].lca);
         }
     }
 
