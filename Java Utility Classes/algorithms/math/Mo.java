@@ -13,7 +13,7 @@ import java.util.Arrays;
  *
  */
 public class Mo {
-    private int n, m, sz, res = 0, maxVal = 0;
+    private int n, m, sz, res, maxVal = 0;
     private int[] cnt, ans;
 
     /**
@@ -39,6 +39,7 @@ public class Mo {
         ans = new int[m];
         int l = q[0].l;
         int r = l - 1;
+        res = 0;
         for (Query query : q) {
             while (l < query.l) {
                 remove(a[l]);
