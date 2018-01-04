@@ -63,17 +63,9 @@ public:
         sort(q, q + Q);
         cnt = new int[maxVal + 1];
         ans = new int[Q];
-        int l = oneIndexed;
+        int l = q[0].l;
         int r = l - 1;
         for (int i = 0; i < Q; i++) {
-            while (r > q[i].r) {
-                remove(a[r]);
-                r--;
-            }
-            while (r < q[i].r) {
-                r++;
-                update(a[r]);
-            }
             while (l < q[i].l) {
                 remove(a[l]);
                 l++;
@@ -81,6 +73,14 @@ public:
             while (l > q[i].l) {
                 l--;
                 update(a[l]);
+            }
+            while (r < q[i].r) {
+                r++;
+                update(a[r]);
+            }
+            while (r > q[i].r) {
+                remove(a[r]);
+                r--;
             }
             ans[q[i].ind] = res;
         }

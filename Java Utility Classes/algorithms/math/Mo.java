@@ -37,17 +37,9 @@ public class Mo {
         Arrays.sort(q);
         cnt = new int[maxVal + 1];
         ans = new int[m];
-        int l = oneIndexed ? 1 : 0;
+        int l = q[0].l;
         int r = l - 1;
         for (Query query : q) {
-            while (r > query.r) {
-                remove(a[r]);
-                r--;
-            }
-            while (r < query.r) {
-                r++;
-                update(a[r]);
-            }
             while (l < query.l) {
                 remove(a[l]);
                 l++;
@@ -55,6 +47,14 @@ public class Mo {
             while (l > query.l) {
                 l--;
                 update(a[l]);
+            }
+            while (r < query.r) {
+                r++;
+                update(a[r]);
+            }
+            while (r > query.r) {
+                remove(a[r]);
+                r--;
             }
             ans[query.index] = res;
         }
