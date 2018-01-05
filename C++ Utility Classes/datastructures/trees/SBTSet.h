@@ -131,7 +131,6 @@ private:
 
     /**
      * Inserts the specified value into the set, allowing for duplicates.
-     * Deletes the specified value from this set if the specified value is {@code null}.
      *
      * @param x the subtree
      * @param val the value
@@ -394,7 +393,7 @@ public:
      */
     Value getMin() {
         if (isEmpty()) throw runtime_error("called getMin() with empty set");
-        return getMin(root).val;
+        return getMin(root)->val;
     }
 
     /**
@@ -405,7 +404,7 @@ public:
      */
     Value getMax() {
         if (isEmpty()) throw runtime_error("called getMax() with empty set");
-        return getMax(root).val;
+        return getMax(root)->val;
     }
 
     /**
