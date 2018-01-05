@@ -134,7 +134,6 @@ private:
 
     /**
      * Inserts the specified value into the symbol table, allowing for duplicates.
-     * Deletes the specified value from this symbol table if the specified value is {@code null}.
      *
      * @param x the subtree
      * @param val the value
