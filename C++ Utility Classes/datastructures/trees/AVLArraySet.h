@@ -11,10 +11,10 @@ public:
     no_such_element_exception(string message): runtime_error(message){}
 };
 
-template <typename Value>
+template <typename Value, typename Comparator = less<Value>>
 struct AVLArraySet {
-
 private:
+    Comparator cmp;
     Value *VAL; // values
     int *HT; // height of subtree
     int *SZ; // size of subtree
@@ -131,8 +131,8 @@ private:
     // auxiliary function for contains
     bool contains(int x, Value val) {
         if (x == 0) return false;
-        else if (val < VAL[x]) return contains(L[x], val);
-        else if (val > VAL[x]) return contains(R[x], val);
+        else if (cmp(val, VAL[x])) return contains(L[x], val);
+        else if (cmp(VAL[x], val)) return contains(R[x], val);
         return true;
     }
 
@@ -153,7 +153,7 @@ private:
             R[ind] = 0;
             return ind++;
         }
-        if (val < VAL[x]) L[x] = add(L[x], val);
+        if (cmp(val, VAL[x])) L[x] = add(L[x], val);
         else R[x] = add(R[x], val);
         return balance(x);
     }
@@ -213,8 +213,8 @@ private:
      * @return the updated subtree
      */
     int remove(int x, Value val) {
-        if (val < VAL[x]) L[x] = remove(L[x], val);
-        else if (val > VAL[x]) R[x] = remove(R[x], val);
+        if (cmp(val, VAL[x])) L[x] = remove(L[x], val);
+        else if (cmp(VAL[x], val)) R[x] = remove(R[x], val);
         else {
             if (L[x] == 0) return R[x];
             else if (R[x] == 0) return L[x];
@@ -239,8 +239,8 @@ private:
      */
     int floor(int x, Value val) {
         if (x == 0) return 0;
-        if (val == VAL[x]) return x;
-        if (val < VAL[x]) return floor(L[x], val);
+        if (!cmp(val, VAL[x]) && !cmp(VAL[x], val)) return x;
+        if (cmp(val, VAL[x])) return floor(L[x], val);
         int y = floor(R[x], val);
         if (y != 0) return y;
         else return x;
@@ -257,8 +257,8 @@ private:
      */
     int ceiling(int x, Value val) {
         if (x == 0) return 0;
-        if (val == VAL[x]) return x;
-        if (val > VAL[x]) return ceiling(R[x], val);
+        if (!cmp(val, VAL[x]) && !cmp(VAL[x], val)) return x;
+        if (cmp(VAL[x], val)) return ceiling(R[x], val);
         int y = ceiling(L[x], val);
         if (y != 0) return y;
         else return x;
@@ -288,7 +288,7 @@ private:
      */
     int getRank(int x, Value val) {
         if (x == 0) return 0;
-        if (val <= VAL[x]) return getRank(L[x], val);
+        if (!cmp(VAL[x], val)) return getRank(L[x], val);
         else return 1 + SZ[L[x]] + getRank(R[x], val);
     }
 
@@ -316,9 +316,9 @@ private:
      */
     void values(int x, vector<Value> *queue, Value lo, Value hi) {
         if (x == 0) return;
-        if (lo < VAL[x]) values(L[x], queue, lo, hi);
-        if (lo <= VAL[x] && hi >= VAL[x]) queue->push_back(VAL[x]);
-        if (hi > VAL[x]) values(R[x], queue, lo, hi);
+        if (cmp(lo, VAL[x])) values(L[x], queue, lo, hi);
+        if (!cmp(VAL[x], lo) && !cmp(hi, VAL[x])) queue->push_back(VAL[x]);
+        if (cmp(VAL[x], hi)) values(R[x], queue, lo, hi);
     }
 
 public:
@@ -551,7 +551,7 @@ public:
      *         (inclusive) and {@code hi} (exclusive)
      */
     int size(Value lo, Value hi) {
-        if (lo > hi) return 0;
+        if (cmp(hi, lo)) return 0;
         if (contains(hi)) return getRank(hi) - getRank(lo) + 1;
         else return getRank(hi) - getRank(lo);
     }
