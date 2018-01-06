@@ -11,9 +11,10 @@ public:
     no_such_element_exception(string message): runtime_error(message){}
 };
 
-template <typename Key, typename Value>
+template <typename Key, typename Value, typename Comparator = less<Key>>
 struct SBTArray {
 private:
+    Comparator cmp;
     Key *KEY; // keys
     Value *VAL; // values
     int *HT; // height of subtree
@@ -143,8 +144,8 @@ private:
      */
     int get(int x, Key key) {
         if (x == 0) return 0;
-        if (key < KEY[x]) return get(L[x], key);
-        else if (key > KEY[x]) return get(R[x], key);
+        if (cmp(key, KEY[x])) return get(L[x], key);
+        else if (cmp(KEY[x], key)) return get(R[x], key);
         else return x;
     }
 
@@ -168,8 +169,8 @@ private:
             R[ind] = 0;
             return ind++;
         }
-        if (key < KEY[x]) L[x] = put(L[x], key, val);
-        else if (key > KEY[x]) R[x] = put(R[x], key, val);
+        if (cmp(key, KEY[x])) L[x] = put(L[x], key, val);
+        else if (cmp(KEY[x], key)) R[x] = put(R[x], key, val);
         else {
             VAL[x] = val;
             return x;
@@ -232,8 +233,8 @@ private:
      * @return the updated subtree
      */
     int remove(int x, Key key) {
-        if (key < KEY[x]) L[x] = remove(L[x], key);
-        else if (key > KEY[x]) R[x] = remove(R[x], key);
+        if (cmp(key, KEY[x])) L[x] = remove(L[x], key);
+        else if (cmp(KEY[x], key)) R[x] = remove(R[x], key);
         else {
             if (L[x] == 0) return R[x];
             else if (R[x] == 0) return L[x];
@@ -258,8 +259,8 @@ private:
      */
     int floor(int x, Key key) {
         if (x == 0) return 0;
-        if (key == KEY[x]) return x;
-        if (key < KEY[x]) return floor(L[x], key);
+        if (!cmp(key, KEY[x]) && !cmp(KEY[x], key)) return x;
+        if (cmp(key, KEY[x])) return floor(L[x], key);
         int y = floor(R[x], key);
         if (y != 0) return y;
         else return x;
@@ -276,8 +277,8 @@ private:
      */
     int ceiling(int x, Key key) {
         if (x == 0) return 0;
-        if (key == KEY[x]) return x;
-        if (key > KEY[x]) return ceiling(R[x], key);
+        if (!cmp(key, KEY[x]) && !cmp(KEY[x], key)) return x;
+        if (cmp(KEY[x], key)) return ceiling(R[x], key);
         int y = ceiling(L[x], key);
         if (y != 0) return y;
         else return x;
@@ -307,8 +308,8 @@ private:
      */
     int getRank(int x, Key key) {
         if (x == 0) return 0;
-        if (key < KEY[x]) return getRank(KEY[x], key);
-        else if (key > KEY[x]) return 1 + SZ[L[x]] + getRank(R[x], key);
+        if (cmp(key, KEY[x])) return getRank(KEY[x], key);
+        else if (cmp(KEY[x], key)) return 1 + SZ[L[x]] + getRank(R[x], key);
         else return SZ[L[x]];
     }
 
@@ -336,9 +337,9 @@ private:
      */
     void keyValuePairs(int x, vector<pair<Key, Value>> &queue, Key lo, Key hi) {
         if (x == 0) return;
-        if (lo < KEY[x]) keyValuePairs(L[x], queue, lo, hi);
-        if (lo <= KEY[x] && hi >= KEY[x]) queue.push_back({KEY[x], VAL[x]});
-        if (hi > KEY[x]) keyValuePairs(R[x], queue, lo, hi);
+        if (cmp(lo, KEY[x])) keyValuePairs(L[x], queue, lo, hi);
+        if (!cmp(KEY[x], lo) && !cmp(hi, KEY[x])) queue.push_back({KEY[x], VAL[x]});
+        if (cmp(KEY[x], hi)) keyValuePairs(R[x], queue, lo, hi);
     }
 
 public:
@@ -594,7 +595,7 @@ public:
      *         (inclusive) and {@code hi} (exclusive)
      */
     int size(Key lo, Key hi) {
-        if (lo > hi) return 0;
+        if (cmp(hi, lo)) return 0;
         if (contains(hi)) return getRank(hi) - getRank(lo) + 1;
         else return getRank(hi) - getRank(lo);
     }

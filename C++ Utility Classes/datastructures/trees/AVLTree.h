@@ -11,8 +11,11 @@ public:
     no_such_element_exception(string message): runtime_error(message){}
 };
 
-template <typename Key, typename Value>
+template <typename Key, typename Value, typename Comparator = less<Key>>
 struct AVLTree {
+private:
+    Comparator cmp;
+
     /**
      * Represents an inner node of the AVL tree.
      */
@@ -29,7 +32,6 @@ struct AVLTree {
         }
     };
 
-private:
     /**
      * The root node.
      */
@@ -143,8 +145,8 @@ private:
      */
     Node *get(Node *&x, Key key) {
         if (x == nullptr) return nullptr;
-        if (key < x->key) return get(x->left, key);
-        else if (key > x->key) return get(x->right, key);
+        if (cmp(key, x->key)) return get(x->left, key);
+        else if (cmp(x->key, key)) return get(x->right, key);
         else return x;
     }
 
@@ -159,8 +161,8 @@ private:
      */
     Node *put(Node *&x, Key key, Value val) {
         if (x == nullptr) return new Node(key, val, 0, 1);
-        if (key < x->key) x->left = put(x->left, key, val);
-        else if (key > x->key) x->right = put(x->right, key, val);
+        if (cmp(key, x->key)) x->left = put(x->left, key, val);
+        else if (cmp(x->key, key)) x->right = put(x->right, key, val);
         else {
             x->val = val;
             return x;
@@ -223,8 +225,8 @@ private:
      * @return the updated subtree
      */
     Node *remove(Node *&x, Key key) {
-        if (key < x->key) x->left = remove(x->left, key);
-        else if (key > x->key) x->right = remove(x->right, key);
+        if (cmp(key, x->key)) x->left = remove(x->left, key);
+        else if (cmp(x->key, key)) x->right = remove(x->right, key);
         else {
             if (x->left == nullptr) return x->right;
             else if (x->right == nullptr) return x->left;
@@ -250,8 +252,8 @@ private:
      */
     Node *floor(Node *&x, Key key) {
         if (x == nullptr) return nullptr;
-        if (key == x->key) return x;
-        if (key < x->key) return floor(x->left, key);
+        if (!cmp(key, x->key) && !cmp(x->key, key)) return x;
+        if (cmp(key, x->key)) return floor(x->left, key);
         Node *y = floor(x->right, key);
         if (y != nullptr) return y;
         else return x;
@@ -268,8 +270,8 @@ private:
      */
     Node *ceiling(Node *&x, Key key) {
         if (x == nullptr) return nullptr;
-        if (key == x->key) return x;
-        if (key > x->key) return ceiling(x->right, key);
+        if (!cmp(key, x->key) && !cmp(x->key, key)) return x;
+        if (cmp(x->key, key)) return ceiling(x->right, key);
         Node *y = ceiling(x->left, key);
         if (y != nullptr) return y;
         else return x;
@@ -299,8 +301,8 @@ private:
      */
     int getRank(Node *&x, Key key) {
         if (x == nullptr) return 0;
-        if (key < x->key) return getRank(x->left, key);
-        else if (key > x->key) return 1 + size(x->left) + getRank(x->right, key);
+        if (cmp(key, x->key)) return getRank(x->left, key);
+        else if (cmp(x->key, key)) return 1 + size(x->left) + getRank(x->right, key);
         else return size(x->left);
     }
 
@@ -328,9 +330,9 @@ private:
      */
     void keyValuePairs(Node *&x, vector<pair<Key, Value>> &queue, Key lo, Key hi) {
         if (x == nullptr) return;
-        if (lo < x->key) keyValuePairs(x->left, queue, lo, hi);
-        if (lo <= x->key && hi >= x->key) queue.push_back({x->key, x->val});
-        if (hi > x->key) keyValuePairs(x->right, queue, lo, hi);
+        if (cmp(lo, x->key)) keyValuePairs(x->left, queue, lo, hi);
+        if (!cmp(x->key, lo) && !cmp(hi, x->key)) queue.push_back({x->key, x->val});
+        if (cmp(x->key, hi)) keyValuePairs(x->right, queue, lo, hi);
     }
 
 public:
@@ -550,7 +552,7 @@ public:
      *         (inclusive) and {@code hi} (exclusive)
      */
     int size(Key lo, Key hi) {
-        if (lo > hi) return 0;
+        if (cmp(hi, lo)) return 0;
         if (contains(hi)) return getRank(hi) - getRank(lo) + 1;
         else return getRank(hi) - getRank(lo);
     }
