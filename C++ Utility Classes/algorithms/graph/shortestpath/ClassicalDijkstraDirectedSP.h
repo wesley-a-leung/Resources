@@ -7,6 +7,8 @@
 using namespace std;
 
 typedef double unit;
+const unit INF = numeric_limits<unit>::infinity();
+// rules for INF (infinity): (length of the longest path + length of greatest weight) <= INF
 
 unit *distTo;
 bool *marked;
@@ -19,10 +21,10 @@ void dijkstraSP(WeightedDigraph *G, int s) {
     edgeTo = new DirectedWeightedEdge *[G->getV()];
     marked = new bool[G->getV()];
     for (int v = 0; v < G->getV(); v++) {
-        distTo[v] = numeric_limits<unit>::max();
+        distTo[v] = INF;
         marked[v] = false;
     }
-    distTo[s] = 0.0;
+    distTo[s] = 0;
     for (int v = 0; v < G->getV() - 1; v++) {
         int minV = -1;
         for (int w = 0; w < G->getV(); w++) {

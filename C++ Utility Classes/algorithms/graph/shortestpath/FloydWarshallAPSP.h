@@ -7,6 +7,8 @@
 using namespace std;
 
 typedef double unit;
+const unit INF = numeric_limits<unit>::infinity();
+// rules for INF (infinity): (length of the longest path + length of greatest weight) <= INF
 
 unit **distTo;
 DirectedWeightedEdge ***edgeTo;
@@ -23,7 +25,7 @@ void floydWarshallAPSP(int V, unit **adj) {
     // initialize distances to infinity
     for (int v = 0; v < V; v++) {
         for (int w = 0; w < V; w++) {
-            distTo[v][w] = numeric_limits<unit>::max();
+            distTo[v][w] = INF;
         }
     }
 
@@ -35,8 +37,8 @@ void floydWarshallAPSP(int V, unit **adj) {
             edgeTo[v][w] = new DirectedWeightedEdge(v, w, adj[v][w]);
         }
         // in case of self-loops
-        if (distTo[v][v] >= 0.0) {
-            distTo[v][v] = 0.0;
+        if (distTo[v][v] >= 0) {
+            distTo[v][v] = 0;
             edgeTo[v][v] = nullptr;
         }
     }
@@ -53,7 +55,7 @@ void floydWarshallAPSP(int V, unit **adj) {
                 }
             }
             // check for negative cycle
-            if (distTo[v][v] < 0.0) throw runtime_error("Graph has a negative cycle.");
+            if (distTo[v][v] < 0) throw runtime_error("Graph has a negative cycle.");
         }
     }
 }

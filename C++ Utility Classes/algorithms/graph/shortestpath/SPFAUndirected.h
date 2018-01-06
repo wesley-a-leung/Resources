@@ -7,6 +7,8 @@
 using namespace std;
 
 typedef double unit;
+const unit INF = numeric_limits<unit>::infinity();
+// rules for INF (infinity): (length of the longest path + length of greatest weight) <= INF
 
 unit *distTo;
 WeightedEdge **edgeTo;
@@ -19,10 +21,10 @@ void spfa(WeightedGraph *G, int s) {
     edgeTo = new WeightedEdge *[G->getV()];
     inQueue = new bool[G->getV()];
     for (int v = 0; v < G->getV(); v++) {
-        distTo[v] = numeric_limits<unit>::max();
+        distTo[v] = INF;
         inQueue[v] = false;
     }
-    distTo[s] = 0.0;
+    distTo[s] = 0;
     inQueue[s] = true;
     q.push_back(s);
     while (!q.empty()) {

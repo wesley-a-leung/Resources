@@ -8,6 +8,8 @@
 using namespace std;
 
 typedef double unit;
+const unit INF = numeric_limits<unit>::infinity();
+// rules for INF (infinity): (length of the longest path + length of greatest weight) <= INF
 
 /**
  * The {@code UndirectedAcyclicAPSP} class represents a data type for solving
@@ -33,7 +35,7 @@ private:
         bool marked[G->getV()];
         for (int v = 0; v < G->getV(); v++) {
             marked[v] = false;
-            distTo[v] = numeric_limits<unit>::max();
+            distTo[v] = INF;
         }
         distTo[s] = 0;
         marked[s] = true;
