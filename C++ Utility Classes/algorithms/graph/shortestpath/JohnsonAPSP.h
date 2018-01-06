@@ -7,6 +7,8 @@
 using namespace std;
 
 typedef double unit;
+const unit INF = numeric_limits<unit>::infinity();
+// rules for INF (infinity): (length of the longest path + length of greatest weight) <= INF
 
 unit **distTo;
 DirectedWeightedEdge ***edgeTo;
@@ -24,16 +26,16 @@ void johnsonAPSP(WeightedDigraph *G) {
     vector<DirectedWeightedEdge*> edges = G->edges();
 
     for (int v = 0; v < G->getV(); v++) {
-        h[v] = numeric_limits<unit>::max();
+        h[v] = INF;
         // add edge from dummy node to each node
-        edges.push_back(new DirectedWeightedEdge(G->getV(), v, 0.0));
+        edges.push_back(new DirectedWeightedEdge(G->getV(), v, 0));
         for (int w = 0; w < G->getV(); w++) {
-            distTo[v][w] = numeric_limits<unit>::max();
+            distTo[v][w] = INF;
         }
     }
 
     // bellman-ford from the dummy node
-    h[G->getV()] = 0.0;
+    h[G->getV()] = 0;
     for (int i = 0; i < G->getV(); i++) {
         for (DirectedWeightedEdge *e : edges) {
             int v = e->from();
@@ -54,7 +56,7 @@ void johnsonAPSP(WeightedDigraph *G) {
     // dijkstra from each node using the reweighted graph
     for (int s = 0; s < G->getV(); s++) {
         priority_queue<pair<unit, int>, vector<pair<unit, int>> , greater<pair<unit, int>>> pq;
-        distTo[s][s] = 0.0;
+        distTo[s][s] = 0;
         pq.push({distTo[s][s], s});
         while (!pq.empty()) {
             int v = pq.top().second;

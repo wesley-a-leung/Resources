@@ -7,6 +7,8 @@
 using namespace std;
 
 typedef double unit;
+const unit INF = numeric_limits<unit>::infinity();
+// rules for INF (infinity): (length of the longest path + length of greatest weight) <= INF
 
 unit *distTo;
 DirectedWeightedEdge **edgeTo;
@@ -16,9 +18,9 @@ void bellmanFordSP(WeightedDigraph *G, int s) {
     distTo = new unit[G->getV()];
     edgeTo = new DirectedWeightedEdge *[G->getV()];
     for (int v = 0; v < G->getV(); v++) {
-        distTo[v] = numeric_limits<unit>::max();
+        distTo[v] = INF;
     }
-    distTo[s] = 0.0;
+    distTo[s] = 0;
     vector<DirectedWeightedEdge*> edges = G->edges();
     for (int i = 0; i < G->getV() - 1; i++) {
         for (DirectedWeightedEdge *e : edges) {
@@ -40,9 +42,9 @@ void bellmanFordSP(int V, vector<DirectedWeightedEdge*> &edges, int s) {
     distTo = new unit[V];
     edgeTo = new DirectedWeightedEdge *[V];
     for (int v = 0; v < V; v++) {
-        distTo[v] = numeric_limits<unit>::max();
+        distTo[v] = INF;
     }
-    distTo[s] = 0.0;
+    distTo[s] = 0;
     for (int i = 0; i < V - 1; i++) {
         for (DirectedWeightedEdge *e : edges) {
             int v = e->from();

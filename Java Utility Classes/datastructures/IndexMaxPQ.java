@@ -33,6 +33,7 @@ import java.util.NoSuchElementException;
  *  @param <Key> the generic type of key on this priority queue
  */
 public class IndexMaxPQ<Key extends Comparable<Key>> implements Iterable<Integer> {
+    private int maxN;        // maximum number of elements on PQ
     private int n;           // number of elements on PQ
     private int[] pq;        // binary heap using 1-based indexing
     private int[] qp;        // inverse of pq - qp[pq[i]] = pq[qp[i]] = i
@@ -47,11 +48,12 @@ public class IndexMaxPQ<Key extends Comparable<Key>> implements Iterable<Integer
      */
     public IndexMaxPQ(int maxN) {
         if (maxN < 0) throw new IllegalArgumentException();
+        this.maxN = maxN;
         n = 0;
-        keys = (Key[]) new Comparable[maxN + 1];    // make this of length maxN??
+        keys = (Key[]) new Comparable[maxN];
         pq   = new int[maxN + 1];
-        qp   = new int[maxN + 1];                   // make this of length maxN??
-        for (int i = 0; i <= maxN; i++)
+        qp   = new int[maxN];
+        for (int i = 0; i < maxN; i++)
             qp[i] = -1;
     }
 
@@ -74,6 +76,7 @@ public class IndexMaxPQ<Key extends Comparable<Key>> implements Iterable<Integer
      * @throws IndexOutOfBoundsException unless {@code 0 <= i < maxN}
      */
     public boolean contains(int i) {
+        if (i < 0 || i >= maxN) throw new IndexOutOfBoundsException();
         return qp[i] != -1;
     }
 
@@ -96,6 +99,7 @@ public class IndexMaxPQ<Key extends Comparable<Key>> implements Iterable<Integer
      *         associated with index {@code i}
      */
     public void insert(int i, Key key) {
+        if (i < 0 || i >= maxN) throw new IndexOutOfBoundsException();
         if (contains(i)) throw new IllegalArgumentException("index is already in the priority queue");
         n++;
         qp[i] = n;
@@ -137,7 +141,6 @@ public class IndexMaxPQ<Key extends Comparable<Key>> implements Iterable<Integer
         int min = pq[1];
         exch(1, n--);
         sink(1);
-
         // assert pq[n+1] == min;
         qp[min] = -1;        // delete
         keys[min] = null;    // to help with garbage collection
@@ -154,6 +157,7 @@ public class IndexMaxPQ<Key extends Comparable<Key>> implements Iterable<Integer
      * @throws NoSuchElementException no key is associated with index {@code i}
      */
     public Key keyOf(int i) {
+        if (i < 0 || i >= maxN) throw new IndexOutOfBoundsException();
         if (!contains(i)) throw new NoSuchElementException("index is not in the priority queue");
         else return keys[i];
     }
@@ -164,25 +168,14 @@ public class IndexMaxPQ<Key extends Comparable<Key>> implements Iterable<Integer
      * @param  i the index of the key to change
      * @param  key change the key associated with index {@code i} to this key
      * @throws IndexOutOfBoundsException unless {@code 0 <= i < maxN}
+     * @throws NoSuchElementException no key is associated with index {@code i}
      */
     public void changeKey(int i, Key key) {
+        if (i < 0 || i >= maxN) throw new IndexOutOfBoundsException();
         if (!contains(i)) throw new NoSuchElementException("index is not in the priority queue");
         keys[i] = key;
         swim(qp[i]);
         sink(qp[i]);
-    }
-
-   /**
-     * Change the key associated with index {@code i} to the specified value.
-     *
-     * @param  i the index of the key to change
-     * @param  key change the key associated with index {@code i} to this key
-     * @throws IndexOutOfBoundsException unless {@code 0 <= i < maxN}
-     * @deprecated Replaced by {@code changeKey(int, Key)}.
-     */
-    @Deprecated
-    public void change(int i, Key key) {
-        changeKey(i, key);
     }
 
     /**
@@ -195,10 +188,10 @@ public class IndexMaxPQ<Key extends Comparable<Key>> implements Iterable<Integer
      * @throws NoSuchElementException no key is associated with index {@code i}
      */
     public void increaseKey(int i, Key key) {
+        if (i < 0 || i >= maxN) throw new IndexOutOfBoundsException();
         if (!contains(i)) throw new NoSuchElementException("index is not in the priority queue");
         if (keys[i].compareTo(key) >= 0)
             throw new IllegalArgumentException("Calling increaseKey() with given argument would not strictly increase the key");
-
         keys[i] = key;
         swim(qp[i]);
     }
@@ -213,10 +206,10 @@ public class IndexMaxPQ<Key extends Comparable<Key>> implements Iterable<Integer
      * @throws NoSuchElementException no key is associated with index {@code i}
      */
     public void decreaseKey(int i, Key key) {
+        if (i < 0 || i >= maxN) throw new IndexOutOfBoundsException();
         if (!contains(i)) throw new NoSuchElementException("index is not in the priority queue");
         if (keys[i].compareTo(key) <= 0)
             throw new IllegalArgumentException("Calling decreaseKey() with given argument would not strictly decrease the key");
-
         keys[i] = key;
         sink(qp[i]);
     }
@@ -229,6 +222,7 @@ public class IndexMaxPQ<Key extends Comparable<Key>> implements Iterable<Integer
      * @throws NoSuchElementException no key is associated with index {@code i}
      */
     public void delete(int i) {
+        if (i < 0 || i >= maxN) throw new IndexOutOfBoundsException();
         if (!contains(i)) throw new NoSuchElementException("index is not in the priority queue");
         int index = qp[i];
         exch(index, n--);
@@ -275,6 +269,10 @@ public class IndexMaxPQ<Key extends Comparable<Key>> implements Iterable<Integer
         }
     }
 
+    
+    /***************************************************************************
+     * Iterators.
+     ***************************************************************************/
 
     /**
      * Returns an iterator that iterates over the keys on the
@@ -300,6 +298,7 @@ public class IndexMaxPQ<Key extends Comparable<Key>> implements Iterable<Integer
         }
 
         public boolean hasNext()  { return !copy.isEmpty();                     }
+       
         public void remove()      { throw new UnsupportedOperationException();  }
 
         public Integer next() {

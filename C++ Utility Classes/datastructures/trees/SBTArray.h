@@ -366,6 +366,7 @@ public:
      * @param N the initial capacity of the symbol table
      */
     SBTArray(int N) {
+        assert(N >= 0);
         N++; // zero node is never used
         KEY = new Key[N];
         VAL = new Value[N];

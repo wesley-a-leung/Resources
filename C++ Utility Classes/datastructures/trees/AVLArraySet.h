@@ -346,6 +346,7 @@ public:
      * @param N the initial capacity of the symbol table
      */
     AVLArraySet(int N) {
+        assert(N >= 0);
         N++; // zero node is never used
         VAL = new Value[N];
         HT = new int[N];
