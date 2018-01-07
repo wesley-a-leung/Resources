@@ -9,7 +9,7 @@ using namespace std;
 
 typedef double unit;
 const unit INF = numeric_limits<unit>::infinity();
-// rules for INF (infinity): (length of the longest path + length of greatest weight) <= INF
+// rules for INF (infinity): (length of the longest path + length of greatest weight) < INF
 
 /**
  * The {@code UndirectedAcyclicAPSP} class represents a data type for solving
