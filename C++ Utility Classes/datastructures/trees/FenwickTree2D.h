@@ -18,13 +18,12 @@ private:
     T **array;
 
 public:
-
     FenwickTree2D(int sizeX, int sizeY) {
         this->sizeX = sizeX;
         this->sizeY = sizeY;
         array = new T*[sizeX + 1];
         for (int i = 0; i <= sizeX; i++) {
-            array[i] = new T[sizeY];
+            array[i] = new T[sizeY + 1];
             for (int j = 0; j <= sizeY; j++) {
                 array[i][j] = 0;
             }
