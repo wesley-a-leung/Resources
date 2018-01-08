@@ -1,5 +1,5 @@
-#ifndef ALGORITHMS_GRAPH_SEARCH_HLD_H_
-#define ALGORITHMS_GRAPH_SEARCH_HLD_H_
+#ifndef ALGORITHMS_GRAPH_QUERIES_HLD_H_
+#define ALGORITHMS_GRAPH_QUERIES_HLD_H_
 
 #include <bits/stdc++.h>
 #include <datastructures/graph/Graph.h>
@@ -9,7 +9,7 @@ using namespace std;
 /**
  * The {@code HLD} class represents a data structure for computing queries on graphs that involve finding the
  * lowest common ancestor of 2 nodes in an acyclic graph using heavy-light decomposition.
- * The constructor takes time proportional to <em>V</em> +  <em>E</em> and afterwards,
+ * The constructor takes time proportional to <em>V</em> + <em>E</em> and afterwards,
  * the {@code lca()} method takes log <em>V</em> time to find the lowest common ancestor.
  *
  * @author Wesley Leung
@@ -102,4 +102,4 @@ public:
     }
 };
 
-#endif /* ALGORITHMS_GRAPH_SEARCH_HLD_H_ */
+#endif /* ALGORITHMS_GRAPH_QUERIES_HLD_H_ */

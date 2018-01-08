@@ -1,5 +1,5 @@
-#ifndef ALGORITHMS_GRAPH_SEARCH_DIRECTEDLCA_H_
-#define ALGORITHMS_GRAPH_SEARCH_DIRECTEDLCA_H_
+#ifndef ALGORITHMS_GRAPH_LCA_DIRECTEDLCA_H_
+#define ALGORITHMS_GRAPH_LCA_DIRECTEDLCA_H_
 
 #include <bits/stdc++.h>
 #include <datastructures/graph/Digraph.h>
@@ -79,4 +79,4 @@ public:
     }
 };
 
-#endif /* ALGORITHMS_GRAPH_SEARCH_DIRECTEDLCA_H_ */
+#endif /* ALGORITHMS_GRAPH_LCA_DIRECTEDLCA_H_ */
