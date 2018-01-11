@@ -1,21 +1,23 @@
-#ifndef DATASTRUCTURES_TREES_MATH_FENWICKTREERANGE_H_
-#define DATASTRUCTURES_TREES_MATH_FENWICKTREERANGE_H_
+#ifndef DATASTRUCTURES_TREES_FENWICKTREEQUADRATIC_H_
+#define DATASTRUCTURES_TREES_FENWICKTREEQUADRATIC_H_
 
 #include <bits/stdc++.h>
 
 using namespace std;
 
 /**
- * FenwickTree supporting range updates and range queries.
- * Memory usage:  O(2n)
+ * FenwickTree supporting range updates with updates in the form of
+ * adding v, 2v, 3v, ... to the interval [l, r], and range queries.
+ * Memory usage:  O(3n)
  *
  * @author Wesley Leung
  */
 template <typename T>
-struct FenwickTreeRange {
+struct FenwickTreeQuadratic {
 private:
     int size;
-    vector<T> array1, array2;
+    // constant, linear, quadratic
+    vector<T> con, lin, quad;
 
     T rsq(vector<T> &array, int ind) {
         T sum = 0;
@@ -32,7 +34,7 @@ private:
     }
 
 public:
-    FenwickTreeRange(int size) : array1(size + 1), array2(size + 1) {
+    FenwickTreeQuadratic(int size) : con(size + 1), lin(size + 1), quad(size + 1) {
         this->size = size;
     }
 
@@ -46,7 +48,7 @@ public:
      * @return sum
      */
     T rsq(int ind) {
-        return rsq(array1, ind) * ind - rsq(array2, ind);
+        return (rsq(quad, ind) * ind * ind + rsq(lin, ind) * ind + rsq(con, ind)) / 2;
     }
 
     /**
@@ -65,7 +67,7 @@ public:
     }
 
     /**
-     * Update the array between index a and b
+     * Update the array between index a and b with values v, 2v, 3v, ...
      * ind is 1-indexed
      * <p>
      * Time-Complexity:    O(log(n))
@@ -75,10 +77,14 @@ public:
      * @param  value value
      */
     void update(int a, int b, T value) {
-        update(array1, a, value);
-        update(array1, b + 1, -value);
-        update(array2, a, value * (a - 1));
-        update(array2, b + 1, -value * b);
+        int s = a - 1, len = b - a + 1;
+        update(quad, a, value);
+        update(quad, b + 1, -value);
+        update(lin, a, value * (1 - 2 * s));
+        update(lin, b + 1, -value * (1 - 2 * s));
+        update(con, a, value * (s * s - s));
+        update(con, b + 1, -value * (s * s - s));
+        update(con, b + 1, value * len * (len + 1));
     }
 
     int getSize() {
@@ -86,4 +92,4 @@ public:
     }
 };
 
-#endif /* DATASTRUCTURES_TREES_MATH_FENWICKTREERANGE_H_ */
+#endif /* DATASTRUCTURES_TREES_FENWICKTREEQUADRATIC_H_ */

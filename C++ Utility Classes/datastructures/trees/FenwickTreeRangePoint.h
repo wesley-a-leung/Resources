@@ -6,7 +6,7 @@
 using namespace std;
 
 /**
- * FenwickTree supporting range updates and point queries
+ * FenwickTree supporting range updates and point queries.
  * Memory usage:  O(n)
  *
  * @author Wesley Leung
