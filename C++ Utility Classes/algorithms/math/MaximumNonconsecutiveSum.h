@@ -1,12 +1,12 @@
-#ifndef ALGORITHMS_MATH_MAXIMUMNONCONSECUTIVESUBSEQUENCE_H_
-#define ALGORITHMS_MATH_MAXIMUMNONCONSECUTIVESUBSEQUENCE_H_
+#ifndef ALGORITHMS_MATH_MAXIMUMNONCONSECUTIVESUM_H_
+#define ALGORITHMS_MATH_MAXIMUMNONCONSECUTIVESUM_H_
 
 #include <bits/stdc++.h>
 
 using namespace std;
 
 /**
- * Method for determining the maximum value of a non consecutive subsequence
+ * Method for determining the maximum sum of a non consecutive subsequence
  * (no 2 elements chosen may be next to each other).
  *
  * Takes time proportional to <em>N</em> where N is the length of the original
@@ -15,7 +15,7 @@ using namespace std;
  * Takes space proportional to <em>N</em>.
  *
  * @param sequence the array of integers to check
- * @return the maximum value of a non consecutive subsequence
+ * @return the maximum sum of a non consecutive subsequence
  */
 int solve(int *sequence, int n) {
     int dp[n];
@@ -27,4 +27,4 @@ int solve(int *sequence, int n) {
     return dp[n-1];
 }
 
-#endif /* ALGORITHMS_MATH_MAXIMUMNONCONSECUTIVESUBSEQUENCE_H_ */
+#endif /* ALGORITHMS_MATH_MAXIMUMNONCONSECUTIVESUM_H_ */
