@@ -13,7 +13,7 @@ using namespace std;
  * @param K the length of the subarray window
  * @return an array with the maximum element for each contiguous subarray of size K starting at index i
  */
-int *compute(int *A, int N, int K) {
+int *solve(int *A, int N, int K) {
     int *ans = new int[N - K + 1];
     deque<int> dq;
     for (int i = 0; i < N; i++) {
