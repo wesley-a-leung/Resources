@@ -2,7 +2,6 @@
 #define ALGORITHMS_MATH_GAUSSIANELIMINATION_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 const double EPSILON = 1e-10;

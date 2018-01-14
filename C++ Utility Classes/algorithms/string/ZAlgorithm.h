@@ -2,7 +2,6 @@
 #define ALGORITHMS_STRING_ZALGORITHM_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 /**

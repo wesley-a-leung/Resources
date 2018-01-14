@@ -2,7 +2,6 @@
 #define ALGORITHMS_MATH_MILLERRABIN_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 unsigned long long mulMod(unsigned long long a, unsigned long long b, unsigned long long mod) {

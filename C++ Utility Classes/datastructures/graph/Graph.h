@@ -2,7 +2,6 @@
 #define DATASTRUCTURES_GRAPH_GRAPH_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 struct Graph {

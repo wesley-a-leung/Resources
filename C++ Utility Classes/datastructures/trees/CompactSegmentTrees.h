@@ -2,7 +2,6 @@
 #define DATASTRUCTURES_TREES_COMPACTSEGMENTTREES_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 // single assignment and modifications, range query

@@ -2,7 +2,6 @@
 #define ALGORITHMS_MATH_SIEVE2_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 bool *isPrime;

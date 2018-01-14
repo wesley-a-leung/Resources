@@ -2,7 +2,6 @@
 #define DATASTRUCTURES_TREES_MATH_LAZYSEGMENTTREE_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 struct SegmentTree {

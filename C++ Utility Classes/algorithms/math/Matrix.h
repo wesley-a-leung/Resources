@@ -2,7 +2,6 @@
 #define ALGORITHMS_MATH_MATRIX_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 class Matrix {

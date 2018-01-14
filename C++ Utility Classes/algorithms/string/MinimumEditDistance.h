@@ -2,7 +2,6 @@
 #define ALGORITHMS_STRING_MINIMUMEDITDISTANCE_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 // Penalty Value

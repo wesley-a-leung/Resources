@@ -2,7 +2,6 @@
 #define ALGORITHMS_DP_LONGESTINCREASINGSUBSEQUENCE_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 int ceilIndex(int *a, int start, int end, int key) {

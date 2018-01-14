@@ -2,9 +2,9 @@
 #define ALGORITHMS_MATH_SIEVE_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
+// generates all primes between start and end inclusive
 vector<int> &primes(int start, int end) {
     if (start > 1) start -= 1;
     int sqrtE = (int) sqrt(end);

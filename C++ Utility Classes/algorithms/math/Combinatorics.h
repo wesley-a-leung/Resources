@@ -2,7 +2,6 @@
 #define ALGORITHMS_MATH_COMBINATORICS_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 long long factorial(long long n, long long m) {

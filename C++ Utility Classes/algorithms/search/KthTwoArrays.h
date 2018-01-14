@@ -2,7 +2,6 @@
 #define ALGORITHMS_SEARCH_KTHTWOARRAYS_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 template<typename Comparable>

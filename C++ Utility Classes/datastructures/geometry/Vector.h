@@ -2,7 +2,6 @@
 #define DATASTRUCTURES_GEOMETRY_VECTOR_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 /**

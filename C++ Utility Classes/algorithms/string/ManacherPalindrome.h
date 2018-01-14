@@ -2,7 +2,6 @@
 #define ALGORITHMS_STRING_MANACHERPALINDROME_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 class ManacherPalindrome {

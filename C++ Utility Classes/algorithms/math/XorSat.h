@@ -2,7 +2,6 @@
 #define ALGORITHMS_MATH_XORSAT_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 bool *solve(int n, bool **A, bool *b) {

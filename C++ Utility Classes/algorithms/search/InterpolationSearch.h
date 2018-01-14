@@ -2,7 +2,6 @@
 #define ALGORITHMS_SEARCH_INTERPOLATIONSEARCH_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 /**
