@@ -1,4 +1,4 @@
-package algorithms.math;
+package algorithms.dp;
 
 import datastructures.Stack;
 

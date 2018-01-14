@@ -1,4 +1,4 @@
-package algorithms.math;
+package algorithms.dp;
 
 public class MaximumSubarraySum {
     private int max;

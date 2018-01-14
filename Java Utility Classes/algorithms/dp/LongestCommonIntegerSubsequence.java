@@ -1,4 +1,4 @@
-package algorithms.math;
+package algorithms.dp;
 
 public class LongestCommonIntegerSubsequence {    
     private int[] subsequence;
