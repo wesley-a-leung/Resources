@@ -2,7 +2,6 @@
 #define ALGORITHMS_MATH_FFT_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 const double PI = 3.14159265358979323846;

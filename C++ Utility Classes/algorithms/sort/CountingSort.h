@@ -2,7 +2,6 @@
 #define ALGORITHMS_SORT_COUNTINGSORT_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 /**

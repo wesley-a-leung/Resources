@@ -2,7 +2,6 @@
 #define DATASTRUCTURES_TREES_SBTARRAYSET_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 class no_such_element_exception: public runtime_error {

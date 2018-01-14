@@ -2,7 +2,6 @@
 #define ALGORITHMS_STRING_LONGESTCOMMONSUBSTRING_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 string substring;

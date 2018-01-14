@@ -2,7 +2,6 @@
 #define ALGORITHMS_SLIDINGWINDOW_SLIDINGWINDOWMAXIMUM_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 /**

@@ -2,7 +2,6 @@
 #define DATASTRUCTURES_TREES_SPLAYTREESET_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 template <typename Value>

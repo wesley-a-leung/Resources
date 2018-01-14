@@ -2,7 +2,6 @@
 #define ALGORITHMS_MATH_EUCLIDGCD_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 // non-recursive implementation

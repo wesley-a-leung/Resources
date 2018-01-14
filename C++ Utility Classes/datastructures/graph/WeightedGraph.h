@@ -2,7 +2,6 @@
 #define DATASTRUCTURES_GRAPH_WEIGHTEDGRAPH_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 typedef double unit;

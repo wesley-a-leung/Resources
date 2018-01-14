@@ -2,7 +2,6 @@
 #define ALGORITHMS_MATH_MO_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 class Mo {

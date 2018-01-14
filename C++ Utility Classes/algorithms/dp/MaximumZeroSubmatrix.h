@@ -2,7 +2,6 @@
 #define ALGORITHMS_DP_MAXIMUMZEROSUBMATRIX_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 /**

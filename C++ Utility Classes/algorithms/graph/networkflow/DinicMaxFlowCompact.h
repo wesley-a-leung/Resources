@@ -2,7 +2,6 @@
 #define ALGORITHMS_GRAPH_NETWORKFLOW_DINICMAXFLOWCOMPACT_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 typedef int unit;

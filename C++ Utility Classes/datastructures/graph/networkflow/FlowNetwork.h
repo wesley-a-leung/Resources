@@ -2,7 +2,6 @@
 #define DATASTRUCTURES_GRAPH_NETWORKFLOW_FLOWNETWORK_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 /**

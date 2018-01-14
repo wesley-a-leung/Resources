@@ -2,7 +2,6 @@
 #define ALGORITHMS_DP_MAXIMUMSUBARRAYSUM_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 int maxSum, start, end; // inclusive

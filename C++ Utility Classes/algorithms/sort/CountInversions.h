@@ -2,7 +2,6 @@
 #define ALGORITHMS_SORT_COUNTINVERSIONS_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 long long cnt; // number of inversions

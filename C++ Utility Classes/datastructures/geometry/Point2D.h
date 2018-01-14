@@ -2,7 +2,6 @@
 #define DATASTRUCTURES_GEOMETRY_POINT2D_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 /**

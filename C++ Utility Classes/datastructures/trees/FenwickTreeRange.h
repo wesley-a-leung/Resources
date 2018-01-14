@@ -2,7 +2,6 @@
 #define DATASTRUCTURES_TREES_MATH_FENWICKTREERANGE_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 /**

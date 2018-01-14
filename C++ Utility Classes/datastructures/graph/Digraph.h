@@ -2,7 +2,6 @@
 #define DATASTRUCTURES_GRAPH_DIGRAPH_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 struct Digraph {

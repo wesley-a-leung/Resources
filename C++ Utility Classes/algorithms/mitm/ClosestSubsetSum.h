@@ -2,7 +2,6 @@
 #define ALGORITHMS_MITM_CLOSESTSUBSETSUM_H_
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
 // solves half of the problem by iterating through each permutation
