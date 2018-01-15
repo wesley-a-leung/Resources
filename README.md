@@ -1,2 +1,2 @@
 # Resources
-Utility Classes and PDFs
+Utility Classes
