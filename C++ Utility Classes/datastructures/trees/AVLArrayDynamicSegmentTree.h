@@ -11,7 +11,7 @@ public:
 };
 
 template <typename Key, typename Value>
-struct SBTArrayDynamicSegmentTree {
+struct AVLArrayDynamicSegmentTree {
 private:
     Key *KEY; // keys (storing indices)
     Key *LO; // lower bound of range
@@ -383,7 +383,7 @@ public:
     /**
      * Initializes an empty symbol table with an initial capacity of 4.
      */
-    SBTArrayDynamicSegmentTree() {
+    AVLArrayDynamicSegmentTree() {
         KEY = new Key[INIT_CAPACITY];
         LO = new Key[INIT_CAPACITY];
         HI = new Key[INIT_CAPACITY];
@@ -407,7 +407,7 @@ public:
      *
      * @param N the initial capacity of the symbol table
      */
-    SBTArrayDynamicSegmentTree(int N) {
+    AVLArrayDynamicSegmentTree(int N) {
         KEY = new Key[N];
         LO = new Key[N];
         HI = new Key[N];

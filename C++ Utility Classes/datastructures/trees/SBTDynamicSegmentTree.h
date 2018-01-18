@@ -12,6 +12,7 @@ public:
 
 template <typename Key, typename Value>
 struct SBTDynamicSegmentTree {
+private:
     /**
      * Represents an inner node of the tree.
      */
@@ -33,7 +34,6 @@ struct SBTDynamicSegmentTree {
         }
     };
 
-private:
     /**
      * The root node.
      */
@@ -235,7 +235,7 @@ private:
                 x = getMin(y->right);
                 x->right = removeMin(y->right);
                 x->left = y->left;
-                free(y);
+                delete y;
             }
         }
         update(x);

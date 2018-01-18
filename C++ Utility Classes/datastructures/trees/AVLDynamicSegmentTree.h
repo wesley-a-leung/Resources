@@ -11,7 +11,8 @@ public:
 };
 
 template <typename Key, typename Value>
-struct SBTDynamicSegmentTree {
+struct AVLDynamicSegmentTree {
+private:
     /**
      * Represents an inner node of the AVL tree.
      */
@@ -34,7 +35,6 @@ struct SBTDynamicSegmentTree {
         }
     };
 
-private:
     /**
      * The root node.
      */
@@ -242,7 +242,7 @@ private:
                 x = getMin(y->right);
                 x->right = removeMin(y->right);
                 x->left = y->left;
-                free(y);
+                delete y;
             }
         }
         return balance(x);
@@ -363,7 +363,7 @@ public:
     /**
      * Initializes an empty symbol table.
      */
-    SBTDynamicSegmentTree() {}
+    AVLDynamicSegmentTree() {}
 
     /**
      * Checks if the symbol table is empty.
