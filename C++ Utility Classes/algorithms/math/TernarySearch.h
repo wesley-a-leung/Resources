@@ -22,8 +22,9 @@ pair<double, double> ternary_search(double (*f)(double), double lo, double hi) {
         if (f(m1) < f(m2)) hi = m2; // change to f(m1) < f(m2) for minimum, f(m1) > f(m2) for maximum
         else lo = m1;
     } while (abs(hi - lo) >= EPS);
-    if (abs(lo) < EPS) lo = 0.0; // correcting -0.0 to 0.0
-    return make_pair(lo, f(lo));
+    m1 = lo + (hi - lo) / 2;
+    if (abs(m1) < EPS) m1 = 0.0; // correcting -0.0 to 0.0
+    return make_pair(m1, f(m1));
 }
 
 #endif /* ALGORITHMS_MATH_TERNARYSEARCH_H_ */
