@@ -250,11 +250,14 @@ public:
         root = splay(root, key);
         if (key == root->key) {
             if (root->left == nullptr) {
-                root = root->right;
+                Node *x = root->right;
+                delete root;
+                root = x;
             } else {
                 Node *x = root->right;
-                root = root->left;
-                splay(root, key);
+                Node *y = root->left;
+                delete root;
+                root = splay(y, key);
                 root->right = x;
             }
             update(root);

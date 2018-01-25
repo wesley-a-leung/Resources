@@ -217,10 +217,14 @@ public:
         root = splay(root, val);
         if (val == root->val) {
             if (root->left == nullptr) {
-                root = root->right;
+                Node *x = root->right;
+                delete root;
+                root = x;
             } else {
                 Node *x = root->right;
-                root = splay(root->left, val);
+                Node *y = root->left;
+                delete root;
+                root = splay(y, val);
                 root->right = x;
             }
             update(root);

@@ -174,9 +174,13 @@ private:
      * @param x the subtree
      * @return the updated subtree
      */
-    Node *removeMin(Node *&x) {
-        if (x->left == nullptr) return x->right;
-        x->left = removeMin(x->left);
+    Node *removeMin(Node *&x, bool freeMemory) {
+        if (x->left == nullptr) {
+            Node *y = x->right;
+            if (freeMemory) delete x;
+            return y;
+        }
+        x->left = removeMin(x->left, freeMemory);
         update(x);
         return x;
     }
@@ -187,9 +191,13 @@ private:
      * @param x the subtree
      * @return the updated subtree
      */
-    Node *removeMax(Node *&x) {
-        if (x->right == nullptr) return x->left;
-        x->right = removeMax(x->right);
+    Node *removeMax(Node *&x, bool freeMemory) {
+        if (x->right == nullptr) {
+            Node *y = x->left;
+            if (freeMemory) delete x;
+            return y;
+        }
+        x->right = removeMax(x->right, freeMemory);
         update(x);
         return x;
     }
@@ -228,12 +236,18 @@ private:
         if (key < x->key) x->left = remove(x->left, key);
         else if (key > x->key) x->right = remove(x->right, key);
         else {
-            if (x->left == nullptr) return x->right;
-            else if (x->right == nullptr) return x->left;
-            else {
+            if (x->left == nullptr) {
+                Node *y = x->right;
+                delete x;
+                return y;
+            } else if (x->right == nullptr) {
+                Node *y = x->left;
+                delete x;
+                return y;
+            } else {
                 Node *y = x;
                 x = getMin(y->right);
-                x->right = removeMin(y->right);
+                x->right = removeMin(y->right, false);
                 x->left = y->left;
                 delete y;
             }
@@ -432,7 +446,7 @@ public:
      */
     void removeMin() {
         if (isEmpty()) throw runtime_error("called removeMin() with empty symbol table");
-        root = removeMin(root);
+        root = removeMin(root, true);
     }
 
     /**
@@ -442,7 +456,7 @@ public:
      */
     void removeMax() {
         if (isEmpty()) throw runtime_error("called removeMax() with empty symbol table");
-        root = removeMax(root);
+        root = removeMax(root, true);
     }
 
     /**
