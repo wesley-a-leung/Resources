@@ -8,28 +8,29 @@ using namespace std;
 /**
  * Returns the greatest common divisor of 2 integers.
  *
- * @param  p the first integer
- * @param  q the second integer
- * @return greatest common divisor of {@code p} and {@code q}
+ * @param  a the first integer
+ * @param  b the second integer
+ * @return greatest common divisor of {@code a} and {@code b}
  */
-int gcd(int p, int q) {
-    while (q != 0) {
-        int temp = q;
-        q = p % q;
-        p = temp;
+int gcd(int a, int b) {
+    while (b != 0) {
+        int temp = b;
+        b = a % b;
+        a = temp;
     }
-    return abs(p);
+    return abs(a);
 }
+
 // recursive implementation
 /**
  * Returns the greatest common divisor of 2 integers.
  *
- * @param  p the first integer
- * @param  q the second integer
- * @return greatest common divisor of {@code p} and {@code q}
+ * @param  a the first integer
+ * @param  b the second integer
+ * @return greatest common divisor of {@code a} and {@codebq}
  */
-int gcdRec(int p, int q) {
-    return q == 0 ? abs(p) : gcdRec(q, p % q);
+int gcdRec(int a, int b) {
+    return b == 0 ? abs(a) : gcdRec(b, a % b);
 }
 
 /**
@@ -48,7 +49,7 @@ int gcd(int a, int b, int &x, int &y) {
     if (b == 0) {
         x = 1;
         y = 0;
-        return a;
+        return abs(a);
     }
     int x1, y1;
     int g = gcd(b, a % b, x1, y1);
