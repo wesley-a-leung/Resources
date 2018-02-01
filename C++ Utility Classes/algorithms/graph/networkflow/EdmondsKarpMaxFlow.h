@@ -2,7 +2,7 @@
 #define ALGORITHMS_GRAPH_NETWORKFLOW_EDMONDSKARPMAXFLOW_H_
 
 #include <bits/stdc++.h>
-#include <datastructures/graph/networkflow/FlowNetwork.h>
+#include "datastructures/graph/networkflow/FlowNetwork.h"
 
 using namespace std;
 

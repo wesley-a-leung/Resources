@@ -2,8 +2,8 @@
 #define ALGORITHMS_GRAPH_MST_BORUVKAMST_H_
 
 #include <bits/stdc++.h>
-#include <datastructures/graph/WeightedGraph.h>
-#include <datastructures/math/UF.h>
+#include "datastructures/graph/WeightedGraph.h"
+#include "datastructures/math/UF.h"
 
 using namespace std;
 

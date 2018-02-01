@@ -9,8 +9,6 @@ import datastructures.graph.Graph;
  * 
  * Time complexity: O(3^(n/3))
  * 
- * @author Wesley Leung
- *
  */
 public class BronKerboschMaxClique {
     private boolean[][] adj;

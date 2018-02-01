@@ -2,7 +2,7 @@
 #define ALGORITHMS_GRAPH_LCA_DIRECTEDWEIGHTEDLCA_H_
 
 #include <bits/stdc++.h>
-#include <datastructures/graph/WeightedDigraph.h>
+#include "datastructures/graph/WeightedDigraph.h"
 
 using namespace std;
 

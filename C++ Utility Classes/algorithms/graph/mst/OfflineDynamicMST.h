@@ -2,7 +2,7 @@
 #define ALGORITHMS_GRAPH_MST_OFFLINEDYNAMICMST_H_
 
 #include <bits/stdc++.h>
-#include <datastructures/graph/WeightedGraph.h>
+#include "datastructures/graph/WeightedGraph.h"
 
 using namespace std;
 

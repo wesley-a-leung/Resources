@@ -2,7 +2,7 @@
 #define ALGORITHMS_GRAPH_SEARCH_BREADTHFIRSTSEARCH_H_
 
 #include <bits/stdc++.h>
-#include <datastructures/graph/Graph.h>
+#include "datastructures/graph/Graph.h"
 
 using namespace std;
 

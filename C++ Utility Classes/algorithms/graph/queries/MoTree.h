@@ -2,7 +2,7 @@
 #define ALGORITHMS_GRAPH_QUERIES_MOTREE_H_
 
 #include <bits/stdc++.h>
-#include <datastructures/graph/Graph.h>
+#include "datastructures/graph/Graph.h"
 
 using namespace std;
 
