@@ -2,7 +2,7 @@
 #define ALGORITHMS_GEOMETRY_GRAHAMSCANCONVEXHULL_H_
 
 #include <bits/stdc++.h>
-#include <datastructures/geometry/Point2D.h>
+#include "datastructures/geometry/Point2D.h"
 
 using namespace std;
 using namespace std::placeholders;

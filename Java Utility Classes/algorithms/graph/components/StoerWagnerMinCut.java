@@ -1,15 +1,13 @@
-package algorithms.graph.networkflow;
+package algorithms.graph.components;
 
 import datastructures.IndexMaxPQ;
 import datastructures.graph.WeightedGraph;
 import datastructures.graph.WeightedEdge;
-import datastructures.graph.networkflow.FlowEdge;
-import datastructures.graph.networkflow.FlowNetwork;
 import datastructures.math.UF;
 
 /**
- * The {@code GlobalMincut} class represents a data type for computing a
- * <em>global minimum cut</em> in an edge-weighted graph where the edge
+ * The {@code StoerWagnerGlobalMincut} class represents a data type for computing
+ * a <em>global minimum cut</em> in an edge-weighted graph where the edge
  * weights are nonnegative. A <em>cut</em> is a partition of the set
  * of vertices of a graph into two nonempty subsets. An edge that has one
  * endpoint in each subset of a cut is a <em>crossing edge</em>. The weight
@@ -44,8 +42,6 @@ import datastructures.math.UF;
  * @author Marcelo Silva
  */
 public class StoerWagnerMinCut {
-    private static final double FLOATING_POINT_EPSILON = 1E-11;
-
     // the weight of the minimum cut
     private double weight = Double.POSITIVE_INFINITY;
 
@@ -85,7 +81,6 @@ public class StoerWagnerMinCut {
         V = G.V();
         validate(G);
         minCut(G, 0);
-        assert check(G);
     }
 
     /**
@@ -123,7 +118,6 @@ public class StoerWagnerMinCut {
      *             {@code 0} and {@code (G.V() - 1)}
      */
     public boolean cut(int v) {
-        int V = cut.length;
         validateVertex(v);
         return cut[v];
     }
@@ -227,35 +221,6 @@ public class StoerWagnerMinCut {
             }
         }
         return H;
-    }
-
-    /**
-     * Checks optimality conditions.
-     * 
-     * @param G the edge-weighted graph
-     * @return {@code true} if optimality conditions are fine
-     */
-    private boolean check(WeightedGraph G) {
-
-        // compute min st-cut for all pairs s and t
-        // shortcut: s must appear on one side of global mincut,
-        // so it suffices to try all pairs s-v for some fixed s
-        double value = Double.POSITIVE_INFINITY;
-        for (int s = 0, t = 1; t < G.V(); t++) {
-            FlowNetwork F = new FlowNetwork(G.V());
-            for (WeightedEdge e : G.edges()) {
-                int v = e.either(), w = e.other(v);
-                F.addEdge(new FlowEdge(v, w, e.weight()));
-                F.addEdge(new FlowEdge(w, v, e.weight()));
-            }
-            EdmondsKarpMaxFlow maxflow = new EdmondsKarpMaxFlow(F, s, t);
-            value = Math.min(value, maxflow.value());
-        }
-        if (Math.abs(weight - value) > FLOATING_POINT_EPSILON) {
-            System.err.println("Min cut weight = " + weight + " , max flow value = " + value);
-            return false;
-        }
-        return true;
     }
 
     // throw an IllegalArgumentException unless {@code 0 <= v < V}

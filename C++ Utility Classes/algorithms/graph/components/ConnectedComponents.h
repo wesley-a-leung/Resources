@@ -2,8 +2,8 @@
 #define ALGORITHMS_GRAPH_COMPONENTS_CONNECTEDCOMPONENTS_H_
 
 #include <bits/stdc++.h>
-#include <datastructures/graph/Graph.h>
-#include <datastructures/graph/WeightedGraph.h>
+#include "datastructures/graph/Graph.h"
+#include "datastructures/graph/WeightedGraph.h"
 
 using namespace std;
 

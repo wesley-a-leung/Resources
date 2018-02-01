@@ -5,16 +5,16 @@
 using namespace std;
 
 typedef int unit;
-const unit INF = 0x3f3f3f3f;
+const unit INF = (1 << 30);
 const unit EPS = 0;
 
 class DinicMaxFlow {
 private:
     struct Edge {
         int dest;
-        unit cost;
+        unit flow;
         int next;
-        Edge(int dest, unit cost, int next) : dest(dest), cost(cost), next(next) {}
+        Edge(int dest, unit cost, int next) : dest(dest), flow(cost), next(next) {}
     };
 
     int N, s = 0, t = 0;
@@ -30,7 +30,7 @@ private:
             int v = q.front();
             q.pop();
             for (int i = last[v]; i != -1; i = e[i].next) {
-                if (e[i].cost > 0 && level[e[i].dest] == -1) {
+                if (e[i].flow > EPS && level[e[i].dest] == -1) {
                     level[e[i].dest] = level[v] + 1;
                     q.push(e[i].dest);
                 }
@@ -43,11 +43,11 @@ private:
         if (v == t) return flow;
         unit ret = 0;
         for (int i = last[v]; i != -1; i = e[i].next) {
-            if (e[i].cost > 0 && level[e[i].dest] == level[v] + 1) {
-                unit res = dfs(e[i].dest, min(flow, e[i].cost));
+            if (e[i].flow > EPS && level[e[i].dest] == level[v] + 1) {
+                unit res = dfs(e[i].dest, min(flow, e[i].flow));
                 ret += res;
-                e[i].cost -= res;
-                e[i ^ 1].cost += res;
+                e[i].flow -= res;
+                e[i ^ 1].flow += res;
                 flow -= res;
                 if (abs(flow) <= EPS) break;
             }

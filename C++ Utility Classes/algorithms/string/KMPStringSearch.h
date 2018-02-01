@@ -48,7 +48,7 @@ public:
     }
 
     /**
-     * Returns the index of the first occurrrence of the pattern string
+     * Returns the index of the first occurrence of the pattern string
      * in the text string.
      *
      * @param  txt the text string
