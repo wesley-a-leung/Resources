@@ -102,7 +102,6 @@ public class ClosestPair {
                         bestDistance = delta;
                         best1 = aux[i];
                         best2 = aux[j];
-                        // StdOut.println("better distance = " + delta + " from " + best1 + " to " + best2);
                     }
                 }
             }
@@ -163,5 +162,4 @@ public class ClosestPair {
             else                           a[k] = aux[i++];
         }
     }
-
 }

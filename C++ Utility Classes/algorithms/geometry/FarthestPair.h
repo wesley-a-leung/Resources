@@ -1,6 +1,10 @@
-package algorithms.geometry;
+#ifndef ALGORITHMS_GEOMETRY_FARTHESTPAIR_H_
+#define ALGORITHMS_GEOMETRY_FARTHESTPAIR_H_
 
-import datastructures.geometry.Point2D;
+#include <bits/stdc++.h>
+#include "datastructures/geometry/Point2D.h"
+#include "algorithms/geometry/GrahamScanConvexHull.h"
+using namespace std;
 
 /**
  *  The {@code FarthestPair} data type computes the farthest pair of points
@@ -21,36 +25,35 @@ import datastructures.geometry.Point2D;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class FarthestPair {
-
+class FarthestPair {
+private:
     // farthest pair of points and distance
-    private Point2D best1, best2;
-    private double bestDistanceSquared = Double.NEGATIVE_INFINITY;
+    Point2D best1, best2;
+    double bestDistanceSquared = -numeric_limits<double>::infinity();
 
+public:
     /**
      * Computes the farthest pair of points in the specified array of points.
      *
+     * @param  n the length of the array
      * @param  points the array of points
      * @throws NullPointerException if {@code points} is {@code null} or if any
      *         entry in {@code points[]} is {@code null}
      */
-    public FarthestPair(Point2D[] points) {
-        GrahamScanConvexHull graham = new GrahamScanConvexHull(points);
+    FarthestPair(int n, Point2D *points) {
+        if (points == nullptr) throw invalid_argument("argument is null");
+        GrahamScanConvexHull graham(n, points);
 
         // single point
-        if (points.length <= 1) return;
+        if (n <= 1) return;
 
         // number of points on the hull
-        int m = 0;
-        for (Point2D p : graham.hull())
-            m++;
+        int m = (int) graham.hull().size();
 
         // the hull, in counterclockwise order hull[1] to hull[m]
-        Point2D[] hull = new Point2D[m+1];
+        Point2D hull[m+1];
         m = 1;
-        for (Point2D p : graham.hull()) {
-            hull[m++] = p;
-        }
+        for (Point2D p : graham.hull()) hull[m++] = p;
         m--;
 
         // all points are equal
@@ -66,9 +69,7 @@ public class FarthestPair {
 
         // k = farthest vertex from edge from hull[1] to hull[m]
         int k = 2;
-        while (Point2D.area2(hull[m], hull[1], hull[k+1]) > Point2D.area2(hull[m], hull[1], hull[k])) {
-            k++;
-        }
+        while (Point2D::area2(hull[m], hull[1], hull[k+1]) > Point2D::area2(hull[m], hull[1], hull[k])) k++;
 
         int j = k;
         for (int i = 1; i <= k && j <= m; i++) {
@@ -77,7 +78,7 @@ public class FarthestPair {
                 best2 = hull[j];
                 bestDistanceSquared = hull[i].distanceSquaredTo(hull[j]);
             }
-            while ((j < m) && Point2D.area2(hull[i], hull[i+1], hull[j+1]) > Point2D.area2(hull[i], hull[i+1], hull[j])) {
+            while ((j < m) && Point2D::area2(hull[i], hull[i+1], hull[j+1]) > Point2D::area2(hull[i], hull[i+1], hull[j])) {
                 j++;
                 double distanceSquared = hull[i].distanceSquaredTo(hull[j]);
                 if (distanceSquared > bestDistanceSquared) {
@@ -95,7 +96,7 @@ public class FarthestPair {
      * @return one of the two points in the farthest pair of points;
      *         {@code null} if no such point (because there are fewer than 2 points)
      */
-    public Point2D either() {
+    Point2D either() {
         return best1;
     }
 
@@ -105,19 +106,21 @@ public class FarthestPair {
      * @return the other point in the farthest pair of points
      *         {@code null} if no such point (because there are fewer than 2 points)
      */
-    public Point2D other() {
+    Point2D other() {
         return best2;
     }
 
     /**
-     * Returns the Eucliden distance between the farthest pair of points.
+     * Returns the Euclidean distance between the farthest pair of points.
      * This quantity is also known as the <em>diameter</em> of the set of points.
      *
      * @return the Euclidean distance between the farthest pair of points
-     *         {@code Double.POSITIVE_INFINITY} if no such pair of points
+     *         {@code -numeric_limits<double>::infinity()} if no such pair of points
      *         exist (because there are fewer than 2 points)
      */
-    public double distance() {
-        return Math.sqrt(bestDistanceSquared);
+    double getDistance() {
+        return sqrt(bestDistanceSquared);
     }
-}
+};
+
+#endif /* ALGORITHMS_GEOMETRY_FARTHESTPAIR_H_ */

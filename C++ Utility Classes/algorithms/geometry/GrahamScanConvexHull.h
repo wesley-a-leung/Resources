@@ -34,9 +34,9 @@ public:
      * @throws invalid_argument if {@code points} is {@code null}
      */
     GrahamScanConvexHull(int n, Point2D *points) {
+        if (points == nullptr) throw invalid_argument("argument is null");
         stack<Point2D> hull;
         hullVector = new vector<Point2D>;
-        if (points == nullptr) throw invalid_argument("argument is null");
 
         // defensive copy
         Point2D a[n];
