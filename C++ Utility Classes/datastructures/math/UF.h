@@ -1,14 +1,13 @@
 #ifndef DATASTRUCTURES_MATH_UF_H_
 #define DATASTRUCTURES_MATH_UF_H_
 
-#include <bits/stdc++.h>;
-
+#include <bits/stdc++.h>
 using namespace std;
 
 struct UF {
 private:
-    int* parent;
-    char* rank; // equivalent to byte
+    int *parent;
+    char *rank; // equivalent to byte
     int count;
 
 public:
@@ -80,12 +79,12 @@ public:
      *
      * @param  p the integer representing one site
      * @param  q the integer representing the other site
+     * @return true if the components were merged, false otherwise
      */
-    void join(int p, int q) {
+    bool join(int p, int q) {
         int rootP = find(p);
         int rootQ = find(q);
-        if (rootP == rootQ) return;
-
+        if (rootP == rootQ) return false;
         // make root of smaller rank point to root of larger rank
         if      (rank[rootP] < rank[rootQ]) parent[rootP] = rootQ;
         else if (rank[rootP] > rank[rootQ]) parent[rootQ] = rootP;
@@ -94,25 +93,7 @@ public:
             rank[rootP]++;
         }
         count--;
-    }
-
-    /**
-     * Unmerges the component containing site {@code p} with the
-     * the component containing site {@code q}.
-     *
-     * @param  p the integer representing one site
-     * @param  q the integer representing the other site
-     */
-    void disjoin(int p, int q) {
-        int rootP = find(p);
-        int rootQ = find(q);
-        if      (rank[rootP] < rank[rootQ]) parent[rootP] = rootP;
-        else if (rank[rootP] > rank[rootQ]) parent[rootQ] = rootQ;
-        else {
-            parent[rootQ] = rootQ;
-            rank[rootP]--;
-        }
-        count++;
+        return true;
     }
 };
 

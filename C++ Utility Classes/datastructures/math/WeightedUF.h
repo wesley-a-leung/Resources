@@ -1,15 +1,15 @@
 #ifndef DATASTRUCTURES_MATH_WEIGHTEDUF_H_
 #define DATASTRUCTURES_MATH_WEIGHTEDUF_H_
 
-#include <bits/stdc++.h>;
-
+#include <bits/stdc++.h>
 using namespace std;
 
 struct WeightedUF {
 private:
-    int* parent;
-    int* size;
+    int *parent;
+    int *size;
     int count;
+    vector<pair<int, int>> history;
 
 public:
     /**
@@ -81,43 +81,34 @@ public:
      *
      * @param  p the integer representing one site
      * @param  q the integer representing the other site
+     * @return true if the components were merged, false otherwise
      */
-    void join(int p, int q) {
+    bool join(int p, int q) {
         int rootP = find(p);
         int rootQ = find(q);
-        if (rootP == rootQ) return;
-
+        if (rootP == rootQ) return false;
+        if (size[rootP] > size[rootQ]) swap(rootP, rootQ);
+        history.push_back(make_pair(rootP, rootQ));
         // make smaller root point to larger one
-        if (size[rootP] < size[rootQ]) {
-            parent[rootP] = rootQ;
-            size[rootQ] += size[rootP];
-        }
-        else {
-            parent[rootQ] = rootP;
-            size[rootP] += size[rootQ];
-        }
+        parent[rootP] = rootQ;
+        size[rootQ] += size[rootP];
         count--;
+        return true;
     }
 
     /**
-     * Unmerges the component containing site {@code p} with the
-     * the component containing site {@code q}.
-     *
-     * @param  p the integer representing one site
-     * @param  q the integer representing the other site
+     * Undos the last merge, returns false if there is no last merge,
+     * true otherwise.
      */
-    void disjoin(int p, int q) {
-        int rootP = find(p);
-        int rootQ = find(q);
-        if (size[rootP] < size[rootQ]) {
-            parent[rootP] = rootP;
-            size[rootQ] -= size[rootP];
-        }
-        else {
-            parent[rootQ] = rootQ;
-            size[rootP] -= size[rootQ];
-        }
+    bool undo() {
+        if ((int) history.size() == 0) return false;
+        int rootP = history.back().first;
+        int rootQ = history.back().second;
+        history.pop_back();
+        parent[rootP] = rootP;
+        size[rootQ] -= size[rootP];
         count++;
+        return true;
     }
 };
 
