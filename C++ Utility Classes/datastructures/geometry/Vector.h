@@ -18,7 +18,7 @@ using namespace std;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-class Vector {
+struct Vector {
 private:
     int d;               // dimension of the vector
     double *data;        // array of vector's components
@@ -34,10 +34,11 @@ public:
     Vector(int d) {
         this->d = d;
         this->data = new double[d];
+        for (int i = 0; i < d; i++) data[i] = 0.0;
     }
 
     /**
-     * Initializes a vector from either an array.
+     * Initializes a vector from an array.
      *
      * @param d the dimension of the vector
      * @param a the array
@@ -46,8 +47,7 @@ public:
         this->d = d;
         // defensive copy so that client can't alter our copy of data[]
         this->data = new double[d];
-        for (int i = 0; i < d; i++)
-            this->data[i] = a[i];
+        for (int i = 0; i < d; i++) this->data[i] = a[i];
     }
 
     /**
