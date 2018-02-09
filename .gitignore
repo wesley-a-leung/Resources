@@ -1,7 +1,6 @@
 **/*.class
 **/bin/
 **/Debug/
-**/HungarianMatchingCompact.h
 **/codebook.pdf
 **/codebook.tex
 
