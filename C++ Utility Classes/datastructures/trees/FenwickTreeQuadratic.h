@@ -82,7 +82,8 @@ public:
         update(lin, a, value * (1 - 2 * s));
         update(lin, b + 1, -value * (1 - 2 * s));
         update(con, a, value * (s * s - s));
-        update(con, b + 1, -value * ((s * s - s) - len * (len + 1)));
+        update(con, b + 1, -value * ((s * s - s)));
+        update(con, b + 1, value * (len * (len + 1)));
     }
 
     int getSize() {
