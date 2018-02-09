@@ -1,5 +1,5 @@
-#ifndef ALGORITHMS_MATH_MATCHING_HUNGARIANALGORITHM_H_
-#define ALGORITHMS_MATH_MATCHING_HUNGARIANALGORITHM_H_
+#ifndef ALGORITHMS_GRAPH_MATCHING_HUNGARIANALGORITHM_H_
+#define ALGORITHMS_GRAPH_MATCHING_HUNGARIANALGORITHM_H_
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -22,7 +22,8 @@ void reduceMatrix(int **aux, int n) {
 }
 
 /**
- * The Hungarian algorithm is a combinatorial optimization algorithm that solves the assignment problem in polynomial time.
+ * The Hungarian (matching) algorithm is a combinatorial optimization algorithm that solves the assignment problem in polynomial time.
+ * The input matrix is equivalent to an adjacency matrix graph.
  *
  * Time complexity: O(N^3)
  *
@@ -104,4 +105,4 @@ int solve(int **matrix, int n) {
     return res;
 }
 
-#endif /* ALGORITHMS_MATH_MATCHING_HUNGARIANALGORITHM_H_ */
+#endif /* ALGORITHMS_GRAPH_MATCHING_HUNGARIANALGORITHM_H_ */
