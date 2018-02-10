@@ -1,11 +1,11 @@
-#ifndef ALGORITHMS_SLIDINGWINDOW_SLIDINGWINDOWMAXIMUM_H_
-#define ALGORITHMS_SLIDINGWINDOW_SLIDINGWINDOWMAXIMUM_H_
+#ifndef ALGORITHMS_SLIDINGWINDOW_MAXSUBARRAYK_H_
+#define ALGORITHMS_SLIDINGWINDOW_MAXSUBARRAYK_H_
 
 #include <bits/stdc++.h>
 using namespace std;
 
 /**
- * Returns an array with the maximum element for each contiguous subarray of size K starting at index i
+ * Returns an array with the maximum element for each contiguous subarray of size K starting at index i.
  *
  * @param A the array
  * @param N the length of the array
@@ -24,4 +24,4 @@ int *solve(int *A, int N, int K) {
     return ans;
 }
 
-#endif /* ALGORITHMS_SLIDINGWINDOW_SLIDINGWINDOWMAXIMUM_H_ */
+#endif /* ALGORITHMS_SLIDINGWINDOW_MAXSUBARRAYK_H_ */
