@@ -5,7 +5,8 @@
 using namespace std;
 
 /**
- * Edmonds Blossom Algorithm.
+ * Edmonds Blossom Algorithm. Given a general graph G = (V, E), the algorithm finds a matching M
+ * such that each vertex in V is incident with at most one edge in M and |M| is maximized.
  *
  * @author Jeffrey Xiao
  */

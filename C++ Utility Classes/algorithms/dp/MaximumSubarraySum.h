@@ -7,19 +7,19 @@ using namespace std;
 int maxSum, start, end; // inclusive
 
 /**
- * Computes the subarray with the maximum sum.
+ * Computes the subarray with the maximum sum with Kadane's Algorithm.
  *
- * @param a the array
- * @param n the length of the array
+ * @param A the array
+ * @param N the length of the array
  */
-void solve(int *a, int n) {
+void solve(int *A, int N) {
     maxSum = 0;
     start = 0;
     end = 0;
     int curMax = 0;
     int curStart = 0;
-    for (int i = 0; i < n; i++) {
-        curMax += a[i];
+    for (int i = 0; i < N; i++) {
+        curMax += A[i];
         if (curMax < 0) {
             curMax = 0;
             curStart = i + 1;
