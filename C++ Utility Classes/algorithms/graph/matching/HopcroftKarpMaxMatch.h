@@ -69,7 +69,7 @@ private:
 
     // is the edge v-w in the level graph?
     bool isLevelGraphEdge(int v, int w) {
-        return (distTo[w] == distTo[v] + 1) && isResidualGraphEdge(v, w);
+        return distTo[w] == distTo[v] + 1 && isResidualGraphEdge(v, w);
     }
 
     /*
@@ -113,8 +113,7 @@ private:
                     if (!marked[w]) {
                         distTo[w] = distTo[v] + 1;
                         marked[w] = true;
-                        if (!isMatched(w))
-                            hasAugmentingPath = true;
+                        if (!isMatched(w)) hasAugmentingPath = true;
 
                         // stop enqueuing vertices once an alternating path has been discovered
                         // (no vertex on same side will be marked if its shortest path distance longer)
@@ -147,18 +146,18 @@ public:
         mate = new int[V];
         marked = new bool[V];
         distTo = new int[V];
-        for (int v = 0; v < V; v++)
-            mate[v] = UNMATCHED;
+        for (int v = 0; v < V; v++) mate[v] = UNMATCHED;
 
+        // to be able to iterate over each adjacency list, keeping track of which
+        // vertex in each adjacency list needs to be explored next
+        int iter[V];
+        vector<int> adj[V];
+        for (int i = 0; i < V; i++) {
+            adj[i] = G->adj(i);
+        }
         // the call to hasAugmentingPath() provides enough info to reconstruct level graph
         while (hasAugmentingPath(G)) {
-
-            // to be able to iterate over each adjacency list, keeping track of which
-            // vertex in each adjacency list needs to be explored next
-            int iter[V];
-            vector<int> adj[V];
             for (int i = 0; i < V; i++) {
-                adj[i] = G->adj(i);
                 iter[i] = 0;
             }
 
@@ -173,8 +172,7 @@ public:
                     int v = path.top();
 
                     // retreat, no more edges in level graph leaving v
-                    if (iter[v] >= adj[v].size())
-                        path.pop();
+                    if (iter[v] >= (int) adj[v].size()) path.pop();
 
                     // advance
                     else {
@@ -187,8 +185,6 @@ public:
 
                         // augmenting path found: update the matching
                         if (!isMatched(w)) {
-                            // StdOut.println("augmenting path: " + toString(path));
-
                             while (!path.empty()) {
                                 int x = path.top();
                                 path.pop();

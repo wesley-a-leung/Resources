@@ -82,7 +82,7 @@ public:
      * @return the dot product of this vector and that vector
      * @throws invalid_argument if the dimensions of the two vectors are not equal
      */
-    double operator ^ (Vector &that) {
+    double operator * (Vector &that) {
         return dot(that);
     }
 
@@ -132,7 +132,7 @@ public:
      * @return the 3-D cross product of this vector and that vector
      * @throws invalid_argument if the two vectors are not 3-dimensional
      */
-    Vector &operator * (Vector &that) {
+    Vector &operator ^ (Vector &that) {
         return cross3D(that);
     }
 
