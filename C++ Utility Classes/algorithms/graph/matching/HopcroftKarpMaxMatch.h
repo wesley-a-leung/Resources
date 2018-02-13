@@ -107,7 +107,6 @@ private:
             int v = q.front();
             q.pop();
             for (int w : G->adj(v)) {
-
                 // forward edge not in matching or backwards edge in matching
                 if (isResidualGraphEdge(v, w)) {
                     if (!marked[w]) {
@@ -152,14 +151,11 @@ public:
         // vertex in each adjacency list needs to be explored next
         int iter[V];
         vector<int> adj[V];
-        for (int i = 0; i < V; i++) {
-            adj[i] = G->adj(i);
-        }
+        for (int v = 0; v < V; v++) adj[v] = G->adj(v);
+
         // the call to hasAugmentingPath() provides enough info to reconstruct level graph
         while (hasAugmentingPath(G)) {
-            for (int i = 0; i < V; i++) {
-                iter[i] = 0;
-            }
+            for (int v = 0; v < V; v++) iter[v] = 0;
 
             // for each unmatched vertex s on one side of bipartition
             for (int s = 0; s < V; s++) {
