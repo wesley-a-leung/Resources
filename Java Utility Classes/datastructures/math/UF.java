@@ -167,27 +167,6 @@ public class UF {
         count--;
     }
     
-    /**
-     * Unmerges the component containing site {@code p} with the 
-     * the component containing site {@code q}.
-     *
-     * @param  p the integer representing one site
-     * @param  q the integer representing the other site
-     * @throws IndexOutOfBoundsException unless
-     *         both {@code 0 <= p < n} and {@code 0 <= q < n}
-     */
-    public void disjoin(int p, int q) {
-        int rootP = find(p);
-        int rootQ = find(q);
-        if      (rank[rootP] < rank[rootQ]) parent[rootP] = rootP;
-        else if (rank[rootP] > rank[rootQ]) parent[rootQ] = rootQ;
-        else {
-            parent[rootQ] = rootQ;
-            rank[rootP]--;
-        }
-        count++;
-    }
-
     // validate that p is a valid index
     private void validate(int p) {
         int n = parent.length;
