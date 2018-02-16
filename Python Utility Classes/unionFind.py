@@ -33,18 +33,6 @@ class UF:
             self._rank[rootP] += 1
         self._count -= 1
 
-    def disjoin(self, p, q):
-        rootP = self.find(p)
-        rootQ = self.find(q)
-        if self._rank[rootP] < self._rank[rootQ]:
-            self._parent[rootP] = rootP
-        elif self._rank[rootP] > self._rank[rootQ]:
-            self._parent[rootQ] = rootQ
-        else:
-            self._parent[rootQ] = rootP
-            self._rank[rootP] -= 1
-        self._count += 1
-
 
 class WeightedUF:
     def __init__(self, n):
@@ -78,15 +66,4 @@ class WeightedUF:
         else:
             self._parent[rootQ] = rootP
             self._size[rootP] += self._size[rootQ]
-        self._count -= 1
-
-    def disjoin(self, p, q):
-        rootP = self.find(p)
-        rootQ = self.find(q)
-        if self._size[rootP] < self._size[rootQ]:
-            self._parent[rootP] = rootP
-            self._size[rootQ] -= self._size[rootP]
-        else:
-            self._parent[rootQ] = rootQ
-            self._size[rootP] -= self._size[rootQ]
         self._count -= 1
