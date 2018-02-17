@@ -21,7 +21,7 @@ int solve(int *A, int N, int K, int &start, int &end) {
     end = K;
     int curSum = maxSum;
     for (int i = K; i < N; i++) {
-        curSum = A[i] - A[i - K];
+        curSum += A[i] - A[i - K];
         if (curSum > maxSum) {
             start = i - K + 1;
             end = i + 1;
