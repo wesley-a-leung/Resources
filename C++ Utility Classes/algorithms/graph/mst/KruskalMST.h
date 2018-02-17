@@ -48,17 +48,16 @@ public:
      */
     KruskalMST(int V, vector<WeightedEdge*> &graphEdges) {
         weight = (unit) 0;
-        // more efficient to build heap by passing array of edges
-        priority_queue<WeightedEdge*, vector<WeightedEdge*>, WeightedEdge_greater> pq;
+        priority_queue<WeightedEdge*, vector<WeightedEdge*>, WeightedEdge_greater> PQ;
         for (WeightedEdge *e : graphEdges) {
-            pq.push(e);
+            PQ.push(e);
         }
 
         // run greedy algorithm
         UF uf(V);
-        while (!pq.empty() && mst.size() < V - 1) {
-            WeightedEdge *e = pq.top();
-            pq.pop();
+        while (!PQ.empty() && mst.size() < V - 1) {
+            WeightedEdge *e = PQ.top();
+            PQ.pop();
             int v = e->either();
             int w = e->other(v);
             if (!uf.connected(v, w)) { // v-w does not create a cycle
