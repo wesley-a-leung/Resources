@@ -71,4 +71,21 @@ int multInv(int a, int n) {
     return (x % n + n) % n;
 }
 
+/**
+ * Solves the linear congruence ax = c mod m.
+ *
+ * @param a the linear coefficient
+ * @param c the constant term
+ * @param m the modulus of the system
+ * @return a pair containing the integer x and the modulus of the answer.
+ */
+pair<int, int> solveCongruence(int a, int c, int m) {
+    int x, y;
+    int g = gcd(a, m, x, y);
+    assert(c % g == 0); // otherwise there is no solution
+    x = (x % m + m) % m;
+    x = (x * c / g) % (m / g);
+    return make_pair(x, m / g);
+}
+
 #endif /* ALGORITHMS_MATH_EUCLIDGCD_H_ */
