@@ -8,7 +8,7 @@ using namespace std;
 /**
  *  The {@code RectHV} class is an immutable data type to encapsulate a
  *  two-dimensional axis-aligned rectagle with real-value coordinates.
- *  The rectangle is <em>closed</em>—it includes the points on the boundary.
+ *  The rectangle is <em>closed</em>-it includes the points on the boundary.
  *  <p>
  *  For additional documentation,
  *  see <a href="https://algs4.cs.princeton.edu/12oop">Section 1.2</a> of
