@@ -39,12 +39,12 @@ public class MergeBUSort {
         Comparable[] aux = a.clone();
         boolean flag = true;
         int len = 1;
-        for (; len <= CUTOFF && len < n; len *= 2) {
-            for (int lo = 0; lo < n; lo += len + len) {
-                int hi = Math.min(lo + len + len - 1, n - 1);
-                insertionSort(aux, lo, hi);
-            }
+        for (; len <= CUTOFF && len < n; len *= 2);
+        for (int lo = 0; lo < n; lo += len + len) {
+            int hi = Math.min(lo + len + len - 1, n - 1);
+            insertionSort(aux, lo, hi);
         }
+        len *= 2;
         for (; len < n; len *= 2) {
             if (flag) {
                 for (int lo = 0; lo < n; lo += len + len) {
@@ -63,7 +63,7 @@ public class MergeBUSort {
             }
             flag = !flag;
         }
-        if (flag) System.arraycopy(aux, 0, a, 0, a.length);
+        if (flag) System.arraycopy(aux, 0, a, 0, n);
         // assert isSorted(a);
     }
     

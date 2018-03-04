@@ -6,7 +6,7 @@
 #include "datastructures/geometry/Rectangle.h"
 using namespace std;
 
-class KdTree {
+struct KdTree {
 private:
     bool VERTICAL = false;
     bool HORIZONTAL = true;
