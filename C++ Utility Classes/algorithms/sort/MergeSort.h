@@ -12,7 +12,7 @@ template <typename T> inline void exch(T *a, T *b) {
     *b = temp;
 }
 
-template <typename T> void merge_sort(T *src_st, T *src_en, T *dst_st, T *dst_en) {
+template <typename It> void merge_sort(It src_st, It src_en, It dst_st, It dst_en) {
     int n = src_en - src_st;
     if (n <= INSERTION_SORT_CUTOFF) {
         for (int i = 0; i < n; i++) {
@@ -38,7 +38,8 @@ template <typename T> void merge_sort(T *src_st, T *src_en, T *dst_st, T *dst_en
     }
 }
 
-template <typename T> void merge_sort(T *st, T *en) {
+template <typename It> void merge_sort(It st, It en) {
+    typedef typename std::iterator_traits<It>::value_type T;
     int n = en - st;
     T *aux = new T[n];
     for (int i = 0; i < n; i++) aux[i] = st[i];
@@ -46,7 +47,7 @@ template <typename T> void merge_sort(T *st, T *en) {
     delete[] (aux);
 }
 
-template <typename T, class Comparator> void merge_sort(T *src_st, T *src_en, T *dst_st, T *dst_en, Comparator cmp) {
+template <typename It, class Comparator> void merge_sort(It src_st, It src_en, It dst_st, It dst_en, Comparator cmp) {
     int n = src_en - src_st;
     if (n <= INSERTION_SORT_CUTOFF) {
         for (int i = 0; i < n; i++) {
@@ -72,7 +73,8 @@ template <typename T, class Comparator> void merge_sort(T *src_st, T *src_en, T 
     }
 }
 
-template <typename T, class Comparator> void merge_sort(T *st, T *en, Comparator cmp) {
+template <typename It, class Comparator> void merge_sort(It st, It en, Comparator cmp) {
+    typedef typename std::iterator_traits<It>::value_type T;
     int n = en - st;
     T *aux = new T[n];
     for (int i = 0; i < n; i++) aux[i] = st[i];

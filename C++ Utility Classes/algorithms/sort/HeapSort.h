@@ -10,7 +10,7 @@ template <typename T> inline void exch(T *a, T *b) {
     *b = temp;
 }
 
-template <typename T> void heap_sort(T *st, T *en) {
+template <typename It> void heap_sort(It st, It en) {
     int n = en - st;
     for (int i = n / 2; i >= 1; i--) {
         int k = i;
@@ -36,7 +36,7 @@ template <typename T> void heap_sort(T *st, T *en) {
     }
 }
 
-template <typename T, class Comparator> void heap_sort(T *st, T *en, Comparator cmp) {
+template <typename It, class Comparator> void heap_sort(It st, It en, Comparator cmp) {
     int n = en - st;
     for (int i = n / 2; i >= 1; i--) {
         int k = i;
