@@ -12,7 +12,8 @@ template <typename T> inline void exch(T *a, T *b) {
     *b = temp;
 }
 
-template <typename T> void merge_sort_buttom_up(T *st, T *en) {
+template <typename It> void merge_sort_buttom_up(It st, It en) {
+    typedef typename std::iterator_traits<It>::value_type T;
     int n = en - st;
     T *aux = new T[n];
     for (int i = 0; i < n; i++) aux[i] = st[i];
@@ -68,7 +69,8 @@ template <typename T> void merge_sort_buttom_up(T *st, T *en) {
     delete[] (aux);
 }
 
-template <typename T, class Comparator> void merge_sort_bottom_up(T *st, T *en, Comparator cmp) {
+template <typename It, class Comparator> void merge_sort_bottom_up(It st, It en, Comparator cmp) {
+    typedef typename std::iterator_traits<It>::value_type T;
     int n = en - st;
     T *aux = new T[n];
     for (int i = 0; i < n; i++) aux[i] = st[i];

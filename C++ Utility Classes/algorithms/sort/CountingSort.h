@@ -24,6 +24,7 @@ void counting_sort(int *a, int n) {
     int maxVal = 0;
     for (int i = 0; i < n; i++) maxVal = max(maxVal, a[i]);
     int *count = new int[maxVal + 1];
+    for (int i = 0; i <= maxVal; i++) count[i] = 0;
     for (int i = 0; i < n; i++) count[a[i]]++;
     for (int i = 1; i <= maxVal; i++) count[i] += count[i - 1];
     int *b = new int[n];
@@ -38,6 +39,7 @@ void counting_sort(int *st, int *en) {
     int maxVal = 0;
     for (int i = 0; i < n; i++) maxVal = max(maxVal, st[i]);
     int *count = new int[maxVal + 1];
+    for (int i = 0; i <= maxVal; i++) count[i] = 0;
     for (int i = 0; i < n; i++) count[st[i]]++;
     for (int i = 1; i <= maxVal; i++) count[i] += count[i - 1];
     int *b = new int[n];
@@ -45,6 +47,19 @@ void counting_sort(int *st, int *en) {
     for (int i = 0; i < n; i++) st[i] = b[i];
     delete[] (count);
     delete[] (b);
+}
+
+void counting_sort(vector<int>::iterator st, vector<int>::iterator en) {
+    int n = en - st;
+    int maxVal = 0;
+    for (int i = 0; i < n; i++) maxVal = max(maxVal, st[i]);
+    vector<int> count(maxVal + 1, 0);
+    for (int i = 0; i <= maxVal; i++) count[i] = 0;
+    for (int i = 0; i < n; i++) count[st[i]]++;
+    for (int i = 1; i <= maxVal; i++) count[i] += count[i - 1];
+    vector<int> b(n);
+    for (int i = 0; i < n; i++) b[--count[st[i]]] = st[i];
+    for (int i = 0; i < n; i++) st[i] = b[i];
 }
 
 #endif /* ALGORITHMS_SORT_COUNTINGSORT_H_ */

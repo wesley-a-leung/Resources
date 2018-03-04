@@ -12,7 +12,7 @@ template <typename T> inline void exch(T *a, T *b) {
     *b = temp;
 }
 
-template <typename T> void quick_sort_dual(T *st, T *en) {
+template <typename It> void quick_sort_dual(It st, It en) {
     int n = en - st;
     if (n <= 1) return;
     if (n <= INSERTION_SORT_CUTOFF) { // insertion sort
@@ -37,7 +37,7 @@ template <typename T> void quick_sort_dual(T *st, T *en) {
     sort(st + gt + 1, en);
 }
 
-template <typename T, class Comparator> void quick_sort_dual(T *st, T *en, Comparator cmp) {
+template <typename It, class Comparator> void quick_sort_dual(It st, It en, Comparator cmp) {
     int n = en - st;
     if (n <= 1) return;
     if (n <= INSERTION_SORT_CUTOFF) { // insertion sort

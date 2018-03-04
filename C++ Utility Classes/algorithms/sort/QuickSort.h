@@ -17,7 +17,7 @@ template <typename T> inline void exch(T *a, T *b) {
     *b = temp;
 }
 
-template <typename T> void quick_sort(T *st, T *en) {
+template <typename It> void quick_sort(It st, It en) {
     int n = en - st;
     if (n <= INSERTION_SORT_CUTOFF) { // insertion sort
         for (int i = 0; i < n; i++) {
@@ -27,19 +27,19 @@ template <typename T> void quick_sort(T *st, T *en) {
         }
         return;
     } else if (n <= MEDIAN_OF_3_CUTOFF) { // median-of-3 pivot
-        T *m = median3(st, st + n / 2, en - 1);
+        It m = median3(st, st + n / 2, en - 1);
         exch(st, m);
     } else { // Tukey ninther pivot
         int eps = n / 8;
-        T *mid = st + n / 2;
-        T *ninther = median3(median3(st, st + eps, st + eps + eps),
+        It mid = st + n / 2;
+        It ninther = median3(median3(st, st + eps, st + eps + eps),
                 median3(mid - eps, mid, mid + eps),
                 median3(en - 1 - eps - eps, en - 1 - eps, en - 1));
         exch(st, ninther);
     }
     // Bentley-McIlroy 3-way partitioning
     int i = 0, j = n, p = 0, q = n;
-    T v = st[0];
+    auto v = st[0];
     while (true) {
         while (st[++i] < v) if (i == n - 1) break;
         while (v < st[--j]) if (j == 0) break;
@@ -56,7 +56,7 @@ template <typename T> void quick_sort(T *st, T *en) {
     sort(st + i, en);
 }
 
-template <typename T, class Comparator> void quick_sort(T *st, T *en, Comparator cmp) {
+template <typename It, class Comparator> void quick_sort(It st, It en, Comparator cmp) {
     int n = en - st;
     if (n <= INSERTION_SORT_CUTOFF) { // insertion sort
         for (int i = 0; i < n; i++) {
@@ -66,19 +66,19 @@ template <typename T, class Comparator> void quick_sort(T *st, T *en, Comparator
         }
         return;
     } else if (n <= MEDIAN_OF_3_CUTOFF) { // median-of-3 pivot
-        T *m = median3(st, st + n / 2, en - 1);
+        It m = median3(st, st + n / 2, en - 1);
         exch(st, m);
     } else { // Tukey ninther pivot
         int eps = n / 8;
-        T *mid = st + n / 2;
-        T *ninther = median3(median3(st, st + eps, st + eps + eps),
+        It mid = st + n / 2;
+        It ninther = median3(median3(st, st + eps, st + eps + eps),
                 median3(mid - eps, mid, mid + eps),
                 median3(en - 1 - eps - eps, en - 1 - eps, en - 1));
         exch(st, ninther);
     }
     // Bentley-McIlroy 3-way partitioning
     int i = 0, j = n, p = 0, q = n;
-    T v = st[0];
+    auto v = st[0];
     while (true) {
         while (cmp(st[++i], v)) if (i == n - 1) break;
         while (cmp(v, st[--j])) if (j == 0) break;
