@@ -7,7 +7,7 @@ using namespace std;
 // http://cr.openjdk.java.net/~martin/webrevs/openjdk7/timsort/raw_files/new/src/share/classes/java/util/TimSort.java
 
 const int MIN_GALLOP = 7;
-const int MIN_MERGE = 31;
+const int MIN_MERGE = 32;
 const int AUX_SIZE = 256;
 const int SMALL_STACK_SIZE = 10;
 const int MEDIUM_STACK_SIZE = 20;
@@ -347,7 +347,7 @@ template <typename It> void tim_sort(It st, It en) {
     int n = en - st;
     int maxSize = n / 2;
     if (n <= 1) return;
-    if (n <= MIN_MERGE) {
+    if (n < MIN_MERGE) {
         int initRunLen = count_run_and_make_ascending(st, en);
         binary_insertion_sort(st, en, st + initRunLen);
         return;
@@ -359,7 +359,7 @@ template <typename It> void tim_sort(It st, It en) {
     int *runLen = new int[maxStackSize];
     int stackSize = 0;
     int nn = n, r = 0;
-    while (nn > MIN_MERGE) {
+    while (nn >= MIN_MERGE) {
         r |= (nn & 1);
         nn >>= 1;
     }
@@ -708,7 +708,7 @@ template <typename It, class Comparator> void tim_sort(It st, It en, Comparator 
     int n = en - st;
     int maxSize = n / 2;
     if (n <= 1) return;
-    if (n <= MIN_MERGE) {
+    if (n < MIN_MERGE) {
         int initRunLen = count_run_and_make_ascending(st, en, cmp);
         binary_insertion_sort(st, en, st + initRunLen, cmp);
         return;
@@ -720,7 +720,7 @@ template <typename It, class Comparator> void tim_sort(It st, It en, Comparator 
     int *runLen = new int[maxStackSize];
     int stackSize = 0;
     int nn = n, r = 0;
-    while (nn > MIN_MERGE) {
+    while (nn >= MIN_MERGE) {
         r |= (nn & 1);
         nn >>= 1;
     }
