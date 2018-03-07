@@ -18,7 +18,7 @@ pair<double, double> ternary_search(double (*f)(double), double lo, double hi) {
     double m1, m2;
     do {
         m1 = lo + (hi - lo) / 3;
-        m2 = lo + (hi - lo) * 2 / 3;
+        m2 = hi - (hi - lo) / 3;
         if (f(m1) < f(m2)) hi = m2; // change to f(m1) < f(m2) for minimum, f(m1) > f(m2) for maximum
         else lo = m1;
     } while (abs(hi - lo) >= EPS);
