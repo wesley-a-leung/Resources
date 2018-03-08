@@ -362,6 +362,36 @@ public:
     }
 
     /**
+     * Deletes the symbol table.
+     */
+    ~AVLArraySet() {
+        delete[](VAL);
+        delete[](HT);
+        delete[](VAL);
+        delete[](SZ);
+        delete[](L);
+        delete[](R);
+    }
+
+    /**
+     * Clears the symbol table.
+     */
+    void clear() {
+        for (int i = 0; i < capacity; i++) {
+            L[i] = 0;
+            R[i] = 0;
+            SZ[i] = 0;
+            HT[i] = 0;
+        }
+        root = 0;
+        SZ[root] = 0;
+        HT[root] = -1;
+        L[root] = 0;
+        R[root] = 0;
+        ind = 1;
+    }
+
+    /**
      * Checks if the symbol table is empty.
      *
      * @return {@code true} if the symbol table is empty.
@@ -522,7 +552,7 @@ public:
      *
      * @return all values in the symbol table following an in-order traversal
      */
-    vector<Value> &values() {
+    vector<Value> values() {
         vector<Value> queue;
         valuesInOrder(root, &queue);
         return queue;
@@ -536,7 +566,7 @@ public:
      * @return all value in the symbol table between {@code lo} (inclusive)
      *         and {@code hi} (exclusive)
      */
-    vector<Value> &values(Value lo, Value hi) {
+    vector<Value> values(Value lo, Value hi) {
         vector<Value> queue;
         values(root, &queue, lo, hi);
         return queue;

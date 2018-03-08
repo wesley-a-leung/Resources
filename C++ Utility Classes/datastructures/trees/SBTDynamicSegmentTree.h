@@ -367,11 +367,38 @@ private:
         return min(min(x->left ? query(x->left, lo, x->left->hi) : INT_MAX, x->right ? query(x->right, x->right->lo, hi) : INT_MAX), x->val);
     }
 
+    /**
+     * Clears the symbol table.
+     * @param x the subtree
+     */
+    void clear(Node *x) {
+        if (x == nullptr) return;
+        clear(x->left);
+        clear(x->right);
+        delete x;
+        x = nullptr;
+    }
+
 public:
     /**
      * Initializes an empty symbol table.
      */
     SBTDynamicSegmentTree() {}
+
+    /**
+     * Deletes the symbol table.
+     */
+    ~SBTDynamicSegmentTree() {
+        clear(root);
+    }
+
+    /**
+     * Clears the symbol table.
+     */
+    void clear() {
+        clear(root);
+        root = nullptr;
+    }
 
     /**
      * Checks if the symbol table is empty.
@@ -544,7 +571,7 @@ public:
      *
      * @return all key-value pairs in the symbol table following an in-order traversal
      */
-    vector<pair<Key, Value>> &keyValuePairs() {
+    vector<pair<Key, Value>> keyValuePairs() {
         vector<pair<Key, Value>> queue;
         keyValuePairsInOrder(root, queue);
         return queue;
@@ -558,7 +585,7 @@ public:
      * @return all key-value pairs in the symbol table between {@code lo} (inclusive)
      *         and {@code hi} (exclusive)
      */
-    vector<pair<Key, Value>> &keyValuePairs(Key lo, Key hi) {
+    vector<pair<Key, Value>> keyValuePairs(Key lo, Key hi) {
         vector<pair<Key, Value>> queue;
         keyValuePairs(root, queue, lo, hi);
         return queue;

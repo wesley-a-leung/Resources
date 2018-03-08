@@ -10,8 +10,11 @@ public:
     no_such_element_exception(string message): runtime_error(message){}
 };
 
-template <typename Key, typename Value>
+template <typename Key, typename Value, typename Comparator = less<Key>>
 struct SplayTree {
+private:
+    Comparator cmp;
+
     // BST helper node data type
     struct Node {
         Key key;
@@ -25,7 +28,6 @@ struct SplayTree {
         }
     };
 
-private:
     Node *root = nullptr;   // root of the BST
 
     int size(Node *&x) {
@@ -97,8 +99,8 @@ private:
      */
     int getRank(Node *&x, Key key) {
         if (x == nullptr) return 0;
-        if (key < x->key) return getRank(x->left, key);
-        else if (key > x->key) return 1 + size(x->left) + getRank(x->right, key);
+        if (cmp(key, x->key)) return getRank(x->left, key);
+        else if (cmp(x->key, key)) return 1 + size(x->left) + getRank(x->right, key);
         else return size(x->left);
     }
 
@@ -117,25 +119,25 @@ private:
      //   along the search path for the key is splayed to the root.
      Node *splay(Node *&x, Key key) {
          if (x == nullptr) return nullptr;
-         if (key < x->key) {
+         if (cmp(key, x->key)) {
              // key not in tree, so we're done
              if (x->left == nullptr) return x;
-             if (key < x->left->key) {
+             if (cmp(key, x->left->key)) {
                  x->left->left = splay(x->left->left, key);
                  x = rotateRight(x);
-             } else if (key > x->left->key) {
+             } else if (cmp(x->left->key, key)) {
                  x->left->right = splay(x->left->right, key);
                  if (x->left->right != nullptr) x->left = rotateLeft(x->left);
              }
              if (x->left == nullptr) return x;
              else return rotateRight(x);
-         } else if (key > x->key) {
+         } else if (cmp(x->key, key)) {
              // key not in tree, so we're done
              if (x->right == nullptr) return x;
-             if (key < x->right->key) {
+             if (cmp(key, x->right->key)) {
                  x->right->left  = splay(x->right->left, key);
                  if (x->right->left != nullptr) x->right = rotateRight(x->right);
-             } else if (key > x->right->key) {
+             } else if (cmp(x->right->key, key)) {
                  x->right->right = splay(x->right->right, key);
                  x = rotateLeft(x);
              }
@@ -146,8 +148,25 @@ private:
          }
      }
 
+     void clear(Node *x) {
+         if (x == nullptr) return;
+         clear(x->left);
+         clear(x->right);
+         delete x;
+         x = nullptr;
+     }
+
 public:
     SplayTree() {}
+
+    ~SplayTree() {
+        clear(root);
+    }
+
+    void clear() {
+        clear(root);
+        root = nullptr;
+    }
 
     int size() {
         return size(root);
@@ -157,8 +176,7 @@ public:
     // if no such value, return null
     Value get(Key key) {
         root = splay(root, key);
-        int cmp = key.compareTo(root->key);
-        if (cmp == 0) return root->val;
+        if (!cmp(key, root->key) && !cmp(root->key, key)) return root->val;
         else throw no_such_element_exception("no such key is in the symbol table");
     }
 
@@ -210,7 +228,7 @@ public:
         }
         root = splay(root, key);
         // Insert new node at root
-        if (key < root->key) {
+        if (cmp(key, root->key)) {
             Node *n = new Node(key, val, 1);
             n->left = root->left;
             n->right = root;
@@ -219,7 +237,7 @@ public:
             root = n;
         }
         // Insert new node at root
-        else if (key > root->key) {
+        else if (cmp(root->key, key)) {
             Node *n = new Node(key, val, 1);
             n->right = root->right;
             n->left = root;
@@ -248,7 +266,7 @@ public:
     void remove(Key key) {
         if (root == nullptr) return; // empty tree
         root = splay(root, key);
-        if (key == root->key) {
+        if (!cmp(key, root->key) && !cmp(root->key, key)) {
             if (root->left == nullptr) {
                 Node *x = root->right;
                 delete root;
@@ -270,7 +288,7 @@ public:
      *
      * @return an iterator that iterates over the key-value pairs in order
      */
-    vector<pair<Key, Value>> &keyValuePairs() {
+    vector<pair<Key, Value>> keyValuePairs() {
         vector<pair<Key, Value>> order;
         traverse(root, order);
         return order;
