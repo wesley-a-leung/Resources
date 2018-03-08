@@ -124,12 +124,11 @@ private:
     }
 
     /**
-     * Returns value associated with the given key in the subtree.
+     * Returns the node associated with the given key in the subtree.
      *
      * @param x the subtree
      * @param key the key
-     * @return value associated with the given key in the subtree or {@code nullptr} if no such key
-     * @throws no_such_element_exception if there is no such key
+     * @return the node associated with the given key in the subtree or {@code nullptr} if no such key
      */
     Node *get(Node *&x, Key key) {
         if (x == nullptr) return nullptr;
@@ -336,11 +335,38 @@ private:
         if (cmp(x->key, hi)) keyValuePairs(x->right, queue, lo, hi);
     }
 
+    /**
+     * Clears the symbol table.
+     * @param x the subtree
+     */
+    void clear(Node *x) {
+        if (x == nullptr) return;
+        clear(x->left);
+        clear(x->right);
+        delete x;
+        x = nullptr;
+    }
+
 public:
     /**
      * Initializes an empty symbol table.
      */
     SBT() {}
+
+    /**
+     * Deletes the symbol table.
+     */
+    ~SBT() {
+        clear(root);
+    }
+
+    /**
+     * Clears the symbol table.
+     */
+    void clear() {
+        clear(root);
+        root = nullptr;
+    }
 
     /**
      * Checks if the symbol table is empty.
@@ -509,7 +535,7 @@ public:
      *
      * @return all key-value pairs in the symbol table following an in-order traversal
      */
-    vector<pair<Key, Value>> &keyValuePairs() {
+    vector<pair<Key, Value>> keyValuePairs() {
         vector<pair<Key, Value>> queue;
         keyValuePairsInOrder(root, queue);
         return queue;
@@ -522,7 +548,7 @@ public:
      * @param hi the highest key
      * @return all key-value pairs in the symbol table between {@code lo} (inclusive) and {@code hi} (exclusive)
      */
-    vector<pair<Key, Value>> &keyValuePairs(Key lo, Key hi) {
+    vector<pair<Key, Value>> keyValuePairs(Key lo, Key hi) {
         vector<pair<Key, Value>> queue;
         keyValuePairs(root, queue, lo, hi);
         return queue;

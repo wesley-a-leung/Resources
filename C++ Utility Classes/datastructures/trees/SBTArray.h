@@ -130,13 +130,11 @@ private:
     }
 
     /**
-     * Returns value associated with the given key in the subtree.
+     * Returns the node associated with the given key in the subtree.
      *
      * @param x the subtree
      * @param key the key
-     * @return value associated with the given key in the subtree or
-     *         {@code null} if no such key
-     * @throws no_such_element_exception if there is no such key
+     * @return the node associated with the given key in the subtree or 0 if no such key
      */
     int get(int x, Key key) {
         if (x == 0) return 0;
@@ -381,6 +379,22 @@ public:
     }
 
     /**
+     * Clears the symbol table.
+     */
+    void clear() {
+        for (int i = 0; i < capacity; i++) {
+            L[i] = 0;
+            R[i] = 0;
+            SZ[i] = 0;
+        }
+        root = 0;
+        SZ[root] = 0;
+        L[root] = 0;
+        R[root] = 0;
+        ind = 1;
+    }
+
+    /**
      * Checks if the symbol table is empty.
      *
      * @return {@code true} if the symbol table is empty.
@@ -551,7 +565,7 @@ public:
      *
      * @return all key-value pairs in the symbol table following an in-order traversal
      */
-    vector<pair<Key, Value>> &keyValuePairs() {
+    vector<pair<Key, Value>> keyValuePairs() {
         vector<pair<Key, Value>> queue;
         keyValuePairsInOrder(root, queue);
         return queue;
@@ -565,7 +579,7 @@ public:
      * @return all key-value pairs in the symbol table between {@code lo} (inclusive)
      *         and {@code hi} (exclusive)
      */
-    vector<pair<Key, Value>> &keyValuePairs(Key lo, Key hi) {
+    vector<pair<Key, Value>> keyValuePairs(Key lo, Key hi) {
         vector<pair<Key, Value>> queue;
         keyValuePairs(root, queue, lo, hi);
         return queue;

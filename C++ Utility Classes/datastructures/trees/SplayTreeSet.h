@@ -4,8 +4,11 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-template <typename Value>
+template <typename Value, typename Comparator = less<Value>>
 struct SplayTreeSet {
+private:
+    Comparator cmp;
+
     // BST helper node data type
     struct Node {
         Value val;
@@ -17,7 +20,6 @@ struct SplayTreeSet {
         }
     };
 
-private:
     Node *root = nullptr;   // root of the BST
 
     int size(Node *&x) {
@@ -83,7 +85,7 @@ private:
      */
     int getRank(Node *&x, Value val) {
         if (x == nullptr) return 0;
-        if (val <= x->val) return getRank(x->left, val);
+        if (!cmp(x->val, val)) return getRank(x->left, val);
         else return 1 + size(x->left) + getRank(x->right, val);
     }
 
@@ -102,25 +104,25 @@ private:
      //   along the search path for the value is splayed to the root.
      Node *splay(Node *&x, Value val) {
          if (x == nullptr) return nullptr;
-         if (val < x->val) {
+         if (cmp(val, x->val)) {
              // key not in tree, so we're done
              if (x->left == nullptr) return x;
-             if (val < x->left->val) {
+             if (cmp(val, x->left->val)) {
                  x->left->left = splay(x->left->left, val);
                  x = rotateRight(x);
-             } else if (val > x->left->val) {
+             } else if (cmp(x->left->val, val)) {
                  x->left->right = splay(x->left->right, val);
                  if (x->left->right != nullptr) x->left = rotateLeft(x->left);
              }
              if (x->left == nullptr) return x;
              else return rotateRight(x);
-         } else if (val > x->val) {
+         } else if (cmp(x->val, val)) {
              // key not in tree, so we're done
              if (x->right == nullptr) return x;
-             if (val < x->right->val) {
+             if (cmp(val, x->right->val)) {
                  x->right->left = splay(x->right->left, val);
                  if (x->right->left != nullptr) x->right = rotateRight(x->right);
-             } else if (val > x->right->val) {
+             } else if (cmp(x->right->val, val)) {
                  x->right->right = splay(x->right->right, val);
                  x = rotateLeft(x);
              }
@@ -131,8 +133,25 @@ private:
          }
      }
 
+     void clear(Node *x) {
+         if (x == nullptr) return;
+         clear(x->left);
+         clear(x->right);
+         delete x;
+         x = nullptr;
+     }
+
 public:
     SplayTreeSet() {}
+
+    ~SplayTreeSet() {
+        clear(root);
+    }
+
+    void clear() {
+        clear(root);
+        root = nullptr;
+    }
 
     int size() {
         return size(root);
@@ -181,7 +200,7 @@ public:
         }
         root = splay(root, val);
         // Insert new node at root
-        if (val < root->val) {
+        if (cmp(val, root->val)) {
             Node *n = new Node(val, 1);
             n->left = root->left;
             n->right = root;
@@ -215,7 +234,7 @@ public:
     void remove(Value val) {
         if (root == nullptr) return; // empty tree
         root = splay(root, val);
-        if (val == root->val) {
+        if (!cmp(val, root->val) && !cmp(root->val, val)) {
             if (root->left == nullptr) {
                 Node *x = root->right;
                 delete root;
@@ -237,7 +256,7 @@ public:
      *
      * @return an iterator that iterates over the values in order
      */
-    vector<Value> &values() {
+    vector<Value> values() {
         vector<Value> order;
         traverse(root, order);
         return order;
