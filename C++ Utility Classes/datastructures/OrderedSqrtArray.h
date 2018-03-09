@@ -67,15 +67,15 @@ private:
 
     pair<int, int> floor_ind(const Value val) const {
         int lo = 0, hi = ((int) a.size()) - 1, mid;
-        while (lo < hi) {
+        while (lo <= hi) {
             mid = lo + (hi - lo) / 2;
-            if (cmp(val, a[mid].back())) hi = mid - 1;
+            if (cmp(val, a[mid].front())) hi = mid - 1;
             else lo = mid + 1;
         }
         if (lo == -1) return {-1, 0};
         int i = lo;
         lo = 0, hi = ((int) a[i].size()) - 1;
-        while (lo < hi) {
+        while (lo <= hi) {
             mid = lo + (hi - lo) / 2;
             if (cmp(val, a[i][mid])) hi = mid - 1;
             else lo = mid + 1;
