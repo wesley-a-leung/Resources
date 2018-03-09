@@ -12,7 +12,7 @@ public:
 
 class illegal_argument_exception: public runtime_error {
 public:
-    illegal_argument_exception(): runtime_error("No such element exists"){}
+    illegal_argument_exception(): runtime_error("Illegal argument exception"){}
     illegal_argument_exception(string message): runtime_error(message){}
 };
 
