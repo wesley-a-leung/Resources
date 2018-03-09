@@ -48,8 +48,8 @@ public:
             a.push_back(vector<Value>(i - min((int) (i - st), sqrtn), i));
             prefixSZ.push_back(0);
         }
-        updateSZ();
         reverse(a.begin(), a.end());
+        updateSZ();
     }
 
     void insert(int k, const Value val) {
