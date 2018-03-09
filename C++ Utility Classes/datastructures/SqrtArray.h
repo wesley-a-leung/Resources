@@ -63,15 +63,14 @@ public:
             if (k < prefixSZ[mid]) hi = mid - 1;
             else lo = mid + 1;
         }
-        int i = hi;
         k -= prefixSZ[hi];
-        if (i == -1) a[i += (int) a.size()].push_back(val);
-        else a[i].insert(a[i].begin() + k, val);
+        if (hi == -1) a[hi += (int) a.size()].push_back(val);
+        else a[hi].insert(a[hi].begin() + k, val);
         int sqrtn = (int) sqrt(n);
-        if ((int) a[i].size() > 2 * sqrtn) {
-            vector<int> y(a[i].begin() + sqrtn, a[i].end());
-            a[i].resize(sqrtn);
-            a.insert(a.begin() + i + 1, y);
+        if ((int) a[hi].size() > 2 * sqrtn) {
+            vector<int> y(a[hi].begin() + sqrtn, a[hi].end());
+            a[hi].resize(sqrtn);
+            a.insert(a.begin() + hi + 1, y);
             prefixSZ.push_back(0);
         }
         updateSZ();
@@ -85,11 +84,10 @@ public:
             if (k < prefixSZ[mid]) hi = mid - 1;
             else lo = mid + 1;
         }
-        int i = hi;
         k -= prefixSZ[hi];
-        a[i].erase(a[i].begin() + k);
-        if (a[i].empty()) {
-            a.erase(a.begin() + i);
+        a[hi].erase(a[hi].begin() + k);
+        if (a[hi].empty()) {
+            a.erase(a.begin() + hi);
             prefixSZ.pop_back();
         }
         updateSZ();
