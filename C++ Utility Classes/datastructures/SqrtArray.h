@@ -10,7 +10,7 @@ using namespace std;
  *
  * Insert: O(sqrt(N))
  * Erase: O(sqrt(N))
- * At, Accessor: O(log(N))
+ * At, Accessor: O(log(sqrt(N)))
  * Lower Bound, Upper Bound: O(log(N))
  * Size: O(1)
  */
@@ -74,7 +74,7 @@ public:
             a.insert(a.begin() + hi + 1, y);
             prefixSZ.push_back(0);
         }
-        for (int i = 1; i < (int) a.size(); i++) {
+        for (int i = hi + 1; i < (int) a.size(); i++) {
             prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
         }
     }
@@ -94,7 +94,7 @@ public:
             a.erase(a.begin() + hi);
             prefixSZ.pop_back();
         }
-        for (int i = 1; i < (int) a.size(); i++) {
+        for (int i = hi + 1; i < (int) a.size(); i++) {
             prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
         }
     }
