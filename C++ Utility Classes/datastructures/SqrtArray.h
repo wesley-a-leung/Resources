@@ -4,14 +4,21 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+class no_such_element_exception: public runtime_error {
+public:
+    no_such_element_exception(): runtime_error("No such element exists"){}
+    no_such_element_exception(string message): runtime_error(message){}
+};
+
 /**
  * Sqrt Array:
  * Decomposes into blocks of size sqrt(n).
  *
  * Insert: O(sqrt(N))
  * Erase: O(sqrt(N))
- * At, Accessor: O(log(sqrt(N)))
+ * At, Accessor: O(log(N))
  * Lower Bound, Upper Bound: O(log(N))
+ * Values: O(N)
  * Size: O(1)
  */
 template <typename Value, typename Comparator = less<Value>>
@@ -26,7 +33,7 @@ public:
     SqrtArray() : n(0) {}
 
     SqrtArray(const int n) : n(n) {
-        assert(n <= 0);
+        assert(n >= 0);
         int sqrtn = (int) sqrt(n);
         for (int i = n; i > 0; i -= sqrtn) {
             a.push_back(vector<Value>(min(i, sqrtn)));
@@ -40,7 +47,7 @@ public:
     template <typename It>
     SqrtArray(const It st, const It en) {
         n = en - st;
-        assert(n <= 0);
+        assert(n >= 0);
         int sqrtn = (int) sqrt(n);
         for (It i = en; i > st; i -= sqrtn) {
             a.push_back(vector<Value>(i - min((int) (i - st), sqrtn), i));
@@ -125,6 +132,10 @@ public:
         return at(k);
     }
 
+    bool isEmpty() const {
+        return n == 0;
+    }
+
     pair<int, Value> lower_bound(const Value val) const {
         int lo = 0, hi = (int) a.size(), mid;
         while (lo < hi) {
@@ -132,7 +143,7 @@ public:
             if (cmp(a[mid].back(), val)) lo = mid + 1;
             else hi = mid;
         }
-        if (lo == (int) a.size()) return {n, 0};
+        if (lo == (int) a.size()) throw no_such_element_exception("call to lower_bound() resulted in no such value");
         int i = lo;
         lo = 0, hi = (int) a[i].size();
         while (lo < hi) {
@@ -150,7 +161,7 @@ public:
             if (cmp(val, a[mid].back())) hi = mid;
             else lo = mid + 1;
         }
-        if (lo == (int) a.size()) return {n, 0};
+        if (lo == (int) a.size()) throw no_such_element_exception("call to upper_bound() resulted in no such value");
         int i = lo;
         lo = 0, hi = (int) a[i].size();
         while (lo < hi) {
@@ -159,6 +170,34 @@ public:
             else lo = mid + 1;
         }
         return {prefixSZ[i] + lo, a[i][lo]};
+    }
+
+    pair<int, int> floor(const Value val) const {
+        int lo = 0, hi = ((int) a.size()) - 1, mid;
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(val, a[mid].back())) hi = mid - 1;
+            else lo = mid + 1;
+        }
+        if (lo == -1) throw no_such_element_exception("call to floor() resulted in no such value");
+        int i = lo;
+        lo = 0, hi = ((int) a[i].size()) - 1;
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(val, a[i][mid])) hi = mid - 1;
+            else lo = mid + 1;
+        }
+        return {prefixSZ[i] + lo, a[i][lo]};
+    }
+
+    vector<Value> values() const {
+        vector<Value> ret;
+        for (int i = 0; i < (int) a.size(); i++) {
+            for (int j = 0; j < (int) a[i].size(); j++) {
+                ret.push_back(a[i][j]);
+            }
+        }
+        return ret;
     }
 
     int size() const {
