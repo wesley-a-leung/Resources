@@ -22,37 +22,38 @@ private:
     vector<vector<Value>> a;
     vector<int> prefixSZ;
 
-    void updateSZ() {
-        for (int i = 1; i < (int) a.size(); i++) {
-            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
-        }
-    }
-
 public:
     SqrtArray() : n(0) {}
 
     SqrtArray(const int n) : n(n) {
+        assert(n <= 0);
         int sqrtn = (int) sqrt(n);
         for (int i = n; i > 0; i -= sqrtn) {
             a.push_back(vector<Value>(min(i, sqrtn)));
             prefixSZ.push_back(0);
         }
-        updateSZ();
+        for (int i = 1; i < (int) a.size(); i++) {
+            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
+        }
     }
 
     template <typename It>
     SqrtArray(const It st, const It en) {
         n = en - st;
+        assert(n <= 0);
         int sqrtn = (int) sqrt(n);
         for (It i = en; i > st; i -= sqrtn) {
             a.push_back(vector<Value>(i - min((int) (i - st), sqrtn), i));
             prefixSZ.push_back(0);
         }
         reverse(a.begin(), a.end());
-        updateSZ();
+        for (int i = 1; i < (int) a.size(); i++) {
+            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
+        }
     }
 
     void insert(int k, const Value val) {
+        assert(0 <= k && k <= n);
         if (n++ == 0) {
             a.push_back({});
             prefixSZ.push_back(0);
@@ -73,10 +74,13 @@ public:
             a.insert(a.begin() + hi + 1, y);
             prefixSZ.push_back(0);
         }
-        updateSZ();
+        for (int i = 1; i < (int) a.size(); i++) {
+            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
+        }
     }
 
     void erase(int k) {
+        assert(0 <= k && k < n);
         --n;
         int lo = 0, hi = (int) (a.size()) - 1, mid;
         while (lo <= hi) {
@@ -90,10 +94,13 @@ public:
             a.erase(a.begin() + hi);
             prefixSZ.pop_back();
         }
-        updateSZ();
+        for (int i = 1; i < (int) a.size(); i++) {
+            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
+        }
     }
 
     Value &operator [](int k) {
+        assert(0 <= k && k < n);
         int lo = 0, hi = (int) (a.size()) - 1, mid;
         while (lo <= hi) {
             mid = lo + (hi - lo) / 2;
@@ -104,6 +111,7 @@ public:
     }
 
     Value at(int k) const {
+        assert(0 <= k && k < n);
         int lo = 0, hi = (int) (a.size()) - 1, mid;
         while (lo <= hi) {
             mid = lo + (hi - lo) / 2;
