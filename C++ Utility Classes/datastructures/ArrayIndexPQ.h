@@ -36,6 +36,7 @@ public:
  *  and <em>key-of</em> operations take constant time.
  *  Construction takes time proportional to the specified capacity.
  */
+// convention is same as priority_queue in STL
 template <typename Key, typename Comparator = less<Key>>
 struct ArrayIndexPQ {
 private:

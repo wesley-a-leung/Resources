@@ -20,6 +20,7 @@ public:
  * Lower Bound, Upper Bound, Floor, Ceiling: O(log(N))
  * Values: O(N)
  * Size: O(1)
+ * Values: O(N)
  */
 template <typename Value, typename Comparator = less<Value>>
 struct SqrtArray {
@@ -136,6 +137,10 @@ public:
         return n == 0;
     }
 
+    int size() const {
+        return n;
+    }
+
     pair<int, Value> lower_bound(const Value val) const {
         int lo = 0, hi = (int) a.size(), mid;
         while (lo < hi) {
@@ -216,10 +221,6 @@ public:
             }
         }
         return ret;
-    }
-
-    int size() const {
-        return n;
     }
 };
 
