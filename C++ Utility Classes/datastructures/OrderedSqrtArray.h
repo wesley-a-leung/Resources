@@ -20,6 +20,7 @@ public:
  * Rank, Contains: O(log(N))
  * Lower Bound, Upper Bound, Floor, Ceiling: O(log(N))
  * isEmpty, Size: O(1)
+ * Values: O(N)
  */
 template <typename Value, typename Comparator = less<Value>>
 struct OrderedSqrtArray {
@@ -185,6 +186,10 @@ public:
         return n == 0;
     }
 
+    int size() const {
+        return n;
+    }
+
     bool contains(const Value val) const {
         pair<int, int> i = lower_bound_ind(val);
         return i.first != (int) a.size() && a[i.first][i.second] == val;
@@ -222,10 +227,6 @@ public:
             }
         }
         return ret;
-    }
-
-    int size() const {
-        return n;
     }
 };
 

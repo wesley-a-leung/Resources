@@ -4,6 +4,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+// convention is same as priority_queue in STL
 template <typename Value, typename Comparator = less<Value>>
 struct SkewHeap {
 private:
@@ -20,7 +21,7 @@ private:
 
     Node *merge(Node *a, Node *b) {
         if (nullptr == a || nullptr == b) return nullptr == a ? b : a;
-        if (cmp(b->val, a->val)) swap(a, b);
+        if (cmp(a->val, b->val)) swap(a, b);
         a->right = merge(b, a->right);
         swap(a->left, a->right);
         return a;
