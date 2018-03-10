@@ -183,9 +183,13 @@ private:
             R[ind] = 0;
             return ind++;
         }
-        if (key < KEY[x]) L[x] = put(L[x], key, val);
-        else if (key > KEY[x]) R[x] = put(R[x], key, val);
-        else {
+        if (key < KEY[x]) {
+            int l = put(L[x], key, val);
+            L[x] = l;
+        } else if (key > KEY[x]) {
+            int r = put(R[x], key, val);
+            R[x] = r;
+        } else {
             VAL[x] = val;
             update(x);
             return x;
