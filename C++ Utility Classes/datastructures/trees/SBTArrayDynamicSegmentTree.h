@@ -31,11 +31,11 @@ private:
      * Resizes the arrays and copies all the keys and values
      */
     void resize() {
-        Key *NEW_KEY = new int[capacity * 2];
-        Key *NEW_LO = new int[capacity * 2];
-        Key *NEW_HI = new int[capacity * 2];
-        Value *NEW_VAL = new int[capacity * 2];
-        Value *NEW_MIN = new int[capacity * 2];
+        Key *NEW_KEY = new Key[capacity * 2];
+        Key *NEW_LO = new Key[capacity * 2];
+        Key *NEW_HI = new Key[capacity * 2];
+        Value *NEW_VAL = new Value[capacity * 2];
+        Value *NEW_MIN = new Value[capacity * 2];
         int *NEW_SZ = new int[capacity * 2];
         int *NEW_L = new int[capacity * 2];
         int *NEW_R = new int[capacity * 2];

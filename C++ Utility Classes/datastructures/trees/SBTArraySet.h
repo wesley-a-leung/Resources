@@ -28,7 +28,7 @@ private:
      * Resizes the arrays and copies all the values
      */
     void resize() {
-        Value *NEW_VAL = new int[capacity * 2];
+        Value *NEW_VAL = new Value[capacity * 2];
         int *NEW_SZ = new int[capacity * 2];
         int *NEW_L = new int[capacity * 2];
         int *NEW_R = new int[capacity * 2];
@@ -296,10 +296,10 @@ private:
      * @param x the subtree
      * @param queue the queue
      */
-    void valuesInOrder(int x, vector<Value> *queue) {
+    void valuesInOrder(int x, vector<Value> &queue) {
         if (x == 0) return;
         valuesInOrder(L[x], queue);
-        queue->push_back(VAL[x]);
+        queue.push_back(VAL[x]);
         valuesInOrder(R[x], queue);
     }
 
@@ -312,10 +312,10 @@ private:
      * @param lo the lowest value
      * @param hi the highest value
      */
-    void values(int x, vector<Value> *queue, Value lo, Value hi) {
+    void values(int x, vector<Value> &queue, Value lo, Value hi) {
         if (x == 0) return;
         if (cmp(lo, VAL[x])) values(L[x], queue, lo, hi);
-        if (!cmp(VAL[x], lo) && !cmp(hi, VAL[x])) queue->push_back(VAL[x]);
+        if (!cmp(VAL[x], lo) && !cmp(hi, VAL[x])) queue.push_back(VAL[x]);
         if (cmp(VAL[x], hi)) values(R[x], queue, lo, hi);
     }
 
@@ -360,7 +360,6 @@ public:
      * Deletes the symbol table.
      */
     ~SBTArraySet() {
-        delete[](VAL);
         delete[](VAL);
         delete[](SZ);
         delete[](L);
@@ -535,7 +534,7 @@ public:
      */
     vector<Value> values() {
         vector<Value> queue;
-        valuesInOrder(root, &queue);
+        valuesInOrder(root, queue);
         return queue;
     }
 
@@ -549,7 +548,7 @@ public:
      */
     vector<Value> values(Value lo, Value hi) {
         vector<Value> queue;
-        values(root, &queue, lo, hi);
+        values(root, queue, lo, hi);
         return queue;
     }
 
