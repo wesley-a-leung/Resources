@@ -72,15 +72,15 @@ private:
             if (cmp(val, a[mid].front())) hi = mid - 1;
             else lo = mid + 1;
         }
-        if (lo == -1) return {-1, 0};
-        int i = lo;
+        if (hi == -1) return {-1, 0};
+        int i = hi;
         lo = 0, hi = ((int) a[i].size()) - 1;
         while (lo <= hi) {
             mid = lo + (hi - lo) / 2;
             if (cmp(val, a[i][mid])) hi = mid - 1;
             else lo = mid + 1;
         }
-        return {i, lo};
+        return {i, hi};
     }
 
 public:

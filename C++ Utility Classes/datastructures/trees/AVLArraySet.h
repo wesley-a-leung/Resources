@@ -152,8 +152,13 @@ private:
             R[ind] = 0;
             return ind++;
         }
-        if (cmp(val, VAL[x])) L[x] = add(L[x], val);
-        else R[x] = add(R[x], val);
+        if (cmp(val, VAL[x])) {
+            int l = add(L[x], val);
+            L[x] = l;
+        } else {
+            int r = add(R[x], val);
+            R[x] = r;
+        }
         return balance(x);
     }
 

@@ -172,56 +172,38 @@ public:
         return {prefixSZ[i] + lo, a[i][lo]};
     }
 
-    pair<int, int> floor(const Value val) const {
-        int lo = 0, hi = ((int) a.size()) - 1, mid;
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (cmp(val, a[mid].back())) hi = mid - 1;
-            else lo = mid + 1;
-        }
-        if (lo == -1) throw no_such_element_exception("call to floor() resulted in no such value");
-        int i = lo;
-        lo = 0, hi = ((int) a[i].size()) - 1;
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (cmp(val, a[i][mid])) hi = mid - 1;
-            else lo = mid + 1;
-        }
-        return {prefixSZ[i] + lo, a[i][lo]};
-    }
-
     pair<int, Value> floor(const Value val) const {
-        int lo = 0, hi = (int) a.size(), mid;
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (cmp(a[mid].back(), val)) lo = mid + 1;
-            else hi = mid;
-        }
-        if (lo == (int) a.size()) throw no_such_element_exception("call to floor() resulted in no such value");
-        int i = lo;
-        lo = 0, hi = (int) a[i].size();
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (cmp(a[i][mid], val)) lo = mid + 1;
-            else hi = mid;
-        }
-        return {prefixSZ[i] + lo, a[i][lo]};
-    }
-
-    pair<int, Value> ceiling(const Value val) const {
         int lo = 0, hi = ((int) a.size()) - 1, mid;
         while (lo <= hi) {
             mid = lo + (hi - lo) / 2;
             if (cmp(val, a[mid].front())) hi = mid - 1;
             else lo = mid + 1;
         }
-        if (lo == -1) return {-1, 0};
-        int i = lo;
+        if (hi == -1) throw no_such_element_exception("call to floor() resulted in no such value");
+        int i = hi;
         lo = 0, hi = ((int) a[i].size()) - 1;
         while (lo <= hi) {
             mid = lo + (hi - lo) / 2;
             if (cmp(val, a[i][mid])) hi = mid - 1;
             else lo = mid + 1;
+        }
+        return {prefixSZ[i] + hi, a[i][hi]};
+    }
+
+    pair<int, Value> ceiling(const Value val) const {
+        int lo = 0, hi = (int) a.size(), mid;
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(a[mid].back(), val)) lo = mid + 1;
+            else hi = mid;
+        }
+        if (lo == (int) a.size()) throw no_such_element_exception("call to ceiling() resulted in no such value");
+        int i = lo;
+        lo = 0, hi = (int) a[i].size();
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(a[i][mid], val)) lo = mid + 1;
+            else hi = mid;
         }
         return {prefixSZ[i] + lo, a[i][lo]};
     }
