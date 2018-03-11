@@ -102,7 +102,7 @@ public:
         else a[hi].insert(a[hi].begin() + k, val);
         int sqrtn = (int) sqrt(n);
         if ((int) a[hi].size() > 2 * sqrtn) {
-            vector<int> y(a[hi].begin() + sqrtn, a[hi].end());
+            vector<Value> y(a[hi].begin() + sqrtn, a[hi].end());
             a[hi].resize(sqrtn);
             a.insert(a.begin() + hi + 1, y);
             prefixSZ.push_back(0);
