@@ -208,6 +208,8 @@ public:
      * @param val
      * @return a pair containing the index and value of the smallest value
      * greater than or equal to val
+     * @throws no_such_element_exception if val is larger than the largest value
+     * in the structure
      */
     pair<int, Value> lower_bound(const Value val) const {
         int lo = 0, hi = (int) a.size(), mid;
@@ -235,6 +237,8 @@ public:
      * @param val
      * @return a pair containing the index and value of the smallest value
      * less than or equal to val
+     * @throws no_such_element_exception if val is greater than or equal to
+     * the largest value in the structure
      */
     pair<int, Value> upper_bound(const Value val) const {
         int lo = 0, hi = (int) a.size(), mid;
@@ -262,6 +266,8 @@ public:
      * @param val
      * @return a pair containing the index and value of the largest value
      * less than or equal to val
+     * @throws no_such_element_exception if val is less than the smallest value
+     * in the structure
      */
     pair<int, Value> floor(const Value val) const {
         int lo = 0, hi = ((int) a.size()) - 1, mid;
@@ -289,6 +295,8 @@ public:
      * @param val
      * @return a pair containing the index and value of the smallest value
      * greater than or equal to val
+     * @throws no_such_element_exception if val is greater than the largest value
+     * in the structure
      */
     pair<int, Value> ceiling(const Value val) const {
         int lo = 0, hi = (int) a.size(), mid;
