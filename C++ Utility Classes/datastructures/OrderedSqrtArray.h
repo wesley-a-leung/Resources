@@ -20,10 +20,10 @@ public:
  *
  * Insert: O(sqrt(N))
  * Erase: O(sqrt(N))
- * Select, Accessor: O(log(N))
+ * At, Accessor: O(log(N))
  * Rank, Contains: O(log(N))
  * Lower Bound, Upper Bound, Floor, Ceiling: O(log(N))
- * isEmpty, Size: O(1)
+ * Empty, Size: O(1)
  * Values: O(N)
  */
 template <typename Value, typename Comparator = less<Value>>
@@ -208,7 +208,7 @@ public:
      * @param k the 0-based index
      * @return the kth value in the structure
      */
-    Value select(int k) const {
+    Value at(int k) const {
         assert(0 <= k && k < n);
         int lo = 0, hi = (int) (a.size()) - 1, mid;
         while (lo <= hi) {
@@ -227,20 +227,7 @@ public:
      * @return the kth value in the structure
      */
     Value operator [](int k) const {
-        return select(k);
-    }
-
-    /**
-     * Returns the number of elements strictly less than val.
-     *
-     * @param val the value
-     * @return the number of elements strictly less than val, -1 if there
-     * are no elements less than val
-     */
-    int getRank(const Value val) const {
-        pair<int, int> i = lower_bound_ind(val);
-        if (i.first == (int) a.size() || a[i.first][i.second] != val) return -1;
-        return prefixSZ[i.first] + i.second;
+        return at(k);
     }
 
     /**
@@ -248,7 +235,7 @@ public:
      *
      * @return true if the structure is empty, false otherwise
      */
-    bool isEmpty() const {
+    bool empty() const {
         return n == 0;
     }
 

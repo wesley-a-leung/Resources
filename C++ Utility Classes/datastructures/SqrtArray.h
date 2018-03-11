@@ -22,7 +22,7 @@ public:
  * Erase: O(sqrt(N))
  * At, Accessor: O(log(N))
  * Lower Bound, Upper Bound, Floor, Ceiling: O(log(N))
- * isEmpty, Size: O(1)
+ * Empty, Size: O(1)
  * Values: O(N)
  */
 template <typename Value, typename Comparator = less<Value>>
@@ -187,7 +187,7 @@ public:
      *
      * @return true if the structure is empty, false otherwise
      */
-    bool isEmpty() const {
+    bool empty() const {
         return n == 0;
     }
 
