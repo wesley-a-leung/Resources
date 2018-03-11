@@ -69,7 +69,7 @@ template <typename It> void merge_sort_buttom_up(It st, It en) {
     delete[] (aux);
 }
 
-template <typename It, class Comparator> void merge_sort_bottom_up(It st, It en, Comparator cmp) {
+template <typename It, typename Comparator> void merge_sort_bottom_up(It st, It en, Comparator cmp) {
     typedef typename std::iterator_traits<It>::value_type T;
     int n = en - st;
     T *aux = new T[n];

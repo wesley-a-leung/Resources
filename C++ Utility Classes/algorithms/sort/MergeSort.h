@@ -47,7 +47,7 @@ template <typename It> void merge_sort(It st, It en) {
     delete[] (aux);
 }
 
-template <typename It, class Comparator> void merge_sort(It src_st, It src_en, It dst_st, It dst_en, Comparator cmp) {
+template <typename It, typename Comparator> void merge_sort(It src_st, It src_en, It dst_st, It dst_en, Comparator cmp) {
     int n = src_en - src_st;
     if (n <= INSERTION_SORT_CUTOFF) {
         for (int i = 0; i < n; i++) {
@@ -73,7 +73,7 @@ template <typename It, class Comparator> void merge_sort(It src_st, It src_en, I
     }
 }
 
-template <typename It, class Comparator> void merge_sort(It st, It en, Comparator cmp) {
+template <typename It, typename Comparator> void merge_sort(It st, It en, Comparator cmp) {
     typedef typename std::iterator_traits<It>::value_type T;
     int n = en - st;
     T *aux = new T[n];

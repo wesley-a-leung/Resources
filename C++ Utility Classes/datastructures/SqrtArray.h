@@ -16,7 +16,6 @@ public:
  *
  * Usage:
  * SqrtArray<int> arr;
- * SqrtArray<int, greater<int>> arr;
  *
  * Insert: O(sqrt(N))
  * Erase: O(sqrt(N))
@@ -25,10 +24,9 @@ public:
  * Empty, Size: O(1)
  * Values: O(N)
  */
-template <typename Value, typename Comparator = less<Value>>
+template <typename Value>
 struct SqrtArray {
 private:
-    Comparator cmp; // the comparator
     int n; // the size of the array
     vector<vector<Value>> a; // the array
     vector<int> prefixSZ; // the prefix array of the sizes of the blocks
@@ -202,16 +200,46 @@ public:
 
     /**
      * Returns a pair containing the index and value of the smallest value
-     * less than or equal to val. Identical to ceiling.
+     * less than or equal to val by the < operator. Identical to ceiling.
      *
-     * @pre the structure must be sorted
-     * @param val
+     * @pre the structure must be sorted by the < operator
+     * @param val the value
      * @return a pair containing the index and value of the smallest value
      * greater than or equal to val
      * @throws no_such_element_exception if val is larger than the largest value
      * in the structure
      */
     pair<int, Value> lower_bound(const Value val) const {
+        int lo = 0, hi = (int) a.size(), mid;
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (a[mid].back() < val) lo = mid + 1;
+            else hi = mid;
+        }
+        if (lo == (int) a.size()) throw no_such_element_exception("call to lower_bound() resulted in no such value");
+        int i = lo;
+        lo = 0, hi = (int) a[i].size();
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (a[i][mid] < val) lo = mid + 1;
+            else hi = mid;
+        }
+        return {prefixSZ[i] + lo, a[i][lo]};
+    }
+
+    /**
+     * Returns a pair containing the index and value of the smallest value
+     * less than or equal to val based on the comparator. Identical to ceiling.
+     *
+     * @pre the structure must be sorted based on the comparator
+     * @param val the value
+     * @param cmp the comparator
+     * @return a pair containing the index and value of the smallest value
+     * greater than or equal to val
+     * @throws no_such_element_exception if val is larger than the largest value
+     * in the structure
+     */
+    template <typename Comparator> pair<int, Value> lower_bound(const Value val, Comparator cmp) const {
         int lo = 0, hi = (int) a.size(), mid;
         while (lo < hi) {
             mid = lo + (hi - lo) / 2;
@@ -231,16 +259,46 @@ public:
 
     /**
      * Returns a pair containing the index and value of the smallest value
-     * greater than to val.
+     * greater than to val by the < operator.
      *
-     * @pre the structure must be sorted
-     * @param val
+     * @pre the structure must be sorted by the < operator
+     * @param val the value
      * @return a pair containing the index and value of the smallest value
      * less than or equal to val
      * @throws no_such_element_exception if val is greater than or equal to
      * the largest value in the structure
      */
     pair<int, Value> upper_bound(const Value val) const {
+        int lo = 0, hi = (int) a.size(), mid;
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (val < a[mid].back()) hi = mid;
+            else lo = mid + 1;
+        }
+        if (lo == (int) a.size()) throw no_such_element_exception("call to upper_bound() resulted in no such value");
+        int i = lo;
+        lo = 0, hi = (int) a[i].size();
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (val < a[i][mid]) hi = mid;
+            else lo = mid + 1;
+        }
+        return {prefixSZ[i] + lo, a[i][lo]};
+    }
+
+    /**
+     * Returns a pair containing the index and value of the smallest value
+     * greater than to val based on the comparator.
+     *
+     * @pre the structure must be sorted based on the comparator
+     * @param val the value
+     * @param cmp the comparator
+     * @return a pair containing the index and value of the smallest value
+     * less than or equal to val
+     * @throws no_such_element_exception if val is greater than or equal to
+     * the largest value in the structure
+     */
+    template <typename Comparator> pair<int, Value> upper_bound(const Value val, Comparator cmp) const {
         int lo = 0, hi = (int) a.size(), mid;
         while (lo < hi) {
             mid = lo + (hi - lo) / 2;
@@ -260,16 +318,46 @@ public:
 
     /**
      * Returns a pair containing the index and value of the largest value
-     * less than or equal to val.
+     * less than or equal to val by the < operator.
      *
-     * @pre the structure must be sorted
-     * @param val
+     * @pre the structure must be sorted by the < operator
+     * @param val the value
      * @return a pair containing the index and value of the largest value
      * less than or equal to val
      * @throws no_such_element_exception if val is less than the smallest value
      * in the structure
      */
     pair<int, Value> floor(const Value val) const {
+        int lo = 0, hi = ((int) a.size()) - 1, mid;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (val < a[mid].front()) hi = mid - 1;
+            else lo = mid + 1;
+        }
+        if (hi == -1) throw no_such_element_exception("call to floor() resulted in no such value");
+        int i = hi;
+        lo = 0, hi = ((int) a[i].size()) - 1;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (val < a[i][mid]) hi = mid - 1;
+            else lo = mid + 1;
+        }
+        return {prefixSZ[i] + hi, a[i][hi]};
+    }
+
+    /**
+     * Returns a pair containing the index and value of the largest value
+     * less than or equal to val based on the comparator.
+     *
+     * @pre the structure must be sorted based on the comparator
+     * @param val the value
+     * @param cmp the comparator
+     * @return a pair containing the index and value of the largest value
+     * less than or equal to val
+     * @throws no_such_element_exception if val is less than the smallest value
+     * in the structure
+     */
+    template <typename Comparator> pair<int, Value> floor(const Value val, Comparator cmp) const {
         int lo = 0, hi = ((int) a.size()) - 1, mid;
         while (lo <= hi) {
             mid = lo + (hi - lo) / 2;
@@ -289,16 +377,46 @@ public:
 
     /**
      * Returns a pair containing the index and value of the smallest value
-     * less than or equal to val. Identical to lower_bound.
+     * less than or equal to val by the < operator. Identical to lower_bound.
      *
      * @pre the structure must be sorted
-     * @param val
+     * @param val the value
      * @return a pair containing the index and value of the smallest value
      * greater than or equal to val
      * @throws no_such_element_exception if val is greater than the largest value
      * in the structure
      */
     pair<int, Value> ceiling(const Value val) const {
+        int lo = 0, hi = (int) a.size(), mid;
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (a[mid].back() < val) lo = mid + 1;
+            else hi = mid;
+        }
+        if (lo == (int) a.size()) throw no_such_element_exception("call to ceiling() resulted in no such value");
+        int i = lo;
+        lo = 0, hi = (int) a[i].size();
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (a[i][mid] < val) lo = mid + 1;
+            else hi = mid;
+        }
+        return {prefixSZ[i] + lo, a[i][lo]};
+    }
+
+    /**
+     * Returns a pair containing the index and value of the smallest value
+     * less than or equal to val based on the comparator. Identical to lower_bound.
+     *
+     * @pre the structure must be sorted based on the comparator
+     * @param val the value
+     * @param cmp the comparator
+     * @return a pair containing the index and value of the smallest value
+     * greater than or equal to val
+     * @throws no_such_element_exception if val is greater than the largest value
+     * in the structure
+     */
+    template <typename Comparator> pair<int, Value> ceiling(const Value val, Comparator cmp) const {
         int lo = 0, hi = (int) a.size(), mid;
         while (lo < hi) {
             mid = lo + (hi - lo) / 2;

@@ -36,7 +36,7 @@ template <typename It> void heap_sort(It st, It en) {
     }
 }
 
-template <typename It, class Comparator> void heap_sort(It st, It en, Comparator cmp) {
+template <typename It, typename Comparator> void heap_sort(It st, It en, Comparator cmp) {
     int n = en - st;
     for (int i = n / 2; i >= 1; i--) {
         int k = i;

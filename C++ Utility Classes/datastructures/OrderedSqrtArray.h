@@ -263,7 +263,7 @@ public:
      * Returns a pair containing the index and value of the smallest value
      * less than or equal to val. Identical to ceiling.
      *
-     * @param val
+     * @param val the value
      * @return a pair containing the index and value of the smallest value
      * greater than or equal to val
      * @throws no_such_element_exception if val is greater than the largest value
@@ -279,7 +279,7 @@ public:
      * Returns a pair containing the index and value of the smallest value
      * greater than to val.
      *
-     * @param val
+     * @param val the value
      * @return a pair containing the index and value of the smallest value
      * less than or equal to val
      * @throws no_such_element_exception if val is greater than or equal to
@@ -295,7 +295,7 @@ public:
      * Returns a pair containing the index and value of the largest value
      * less than or equal to val.
      *
-     * @param val
+     * @param val the value
      * @return a pair containing the index and value of the largest value
      * less than or equal to val
      * @throws no_such_element_exception if val is less than the smallest value
@@ -311,7 +311,7 @@ public:
      * Returns a pair containing the index and value of the smallest value
      * less than or equal to val. Identical to lower_bound.
      *
-     * @param val
+     * @param val the value
      * @return a pair containing the index and value of the smallest value
      * greater than or equal to val
      * @throws no_such_element_exception if val is greater than the largest value

@@ -401,7 +401,7 @@ template <typename It> void tim_sort(It st, It en) {
 
 ////////////////////////// COMPARATOR TIM SORT //////////////////////////
 
-template <typename It, class Comparator> int count_run_and_make_ascending(It st, It en, Comparator cmp) {
+template <typename It, typename Comparator> int count_run_and_make_ascending(It st, It en, Comparator cmp) {
     int n = en - st;
     int i = 1;
     if (i == n) return 1;
@@ -414,7 +414,7 @@ template <typename It, class Comparator> int count_run_and_make_ascending(It st,
     return i;
 }
 
-template <typename It, class Comparator> void binary_insertion_sort(It st, It en, It ind, Comparator cmp) {
+template <typename It, typename Comparator> void binary_insertion_sort(It st, It en, It ind, Comparator cmp) {
     typedef typename std::iterator_traits<It>::value_type T;
     if (ind - st == 0) ind++;
     for ( ; ind < en; ind++) {
@@ -430,7 +430,7 @@ template <typename It, class Comparator> void binary_insertion_sort(It st, It en
     }
 }
 
-template <typename T, typename It, class Comparator> int gallop_left(T key, It st, It en, It hint, Comparator cmp) {
+template <typename T, typename It, typename Comparator> int gallop_left(T key, It st, It en, It hint, Comparator cmp) {
     int ofs = 1, lastOfs = 0;
     if (cmp(*hint, key)) {
         int maxOfs = en - hint;
@@ -463,7 +463,7 @@ template <typename T, typename It, class Comparator> int gallop_left(T key, It s
     return ofs;
 }
 
-template <typename T, typename It, class Comparator> int gallop_right(T key, It st, It en, It hint, Comparator cmp) {
+template <typename T, typename It, typename Comparator> int gallop_right(T key, It st, It en, It hint, Comparator cmp) {
     int ofs = 1, lastOfs = 0;
     if (cmp(key, *hint)) {
         int maxOfs = hint - st + 1;
@@ -496,7 +496,7 @@ template <typename T, typename It, class Comparator> int gallop_right(T key, It 
     return ofs;
 }
 
-template <typename T, typename It, class Comparator> void merge_lo(It st1, It en1, It st2, It en2, Comparator cmp, T *&aux, int &auxSize, int maxSize) {
+template <typename T, typename It, typename Comparator> void merge_lo(It st1, It en1, It st2, It en2, Comparator cmp, T *&aux, int &auxSize, int maxSize) {
     int len1 = en1 - st1, len2 = en2 - st2;
     expand(aux, auxSize, len1, maxSize);
     memmove(aux, st1, len1 * sizeof(T));
@@ -587,7 +587,7 @@ template <typename T, typename It, class Comparator> void merge_lo(It st1, It en
     }
 }
 
-template <typename T, typename It, class Comparator> void merge_hi(It st1, It en1, It st2, It en2, Comparator cmp, T *&aux, int &auxSize, int maxSize) {
+template <typename T, typename It, typename Comparator> void merge_hi(It st1, It en1, It st2, It en2, Comparator cmp, T *&aux, int &auxSize, int maxSize) {
     int len1 = en1 - st1, len2 = en2 - st2;
     expand(aux, auxSize, len2, maxSize);
     memmove(aux, st2, len2 * sizeof(T));
@@ -682,7 +682,7 @@ template <typename T, typename It, class Comparator> void merge_hi(It st1, It en
     }
 }
 
-template <typename T, typename It, class Comparator> void merge_runs(It st, It en, Comparator cmp, int *runBase, int *runLen, int &stackSize, int i, T *&aux, int &auxSize, int maxSize) {
+template <typename T, typename It, typename Comparator> void merge_runs(It st, It en, Comparator cmp, int *runBase, int *runLen, int &stackSize, int i, T *&aux, int &auxSize, int maxSize) {
     int base1 = runBase[i];
     int len1 = runLen[i];
     int base2 = runBase[i + 1];
@@ -703,7 +703,7 @@ template <typename T, typename It, class Comparator> void merge_runs(It st, It e
     else merge_hi(st + base1, st + base1 + len1, st + base2, st + base2 + len2, cmp, aux, auxSize, maxSize);
 }
 
-template <typename It, class Comparator> void tim_sort(It st, It en, Comparator cmp) {
+template <typename It, typename Comparator> void tim_sort(It st, It en, Comparator cmp) {
     typedef typename std::iterator_traits<It>::value_type T;
     int n = en - st;
     int maxSize = n / 2;
