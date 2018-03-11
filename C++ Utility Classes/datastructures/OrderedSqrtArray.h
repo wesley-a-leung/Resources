@@ -234,7 +234,8 @@ public:
      * Returns the number of elements strictly less than val.
      *
      * @param val the value
-     * @return the number of elements strictly less than val.
+     * @return the number of elements strictly less than val, -1 if there
+     * are no elements less than val
      */
     int getRank(const Value val) const {
         pair<int, int> i = lower_bound_ind(val);
@@ -278,6 +279,8 @@ public:
      * @param val
      * @return a pair containing the index and value of the smallest value
      * greater than or equal to val
+     * @throws no_such_element_exception if val is greater than the largest value
+     * in the structure
      */
     pair<int, Value> lower_bound(const Value val) const {
         pair<int, int> i = lower_bound_ind(val);
@@ -292,6 +295,8 @@ public:
      * @param val
      * @return a pair containing the index and value of the smallest value
      * less than or equal to val
+     * @throws no_such_element_exception if val is greater than or equal to
+     * the largest value in the structure
      */
     pair<int, Value> upper_bound(const Value val) const {
         pair<int, int> i = upper_bound_ind(val);
@@ -306,6 +311,8 @@ public:
      * @param val
      * @return a pair containing the index and value of the largest value
      * less than or equal to val
+     * @throws no_such_element_exception if val is less than the smallest value
+     * in the structure
      */
     pair<int, Value> floor(const Value val) const {
         pair<int, int> i = floor_ind(val);
@@ -320,6 +327,8 @@ public:
      * @param val
      * @return a pair containing the index and value of the smallest value
      * greater than or equal to val
+     * @throws no_such_element_exception if val is greater than the largest value
+     * in the structure
      */
     pair<int, Value> ceiling(const Value val) const {
         pair<int, int> i = lower_bound_ind(val);
