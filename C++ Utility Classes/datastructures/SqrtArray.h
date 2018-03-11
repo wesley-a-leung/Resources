@@ -145,7 +145,7 @@ public:
      */
     Value &operator [](int k) {
         assert(0 <= k && k < n);
-        int lo = 0, hi = (int) (a.size()) - 1, mid;
+        int lo = 0, hi = ((int) a.size()) - 1, mid;
         while (lo <= hi) {
             mid = lo + (hi - lo) / 2;
             if (k < prefixSZ[mid]) hi = mid - 1;
@@ -162,7 +162,7 @@ public:
      */
     Value at(int k) const {
         assert(0 <= k && k < n);
-        int lo = 0, hi = (int) (a.size()) - 1, mid;
+        int lo = 0, hi = ((int) a.size()) - 1, mid;
         while (lo <= hi) {
             mid = lo + (hi - lo) / 2;
             if (k < prefixSZ[mid]) hi = mid - 1;
