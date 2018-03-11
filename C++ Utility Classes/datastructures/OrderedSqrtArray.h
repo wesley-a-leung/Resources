@@ -115,7 +115,8 @@ public:
     }
 
     /**
-     * Accepts 2 iterators such that st <= en. The elements between the 2 iterators
+     * Initializes the structures with the elements between st and en
+     * such that st <= en. The elements between the 2 iterators
      * must be sorted.
      *
      * @param st the starting iterator (inclusive)

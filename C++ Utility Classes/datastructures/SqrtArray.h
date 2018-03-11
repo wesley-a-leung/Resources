@@ -22,7 +22,7 @@ public:
  * Erase: O(sqrt(N))
  * At, Accessor: O(log(N))
  * Lower Bound, Upper Bound, Floor, Ceiling: O(log(N))
- * Size: O(1)
+ * isEmpty, Size: O(1)
  * Values: O(N)
  */
 template <typename Value, typename Comparator = less<Value>>
@@ -57,7 +57,8 @@ public:
     }
 
     /**
-     * Accepts 2 iterators such that st <= en.
+     * Initializes the structures with the elements between st and en
+     * such that st <= en.
      *
      * @param st the starting iterator (inclusive)
      * @param en the ending iterator (exclusive)
@@ -82,7 +83,7 @@ public:
      * then the value is inserted at the end of the structure.
      *
      * @param k the 0-based index to insert before, 0 <= k <= n
-     * @param val the value to be inserted.
+     * @param val the value to be inserted
      */
     void insert(int k, const Value val) {
         assert(0 <= k && k <= n);
