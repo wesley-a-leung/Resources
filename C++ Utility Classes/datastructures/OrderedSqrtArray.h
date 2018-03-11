@@ -126,7 +126,7 @@ public:
     OrderedSqrtArray(const It st, const It en) {
         n = en - st;
         assert(n >= 0);
-        assert(is_sorted(st, en));
+        assert(is_sorted(st, en, cmp));
         int sqrtn = (int) sqrt(n);
         for (It i = en; i > st; i -= sqrtn) {
             a.push_back(vector<Value>(i - min((int) (i - st), sqrtn), i));
