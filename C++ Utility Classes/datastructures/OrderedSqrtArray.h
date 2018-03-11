@@ -98,23 +98,6 @@ public:
     OrderedSqrtArray() : n(0) {}
 
     /**
-     * Initializes the structure with an initial size.
-     *
-     * @param n the initial size
-     */
-    OrderedSqrtArray(const int n) : n(n) {
-        assert(n >= 0);
-        int sqrtn = (int) sqrt(n);
-        for (int i = n; i > 0; i -= sqrtn) {
-            a.emplace_back(min(i, sqrtn));
-            prefixSZ.push_back(0);
-        }
-        for (int i = 1; i < (int) a.size(); i++) {
-            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
-        }
-    }
-
-    /**
      * Initializes the structures with the elements between st and en
      * such that st <= en. The elements between the 2 iterators
      * must be sorted.
