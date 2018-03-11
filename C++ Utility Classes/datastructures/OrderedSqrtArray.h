@@ -12,7 +12,11 @@ public:
 
 /**
  * Ordered Sqrt Array:
- * Decomposes into blocks of size sqrt(n).
+ * Decomposes arary into blocks of size sqrt(n).
+ *
+ * Usage:
+ * OrderedSqrtArray<int> arr;
+ * OrderedSqrtArray<int, greater<int>> arr;
  *
  * Insert: O(sqrt(N))
  * Erase: O(sqrt(N))
@@ -25,11 +29,12 @@ public:
 template <typename Value, typename Comparator = less<Value>>
 struct OrderedSqrtArray {
 private:
-    Comparator cmp;
-    int n;
-    vector<vector<Value>> a;
-    vector<int> prefixSZ;
+    Comparator cmp; // the comparator
+    int n; // the size of the array
+    vector<vector<Value>> a; // the array
+    vector<int> prefixSZ; // the prefix array of the sizes of the blocks
 
+    // returns the 2D index of the smallest value greater than or equal to val
     pair<int, int> lower_bound_ind(const Value val) const {
         int lo = 0, hi = (int) a.size(), mid;
         while (lo < hi) {
@@ -48,6 +53,7 @@ private:
         return {i, lo};
     }
 
+    // returns the 2D index of the smallest value greater than val
     pair<int, int> upper_bound_ind(const Value val) const {
         int lo = 0, hi = (int) a.size(), mid;
         while (lo < hi) {
@@ -66,6 +72,7 @@ private:
         return {i, lo};
     }
 
+    // returns the 2D index of the largest value less than or equal to val
     pair<int, int> floor_ind(const Value val) const {
         int lo = 0, hi = ((int) a.size()) - 1, mid;
         while (lo <= hi) {
@@ -85,8 +92,16 @@ private:
     }
 
 public:
+    /**
+     * Initializes and empty structure.
+     */
     OrderedSqrtArray() : n(0) {}
 
+    /**
+     * Initializes the structure with an initial size.
+     *
+     * @param n the initial size
+     */
     OrderedSqrtArray(const int n) : n(n) {
         assert(n >= 0);
         int sqrtn = (int) sqrt(n);
@@ -99,6 +114,13 @@ public:
         }
     }
 
+    /**
+     * Accepts 2 iterators such that st <= en. The elements between the 2 iterators
+     * must be sorted.
+     *
+     * @param st the starting iterator (inclusive)
+     * @param en the ending iterator (exclusive)
+     */
     template <typename It>
     OrderedSqrtArray(const It st, const It en) {
         n = en - st;
@@ -115,6 +137,11 @@ public:
         }
     }
 
+    /**
+     * Inserts a value into the structure, allowing for duplicates.
+     *
+     * @param val the value to be inserted
+     */
     void insert(const Value val) {
         pair<int, int> i = upper_bound_ind(val);
         if (n++ == 0) {
@@ -135,6 +162,13 @@ public:
         }
     }
 
+    /**
+     * Erases a value in the structure. If there are multiple, only one is erased.
+     * If the value does not exist, then it is not removed.
+     *
+     * @param val the value to erase
+     * @return true if the value was in the structure and removed, false otherwise
+     */
     bool erase(const Value val) {
         pair<int, int> i = lower_bound_ind(val);
         if (i.first == (int) a.size() || a[i.first][i.second] != val) return false;
@@ -150,6 +184,12 @@ public:
         return true;
     }
 
+    /**
+     * Accessor operator.
+     *
+     * @param k the 0-based index
+     * @return a reference to the kth element in the structure
+     */
     Value &operator [](int k) {
         assert(0 <= k && k < n);
         int lo = 0, hi = (int) (a.size()) - 1, mid;
@@ -161,6 +201,12 @@ public:
         return a[hi][k - prefixSZ[hi]];
     }
 
+    /**
+     * Returns the kth value in the structure.
+     *
+     * @param k the 0-based index
+     * @return the kth value in the structure
+     */
     Value select(int k) const {
         assert(0 <= k && k < n);
         int lo = 0, hi = (int) (a.size()) - 1, mid;
@@ -172,53 +218,119 @@ public:
         return a[hi][k - prefixSZ[hi]];
     }
 
+    /**
+     * Modification operator.
+     * Returns the kth value in the structure.
+     *
+     * @param k the 0-based index
+     * @return the kth value in the structure
+     */
     Value operator [](int k) const {
         return select(k);
     }
 
+    /**
+     * Returns the number of elements strictly less than val.
+     *
+     * @param val the value
+     * @return the number of elements strictly less than val.
+     */
     int getRank(const Value val) const {
         pair<int, int> i = lower_bound_ind(val);
         if (i.first == (int) a.size() || a[i.first][i.second] != val) return -1;
         return prefixSZ[i.first] + i.second;
     }
 
+    /**
+     * Checks if the structure is empty.
+     *
+     * @return true if the structure is empty, false otherwise
+     */
     bool isEmpty() const {
         return n == 0;
     }
 
+    /**
+     * Returns the number of values in the structure.
+     *
+     * @return the number of values in the structure
+     */
     int size() const {
         return n;
     }
 
+    /**
+     * Checks if the structure contains the given key.
+     *
+     * @param val the value
+     * @return true if the structure contains val, false otherwise
+     */
     bool contains(const Value val) const {
         pair<int, int> i = lower_bound_ind(val);
         return i.first != (int) a.size() && a[i.first][i.second] == val;
     }
 
+    /**
+     * Returns a pair containing the index and value of the smallest value
+     * less than or equal to val. Identical to ceiling.
+     *
+     * @param val
+     * @return a pair containing the index and value of the smallest value
+     * greater than or equal to val
+     */
     pair<int, Value> lower_bound(const Value val) const {
         pair<int, int> i = lower_bound_ind(val);
         if (i.first == (int) a.size()) throw no_such_element_exception("call to lower_bound() resulted in no such value");
         return {prefixSZ[i.first] + i.second, a[i.first][i.second]};
     }
 
+    /**
+     * Returns a pair containing the index and value of the smallest value
+     * greater than to val.
+     *
+     * @param val
+     * @return a pair containing the index and value of the smallest value
+     * less than or equal to val
+     */
     pair<int, Value> upper_bound(const Value val) const {
         pair<int, int> i = upper_bound_ind(val);
         if (i.first == (int) a.size()) throw no_such_element_exception("call to upper_bound() resulted in no such value");
         return {prefixSZ[i.first] + i.second, a[i.first][i.second]};
     }
 
+    /**
+     * Returns a pair containing the index and value of the largest value
+     * less than or equal to val.
+     *
+     * @param val
+     * @return a pair containing the index and value of the largest value
+     * less than or equal to val
+     */
     pair<int, Value> floor(const Value val) const {
         pair<int, int> i = floor_ind(val);
         if (i.first == -1) throw no_such_element_exception("call to floor() resulted in no such value");
         return {prefixSZ[i.first] + i.second, a[i.first][i.second]};
     }
 
+    /**
+     * Returns a pair containing the index and value of the smallest value
+     * less than or equal to val. Identical to lower_bound.
+     *
+     * @param val
+     * @return a pair containing the index and value of the smallest value
+     * greater than or equal to val
+     */
     pair<int, Value> ceiling(const Value val) const {
         pair<int, int> i = lower_bound_ind(val);
         if (i.first == (int) a.size()) throw no_such_element_exception("call to ceiling() resulted in no such value");
         return {prefixSZ[i.first] + i.second, a[i.first][i.second]};
     }
 
+    /**
+     * Returns all values in the structure.
+     *
+     * @return a vector containing all values in the structure
+     */
     vector<Value> values() const {
         vector<Value> ret;
         for (int i = 0; i < (int) a.size(); i++) {
