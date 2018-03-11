@@ -67,7 +67,7 @@ public:
         assert(n >= 0);
         int sqrtn = (int) sqrt(n);
         for (It i = en; i > st; i -= sqrtn) {
-            a.push_back(vector<Value>(i - min((int) (i - st), sqrtn), i));
+            a.emplace_back(min(i, sqrtn));
             prefixSZ.push_back(0);
         }
         reverse(a.begin(), a.end());
@@ -86,7 +86,7 @@ public:
     void insert(int k, const Value val) {
         assert(0 <= k && k <= n);
         if (n++ == 0) {
-            a.push_back({});
+            a.emplace_back();
             prefixSZ.push_back(0);
         }
         int lo = 0, hi = (int) (a.size()) - 1, mid;
@@ -100,9 +100,8 @@ public:
         else a[hi].insert(a[hi].begin() + k, val);
         int sqrtn = (int) sqrt(n);
         if ((int) a[hi].size() > 2 * sqrtn) {
-            vector<Value> y(a[hi].begin() + sqrtn, a[hi].end());
+            a.emplace(a.begin() + hi + 1, a[hi].begin() + sqrtn, a[hi].end());
             a[hi].resize(sqrtn);
-            a.insert(a.begin() + hi + 1, y);
             prefixSZ.push_back(0);
         }
         for (int i = hi + 1; i < (int) a.size(); i++) {

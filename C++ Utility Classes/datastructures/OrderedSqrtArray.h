@@ -106,7 +106,7 @@ public:
         assert(n >= 0);
         int sqrtn = (int) sqrt(n);
         for (int i = n; i > 0; i -= sqrtn) {
-            a.push_back(vector<Value>(min(i, sqrtn)));
+            a.emplace_back(min(i, sqrtn));
             prefixSZ.push_back(0);
         }
         for (int i = 1; i < (int) a.size(); i++) {
@@ -129,7 +129,7 @@ public:
         assert(is_sorted(st, en, cmp));
         int sqrtn = (int) sqrt(n);
         for (It i = en; i > st; i -= sqrtn) {
-            a.push_back(vector<Value>(i - min((int) (i - st), sqrtn), i));
+            a.emplace_back(i - min((int) (i - st), sqrtn), i);
             prefixSZ.push_back(0);
         }
         reverse(a.begin(), a.end());
@@ -146,16 +146,15 @@ public:
     void insert(const Value val) {
         pair<int, int> i = upper_bound_ind(val);
         if (n++ == 0) {
-            a.push_back({});
+            a.emplace_back();
             prefixSZ.push_back(0);
         }
         if (i.first == (int) a.size()) a[--i.first].push_back(val);
         else a[i.first].insert(a[i.first].begin() + i.second, val);
         int sqrtn = (int) sqrt(n);
         if ((int) a[i.first].size() > 2 * sqrtn) {
-            vector<Value> y(a[i.first].begin() + sqrtn, a[i.first].end());
+            a.emplace(a.begin() + i.first + 1, a[i.first].begin() + sqrtn, a[i.first].end());
             a[i.first].resize(sqrtn);
-            a.insert(a.begin() + i.first + 1, y);
             prefixSZ.push_back(0);
         }
         for (int j = i.first + 1; j < (int) a.size(); j++) {
