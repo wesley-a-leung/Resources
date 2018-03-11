@@ -420,6 +420,18 @@ private:
         if (cmp(x->key, hi)) keyValuePairs(x->right, queue, lo, hi);
     }
 
+    /**
+     * Clears the symbol table.
+     * @param x the subtree
+     */
+    void clear(Node *x) {
+        if (x == nullptr) return;
+        clear(x->left);
+        clear(x->right);
+        delete x;
+        x = nullptr;
+    }
+
 public:
     /**
      * Initializes an empty set.
@@ -427,6 +439,23 @@ public:
     Treap() {
         gen = new mt19937(time(0));
         dis = new uniform_real_distribution<double>(0.0, 1.0);
+    }
+
+    /**
+     * Deletes the symbol table.
+     */
+    ~Treap() {
+        clear(root);
+        delete gen;
+        delete dis;
+    }
+
+    /**
+     * Clears the symbol table.
+     */
+    void clear() {
+        clear(root);
+        root = nullptr;
     }
 
     /**
