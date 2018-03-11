@@ -93,7 +93,7 @@ private:
 
 public:
     /**
-     * Initializes and empty structure.
+     * Initializes an empty structure.
      */
     OrderedSqrtArray() : n(0) {}
 

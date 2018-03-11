@@ -35,7 +35,7 @@ private:
 
 public:
     /**
-     * Initializes and empty structure.
+     * Initializes an empty structure.
      */
     SqrtArray() : n(0) {}
 
