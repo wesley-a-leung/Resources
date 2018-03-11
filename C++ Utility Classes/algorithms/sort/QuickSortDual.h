@@ -37,7 +37,7 @@ template <typename It> void quick_sort_dual(It st, It en) {
     sort(st + gt + 1, en);
 }
 
-template <typename It, class Comparator> void quick_sort_dual(It st, It en, Comparator cmp) {
+template <typename It, typename Comparator> void quick_sort_dual(It st, It en, Comparator cmp) {
     int n = en - st;
     if (n <= 1) return;
     if (n <= INSERTION_SORT_CUTOFF) { // insertion sort

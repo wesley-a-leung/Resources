@@ -56,7 +56,7 @@ template <typename It> void quick_sort(It st, It en) {
     sort(st + i, en);
 }
 
-template <typename It, class Comparator> void quick_sort(It st, It en, Comparator cmp) {
+template <typename It, typename Comparator> void quick_sort(It st, It en, Comparator cmp) {
     int n = en - st;
     if (n <= INSERTION_SORT_CUTOFF) { // insertion sort
         for (int i = 0; i < n; i++) {
