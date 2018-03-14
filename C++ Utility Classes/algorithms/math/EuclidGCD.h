@@ -12,9 +12,10 @@ using namespace std;
  * @param  b the second integer
  * @return greatest common divisor of {@code a} and {@code b}
  */
-int gcd(int a, int b) {
+template <typename T>
+T gcd(T a, T b) {
     while (b != 0) {
-        int temp = b;
+        T temp = b;
         b = a % b;
         a = temp;
     }
@@ -29,7 +30,8 @@ int gcd(int a, int b) {
  * @param  b the second integer
  * @return greatest common divisor of {@code a} and {@codebq}
  */
-int gcdRec(int a, int b) {
+template <typename T>
+T gcdRec(T a, T b) {
     return b == 0 ? abs(a) : gcdRec(b, a % b);
 }
 
@@ -45,14 +47,15 @@ int gcdRec(int a, int b) {
  * @param  y the reference to the multiplier of b
  * @return greatest common divisor of {@code a} and {@code b}
  */
-int gcd(int a, int b, int &x, int &y) {
+template <typename T>
+T gcd(T a, T b, T &x, T &y) {
     if (b == 0) {
         x = 1;
         y = 0;
         return abs(a);
     }
-    int x1, y1;
-    int g = gcd(b, a % b, x1, y1);
+    T x1, y1;
+    T g = gcd(b, a % b, x1, y1);
     y = x1 - (a / b) * y1;
     x = y1;
     return g;
@@ -65,8 +68,9 @@ int gcd(int a, int b, int &x, int &y) {
  * @param n the integer class
  * @return the multiplicative inverse of a in Zn.
  */
-int multInv(int a, int n) {
-    int x, y;
+template <typename T>
+T multInv(T a, T n) {
+    T x, y;
     assert(gcd(a, n, x, y) == 1); // otherwise, there is no inverse
     return (x % n + n) % n;
 }
@@ -79,9 +83,10 @@ int multInv(int a, int n) {
  * @param m the modulus of the system
  * @return a pair containing the integer x and the modulus of the answer.
  */
-pair<int, int> solveCongruence(int a, int c, int m) {
-    int x, y;
-    int g = gcd(a, m, x, y);
+template <typename T>
+pair<T, T> solveCongruence(T a, T c, T m) {
+    T x, y;
+    T g = gcd(a, m, x, y);
     assert(c % g == 0); // otherwise there is no solution
     x = (x % m + m) % m;
     x = (x * c / g) % (m / g);
