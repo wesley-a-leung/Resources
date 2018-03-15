@@ -16,6 +16,7 @@ public:
  *
  * Usage:
  * OrderedSqrtArray<int> arr;
+ * OrderedSqrtArray<int, greater<int>> arr;
  *
  * Insert: O(sqrt(N))
  * Erase: O(sqrt(N))
