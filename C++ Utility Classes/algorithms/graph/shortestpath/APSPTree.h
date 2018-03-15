@@ -1,5 +1,5 @@
-#ifndef ALGORITHMS_GRAPH_SHORTESTPATH_UNDIRECTEDACYCLICAPSP_H_
-#define ALGORITHMS_GRAPH_SHORTESTPATH_UNDIRECTEDACYCLICAPSP_H_
+#ifndef ALGORITHMS_GRAPH_SHORTESTPATH_APSPTREE_H_
+#define ALGORITHMS_GRAPH_SHORTESTPATH_APSPTREE_H_
 
 #include <bits/stdc++.h>
 #include "datastructures/graph/Graph.h"
@@ -12,9 +12,8 @@ const unit INF = numeric_limits<unit>::infinity();
 // rules for INF (infinity): (length of the longest path + length of greatest weight) < INF
 
 /**
- * The {@code UndirectedAcyclicAPSP} class represents a data type for solving
- * the all-pairs shortest paths problem in edge-weighted undirected acyclic
- * graphs. The edge weights can be positive, negative, or zero.
+ * The {@code APSPTree} class represents a data type for solving the all-pairs shortest
+ * paths problem in tree. The edge weights can be positive, negative, or zero.
  *
  * This implementation uses a lowest common ancestor algorithm that performs queries
  * in log <em>V</em> time.
@@ -25,7 +24,7 @@ const unit INF = numeric_limits<unit>::infinity();
  * @author Wesley Leung
  *
  */
-class UndirectedAcyclicAPSP {
+class APSPTree {
 private:
     unit *distTo; // stores the distance from an arbitrary root
     WeightedLCA *LCA;
@@ -56,7 +55,7 @@ private:
     }
 
 public:
-    UndirectedAcyclicAPSP(WeightedGraph *G) {
+    APSPTree(WeightedGraph *G) {
         distTo = new unit[G->getV()];
         LCA = new WeightedLCA(G);
         bfs(G, 0);
@@ -75,4 +74,4 @@ public:
     }
 };
 
-#endif /* ALGORITHMS_GRAPH_SHORTESTPATH_UNDIRECTEDACYCLICAPSP_H_ */
+#endif /* ALGORITHMS_GRAPH_SHORTESTPATH_APSPTREE_H_ */
