@@ -19,7 +19,7 @@ public:
  *
  * Insert: O(sqrt(N))
  * Erase: O(sqrt(N))
- * At, Accessor: O(log(N))
+ * At, Accessor, Mutator: O(log(N))
  * Lower Bound, Upper Bound, Floor, Ceiling: O(log(N))
  * Empty, Size: O(1)
  * Values: O(N)
@@ -135,7 +135,7 @@ public:
     }
 
     /**
-     * Accessor operator.
+     * Mutator operator.
      *
      * @param k the 0-based index
      * @return a reference to the kth element in the structure
@@ -169,7 +169,7 @@ public:
     }
 
     /**
-     * Modification operator.
+     * Accessor operator.
      * Returns the kth value in the structure.
      *
      * @param k the 0-based index
