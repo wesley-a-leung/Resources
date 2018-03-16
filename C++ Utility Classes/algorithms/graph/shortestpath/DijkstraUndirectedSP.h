@@ -21,6 +21,7 @@ void dijkstraSP(WeightedGraph *G, int s) {
     edgeTo = new WeightedEdge *[G->getV()];
     for (int v = 0; v < G->getV(); v++) {
         distTo[v] = INF;
+        edgeTo[v] = nullptr;
     }
     distTo[s] = 0;
     PQ.push({distTo[s], s});

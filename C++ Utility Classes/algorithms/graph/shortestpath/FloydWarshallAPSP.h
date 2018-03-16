@@ -20,6 +20,9 @@ void floydWarshallAPSP(int V, unit **adj) {
     for (int i = 0; i < V; i++) {
         distTo[i] = new unit[V];
         edgeTo[i] = new DirectedWeightedEdge *[V];
+        for (int j = 0; j < V; j++) {
+            edgeTo[i][j] = nullptr;
+        }
     }
 
     // initialize distances to infinity
@@ -33,7 +36,7 @@ void floydWarshallAPSP(int V, unit **adj) {
     for (int v = 0; v < V; v++) {
         for (int w = 0; w < V; w++) {
             if (adj[v][w] == 0) continue;
-            distTo[v][w] = adj[v][w];
+            distTo[v][w] = min(distTo[v][w], adj[v][w]);
             edgeTo[v][w] = new DirectedWeightedEdge(v, w, adj[v][w]);
         }
         // in case of self-loops

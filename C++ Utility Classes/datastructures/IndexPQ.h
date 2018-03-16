@@ -105,6 +105,10 @@ public:
         pq = new Index[N + 1];
     }
 
+    ~IndexPQ() {
+        delete[](pq);
+    }
+
     /**
      * Returns true if this priority queue is empty.
      *

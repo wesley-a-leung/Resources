@@ -22,6 +22,7 @@ void spfa(WeightedDigraph *G, int s) {
     inQueue = new bool[G->getV()];
     for (int v = 0; v < G->getV(); v++) {
         distTo[v] = INF;
+        edgeTo[v] = nullptr;
         inQueue[v] = false;
     }
     distTo[s] = 0;

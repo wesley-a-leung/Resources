@@ -21,6 +21,9 @@ void johnsonAPSP(WeightedDigraph *G) {
     for (int i = 0; i < G->getV(); i++) {
         distTo[i] = new unit[G->getV()];
         edgeTo[i] = new DirectedWeightedEdge *[G->getV()];
+        for (int j = 0; j < G->getV(); j++) {
+            edgeTo[i][j] = nullptr;
+        }
     }
 
     vector<DirectedWeightedEdge*> edges = G->edges();
@@ -55,18 +58,18 @@ void johnsonAPSP(WeightedDigraph *G) {
 
     // dijkstra from each node using the reweighted graph
     for (int s = 0; s < G->getV(); s++) {
-        priority_queue<pair<unit, int>, vector<pair<unit, int>> , greater<pair<unit, int>>> pq;
+        priority_queue<pair<unit, int>, vector<pair<unit, int>> , greater<pair<unit, int>>> PQ;
         distTo[s][s] = 0;
-        pq.push({distTo[s][s], s});
-        while (!pq.empty()) {
-            int v = pq.top().second;
-            pq.pop();
+        PQ.push({distTo[s][s], s});
+        while (!PQ.empty()) {
+            int v = PQ.top().second;
+            PQ.pop();
             for (DirectedWeightedEdge *e : G->adj(v)) {
                 int w = e->to();
                 if (distTo[s][w] > distTo[s][v] + e->getWeight() + h[v] - h[w]) {
                     distTo[s][w] = distTo[s][v] + e->getWeight() + h[v] - h[w];
                     edgeTo[s][w] = e;
-                    pq.push({distTo[s][w], w});
+                    PQ.push({distTo[s][w], w});
                 }
             }
         }
