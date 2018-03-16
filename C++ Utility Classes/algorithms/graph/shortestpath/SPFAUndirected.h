@@ -38,7 +38,7 @@ void spfa(WeightedGraph *G, int s) {
                 distTo[w] = distTo[v] + e->getWeight();
                 edgeTo[w] = e;
                 if (!inQueue[w]) {
-                    if (!q.empty() && distTo[w] < distTo[q.front()]) q.push_front(w);
+                    if (!q.empty() && distTo[w] <= distTo[q.front()]) q.push_front(w);
                     else q.push_back(w);
                     inQueue[w] = true;
                 }
