@@ -19,6 +19,7 @@ void bellmanFordSP(WeightedDigraph *G, int s) {
     edgeTo = new DirectedWeightedEdge *[G->getV()];
     for (int v = 0; v < G->getV(); v++) {
         distTo[v] = INF;
+        edgeTo[v] = nullptr;
     }
     distTo[s] = 0;
     vector<DirectedWeightedEdge*> edges = G->edges();
@@ -43,6 +44,7 @@ void bellmanFordSP(int V, vector<DirectedWeightedEdge*> &edges, int s) {
     edgeTo = new DirectedWeightedEdge *[V];
     for (int v = 0; v < V; v++) {
         distTo[v] = INF;
+        edgeTo[v] = nullptr;
     }
     distTo[s] = 0;
     for (int i = 0; i < V - 1; i++) {

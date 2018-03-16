@@ -88,6 +88,12 @@ public:
         for (int i = 0; i < maxN; i++) qp[i] = -1;
     }
 
+    ~ArrayIndexPQ() {
+        delete[](pq);
+        delete[](qp);
+        delete[](keys);
+    }
+
     /**
      * Returns true if this priority queue is empty.
      *

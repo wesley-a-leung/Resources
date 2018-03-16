@@ -22,6 +22,7 @@ void dijkstraSP(WeightedGraph *G, int s) {
     marked = new bool[G->getV()];
     for (int v = 0; v < G->getV(); v++) {
         distTo[v] = INF;
+        edgeTo[v] = nullptr;
         marked[v] = false;
     }
     distTo[s] = 0;
