@@ -28,6 +28,10 @@ public:
         }
     }
 
+    ~FenwickTreeBinarySearch() {
+        delete[](array);
+    }
+
     /**
      * Range Sum query from 1 to ind
      * ind is 1-indexed
