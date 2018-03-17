@@ -1,18 +1,15 @@
-#ifndef ALGORITHMS_GRAPH_LCA_LCADP_H_
-#define ALGORITHMS_GRAPH_LCA_LCADP_H_
+#ifndef ALGORITHMS_GRAPH_LCA_LCA_DP_H_
+#define ALGORITHMS_GRAPH_LCA_LCA_DP_H_
 
 #include <bits/stdc++.h>
 #include "datastructures/graph/Graph.h"
-
 using namespace std;
 
 /**
- * The {@code LCADP} class represents a data structure for finding the
- * lowest common ancestor of 2 nodes in an acyclic graph using dynamic programming.
+ * The {@code LCA} class represents a data structure for finding the
+ * lowest common ancestor of 2 nodes in a tree using dynamic programming.
  * The constructor takes time proportional to V + E and afterwards,
  * the {@code lca()} method takes time proportional to log(V) to find the lowest common ancestor.
- *
- * @author Wesley Leung
  */
 class LCA {
 private:
@@ -57,7 +54,7 @@ public:
     int lca(int v, int w) {
         if (depth[v] < depth[w]) swap(v, w);
         for (int i = LGV - 1; i >= 0; i--) {
-            if (depth[parent[v][i]] >= depth[w]) v = parent[v][i];
+            if (parent[v][i] != -1 && depth[parent[v][i]] >= depth[w]) v = parent[v][i];
         }
         if (v == w) return v;
         for (int i = LGV - 1; i >= 0; i--) {
@@ -70,4 +67,4 @@ public:
     }
 };
 
-#endif /* ALGORITHMS_GRAPH_LCA_LCADP_H_ */
+#endif /* ALGORITHMS_GRAPH_LCA_LCA_DP_H_ */
