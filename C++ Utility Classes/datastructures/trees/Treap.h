@@ -155,14 +155,16 @@ private:
     }
 
     /**
-     * Removes the smallest key from the given subtree.
+     * Removes the smallest value from the given subtree.
      *
      * @param x the subtree
      * @return the updated subtree
      */
     void removeMin(Node *&x) {
         if (nullptr == x->left) {
+            Node *y = x;
             x = x->right;
+            delete y;
             return;
         }
         removeMin(x->left);
@@ -170,14 +172,16 @@ private:
     }
 
     /**
-     * Removes the largest key from the given subtree.
+     * Removes the largest value from the given subtree.
      *
      * @param x the subtree
      * @return the updated subtree
      */
     void removeMax(Node *&x) {
         if (nullptr == x->right) {
+            Node *y = x;
             x = x->left;
+            delete y;
             return;
         }
         removeMax(x->right);
@@ -214,7 +218,11 @@ private:
      * @param key the key to be removed
      */
     void remove(Node *&x, Key key) {
-        if (!cmp(key, x->key) && !cmp(x->key, key)) merge(x, x->left, x->right);
+        if (!cmp(key, x->key) && !cmp(x->key, key)) {
+            Node *y = x;
+            merge(x, x->left, x->right);
+            delete x;
+        }
         else remove(cmp(key, x->key) ? x->left : x->right, key);
         update(x);
     }
