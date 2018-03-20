@@ -11,10 +11,10 @@ const unit EPS = 0;
 class PushRelabelMaxFlowCompact {
 private:
     struct Edge {
-        int dest;
+        int to;
         unit cap;
         int next;
-        Edge(int dest, unit cost, int next) : dest(dest), cap(cost), next(next) {}
+        Edge(int to, unit cap, int next) : to(to), cap(cap), next(next) {}
     };
 
     int V;
@@ -44,7 +44,7 @@ public:
         queue<int> q;
         height[s] = V;
         for (int i = last[s]; i != -1; i = e[i].next) {
-            int v = e[i].dest;
+            int v = e[i].to;
             excess[s] -= e[i].cap;
             excess[v] += e[i].cap;
             e[i ^ 1].cap = e[i].cap;
@@ -59,7 +59,7 @@ public:
             int tempHeight = 2 * V;
             for (int i = last[v]; i != -1; i = e[i].next) {
                 if (abs(excess[v]) <= EPS) break;
-                int w = e[i].dest;
+                int w = e[i].to;
                 if (e[i].cap > EPS) {
                     if (height[v] > height[w]) {
                         unit tempFlow = min(excess[v], e[i].cap);

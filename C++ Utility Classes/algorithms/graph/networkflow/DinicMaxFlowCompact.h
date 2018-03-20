@@ -11,10 +11,10 @@ const unit EPS = 0;
 class DinicMaxFlow {
 private:
     struct Edge {
-        int dest;
+        int to;
         unit cap;
         int next;
-        Edge(int dest, unit cost, int next) : dest(dest), cap(cost), next(next) {}
+        Edge(int to, unit cap, int next) : to(to), cap(cap), next(next) {}
     };
 
     int N, s = 0, t = 0;
@@ -30,9 +30,9 @@ private:
             int v = q.front();
             q.pop();
             for (int i = last[v]; i != -1; i = e[i].next) {
-                if (e[i].cap > EPS && level[e[i].dest] == -1) {
-                    level[e[i].dest] = level[v] + 1;
-                    q.push(e[i].dest);
+                if (e[i].cap > EPS && level[e[i].to] == -1) {
+                    level[e[i].to] = level[v] + 1;
+                    q.push(e[i].to);
                 }
             }
         }
@@ -43,8 +43,8 @@ private:
         if (v == t) return flow;
         unit ret = 0;
         for (int i = last[v]; i != -1; i = e[i].next) {
-            if (e[i].cap > EPS && level[e[i].dest] == level[v] + 1) {
-                unit res = dfs(e[i].dest, min(flow, e[i].cap));
+            if (e[i].cap > EPS && level[e[i].to] == level[v] + 1) {
+                unit res = dfs(e[i].to, min(flow, e[i].cap));
                 ret += res;
                 e[i].cap -= res;
                 e[i ^ 1].cap += res;
