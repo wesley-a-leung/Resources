@@ -12,7 +12,8 @@ public:
 
 /**
  * Sqrt Array:
- * Decomposes array into blocks of size sqrt(n).
+ * Decomposes the array into blocks of size sqrt(n) multiplied by a factor.
+ * The factor should be between 1 and 10, and should be smaller for large N.
  *
  * Usage:
  * SqrtArray<int> arr;
@@ -28,21 +29,24 @@ template <typename Value>
 struct SqrtArray {
 private:
     int n; // the size of the array
+    const int SCALE_FACTOR; // the scale factor of sqrt(n)
     vector<vector<Value>> a; // the array
     vector<int> prefixSZ; // the prefix array of the sizes of the blocks
 
 public:
     /**
      * Initializes an empty structure.
+     * @param SCALE_FACTOR scales the value of sqrt(n) by this value
      */
-    SqrtArray() : n(0) {}
+    SqrtArray(const int SCALE_FACTOR = 1) : n(0), SCALE_FACTOR(SCALE_FACTOR) {}
 
     /**
      * Initializes the structure with an initial size.
+     * @param SCALE_FACTOR scales the value of sqrt(n) by this value
      *
      * @param n the initial size
      */
-    SqrtArray(const int n) : n(n) {
+    SqrtArray(const int n, const int SCALE_FACTOR = 1) : n(n), SCALE_FACTOR(SCALE_FACTOR) {
         assert(n >= 0);
         int sqrtn = (int) sqrt(n);
         for (int i = n; i > 0; i -= sqrtn) {
@@ -60,10 +64,10 @@ public:
      *
      * @param st the starting iterator (inclusive)
      * @param en the ending iterator (exclusive)
+     * @param SCALE_FACTOR scales the value of sqrt(n) by this value
      */
     template <typename It>
-    SqrtArray(const It st, const It en) {
-        n = en - st;
+    SqrtArray(const It st, const It en, const int SCALE_FACTOR = 1) : n(en - st), SCALE_FACTOR(SCALE_FACTOR) {
         assert(n >= 0);
         int sqrtn = (int) sqrt(n);
         for (It i = en; i > st; i -= sqrtn) {
@@ -446,6 +450,25 @@ public:
             }
         }
         return ret;
+    }
+
+    /**
+     * Sorts the structure by creating an auxiliary array.
+     */
+    void sort() {
+        vector<Value> b;
+        for (int i = 0; i < (int) a.size(); i++) {
+            for (int j = 0; j < (int) a[i].size(); j++) {
+                b.push_back(a[i][j]);
+            }
+        }
+        sort(b.begin(), b.end());
+        int k = 0;
+        for (int i = 0; i < (int) a.size(); i++) {
+            for (int j = 0; j < (int) a[i].size(); j++) {
+                a[i][j] = b[k++];
+            }
+        }
     }
 };
 
