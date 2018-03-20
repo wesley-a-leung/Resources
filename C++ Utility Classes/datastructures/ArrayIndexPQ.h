@@ -10,12 +10,6 @@ public:
     no_such_element_exception(string message): runtime_error(message){}
 };
 
-class illegal_argument_exception: public runtime_error {
-public:
-    illegal_argument_exception(): runtime_error("Illegal argument exception"){}
-    illegal_argument_exception(string message): runtime_error(message){}
-};
-
 /**
  *  The {@code ArrayIndexPQ} class represents an indexed priority queue of
  *  generic keys.
@@ -130,12 +124,12 @@ public:
       *
       * @param  i an index
       * @param  key the key to associate with index {@code i}
-      * @throws illegal_argument_exception if there already is an item
+      * @throws invalid_argument if there already is an item
       *         associated with index {@code i}
       */
      void insert(int i, Key key) {
          assert(0 <= i && i < maxN);
-         if (contains(i)) throw illegal_argument_exception("index is already in the priority queue");
+         if (contains(i)) throw invalid_argument("index is already in the priority queue");
          n++;
          qp[i] = n;
          pq[n] = i;

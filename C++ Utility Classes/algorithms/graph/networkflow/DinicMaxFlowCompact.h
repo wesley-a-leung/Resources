@@ -12,9 +12,9 @@ class DinicMaxFlow {
 private:
     struct Edge {
         int dest;
-        unit flow;
+        unit cap;
         int next;
-        Edge(int dest, unit cost, int next) : dest(dest), flow(cost), next(next) {}
+        Edge(int dest, unit cost, int next) : dest(dest), cap(cost), next(next) {}
     };
 
     int N, s = 0, t = 0;
@@ -30,7 +30,7 @@ private:
             int v = q.front();
             q.pop();
             for (int i = last[v]; i != -1; i = e[i].next) {
-                if (e[i].flow > EPS && level[e[i].dest] == -1) {
+                if (e[i].cap > EPS && level[e[i].dest] == -1) {
                     level[e[i].dest] = level[v] + 1;
                     q.push(e[i].dest);
                 }
@@ -43,11 +43,11 @@ private:
         if (v == t) return flow;
         unit ret = 0;
         for (int i = last[v]; i != -1; i = e[i].next) {
-            if (e[i].flow > EPS && level[e[i].dest] == level[v] + 1) {
-                unit res = dfs(e[i].dest, min(flow, e[i].flow));
+            if (e[i].cap > EPS && level[e[i].dest] == level[v] + 1) {
+                unit res = dfs(e[i].dest, min(flow, e[i].cap));
                 ret += res;
-                e[i].flow -= res;
-                e[i ^ 1].flow += res;
+                e[i].cap -= res;
+                e[i ^ 1].cap += res;
                 flow -= res;
                 if (abs(flow) <= EPS) break;
             }
@@ -60,10 +60,10 @@ public:
         fill(last.begin(), last.end(), -1);
     }
 
-    void addEdge(int v, int w, int vw, int wv = 0) {
-        e.push_back(Edge(w, vw, last[v]));
+    void addEdge(int v, int w, unit vw, unit wv = 0) {
+        e.emplace_back(w, vw, last[v]);
         last[v] = ((int) e.size()) - 1;
-        e.push_back(Edge(v, wv, last[w]));
+        e.emplace_back(v, wv, last[w]);
         last[w] = ((int) e.size()) - 1;
     }
 
