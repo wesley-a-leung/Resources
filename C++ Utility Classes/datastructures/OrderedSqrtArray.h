@@ -12,7 +12,8 @@ public:
 
 /**
  * Ordered Sqrt Array:
- * Decomposes arary into blocks of size sqrt(n).
+ * Decomposes the array into blocks of size sqrt(n) multiplied by a factor.
+ * The factor should be between 1 and 10, and should be smaller for large N.
  *
  * Usage:
  * OrderedSqrtArray<int> arr;
@@ -31,6 +32,7 @@ struct OrderedSqrtArray {
 private:
     Comparator cmp; // the comparator
     int n; // the size of the array
+    const int SCALE_FACTOR; // the scale factor of sqrt(n)
     vector<vector<Value>> a; // the array
     vector<int> prefixSZ; // the prefix array of the sizes of the blocks
 
@@ -94,8 +96,9 @@ private:
 public:
     /**
      * Initializes an empty structure.
+     * @param SCALE_FACTOR scales the value of sqrt(n) by this value
      */
-    OrderedSqrtArray() : n(0) {}
+    OrderedSqrtArray(const int SCALE_FACTOR = 1) : n(0), SCALE_FACTOR(SCALE_FACTOR) {}
 
     /**
      * Initializes the structures with the elements between st and en
@@ -104,13 +107,13 @@ public:
      *
      * @param st the starting iterator (inclusive)
      * @param en the ending iterator (exclusive)
+     * @param SCALE_FACTOR scales the value of sqrt(n) by this value
      */
     template <typename It>
-    OrderedSqrtArray(const It st, const It en) {
-        n = en - st;
+    OrderedSqrtArray(const It st, const It en, const int SCALE_FACTOR = 1) : n(en - st), SCALE_FACTOR(SCALE_FACTOR) {
         assert(n >= 0);
         assert(is_sorted(st, en, cmp));
-        int sqrtn = (int) sqrt(n);
+        int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
         for (It i = en; i > st; i -= sqrtn) {
             a.emplace_back(i - min((int) (i - st), sqrtn), i);
             prefixSZ.push_back(0);
