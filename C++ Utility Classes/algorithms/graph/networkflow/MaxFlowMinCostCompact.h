@@ -21,11 +21,11 @@ const costUnit COST_SMALL_INF = (1 << 25);
 class MaxFlowMinCost {
 private:
     struct Edge {
-        int orig, dest;
+        int from, to;
         costUnit origCost, cost;
-        flowUnit flow;
-        int last;
-        Edge(int orig, int dest, costUnit cost, flowUnit flow, int last) : orig(orig), dest(dest), origCost(cost), cost(cost), flow(flow), last(last) {}
+        flowUnit cap;
+        int next;
+        Edge(int from, int to, costUnit cost, flowUnit cap, int next) : from(from), to(to), origCost(cost), cost(cost), cap(cap), next(next) {}
     };
 
     struct Vertex {
@@ -42,7 +42,7 @@ private:
 
     void reduceCost() {
         for (int i = 0; i < (int) e.size(); i += 2) {
-            e[i].cost += phi[e[i].orig] - phi[e[i].dest];
+            e[i].cost += phi[e[i].from] - phi[e[i].to];
             e[i ^ 1].cost = 0;
         }
     }
@@ -52,7 +52,7 @@ private:
         phi[src] = 0;
         for (int j = 0; j < N - 1; j++)
             for (int i = 0; i < (int) e.size(); i++)
-                if (e[i].flow > FLOW_EPS) phi[e[i].dest] = min(phi[e[i].dest], phi[e[i].orig] + e[i].cost);
+                if (e[i].cap > FLOW_EPS) phi[e[i].to] = min(phi[e[i].to], phi[e[i].from] + e[i].cost);
     }
 
     bool dijkstra() {
@@ -65,12 +65,12 @@ private:
         while (!pq.empty()) {
             Vertex cur = pq.top();
             pq.pop();
-            for (int next = last[cur.index]; next != -1; next = e[next].last) {
-                if (abs(e[next].flow) <= FLOW_EPS || dist[e[next].dest] <= dist[cur.index] + e[next].cost) continue;
-                dist[e[next].dest] = dist[cur.index] + e[next].cost;
-                prev[e[next].dest] = cur.index;
-                index[e[next].dest] = next;
-                pq.push({e[next].dest, dist[e[next].dest]});
+            for (int next = last[cur.index]; next != -1; next = e[next].next) {
+                if (abs(e[next].cap) <= FLOW_EPS || dist[e[next].to] <= dist[cur.index] + e[next].cost) continue;
+                dist[e[next].to] = dist[cur.index] + e[next].cost;
+                prev[e[next].to] = cur.index;
+                index[e[next].to] = next;
+                pq.push({e[next].to, dist[e[next].to]});
             }
         }
         return dist[sink] != COST_LARGE_INF;
@@ -99,14 +99,14 @@ public:
             flowUnit aug = FLOW_INF;
             int cur = sink;
             while (prev[cur] != -1) {
-                aug = min(aug, e[index[cur]].flow);
+                aug = min(aug, e[index[cur]].cap);
                 cur = prev[cur];
             }
             flow += aug;
             cur = sink;
             while (prev[cur] != -1) {
-                e[index[cur]].flow -= aug;
-                e[index[cur] ^ 1].flow += aug;
+                e[index[cur]].cap -= aug;
+                e[index[cur] ^ 1].cap += aug;
                 cost += aug * e[index[cur]].origCost;
                 cur = prev[cur];
             }
