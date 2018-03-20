@@ -77,7 +77,7 @@ public:
                             q.push(w);
                         }
                     } else {
-                        tempHeight = min(height[v], tempHeight);
+                        tempHeight = min(height[w], tempHeight);
                     }
                 }
             }
