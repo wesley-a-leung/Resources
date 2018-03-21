@@ -114,11 +114,10 @@ public:
         assert(n >= 0);
         assert(is_sorted(st, en, cmp));
         int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
-        for (It i = en; i > st; i -= sqrtn) {
-            a.emplace_back(i - min((int) (i - st), sqrtn), i);
+        for (It i = st; i < en; i += sqrtn) {
+            a.emplace_back(i, min(i + sqrtn, st + n));
             prefixSZ.push_back(0);
         }
-        reverse(a.begin(), a.end());
         for (int i = 1; i < (int) a.size(); i++) {
             prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
         }
@@ -137,7 +136,7 @@ public:
         }
         if (i.first == (int) a.size()) a[--i.first].push_back(val);
         else a[i.first].insert(a[i.first].begin() + i.second, val);
-        int sqrtn = (int) sqrt(n);
+        int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
         if ((int) a[i.first].size() > 2 * sqrtn) {
             a.emplace(a.begin() + i.first + 1, a[i.first].begin() + sqrtn, a[i.first].end());
             a[i.first].resize(sqrtn);
