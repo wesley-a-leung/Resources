@@ -48,9 +48,9 @@ public:
      */
     SqrtArray(const int n, const int SCALE_FACTOR = 1) : n(n), SCALE_FACTOR(SCALE_FACTOR) {
         assert(n >= 0);
-        int sqrtn = (int) sqrt(n);
-        for (int i = n; i > 0; i -= sqrtn) {
-            a.push_back(vector<Value>(min(i, sqrtn)));
+        int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
+        for (int i = 0; i < n; i += sqrtn) {
+            a.push_back(vector<Value>(min(sqrtn, n - i)));
             prefixSZ.push_back(0);
         }
         for (int i = 1; i < (int) a.size(); i++) {
@@ -69,12 +69,11 @@ public:
     template <typename It>
     SqrtArray(const It st, const It en, const int SCALE_FACTOR = 1) : n(en - st), SCALE_FACTOR(SCALE_FACTOR) {
         assert(n >= 0);
-        int sqrtn = (int) sqrt(n);
-        for (It i = en; i > st; i -= sqrtn) {
-            a.emplace_back(min(i, sqrtn));
+        int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
+        for (It i = st; i < en; i += sqrtn) {
+            a.emplace_back(i, min(i + sqrtn, st + n));
             prefixSZ.push_back(0);
         }
-        reverse(a.begin(), a.end());
         for (int i = 1; i < (int) a.size(); i++) {
             prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
         }
@@ -102,7 +101,7 @@ public:
         k -= prefixSZ[hi];
         if (hi == -1) a[hi += (int) a.size()].push_back(val);
         else a[hi].insert(a[hi].begin() + k, val);
-        int sqrtn = (int) sqrt(n);
+        int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
         if ((int) a[hi].size() > 2 * sqrtn) {
             a.emplace(a.begin() + hi + 1, a[hi].begin() + sqrtn, a[hi].end());
             a[hi].resize(sqrtn);
