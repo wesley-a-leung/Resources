@@ -19,8 +19,6 @@ long long divMod(long long i, long long j, long long p) {
  * FenwickTree supporting range updates with updates in the form of
  * adding v, 2^k * v, 3^k * v, ... to the interval [l, r], and range queries.
  * Memory usage:  O(kn)
- *
- * @author Wesley Leung
  */
 struct FenwickTreePolynomial {
 private:

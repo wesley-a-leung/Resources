@@ -8,8 +8,6 @@ using namespace std;
  * FenwickTree supporting point updates and range queries, as well as
  * support for lower_bound and upper_bound binary searching the cumulative sum.
  * Memory usage:  O(n)
- *
- * @author Wesley Leung
  */
 template <typename T>
 struct FenwickTreeBinarySearch {

@@ -7,8 +7,6 @@ using namespace std;
 /**
  * FenwickTree supporting range updates and range queries.
  * Memory usage:  O(2n)
- *
- * @author Wesley Leung
  */
 template <typename T>
 struct FenwickTreeRange {
@@ -76,8 +74,8 @@ public:
     void update(int a, int b, T value) {
         update(array1, a, value);
         update(array1, b + 1, -value);
-        update(array2, a, value * (a - 1));
-        update(array2, b + 1, -value * b);
+        update(array2, a, value * ((T) a - 1));
+        update(array2, b + 1, -value * (T) b);
     }
 
     int getSize() {
