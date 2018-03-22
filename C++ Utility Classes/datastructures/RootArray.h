@@ -211,6 +211,7 @@ public:
         --n;
         a.front()->pop_front();
         if (a.front()->empty()) {
+            delete a.front();
             a.erase(a.begin());
             prefixSZ.pop_back();
         }
@@ -227,6 +228,7 @@ public:
         --n;
         a.back()->pop_back();
         if (a.back()->empty()) {
+            delete a.back();
             a.pop_back();
             prefixSZ.pop_back();
         }
