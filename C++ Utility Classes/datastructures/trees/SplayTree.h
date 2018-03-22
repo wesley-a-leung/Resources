@@ -159,7 +159,7 @@ private:
 public:
     SplayTree() {}
 
-    ~SplayTree() {
+    virtual ~SplayTree() {
         clear(root);
     }
 

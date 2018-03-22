@@ -28,7 +28,7 @@ public:
         }
     }
 
-    ~FenwickTreeBinarySearch() {
+    virtual ~FenwickTreeBinarySearch() {
         delete[](array);
     }
 

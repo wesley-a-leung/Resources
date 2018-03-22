@@ -144,7 +144,7 @@ private:
 public:
     SplayTreeSet() {}
 
-    ~SplayTreeSet() {
+    virtual ~SplayTreeSet() {
         clear(root);
     }
 

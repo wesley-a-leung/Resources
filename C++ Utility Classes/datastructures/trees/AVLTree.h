@@ -367,7 +367,7 @@ public:
     /**
      * Deletes the symbol table.
      */
-    ~AVLTree() {
+    virtual ~AVLTree() {
         clear(root);
     }
 

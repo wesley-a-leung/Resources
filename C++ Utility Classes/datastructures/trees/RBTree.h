@@ -396,7 +396,7 @@ public:
     /**
      * Deletes the symbol table.
      */
-    ~RBTree() {
+    virtual ~RBTree() {
         clear(root);
     }
 
