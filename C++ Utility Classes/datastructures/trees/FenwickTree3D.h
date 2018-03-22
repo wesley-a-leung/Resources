@@ -6,8 +6,6 @@ using namespace std;
 
 /**
  * Memory usage:  O(nmp)
- *
- * @author Wesley Leung
  */
 template <typename T>
 struct FenwickTree3D {

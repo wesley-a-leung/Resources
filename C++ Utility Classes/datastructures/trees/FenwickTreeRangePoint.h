@@ -7,8 +7,6 @@ using namespace std;
 /**
  * FenwickTree supporting range updates and point queries.
  * Memory usage:  O(n)
- *
- * @author Wesley Leung
  */
 template <typename T>
 struct FenwickTreeRangePoint {

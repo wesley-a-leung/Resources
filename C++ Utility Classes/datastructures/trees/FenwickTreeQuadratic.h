@@ -8,8 +8,6 @@ using namespace std;
  * FenwickTree supporting range updates with updates in the form of
  * adding v, 2v, 3v, ... to the interval [l, r], and range queries.
  * Memory usage:  O(3n)
- *
- * @author Wesley Leung
  */
 template <typename T>
 struct FenwickTreeQuadratic {
@@ -47,7 +45,7 @@ public:
      * @return sum
      */
     T rsq(int ind) {
-        return (rsq(quad, ind) * ind * ind + rsq(lin, ind) * ind + rsq(con, ind)) / 2;
+        return (rsq(quad, ind) * (T) ind * (T) ind + rsq(lin, ind) * (T) ind + rsq(con, ind)) / (T) 2;
     }
 
     /**
@@ -79,11 +77,11 @@ public:
         int s = a - 1, len = b - a + 1;
         update(quad, a, value);
         update(quad, b + 1, -value);
-        update(lin, a, value * (1 - 2 * s));
-        update(lin, b + 1, -value * (1 - 2 * s));
-        update(con, a, value * (s * s - s));
-        update(con, b + 1, -value * ((s * s - s)));
-        update(con, b + 1, value * (len * (len + 1)));
+        update(lin, a, value * ((T) 1 - (T) 2 * (T) s));
+        update(lin, b + 1, -value * ((T) 1 - (T) 2 * (T) s));
+        update(con, a, value * ((T) s * (T) s - (T) s));
+        update(con, b + 1, -value * (((T) s * (T) s - (T) s)));
+        update(con, b + 1, value * ((T) len * (T) (len + 1)));
     }
 
     int getSize() {

@@ -8,8 +8,6 @@ using namespace std;
 /**
  * FenwickTree supporting point updates and range queries
  * Memory usage:  O(n)
- *
- * @author Wesley Leung
  */
 template <typename T>
 struct FenwickTree {
