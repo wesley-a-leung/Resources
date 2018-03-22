@@ -67,7 +67,7 @@ private:
         int lo = 0, hi = ((int) a.size()) - 1, mid;
         while (lo <= hi) {
             mid = lo + (hi - lo) / 2;
-            if (cmp(a[mid]->front(), val)) hi = mid - 1;
+            if (cmp(val, a[mid]->front())) hi = mid - 1;
             else lo = mid + 1;
         }
         return hi;
@@ -317,7 +317,7 @@ public:
      */
     pair<int, Value> floor(const Value val) const {
         int i = floor_ind(val);
-        if (i == (int) a.size()) throw no_such_element_exception("call to floor() resulted in no such value");
+        if (i == -1) throw no_such_element_exception("call to floor() resulted in no such value");
         pair<int, Value> j = a[i]->floor(val);
         return {prefixSZ[i] + j.first, j.second};
     }
