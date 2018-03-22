@@ -83,7 +83,7 @@ private:
 public:
     OrderStatisticSegmentTree(T MAXVAL) : MAXVAL(MAXVAL) {}
 
-    ~OrderStatisticSegmentTree() {
+    virtual ~OrderStatisticSegmentTree() {
         clear(root);
         root = nullptr;
     }

@@ -452,7 +452,7 @@ public:
     /**
      * Deletes the symbol table.
      */
-    ~Treap() {
+    virtual ~Treap() {
         clear(root);
         delete gen;
         delete dis;

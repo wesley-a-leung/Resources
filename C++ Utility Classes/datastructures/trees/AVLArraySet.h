@@ -369,7 +369,7 @@ public:
     /**
      * Deletes the symbol table.
      */
-    ~AVLArraySet() {
+    virtual ~AVLArraySet() {
         delete[](VAL);
         delete[](HT);
         delete[](SZ);
