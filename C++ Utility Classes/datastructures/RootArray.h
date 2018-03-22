@@ -1,5 +1,5 @@
-#ifndef DATASTRUCTURES_SQRTARRAY_H_
-#define DATASTRUCTURES_SQRTARRAY_H_
+#ifndef DATASTRUCTURES_ROOTARRAY_H_
+#define DATASTRUCTURES_ROOTARRAY_H_
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -11,16 +11,17 @@ public:
 };
 
 /**
- * Sqrt Array:
- * Decomposes the array into blocks of size sqrt(n) multiplied by a factor.
+ * Root Array:
+ * Decomposes the array into containers of size N ^ (1 / R) multiplied by a factor.
  * The factor should be between 1 and 10, and should be smaller for large N.
  *
  * Usage:
- * SqrtArray<int> arr;
+ * RootArray<3, int, SqrtArray<int>> arr;
+ * RootArray<4, int, RootArray<3, int, SqrtArray<int>>> arr;
  *
- * Insert: O(sqrt(N) + log(N))
- * Erase: O(sqrt(N) + log(N))
- * Push Front, Pop Front: O(sqrt(N))
+ * Insert: O(N ^ (1 / R) + log(N))
+ * Erase: O(N ^ (1 / R) + log(N))
+ * Push Front, Pop Front: O(N ^ (1 / R))
  * Push Back, Pop Back: O(1) ammortized
  * At, Accessor, Mutator: O(log(N))
  * Front, Back: O(1)
@@ -28,32 +29,32 @@ public:
  * Empty, Size: O(1)
  * Values: O(N)
  */
-template <typename Value>
-struct SqrtArray {
+template <const int R, typename Value, typename Container>
+struct RootArray {
 private:
     int n; // the size of the array
     const int SCALE_FACTOR; // the scale factor of sqrt(n)
-    vector<vector<Value>> a; // the array
+    vector<Container*> a; // the array
     vector<int> prefixSZ; // the prefix array of the sizes of the blocks
 
 public:
     /**
      * Initializes an empty structure.
-     * @param SCALE_FACTOR scales the value of sqrt(n) by this value
+     * @param SCALE_FACTOR scales the value of N ^ (1 / R) by this value
      */
-    SqrtArray(const int SCALE_FACTOR = 1) : n(0), SCALE_FACTOR(SCALE_FACTOR) {}
+    RootArray(const int SCALE_FACTOR = 1) : n(0), SCALE_FACTOR(SCALE_FACTOR) {}
 
     /**
      * Initializes the structure with an initial size.
-     * @param SCALE_FACTOR scales the value of sqrt(n) by this value
+     * @param SCALE_FACTOR scales the value of N ^ (1 / R) by this value
      *
      * @param n the initial size
      */
-    SqrtArray(const int n, const int SCALE_FACTOR = 1) : n(n), SCALE_FACTOR(SCALE_FACTOR) {
+    RootArray(const int n, const int SCALE_FACTOR = 1) : n(n), SCALE_FACTOR(SCALE_FACTOR) {
         assert(n >= 0);
-        int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
-        for (int i = 0; i < n; i += sqrtn) {
-            a.push_back(vector<Value>(min(sqrtn, n - i)));
+        int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
+        for (int i = 0; i < n; i += rootn) {
+            a.push_back(new Container(min(rootn, n - i)));
             prefixSZ.push_back(0);
         }
         for (int i = 1; i < (int) a.size(); i++) {
@@ -70,16 +71,26 @@ public:
      * @param SCALE_FACTOR scales the value of sqrt(n) by this value
      */
     template <typename It>
-    SqrtArray(const It st, const It en, const int SCALE_FACTOR = 1) : n(en - st), SCALE_FACTOR(SCALE_FACTOR) {
+    RootArray(const It st, const It en, const int SCALE_FACTOR = 1) : n(en - st), SCALE_FACTOR(SCALE_FACTOR) {
         assert(n >= 0);
-        int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
-        for (It i = st; i < en; i += sqrtn) {
-            a.emplace_back(i, min(i + sqrtn, en));
+        int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
+        for (It i = st; i < en; i += rootn) {
+            a.push_back(new Container(i, min(i + rootn, st + n), SCALE_FACTOR));
             prefixSZ.push_back(0);
         }
         for (int i = 1; i < (int) a.size(); i++) {
-            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
+            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1]->size();
         }
+    }
+
+    /**
+     * Deletes the structure and all nested containers.
+     */
+    ~RootArray() {
+        for (int i = 0; i < (int) a.size(); i++) {
+            delete a[i];
+        }
+        a.clear();
     }
 
     /**
@@ -92,7 +103,7 @@ public:
     void insert(int k, const Value val) {
         assert(0 <= k && k <= n);
         if (n++ == 0) {
-            a.emplace_back();
+            a.push_back(new Container());
             prefixSZ.push_back(0);
         }
         int lo = 0, hi = (int) (a.size()) - 1, mid;
@@ -102,16 +113,21 @@ public:
             else lo = mid + 1;
         }
         k -= prefixSZ[hi];
-        if (hi == -1) a[hi += (int) a.size()].push_back(val);
-        else a[hi].insert(a[hi].begin() + k, val);
-        int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
-        if ((int) a[hi].size() > 2 * sqrtn) {
-            a.emplace(a.begin() + hi + 1, a[hi].begin() + sqrtn, a[hi].end());
-            a[hi].resize(sqrtn);
+        if (hi == -1) a[hi += (int) a.size()]->push_back(val);
+        else a[hi]->insert(k, val);
+        int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
+        if ((int) a[hi]->size() > 2 * rootn) {
+            vector<Value> b;
+            while (a[hi]->size() > rootn) {
+                b.push_back(a[hi]->back());
+                a[hi]->pop_back();
+            }
+            reverse(b.begin(), b.end());
+            a.insert(a.begin() + hi + 1, new Container(b.begin(), b.end()));
             prefixSZ.push_back(0);
         }
         for (int i = hi + 1; i < (int) a.size(); i++) {
-            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
+            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1]->size();
         }
     }
 
@@ -121,18 +137,20 @@ public:
      */
     void push_front(const Value val) {
         if (n++ == 0) {
-            a.emplace_back();
+            a.push_back(new Container());
             prefixSZ.push_back(0);
         }
-        a.front().insert(a.front().begin(), val);
-        int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
-        if ((int) a.front().size() > 2 * sqrtn) {
-            a.emplace(a.begin() + 1, a.front().begin() + sqrtn, a.front().end());
-            a.front().resize(sqrtn);
+        a.front()->push_front(val);
+        int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
+        if ((int) a.front()->size() > 2 * rootn) {
+            vector<Value> b;
+            while (a.front()->size() > rootn) {
+                b.push_back(a.front()->back());
+                a.front()->pop_back();
+            }
+            reverse(b.begin(), b.end());
+            a.insert(a.begin() + 1, new Container(b.begin(), b.end()));
             prefixSZ.push_back(0);
-        }
-        for (int i = 1; i < (int) a.size(); i++) {
-            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
         }
     }
 
@@ -142,15 +160,20 @@ public:
      */
     void push_back(const Value val) {
         if (n++ == 0) {
-            a.emplace_back();
+            a.push_back(new Container());
             prefixSZ.push_back(0);
         }
-        a.back().push_back(val);
-        int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
-        if ((int) a.back().size() > 2 * sqrtn) {
-            a.emplace_back(a.back().begin() + sqrtn, a.back().end());
-            a[(int) a.size() - 2].resize(sqrtn);
-            prefixSZ.push_back(prefixSZ[(int) a.size() - 2] + (int) a[(int) a.size() - 2].size());
+        a.back()->push_back(val);
+        int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
+        if ((int) a.back()->size() > 2 * rootn) {
+            vector<Value> b;
+            while (a.back()->size() > rootn) {
+                b.push_back(a.back()->back());
+                a.back()->pop_back();
+            }
+            reverse(b.begin(), b.end());
+            a.push_back(new Container(b.begin(), b.end()));
+            prefixSZ.push_back(prefixSZ[(int) a.size() - 2] + (int) a[(int) a.size() - 2]->size());
         }
     }
 
@@ -169,13 +192,14 @@ public:
             else lo = mid + 1;
         }
         k -= prefixSZ[hi];
-        a[hi].erase(a[hi].begin() + k);
-        if (a[hi].empty()) {
+        a[hi]->erase(k);
+        if (a[hi]->empty()) {
+            delete a[hi];
             a.erase(a.begin() + hi);
             prefixSZ.pop_back();
         }
         for (int i = hi + 1; i < (int) a.size(); i++) {
-            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
+            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1]->size();
         }
     }
 
@@ -185,13 +209,13 @@ public:
     void pop_front() {
         assert(n > 0);
         --n;
-        a.front().erase(a.front().begin());
-        if (a.front().empty()) {
+        a.front()->pop_front();
+        if (a.front()->empty()) {
             a.erase(a.begin());
             prefixSZ.pop_back();
         }
         for (int i = 1; i < (int) a.size(); i++) {
-            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
+            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1]->size();
         }
     }
 
@@ -201,8 +225,8 @@ public:
     void pop_back() {
         assert(n > 0);
         --n;
-        a.back().pop_back();
-        if (a.back().empty()) {
+        a.back()->pop_back();
+        if (a.back()->empty()) {
             a.pop_back();
             prefixSZ.pop_back();
         }
@@ -222,7 +246,7 @@ public:
             if (k < prefixSZ[mid]) hi = mid - 1;
             else lo = mid + 1;
         }
-        return a[hi][k - prefixSZ[hi]];
+        return a[hi]->at(k - prefixSZ[hi]);
     }
 
     /**
@@ -239,7 +263,7 @@ public:
             if (k < prefixSZ[mid]) hi = mid - 1;
             else lo = mid + 1;
         }
-        return a[hi][k - prefixSZ[hi]];
+        return a[hi]->at(k - prefixSZ[hi]);
     }
 
     /**
@@ -259,7 +283,7 @@ public:
      */
     const Value &front() const {
         assert(n > 0);
-        return a.front().front();
+        return a.front()->front();
     }
 
     /**
@@ -268,7 +292,7 @@ public:
      */
     const Value &back() const {
         assert(n > 0);
-        return a.back().back();
+        return a.back()->back();
     }
 
     /**
@@ -304,18 +328,12 @@ public:
         int lo = 0, hi = (int) a.size(), mid;
         while (lo < hi) {
             mid = lo + (hi - lo) / 2;
-            if (a[mid].back() < val) lo = mid + 1;
+            if (a[mid]->back() < val) lo = mid + 1;
             else hi = mid;
         }
         if (lo == (int) a.size()) throw no_such_element_exception("call to lower_bound() resulted in no such value");
-        int i = lo;
-        lo = 0, hi = (int) a[i].size();
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (a[i][mid] < val) lo = mid + 1;
-            else hi = mid;
-        }
-        return {prefixSZ[i] + lo, a[i][lo]};
+        pair<int, Value> j = a[lo]->lower_bound(val);
+        return {prefixSZ[lo] + j.first, j.second};
     }
 
     /**
@@ -334,18 +352,12 @@ public:
         int lo = 0, hi = (int) a.size(), mid;
         while (lo < hi) {
             mid = lo + (hi - lo) / 2;
-            if (cmp(a[mid].back(), val)) lo = mid + 1;
+            if (cmp(a[mid]->back(), val)) lo = mid + 1;
             else hi = mid;
         }
         if (lo == (int) a.size()) throw no_such_element_exception("call to lower_bound() resulted in no such value");
-        int i = lo;
-        lo = 0, hi = (int) a[i].size();
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (cmp(a[i][mid], val)) lo = mid + 1;
-            else hi = mid;
-        }
-        return {prefixSZ[i] + lo, a[i][lo]};
+        pair<int, Value> j = a[lo]->lower_bound(val, cmp);
+        return {prefixSZ[lo] + j.first, j.second};
     }
 
     /**
@@ -367,14 +379,8 @@ public:
             else lo = mid + 1;
         }
         if (lo == (int) a.size()) throw no_such_element_exception("call to upper_bound() resulted in no such value");
-        int i = lo;
-        lo = 0, hi = (int) a[i].size();
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (val < a[i][mid]) hi = mid;
-            else lo = mid + 1;
-        }
-        return {prefixSZ[i] + lo, a[i][lo]};
+        pair<int, Value> j = a[lo]->upper_bound(val);
+        return {prefixSZ[lo] + j.first, j.second};
     }
 
     /**
@@ -397,14 +403,8 @@ public:
             else lo = mid + 1;
         }
         if (lo == (int) a.size()) throw no_such_element_exception("call to upper_bound() resulted in no such value");
-        int i = lo;
-        lo = 0, hi = (int) a[i].size();
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (cmp(val, a[i][mid])) hi = mid;
-            else lo = mid + 1;
-        }
-        return {prefixSZ[i] + lo, a[i][lo]};
+        pair<int, Value> j = a[lo]->upper_bound(val, cmp);
+        return {prefixSZ[lo] + j.first, j.second};
     }
 
     /**
@@ -426,14 +426,8 @@ public:
             else lo = mid + 1;
         }
         if (hi == -1) throw no_such_element_exception("call to floor() resulted in no such value");
-        int i = hi;
-        lo = 0, hi = ((int) a[i].size()) - 1;
-        while (lo <= hi) {
-            mid = lo + (hi - lo) / 2;
-            if (val < a[i][mid]) hi = mid - 1;
-            else lo = mid + 1;
-        }
-        return {prefixSZ[i] + hi, a[i][hi]};
+        pair<int, Value> j = a[lo]->floor(val);
+        return {prefixSZ[lo] + j.first, j.second};
     }
 
     /**
@@ -456,14 +450,8 @@ public:
             else lo = mid + 1;
         }
         if (hi == -1) throw no_such_element_exception("call to floor() resulted in no such value");
-        int i = hi;
-        lo = 0, hi = ((int) a[i].size()) - 1;
-        while (lo <= hi) {
-            mid = lo + (hi - lo) / 2;
-            if (cmp(val, a[i][mid])) hi = mid - 1;
-            else lo = mid + 1;
-        }
-        return {prefixSZ[i] + hi, a[i][hi]};
+        pair<int, Value> j = a[lo]->floor(val, cmp);
+        return {prefixSZ[lo] + j.first, j.second};
     }
 
     /**
@@ -485,14 +473,8 @@ public:
             else hi = mid;
         }
         if (lo == (int) a.size()) throw no_such_element_exception("call to ceiling() resulted in no such value");
-        int i = lo;
-        lo = 0, hi = (int) a[i].size();
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (a[i][mid] < val) lo = mid + 1;
-            else hi = mid;
-        }
-        return {prefixSZ[i] + lo, a[i][lo]};
+        pair<int, Value> j = a[lo]->ceiling(val);
+        return {prefixSZ[lo] + j.first, j.second};
     }
 
     /**
@@ -515,14 +497,8 @@ public:
             else hi = mid;
         }
         if (lo == (int) a.size()) throw no_such_element_exception("call to ceiling() resulted in no such value");
-        int i = lo;
-        lo = 0, hi = (int) a[i].size();
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (cmp(a[i][mid], val)) lo = mid + 1;
-            else hi = mid;
-        }
-        return {prefixSZ[i] + lo, a[i][lo]};
+        pair<int, Value> j = a[lo]->ceiling(val, cmp);
+        return {prefixSZ[lo] + j.first, j.second};
     }
 
     /**
@@ -533,8 +509,8 @@ public:
     vector<Value> values() const {
         vector<Value> ret;
         for (int i = 0; i < (int) a.size(); i++) {
-            for (int j = 0; j < (int) a[i].size(); j++) {
-                ret.push_back(a[i][j]);
+            for (Value x : a[i]->values()) {
+                ret.push_back(x);
             }
         }
         return ret;
@@ -546,15 +522,15 @@ public:
     void sort() {
         vector<Value> b;
         for (int i = 0; i < (int) a.size(); i++) {
-            for (int j = 0; j < (int) a[i].size(); j++) {
-                b.push_back(a[i][j]);
+            for (Value x : a[i]->values()) {
+                b.push_back(x);
             }
         }
         std::sort(b.begin(), b.end());
         int k = 0;
         for (int i = 0; i < (int) a.size(); i++) {
-            for (int j = 0; j < (int) a[i].size(); j++) {
-                a[i][j] = b[k++];
+            for (int j = 0; j < (int) a[i]->size(); j++) {
+                (*a[i])[j] = b[k++];
             }
         }
     }
@@ -566,18 +542,18 @@ public:
     template <typename Comparator> void sort(Comparator cmp) {
         vector<Value> b;
         for (int i = 0; i < (int) a.size(); i++) {
-            for (int j = 0; j < (int) a[i].size(); j++) {
-                b.push_back(a[i][j]);
+            for (Value x : a[i]->values()) {
+                b.push_back(x);
             }
         }
         std::sort(b.begin(), b.end(), cmp);
         int k = 0;
         for (int i = 0; i < (int) a.size(); i++) {
-            for (int j = 0; j < (int) a[i].size(); j++) {
-                a[i][j] = b[k++];
+            for (int j = 0; j < (int) a[i]->size(); j++) {
+                (*a[i])[j] = b[k++];
             }
         }
     }
 };
 
-#endif /* DATASTRUCTURES_SQRTARRAY_H_ */
+#endif /* DATASTRUCTURES_ROOTARRAY_H_ */

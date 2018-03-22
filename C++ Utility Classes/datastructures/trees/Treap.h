@@ -12,11 +12,11 @@ public:
 
 /**
  * Treap:
- * To maintain optimized runtime, memory is not freed.
+ * To maintain optimized time complexity, memory is not freed for set operations.
  *
  * Size: O(1)
  * Contains / Get: O(log(N))
- * Add: O(log(N))
+ * Put: O(log(N))
  * Remove: O(log(N))
  * Get/Remove Min/Max: O(log(N))
  * Floor/Ceiling/Select/GetRank: O(log(N))
