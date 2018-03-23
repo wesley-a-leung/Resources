@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 import algorithms.graph.cycle.WeightedCycle;
 import datastructures.Pair;
+import datastructures.UF;
 import datastructures.graph.WeightedEdge;
 import datastructures.graph.WeightedGraph;
-import datastructures.math.UF;
 
 /**
  * The {@code TarjanWeightedLCA} class represents a data structure for finding the

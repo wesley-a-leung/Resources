@@ -1,4 +1,4 @@
-package algorithms.math;
+package algorithms.queries;
 
 import java.util.Arrays;
 

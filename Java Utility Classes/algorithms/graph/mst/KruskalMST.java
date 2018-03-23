@@ -2,8 +2,8 @@ package algorithms.graph.mst;
 
 import datastructures.MinPQ;
 import datastructures.Queue;
+import datastructures.UF;
 import datastructures.graph.WeightedGraph;
-import datastructures.math.UF;
 import datastructures.graph.WeightedEdge;
 
 /**

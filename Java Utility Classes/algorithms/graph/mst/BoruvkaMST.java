@@ -3,8 +3,8 @@ package algorithms.graph.mst;
 import java.util.ArrayList;
 
 import datastructures.Bag;
+import datastructures.UF;
 import datastructures.graph.WeightedGraph;
-import datastructures.math.UF;
 import datastructures.graph.WeightedEdge;
 
 /**

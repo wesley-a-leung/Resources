@@ -1,4 +1,4 @@
-package datastructures.math;
+package datastructures;
 
 /**
  *  The {@code UF} class represents a <em>union–find data type</em>
