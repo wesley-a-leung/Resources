@@ -58,6 +58,8 @@ public:
             }
         }
 
+        int cnt = 0;
+        unit lastEx = -1;
         while (!q.empty()) {
             int v = q.front();
             int tempHeight = 2 * G->getV();
@@ -85,6 +87,12 @@ public:
             else {
                 done[v] = false;
                 q.pop();
+            }
+            if (lastEx == excess[t]) {
+                if (++cnt > 2 * G->getV()) break;
+            } else {
+                lastEx = excess[t];
+                cnt = 0;
             }
         }
         value = excess[t];
