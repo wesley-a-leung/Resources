@@ -15,9 +15,9 @@ using namespace std;
 class MoUpdates {
 private:
     int res;
-    int *A, *ans;
-    unordered_map<int, int> cnt;
-    vector<int> **q;
+    int *A, *ans, *cnt;
+    pair<int, int> *q;
+    vector<int> **qs;
     stack<pair<int, int>> revert;
 
     inline void add(int a) {
@@ -61,24 +61,44 @@ public:
      * @param Q the number of queries
      */
     MoUpdates(int *arr, int N, bool oneIndexed, pair<int, int> *queries, bool *isQuery, int Q) {
+        vector<int> values;
+        unordered_map<int, int> vmap;
         A = new int[N + oneIndexed];
         for (int i = oneIndexed; i < N + oneIndexed; i++) {
             A[i] = arr[i];
+            values.push_back(A[i]);
+        }
+        q = new pair<int, int>[Q];
+        for (int i = 0; i < Q; i++) {
+            q[i] = queries[i];
+            if (!isQuery[i]) values.push_back(queries[i].second);
+        }
+        sort(values.begin(), values.end());
+        values.resize(unique(values.begin(), values.end()) - values.begin());
+        for (int i = 0; i < (int) values.size(); i++) {
+            vmap[values[i]] = i;
+        }
+        cnt = new int[values.size()];
+        for (int i = oneIndexed; i < N + oneIndexed; i++) {
+            A[i] = vmap[A[i]];
+        }
+        for (int i = 0; i < Q; i++) {
+            if (!isQuery[i]) q[i].second = vmap[q[i].second];
         }
         int sz = (int) cbrt(N); sz *= sz;
         int blocks = (N + oneIndexed - 1) / sz + 1;
-        q = new vector<int> *[blocks];
+        qs = new vector<int> *[blocks];
         for (int i = 0; i < blocks; i++) {
-            q[i] = new vector<int>[blocks];
+            qs[i] = new vector<int>[blocks];
         }
         ans = new int[Q];
         res = 0;
         for (int i = 0; i < Q; i++) {
-            if (isQuery[i]) q[queries[i].first / sz][queries[i].second / sz].push_back(i);
+            if (isQuery[i]) qs[q[i].first / sz][q[i].second / sz].push_back(i);
             else {
-                for (int bl = 0; bl <= queries[i].first / sz; bl++) {
-                    for (int br = queries[i].first / sz; br < blocks; br++) {
-                        q[bl][br].push_back(i);
+                for (int bl = 0; bl <= q[i].first / sz; bl++) {
+                    for (int br = q[i].first / sz; br < blocks; br++) {
+                        qs[bl][br].push_back(i);
                     }
                 }
             }
@@ -86,31 +106,31 @@ public:
         int l = oneIndexed, r = l - 1;
         for (int bl = 0; bl < blocks; bl++) {
             for (int br = bl; br < blocks; br++) {
-                for (int i : q[bl][br]) {
+                for (int i : qs[bl][br]) {
                     if (isQuery[i]) {
-                        while (l < queries[i].first) {
+                        while (l < q[i].first) {
                             remove(A[l]);
                             l++;
                         }
-                        while (l > queries[i].first) {
+                        while (l > q[i].first) {
                             l--;
                             add(A[l]);
                         }
-                        while (r < queries[i].second) {
+                        while (r < q[i].second) {
                             r++;
                             add(A[r]);
                         }
-                        while (r > queries[i].second) {
+                        while (r > q[i].second) {
                             remove(A[r]);
                             r--;
                         }
                         ans[i] = res;
                     } else {
-                        revert.push({queries[i].first, A[queries[i].first]});
-                        if (l <= queries[i].first && queries[i].first <= r) {
-                            update(queries[i].first, queries[i].second);
+                        revert.push({q[i].first, A[q[i].first]});
+                        if (l <= q[i].first && q[i].first <= r) {
+                            update(q[i].first, q[i].second);
                         } else {
-                            A[queries[i].first] = queries[i].second;
+                            A[q[i].first] = q[i].second;
                         }
                     }
                 }
