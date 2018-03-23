@@ -54,6 +54,8 @@ public:
                 q.push(v);
             }
         }
+        int cnt = 0;
+        unit lastEx = -1;
         while (!q.empty()) {
             int v = q.front();
             int tempHeight = 2 * V;
@@ -80,6 +82,12 @@ public:
             else {
                 done[v] = false;
                 q.pop();
+            }
+            if (lastEx == excess[t]) {
+                if (++cnt > 2 * V) break;
+            } else {
+                lastEx = excess[t];
+                cnt = 0;
             }
         }
         return excess[t];
