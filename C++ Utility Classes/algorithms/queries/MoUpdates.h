@@ -75,10 +75,11 @@ public:
         }
         sort(values.begin(), values.end());
         values.resize(unique(values.begin(), values.end()) - values.begin());
+        cnt = new int[values.size()];
         for (int i = 0; i < (int) values.size(); i++) {
             vmap[values[i]] = i;
+            cnt[i] = 0;
         }
-        cnt = new int[values.size()];
         for (int i = oneIndexed; i < N + oneIndexed; i++) {
             A[i] = vmap[A[i]];
         }
