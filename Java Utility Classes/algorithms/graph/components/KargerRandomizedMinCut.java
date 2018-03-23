@@ -2,8 +2,8 @@ package algorithms.graph.components;
 
 import java.util.ArrayList;
 
+import datastructures.UF;
 import datastructures.graph.Graph;
-import datastructures.math.UF;
 
 /**
  * The {@code KargerRandomizedMinCut} class represents a data type for computing

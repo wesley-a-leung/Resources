@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import algorithms.graph.cycle.DirectedCycle;
 import datastructures.Pair;
+import datastructures.UF;
 import datastructures.graph.Digraph;
-import datastructures.math.UF;
 
 /**
  * The {@code TarjanDirectedLCA} class represents a data structure for finding the

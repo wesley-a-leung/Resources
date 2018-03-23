@@ -3,7 +3,7 @@
 
 #include <bits/stdc++.h>
 #include "datastructures/graph/WeightedGraph.h"
-#include "datastructures/math/UF.h"
+#include "datastructures/UF.h"
 
 using namespace std;
 

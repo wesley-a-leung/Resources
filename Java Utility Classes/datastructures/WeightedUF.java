@@ -1,4 +1,4 @@
-package datastructures.math;
+package datastructures;
 
 /**
  *  The {@code WeightedUF} class represents a

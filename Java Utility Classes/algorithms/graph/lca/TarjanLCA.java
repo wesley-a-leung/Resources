@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import algorithms.graph.cycle.Cycle;
 import datastructures.Pair;
+import datastructures.UF;
 import datastructures.graph.Graph;
-import datastructures.math.UF;
 
 /**
  * The {@code TarjanLCA} class represents a data structure for finding the

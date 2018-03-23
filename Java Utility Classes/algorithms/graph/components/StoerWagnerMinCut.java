@@ -1,9 +1,9 @@
 package algorithms.graph.components;
 
 import datastructures.IndexMaxPQ;
+import datastructures.UF;
 import datastructures.graph.WeightedGraph;
 import datastructures.graph.WeightedEdge;
-import datastructures.math.UF;
 
 /**
  * The {@code StoerWagnerGlobalMincut} class represents a data type for computing
