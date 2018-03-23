@@ -59,7 +59,7 @@ public class EdmondsKarpMaxFlow {
         // if (!isFeasible(G, s, t)) throw new IllegalArgumentException("Initial flow is infeasible");
 
         // while there exists an augmenting path, use it
-        value = excess(G, t);
+        value = 0;
         while (hasAugmentingPath(G, s, t)) {
 
             // compute bottleneck capacity

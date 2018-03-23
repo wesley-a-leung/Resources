@@ -75,7 +75,7 @@ public class PushRelabelMaxFlow {
                             q.enqueue(w);
                         }
                     } else {
-                        tempHeight = Math.min(height[v], tempHeight);
+                        tempHeight = Math.min(height[w], tempHeight);
                     }
                 }
             }

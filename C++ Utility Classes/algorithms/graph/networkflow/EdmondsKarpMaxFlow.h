@@ -74,17 +74,6 @@ private:
         return marked[t];
     }
 
-    // return excess flow at vertex v
-    double excess(FlowNetwork *G, int v) {
-        double excessCapacity = 0.0;
-        for (FlowEdge *e : G->adj(v)) {
-            if (v == e->from()) excessCapacity -= e->getFlow();
-            else               excessCapacity += e->getFlow();
-        }
-        return excessCapacity;
-    }
-
-
 public:
     /**
      * Compute a maximum flow and minimum cut in the network {@code G}
@@ -99,8 +88,8 @@ public:
         if (s == t)               throw invalid_argument("Source equals sink");
         edgeTo = new FlowEdge*[G->getV()];
         marked = new bool[G->getV()];
+        value = 0;
         // while there exists an augmenting path, use it
-        value = excess(G, t);
         while (hasAugmentingPath(G, s, t)) {
             // compute bottleneck capacity
             double bottle = numeric_limits<double>::infinity();
