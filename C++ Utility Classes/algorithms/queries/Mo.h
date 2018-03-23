@@ -4,6 +4,13 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+/**
+ * Mo's Algorithm
+ *
+ * Decomposes the array into blocks of size sqrt(N) to answer queries.
+ *
+ * Time complexity: Q log Q + Q sqrt(N)
+ */
 class Mo {
 private:
     int res;
@@ -18,14 +25,14 @@ private:
         }
     } *q;
 
-    void update(int i) {
-        cnt[i]++;
-        if (cnt[i] == 1) res++;
+    inline void add(int a) {
+        cnt[a]++;
+        if (cnt[a] == 1) res++;
     }
 
-    void remove(int i) {
-        cnt[i]--;
-        if (cnt[i] == 0) res--;
+    inline void remove(int a) {
+        cnt[a]--;
+        if (cnt[a] == 0) res--;
     }
 
 public:
@@ -40,7 +47,8 @@ public:
     }
 
     /**
-     * Computes the number of unique numbers, provided the queries are known beforehand.
+     * Computes the number of unique values between l and r inclusive, provided the
+     * queries are known beforehand.
      *
      * @param a the array (must contain only positive values)
      * @param N the number of elements in the array
@@ -80,11 +88,11 @@ public:
             }
             while (l > q[i].l) {
                 l--;
-                update(a[l]);
+                add(a[l]);
             }
             while (r < q[i].r) {
                 r++;
-                update(a[r]);
+                add(a[r]);
             }
             while (r > q[i].r) {
                 remove(a[r]);
