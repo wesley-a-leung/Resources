@@ -70,6 +70,7 @@ public:
             a[i + oneIndexed] = lower_bound(temp + oneIndexed, temp + k + oneIndexed, arr[i + oneIndexed]) - temp - oneIndexed;
         }
         q = new Query[Q];
+        ans = new int[Q];
         for (int i = 0; i < Q; i++) {
             q[i].l = queries[i].first;
             q[i].r = queries[i].second;
@@ -77,7 +78,6 @@ public:
             q[i].block = q[i].l / sz;
         }
         sort(q, q + Q);
-        ans = new int[Q];
         int l = q[0].l;
         int r = l - 1;
         res = 0;
