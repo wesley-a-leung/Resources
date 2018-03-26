@@ -11,8 +11,6 @@ using namespace std;
  * lowest common ancestor of 2 nodes in an acyclic graph using heavy-light decomposition.
  * The constructor takes time proportional to <em>V</em> + <em>E</em> and afterwards,
  * the {@code lca()} method takes log <em>V</em> time to find the lowest common ancestor.
- *
- * @author Wesley Leung
  */
 class HLD {
 private:

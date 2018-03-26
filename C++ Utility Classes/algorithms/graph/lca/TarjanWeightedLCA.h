@@ -3,7 +3,7 @@
 
 #include <bits/stdc++.h>
 #include "datastructures/graph/WeightedGraph.h"
-#include "datastructures/math/UF.h"
+#include "datastructures/UF.h"
 
 using namespace std;
 
@@ -11,8 +11,6 @@ using namespace std;
  * The {@code TarjanWeightedLCA} class represents a data structure for finding the
  * lowest common ancestor when the queries are known in advance. The constructor
  * take time proportional to <em>N</em> + <em>Q</em>.
- *
- * @author Wesley Leung
  */
 class TarjanWeightedLCA {
 private:
