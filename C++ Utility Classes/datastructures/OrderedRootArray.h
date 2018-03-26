@@ -20,6 +20,7 @@ public:
  * OrderedRootArray<3, int, OrderedSqrtArray<int, greater<int>>, greater<int>> arr;
  * OrderedRootArray<4, int, OrderedRootArray<3, int, OrderedSqrtArray<int>>> arr;
  *
+ * Initializing: O(N)
  * Insert: O(N ^ (1 / R) + log(N))
  * Erase: O(N ^ (1 / R) + log(N))
  * Pop Front: O(N ^ (1 / R))
@@ -36,8 +37,8 @@ struct OrderedRootArray {
 private:
     Comparator cmp; // the comparator
     int n; // the size of the array
-    const int SCALE_FACTOR; // the scale factor
-    vector<Container*> a; // the array
+    int SCALE_FACTOR; // the scale factor
+    vector<Container> a; // the array
     vector<int> prefixSZ; // the prefix array of the sizes of the blocks
 
     // returns the index of the container with the smallest value greater than or equal to val
@@ -45,7 +46,7 @@ private:
         int lo = 0, hi = (int) a.size(), mid;
         while (lo < hi) {
             mid = lo + (hi - lo) / 2;
-            if (cmp(a[mid]->back(), val)) lo = mid + 1;
+            if (cmp(a[mid].back(), val)) lo = mid + 1;
             else hi = mid;
         }
         return lo;
@@ -56,7 +57,7 @@ private:
         int lo = 0, hi = (int) a.size(), mid;
         while (lo < hi) {
             mid = lo + (hi - lo) / 2;
-            if (cmp(val, a[mid]->back())) hi = mid;
+            if (cmp(val, a[mid].back())) hi = mid;
             else lo = mid + 1;
         }
         return lo;
@@ -67,7 +68,7 @@ private:
         int lo = 0, hi = ((int) a.size()) - 1, mid;
         while (lo <= hi) {
             mid = lo + (hi - lo) / 2;
-            if (cmp(val, a[mid]->front())) hi = mid - 1;
+            if (cmp(val, a[mid].front())) hi = mid - 1;
             else lo = mid + 1;
         }
         return hi;
@@ -95,60 +96,12 @@ public:
         assert(is_sorted(st, en, cmp));
         int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
         for (It i = st; i < en; i += rootn) {
-            a.push_back(new Container(i, min(i + rootn, st + n), SCALE_FACTOR));
+            a.emplace_back(i, min(i + rootn, st + n), SCALE_FACTOR);
             prefixSZ.push_back(0);
         }
         for (int i = 1; i < (int) a.size(); i++) {
-            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1]->size();
+            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
         }
-    }
-
-    /**
-     * Copy constructor.
-     *
-     * @param arr the other OrderedRootArray of the same type
-     */
-    OrderedRootArray(const OrderedRootArray<R, Value, Container, Comparator> &other) {
-        this->cmp = other.cmp;
-        this->n = other.n;
-        this->SCALE_FACTOR = other.SCALE_FACTOR;
-        for (int i = 0; i < (int) other.a.size(); i++) {
-            this->a.push_back(new Container(*other.a[i]));
-        }
-        this->prefixSZ = other.prefixSZ;
-    }
-
-    /**
-     * Copy assignment operator.
-     *
-     * @param other the other OrderedRootArray of the same type
-     * @return a reference to a copy of the OrderedRootAray
-     */
-    OrderedRootArray &operator = (const OrderedRootArray<R, Value, Container, Comparator> &other) {
-        if (this != &other) {
-            for (int i = 0; i < (int) this->a.size(); i++) {
-                delete a[i];
-            }
-            a.clear();
-            this->cmp = other.cmp;
-            this->n = other.n;
-            this->SCALE_FACTOR = other.SCALE_FACTOR;
-            for (int i = 0; i < (int) other.a.size(); i++) {
-                this->a.push_back(new Container(*other.a[i]));
-            }
-            this->prefixSZ = other.prefixSZ;
-        }
-        return *this;
-    }
-
-    /**
-     * Deletes the structure and all nested containers.
-     */
-    virtual ~OrderedRootArray() {
-        for (int i = 0; i < (int) a.size(); i++) {
-            delete a[i];
-        }
-        a.clear();
     }
 
     /**
@@ -159,24 +112,24 @@ public:
     void insert(const Value val) {
         int i = upper_bound_ind(val);
         if (n++ == 0) {
-            a.push_back(new Container());
+            a.emplace_back();
             prefixSZ.push_back(0);
         }
-        if (i == (int) a.size()) a[--i]->insert(val);
-        else a[i]->insert(val);
+        if (i == (int) a.size()) a[--i].insert(val);
+        else a[i].insert(val);
         int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
-        if ((int) a[i]->size() > 2 * rootn) {
+        if ((int) a[i].size() > 2 * rootn) {
             vector<Value> b;
-            while (a[i]->size() > rootn) {
-                b.push_back(a[i]->back());
-                a[i]->pop_back();
+            while (a[i].size() > rootn) {
+                b.push_back(a[i].back());
+                a[i].pop_back();
             }
             reverse(b.begin(), b.end());
-            a.insert(a.begin() + i + 1, new Container(b.begin(), b.end()));
+            a.emplace(a.begin() + i + 1, b.begin(), b.end());
             prefixSZ.push_back(0);
         }
         for (int j = i + 1; j < (int) a.size(); j++) {
-            prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1]->size();
+            prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1].size();
         }
     }
 
@@ -190,15 +143,14 @@ public:
     bool erase(const Value val) {
         int i = lower_bound_ind(val);
         if (i == (int) a.size()) return false;
-        if (!a[i]->erase(val)) return false;
+        if (!a[i].erase(val)) return false;
         --n;
-        if (a[i]->empty()) {
-            delete a[i];
+        if (a[i].empty()) {
             a.erase(a.begin() + i);
             prefixSZ.pop_back();
         }
         for (int j = i + 1; j < (int) a.size(); j++) {
-            prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1]->size();
+            prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1].size();
         }
         return true;
     }
@@ -209,14 +161,13 @@ public:
     void pop_front() {
         assert(n > 0);
         --n;
-        a.front()->pop_front();
-        if (a.front()->empty()) {
-            delete a.front();
+        a.front().pop_front();
+        if (a.front().empty()) {
             a.erase(a.begin());
             prefixSZ.pop_back();
         }
         for (int i = 1; i < (int) a.size(); i++) {
-            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1]->size();
+            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
         }
     }
 
@@ -226,9 +177,8 @@ public:
     void pop_back() {
         assert(n > 0);
         --n;
-        a.back()->pop_back();
-        if (a.back()->empty()) {
-            delete a.back();
+        a.back().pop_back();
+        if (a.back().empty()) {
             a.pop_back();
             prefixSZ.pop_back();
         }
@@ -248,7 +198,7 @@ public:
             if (k < prefixSZ[mid]) hi = mid - 1;
             else lo = mid + 1;
         }
-        return a[hi]->at(k - prefixSZ[hi]);
+        return a[hi].at(k - prefixSZ[hi]);
     }
 
     /**
@@ -268,7 +218,7 @@ public:
      */
     const Value &front() const {
         assert(n > 0);
-        return a.front()->front();
+        return a.front().front();
     }
 
     /**
@@ -277,7 +227,7 @@ public:
      */
     const Value &back() const {
         assert(n > 0);
-        return a.back()->back();
+        return a.back().back();
     }
 
     /**
@@ -306,7 +256,7 @@ public:
      */
     bool contains(const Value val) const {
         int i = lower_bound_ind(val);
-        return i != (int) a.size() && a[i]->contains(val);
+        return i != (int) a.size() && a[i].contains(val);
     }
 
     /**
@@ -322,7 +272,7 @@ public:
     pair<int, Value> lower_bound(const Value val) const {
         int i = lower_bound_ind(val);
         if (i == (int) a.size()) throw no_such_element_exception("call to lower_bound() resulted in no such value");
-        pair<int, Value> j = a[i]->lower_bound(val);
+        pair<int, Value> j = a[i].lower_bound(val);
         return {prefixSZ[i] + j.first, j.second};
     }
 
@@ -339,7 +289,7 @@ public:
     pair<int, Value> upper_bound(const Value val) const {
         int i = upper_bound_ind(val);
         if (i == (int) a.size()) throw no_such_element_exception("call to upper_bound() resulted in no such value");
-        pair<int, Value> j = a[i]->upper_bound(val);
+        pair<int, Value> j = a[i].upper_bound(val);
         return {prefixSZ[i] + j.first, j.second};
     }
 
@@ -356,7 +306,7 @@ public:
     pair<int, Value> floor(const Value val) const {
         int i = floor_ind(val);
         if (i == -1) throw no_such_element_exception("call to floor() resulted in no such value");
-        pair<int, Value> j = a[i]->floor(val);
+        pair<int, Value> j = a[i].floor(val);
         return {prefixSZ[i] + j.first, j.second};
     }
 
@@ -373,7 +323,7 @@ public:
     pair<int, Value> ceiling(const Value val) const {
         int i = lower_bound_ind(val);
         if (i == (int) a.size()) throw no_such_element_exception("call to ceiling() resulted in no such value");
-        pair<int, Value> j = a[i]->ceiling(val);
+        pair<int, Value> j = a[i].ceiling(val);
         return {prefixSZ[i] + j.first, j.second};
     }
 
@@ -385,7 +335,7 @@ public:
     vector<Value> values() const {
         vector<Value> ret;
         for (int i = 0; i < (int) a.size(); i++) {
-            for (Value x : a[i]->values()) {
+            for (Value x : a[i].values()) {
                 ret.push_back(x);
             }
         }
