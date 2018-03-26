@@ -9,15 +9,15 @@ private:
     static const int vdef = 0, ldef = 0, qdef = 0;
 
     static int merge(int l, int r) {
-        return l + r;
+        return l + r; // sum
     }
 
     static int apply(int x, int v) {
-        return x + v;
+        return x + v; // increment
     }
 
     static int getSegmentVal(int x, int len) {
-        return x * len;
+        return x * len; // sum
     }
 
     struct Node {
