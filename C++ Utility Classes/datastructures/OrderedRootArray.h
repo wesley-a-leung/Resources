@@ -104,6 +104,44 @@ public:
     }
 
     /**
+     * Copy constructor.
+     *
+     * @param arr the other OrderedRootArray of the same type
+     */
+    OrderedRootArray(const OrderedRootArray<R, Value, Container, Comparator> &other) {
+        this->cmp = other.cmp;
+        this->n = other.n;
+        this->SCALE_FACTOR = other.SCALE_FACTOR;
+        for (int i = 0; i < (int) other.a.size(); i++) {
+            this->a.push_back(new Container(*other.a[i]));
+        }
+        this->prefixSZ = other.prefixSZ;
+    }
+
+    /**
+     * Copy assignment operator.
+     *
+     * @param other the other OrderedRootArray of the same type
+     * @return a reference to a copy of the OrderedRootAray
+     */
+    OrderedRootArray &operator = (const OrderedRootArray<R, Value, Container, Comparator> &other) {
+        if (this != &other) {
+            for (int i = 0; i < (int) this->a.size(); i++) {
+                delete a[i];
+            }
+            a.clear();
+            this->cmp = other.cmp;
+            this->n = other.n;
+            this->SCALE_FACTOR = other.SCALE_FACTOR;
+            for (int i = 0; i < (int) other.a.size(); i++) {
+                this->a.push_back(new Container(*other.a[i]));
+            }
+            this->prefixSZ = other.prefixSZ;
+        }
+        return *this;
+    }
+
+    /**
      * Deletes the structure and all nested containers.
      */
     virtual ~OrderedRootArray() {
