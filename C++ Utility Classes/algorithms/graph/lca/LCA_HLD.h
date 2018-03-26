@@ -20,7 +20,7 @@ private:
         depth[v] = d;
         parent[v] = prev;
         size[v] = 1;
-        for (int w: G->adj(v)) {
+        for (int w : G->adj(v)) {
             if (w != prev) {
                 dfs(G, w, d + 1, v);
                 size[v] += size[w];
@@ -32,11 +32,11 @@ private:
         if (head[chainNum] == -1) head[chainNum] = v;
         chain[v] = chainNum;
         int maxIndex = -1;
-        for (int w: G->adj(v)) {
+        for (int w : G->adj(v)) {
             if (w != prev && (maxIndex == -1 || size[maxIndex] < size[w])) maxIndex = w;
         }
         if (maxIndex != -1) hld(G, maxIndex, v);
-        for (int w: G->adj(v)) {
+        for (int w : G->adj(v)) {
             if (w != prev && w != maxIndex) {
                 chainNum++;
                 hld(G, w, v);
