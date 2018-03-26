@@ -1,23 +1,33 @@
-#ifndef DATASTRUCTURES_TREES_MATH_DYNAMICSEGMENTTREE_H_
-#define DATASTRUCTURES_TREES_MATH_DYNAMICSEGMENTTREE_H_
+#ifndef DATASTRUCTURES_TREES_DYNAMICSEGMENTTREE_H_
+#define DATASTRUCTURES_TREES_DYNAMICSEGMENTTREE_H_
 
 #include <bits/stdc++.h>
 using namespace std;
 
 struct DynamicSegmentTree {
+private:
+    static const int vdef = 0, qdef = 0;
+
+    static int merge(int l, int r) {
+        return l + r;
+    }
+
+    static int apply(int x, int v) {
+        return x + v;
+    }
+
     struct Node {
         Node *left = nullptr, *right = nullptr;
-        int val = 0;
+        int val = DynamicSegmentTree::vdef;
     };
 
-private:
     Node *root;
     int N;
 
     void update(Node *cur, int cL, int cR, int ind, int val) {
         if (cL > ind || cR < ind) return;
         if (cL >= ind && cR <= ind) {
-           cur->val += val;
+           cur->val = apply(cur->val, val);
            return;
         }
         int m = cL + (cR - cL) / 2;
@@ -25,16 +35,16 @@ private:
         update(cur->left, cL, m, ind, val);
         if (cur->right == nullptr) cur->right = new Node();
         update(cur->right, m + 1, cR, ind, val);
-        cur->val = max(cur->left->val, cur->right->val);
+        cur->val = merge(cur->left->val, cur->right->val);
     }
 
     int query(Node *cur, int cL, int cR, int l, int r) {
-        if (cur == nullptr || cL > r || cR < l) return 0;
-        if (cL >= l && cR <= r) return cur->val;
+        if (cur == nullptr || cL > r || cR < l) return qdef;
+        if (cL == cR) return cur->val;
         int m = cL + (cR - cL) / 2;
         int left = query(cur->left, cL, m, l, r);
         int right = query(cur->right, m + 1, cR, l, r);
-        return max(left, right);
+        return merge(left, right);
     }
 
 public:
@@ -56,4 +66,4 @@ public:
     }
 };
 
-#endif /* DATASTRUCTURES_TREES_MATH_DYNAMICSEGMENTTREE_H_ */
+#endif /* DATASTRUCTURES_TREES_DYNAMICSEGMENTTREE_H_ */
