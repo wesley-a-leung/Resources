@@ -1,10 +1,11 @@
-#ifndef DATASTRUCTURES_TREES_MATH_REVERSIONSEGMENTTREE_H_
-#define DATASTRUCTURES_TREES_MATH_REVERSIONSEGMENTTREE_H_
+#ifndef DATASTRUCTURES_TREES_PERSISTENTSEGMENTTREE2_H_
+#define DATASTRUCTURES_TREES_PERSISTENTSEGMENTTREE2_H_
 
 #include <bits/stdc++.h>
 using namespace std;
 
 struct ReversionSegmentTree {
+private:
     struct Node {
         Node *left;
         Node *right;
@@ -50,7 +51,6 @@ struct ReversionSegmentTree {
         }
     };
 
-private:
     vector<Node*> rev;
     int *array;
     int revInd = 0;
@@ -63,12 +63,10 @@ private:
     }
 
     Node *update(Node *cur, int cL, int cR, int ind) {
-        if (cL <= ind && ind <= cR) {
-            if (cL == cR) return new Node(array[cL]);
-            int m = cL + (cR - cL) / 2;
-            return new Node(update(cur->left, cL, m, ind), update(cur->right, m + 1, cR, ind));
-        }
-        return cur;
+        if (cL > ind || cR < ind) return cur;
+        if (cL == cR) return new Node(array[cL]);
+        int m = cL + (cR - cL) / 2;
+        return new Node(update(cur->left, cL, m, ind), update(cur->right, m + 1, cR, ind));
     }
 
     Query query(Node *cur, int cL, int cR, int l, int r) {
@@ -124,4 +122,4 @@ public:
     }
 };
 
-#endif /* DATASTRUCTURES_TREES_MATH_REVERSIONSEGMENTTREE_H_ */
+#endif /* DATASTRUCTURES_TREES_PERSISTENTSEGMENTTREE2_H_ */
