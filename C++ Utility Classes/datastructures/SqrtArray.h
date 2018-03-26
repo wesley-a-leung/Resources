@@ -21,7 +21,7 @@ public:
  * Insert: O(sqrt(N) + log(N))
  * Erase: O(sqrt(N) + log(N))
  * Push Front, Pop Front: O(sqrt(N))
- * Push Back, Pop Back: O(1) ammortized
+ * Push Back, Pop Back: O(1) amortized
  * At, Accessor, Mutator: O(log(N))
  * Front, Back: O(1)
  * Lower Bound, Upper Bound, Floor, Ceiling: O(log(N))

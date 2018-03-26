@@ -22,7 +22,7 @@ public:
  * Insert: O(sqrt(N) + log(N))
  * Erase: O(sqrt(N) + log(N))
  * Pop Front: O(sqrt(N))
- * Pop Back: O(1) ammortized
+ * Pop Back: O(1) amortized
  * At, Accessor: O(log(N))
  * Front, Back: O(1)
  * Rank, Contains: O(log(N))
