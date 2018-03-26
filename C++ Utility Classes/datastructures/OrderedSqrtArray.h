@@ -19,6 +19,7 @@ public:
  * OrderedSqrtArray<int> arr;
  * OrderedSqrtArray<int, greater<int>> arr;
  *
+ * Initializing: O(N)
  * Insert: O(sqrt(N) + log(N))
  * Erase: O(sqrt(N) + log(N))
  * Pop Front: O(sqrt(N))
@@ -35,7 +36,7 @@ struct OrderedSqrtArray {
 private:
     Comparator cmp; // the comparator
     int n; // the size of the array
-    const int SCALE_FACTOR; // the scale factor of sqrt(n)
+    int SCALE_FACTOR; // the scale factor of sqrt(n)
     vector<vector<Value>> a; // the array
     vector<int> prefixSZ; // the prefix array of the sizes of the blocks
 

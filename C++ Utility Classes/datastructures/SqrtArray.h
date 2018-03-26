@@ -18,6 +18,7 @@ public:
  * Usage:
  * SqrtArray<int> arr;
  *
+ * Initializing: O(N)
  * Insert: O(sqrt(N) + log(N))
  * Erase: O(sqrt(N) + log(N))
  * Push Front, Pop Front: O(sqrt(N))
@@ -32,7 +33,7 @@ template <typename Value>
 struct SqrtArray {
 private:
     int n; // the size of the array
-    const int SCALE_FACTOR; // the scale factor of sqrt(n)
+    int SCALE_FACTOR; // the scale factor of sqrt(n)
     vector<vector<Value>> a; // the array
     vector<int> prefixSZ; // the prefix array of the sizes of the blocks
 
