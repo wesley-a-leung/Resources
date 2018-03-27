@@ -26,7 +26,7 @@ public:
  * Push Back, Pop Back: O(1) amortized
  * At, Accessor, Mutator: O(log(N))
  * Front, Back: O(1)
- * Lower Bound, Upper Bound, Floor, Ceiling: O(log(N))
+ * Lower Bound, Upper Bound, Floor, Ceiling, Above, Below: O(log(N))
  * Empty, Size: O(1)
  * Values: O(N)
  */
@@ -352,7 +352,7 @@ public:
 
     /**
      * Returns a pair containing the index and value of the smallest value
-     * greater than to val by the < operator.
+     * greater than to val by the < operator. Identical to above.
      *
      * @pre the structure must be sorted by the < operator
      * @param val the value
@@ -375,7 +375,7 @@ public:
 
     /**
      * Returns a pair containing the index and value of the smallest value
-     * greater than to val based on the comparator.
+     * greater than to val based on the comparator. Identical to above.
      *
      * @pre the structure must be sorted based on the comparator
      * @param val the value
@@ -416,8 +416,8 @@ public:
             else lo = mid + 1;
         }
         if (hi == -1) throw no_such_element_exception("call to floor() resulted in no such value");
-        pair<int, Value> j = a[lo].floor(val);
-        return {prefixSZ[lo] + j.first, j.second};
+        pair<int, Value> j = a[hi].floor(val);
+        return {prefixSZ[hi] + j.first, j.second};
     }
 
     /**
@@ -440,8 +440,8 @@ public:
             else lo = mid + 1;
         }
         if (hi == -1) throw no_such_element_exception("call to floor() resulted in no such value");
-        pair<int, Value> j = a[lo].floor(val, cmp);
-        return {prefixSZ[lo] + j.first, j.second};
+        pair<int, Value> j = a[hi].floor(val, cmp);
+        return {prefixSZ[hi] + j.first, j.second};
     }
 
     /**
@@ -489,6 +489,100 @@ public:
         if (lo == (int) a.size()) throw no_such_element_exception("call to ceiling() resulted in no such value");
         pair<int, Value> j = a[lo].ceiling(val, cmp);
         return {prefixSZ[lo] + j.first, j.second};
+    }
+
+    /**
+     * Returns a pair containing the index and value of the smallest value
+     * greater than to val by the < operator. Identical to upper_bound.
+     *
+     * @pre the structure must be sorted by the < operator
+     * @param val the value
+     * @return a pair containing the index and value of the smallest value
+     * less than or equal to val
+     * @throws no_such_element_exception if val is greater than or equal to
+     * the largest value in the structure
+     */
+    pair<int, Value> above(const Value val) const {
+        int lo = 0, hi = (int) a.size(), mid;
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (val < a[mid].back()) hi = mid;
+            else lo = mid + 1;
+        }
+        if (lo == (int) a.size()) throw no_such_element_exception("call to above() resulted in no such value");
+        pair<int, Value> j = a[lo].above(val);
+        return {prefixSZ[lo] + j.first, j.second};
+    }
+
+    /**
+     * Returns a pair containing the index and value of the smallest value
+     * greater than to val based on the comparator. Identical to upper_bound.
+     *
+     * @pre the structure must be sorted based on the comparator
+     * @param val the value
+     * @param cmp the comparator
+     * @return a pair containing the index and value of the smallest value
+     * less than or equal to val
+     * @throws no_such_element_exception if val is greater than or equal to
+     * the largest value in the structure
+     */
+    template <typename Comparator> pair<int, Value> above(const Value val, Comparator cmp) const {
+        int lo = 0, hi = (int) a.size(), mid;
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(val, a[mid].back())) hi = mid;
+            else lo = mid + 1;
+        }
+        if (lo == (int) a.size()) throw no_such_element_exception("call to above() resulted in no such value");
+        pair<int, Value> j = a[lo].above(val, cmp);
+        return {prefixSZ[lo] + j.first, j.second};
+    }
+
+    /**
+     * Returns a pair containing the index and value of the largest value
+     * less than val by the < operator.
+     *
+     * @pre the structure must be sorted by the < operator
+     * @param val the value
+     * @return a pair containing the index and value of the largest value
+     * less than val
+     * @throws no_such_element_exception if val is less than or equal to the smallest value
+     * in the structure
+     */
+    pair<int, Value> below(const Value val) const {
+        int lo = 0, hi = ((int) a.size()) - 1, mid;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (a[mid].front() < val) lo = mid + 1;
+            else hi = mid - 1;
+        }
+        if (hi == -1) throw no_such_element_exception("call to below() resulted in no such value");
+        pair<int, Value> j = a[hi].below(val);
+        return {prefixSZ[hi] + j.first, j.second};
+    }
+
+    /**
+     * Returns a pair containing the index and value of the largest value
+     * less than val based on the comparator.
+     *
+     * @pre the structure must be sorted based on the comparator
+     * @param val the value
+     * @param cmp the comparator
+     * @return a pair containing the index and value of the largest value
+     * less than val
+     * @throws no_such_element_exception if val is less than or equal to the smallest value
+     * in the structure
+     */
+    template <typename Comparator> pair<int, Value> below(const Value val, Comparator cmp) const {
+        int lo = 0, hi = ((int) a.size()) - 1, mid;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(a[mid].front(), val)) lo = mid + 1;
+            else hi = mid - 1;
+        }
+        if (hi == -1) throw no_such_element_exception("call to below() resulted in no such value");
+        pair<int, Value> j = a[hi].below(val, cmp);
+        return {prefixSZ[hi] + j.first, j.second};
     }
 
     /**
