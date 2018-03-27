@@ -4,12 +4,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class no_such_element_exception: public runtime_error {
-public:
-    no_such_element_exception(): runtime_error("No such element exists"){}
-    no_such_element_exception(string message): runtime_error(message){}
-};
-
 /**
  * Ordered Sqrt Array:
  * Decomposes the array into blocks of size sqrt(n) multiplied by a factor.
@@ -27,7 +21,7 @@ public:
  * At, Accessor: O(log(N))
  * Front, Back: O(1)
  * Rank, Contains: O(log(N))
- * Lower Bound, Upper Bound, Floor, Ceiling: O(log(N))
+ * Lower Bound, Upper Bound, Floor, Ceiling, Above, Below: O(log(N))
  * Empty, Size: O(1)
  * Values: O(N)
  */
@@ -41,7 +35,7 @@ private:
     vector<int> prefixSZ; // the prefix array of the sizes of the blocks
 
     // returns the 2D index of the smallest value greater than or equal to val
-    pair<int, int> lower_bound_ind(const Value val) const {
+    pair<int, int> ceiling_ind(const Value val) const {
         int lo = 0, hi = (int) a.size(), mid;
         while (lo < hi) {
             mid = lo + (hi - lo) / 2;
@@ -60,7 +54,7 @@ private:
     }
 
     // returns the 2D index of the smallest value greater than val
-    pair<int, int> upper_bound_ind(const Value val) const {
+    pair<int, int> above_ind(const Value val) const {
         int lo = 0, hi = (int) a.size(), mid;
         while (lo < hi) {
             mid = lo + (hi - lo) / 2;
@@ -97,7 +91,217 @@ private:
         return {i, hi};
     }
 
+    // returns the 2D index of the largest value less than val
+    pair<int, int> below_ind(const Value val) const {
+        int lo = 0, hi = ((int) a.size()) - 1, mid;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(a[mid].front(), val)) lo = mid + 1;
+            else hi = mid - 1;
+        }
+        if (hi == -1) return {-1, 0};
+        int i = hi;
+        lo = 0, hi = ((int) a[i].size()) - 1;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(a[i][mid], val)) lo = mid + 1;
+            else hi = mid - 1;
+        }
+        return {i, hi};
+    }
+
 public:
+    /**
+     * Random Access Iterator; value can be made constant.
+     *
+     * All operators take O(1) time, except for iter += int, iter -= int,
+     * iter + int, iter - int, iter[], which take O(log(N)) time.
+     */
+    template <typename T, typename Object>
+    class iterator : public std::iterator<std::random_access_iterator_tag, Value> {
+    private:
+        Object &arr = 0;
+        int i = 0, j = 0, k = 0;
+
+        friend class OrderedSqrtArray;
+
+        int getBlockIndex() const {
+            return i;
+        }
+
+        int getNestedIndex() const {
+            return j;
+        }
+
+        int getIndex() const {
+            return k;
+        }
+
+    public:
+        using size_type = int;
+        using value_type = T;
+        using difference_type = std::ptrdiff_t;
+        using pointer = T*;
+        using reference = T&;
+        using iterator_category = std::random_access_iterator_tag;
+
+        iterator() = default;
+
+        iterator(Object &arr, int i, int j, int k) : arr(arr), i(i), j(j), k(k) {}
+
+        iterator(Object &arr, const iterator &other) : arr(arr), i(other.i), j(other.j), k(other.k) {}
+
+        iterator(const iterator &other) = default;
+
+        virtual ~iterator() = default;
+
+        iterator &operator = (const iterator &other) = default;
+
+        reference operator *() const {
+            return arr.a[i][j];
+        }
+
+        pointer operator ->() const {
+            return &(arr.a[i][j]);
+        }
+
+        reference operator [](size_type x) {
+            int k = this->k + x;
+            int lo = 0, hi = ((int) arr.a.size()) - 1, mid;
+            while (lo <= hi) {
+                mid = lo + (hi - lo) / 2;
+                if (k < arr.prefixSZ[mid]) hi = mid - 1;
+                else lo = mid + 1;
+            }
+            int i = hi;
+            int j = k - arr.prefixSZ[hi];
+            return arr.a[i][j];
+        }
+
+        iterator &operator ++() {
+            ++k;
+            if (++j == (int) arr.a[i].size()) {
+                j = 0;
+                i++;
+            }
+            return *this;
+        }
+
+        iterator operator ++(int) {
+            iterator temp = *this;
+            ++k;
+            if (++j == (int) arr.a[i].size()) {
+                j = 0;
+                i++;
+            }
+            return temp;
+        }
+
+        iterator &operator --() {
+            --k;
+            if (--j == -1) {
+                j = ((int) arr.a[--i].size()) - 1;
+            }
+            return *this;
+        }
+
+        iterator operator --(int) {
+            iterator temp = *this;
+            --k;
+            if (--j == -1) {
+                j = ((int) arr.a[--i].size()) - 1;
+            }
+            return temp;
+        }
+
+        iterator &operator +=(size_type x) {
+            k += x;
+            int lo = 0, hi = ((int) arr.a.size()) - 1, mid;
+            while (lo <= hi) {
+                mid = lo + (hi - lo) / 2;
+                if (k < arr.prefixSZ[mid]) hi = mid - 1;
+                else lo = mid + 1;
+            }
+            i = hi;
+            j = k - arr.prefixSZ[hi];
+            return *this;
+        }
+
+        iterator operator +(size_type x) const {
+            int k = this->k + x;
+            int lo = 0, hi = ((int) arr.a.size()) - 1, mid;
+            while (lo <= hi) {
+                mid = lo + (hi - lo) / 2;
+                if (k < arr.prefixSZ[mid]) hi = mid - 1;
+                else lo = mid + 1;
+            }
+            int i = hi;
+            int j = k - arr.prefixSZ[hi];
+            return iterator(arr, i, j, k);
+        }
+
+        friend iterator operator +(size_type x, const iterator &iter) {
+            return iter + x;
+        }
+
+        iterator &operator -=(size_type x) {
+            k -= x;
+            int lo = 0, hi = ((int) arr.a.size()) - 1, mid;
+            while (lo <= hi) {
+                mid = lo + (hi - lo) / 2;
+                if (k < arr.prefixSZ[mid]) hi = mid - 1;
+                else lo = mid + 1;
+            }
+            i = hi;
+            j = k - arr.prefixSZ[hi];
+            return *this;
+        }
+
+        iterator operator -(size_type x) const {
+            int k = this->k - x;
+            int lo = 0, hi = ((int) arr.a.size()) - 1, mid;
+            while (lo <= hi) {
+                mid = lo + (hi - lo) / 2;
+                if (k < arr.prefixSZ[mid]) hi = mid - 1;
+                else lo = mid + 1;
+            }
+            int i = hi;
+            int j = k - arr.prefixSZ[hi];
+            return iterator(arr, i, j, k);
+        }
+
+        difference_type operator -(const iterator &other) const {
+            return k - other.k;
+        }
+
+        bool operator == (const iterator &other) const {
+            return k == other.k;
+        }
+
+        bool operator != (const iterator &other) const {
+            return k != other.k;
+        }
+
+        bool operator < (const iterator &other) const {
+            return k < other.k;
+        }
+
+        bool operator <= (const iterator &other) const {
+            return k <= other.k;
+        }
+
+        bool operator > (const iterator &other) const {
+            return k > other.k;
+        }
+
+        bool operator >= (const iterator &other) const {
+            return k >= other.k;
+        }
+    };
+
+    using forward_iterator = iterator<const Value, const OrderedSqrtArray<Value, Comparator>>;
+    using reverse_iterator = reverse_iterator<forward_iterator>;
+
     /**
      * Initializes an empty structure.
      * @param SCALE_FACTOR scales the value of sqrt(n) by this value
@@ -127,13 +331,23 @@ public:
         }
     }
 
+    OrderedSqrtArray(const OrderedSqrtArray &other) = default;
+
+    OrderedSqrtArray(OrderedSqrtArray &&other) = default;
+
+    virtual ~OrderedSqrtArray() = default;
+
+    OrderedSqrtArray &operator = (const OrderedSqrtArray &other) = default;
+
+    OrderedSqrtArray &operator = (OrderedSqrtArray &&other) = default;
+
     /**
      * Inserts a value into the structure, allowing for duplicates.
      *
      * @param val the value to be inserted
      */
     void insert(const Value val) {
-        pair<int, int> i = upper_bound_ind(val);
+        pair<int, int> i = above_ind(val);
         if (n++ == 0) {
             a.emplace_back();
             prefixSZ.push_back(0);
@@ -159,7 +373,7 @@ public:
      * @return true if the value was in the structure and removed, false otherwise
      */
     bool erase(const Value val) {
-        pair<int, int> i = lower_bound_ind(val);
+        pair<int, int> i = ceiling_ind(val);
         if (i.first == (int) a.size() || a[i.first][i.second] != val) return false;
         --n;
         a[i.first].erase(a[i.first].begin() + i.second);
@@ -274,72 +488,164 @@ public:
      * @return true if the structure contains val, false otherwise
      */
     bool contains(const Value val) const {
-        pair<int, int> i = lower_bound_ind(val);
+        pair<int, int> i = ceiling_ind(val);
         return i.first != (int) a.size() && a[i.first][i.second] == val;
     }
 
     /**
-     * Returns a pair containing the index and value of the smallest value
-     * less than or equal to val. Identical to ceiling.
+     * Returns a constant forward random access iterator to the first element. Identical to cbegin.
      *
-     * @param val the value
-     * @return a pair containing the index and value of the smallest value
-     * greater than or equal to val
-     * @throws no_such_element_exception if val is greater than the largest value
-     * in the structure
+     * @return a constant forward random access iterator to the first element.
      */
-    pair<int, Value> lower_bound(const Value val) const {
-        pair<int, int> i = lower_bound_ind(val);
-        if (i.first == (int) a.size()) throw no_such_element_exception("call to lower_bound() resulted in no such value");
-        return {prefixSZ[i.first] + i.second, a[i.first][i.second]};
+    forward_iterator begin() const {
+        return forward_iterator(*this, 0, 0, 0);
     }
 
     /**
-     * Returns a pair containing the index and value of the smallest value
-     * greater than to val.
+     * Returns a constant forward random access iterator to just past the last element. Identical to cend.
      *
-     * @param val the value
-     * @return a pair containing the index and value of the smallest value
-     * less than or equal to val
-     * @throws no_such_element_exception if val is greater than or equal to
-     * the largest value in the structure
+     * @return a constant forward random access iterator to just past the last element.
      */
-    pair<int, Value> upper_bound(const Value val) const {
-        pair<int, int> i = upper_bound_ind(val);
-        if (i.first == (int) a.size()) throw no_such_element_exception("call to upper_bound() resulted in no such value");
-        return {prefixSZ[i.first] + i.second, a[i.first][i.second]};
+    forward_iterator end() const {
+        return forward_iterator(*this, a.size(), 0, n);
     }
 
     /**
-     * Returns a pair containing the index and value of the largest value
-     * less than or equal to val.
+     * Returns a constant forward random access iterator to the first element. Identical to begin.
+     *
+     * @return a constant forward random access iterator to the first element.
+     */
+    forward_iterator cbegin() const {
+        return forward_iterator(*this, 0, 0, 0);
+    }
+
+    /**
+     * Returns a constant forward random access iterator to just past the last element. Identical to end.
+     *
+     * @return a constant forward random access iterator to just past the last element.
+     */
+    forward_iterator cend() const {
+        return forward_iterator(*this, a.size(), 0, n);
+    }
+
+    /**
+     * Returns a constant reverse random access iterator to just before the first element. Identical to crbegin.
+     *
+     * @return a constant reverse random access iterator to just before the first element.
+     */
+    reverse_iterator rbegin() const {
+        return reverse_iterator(forward_iterator(*this, a.size(), 0, n));
+    }
+
+    /**
+     * Returns a constant reverse random access iterator to the last element. Identical to crend.
+     *
+     * @return a constant reverse random access iterator to the last element.
+     */
+    reverse_iterator rend() const {
+        return reverse_iterator(forward_iterator(*this, 0, 0, 0));
+    }
+
+    /**
+     * Returns a constant reverse random access iterator to just before the first element. Identical to cbegin.
+     *
+     * @return a constant reverse random access iterator to just before the first element.
+     */
+    reverse_iterator crbegin() const {
+        return reverse_iterator(forward_iterator(*this, a.size(), 0, n));
+    }
+
+    /**
+     * Returns a constant reverse random access iterator to the last element. Identical to rend.
+     *
+     * @return a constant reverse random access iterator to the last element.
+     */
+    reverse_iterator crend() const {
+        return reverse_iterator(forward_iterator(*this, 0, 0, 0));
+    }
+
+    /**
+     * Returns an iterator to the first element equal to val.
      *
      * @param val the value
-     * @return a pair containing the index and value of the largest value
-     * less than or equal to val
-     * @throws no_such_element_exception if val is less than the smallest value
-     * in the structure
+     * @return an iterator to the first element equal to val, end() if no such element exists
      */
-    pair<int, Value> floor(const Value val) const {
+    forward_iterator find(const Value val) const {
+        pair<int, int> i = ceiling_ind(val);
+        if (i.first == (int) a.size() || a[i.first][i.second] != val) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns an iterator to the smallest value less than or equal to val. Identical to ceiling.
+     *
+     * @param val the value
+     * @return an iterator to the smallest value less than or equal to val, end() if no such element exists
+     */
+    forward_iterator lower_bound(const Value val) const {
+        pair<int, int> i = ceiling_ind(val);
+        if (i.first == (int) a.size()) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns an iterator to the smallest value greater than to val. Identical to above.
+     *
+     * @param val the value
+     * @return an iterator to the smallest value greater than to val, end() if no such element exists
+     */
+    forward_iterator upper_bound(const Value val) const {
+        pair<int, int> i = above_ind(val);
+        if (i.first == (int) a.size()) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns an iterator to the largest value less than or equal to val.
+     *
+     * @param val the value
+     * @return an iterator to the largest value less than or equal to val, end() if no such element exists
+     */
+    forward_iterator floor(const Value val) const {
         pair<int, int> i = floor_ind(val);
-        if (i.first == -1) throw no_such_element_exception("call to floor() resulted in no such value");
-        return {prefixSZ[i.first] + i.second, a[i.first][i.second]};
+        if (i.first == -1) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
     }
 
     /**
-     * Returns a pair containing the index and value of the smallest value
-     * less than or equal to val. Identical to lower_bound.
+     * Returns an iterator to the smallest value less than or equal to val. Identical to lower_bound.
      *
      * @param val the value
-     * @return a pair containing the index and value of the smallest value
-     * greater than or equal to val
-     * @throws no_such_element_exception if val is greater than the largest value
-     * in the structure
+     * @return an iterator to the smallest value less than or equal to val, end() if no such element exists
      */
-    pair<int, Value> ceiling(const Value val) const {
-        pair<int, int> i = lower_bound_ind(val);
-        if (i.first == (int) a.size()) throw no_such_element_exception("call to ceiling() resulted in no such value");
-        return {prefixSZ[i.first] + i.second, a[i.first][i.second]};
+    forward_iterator ceiling(const Value val) const {
+        pair<int, int> i = ceiling_ind(val);
+        if (i.first == (int) a.size()) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns an iterator to the smallest value greater than to val. Identical to upper_bound.
+     *
+     * @param val the value
+     * @return an iterator to the smallest value greater than to val, end() if no such element exists
+     */
+    forward_iterator above(const Value val) const {
+        pair<int, int> i = above_ind(val);
+        if (i.first == (int) a.size()) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns an iterator to the largest value less than val.
+     *
+     * @param val the value
+     * @return an iterator to the largest value less than val, end() if no such element exists
+     */
+    forward_iterator below(const Value val) const {
+        pair<int, int> i = below_ind(val);
+        if (i.first == -1) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
     }
 
     /**
@@ -355,6 +661,24 @@ public:
             }
         }
         return ret;
+    }
+
+    bool operator ==(OrderedSqrtArray<Value, Comparator> &other) const {
+        if (this == &other) return true;
+        if (n != other.n) return false;
+        for (forward_iterator i = begin(), j = other.begin(); i < end(); i++, j++) {
+            if (*i != *j) return false;
+        }
+        return true;
+    }
+
+    bool operator !=(OrderedSqrtArray<Value, Comparator> &other) const {
+        if (this == &other) return false;
+        if (n != other.n) return true;
+        for (forward_iterator i = begin(), j = other.begin(); i < end(); i++, j++) {
+            if (*i != *j) return true;
+        }
+        return false;
     }
 };
 

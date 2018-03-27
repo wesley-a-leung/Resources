@@ -4,12 +4,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class no_such_element_exception: public runtime_error {
-public:
-    no_such_element_exception(): runtime_error("No such element exists"){}
-    no_such_element_exception(string message): runtime_error(message){}
-};
-
 /**
  * Sqrt Array:
  * Decomposes the array into blocks of size sqrt(n) multiplied by a factor.
@@ -25,7 +19,7 @@ public:
  * Push Back, Pop Back: O(1) amortized
  * At, Accessor, Mutator: O(log(N))
  * Front, Back: O(1)
- * Lower Bound, Upper Bound, Floor, Ceiling: O(log(N))
+ * Lower Bound, Upper Bound, Floor, Ceiling, Above, Below: O(log(N))
  * Empty, Size: O(1)
  * Values: O(N)
  */
@@ -37,7 +31,350 @@ private:
     vector<vector<Value>> a; // the array
     vector<int> prefixSZ; // the prefix array of the sizes of the blocks
 
+    // returns the 2D index of the smallest value greater than or equal to val
+    pair<int, int> ceiling_ind(const Value val) const {
+        int lo = 0, hi = (int) a.size(), mid;
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (a[mid].back() < val) lo = mid + 1;
+            else hi = mid;
+        }
+        if (lo == (int) a.size()) return {(int) a.size(), 0};
+        int i = lo;
+        lo = 0, hi = (int) a[i].size();
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (a[i][mid] < val) lo = mid + 1;
+            else hi = mid;
+        }
+        return {i, lo};
+    }
+
+    // returns the 2D index of the smallest value greater than or equal to val
+    template <typename Comparator> pair<int, int> ceiling_ind(const Value val, Comparator cmp) const {
+        int lo = 0, hi = (int) a.size(), mid;
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(a[mid].back(), val)) lo = mid + 1;
+            else hi = mid;
+        }
+        if (lo == (int) a.size()) return {(int) a.size(), 0};
+        int i = lo;
+        lo = 0, hi = (int) a[i].size();
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(a[i][mid], val)) lo = mid + 1;
+            else hi = mid;
+        }
+        return {i, lo};
+    }
+
+    // returns the 2D index of the smallest value greater than val
+    pair<int, int> above_ind(const Value val) const {
+        int lo = 0, hi = (int) a.size(), mid;
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (val < a[mid].back()) hi = mid;
+            else lo = mid + 1;
+        }
+        if (lo == (int) a.size()) return {(int) a.size(), 0};
+        int i = lo;
+        lo = 0, hi = (int) a[i].size();
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (val < a[i][mid]) hi = mid;
+            else lo = mid + 1;
+        }
+        return {i, lo};
+    }
+
+    // returns the 2D index of the smallest value greater than val
+    template <typename Comparator> pair<int, int> above_ind(const Value val, Comparator cmp) const {
+        int lo = 0, hi = (int) a.size(), mid;
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(val, a[mid].back())) hi = mid;
+            else lo = mid + 1;
+        }
+        if (lo == (int) a.size()) return {(int) a.size(), 0};
+        int i = lo;
+        lo = 0, hi = (int) a[i].size();
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(val, a[i][mid])) hi = mid;
+            else lo = mid + 1;
+        }
+        return {i, lo};
+    }
+
+    // returns the 2D index of the largest value less than or equal to val
+    pair<int, int> floor_ind(const Value val) const {
+        int lo = 0, hi = ((int) a.size()) - 1, mid;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (val < a[mid].front()) hi = mid - 1;
+            else lo = mid + 1;
+        }
+        if (hi == -1) return {-1, 0};
+        int i = hi;
+        lo = 0, hi = ((int) a[i].size()) - 1;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (val < a[i][mid]) hi = mid - 1;
+            else lo = mid + 1;
+        }
+        return {i, hi};
+    }
+
+    // returns the 2D index of the largest value less than or equal to val
+    template <typename Comparator> pair<int, int> floor_ind(const Value val, Comparator cmp) const {
+        int lo = 0, hi = ((int) a.size()) - 1, mid;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(val, a[mid].front())) hi = mid - 1;
+            else lo = mid + 1;
+        }
+        if (hi == -1) return {-1, 0};
+        int i = hi;
+        lo = 0, hi = ((int) a[i].size()) - 1;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(val, a[i][mid])) hi = mid - 1;
+            else lo = mid + 1;
+        }
+        return {i, hi};
+    }
+
+    // returns the 2D index of the largest value less than val
+    pair<int, int> below_ind(const Value val) const {
+        int lo = 0, hi = ((int) a.size()) - 1, mid;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (a[mid].front() < val) lo = mid + 1;
+            else hi = mid - 1;
+        }
+        if (hi == -1) return {-1, 0};
+        int i = hi;
+        lo = 0, hi = ((int) a[i].size()) - 1;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (a[i][mid] < val) lo = mid + 1;
+            else hi = mid - 1;
+        }
+        return {i, hi};
+    }
+
+    // returns the 2D index of the largest value less than val
+    template <typename Comparator> pair<int, int> below_ind(const Value val, Comparator cmp) const {
+        int lo = 0, hi = ((int) a.size()) - 1, mid;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(a[mid].front(), val)) lo = mid + 1;
+            else hi = mid - 1;
+        }
+        if (hi == -1) return {-1, 0};
+        int i = hi;
+        lo = 0, hi = ((int) a[i].size()) - 1;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(a[i][mid], val)) lo = mid + 1;
+            else hi = mid - 1;
+        }
+        return {i, hi};
+    }
+
 public:
+    /**
+     * Random Access Iterator; value can be made constant.
+     *
+     * All operators take O(1) time, except for iter += int, iter -= int,
+     * iter + int, iter - int, iter[], which take O(log(N)) time.
+     */
+    template <typename T, typename Object>
+    class iterator : public std::iterator<std::random_access_iterator_tag, Value> {
+    private:
+        Object &arr = 0;
+        int i = 0, j = 0, k = 0;
+
+        friend class SqrtArray;
+
+        int getBlockIndex() const {
+            return i;
+        }
+
+        int getNestedIndex() const {
+            return j;
+        }
+
+        int getIndex() const {
+            return k;
+        }
+
+    public:
+        using size_type = int;
+        using value_type = T;
+        using difference_type = std::ptrdiff_t;
+        using pointer = T*;
+        using reference = T&;
+        using iterator_category = std::random_access_iterator_tag;
+
+        iterator() = default;
+
+        iterator(Object &arr, int i, int j, int k) : arr(arr), i(i), j(j), k(k) {}
+
+        iterator(const iterator &other) = default;
+
+        virtual ~iterator() = default;
+
+        iterator &operator = (const iterator &other) = default;
+
+        reference operator *() const {
+            return arr.a[i][j];
+        }
+
+        pointer operator ->() const {
+            return &(arr.a[i][j]);
+        }
+
+        reference operator [](size_type x) {
+            int k = this->k + x;
+            int lo = 0, hi = ((int) arr.a.size()) - 1, mid;
+            while (lo <= hi) {
+                mid = lo + (hi - lo) / 2;
+                if (k < arr.prefixSZ[mid]) hi = mid - 1;
+                else lo = mid + 1;
+            }
+            int i = hi;
+            int j = k - arr.prefixSZ[hi];
+            return arr.a[i][j];
+        }
+
+        iterator &operator ++() {
+            ++k;
+            if (++j == (int) arr.a[i].size()) {
+                j = 0;
+                i++;
+            }
+            return *this;
+        }
+
+        iterator operator ++(int) {
+            iterator temp = *this;
+            ++k;
+            if (++j == (int) arr.a[i].size()) {
+                j = 0;
+                i++;
+            }
+            return temp;
+        }
+
+        iterator &operator --() {
+            --k;
+            if (--j == -1) {
+                j = ((int) arr.a[--i].size()) - 1;
+            }
+            return *this;
+        }
+
+        iterator operator --(int) {
+            iterator temp = *this;
+            --k;
+            if (--j == -1) {
+                j = ((int) arr.a[--i].size()) - 1;
+            }
+            return temp;
+        }
+
+        iterator &operator +=(size_type x) {
+            k += x;
+            int lo = 0, hi = ((int) arr.a.size()) - 1, mid;
+            while (lo <= hi) {
+                mid = lo + (hi - lo) / 2;
+                if (k < arr.prefixSZ[mid]) hi = mid - 1;
+                else lo = mid + 1;
+            }
+            i = hi;
+            j = k - arr.prefixSZ[hi];
+            return *this;
+        }
+
+        iterator operator +(size_type x) const {
+            int k = this->k + x;
+            int lo = 0, hi = ((int) arr.a.size()) - 1, mid;
+            while (lo <= hi) {
+                mid = lo + (hi - lo) / 2;
+                if (k < arr.prefixSZ[mid]) hi = mid - 1;
+                else lo = mid + 1;
+            }
+            int i = hi;
+            int j = k - arr.prefixSZ[hi];
+            return iterator(arr, i, j, k);
+        }
+
+        friend iterator operator +(size_type x, const iterator &iter) {
+            return iter + x;
+        }
+
+        iterator &operator -=(size_type x) {
+            k -= x;
+            int lo = 0, hi = ((int) arr.a.size()) - 1, mid;
+            while (lo <= hi) {
+                mid = lo + (hi - lo) / 2;
+                if (k < arr.prefixSZ[mid]) hi = mid - 1;
+                else lo = mid + 1;
+            }
+            i = hi;
+            j = k - arr.prefixSZ[hi];
+            return *this;
+        }
+
+        iterator operator -(size_type x) const {
+            int k = this->k - x;
+            int lo = 0, hi = ((int) arr.a.size()) - 1, mid;
+            while (lo <= hi) {
+                mid = lo + (hi - lo) / 2;
+                if (k < arr.prefixSZ[mid]) hi = mid - 1;
+                else lo = mid + 1;
+            }
+            int i = hi;
+            int j = k - arr.prefixSZ[hi];
+            return iterator(arr, i, j, k);
+        }
+
+        difference_type operator -(const iterator &other) const {
+            return k - other.k;
+        }
+
+        bool operator == (const iterator &other) const {
+            return k == other.k;
+        }
+
+        bool operator != (const iterator &other) const {
+            return k != other.k;
+        }
+
+        bool operator < (const iterator &other) const {
+            return k < other.k;
+        }
+
+        bool operator <= (const iterator &other) const {
+            return k <= other.k;
+        }
+
+        bool operator > (const iterator &other) const {
+            return k > other.k;
+        }
+
+        bool operator >= (const iterator &other) const {
+            return k >= other.k;
+        }
+    };
+
+    using const_forward_iterator = iterator<const Value, const SqrtArray<Value>>;
+    using forward_iterator = iterator<Value, SqrtArray<Value>>;
+    using const_reverse_iterator = reverse_iterator<forward_iterator>;
+    using reverse_iterator = reverse_iterator<forward_iterator>;
+
     /**
      * Initializes an empty structure.
      * @param SCALE_FACTOR scales the value of sqrt(n) by this value
@@ -83,6 +420,16 @@ public:
         }
     }
 
+    SqrtArray(const SqrtArray &other) = default;
+
+    SqrtArray(SqrtArray &&other) = default;
+
+    virtual ~SqrtArray() = default;
+
+    SqrtArray &operator = (const SqrtArray &other) = default;
+
+    SqrtArray &operator = (SqrtArray &&other) = default;
+
     /**
      * Inserts a value before the current kth index of the structure. If k == n,
      * then the value is inserted at the end of the structure.
@@ -113,6 +460,34 @@ public:
         }
         for (int i = hi + 1; i < (int) a.size(); i++) {
             prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
+        }
+    }
+
+    /**
+     * Inserts a value before the iterator location in the structure. If
+     * it = end(), then the element is inserted after the last element.
+     *
+     * @param it the iterator to the element to be inserted right before
+     * @param val the value to be inserted
+     */
+    void insert(forward_iterator it, const Value val) {
+        int i = it.getBlockIndex(), j = it.getNestedIndex();
+        assert(0 <= i && i <= (int) a.size());
+        if (i != (int) a.size()) assert(0 <= j && j < (int) a[i].size());
+        if (n++ == 0) {
+            a.emplace_back();
+            prefixSZ.push_back(0);
+        }
+        if (i == (int) a.size()) a[--i].push_back(val);
+        else a[i].insert(a[i].begin() + j, val);
+        int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
+        if ((int) a[i].size() > 2 * sqrtn) {
+            a.emplace(a.begin() + i + 1, a[i].begin() + sqrtn, a[i].end());
+            a[i].resize(sqrtn);
+            prefixSZ.push_back(0);
+        }
+        for (int k = i + 1; k < (int) a.size(); k++) {
+            prefixSZ[k] = prefixSZ[k - 1] + (int) a[k - 1].size();
         }
     }
 
@@ -177,6 +552,26 @@ public:
         }
         for (int i = hi + 1; i < (int) a.size(); i++) {
             prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
+        }
+    }
+
+    /**
+     * Erases the element at the location of the iterator in the structure.
+     *
+     * @param it the iterator of the location to erase
+     */
+    void erase(forward_iterator it) {
+        int i = it.getBlockIndex(), j = it.getNestedIndex();
+        assert(0 <= i && i <= (int) a.size());
+        assert(0 <= j && j < (int) a[i].size());
+        --n;
+        a[i].erase(a[i].begin() + j);
+        if (a[i].empty()) {
+            a.erase(a.begin() + i);
+            prefixSZ.pop_back();
+        }
+        for (int k = i + 1; k < (int) a.size(); k++) {
+            prefixSZ[k] = prefixSZ[k - 1] + (int) a[k - 1].size();
         }
     }
 
@@ -291,239 +686,479 @@ public:
     }
 
     /**
-     * Returns a pair containing the index and value of the smallest value
-     * less than or equal to val by the < operator. Identical to ceiling.
+     * Returns a forward random access iterator to the first element.
+     *
+     * @return a forward random access iterator to the first element.
+     */
+    forward_iterator begin() {
+        return forward_iterator(*this, 0, 0, 0);
+    }
+
+    /**
+     * Returns a constant forward random access iterator to the first element.
+     *
+     * @return a constant forward random access iterator to the first element.
+     */
+    const_forward_iterator begin() const {
+        return const_forward_iterator(*this, 0, 0, 0);
+    }
+
+    /**
+     * Returns a forward random access iterator to just past the last element.
+     *
+     * @return a forward random access iterator to just past the last element.
+     */
+    forward_iterator end() {
+        return forward_iterator(*this, a.size(), 0, n);
+    }
+
+    /**
+     * Returns a constant forward random access iterator to just past the last element.
+     *
+     * @return a constant forward random access iterator to just past the last element.
+     */
+    const_forward_iterator end() const {
+        return const_forward_iterator(*this, a.size(), 0, n);
+    }
+
+    /**
+     * Returns a constant forward random access iterator to the first element.
+     *
+     * @return a constant forward random access iterator to the first element.
+     */
+    const_forward_iterator cbegin() const {
+        return const_forward_iterator(*this, 0, 0, 0);
+    }
+
+    /**
+     * Returns a constant forward random access iterator to just past the last element.
+     *
+     * @return a constant forward random access iterator to just past the last element.
+     */
+    const_forward_iterator cend() const {
+        return const_forward_iterator(*this, a.size(), 0, n);
+    }
+
+    /**
+     * Returns a reverse random access iterator to just before the first element.
+     *
+     * @return a reverse random access iterator to just before the first element.
+     */
+    reverse_iterator rbegin() {
+        return reverse_iterator(forward_iterator(*this, a.size(), 0, n));
+    }
+
+    /**
+     * Returns a constant reverse random access iterator to just before the first element.
+     *
+     * @return a constant reverse random access iterator to just before the first element.
+     */
+    const_reverse_iterator rbegin() const {
+        return const_reverse_iterator(const_forward_iterator(*this, a.size(), 0, n));
+    }
+
+    /**
+     * Returns a reverse random access iterator to the last element.
+     *
+     * @return a reverse random access iterator to the last element.
+     */
+    reverse_iterator rend() {
+        return reverse_iterator(forward_iterator(*this, 0, 0, 0));
+    }
+
+    /**
+     * Returns a constant reverse random access iterator to the last element.
+     *
+     * @return a constant reverse random access iterator to the last element.
+     */
+    const_reverse_iterator rend() const {
+        return const_reverse_iterator(const_forward_iterator(*this, 0, 0, 0));
+    }
+
+    /**
+     * Returns a constant reverse random access iterator to just before the first element.
+     *
+     * @return a constant reverse random access iterator to just before the first element.
+     */
+    const_reverse_iterator crbegin() const {
+        return const_reverse_iterator(const_forward_iterator(*this, a.size(), 0, n));
+    }
+
+    /**
+     * Returns a constant reverse random access iterator to the last element.
+     *
+     * @return a constant reverse random access iterator to the last element.
+     */
+    const_reverse_iterator crend() const {
+        return const_reverse_iterator(const_forward_iterator(*this, 0, 0, 0));
+    }
+
+    /**
+     * Returns an iterator to the first element equal to val.
      *
      * @pre the structure must be sorted by the < operator
      * @param val the value
-     * @return a pair containing the index and value of the smallest value
-     * greater than or equal to val
-     * @throws no_such_element_exception if val is larger than the largest value
-     * in the structure
+     * @return an iterator to the first element equal to val, end() if no such element exists
      */
-    pair<int, Value> lower_bound(const Value val) const {
-        int lo = 0, hi = (int) a.size(), mid;
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (a[mid].back() < val) lo = mid + 1;
-            else hi = mid;
-        }
-        if (lo == (int) a.size()) throw no_such_element_exception("call to lower_bound() resulted in no such value");
-        int i = lo;
-        lo = 0, hi = (int) a[i].size();
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (a[i][mid] < val) lo = mid + 1;
-            else hi = mid;
-        }
-        return {prefixSZ[i] + lo, a[i][lo]};
+    forward_iterator find(const Value val) {
+        pair<int, int> i = ceiling_ind(val);
+        if (i.first == (int) a.size() || a[i.first][i.second] != val) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
     }
 
     /**
-     * Returns a pair containing the index and value of the smallest value
-     * less than or equal to val based on the comparator. Identical to ceiling.
-     *
-     * @pre the structure must be sorted based on the comparator
-     * @param val the value
-     * @param cmp the comparator
-     * @return a pair containing the index and value of the smallest value
-     * greater than or equal to val
-     * @throws no_such_element_exception if val is larger than the largest value
-     * in the structure
-     */
-    template <typename Comparator> pair<int, Value> lower_bound(const Value val, Comparator cmp) const {
-        int lo = 0, hi = (int) a.size(), mid;
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (cmp(a[mid].back(), val)) lo = mid + 1;
-            else hi = mid;
-        }
-        if (lo == (int) a.size()) throw no_such_element_exception("call to lower_bound() resulted in no such value");
-        int i = lo;
-        lo = 0, hi = (int) a[i].size();
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (cmp(a[i][mid], val)) lo = mid + 1;
-            else hi = mid;
-        }
-        return {prefixSZ[i] + lo, a[i][lo]};
-    }
-
-    /**
-     * Returns a pair containing the index and value of the smallest value
-     * greater than to val by the < operator.
+     * Returns a constant iterator to the first element equal to val.
      *
      * @pre the structure must be sorted by the < operator
      * @param val the value
-     * @return a pair containing the index and value of the smallest value
-     * less than or equal to val
-     * @throws no_such_element_exception if val is greater than or equal to
-     * the largest value in the structure
+     * @return a constant iterator to the first element equal to val, end() if no such element exists
      */
-    pair<int, Value> upper_bound(const Value val) const {
-        int lo = 0, hi = (int) a.size(), mid;
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (val < a[mid].back()) hi = mid;
-            else lo = mid + 1;
-        }
-        if (lo == (int) a.size()) throw no_such_element_exception("call to upper_bound() resulted in no such value");
-        int i = lo;
-        lo = 0, hi = (int) a[i].size();
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (val < a[i][mid]) hi = mid;
-            else lo = mid + 1;
-        }
-        return {prefixSZ[i] + lo, a[i][lo]};
+    const_forward_iterator find(const Value val) const {
+        pair<int, int> i = ceiling_ind(val);
+        if (i.first == (int) a.size() || a[i.first][i.second] != val) return end();
+        return const_forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
     }
 
     /**
-     * Returns a pair containing the index and value of the smallest value
-     * greater than to val based on the comparator.
+     * Returns an iterator to the first element equal to val.
      *
-     * @pre the structure must be sorted based on the comparator
+     * @pre the structure must be sorted by the comparator
      * @param val the value
      * @param cmp the comparator
-     * @return a pair containing the index and value of the smallest value
-     * less than or equal to val
-     * @throws no_such_element_exception if val is greater than or equal to
-     * the largest value in the structure
+     * @return an iterator to the first element equal to val, end() if no such element exists
      */
-    template <typename Comparator> pair<int, Value> upper_bound(const Value val, Comparator cmp) const {
-        int lo = 0, hi = (int) a.size(), mid;
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (cmp(val, a[mid].back())) hi = mid;
-            else lo = mid + 1;
-        }
-        if (lo == (int) a.size()) throw no_such_element_exception("call to upper_bound() resulted in no such value");
-        int i = lo;
-        lo = 0, hi = (int) a[i].size();
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (cmp(val, a[i][mid])) hi = mid;
-            else lo = mid + 1;
-        }
-        return {prefixSZ[i] + lo, a[i][lo]};
+    template <typename Comparator> forward_iterator find(const Value val, Comparator cmp) {
+        pair<int, int> i = ceiling_ind(val, cmp);
+        if (i.first == (int) a.size() || a[i.first][i.second] != val) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
     }
 
     /**
-     * Returns a pair containing the index and value of the largest value
-     * less than or equal to val by the < operator.
+     * Returns a constant iterator to the first element equal to val.
+     *
+     * @pre the structure must be sorted by the comparator
+     * @param val the value
+     * @param cmp the comparator
+     * @return a constant iterator to the first element equal to val, end() if no such element exists
+     */
+    template <typename Comparator> const_forward_iterator find(const Value val, Comparator cmp) const {
+        pair<int, int> i = ceiling_ind(val, cmp);
+        if (i.first == (int) a.size() || a[i.first][i.second] != val) return end();
+        return const_forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns an iterator to the smallest value less than or equal to val. Identical to ceiling.
      *
      * @pre the structure must be sorted by the < operator
      * @param val the value
-     * @return a pair containing the index and value of the largest value
-     * less than or equal to val
-     * @throws no_such_element_exception if val is less than the smallest value
-     * in the structure
+     * @return an iterator to the smallest value less than or equal to val, end() if no such element exists
      */
-    pair<int, Value> floor(const Value val) const {
-        int lo = 0, hi = ((int) a.size()) - 1, mid;
-        while (lo <= hi) {
-            mid = lo + (hi - lo) / 2;
-            if (val < a[mid].front()) hi = mid - 1;
-            else lo = mid + 1;
-        }
-        if (hi == -1) throw no_such_element_exception("call to floor() resulted in no such value");
-        int i = hi;
-        lo = 0, hi = ((int) a[i].size()) - 1;
-        while (lo <= hi) {
-            mid = lo + (hi - lo) / 2;
-            if (val < a[i][mid]) hi = mid - 1;
-            else lo = mid + 1;
-        }
-        return {prefixSZ[i] + hi, a[i][hi]};
+    forward_iterator lower_bound(const Value val) {
+        pair<int, int> i = ceiling_ind(val);
+        if (i.first == (int) a.size()) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
     }
 
     /**
-     * Returns a pair containing the index and value of the largest value
-     * less than or equal to val based on the comparator.
+     * Returns a constant iterator to the smallest value less than or equal to val. Identical to ceiling.
      *
-     * @pre the structure must be sorted based on the comparator
+     * @pre the structure must be sorted by the < operator
+     * @param val the value
+     * @return a constant iterator to the smallest value less than or equal to val, end() if no such element exists
+     */
+    const_forward_iterator lower_bound(const Value val) const {
+        pair<int, int> i = ceiling_ind(val);
+        if (i.first == (int) a.size()) return end();
+        return const_forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns an iterator to the smallest value less than or equal to val. Identical to ceiling.
+     *
+     * @pre the structure must be sorted by the comparator
      * @param val the value
      * @param cmp the comparator
-     * @return a pair containing the index and value of the largest value
-     * less than or equal to val
-     * @throws no_such_element_exception if val is less than the smallest value
-     * in the structure
+     * @return an iterator to the smallest value less than or equal to val, end() if no such element exists
      */
-    template <typename Comparator> pair<int, Value> floor(const Value val, Comparator cmp) const {
-        int lo = 0, hi = ((int) a.size()) - 1, mid;
-        while (lo <= hi) {
-            mid = lo + (hi - lo) / 2;
-            if (cmp(val, a[mid].front())) hi = mid - 1;
-            else lo = mid + 1;
-        }
-        if (hi == -1) throw no_such_element_exception("call to floor() resulted in no such value");
-        int i = hi;
-        lo = 0, hi = ((int) a[i].size()) - 1;
-        while (lo <= hi) {
-            mid = lo + (hi - lo) / 2;
-            if (cmp(val, a[i][mid])) hi = mid - 1;
-            else lo = mid + 1;
-        }
-        return {prefixSZ[i] + hi, a[i][hi]};
+    template <typename Comparator> forward_iterator lower_bound(const Value val, Comparator cmp) {
+        pair<int, int> i = ceiling_ind(val, cmp);
+        if (i.first == (int) a.size()) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
     }
 
     /**
-     * Returns a pair containing the index and value of the smallest value
-     * less than or equal to val by the < operator. Identical to lower_bound.
+     * Returns a constant iterator to the smallest value less than or equal to val. Identical to ceiling.
      *
-     * @pre the structure must be sorted
-     * @param val the value
-     * @return a pair containing the index and value of the smallest value
-     * greater than or equal to val
-     * @throws no_such_element_exception if val is greater than the largest value
-     * in the structure
-     */
-    pair<int, Value> ceiling(const Value val) const {
-        int lo = 0, hi = (int) a.size(), mid;
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (a[mid].back() < val) lo = mid + 1;
-            else hi = mid;
-        }
-        if (lo == (int) a.size()) throw no_such_element_exception("call to ceiling() resulted in no such value");
-        int i = lo;
-        lo = 0, hi = (int) a[i].size();
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (a[i][mid] < val) lo = mid + 1;
-            else hi = mid;
-        }
-        return {prefixSZ[i] + lo, a[i][lo]};
-    }
-
-    /**
-     * Returns a pair containing the index and value of the smallest value
-     * less than or equal to val based on the comparator. Identical to lower_bound.
-     *
-     * @pre the structure must be sorted based on the comparator
+     * @pre the structure must be sorted by the comparator
      * @param val the value
      * @param cmp the comparator
-     * @return a pair containing the index and value of the smallest value
-     * greater than or equal to val
-     * @throws no_such_element_exception if val is greater than the largest value
-     * in the structure
+     * @return a constant iterator to the smallest value less than or equal to val, end() if no such element exists
      */
-    template <typename Comparator> pair<int, Value> ceiling(const Value val, Comparator cmp) const {
-        int lo = 0, hi = (int) a.size(), mid;
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (cmp(a[mid].back(), val)) lo = mid + 1;
-            else hi = mid;
-        }
-        if (lo == (int) a.size()) throw no_such_element_exception("call to ceiling() resulted in no such value");
-        int i = lo;
-        lo = 0, hi = (int) a[i].size();
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (cmp(a[i][mid], val)) lo = mid + 1;
-            else hi = mid;
-        }
-        return {prefixSZ[i] + lo, a[i][lo]};
+    template <typename Comparator> const_forward_iterator lower_bound(const Value val, Comparator cmp) const {
+        pair<int, int> i = ceiling_ind(val, cmp);
+        if (i.first == (int) a.size()) return end();
+        return const_forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns an iterator to the smallest value greater than to val. Identical to above.
+     *
+     * @pre the structure must be sorted by the < operator
+     * @param val the value
+     * @return an iterator to the smallest value greater than to val, end() if no such element exists
+     */
+    forward_iterator upper_bound(const Value val) {
+        pair<int, int> i = above_ind(val);
+        if (i.first == (int) a.size()) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns a constant iterator to the smallest value greater than to val. Identical to above.
+     *
+     * @pre the structure must be sorted by the < operator
+     * @param val the value
+     * @return a constant iterator to the smallest value greater than to val, end() if no such element exists
+     */
+    const_forward_iterator upper_bound(const Value val) const {
+        pair<int, int> i = above_ind(val);
+        if (i.first == (int) a.size()) return end();
+        return const_forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns an iterator to the smallest value greater than to val. Identical to above.
+     *
+     * @pre the structure must be sorted by the comparator
+     * @param val the value
+     * @return an iterator to the smallest value greater than to val, end() if no such element exists
+     */
+    template <typename Comparator> forward_iterator upper_bound(const Value val, Comparator cmp) {
+        pair<int, int> i = above_ind(val, cmp);
+        if (i.first == (int) a.size()) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns a constant iterator to the smallest value greater than to val. Identical to above.
+     *
+     * @pre the structure must be sorted by the comparator
+     * @param val the value
+     * @return a constant iterator to the smallest value greater than to val, end() if no such element exists
+     */
+    template <typename Comparator> const_forward_iterator upper_bound(const Value val, Comparator cmp) const {
+        pair<int, int> i = above_ind(val, cmp);
+        if (i.first == (int) a.size()) return end();
+        return const_forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns an iterator to the largest value less than or equal to val.
+     *
+     * @pre the structure must be sorted by the < operator
+     * @param val the value
+     * @return an iterator to the largest value less than or equal to val, end() if no such element exists
+     */
+    forward_iterator floor(const Value val) {
+        pair<int, int> i = floor_ind(val);
+        if (i.first == -1) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns a constant iterator to the largest value less than or equal to val.
+     *
+     * @pre the structure must be sorted by the < operator
+     * @param val the value
+     * @return a constant iterator to the largest value less than or equal to val, end() if no such element exists
+     */
+    const_forward_iterator floor(const Value val) const {
+        pair<int, int> i = floor_ind(val);
+        if (i.first == -1) return end();
+        return const_forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns an iterator to the largest value less than or equal to val.
+     *
+     * @pre the structure must be sorted by the the comparator
+     * @param val the value
+     * @return an iterator to the largest value less than or equal to val, end() if no such element exists
+     */
+    template <typename Comparator> forward_iterator floor(const Value val,  Comparator cmp) {
+        pair<int, int> i = floor_ind(val, cmp);
+        if (i.first == -1) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns a constant iterator to the largest value less than or equal to val.
+     *
+     * @pre the structure must be sorted by the comparator
+     * @param val the value
+     * @return a constant iterator to the largest value less than or equal to val, end() if no such element exists
+     */
+    template <typename Comparator> const_forward_iterator floor(const Value val, Comparator cmp) const {
+        pair<int, int> i = floor_ind(val, cmp);
+        if (i.first == -1) return end();
+        return const_forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns an iterator to the smallest value less than or equal to val. Identical to lower_bound.
+     *
+     * @pre the structure must be sorted by the < operator
+     * @param val the value
+     * @return an iterator to the smallest value less than or equal to val, end() if no such element exists
+     */
+    forward_iterator ceiling(const Value val) {
+        pair<int, int> i = ceiling_ind(val);
+        if (i.first == (int) a.size()) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns a constant iterator to the smallest value less than or equal to val. Identical to lower_bound.
+     *
+     * @pre the structure must be sorted by the < operator
+     * @param val the value
+     * @return a constant iterator to the smallest value less than or equal to val, end() if no such element exists
+     */
+    const_forward_iterator ceiling(const Value val) const {
+        pair<int, int> i = ceiling_ind(val);
+        if (i.first == (int) a.size()) return end();
+        return const_forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns an iterator to the smallest value less than or equal to val. Identical to lower_bound.
+     *
+     * @pre the structure must be sorted by the comparator
+     * @param val the value
+     * @return an iterator to the smallest value less than or equal to val, end() if no such element exists
+     */
+    template <typename Comparator> forward_iterator ceiling(const Value val, Comparator cmp) {
+        pair<int, int> i = ceiling_ind(val, cmp);
+        if (i.first == (int) a.size()) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns a constant iterator to the smallest value less than or equal to val. Identical to lower_bound.
+     *
+     * @pre the structure must be sorted by the comparator
+     * @param val the value
+     * @return a constant iterator to the smallest value less than or equal to val, end() if no such element exists
+     */
+    template <typename Comparator> const_forward_iterator ceiling(const Value val, Comparator cmp) const {
+        pair<int, int> i = ceiling_ind(val, cmp);
+        if (i.first == (int) a.size()) return end();
+        return const_forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns an iterator to the smallest value greater than to val. Identical to upper_bound.
+     *
+     * @pre the structure must be sorted by the < operator
+     * @param val the value
+     * @return an iterator to the smallest value greater than to val, end() if no such element exists
+     */
+    forward_iterator above(const Value val) {
+        pair<int, int> i = above_ind(val);
+        if (i.first == (int) a.size()) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns a constant iterator to the smallest value greater than to val. Identical to upper_bound.
+     *
+     * @pre the structure must be sorted by the < operator
+     * @param val the value
+     * @return a constant iterator to the smallest value greater than to val, end() if no such element exists
+     */
+    const_forward_iterator above(const Value val) const {
+        pair<int, int> i = above_ind(val);
+        if (i.first == (int) a.size()) return end();
+        return const_forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns an iterator to the smallest value greater than to val. Identical to upper_bound.
+     *
+     * @pre the structure must be sorted by the comparator
+     * @param val the value
+     * @return an iterator to the smallest value greater than to val, end() if no such element exists
+     */
+    template <typename Comparator> forward_iterator above(const Value val, Comparator cmp) {
+        pair<int, int> i = above_ind(val, cmp);
+        if (i.first == (int) a.size()) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns a constant iterator to the smallest value greater than to val. Identical to upper_bound.
+     *
+     * @pre the structure must be sorted by the comparator
+     * @param val the value
+     * @return a constant iterator to the smallest value greater than to val, end() if no such element exists
+     */
+    template <typename Comparator> const_forward_iterator above(const Value val, Comparator cmp) const {
+        pair<int, int> i = above_ind(val, cmp);
+        if (i.first == (int) a.size()) return end();
+        return const_forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns an iterator to the largest value less than val.
+     *
+     * @param the structure must be sorted by the < operator
+     * @param val the value
+     * @return an iterator to the largest value less than val, end() if no such element exists
+     */
+    forward_iterator below(const Value val) {
+        pair<int, int> i = below_ind(val);
+        if (i.first == -1) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns a constant iterator to the largest value less than val.
+     *
+     * @pre the structure must be sorted by the < operator
+     * @param val the value
+     * @return a constant iterator to the largest value less than val, end() if no such element exists
+     */
+    const_forward_iterator below(const Value val) const {
+        pair<int, int> i = below_ind(val);
+        if (i.first == -1) return end();
+        return const_forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns an iterator to the largest value less than val.
+     *
+     * @pre the structure must be sorted by the comparator
+     * @param val the value
+     * @return an iterator to the largest value less than val, end() if no such element exists
+     */
+    template <typename Comparator> forward_iterator below(const Value val, Comparator cmp) {
+        pair<int, int> i = below_ind(val, cmp);
+        if (i.first == -1) return end();
+        return forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
+    }
+
+    /**
+     * Returns a constant iterator to the largest value less than val.
+     *
+     * @pre the structure must be sorted by the comparator
+     * @param val the value
+     * @return a constant iterator to the largest value less than val, end() if no such element exists
+     */
+    template <typename Comparator> const_forward_iterator below(const Value val, Comparator cmp) const {
+        pair<int, int> i = below_ind(val, cmp);
+        if (i.first == -1) return end();
+        return const_forward_iterator(*this, i.first, i.second, prefixSZ[i.first] + i.second);
     }
 
     /**
@@ -546,17 +1181,13 @@ public:
      */
     void sort() {
         vector<Value> b;
-        for (int i = 0; i < (int) a.size(); i++) {
-            for (int j = 0; j < (int) a[i].size(); j++) {
-                b.push_back(a[i][j]);
-            }
+        for (forward_iterator i = begin(); i < end(); i++) {
+            b.push_back(*i);
         }
         std::sort(b.begin(), b.end());
         int k = 0;
-        for (int i = 0; i < (int) a.size(); i++) {
-            for (int j = 0; j < (int) a[i].size(); j++) {
-                a[i][j] = b[k++];
-            }
+        for (forward_iterator i = begin(); i < end(); i++) {
+            *i = b[k++];
         }
     }
 
@@ -566,18 +1197,32 @@ public:
      */
     template <typename Comparator> void sort(Comparator cmp) {
         vector<Value> b;
-        for (int i = 0; i < (int) a.size(); i++) {
-            for (int j = 0; j < (int) a[i].size(); j++) {
-                b.push_back(a[i][j]);
-            }
+        for (forward_iterator i = begin(); i < end(); i++) {
+            b.push_back(*i);
         }
         std::sort(b.begin(), b.end(), cmp);
         int k = 0;
-        for (int i = 0; i < (int) a.size(); i++) {
-            for (int j = 0; j < (int) a[i].size(); j++) {
-                a[i][j] = b[k++];
-            }
+        for (forward_iterator i = begin(); i < end(); i++) {
+            *i = b[k++];
         }
+    }
+
+    bool operator ==(SqrtArray<Value> &other) const {
+        if (this == &other) return true;
+        if (n != other.n) return false;
+        for (forward_iterator i = begin(), j = other.begin(); i < end(); i++, j++) {
+            if (*i != *j) return false;
+        }
+        return true;
+    }
+
+    bool operator !=(SqrtArray<Value> &other) const {
+        if (this == &other) return false;
+        if (n != other.n) return true;
+        for (forward_iterator i = begin(), j = other.begin(); i < end(); i++, j++) {
+            if (*i != *j) return true;
+        }
+        return false;
     }
 };
 
