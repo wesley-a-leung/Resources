@@ -1,4 +1,4 @@
-package stdlib;
+package utils;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;

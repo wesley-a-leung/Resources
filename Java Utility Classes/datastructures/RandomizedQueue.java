@@ -3,7 +3,7 @@ package datastructures;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import stdlib.StdRandom;
+import utils.StdRandom;
 
 /**
  *  The {@code RandomizedQueue} class represents a queue of generic items

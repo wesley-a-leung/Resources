@@ -1,5 +1,5 @@
-#ifndef STDLIB_FASTIO_H_
-#define STDLIB_FASTIO_H_
+#ifndef UTILS_FASTIO_H_
+#define UTILS_FASTIO_H_
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -512,4 +512,4 @@ void flush() { output->flush(); }
  * - Iterator first, int count
  ******************************************************************************/
 
-#endif /* STDLIB_FASTIO_H_ */
+#endif /* UTILS_FASTIO_H_ */

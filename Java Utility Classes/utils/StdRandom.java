@@ -1,4 +1,4 @@
-package stdlib;
+package utils;
 
 /******************************************************************************
  *  Compilation:  javac StdRandom.java
