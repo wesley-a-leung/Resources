@@ -31,14 +31,15 @@ public:
  * Empty, Size: O(1)
  * Values: O(N)
  */
-template <typename Value, typename Comparator = less<Value>>
+template <typename Value, typename Comparator = less<Value>, typename SmallAlloc = allocator<Value>,
+        typename LargeAlloc = allocator<vector<Value>>, typename IntAlloc = allocator<int>>
 struct OrderedSqrtArray {
 private:
     Comparator cmp; // the comparator
     int n; // the size of the array
     int SCALE_FACTOR; // the scale factor of sqrt(n)
-    vector<vector<Value>> a; // the array
-    vector<int> prefixSZ; // the prefix array of the sizes of the blocks
+    vector<vector<Value, SmallAlloc>, LargeAlloc> a; // the array
+    vector<int, IntAlloc> prefixSZ; // the prefix array of the sizes of the blocks
 
     // returns the 2D index of the smallest value greater than or equal to val
     pair<int, int> ceiling_ind(const Value val) const {
@@ -398,8 +399,8 @@ public:
      *
      * @return a vector containing all values in the structure
      */
-    vector<Value> values() const {
-        vector<Value> ret;
+    vector<Value, SmallAlloc> values() const {
+        vector<Value, SmallAlloc> ret;
         for (int i = 0; i < (int) a.size(); i++) {
             for (int j = 0; j < (int) a[i].size(); j++) {
                 ret.push_back(a[i][j]);

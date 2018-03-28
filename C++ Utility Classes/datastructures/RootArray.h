@@ -30,13 +30,14 @@ public:
  * Empty, Size: O(1)
  * Values: O(N)
  */
-template <const int R, typename Value, typename Container>
+template <const int R, typename Value, typename Container, typename SmallAlloc = allocator<Value>,
+        typename LargeAlloc = allocator<Container>, typename IntAlloc = allocator<int>>
 struct RootArray {
 private:
     int n; // the size of the array
     int SCALE_FACTOR; // the scale factor of sqrt(n)
-    vector<Container> a; // the array
-    vector<int> prefixSZ; // the prefix array of the sizes of the blocks
+    vector<Container, LargeAlloc> a; // the array
+    vector<int, IntAlloc> prefixSZ; // the prefix array of the sizes of the blocks
 
 public:
     /**
@@ -108,7 +109,7 @@ public:
         else a[hi].insert(k, val);
         int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
         if ((int) a[hi].size() > 2 * rootn) {
-            vector<Value> b;
+            vector<Value, SmallAlloc> b;
             while (a[hi].size() > rootn) {
                 b.push_back(a[hi].back());
                 a[hi].pop_back();
@@ -134,7 +135,7 @@ public:
         a.front().push_front(val);
         int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
         if ((int) a.front().size() > 2 * rootn) {
-            vector<Value> b;
+            vector<Value, SmallAlloc> b;
             while (a.front().size() > rootn) {
                 b.push_back(a.front().back());
                 a.front().pop_back();
@@ -157,7 +158,7 @@ public:
         a.back().push_back(val);
         int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
         if ((int) a.back().size() > 2 * rootn) {
-            vector<Value> b;
+            vector<Value, SmallAlloc> b;
             while (a.back().size() > rootn) {
                 b.push_back(a.back().back());
                 a.back().pop_back();
@@ -590,8 +591,8 @@ public:
      *
      * @return a vector containing all values in the structure
      */
-    vector<Value> values() const {
-        vector<Value> ret;
+    vector<Value, SmallAlloc> values() const {
+        vector<Value, SmallAlloc> ret;
         for (int i = 0; i < (int) a.size(); i++) {
             for (Value x : a[i].values()) {
                 ret.push_back(x);
@@ -604,7 +605,7 @@ public:
      * Sorts the structure by creating an auxiliary array.
      */
     void sort() {
-        vector<Value> b;
+        vector<Value, SmallAlloc> b;
         for (int i = 0; i < (int) a.size(); i++) {
             for (Value x : a[i].values()) {
                 b.push_back(x);
@@ -624,7 +625,7 @@ public:
      * @param cmp the comparator
      */
     template <typename Comparator> void sort(Comparator cmp) {
-        vector<Value> b;
+        vector<Value, SmallAlloc> b;
         for (int i = 0; i < (int) a.size(); i++) {
             for (Value x : a[i].values()) {
                 b.push_back(x);

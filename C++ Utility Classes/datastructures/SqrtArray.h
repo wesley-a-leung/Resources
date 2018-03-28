@@ -29,13 +29,14 @@ public:
  * Empty, Size: O(1)
  * Values: O(N)
  */
-template <typename Value>
+template <typename Value, typename SmallAlloc = allocator<Value>,
+        typename LargeAlloc = allocator<vector<Value>>, typename IntAlloc = allocator<int>>
 struct SqrtArray {
 private:
     int n; // the size of the array
     int SCALE_FACTOR; // the scale factor of sqrt(n)
-    vector<vector<Value>> a; // the array
-    vector<int> prefixSZ; // the prefix array of the sizes of the blocks
+    vector<vector<Value, SmallAlloc>, LargeAlloc> a; // the array
+    vector<int, IntAlloc> prefixSZ; // the prefix array of the sizes of the blocks
 
 public:
     /**
@@ -54,7 +55,7 @@ public:
         assert(n >= 0);
         int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
         for (int i = 0; i < n; i += sqrtn) {
-            a.push_back(vector<Value>(min(sqrtn, n - i)));
+            a.emplace_back(min(sqrtn, n - i));
             prefixSZ.push_back(0);
         }
         for (int i = 1; i < (int) a.size(); i++) {
@@ -649,8 +650,8 @@ public:
      *
      * @return a vector containing all values in the structure
      */
-    vector<Value> values() const {
-        vector<Value> ret;
+    vector<Value, SmallAlloc> values() const {
+        vector<Value, SmallAlloc> ret;
         for (int i = 0; i < (int) a.size(); i++) {
             for (int j = 0; j < (int) a[i].size(); j++) {
                 ret.push_back(a[i][j]);
@@ -663,7 +664,7 @@ public:
      * Sorts the structure by creating an auxiliary array.
      */
     void sort() {
-        vector<Value> b;
+        vector<Value, SmallAlloc> b;
         for (int i = 0; i < (int) a.size(); i++) {
             for (int j = 0; j < (int) a[i].size(); j++) {
                 b.push_back(a[i][j]);
@@ -683,7 +684,7 @@ public:
      * @param cmp the comparator
      */
     template <typename Comparator> void sort(Comparator cmp) {
-        vector<Value> b;
+        vector<Value, SmallAlloc> b;
         for (int i = 0; i < (int) a.size(); i++) {
             for (int j = 0; j < (int) a[i].size(); j++) {
                 b.push_back(a[i][j]);
