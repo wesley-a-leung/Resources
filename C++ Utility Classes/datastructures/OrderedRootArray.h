@@ -32,14 +32,15 @@ public:
  * Empty, Size: O(1)
  * Values: O(N)
  */
-template <const int R, typename Value, typename Container, typename Comparator = less<Value>>
+template <const int R, typename Value, typename Container, typename Comparator = less<Value>,
+        typename SmallAlloc = allocator<Value>, typename LargeAlloc = allocator<Container>, typename IntAlloc = allocator<int>>
 struct OrderedRootArray {
 private:
     Comparator cmp; // the comparator
     int n; // the size of the array
     int SCALE_FACTOR; // the scale factor
-    vector<Container> a; // the array
-    vector<int> prefixSZ; // the prefix array of the sizes of the blocks
+    vector<Container, LargeAlloc> a; // the array
+    vector<int, IntAlloc> prefixSZ; // the prefix array of the sizes of the blocks
 
     // returns the index of the container with the smallest value greater than or equal to val
     int ceiling_ind(const Value val) const {
@@ -130,7 +131,7 @@ public:
         else a[i].insert(val);
         int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
         if ((int) a[i].size() > 2 * rootn) {
-            vector<Value> b;
+            vector<Value, SmallAlloc> b;
             while (a[i].size() > rootn) {
                 b.push_back(a[i].back());
                 a[i].pop_back();
@@ -377,8 +378,8 @@ public:
      *
      * @return a vector containing all values in the structure
      */
-    vector<Value> values() const {
-        vector<Value> ret;
+    vector<Value, SmallAlloc> values() const {
+        vector<Value, SmallAlloc> ret;
         for (int i = 0; i < (int) a.size(); i++) {
             for (Value x : a[i].values()) {
                 ret.push_back(x);
