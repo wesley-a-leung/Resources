@@ -176,9 +176,8 @@ public:
         }
     }
 
-    void addNode(int v, int value) {
-        nodes.push_back(new Node(v, value));
-        V++;
+    void addNode(int value) {
+        nodes.push_back(new Node(V++, value));
     }
 
     bool link(int v, int w) {

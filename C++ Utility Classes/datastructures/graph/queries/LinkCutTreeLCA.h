@@ -94,9 +94,8 @@ public:
         }
     }
 
-    void addNode(int v, int value) {
-        nodes.push_back(new Node(v));
-        V++;
+    void addNode() {
+        nodes.push_back(new Node(V++));
     }
 
     bool link(int v, int w) {
