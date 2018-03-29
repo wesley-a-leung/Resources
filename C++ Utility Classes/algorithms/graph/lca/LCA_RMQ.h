@@ -18,13 +18,13 @@ private:
     int ind;
     int lg;
 
-    void dfs(int v, int prev) {
+    void dfs(int v, int d, int prev) {
+        depth[v] = d;
         head[v] = ind;
         rmq[0][ind++] = v;
         for (int w : adj[v]) {
             if (w == prev) continue;
-            depth[w] = depth[v] + 1;
-            dfs(w, v);
+            dfs(w, d + 1, v);
             rmq[0][ind++] = v;
         }
     }
@@ -68,8 +68,7 @@ public:
      * @param root the root of the tree
      */
     void compute(int root = 0) {
-        depth[root] = 0;
-        dfs(root, -1);
+        dfs(root, 0, -1);
         for (int i = 0; i < lg - 1; i++) {
             for (int j = 0; j < ind; j++) {
                 rmq[i + 1][j] = minDepth(rmq[i][j], rmq[i][min(j + (1 << i), ind - 1)]);
