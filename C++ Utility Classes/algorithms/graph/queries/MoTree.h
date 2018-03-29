@@ -13,8 +13,8 @@ using namespace std;
 class MoTree {
 private:
     bool *vis;
-    int *a, *depth, *parent, *chain, *size, *head, *pre, *post, *vertex, *cnt, *ans;
-    int V, Q, chainNum, cur, res;
+    int *a, *depth, *head, **rmq, *pre, *post, *vertex, *cnt, *ans;
+    int V, Q, lg, ind, cur, res;
 
     struct Query {
         int l, r, lca, ind, block;
@@ -29,41 +29,29 @@ private:
         vertex[cur] = v;
         pre[v] = cur++;
         depth[v] = d;
-        parent[v] = prev;
-        size[v] = 1;
+        head[v] = ind;
+        rmq[0][ind++] = v;
         for (int w : G->adj(v)) {
-            if (w != prev) {
-                dfs(G, w, d + 1, v);
-                size[v] += size[w];
-            }
+            if (w == prev) continue;
+            dfs(G, w, d + 1, v);
+            rmq[0][ind++] = v;
         }
         vertex[cur] = v;
         post[v] = cur++;
     }
 
-    void hld(Graph *G, int v, int prev) {
-        if (head[chainNum] == -1) head[chainNum] = v;
-        chain[v] = chainNum;
-        int maxIndex = -1;
-        for (int w : G->adj(v)) {
-            if (w != prev && (maxIndex == -1 || size[maxIndex] < size[w])) maxIndex = w;
-        }
-        if (maxIndex != -1) hld(G, maxIndex, v);
-        for (int w : G->adj(v)) {
-            if (w != prev && w != maxIndex) {
-                chainNum++;
-                hld(G, w, v);
-            }
-        }
+    inline int minDepth(int v, int w) {
+        return depth[v] < depth[w] ? v : w;
+    }
+
+    inline int RMQ(int l, int r) {
+        int i = 31 - __builtin_clz(r - l + 1);
+        return minDepth(rmq[i][l], rmq[i][r - (1 << i) + 1]);
     }
 
     int lca(int v, int w) {
-        while (chain[v] != chain[w]) {
-            if (depth[head[chain[v]]] < depth[head[chain[w]]]) w = parent[head[chain[w]]];
-            else v = parent[head[chain[v]]];
-        }
-        if (depth[v] < depth[w]) return v;
-        return w;
+        if (head[v] > head[w]) swap(v, w);
+        return RMQ(head[v], head[w]);
     }
 
     void update(int v) {
@@ -111,27 +99,33 @@ public:
     MoTree(Graph *G, int *arr, pair<int, int> *queries, int Q) {
         this->V = G->getV();
         this->Q = Q;
+        this->lg = 32 - __builtin_clz(V * 2 - 1);
         a = new int[V];
         vis = new bool[V];
         depth = new int[V];
-        parent = new int[V];
-        chain = new int[V];
-        size = new int[V];
         head = new int[V];
+        rmq = new int*[lg];
+        for (int i = 0; i < lg; i++) {
+            rmq[i] = new int[V * 2 - 1];
+        }
         pre = new int[V];
         post = new int[V];
         vertex = new int[V * 2];
         cnt = new int[V];
         q = new Query[Q];
         ans = new int[Q];
-        chainNum = 0;
+        ind = 0;
         cur = 0;
         for (int i = 0; i < V; i++) {
             head[i] = -1;
             vis[i] = false;
         }
         dfs(G, 0, 0, -1);
-        hld(G, 0, -1);
+        for (int i = 0; i < lg - 1; i++) {
+            for (int j = 0; j < ind; j++) {
+                rmq[i + 1][j] = minDepth(rmq[i][j], rmq[i][min(j + (1 << i), ind - 1)]);
+            }
+        }
         int sz = (int) sqrt(cur);
         int temp[V];
         for (int i = 0; i < V; i++) {
