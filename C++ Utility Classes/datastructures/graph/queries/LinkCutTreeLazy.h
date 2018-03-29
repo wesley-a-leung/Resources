@@ -1,20 +1,20 @@
-#ifndef DATASTRUCTURES_GRAPH_QUERIES_LINKCUTTREE_H_
-#define DATASTRUCTURES_GRAPH_QUERIES_LINKCUTTREE_H_
+#ifndef DATASTRUCTURES_GRAPH_QUERIES_LINKCUTTREELAZY_H_
+#define DATASTRUCTURES_GRAPH_QUERIES_LINKCUTTREELAZY_H_
 
 #include <bits/stdc++.h>
 using namespace std;
 
 struct LinkCutTree {
 private:
-    static const int vdef = 0, qdef = 0;
+    static const int ddef = 0, vdef = 0, qdef = 0;
 
     struct Node {
     public:
-        int vertex, val, subtreeVal, size;
+        int vertex, val, subtreeVal, delta, size;
         bool revert;
         Node *left = nullptr, *right = nullptr, *parent = nullptr;
 
-        Node (int vertex, int val) : vertex(vertex), val(val), subtreeVal(val), size(1), revert(false) {};
+        Node (int vertex, int val) : vertex(vertex), val(val), subtreeVal(val), delta(LinkCutTree::ddef), size(1), revert(false) {};
     };
 
     int V;
@@ -28,6 +28,21 @@ private:
         return l + r;
     }
 
+    int getSegmentVal(int delta, int len) {
+        return delta * len;
+    }
+
+    int applyDelta(int val, int delta) {
+        if (ddef == delta) return val;
+        return apply(val, delta);
+    }
+
+    int joinDeltas(int delta1, int delta2) {
+        if (ddef == delta1) return delta2;
+        if (ddef == delta2) return delta1;
+        return apply(delta1, delta2);
+    }
+
     bool isRoot(Node *x) {
         return nullptr == x->parent || (x != x->parent->left && x != x->parent->right);
     }
@@ -37,7 +52,7 @@ private:
     }
 
     int getSubtreeVal(Node *x) {
-        return nullptr == x ? vdef : x->subtreeVal;
+        return nullptr == x ? vdef : applyDelta(x->subtreeVal, getSegmentVal(x->delta, x->size));
     }
 
     void propagate(Node *x) {
@@ -49,10 +64,15 @@ private:
             if (nullptr != x->left) x->left->revert = !x->left->revert;
             if (nullptr != x->right) x->right->revert = !x->right->revert;
         }
+        x->val = applyDelta(x->val, x->delta);
+        x->subtreeVal = applyDelta(x->subtreeVal, getSegmentVal(x->delta, x->size));
+        if (nullptr != x->left) x->left->delta = joinDeltas(x->left->delta, x->delta);
+        if (nullptr != x->right) x->right->delta = joinDeltas(x->right->delta, x->delta);
+        x->delta = ddef;
     }
 
     void update(Node *x) {
-        x->subtreeVal = merge(merge(getSubtreeVal(x->left), x->val), getSubtreeVal(x->right));
+        x->subtreeVal = merge(merge(getSubtreeVal(x->left), applyDelta(x->val, x->delta)), getSubtreeVal(x->right));
         x->size = 1 + getSize(x->left) + getSize(x->right);
     }
 
@@ -128,9 +148,11 @@ private:
         return true;
     }
 
-    bool modify(Node *x, int delta) {
-        makeRoot(x);
-        x->val = apply(x->val, delta);
+    bool modify(Node *from, Node *to, int delta) {
+        if (!connected(from, to)) return false;
+        makeRoot(from);
+        expose(to);
+        to->delta = joinDeltas(to->delta, delta);
         return true;
     }
 
@@ -154,8 +176,9 @@ public:
         }
     }
 
-    void addNode(int value) {
-        nodes.push_back(new Node(V++, value));
+    void addNode(int v, int value) {
+        nodes.push_back(new Node(v, value));
+        V++;
     }
 
     bool link(int v, int w) {
@@ -166,8 +189,8 @@ public:
         return cut(nodes[v], nodes[w]);
     }
 
-    bool modify(int v, int delta) {
-        return modify(nodes[v], delta);
+    bool modify(int v, int w, int delta) {
+        return modify(nodes[v], nodes[w], delta);
     }
 
     int query(int v, int w) {
@@ -183,4 +206,4 @@ public:
     }
 };
 
-#endif /* DATASTRUCTURES_GRAPH_QUERIES_LINKCUTTREE_H_ */
+#endif /* DATASTRUCTURES_GRAPH_QUERIES_LINKCUTTREELAZY_H_ */
