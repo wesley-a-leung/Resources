@@ -86,6 +86,24 @@ public:
     }
 
     /**
+     * Initializes the structures with an initializer list. The elements must be sorted.
+     *
+     * @param il the initializer list
+     * @param SCALE_FACTOR scales the value of N ^ (1 / R) by this value
+     */
+    RootArray(initializer_list<Value> il, const int SCALE_FACTOR = 1) : n(il.end() - il.begin()), SCALE_FACTOR(SCALE_FACTOR) {
+        assert(n >= 0);
+        int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
+        for (auto i = il.begin(); i < il.end(); i += rootn) {
+            a.emplace_back(i, min(i + rootn, il.end()), SCALE_FACTOR);
+            prefixSZ.push_back(0);
+        }
+        for (int i = 1; i < (int) a.size(); i++) {
+            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
+        }
+    }
+
+    /**
      * Inserts a value before the current kth index of the structure. If k == n,
      * then the value is inserted at the end of the structure.
      *
