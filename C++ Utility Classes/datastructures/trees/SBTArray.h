@@ -385,7 +385,7 @@ public:
     /**
      * Deletes the symbol table.
      */
-    virtual ~SBTArray() {
+    ~SBTArray() {
         delete[](KEY);
         delete[](VAL);
         delete[](SZ);

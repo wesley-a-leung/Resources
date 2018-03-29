@@ -347,7 +347,7 @@ public:
     /**
      * Deletes the symbol table.
      */
-    virtual ~SBTSet() {
+    ~SBTSet() {
         clear(root);
     }
 

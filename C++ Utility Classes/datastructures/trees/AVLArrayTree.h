@@ -389,7 +389,7 @@ public:
     /**
      * Deletes the symbol table.
      */
-    virtual ~AVLArrayTree() {
+    ~AVLArrayTree() {
         delete[](KEY);
         delete[](VAL);
         delete[](HT);
