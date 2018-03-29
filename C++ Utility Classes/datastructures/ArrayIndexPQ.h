@@ -82,7 +82,7 @@ public:
         for (int i = 0; i < maxN; i++) qp[i] = -1;
     }
 
-    virtual ~ArrayIndexPQ() {
+    ~ArrayIndexPQ() {
         delete[](pq);
         delete[](qp);
         delete[](keys);

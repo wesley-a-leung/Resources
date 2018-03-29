@@ -99,7 +99,7 @@ public:
         pq = new Index[N + 1];
     }
 
-    virtual ~IndexPQ() {
+    ~IndexPQ() {
         delete[](pq);
     }
 

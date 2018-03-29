@@ -356,7 +356,7 @@ public:
     /**
      * Deletes the symbol table.
      */
-    virtual ~SBT() {
+    ~SBT() {
         clear(root);
     }
 

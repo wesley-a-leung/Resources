@@ -428,7 +428,7 @@ public:
     /**
      * Deletes the symbol table.
      */
-    virtual ~SBTArrayDynamicSegmentTree() {
+    ~SBTArrayDynamicSegmentTree() {
         delete[](KEY);
         delete[](LO);
         delete[](HI);

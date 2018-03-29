@@ -444,7 +444,7 @@ public:
     /**
      * Deletes the symbol table.
      */
-    virtual ~TreapSet() {
+    ~TreapSet() {
         clear(root);
         delete gen;
         delete dis;

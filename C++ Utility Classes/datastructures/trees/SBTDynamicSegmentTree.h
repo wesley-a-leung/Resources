@@ -388,7 +388,7 @@ public:
     /**
      * Deletes the symbol table.
      */
-    virtual ~SBTDynamicSegmentTree() {
+    ~SBTDynamicSegmentTree() {
         clear(root);
     }
 
