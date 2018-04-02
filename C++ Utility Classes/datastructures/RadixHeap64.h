@@ -1,35 +1,35 @@
-#ifndef DATASTRUCTURES_RADIXHEAP_H_
-#define DATASTRUCTURES_RADIXHEAP_H_
+#ifndef DATASTRUCTURES_RADIXHEAP64_H_
+#define DATASTRUCTURES_RADIXHEAP64_H_
 
 #include <bits/stdc++.h>
 using namespace std;
 
 /**
- * Radix Heap, 32-bit:
+ * Radix Heap, 64-bit:
  *
  * Top: O(B) where B is the number of bits
  * Pop: O(1)
  * Push: O(1)
  */
 // convention is same as priority_queue in STL
-template <typename T, typename Comparator = less<uint32_t>>
-struct RadixHeap {
+template <typename T, typename Comparator = less<uint64_t>>
+struct RadixHeap64 {
 private:
     Comparator cmp;
     int n;
-    uint32_t last;
-    vector<pair<uint32_t, T>> x[33];
+    uint64_t last;
+    vector<pair<uint64_t, T>> x[65];
 
-    int bsr(uint32_t a) {
-        return a ? 31 - __builtin_clzll(a) : -1;
+    int bsr(uint64_t a) {
+        return a ? 63 - __builtin_clzll(a) : -1;
     }
 
-    void aux(pair<uint32_t, T> p) {
+    void aux(pair<uint64_t, T> p) {
         x[bsr(p.first ^ last) + 1].push_back(p);
     }
 
 public:
-    RadixHeap() : n(0), last(0) {}
+    RadixHeap64() : n(0), last(0) {}
 
     bool empty() const {
         return 0 == n;
@@ -39,7 +39,7 @@ public:
         return n;
     }
 
-    pair<uint32_t, T> top() {
+    pair<uint64_t, T> top() {
         assert(n > 0);
         if (x[0].empty()) {
             int i = 1;
@@ -48,7 +48,7 @@ public:
             for (int j = 1; j < (int) x[i].size(); j++) {
                 if (cmp(last, x[i][j].first)) last = x[i][j].first;
             }
-            for (pair<uint32_t, T> p : x[i]) aux(p);
+            for (pair<uint64_t, T> p : x[i]) aux(p);
             x[i].clear();
         }
         return x[0].back();
@@ -61,10 +61,10 @@ public:
         x[0].pop_back();
     }
 
-    void push(uint32_t key, T value) {
+    void push(uint64_t key, T value) {
         n++;
         aux({key, value});
     }
 };
 
-#endif /* DATASTRUCTURES_RADIXHEAP_H_ */
+#endif /* DATASTRUCTURES_RADIXHEAP64_H_ */
