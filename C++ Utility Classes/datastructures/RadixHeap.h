@@ -21,7 +21,7 @@ private:
     vector<pair<uint32_t, T>> x[33];
 
     int bsr(uint32_t a) {
-        return a ? 31 - __builtin_clzll(a) : -1;
+        return a ? 31 - __builtin_clz(a) : -1;
     }
 
     void aux(pair<uint32_t, T> p) {
