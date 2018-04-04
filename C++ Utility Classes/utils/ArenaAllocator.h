@@ -8,7 +8,7 @@ const size_t MB = 200; // size in megabytes
 
 // BUFFER_SIZE is the size of the buffer in bytes
 // ID is the unique id of each Arena with the same size
-template <size_t BUFFER_SIZE = MB << 20, size_t ID = ~0> class Arena {
+template <size_t BUFFER_SIZE = MB << 20, uint64_t ID = ~0> class Arena {
 private:
     static char buffer[];
     static size_t index;
@@ -62,7 +62,7 @@ public:
     }
 };
 
-template <size_t BUFFER_SIZE, size_t ID> char Arena<BUFFER_SIZE, ID>::buffer[BUFFER_SIZE];
-template <size_t BUFFER_SIZE, size_t ID> size_t Arena<BUFFER_SIZE, ID>::index = BUFFER_SIZE;
+template <size_t BUFFER_SIZE, uint64_t ID> char Arena<BUFFER_SIZE, ID>::buffer[BUFFER_SIZE];
+template <size_t BUFFER_SIZE, uint64_t ID> size_t Arena<BUFFER_SIZE, ID>::index = BUFFER_SIZE;
 
 #endif /* UTILS_ARENAALLOCATOR_H_ */
