@@ -1,2 +1,2 @@
 # Resources
-Utility Classes
+Data Structures, Algorithms, Utility Classes
