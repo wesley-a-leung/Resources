@@ -83,6 +83,7 @@ public:
             hullVector->push_back(hull.top());
             hull.pop();
         }
+        reverse(hullVector->begin(), hullVector->end());
     }
 
     /**
