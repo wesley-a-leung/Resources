@@ -50,6 +50,46 @@ public:
         for (int i = 0; i < d; i++) this->data[i] = a[i];
     }
 
+    Vector(const Vector &v) {
+        this->d = v.d;
+        this->data = new double[this->d];
+        for (int i = 0; i < d; i++) {
+            this->data[i] = v.data[i];
+        }
+    }
+
+    Vector &operator = (const Vector &v) {
+        if (this != &v) {
+            delete this->data;
+            this->d = v.d;
+            this->data = new double[this->d];
+            for (int i = 0; i < d; i++) {
+                this->data[i] = v.data[i];
+            }
+        }
+        return *this;
+    }
+
+    Vector(Vector &&v) {
+        this->d = v.d;
+        this->data = v.data;
+        v.data = nullptr;
+    }
+
+    Vector &operator = (Vector &&v) {
+        if (this != &v) {
+            delete this->data;
+            this->d = v.d;
+            this->data = v.data;
+            v.data = nullptr;
+        }
+        return *this;
+    }
+
+    ~Vector() {
+        delete data;
+    }
+
     /**
      * Returns the dimension of this vector.
      *
