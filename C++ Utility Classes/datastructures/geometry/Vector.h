@@ -20,8 +20,8 @@ using namespace std;
  */
 struct Vector {
 private:
-    int d;               // dimension of the vector
-    double *data = nullptr;        // array of vector's components
+    int d;                          // dimension of the vector
+    double *data = nullptr;         // array of vector's components
 
 public:
     Vector() {}
