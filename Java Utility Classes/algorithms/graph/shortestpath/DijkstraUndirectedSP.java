@@ -1,7 +1,10 @@
 package algorithms.graph.shortestpath;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Stack;
+
 import datastructures.IndexMinPQ;
-import datastructures.Stack;
 import datastructures.graph.WeightedGraph;
 import datastructures.graph.WeightedEdge;
 
@@ -110,12 +113,14 @@ public class DijkstraUndirectedSP {
     public Iterable<WeightedEdge> pathTo(int v) {
         validateVertex(v);
         if (!hasPathTo(v)) return null;
-        Stack<WeightedEdge> path = new Stack<WeightedEdge>();
+        Stack<WeightedEdge> rev = new Stack<WeightedEdge>();
         int x = v;
         for (WeightedEdge e = edgeTo[v]; e != null; e = edgeTo[x]) {
-            path.push(e);
+            rev.push(e);
             x = e.other(x);
         }
+        Queue<WeightedEdge> path = new ArrayDeque<WeightedEdge>();
+        while (!rev.isEmpty()) path.offer(rev.pop());
         return path;
     }
 

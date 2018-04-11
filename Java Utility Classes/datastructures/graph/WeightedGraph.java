@@ -2,8 +2,6 @@ package datastructures.graph;
 
 import java.util.ArrayList;
 
-import datastructures.Stack;
-
 /**
  *  The {@code WeightedGraph} class represents an edge-weighted
  *  graph of vertices named 0 through <em>V</em> – 1, where each
@@ -61,12 +59,7 @@ public class WeightedGraph {
         this(G.V());
         this.E = G.E();
         for (int v = 0; v < G.V(); v++) {
-            // reverse so that adjacency list is in same order as original
-            Stack<WeightedEdge> reverse = new Stack<WeightedEdge>();
             for (WeightedEdge e : G.adj[v]) {
-                reverse.push(e);
-            }
-            for (WeightedEdge e : reverse) {
                 adj[v].add(e);
             }
         }

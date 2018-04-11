@@ -1,9 +1,10 @@
 package algorithms.graph.cycle;
 
-import datastructures.Queue;
-import datastructures.Stack;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Stack;
+
 import datastructures.graph.Graph;
-import algorithms.graph.search.BreadthFirstPaths;
 
 /**
  *  The {@code EulerianPath} class represents a data type
@@ -82,7 +83,7 @@ public class EulerianPath {
         // the helper Edge data type is used to avoid exploring both copies of an edge v-w
         Queue<Edge>[] adj = (Queue<Edge>[]) new Queue[G.V()];
         for (int v = 0; v < G.V(); v++)
-            adj[v] = new Queue<Edge>();
+            adj[v] = new ArrayDeque<Edge>();
 
         for (int v = 0; v < G.V(); v++) {
             int selfLoops = 0;
@@ -91,15 +92,15 @@ public class EulerianPath {
                 if (v == w) {
                     if (selfLoops % 2 == 0) {
                         Edge e = new Edge(v, w);
-                        adj[v].enqueue(e);
-                        adj[w].enqueue(e);
+                        adj[v].offer(e);
+                        adj[w].offer(e);
                     }
                     selfLoops++;
                 }
                 else if (v < w) {
                     Edge e = new Edge(v, w);
-                    adj[v].enqueue(e);
-                    adj[w].enqueue(e);
+                    adj[v].offer(e);
+                    adj[w].offer(e);
                 }
             }
         }
@@ -113,7 +114,7 @@ public class EulerianPath {
         while (!stack.isEmpty()) {
             int v = stack.pop();
             while (!adj[v].isEmpty()) {
-                Edge edge = adj[v].dequeue();
+                Edge edge = adj[v].poll();
                 if (edge.isUsed) continue;
                 edge.isUsed = true;
                 stack.push(v);
@@ -126,8 +127,6 @@ public class EulerianPath {
         // check if all edges are used
         if (path.size() != G.E() + 1)
             path = null;
-
-        assert certifySolution(G);
     }
 
     /**
@@ -157,57 +156,5 @@ public class EulerianPath {
             if (G.degree(v) > 0)
                 return v;
         return -1;
-    }
-
-
-    /**************************************************************************
-     *
-     *  The code below is solely for testing correctness of the data type.
-     *
-     **************************************************************************/
-
-    // Determines whether a graph has an Eulerian path using necessary
-    // and sufficient conditions (without computing the path itself):
-    //    - degree(v) is even for every vertex, except for possibly two
-    //    - the graph is connected (ignoring isolated vertices)
-    // This method is solely for unit testing.
-    private static boolean hasEulerianPath(Graph G) {
-        if (G.E() == 0) return true;
-
-        // Condition 1: degree(v) is even except for possibly two
-        int oddDegreeVertices = 0;
-        for (int v = 0; v < G.V(); v++)
-            if (G.degree(v) % 2 != 0)
-                oddDegreeVertices++;
-        if (oddDegreeVertices > 2) return false;
-
-        // Condition 2: graph is connected, ignoring isolated vertices
-        int s = nonIsolatedVertex(G);
-        BreadthFirstPaths bfs = new BreadthFirstPaths(G, s);
-        for (int v = 0; v < G.V(); v++)
-            if (G.degree(v) > 0 && !bfs.hasPathTo(v))
-                return false;
-
-        return true;
-    }
-
-    // check that solution is correct
-    private boolean certifySolution(Graph G) {
-
-        // internal consistency check
-        if (hasEulerianPath() == (path() == null)) return false;
-
-        // hashEulerianPath() returns correct value
-        if (hasEulerianPath() != hasEulerianPath(G)) return false;
-
-        // nothing else to check if no Eulerian path
-        if (path == null) return true;
-
-        // check that path() uses correct number of edges
-        if (path.size() != G.E() + 1) return false;
-
-        // check that path() is a path in G
-
-        return true;
     }
 }

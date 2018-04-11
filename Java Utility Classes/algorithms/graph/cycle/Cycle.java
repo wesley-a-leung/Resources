@@ -1,6 +1,7 @@
 package algorithms.graph.cycle;
 
-import datastructures.Stack;
+import java.util.Stack;
+
 import datastructures.graph.Graph;
 
 /**

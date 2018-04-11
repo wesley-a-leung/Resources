@@ -1,8 +1,8 @@
 package datastructures.geometry;
 
 import java.util.Arrays;
-
-import datastructures.Queue;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public class KdTree {
     private static final boolean VERTICAL = false;
@@ -111,7 +111,7 @@ public class KdTree {
     
     public Iterable<Point2D> range(Rectangle rect) {
         if (rect == null) throw new IllegalArgumentException("Argument cannot be null.");
-        Queue<Point2D> q = new Queue<Point2D>();
+        Queue<Point2D> q = new ArrayDeque<Point2D>();
         range(root, q, rect);
         return q;
     }

@@ -1,7 +1,7 @@
 package datastructures;
 
-import datastructures.trees.BST;
-import datastructures.trees.RedBlackBST;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 /**
  *  The {@code SeparateChainingHashTable} class represents a symbol table of generic
@@ -169,10 +169,10 @@ public class SeparateChainingHashTable<Key, Value> {
 
     // return keys in symbol table as an Iterable
     public Iterable<Key> keys() {
-        Queue<Key> queue = new Queue<Key>();
+        Queue<Key> queue = new ArrayDeque<Key>();
         for (int i = 0; i < m; i++) {
             for (Key key : st[i].keys())
-                queue.enqueue(key);
+                queue.offer(key);
         }
         return queue;
     }

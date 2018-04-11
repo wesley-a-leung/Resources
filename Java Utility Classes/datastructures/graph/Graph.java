@@ -2,8 +2,6 @@ package datastructures.graph;
 
 import java.util.ArrayList;
 
-import datastructures.Stack;
-
 /**
  *  The {@code Graph} class represents an undirected graph of vertices
  *  named 0 through <em>V</em> – 1.
@@ -60,12 +58,7 @@ public class Graph {
         this(G.V());
         this.E = G.E();
         for (int v = 0; v < G.V(); v++) {
-            // reverse so that adjacency list is in same order as original
-            Stack<Integer> reverse = new Stack<Integer>();
             for (int w : G.adj[v]) {
-                reverse.push(w);
-            }
-            for (int w : reverse) {
                 adj[v].add(w);
             }
         }
@@ -134,7 +127,6 @@ public class Graph {
         validateVertex(v);
         return adj[v].size();
     }
-
 
     /**
      * Returns a string representation of this graph.

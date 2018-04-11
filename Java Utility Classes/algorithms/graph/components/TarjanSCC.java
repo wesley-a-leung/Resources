@@ -1,6 +1,7 @@
 package algorithms.graph.components;
 
-import datastructures.Stack;
+import java.util.Stack;
+
 import datastructures.graph.Digraph;
 
 /**

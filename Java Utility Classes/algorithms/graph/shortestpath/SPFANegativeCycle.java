@@ -1,7 +1,9 @@
 package algorithms.graph.shortestpath;
 
-import datastructures.Queue;
-import datastructures.Stack;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Stack;
+
 import datastructures.graph.DirectedWeightedEdge;
 import datastructures.graph.WeightedDigraph;
 import algorithms.graph.cycle.DirectedWeightedCycle;
@@ -53,11 +55,11 @@ public class SPFANegativeCycle {
         distTo[s] = 0.0;
 
         // Bellman-Ford algorithm
-        queue = new Queue<Integer>();
-        queue.enqueue(s);
+        queue = new ArrayDeque<Integer>();
+        queue.offer(s);
         onQueue[s] = true;
         while (!queue.isEmpty() && !hasNegativeCycle()) {
-            int v = queue.dequeue();
+            int v = queue.poll();
             onQueue[v] = false;
             relax(G, v);
         }
@@ -71,7 +73,7 @@ public class SPFANegativeCycle {
                 distTo[w] = distTo[v] + e.weight();
                 edgeTo[w] = e;
                 if (!onQueue[w]) {
-                    queue.enqueue(w);
+                    queue.offer(w);
                     onQueue[w] = true;
                 }
             }
@@ -155,10 +157,12 @@ public class SPFANegativeCycle {
         if (hasNegativeCycle())
             throw new UnsupportedOperationException("Negative cost cycle exists");
         if (!hasPathTo(v)) return null;
-        Stack<DirectedWeightedEdge> path = new Stack<DirectedWeightedEdge>();
+        Stack<DirectedWeightedEdge> rev = new Stack<DirectedWeightedEdge>();
         for (DirectedWeightedEdge e = edgeTo[v]; e != null; e = edgeTo[e.from()]) {
-            path.push(e);
+            rev.push(e);
         }
+        Queue<DirectedWeightedEdge> path = new ArrayDeque<DirectedWeightedEdge>();
+        while (!rev.isEmpty()) path.offer(rev.pop());
         return path;
     }
 

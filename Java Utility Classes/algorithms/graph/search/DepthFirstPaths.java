@@ -1,6 +1,9 @@
 package algorithms.graph.search;
 
-import datastructures.Stack;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Stack;
+
 import datastructures.graph.Graph;
 
 /**
@@ -87,10 +90,12 @@ public class DepthFirstPaths {
     public Iterable<Integer> pathTo(int v) {
         validateVertex(v);
         if (!hasPathTo(v)) return null;
-        Stack<Integer> path = new Stack<Integer>();
+        Stack<Integer> rev = new Stack<Integer>();
         for (int x = v; x != s; x = edgeTo[x])
-            path.push(x);
-        path.push(s);
+            rev.push(x);
+        rev.push(s);
+        Queue<Integer> path = new ArrayDeque<Integer>();
+        while (!rev.isEmpty()) path.offer(rev.pop());
         return path;
     }
 

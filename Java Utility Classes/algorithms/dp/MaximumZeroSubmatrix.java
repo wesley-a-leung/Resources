@@ -1,6 +1,6 @@
 package algorithms.dp;
 
-import datastructures.Stack;
+import java.util.Stack;
 
 public class MaximumZeroSubmatrix {
     

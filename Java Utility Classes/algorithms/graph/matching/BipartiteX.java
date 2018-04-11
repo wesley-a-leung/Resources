@@ -1,7 +1,9 @@
 package algorithms.graph.matching;
 
-import datastructures.Queue;
-import datastructures.Stack;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Stack;
+
 import datastructures.graph.Graph;
 
 /**
@@ -60,19 +62,19 @@ public class BipartiteX {
     }
 
     private void bfs(Graph G, int s) { 
-        Queue<Integer> q = new Queue<Integer>();
+        Queue<Integer> q = new ArrayDeque<Integer>();
         color[s] = WHITE;
         marked[s] = true;
-        q.enqueue(s);
+        q.offer(s);
 
         while (!q.isEmpty()) {
-            int v = q.dequeue();
+            int v = q.poll();
             for (int w : G.adj(v)) {
                 if (!marked[w]) {
                     marked[w] = true;
                     edgeTo[w] = v;
                     color[w] = !color[v];
-                    q.enqueue(w);
+                    q.offer(w);
                 }
                 else if (color[w] == color[v]) {
                     isBipartite = false;
@@ -81,19 +83,19 @@ public class BipartiteX {
                     // and let x be closest node to v and w common to two paths
                     // then (w-x path) + (x-v path) + (edge v-w) is an odd-length cycle
                     // Note: distTo[v] == distTo[w];
-                    cycle = new Queue<Integer>();
+                    cycle = new ArrayDeque<Integer>();
                     Stack<Integer> stack = new Stack<Integer>();
                     int x = v, y = w;
                     while (x != y) {
                         stack.push(x);
-                        cycle.enqueue(y);
+                        cycle.offer(y);
                         x = edgeTo[x];
                         y = edgeTo[y];
                     }
                     stack.push(x);
                     while (!stack.isEmpty())
-                        cycle.enqueue(stack.pop());
-                    cycle.enqueue(w);
+                        cycle.offer(stack.pop());
+                    cycle.offer(w);
                     return;
                 }
             }
@@ -138,35 +140,6 @@ public class BipartiteX {
      */
     public Iterable<Integer> oddCycle() {
         return cycle; 
-    }
-
-    private boolean check(Graph G) {
-        // graph is bipartite
-        if (isBipartite) {
-            for (int v = 0; v < G.V(); v++) {
-                for (int w : G.adj(v)) {
-                    if (color[v] == color[w]) {
-                        System.err.printf("edge %d-%d with %d and %d in same side of bipartition\n", v, w, v, w);
-                        return false;
-                    }
-                }
-            }
-        }
-
-        // graph has an odd-length cycle
-        else {
-            // verify cycle
-            int first = -1, last = -1;
-            for (int v : oddCycle()) {
-                if (first == -1) first = v;
-                last = v;
-            }
-            if (first != last) {
-                System.err.printf("cycle begins with %d and ends with %d\n", first, last);
-                return false;
-            }
-        }
-        return true;
     }
 
     // throw an IllegalArgumentException unless {@code 0 <= v < V}

@@ -1,9 +1,10 @@
 package algorithms.graph.matching;
 
 import java.util.Iterator;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Stack;
 
-import datastructures.Queue;
-import datastructures.Stack;
 import datastructures.graph.Graph;
 
 /**
@@ -176,10 +177,10 @@ public class HopcroftKarpMaxMatch {
             distTo[v] = Integer.MAX_VALUE;
 
         // breadth-first search (starting from all unmatched vertices on one side of bipartition)
-        Queue<Integer> queue = new Queue<Integer>();
+        Queue<Integer> queue = new ArrayDeque<Integer>();
         for (int v = 0; v < V; v++) {
             if (bipartition.color(v) && !isMatched(v)) {
-                queue.enqueue(v);
+                queue.offer(v);
                 marked[v] = true;
                 distTo[v] = 0;
             }
@@ -189,7 +190,7 @@ public class HopcroftKarpMaxMatch {
         // (and keep going until all vertices at that distance are explored)
         boolean hasAugmentingPath = false;
         while (!queue.isEmpty()) {
-            int v = queue.dequeue();
+            int v = queue.poll();
             for (int w : G.adj(v)) {
 
                 // forward edge not in matching or backwards edge in matching
@@ -202,7 +203,7 @@ public class HopcroftKarpMaxMatch {
 
                         // stop enqueuing vertices once an alternating path has been discovered
                         // (no vertex on same side will be marked if its shortest path distance longer)
-                        if (!hasAugmentingPath) queue.enqueue(w);
+                        if (!hasAugmentingPath) queue.offer(w);
                     }
                 }
             }
@@ -280,63 +281,5 @@ public class HopcroftKarpMaxMatch {
     private void validate(int v) {
         if (v < 0 || v >= V)
             throw new IndexOutOfBoundsException("vertex " + v + " is not between 0 and " + (V-1));
-    }
-
-    /**************************************************************************
-     *   
-     *  The code below is solely for testing correctness of the data type.
-     *
-     **************************************************************************/
-
-    // check that mate[] and inVertexCover[] define a max matching and min vertex cover, respectively
-    private boolean certifySolution(Graph G) {
-
-        // check that mate(v) = w iff mate(w) = v
-        for (int v = 0; v < V; v++) {
-            if (mate(v) == -1) continue;
-            if (mate(mate(v)) != v) return false;
-        }
-
-        // check that size() is consistent with mate()
-        int matchedVertices = 0;
-        for (int v = 0; v < V; v++) {
-            if (mate(v) != -1) matchedVertices++;
-        }
-        if (2*cardinality() != matchedVertices) return false;
-
-        // check that size() is consistent with minVertexCover()
-        int sizeOfMinVertexCover = 0;
-        for (int v = 0; v < V; v++)
-            if (inMinVertexCover(v)) sizeOfMinVertexCover++;
-        if (cardinality() != sizeOfMinVertexCover) return false;
-
-        // check that mate() uses each vertex at most once
-        boolean[] isMatched = new boolean[V];
-        for (int v = 0; v < V; v++) {
-            int w = mate[v];
-            if (w == -1) continue;
-            if (v == w) return false;
-            if (v >= w) continue;
-            if (isMatched[v] || isMatched[w]) return false;
-            isMatched[v] = true;
-            isMatched[w] = true;
-        }
-
-        // check that mate() uses only edges that appear in the graph
-        for (int v = 0; v < V; v++) {
-            if (mate(v) == -1) continue;
-            boolean isEdge = false;
-            for (int w : G.adj(v)) {
-                if (mate(v) == w) isEdge = true;
-            }
-            if (!isEdge) return false;
-        }
-
-        // check that inMinVertexCover() is a vertex cover
-        for (int v = 0; v < V; v++)
-            for (int w : G.adj(v))
-                if (!inMinVertexCover(v) && !inMinVertexCover(w)) return false;
-
-        return true;
     }
 }

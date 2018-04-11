@@ -1,6 +1,7 @@
 package algorithms.graph.cycle;
 
-import datastructures.Stack;
+import java.util.Stack;
+
 import datastructures.graph.DirectedWeightedEdge;
 import datastructures.graph.WeightedDigraph;
 import algorithms.graph.search.TopologicalOrder;
@@ -103,34 +104,5 @@ public class DirectedWeightedCycle {
      */
     public Iterable<DirectedWeightedEdge> cycle() {
         return cycle;
-    }
-
-
-    // certify that digraph is either acyclic or has a directed cycle
-    private boolean check() {
-
-        // edge-weighted digraph is cyclic
-        if (hasCycle()) {
-            // verify cycle
-            DirectedWeightedEdge first = null, last = null;
-            for (DirectedWeightedEdge e : cycle()) {
-                if (first == null) first = e;
-                if (last != null) {
-                    if (last.to() != e.from()) {
-                        System.err.printf("cycle edges %s and %s not incident\n", last, e);
-                        return false;
-                    }
-                }
-                last = e;
-            }
-
-            if (last.to() != first.from()) {
-                System.err.printf("cycle edges %s and %s not incident\n", last, first);
-                return false;
-            }
-        }
-
-
-        return true;
     }
 }

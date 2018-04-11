@@ -1,7 +1,9 @@
 package algorithms.graph.mst;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 import datastructures.IndexMinPQ;
-import datastructures.Queue;
 import datastructures.graph.WeightedGraph;
 import datastructures.graph.WeightedEdge;
 
@@ -37,6 +39,7 @@ public class PrimMST {
     private double[] distTo;      // distTo[v] = weight of shortest such edge
     private boolean[] marked;     // marked[v] = true if v on tree, false otherwise
     private IndexMinPQ<Double> pq;
+    Queue<WeightedEdge> mst = new ArrayDeque<WeightedEdge>();
 
     /**
      * Compute a minimum spanning tree (or forest) of an edge-weighted graph.
@@ -52,6 +55,12 @@ public class PrimMST {
 
         for (int v = 0; v < G.V(); v++)      // run from each vertex to find
             if (!marked[v]) prim(G, v);      // minimum spanning forest
+        for (int v = 0; v < edgeTo.length; v++) {
+            WeightedEdge e = edgeTo[v];
+            if (e != null) {
+                mst.offer(e);
+            }
+        }
 
     }
 
@@ -86,13 +95,6 @@ public class PrimMST {
      *    an iterable of edges
      */
     public Iterable<WeightedEdge> edges() {
-        Queue<WeightedEdge> mst = new Queue<WeightedEdge>();
-        for (int v = 0; v < edgeTo.length; v++) {
-            WeightedEdge e = edgeTo[v];
-            if (e != null) {
-                mst.enqueue(e);
-            }
-        }
         return mst;
     }
 

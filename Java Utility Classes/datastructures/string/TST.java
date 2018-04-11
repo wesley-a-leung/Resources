@@ -1,44 +1,7 @@
 package datastructures.string;
 
-import datastructures.Queue;
-
-/******************************************************************************
- *  Compilation:  javac TST.java
- *  Execution:    java TST < words.txt
- *  Dependencies: StdIn.java
- *  Data files:   http://algs4.cs.princeton.edu/52trie/shellsST.txt
- *
- *  Symbol table with string keys, implemented using a ternary search
- *  trie (TST).
- *
- *
- *  % java TST < shellsST.txt
- *  keys(""):
- *  by 4
- *  sea 6
- *  sells 1
- *  she 0
- *  shells 3
- *  shore 7
- *  the 5
- *
- *  longestPrefixOf("shellsort"):
- *  shells
- *
- *  keysWithPrefix("shor"):
- *  shore
- *
- *  keysThatMatch(".he.l."):
- *  shells
- *
- *  % java TST
- *  theory the now is the time for all good men
- *
- *  Remarks
- *  --------
- *    - can't use a key that is the empty string ""
- *
- ******************************************************************************/
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 /**
  *  The {@code TST} class represents an symbol table of key-value
@@ -193,7 +156,7 @@ public class TST<Value> {
      * @return all keys in the symbol table as an {@code Iterable}
      */
     public Iterable<String> keys() {
-        Queue<String> queue = new Queue<String>();
+        Queue<String> queue = new ArrayDeque<String>();
         collect(root, new StringBuilder(), queue);
         return queue;
     }
@@ -209,10 +172,10 @@ public class TST<Value> {
         if (prefix == null) {
             throw new IllegalArgumentException("calls keysWithPrefix() with null argument");
         }
-        Queue<String> queue = new Queue<String>();
+        Queue<String> queue = new ArrayDeque<String>();
         Node<Value> x = get(root, prefix, 0);
         if (x == null) return queue;
-        if (x.val != null) queue.enqueue(prefix);
+        if (x.val != null) queue.offer(prefix);
         collect(x.mid, new StringBuilder(prefix), queue);
         return queue;
     }
@@ -221,7 +184,7 @@ public class TST<Value> {
     private void collect(Node<Value> x, StringBuilder prefix, Queue<String> queue) {
         if (x == null) return;
         collect(x.left,  prefix, queue);
-        if (x.val != null) queue.enqueue(prefix.toString() + x.c);
+        if (x.val != null) queue.offer(prefix.toString() + x.c);
         collect(x.mid,   prefix.append(x.c), queue);
         prefix.deleteCharAt(prefix.length() - 1);
         collect(x.right, prefix, queue);
@@ -236,7 +199,7 @@ public class TST<Value> {
      *     as an iterable, where . is treated as a wildcard character.
      */
     public Iterable<String> keysThatMatch(String pattern) {
-        Queue<String> queue = new Queue<String>();
+        Queue<String> queue = new ArrayDeque<String>();
         collect(root, new StringBuilder(), 0, pattern, queue);
         return queue;
     }
@@ -246,7 +209,7 @@ public class TST<Value> {
         char c = pattern.charAt(i);
         if (c == '.' || c < x.c) collect(x.left, prefix, i, pattern, queue);
         if (c == '.' || c == x.c) {
-            if (i == pattern.length() - 1 && x.val != null) queue.enqueue(prefix.toString() + x.c);
+            if (i == pattern.length() - 1 && x.val != null) queue.offer(prefix.toString() + x.c);
             if (i < pattern.length() - 1) {
                 collect(x.mid, prefix.append(x.c), i+1, pattern, queue);
                 prefix.deleteCharAt(prefix.length() - 1);

@@ -1,6 +1,6 @@
 package algorithms.sort;
 
-import datastructures.MinPQ;
+import java.util.PriorityQueue;
 
 /**
  * The {@code PriorityQueueSort} class provides a static methods for sorting
@@ -19,12 +19,12 @@ public class PriorityQueueSort {
      * @param a the array to be sorted
      */
     public static void sort(Comparable[] a) {
-        MinPQ<Comparable> pq = new MinPQ<Comparable>();
+        PriorityQueue<Comparable> pq = new PriorityQueue<Comparable>();
         for (Comparable x: a) {
-            pq.insert(x);
+            pq.offer(x);
         }
         for (int i = 0; i < a.length; i++) {
-            a[i] = pq.delMin();
+            a[i] = pq.poll();
         }
     }
 }

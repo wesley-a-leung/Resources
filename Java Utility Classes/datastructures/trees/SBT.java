@@ -1,8 +1,8 @@
 package datastructures.trees;
 
+import java.util.ArrayDeque;
 import java.util.NoSuchElementException;
-
-import datastructures.Queue;
+import java.util.Queue;
 
 public class SBT<Key extends Comparable<Key>, Value> {
 
@@ -491,7 +491,7 @@ public class SBT<Key extends Comparable<Key>, Value> {
      * @return all keys in the symbol table following an in-order traversal
      */
     public Iterable<Key> keys() {
-        Queue<Key> queue = new Queue<Key>();
+        Queue<Key> queue = new ArrayDeque<Key>();
         keysInOrder(root, queue);
         return queue;
     }
@@ -505,7 +505,7 @@ public class SBT<Key extends Comparable<Key>, Value> {
     private void keysInOrder(Node x, Queue<Key> queue) {
         if (x == null) return;
         keysInOrder(x.left, queue);
-        queue.enqueue(x.key);
+        queue.offer(x.key);
         keysInOrder(x.right, queue);
     }
 
@@ -515,18 +515,18 @@ public class SBT<Key extends Comparable<Key>, Value> {
      * @return all keys in the symbol table following a level-order traversal.
      */
     public Iterable<Key> keysLevelOrder() {
-        Queue<Key> queue = new Queue<Key>();
+        Queue<Key> queue = new ArrayDeque<Key>();
         if (!isEmpty()) {
-            Queue<Node> queue2 = new Queue<Node>();
-            queue2.enqueue(root);
+            Queue<Node> queue2 = new ArrayDeque<Node>();
+            queue2.offer(root);
             while (!queue2.isEmpty()) {
-                Node x = queue2.dequeue();
-                queue.enqueue(x.key);
+                Node x = queue2.poll();
+                queue.offer(x.key);
                 if (x.left != null) {
-                    queue2.enqueue(x.left);
+                    queue2.offer(x.left);
                 }
                 if (x.right != null) {
-                    queue2.enqueue(x.right);
+                    queue2.offer(x.right);
                 }
             }
         }
@@ -546,7 +546,7 @@ public class SBT<Key extends Comparable<Key>, Value> {
     public Iterable<Key> keys(Key lo, Key hi) {
         if (lo == null) throw new IllegalArgumentException("first argument to keys() is null");
         if (hi == null) throw new IllegalArgumentException("second argument to keys() is null");
-        Queue<Key> queue = new Queue<Key>();
+        Queue<Key> queue = new ArrayDeque<Key>();
         keys(root, queue, lo, hi);
         return queue;
     }
@@ -565,7 +565,7 @@ public class SBT<Key extends Comparable<Key>, Value> {
         int cmplo = lo.compareTo(x.key);
         int cmphi = hi.compareTo(x.key);
         if (cmplo < 0) keys(x.left, queue, lo, hi);
-        if (cmplo <= 0 && cmphi >= 0) queue.enqueue(x.key);
+        if (cmplo <= 0 && cmphi >= 0) queue.offer(x.key);
         if (cmphi > 0) keys(x.right, queue, lo, hi);
     }
 

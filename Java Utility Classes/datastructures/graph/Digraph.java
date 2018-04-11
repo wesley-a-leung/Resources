@@ -2,8 +2,6 @@ package datastructures.graph;
 
 import java.util.ArrayList;
 
-import datastructures.Stack;
-
 /**
  *  The {@code Digraph} class represents a directed graph of vertices
  *  named 0 through <em>V</em> - 1.
@@ -60,12 +58,7 @@ public class Digraph {
         for (int v = 0; v < V; v++)
             this.indegree[v] = G.indegree(v);
         for (int v = 0; v < G.V(); v++) {
-            // reverse so that adjacency list is in same order as original
-            Stack<Integer> reverse = new Stack<Integer>();
             for (int w : G.adj[v]) {
-                reverse.push(w);
-            }
-            for (int w : reverse) {
                 adj[v].add(w);
             }
         }

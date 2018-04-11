@@ -1,22 +1,9 @@
 package algorithms.graph.cycle;
 
-/******************************************************************************
- *  Compilation:  javac DirectedEulerianCycle.java
- *  Execution:    java DirectedEulerianCycle V E
- *  Dependencies: Digraph.java Stack.java StdOut.java
- *                BreadthFirstPaths.java
- *                DigraphGenerator.java StdRandom.java
- *
- *  Find an Eulerian cycle in a digraph, if one exists.
- *
- ******************************************************************************/
-
 import java.util.Iterator;
+import java.util.Stack;
 
-import datastructures.Stack;
 import datastructures.graph.Digraph;
-import datastructures.graph.Graph;
-import algorithms.graph.search.BreadthFirstPaths;
 
 /**
  *  The {@code DirectedEulerianCycle} class represents a data type
@@ -87,8 +74,6 @@ public class DirectedEulerianCycle {
         // (in case there are two or more vertex-disjoint Eulerian cycles)
         if (cycle.size() != G.E() + 1)
             cycle = null;
-
-        assert certifySolution(G);
     }
 
     /**
@@ -118,64 +103,4 @@ public class DirectedEulerianCycle {
                 return v;
         return -1;
     }
-
-
-    /**************************************************************************
-     *
-     *  The code below is solely for testing correctness of the data type.
-     *
-     **************************************************************************/
-
-    // Determines whether a digraph has an Eulerian cycle using necessary
-    // and sufficient conditions (without computing the cycle itself):
-    //    - at least one edge
-    //    - indegree(v) = outdegree(v) for every vertex
-    //    - the graph is connected, when viewed as an undirected graph
-    //      (ignoring isolated vertices)
-    private static boolean hasEulerianCycle(Digraph G) {
-
-        // Condition 0: at least 1 edge
-        if (G.E() == 0) return false;
-
-        // Condition 1: indegree(v) == outdegree(v) for every vertex
-        for (int v = 0; v < G.V(); v++)
-            if (G.outdegree(v) != G.indegree(v))
-                return false;
-
-        // Condition 2: graph is connected, ignoring isolated vertices
-        Graph H = new Graph(G.V());
-        for (int v = 0; v < G.V(); v++)
-            for (int w : G.adj(v))
-                H.addEdge(v, w);
-        
-        // check that all non-isolated vertices are conneted
-        int s = nonIsolatedVertex(G);
-        BreadthFirstPaths bfs = new BreadthFirstPaths(H, s);
-        for (int v = 0; v < G.V(); v++)
-            if (H.degree(v) > 0 && !bfs.hasPathTo(v))
-                return false;
-
-        return true;
-    }
-
-    // check that solution is correct
-    private boolean certifySolution(Digraph G) {
-
-        // internal consistency check
-        if (hasEulerianCycle() == (cycle() == null)) return false;
-
-        // hashEulerianCycle() returns correct value
-        if (hasEulerianCycle() != hasEulerianCycle(G)) return false;
-
-        // nothing else to check if no Eulerian cycle
-        if (cycle == null) return true;
-
-        // check that cycle() uses correct number of edges
-        if (cycle.size() != G.E() + 1) return false;
-
-        // check that cycle() is a directed cycle of G
-
-        return true;
-    }
-
 }

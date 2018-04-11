@@ -1,7 +1,7 @@
 package datastructures;
 
-import datastructures.trees.BST;
-import datastructures.trees.RedBlackBST;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 /**
  *  The {@code LinearProbingHashTable} class represents a symbol table of generic
@@ -197,8 +197,6 @@ public class LinearProbingHashTable<Key, Value> {
 
         // halves size of array if it's 12.5% full or less
         if (n > 0 && n <= m/8) resize(m/2);
-
-        assert check();
     }
 
     /**
@@ -209,30 +207,9 @@ public class LinearProbingHashTable<Key, Value> {
      * @return all keys in this symbol table
      */
     public Iterable<Key> keys() {
-        Queue<Key> queue = new Queue<Key>();
+        Queue<Key> queue = new ArrayDeque<Key>();
         for (int i = 0; i < m; i++)
-            if (keys[i] != null) queue.enqueue(keys[i]);
+            if (keys[i] != null) queue.offer(keys[i]);
         return queue;
-    }
-
-    // integrity check - don't check after each put() because
-    // integrity not maintained during a delete()
-    private boolean check() {
-
-        // check that hash table is at most 50% full
-        if (m < 2*n) {
-            System.err.println("Hash table size m = " + m + "; array size n = " + n);
-            return false;
-        }
-
-        // check that each key in table can be found by get()
-        for (int i = 0; i < m; i++) {
-            if (keys[i] == null) continue;
-            else if (get(keys[i]) != vals[i]) {
-                System.err.println("get[" + keys[i] + "] = " + get(keys[i]) + "; vals[i] = " + vals[i]);
-                return false;
-            }
-        }
-        return true;
     }
 }

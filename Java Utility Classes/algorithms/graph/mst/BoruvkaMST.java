@@ -1,8 +1,9 @@
 package algorithms.graph.mst;
 
 import java.util.ArrayList;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
-import datastructures.Bag;
 import datastructures.UF;
 import datastructures.graph.WeightedGraph;
 import datastructures.graph.WeightedEdge;
@@ -35,7 +36,7 @@ import datastructures.graph.WeightedEdge;
  *  @author Kevin Wayne
  */
 public class BoruvkaMST {
-    private Bag<WeightedEdge> mst = new Bag<WeightedEdge>();    // edges in MST
+    private Queue<WeightedEdge> mst = new ArrayDeque<WeightedEdge>();    // edges in MST
     private double weight;                      // weight of MST
 
     /**
@@ -61,6 +62,44 @@ public class BoruvkaMST {
 
             // add newly discovered edges to MST
             for (int i = 0; i < G.V(); i++) {
+                WeightedEdge e = closest[i];
+                if (e != null) {
+                    int v = e.either(), w = e.other(v);
+                    // don't add the same edge twice
+                    if (!uf.connected(v, w)) {
+                        mst.add(e);
+                        weight += e.weight();
+                        uf.union(v, w);
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Compute a minimum spanning tree (or forest) of an edge-weighted graph.
+     * 
+     * @param edges the edges in the graph
+     * @param V the number of vertices in the graph
+     */
+    public BoruvkaMST(Iterable<WeightedEdge> edges, int V) {
+        UF uf = new UF(V);
+        // repeat at most log V times or until we have V-1 edges
+        for (int t = 1; t < V && mst.size() < V - 1; t = t + t) {
+
+            // foreach tree in forest, find closest edge
+            // if edge weights are equal, ties are broken in favor of first edge in G.edges()
+            WeightedEdge[] closest = new WeightedEdge[V];
+            for (WeightedEdge e : edges) {
+                int v = e.either(), w = e.other(v);
+                int i = uf.find(v), j = uf.find(w);
+                if (i == j) continue;   // same tree
+                if (closest[i] == null || less(e, closest[i])) closest[i] = e;
+                if (closest[j] == null || less(e, closest[j])) closest[j] = e;
+            }
+
+            // add newly discovered edges to MST
+            for (int i = 0; i < V; i++) {
                 WeightedEdge e = closest[i];
                 if (e != null) {
                     int v = e.either(), w = e.other(v);
