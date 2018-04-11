@@ -1,38 +1,5 @@
 package utils;
 
-/******************************************************************************
- *  Compilation:  javac StdStats.java
- *  Execution:    java StdStats < input.txt
- *  Dependencies: StdOut.java
- *
- *  Library of statistical functions.
- *
- *  The test client reads an array of real numbers from standard
- *  input, and computes the minimum, mean, maximum, and
- *  standard deviation.
- *
- *  The functions all throw a java.lang.IllegalArgumentException
- *  if the array passed in as an argument is null.
- *
- *  The floating-point functions all return NaN if any input is NaN.
- *
- *  Unlike Math.min() and Math.max(), the min() and max() functions
- *  do not differentiate between -0.0 and 0.0.
- *
- *  % more tiny.txt
- *  5
- *  3.0 1.0 2.0 5.0 4.0
- *
- *  % java StdStats < tiny.txt
- *         min   1.000
- *        mean   3.000
- *         max   5.000
- *     std dev   1.581
- *
- *  Should these funtions use varargs instead of array arguments?
- *
- ******************************************************************************/
-
 /**
  *  The {@code StdStats} class provides static methods for computing
  *  statistics such as min, max, mean, sample standard deviation, and
