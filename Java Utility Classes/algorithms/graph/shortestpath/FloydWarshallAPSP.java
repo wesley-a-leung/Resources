@@ -1,6 +1,9 @@
 package algorithms.graph.shortestpath;
 
-import datastructures.Stack;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Stack;
+
 import datastructures.graph.AdjMatrixWeightedDigraph;
 import datastructures.graph.DirectedWeightedEdge;
 import datastructures.graph.WeightedDigraph;
@@ -161,10 +164,12 @@ public class FloydWarshallAPSP {
         if (hasNegativeCycle())
             throw new UnsupportedOperationException("Negative cost cycle exists");
         if (!hasPath(s, t)) return null;
-        Stack<DirectedWeightedEdge> path = new Stack<DirectedWeightedEdge>();
+        Stack<DirectedWeightedEdge> rev = new Stack<DirectedWeightedEdge>();
         for (DirectedWeightedEdge e = edgeTo[s][t]; e != null; e = edgeTo[s][e.from()]) {
-            path.push(e);
+            rev.push(e);
         }
+        Queue<DirectedWeightedEdge> path = new ArrayDeque<DirectedWeightedEdge>();
+        while (!rev.isEmpty()) path.offer(rev.pop());
         return path;
     }
     

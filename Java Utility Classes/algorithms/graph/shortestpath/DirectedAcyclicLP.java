@@ -1,6 +1,9 @@
 package algorithms.graph.shortestpath;
 
-import datastructures.Stack;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Stack;
+
 import datastructures.graph.DirectedWeightedEdge;
 import datastructures.graph.WeightedDigraph;
 import algorithms.graph.search.TopologicalOrder;
@@ -99,10 +102,12 @@ public class DirectedAcyclicLP {
     public Iterable<DirectedWeightedEdge> pathTo(int v) {
         validateVertex(v);
         if (!hasPathTo(v)) return null;
-        Stack<DirectedWeightedEdge> path = new Stack<DirectedWeightedEdge>();
+        Stack<DirectedWeightedEdge> rev = new Stack<DirectedWeightedEdge>();
         for (DirectedWeightedEdge e = edgeTo[v]; e != null; e = edgeTo[e.from()]) {
-            path.push(e);
+            rev.push(e);
         }
+        Queue<DirectedWeightedEdge> path = new ArrayDeque<DirectedWeightedEdge>();
+        while (!rev.isEmpty()) path.offer(rev.pop());
         return path;
     }
 

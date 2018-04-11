@@ -37,10 +37,10 @@ public class DoublyLinkedList<Item> implements Iterable<Item> {
         n++;
     }
 
-    public ListIterator<Item> iterator()  { return new DoublyLinkedListIterator(); }
+    public ListIterator<Item> iterator()  { return new DoublyArrayDequeIterator(); }
 
-    // assumes no calls to DoublyLinkedList.add() during iteration
-    private class DoublyLinkedListIterator implements ListIterator<Item> {
+    // assumes no calls to DoublyArrayDeque.add() during iteration
+    private class DoublyArrayDequeIterator implements ListIterator<Item> {
         private Node current      = pre.next;  // the node that is returned by next()
         private Node lastAccessed = null;      // the last node to be returned by prev() or next()
                                                // reset to null upon intervening remove() or add()

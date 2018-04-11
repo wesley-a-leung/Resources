@@ -1,6 +1,8 @@
 package algorithms.graph.networkflow;
 
-import datastructures.Queue;
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 import datastructures.graph.networkflow.FlowEdge;
 import datastructures.graph.networkflow.FlowNetwork;
 
@@ -21,7 +23,6 @@ public class PushRelabelMaxFlow {
     private double[] excess;
     private boolean[] done;
     
-    
     /**
      * Compute a maximum flow in the network {@code G}
      * from vertex {@code s} to vertex {@code t}.
@@ -38,7 +39,7 @@ public class PushRelabelMaxFlow {
         validate(s);
         validate(t);
         if (s == t) throw new IllegalArgumentException("Source equals sink");
-        Queue<Integer> q = new Queue<Integer>();
+        Queue<Integer> q = new ArrayDeque<Integer>();
         height = new int[G.V()];
         height[s] = G.V();
         excess = new double[G.V()];
@@ -52,7 +53,7 @@ public class PushRelabelMaxFlow {
             }
             if (v != t) {
                 done[v] = true;
-                q.enqueue(v);
+                q.offer(v);
             }
         }
         
@@ -72,7 +73,7 @@ public class PushRelabelMaxFlow {
                         // END PUSH
                         if (!done[w] && w != s && w != t) {
                             done[w] = true;
-                            q.enqueue(w);
+                            q.offer(w);
                         }
                     } else {
                         tempHeight = Math.min(height[w], tempHeight);
@@ -82,7 +83,7 @@ public class PushRelabelMaxFlow {
             if (excess[v] > FLOATING_POINT_EPSILON) height[v] = tempHeight + 1;
             else {
                 done[v] = false;
-                q.dequeue();
+                q.poll();
             }
         }
         value = excess[t];
@@ -96,7 +97,6 @@ public class PushRelabelMaxFlow {
     public double value()  {
         return value;
     }
-
     
     // throw an IllegalArgumentException if v is outside prescribed range
     private void validate(int v)  {

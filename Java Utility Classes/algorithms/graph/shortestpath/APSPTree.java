@@ -1,7 +1,9 @@
 package algorithms.graph.shortestpath;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 import algorithms.graph.lca.WeightedLCA;
-import datastructures.Queue;
 import datastructures.graph.WeightedEdge;
 import datastructures.graph.WeightedGraph;
 
@@ -30,20 +32,20 @@ public class APSPTree {
     }
     
     private void bfs(WeightedGraph G, int s) {
-        Queue<Integer> q = new Queue<Integer>();
+        Queue<Integer> q = new ArrayDeque<Integer>();
         boolean[] marked = new boolean[G.V()];
         distTo[s] = 0;
         marked[s] = true;
-        q.enqueue(s);
+        q.offer(s);
 
         while (!q.isEmpty()) {
-            int v = q.dequeue();
+            int v = q.poll();
             for (WeightedEdge e: G.adj(v)) {
                 int w = e.other(v);
                 if (!marked[w]) {
                     distTo[w] = distTo[v] + e.weight();
                     marked[w] = true;
-                    q.enqueue(w);
+                    q.offer(w);
                 }
             }
         }

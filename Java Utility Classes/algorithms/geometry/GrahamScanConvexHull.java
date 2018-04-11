@@ -1,8 +1,10 @@
 package algorithms.geometry;
 
 import java.util.Arrays;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Stack;
 
-import datastructures.Stack;
 import datastructures.geometry.Point2D;
 
 /**
@@ -20,7 +22,7 @@ import datastructures.geometry.Point2D;
  *  @author Kevin Wayne
  */
 public class GrahamScanConvexHull {
-    private Stack<Point2D> hull = new Stack<Point2D>();
+    private Queue<Point2D> hull = new ArrayDeque<Point2D>();
 
     /**
      * Computes the convex hull of the specified array of points.
@@ -42,6 +44,8 @@ public class GrahamScanConvexHull {
                 throw new IllegalArgumentException("points[" + i + "] is null");
             a[i] = points[i];
          }
+        
+        Stack<Point2D> hull = new Stack<Point2D>();
 
         // preprocess so that a[0] has lowest y-coordinate; break ties by x-coordinate
         // a[0] is an extreme point of the convex hull
@@ -75,8 +79,7 @@ public class GrahamScanConvexHull {
             hull.push(top);
             hull.push(a[i]);
         }
-
-        // assert isConvex();
+        while (!hull.isEmpty()) this.hull.offer(hull.pop());
     }
 
     /**
@@ -85,27 +88,8 @@ public class GrahamScanConvexHull {
      * @return the extreme points on the convex hull in counterclockwise order
      */
     public Iterable<Point2D> hull() {
-        Stack<Point2D> s = new Stack<Point2D>();
-        for (Point2D p : hull) s.push(p);
-        return s;
-    }
-
-    // check that boundary of hull is strictly convex
-    private boolean isConvex() {
-        int n = hull.size();
-        if (n <= 2) return true;
-
-        Point2D[] points = new Point2D[n];
-        int k = 0;
-        for (Point2D p : hull()) {
-            points[k++] = p;
-        }
-
-        for (int i = 0; i < n; i++) {
-            if (Point2D.ccw(points[i], points[(i+1) % n], points[(i+2) % n]) <= 0) {
-                return false;
-            }
-        }
-        return true;
+        Queue<Point2D> q = new ArrayDeque<Point2D>();
+        for (Point2D p : hull) q.offer(p);
+        return q;
     }
 }

@@ -1,29 +1,5 @@
 package utils;
 
-/******************************************************************************
- *  Compilation:  javac StdDraw.java
- *  Execution:    java StdDraw
- *  Dependencies: none
- *
- *  Standard drawing library. This class provides a basic capability for
- *  creating drawings with your programs. It uses a simple graphics model that
- *  allows you to create drawings consisting of points, lines, and curves
- *  in a window on your computer and to save the drawings to a file.
- *
- *  Todo
- *  ----
- *    -  Add support for gradient fill, etc.
- *    -  Fix setCanvasSize() so that it can only be called once.
- *    -  On some systems, drawing a line (or other shape) that extends way
- *       beyond canvas (e.g., to infinity) dimensions does not get drawn.
- *
- *  Remarks
- *  -------
- *    -  don't use AffineTransform for rescaling since it inverts
- *       images and strings
- *
- ******************************************************************************/
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FileDialog;
@@ -59,7 +35,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import java.util.LinkedList;
+import java.util.ArrayDeque;
 import java.util.TreeSet;
 import java.util.NoSuchElementException;
 import javax.imageio.ImageIO;
@@ -608,7 +584,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
     private static double mouseY = 0;
 
     // queue of typed key characters
-    private static LinkedList<Character> keysTyped = new LinkedList<Character>();
+    private static ArrayDeque<Character> keysTyped = new ArrayDeque<Character>();
 
     // set of key codes currently pressed down
     private static TreeSet<Integer> keysDown = new TreeSet<Integer>();

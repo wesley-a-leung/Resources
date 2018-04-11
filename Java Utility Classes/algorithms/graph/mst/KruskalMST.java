@@ -1,7 +1,9 @@
 package algorithms.graph.mst;
 
-import datastructures.MinPQ;
-import datastructures.Queue;
+import java.util.ArrayDeque;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
 import datastructures.UF;
 import datastructures.graph.WeightedGraph;
 import datastructures.graph.WeightedEdge;
@@ -35,7 +37,7 @@ import datastructures.graph.WeightedEdge;
  */
 public class KruskalMST {
     private double weight;                        // weight of MST
-    private Queue<WeightedEdge> mst = new Queue<WeightedEdge>();  // edges in MST
+    private Queue<WeightedEdge> mst = new ArrayDeque<WeightedEdge>();  // edges in MST
 
     /**
      * Compute a minimum spanning tree (or forest) of an edge-weighted graph.
@@ -43,20 +45,47 @@ public class KruskalMST {
      */
     public KruskalMST(WeightedGraph G) {
         // more efficient to build heap by passing array of edges
-        MinPQ<WeightedEdge> pq = new MinPQ<WeightedEdge>();
+        PriorityQueue<WeightedEdge> pq = new PriorityQueue<WeightedEdge>();
         for (WeightedEdge e : G.edges()) {
-            pq.insert(e);
+            pq.offer(e);
         }
 
         // run greedy algorithm
         UF uf = new UF(G.V());
         while (!pq.isEmpty() && mst.size() < G.V() - 1) {
-            WeightedEdge e = pq.delMin();
+            WeightedEdge e = pq.poll();
             int v = e.either();
             int w = e.other(v);
             if (!uf.connected(v, w)) { // v-w does not create a cycle
                 uf.union(v, w);  // merge v and w components
-                mst.enqueue(e);  // add edge e to mst
+                mst.offer(e);  // add edge e to mst
+                weight += e.weight();
+            }
+        }
+    }
+    
+    /**
+     * Compute a minimum spanning tree (or forest) of an edge-weighted graph.
+     * 
+     * @param edges the edges in the graph
+     * @param V the number of vertices in the graph
+     */
+    public KruskalMST(Iterable<WeightedEdge> edges, int V) {
+        // more efficient to build heap by passing array of edges
+        PriorityQueue<WeightedEdge> pq = new PriorityQueue<WeightedEdge>();
+        for (WeightedEdge e : edges) {
+            pq.offer(e);
+        }
+
+        // run greedy algorithm
+        UF uf = new UF(V);
+        while (!pq.isEmpty() && mst.size() < V - 1) {
+            WeightedEdge e = pq.poll();
+            int v = e.either();
+            int w = e.other(v);
+            if (!uf.connected(v, w)) { // v-w does not create a cycle
+                uf.union(v, w);  // merge v and w components
+                mst.offer(e);  // add edge e to mst
                 weight += e.weight();
             }
         }

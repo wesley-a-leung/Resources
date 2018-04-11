@@ -7,7 +7,7 @@ import java.io.InputStream;
 
 public class FastReader {
     private final int BUFFER_SIZE = 1 << 16;
-    private int MAX_LENGTH = 64;
+    private int LENGTH = -1;
     private DataInputStream din;
     private byte[] buffer;
     private int bufferPointer, bytesRead;
@@ -18,28 +18,14 @@ public class FastReader {
         bufferPointer = bytesRead = 0;
     }
 
-    public FastReader(InputStream inputStream, int length) {
-        din = new DataInputStream(inputStream);
-        buffer = new byte[BUFFER_SIZE];
-        bufferPointer = bytesRead = 0;
-        MAX_LENGTH = length;
-    }
-
     public FastReader(String file_name) throws IOException {
         din = new DataInputStream(new FileInputStream(file_name));
         buffer = new byte[BUFFER_SIZE];
         bufferPointer = bytesRead = 0;
     }
 
-    public FastReader(String file_name, int length) throws IOException {
-        din = new DataInputStream(new FileInputStream(file_name));
-        buffer = new byte[BUFFER_SIZE];
-        bufferPointer = bytesRead = 0;
-        MAX_LENGTH = length;
-    }
-
     public String nextLine() throws IOException {
-        byte[] buf = new byte[MAX_LENGTH];
+        byte[] buf = new byte[LENGTH];
         int cnt = 0, c;
         while ((c = read()) != -1) {
             if (c == '\n' || c == '\r') break;
@@ -111,7 +97,7 @@ public class FastReader {
     }
 
     public String next() throws IOException {
-        byte[] buf = new byte[MAX_LENGTH];
+        byte[] buf = new byte[LENGTH];
         int cnt = 0, c;
         c = read();
         while (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1) c = read();
@@ -121,6 +107,10 @@ public class FastReader {
             buf[cnt++] = (byte) c;
         }
         return new String(buf, 0, cnt);
+    }
+    
+    public void setLength(int length) {
+        LENGTH = length;
     }
 
     private void fillBuffer() throws IOException {

@@ -1,8 +1,8 @@
 package datastructures.trees;
 
+import java.util.ArrayDeque;
 import java.util.NoSuchElementException;
-
-import datastructures.Queue;
+import java.util.Queue;
 
 /**
  *  The {@code AVLTree} class represents an ordered symbol table of
@@ -573,7 +573,7 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
      * @return all keys in the symbol table following an in-order traversal
      */
     public Iterable<Key> keysInOrder() {
-        Queue<Key> queue = new Queue<Key>();
+        Queue<Key> queue = new ArrayDeque<Key>();
         keysInOrder(root, queue);
         return queue;
     }
@@ -587,7 +587,7 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
     private void keysInOrder(Node x, Queue<Key> queue) {
         if (x == null) return;
         keysInOrder(x.left, queue);
-        queue.enqueue(x.key);
+        queue.offer(x.key);
         keysInOrder(x.right, queue);
     }
 
@@ -597,18 +597,18 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
      * @return all keys in the symbol table following a level-order traversal.
      */
     public Iterable<Key> keysLevelOrder() {
-        Queue<Key> queue = new Queue<Key>();
+        Queue<Key> queue = new ArrayDeque<Key>();
         if (!isEmpty()) {
-            Queue<Node> queue2 = new Queue<Node>();
-            queue2.enqueue(root);
+            Queue<Node> queue2 = new ArrayDeque<Node>();
+            queue2.offer(root);
             while (!queue2.isEmpty()) {
-                Node x = queue2.dequeue();
-                queue.enqueue(x.key);
+                Node x = queue2.poll();
+                queue.offer(x.key);
                 if (x.left != null) {
-                    queue2.enqueue(x.left);
+                    queue2.offer(x.left);
                 }
                 if (x.right != null) {
-                    queue2.enqueue(x.right);
+                    queue2.offer(x.right);
                 }
             }
         }
@@ -628,7 +628,7 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
     public Iterable<Key> keys(Key lo, Key hi) {
         if (lo == null) throw new IllegalArgumentException("first argument to keys() is null");
         if (hi == null) throw new IllegalArgumentException("second argument to keys() is null");
-        Queue<Key> queue = new Queue<Key>();
+        Queue<Key> queue = new ArrayDeque<Key>();
         keys(root, queue, lo, hi);
         return queue;
     }
@@ -647,7 +647,7 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
         int cmplo = lo.compareTo(x.key);
         int cmphi = hi.compareTo(x.key);
         if (cmplo < 0) keys(x.left, queue, lo, hi);
-        if (cmplo <= 0 && cmphi >= 0) queue.enqueue(x.key);
+        if (cmplo <= 0 && cmphi >= 0) queue.offer(x.key);
         if (cmphi > 0) keys(x.right, queue, lo, hi);
     }
 
@@ -667,95 +667,5 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
         if (lo.compareTo(hi) > 0) return 0;
         if (contains(hi)) return rank(hi) - rank(lo) + 1;
         else return rank(hi) - rank(lo);
-    }
-
-    /**
-     * Checks if the AVL tree invariants are fine.
-     * 
-     * @return {@code true} if the AVL tree invariants are fine
-     */
-    private boolean check() {
-        return isBST() && isAVL() && isSizeConsistent() && isRankConsistent();
-    }
-
-    /**
-     * Checks if AVL property is consistent.
-     * 
-     * @return {@code true} if AVL property is consistent.
-     */
-    private boolean isAVL() {
-        return isAVL(root);
-    }
-
-    /**
-     * Checks if AVL property is consistent in the subtree.
-     * 
-     * @param x the subtree
-     * @return {@code true} if AVL property is consistent in the subtree
-     */
-    private boolean isAVL(Node x) {
-        if (x == null) return true;
-        int bf = balanceFactor(x);
-        if (bf > 1 || bf < -1) return false;
-        return isAVL(x.left) && isAVL(x.right);
-    }
-
-    /**
-     * Checks if the symmetric order is consistent.
-     * 
-     * @return {@code true} if the symmetric order is consistent
-     */
-    private boolean isBST() {
-        return isBST(root, null, null);
-    }
-
-    /**
-     * Checks if the tree rooted at x is a BST with all keys strictly between
-     * min and max (if min or max is null, treat as empty constraint) Credit:
-     * Bob Dondero's elegant solution
-     * 
-     * @param x the subtree
-     * @param min the minimum key in subtree
-     * @param max the maximum key in subtree
-     * @return {@code true} if if the symmetric order is consistent
-     */
-    private boolean isBST(Node x, Key min, Key max) {
-        if (x == null) return true;
-        if (min != null && x.key.compareTo(min) <= 0) return false;
-        if (max != null && x.key.compareTo(max) >= 0) return false;
-        return isBST(x.left, min, x.key) && isBST(x.right, x.key, max);
-    }
-
-    /**
-     * Checks if size is consistent.
-     * 
-     * @return {@code true} if size is consistent
-     */
-    private boolean isSizeConsistent() {
-        return isSizeConsistent(root);
-    }
-
-    /**
-     * Checks if the size of the subtree is consistent.
-     * 
-     * @return {@code true} if the size of the subtree is consistent
-     */
-    private boolean isSizeConsistent(Node x) {
-        if (x == null) return true;
-        if (x.size != size(x.left) + size(x.right) + 1) return false;
-        return isSizeConsistent(x.left) && isSizeConsistent(x.right);
-    }
-
-    /**
-     * Checks if rank is consistent.
-     * 
-     * @return {@code true} if rank is consistent
-     */
-    private boolean isRankConsistent() {
-        for (int i = 0; i < size(); i++)
-            if (i != rank(select(i))) return false;
-        for (Key key : keys())
-            if (key.compareTo(select(rank(key))) != 0) return false;
-        return true;
     }
 }

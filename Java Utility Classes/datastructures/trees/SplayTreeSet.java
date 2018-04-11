@@ -1,6 +1,7 @@
 package datastructures.trees;
 
-import datastructures.Queue;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public class SplayTreeSet<Value extends Comparable<Value>> {
 
@@ -142,7 +143,7 @@ public class SplayTreeSet<Value extends Comparable<Value>> {
      * @return an iterator that iterates over the values in order
      */
     public Iterable<Value> values() {
-        Queue<Value> order = new Queue<Value>();
+        Queue<Value> order = new ArrayDeque<Value>();
         traverse(root, order);
         return order;
     }
@@ -150,7 +151,7 @@ public class SplayTreeSet<Value extends Comparable<Value>> {
     private void traverse(Node x, Queue<Value> order) {
         if (x == null) return;
         traverse(x.left, order);
-        order.enqueue(x.val);
+        order.offer(x.val);
         traverse(x.right, order);
     }
     

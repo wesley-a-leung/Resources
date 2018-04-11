@@ -1,10 +1,10 @@
 package algorithms.graph.components;
 
 import java.util.HashSet;
+import java.util.Stack;
 import java.util.ArrayList;
 
 import datastructures.Pair;
-import datastructures.Stack;
 import datastructures.graph.Graph;
 
 /**

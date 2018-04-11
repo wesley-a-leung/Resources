@@ -1,7 +1,9 @@
 package algorithms.graph.search;
 
-import datastructures.Queue;
-import datastructures.Stack;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Stack;
+
 import datastructures.graph.Digraph;
 import datastructures.graph.DirectedWeightedEdge;
 import datastructures.graph.WeightedDigraph;
@@ -41,8 +43,8 @@ public class DepthFirstOrder {
     public DepthFirstOrder(Digraph G) {
         pre    = new int[G.V()];
         post   = new int[G.V()];
-        postorder = new Queue<Integer>();
-        preorder  = new Queue<Integer>();
+        postorder = new ArrayDeque<Integer>();
+        preorder  = new ArrayDeque<Integer>();
         marked    = new boolean[G.V()];
         for (int v = 0; v < G.V(); v++)
             if (!marked[v]) dfs(G, v);
@@ -55,8 +57,8 @@ public class DepthFirstOrder {
     public DepthFirstOrder(WeightedDigraph G) {
         pre    = new int[G.V()];
         post   = new int[G.V()];
-        postorder = new Queue<Integer>();
-        preorder  = new Queue<Integer>();
+        postorder = new ArrayDeque<Integer>();
+        preorder  = new ArrayDeque<Integer>();
         marked    = new boolean[G.V()];
         for (int v = 0; v < G.V(); v++)
             if (!marked[v]) dfs(G, v);
@@ -66,13 +68,13 @@ public class DepthFirstOrder {
     private void dfs(Digraph G, int v) {
         marked[v] = true;
         pre[v] = preCounter++;
-        preorder.enqueue(v);
+        preorder.offer(v);
         for (int w : G.adj(v)) {
             if (!marked[w]) {
                 dfs(G, w);
             }
         }
-        postorder.enqueue(v);
+        postorder.offer(v);
         post[v] = postCounter++;
     }
 
@@ -80,14 +82,14 @@ public class DepthFirstOrder {
     private void dfs(WeightedDigraph G, int v) {
         marked[v] = true;
         pre[v] = preCounter++;
-        preorder.enqueue(v);
+        preorder.offer(v);
         for (DirectedWeightedEdge e : G.adj(v)) {
             int w = e.to();
             if (!marked[w]) {
                 dfs(G, w);
             }
         }
-        postorder.enqueue(v);
+        postorder.offer(v);
         post[v] = postCounter++;
     }
 
@@ -135,9 +137,10 @@ public class DepthFirstOrder {
      */
     public Iterable<Integer> reversePost() {
         Stack<Integer> reverse = new Stack<Integer>();
-        for (int v : postorder)
-            reverse.push(v);
-        return reverse;
+        for (int v : postorder) reverse.push(v);
+        Queue<Integer> ret = new ArrayDeque<Integer>();
+        while (!reverse.isEmpty()) ret.offer(reverse.pop());
+        return ret;
     }
 
     // throw an IllegalArgumentException unless {@code 0 <= v < V}

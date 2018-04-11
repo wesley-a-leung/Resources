@@ -1,9 +1,10 @@
 package algorithms.graph.cycle;
 
-import datastructures.Queue;
-import datastructures.Stack;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Stack;
+
 import datastructures.graph.Graph;
-import algorithms.graph.search.BreadthFirstPaths;
 
 /**
  *  The {@code EulerianCycle} class represents a data type
@@ -72,7 +73,7 @@ public class EulerianCycle {
         // the helper Edge data type is used to avoid exploring both copies of an edge v-w
         Queue<Edge>[] adj = (Queue<Edge>[]) new Queue[G.V()];
         for (int v = 0; v < G.V(); v++)
-            adj[v] = new Queue<Edge>();
+            adj[v] = new ArrayDeque<Edge>();
 
         for (int v = 0; v < G.V(); v++) {
             int selfLoops = 0;
@@ -81,15 +82,15 @@ public class EulerianCycle {
                 if (v == w) {
                     if (selfLoops % 2 == 0) {
                         Edge e = new Edge(v, w);
-                        adj[v].enqueue(e);
-                        adj[w].enqueue(e);
+                        adj[v].offer(e);
+                        adj[w].offer(e);
                     }
                     selfLoops++;
                 }
                 else if (v < w) {
                     Edge e = new Edge(v, w);
-                    adj[v].enqueue(e);
-                    adj[w].enqueue(e);
+                    adj[v].offer(e);
+                    adj[w].offer(e);
                 }
             }
         }
@@ -104,7 +105,7 @@ public class EulerianCycle {
         while (!stack.isEmpty()) {
             int v = stack.pop();
             while (!adj[v].isEmpty()) {
-                Edge edge = adj[v].dequeue();
+                Edge edge = adj[v].poll();
                 if (edge.isUsed) continue;
                 edge.isUsed = true;
                 stack.push(v);
@@ -117,8 +118,6 @@ public class EulerianCycle {
         // check if all edges are used
         if (cycle.size() != G.E() + 1)
             cycle = null;
-
-        assert certifySolution(G);
     }
 
     /**
@@ -148,64 +147,4 @@ public class EulerianCycle {
                 return v;
         return -1;
     }
-
-    /**************************************************************************
-     *
-     *  The code below is solely for testing correctness of the data type.
-     *
-     **************************************************************************/
-
-    // Determines whether a graph has an Eulerian cycle using necessary
-    // and sufficient conditions (without computing the cycle itself):
-    //    - at least one edge
-    //    - degree(v) is even for every vertex v
-    //    - the graph is connected (ignoring isolated vertices)
-    private static boolean hasEulerianCycle(Graph G) {
-
-        // Condition 0: at least 1 edge
-        if (G.E() == 0) return false;
-
-        // Condition 1: degree(v) is even for every vertex
-        for (int v = 0; v < G.V(); v++)
-            if (G.degree(v) % 2 != 0)
-                return false;
-
-        // Condition 2: graph is connected, ignoring isolated vertices
-        int s = nonIsolatedVertex(G);
-        BreadthFirstPaths bfs = new BreadthFirstPaths(G, s);
-        for (int v = 0; v < G.V(); v++)
-            if (G.degree(v) > 0 && !bfs.hasPathTo(v))
-                return false;
-
-        return true;
-    }
-
-    // check that solution is correct
-    private boolean certifySolution(Graph G) {
-
-        // internal consistency check
-        if (hasEulerianCycle() == (cycle() == null)) return false;
-
-        // hashEulerianCycle() returns correct value
-        if (hasEulerianCycle() != hasEulerianCycle(G)) return false;
-
-        // nothing else to check if no Eulerian cycle
-        if (cycle == null) return true;
-
-        // check that cycle() uses correct number of edges
-        if (cycle.size() != G.E() + 1) return false;
-
-        // check that cycle() is a cycle of G
-
-        // check that first and last vertices in cycle() are the same
-        int first = -1, last = -1;
-        for (int v : cycle()) {
-            if (first == -1) first = v;
-            last = v;
-        }
-        if (first != last) return false;
-
-        return true;
-    }
 }
-

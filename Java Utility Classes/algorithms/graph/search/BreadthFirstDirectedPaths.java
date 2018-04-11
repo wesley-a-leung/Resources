@@ -1,7 +1,9 @@
 package algorithms.graph.search;
 
-import datastructures.Queue;
-import datastructures.Stack;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Stack;
+
 import datastructures.graph.Digraph;
 
 /**
@@ -63,18 +65,18 @@ public class BreadthFirstDirectedPaths {
 
     // BFS from single source
     private void bfs(Digraph G, int s) {
-        Queue<Integer> q = new Queue<Integer>();
+        Queue<Integer> q = new ArrayDeque<Integer>();
         marked[s] = true;
         distTo[s] = 0;
-        q.enqueue(s);
+        q.offer(s);
         while (!q.isEmpty()) {
-            int v = q.dequeue();
+            int v = q.poll();
             for (int w : G.adj(v)) {
                 if (!marked[w]) {
                     edgeTo[w] = v;
                     distTo[w] = distTo[v] + 1;
                     marked[w] = true;
-                    q.enqueue(w);
+                    q.offer(w);
                 }
             }
         }
@@ -82,20 +84,20 @@ public class BreadthFirstDirectedPaths {
 
     // BFS from multiple sources
     private void bfs(Digraph G, Iterable<Integer> sources) {
-        Queue<Integer> q = new Queue<Integer>();
+        Queue<Integer> q = new ArrayDeque<Integer>();
         for (int s : sources) {
             marked[s] = true;
             distTo[s] = 0;
-            q.enqueue(s);
+            q.offer(s);
         }
         while (!q.isEmpty()) {
-            int v = q.dequeue();
+            int v = q.poll();
             for (int w : G.adj(v)) {
                 if (!marked[w]) {
                     edgeTo[w] = v;
                     distTo[w] = distTo[v] + 1;
                     marked[w] = true;
-                    q.enqueue(w);
+                    q.offer(w);
                 }
             }
         }
@@ -133,13 +135,14 @@ public class BreadthFirstDirectedPaths {
      */
     public Iterable<Integer> pathTo(int v) {
         validateVertex(v);
-
         if (!hasPathTo(v)) return null;
-        Stack<Integer> path = new Stack<Integer>();
+        Stack<Integer> rev = new Stack<Integer>();
         int x;
         for (x = v; distTo[x] != 0; x = edgeTo[x])
-            path.push(x);
-        path.push(x);
+            rev.push(x);
+        rev.push(x);
+        Queue<Integer> path = new ArrayDeque<Integer>();
+        while (!rev.isEmpty()) path.offer(rev.pop());
         return path;
     }
 

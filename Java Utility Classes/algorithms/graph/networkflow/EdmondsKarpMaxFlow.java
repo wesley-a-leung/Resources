@@ -1,6 +1,8 @@
 package algorithms.graph.networkflow;
 
-import datastructures.Queue;
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 import datastructures.graph.networkflow.FlowEdge;
 import datastructures.graph.networkflow.FlowNetwork;
 
@@ -115,11 +117,11 @@ public class EdmondsKarpMaxFlow {
         marked = new boolean[G.V()];
 
         // breadth-first search
-        Queue<Integer> queue = new Queue<Integer>();
-        queue.enqueue(s);
+        Queue<Integer> queue = new ArrayDeque<Integer>();
+        queue.offer(s);
         marked[s] = true;
         while (!queue.isEmpty() && !marked[t]) {
-            int v = queue.dequeue();
+            int v = queue.poll();
 
             for (FlowEdge e : G.adj(v)) {
                 int w = e.other(v);
@@ -129,7 +131,7 @@ public class EdmondsKarpMaxFlow {
                     if (!marked[w]) {
                         edgeTo[w] = e;
                         marked[w] = true;
-                        queue.enqueue(w);
+                        queue.offer(w);
                     }
                 }
             }
@@ -137,89 +139,5 @@ public class EdmondsKarpMaxFlow {
 
         // is there an augmenting path?
         return marked[t];
-    }
-
-
-
-    // return excess flow at vertex v
-    private double excess(FlowNetwork G, int v) {
-        double excess = 0.0;
-        for (FlowEdge e : G.adj(v)) {
-            if (v == e.from()) excess -= e.flow();
-            else               excess += e.flow();
-        }
-        return excess;
-    }
-
-    // return excess flow at vertex v
-    private boolean isFeasible(FlowNetwork G, int s, int t) {
-
-        // check that capacity constraints are satisfied
-        for (int v = 0; v < G.V(); v++) {
-            for (FlowEdge e : G.adj(v)) {
-                if (e.flow() < -FLOATING_POINT_EPSILON || e.flow() > e.capacity() + FLOATING_POINT_EPSILON) {
-                    System.err.println("Edge does not satisfy capacity constraints: " + e);
-                    return false;
-                }
-            }
-        }
-
-        // check that net flow into a vertex equals zero, except at source and sink
-        if (Math.abs(value + excess(G, s)) > FLOATING_POINT_EPSILON) {
-            System.err.println("Excess at source = " + excess(G, s));
-            System.err.println("Max flow         = " + value);
-            return false;
-        }
-        if (Math.abs(value - excess(G, t)) > FLOATING_POINT_EPSILON) {
-            System.err.println("Excess at sink   = " + excess(G, t));
-            System.err.println("Max flow         = " + value);
-            return false;
-        }
-        for (int v = 0; v < G.V(); v++) {
-            if (v == s || v == t) continue;
-            else if (Math.abs(excess(G, v)) > FLOATING_POINT_EPSILON) {
-                System.err.println("Net flow out of " + v + " doesn't equal zero");
-                return false;
-            }
-        }
-        return true;
-    }
-
-
-
-    // check optimality conditions
-    private boolean check(FlowNetwork G, int s, int t) {
-
-        // check that flow is feasible
-        if (!isFeasible(G, s, t)) {
-            System.err.println("Flow is infeasible");
-            return false;
-        }
-
-        // check that s is on the source side of min cut and that t is not on source side
-        if (!inCut(s)) {
-            System.err.println("source " + s + " is not on source side of min cut");
-            return false;
-        }
-        if (inCut(t)) {
-            System.err.println("sink " + t + " is on source side of min cut");
-            return false;
-        }
-
-        // check that value of min cut = value of max flow
-        double mincutValue = 0.0;
-        for (int v = 0; v < G.V(); v++) {
-            for (FlowEdge e : G.adj(v)) {
-                if ((v == e.from()) && inCut(e.from()) && !inCut(e.to()))
-                    mincutValue += e.capacity();
-            }
-        }
-
-        if (Math.abs(mincutValue - value) > FLOATING_POINT_EPSILON) {
-            System.err.println("Max flow value = " + value + ", min cut value = " + mincutValue);
-            return false;
-        }
-
-        return true;
     }
 }

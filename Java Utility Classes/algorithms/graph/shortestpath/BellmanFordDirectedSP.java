@@ -1,9 +1,10 @@
 package algorithms.graph.shortestpath;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Stack;
 
-import datastructures.Stack;
 import datastructures.graph.DirectedWeightedEdge;
 import datastructures.graph.WeightedDigraph;
 
@@ -110,7 +111,7 @@ public class BellmanFordDirectedSP {
      * @throws IllegalArgumentException unless {@code 0 <= s < V}
      * @throws IllegalArgumentException if there is a negative cycle
      */
-    public BellmanFordDirectedSP(int V, List<DirectedWeightedEdge> edges, int s) {
+    public BellmanFordDirectedSP(int V, Iterable<DirectedWeightedEdge> edges, int s) {
         distTo = new double[V];
         edgeTo = new DirectedWeightedEdge[V];
 
@@ -172,10 +173,12 @@ public class BellmanFordDirectedSP {
     public Iterable<DirectedWeightedEdge> pathTo(int v) {
         validateVertex(v);
         if (!hasPathTo(v)) return null;
-        Stack<DirectedWeightedEdge> path = new Stack<DirectedWeightedEdge>();
+        Stack<DirectedWeightedEdge> rev = new Stack<DirectedWeightedEdge>();
         for (DirectedWeightedEdge e = edgeTo[v]; e != null; e = edgeTo[e.from()]) {
-            path.push(e);
+            rev.push(e);
         }
+        Queue<DirectedWeightedEdge> path = new ArrayDeque<DirectedWeightedEdge>();
+        while (!rev.isEmpty()) path.offer(rev.pop());
         return path;
     }
 

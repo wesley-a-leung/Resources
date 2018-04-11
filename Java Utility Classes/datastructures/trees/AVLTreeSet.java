@@ -1,8 +1,8 @@
 package datastructures.trees;
 
+import java.util.ArrayDeque;
 import java.util.NoSuchElementException;
-
-import datastructures.Queue;
+import java.util.Queue;
 
 public class AVLTreeSet<Value extends Comparable<Value>> {
 
@@ -461,7 +461,7 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
      * @return all values in the symbol table following an in-order traversal
      */
     public Iterable<Value> values() {
-        Queue<Value> queue = new Queue<Value>();
+        Queue<Value> queue = new ArrayDeque<Value>();
         valuesInOrder(root, queue);
         return queue;
     }
@@ -475,7 +475,7 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
     private void valuesInOrder(Node x, Queue<Value> queue) {
         if (x == null) return;
         valuesInOrder(x.left, queue);
-        queue.enqueue(x.val);
+        queue.offer(x.val);
         valuesInOrder(x.right, queue);
     }
 
@@ -485,15 +485,15 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
      * @return all values in the symbol table following a level-order traversal.
      */
     public Iterable<Value> valuesLevelOrder() {
-        Queue<Value> queue = new Queue<Value>();
+        Queue<Value> queue = new ArrayDeque<Value>();
         if (!isEmpty()) {
-            Queue<Node> queue2 = new Queue<Node>();
-            queue2.enqueue(root);
+            Queue<Node> queue2 = new ArrayDeque<Node>();
+            queue2.offer(root);
             while (!queue2.isEmpty()) {
-                Node x = queue2.dequeue();
-                queue.enqueue(x.val);
-                if (x.left != null) queue2.enqueue(x.left);
-                if (x.right != null) queue2.enqueue(x.right);
+                Node x = queue2.poll();
+                queue.offer(x.val);
+                if (x.left != null) queue2.offer(x.left);
+                if (x.right != null) queue2.offer(x.right);
             }
         }
         return queue;
@@ -512,7 +512,7 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
     public Iterable<Value> values(Value lo, Value hi) {
         if (lo == null) throw new IllegalArgumentException("first argument to values() is null");
         if (hi == null) throw new IllegalArgumentException("second argument to values() is null");
-        Queue<Value> queue = new Queue<Value>();
+        Queue<Value> queue = new ArrayDeque<Value>();
         values(root, queue, lo, hi);
         return queue;
     }
@@ -531,7 +531,7 @@ public class AVLTreeSet<Value extends Comparable<Value>> {
         int cmplo = lo.compareTo(x.val);
         int cmphi = hi.compareTo(x.val);
         if (cmplo < 0) values(x.left, queue, lo, hi);
-        if (cmplo <= 0 && cmphi >= 0) queue.enqueue(x.val);
+        if (cmplo <= 0 && cmphi >= 0) queue.offer(x.val);
         if (cmphi > 0) values(x.right, queue, lo, hi);
     }
 

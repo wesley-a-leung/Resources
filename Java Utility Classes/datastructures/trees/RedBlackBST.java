@@ -1,8 +1,8 @@
 package datastructures.trees;
 
+import java.util.ArrayDeque;
 import java.util.NoSuchElementException;
-
-import datastructures.Queue;
+import java.util.Queue;
 
 /**
  *  The {@code BST} class represents an ordered symbol table of generic
@@ -543,7 +543,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
      * @return all keys in the symbol table as an {@code Iterable}
      */
     public Iterable<Key> keys() {
-        if (isEmpty()) return new Queue<Key>();
+        if (isEmpty()) return new ArrayDeque<Key>();
         return keys(min(), max());
     }
 
@@ -562,7 +562,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
         if (lo == null) throw new IllegalArgumentException("first argument to keys() is null");
         if (hi == null) throw new IllegalArgumentException("second argument to keys() is null");
 
-        Queue<Key> queue = new Queue<Key>();
+        Queue<Key> queue = new ArrayDeque<Key>();
         // if (isEmpty() || lo.compareTo(hi) > 0) return queue;
         keys(root, queue, lo, hi);
         return queue;
@@ -575,7 +575,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
         int cmplo = lo.compareTo(x.key); 
         int cmphi = hi.compareTo(x.key); 
         if (cmplo < 0) keys(x.left, queue, lo, hi); 
-        if (cmplo <= 0 && cmphi >= 0) queue.enqueue(x.key); 
+        if (cmplo <= 0 && cmphi >= 0) queue.offer(x.key); 
         if (cmphi > 0) keys(x.right, queue, lo, hi); 
     } 
 
@@ -597,74 +597,4 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
         if (contains(hi)) return rank(hi) - rank(lo) + 1;
         else              return rank(hi) - rank(lo);
     }
-
-
-   /***************************************************************************
-    *  Check integrity of red-black tree data structure.
-    ***************************************************************************/
-    private boolean check() {
-        return isBST() && isSizeConsistent() && isRankConsistent() && is23() && isBalanced();
-    }
-
-    // does this binary tree satisfy symmetric order?
-    // Note: this test also ensures that data structure is a binary tree since order is strict
-    private boolean isBST() {
-        return isBST(root, null, null);
-    }
-
-    // is the tree rooted at x a BST with all keys strictly between min and max
-    // (if min or max is null, treat as empty constraint)
-    // Credit: Bob Dondero's elegant solution
-    private boolean isBST(Node x, Key min, Key max) {
-        if (x == null) return true;
-        if (min != null && x.key.compareTo(min) <= 0) return false;
-        if (max != null && x.key.compareTo(max) >= 0) return false;
-        return isBST(x.left, min, x.key) && isBST(x.right, x.key, max);
-    } 
-
-    // are the size fields correct?
-    private boolean isSizeConsistent() { return isSizeConsistent(root); }
-    private boolean isSizeConsistent(Node x) {
-        if (x == null) return true;
-        if (x.size != size(x.left) + size(x.right) + 1) return false;
-        return isSizeConsistent(x.left) && isSizeConsistent(x.right);
-    } 
-
-    // check that ranks are consistent
-    private boolean isRankConsistent() {
-        for (int i = 0; i < size(); i++)
-            if (i != rank(select(i))) return false;
-        for (Key key : keys())
-            if (key.compareTo(select(rank(key))) != 0) return false;
-        return true;
-    }
-
-    // Does the tree have no red right links, and at most one (left)
-    // red links in a row on any path?
-    private boolean is23() { return is23(root); }
-    private boolean is23(Node x) {
-        if (x == null) return true;
-        if (isRed(x.right)) return false;
-        if (x != root && isRed(x) && isRed(x.left))
-            return false;
-        return is23(x.left) && is23(x.right);
-    } 
-
-    // do all paths from root to leaf have same number of black edges?
-    private boolean isBalanced() { 
-        int black = 0;     // number of black links on path from root to min
-        Node x = root;
-        while (x != null) {
-            if (!isRed(x)) black++;
-            x = x.left;
-        }
-        return isBalanced(root, black);
-    }
-
-    // does every path from the root to a leaf have the given number of black links?
-    private boolean isBalanced(Node x, int black) {
-        if (x == null) return black == 0;
-        if (!isRed(x)) black--;
-        return isBalanced(x.left, black) && isBalanced(x.right, black);
-    } 
 }

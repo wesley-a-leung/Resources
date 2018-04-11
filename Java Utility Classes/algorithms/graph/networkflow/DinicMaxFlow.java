@@ -1,6 +1,8 @@
 package algorithms.graph.networkflow;
 
-import datastructures.Queue;
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 import datastructures.graph.networkflow.FlowEdge;
 import datastructures.graph.networkflow.FlowNetwork;
 
@@ -92,15 +94,15 @@ public class DinicMaxFlow {
             level[v] = -1;
         }
         level[s] = 0;
-        Queue<Integer> queue = new Queue<Integer>();
-        queue.enqueue(s);
+        Queue<Integer> queue = new ArrayDeque<Integer>();
+        queue.offer(s);
         while (!queue.isEmpty()) {
-            int v = queue.dequeue();
+            int v = queue.poll();
             for (FlowEdge e : G.adj(v)) {
                 int w = e.other(v);
                 if (level[w] < 0 && e.residualCapacityTo(w) > 0) {
                     level[w] = level[v] + 1;
-                    queue.enqueue(w);
+                    queue.offer(w);
                 }
             }
         }

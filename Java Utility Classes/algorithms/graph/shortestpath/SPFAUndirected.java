@@ -1,7 +1,10 @@
 package algorithms.graph.shortestpath;
 
-import datastructures.Deque;
-import datastructures.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Queue;
+import java.util.Stack;
+
 import datastructures.graph.WeightedEdge;
 import datastructures.graph.WeightedGraph;
 
@@ -38,7 +41,7 @@ public class SPFAUndirected {
         distTo = new double[G.V()];
         edgeTo = new WeightedEdge[G.V()];
         inQueue = new boolean[G.V()];
-        q = new Deque<Integer>();
+        q = new ArrayDeque<Integer>();
 
         validateVertex(s);
 
@@ -101,12 +104,14 @@ public class SPFAUndirected {
     public Iterable<WeightedEdge> pathTo(int v) {
         validateVertex(v);
         if (!hasPathTo(v)) return null;
-        Stack<WeightedEdge> path = new Stack<WeightedEdge>();
+        Stack<WeightedEdge> rev = new Stack<WeightedEdge>();
         int x = v;
         for (WeightedEdge e = edgeTo[v]; e != null; e = edgeTo[x]) {
-            path.push(e);
+            rev.push(e);
             x = e.other(x);
         }
+        Queue<WeightedEdge> path = new ArrayDeque<WeightedEdge>();
+        while (!rev.isEmpty()) path.offer(rev.pop());
         return path;
     }
 
