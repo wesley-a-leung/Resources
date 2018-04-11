@@ -5,33 +5,33 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class DataInputStreamReader {
+public class FastReader {
     private final int BUFFER_SIZE = 1 << 16;
     private int MAX_LENGTH = 64;
     private DataInputStream din;
     private byte[] buffer;
     private int bufferPointer, bytesRead;
 
-    public DataInputStreamReader(InputStream inputStream) {
+    public FastReader(InputStream inputStream) {
         din = new DataInputStream(inputStream);
         buffer = new byte[BUFFER_SIZE];
         bufferPointer = bytesRead = 0;
     }
-    
-    public DataInputStreamReader(InputStream inputStream, int length) {
+
+    public FastReader(InputStream inputStream, int length) {
         din = new DataInputStream(inputStream);
         buffer = new byte[BUFFER_SIZE];
         bufferPointer = bytesRead = 0;
         MAX_LENGTH = length;
     }
 
-    public DataInputStreamReader(String file_name) throws IOException {
+    public FastReader(String file_name) throws IOException {
         din = new DataInputStream(new FileInputStream(file_name));
         buffer = new byte[BUFFER_SIZE];
         bufferPointer = bytesRead = 0;
     }
-    
-    public DataInputStreamReader(String file_name, int length) throws IOException {
+
+    public FastReader(String file_name, int length) throws IOException {
         din = new DataInputStream(new FileInputStream(file_name));
         buffer = new byte[BUFFER_SIZE];
         bufferPointer = bytesRead = 0;
@@ -47,18 +47,30 @@ public class DataInputStreamReader {
         }
         return new String(buf, 0, cnt);
     }
+    
+    public byte nextByte() throws IOException {
+        byte ret = 0;
+        byte c = read();
+        while (c <= ' ') c = read();
+        boolean neg = (c == '-');
+        if (neg) c = read();
+        do {
+            ret *= 10;
+            ret += c - '0';
+        } while ((c = read()) >= '0' && c <= '9');
+        if (neg) return (byte) (-ret);
+        return ret;
+    }
 
     public int nextInt() throws IOException {
         int ret = 0;
         byte c = read();
-        while (c <= ' ')
-            c = read();
+        while (c <= ' ') c = read();
         boolean neg = (c == '-');
         if (neg) c = read();
         do {
             ret = ret * 10 + c - '0';
         } while ((c = read()) >= '0' && c <= '9');
-
         if (neg) return -ret;
         return ret;
     }
@@ -66,8 +78,7 @@ public class DataInputStreamReader {
     public long nextLong() throws IOException {
         long ret = 0;
         byte c = read();
-        while (c <= ' ')
-            c = read();
+        while (c <= ' ') c = read();
         boolean neg = (c == '-');
         if (neg) c = read();
         do {
@@ -80,40 +91,30 @@ public class DataInputStreamReader {
     public double nextDouble() throws IOException {
         double ret = 0, div = 1;
         byte c = read();
-        while (c <= ' ')
-            c = read();
+        while (c <= ' ') c = read();
         boolean neg = (c == '-');
         if (neg) c = read();
-
         do {
             ret = ret * 10 + c - '0';
         } while ((c = read()) >= '0' && c <= '9');
-
-        if (c == '.') {
-            while ((c = read()) >= '0' && c <= '9') {
-                ret += (c - '0') / (div *= 10);
-            }
-        }
-
+        if (c == '.') while ((c = read()) >= '0' && c <= '9') ret += (c - '0') / (div *= 10);
         if (neg) return -ret;
         return ret;
     }
-    
+
     public char nextChar() throws IOException {
-        int c = read();
-        while (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1) {
+        byte c;
+        do {
             c = read();
-        }
+        } while (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1);
         return (char) c;
     }
-    
+
     public String next() throws IOException {
         byte[] buf = new byte[MAX_LENGTH];
         int cnt = 0, c;
         c = read();
-        while(c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1) {
-            c = read();
-        }
+        while (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1) c = read();
         buf[cnt++] = (byte) c;
         while ((c = read()) != -1) {
             if (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1) break;
