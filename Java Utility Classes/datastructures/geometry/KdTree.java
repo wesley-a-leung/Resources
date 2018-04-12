@@ -118,7 +118,7 @@ public class KdTree {
     
     private void range(Node n, Queue<Point2D> q, Rectangle rect) {
         if (n == null || !rect.intersects(n.r)) return;
-        if (rect.contains(n.p)) q.enqueue(n.p);
+        if (rect.contains(n.p)) q.offer(n.p);
         range(n.leftUp, q, rect);
         range(n.rightDown, q, rect);
     }
