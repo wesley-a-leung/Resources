@@ -68,7 +68,7 @@ public:
         size = new int[G->getV()];
         head = new int[G->getV()];
         index = new int[G->getV()];
-        vertex = new int[G->getV()];
+        vertex = new int[G->getV() + 1];
         chainNum = 0;
         curInd = 1;
         for (int i = 0; i < G->getV(); i++) {

@@ -30,6 +30,26 @@ public:
  * Empty, Size: O(1)
  * Values: O(N)
  */
+/**
+ * Root Array:
+ * Decomposes the array into N ^ (1 / R) containers of size N ^ ((R - 1) / R) multiplied by a factor.
+ * The factor should be between 1 and 10, and should be smaller for large N.
+ *
+ * Usage:
+ * RootArray<3, int, SqrtArray<int>> arr;
+ * RootArray<4, int, RootArray<3, int, SqrtArray<int>>> arr;
+ *
+ * Initializing: O(N)
+ * Insert: O(N ^ (1 / R) + log(N))
+ * Erase: O(N ^ (1 / R) + log(N))
+ * Push Front, Pop Front: O(N ^ (1 / R))
+ * Push Back, Pop Back: O(1) amortized
+ * At, Accessor, Mutator: O(log(N))
+ * Front, Back: O(1)
+ * Lower Bound, Upper Bound, Floor, Ceiling, Above, Below: O(log(N))
+ * Empty, Size: O(1)
+ * Values: O(N)
+ */
 template <const int R, typename Value, typename Container, typename SmallAlloc = allocator<Value>,
         typename LargeAlloc = allocator<Container>, typename IntAlloc = allocator<int>>
 struct RootArray {
@@ -51,8 +71,9 @@ public:
      * @param SCALE_FACTOR scales the value of N ^ (1 / R) by this value
      *
      * @param n the initial size
+     * @param SCALE_FACTOR scales the value of N ^ (1 / R) by this value
      */
-    RootArray(const int n, const int SCALE_FACTOR = 1) : n(n), SCALE_FACTOR(SCALE_FACTOR) {
+    RootArray(const int n, const int SCALE_FACTOR) : n(n), SCALE_FACTOR(SCALE_FACTOR) {
         assert(n >= 0);
         int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
         for (int i = 0; i < n; i += rootn) {
@@ -113,7 +134,7 @@ public:
     void insert(int k, const Value val) {
         assert(0 <= k && k <= n);
         if (n++ == 0) {
-            a.emplace_back();
+            a.emplace_back(SCALE_FACTOR);
             prefixSZ.push_back(0);
         }
         int lo = 0, hi = (int) (a.size()) - 1, mid;
@@ -133,7 +154,7 @@ public:
                 a[hi].pop_back();
             }
             reverse(b.begin(), b.end());
-            a.emplace(a.begin() + hi + 1, b.begin(), b.end());
+            a.emplace(a.begin() + hi + 1, b.begin(), b.end(), SCALE_FACTOR);
             prefixSZ.push_back(0);
         }
         for (int i = hi + 1; i < (int) a.size(); i++) {
@@ -147,7 +168,7 @@ public:
      */
     void push_front(const Value val) {
         if (n++ == 0) {
-            a.emplace_back();
+            a.emplace_back(SCALE_FACTOR);
             prefixSZ.push_back(0);
         }
         a.front().push_front(val);
@@ -159,7 +180,7 @@ public:
                 a.front().pop_back();
             }
             reverse(b.begin(), b.end());
-            a.emplace(a.begin() + 1, b.begin(), b.end());
+            a.emplace(a.begin() + 1, b.begin(), b.end(), SCALE_FACTOR);
             prefixSZ.push_back(0);
         }
     }
@@ -170,7 +191,7 @@ public:
      */
     void push_back(const Value val) {
         if (n++ == 0) {
-            a.push_back(new Container());
+            a.emplace_back(SCALE_FACTOR);
             prefixSZ.push_back(0);
         }
         a.back().push_back(val);
@@ -182,7 +203,7 @@ public:
                 a.back().pop_back();
             }
             reverse(b.begin(), b.end());
-            a.emplace_back(b.begin(), b.end());
+            a.emplace_back(b.begin(), b.end(), SCALE_FACTOR);
             prefixSZ.push_back(prefixSZ[(int) a.size() - 2] + (int) a[(int) a.size() - 2].size());
         }
     }
@@ -255,7 +276,7 @@ public:
             if (k < prefixSZ[mid]) hi = mid - 1;
             else lo = mid + 1;
         }
-        return a[hi].at(k - prefixSZ[hi]);
+        return a[hi][k - prefixSZ[hi]];
     }
 
     /**
