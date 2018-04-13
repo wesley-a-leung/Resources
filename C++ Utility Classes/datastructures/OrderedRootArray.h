@@ -144,7 +144,7 @@ public:
     void insert(const Value val) {
         int i = above_ind(val);
         if (n++ == 0) {
-            a.emplace_back();
+            a.emplace_back(SCALE_FACTOR);
             prefixSZ.push_back(0);
         }
         if (i == (int) a.size()) a[--i].insert(val);
@@ -157,7 +157,7 @@ public:
                 a[i].pop_back();
             }
             reverse(b.begin(), b.end());
-            a.emplace(a.begin() + i + 1, b.begin(), b.end());
+            a.emplace(a.begin() + i + 1, b.begin(), b.end(), SCALE_FACTOR);
             prefixSZ.push_back(0);
         }
         for (int j = i + 1; j < (int) a.size(); j++) {

@@ -50,8 +50,9 @@ public:
      * @param SCALE_FACTOR scales the value of sqrt(n) by this value
      *
      * @param n the initial size
+     * @param SCALE_FACTOR scales the value of sqrt(n) by this value
      */
-    SqrtArray(const int n, const int SCALE_FACTOR = 1) : n(n), SCALE_FACTOR(SCALE_FACTOR) {
+    SqrtArray(const int n, const int SCALE_FACTOR) : n(n), SCALE_FACTOR(SCALE_FACTOR) {
         assert(n >= 0);
         int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
         for (int i = 0; i < n; i += sqrtn) {
