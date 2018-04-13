@@ -48,16 +48,16 @@ private:
     }
 
     int merge(int a, int b); // to be implemented
-    int query(int l, int r, bool reverse); // to be implemented
+    int query(int l, int r, bool up); // to be implemented
 
-    int queryUp(int v, int w, bool reverse, bool includeW) {
+    int queryUp(int v, int w, bool up, bool includeW) {
         int ans = 0;
         while (chain[v] != chain[w]) {
-            ans = reverse ? merge(ans, query(index[head[chain[v]]], index[v], reverse)) : merge(query(index[head[chain[v]]], index[v], reverse), ans);
+            ans = up ? merge(ans, query(index[head[chain[v]]], index[v], up)) : merge(query(index[head[chain[v]]], index[v], up), ans);
             v = parent[head[chain[v]]];
         }
         if (!includeW && v == w) return ans;
-        return reverse ? merge(ans, query(index[w] + !includeW, index[v], reverse)) : merge(query(index[w] + !includeW, index[v], reverse), ans);
+        return up ? merge(ans, query(index[w] + !includeW, index[v], up)) : merge(query(index[w] + !includeW, index[v], up), ans);
     }
 
 public:
