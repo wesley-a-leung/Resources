@@ -28,7 +28,7 @@ private:
     int N;
     int *array;
 
-    void propogate(int cur, int cL, int cR) {
+    void propagate(int cur, int cL, int cR) {
         if (tree[cur].lazy != ldef) {
             int m = cL + (cR - cL) / 2;
             tree[cur * 2].val = apply(tree[cur * 2].val, getSegmentVal(tree[cur].lazy, m - cL + 1));
@@ -51,7 +51,7 @@ private:
     }
 
     void update(int cur, int cL, int cR, int l, int r, int val) {
-        if (cL != cR) propogate(cur, cL, cR);
+        if (cL != cR) propagate(cur, cL, cR);
         if (cL > r || cR < l) return;
         if (cL >= l && cR <= r) {
             tree[cur].val = apply(tree[cur].val, getSegmentVal(val, cR - cL + 1));
@@ -65,7 +65,7 @@ private:
     }
 
     int query(int cur, int cL, int cR, int l, int r) {
-        if (cL != cR) propogate(cur, cL, cR);
+        if (cL != cR) propagate(cur, cL, cR);
         if (cL > r || cR < l) return qdef;
         if (cL >= l && cR <= r) return tree[cur].val;
         int m = cL + (cR - cL) / 2;
