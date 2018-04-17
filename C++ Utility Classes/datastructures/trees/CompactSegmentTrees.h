@@ -136,7 +136,7 @@ private:
     }
 
     // propagates changes down from index i
-    void propogate(int i) {
+    void propagate(int i) {
         for (int h = H; h > 0; h--) {
             int ii = i >> h;
             if (L[ii] != ldef) {
@@ -194,8 +194,8 @@ public:
     int query(int l, int r) {
         l += (N - 1);
         r += (N - 1);
-        propogate(l);
-        propogate(r);
+        propagate(l);
+        propagate(r);
         int ql = qdef, qr = qdef;
         for (; l <= r; l >>= 1, r >>= 1) {
             if (l & 1) ql = merge(ql, T[l++]);
@@ -241,7 +241,7 @@ private:
     }
 
     // propagates changes down from index i
-    void propogate(int i) {
+    void propagate(int i) {
         for (int h = H, k = 1 << (H - 1); h > 0; h--, k >>= 1) {
             int ii = i >> h;
             if (L[ii] != ldef) {
@@ -286,8 +286,8 @@ public:
     void update(int l, int r, int v) {
         l += (N - 1);
         r += (N - 1);
-        propogate(l);
-        propogate(r);
+        propagate(l);
+        propagate(r);
         int l0 = l, r0 = r, k = 1;
         for (; l <= r; l >>= 1, r >>= 1, k <<= 1) {
             if (l & 1) apply(l++, v, k);
@@ -301,8 +301,8 @@ public:
     int query(int l, int r) {
         l += (N - 1);
         r += (N - 1);
-        propogate(l);
-        propogate(r);
+        propagate(l);
+        propagate(r);
         int ql = qdef, qr = qdef;
         for (; l <= r; l >>= 1, r >>= 1) {
             if (l & 1) ql = merge(ql, T[l++]);

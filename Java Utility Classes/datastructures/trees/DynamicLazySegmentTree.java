@@ -8,7 +8,7 @@ public class DynamicLazySegmentTree {
         public Node left = null, right = null;
         public int val = 0, lazy = 0;
         
-        public void propogate() {
+        public void propagate() {
             if (lazy != 0) {
                 if (left == null) left = new Node();
                 left.val += lazy;
@@ -35,7 +35,7 @@ public class DynamicLazySegmentTree {
     }
     
     private void update(Node cur, int cL, int cR, int l, int r, int val) {
-        if (cL != cR) cur.propogate();
+        if (cL != cR) cur.propagate();
         if (cL > r || cR < l) return;
         if (cL >= l && cR <= r) {
             cur.val += val;
@@ -56,7 +56,7 @@ public class DynamicLazySegmentTree {
     
     private int query(Node cur, int cL, int cR, int l, int r) {
         if (cur == null || cL > r || cR < l) return 0;
-        if (cL != cR) cur.propogate();
+        if (cL != cR) cur.propagate();
         if (cL >= l && cR <= r) return cur.val;
         int m = cL + (cR - cL) / 2;
         int left = query(cur.left, cL, m, l, r);

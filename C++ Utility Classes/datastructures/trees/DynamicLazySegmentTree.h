@@ -26,7 +26,7 @@ private:
         int val = DynamicLazySegmentTree::vdef, lazy = DynamicLazySegmentTree::ldef;
     };
 
-    void propogate(Node *cur, int cL, int cR) {
+    void propagate(Node *cur, int cL, int cR) {
         if (cur->lazy != ldef) {
             int m = cL + (cR - cL) / 2;
             if (cur->left == nullptr) cur->left = new Node();
@@ -43,7 +43,7 @@ private:
     int N;
 
     void update(Node *cur, int cL, int cR, int l, int r, int val) {
-        if (cL != cR) propogate(cur, cL, cR);
+        if (cL != cR) propagate(cur, cL, cR);
         if (cL > r || cR < l) return;
         if (cL >= l && cR <= r) {
             cur->val = apply(cur->val, getSegmentVal(val, cR - cL + 1));
@@ -60,7 +60,7 @@ private:
 
     int query(Node *cur, int cL, int cR, int l, int r) {
         if (cur == nullptr || cL > r || cR < l) return qdef;
-        if (cL != cR) propogate(cur, cL, cR);
+        if (cL != cR) propagate(cur, cL, cR);
         if (cL >= l && cR <= r) return cur->val;
         int m = cL + (cR - cL) / 2;
         int left = query(cur->left, cL, m, l, r);
