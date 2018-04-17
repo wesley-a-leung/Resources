@@ -51,8 +51,8 @@ private:
     }
 
     void update(int cur, int cL, int cR, int l, int r, int val) {
-        if (cL != cR) propagate(cur, cL, cR);
         if (cL > r || cR < l) return;
+        if (cL != cR) propagate(cur, cL, cR);
         if (cL >= l && cR <= r) {
             tree[cur].val = apply(tree[cur].val, getSegmentVal(val, cR - cL + 1));
             tree[cur].lazy = apply(tree[cur].lazy, val);
