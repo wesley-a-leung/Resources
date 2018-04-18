@@ -36,7 +36,7 @@ public:
      * @throws IllegalArgumentException if {@code xmax < xmin} or {@code ymax < ymin}.
      */
     Rectangle(double xmin, double ymin, double xmax, double ymax) {
-        assert(xmin <= ymin);
+        assert(xmin <= xmax);
         assert(ymin <= ymax);
         this->xmin = xmin;
         this->ymin = ymin;

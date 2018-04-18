@@ -80,15 +80,15 @@ private:
         range(n->rightDown, q, rect);
     }
 
-    Point2D *nearest(Node *n, Point2D *p, Point2D *nearest) {
+    Point2D *findNearest(Node *n, Point2D *p, Point2D *nearest) {
         if (nullptr == n || (nullptr != nearest && nearest->distanceSquaredTo(*p) < n->r->distanceSquaredTo(p))) return nearest;
         if (nullptr == nearest || n->p->distanceSquaredTo(*p) < nearest->distanceSquaredTo(*p)) nearest = n->p;
         if (nullptr != n->leftUp && n->leftUp->r->contains(p)) {
-            nearest = nearest(n->leftUp, p, nearest);
-            nearest = nearest(n->rightDown, p, nearest);
+            nearest = findNearest(n->leftUp, p, nearest);
+            nearest = findNearest(n->rightDown, p, nearest);
         } else {
-            nearest = nearest(n->rightDown, p, nearest);
-            nearest = nearest(n->leftUp, p, nearest);
+            nearest = findNearest(n->rightDown, p, nearest);
+            nearest = findNearest(n->leftUp, p, nearest);
         }
         return nearest;
     }
@@ -137,10 +137,10 @@ public:
         return q;
     }
 
-    Point2D *nearest(Point2D *p) {
+    Point2D *findNearest(Point2D *p) {
         assert(nullptr != p);
         if (isEmpty()) return nullptr;
-        return nearest(root, p, nullptr);
+        return findNearest(root, p, nullptr);
     }
 };
 
