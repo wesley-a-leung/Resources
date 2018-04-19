@@ -8,6 +8,7 @@ typedef int unit;
 const unit INF = (1 << 30);
 const unit EPS = 0;
 
+// O(V ^ 2 * E) in the worst case, O(min(V ^ (2 / 3), E ^ (1 / 2)) * E) for unit values
 class DinicMaxFlow {
 private:
     struct Edge {
