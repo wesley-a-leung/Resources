@@ -6,18 +6,12 @@ using namespace std;
 
 const int INSERTION_SORT_CUTOFF = 8;
 
-template <typename T> inline void exch(T *a, T *b) {
-    T temp = *a;
-    *a = *b;
-    *b = temp;
-}
-
 template <typename It> void merge_sort(It src_st, It src_en, It dst_st, It dst_en) {
     int n = src_en - src_st;
     if (n <= INSERTION_SORT_CUTOFF) {
         for (int i = 0; i < n; i++) {
             for (int j = i; j > 0 && dst_st[j] < dst_st[j - 1]; j--) {
-                exch(dst_st + j, dst_st + j - 1);
+                swap(dst_st[j], dst_st[j - 1]);
             }
         }
         return;
@@ -52,7 +46,7 @@ template <typename It, typename Comparator> void merge_sort(It src_st, It src_en
     if (n <= INSERTION_SORT_CUTOFF) {
         for (int i = 0; i < n; i++) {
             for (int j = i; j > 0 && cmp(dst_st[j], dst_st[j - 1]); j--) {
-                exch(dst_st + j, dst_st + j - 1);
+                swap(dst_st[j], dst_st[j - 1]);
             }
         }
         return;
