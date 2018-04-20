@@ -6,12 +6,6 @@ using namespace std;
 
 const int INSERTION_SORT_CUTOFF = 7;
 
-template <typename T> inline void exch(T *a, T *b) {
-    T temp = *a;
-    *a = *b;
-    *b = temp;
-}
-
 template <typename It> void merge_sort_buttom_up(It st, It en) {
     typedef typename std::iterator_traits<It>::value_type T;
     int n = en - st;
@@ -24,7 +18,7 @@ template <typename It> void merge_sort_buttom_up(It st, It en) {
         int hi = min(lo + len + len - 1, n - 1);
         for (int i = lo; i <= hi; i++) {
             for (int j = i; j > lo && aux[j] < aux[j - 1]; j--) {
-                exch(aux + j, aux + j - 1);
+                swap(aux[j], aux[j - 1]);
             }
         }
     }
@@ -81,7 +75,7 @@ template <typename It, typename Comparator> void merge_sort_bottom_up(It st, It 
         int hi = min(lo + len + len - 1, n - 1);
         for (int i = lo; i <= hi; i++) {
             for (int j = i; j > lo && cmp(aux[j], aux[j - 1]); j--) {
-                exch(aux + j, aux + j - 1);
+                swap(aux[j], aux[j - 1]);
             }
         }
     }

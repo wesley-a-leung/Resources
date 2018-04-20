@@ -13,12 +13,6 @@ const int SMALL_STACK_SIZE = 10;
 const int MEDIUM_STACK_SIZE = 20;
 const int LARGE_STACK_SIZE = 40;
 
-template <typename T> inline void exch(T *a, T *b) {
-    T temp = *a;
-    *a = *b;
-    *b = temp;
-}
-
 template <typename T> void expand(T *&arr, int &curSize, int minSize, int maxSize) {
     if (curSize < minSize) {
         int newSize = minSize;
@@ -46,7 +40,7 @@ template <typename It> int count_run_and_make_ascending(It st, It en) {
     if (i == n) return 1;
     if (st[i++] < st[0]) {
         while (i < n && st[i] < st[i - 1]) i++;
-        for (int lo = 0, hi = i - 1; lo < hi; lo++, hi--) exch(st + lo, st + hi);
+        for (int lo = 0, hi = i - 1; lo < hi; lo++, hi--) swap(st[lo], st[hi]);
     } else {
         while (i < n && st[i] >= st[i - 1]) i++;
     }
@@ -407,7 +401,7 @@ template <typename It, typename Comparator> int count_run_and_make_ascending(It 
     if (i == n) return 1;
     if (cmp(st[i++], st[0])) {
         while (i < n && cmp(st[i], st[i - 1])) i++;
-        for (int lo = 0, hi = i - 1; lo < hi; lo++, hi--) exch(st + lo, st + hi);
+        for (int lo = 0, hi = i - 1; lo < hi; lo++, hi--) swap(st[lo], st[hi]);
     } else {
         while (i < n && !cmp(st[i], st[i - 1])) i++;
     }
