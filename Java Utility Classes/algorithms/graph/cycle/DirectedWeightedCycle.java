@@ -48,9 +48,6 @@ public class DirectedWeightedCycle {
         edgeTo  = new DirectedWeightedEdge[G.V()];
         for (int v = 0; v < G.V(); v++)
             if (!marked[v]) dfs(G, v);
-
-        // check that digraph has a cycle
-        // assert check();
     }
 
     // check that algorithm computes either the topological order or finds a directed cycle

@@ -64,9 +64,6 @@ public class LinearProgramming {
             basis[i] = n + i;
 
         solve();
-
-        // check optimality conditions
-        // assert check(A, b, c);
     }
 
     // run simplex algorithm starting from initial BFS
@@ -169,78 +166,5 @@ public class LinearProgramming {
         for (int i = 0; i < m; i++)
             y[i] = -a[m][n+i];
         return y;
-    }
-
-
-    // is the solution primal feasible?
-    private boolean isPrimalFeasible(double[][] A, double[] b) {
-        double[] x = primal();
-
-        // check that x >= 0
-        for (int j = 0; j < x.length; j++) {
-            if (x[j] < 0.0) {
-                return false;
-            }
-        }
-
-        // check that Ax <= b
-        for (int i = 0; i < m; i++) {
-            double sum = 0.0;
-            for (int j = 0; j < n; j++) {
-                sum += A[i][j] * x[j];
-            }
-            if (sum > b[i] + EPSILON) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // is the solution dual feasible?
-    private boolean isDualFeasible(double[][] A, double[] c) {
-        double[] y = dual();
-
-        // check that y >= 0
-        for (int i = 0; i < y.length; i++) {
-            if (y[i] < 0.0) {
-                return false;
-            }
-        }
-
-        // check that yA >= c
-        for (int j = 0; j < n; j++) {
-            double sum = 0.0;
-            for (int i = 0; i < m; i++) {
-                sum += A[i][j] * y[i];
-            }
-            if (sum < c[j] - EPSILON) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // check that optimal value = cx = yb
-    private boolean isOptimal(double[] b, double[] c) {
-        double[] x = primal();
-        double[] y = dual();
-        double value = value();
-
-        // check that value = cx = yb
-        double value1 = 0.0;
-        for (int j = 0; j < x.length; j++)
-            value1 += c[j] * x[j];
-        double value2 = 0.0;
-        for (int i = 0; i < y.length; i++)
-            value2 += y[i] * b[i];
-        if (Math.abs(value - value1) > EPSILON || Math.abs(value - value2) > EPSILON) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean check(double[][]A, double[] b, double[] c) {
-        return isPrimalFeasible(A, b) && isDualFeasible(A, c) && isOptimal(b, c);
     }
 }

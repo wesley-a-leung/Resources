@@ -71,7 +71,6 @@ public class DirectedCycle {
                 }
                 cycle.push(w);
                 cycle.push(v);
-                // assert check();
             }
         }
         onStack[v] = false;

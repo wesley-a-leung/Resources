@@ -58,7 +58,6 @@ public class BipartiteX {
                 bfs(G, v);
             }
         }
-        // assert check(G);
     }
 
     private void bfs(Graph G, int s) { 
