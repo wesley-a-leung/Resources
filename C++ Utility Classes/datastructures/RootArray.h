@@ -30,26 +30,6 @@ public:
  * Empty, Size: O(1)
  * Values: O(N)
  */
-/**
- * Root Array:
- * Decomposes the array into N ^ (1 / R) containers of size N ^ ((R - 1) / R) multiplied by a factor.
- * The factor should be between 1 and 10, and should be smaller for large N.
- *
- * Usage:
- * RootArray<3, int, SqrtArray<int>> arr;
- * RootArray<4, int, RootArray<3, int, SqrtArray<int>>> arr;
- *
- * Initializing: O(N)
- * Insert: O(N ^ (1 / R) + log(N))
- * Erase: O(N ^ (1 / R) + log(N))
- * Push Front, Pop Front: O(N ^ (1 / R))
- * Push Back, Pop Back: O(1) amortized
- * At, Accessor, Mutator: O(log(N))
- * Front, Back: O(1)
- * Lower Bound, Upper Bound, Floor, Ceiling, Above, Below: O(log(N))
- * Empty, Size: O(1)
- * Values: O(N)
- */
 template <const int R, typename Value, typename Container, typename SmallAlloc = allocator<Value>,
         typename LargeAlloc = allocator<Container>, typename IntAlloc = allocator<int>>
 struct RootArray {
@@ -68,7 +48,6 @@ public:
 
     /**
      * Initializes the structure with an initial size.
-     * @param SCALE_FACTOR scales the value of N ^ (1 / R) by this value
      *
      * @param n the initial size
      * @param SCALE_FACTOR scales the value of N ^ (1 / R) by this value

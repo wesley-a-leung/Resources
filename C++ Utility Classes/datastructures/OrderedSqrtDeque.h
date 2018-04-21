@@ -32,6 +32,7 @@ public:
  * Lower Bound, Upper Bound, Floor, Ceiling, Above, Below: O(log(N))
  * Empty, Size: O(1)
  * Values: O(N)
+ * Sort: O(N log N) time, O(N) extra space
  */
 template <const int BLOCK_SIZE, typename Value, typename Comparator = less<Value>,
         typename SmallAlloc = allocator<Value>, typename LargeAlloc = allocator<vector<Value>>>
