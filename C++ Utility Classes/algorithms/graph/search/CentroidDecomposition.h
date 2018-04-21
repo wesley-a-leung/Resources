@@ -13,9 +13,7 @@ private:
 
     int getSize(int v, int prev) {
         int size = 1;
-        for (int w : G->adj(v)) {
-            if (w != prev && !exclude[w]) size += getSize(w, v);
-        }
+        for (int w : G->adj(v)) if (w != prev && !exclude[w]) size += getSize(w, v);
         return size;
     }
 
@@ -38,9 +36,7 @@ public:
     CentroidDecomposition(Graph *G) {
         this->G = G;
         exclude = new bool[G->getV()];
-        for (int v = 0; v < G->getV(); v++) {
-            exclude[v] = false;
-        }
+        for (int v = 0; v < G->getV(); v++) exclude[v] = false;
     }
 
     /**
