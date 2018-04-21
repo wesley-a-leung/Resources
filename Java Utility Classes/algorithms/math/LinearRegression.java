@@ -1,15 +1,5 @@
 package algorithms.math;
 
-/******************************************************************************
- *  Compilation:  javac LinearRegression.java
- *  Execution:    java  LinearRegression
- *  Dependencies: none
- *  
- *  Compute least squares solution to y = beta * x + alpha.
- *  Simple linear regression.
- *
- ******************************************************************************/
-
 /**
  *  The {@code LinearRegression} class performs a simple linear regression
  *  on an set of <em>n</em> data points (<em>y<sub>i</sub></em>, <em>x<sub>i</sub></em>).
