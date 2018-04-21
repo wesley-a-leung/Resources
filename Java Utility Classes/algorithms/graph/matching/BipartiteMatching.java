@@ -3,7 +3,7 @@ package algorithms.graph.matching;
 import datastructures.graph.Graph;
 import datastructures.graph.networkflow.FlowEdge;
 import datastructures.graph.networkflow.FlowNetwork;
-import algorithms.graph.networkflow.EdmondsKarpMaxFlow;
+import algorithms.graph.networkflow.DinicMaxFlow;
 
 /**
  *  The {@code BipartiteMatchingToMaxflow} class represents a data type for
@@ -61,9 +61,7 @@ public class BipartiteMatching {
      */
     public BipartiteMatching(Graph G) {
         BipartiteX bipartite = new BipartiteX(G);
-        if (!bipartite.isBipartite()) {
-            throw new IllegalArgumentException("graph is not bipartite");
-        }
+        if (!bipartite.isBipartite()) throw new IllegalArgumentException("graph is not bipartite");
 
         // reduction to maxflow problem
         this.V = G.V();
@@ -79,22 +77,19 @@ public class BipartiteMatching {
             }
         }
         for (int v = 0; v < V; v++) {
-            if (bipartite.color(v))
-                H.addEdge(new FlowEdge(s, v, 1.0));
-            else
-                H.addEdge(new FlowEdge(v, t, 1.0));
+            if (bipartite.color(v)) H.addEdge(new FlowEdge(s, v, 1.0));
+            else H.addEdge(new FlowEdge(v, t, 1.0));
         }
 
         // solve the maximum flow problem
-        EdmondsKarpMaxFlow maxflow = new EdmondsKarpMaxFlow(H, s, t);
+        DinicMaxFlow maxflow = new DinicMaxFlow(H, s, t);
 
         // get the cardinality of the maximum matching (guaranteed to be an integer)
         cardinality = (int) maxflow.value();
 
         // extract the edges in the maximum matching
         mate = new int[V];
-        for (int v = 0; v < V; v++)
-            mate[v] = UNMATCHED;
+        for (int v = 0; v < V; v++) mate[v] = UNMATCHED;
         for (int v = 0; v < V; v++) {
             for (FlowEdge e : H.adj(v)) {
                 if (e.from() == v && e.flow() > 0 && e.to() != t) {
@@ -111,8 +106,6 @@ public class BipartiteMatching {
             if (bipartite.color(v) && !maxflow.inCut(v)) inMinVertexCover[v] = true;
             if (!bipartite.color(v) && maxflow.inCut(v)) inMinVertexCover[v] = true;
         }
-
-        assert certifySolution(G);
     }
 
     /**
@@ -182,64 +175,4 @@ public class BipartiteMatching {
         if (v < 0 || v >= V)
             throw new IndexOutOfBoundsException("vertex " + v + " is not between 0 and " + (V-1));
     }
-
-
-    /**************************************************************************
-     *   
-     *  The code below is solely for testing correctness of the data type.
-     *
-     **************************************************************************/
-
-    // check that mate[] and inVertexCover[] define a max matching and min vertex cover, respectively
-    private boolean certifySolution(Graph G) {
-
-        // check that mate(v) = w iff mate(w) = v
-        for (int v = 0; v < V; v++) {
-            if (mate(v) == UNMATCHED) continue;
-            if (mate(mate(v)) != v) return false;
-        }
-
-        // check that size() is consistent with mate()
-        int matchedVertices = 0;
-        for (int v = 0; v < V; v++) {
-            if (mate(v) != UNMATCHED) matchedVertices++;
-        }
-        if (2*size() != matchedVertices) return false;
-
-        // check that size() is consistent with minVertexCover()
-        int sizeOfMinVertexCover = 0;
-        for (int v = 0; v < V; v++)
-            if (inMinVertexCover(v)) sizeOfMinVertexCover++;
-        if (size() != sizeOfMinVertexCover) return false;
-
-        // check that mate() uses each vertex at most once
-        boolean[] isMatched = new boolean[V];
-        for (int v = 0; v < V; v++) {
-            int w = mate[v];
-            if (w == UNMATCHED) continue;
-            if (v == w) return false;
-            if (v >= w) continue;
-            if (isMatched[v] || isMatched[w]) return false;
-            isMatched[v] = true;
-            isMatched[w] = true;
-        }
-
-        // check that mate() uses only edges that appear in the graph
-        for (int v = 0; v < V; v++) {
-            if (mate(v) == UNMATCHED) continue;
-            boolean isEdge = false;
-            for (int w : G.adj(v)) {
-                if (mate(v) == w) isEdge = true;
-            }
-            if (!isEdge) return false;
-        }
-
-        // check that inMinVertexCover() is a vertex cover
-        for (int v = 0; v < V; v++)
-            for (int w : G.adj(v))
-                if (!inMinVertexCover(v) && !inMinVertexCover(w)) return false;
-
-        return true;
-    }
-
 }
