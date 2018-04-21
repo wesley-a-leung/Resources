@@ -1,5 +1,5 @@
-#ifndef DATASTRUCTURES_ORDEREDROOTARRAY_H_
-#define DATASTRUCTURES_ORDEREDROOTARRAY_H_
+#ifndef DATASTRUCTURES_ORDEREDROOTDEQUE_H_
+#define DATASTRUCTURES_ORDEREDROOTDEQUE_H_
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -12,35 +12,35 @@ public:
 
 /**
  * Ordered Root Array:
- * Decomposes the array into N ^ (1 / R) containers of size N ^ ((R - 1) / R) multiplied by a factor.
- * The factor should be between 1 and 10, and should be smaller for large N.
+ * Decomposes the array into containers of a specified block size (around 2 to 10 times
+ * N ^ (1 / R) is optimal).
  *
  * Usage:
- * OrderedRootArray<3, int, OrderedSqrtArray<int>> arr;
- * OrderedRootArray<3, int, OrderedSqrtArray<int, greater<int>>, greater<int>> arr;
- * OrderedRootArray<4, int, OrderedRootArray<3, int, OrderedSqrtArray<int>>> arr;
+ * OrderedRootDeque<65536, int, OrderedSqrtDeque<2048, int>> arr;
+ * OrderedRootDeque<65536, int, OrderedSqrtDeque<2048, int, greater<int>>, greater<int>> arr;
+ * OrderedRootDeque<131072, int, OrderedRootDeque<8192, int, OrderedSqrtDeque<512, int>>> arr;
  *
  * Initializing: O(N)
- * Insert: O(N ^ (1 / R) + log(N))
- * Erase: O(N ^ (1 / R) + log(N))
- * Pop Front: O(N ^ (1 / R))
+ * Insert: O(sqrt(N) + log(N))
+ * Erase: O(sqrt(N) + log(N))
+ * Pop Front: O(1) amortized
+ * Push Front: O(1) amortized
  * Pop Back: O(1) amortized
- * At, Accessor: O(log(N))
+ * Push Back: O(1) amortized
+ * At, Accessor: O(1)
  * Front, Back: O(1)
  * Rank, Contains: O(log(N))
  * Lower Bound, Upper Bound, Floor, Ceiling, Above, Below: O(log(N))
  * Empty, Size: O(1)
  * Values: O(N)
  */
-template <const int R, typename Value, typename Container, typename Comparator = less<Value>,
+template <const int BLOCK_SIZE, typename Value, typename Container, typename Comparator = less<Value>,
         typename SmallAlloc = allocator<Value>, typename LargeAlloc = allocator<Container>, typename IntAlloc = allocator<int>>
-struct OrderedRootArray {
+struct OrderedRootDeque {
 private:
-    Comparator cmp; // the comparator
-    int n; // the size of the array
-    int SCALE_FACTOR; // the scale factor
-    vector<Container, LargeAlloc> a; // the array
-    vector<int, IntAlloc> prefixSZ; // the prefix array of the sizes of the blocks
+    Comparator cmp;
+    int n;
+    deque<Container, LargeAlloc> a;
 
     // returns the index of the container with the smallest value greater than or equal to val
     int ceiling_ind(const Value val) const {
@@ -89,9 +89,8 @@ private:
 public:
     /**
      * Initializes an empty structure.
-     * @param SCALE_FACTOR scales the value of N ^ (1 / R) by this value
      */
-    OrderedRootArray(const int SCALE_FACTOR = 1) : n(0), SCALE_FACTOR(SCALE_FACTOR) {}
+    OrderedRootDeque() : n(0) {}
 
     /**
      * Initializes the structures with the elements between st and en
@@ -100,40 +99,28 @@ public:
      *
      * @param st the starting iterator (inclusive)
      * @param en the ending iterator (exclusive)
-     * @param SCALE_FACTOR scales the value of N ^ (1 / R) by this value
      */
     template <typename It>
-    OrderedRootArray(const It st, const It en, const int SCALE_FACTOR = 1) : n(en - st), SCALE_FACTOR(SCALE_FACTOR) {
+    OrderedRootDeque(const It st, const It en) : n(en - st) {
         assert(n >= 0);
         assert(is_sorted(st, en, cmp));
-        int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
-        for (It i = st; i < en; i += rootn) {
-            a.emplace_back(i, min(i + rootn, en), SCALE_FACTOR);
-            prefixSZ.push_back(0);
-        }
-        for (int i = 1; i < (int) a.size(); i++) {
-            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
+        for (It i = st; i < en; i += BLOCK_SIZE) {
+            a.emplace_back(i, min(i + BLOCK_SIZE, en));
         }
     }
 
-   /**
-    * Initializes the structures with an initializer list. The elements must be sorted.
-    *
-    * @param il the initializer list
-    * @param SCALE_FACTOR scales the value of N ^ (1 / R) by this value
-    */
-   OrderedRootArray(initializer_list<Value> il, const int SCALE_FACTOR = 1) : n(il.end() - il.begin()), SCALE_FACTOR(SCALE_FACTOR) {
-       assert(n >= 0);
-       assert(is_sorted(il.begin(), il.end(), cmp));
-       int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
-       for (auto i = il.begin(); i < il.end(); i += rootn) {
-           a.emplace_back(i, min(i + rootn, il.end()), SCALE_FACTOR);
-           prefixSZ.push_back(0);
-       }
-       for (int i = 1; i < (int) a.size(); i++) {
-           prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
-       }
-   }
+    /**
+     * Initializes the structures with an initializer list. The elements must be sorted.
+     *
+     * @param il the initializer list
+     */
+    OrderedRootDeque(initializer_list<Value> il) : n(il.end() - il.begin()) {
+        assert(n >= 0);
+        assert(is_sorted(il.begin(), il.end(), cmp));
+        for (auto i = il.begin(); i < il.end(); i += BLOCK_SIZE) {
+            a.emplace_back(i, min(i + BLOCK_SIZE, il.end()));
+        }
+    }
 
     /**
      * Inserts a value into the structure, allowing for duplicates.
@@ -142,25 +129,29 @@ public:
      */
     void insert(const Value val) {
         int i = above_ind(val);
-        if (n++ == 0) {
-            a.emplace_back(SCALE_FACTOR);
-            prefixSZ.push_back(0);
-        }
+        if (n++ == 0) a.emplace_back();
         if (i == (int) a.size()) a[--i].insert(val);
         else a[i].insert(val);
-        int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
-        if ((int) a[i].size() > 2 * rootn) {
-            vector<Value, SmallAlloc> b;
-            while (a[i].size() > rootn) {
-                b.push_back(a[i].back());
-                a[i].pop_back();
+        if (i < (int) a.size() / 2) {
+            for (int j = i - 1; j >= 0; j--) {
+                a[j].push_back(a[j + 1].front());
+                a[j + 1].pop_front();
             }
-            reverse(b.begin(), b.end());
-            a.emplace(a.begin() + i + 1, b.begin(), b.end(), SCALE_FACTOR);
-            prefixSZ.push_back(0);
-        }
-        for (int j = i + 1; j < (int) a.size(); j++) {
-            prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1].size();
+            if ((int) a.front().size() > BLOCK_SIZE) {
+                a.emplace_front();
+                a.front().push_back(a[1].front());
+                a[1].pop_front();
+            }
+        } else {
+            for (int j = i + 1; j < (int) a.size(); j++) {
+                a[j].push_front(a[j - 1].back());
+                a[j - 1].pop_back();
+            }
+            if ((int) a.back().size() > BLOCK_SIZE) {
+                a.emplace_back();
+                a.back().push_front(a[((int) a.size()) - 2].back());
+                a[((int) a.size()) - 2].pop_back();
+            }
         }
     }
 
@@ -176,71 +167,20 @@ public:
         if (i == (int) a.size()) return false;
         if (!a[i].erase(val)) return false;
         --n;
-        if (a[i].empty()) {
-            a.erase(a.begin() + i);
-            prefixSZ.pop_back();
-        }
-        for (int j = i + 1; j < (int) a.size(); j++) {
-            prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1].size();
+        if (i < (int) a.size() / 2) {
+            for (int j = i - 1; j >= 0; j--) {
+                a[j + 1].push_front(a[j].back());
+                a[j].pop_back();
+            }
+            if ((int) a.front().size() == 0) a.pop_front();
+        } else {
+            for (int j = i + 1; j < (int) a.size(); j++) {
+                a[j - 1].push_back(a[j].front());
+                a[j].pop_front();
+            }
+            if ((int) a.back().size() == 0) a.pop_back();
         }
         return true;
-    }
-
-    /**
-     * Erases the first element in the structure.
-     */
-    void pop_front() {
-        assert(n > 0);
-        --n;
-        a.front().pop_front();
-        if (a.front().empty()) {
-            a.erase(a.begin());
-            prefixSZ.pop_back();
-        }
-        for (int i = 1; i < (int) a.size(); i++) {
-            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
-        }
-    }
-
-    /**
-     * Erases the last element in the structure.
-     */
-    void pop_back() {
-        assert(n > 0);
-        --n;
-        a.back().pop_back();
-        if (a.back().empty()) {
-            a.pop_back();
-            prefixSZ.pop_back();
-        }
-    }
-
-    /**
-     * Returns a constant reference to the kth value in the structure.
-     *
-     * @param k the 0-based index
-     * @return a constant reference to the kth value in the structure
-     */
-    const Value &at(const int k) const {
-        assert(0 <= k && k < n);
-        int lo = 0, hi = ((int) a.size()) - 1, mid;
-        while (lo <= hi) {
-            mid = lo + (hi - lo) / 2;
-            if (k < prefixSZ[mid]) hi = mid - 1;
-            else lo = mid + 1;
-        }
-        return a[hi].at(k - prefixSZ[hi]);
-    }
-
-    /**
-     * Accessor operator.
-     * Returns a constant reference to the kth value in the structure.
-     *
-     * @param k the 0-based index
-     * @return a constant reference to the kth value in the structure
-     */
-    const Value &operator [](const int k) const {
-        return at(k);
     }
 
     /**
@@ -253,12 +193,88 @@ public:
     }
 
     /**
+     * Erases the first element in the structure.
+     */
+    void pop_front() {
+        assert(n > 0);
+        --n;
+        a.front().pop_front();
+        if (a.front().empty()) a.pop_front();
+    }
+
+    /**
+     * Inserts an element at the front of the structure. val must be no greater than
+     * the front element.
+     * @param val the value to be inserted
+     */
+    void push_front(const Value &val) {
+        if (n > 0) assert(!cmp(front(), val));
+        if (n++ == 0) a.emplace_front();
+        a.front().push_front(val);
+        if ((int) a.front().size() > BLOCK_SIZE) {
+            a.emplace_front();
+            a.front().push_back(a[1].front());
+            a[1].pop_front();
+        }
+    }
+
+    /**
      * Returns a constant reference to the last element.
      * @return a constant reference to the last element
      */
     const Value &back() const {
         assert(n > 0);
         return a.back().back();
+    }
+
+    /**
+     * Erases the last element in the structure.
+     */
+    void pop_back() {
+        assert(n > 0);
+        --n;
+        a.back().pop_back();
+        if (a.back().empty()) a.pop_back();
+    }
+
+    /**
+     * Inserts an element at the back of the structure. val must be no less than
+     * the back element.
+     * @param val the value to be inserted
+     */
+    void push_back(const Value &val) {
+        if (n > 0) assert(!cmp(val, back()));
+        if (n++ == 0) a.emplace_back();
+        a.back().push_back(val);
+        if ((int) a.back().size() > BLOCK_SIZE) {
+            a.emplace_back();
+            a.back().push_front(a[((int) a.size()) - 2].back());
+            a[((int) a.size()) - 2].pop_back();
+        }
+    }
+
+    /**
+     * Returns a constant reference to the kth value in the structure.
+     *
+     * @param k the 0-based index
+     * @return a constant reference to the kth value in the structure
+     */
+    const Value &at(const int k) const {
+        assert(0 <= k && k < n);
+        if (k < (int) a[0].size()) return a[0][k];
+        int m = k - (int) a[0].size();
+        return a[1 + m / BLOCK_SIZE][m % BLOCK_SIZE];
+    }
+
+    /**
+     * Accessor operator.
+     * Returns a constant reference to the kth value in the structure.
+     *
+     * @param k the 0-based index
+     * @return a constant reference to the kth value in the structure
+     */
+    const Value &operator [](const int k) const {
+        return at(k);
     }
 
     /**
@@ -304,7 +320,8 @@ public:
         int i = ceiling_ind(val);
         if (i == (int) a.size()) throw no_such_element_exception("call to lower_bound() resulted in no such value");
         pair<int, Value> j = a[i].lower_bound(val);
-        return {prefixSZ[i] + j.first, j.second};
+        if (i == 0) return j;
+        return {(int) a[0].size() + (i - 1) * BLOCK_SIZE + j.first, j.second};
     }
 
     /**
@@ -321,7 +338,8 @@ public:
         int i = above_ind(val);
         if (i == (int) a.size()) throw no_such_element_exception("call to upper_bound() resulted in no such value");
         pair<int, Value> j = a[i].upper_bound(val);
-        return {prefixSZ[i] + j.first, j.second};
+        if (i == 0) return j;
+        return {(int) a[0].size() + (i - 1) * BLOCK_SIZE + j.first, j.second};
     }
 
     /**
@@ -338,7 +356,8 @@ public:
         int i = floor_ind(val);
         if (i == -1) throw no_such_element_exception("call to floor() resulted in no such value");
         pair<int, Value> j = a[i].floor(val);
-        return {prefixSZ[i] + j.first, j.second};
+        if (i == 0) return j;
+        return {(int) a[0].size() + (i - 1) * BLOCK_SIZE + j.first, j.second};
     }
 
     /**
@@ -355,7 +374,8 @@ public:
         int i = above_ind(val);
         if (i == (int) a.size()) throw no_such_element_exception("call to above() resulted in no such value");
         pair<int, Value> j = a[i].above(val);
-        return {prefixSZ[i] + j.first, j.second};
+        if (i == 0) return j;
+        return {(int) a[0].size() + (i - 1) * BLOCK_SIZE + j.first, j.second};
     }
 
     /**
@@ -372,7 +392,8 @@ public:
         int i = below_ind(val);
         if (i == -1) throw no_such_element_exception("call to below() resulted in no such value");
         pair<int, Value> j = a[i].below(val);
-        return {prefixSZ[i] + j.first, j.second};
+        if (i == 0) return j;
+        return {(int) a[0].size() + (i - 1) * BLOCK_SIZE + j.first, j.second};
     }
 
     /**
@@ -389,7 +410,8 @@ public:
         int i = ceiling_ind(val);
         if (i == (int) a.size()) throw no_such_element_exception("call to ceiling() resulted in no such value");
         pair<int, Value> j = a[i].ceiling(val);
-        return {prefixSZ[i] + j.first, j.second};
+        if (i == 0) return j;
+        return {(int) a[0].size() + (i - 1) * BLOCK_SIZE + j.first, j.second};
     }
 
     /**
@@ -408,4 +430,4 @@ public:
     }
 };
 
-#endif /* DATASTRUCTURES_ORDEREDROOTARRAY_H_ */
+#endif /* DATASTRUCTURES_ORDEREDROOTDEQUE_H_ */
