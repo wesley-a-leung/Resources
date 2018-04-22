@@ -9,7 +9,7 @@ using namespace std;
 /**
  * The {@code WeightedLCA} class represents a data structure for finding the
  * lowest common ancestor of 2 nodes in an acyclic weighted graph using heavy-light decomposition.
- * The constructor takes time proportional to <em>V</em> +  <em>E</em> and afterwards,
+ * The constructor takes time proportional to <em>V</em> + <em>E</em> and afterwards,
  * the {@code lca()} method takes log <em>V</em> time to find the lowest common ancestor.
  */
 class WeightedLCA {
