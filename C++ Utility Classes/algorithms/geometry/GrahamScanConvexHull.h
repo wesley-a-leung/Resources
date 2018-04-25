@@ -23,7 +23,7 @@ using namespace std::placeholders;
  */
 class GrahamScanConvexHull {
 private:
-    vector<Point2D> *hullVector;
+    vector<Point2D> hullVector;
 
 public:
     /**
@@ -36,7 +36,6 @@ public:
     GrahamScanConvexHull(int n, Point2D *points) {
         if (points == nullptr) throw invalid_argument("argument is null");
         stack<Point2D> hull;
-        hullVector = new vector<Point2D>;
 
         // defensive copy
         Point2D a[n];
@@ -80,10 +79,10 @@ public:
             hull.push(a[i]);
         }
         while (!hull.empty()) {
-            hullVector->push_back(hull.top());
+            hullVector.push_back(hull.top());
             hull.pop();
         }
-        reverse(hullVector->begin(), hullVector->end());
+        reverse(hullVector.begin(), hullVector.end());
     }
 
     /**
@@ -91,8 +90,8 @@ public:
      *
      * @return the extreme points on the convex hull in counterclockwise order
      */
-    vector<Point2D> &hull() {
-        return *hullVector;
+    vector<Point2D> hull() {
+        return hullVector;
     }
 };
 
