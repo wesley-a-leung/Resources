@@ -51,7 +51,7 @@ public:
 
         // sort by polar angle with respect to base point a[0],
         // breaking ties by distance to a[0]
-        sort(a, a + n, bind(&Point2D::polarOrderLt, a[0], _1, _2));
+        sort(a + 1, a + n, bind(&Point2D::polarOrderLt, a[0], _1, _2));
 
         hull.push(a[0]);       // a[0] is first extreme point
 
