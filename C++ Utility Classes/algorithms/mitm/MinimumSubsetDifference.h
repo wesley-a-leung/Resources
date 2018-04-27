@@ -37,7 +37,11 @@ template <typename T> void solveHalf(vector<T> &half, vector<pair<T, int>> &diff
 template <typename T> T solve(vector<T> &all, vector<T> &setA, vector<T> &setB) {
     T minDiff = numeric_limits<T>::max();
     vector<T> even, odd;
+    even.reserve(all.size() / 2 + all.size() % 2);
+    odd.reserve(all.size() / 2);
     vector<pair<T, int>> evenDiff, oddDiff;
+    evenDiff.reserve(1 << (all.size() / 2 + all.size() % 2));
+    oddDiff.reserve(1 << (all.size() / 2));
     int evenPerm, oddPerm;
     for (int i = 0; i < (int) all.size(); i++) {
         if (i % 2 == 0) even.push_back(all[i]);

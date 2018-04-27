@@ -28,7 +28,11 @@ template <typename T> void solveHalf(vector<T> &half, vector<pair<T, int>> &sum)
 template <typename T> T solve(vector<T> &all, T value, vector<T> &subset) {
     T minDiff = numeric_limits<T>::max(), closestSum;
     vector<T> even, odd;
+    even.reserve(all.size() / 2 + all.size() % 2);
+    odd.reserve(all.size() / 2);
     vector<pair<T, int>> evenSum, oddSum;
+    evenSum.reserve(1 << (all.size() / 2 + all.size() % 2));
+    oddSum.reserve(1 << (all.size() / 2));
     int evenPerm, oddPerm;
     for (int i = 0; i < (int) all.size(); i++) {
         if (i % 2 == 0) even.push_back(all[i]);
