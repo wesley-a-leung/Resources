@@ -107,7 +107,7 @@ private:
         for (int v = 0; v < V; v++) if (v != cp->s && !marked[v]) pq.insert(v, 0);
         pq.insert(cp->s, INF);
         while (!pq.isEmpty()) {
-            int v = pq.top().second;
+            int v = pq.top().first;
             pq.pop();
             cp->s = cp->t;
             cp->t = v;
@@ -194,7 +194,7 @@ public:
      *
      * @param G the edge-weighted graph
      * @throws IllegalArgumentException if the number of vertices of {@code G}
-     *             is less than {@code 2} or if anny edge weight is negative
+     *             is less than {@code 2} or if any edge weight is negative
      */
     StoerWagnerMinCut(WeightedGraph *G) {
         V = G->getV();
