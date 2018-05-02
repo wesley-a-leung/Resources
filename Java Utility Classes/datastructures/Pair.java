@@ -21,4 +21,9 @@ public class Pair<Item, Item2> {
         Pair p = (Pair) o;
         return first.equals(p.first) && second.equals(p.second);
     }
+    
+    @Override
+    public String toString() {
+        return "(" + first.toString() + ", " + second.toString() + ")";
+    }
 }

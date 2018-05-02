@@ -27,4 +27,9 @@ public class ComparablePair<Item extends Comparable<Item>, Item2 extends Compara
         if (first.compareTo(p.first) != 0) return first.compareTo(p.first);
         return (second.compareTo(p.second));
     }
+    
+    @Override
+    public String toString() {
+        return "(" + first.toString() + ", " + second.toString() + ")";
+    }
 }
