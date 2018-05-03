@@ -87,8 +87,8 @@ public:
                possibly at the boundary; {@code false} otherwise
      */
     bool contains(Point2D *p) {
-        return (p->x - xmin < -EPS) && (xmax - p->x < -EPS)
-            && (p->y - ymin < -EPS) && (ymax - p->y < -EPS);
+        return (p->x - xmin <= -EPS) && (xmax - p->x <= -EPS)
+            && (p->y - ymin <= -EPS) && (ymax - p->y <= -EPS);
     }
 
     /**
@@ -111,7 +111,7 @@ public:
      *         in this rectangle
      */
     T distanceSquaredTo(Point2D *p) {
-        T dx = 0.0, dy = 0.0;
+        T dx = 0, dy = 0;
         if      (p->x < xmin) dx = p->x - xmin;
         else if (p->x > xmax) dx = p->x - xmax;
         if      (p->y < ymin) dy = p->y - ymin;
@@ -132,6 +132,21 @@ public:
         if (abs(xmax - that.xmax) > EPS) return false;
         if (abs(ymax - that.ymax) > EPS) return false;
         return true;
+    }
+
+    /**
+     * Compares this rectangle to the specified rectangle.
+     *
+     * @param  that the other rectangle
+     * @return {@code true} if this rectangle does not equal {@code that};
+     *         {@code false} otherwise
+     */
+    bool operator != (const Rectangle &that) const {
+        if (abs(xmin - that.xmin) > EPS) return true;
+        if (abs(ymin - that.ymin) > EPS) return true;
+        if (abs(xmax - that.xmax) > EPS) return true;
+        if (abs(ymax - that.ymax) > EPS) return true;
+        return false;
     }
 };
 
