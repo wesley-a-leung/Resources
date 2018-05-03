@@ -17,10 +17,13 @@ using namespace std;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
+typedef double T;
+constexpr static T EPS = 1e-9;
+
 class Rectangle {
 public:
-    double xmin, ymin;   // minimum x- and y-coordinates
-    double xmax, ymax;   // maximum x- and y-coordinates
+    T xmin, ymin;   // minimum x- and y-coordinates
+    T xmax, ymax;   // maximum x- and y-coordinates
 
     /**
      * Initializes a new rectangle [<em>xmin</em>, <em>xmax</em>]
@@ -35,7 +38,7 @@ public:
      *         is {@code Double.NaN}.
      * @throws IllegalArgumentException if {@code xmax < xmin} or {@code ymax < ymin}.
      */
-    Rectangle(double xmin, double ymin, double xmax, double ymax) {
+    Rectangle(T xmin, T ymin, T xmax, T ymax) {
         assert(xmin <= xmax);
         assert(ymin <= ymax);
         this->xmin = xmin;
@@ -49,7 +52,7 @@ public:
      *
      * @return the width of this rectangle {@code xmax - xmin}
      */
-    double width() {
+    T width() {
         return xmax - xmin;
     }
 
@@ -58,7 +61,7 @@ public:
      *
      * @return the height of this rectangle {@code ymax - ymin}
      */
-    double height() {
+    T height() {
         return ymax - ymin;
     }
 
@@ -73,8 +76,8 @@ public:
                rectangle at one or more points
      */
     bool intersects(Rectangle *that) {
-        return this->xmax >= that->xmin && this->ymax >= that->ymin
-            && that->xmax >= this->xmin && that->ymax >= this->ymin;
+        return this->xmax - that->xmin < -EPS && this->ymax - that->ymin < -EPS
+            && that->xmax - this->xmin < -EPS && that->ymax - this->ymin < -EPS;
     }
 
     /**
@@ -84,8 +87,8 @@ public:
                possibly at the boundary; {@code false} otherwise
      */
     bool contains(Point2D *p) {
-        return (p->x >= xmin) && (p->x <= xmax)
-            && (p->y >= ymin) && (p->y <= ymax);
+        return (p->x - xmin < -EPS) && (xmax - p->x < -EPS)
+            && (p->y - ymin < -EPS) && (ymax - p->y < -EPS);
     }
 
     /**
@@ -107,8 +110,8 @@ public:
      *         the closest point on this rectangle; 0 if the point is contained
      *         in this rectangle
      */
-    double distanceSquaredTo(Point2D *p) {
-        double dx = 0.0, dy = 0.0;
+    T distanceSquaredTo(Point2D *p) {
+        T dx = 0.0, dy = 0.0;
         if      (p->x < xmin) dx = p->x - xmin;
         else if (p->x > xmax) dx = p->x - xmax;
         if      (p->y < ymin) dy = p->y - ymin;
@@ -124,17 +127,17 @@ public:
      *         {@code false} otherwise
      */
     bool operator == (const Rectangle &that) const {
-        if (xmin != that.xmin) return false;
-        if (ymin != that.ymin) return false;
-        if (xmax != that.xmax) return false;
-        if (ymax != that.ymax) return false;
+        if (abs(xmin - that.xmin) > EPS) return false;
+        if (abs(ymin - that.ymin) > EPS) return false;
+        if (abs(xmax - that.xmax) > EPS) return false;
+        if (abs(ymax - that.ymax) > EPS) return false;
         return true;
     }
 };
 
 struct Rectangle_hash {
     size_t operator ()(const Rectangle &r) const {
-        return 31 * (31 * (31 * hash<double> {}(r.xmin) + hash<double> {}(r.ymin)) + hash<double> {}(r.xmax)) + hash<double> {}(r.ymax);
+        return 31 * (31 * (31 * hash<T> {}(r.xmin) + hash<T> {}(r.ymin)) + hash<T> {}(r.xmax)) + hash<T> {}(r.ymax);
     }
 };
 

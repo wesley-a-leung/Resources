@@ -23,6 +23,9 @@ using namespace std;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
+typedef double T;
+constexpr static T EPS = 1e-9;
+
 class ClosestPair {
 private:
     // closest pair of points and their Euclidean distance
@@ -51,16 +54,16 @@ private:
     // precondition:  pointsByX[lo..hi] and pointsByY[lo..hi] are the same sequence of points
     // precondition:  pointsByX[lo..hi] sorted by x-coordinate
     // postcondition: pointsByY[lo..hi] sorted by y-coordinate
-    double closest(Point2D *pointsByX, Point2D *pointsByY, Point2D *aux, int lo, int hi) {
+    T closest(Point2D *pointsByX, Point2D *pointsByY, Point2D *aux, int lo, int hi) {
         if (hi <= lo) return numeric_limits<double>::infinity();
 
         int mid = lo + (hi - lo) / 2;
         Point2D median = pointsByX[mid];
 
         // compute closest pair with both endpoints in left subarray or both in right subarray
-        double delta1 = closest(pointsByX, pointsByY, aux, lo, mid);
-        double delta2 = closest(pointsByX, pointsByY, aux, mid+1, hi);
-        double delta = min(delta1, delta2);
+        T delta1 = closest(pointsByX, pointsByY, aux, lo, mid);
+        T delta2 = closest(pointsByX, pointsByY, aux, mid+1, hi);
+        T delta = min(delta1, delta2);
 
         // merge back so that pointsByY[lo..hi] are sorted by y-coordinate
         merge(pointsByY, aux, lo, mid, hi);
