@@ -52,4 +52,5 @@ public class Reader {
     public long nextLong(String delim) throws IOException { return Long.parseLong(next(delim)); }
     public short nextShort() throws IOException { return Short.parseShort(next()); }
     public short nextShort(String delim) throws IOException { return Short.parseShort(next(delim)); }
+    public void close() throws IOException { in.close(); }
 } // Reader class
