@@ -25,6 +25,9 @@ using namespace std;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
+typedef double T;
+constexpr static T EPS = 1e-9;
+
 class FarthestPair {
 private:
     // farthest pair of points and distance
@@ -69,7 +72,7 @@ public:
 
         // k = farthest vertex from edge from hull[1] to hull[m]
         int k = 2;
-        while (Point2D::area2(hull[m], hull[1], hull[k+1]) > Point2D::area2(hull[m], hull[1], hull[k])) k++;
+        while (Point2D::area2(hull[m], hull[1], hull[k+1]) > Point2D::area2(hull[m], hull[1], hull[k]) + EPS) k++;
 
         int j = k;
         for (int i = 1; i <= k && j <= m; i++) {
@@ -78,7 +81,7 @@ public:
                 best2 = hull[j];
                 bestDistanceSquared = hull[i].distanceSquaredTo(hull[j]);
             }
-            while ((j < m) && Point2D::area2(hull[i], hull[i+1], hull[j+1]) > Point2D::area2(hull[i], hull[i+1], hull[j])) {
+            while ((j < m) && Point2D::area2(hull[i], hull[i+1], hull[j+1]) > Point2D::area2(hull[i], hull[i+1], hull[j]) + EPS) {
                 j++;
                 double distanceSquared = hull[i].distanceSquaredTo(hull[j]);
                 if (distanceSquared > bestDistanceSquared) {

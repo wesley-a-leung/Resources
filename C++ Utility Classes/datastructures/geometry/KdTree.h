@@ -6,11 +6,14 @@
 #include "datastructures/geometry/Rectangle.h"
 using namespace std;
 
+typedef double T;
+constexpr static T EPS = 1e-9;
+
 struct KdTree {
 private:
     bool VERTICAL = false;
     bool HORIZONTAL = true;
-    double XMIN, YMIN, XMAX, YMAX;
+    T XMIN, YMIN, XMAX, YMAX;
 
     struct Node {
         Point2D *p;
@@ -28,7 +31,7 @@ private:
     int cnt;
     Node *root;
 
-    Node *construct(Node *n, Point2D *points, int lo, int hi, bool partition, double xmin, double ymin, double xmax, double ymax) {
+    Node *construct(Node *n, Point2D *points, int lo, int hi, bool partition, T xmin, T ymin, T xmax, T ymax) {
         if (lo > hi) return nullptr;
         if (partition == VERTICAL) sort(points + lo, points + hi + 1, Point2D::xOrderLt);
         else sort(points + lo, points + hi + 1, Point2D::yOrderLt);
@@ -45,7 +48,7 @@ private:
         return n;
     }
 
-    Node *insert(Node *n, Point2D *p, bool partition, double xmin, double ymin, double xmax, double ymax) {
+    Node *insert(Node *n, Point2D *p, bool partition, T xmin, T ymin, T xmax, T ymax) {
         if (nullptr == n) {
             cnt++;
             return new Node(p, new Rectangle(xmin, ymin, xmax, ymax));
@@ -94,7 +97,7 @@ private:
     }
 
 public:
-    KdTree(double xmin, double ymin, double xmax, double ymax) {
+    KdTree(T xmin, T ymin, T xmax, T ymax) {
         cnt = 0;
         XMIN = xmin;
         YMIN = ymin;
@@ -103,7 +106,7 @@ public:
         root = nullptr;
     }
 
-    KdTree(double xmin, double ymin, double xmax, double ymax, Point2D *points, int N) {
+    KdTree(T xmin, T ymin, T xmax, T ymax, Point2D *points, int N) {
         cnt = N;
         XMIN = xmin;
         YMIN = ymin;
