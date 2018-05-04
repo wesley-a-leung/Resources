@@ -7,10 +7,10 @@ using namespace std;
 const double PI = 3.14159265358979323846;
 
 /**
- * Computes the nth roots of unity.
+ * Computes the Nth roots of unity.
  *
- * @param N
- * @param out
+ * @param N the root
+ * @param out the Nth roots of unity
  */
 void getRoots(int N, vector<complex<double>> &out) {
     for (int i = 0; i < N; i++) out.push_back(polar(1.0, 2.0 * PI * i / N));
