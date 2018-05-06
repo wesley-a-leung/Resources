@@ -131,10 +131,11 @@ private:
     bool modify(Node *x, int delta) {
         makeRoot(x);
         x->val = apply(x->val, delta);
+        update(x);
         return true;
     }
 
-    int query(Node *from, Node *to) {
+    int queryPath(Node *from, Node *to) {
         if (!connected(from, to)) return qdef;
         makeRoot(from);
         expose(to);
@@ -170,8 +171,8 @@ public:
         return modify(nodes[v], delta);
     }
 
-    int query(int v, int w) {
-        return query(nodes[v], nodes[w]);
+    int queryPath(int v, int w) {
+        return queryPath(nodes[v], nodes[w]);
     }
 
     bool connected(int v, int w) {
