@@ -153,10 +153,11 @@ private:
         makeRoot(from);
         expose(to);
         to->delta = joinDeltas(to->delta, delta);
+        update(to);
         return true;
     }
 
-    int query(Node *from, Node *to) {
+    int queryPath(Node *from, Node *to) {
         if (!connected(from, to)) return qdef;
         makeRoot(from);
         expose(to);
@@ -176,9 +177,8 @@ public:
         }
     }
 
-    void addNode(int v, int value) {
-        nodes.push_back(new Node(v, value));
-        V++;
+    void addNode(int value) {
+        nodes.push_back(new Node(V++, value));
     }
 
     bool link(int v, int w) {
@@ -193,8 +193,8 @@ public:
         return modify(nodes[v], nodes[w], delta);
     }
 
-    int query(int v, int w) {
-        return query(nodes[v], nodes[w]);
+    int queryPath(int v, int w) {
+        return queryPath(nodes[v], nodes[w]);
     }
 
     bool connected(int v, int w) {
