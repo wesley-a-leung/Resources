@@ -10,7 +10,7 @@ public class Sieve2 {
     public static void sieve(int N) {
         isPrime = new boolean[N + 1];
         for (int i = 0; i <= N; i++) isPrime[i] = true;
-        primes.clear();
+        primes = new ArrayList<Integer>();
         SPF = new int[N + 1];
         isPrime[0] = isPrime[1] = false;
         for (int i = 2; i <= N; i++) {
