@@ -53,7 +53,7 @@ public:
     /**
      * Returns the index of the first element that is greater than the key
      * in the specified array between indices {@code start} (inclusive)
-     * and {@code end} (exclusive).
+     * and {@code end} (exclusive). This is idential to above
      *
      * @param  a the array, must be sorted in ascending order
      * @param  start the inclusive start index
@@ -90,6 +90,50 @@ public:
             mid = lo + (hi - lo) / 2;
             if (key < a[mid]) hi = mid - 1;
             else lo = mid + 1;
+        }
+        return hi;
+    }
+
+    /**
+     * Returns the index of the first element that is greater than the key
+     * in the specified array between indices {@code start} (inclusive)
+     * and {@code end} (exclusive). This is identical to upperBound.
+     *
+     * @param  a the array, must be sorted in ascending order
+     * @param  start the inclusive start index
+     * @param  end the exclusive end index
+     * @param  key the search key
+     * @return index of first element greater than key in array {@code a};
+     * {@code end} if key is larger than or equal to the largest element
+     */
+    static int above(Comparable *a, int start, int end, Comparable key) {
+        int lo = start, hi = end, mid;
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (key >= a[mid]) lo = mid + 1;
+            else hi = mid;
+        }
+        return lo;
+    }
+
+    /**
+     * Returns the index of the largest element that is less than the key
+     * in the specified array between indices {@code start} (inclusive)
+     * and {@code end} (exclusive).
+     *
+     * @param  a the array, must be sorted in ascending order
+     * @param  start the inclusive start index
+     * @param  end the exclusive end index
+     * @param  key the search key
+     * @return index of largest element less than the key in array {@code a};
+     * {@code start} - 1 if no such element exists
+     */
+    static int below(Comparable *a, int start, int end, Comparable key) {
+        int lo = start, hi = end - 1, mid;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (a[mid] < key) lo = mid - 1;
+            else hi = mid + 1;
         }
         return hi;
     }
