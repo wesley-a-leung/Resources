@@ -25,7 +25,7 @@ private:
         for (int w : G->adj(v)) {
             if (w == prev) continue;
             getSize(G, w, v);
-            size[w] += size[v];
+            size[v] += size[w];
         }
     }
 
