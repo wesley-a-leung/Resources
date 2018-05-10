@@ -22,10 +22,8 @@ public:
         m = pat.length();
         LCP = new int[m + 1];
         LCP[0] = -1;
-        for (int i = 0, j = -1; i < m; i++, j++, LCP[i] = j) {
-            while (j >= 0 && pat[i] != pat[j]) {
-                j = LCP[j];
-            }
+        for (int i = 0, j = -1; i < m; i++, j++, LCP[i] = (i != m && pat[i] == pat[j]) ? LCP[j] : j) {
+            while (j >= 0 && pat[i] != pat[j]) j = LCP[j];
         }
     }
 
@@ -40,10 +38,8 @@ public:
         this->m = m;
         LCP = new int[m + 1];
         LCP[0] = -1;
-        for (int i = 0, j = -1; i < m; i++, j++, LCP[i] = j) {
-            while (j >= 0 && pattern[i] != pattern[j]) {
-                j = LCP[j];
-            }
+        for (int i = 0, j = -1; i < m; i++, j++, LCP[i] = (i != m && pattern[i] == pattern[j]) ? LCP[j] : j) {
+            while (j >= 0 && pattern[i] != pattern[j]) j = LCP[j];
         }
     }
 
@@ -58,12 +54,8 @@ public:
     int search(string txt) {
         int n = txt.length();
         for (int i = 0, j = 0; i < n; i++, j++) {
-            while (j >= 0 && txt[i] != pat[j]) {
-                j = LCP[j];
-            }
-            if (j == m - 1) {
-                return i - j;
-            }
+            while (j >= 0 && txt[i] != pat[j]) j = LCP[j];
+            if (j == m - 1) return i - j;
         }
         return -1;
     }
@@ -79,12 +71,8 @@ public:
      */
     int search(char *text, int n) {
         for (int i = 0, j = 0; i < n; i++, j++) {
-            while (j >= 0 && text[i] != pattern[j]) {
-                j = LCP[j];
-            }
-            if (j == m - 1) {
-                return i - j;
-            }
+            while (j >= 0 && text[i] != pattern[j]) j = LCP[j];
+            if (j == m - 1) return i - j;
         }
         return -1;
     }

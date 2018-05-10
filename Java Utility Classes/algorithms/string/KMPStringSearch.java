@@ -29,10 +29,8 @@ public class KMPStringSearch {
         int m = pat.length();
         LCP = new int[m + 1];
         LCP[0] = -1;
-        for (int i = 0, j = -1; i < m; i++, j++, LCP[i] = j) {
-            while (j >= 0 && pat.charAt(i) != pat.charAt(j)) {
-                j = LCP[j];
-            }
+        for (int i = 0, j = -1; i < m; i++, j++, LCP[i] = (i != m && pat.charAt(i) == pat.charAt(j) ? LCP[j] : j)) {
+            while (j >= 0 && pat.charAt(i) != pat.charAt(j)) j = LCP[j];
         }
     } 
 
@@ -46,15 +44,13 @@ public class KMPStringSearch {
         int m = pattern.length;
         LCP = new int[m + 1];
         LCP[0] = -1;
-        for (int i = 0, j = -1; i < m; i++, j++, LCP[i] = j) {
-            while (j >= 0 && pattern[i] != pattern[j]) {
-                j = LCP[j];
-            }
+        for (int i = 0, j = -1; i < m; i++, j++, LCP[i] = (i != m && pattern[i] == pattern[j] ? LCP[j] : j)) {
+            while (j >= 0 && pattern[i] != pattern[j]) j = LCP[j];
         }
     } 
 
     /**
-     * Returns the index of the first occurrrence of the pattern string
+     * Returns the index of the first occurrence of the pattern string
      * in the text string.
      *
      * @param  txt the text string
@@ -65,12 +61,8 @@ public class KMPStringSearch {
         int m = pat.length();
         int n = txt.length();
         for (int i = 0, j = 0; i < n; i++, j++) {
-            while (j >= 0 && txt.charAt(i) != pat.charAt(j)) {
-                j = LCP[j];
-            }
-            if (j == m - 1) {
-                return i - j;
-            }
+            while (j >= 0 && txt.charAt(i) != pat.charAt(j)) j = LCP[j];
+            if (j == m - 1) return i - j;
         }
         return -1;
     }
@@ -87,12 +79,8 @@ public class KMPStringSearch {
         int m = pattern.length;
         int n = text.length;
         for (int i = 0, j = 0; i < n; i++, j++) {
-            while (j >= 0 && text[i] != pattern[j]) {
-                j = LCP[j];
-            }
-            if (j == m - 1) {
-                return i - j;
-            }
+            while (j >= 0 && text[i] != pattern[j]) j = LCP[j];
+            if (j == m - 1) return i - j;
         }
         return -1;
     }
