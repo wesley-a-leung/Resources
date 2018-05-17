@@ -132,8 +132,8 @@ public:
         int lo = start, hi = end - 1, mid;
         while (lo <= hi) {
             mid = lo + (hi - lo) / 2;
-            if (a[mid] < key) lo = mid - 1;
-            else hi = mid + 1;
+            if (a[mid] < key) lo = mid + 1;
+            else hi = mid - 1;
         }
         return hi;
     }
