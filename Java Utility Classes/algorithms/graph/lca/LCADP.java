@@ -22,23 +22,23 @@ public class LCADP {
         V = G.V();
         LGV = (int) (Math.ceil(Math.log(V) / Math.log(2)) + 1);
         depth = new int[V];
-        parent = new int[V][LGV];
-        for (int i = 0; i < V; i++) {
-            for (int j = 0; j < LGV; j++) {
+        parent = new int[LGV][V];
+        for (int i = 0; i < LGV; i++) {
+            for (int j = 0; j < V; j++) {
                 parent[i][j] = -1;
             }
         }
         dfs(G, 0, 0, -1);
-        for (int j = 1; j < LGV; j++) {
-            for (int i = 0; i < V; i++) {
-                if (parent[i][j - 1] != -1) parent[i][j] = parent[parent[i][j - 1]][j - 1];
+        for (int i = 1; i < LGV; i++) {
+            for (int j = 0; j < V; j++) {
+                if (parent[i - 1][j] != -1) parent[i][j] = parent[i - 1][parent[i - 1][j]];
             }
         }
     }
     
     private void dfs(Graph G, int v, int d, int prev) {
         depth[v] = d;
-        parent[v][0] = prev;
+        parent[0][v] = prev;
         for (int w : G.adj(v)) {
             if (w != prev) dfs(G, w, d + 1, v);
         }
@@ -60,13 +60,13 @@ public class LCADP {
             w = temp;
         }
         for (int i = LGV - 1; i >= 0; i--) {
-            if (depth[parent[v][i]] >= depth[w]) v = parent[v][i];
+            if (parent[i][v] != -1 && depth[parent[i][v]] >= depth[w]) v = parent[i][v];
         }
         if (v == w) return v;
         for (int i = LGV - 1; i >= 0; i--) {
-            if (parent[v][i] != parent[w][i]) {
-                v = parent[v][i];
-                w = parent[w][i];
+            if (parent[i][v] != parent[i][w]) {
+                v = parent[i][v];
+                w = parent[i][w];
             }
         }
         return parent[v][0];
