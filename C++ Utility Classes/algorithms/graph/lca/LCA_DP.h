@@ -18,7 +18,7 @@ private:
 
     void dfs(Graph *G, int v, int d, int prev) {
         depth[v] = d;
-        parent[v][0] = prev;
+        parent[0][v] = prev;
         for (int w : G->adj(v)) {
             if (w != prev) dfs(G, w, d + 1, v);
         }
@@ -29,17 +29,17 @@ public:
         V = G->getV();
         LGV = (int) (ceil(log2(V)) + 1);
         depth = new int[V];
-        parent = new int*[V];
-        for (int i = 0; i < V; i++) {
-            parent[i] = new int[LGV];
-            for (int j = 0; j < LGV; j++) {
+        parent = new int*[LGV];
+        for (int i = 0; i < LGV; i++) {
+            parent[i] = new int[V];
+            for (int j = 0; j < V; j++) {
                 parent[i][j] = -1;
             }
         }
         dfs(G, 0, 0, -1);
-        for (int j = 1; j < LGV; j++) {
-            for (int i = 0; i < V; i++) {
-                if (parent[i][j - 1] != -1) parent[i][j] = parent[parent[i][j - 1]][j - 1];
+        for (int i = 1; i < LGV; i++) {
+            for (int j = 0; j < V; j++) {
+                if (parent[i - 1][j] != -1) parent[i][j] = parent[i - 1][parent[i - 1][j]];
             }
         }
     }
@@ -54,16 +54,16 @@ public:
     int lca(int v, int w) {
         if (depth[v] < depth[w]) swap(v, w);
         for (int i = LGV - 1; i >= 0; i--) {
-            if (parent[v][i] != -1 && depth[parent[v][i]] >= depth[w]) v = parent[v][i];
+            if (parent[i][v] != -1 && depth[parent[i][v]] >= depth[w]) v = parent[i][v];
         }
         if (v == w) return v;
         for (int i = LGV - 1; i >= 0; i--) {
-            if (parent[v][i] != parent[w][i]) {
-                v = parent[v][i];
-                w = parent[w][i];
+            if (parent[i][v] != parent[i][w]) {
+                v = parent[i][v];
+                w = parent[i][w];
             }
         }
-        return parent[v][0];
+        return parent[0][v];
     }
 };
 
