@@ -1,4 +1,4 @@
-package algorithms.graph.search;
+package algorithms.graph.components;
 
 import datastructures.graph.Graph;
 
