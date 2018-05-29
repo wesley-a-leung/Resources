@@ -9,7 +9,7 @@ private:
     int *parent;
     int *size;
     int count;
-    vector<pair<int, int>> history;
+    vector<pair<pair<int, int>, int>> history;
 
 public:
     /**
@@ -88,7 +88,7 @@ public:
         int rootQ = find(q);
         if (rootP == rootQ) return false;
         if (size[rootP] > size[rootQ]) swap(rootP, rootQ);
-        history.push_back(make_pair(rootP, rootQ));
+        history.push_back(make_pair(make_pair(rootP, rootQ), parent[rootP]));
         // make smaller root point to larger one
         parent[rootP] = rootQ;
         size[rootQ] += size[rootP];
@@ -102,10 +102,11 @@ public:
      */
     bool undo() {
         if ((int) history.size() == 0) return false;
-        int rootP = history.back().first;
-        int rootQ = history.back().second;
+        int rootP = history.back().first.first;
+        int rootQ = history.back().first.second;
+        int parP = history.back().second;
         history.pop_back();
-        parent[rootP] = rootP;
+        parent[rootP] = parP;
         size[rootQ] -= size[rootP];
         count++;
         return true;
