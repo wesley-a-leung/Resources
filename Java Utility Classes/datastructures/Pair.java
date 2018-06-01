@@ -1,10 +1,10 @@
 package datastructures;
 
-public class Pair<Item, Item2> {
-    public Item first;
+public class Pair<Item1, Item2> {
+    public Item1 first;
     public Item2 second;
 
-    public Pair(Item first, Item2 second) {
+    public Pair(Item1 first, Item2 second) {
         this.first = first;
         this.second = second;
     }
