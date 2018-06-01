@@ -24,16 +24,6 @@ public class FastReader {
         bufferPointer = bytesRead = 0;
     }
 
-    public String nextLine() throws IOException {
-        byte[] buf = new byte[LENGTH];
-        int cnt = 0, c;
-        while ((c = read()) != -1) {
-            if (c == '\n' || c == '\r') break;
-            buf[cnt++] = (byte) c;
-        }
-        return new String(buf, 0, cnt);
-    }
-    
     public byte nextByte() throws IOException {
         byte ret = 0;
         byte c = read();
@@ -127,11 +117,26 @@ public class FastReader {
     public String next() throws IOException {
         byte[] buf = new byte[LENGTH];
         int cnt = 0, c;
-        c = read();
-        while (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1) c = read();
+        do {
+            c = read();
+        } while (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1);
         buf[cnt++] = (byte) c;
         while ((c = read()) != -1) {
             if (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1) break;
+            buf[cnt++] = (byte) c;
+        }
+        return new String(buf, 0, cnt);
+    }
+
+    public String nextLine() throws IOException {
+        byte[] buf = new byte[LENGTH];
+        int cnt = 0, c;
+        do {
+            c = read();
+        } while (c == ' ' || c == '\n' || c == '\r' || c == -1);
+        buf[cnt++] = (byte) c;
+        while ((c = read()) != -1) {
+            if (c == '\n' || c == '\r' || c == -1) break;
             buf[cnt++] = (byte) c;
         }
         return new String(buf, 0, cnt);
