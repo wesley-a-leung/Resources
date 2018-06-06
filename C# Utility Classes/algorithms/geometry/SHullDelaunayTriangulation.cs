@@ -217,7 +217,7 @@ namespace Algorithms.Geometry {
                 int pInd = sortedInd[i];
                 HullPoint p = new HullPoint(points, pInd);
                 double dx = p.x - hull[0].x, dy = p.y - hull[0].y;
-                int H = hull.Count, HH = H, hInd = 0;
+                int H = hull.Count, hInd = 0;
                 List<int> pInds = new List<int>(), tInds = new List<int>();
                 if (hull.edgeVisibleFrom(0, dx, dy)) {
                     hInd = 0;
