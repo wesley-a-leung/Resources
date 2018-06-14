@@ -18,7 +18,7 @@ template <typename It> void merge_sort(It src_st, It src_en, It dst_st, It dst_e
     }
     int mid = (n - 1) / 2;
     merge_sort(dst_st, dst_st + mid + 1, src_st, src_st + mid + 1);
-    merge_sort(dst_st + mid + 1, dst_en, src_st + mid + 1, src_en);
+    merge_sort(dst_st + mid + 1, dst_en, src_st + mid + 1, src_en,);
     if (src_st[mid + 1] >= src_st[mid]) {
         for (int i = 0; i < n; i++) dst_st[i] = src_st[i];
         return;
@@ -52,8 +52,8 @@ template <typename It, typename Comparator> void merge_sort(It src_st, It src_en
         return;
     }
     int mid = (n - 1) / 2;
-    merge_sort(dst_st, dst_st + mid + 1, src_st, src_st + mid + 1);
-    merge_sort(dst_st + mid + 1, dst_en, src_st + mid + 1, src_en);
+    merge_sort(dst_st, dst_st + mid + 1, src_st, src_st + mid + 1, cmp);
+    merge_sort(dst_st + mid + 1, dst_en, src_st + mid + 1, src_en, cmp);
     if (!cmp(src_st[mid + 1], src_st[mid])) {
         for (int i = 0; i < n; i++) dst_st[i] = src_st[i];
         return;
@@ -72,7 +72,7 @@ template <typename It, typename Comparator> void merge_sort(It st, It en, Compar
     int n = en - st;
     T *aux = new T[n];
     for (int i = 0; i < n; i++) aux[i] = st[i];
-    merge_sort(aux, aux + n, st, en);
+    merge_sort(aux, aux + n, st, en, cmp);
     delete[] (aux);
 }
 
