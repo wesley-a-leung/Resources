@@ -365,7 +365,7 @@ public:
 
   OutputDevice(OutputDevice const&) = delete;
   OutputDevice& operator = (OutputDevice const&) = delete;
-  ~OutputDevice() {};
+  virtual ~OutputDevice() {};
 
   inline int writeChar(char arg) { separate = false; *output++ = arg; flushMaybe(); return 1; }
 
