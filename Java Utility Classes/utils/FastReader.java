@@ -5,8 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class FastReader {
-    private final int BUFFER_SIZE = 1 << 16;
+public static class FastReader {
+    private final int BUFFER_SIZE = 1 << 12;
     private int LENGTH = -1;
     private DataInputStream din;
     private byte[] buffer;
@@ -24,44 +24,13 @@ public class FastReader {
         bufferPointer = bytesRead = 0;
     }
 
-    public byte nextByte() throws IOException {
-        byte ret = 0;
-        byte c;
-        do {
-            c = read();
-        } while (c <= ' ');
-        boolean neg = (c == '-');
-        if (neg) c = read();
-        do {
-            ret *= 10;
-            ret += c - '0';
-        } while ((c = read()) >= '0');
-        if (neg) return (byte) (-ret);
-        return ret;
-    }
-    
-    public short nextShort() throws IOException {
-        short ret = 0;
-        byte c;
-        do {
-            c = read();
-        } while (c <= ' ');
-        boolean neg = (c == '-');
-        if (neg) c = read();
-        do {
-            ret *= 10;
-            ret += c - '0';
-        } while ((c = read()) >= '0');
-        if (neg) return (short) (-ret);
-        return ret;
-    }
-
     public int nextInt() throws IOException {
         int ret = 0;
         byte c;
         do {
             c = read();
         } while (c <= ' ');
+        while (c <= ' ') c = read();
         boolean neg = (c == '-');
         if (neg) c = read();
         do {
@@ -82,20 +51,6 @@ public class FastReader {
         do {
             ret = ret * 10 + c - '0';
         } while ((c = read()) >= '0');
-        if (neg) return -ret;
-        return ret;
-    }
-    
-    public float nextFloat() throws IOException {
-        float ret = 0, div = 1;
-        byte c = read();
-        while (c <= ' ') c = read();
-        boolean neg = (c == '-');
-        if (neg) c = read();
-        do {
-            ret = ret * 10 + c - '0';
-        } while ((c = read()) >= '0');
-        if (c == '.') while ((c = read()) >= '0') ret += (c - '0') / (div *= 10);
         if (neg) return -ret;
         return ret;
     }
