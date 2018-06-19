@@ -89,6 +89,7 @@ public class BellmanFordDirectedSP {
             for (DirectedWeightedEdge e : edges) {
                 int v = e.from();
                 int w = e.to();
+                if (distTo[v] == Double.POSITIVE_INFINITY) continue;
                 if (distTo[w] > distTo[v] + e.weight()) {
                     distTo[w] = distTo[v] + e.weight();
                     edgeTo[w] = e;

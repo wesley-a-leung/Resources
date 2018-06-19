@@ -1,7 +1,8 @@
 package algorithms.geometry;
 
 import java.util.Arrays;
-import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -22,7 +23,7 @@ import datastructures.geometry.Point2D;
  *  @author Kevin Wayne
  */
 public class GrahamScanConvexHull {
-    private Queue<Point2D> hull = new ArrayDeque<Point2D>();
+    private ArrayList<Point2D> hull = new ArrayList<Point2D>();
 
     /**
      * Computes the convex hull of the specified array of points.
@@ -62,7 +63,10 @@ public class GrahamScanConvexHull {
         int k1;
         for (k1 = 1; k1 < n; k1++)
             if (!a[0].equals(a[k1])) break;
-        if (k1 == n) return;        // all points equal
+        if (k1 == n) {
+            this.hull.add(hull.pop());
+            return;
+        }
 
         // find index k2 of first point not collinear with a[0] and a[k1]
         int k2;
@@ -79,17 +83,13 @@ public class GrahamScanConvexHull {
             hull.push(top);
             hull.push(a[i]);
         }
-        while (!hull.isEmpty()) this.hull.offer(hull.pop());
+        while (!hull.isEmpty()) this.hull.add(hull.pop());
+        Collections.reverse(this.hull);
     }
 
-    /**
-     * Returns the extreme points on the convex hull in counterclockwise order.
-     *
-     * @return the extreme points on the convex hull in counterclockwise order
-     */
-    public Iterable<Point2D> hull() {
-        Queue<Point2D> q = new ArrayDeque<Point2D>();
-        for (Point2D p : hull) q.offer(p);
-        return q;
+    public ArrayList<Point2D> hull() {
+        ArrayList<Point2D> list = new ArrayList<Point2D>();
+        for (Point2D p : hull) list.offer(p);
+        return list;
     }
 }
