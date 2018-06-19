@@ -59,7 +59,11 @@ public:
         int k1;
         for (k1 = 1; k1 < n; k1++)
             if (a[0] != a[k1]) break;
-        if (k1 == n) return;        // all points equal
+        if (k1 == n) { // all points equal
+            hullVector.push_back(hull.top());
+            hull.pop();
+            return;
+        }
 
         // find index k2 of first point not collinear with a[0] and a[k1]
         int k2;
