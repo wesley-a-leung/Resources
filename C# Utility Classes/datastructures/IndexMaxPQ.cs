@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -25,79 +26,79 @@ namespace Datastructures {
             for (int i = 0; i < maxN; i++) qp[i] = -1;
         }
     
-        public bool isEmpty() {
+        public bool IsEmpty() {
             return n == 0;
         }
     
-        public bool contains(int i) {
+        public bool Contains(int i) {
             if (i < 0 || i >= maxN) throw new IndexOutOfRangeException();
             return qp[i] != -1;
         }
     
-        public int size() {
+        public int Count() {
             return n;
         }
         
-        public void insert(int i, Key key) {
+        public void Insert(int i, Key key) {
             if (i < 0 || i >= maxN) throw new IndexOutOfRangeException();
-            if (contains(i)) throw new Exception("index is already in the priority queue");
+            if (Contains(i)) throw new Exception("index is already in the priority queue");
             n++;
             qp[i] = n;
             pq[n] = i;
             keys[i] = key;
-            swim(n);
+            Swim(n);
         }
     
-        public int maxIndex() {
+        public int MaxIndex() {
             if (n == 0) throw new Exception("Priority queue underflow");
             return pq[1];
         }
     
-        public Key maxKey() {
+        public Key MaxKey() {
             if (n == 0) throw new Exception("Priority queue underflow");
             return keys[pq[1]];
         }
     
-        public int delMax() {
+        public int DeleteMax() {
             if (n == 0) throw new Exception("Priority queue underflow");
             int max = pq[1];
-            exch(1, n--);
-            sink(1);
+            Exch(1, n--);
+            Sink(1);
             qp[max] = -1;
             pq[n + 1] = -1;
             return max;
         }
     
-        public Key keyOf(int i) {
+        public Key KeyOf(int i) {
             if (i < 0 || i >= maxN) throw new IndexOutOfRangeException();
-            if (!contains(i)) throw new Exception("index is not in the priority queue");
+            if (!Contains(i)) throw new Exception("index is not in the priority queue");
             else return keys[i];
         }
     
-        public void changeKey(int i, Key key) {
+        public void ChangeKey(int i, Key key) {
             if (i < 0 || i >= maxN) throw new IndexOutOfRangeException();
-            if (!contains(i)) throw new Exception("index is not in the priority queue");
+            if (!Contains(i)) throw new Exception("index is not in the priority queue");
             Key old = keys[i];
             keys[i] = key;
-            if (old.CompareTo(key) > 0) swim(qp[i]);
-            else if (old.CompareTo(key) < 0) sink(qp[i]);
+            if (old.CompareTo(key) > 0) Swim(qp[i]);
+            else if (old.CompareTo(key) < 0) Sink(qp[i]);
         }
     
-        public void delete(int i) {
+        public void Delete(int i) {
             if (i < 0 || i >= maxN) throw new IndexOutOfRangeException();
-            if (!contains(i)) throw new Exception("index is not in the priority queue");
+            if (!Contains(i)) throw new Exception("index is not in the priority queue");
             int index = qp[i];
-            exch(index, n--);
-            swim(index);
-            sink(index);
+            Exch(index, n--);
+            Swim(index);
+            Sink(index);
             qp[i] = -1;
         }
     
-        private bool less(int i, int j) {
+        private bool Less(int i, int j) {
             return keys[pq[i]].CompareTo(keys[pq[j]]) < 0;
         }
     
-        private void exch(int i, int j) {
+        private void Exch(int i, int j) {
             int swap = pq[i];
             pq[i] = pq[j];
             pq[j] = swap;
@@ -105,19 +106,19 @@ namespace Datastructures {
             qp[pq[j]] = j;
         }
     
-        private void swim(int k) {
-            while (k > 1 && less(k / 2, k)) {
-                exch(k, k / 2);
+        private void Swim(int k) {
+            while (k > 1 && Less(k / 2, k)) {
+                Exch(k, k / 2);
                 k = k / 2;
             }
         }
     
-        private void sink(int k) {
+        private void Sink(int k) {
             while (2 * k <= n) {
                 int j = 2 * k;
-                if (j < n && less(j, j + 1)) j++;
-                if (!less(k, j)) break;
-                exch(k, j);
+                if (j < n && Less(j, j + 1)) j++;
+                if (!Less(k, j)) break;
+                Exch(k, j);
                 k = j;
             }
         }
