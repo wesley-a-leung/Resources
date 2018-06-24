@@ -4,56 +4,74 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-long long cnt; // number of inversions
-
-// merges and counts inversions
-void merge(int *a, int *aux, int lo, int mid, int hi) {
-    for (int k = lo; k <= hi; k++) {
-        aux[k] = a[k];
-    }
-    int i = lo, j = mid + 1;
-    for (int k = lo; k <= hi; k++) {
-        if (i > mid) { // no inversions if the lower half is completed
-            a[k] = aux[j++];
-        } else if (j > hi) { // if the upper half is completed, the number of inversions
-                             // is equal to the size of the upper half
-            a[k] = aux[i++];
-            cnt += j - (mid + 1);
-        } else if (aux[i] <= aux[j]) { // if the lower half element is smaller, the number of inversions
-                                       // is equal to the number of elements taken in the upper half
-            a[k] = aux[i++];
-            cnt += j - (mid + 1);
-        } else {                       // if the upper half element is smaller, the number of inversions
-                                       // is equal to the number of elements not taken in the lower half
-            a[k] = aux[j++];
-            cnt += mid + 1 - i;
+template <typename It, typename Comparator> long long count_inversions(It src_st, It src_en, It dst_st, It dst_en) {
+    int n = src_en - src_st;
+    if (n <= 1) return 0;
+    int mid = (n - 1) / 2;
+    long long ret = 0;
+    ret += count_inversions(dst_st, dst_st + mid + 1, src_st, src_st + mid + 1);
+    ret += count_inversions(dst_st + mid + 1, dst_en, src_st + mid + 1, src_en);
+    int i = 0, j = mid + 1;
+    for (int k = 0; k < n; k++) {
+        if (i > mid) {
+            dst_st[k] = src_st[j++];
+        } else if (j >= n) {
+            dst_st[k] = src_st[i++];
+            ret += j - (mid + 1);
+        } else if (src_st[j] < src_st[i]) {
+            dst_st[k] = src_st[j++];
+            ret += mid + 1 - i;
+        } else {
+            dst_st[k] = src_st[i++];
+            ret += j - (mid + 1);
         }
     }
+    return ret;
 }
 
-void countInversions(int *a, int *aux, int lo, int hi) {
-    if (lo >= hi) return; // base case is interval of 1; if lo is greater than or equal to hi,
-                          // then the current interval is less than 1
-    int mid = lo + (hi - lo) / 2; // to prevent integer overflow
-    // recursively divides into 2 subarrays
-    countInversions(a, aux, lo, mid);
-    countInversions(a, aux, mid + 1, hi);
-    // merges subarrays and counts inversions
-    merge(a, aux, lo, mid, hi);
+template <typename It, typename Comparator> long long count_inversions(It st, It en) {
+    typedef typename std::iterator_traits<It>::value_type T;
+    int n = en - st;
+    T *aux = new T[n];
+    for (int i = 0; i < n; i++) aux[i] = st[i];
+    long long ret = count_inversions(aux, aux + n, st, en);
+    delete[] (aux);
+    return ret / 2;
 }
 
-/**
- * Counts the number of inversions in an array.
- *
- * @param a the array
- * @param n the length of the array
- * @return the number of inversions in {@code a}
- */
-long long countInversions(int *a, int n) {
-    int *aux = new int[n];
-    cnt = 0;
-    countInversions(a, aux, 0, n - 1);
-    return cnt / 2; // since each inversion is counted twice
+template <typename It, typename Comparator> long long count_inversions(It src_st, It src_en, It dst_st, It dst_en, Comparator cmp) {
+    int n = src_en - src_st;
+    if (n <= 1) return 0;
+    int mid = (n - 1) / 2;
+    long long ret = 0;
+    ret += count_inversions(dst_st, dst_st + mid + 1, src_st, src_st + mid + 1, cmp);
+    ret += count_inversions(dst_st + mid + 1, dst_en, src_st + mid + 1, src_en, cmp);
+    int i = 0, j = mid + 1;
+    for (int k = 0; k < n; k++) {
+        if (i > mid) {
+            dst_st[k] = src_st[j++];
+        } else if (j >= n) {
+            dst_st[k] = src_st[i++];
+            ret += j - (mid + 1);
+        } else if (cmp(src_st[j], src_st[i])) {
+            dst_st[k] = src_st[j++];
+            ret += mid + 1 - i;
+        } else {
+            dst_st[k] = src_st[i++];
+            ret += j - (mid + 1);
+        }
+    }
+    return ret;
+}
+
+template <typename It, typename Comparator> long long count_inversions(It st, It en, Comparator cmp) {
+    typedef typename std::iterator_traits<It>::value_type T;
+    int n = en - st;
+    T *aux = new T[n];
+    for (int i = 0; i < n; i++) aux[i] = st[i];
+    long long ret = count_inversions(aux, aux + n, st, en, cmp);
+    delete[] (aux);
+    return ret / 2;
 }
 
 #endif /* ALGORITHMS_SORT_COUNTINVERSIONS_H_ */
