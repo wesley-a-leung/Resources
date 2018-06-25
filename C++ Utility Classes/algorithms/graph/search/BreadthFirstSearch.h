@@ -30,7 +30,7 @@ void bfs(Graph *G, int s) {
     marked[s] = true;
     q.push(s);
 
-    while(!q.empty()) {
+    while (!q.empty()) {
         int v = q.front();
         q.pop();
         for (int w : G->adj(v)) {
