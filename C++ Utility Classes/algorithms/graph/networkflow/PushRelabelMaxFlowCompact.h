@@ -25,12 +25,7 @@ private:
     vector<bool> done;
 
 public:
-    PushRelabelMaxFlowCompact(int V) : V(V), last(V), height(V), excess(V), done(V) {
-        fill(last.begin(), last.end(), -1);
-        fill(height.begin(), height.end(), 0);
-        fill(excess.begin(), excess.end(), 0);
-        fill(done.begin(), done.end(), false);
-    }
+    PushRelabelMaxFlowCompact(int V) : V(V), last(V, -1), height(V, 0), excess(V, 0), done(V, false) {}
 
     void addEdge(int v, int w, unit vw, unit wv = 0) {
         e.emplace_back(w, vw, last[v]);

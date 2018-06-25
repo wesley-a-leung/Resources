@@ -8,7 +8,7 @@ using namespace std;
  * Edmonds Blossom Algorithm. Given a general graph G = (V, E), the algorithm finds a matching M
  * such that each vertex in V is incident with at most one edge in M and |M| is maximized.
  *
- * @author Jeffrey Xiao
+ * Time Complexity: O(V ^ 2 * E)
  */
 class EdmondsMatching {
 private:
@@ -47,7 +47,6 @@ private:
         used[src] = true;
         queue<int> q;
         q.push(src);
-
         while (!q.empty()) {
             int curr = q.front();
             q.pop();
@@ -92,7 +91,6 @@ public:
         fill(par.begin(), par.end(), 0);
         fill(id.begin(), id.end(), 0);
         fill(used.begin(), used.end(), 0);
-
         for (int i = 0; i < N; i++) {
             if (match[i] == -1) {
                 int v = getAugmentingPath(i);
@@ -105,7 +103,6 @@ public:
                 }
             }
         }
-
         int res = 0;
         for (int i = 0; i < N; i++) if (match[i] != -1) res++;
         return res / 2;

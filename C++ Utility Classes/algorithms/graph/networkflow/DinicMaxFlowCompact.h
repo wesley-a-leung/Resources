@@ -65,10 +65,7 @@ private:
     }
 
 public:
-    DinicMaxFlow(int N) : N(N), last(N), level(N), cut(N) {
-        fill(last.begin(), last.end(), -1);
-        fill(cut.begin(), cut.end(), false);
-    }
+    DinicMaxFlow(int N) : N(N), last(N, -1), level(N), cut(N, false) {}
 
     void addEdge(int v, int w, unit vw, unit wv = 0) {
         e.emplace_back(w, vw, last[v]);

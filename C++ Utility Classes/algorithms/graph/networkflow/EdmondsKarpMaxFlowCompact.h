@@ -44,9 +44,7 @@ private:
     }
 
 public:
-    EdmondsKarpMaxFlow(int N) : N(N), edgeTo(N), marked(N), last(N) {
-        fill(last.begin(), last.end(), -1);
-    }
+    EdmondsKarpMaxFlow(int N) : N(N), edgeTo(N), marked(N), last(N, -1) {}
 
     void addEdge(int v, int w, unit vw, unit wv = 0) {
         e.emplace_back(w, vw, last[v]);

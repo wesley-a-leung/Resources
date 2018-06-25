@@ -61,9 +61,7 @@ private:
     }
 
 public:
-    HopcroftKarpMaxMatchCompact(int N, vector<bool> &color) : N(N), adj(N), color(color), mate(N), dist(N) {
-        fill(mate.begin(), mate.end(), -1);
-    }
+    HopcroftKarpMaxMatchCompact(int N, vector<bool> &color) : N(N), adj(N), color(color), mate(N, -1), dist(N) {}
 
     void addEdge(int v, int w) {
         adj[v].push_back(w);

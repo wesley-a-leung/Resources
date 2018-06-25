@@ -4,13 +4,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef int flowUnit;
-typedef int costUnit;
-const flowUnit FLOW_INF = (1 << 30);
-const flowUnit FLOW_EPS = 0;
-const costUnit COST_LARGE_INF = (1 << 30);
-const costUnit COST_SMALL_INF = (1 << 25);
-
 /**
  * Computes the maximum flow using that path with the minimum cost.
  *
@@ -45,28 +38,26 @@ private:
         fill(index.begin(), index.end(), -1);
         dist[src] = 0;
         priority_queue<pair<costUnit, int>, vector<pair<costUnit, int>>, greater<pair<costUnit, int>>> PQ;
-        PQ.push({src, 0});
+        PQ.push({dist[src], src});
         while (!PQ.empty()) {
             pair<costUnit, int> v = PQ.top();
             PQ.pop();
-            if (v.second > dist[v.first]) continue;
-            for (int next = last[v.first]; next != -1; next = e[next].next) {
+            if (v.first > dist[v.second]) continue;
+            for (int next = last[v.second]; next != -1; next = e[next].next) {
                 if (abs(e[next].cap) <= FLOW_EPS) continue;
-                costUnit d = dist[v.first] + e[next].cost + phi[v.first] - phi[e[next].to];
+                costUnit d = dist[v.second] + e[next].cost + phi[v.second] - phi[e[next].to];
                 if (dist[e[next].to] <= d) continue;
                 dist[e[next].to] = d;
-                prev[e[next].to] = v.first;
+                prev[e[next].to] = v.second;
                 index[e[next].to] = next;
-                PQ.push({e[next].to, dist[e[next].to]});
+                PQ.push({dist[e[next].to], e[next].to});
             }
         }
         return dist[sink] != COST_INF;
     }
 
 public:
-    MaxFlowMinCost(int N) : N(N), last(N), prev(N), index(N), phi(N), dist(N) {
-        fill(last.begin(), last.end(), -1);
-    }
+    MaxFlowMinCost(int N) : N(N), last(N, -1), prev(N), index(N), phi(N), dist(N) {}
 
     void addEdge(int u, int v, flowUnit flow, costUnit cost) {
         e.push_back({u, v, cost, flow, last[u]});
