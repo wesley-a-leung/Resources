@@ -16,6 +16,7 @@ typedef int costUnit;
 const flowUnit FLOW_INF = 1 << 30;
 const flowUnit FLOW_EPS = 0;
 const costUnit COST_INF = 1 << 30;
+const costUnit COST_SMALL_INF = 1 << 25;
 
 class MaxFlowMinCost {
 private:
@@ -31,6 +32,13 @@ private:
     vector<Edge> e;
     vector<int> last, prev, index;
     vector<costUnit> phi, dist;
+    bool hasNegativeEdgeCost = false;
+
+    void bellmanFord() {
+        fill(phi.begin(), phi.end(), COST_SMALL_INF);
+        phi[src] = 0;
+        for (int j = 0; j < N - 1; j++) for (int i = 0; i < (int) e.size(); i++) if (e[i].cap > FLOW_EPS) phi[e[i].to] = min(phi[e[i].to], phi[e[i].from] + e[i].cost);
+    }
 
     bool dijkstra() {
         fill(dist.begin(), dist.end(), COST_INF);
@@ -60,6 +68,7 @@ public:
     MaxFlowMinCost(int N) : N(N), last(N, -1), prev(N), index(N), phi(N), dist(N) {}
 
     void addEdge(int u, int v, flowUnit flow, costUnit cost) {
+        if (cost < 0) hasNegativeEdgeCost = true;
         e.push_back({u, v, cost, flow, last[u]});
         last[u] = (int) e.size() - 1;
         e.push_back({v, u, -cost, 0, last[v]});
@@ -72,6 +81,7 @@ public:
         flowUnit flow = 0;
         costUnit cost = 0;
         fill(phi.begin(), phi.end(), 0);
+        if (hasNegativeEdgeCost) bellmanFord();
         while (dijkstra()) {
             flowUnit aug = FLOW_INF;
             int cur = sink;
