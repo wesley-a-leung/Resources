@@ -9,16 +9,18 @@ using System.Threading;
 using static System.Diagnostics.Debug;
 
 namespace Datastructures {
-    public class IndexMinPQ<Key> where Key : IComparable<Key> {
+    public class IndexMinPQ<Key> {
         private int maxN;
         private int n;
         private int[] pq;
         private int[] qp;
         private Key[] keys;
+        private IComparer<Key> cmp;
     
-        public IndexMinPQ(int maxN) {
+        public IndexMinPQ(int maxN, IComparer<Key> cmp = null) {
             if (maxN < 0) throw new Exception("maxN cannot be negative");
             this.maxN = maxN;
+            this.cmp = cmp;
             n = 0;
             keys = new Key[maxN];
             pq = new int[maxN + 1];
@@ -80,8 +82,8 @@ namespace Datastructures {
             if (!Contains(i)) throw new Exception("index is not in the priority queue");
             Key old = keys[i];
             keys[i] = key;
-            if (old.CompareTo(key) < 0) Swim(qp[i]);
-            else if (old.CompareTo(key) > 0) Sink(qp[i]);
+            if (Greater(key, old)) Swim(qp[i]);
+            else if (Greater(old, key)) Sink(qp[i]);
         }
     
         public void Delete(int i) {
@@ -93,9 +95,10 @@ namespace Datastructures {
             Sink(index);
             qp[i] = -1;
         }
-    
-        private bool Greater(int i, int j) {
-            return keys[pq[i]].CompareTo(keys[pq[j]]) > 0;
+        
+        private bool Greater(Key a, Key b) {
+            if (cmp == null) return ((IComparable<Key>) a).CompareTo(b) > 0;
+            return cmp.Compare(a, b) > 0;
         }
     
         private void Exch(int i, int j) {
@@ -107,7 +110,7 @@ namespace Datastructures {
         }
     
         private void Swim(int k) {
-            while (k > 1 && Greater(k / 2, k)) {
+            while (k > 1 && Greater(keys[pq[k / 2]], keys[pq[k]])) {
                 Exch(k, k / 2);
                 k = k / 2;
             }
@@ -116,8 +119,8 @@ namespace Datastructures {
         private void Sink(int k) {
             while (2 * k <= n) {
                 int j = 2 * k;
-                if (j < n && Greater(j, j + 1)) j++;
-                if (!Greater(k, j)) break;
+                if (j < n && Greater(keys[pq[j]], keys[pq[j + 1]])) j++;
+                if (!Greater(keys[pq[k]], keys[pq[j]])) break;
                 Exch(k, j);
                 k = j;
             }
