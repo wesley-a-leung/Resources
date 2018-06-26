@@ -17,7 +17,7 @@ public:
      *
      * @param pat the pattern string
      */
-    KMPFastStringSearch(string pat) {
+    KMPFastStringSearch(string &pat) {
         this->pat = pat;
         m = pat.length();
         LCP = new int[m + 1];
@@ -51,7 +51,7 @@ public:
      * @return the index of the first occurrence of the pattern string
      *         in the text string; -1 if no such match
      */
-    int search(string txt) {
+    int search(string &txt) {
         int n = txt.length();
         for (int i = 0, j = 0; i < n; i++, j++) {
             while (j >= 0 && txt[i] != pat[j]) j = LCP[j];
