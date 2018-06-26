@@ -18,7 +18,7 @@ public:
      *
      * @param pat the pattern string
      */
-    BoyerMooreStringSearch(string pat) {
+    BoyerMooreStringSearch(string &pat) {
         this->R = 256;
         this->pat = pat;
         this->m = pat.length();
@@ -57,7 +57,7 @@ public:
      * @return the index of the first occurrence of the pattern string
      *         in the text string; -1 if no such match
      */
-    int search(string txt) {
+    int search(string &txt) {
         int n = txt.length();
         int skip;
         for (int i = 0; i <= n - m; i += skip) {
