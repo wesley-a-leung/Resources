@@ -27,13 +27,9 @@ public:
 template <typename Key, typename Value, typename Comparator = less<Key>>
 struct Treap {
 private:
-    mt19937 *gen;
-    uniform_real_distribution<double> *dis;
+    mt19937 gen;
+    uniform_real_distribution<double> dis;
     Comparator cmp;
-
-    double randDouble() {
-        return (*dis)(*gen);
-    }
 
     /**
      * Represents an inner node of the treap.
@@ -444,18 +440,13 @@ public:
     /**
      * Initializes an empty set.
      */
-    Treap() {
-        gen = new mt19937(time(0));
-        dis = new uniform_real_distribution<double>(0.0, 1.0);
-    }
+    Treap() : gen(time(0)), dis(0.0, 1.0) {}
 
     /**
      * Deletes the symbol table.
      */
     ~Treap() {
         clear(root);
-        delete gen;
-        delete dis;
     }
 
     /**
@@ -516,7 +507,7 @@ public:
      */
     bool put(Key key, Value val) {
         if (contains(root, key)) return false;
-        Node *x = new Node(key, val, randDouble(), 1);
+        Node *x = new Node(key, val, dis(gen), 1);
         put(root, x);
         return true;
     }

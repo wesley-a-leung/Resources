@@ -27,13 +27,9 @@ public:
 template <typename Value, typename Comparator = less<Value>>
 struct TreapSet {
 private:
-    mt19937 *gen;
-    uniform_real_distribution<double> *dis;
+    mt19937 gen;
+    uniform_real_distribution<double> dis;
     Comparator cmp;
-
-    double randDouble() {
-        return (*dis)(*gen);
-    }
 
     /**
      * Represents an inner node of the treap.
@@ -436,18 +432,13 @@ public:
     /**
      * Initializes an empty set.
      */
-    TreapSet() {
-        gen = new mt19937(time(0));
-        dis = new uniform_real_distribution<double>(0.0, 1.0);
-    }
+    TreapSet() : gen(time(0)), dis(0.0, 1.0) {}
 
     /**
      * Deletes the symbol table.
      */
     ~TreapSet() {
         clear(root);
-        delete gen;
-        delete dis;
     }
 
     /**
@@ -493,7 +484,7 @@ public:
      * @param val the value
      */
     void add(Value val) {
-        Node *x = new Node(val, randDouble(), 1);
+        Node *x = new Node(val, dis(gen), 1);
         add(root, x);
     }
 
@@ -504,7 +495,7 @@ public:
      */
     void addUnique(Value val) {
         if (contains(root, val)) return;
-        Node *x = new Node(val, randDouble(), 1);
+        Node *x = new Node(val, dis(gen), 1);
         add(root, x);
     }
 
