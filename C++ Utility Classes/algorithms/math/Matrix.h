@@ -24,7 +24,7 @@ class Matrix {
     }
 
     // return B = A^T, both m-by-n matrix
-    double *transpose(double **a, int m, int n) {;
+    double **transpose(double **a, int m, int n) {;
         double **b = new double*[n];
         for (int i = 0; i < m; i++)
             b[i] = new double[m];
