@@ -76,8 +76,8 @@ public:
                rectangle at one or more points
      */
     bool intersects(Rectangle *that) {
-        return this->xmax - that->xmin < -EPS && this->ymax - that->ymin < -EPS
-            && that->xmax - this->xmin < -EPS && that->ymax - this->ymin < -EPS;
+        return this->xmax - that->xmin >= -EPS && this->ymax - that->ymin >= -EPS
+            && that->xmax - this->xmin >= -EPS && that->ymax - this->ymin >= -EPS;
     }
 
     /**
@@ -87,8 +87,8 @@ public:
                possibly at the boundary; {@code false} otherwise
      */
     bool contains(Point2D *p) {
-        return (p->x - xmin <= -EPS) && (xmax - p->x <= -EPS)
-            && (p->y - ymin <= -EPS) && (ymax - p->y <= -EPS);
+        return (p->x - xmin >= -EPS) && (xmax - p->x >= -EPS)
+            && (p->y - ymin >= -EPS) && (ymax - p->y >= -EPS);
     }
 
     /**
