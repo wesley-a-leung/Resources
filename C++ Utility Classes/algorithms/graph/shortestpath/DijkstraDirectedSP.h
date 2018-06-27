@@ -26,8 +26,10 @@ void dijkstraSP(WeightedDigraph *G, int s) {
     distTo[s] = 0;
     PQ.push({distTo[s], s});
     while (!PQ.empty()) {
+        unit d = PQ.top().first;
         int v = PQ.top().second;
         PQ.pop();
+        if (d > distTo[v]) continue;
         for (DirectedWeightedEdge *e : G->adj(v)) {
             int w = e->to();
             if (distTo[w] > distTo[v] + e->getWeight()) {

@@ -52,6 +52,7 @@ void bellmanFordSP(int V, vector<DirectedWeightedEdge*> &edges, int s) {
         for (DirectedWeightedEdge *e : edges) {
             int v = e->from();
             int w = e->to();
+            if (distTo[v] == INF) continue;
             if (distTo[w] > distTo[v] + e->getWeight()) {
                 distTo[w] = distTo[v] + e->getWeight();
                 edgeTo[w] = e;
