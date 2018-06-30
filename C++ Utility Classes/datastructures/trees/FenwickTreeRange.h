@@ -29,9 +29,7 @@ private:
     }
 
 public:
-    FenwickTreeRange(int size) : array1(size + 1), array2(size + 1) {
-        this->size = size;
-    }
+    FenwickTreeRange(int size) : size(size), array1(size + 1), array2(size + 1) {}
 
     /**
      * Range Sum query at index ind

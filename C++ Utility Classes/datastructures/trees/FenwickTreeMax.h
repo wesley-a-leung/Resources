@@ -13,16 +13,10 @@ template <typename T>
 struct FenwickTree {
 private:
     int size;
-    T *array;
+    vector<int> array;
 
 public:
-    FenwickTree(int size) {
-        this->size = size;
-        array = new T[size + 1];
-        for (int i = 0; i <= size; i++) {
-            array[i] = 0;
-        }
-    }
+    FenwickTree(int size) : size(size), array(size + 1, 0) {}
 
     /**
      * Range Max query from 1 to ind

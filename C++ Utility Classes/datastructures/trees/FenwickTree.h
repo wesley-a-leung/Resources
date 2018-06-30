@@ -1,28 +1,20 @@
 #ifndef DATASTRUCTURES_TREES_MATH_FENWICKTREE_H_
 #define DATASTRUCTURES_TREES_MATH_FENWICKTREE_H_
 
-#include <bits/stdc++.h>;
-
+#include <bits/stdc++.h>
 using namespace std;
 
 /**
  * FenwickTree supporting point updates and range queries
  * Memory usage:  O(n)
  */
-template <typename T>
 struct FenwickTree {
 private:
     int size;
-    T *array;
+    vector<int> array;
 
 public:
-    FenwickTree(int size) {
-        this->size = size;
-        array = new T[size + 1];
-        for (int i = 0; i <= size; i++) {
-            array[i] = 0;
-        }
-    }
+    FenwickTree(int size) : size(size), array(size + 1, 0) {}
 
     /**
      * Range Sum query from 1 to ind

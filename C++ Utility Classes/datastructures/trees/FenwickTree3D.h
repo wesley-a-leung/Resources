@@ -13,24 +13,10 @@ private:
     int sizeX;
     int sizeY;
     int sizeZ;
-    T ***array;
+    vector<vector<vector<int>>> array;
 
 public:
-    FenwickTree3D(int sizeX, int sizeY, int sizeZ) {
-        this->sizeX = sizeX;
-        this->sizeY = sizeY;
-        this->sizeZ = sizeZ;
-        array = new T**[sizeX + 1];
-        for (int i = 0; i <= sizeX; i++) {
-            array[i] = new T*[sizeY + 1];
-            for (int j = 0; j <= sizeY; j++) {
-                array[i][j] = new T[sizeZ + 1];
-                for (int k = 0; k <= sizeZ; k++) {
-                     array[i][j][k] = 0;
-                 }
-            }
-        }
-    }
+    FenwickTree3D(int sizeX, int sizeY, int sizeZ) : sizeX(sizeX), sizeY(sizeY), sizeZ(sizeZ), array(sizeX + 1, vector<vector<int>>(sizeY + 1, vector<int>(sizeX + 1, 0))) {}
 
     /**
      * Range Sum Query

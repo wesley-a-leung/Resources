@@ -31,9 +31,7 @@ private:
     }
 
 public:
-    FenwickTreeQuadratic(int size) : con(size + 1), lin(size + 1), quad(size + 1) {
-        this->size = size;
-    }
+    FenwickTreeQuadratic(int size) : size(size), con(size + 1), lin(size + 1), quad(size + 1) {}
 
     /**
      * Range Sum query at index ind

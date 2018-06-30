@@ -14,21 +14,10 @@ struct FenwickTreeBinarySearch {
 private:
     int size;
     int logSize;
-    T *array;
+    vector<int> array;
 
 public:
-    FenwickTreeBinarySearch(int size) {
-        this->size = size;
-        this->logSize = 31 - __builtin_clz(size);
-        array = new T[size + 1];
-        for (int i = 0; i <= size; i++) {
-            array[i] = 0;
-        }
-    }
-
-    ~FenwickTreeBinarySearch() {
-        delete[](array);
-    }
+    FenwickTreeBinarySearch(int size) : size(size), logSize(31 - __builtin_clz(size)), array(size + 1, 0) {}
 
     /**
      * Range Sum query from 1 to ind

@@ -4,9 +4,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class SuffixAutomata {
+template <const int ALPHABET_SIZE, const int OFFSET> class SuffixAutomata {
 public: // these should really be private
-    vector<unordered_map<char, int>> to;
+    vector<array<int, ALPHABET_SIZE>> to;
     vector<int> len, link;
 
 private:
@@ -19,13 +19,15 @@ public:
         link.clear();
         last = 0;
         to.emplace_back();
+        to.back().fill(-1);
         len.push_back(0);
         link.push_back(0);
     }
 
     void addLetter(char c) {
+        c -= OFFSET;
         int p = last, q;
-        if (to[p].count(c)) {
+        if (to[p][c] != -1) {
             q = to[p][c];
             if (len[q] == len[p] + 1) {
                 last = q;
@@ -42,9 +44,10 @@ public:
         } else {
             last = (int) to.size();
             to.emplace_back();
+            to.back().fill(-1);
             len.push_back(len[p] + 1);
             link.push_back(0);
-            while (to[p][c] == 0) {
+            while (to[p][c] == -1) {
                 to[p][c] = last;
                 p = link[p];
             }
@@ -80,14 +83,15 @@ public:
 };
 
 // longest common substring
-int LCS(SuffixAutomata &SA, string &s) {
+template <const int ALPHABET_SIZE, const int OFFSET> int LCS(SuffixAutomata<ALPHABET_SIZE, OFFSET> &SA, string &s) {
     int p = 0, len = 0, ret = 0;
     for (char c : s) {
-        while (p != 0 && !SA.to[p].count(c)) {
+        c -= OFFSET;
+        while (p != 0 && SA.to[p][c] == -1) {
             p = SA.link[p];
             len = SA.len[p];
         }
-        if (SA.to[p].count(c)) {
+        if (SA.to[p][c] != -1) {
             p = SA.to[p][c];
             len++;
         }
