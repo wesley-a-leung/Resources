@@ -12,16 +12,10 @@ template <typename T>
 struct FenwickTreeRangePoint {
 private:
     int size;
-    T *array;
+    vector<int> array;
 
 public:
-    FenwickTreeRangePoint(int size) {
-        this->size = size;
-        array = new T[size + 1];
-        for (int i = 0; i <= size; i++) {
-            array[i] = 0;
-        }
-    }
+    FenwickTreeRangePoint(int size) : size(size), array(size + 1, 0) {}
 
     /**
      * Value at index {@code ind}.

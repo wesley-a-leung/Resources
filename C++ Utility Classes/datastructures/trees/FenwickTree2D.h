@@ -12,20 +12,10 @@ struct FenwickTree2D {
 private:
     int sizeX;
     int sizeY;
-    T **array;
+    vector<vector<int>> array;
 
 public:
-    FenwickTree2D(int sizeX, int sizeY) {
-        this->sizeX = sizeX;
-        this->sizeY = sizeY;
-        array = new T*[sizeX + 1];
-        for (int i = 0; i <= sizeX; i++) {
-            array[i] = new T[sizeY + 1];
-            for (int j = 0; j <= sizeY; j++) {
-                array[i][j] = 0;
-            }
-        }
-    }
+    FenwickTree2D(int sizeX, int sizeY) : sizeX(sizeX), sizeY(sizeY), array(sizeX + 1, vector<int>(sizeY + 1, 0)) {}
 
     /**
      * Range Sum Query
