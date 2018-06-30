@@ -4,7 +4,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-template <typename It, typename Comparator> long long count_inversions(It src_st, It src_en, It dst_st, It dst_en) {
+template <typename It> long long count_inversions(It src_st, It src_en, It dst_st, It dst_en) {
     int n = src_en - src_st;
     if (n <= 1) return 0;
     int mid = (n - 1) / 2;
@@ -29,7 +29,7 @@ template <typename It, typename Comparator> long long count_inversions(It src_st
     return ret;
 }
 
-template <typename It, typename Comparator> long long count_inversions(It st, It en) {
+template <typename It> long long count_inversions(It st, It en) {
     typedef typename std::iterator_traits<It>::value_type T;
     int n = en - st;
     T *aux = new T[n];
