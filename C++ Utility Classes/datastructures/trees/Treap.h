@@ -217,7 +217,7 @@ private:
         if (!cmp(key, x->key) && !cmp(x->key, key)) {
             Node *y = x;
             merge(x, x->left, x->right);
-            delete x;
+            delete y;
         }
         else remove(cmp(key, x->key) ? x->left : x->right, key);
         update(x);
