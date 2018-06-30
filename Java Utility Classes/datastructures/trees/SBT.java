@@ -162,6 +162,7 @@ public class SBT<Key extends Comparable<Key>, Value> {
      */
     private Node maintain(Node x, boolean flag) {
         if (flag) {
+            if (x.right == null) return x;
             if (size(x.left) < size(x.right.left)) {
                 x.right = rotateRight(x.right);
                 x = rotateLeft(x);
@@ -171,6 +172,7 @@ public class SBT<Key extends Comparable<Key>, Value> {
                 return x;
             }
         } else {
+            if (x.left == null) return x;
             if (size(x.right) < size(x.left.right)) {
                 x.left = rotateLeft(x.left);
                 x = rotateRight(x);
