@@ -17,10 +17,10 @@ private:
 
     void compute() {
         int l = 0, r = 0;
-        for (int i = 1; i < text.length(); i++) {
+        for (int i = 1; i < (int) text.length(); i++) {
             if (i > r) {
                 l = r = i;
-                while (r < text.length() && text[r] == text[r - l]) r++;
+                while (r < (int) text.length() && text[r] == text[r - l]) r++;
                 r--;
                 z[i] = r - l + 1;
             } else {
@@ -28,7 +28,7 @@ private:
                 if (z[j] < r - i + 1) z[i] = z[j];
                 else {
                     l = i;
-                    while (r < text.length() && text[r] == text[r - l]) r++;
+                    while (r < (int) text.length() && text[r] == text[r - l]) r++;
                     r--;
                     z[i] = r - l + 1;
                 }
