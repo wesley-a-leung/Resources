@@ -8,6 +8,7 @@ using namespace std;
  * FenwickTree supporting point updates and range queries
  * Memory usage:  O(n)
  */
+template <typename T>
 struct FenwickTree {
 private:
     int size;

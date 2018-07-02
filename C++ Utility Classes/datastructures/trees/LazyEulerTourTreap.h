@@ -89,9 +89,9 @@ private:
     }
     
     void propagate(Node *x) {
-        if (x && x->delta) {
-            if (x->left) apply(x->left, x->val);
-            if (x->right) apply(x->right, x->val);
+        if (x && x->delta != LDEF) {
+            if (x->left) apply(x->left, x->delta);
+            if (x->right) apply(x->right, x->delta);
             x->delta = LDEF;
         }
     }
@@ -111,7 +111,7 @@ private:
         update(x);
     }
     
-    // ind is the exclusive end index
+    // ind is the size of the l tree
     void split(Node *x, Node *&l, Node *&r, int ind) {
         if (!x) {
             l = r = nullptr;
