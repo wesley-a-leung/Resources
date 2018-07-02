@@ -72,7 +72,7 @@ private:
         update(x);
     }
     
-    // ind is the exclusive end index
+    // ind is the size of the l tree
     void split(Node *x, Node *&l, Node *&r, int ind) {
         if (!x) {
             l = r = nullptr;
