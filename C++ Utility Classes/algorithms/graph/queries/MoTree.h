@@ -20,8 +20,8 @@ private:
         int l, r, lca, ind, block;
 
         bool operator < (const Query &q) const {
-            if (block != q.block) return block < q.block;
-            return r < q.r;
+            if (block == q.block) return r < q.r;
+            return block < q.block;
         }
     } *q;
 
@@ -127,7 +127,7 @@ public:
             }
         }
         int sz = (int) sqrt(cur);
-        int temp[V];
+        int *temp = new int[V];
         for (int i = 0; i < V; i++) {
             temp[i] = arr[i];
             cnt[i] = 0;
