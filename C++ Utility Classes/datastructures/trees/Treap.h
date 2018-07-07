@@ -95,12 +95,12 @@ private:
 
     /**
      * Splits the subtree into 2 smaller subtrees l and r where l contains
-     * all elements less than key and r contains all elements not less than key.
+     * all elements not greater than key and r contains all elements greater than key.
      *
      * @param x the subtree to split
      * @param key the keyue to compare to
-     * @param l the reference to the subtree containing all elements less than key
-     * @param r the reference to the subtree containing all elements not less than key
+     * @param l the reference to the subtree containing all elements not greater than key
+     * @param r the reference to the subtree containing all elements greater than key
      */
     void split(Node *x, Key key, Node *&l, Node *&r) {
         if (nullptr == x) {
