@@ -17,7 +17,7 @@ private:
 
     void compute() {
         int l = 0, r = 0;
-        z[0] = (int) text.length();
+        if ((int) text.length() > 0) z[0] = (int) text.length();
         for (int i = 1; i < (int) text.length(); i++) {
             if (i > r) {
                 l = r = i;
