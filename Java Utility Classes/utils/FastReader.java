@@ -30,7 +30,6 @@ public static class FastReader {
         do {
             c = read();
         } while (c <= ' ');
-        while (c <= ' ') c = read();
         boolean neg = (c == '-');
         if (neg) c = read();
         do {
