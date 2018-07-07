@@ -27,6 +27,11 @@ public:
 template <typename Value, typename Comparator = less<Value>>
 struct TreapSet {
 private:
+    seed_seq seq {
+        (uint64_t) chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
+        (uint64_t) __builtin_ia32_rdtsc(),
+        (uint64_t) (uintptr_t) make_unique<char>().get()
+    };
     mt19937 gen;
     uniform_real_distribution<double> dis;
     Comparator cmp;
@@ -432,14 +437,7 @@ public:
     /**
      * Initializes an empty set.
      */
-    TreapSet() : gen(time(0)), dis(0.0, 1.0) {}
-
-    /**
-     * Deletes the symbol table.
-     */
-    ~TreapSet() {
-        clear(root);
-    }
+    TreapSet() : gen(seq), dis(0.0, 1.0) {}
 
     /**
      * Clears the symbol table.
