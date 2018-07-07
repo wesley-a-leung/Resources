@@ -6,6 +6,11 @@ using namespace std;
 
 struct EulerTourTreap {
 private:
+    seed_seq seq {
+        (uint64_t) chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
+        (uint64_t) __builtin_ia32_rdtsc(),
+        (uint64_t) (uintptr_t) make_unique<char>().get()
+    };
     mt19937 gen;
     uniform_real_distribution<double> dis;
     
@@ -119,7 +124,7 @@ private:
     vector<Node*> pre, post;
 
 public:
-    EulerTourTreap(vector<T> &A) : gen(time(0)), dis(0.0, 1.0), N(A.size()) {
+    EulerTourTreap(vector<T> &A) : gen(seq), dis(0.0, 1.0), N(A.size()) {
         pre.reserve(N);
         post.reserve(N);
         Node *dummy = nullptr;
@@ -130,7 +135,7 @@ public:
         }
     }
 
-    EulerTourTreap(int N) : gen(time(0)), dis(0.0, 1.0) {
+    EulerTourTreap(int N) : gen(seq), dis(0.0, 1.0) {
         pre.reserve(N);
         post.reserve(N);
         Node *dummy = nullptr;

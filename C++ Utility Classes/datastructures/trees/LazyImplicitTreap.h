@@ -6,6 +6,11 @@ using namespace std;
 
 struct LazyImplicitTreap {
 private:
+    seed_seq seq {
+        (uint64_t) chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
+        (uint64_t) __builtin_ia32_rdtsc(),
+        (uint64_t) (uintptr_t) make_unique<char>().get()
+    };
     mt19937 gen;
     uniform_real_distribution<double> dis;
     
@@ -105,11 +110,11 @@ private:
     Node *root = nullptr;
 
 public:
-    LazyImplicitTreap(int N) : gen(time(0)), dis(0.0, 1.0) {
+    LazyImplicitTreap(int N) : gen(seq), dis(0.0, 1.0) {
         for (int i = 0; i < N; i++) merge(root, root, new Node(VDEF, dis(gen)));
     }
 
-    LazyImplicitTreap(T *A, int N, bool oneIndexed) : gen(time(0)), dis(0.0, 1.0) {
+    LazyImplicitTreap(T *A, int N, bool oneIndexed) : gen(seq), dis(0.0, 1.0) {
         for (int i = oneIndexed; i < N + oneIndexed; i++) merge(root, root, new Node(A[i], dis(gen)));
     }
     
