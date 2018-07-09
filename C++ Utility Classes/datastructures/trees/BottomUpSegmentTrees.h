@@ -172,7 +172,7 @@ public:
         T = new int[2 * N];
         L = new int[N];
         H = 0;
-        for (int i = 1, i <= N; H++) i <<= 1;
+        for (int i = 1; i <= N; H++) i <<= 1;
         for (int i = 1; i < 2 * N; i++) T[i] = def;
         for (int i = 1; i < N; i++) L[i] = ldef;
     }
@@ -277,7 +277,7 @@ public:
         T = new int[2 * N];
         L = new int[N];
         H = 0;
-        for (int i = 1, H = 0; i <= N; H++) i <<= 1;
+        for (int i = 1; i <= N; H++) i <<= 1;
         for (int i = 1; i < 2 * N; i++) T[i] = def;
         for (int i = 1; i < N; i++) L[i] = ldef;
     }
