@@ -6,21 +6,31 @@ using namespace std;
 
 // convention is same as priority_queue in STL
 template <typename Value, typename Comparator = less<Value>>
-struct SkewHeap {
+struct IncrementalSkewHeap {
 private:
     Comparator cmp;
 
     struct Node {
         Value val;
         Node *left = nullptr, *right = nullptr;
+        Value delta = 0;
         Node (Value val) : val(val) {}
     };
 
     int sz = 0;
     Node *root = nullptr;
 
+    void propagate(Node *a) {
+        a->val += a->delta;
+        if (nullptr != a->left) a->left->delta += a->delta;
+        if (nullptr != a->right) a->right->delta += a->delta;
+        a->delta = 0;
+    }
+
     Node *merge(Node *a, Node *b) {
         if (nullptr == a || nullptr == b) return nullptr == a ? b : a;
+        propagate(a);
+        propagate(b);
         if (cmp(a->val, b->val)) swap(a, b);
         a->right = merge(b, a->right);
         swap(a->left, a->right);
@@ -28,17 +38,19 @@ private:
     }
 
 public:
-    SkewHeap() {}
+    IncrementalSkewHeap() {}
 
     bool isEmpty() {
         return nullptr == root;
     }
 
     Value top() {
+        propagate(root);
         return root->val;
     }
 
     Value pop() {
+        propagate(root);
         Value ret = root->val;
         Node *temp = root;
         root = merge(root->left, root->right);
@@ -53,7 +65,11 @@ public:
         sz++;
     }
 
-    void merge(SkewHeap &h) {
+    void increment(Value delta) {
+        if (nullptr != root) root->delta += delta;
+    }
+
+    void merge(IncrementalSkewHeap &h) {
         root = merge(root, h.root);
         sz += h.sz;
     }
