@@ -80,24 +80,26 @@ public static class FastReader {
 
     public String next() throws IOException {
         byte[] buf = new byte[LENGTH];
-        int cnt = 0, c;
+        int cnt = 0;
+        byte c;
         do {
             c = read();
         } while (c <= ' ');
         do {
-            buf[cnt++] = (byte) c;
+            buf[cnt++] = c;
         } while ((c = read()) > ' ');
         return new String(buf, 0, cnt);
     }
 
     public String nextLine() throws IOException {
         byte[] buf = new byte[LENGTH];
-        int cnt = 0, c;
+        int cnt = 0;
+        byte c;
         do {
             c = read();
         } while (c <= ' ');
         do {
-            buf[cnt++] = (byte) c;
+            buf[cnt++] = c;
         } while ((c = read()) >= ' ');
         return new String(buf, 0, cnt);
     }
