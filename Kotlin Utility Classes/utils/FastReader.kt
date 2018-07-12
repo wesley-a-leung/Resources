@@ -94,7 +94,7 @@ class FastReader {
             buf[cnt++] = c.toChar()
             c = read()
         } while (c > 32)
-        return String(buf)
+        return String(buf, 0, cnt)
     }
 
     fun nextLine(): String {
@@ -108,7 +108,7 @@ class FastReader {
             buf[cnt++] = c.toChar()
             c = read()
         } while (c >= 32)
-        return String(buf)
+        return String(buf, 0, cnt)
     }
 
     fun setLength(length: Int) {
