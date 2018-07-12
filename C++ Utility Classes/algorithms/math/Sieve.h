@@ -5,12 +5,11 @@
 using namespace std;
 
 // generates all primes between start and end inclusive
-vector<int> &primes(int start, int end) {
+vector<int> primes(int start, int end) {
     if (start > 1) start -= 1;
     int sqrtE = (int) sqrt(end);
     int range = end - start;
-    bool sieve1[sqrtE];
-    memset(sieve1, false, sizeof(sieve1));
+    vector<bool> sieve1(sqrtE, false);
     vector<int> list;
     sieve1[0] = true;
     for (int x = 1; x < sqrtE; x++) {
@@ -21,19 +20,18 @@ vector<int> &primes(int start, int end) {
             }
         }
     }
-    bool sieve2[range];
-    memset(sieve2, false, sizeof(sieve2));
+    vector<bool> sieve2(range, false);
     for (int x : list) {
         for (int y = x * x - 1; y < end; y += x) {
             if (y < start) continue;
             sieve2[y - start] = true;
         }
     }
-    vector<int> *primes = new vector<int>;
+    vector<int> primes;
     for (int x = 0; x < range; x++) {
-        if (sieve2[x] == false) primes->push_back(start + x + 1);
+        if (sieve2[x] == false) primes.push_back(start + x + 1);
     }
-    return *primes;
+    return primes;
 }
 
 #endif /* ALGORITHMS_MATH_SIEVE_H_ */
