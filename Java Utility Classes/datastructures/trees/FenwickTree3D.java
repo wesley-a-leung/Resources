@@ -16,7 +16,7 @@ public class FenwickTree3D {
     /**
      * Range Sum Query
      * <p>
-     * Time-Complexity:    O(log(nmp))
+     * Time-Complexity:    O(log(n) log(m) log(p))
      *
      * @param  indX x index
      * @param  indY y index
@@ -38,7 +38,7 @@ public class FenwickTree3D {
     /**
      * Range Sum Query
      * <p>
-     * Time-Complexity:    O(log(nmp))
+     * Time-Complexity:    O(log(n) log(m) log(p))
      *
      * @param  x1 top index
      * @param  y1 left index
@@ -59,7 +59,7 @@ public class FenwickTree3D {
      * Update the array at [indX][indY][indZ] and all the affected regions above ind.
      * ind is 1-indexed
      * <p>
-     * Time-Complexity:    O(log(nmp))
+     * Time-Complexity:    O(log(n) log(m) log(p))
      *
      * @param  indX   x index
      * @param  indY   y index
