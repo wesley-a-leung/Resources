@@ -34,7 +34,7 @@ private:
         for (int w : G->adj(v)) if (w != prev && !isHeavy[w]) add(G, w, v, delta);
     }
 
-    void dfs(Graph *G, int v, int prev, bool keep = 0) {
+    void dfs(Graph *G, int v, int prev, bool keep) {
         int maxSize = -1, heavyInd = -1;
         for (int w : G->adj(v)) {
             if (w != prev && size[w] > maxSize) {

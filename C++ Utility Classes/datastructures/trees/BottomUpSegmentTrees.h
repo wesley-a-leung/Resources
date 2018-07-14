@@ -34,13 +34,13 @@ public:
 
     // assigns v to index i (one-indexed)
     void update(int i, int v) {
-        for (T[i += (N - 1)] = v; i >>= 1;) T[i] = merge(T[i << 1], T[i << 1 | 1]);
+        for (T[i += N - 1] = v; i >>= 1;) T[i] = merge(T[i << 1], T[i << 1 | 1]);
     }
 
     // returns the maximum element on the interval [l, r] (one-indexed)
     int query(int l, int r) {
         int ql = qdef, qr = qdef;
-        for (l += (N - 1), r += (N - 1); l <= r; l >>= 1, r >>= 1) {
+        for (l += N - 1, r += N - 1; l <= r; l >>= 1, r >>= 1) {
             if (l & 1) ql = merge(ql, T[l++]);
             if (!(r & 1)) qr = merge(T[r--], qr);
         }
@@ -82,7 +82,7 @@ public:
 
     // adds v to the interval [l, r] (one-indexed)
     void update(int l, int r, int v) {
-        for (l += (N - 1), r += (N - 1); l <= r; l >>= 1, r >>= 1) {
+        for (l += N - 1, r += N - 1; l <= r; l >>= 1, r >>= 1) {
             if (l & 1) T[l++] += v;
             if (!(r & 1)) T[r--] += v;
         }
@@ -92,7 +92,7 @@ public:
     int query(int i) {
         if (final) return T[N + i - 1];
         int q = 0;
-        for (i += (N - 1); i > 0; i >>= 1) q += T[i];
+        for (i += N - 1; i > 0; i >>= 1) q += T[i];
         return q;
     }
 
@@ -179,8 +179,8 @@ public:
 
     // adds v to the interval [l, r] (one-indexed)
     void update(int l, int r, int v) {
-        l += (N - 1);
-        r += (N - 1);
+        l += N - 1;
+        r += N - 1;
         int l0 = l, r0 = r;
         for (; l <= r; l >>= 1, r >>= 1) {
             if (l & 1) apply(l++, v);
@@ -192,8 +192,8 @@ public:
 
     // returns the maximum element on the interval [l, r] (one-indexed)
     int query(int l, int r) {
-        l += (N - 1);
-        r += (N - 1);
+        l += N - 1;
+        r += N - 1;
         propagate(l);
         propagate(r);
         int ql = qdef, qr = qdef;
@@ -284,8 +284,8 @@ public:
 
     // assigns v to all elements on the interval [l, r] (one-indexed)
     void update(int l, int r, int v) {
-        l += (N - 1);
-        r += (N - 1);
+        l += N - 1;
+        r += N - 1;
         propagate(l);
         propagate(r);
         int l0 = l, r0 = r, k = 1;
@@ -299,8 +299,8 @@ public:
 
     // returns the sum of all elements on the interval [l, r] (one-indexed)
     int query(int l, int r) {
-        l += (N - 1);
-        r += (N - 1);
+        l += N - 1;
+        r += N - 1;
         propagate(l);
         propagate(r);
         int ql = qdef, qr = qdef;
