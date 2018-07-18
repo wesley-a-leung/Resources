@@ -115,6 +115,11 @@ class FastReader {
         LENGTH = length
     }
 
+    fun hasNext(): Boolean {
+        while (peek() > -1 && peek() <= 32) read()
+        return peek() > -1
+    }
+
     private fun fillBuffer() {
         bufferPointer = 0
         bytesRead = din.read(buffer, bufferPointer, BUFFER_SIZE)
@@ -124,6 +129,11 @@ class FastReader {
     private fun read(): Byte {
         if (bufferPointer == bytesRead) fillBuffer()
         return buffer[bufferPointer++]
+    }
+
+    private fun peek(): Byte {
+        if (bufferPointer == bytesRead) fillBuffer()
+        return buffer[bufferPointer]
     }
 
     fun close() {
