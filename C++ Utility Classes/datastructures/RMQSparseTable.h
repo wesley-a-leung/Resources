@@ -14,12 +14,13 @@ public:
     RMQSparseTable(int *arr, int N) {
         n = N;
         lg = 32 - __builtin_clz(n);
-        a = new int[n + 1];
+        a = new int[n];
+        for (int i = 0; i < n; i++) a[i] = arr[i];
         rmq = new int*[lg];
         for (int i = 0; i < lg; i++) rmq[i] = new int[n];
         for (int i = 0; i < n; i++) rmq[0][i] = i;
         for (int i = 0; i < lg - 1; i++) {
-            for (int j = 0; j + (1 << i) <= n; j++) {
+            for (int j = 0; j + (1 << i) < n; j++) {
                 int x = rmq[i][j];
                 int y = rmq[i][j + (1 << i)];
                 rmq[i + 1][j] = a[x] <= a[y] ? x : y;
