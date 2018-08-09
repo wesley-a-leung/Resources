@@ -47,7 +47,7 @@ public:
      */
     int find(int p) {
         while (p != parent[p]) {
-            parent[p] = parent[parent[p]];    // path compression by halving
+            // NO PATH COMPRESSION TO SUPPORT UNDOS
             p = parent[p];
         }
         return p;
