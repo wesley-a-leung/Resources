@@ -192,7 +192,7 @@ public:
      *
      * @param k the value to erase, 0 <= k < n
      */
-    void erase(int k) {
+    void erase(const int k) {
         assert(0 <= k && k < n);
         --n;
         int lo = 0, hi = (int) (a.size()) - 1, mid;
@@ -201,8 +201,7 @@ public:
             if (k < prefixSZ[mid]) hi = mid - 1;
             else lo = mid + 1;
         }
-        k -= prefixSZ[hi];
-        a[hi].erase(k);
+        a[hi].erase(k - prefixSZ[hi]);
         if (a[hi].empty()) {
             a.erase(a.begin() + hi);
             prefixSZ.pop_back();
