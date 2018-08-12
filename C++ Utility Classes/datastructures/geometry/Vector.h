@@ -4,6 +4,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+const double EPS = 1e-9;
+
 /**
  *  The {@code Vector} class represents a <em>d</em>-dimensional Euclidean vector.
  *  Vectors are immutable: their values cannot be changed after they are created.
@@ -21,7 +23,7 @@ using namespace std;
 struct Vector {
 private:
     int d;                          // dimension of the vector
-    double *data = nullptr;         // array of vector's components
+    vector<double> data;            // array of vector's components
 
 public:
     Vector() {}
@@ -31,11 +33,7 @@ public:
      *
      * @param d the dimension of the vector
      */
-    Vector(int d) {
-        this->d = d;
-        this->data = new double[d];
-        for (int i = 0; i < d; i++) data[i] = 0.0;
-    }
+    Vector(int d) : d(d), data(d, 0.0) {}
 
     /**
      * Initializes a vector from an array.
@@ -43,59 +41,21 @@ public:
      * @param d the dimension of the vector
      * @param a the array
      */
-    Vector(int d, double *a) {
-        this->d = d;
-        // defensive copy so that client can't alter our copy of data[]
-        this->data = new double[d];
-        for (int i = 0; i < d; i++) this->data[i] = a[i];
-    }
+    Vector(int d, double *a) : d(d), data(a, a + d) {}
 
-    Vector(const Vector &v) {
-        this->d = v.d;
-        this->data = new double[this->d];
-        for (int i = 0; i < d; i++) {
-            this->data[i] = v.data[i];
-        }
-    }
-
-    Vector &operator = (const Vector &v) {
-        if (this != &v) {
-            delete this->data;
-            this->d = v.d;
-            this->data = new double[this->d];
-            for (int i = 0; i < d; i++) {
-                this->data[i] = v.data[i];
-            }
-        }
-        return *this;
-    }
-
-    Vector(Vector &&v) {
-        this->d = v.d;
-        this->data = v.data;
-        v.data = nullptr;
-    }
-
-    Vector &operator = (Vector &&v) {
-        if (this != &v) {
-            delete this->data;
-            this->d = v.d;
-            this->data = v.data;
-            v.data = nullptr;
-        }
-        return *this;
-    }
-
-    ~Vector() {
-        delete data;
-    }
+    /**
+     * Initializes a vector from a vector
+     *
+     * @param v the vector
+     */
+    Vector(const vector<int> &v) : d(v.size()), data(v.begin(), v.end()) {}
 
     /**
      * Returns the dimension of this vector.
      *
      * @return the dimension of this vector
      */
-    int dimension() {
+    int dimension() const {
         return d;
     }
 
@@ -106,11 +66,10 @@ public:
      * @return the dot product of this vector and that vector
      * @throws invalid_argument if the dimensions of the two vectors are not equal
      */
-    double dot(Vector &that) {
+    double dot(const Vector &that) const {
         if (d != that.d) throw invalid_argument("Dimensions don't agree");
         double sum = 0.0;
-        for (int i = 0; i < d; i++)
-            sum = sum + (data[i] * that.data[i]);
+        for (int i = 0; i < d; i++) sum = sum + (data[i] * that.data[i]);
         return sum;
     }
 
@@ -122,7 +81,7 @@ public:
      * @return the dot product of this vector and that vector
      * @throws invalid_argument if the dimensions of the two vectors are not equal
      */
-    double operator * (Vector &that) {
+    double operator * (const Vector &that) const {
         return dot(that);
     }
 
@@ -133,7 +92,7 @@ public:
      * @return the 2-D cross product of this vector and that vector
      * @throws invalid_argument if the two vectors are not 2-dimensional
      */
-    double cross2D(Vector &that) {
+    double cross2D(const Vector &that) const {
         if (d != 2 || that.d != 2) throw invalid_argument("Vectors must be 2-dimensional");
         return data[0] * that.data[1] - data[1] * that.data[0];
     }
@@ -145,7 +104,7 @@ public:
      * @return the 2-D cross product of this vector and that vector
      * @throws invalid_argument if the two vectors are not 2-dimensional
      */
-    double operator | (Vector &that) {
+    double operator | (const Vector &that) const {
         return cross2D(that);
     }
 
@@ -156,13 +115,13 @@ public:
      * @return the 3-D cross product of this vector and that vector
      * @throws invalid_argument if the two vectors are not 3-dimensional
      */
-    Vector &cross3D(Vector &that) {
+    Vector cross3D(const Vector &that) const {
         if (d != 3 || that.d != 3) throw invalid_argument("Vectors must be 3-dimensional");
-        Vector *c = new Vector(d);
-        c->data[0] = data[1] * that.data[2] - data[2] * that.data[1];
-        c->data[1] = data[2] * that.data[0] - data[0] * that.data[2];
-        c->data[2] = data[0] * that.data[1] - data[1] * that.data[0];
-        return *c;
+        Vector c(d);
+        c.data[0] = data[1] * that.data[2] - data[2] * that.data[1];
+        c.data[1] = data[2] * that.data[0] - data[0] * that.data[2];
+        c.data[2] = data[0] * that.data[1] - data[1] * that.data[0];
+        return c;
     }
 
     /**
@@ -172,7 +131,7 @@ public:
      * @return the 3-D cross product of this vector and that vector
      * @throws invalid_argument if the two vectors are not 3-dimensional
      */
-    Vector &operator ^ (Vector &that) {
+    Vector operator ^ (const Vector &that) const {
         return cross3D(that);
     }
 
@@ -182,7 +141,7 @@ public:
      *
      * @return the magnitude of this vector
      */
-    double magnitude() {
+    double magnitude() const {
         return sqrt(this->dot(*this));
     }
 
@@ -193,7 +152,7 @@ public:
      * @return the Euclidean distance between this vector and that vector
      * @throws invalid_argument if the dimensions of the two vectors are not equal
      */
-    double distanceTo(Vector &that) {
+    double distanceTo(const Vector &that) const {
         if (d != that.d) throw invalid_argument("Dimensions don't agree");
         return minus(that).magnitude();
     }
@@ -205,12 +164,11 @@ public:
      * @return the vector whose value is {@code (this + that)}
      * @throws invalid_argument if the dimensions of the two vectors are not equal
      */
-    Vector &plus(Vector &that) {
+    Vector plus(const Vector &that) const {
         if (d != that.d) throw invalid_argument("Dimensions don't agree");
-        Vector *c = new Vector(d);
-        for (int i = 0; i < d; i++)
-            c->data[i] = data[i] + that.data[i];
-        return *c;
+        Vector c(d);
+        for (int i = 0; i < d; i++) c.data[i] = data[i] + that.data[i];
+        return c;
     }
 
     /**
@@ -220,7 +178,7 @@ public:
      * @return the vector whose value is {@code (this + that)}
      * @throws invalid_argument if the dimensions of the two vectors are not equal
      */
-    Vector &operator + (Vector &that) {
+    Vector operator + (const Vector &that) const {
         return plus(that);
     }
 
@@ -231,12 +189,11 @@ public:
      * @return the vector whose value is {@code (this - that)}
      * @throws invalid_argument if the dimensions of the two vectors are not equal
      */
-    Vector &minus(Vector &that) {
+    Vector minus(const Vector &that) const {
         if (d != that.d) throw invalid_argument("Dimensions don't agree");
-        Vector *c = new Vector(d);
-        for (int i = 0; i < d; i++)
-            c->data[i] = data[i] - that.data[i];
-        return *c;
+        Vector c(d);
+        for (int i = 0; i < d; i++) c.data[i] = data[i] - that.data[i];
+        return c;
     }
 
     /**
@@ -246,7 +203,7 @@ public:
      * @return the vector whose value is {@code (this - that)}
      * @throws invalid_argument if the dimensions of the two vectors are not equal
      */
-    Vector &operator - (Vector &that) {
+    Vector operator - (const Vector &that) const {
         return minus(that);
     }
 
@@ -256,7 +213,7 @@ public:
      * @param  i the coordinate index
      * @return the ith cartesian coordinate
      */
-    double cartesian(int i) {
+    double cartesian(int i) const {
         return data[i];
     }
 
@@ -276,11 +233,10 @@ public:
      * @param  alpha the scalar
      * @return the vector whose value is {@code (alpha * this)}
      */
-    Vector &scale(double alpha) {
-        Vector *c = new Vector(d);
-        for (int i = 0; i < d; i++)
-            c->data[i] = alpha * data[i];
-        return *c;
+    Vector scale(double alpha) const {
+        Vector c(d);
+        for (int i = 0; i < d; i++) c.data[i] = alpha * data[i];
+        return c;
     }
 
     /**
@@ -289,7 +245,7 @@ public:
      * @param  alpha the scalar
      * @return the vector whose value is {@code (alpha * this)}
      */
-    Vector &operator * (double alpha) {
+    Vector operator * (double alpha) const {
         return scale(alpha);
     }
 
@@ -299,7 +255,7 @@ public:
      * @param  alpha the scalar
      * @return the vector whose value is {@code (alpha * this)}
      */
-    Vector &operator / (double alpha) {
+    Vector operator / (double alpha) const {
         return scale(1.0 / alpha);
     }
 
@@ -309,8 +265,8 @@ public:
      * @return a unit vector in the direction of this vector
      * @throws runtime_error if this vector is the zero vector
      */
-    Vector &direction() {
-        if (magnitude() == 0.0) throw runtime_error("Zero-vector has no direction");
+    Vector direction() const {
+        if (magnitude() <= EPS) throw runtime_error("Zero-vector has no direction");
         return scale(1.0 / magnitude());
     }
 
@@ -320,7 +276,7 @@ public:
      * @param i the direction number (0-indexed)
      * @return the direction cosine of this angle in the ith dimension
      */
-    double directionCosine(int i) {
+    double directionCosine(int i) const {
         return data[i] / magnitude();
     }
 
@@ -331,7 +287,7 @@ public:
      * @return a projection of this vector on that vector
      * @throws invalid_argument if the dimensions of the two vectors are not equal
      */
-    Vector &projectionOn(Vector &that) {
+    Vector projectionOn(const Vector &that) const {
         if (d != that.d) throw invalid_argument("Dimensions don't agree");
         return that.scale(dot(that) / that.dot(that));
     }
@@ -345,21 +301,24 @@ public:
      * @throws invalid_argument if the dimensions of the two vectors are not equal
      * @throws invalid_argument if the two vectors are not 2-dimensional or 3-dimensional
      */
-    Vector &rotate(Vector &that, double theta) {
+    Vector rotate(Vector &that, double theta) const {
         if (d == 2 && that.d == 2) {
-            Vector *r = new Vector(2);
-            r->data[0] = that.data[0] + (data[0] - that.data[0]) * cos(theta) - (data[1] - that.data[1]) * sin(theta);
-            r->data[1] = that.data[1] + (data[0] - that.data[0]) * sin(theta) + (data[1] - that.data[1]) * cos(theta);
-            return *r;
+            Vector r(2);
+            r.data[0] = that.data[0] + (data[0] - that.data[0]) * cos(theta) - (data[1] - that.data[1]) * sin(theta);
+            r.data[1] = that.data[1] + (data[0] - that.data[0]) * sin(theta) + (data[1] - that.data[1]) * cos(theta);
+            return r;
         } else if (d == 3 && that.d == 3) {
-            Vector *r = new Vector(3);
-            r = &this->scale(cos(theta)).plus(that.direction().cross3D(*this).scale(sin(theta))).plus(that.direction().scale(that.direction().dot(*this)).scale(1.0 - cos(theta)));
-            return *r;
+            return scale(cos(theta)).plus(that.direction().cross3D(*this).scale(sin(theta))).plus(that.direction().scale(that.direction().dot(*this)).scale(1.0 - cos(theta)));
         } else if (d == that.d) {
             throw invalid_argument("Vectors must be 2-dimensional or 3-dimensional");
         } else {
             throw invalid_argument("Dimensions don't agree");
         }
+    }
+
+    bool operator < (const Vector &that) const {
+        for (int i = 0; i < d; i++) if (abs(data[i] - that.data[i]) > EPS) return data[i] < that.data[i];
+        return false;
     }
 };
 
