@@ -36,7 +36,7 @@ private:
                 if ((prev == v && children > 1) || (prev != v && low[w] >= pre[v])) {
                     articulation[v] = true;
                     components.push_back(unordered_set<int>());
-                    while (s.top().first != v && s.top().second != w) {
+                    while (s.top().first != v || s.top().second != w) {
                         components.back().insert(s.top().first);
                         components.back().insert(s.top().second);
                         s.pop();
