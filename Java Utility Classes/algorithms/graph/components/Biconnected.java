@@ -61,7 +61,7 @@ public class Biconnected {
                 if ((prev == v && children > 1) || (prev != v && low[w] >= pre[v])) {
                     articulation[v] = true;
                     components.add(new HashSet<Integer>());
-                    while (s.peek().first != v && s.peek().second != w) {
+                    while (s.peek().first != v || s.peek().second != w) {
                         components.get(components.size() - 1).add(s.peek().first);
                         components.get(components.size() - 1).add(s.peek().second);
                         s.pop();
