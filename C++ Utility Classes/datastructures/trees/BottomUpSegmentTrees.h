@@ -229,7 +229,7 @@ private:
     // evaluates the value of index i
     // k is the length of the interval of node i
     int eval(int i, int k) {
-        return L[i] == ldef ? merge(T[i << 1], T[i << 1 | 1]) : L[i] * k; // for maximum value queries: L[i], for sum queries: L[i] = v * k
+        return L[i] == ldef ? merge(T[i << 1], T[i << 1 | 1]) : L[i] * k; // for maximum value queries: L[i], for sum queries: L[i] * k
     }
 
     // updates parents of index i
