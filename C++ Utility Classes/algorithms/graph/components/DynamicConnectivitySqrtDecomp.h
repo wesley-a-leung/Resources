@@ -1,10 +1,10 @@
-#ifndef ALGORITHMS_GRAPH_COMPONENTS_DYNAMICCONNECTIVITY_H_
-#define ALGORITHMS_GRAPH_COMPONENTS_DYNAMICCONNECTIVITY_H_
+#ifndef ALGORITHMS_GRAPH_COMPONENTS_DYNAMICCONNECTIVITYSQRTDECOMP_H_
+#define ALGORITHMS_GRAPH_COMPONENTS_DYNAMICCONNECTIVITYSQRTDECOMP_H_
 
 #include <bits/stdc++.h>
 using namespace std;
 
-class DynamicConnectivity {
+class DynamicConnectivitySqrtDecomp {
 private:
     struct Query {
         int type, v, w;
@@ -30,7 +30,7 @@ private:
     }
 
 public:
-    DynamicConnectivity(int V): V(V), vis(V, -1), root(V, -1), adj(V), toRemove(V), adj2(V) {}
+    DynamicConnectivitySqrtDecomp(int V): V(V), vis(V, -1), root(V, -1), adj(V), toRemove(V), adj2(V) {}
 
     void addEdge(int v, int w) {
         queries.push_back({1, v, w});
@@ -89,4 +89,4 @@ public:
     }
 };
 
-#endif /* ALGORITHMS_GRAPH_COMPONENTS_DYNAMICCONNECTIVITY_H_ */
+#endif /* ALGORITHMS_GRAPH_COMPONENTS_DYNAMICCONNECTIVITYSQRTDECOMP_H_ */
