@@ -60,17 +60,17 @@ long long mulMod(long long a, long long b, long long mod) {
         if (b % 2 == 0) x = (x + y) % mod;
         y = (y * 2) % mod;
     }
-    return x % mod;
+    return x;
 }
 
 // O(log power)
 long long powMod(long long base, long long pow, long long mod) {
-    long long x = 1, y = base;
+    long long x = 1, y = base % mod;
     for (; pow > 0; pow /= 2) {
         if (pow % 2 == 1) x = mulMod(x, y, mod);
         y = mulMod(y, y, mod);
     }
-    return x % mod;
+    return x;
 }
 
 // O(log P)
