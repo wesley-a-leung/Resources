@@ -1,5 +1,5 @@
-#ifndef DATASTRUCTURES_MATH_WEIGHTEDUF_H_
-#define DATASTRUCTURES_MATH_WEIGHTEDUF_H_
+#ifndef DATASTRUCTURES_WEIGHTEDUF_H_
+#define DATASTRUCTURES_WEIGHTEDUF_H_
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -113,4 +113,4 @@ public:
     }
 };
 
-#endif /* DATASTRUCTURES_MATH_WEIGHTEDUF_H_ */
+#endif /* DATASTRUCTURES_WEIGHTEDUF_H_ */
