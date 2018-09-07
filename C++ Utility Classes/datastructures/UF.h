@@ -1,5 +1,5 @@
-#ifndef DATASTRUCTURES_MATH_UF_H_
-#define DATASTRUCTURES_MATH_UF_H_
+#ifndef DATASTRUCTURES_UF_H_
+#define DATASTRUCTURES_UF_H_
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -97,4 +97,4 @@ public:
     }
 };
 
-#endif /* DATASTRUCTURES_MATH_UF_H_ */
+#endif /* DATASTRUCTURES_UF_H_ */
