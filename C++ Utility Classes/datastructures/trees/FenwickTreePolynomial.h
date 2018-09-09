@@ -11,17 +11,12 @@ long long pow3(long long base, long long pow, long long mod) {
     return base * pow3(base * base % mod, pow / 2, mod) % mod;
 }
 
-long long divMod(long long i, long long j, long long p) {
-    return i * pow3(j, p - 2, p) % p;
-}
-
 /**
  * FenwickTree supporting range updates with updates in the form of
  * adding v, 2^k * v, 3^k * v, ... to the interval [l, r], and range queries.
  * Memory usage:  O(kn)
  */
 struct FenwickTreePolynomial {
-private:
 private:
     int size, maxK;
     long long mod;
@@ -40,6 +35,7 @@ private:
     vector<vector<vector<long long>>> sumDiff;
     vector<long long> factorial;
     vector<vector<long long>> pascal;
+    long long invDen;
 
     long long rsq(vector<long long> &array, int ind) {
         long long sum = 0;
@@ -77,6 +73,7 @@ public:
                 }
             }
         }
+        invDen = pow3(factorial[maxK + 1], mod - 2, mod);
     }
 
     /**
@@ -92,8 +89,7 @@ public:
         long long sum = rsq(BIT[maxK + 1], ind);
         for (int i = maxK; i >= 0; i--) sum = ((sum * ind) % mod + rsq(BIT[i], ind)) % mod;
         if (sum < 0) sum += mod;
-        sum = divMod(sum, factorial[maxK + 1], mod);
-        return sum;
+        return sum * invDen % mod;
     }
 
     /**
@@ -126,6 +122,7 @@ public:
      */
     void update(int a, int b, long long value, int k) {
         value %= mod;
+        if (value < 0) value += mod;
         long long s = a - 1, len = b - a + 1, mult;
         for (int i = 0; i < k + 2; i++) {
             mult = sumDiff[k][i][k + 1 - i];

@@ -9,7 +9,7 @@ using namespace std;
  * which floor out of {@code K} floors will an egg break, using {@code N}
  * eggs, assuming eggs cannot be reused if broken.
  *
- * Takes time proportional to <em>NK</em> where <em>N</em> is the number of
+ * Takes time proportional to <em>NK^2</em> where <em>N</em> is the number of
  * eggs and <em>K</em> is the number of floors.
  *
  * Takes space proportional to <em>NK</em>.
