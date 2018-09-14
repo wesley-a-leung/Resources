@@ -27,7 +27,7 @@ int solve(int *A, int N) {
         maxSum = max(maxSum, curMax);
         bw[i] = curMax;
     }
-    for (int i = 1; i < N - 1; i++) maxSum = max(maxSum, fw[i - 1], bw[i - 1]); // excluding ith index
+    for (int i = 1; i < N - 1; i++) maxSum = max(maxSum, fw[i - 1] + bw[i + 1]); // excluding ith index
     return maxSum;
 }
 
