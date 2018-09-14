@@ -4,7 +4,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int maxSum, start, end; // inclusive
+int maxSum, st, en; // inclusive
 
 /**
  * Computes the subarray with the maximum sum with Kadane's Algorithm.
@@ -14,8 +14,8 @@ int maxSum, start, end; // inclusive
  */
 void solve(int *A, int N) {
     maxSum = 0;
-    start = 0;
-    end = 0;
+    st = 0;
+    en = -1;
     int curMax = 0;
     int curStart = 0;
     for (int i = 0; i < N; i++) {
@@ -26,8 +26,8 @@ void solve(int *A, int N) {
         }
         if (maxSum < curMax) {
             maxSum = curMax;
-            start = curStart;
-            end = i;
+            st = curStart;
+            en = i;
         }
     }
 }
