@@ -29,7 +29,7 @@ private:
         vector<bool> v(N);
         while (true) {
             i = id[i];
-            used[i] = true;
+            v[i] = true;
             if (match[i] == -1) break;
             i = par[match[i]];
         }
@@ -88,7 +88,7 @@ public:
 
     int getMaxMatching() {
         fill(match.begin(), match.end(), -1);
-        fill(par.begin(), par.end(), 0);
+        fill(par.begin(), par.end(), -1);
         fill(id.begin(), id.end(), 0);
         fill(used.begin(), used.end(), 0);
         for (int i = 0; i < N; i++) {
