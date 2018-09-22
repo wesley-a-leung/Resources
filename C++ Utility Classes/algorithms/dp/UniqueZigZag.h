@@ -20,7 +20,7 @@ using namespace std;
  * @return number of unique zigzag sequences
  */
 long long solve(int N, long long MOD) {
-    long long dp[2][N + 2];
+    long long dp[2][N + 1];
     dp[1][1] = 1LL;
     dp[0][0] = dp[1][0] = 0LL;
     for (int i = 2; i <= N; i++) {
