@@ -79,7 +79,7 @@ long long divMod(long long i, long long j, long long p) {
 }
 
 // O(log P) if you precompute factorials
-long long fastChoose(int n, int k, int p) {
+long long fastChoose(int n, int k, long long p) {
     return divMod(divMod(factorial(n, p), factorial(k, p), p), factorial(n - k, p), p);
 }
 
