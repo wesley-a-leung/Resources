@@ -18,7 +18,7 @@ template <typename It> void merge_sort(It src_st, It src_en, It dst_st, It dst_e
     }
     int mid = (n - 1) / 2;
     merge_sort(dst_st, dst_st + mid + 1, src_st, src_st + mid + 1);
-    merge_sort(dst_st + mid + 1, dst_en, src_st + mid + 1, src_en,);
+    merge_sort(dst_st + mid + 1, dst_en, src_st + mid + 1, src_en);
     if (src_st[mid + 1] >= src_st[mid]) {
         for (int i = 0; i < n; i++) dst_st[i] = src_st[i];
         return;
