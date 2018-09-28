@@ -26,9 +26,9 @@ template <typename It> void quick_sort_dual(It st, It en) {
     }
     swap(st[0], st[--lt]);
     swap(st[n - 1], st[++gt]);
-    sort(st, st + lt);
-    if (st[lt] < st[gt]) sort(st + lt + 1, st + gt);
-    sort(st + gt + 1, en);
+    quick_sort_dual(st, st + lt);
+    if (st[lt] < st[gt]) quick_sort_dual(st + lt + 1, st + gt);
+    quick_sort_dual(st + gt + 1, en);
 }
 
 template <typename It, typename Comparator> void quick_sort_dual(It st, It en, Comparator cmp) {
@@ -51,9 +51,9 @@ template <typename It, typename Comparator> void quick_sort_dual(It st, It en, C
     }
     swap(st[0], st[--lt]);
     swap(st[n - 1], st[++gt]);
-    sort(st, st + lt);
-    if (cmp(st[lt], st[gt])) sort(st + lt + 1, st + gt);
-    sort(st + gt + 1, en);
+    quick_sort_dual(st, st + lt);
+    if (cmp(st[lt], st[gt])) quick_sort_dual(st + lt + 1, st + gt);
+    quick_sort_dual(st + gt + 1, en);
 }
 
 #endif /* ALGORITHMS_SORT_QUICKSORTDUAL_H_ */

@@ -46,8 +46,8 @@ template <typename It> void quick_sort(It st, It en) {
     i = j + 1;
     for (int k = 0; k <= p; k++, j--) swap(st[k], st[j]);
     for (int k = n - 1; k >= q; k--, i++) swap(st[k], st[i]);
-    sort(st, st + j + 1);
-    sort(st + i, en);
+    quick_sort(st, st + j + 1);
+    quick_sort(st + i, en);
 }
 
 template <typename It, typename Comparator> void quick_sort(It st, It en, Comparator cmp) {
@@ -85,8 +85,8 @@ template <typename It, typename Comparator> void quick_sort(It st, It en, Compar
     i = j + 1;
     for (int k = 0; k <= p; k++, j--) swap(st[k], st[j]);
     for (int k = n - 1; k >= q; k--, i++) swap(st[k], st[i]);
-    sort(st, st + j + 1, cmp);
-    sort(st + i, en, cmp);
+    quick_sort(st, st + j + 1, cmp);
+    quick_sort(st + i, en, cmp);
 }
 
 #endif /* ALGORITHMS_SORT_QUICKSORT_H_ */
