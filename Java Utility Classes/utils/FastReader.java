@@ -9,7 +9,7 @@ public class FastReader {
     private final int BUFFER_SIZE = 1 << 12;
     private int LENGTH = -1;
     private DataInputStream din;
-    private byte[] buffer;
+    private byte[] buffer, buf;
     private int bufferPointer, bytesRead;
 
     public FastReader(InputStream inputStream) {
@@ -79,7 +79,6 @@ public class FastReader {
     }
 
     public String next() throws IOException {
-        byte[] buf = new byte[LENGTH];
         int cnt = 0;
         byte c;
         do {
@@ -92,7 +91,6 @@ public class FastReader {
     }
 
     public String nextLine() throws IOException {
-        byte[] buf = new byte[LENGTH];
         int cnt = 0;
         byte c;
         do {
@@ -106,6 +104,7 @@ public class FastReader {
     
     public void setLength(int length) {
         LENGTH = length;
+        buf = new byte[LENGTH];
     }
 
     public boolean hasNext() throws IOException {
