@@ -131,7 +131,7 @@ public:
         Node *left = nullptr, *right = nullptr, *mid = nullptr;
         split(root, left, mid, l);
         split(mid, mid, right, r - l + 1);
-        T ret = val(mid);
+        T ret = subtreeVal(mid);
         merge(root, left, mid);
         merge(root, root, right);
         return ret;

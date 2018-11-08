@@ -9,6 +9,7 @@ class FastReader {
     private val buffer: ByteArray = ByteArray(BUFFER_SIZE)
     private var bufferPointer: Int = 0
     private var bytesRead: Int = 0
+    private var buf: CharArray = CharArray(0)
 
     constructor(inputStream: InputStream) {
         din = DataInputStream(inputStream)
@@ -84,7 +85,6 @@ class FastReader {
     }
 
     fun next(): String {
-        val buf: CharArray = CharArray(LENGTH)
         var c: Byte
         var cnt: Int = 0
         do {
@@ -98,7 +98,6 @@ class FastReader {
     }
 
     fun nextLine(): String {
-        val buf: CharArray = CharArray(LENGTH)
         var c: Byte
         var cnt: Int = 0
         do {
@@ -113,6 +112,7 @@ class FastReader {
 
     fun setLength(length: Int) {
         LENGTH = length
+        buf = CharArray(LENGTH)
     }
 
     fun hasNext(): Boolean {
