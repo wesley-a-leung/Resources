@@ -58,7 +58,7 @@ template <class T> struct FenwickTreePolynomial {
                 }
             }
         }
-        invDen = pow3(factorial[maxK + 1], mod - 2, mod);
+        invDen = powMod(factorial[maxK + 1], mod - 2, mod);
     }
     T rsq(int ind) {
         T sum = rsq(BIT[maxK + 1], ind);
