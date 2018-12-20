@@ -8,11 +8,11 @@ using namespace std;
 //   constructor: O(N)
 //   update, rsq: O(log N)
 // Memory Complexity: O(N)
-template <class T> struct FenwickTreeQuadratic {
-    int size; vector<T> con, lin, quad;
-    T rsq(vector<T> &BIT, int i) { T ret = 0; for (; i > 0; i -= i & -i) ret += BIT[i]; return ret; }
-    void update(vector<T> &BIT, int i, T v) { for (; i <= size; i += i & -i) BIT[i] += v; }
-    FenwickTreeQuadratic(int size) : size(size), con(size + 1), lin(size + 1), quad(size + 1) {}
+template <const int MAXN, class T> struct FenwickTreeQuadratic {
+    array<T, MAXN> con, lin, quad;
+    T rsq(array<T, MAXN> &BIT, int i) { T ret = 0; for (; i > 0; i -= i & -i) ret += BIT[i]; return ret; }
+    void update(array<T, MAXN> &BIT, int i, T v) { for (; i < MAXN; i += i & -i) BIT[i] += v; }
+    void init() { fill(con.begin(), con.end(), 0); fill(lin.begin(), lin.end(), 0); fill(quad.begin(), quad.end(), 0); }
     T rsq(int ind) { return (rsq(quad, ind) * (T) ind * (T) ind + rsq(lin, ind) * (T) ind + rsq(con, ind)) / (T) 2; }
     T rsq(int a, int b) { return rsq(b) - rsq(a - 1); }
     void update(int a, int b, T value) {
