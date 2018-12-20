@@ -23,9 +23,9 @@ template <const int MAXV, class unit> struct TransistiveClosureSCC {
             DAG[i].clear(); vis[i].reset(); fill(G[i], G[i] + int(SCC.components.size), false);
         }
         for (int v = 0; v < V; v++) for (int w : SCC.adj[v]) if (SCC.id[v] != SCC.id[w]) G[SCC.id[v]][SCC.id[w]] = true;
+        for (int i = 0; i < int(SCC.components.size); i++) for (int j = 0; j < int(SCC.components.size); j++) DAG[i].push_back(j);
         for (int i = 0; i < int(SCC.components.size); i++) dfs(i);
     }
-    bool reachable(int v, int w) { // is w reachable from v
-        return vis[SCC.id[v]][w];
-    }
+    // is w reachable from v
+    bool reachable(int v, int w) { return vis[SCC.id[v]][w]; }
 };
