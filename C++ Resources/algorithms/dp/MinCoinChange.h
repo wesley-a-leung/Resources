@@ -3,6 +3,7 @@
 using namespace std;
 
 // Computes the minimum number of coins to make chance for exactly T dollars given N coin values
+// each coin may be used multiple times
 // Time Complexity: O(TN)
 // Memory Complexity: O(T + N)
 template <const int MAXT, const int MAXN> struct CoinChange {

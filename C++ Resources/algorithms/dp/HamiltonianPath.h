@@ -25,4 +25,6 @@ template <const int MAXN, class T> struct HamiltonianPath {
         }
         return ret;
     }
+    void init() { for (int i = 0; i < MAXN; i++) { fill(dist[i], dist[i] + MAXN, 0); dist[i][i] = 0; } }
+    void addEdge(int v, int w, T weight) { dist[v][w] = dist[w][v] = min(weight, dist[v][w]); }
 };

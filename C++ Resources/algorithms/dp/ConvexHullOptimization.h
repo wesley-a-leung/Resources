@@ -17,4 +17,5 @@ template <const int MAXN, class T, class Comparator = less<T>> struct ConvexHull
         while (front < back - 1 && !cmp(M[front + 1] * x + B[front + 1], M[front] * x + B[front])) front++;
         return M[front] * x + B[front];
     }
+    void clear() { front = back = 0; }
 };
