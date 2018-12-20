@@ -1,0 +1,377 @@
+\documentclass[8pt]{article}
+\usepackage[left=1cm,right=1cm,top=1.5cm,bottom=1.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tocloft}
+\usepackage{pdflscape}
+\usepackage{multicol}
+\usepackage{titlesec}
+\usepackage{courier}
+
+\title{Codebook}
+\author{Wesley Leung}
+\date{September 2018}
+
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\lstdefinestyle{shared}{
+    aboveskip=-5pt,
+    belowcaptionskip=1\baselineskip,
+    breaklines=true,
+    xleftmargin=0pt,
+    showstringspaces=false,
+    basicstyle=\fontsize{7}{6}\ttfamily,
+}
+
+\lstdefinestyle{cpp}{
+    style=shared,
+    language=C++,
+    keywordstyle=\bfseries\color{blue!50!black},
+    commentstyle=\itshape\color{green!50!black},
+    identifierstyle=\color{black},
+    stringstyle=\color{orange!80!black},
+}
+
+\begin{document}
+
+\begin{titlepage}
+\vspace*{\fill}
+\begin{center}
+    {\Huge Codebook}\\[0.7cm]
+    {\Large Wesley Leung}\\[0.5cm]
+    September 2018
+\end{center}
+\vspace*{\fill}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Data Structures}
+\subsection{General}
+\subsubsection{Indexed Priority Queue}
+\lstinputlisting[style=cpp]{datastructures/IndexedPQ.h}
+\subsubsection{Skew Heap}
+\lstinputlisting[style=cpp]{datastructures/SkewHeap.h}
+\subsubsection{Incremental Skew Heap}
+\lstinputlisting[style=cpp]{datastructures/IncrementalSkewHeap.h}
+\subsubsection{Ordered Square Root Array}
+\lstinputlisting[style=cpp]{datastructures/OrderedSqrtArray.h}
+\subsubsection{Ordered Root Array}
+\lstinputlisting[style=cpp]{datastructures/OrderedRootArray.h}
+\subsubsection{Square Root Array}
+\lstinputlisting[style=cpp]{datastructures/SqrtArray.h}
+\subsubsection{Root Array}
+\lstinputlisting[style=cpp]{datastructures/RootArray.h}
+\subsubsection{Radix Heap}
+\lstinputlisting[style=cpp]{datastructures/RadixHeap.h}
+\subsubsection{Radix Heap 64}
+\lstinputlisting[style=cpp]{datastructures/RadixHeap64.h}
+\subsubsection{RMQ Sparse Table}
+\lstinputlisting[style=cpp]{datastructures/RMQSparseTable.h}
+\subsubsection{Union Find}
+\lstinputlisting[style=cpp]{datastructures/UnionFind.h}
+\subsubsection{Union Find Undo}
+\lstinputlisting[style=cpp]{datastructures/UnionFindUndo.h}
+
+\subsection{Trees}
+\subsubsection{Size Balanced Tree}
+\lstinputlisting[style=cpp]{datastructures/trees/SBT.h}
+\subsubsection{Size Balanced Tree Set}
+\lstinputlisting[style=cpp]{datastructures/trees/SBTSet.h}
+\subsubsection{Fenwick Tree}
+\lstinputlisting[style=cpp]{datastructures/trees/FenwickTree.h}
+\subsubsection{Fenwick Tree Binary Search}
+\lstinputlisting[style=cpp]{datastructures/trees/FenwickTreeBinarySearch.h}
+\subsubsection{Fenwick Tree Range Point}
+\lstinputlisting[style=cpp]{datastructures/trees/FenwickTreeRangePoint.h}
+\subsubsection{Fenwick Tree Range}
+\lstinputlisting[style=cpp]{datastructures/trees/FenwickTreeRange.h}
+\subsubsection{Fenwick Tree 2D}
+\lstinputlisting[style=cpp]{datastructures/trees/FenwickTree2D.h}
+\subsubsection{Fenwick Tree ND}
+\lstinputlisting[style=cpp]{datastructures/trees/FenwickTreeND.h}
+\subsubsection{Fenwick Tree Quadratic}
+\lstinputlisting[style=cpp]{datastructures/trees/FenwickTreeQuadratic.h}
+\subsubsection{Fenwick Tree Polynomial}
+\lstinputlisting[style=cpp]{datastructures/trees/FenwickTreePolynomial.h}
+\subsubsection{Bottom Up Segment Trees}
+\lstinputlisting[style=cpp]{datastructures/trees/BottomUpSegmentTrees.h}
+\subsubsection{Top Down Segment Trees}
+\lstinputlisting[style=cpp]{datastructures/trees/TopDownSegmentTrees.h}
+\subsubsection{Implicit Treap}
+\lstinputlisting[style=cpp]{datastructures/trees/ImplicitTreap.h}
+\subsubsection{Lazy Implicit Treap}
+\lstinputlisting[style=cpp]{datastructures/trees/LazyImplicitTreap.h}
+
+
+\subsection{Geometry}
+\subsubsection{Point}
+\lstinputlisting[style=cpp]{datastructures/geometry/Point.h}
+\subsubsection{Vector}
+\lstinputlisting[style=cpp]{datastructures/geometry/Vector.h}
+\subsubsection{Rectangle}
+\lstinputlisting[style=cpp]{datastructures/geometry/Rectangle.h}
+\subsubsection{Kd Tree}
+\lstinputlisting[style=cpp]{datastructures/geometry/KdTree.h}
+
+\subsection{Graph}
+\subsubsection{Euler Tour Treap}
+\lstinputlisting[style=cpp]{datastructures/graph/EulerTourTreap.h}
+\subsubsection{Lazy Euler Tour Treap}
+\lstinputlisting[style=cpp]{datastructures/graph/LazyEulerTourTreap.h}
+\subsubsection{Link Cut Tree}
+\lstinputlisting[style=cpp]{datastructures/graph/LinkCutTree.h}
+\subsubsection{Lazy Link Cut Tree}
+\lstinputlisting[style=cpp]{datastructures/graph/LazyLinkCutTree.h}
+\subsubsection{Top Tree}
+\lstinputlisting[style=cpp]{datastructures/graph/TopTree.h}
+
+\subsection{String}
+\subsubsection{Trie}
+\lstinputlisting[style=cpp]{datastructures/string/Trie.h}
+
+\section{Algorithms}
+\subsection{Dynamic Programming}
+\subsubsection{Coin Change}
+\lstinputlisting[style=cpp]{algorithms/dp/CoinChange.h}
+\subsubsection{Minimum Coin Change}
+\lstinputlisting[style=cpp]{algorithms/dp/MinCoinChange.h}
+\subsubsection{Egg Dropping}
+\lstinputlisting[style=cpp]{algorithms/dp/EggDropping.h}
+\subsubsection{Hamiltonian Cycle}
+\lstinputlisting[style=cpp]{algorithms/dp/HamiltonianCycle.h}
+\subsubsection{Hamiltonian Path}
+\lstinputlisting[style=cpp]{algorithms/dp/HamiltonianPath.h}
+\subsubsection{0-1 Knapsack}
+\lstinputlisting[style=cpp]{algorithms/dp/ZeroOneKnapsack.h}
+\subsubsection{Unbounded Knapsack}
+\lstinputlisting[style=cpp]{algorithms/dp/UnboundedKnapsack.h}
+\subsubsection{Bounded Knapsack}
+\lstinputlisting[style=cpp]{algorithms/dp/BoundedKnapsack.h}
+\subsubsection{ZigZag}
+\lstinputlisting[style=cpp]{algorithms/dp/ZigZag.h}
+\subsubsection{Unique ZigZag}
+\lstinputlisting[style=cpp]{algorithms/dp/UniqueZigZag.h}
+\subsubsection{Longest Common Integer Subsequence}
+\lstinputlisting[style=cpp]{algorithms/dp/LongestCommonIntegerSubsequence.h}
+\subsubsection{Longest Increasing Subsequence}
+\lstinputlisting[style=cpp]{algorithms/dp/LongestIncreasingSubsequence.h}
+\subsubsection{Maximum Nonconsecutive Subsequence Sum}
+\lstinputlisting[style=cpp]{algorithms/dp/MaxNonconsecutiveSum.h}
+\subsubsection{Maximum Subarray Sum}
+\lstinputlisting[style=cpp]{algorithms/dp/MaxSubarraySum.h}
+\subsubsection{Maximum Subarray Sum With Skip}
+\lstinputlisting[style=cpp]{algorithms/dp/MaxSubarraySumSkip.h}
+\subsubsection{Maximum Zero Submatrix}
+\lstinputlisting[style=cpp]{algorithms/dp/MaxZeroSubmatrix.h}
+\subsubsection{Partitions}
+\lstinputlisting[style=cpp]{algorithms/dp/Partitions.h}
+\subsubsection{Convex Hull Optimization}
+\lstinputlisting[style=cpp]{algorithms/dp/ConvexHullOptimization.h}
+\subsubsection{Knuth Optimization}
+\lstinputlisting[style=cpp]{algorithms/dp/KnuthOptimization.h}
+
+\subsection{Meet in the Middle}
+\subsubsection{Closest Subset Sum}
+\lstinputlisting[style=cpp]{algorithms/mitm/ClosestSubsetSum.h}
+\subsubsection{Minimum Subset Difference}
+\lstinputlisting[style=cpp]{algorithms/mitm/MinSubsetDifference.h}
+\subsubsection{Subset Sum Count Less}
+\lstinputlisting[style=cpp]{algorithms/mitm/SubsetSumCountLess.h}
+
+\subsection{Sliding Window}
+\subsubsection{Maximum Subarray For Each Subarray of Size K}
+\lstinputlisting[style=cpp]{algorithms/slidingwindow/MaxSubarrayK.h}
+\subsubsection{Maximum Subarray Sum of Size K}
+\lstinputlisting[style=cpp]{algorithms/slidingwindow/MaxSubarraySumK.h}
+\subsubsection{Maximum Subarray Sum of Size K or Less}
+\lstinputlisting[style=cpp]{algorithms/slidingwindow/MaxSubarraySumKLess.h}
+\subsubsection{Maximum Subarray Sum of Size K or More}
+\lstinputlisting[style=cpp]{algorithms/slidingwindow/MaxSubarraySumKMore.h}
+
+\subsection{Geometry}
+\subsubsection{Convex Hull}
+\lstinputlisting[style=cpp]{algorithms/geometry/ConvexHull.h}
+\subsubsection{Closest Pair}
+\lstinputlisting[style=cpp]{algorithms/geometry/ClosestPair.h}
+\subsubsection{Farthest Pair}
+\lstinputlisting[style=cpp]{algorithms/geometry/FarthestPair.h}
+
+\subsection{Graph}
+\subsubsection{Search}
+\paragraph{Depth First Search}
+\lstinputlisting[style=cpp]{algorithms/graph/search/DepthFirstSearch.h}
+\paragraph{BreadthFirstSearch}
+\lstinputlisting[style=cpp]{algorithms/graph/search/BreadthFirstSearch.h}
+
+\subsubsection{Shortest Path}
+\paragraph{Classical Dijkstra Single Source Shortest Path}
+\lstinputlisting[style=cpp]{algorithms/graph/shortestpath/ClassicalDijkstraSSSP.h}
+\paragraph{Dijkstra Single Source Shortest Path}
+\lstinputlisting[style=cpp]{algorithms/graph/shortestpath/DijkstraSSSP.h}
+\paragraph{Source Path Faster Algorithm}
+\lstinputlisting[style=cpp]{algorithms/graph/shortestpath/SPFA.h}
+\paragraph{Bellman Ford Single Source Shortest Path and Negative Cycle Detection}
+\lstinputlisting[style=cpp]{algorithms/graph/shortestpath/BellmanFordSSSP.h}
+\paragraph{Floyd Warshall All Pairs Shortest Path}
+\lstinputlisting[style=cpp]{algorithms/graph/shortestpath/FloydWarshallAPSP.h}
+\paragraph{Johnson All Pairs Shortest Path}
+\lstinputlisting[style=cpp]{algorithms/graph/shortestpath/JohnsonAPSP.h}
+
+\subsubsection{Components}
+\paragraph{Biconnected Components}
+\lstinputlisting[style=cpp]{algorithms/graph/components/Biconnected.h}
+\paragraph{Connected Components}
+\lstinputlisting[style=cpp]{algorithms/graph/components/ConnectedComponents.h}
+\paragraph{Kosaraju Sharir Strongly Connected Components}
+\lstinputlisting[style=cpp]{algorithms/graph/components/KosarajuSharirSCC.h}
+\paragraph{Tarjan Strongly Connected Components}
+\lstinputlisting[style=cpp]{algorithms/graph/components/TarjanSCC.h}
+\paragraph{Bron Kerbosch Max Clique}
+\lstinputlisting[style=cpp]{algorithms/graph/components/BronKerboschMaxClique.h}
+\paragraph{Stoer Wagner Min Cut}
+\lstinputlisting[style=cpp]{algorithms/graph/components/StoerWagnerMinCut.h}
+\paragraph{Centroid Decomposition}
+\lstinputlisting[style=cpp]{algorithms/graph/components/CentroidDecomposition.h}
+\paragraph{Dynamic Connectivity Divide and Conquer}
+\lstinputlisting[style=cpp]{algorithms/graph/components/DynamicConnectivityDivAndConq.h}
+\paragraph{Dynamic Connectivity Sqrt Decomposition}
+\lstinputlisting[style=cpp]{algorithms/graph/components/DynamicConnectivitySqrtDecomp.h}
+\paragraph{Dynamic Biconnectivity}
+\lstinputlisting[style=cpp]{algorithms/graph/components/DynamicBiconnectivity.h}
+
+\subsubsection{Minimum Spanning Tree}
+\paragraph{Prim Minimum Spanning Tree}
+\lstinputlisting[style=cpp]{algorithms/graph/mst/PrimMST.h}
+\paragraph{Kruskal Minimum Spanning Tree}
+\lstinputlisting[style=cpp]{algorithms/graph/mst/KruskalMST.h}
+\paragraph{Boruvka Minimum Spanning Tree}
+\lstinputlisting[style=cpp]{algorithms/graph/mst/BoruvkaMST.h}
+\paragraph{Offline Dynamic MST}
+\lstinputlisting[style=cpp]{algorithms/graph/mst/OfflineDynamicMST.h}
+
+\subsubsection{Lowest Common Ancestor}
+\paragraph{LCA using Sparse Table}
+\lstinputlisting[style=cpp]{algorithms/graph/lca/LCA_SparseTable.h}
+\paragraph{LCA using Euler Tour}
+\lstinputlisting[style=cpp]{algorithms/graph/lca/LCA_Euler.h}
+\paragraph{LCA using Range Minimum Query}
+\lstinputlisting[style=cpp]{algorithms/graph/lca/LCA_RMQ.h}
+\paragraph{Tarjan Offline LCA}
+\lstinputlisting[style=cpp]{algorithms/graph/lca/TarjanOfflineLCA.h}
+
+\subsubsection{Queries}
+\paragraph{Heavy Light Decomposition}
+\lstinputlisting[style=cpp]{algorithms/graph/queries/HLD.h}
+\paragraph{Mo's Algorithm for Trees}
+\lstinputlisting[style=cpp]{algorithms/graph/queries/MoTree.h}
+\paragraph{Disjoint Union Sets for Trees}
+\lstinputlisting[style=cpp]{algorithms/graph/queries/DSUTree.h}
+
+\subsubsection{Cycle}
+\paragraph{Cycle}
+\lstinputlisting[style=cpp]{algorithms/graph/cycle/Cycle.h}
+\paragraph{Directed Cycle}
+\lstinputlisting[style=cpp]{algorithms/graph/cycle/DirectedCycle.h}
+
+\subsubsection{Matching}
+\paragraph{Bipartite}
+\lstinputlisting[style=cpp]{algorithms/graph/matching/Bipartite.h}
+\paragraph{Hopcroft-Karp Maximum Matching}
+\lstinputlisting[style=cpp]{algorithms/graph/matching/HopcroftKarpMaxMatch.h}
+\paragraph{Edmonds Matching}
+\lstinputlisting[style=cpp]{algorithms/graph/matching/EdmondsMatching.h}
+\paragraph{Hungarian Algorithm}
+\lstinputlisting[style=cpp]{algorithms/graph/matching/HungarianAlgorithm.h}
+\paragraph{Stable Marriage}
+\lstinputlisting[style=cpp]{algorithms/graph/matching/StableMarriage.h}
+
+\subsubsection{Network Flow}
+\paragraph{Edmonds Karp Max Flow}
+\lstinputlisting[style=cpp]{algorithms/graph/networkflow/EdmondsKarpMaxFlow.h}
+\paragraph{Dinic Max Flow}
+\lstinputlisting[style=cpp]{algorithms/graph/networkflow/DinicMaxFlow.h}
+\paragraph{Max Flow Min Cost}
+\lstinputlisting[style=cpp]{algorithms/graph/networkflow/MaxFlowMinCost.h}
+
+\subsubsection{Dynamic Programming}
+\paragraph{Maximum Nonadjacent Sum}
+\lstinputlisting[style=cpp]{algorithms/graph/dp/MaxNonadjacentSum.h}
+
+\subsection{Math}
+\subsubsection{Bisection Root Finding}
+\lstinputlisting[style=cpp]{algorithms/math/BisectionRootFinding.h}
+\subsubsection{Newton Root Finding}
+\lstinputlisting[style=cpp]{algorithms/math/NewtonRootFinding.h}
+\subsubsection{Ternary Search for Maximum or Minimum}
+\lstinputlisting[style=cpp]{algorithms/math/TernarySearch.h}
+\subsubsection{Combinatorics}
+\lstinputlisting[style=cpp]{algorithms/math/Combinatorics.h}
+\subsubsection{Greatest Common Divisor}
+\lstinputlisting[style=cpp]{algorithms/math/GCD.h}
+\subsubsection{Primes}
+\lstinputlisting[style=cpp]{algorithms/math/Primes.h}
+\subsubsection{Fast Fourier Transformations}
+\lstinputlisting[style=cpp]{algorithms/math/FFT.h}
+\subsubsection{Gaussian Elimination}
+\lstinputlisting[style=cpp]{algorithms/math/GaussianElimination.h}
+\subsubsection{Matrix}
+\lstinputlisting[style=cpp]{algorithms/math/Matrix.h}
+\subsubsection{XOR Satisfiability}
+\lstinputlisting[style=cpp]{algorithms/math/XorSat.h}
+
+\subsection{Queries}
+\subsubsection{Mo's Algorithm}
+\lstinputlisting[style=cpp]{algorithms/queries/Mo.h}
+\subsubsection{Mo's Algorithm with Updates}
+\lstinputlisting[style=cpp]{algorithms/queries/MoUpdates.h}
+
+\subsection{Search}
+\subsubsection{Binary Search}
+\lstinputlisting[style=cpp]{algorithms/search/BinarySearch.h}
+\subsubsection{Interpolation Search}
+\lstinputlisting[style=cpp]{algorithms/search/InterpolationSearch.h}
+
+\subsection{Sort}
+\subsubsection{Counting Sort}
+\lstinputlisting[style=cpp]{algorithms/sort/CountingSort.h}
+\subsubsection{Heap Sort}
+\lstinputlisting[style=cpp]{algorithms/sort/HeapSort.h}
+\subsubsection{Merge Sort}
+\lstinputlisting[style=cpp]{algorithms/sort/MergeSort.h}
+\subsubsection{Merge Sort Bottom Up}
+\lstinputlisting[style=cpp]{algorithms/sort/MergeSortBottomUp.h}
+\subsubsection{Quick Sort 3 Way}
+\lstinputlisting[style=cpp]{algorithms/sort/QuickSort3Way.h}
+\subsubsection{Quick Sort Dual Pivot}
+\lstinputlisting[style=cpp]{algorithms/sort/QuickSortDual.h}
+\subsubsection{Shell Sort}
+\lstinputlisting[style=cpp]{algorithms/sort/ShellSort.h}
+\subsubsection{Count Inversions}
+\lstinputlisting[style=cpp]{algorithms/sort/CountInversions.h}
+
+\subsection{String}
+\subsubsection{KMP String Search}
+\lstinputlisting[style=cpp]{algorithms/string/KMP.h}
+\subsubsection{Manacher Palindrome}
+\lstinputlisting[style=cpp]{algorithms/string/ManacherPalindrome.h}
+\subsubsection{Z Algorithm}
+\lstinputlisting[style=cpp]{algorithms/string/ZAlgorithm.h}
+\subsubsection{Longest Common Substring}
+\lstinputlisting[style=cpp]{algorithms/string/LongestCommonSubstring.h}
+\subsubsection{Minimum Edit Distance}
+\lstinputlisting[style=cpp]{algorithms/string/MinEditDistance.h}
+\subsubsection{Suffix Automata}
+\lstinputlisting[style=cpp]{algorithms/string/SuffixAutomata.h}
+
+\end{document}
