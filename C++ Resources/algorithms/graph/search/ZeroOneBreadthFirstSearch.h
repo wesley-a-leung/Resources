@@ -10,9 +10,9 @@ template <const int MAXV> struct BFS {
     void addEdge(int v, int w, int weight) { adj[v].emplace_back(w, weight); }
     void addBiEdge(int v, int w, int weight) { addEdge(v, w, weight); addEdge(w, v, weight); }
     void clear() { for (int i = 0; i < MAXV; i++) adj[i].clear(); }
-    void run(int s) {
-        fill(dist, dist + MAXV, INT_MAX); fill(to, to + MAXV, -1);
-        deque<int> dq; dist[s] = 0; dq.push_front(s);
+    void run(const vector<int> &srcs) {
+        fill(dist, dist + MAXV, INT_MAX); fill(to, to + MAXV, -1); deque<int> dq;
+        for (int s : srcs) { dist[s] = 0; dq.push_front(s); }
         while (!dq.empty()) {
             int v = dq.front(); dq.pop_front();
             for (auto &&e : adj[v]) if (dist[e.first] == INT_MAX) {
@@ -22,4 +22,5 @@ template <const int MAXV> struct BFS {
             }
         }
     }
+    void run(int s) { run(vector<int>(1, s)); }
 };

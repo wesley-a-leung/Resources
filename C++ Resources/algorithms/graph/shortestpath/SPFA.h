@@ -11,9 +11,9 @@ template <const int MAXV, class unit> struct SPFA {
     void addEdge(int v, int w, unit weight) { adj[v].emplace_back(w, weight); }
     void addBiEdge(int v, int w, unit weight) { addEdge(v, w, weight); addEdge(w, v, weight); }
     void clear() { for (int i = 0; i < MAXV; i++) adj[i].clear(); }
-    void run(int V, int s) {
-        fill(dist, dist + V, INF); fill(to, to + V, make_pair(-1, 0)); fill(inQueue, inQueue + V, false);
-        deque<int> DQ; DQ.push_back(s); inQueue[s] = true; dist[s] = 0;
+    void run(int V, const vector<int> &src) {
+        fill(dist, dist + V, INF); fill(to, to + V, make_pair(-1, 0)); fill(inQueue, inQueue + V, false); deque<int> DQ;
+        for (int s : src) { DQ.push_back(s); inQueue[s] = true; dist[s] = 0; }
         while (!DQ.empty()) {
             int v = DQ.front(); DQ.pop_front(); inQueue[v] = false;
             for (auto &&e : adj[v]) if (dist[e.first] > dist[v] + e.second) {
@@ -27,4 +27,5 @@ template <const int MAXV, class unit> struct SPFA {
             }
         }
     }
+    void run(int V, int s) { run(V, vector<int>(1, s)); }
 };
