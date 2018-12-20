@@ -15,11 +15,7 @@ template <const int MAXN> struct LongestIncreasingSubsequenceBIT {
         copy(A, A + N, temp); sort(temp, temp + N); int k = unique(temp, temp + N) - temp, ret = 0;
         for (int i = 0; i < N; i++) A[i] = lower_bound(temp, temp + k, A[i]) - temp + 1;
         fill(BIT, BIT + MAXN, -1);
-        for (int i = 0; i < N; i++) {
-            dp[i] = rmq(A[i] - 1);
-            ret = max(ret, len[i] = dp[i] == -1 ? 1 : len[dp[i]] + 1);
-            update(A[i], i);
-        }
+        for (int i = 0; i < N; i++) { dp[i] = rmq(A[i] - 1); ret = max(ret, len[i] = dp[i] == -1 ? 1 : len[dp[i]] + 1); update(A[i], i); }
         return ret;
     }
 };

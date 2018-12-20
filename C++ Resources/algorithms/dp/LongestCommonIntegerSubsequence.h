@@ -6,7 +6,7 @@ using namespace std;
 // Time Complexity: O(N^2)
 // Memory Complexity: O(N^2)
 template <const int MAXN, const int MAXM = MAXN> struct LCIS {
-    int A[MAXN], B[MAXM], dp[MAXN][MAXM], subsequence[max(MAXN, MAXM)], len;
+    int A[MAXN], B[MAXM], dp[MAXN][MAXM], subsequence[MAXN > MAXM ? MAXN : MAXM], len;
     int solve(int N, int M) {
         for (int i = 1; i <= N; i++) for (int j = 1; j <= M; j++) {
             if (A[i - 1] == B[j - 1]) dp[i][j] = dp[i - 1][j - 1] + 1;

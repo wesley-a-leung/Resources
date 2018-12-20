@@ -8,10 +8,11 @@ using namespace std;
 // for dp[i][j]
 // Time Complexity: Reduces the runtime from O(N^3) to O(N^2)
 // Memory Complexity: O(N^2)
-template <const int MAXN, const int INF> struct KnuthOptimization {
-    int dp[MAXN][MAXN], mid[MAXN][MAXN];
-    int cost(int l, int m, int r); // to be implemented
-    int solve(int N) {
+template <const int MAXN, class T> struct KnuthOptimization {
+    T dp[MAXN][MAXN], INF; int mid[MAXN][MAXN];
+    KnuthOptimization(T INF) : INF(INF) {}
+    T cost(int l, int m, int r); // to be implemented
+    T solve(int N) {
         for (int l = N - 1; l >= 0; l--) for (int r = l; r <= N; r++) {
             if (r - l < 2) { dp[l][r] = 0; mid[l][r] = l; continue; }
             dp[l][r] = INF;
