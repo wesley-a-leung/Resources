@@ -6,11 +6,11 @@ using namespace std;
 // a source an (optional) destination vertex on a Directed Acyclic Graph
 // Time Complexity: O(V)
 // Memory Complexity: O(V)
-template <const int MAXV> struct MaxWeightedIndependentSet {
+template <const int MAXV> struct MaxNonadjacentSum {
     vector<int> adj[MAXV]; int val[MAXV], dp[MAXV][2];
     void addEdge(int v, int w) { adj[v].push_back(w); }
     int dfs(int v, int t, bool take) {
-        if (v == t) return take;
+        if (v == t) return take ? val[v] : 0;
         if (dp[v][take] != -1) return dp[v][take];
         int ret = INT_MIN;
         for (int w : adj[v]) {
