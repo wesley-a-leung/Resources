@@ -4,8 +4,8 @@ using namespace std;
 
 // Computes the maximum sum of non adjacent vertices on any path between
 // a source an (optional) destination vertex on a Directed Acyclic Graph
-// Time Complexity: O(V)
-// Memory Complexity: O(V)
+// Time Complexity: O(V + E)
+// Memory Complexity: O(V + E)
 template <const int MAXV> struct MaxNonadjacentSum {
     vector<int> adj[MAXV]; int val[MAXV], dp[MAXV][2];
     void addEdge(int v, int w) { adj[v].push_back(w); }
