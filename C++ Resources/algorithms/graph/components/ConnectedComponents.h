@@ -6,8 +6,7 @@ using namespace std;
 // Time Complexity: O(V + E)
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct ConnectedComponents {
-    int id[MAXV];
-    vector<int> adj[MAXV]; vector<vector<int>> components;
+    int id[MAXV]; vector<int> adj[MAXV]; vector<vector<int>> components;
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     void dfs(int v) {
         id[v] = int(components.size()) - 1; components.back().push_back(v);

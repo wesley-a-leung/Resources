@@ -10,7 +10,8 @@ template <const int MAXN> struct MaxSubarraySum {
     int solve(int N) {
         maxSum = st = 0; en = -1; int curMax = 0, curSt = 0;
         for (int i = 0; i < N; i++) {
-            curMax += A[i]; if (curMax < 0) { curMax = 0; curSt = i + 1; }
+            curMax += A[i];
+            if (curMax < 0) { curMax = 0; curSt = i + 1; }
             if (maxSum < curMax) { maxSum = curMax; st = curSt; en = i; }
         }
         return maxSum;
