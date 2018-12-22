@@ -29,7 +29,7 @@ template <const int MAXN> struct SegmentTree {
         for (int i = 1; i <= N; i++) A[i] = *(st + i - 1);
         build(1, 1, N);
     }
-    void init(int size) { N = size; fill(A + 1, A + N, vdef); build(1, 1, size); }
+    void init(int size) { N = size; fill(A + 1, A + N + 1, vdef); build(1, 1, size); }
     void update(int ind, const Data &val) { update(1, 1, N, ind, val); }
     Data query(int l, int r) { return query(1, 1, N, l, r); }
 };
@@ -68,8 +68,8 @@ template <const int MAXN> struct LazySegmentTree {
         T[cur] = merge(T[cur * 2], T[cur * 2 + 1]);
     }
     Data query(int cur, int cL, int cR, int l, int r) {
-        if (cL != cR) propagate(cur, cL, cR);
         if (cL > r || cR < l) return qdef;
+        if (cL != cR) propagate(cur, cL, cR);
         if (cL >= l && cR <= r) return T[cur];
         int m = cL + (cR - cL) / 2;
         return merge(query(cur * 2, cL, m, l, r), query(cur * 2 + 1, m + 1, cR, l, r));
