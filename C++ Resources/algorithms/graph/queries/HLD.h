@@ -33,8 +33,8 @@ template <const int MAXV> struct HLD {
         if (!includeW && v == w) return ans;
         return up ? merge(ans, query(ind[w] + !includeW, ind[v], up)) : merge(query(ind[w] + !includeW, ind[v], up), ans);
     }
-    void clear() { for (int i = 0; i < MAXV; i++) adj[i].clear(); }
-    void run(int root = 0) { chainNum = 0; curInd = 1; fill(head, head + MAXV, -1); dfs(root, -1, 0); hld(root, -1); }
+    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
+    void run(int V, int root = 0) { chainNum = 0; curInd = 1; fill(head, head + V, -1); dfs(root, -1, 0); hld(root, -1); }
     void addEdge(int a, int b) { adj[a].pb(b); adj[b].pb(a); }
     int lca(int v, int w) {
         while (chain[v] != chain[w]) {

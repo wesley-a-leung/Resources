@@ -13,11 +13,10 @@ template <const int MAXN, const int MAXM, class value_type> struct BoundedKnapsa
         for (f = min(f, MAXM / w); sum + mult < f; sum += mult, mult *= 2) items.emplace_back(mult * w, mult * v);
         items.emplace_back((f - sum) * w, (f - sum) * v);
     }
-    void clear() { items.clear(); solved = false; }
+    void clear() { items.clear(); }
     value_type solve(int N, int M) {
         fill(dp, dp + M + 1, 0);
         for (auto &&i : items) for (int j = M; j >= i.first; j--) dp[j] = max(dp[j], dp[j - i.first] + i.second);
-        solved = true;
         return dp[M];
     }
 };

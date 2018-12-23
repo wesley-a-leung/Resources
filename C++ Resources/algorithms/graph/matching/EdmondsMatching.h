@@ -59,5 +59,5 @@ template <const int MAXV> struct EdmondsMatching {
         for (int i = 0; i < V; i++) if (match[i] != -1) cardinality++;
         return cardinality / 2;
     }
-    void clear() { for (int i = 0; i < MAXV; i++) adj[i].clear(); }
+    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
 };

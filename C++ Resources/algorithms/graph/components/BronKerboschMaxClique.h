@@ -11,7 +11,7 @@ using namespace std;
 template <const int MAXV> struct BronKerboschMaxClique {
     bool adj[MAXV][MAXV]; int W[MAXV];
     void addEdge(int v, int w) { adj[v][w] = adj[w][v] = 1; }
-    void init() { for (int i = 0; i < MAXV; W[i++] = 1) for (int j = 0; j < MAXV; j++) adj[i][j] = 0; }
+    void init(int V = MAXV) { for (int i = 0; i < V; W[i++] = 1) for (int j = 0; j < V; j++) adj[i][j] = 0; }
     int solve(int V, long long cur, long long pool, long long excl) {
         if (pool == 0 && excl == 0) {
             int cnt = 0;

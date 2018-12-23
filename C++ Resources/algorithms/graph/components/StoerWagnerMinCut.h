@@ -10,16 +10,16 @@ using namespace std;
 // The cost of a cut is the sum of the weights of the crossing edges
 // Time Complexity: O(V (V + E) log V)
 // Memory Complexity: O(V + E)
-template <const int MAXN, class unit> struct StoerWagnerMinCut {
+template <const int MAXV, class unit> struct StoerWagnerMinCut {
     struct Graph {
-        vector<pair<int, unit>> adj[MAXN];
+        vector<pair<int, unit>> adj[MAXV];
         void addEdge(int v, int w, unit weight) { adj[v].emplace_back(w, weight); adj[w].emplace_back(v, weight); }
-        void clear() { for (int i = 0; i < MAXN; i++) adj[i].clear(); }
+        void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     } G;
-    bool vis[MAXN], cut[MAXN]; UnionFind<MAXN> uf; unit INF; StoerWagnerMinCut(unit INF) : INF(INF) {}
+    bool vis[MAXV], cut[MAXV]; UnionFind<MAXV> uf; unit INF; StoerWagnerMinCut(unit INF) : INF(INF) {}
     void addEdge(int v, int w, unit weight) { G.addEdge(v, w, weight); }
     struct CutPhase { unit weight; int s, t; };
-    void makeCut(int V, int t, UnionFind<MAXN> &uf) { for (int v = 0; v < V; v++) cut[v] = uf.connected(v, t); }
+    void makeCut(int V, int t, UnionFind<MAXV> &uf) { for (int v = 0; v < V; v++) cut[v] = uf.connected(v, t); }
     void minCutPhase(int V, CutPhase &cp) {
         IndexedPQ<unit, less<unit>> pq(V);
         for (int v = 0; v < V; v++) if (v != cp.s && !vis[v]) pq.push(v, 0);
@@ -54,5 +54,5 @@ template <const int MAXN, class unit> struct StoerWagnerMinCut {
         }
         return ret;
     }
-    void clear() { G.clear(); }
+    void clear(int V = MAXV) { G.clear(V); }
 };

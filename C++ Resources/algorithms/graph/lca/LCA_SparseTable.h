@@ -13,7 +13,7 @@ template <const int MAXV, const int MAXLGV> struct LCA_SparseTable {
         dep[v] = d; par[0][v] = prev;
         for (int w : adj[v]) if (w != prev) dfs(w, v, d + 1);
     }
-    void clear() { for (int i = 0; i < MAXV; i++) adj[i].clear(); }
+    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     void run(int V, int root = 0) {
         for (int i = 0; i < MAXLGV; i++) fill(par[i], par[i] + V, -1);
         dfs(root, -1, 0);

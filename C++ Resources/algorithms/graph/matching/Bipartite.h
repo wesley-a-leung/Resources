@@ -30,5 +30,5 @@ template <const int MAXV> struct Bipartite {
         for (int v = 0; v < V && bipartite; v++) if (!vis[v]) bfs(v);
         return oddCycle.empty();
     }
-    void clear() { oddCycle.clear(); for (int i = 0; i < MAXV; i++) adj[i].clear(); }
+    void clear(int V = MAXV) { oddCycle.clear(); for (int i = 0; i < V; i++) adj[i].clear(); }
 };

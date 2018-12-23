@@ -32,7 +32,7 @@ template <const int MAXV, const int MAXQ> struct DynamicConnectivityDivAndConq {
         solve(m + 1, r);
         while ((int) history.size() > curSize) undo();
     }
-    void clear() { ans.clear(); Q = 0; for (int i = 0; i < MAXV; i++) present[i].clear(); }
+    void clear(int V = MAXV) { ans.clear(); Q = 0; for (int i = 0; i < V; i++) present[i].clear(); }
     void addEdge(int v, int w) {
         if (v > w) swap(v, w);
         present[v][w] = Q; q[Q++] = {1, v, w, INT_MAX};

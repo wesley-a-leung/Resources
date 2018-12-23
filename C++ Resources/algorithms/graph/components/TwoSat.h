@@ -29,5 +29,5 @@ template <const int MAXN> struct TwoSat {
         for (int i = 0; i < N; i++) x[i] = post[scc.id[i * 2]] < post[scc.id[i * 2 + 1]];
         return true;
     }
-    void clear() { scc.clear(); for (int i = 0; i < MAXN * 2; i++) DAG[i].clear(); }
+    void clear(int N = MAXN) { scc.clear(); for (int i = 0; i < N * 2; i++) DAG[i].clear(); }
 };

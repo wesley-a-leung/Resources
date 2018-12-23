@@ -10,7 +10,7 @@ template <const int MAXV> struct DFSOrder {
     vector<int> adj[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); }
     void addBiEdge(int v, int w) { addEdge(v, w); addEdge(w, v); }
-    void clear() { for (int i = 0; i < MAXV; i++) adj[i].clear(); }
+    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     void dfs(int v) {
         preOrd[preInd[v] = curPre++] = v;
         for (int w : adj[v]) if (preInd[w] == -1) dfs(w);

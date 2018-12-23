@@ -20,7 +20,7 @@ template <const int MAXV> struct LCA_Euler {
         ord[size + cnt++] = cur;
         if (head[cur] == -1) head[cur] = cnt - 1;
     }
-    void clear() { for (int i = 0; i < MAXV; i++) adj[i].clear(); }
+    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     void run(int V, int root = 0) {
         size = 2 * V - 1; curInd = cnt = 0; fill(head, head + V, -1); dfs(root, -1);
         for (int i = 2 * size - 2; i > 1; i -= 2) ord[i / 2] = min(ord[i], ord[i ^ 1]);

@@ -16,7 +16,7 @@ template <const int MAXV, const int MAXLGV> struct LCA_RMQ {
     }
     int minDep(int v, int w) { return dep[v] < dep[w] ? v : w; }
     int RMQ(int l, int r) { int i = 31 - __builtin_clz(r - l + 1); return minDep(rmq[i][l], rmq[i][r - (1 << i) + 1]); }
-    void clear() { for (int i = 0; i < MAXV; i++) adj[i].clear(); }
+    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     void run(int V, int root = 0) {
         ind = 0; dfs(root, -1, 0); int lg = 32 - __builtin_clz(V * 2 - 1); assert(lg < MAXLGV);
         for (int i = 0; i < lg - 1; i++) for (int j = 0; j < ind; j++) rmq[i + 1][j] = minDep(rmq[i][j], rmq[i][min(j + (1 << i), ind - 1)]);

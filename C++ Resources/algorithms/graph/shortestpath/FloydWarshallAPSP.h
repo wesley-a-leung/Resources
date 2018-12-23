@@ -8,7 +8,7 @@ using namespace std;
 // Memory Complexity: O(V^2)
 template <const int MAXV, class unit> struct FloydWarshallAPSP {
     unit INF, dist[MAXV][MAXV]; bool hasNegativeCycle; FloydWarshallAPSP(unit INF) : INF(INF) {}
-    void init() { for (int i = 0; i < MAXV; i++) fill(dist[i], dist[i] + MAXV, INF); }
+    void init(int V = MAXV) { for (int i = 0; i < V; i++) fill(dist[i], dist[i] + V, INF); }
     void addEdge(int v, int w, unit weight) { dist[v][w] = min(dist[v][w], weight); }
     void addBiEdge(int v, int w, unit weight) { addEdge(v, w, weight); addEdge(w, v, weight); }
     void run(int V) {

@@ -12,7 +12,7 @@ template <const int MAXV> struct ConnectedComponents {
         id[v] = int(components.size()) - 1; components.back().push_back(v);
         for (int w : adj[v]) if (id[w] == -1) dfs(w);
     }
-    void clear() { components.clear(); for (int i = 0; i < MAXV; i++) adj[i].clear(); }
+    void clear(int V = MAXV) { components.clear(); for (int i = 0; i < V; i++) adj[i].clear(); }
     void run(int V) {
         fill(id, id + V, -1);
         for (int v = 0; v < V; v++) if (id[v] == -1) { components.emplace_back(); dfs(v); }

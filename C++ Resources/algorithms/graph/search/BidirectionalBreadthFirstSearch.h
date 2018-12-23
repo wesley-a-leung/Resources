@@ -9,10 +9,10 @@ template <const int MAXV> struct BFS {
     int dist[MAXV], src[MAXV], to[MAXV]; vector<int> adj[MAXV]; pair<int, int> edgeOnPath;
     void addEdge(int v, int w) { adj[v].push_back(w); }
     void addBiEdge(int v, int w) { addEdge(v, w); addEdge(w, v); }
-    void clear() { for (int i = 0; i < MAXV; i++) adj[i].clear(); }
-    int bfs(int s, int t) {
+    void clear(int V = MAXV) { for (int i = 0; i < MAXV; i++) adj[i].clear(); }
+    int bfs(int V, int s, int t) {
         if (s == t) return 0;
-        fill(dist, dist + MAXV, INT_MAX); fill(to, to + MAXV, -1);
+        fill(dist, dist + V, INT_MAX); fill(to, to + V, -1);
         queue<int> q; dist[s] = dist[t] = 0; q.push(src[s] = s); q.push(src[t] = t);
         while (!q.empty()) {
             int v = q.front(); q.pop();

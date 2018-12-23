@@ -16,7 +16,7 @@ template <const int MAXV, const int MAXLGV, class unit> struct APSPTree {
     }
     int minDep(int v, int w) { return dep[v] < dep[w] ? v : w; }
     int RMQ(int l, int r) { int i = 31 - __builtin_clz(r - l + 1); return minDep(rmq[i][l], rmq[i][r - (1 << i) + 1]); }
-    void clear() { for (int i = 0; i < MAXV; i++) adj[i].clear(); }
+    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     void run(int V) {
         ind = 0; int lg = 32 - __builtin_clz(V * 2 - 1); assert(lg < MAXLGV); fill(root, root + V, -1);
         for (int i = 0; i < V; i++) if (root[i] == -1) dfs(i, -1, i, 0, 0);

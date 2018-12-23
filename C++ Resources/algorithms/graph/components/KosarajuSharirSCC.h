@@ -17,7 +17,7 @@ template <const int MAXV> struct KosarajuSharirSCC {
         vis[v] = true; id[v] = components.size() - 1; components.back().push_back(v);
         for (int w : adj[v]) if (!vis[v]) dfs(w);
     }
-    void clear() { components.clear(); for (int i = 0; i < MAXV; i++) { adj[i].clear(); rev[i].clear(); } }
+    void clear(int V = MAXV) { components.clear(); for (int i = 0; i < V; i++) { adj[i].clear(); rev[i].clear(); } }
     void run(int V) {
         fill(vis, vis + V, false);
         for (int v = 0; v < V; v++) for (int w : adj[v]) rev[w].push_back(v);

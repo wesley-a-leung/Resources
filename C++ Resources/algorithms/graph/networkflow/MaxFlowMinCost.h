@@ -42,7 +42,7 @@ template <const int MAXV, class flowUnit, class costUnit> struct MaxFlowMinCost 
         }
         return dist[t] != COST_INF;
     }
-    void init() { fill(last, last + MAXV, -1); hasNegativeEdgeCost = false; }
+    void init(int V = MAXV) { fill(last, last + V, -1); hasNegativeEdgeCost = false; }
     void clear() { e.clear(); }
     pair<flowUnit, costUnit> getMaxFlowMinCost(int V, int s, int t) {
         flowUnit flow = 0; costUnit cost = 0; fill(phi, phi + V, 0);

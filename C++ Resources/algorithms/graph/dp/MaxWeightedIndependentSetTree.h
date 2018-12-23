@@ -17,9 +17,9 @@ template <const int MAXV> struct MaxWeightedIndependentSet {
         }
         return dp[v][take] = ret;
     }
-    void clear() { for (int i = 0; i < MAXV; i++) adj[i].clear(); }
-    int solve(int root = 0) {
-        fill(dp, dp + MAXV, -1);
+    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
+    int solve(int V, int root = 0) {
+        fill(dp, dp + V, -1);
         return max(dfs(root, true), dfs(root, false));
     }
 };

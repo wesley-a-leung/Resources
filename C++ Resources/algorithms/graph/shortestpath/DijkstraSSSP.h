@@ -9,7 +9,7 @@ template <const int MAXV, class unit> struct DijkstraSSSP {
     unit INF, dist[MAXV]; pair<int, unit> to[MAXV]; vector<pair<int, unit>> adj[MAXV]; DijkstraSSSP(unit INF) : INF(INF) {}
     void addEdge(int v, int w, unit weight) { adj[v].emplace_back(w, weight); }
     void addBiEdge(int v, int w, unit weight) { addEdge(v, w, weight); addEdge(w, v, weight); }
-    void clear() { for (int i = 0; i < MAXV; i++) adj[i].clear(); }
+    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     void run(int V, const vector<int> &src) {
         priority_queue<pair<unit, int>, vector<pair<unit, int>>, greater<pair<unit, int>>> PQ;
         fill(dist, dist + V, INF); fill(to, to + V, make_pair(-1, 0));

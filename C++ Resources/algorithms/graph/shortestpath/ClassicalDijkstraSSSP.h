@@ -10,7 +10,7 @@ template <const int MAXV, class unit> struct ClassicalDijkstraSSSP {
     ClassicalDijkstraSSSP(unit INF) : INF(INF) {}
     void addEdge(int v, int w, unit weight) { adj[v].emplace_back(w, weight); }
     void addBiEdge(int v, int w, unit weight) { addEdge(v, w, weight); addEdge(w, v, weight); }
-    void clear() { for (int i = 0; i < MAXV; i++) adj[i].clear(); }
+    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     void run(int V, const vector<int> &src) {
         fill(dist, dist + V, INF); fill(to, to + V, make_pair(-1, 0)); fill(done, done + V, false);
         for (int s : src) dist[s] = 0;
