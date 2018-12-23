@@ -145,14 +145,8 @@ template <typename Value, typename Comparator = less<Value>> struct SBTSet {
         return VAL[select(root, k)];
     }
     int getRank(Value val) { return getRank(root, val); }
-    vector<Value> values() {
-        vector<Value> queue; valuesInOrder(root, queue);
-        return queue;
-    }
-    vector<Value> values(Value lo, Value hi) {
-        vector<Value> queue; values(root, queue, lo, hi); 
-        return queue;
-    }
+    vector<Value> values() { vector<Value> queue; valuesInOrder(root, queue); return queue; }
+    vector<Value> values(Value lo, Value hi) { vector<Value> queue; values(root, queue, lo, hi); return queue; }
     int size(Value lo, Value hi) {
         if (cmp(hi, lo)) return 0;
         if (contains(hi)) return getRank(hi) - getRank(lo) + 1;
