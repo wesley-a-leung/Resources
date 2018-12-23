@@ -122,12 +122,14 @@ struct BigInt {
         trim();
     }
     friend istream& operator >> (istream &stream, BigInt &v) { string s; stream >> s; v.read(s); return stream; }
-    friend ostream& operator << (ostream &stream, const BigInt &v) {
-        if (v.sign == -1) stream << '-';
-        stream << (v.a.empty() ? 0 : v.a.back());
-        for (int i = (int) v.a.size() - 2; i >= 0; i--) stream << setw(1) << setfill('0') << v.a[i];
-        return stream;
+    string write() const {
+        string ret = "";
+        if (sign == -1) ret.push_back('-');
+        ret.push_back('0' + (a.empty() ? 0 : a.back()));
+        for (int i = int(a.size()) - 2; i >= 0; i--) ret.push_back('0' + a[i]);
+        return ret;
     }
+    friend ostream& operator << (ostream &stream, const BigInt &v) { stream << v.write(); return stream; }
     void fft(vector<complex<double> > & a, bool invert) const {
         int n = (int) a.size();
         for (int i = 1, j = 0; i < n; i++) {
