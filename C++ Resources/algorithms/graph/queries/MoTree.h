@@ -37,11 +37,8 @@ template <const int MAXV, const int MAXQ, const int BLOCKSZ, const int MAXLGV> s
         for (int i = 0; i < Q; i++) {
             int v = q[i].l, w = q[i].r; q[i].lca = lca(v, w);
             if (pre[v] > pre[w]) swap(v, w);
-            if (q[i].lca == v) {
-                q[i].l = pre[v]; q[i].r = pre[w];
-            } else {
-                q[i].l = post[v]; q[i].r = pre[w];
-            }
+            if (q[i].lca == v) { q[i].l = pre[v]; q[i].r = pre[w]; }
+            else { q[i].l = post[v]; q[i].r = pre[w]; }
             q[i].ind = i; q[i].block = q[i].l / BLOCKSZ;
         }
         sort(q, q + Q); int l = q[0].l, r = l - 1; curAns = 0;
@@ -55,5 +52,5 @@ template <const int MAXV, const int MAXQ, const int BLOCKSZ, const int MAXLGV> s
             if (q[i].lca != vert[l] && q[i].lca != vert[r]) update(q[i].lca);
         }
     }
-    void clear() { Q = 0; for (int i = 0; i < MAXV; i++) adj[i].clear(); }
+    void clear(int V = MAXV) { Q = 0; for (int i = 0; i < V; i++) adj[i].clear(); }
 };

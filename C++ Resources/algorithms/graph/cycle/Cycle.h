@@ -42,7 +42,7 @@ template <const int MAXV> struct Cycle {
             }
         }
     }
-    void clear() { cycle.clear(); for (int i = 0; i < MAXV; i++) adj[i].clear(); }
+    void clear(int V = MAXV) { cycle.clear(); for (int i = 0; i < V; i++) adj[i].clear(); }
     bool run(int V) { // returns true if there is a cycle
         if (hasSelfLoop(V) || hasParallelEdges(V)) return true;
         fill(vis, vis + V, false);

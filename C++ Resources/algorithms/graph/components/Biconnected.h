@@ -28,7 +28,7 @@ template <const int MAXV> struct Biconnected {
             }
         }
     }
-    void clear() { bridges.clear(); components.clear(); for (int i = 0; i < MAXV; i++) adj[i].clear(); }
+    void clear(int V = MAXV) { bridges.clear(); components.clear(); for (int i = 0; i < V; i++) adj[i].clear(); }
     void run(int V) {
         cur = 0;
         for (int v = 0; v < V; v++) { low[v] = pre[v] = -1; articulation[v] = false; }

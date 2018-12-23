@@ -21,7 +21,7 @@ template <const int MAXV> struct TarjanSCC {
             id[w] = components.size() - 1; components.back().push_back(w); low[w] = INT_MAX;
         } while (w != v);
     }
-    void clear() { components.clear(); for (int i = 0; i < MAXV; i++) adj[i].clear(); }
+    void clear(int V = MAXV) { components.clear(); for (int i = 0; i < V; i++) adj[i].clear(); }
     void run(int V) {
         fill(vis, vis + V, false); pre = 0;
         for (int v = 0; v < V; v++) if (!vis[v]) dfs(v);

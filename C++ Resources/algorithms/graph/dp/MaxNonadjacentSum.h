@@ -19,9 +19,9 @@ template <const int MAXV> struct MaxNonadjacentSum {
         }
         return dp[v][take] = ret;
     }
-    void clear() { for (int i = 0; i < MAXV; i++) adj[i].clear(); }
-    int solve(int s, int t) {
-        fill(dp, dp + MAXV, -1);
+    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
+    int solve(int V, int s, int t) {
+        fill(dp, dp + V, -1);
         return dfs(s, t, true);
     }
 };

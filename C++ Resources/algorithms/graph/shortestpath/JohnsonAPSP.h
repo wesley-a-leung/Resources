@@ -11,7 +11,7 @@ template <const int MAXV, class unit> struct JohnsonAPSP {
     pair<int, unit> to[MAXV][MAXV]; bool hasNegativeCycle; vector<pair<int, unit>> adj[MAXV];
     void addEdge(int v, int w, unit weight) { adj[v].emplace_back(w, weight); }
     void addBiEdge(int v, int w, unit weight) { addEdge(v, w, weight); addEdge(w, v, weight); }
-    void clear() { for (int i = 0; i < MAXV; i++) adj[i].clear(); }
+    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     void run(int V) {
         for (int v = 0; v < V; v++) { fill(dist[v], dist[v] + V, INF); fill(to[v], to[v] + V, make_pair(-1, 0)); }
         fill(h, h + V, INF); h[V] = 0;

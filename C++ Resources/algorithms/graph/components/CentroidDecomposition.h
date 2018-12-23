@@ -26,8 +26,8 @@ template <const int MAXV> struct CentroidDecomposition {
         }
         return (hasCentroid &= n - size <= n / 2) ? v : -size;
     }
-    void init() { fill(exclude, exclude + MAXV, false); fill(par, par + MAXV, -1); }
-    void clear() { for (int i = 0; i < MAXV; i++) adj[i].clear(); }
+    void init(int V = MAXV) { fill(exclude, exclude + V, false); fill(par, par + V, -1); }
+    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     int getCentroid(int v) {
         int c = getCentroid(v, -1, getSize(v, -1)); exclude[c] = true;
         return c;

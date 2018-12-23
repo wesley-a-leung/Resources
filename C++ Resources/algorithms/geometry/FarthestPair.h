@@ -9,10 +9,10 @@ using namespace std;
 // Memory Complexity: O(N)
 template <const int MAXN> struct FarthestPair {
     Point P[MAXN], hull[MAXN], best1, best2; double bestDist;
-    ConvexHull<MAXN> H;
     void solve(int N) {
         bestDist = -numeric_limits<double>::infinity();
         if (N <= 1) return;
+        ConvexHull<MAXN> H;
         copy(P, P + N, H.P);
         H.run(N);
         int M = 1;

@@ -6,9 +6,9 @@ using namespace std;
 // that can hold a maximum of M weight, allowing for repeated instances of items
 // Time Complexity: O(NM)
 // Space Complexity: O(N + M)
-template <const int MAXN, const int MAXM, class TV> struct UnboundedKnapsack {
-    int W[MAXN]; TV V[MAXN], dp[MAXM];
-    TV solve(int N, int M) {
+template <const int MAXN, const int MAXM, class value_type> struct UnboundedKnapsack {
+    int W[MAXN]; value_type V[MAXN], dp[MAXM];
+    value_type solve(int N, int M) {
         for (int j = 0; j <= M; j++) for (int i = 0; i < N; i++) if (W[i] <= j) dp[j] = max(dp[j], dp[j - W[i]] + V[i]);
         return dp[M];
     }

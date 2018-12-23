@@ -25,7 +25,7 @@ template <const int MAXV, class unit> struct EdmondsKarpMaxFlow {
         }
         return vis[t];
     }
-    void init() { fill(last, last + MAXV, -1); fill(cut, cut + MAXV, false); }
+    void init(int V = MAXV) { fill(last, last + V, -1); fill(cut, cut + V, false); }
     void clear() { e.clear(); }
     unit getFlow(int V, int s, int t) {
         maxFlow = 0;

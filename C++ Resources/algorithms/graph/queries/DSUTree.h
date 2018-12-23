@@ -35,5 +35,5 @@ template <const int MAXV, const int MAXQ> struct DSUTree {
         fill(isHeavy, isHeavy + V, false);
         getSize(0, -1); dfs(0, -1, 0);
     }
-    void clear() { Q = 0; for (int i = 0; i < MAXV; i++) { adj[i].clear(); q[i].clear(); } }
+    void clear(int V = MAXV) { Q = 0; for (int i = 0; i < V; i++) { adj[i].clear(); q[i].clear(); } }
 };

@@ -19,7 +19,7 @@ template <const int MAXV, const int MAXQ, const int BLOCKSZ> struct DynamicConne
         for (auto && e : adj2[v]) if (vis[e.first] != i && dfs2(e.first, t, i)) return true;
         return false;
     }
-    void clear() { ans.clear(); Q = 0; for (int i = 0; i < MAXV; i++) { adj[i].clear(); toRem[i].clear(); adj2[i].clear(); } }
+    void clear(int V = MAXV) { ans.clear(); Q = 0; for (int i = 0; i < V; i++) { adj[i].clear(); toRem[i].clear(); adj2[i].clear(); } }
     void addEdge(int v, int w) { q[Q++] = {1, v, w}; }
     void removeEdge(int v, int w) { q[Q++] = {-1, v, w}; }
     void query() { q[Q++] = {0, -1, -1}; }
