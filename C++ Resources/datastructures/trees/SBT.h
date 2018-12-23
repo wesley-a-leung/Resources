@@ -154,12 +154,10 @@ template <typename Key, typename Value, typename Comparator = less<Key>> struct 
     }
     int getRank(Key key) { return getRank(root, key); }
     vector<pair<Key, Value>> keyValuePairs() {
-        vector<pair<Key, Value>> queue; keyValuePairsInOrder(root, queue);
-        return queue;
+        vector<pair<Key, Value>> queue; keyValuePairsInOrder(root, queue); return queue;
     }
     vector<pair<Key, Value>> keyValuePairs(Key lo, Key hi) {
-        vector<pair<Key, Value>> queue; keyValuePairs(root, queue, lo, hi);
-        return queue;
+        vector<pair<Key, Value>> queue; keyValuePairs(root, queue, lo, hi); return queue;
     }
     int size(Key lo, Key hi) {
         if (cmp(hi, lo)) return 0;
