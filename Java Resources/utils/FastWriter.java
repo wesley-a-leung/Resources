@@ -25,8 +25,8 @@ public class FastWriter {
         setFill(' ');
     }
 
-    public FastWriter(String file_name) throws IOException {
-        dout = new DataOutputStream(new FileOutputStream(file_name));
+    public FastWriter(String fileName) throws IOException {
+        dout = new DataOutputStream(new FileOutputStream(fileName));
         buffer = new byte[BUFFER_SIZE];
         numBuffer = new byte[MAX_NUM_LENGTH];
         tempBuffer = new byte[MAX_NUM_LENGTH];
