@@ -24,6 +24,6 @@ class Reader {
     fun nextChar(): Char = next()[0]
     fun nextDouble(): Double = next().toDouble()
     fun nextInt(): Int = next().toInt()
-    fun nextLong(): Long  = next().toLong()
+    fun nextLong(): Long = next().toLong()
     fun close(): Unit = In.close()
 }

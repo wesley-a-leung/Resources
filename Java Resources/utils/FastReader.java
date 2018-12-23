@@ -18,8 +18,8 @@ public class FastReader {
         bufferPointer = bytesRead = 0;
     }
 
-    public FastReader(String file_name) throws IOException {
-        din = new DataInputStream(new FileInputStream(file_name));
+    public FastReader(String fileName) throws IOException {
+        din = new DataInputStream(new FileInputStream(fileName));
         buffer = new byte[BUFFER_SIZE];
         bufferPointer = bytesRead = 0;
     }
