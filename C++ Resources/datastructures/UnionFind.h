@@ -12,8 +12,7 @@ template <const int MAXN> struct UnionFind {
     void init(int N) { cnt = N; fill(UF, UF + MAXN, -1); }
     int find(int v) { return UF[v] < 0 ? v : UF[v] = find(UF[v]); }
     bool join(int v, int w) {
-        v = find(v); w = find(w);
-        if (v == w) return false;
+        if ((v = find(v)) == (w = find(w))) return false;
         if (UF[v] > UF[w]) swap(v, w);
         UF[v] += UF[w]; UF[w] = v; cnt--;
         return true;
