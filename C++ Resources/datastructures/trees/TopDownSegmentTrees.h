@@ -74,11 +74,12 @@ template <const int MAXN> struct LazySegmentTree {
         int m = cL + (cR - cL) / 2;
         return merge(query(cur * 2, cL, m, l, r), query(cur * 2 + 1, m + 1, cR, l, r));
     }
-    template <class It> LazySegmentTree(It st, It en): N(en - st) {
+    template <class It> void init(It st, It en) {
+        N = en - st;
         for (int i = 1; i <= N; i++) A[i] = *(st + i - 1);
         build(1, 1, N);
     }
-    LazySegmentTree(int size) : N(size) { fill(A + 1, A + N, vdef); build(1, 1, size); }
+    void init(int size) { N = size; fill(A + 1, A + N, vdef); build(1, 1, size); }
     void update(int l, int r, const Lazy &val) { update(1, 1, N, l, r, val); }
     Data query(int l, int r) { return query(1, 1, N, l, r); }
 };

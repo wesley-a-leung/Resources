@@ -2,13 +2,13 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// FenwickTree supporting range updates with updates in the form of
-// adding v, 2v, 3v, ... to the interval [l, r], and range queries
+// Fenwick Tree supporting range updates with updates in the form of
+// adding v, 2v, 3v, ... to the interval [l, r], and range sum queries
 // Time Complexity:
 //   constructor: O(N)
 //   update, rsq: O(log N)
 // Memory Complexity: O(N)
-template <const int MAXN, class T> struct FenwickTreeQuadratic {
+template <const int MAXN, class T> struct FenwickTreeLinear {
     array<T, MAXN> con, lin, quad;
     T rsq(array<T, MAXN> &BIT, int i) { T ret = 0; for (; i > 0; i -= i & -i) ret += BIT[i]; return ret; }
     void update(array<T, MAXN> &BIT, int i, T v) { for (; i < MAXN; i += i & -i) BIT[i] += v; }
