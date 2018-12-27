@@ -100,13 +100,11 @@ class FastReader {
     fun nextLine(): String {
         var c: Byte
         var cnt: Int = 0
-        do {
+        c = read()
+        while (c.toInt() != 10) {
+            if (c.toInt() != 13) buf[cnt++] = c.toChar()
             c = read()
-        } while (c <= 32)
-        do {
-            buf[cnt++] = c.toChar()
-            c = read()
-        } while (c >= 32)
+        }
         return String(buf, 0, cnt)
     }
 
@@ -117,6 +115,11 @@ class FastReader {
 
     fun hasNext(): Boolean {
         while (peek() > -1 && peek() <= 32) read()
+        return peek() > -1
+    }
+
+    fun hasNextLine(): Boolean {
+        while (peek() > -1 && peek().toInt() == 13) read()
         return peek() > -1
     }
 
