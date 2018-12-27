@@ -93,12 +93,7 @@ public class FastReader {
     public String nextLine() throws IOException {
         int cnt = 0;
         byte c;
-        do {
-            c = read();
-        } while (c <= ' ');
-        do {
-            buf[cnt++] = c;
-        } while ((c = read()) >= ' ');
+        while ((c = read()) != '\n') if (c != '\r') buf[cnt++] = c;
         return new String(buf, 0, cnt);
     }
     
@@ -109,6 +104,11 @@ public class FastReader {
 
     public boolean hasNext() throws IOException {
         while (peek() != -1 && peek() <= ' ') read();
+        return peek() != -1;
+    }
+
+    public boolean hasNextLine() throws IOException {
+        while (peek() != -1 && peek() == '\r') read();
         return peek() != -1;
     }
 
