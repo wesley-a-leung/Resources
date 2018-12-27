@@ -119,7 +119,7 @@ class FastReader {
     }
 
     fun hasNextLine(): Boolean {
-        while (peek() > -1 && peek().toInt() == 13) read()
+        while (peek().toInt() == 13) read()
         return peek() > -1
     }
 
