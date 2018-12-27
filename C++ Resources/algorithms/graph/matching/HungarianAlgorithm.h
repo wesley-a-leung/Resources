@@ -84,7 +84,7 @@ template <const int MAXWJ, class unit> struct HungarianAlgorithm {
             }
         }
     }
-    void init(int maxwj = MAXWJ) { for (int i = 0; i < maxwj; i++) fill(matrix[i], matrix[i] + maxwj, 0); }
+    void init(int maxwj = MAXWJ) { for (int i = 0; i < maxwj; i++) fill(matrix[i], matrix[i] + maxwj, INF); }
     unit run(int workers, int jobs) {
         dim = max(workers, jobs); rows = workers; cols = jobs;
         for (int i = 0; i < dim; i++) {
