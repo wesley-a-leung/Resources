@@ -108,7 +108,7 @@ public class FastReader {
     }
 
     public boolean hasNextLine() throws IOException {
-        while (peek() != -1 && peek() == '\r') read();
+        while (peek() == '\r') read();
         return peek() != -1;
     }
 
