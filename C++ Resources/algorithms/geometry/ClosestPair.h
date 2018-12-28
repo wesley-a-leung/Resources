@@ -21,8 +21,7 @@ template <const int MAXN> struct ClosestPair {
     double closest(int lo, int hi) {
         if (hi <= lo) return numeric_limits<double>::infinity();
         int mid = lo + (hi - lo) / 2; Point median = P[mid];
-        double delta = min(closest(lo, mid), closest(mid + 1, hi));
-        merge(lo, mid, hi); int m = 0;
+        double delta = min(closest(lo, mid), closest(mid + 1, hi)); merge(lo, mid, hi); int m = 0;
         for (int i = lo; i <= hi; i++) if (abs(pointsByY[i].x - median.x) < delta) aux[m++] = pointsByY[i];
         for (int i = 0; i < m; i++) {
             for (int j = i + 1; (j < m) && (aux[j].y - aux[i].y < delta); j++) {
@@ -35,16 +34,11 @@ template <const int MAXN> struct ClosestPair {
         }
         return delta;
     }
-    void solve(int N) {
-        if (N <= 1) return;
+    double solve(int N) {
+        if (N <= 1) return bestDist;
         sort(P, P + N, Point::xOrderLt);
-        for (int i = 0; i < N - 1; i++) {
-            if (P[i] == P[i + 1]) {
-                bestDist = 0; best1 = P[i]; best2 = P[i + 1]; 
-                return;
-            }
-        }
+        for (int i = 0; i < N - 1; i++) if (P[i] == P[i + 1]) { bestDist = 0; best1 = P[i]; best2 = P[i + 1]; return bestDist; }
         for (int i = 0; i < N; i++) pointsByY[i] = P[i];
-        closest(0, N - 1);
+        closest(0, N - 1); return bestDist;
     }
 };
