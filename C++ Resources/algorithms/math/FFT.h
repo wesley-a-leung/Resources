@@ -14,7 +14,7 @@ template <class T> pair<T, T> operator - (const pair<T, T> &a, const pair<T, T> 
 template <class T> pair<T, T> operator * (const pair<T, T> &a, const pair<T, T> &b) {
     return make_pair(a.first * b.first - a.second * b.second, a.first * b.second + a.second * b.first);
 }
-template <class T> pair<T, T> operator / (const pair<T, T> &a, const T &b) {
+template <class T, class U> pair<T, T> operator / (const pair<T, T> &a, const U &b) {
     return make_pair(a.first / b, a.second / b);
 }
 
@@ -37,7 +37,7 @@ void fft(vector<pair<double, double>> &a, bool invert) {
             }
         }
     }
-    if (invert) for (int i = 0; i < N; i++) a[i] = a[i] / double(N);
+    if (invert) for (int i = 0; i < N; i++) a[i] = a[i] / N;
 }
 
 void multiplyInteger(vector<int> &a, vector<int> &b, vector<int> &res) {
