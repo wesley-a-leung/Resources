@@ -68,7 +68,10 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree_RAM_RQ {
         if (i < N) L[i] = mergeLazy(L[i], v);
     }
     void pushup(int i) {
-        for (int k = 2; i > 1; k <<= 1) { i >>= 1; T[i] = L[i] == ldef ? merge(T[i << 1], T[i << 1 | 1]) : getSegmentVal(L[i], k); }
+        for (int k = 2; i > 1; k <<= 1) {
+            i >>= 1;
+            T[i] = L[i] == ldef ? merge(T[i << 1], T[i << 1 | 1]) : applyVal(merge(T[i << 1], T[i << 1 | 1]), getSegmentVal(L[i], k));
+        }
     }
     void propagate(int i) {
         for (int h = H, k = 1 << (H - 1); h > 0; h--, k >>= 1) {
