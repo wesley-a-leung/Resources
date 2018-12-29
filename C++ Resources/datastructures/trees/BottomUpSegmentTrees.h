@@ -60,17 +60,17 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree_RAM_RQ {
     const Lazy ldef = 0; // lazy default value
     // operation must be associative (but not necessarily commutative)
     Data merge(Data l, Data r); // to be implemented
-    Data getSegmentVal(Lazy v, int k); // to be implemented
+    Lazy getSegmentVal(Lazy v, int k); // to be implemented
     Lazy mergeLazy(Lazy l, Lazy r); // to be implemented
-    Data applyVal(Data l, Data r); // to be implemented
+    Data applyLazy(Data l, Lazy r); // to be implemented
     void apply(int i, Lazy v, int k) {
-        T[i] = applyVal(T[i], getSegmentVal(v, k));
+        T[i] = applyLazy(T[i], getSegmentVal(v, k));
         if (i < N) L[i] = mergeLazy(L[i], v);
     }
     void pushup(int i) {
         for (int k = 2; i > 1; k <<= 1) {
             i >>= 1;
-            T[i] = L[i] == ldef ? merge(T[i << 1], T[i << 1 | 1]) : applyVal(merge(T[i << 1], T[i << 1 | 1]), getSegmentVal(L[i], k));
+            T[i] = L[i] == ldef ? merge(T[i << 1], T[i << 1 | 1]) : applyLazy(merge(T[i << 1], T[i << 1 | 1]), getSegmentVal(L[i], k));
         }
     }
     void propagate(int i) {
