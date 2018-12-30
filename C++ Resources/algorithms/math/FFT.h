@@ -40,6 +40,7 @@ void fft(vector<pair<double, double>> &a, bool invert) {
     if (invert) for (int i = 0; i < N; i++) a[i] = a[i] / N;
 }
 
+// Multiplies 2 big integers
 void multiplyInteger(vector<int> &a, vector<int> &b, vector<int> &res) {
     int N = int(a.size()) + int(b.size());
     while (N & (N - 1)) N++;

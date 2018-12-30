@@ -41,13 +41,13 @@ template <class T> T powMod(T base, T pow, T mod) {
 // Modular Multiplicative Inverse of i in Zp for a prime p
 // Time Complexity: O(log p)
 template <class T> T multInv(T i, T p) {
-    return powMod(i, p - 2, p);
+    return powMod(i % p, p - 2, p);
 }
 
 // i / j % p for a prime p
 // Time Complexity: O(log p)
 template <class T> T divMod(T i, T j, T p) {
-    return i * powMod(j, p - 2, p) % p;
+    return i % p * powMod(j % p, p - 2, p) % p;
 }
 
 // n choose k
