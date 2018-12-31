@@ -29,8 +29,7 @@ void fft(vector<pair<F, F>> &a, bool invert) {
         if (i < j) swap(a[i], a[j]);
     }
     for (int len = 2; len <= N; len <<= 1) {
-        double ang = 2 * PI / len * (invert ? -1 : 1);
-        pair<F, F> wlen(cos(ang), sin(ang));
+        double ang = 2 * PI / len * (invert ? -1 : 1); pair<F, F> wlen(cos(ang), sin(ang));
         for (int i = 0; i < N; i += len) {
             pair<F, F> w(1, 0);
             for (int j = 0; j < len / 2; j++) {
