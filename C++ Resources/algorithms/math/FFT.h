@@ -4,9 +4,7 @@ using namespace std;
 
 // Time Complexity of all functions: O(log max(size(a), size(b)))
 
-using F = double;
-const int CUTOFF = 600, BASE = 10;
-const F PI = acos(-1);
+using F = double; const int CUTOFF = 600, BASE = 10; const F PI = acos(-1);
 template <class T> pair<T, T> operator + (const pair<T, T> &a, const pair<T, T> &b) {
     return make_pair(a.first + b.first, a.second + b.second);
 }
