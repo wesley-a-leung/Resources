@@ -27,15 +27,21 @@ template <class T> T powMod(T base, T pow, T mod) {
     return x;
 }
 
+seed_seq seq {
+    (uint64_t)chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
+    (uint64_t)__builtin_ia32_rdtsc(),(uint64_t)(uintptr_t)make_unique<char>().get()
+};
+mt19937_64 rng64(seq);
+
 // Determines whether N is prime using the Miller Rabin Primality Test
-// Time Complexity: O((log N)^3) * iterations
+// Time Complexity: O(log N) * (time to square 2 integers) * iterations
 // Memory Complexity: O(1)
 template <class T> bool millerRabin(T N, int iterations) {
     if (N < 2 || (N != 2 && N % 2 == 0)) return false;
-    mt19937_64 rng(time(0)); T s = N - 1;
+    T s = N - 1;
     while (s % 2 == 0) s /= 2;
     for (int i = 0; i < iterations; i++) {
-        T temp = s, r = powMod(T(rng() % (N - 1) + 1), temp, N);
+        T temp = s, r = powMod(T(rng64() % (N - 1) + 1), temp, N);
         while (temp != N - 1 && r != 1 && r != N - 1) { r = r * r % N; temp *= 2; }
         if (r != N - 1 && temp % 2 == 0) return false;
     }
