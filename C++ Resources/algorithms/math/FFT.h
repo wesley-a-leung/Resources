@@ -41,6 +41,7 @@ void fft(vector<pair<F, F>> &a, bool invert) {
 
 // Multiplies 2 big integers
 template <class T> void multiplyInteger(vector<T> &a, vector<T> &b, vector<T> &res) {
+    static_assert(is_integral<T>::value, "T must be an integral type");
     if (min(int(a.size()), int(b.size())) <= CUTOFF) {
         res.resize(int(a.size()) + int(b.size()), 0); T carry = 0;
         for (int i = 0; i < int(a.size()); i++) for (int j = 0; j < int(b.size()); j++) res[i + j] += a[i] * b[j];
