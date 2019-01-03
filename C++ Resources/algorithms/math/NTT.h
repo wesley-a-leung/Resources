@@ -39,7 +39,7 @@ T primitiveRoot(T p) {
 // for MOD > 1e9:
 //   C = 479, K = 21
 //   C = 483, K = 21
-const T C = 479, K = 21, PK = 1 << K, MOD = C * PK + 1, ROOT = powMod(primitiveRoot(MOD), C, MOD), INVROOT = multInv(ROOT, MOD);
+const T C = 119, K = 23, PK = 1 << K, MOD = C * PK + 1, ROOT = powMod(primitiveRoot(MOD), C, MOD), INVROOT = multInv(ROOT, MOD);
 
 void fft(vector<T> &a, bool invert) {
     int N = int(a.size());
