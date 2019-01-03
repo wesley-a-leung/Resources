@@ -74,6 +74,7 @@ template <class T> void multiplyPolynomial(vector<T> &a, vector<T> &b, vector<T>
         for (int i = 0; i < int(a.size()); i++) for (int j = 0; j < int(b.size()); j++) {
             c[i + j] += a[i] * b[j] % MOD;
             if (c[i + j] >= MOD) c[i + j] -= MOD;
+            else if (c[i + j] < 0) c[i + j] += MOD;
         }
         res.resize(int(a.size()) + int(b.size()) - 1, 0); copy(c.begin(), c.end(), res.begin());
         return;
