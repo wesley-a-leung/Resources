@@ -4,7 +4,7 @@ using namespace std;
 
 // Time Complexity of all functions: O(N log N) where N = max(size(a), size(b))
 
-using T = long long; const int CUTOFF = 600, BASE = 10;
+using T = long long; const int CUTOFF = 600;
 
 template <class T> T powMod(T base, T pow, T mod) {
     T x = 1, y = base % mod;
@@ -41,7 +41,7 @@ T primitiveRoot(T p) {
 //   C = 483, K = 21
 const T C = 119, K = 23, PK = 1 << K, MOD = C * PK + 1, ROOT = powMod(primitiveRoot(MOD), C, MOD), INVROOT = multInv(ROOT, MOD);
 
-void fft(vector<T> &a, bool invert) {
+void ntt(vector<T> &a, bool invert) {
     int N = int(a.size());
     for (int i = 1, j = 0; i < N; i++) {
         int bit = N >> 1;
@@ -66,43 +66,22 @@ void fft(vector<T> &a, bool invert) {
     }
 }
 
-// Multiplies 2 big integers
-template <class T> void multiplyInteger(vector<T> &a, vector<T> &b, vector<T> &res) {
-    static_assert(is_integral<T>::value, "T must be an integral type");
-    if (min(int(a.size()), int(b.size())) <= CUTOFF) {
-        res.resize(int(a.size()) + int(b.size()), 0); T carry = 0;
-        for (int i = 0; i < int(a.size()); i++) for (int j = 0; j < int(b.size()); j++) {
-            res[i + j] += a[i] * b[j] % MOD;
-            if (res[i + j] >= MOD) res[i + j] -= MOD;
-        }
-        for (int i = 0; i < int(res.size()); i++) { res[i] += carry; carry = res[i] / BASE; res[i] %= BASE; }
-        while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
-        return;
-    }
-    int N = int(a.size()) + int(b.size());
-    while (N & (N - 1)) N++;
-    vector<T> fa(N, 0), fb(N, 0); copy(a.begin(), a.end(), fa.begin()); copy(b.begin(), b.end(), fb.begin()); fft(fa, false); fft(fb, false);
-    for (int i = 0; i < N; i++) fa[i] = fa[i] * fb[i] % MOD;
-    fft(fa, true); res.resize(N); T carry = 0;
-    for (int i = 0; i < N; i++) { res[i] = fa[i] + carry; carry = res[i] / BASE; res[i] %= BASE; }
-    while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
-}
-
 // Multiplies 2 polynomials
 template <class T> void multiplyPolynomial(vector<T> &a, vector<T> &b, vector<T> &res) {
     static_assert(is_integral<T>::value, "T must be an integral type");
     if (min(int(a.size()), int(b.size())) <= CUTOFF) {
-        res.resize(int(a.size()) + int(b.size()) - 1, 0);
+        vector<T> c(int(a.size()) + int(b.size()) - 1, 0);
         for (int i = 0; i < int(a.size()); i++) for (int j = 0; j < int(b.size()); j++) {
-            res[i + j] += a[i] * b[j] % MOD;
-            if (res[i + j] >= MOD) res[i + j] -= MOD;
+            c[i + j] += a[i] * b[j] % MOD;
+            if (c[i + j] >= MOD) c[i + j] -= MOD;
         }
+        res.resize(int(a.size()) + int(b.size()) - 1, 0); copy(c.begin(), c.end(), res.begin());
         return;
     }
     int N = int(a.size()) + int(b.size()) - 1;
     while (N & (N - 1)) N++;
-    vector<T> fa(N, 0), fb(N, 0); copy(a.begin(), a.end(), fa.begin()); copy(b.begin(), b.end(), fb.begin()); fft(fa, false); fft(fb, false);
+    vector<T> fa(N, 0), fb(N, 0); copy(a.begin(), a.end(), fa.begin()); copy(b.begin(), b.end(), fb.begin()); ntt(fa, false); ntt(fb, false);
     res.resize(N);
     for (int i = 0; i < N; i++) res[i] = fa[i] * fb[i] % MOD;
-    fft(res, true);
+    ntt(res, true);
 }

@@ -43,9 +43,10 @@ void fft(vector<pair<F, F>> &a, bool invert) {
 template <class T> void multiplyInteger(vector<T> &a, vector<T> &b, vector<T> &res) {
     static_assert(is_integral<T>::value, "T must be an integral type");
     if (min(int(a.size()), int(b.size())) <= CUTOFF) {
-        res.resize(int(a.size()) + int(b.size()), 0); T carry = 0;
-        for (int i = 0; i < int(a.size()); i++) for (int j = 0; j < int(b.size()); j++) res[i + j] += a[i] * b[j];
-        for (int i = 0; i < int(res.size()); i++) { res[i] += carry; carry = res[i] / BASE; res[i] %= BASE; }
+        vector<T> c(int(a.size()) + int(b.size()) - 1, 0); T carry = 0;
+        for (int i = 0; i < int(a.size()); i++) for (int j = 0; j < int(b.size()); j++) c[i + j] += a[i] * b[j];
+        for (int i = 0; i < int(c.size()); i++) { c[i] += carry; carry = c[i] / BASE; c[i] %= BASE; }
+        res.resize(int(a.size()) + int(b.size()) - 1, 0); copy(c.begin(), c.end(), res.begin());
         while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
         return;
     }
@@ -64,8 +65,9 @@ template <class T> void multiplyInteger(vector<T> &a, vector<T> &b, vector<T> &r
 // Multiplies 2 polynomials
 template <class T> void multiplyPolynomial(vector<T> &a, vector<T> &b, vector<T> &res) {
     if (min(int(a.size()), int(b.size())) <= CUTOFF) {
-        res.resize(int(a.size()) + int(b.size()) - 1, 0);
-        for (int i = 0; i < int(a.size()); i++) for (int j = 0; j < int(b.size()); j++) res[i + j] += a[i] * b[j];
+        vector<T> c(int(a.size()) + int(b.size()) - 1, 0);
+        for (int i = 0; i < int(a.size()); i++) for (int j = 0; j < int(b.size()); j++) c[i + j] += a[i] * b[j];
+        res.resize(int(a.size()) + int(b.size()) - 1, 0); copy(c.begin(), c.end(), res.begin());
         while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
         return;
     }
