@@ -2,10 +2,10 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Computes the connected components of a graph
+// Computes the connected components of a graph using dfs
 // Time Complexity: O(V + E)
 // Memory Complexity: O(V + E)
-template <const int MAXV> struct ConnectedComponents {
+template <const int MAXV> struct ConnectedComponentsDFS {
     int id[MAXV]; vector<int> adj[MAXV]; vector<vector<int>> components;
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     void dfs(int v) {
