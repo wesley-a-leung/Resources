@@ -33,12 +33,12 @@ T primitiveRoot(T p) {
 
 // MOD = C * 2 ^ K + 1
 // for MOD < 1e9:
-//   C = 119, K = 23 (MOD = 998244353)
-//   C = 5, K = 25
-//   C = 7, K = 26
+//   C = 119, K = 23 (998244353)
+//   C = 5, K = 25 (167772161)
+//   C = 7, K = 26 (469762049)
 // for MOD > 1e9:
-//   C = 479, K = 21
-//   C = 483, K = 21
+//   C = 479, K = 21 (1004535809)
+//   C = 483, K = 21 (1012924417)
 const T C = 119, K = 23, PK = 1 << K, MOD = C * PK + 1, ROOT = powMod(primitiveRoot(MOD), C, MOD), INVROOT = multInv(ROOT, MOD);
 
 void ntt(vector<T> &a, bool invert) {
