@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Time Complexity of all functions: O(N log N) where N = max(size(a), size(b))
+// Time Complexity of all functions: O(N log N) where N = size(a) + size(b)
 
 using T = long long; const int CUTOFF = 600;
 
