@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Time Complexity of all functions: O(log max(size(a), size(b)))
+// Time Complexity of all functions: O(N log N) where N = max(size(a), size(b))
 
 using F = double; const int CUTOFF = 600, BASE = 10; const F PI = acos(-1);
 template <class T> pair<T, T> operator + (const pair<T, T> &a, const pair<T, T> &b) {
@@ -42,9 +42,9 @@ void fft(vector<pair<F, F>> &a, bool invert) {
 // Multiplies 2 big integers
 template <class T> void multiplyInteger(vector<T> &a, vector<T> &b, vector<T> &res) {
     if (min(int(a.size()), int(b.size())) <= CUTOFF) {
-        res.resize(int(a.size()) + int(b.size()), 0);
+        res.resize(int(a.size()) + int(b.size()), 0); T carry = 0;
         for (int i = 0; i < int(a.size()); i++) for (int j = 0; j < int(b.size()); j++) res[i + j] += a[i] * b[j];
-        for (int i = 0, carry = 0; i < int(res.size()); i++) { res[i] += carry; carry = res[i] / BASE; res[i] %= BASE; }
+        for (int i = 0; i < int(res.size()); i++) { res[i] += carry; carry = res[i] / BASE; res[i] %= BASE; }
         while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
         return;
     }
@@ -55,8 +55,8 @@ template <class T> void multiplyInteger(vector<T> &a, vector<T> &b, vector<T> &r
     for (int i = 0; i < int(b.size()); i++) fb[i] = make_pair(b[i], 0);
     fft(fa, false); fft(fb, false);
     for (int i = 0; i < N; i++) fa[i] = fa[i] * fb[i];
-    fft(fa, true); res.resize(N);
-    for (int i = 0, carry = 0; i < N; i++) { res[i] = (T) (fa[i].first + 0.5) + carry; carry = res[i] / BASE; res[i] %= BASE; }
+    fft(fa, true); res.resize(N); T carry = 0;
+    for (int i = 0; i < N; i++) { res[i] = (T) (fa[i].first + 0.5) + carry; carry = res[i] / BASE; res[i] %= BASE; }
     while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
 }
 
