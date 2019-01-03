@@ -2,6 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+// Number Theoretic Transform 
 // Time Complexity of all functions: O(N log N) where N = size(a) + size(b)
 
 using T = long long; const int CUTOFF = 600;
