@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Time Complexity of all functions: O(N log N) where N = max(size(a), size(b))
+// Time Complexity of all functions: O(N log N) where N = size(a) + size(b)
 
 using F = double; const int CUTOFF = 600, BASE = 10; const F PI = acos(-1);
 template <class T> pair<T, T> operator + (const pair<T, T> &a, const pair<T, T> &b) {
