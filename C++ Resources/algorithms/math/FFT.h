@@ -5,7 +5,7 @@ using namespace std;
 // Fast Fourier Transform 
 // Time Complexity of all functions: O(N log N) where N = size(a) + size(b)
 
-using F = double; const int CUTOFF = 600, BASE = 10; const F PI = acos(-1);
+using F = double; const int CUTOFF = 150, BASE = 10; const F PI = acos(-1);
 template <class T> pair<T, T> operator + (const pair<T, T> &a, const pair<T, T> &b) {
     return make_pair(a.first + b.first, a.second + b.second);
 }
@@ -18,68 +18,87 @@ template <class T> pair<T, T> operator * (const pair<T, T> &a, const pair<T, T> 
 template <class T, class U> pair<T, T> operator / (const pair<T, T> &a, const U &b) {
     return make_pair(a.first / b, a.second / b);
 }
+template <class T> pair<T, T> conj(const pair<T, T> &a) {
+    return make_pair(a.first, -a.second);
+}
 
-void fft(vector<pair<F, F>> &a, bool invert) {
-    int N = int(a.size());
-    for (int i = 1, j = 0; i < N; i++) {
-        int bit = N >> 1;
-        for (; j >= bit; bit >>= 1) j -= bit;
-        j += bit;
-        if (i < j) swap(a[i], a[j]);
-    }
-    for (int len = 2; len <= N; len <<= 1) {
-        double ang = 2 * PI / len * (invert ? -1 : 1); pair<F, F> wlen(cos(ang), sin(ang));
-        for (int i = 0; i < N; i += len) {
-            pair<F, F> w(1, 0);
-            for (int j = 0; j < len / 2; j++) {
-                pair<F, F> u = a[i + j], v = a[i + j + len / 2] * w;
-                a[i + j] = u + v; a[i + j + len / 2] = u - v; w = w * wlen;
-            }
+vector<int> ord; vector<pair<F, F>> roots;
+
+void computeRoots(int N) {
+    if (int(roots.size()) >= N) return;
+    if (roots.empty()) roots = {{0, 0}, {1, 0}};
+    int len = __builtin_ctz(int(roots.size())); roots.resize(N);
+    for (; (1 << len) < N; len++) {
+        double mnAngle = 2 * PI / (1 << (len + 1));
+        for (int i = 0; i < (1 << (len - 1)); i++) {
+            int ind = (1 << (len - 1)) + i; double ang = mnAngle * (2 * i + 1);
+            roots[2 * ind] = roots[ind]; roots[2 * ind + 1] = make_pair(cos(ang), sin(ang));
         }
     }
-    if (invert) for (int i = 0; i < N; i++) a[i] = a[i] / N;
+}
+
+void reorder(vector<pair<F, F>> &a) {
+    int N = int(a.size());
+    if (int(ord.size()) != N) {
+        ord.assign(N, 0); int len = __builtin_ctz(N);
+        for (int i = 0; i < N; i++) ord[i] = (ord[i >> 1] >> 1) + ((i & 1) << (len - 1));
+    }
+    for (int i = 0; i < N; i++) if (i < ord[i]) swap(a[i], a[ord[i]]);
+}
+
+void fft(vector<pair<F, F>> &a) {
+    int N = int(a.size()); computeRoots(N), reorder(a);
+    for (int len = 1; len < N; len <<= 1) for (int i = 0; i < N; i += len << 1) for (int j = 0; j < len; j++) {
+        pair<F, F> u = a[i + j], v = a[len + i + j] * roots[len + j]; a[i + j] = u + v; a[len + i + j] = u - v;
+    }
 }
 
 // Multiplies 2 big integers
 template <class T> void multiplyInteger(vector<T> &a, vector<T> &b, vector<T> &res) {
     static_assert(is_integral<T>::value, "T must be an integral type");
-    if (min(int(a.size()), int(b.size())) <= CUTOFF) {
-        vector<T> c(int(a.size()) + int(b.size()) - 1, 0); T carry = 0;
+    if (max(int(a.size()), int(b.size())) <= CUTOFF) {
+        vector<T> c(int(a.size()) + int(b.size()), 0); T carry = 0;
         for (int i = 0; i < int(a.size()); i++) for (int j = 0; j < int(b.size()); j++) c[i + j] += a[i] * b[j];
-        for (int i = 0; i < int(c.size()); i++) { c[i] += carry; carry = c[i] / BASE; c[i] %= BASE; }
-        res.resize(int(a.size()) + int(b.size()) - 1, 0); copy(c.begin(), c.end(), res.begin());
+        res.resize(int(a.size()) + int(b.size()), 0);
+        for (int i = 0; i < int(c.size()); i++) { res[i] = c[i] + carry; carry = res[i] / BASE; res[i] %= BASE; }
         while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
         return;
     }
     int N = int(a.size()) + int(b.size());
     while (N & (N - 1)) N++;
-    vector<pair<F, F>> fa(N, make_pair(0, 0)), fb(N, make_pair(0, 0));
-    for (int i = 0; i < int(a.size()); i++) fa[i] = make_pair(a[i], 0);
-    for (int i = 0; i < int(b.size()); i++) fb[i] = make_pair(b[i], 0);
-    fft(fa, false); fft(fb, false);
-    for (int i = 0; i < N; i++) fa[i] = fa[i] * fb[i];
-    fft(fa, true); res.resize(N); T carry = 0;
-    for (int i = 0; i < N; i++) { res[i] = (T) (fa[i].first + 0.5) + carry; carry = res[i] / BASE; res[i] %= BASE; }
+    vector<pair<F, F>> f(N, make_pair(0, 0));
+    for (int i = 0; i < int(a.size()); i++) f[i].first = a[i];
+    for (int i = 0; i < int(b.size()); i++) f[i].second = b[i];
+    fft(f);
+    for (int i = 0; i <= N / 2; i++) {
+        int j = (N - i) & (N - 1);
+        pair<F, F> prod = (f[j] * f[j] - conj(f[i] * f[i])) * make_pair(F(0), F(-0.25 / N)); f[i] = prod; f[j] = conj(prod);
+    }
+    fft(f); res.resize(N); T carry = 0;
+    for (int i = 0; i < N; i++) { res[i] = (T) (f[i].first + 0.5) + carry; carry = res[i] / BASE; res[i] %= BASE; }
     while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
 }
 
 // Multiplies 2 polynomials
 template <class T> void multiplyPolynomial(vector<T> &a, vector<T> &b, vector<T> &res) {
-    if (min(int(a.size()), int(b.size())) <= CUTOFF) {
+    if (max(int(a.size()), int(b.size())) <= CUTOFF) {
         vector<T> c(int(a.size()) + int(b.size()) - 1, 0);
         for (int i = 0; i < int(a.size()); i++) for (int j = 0; j < int(b.size()); j++) c[i + j] += a[i] * b[j];
-        res.resize(int(a.size()) + int(b.size()) - 1, 0); copy(c.begin(), c.end(), res.begin());
+        res.resize(int(a.size()) + int(b.size()), 0); copy(c.begin(), c.end(), res.begin());
         while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
         return;
     }
     int N = int(a.size()) + int(b.size()) - 1;
     while (N & (N - 1)) N++;
-    vector<pair<F, F>> fa(N, make_pair(0, 0)), fb(N, make_pair(0, 0));
-    for (int i = 0; i < int(a.size()); i++) fa[i] = make_pair(a[i], 0);
-    for (int i = 0; i < int(b.size()); i++) fb[i] = make_pair(b[i], 0);
-    fft(fa, false); fft(fb, false); bool isIntegral = is_integral<T>::value;
-    for (int i = 0; i < N; i++) fa[i] = fa[i] * fb[i];
-    fft(fa, true); res.resize(N);
-    for (int i = 0; i < N; i++) res[i] = isIntegral ? round(fa[i].first) : fa[i].first;
+    vector<pair<F, F>> f(N, make_pair(0, 0));
+    for (int i = 0; i < int(a.size()); i++) f[i].first = a[i];
+    for (int i = 0; i < int(b.size()); i++) f[i].second = b[i];
+    fft(f); bool isIntegral = is_integral<T>::value;
+    for (int i = 0; i <= N / 2; i++) {
+        int j = (N - i) & (N - 1);
+        pair<F, F> prod = (f[j] * f[j] - conj(f[i] * f[i])) * make_pair(F(0), F(-0.25 / N)); f[i] = prod; f[j] = conj(prod);
+    }
+    fft(f); res.resize(N);
+    for (int i = 0; i < N; i++) res[i] = isIntegral ? f[i].first + 0.5 : f[i].first;
     while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
 }
