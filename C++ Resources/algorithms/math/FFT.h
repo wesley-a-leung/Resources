@@ -15,9 +15,6 @@ template <class T> pair<T, T> operator - (const pair<T, T> &a, const pair<T, T> 
 template <class T> pair<T, T> operator * (const pair<T, T> &a, const pair<T, T> &b) {
     return make_pair(a.first * b.first - a.second * b.second, a.first * b.second + a.second * b.first);
 }
-template <class T, class U> pair<T, T> operator / (const pair<T, T> &a, const U &b) {
-    return make_pair(a.first / b, a.second / b);
-}
 template <class T> pair<T, T> conj(const pair<T, T> &a) {
     return make_pair(a.first, -a.second);
 }
