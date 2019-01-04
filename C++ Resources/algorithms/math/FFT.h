@@ -66,10 +66,10 @@ template <class T> void multiplyInteger(vector<T> &a, vector<T> &b, vector<T> &r
     vector<pair<F, F>> f(N, make_pair(0, 0));
     for (int i = 0; i < int(a.size()); i++) f[i].first = a[i];
     for (int i = 0; i < int(b.size()); i++) f[i].second = b[i];
-    fft(f);
+    fft(f); pair<F, F> r(0, -0.25 / N);
     for (int i = 0; i <= N / 2; i++) {
         int j = (N - i) & (N - 1);
-        pair<F, F> prod = (f[j] * f[j] - conj(f[i] * f[i])) * make_pair(F(0), F(-0.25 / N)); f[i] = prod; f[j] = conj(prod);
+        pair<F, F> prod = (f[j] * f[j] - conj(f[i] * f[i])) * r; f[i] = prod; f[j] = conj(prod);
     }
     fft(f); res.resize(N); T carry = 0;
     for (int i = 0; i < N; i++) { res[i] = (T) (f[i].first + 0.5) + carry; carry = res[i] / BASE; res[i] %= BASE; }
@@ -90,10 +90,10 @@ template <class T> void multiplyPolynomial(vector<T> &a, vector<T> &b, vector<T>
     vector<pair<F, F>> f(N, make_pair(0, 0));
     for (int i = 0; i < int(a.size()); i++) f[i].first = a[i];
     for (int i = 0; i < int(b.size()); i++) f[i].second = b[i];
-    fft(f); bool isIntegral = is_integral<T>::value;
+    fft(f); bool isIntegral = is_integral<T>::value; pair<F, F> r(0, -0.25 / N);
     for (int i = 0; i <= N / 2; i++) {
         int j = (N - i) & (N - 1);
-        pair<F, F> prod = (f[j] * f[j] - conj(f[i] * f[i])) * make_pair(F(0), F(-0.25 / N)); f[i] = prod; f[j] = conj(prod);
+        pair<F, F> prod = (f[j] * f[j] - conj(f[i] * f[i])) * r; f[i] = prod; f[j] = conj(prod);
     }
     fft(f); res.resize(N);
     for (int i = 0; i < N; i++) res[i] = isIntegral ? f[i].first + 0.5 : f[i].first;
