@@ -17,8 +17,7 @@ template <const int MAXV, class unit> struct SPFA {
         while (!DQ.empty()) {
             int v = DQ.front(); DQ.pop_front(); inQueue[v] = false;
             for (auto &&e : adj[v]) if (dist[e.first] > dist[v] + e.second) {
-                dist[e.first] = dist[v] + e.second;
-                to[e.first] = {v, e.second};
+                dist[e.first] = dist[v] + e.second; to[e.first] = make_pair(v, e.second);
                 if (!inQueue[e.first]) {
                     if (!DQ.empty() && dist[e.first] <= dist[DQ.front()]) DQ.push_front(e.first);
                     else DQ.push_back(e.first);

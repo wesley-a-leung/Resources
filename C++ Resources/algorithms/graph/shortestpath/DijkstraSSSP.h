@@ -18,7 +18,7 @@ template <const int MAXV, class unit> struct DijkstraSSSP {
             unit d = PQ.top().first; int v = PQ.top().second; PQ.pop();
             if (d > dist[v]) continue;
             for (auto &&e : adj[v]) if (dist[e.first] > dist[v] + e.second) {
-                to[e.first] = {v, e.second}; PQ.emplace(dist[e.first] = dist[v] + e.second, e.first);
+                to[e.first] = make_pair(v, e.second); PQ.emplace(dist[e.first] = dist[v] + e.second, e.first);
             }
         }
     }
