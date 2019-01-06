@@ -41,9 +41,9 @@ template <class T> Matrix<T> times(const Matrix<T> &A, const Matrix<T> &B) {
 
 // Returns A ^ pow
 // Time Complexity: O(N^3 log pow)
-template <class T> Matrix<T> pow(const Matrix<T> &A, long long pow) {
+template <class T, class U> Matrix<T> pow(const Matrix<T> &A, U pow) {
     assert(A.N == A.M);
-    Matrix<T> x = identity(A.N), y = A;
+    Matrix<T> x = identity<T>(A.N), y = A;
     for (; pow > 0; pow /= 2, y = times(y, y)) if (pow % 2 == 1) x = times(x, y);
     return x;
 }
