@@ -37,7 +37,7 @@ template <const int MAXV, class unit> struct JohnsonAPSP {
                 unit d = PQ.top().first; int v = PQ.top().second; PQ.pop();
                 if (d > dist[s][v]) continue;
                 for (auto &&e : adj[v]) if (dist[s][e.first] > dist[s][v] + e.second + h[v] - h[e.first]) {
-                    to[s][e.first] = {v, e.second}; PQ.emplace(dist[s][e.first] = dist[s][v] + e.second + h[v] - h[e.first], e.first);
+                    to[s][e.first] = make_pair(v, e.second); PQ.emplace(dist[s][e.first] = dist[s][v] + e.second + h[v] - h[e.first], e.first);
                 }
             }
         }
