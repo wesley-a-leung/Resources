@@ -96,6 +96,6 @@ template <class T> void multiplyPolynomial(vector<T> &a, vector<T> &b, vector<T>
         pair<F, F> prod = (f[j] * f[j] - conj(f[i] * f[i])) * r; f[i] = prod; f[j] = conj(prod);
     }
     fft(f); res.resize(N);
-    for (int i = 0; i < N; i++) res[i] = isIntegral ? f[i].first + 0.5 : f[i].first;
+    for (int i = 0; i < N; i++) res[i] = isIntegral ? round(f[i].first) : f[i].first;
     while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
 }
