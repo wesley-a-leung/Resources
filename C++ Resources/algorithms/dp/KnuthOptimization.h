@@ -17,7 +17,7 @@ template <const int MAXN, class T> struct KnuthOptimization {
             if (r - l < 2) { dp[l][r] = 0; mid[l][r] = l; continue; }
             dp[l][r] = INF;
             for (int m = mid[l][r - 1]; m <= mid[l + 1][r]; m++) {
-                int temp = dp[l][m] + dp[m][r] + cost(l, m ,r);
+                T temp = dp[l][m] + dp[m][r] + cost(l, m, r);
                 if (dp[l][r] > temp) { dp[l][r] = temp; mid[l][r] = m; }
             }
         }
