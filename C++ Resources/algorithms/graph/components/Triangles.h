@@ -3,7 +3,7 @@
 using namespace std;
 
 // Counts the number of triangles in a graph
-// Time Complexity: O(V log E + E sqrt E)
+// Time Complexity: O(V log E + E sqrt E log E)
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct Triangles {
     int ord[MAXV]; vector<int> adj[MAXV], adj2[MAXV];
