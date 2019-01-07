@@ -14,11 +14,11 @@ template <const int MAXV> struct MaxWeightedIndependentSet {
         for (int w : adj[v]) {
             if (w == prev) continue;
             cnt++;
-            if (!take) ret = max(ret, dfs(w, true) + val[v]);
+            if (!take) ret = max(ret, dfs(w, true));
             ret = max(ret, dfs(w, false));
         }
         if (cnt == 0) return take ? val[v] : 0;
-        return dp[v][take] = ret;
+        return take ? (dp[v][take] = ret + val[v]) : (dp[v][take] = ret);
     }
     void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     int solve(int V, int root = 0) {
