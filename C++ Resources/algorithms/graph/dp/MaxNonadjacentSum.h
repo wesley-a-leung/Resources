@@ -14,8 +14,8 @@ template <const int MAXV> struct MaxNonadjacentSum {
         if (dp[v][take] != -1) return dp[v][take];
         int ret = INT_MIN;
         for (int w : adj[v]) {
-            if (take) ret = max(ret, dfs(w, false) + val[v]);
-            ret = max(ret, dfs(w, true));
+            if (!take) ret = max(ret, dfs(w, true) + val[v]);
+            ret = max(ret, dfs(w, false));
         }
         return dp[v][take] = ret;
     }

@@ -14,8 +14,8 @@ template <const int MAXV> struct MaxWeightedIndependentSet {
         for (int w : adj[v]) {
             if (w == prev) continue;
             cnt++;
-            if (take) ret = max(ret, dfs(w, false) + val[v]);
-            ret = max(ret, dfs(w, true));
+            if (!take) ret = max(ret, dfs(w, true) + val[v]);
+            ret = max(ret, dfs(w, false));
         }
         if (cnt == 0) return take ? val[v] : 0;
         return dp[v][take] = ret;
