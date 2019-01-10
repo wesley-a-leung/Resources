@@ -9,13 +9,14 @@ using namespace std;
 //   then the naive complexity would be O(Q * log(hi) * (time to compute f(q, hi)))
 //   for Q independent binary searches, or O(Q * (hi - lo) * (time to compute f(q, x + 1) from f(q, x)))
 //   Parallel Binary Search reduces this runtime to:
-//   O((hi - lo) * log(hi - lo) * (time to compute f(q, x + 1) from f(q, x)) + Q log Q * (time to compute f(q, x) if precomputed))
+//   O(Q * log(hi - lo) * (time to compute f(q, x + 1) from f(q, x)) + Q log Q * (time to compute f(q, x) if precomputed))
 template <const int MAXQ, const bool ONE_INDEXED> struct ParallelBinarySearch {
     struct Query { int ans; } queries[MAXQ]; // to be completed
     void add(int l, int r); // to be implemented
     void rem(int l, int r); // to be implemented
     bool f(int i); // to be impemented
     void solve(vector<int> &qs, int l, int r) {
+        if (qs.empty()) return;
         if (l == r) { for (int i: qs) queries[i].ans = l; return; }
         int m = l + (r - l) / 2; vector<int> left, right; add(l, m);
         for (int i : qs) {
