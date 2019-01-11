@@ -6,7 +6,11 @@ using namespace std;
 // Data structure representing a Fraction modulo MOD
 template <class T, T MOD> struct FractionMod {
     T num, den;
-    FractionMod(T num = 0, T den = 0) : num(num % MOD), den(den % MOD) {}
+    FractionMod(T num = 0, T den = 0) {
+        num %= MOD; den %= MOD;
+        if (num < 0) num += MOD;
+        if (den < 0) den += MOD;
+    }
     FractionMod<T, MOD> operator + (const FractionMod<T, MOD> &f) const {
         return FractionMod<T, MOD>((num * f.den % MOD + f.num * den % MOD) % MOD, den * f.den % MOD);
     }
