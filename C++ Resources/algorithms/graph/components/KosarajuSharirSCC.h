@@ -6,7 +6,7 @@ using namespace std;
 // Time Complexity: O(V + E)
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct KosarajuSharirSCC {
-    int id[MAXV]; bool vis[MAXV]; vector<int> adj[MAXV], rev[MAXV]; vector<vector<int>> components; stack<int> revPost;
+    int id[MAXV]; bool vis[MAXV]; vector<int> adj[MAXV], rev[MAXV], DAG[MAXV]; vector<vector<int>> components; stack<int> revPost;
     void addEdge(int v, int w) { adj[v].push_back(w); }
     void postOrder(int v) {
         vis[v] = true;
@@ -26,6 +26,13 @@ template <const int MAXV> struct KosarajuSharirSCC {
         while (!revPost.empty()) {
             int v = revPost.top(); revPost.pop();
             if (!vis[v]) { components.emplace_back(); dfs(v); }
+        }
+    }
+    void genDAG(int V) {
+        for (int v = 0; v < V; v++) for (int w : adj[v]) if (id[v] != id[w]) DAG[id[v]].push_back(id[w]);
+        for (int i = 0; i < int(components.size()); i++) {
+            sort(DAG[i].begin(), DAG[i].end());
+            DAG[i].erase(unique(DAG[i].begin(), DAG[i].end()), DAG[i].end());
         }
     }
 };

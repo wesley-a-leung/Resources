@@ -6,7 +6,7 @@ using namespace std;
 // Time Complexity: O(V + E)
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct TarjanSCC {
-    int id[MAXV], low[MAXV], pre; bool vis[MAXV]; vector<int> adj[MAXV]; vector<vector<int>> components; stack<int> s;
+    int id[MAXV], low[MAXV], pre; bool vis[MAXV]; vector<int> adj[MAXV], DAG[MAXV]; vector<vector<int>> components; stack<int> s;
     void addEdge(int v, int w) { adj[v].push_back(w); }
     void dfs(int v) {
         vis[v] = true; int mn = low[v] = pre++; s.push(v);
@@ -21,9 +21,16 @@ template <const int MAXV> struct TarjanSCC {
             id[w] = components.size() - 1; components.back().push_back(w); low[w] = INT_MAX;
         } while (w != v);
     }
-    void clear(int V = MAXV) { components.clear(); for (int i = 0; i < V; i++) adj[i].clear(); }
+    void clear(int V = MAXV) { components.clear(); for (int i = 0; i < V; i++) { adj[i].clear(); DAG[i].clear(); } }
     void run(int V) {
         fill(vis, vis + V, false); pre = 0;
         for (int v = 0; v < V; v++) if (!vis[v]) dfs(v);
+    }
+    void genDAG(int V) {
+        for (int v = 0; v < V; v++) for (int w : adj[v]) if (id[v] != id[w]) DAG[id[v]].push_back(id[w]);
+        for (int i = 0; i < int(components.size()); i++) {
+            sort(DAG[i].begin(), DAG[i].end());
+            DAG[i].erase(unique(DAG[i].begin(), DAG[i].end()), DAG[i].end());
+        }
     }
 };
