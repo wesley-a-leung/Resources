@@ -66,7 +66,7 @@ template <const int MAXN> struct ImplicitSplayTree {
     void updateToRoot() { if (root->r->l) { root->r->l->update(); root->r->update(); root->update(); } }
     void update(int ind, Data val) { slice(ind, ind); root->r->l->val = applyVal(root->r->l->val, val); updateToRoot(); }
     Data query(int l, int r) { slice(l, r); return Sbtr(root->r->l); }
-    ImplicitSplayTree(int N) { vector<Data> A(N + 2, vdef); root = build(0, int(A.size()) - 1, A); }
+    void init(int N) { vector<Data> A(N + 2, vdef); root = build(0, int(A.size()) - 1, A); }
     template <class It> ImplicitSplayTree(It st, It en) {
         vector<Data> A; A.push_back(vdef); A.insert(A.back(), st, en); A.push_back(vdef);
         root = build(0, int(A.size()) - 1, A);
