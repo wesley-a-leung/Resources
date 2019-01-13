@@ -58,8 +58,8 @@ void Node::splay(Node *rootP) {
     }
     update();
 }
-template <const int MAXN> struct LazyImplicitSplayTree {
-    Node T[MAXN], *root = nullptr; int cur = 0;
+struct LazyImplicitSplayTree {
+    Node *root = nullptr; int cur = 0; vector<Node> T;
     Node *select(Node *x, int k) {
         if (!x) return nullptr;
         int t = Size(x->l);
@@ -83,9 +83,9 @@ template <const int MAXN> struct LazyImplicitSplayTree {
         updateToRoot();
     }
     Data query(int l, int r) { slice(l, r); return Sbtr(root->r->l); }
-    void init(int N) { vector<Data> A(N + 2, vdef); root = build(0, A.size() - 1, A); }
-    template <class It> void init(It st, It en) {
-        vector<Data> A; A.push_back(vdef); A.insert(A.back(), st, en); A.push_back(vdef);
+    LazyImplicitSplayTree(int N) { T.resize(N + 2); vector<Data> A(N + 2, vdef); root = build(0, A.size() - 1, A); }
+    template <class It> LazyImplicitSplayTree(It st, It en) {
+        T.resize(en - st + 2); vector<Data> A; A.push_back(vdef); A.insert(A.back(), st, en); A.push_back(vdef);
         root = build(0, A.size() - 1, A);
     }
 };

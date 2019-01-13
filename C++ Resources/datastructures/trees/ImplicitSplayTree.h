@@ -45,8 +45,8 @@ void Node::splay(Node *rootP) {
     }
     update();
 }
-template <const int MAXN> struct ImplicitSplayTree {
-    Node T[MAXN], *root = nullptr; int cur = 0;
+struct ImplicitSplayTree {
+    Node *root = nullptr; int cur = 0; vector<Node> T;
     Node *select(Node *x, int k) {
         if (!x) return nullptr;
         int t = Size(x->l);
@@ -66,9 +66,9 @@ template <const int MAXN> struct ImplicitSplayTree {
     void updateToRoot() { if (root->r->l) { root->r->l->update(); root->r->update(); root->update(); } }
     void update(int ind, Data val) { slice(ind, ind); root->r->l->val = applyVal(root->r->l->val, val); updateToRoot(); }
     Data query(int l, int r) { slice(l, r); return Sbtr(root->r->l); }
-    void init(int N) { vector<Data> A(N + 2, vdef); root = build(0, int(A.size()) - 1, A); }
+    ImplicitSplayTree(int N) { T.resize(N + 2); vector<Data> A(N + 2, vdef); root = build(0, int(A.size()) - 1, A); }
     template <class It> ImplicitSplayTree(It st, It en) {
-        vector<Data> A; A.push_back(vdef); A.insert(A.back(), st, en); A.push_back(vdef);
+        T.resize(en - st + 2); vector<Data> A; A.push_back(vdef); A.insert(A.back(), st, en); A.push_back(vdef);
         root = build(0, int(A.size()) - 1, A);
     }
 };
