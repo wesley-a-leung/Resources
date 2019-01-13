@@ -72,9 +72,9 @@ struct LinkCutTree {
         if (x == y) return true;
         expose(x); expose(y); return P[x] != -1;
     }
-    int lca(int x, int y) {
+    int lca(int x, int y, int r) {
         if (findRoot(x) != findRoot(y)) return -1;
-        expose(x); return expose(y);
+        makeRoot(r); expose(x); return expose(y);
     }
     bool link(int x, int y) {
         if (connected(x, y)) return false;
