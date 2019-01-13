@@ -44,4 +44,3 @@ template <class T, class F> T getLast(T lo, T hi, F f) {
     }
     return hi;
 }
-

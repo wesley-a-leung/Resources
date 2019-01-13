@@ -22,8 +22,9 @@ template <const int MAXV> struct DirectedCycle {
         onStack[v] = false;
     }
     void clear(int V = MAXV) { cycle.clear(); for (int i = 0; i < V; i++) adj[i].clear(); }
-    void run(int V) {
-        fill(vis, vis + MAXV, false);
+    bool run(int V) {
+        fill(vis, vis + V, false); fill(onStack, onStack + V, false);
         for (int v = 0; v < V; v++) if (!vis[v] && cycle.empty()) dfs(v);
+        return !cycle.empty();
     }
 };
