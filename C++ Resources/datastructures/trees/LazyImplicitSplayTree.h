@@ -83,8 +83,8 @@ template <const int MAXN> struct LazyImplicitSplayTree {
         updateToRoot();
     }
     Data query(int l, int r) { slice(l, r); return Sbtr(root->r->l); }
-    LazyImplicitSplayTree(int N) { vector<Data> A(N + 2, vdef); root = build(0, A.size() - 1, A); }
-    template <class It> LazyImplicitSplayTree(It st, It en) {
+    void init(int N) { vector<Data> A(N + 2, vdef); root = build(0, A.size() - 1, A); }
+    template <class It> void init(It st, It en) {
         vector<Data> A; A.push_back(vdef); A.insert(A.back(), st, en); A.push_back(vdef);
         root = build(0, A.size() - 1, A);
     }
