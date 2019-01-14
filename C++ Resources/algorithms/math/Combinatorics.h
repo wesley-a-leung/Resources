@@ -105,7 +105,7 @@ template <class T> T permute(int n, int k, T m) {
 // n permute k % p
 // Time Complexity: O(log p) if factorials are precomputed
 template <class T> T fastPermute(int n, int k, T p) {
-    return divMod(factorial(n, p), factorial(k, p), p);
+    return divMod(factorial(n, p), factorial(n - k, p), p);
 }
 
 // Structure to support combinatorical queries
@@ -127,8 +127,8 @@ template <const int MAXN, class T> struct FactCombinatorics {
     }
     T factorial(int N) { return fact[N]; }
     T invFactorial(int N) { return invFact[N]; }
-    T permute(int N, int K) { return fact[N] / fact[K]; }
-    T permute(int N, int K, T P) { return fact[N] * invFact[K] % P; }
+    T permute(int N, int K) { return fact[N] / fact[N - K]; }
+    T permute(int N, int K, T P) { return fact[N] * invFact[N - K] % P; }
     T choose(int N, int K) { return fact[N] / fact[K] / fact[N - K]; }
     T choose(int N, int K, T P) { return fact[N] * invFact[K] % P * invFact[N - K] % P; }
     T multiChoose(int N, int K) { return choose(N + K - 1, K); }
