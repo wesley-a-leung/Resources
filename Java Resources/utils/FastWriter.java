@@ -181,7 +181,7 @@ public class FastWriter {
     }
 
     private void write(byte x) throws IOException {
-        if (bufferPointer == buffer.length - 1) flushBuffer();
+        if (bufferPointer == buffer.length) flushBuffer();
         buffer[bufferPointer++] = x;
     }
 
