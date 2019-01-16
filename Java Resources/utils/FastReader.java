@@ -91,6 +91,7 @@ public class FastReader {
     }
 
     public String nextLine() throws IOException {
+        while (bufferPointer > 0 && buffer[bufferPointer - 1] == '\r') read();
         int cnt = 0;
         byte c;
         while ((c = read()) != '\n') if (c != '\r') buf[cnt++] = c;
