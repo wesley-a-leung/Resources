@@ -102,7 +102,7 @@ template <typename Value, typename Comparator = less<Value>> struct SBTSet {
         if (!cmp(VAL[x], lo) && !cmp(hi, VAL[x])) queue.push_back(VAL[x]);
         if (cmp(VAL[x], hi)) values(R[x], queue, lo, hi);
     }
-    SBTSet() : SZ(1), L(1), R(1) {}
+    SBTSet() : SZ(1, 0), L(1, 0), R(1, 0) {}
     void clear() {
         VAL.clear(); SZ.clear(); L.clear(); R.clear();
         SZ.push_back(0); L.push_back(0); R.push_back(0);
