@@ -8,7 +8,7 @@ public:
     no_such_element_exception(string message): runtime_error(message){}
 };
 
-// Size Balanced Binary Search Set
+// Size Balanced Binary Search Tree
 // Time Complexity:
 //   constructor, empty, size: O(1)
 //   keyValuePairs: O(N)
@@ -105,7 +105,7 @@ template <typename Key, typename Value, typename Comparator = less<Key>> struct 
         if (!cmp(KEY[x], lo) && !cmp(hi, KEY[x])) queue.push_back({KEY[x], VAL[x]});
         if (cmp(KEY[x], hi)) keyValuePairs(R[x], queue, lo, hi);
     }
-    SBT() : SZ(1), L(1), R(1) {}
+    SBT() : SZ(1, 0), L(1, 0), R(1, 0) {}
     void clear() {
         KEY.clear(); VAL.clear(); SZ.clear(); L.clear(); R.clear();
         SZ.push_back(0); L.push_back(0); R.push_back(0);

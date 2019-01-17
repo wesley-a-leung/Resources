@@ -69,7 +69,7 @@ struct LazyImplicitSplayTree {
     }
     Node *build(int l, int r, vector<Data> &A) {
         if (l > r) return nullptr;
-        int m = l + (r - l) / 2, i = cur; T[cur++] = Node(A[m]);
+        int m = l + (r - l) / 2, i = int(T.size()); T.emplace_back(A[m]);
         Node *left = build(l, m - 1, A), *right = build(m + 1, r, A), *x = &(T[i]);
         connect(left, x, true); connect(right, x, false); x->update();
         return x;
@@ -83,9 +83,9 @@ struct LazyImplicitSplayTree {
         updateToRoot();
     }
     Data query(int l, int r) { slice(l, r); return Sbtr(root->r->l); }
-    LazyImplicitSplayTree(int N) { T.resize(N + 2); vector<Data> A(N + 2, vdef); root = build(0, A.size() - 1, A); }
+    LazyImplicitSplayTree(int N) { T.reserve(N + 2); vector<Data> A(N + 2, vdef); root = build(0, A.size() - 1, A); }
     template <class It> LazyImplicitSplayTree(It st, It en) {
-        T.resize(en - st + 2); vector<Data> A; A.push_back(vdef); A.insert(A.back(), st, en); A.push_back(vdef);
+        T.reserve(en - st + 2); vector<Data> A; A.push_back(vdef); A.insert(A.back(), st, en); A.push_back(vdef);
         root = build(0, A.size() - 1, A);
     }
 };

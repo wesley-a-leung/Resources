@@ -11,7 +11,6 @@ using namespace std;
 using Data = int; const Data vdef = 0;
 struct Node {
     Node *l, *r, *p; int size; Data val, sbtr;
-    Node() {}
     Node(Data val) : l(nullptr), r(nullptr), p(nullptr), size(1), val(val), sbtr(val) {}
     void update();
     void rotate(Node *rootP);
@@ -46,7 +45,7 @@ void Node::splay(Node *rootP) {
     update();
 }
 struct ImplicitSplayTree {
-    Node *root = nullptr; int cur = 0; vector<Node> T;
+    Node *root = nullptr; vector<Node> T;
     Node *select(Node *x, int k) {
         if (!x) return nullptr;
         int t = Size(x->l);
@@ -56,7 +55,7 @@ struct ImplicitSplayTree {
     }
     Node *build(int l, int r, vector<Data> &A) {
         if (l > r) return nullptr;
-        int m = l + (r - l) / 2, i = cur; T[cur++] = Node(A[m]);
+        int m = l + (r - l) / 2, i = int(T.size()); T.emplace_back(A[m]);
         Node *left = build(l, m - 1, A), *right = build(m + 1, r, A), *x = &(T[i]);
         connect(left, x, true); connect(right, x, false); x->update();
         return x;
@@ -66,9 +65,9 @@ struct ImplicitSplayTree {
     void updateToRoot() { if (root->r->l) { root->r->l->update(); root->r->update(); root->update(); } }
     void update(int ind, Data val) { slice(ind, ind); root->r->l->val = applyVal(root->r->l->val, val); updateToRoot(); }
     Data query(int l, int r) { slice(l, r); return Sbtr(root->r->l); }
-    ImplicitSplayTree(int N) { T.resize(N + 2); vector<Data> A(N + 2, vdef); root = build(0, int(A.size()) - 1, A); }
+    ImplicitSplayTree(int N) { T.reserve(N + 2); vector<Data> A(N + 2, vdef); root = build(0, int(A.size()) - 1, A); }
     template <class It> ImplicitSplayTree(It st, It en) {
-        T.resize(en - st + 2); vector<Data> A; A.push_back(vdef); A.insert(A.back(), st, en); A.push_back(vdef);
+        T.reserve(en - st + 2); vector<Data> A; A.push_back(vdef); A.insert(A.back(), st, en); A.push_back(vdef);
         root = build(0, int(A.size()) - 1, A);
     }
 };
