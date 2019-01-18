@@ -2,8 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-template <typename T, const T MAXVAL>
-struct OrderStatisticSegmentTree {
+template <class T, const T MAXVAL> struct OrderStatisticSegmentTree {
     struct Node { Node *left = nullptr, *right = nullptr; int size = 0; };
     Node *root = nullptr;
     void insert(Node *&cur, T cL, T cR, T val) {
