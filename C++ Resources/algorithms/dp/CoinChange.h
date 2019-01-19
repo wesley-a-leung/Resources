@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Computes the number of ways to make chance for exactly T dollars given N coin values,
+// Computes the number of ways to make change for exactly T dollars given N coin values,
 // each coin may be used multiple times
 // Time Complexity: O(TN)
 // Memory Complexity: O(T + N)

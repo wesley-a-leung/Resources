@@ -10,7 +10,7 @@ template <const int MAXN> struct Partitions1 {
     long long solve(int N, long long mod) {
         dp[0] = 1;
         for (int i = 1; i <= N; i++) for (int j = i; j <= N; j++) dp[j] = (dp[j] + dp[j - 1]) % mod;
-        return dp[N] % mod;
+        return dp[N];
     }
 };
 
@@ -22,6 +22,6 @@ template <const int MAXN, const int MAXK> struct Partitions2 {
     long long solve(int N, int K, long long mod) {
         dp[0][1] = 1;
         for (int i = 1; i <= N; i++) for (int j = 1; j <= min(i, K); j++) dp[i][j] = (dp[i - 1][j - 1] + dp[i - j][j]) % mod;
-        return dp[N][K] % mod;
+        return dp[N][K];
     }
 };
