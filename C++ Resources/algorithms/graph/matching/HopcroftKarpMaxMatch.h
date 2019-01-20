@@ -9,12 +9,11 @@ template <const int MAXV> struct HopcroftKarpMaxMatch {
     int cardinality, mate[MAXV], dist[MAXV], pathDist; vector<int> adj[MAXV], typeA; bool color[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     bool hasPath() {
-        queue<int> q;
+        queue<int> q; pathDist = INT_MAX;
         for (int v : typeA) {
             if (mate[v] == -1) { dist[v] = 0; q.push(v); }
             else dist[v] = INT_MAX;
         }
-        pathDist = INT_MAX;
         while (!q.empty()) {
             int v = q.front(); q.pop();
             for (int w : adj[v]) {
