@@ -24,7 +24,7 @@ template <const int MAXV> struct BronKerboschMaxClique {
             if ((pool & (1LL << i)) == 0 || adj[i][j]) continue;
             long long ncurr = cur, npool = 0, nexcl = 0; ncurr |= 1LL << i;
             for (int k = 0; k < V; k++) if (adj[i][k]) { npool |= pool & (1LL << k); nexcl |= excl & (1LL << k); }
-            res = max(res, solve(V, ncurr, npool, nexcl)); pool &= ~(1LL << i); excl |= 1 >> i;
+            res = max(res, solve(V, ncurr, npool, nexcl)); pool &= ~(1LL << i); excl |= 1LL >> i;
         }
         return res;
     }
