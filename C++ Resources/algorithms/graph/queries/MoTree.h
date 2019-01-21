@@ -31,7 +31,7 @@ template <const int MAXV, const int MAXQ, const int BLOCKSZ, const int MAXLGV> s
     }
     void run(int V) {
         ind1 = ind2 = 0; int lg = 32 - __builtin_clz(V * 2 - 1); fill(cnt, cnt + V, 0); fill(vis, vis + V, false); dfs(0, -1, 0);
-        for (int i = 0; i < lg; i++) for (int j = 0; j < ind1; j++) rmq[i + 1][j] = minDep(rmq[i][j], rmq[i][min(j + (1 << i), ind1 - 1)]);
+        for (int i = 0; i < lg - 1; i++) for (int j = 0; j < ind1; j++) rmq[i + 1][j] = minDep(rmq[i][j], rmq[i][min(j + (1 << i), ind1 - 1)]);
         copy(val, val + V, temp); sort(temp, temp + V); int k = unique(temp, temp + V) - temp;
         for (int v = 0; v < V; v++) val[v] = lower_bound(temp, temp + k, val[v]) - temp;
         for (int i = 0; i < Q; i++) {
