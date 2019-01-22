@@ -18,13 +18,13 @@ template <class Value, class Comparator = less<Value>> struct SkewHeap {
         return a;
     }
     SkewHeap() {}
-    bool empty() { return !root; }
-    Value top() { return root->val; }
+    bool empty() const { return !root; }
+    Value top() const { return root->val; }
     Value pop() {
         Value ret = root->val; root = merge(move(root->left), move(root->right)); cnt--;
         return ret;
     }
     void push(Value val) { root = merge(move(root), make_unique<Node>(val)); cnt++; }
     void merge(SkewHeap &h) { root = merge(move(root), move(h.root)); cnt += h.cnt; }
-    int size() { return cnt; }
+    int size() const { return cnt; }
 };

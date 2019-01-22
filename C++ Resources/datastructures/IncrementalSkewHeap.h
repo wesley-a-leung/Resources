@@ -25,7 +25,7 @@ template <class Value, class Comparator = less<Value>, class D_Type = Value> str
         return a;
     }
     IncrementalSkewHeap() {}
-    bool empty() { return !root; }
+    bool empty() const { return !root; }
     Value top() { propagate(root); return root->val; }
     Value pop() {
         propagate(root); Value ret = root->val; root = merge(move(root->left), move(root->right)); cnt--;
@@ -34,5 +34,5 @@ template <class Value, class Comparator = less<Value>, class D_Type = Value> str
     void push(Value val) { root = merge(move(root), make_unique<Node>(val)); cnt++; }
     void increment(D_Type delta) { if (root) root->delta += delta; }
     void merge(IncrementalSkewHeap &h) { root = merge(move(root), move(h.root)); cnt += h.cnt; }
-    int size() { return cnt; }
+    int size() const { return cnt; }
 };
