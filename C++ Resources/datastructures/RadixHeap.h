@@ -3,10 +3,12 @@
 using namespace std;
 
 // 32-bit Radix Heap
+// All new keys pushed to the queue must be less than the last call to top
 // Comparator convention is same as priority_queue in STL
 // Time Complexity:
 //   top: O(B) where B is the number of bits
-//   empty, size, pop, push: O(1)
+//   empty, size: O(1)
+//   pop, push: O(1) amortized
 template <class T, class Comparator = less<uint32_t>> struct RadixHeap {
     Comparator cmp; int n; uint32_t last; vector<pair<uint32_t, T>> x[33];
     int bsr(uint32_t a) { return a ? 31 - __builtin_clz(a) : -1; }
