@@ -35,7 +35,7 @@ template <const int MAXV> struct HLD {
     }
     void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     void run(int V, int root = 0) { chainNum = 0; curInd = 1; fill(head, head + V, -1); dfs(root, -1, 0); hld(root, -1); }
-    void addEdge(int a, int b) { adj[a].pb(b); adj[b].pb(a); }
+    void addEdge(int a, int b) { adj[a].push_back(b); adj[b].push_back(a); }
     int lca(int v, int w) {
         while (chain[v] != chain[w]) {
             if (dep[head[chain[v]]] < dep[head[chain[w]]]) w = par[head[chain[w]]];
