@@ -3,11 +3,9 @@
 #include "Point.h"
 using namespace std;
 
-using T = double;
-
 struct Rectangle {
     T xmin, ymin, xmax, ymax;
-    Rectangle(T xmin, T ymin, T xmax, T ymax) : xmin(xmin), ymin(ymin), xmax(xmax), ymax(ymax) {
+    Rectangle(T xmin = 0, T ymin = 0, T xmax = 0, T ymax = 0) : xmin(xmin), ymin(ymin), xmax(xmax), ymax(ymax) {
         assert(xmin <= xmax);
         assert(ymin <= ymax);
     }
