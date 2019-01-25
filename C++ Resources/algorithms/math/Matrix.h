@@ -42,8 +42,7 @@ template <class T> Matrix<T> times(const Matrix<T> &A, const Matrix<T> &B) {
 // Returns A ^ pow
 // Time Complexity: O(N^3 log pow)
 template <class T, class U> Matrix<T> pow(const Matrix<T> &A, U pow) {
-    assert(A.N == A.M);
-    Matrix<T> x = identity<T>(A.N), y = A;
+    assert(A.N == A.M); Matrix<T> x = identity<T>(A.N), y = A;
     for (; pow > 0; pow /= 2, y = times(y, y)) if (pow % 2 == 1) x = times(x, y);
     return x;
 }
@@ -55,10 +54,7 @@ template <class T> T det(Matrix<T> &A) {
     for (int i = 0; i < A.N; i++) {
         int mx = i;
         for (int j = i + 1; j < A.N; j++) if (A[j][i] > A[mx][i]) mx = j;
-        if (i != mx) {
-            ret = -ret;
-            A[i].swap(A[mx]);
-        }
+        if (i != mx) { ret = -ret; A[i].swap(A[mx]); }
         for (int j = i + 1; j < A.N; j++) {
             T alpha = A[j][i] / A[i][i];
             for (int k = i + 1; k < A.N; k++) A[j][k] -= alpha * A[i][k];
