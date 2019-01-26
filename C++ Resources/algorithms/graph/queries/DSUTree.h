@@ -6,7 +6,7 @@ using namespace std;
 // with a certain property
 // Time Complexity: O(V log V + Q)
 // Memory Complexity: O(V + Q)
-template <const int MAXV, const int MAXQ> struct DSUTree {
+template <const int MAXV, const int MAXQ, const bool COMPRESS_VALUES> struct DSUTree {
     int Q = 0, ans[MAXQ], color[MAXV], temp[MAXV], size[MAXV], cnt[MAXV]; bool isHeavy[MAXV];
     vector<int> adj[MAXV]; vector<pair<int, int>> q[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
@@ -30,10 +30,11 @@ template <const int MAXV, const int MAXQ> struct DSUTree {
         if (!keep) add(v, prev, -1);
     }
     void run(int V) {
-        copy(color, color + V, temp); sort(temp, temp + V); int k = unique(temp, temp + V) - temp;
-        for (int v = 0; v < V; v++) color[v] = lower_bound(temp, temp + k, color[v]) - temp;
-        fill(isHeavy, isHeavy + V, false);
-        getSize(0, -1); dfs(0, -1, 0);
+        if (COMPRESS_VALUES) {
+            sort(temp, temp + V); int k = unique(temp, temp + V) - temp;
+            for (int v = 0; v < V; v++) color[v] = lower_bound(temp, temp + k, color[v]) - temp;
+        }
+        copy(color, color + V, temp); fill(isHeavy, isHeavy + V, false); getSize(0, -1); dfs(0, -1, 0);
     }
     void clear(int V = MAXV) { Q = 0; for (int i = 0; i < V; i++) { adj[i].clear(); q[i].clear(); } }
 };

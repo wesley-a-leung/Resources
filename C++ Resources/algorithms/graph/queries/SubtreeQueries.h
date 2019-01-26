@@ -7,7 +7,7 @@ using namespace std;
 //   run: O(V)
 //   updateSubtree, querySubtree, updateVertex: O(1) * (complexity of update/query)
 // Memory Complexity: O(V)
-template <const int MAXV, bool ONE_INDEXED> struct SubtreeQueries {
+template <const int MAXV, const bool ONE_INDEXED> struct SubtreeQueries {
     using Data = int; int st[MAXV], en[MAXV], vert[MAXV], curInd; vector<int> adj[MAXV];
     void update(int i, Data val); // to be implemented
     void update(int l, int r, Data val); // to be implemented

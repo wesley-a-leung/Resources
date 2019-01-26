@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-template <const int MAXN> struct SegmentTree {
+template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree {
     using Data = int; const Data vdef = 0, qdef = 0;
     Data merge(const Data &l, const Data &r); // to be implemented
     Data apply(const Data &x, const Data &v); // to be implemented
@@ -26,15 +26,15 @@ template <const int MAXN> struct SegmentTree {
     }
     template <class It> void init(It st, It en) {
         N = en - st;
-        for (int i = 1; i <= N; i++) A[i] = *(st + i - 1);
-        build(1, 1, N);
+        for (int i = 0; i < N; i++) A[i + ONE_INDEXED] = *(st + i);
+        build(1, ONE_INDEXED, N - !ONE_INDEXED);
     }
-    void init(int size) { N = size; fill(A + 1, A + N + 1, vdef); build(1, 1, size); }
-    void update(int ind, const Data &val) { update(1, 1, N, ind, val); }
-    Data query(int l, int r) { return query(1, 1, N, l, r); }
+    void init(int size) { N = size; fill(A + ONE_INDEXED, A + N + ONE_INDEXED, vdef); build(1, ONE_INDEXED, size - !ONE_INDEXED); }
+    void update(int ind, const Data &val) { update(1, ONE_INDEXED, N - !ONE_INDEXED, ind, val); }
+    Data query(int l, int r) { return query(1, ONE_INDEXED, N - !ONE_INDEXED, l, r); }
 };
 
-template <const int MAXN> struct LazySegmentTree {
+template <const int MAXN, const bool ONE_INDEXED> struct LazySegmentTree {
     using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ldef = 0;
     Data merge(const Data &l, const Data &r); // to be implemented
     Data apply(const Data &x, const Lazy &v); // to be implemented
@@ -76,15 +76,15 @@ template <const int MAXN> struct LazySegmentTree {
     }
     template <class It> void init(It st, It en) {
         N = en - st;
-        for (int i = 1; i <= N; i++) A[i] = *(st + i - 1);
-        build(1, 1, N);
+        for (int i = 0; i < N; i++) A[i + ONE_INDEXED] = *(st + i);
+        build(1, ONE_INDEXED, N - !ONE_INDEXED);
     }
-    void init(int size) { N = size; fill(A + 1, A + N, vdef); build(1, 1, size); }
-    void update(int l, int r, const Lazy &val) { update(1, 1, N, l, r, val); }
-    Data query(int l, int r) { return query(1, 1, N, l, r); }
+    void init(int size) { N = size; fill(A + ONE_INDEXED, A + N + ONE_INDEXED, vdef); build(1, ONE_INDEXED, size - !ONE_INDEXED); }
+    void update(int l, int r, const Lazy &val) { update(1, ONE_INDEXED, N - !ONE_INDEXED, l, r, val); }
+    Data query(int l, int r) { return query(1, ONE_INDEXED, N - !ONE_INDEXED, l, r); }
 };
 
-struct PersistentSegmentTree {
+template <const bool ONE_INDEXED> struct PersistentSegmentTree {
     using Data = int; using Lazy = int; static const Data vdef = 0, qdef = 0; static const Lazy ldef = 0;
     Data merge(const Data &l, const Data &r); // to be implemented
     Data apply(const Data &x, const Lazy &v); // to be implemented
@@ -110,7 +110,7 @@ struct PersistentSegmentTree {
     int N; vector<Node*> roots = {new Node()};
     template <class It> Node *build(int cL, int cR, It st) {
         Node *ret = new Node();
-        if (cL == cR) { ret->val = *(st + cL - 1); return ret; }
+        if (cL == cR) { ret->val = *(st + cL - ONE_INDEXED); return ret; }
         int m = cL + (cR - cL) / 2;
         ret->left = build(cL, m, st); ret->right = build(m + 1, cR, st);
         ret->val = merge(ret->left->val, ret->right->val);
@@ -142,9 +142,9 @@ struct PersistentSegmentTree {
         int m = cL + (cR - cL) / 2;
         return merge(query(cur->left, cL, m, l, r), query(cur->right, m + 1, cR, l, r));
     }
-    template <class It> void init(It st, It en) { N = en - st; roots.push_back(build(1, N, st)); }
+    template <class It> void init(It st, It en) { N = en - st; roots.push_back(build(ONE_INDEXED, N - !ONE_INDEXED, st)); }
     void init(int size) { N = size; }
-    void update(int l, int r, int val) { roots.push_back(update(roots.back(), 1, N, l, r, val)); }
-    Data query(int rootInd, int l, int r) { return query(roots[rootInd], 1, N, l, r); }
+    void update(int l, int r, int val) { roots.push_back(update(roots.back(), ONE_INDEXED, N - !ONE_INDEXED, l, r, val)); }
+    Data query(int rootInd, int l, int r) { return query(roots[rootInd], ONE_INDEXED, N - !ONE_INDEXED, l, r); }
     void revert(int x) { roots.push_back(roots[x]); }
 };
