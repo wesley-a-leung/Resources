@@ -5,7 +5,7 @@ using namespace std;
 // Mo's algorithm on a tree, used to count the number of distinct integers on a path between two nodes
 // Time Complexity: O(V + Q log Q + Q * max(B, Q / B) * (update complexity))
 // Memory Complexity: O(V log V + Q)
-template <const int MAXV, const int MAXQ, const int BLOCKSZ, const int MAXLGV> struct MoTree {
+template <const int MAXV, const int MAXQ, const int BLOCKSZ, const int MAXLGV, const bool COMPRESS_VALUES> struct MoTree {
     struct Query {
         int l, r, lca, ind, block;
         bool operator < (const Query &q) const { return block == q.block ? r < q.r : block < q.block; }
@@ -32,8 +32,10 @@ template <const int MAXV, const int MAXQ, const int BLOCKSZ, const int MAXLGV> s
     void run(int V) {
         ind1 = ind2 = 0; int lg = 32 - __builtin_clz(V * 2 - 1); fill(cnt, cnt + V, 0); fill(vis, vis + V, false); dfs(0, -1, 0);
         for (int i = 0; i < lg - 1; i++) for (int j = 0; j < ind1; j++) rmq[i + 1][j] = minDep(rmq[i][j], rmq[i][min(j + (1 << i), ind1 - 1)]);
-        copy(val, val + V, temp); sort(temp, temp + V); int k = unique(temp, temp + V) - temp;
-        for (int v = 0; v < V; v++) val[v] = lower_bound(temp, temp + k, val[v]) - temp;
+        if (COMPRESS_VALUES) {
+            copy(val, val + V, temp); sort(temp, temp + V); int k = unique(temp, temp + V) - temp;
+            for (int v = 0; v < V; v++) val[v] = lower_bound(temp, temp + k, val[v]) - temp;
+        }
         for (int i = 0; i < Q; i++) {
             int v = q[i].l, w = q[i].r; q[i].lca = lca(v, w);
             if (pre[v] > pre[w]) swap(v, w);

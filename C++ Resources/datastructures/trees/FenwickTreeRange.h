@@ -7,11 +7,11 @@ using namespace std;
 //   init: O(N)
 //   update, rsq: O(log N)
 // Memory Complexity: O(N)
-template <const int MAXN, class T> struct FenwickTreeRange {
+template <const int MAXN, class T, const bool ONE_INDEXED> struct FenwickTreeRange {
     array<T, MAXN> BIT1, BIT2;
     void init() { fill(BIT1.begin(), BIT1.end(), 0); fill(BIT2.begin(), BIT2.end(), 0); }
-    T rsq(array<T, MAXN> &BIT, int i) { T ret = 0; for (; i > 0; i -= i & -i) ret += BIT[i]; return ret; }
-    void update(array<T, MAXN> &BIT, int i, T v) { for (; i < MAXN; i += i & -i) BIT[i] += v; }
+    T rsq(array<T, MAXN> &BIT, int i) { T ret = 0; for (i += !ONE_INDEXED; i > 0; i -= i & -i) ret += BIT[i]; return ret; }
+    void update(array<T, MAXN> &BIT, int i, T v) { for (i += !ONE_INDEXED; i < MAXN; i += i & -i) BIT[i] += v; }
     T rsq(int ind) { return rsq(BIT1, ind) * ind - rsq(BIT2, ind); }
     T rsq(int a, int b) { return rsq(b) - rsq(a - 1); }
     void update(int a, int b, T value) {

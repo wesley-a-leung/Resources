@@ -9,7 +9,7 @@ using namespace std;
 //   updatePath, queryPath: O(log V) * (complexity of update/query)
 //   updateVertex: O(1) * (complexity of update)
 // Memory Complexity: O(V)
-template <const int MAXV, bool ONE_INDEXED> struct HLD {
+template <const int MAXV, const bool ONE_INDEXED, const bool VALUES_ON_EDGES> struct HLD {
     using Data = int; const Data vdef = 0;
     int dep[MAXV], par[MAXV], chain[MAXV], size[MAXV], head[MAXV], ind[MAXV], vert[MAXV], chainNum, curInd; vector<int> adj[MAXV];
     void dfs(int v, int prev, int d) {
@@ -57,7 +57,7 @@ template <const int MAXV, bool ONE_INDEXED> struct HLD {
         return dep[v] < dep[w] ? v : w;
     }
     Data queryPath(int v, int w) {
-        int lcavertex = lca(v, w); return merge(queryUp(v, lcavertex, true, false), queryUp(w, lcavertex, false, true));
+        int lcavertex = lca(v, w); return merge(queryUp(v, lcavertex, true, false), queryUp(w, lcavertex, false, !VALUES_ON_EDGES));
     }
     void updatePath(int v, int w, Data val) {
         int lcavertex = lca(v, w); updateUp(v, lcavertex, true, false, val); updateUp(w, lcavertex, false, true, val);

@@ -7,10 +7,10 @@ using namespace std;
 //   init: O(N)
 //   update, getValue: O(log N)
 // Memory Complexity: O(N)
-template <const int MAXN, class T> struct FenwickTreeRangePoint {
+template <const int MAXN, class T, const bool ONE_INDEXED> struct FenwickTreeRangePoint {
     T BIT[MAXN];
     void init() { fill(BIT, BIT + MAXN, 0); }
-    void update(int i, T v) { for (; i < MAXN; i += i & -i) BIT[i] += v; }
+    void update(int i, T v) { for (i += !ONE_INDEXED; i < MAXN; i += i & -i) BIT[i] += v; }
     void update(int a, int b, T v) { update(a, v), update(b + 1, -v); }
-    T getValue(int i) { T ret = 0; for (; i > 0; i -= i & -i) ret += BIT[i]; return ret; }
+    T getValue(int i) { T ret = 0; for (i += !ONE_INDEXED; i > 0; i -= i & -i) ret += BIT[i]; return ret; }
 };

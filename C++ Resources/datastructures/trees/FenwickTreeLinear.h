@@ -8,10 +8,10 @@ using namespace std;
 //   constructor: O(N)
 //   update, rsq: O(log N)
 // Memory Complexity: O(N)
-template <const int MAXN, class T> struct FenwickTreeLinear {
+template <const int MAXN, class T, const bool ONE_INDEXED> struct FenwickTreeLinear {
     array<T, MAXN> con, lin, quad;
-    T rsq(array<T, MAXN> &BIT, int i) { T ret = 0; for (; i > 0; i -= i & -i) ret += BIT[i]; return ret; }
-    void update(array<T, MAXN> &BIT, int i, T v) { for (; i < MAXN; i += i & -i) BIT[i] += v; }
+    T rsq(array<T, MAXN> &BIT, int i) { T ret = 0; for (i += !ONE_INDEXED; i > 0; i -= i & -i) ret += BIT[i]; return ret; }
+    void update(array<T, MAXN> &BIT, int i, T v) { for (i += !ONE_INDEXED; i < MAXN; i += i & -i) BIT[i] += v; }
     void init() { fill(con.begin(), con.end(), 0); fill(lin.begin(), lin.end(), 0); fill(quad.begin(), quad.end(), 0); }
     T rsq(int ind) { return (rsq(quad, ind) * (T) ind * (T) ind + rsq(lin, ind) * (T) ind + rsq(con, ind)) / (T) 2; }
     T rsq(int a, int b) { return rsq(b) - rsq(a - 1); }
