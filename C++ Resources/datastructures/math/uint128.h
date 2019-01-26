@@ -55,6 +55,19 @@ struct uint128 {
     uint128 &operator /= (const uint128 &v) { return *this = *this / v; }
     uint128 operator % (const uint128 &v) const { uint128 q, r; divmod128(*this, v, q, r); return r; }
     uint128 &operator %= (const uint128 &v) { return *this = *this % v; }
+    void read(const string &s) {
+        *this = 0;
+        for (char c : s) *this = (*this << 3) + (*this << 1) + c - '0';
+    }
+    friend istream& operator >> (istream &stream, uint128 &v) { string s; stream >> s; v.read(s); return stream; }
+    string write() const {
+        if (*this == 0) return "0";
+        string ret = ""; uint128 temp = *this;
+        while (temp > 0) { ret.push_back((temp % 10).lo + '0'); temp /= 10; }
+        reverse(ret.begin(), ret.end());
+        return ret;
+    }
+    friend ostream& operator << (ostream &stream, const uint128 &v) { stream << v.write(); return stream; }
 };
 
 int popcnt128(const uint128 &v) { return __builtin_popcountll(v.hi) + __builtin_popcountll(v.lo); }
