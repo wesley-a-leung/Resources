@@ -63,6 +63,7 @@ struct LazyImplicitTreap {
     template <class It> LazyImplicitTreap(It st, It en) : rng(seq), dis(0.0, 1.0) {
         for (It i = st; i < en; i++) merge(root, root, makeNode(*i));
     }
+    // 0-indexed, inclusive
     void updateRange(int l, int r, Lazy val) {
         int left, right, mid; split(root, left, mid, l); split(mid, mid, right, r - l + 1);
         apply(mid, val); merge(root, left, mid); merge(root, root, right);

@@ -21,6 +21,19 @@ vector<long long> primeFactor(long long x) {
     return ret;
 }
 
+// Returns the factors of N
+// Time Complexity: O(sqrt N)
+// Memory Complexity: O(1)
+vector<long long> factors(long long x) {
+    vector<long long> ret;
+    for (long long i = 2; i * i <= x; i++) if (x % i == 0) {
+        ret.push_back(i);
+        if (x / i != i) ret.push_back(x / i);
+    }
+    sort(ret.begin(), ret.end());
+    return ret;
+}
+
 template <class T> T powMod(T base, T pow, T mod) {
     T x = 1, y = base % mod;
     for (; pow > 0; pow /= 2, y = y * y % mod) if (pow % 2 == 1) x = x * y % mod;
