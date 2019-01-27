@@ -14,8 +14,8 @@ template <const int MAXN, const int MAXLGN, class T> struct RMQSparseTable {
         for (int i = 0; i < lg - 1; i++) for (int j = 0; j + (1 << i) < N; j++)
             ST[i + 1][j] = minInd(ST[i][j], ST[i][j + (1 << i)]);
     }
-    int query(int l, int r) { // zero-indexed, inclusive
+    int query(int l, int r) { // 0-indexed, inclusive
         int i = 31 - __builtin_clz(r - l + 1);
         return minInd(ST[i][l], ST[i][r - (1 << i) + 1]);
     }
-}; 
+};
