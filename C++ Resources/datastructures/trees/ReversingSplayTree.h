@@ -2,28 +2,34 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Implicit Splay Tree supporting point updates and range queries
+// Implicit Splay Tree supporting point queries and range reversals
 // Time Complexity:
 //   constructor: O(N)
-//   update, query: O(log N)
+//   reverseRange, getValue: O(log N)
 // Memory Complexity: O(N)
 
 using Data = int; const Data vdef = 0;
 struct Node {
-    Node *l, *r, *p; int size; Data val, sbtr;
-    Node(Data val) : l(nullptr), r(nullptr), p(nullptr), size(1), val(val), sbtr(val) {}
+    Node *l, *r, *p; int size; Data val; bool rev;
+    Node(Data val) : l(nullptr), r(nullptr), p(nullptr), size(1), val(val), rev(false) {}
+    void propagate();
     void update();
     void rotate(Node *rootP);
     void splay(Node *rootP);
 };
 int Size(Node *x) { return x ? x->size : 0; }
-Data Sbtr(Node *x) { return x ? x->sbtr : vdef; }
-Data merge(Data l, Data r) { return l + r; } // to be implemented
-Data applyVal(Data o, Data n) { return o + n; } // to be implemented
+void Node::propagate() {
+    if (rev) {
+        swap(l, r);
+        if (l) l->rev = !l->rev;
+        if (r) r->rev = !r->rev;
+        rev = false;
+    }
+}
 void Node::update() {
-    size = 1; sbtr = val;
-    if (l) { size += Size(l); sbtr = merge(sbtr, l->sbtr); }
-    if (r) { size += Size(r); sbtr = merge(sbtr, r->sbtr); }
+    size = 1;
+    if (l) size += Size(l);
+    if (r) size += Size(r);
 }
 void connect(Node *ch, Node *par, bool isL) {
     if (ch) ch->p = par;
@@ -39,16 +45,18 @@ void Node::rotate(Node *rootP) {
 void Node::splay(Node *rootP) {
     while (p != rootP) {
         Node *p = this->p, *g = p->p;
+        if (g != rootP) g->propagate();
+        p->propagate(); propagate();
         if (g != rootP) ((this == p->l) == (p == g->l) ? p : this)->rotate(rootP);
         rotate(rootP);
     }
-    update();
+    propagate(); update();
 }
-struct ImplicitSplayTree {
-    Node *root = nullptr; vector<Node> T;
+struct ReversingSplayTree {
+    Node *root = nullptr; int cur = 0; vector<Node> T;
     Node *select(Node *x, int k) {
         if (!x) return nullptr;
-        int t = Size(x->l);
+        x->propagate(); int t = Size(x->l);
         if (t > k) return select(x->l, k);
         else if (t < k) return select(x->r, k - t - 1);
         return x;
@@ -62,13 +70,17 @@ struct ImplicitSplayTree {
     }
     //  [l, r] is at root->r->l
     void slice(int l, int r) { (root = select(root, l - 1))->splay(nullptr); select(root, r + 1)->splay(root); }
-    void updateToRoot() { if (root->r->l) { root->r->l->update(); root->r->update(); root->update(); } }
+    void updateToRoot() { if (root->r->l) { root->r->l->propagate(); root->r->l->update(); root->r->update(); root->update(); } }
     // 1-indexed, inclusive
-    void update(int ind, Data val) { slice(ind, ind); root->r->l->val = applyVal(root->r->l->val, val); updateToRoot(); }
-    Data query(int l, int r) { slice(l, r); return Sbtr(root->r->l); }
-    ImplicitSplayTree(int N) { T.reserve(N + 2); vector<Data> A(N + 2, vdef); root = build(0, int(A.size()) - 1, A); }
-    template <class It> ImplicitSplayTree(It st, It en) {
+    void reverseRange(int l, int r) {
+        slice(l, r);
+        if (root->r->l) root->r->l->rev = !root->r->l->rev;
+        updateToRoot();
+    }
+    Data getValue(int ind) { slice(ind, ind); return root->r->l->val; }
+    ReversingSplayTree(int N) { T.reserve(N + 2); vector<Data> A(N + 2, vdef); root = build(0, A.size() - 1, A); }
+    template <class It> ReversingSplayTree(It st, It en) {
         T.reserve(en - st + 2); vector<Data> A; A.push_back(vdef); A.insert(A.end(), st, en); A.push_back(vdef);
-        root = build(0, int(A.size()) - 1, A);
+        root = build(0, A.size() - 1, A);
     }
 };

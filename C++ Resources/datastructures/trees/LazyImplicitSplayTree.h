@@ -56,13 +56,13 @@ void Node::splay(Node *rootP) {
         if (g != rootP) ((this == p->l) == (p == g->l) ? p : this)->rotate(rootP);
         rotate(rootP);
     }
-    update();
+    propagate(); update();
 }
 struct LazyImplicitSplayTree {
     Node *root = nullptr; int cur = 0; vector<Node> T;
     Node *select(Node *x, int k) {
         if (!x) return nullptr;
-        int t = Size(x->l);
+        x->propagate(); int t = Size(x->l);
         if (t > k) return select(x->l, k);
         else if (t < k) return select(x->r, k - t - 1);
         return x;
@@ -86,7 +86,7 @@ struct LazyImplicitSplayTree {
     Data query(int l, int r) { slice(l, r); return Sbtr(root->r->l); }
     LazyImplicitSplayTree(int N) { T.reserve(N + 2); vector<Data> A(N + 2, vdef); root = build(0, A.size() - 1, A); }
     template <class It> LazyImplicitSplayTree(It st, It en) {
-        T.reserve(en - st + 2); vector<Data> A; A.push_back(vdef); A.insert(A.back(), st, en); A.push_back(vdef);
+        T.reserve(en - st + 2); vector<Data> A; A.push_back(vdef); A.insert(A.end(), st, en); A.push_back(vdef);
         root = build(0, A.size() - 1, A);
     }
 };
