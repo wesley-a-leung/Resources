@@ -4,19 +4,19 @@ using namespace std;
 
 // Ternary search to find the minimum of a function
 // Time Complexity: O(log((hi - lo) / EPS)) * (cost to compute f(x))
-template <class T, class F> T ternary_search(F f, T lo, T hi, T EPS) {
+template <class T, class F> T ternary_search(T lo, T hi, F f, T EPS, int iters) {
     T m1, m2;
-    do {
+    for (int it = 0; it < iters && hi - lo > EPS; it++) {
         m1 = lo + (hi - lo) / 3; m2 = hi - (hi - lo) / 3;
         if (f(m1) < f(m2)) hi = m2; // f(m1) < f(m2) for minimum, f(m1) > f(m2) for maximum
         else lo = m1;
-    } while (abs(hi - lo) >= EPS);
+    };
     return lo + (hi - lo) / 2;
 }
 
 // Ternary search to find the minimum of a function at integral values
 // Time Complexity: O(log(hi - lo)) * (cost to compute f(x))
-template <class T, class F> T ternary_search(F f, T lo, T hi) {
+template <class T, class F> T ternary_search(T lo, T hi, F f) {
     static_assert(is_integral<T>::value, "T must be an integral type"); T mid;
     while (lo < hi) {
         mid = lo + (hi - lo) / 2;
