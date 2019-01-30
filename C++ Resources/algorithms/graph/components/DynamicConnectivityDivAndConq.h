@@ -4,7 +4,7 @@ using namespace std;
 
 // Support queries for the number of components in a graph, after edges have been added or removed
 // Divide and Conquer Solution
-// Time Complexity: O(V + Q log Q)
+// Time Complexity: O(V + Q (log Q) ^ 2)
 // Memory Complexity: O(V + Q)
 template <const int MAXV, const int MAXQ> struct DynamicConnectivityDivAndConq {
     int Q = 0, cnt, UF[MAXV]; vector<int> ans; unordered_map<int, int> present[MAXV]; stack<pair<pair<int ,int>, int>> history;
