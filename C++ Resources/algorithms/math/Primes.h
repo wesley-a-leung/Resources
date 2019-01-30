@@ -26,10 +26,7 @@ vector<long long> primeFactor(long long x) {
 // Memory Complexity: O(1)
 vector<long long> factors(long long x) {
     vector<long long> ret;
-    for (long long i = 2; i * i <= x; i++) if (x % i == 0) {
-        ret.push_back(i);
-        if (x / i != i) ret.push_back(x / i);
-    }
+    for (long long i = 2; i * i <= x; i++) if (x % i == 0) { ret.push_back(i); if (x / i != i) ret.push_back(x / i); }
     sort(ret.begin(), ret.end());
     return ret;
 }
