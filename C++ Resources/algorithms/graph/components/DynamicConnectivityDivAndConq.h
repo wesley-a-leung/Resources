@@ -42,8 +42,5 @@ template <const int MAXV, const int MAXQ> struct DynamicConnectivityDivAndConq {
         int insTime = present[v][w]; q[Q] = {-1, v, w, insTime}; q[insTime].otherTime = Q++; present[v].erase(w);
     }
     void query() { q[Q] = {0, -1, -1, Q}; Q++; }
-    void solve(int V) {
-        cnt = V; fill(UF, UF + MAXV, -1);
-        solve(0, Q - 1);
-    }
+    void solve(int V) { cnt = V; fill(UF, UF + MAXV, -1); solve(0, Q - 1); }
 };
