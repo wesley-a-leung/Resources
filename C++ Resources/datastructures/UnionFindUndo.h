@@ -8,16 +8,14 @@ using namespace std;
 //   find, join, connected, getSize: O(log N)
 //   undo: O(1)
 // Memory Complexity: O(N)
-template <const int MAXN> struct UnionFindUndo {
+template <const int MAXN, const bool ONE_INDEXED> struct UnionFindUndo {
     int UF[MAXN], cnt; stack<pair<pair<int, int>, int>> history;
-    void init(int N) { cnt = N; fill(UF, UF + MAXN, -1); }
+    void init(int N) { cnt = N; fill(UF, UF + N + ONE_INDEXED, -1); }
     int find(int v) { while (UF[v] >= 0) v = UF[v]; return v; }
     bool join(int v, int w) {
-        v = find(v); w = find(w);
-        if (v == w) return false;
+        if ((v = find(v)) == (w = find(w))) return false;
         if (UF[v] > UF[w]) swap(v, w);
-        history.push({{v, w}, UF[w]}); UF[v] += UF[w]; UF[w] = v; cnt--;
-        return true;
+        history.emplace(make_pair(v, w), UF[w]); UF[v] += UF[w]; UF[w] = v; cnt--; return true;
     }
     void undo() {
         int v = history.top().first.first, w = history.top().first.second, ufw = history.top().second;

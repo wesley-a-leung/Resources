@@ -10,12 +10,10 @@ template <const int MAXV, const int MAXQ> struct DynamicConnectivityDivAndConq {
     int Q = 0, cnt, UF[MAXV]; vector<int> ans; unordered_map<int, int> present[MAXV]; stack<pair<pair<int ,int>, int>> history;
     struct Query { int type, v, w, otherTime; } q[MAXQ];
     int find(int v) { while (UF[v] >= 0) v = UF[v]; return v; }
-    bool join(int v, int w) {
-        v = find(v); w = find(w);
-        if (v == w) return false;
+    void join(int v, int w) {
+        if ((v = find(v)) == (w = find(w))) return;
         if (UF[v] > UF[w]) swap(v, w);
-        history.push({{v, w}, UF[w]}); UF[v] += UF[w]; UF[w] = v; cnt--;
-        return true;
+        history.emplace(make_pair(v, w), UF[w]); UF[v] += UF[w]; UF[w] = v; cnt--;
     }
     void undo() {
         int v = history.top().first.first, w = history.top().first.second, ufw = history.top().second;

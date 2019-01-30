@@ -6,18 +6,17 @@ using namespace std;
 // Divide and Conquer Solution
 // Time Complexity: O(V + Q (log Q) ^ 2)
 // Memory Complexity: O(V + Q)
-template <const int MAXV, const int MAXQ> struct DynamicBipartiteDivAndConq {
+template <const int MAXV, const int MAXQ, const bool ONE_INDEXED> struct DynamicBipartiteDivAndConq {
     int Q = 0, cnt, UF[MAXV]; bool P[MAXV]; vector<bool> ans; unordered_map<int, int> present[MAXV];
     stack<pair<pair<int ,int>, pair<int, bool>>> history; stack<bool> history2;
     struct Query { int type, v, w, otherTime; } q[MAXQ];
     int find(int v) { while (UF[v] >= 0) v = UF[v]; return v; }
     bool parity(int v) { bool p = P[v]; for (; UF[v] >= 0; p ^= P[v]) v = UF[v]; return p; }
-    bool join(int v, int w) {
+    void join(int v, int w) {
         int fv = find(v), fw = find(w); bool p = parity(v) ^ parity(w) ^ 1;
-        if (fv == fw) { history2.push(p); cnt += history2.top(); return false; }
+        if (fv == fw) { history2.push(p); cnt += history2.top(); return; }
         if (UF[fv] > UF[fw]) swap(fv, fw);
-        history.push({{fv, fw}, {UF[fw], P[fw]}}); UF[fv] += UF[fw]; UF[fw] = fv; P[fw] = p;
-        return true;
+        history.emplace(make_pair(fv, fw), make_pair(UF[fw], P[fw])); UF[fv] += UF[fw]; UF[fw] = fv; P[fw] = p;
     }
     void undo() {
         int v = history.top().first.first, w = history.top().first.second, ufw = history.top().second.first;
@@ -46,5 +45,5 @@ template <const int MAXV, const int MAXQ> struct DynamicBipartiteDivAndConq {
         int insTime = present[v][w]; q[Q] = {-1, v, w, insTime}; q[insTime].otherTime = Q++; present[v].erase(w);
     }
     void query() { q[Q] = {0, -1, -1, Q}; Q++; }
-    void solve() { cnt = 0; fill(UF, UF + MAXV, -1); fill(P, P + MAXV, 0); solve(0, Q - 1); }
+    void solve(int V) { cnt = 0; fill(UF, UF + V + ONE_INDEXED, -1); fill(P, P + V + ONE_INDEXED, 0); solve(0, Q - 1); }
 };
