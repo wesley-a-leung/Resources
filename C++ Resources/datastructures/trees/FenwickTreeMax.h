@@ -5,7 +5,7 @@ using namespace std;
 // Fenwick Tree or Binary Indexed Tree supporting point updates and prefix range queries for maximum value queries
 // Time Complexity:
 //   init: O(N)
-//   update, rsq: O(log N)
+//   update, rmq: O(log N)
 // Memory Complexity: O(N)
 template <const int MAXN, class T, const bool ONE_INDEXED> struct FenwickTreeMax {
     T BIT[MAXN], NEG_INF;
