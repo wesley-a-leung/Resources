@@ -3,7 +3,7 @@
 using namespace std;
 
 // Arpa's Trick to solve Range Minimum Queries offline
-// Time Complexity: O((N + Q) * (Inverse Ackerman))
+// Time Complexity: O((N + Q) * (Inverse Ackermann))
 // Memory Complexity: O(N + Q)
 template <const int MAXN, const int MAXQ, class T, const bool ONE_INDEXED> struct ArpasTrick {
     T A[MAXN], ans[MAXQ]; int Q = 0, UF[MAXN]; vector<pair<int, int>> L[MAXN];

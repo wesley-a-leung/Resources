@@ -5,7 +5,7 @@ using namespace std;
 // Union Find / Disjoint Sets with Half Compression
 // Time Complexity:
 //   init: O(N)
-//   find, join, connected, getSize: Inverse Ackerman
+//   find, join, connected, getSize: Inverse Ackermann
 // Memory Complexity: O(N)
 template <const int MAXN, const bool ONE_INDEXED> struct UnionFind {
     int UF[MAXN], cnt;
