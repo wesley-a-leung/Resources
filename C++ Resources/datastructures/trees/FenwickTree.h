@@ -11,7 +11,7 @@ using namespace std;
 template <class T, const bool ONE_INDEXED, const int ...Args> struct FenwickTree {
     T val;
     void init() { val = 0; }
-    void update(int v) { val += v; }
+    void update(T v) { val += v; }
     T rsq() { return val; }
 };
 
