@@ -10,6 +10,6 @@ using namespace std;
 template <const int MAXN, class T, const bool ONE_INDEXED> struct FenwickTreeMax {
     T BIT[MAXN], NEG_INF;
     FenwickTreeMax(T NEG_INF) : NEG_INF(NEG_INF) { fill(BIT, BIT + MAXN, NEG_INF); }
-    void update(int i, T v) { for ( i += !ONE_INDEXED; i < MAXN; i += i & -i) BIT[i] = max(BIT[i], v); }
+    void update(int i, T v) { for (i += !ONE_INDEXED; i < MAXN; i += i & -i) BIT[i] = max(BIT[i], v); }
     T rmq(int i) { T ret = NEG_INF; for (i += !ONE_INDEXED; i > 0; i -= i & -i) ret = max(ret, BIT[i]); return ret; }
 };
