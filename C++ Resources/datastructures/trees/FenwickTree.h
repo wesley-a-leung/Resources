@@ -18,8 +18,8 @@ template <class T, const bool ONE_INDEXED, const int ...Args> struct FenwickTree
 template <class T, const bool ONE_INDEXED, const int MAXN, const int ...Ns> struct FenwickTree <T, ONE_INDEXED, MAXN, Ns...> {
     FenwickTree<T, ONE_INDEXED, Ns...> BIT[MAXN];
     void init() { for (int i = 0; i < MAXN; i++) BIT[i].init(); }
-    template <typename ...Args> void update(int i, Args ...args) { for (i += !ONE_INDEXED; i < MAXN; i += i & -i) BIT[i].update(args...); }
-    template <typename ...Args> T rsq(int l, int r, Args ...args) {
+    template <class ...Args> void update(int i, Args ...args) { for (i += !ONE_INDEXED; i < MAXN; i += i & -i) BIT[i].update(args...); }
+    template <class ...Args> T rsq(int l, int r, Args ...args) {
         T ret = 0;
         for (r += !ONE_INDEXED; r > 0; r -= r & -r) ret += BIT[r].rsq(args...);
         for (l -= ONE_INDEXED; l > 0; l -= l & -l) ret -= BIT[l].rsq(args...);
