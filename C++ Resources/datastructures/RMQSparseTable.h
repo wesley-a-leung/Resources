@@ -6,6 +6,7 @@ using namespace std;
 // Time Complexity:
 //   init: O(N log N)
 //   query: O(1)
+// Memory Complexity: O(N log N)
 template <const int MAXN, const int MAXLGN, class T> struct RMQSparseTable {
     T A[MAXN]; int ST[MAXLGN][MAXN];
     int minInd(int l, int r) { return A[l] <= A[r] ? l : r; }
