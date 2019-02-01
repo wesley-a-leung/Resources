@@ -58,20 +58,17 @@ template <const int MAXN, const bool ONE_INDEXED> struct LazySegmentTree {
     }
     void update(int cur, int cL, int cR, int l, int r, const Lazy &val) {
         if (cL > r || cR < l) return;
-        if (cL != cR) propagate(cur, cL, cR);
         if (cL >= l && cR <= r) {
             T[cur] = apply(T[cur], getSegmentVal(val, cR - cL + 1));
-            L[cur] = mergeLazy(L[cur], val);
-            return;
+            L[cur] = mergeLazy(L[cur], val); return;
         }
-        int m = cL + (cR - cL) / 2; update(cur * 2, cL, m, l, r, val); update(cur * 2 + 1, m + 1, cR, l, r, val);
+        int m = cL + (cR - cL) / 2; propagate(cur, cL, cR); update(cur * 2, cL, m, l, r, val); update(cur * 2 + 1, m + 1, cR, l, r, val);
         T[cur] = merge(T[cur * 2], T[cur * 2 + 1]);
     }
     Data query(int cur, int cL, int cR, int l, int r) {
         if (cL > r || cR < l) return qdef;
-        if (cL != cR) propagate(cur, cL, cR);
         if (cL >= l && cR <= r) return T[cur];
-        int m = cL + (cR - cL) / 2;
+        int m = cL + (cR - cL) / 2; propagate(cur, cL, cR);
         return merge(query(cur * 2, cL, m, l, r), query(cur * 2 + 1, m + 1, cR, l, r));
     }
     template <class It> void init(It st, It en) {
@@ -84,67 +81,70 @@ template <const int MAXN, const bool ONE_INDEXED> struct LazySegmentTree {
     Data query(int l, int r) { return query(1, ONE_INDEXED, N - !ONE_INDEXED, l, r); }
 };
 
-template <const bool ONE_INDEXED> struct PersistentSegmentTree {
-    using Data = int; using Lazy = int; static const Data vdef = 0, qdef = 0; static const Lazy ldef = 0;
+using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ldef = 0;
+template <const int MAXNODES, const int MAXROOTS, const bool ONE_INDEXED> struct DyanmicSegmentTree {
     Data merge(const Data &l, const Data &r); // to be implemented
     Data apply(const Data &x, const Lazy &v); // to be implemented
     Lazy getSegmentVal(const Lazy &v, int len); // to be implemented
     Lazy mergeLazy(const Lazy &l, const Lazy &r); // to be implemented
-    struct Node {
-        Node *left = nullptr, *right = nullptr;
-        Data val = PersistentSegmentTree::vdef;
-        Lazy lazy = PersistentSegmentTree::ldef;
-    };
-    void propagate(Node *cur, int cL, int cR) {
-        if (cur->lazy != ldef) {
+    int N, roots[MAXROOTS], L[MAXNODES], R[MAXNODES]; Data VAL[MAXNODES], LZ[MAXNODES], curNode = 0, curRoot = 0;
+    int makeNode(int cp = 0) {
+        assert(curNode < MAXNODES); L[curNode] = curNode ? L[cp] : 0; R[curNode] = curNode ? R[cp] : 0;
+        VAL[curNode] = curNode ? VAL[cp] : vdef; LZ[curNode] = curNode ? LZ[cp] : ldef; return curNode++;
+    }
+    void propagate(int cur, int cL, int cR) {
+        if (LZ[cur] != ldef) {
             int m = cL + (cR - cL) / 2;
-            if (cur->left == nullptr) cur->left = new Node();
-            cur->left->val = apply(cur->left->val, getSegmentVal(cur->lazy, m - cL + 1));
-            cur->left->lazy = mergeLazy(cur->left->lazy, cur->lazy);
-            if (cur->right == nullptr) cur->right = new Node();
-            cur->right->val = apply(cur->right->val, getSegmentVal(cur->lazy, cR - m));
-            cur->right->lazy = mergeLazy(cur->right->lazy, cur->lazy);
-            cur->lazy = ldef;
+            if (!L[cur]) L[cur] = makeNode();
+            VAL[L[cur]] = apply(VAL[L[cur]], getSegmentVal(LZ[cur], m - cL + 1));
+            LZ[L[cur]] = mergeLazy(LZ[L[cur]], LZ[cur]);
+            if (!R[cur]) R[cur] = makeNode();
+            VAL[R[cur]] = apply(VAL[R[cur]], getSegmentVal(LZ[cur], cR - m));
+            LZ[R[cur]] = mergeLazy(LZ[R[cur]], LZ[cur]);
+            LZ[cur] = ldef;
         }
     }
-    int N; vector<Node*> roots = {new Node()};
-    template <class It> Node *build(int cL, int cR, It st) {
-        Node *ret = new Node();
-        if (cL == cR) { ret->val = *(st + cL - ONE_INDEXED); return ret; }
-        int m = cL + (cR - cL) / 2;
-        ret->left = build(cL, m, st); ret->right = build(m + 1, cR, st);
-        ret->val = merge(ret->left->val, ret->right->val);
-        return ret;
+    template <class It> int build(int cL, int cR, It st) {
+        int ret = makeNode();
+        if (cL == cR) { VAL[ret] = *(st + cL - ONE_INDEXED); return ret; }
+        int m = cL + (cR - cL) / 2; L[ret] = build(cL, m, st); R[ret] = build(m + 1, cR, st);
+        VAL[ret] = merge(VAL[L[ret]], VAL[R[ret]]); return ret;
     }
-    Node *update(Node *cur, int cL, int cR, int l, int r, const Lazy &val) {
+    int update(int cur, int cL, int cR, int l, int r, const Lazy &val, bool persistent) {
         if (cL > r || cR < l) return cur;
-        Node *ret = new Node();
-        if (cur) { ret->left = cur->left; ret->right = cur->right; ret->val = cur->val, ret->lazy = cur->lazy; }
-        if (cL != cR) propagate(ret, cL, cR);
+        int ret = persistent ? makeNode(cur) : cur;
         if (cL >= l && cR <= r) {
-            ret->val = apply(ret->val, getSegmentVal(val, cR - cL + 1));
-            ret->lazy = mergeLazy(ret->lazy, val);
-            return ret;
+            VAL[ret] = apply(VAL[ret], getSegmentVal(val, cR - cL + 1));
+            LZ[ret] = mergeLazy(LZ[ret], val); return ret;
         }
-        int m = cL + (cR - cL) / 2;
-        ret->left = update(ret->left, cL, m, l, r, val);
-        ret->right = update(ret->right, m + 1, cR, l, r, val);
-        if (ret->left && ret->right) ret->val = merge(ret->left->val, ret->right->val);
-        else if (ret->left) ret->val = merge(ret->left->val, Data(vdef));
-        else if (ret->right) ret->val = merge(ret->right->val, Data(vdef));
+        if (!L[ret]) L[ret] = makeNode();
+        if (!R[ret]) R[ret] = makeNode();
+        int m = cL + (cR - cL) / 2; propagate(ret, cL, cR);
+        L[ret] = update(L[ret], cL, m, l, r, val, persistent);
+        R[ret] = update(R[ret], m + 1, cR, l, r, val, persistent);
+        if (L[ret] && R[ret]) VAL[ret] = merge(VAL[L[ret]], VAL[R[ret]]);
+        else if (L[ret]) VAL[ret] = merge(VAL[L[ret]], Data(vdef));
+        else if (R[ret]) VAL[ret] = merge(VAL[R[ret]], Data(vdef));
         return ret;
     }
-    Data query(Node *cur, int cL, int cR, int l, int r) {
+    Data query(int cur, int cL, int cR, int l, int r) {
         if (cL > r || cR < l) return qdef;
         if (!cur) return vdef;
-        if (cL != cR) propagate(cur, cL, cR);
-        if (cL >= l && cR <= r) return cur->val;
-        int m = cL + (cR - cL) / 2;
-        return merge(query(cur->left, cL, m, l, r), query(cur->right, m + 1, cR, l, r));
+        if (cL >= l && cR <= r) return VAL[cur];
+        int m = cL + (cR - cL) / 2; propagate(cur, cL, cR); return merge(query(L[cur], cL, m, l, r), query(R[cur], m + 1, cR, l, r));
     }
-    template <class It> void init(It st, It en) { N = en - st; roots.push_back(build(ONE_INDEXED, N - !ONE_INDEXED, st)); }
-    void init(int size) { N = size; }
-    void update(int l, int r, int val) { roots.push_back(update(roots.back(), ONE_INDEXED, N - !ONE_INDEXED, l, r, val)); }
-    Data query(int rootInd, int l, int r) { return query(roots[rootInd], ONE_INDEXED, N - !ONE_INDEXED, l, r); }
-    void revert(int x) { roots.push_back(roots[x]); }
+    template <class It> void init(It st, It en) {
+        N = en - st; makeNode(); roots[curRoot++] = build(ONE_INDEXED, N - !ONE_INDEXED, st);
+    }
+    void init(int size) { N = size; makeNode(); roots[curRoot++] = makeNode(); }
+    void update(int l, int r, Lazy val, bool persistent) {
+        int nr = update(roots[curRoot - 1], ONE_INDEXED, N - !ONE_INDEXED, l, r, val, persistent);
+        if (persistent) roots[curRoot++] = nr;
+        else roots[curRoot - 1] = nr;
+    }
+    Data query(int l, int r, int rootInd = -1) {
+        return query((rootInd == -1 ? roots[curRoot - 1] : roots[rootInd]), ONE_INDEXED, N - !ONE_INDEXED, l, r);
+    }
+    void revert(int x) { roots[curRoot++] = roots[x]; }
+    void clear() { curNode = curRoot = 0; }
 };
