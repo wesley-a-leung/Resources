@@ -5,9 +5,10 @@ using namespace std;
 // Fenwick Tree or Binary Indexed Tree supporting point updates and range queries in any number of dimensions
 // Time Complexity:
 //   init: O(PI(N_i))
-//   update, rsq: O(PI(log(N_i)))
+//   update: O(PI(log(N_i)))
+//   rsq: O(2^D * PI(log(N_i))), 
 // Memory Complexity: O(PI(N_i))
-// where PI is the product function, and N_i is the size in the ith dimension
+// where PI is the product function, N_i is the size in the ith dimension, and D is the number of dimensions
 template <class T, const bool ONE_INDEXED, const int ...Args> struct FenwickTree {
     T val;
     void init() { val = 0; }
