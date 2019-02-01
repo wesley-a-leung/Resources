@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Union Find / Disjoint Sets with Half Compression
+// Union Find / Disjoint Sets by size with path compression
 // Time Complexity:
 //   init: O(N)
 //   find, join, connected, getSize: Inverse Ackermann
