@@ -133,9 +133,7 @@ template <const int MAXNODES, const int MAXROOTS, const bool ONE_INDEXED> struct
         if (cL >= l && cR <= r) return VAL[cur];
         int m = cL + (cR - cL) / 2; propagate(cur, cL, cR); return merge(query(L[cur], cL, m, l, r), query(R[cur], m + 1, cR, l, r));
     }
-    template <class It> void init(It st, It en) {
-        N = en - st; makeNode(); roots[curRoot++] = build(ONE_INDEXED, N - !ONE_INDEXED, st);
-    }
+    template <class It> void init(It st, It en) { N = en - st; makeNode(); roots[curRoot++] = build(ONE_INDEXED, N - !ONE_INDEXED, st); }
     void init(int size) { N = size; makeNode(); roots[curRoot++] = makeNode(); }
     void update(int l, int r, Lazy val, bool persistent) {
         int nr = update(roots[curRoot - 1], ONE_INDEXED, N - !ONE_INDEXED, l, r, val, persistent);
