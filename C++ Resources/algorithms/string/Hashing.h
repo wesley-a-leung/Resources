@@ -3,8 +3,9 @@
 using namespace std;
 
 seed_seq seq {
-    (uint64_t)chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
-    (uint64_t)__builtin_ia32_rdtsc(),(uint64_t)(uintptr_t)make_unique<char>().get()
+    (uint64_t) chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
+    (uint64_t) __builtin_ia32_rdtsc(),
+    (uint64_t) (uintptr_t) make_unique<char>().get()
 };
 mt19937_64 rng64(seq);
 
