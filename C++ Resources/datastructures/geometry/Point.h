@@ -35,7 +35,7 @@ struct Point {
     bool onSegment(const Point &p, const Point &q) const {
         return x <= max(p.x, q.x) + T(EPS) && x >= min(p.x, q.x) - T(EPS) && y <= max(p.y, q.y) + T(EPS) && y >= min(p.y, q.y) - T(EPS);
     }
-    static bool intersects(const Point &p1, const Point &q1, const Point &p2, const Point &q2) {
+    static bool lineSegmentIntersects(const Point &p1, const Point &q1, const Point &p2, const Point &q2) {
         int o1 = Point::ccw(p1, q1, p2), o2 = Point::ccw(p1, q1, q2), o3 = Point::ccw(p2, q2, p1), o4 = Point::ccw(p2, q2, q1);
         if (o1 != o2 && o3 != o4) return true;
         if (o1 == 0 && p2.onSegment(p1, q1)) return true;
@@ -44,7 +44,7 @@ struct Point {
         if (o4 == 0 && q1.onSegment(p2, q2)) return true;
         return false;
     }
-    static Point intersection(const Point &p1, const Point &q1, const Point &p2, const Point &q2) {
+    static Point lineIntersection(const Point &p1, const Point &q1, const Point &p2, const Point &q2) {
         T A1 = q1.y - p1.y, B1 = p1.x - q1.x, C1 = A1 * p1.x + B1 * p1.y;
         T A2 = q2.y - p2.y, B2 = p2.x - q2.x, C2 = A2 * p2.x + B2 * p2.y, det = A1 * B2 - A2 * B1;
         if (abs(det) <= T(EPS)) throw runtime_error("The lines do not intersect");
