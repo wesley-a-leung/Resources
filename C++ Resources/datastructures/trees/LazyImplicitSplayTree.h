@@ -12,7 +12,7 @@ using Data = int; using Lazy = int; const Data vdef = 0; const Lazy ldef = 0;
 struct Node {
     Node *l, *r, *p; int size; Data val, sbtr; Lazy lz;
     Node(Data val) : l(nullptr), r(nullptr), p(nullptr), size(1), val(val), sbtr(val), lz(ldef) {}
-    void apply(Lazy lz);
+    void apply(const Lazy &v);
     void propagate();
     void update();
     void rotate(Node *rootP);
@@ -20,11 +20,11 @@ struct Node {
 };
 int Size(Node *x) { return x ? x->size : 0; }
 Data Sbtr(Node *x) { return x ? x->sbtr : vdef; }
-Data merge(Data l, Data r) { return l + r; } // to be implemented
-Lazy getSegmentVal(Lazy v, int k); // to be implemented
-Lazy mergeLazy(Lazy l, Lazy r); // to be implemented
-Data applyLazy(Data d, Lazy l); // to be implemented
-void Node::apply(Lazy l) { val = applyLazy(val, l); sbtr = applyLazy(sbtr, getSegmentVal(l, size)); lz = mergeLazy(lz, l); }
+Data merge(const Data &l, const Data &r) { return l + r; } // to be implemented
+Lazy getSegmentVal(const Lazy &v, int k); // to be implemented
+Lazy mergeLazy(const Lazy &l, const Lazy &r); // to be implemented
+Data applyLazy(const Data &l, const Lazy &r); // to be implemented
+void Node::apply(const Lazy &v) { val = applyLazy(val, v); sbtr = applyLazy(sbtr, getSegmentVal(v, size)); lz = mergeLazy(lz, v); }
 void Node::propagate() {
     if (lz != ldef) {
         if (l) l->apply(lz);
@@ -78,7 +78,7 @@ struct LazyImplicitSplayTree {
     void slice(int l, int r) { (root = select(root, l - 1))->splay(nullptr); select(root, r + 1)->splay(root); }
     void updateToRoot() { if (root->r->l) { root->r->l->propagate(); root->r->l->update(); root->r->update(); root->update(); } }
     // 1-indexed, inclusive
-    void update(int l, int r, Lazy val) {
+    void update(int l, int r, const Lazy &val) {
         slice(l, r);
         if (root->r->l) root->r->l->apply(val);
         updateToRoot();

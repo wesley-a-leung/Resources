@@ -10,7 +10,7 @@ using namespace std;
 struct LazyLinkCutTree {
     using Data = int; using Lazy = int; const Data vdef = 0; const Lazy ldef = 0;
     vector<Data> VAL, SBTR; vector<Lazy> LZ; vector<int> L, R, P, SZ; vector<bool> REV;
-    int makeNode(Data val) {
+    int makeNode(const Data &val) {
         VAL.push_back(val); SBTR.push_back(val); LZ.push_back(ldef); REV.push_back(false);
         L.push_back(-1); R.push_back(-1); P.push_back(-1); SZ.push_back(1);
         return int(VAL.size()) - 1;
@@ -20,11 +20,11 @@ struct LazyLinkCutTree {
     bool isRoot(int x) { return P[x] == -1 || (x != L[P[x]] && x != R[P[x]]); }
     int size(int x) { return x == -1 ? 0 : SZ[x]; }
     Data sbtr(int x) { return x == -1 ? vdef : SBTR[x]; }
-    Data merge(Data l, Data r); // to be implemented
-    Lazy getSegmentVal(Lazy v, int k); // to be implemented
-    Lazy mergeLazy(Lazy l, Lazy r); // to be implemented
-    Data applyLazy(Data d, Lazy l); // to be implemented
-    void apply(int x, Lazy v) {
+    Data merge(const Data &l, const Data &r); // to be implemented
+    Lazy getSegmentVal(const Lazy &v, int k); // to be implemented
+    Lazy mergeLazy(const Lazy &l, const Lazy &r); // to be implemented
+    Data applyLazy(const Data &l, const Lazy &r); // to be implemented
+    void apply(int x, const Lazy &v) {
         if (x == -1) return;
         VAL[x] = applyLazy(VAL[x], v); SBTR[x] = applyLazy(SBTR[x], getSegmentVal(v, SZ[x])); LZ[x] = mergeLazy(LZ[x], v);
     }
@@ -101,7 +101,7 @@ struct LazyLinkCutTree {
         R[x] = P[R[x]] = -1;
         return true;
     }
-    bool updatePath(int from, int to, Lazy val) {
+    bool updatePath(int from, int to, const Lazy &val) {
         if (!connected(from, to)) return false;
         makeRoot(from); expose(to); apply(to, val); return true;
     }

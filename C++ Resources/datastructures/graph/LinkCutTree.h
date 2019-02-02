@@ -8,9 +8,9 @@ using namespace std;
 //   makeRoot, findRoot, lca, link, cut, cutParent, updateVertex, queryPath: O(log N)
 // Memory Complexity: O(N)
 struct LinkCutTree {
-    using Data = int; const Data vdef = 0;
+    using Data = int; using Lazy = int; const Data vdef = 0;
     vector<Data> VAL, SBTR; vector<int> L, R, P, SZ; vector<bool> REV;
-    int makeNode(Data val) {
+    int makeNode(const Data &val) {
         VAL.push_back(val); SBTR.push_back(val); REV.push_back(false);
         L.push_back(-1); R.push_back(-1); P.push_back(-1); SZ.push_back(1);
         return int(VAL.size()) - 1;
@@ -20,11 +20,11 @@ struct LinkCutTree {
     bool isRoot(int x) { return P[x] == -1 || (x != L[P[x]] && x != R[P[x]]); }
     int size(int x) { return x == -1 ? 0 : SZ[x]; }
     Data sbtr(int x) { return x == -1 ? vdef : SBTR[x]; }
-    Data merge(Data l, Data r); // to be implemented
-    Data applyVal(Data l, Data r); // to be implemented
-    void apply(int x, Data d) {
+    Data merge(const Data &l, const Data &r); // to be implemented
+    Data applyLazy(const Data &l, const Lazy &r); // to be implemented
+    void apply(int x, const Lazy &v) {
         if (x == -1) return;
-        VAL[x] = applyVal(VAL[x], d); SBTR[x] = applyVal(SBTR[x], d);
+        VAL[x] = applyLazy(VAL[x], v); SBTR[x] = applyLazy(SBTR[x], v);
     }
     void propagate(int x) {
         if (REV[x]) {
@@ -92,7 +92,7 @@ struct LinkCutTree {
         R[x] = P[R[x]] = -1;
         return true;
     }
-    void updateVertex(int x, Data val) { makeRoot(x); apply(x, val); }
+    void updateVertex(int x, const Lazy &val) { makeRoot(x); apply(x, val); }
     int queryPath(int from, int to) {
         if (!connected(from, to)) return vdef;
         makeRoot(from); expose(to); return sbtr(to);

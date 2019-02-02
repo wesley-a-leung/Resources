@@ -3,18 +3,18 @@
 using namespace std;
 
 template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree {
-    using Data = int; const Data vdef = 0, qdef = 0;
+    using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0;
     Data merge(const Data &l, const Data &r); // to be implemented
-    Data apply(const Data &x, const Data &v); // to be implemented
+    Data applyLazy(const Data &l, const Lazy &r); // to be implemented
     Data T[MAXN * 4], A[MAXN]; int N;
     void build(int cur, int cL, int cR) {
         if (cL == cR) { T[cur] = A[cL]; return; }
         int m = cL + (cR - cL) / 2; build(cur * 2, cL, m); build(cur * 2 + 1, m + 1, cR);
         T[cur] = merge(T[cur * 2], T[cur * 2 + 1]);
     }
-    void update(int cur, int cL, int cR, int ind, const Data &val) {
+    void update(int cur, int cL, int cR, int ind, const Lazy &val) {
         if (cL > ind || cR < ind) return;
-        if (cL == cR) { T[cur] = apply(T[cur], val); return; }
+        if (cL == cR) { T[cur] = applyLazy(T[cur], val); return; }
         int m = cL + (cR - cL) / 2; update(cur * 2, cL, m, ind, val); update(cur * 2 + 1, m + 1, cR, ind, val);
         T[cur] = merge(T[cur * 2], T[cur * 2 + 1]);
     }
@@ -30,14 +30,14 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree {
         build(1, ONE_INDEXED, N - !ONE_INDEXED);
     }
     void init(int size) { N = size; fill(A + ONE_INDEXED, A + N + ONE_INDEXED, vdef); build(1, ONE_INDEXED, N - !ONE_INDEXED); }
-    void update(int ind, const Data &val) { update(1, ONE_INDEXED, N - !ONE_INDEXED, ind, val); }
+    void update(int ind, const Lazy &val) { update(1, ONE_INDEXED, N - !ONE_INDEXED, ind, val); }
     Data query(int l, int r) { return query(1, ONE_INDEXED, N - !ONE_INDEXED, l, r); }
 };
 
 template <const int MAXN, const bool ONE_INDEXED> struct LazySegmentTree {
     using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ldef = 0;
     Data merge(const Data &l, const Data &r); // to be implemented
-    Data applyLazy(const Data &x, const Lazy &v); // to be implemented
+    Data applyLazy(const Data &l, const Lazy &r); // to be implemented
     Lazy getSegmentVal(const Lazy &v, int len); // to be implemented
     Lazy mergeLazy(const Lazy &l, const Lazy &r); // to be implemented
     Data T[MAXN * 4], A[MAXN]; Lazy L[MAXN * 4]; int N;
@@ -60,8 +60,8 @@ template <const int MAXN, const bool ONE_INDEXED> struct LazySegmentTree {
             T[cur] = applyLazy(T[cur], getSegmentVal(val, cR - cL + 1));
             L[cur] = mergeLazy(L[cur], val); return;
         }
-        int m = cL + (cR - cL) / 2; propagate(cur, cL, cR); update(cur * 2, cL, m, l, r, val); update(cur * 2 + 1, m + 1, cR, l, r, val);
-        T[cur] = merge(T[cur * 2], T[cur * 2 + 1]);
+        int m = cL + (cR - cL) / 2; propagate(cur, cL, cR);
+        update(cur * 2, cL, m, l, r, val); update(cur * 2 + 1, m + 1, cR, l, r, val); T[cur] = merge(T[cur * 2], T[cur * 2 + 1]);
     }
     Data query(int cur, int cL, int cR, int l, int r) {
         if (cL > r || cR < l) return qdef;

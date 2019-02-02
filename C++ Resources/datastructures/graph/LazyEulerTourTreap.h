@@ -17,7 +17,7 @@ struct LazyEulerTourTreap {
     mt19937 rng; uniform_real_distribution<double> dis;
     using Data = int; using Lazy = int; const Data vdef = 0; const Lazy ldef = 0; const bool ISPRE = true, ISPOST = false;
     vector<Data> VAL, SBTR; vector<Lazy> LZ; vector<int> PRE, POST, VERT, L, R, P, SZ; vector<double> PRI; vector<bool> TYPE;
-    int makeNode(int vert, bool type, Data val) {
+    int makeNode(int vert, bool type, const Data &val) {
         VAL.push_back(val); SBTR.push_back(val); LZ.push_back(ldef); VERT.push_back(vert); TYPE.push_back(type);
         L.push_back(-1); R.push_back(-1); P.push_back(-1); SZ.push_back(1); PRI.push_back(dis(rng));
         return int(VAL.size()) - 1;
@@ -25,11 +25,11 @@ struct LazyEulerTourTreap {
     int size(int x) { return x == -1 ? 0 : SZ[x]; }
     Data val(int x) { return x == -1 ? vdef: VAL[x]; }
     Data sbtrVal(int x) { return x == -1 ? vdef : SBTR[x]; }
-    Data merge(Data l, Data r); // to be implemented
-    Lazy getSegmentVal(Lazy v, int k); // to be implemented
-    Lazy mergeLazy(Lazy l, Lazy r); // to be implemented
-    Data applyLazy(Data d, Lazy l); // to be implemented
-    void apply(int x, Lazy v) {
+    Data merge(const Data &l, const Data &r); // to be implemented
+    Lazy getSegmentVal(const Lazy &v, int k); // to be implemented
+    Lazy mergeLazy(const Lazy &l, const Lazy &r); // to be implemented
+    Data applyLazy(const Data &l, const Lazy &r); // to be implemented
+    void apply(int x, const Lazy &v) {
         if (x == -1) return;
         VAL[x] = applyLazy(VAL[x], v); SBTR[x] = applyLazy(SBTR[x], getSegmentVal(v, SZ[x])); LZ[x] = mergeLazy(LZ[x], v);
     }
@@ -107,12 +107,12 @@ struct LazyEulerTourTreap {
         Data ret = sbtrVal(m); merge(l, l, m); merge(l, l, r);
         return ret;
     }
-    void updateVertex(int v, Data val) {
+    void updateVertex(int v, const Lazy &val) {
         int l, preV, m, postV, r; split(root(PRE[v]), l, preV, index(PRE[v])); split(preV, preV, m, 1);
         split(m, m, postV, index(POST[v])); split(postV, postV, r, 1);
         apply(preV, val); apply(postV, val); merge(l, l, preV); merge(l, l, m); merge(l, l, postV); merge(l, l, r);
     }
-    void updateSubtree(int v, Data val) {
+    void updateSubtree(int v, const Lazy &val) {
         int l, m, r; split(root(PRE[v]), l, m, index(PRE[v])); split(m, m, r, index(POST[v]) + 1);
         apply(m, val); merge(l, l, m); merge(l, l, r);
     }
