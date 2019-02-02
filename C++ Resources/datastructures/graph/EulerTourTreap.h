@@ -15,9 +15,9 @@ struct EulerTourTreap {
         (uint64_t) (uintptr_t) make_unique<char>().get()
     };
     mt19937 rng; uniform_real_distribution<double> dis;
-    using Data = int; const Data vdef = 0; const bool ISPRE = true, ISPOST = false;
+    using Data = int; using Lazy = int; const Data vdef = 0; const bool ISPRE = true, ISPOST = false;
     vector<Data> VAL, SBTR; vector<int> PRE, POST, VERT, L, R, P, SZ; vector<double> PRI; vector<bool> TYPE;
-    int makeNode(int vert, bool type, Data val) {
+    int makeNode(int vert, bool type, const Data &val) {
         VAL.push_back(val); SBTR.push_back(val); VERT.push_back(vert); TYPE.push_back(type);
         L.push_back(-1); R.push_back(-1); P.push_back(-1); SZ.push_back(1); PRI.push_back(dis(rng));
         return int(VAL.size()) - 1;
@@ -25,11 +25,11 @@ struct EulerTourTreap {
     int size(int x) { return x == -1 ? 0 : SZ[x]; }
     Data val(int x) { return x == -1 ? vdef : VAL[x]; }
     Data sbtrVal(int x) { return x == -1 ? vdef : SBTR[x]; }
-    Data merge(Data l, Data r); // to be implemented
-    Data applyVal(Data l, Data r); // to be implemented
-    void apply(int x, Data d) {
+    Data merge(const Data &l, const Data &r); // to be implemented
+    Data applyLazy(const Data &l, const Lazy &r); // to be implemented
+    void apply(int x, const Lazy &v) {
         if (x == -1) return;
-        VAL[x] = applyVal(VAL[x], d); SBTR[x] = applyVal(SBTR[x], d);
+        VAL[x] = applyLazy(VAL[x], v); SBTR[x] = applyLazy(SBTR[x], v);
     }
     void update(int x) {
         if (x == -1) return;
@@ -98,7 +98,7 @@ struct EulerTourTreap {
         Data ret = sbtrVal(m); merge(l, l, m); merge(l, l, r);
         return ret;
     }
-    void updateVertex(int v, Data val) {
+    void updateVertex(int v, const Lazy &val) {
         int l, preV, m, postV, r; split(root(PRE[v]), l, preV, index(PRE[v])); split(preV, preV, m, 1);
         split(m, m, postV, index(POST[v])); split(postV, postV, r, 1);
         apply(preV, val); apply(postV, val); merge(l, l, preV); merge(l, l, m); merge(l, l, postV); merge(l, l, r);

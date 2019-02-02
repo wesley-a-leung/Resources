@@ -5,15 +5,24 @@
 using namespace std;
 using namespace __gnu_pbds;
 
-template <class K, class V, class H = hash<K>, class E = equal_to<K>> using hash_map = gp_hash_table<K, V, H, E>;
-template <class T, class Comparator = less<T>> using ordered_set = tree<T, null_type, Comparator, rb_tree_tag, tree_order_statistics_node_update>;
+seed_seq seq {
+    (uint64_t)chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
+    (uint64_t)__builtin_ia32_rdtsc(),(uint64_t)(uintptr_t)make_unique<char>().get()
+};
+mt19937_64 rng64(seq);const size_t RANDOM=uniform_int_distribution<size_t>(0,(numeric_limits<size_t>::max)())(rng64);
+template<class T,class H=hash<T>>struct rand_hash{
+    static uint64_t splitmix64(uint64_t x){x+=0x9e3779b97f4a7c15;x=(x^(x>>30))*0xbf58476d1ce4e5b9;x=(x^(x>>27))*0x94d049bb133111eb;return x^(x>>31);}
+    size_t operator()(const T&x)const{return splitmix64(H{}(x)+RANDOM);}
+};
+template<class K,class V,class H=rand_hash<K>,class...Ts>using hashmap=gp_hash_table<K,V,H,Ts...>;
+template<class K,class C=less<K>,class...Ts>using treeset=tree<K,null_type,C,rb_tree_tag,tree_order_statistics_node_update,Ts...>;
 
 // Sparse Fenwick Tree supporting point updates (with value 1) and range queries in 2 dimensions
 // Time Complexity:
 //   add, rem, rsq: O(log N log M)
 // Memory Complexity: O(NM)
 template <const int MAXN, class T> struct SparseFenwickTree2DSimple {
-    ordered_set<pair<T, int>> BIT[MAXN]; int stamp = 0;
+    treeset<pair<T, int>> BIT[MAXN]; int stamp = 0;
     void clear() { stamp = 0; for (int i = 0; i < MAXN; i++) BIT[i].clear(); }
     void add(int x, int y) { for (; x < MAXN; x += x & -x) BIT[x].insert(make_pair(y, stamp++)); }
     void rem(int x, int y) { for (; x < MAXN; x += x & -x) BIT[x].erase(BIT[x].lower_bound(make_pair(y, 0))); }
@@ -21,21 +30,12 @@ template <const int MAXN, class T> struct SparseFenwickTree2DSimple {
     T rsq(int x1, int y1, int x2, int y2) { return rsq(x2, y2) + rsq(x1 - 1, y1 - 1) - rsq(x1 - 1, y2) - rsq(x2, y1 - 1); }
 };
 
-seed_seq seq {
-    (uint64_t)chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
-    (uint64_t)__builtin_ia32_rdtsc(),(uint64_t)(uintptr_t)make_unique<char>().get()
-};
-mt19937_64 rng64(seq);
-
-const size_t RANDOM = uniform_int_distribution<size_t>(0, (numeric_limits<size_t>::max)())(rng64);
-
 // Sparse Fenwick Tree supporting point updates (with any value) and range queries in 2 dimensions
 // Time Complexity:
 //   update, rsq: O(log N log M)
 // Memory Complexity: O(NM)
 template <const int MAXN, class T> struct SparseFenwickTree2D {
-    struct rand_hash { size_t operator ()(T x) const { return x ^ RANDOM; } };
-    hash_map<int, int, rand_hash> BIT[MAXN];
+    hashmap<int, int> BIT[MAXN];
     void clear() { for (int i = 0; i < MAXN; i++) BIT[i].clear(); }
     void update(int x, int y, T v) {
         for (int i = x; i < MAXN; i += i & -i) for (int j = y; j < MAXN; j += j & -j) {

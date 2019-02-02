@@ -8,7 +8,7 @@ using namespace std;
 //   update, query: O(log N)
 // Memory Complexity: O(N)
 
-using Data = int; const Data vdef = 0;
+using Data = int; using Lazy = int; const Data vdef = 0;
 struct Node {
     Node *l, *r, *p; int size; Data val, sbtr;
     Node(Data val) : l(nullptr), r(nullptr), p(nullptr), size(1), val(val), sbtr(val) {}
@@ -18,8 +18,8 @@ struct Node {
 };
 int Size(Node *x) { return x ? x->size : 0; }
 Data Sbtr(Node *x) { return x ? x->sbtr : vdef; }
-Data merge(Data l, Data r) { return l + r; } // to be implemented
-Data applyVal(Data o, Data n) { return o + n; } // to be implemented
+Data merge(const Data &l, const Data &r); // to be implemented
+Data applyLazy(const Data &l, const Lazy &r); // to be implemented
 void Node::update() {
     size = 1; sbtr = val;
     if (l) { size += Size(l); sbtr = merge(sbtr, l->sbtr); }
@@ -64,7 +64,7 @@ struct ImplicitSplayTree {
     void slice(int l, int r) { (root = select(root, l - 1))->splay(nullptr); select(root, r + 1)->splay(root); }
     void updateToRoot() { if (root->r->l) { root->r->l->update(); root->r->update(); root->update(); } }
     // 1-indexed, inclusive
-    void update(int ind, Data val) { slice(ind, ind); root->r->l->val = applyVal(root->r->l->val, val); updateToRoot(); }
+    void update(int ind, const Lazy &val) { slice(ind, ind); root->r->l->val = applyLazy(root->r->l->val, val); updateToRoot(); }
     Data query(int l, int r) { slice(l, r); return Sbtr(root->r->l); }
     ImplicitSplayTree(int N) { T.reserve(N + 2); vector<Data> A(N + 2, vdef); root = build(0, int(A.size()) - 1, A); }
     template <class It> ImplicitSplayTree(It st, It en) {
