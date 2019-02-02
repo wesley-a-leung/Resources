@@ -31,7 +31,7 @@ template <class Key, class Comparator = less<Key>> struct IndexedPQ {
     bool empty() { return N == 0; }
     bool containsIndex(int i) { assert(0 <= i && i < maxN); return qp[i] != -1; }
     int size() { return N; }
-    void push(int i, Key key) {
+    void push(int i, const Key &key) {
         assert(0 <= i && i < maxN);
         if (containsIndex(i)) throw invalid_argument("index is already in the priority queue");
         N++; qp[i] = N; pq[N] = i; keys[i] = key; swim(N);
@@ -50,7 +50,7 @@ template <class Key, class Comparator = less<Key>> struct IndexedPQ {
         if (!containsIndex(i)) throw no_such_element_exception("index is not in the priority queue");
         else return keys[i];
     }
-    void changeKey(int i, Key key) {
+    void changeKey(int i, const Key &key) {
         assert(0 <= i && i < maxN);
         if (!containsIndex(i)) throw no_such_element_exception("index is not in the priority queue");
         Key old = keys[i]; keys[i] = key;
