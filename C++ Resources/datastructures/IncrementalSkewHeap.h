@@ -9,7 +9,7 @@ using namespace std;
 //   pop, push, merge: O(log N)
 template <class Value, class Comparator = less<Value>, class D_Type = Value> struct IncrementalSkewHeap {
     Comparator cmp; struct Node;
-    struct Node { Value val; D_Type delta = 0; unique_ptr<Node> left, right; Node(const Value &val) : val(val) {} };
+    struct Node { Value val; D_Type delta; unique_ptr<Node> left, right; Node(const Value &val) : val(val), delta(0) {} };
     int cnt = 0; unique_ptr<Node> root;
     void propagate(unique_ptr<Node> &a) {
         a->val += a->delta;
