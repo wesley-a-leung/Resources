@@ -10,7 +10,7 @@ using namespace std;
 //   updateVertex: O(1) * (complexity of update)
 // Memory Complexity: O(V)
 template <const int MAXV, const bool ONE_INDEXED, const bool VALUES_ON_EDGES> struct HLD {
-    using Data = int; const Data vdef = 0;
+    using Data = int; using Lazy = int; const Data vdef = 0;
     int dep[MAXV], par[MAXV], chain[MAXV], size[MAXV], head[MAXV], ind[MAXV], vert[MAXV], chainNum, curInd; vector<int> adj[MAXV];
     void dfs(int v, int prev, int d) {
         dep[v] = d; par[v] = prev; size[v] = 1;
@@ -23,9 +23,9 @@ template <const int MAXV, const bool ONE_INDEXED, const bool VALUES_ON_EDGES> st
         if (maxInd != -1) hld(maxInd, v);
         for (int w : adj[v]) if (w != prev && w != maxInd) { chainNum++; hld(w, v); }
     }
-    Data merge(Data a, Data b); // to be implemented
-    void update(int i, Data val); // to be implemented
-    void update(int l, int r, bool up, Data val); // to be implemented
+    Data merge(const Data &a, const Data &b); // to be implemented
+    void update(int i, const Lazy &val); // to be implemented
+    void update(int l, int r, bool up, const Lazy &val); // to be implemented
     Data query(int l, int r, bool up); // to be implemented
     Data queryUp(int v, int w, bool up, bool includeW) {
         Data ans = vdef;
@@ -36,15 +36,13 @@ template <const int MAXV, const bool ONE_INDEXED, const bool VALUES_ON_EDGES> st
         if (!includeW && v == w) return ans;
         return up ? merge(ans, query(ind[w] + !includeW, ind[v], up)) : merge(query(ind[w] + !includeW, ind[v], up), ans);
     }
-    void updateUp(int v, int w, bool up, bool includeW, Data val) {
+    void updateUp(int v, int w, bool up, bool includeW, const Lazy &val) {
         while (chain[v] != chain[w]) {
-            if (up) update(ind[head[chain[v]]], ind[v], up);
-            else update(ind[head[chain[v]]], ind[v], up);
+            update(ind[head[chain[v]]], ind[v], up, val);
             v = par[head[chain[v]]];
         }
         if (!includeW && v == w) return;
-        if (up) update(ind[w] + !includeW, ind[v], up);
-        else update(ind[w] + !includeW, ind[v], up);
+        update(ind[w] + !includeW, ind[v], up, val);
     }
     void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     void run(int V, int root = 0) { chainNum = 0; curInd = ONE_INDEXED; fill(head, head + V, -1); dfs(root, -1, 0); hld(root, -1); }
@@ -59,8 +57,8 @@ template <const int MAXV, const bool ONE_INDEXED, const bool VALUES_ON_EDGES> st
     Data queryPath(int v, int w) {
         int lcavertex = lca(v, w); return merge(queryUp(v, lcavertex, true, false), queryUp(w, lcavertex, false, !VALUES_ON_EDGES));
     }
-    void updatePath(int v, int w, Data val) {
-        int lcavertex = lca(v, w); updateUp(v, lcavertex, true, false, val); updateUp(w, lcavertex, false, true, val);
+    void updatePath(int v, int w, const Lazy &val) {
+        int lcavertex = lca(v, w); updateUp(v, lcavertex, true, false, val); updateUp(w, lcavertex, false, !VALUES_ON_EDGES, val);
     }
-    void updateVertex(int v, Data val) { update(ind[v], val); }
+    void updateVertex(int v, const Lazy &val) { update(ind[v], val); }
 };
