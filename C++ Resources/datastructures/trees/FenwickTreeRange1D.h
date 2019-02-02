@@ -2,12 +2,12 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Fenwick Tree or Binary Indexed Tree supporting range updates and range queries
+// Fenwick Tree or Binary Indexed Tree supporting range updates and range queries in 1 dimension
 // Time Complexity:
 //   init: O(N)
 //   update, rsq: O(log N)
 // Memory Complexity: O(N)
-template <const int MAXN, class T, const bool ONE_INDEXED> struct FenwickTreeRange {
+template <const int MAXN, class T, const bool ONE_INDEXED> struct FenwickTreeRange1D {
     array<T, MAXN> BIT1, BIT2;
     void init() { fill(BIT1.begin(), BIT1.end(), 0); fill(BIT2.begin(), BIT2.end(), 0); }
     T rsq(array<T, MAXN> &BIT, int i) { T ret = 0; for (i += !ONE_INDEXED; i > 0; i -= i & -i) ret += BIT[i]; return ret; }
