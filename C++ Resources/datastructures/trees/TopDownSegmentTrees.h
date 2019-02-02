@@ -143,7 +143,10 @@ template <const int MAXNODES, const int MAXROOTS, const bool ONE_INDEXED> struct
     void clear() { curNode = curRoot = 0; }
 };
 
-template <class T> struct MaxContiguousSubarrayData { T pre = 0, suf = 0, sum = 0, maxSum = 0; bool isNull = true; };
+template <class T> struct MaxContiguousSubarrayData { T pre, suf, sum, maxSum; bool isNull; };
+template <class T> MaxContiguousSubarrayData<T> nullNode() {
+    MaxContiguousSubarrayData<T> ret; ret.pre = ret.suf = ret.sum = ret.maxSum = 0; ret.isNull = true; return ret;
+}
 template <class T> MaxContiguousSubarrayData<T> merge(const MaxContiguousSubarrayData<T> &l, const MaxContiguousSubarrayData<T> &r) {
     if (l.isNull) return r;
     if (r.isNull) return l;
