@@ -11,7 +11,7 @@ using namespace std;
 using Data = int; const Data vdef = 0;
 struct Node {
     Node *l, *r, *p; int size; Data val; bool rev;
-    Node(Data val) : l(nullptr), r(nullptr), p(nullptr), size(1), val(val), rev(false) {}
+    Node(const Data &val) : l(nullptr), r(nullptr), p(nullptr), size(1), val(val), rev(false) {}
     void propagate();
     void update();
     void rotate(Node *rootP);

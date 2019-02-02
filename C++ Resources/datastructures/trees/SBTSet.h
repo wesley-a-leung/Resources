@@ -32,13 +32,13 @@ template <typename Value, typename Comparator = less<Value>> struct SBTSet {
         L[x] = maintain(L[x], false); R[x] = maintain(R[x], true); x = maintain(x, true); x = maintain(x, false);
         return x;
     }
-    bool contains(int x, Value val) {
+    bool contains(int x, const Value &val) {
         if (!x) return false;
         else if (cmp(val, VAL[x])) return contains(L[x], val);
         else if (cmp(VAL[x], val)) return contains(R[x], val);
         return true;
     }
-    int add(int x, Value val) {
+    int add(int x, const Value &val) {
         if (!x) {
             if (VAL.empty()) VAL.push_back(val);
             VAL.push_back(val); SZ.push_back(1); L.push_back(0); R.push_back(0);
@@ -58,7 +58,7 @@ template <typename Value, typename Comparator = less<Value>> struct SBTSet {
     }
     int getMin(int x) { return L[x] ? getMin(L[x]) : x; }
     int getMax(int x) { return R[x] ? getMax(R[x]) : x; }
-    int remove(int x, Value val) {
+    int remove(int x, const Value &val) {
         if (cmp(val, VAL[x])) L[x] = remove(L[x], val);
         else if (cmp(VAL[x], val)) R[x] = remove(R[x], val);
         else {
@@ -68,13 +68,13 @@ template <typename Value, typename Comparator = less<Value>> struct SBTSet {
         }
         update(x); return x;
     }
-    int floor(int x, Value val) {
+    int floor(int x, const Value &val) {
         if (!x) return 0;
         if (!cmp(val, VAL[x]) && !cmp(VAL[x], val)) return x;
         if (cmp(val, VAL[x])) return floor(L[x], val);
         int y = floor(R[x], val); return y ? y : x;
     }
-    int ceiling(int x, Value val) {
+    int ceiling(int x, const Value &val) {
         if (!x) return 0;
         if (!cmp(val, VAL[x]) && !cmp(VAL[x], val)) return x;
         if (cmp(VAL[x], val)) return ceiling(R[x], val);
@@ -87,7 +87,7 @@ template <typename Value, typename Comparator = less<Value>> struct SBTSet {
         else if (t < k) return select(R[x], k - t - 1);
         return x;
     }
-    int getRank(int x, Value val) {
+    int getRank(int x, const Value &val) {
         if (!x) return 0;
         if (!cmp(VAL[x], val)) return getRank(L[x], val);
         else return 1 + SZ[L[x]] + getRank(R[x], val);
@@ -96,7 +96,7 @@ template <typename Value, typename Comparator = less<Value>> struct SBTSet {
         if (!x) return;
         valuesInOrder(L[x], queue); queue.push_back(VAL[x]); valuesInOrder(R[x], queue);
     }
-    void values(int x, vector<Value> &queue, Value lo, Value hi) {
+    void values(int x, vector<Value> &queue, const Value &lo, const Value &hi) {
         if (!x) return;
         if (cmp(lo, VAL[x])) values(L[x], queue, lo, hi);
         if (!cmp(VAL[x], lo) && !cmp(hi, VAL[x])) queue.push_back(VAL[x]);
@@ -109,9 +109,9 @@ template <typename Value, typename Comparator = less<Value>> struct SBTSet {
     }
     bool empty() { return root == 0; }
     int size() { return SZ[root]; }
-    bool contains(Value val) { return contains(root, val); }
-    void add(Value val) { root = add(root, val); }
-    void remove(Value val) { if (contains(val)) root = remove(root, val); }
+    bool contains(const Value &val) { return contains(root, val); }
+    void add(const Value &val) { root = add(root, val); }
+    void remove(const Value &val) { if (contains(val)) root = remove(root, val); }
     void removeMin() {
         if (empty()) throw runtime_error("called removeMin() with empty symbol table");
         root = removeMin(root);
@@ -128,13 +128,13 @@ template <typename Value, typename Comparator = less<Value>> struct SBTSet {
         if (empty()) throw runtime_error("called getMax() with empty symbol table");
         return VAL[getMax(root)];
     }
-    Value floor(Value val) {
+    Value floor(const Value &val) {
         if (empty()) throw runtime_error("called floor() with empty symbol table");
         int x = floor(root, val);
         if (!x) throw no_such_element_exception("call to floor() resulted in no such value");
         return VAL[x];
     }
-    Value ceiling(Value val) {
+    Value ceiling(const Value &val) {
         if (empty()) throw runtime_error("called ceiling() with empty symbol table");
         int x = ceiling(root, val);
         if (!x) throw no_such_element_exception("call to ceiling() resulted in no such value");
@@ -144,10 +144,10 @@ template <typename Value, typename Comparator = less<Value>> struct SBTSet {
         if (k < 0 || k >= size()) throw invalid_argument("k is not in range 0 to size");
         return VAL[select(root, k)];
     }
-    int getRank(Value val) { return getRank(root, val); }
+    int getRank(const Value &val) { return getRank(root, val); }
     vector<Value> values() { vector<Value> queue; valuesInOrder(root, queue); return queue; }
-    vector<Value> values(Value lo, Value hi) { vector<Value> queue; values(root, queue, lo, hi); return queue; }
-    int size(Value lo, Value hi) {
+    vector<Value> values(const Value &lo, const Value &hi) { vector<Value> queue; values(root, queue, lo, hi); return queue; }
+    int size(const Value &lo, const Value &hi) {
         if (cmp(hi, lo)) return 0;
         if (contains(hi)) return getRank(hi) - getRank(lo) + 1;
         else return getRank(hi) - getRank(lo);
