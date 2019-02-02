@@ -29,5 +29,5 @@ template <class T, class Comparator = less<uint32_t>> struct RadixHeap {
         return x[0].back();
     }
     void pop() { assert(n > 0); top(); n--; x[0].pop_back(); }
-    void push(uint32_t key, T value) { n++; aux(make_pair(key, value)); }
+    void push(uint32_t key, const T &value) { n++; aux(make_pair(key, value)); }
 };
