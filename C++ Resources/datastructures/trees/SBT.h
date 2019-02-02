@@ -32,13 +32,13 @@ template <typename Key, typename Value, typename Comparator = less<Key>> struct 
         L[x] = maintain(L[x], false); R[x] = maintain(R[x], true); x = maintain(x, true); x = maintain(x, false);
         return x;
     }
-    int get(int x, Key key) {
+    int get(int x, const Key &key) {
         if (!x) return 0;
         if (cmp(key, KEY[x])) return get(L[x], key);
         else if (cmp(KEY[x], key)) return get(R[x], key);
         else return x;
     }
-    int put(int x, Key key, Value val) {
+    int put(int x, const Key &key, const Value &val) {
         if (!x) {
             if (KEY.empty()) KEY.push_back(key);
             if (VAL.empty()) VAL.push_back(val);
@@ -60,7 +60,7 @@ template <typename Key, typename Value, typename Comparator = less<Key>> struct 
     }
     int getMin(int x) { return L[x] ? getMin(L[x]) : x; }
     int getMax(int x) { return R[x] ? getMax(R[x]) : x; }
-    int remove(int x, Key key) {
+    int remove(int x, const Key &key) {
         if (cmp(key, KEY[x])) L[x] = remove(L[x], key);
         else if (cmp(KEY[x], key)) R[x] = remove(R[x], key);
         else {
@@ -70,13 +70,13 @@ template <typename Key, typename Value, typename Comparator = less<Key>> struct 
         }
         update(x); return x;
     }
-    int floor(int x, Key key) {
+    int floor(int x, const Key &key) {
         if (!x) return 0;
         if (!cmp(key, KEY[x]) && !cmp(KEY[x], key)) return x;
         if (cmp(key, KEY[x])) return floor(L[x], key);
         int y = floor(R[x], key); return y ? y : x;
     }
-    int ceiling(int x, Key key) {
+    int ceiling(int x, const Key &key) {
         if (!x) return 0;
         if (!cmp(key, KEY[x]) && !cmp(KEY[x], key)) return x;
         if (cmp(KEY[x], key)) return ceiling(R[x], key);
@@ -89,7 +89,7 @@ template <typename Key, typename Value, typename Comparator = less<Key>> struct 
         else if (t < k) return select(R[x], k - t - 1);
         return x;
     }
-    int getRank(int x, Key key) {
+    int getRank(int x, const Key &key) {
         if (!x) return 0;
         if (cmp(key, KEY[x])) return getRank(KEY[x], key);
         else if (cmp(KEY[x], key)) return 1 + SZ[L[x]] + getRank(R[x], key);
@@ -99,7 +99,7 @@ template <typename Key, typename Value, typename Comparator = less<Key>> struct 
         if (!x) return;
         keyValuePairsInOrder(L[x], queue); queue.push_back({KEY[x], VAL[x]}); keyValuePairsInOrder(R[x], queue);
     }
-    void keyValuePairs(int x, vector<pair<Key, Value>> &queue, Key lo, Key hi) {
+    void keyValuePairs(int x, vector<pair<Key, Value>> &queue, const Key &lo, const Key &hi) {
         if (!x) return;
         if (cmp(lo, KEY[x])) keyValuePairs(L[x], queue, lo, hi);
         if (!cmp(KEY[x], lo) && !cmp(hi, KEY[x])) queue.push_back({KEY[x], VAL[x]});
@@ -112,14 +112,14 @@ template <typename Key, typename Value, typename Comparator = less<Key>> struct 
     }
     bool empty() { return root == 0; }
     int size() { return SZ[root]; }
-    Value get(Key key) {
+    Value get(const Key &key) {
         int x = get(root, key);
         if (!x) throw no_such_element_exception("no such key is in the symbol table");
         return VAL[x];
     }
-    bool contains(Key key) { return get(root, key) != 0; }
-    void put(Key key, Value val) { root = put(root, key, val); }
-    void remove(Key key) { if (contains(key)) root = remove(root, key); }
+    bool contains(const Key &key) { return get(root, key) != 0; }
+    void put(const Key &key, const Value &val) { root = put(root, key, val); }
+    void remove(const Key &key) { if (contains(key)) root = remove(root, key); }
     void removeMin() {
         if (empty()) throw runtime_error("called removeMin() with empty symbol table");
         root = removeMin(root);
@@ -136,13 +136,13 @@ template <typename Key, typename Value, typename Comparator = less<Key>> struct 
         if (empty()) throw runtime_error("called getMax() with empty symbol table");
         int x = getMax(root); return {KEY[x], VAL[x]};
     }
-    pair<Key, Value> floor(Key key) {
+    pair<Key, Value> floor(const Key &key) {
         if (empty()) throw runtime_error("called floor() with empty symbol table");
         int x = floor(root, key);
         if (!x) throw no_such_element_exception("call to floor() resulted in no such value");
         return {KEY[x], VAL[x]};
     }
-    pair<Key, Value> ceiling(Key key) {
+    pair<Key, Value> ceiling(const Key &key) {
         if (empty()) throw runtime_error("called ceiling() with empty symbol table");
         int x = ceiling(root, key);
         if (!x) throw no_such_element_exception("call to ceiling() resulted in no such value");
@@ -152,14 +152,14 @@ template <typename Key, typename Value, typename Comparator = less<Key>> struct 
         if (k < 0 || k >= size()) throw invalid_argument("k is not in range 0 to size");
         int x = select(root, k); return {KEY[x], VAL[x]};
     }
-    int getRank(Key key) { return getRank(root, key); }
+    int getRank(const Key &key) { return getRank(root, key); }
     vector<pair<Key, Value>> keyValuePairs() {
         vector<pair<Key, Value>> queue; keyValuePairsInOrder(root, queue); return queue;
     }
-    vector<pair<Key, Value>> keyValuePairs(Key lo, Key hi) {
+    vector<pair<Key, Value>> keyValuePairs(const Key &lo, const Key &hi) {
         vector<pair<Key, Value>> queue; keyValuePairs(root, queue, lo, hi); return queue;
     }
-    int size(Key lo, Key hi) {
+    int size(const Key &lo, const Key &hi) {
         if (cmp(hi, lo)) return 0;
         if (contains(hi)) return getRank(hi) - getRank(lo) + 1;
         else return getRank(hi) - getRank(lo);

@@ -22,7 +22,7 @@ public:
 template <const int R, class Value, class Container, class Comparator = less<Value>>
 struct OrderedRootArray {
     Comparator cmp; int n, SCALE_FACTOR; vector<Container> a; vector<int> prefixSZ;
-    int ceiling_ind(const Value val) const {
+    int ceiling_ind(const Value &val) const {
         int lo = 0, hi = (int) a.size(), mid;
         while (lo < hi) {
             mid = lo + (hi - lo) / 2;
@@ -31,7 +31,7 @@ struct OrderedRootArray {
         }
         return lo;
     }
-    int floor_ind(const Value val) const {
+    int floor_ind(const Value &val) const {
         int lo = 0, hi = ((int) a.size()) - 1, mid;
         while (lo <= hi) {
             mid = lo + (hi - lo) / 2;
@@ -40,7 +40,7 @@ struct OrderedRootArray {
         }
         return hi;
     }
-    int above_ind(const Value val) const {
+    int above_ind(const Value &val) const {
         int lo = 0, hi = (int) a.size(), mid;
         while (lo < hi) {
             mid = lo + (hi - lo) / 2;
@@ -49,7 +49,7 @@ struct OrderedRootArray {
         }
         return lo;
     }
-    int below_ind(const Value val) const {
+    int below_ind(const Value &val) const {
         int lo = 0, hi = ((int) a.size()) - 1, mid;
         while (lo <= hi) {
             mid = lo + (hi - lo) / 2;
@@ -79,7 +79,7 @@ struct OrderedRootArray {
         }
         for (int i = 1; i < (int) a.size(); i++) prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
     }
-    void insert(const Value val) {
+    void insert(const Value &val) {
         int i = above_ind(val);
         if (n++ == 0) { a.emplace_back(SCALE_FACTOR); prefixSZ.push_back(0); }
         if (i == (int) a.size()) a[--i].insert(val);
@@ -92,7 +92,7 @@ struct OrderedRootArray {
         }
         for (int j = i + 1; j < (int) a.size(); j++) prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1].size();
     }
-    bool erase(const Value val) {
+    bool erase(const Value &val) {
         int i = ceiling_ind(val);
         if (i == (int) a.size()) return false;
         if (!a[i].erase(val)) return false;
@@ -124,29 +124,29 @@ struct OrderedRootArray {
     const Value &back() const { assert(n > 0); return a.back().back(); }
     bool empty() const { return n == 0; }
     int size() const { return n; }
-    bool contains(const Value val) const {
+    bool contains(const Value &val) const {
         int i = ceiling_ind(val);
         return i != (int) a.size() && a[i].contains(val);
     }
-    pair<int, Value> floor(const Value val) const {
+    pair<int, Value> floor(const Value &val) const {
         int i = floor_ind(val);
         if (i == -1) throw no_such_element_exception("call to floor() resulted in no such value");
         pair<int, Value> j = a[i].floor(val);
         return {prefixSZ[i] + j.first, j.second};
     }
-    pair<int, Value> above(const Value val) const {
+    pair<int, Value> above(const Value &val) const {
         int i = above_ind(val);
         if (i == (int) a.size()) throw no_such_element_exception("call to above() resulted in no such value");
         pair<int, Value> j = a[i].above(val);
         return {prefixSZ[i] + j.first, j.second};
     }
-    pair<int, Value> below(const Value val) const {
+    pair<int, Value> below(const Value &val) const {
         int i = below_ind(val);
         if (i == -1) throw no_such_element_exception("call to below() resulted in no such value");
         pair<int, Value> j = a[i].below(val);
         return {prefixSZ[i] + j.first, j.second};
     }
-    pair<int, Value> ceiling(const Value val) const {
+    pair<int, Value> ceiling(const Value &val) const {
         int i = ceiling_ind(val);
         if (i == (int) a.size()) throw no_such_element_exception("call to ceiling() resulted in no such value");
         pair<int, Value> j = a[i].ceiling(val);

@@ -37,7 +37,7 @@ template <class Value> struct SqrtArray {
         for (auto i = il.begin(); i < il.end(); i += sqrtn) { a.emplace_back(i, min(i + sqrtn, il.end())); prefixSZ.push_back(0); }
         for (int i = 1; i < (int) a.size(); i++) prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
     }
-    void insert(int k, const Value val) { // inserts value before kth index
+    void insert(int k, const Value &val) { // inserts value before kth index
         assert(0 <= k && k <= n);
         if (n++ == 0) { a.emplace_back(); prefixSZ.push_back(0); }
         int lo = 0, hi = (int) (a.size()) - 1, mid;
@@ -54,7 +54,7 @@ template <class Value> struct SqrtArray {
         }
         for (int i = hi + 1; i < (int) a.size(); i++) prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
     }
-    void push_front(const Value val) {
+    void push_front(const Value &val) {
         if (n++ == 0) { a.emplace_back(); prefixSZ.push_back(0); }
         a.front().insert(a.front().begin(), val); int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
         if ((int) a.front().size() > 2 * sqrtn) {
@@ -62,7 +62,7 @@ template <class Value> struct SqrtArray {
         }
         for (int i = 1; i < (int) a.size(); i++) prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
     }
-    void push_back(const Value val) {
+    void push_back(const Value &val) {
         if (n++ == 0) { a.emplace_back(); prefixSZ.push_back(0); }
         a.back().push_back(val); int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
         if ((int) a.back().size() > 2 * sqrtn) {

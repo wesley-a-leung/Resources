@@ -16,7 +16,7 @@ struct ReversingImplicitTreap {
     mt19937 rng; uniform_real_distribution<double> dis;
     using Data = int; const Data vdef = 0;
     vector<Data> VAL; vector<bool> REV; vector<int> L, R, SZ; vector<double> PRI; int root = -1;
-    int makeNode(Data val) {
+    int makeNode(const Data &val) {
         VAL.push_back(val); REV.push_back(false); L.push_back(-1); R.push_back(-1); SZ.push_back(1); PRI.push_back(dis(rng));
         return int(VAL.size()) - 1;
     }
