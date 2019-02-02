@@ -29,7 +29,7 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree {
         for (int i = 0; i < N; i++) A[i + ONE_INDEXED] = *(st + i);
         build(1, ONE_INDEXED, N - !ONE_INDEXED);
     }
-    void init(int size) { N = size; fill(A + ONE_INDEXED, A + N + ONE_INDEXED, vdef); build(1, ONE_INDEXED, size - !ONE_INDEXED); }
+    void init(int size) { N = size; fill(A + ONE_INDEXED, A + N + ONE_INDEXED, vdef); build(1, ONE_INDEXED, N - !ONE_INDEXED); }
     void update(int ind, const Data &val) { update(1, ONE_INDEXED, N - !ONE_INDEXED, ind, val); }
     Data query(int l, int r) { return query(1, ONE_INDEXED, N - !ONE_INDEXED, l, r); }
 };
@@ -37,27 +37,27 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree {
 template <const int MAXN, const bool ONE_INDEXED> struct LazySegmentTree {
     using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ldef = 0;
     Data merge(const Data &l, const Data &r); // to be implemented
-    Data apply(const Data &x, const Lazy &v); // to be implemented
+    Data applyLazy(const Data &x, const Lazy &v); // to be implemented
     Lazy getSegmentVal(const Lazy &v, int len); // to be implemented
     Lazy mergeLazy(const Lazy &l, const Lazy &r); // to be implemented
     Data T[MAXN * 4], A[MAXN]; Lazy L[MAXN * 4]; int N;
     void propagate(int cur, int cL, int cR) {
-        if (T[cur].lazy != ldef) {
+        if (L[cur] != ldef) {
             int m = cL + (cR - cL) / 2;
-            T[cur * 2] = apply(T[cur * 2], getSegmentVal(L[cur], m - cL + 1)); L[cur * 2] = mergeLazy(L[cur * 2], L[cur]);
-            T[cur * 2 + 1] = apply(T[cur * 2 + 1], getSegmentVal(L[cur], cR - m)); L[cur * 2 + 1] = mergeLazy(L[cur * 2 + 1], L[cur]);
-            L[cur].lazy = ldef;
+            T[cur * 2] = applyLazy(T[cur * 2], getSegmentVal(L[cur], m - cL + 1)); L[cur * 2] = mergeLazy(L[cur * 2], L[cur]);
+            T[cur * 2 + 1] = applyLazy(T[cur * 2 + 1], getSegmentVal(L[cur], cR - m)); L[cur * 2 + 1] = mergeLazy(L[cur * 2 + 1], L[cur]);
+            L[cur] = ldef;
         }
     }
     void build(int cur, int cL, int cR) {
         if (cL == cR) { T[cur] = A[cL]; L[cur] = ldef; return; }
         int m = cL + (cR - cL) / 2; build(cur * 2, cL, m); build(cur * 2 + 1, m + 1, cR);
-        T[cur] = merge(T[cur * 2], T[cur * 2 + 1]);
+        T[cur] = merge(T[cur * 2], T[cur * 2 + 1]); L[cur] = ldef;
     }
     void update(int cur, int cL, int cR, int l, int r, const Lazy &val) {
         if (cL > r || cR < l) return;
         if (cL >= l && cR <= r) {
-            T[cur] = apply(T[cur], getSegmentVal(val, cR - cL + 1));
+            T[cur] = applyLazy(T[cur], getSegmentVal(val, cR - cL + 1));
             L[cur] = mergeLazy(L[cur], val); return;
         }
         int m = cL + (cR - cL) / 2; propagate(cur, cL, cR); update(cur * 2, cL, m, l, r, val); update(cur * 2 + 1, m + 1, cR, l, r, val);
@@ -74,7 +74,7 @@ template <const int MAXN, const bool ONE_INDEXED> struct LazySegmentTree {
         for (int i = 0; i < N; i++) A[i + ONE_INDEXED] = *(st + i);
         build(1, ONE_INDEXED, N - !ONE_INDEXED);
     }
-    void init(int size) { N = size; fill(A + ONE_INDEXED, A + N + ONE_INDEXED, vdef); build(1, ONE_INDEXED, size - !ONE_INDEXED); }
+    void init(int size) { N = size; fill(A + ONE_INDEXED, A + N + ONE_INDEXED, vdef); build(1, ONE_INDEXED, N - !ONE_INDEXED); }
     void update(int l, int r, const Lazy &val) { update(1, ONE_INDEXED, N - !ONE_INDEXED, l, r, val); }
     Data query(int l, int r) { return query(1, ONE_INDEXED, N - !ONE_INDEXED, l, r); }
 };
@@ -82,10 +82,10 @@ template <const int MAXN, const bool ONE_INDEXED> struct LazySegmentTree {
 using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ldef = 0;
 template <const int MAXNODES, const int MAXROOTS, const bool ONE_INDEXED> struct DyanmicSegmentTree {
     Data merge(const Data &l, const Data &r); // to be implemented
-    Data apply(const Data &x, const Lazy &v); // to be implemented
+    Data applyLazy(const Data &x, const Lazy &v); // to be implemented
     Lazy getSegmentVal(const Lazy &v, int len); // to be implemented
     Lazy mergeLazy(const Lazy &l, const Lazy &r); // to be implemented
-    int N, roots[MAXROOTS], L[MAXNODES], R[MAXNODES]; Data VAL[MAXNODES], LZ[MAXNODES], curNode = 0, curRoot = 0;
+    int N, curNode = 0, curRoot = 0, roots[MAXROOTS], L[MAXNODES], R[MAXNODES]; Data VAL[MAXNODES]; Lazy LZ[MAXNODES];
     int makeNode(int cp = 0) {
         assert(curNode < MAXNODES); L[curNode] = curNode ? L[cp] : 0; R[curNode] = curNode ? R[cp] : 0;
         VAL[curNode] = curNode ? VAL[cp] : vdef; LZ[curNode] = curNode ? LZ[cp] : ldef; return curNode++;
@@ -94,9 +94,9 @@ template <const int MAXNODES, const int MAXROOTS, const bool ONE_INDEXED> struct
         if (LZ[cur] != ldef) {
             int m = cL + (cR - cL) / 2;
             if (!L[cur]) L[cur] = makeNode();
-            VAL[L[cur]] = apply(VAL[L[cur]], getSegmentVal(LZ[cur], m - cL + 1)); LZ[L[cur]] = mergeLazy(LZ[L[cur]], LZ[cur]);
+            VAL[L[cur]] = applyLazy(VAL[L[cur]], getSegmentVal(LZ[cur], m - cL + 1)); LZ[L[cur]] = mergeLazy(LZ[L[cur]], LZ[cur]);
             if (!R[cur]) R[cur] = makeNode();
-            VAL[R[cur]] = apply(VAL[R[cur]], getSegmentVal(LZ[cur], cR - m)); LZ[R[cur]] = mergeLazy(LZ[R[cur]], LZ[cur]);
+            VAL[R[cur]] = applyLazy(VAL[R[cur]], getSegmentVal(LZ[cur], cR - m)); LZ[R[cur]] = mergeLazy(LZ[R[cur]], LZ[cur]);
             LZ[cur] = ldef;
         }
     }
@@ -110,7 +110,7 @@ template <const int MAXNODES, const int MAXROOTS, const bool ONE_INDEXED> struct
         if (cL > r || cR < l) return cur;
         int ret = persistent ? makeNode(cur) : cur;
         if (cL >= l && cR <= r) {
-            VAL[ret] = apply(VAL[ret], getSegmentVal(val, cR - cL + 1));
+            VAL[ret] = applyLazy(VAL[ret], getSegmentVal(val, cR - cL + 1));
             LZ[ret] = mergeLazy(LZ[ret], val); return ret;
         }
         if (!L[ret]) L[ret] = makeNode();
@@ -142,3 +142,17 @@ template <const int MAXNODES, const int MAXROOTS, const bool ONE_INDEXED> struct
     void revert(int x) { roots[curRoot++] = roots[x]; }
     void clear() { curNode = curRoot = 0; }
 };
+
+template <class T> struct MaxContiguousSubarrayData { T pre = 0, suf = 0, sum = 0, maxSum = 0; bool isNull = true; };
+template <class T> MaxContiguousSubarrayData<T> merge(const MaxContiguousSubarrayData<T> &l, const MaxContiguousSubarrayData<T> &r) {
+    if (l.isNull) return r;
+    if (r.isNull) return l;
+    MaxContiguousSubarrayData<T> ret; ret.isNull = false; ret.pre = max(l.pre, l.sum + r.pre); ret.suf = max(l.suf + r.sum, r.suf);
+    ret.sum = l.sum + r.sum; ret.maxSum = max(max(l.maxSum, r.maxSum), l.suf + r.pre); return ret;
+}
+// range assignments
+template <class T> MaxContiguousSubarrayData<T> applyLazy(const MaxContiguousSubarrayData<T> &x, const T &v) {
+    MaxContiguousSubarrayData<T> ret; ret.pre = ret.suf = ret.sum = ret.maxSum = v; ret.isNull = false; return ret;
+}
+template <class T> T getSegmentVal(const T &l, int len) { return l * len; }
+template <class T> T mergeLazy(const T &l, const T &r) { return r; }
