@@ -68,7 +68,7 @@ template <const int MAXN> struct Sieve {
     void run(int N) {
         primes.clear(); fill(isPrime, isPrime + N + 1, true); isPrime[0] = isPrime[1] = false;
         for (int i = 2; i <= N; i++) {
-            if (isPrime[i]) { primes.push_back(i); SPF[i] = i; }
+            if (isPrime[i]) primes.push_back(SPF[i] = i);
             for (int j = 0; j < (int) primes.size() && i * primes[j] <= N && primes[j] <= SPF[i]; j++) {
                 isPrime[i * primes[j]] = false; SPF[i * primes[j]] = primes[j];
             }
