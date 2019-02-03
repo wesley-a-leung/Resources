@@ -113,7 +113,7 @@ template <class T> T fastPermute(int n, int k, T p) {
 //   init (no modulo / modulo): O(N)
 //   factorial, invFactorial, permute, choose, multiChoose: O(1)
 // Memory Complexity: O(N)
-template <const int MAXN, class T> struct FactCombinatorics {
+template <const int MAXN, class T> struct Combinatorics {
     T fact[MAXN], invFact[MAXN];
     void init(int N) { // compute factorials up to N!
         fact[0] = 1;
