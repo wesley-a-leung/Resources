@@ -6,14 +6,14 @@ using namespace std;
 // Time Complexity: O(V + E)
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct Bipartite {
-    const bool WHITE = false, BLACK = true; bool bipartite, color[MAXV], vis[MAXV]; int to[MAXV]; vector<int> oddCycle, adj[MAXV];
+    const bool WHITE = false, BLACK = true; bool bipartite, color[MAXV], vis[MAXV]; int to[MAXV], q[MAXV]; vector<int> oddCycle, adj[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     void bfs(int s) {
-        queue<int> q; color[s] = WHITE; vis[s] = true; q.push(s);
-        while (!q.empty()) {
-            int v = q.front(); q.pop();
+        color[s] = WHITE; vis[s] = true; int front = 0, back = 0; q[back++] = s;
+        while (front < back) {
+            int v = q[front++];
             for (int w : adj[v]) {
-                if (!vis[w]) { vis[w] = true; to[w] = v; color[w] = !color[v]; q.push(w); }
+                if (!vis[w]) { vis[w] = true; to[w] = v; color[w] = !color[v]; q[back++] = w; }
                 else if (color[w] == color[v]) {
                     bipartite = false; oddCycle.clear(); stack<int> stk; int x = v, y = w;
                     while (x != y) { stk.push(x); oddCycle.push_back(y); x = to[x]; y = to[y]; }

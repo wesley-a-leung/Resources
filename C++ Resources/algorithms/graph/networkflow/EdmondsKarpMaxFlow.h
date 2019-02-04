@@ -11,17 +11,17 @@ template <const int MAXV, class unit> struct EdmondsKarpMaxFlow {
         int to; unit cap, origCap; int next;
         Edge(int to, unit cap, int next) : to(to), cap(cap), origCap(cap), next(next) {}
     };
-    int to[MAXV], last[MAXV]; bool vis[MAXV], cut[MAXV]; vector<Edge> e; unit maxFlow, minCut;
+    int to[MAXV], last[MAXV], q[MAXV]; bool vis[MAXV], cut[MAXV]; vector<Edge> e; unit maxFlow, minCut;
     void addEdge(int v, int w, unit vw, unit wv = 0) {
         e.emplace_back(w, vw, last[v]); last[v] = int(e.size()) - 1;
         e.emplace_back(v, wv, last[w]); last[w] = int(e.size()) - 1;
     }
     bool bfs(int V, int s, int t) {
-        fill(vis, vis + V, false); fill(to, to + V, -1); queue<int> q; q.push(s); vis[s] = true;
-        while (!q.empty()) {
-            int v = q.front(); q.pop();
+        fill(vis, vis + V, false); fill(to, to + V, -1); int front = 0, back = 0; q[back++] = s; vis[s] = true;
+        while (front < back) {
+            int v = q[front++];
             for (int i = last[v]; i != -1; i = e[i].next)
-                if (e[i].cap > EPS && !vis[e[i].to]) { vis[e[i].to] = true; to[e[i].to] = i; q.push(e[i].to); }
+                if (e[i].cap > EPS && !vis[e[i].to]) { vis[e[i].to] = true; to[e[i].to] = i; q[back++] = e[i].to; }
         }
         return vis[t];
     }

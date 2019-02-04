@@ -7,7 +7,7 @@ using namespace std;
 // Time Complexity: O(V^2 * E)
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct EdmondsMatching {
-    int cardinality, match[MAXV], par[MAXV], id[MAXV], vis2[MAXV], stamp; bool vis[MAXV], blossom[MAXV]; vector<int> adj[MAXV];
+    int cardinality, match[MAXV], par[MAXV], id[MAXV], vis2[MAXV], q[MAXV], stamp; bool vis[MAXV], blossom[MAXV]; vector<int> adj[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     void markPath(int i, int b, int j) {
         for (; id[i] != b; i = par[match[i]]) { blossom[id[i]] = blossom[id[match[i]]] = true; par[i] = j; j = match[i]; }
@@ -25,9 +25,9 @@ template <const int MAXV> struct EdmondsMatching {
         }
     }
     int getAugmentingPath(int V, int s) {
-        fill(par, par + V, -1); fill(vis, vis + V, false); iota(id, id + V, 0); queue<int> q; vis[q] = true; q.push(s);
-        while (!q.empty()) {
-            int v = q.front(); q.pop();
+        fill(par, par + V, -1); fill(vis, vis + V, false); iota(id, id + V, 0); vis[s] = true; int front = 0, back = 0; q[back++] = s;
+        while (front < back) {
+            int v = q[front++];
             for (int w : adj[v]) {
                 if (id[v] == id[w] || match[v] == w) continue;
                 if (w == s || (match[w] != -1 && par[match[w]] != -1)) {
@@ -35,18 +35,17 @@ template <const int MAXV> struct EdmondsMatching {
                     for (int i = 0; i < V; i++) {
                         if (!blossom[id[i]]) continue;
                         id[i] = newBase;
-                        if (!vis[i]) { vis[i] = true; q.push(i); }
+                        if (!vis[i]) { vis[i] = true; q[back++] = i; }
                     }
                 } else if (par[w] == -1) {
                     par[w] = v;
                     if (match[w] == -1) return w;
                     vis[match[w]] = true;
-                    q.push(match[w]);
+                    q[back++] = match[w];
                 }
             }
         }
-        assert(false);
-        return -1;
+        assert(false); return -1;
     }
     int getMaxMatch(int V) {
         fill(match, match + V, -1); fill(vis2, vis2 + V, 0); stamp = 0;

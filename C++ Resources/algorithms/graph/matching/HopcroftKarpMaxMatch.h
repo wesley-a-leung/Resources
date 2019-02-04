@@ -6,22 +6,22 @@ using namespace std;
 // Time Complexity: O((V + E) sqrt V)
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct HopcroftKarpMaxMatch {
-    int cardinality, mate[MAXV], dist[MAXV], pathDist; vector<int> adj[MAXV], typeA; bool color[MAXV];
+    int cardinality, mate[MAXV], dist[MAXV], q[MAXV], pathDist; vector<int> adj[MAXV], typeA; bool color[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     bool hasPath() {
-        queue<int> q; pathDist = INT_MAX;
+        pathDist = INT_MAX; int front = 0, back = 0;
         for (int v : typeA) {
-            if (mate[v] == -1) { dist[v] = 0; q.push(v); }
+            if (mate[v] == -1) { dist[v] = 0; q[back++] = v; }
             else dist[v] = INT_MAX;
         }
-        while (!q.empty()) {
-            int v = q.front(); q.pop();
+        while (front < back) {
+            int v = q[front++];
             for (int w : adj[v]) {
                 if (mate[w] == -1) {
                     if (pathDist == INT_MAX) pathDist = dist[v] + 1;
                 } else if (dist[mate[w]] == INT_MAX) {
                     dist[mate[w]] = dist[v] + 1;
-                    if (pathDist == INT_MAX) q.push(mate[w]);
+                    if (pathDist == INT_MAX) q[back++] = mate[w];
                 }
             }
         }

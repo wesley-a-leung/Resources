@@ -11,17 +11,17 @@ template <const int MAXV, class unit> struct DinicMaxFlow {
         int to; unit cap, origCap; int next;
         Edge(int to, unit cap, int next) : to(to), cap(cap), origCap(cap), next(next) {}
     };
-    int level[MAXV], last[MAXV]; bool vis[MAXV], cut[MAXV]; vector<Edge> e; unit maxFlow, minCut;
+    int level[MAXV], last[MAXV], q[MAXV]; bool vis[MAXV], cut[MAXV]; vector<Edge> e; unit maxFlow, minCut;
     void addEdge(int v, int w, unit vw, unit wv = 0) {
         e.emplace_back(w, vw, last[v]); last[v] = int(e.size()) - 1;
         e.emplace_back(v, wv, last[w]); last[w] = int(e.size()) - 1;
     }
     bool bfs(int V, int s, int t) {
-        fill(level, level + V, -1); level[s] = 0; queue<int> q; q.push(s);
-        while (!q.empty()) {
-            int v = q.front(); q.pop();
+        fill(level, level + V, -1); level[s] = 0; int front = 0, back = 0; q[back++] = s;
+        while (front < back) {
+            int v = q[front++];
             for (int i = last[v]; i != -1; i = e[i].next)
-                if (e[i].cap > EPS && level[e[i].to] == -1) { level[e[i].to] = level[v] + 1; q.push(e[i].to); }
+                if (e[i].cap > EPS && level[e[i].to] == -1) { level[e[i].to] = level[v] + 1; q[back++] = e[i].to; }
         }
         return level[t] != -1;
     }
