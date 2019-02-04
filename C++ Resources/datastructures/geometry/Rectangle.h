@@ -28,7 +28,7 @@ struct Rectangle {
         else if (p.y > ymax) dy = p.y - ymax;
         return dx * dx + dy * dy;
     }
-    double distanceTo(const Point &p) const { return sqrt(distanceSquaredTo(p)); }
+    F distanceTo(const Point &p) const { return sqrt(distanceSquaredTo(p)); }
     bool operator == (const Rectangle &that) const {
         if (abs(xmin - that.xmin) > EPS) return false;
         if (abs(ymin - that.ymin) > EPS) return false;
