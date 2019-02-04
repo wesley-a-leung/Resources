@@ -56,32 +56,32 @@ struct Point {
         if (x > that.x + T(EPS)) return +1;
         return 0;
     }
-    bool operator == (const Point &other) const { return abs(x - other.x) <= T(EPS) && abs(y - other.y) <= T(EPS); }
-    bool operator != (const Point &other) const { return abs(x - other.x) > T(EPS) || abs(y - other.y) > T(EPS); }
+    bool operator == (const Point &that) const { return abs(x - that.x) <= T(EPS) && abs(y - that.y) <= T(EPS); }
+    bool operator != (const Point &that) const { return !(*this == that); }
     static bool xOrderLt(const Point &p, const Point &q) { return p.x < q.x - T(EPS); }
-    static bool xOrderLe(const Point &p, const Point &q) { return p.x <= q.x + T(EPS); }
-    static bool xOrderGt(const Point &p, const Point &q) { return p.x > q.x + T(EPS); }
-    static bool xOrderGe(const Point &p, const Point &q) { return p.x >= q.x - T(EPS); }
+    static bool xOrderLe(const Point &p, const Point &q) { return !xOrderLt(q, p); }
+    static bool xOrderGt(const Point &p, const Point &q) { return xOrderLt(q, p); }
+    static bool xOrderGe(const Point &p, const Point &q) { return !xOrderLt(p, q); }
     static bool yOrderLt(const Point &p, const Point &q) { return p.y < q.y - T(EPS); }
-    static bool yOrderLe(const Point &p, const Point &q) { return p.y <= q.y + T(EPS); }
-    static bool yOrderGt(const Point &p, const Point &q) { return p.y > q.y + T(EPS); }
-    static bool yOrderGe(const Point &p, const Point &q) { return p.y >= q.y - T(EPS); }
+    static bool yOrderLe(const Point &p, const Point &q) { return !yOrderLt(q, p); }
+    static bool yOrderGt(const Point &p, const Point &q) { return yOrderLt(q, p); }
+    static bool yOrderGe(const Point &p, const Point &q) { return !yOrderLt(p, q); }
     static bool rOrderLt(const Point &p, const Point &q) { return (p.x * p.x + p.y * p.y) < (q.x * q.x + q.y * q.y) - T(EPS); }
-    static bool rOrderLe(const Point &p, const Point &q) { return (p.x * p.x + p.y * p.y) <= (p.x * p.x + p.y * p.y) + T(EPS); }
-    static bool rOrderGt(const Point &p, const Point &q) { return (p.x * p.x + p.y * p.y) > (q.x * q.x + q.y * q.y) + T(EPS); }
-    static bool rOrderGe(const Point &p, const Point &q) { return (p.x * p.x + p.y * p.y) >= (q.x * q.x + q.y * q.y) - T(EPS); }
+    static bool rOrderLe(const Point &p, const Point &q) { return !rOrderLt(q, p); }
+    static bool rOrderGt(const Point &p, const Point &q) { return rOrderLt(q, p); }
+    static bool rOrderGe(const Point &p, const Point &q) { return !rOrderLt(p, q); }
     bool polarOrderLt(const Point &p, const Point &q) const { return ccw(*this, p, q) > 0; }
-    bool polarOrderLe(const Point &p, const Point &q) const { return ccw(*this, p, q) >= 0; }
-    bool polarOrderGt(const Point &p, const Point &q) const { return ccw(*this, p, q) < 0; }
-    bool polarOrderGe(const Point &p, const Point &q) const { return ccw(*this, p, q) <= 0; }
+    bool polarOrderLe(const Point &p, const Point &q) const { return !polarOrderLt(q, p); }
+    bool polarOrderGt(const Point &p, const Point &q) const { return polarOrderLt(q, p); }
+    bool polarOrderGe(const Point &p, const Point &q) const { return !polarOrderLt(p, q); }
     bool atan2OrderLt(const Point &p, const Point &q) const { return angleTo(p) < angleTo(q) - T(EPS); }
-    bool atan2OrderLe(const Point &p, const Point &q) const { return angleTo(p) <= angleTo(q) + T(EPS); }
-    bool atan2OrderGt(const Point &p, const Point &q) const { return angleTo(p) > angleTo(q) + T(EPS); }
-    bool atan2OrderGe(const Point &p, const Point &q) const { return angleTo(p) >= angleTo(q) - T(EPS); }
+    bool atan2OrderLe(const Point &p, const Point &q) const { return !atan2OrderLe(q, p); }
+    bool atan2OrderGt(const Point &p, const Point &q) const { return atan2OrderLe(q, p); }
+    bool atan2OrderGe(const Point &p, const Point &q) const { return !atan2OrderLe(p, q); }
     bool distanceToOrderLt(const Point &p, const Point &q) { return distanceSquaredTo(p) < distanceSquaredTo(q) - T(EPS); }
-    bool distanceToOrderLe(const Point &p, const Point &q) { return distanceSquaredTo(p) <= distanceSquaredTo(q) + T(EPS); }
-    bool distanceToOrderGt(const Point &p, const Point &q) { return distanceSquaredTo(p) > distanceSquaredTo(q) + T(EPS); }
-    bool distanceToOrderGe(const Point &p, const Point &q) { return distanceSquaredTo(p) >= distanceSquaredTo(q) - T(EPS); }
+    bool distanceToOrderLe(const Point &p, const Point &q) { return !distanceToOrderLt(q, p); }
+    bool distanceToOrderGt(const Point &p, const Point &q) { return distanceToOrderLt(q, p); }
+    bool distanceToOrderGe(const Point &p, const Point &q) { return !distanceToOrderLt(p, q); }
 };
 
 struct Point_hash { size_t operator ()(const Point &p) const { return 31 * hash<T> {}(p.x) + hash<T> {}(p.y); } };
