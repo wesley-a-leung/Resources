@@ -2,36 +2,28 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-using T = double; const T EPS = 1e-9;
+using T = double; using F = double; const F EPS = 1e-9;
 
 struct Point {
     T x, y;
     Point(T x = 0, T y = 0) : x(x), y(y) {}
-    double polarRadius() const { return sqrt(x * x + y * y); }
-    double theta() const { return atan2(y, x); }
-    double angleTo(const Point &that) const { return atan2(that.y - y, that.x - x); }
+    F polarRadius() const { return sqrt(x * x + y * y); }
+    F theta() const { return atan2(y, x); }
+    F angleTo(const Point &that) const { return atan2(that.y - y, that.x - x); }
     static int ccw(const Point &a, const Point &b, const Point &c) { // -1 if clockwise, 0 if colinear, +1 if counterclockwise
         T area2 = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
         if (area2 < -T(EPS)) return -1;
         else if (area2 > T(EPS)) return +1;
         else return 0;
     }
-    static T area2(const Point &a, const Point &b, const Point &c) {
-        return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
-    }
-    Point rotate(const Point &that, double theta) const { // this point rotated theta radians around that point
+    static T area2(const Point &a, const Point &b, const Point &c) { return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x); }
+    Point rotate(const Point &that, F theta) const { // this point rotated theta radians around that point
         T x = that.x + (this->x - that.x) * cos(theta) - (this->y - that.y) * sin(theta);
         T y = that.y + (this->x - that.x) * sin(theta) + (this->y - that.y) * cos(theta);
         return Point(x, y);
     }
-    double distanceTo(const Point &that) const {
-        T dx = x - that.x, dy = y - that.y;
-        return sqrt(dx * dx + dy * dy);
-    }
-    T distanceSquaredTo(const Point &that) const {
-        T dx = x - that.x, dy = y - that.y;
-        return dx * dx + dy * dy;
-    }
+    F distanceTo(const Point &that) const { T dx = x - that.x, dy = y - that.y; return sqrt(dx * dx + dy * dy); }
+    T distanceSquaredTo(const Point &that) const { T dx = x - that.x, dy = y - that.y; return dx * dx + dy * dy; }
     bool onSegment(const Point &p, const Point &q) const {
         return x <= max(p.x, q.x) + T(EPS) && x >= min(p.x, q.x) - T(EPS) && y <= max(p.y, q.y) + T(EPS) && y >= min(p.y, q.y) - T(EPS);
     }

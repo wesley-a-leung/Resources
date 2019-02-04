@@ -8,9 +8,9 @@ using namespace std;
 // Time Complexity: O(N log N)
 // Memory Complexity: O(N)
 template <const int MAXN> struct FarthestPair {
-    Point P[MAXN], hull[MAXN], best1, best2; double bestDist;
-    double solve(int N) {
-        bestDist = -numeric_limits<double>::infinity();
+    Point P[MAXN], hull[MAXN], best1, best2; F bestDist;
+    F solve(int N) {
+        bestDist = -numeric_limits<F>::infinity();
         if (N <= 1) { best1 = best2 = P[0]; return bestDist; }
         ConvexHull<MAXN> H; copy(P, P + N, H.P); H.run(N); int M = 1;
         for (auto &&p : H.hull) hull[M++] = p;
@@ -23,7 +23,7 @@ template <const int MAXN> struct FarthestPair {
             if (hull[i].distanceTo(hull[j]) > bestDist) { best1 = hull[i]; best2 = hull[j]; bestDist = hull[i].distanceTo(hull[j]); }
             while ((j < M) && Point::area2(hull[i], hull[i + 1], hull[j + 1]) > Point::area2(hull[i], hull[i + 1], hull[j])) {
                 j++;
-                double distanceSquared = hull[i].distanceTo(hull[j]);
+                F distanceSquared = hull[i].distanceTo(hull[j]);
                 if (distanceSquared > bestDist) { best1 = hull[i]; best2 = hull[j]; bestDist = hull[i].distanceTo(hull[j]); }
             }
         }

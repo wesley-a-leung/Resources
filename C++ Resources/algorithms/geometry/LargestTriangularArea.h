@@ -8,8 +8,8 @@ using namespace std;
 // Time Complexity: O(N^2)
 // Memory Complexity: O(N)
 template <const int MAXN> struct LargestTriangularArea {
-    Point P[MAXN], hull[MAXN], PA, PB, PC; double largestArea;
-    double solve(int N) {
+    Point P[MAXN], hull[MAXN], PA, PB, PC; F largestArea;
+    F solve(int N) {
         largestArea = 0;
         if (N < 3) { PA = P[0]; PB = P[1 % N]; PC = P[2 % N]; return largestArea; }
         ConvexHull<MAXN> H; copy(P, P + N, H.P); H.run(N); int M = 0;

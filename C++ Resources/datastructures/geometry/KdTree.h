@@ -4,8 +4,6 @@
 #include "Rectangle.h"
 using namespace std;
 
-using T = double;
-
 struct KdTree {
     bool VERTICAL = false, HORIZONTAL = true;
     T XMIN, YMIN, XMAX, YMAX;
