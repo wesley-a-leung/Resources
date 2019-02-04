@@ -13,11 +13,10 @@ template <const int MAXV, class unit> struct BellmanFordSSSP {
     void addBiEdge(int v, int w, unit weight) { addEdge(v, w, weight); addEdge(w, v, weight); }
     void clear() { edges.clear(); }
     void run(int V, int s) {
-        fill(dist, dist + V, INF); fill(to, to + V, make_pair(-1, 0)); hasNegativeCycle = false; dist[s] = 0;
+        fill(dist, dist + V, INF); fill(to, to + V, make_pair(-1, 0)); hasNegativeCycle = false; dist[s] = 0; bool inCycle = true;
         for (int i = 0; i < V - 1; i++) for (auto &&e : edges) if (dist[e.v] < INF && dist[e.w] > dist[e.v] + e.weight) {
             dist[e.w] = dist[e.v] + e.weight; to[e.w] = make_pair(e.v, e.weight);
         }
-        bool inCycle = true;
         while (inCycle) {
             inCycle = false;
             for (auto &&e : edges) if (dist[e.v] < INF && dist[e.w] > -INF && dist[e.w] > dist[e.v] + e.weight) {
