@@ -19,7 +19,7 @@ template <const int MAXV, const bool ONE_INDEXED> struct SubtreeQueries {
     }
     void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     void run(int V, int root = 0) {
-        curInd = int(ONE_INDEXED) - 1; fill(st, st + V, -1);
+        curInd = int(ONE_INDEXED) - 1; fill(st, st + V, -1); dfs(root, -1);
         for (int v = 0; v < V; v++) if (st[v] == -1) dfs(v, -1);
     }
     void addEdge(int a, int b) { adj[a].push_back(b); adj[b].push_back(a); }

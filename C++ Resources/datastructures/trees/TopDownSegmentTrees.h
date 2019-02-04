@@ -80,7 +80,7 @@ template <const int MAXN, const bool ONE_INDEXED> struct LazySegmentTree {
 };
 
 using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ldef = 0;
-template <const int MAXNODES, const int MAXROOTS, const bool ONE_INDEXED> struct DyanmicSegmentTree {
+template <const int MAXNODES, const int MAXROOTS, const bool ONE_INDEXED> struct DynamicSegmentTree {
     Data merge(const Data &l, const Data &r); // to be implemented
     Data applyLazy(const Data &l, const Lazy &r); // to be implemented
     Lazy getSegmentVal(const Lazy &v, int len); // to be implemented
