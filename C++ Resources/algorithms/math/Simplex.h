@@ -5,7 +5,7 @@ using namespace std;
 // Solve a linear programming problem in canonical form:
 // max c^T x
 // subject to Ax <= b and x >= 0
-// where A is an M x N Matrix; b >= 0 is a Vector with dimension M; c, x are Vectors with dimension N
+// where A is an M x N Matrix; b is a Vector with dimension M; c, x are Vectors with dimension N
 // Time Complexity: exponential worst case, polynomial in the average case ~O((M + N)^2.5)
 // Memory Complexity: O(MN)
 template <const int MAXM, const int MAXN, class F> struct Simplex {
