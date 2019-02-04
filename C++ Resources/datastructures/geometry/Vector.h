@@ -106,5 +106,5 @@ struct Vector {
     bool operator > (const Vector &that) const { return that < *this; }
     bool operator >= (const Vector &that) const { return !(*this < that); }
     bool operator == (const Vector &that) const { return !(*this < that) && !(that < *this); }
-    bool operator != (const Vector &that) const { return (*this < that) || (that < *this); }
+    bool operator != (const Vector &that) const { return !(*this == that); }
 };

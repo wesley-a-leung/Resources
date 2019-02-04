@@ -36,13 +36,7 @@ struct Rectangle {
         if (abs(ymax - that.ymax) > EPS) return false;
         return true;
     }
-    bool operator != (const Rectangle &that) const {
-        if (abs(xmin - that.xmin) > EPS) return true;
-        if (abs(ymin - that.ymin) > EPS) return true;
-        if (abs(xmax - that.xmax) > EPS) return true;
-        if (abs(ymax - that.ymax) > EPS) return true;
-        return false;
-    }
+    bool operator != (const Rectangle &that) const { return !(*this == that); }
 };
 
 struct Rectangle_hash {
