@@ -7,7 +7,7 @@ using namespace std;
 // subject to Ax <= b and x >= 0
 // where A is an M x N Matrix; b is a Vector with dimension M; c, x are Vectors with dimension N
 // Time Complexity: exponential worst case, polynomial in the average case ~O(N * M * (N + M))
-// Memory Complexity: O(M * (M + N))
+// Memory Complexity: O(M * (N + M))
 template <const int MAXM, const int MAXN, class F> struct Simplex {
     F EPS, A[MAXM][MAXN], b[MAXM], c[MAXN], x[MAXN], T[MAXM][MAXN + MAXM]; Simplex(F EPS) : EPS(EPS) {}
     F solve(int M, int N) {
