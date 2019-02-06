@@ -30,8 +30,7 @@ template <const int MAXM, const int MAXN, class F> struct Simplex {
             for (int j = 0; j <= N; j++) if (OUT[j] != -phase && (s == -1 || cmp(T[x][j], OUT[j], T[x][s], OUT[s]))) s = j;
             if (T[x][s] >= -EPS) return true;
             int r = -1;
-            for (int i = 0; i < M; i++)
-                if (T[i][s] > EPS && (r == -1 || cmp(T[i][N + 1] * T[r][s], IN[i], T[r][N + 1] * T[i][s], IN[r]))) r = i;
+            for (int i = 0; i < M; i++) if (T[i][s] > EPS && (r == -1 || cmp(T[i][N + 1] * T[r][s], IN[i], T[r][N + 1] * T[i][s], IN[r]))) r = i;
             if (r == -1) return false;
             pivot(r, s);
         }
