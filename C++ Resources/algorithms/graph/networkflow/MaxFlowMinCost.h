@@ -5,33 +5,32 @@ using namespace std;
 using namespace __gnu_pbds;
 
 // Computes the maximum flow using a path with the minimum cost
-// Time Complexity: O(VEB log V) where B the the upper bound on the largest supply of any node
+// Time Complexity: O(VEU log V) where U is the maximum capcity of any edge, much faster in practice (~O(VE))
 // Memory Complexity: O(V + E)
 template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct MaxFlowMinCost {
-    flowUnit FLOW_INF, FLOW_EPS; costUnit COST_INF, COST_SMALL_INF;
+    flowUnit FLOW_INF, FLOW_EPS; costUnit COST_INF;
     using heap = __gnu_pbds::priority_queue<pair<costUnit, int>, greater<pair<costUnit, int>>, pairing_heap_tag>;
-    MaxFlowMinCost(flowUnit FLOW_INF, flowUnit FLOW_EPS, costUnit COST_INF, costUnit COST_SMALL_INF) :
-        FLOW_INF(FLOW_INF), FLOW_EPS(FLOW_EPS), COST_INF(COST_INF), COST_SMALL_INF(COST_SMALL_INF) {}
+    MaxFlowMinCost(flowUnit FLOW_INF, flowUnit FLOW_EPS, costUnit COST_INF) : FLOW_INF(FLOW_INF), FLOW_EPS(FLOW_EPS), COST_INF(COST_INF) {}
     struct Edge {
-        int from, to; flowUnit cap; costUnit origCost, cost; int rev;
+        int from, to; flowUnit origCap, cap; costUnit origCost, cost; int rev;
         Edge() {}
-        Edge(int from, int to, flowUnit cap, costUnit cost) : from(from), to(to), cap(cap), origCost(cost), cost(cost) {}
+        Edge(int from, int to, flowUnit cap, costUnit cost) : from(from), to(to), origCap(cap), cap(cap), origCost(cost), cost(cost) {}
     };
     int E, prev[MAXV], index[MAXV], st[MAXV], deg[MAXV], ord[MAXE * 2], ind[MAXE * 2]; costUnit phi[MAXV], dist[MAXV];
-    Edge e[MAXE * 2]; bool hasNegativeEdgeCost; typename heap::point_iterator to[MAXV];
+    Edge e[MAXE * 2]; bool hasNegativeEdgeCost; typename heap::point_iterator ptr[MAXV];
     void addEdge(int u, int v, flowUnit flow, costUnit cost) {
         if (cost < 0) hasNegativeEdgeCost = true;
         e[E++] = Edge(u, v, flow, cost); e[E++] = Edge(v, u, 0, -cost);
         e[E - 2].rev = E - 1; e[E - 1].rev = E - 2; deg[u]++; deg[v]++;
     }
     void bellmanFord(int V, int s, int t) {
-        fill(phi, phi + V, COST_SMALL_INF); phi[s] = 0;
+        fill(phi, phi + V, COST_INF); phi[s] = 0;
         for (int j = 0; j < V - 1; j++) for (int i = 0; i < E; i++)
             if (e[i].cap > FLOW_EPS) phi[e[i].to] = min(phi[e[i].to], phi[e[i].from] + e[i].cost);
     }
     bool dijkstra(int V, int s, int t) {
         fill(dist, dist + V, COST_INF); fill(prev, prev + V, -1); fill(index, index + V, -1);
-        heap PQ; fill(to, to + V, PQ.end()); to[s] = PQ.push({dist[s] = 0, s});
+        heap PQ; fill(ptr, ptr + V, PQ.end()); ptr[s] = PQ.push({dist[s] = 0, s});
         while (!PQ.empty()) {
             int v = PQ.top().second; PQ.pop();
             for (int i = st[v]; i < st[v] + deg[v]; i++) {
@@ -40,8 +39,8 @@ template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct
                 costUnit d = dist[v] + e[i].cost + phi[v] - phi[w];
                 if (dist[w] <= d) continue;
                 prev[w] = v; index[w] = i;
-                if (to[w] == PQ.end()) to[w] = PQ.push({dist[w] = d, w});
-                else PQ.modify(to[w], {dist[w] = d, w});
+                if (ptr[w] == PQ.end()) ptr[w] = PQ.push({dist[w] = d, w});
+                else PQ.modify(ptr[w], {dist[w] = d, w});
             }
         }
         return dist[t] != COST_INF;
