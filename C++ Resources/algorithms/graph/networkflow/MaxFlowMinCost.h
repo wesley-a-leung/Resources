@@ -19,8 +19,7 @@ template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct
     flowUnit maxFlow; costUnit phi[MAXV], dist[MAXV], minCost; bool hasNegativeEdgeCost; typename heap::point_iterator ptr[MAXV];
     void addEdge(int v, int w, flowUnit flow, costUnit cost) {
         if (cost < 0) hasNegativeEdgeCost = true;
-        e[E++] = Edge(v, w, flow, cost); e[E++] = Edge(w, v, 0, -cost);
-        e[E - 2].rev = E - 1; e[E - 1].rev = E - 2; deg[v]++; deg[w]++;
+        e[E++] = Edge(v, w, flow, cost); e[E++] = Edge(w, v, 0, -cost); e[E - 2].rev = E - 1; e[E - 1].rev = E - 2; deg[v]++; deg[w]++;
     }
     void bellmanFord(int V, int s, int t) {
         fill(phi, phi + V, COST_INF); phi[s] = 0;
@@ -33,9 +32,8 @@ template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct
         while (!PQ.empty()) {
             int v = PQ.top().second; PQ.pop();
             for (int i = st[v]; i < st[v] + deg[v]; i++) {
-                int w = e[i].to;
                 if (abs(e[i].cap) <= FLOW_EPS) continue;
-                costUnit d = dist[v] + e[i].cost + phi[v] - phi[w];
+                int w = e[i].to; costUnit d = dist[v] + e[i].cost + phi[v] - phi[w];
                 if (dist[w] <= d) continue;
                 prev[w] = v; index[w] = i;
                 if (ptr[w] == PQ.end()) ptr[w] = PQ.push({dist[w] = d, w});
@@ -58,8 +56,7 @@ template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct
             while (prev[cur] != -1) { aug = min(aug, e[index[cur]].cap); cur = prev[cur]; }
             maxFlow += aug; cur = t;
             while (prev[cur] != -1) {
-                e[index[cur]].cap -= aug; e[e[index[cur]].rev].cap += aug;
-                minCost += aug * e[index[cur]].origCost; cur = prev[cur];
+                e[index[cur]].cap -= aug; e[e[index[cur]].rev].cap += aug; minCost += aug * e[index[cur]].origCost; cur = prev[cur];
             }
             for (int v = 0; v < V; v++) if (dist[v] != COST_INF) phi[v] += dist[v];
         }
