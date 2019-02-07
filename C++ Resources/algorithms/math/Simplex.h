@@ -8,7 +8,7 @@ using namespace std;
 // where A is an M x N Matrix; b is a Vector with dimension M; c, x are Vectors with dimension N
 
 // Fast implementation of Simplex, but prone to precision errors
-// Time Complexity: exponential worst case, polynomial in the average case ~O((N + M)^2 * M)
+// Time Complexity: exponential worst case, polynomial in the average case ~O((N + M) ^ 2 * M)
 // Memory Complexity: O(M * (N + M))
 template <const int MAXM, const int MAXN, class F> struct SimplexFast {
     F INF, EPS, A[MAXM][MAXN], b[MAXM], c[MAXN], x[MAXN], T[MAXM][MAXN + MAXM]; int IN[MAXM], OUT[MAXN + MAXM];
