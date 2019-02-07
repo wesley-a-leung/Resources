@@ -12,16 +12,15 @@ template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct
     using heap = __gnu_pbds::priority_queue<pair<costUnit, int>, greater<pair<costUnit, int>>, pairing_heap_tag>;
     MaxFlowMinCost(flowUnit FLOW_INF, flowUnit FLOW_EPS, costUnit COST_INF) : FLOW_INF(FLOW_INF), FLOW_EPS(FLOW_EPS), COST_INF(COST_INF) {}
     struct Edge {
-        int from, to; flowUnit origCap, cap; costUnit origCost, cost; int rev;
-        Edge() {}
+        int from, to; flowUnit origCap, cap; costUnit origCost, cost; int rev; Edge() {}
         Edge(int from, int to, flowUnit cap, costUnit cost) : from(from), to(to), origCap(cap), cap(cap), origCost(cost), cost(cost) {}
     };
-    int E, prev[MAXV], index[MAXV], st[MAXV], deg[MAXV], ord[MAXE * 2], ind[MAXE * 2]; costUnit phi[MAXV], dist[MAXV];
-    Edge e[MAXE * 2]; bool hasNegativeEdgeCost; typename heap::point_iterator ptr[MAXV];
-    void addEdge(int u, int v, flowUnit flow, costUnit cost) {
+    int E, prev[MAXV], index[MAXV], st[MAXV], deg[MAXV], ord[MAXE * 2], ind[MAXE * 2]; Edge e[MAXE * 2];
+    flowUnit maxFlow; costUnit phi[MAXV], dist[MAXV], minCost; bool hasNegativeEdgeCost; typename heap::point_iterator ptr[MAXV];
+    void addEdge(int v, int w, flowUnit flow, costUnit cost) {
         if (cost < 0) hasNegativeEdgeCost = true;
-        e[E++] = Edge(u, v, flow, cost); e[E++] = Edge(v, u, 0, -cost);
-        e[E - 2].rev = E - 1; e[E - 1].rev = E - 2; deg[u]++; deg[v]++;
+        e[E++] = Edge(v, w, flow, cost); e[E++] = Edge(w, v, 0, -cost);
+        e[E - 2].rev = E - 1; e[E - 1].rev = E - 2; deg[v]++; deg[w]++;
     }
     void bellmanFord(int V, int s, int t) {
         fill(phi, phi + V, COST_INF); phi[s] = 0;
@@ -47,7 +46,7 @@ template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct
     }
     void init(int V = MAXV) { E = 0; hasNegativeEdgeCost = false; fill(deg, deg + V, 0); }
     pair<flowUnit, costUnit> getMaxFlowMinCost(int V, int s, int t) {
-        flowUnit flow = 0; costUnit cost = 0; fill(phi, phi + V, 0); iota(ord, ord + E, 0);
+        maxFlow = 0; minCost = 0; fill(phi, phi + V, 0); iota(ord, ord + E, 0);
         stable_sort(ord, ord + E, [&] (const int &a, const int &b) { return e[a].from < e[b].from; });
         for (int i = 0; i < E; i++) ind[ord[i]] = i;
         for (int i = 0; i < E; i++) e[i].rev = ind[e[i].rev];
@@ -57,13 +56,13 @@ template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct
         while (dijkstra(V, s, t)) {
             flowUnit aug = FLOW_INF; int cur = t;
             while (prev[cur] != -1) { aug = min(aug, e[index[cur]].cap); cur = prev[cur]; }
-            flow += aug; cur = t;
+            maxFlow += aug; cur = t;
             while (prev[cur] != -1) {
                 e[index[cur]].cap -= aug; e[e[index[cur]].rev].cap += aug;
-                cost += aug * e[index[cur]].origCost; cur = prev[cur];
+                minCost += aug * e[index[cur]].origCost; cur = prev[cur];
             }
             for (int v = 0; v < V; v++) if (dist[v] != COST_INF) phi[v] += dist[v];
         }
-        return {flow, cost};
+        return {maxFlow, minCost};
     }
 };

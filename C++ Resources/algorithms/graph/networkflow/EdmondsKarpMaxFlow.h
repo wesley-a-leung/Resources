@@ -8,13 +8,12 @@ using namespace std;
 template <const int MAXV, class unit> struct EdmondsKarpMaxFlow {
     unit INF, EPS; EdmondsKarpMaxFlow(unit INF, unit EPS) : INF(INF), EPS(EPS) {}
     struct Edge {
-        int to; unit cap, origCap; int next;
-        Edge(int to, unit cap, int next) : to(to), cap(cap), origCap(cap), next(next) {}
+        int to; unit origCap, cap; int next;
+        Edge(int to, unit cap, int next) : to(to), origCap(cap), cap(cap), next(next) {}
     };
     int to[MAXV], last[MAXV], q[MAXV]; bool vis[MAXV], cut[MAXV]; vector<Edge> e; unit maxFlow, minCut;
     void addEdge(int v, int w, unit vw, unit wv = 0) {
-        e.emplace_back(w, vw, last[v]); last[v] = int(e.size()) - 1;
-        e.emplace_back(v, wv, last[w]); last[w] = int(e.size()) - 1;
+        e.emplace_back(w, vw, last[v]); last[v] = int(e.size()) - 1; e.emplace_back(v, wv, last[w]); last[w] = int(e.size()) - 1;
     }
     bool bfs(int V, int s, int t) {
         fill(vis, vis + V, false); fill(to, to + V, -1); int front = 0, back = 0; q[back++] = s; vis[s] = true;
@@ -25,7 +24,7 @@ template <const int MAXV, class unit> struct EdmondsKarpMaxFlow {
         }
         return vis[t];
     }
-    void init(int V) { fill(last, last + V, -1); fill(cut, cut + V, false); }
+    void init(int V = MAXV) { fill(last, last + V, -1); fill(cut, cut + V, false); }
     void clear() { e.clear(); }
     unit getFlow(int V, int s, int t) {
         maxFlow = 0;
@@ -39,12 +38,11 @@ template <const int MAXV, class unit> struct EdmondsKarpMaxFlow {
     }
     void inferMinCutDfs(int v) {
         cut[v] = true;
-        for (int i = last[v]; i != -1; i = e[i].next) if (e[i].cap > 0 && !cut[e[i].to]) inferMinCutDfs(e[i].to);
+        for (int i = last[v]; i != -1; i = e[i].next) if (e[i].cap > EPS && !cut[e[i].to]) inferMinCutDfs(e[i].to);
     }
     unit inferMinCut(int V, int s) {
         inferMinCutDfs(s); minCut = 0;
-        for (int v = 0; v < V; v++) if (cut[v]) for (int i = last[v]; i != -1; i = e[i].next)
-            if (!cut[e[i].to]) minCut += e[i].origCap;
+        for (int v = 0; v < V; v++) if (cut[v]) for (int i = last[v]; i != -1; i = e[i].next) if (!cut[e[i].to]) minCut += e[i].origCap;
         return minCut;
     }
 };
