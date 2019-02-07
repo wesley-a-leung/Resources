@@ -1,58 +1,66 @@
 #pragma once
 #include <bits/stdc++.h>
+#include <ext/pb_ds/priority_queue.hpp>
 using namespace std;
+using namespace __gnu_pbds;
 
 // Computes the maximum flow using a path with the minimum cost
 // Time Complexity: O(VEB log V) where B the the upper bound on the largest supply of any node
 // Memory Complexity: O(V + E)
-template <const int MAXV, class flowUnit, class costUnit> struct MaxFlowMinCost {
+template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct MaxFlowMinCost {
     flowUnit FLOW_INF, FLOW_EPS; costUnit COST_INF, COST_SMALL_INF;
+    using heap = __gnu_pbds::priority_queue<pair<costUnit, int>, greater<pair<costUnit, int>>, pairing_heap_tag>;
     MaxFlowMinCost(flowUnit FLOW_INF, flowUnit FLOW_EPS, costUnit COST_INF, costUnit COST_SMALL_INF) :
         FLOW_INF(FLOW_INF), FLOW_EPS(FLOW_EPS), COST_INF(COST_INF), COST_SMALL_INF(COST_SMALL_INF) {}
     struct Edge {
-        int from, to; flowUnit cap; costUnit origCost, cost; int next;
-        Edge(int from, int to, flowUnit cap, costUnit cost, int next) :
-            from(from), to(to), cap(cap), origCost(cost), cost(cost), next(next) {}
+        int from, to; flowUnit cap; costUnit origCost, cost; int rev;
+        Edge() {}
+        Edge(int from, int to, flowUnit cap, costUnit cost) : from(from), to(to), cap(cap), origCost(cost), cost(cost) {}
     };
-    int last[MAXV], prev[MAXV], index[MAXV]; costUnit phi[MAXV], dist[MAXV]; vector<Edge> e; bool hasNegativeEdgeCost;
+    int E, prev[MAXV], index[MAXV], st[MAXV], deg[MAXV], ord[MAXE * 2], ind[MAXE * 2]; costUnit phi[MAXV], dist[MAXV];
+    Edge e[MAXE * 2]; bool hasNegativeEdgeCost; typename heap::point_iterator to[MAXV];
     void addEdge(int u, int v, flowUnit flow, costUnit cost) {
         if (cost < 0) hasNegativeEdgeCost = true;
-        e.emplace_back(u, v, flow, cost, last[u]); last[u] = int(e.size()) - 1;
-        e.emplace_back(v, u, 0, -cost, last[v]); last[v] = int(e.size()) - 1;
+        e[E++] = Edge(u, v, flow, cost); e[E++] = Edge(v, u, 0, -cost);
+        e[E - 2].rev = E - 1; e[E - 1].rev = E - 2; deg[u]++; deg[v]++;
     }
     void bellmanFord(int V, int s, int t) {
         fill(phi, phi + V, COST_SMALL_INF); phi[s] = 0;
-        for (int j = 0; j < V - 1; j++) for (int i = 0; i < int(e.size()); i++)
+        for (int j = 0; j < V - 1; j++) for (int i = 0; i < E; i++)
             if (e[i].cap > FLOW_EPS) phi[e[i].to] = min(phi[e[i].to], phi[e[i].from] + e[i].cost);
     }
     bool dijkstra(int V, int s, int t) {
         fill(dist, dist + V, COST_INF); fill(prev, prev + V, -1); fill(index, index + V, -1);
-        priority_queue<pair<costUnit, int>, vector<pair<costUnit, int>>, greater<pair<costUnit, int>>> PQ;
-        PQ.emplace(dist[s] = 0, s);
+        heap PQ; fill(to, to + V, PQ.end()); to[s] = PQ.push({dist[s] = 0, s});
         while (!PQ.empty()) {
-            pair<costUnit, int> v = PQ.top(); PQ.pop();
-            if (v.first > dist[v.second]) continue;
-            for (int next = last[v.second]; next != -1; next = e[next].next) {
-                if (abs(e[next].cap) <= FLOW_EPS) continue;
-                costUnit d = dist[v.second] + e[next].cost + phi[v.second] - phi[e[next].to];
-                if (dist[e[next].to] <= d) continue;
-                prev[e[next].to] = v.second; index[e[next].to] = next;
-                PQ.emplace(dist[e[next].to] = d, e[next].to);
+            int v = PQ.top().second; PQ.pop();
+            for (int i = st[v]; i < st[v] + deg[v]; i++) {
+                int w = e[i].to;
+                if (abs(e[i].cap) <= FLOW_EPS) continue;
+                costUnit d = dist[v] + e[i].cost + phi[v] - phi[w];
+                if (dist[w] <= d) continue;
+                prev[w] = v; index[w] = i;
+                if (to[w] == PQ.end()) to[w] = PQ.push({dist[w] = d, w});
+                else PQ.modify(to[w], {dist[w] = d, w});
             }
         }
         return dist[t] != COST_INF;
     }
-    void init(int V = MAXV) { fill(last, last + V, -1); hasNegativeEdgeCost = false; }
-    void clear() { e.clear(); }
+    void init(int V = MAXV) { E = 0; hasNegativeEdgeCost = false; fill(deg, deg + V, 0); }
     pair<flowUnit, costUnit> getMaxFlowMinCost(int V, int s, int t) {
-        flowUnit flow = 0; costUnit cost = 0; fill(phi, phi + V, 0);
+        flowUnit flow = 0; costUnit cost = 0; fill(phi, phi + V, 0); iota(ord, ord + E, 0);
+        stable_sort(ord, ord + E, [&] (const int &a, const int &b) { return e[a].from < e[b].from; });
+        for (int i = 0; i < E; i++) ind[ord[i]] = i;
+        for (int i = 0; i < E; i++) e[i].rev = ind[e[i].rev];
+        stable_sort(e, e + E, [&] (const Edge &a, const Edge &b) { return a.from < b.from; });
+        for (int v = 0, curSum = 0; v < V; v++) { st[v] = curSum; curSum += deg[v]; }
         if (hasNegativeEdgeCost) bellmanFord(V, s, t);
         while (dijkstra(V, s, t)) {
             flowUnit aug = FLOW_INF; int cur = t;
             while (prev[cur] != -1) { aug = min(aug, e[index[cur]].cap); cur = prev[cur]; }
             flow += aug; cur = t;
             while (prev[cur] != -1) {
-                e[index[cur]].cap -= aug; e[index[cur] ^ 1].cap += aug;
+                e[index[cur]].cap -= aug; e[e[index[cur]].rev].cap += aug;
                 cost += aug * e[index[cur]].origCost; cur = prev[cur];
             }
             for (int v = 0; v < V; v++) if (dist[v] != COST_INF) phi[v] += dist[v];
