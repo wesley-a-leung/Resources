@@ -72,11 +72,7 @@ struct ReversingSplayTree {
     void slice(int l, int r) { (root = select(root, l - 1))->splay(nullptr); select(root, r + 1)->splay(root); }
     void updateToRoot() { if (root->r->l) { root->r->l->propagate(); root->r->l->update(); root->r->update(); root->update(); } }
     // 1-indexed, inclusive
-    void reverseRange(int l, int r) {
-        slice(l, r);
-        if (root->r->l) root->r->l->rev = !root->r->l->rev;
-        updateToRoot();
-    }
+    void reverseRange(int l, int r) { slice(l, r); root->r->l->rev = !root->r->l->rev; updateToRoot(); }
     Data getValue(int ind) { slice(ind, ind); return root->r->l->val; }
     ReversingSplayTree(int N) { T.reserve(N + 2); vector<Data> A(N + 2, vdef); root = build(0, A.size() - 1, A); }
     template <class It> ReversingSplayTree(It st, It en) {
