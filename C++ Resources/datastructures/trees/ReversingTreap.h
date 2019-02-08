@@ -57,8 +57,7 @@ struct ReversingImplicitTreap {
     // 0-indexed, inclusive
     void reverseRange(int l, int r) {
         int left, right, mid; split(root, left, mid, l); split(mid, mid, right, r - l + 1);
-        if (mid != -1) REV[mid] = !REV[mid];
-        merge(root, left, mid); merge(root, root, right);
+        REV[mid] = !REV[mid]; merge(root, left, mid); merge(root, root, right);
     }
     Data getValue(int ind) {
         int left, right, mid; split(root, left, mid, ind); split(mid, mid, right, 1);
