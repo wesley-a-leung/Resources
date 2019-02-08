@@ -31,7 +31,7 @@ template <const int MAXV, class unit> struct JohnsonAPSP {
         adj[V].clear();
         if (hasNegativeCycle) return;
         for (int s = 0; s < V; s++) {
-            priority_queue<pair<unit, int>, vector<pair<unit, int>> , greater<pair<unit, int>>> PQ;
+            std::priority_queue<pair<unit, int>, vector<pair<unit, int>> , greater<pair<unit, int>>> PQ;
             PQ.emplace(dist[s][s] = 0, s);
             while (!PQ.empty()) {
                 unit d = PQ.top().first; int v = PQ.top().second; PQ.pop();

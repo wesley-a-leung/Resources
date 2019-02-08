@@ -13,7 +13,7 @@ template <const int MAXV, class unit> struct PrimMST {
     void addEdge(int v, int w, unit weight) { adj[v].emplace_back(w, weight); adj[w].emplace_back(v, weight); }
     unit run(int V) {
         weight = 0; fill(vis, vis + V, false); fill(cost, cost + V, INF); fill(to, to + V, make_pair(-1, 0));
-        priority_queue<pair<unit, int>, vector<pair<unit, int>>, greater<pair<unit, int>>> PQ;
+        std::priority_queue<pair<unit, int>, vector<pair<unit, int>>, greater<pair<unit, int>>> PQ;
         for (int s = 0; s < V; s++) {
             if (vis[s]) continue;
             PQ.emplace(cost[s] = 0, s);
