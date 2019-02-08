@@ -18,12 +18,12 @@ struct Node {
     void splay(Node *rootP);
 };
 int Size(Node *x) { return x ? x->size : 0; }
+void revData(Data &v); // to be implemented
 void Node::propagate() {
     if (rev) {
-        swap(l, r);
-        if (l) l->rev = !l->rev;
-        if (r) r->rev = !r->rev;
-        rev = false;
+        swap(l, r); rev = false;
+        if (l) { l->rev = !l->rev; revData(l->val); }
+        if (r) { r->rev = !r->rev; revData(r->val); }
     }
 }
 void Node::update() {
@@ -74,7 +74,7 @@ struct ReversingSplayTree {
     // 1-indexed, inclusive
     void reverseRange(int l, int r) {
         slice(l, r);
-        if (root->r->l) root->r->l->rev = !root->r->l->rev;
+        if (root->r->l) { root->r->l->rev = !root->r->l->rev; revData(root->r->l->val); }
         updateToRoot();
     }
     Data getValue(int ind) { slice(ind, ind); return root->r->l->val; }
