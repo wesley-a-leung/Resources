@@ -21,12 +21,12 @@ struct ReversingImplicitTreap {
         return int(VAL.size()) - 1;
     }
     int size(int x) { return x == -1 ? 0 : SZ[x]; }
+    void revData(Data &v); // to be implemented
     void propagate(int x) {
         if (x == -1 || !REV[x]) return;
-        swap(L[x], R[x]);
-        if (L[x] != -1) REV[L[x]] = !REV[L[x]];
-        if (R[x] != -1) REV[R[x]] = !REV[R[x]];
-        REV[x] = false;
+        swap(L[x], R[x]); REV[x] = false;
+        if (L[x] != -1) { REV[L[x]] = !REV[L[x]]; revData(VAL[L[x]]); }
+        if (R[x] != -1) { REV[R[x]] = !REV[R[x]]; revData(VAL[R[x]]); }
     }
     void update(int x) {
         if (x == -1) return;
@@ -57,7 +57,7 @@ struct ReversingImplicitTreap {
     // 0-indexed, inclusive
     void reverseRange(int l, int r) {
         int left, right, mid; split(root, left, mid, l); split(mid, mid, right, r - l + 1);
-        if (mid != -1) REV[mid] = !REV[mid];
+        if (mid != -1) { REV[mid] = !REV[mid]; revData(VAL[mid]); }
         merge(root, left, mid); merge(root, root, right);
     }
     Data getValue(int ind) {
