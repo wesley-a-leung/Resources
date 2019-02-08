@@ -1,7 +1,7 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "../../datastructures/IndexedPQ.h"
-#include "../../datastructures/UnionFind.h"
+#include "../../../datastructures/IndexedPQ.h"
+#include "../../../datastructures/UnionFind.h"
 using namespace std;
 
 // Computes the minimum cut for a weighted graph
@@ -16,10 +16,10 @@ template <const int MAXV, class unit> struct StoerWagnerMinCut {
         void addEdge(int v, int w, unit weight) { adj[v].emplace_back(w, weight); adj[w].emplace_back(v, weight); }
         void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     } G;
-    bool vis[MAXV], cut[MAXV]; UnionFind<MAXV> uf; unit INF; StoerWagnerMinCut(unit INF) : INF(INF) {}
+    bool vis[MAXV], cut[MAXV]; UnionFind<MAXV, 0> uf; unit INF; StoerWagnerMinCut(unit INF) : INF(INF) {}
     void addEdge(int v, int w, unit weight) { G.addEdge(v, w, weight); }
     struct CutPhase { unit weight; int s, t; };
-    void makeCut(int V, int t, UnionFind<MAXV> &uf) { for (int v = 0; v < V; v++) cut[v] = uf.connected(v, t); }
+    void makeCut(int V, int t, UnionFind<MAXV, 0> &uf) { for (int v = 0; v < V; v++) cut[v] = uf.connected(v, t); }
     void minCutPhase(int V, CutPhase &cp) {
         IndexedPQ<unit, less<unit>> pq(V);
         for (int v = 0; v < V; v++) if (v != cp.s && !vis[v]) pq.push(v, 0);
