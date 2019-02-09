@@ -15,11 +15,10 @@ struct Line {
 
 // Supports adding lines in the form f(x) = mx + b and finding the maximum value of f(x) at any given x
 // Dynamic variant (allows for updates queries in arbitrary order)
-// Comparator convention is same as priority_queue in STL
 // Time Complexity:
 //   addLine, getMax O(log N)
 // Memory Complexity: O(N) where N is the total number of lines added
-template <const bool maxHull> struct DynamicConvexHullOptimization : public multiset<Line> {
+template <const bool maxHull> struct DynamicConvexHullTrick : public multiset<Line> {
     bool bad(iterator y) {
         auto z = next(y);
         if (y == begin()) {
@@ -37,8 +36,5 @@ template <const bool maxHull> struct DynamicConvexHullOptimization : public mult
         while (next(y) != end() && bad(next(y))) erase(next(y));
         while (y != begin() && bad(prev(y))) erase(prev(y));
     }
-    T getMax(T x) {
-        auto l = *lower_bound(Line(x, 0, true));
-        return maxHull ? l.m * x + l.b : -(l.m * x + l.b);
-    }
+    T getMax(T x) { auto l = *lower_bound(Line(x, 0, true)); return maxHull ? l.m * x + l.b : -(l.m * x + l.b); }
 };
