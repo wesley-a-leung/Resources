@@ -5,10 +5,10 @@ using namespace std;
 // Computes the maximum subarray sum of size K or less
 // Time Complexity: O(N)
 // Memory Complexity: O(N)
-template <const int MAXN> struct MaxSubarraySumK {
-    int A[MAXN], dq[MAXN];
-    int solve(int N, int K) {
-        int front = 0, back = 0, ans = 0;
+template <const int MAXN, class T> struct MaxSubarraySumK {
+    T A[MAXN]; int dq[MAXN];
+    T solve(int N, int K) {
+        int front = 0, back = 0; T ans = 0;
         for (int i = 1; i < N; i++) A[i] += A[i - 1];
         for (int i = 0; i < N; i++) {
             while (back - front > 0 && dq[front] < i - K) front++;
