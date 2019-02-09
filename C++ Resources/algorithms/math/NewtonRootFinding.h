@@ -3,9 +3,9 @@
 using namespace std;
 
 // Find the root of a function using Newton's Method, given an initial guess x0
-// Time Complexity: O(-log(EPS)) * cost to compute f(x), faster in practice
-template <class T, class F> T newton(F f, F df, T x0, T EPS) {
+// Time Complexity: iters * cost to compute f(x)
+template <class T, class F> T newton(T x0, F f, F df, int iters) {
     T cur = x0, next = x0;
-    do { cur = next; next = cur - f(cur) / df(cur); } while (abs(next - cur) > EPS);
+    for (int it = 0; it < iters; it++) { cur = next; next = cur - f(cur) / df(cur); }
     return next;
 }
