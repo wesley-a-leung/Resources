@@ -5,8 +5,8 @@ using namespace std;
 // Computes the maximum element for each contiguous subarray of size K
 // Time Complexity: O(N)
 // Memory Complexity: O(N)
-template <const int MAXN> struct MaxSubarrayK {
-    int A[MAXN], dq[MAXN], ans[MAXN];
+template <const int MAXN, class T> struct MaxSubarrayK {
+    T A[MAXN], ans[MAXN]; int dq[MAXN];
     void solve(int N, int K) {
         int front = 0, back = 0;
         for (int i = 0; i < N; i++) {
