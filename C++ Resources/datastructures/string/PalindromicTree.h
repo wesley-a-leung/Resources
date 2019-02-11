@@ -10,7 +10,7 @@ using namespace std;
 // Memory Complexity: O(S * ALPHABET_SIZE)
 template<const int MAXS, const int ALPHABET_SIZE, const int OFFSET> struct PalindromicTree {
     using Data = int; const Data def = 0; Data val[MAXS]; int s[MAXS], len[MAXS], link[MAXS], to[MAXS][ALPHABET_SIZE], cur, last, ind;
-    void computeData() { val[last] = val[link[last]] + 1; }
+    void computeData(); // to be implemented
     void init(int S = MAXS) {
         for (int i = 0; i < min(MAXS, S + 2); i++) { s[i] = len[i] = link[i] = 0; val[i] = def; fill(to[i], to[i] + ALPHABET_SIZE, 0); }
         s[0] = len[1] = -1; link[0] = 1; cur = 2; last = 0; ind = 1;
