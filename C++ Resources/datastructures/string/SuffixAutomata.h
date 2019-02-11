@@ -8,7 +8,7 @@ using namespace std;
 //   addLetter: amortized O(1)
 //   LCS: O(S)
 // Memory Complexity: O(S * ALPHABET_SIZE)
-template <const int ALPHABET_SIZE, const int OFFSET> class SuffixAutomata {
+template <const int ALPHABET_SIZE, const int OFFSET> struct SuffixAutomata {
     vector<array<int, ALPHABET_SIZE>> to; vector<int> len, link; int last;
     void init() {
         to.clear(); len.clear(); link.clear(); last = 0;
@@ -32,10 +32,7 @@ template <const int ALPHABET_SIZE, const int OFFSET> class SuffixAutomata {
             while (to[p][c] == q) { to[p][c] = int(to.size()) - 1; p = link[p]; }
         }
     }
-    void add(const string &s) {
-        last = 0;
-        for (auto &&c : s) addLetter(c);
-    }
+    void add(const string &s) { for (auto &&c : s) addLetter(c); }
     // longest common substring
     int LCS(const string &s) {
         int p = 0, curLen = 0, ret = 0;
