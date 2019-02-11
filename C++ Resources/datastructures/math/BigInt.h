@@ -3,6 +3,7 @@
 using namespace std;
 
 struct BigInt {
+    static const int KARATSUBA_CUTOFF = 32;
     vector<int> a; int sign;
     BigInt() : sign(1) {}
     BigInt(long long v) { *this = v; }
@@ -174,29 +175,24 @@ struct BigInt {
     }
     typedef vector<long long> vll;
     static vll karatsubaMultiply(const vll &a, const vll &b) {
-        int n = int(a.size()); vll res(n + n);
-        if (n <= 32) {
+        int n = int(a.size());
+        if (int(a.size()) <= KARATSUBA_CUTOFF) {
+            vll res(n + n);
             for (int i = 0; i < n; i++) for (int j = 0; j < n; j++) res[i + j] += a[i] * b[j];
             return res;
         }
         int k = n >> 1;
-        vll a1(a.begin(), a.begin() + k), a2(a.begin() + k, a.end()), b1(b.begin(), b.begin() + k), b2(b.begin() + k, b.end());
-        vll a1b1 = karatsubaMultiply(a1, b1), a2b2 = karatsubaMultiply(a2, b2);
-        for (int i = 0; i < k; i++) a2[i] += a1[i];
-        for (int i = 0; i < k; i++) b2[i] += b1[i];
-        vll r = karatsubaMultiply(a2, b2);
-        for (int i = 0; i < int(a1b1.size()); i++) r[i] -= a1b1[i];
-        for (int i = 0; i < int(a2b2.size()); i++) r[i] -= a2b2[i];
-        for (int i = 0; i < int(r.size()); i++) res[i + k] += r[i];
-        for (int i = 0; i < int(a1b1.size()); i++) res[i] += a1b1[i];
-        for (int i = 0; i < int(a2b2.size()); i++) res[i + n] += a2b2[i];
+        vll a2(a.begin() + k, a.end()), b2(b.begin() + k, b.end()), a2b2 = karatsubaMultiply(a2, b2);
+        for (int i = 0; i < k; i++) { a2[i] += a[i]; b2[i] += b[i]; }
+        vll r = karatsubaMultiply(a2, b2), a1b1 = karatsubaMultiply(vll(a.begin(), a.begin() + k), vll(b.begin(), b.begin() + k)), res(n << 1);
+        for (int i = 0; i < int(r.size()); i++) { r[i] -= a1b1[i] + a2b2[i]; res[i] += a1b1[i]; res[i + k] += r[i]; res[i + n] += a2b2[i]; }
         return res;
     }
     BigInt mul_karatsuba(const BigInt &v) const {
         vll a(this->a.begin(), this->a.end()), b(v.a.begin(), v.a.end());
         while (int(a.size()) < int(b.size())) a.push_back(0);
         while (int(b.size()) < int(a.size())) b.push_back(0);
-        while (int(a.size()) & (int(a.size()) - 1)) a.push_back(0), b.push_back(0);
+        while (int(a.size()) & (int(a.size()) - 1)) { a.push_back(0); b.push_back(0); }
         vll c = karatsubaMultiply(a, b); BigInt res; res.sign = sign * v.sign;
         for (int i = 0, carry = 0; i < int(c.size()); i++) {
             long long cur = c[i] + carry; res.a.push_back((int) (cur % 10)); carry = (int) (cur / 10);
