@@ -15,9 +15,8 @@ template <class T> T factorial(T n, T m) {
 template <class T> T factorialPrime(T n, T p) {
     T ret = 1, h = 0;
     while (n > 1) {
-        ret = (ret * ((n / p) % 2 == 1 ? p - 1 : 1)) % p; h = n % p;
+        ret = (ret * ((n / p) % 2 == 1 ? p - 1 : 1)) % p; h = n % p; n /= p;
         for (int i = 2; i <= h; i++) ret = (ret * i) % p;
-        n /= p;
     }
     return ret;
 }
@@ -27,6 +26,14 @@ template <class T> T factorialPrime(T n, T p) {
 template <class T> T multMod(T a, T b, T mod) {
     T x = 0, y = a % mod;
     for (; b > 0; b /= 2, y = (y + y) % mod) if (b % 2 == 1) x = (x + y) % mod;
+    return x;
+}
+
+// base ^ pow % mod
+// Time Complexity: O(log pow)
+template <class T> T pow2(T base, T pow) {
+    T x = 1, y = base;
+    for (; pow > 0; pow /= 2, y = y * y) if (pow % 2 == 1) x = x * y;
     return x;
 }
 

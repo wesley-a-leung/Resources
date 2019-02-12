@@ -176,16 +176,15 @@ struct BigInt {
     typedef vector<long long> vll;
     static vll karatsubaMultiply(const vll &a, const vll &b) {
         int n = int(a.size());
-        if (int(a.size()) <= KARATSUBA_CUTOFF) {
-            vll res(n + n);
+        if (n <= KARATSUBA_CUTOFF) {
+            vll res(n << 1);
             for (int i = 0; i < n; i++) for (int j = 0; j < n; j++) res[i + j] += a[i] * b[j];
             return res;
         }
-        int k = n >> 1;
-        vll a2(a.begin() + k, a.end()), b2(b.begin() + k, b.end()), a2b2 = karatsubaMultiply(a2, b2);
+        int k = n >> 1; vll a2(a.begin() + k, a.end()), b2(b.begin() + k, b.end()), a2b2 = karatsubaMultiply(a2, b2);
         for (int i = 0; i < k; i++) { a2[i] += a[i]; b2[i] += b[i]; }
         vll r = karatsubaMultiply(a2, b2), a1b1 = karatsubaMultiply(vll(a.begin(), a.begin() + k), vll(b.begin(), b.begin() + k)), res(n << 1);
-        for (int i = 0; i < int(r.size()); i++) { r[i] -= a1b1[i] + a2b2[i]; res[i] += a1b1[i]; res[i + k] += r[i]; res[i + n] += a2b2[i]; }
+        for (int i = 0; i < int(r.size()); i++) { res[i] += a1b1[i]; res[i + k] += r[i] - a1b1[i] - a2b2[i]; res[i + n] += a2b2[i]; }
         return res;
     }
     BigInt mul_karatsuba(const BigInt &v) const {

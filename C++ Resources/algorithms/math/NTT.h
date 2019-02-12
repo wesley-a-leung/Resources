@@ -50,9 +50,7 @@ void computeRoots(int N) {
     int len = __builtin_ctz(int(roots.size())); roots.resize(N);
     for (; (1 << len) < N; len++) {
         T z = powMod(ROOT, PK >> (len + 1), MOD);
-        for (int i = 1 << (len - 1); i < (1 << len); i++) {
-            roots[2 * i] = roots[i]; roots[2 * i + 1] = roots[i] * z % MOD;
-        }
+        for (int i = 1 << (len - 1); i < (1 << len); i++) { roots[2 * i] = roots[i]; roots[2 * i + 1] = roots[i] * z % MOD; }
     }
 }
 
@@ -89,8 +87,7 @@ template <class T> void multiplyPolynomial(vector<T> &a, vector<T> &b, vector<T>
     }
     int N = int(a.size()) + int(b.size()) - 1;
     while (N & (N - 1)) N++;
-    vector<T> fa(N, 0), fb; copy(a.begin(), a.end(), fa.begin());
-    ntt(fa);
+    vector<T> fa(N, 0), fb; copy(a.begin(), a.end(), fa.begin()); ntt(fa);
     if (eq) fb = fa;
     else { fb.assign(N, 0); copy(b.begin(), b.end(), fb.begin()); ntt(fb); }
     res.resize(N); T invN = multInv(T(N), MOD); res[0] = fa[0] * fb[0] % MOD * invN % MOD;
