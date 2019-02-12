@@ -5,7 +5,14 @@ using namespace std;
 // Fast Fourier Transform
 // Time Complexity of multiplyInteger, multiplyPolynomial: O(N log N) where N = size(a) + size(b)
 
-using F = double; const int CUTOFF = 150, DIG = 1, BASE = pow(10, DIG); const F PI = acos(-1);
+using F = double; const int CUTOFF = 150, DIG = 1; const F PI = acos(-1);
+
+template <class T> T pow2(T base, T pow) {
+    T x = 1, y = base;
+    for (; pow > 0; pow /= 2, y = y * y) if (pow % 2 == 1) x = x * y;
+    return x;
+}
+
 template <class T> pair<T, T> operator + (const pair<T, T> &a, const pair<T, T> &b) {
     return make_pair(a.first + b.first, a.second + b.second);
 }
@@ -52,7 +59,7 @@ void fft(vector<pair<F, F>> &a) {
 
 // Multiplies 2 big integers
 template <class T> void multiplyInteger(vector<T> &a, vector<T> &b, vector<T> &res) {
-    static_assert(is_integral<T>::value, "T must be an integral type");
+    static_assert(is_integral<T>::value, "T must be an integral type"); static T BASE = pow2(T(10), T(DIG));
     if (max(int(a.size()), int(b.size())) <= CUTOFF) {
         vector<T> c(int(a.size()) + int(b.size()), 0); T carry = 0;
         for (int i = 0; i < int(a.size()); i++) for (int j = 0; j < int(b.size()); j++) c[i + j] += a[i] * b[j];
@@ -90,12 +97,11 @@ template <class T> void multiplyPolynomial(vector<T> &a, vector<T> &b, vector<T>
     vector<pair<F, F>> f(N, make_pair(0, 0));
     for (int i = 0; i < int(a.size()); i++) f[i].first = a[i];
     for (int i = 0; i < int(b.size()); i++) f[i].second = b[i];
-    fft(f); bool isIntegral = is_integral<T>::value; pair<F, F> r(0, -0.25 / N);
+    fft(f); pair<F, F> r(0, -0.25 / N);
     for (int i = 0; i <= N / 2; i++) {
-        int j = (N - i) & (N - 1);
-        pair<F, F> prod = (f[j] * f[j] - conj(f[i] * f[i])) * r; f[i] = prod; f[j] = conj(prod);
+        int j = (N - i) & (N - 1); pair<F, F> prod = (f[j] * f[j] - conj(f[i] * f[i])) * r; f[i] = prod; f[j] = conj(prod);
     }
-    fft(f); res.resize(N);
+    fft(f); res.resize(N); bool isIntegral = is_integral<T>::value;
     for (int i = 0; i < N; i++) res[i] = isIntegral ? round(f[i].first) : f[i].first;
     while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
 }
