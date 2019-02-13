@@ -40,6 +40,7 @@ template <class Value, class Comparator = less<Value>> struct SqrtOrderMaintenan
         for (auto &&x : small) if (!cmp(val, x) && !cmp(x, val)) return true;
         return false;
     }
+    int count(const Value &val) { return aboveInd(val) - ceiling(val); }
     bool empty() const { return small.empty() && large.empty(); } 
     int size() const { return int(small.size() + large.size()); } 
     void clear() const { small.clear(); large.clear(); }
