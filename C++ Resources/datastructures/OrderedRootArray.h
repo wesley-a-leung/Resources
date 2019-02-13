@@ -59,24 +59,16 @@ struct OrderedRootArray {
         return hi;
     }
     OrderedRootArray(const int SCALE_FACTOR = 1) : n(0), SCALE_FACTOR(SCALE_FACTOR) {}
-    template <typename It> OrderedRootArray(const It st, const It en, const int SCALE_FACTOR = 1) :
-            n(en - st), SCALE_FACTOR(SCALE_FACTOR) {
+    template <typename It> OrderedRootArray(const It st, const It en, const int SCALE_FACTOR = 1) : n(en - st), SCALE_FACTOR(SCALE_FACTOR) {
         assert(n >= 0); assert(is_sorted(st, en, cmp));
         int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
-        for (It i = st; i < en; i += rootn) {
-            a.emplace_back(i, min(i + rootn, en), SCALE_FACTOR);
-            prefixSZ.push_back(0);
-        }
+        for (It i = st; i < en; i += rootn) { a.emplace_back(i, min(i + rootn, en), SCALE_FACTOR); prefixSZ.push_back(0); }
         for (int i = 1; i < (int) a.size(); i++) prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
     }
-    OrderedRootArray(initializer_list<Value> il, const int SCALE_FACTOR = 1) :
-            n(il.end() - il.begin()), SCALE_FACTOR(SCALE_FACTOR) {
+    OrderedRootArray(initializer_list<Value> il, const int SCALE_FACTOR = 1) : n(il.end() - il.begin()), SCALE_FACTOR(SCALE_FACTOR) {
         assert(n >= 0); assert(is_sorted(il.begin(), il.end(), cmp));
         int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
-        for (auto i = il.begin(); i < il.end(); i += rootn) {
-            a.emplace_back(i, min(i + rootn, il.end()), SCALE_FACTOR);
-            prefixSZ.push_back(0);
-        }
+        for (auto i = il.begin(); i < il.end(); i += rootn) { a.emplace_back(i, min(i + rootn, il.end()), SCALE_FACTOR); prefixSZ.push_back(0); }
         for (int i = 1; i < (int) a.size(); i++) prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
     }
     void insert(const Value &val) {
@@ -157,4 +149,5 @@ struct OrderedRootArray {
         for (auto &&ai : a) for (auto &&aij : ai.values()) ret.push_back(aij);
         return ret;
     }
+    void clear() { n = 0; a.clear(); prefixSZ.clear(); }
 };

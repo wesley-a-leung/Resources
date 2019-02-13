@@ -118,5 +118,6 @@ template <class Value> struct SqrtArray {
         for (auto &&ai : a) for (auto &&aij : ai) ret.push_back(aij);
         return ret;
     }
+    void clear() { n = 0; a.clear(); prefixSZ.clear(); }
 };
 
