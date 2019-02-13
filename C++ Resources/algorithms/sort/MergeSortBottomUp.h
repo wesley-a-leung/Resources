@@ -6,9 +6,9 @@ using namespace std;
 // Time Complexity: O(N log N) worse case
 // Memory Complexity: O(N) additional memory
 
-const int INSERTION_SORT_CUTOFF = 7;
+const int INSERTION_SORT_CUTOFF = 8;
 
-template <class It> void merge_sort_buttom_up(It st, It en) {
+template <class It> void merge_sort_bottom_up(It st, It en) {
     typedef typename std::iterator_traits<It>::value_type T;
     int n = en - st; T *aux = new T[n];
     for (int i = 0; i < n; i++) aux[i] = st[i];

@@ -8,9 +8,9 @@ using namespace std;
 template <const int MAXS> struct LongestCommonSubstring {
     int dp[2][MAXS]; string substring;
     int solve(const string &s1, const string &s2) {
-        int st = 0, len = 0;
-        for (int i = 0; i < 2; i++) fill(dp[i], dp[i] + s2.length() + 1, 0);
+        int st = 0, len = 0; fill(dp[0], dp[0] + s2.length() + 1, 0);
         for (int i = 1; i <= int(s1.length()); i++) {
+            dp[i % 2][0] = 0;
             for (int j = 1; j <= int(s2.length()); j++) {
                 if (s1[i - 1] == s2[j - 1]) {
                     dp[i % 2][j] = 1 + dp[1 - i % 2][j - 1];
@@ -18,7 +18,6 @@ template <const int MAXS> struct LongestCommonSubstring {
                 }
             }
         }
-        substring = s1.substr(st, len);
-        return len;
+        substring = s1.substr(st, len); return len;
     }
 };

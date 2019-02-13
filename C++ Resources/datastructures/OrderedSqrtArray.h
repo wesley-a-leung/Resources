@@ -19,8 +19,7 @@ public:
 //   at, accessor, contains, floor, ceiling, above, below: O(log(N))
 //   values: O(N)
 // Memory Complexity: O(N)
-template <class Value, class Comparator = less<Value>>
-struct OrderedSqrtArray {
+template <class Value, class Comparator = less<Value>> struct OrderedSqrtArray {
     Comparator cmp; int n, SCALE_FACTOR; vector<vector<Value>> a; vector<int> prefixSZ;
     pair<int, int> ceiling_ind(const Value &val) const {
         int lo = 0, hi = (int) a.size(), mid;
@@ -54,7 +53,6 @@ struct OrderedSqrtArray {
         }
         return {i, hi};
     }
-
     pair<int, int> above_ind(const Value &val) const {
         int lo = 0, hi = (int) a.size(), mid;
         while (lo < hi) {
@@ -88,24 +86,16 @@ struct OrderedSqrtArray {
         return {i, hi};
     }
     OrderedSqrtArray(const int SCALE_FACTOR = 1) : n(0), SCALE_FACTOR(SCALE_FACTOR) {}
-    template <typename It> OrderedSqrtArray(const It st, const It en, const int SCALE_FACTOR = 1) :
-            n(en - st), SCALE_FACTOR(SCALE_FACTOR) {
+    template <typename It> OrderedSqrtArray(const It st, const It en, const int SCALE_FACTOR = 1) : n(en - st), SCALE_FACTOR(SCALE_FACTOR) {
         assert(n >= 0); assert(is_sorted(st, en, cmp));
         int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
-        for (It i = st; i < en; i += sqrtn) {
-            a.emplace_back(i, min(i + sqrtn, en));
-            prefixSZ.push_back(0);
-        }
+        for (It i = st; i < en; i += sqrtn) { a.emplace_back(i, min(i + sqrtn, en)); prefixSZ.push_back(0); }
         for (int i = 1; i < (int) a.size(); i++) prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
     }
-    OrderedSqrtArray(initializer_list<Value> il, const int SCALE_FACTOR = 1) :
-            n(il.end() - il.begin()), SCALE_FACTOR(SCALE_FACTOR) {
+    OrderedSqrtArray(initializer_list<Value> il, const int SCALE_FACTOR = 1) : n(il.end() - il.begin()), SCALE_FACTOR(SCALE_FACTOR) {
         assert(n >= 0); assert(is_sorted(il.begin(), il.end(), cmp));
         int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
-        for (auto i = il.begin(); i < il.end(); i += sqrtn) {
-            a.emplace_back(i, min(i + sqrtn, il.end()));
-            prefixSZ.push_back(0);
-        }
+        for (auto i = il.begin(); i < il.end(); i += sqrtn) { a.emplace_back(i, min(i + sqrtn, il.end())); prefixSZ.push_back(0); }
         for (int i = 1; i < (int) a.size(); i++) prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
     }
     void insert(const Value &val) {
@@ -115,9 +105,7 @@ struct OrderedSqrtArray {
         else a[i.first].insert(a[i.first].begin() + i.second, val);
         int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
         if ((int) a[i.first].size() > 2 * sqrtn) {
-            a.emplace(a.begin() + i.first + 1, a[i.first].begin() + sqrtn, a[i.first].end());
-            a[i.first].resize(sqrtn);
-            prefixSZ.push_back(0);
+            a.emplace(a.begin() + i.first + 1, a[i.first].begin() + sqrtn, a[i.first].end()); a[i.first].resize(sqrtn); prefixSZ.push_back(0);
         }
         for (int j = i.first + 1; j < (int) a.size(); j++) prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1].size();
     }
@@ -181,4 +169,5 @@ struct OrderedSqrtArray {
         for (auto &&ai : a) for (auto &&aij : ai) ret.push_back(aij);
         return ret;
     }
+    void clear() { n = 0; a.clear(); prefixSZ.clear(); }
 };

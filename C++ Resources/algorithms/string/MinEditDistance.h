@@ -8,12 +8,11 @@ using namespace std;
 template <const int MAXS> struct MinEditDistance {
     int dp[2][MAXS]; string substring;
     int solve(const string &s1, const string &s2, int repPen = 1, int insPen = 1, int delPen = 1) {
-        for (int i = 0; i < 2; i++) fill(dp[i], dp[i] + s2.length() + 1, 0);
-        for (int i = 0; i <= int(s1.length()); i++) {
-            for (int j = 0; j <= int(s2.length()); j++) {
-                if (i == 0) dp[i % 2][j] = j;
-                else if (j == 0) dp[i % 2][j] = i;
-                else if (s1[i - 1] == s2[j - 1]) dp[i % 2][j] = dp[1 - i % 2][j - 1];
+        iota(dp[0], dp[0] + s2.length() + 1, 0);
+        for (int i = 1; i <= int(s1.length()); i++) {
+            dp[i % 2][0] = i;
+            for (int j = 1; j <= int(s2.length()); j++) {
+                if (s1[i - 1] == s2[j - 1]) dp[i % 2][j] = dp[1 - i % 2][j - 1];
                 else dp[i % 2][j] = min(min(dp[1 - i % 2][j - 1] + repPen, dp[1 - i % 2][j] + insPen), dp[i % 2][j - 1] + delPen);
             }
         }
