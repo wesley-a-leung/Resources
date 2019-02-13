@@ -12,8 +12,8 @@ public:
 // The factor should be between 1 and 10, and should be smaller for large N
 // Time Complexity:
 //   constructor: O(N)
-//   insert, erase: O(N ^ (1 / R) + log(N)) amortized
-//   push_front, pop_front: O(N ^ (1 / R)) amortized
+//   insert, erase: O(R * (N ^ (1 / R)) + log(N)) amortized
+//   push_front, pop_front: O(R * (N ^ (1 / R))) amortized
 //   push_back, pop_back: O(1) amortized
 //   front, back, empty, size: O(1)
 //   at, accessor: O(log(N))
