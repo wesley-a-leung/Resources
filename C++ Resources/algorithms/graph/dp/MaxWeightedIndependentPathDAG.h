@@ -6,7 +6,7 @@ using namespace std;
 // a source an (optional) destination vertex on a Directed Acyclic Graph
 // Time Complexity: O(V + E)
 // Memory Complexity: O(V + E)
-template <const int MAXV> struct MaxNonadjacentSum {
+template <const int MAXV> struct MaxWeightedIndependentPathDAG {
     vector<int> adj[MAXV]; int val[MAXV], dp[MAXV][2];
     void addEdge(int v, int w) { adj[v].push_back(w); }
     int dfs(int v, int t, bool take) {

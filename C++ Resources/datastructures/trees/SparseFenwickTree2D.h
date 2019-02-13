@@ -22,7 +22,7 @@ template<class K,class C=less<K>,class...Ts>using treeset=tree<K,null_type,C,rb_
 // Time Complexity:
 //   add, rem, rsq: O(log N log M)
 // Memory Complexity: O(NM)
-template <const int MAXN, class T> struct SparseFenwickTree2DSimple {
+template <const int MAXN, class T> struct SparseFenwickTree2DTreeset {
     treeset<pair<T, int>> BIT[MAXN]; int stamp = 0;
     void clear() { stamp = 0; for (int i = 0; i < MAXN; i++) BIT[i].clear(); }
     void add(int x, int y) { for (; x < MAXN; x += x & -x) BIT[x].insert(make_pair(y, stamp++)); }

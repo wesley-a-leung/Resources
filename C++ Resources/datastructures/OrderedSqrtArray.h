@@ -142,7 +142,7 @@ template <class Value, class Comparator = less<Value>> struct OrderedSqrtArray {
     int size() const { return n; }
     bool contains(const Value &val) const {
         pair<int, int> i = ceiling_ind(val);
-        return i.first != (int) a.size() && a[i.first][i.second] == val;
+        return i.first != (int) a.size() && !cmp(a[i.first][i.second], val) && !cmp(val, a[i.first][i.second]);
     }
     pair<int, Value> floor(const Value &val) const {
         pair<int, int> i = floor_ind(val);
