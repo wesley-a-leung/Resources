@@ -50,6 +50,7 @@ template <class Value, class Comparator = less<Value>> struct CbrtOrderMaintenan
         for (auto &&x : small) if (!cmp(val, x) && !cmp(x, val)) return true;
         return false;
     }
+    int count(const Value &val) { return aboveInd(val) - ceiling(val); }
     bool empty() const { return small.empty() && medium.empty() && large.empty(); } 
     int size() const { return int(small.size() + medium.empty() + large.size()); } 
     void clear() const { small.clear(); medium.clear(); large.clear(); }

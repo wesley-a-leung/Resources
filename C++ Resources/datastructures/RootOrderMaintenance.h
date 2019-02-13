@@ -47,6 +47,7 @@ template <const int R, class Value, class Comparator = less<Value>> struct RootO
         for (auto &&x : A[0]) if (!cmp(val, x) && !cmp(x, val)) return true;
         return false;
     }
+    int count(const Value &val) { return aboveInd(val) - ceiling(val); }
     bool empty() const { return n == 0; } 
     int size() const { return n; } 
     void clear() const { for (int i = 0; i < R; i++) A[i].clear(); }
