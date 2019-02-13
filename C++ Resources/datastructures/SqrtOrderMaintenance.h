@@ -36,6 +36,7 @@ template <class Value, class Comparator = less<Value>> struct SqrtOrderMaintenan
     bool contains(const Value &val) {
         if (binary_search(large.begin(), large.end(), val, cmp)) return true;
         resize();
+        if (binary_search(large.begin(), large.end(), val, cmp)) return true;
         for (auto &&x : small) if (!cmp(val, x) && !cmp(x, val)) return true;
         return false;
     }
