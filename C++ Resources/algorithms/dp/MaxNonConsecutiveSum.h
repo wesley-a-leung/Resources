@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Computes the maximum sum of a non sonsecutive subsequence
+// Computes the maximum sum of a non consecutive subsequence
 // Time Complexity: O(N)
 // Memory Complexity: O(N)
 template <const int MAXN> struct MaxNonConsecutiveSum {

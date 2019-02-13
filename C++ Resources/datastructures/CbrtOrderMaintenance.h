@@ -12,7 +12,9 @@ using namespace std;
 template <class Value, class Comparator = less<Value>> struct CbrtOrderMaintenance {
     Comparator cmp; double SCALE_FACTOR; vector<Value> small, medium, large;
     CbrtOrderMaintenance(const double SCALE_FACTOR = 1) : SCALE_FACTOR(SCALE_FACTOR) {}
-    template <class It> CbrtOrderMaintenance(const It st, const It en, const double SCALE_FACTOR = 1) : large(st, en), SCALE_FACTOR(SCALE_FACTOR) {}
+    template <class It> CbrtOrderMaintenance(const It st, const It en, const double SCALE_FACTOR = 1) : SCALE_FACTOR(SCALE_FACTOR), large(st, en) {
+        assert(is_sorted(st, en));
+    }
     void resize() {
         double c = cbrt(small.size() + medium.size() + large.size());
         if (int(small.size()) > SCALE_FACTOR * c) {
@@ -50,8 +52,15 @@ template <class Value, class Comparator = less<Value>> struct CbrtOrderMaintenan
         for (auto &&x : small) if (!cmp(val, x) && !cmp(x, val)) return true;
         return false;
     }
-    int count(const Value &val) { return aboveInd(val) - ceiling(val); }
+    int count(const Value &val) { return aboveInd(val) - ceilingInd(val); }
     bool empty() const { return small.empty() && medium.empty() && large.empty(); } 
-    int size() const { return int(small.size() + medium.empty() + large.size()); } 
+    int size() const { return int(small.size() + medium.size() + large.size()); } 
     void clear() const { small.clear(); medium.clear(); large.clear(); }
+    vector<Value> values() const { // not sorted
+        vector<Value> ret;
+        for (auto &&x : large) ret.push_back(x);
+        for (auto &&x : medium) ret.push_back(x);
+        for (auto &&x : small) ret.push_back(x);
+        return ret;
+    }
 };

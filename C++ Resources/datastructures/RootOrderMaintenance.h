@@ -8,12 +8,13 @@ using namespace std;
 //   insert: O(1) amortized
 //   empty, size: O(1)
 //   floor, ceiling, above, below, contains: O(R * (N ^ (1 / R)) + log(N)) amortized
+//   values: O(N)
 // Memory Complexity: O(N)
 template <const int R, class Value, class Comparator = less<Value>> struct RootOrderMaintenance {
     Comparator cmp; int n; double SCALE_FACTOR; vector<Value> A[R];
     RootOrderMaintenance(const double SCALE_FACTOR = 1) : n(0), SCALE_FACTOR(SCALE_FACTOR) {}
     template <class It> RootOrderMaintenance(const It st, const It en, const double SCALE_FACTOR = 1) : n(en - st), SCALE_FACTOR(SCALE_FACTOR) {
-        A.back() = vector<Value>(st, en);
+        assert(is_sorted(st, en)); A[R - 1] = vector<Value>(st, en);
     }
     void resize() {
         double b = pow(n, 1.0 / R), c = b;
@@ -35,7 +36,7 @@ template <const int R, class Value, class Comparator = less<Value>> struct RootO
     int ceilingInd(const Value &val) {
         resize(); int ret = 0;
         for (int i = R - 1; i >= 1; i--) ret += lower_bound(A[i].begin(), A[i].end(), val, cmp) - A[i].begin();
-        for (auto &&x : A[0]) ret += !cmp(val, x);
+        for (auto &&x : A[0]) ret += cmp(x, val);
         return ret;
     }
     int floorInd(const Value &val) { return aboveInd(val) - 1; }
@@ -47,8 +48,13 @@ template <const int R, class Value, class Comparator = less<Value>> struct RootO
         for (auto &&x : A[0]) if (!cmp(val, x) && !cmp(x, val)) return true;
         return false;
     }
-    int count(const Value &val) { return aboveInd(val) - ceiling(val); }
+    int count(const Value &val) { return aboveInd(val) - ceilingInd(val); }
     bool empty() const { return n == 0; } 
     int size() const { return n; } 
     void clear() const { for (int i = 0; i < R; i++) A[i].clear(); }
+    vector<Value> values() const { // not sorted
+        vector<Value> ret;
+        for (int i = R - 1; i >= 0; i--) for (auto &&x : A[i]) ret.push_back(x);
+        return ret;
+    }
 };

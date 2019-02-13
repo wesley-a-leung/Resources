@@ -8,11 +8,14 @@ using namespace std;
 //   insert: O(1) amortized
 //   empty, size: O(1)
 //   floor, ceiling, above, below, contains: O(log(N) + sqrt(N)) amortized
+//   values: O(N)
 // Memory Complexity: O(N)
 template <class Value, class Comparator = less<Value>> struct SqrtOrderMaintenance {
     Comparator cmp; double SCALE_FACTOR; vector<Value> small, large;
     SqrtOrderMaintenance(const double SCALE_FACTOR = 1) : SCALE_FACTOR(SCALE_FACTOR) {}
-    template <class It> SqrtOrderMaintenance(const It st, const It en, const double SCALE_FACTOR = 1) : large(st, en), SCALE_FACTOR(SCALE_FACTOR) {}
+    template <class It> SqrtOrderMaintenance(const It st, const It en, const double SCALE_FACTOR = 1) : SCALE_FACTOR(SCALE_FACTOR), large(st, en) {
+        assert(is_sorted(st, en));
+    }
     void resize() {
         if (int(small.size()) > SCALE_FACTOR * sqrt(small.size() + large.size())) {
             int largeSz = int(large.size()); sort(small.begin(), small.end(), cmp);
@@ -40,8 +43,14 @@ template <class Value, class Comparator = less<Value>> struct SqrtOrderMaintenan
         for (auto &&x : small) if (!cmp(val, x) && !cmp(x, val)) return true;
         return false;
     }
-    int count(const Value &val) { return aboveInd(val) - ceiling(val); }
+    int count(const Value &val) { return aboveInd(val) - ceilingInd(val); }
     bool empty() const { return small.empty() && large.empty(); } 
     int size() const { return int(small.size() + large.size()); } 
     void clear() const { small.clear(); large.clear(); }
+    vector<Value> values() const { // not sorted
+        vector<Value> ret;
+        for (auto &&x : large) ret.push_back(x);
+        for (auto &&x : small) ret.push_back(x);
+        return ret;
+    }
 };
