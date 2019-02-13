@@ -7,7 +7,7 @@ using namespace std;
 //   constructor: O(N)
 //   insert: O(1) amortized
 //   empty, size: O(1)
-//   floor, ceiling, above, below, contains: O(log(N) + N ^ (1 / R)) amortized
+//   floor, ceiling, above, below, contains: O(R * (N ^ (1 / R)) + log(N)) amortized
 // Memory Complexity: O(N)
 template <const int R, class Value, class Comparator = less<Value>> struct RootOrderMaintenance {
     Comparator cmp; int n; double SCALE_FACTOR; vector<Value> A[R];
