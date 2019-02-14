@@ -3,12 +3,16 @@
 #include "../../algorithms/math/Combinatorics.h"
 using namespace std;
 
-using T = long long;
+using T = long long; static_assert(is_integral<T>::value, "T must be an integral type");
 
 // Data structure representing a Fraction
 struct Fraction {
     T num, den;
     Fraction(T num = 0, T den = 0) : num(num), den(den) {}
+    Fraction reduce() const {
+        T g = __gcd(abs(num), abs(den));
+        return den >= 0 ? Fraction(num / g, den / g) : Fraction(-num / g, -den / g);
+    }
     Fraction operator + (const Fraction &f) const {
         return Fraction((num * f.den + f.num * den), den * f.den);
     }
