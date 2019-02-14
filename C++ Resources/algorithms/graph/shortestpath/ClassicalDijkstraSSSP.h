@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Classical Dijkstra's single source shortest path algorithm for weighted graphs with non negative weights
+// Classical Dijkstra's single source shortest path algorithm for weighted graphs without negative weights
 // Time Complexity: O(V^2)
 // Memory Complexity: O(V + E)
 template <const int MAXV, class unit> struct ClassicalDijkstraSSSP {

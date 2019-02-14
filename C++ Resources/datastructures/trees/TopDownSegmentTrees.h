@@ -99,16 +99,14 @@ template <const int MAXNODES, const int MAXROOTS, const bool ONE_INDEXED> struct
         VAL[ret] = merge(VAL[L[ret]], VAL[R[ret]]); return ret;
     }
     int update(int cur, int cL, int cR, int l, int r, const Lazy &val, bool persistent) {
-        if (cL > r || cR < l) return cur;
         int ret = persistent ? makeNode(cur) : cur;
         if (cL >= l && cR <= r) {
             VAL[ret] = applyLazy(VAL[ret], getSegmentVal(val, cR - cL + 1));
             LZ[ret] = mergeLazy(LZ[ret], val); return ret;
         }
-        if (!L[ret]) L[ret] = makeNode();
-        if (!R[ret]) R[ret] = makeNode();
         int m = cL + (cR - cL) / 2; propagate(ret, cL, cR);
-        L[ret] = update(L[ret], cL, m, l, r, val, persistent); R[ret] = update(R[ret], m + 1, cR, l, r, val, persistent);
+        if (cL <= r && l <= m) L[ret] = update(L[ret] ? L[ret] : makeNode(), cL, m, l, r, val, persistent);
+        if (m + 1 <= r && l <= cR) R[ret] = update(R[ret] ? R[ret] : makeNode(), m + 1, cR, l, r, val, persistent);
         if (L[ret] && R[ret]) VAL[ret] = merge(VAL[L[ret]], VAL[R[ret]]);
         else if (L[ret]) VAL[ret] = merge(VAL[L[ret]], Data(vdef));
         else if (R[ret]) VAL[ret] = merge(VAL[R[ret]], Data(vdef));

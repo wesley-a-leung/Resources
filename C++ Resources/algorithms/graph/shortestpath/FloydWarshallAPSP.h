@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Floyd Warshall's all pairs shortest path algorithm for weighted graphs
+// Floyd Warshall's all pairs shortest path algorithm for weighted graphs with negative cycles
 // Can be used to detect negative cycles
 // Time Complexity: O(V^3)
 // Memory Complexity: O(V^2)

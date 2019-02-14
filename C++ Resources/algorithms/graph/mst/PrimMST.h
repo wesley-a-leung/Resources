@@ -8,14 +8,12 @@ using namespace std;
 template <const int MAXV, class unit> struct PrimMST {
     unit INF; PrimMST(unit INF) : INF(INF) {}
     struct Edge { int v, w; unit weight; };
-    pair<int, unit> to[MAXV]; unit weight, cost[MAXV]; vector<Edge> mst; bool vis[MAXV];
-    vector<pair<int, unit>> adj[MAXV];
+    pair<int, unit> to[MAXV]; unit weight, cost[MAXV]; vector<Edge> mst; bool vis[MAXV]; vector<pair<int, unit>> adj[MAXV];
     void addEdge(int v, int w, unit weight) { adj[v].emplace_back(w, weight); adj[w].emplace_back(v, weight); }
     unit run(int V) {
         weight = 0; fill(vis, vis + V, false); fill(cost, cost + V, INF); fill(to, to + V, make_pair(-1, 0));
         std::priority_queue<pair<unit, int>, vector<pair<unit, int>>, greater<pair<unit, int>>> PQ;
-        for (int s = 0; s < V; s++) {
-            if (vis[s]) continue;
+        for (int s = 0; s < V; s++) if (!vis[s]) {
             PQ.emplace(cost[s] = 0, s);
             while (!PQ.empty()) {
                 int v = PQ.top().second; PQ.pop(); vis[v] = true;

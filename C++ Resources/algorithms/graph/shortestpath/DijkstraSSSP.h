@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Dijstra's single source shortest path algorithm for weighted graphs without negative cycles
+// Dijstra's single source shortest path algorithm for weighted graphs without negative weights
 // Time Complexity: O(E log E) or O(E log V) if an indexed priority queue is used
 // Memory Complexity: O(V + E)
 template <const int MAXV, class unit> struct DijkstraSSSP {

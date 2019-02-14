@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Shortest Path Faster Algorithm for weighted graphs without negative cycles
+// Shortest Path Faster Algorithm for weighted graphs without negative weights
 // Time Complexity: O(VE) in the worst case, O(E) on average
 // Memory Complexity: O(V + E)
 template <const int MAXV, class unit> struct SPFA {

@@ -14,11 +14,9 @@ template <const int MAXV, class unit> struct KruskalMST {
     void addEdge(int v, int w, unit weight) { edges.push_back({v, w, weight}); }
     int find(int v) { return UF[v] < 0 ? v : UF[v] = find(UF[v]); }
     bool join(int v, int w) {
-        v = find(v); w = find(w);
-        if (v == w) return false;
+        if ((v = find(v)) == (w = find(w))) return false;
         if (UF[v] > UF[w]) swap(v, w);
-        UF[v] += UF[w]; UF[w] = v;
-        return true;
+        UF[v] += UF[w]; UF[w] = v; return true;
     }
     unit run(int V) {
         weight = 0; fill(UF, UF + V, -1); sort(edges.begin(), edges.end());
