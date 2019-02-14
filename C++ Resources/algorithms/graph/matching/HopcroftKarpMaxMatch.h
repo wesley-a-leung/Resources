@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Computes the maximum matching (ans minimum vertex cover) on an unweighted bipartite graph
+// Computes the maximum matching (and minimum vertex cover) on an unweighted bipartite graph
 // Time Complexity: O((V + E) sqrt V)
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct HopcroftKarpMaxMatch {
