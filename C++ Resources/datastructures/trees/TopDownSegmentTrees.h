@@ -3,14 +3,12 @@
 using namespace std;
 
 template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree {
-    using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0;
+    using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; Data T[MAXN * 4], A[MAXN]; int N;
     Data merge(const Data &l, const Data &r); // to be implemented
     Data applyLazy(const Data &l, const Lazy &r); // to be implemented
-    Data T[MAXN * 4], A[MAXN]; int N;
     void build(int cur, int cL, int cR) {
         if (cL == cR) { T[cur] = A[cL]; return; }
-        int m = cL + (cR - cL) / 2; build(cur * 2, cL, m); build(cur * 2 + 1, m + 1, cR);
-        T[cur] = merge(T[cur * 2], T[cur * 2 + 1]);
+        int m = cL + (cR - cL) / 2; build(cur * 2, cL, m); build(cur * 2 + 1, m + 1, cR); T[cur] = merge(T[cur * 2], T[cur * 2 + 1]);
     }
     void update(int cur, int cL, int cR, int ind, const Lazy &val) {
         if (cL > ind || cR < ind) return;
@@ -21,8 +19,7 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree {
     Data query(int cur, int cL, int cR, int l, int r) {
         if (cL > r || cR < l) return qdef;
         if (cL >= l && cR <= r) return T[cur];
-        int m = cL + (cR - cL) / 2;
-        return merge(query(cur * 2, cL, m, l, r), query(cur * 2 + 1, m + 1, cR, l, r));
+        int m = cL + (cR - cL) / 2; return merge(query(cur * 2, cL, m, l, r), query(cur * 2 + 1, m + 1, cR, l, r));
     }
     template <class It> void init(It st, It en) {
         N = en - st;
@@ -35,12 +32,11 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree {
 };
 
 template <const int MAXN, const bool ONE_INDEXED> struct LazySegmentTree {
-    using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ldef = 0;
+    using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ldef = 0; Data T[MAXN * 4], A[MAXN]; Lazy L[MAXN * 4]; int N;
     Data merge(const Data &l, const Data &r); // to be implemented
     Data applyLazy(const Data &l, const Lazy &r); // to be implemented
     Lazy getSegmentVal(const Lazy &v, int len); // to be implemented
     Lazy mergeLazy(const Lazy &l, const Lazy &r); // to be implemented
-    Data T[MAXN * 4], A[MAXN]; Lazy L[MAXN * 4]; int N;
     void propagate(int cur, int cL, int cR) {
         if (L[cur] != ldef) {
             int m = cL + (cR - cL) / 2;
@@ -56,18 +52,14 @@ template <const int MAXN, const bool ONE_INDEXED> struct LazySegmentTree {
     }
     void update(int cur, int cL, int cR, int l, int r, const Lazy &val) {
         if (cL > r || cR < l) return;
-        if (cL >= l && cR <= r) {
-            T[cur] = applyLazy(T[cur], getSegmentVal(val, cR - cL + 1));
-            L[cur] = mergeLazy(L[cur], val); return;
-        }
+        if (cL >= l && cR <= r) { T[cur] = applyLazy(T[cur], getSegmentVal(val, cR - cL + 1)); L[cur] = mergeLazy(L[cur], val); return; }
         int m = cL + (cR - cL) / 2; propagate(cur, cL, cR);
         update(cur * 2, cL, m, l, r, val); update(cur * 2 + 1, m + 1, cR, l, r, val); T[cur] = merge(T[cur * 2], T[cur * 2 + 1]);
     }
     Data query(int cur, int cL, int cR, int l, int r) {
         if (cL > r || cR < l) return qdef;
         if (cL >= l && cR <= r) return T[cur];
-        int m = cL + (cR - cL) / 2; propagate(cur, cL, cR);
-        return merge(query(cur * 2, cL, m, l, r), query(cur * 2 + 1, m + 1, cR, l, r));
+        int m = cL + (cR - cL) / 2; propagate(cur, cL, cR); return merge(query(cur * 2, cL, m, l, r), query(cur * 2 + 1, m + 1, cR, l, r));
     }
     template <class It> void init(It st, It en) {
         N = en - st;
@@ -116,8 +108,7 @@ template <const int MAXNODES, const int MAXROOTS, const bool ONE_INDEXED> struct
         if (!L[ret]) L[ret] = makeNode();
         if (!R[ret]) R[ret] = makeNode();
         int m = cL + (cR - cL) / 2; propagate(ret, cL, cR);
-        L[ret] = update(L[ret], cL, m, l, r, val, persistent);
-        R[ret] = update(R[ret], m + 1, cR, l, r, val, persistent);
+        L[ret] = update(L[ret], cL, m, l, r, val, persistent); R[ret] = update(R[ret], m + 1, cR, l, r, val, persistent);
         if (L[ret] && R[ret]) VAL[ret] = merge(VAL[L[ret]], VAL[R[ret]]);
         else if (L[ret]) VAL[ret] = merge(VAL[L[ret]], Data(vdef));
         else if (R[ret]) VAL[ret] = merge(VAL[R[ret]], Data(vdef));

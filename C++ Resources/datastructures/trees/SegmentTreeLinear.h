@@ -27,8 +27,7 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTreeLinear {
     }
     void build(int cur, int cL, int cR) {
         if (cL == cR) { T[cur] = make_pair(A[cL], 0); L[cur] = ZERO; return; }
-        int m = cL + (cR - cL) / 2; build(cur * 2, cL, m); build(cur * 2 + 1, m + 1, cR);
-        T[cur] = T[cur * 2] + T[cur * 2 + 1];
+        int m = cL + (cR - cL) / 2; build(cur * 2, cL, m); build(cur * 2 + 1, m + 1, cR); T[cur] = T[cur * 2] + T[cur * 2 + 1];
     }
     void update(int cur, int cL, int cR, int l, int r, const Data &val) {
         if (cL > r || cR < l) return;
@@ -39,8 +38,7 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTreeLinear {
     Data query(int cur, int cL, int cR, int l, int r) {
         if (cL > r || cR < l) return ZERO;
         if (cL >= l && cR <= r) return T[cur];
-        int m = cL + (cR - cL) / 2; propagate(cur, cL, cR);
-        return query(cur * 2, cL, m, l, r) + query(cur * 2 + 1, m + 1, cR, l, r);
+        int m = cL + (cR - cL) / 2; propagate(cur, cL, cR); return query(cur * 2, cL, m, l, r) + query(cur * 2 + 1, m + 1, cR, l, r);
     }
     template <class It> void init(It st, It en) {
         N = en - st;
