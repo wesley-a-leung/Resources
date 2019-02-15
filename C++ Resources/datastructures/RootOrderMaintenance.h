@@ -7,6 +7,7 @@ using namespace std;
 //   constructor: O(N)
 //   insert: O(1) amortized
 //   empty, size: O(1)
+//   rebuild: O(R * (N ^ (1 / R)))
 //   floor, ceiling, above, below, contains: O(R * (N ^ (1 / R)) + log(N)) amortized
 //   values: O(N)
 // Memory Complexity: O(N)
@@ -16,7 +17,7 @@ template <const int R, class Value, class Comparator = less<Value>> struct RootO
     template <class It> RootOrderMaintenance(const It st, const It en, const double SCALE_FACTOR = 1) : n(en - st), SCALE_FACTOR(SCALE_FACTOR) {
         assert(is_sorted(st, en)); A[R - 1] = vector<Value>(st, en);
     }
-    void resize() {
+    void rebuild() {
         double b = pow(n, 1.0 / R), c = b;
         for (int i = 0; i < R - 1; i++, c *= b) {
             if (int(A[i].size()) > SCALE_FACTOR * c) {
@@ -28,13 +29,13 @@ template <const int R, class Value, class Comparator = less<Value>> struct RootO
     }
     void insert(const Value &val) { A[0].push_back(val); n++; }
     int aboveInd(const Value &val) {
-        resize(); int ret = 0;
+        rebuild(); int ret = 0;
         for (int i = R - 1; i >= 1; i--) ret += upper_bound(A[i].begin(), A[i].end(), val, cmp) - A[i].begin();
         for (auto &&x : A[0]) ret += !cmp(val, x);
         return ret;
     }
     int ceilingInd(const Value &val) {
-        resize(); int ret = 0;
+        rebuild(); int ret = 0;
         for (int i = R - 1; i >= 1; i--) ret += lower_bound(A[i].begin(), A[i].end(), val, cmp) - A[i].begin();
         for (auto &&x : A[0]) ret += cmp(x, val);
         return ret;
@@ -43,7 +44,7 @@ template <const int R, class Value, class Comparator = less<Value>> struct RootO
     int belowInd(const Value &val) { return ceilingInd(val) - 1; }
     bool contains(const Value &val) {
         for (int i = R - 1; i >= 1; i--) if (binary_search(A[i].begin(), A[i].end(), val, cmp)) return true;
-        resize();
+        rebuild();
         for (int i = R - 1; i >= 1; i--) if (binary_search(A[i].begin(), A[i].end(), val, cmp)) return true;
         for (auto &&x : A[0]) if (!cmp(val, x) && !cmp(x, val)) return true;
         return false;
