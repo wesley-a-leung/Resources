@@ -49,7 +49,7 @@ template <const int MAXN, const int MAXQ, const int BLOCKSZ> struct MoUpdates {
         }
     }
     void clear(int N = MAXN) {
-        Q = 0;
-        for (int i = 0; i <= (N - 1) / BLOCKSZ + 5; i++) for (int j = 0; j <= (N - 1) / BLOCKSZ + 5; j++) qs.clear();
+        Q = 0; int bnd = min((N - 1) / BLOCKSZ + 1, MAXN / BLOCKSZ + 5);
+        for (int i = 0; i < bnd; i++) for (int j = 0; j < bnd; j++) qs.clear();
     }
 };

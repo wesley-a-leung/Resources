@@ -16,7 +16,7 @@ template <const int MAXV, class unit> struct ClassicalDijkstraSSSP {
         for (int s : src) dist[s] = 0;
         for (int v = 0; v < V - 1; v++) {
             int minV = -1;
-            for (int w = 0; w < V; v++) if (!done[w] && (minV == -1 || dist[minV] > dist[w])) minV = w;
+            for (int w = 0; w < V; w++) if (!done[w] && (minV == -1 || dist[minV] > dist[w])) minV = w;
             done[minV] = true;
             for (auto &&e : adj[minV]) if (dist[e.first] > dist[minV] + e.second) {
                 dist[e.first] = dist[minV] + e.second; to[e.first] = make_pair(v, e.second);
