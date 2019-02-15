@@ -7,7 +7,8 @@ using namespace std;
 //   constructor: O(N)
 //   insert: O(1) amortized
 //   empty, size: O(1)
-//   floor, ceiling, above, below, contains: O(log(N) + sqrt(N)) amortized
+//   rebuild: O(sqrt(N))
+//   floor, ceiling, above, below, contains: O(sqrt(N) + log(N)) amortized
 //   values: O(N)
 // Memory Complexity: O(N)
 template <class Value, class Comparator = less<Value>> struct SqrtOrderMaintenance {
@@ -16,7 +17,7 @@ template <class Value, class Comparator = less<Value>> struct SqrtOrderMaintenan
     template <class It> SqrtOrderMaintenance(const It st, const It en, const double SCALE_FACTOR = 1) : SCALE_FACTOR(SCALE_FACTOR), large(st, en) {
         assert(is_sorted(st, en));
     }
-    void resize() {
+    void rebuild() {
         if (int(small.size()) > SCALE_FACTOR * sqrt(small.size() + large.size())) {
             int largeSz = int(large.size()); sort(small.begin(), small.end(), cmp);
             for (auto &&x : small) large.push_back(x);
@@ -25,12 +26,12 @@ template <class Value, class Comparator = less<Value>> struct SqrtOrderMaintenan
     }
     void insert(const Value &val) { small.push_back(val); }
     int aboveInd(const Value &val) {
-        resize(); int ret = upper_bound(large.begin(), large.end(), val, cmp) - large.begin();
+        rebuild(); int ret = upper_bound(large.begin(), large.end(), val, cmp) - large.begin();
         for (auto &&x : small) ret += !cmp(val, x);
         return ret;
     }
     int ceilingInd(const Value &val) {
-        resize(); int ret = lower_bound(large.begin(), large.end(), val, cmp) - large.begin();
+        rebuild(); int ret = lower_bound(large.begin(), large.end(), val, cmp) - large.begin();
         for (auto &&x : small) ret += cmp(x, val);
         return ret;
     }
@@ -38,7 +39,7 @@ template <class Value, class Comparator = less<Value>> struct SqrtOrderMaintenan
     int belowInd(const Value &val) { return ceilingInd(val) - 1; }
     bool contains(const Value &val) {
         if (binary_search(large.begin(), large.end(), val, cmp)) return true;
-        resize();
+        rebuild();
         if (binary_search(large.begin(), large.end(), val, cmp)) return true;
         for (auto &&x : small) if (!cmp(val, x) && !cmp(x, val)) return true;
         return false;
