@@ -101,8 +101,7 @@ template <const int MAXNODES, const int MAXROOTS, const bool ONE_INDEXED> struct
     int update(int cur, int cL, int cR, int l, int r, const Lazy &val, bool persistent) {
         int ret = persistent ? makeNode(cur) : cur;
         if (cL >= l && cR <= r) {
-            VAL[ret] = applyLazy(VAL[ret], getSegmentVal(val, cR - cL + 1));
-            LZ[ret] = mergeLazy(LZ[ret], val); return ret;
+            VAL[ret] = applyLazy(VAL[ret], getSegmentVal(val, cR - cL + 1)); LZ[ret] = mergeLazy(LZ[ret], val); return ret;
         }
         int m = cL + (cR - cL) / 2; propagate(ret, cL, cR);
         if (cL <= r && l <= m) L[ret] = update(L[ret] ? L[ret] : makeNode(), cL, m, l, r, val, persistent);
