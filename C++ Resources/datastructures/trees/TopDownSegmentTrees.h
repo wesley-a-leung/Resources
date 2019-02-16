@@ -107,8 +107,8 @@ template <const int MAXNODES, const int MAXROOTS, const bool ONE_INDEXED> struct
         if (cL <= r && l <= m) L[ret] = update(L[ret] ? L[ret] : makeNode(), cL, m, l, r, val, persistent);
         if (m + 1 <= r && l <= cR) R[ret] = update(R[ret] ? R[ret] : makeNode(), m + 1, cR, l, r, val, persistent);
         if (L[ret] && R[ret]) VAL[ret] = merge(VAL[L[ret]], VAL[R[ret]]);
-        else if (L[ret]) VAL[ret] = merge(VAL[L[ret]], Data(vdef));
-        else if (R[ret]) VAL[ret] = merge(VAL[R[ret]], Data(vdef));
+        else if (L[ret]) VAL[ret] = VAL[L[ret]];
+        else if (R[ret]) VAL[ret] = VAL[R[ret]];
         return ret;
     }
     Data query(int cur, int cL, int cR, int l, int r) {
@@ -119,7 +119,7 @@ template <const int MAXNODES, const int MAXROOTS, const bool ONE_INDEXED> struct
     }
     template <class It> void init(It st, It en) { N = en - st; makeNode(); roots[curRoot++] = build(ONE_INDEXED, N - !ONE_INDEXED, st); }
     void init(int size) { N = size; makeNode(); roots[curRoot++] = makeNode(); }
-    void update(int l, int r, Lazy val, bool persistent) {
+    void update(int l, int r, const Lazy &val, bool persistent) {
         int nr = update(roots[curRoot - 1], ONE_INDEXED, N - !ONE_INDEXED, l, r, val, persistent);
         if (persistent) roots[curRoot++] = nr;
         else roots[curRoot - 1] = nr;

@@ -13,7 +13,7 @@ bool isPrime(long long N) {
 
 // Returns the prime factors of N
 // Time Complexity: O(sqrt N)
-// Memory Complexity: O(1)
+// Memory Complexity: O(log N)
 vector<long long> primeFactor(long long x) {
     vector<long long> ret;
     for (long long i = 2; i * i <= x; i++) while (x % i == 0) { ret.push_back(i); x /= i; }
@@ -21,9 +21,24 @@ vector<long long> primeFactor(long long x) {
     return ret;
 }
 
+// Returns the prime factors of N and the count of each factor
+// Time Complexity: O(sqrt N)
+// Memory Complexity: O(log N)
+vector<pair<long long, int>> primeFactorWithCount(long long x) {
+    vector<pair<long long, int>> ret;
+    for (long long i = 2; i * i <= x; i++) {
+        if (x % i == 0) {
+            ret.emplace_back(i, 0);
+            while (x % i == 0) { ret.back().second++; x /= i; }
+        }
+    }
+    if (x > 1) ret.emplace_back(x, 1);
+    return ret;
+}
+
 // Returns the factors of N
 // Time Complexity: O(sqrt N)
-// Memory Complexity: O(1)
+// Memory Complexity: O(sqrt N)
 vector<long long> factors(long long x) {
     vector<long long> ret;
     for (long long i = 2; i * i <= x; i++) if (x % i == 0) { ret.push_back(i); if (x / i != i) ret.push_back(x / i); }
@@ -77,6 +92,14 @@ template <const int MAXN> struct Sieve {
     vector<int> primeFactor(int x) {
         vector<int> ret;
         while (x != 1) { ret.push_back(SPF[x]); x /= SPF[x]; }
+        return ret;
+    }
+    vector<pair<int, int>> primeFactorWithCount(int x) {
+        vector<pair<int, int>> ret;
+        while (x != 1) {
+            ret.emplace_back(SPF[x], 0); int spf = SPF[x];
+            while (x % spf == 0) { ret.back().second++; x /= spf; }
+        }
         return ret;
     }
 };
