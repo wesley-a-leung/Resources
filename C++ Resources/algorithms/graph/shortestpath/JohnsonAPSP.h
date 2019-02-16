@@ -2,9 +2,12 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Johnson's all pairs shortest path algorithm for weighted graphs with negative cycles
-// Can be used to detect negative cycles
-// Time Complexity: O(VE log E) or O(VE log V) if an indexed priority queue is used
+// Johnson's all pairs shortest path algorithm for weighted graphs with negative weights
+// Can also detect negative cycles
+// Time Complexity:
+//   O(VE log E) if a regular priority queue is used
+//   O(VE log V) if an indexed priority queue or pairing heap is used
+//   O(VE log (sum of weights)) if all weights are integers and a radix heap is used
 // Memory Complexity: O(V^2 + E)
 template <const int MAXV, class unit> struct JohnsonAPSP {
     unit INF, dist[MAXV][MAXV], h[MAXV]; int q[MAXV], vis[MAXV]; JohnsonAPSP(unit INF) : INF(INF) {}

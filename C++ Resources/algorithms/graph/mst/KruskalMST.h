@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Computes the minimum spanning tree using Kruskal's algorithm.
+// Computes the minimum spanning tree using Kruskal's algorithm
 // Time Complexity: O(E log E)
 // Memory Complexity: O(V + E)
 template <const int MAXV, class unit> struct KruskalMST {

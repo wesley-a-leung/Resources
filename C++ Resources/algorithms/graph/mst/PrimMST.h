@@ -2,8 +2,11 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Computes the minimum spanning tree using Prims's algorithm.
-// Time Complexity: O(E log E) or O(E log V) if an indexed priority queue is used
+// Computes the minimum spanning tree using Prims's algorithm
+// Time Complexity:
+//   O(E log E) if a regular priority queue is used
+//   O(E log V) if an indexed priority queue or pairing heap is used
+//   Note: unlike Dijkstra's algorithm, the conditions to use a radix heap are not satisfied
 // Memory Complexity: O(V + E)
 template <const int MAXV, class unit> struct PrimMST {
     unit INF; PrimMST(unit INF) : INF(INF) {}

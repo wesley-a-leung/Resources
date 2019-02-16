@@ -3,7 +3,12 @@
 using namespace std;
 
 // Dijstra's single source shortest path algorithm for weighted graphs without negative weights
-// Time Complexity: O(E log E) or O(E log V) if an indexed priority queue is used
+// Time Complexity:
+//   O(E log E) if a regular priority queue is used
+//   O(E log V) if an indexed priority queue or pairing heap is used
+//   O(E log (sum of weights)) if all weights are integers and a radix heap is used
+//   If there is a negative cycle, then it may not terminate
+//   If there are negative weights, but no negative cycles, the time complexity can become exponential
 // Memory Complexity: O(V + E)
 template <const int MAXV, class unit> struct DijkstraSSSP {
     unit INF, dist[MAXV]; pair<int, unit> to[MAXV]; vector<pair<int, unit>> adj[MAXV]; DijkstraSSSP(unit INF) : INF(INF) {}

@@ -4,6 +4,8 @@ using namespace std;
 
 // Shortest Path Faster Algorithm for weighted graphs without negative weights
 // Time Complexity: O(VE) in the worst case, O(E) on average
+//   If there is a negative cycle, then it may not terminate
+//   If there are negative weights, but no negative cycles, the time complexity can become exponential
 // Memory Complexity: O(V + E)
 template <const int MAXV, class unit> struct SPFA {
     unit INF, dist[MAXV]; int DQ[MAXV]; SPFA(unit INF) : INF(INF) {}
