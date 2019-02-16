@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Computes the minimum spanning tree using Boruvka's algorithm.
+// Computes the minimum spanning tree using Boruvka's algorithm
 // Time Complexity: O(E log V)
 // Memory Complexity: O(V + E)
 template <const int MAXV, class unit> struct BoruvkaMST {

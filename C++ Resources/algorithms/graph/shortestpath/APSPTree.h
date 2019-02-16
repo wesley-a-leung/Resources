@@ -4,9 +4,8 @@ using namespace std;
 
 // Supports queries for the distance between 2 vertices in a tree
 // Time Complexity:
-//    run: O(V log V)
-//    lca: O(1)
-//    getDist: O(1)
+//   run: O(V log V)
+//   lca, getDist: O(1)
 template <const int MAXV, const int MAXLGV, class unit> struct APSPTree {
     int ind, head[MAXV], dep[MAXV], root[MAXV], rmq[MAXLGV][2 * MAXV]; unit dist[MAXV]; vector<pair<int, unit>> adj[MAXV];
     void addEdge(int v, int w, unit weight) { adj[v].emplace_back(w, weight); adj[w].emplace_back(v, weight); }

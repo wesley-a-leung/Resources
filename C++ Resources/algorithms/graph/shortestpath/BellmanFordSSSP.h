@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Bellman Ford's single source shortest path algorithm for weighted graphs with negative cycles
+// Bellman Ford's single source shortest path algorithm for weighted graphs with negative weights
 // Can be used to detect negative cycles
 // Time Compleity: O(VE)
 // Memory Complexity: O(V + E)

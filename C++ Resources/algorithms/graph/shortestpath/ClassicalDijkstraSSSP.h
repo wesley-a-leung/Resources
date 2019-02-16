@@ -4,6 +4,7 @@ using namespace std;
 
 // Classical Dijkstra's single source shortest path algorithm for weighted graphs without negative weights
 // Time Complexity: O(V^2)
+//   Always guaranteed to terminate, but if there are negative weights, the distance array may be incorrect
 // Memory Complexity: O(V + E)
 template <const int MAXV, class unit> struct ClassicalDijkstraSSSP {
     unit INF, dist[MAXV]; pair<int, unit> to[MAXV]; bool done[MAXV]; vector<pair<int, unit>> adj[MAXV];
