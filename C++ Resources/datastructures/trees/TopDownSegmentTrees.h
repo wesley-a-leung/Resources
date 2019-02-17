@@ -3,32 +3,32 @@
 using namespace std;
 
 template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree {
-    using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; Data T[MAXN * 4], A[MAXN]; int N;
+    using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; Data T[MAXN * 2], A[MAXN]; int N;
     Data merge(const Data &l, const Data &r); // to be implemented
     Data applyLazy(const Data &l, const Lazy &r); // to be implemented
     void build(int cur, int cL, int cR) {
         if (cL == cR) { T[cur] = A[cL]; return; }
-        int m = cL + (cR - cL) / 2; build(cur * 2, cL, m); build(cur * 2 + 1, m + 1, cR); T[cur] = merge(T[cur * 2], T[cur * 2 + 1]);
+        int m = cL + (cR - cL) / 2, rc = cur + (m - cL + 1) * 2; build(cur + 1, cL, m); build(rc, m + 1, cR); T[cur] = merge(T[cur + 1], T[rc]);
     }
     void update(int cur, int cL, int cR, int ind, const Lazy &val) {
         if (cL > ind || cR < ind) return;
         if (cL == cR) { T[cur] = applyLazy(T[cur], val); return; }
-        int m = cL + (cR - cL) / 2; update(cur * 2, cL, m, ind, val); update(cur * 2 + 1, m + 1, cR, ind, val);
-        T[cur] = merge(T[cur * 2], T[cur * 2 + 1]);
+        int m = cL + (cR - cL) / 2, rc = cur + (m - cL + 1) * 2; update(cur + 1, cL, m, ind, val); update(rc, m + 1, cR, ind, val);
+        T[cur] = merge(T[cur + 1], T[rc]);
     }
     Data query(int cur, int cL, int cR, int l, int r) {
         if (cL > r || cR < l) return qdef;
         if (cL >= l && cR <= r) return T[cur];
-        int m = cL + (cR - cL) / 2; return merge(query(cur * 2, cL, m, l, r), query(cur * 2 + 1, m + 1, cR, l, r));
+        int m = cL + (cR - cL) / 2, rc = cur + (m - cL + 1) * 2; return merge(query(cur + 1, cL, m, l, r), query(rc, m + 1, cR, l, r));
     }
     template <class It> void init(It st, It en) {
         N = en - st;
         for (int i = 0; i < N; i++) A[i + ONE_INDEXED] = *(st + i);
-        build(1, ONE_INDEXED, N - !ONE_INDEXED);
+        build(0, ONE_INDEXED, N - !ONE_INDEXED);
     }
-    void init(int size) { N = size; fill(A + ONE_INDEXED, A + N + ONE_INDEXED, vdef); build(1, ONE_INDEXED, N - !ONE_INDEXED); }
-    void update(int ind, const Lazy &val) { update(1, ONE_INDEXED, N - !ONE_INDEXED, ind, val); }
-    Data query(int l, int r) { return query(1, ONE_INDEXED, N - !ONE_INDEXED, l, r); }
+    void init(int size) { N = size; fill(A + ONE_INDEXED, A + N + ONE_INDEXED, vdef); build(0, ONE_INDEXED, N - !ONE_INDEXED); }
+    void update(int ind, const Lazy &val) { update(0, ONE_INDEXED, N - !ONE_INDEXED, ind, val); }
+    Data query(int l, int r) { return query(0, ONE_INDEXED, N - !ONE_INDEXED, l, r); }
 };
 
 template <const int MAXN, const bool ONE_INDEXED> struct LazySegmentTree {
@@ -39,36 +39,37 @@ template <const int MAXN, const bool ONE_INDEXED> struct LazySegmentTree {
     Lazy mergeLazy(const Lazy &l, const Lazy &r); // to be implemented
     void propagate(int cur, int cL, int cR) {
         if (L[cur] != ldef) {
-            int m = cL + (cR - cL) / 2;
-            T[cur * 2] = applyLazy(T[cur * 2], getSegmentVal(L[cur], m - cL + 1)); L[cur * 2] = mergeLazy(L[cur * 2], L[cur]);
-            T[cur * 2 + 1] = applyLazy(T[cur * 2 + 1], getSegmentVal(L[cur], cR - m)); L[cur * 2 + 1] = mergeLazy(L[cur * 2 + 1], L[cur]);
+            int m = cL + (cR - cL) / 2, rc = cur + (m - cL + 1) * 2;
+            T[cur + 1] = applyLazy(T[cur + 1], getSegmentVal(L[cur], m - cL + 1)); L[cur + 1] = mergeLazy(L[cur + 1], L[cur]);
+            T[rc] = applyLazy(T[rc], getSegmentVal(L[cur], cR - m)); L[rc] = mergeLazy(L[rc], L[cur]);
             L[cur] = ldef;
         }
     }
     void build(int cur, int cL, int cR) {
         if (cL == cR) { T[cur] = A[cL]; L[cur] = ldef; return; }
-        int m = cL + (cR - cL) / 2; build(cur * 2, cL, m); build(cur * 2 + 1, m + 1, cR);
-        T[cur] = merge(T[cur * 2], T[cur * 2 + 1]); L[cur] = ldef;
+        int m = cL + (cR - cL) / 2, rc = cur + (m - cL + 1) * 2; build(cur + 1, cL, m); build(rc, m + 1, cR);
+        T[cur] = merge(T[cur + 1], T[rc]); L[cur] = ldef;
     }
     void update(int cur, int cL, int cR, int l, int r, const Lazy &val) {
         if (cL > r || cR < l) return;
         if (cL >= l && cR <= r) { T[cur] = applyLazy(T[cur], getSegmentVal(val, cR - cL + 1)); L[cur] = mergeLazy(L[cur], val); return; }
-        int m = cL + (cR - cL) / 2; propagate(cur, cL, cR);
-        update(cur * 2, cL, m, l, r, val); update(cur * 2 + 1, m + 1, cR, l, r, val); T[cur] = merge(T[cur * 2], T[cur * 2 + 1]);
+        int m = cL + (cR - cL) / 2, rc = cur + (m - cL + 1) * 2; propagate(cur, cL, cR);
+        update(cur + 1, cL, m, l, r, val); update(rc, m + 1, cR, l, r, val); T[cur] = merge(T[cur + 1], T[rc]);
     }
     Data query(int cur, int cL, int cR, int l, int r) {
         if (cL > r || cR < l) return qdef;
         if (cL >= l && cR <= r) return T[cur];
-        int m = cL + (cR - cL) / 2; propagate(cur, cL, cR); return merge(query(cur * 2, cL, m, l, r), query(cur * 2 + 1, m + 1, cR, l, r));
+        int m = cL + (cR - cL) / 2, rc = cur + (m - cL + 1) * 2; propagate(cur, cL, cR);
+        return merge(query(cur + 1, cL, m, l, r), query(rc, m + 1, cR, l, r));
     }
     template <class It> void init(It st, It en) {
         N = en - st;
         for (int i = 0; i < N; i++) A[i + ONE_INDEXED] = *(st + i);
-        build(1, ONE_INDEXED, N - !ONE_INDEXED);
+        build(0, ONE_INDEXED, N - !ONE_INDEXED);
     }
-    void init(int size) { N = size; fill(A + ONE_INDEXED, A + N + ONE_INDEXED, vdef); build(1, ONE_INDEXED, N - !ONE_INDEXED); }
-    void update(int l, int r, const Lazy &val) { update(1, ONE_INDEXED, N - !ONE_INDEXED, l, r, val); }
-    Data query(int l, int r) { return query(1, ONE_INDEXED, N - !ONE_INDEXED, l, r); }
+    void init(int size) { N = size; fill(A + ONE_INDEXED, A + N + ONE_INDEXED, vdef); build(0, ONE_INDEXED, N - !ONE_INDEXED); }
+    void update(int l, int r, const Lazy &val) { update(0, ONE_INDEXED, N - !ONE_INDEXED, l, r, val); }
+    Data query(int l, int r) { return query(0, ONE_INDEXED, N - !ONE_INDEXED, l, r); }
 };
 
 using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ldef = 0;
