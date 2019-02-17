@@ -1,17 +1,12 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "Combinatorics.h"
 using namespace std;
 
 // Karatsuba Multiplication
 // Time Complexity of multiplyInteger, multiplyPolynomial: O(N ^ log_2(3)) where N = size(a) + size(b)
 
 const int CUTOFF = 32, DIG = 1;
-
-template <class T> T pow2(T base, T pow) {
-    T x = 1, y = base;
-    for (; pow > 0; pow /= 2, y = y * y) if (pow % 2 == 1) x = x * y;
-    return x;
-}
 
 template <class T> vector<T> karatsuba(const vector<T> &a, const vector<T> &b) {
     int n = int(a.size());
@@ -32,7 +27,7 @@ template <class T> vector<T> multiplyInteger(vector<T> &a, vector<T> &b) {
     while (int(a.size()) < int(b.size())) a.push_back(0);
     while (int(b.size()) < int(a.size())) b.push_back(0);
     while (int(a.size()) & (int(a.size()) - 1)) { a.push_back(0); b.push_back(0); }
-    vector<T> c = karatsuba(a, b); T carry = 0; static T BASE = pow2(T(10), T(DIG));
+    vector<T> c = karatsuba(a, b); T carry = 0; static T BASE = pow2(T(10), DIG);
     for (int i = 0; i < int(c.size()); i++) { T cur = c[i] + carry; c[i] = T(cur % BASE); carry = T(cur / BASE); }
     while (int(c.size()) > 1 && c.back() == 0) c.pop_back();
     return c;
