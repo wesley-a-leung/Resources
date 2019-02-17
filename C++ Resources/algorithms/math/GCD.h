@@ -16,7 +16,7 @@ template <class T> T EEA(T a, T b, T &x, T &y) {
 
 // Computes the multiplicative inverse of a in Zn
 template <class T> T multInv(T a, T n) {
-    T x, y;
+    assert(0 <= a && a < n); T x, y;
     if (EEA(a, n, x, y) != 1) return -1; // no inverse
     return (x % n + n) % n;
 }
@@ -24,7 +24,7 @@ template <class T> T multInv(T a, T n) {
 // Solves the linear congruence ax = c mod m
 // Return the value of x, and the modulus of the answer
 template <class T> pair<T, T> solveCongruence(T a, T c, T m) {
-    T x, y, g = EEA(a, m, x, y);
+    assert(0 <= a && a < m && 0 <= c && c < m); T x, y, g = EEA(a, m, x, y);
     if (c % g != 0) return make_pair(-1, m / g); // no solution
     x = (x % m + m) % m; x = (x * c / g) % (m / g); return make_pair(x, m / g); 
 }
@@ -33,6 +33,7 @@ template <class T> pair<T, T> solveCongruence(T a, T c, T m) {
 // given x = a.first mod a.second and x = b.first mod b.second
 // Returns the pair {x, lcm(a.second, b.second)}
 template <class T> pair<T, T> CRT(pair<T, T> a, pair<T, T> b) {
+    assert(0 < a.second && 0 < b.second && 0 <= a.first && a.first < a.second && 0 <= b.first && b.first < b.second);
     T g = gcd(a.second, b.second), l = a.second / g * b.second;
     if ((b.first - a.first) % g != 0) return make_pair(-1, l); // no solution
     T A = a.second / g, B = b.second / g, mul = (b.first - a.first) / g * multInv(A % B, B) % B;
