@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "combinatorics.h"
+#include "Combinatorics.h"
 using namespace std;
 
 // Determines whether N is prime
