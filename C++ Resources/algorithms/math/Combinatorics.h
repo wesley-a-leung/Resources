@@ -29,7 +29,7 @@ template <class T> T multMod(T a, T b, T mod) {
     return x;
 }
 
-// base ^ pow % mod
+// base ^ pow
 // Time Complexity: O(log pow)
 template <class T> T pow2(T base, T pow) {
     T x = 1, y = base;
