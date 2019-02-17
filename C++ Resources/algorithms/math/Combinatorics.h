@@ -31,7 +31,7 @@ template <class T> T multMod(T a, T b, T mod) {
 
 // base ^ pow
 // Time Complexity: O(log pow)
-template <class T> T pow2(T base, T pow) {
+template <class T, class U> T pow2(T base, U pow) {
     T x = 1, y = base;
     for (; pow > 0; pow /= 2, y = y * y) if (pow % 2 == 1) x = x * y;
     return x;
@@ -39,7 +39,7 @@ template <class T> T pow2(T base, T pow) {
 
 // base ^ pow % mod
 // Time Complexity: O(log pow)
-template <class T> T powMod(T base, T pow, T mod) {
+template <class T, class U> T powMod(T base, U pow, T mod) {
     T x = 1, y = base % mod;
     for (; pow > 0; pow /= 2, y = y * y % mod) if (pow % 2 == 1) x = x * y % mod;
     return x;
@@ -59,10 +59,10 @@ template <class T> T divMod(T i, T j, T p) {
 
 // n choose k
 // Time Complexity: O(min(k, n - k))
-long long choose(int n, int k) {
+template <class T> choose(int n, int k) {
     if (n < k) return 0;
     if (k > n - k) k = n - k;
-    long long ret = 1;
+    T ret = 1;
     for (int i = 0; i < k; i++) ret = ret * (n - i) / (i + 1);
     return ret;
 }
@@ -91,10 +91,10 @@ template <class T> T multiChoose(int n, int k, T p) {
 
 // n permute k
 // Time Complexity: O(min(k, n - k))
-long long permute(int n, int k) {
+template <class T> permute(int n, int k) {
     if (n < k) return 0;
     if (k > n - k) k = n - k;
-    long long ret = 1;
+    T ret = 1;
     for (int i = 0; i < k; i++) ret = ret * (n - i);
     return ret;
 }

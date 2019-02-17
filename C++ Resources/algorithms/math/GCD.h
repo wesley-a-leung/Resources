@@ -25,7 +25,7 @@ template <class T> T multInv(T a, T n) {
 // Return the value of x, and the modulus of the answer
 template <class T> pair<T, T> solveCongruence(T a, T c, T m) {
     T x, y, g = EEA(a, m, x, y);
-    if (c % g != 0) return make_pair(-1, -1); // no solution
+    if (c % g != 0) return make_pair(-1, m / g); // no solution
     x = (x % m + m) % m; x = (x * c / g) % (m / g); return make_pair(x, m / g); 
 }
 
@@ -34,7 +34,7 @@ template <class T> pair<T, T> solveCongruence(T a, T c, T m) {
 // Returns the pair {x, lcm(a.second, b.second)}
 template <class T> pair<T, T> CRT(pair<T, T> a, pair<T, T> b) {
     T g = gcd(a.second, b.second), l = a.second / g * b.second;
-    if ((b.first - a.first) % g != 0) return make_pair(-1, -1); // no solution
+    if ((b.first - a.first) % g != 0) return make_pair(-1, l); // no solution
     T A = a.second / g, B = b.second / g, mul = (b.first - a.first) / g * multInv(A % B, B) % B;
     return make_pair(((mul * a.second + a.first) % l + l) % l, l);
 }

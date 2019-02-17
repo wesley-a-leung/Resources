@@ -1,21 +1,12 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "Combinatorics.h"
 using namespace std;
 
 // Number Theoretic Transform
 // Time Complexity of multiplyPolynomial: O(N log N) where N = size(a) + size(b)
 
 using T = long long; const int CUTOFF = 150;
-
-template <class T> T powMod(T base, T pow, T mod) {
-    T x = 1, y = base % mod;
-    for (; pow > 0; pow /= 2, y = y * y % mod) if (pow % 2 == 1) x = x * y % mod;
-    return x;
-}
-
-template <class T> T multInv(T i, T p) {
-    return powMod(i % p, p - 2, p);
-}
 
 T primitiveRoot(T p) {
     vector<T> fact; T phi = p - 1, n = phi;
