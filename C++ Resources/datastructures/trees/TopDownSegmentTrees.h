@@ -32,7 +32,7 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree {
 };
 
 template <const int MAXN, const bool ONE_INDEXED> struct LazySegmentTree {
-    using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ldef = 0; Data T[MAXN * 4], A[MAXN]; Lazy L[MAXN * 4]; int N;
+    using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ldef = 0; Data T[MAXN * 2], A[MAXN]; Lazy L[MAXN * 2]; int N;
     Data merge(const Data &l, const Data &r); // to be implemented
     Data applyLazy(const Data &l, const Lazy &r); // to be implemented
     Lazy getSegmentVal(const Lazy &v, int len); // to be implemented
