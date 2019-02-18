@@ -7,15 +7,17 @@ using namespace std;
 // Time Complexity:
 //   constructor, empty, top, increment, size: O(1)
 //   pop, push, merge: O(log N)
-template <class Value, class Comparator = less<Value>, class D_Type = Value> struct IncrementalSkewHeap {
-    Comparator cmp; struct Node;
-    struct Node { Value val; D_Type delta; unique_ptr<Node> left, right; Node(const Value &val) : val(val), delta(0) {} };
+template <class Value, class Comparator = less<Value>, class Delta = Value> struct IncrementalSkewHeap {
+    Comparator cmp; Delta ddef;
+    struct Node { Value val; Delta delta; unique_ptr<Node> left, right; Node(const Value &val) : val(val), delta(ddef) {} };
+    void applyDelta(const Value &val, const Delta &delta); // to be implemented
+    void mergeDelta(const Delta &l, const Delta &r); // to be implemented
     int cnt = 0; unique_ptr<Node> root;
     void propagate(unique_ptr<Node> &a) {
-        a->val += a->delta;
-        if (a->left) a->left->delta += a->delta;
-        if (a->right) a->right->delta += a->delta;
-        a->delta = 0;
+        a->val = applyDelta(a->val, a->delta);
+        if (a->left) a->left->delta = mergeDelta(a->left->delta, a->delta);
+        if (a->right) a->right->delta = mergeDelta(a->right->delta, a->delta);
+        a->delta = ddef;
     }
     unique_ptr<Node> merge(unique_ptr<Node> a, unique_ptr<Node> b) {
         if (!a || !b) return a ? move(a) : move(b);
@@ -24,7 +26,7 @@ template <class Value, class Comparator = less<Value>, class D_Type = Value> str
         a->right = merge(move(b), move(a->right)); a->left.swap(a->right);
         return a;
     }
-    IncrementalSkewHeap() {}
+    IncrementalSkewHeap(Delta ddef) : ddef(ddef) {}
     bool empty() const { return !root; }
     Value top() { propagate(root); return root->val; }
     Value pop() {
@@ -32,7 +34,7 @@ template <class Value, class Comparator = less<Value>, class D_Type = Value> str
         return ret;
     }
     void push(const Value &val) { root = merge(move(root), make_unique<Node>(val)); cnt++; }
-    void increment(const D_Type &delta) { if (root) root->delta += delta; }
+    void increment(const Delta &delta) { if (root) root->delta = mergeDelta(root->delta, delta); }
     void merge(IncrementalSkewHeap &h) { root = merge(move(root), move(h.root)); cnt += h.cnt; }
     int size() const { return cnt; }
 };
