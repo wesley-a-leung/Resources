@@ -3,8 +3,8 @@
 using namespace std;
 
 // Computes the diameter of a component, assuming the graph is a forest
-// Time Complexity: O(N)
-// Memory Complexity: O(N)
+// Time Complexity: O(V)
+// Memory Complexity: O(V)
 template <const int MAXV, class unit> struct TreeDiameter {
     vector<pair<int, unit>> adj[MAXV];
     void addEdge(int v, int w, unit weight) { adj[v].emplace_back(w, weight); adj[w].emplace_back(v, weight); }
