@@ -16,4 +16,5 @@ template <const int MAXV, class unit> struct TreeDiameter {
     pair<unit, pair<int, int>> getDiameter(int s = 0) { // returns the diameter, along with 2 vertices with that diameter
         pair<unit, int> t = dfs(s, -1, 0), u = dfs(t.second, -1, 0); return make_pair(u.first, make_pair(t.second, u.second));
     }
+    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
 };
