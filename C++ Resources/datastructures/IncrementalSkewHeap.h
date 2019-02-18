@@ -9,9 +9,9 @@ using namespace std;
 //   pop, push, merge: O(log N)
 template <class Value, class Comparator = less<Value>, class Delta = Value> struct IncrementalSkewHeap {
     Comparator cmp; Delta ddef;
-    struct Node { Value val; Delta delta; unique_ptr<Node> left, right; Node(const Value &val) : val(val), delta(ddef) {} };
-    void applyDelta(const Value &val, const Delta &delta); // to be implemented
-    void mergeDelta(const Delta &l, const Delta &r); // to be implemented
+    struct Node { Value val; Delta delta; unique_ptr<Node> left, right; Node(const Value &v, const Delta &d) : val(v), delta(d) {} };
+    Value applyDelta(const Value &l, const Delta &r); // to be implemented
+    Delta mergeDelta(const Delta &l, const Delta &r); // to be implemented
     int cnt = 0; unique_ptr<Node> root;
     void propagate(unique_ptr<Node> &a) {
         a->val = applyDelta(a->val, a->delta);
@@ -23,8 +23,7 @@ template <class Value, class Comparator = less<Value>, class Delta = Value> stru
         if (!a || !b) return a ? move(a) : move(b);
         propagate(a); propagate(b);
         if (cmp(a->val, b->val)) a.swap(b);
-        a->right = merge(move(b), move(a->right)); a->left.swap(a->right);
-        return a;
+        a->right = merge(move(b), move(a->right)); a->left.swap(a->right); return a;
     }
     IncrementalSkewHeap(Delta ddef) : ddef(ddef) {}
     bool empty() const { return !root; }
@@ -33,7 +32,7 @@ template <class Value, class Comparator = less<Value>, class Delta = Value> stru
         propagate(root); Value ret = root->val; root = merge(move(root->left), move(root->right)); cnt--;
         return ret;
     }
-    void push(const Value &val) { root = merge(move(root), make_unique<Node>(val)); cnt++; }
+    void push(const Value &val) { root = merge(move(root), make_unique<Node>(val, ddef)); cnt++; }
     void increment(const Delta &delta) { if (root) root->delta = mergeDelta(root->delta, delta); }
     void merge(IncrementalSkewHeap &h) { root = merge(move(root), move(h.root)); cnt += h.cnt; }
     int size() const { return cnt; }

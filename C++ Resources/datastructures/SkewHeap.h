@@ -8,14 +8,12 @@ using namespace std;
 //   constructor, empty, top, size: O(1)
 //   pop, push, merge: O(log N)
 template <class Value, class Comparator = less<Value>> struct SkewHeap {
-    Comparator cmp;
-    struct Node { Value val; unique_ptr<Node> left, right; Node(const Value &val) : val(val) {} };
-    int cnt = 0; unique_ptr<Node> root;
+    struct Node { Value val; unique_ptr<Node> left, right; Node(const Value &v) : val(v) {} };
+    Comparator cmp; int cnt = 0; unique_ptr<Node> root;
     unique_ptr<Node> merge(unique_ptr<Node> a, unique_ptr<Node> b) {
         if (!a || !b) return a ? move(a) : move(b);
         if (cmp(a->val, b->val)) a.swap(b);
-        a->right = merge(move(b), move(a->right)); a->left.swap(a->right);
-        return a;
+        a->right = merge(move(b), move(a->right)); a->left.swap(a->right); return a;
     }
     SkewHeap() {}
     bool empty() const { return !root; }
