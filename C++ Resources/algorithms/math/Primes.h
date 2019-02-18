@@ -12,9 +12,9 @@ bool isPrime(long long N) {
     return true;
 }
 
-// Returns the prime factors of N
-// Time Complexity: O(sqrt N)
-// Memory Complexity: O(log N)
+// Returns the prime factors of x
+// Time Complexity: O(sqrt x)
+// Memory Complexity: O(log x)
 vector<long long> primeFactor(long long x) {
     vector<long long> ret;
     for (long long i = 2; i * i <= x; i++) while (x % i == 0) { ret.push_back(i); x /= i; }
@@ -22,9 +22,9 @@ vector<long long> primeFactor(long long x) {
     return ret;
 }
 
-// Returns the prime factors of N and the count of each factor
-// Time Complexity: O(sqrt N)
-// Memory Complexity: O(log N)
+// Returns the prime factors of x and the count of each factor
+// Time Complexity: O(sqrt x)
+// Memory Complexity: O(log x)
 vector<pair<long long, int>> primeFactorWithCount(long long x) {
     vector<pair<long long, int>> ret;
     for (long long i = 2; i * i <= x; i++) if (x % i == 0) {
@@ -35,9 +35,9 @@ vector<pair<long long, int>> primeFactorWithCount(long long x) {
     return ret;
 }
 
-// Returns the factors of N
-// Time Complexity: O(sqrt N)
-// Memory Complexity: O(sqrt N)
+// Returns the factors of x
+// Time Complexity: O(sqrt x)
+// Memory Complexity: O(sqrt x)
 vector<long long> factors(long long x) {
     vector<long long> ret;
     for (long long i = 2; i * i <= x; i++) if (x % i == 0) { ret.push_back(i); if (x / i != i) ret.push_back(x / i); }
@@ -59,7 +59,7 @@ template <class T> bool millerRabin(T N, int iterations) {
     T s = N - 1;
     while (s % 2 == 0) s /= 2;
     for (int i = 0; i < iterations; i++) {
-        T temp = s, r = powMod(T(rng64()) % (N - 1) + 1, temp, N);
+        T temp = s, r = powMod(uniform_int_distribution<T>(1, N - 1)(rng64), temp, N);
         while (temp != N - 1 && r != 1 && r != N - 1) { r = r * r % N; temp *= 2; }
         if (r != N - 1 && temp % 2 == 0) return false;
     }
@@ -113,6 +113,46 @@ template <const int MAXE, const int MAXRANGE> struct SegmentedSieve {
         for (long i = 0; i < en - st + 1; i++) if (!sieve2[i]) primes.push_back(st + i);
     }
 };
+
+
+// Returns a divisor of N
+// Time Complexity: O(log N)
+// Memory Complexity: O(1)
+template <class T> T pollardsRho(T N) {
+    if (N <= 1) return N;
+    if (N % 2 == 0) return 2;
+    T x = uniform_int_distribution<T>(2, N - 1)(rng64), y = x, c = uniform_int_distribution<T>(1, N - 1)(rng64), d = 1;
+    while (d == 1) {
+        x = (x * x % N + c) % N; y = (y * y % N + c) % N; y = (y * y % N + c) % N; d = __gcd(x >= y ? x - y : y - x, N);
+        if (d == N) return pollardsRho(N);
+    }
+    return d;
+}
+
+// Returns the prime factors of N
+// Time Complexity: O(x ^ (1/4) * (log x) ^ 2)
+// Memory Complexity: O(log x)
+template <class T> vector<T> pollardsRhoPrimeFactor(T x, int millerRabinIters) {
+    vector<T> ret; queue<T> q; q.push(x);
+    while (!q.empty()) {
+        T y = q.front(); q.pop();
+        if (millerRabin(y, millerRabinIters)) ret.push_back(y);
+        else { q.push(pollardsRho(y)); q.push(y / q.back()); }
+    }
+    return ret;
+}
+
+// Returns the prime factors of N and the count of each factor
+// Time Complexity: O(x ^ (1/4) * (log x) ^ 2)
+// Memory Complexity: O(log x)
+template <class T> vector<pair<T, int>> pollardsRhoPrimeFactorWithCount(T x, int millerRabinIters) {
+    vector<T> pf = pollardsRhoPrimeFactor(x, millerRabinIters); sort(pf.begin(), pf.end()); vector<pair<T, int>> ret;
+    for (int i = 0, cnt = 0; i < int(pf.size()); i++) {
+        cnt++;
+        if (i + 1 == int(pf.size()) || pf[i] != pf[i + 1]) { ret.emplace_back(pf[i], cnt); cnt = 0; }
+    }
+    return ret;
+}
 
 // Determines the factors of all numbers from 1 to N
 // Time Complexity: O(N log N)
