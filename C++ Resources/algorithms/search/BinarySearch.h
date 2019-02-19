@@ -3,11 +3,11 @@
 using namespace std;
 
 // returns the first value in the range [lo, hi) where f(x) == 0
-// if there is no value in [lo, hi) where f(x) == 0, then it returns -1
+// if there is no value in [lo, hi) where f(x) == 0, then it returns hi
 // assumes that f(x) is non decreasing in the range [lo, hi)
 // Time Complexity: O(log (hi - lo)) * (cost to compute f(x))
 template <class T, class F> T getExact(T lo, T hi, F f) {
-    hi--;
+    T NONE = hi--;
     while (lo <= hi) {
         T mid = lo + (hi - lo) / 2;
         auto fmid = f(mid);
@@ -15,7 +15,7 @@ template <class T, class F> T getExact(T lo, T hi, F f) {
         else if (fmid > 0) hi = mid - 1;
         else return mid;
     }
-    return -1;
+    return NONE;
 }
 
 // returns the first value in the range [lo, hi) where f(x) is true
