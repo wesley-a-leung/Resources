@@ -11,8 +11,7 @@ template <const int MAXV> struct LCA_Euler {
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     void dfs(int v, int prev) {
         int cur = ind[v] = curInd++; vert[cur] = v;
-        for (int w : adj[v]) {
-            if (w == prev) continue;
+        for (int w : adj[v]) if (w != prev) {
             ord[size + cnt++] = cur;
             if (head[cur] == -1) head[cur] = cnt - 1;
             dfs(w, v);
@@ -26,8 +25,9 @@ template <const int MAXV> struct LCA_Euler {
         for (int i = 2 * size - 2; i > 1; i -= 2) ord[i / 2] = min(ord[i], ord[i ^ 1]);
     }
     int lca(int v, int w) {
-        int lo = head[ind[v]], hi = head[ind[w]], ret = INT_MAX; if (lo > hi) swap(lo, hi);
+        int lo = head[ind[v]], hi = head[ind[w]], ret = INT_MAX;
+        if (lo > hi) swap(lo, hi);
         for (lo += size, hi += size; lo <= hi; lo = (lo + 1) / 2, hi = (hi - 1) / 2) ret = min(ret, min(ord[lo], ord[hi]));
-        return ret;
+        return vert[ret];
     }
 };

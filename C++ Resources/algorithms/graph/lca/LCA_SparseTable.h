@@ -15,9 +15,8 @@ template <const int MAXV, const int MAXLGV> struct LCA_SparseTable {
     }
     void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     void run(int V, int root = 0) {
-        for (int i = 0; i < MAXLGV; i++) fill(par[i], par[i] + V, -1);
         dfs(root, -1, 0);
-        for (int i = 1; i < MAXLGV; i++) for (int j = 0; j < V; j++) if (par[i - 1][j] != -1) par[i][j] = par[i - 1][par[i - 1][j]];
+        for (int i = 0; i < MAXLGV - 1; i++) for (int j = 0; j < V; j++) par[i + 1][j] = par[i][j] == -1 ? -1 : par[i][par[i][j]];
     }
     int lca(int v, int w) {
         if (dep[v] < dep[w]) swap(v, w);

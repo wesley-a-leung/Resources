@@ -8,7 +8,7 @@ using namespace std;
 //   makeRoot, findRoot, lca, link, cut, cutParent, updatePath, queryPath: O(log N)
 // Memory Complexity: O(N)
 struct LazyLinkCutTree {
-    using Data = int; using Lazy = int; const Data vdef = 0; const Lazy ldef = 0;
+    using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ldef = 0;
     vector<Data> VAL, SBTR; vector<Lazy> LZ; vector<int> L, R, P, SZ; vector<bool> REV;
     int makeNode(const Data &val) {
         VAL.push_back(val); SBTR.push_back(val); LZ.push_back(ldef); REV.push_back(false);
@@ -105,8 +105,8 @@ struct LazyLinkCutTree {
         if (!connected(from, to)) return false;
         makeRoot(from); expose(to); apply(to, val); return true;
     }
-    int queryPath(int from, int to) {
-        if (!connected(from, to)) return vdef;
+    Data queryPath(int from, int to) {
+        if (!connected(from, to)) return qdef;
         makeRoot(from); expose(to); return sbtr(to);
     }
 };

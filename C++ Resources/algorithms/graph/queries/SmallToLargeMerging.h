@@ -4,6 +4,7 @@ using namespace std;
 
 // Solves queries on a tree by merging the smaller subtrees into the larger subtrees
 // Time Complexity: O(V log V * (complexity of moving from one container to another))
+// Memory Complexity: generally O(V) or O(V log V), but depends on the container
 template <const int MAXV> struct SmallToLargeMerging {
     vector<int> adj[MAXV]; int SZ[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
