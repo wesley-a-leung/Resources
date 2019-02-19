@@ -10,7 +10,7 @@ using namespace std;
 //   updateVertex: O(1) * (complexity of update)
 // Memory Complexity: O(V)
 template <const int MAXV, const bool ONE_INDEXED, const bool VALUES_ON_EDGES> struct HLD {
-    using Data = int; using Lazy = int; const Data vdef = 0;
+    using Data = int; using Lazy = int; const Data qdef = 0;
     int dep[MAXV], par[MAXV], chain[MAXV], size[MAXV], head[MAXV], ind[MAXV], vert[MAXV], chainNum, curInd; vector<int> adj[MAXV];
     void dfs(int v, int prev, int d) {
         dep[v] = d; par[v] = prev; size[v] = 1;
@@ -23,12 +23,12 @@ template <const int MAXV, const bool ONE_INDEXED, const bool VALUES_ON_EDGES> st
         if (maxInd != -1) hld(maxInd, v);
         for (int w : adj[v]) if (w != prev && w != maxInd) { chainNum++; hld(w, v); }
     }
-    Data merge(const Data &a, const Data &b); // to be implemented
+    Data merge(const Data &l, const Data &r); // to be implemented
     void update(int i, const Lazy &val); // to be implemented
     void update(int l, int r, bool up, const Lazy &val); // to be implemented
     Data query(int l, int r, bool up); // to be implemented
     Data queryUp(int v, int w, bool up, bool includeW) {
-        Data ans = vdef;
+        Data ans = qdef;
         while (chain[v] != chain[w]) {
             ans = up ? merge(ans, query(ind[head[chain[v]]], ind[v], up)) : merge(query(ind[head[chain[v]]], ind[v], up), ans);
             v = par[head[chain[v]]];

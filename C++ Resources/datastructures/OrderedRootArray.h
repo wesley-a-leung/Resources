@@ -19,8 +19,7 @@ public:
 //   at, accessor, contains, floor, ceiling, above, below: O(log(N))
 //   values: O(N)
 // Memory Complexity: O(N)
-template <const int R, class Value, class Container, class Comparator = less<Value>>
-struct OrderedRootArray {
+template <const int R, class Value, class Container, class Comparator = less<Value>> struct OrderedRootArray {
     Comparator cmp; int n, SCALE_FACTOR; vector<Container> a; vector<int> prefixSZ;
     int ceiling_ind(const Value &val) const {
         int lo = 0, hi = (int) a.size(), mid;

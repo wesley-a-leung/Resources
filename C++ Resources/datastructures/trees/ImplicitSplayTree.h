@@ -60,7 +60,7 @@ struct ImplicitSplayTree {
         connect(left, x, true); connect(right, x, false); x->update();
         return x;
     }
-    //  [l, r] is at root->r->l
+    // [l, r] is at root->r->l
     void slice(int l, int r) { (root = select(root, l - 1))->splay(nullptr); select(root, r + 1)->splay(root); }
     void updateToRoot() { if (root->r->l) { root->r->l->update(); root->r->update(); root->update(); } }
     // 1-indexed, inclusive
