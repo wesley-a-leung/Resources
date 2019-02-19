@@ -68,15 +68,13 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree_RAM_RQ {
         if (i < N) L[i] = mergeLazy(L[i], v);
     }
     void pushup(int i) {
-        for (int k = 2; i > 1; k <<= 1) {
-            i >>= 1;
+        for (int k = 2; i >>= 1; k <<= 1) {
             T[i] = L[i] == ldef ? merge(T[i << 1], T[i << 1 | 1]) : applyLazy(merge(T[i << 1], T[i << 1 | 1]), getSegmentVal(L[i], k));
         }
     }
     void propagate(int i) {
-        for (int h = H, k = 1 << (H - 1); h > 0; h--, k >>= 1) {
-            int ii = i >> h;
-            if (L[ii] != ldef) { apply(ii << 1, L[ii], k); apply(ii << 1 | 1, L[ii], k); L[ii] = ldef; }
+        for (int h = H, k = 1 << (H - 1), ii = i >> h; h > 0; ii = i >> --h, k >>= 1) if (L[ii] != ldef) {
+            apply(ii << 1, L[ii], k); apply(ii << 1 | 1, L[ii], k); L[ii] = ldef;
         }
     }
     template <class It> void init(It st, It en) {
