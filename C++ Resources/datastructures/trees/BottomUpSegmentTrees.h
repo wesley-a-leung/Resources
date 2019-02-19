@@ -6,7 +6,7 @@ using namespace std;
 template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree_SAM_RQ {
     using Data = int; using Lazy = int; int N; Data T[2 * MAXN];
     const Data vdef = 0; // default value
-    const Data qdef = INT_MIN; // query default value
+    const Data qdef = 0; // query default value
     // operation must be associative (but not necessarily commutative)
     Data merge(const Data &l, const Data &r); // to be implemented
     Data applyLazy(const Data &l, const Lazy &r); // to be implemented
@@ -31,23 +31,23 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree_SAM_RQ {
 template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree_RM_SQ {
     using Data = int; int N; Data T[2 * MAXN];
     const Data vdef = 0; // default value
-    bool final = false; // whether the pushAll function has been called
+    bool final; // whether the values can be found at the leaves or not
     Data merge(const Data &l, const Data &r); // to be implemented
-    template <class It> void init(It st, It en) { N = en - st; for (int i = 0; i < N; i++) T[N + i] = *(st + i), T[i] = 0; }
-    void init(int size) { N = size; for (int i = 0; i < N; i++) T[N + i] = vdef, T[i] = 0; }
+    template <class It> void init(It st, It en) { N = en - st; final = true; for (int i = 0; i < N; i++) { T[N + i] = *(st + i); T[i] = vdef; } }
+    void init(int size) { N = size; final = true; for (int i = 1; i < 2 * N; i++) T[i] = vdef; }
     void update(int l, int r, const Data &v) {
-        for (l += N - ONE_INDEXED, r += N - ONE_INDEXED; l <= r; l >>= 1, r >>= 1) {
+        for (l += N - ONE_INDEXED, r += N - ONE_INDEXED, final = false; l <= r; l >>= 1, r >>= 1) {
             if (l & 1) { T[l] = merge(T[l], v); l++; }
             if (!(r & 1)) { T[r] = merge(T[r], v); r--; }
         }
     }
     Data query(int i) {
         if (final) return T[N + i - ONE_INDEXED];
-        Data q = 0; for (i += N - ONE_INDEXED; i > 0; i >>= 1) q = merge(q, T[i]);
+        Data q = vdef; for (i += N - ONE_INDEXED; i > 0; i >>= 1) q = merge(q, T[i]);
         return q;
     }
     void pushAll() {
-        for (int i = 1; i < N; i++) { T[i << 1] = merge(T[i << 1], T[i]); T[i << 1 | 1] = merge(T[i << 1 | 1], T[i]); T[i] = 0; }
+        for (int i = 1; i < N; i++) { T[i << 1] = merge(T[i << 1], T[i]); T[i << 1 | 1] = merge(T[i << 1 | 1], T[i]); T[i] = vdef; }
         final = true;
     }
 };
