@@ -5,7 +5,7 @@ using namespace std;
 // single assignment and modifications, range query
 template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree_SAM_RQ {
     using Data = int; using Lazy = int; int N; Data T[2 * MAXN];
-    const Data def = 0; // default value
+    const Data vdef = 0; // default value
     const Data qdef = INT_MIN; // query default value
     // operation must be associative (but not necessarily commutative)
     Data merge(const Data &l, const Data &r); // to be implemented
@@ -14,7 +14,7 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree_SAM_RQ {
         N = en - st; for (int i = 0; i < N; i++) T[N + i] = *(st + i);
         for (int i = N - 1; i > 0; i--) T[i] = merge(T[i << 1], T[i << 1 | 1]);
     }
-    void init(int size) { N = size; for (int i = 1; i < 2 * N; i++) T[i] = def; }
+    void init(int size) { N = size; for (int i = 1; i < 2 * N; i++) T[i] = vdef; }
     void update(int i, const Lazy &v) { for (i += N - ONE_INDEXED, T[i] = applyLazy(T[i], v); i >>= 1;) T[i] = merge(T[i << 1], T[i << 1 | 1]); }
     Data query(int l, int r) {
         Data ql = qdef, qr = qdef;
@@ -30,11 +30,11 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree_SAM_RQ {
 // works when order of modifications does not affect result
 template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree_RM_SQ {
     using Data = int; int N; Data T[2 * MAXN];
-    const Data def = 0; // default value
+    const Data vdef = 0; // default value
     bool final = false; // whether the pushAll function has been called
     Data merge(const Data &l, const Data &r); // to be implemented
     template <class It> void init(It st, It en) { N = en - st; for (int i = 0; i < N; i++) T[N + i] = *(st + i), T[i] = 0; }
-    void init(int size) { N = size; for (int i = 0; i < N; i++) T[N + i] = def, T[i] = 0; }
+    void init(int size) { N = size; for (int i = 0; i < N; i++) T[N + i] = vdef, T[i] = 0; }
     void update(int l, int r, const Data &v) {
         for (l += N - ONE_INDEXED, r += N - ONE_INDEXED; l <= r; l >>= 1, r >>= 1) {
             if (l & 1) { T[l] = merge(T[l], v); l++; }
@@ -55,7 +55,7 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree_RM_SQ {
 // range assignments/modifications, range query
 template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree_RAM_RQ {
     using Data = int; using Lazy = int; int N, H; Data T[2 * MAXN]; Lazy L[MAXN]; // L stores lazy values
-    const Data def = 0; // default value
+    const Data vdef = 0; // default value
     const Data qdef = 0; // query default value
     const Lazy ldef = 0; // lazy default value
     // operation must be associative (but not necessarily commutative)
@@ -85,7 +85,7 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree_RAM_RQ {
     void init(int size) {
         N = size; H = 0;
         for (int i = 1; i <= N; H++) i <<= 1;
-        for (int i = 1; i < 2 * N; i++) T[i] = def;
+        for (int i = 1; i < 2 * N; i++) T[i] = vdef;
         for (int i = 0; i < N; i++) L[i] = ldef;
     }
     void update(int l, int r, const Lazy &v) {
