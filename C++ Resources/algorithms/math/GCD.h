@@ -35,7 +35,7 @@ template <class T> pair<T, T> solveCongruence(T a, T c, T m) {
 // All pairs of integers (s, t) where s = x.first + k * x.second and t = y.first + k * y.second
 // for all integers k are solutions
 template <class T> bool LDE(T a, T b, T c, pair<T, T> &x, pair<T, T> &y) {
-    T xg, yg, g = EEA(a, b, xg, yg); assert(g != 0);
+    assert(a != 0 && b != 0); T xg, yg, g = EEA(a, b, xg, yg);
     if (c % g != 0) return false;
     x = make_pair(xg * (c / g), b / g); y = make_pair(yg * (c / g), -a / g); return true; 
 }
