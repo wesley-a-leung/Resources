@@ -5,8 +5,8 @@ using namespace std;
 // Computes the longest common subsequence between 2 arrays of integers
 // Time Complexity: O(NM)
 // Memory Complexity: O(NM)
-template <const int MAXN, const int MAXM = MAXN> struct LCIS {
-    int A[MAXN], B[MAXM], dp[MAXN][MAXM], subsequence[MAXN > MAXM ? MAXN : MAXM], len;
+template <class T, const int MAXN, const int MAXM = MAXN> struct LCIS {
+    T A[MAXN], B[MAXM], subsequence[MAXN > MAXM ? MAXN : MAXM]; int dp[MAXN][MAXM], len;
     int solve(int N, int M) {
         fill(dp[0], dp[0] + M + 1, 0);
         for (int i = 1; i <= N; i++) {
