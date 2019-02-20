@@ -6,8 +6,8 @@ using namespace std;
 // A zigzag sequence alternates between increasing and decreasing (it can start with either)
 // Time Complexity: O(N)
 // Memory Complexity: O(N)
-template <const int MAXN> struct ZigZag {
-    int A[MAXN], dp[2][MAXN];
+template <const int MAXN, class T> struct ZigZag {
+    T A[MAXN]; int dp[2][MAXN];
     int solve(int N) {
         dp[0][0] = dp[1][0] = 1;
         for (int i = 1; i < N; i++) {

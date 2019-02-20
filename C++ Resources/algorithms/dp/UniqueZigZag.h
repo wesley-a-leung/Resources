@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Computes the number of unique zigzag sequences of a specified length N, modulo a number
+// Computes the number of unique zigzag sequences of a specified length N with all numbers in the range [1, N], modulo a number
 // A zigzag sequence alternates between increasing and decreasing (it can start with either)
 // Time Complexity: O(N^2)
 // Memory Complexity: O(N)
