@@ -15,7 +15,7 @@ template <class T> MaxContiguousSubarrayData<T> merge(const MaxContiguousSubarra
 }
 // range assignments
 template <class T> MaxContiguousSubarrayData<T> applyLazy(const MaxContiguousSubarrayData<T> &l, const pair<T, T> &r) {
-    MaxContiguousSubarrayData<T> ret; ret.pre = ret.suf = ret.maxSum = max(l.first, l.second); ret.sum = l.first; ret.isNull = false; return ret;
+    MaxContiguousSubarrayData<T> ret; ret.pre = ret.suf = ret.maxSum = max(r.first, r.second); ret.sum = r.first; ret.isNull = false; return ret;
 }
 // getSegmentVal returns a pair containing the range value, and the actual value
 template <class T> pair<T, T> getSegmentVal(const pair<T, T> &l, int len) { return make_pair(l.first * len, l.second); }
