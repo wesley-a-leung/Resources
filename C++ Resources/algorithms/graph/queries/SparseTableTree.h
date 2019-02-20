@@ -9,7 +9,7 @@ using namespace std;
 //   queryPath: O(log V) * (complexity of merge)
 // Memory Complexity: O(V log V)
 template <const int MAXV, const int MAXLGV, const bool VALUES_ON_EDGES> struct SparseTableTree {
-    using Data = int; const Data vdef = 0, qdef = 0; Data A[MAXV], ST[MAXLGV][MAXV]; int dep[MAXV], par[MAXLGV][MAXV]; vector<int> adj[MAXV];
+    using Data = int; const Data qdef = 0; Data A[MAXV], ST[MAXLGV][MAXV]; int dep[MAXV], par[MAXLGV][MAXV]; vector<int> adj[MAXV];
     Data merge(const Data &l, const Data &r); // to be implemented
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     void dfs(int v, int prev, int d) {
