@@ -35,9 +35,9 @@ template <class T> pair<T, T> solveCongruence(T a, T c, T m) {
 // All pairs of integers (s, t) where s = x.first + k * x.second and t = y.first + k * y.second
 // for all integers k are solutions
 // Edge cases:
-//   1. a == 0 && b == 0 is satisfied by all integer pairs if c == 0, no solutions otherwise
-//   2. a == 0 has 1 solution (c / b) if c is divisible by b, no solutions otherwise
-//   3. b == 0 has 1 solution (c / a) if c is divisible by a, no solutions otherwise
+//   1. a == 0 && b == 0 is satisfied by all integer pairs (s, t) if c == 0, no solutions otherwise
+//   2. a == 0 is satisfied by all integer pairs (s, t) with t = c / b if c is divisible by b, no solutions otherwise
+//   3. b == 0 is satisfied by all integer pairs (s, t) with s = c / a if c is divisible by a, no solutions otherwise
 template <class T> bool LDE(T a, T b, T c, pair<T, T> &x, pair<T, T> &y) {
     assert(a != 0 && b != 0); T xg, yg, g = EEA(a, b, xg, yg);
     if (c % g != 0) return false;
