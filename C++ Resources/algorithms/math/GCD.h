@@ -29,6 +29,17 @@ template <class T> pair<T, T> solveCongruence(T a, T c, T m) {
     x = (x % m + m) % m; x = (x * c / g) % (m / g); return make_pair(x, m / g); 
 }
 
+// Solves the Linear Diophantine Equation ax + by = c
+// Returns true if there is a solution, false otherwise
+// The solutions are stored in the pairs x and y
+// All pairs of integers (s, t) where s = x.first + k * x.second and t = y.first + k * y.second
+// for all integers k are solutions
+template <class T> bool LDE(T a, T b, T c, pair<T, T> &x, pair<T, T> &y) {
+    T xg, yg, g = EEA(a, b, xg, yg);
+    if (c % g != 0) return false;
+    x = make_pair(xg * c / g, b / g); y = make_pair(yg * c / g, -a / g); return true; 
+}
+
 // Generalized Chinese Remainder Theorem to find the solution to x mod lcm(a.second, b.second)
 // given x = a.first mod a.second and x = b.first mod b.second
 // Returns the pair {x, lcm(a.second, b.second)}
