@@ -53,7 +53,7 @@ struct ImplicitSplayTree {
         else if (t < k) return select(x->r, k - t - 1);
         return x;
     }
-    Node *build(int l, int r, vector<Data> &A) {
+    Node *build(int l, int r, const vector<Data> &A) {
         if (l > r) return nullptr;
         int m = l + (r - l) / 2, i = int(T.size()); T.emplace_back(A[m]);
         Node *left = build(l, m - 1, A), *right = build(m + 1, r, A), *x = &(T[i]);

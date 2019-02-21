@@ -20,7 +20,7 @@ struct Node {
 };
 int Size(Node *x) { return x ? x->size : 0; }
 Data Sbtr(Node *x) { return x ? x->sbtr : vdef; }
-Data merge(const Data &l, const Data &r) { return l + r; } // to be implemented
+Data merge(const Data &l, const Data &r); // to be implemented
 Lazy getSegmentVal(const Lazy &v, int k); // to be implemented
 Lazy mergeLazy(const Lazy &l, const Lazy &r); // to be implemented
 Data applyLazy(const Data &l, const Lazy &r); // to be implemented
@@ -67,7 +67,7 @@ struct LazyImplicitSplayTree {
         else if (t < k) return select(x->r, k - t - 1);
         return x;
     }
-    Node *build(int l, int r, vector<Data> &A) {
+    Node *build(int l, int r, const vector<Data> &A) {
         if (l > r) return nullptr;
         int m = l + (r - l) / 2, i = int(T.size()); T.emplace_back(A[m]);
         Node *left = build(l, m - 1, A), *right = build(m + 1, r, A), *x = &(T[i]);
