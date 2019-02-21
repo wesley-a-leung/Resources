@@ -91,7 +91,7 @@ template <typename Key, typename Value, typename Comparator = less<Key>> struct 
     }
     int getRank(int x, const Key &key) {
         if (!x) return 0;
-        if (cmp(key, KEY[x])) return getRank(KEY[x], key);
+        if (cmp(key, KEY[x])) return getRank(L[x], key);
         else if (cmp(KEY[x], key)) return 1 + SZ[L[x]] + getRank(R[x], key);
         else return SZ[L[x]];
     }
