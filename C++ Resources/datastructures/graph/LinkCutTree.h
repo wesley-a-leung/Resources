@@ -5,7 +5,7 @@ using namespace std;
 // Link Cut Tree supporting vertex updates and path queries
 // Time Complexity:
 //   constructor: O(N)
-//   makeRoot, findRoot, lca, link, cut, cutParent, updateVertex, queryPath: O(log N)
+//   makeRoot, findRoot, lca, link, cut, updateVertex, queryPath: O(log N)
 // Memory Complexity: O(N)
 
 using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0;

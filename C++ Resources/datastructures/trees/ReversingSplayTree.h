@@ -5,7 +5,7 @@ using namespace std;
 // Implicit Splay Tree supporting point/range queries and range reversals
 // Time Complexity:
 //   constructor: O(N)
-//   reverseRange, getValue: O(log N)
+//   reverseRange, getValue, queryRange: O(log N)
 // Memory Complexity: O(N)
 
 using Data = int; const Data vdef = 0;

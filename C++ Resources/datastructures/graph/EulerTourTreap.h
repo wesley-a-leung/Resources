@@ -6,7 +6,7 @@ using namespace std;
 // Time Complexity:
 //   constructor: O(N)
 //   treeRoot, connected, addEdge, cutParent: O(log N)
-//   updateVertex, queryVertexValue, querySubtreeValue: O(log N)
+//   updateVertex, queryVertexValue, querySubtreeValue, getPathFromRootValue: O(log N)
 // Memory Complexity: O(N)
 
 seed_seq seq {
