@@ -33,7 +33,7 @@ struct ReversingImplicitTreap {
     void update(int x) {
         if (x == -1) return;
         SZ[x] = 1; SBTR[x] = VAL[x];
-        if (L[x] != -1) { SZ[x] += SZ[L[x]]; SBTR[x] = merge(SBTR[x], SBTR[L[x]]); }
+        if (L[x] != -1) { SZ[x] += SZ[L[x]]; SBTR[x] = merge(SBTR[L[x]], SBTR[x]); }
         if (R[x] != -1) { SZ[x] += SZ[R[x]]; SBTR[x] = merge(SBTR[x], SBTR[R[x]]); }
     }
     void merge(int &x, int l, int r) {
