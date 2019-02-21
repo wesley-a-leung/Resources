@@ -11,7 +11,7 @@ using namespace std;
 using Data = int; using Lazy = int; const Data vdef = 0; const Lazy ldef = 0;
 struct Node {
     Node *l, *r, *p; int size; Data val, sbtr; Lazy lz;
-    Node(Data val) : l(nullptr), r(nullptr), p(nullptr), size(1), val(val), sbtr(val), lz(ldef) {}
+    Node(const Data &val) : l(nullptr), r(nullptr), p(nullptr), size(1), val(val), sbtr(val), lz(ldef) {}
     void apply(const Lazy &v);
     void propagate();
     void update();
