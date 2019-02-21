@@ -30,7 +30,7 @@ void Node::propagate() {
 }
 void Node::update() {
     size = 1; sbtr = val;
-    if (l) { size += Size(l); sbtr = merge(sbtr, l->sbtr); }
+    if (l) { size += Size(l); sbtr = merge(l->sbtr, sbtr); }
     if (r) { size += Size(r); sbtr = merge(sbtr, r->sbtr); }
 }
 void connect(Node *ch, Node *par, bool isL) {
