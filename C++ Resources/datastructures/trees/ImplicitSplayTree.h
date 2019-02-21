@@ -22,15 +22,12 @@ Data merge(const Data &l, const Data &r); // to be implemented
 Data applyLazy(const Data &l, const Lazy &r); // to be implemented
 void Node::update() {
     size = 1; sbtr = val;
-    if (l) { size += Size(l); sbtr = merge(sbtr, l->sbtr); }
-    if (r) { size += Size(r); sbtr = merge(sbtr, r->sbtr); }
+    if (l) { size += l->size; sbtr = merge(l->sbtr, sbtr); }
+    if (r) { size += r->size; sbtr = merge(sbtr, r->sbtr); }
 }
 void connect(Node *ch, Node *par, bool isL) {
     if (ch) ch->p = par;
-    if (par) {
-        if (isL) par->l = ch;
-        else par->r = ch;
-    }
+    if (par) (isL ? par->l : par->r) = ch;
 }
 void Node::rotate(Node *rootP) {
     Node *p = this->p, *g = p->p; bool isRootP = g == rootP, isL = this == p->l;
