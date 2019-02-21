@@ -59,7 +59,7 @@ void Node::splay(Node *rootP) {
     propagate(); update();
 }
 struct LazyImplicitSplayTree {
-    Node *root = nullptr; int cur = 0; vector<Node> T;
+    Node *root = nullptr; vector<Node> T;
     Node *select(Node *x, int k) {
         if (!x) return nullptr;
         x->propagate(); int t = Size(x->l);
