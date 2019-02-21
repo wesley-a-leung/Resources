@@ -8,99 +8,98 @@ using namespace std;
 //   treeRoot, connected, addEdge, cutParent: O(log N)
 //   updateVertex, queryVertexValue, querySubtreeValue: O(log N)
 // Memory Complexity: O(N)
+
+seed_seq seq {
+    (uint64_t)chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
+    (uint64_t)__builtin_ia32_rdtsc(),(uint64_t)(uintptr_t)make_unique<char>().get()
+};
+mt19937 rng(seq); uniform_real_distribution<double> dis;
+using Data = int; using Lazy = int; const Data vdef = 0; const bool ISPRE = true, ISPOST = false;
+Data merge(const Data &l, const Data &r); // to be implemented
+Data applyLazy(const Data &l, const Lazy &r); // to be implemented
+struct Node {
+    Node *l, *r, *p; int vert, size; bool type; double pri; Data val, sbtr;
+    Node (int vert, bool type, const Data &val) : l(nullptr), r(nullptr), p(nullptr), vert(vert), size(1),
+        type(type), pri(dis(rng)), val(val), sbtr(val) {}
+    void update() {
+        size = 1; sbtr = val;
+        if (l) { l->p = this; size += l->size; sbtr = merge(l->sbtr, sbtr); }
+        if (r) { r->p = this; size += r->size; sbtr = merge(sbtr, r->sbtr); }
+    }
+    void apply(const Lazy &v) { val = applyLazy(val, v); sbtr = applyLazy(sbtr, v); }
+};
+int Size(Node *x) { return x ? x->size : 0; }
+Data Val(Node *x) { return x ? x->val : vdef; }
+Data Sbtr(Node *x) { return x ? x->sbtr : vdef; }
+void merge(Node *&x, Node *l, Node *r) {
+    if (!l || !r) { x = l ? l : r; }
+    else if (l->pri > r->pri) { merge(l->r, l->r, r); x = l; }
+    else { merge(r->l, l, r->l); x = r; }
+    if (x) x->update();
+}
+void split(Node *x, Node *&l, Node *&r, int lsz) {
+    if (!x) { l = r = nullptr; return; }
+    x->p = nullptr;
+    if (lsz <= Size(x->l)) { split(x->l, l, x->l, lsz); r = x; }
+    else { split(x->r, x->r, r, lsz - Size(x->l) - 1); l = x; }
+    x->update();
+}
+Node *min(Node *x) {
+    if (!x) return nullptr;
+    while (x->l) x = x->l;
+    return x;
+}
+Node *root(Node *x) {
+    if (!x) return nullptr;
+    while (x->p) x = x->p;
+    return x;
+}
+int index(Node *x) {
+    if (!x) return -1;
+    int ind = Size(x->l);
+    for (; x->p; x = x->p) if (x->p->l != x) ind += 1 + Size(x->p->l);
+    return ind;
+}
 struct EulerTourTreap {
-    seed_seq seq {
-        (uint64_t) chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
-        (uint64_t) __builtin_ia32_rdtsc(),
-        (uint64_t) (uintptr_t) make_unique<char>().get()
-    };
-    mt19937 rng; uniform_real_distribution<double> dis;
-    using Data = int; using Lazy = int; const Data vdef = 0; const bool ISPRE = true, ISPOST = false;
-    vector<Data> VAL, SBTR; vector<int> PRE, POST, VERT, L, R, P, SZ; vector<double> PRI; vector<bool> TYPE;
-    int makeNode(int vert, bool type, const Data &val) {
-        VAL.push_back(val); SBTR.push_back(val); VERT.push_back(vert); TYPE.push_back(type);
-        L.push_back(-1); R.push_back(-1); P.push_back(-1); SZ.push_back(1); PRI.push_back(dis(rng));
-        return int(VAL.size()) - 1;
-    }
-    int size(int x) { return x == -1 ? 0 : SZ[x]; }
-    Data val(int x) { return x == -1 ? vdef : VAL[x]; }
-    Data sbtrVal(int x) { return x == -1 ? vdef : SBTR[x]; }
-    Data merge(const Data &l, const Data &r); // to be implemented
-    Data applyLazy(const Data &l, const Lazy &r); // to be implemented
-    void apply(int x, const Lazy &v) {
-        if (x == -1) return;
-        VAL[x] = applyLazy(VAL[x], v); SBTR[x] = applyLazy(SBTR[x], v);
-    }
-    void update(int x) {
-        if (x == -1) return;
-        SZ[x] = 1; SBTR[x] = VAL[x];
-        if (L[x] != -1) { P[L[x]] = x; SZ[x] += SZ[L[x]]; SBTR[x] = merge(SBTR[x], SBTR[L[x]]); }
-        if (R[x] != -1) { P[R[x]] = x; SZ[x] += SZ[R[x]]; SBTR[x] = merge(SBTR[x], SBTR[R[x]]); }
-    }
-    void merge(int &x, int l, int r) {
-        if (l == -1 || r == -1) { x = l == -1 ? r : l; }
-        else if (PRI[l] > PRI[r]) { merge(R[l], R[l], r); x = l; }
-        else { merge(L[r], l, L[r]); x = r; }
-        update(x);
-    }
-    void split(int x, int &l, int &r, int lsz) {
-        if (x == -1) { l = r = -1; return; }
-        P[x] = -1;
-        if (lsz <= size(L[x])) { split(L[x], l, L[x], lsz); r = x; }
-        else { split(R[x], R[x], r, lsz - size(L[x]) - 1); l = x; }
-        update(x);
-    }
-    int min(int x) {
-        if (x == -1) return 0;
-        while (L[x] != -1) x = L[x];
-        return x;
-    }
-    int root(int x) {
-        if (x == -1) return 0;
-        while (P[x] != -1) x = P[x];
-        return x;
-    }
-    int index(int x) {
-        int ind = size(L[x]);
-        for (; P[x] != -1; x = P[x]) if (L[P[x]] != x) ind += 1 + size(L[P[x]]);
-        return ind;
-    }
-    EulerTourTreap(int N) : rng(seq), dis(0.0, 1.0) {
-        for (int i = 0, dummy = -1; i < N; i++) {
-            PRE.push_back(makeNode(i, ISPRE, vdef)); POST.push_back(makeNode(i, ISPOST, vdef));
-            merge(dummy, PRE.back(), POST.back());
+    vector<Node> PRE, POST;
+    EulerTourTreap(int N) {
+        PRE.reserve(N); POST.reserve(N); Node *dummy = nullptr;
+        for (int i = 0; i < N; i++) {
+            PRE.emplace_back(i, ISPRE, vdef); POST.emplace_back(i, ISPOST, vdef); merge(dummy, &PRE.back(), &POST.back());
         }
     }
-    template <class It> EulerTourTreap(It st, It en) : rng(seq), dis(0.0, 1.0) {
-        int dummy = -1;
-        for (It i = st; i < en; i++) {
-            PRE.push_back(makeNode(i, ISPRE, *i)); POST.push_back(makeNode(i, ISPOST, *i));
-            merge(dummy, PRE.back(), POST.back());
+    template <class It> EulerTourTreap(It st, It en) {
+        int N = en - st; PRE.reserve(N); POST.reserve(N); Node *dummy = nullptr;
+        for (int i = 0; i < N; i++) {
+            PRE.emplace_back(i, ISPRE, *(st + i)); POST.emplace_back(i, ISPOST, *(st + i)); merge(dummy, &PRE.back(), &POST.back());
         }
     }
-    int treeRoot(int v) { return VERT[min(root(PRE[v]))]; }
+    int treeRoot(int v) { return min(root(&PRE[v]))->vert; }
     bool connected(int v, int w) { return treeRoot(v) == treeRoot(w); }
-    void addEdge(int v, int w) {
-        int l, r; split(root(PRE[v]), l, r, index(PRE[v]) + 1);
-        merge(l, l, root(PRE[w])); merge(l, l, r);
+    bool inSubtree(int v, int w) { // returns true if w is in the subtree of v
+        int indW = index(&PRE[w]); return index(&PRE[v]) <= indW && indW <= index(&POST[v]);
     }
-    void cutParent(int v) {
-        int l, m, r; split(root(PRE[v]), l, m, index(PRE[v])); split(m, m, r, index(POST[v]) + 1);
-        merge(l, l, r);
+    void addEdge(int par, int ch) {
+        Node *l, *r; split(root(&PRE[par]), l, r, index(&PRE[par]) + 1); merge(l, l, root(&PRE[ch])); merge(l, l, r);
+    }
+    void cutParent(int ch) {
+        Node *l, *m, *r; split(root(&PRE[ch]), l, m, index(&PRE[ch])); split(m, m, r, index(&POST[ch]) + 1); merge(l, l, r);
     }
     Data getVertexValue(int v) {
-        int l, m, r; split(root(PRE[v]), l, m, index(PRE[v])); split(m, m, r, 1);
-        Data ret = val(m); merge(l, l, m); merge(l, l, r);
-        return ret;
+        Node *l, *m, *r; split(root(&PRE[v]), l, m, index(&PRE[v])); split(m, m, r, 1);
+        Data ret = Val(m); merge(l, l, m); merge(l, l, r); return ret;
     }
     Data getSubtreeValue(int v) { // value may be doubled due to double counting of pre and post
-        int l, m, r; split(root(PRE[v]), l, m, index(PRE[v])); split(m, m, r, index(POST[v]) + 1);
-        Data ret = sbtrVal(m); merge(l, l, m); merge(l, l, r);
-        return ret;
+        Node *l, *m, *r; split(root(&PRE[v]), l, m, index(&PRE[v])); split(m, m, r, index(&POST[v]) + 1);
+        Data ret = Sbtr(m); merge(l, l, m); merge(l, l, r); return ret;
+    }
+    Data getPathFromRootValue(int v) { // path from the root to a vertex, in Euler Tour order
+        Node *l, *r; split(root(&PRE[v]), l, r, index(&PRE[v]) + 1);
+        Data ret = Sbtr(l); merge(l, l, r); return ret;
     }
     void updateVertex(int v, const Lazy &val) {
-        int l, preV, m, postV, r; split(root(PRE[v]), l, preV, index(PRE[v])); split(preV, preV, m, 1);
-        split(m, m, postV, index(POST[v])); split(postV, postV, r, 1);
-        apply(preV, val); apply(postV, val); merge(l, l, preV); merge(l, l, m); merge(l, l, postV); merge(l, l, r);
+        Node *l, *preV, *m, *postV, *r; split(root(&PRE[v]), l, preV, index(&PRE[v])); split(preV, preV, m, 1);
+        split(m, m, postV, index(&POST[v])); split(postV, postV, r, 1);
+        preV->apply(val); postV->apply(val); merge(l, l, preV); merge(l, l, m); merge(l, l, postV); merge(l, l, r);
     }
 };
