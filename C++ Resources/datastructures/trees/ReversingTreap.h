@@ -5,7 +5,7 @@ using namespace std;
 // Implicit Treap supporting point/range queries and range reversals
 // Time Complexity:
 //   constructor: O(N)
-//   reverseRange, getValue: O(log N)
+//   reverseRange, getValue, queryRange: O(log N)
 // Memory Complexity: O(N)
 struct ReversingImplicitTreap {
     seed_seq seq {
