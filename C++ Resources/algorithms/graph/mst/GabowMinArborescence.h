@@ -11,21 +11,19 @@ template <const int MAXV, class unit> struct GabowMinArborescence {
     struct Edge {
         int from, to; unit weight;
         bool operator > (const Edge &e) const { return weight > e.weight; }
-        Edge &operator += (const unit &add) { weight += add; return *this; }
+        Edge operator + (const unit &add) const { Edge ret; ret.from = from; ret.to = to; ret.weight = weight + add; return ret; }
     };
-    int UF[MAXV], vis[MAXV]; vector<Edge> edges, mst; unit weight; IncrementalSkewHeap<Edge, greater<Edge>, unit> H[MAXV];
+    int UF[MAXV], vis[MAXV]; vector<Edge> edges, mst; unit weight; vector<IncrementalSkewHeap<Edge, greater<Edge>, unit>> H;
     void addEdge(int from, int to, unit weight) { edges.push_back({from, to, weight}); }
     int find(int v) { return UF[v] < 0 ? v : UF[v] = find(UF[v]); }
     bool join(int v, int w) {
-        v = find(v); w = find(w);
-        if (v == w) return false;
+        if ((v = find(v)) == (w = find(w))) return false;
         if (UF[v] > UF[w]) swap(v, w);
-        UF[v] += UF[w]; UF[w] = v;
-        return true;
+        UF[v] += UF[w]; UF[w] = v; return true;
     }
     unit run(int V, int root) {
         weight = 0; fill(UF, UF + V, -1); fill(vis, vis + V, -1); vis[root] = root;
-        for (int v = 0; v < V; v++) H[v] = IncrementalSkewHeap<Edge, greater<Edge>, unit>(); 
+        for (int v = 0; v < V; v++) H.emplace_back(0); 
         for (auto &&e : edges) H[e.to].push(e);
         for (int s = 0; s < V; s++) {
             stack<int> path;
@@ -35,7 +33,7 @@ template <const int MAXV, class unit> struct GabowMinArborescence {
                 Edge minEdge = H[v].top(); int w = find(minEdge.from);
                 weight += minEdge.weight; H[v].increment(-minEdge.weight); H[v].pop();
                 if (vis[w] == s) {
-                    IncrementalSkewHeap<Edge, greater<Edge>, unit> temp; int x;
+                    IncrementalSkewHeap<Edge, greater<Edge>, unit> temp(0); int x;
                     do { x = path.top(); path.pop(); temp.merge(H[x]); } while (join(w, x));
                     H[find(w)] = move(temp); vis[find(w)] = -1;
                 }
@@ -44,5 +42,5 @@ template <const int MAXV, class unit> struct GabowMinArborescence {
         }
         return weight;
     }
-    void clear() { edges.clear(); mst.clear(); }
+    void clear() { edges.clear(); mst.clear(); H.clear(); }
 };

@@ -7,11 +7,16 @@ using namespace std;
 // Time Complexity:
 //   constructor, empty, top, increment, size: O(1)
 //   pop, push, merge: O(log N)
-template <class Value, class Comparator = less<Value>, class Delta = Value> struct IncrementalSkewHeap {
-    Comparator cmp; Delta ddef;
+
+template <class Ret, class T1, class T2> struct IncrementalSkewHeapPlus {
+    Ret operator () (const T1 &l, const T2 &r) const { return l + r; }
+};
+
+template <class Value, class Comparator = less<Value>, class Delta = Value,
+        class ApplyDelta = IncrementalSkewHeapPlus<Value, Value, Delta>, class MergeDelta = IncrementalSkewHeapPlus<Delta, Delta, Delta>>
+        struct IncrementalSkewHeap {
+    Comparator cmp; Delta ddef; ApplyDelta applyDelta; MergeDelta mergeDelta;
     struct Node { Value val; Delta delta; unique_ptr<Node> left, right; Node(const Value &v, const Delta &d) : val(v), delta(d) {} };
-    Value applyDelta(const Value &l, const Delta &r); // to be implemented
-    Delta mergeDelta(const Delta &l, const Delta &r); // to be implemented
     int cnt = 0; unique_ptr<Node> root;
     void propagate(unique_ptr<Node> &a) {
         a->val = applyDelta(a->val, a->delta);
@@ -25,7 +30,7 @@ template <class Value, class Comparator = less<Value>, class Delta = Value> stru
         if (cmp(a->val, b->val)) a.swap(b);
         a->right = merge(move(b), move(a->right)); a->left.swap(a->right); return a;
     }
-    IncrementalSkewHeap(Delta ddef) : ddef(ddef) {}
+    IncrementalSkewHeap(const Delta &ddef) : ddef(ddef) {}
     bool empty() const { return !root; }
     Value top() { propagate(root); return root->val; }
     Value pop() {
