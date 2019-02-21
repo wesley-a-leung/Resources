@@ -62,7 +62,7 @@ struct ImplicitSplayTree {
     }
     // [l, r] is at root->r->l
     void slice(int l, int r) { (root = select(root, l - 1))->splay(nullptr); select(root, r + 1)->splay(root); }
-    void updateToRoot() { if (root->r->l) { root->r->l->update(); root->r->update(); root->update(); } }
+    void updateToRoot() { if (root->r->l) { root->r->l->update(); } root->r->update(); root->update(); }
     // 1-indexed, inclusive
     void update(int ind, const Lazy &val) { slice(ind, ind); root->r->l->val = applyLazy(root->r->l->val, val); updateToRoot(); }
     Data query(int l, int r) { slice(l, r); return Sbtr(root->r->l); }

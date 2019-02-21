@@ -76,7 +76,7 @@ struct LazyImplicitSplayTree {
     }
     // [l, r] is at root->r->l
     void slice(int l, int r) { (root = select(root, l - 1))->splay(nullptr); select(root, r + 1)->splay(root); }
-    void updateToRoot() { if (root->r->l) { root->r->l->propagate(); root->r->l->update(); root->r->update(); root->update(); } }
+    void updateToRoot() { if (root->r->l) { root->r->l->propagate(); root->r->l->update(); } root->r->update(); root->update(); }
     // 1-indexed, inclusive
     void update(int l, int r, const Lazy &val) {
         slice(l, r);
