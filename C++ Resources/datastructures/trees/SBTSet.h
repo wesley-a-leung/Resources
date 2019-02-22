@@ -14,7 +14,7 @@ public:
 //   values: O(N)
 //   all other operators: O(log N)
 // Memory Complexity: O(N)
-template <typename Value, typename Comparator = less<Value>> struct SBTSet {
+template <class Value, class Comparator = less<Value>> struct SBTSet {
     struct Node {
         Node *l, *r; int size; Value val;
         Node(const Value &val) : l(nullptr), r(nullptr), size(1), val(val) {}
