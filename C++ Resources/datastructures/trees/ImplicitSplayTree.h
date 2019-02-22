@@ -5,26 +5,26 @@ using namespace std;
 // Implicit Splay Tree supporting point updates and range queries
 // Time Complexity:
 //   constructor: O(N)
-//   update, query: O(log N)
+//   updateVal, queryVal, queryRange: O(log N)
 // Memory Complexity: O(N)
 
 using Data = int; using Lazy = int; const Data vdef = 0;
+Data merge(const Data &l, const Data &r); // to be implemented
+Data applyLazy(const Data &l, const Lazy &r); // to be implemented
 struct Node {
     Node *l, *r, *p; int size; Data val, sbtr;
     Node(const Data &val) : l(nullptr), r(nullptr), p(nullptr), size(1), val(val), sbtr(val) {}
-    void update();
-    void rotate(Node *rootP);
-    void splay(Node *rootP);
+    void update(); void apply(const Lazy &v); void rotate(Node *rootP); void splay(Node *rootP);
 };
 int Size(Node *x) { return x ? x->size : 0; }
+Data Val(Node *x) { return x ? x->val : vdef; }
 Data Sbtr(Node *x) { return x ? x->sbtr : vdef; }
-Data merge(const Data &l, const Data &r); // to be implemented
-Data applyLazy(const Data &l, const Lazy &r); // to be implemented
 void Node::update() {
     size = 1; sbtr = val;
     if (l) { size += l->size; sbtr = merge(l->sbtr, sbtr); }
     if (r) { size += r->size; sbtr = merge(sbtr, r->sbtr); }
 }
+void Node::apply(const Lazy &v) { val = applyLazy(val, v); sbtr = applyLazy(sbtr, v); }
 void connect(Node *ch, Node *par, bool isL) {
     if (ch) ch->p = par;
     if (par) (isL ? par->l : par->r) = ch;
@@ -61,8 +61,9 @@ struct ImplicitSplayTree {
     void slice(int l, int r) { (root = select(root, l - 1))->splay(nullptr); select(root, r + 1)->splay(root); }
     void updateToRoot() { if (root->r->l) { root->r->l->update(); } root->r->update(); root->update(); }
     // 1-indexed, inclusive
-    void update(int ind, const Lazy &val) { slice(ind, ind); root->r->l->val = applyLazy(root->r->l->val, val); updateToRoot(); }
-    Data query(int l, int r) { slice(l, r); return Sbtr(root->r->l); }
+    void updateVal(int ind, const Lazy &val) { slice(ind, ind); root->r->l->apply(val); updateToRoot(); }
+    Data queryVal(int ind) { slice(ind, ind); return Val(root->r->l); }
+    Data queryRange(int l, int r) { slice(l, r); return Sbtr(root->r->l); }
     ImplicitSplayTree(int N) { T.reserve(N + 2); vector<Data> A(N + 2, vdef); root = build(0, int(A.size()) - 1, A); }
     template <class It> ImplicitSplayTree(It st, It en) {
         T.reserve(en - st + 2); vector<Data> A; A.push_back(vdef); A.insert(A.end(), st, en); A.push_back(vdef);

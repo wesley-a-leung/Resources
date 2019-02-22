@@ -18,11 +18,11 @@ template<class T,class H=hash<T>>struct rand_hash{
 template<class K,class V,class H=rand_hash<K>,class...Ts>using hashmap=gp_hash_table<K,V,H,Ts...>;
 template<class K,class C=less<K>,class...Ts>using treeset=tree<K,null_type,C,rb_tree_tag,tree_order_statistics_node_update,Ts...>;
 
-// Sparse Fenwick Tree supporting point updates (with value 1) and range queries in 2 dimensions using pbds tree
+// Sparse Fenwick Tree supporting point updates (with value 1) and range queries in 2 dimensions using pbds tree (sparse in 1 dimension)
 // Time Complexity:
 //   add, rem, rsq: O(log N log M)
 // Memory Complexity: O(NM)
-template <const int MAXN, class T> struct SparseFenwickTree2DTreeset {
+template <const int MAXN, class T> struct SparseFenwickTree2DSimpleTreeset {
     treeset<pair<T, int>> BIT[MAXN]; int stamp = 0;
     void clear() { stamp = 0; for (int i = 0; i < MAXN; i++) BIT[i].clear(); }
     void add(int x, int y) { for (; x < MAXN; x += x & -x) BIT[x].insert(make_pair(y, stamp++)); }
@@ -31,12 +31,13 @@ template <const int MAXN, class T> struct SparseFenwickTree2DTreeset {
     T rsq(int x1, int y1, int x2, int y2) { return rsq(x2, y2) + rsq(x1 - 1, y1 - 1) - rsq(x1 - 1, y2) - rsq(x2, y1 - 1); }
 };
 
-// Sparse Fenwick Tree supporting point updates (with value 1) and range queries in 2 dimensions using sqrt order maintenance
+// Sparse Fenwick Tree supporting point updates (with value 1) and range queries in 2 dimensions
+// using sqrt order maintenance (sparse in 1 dimension)
 // Time Complexity:
 //   add, rem: O(log N) amortized
 //   rsq: O(log N (log M + sqrt M)) amortized
 // Memory Complexity: O(NM)
-template <const int MAXN, class T, class Tree = SqrtOrderMaintenance<T>> struct SparseFenwickTree2DSqrt {
+template <const int MAXN, class T, class Tree = SqrtOrderMaintenance<T>> struct SparseFenwickTree2DSimpleSqrt {
     Tree IN[MAXN], OUT[MAXN];
     void init(const double SCALE_FACTOR = 1) { for (int i = 0; i < MAXN; i++) { IN[i] = Tree(SCALE_FACTOR); OUT[i] = Tree(SCALE_FACTOR); } }
     void clear() { for (int i = 0; i < MAXN; i++) { IN[i].clear(); OUT[i].clear(); } }
@@ -46,7 +47,7 @@ template <const int MAXN, class T, class Tree = SqrtOrderMaintenance<T>> struct 
     T rsq(int x1, int y1, int x2, int y2) { return rsq(x2, y2) + rsq(x1 - 1, y1 - 1) - rsq(x1 - 1, y2) - rsq(x2, y1 - 1); }
 };
 
-// Sparse Fenwick Tree supporting point updates (with any value) and range queries in 2 dimensions
+// Sparse Fenwick Tree supporting point updates (with any value) and range queries in 2 dimensions (sparse in 1 dimension)
 // Time Complexity:
 //   update, rsq: O(log N log M)
 // Memory Complexity: O(NM)
