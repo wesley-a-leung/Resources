@@ -14,7 +14,7 @@ public:
 //   keyValuePairs: O(N)
 //   all other operators: O(log N)
 // Memory Complexity: O(N)
-template <typename Key, typename Value, typename Comparator = less<Key>> struct SBT {
+template <class Key, class Value, class Comparator = less<Key>> struct SBT {
     struct Node {
         Node *l, *r; int size; Key key; Value val;
         Node(const Key &key, const Value &val) : l(nullptr), r(nullptr), size(1), key(key), val(val) {}

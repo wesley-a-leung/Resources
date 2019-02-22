@@ -14,7 +14,7 @@ public:
 //   keyValuePairs: O(N)
 //   all other operators: O(log N)
 // Memory Complexity: O(N)
-template <typename Key, typename Value, typename Comparator = less<Key>> struct SBTArray {
+template <class Key, class Value, class Comparator = less<Key>> struct SBTArray {
     Comparator cmp; vector<Key> KEY; vector<Value> VAL; vector<int> SZ, L, R; int root = 0;
     void update(int x) { SZ[x] = 1 + SZ[L[x]] + SZ[R[x]]; }
     int rotateRight(int x) { int y = L[x]; L[x] = R[y]; R[y] = x; update(x); update(y); return y; }

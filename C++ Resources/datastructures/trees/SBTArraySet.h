@@ -14,7 +14,7 @@ public:
 //   values: O(N)
 //   all other operators: O(log N)
 // Memory Complexity: O(N)
-template <typename Value, typename Comparator = less<Value>> struct SBTArraySet {
+template <class Value, class Comparator = less<Value>> struct SBTArraySet {
     Comparator cmp; vector<Value> VAL; vector<int> SZ, L, R; int root = 0;
     void update(int x) { SZ[x] = 1 + SZ[L[x]] + SZ[R[x]]; }
     int rotateRight(int x) { int y = L[x]; L[x] = R[y]; R[y] = x; update(x); update(y); return y; }
