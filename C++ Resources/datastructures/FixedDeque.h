@@ -9,9 +9,9 @@ using namespace std;
 //   back, front, size, empty, at, accessor: O(1)
 // Memory Complexity: O(N)
 template <class T, const int MAXN> struct FixedDeque {
-    T A[MAXN]; int N, st = 0, en = 0;
-    FixedDeque(int N = 0) : N(N) {}
-    FixedDeque(int N, T val): N(N) { fill(A, A + N, val); }
+    T A[MAXN]; int N, st, en;
+    FixedDeque(int N = 0) : N(N), st(0), en(0) {}
+    FixedDeque(int N, T val): N(N), st(0), en(0) { fill(A, A + N, val); }
     void clear() { N = st = en = 0; }
     void push_back(const T &val) {
         if (en == MAXN) en = 0;
