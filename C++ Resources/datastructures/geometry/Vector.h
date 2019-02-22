@@ -56,8 +56,8 @@ struct Vector {
     }
     Vector operator - (const Vector &that) const { return minus(that); }
     T cartesian(int i) const { return data[i]; }
-    T &operator [](int i) { return data[i]; }
-    T operator [](int i) const { return data[i]; }
+    const T &operator [](const int i) const { return data[i]; }
+    T &operator [](const int i) { return data[i]; }
     Vector scale(F alpha) const {
         Vector c(d);
         for (int i = 0; i < d; i++) c.data[i] = data[i] * alpha;
