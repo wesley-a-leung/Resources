@@ -12,7 +12,7 @@ public:
 // The factor should be between 1 and 10, and should be smaller for large N
 // Time Complexity:
 //   constructor: O(N)
-//   insert, erase: O(R * (N ^ (1 / R)) + log(N)) amortized
+//   insert, emplace, erase: O(R * (N ^ (1 / R)) + log(N)) amortized
 //   pop_front: O(R * (N ^ (1 / R))) amortized
 //   pop_back: O(1) amortized
 //   front, back, empty, size: O(1)
@@ -83,6 +83,7 @@ template <const int R, class Value, class Container, class Comparator = less<Val
         }
         for (int j = i + 1; j < (int) a.size(); j++) prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1].size();
     }
+    template <class ...Args> void emplace(Args &&...args) { insert(T(forward<Args>(args)...)); }
     bool erase(const Value &val) {
         int i = ceiling_ind(val);
         if (i == (int) a.size()) return false;

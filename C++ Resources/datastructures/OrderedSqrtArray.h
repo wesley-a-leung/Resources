@@ -12,7 +12,7 @@ public:
 // The factor should be between 1 and 10, and should be smaller for large N
 // Time Complexity:
 //   constructor: O(N)
-//   insert, erase: O(sqrt(N) + log(N))
+//   insert, emplace, erase: O(sqrt(N) + log(N))
 //   pop_front: O(sqrt(N))
 //   pop_back: O(1) amortized
 //   front, back, empty, size: O(1)
@@ -109,6 +109,7 @@ template <class Value, class Comparator = less<Value>> struct OrderedSqrtArray {
         }
         for (int j = i.first + 1; j < (int) a.size(); j++) prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1].size();
     }
+    template <class ...Args> void emplace(Args &&...args) { insert(T(forward<Args>(args)...)); }
     bool erase(const Value &val) {
         pair<int, int> i = ceiling_ind(val);
         if (i.first == (int) a.size() || a[i.first][i.second] != val) return false;

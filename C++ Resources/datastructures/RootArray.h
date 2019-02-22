@@ -12,9 +12,9 @@ public:
 // The factor should be between 1 and 10, and should be smaller for large N
 // Time Complexity:
 //   constructor: O(N)
-//   insert, erase: O(R * (N ^ (1 / R)) + log(N)) amortized
-//   push_front, pop_front: O(R * (N ^ (1 / R))) amortized
-//   push_back, pop_back: O(1) amortized
+//   insert, emplace, erase: O(R * (N ^ (1 / R)) + log(N)) amortized
+//   push_front, pop_front, emplace_front: O(R * (N ^ (1 / R))) amortized
+//   push_back, pop_back, emplace_back: O(1) amortized
 //   front, back, empty, size: O(1)
 //   at, accessor: O(log(N))
 //   values: O(N)
@@ -77,6 +77,9 @@ template <const int R, class Value, class Container> struct RootArray {
             prefixSZ.push_back(prefixSZ[(int) a.size() - 2] + (int) a[(int) a.size() - 2].size());
         }
     }
+    template <class ...Args> void emplace(int k, Args &&...args) { insert(k, T(forward<Args>(args)...)); }
+    template <class ...Args> void emplace_front(Args &&...args) { push_front(T(forward<Args>(args)...)); }
+    template <class ...Args> void emplace_back(Args &&...args) { push_back(T(forward<Args>(args)...)); }
     void erase(const int k) {
         assert(0 <= k && k < n); --n; int lo = 0, hi = (int) (a.size()) - 1, mid;
         while (lo <= hi) {
@@ -97,15 +100,6 @@ template <const int R, class Value, class Container> struct RootArray {
         assert(n > 0); --n; a.back().pop_back();
         if (a.back().empty()) { a.pop_back(); prefixSZ.pop_back(); }
     }
-    Value &operator [](int k) {
-        assert(0 <= k && k < n); int lo = 0, hi = ((int) a.size()) - 1, mid;
-        while (lo <= hi) {
-            mid = lo + (hi - lo) / 2;
-            if (k < prefixSZ[mid]) hi = mid - 1;
-            else lo = mid + 1;
-        }
-        return a[hi][k - prefixSZ[hi]];
-    }
     const Value &at(const int k) const {
         assert(0 <= k && k < n); int lo = 0, hi = ((int) a.size()) - 1, mid;
         while (lo <= hi) {
@@ -115,9 +109,21 @@ template <const int R, class Value, class Container> struct RootArray {
         }
         return a[hi].at(k - prefixSZ[hi]);
     }
+    Value &at(const int k) {
+        assert(0 <= k && k < n); int lo = 0, hi = ((int) a.size()) - 1, mid;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (k < prefixSZ[mid]) hi = mid - 1;
+            else lo = mid + 1;
+        }
+        return a[hi].at(k - prefixSZ[hi]);
+    }
     const Value &operator [](const int k) const { return at(k); }
+    Value &operator [](const int k) { return at(k); }
     const Value &front() const { assert(n > 0); return a.front().front(); }
+    Value &front() { assert(n > 0); return a.front().front(); }
     const Value &back() const { assert(n > 0); return a.back().back(); }
+    Value &back() { assert(n > 0); return a.back().back(); }
     bool empty() const { return n == 0; }
     int size() const { return n; }
     vector<Value> values() const {

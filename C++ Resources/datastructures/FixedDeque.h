@@ -5,7 +5,7 @@ using namespace std;
 // Fixed size deque using a circular buffer
 // Time Complexity:
 //   constructor: O(N)
-//   clear, push_back, emplace_back, push_front, emplace_front, pop_back, pop_front: O(1)
+//   clear, push_back, push_front, emplace_back, emplace_front, pop_back, pop_front: O(1)
 //   back, front, size, empty, at, accessor: O(1)
 // Memory Complexity: O(N)
 template <class T, const int MAXN> struct FixedDeque {
@@ -32,10 +32,13 @@ template <class T, const int MAXN> struct FixedDeque {
         if (st == MAXN) st = 0;
     }
     const T &back() const { return A[en == 0 ? MAXN - 1 : en - 1]; }
+    T &back() { return A[en == 0 ? MAXN - 1 : en - 1]; }
     const T &front() const { return A[st]; }
+    T &front() { return A[st]; }
     int size() const { return N; }
     bool empty() const { return N == 0; }
-    T &operator [](int i) { return A[st + i < MAXN ? st + i : st + i - MAXN]; }
-    const T &at(const int i) { return A[st + i < MAXN ? st + i : st + i - MAXN]; }
+    const T &at(const int i) const { return A[st + i < MAXN ? st + i : st + i - MAXN]; }
+    T &at(const int i) { return A[st + i < MAXN ? st + i : st + i - MAXN]; }
     const T &operator [](const int i) const { return at(i); }
+    T &operator [](const int i) { return at(i); }
 };
