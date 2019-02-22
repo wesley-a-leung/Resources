@@ -8,116 +8,113 @@ public:
     no_such_element_exception(string message): runtime_error(message){}
 };
 
-// Size Balanced Binary Search Tree
+// Size Balanced Binary Search Tree (no duplicates allowed)
 // Time Complexity:
 //   constructor, empty, size: O(1)
 //   keyValuePairs: O(N)
 //   all other operators: O(log N)
 // Memory Complexity: O(N)
 template <typename Key, typename Value, typename Comparator = less<Key>> struct SBT {
-    Comparator cmp; vector<Key> KEY; vector<Value> VAL; vector<int> SZ, L, R; int root = 0;
-    void update(int x) { SZ[x] = 1 + SZ[L[x]] + SZ[R[x]]; }
-    int rotateRight(int x) { int y = L[x]; L[x] = R[y]; R[y] = x; update(x); update(y); return y; }
-    int rotateLeft(int x) { int y = R[x]; R[x] = L[y]; L[y] = x; update(x); update(y); return y; }
-    int maintain(int x, bool flag) {
+    struct Node {
+        Node *l, *r; int size; Key key; Value val;
+        Node(const Key &key, const Value &val) : l(nullptr), r(nullptr), size(1), key(key), val(val) {}
+    };
+    Node *root = nullptr; deque<Node> T; Comparator cmp;
+    int Size(Node *x) { return x ? x->size : 0; }
+    void update(Node *x) { x->size = 1 + Size(x->l) + Size(x->r); }
+    Node *rotateRight(Node *x) { Node *y = x->l; x->l = y->r; y->r = x; update(x); update(y); return y; }
+    Node *rotateLeft(Node *x) { Node *y = x->r; x->r = y->l; y->l = x; update(x); update(y); return y; }
+    Node *maintain(Node *x, bool flag) {
         if (flag) {
-            if (SZ[L[x]] < SZ[L[R[x]]]) { R[x] = rotateRight(R[x]); x = rotateLeft(x); }
-            else if (SZ[L[x]] < SZ[R[R[x]]]) x = rotateLeft(x);
+            if (!x->r) return x;
+            else if (Size(x->l) < Size(x->r->l)) { x->r = rotateRight(x->r); x = rotateLeft(x); }
+            else if (Size(x->l) < Size(x->r->r)) x = rotateLeft(x);
             else return x;
         } else {
-            if (SZ[R[x]] < SZ[R[L[x]]]) { L[x] = rotateLeft(L[x]); x = rotateRight(x); }
-            else if (SZ[R[x]] < SZ[L[L[x]]]) x = rotateRight(x);
+            if (!x->l) return x;
+            else if (Size(x->r) < Size(x->l->r)) { x->l = rotateLeft(x->l); x = rotateRight(x); }
+            else if (Size(x->r) < Size(x->l->l)) x = rotateRight(x);
             else return x;
         }
-        L[x] = maintain(L[x], false); R[x] = maintain(R[x], true); x = maintain(x, true); x = maintain(x, false);
-        return x;
+        x->l = maintain(x->l, false); x->r = maintain(x->r, true); x = maintain(x, true); x = maintain(x, false); return x;
     }
-    int get(int x, const Key &key) {
+    Node *get(Node *x, const Key &key) {
         if (!x) return 0;
-        if (cmp(key, KEY[x])) return get(L[x], key);
-        else if (cmp(KEY[x], key)) return get(R[x], key);
+        if (cmp(key, x->key)) return get(x->l, key);
+        else if (cmp(x->key, key)) return get(x->r, key);
         else return x;
     }
-    int put(int x, const Key &key, const Value &val) {
-        if (!x) {
-            if (KEY.empty()) KEY.push_back(key);
-            if (VAL.empty()) VAL.push_back(val);
-            KEY.push_back(key); VAL.push_back(val); SZ.push_back(1); L.push_back(0); R.push_back(0);
-            return int(KEY.size()) - 1;
-        }
-        if (cmp(key, KEY[x])) { int l = put(L[x], key, val); L[x] = l; }
-        else if (cmp(KEY[x], key)) { int r = put(R[x], key, val); R[x] = r; }
-        else { VAL[x] = val; return x; }
-        update(x); return maintain(x, key > KEY[x]);
+    Node *put(Node *x, const Key &key, const Value &val) {
+        if (!x) { T.emplace_back(key, val); return &T.back(); }
+        if (cmp(key, x->key)) x->l = put(x->l, key, val);
+        else if (cmp(x->key, key)) x->r = put(x->r, key, val);
+        else { x->val = val; return x; }
+        update(x); return maintain(x, key > x->key);
     }
-    int removeMin(int x) {
-        if (!L[x]) return R[x];
-        L[x] = removeMin(L[x]); update(x); return x;
+    Node *removeMin(Node *x) {
+        if (!x->l) return x->r;
+        x->l = removeMin(x->l); update(x); return x;
     }
-    int removeMax(int x) {
-        if (!R[x]) return L[x];
-        R[x] = removeMax(R[x]); update(x); return x;
+    Node *removeMax(Node *x) {
+        if (!x->r) return x->l;
+        x->r = removeMax(x->r); update(x); return x;
     }
-    int getMin(int x) { return L[x] ? getMin(L[x]) : x; }
-    int getMax(int x) { return R[x] ? getMax(R[x]) : x; }
-    int remove(int x, const Key &key) {
-        if (cmp(key, KEY[x])) L[x] = remove(L[x], key);
-        else if (cmp(KEY[x], key)) R[x] = remove(R[x], key);
+    Node *getMin(Node *x) { return x->l ? getMin(x->l) : x; }
+    Node *getMax(Node *x) { return x->r ? getMax(x->r) : x; }
+    Node *remove(Node *x, const Key &key) {
+        if (cmp(key, x->key)) x->l = remove(x->l, key);
+        else if (cmp(x->key, key)) x->r = remove(x->r, key);
         else {
-            if (!L[x]) return R[x];
-            else if (!R[x]) return L[x];
-            else { int y = x; x = getMin(R[y]); R[x] = removeMin(R[y]); L[x] = L[y]; }
+            if (!x->l) return x->r;
+            else if (!x->r) return x->l;
+            else { Node *y = x; x = getMin(y->r); x->r = removeMin(y->r); x->l = y->l; }
         }
         update(x); return x;
     }
-    int floor(int x, const Key &key) {
+    Node *floor(Node *x, const Key &key) {
         if (!x) return 0;
-        if (!cmp(key, KEY[x]) && !cmp(KEY[x], key)) return x;
-        if (cmp(key, KEY[x])) return floor(L[x], key);
-        int y = floor(R[x], key); return y ? y : x;
+        if (!cmp(key, x->key) && !cmp(x->key, key)) return x;
+        if (cmp(key, x->key)) return floor(x->l, key);
+        Node *y = floor(x->r, key); return y ? y : x;
     }
-    int ceiling(int x, const Key &key) {
+    Node *ceiling(Node *x, const Key &key) {
         if (!x) return 0;
-        if (!cmp(key, KEY[x]) && !cmp(KEY[x], key)) return x;
-        if (cmp(KEY[x], key)) return ceiling(R[x], key);
-        int y = ceiling(L[x], key); return y ? y : x;
+        if (!cmp(key, x->key) && !cmp(x->key, key)) return x;
+        if (cmp(x->key, key)) return ceiling(x->r, key);
+        Node *y = ceiling(x->l, key); return y ? y : x;
     }
-    int select(int x, int k) {
+    Node *select(Node *x, int k) {
         if (!x) return 0;
-        int t = SZ[L[x]];
-        if (t > k) return select(L[x], k);
-        else if (t < k) return select(R[x], k - t - 1);
+        int t = Size(x->l);
+        if (t > k) return select(x->l, k);
+        else if (t < k) return select(x->r, k - t - 1);
         return x;
     }
-    int getRank(int x, const Key &key) {
+    int getRank(Node *x, const Key &key) { // number of keys less than key
         if (!x) return 0;
-        if (cmp(key, KEY[x])) return getRank(L[x], key);
-        else if (cmp(KEY[x], key)) return 1 + SZ[L[x]] + getRank(R[x], key);
-        else return SZ[L[x]];
+        if (cmp(key, x->key)) return getRank(x->l, key);
+        else if (cmp(x->key, key)) return 1 + Size(x->l) + getRank(x->r, key);
+        else return Size(x->l);
     }
-    void keyValuePairsInOrder(int x, vector<pair<Key, Value>> &queue) {
+    void keyValuePairsInOrder(Node *x, vector<pair<Key, Value>> &queue) {
         if (!x) return;
-        keyValuePairsInOrder(L[x], queue); queue.push_back({KEY[x], VAL[x]}); keyValuePairsInOrder(R[x], queue);
+        keyValuePairsInOrder(x->l, queue); queue.push_back({x->key, x->val}); keyValuePairsInOrder(x->r, queue);
     }
-    void keyValuePairs(int x, vector<pair<Key, Value>> &queue, const Key &lo, const Key &hi) {
+    void keyValuePairs(Node *x, vector<pair<Key, Value>> &queue, const Key &lo, const Key &hi) {
         if (!x) return;
-        if (cmp(lo, KEY[x])) keyValuePairs(L[x], queue, lo, hi);
-        if (!cmp(KEY[x], lo) && !cmp(hi, KEY[x])) queue.push_back({KEY[x], VAL[x]});
-        if (cmp(KEY[x], hi)) keyValuePairs(R[x], queue, lo, hi);
+        if (cmp(lo, x->key)) keyValuePairs(x->l, queue, lo, hi);
+        if (!cmp(x->key, lo) && !cmp(hi, x->key)) queue.push_back({x->key, x->val});
+        if (cmp(x->key, hi)) keyValuePairs(x->r, queue, lo, hi);
     }
-    SBT() : SZ(1, 0), L(1, 0), R(1, 0) {}
-    void clear() {
-        KEY.clear(); VAL.clear(); SZ.clear(); L.clear(); R.clear();
-        SZ.push_back(0); L.push_back(0); R.push_back(0);
-    }
-    bool empty() { return root == 0; }
-    int size() { return SZ[root]; }
+    void clear() { root = nullptr; T.clear(); }
+    bool empty() { return !root; }
+    int size() { return Size(root); }
     Value get(const Key &key) {
-        int x = get(root, key);
+        Node *x = get(root, key);
         if (!x) throw no_such_element_exception("no such key is in the symbol table");
-        return VAL[x];
+        return x->val;
     }
-    bool contains(const Key &key) { return get(root, key) != 0; }
+    bool contains(const Key &key) { return get(root, key); }
     void put(const Key &key, const Value &val) { root = put(root, key, val); }
     void remove(const Key &key) { if (contains(key)) root = remove(root, key); }
     void removeMin() {
@@ -130,27 +127,27 @@ template <typename Key, typename Value, typename Comparator = less<Key>> struct 
     }
     pair<Key, Value> getMin() {
         if (empty()) throw runtime_error("called getMin() with empty symbol table");
-        int x = getMin(root); return {KEY[x], VAL[x]};
+        Node *x = getMin(root); return {x->key, x->val};
     }
     pair<Key, Value> getMax() {
         if (empty()) throw runtime_error("called getMax() with empty symbol table");
-        int x = getMax(root); return {KEY[x], VAL[x]};
+        Node *x = getMax(root); return {x->key, x->val};
     }
     pair<Key, Value> floor(const Key &key) {
         if (empty()) throw runtime_error("called floor() with empty symbol table");
-        int x = floor(root, key);
+        Node *x = floor(root, key);
         if (!x) throw no_such_element_exception("call to floor() resulted in no such value");
-        return {KEY[x], VAL[x]};
+        return {x->key, x->val};
     }
     pair<Key, Value> ceiling(const Key &key) {
         if (empty()) throw runtime_error("called ceiling() with empty symbol table");
-        int x = ceiling(root, key);
+        Node *x = ceiling(root, key);
         if (!x) throw no_such_element_exception("call to ceiling() resulted in no such value");
-        return {KEY[x], VAL[x]};
+        return {x->key, x->val};
     }
     pair<Key, Value> select(int k) {
         if (k < 0 || k >= size()) throw invalid_argument("k is not in range 0 to size");
-        int x = select(root, k); return {KEY[x], VAL[x]};
+        Node *x = select(root, k); return {x->key, x->val};
     }
     int getRank(const Key &key) { return getRank(root, key); }
     vector<pair<Key, Value>> keyValuePairs() {
@@ -161,7 +158,7 @@ template <typename Key, typename Value, typename Comparator = less<Key>> struct 
     }
     int size(const Key &lo, const Key &hi) {
         if (cmp(hi, lo)) return 0;
-        if (contains(hi)) return getRank(hi) - getRank(lo) + 1;
+        else if (contains(hi)) return getRank(hi) - getRank(lo) + 1;
         else return getRank(hi) - getRank(lo);
     }
 };

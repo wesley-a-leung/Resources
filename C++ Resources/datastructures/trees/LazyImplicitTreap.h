@@ -5,72 +5,91 @@ using namespace std;
 // Implicit Treap supporting range updates and queries
 // Time Complexity:
 //   constructor: O(N)
-//   updateRange, queryRange: O(log N)
+//   updateVal, queryVal, updateRange, queryRange, reverseRange: O(log N)
 // Memory Complexity: O(N)
+
+seed_seq seq {
+    (uint64_t)chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
+    (uint64_t)__builtin_ia32_rdtsc(),(uint64_t)(uintptr_t)make_unique<char>().get()
+};
+mt19937 rng(seq); uniform_real_distribution<double> dis;
+using Data = int; using Lazy = int; const Data vdef = 0; const Lazy ldef = 0;
+Data merge(const Data &l, const Data &r); // to be implemented
+Lazy getSegmentVal(const Lazy &v, int k); // to be implemented
+Lazy mergeLazy(const Lazy &l, const Lazy &r); // to be implemented
+Data applyLazy(const Data &l, const Lazy &r); // to be implemented
+void revData(Data &v); // to be implemented
+struct Node {
+    Node *l, *r; int size; double pri; Data val, sbtr; Lazy lz; bool rev;
+    Node (const Data &val) : l(nullptr), r(nullptr), size(1), pri(dis(rng)), val(val), sbtr(val), lz(ldef), rev(false) {}
+    void update() {
+        size = 1; sbtr = val;
+        if (l) { size += l->size; sbtr = merge(l->sbtr, sbtr); }
+        if (r) { size += r->size; sbtr = merge(sbtr, r->sbtr); }
+    }
+    void apply(const Lazy &v) { val = applyLazy(val, v); sbtr = applyLazy(sbtr, getSegmentVal(v, size)); lz = mergeLazy(lz, v); }
+    void propagate() {
+        if (rev) {
+            swap(l, r); rev = false;
+            if (l) { l->rev = !l->rev; revData(l->sbtr); }
+            if (r) { r->rev = !r->rev; revData(r->sbtr); }
+        }
+        if (lz != ldef) {
+            if (l) l->apply(lz);
+            if (r) r->apply(lz);
+            lz = ldef;
+        }
+    }
+};
+int Size(Node *x) { return x ? x->size : 0; }
+Data Val(Node *x) { return x ? x->val : vdef; }
+Data Sbtr(Node *x) { return x ? x->sbtr : vdef; }
+void merge(Node *&x, Node *l, Node *r) {
+    if (l) l->propagate();
+    if (r) r->propagate();
+    if (!l || !r) { x = l ? l : r; }
+    else if (l->pri > r->pri) { merge(l->r, l->r, r); x = l; }
+    else { merge(r->l, l, r->l); x = r; }
+    if (x) x->update();
+}
+void split(Node *x, Node *&l, Node *&r, int lsz) {
+    if (!x) { l = r = nullptr; return; }
+    x->propagate();
+    if (lsz <= Size(x->l)) { split(x->l, l, x->l, lsz); r = x; }
+    else { split(x->r, x->r, r, lsz - Size(x->l) - 1); l = x; }
+    x->update();
+}
 struct LazyImplicitTreap {
-    seed_seq seq {
-        (uint64_t) chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
-        (uint64_t) __builtin_ia32_rdtsc(),
-        (uint64_t) (uintptr_t) make_unique<char>().get()
-    };
-    mt19937 rng; uniform_real_distribution<double> dis;
-    using Data = int; using Lazy = int; const Data vdef = 0; const Lazy ldef = 0;
-    vector<Data> VAL, SBTR; vector<Lazy> LZ; vector<int> L, R, SZ; vector<double> PRI; int root = -1;
-    int makeNode(const Data &val) {
-        VAL.push_back(val); SBTR.push_back(val); LZ.push_back(ldef);
-        L.push_back(-1); R.push_back(-1); SZ.push_back(1); PRI.push_back(dis(rng));
-        return int(VAL.size()) - 1;
+    vector<Node> T; Node *root;
+    LazyImplicitTreap(int N) {
+        T.reserve(N); root = nullptr;
+        for (int i = 0; i < N; i++) { T.emplace_back(vdef); merge(root, root, &T.back()); }
     }
-    int size(int x) { return x == -1 ? 0 : SZ[x]; }
-    Data sbtrVal(int x) { return x == -1 ? vdef : SBTR[x]; }
-    Data merge(const Data &l, const Data &r); // to be implemented
-    Lazy getSegmentVal(const Lazy &v, int k); // to be implemented
-    Lazy mergeLazy(const Lazy &l, const Lazy &r); // to be implemented
-    Data applyLazy(const Data &l, const Lazy &r); // to be implemented
-    void apply(int x, const Lazy &v) {
-        if (x == -1) return;
-        VAL[x] = applyLazy(VAL[x], v); SBTR[x] = applyLazy(SBTR[x], getSegmentVal(v, SZ[x])); LZ[x] = mergeLazy(LZ[x], v);
-    }
-    void propagate(int x) {
-        if (x == -1 || LZ[x] == ldef) return;
-        if (L[x] != -1) apply(L[x], LZ[x]);
-        if (R[x] != -1) apply(R[x], LZ[x]);
-        LZ[x] = ldef;
-    }
-    void update(int x) {
-        if (x == -1) return;
-        SZ[x] = 1; SBTR[x] = VAL[x];
-        if (L[x] != -1) { SZ[x] += SZ[L[x]]; SBTR[x] = merge(SBTR[L[x]], SBTR[x]); }
-        if (R[x] != -1) { SZ[x] += SZ[R[x]]; SBTR[x] = merge(SBTR[x], SBTR[R[x]]); }
-    }
-    void merge(int &x, int l, int r) {
-        propagate(l); propagate(r);
-        if (l == -1 || r == -1) { x = l == -1 ? r : l; }
-        else if (PRI[l] > PRI[r]) { merge(R[l], R[l], r); x = l; }
-        else { merge(L[r], l, L[r]); x = r; }
-        update(x);
-    }
-    void split(int x, int &l, int &r, int lsz) {
-        if (x == -1) { l = r = -1; return; }
-        propagate(x);
-        if (lsz <= size(L[x])) { split(L[x], l, L[x], lsz); r = x; }
-        else { split(R[x], R[x], r, lsz - size(L[x]) - 1); l = x; }
-        update(x);
-    }
-    LazyImplicitTreap(int N) : rng(seq), dis(0.0, 1.0) {
-        for (int i = 0; i < N; i++) merge(root, root, makeNode(vdef));
-    }
-    template <class It> LazyImplicitTreap(It st, It en) : rng(seq), dis(0.0, 1.0) {
-        for (It i = st; i < en; i++) merge(root, root, makeNode(*i));
+    template <class It> LazyImplicitTreap(It st, It en) {
+        int N = en - st; T.reserve(N); root = nullptr;
+        for (int i = 0; i < N; i++) { T.emplace_back(*(st + i)); merge(root, root, &T.back()); }
     }
     // 0-indexed, inclusive
+    void updateVal(int i, const Lazy &val) {
+        Node *left, *mid, *right; split(root, left, mid, i); split(mid, mid, right, 1);
+        mid->apply(val); merge(root, left, mid); merge(root, root, right);
+    }
+    Data queryVal(int i) {
+        Node *left, *mid, *right; split(root, left, mid, i); split(mid, mid, right, 1);
+        Data ret = Val(mid); merge(root, left, mid); merge(root, root, right); return ret;
+    }
     void updateRange(int l, int r, const Lazy &val) {
-        int left, right, mid; split(root, left, mid, l); split(mid, mid, right, r - l + 1);
-        apply(mid, val); merge(root, left, mid); merge(root, root, right);
+        Node *left, *mid, *right; split(root, left, mid, l); split(mid, mid, right, r - l + 1);
+        if (mid) mid->apply(val);
+        merge(root, left, mid); merge(root, root, right);
     }
     Data queryRange(int l, int r) {
-        int left, right, mid; split(root, left, mid, l); split(mid, mid, right, r - l + 1);
-        Data ret = sbtrVal(mid); merge(root, left, mid); merge(root, root, right);
-        return ret;
+        Node *left, *mid, *right; split(root, left, mid, l); split(mid, mid, right, r - l + 1);
+        Data ret = Sbtr(mid); merge(root, left, mid); merge(root, root, right); return ret;
+    }
+    void reverseRange(int l, int r) {
+        Node *left, *mid, *right; split(root, left, mid, l); split(mid, mid, right, r - l + 1);
+        if (mid) { mid->rev = !mid->rev; revData(mid->sbtr); }
+        merge(root, left, mid); merge(root, root, right);
     }
 };

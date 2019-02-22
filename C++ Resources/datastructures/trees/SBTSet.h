@@ -8,107 +8,105 @@ public:
     no_such_element_exception(string message): runtime_error(message){}
 };
 
-// Size Balanced Binary Search Set
+// Size Balanced Binary Search (Multi) Set
 // Time Complexity:
 //   constructor, empty, size: O(1)
 //   values: O(N)
 //   all other operators: O(log N)
 // Memory Complexity: O(N)
 template <typename Value, typename Comparator = less<Value>> struct SBTSet {
-    Comparator cmp; vector<Value> VAL; vector<int> SZ, L, R; int root = 0;
-    void update(int x) { SZ[x] = 1 + SZ[L[x]] + SZ[R[x]]; }
-    int rotateRight(int x) { int y = L[x]; L[x] = R[y]; R[y] = x; update(x); update(y); return y; }
-    int rotateLeft(int x) { int y = R[x]; R[x] = L[y]; L[y] = x; update(x); update(y); return y; }
-    int maintain(int x, bool flag) {
+    struct Node {
+        Node *l, *r; int size; Value val;
+        Node(const Value &val) : l(nullptr), r(nullptr), size(1), val(val) {}
+    };
+    Node *root = nullptr; deque<Node> T; Comparator cmp;
+    int Size(Node *x) { return x ? x->size : 0; }
+    void update(Node *x) { x->size = 1 + Size(x->l) + Size(x->r); }
+    Node *rotateRight(Node *x) { Node *y = x->l; x->l = y->r; y->r = x; update(x); update(y); return y; }
+    Node *rotateLeft(Node *x) { Node *y = x->r; x->r = y->l; y->l = x; update(x); update(y); return y; }
+    Node *maintain(Node *x, bool flag) {
         if (flag) {
-            if (SZ[L[x]] < SZ[L[R[x]]]) { R[x] = rotateRight(R[x]); x = rotateLeft(x); }
-            else if (SZ[L[x]] < SZ[R[R[x]]]) x = rotateLeft(x);
+            if (!x->r) return x;
+            else if (Size(x->l) < Size(x->r->l)) { x->r = rotateRight(x->r); x = rotateLeft(x); }
+            else if (Size(x->l) < Size(x->r->r)) x = rotateLeft(x);
             else return x;
         } else {
-            if (SZ[R[x]] < SZ[R[L[x]]]) { L[x] = rotateLeft(L[x]); x = rotateRight(x); }
-            else if (SZ[R[x]] < SZ[L[L[x]]]) x = rotateRight(x);
+            if (!x->l) return x;
+            else if (Size(x->r) < Size(x->l->r)) { x->l = rotateLeft(x->l); x = rotateRight(x); }
+            else if (Size(x->r) < Size(x->l->l)) x = rotateRight(x);
             else return x;
         }
-        L[x] = maintain(L[x], false); R[x] = maintain(R[x], true); x = maintain(x, true); x = maintain(x, false);
-        return x;
+        x->l = maintain(x->l, false); x->r = maintain(x->r, true); x = maintain(x, true); x = maintain(x, false); return x;
     }
-    bool contains(int x, const Value &val) {
+    bool contains(Node *x, const Value &val) {
         if (!x) return false;
-        else if (cmp(val, VAL[x])) return contains(L[x], val);
-        else if (cmp(VAL[x], val)) return contains(R[x], val);
+        else if (cmp(val, x->val)) return contains(x->l, val);
+        else if (cmp(x->val, val)) return contains(x->r, val);
         return true;
     }
-    int add(int x, const Value &val) {
-        if (!x) {
-            if (VAL.empty()) VAL.push_back(val);
-            VAL.push_back(val); SZ.push_back(1); L.push_back(0); R.push_back(0);
-            return int(VAL.size()) - 1;
-        }
-        if (cmp(val, VAL[x])) { int l = add(L[x], val); L[x] = l; }
-        else { int r = add(R[x], val); R[x] = r; }
-        update(x); return maintain(x, !cmp(val, VAL[x]));
+    Node *add(Node *x, const Value &val) {
+        if (!x) { T.emplace_back(val); return &T.back(); }
+        if (cmp(val, x->val)) x->l = add(x->l, val);
+        else x->r = add(x->r, val);
+        update(x); return maintain(x, !cmp(val, x->val));
     }
-    int removeMin(int x) {
-        if (!L[x]) return R[x];
-        L[x] = removeMin(L[x]); update(x); return x;
+    Node *removeMin(Node *x) {
+        if (!x->l) return x->r;
+        x->l = removeMin(x->l); update(x); return x;
     }
-    int removeMax(int x) {
-        if (!R[x]) return L[x];
-        R[x] = removeMax(R[x]); update(x); return x;
+    Node *removeMax(Node *x) {
+        if (!x->r) return x->l;
+        x->r = removeMax(x->r); update(x); return x;
     }
-    int getMin(int x) { return L[x] ? getMin(L[x]) : x; }
-    int getMax(int x) { return R[x] ? getMax(R[x]) : x; }
-    int remove(int x, const Value &val) {
-        if (cmp(val, VAL[x])) L[x] = remove(L[x], val);
-        else if (cmp(VAL[x], val)) R[x] = remove(R[x], val);
+    Node *getMin(Node *x) { return x->l ? getMin(x->l) : x; }
+    Node *getMax(Node *x) { return x->r ? getMax(x->r) : x; }
+    Node *remove(Node *x, const Value &val) {
+        if (cmp(val, x->val)) x->l = remove(x->l, val);
+        else if (cmp(x->val, val)) x->r = remove(x->r, val);
         else {
-            if (!L[x]) return R[x];
-            else if (!R[x]) return L[x];
-            else { int y = x; x = getMin(R[y]); R[x] = removeMin(R[y]); L[x] = L[y]; }
+            if (!x->l) return x->r;
+            else if (!x->r) return x->l;
+            else { Node *y = x; x = getMin(y->r); x->r = removeMin(y->r); x->l = y->l; }
         }
         update(x); return x;
     }
-    int floor(int x, const Value &val) {
-        if (!x) return 0;
-        if (!cmp(val, VAL[x]) && !cmp(VAL[x], val)) return x;
-        if (cmp(val, VAL[x])) return floor(L[x], val);
-        int y = floor(R[x], val); return y ? y : x;
+    Node *floor(Node *x, const Value &val) {
+        if (!x) return nullptr;
+        if (!cmp(val, x->val) && !cmp(x->val, val)) return x;
+        if (cmp(val, x->val)) return floor(x->l, val);
+        Node *y = floor(x->r, val); return y ? y : x;
     }
-    int ceiling(int x, const Value &val) {
-        if (!x) return 0;
-        if (!cmp(val, VAL[x]) && !cmp(VAL[x], val)) return x;
-        if (cmp(VAL[x], val)) return ceiling(R[x], val);
-        int y = ceiling(L[x], val); return y ? y : x;
+    Node *ceiling(Node *x, const Value &val) {
+        if (!x) return nullptr;
+        if (!cmp(val, x->val) && !cmp(x->val, val)) return x;
+        if (cmp(x->val, val)) return ceiling(x->r, val);
+        Node *y = ceiling(x->l, val); return y ? y : x;
     }
-    int select(int x, int k) {
-        if (!x) return 0;
-        int t = SZ[L[x]];
-        if (t > k) return select(L[x], k);
-        else if (t < k) return select(R[x], k - t - 1);
+    Node *select(Node *x, int k) {
+        if (!x) return nullptr;
+        int t = Size(x->l);
+        if (t > k) return select(x->l, k);
+        else if (t < k) return select(x->r, k - t - 1);
         return x;
     }
-    int getRank(int x, const Value &val) {
+    int getRank(Node *x, const Value &val) { // number of values less than first occurrence
         if (!x) return 0;
-        if (!cmp(VAL[x], val)) return getRank(L[x], val);
-        else return 1 + SZ[L[x]] + getRank(R[x], val);
+        if (!cmp(x->val, val)) return getRank(x->l, val);
+        else return 1 + Size(x->l) + getRank(x->r, val);
     }
-    void valuesInOrder(int x, vector<Value> &queue) {
+    void valuesInOrder(Node *x, vector<Value> &queue) {
         if (!x) return;
-        valuesInOrder(L[x], queue); queue.push_back(VAL[x]); valuesInOrder(R[x], queue);
+        valuesInOrder(x->l, queue); queue.push_back(x->val); valuesInOrder(x->r, queue);
     }
-    void values(int x, vector<Value> &queue, const Value &lo, const Value &hi) {
+    void values(Node *x, vector<Value> &queue, const Value &lo, const Value &hi) {
         if (!x) return;
-        if (cmp(lo, VAL[x])) values(L[x], queue, lo, hi);
-        if (!cmp(VAL[x], lo) && !cmp(hi, VAL[x])) queue.push_back(VAL[x]);
-        if (cmp(VAL[x], hi)) values(R[x], queue, lo, hi);
+        if (cmp(lo, x->val)) values(x->l, queue, lo, hi);
+        if (!cmp(x->val, lo) && !cmp(hi, x->val)) queue.push_back(x->val);
+        if (cmp(x->val, hi)) values(x->r, queue, lo, hi);
     }
-    SBTSet() : SZ(1, 0), L(1, 0), R(1, 0) {}
-    void clear() {
-        VAL.clear(); SZ.clear(); L.clear(); R.clear();
-        SZ.push_back(0); L.push_back(0); R.push_back(0);
-    }
-    bool empty() { return root == 0; }
-    int size() { return SZ[root]; }
+    void clear() { root = nullptr; T.clear(); }
+    bool empty() { return !root; }
+    int size() { return Size(root); }
     bool contains(const Value &val) { return contains(root, val); }
     void add(const Value &val) { root = add(root, val); }
     void remove(const Value &val) { if (contains(val)) root = remove(root, val); }
@@ -122,34 +120,34 @@ template <typename Value, typename Comparator = less<Value>> struct SBTSet {
     }
     Value getMin() {
         if (empty()) throw runtime_error("called getMin() with empty symbol table");
-        return VAL[getMin(root)];
+        return getMin(root)->val;
     }
     Value getMax() {
         if (empty()) throw runtime_error("called getMax() with empty symbol table");
-        return VAL[getMax(root)];
+        return getMax(root)->val;
     }
     Value floor(const Value &val) {
         if (empty()) throw runtime_error("called floor() with empty symbol table");
-        int x = floor(root, val);
+        Node *x = floor(root, val);
         if (!x) throw no_such_element_exception("call to floor() resulted in no such value");
-        return VAL[x];
+        return x->val;
     }
     Value ceiling(const Value &val) {
         if (empty()) throw runtime_error("called ceiling() with empty symbol table");
-        int x = ceiling(root, val);
+        Node *x = ceiling(root, val);
         if (!x) throw no_such_element_exception("call to ceiling() resulted in no such value");
-        return VAL[x];
+        return x->val;
     }
     Value select(int k) {
         if (k < 0 || k >= size()) throw invalid_argument("k is not in range 0 to size");
-        return VAL[select(root, k)];
+        return select(root, k)->val;
     }
     int getRank(const Value &val) { return getRank(root, val); }
     vector<Value> values() { vector<Value> queue; valuesInOrder(root, queue); return queue; }
     vector<Value> values(const Value &lo, const Value &hi) { vector<Value> queue; values(root, queue, lo, hi); return queue; }
     int size(const Value &lo, const Value &hi) {
         if (cmp(hi, lo)) return 0;
-        if (contains(hi)) return getRank(hi) - getRank(lo) + 1;
+        else if (contains(hi)) return getRank(hi) - getRank(lo) + 1;
         else return getRank(hi) - getRank(lo);
     }
 };

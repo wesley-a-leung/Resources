@@ -28,7 +28,7 @@ struct Node {
         if (l) { l->p = this; size += l->size; sbtr = merge(l->sbtr, sbtr); }
         if (r) { r->p = this; size += r->size; sbtr = merge(sbtr, r->sbtr); }
     }
-    void apply(const Lazy &v) { val = applyLazy(val, v); sbtr = applyLazy(sbtr, getSegmentVal(v, size)); lz = applyLazy(lz, v); }
+    void apply(const Lazy &v) { val = applyLazy(val, v); sbtr = applyLazy(sbtr, getSegmentVal(v, size)); lz = mergeLazy(lz, v); }
     void propagate() {
         if (lz == ldef) return;
         if (l) l->apply(lz);
