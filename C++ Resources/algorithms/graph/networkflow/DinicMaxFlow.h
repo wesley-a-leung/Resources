@@ -11,7 +11,7 @@ template <const int MAXV, const int MAXE, class unit> struct DinicMaxFlow {
         int from, to; unit origCap, cap; int rev; Edge() {}
         Edge(int from, int to, unit cap) : from(from), to(to), origCap(cap), cap(cap) {}
     };
-    int E, level[MAXV], q[MAXV], st[MAXV], deg[MAXV], ord[MAXE * 2], ind[MAXE * 2];
+    int E, cur[MAXV], level[MAXV], q[MAXV], st[MAXV], deg[MAXV], ord[MAXE * 2], ind[MAXE * 2];
     bool cut[MAXV]; Edge e[MAXE * 2]; unit maxFlow, minCut;
     void addEdge(int v, int w, unit vw, unit wv = 0) {
         e[E++] = Edge(v, w, vw); e[E++] = Edge(w, v, wv); e[E - 2].rev = E - 1; e[E - 1].rev = E - 2; deg[v]++; deg[w]++;
@@ -27,12 +27,11 @@ template <const int MAXV, const int MAXE, class unit> struct DinicMaxFlow {
     }
     unit dfs(int v, int t, unit flow) {
         if (v == t) return flow;
-        unit ret = 0;
-        for (int i = st[v]; i < st[v] + deg[v]; i++) if (e[i].cap > EPS && level[e[i].to] == level[v] + 1) {
-            unit res = dfs(e[i].to, t, min(flow, e[i].cap)); ret += res; e[i].cap -= res; e[e[i].rev].cap += res; flow -= res;
-            if (abs(flow) <= EPS) break;
+        for (int i = cur[v]; i < st[v] + deg[v]; cur[v] = ++i) if (e[i].cap > EPS && level[e[i].to] == level[v] + 1) {
+            unit res = dfs(e[i].to, t, min(flow, e[i].cap));
+            if (res > EPS) { e[i].cap -= res; e[e[i].rev].cap += res; return res; }
         }
-        return ret;
+        return 0;
     }
     void init(int V = MAXV) { E = 0; fill(cut, cut + V, false); fill(deg, deg + V, 0); }
     unit getFlow(int V, int s, int t) {
@@ -41,7 +40,10 @@ template <const int MAXV, const int MAXE, class unit> struct DinicMaxFlow {
         for (int i = 0; i < E; i++) e[i].rev = ind[e[i].rev];
         stable_sort(e, e + E, [&] (const Edge &a, const Edge &b) { return a.from < b.from; });
         for (int v = 0, curSum = 0; v < V; v++) { st[v] = curSum; curSum += deg[v]; }
-        while (bfs(V, s, t)) maxFlow += dfs(s, t, INF);
+        while (bfs(V, s, t)) {
+            copy(st, st + V, cur);
+            for (unit flow = dfs(s, t, INF); flow > EPS; flow = dfs(s, t, INF)) maxFlow += flow;
+        }
         return maxFlow;
     }
     void inferMinCutDfs(int v) {
