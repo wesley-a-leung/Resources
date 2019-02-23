@@ -22,13 +22,13 @@ template<class K,class C=less<K>,class...Ts>using treeset=tree<K,null_type,C,rb_
 // Time Complexity:
 //   add, rem, rsq: O(log N log M)
 // Memory Complexity: O(NM)
-template <const int MAXN, class T> struct SparseFenwickTree2DSimpleTreeset {
-    treeset<pair<T, int>> BIT[MAXN]; int stamp = 0;
+template <const int MAXN, class IndexType> struct SparseFenwickTree2DSimpleTreeset {
+    treeset<pair<IndexType, int>> BIT[MAXN]; int stamp = 0;
     void clear() { stamp = 0; for (int i = 0; i < MAXN; i++) BIT[i].clear(); }
-    void add(int x, int y) { for (; x < MAXN; x += x & -x) BIT[x].insert(make_pair(y, stamp++)); }
-    void rem(int x, int y) { for (; x < MAXN; x += x & -x) BIT[x].erase(BIT[x].lower_bound(make_pair(y, 0))); }
-    T rsq(int x, int y) { T ret = 0; for (; x > 0; x -= x & -x) ret += BIT[x].order_of_key(make_pair(y, stamp)); return ret; }
-    T rsq(int x1, int y1, int x2, int y2) { return rsq(x2, y2) + rsq(x1 - 1, y1 - 1) - rsq(x1 - 1, y2) - rsq(x2, y1 - 1); }
+    void add(int x, IndexType y) { for (; x < MAXN; x += x & -x) BIT[x].insert(make_pair(y, stamp++)); }
+    void rem(int x, IndexType y) { for (; x < MAXN; x += x & -x) BIT[x].erase(BIT[x].lower_bound(make_pair(y, 0))); }
+    int rsq(int x, IndexType y) { int ret = 0; for (; x > 0; x -= x & -x) ret += BIT[x].order_of_key(make_pair(y, stamp)); return ret; }
+    int rsq(int x1, IndexType y1, int x2, IndexType y2) { return rsq(x2, y2) + rsq(x1 - 1, y1 - 1) - rsq(x1 - 1, y2) - rsq(x2, y1 - 1); }
 };
 
 // Sparse Fenwick Tree supporting point updates (with value 1) and range queries in 2 dimensions
@@ -37,43 +37,37 @@ template <const int MAXN, class T> struct SparseFenwickTree2DSimpleTreeset {
 //   add, rem: O(log N) amortized
 //   rsq: O(log N (log M + sqrt M)) amortized
 // Memory Complexity: O(NM)
-template <const int MAXN, class T, class Tree = SqrtOrderMaintenance<T>> struct SparseFenwickTree2DSimpleSqrt {
+template <const int MAXN, class IndexType, class Tree = SqrtOrderMaintenance<IndexType>> struct SparseFenwickTree2DSimpleSqrt {
     Tree IN[MAXN], OUT[MAXN];
     void init(const double SCALE_FACTOR = 1) { for (int i = 0; i < MAXN; i++) { IN[i] = Tree(SCALE_FACTOR); OUT[i] = Tree(SCALE_FACTOR); } }
     void clear() { for (int i = 0; i < MAXN; i++) { IN[i].clear(); OUT[i].clear(); } }
-    void add(int x, int y) { for (; x < MAXN; x += x & -x) IN[x].insert(y); }
-    void rem(int x, int y) { for (; x < MAXN; x += x & -x) OUT[x].insert(y); }
-    T rsq(int x, int y) { T ret = 0; for (; x > 0; x -= x & -x) ret += IN[x].aboveInd(y) - OUT[x].aboveInd(y); return ret; }
-    T rsq(int x1, int y1, int x2, int y2) { return rsq(x2, y2) + rsq(x1 - 1, y1 - 1) - rsq(x1 - 1, y2) - rsq(x2, y1 - 1); }
+    void add(int x, IndexType y) { for (; x < MAXN; x += x & -x) IN[x].insert(y); }
+    void rem(int x, IndexType y) { for (; x < MAXN; x += x & -x) OUT[x].insert(y); }
+    int rsq(int x, IndexType y) { int ret = 0; for (; x > 0; x -= x & -x) ret += IN[x].aboveInd(y) - OUT[x].aboveInd(y); return ret; }
+    int rsq(int x1, IndexType y1, int x2, IndexType y2) { return rsq(x2, y2) + rsq(x1 - 1, y1 - 1) - rsq(x1 - 1, y2) - rsq(x2, y1 - 1); }
 };
 
 // Sparse Fenwick Tree supporting point updates (with any value) and range queries in 2 dimensions (sparse in 1 dimension)
 // Time Complexity:
 //   update, rsq: O(log N log M)
 // Memory Complexity: O(NM)
-template <const int MAXN, class T> struct SparseFenwickTree2D {
-    hashmap<int, int> BIT[MAXN];
+template <const int MAXN, class T, class IndexType> struct SparseFenwickTree2D {
+    hashmap<IndexType, T> BIT[MAXN];
     void clear() { for (int i = 0; i < MAXN; i++) BIT[i].clear(); }
-    void update(int x, int y, T v) {
-        for (int i = x; i < MAXN; i += i & -i) for (int j = y; j < MAXN; j += j & -j) {
+    void update(int x, IndexType y, T v) {
+        for (int i = x; i < MAXN; i += i & -i) for (IndexType j = y; j < MAXN; j += j & -j) {
             auto it = BIT[i].find(j);
-            if (it == BIT[i].end()) {
-                BIT[i][j] += v;
-            } else {
-                it->second += v;
-                if (it->second == 0) BIT[i].erase(it->first);
-            }
+            if (it == BIT[i].end()) BIT[i][j] += v;
+            else if ((it->second += v) == 0) BIT[i].erase(it->first);
         }
     }
-    T rsq(int x, int y) {
+    T rsq(int x, IndexType y) {
         T ret = 0;
-        for (int i = x; i > 0; i -= i & -i) for (int j = y; j > 0; j -= j & -j) {
+        for (int i = x; i > 0; i -= i & -i) for (IndexType j = y; j > 0; j -= j & -j) {
             auto it = BIT[i].find(j);
             if (it != BIT[i].end()) ret += it->second;
         }
         return ret;
     }
-    T rsq(int x1, int y1, int x2, int y2) {
-        return rsq(x2, y2) + rsq(x1 - 1, y1 - 1) - rsq(x1 - 1, y2) - rsq(x2, y1 - 1);
-    }
+    T rsq(int x1, IndexType y1, int x2, IndexType y2) { return rsq(x2, y2) + rsq(x1 - 1, y1 - 1) - rsq(x1 - 1, y2) - rsq(x2, y1 - 1); }
 };
