@@ -83,15 +83,20 @@ struct LinkCutTree {
         if (T[x].findRoot() != T[y].findRoot()) return -1;
         T[r].makeRoot(); T[x].expose(); return T[y].expose()->vert;
     }
-    bool link(int x, int y) {
-        if (connected(x, y)) return false;
-        T[y].makeRoot(); T[y].p = &T[x]; return true;
+    bool link(int par, int ch) {
+        if (connected(par, ch)) return false;
+        T[ch].makeRoot(); T[ch].p = &T[par]; return true;
     }
     bool cut(int x, int y) {
         if (!connected(x, y)) return false;
         T[x].makeRoot(); T[y].expose();
         if (&T[x] != T[y].r || T[x].l) return false;
         T[y].r->p = nullptr; T[y].r = nullptr; return true;
+    }
+    bool cutParent(int ch) {
+        T[ch].expose();
+        if (!T[ch].r) return false;
+        T[ch].r->p = nullptr; T[ch].r = nullptr; return true;
     }
     void updateVertex(int x, const Lazy &val) { T[x].makeRoot(); T[x].apply(val); }
     bool updatePath(int from, int to, const Lazy &val) {
