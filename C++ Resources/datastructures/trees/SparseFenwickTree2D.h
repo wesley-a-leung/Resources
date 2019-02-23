@@ -24,7 +24,7 @@ template<class T1,class T2,class H1=rand_hash<T1>,class H2=rand_hash<T2>>struct 
 // Sparse Fenwick Tree supporting point updates (with value 1) and range queries in 2 dimensions using pbds tree (sparse in 1 dimension)
 // Time Complexity:
 //   add, rem, rsq: O(log N log M)
-// Memory Complexity: O(NM)
+// Memory Complexity: O(N + Q log M) for Q updates
 template <const int MAXN, class IndexType, const bool ONE_INDEXED, class Tree = treeset<pair<IndexType, int>>> struct SparseFenwickTree2DSimpleTreeset {
     Tree BIT[MAXN]; int stamp = 0;
     void clear() { stamp = 0; for (int i = 0; i < MAXN; i++) BIT[i].clear(); }
@@ -39,7 +39,7 @@ template <const int MAXN, class IndexType, const bool ONE_INDEXED, class Tree = 
 // Time Complexity:
 //   add, rem: O(log N) amortized
 //   rsq: O(log N (log M + sqrt M)) amortized
-// Memory Complexity: O(NM)
+// Memory Complexity: O(N + Q log M) for Q updates
 template <const int MAXN, class IndexType, const bool ONE_INDEXED, class Tree = SqrtOrderMaintenance<IndexType>> struct SparseFenwickTree2DSimpleSqrt {
     Tree IN[MAXN], OUT[MAXN];
     void init(const double SCALE_FACTOR = 1) { for (int i = 0; i < MAXN; i++) { IN[i] = Tree(SCALE_FACTOR); OUT[i] = Tree(SCALE_FACTOR); } }
@@ -53,7 +53,7 @@ template <const int MAXN, class IndexType, const bool ONE_INDEXED, class Tree = 
 // Sparse Fenwick Tree supporting point updates (with any value) and range queries in 2 dimensions (sparse in 1 dimension)
 // Time Complexity:
 //   update, rsq: O(log N log M)
-// Memory Complexity: O(NM)
+// Memory Complexity: O(N + Q log M) for Q updates
 template <class T, class IndexType, const int MAXN, const IndexType MAXM, const bool ONE_INDEXED,
         class Container = hashmap<IndexType, T>> struct SparseFenwickTree2D_1 {
     Container BIT[MAXN];
@@ -79,7 +79,7 @@ template <class T, class IndexType, const int MAXN, const IndexType MAXM, const 
 // Sparse Fenwick Tree supporting point updates (with any value) and range queries in 2 dimensions (sparse in 2 dimension)
 // Time Complexity:
 //   update, rsq: O(log N log M)
-// Memory Complexity: O(NM)
+// Memory Complexity: O(Q log N loq M) for Q updates
 template <class T, class IndexType1, class IndexType2, const IndexType1 MAXN, const IndexType2 MAXM, const bool ONE_INDEXED,
         class Container = hashmap<pair<IndexType1, IndexType2>, T, pair_hash<IndexType1, IndexType2>>> struct SparseFenwickTree2D_2 {
     Container BIT;
