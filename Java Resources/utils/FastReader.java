@@ -94,7 +94,7 @@ public class FastReader {
         while (bufferPointer > 0 && buffer[bufferPointer - 1] == '\r') read();
         int cnt = 0;
         byte c;
-        while ((c = read()) != '\n') if (c != '\r') buf[cnt++] = c;
+        while ((c = read()) != '\n' && c != '\0') if (c != '\r') buf[cnt++] = c;
         return new String(buf, 0, cnt);
     }
     
