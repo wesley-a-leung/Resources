@@ -17,11 +17,12 @@ void revData(Data &v); // to be implemented
 struct Node {
     Node *l, *r, *p; int vert, size; Data val, sbtr; Lazy lz; bool rev;
     Node(int vert, const Data &val) : l(nullptr), r(nullptr), p(nullptr), vert(vert), size(1), val(val), sbtr(val), lz(ldef), rev(false) {}
-    bool isRoot() { return !p || (this != p->l && this != p->r); }
-    void update(); void apply(const Lazy &v); void propagate(); void rotate(); void splay(); Node *expose(); void makeRoot(); Node *findRoot();
+    bool isRoot(); void update(); void apply(const Lazy &v); void propagate(); void rotate();
+    void splay(); Node *expose(); void makeRoot(); Node *findRoot(); Node *findMin();
 };
 int Size(Node *x) { return x ? x->size : 0; }
 Data Sbtr(Node *x) { return x ? x->sbtr : vdef; }
+bool Node::isRoot() { return !p || (this != p->l && this != p->r); }
 void Node::update() {
     size = 1; sbtr = val;
     if (l) { size += l->size; sbtr = merge(l->sbtr, sbtr); }
@@ -69,6 +70,11 @@ Node *Node::findRoot() {
     while (x->r) x = x->r;
     x->splay(); return x;
 }
+Node *Node::findMin() {
+    Node *x = this;
+    while (x->l) x = x->l;
+    x->splay(); return x;
+}
 struct LinkCutTree {
     vector<Node> T;
     LinkCutTree(int N) { T.reserve(N); for (int i = 0; i < N; i++) T.emplace_back(i, vdef); }
@@ -98,6 +104,7 @@ struct LinkCutTree {
         if (!T[ch].r) return false;
         T[ch].r->p = nullptr; T[ch].r = nullptr; return true;
     }
+    int findParent(int ch) { T[ch].expose(); return T[ch].r ? T[ch].r->findMin()->vert : -1; }
     void updateVertex(int x, const Lazy &val) { T[x].makeRoot(); T[x].apply(val); }
     bool updatePath(int from, int to, const Lazy &val) {
         if (!connected(from, to)) return false;
