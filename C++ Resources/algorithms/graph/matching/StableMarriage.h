@@ -3,8 +3,8 @@
 using namespace std;
 
 // Given N people of type A and N people of type B, and a list of their ranked choices
-// for partners, the goal is to arrange N pairs such that if a person x of type A perfers
-// a person y of type B more than their current partner, then person y preters their
+// for partners, the goal is to arrange N pairs such that if a person x of type A prefers
+// a person y of type B more than their current partner, then person y prefers their
 // current partner more than x
 // Time Complexity: O(N^2)
 // Memory Complexity: O(N^2)
@@ -18,13 +18,8 @@ template <const int MAXN> struct StableMarriage {
             int A = q.front(); q.pop();
             while (true) {
                 int B = aPrefs[A][++curA[A]];
-                if (mateB[B] == -1) {
-                    mateB[B] = A;
-                    break;
-                } else if (bRanks[B][A] < bRanks[B][mateB[B]]) {
-                    q.push(mateB[B]); mateB[B] = A;
-                    break;
-                }
+                if (mateB[B] == -1) { mateB[B] = A; break; }
+                else if (bRanks[B][A] < bRanks[B][mateB[B]]) { q.push(mateB[B]); mateB[B] = A; break; }
             }
         }
         for (int i = 0; i < N; i++) mateA[mateB[i]] = i;
