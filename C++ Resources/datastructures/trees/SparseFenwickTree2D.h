@@ -25,7 +25,7 @@ template<class T1,class T2,class H1=rand_hash<T1>,class H2=rand_hash<T2>>struct 
 // Time Complexity:
 //   add, rem, rsq: O(log N log M)
 // Memory Complexity: O(N + Q log M) for Q updates
-template <const int MAXN, class IndexType, const bool ONE_INDEXED, class Tree = treeset<pair<IndexType, int>>> struct SparseFenwickTree2DSimpleTreeset {
+template <class IndexType, const int MAXN, const bool ONE_INDEXED, class Tree = treeset<pair<IndexType, int>>> struct SparseFenwickTree2DSimpleTreeset {
     Tree BIT[MAXN]; int stamp = 0;
     void clear() { stamp = 0; for (int i = 0; i < MAXN; i++) BIT[i].clear(); }
     void add(int x, IndexType y) { for (x += !ONE_INDEXED; x < MAXN; x += x & -x) BIT[x].insert(make_pair(y, stamp++)); }
@@ -40,7 +40,7 @@ template <const int MAXN, class IndexType, const bool ONE_INDEXED, class Tree = 
 //   add, rem: O(log N) amortized
 //   rsq: O(log N (log M + sqrt M)) amortized
 // Memory Complexity: O(N + Q log M) for Q updates
-template <const int MAXN, class IndexType, const bool ONE_INDEXED, class Tree = SqrtOrderMaintenance<IndexType>> struct SparseFenwickTree2DSimpleSqrt {
+template <class IndexType, const int MAXN, const bool ONE_INDEXED, class Tree = SqrtOrderMaintenance<IndexType>> struct SparseFenwickTree2DSimpleSqrt {
     Tree IN[MAXN], OUT[MAXN];
     void init(const double SCALE_FACTOR = 1) { for (int i = 0; i < MAXN; i++) { IN[i] = Tree(SCALE_FACTOR); OUT[i] = Tree(SCALE_FACTOR); } }
     void clear() { for (int i = 0; i < MAXN; i++) { IN[i].clear(); OUT[i].clear(); } }
