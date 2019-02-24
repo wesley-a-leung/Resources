@@ -6,7 +6,7 @@ using namespace std;
 // Time Complexity: O(n)
 template <class T> T factorial(T n, T m) {
     T ret = 1;
-    for (int i = 2; i <= n; i++) ret = (ret * i) % m;
+    for (int i = 2; i <= n; i++) ret = ret * i % m;
     return ret;
 }
 
@@ -16,7 +16,7 @@ template <class T> T factorialPrime(T n, T p) {
     T ret = 1, h = 0;
     while (n > 1) {
         ret = (ret * ((n / p) % 2 == 1 ? p - 1 : 1)) % p; h = n % p; n /= p;
-        for (int i = 2; i <= h; i++) ret = (ret * i) % p;
+        for (int i = 2; i <= h; i++) ret = ret * i % p;
     }
     return ret;
 }
@@ -47,15 +47,11 @@ template <class T, class U> T powMod(T base, U pow, T mod) {
 
 // Modular Multiplicative Inverse of i in Zp for a prime p
 // Time Complexity: O(log p)
-template <class T> T multInv(T i, T p) {
-    return powMod(i % p, p - 2, p);
-}
+template <class T> T multInv(T i, T p) { return powMod(i % p, p - 2, p); }
 
 // i / j % p for a prime p
 // Time Complexity: O(log p)
-template <class T> T divMod(T i, T j, T p) {
-    return i % p * powMod(j % p, p - 2, p) % p;
-}
+template <class T> T divMod(T i, T j, T p) { return i % p * powMod(j % p, p - 2, p) % p; }
 
 // n choose k
 // Time Complexity: O(min(k, n - k))
@@ -85,9 +81,7 @@ template <class T> T fastChoose(int n, int k, T p) {
 
 // choosing k elements from n items with replacement, modulo p
 // Time Complexity: O(log p) if factorials are precomputed
-template <class T> T multiChoose(int n, int k, T p) {
-    return fastChoose(n + k - 1, k, p);
-}
+template <class T> T multiChoose(int n, int k, T p) { return fastChoose(n + k - 1, k, p); }
 
 // n permute k
 // Time Complexity: O(min(k, n - k))
@@ -111,9 +105,7 @@ template <class T> T permute(int n, int k, T m) {
 
 // n permute k % p
 // Time Complexity: O(log p) if factorials are precomputed
-template <class T> T fastPermute(int n, int k, T p) {
-    return divMod(factorial(n, p), factorial(n - k, p), p);
-}
+template <class T> T fastPermute(int n, int k, T p) { return divMod(factorial(n, p), factorial(n - k, p), p); }
 
 // Structure to support combinatorical queries
 // Time Complexity:
@@ -126,7 +118,7 @@ template <const int MAXN, class T> struct Combinatorics {
         fact[0] = 1;
         for (int i = 1; i <= N; i++) fact[i] = fact[i - 1] * i;
     }
-    void init(int N, T P) { // compute factorials mod P up to N!
+    void init(int N, T P) { // compute factorials mod prime up to N!
         assert(N < P); fact[0] = 1;
         for (int i = 1; i <= N; i++) fact[i] = fact[i - 1] * i % P;
         invFact[N] = multInv(fact[N], P);
@@ -154,11 +146,8 @@ template <const int MAXN, class T> struct PascalsRow {
         for (int j = 0; j <= N; j++) { C[j] = cur; cur = cur * (N - j) / (j + 1); }
     }
     void init(int N, T p) { // modulo prime
-        assert(p > N); T cur = 1;
-        for (int j = 0; j <= N; j++) {
-            C[j] = cur;
-            cur = divMod(cur * (N - j) % p, (j + 1), p);
-        }
+        assert(N < p); T cur = 1;
+        for (int j = 0; j <= N; j++) { C[j] = cur; cur = divMod(cur * (N - j) % p, (j + 1), p); }
     }
 };
 
