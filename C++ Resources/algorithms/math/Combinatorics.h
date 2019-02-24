@@ -25,12 +25,13 @@ template <class T> T factorialPrime(T n, T p) {
 // Time Complexity: O(log b)
 template <class T> T multMod(T a, T b, T mod) {
     T x = 0, y = a % mod;
-    for (; b > 0; b /= 2, y = (y + y) % mod) if (b % 2 == 1) x = (x + y) % mod;
+    for (; b > 0; b /= 2, y = y + y < mod ? y + y : y + y - mod) if (b % 2 == 1) x = x + y < mod ? x + y : x + y - mod;
     return x;
 }
 
 // base ^ pow
 // Time Complexity: O(log pow)
+// If multiplication is an expensive operation, then y = y * y should only be computed when pow > 0
 template <class T, class U> T pow2(T base, U pow) {
     T x = 1, y = base;
     for (; pow > 0; pow /= 2, y = y * y) if (pow % 2 == 1) x = x * y;
@@ -39,6 +40,7 @@ template <class T, class U> T pow2(T base, U pow) {
 
 // base ^ pow % mod
 // Time Complexity: O(log pow)
+// If multiplication is an expensive operation, then y = y * y should only be computed when pow > 0
 template <class T, class U> T powMod(T base, U pow, T mod) {
     T x = 1, y = base % mod;
     for (; pow > 0; pow /= 2, y = y * y % mod) if (pow % 2 == 1) x = x * y % mod;
