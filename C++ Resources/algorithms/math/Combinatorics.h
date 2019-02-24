@@ -21,7 +21,7 @@ template <class T> T factorialPrime(T n, T p) {
     return ret;
 }
 
-// a * b % mod, useful if a * b overflow
+// a * b % mod, useful if a * b overflows
 // Time Complexity: O(log b)
 template <class T> T multMod(T a, T b, T mod) {
     T x = 0, y = a % mod;
