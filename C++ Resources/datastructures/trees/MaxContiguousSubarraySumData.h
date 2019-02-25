@@ -20,3 +20,4 @@ template <class T> MaxContiguousSubarrayData<T> applyLazy(const MaxContiguousSub
 // getSegmentVal returns a pair containing the range value, and the actual value
 template <class T> pair<T, T> getSegmentVal(const pair<T, T> &l, int len) { return make_pair(l.first * len, l.second); }
 template <class T> pair<T, T> mergeLazy(const pair<T, T> &l, const pair<T, T> &r) { return r; }
+template <class T> pair<T, T> makeLazy(const T &v) { return make_pair(v, v); }
