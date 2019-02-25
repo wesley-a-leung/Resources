@@ -4,6 +4,8 @@
 using namespace std;
 
 // Computes the minimum arborescence, or directed minimum spanning tree using Gabow's variant of Edmonds' algorithm
+// The directed minimum spanning tree is a set of edges such that every vertex is reachable from the root,
+// and the sum of the edge weights is minimized
 // Time Complexity: O(E log V)
 // Memory Complexity: O(V + E)
 template <const int MAXV, class unit> struct GabowMinArborescence {
@@ -13,7 +15,7 @@ template <const int MAXV, class unit> struct GabowMinArborescence {
         bool operator > (const Edge &e) const { return weight > e.weight; }
         Edge operator + (const unit &add) const { Edge ret; ret.from = from; ret.to = to; ret.weight = weight + add; return ret; }
     };
-    int UF[MAXV], vis[MAXV]; vector<Edge> edges, mst; unit weight; vector<IncrementalSkewHeap<Edge, greater<Edge>, unit>> H;
+    int UF[MAXV], vis[MAXV]; vector<Edge> edges; unit weight; vector<IncrementalSkewHeap<Edge, greater<Edge>, unit>> H;
     void addEdge(int from, int to, unit weight) { edges.push_back({from, to, weight}); }
     int find(int v) { return UF[v] < 0 ? v : UF[v] = find(UF[v]); }
     bool join(int v, int w) {
@@ -42,5 +44,5 @@ template <const int MAXV, class unit> struct GabowMinArborescence {
         }
         return weight;
     }
-    void clear() { edges.clear(); mst.clear(); H.clear(); }
+    void clear() { edges.clear(); H.clear(); }
 };
