@@ -19,7 +19,7 @@ struct Node {
     void splay(); Node *expose(); void makeRoot(); Node *findRoot(); Node *findMin();
 };
 int Size(Node *x) { return x ? x->size : 0; }
-Data Sbtr(Node *x) { return x ? x->sbtr : vdef; }
+Data Sbtr(Node *x) { return x ? x->sbtr : qdef; }
 bool Node::isRoot() { return !p || (this != p->l && this != p->r); }
 void Node::update() {
     size = 1; sbtr = val;

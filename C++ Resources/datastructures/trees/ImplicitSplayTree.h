@@ -8,7 +8,7 @@ using namespace std;
 //   updateVal, queryVal, queryRange: O(log N)
 // Memory Complexity: O(N)
 
-using Data = int; using Lazy = int; const Data vdef = 0;
+using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0;
 Data merge(const Data &l, const Data &r); // to be implemented
 Data applyLazy(const Data &l, const Lazy &r); // to be implemented
 struct Node {
@@ -18,7 +18,7 @@ struct Node {
 };
 int Size(Node *x) { return x ? x->size : 0; }
 Data Val(Node *x) { return x ? x->val : vdef; }
-Data Sbtr(Node *x) { return x ? x->sbtr : vdef; }
+Data Sbtr(Node *x) { return x ? x->sbtr : qdef; }
 void Node::update() {
     size = 1; sbtr = val;
     if (l) { size += l->size; sbtr = merge(l->sbtr, sbtr); }
