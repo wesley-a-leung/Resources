@@ -19,4 +19,9 @@ template <const int MAXV> struct BFS {
         }
     }
     void run(int V, int s) { run(V, vector<int>(1, s)); }
+    vector<int> getPath(int v) {
+        vector<int> path;
+        for (; v != -1; v = to[v]) path.push_back(v);
+        reverse(path.begin(), path.end()); return path;
+    }
 };

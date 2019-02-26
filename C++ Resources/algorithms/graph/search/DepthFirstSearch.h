@@ -15,4 +15,9 @@ template <const int MAXV> struct DFS {
         for (int w : adj[v]) if (!vis[w]) { to[w] = v; dfs(w, d + 1); }
     }
     void run(int V, int s) { fill(vis, vis + V, false); fill(to, to + V, -1); dfs(s, 0); }
+    vector<int> getPath(int v) {
+        vector<int> path;
+        for (; v != -1; v = to[v]) path.push_back(v);
+        reverse(path.begin(), path.end()); return path;
+    }
 };
