@@ -3,13 +3,13 @@
 using namespace std;
 
 seed_seq seq {
-    (uint64_t) chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
-    (uint64_t) __builtin_ia32_rdtsc(),
-    (uint64_t) (uintptr_t) make_unique<char>().get()
+    (uint64_t)chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
+    (uint64_t)__builtin_ia32_rdtsc(),(uint64_t)(uintptr_t)make_unique<char>().get()
 };
 mt19937_64 rng64(seq);
 
-// Computes the hash of a string to allow for easy compuptation of substring hashes
+// Computes the hash of a string to allow for easy computation of substring hashes
+// MOD should be at least S^2 to prevent collisions
 // Time Complexity:
 //   compute: O(S)
 //   getHash: O(1)

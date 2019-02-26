@@ -13,14 +13,14 @@ seed_seq seq {
     (uint64_t)chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
     (uint64_t)__builtin_ia32_rdtsc(),(uint64_t)(uintptr_t)make_unique<char>().get()
 };
-mt19937 rng(seq); uniform_real_distribution<double> dis;
+mt19937_64 rng64(seq); uniform_int_distribution<long long> dis;
 using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const bool ISPRE = true, ISPOST = false;
 Data merge(const Data &l, const Data &r); // to be implemented
 Data applyLazy(const Data &l, const Lazy &r); // to be implemented
 struct Node {
-    Node *l, *r, *p; int vert, size; bool type; double pri; Data val, sbtr;
+    Node *l, *r, *p; int vert, size; bool type; long long pri; Data val, sbtr;
     Node (int vert, bool type, const Data &val) : l(nullptr), r(nullptr), p(nullptr), vert(vert), size(1),
-        type(type), pri(dis(rng)), val(val), sbtr(val) {}
+        type(type), pri(dis(rng64)), val(val), sbtr(val) {}
     void update() {
         size = 1; sbtr = val;
         if (l) { l->p = this; size += l->size; sbtr = merge(l->sbtr, sbtr); }
