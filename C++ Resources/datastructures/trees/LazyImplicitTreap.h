@@ -12,7 +12,7 @@ seed_seq seq {
     (uint64_t)chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
     (uint64_t)__builtin_ia32_rdtsc(),(uint64_t)(uintptr_t)make_unique<char>().get()
 };
-mt19937 rng(seq); uniform_real_distribution<double> dis;
+mt19937_64 rng64(seq); uniform_int_distribution<long long> dis;
 using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ldef = 0;
 Data merge(const Data &l, const Data &r); // to be implemented
 Lazy getSegmentVal(const Lazy &v, int k); // to be implemented
@@ -20,8 +20,8 @@ Lazy mergeLazy(const Lazy &l, const Lazy &r); // to be implemented
 Data applyLazy(const Data &l, const Lazy &r); // to be implemented
 void revData(Data &v); // to be implemented
 struct Node {
-    Node *l, *r; int size; double pri; Data val, sbtr; Lazy lz; bool rev;
-    Node (const Data &val) : l(nullptr), r(nullptr), size(1), pri(dis(rng)), val(val), sbtr(val), lz(ldef), rev(false) {}
+    Node *l, *r; int size; long long pri; Data val, sbtr; Lazy lz; bool rev;
+    Node (const Data &val) : l(nullptr), r(nullptr), size(1), pri(dis(rng64)), val(val), sbtr(val), lz(ldef), rev(false) {}
     void update() {
         size = 1; sbtr = val;
         if (l) { size += l->size; sbtr = merge(l->sbtr, sbtr); }
