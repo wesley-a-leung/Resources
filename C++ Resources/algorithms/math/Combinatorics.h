@@ -91,7 +91,7 @@ template <class T> T choose(int n, int k, T p) {
     if (n < k) return 0;
     if (k > n - k) k = n - k;
     T num = 1, den = 1;
-    for (int i = 0; i < k; i++) { num = (num * (n - i)) % p; den = (den * (i + 1)) % p; }
+    for (int i = 0; i < k; i++) { num = num * (n - i) % p; den = den * (i + 1) % p; }
     return divMod(num, den, p);
 }
 
