@@ -28,7 +28,7 @@ template <class T> addMod(T a, T b, T mod) { T ret = a + b; return ret < mod ? r
 
 // (a - b) % mod
 // Time Complexity O(1)
-// Required: 0 <= a < mod, 0 <= b < mod, 0 < mod, mod can be represented as an unsigned integer
+// Required: 0 <= a < mod, 0 <= b < mod, 0 < mod, mod can be represented as an signed integer
 template <class T> subMod(T a, T b, T mod) { T ret = a - b; return 0 <= ret ? ret : ret + mod; }
 
 // a * b % mod
