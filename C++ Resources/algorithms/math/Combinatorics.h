@@ -21,10 +21,26 @@ template <class T> T factorialPrime(T n, T p) {
     return ret;
 }
 
+// (a + b) % mod
+// Time Complexity O(1)
+// Required: 0 <= a < mod, 0 <= b < mod, 0 < mod, mod + mod does not overflow
+template <class T> addMod(T a, T b, T mod) { T ret = a + b; return ret < mod ? ret : ret - mod; }
+
+// (a - b) % mod
+// Time Complexity O(1)
+// Required: 0 <= a < mod, 0 <= b < mod, 0 < mod, mod can be represented as an unsigned integer
+template <class T> subMod(T a, T b, T mod) { T ret = a - b; return 0 <= ret ? ret : ret + mod; }
+
+// a * b % mod
+// Time Complexity: O(1)
+// Required: 0 <= a < mod, 0 <= b < mod, 0 < mod, mod * mod does not overflow
+template <class T> mulMod(T a, T b, T mod) { return a * b % mod; }
+
 // a * b % mod, useful if a * b overflows
 // Time Complexity: O(log b)
-template <class T> T multMod(T a, T b, T mod) {
-    T x = 0, y = a % mod;
+// Required: 0 <= a < mod, 0 <= b < mod, 0 < mod, mod + mod does not overflow
+template <class T> T mulMod2(T a, T b, T mod) {
+    T x = 0, y = a;
     for (; b > 0; b /= 2, y = y + y < mod ? y + y : y + y - mod) if (b % 2 == 1) x = x + y < mod ? x + y : x + y - mod;
     return x;
 }
@@ -32,6 +48,7 @@ template <class T> T multMod(T a, T b, T mod) {
 // base ^ pow
 // Time Complexity: O(log pow)
 // If multiplication is an expensive operation, then y = y * y should only be computed when pow > 0
+// Required: 0 <= pow
 template <class T, class U> T pow2(T base, U pow) {
     T x = 1, y = base;
     for (; pow > 0; pow /= 2, y = y * y) if (pow % 2 == 1) x = x * y;
@@ -41,19 +58,22 @@ template <class T, class U> T pow2(T base, U pow) {
 // base ^ pow % mod
 // Time Complexity: O(log pow)
 // If multiplication is an expensive operation, then y = y * y should only be computed when pow > 0
+// Required: 0 <= base < mod, 0 <= pow, 0 < mod, mod * mod does not overflow
 template <class T, class U> T powMod(T base, U pow, T mod) {
-    T x = 1, y = base % mod;
+    T x = 1, y = base;
     for (; pow > 0; pow /= 2, y = y * y % mod) if (pow % 2 == 1) x = x * y % mod;
     return x;
 }
 
 // Modular Multiplicative Inverse of i in Zp for a prime p
 // Time Complexity: O(log p)
-template <class T> T multInv(T i, T p) { return powMod(i % p, p - 2, p); }
+// Required: 0 < i < p, 0 < p, p * p does not overflow
+template <class T> T mulInv(T i, T p) { return powMod(i, p - 2, p); }
 
 // i / j % p for a prime p
 // Time Complexity: O(log p)
-template <class T> T divMod(T i, T j, T p) { return i % p * powMod(j % p, p - 2, p) % p; }
+// Required: 0 <= i < p, 0 < j < p, 0 < p, p * p does not overflow
+template <class T> T divMod(T i, T j, T p) { return i * mulInv(j) % p; }
 
 // n choose k
 // Time Complexity: O(min(k, n - k))
@@ -77,9 +97,7 @@ template <class T> T choose(int n, int k, T p) {
 
 // n choose k % p
 // Time Complexity: O(log p) if factorials are precomputed
-template <class T> T fastChoose(int n, int k, T p) {
-    return divMod(divMod(factorial(n, p), factorial(k, p), p), factorial(n - k, p), p);
-}
+template <class T> T fastChoose(int n, int k, T p) { return divMod(divMod(factorial(n, p), factorial(k, p), p), factorial(n - k, p), p); }
 
 // choosing k elements from n items with replacement, modulo p
 // Time Complexity: O(log p) if factorials are precomputed
@@ -123,7 +141,7 @@ template <const int MAXN, class T> struct Combinatorics {
     void init(int N, T P) { // compute factorials mod prime up to N!
         assert(N < P); fact[0] = 1;
         for (int i = 1; i <= N; i++) fact[i] = fact[i - 1] * i % P;
-        invFact[N] = multInv(fact[N], P);
+        invFact[N] = mulInv(fact[N], P);
         for (int i = N - 1; i >= 0; i--) invFact[i] = invFact[i + 1] * (i + 1) % P;
     }
     T factorial(int N) { return fact[N]; }

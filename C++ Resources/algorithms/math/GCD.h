@@ -15,7 +15,7 @@ template <class T> T EEA(T a, T b, T &x, T &y) {
 }
 
 // Computes the multiplicative inverse of a in Zn
-template <class T> T multInv(T a, T n) {
+template <class T> T mulInv(T a, T n) {
     assert(0 <= a && a < n); T x, y;
     if (EEA(a, n, x, y) != 1) return -1; // no inverse
     return (x % n + n) % n;
@@ -51,6 +51,6 @@ template <class T> pair<T, T> CRT(pair<T, T> a, pair<T, T> b) {
     assert(0 < a.second && 0 < b.second && 0 <= a.first && a.first < a.second && 0 <= b.first && b.first < b.second);
     T g = gcd(a.second, b.second), l = a.second / g * b.second;
     if ((b.first - a.first) % g != 0) return make_pair(-1, l); // no solution
-    T A = a.second / g, B = b.second / g, mul = (b.first - a.first) / g * multInv(A % B, B) % B;
+    T A = a.second / g, B = b.second / g, mul = (b.first - a.first) / g * mulInv(A % B, B) % B;
     return make_pair(((mul * a.second + a.first) % l + l) % l, l);
 }
