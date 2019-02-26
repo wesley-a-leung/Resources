@@ -6,7 +6,7 @@ using namespace std;
 
 template <class T> T gcd(T a, T b) { return b == 0 ? abs(a) : gcd(b, a % b); }
 
-template <class T> T lcm(T a, T b) { return abs(a / gcd(a, b) * b); }
+template <class T> T lcm(T a, T b) { return a == 0 && b == 0 ? 0 : abs(a / gcd(a, b) * b); }
 
 // Extended Euclidean Algorithm to compute x and y, where ax + by = gcd(a, b)
 template <class T> T EEA(T a, T b, T &x, T &y) {
