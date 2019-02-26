@@ -59,7 +59,7 @@ template <class T> bool millerRabin(T N, int iterations) {
     T s = N - 1;
     while (s % 2 == 0) s /= 2;
     for (int i = 0; i < iterations; i++) {
-        T temp = s, r = powMod(uniform_int_distribution<T>(1, N - 1)(rng64), temp, N);
+        T temp = s, r = powMod(uniform_int_distribution<T>(1, N - 1)(rng64) % N, temp, N);
         while (temp != N - 1 && r != 1 && r != N - 1) { r = r * r % N; temp *= 2; }
         if (r != N - 1 && temp % 2 == 0) return false;
     }
