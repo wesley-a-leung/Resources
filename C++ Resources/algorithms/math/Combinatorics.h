@@ -23,22 +23,22 @@ template <class T> T factorialPrime(T n, T p) {
 
 // (a + b) % mod
 // Time Complexity O(1)
-// Required: 0 <= a < mod, 0 <= b < mod, 0 < mod, mod + mod does not overflow
+// Required: 0 <= a < mod, 0 <= b < mod, mod + mod does not overflow
 template <class T> addMod(T a, T b, T mod) { T ret = a + b; return ret < mod ? ret : ret - mod; }
 
 // (a - b) % mod
 // Time Complexity O(1)
-// Required: 0 <= a < mod, 0 <= b < mod, 0 < mod, mod can be represented as a signed integer
+// Required: 0 <= a < mod, 0 <= b < mod, mod can be represented as a signed integer
 template <class T> subMod(T a, T b, T mod) { T ret = a - b; return 0 <= ret ? ret : ret + mod; }
 
 // a * b % mod
 // Time Complexity: O(1)
-// Required: 0 <= a < mod, 0 <= b < mod, 0 < mod, a * b does not overflow
+// Required: 0 <= a < mod, 0 <= b < mod, a * b does not overflow
 template <class T> mulMod(T a, T b, T mod) { return a * b % mod; }
 
 // a * b % mod, useful if a * b overflows
 // Time Complexity: O(log b)
-// Required: 0 <= a < mod, 0 <= b < mod, 0 < mod, mod + mod does not overflow
+// Required: 0 <= a < mod, 0 <= b < mod, mod + mod does not overflow
 template <class T> T mulMod2(T a, T b, T mod) {
     T x = 0, y = a;
     for (; b > 0; b /= 2, y = y + y < mod ? y + y : y + y - mod) if (b % 2 == 1) x = x + y < mod ? x + y : x + y - mod;
@@ -67,12 +67,12 @@ template <class T, class U> T powMod(T base, U pow, T mod) {
 
 // Modular Multiplicative Inverse of i in Zp for a prime p
 // Time Complexity: O(log p)
-// Required: 0 < i < p, 0 < p, p * p does not overflow
+// Required: 0 < i < p, p * p does not overflow
 template <class T> T mulInv(T i, T p) { return powMod(i, p - 2, p); }
 
 // i / j % p for a prime p
 // Time Complexity: O(log p)
-// Required: 0 <= i < p, 0 < j < p, 0 < p, p * p does not overflow
+// Required: 0 <= i < p, 0 < j < p, p * p does not overflow
 template <class T> T divMod(T i, T j, T p) { return i * mulInv(j) % p; }
 
 // n choose k
