@@ -2,25 +2,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// n! % m
-// Time Complexity: O(n)
-template <class T> T factorial(T n, T m) {
-    T ret = 1;
-    for (int i = 2; i <= n; i++) ret = ret * i % m;
-    return ret;
-}
-
-// n! % p for a prime p
-// Time Complexity: O(p log n)
-template <class T> T factorialPrime(T n, T p) {
-    T ret = 1, h = 0;
-    while (n > 1) {
-        ret = (ret * ((n / p) % 2 == 1 ? p - 1 : 1)) % p; h = n % p; n /= p;
-        for (int i = 2; i <= h; i++) ret = ret * i % p;
-    }
-    return ret;
-}
-
 // (a + b) % mod
 // Time Complexity O(1)
 // Required: 0 <= a < mod, 0 <= b < mod, mod + mod does not overflow
@@ -74,6 +55,25 @@ template <class T> T mulInv(T i, T p) { return powMod(i, p - 2, p); }
 // Time Complexity: O(log p)
 // Required: 0 <= i < p, 0 < j < p, p * p does not overflow
 template <class T> T divMod(T i, T j, T p) { return i * mulInv(j) % p; }
+
+// n! % m
+// Time Complexity: O(n)
+template <class T> T factorial(T n, T m) {
+    T ret = 1;
+    for (int i = 2; i <= n; i++) ret = ret * i % m;
+    return ret;
+}
+
+// n! % p for a prime p
+// Time Complexity: O(p log n)
+template <class T> T factorialPrime(T n, T p) {
+    T ret = 1, h = 0;
+    while (n > 1) {
+        ret = (ret * ((n / p) % 2 == 1 ? p - 1 : 1)) % p; h = n % p; n /= p;
+        for (int i = 2; i <= h; i++) ret = ret * i % p;
+    }
+    return ret;
+}
 
 // n choose k
 // Time Complexity: O(min(k, n - k))
