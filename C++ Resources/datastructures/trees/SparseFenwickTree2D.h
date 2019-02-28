@@ -96,7 +96,8 @@ template <class T, class IndexType, const int MAXN, const IndexType MAXM, const 
         }
         return ret;
     }
-    T rsq(int x1, IndexType y1, int x2, IndexType y2) { return rsq(x2, y2) + rsq(x1 - 1, y1 - 1) - rsq(x1 - 1, y2) - rsq(x2, y1 - 1); }
+    T rsq(int x, IndexType y1, IndexType y2) { return rsq(x, y2) - rsq(x, y1 - 1); }
+    T rsq(int x1, IndexType y1, int x2, IndexType y2) { return rsq(x2, y1, y2) - rsq(x1 - 1, y1, y2); }
 };
 
 // Sparse Fenwick Tree supporting point updates (with any value) and range queries in 2 dimensions (sparse in 2 dimension)
