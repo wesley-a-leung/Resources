@@ -123,5 +123,6 @@ template <class T, class IndexType1, class IndexType2, const IndexType1 MAXN, co
         }
         return ret;
     }
-    T rsq(IndexType1 x1, IndexType2 y1, IndexType1 x2, IndexType2 y2) { return rsq(x2, y2) + rsq(x1 - 1, y1 - 1) - rsq(x1 - 1, y2) - rsq(x2, y1 - 1); }
+    T rsq(IndexType1 x, IndexType2 y1, IndexType2 y2) { return rsq(x, y2) - rsq(x, y1 - 1); }
+    T rsq(IndexType1 x1, IndexType2 y1, IndexType1 x2, IndexType2 y2) { return rsq(x2, y1, y2) - rsq(x1 - 1, y1, y2); }
 };
