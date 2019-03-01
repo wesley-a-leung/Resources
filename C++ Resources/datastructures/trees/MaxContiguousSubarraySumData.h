@@ -17,6 +17,8 @@ template <class T> MaxContiguousSubarrayData<T> merge(const MaxContiguousSubarra
 template <class T> MaxContiguousSubarrayData<T> applyLazy(const MaxContiguousSubarrayData<T> &l, const pair<T, T> &r) {
     MaxContiguousSubarrayData<T> ret; ret.pre = ret.suf = ret.maxSum = max(r.first, r.second); ret.sum = r.first; ret.isNull = false; return ret;
 }
+// reversing interval
+template <class T> void revData(MaxContiguousSubarrayData<T> &v) { swap(v.pre, v.suf); }
 // getSegmentVal returns a pair containing the range value, and the actual value
 template <class T> pair<T, T> getSegmentVal(const pair<T, T> &l, int len) { return make_pair(l.first * len, l.second); }
 template <class T> pair<T, T> mergeLazy(const pair<T, T> &l, const pair<T, T> &r) { return r; }
