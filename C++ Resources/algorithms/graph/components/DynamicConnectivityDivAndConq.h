@@ -7,7 +7,7 @@ using namespace std;
 // Time Complexity: O(V + Q (log Q) ^ 2)
 // Memory Complexity: O(V + Q)
 template <const int MAXV, const int MAXQ> struct DynamicConnectivityDivAndConq {
-    int Q = 0, cnt, UF[MAXV]; vector<int> ans; unordered_map<int, int> present[MAXV]; stack<pair<pair<int ,int>, int>> history;
+    int Q = 0, cnt, UF[MAXV]; vector<int> ans; unordered_map<int, int> present[MAXV]; stack<pair<pair<int, int>, int>> history;
     struct Query { int type, v, w, otherTime; } q[MAXQ];
     int find(int v) { while (UF[v] >= 0) v = UF[v]; return v; }
     void join(int v, int w) {

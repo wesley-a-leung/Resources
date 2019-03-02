@@ -8,7 +8,7 @@ using namespace std;
 // Memory Complexity: O(V + Q)
 template <const int MAXV, const int MAXQ, const bool ONE_INDEXED> struct DynamicBipartiteDivAndConq {
     int Q = 0, cnt, UF[MAXV]; bool P[MAXV]; vector<bool> ans; unordered_map<int, int> present[MAXV];
-    stack<pair<pair<int ,int>, pair<int, bool>>> history; stack<bool> history2;
+    stack<pair<pair<int, int>, pair<int, bool>>> history; stack<bool> history2;
     struct Query { int type, v, w, otherTime; } q[MAXQ];
     int find(int v) { while (UF[v] >= 0) v = UF[v]; return v; }
     bool parity(int v) { bool p = P[v]; for (; UF[v] >= 0; p ^= P[v]) v = UF[v]; return p; }

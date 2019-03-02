@@ -2,21 +2,22 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Link Cut Tree supporting vertex updates and path queries
-// Time Complexity:
-//   constructor: O(N)
-//   makeRoot, findRoot, lca, link, cut, updateVertex, queryPath: O(log N)
-// Memory Complexity: O(N)
+// Supports queries for the minimum spanning tree after an edge has been added
+// Online Link Cut Tree Solution
+// Time Complexity: O((V + Q) log (V + Q))
+// Memory Complexity: O(V + Q)
 
-using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0;
-Data merge(const Data &l, const Data &r); // to be implemented
-Data applyLazy(const Data &l, const Lazy &r); // to be implemented
-void revData(Data &v); // to be implemented
+using unit = int; const unit NEG_INF = (numeric_limits<unit>::min)();
+// Stripped down version of Link Cut Tree for maximum edge weight queries
+using Data = pair<unit, int>; using Lazy = unit; const Data vdef = make_pair(NEG_INF, -1), qdef = make_pair(NEG_INF, -1);
+Data merge(const Data &l, const Data &r) { return max(l, r); }
+Data applyLazy(const Data &l, const Lazy &r) { return make_pair(r, l.second); }
+void revData(Data &v) {}
 struct Node {
-    Node *l, *r, *p; int vert, size; Data val, sbtr; bool rev;
-    Node(int vert, const Data &val) : l(nullptr), r(nullptr), p(nullptr), vert(vert), size(1), val(val), sbtr(val), rev(false) {}
+    Node *l, *r, *p; int size; Data val, sbtr; bool rev;
+    Node(const Data &val) : l(nullptr), r(nullptr), p(nullptr), size(1), val(val), sbtr(val), rev(false) {}
     bool isRoot(); void update(); void apply(const Lazy &v); void propagate(); void rotate();
-    void splay(); Node *expose(); void makeRoot(); Node *findRoot(); Node *findMin();
+    void splay(); Node *expose(); void makeRoot(); Node *findRoot();
 };
 int Size(Node *x) { return x ? x->size : 0; }
 Data Sbtr(Node *x) { return x ? x->sbtr : qdef; }
@@ -63,40 +64,44 @@ Node *Node::findRoot() {
     while (x->r) x = x->r;
     x->splay(); return x;
 }
-Node *Node::findMin() {
-    Node *x = this;
-    while (x->l) x = x->l;
-    x->splay(); return x;
-}
 struct LinkCutTree {
-    vector<Node> T;
-    LinkCutTree(int N) { T.reserve(N); for (int i = 0; i < N; i++) T.emplace_back(i, vdef); }
-    template <class It> LinkCutTree(It st, It en) { int N = en - st; T.reserve(N); for (int i = 0; i < N; i++) T.emplace_back(i, *(st + i)); }
-    void makeRoot(int x) { T[x].makeRoot(); }
-    bool connected(int x, int y) { return x == y || T[x].findRoot() == T[y].findRoot(); }
-    int lca(int x, int y, int r) {
-        if (T[x].findRoot() != T[y].findRoot()) return -1;
-        T[r].makeRoot(); T[x].expose(); return T[y].expose()->vert;
+    vector<Node> T; int MAXNODES = 0;
+    void reserve(int N) { T.reserve(N); MAXNODES = N; }
+    void init(int N) { for (int i = 0; i < N; i++) { T.emplace_back(vdef); assert(int(T.size()) <= MAXNODES); } }
+    void makeNode(int id, unit weight) { T.emplace_back(make_pair(weight, id)); assert(int(T.size()) <= MAXNODES); }
+    bool connected(int x, int y) {
+        if (x == y) return true;
+        if (T[x].findRoot() != T[y].findRoot()) return false;
+        T[x].expose(); T[y].expose(); return T[x].p;
     }
     bool link(int par, int ch) {
-        if (connected(par, ch)) return false;
         T[ch].makeRoot(); T[ch].p = &T[par]; return true;
     }
     bool cut(int x, int y) {
-        if (!connected(x, y)) return false;
         T[x].makeRoot(); T[y].expose();
         if (&T[x] != T[y].r || T[x].l) return false;
         T[y].r->p = nullptr; T[y].r = nullptr; return true;
     }
-    bool cutParent(int ch) {
-        T[ch].expose();
-        if (!T[ch].r) return false;
-        T[ch].r->p = nullptr; T[ch].r = nullptr; return true;
-    }
-    int findParent(int ch) { T[ch].expose(); return T[ch].r ? T[ch].r->findMin()->vert : -1; }
     void updateVertex(int x, const Lazy &val) { T[x].makeRoot(); T[x].apply(val); }
     Data queryPath(int from, int to) {
-        if (!connected(from, to)) return qdef;
         T[from].makeRoot(); T[to].expose(); return Sbtr(&T[to]);
+    }
+    void clear() { T.clear(); MAXNODES = 0; }
+};
+
+struct SemiDynamicMST {
+    struct Edge { int v, w; unit weight; };
+    int V; LinkCutTree LCT; unit currentMST; vector<Edge> edges;
+    void init(int V, int Q) { this->V = V; currentMST = 0; LCT.reserve(V + Q); LCT.init(V); }
+    void clear() { LCT.clear(); edges.clear(); }
+    unit addEdge(int v, int w, unit weight) {
+        if (LCT.connected(v, w)) {
+            pair<unit, int> mx = LCT.queryPath(v, w);
+            if (mx.first <= weight) return currentMST;
+            LCT.cut(edges[mx.second].v, V + mx.second); LCT.cut(edges[mx.second].w, V + mx.second); currentMST -= mx.first;
+        }
+        int id = int(edges.size()); edges.push_back({v, w, weight});
+        LCT.makeNode(id, weight); LCT.link(v, V + id); LCT.link(w, V + id); currentMST += weight;
+        return currentMST;
     }
 };
