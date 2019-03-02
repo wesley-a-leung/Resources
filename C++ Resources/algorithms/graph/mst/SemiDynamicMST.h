@@ -16,8 +16,7 @@ void revData(Data &v) {}
 struct Node {
     Node *l, *r, *p; int size; Data val, sbtr; bool rev;
     Node(const Data &val) : l(nullptr), r(nullptr), p(nullptr), size(1), val(val), sbtr(val), rev(false) {}
-    bool isRoot(); void update(); void apply(const Lazy &v); void propagate(); void rotate();
-    void splay(); Node *expose(); void makeRoot(); Node *findRoot();
+    bool isRoot(); void update(); void propagate(); void rotate(); void splay(); Node *expose(); void makeRoot(); Node *findRoot();
 };
 int Size(Node *x) { return x ? x->size : 0; }
 Data Sbtr(Node *x) { return x ? x->sbtr : qdef; }
@@ -27,7 +26,6 @@ void Node::update() {
     if (l) { size += l->size; sbtr = merge(l->sbtr, sbtr); }
     if (r) { size += r->size; sbtr = merge(sbtr, r->sbtr); }
 }
-void Node::apply(const Lazy &v) { val = applyLazy(val, v); sbtr = applyLazy(sbtr, v); }
 void Node::propagate() {
     if (rev) {
         swap(l, r); rev = false;
@@ -82,7 +80,6 @@ struct LinkCutTree {
         if (&T[x] != T[y].r || T[x].l) return false;
         T[y].r->p = nullptr; T[y].r = nullptr; return true;
     }
-    void updateVertex(int x, const Lazy &val) { T[x].makeRoot(); T[x].apply(val); }
     Data queryPath(int from, int to) {
         T[from].makeRoot(); T[to].expose(); return Sbtr(&T[to]);
     }
