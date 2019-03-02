@@ -10,7 +10,7 @@ using namespace std::placeholders;
 //   getArea2: O(N)
 // Memory Complexity: O(N)
 template <const int MAXN> struct ConvexHull {
-    Point P[MAXN]; vector<Point> hull;
+    Point P[MAXN]; vector<Point> hull; // counterclockwise order
     void clear() { hull.clear(); }
     void run(int N) {
         sort(P, P + N, [&] (const Point &p, const Point &q) { return p.y == q.y ? p.x < q.x : p.y < q.y; });
