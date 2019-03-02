@@ -62,43 +62,27 @@ Node *Node::findRoot() {
     while (x->r) x = x->r;
     x->splay(); return x;
 }
-struct LinkCutTree {
-    vector<Node> T; int MAXNODES = 0;
-    void reserve(int N) { T.reserve(N); MAXNODES = N; }
-    void init(int N) { for (int i = 0; i < N; i++) { T.emplace_back(vdef); assert(int(T.size()) <= MAXNODES); } }
-    void makeNode(int id, unit weight) { T.emplace_back(make_pair(weight, id)); assert(int(T.size()) <= MAXNODES); }
-    bool connected(int x, int y) {
-        if (x == y) return true;
-        if (T[x].findRoot() != T[y].findRoot()) return false;
-        T[x].expose(); T[y].expose(); return T[x].p;
-    }
-    bool link(int par, int ch) {
-        T[ch].makeRoot(); T[ch].p = &T[par]; return true;
-    }
-    bool cut(int x, int y) {
-        T[x].makeRoot(); T[y].expose();
-        if (&T[x] != T[y].r || T[x].l) return false;
-        T[y].r->p = nullptr; T[y].r = nullptr; return true;
-    }
-    Data queryPath(int from, int to) {
-        T[from].makeRoot(); T[to].expose(); return Sbtr(&T[to]);
-    }
-    void clear() { T.clear(); MAXNODES = 0; }
-};
-
 struct SemiDynamicMST {
     struct Edge { int v, w; unit weight; };
-    int V; LinkCutTree LCT; unit currentMST; vector<Edge> edges;
-    void init(int V, int Q) { this->V = V; currentMST = 0; LCT.reserve(V + Q); LCT.init(V); }
-    void clear() { LCT.clear(); edges.clear(); }
+    int V, MAXNODES = 0; vector<Node> T; unit currentMST; vector<Edge> edges;
+    void makeNode(int id, unit weight) { T.emplace_back(make_pair(weight, id)); assert(int(T.size()) <= MAXNODES); }
+    bool connected(int x, int y) { return x == y || T[x].findRoot() == T[y].findRoot(); }
+    void link(int par, int ch) { T[ch].makeRoot(); T[ch].p = &T[par]; }
+    void cut(int x, int y) { T[x].makeRoot(); T[y].expose(); T[y].r->p = nullptr; T[y].r = nullptr; }
+    Data queryPath(int from, int to) { T[from].makeRoot(); T[to].expose(); return Sbtr(&T[to]); }
+    void init(int V, int Q) {
+        this->V = V; currentMST = 0; T.reserve(MAXNODES = V + Q);
+        for (int i = 0; i < V; i++) { T.emplace_back(vdef); }
+    }
+    void clear() { MAXNODES = 0; T.clear(); edges.clear(); }
     unit addEdge(int v, int w, unit weight) {
-        if (LCT.connected(v, w)) {
-            pair<unit, int> mx = LCT.queryPath(v, w);
+        if (connected(v, w)) {
+            pair<unit, int> mx = queryPath(v, w);
             if (mx.first <= weight) return currentMST;
-            LCT.cut(edges[mx.second].v, V + mx.second); LCT.cut(edges[mx.second].w, V + mx.second); currentMST -= mx.first;
+            cut(edges[mx.second].v, V + mx.second); cut(edges[mx.second].w, V + mx.second); currentMST -= mx.first;
         }
         int id = int(edges.size()); edges.push_back({v, w, weight});
-        LCT.makeNode(id, weight); LCT.link(v, V + id); LCT.link(w, V + id); currentMST += weight;
+        makeNode(id, weight); link(v, V + id); link(w, V + id); currentMST += weight;
         return currentMST;
     }
 };
