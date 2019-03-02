@@ -22,13 +22,12 @@ template <const int MAXV> struct DFSOrder {
     }
 };
 
-// Computes the Topological of a graph iteratively
+// Computes the Topological of a directed graph iteratively
 // Time Complexity: O(V + E)
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct TopologicalOrder {
     int ind[MAXV], ord[MAXV], inDeg[MAXV]; vector<int> adj[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); inDeg[w]++; }
-    void addBiEdge(int v, int w) { addEdge(v, w); addEdge(w, v); }
     void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     void init(int V = MAXV) { for (int i = 0; i < V; i++) inDeg[i] = 0; }
     void run(int V) {

@@ -11,7 +11,6 @@ template <const int MAXV, class unit, class Comparator = less<unit>> struct DAGS
     Comparator cmp; unit NEG_INF, dist[MAXV]; pair<int, unit> to[MAXV]; vector<pair<int, unit>> adj[MAXV]; TopologicalOrder<MAXV> ord;
     DAGSP(unit NEG_INF) : NEG_INF(NEG_INF) {}
     void addEdge(int v, int w, unit weight) { adj[v].emplace_back(w, weight); ord.addEdge(v, w); }
-    void addBiEdge(int v, int w, unit weight) { addEdge(v, w, weight); addEdge(w, v, weight); }
     void clear(int V = MAXV) { ord.clear(V); for (int i = 0; i < V; i++) adj[i].clear(); }
     void run(int V, const vector<int> &src = vector<int>()) { // if src is empty, then all vertices are sources
         fill(dist, dist + V, src.empty() ? 0 : NEG_INF); fill(to, to + V, make_pair(-1, 0)); ord.run(V);
