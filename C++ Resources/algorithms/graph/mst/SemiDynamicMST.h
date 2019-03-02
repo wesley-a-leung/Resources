@@ -9,28 +9,25 @@ using namespace std;
 
 using unit = int; const unit NEG_INF = (numeric_limits<unit>::min)();
 // Stripped down version of Link Cut Tree for maximum edge weight queries
-using Data = pair<unit, int>; using Lazy = unit; const Data vdef = make_pair(NEG_INF, -1), qdef = make_pair(NEG_INF, -1);
+using Data = pair<unit, int>; const Data vdef = make_pair(NEG_INF, -1), qdef = make_pair(NEG_INF, -1);
 Data merge(const Data &l, const Data &r) { return max(l, r); }
-Data applyLazy(const Data &l, const Lazy &r) { return make_pair(r, l.second); }
-void revData(Data &v) {}
 struct Node {
-    Node *l, *r, *p; int size; Data val, sbtr; bool rev;
-    Node(const Data &val) : l(nullptr), r(nullptr), p(nullptr), size(1), val(val), sbtr(val), rev(false) {}
+    Node *l, *r, *p; Data val, sbtr; bool rev;
+    Node(const Data &val) : l(nullptr), r(nullptr), p(nullptr), val(val), sbtr(val), rev(false) {}
     bool isRoot(); void update(); void propagate(); void rotate(); void splay(); Node *expose(); void makeRoot(); Node *findRoot();
 };
-int Size(Node *x) { return x ? x->size : 0; }
 Data Sbtr(Node *x) { return x ? x->sbtr : qdef; }
 bool Node::isRoot() { return !p || (this != p->l && this != p->r); }
 void Node::update() {
-    size = 1; sbtr = val;
-    if (l) { size += l->size; sbtr = merge(l->sbtr, sbtr); }
-    if (r) { size += r->size; sbtr = merge(sbtr, r->sbtr); }
+    sbtr = val;
+    if (l) sbtr = merge(l->sbtr, sbtr);
+    if (r) sbtr = merge(sbtr, r->sbtr);
 }
 void Node::propagate() {
     if (rev) {
         swap(l, r); rev = false;
-        if (l) { l->rev = !l->rev; revData(l->sbtr); }
-        if (r) { r->rev = !r->rev; revData(r->sbtr); }
+        if (l) l->rev = !l->rev;
+        if (r) r->rev = !r->rev;
     }
 }
 void connect(Node *ch, Node *par, bool hasCh, bool isL) {
@@ -56,7 +53,7 @@ Node *Node::expose() {
     for (Node *y = this; y; y = y->p) { y->splay(); y->l = last; last = y; }
     splay(); return last;
 }
-void Node::makeRoot() { expose(); rev = !rev; revData(sbtr); }
+void Node::makeRoot() { expose(); rev = !rev; }
 Node *Node::findRoot() {
     expose(); Node *x = this;
     while (x->r) x = x->r;
