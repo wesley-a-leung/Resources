@@ -4,9 +4,9 @@ using namespace std;
 
 // Supports queries for the minimum spanning tree after an edges's weight has been changed
 // Offline Sqrt Decomposition Solution
-// Time Complexity: O(V + E * (Q / B) + Q * B)
-// Memory Complexity: O(V + E + Q)
-template <const int MAXV, const int MAXE, const int MAXQ, const int BLOCKSZ, class unit> struct OfflineDynamicMST {
+// Time Complexity: O(Q log Q log (V + Q))
+// Memory Complexity: O(V + Q)
+template <const int MAXV, const int MAXE, const int MAXQ, const int BLOCKSZ, class unit> struct DynamicMSTSqrtDecomp {
     struct Edge { int v, w; unit weight; };
     int Q = 0, flag[MAXE], ind[MAXQ], curFlag, UF[2][MAXV], stamp[2], vis[2][MAXV]; unit ans[MAXQ]; pair<int, unit> q[MAXQ];
     set<pair<unit, int>> small, large; vector<Edge> edges;

@@ -80,11 +80,7 @@ struct LazyLinkCutTree {
     LazyLinkCutTree(int N) { T.reserve(N); for (int i = 0; i < N; i++) T.emplace_back(i, vdef); }
     template <class It> LazyLinkCutTree(It st, It en) { int N = en - st; T.reserve(N); for (int i = 0; i < N; i++) T.emplace_back(i, *(st + i)); }
     void makeRoot(int x) { T[x].makeRoot(); }
-    bool connected(int x, int y) {
-        if (x == y) return true;
-        if (T[x].findRoot() != T[y].findRoot()) return false;
-        T[x].expose(); T[y].expose(); return T[x].p;
-    }
+    bool connected(int x, int y) { return x == y || T[x].findRoot() == T[y].findRoot(); }
     int lca(int x, int y, int r) {
         if (T[x].findRoot() != T[y].findRoot()) return -1;
         T[r].makeRoot(); T[x].expose(); return T[y].expose()->vert;
