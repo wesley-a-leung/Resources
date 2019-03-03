@@ -7,17 +7,17 @@ using namespace std;
 // Time Complexity: O(V + Q (log Q) ^ 2)
 // Memory Complexity: O(V + Q)
 template <const int MAXV, const int MAXQ> struct DynamicConnectivityDivAndConq {
-    int Q = 0, cnt, UF[MAXV]; vector<int> ans; unordered_map<int, int> present[MAXV]; stack<pair<pair<int, int>, int>> history;
+    int Q = 0, cnt, UF[MAXV]; vector<int> ans; unordered_map<int, int> present[MAXV]; vector<pair<pair<int, int>, int>> history;
     struct Query { int type, v, w, otherTime; } q[MAXQ];
     int find(int v) { while (UF[v] >= 0) v = UF[v]; return v; }
     void join(int v, int w) {
         if ((v = find(v)) == (w = find(w))) return;
         if (UF[v] > UF[w]) swap(v, w);
-        history.emplace(make_pair(v, w), UF[w]); UF[v] += UF[w]; UF[w] = v; cnt--;
+        history.emplace_back(make_pair(v, w), UF[w]); UF[v] += UF[w]; UF[w] = v; cnt--;
     }
     void undo() {
-        int v = history.top().first.first, w = history.top().first.second, ufw = history.top().second;
-        history.pop(); UF[w] = ufw; UF[v] -= UF[w]; cnt++;
+        int v = history.back().first.first, w = history.back().first.second, ufw = history.back().second;
+        history.pop_back(); UF[w] = ufw; UF[v] -= UF[w]; cnt++;
     }
     void solve(int l, int r) {
         if (l == r && q[l].type == 0) ans.push_back(cnt);

@@ -8,19 +8,19 @@ using namespace std;
 // Memory Complexity: O(V + Q)
 template <const int MAXV, const int MAXQ, const bool ONE_INDEXED> struct DynamicBipartiteDivAndConq {
     int Q = 0, cnt, UF[MAXV]; bool P[MAXV]; vector<bool> ans; unordered_map<int, int> present[MAXV];
-    stack<pair<pair<int, int>, pair<int, bool>>> history; stack<bool> history2;
+    vector<pair<pair<int, int>, pair<int, bool>>> history; vector<bool> history2;
     struct Query { int type, v, w, otherTime; } q[MAXQ];
     int find(int v) { while (UF[v] >= 0) v = UF[v]; return v; }
     bool parity(int v) { bool p = P[v]; for (; UF[v] >= 0; p ^= P[v]) v = UF[v]; return p; }
     void join(int v, int w) {
         int fv = find(v), fw = find(w); bool p = parity(v) ^ parity(w) ^ 1;
-        if (fv == fw) { history2.push(p); cnt += history2.top(); return; }
+        if (fv == fw) { history2.push_back(p); cnt += history2.back(); return; }
         if (UF[fv] > UF[fw]) swap(fv, fw);
-        history.emplace(make_pair(fv, fw), make_pair(UF[fw], P[fw])); UF[fv] += UF[fw]; UF[fw] = fv; P[fw] = p;
+        history.emplace_back(make_pair(fv, fw), make_pair(UF[fw], P[fw])); UF[fv] += UF[fw]; UF[fw] = fv; P[fw] = p;
     }
     void undo() {
-        int v = history.top().first.first, w = history.top().first.second, ufw = history.top().second.first;
-        bool pfw = history.top().second.second; history.pop(); UF[w] = ufw; UF[v] -= UF[w]; P[w] = pfw;
+        int v = history.back().first.first, w = history.back().first.second, ufw = history.back().second.first;
+        bool pfw = history.back().second.second; history.pop_back(); UF[w] = ufw; UF[v] -= UF[w]; P[w] = pfw;
     }
     void solve(int l, int r) {
         if (l == r && q[l].type == 0) ans.push_back(cnt == 0);
@@ -29,11 +29,11 @@ template <const int MAXV, const int MAXQ, const bool ONE_INDEXED> struct Dynamic
         for (int i = m + 1; i <= r; i++) if (q[i].otherTime < l) join(q[i].v, q[i].w);
         solve(l, m);
         while ((int) history.size() > curSize) undo();
-        while ((int) history2.size() > curSize2) { cnt -= history2.top(); history2.pop(); }
+        while ((int) history2.size() > curSize2) { cnt -= history2.back(); history2.pop_back(); }
         for (int i = l; i <= m; i++) if (q[i].otherTime > r) join(q[i].v, q[i].w);
         solve(m + 1, r);
         while ((int) history.size() > curSize) undo();
-        while ((int) history2.size() > curSize2) { cnt -= history2.top(); history2.pop(); }
+        while ((int) history2.size() > curSize2) { cnt -= history2.back(); history2.pop_back(); }
     }
     void clear(int V = MAXV) { ans.clear(); Q = 0; for (int i = 0; i < V; i++) present[i].clear(); }
     void addEdge(int v, int w) {
