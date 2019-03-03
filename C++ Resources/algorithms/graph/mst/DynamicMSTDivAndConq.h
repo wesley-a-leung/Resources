@@ -57,7 +57,7 @@ void Node::makeRoot() { expose(); rev = !rev; }
 template <const int MAXV> struct DynamicMSTDivAndConq {
     struct Query { int type, v, w; unit weight; int otherTime; };
     int V, MAXNODES = 0; vector<Node> T; unit currentMST; vector<unit> ans; vector<Query> q;
-    unordered_map<int, int> present[MAXV]; stack<pair<pair<int, int>, unit>> history;
+    unordered_map<int, int> present[MAXV]; vector<pair<pair<int, int>, unit>> history;
     void makeNode(int id, unit weight) { T.emplace_back(make_pair(weight, id)); assert(int(T.size()) <= MAXNODES); }
     bool connected(int x, int y) {
         if (x == y) return true;
@@ -76,14 +76,14 @@ template <const int MAXV> struct DynamicMSTDivAndConq {
         if (connected(v, w)) {
             pair<unit, int> mx = queryPath(v, w);
             if (mx.first <= weight) return;
-            history.emplace(make_pair(i, mx.second), currentMST);
+            history.emplace_back(make_pair(i, mx.second), currentMST);
             cut(q[mx.second].v, V + mx.second); cut(q[mx.second].w, V + mx.second); currentMST -= mx.first;
-        } else history.emplace(make_pair(i, -1), currentMST);
+        } else history.emplace_back(make_pair(i, -1), currentMST);
         link(v, V + i); link(w, V + i); currentMST += weight;
     }
     void undo() {
-        int i = history.top().first.first; int j = history.top().first.second; currentMST = history.top().second; history.pop();
-        cut(q[i].v, V + i); cut(q[i].w, V + i);
+        int i = history.back().first.first; int j = history.back().first.second; currentMST = history.back().second;
+        history.pop_back(); cut(q[i].v, V + i); cut(q[i].w, V + i);
         if (j != -1) { link(q[j].v, V + j); link(q[j].w, V + j); }
     }
     void solve(int l, int r) {
@@ -104,7 +104,7 @@ template <const int MAXV> struct DynamicMSTDivAndConq {
     void removeEdge(int v, int w) {
         if (v > w) swap(v, w);
         int insTime = present[v][w]; makeNode(int(q.size()), q[insTime].weight);
-        q[insTime].otherTime = int(q.size()); q.push_back({-1, v, w, q[insTime].weight, insTime});
+        q[insTime].otherTime = int(q.size()); q.push_back({-1, q[insTime].v,  q[insTime].w, q[insTime].weight, insTime});
     }
     void query() { makeNode(int(q.size()), 0); q.push_back({0, -1, -1, 0, int(q.size())}); }
     void solve() { solve(0, int(q.size()) - 1); }
