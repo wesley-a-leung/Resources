@@ -7,7 +7,7 @@ using namespace std;
 //   init: O(N log N)
 //   query: O(1)
 // Memory Complexity: O(N log N)
-template <const int MAXN, const int MAXLGN, class T, const bool IS_MAX> struct RMQSparseTable {
+template <const int MAXN, const int MAXLGN, class T, const bool IS_MAX> struct SparseTableRMQ {
     T A[MAXN]; int ST[MAXLGN][MAXN];
     int cmpInd(int l, int r) { return (A[l] <= A[r]) ^ IS_MAX ? l : r; }
     void init(int N) {
