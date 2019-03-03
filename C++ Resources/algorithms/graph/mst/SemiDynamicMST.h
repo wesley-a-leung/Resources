@@ -14,7 +14,7 @@ Data merge(const Data &l, const Data &r) { return max(l, r); }
 struct Node {
     Node *l, *r, *p; Data val, sbtr; bool rev;
     Node(const Data &val) : l(nullptr), r(nullptr), p(nullptr), val(val), sbtr(val), rev(false) {}
-    bool isRoot(); void update(); void propagate(); void rotate(); void splay(); Node *expose(); void makeRoot(); Node *findRoot();
+    bool isRoot(); void update(); void propagate(); void rotate(); void splay(); Node *expose(); void makeRoot();
 };
 Data Sbtr(Node *x) { return x ? x->sbtr : qdef; }
 bool Node::isRoot() { return !p || (this != p->l && this != p->r); }
@@ -54,16 +54,14 @@ Node *Node::expose() {
     splay(); return last;
 }
 void Node::makeRoot() { expose(); rev = !rev; }
-Node *Node::findRoot() {
-    expose(); Node *x = this;
-    while (x->r) x = x->r;
-    x->splay(); return x;
-}
 struct SemiDynamicMST {
     struct Edge { int v, w; unit weight; };
     int V, MAXNODES = 0; vector<Node> T; unit currentMST; vector<Edge> edges;
     void makeNode(int id, unit weight) { T.emplace_back(make_pair(weight, id)); assert(int(T.size()) <= MAXNODES); }
-    bool connected(int x, int y) { return x == y || T[x].findRoot() == T[y].findRoot(); }
+    bool connected(int x, int y) {
+        if (x == y) return true;
+        T[x].expose(); T[y].expose(); return T[x].p;
+    }
     void link(int par, int ch) { T[ch].makeRoot(); T[ch].p = &T[par]; }
     void cut(int x, int y) { T[x].makeRoot(); T[y].expose(); T[y].r->p = nullptr; T[y].r = nullptr; }
     Data queryPath(int from, int to) { T[from].makeRoot(); T[to].expose(); return Sbtr(&T[to]); }
@@ -78,8 +76,7 @@ struct SemiDynamicMST {
             if (mx.first <= weight) return currentMST;
             cut(edges[mx.second].v, V + mx.second); cut(edges[mx.second].w, V + mx.second); currentMST -= mx.first;
         }
-        int id = int(edges.size()); edges.push_back({v, w, weight});
-        makeNode(id, weight); link(v, V + id); link(w, V + id); currentMST += weight;
-        return currentMST;
+        int id = int(edges.size()); edges.push_back({v, w, weight}); makeNode(id, weight);
+        link(v, V + id); link(w, V + id); currentMST += weight; return currentMST;
     }
 };

@@ -18,7 +18,7 @@ struct Node {
     Node *l, *r, *p; int vert, size; Data val, sbtr; Lazy lz; bool rev;
     Node(int vert, const Data &val) : l(nullptr), r(nullptr), p(nullptr), vert(vert), size(1), val(val), sbtr(val), lz(ldef), rev(false) {}
     bool isRoot(); void update(); void apply(const Lazy &v); void propagate(); void rotate();
-    void splay(); Node *expose(); void makeRoot(); Node *findRoot(); Node *findMin();
+    void splay(); Node *expose(); void makeRoot(); Node *findMin();
 };
 int Size(Node *x) { return x ? x->size : 0; }
 Data Sbtr(Node *x) { return x ? x->sbtr : qdef; }
@@ -65,11 +65,6 @@ Node *Node::expose() {
     splay(); return last;
 }
 void Node::makeRoot() { expose(); rev = !rev; revData(sbtr); }
-Node *Node::findRoot() {
-    expose(); Node *x = this;
-    while (x->r) x = x->r;
-    x->splay(); return x;
-}
 Node *Node::findMin() {
     Node *x = this;
     while (x->l) x = x->l;
@@ -80,9 +75,12 @@ struct LazyLinkCutTree {
     LazyLinkCutTree(int N) { T.reserve(N); for (int i = 0; i < N; i++) T.emplace_back(i, vdef); }
     template <class It> LazyLinkCutTree(It st, It en) { int N = en - st; T.reserve(N); for (int i = 0; i < N; i++) T.emplace_back(i, *(st + i)); }
     void makeRoot(int x) { T[x].makeRoot(); }
-    bool connected(int x, int y) { return x == y || T[x].findRoot() == T[y].findRoot(); }
+    bool connected(int x, int y) {
+        if (x == y) return true;
+        T[x].expose(); T[y].expose(); return T[x].p;
+    }
     int lca(int x, int y, int r) {
-        if (T[x].findRoot() != T[y].findRoot()) return -1;
+        if (!connected(x, y)) return -1;
         T[r].makeRoot(); T[x].expose(); return T[y].expose()->vert;
     }
     bool link(int par, int ch) {
