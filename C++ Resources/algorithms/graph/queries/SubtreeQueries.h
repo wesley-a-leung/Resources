@@ -5,7 +5,7 @@ using namespace std;
 // Supports updates and queries on a subtree
 // Time Complexity:
 //   run: O(V)
-//   updateSubtree, querySubtree, updateVertex: O(1) * (complexity of update/query)
+//   updateVertex, updateSubtree, querySubtree: O(1) * (complexity of update/query)
 // Memory Complexity: O(V)
 template <const int MAXV, const bool ONE_INDEXED> struct SubtreeQueries {
     using Data = int; using Lazy = int; int st[MAXV], en[MAXV], vert[MAXV], curInd; vector<int> adj[MAXV];
