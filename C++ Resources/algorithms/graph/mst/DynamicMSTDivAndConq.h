@@ -14,7 +14,7 @@ Data merge(const Data &l, const Data &r) { return max(l, r); }
 struct Node {
     Node *l, *r, *p; Data val, sbtr; bool rev;
     Node(const Data &val) : l(nullptr), r(nullptr), p(nullptr), val(val), sbtr(val), rev(false) {}
-    bool isRoot(); void update(); void propagate(); void rotate(); void splay(); Node *expose(); void makeRoot(); Node *findRoot();
+    bool isRoot(); void update(); void propagate(); void rotate(); void splay(); Node *expose(); void makeRoot();
 };
 Data Sbtr(Node *x) { return x ? x->sbtr : qdef; }
 bool Node::isRoot() { return !p || (this != p->l && this != p->r); }
@@ -54,17 +54,15 @@ Node *Node::expose() {
     splay(); return last;
 }
 void Node::makeRoot() { expose(); rev = !rev; }
-Node *Node::findRoot() {
-    expose(); Node *x = this;
-    while (x->r) x = x->r;
-    x->splay(); return x;
-}
 template <const int MAXV> struct DynamicMSTDivAndConq {
     struct Query { int type, v, w; unit weight; int otherTime; };
     int V, MAXNODES = 0; vector<Node> T; unit currentMST; vector<unit> ans; vector<Query> q;
     unordered_map<int, int> present[MAXV]; stack<pair<pair<int, int>, unit>> history;
     void makeNode(int id, unit weight) { T.emplace_back(make_pair(weight, id)); assert(int(T.size()) <= MAXNODES); }
-    bool connected(int x, int y) { return x == y || T[x].findRoot() == T[y].findRoot(); }
+    bool connected(int x, int y) {
+        if (x == y) return true;
+        T[x].expose(); T[y].expose(); return T[x].p;
+    }
     void link(int par, int ch) { T[ch].makeRoot(); T[ch].p = &T[par]; }
     void cut(int x, int y) { T[x].makeRoot(); T[y].expose(); T[y].r->p = nullptr; T[y].r = nullptr; }
     Data queryPath(int from, int to) { T[from].makeRoot(); T[to].expose(); return Sbtr(&T[to]); }
@@ -101,8 +99,7 @@ template <const int MAXV> struct DynamicMSTDivAndConq {
     }
     void addEdge(int v, int w, unit weight) {
         if (v > w) swap(v, w);
-        present[v][w] = int(q.size()); makeNode(int(q.size()), weight);
-        q.push_back({1, v, w, weight, INT_MAX});
+        present[v][w] = int(q.size()); makeNode(int(q.size()), weight); q.push_back({1, v, w, weight, INT_MAX});
     }
     void removeEdge(int v, int w) {
         if (v > w) swap(v, w);
