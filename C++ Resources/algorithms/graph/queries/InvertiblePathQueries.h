@@ -5,11 +5,12 @@ using namespace std;
 // Supports updates and queries on a tree path from the root for an invertible operation
 // Time Complexity:
 //   run: O(V)
-//   updateVertex, queryPath: O(1) * (complexity of update/query)
+//   updateVertex, queryPathFromRoot, queryPath: O(1) * (complexity of update/query)
 // Memory Complexity: O(V)
 template <const int MAXV, const bool ONE_INDEXED> struct PathQueries {
     using Data = int; using Lazy = int; int st[MAXV], en[MAXV], vert[MAXV * 2], curInd;
     bool isPre[MAXV * 2]; Data A[MAXV]; vector<int> adj[MAXV];
+    Data merge(const Data &l, const Data &r); // to be implemented
     Lazy inverse(const Lazy &val); // to be implemented
     void update(int i, const Lazy &val); // to be implemented
     Data query(int l, int r); // to be implemented
@@ -26,4 +27,8 @@ template <const int MAXV, const bool ONE_INDEXED> struct PathQueries {
     void addEdge(int a, int b) { adj[a].push_back(b); adj[b].push_back(a); }
     void updateVertex(int v, const Lazy &val) { update(st[v], A[v] = val); update(en[v], inverse(val)); }
     Data queryPathFromRoot(int v) { return query(int(ONE_INDEXED), st[v]); }
+    Data queryPath(int v, int w, int lca) {
+        Data ret = merge(queryPathFromRoot(v), queryPathFromRoot(w)), inv = query(en[lca], curInd);
+        inv = merge(inv, inv); ret = merge(ret, inv); return merge(ret, A[lca]);
+    }
 };
