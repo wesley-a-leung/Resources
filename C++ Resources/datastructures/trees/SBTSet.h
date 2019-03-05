@@ -61,7 +61,8 @@ template <class Value, class Comparator = less<Value>> struct SBTSet {
     int getMin(int x) { return T[x].l == -1 ? x : getMin(T[x].l); }
     int getMax(int x) { return T[x].r == -1 ? x : getMax(T[x].r); }
     int remove(int x, const Value &val) {
-        if (cmp(val, T[x].val)) T[x].l = remove(T[x].l, val);
+        if (x == -1) return -1;
+        else if (cmp(val, T[x].val)) T[x].l = remove(T[x].l, val);
         else if (cmp(T[x].val, val)) T[x].r = remove(T[x].r, val);
         else {
             if (T[x].l == -1) return T[x].r;
@@ -110,7 +111,7 @@ template <class Value, class Comparator = less<Value>> struct SBTSet {
     void reserve(int n) { T.reserve(n); }
     bool contains(const Value &val) { return contains(root, val); }
     void add(const Value &val) { root = add(root, val); }
-    void remove(const Value &val) { if (contains(val)) root = remove(root, val); }
+    void remove(const Value &val) { root = remove(root, val); }
     void removeMin() {
         if (empty()) throw runtime_error("called removeMin() with empty symbol table");
         root = removeMin(root);

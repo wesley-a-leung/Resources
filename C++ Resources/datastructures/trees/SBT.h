@@ -39,7 +39,7 @@ template <class Key, class Value, class Comparator = less<Key>> struct SBT {
         T[x].l = maintain(T[x].l, false); T[x].r = maintain(T[x].r, true); x = maintain(x, true); x = maintain(x, false); return x;
     }
     int get(int x, const Key &key) {
-        if (x == -1) return 0;
+        if (x == -1) return -1;
         if (cmp(key, T[x].key)) return get(T[x].l, key);
         else if (cmp(T[x].key, key)) return get(T[x].r, key);
         else return x;
@@ -62,7 +62,8 @@ template <class Key, class Value, class Comparator = less<Key>> struct SBT {
     int getMin(int x) { return T[x].l == -1 ? x : getMin(T[x].l); }
     int getMax(int x) { return T[x].r == -1 ? x : getMax(T[x].r); }
     int remove(int x, const Key &key) {
-        if (cmp(key, T[x].key)) T[x].l = remove(T[x].l, key);
+        if (x == -1) return -1;
+        else if (cmp(key, T[x].key)) T[x].l = remove(T[x].l, key);
         else if (cmp(T[x].key, key)) T[x].r = remove(T[x].r, key);
         else {
             if (T[x].l == -1) return T[x].r;
@@ -92,9 +93,8 @@ template <class Key, class Value, class Comparator = less<Key>> struct SBT {
     }
     int getRank(int x, const Key &key) { // number of keys less than key
         if (x == -1) return 0;
-        if (cmp(key, T[x].key)) return getRank(T[x].l, key);
-        else if (cmp(T[x].key, key)) return 1 + Size(T[x].l) + getRank(T[x].r, key);
-        else return Size(T[x].l);
+        if (!cmp(T[x].key, key)) return getRank(T[x].l, key);
+        else return 1 + Size(T[x].l) + getRank(T[x].r, key);
     }
     void keyValuePairsInOrder(int x, vector<pair<Key, Value>> &queue) {
         if (x == -1) return;
@@ -115,9 +115,9 @@ template <class Key, class Value, class Comparator = less<Key>> struct SBT {
         if (x == -1) throw no_such_element_exception("no such key is in the symbol table");
         return T[x].val;
     }
-    bool contains(const Key &key) { return get(root, key) != 0; }
+    bool contains(const Key &key) { return get(root, key) != -1; }
     void put(const Key &key, const Value &val) { root = put(root, key, val); }
-    void remove(const Key &key) { if (contains(key)) root = remove(root, key); }
+    void remove(const Key &key) { root = remove(root, key); }
     void removeMin() {
         if (empty()) throw runtime_error("called removeMin() with empty symbol table");
         root = removeMin(root);
