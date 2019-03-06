@@ -83,10 +83,7 @@ struct Vector {
         if (d == 2 && that.d == 2) return projectionOn(that).scale(2).minus(*this);
         else throw invalid_argument("Vectors must be 2-dimensional");
     }
-    Vector reflectionOnHyperplane(const Vector &that) const {
-        if (d == 3 && that.d == 3) return minus(projectionOn(that).scale(2));
-        else throw invalid_argument("Vectors must be 3-dimensional");
-    }
+    Vector reflectionOnHyperplane(const Vector &that) const { return minus(projectionOn(that).scale(2)); }
     Vector rotate(const Vector &that, F theta) const {
         if (d == 2 && that.d == 2) {
             Vector r(2);
