@@ -14,7 +14,10 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree_SAM_RQ {
         N = en - st; for (int i = 0; i < N; i++) T[N + i] = *(st + i);
         for (int i = N - 1; i > 0; i--) T[i] = merge(T[i << 1], T[i << 1 | 1]);
     }
-    void init(int size) { N = size; for (int i = 1; i < 2 * N; i++) T[i] = vdef; }
+    void init(int size) {
+        N = size; for (int i = 0; i < N; i++) T[N + i] = vdef;
+        for (int i = N - 1; i > 0; i--) T[i] = merge(T[i << 1], T[i << 1 | 1]);
+    }
     void update(int i, const Lazy &v) { for (i += N - ONE_INDEXED, T[i] = applyLazy(T[i], v); i >>= 1;) T[i] = merge(T[i << 1], T[i << 1 | 1]); }
     Data query(int l, int r) {
         Data ql = qdef, qr = qdef;
@@ -83,10 +86,9 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree_RAM_RQ {
         for (int i = N - 1; i > 0; i--) T[i] = merge(T[i << 1], T[i << 1 | 1]);
     }
     void init(int size) {
-        N = size; H = 0;
-        for (int i = 1; i <= N; H++) i <<= 1;
-        for (int i = 1; i < 2 * N; i++) T[i] = vdef;
-        for (int i = 0; i < N; i++) L[i] = ldef;
+        N = size; H = 0; for (int i = 1; i <= N; H++) i <<= 1;
+        for (int i = 0; i < N; i++) { T[N + i] = vdef; L[i] = ldef; }
+        for (int i = N - 1; i > 0; i--) T[i] = merge(T[i << 1], T[i << 1 | 1]);
     }
     void update(int l, int r, const Lazy &v) {
         int l0 = l += N - ONE_INDEXED, r0 = r += N - ONE_INDEXED, k = 1; propagate(l); propagate(r);
