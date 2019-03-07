@@ -35,7 +35,7 @@ template <const int MAXN, const bool ONE_INDEXED> struct LazySegmentTree {
     using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ldef = 0; Data T[MAXN * 2], A[MAXN]; Lazy L[MAXN * 2]; int N;
     Data merge(const Data &l, const Data &r); // to be implemented
     Data applyLazy(const Data &l, const Lazy &r); // to be implemented
-    Lazy getSegmentVal(const Lazy &v, int len); // to be implemented
+    Lazy getSegmentVal(const Lazy &v, int k); // to be implemented
     Lazy mergeLazy(const Lazy &l, const Lazy &r); // to be implemented
     void propagate(int cur, int tl, int tr) {
         if (L[cur] != ldef) {
@@ -76,7 +76,7 @@ using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ld
 template <class IndexType, const int MAXNODES, const int MAXROOTS, const bool ONE_INDEXED> struct DynamicSegmentTree {
     Data merge(const Data &l, const Data &r); // to be implemented
     Data applyLazy(const Data &l, const Lazy &r); // to be implemented
-    Lazy getSegmentVal(const Lazy &v, IndexType len); // to be implemented
+    Lazy getSegmentVal(const Lazy &v, IndexType k); // to be implemented
     Lazy mergeLazy(const Lazy &l, const Lazy &r); // to be implemented
     IndexType N; int curNode = 0, curRoot = 0, roots[MAXROOTS], L[MAXNODES], R[MAXNODES]; Data VAL[MAXNODES]; Lazy LZ[MAXNODES];
     int makeNode(int cp = 0) {
