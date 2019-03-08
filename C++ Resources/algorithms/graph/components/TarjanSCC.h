@@ -16,10 +16,7 @@ template <const int MAXV> struct TarjanSCC {
         }
         if (mn < low[v]) { low[v] = mn; return; }
         int w; components.emplace_back();
-        do {
-            w = s.top(); s.pop();
-            id[w] = components.size() - 1; components.back().push_back(w); low[w] = INT_MAX;
-        } while (w != v);
+        do { w = s.top(); s.pop(); id[w] = components.size() - 1; components.back().push_back(w); low[w] = INT_MAX; } while (w != v);
     }
     void clear(int V = MAXV) { components.clear(); for (int i = 0; i < V; i++) { adj[i].clear(); DAG[i].clear(); } }
     void run(int V) {
