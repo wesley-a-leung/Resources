@@ -47,7 +47,7 @@ template <const int MAXV, class unit> struct JohnsonAPSP {
         if (hasNegativeWeight) {
             markNegativeCycles(V); fill(h, h + V, 0);
             for (int i = 0; i < V - 1; i++) for (int v = 0; v < V; v++) for (auto &&e : adj[v])
-                if (h[e.first] > h[v] + e.second) h[e.first] = h[v] + e.second;
+                if (!inNegCyc[v] && !inNegCyc[e.first] && h[e.first] > h[v] + e.second) h[e.first] = h[v] + e.second;
             for (int v = 0; v < V; v++) for (auto &&e : adj[v]) if (id[v] != id[e.first]) G[id[v]][id[e.first]] = true;
             for (int i = 0; i < int(components.size()); i++) {
                 dp[i].reset(); neg[i].reset(); vis[i] = false;
