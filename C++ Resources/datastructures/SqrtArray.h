@@ -46,9 +46,7 @@ template <class Value> struct SqrtArray {
             if (k < prefixSZ[mid]) hi = mid - 1;
             else lo = mid + 1;
         }
-        k -= prefixSZ[hi]; int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
-        if (hi == -1) a[hi += (int) a.size()].push_back(val);
-        else a[hi].insert(a[hi].begin() + k, val);
+        k -= prefixSZ[hi]; int sqrtn = (int) sqrt(n) * SCALE_FACTOR; a[hi].insert(a[hi].begin() + k, val);
         if ((int) a[hi].size() > 2 * sqrtn) {
             a.emplace(a.begin() + hi + 1, a[hi].begin() + sqrtn, a[hi].end()); a[hi].resize(sqrtn); prefixSZ.push_back(0);
         }
@@ -126,4 +124,3 @@ template <class Value> struct SqrtArray {
     }
     void clear() { n = 0; a.clear(); prefixSZ.clear(); }
 };
-

@@ -46,9 +46,7 @@ template <const int R, class Value, class Container> struct RootArray {
             if (k < prefixSZ[mid]) hi = mid - 1;
             else lo = mid + 1;
         }
-        k -= prefixSZ[hi]; int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
-        if (hi == -1) a[hi += (int) a.size()].push_back(val);
-        else a[hi].insert(k, val);
+        k -= prefixSZ[hi]; int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR; a[hi].insert(k, val);
         if ((int) a[hi].size() > 2 * rootn) {
             vector<Value> b;
             while (a[hi].size() > rootn) { b.push_back(a[hi].back()); a[hi].pop_back(); }
