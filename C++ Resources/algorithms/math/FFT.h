@@ -1,17 +1,12 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "Combinatorics.h"
 using namespace std;
 
 // Fast Fourier Transform
 // Time Complexity of multiplyInteger, multiplyPolynomial: O(N log N) where N = size(a) + size(b)
 
 using F = double; const int CUTOFF = 150, DIG = 1; const F PI = acos(-1);
-
-template <class T> T pow2(T base, T pow) {
-    T x = 1, y = base;
-    for (; pow > 0; pow /= 2, y = y * y) if (pow % 2 == 1) x = x * y;
-    return x;
-}
 
 template <class T> pair<T, T> operator + (const pair<T, T> &a, const pair<T, T> &b) {
     return make_pair(a.first + b.first, a.second + b.second);
