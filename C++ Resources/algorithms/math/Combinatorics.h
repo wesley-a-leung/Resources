@@ -138,9 +138,9 @@ template <const int MAXN, class T> struct Combinatorics {
     }
     void init(int N, T P) { // compute factorials mod prime up to N!
         assert(N < P); fact[0] = 1;
-        for (int i = 1; i <= N; i++) fact[i] = mulMod(fact[i - 1], T(i), p);
+        for (int i = 1; i <= N; i++) fact[i] = mulMod(fact[i - 1], T(i), P);
         invFact[N] = mulInvPrime(fact[N], P);
-        for (int i = N - 1; i >= 0; i--) invFact[i] = mulMod(invFact[i + 1], T(i + 1), p);
+        for (int i = N - 1; i >= 0; i--) invFact[i] = mulMod(invFact[i + 1], T(i + 1), P);
     }
     T factorial(int N) { return fact[N]; }
     T invFactorial(int N) { return invFact[N]; }
