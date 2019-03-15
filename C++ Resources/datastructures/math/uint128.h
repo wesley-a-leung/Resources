@@ -3,7 +3,7 @@
 using namespace std;
 
 using uint64 = uint64_t; 
-void mult64to128(uint64 u, uint64 v, uint64 &h, uint64 &l);void mult64to128(uint64 u, uint64 v, uint64 &h, uint64 &l);
+void mult64to128(uint64 u, uint64 v, uint64 &h, uint64 &l); void mult64to128(uint64 u, uint64 v, uint64 &h, uint64 &l);
 void divmod128by64(uint64 u1, uint64 u0, uint64 v, uint64 &q, uint64 &r);
 
 struct uint128 {
@@ -59,7 +59,7 @@ struct uint128 {
         *this = 0;
         for (char c : s) *this = (*this << 3) + (*this << 1) + c - '0';
     }
-    friend istream& operator >> (istream &stream, uint128 &v) { string s; stream >> s; v.read(s); return stream; }
+    friend istream &operator >> (istream &stream, uint128 &v) { string s; stream >> s; v.read(s); return stream; }
     string write() const {
         if (*this == 0) return "0";
         string ret = ""; uint128 temp = *this;
@@ -67,7 +67,7 @@ struct uint128 {
         reverse(ret.begin(), ret.end());
         return ret;
     }
-    friend ostream& operator << (ostream &stream, const uint128 &v) { stream << v.write(); return stream; }
+    friend ostream &operator << (ostream &stream, const uint128 &v) { stream << v.write(); return stream; }
 };
 
 int popcnt128(const uint128 &v) { return __builtin_popcountll(v.hi) + __builtin_popcountll(v.lo); }
