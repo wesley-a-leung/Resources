@@ -33,7 +33,7 @@ template <class T> Matrix<T> sub(const Matrix<T> &A, const Matrix<T> &B) {
 
 // Returns A * B
 // Time Complexity: O(N^3)
-template <class T> Matrix<T> times(const Matrix<T> &A, const Matrix<T> &B) {
+template <class T> Matrix<T> mul(const Matrix<T> &A, const Matrix<T> &B) {
     assert(A.M == B.N); Matrix<T> C(A.N, B.M);
     for (int i = 0; i < A.N; i++) for (int j = 0; j < B.M; j++) for (int k = 0; k < A.M; k++) C[i][j] += A[i][k] * B[k][j];
     return C;
@@ -43,7 +43,7 @@ template <class T> Matrix<T> times(const Matrix<T> &A, const Matrix<T> &B) {
 // Time Complexity: O(N^3 log pow)
 template <class T, class U> Matrix<T> pow(const Matrix<T> &A, U pow) {
     assert(A.N == A.M); Matrix<T> x = identity<T>(A.N), y = A;
-    for (; pow > 0; pow /= 2, y = times(y, y)) if (pow % 2 == 1) x = times(x, y);
+    for (; pow > 0; pow /= 2, y = mul(y, y)) if (pow % 2 == 1) x = mul(x, y);
     return x;
 }
 
