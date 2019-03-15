@@ -60,7 +60,7 @@ template <class T> bool millerRabin(T N, int iterations) {
     while (s % 2 == 0) s /= 2;
     for (int i = 0; i < iterations; i++) {
         T temp = s, r = powMod(uniform_int_distribution<T>(1, N - 1)(rng64) % N, temp, N);
-        while (temp != N - 1 && r != 1 && r != N - 1) { r = r * r % N; temp *= 2; }
+        while (temp != N - 1 && r != 1 && r != N - 1) { r = mulMod(r, r, N); temp *= 2; }
         if (r != N - 1 && temp % 2 == 0) return false;
     }
     return true;
@@ -123,7 +123,7 @@ template <class T> T pollardsRho(T N) {
     if (N % 2 == 0) return 2;
     T x = uniform_int_distribution<T>(2, N - 1)(rng64), y = x, c = uniform_int_distribution<T>(1, N - 1)(rng64), d = 1;
     while (d == 1) {
-        x = (x * x % N + c) % N; y = (y * y % N + c) % N; y = (y * y % N + c) % N; d = __gcd(x >= y ? x - y : y - x, N);
+        x = addMod(mulMod(x, x, N), c, N); y = addMod(mulMod(y, y, N), c, N); y = addMod(mulMod(y, y, N), c, N); d = __gcd(x >= y ? x - y : y - x, N);
         if (d == N) return pollardsRho(N);
     }
     return d;
