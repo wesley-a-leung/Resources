@@ -22,7 +22,9 @@ template <class T, const T MOD> struct IntMod {
     IM &operator += (const IM &i) { v += i.v; if (v >= MOD) v -= MOD; return *this; }
     IM operator - (const IM &i) const { IM ret; ret.v = v - i.v; if (ret.v < 0) ret.v += MOD; return ret;  }
     IM &operator -= (const IM &i) { v -= i.v; if (v < 0) v += MOD; return *this; }
+    // when MOD * MOD doesn't overflow
     IM operator * (const IM &i) const { return IM(v * i.v % MOD); }
+    // when MOD * MOD doesn't overflow
     IM &operator *= (const IM &i) { v = v * i.v % MOD; return *this; }
     // when MOD * MOD overflows
     IM mulOvf(const IM &i) const {
@@ -30,7 +32,7 @@ template <class T, const T MOD> struct IntMod {
         for (; z > 0; z >>= 1, y += y) if (z & 1) x += y;
         return x;
     }
-    // when MOD * MOD doesn't overflows
+    // when MOD * MOD doesn't overflow
     template <class U> IM pow(U p) const {
         IM x = 1, y = *this;
         for (; p > 0; p >>= 1, y *= y) if (p & 1) x *= y;
@@ -53,7 +55,9 @@ template <class T, const T MOD> struct IntMod {
     }
     // for prime MOD, MOD * MOD doesn't overflow
     IM mulInvPrime() const { return pow(MOD - 2); }
+    // when MOD * MOD doesn't overflow
     IM operator / (const IM &i) const { return *this * i.mulInv(); }
+    // when MOD * MOD doesn't overflow
     IM &operator /= (const IM &i) { return *this *= i.mulInv(); }
     // for prime MOD, MOD * MOD doesn't overflow
     IM divPrime(const IM &i) const { return *this * i.mulInvPrime(); }
