@@ -19,7 +19,7 @@ template <class T> T EEA(T a, T b, T &x, T &y) {
 template <class T> T mulInv(T a, T n) {
     T x, y;
     if (EEA(a, n, x, y) != 1) return -1; // no inverse
-    return (x % n + n) % n;
+    x %= n; return x < 0 ? x + n : x;
 }
 
 // Solves the linear congruence ax = c mod m
