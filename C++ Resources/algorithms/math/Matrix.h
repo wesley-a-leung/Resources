@@ -43,7 +43,7 @@ template <class T> Matrix<T> mul(const Matrix<T> &A, const Matrix<T> &B) {
 // Time Complexity: O(N^3 log pow)
 template <class T, class U> Matrix<T> pow(const Matrix<T> &A, U pow) {
     assert(A.N == A.M); Matrix<T> x = identity<T>(A.N), y = A;
-    for (; pow > 0; pow /= 2, y = mul(y, y)) if (pow % 2 == 1) x = mul(x, y);
+    for (; pow > 0; pow >>= 1, y = mul(y, y)) if (pow & 1) x = mul(x, y);
     return x;
 }
 
