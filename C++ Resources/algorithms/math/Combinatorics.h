@@ -49,12 +49,12 @@ template <class T, class U> T powMod(T base, U pow, T mod) {
 // Modular Multiplicative Inverse of i in Zp for a prime p
 // Time Complexity: O(log p)
 // Required: 0 < i < p, p * p does not overflow
-template <class T> T mulInv(T i, T p) { return powMod(i, p - 2, p); }
+template <class T> T mulInvPrime(T i, T p) { return powMod(i, p - 2, p); }
 
 // i / j % p for a prime p
 // Time Complexity: O(log p)
 // Required: 0 <= i < p, 0 < j < p, p * p does not overflow
-template <class T> T divMod(T i, T j, T p) { return i * mulInv(j, p) % p; }
+template <class T> T divMod(T i, T j, T p) { return i * mulInvPrime(j, p) % p; }
 
 // n! % m
 // Time Complexity: O(n)
@@ -141,7 +141,7 @@ template <const int MAXN, class T> struct Combinatorics {
     void init(int N, T P) { // compute factorials mod prime up to N!
         assert(N < P); fact[0] = 1;
         for (int i = 1; i <= N; i++) fact[i] = fact[i - 1] * i % P;
-        invFact[N] = mulInv(fact[N], P);
+        invFact[N] = mulInvPrime(fact[N], P);
         for (int i = N - 1; i >= 0; i--) invFact[i] = invFact[i + 1] * (i + 1) % P;
     }
     T factorial(int N) { return fact[N]; }
