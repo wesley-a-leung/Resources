@@ -20,9 +20,9 @@ template <class T> mulMod(T a, T b, T mod) { return a * b % mod; }
 // a * b % mod, useful if a * b overflows
 // Time Complexity: O(log b)
 // Required: 0 <= a < mod, 0 <= b < mod, mod + mod does not overflow
-template <class T> T mulMod2(T a, T b, T mod) {
+template <class T> T mulModOvf(T a, T b, T mod) {
     T x = 0, y = a;
-    for (; b > 0; b /= 2, y = y + y < mod ? y + y : y + y - mod) if (b % 2 == 1) x = x + y < mod ? x + y : x + y - mod;
+    for (; b > 0; b >>= 1, y = addMod(y, y, mod)) if (b & 1) x = addMod(x, y, mod);
     return x;
 }
 
@@ -32,7 +32,7 @@ template <class T> T mulMod2(T a, T b, T mod) {
 // Required: 0 <= pow
 template <class T, class U> T pow2(T base, U pow) {
     T x = 1, y = base;
-    for (; pow > 0; pow /= 2, y = y * y) if (pow % 2 == 1) x = x * y;
+    for (; pow > 0; pow >>= 1, y = y * y) if (pow & 1) x = x * y;
     return x;
 }
 
@@ -42,7 +42,17 @@ template <class T, class U> T pow2(T base, U pow) {
 // Required: 0 <= base < mod, 0 <= pow, 0 < mod, mod * mod does not overflow
 template <class T, class U> T powMod(T base, U pow, T mod) {
     T x = 1, y = base;
-    for (; pow > 0; pow /= 2, y = y * y % mod) if (pow % 2 == 1) x = x * y % mod;
+    for (; pow > 0; pow >>= 1, y = mulMod(y, y, mod)) if (pow & 1) x = mulMod(x, y, mod);
+    return x;
+}
+
+// base ^ pow % mod, useful when mod * mod overflows
+// Time Complexity: O(log pow)
+// If multiplication is an expensive operation, then y = y * y should only be computed when pow > 0
+// Required: 0 <= base < mod, 0 <= pow, 0 < mod, mod * mod does not overflow
+template <class T, class U> T powModOvf(T base, U pow, T mod) {
+    T x = 1, y = base;
+    for (; pow > 0; pow >>= 1, y = mulModOvf(y, y, mod)) if (pow & 1) x = mulModOvf(x, y, mod);
     return x;
 }
 
@@ -54,13 +64,13 @@ template <class T> T mulInvPrime(T i, T p) { return powMod(i, p - 2, p); }
 // i / j % p for a prime p
 // Time Complexity: O(log p)
 // Required: 0 <= i < p, 0 < j < p, p * p does not overflow
-template <class T> T divMod(T i, T j, T p) { return i * mulInvPrime(j, p) % p; }
+template <class T> T divModPrime(T i, T j, T p) { return mulMod(i, mulInvPrime(j, p)); }
 
 // n! % m
 // Time Complexity: O(n)
 template <class T> T factorial(T n, T m) {
     T ret = 1;
-    for (int i = 2; i <= n; i++) ret = ret * i % m;
+    for (int i = 2; i <= n; i++) ret = mulMod(ret, T(i), m);
     return ret;
 }
 
@@ -69,8 +79,8 @@ template <class T> T factorial(T n, T m) {
 template <class T> T factorialPrime(T n, T p) {
     T ret = 1, h = 0;
     while (n > 1) {
-        ret = (ret * ((n / p) % 2 == 1 ? p - 1 : 1)) % p; h = n % p; n /= p;
-        for (int i = 2; i <= h; i++) ret = ret * i % p;
+        ret = mulMod(ret, ((n / p) & 1) ? p - 1 : T(1), p); h = n % p; n /= p;
+        for (int i = 2; i <= h; i++) ret = mulMod(ret, T(i), p);
     }
     return ret;
 }
@@ -91,17 +101,9 @@ template <class T> T choose(int n, int k, T p) {
     if (n < k) return 0;
     if (k > n - k) k = n - k;
     T num = 1, den = 1;
-    for (int i = 0; i < k; i++) { num = num * (n - i) % p; den = den * (i + 1) % p; }
-    return divMod(num, den, p);
+    for (int i = 0; i < k; i++) { num = mulMod(num, T(n - i), p); den = mulMod(den, T(i + 1), p); }
+    return divModPrime(num, den, p);
 }
-
-// n choose k % p
-// Time Complexity: O(log p) if factorials are precomputed
-template <class T> T fastChoose(int n, int k, T p) { return divMod(divMod(factorial(n, p), factorial(k, p), p), factorial(n - k, p), p); }
-
-// choosing k elements from n items with replacement, modulo p
-// Time Complexity: O(log p) if factorials are precomputed
-template <class T> T multiChoose(int n, int k, T p) { return fastChoose(n + k - 1, k, p); }
 
 // n permute k
 // Time Complexity: O(min(k, n - k))
@@ -119,13 +121,9 @@ template <class T> T permute(int n, int k, T m) {
     if (n < k) return 0;
     if (k > n - k) k = n - k;
     T ret = 1;
-    for (int i = 0; i < k; i++) ret = ret * (n - i) % m;
+    for (int i = 0; i < k; i++) ret = mulMod(ret, T(n - i), m);
     return ret;
 }
-
-// n permute k % p
-// Time Complexity: O(log p) if factorials are precomputed
-template <class T> T fastPermute(int n, int k, T p) { return divMod(factorial(n, p), factorial(n - k, p), p); }
 
 // Structure to support combinatorical queries
 // Time Complexity:
@@ -140,16 +138,16 @@ template <const int MAXN, class T> struct Combinatorics {
     }
     void init(int N, T P) { // compute factorials mod prime up to N!
         assert(N < P); fact[0] = 1;
-        for (int i = 1; i <= N; i++) fact[i] = fact[i - 1] * i % P;
+        for (int i = 1; i <= N; i++) fact[i] = mulMod(fact[i - 1], T(i), p);
         invFact[N] = mulInvPrime(fact[N], P);
-        for (int i = N - 1; i >= 0; i--) invFact[i] = invFact[i + 1] * (i + 1) % P;
+        for (int i = N - 1; i >= 0; i--) invFact[i] = mulMod(invFact[i + 1], T(i + 1), p);
     }
     T factorial(int N) { return fact[N]; }
     T invFactorial(int N) { return invFact[N]; }
     T permute(int N, int K) { return fact[N] / fact[N - K]; }
-    T permute(int N, int K, T P) { return fact[N] * invFact[N - K] % P; }
+    T permute(int N, int K, T P) { return mulMod(fact[N], invFact[N - K], P); }
     T choose(int N, int K) { return fact[N] / fact[K] / fact[N - K]; }
-    T choose(int N, int K, T P) { return fact[N] * invFact[K] % P * invFact[N - K] % P; }
+    T choose(int N, int K, T P) { return mulMod(mulMod(fact[N], invFact[K], P), invFact[N - K], P); }
     T multiChoose(int N, int K) { return choose(N + K - 1, K); }
     T multiChoose(int N, int K, T P) { return choose(N + K - 1, K, P); }
 };
@@ -167,7 +165,7 @@ template <const int MAXN, class T> struct PascalsRow {
     }
     void init(int N, T p) { // modulo prime
         assert(N < p); T cur = 1;
-        for (int j = 0; j <= N; j++) { C[j] = cur; cur = divMod(cur * (N - j) % p, (j + 1), p); }
+        for (int j = 0; j <= N; j++) { C[j] = cur; cur = divModPrime(mulMod(cur, T(N - j), p), T(j + 1), p); }
     }
 };
 
@@ -188,7 +186,7 @@ template <const int MAXN, class T> struct PascalsTriangle {
         C[0][0] = 1;
         for (int i = 1; i <= N; i++) {
             C[i][0] = 1;
-            for (int j = 1; j <= i; j++) C[i][j] = (C[i - 1][j] + C[i - 1][j - 1]) % m;
+            for (int j = 1; j <= i; j++) C[i][j] = addMod(C[i - 1][j], C[i - 1][j - 1], m);
         }
     }
 };
