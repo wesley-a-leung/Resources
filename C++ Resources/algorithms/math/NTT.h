@@ -81,7 +81,7 @@ template <class T> void multiplyPolynomial(vector<T> &a, vector<T> &b, vector<T>
     vector<T> fa(N, 0), fb; copy(a.begin(), a.end(), fa.begin()); ntt(fa);
     if (eq) fb = fa;
     else { fb.assign(N, 0); copy(b.begin(), b.end(), fb.begin()); ntt(fb); }
-    res.resize(N); T invN = multInvPrime(T(N), MOD); res[0] = fa[0] * fb[0] % MOD * invN % MOD;
+    res.resize(N); T invN = mulInvPrime(T(N), MOD); res[0] = fa[0] * fb[0] % MOD * invN % MOD;
     for (int i = 1; i < N; i++) res[N - i] = fa[i] * fb[i] % MOD * invN % MOD;
     ntt(res);
     while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
