@@ -2,6 +2,14 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+// improves the performance of mod on x86 machines
+uint32_t fastMod(uint64_t x, uint32_t m) {
+#if !defined(_WIN32) || defined(_WIN64)
+    return x % m;
+#endif
+    uint32_t hi = x >> 32, lo = x, q, r; assert(hi < m); asm("divl %4\n" : "=a" (q), "=d" (r) : "d" (hi), "a" (lo), "r" (m)); return r;
+}
+
 // (a + b) % mod
 // Time Complexity O(1)
 // Required: 0 <= a < mod, 0 <= b < mod, mod + mod does not overflow
@@ -15,7 +23,7 @@ template <class T> subMod(T a, T b, T mod) { T ret = a - b; return 0 <= ret ? re
 // a * b % mod
 // Time Complexity: O(1)
 // Required: 0 <= a < mod, 0 <= b < mod, a * b does not overflow
-template <class T> mulMod(T a, T b, T mod) { return a * b % mod; }
+template <class T> mulMod(T a, T b, T mod) { return fastMod(a * b, mod); }
 
 // a * b % mod, useful if a * b overflows
 // Time Complexity: O(log b)
