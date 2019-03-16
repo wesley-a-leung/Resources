@@ -4,7 +4,7 @@ using namespace std;
 
 template <class T, const T MOD> struct IntMod {
     // improves the performance of mod on x86 machines
-    uint32_t fastMod(uint64_t x, uint32_t m) {
+    static uint32_t fastMod(uint64_t x, uint32_t m) {
     #if !defined(_WIN32) || defined(_WIN64)
         return x % m;
     #endif
@@ -51,14 +51,10 @@ template <class T, const T MOD> struct IntMod {
         for (; p > 0; p >>= 1, y = y.mulOvf(y)) if (p & 1) x = x.mulOvf(y);
         return x;
     }
-    static T EEA(T a, T b, T &x, T &y) {
-        if (b == 0) { x = 1; y = 0; return a; }
-        T x1, y1, g = EEA(b, a % b, x1, y1); y = x1 - (a / b) * y1; x = y1; return g;
-    }
     IM mulInv() const {
-        T x, y;
-        if (EEA(v, MOD, x, y) != 1) throw 0;
-        return IM(x);
+        T g = MOD, r = v, x = 0, y = 1;
+        while (r != 0) { T q = g / r; g %= r; swap(g, r); x -= q * y; swap(x, y); }
+        assert(g == 1); return IM(x);
     }
     // for prime MOD, MOD * MOD doesn't overflow
     IM mulInvPrime() const { return pow(MOD - 2); }
