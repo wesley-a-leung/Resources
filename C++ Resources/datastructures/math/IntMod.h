@@ -3,13 +3,6 @@
 using namespace std;
 
 template <class T, const T MOD> struct IntMod {
-    // improves the performance of mod on x86 machines
-    static uint32_t fastMod(uint64_t x, uint32_t m) {
-    #if !defined(_WIN32) || defined(_WIN64)
-        return x % m;
-    #endif
-        uint32_t hi = x >> 32, lo = x, q, r; assert(hi < m); asm("divl %4\n" : "=a" (q), "=d" (r) : "d" (hi), "a" (lo), "r" (m)); return r;
-    }
     static_assert(is_integral<T>::value, "T must be an integral type");
     static_assert(0 < MOD, "MOD must be a positive integer");
     using IM = IntMod<T, MOD>; T v = 0; IntMod() {}
@@ -30,9 +23,11 @@ template <class T, const T MOD> struct IntMod {
     IM operator - (const IM &i) const { IM ret; ret.v = v - i.v; if (ret.v < 0) ret.v += MOD; return ret;  }
     IM &operator -= (const IM &i) { v -= i.v; if (v < 0) v += MOD; return *this; }
     // when MOD * MOD doesn't overflow
-    IM operator * (const IM &i) const { return IM(fastMod(v * i.v, MOD)); }
+    // fastMod can be used if MOD < 2^32
+    IM operator * (const IM &i) const { return IM(v * i.v % MOD); }
     // when MOD * MOD doesn't overflow
-    IM &operator *= (const IM &i) { v = fastMod(v * i.v, MOD); return *this; }
+    // fastMod can be used if MOD < 2^32
+    IM &operator *= (const IM &i) { v = v * i.v % MOD; return *this; }
     // when MOD * MOD overflows
     IM mulOvf(const IM &i) const {
         IM x = 0, y = *this; T z = i.v;
