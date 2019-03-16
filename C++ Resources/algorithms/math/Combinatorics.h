@@ -23,7 +23,8 @@ template <class T> subMod(T a, T b, T mod) { T ret = a - b; return 0 <= ret ? re
 // a * b % mod
 // Time Complexity: O(1)
 // Required: 0 <= a < mod, 0 <= b < mod, a * b does not overflow
-template <class T> mulMod(T a, T b, T mod) { return fastMod(a * b, mod); }
+// a * b % mod can be replaced with fastMod(a, b, mod) if mod < 2^32
+template <class T> mulMod(T a, T b, T mod) { return a * b % mod; }
 
 // a * b % mod, useful if a * b overflows
 // Time Complexity: O(log b)
