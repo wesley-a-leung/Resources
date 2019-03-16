@@ -15,12 +15,12 @@ template <class T> T EEA(T a, T b, T &x, T &y) {
     return g;
 }
 
-// Computes the multiplicative inverse of a in Zn
+// Computes the multiplicative inverse of a in Zm
 // Require: 0 <= a, a < n
-template <class T> T mulInv(T a, T n) {
+template <class T> T mulInv(T a, T m) {
     T x, y;
-    if (EEA(a, n, x, y) != 1) return -1; // no inverse
-    x %= n; return x < 0 ? x + n : x;
+    if (EEA(a, m, x, y) != 1) return -1; // no inverse
+    x %= m; return x < 0 ? x + m : x;
 }
 
 // Solves the linear congruence ax = c mod m
