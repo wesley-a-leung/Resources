@@ -20,6 +20,7 @@ template <class T, const T MOD> struct FractionMod {
     FM &operator *= (const FM &f) { num = mulMod(num, f.num, MOD); den = mulMod(den, f.den, MOD); return *this; }
     FM operator / (const FM &f) const { return FM(mulMod(num, f.den, MOD), mulMod(den, f.num, MOD)); }
     FM &operator /= (const FM &f) { T t_num = mulMod(num, f.den, MOD), t_den = mulMod(den, f.num, MOD); num = t_num; den = t_den; return *this; }
+    T eval() const { return divModPrime(num, den, MOD); }
     bool operator == (const FM &f) const { return mulMod(num, f.den, MOD) == mulMod(f.num, den, MOD); }
     bool operator != (const FM &f) const { return mulMod(num, f.den, MOD) != mulMod(f.num, den, MOD); }
 };
