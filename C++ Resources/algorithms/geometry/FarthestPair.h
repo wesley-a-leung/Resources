@@ -23,8 +23,8 @@ template <const int MAXN> struct FarthestPair {
             if (hull[i].distanceTo(hull[j]) > bestDist) { best1 = hull[i]; best2 = hull[j]; bestDist = hull[i].distanceTo(hull[j]); }
             while ((j < M) && Point::area2(hull[i], hull[i + 1], hull[j + 1]) > Point::area2(hull[i], hull[i + 1], hull[j])) {
                 j++;
-                F distanceSquared = hull[i].distanceTo(hull[j]);
-                if (distanceSquared > bestDist) { best1 = hull[i]; best2 = hull[j]; bestDist = hull[i].distanceTo(hull[j]); }
+                F dist = hull[i].distanceTo(hull[j]);
+                if (dist > bestDist) { best1 = hull[i]; best2 = hull[j]; bestDist = hull[i].distanceTo(hull[j]); }
             }
         }
         return bestDist;
