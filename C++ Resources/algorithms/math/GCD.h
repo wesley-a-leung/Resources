@@ -16,7 +16,7 @@ template <class T> T EEA(T a, T b, T &x, T &y) {
 }
 
 // Computes the multiplicative inverse of a in Zm
-// Require: 0 <= a, a < n
+// Require: 0 <= a, a < m
 template <class T> T mulInv(T a, T m) {
     T x, y;
     if (EEA(a, m, x, y) != 1) return -1; // no inverse
