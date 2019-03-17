@@ -26,7 +26,7 @@ template <const int MAXV, const int MAXE, class unit> struct DinicMaxFlow {
         return level[t] != -1;
     }
     unit dfs(int v, int t, unit flow) {
-        if (v == t || flow < EPS) return flow;
+        if (v == t || flow <= EPS) return flow;
         for (int i = cur[v]; i < st[v] + deg[v]; cur[v] = ++i) if (e[i].cap > EPS && level[e[i].to] == level[v] + 1) {
             unit res = dfs(e[i].to, t, min(flow, e[i].cap));
             if (res > EPS) { e[i].cap -= res; e[e[i].rev].cap += res; return res; }
