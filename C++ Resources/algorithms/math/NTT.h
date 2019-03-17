@@ -41,7 +41,7 @@ void computeRoots(int N) {
     int len = __builtin_ctz(int(roots.size())); roots.resize(N);
     for (; (1 << len) < N; len++) {
         T z = powMod(ROOT, PK >> (len + 1), MOD);
-        for (int i = 1 << (len - 1); i < (1 << len); i++) { roots[2 * i] = roots[i]; roots[2 * i + 1] = roots[i] * z % MOD; }
+        for (int i = 1 << (len - 1); i < (1 << len); i++) { roots[2 * i] = roots[i]; roots[2 * i + 1] = mulMod(roots[i], z, MOD); }
     }
 }
 
@@ -57,8 +57,8 @@ void reorder(vector<T> &a) {
 void ntt(vector<T> &a) {
     int N = int(a.size()); computeRoots(N), reorder(a);
     for (int len = 1; len < N; len <<= 1) for (int i = 0; i < N; i += len << 1) for (int j = 0; j < len; j++) {
-        T u = a[i + j], v = a[len + i + j] * roots[len + j] % MOD;
-        a[i + j] = u + v < MOD ? u + v : u + v - MOD; a[len + i + j] = u - v >= 0 ? u - v : u - v + MOD;
+        T u = a[i + j], v = mulMod(a[len + i + j], roots[len + j], MOD);
+        a[i + j] = addMod(u, v, MOD); a[len + i + j] = subMod(u, v, MOD);
     }
 }
 
@@ -67,10 +67,9 @@ template <class T> void multiplyPolynomial(vector<T> &a, vector<T> &b, vector<T>
     static_assert(is_integral<T>::value, "T must be an integral type");
     if (max(int(a.size()), int(b.size())) <= CUTOFF) {
         vector<T> c(int(a.size()) + int(b.size()) - 1, 0);
-        for (int i = 0; i < int(a.size()); i++) for (int j = 0; j < int(b.size()); j++) {
-            c[i + j] += a[i] * b[j] % MOD;
-            if (c[i + j] >= MOD) c[i + j] -= MOD;
-            else if (c[i + j] < 0) c[i + j] += MOD;
+        for (int i = 0; i < int(a.size()); i++) {
+            T ai = posMod(a[i], MOD);
+            for (int j = 0; j < int(b.size()); j++) c[i + j] = addMod(c[i + j], mulMod(ai, posMod(b[j], MOD), MOD), MOD);
         }
         res.resize(int(a.size()) + int(b.size()) - 1, 0); copy(c.begin(), c.end(), res.begin());
         while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
@@ -81,8 +80,8 @@ template <class T> void multiplyPolynomial(vector<T> &a, vector<T> &b, vector<T>
     vector<T> fa(N, 0), fb; copy(a.begin(), a.end(), fa.begin()); ntt(fa);
     if (eq) fb = fa;
     else { fb.assign(N, 0); copy(b.begin(), b.end(), fb.begin()); ntt(fb); }
-    res.resize(N); T invN = mulInvPrime(T(N), MOD); res[0] = fa[0] * fb[0] % MOD * invN % MOD;
-    for (int i = 1; i < N; i++) res[N - i] = fa[i] * fb[i] % MOD * invN % MOD;
+    res.resize(N); T invN = mulInvPrime(T(N), MOD); res[0] = mulMod(mulMod(fa[0], fb[0], MOD), invN, MOD);
+    for (int i = 1; i < N; i++) res[N - i] = mulMod(mulMod(fa[i], fb[i], MOD), invN, MOD);
     ntt(res);
     while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
 }

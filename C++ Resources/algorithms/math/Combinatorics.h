@@ -2,20 +2,24 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+// a % mod, returns a value in the range [0, mod)
+// Time Complexity: O(1)
+template <class T> T posMod(T a, T mod) { T ret = -mod < a && a < mod ? a : a % mod; return 0 <= ret ? ret : ret + mod; }
+
 // (a + b) % mod
 // Time Complexity O(1)
 // Required: 0 <= a < mod, 0 <= b < mod, mod + mod does not overflow
-template <class T> addMod(T a, T b, T mod) { T ret = a + b; return ret < mod ? ret : ret - mod; }
+template <class T> T addMod(T a, T b, T mod) { T ret = a + b; return ret < mod ? ret : ret - mod; }
 
 // (a - b) % mod
 // Time Complexity O(1)
 // Required: 0 <= a < mod, 0 <= b < mod, mod can be represented as a signed integer
-template <class T> subMod(T a, T b, T mod) { T ret = a - b; return 0 <= ret ? ret : ret + mod; }
+template <class T> T subMod(T a, T b, T mod) { T ret = a - b; return 0 <= ret ? ret : ret + mod; }
 
 // a * b % mod
 // Time Complexity: O(1)
 // Required: 0 <= a < mod, 0 <= b < mod, a * b does not overflow
-template <class T> mulMod(T a, T b, T mod) { return a * b % mod; }
+template <class T> T mulMod(T a, T b, T mod) { return a * b % mod; }
 
 // a * b % mod, useful if a * b overflows
 // Time Complexity: O(log b)
@@ -87,7 +91,7 @@ template <class T> T factorialPrime(T n, T p) {
 
 // n choose k
 // Time Complexity: O(min(k, n - k))
-template <class T> choose(int n, int k) {
+template <class T> T choose(int n, int k) {
     if (n < k) return 0;
     if (k > n - k) k = n - k;
     T ret = 1;
@@ -105,9 +109,17 @@ template <class T> T choose(int n, int k, T p) {
     return divModPrime(num, den, p);
 }
 
+// n multiChoose k
+// Time Complexity: O(min(k, n - 1))
+template <class T> T multiChoose(int n, int k) { return choose<T>(n + k - 1, k); }
+
+// n multiChoose k % p for a prime p
+// Time Complexity: O(min(k, n - 1))
+template <class T> T multiChoose(int n, int k, T p) { return choose(n + k - 1, k, p); }
+
 // n permute k
 // Time Complexity: O(min(k, n - k))
-template <class T> permute(int n, int k) {
+template <class T> T permute(int n, int k) {
     if (n < k) return 0;
     if (k > n - k) k = n - k;
     T ret = 1;
