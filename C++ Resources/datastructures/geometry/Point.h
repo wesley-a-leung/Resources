@@ -3,6 +3,7 @@
 using namespace std;
 
 using T = double; using F = double; const F EPS = 1e-9;
+static_assert(is_floating_point<F>::value, "F must be a a floating point type");
 
 struct Point {
     T x, y;
@@ -78,10 +79,10 @@ struct Point {
     bool atan2OrderLe(const Point &p, const Point &q) const { return !atan2OrderLe(q, p); }
     bool atan2OrderGt(const Point &p, const Point &q) const { return atan2OrderLe(q, p); }
     bool atan2OrderGe(const Point &p, const Point &q) const { return !atan2OrderLe(p, q); }
-    bool distanceToOrderLt(const Point &p, const Point &q) { return distanceSquaredTo(p) < distanceSquaredTo(q) - T(EPS); }
-    bool distanceToOrderLe(const Point &p, const Point &q) { return !distanceToOrderLt(q, p); }
-    bool distanceToOrderGt(const Point &p, const Point &q) { return distanceToOrderLt(q, p); }
-    bool distanceToOrderGe(const Point &p, const Point &q) { return !distanceToOrderLt(p, q); }
+    bool distanceToOrderLt(const Point &p, const Point &q) const { return distanceSquaredTo(p) < distanceSquaredTo(q) - T(EPS); }
+    bool distanceToOrderLe(const Point &p, const Point &q) const { return !distanceToOrderLt(q, p); }
+    bool distanceToOrderGt(const Point &p, const Point &q) const { return distanceToOrderLt(q, p); }
+    bool distanceToOrderGe(const Point &p, const Point &q) const { return !distanceToOrderLt(p, q); }
 };
 
 struct Point_hash { size_t operator ()(const Point &p) const { return 31 * hash<T> {}(p.x) + hash<T> {}(p.y); } };
