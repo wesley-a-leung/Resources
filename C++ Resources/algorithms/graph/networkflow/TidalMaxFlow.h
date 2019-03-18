@@ -22,12 +22,11 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
     }
     bool bfs(int V, int s, int t, unit lim, char r) {
         fill(level, level + V, -1); level[s] = 0; int front = 0, back = 0; qesz = 0; q[back++] = s;
-        while (front < back && level[t] == -1) {
+        while (front < back) {
             int v = q[front++];
             for (int i = st[v]; i < st[v] + deg[v] && e[i].origCap > lim && e[i].isRev <= r; i++) {
                 if (e[i].cap > EPS && level[e[i].to] == -1) { level[e[i].to] = level[v] + 1; q[back++] = e[i].to; }
                 if (e[i].cap > EPS && level[e[i].to] == level[v] + 1) qe[qesz++] = i;
-                if (level[t] != -1) return true;
             }
         }
         return level[t] != -1;
