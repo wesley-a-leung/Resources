@@ -24,5 +24,5 @@ template <const int MAXN, class T, const T MOD> struct Hashing {
         for (int i = N - 1; i >= 0; i--) H[i] = addMod(mulMod(H[i + 1], base, MOD), T(s[i] - 'a' + 1), MOD);
     }
     // hash for substring [l, r)
-    T getHash(int l, int r) { return subMod(H[l], mulMod(H[r] * POW[r - l], MOD), MOD); }
+    T getHash(int l, int r) { return subMod(H[l], mulMod(H[r], POW[r - l], MOD), MOD); }
 };
