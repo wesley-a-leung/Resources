@@ -25,7 +25,7 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
         while (front < back && level[t] == -1) {
             int v = q[front++];
             for (int i = st[v]; i < st[v] + deg[v] && e[i].origCap > lim && e[i].isRev <= r; i++)
-                if (level[e[i].to] == -1 && e[i].cap > EPS) { level[e[i].to] = level[v] + 1; q[back++] = e[i].to; }
+                if (e[i].cap > EPS && level[e[i].to] == -1) { level[e[i].to] = level[v] + 1; q[back++] = e[i].to; }
         }
         return level[t] != -1;
     }
