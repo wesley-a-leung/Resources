@@ -5,7 +5,7 @@ using namespace std;
 using namespace __gnu_pbds;
 
 // Computes the maximum flow using a path with the minimum cost
-// Time Complexity: O(VEU log V) where U is the maximum capcity of any edge, much faster in practice (~O(VE))
+// Time Complexity: O(E^2 V log V), much faster in practice (~O(VE))
 // Memory Complexity: O(V + E)
 template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct MaxFlowMinCost {
     flowUnit FLOW_INF, FLOW_EPS; costUnit COST_INF;
