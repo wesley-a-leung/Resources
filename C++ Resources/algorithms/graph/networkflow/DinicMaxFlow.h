@@ -4,9 +4,9 @@ using namespace std;
 
 // Computes the maximum flow and minimum cut in a flow network using Dinic's algorithm
 // Time Complexity:
-//   O(V^2 * E), much faster in practice
-//   O(min(V^(2/3), E^(1/2)) * E) for unit capacities
-//   O(VE log U) with cost scaling, where U is the maximum capacity of any edge
+//   O(V^2 E), much faster in practice
+//   O(E min(V^(2/3), E^(1/2))) for unit capacities
+//   O(VE log C) with capacity scaling, where C is the maximum capacity of any edge
 // Memory Complexity: O(V + E)
 template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct DinicMaxFlow {
     unit INF, EPS; DinicMaxFlow(unit INF, unit EPS) : INF(INF), EPS(EPS) {}
