@@ -33,7 +33,7 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
         for (int qind = 0; qind < back; qind++) {
             int v = q[qind];
             for (int i = st[v]; i < st[v] + deg[v] && e[i].origCap > lim && e[i].isRev <= r; i++)
-                if (e[i].cap > EPS && level[e[i].to] == level[v] + 1) { h[e[i].to] += e[i].promised = min(e[i].cap, h[e[i].from]); }
+                if (e[i].cap > EPS && level[e[i].to] == level[v] + 1) { h[e[i].to] += e[i].promised = min(e[i].cap, h[v]); }
         }
         if (h[t] <= EPS) return 0;
         fill(pool, pool + V, 0); pool[t] = h[t]; // low tide
