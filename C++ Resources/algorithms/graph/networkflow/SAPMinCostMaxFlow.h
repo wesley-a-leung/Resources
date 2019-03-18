@@ -4,13 +4,13 @@
 using namespace std;
 using namespace __gnu_pbds;
 
-// Computes the maximum flow using a path with the minimum cost
+// Computes the maximum flow using a path with the minimum cost by finding Shortest Augmenting Paths
 // Time Complexity: O(E^2 V log V), much faster in practice (~O(VE))
 // Memory Complexity: O(V + E)
-template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct MaxFlowMinCost {
+template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct SAPMinCostMaxFlow {
     flowUnit FLOW_INF, FLOW_EPS; costUnit COST_INF;
     using heap = __gnu_pbds::priority_queue<pair<costUnit, int>, greater<pair<costUnit, int>>, pairing_heap_tag>;
-    MaxFlowMinCost(flowUnit FLOW_INF, flowUnit FLOW_EPS, costUnit COST_INF) : FLOW_INF(FLOW_INF), FLOW_EPS(FLOW_EPS), COST_INF(COST_INF) {}
+    SAPMinCostMaxFlow(flowUnit FLOW_INF, flowUnit FLOW_EPS, costUnit COST_INF) : FLOW_INF(FLOW_INF), FLOW_EPS(FLOW_EPS), COST_INF(COST_INF) {}
     struct Edge {
         int from, to; flowUnit origCap, cap; costUnit origCost, cost; int rev; Edge() {}
         Edge(int from, int to, flowUnit cap, costUnit cost) : from(from), to(to), origCap(cap), cap(cap), origCost(cost), cost(cost) {}
