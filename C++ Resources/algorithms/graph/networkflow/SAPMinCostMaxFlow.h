@@ -32,7 +32,7 @@ template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct
         while (!PQ.empty()) {
             int v = PQ.top().second; PQ.pop();
             for (int i = st[v]; i < st[v] + deg[v]; i++) {
-                if (abs(e[i].cap) <= FLOW_EPS) continue;
+                if (e[i].cap <= FLOW_EPS) continue;
                 int w = e[i].to; costUnit d = dist[v] + e[i].cost + phi[v] - phi[w];
                 if (dist[w] <= d) continue;
                 prev[w] = v; index[w] = i;
