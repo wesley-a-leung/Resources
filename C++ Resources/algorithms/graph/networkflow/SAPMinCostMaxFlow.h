@@ -5,7 +5,7 @@ using namespace std;
 using namespace __gnu_pbds;
 
 // Computes the maximum flow using a path with the minimum cost by finding Shortest Augmenting Paths
-// Time Complexity: O(E^2 V log V), much faster in practice (~O(VE))
+// Time Complexity: O(E^2 V log V), much faster in practice
 // Memory Complexity: O(V + E)
 template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct SAPMinCostMaxFlow {
     flowUnit FLOW_INF, FLOW_EPS; costUnit COST_INF;
