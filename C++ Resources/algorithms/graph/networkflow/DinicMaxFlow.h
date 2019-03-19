@@ -20,7 +20,8 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
             return maxCap > other.maxCap;
         }
     };
-    int E, cur[MAXV], level[MAXV], q[MAXV], st[MAXV], deg[MAXV]; bool cut[MAXV]; Edge e[MAXE * 2]; unit maxFlow, minCut, maxCap;
+    int E, cur[MAXV], level[MAXV], q[MAXV], st[MAXV], deg[MAXV], ind[MAXE * 2];
+    bool cut[MAXV]; Edge e[MAXE * 2]; unit maxFlow, minCut, maxCap;
     void addEdge(int v, int w, unit vw, unit wv = 0) {
         e[E++] = Edge(v, w, vw, max(vw, wv), 0); e[E++] = Edge(w, v, wv, max(vw, wv), 1);
         e[E - 2].ind = E - 2; e[E - 1].ind = E - 1; e[E - 2].rev = E - 1; e[E - 1].rev = E - 2;
@@ -56,7 +57,8 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
     void init(int V = MAXV) { E = 0; maxCap = 0; fill(cut, cut + V, false); fill(deg, deg + V, 0); }
     unit getFlow(int V, int s, int t) {
         maxFlow = 0; sort(e, e + E);
-        for (int i = 0; i < E; i++) { e[i].rev = e[e[i].rev].ind; }
+        for (int i = 0; i < E; i++) { ind[e[i].ind] = i; }
+        for (int i = 0; i < E; i++) { e[i].rev = ind[e[i].rev]; }
         for (int v = 0, curSum = 0; v < V; v++) { st[v] = curSum; curSum += deg[v]; }
         for (char r = 1 - int(SCALING); r <= 1; r++) for (unit lim = SCALING ? maxCap : EPS; ; lim = max(lim / 2, EPS)) {
             while (bfs(V, s, t, lim, r)) { copy(st, st + V, cur); maxFlow += dfs(s, t, INF, lim, r); }
