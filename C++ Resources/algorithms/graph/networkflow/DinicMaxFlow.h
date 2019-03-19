@@ -14,7 +14,7 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
         int from, to; unit origCap, cap, maxCap; int ind, rev; char isRev; Edge() {}
         Edge(int from, int to, unit cap, unit maxCap, char isRev) :
             from(from), to(to), origCap(cap), cap(cap), maxCap(maxCap), isRev(isRev) {}
-        bool operator < (const Edge &other) {
+        bool operator < (const Edge &other) const {
             if (from != other.from) return from < other.from;
             if (isRev != other.isRev) return isRev < other.isRev;
             return maxCap > other.maxCap;
