@@ -12,14 +12,16 @@ template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct
     using heap = __gnu_pbds::priority_queue<pair<costUnit, int>, greater<pair<costUnit, int>>, pairing_heap_tag>;
     SAPMinCostMaxFlow(flowUnit FLOW_INF, flowUnit FLOW_EPS, costUnit COST_INF) : FLOW_INF(FLOW_INF), FLOW_EPS(FLOW_EPS), COST_INF(COST_INF) {}
     struct Edge {
-        int from, to; flowUnit origCap, cap; costUnit origCost, cost; int rev; Edge() {}
+        int from, to; flowUnit origCap, cap; costUnit origCost, cost; int ind, rev; Edge() {}
         Edge(int from, int to, flowUnit cap, costUnit cost) : from(from), to(to), origCap(cap), cap(cap), origCost(cost), cost(cost) {}
+        bool operator < (const Edge &other) const { return from < other.from; }
     };
-    int E, prev[MAXV], index[MAXV], st[MAXV], deg[MAXV], ord[MAXE * 2], ind[MAXE * 2]; Edge e[MAXE * 2];
+    int E, prev[MAXV], index[MAXV], st[MAXV], deg[MAXV], ind[MAXE * 2]; Edge e[MAXE * 2];
     flowUnit maxFlow; costUnit phi[MAXV], dist[MAXV], minCost; bool hasNegativeEdgeCost; typename heap::point_iterator ptr[MAXV];
     void addEdge(int v, int w, flowUnit flow, costUnit cost) {
         if (cost < 0) hasNegativeEdgeCost = true;
-        e[E++] = Edge(v, w, flow, cost); e[E++] = Edge(w, v, 0, -cost); e[E - 2].rev = E - 1; e[E - 1].rev = E - 2; deg[v]++; deg[w]++;
+        e[E++] = Edge(v, w, flow, cost); e[E++] = Edge(w, v, 0, -cost); deg[v]++; deg[w]++;
+        e[E - 2].ind = E - 2; e[E - 1].ind = E - 1; e[E - 2].rev = E - 1; e[E - 1].rev = E - 2;
     }
     void bellmanFord(int V, int s, int t) {
         fill(phi, phi + V, COST_INF); phi[s] = 0;
@@ -44,11 +46,9 @@ template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct
     }
     void init(int V = MAXV) { E = 0; hasNegativeEdgeCost = false; fill(deg, deg + V, 0); }
     pair<flowUnit, costUnit> getMaxFlowMinCost(int V, int s, int t) {
-        maxFlow = 0; minCost = 0; fill(phi, phi + V, 0); iota(ord, ord + E, 0);
-        stable_sort(ord, ord + E, [&] (const int &a, const int &b) { return e[a].from < e[b].from; });
-        for (int i = 0; i < E; i++) ind[ord[i]] = i;
-        for (int i = 0; i < E; i++) e[i].rev = ind[e[i].rev];
-        stable_sort(e, e + E, [&] (const Edge &a, const Edge &b) { return a.from < b.from; });
+        maxFlow = 0; minCost = 0; fill(phi, phi + V, 0); sort(e, e + E);
+        for (int i = 0; i < E; i++) { ind[e[i].ind] = i; }
+        for (int i = 0; i < E; i++) { e[i].rev = ind[e[i].rev]; }
         for (int v = 0, curSum = 0; v < V; v++) { st[v] = curSum; curSum += deg[v]; }
         if (hasNegativeEdgeCost) bellmanFord(V, s, t);
         while (dijkstra(V, s, t)) {
