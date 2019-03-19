@@ -11,8 +11,7 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
     unit INF, EPS; TidalMaxFlow(unit INF, unit EPS) : INF(INF), EPS(EPS) {}
     struct Edge {
         int from, to; unit origCap, cap, maxCap, promised; int rev; char isRev; Edge() {}
-        Edge(int from, int to, unit cap, unit maxCap, char isRev) :
-            from(from), to(to), origCap(cap), cap(cap), maxCap(maxCap), isRev(isRev) {}
+        Edge(int from, int to, unit cap, unit maxCap, char isRev) : from(from), to(to), origCap(cap), cap(cap), maxCap(maxCap), isRev(isRev) {}
     };
     int E, qesz, level[MAXV], q[MAXV], qe[MAXE * 2], st[MAXV], deg[MAXV], ord[MAXE * 2], ind[MAXE * 2];
     bool cut[MAXV]; Edge e[MAXE * 2]; unit maxFlow, minCut, maxCap, h[MAXV], pool[MAXV];
