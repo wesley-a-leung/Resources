@@ -10,14 +10,21 @@ using namespace std;
 template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct TidalMaxFlow {
     unit INF, EPS; TidalMaxFlow(unit INF, unit EPS) : INF(INF), EPS(EPS) {}
     struct Edge {
-        int from, to; unit origCap, cap, maxCap, promised; int rev; char isRev; Edge() {}
-        Edge(int from, int to, unit cap, unit maxCap, char isRev) : from(from), to(to), origCap(cap), cap(cap), maxCap(maxCap), isRev(isRev) {}
+        int from, to; unit origCap, cap, maxCap, promised; int ind, rev; char isRev; Edge() {}
+        Edge(int from, int to, unit cap, unit maxCap, char isRev) :
+            from(from), to(to), origCap(cap), cap(cap), maxCap(maxCap), isRev(isRev) {}
+        bool operator < (const Edge &other) {
+            if (from != other.from) return from < other.from;
+            if (isRev != other.isRev) return isRev < other.isRev;
+            return maxCap > other.maxCap;
+        }
     };
-    int E, qesz, level[MAXV], q[MAXV], qe[MAXE * 2], st[MAXV], deg[MAXV], ord[MAXE * 2], ind[MAXE * 2];
+    int E, qesz, level[MAXV], q[MAXV], qe[MAXE * 2], st[MAXV], deg[MAXV], ind[MAXE * 2];
     bool cut[MAXV]; Edge e[MAXE * 2]; unit maxFlow, minCut, maxCap, h[MAXV], pool[MAXV];
     void addEdge(int v, int w, unit vw, unit wv = 0) {
         e[E++] = Edge(v, w, vw, max(vw, wv), 0); e[E++] = Edge(w, v, wv, max(vw, wv), 1);
-        e[E - 2].rev = E - 1; e[E - 1].rev = E - 2; deg[v]++; deg[w]++; maxCap = max(maxCap, max(vw, wv));
+        e[E - 2].ind = E - 2; e[E - 1].ind = E - 1; e[E - 2].rev = E - 1; e[E - 1].rev = E - 2;
+        deg[v]++; deg[w]++; maxCap = max(maxCap, max(vw, wv));
     }
     bool bfs(int V, int s, int t, unit lim, char r) {
         fill(level, level + V, -1); level[s] = 0; int front = 0, back = 0; qesz = 0; q[back++] = s;
@@ -48,19 +55,9 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
     }
     void init(int V = MAXV) { E = 0; maxCap = 0; fill(cut, cut + V, false); fill(deg, deg + V, 0); }
     unit getFlow(int V, int s, int t) {
-        maxFlow = 0; iota(ord, ord + E, 0);
-        stable_sort(ord, ord + E, [&] (const int &a, const int &b) {
-            if (e[a].from != e[b].from) return e[a].from < e[b].from;
-            if (e[a].isRev != e[b].isRev) return e[a].isRev < e[b].isRev;
-            return e[a].maxCap > e[b].maxCap;
-        });
-        for (int i = 0; i < E; i++) ind[ord[i]] = i;
-        for (int i = 0; i < E; i++) e[i].rev = ind[e[i].rev];
-        stable_sort(e, e + E, [&] (const Edge &a, const Edge &b) {
-            if (a.from != b.from) return a.from < b.from;
-            if (a.isRev != b.isRev) return a.isRev < b.isRev;
-            return a.maxCap > b.maxCap;
-        });
+        maxFlow = 0; sort(e, e + E);
+        for (int i = 0; i < E; i++) { ind[e[i].ind] = i; }
+        for (int i = 0; i < E; i++) { e[i].rev = ind[e[i].rev]; }
         for (int v = 0, curSum = 0; v < V; v++) { st[v] = curSum; curSum += deg[v]; }
         for (char r = 1 - int(SCALING); r <= 1; r++) for (unit lim = SCALING ? maxCap : EPS; ; lim = max(lim / 2, EPS)) {
             while (bfs(V, s, t, lim, r)) maxFlow += tideCycle(V, s, t);
