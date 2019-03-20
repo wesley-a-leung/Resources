@@ -47,8 +47,8 @@ template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct
     void init(int V = MAXV) { E = 0; hasNegativeEdgeCost = false; fill(deg, deg + V, 0); }
     pair<flowUnit, costUnit> getMaxFlowMinCost(int V, int s, int t) {
         maxFlow = 0; minCost = 0; fill(phi, phi + V, 0); sort(e, e + E);
-        for (int i = 0; i < E; i++) { ind[e[i].ind] = i; }
-        for (int i = 0; i < E; i++) { e[i].rev = ind[e[i].rev]; }
+        for (int i = 0; i < E; i++) ind[e[i].ind] = i;
+        for (int i = 0; i < E; i++) e[i].rev = ind[e[i].rev];
         for (int v = 0, curSum = 0; v < V; v++) { st[v] = curSum; curSum += deg[v]; }
         if (hasNegativeEdgeCost) bellmanFord(V, s, t);
         while (dijkstra(V, s, t)) {
