@@ -56,8 +56,8 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
     void init(int V = MAXV) { E = 0; maxCap = 0; fill(cut, cut + V, false); fill(deg, deg + V, 0); }
     unit getFlow(int V, int s, int t) {
         maxFlow = 0; sort(e, e + E);
-        for (int i = 0; i < E; i++) { ind[e[i].ind] = i; }
-        for (int i = 0; i < E; i++) { e[i].rev = ind[e[i].rev]; }
+        for (int i = 0; i < E; i++) ind[e[i].ind] = i;
+        for (int i = 0; i < E; i++) e[i].rev = ind[e[i].rev];
         for (int v = 0, curSum = 0; v < V; v++) { st[v] = curSum; curSum += deg[v]; }
         for (char r = 1 - int(SCALING); r <= 1; r++) for (unit lim = SCALING ? maxCap : EPS; ; lim = max(lim / 2, EPS)) {
             while (bfs(V, s, t, lim, r)) maxFlow += tideCycle(V, s, t);

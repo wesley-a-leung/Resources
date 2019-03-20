@@ -27,7 +27,7 @@ template <const int MAXV, const int MAXE, class unit> struct PushRelabelMaxFlow 
     }
     unit getFlow(int V, int s, int t) {
         for (int v = 0, curSum = 0; v < V; v++) { st[v] = curSum; curSum += deg[v]; }
-        for (int i = 0; i < E; i++) { e[ind[_e[i].ind] = st[_e[i].from]++] = _e[i]; }
+        for (int i = 0; i < E; i++) e[ind[_e[i].ind] = st[_e[i].from]++] = _e[i];
         for (int i = 0; i < E; i++) e[i].rev = ind[e[i].rev];
         for (int v = 0, curSum = 0; v < V; v++) { cur[v] = st[v] = curSum; curSum += deg[v]; }
         fill(h, h + V, 0); h[s] = V; fill(ex, ex + V, 0); ex[t] = 1; fill(cnt, cnt + 2 * V, 0); cnt[0] = V - 1;
