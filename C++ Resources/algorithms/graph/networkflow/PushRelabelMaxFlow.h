@@ -8,7 +8,7 @@ using namespace std;
 // Memory Complexity: O(V + E)
 template <const int MAXV, class unit> struct PushRelabelMaxFlow {
     struct Edge {
-        int to; unit origCap, cap; int rev; Edge() {}
+        int to; unit origCap, cap; int rev;
         Edge(int to, unit cap, int rev) : to(to), origCap(cap), cap(cap), rev(rev) {}
     };
     unit INF, EPS, maxFlow, minCut, ex[MAXV]; PushRelabelMaxFlow(unit INF, unit EPS) : INF(INF), EPS(EPS) {}
