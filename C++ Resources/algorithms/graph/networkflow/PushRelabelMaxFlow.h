@@ -11,7 +11,7 @@ template <const int MAXV, class unit> struct PushRelabelMaxFlow {
         int to; unit origCap, cap; int rev;
         Edge(int to, unit cap, int rev) : to(to), origCap(cap), cap(cap), rev(rev) {}
     };
-    unit INF, EPS, maxFlow, minCut, ex[MAXV]; PushRelabelMaxFlow(unit INF, unit EPS) : INF(INF), EPS(EPS) {}
+    unit EPS, maxFlow, minCut, ex[MAXV]; PushRelabelMaxFlow(unit EPS) : EPS(EPS) {}
     int h[MAXV], cnt[MAXV * 2]; bool cut[MAXV]; vector<int> hs[MAXV * 2]; vector<Edge> adj[MAXV]; typename vector<Edge>::iterator cur[MAXV];
     void addEdge(int v, int w, unit vw, unit wv = 0) {
         if (v == w) return;
