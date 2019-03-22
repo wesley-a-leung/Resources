@@ -7,7 +7,7 @@ using namespace std;
 // If A[i][j] = 0, then the value !xj is xored in equation i
 // Time Complexity: O(N^3)
 // Memory Complexity: O(N^2)
-template <const int MAXN> struct GaussianElimination {
+template <const int MAXN> struct XorSat {
     bool A[MAXN][MAXN], b[MAXN], x[MAXN];
     bool solve(int N) {
         for (int p = 0; p < N; p++) {
