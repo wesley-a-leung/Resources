@@ -3,7 +3,7 @@
 using namespace std;
 
 // Computes the maximum flow in a flow network using the Push Relabel algorithm
-// with the highest label selection rule, gap relabelling heuristic, and a single global relabelling
+// with the highest label selection rule, gap relabelling heuristic, and global relabelling every V * 4 relabels
 // This implementation only returns the maximum flow, and does not necessarily have the actual flow
 // values on the edges
 // Time Complexity: O(V^2 sqrt E), faster in practice
