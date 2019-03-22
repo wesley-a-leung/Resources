@@ -14,7 +14,7 @@ template <const int MAXV, class unit> struct PushRelabelMaxFlowGlobal {
         Edge(int to, unit cap, int rev) : to(to), cap(cap), rev(rev) {}
     };
     unit INF = (numeric_limits<unit>::max)(), EPS, maxFlow, ex[MAXV]; PushRelabelMaxFlowGlobal(unit EPS) : EPS(EPS) {}
-    int h[MAXV], cnt[MAXV], q[MAXV], high; vector<Edge> adj[MAXV]; vector<int> hs[MAXV], gap[MAXV];
+    int h[MAXV], cnt[MAXV], q[MAXV], high, relabels; vector<Edge> adj[MAXV]; vector<int> hs[MAXV], gap[MAXV];
     void addEdge(int v, int w, unit vw, unit wv = 0) {
         if (v == w) return;
         adj[v].emplace_back(w, vw, int(adj[w].size())); adj[w].emplace_back(v, wv, int(adj[v].size()) - 1);
@@ -23,15 +23,16 @@ template <const int MAXV, class unit> struct PushRelabelMaxFlowGlobal {
     void updateHeight(int v, int nh) {
         if (h[v] != MAXV) cnt[h[v]]--;
         if ((h[v] = nh) == MAXV) return;
-        hs[nh].push_back(v); gap[nh].push_back(v); cnt[nh]++; high = nh; 
+        hs[nh].push_back(v); gap[nh].push_back(v); cnt[nh]++; high = nh; relabels++;
     }
     void globalRelabel(int V, int t) {
         fill(h, h + V, MAXV); h[t] = 0; fill(cnt, cnt + V, 0); int front = 0, back = 0; q[back++] = t;
+        for (int i = 0; i < V; i++) { hs[i].clear(); gap[i].clear(); }
         while (front < back) {
             int v = q[front++];
             for (auto &&e : adj[v]) if (h[e.to] == MAXV && adj[e.to][e.rev].cap > EPS) updateHeight(q[back++] = e.to, h[v] + 1);
         }
-        high = h[q[back - 1]];
+        high = h[q[back - 1]]; relabels = 0;
     }
     void push(int v, Edge &e) {
         int w = e.to; unit df = min(ex[v], e.cap); e.cap -= df; adj[w][e.rev].cap += df; ex[v] -= df; ex[w] += df;
@@ -46,13 +47,16 @@ template <const int MAXV, class unit> struct PushRelabelMaxFlowGlobal {
             } else nh = min(nh, h[e.to] + 1);
         }
         if (cnt[h[v]] > 1) updateHeight(v, nh);
-        else for (int i = h[v]; i < V; gap[i++].clear()) for (int j : gap[i]) updateHeight(j, MAXV);
+        else for (int i = h[v]; i <= high; gap[i++].clear()) for (int j : gap[i]) updateHeight(j, MAXV);
     }
     unit getFlow(int V, int s, int t) {
         if (s == t) return maxFlow = 0;
         fill(ex, ex + V, 0); ex[s] = INF; ex[t] = -INF; globalRelabel(V, t);
         for (auto &&e : adj[s]) push(s, e);
-        for (; high >= 0; high --) while (!hs[high].empty()) { int v = hs[high].back(); hs[high].pop_back(); discharge(V, v); }
+        for (; high >= 0; high --) while (!hs[high].empty()) {
+            int v = hs[high].back(); hs[high].pop_back(); discharge(V, v);
+            if (relabels >= V * 4) globalRelabel(V, t);
+        }
         return ex[t] + INF;
     }
 };
