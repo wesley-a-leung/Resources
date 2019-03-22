@@ -100,13 +100,13 @@ template <class IndexType, const int MAXNODES, const int MAXROOTS, const bool ON
         VAL[ret] = merge(VAL[L[ret]], VAL[R[ret]]); return ret;
     }
     int update(int cur, IndexType tl, IndexType tr, IndexType l, IndexType r, const Lazy &val, bool persistent) {
-        int ret = persistent ? makeNode(cur) : cur;
+        int ret = persistent || !cur ? makeNode(cur) : cur;
         if (tl >= l && tr <= r) {
             VAL[ret] = applyLazy(VAL[ret], getSegmentVal(val, tr - tl + 1)); LZ[ret] = mergeLazy(LZ[ret], val); return ret;
         }
         IndexType m = tl + (tr - tl) / 2; propagate(ret, tl, tr);
-        if (tl <= r && l <= m) L[ret] = update(L[ret] ? L[ret] : makeNode(), tl, m, l, r, val, persistent);
-        if (m + 1 <= r && l <= tr) R[ret] = update(R[ret] ? R[ret] : makeNode(), m + 1, tr, l, r, val, persistent);
+        if (tl <= r && l <= m) L[ret] = update(L[ret], tl, m, l, r, val, persistent);
+        if (m + 1 <= r && l <= tr) R[ret] = update(R[ret], m + 1, tr, l, r, val, persistent);
         if (L[ret] && R[ret]) VAL[ret] = merge(VAL[L[ret]], VAL[R[ret]]);
         else if (L[ret]) VAL[ret] = VAL[L[ret]];
         else if (R[ret]) VAL[ret] = VAL[R[ret]];
@@ -119,15 +119,16 @@ template <class IndexType, const int MAXNODES, const int MAXROOTS, const bool ON
         IndexType m = tl + (tr - tl) / 2; propagate(cur, tl, tr); return merge(query(L[cur], tl, m, l, r), query(R[cur], m + 1, tr, l, r));
     }
     template <class It> void init(It st, It en) { N = en - st; makeNode(); roots[curRoot++] = build(ONE_INDEXED, N - !ONE_INDEXED, st); }
-    void init(IndexType size) { N = size; makeNode(); roots[curRoot++] = makeNode(); }
+    void init(IndexType size) { N = size; makeNode(); roots[curRoot++] = 0; }
     void update(IndexType l, IndexType r, const Lazy &val, bool persistent) {
         int nr = update(roots[curRoot - 1], ONE_INDEXED, N - !ONE_INDEXED, l, r, val, persistent);
         if (persistent) roots[curRoot++] = nr;
         else roots[curRoot - 1] = nr;
+        assert(curRoot <= MAXROOTS);
     }
     Data query(IndexType l, IndexType r, int rootInd = -1) {
         return query((rootInd == -1 ? roots[curRoot - 1] : roots[rootInd]), ONE_INDEXED, N - !ONE_INDEXED, l, r);
     }
     void revert(int x) { roots[curRoot++] = roots[x]; }
-    void clear() { curNode = curRoot = 0; }
+    void clear() { curNode = 0; curRoot = 0; }
 };
