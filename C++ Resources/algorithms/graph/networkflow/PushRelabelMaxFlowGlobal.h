@@ -21,9 +21,10 @@ template <const int MAXV, class unit> struct PushRelabelMaxFlowGlobal {
     }
     void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     void updateHeight(int v, int nh) {
+        relabels++;
         if (h[v] != MAXV) cnt[h[v]]--;
         if ((h[v] = nh) == MAXV) return;
-        hs[nh].push_back(v); gap[nh].push_back(v); cnt[nh]++; high = nh; relabels++;
+        hs[nh].push_back(v); gap[nh].push_back(v); cnt[nh]++; high = nh;
     }
     void globalRelabel(int V, int t) {
         fill(h, h + V, MAXV); h[t] = 0; fill(cnt, cnt + V, 0); int front = 0, back = 0; q[back++] = t;
