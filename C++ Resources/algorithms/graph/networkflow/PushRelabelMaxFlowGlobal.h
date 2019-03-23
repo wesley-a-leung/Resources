@@ -37,7 +37,7 @@ template <const int MAXV, class unit> struct PushRelabelMaxFlowGlobal {
     }
     void push(int v, Edge &e) {
         int w = e.to; unit df = min(ex[v], e.cap); e.cap -= df; adj[w][e.rev].cap += df; ex[v] -= df; ex[w] += df;
-        if (EPS < ex[w] && ex[w] <= df + EPS) hs[h[w]].push_back(w);
+        if (EPS < ex[w] && ex[w] <= df + EPS && h[w] < MAXV) hs[h[w]].push_back(w);
     }
     void discharge(int V, int v) {
         int nh = MAXV;
@@ -48,13 +48,13 @@ template <const int MAXV, class unit> struct PushRelabelMaxFlowGlobal {
             } else nh = min(nh, h[e.to] + 1);
         }
         if (cnt[h[v]] > 1) updateHeight(v, nh);
-        else for (int i = h[v]; i <= high; gap[i++].clear()) for (int j : gap[i]) updateHeight(j, MAXV);
+        else for (; high >= h[v]; gap[high--].clear()) for (int j : gap[high]) updateHeight(j, MAXV);
     }
     unit getFlow(int V, int s, int t) {
         if (s == t) return maxFlow = 0;
         fill(ex, ex + V, 0); ex[s] = INF; ex[t] = -INF; globalRelabel(V, t);
         for (auto &&e : adj[s]) push(s, e);
-        for (; high >= 0; high --) while (!hs[high].empty()) {
+        for (; high >= 0; high --) while (high >= 0 && !hs[high].empty()) {
             int v = hs[high].back(); hs[high].pop_back(); discharge(V, v);
             if (relabels >= V * 4) globalRelabel(V, t);
         }
