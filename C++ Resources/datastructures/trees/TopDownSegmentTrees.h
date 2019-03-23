@@ -73,7 +73,7 @@ template <const int MAXN, const bool ONE_INDEXED> struct LazySegmentTree {
 };
 
 using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ldef = 0;
-template <class IndexType, const int MAXNODES, const int MAXROOTS, const bool ONE_INDEXED> struct DynamicSegmentTree {
+template <class IndexType, const int MAXNODES, const int MAXROOTS, const bool ONE_INDEXED, const bool PERSISTENT> struct DynamicSegmentTree {
     Data merge(const Data &l, const Data &r); // to be implemented
     Data applyLazy(const Data &l, const Lazy &r); // to be implemented
     Lazy getSegmentVal(const Lazy &v, IndexType k); // to be implemented
@@ -99,14 +99,14 @@ template <class IndexType, const int MAXNODES, const int MAXROOTS, const bool ON
         IndexType m = tl + (tr - tl) / 2; L[ret] = build(tl, m, st); R[ret] = build(m + 1, tr, st);
         VAL[ret] = merge(VAL[L[ret]], VAL[R[ret]]); return ret;
     }
-    int update(int cur, IndexType tl, IndexType tr, IndexType l, IndexType r, const Lazy &val, bool persistent) {
-        int ret = persistent || !cur ? makeNode(cur) : cur;
+    int update(int cur, IndexType tl, IndexType tr, IndexType l, IndexType r, const Lazy &val) {
+        int ret = PERSISTENT || !cur ? makeNode(cur) : cur;
         if (tl >= l && tr <= r) {
             VAL[ret] = applyLazy(VAL[ret], getSegmentVal(val, tr - tl + 1)); LZ[ret] = mergeLazy(LZ[ret], val); return ret;
         }
         IndexType m = tl + (tr - tl) / 2; propagate(ret, tl, tr);
-        if (tl <= r && l <= m) L[ret] = update(L[ret], tl, m, l, r, val, persistent);
-        if (m + 1 <= r && l <= tr) R[ret] = update(R[ret], m + 1, tr, l, r, val, persistent);
+        if (tl <= r && l <= m) L[ret] = update(L[ret], tl, m, l, r, val);
+        if (m + 1 <= r && l <= tr) R[ret] = update(R[ret], m + 1, tr, l, r, val);
         if (L[ret] && R[ret]) VAL[ret] = merge(VAL[L[ret]], VAL[R[ret]]);
         else if (L[ret]) VAL[ret] = VAL[L[ret]];
         else if (R[ret]) VAL[ret] = VAL[R[ret]];
@@ -120,9 +120,9 @@ template <class IndexType, const int MAXNODES, const int MAXROOTS, const bool ON
     }
     template <class It> void init(It st, It en) { N = en - st; makeNode(); roots[curRoot++] = build(ONE_INDEXED, N - !ONE_INDEXED, st); }
     void init(IndexType size) { N = size; makeNode(); roots[curRoot++] = 0; }
-    void update(IndexType l, IndexType r, const Lazy &val, bool persistent) {
-        int nr = update(roots[curRoot - 1], ONE_INDEXED, N - !ONE_INDEXED, l, r, val, persistent);
-        if (persistent) roots[curRoot++] = nr;
+    void update(IndexType l, IndexType r, const Lazy &val, bool newRoot) {
+        int nr = update(roots[curRoot - 1], ONE_INDEXED, N - !ONE_INDEXED, l, r, val);
+        if (newRoot) roots[curRoot++] = nr;
         else roots[curRoot - 1] = nr;
         assert(curRoot <= MAXROOTS);
     }
