@@ -64,8 +64,7 @@ struct uint128 {
         if (*this == 0) return "0";
         string ret = ""; uint128 temp = *this;
         while (temp > 0) { ret.push_back((temp % 10).lo + '0'); temp /= 10; }
-        reverse(ret.begin(), ret.end());
-        return ret;
+        reverse(ret.begin(), ret.end()); return ret;
     }
     friend ostream &operator << (ostream &stream, const uint128 &v) { stream << v.write(); return stream; }
 };
