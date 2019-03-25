@@ -7,8 +7,7 @@ using namespace std;
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct BidirectionalBFS {
     int dist[MAXV], src[MAXV], to[MAXV], q[MAXV]; vector<int> adj[MAXV]; pair<int, int> edgeOnPath;
-    void addEdge(int v, int w) { adj[v].push_back(w); }
-    void addBiEdge(int v, int w) { addEdge(v, w); addEdge(w, v); }
+    void addBiEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     void clear(int V = MAXV) { for (int i = 0; i < MAXV; i++) adj[i].clear(); }
     int bfs(int V, int s, int t) {
         if (s == t) return 0;
