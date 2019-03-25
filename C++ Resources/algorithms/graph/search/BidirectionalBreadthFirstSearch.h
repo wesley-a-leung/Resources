@@ -17,7 +17,7 @@ template <const int MAXV> struct BidirectionalBFS {
         while (front < back) {
             int v = q[front++];
             for (int w : adj[v]) {
-                if (dist[w] == INT_MAX) { dist[w] = dist[v] + 1; src[w] = v; to[w] = v; q[back++] = w; }
+                if (dist[w] == INT_MAX) { dist[w] = dist[v] + 1; src[w] = src[v]; to[w] = v; q[back++] = w; }
                 else if (src[v] != src[w]) { edgeOnPath = make_pair(v, w); return dist[v] + dist[w] + 1; }
             }
         }
