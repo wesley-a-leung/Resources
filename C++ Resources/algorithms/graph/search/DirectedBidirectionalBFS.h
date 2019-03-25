@@ -11,8 +11,8 @@ template <const int MAXV> struct DirectedBidirectionalBFS {
     void clear(int V = MAXV) { stamp = 0; for (int h = 0; h < 2; h++) for (int i = 0; i < MAXV; i++) adj[h][i].clear(); }
     int run(int V, int s, int t) {
         if (s == t) return 0;
-        if (stamp == 0) fill(vis, vis + V, stamp);
-        stamp++; int front = 0, back = 0; dist[s] = dist[t] = 0; q[back++] = s; q[back++] = t; vis[s] = stamp; vis[t] = -stamp;
+        if (stamp++ == 0) fill(vis, vis + V, 0);
+        int front = 0, back = 0; dist[s] = dist[t] = 0; q[back++] = s; q[back++] = t; vis[s] = stamp; vis[t] = -stamp;
         while (front < back) {
             int v = q[front++];
             for (int w : adj[v][vis[v] < 0]) {
