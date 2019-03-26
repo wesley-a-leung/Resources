@@ -12,7 +12,7 @@ template <const int MAXN> struct TwoSat {
     TarjanSCC<MAXN * 2> scc; bool vis[MAXN * 2], x[MAXN * 2]; int post[MAXN], cur;
     // adds the disjunction xi | xj, with possible negations
     void addEquation(bool affI, int i, bool affJ, int j) { 
-        i = i * 2 + !affI; j = j * 2 + !affJ;
+        i = i * 2 + affI; j = j * 2 + affJ;
         scc.addEdge(i ^ 1, j); scc.addEdge(j ^ 1, i);
     }
     void dfs(int v) {
