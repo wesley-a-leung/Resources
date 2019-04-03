@@ -6,7 +6,7 @@ using namespace std;
 // Time Complexity: Reduces the runtime from O(N * 2^N) to O(N * 2^(N/2))
 // Memory Complexity: O(2^(N/2))
 template <const int MAXN, class T> struct ClosestSubsetSum {
-    T A[MAXN]; vector<T> ans; // ans contains the closest non-empty subset sum to value
+    T A[MAXN]; vector<int> ans; // ans contains the closest non-empty subset sum to value
     void solveHalf(vector<T> &half, vector<pair<T, int>> &sum) {
         for (int i = 1; i < (1 << int(half.size())); i++) {
             T curSum = 0;
@@ -16,7 +16,7 @@ template <const int MAXN, class T> struct ClosestSubsetSum {
         sort(sum.begin(), sum.end()); sum.resize(unique(sum.begin(), sum.end()) - sum.begin());
     }
     T solve(int N, T value) { // returns the closest sum, elements are stored in ans
-        ans.clear(); T minDiff = numeric_limits<T>::max(), closestSum; int evenPerm, oddPerm;
+        ans.clear(); T minDiff = (numeric_limits<T>::max)(), closestSum = (numeric_limits<T>::max)(); int evenPerm = 0, oddPerm = 0;
         vector<T> even, odd; even.reserve(N - N / 2); odd.reserve(N / 2);
         vector<pair<T, int>> evenSum, oddSum; evenSum.reserve(1 << (N - N / 2)); oddSum.reserve(1 << (N / 2));
         for (int i = 0; i < N; i++) {

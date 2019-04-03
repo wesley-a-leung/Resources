@@ -7,7 +7,7 @@ using namespace std;
 // Time Complexity: Reduces the runtime from O(N * 3^N) to O(N * 3^(N/2))
 // Memory Complexity: O(3^(N/2))
 template <const int MAXN, class T> struct MinSubsetDifference {
-    T A[MAXN]; vector<T> setA, setB; // setA and setB contain the two disjoint non-empty subset
+    T A[MAXN]; vector<int> setA, setB; // setA and setB contain the two disjoint non-empty subset
     void solveHalf(vector<T> &half, vector<pair<T, int>> &diff) {
         int perms = 1;
         for (int i = 0; i < int(half.size()); i++) perms *= 3;
@@ -23,9 +23,9 @@ template <const int MAXN, class T> struct MinSubsetDifference {
         sort(diff.begin(), diff.end()); diff.resize(unique(diff.begin(), diff.end()) - diff.begin());
     }
     T solve(int N) { // returns the smallest absolute difference of sums, set is split into setA and setB
-        T minDiff = numeric_limits<T>::max(); vector<T> even, odd; even.reserve(N - N / 2); odd.reserve(N / 2);
+        T minDiff = (numeric_limits<T>::max)(); vector<T> even, odd; even.reserve(N - N / 2); odd.reserve(N / 2);
         vector<pair<T, int>> evenDiff, oddDiff; evenDiff.reserve(1 << (N - N / 2)); oddDiff.reserve(1 << (N / 2));
-        int evenPerm, oddPerm; setA.clear(); setB.clear();
+        int evenPerm = 0, oddPerm = 0; setA.clear(); setB.clear();
         for (int i = 0; i < N; i++) {
             if (i % 2 == 0) even.push_back(A[i]);
             else odd.push_back(A[i]);
