@@ -2,155 +2,163 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Data {
-    int mn, mx, sum, size; Data(int mn = INT_MAX, int mx = INT_MIN, int sum = 0, int size = 0) : mn(mn), mx(mx), sum(sum), size(size) {}
-};
-struct Lazy {
-    int lz, fl; Lazy(int lz = 0, int fl = 0): lz(lz), fl(fl) {}
-};
-
 // Top Tree supporting path and subtree, updates and queries
 // Time Complexity:
 //   constructor: O(N)
-//   makeRoot, findParent, link, cutParent: O(log N)
+//   makeRoot, findRoot, findParent, cutParent, link: O(log N)
 //   updatePath, updateSubtree, queryPath, querySubtree: O(log N)
 // Memory Complexity: O(N)
+
+const char NONE = 0, INC = 1, ASSIGN = 2; using Value = int; const Value vdef = 0;
+struct Data {
+    Value mn, mx, sum; int size; Data() : mn((numeric_limits<Value>::max)()), mx((numeric_limits<Value>::min)()), sum(0), size(0) {}
+    Data(const Value &v) : mn(v), mx(v), sum(v), size(1) {}
+    Data(const Value &mn, const Value &mx, const Value &sum, int size) : mn(mn), mx(mx), sum(sum), size(size) {}
+};
+struct Lazy {
+    Value lz; char fl; Lazy() : lz(vdef), fl(NONE) {}
+    Lazy(const Value &lz, char fl) : lz(lz), fl(fl) {}
+};
+const Data qdef = Data(); const Lazy ldef = Lazy();
+Value applyVal(const Value &v, const Lazy &lz) {
+    if (lz.fl == ASSIGN) return lz.lz;
+    else if (lz.fl == INC) return v + lz.lz;
+    else return v;
+}
+Data merge(const Data &l, const Data &r) { return Data(min(l.mn, r.mn), max(l.mx, r.mx), l.sum + r.sum, l.size + r.size); }
+Lazy mergeLazy(const Lazy &l, const Lazy &r) { return Lazy(applyVal(l.lz, r), max(l.fl, r.fl)); }
+Data applyLazy(const Data &l, const Lazy &r) {
+    return l.size == 0 ? l : Data(applyVal(l.mn, r), applyVal(l.mx, r), applyVal(l.sum, Lazy(r.lz * l.size, r.fl)), l.size);
+}
+struct Node {
+    int x, p; array<int, 4> ch; Value val; Data path, sbtr, ftr; Lazy lzpath, lzsbtr; bool rev, inr; Node() {}
+    Node(int x, const Value &v, bool inr) : x(x), p(0), val(v), lzpath(ldef), lzsbtr(ldef), rev(false), inr(inr) {
+        ch.fill(0); path = sbtr = ftr = inr ? qdef : Data(v);
+    }
+    bool isRoot(bool t); void reverse(); void applyPath(const Lazy &v); void applySbtr(const Lazy &v, bool f); void update(); void propagate();
+    int findInd(); void rotate(int t); void splay(int t); void add(int y); void rem();
+};
+vector<Node> T; vector<int> garbage;
+int makeNode(const Value &val, bool inr) {
+    if (garbage.empty()) { T.emplace_back(int(T.size()), val, inr); return int(T.size()) - 1; }
+    int x = garbage.back(); garbage.pop_back(); T[x] = Node(x, val, inr); return x;
+}
+void delNode(int x) { garbage.push_back(x); }
+bool Node::isRoot(bool t) {
+    if (t) return !p || !inr || !T[p].inr;
+    else return !p || (x != T[p].ch[0] && x != T[p].ch[1]);
+}
+void Node::reverse() { rev = !rev; swap(ch[0], ch[1]); }
+void Node::applyPath(const Lazy &v) { 
+    val = applyVal(val, v); path = applyLazy(path, v); lzpath = mergeLazy(lzpath, v); sbtr = merge(path, ftr);
+}
+void Node::applySbtr(const Lazy &v, bool f) {
+    sbtr = applyLazy(sbtr, v); ftr = applyLazy(ftr, v); lzsbtr = mergeLazy(lzsbtr, v);
+    if (f) applyPath(v);
+}
+void Node::update() {
+    if (!x) return;
+    path = sbtr = ftr = qdef;
+    if (!inr) path = sbtr = Data(val);
+    for (int i = 0; i < 2; i++) if (ch[i]) { path = merge(path, T[ch[i]].path); sbtr = merge(sbtr, T[ch[i]].sbtr); ftr = merge(ftr, T[ch[i]].ftr); }
+    for (int i = 2; i < 4; i++) if (ch[i]) { sbtr = merge(sbtr, T[ch[i]].sbtr); ftr = merge(ftr, T[ch[i]].sbtr); }
+}
+void Node::propagate() {
+    if (!x) return;
+    if (rev) {
+        rev = false;
+        for (int i = 0; i < 2; i++) if (ch[i]) T[ch[i]].reverse();
+    }
+    for (int i = 0; i < 4; i++) if (ch[i]) T[ch[i]].applySbtr(lzsbtr, i >= 2);
+    for (int i = 0; i < 2; i++) if (ch[i]) T[ch[i]].applyPath(lzpath);
+    lzpath = lzsbtr = ldef;
+}
+int Node::findInd() {
+    for (int i = 0; i < 4; i++) if (T[p].ch[i] == x) return i;
+    assert(false); return -1;
+}
+void connect(int ch, int par, int i) {
+    if (ch) T[ch].p = par;
+    T[par].ch[i] = ch;
+}
+void Node::rotate(int t) {
+    int p = this->p, g = T[p].p; bool isL = x == T[p].ch[t];
+    if (g) connect(x, g, T[p].findInd());
+    else this->p = 0;
+    connect(ch[t ^ isL], p, t ^ !isL); connect(p, x, t ^ isL); T[p].update();
+}
+void Node::splay(int t) {
+    while (!isRoot(t)) {
+        int p = this->p, g = T[p].p;
+        if (!T[p].isRoot(t)) ((x == T[p].ch[t]) == (p == T[g].ch[t]) ? T[p] : T[x]).rotate(t);
+        rotate(t);
+    }
+    update();
+}
+void Node::add(int y) {
+    T[y].propagate();
+    for (int i = 2; i < 4; i++) if (!T[y].ch[i]) { connect(x, y, i); return; }
+    int z = makeNode(vdef, true), w = 0;
+    for (w = y; T[T[w].ch[2]].inr; w = T[w].ch[2]) T[T[w].ch[2]].propagate();
+    connect(T[w].ch[2], z, 2); connect(x, z, 3); connect(z, w, 2); T[z].splay(2);
+}
+void Node::rem() {
+    if (T[p].inr) { connect(T[p].ch[findInd() ^ 1], T[p].p, T[p].findInd()); delNode(p); T[T[p].p].splay(2); }
+    else connect(0, p, findInd());
+    p = 0;
+}
+void expose(int x) {
+    stack<int> stk; int y = x, z = x;
+    for (; z; z = T[z].p) stk.push(z);
+    for (; !stk.empty(); stk.pop()) T[stk.top()].propagate();
+    T[x].splay(0);
+    if (T[x].ch[1]) { z = T[x].ch[1]; T[x].ch[1] = 0; T[z].add(x); T[x].update(); }
+    for (; T[x].p; x = z) {
+        for (z = T[x].p; T[z].inr; z = T[z].p);
+        T[z].splay(0);
+        if (T[z].ch[1]) { connect(T[z].ch[1], T[x].p, T[x].findInd()); T[T[x].p].splay(2); }
+        else T[x].rem();
+        connect(x, z, 1); T[z].update();
+    }
+    T[y].splay(0);
+}
+// one-indexed
 struct TopTree {
-    const int INC = 1, ASSIGN = 2;
-    Data merge(const Data &l, const Data &r) {
-        return Data(min(l.mn, r.mn), max(l.mx, r.mx), l.sum + r.sum, l.size + r.size);
+    TopTree(int N) {
+        T.clear(); garbage.clear(); T.reserve(2 * N); garbage.reserve(2 * N); makeNode(vdef, false);
+        for (int i = 1; i <= N; i++) makeNode(vdef, false);
     }
-    int apply(int val, int lz, int fl) {
-        if (fl == ASSIGN) return lz;
-        else if (fl == INC) return val + lz;
-        else return val;
+    template <class It> TopTree(It st, It en) {
+        T.clear(); garbage.clear(); T.reserve(2 * (en - st)); garbage.reserve(2 * (en - st)); makeNode(vdef, false);
+        for (It i = st; i < en; i++) makeNode(*i, false);
     }
-    Data applyLazy(const Data &d, const Lazy &lz) {
-        return d.size ? Data(apply(d.mn, lz.lz, lz.fl), apply(d.mx, lz.lz, lz.fl), apply(d.sum, lz.lz * d.size, lz.fl), d.size) : d;
-    }
-    Lazy mergeLazy(const Lazy &ch, const Lazy &par) {
-        return Lazy(apply(ch.lz, par.lz, par.fl), max(ch.fl, par.fl));
-    }
-    vector<Data> PATH, SBTR, FTR; vector<Lazy> LZPATH, LZSBTR;
-    vector<array<int, 4>> CH; vector<int> VAL, P; vector<bool> REV, INR;
-    int makeNode(int val, bool inr) {
-        VAL.push_back(val); Data d = inr ? Data() : Data(val, val, val, 1); Lazy lz = Lazy(0, 0);
-        PATH.push_back(d); SBTR.push_back(d); FTR.push_back(d); LZPATH.push_back(lz); LZSBTR.push_back(lz);
-        CH.push_back({0, 0, 0, 0}); P.push_back(0); REV.push_back(false); INR.push_back(inr);
-        return int(VAL.size()) - 1;
-    }
-    TopTree(int N) { makeNode(0, false); for (int i = 1; i <= N; i++) makeNode(0, false); }
-    template <class It> TopTree(It st, It en) { makeNode(0, false); for (It i = st; i < en; i++) makeNode(*i, false); }
-    bool isRoot(int x, bool t) {
-        if (t) return !P[x] || !INR[x] || !INR[P[x]];
-        else return !P[x] || (x != CH[P[x]][0] && x != CH[P[x]][1]);
-    }
-    void rev(int x) { REV[x] = !REV[x]; swap(CH[x][0], CH[x][1]); }
-    void pushPath(int x, const Lazy &lz) {
-        LZPATH[x] = mergeLazy(LZPATH[x], lz); PATH[x] = applyLazy(PATH[x], lz);
-        VAL[x] = apply(VAL[x], lz.lz, lz.fl); SBTR[x] = merge(PATH[x], FTR[x]);
-    }
-    void pushSbtr(int x, const Lazy &lz, bool ftr) {
-        LZSBTR[x] = mergeLazy(LZSBTR[x], lz); SBTR[x] = applyLazy(SBTR[x], lz); FTR[x] = applyLazy(FTR[x], lz);
-        if (ftr) pushPath(x, lz);
-    }
-    void propagate(int x) {
-        if (x) {
-            if (REV[x]) {
-                REV[x] = false;
-                for (int i = 0; i < 2; i++) if (CH[x][i]) rev(CH[x][i]);
-            }
-            for (int i = 0; i < 4; i++) if (CH[x][i]) pushSbtr(CH[x][i], LZSBTR[x], i >= 2);
-            for (int i = 0; i < 2; i++) if (CH[x][i]) pushPath(CH[x][i], LZPATH[x]);
-            LZSBTR[x] = LZPATH[x] = Lazy();
-        }
-    }
-    void update(int x) {
-        if (x) {
-            PATH[x] = SBTR[x] = FTR[x] = Data();
-            if (!INR[x]) PATH[x] = SBTR[x] = Data(VAL[x], VAL[x], VAL[x], 1);
-            for (int i = 0; i < 2; i++) if (CH[x][i]) { PATH[x] = merge(PATH[x], PATH[CH[x][i]]); FTR[x] = merge(FTR[x], FTR[CH[x][i]]); }
-            for (int i = 0; i < 4; i++) if (CH[x][i]) SBTR[x] = merge(SBTR[x], SBTR[CH[x][i]]);
-            for (int i = 2; i < 4; i++) if (CH[x][i]) FTR[x] = merge(FTR[x], SBTR[CH[x][i]]);
-        }
-    }
-    int findInd(int x) {
-        for (int i = 0; i < 4; i++) if (CH[P[x]][i] == x) return i;
-        assert(false); return -1;
-    }
-    void connect(int ch, int par, int i) {
-        if (ch) P[ch] = par;
-        CH[par][i] = ch;
-    }
-    void rotate(int x, int t) {
-        assert(t == 0 || t == 2); int p = P[x], g = P[p]; bool isL = x == CH[p][t];
-        if (g) connect(x, g, findInd(p));
-        else P[x] = 0;
-        connect(CH[x][t ^ isL], p, t ^ !isL); connect(p, x, t ^ isL); update(p);
-    }
-    void splay(int x, int t) {
-        assert(t == 0 || t == 2);
-        while (!isRoot(x, t)) {
-            int p = P[x], g = P[p];
-            if (!isRoot(p, t)) rotate((x == CH[p][t]) == (p == CH[g][t]) ? p : x, t);
-            rotate(x, t);
-        }
-        update(x);
-    }
-    void add(int x, int y) {
-        propagate(y);
-        for (int i = 2; i < 4; i++) if (!CH[y][i]) { connect(x, y, i); return; }
-        int z = makeNode(0, true), w = 0;
-        for(w = y; INR[CH[w][2]]; w = CH[w][2]) propagate(CH[w][2]);
-        connect(CH[w][2], z, 2); connect(x, z, 3); connect(z, w, 2); splay(z, 2);
-    }
-    void remove(int x) {
-        if (INR[P[x]]) { connect(CH[P[x]][findInd(x) ^ 1], P[P[x]], findInd(P[x])); splay(P[P[x]], 2); }
-        else connect(0, P[x], findInd(x));
-        P[x] = 0;
-    }
-    void expose(int x) {
-        stack<int> stk; int y = x, z;
-        for (z = x; z; z = P[z]) stk.push(z);
-        while (!stk.empty()) { propagate(stk.top()); stk.pop(); }
-        splay(x, 0);
-        if (CH[x][1]) { z = CH[x][1]; CH[x][1] = 0; add(z, x); update(x); }
-        while (P[x]) {
-            for (z = P[x]; INR[z]; z = P[z]);
-            splay(z, 0);
-            if (CH[z][1]) { connect(CH[z][1], P[x], findInd(x)); splay(P[x], 2); }
-            else remove(x);
-            connect(x, z, 1); update(z); x = z;
-        }
-        splay(y, 0);
-    }
-    void makeRoot(int x) { expose(x); rev(x); }
+    void makeRoot(int x) { expose(x); T[x].reverse(); }
+    int findRoot(int x) { for (; T[x].p; x = T[x].p); return x; }
     int findParent(int x) {
-        expose(x); propagate(CH[x][0]);
-        for (x = CH[x][0]; x && CH[x][1]; x = CH[x][1]) propagate(CH[x][1]);
+        expose(x); T[T[x].ch[0]].propagate();
+        for (x = T[x].ch[0]; x && T[x].ch[1]; x = T[x].ch[1]) T[T[x].ch[1]].propagate();
         return x;
     }
-    int findRoot(int x) { for (; P[x]; x = P[x]); return x; }
     int cutParent(int x) {
         int y = findParent(x);
-        if (y) { expose(y); remove(x); update(y); }
+        if (y) { expose(y); T[x].rem(); T[y].update(); }
         return y;
     }
-    void link(int x, int y) {
-        makeRoot(x); int p = cutParent(x);
-        if (findRoot(x) != findRoot(y)) p = y;
-        if (p) { expose(p); add(x, p); update(p); }
+    void link(int ch, int par) { // makes par the parent of ch, unless par is in the subtree of ch
+        int p = cutParent(ch);
+        if (findRoot(ch) != findRoot(par)) p = par;
+        if (p) { expose(p); T[ch].add(p); T[p].update(); }
     }
-    void updateSubtree(int x, Lazy lz) {
-        expose(x); VAL[x] = apply(VAL[x], lz.lz, lz.fl);
-        for (int i = 2; i < 4; i++) if (CH[x][i]) pushSbtr(CH[x][i], lz, true);
-        update(x);
+    void updateSubtree(int x, const Lazy &lz) {
+        expose(x); T[x].val = applyVal(T[x].val, lz);
+        for (int i = 2; i < 4; i++) if (T[x].ch[i]) T[T[x].ch[i]].applySbtr(lz, true);
+        T[x].update();
     }
-    void updatePath(int x, int y, Lazy lz) { makeRoot(x); expose(y); splay(x, 0); pushPath(x, lz); }
+    void updatePath(int x, int y, const Lazy &lz) { makeRoot(x); expose(y); T[x].splay(0); T[x].applyPath(lz); }
     Data querySubtree(int x) {
-        expose(x); Data ret = (VAL[x], VAL[x], VAL[x], 1);
-        for (int i = 2; i < 4; i++) ret = merge(ret, SBTR[CH[x][i]]);
+        expose(x); Data ret(T[x].val);
+        for (int i = 2; i < 4; i++) if (T[x].ch[i]) ret = merge(ret, T[T[x].ch[i]].sbtr);
         return ret;
     }
-    Data queryPath(int x, int y) { makeRoot(x); expose(y); splay(x, 0); return PATH[x]; }
+    Data queryPath(int x, int y) { makeRoot(x); expose(y); T[x].splay(0); return T[x].path; }
 };
