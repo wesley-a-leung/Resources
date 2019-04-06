@@ -18,16 +18,12 @@ public class Reader {
     public Reader(String fileName) throws FileNotFoundException { in = new BufferedReader(new FileReader(fileName)); }
 
     public String next() throws IOException {
-        while (st == null || !st.hasMoreTokens()) {
-            st = new StringTokenizer(in.readLine().trim());
-        }
+        while (st == null || !st.hasMoreTokens()) st = new StringTokenizer(in.readLine().trim());
         return st.nextToken();
     }
 
     public String next(String delim) throws IOException {
-        while (st == null || !st.hasMoreTokens()) {
-            st = new StringTokenizer(in.readLine().trim());
-        }
+        while (st == null || !st.hasMoreTokens()) st = new StringTokenizer(in.readLine().trim());
         return st.nextToken(delim);
     }
     
