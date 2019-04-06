@@ -49,4 +49,4 @@ public class Reader {
     public short nextShort() throws IOException { return Short.parseShort(next()); }
     public short nextShort(String delim) throws IOException { return Short.parseShort(next(delim)); }
     public void close() throws IOException { in.close(); }
-} // Reader class
+}
