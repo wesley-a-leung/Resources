@@ -5,7 +5,7 @@ using namespace std;
 // Supports queries for whether a graph component is bipartite after edges have been added
 // Time Complexity:
 //   init: O(V)
-//   find, addEdge, connected, pathParity, getSize, isComponentBipartite: alpha(N)
+//   find, addEdge, connected, pathParity, getSize, isComponentBipartite: alpha(V)
 //   isGraphBipartite: O(1)
 // Memory Complexity: O(V)
 template <const int MAXV, const bool ONE_INDEXED> struct SemiDynamicBipartite {
