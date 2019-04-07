@@ -4,7 +4,7 @@ using namespace std;
 
 // Computes the connected components of a graph using Union Find
 // Time Complexity: O(V + E)
-// Memory Complexity: O(V * Inverse Ackermann)
+// Memory Complexity: O(V * alpha(V))
 template <const int MAXV> struct ConnectedComponentsUF {
     int UF[MAXV], id[MAXV]; vector<vector<int>> components;
     void init(int N) { fill(UF, UF + N, -1); }
