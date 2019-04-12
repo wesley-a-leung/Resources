@@ -43,8 +43,8 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTreeLinear {
     }
     template <class It> void init(It st, It en) {
         N = en - st;
-        for (int i = 1; i <= N; i++) A[i] = *(st + i - 1);
-        build(0, 1, N);
+        for (int i = 0; i < N; i++) A[i + ONE_INDEXED] = *(st + i);
+        build(0, ONE_INDEXED, N - !ONE_INDEXED);
     }
     void init(int size) { N = size; fill(A + ONE_INDEXED, A + N + ONE_INDEXED, 0); build(0, ONE_INDEXED, N - !ONE_INDEXED); }
     void update(int l, int r, type val) { update(0, ONE_INDEXED, N - !ONE_INDEXED, l, r, make_pair((1 - l) * val, val)); }
