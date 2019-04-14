@@ -33,4 +33,3 @@ template <const int MAXN, class T> struct FenwickTreeBinarySearch {
         return ind + 1;
     }
 };
-
