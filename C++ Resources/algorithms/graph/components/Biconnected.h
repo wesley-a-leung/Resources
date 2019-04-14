@@ -28,13 +28,8 @@ template <const int MAXV> struct Biconnected {
                     }
                     components.back().push_back(s.top().first); components.back().push_back(s.top().second); s.pop();
                 }
-                if (low[w] == pre[w]) {
-                    isBridge[v][i] = true;
-                    isBridge[w][rev[v][i]] = true;
-                }
-            } else if (w != prev && pre[w] < low[v]) {
-                low[v] = pre[w]; s.emplace(v, w);
-            }
+                if (low[w] == pre[w]) { isBridge[v][i] = isBridge[w][rev[v][i]] = true; }
+            } else if (w != prev && pre[w] < low[v]) { low[v] = pre[w]; s.emplace(v, w); }
         }
     }
     void dfs2(int v, int curId) {
@@ -54,10 +49,7 @@ template <const int MAXV> struct Biconnected {
                 }
             }
         }
-        for (auto &&comp : components) {
-            sort(comp.begin(), comp.end());
-            comp.erase(unique(comp.begin(), comp.end()), comp.end());
-        }
+        for (auto &&comp : components) { sort(comp.begin(), comp.end()); comp.erase(unique(comp.begin(), comp.end()), comp.end()); }
     }
     void genForest(int V) {
         fill(id, id + V, -1); forestN = 0;

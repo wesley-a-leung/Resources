@@ -31,8 +31,7 @@ template <const int MAXV> struct KosarajuSharirSCC {
     void genDAG(int V) {
         for (int v = 0; v < V; v++) for (int w : adj[v]) if (id[v] != id[w]) DAG[id[v]].push_back(id[w]);
         for (int i = 0; i < int(components.size()); i++) {
-            sort(DAG[i].begin(), DAG[i].end());
-            DAG[i].erase(unique(DAG[i].begin(), DAG[i].end()), DAG[i].end());
+            sort(DAG[i].begin(), DAG[i].end()); DAG[i].erase(unique(DAG[i].begin(), DAG[i].end()), DAG[i].end());
         }
     }
 };
