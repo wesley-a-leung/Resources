@@ -10,11 +10,9 @@ template <const int MAXV, const int MAXQ> struct SemiDynamicBiconnectivity {
     struct Query { int type, v, w; } q[MAXQ];
     int find(int v) { return UF[v] < 0 ? v : UF[v] = find(UF[v]); }
     bool join(int v, int w) {
-        v = find(v); w = find(w);
-        if (v == w) return false;
+        if ((v = find(v)) == (w = find(w))) return false;
         if (UF[v] > UF[w]) swap(v, w);
-        UF[v] += UF[w]; UF[w] = v;
-        return true;
+        UF[v] += UF[w]; UF[w] = v; return true;
     }
     void dfs(int v, int prev, int d) {
         dep[v] = d; par[v] = prev;
