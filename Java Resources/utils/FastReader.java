@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class FastReader {
-    private final int BUFFER_SIZE = 1 << 12;
+    private final int BUFFER_SIZE = 1 << 16;
     private int LENGTH = -1;
     private DataInputStream din;
     private byte[] buffer, buf;
