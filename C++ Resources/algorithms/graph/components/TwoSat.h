@@ -26,7 +26,7 @@ template <const int MAXN> struct TwoSat {
         scc.genDAG(N * 2);
         fill(vis, vis + N * 2, false);
         for (int i = 0; i < int(scc.components.size()); i++) if (!vis[i]) dfs(i);
-        for (int i = 0; i < N; i++) x[i] = post[scc.id[i * 2]] < post[scc.id[i * 2 + 1]];
+        for (int i = 0; i < N; i++) x[i] = post[scc.id[i * 2]] > post[scc.id[i * 2 + 1]];
         return true;
     }
     void clear(int N = MAXN) { scc.clear(); }
