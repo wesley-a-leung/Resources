@@ -14,7 +14,7 @@ template <const int MAXV> struct TransitiveClosureSCC {
     bitset<MAXV> dfs(int v) {
         if (vis[v]) return dp[v];
         vis[v] = true;
-        for (int w : SCC.components[v]) dp[v][w] = 1;
+        dp[v][v] = 1;
         for (int w : SCC.DAG[v]) dp[v] |= dfs(w);
         return dp[v];
     }
@@ -25,5 +25,5 @@ template <const int MAXV> struct TransitiveClosureSCC {
         for (int i = 0; i < int(SCC.components.size()); i++) if (!vis[i]) dfs(i);
     }
     // is w reachable from v
-    bool reachable(int v, int w) { return dp[SCC.id[v]][w]; }
+    bool reachable(int v, int w) { return dp[SCC.id[v]][SCC.id[w]]; }
 };
