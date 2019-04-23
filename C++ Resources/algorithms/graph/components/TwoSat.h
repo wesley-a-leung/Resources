@@ -21,9 +21,10 @@ template <const int MAXN> struct TwoSat {
         post[v] = cur++;
     }
     bool solve(int N) {
-        scc.run(2 * N);
+        scc.run(N * 2);
         for (int i = 0; i < N; i++) if (scc.id[i * 2] == scc.id[i * 2 + 1]) return false;
-        scc.genDAG(2 * N);
+        scc.genDAG(N * 2);
+        fill(vis, vis + N * 2, false);
         for (int i = 0; i < int(scc.components.size()); i++) if (!vis[i]) dfs(i);
         for (int i = 0; i < N; i++) x[i] = post[scc.id[i * 2]] < post[scc.id[i * 2 + 1]];
         return true;
