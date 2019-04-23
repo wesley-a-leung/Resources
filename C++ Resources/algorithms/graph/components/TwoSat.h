@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "TarjanScc.h"
+#include "TarjanSCC.h"
 using namespace std;
 
 // Solves the two satisfiability problem:
