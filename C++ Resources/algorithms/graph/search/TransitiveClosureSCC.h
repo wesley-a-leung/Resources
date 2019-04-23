@@ -22,7 +22,7 @@ template <const int MAXV> struct TransitiveClosureSCC {
         SCC.run(V);
         for (int i = 0; i < int(SCC.components.size()); i++) { dp[i].reset(); vis[i] = false; }
         SCC.genDAG(V);
-        for (int i = 0; i < int(SCC.components.size()); i++) dfs(i);
+        for (int i = 0; i < int(SCC.components.size()); i++) if (!vis[i]) dfs(i);
     }
     // is w reachable from v
     bool reachable(int v, int w) { return dp[SCC.id[v]][w]; }
