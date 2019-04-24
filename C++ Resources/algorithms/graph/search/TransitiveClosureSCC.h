@@ -11,12 +11,11 @@ template <const int MAXV> struct TransitiveClosureSCC {
     void addEdge(int v, int w) { SCC.addEdge(v, w); }
     void addBiEdge(int v, int w) { addEdge(v, w); addEdge(w, v); }
     void clear() { SCC.clear(); }
-    bitset<MAXV> dfs(int v) {
-        if (vis[v]) return dp[v];
+    void dfs(int v) {
+        if (vis[v]) return;
         vis[v] = true;
         dp[v][v] = 1;
-        for (int w : SCC.DAG[v]) dp[v] |= dfs(w);
-        return dp[v];
+        for (int w : SCC.DAG[v]) { dfs(w); dp[v] |= dp[w]; }
     }
     void run(int V) {
         SCC.run(V);
