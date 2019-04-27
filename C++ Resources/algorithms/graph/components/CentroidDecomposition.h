@@ -18,11 +18,10 @@ template <const int MAXV> struct CentroidDecomposition {
     }
     int getCentroid(int v, int prev, int treeSize) {
         int n = treeSize, size = 1; bool hasCentroid = true;
-        for (int w : adj[v]) {
-            if (w == prev || exclude[w]) continue;
+        for (int w : adj[v]) if (w != prev && exclude[w]) {
             int ret = getCentroid(w, v, treeSize);
             if (ret >= 0) return ret;
-            hasCentroid &= -ret <= n / 2; size += -ret;
+            hasCentroid &= -ret <= n / 2; size -= ret;
         }
         return (hasCentroid &= n - size <= n / 2) ? v : -size;
     }
