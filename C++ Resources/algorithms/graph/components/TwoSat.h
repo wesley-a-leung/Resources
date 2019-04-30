@@ -9,7 +9,7 @@ using namespace std;
 // Time Complexity: O(N + M) for N variables, M equations
 // Memory Complexity: O(N + M) for N varaibles, M equations
 template <const int MAXN> struct TwoSat {
-    TarjanSCC<MAXN * 2> scc; bool vis[MAXN * 2], x[MAXN * 2]; int post[MAXN], cur;
+    TarjanSCC<MAXN * 2> scc; bool vis[MAXN * 2], x[MAXN * 2]; int post[MAXN * 2], cur;
     // adds the disjunction xi | xj, with possible negations
     void addEquation(bool affI, int i, bool affJ, int j) { 
         i = i * 2 + affI; j = j * 2 + affJ;
