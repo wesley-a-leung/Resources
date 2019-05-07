@@ -49,8 +49,8 @@ template <class T, class U> Matrix<T> pow(const Matrix<T> &A, U pow) {
 
 // Determinant
 // Time Complexity: O(N^3)
-template <class T> T det(Matrix<T> &A) {
-    assert(A.N > 0 && A.N == A[0].N); T ret = 1;
+template <class T> T det(Matrix<T> A) {
+    assert(A.N > 0 && A.N == A.M); T ret = 1;
     for (int i = 0; i < A.N; i++) {
         int mx = i;
         for (int j = i + 1; j < A.N; j++) if (A[j][i] > A[mx][i]) mx = j;
