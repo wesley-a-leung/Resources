@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Metrix data structure
+// Matrix data structure
 template <class T> struct Matrix : vector<vector<T>> {
     int N, M; Matrix(int N, int M) : N(N), M(M) { for (int i = 0; i < N; i++) this->push_back(vector<T>(M, 0)); }
 };
