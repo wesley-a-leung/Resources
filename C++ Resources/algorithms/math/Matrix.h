@@ -35,7 +35,25 @@ template <class T> Matrix<T> sub(const Matrix<T> &A, const Matrix<T> &B) {
 // Time Complexity: O(N^3)
 template <class T> Matrix<T> mul(const Matrix<T> &A, const Matrix<T> &B) {
     assert(A.M == B.N); Matrix<T> C(A.N, B.M);
-    for (int i = 0; i < A.N; i++) for (int j = 0; j < B.M; j++) for (int k = 0; k < A.M; k++) C[i][j] += A[i][k] * B[k][j];
+    for (int i = 0; i < A.N; i++) for (int j = 0; j < B.M; j++) {
+        T temp = 0;
+        for (int k = 0; k < A.M; k++) temp += A[i][k] * B[k][j];
+        C[i][j] += temp;
+    }
+    return C;
+}
+
+// Returns A * B using the sqrt caching trick
+// Time Complexity: O(N^3)
+template <class T> Matrix<T> mulSqrtCache(const Matrix<T> &A, const Matrix<T> &B, int BSZ) {
+    assert(A.M == B.N); Matrix<T> C(A.N, B.M);
+    for (int i = 0; i < A.N; i += BSZ) for (int j = 0; j < B.M; j += BSZ) for (int k = 0; k < A.M; k += BSZ) {
+        for (int ii = i, eni = min(i + BSZ, A.N); ii < eni; ii++) for (int jj = j, enj = min(j + BSZ, B.M); jj < enj; jj++) {
+            T temp = 0;
+            for (int kk = k, enk = min(k + BSZ, A.M); kk < enk; kk++) temp += A[ii][kk] * B[kk][jj];
+            C[ii][jj] += temp;
+        }
+    }
     return C;
 }
 
