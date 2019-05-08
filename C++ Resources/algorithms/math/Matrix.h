@@ -4,7 +4,7 @@ using namespace std;
 
 // Matrix data structure
 template <class T> struct Matrix : vector<vector<T>> {
-    int N, M; Matrix(int N, int M) : N(N), M(M) { for (int i = 0; i < N; i++) this->push_back(vector<T>(M, 0)); }
+    int N, M; Matrix(int N, int M) : vector<vector<T>>(N, vector<T>(M, 0)), N(N), M(M) {}
 };
 
 // Returns the identiy matrix of dimension N
@@ -13,6 +13,12 @@ template <class T> Matrix<T> identity(int N) {
     Matrix<T> A(N, N);
     for (int i = 0; i < N; i++) A[i][i] = 1;
     return A;
+}
+
+template <class T> Matrix<T> transpose(const Matrix<T> &A) {
+    Matrix<T> C(A.M, A.N);
+    for (int i = 0; i < C.N; i++) for (int j = 0; j < C.M; j++) C[i][j] = A[j][i];
+    return C;
 }
 
 // Returns A + B
@@ -53,6 +59,18 @@ template <class T> Matrix<T> mulSqrtCache(const Matrix<T> &A, const Matrix<T> &B
             for (int kk = k, enk = min(k + BSZ, A.M); kk < enk; kk++) temp += A[ii][kk] * B[kk][jj];
             C[ii][jj] += temp;
         }
+    }
+    return C;
+}
+
+// Returns A * B using the transpose trick to optimize cache hits
+// Time Complexity: O(N^3)
+template <class T> Matrix<T> mulTranspose(const Matrix<T> &A, const Matrix<T> &B) {
+    assert(A.M == B.N); Matrix<T> BP = transpose(B), C(A.N, BP.N);
+    for (int i = 0; i < A.N; i++) for (int j = 0; j < BP.N; j++) {
+        T temp = 0;
+        for (int k = 0; k < A.M; k++) temp += A[i][k] * BP[j][k];
+        C[i][j] += temp;
     }
     return C;
 }
