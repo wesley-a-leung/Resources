@@ -49,28 +49,16 @@ template <class T> Matrix<T> mul(const Matrix<T> &A, const Matrix<T> &B) {
     return C;
 }
 
-// Returns A * B using the sqrt caching trick
+// Returns A * B using the transpose trick and the sqrt caching trick to optimize cache hits
 // Time Complexity: O(N^3)
-template <class T> Matrix<T> mulSqrtCache(const Matrix<T> &A, const Matrix<T> &B, int BSZ) {
-    assert(A.M == B.N); Matrix<T> C(A.N, B.M);
-    for (int i = 0; i < A.N; i += BSZ) for (int j = 0; j < B.M; j += BSZ) for (int k = 0; k < A.M; k += BSZ) {
-        for (int ii = i, eni = min(i + BSZ, A.N); ii < eni; ii++) for (int jj = j, enj = min(j + BSZ, B.M); jj < enj; jj++) {
+template <class T> Matrix<T> mulOpt(const Matrix<T> &A, const Matrix<T> &B, int BSZ) {
+    assert(A.M == B.N); Matrix<T> BP = transpose(B), C(A.N, B.M);
+    for (int i = 0; i < A.N; i += BSZ) for (int j = 0; j < BP.N; j += BSZ) for (int k = 0; k < A.M; k += BSZ) {
+        for (int ii = i, eni = min(i + BSZ, A.N); ii < eni; ii++) for (int jj = j, enj = min(j + BSZ, BP.N); jj < enj; jj++) {
             T temp = 0;
-            for (int kk = k, enk = min(k + BSZ, A.M); kk < enk; kk++) temp += A[ii][kk] * B[kk][jj];
+            for (int kk = k, enk = min(k + BSZ, A.M); kk < enk; kk++) temp += A[ii][kk] * BP[jj][kk];
             C[ii][jj] += temp;
         }
-    }
-    return C;
-}
-
-// Returns A * B using the transpose trick to optimize cache hits
-// Time Complexity: O(N^3)
-template <class T> Matrix<T> mulTranspose(const Matrix<T> &A, const Matrix<T> &B) {
-    assert(A.M == B.N); Matrix<T> BP = transpose(B), C(A.N, BP.N);
-    for (int i = 0; i < A.N; i++) for (int j = 0; j < BP.N; j++) {
-        T temp = 0;
-        for (int k = 0; k < A.M; k++) temp += A[i][k] * BP[j][k];
-        C[i][j] += temp;
     }
     return C;
 }
