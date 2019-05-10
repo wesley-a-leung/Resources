@@ -65,6 +65,7 @@ struct Vector {
         return c;
     }
     Vector operator * (F alpha) const { return scale(alpha); }
+    friend Vector operator * (F alpha, const Vector &v) { return v.scale(alpha); }
     Vector operator / (F alpha) const { return scale(1.0 / alpha); }
     Vector direction() const {
         if (magnitude() <= EPS) throw runtime_error("Zero-vector has no direction");
