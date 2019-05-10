@@ -7,8 +7,7 @@ using namespace std;
 template <class T, const T MOD> struct FractionMod {
     static_assert(is_integral<T>::value, "T must be an integral type");
     static_assert(0 < MOD, "MOD must be a positive integer");
-    using FM = FractionMod<T, MOD>; T num, den;
-    FractionMod(T num = 0, T den = 0) : num(posMod(num)), den(posMod(den)) {}
+    using FM = FractionMod<T, MOD>; T num, den; FractionMod(T num = 0, T den = 0) : num(posMod(num)), den(posMod(den)) {}
     FM operator + (const FM &f) const { return FM(addMod(mulMod(num, f.den, MOD), mulMod(f.num, den, MOD), MOD), mulMod(den, f.den, MOD)); }
     FM &operator += (const FM &f) { num = addMod(mulMod(num, f.den, MOD), mulMod(f.num, den, MOD), MOD); den = mulMod(den, f.den, MOD); return *this; }
     FM operator - (const FM &f) const { return FM(subMod(mulMod(num, f.den, MOD), mulMod(f.num, den, MOD), MOD), mulMod(den, f.den, MOD)); }
