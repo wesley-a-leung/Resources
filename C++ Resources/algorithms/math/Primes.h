@@ -40,8 +40,7 @@ vector<pair<long long, int>> primeFactorWithCount(long long x) {
 // Memory Complexity: O(sqrt x)
 vector<long long> factors(long long x) {
     vector<long long> ret;
-    for (long long i = 2; i * i <= x; i++) if (x % i == 0) { ret.push_back(i); if (x / i != i) ret.push_back(x / i); }
-    sort(ret.begin(), ret.end());
+    for (long long i = 1; i * i <= x; i++) if (x % i == 0) { ret.push_back(i); if (x / i != i) ret.push_back(x / i); }
     return ret;
 }
 
