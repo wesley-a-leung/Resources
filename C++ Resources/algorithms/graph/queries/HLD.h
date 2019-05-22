@@ -14,7 +14,7 @@ template <const int MAXV, const bool ONE_INDEXED, const bool VALUES_ON_EDGES> st
     int dep[MAXV], par[MAXV], size[MAXV], head[MAXV], ind[MAXV], vert[MAXV], curInd; vector<int> adj[MAXV];
     void addEdge(int a, int b) { adj[a].push_back(b); adj[b].push_back(a); }
     void dfs(int v, int prev, int d) {
-        dep[v] = d; par[v] = prev; size[v] = 1;
+        dep[v] = d; par[v] = prev; size[v] = 1; head[v] = -1;
         for (int w : adj[v]) if (w != prev) { dfs(w, v, d + 1); size[v] += size[w]; }
     }
     void hld(int v, int prev) {
@@ -59,5 +59,5 @@ template <const int MAXV, const bool ONE_INDEXED, const bool VALUES_ON_EDGES> st
         return dep[v] < dep[w] ? v : w;
     }
     void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
-    void run(int V, int root = 0) { curInd = ONE_INDEXED; fill(head, head + V, -1); dfs(root, -1, 0); hld(root, -1); }
+    void run(int V, int root = 0) { curInd = ONE_INDEXED; dfs(root, -1, 0); hld(root, -1); }
 };
