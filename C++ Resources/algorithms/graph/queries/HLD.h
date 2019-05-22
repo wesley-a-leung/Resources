@@ -37,7 +37,7 @@ template <const int MAXV, const bool ONE_INDEXED, const bool VALUES_ON_EDGES> st
         if (v != w) {
             if (dep[v] < dep[w]) up = merge(up, query(ind[v] + VALUES_ON_EDGES, ind[w], false));
             else down = merge(query(ind[w] + VALUES_ON_EDGES, ind[v], true), down);
-        } else if (!VALUES_ON_EDGES) up = merge(up, query(ind[dep[v] < dep[w] ? v : w], ind[dep[v] < dep[w] ? v : w], true));
+        } else if (!VALUES_ON_EDGES) { int i = ind[dep[v] < dep[w] ? v : w]; up = merge(up, query(i, i, true)); }
         return merge(up, down);
     }
     void updatePath(int v, int w, const Lazy &val) {
@@ -48,7 +48,7 @@ template <const int MAXV, const bool ONE_INDEXED, const bool VALUES_ON_EDGES> st
         if (v != w) {
             if (dep[v] < dep[w]) update(ind[v] + VALUES_ON_EDGES, ind[w], false, val);
             else update(ind[w] + VALUES_ON_EDGES, ind[v], true, val);
-        } else if (!VALUES_ON_EDGES) update(ind[dep[v] < dep[w] ? v : w], ind[dep[v] < dep[w] ? v : w], true, val);
+        } else if (!VALUES_ON_EDGES) { int i = ind[dep[v] < dep[w] ? v : w]; update(i, i, true, val); }
     }
     void updateVertex(int v, const Lazy &val) { update(ind[v], val); }
     int lca(int v, int w) {
