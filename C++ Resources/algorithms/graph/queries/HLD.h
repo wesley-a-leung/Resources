@@ -11,18 +11,18 @@ using namespace std;
 // Memory Complexity: O(V)
 template <const int MAXV, const bool ONE_INDEXED, const bool VALUES_ON_EDGES> struct HLD {
     using Data = int; using Lazy = int; const Data qdef = 0;
-    int dep[MAXV], par[MAXV], chain[MAXV], size[MAXV], head[MAXV], ind[MAXV], vert[MAXV], chainNum, curInd; vector<int> adj[MAXV];
+    int dep[MAXV], par[MAXV], size[MAXV], head[MAXV], ind[MAXV], vert[MAXV], curInd; vector<int> adj[MAXV];
     void addEdge(int a, int b) { adj[a].push_back(b); adj[b].push_back(a); }
     void dfs(int v, int prev, int d) {
         dep[v] = d; par[v] = prev; size[v] = 1;
         for (int w : adj[v]) if (w != prev) { dfs(w, v, d + 1); size[v] += size[w]; }
     }
     void hld(int v, int prev) {
-        if (head[chainNum] == -1) head[chainNum] = v;
-        chain[v] = chainNum; ind[v] = curInd; vert[curInd++] = v; int maxInd = -1;
+        if (head[v] == -1) head[v] = v;
+        ind[v] = curInd; vert[curInd++] = v; int maxInd = -1;
         for (int w : adj[v]) if (w != prev && (maxInd == -1 || size[maxInd] < size[w])) maxInd = w;
-        if (maxInd != -1) hld(maxInd, v);
-        for (int w : adj[v]) if (w != prev && w != maxInd) { chainNum++; hld(w, v); }
+        if (maxInd != -1) { head[maxInd] = head[v]; hld(maxInd, v); }
+        for (int w : adj[v]) if (w != prev && w != maxInd) hld(w, v);
     }
     Data merge(const Data &l, const Data &r); // to be implemented
     void update(int i, const Lazy &val); // to be implemented
@@ -30,13 +30,13 @@ template <const int MAXV, const bool ONE_INDEXED, const bool VALUES_ON_EDGES> st
     Data query(int l, int r, bool up); // to be implemented
     Data queryPath(int v, int w) {
         Data up = qdef, down = qdef;
-        while (chain[v] != chain[w]) {
-            if (dep[head[chain[v]]] < dep[head[chain[w]]]) { 
-                down = merge(query(ind[head[chain[w]]], ind[w], false), down);
-                w = par[head[chain[w]]];
+        while (head[v] != head[w]) {
+            if (dep[head[v]] < dep[head[w]]) { 
+                down = merge(query(ind[head[w]], ind[w], false), down);
+                w = par[head[w]];
             } else {
-                up = merge(up, query(ind[head[chain[v]]], ind[v], true));
-                v = par[head[chain[v]]];
+                up = merge(up, query(ind[head[v]], ind[v], true));
+                v = par[head[v]];
             }
         }
         if (v != w) {
@@ -46,9 +46,9 @@ template <const int MAXV, const bool ONE_INDEXED, const bool VALUES_ON_EDGES> st
         return merge(up, down);
     }
     void updatePath(int v, int w, const Lazy &val) {
-        while (chain[v] != chain[w]) {
-            if (dep[head[chain[v]]] < dep[head[chain[w]]]) { update(ind[head[chain[w]]], ind[w], false, val); w = par[head[chain[w]]]; }
-            else { update(ind[head[chain[v]]], ind[v], true, val); v = par[head[chain[v]]]; }
+        while (head[v] != head[w]) {
+            if (dep[head[v]] < dep[head[w]]) { update(ind[head[w]], ind[w], false, val); w = par[head[w]]; }
+            else { update(ind[head[v]], ind[v], true, val); v = par[head[v]]; }
         }
         if (v != w) {
             if (dep[v] < dep[w]) update(ind[v] + VALUES_ON_EDGES, ind[w], false, val);
@@ -57,12 +57,12 @@ template <const int MAXV, const bool ONE_INDEXED, const bool VALUES_ON_EDGES> st
     }
     void updateVertex(int v, const Lazy &val) { update(ind[v], val); }
     int lca(int v, int w) {
-        while (chain[v] != chain[w]) {
-            if (dep[head[chain[v]]] < dep[head[chain[w]]]) w = par[head[chain[w]]];
-            else v = par[head[chain[v]]];
+        while (head[v] != head[w]) {
+            if (dep[head[v]] < dep[head[w]]) w = par[head[w]];
+            else v = par[head[v]];
         }
         return dep[v] < dep[w] ? v : w;
     }
     void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
-    void run(int V, int root = 0) { chainNum = 0; curInd = ONE_INDEXED; fill(head, head + V, -1); dfs(root, -1, 0); hld(root, -1); }
+    void run(int V, int root = 0) { curInd = ONE_INDEXED; fill(head, head + V, -1); dfs(root, -1, 0); hld(root, -1); }
 };
