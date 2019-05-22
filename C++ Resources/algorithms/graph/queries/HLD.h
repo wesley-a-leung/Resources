@@ -31,13 +31,8 @@ template <const int MAXV, const bool ONE_INDEXED, const bool VALUES_ON_EDGES> st
     Data queryPath(int v, int w) {
         Data up = qdef, down = qdef;
         while (head[v] != head[w]) {
-            if (dep[head[v]] < dep[head[w]]) { 
-                down = merge(query(ind[head[w]], ind[w], false), down);
-                w = par[head[w]];
-            } else {
-                up = merge(up, query(ind[head[v]], ind[v], true));
-                v = par[head[v]];
-            }
+            if (dep[head[v]] < dep[head[w]]) { down = merge(query(ind[head[w]], ind[w], false), down); w = par[head[w]]; }
+            else { up = merge(up, query(ind[head[v]], ind[v], true)); v = par[head[v]]; }
         }
         if (v != w) {
             if (dep[v] < dep[w]) up = merge(up, query(ind[v] + VALUES_ON_EDGES, ind[w], false));
