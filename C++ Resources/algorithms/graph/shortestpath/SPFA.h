@@ -22,7 +22,7 @@ template <const int MAXV, class unit> struct SPFA {
     void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     void run(int V, const vector<int> &src) {
         fill(dist, dist + V, INF); fill(to, to + V, make_pair(-1, 0)); fill(inQueue, inQueue + V, false); int front = 0, back = 0, qsize = 0;
-        for (int v = 0; v < V; v++) random_shuffle(adj[v].begin(), adj[v].end(), [&] (int x) { return rng() % x; });
+        for (int v = 0; v < V; v++) shuffle(adj[v].begin(), adj[v].end(), rng);
         for (int s : src) {
             DQ[back++] = s; qsize++; inQueue[s] = true; dist[s] = 0;
             if (back >= MAXV) back = 0;
