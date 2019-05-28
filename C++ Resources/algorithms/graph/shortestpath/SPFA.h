@@ -33,7 +33,7 @@ template <const int MAXV, class unit> struct SPFA {
             for (auto &&e : adj[v]) if (dist[e.first] > dist[v] + e.second) {
                 dist[e.first] = dist[v] + e.second; to[e.first] = make_pair(v, e.second);
                 if (!inQueue[e.first]) {
-                    if (front < back && dist[e.first] <= dist[DQ[front]]) {
+                    if (qsize > 0 && dist[e.first] <= dist[DQ[front]]) {
                         if (front <= 0) front = MAXV;
                         DQ[--front] = e.first; qsize++;
                     } else {
