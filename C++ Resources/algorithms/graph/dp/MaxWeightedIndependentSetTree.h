@@ -5,13 +5,14 @@ using namespace std;
 // Computes the maximum weighted independent set for a tree
 // Time Complexity: O(V)
 // Memory Complexity: O(V)
-template <const int MAXV> struct MaxWeightedIndependentSet {
-    vector<int> adj[MAXV]; int val[MAXV], dp[MAXV][2];
+template <const int MAXV, class T> struct MaxWeightedIndependentSet {
+    vector<int> adj[MAXV]; T val[MAXV], dp[MAXV][2];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(w); }
     void addBiEdge(int v, int w) { addEdge(v, w); addEdge(w, v); }
-    int dfs(int v, int prev, bool take) {
-        if (dp[v][take] != -1) return dp[v][take];
-        int ret = INT_MIN, cnt = 0;
+    T dfs(int v, int prev, bool take) {
+        if (dp[v][take] != (numeric_limits<T>::max)()) return dp[v][take];
+        T ret = (numeric_limits<T>::min)();
+        int cnt = 0;
         for (int w : adj[v]) {
             if (w == prev) continue;
             cnt++;
@@ -22,8 +23,8 @@ template <const int MAXV> struct MaxWeightedIndependentSet {
         return take ? (dp[v][take] = ret + val[v]) : (dp[v][take] = ret);
     }
     void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
-    int solve(int V, int root = 0) {
-        for (int i = 0; i < V; i++) dp[i][0] = dp[i][1] = -1;
+    T solve(int V, int root = 0) {
+        for (int i = 0; i < V; i++) dp[i][0] = dp[i][1] = (numeric_limits<T>::max)();
         return max(dfs(root, true), dfs(root, false));
     }
 };
