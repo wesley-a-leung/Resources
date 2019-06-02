@@ -20,8 +20,8 @@ template <const int MAXV, const int MAXQ, const bool COMPRESS_VALUES> struct DSU
         for (int w : adj[v]) if (w != prev && !isHeavy[w]) add(w, v, delta);
     }
     void dfs(int v, int prev, bool keep) {
-        int maxSize = -1, heavyInd = -1;
-        for (int w : adj[v]) if (w != prev && size[w] > maxSize) { maxSize = size[w]; heavyInd = w; }
+        int heavyInd = -1;
+        for (int w : adj[v]) if (w != prev && (heavyInd == -1 || size[heavyInd] < size[w])) heavyInd = w;
         for (int w : adj[v]) if (w != prev && w != heavyInd) dfs(w, v, 0);
         if (heavyInd != -1) { dfs(heavyInd, v, 1); isHeavy[heavyInd] = 1; }
         add(v, prev, 1);
