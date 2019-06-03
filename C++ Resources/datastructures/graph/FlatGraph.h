@@ -14,7 +14,6 @@ template <const int MAXV, const int MAXE, class unit = int> struct FlatGraph {
     int st[MAXV], to[MAXE], A[MAXE], B[MAXE], E; unit weight[MAXE], C[MAXE];
     void init(int V) { fill(st, st + V + 1, 0); E = 0; }
     void addEdge(int v, int w, unit cost = 1) { st[v]++; A[E] = v; B[E] = w; C[E++] = cost; }
-    void addBiEdge(int v, int w, unit cost = 1) { addEdge(v, w, cost); addEdge(w, v, cost); }
     void build(int V) {
         partial_sum(st, st + V + 1, st);
         for (int e = 0; e < E; e++) { to[--st[A[e]]] = B[e]; weight[st[A[e]]] = C[e]; }
