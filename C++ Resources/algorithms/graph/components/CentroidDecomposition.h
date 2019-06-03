@@ -9,21 +9,16 @@ using namespace std;
 //    bfs: O(V log V)
 // Memory Complexity: O(V)
 template <const int MAXV> struct CentroidDecomposition {
-    vector<int> adj[MAXV]; bool exclude[MAXV]; int par[MAXV];
+    vector<int> adj[MAXV]; bool exclude[MAXV]; int size[MAXV], par[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     int getSize(int v, int prev) {
-        int size = 1;
-        for (int w : adj[v]) if (w != prev && !exclude[w]) size += getSize(w, v);
-        return size;
+        size[v] = 1;
+        for (int w : adj[v]) if (w != prev && !exclude[w]) size[v] += getSize(w, v);
+        return size[v];
     }
     int getCentroid(int v, int prev, int treeSize) {
-        int n = treeSize, size = 1; bool hasCentroid = true;
-        for (int w : adj[v]) if (w != prev && exclude[w]) {
-            int ret = getCentroid(w, v, treeSize);
-            if (ret >= 0) return ret;
-            hasCentroid &= -ret <= n / 2; size -= ret;
-        }
-        return (hasCentroid &= n - size <= n / 2) ? v : -size;
+        for (int w : adj[v]) if (w != prev && !exclude[w] && size[w] > treeSize / 2) return getCentroid(w, v, treeSize);
+        return v;
     }
     void init(int V = MAXV) { fill(exclude, exclude + V, false); fill(par, par + V, -1); }
     void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
