@@ -207,16 +207,16 @@ template <const int MAXN, class T> struct PascalsTriangle {
 template <class T> T sumTo(T n) { return n * (n + 1) / 2; }
 
 // a + (a + 1) + ... + b
-template <class T> sumBetween(T a, T b) { return sumTo(b) - sumTo(a - 1); }
+template <class T> T sumBetween(T a, T b) { return sumTo(b) - sumTo(a - 1); }
 
 // computes the nth term of an arithmetic sequence with starting value a1 and common difference d
-template <class T, class U> arithSeq(T a1, T d, U n) { return a1 + d * (n - 1); }
+template <class T, class U> T arithSeq(T a1, T d, U n) { return a1 + d * (n - 1); }
 
 // computes the sum of an arithmetic series with starting value a1 and common difference d from term a1 to term an
-template <class T, class U> arithSeries(T a1, T d, U n) { return n * (a1 + arithSeq(a1, d, n)) / 2; }
+template <class T, class U> T arithSeries(T a1, T d, U n) { return n * (a1 + arithSeq(a1, d, n)) / 2; }
 
 // computes the nth term of a geometric sequence with starting value a1 and common ratio r
-template <class T, class U> geoSeq(T a1, T r, U n) { return a1 * pow2(r, n - 1); }
+template <class T, class U> T geoSeq(T a1, T r, U n) { return a1 * pow2(r, n - 1); }
 
 // computes the sum of a geometric series with starting value a1 and common ratio r from term a1 to term an
-template <class T, class U> geoSeries(T a1, T r, U n) { return r == 1 ? a1 * n : a1 * (1 - pow2(r, n)) / (1 - r); }
+template <class T, class U> T geoSeries(T a1, T r, U n) { return r == 1 ? a1 * n : a1 * (1 - pow2(r, n)) / (1 - r); }
