@@ -37,9 +37,9 @@ struct uint128 {
     friend int popcnt128(const uint128 &v);
     friend int clz128(const uint128 &v);
     friend int ctz128(const uint128 &v);
-    uint128 operator ++ () { uint64 t = lo + 1; hi += ((lo ^ t) & lo) >> 63; lo = t; return *this; }
+    uint128 &operator ++ () { uint64 t = lo + 1; hi += ((lo ^ t) & lo) >> 63; lo = t; return *this; }
     uint128 operator ++ (int) { uint128 ret = *this; uint64 t = lo + 1; hi += ((lo ^ t) & lo) >> 63; lo = t; return ret; }
-    uint128 operator -- () { uint64 t = lo - 1; hi -= ((t ^ lo) & t) >> 63; lo = t; return *this; }
+    uint128 &operator -- () { uint64 t = lo - 1; hi -= ((t ^ lo) & t) >> 63; lo = t; return *this; }
     uint128 operator -- (int) { uint128 ret = *this; uint64 t = lo - 1; hi -= ((t ^ lo) & t) >> 63; lo = t; return ret; }
     uint128 operator + (const uint128 &v) const { return uint128(hi + v.hi + ((((lo & v.lo) & 1) + (lo >> 1) + (v.lo >> 1)) >> 63), lo + v.lo); }
     uint128 &operator += (const uint128 &v) { hi += v.hi + ((((lo & v.lo) & 1) + (lo >> 1) + (v.lo >> 1)) >> 63); lo += v.lo; return *this; }
