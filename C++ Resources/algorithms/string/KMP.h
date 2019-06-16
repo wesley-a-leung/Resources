@@ -21,11 +21,12 @@ template <const int MAXS> struct KMP {
         }
         return -1;
     }
-    void multiSearch(const string &txt) { // finds all matches
+    int multiSearch(const string &txt) { // finds all matches
         matches.clear();
         for (int i = 0, j = 0; i < int(txt.length()); i++, j++) {
             while (j >= 0 && (j == int(pat.length()) || txt[i] != pat[j])) j = LCP[j];
             if (j == int(pat.length()) - 1) matches.push_back(i - j);
         }
+        return int(matches.size());
     }
 };
