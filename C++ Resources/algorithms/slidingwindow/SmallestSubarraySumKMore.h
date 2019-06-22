@@ -7,7 +7,7 @@ using namespace std;
 // Memory Complexity: O(N)
 template <const int MAXN, class T> struct MaxSubarraySumK {
     T A[MAXN];
-    int solve(int N, int K) {
+    int solve(int N, T K) {
         T curSum = 0; int minLen = N + 1;
         for (int l = 0, r = 0; r < N;) {
             while (curSum < K && r < N) curSum += A[r++];
