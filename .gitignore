@@ -1,6 +1,7 @@
 **/*.class
 **/bin/
 **/Debug/
+**/Codebook/
 
 # Compiled Object files
 *.slo
