@@ -44,7 +44,7 @@ template <class T> Matrix<T> mul(const Matrix<T> &A, const Matrix<T> &B) {
     for (int i = 0; i < A.N; i++) for (int j = 0; j < B.M; j++) {
         T temp = 0;
         for (int k = 0; k < A.M; k++) temp += A[i][k] * B[k][j];
-        C[i][j] += temp;
+        C[i][j] = temp;
     }
     return C;
 }
