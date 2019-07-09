@@ -65,9 +65,9 @@ template <class T> Matrix<T> mulOpt(const Matrix<T> &A, const Matrix<T> &B, int 
 
 // Returns A ^ pow
 // Time Complexity: O(N^3 log pow)
-template <class T, class U> Matrix<T> pow(const Matrix<T> &A, U pow) {
-    assert(A.N == A.M); Matrix<T> x = identity<T>(A.N), y = A;
-    for (; pow > 0; pow >>= 1, y = mul(y, y)) if (pow & 1) x = mul(x, y);
+template <class T, class U> Matrix<T> pow(Matrix<T> A, U pow) {
+    assert(A.N == A.M); Matrix<T> x = identity<T>(A.N);
+    for (; pow > 0; pow >>= 1, A = mul(A, A)) if (pow & 1) x = mul(x, A);
     return x;
 }
 

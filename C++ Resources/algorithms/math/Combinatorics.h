@@ -25,8 +25,8 @@ template <class T> T mulMod(T a, T b, T mod) { return a * b % mod; }
 // Time Complexity: O(log b)
 // Required: 0 <= a < mod, 0 <= b < mod, mod + mod does not overflow
 template <class T> T mulModOvf(T a, T b, T mod) {
-    T x = 0, y = a;
-    for (; b > 0; b >>= 1, y = addMod(y, y, mod)) if (b & 1) x = addMod(x, y, mod);
+    T x = 0;
+    for (; b > 0; b >>= 1, a = addMod(a, a, mod)) if (b & 1) x = addMod(x, a, mod);
     return x;
 }
 
@@ -35,8 +35,8 @@ template <class T> T mulModOvf(T a, T b, T mod) {
 // If multiplication is an expensive operation, then y = y * y should only be computed when pow > 0
 // Required: 0 <= pow
 template <class T, class U> T pow2(T base, U pow) {
-    T x = 1, y = base;
-    for (; pow > 0; pow >>= 1, y = y * y) if (pow & 1) x = x * y;
+    T x = 1;
+    for (; pow > 0; pow >>= 1, base = base * base) if (pow & 1) x = x * base;
     return x;
 }
 
@@ -45,8 +45,8 @@ template <class T, class U> T pow2(T base, U pow) {
 // If multiplication is an expensive operation, then y = y * y should only be computed when pow > 0
 // Required: 0 <= base < mod, 0 <= pow, 0 < mod, mod * mod does not overflow
 template <class T, class U> T powMod(T base, U pow, T mod) {
-    T x = 1, y = base;
-    for (; pow > 0; pow >>= 1, y = mulMod(y, y, mod)) if (pow & 1) x = mulMod(x, y, mod);
+    T x = 1;
+    for (; pow > 0; pow >>= 1, base = mulMod(base, base, mod)) if (pow & 1) x = mulMod(x, base, mod);
     return x;
 }
 
@@ -55,8 +55,8 @@ template <class T, class U> T powMod(T base, U pow, T mod) {
 // If multiplication is an expensive operation, then y = y * y should only be computed when pow > 0
 // Required: 0 <= base < mod, 0 <= pow, 0 < mod, mod * mod does not overflow
 template <class T, class U> T powModOvf(T base, U pow, T mod) {
-    T x = 1, y = base;
-    for (; pow > 0; pow >>= 1, y = mulModOvf(y, y, mod)) if (pow & 1) x = mulModOvf(x, y, mod);
+    T x = 1;
+    for (; pow > 0; pow >>= 1, base = mulModOvf(base, base, mod)) if (pow & 1) x = mulModOvf(x, base, mod);
     return x;
 }
 
