@@ -63,7 +63,7 @@ void ntt(vector<T> &a) {
 }
 
 // Multiplies 2 polynomials modulo a prime
-template <class T> void multiplyPolynomial(vector<T> &a, vector<T> &b, vector<T> &res, bool eq = false) {
+template <class T> void multiplyPolynomial(const vector<T> &a, const vector<T> &b, vector<T> &res, bool eq = false) {
     static_assert(is_integral<T>::value, "T must be an integral type");
     if (max(int(a.size()), int(b.size())) <= CUTOFF) {
         vector<T> c(int(a.size()) + int(b.size()) - 1, 0);
