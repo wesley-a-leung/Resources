@@ -11,7 +11,7 @@ struct Point {
     F polarRadius() const { return sqrt(x * x + y * y); }
     F theta() const { return atan2(y, x); }
     F angleTo(const Point &that) const { return atan2(that.y - y, that.x - x); }
-    static int ccw(const Point &a, const Point &b, const Point &c) { // -1 if clockwise, 0 if colinear, +1 if counterclockwise
+    static int ccw(const Point &a, const Point &b, const Point &c) { // -1 if clockwise, 0 if collinear, +1 if counterclockwise
         T area2 = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
         if (area2 < -T(EPS)) return -1;
         else if (area2 > T(EPS)) return +1;
@@ -40,7 +40,7 @@ struct Point {
     static Point lineIntersection(const Point &p1, const Point &q1, const Point &p2, const Point &q2) {
         T A1 = q1.y - p1.y, B1 = p1.x - q1.x, C1 = A1 * p1.x + B1 * p1.y;
         T A2 = q2.y - p2.y, B2 = p2.x - q2.x, C2 = A2 * p2.x + B2 * p2.y, det = A1 * B2 - A2 * B1;
-        if (abs(det) <= T(EPS)) throw runtime_error("The lines do not intersect");
+        if (abs(det) <= T(EPS)) throw runtime_error("The lines do not intersect or are collinear");
         return Point((B2 * C1 - B1 * C2) / det, (A1 * C2 - A2 * C1) / det);
     }
     int compareXThenY(const Point &that) const {
