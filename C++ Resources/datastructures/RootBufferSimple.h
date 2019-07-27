@@ -11,10 +11,10 @@ using namespace std;
 //   floor, ceiling, above, below, contains, count: O(R * (N ^ (1 / R)) + log(N)) amortized
 //   values: O(N)
 // Memory Complexity: O(N)
-template <const int R, class Value, class Comparator = less<Value>> struct RootOrderMaintenanceSimple {
+template <const int R, class Value, class Comparator = less<Value>> struct RootBufferSimple {
     Comparator cmp; int n; double SCALE_FACTOR; vector<Value> A[R];
-    RootOrderMaintenanceSimple(const double SCALE_FACTOR = 1) : n(0), SCALE_FACTOR(SCALE_FACTOR) {}
-    template <class It> RootOrderMaintenanceSimple(const It st, const It en, const double SCALE_FACTOR = 1) :
+    RootBufferSimple(const double SCALE_FACTOR = 1) : n(0), SCALE_FACTOR(SCALE_FACTOR) {}
+    template <class It> RootBufferSimple(const It st, const It en, const double SCALE_FACTOR = 1) :
             n(en - st), SCALE_FACTOR(SCALE_FACTOR) {
         assert(is_sorted(st, en, cmp)); A[R - 1] = vector<Value>(st, en);
     }

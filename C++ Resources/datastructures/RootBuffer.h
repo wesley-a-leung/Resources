@@ -11,12 +11,12 @@ using namespace std;
 //   floor, ceiling, above, below, contains, count(val), count(lo, hi): O(R * (N ^ (1 / R)) + log(N)) amortized
 //   valuesAndCount: O(N)
 // Memory Complexity: O(N)
-template <const int R, class Value, class CountType, class Comparator = less<Value>> struct RootOrderMaintenance {
+template <const int R, class Value, class CountType, class Comparator = less<Value>> struct RootBuffer {
     Comparator cmp; CountType tot; int n; double SCALE_FACTOR; vector<pair<Value, CountType>> A[R];
     function<bool(const pair<Value, CountType>&, const pair<Value, CountType>&)> pairCmp =
         [&] (const pair<Value, CountType> &a, const pair<Value, CountType> &b) { return cmp(a.first, b.first); };
-    RootOrderMaintenance(const double SCALE_FACTOR = 1) : tot(0), n(0), SCALE_FACTOR(SCALE_FACTOR) {}
-    template <class PairIt> RootOrderMaintenance(const PairIt st, const PairIt en, const double SCALE_FACTOR = 1) :
+    RootBuffer(const double SCALE_FACTOR = 1) : tot(0), n(0), SCALE_FACTOR(SCALE_FACTOR) {}
+    template <class PairIt> RootBuffer(const PairIt st, const PairIt en, const double SCALE_FACTOR = 1) :
             SCALE_FACTOR(SCALE_FACTOR) {
         assert(is_sorted(st, en, pairCmp)); A[R - 1] = vector<pair<Value, CountType>>(st, en); resizeUnique(A[R - 1]);
         n = int(A[R - 1].size()); tot = 0; for (auto &&p : A[R - 1]) tot += p.second;

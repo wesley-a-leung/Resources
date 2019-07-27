@@ -11,12 +11,12 @@ using namespace std;
 //   floor, ceiling, above, below, contains, count(val), count(lo, hi): O(sqrt(N) + log(N)) amortized
 //   valuesAndCount: O(N)
 // Memory Complexity: O(N)
-template <class Value, class CountType, class Comparator = less<Value>> struct SqrtOrderMaintenance {
+template <class Value, class CountType, class Comparator = less<Value>> struct SqrtBuffer {
     Comparator cmp; CountType tot; double SCALE_FACTOR; vector<pair<Value, CountType>> small, large;
     function<bool(const pair<Value, CountType>&, const pair<Value, CountType>&)> pairCmp =
         [&] (const pair<Value, CountType> &a, const pair<Value, CountType> &b) { return cmp(a.first, b.first); };
-    SqrtOrderMaintenance(const double SCALE_FACTOR = 1) : tot(0), SCALE_FACTOR(SCALE_FACTOR) {}
-    template <class PairIt> SqrtOrderMaintenance(const PairIt st, const PairIt en, const double SCALE_FACTOR = 1) :
+    SqrtBuffer(const double SCALE_FACTOR = 1) : tot(0), SCALE_FACTOR(SCALE_FACTOR) {}
+    template <class PairIt> SqrtBuffer(const PairIt st, const PairIt en, const double SCALE_FACTOR = 1) :
             SCALE_FACTOR(SCALE_FACTOR), large(st, en) {
         assert(is_sorted(st, en, pairCmp)); resizeUnique(large); tot = 0; for (auto &&p : large) tot += p.second;
     }
