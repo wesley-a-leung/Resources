@@ -2,8 +2,8 @@
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
-#include "../SqrtOrderMaintenanceSimple.h"
-#include "../SqrtOrderMaintenance.h"
+#include "../SqrtBufferSimple.h"
+#include "../SqrtBuffer.h"
 using namespace std;
 using namespace __gnu_pbds;
 
@@ -37,12 +37,12 @@ template <class IndexType, const int MAXN, const bool ONE_INDEXED, class Tree = 
 };
 
 // Sparse Fenwick Tree supporting point updates (with value 1) and range queries in 2 dimensions
-// using sqrt order maintenance (sparse in 1 dimension)
+// using sqrt buffer (sparse in 1 dimension)
 // Time Complexity:
 //   add, rem: O(log N) amortized
 //   rsq: O(log N (log M + sqrt M)) amortized
 // Memory Complexity: O(N + Q log M) for Q updates
-template <class IndexType, const int MAXN, const bool ONE_INDEXED, class Tree = SqrtOrderMaintenanceSimple<IndexType>> struct SemiSparseFenwickTree2DSimpleSqrt {
+template <class IndexType, const int MAXN, const bool ONE_INDEXED, class Tree = SqrtBufferSimple<IndexType>> struct SemiSparseFenwickTree2DSimpleSqrt {
     Tree IN[MAXN], OUT[MAXN];
     void init(const double SCALE_FACTOR = 1) { for (int i = 0; i < MAXN; i++) { IN[i] = Tree(SCALE_FACTOR); OUT[i] = Tree(SCALE_FACTOR); } }
     void clear() { for (int i = 0; i < MAXN; i++) { IN[i].clear(); OUT[i].clear(); } }
@@ -58,12 +58,12 @@ template <class IndexType, const int MAXN, const bool ONE_INDEXED, class Tree = 
 };
 
 // Sparse Fenwick Tree supporting point updates (with any value) and range queries in 2 dimensions
-// using sqrt order maintenance (sparse in 1 dimension)
+// using sqrt buffer (sparse in 1 dimension)
 // Time Complexity:
 //   update: O(log N) amortized
 //   rsq: O(log N (log M + sqrt M)) amortized
 // Memory Complexity: O(N + Q log M) for Q updates
-template <class T, class IndexType, const int MAXN, const bool ONE_INDEXED, class Tree = SqrtOrderMaintenance<IndexType, T>> struct SemiSparseFenwickTree2DSqrt {
+template <class T, class IndexType, const int MAXN, const bool ONE_INDEXED, class Tree = SqrtBuffer<IndexType, T>> struct SemiSparseFenwickTree2DSqrt {
     Tree BIT[MAXN];
     void init(const double SCALE_FACTOR = 1) { for (int i = 0; i < MAXN; i++) BIT[i] = Tree(SCALE_FACTOR); }
     void clear() { for (int i = 0; i < MAXN; i++) BIT[i].clear(); }

@@ -11,10 +11,10 @@ using namespace std;
 //   floor, ceiling, above, below, contains, count: O(sqrt(N) + log(N)) amortized
 //   values: O(N)
 // Memory Complexity: O(N)
-template <class Value, class Comparator = less<Value>> struct SqrtOrderMaintenanceSimple {
+template <class Value, class Comparator = less<Value>> struct SqrtBufferSimple {
     Comparator cmp; double SCALE_FACTOR; vector<Value> small, large;
-    SqrtOrderMaintenanceSimple(const double SCALE_FACTOR = 1) : SCALE_FACTOR(SCALE_FACTOR) {}
-    template <class It> SqrtOrderMaintenanceSimple(const It st, const It en, const double SCALE_FACTOR = 1) :
+    SqrtBufferSimple(const double SCALE_FACTOR = 1) : SCALE_FACTOR(SCALE_FACTOR) {}
+    template <class It> SqrtBufferSimple(const It st, const It en, const double SCALE_FACTOR = 1) :
             SCALE_FACTOR(SCALE_FACTOR), large(st, en) {
         assert(is_sorted(st, en, cmp));
     }
