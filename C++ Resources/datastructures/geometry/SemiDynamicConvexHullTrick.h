@@ -13,6 +13,7 @@ template <const int MAXN, class T, class Comparator = less<T>> struct SemiDynami
     Comparator cmp; T M[MAXN], B[MAXN]; int front = 0, back = 0;
     void addLine(T m, T b) { // in non decreasing order of slope, as sorted by the comparator
         while (back >= 2 && (B[back - 2] - B[back - 1]) * (m - M[back - 1]) >= (B[back - 1] - b) * (M[back - 1] - M[back - 2])) back--;
+        while (back >= 1 && m == M[back - 1] && !cmp(b, B[back - 1])) back--;
         M[back] = m; B[back++] = b;
     }
     T getMax(T x) {
