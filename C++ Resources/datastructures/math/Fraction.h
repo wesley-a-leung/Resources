@@ -5,7 +5,7 @@ using namespace std;
 // Data structure representing a Fraction
 template <class T> struct Fraction {
     static_assert(is_integral<T>::value, "T must be an integral type");
-    using F = Fraction<T>; T num, den; Fraction(T num = 0, T den = 0) : num(num), den(den) {}
+    using F = Fraction<T>; T num, den; Fraction(T num = 0, T den = 1) : num(num), den(den) {}
     F reduce() const { T g = __gcd(abs(num), abs(den)); return den >= 0 ? F(num / g, den / g) : F(-num / g, -den / g); }
     F operator + (const F &f) const { return F((num * f.den + f.num * den), den * f.den); }
     F &operator += (const F &f) { num = (num * f.den + f.num * den); den = den * f.den; return *this; }
