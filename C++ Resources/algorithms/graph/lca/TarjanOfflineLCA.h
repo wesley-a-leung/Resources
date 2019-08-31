@@ -10,8 +10,7 @@ template <const int MAXV, const int MAXQ> struct TarjanOfflineLCA {
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     int find(int v) { return UF[v] < 0 ? v : UF[v] = find(UF[v]); }
     void join(int v, int w) {
-        v = find(v); w = find(w);
-        if (v == w) return;
+        if ((v = find(v)) == (w = find(w))) return;
         if (UF[v] > UF[w]) swap(v, w);
         UF[v] += UF[w]; UF[w] = v;
     }
