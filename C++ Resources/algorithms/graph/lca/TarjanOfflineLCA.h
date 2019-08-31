@@ -7,6 +7,7 @@ using namespace std;
 template <const int MAXV, const int MAXQ> struct TarjanOfflineLCA {
     const bool WHITE = false, BLACK = true; bool color[MAXV]; int par[MAXV], ans[MAXQ], UF[MAXV], Q = 0;
     vector<int> adj[MAXV]; vector<pair<int, int>> qAdj[MAXV];
+    void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     int find(int v) { return UF[v] < 0 ? v : UF[v] = find(UF[v]); }
     void join(int v, int w) {
         v = find(v); w = find(w);
