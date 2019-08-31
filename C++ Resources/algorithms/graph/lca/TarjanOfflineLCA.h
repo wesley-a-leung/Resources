@@ -22,6 +22,6 @@ template <const int MAXV, const int MAXQ> struct TarjanOfflineLCA {
         for (auto &&q : qAdj[v]) if (color[q.first] == BLACK) ans[q.second] = par[find(q.first)];
     }
     void clear(int V = MAXV) { Q = 0; for (int i = 0; i < V; i++) { adj[i].clear(); qAdj[i].clear(); } }
-    void run(int root = 0) { fill(UF, UF + MAXV, -1); fill(color, color + MAXV, WHITE); dfs(root, -1); }
+    void run(int V, int root = 0) { fill(UF, UF + V, -1); fill(color, color + V, WHITE); dfs(root, -1); }
     void query(int v, int w) { qAdj[v].emplace_back(w, Q); qAdj[w].emplace_back(v, Q); Q++; }
 };
