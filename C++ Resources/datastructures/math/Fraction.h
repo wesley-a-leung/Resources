@@ -15,7 +15,7 @@ template <class T> struct Fraction {
     F &operator *= (const F &f) { num = num * f.num; den = den * f.den; return *this; }
     F operator / (const F &f) const { return F(num * f.den, den * f.num); }
     F &operator /= (const F &f) { T t_num = num * f.den, t_den = den * f.num; num = t_num; den = t_den; return *this; }
-    bool operator < (const F &f) const { return num * f.den < f.num * den; }
+    bool operator < (const F &f) const { F a = reduce(), b = f.reduce(); return a.num * b.den < b.num * a.den; }
     bool operator <= (const F &f) const { return !(f < *this); }
     bool operator > (const F &f) const { return f < *this; }
     bool operator >= (const F &f) const { return !(*this < f); }
