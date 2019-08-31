@@ -25,4 +25,5 @@ template <const int MAXV, const int MAXLGV> struct LCA_RMQ {
         if (head[v] > head[w]) swap(v, w);
         return RMQ(head[v], head[w]);
     }
+    int dist(int v, int w) { return dep[v] + dep[w] - 2 * dep[lca(v, w)]; }
 };
