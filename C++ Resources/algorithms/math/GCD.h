@@ -2,6 +2,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+template <class T> T abs(T a) { return a >= 0 ? a : -a; }
+
 // Time Complexity of all functions: O(log max(a, b))
 
 template <class T> T gcd(T a, T b) { return b == 0 ? abs(a) : gcd(b, a % b); }
