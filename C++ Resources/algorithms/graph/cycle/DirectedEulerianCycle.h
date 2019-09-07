@@ -22,6 +22,7 @@ template <const int MAXV> struct DirectedEulerianCycle {
             cycle.push_back(v);
         }
         if (int(cycle.size()) != E + 1) cycle.clear();
+        reverse(cycle.begin(), cycle.end());
         return !cycle.empty();
     }
 };
