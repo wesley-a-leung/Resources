@@ -23,6 +23,7 @@ template <const int MAXV> struct DirectedEulerianPath {
             path.push_back(v);
         }
         if (int(path.size()) != E + 1) path.clear();
+        reverse(path.begin(), path.end());
         return !path.empty();
     }
 };
