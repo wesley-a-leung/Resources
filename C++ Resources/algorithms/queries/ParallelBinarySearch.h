@@ -3,7 +3,7 @@
 using namespace std;
 
 // Given a set of Q queries, for each query q, find the first value x in the range
-// [lo, hi) such that f(q, x) is true
+// [lo, hi] such that f(q, x) is true
 // Time Complexity:
 //   If f(q, x) takes time proportional to x to compute, and f(q, x + 1) can be compute from f(q, x)
 //   then the naive complexity would be O(Q * log(hi) * (time to compute f(q, hi)))
