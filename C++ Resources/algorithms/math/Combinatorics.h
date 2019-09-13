@@ -68,7 +68,7 @@ template <class T> T mulInvPrime(T i, T p) { return powMod(i, p - 2, p); }
 // i / j % p for a prime p
 // Time Complexity: O(log p)
 // Required: 0 <= i < p, 0 < j < p, p * p does not overflow
-template <class T> T divModPrime(T i, T j, T p) { return mulMod(i, mulInvPrime(j, p)); }
+template <class T> T divModPrime(T i, T j, T p) { return mulMod(i, mulInvPrime(j, p), p); }
 
 // n! % m
 // Time Complexity: O(n)
