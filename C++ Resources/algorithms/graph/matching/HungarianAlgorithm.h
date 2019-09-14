@@ -3,7 +3,7 @@
 using namespace std;
 
 // Solves the assignment problem of matching W workers to J jobs with the minimum cost
-// where each worked can only be assigned to 1 job and each job can only be assigned to 1 worker
+// where each worker can only be assigned to 1 job and each job can only be assigned to 1 worker
 // Time Complexity: O(max(W, J)^3)
 // Memory Complexity: O(max(W, J)^2)
 template <const int MAXWJ, class unit> struct HungarianAlgorithm {
