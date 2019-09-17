@@ -13,7 +13,7 @@ template <const int MAXV> struct EulerianPath {
     int front[MAXV]; vector<Edge> e; vector<int> path, adj[MAXV], q[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     void clear(int V = MAXV) { e.clear(); path.clear(); for (int v = 0; v < V; v++) adj[v].clear(); }
-    bool run(int V) {
+    bool run(int V) { // returns true if there is an eulerian path
         int odd = 0, s = -1;
         for (int v = 0; v < V; v++) if (int(adj[v].size()) > 0) { s = v; break; }
         for (int v = 0; v < V; v++) if (int(adj[v].size()) % 2 != 0) { odd++; s = v; }
