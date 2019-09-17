@@ -3,12 +3,12 @@
 #include "Combinatorics.h"
 using namespace std;
 
-// Determines whether N is prime
-// Time Complexity: O(sqrt N)
+// Determines whether x is prime
+// Time Complexity: O(sqrt x)
 // Memory Complexity: O(1)
-bool isPrime(long long N) {
-    if (N < 2) return false;
-    for (long long i = 2; i * i <= N; i++) if (N % i == 0) return false;
+bool isPrime(long long x) {
+    if (x < 2) return false;
+    for (long long i = 2; i * i <= x; i++) if (x % i == 0) return false;
     return true;
 }
 
@@ -67,7 +67,7 @@ template <class T> bool millerRabin(T N, int iterations) {
 
 // Sieve of Erathosthenes to identify primes and the smallest prime factor of each number
 // Time Complexity:
-//   sieve: O(N)
+//   run: O(N)
 //   primeFactor: O(log x)
 // Memory Complexity: O(N)
 template <const int MAXN> struct Sieve {
@@ -93,6 +93,31 @@ template <const int MAXN> struct Sieve {
             while (x % spf == 0) { ret.back().second++; x /= spf; }
         }
         return ret;
+    }
+};
+
+// Counts the number of positive integers less than or equal to x that are relatively prime to x
+// Time Complexity: O(sqrt x)
+long long phi(long long x) {
+    long long ret = x;
+    for (long long i = 2; i * i <= x; i++) if (x % i == 0) for (ret -= ret / i; x % i == 0; x /= i);
+    if(x > 1) ret -= ret / x;
+    return ret;
+}
+
+// Euler's Totient function
+// phi[i] = number of positive integers less than or equal to i that are relatively prime to i
+// Time Complexity:
+//   run: O(N log N)
+// Memory Complexity: O(N)
+template <const int MAXN> struct EulersTotient {
+    int phi[MAXN]; 
+    void run(int N) {
+        iota(phi, phi + N + 1, 0);
+        for (int i = 2; i <= N; i++) if (phi[i] == i) {
+            phi[i] = i - 1;
+            for (int j = 2 * i; j <= N; j += i) phi[j] = phi[j] / i * (i - 1);
+        }
     }
 };
 

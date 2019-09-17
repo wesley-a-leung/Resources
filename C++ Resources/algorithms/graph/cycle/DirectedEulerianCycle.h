@@ -10,7 +10,7 @@ template <const int MAXV> struct DirectedEulerianCycle {
     void addEdge(int v, int w) { adj[v].push_back(w); inDeg[w]++; E++; }
     void init(int V = MAXV) { E = 0; fill(inDeg, inDeg + V, 0); }
     void clear(int V = MAXV) { cycle.clear(); for (int v = 0; v < V; v++) adj[v].clear(); }
-    bool run(int V) {
+    bool run(int V) { // returns true if there is a directed eulerian cycle
         int s = -1;
         for (int v = 0; v < V; v++) if (int(adj[v].size()) > 0) { s = v; break; }
         for (int v = 0; v < V; v++) if (int(adj[v].size()) != inDeg[v]) return false;

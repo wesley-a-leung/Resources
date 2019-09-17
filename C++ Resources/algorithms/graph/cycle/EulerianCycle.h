@@ -13,7 +13,7 @@ template <const int MAXV> struct EulerianCycle {
     int front[MAXV]; vector<Edge> e; vector<int> cycle, adj[MAXV], q[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     void clear(int V = MAXV) { e.clear(); cycle.clear(); for (int v = 0; v < V; v++) adj[v].clear(); }
-    bool run(int V) {
+    bool run(int V) { // returns true if there is an eulerian cycle
         int s = -1;
         for (int v = 0; v < V; v++) if (int(adj[v].size()) > 0) { s = v; break; }
         if (s == -1) return false;
