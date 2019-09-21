@@ -10,7 +10,8 @@ template <const int MAXV, const int MAXQ, const int BLOCKSZ, const int MAXLGV, c
         int l, r, lca, ind, block;
         bool operator < (const Query &q) const { return block == q.block ? r < q.r : block < q.block; }
     };
-    int head[MAXV], dep[MAXV], rmq[MAXLGV][2 * MAXV], pre[MAXV], post[MAXV], vert[MAXV * 2], cnt[MAXV], ans[MAXQ], val[MAXV], temp[MAXV];
+    int LG[MAXV * 2], head[MAXV], dep[MAXV], rmq[MAXLGV][MAXV * 2];
+    int pre[MAXV], post[MAXV], vert[MAXV * 2], cnt[MAXV], ans[MAXQ], val[MAXV], temp[MAXV];
     int Q = 0, ind1, ind2, curAns; vector<int> adj[MAXV]; Query q[MAXQ]; bool vis[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     void query(int v, int w) { q[Q++] = {v, w, 0, 0, 0}; }
@@ -20,7 +21,7 @@ template <const int MAXV, const int MAXQ, const int BLOCKSZ, const int MAXLGV, c
         vert[post[v] = ind2++] = v;
     }
     int minDep(int v, int w) { return dep[v] < dep[w] ? v : w; }
-    int RMQ(int l, int r) { int i = 31 - __builtin_clz(r - l + 1); return minDep(rmq[i][l], rmq[i][r - (1 << i) + 1]); }
+    int RMQ(int l, int r) { int i = LG[r - l + 1]; return minDep(rmq[i][l], rmq[i][r - (1 << i) + 1]); }
     int lca(int v, int w) { if (head[v] > head[w]) swap(v, w); return RMQ(head[v], head[w]); }
     void add(int x) { if (cnt[x]++ == 0) curAns++; }
     void rem(int x) { if (--cnt[x] == 0) curAns--; }
@@ -30,7 +31,9 @@ template <const int MAXV, const int MAXQ, const int BLOCKSZ, const int MAXLGV, c
         vis[v] = !vis[v];
     }
     void run(int V) {
-        ind1 = ind2 = 0; int lg = 32 - __builtin_clz(V * 2 - 1); fill(cnt, cnt + V, 0); fill(vis, vis + V, false); dfs(0, -1, 0);
+        LG[0] = LG[1] = 0;
+        for (int i = 2; i <= V * 2 - 1; i++) LG[i] = LG[i / 2] + 1;
+        ind1 = ind2 = 0; int lg = LG[V * 2 - 1]; fill(cnt, cnt + V, 0); fill(vis, vis + V, false); dfs(0, -1, 0);
         for (int i = 0; i < lg - 1; i++) for (int j = 0; j < ind1; j++) rmq[i + 1][j] = minDep(rmq[i][j], rmq[i][min(j + (1 << i), ind1 - 1)]);
         if (COMPRESS_VALUES) {
             copy(val, val + V, temp); sort(temp, temp + V); int k = unique(temp, temp + V) - temp;
