@@ -19,7 +19,7 @@ template <const int MAXV, const int MAXLGV, class unit> struct APSPTree {
     void run(int V) {
         LG[0] = LG[1] = 0;
         for (int i = 2; i <= V * 2 - 1; i++) LG[i] = LG[i / 2] + 1;
-        ind = 0; int lg = LG[V * 2 - 1]; assert(lg < MAXLGV); fill(root, root + V, -1);
+        ind = 0; int lg = LG[V * 2 - 1] + 1; assert(lg < MAXLGV); fill(root, root + V, -1);
         for (int i = 0; i < V; i++) if (root[i] == -1) dfs(i, -1, i, 0, 0);
         for (int i = 0; i < lg - 1; i++) for (int j = 0; j < ind; j++) rmq[i + 1][j] = minDep(rmq[i][j], rmq[i][min(j + (1 << i), ind - 1)]);
     }
