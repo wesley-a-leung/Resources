@@ -10,10 +10,12 @@ using namespace std;
 // where PI is the product function, N_i is the size in the ith dimension, and D is the number of dimensions
 using T = int; const T NEG_INF = 0;
 
+T op(T a, T b) { return max(a, b); }
+
 template <const bool ONE_INDEXED, const int ...Args> struct FenwickTreeMax {
     T val;
     void init() { val = NEG_INF; }
-    void update(T v) { val = max(val, v); }
+    void update(T v) { val = op(val, v); }
     T rmq() { return val; }
 };
 
@@ -22,6 +24,6 @@ template <const bool ONE_INDEXED, const int MAXN, const int ...Ns> struct Fenwic
     void init() { for (int i = 0; i < MAXN; i++) BIT[i].init(); }
     template <class ...Args> void update(int i, Args ...args) { for (i += !ONE_INDEXED; i < MAXN; i += i & -i) BIT[i].update(args...); }
     template <class ...Args> T rmq(int i, Args ...args) {
-        T ret = NEG_INF; for (i += !ONE_INDEXED; i > 0; i -= i & -i) ret = max(ret, BIT[i].rmq(args...)); return ret;
+        T ret = NEG_INF; for (i += !ONE_INDEXED; i > 0; i -= i & -i) ret = op(ret, BIT[i].rmq(args...)); return ret;
     }
 };
