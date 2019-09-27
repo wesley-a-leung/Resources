@@ -53,7 +53,7 @@ template <class T, class U> T powMod(T base, U pow, T mod) {
 // base ^ pow % mod, useful when mod * mod overflows
 // Time Complexity: O(log pow)
 // If multiplication is an expensive operation, then y = y * y should only be computed when pow > 0
-// Required: 0 <= base < mod, 0 <= pow, 0 < mod, mod * mod does not overflow
+// Required: 0 <= base < mod, 0 <= pow, 0 < mod, mod + mod does not overflow
 template <class T, class U> T powModOvf(T base, U pow, T mod) {
     T x = 1;
     for (; pow > 0; pow >>= 1, base = mulModOvf(base, base, mod)) if (pow & 1) x = mulModOvf(x, base, mod);
