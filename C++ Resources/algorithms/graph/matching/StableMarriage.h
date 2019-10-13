@@ -9,7 +9,7 @@ using namespace std;
 // Time Complexity: O(N^2)
 // Memory Complexity: O(N^2)
 template <const int MAXN> struct StableMarriage {
-    int aPrefs[MAXN], bPrefs[MAXN], curA[MAXN], mateA[MAXN], mateB[MAXN], bRanks[MAXN][MAXN];
+    int aPrefs[MAXN][MAXN], bPrefs[MAXN][MAXN], curA[MAXN], mateA[MAXN], mateB[MAXN], bRanks[MAXN][MAXN];
     void solve(int N) {
         for (int i = 0; i < N; i++) for (int j = 0; j < N; j++) bRanks[i][bPrefs[i][j]] = j;
         queue<int> q;
