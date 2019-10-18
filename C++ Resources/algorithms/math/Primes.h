@@ -101,7 +101,7 @@ template <const int MAXN> struct Sieve {
 long long phi(long long x) {
     long long ret = x;
     for (long long i = 2; i * i <= x; i++) if (x % i == 0) for (ret -= ret / i; x % i == 0; x /= i);
-    if(x > 1) ret -= ret / x;
+    if (x > 1) ret -= ret / x;
     return ret;
 }
 
