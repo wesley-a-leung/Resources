@@ -36,8 +36,7 @@ const T C = 119, K = 23, PK = 1 << K, MOD = C * PK + 1, ROOT = powMod(primitiveR
 vector<int> ord; vector<T> roots;
 
 void computeRoots(int N) {
-    if (int(roots.size()) >= N) return;
-    if (roots.empty()) roots = {0, 1};
+    roots = {0, 1};
     int len = __builtin_ctz(int(roots.size())); roots.resize(N);
     for (; (1 << len) < N; len++) {
         T z = powMod(ROOT, PK >> (len + 1), MOD);
