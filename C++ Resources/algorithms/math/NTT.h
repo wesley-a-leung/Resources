@@ -55,7 +55,7 @@ void reorder(vector<T> &a) {
 }
 
 void ntt(vector<T> &a) {
-    int N = int(a.size()); computeRoots(N), reorder(a);
+    int N = int(a.size()); computeRoots(N); reorder(a);
     for (int len = 1; len < N; len <<= 1) for (int i = 0; i < N; i += len << 1) for (int j = 0; j < len; j++) {
         T u = a[i + j], v = mulMod(a[len + i + j], roots[len + j], MOD);
         a[i + j] = addMod(u, v, MOD); a[len + i + j] = subMod(u, v, MOD);

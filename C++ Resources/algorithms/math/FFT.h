@@ -46,7 +46,7 @@ void reorder(vector<pair<F, F>> &a) {
 }
 
 void fft(vector<pair<F, F>> &a) {
-    int N = int(a.size()); computeRoots(N), reorder(a);
+    int N = int(a.size()); computeRoots(N); reorder(a);
     for (int len = 1; len < N; len <<= 1) for (int i = 0; i < N; i += len << 1) for (int j = 0; j < len; j++) {
         pair<F, F> u = a[i + j], v = a[len + i + j] * roots[len + j]; a[i + j] = u + v; a[len + i + j] = u - v;
     }
