@@ -24,7 +24,8 @@ template <class T> pair<T, T> conj(const pair<T, T> &a) {
 vector<int> ord; vector<pair<F, F>> roots;
 
 void computeRoots(int N) {
-    roots = {{0, 0}, {1, 0}};
+    if (int(roots.size()) >= N) return;
+    if (roots.empty()) roots = {{0, 0}, {1, 0}};
     int len = __builtin_ctz(int(roots.size())); roots.resize(N);
     for (; (1 << len) < N; len++) {
         double mnAngle = 2 * PI / (1 << (len + 1));
