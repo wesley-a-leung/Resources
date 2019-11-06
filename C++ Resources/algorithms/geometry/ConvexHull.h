@@ -4,7 +4,7 @@
 using namespace std;
 using namespace std::placeholders;
 
-// Computes the convex hull of points
+// Computes the convex hull of a set of N points
 // Time Complexity:
 //   run: O(N log N)
 //   getArea2: O(N)

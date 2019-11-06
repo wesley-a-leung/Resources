@@ -3,7 +3,7 @@
 #include "../../datastructures/geometry/Point.h"
 using namespace std;
 
-// Computes the closest pair of points
+// Computes the closest pair of points out of a set of N points
 // Time Complexity: O(N log N)
 // Memory Complexity: O(N)
 template <const int MAXN> struct ClosestPair {
