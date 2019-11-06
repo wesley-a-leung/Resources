@@ -4,7 +4,7 @@
 #include "ConvexHull.h"
 using namespace std;
 
-// Computes the farthest pair of points
+// Computes the farthest pair of points out of a set of N points
 // Time Complexity: O(N log N)
 // Memory Complexity: O(N)
 template <const int MAXN> struct FarthestPair {
