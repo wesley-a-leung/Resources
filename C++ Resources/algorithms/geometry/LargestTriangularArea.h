@@ -4,7 +4,7 @@
 #include "ConvexHull.h"
 using namespace std;
 
-// Computes the largest area from 3 distinct points
+// Computes the largest area from 3 distinct points out of a set of N points
 // Time Complexity: O(N^2)
 // Memory Complexity: O(N)
 template <const int MAXN> struct LargestTriangularArea {
