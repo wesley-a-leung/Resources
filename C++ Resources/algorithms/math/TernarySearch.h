@@ -13,16 +13,3 @@ template <class T, class F> T ternary_search(T lo, T hi, F f, int iters) {
     };
     return lo + (hi - lo) / 2;
 }
-
-// Ternary search to find the minimum of a function at integral values
-// in the range [lo, hi), f(hi) must be defined
-// Time Complexity: O(log(hi - lo)) * (cost to compute f(x))
-template <class T, class F> T ternary_search(T lo, T hi, F f) {
-    static_assert(is_integral<T>::value, "T must be an integral type"); T mid;
-    while (lo < hi) {
-        mid = lo + (hi - lo) / 2;
-        if (f(mid) < f(mid + 1)) hi = mid; // f(mid) < f(mid + 1) for minimum, f(mid) > f(mid + 1) for maximum
-        else lo = mid + 1;
-    }
-    return lo;
-}
