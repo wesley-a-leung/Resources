@@ -10,8 +10,6 @@ template <const int MAXN, class T> struct LagrangePolynomialInterpolation {
     void solve(int N) {
         for (int k = 0; k < N - 1; k++) for (int i = k + 1; i < N; i++) Y[i] = (Y[i] - Y[k]) / (X[i] - X[k]);
         T last = 0; temp[0] = 1; fill(temp + 1, temp + N, 0); fill(A, A + N, 0);
-        for (int k = 0; k < N; k++) for (int i = 0; i < N; i++) {
-            A[i] += Y[k] * temp[i]; swap(last, temp[i]); temp[i] -= X[k] * last;
-        }
+        for (int k = 0; k < N; k++) for (int i = 0; i < N; i++) { A[i] += Y[k] * temp[i]; swap(last, temp[i]); temp[i] -= X[k] * last; }
     }
 };
