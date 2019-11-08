@@ -23,10 +23,17 @@ template <class T> pair<T, T> conj(const pair<T, T> &a) {
 
 vector<int> ord; vector<pair<F, F>> roots;
 
+template <class T> int ctz(const T &x) {
+    if (x == 0) return -1;
+    int i = 0;
+    while (!((x >> i) & 1)) i++;
+    return i;
+}
+
 void computeRoots(int N) {
     if (int(roots.size()) >= N) return;
     if (roots.empty()) roots = {{0, 0}, {1, 0}};
-    int len = __builtin_ctz(int(roots.size())); roots.resize(N);
+    int len = ctz(int(roots.size())); roots.resize(N);
     for (; (1 << len) < N; len++) {
         double mnAngle = 2 * PI / (1 << (len + 1));
         for (int i = 0; i < (1 << (len - 1)); i++) {
@@ -39,7 +46,7 @@ void computeRoots(int N) {
 void reorder(vector<pair<F, F>> &a) {
     int N = int(a.size());
     if (int(ord.size()) != N) {
-        ord.assign(N, 0); int len = __builtin_ctz(N);
+        ord.assign(N, 0); int len = ctz(N);
         for (int i = 0; i < N; i++) ord[i] = (ord[i >> 1] >> 1) + ((i & 1) << (len - 1));
     }
     for (int i = 0; i < N; i++) if (i < ord[i]) swap(a[i], a[ord[i]]);

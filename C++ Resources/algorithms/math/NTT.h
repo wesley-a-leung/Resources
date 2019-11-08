@@ -35,10 +35,17 @@ const T C = 119, K = 23, PK = 1 << K, MOD = C * PK + 1, ROOT = powMod(primitiveR
 
 vector<int> ord; vector<T> roots;
 
+template <class T> int ctz(const T &x) {
+    if (x == 0) return -1;
+    int i = 0;
+    while (!((x >> i) & 1)) i++;
+    return i;
+}
+
 void computeRoots(int N) {
     if (int(roots.size()) >= N) return;
     if (roots.empty()) roots = {0, 1};
-    int len = __builtin_ctz(int(roots.size())); roots.resize(N);
+    int len = ctz(int(roots.size())); roots.resize(N);
     for (; (1 << len) < N; len++) {
         T z = powMod(ROOT, PK >> (len + 1), MOD);
         for (int i = 1 << (len - 1); i < (1 << len); i++) { roots[2 * i] = roots[i]; roots[2 * i + 1] = mulMod(roots[i], z, MOD); }
@@ -48,7 +55,7 @@ void computeRoots(int N) {
 void reorder(vector<T> &a) {
     int N = int(a.size());
     if (int(ord.size()) != N) {
-        ord.assign(N, 0); int len = __builtin_ctz(N);
+        ord.assign(N, 0); int len = ctz(N);
         for (int i = 0; i < N; i++) ord[i] = (ord[i >> 1] >> 1) + ((i & 1) << (len - 1));
     }
     for (int i = 0; i < N; i++) if (i < ord[i]) swap(a[i], a[ord[i]]);
