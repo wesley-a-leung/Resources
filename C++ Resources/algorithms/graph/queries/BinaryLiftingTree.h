@@ -2,13 +2,13 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Solves queries on a tree using a sparse table / binary lifting
+// Solves queries on a tree using binary lifting
 // Time Complexity:
 //   run: O(V log V)
 //   lca: O(log V)
 //   queryPath: O(log V) * (complexity of merge)
 // Memory Complexity: O(V log V)
-template <const int MAXV, const int MAXLGV, const bool VALUES_ON_EDGES> struct SparseTableTree {
+template <const int MAXV, const int MAXLGV, const bool VALUES_ON_EDGES> struct BinaryLiftingTree {
     using Data = int; const Data qdef = 0; Data A[MAXV], ST[MAXLGV][MAXV]; int dep[MAXV], par[MAXLGV][MAXV]; vector<int> adj[MAXV];
     Data merge(const Data &l, const Data &r); // to be implemented
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
