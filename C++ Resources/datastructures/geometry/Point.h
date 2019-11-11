@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-using T = double; using F = double; const F EPS = 1e-9;
+using T = long double; using F = long double; const F EPS = 1e-9;
 static_assert(is_floating_point<F>::value, "F must be a a floating point type");
 
 struct Point {
