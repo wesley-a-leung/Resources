@@ -6,7 +6,7 @@ using namespace std;
 // Fast Fourier Transform
 // Time Complexity of multiplyInteger, multiplyPolynomial: O(N log N) where N = size(a) + size(b)
 
-using F = double; const int CUTOFF = 150, DIG = 1; const F PI = acos(-1);
+using F = long double; const int CUTOFF = 150, DIG = 1; const F PI = acos(-1);
 
 template <class T> pair<T, T> operator + (const pair<T, T> &a, const pair<T, T> &b) {
     return make_pair(a.first + b.first, a.second + b.second);
