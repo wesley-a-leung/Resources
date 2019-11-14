@@ -6,7 +6,7 @@ using namespace std;
 // Fast Fourier Transform
 // Time Complexity of multiplyInteger, multiplyPolynomial: O(N log N) where N = size(a) + size(b)
 
-using F = long double; const int CUTOFF = 150, DIG = 1; const F PI = acos(-1);
+using F = long double; const int CUTOFF = 150, DIG = 1; const F PI = acos(F(-1));
 
 template <class T> pair<T, T> operator + (const pair<T, T> &a, const pair<T, T> &b) {
     return make_pair(a.first + b.first, a.second + b.second);
@@ -28,9 +28,9 @@ void computeRoots(int N) {
     if (roots.empty()) roots = {{0, 0}, {1, 0}};
     int len = __builtin_ctz(int(roots.size())); roots.resize(N);
     for (; (1 << len) < N; len++) {
-        double mnAngle = 2 * PI / (1 << (len + 1));
+        F mnAngle = 2 * PI / (1 << (len + 1));
         for (int i = 0; i < (1 << (len - 1)); i++) {
-            int ind = (1 << (len - 1)) + i; double ang = mnAngle * (2 * i + 1);
+            int ind = (1 << (len - 1)) + i; F ang = mnAngle * (2 * i + 1);
             roots[2 * ind] = roots[ind]; roots[2 * ind + 1] = make_pair(cos(ang), sin(ang));
         }
     }
