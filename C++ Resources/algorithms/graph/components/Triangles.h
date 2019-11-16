@@ -11,13 +11,13 @@ template <const int MAXV> struct Triangles {
     int run(int V) {
         iota(ord, ord + V, 0); int cnt = 0;
         sort(ord, ord + V, [&] (const int &i, const int &j) {
-            return make_pair(int(adj[i].size()), i) < make_pair(int(adj[j].size()), j);}
-        );
+            return make_pair(int(adj[i].size()), i) < make_pair(int(adj[j].size()), j);
+        });
         for (int v = 0; v < V; v++) {
             adj2[v] = adj[v]; sort(adj2[v].begin(), adj2[v].end());
             sort(adj[v].begin(), adj[v].end(), [&] (const int &i, const int &j) {
-                return make_pair(int(adj[i].size()), i) > make_pair(int(adj[j].size()), j);}
-            );
+                return make_pair(int(adj[i].size()), i) > make_pair(int(adj[j].size()), j);
+            });
         }
         for (int i = 0; i < V; i++) {
             int v = ord[i];
