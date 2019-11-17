@@ -23,11 +23,11 @@ template <const int MAXV, const int MAXQ, const int BLOCKSZ, const int MAXLGV, c
     int minDep(int v, int w) { return dep[v] < dep[w] ? v : w; }
     int RMQ(int l, int r) { int i = 31 - __builtin_clz(r - l + 1); return minDep(rmq[i][l], rmq[i][r - (1 << i) + 1]); }
     int lca(int v, int w) { if (head[v] > head[w]) swap(v, w); return RMQ(head[v], head[w]); }
-    void add(int x) { if (cnt[x]++ == 0) curAns++; }
-    void rem(int x) { if (--cnt[x] == 0) curAns--; }
+    void add(int i) { if (cnt[val[i]]++ == 0) curAns++; }
+    void rem(int i) { if (--cnt[val[i]] == 0) curAns--; }
     void update(int v) {
-        if (vis[v]) rem(val[v]);
-        else add(val[v]);
+        if (vis[v]) rem(v);
+        else add(v);
         vis[v] = !vis[v];
     }
     void run(int V) {

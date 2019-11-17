@@ -8,9 +8,9 @@ using namespace std;
 template <const int MAXN, const int MAXQ, const int BLOCKSZ> struct MoUpdates {
     int Q = 0, cnt[MAXN + MAXQ], ans[MAXQ], val[MAXN], temp[MAXN + MAXQ], curAns;
     pair<int, int> q[MAXQ]; bool isQuery[MAXQ]; vector<int> qs[MAXN / BLOCKSZ + 5][MAXN / BLOCKSZ + 5];
-    void add(int x) { if (cnt[x]++ == 0) curAns++; }
-    void rem(int x) { if (--cnt[x] == 0) curAns--; }
-    void upd(int i, int x) { rem(val[i]); add(val[i] = x); }
+    void add(int i) { if (cnt[val[i]]++ == 0) curAns++; }
+    void rem(int i) { if (--cnt[val[i]] == 0) curAns--; }
+    void upd(int i, int x) { rem(i); val[i] = x; add(i); }
     void query(int l, int r) { q[Q] = {l, r}; isQuery[Q++] = true; }
     void update(int i, int x) { q[Q] = {i, x}; isQuery[Q++] = false; }
     void run(int N) {
@@ -30,10 +30,10 @@ template <const int MAXN, const int MAXQ, const int BLOCKSZ> struct MoUpdates {
         for (int bl = 0; bl < blocks; bl++) for (int br = bl; br < blocks; br++) {
             for (int i : qs[bl][br]) {
                 if (isQuery[i]) {
-                    while (l < q[i].first) rem(val[l++]);
-                    while (l > q[i].first) add(val[--l]);
-                    while (r < q[i].second) add(val[++r]);
-                    while (r > q[i].second) rem(val[r--]);
+                    while (l < q[i].first) rem(l++);
+                    while (l > q[i].first) add(--l);
+                    while (r < q[i].second) add(++r);
+                    while (r > q[i].second) rem(r--);
                     ans[i] = curAns;
                 } else {
                     revert.emplace(q[i].first, val[q[i].first]);
