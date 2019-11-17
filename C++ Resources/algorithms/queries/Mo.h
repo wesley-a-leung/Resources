@@ -12,8 +12,8 @@ template <const int MAXN, const int MAXQ, const int BLOCKSZ, const bool COMPRESS
     };
     int Q = 0, cnt[MAXN], ans[MAXQ], val[MAXN], temp[MAXN], curAns; Query q[MAXQ];
     void query(int l, int r) { q[Q] = {l, r, Q, l / BLOCKSZ}; Q++; }
-    void add(int x) { if (cnt[x]++ == 0) curAns++; }
-    void rem(int x) { if (--cnt[x] == 0) curAns--; }
+    void add(int i) { if (cnt[val[i]]++ == 0) curAns++; }
+    void rem(int i) { if (--cnt[val[i]] == 0) curAns--; }
     void run(int N) {
         if (COMPRESS_VALUES) {
             copy(val, val + N, temp); sort(temp, temp + N); int k = unique(temp, temp + N) - temp;
@@ -21,10 +21,10 @@ template <const int MAXN, const int MAXQ, const int BLOCKSZ, const bool COMPRESS
         }
         fill(cnt, cnt + N, 0); sort(q, q + Q); int l = q[0].l, r = l - 1; curAns = 0;
         for (int i = 0; i < Q; i++) {
-            while (l < q[i].l) rem(val[l++]);
-            while (l > q[i].l) add(val[--l]);
-            while (r < q[i].r) add(val[++r]);
-            while (r > q[i].r) rem(val[r--]);
+            while (l < q[i].l) rem(l++);
+            while (l > q[i].l) add(--l);
+            while (r < q[i].r) add(++r);
+            while (r > q[i].r) rem(r--);
             ans[q[i].ind] = curAns;
         }
     }
