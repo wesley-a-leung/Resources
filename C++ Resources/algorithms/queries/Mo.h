@@ -3,7 +3,7 @@
 using namespace std;
 
 // Mo's algorithm, used to count the number of distinct integers in a subarray
-// Time Complexity: O(N + Q log Q + Q * max(B, Q / B) * (update complexity))
+// Time Complexity: O(N + Q log Q + Q * max(B, N / B) * (update complexity))
 // Memory Complexity: O(N + Q)
 template <const int MAXN, const int MAXQ, const int BLOCKSZ, const bool COMPRESS_VALUES> struct Mo {
     struct Query {
