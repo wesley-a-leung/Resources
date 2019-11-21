@@ -2,7 +2,6 @@
 #include <bits/stdc++.h>
 #include "../../datastructures/geometry/Point.h"
 using namespace std;
-using namespace std::placeholders;
 
 // Computes the convex hull of a set of N points
 // Time Complexity:
@@ -14,7 +13,7 @@ template <const int MAXN> struct ConvexHull {
     void clear() { hull.clear(); }
     void run(int N) {
         sort(P, P + N, [&] (const Point &p, const Point &q) { return p.y == q.y ? p.x < q.x : p.y < q.y; });
-        if (N > 1) stable_sort(P + 1, P + N, bind(&Point::polarOrderLt, P[0], _1, _2));
+        if (N > 1) stable_sort(P + 1, P + N, [&] (const Point &p, const Point &q) { return P[0].polarOrderLt(p, q); });
         hull.push_back(P[0]); int k1, k2;
         for (k1 = 1; k1 < N; k1++) if (P[0] != P[k1]) break;
         if (k1 == N) return;
