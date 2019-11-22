@@ -3,7 +3,7 @@
 using namespace std;
 
 // Mo's algorithm, supporting point updates, used to count the number of distinct integers in a subarray
-// Time Complexity: O(N + Q * ((N/B)^2 + B * (update complexity)))
+// Time Complexity: O(N + Q * ((N/B)^2 + min(B, N / B) * (update complexity)))
 // Memory Complexity: O(N + Q)
 template <const int MAXN, const int MAXQ, const int BLOCKSZ> struct MoUpdates {
     int Q = 0, cnt[MAXN + MAXQ], ans[MAXQ], val[MAXN], temp[MAXN + MAXQ], curAns;
