@@ -10,9 +10,9 @@ using namespace std;
 // Memory Complexity: O(N log N)
 template <class T, class F> struct SparseTable {
     int N, lg; vector<vector<T>> ST; F op;
-    template <class It> SparseTable(It st, It en, F op) : N(en - st), lg(32 - __builtin_clz(N)), ST(lg, vector<T>(st, en)), op(op) {
-        for (int i = 0; i < lg - 1; i++) for (int j = 0; j < N; j++) ST[i + 1][j] = op(ST[i][j], ST[i][min(j + (1 << i), N - 1)]);
-    }
+    void build() { for (int i = 0; i < lg - 1; i++) for (int j = 0; j < N; j++) ST[i + 1][j] = op(ST[i][j], ST[i][min(j + (1 << i), N - 1)]); }
+    template <class It> SparseTable(It st, It en) : N(en - st), lg(32 - __builtin_clz(N)), ST(lg, vector<T>(st, en)) { build(); }
+    template <class It> SparseTable(It st, It en, F op) : N(en - st), lg(32 - __builtin_clz(N)), ST(lg, vector<T>(st, en)), op(op) { build(); }
     // 0-indexed, inclusive
     T query(int l, int r) { int i = 31 - __builtin_clz(r - l + 1); return op(ST[i][l], ST[i][r - (1 << i) + 1]); }
 };
