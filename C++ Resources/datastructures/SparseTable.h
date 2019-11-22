@@ -2,19 +2,21 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Sparse Table
+// Sparse Table for generic operations
+// F must be a binary operator that is associative and idempotent
 // Time Complexity:
 //   init: O(N log N)
 //   query: O(1)
 // Memory Complexity: O(N log N)
-template <const int MAXN, const int MAXLGN> struct SparseTableRMQ {
-    using Data = int; Data ST[MAXLGN][MAXN];
-    // operation must be associative and idempotent
-    Data merge(const Data &l, const Data &r); // to be implemented
-    template <class It> void init(It st, It en) {
-        int N = en - st, lg = 32 - __builtin_clz(N); assert(lg < MAXLGN); copy(st, en, ST[0]);
-        for (int i = 0; i < lg - 1; i++) for (int j = 0; j < N; j++) ST[i + 1][j] = merge(ST[i][j], ST[i][min(j + (1 << i), N - 1)]);
+template <class T, class F> struct SparseTable {
+    int N, lg; vector<vector<T>> ST; F op;
+    template <class It> SparseTable(It st, It en, F op) : N(en - st), lg(32 - __builtin_clz(N)), ST(lg, vector<T>(st, en)), op(op) {
+        for (int i = 0; i < lg - 1; i++) for (int j = 0; j < N; j++) ST[i + 1][j] = op(ST[i][j], ST[i][min(j + (1 << i), N - 1)]);
     }
     // 0-indexed, inclusive
-    Data query(int l, int r) { int i = 31 - __builtin_clz(r - l + 1); return merge(ST[i][l], ST[i][r - (1 << i) + 1]); }
+    T query(int l, int r) { int i = 31 - __builtin_clz(r - l + 1); return op(ST[i][l], ST[i][r - (1 << i) + 1]); }
 };
+
+template <class It, class F> auto makeSparseTable(It st, It en, F op) {
+    return SparseTable<typename std::iterator_traits<It>::value_type, F>(st, en, op);
+}
