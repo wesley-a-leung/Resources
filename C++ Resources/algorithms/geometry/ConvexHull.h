@@ -12,17 +12,16 @@ template <const int MAXN> struct ConvexHull {
     Point P[MAXN]; vector<Point> hull; // counterclockwise order
     void clear() { hull.clear(); }
     void run(int N) {
-        sort(P, P + N, [&] (const Point &p, const Point &q) { return p.y == q.y ? p.x < q.x : p.y < q.y; });
-        if (N > 1) stable_sort(P + 1, P + N, [&] (const Point &p, const Point &q) { return P[0].polarOrderLt(p, q); });
-        hull.push_back(P[0]); int k1, k2;
-        for (k1 = 1; k1 < N; k1++) if (P[0] != P[k1]) break;
-        if (k1 == N) return;
-        for (k2 = k1 + 1; k2 < N; k2++) if (Point::ccw(P[0], P[k1], P[k2]) != 0) break;
-        hull.push_back(P[k2 - 1]);
-        for (int i = k2; i < N; i++) {
-            while (hull.size() >= 2 && Point::ccw(hull[hull.size() - 2], hull[hull.size() - 1], P[i]) <= 0) hull.pop_back();
-            hull.push_back(P[i]);
+        sort(P, P + N, Point::xyOrderLt);
+        for (int phase = 0; phase < 2; phase++) {
+            for (int i = 0, st = int(hull.size()); i < N; i++) {
+                while (int(hull.size()) >= st + 2 && Point::ccw(hull[hull.size() - 2], hull[hull.size() - 1], P[i]) <= 0) hull.pop_back();
+                hull.push_back(P[i]);
+            }
+            hull.pop_back(); reverse(P, P + N);
         }
+        if (int(hull.size()) == 2 && hull[0] == hull[1]) hull.pop_back();
+        if (hull.empty() && N > 0) hull.push_back(P[0]);
     }
     template <class T> T getArea2() { // returns twice the area of the convex hull
         T ret = 0; int H = int(hull.size());

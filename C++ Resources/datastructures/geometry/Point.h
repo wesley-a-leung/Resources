@@ -43,20 +43,6 @@ struct Point {
         if (abs(det) <= T(EPS)) throw runtime_error("The lines do not intersect or are collinear");
         return Point((B2 * C1 - B1 * C2) / det, (A1 * C2 - A2 * C1) / det);
     }
-    int compareXThenY(const Point &that) const {
-        if (x < that.x - T(EPS)) return -1;
-        if (x > that.x + T(EPS)) return +1;
-        if (y < that.y - T(EPS)) return -1;
-        if (y > that.y + T(EPS)) return +1;
-        return 0;
-    }
-    int compareYThenX(const Point &that) const {
-        if (y < that.y - T(EPS)) return -1;
-        if (y > that.y + T(EPS)) return +1;
-        if (x < that.x - T(EPS)) return -1;
-        if (x > that.x + T(EPS)) return +1;
-        return 0;
-    }
     bool operator == (const Point &that) const { return abs(x - that.x) <= T(EPS) && abs(y - that.y) <= T(EPS); }
     bool operator != (const Point &that) const { return !(*this == that); }
     static bool xOrderLt(const Point &p, const Point &q) { return p.x < q.x - T(EPS); }
@@ -67,6 +53,14 @@ struct Point {
     static bool yOrderLe(const Point &p, const Point &q) { return !yOrderLt(q, p); }
     static bool yOrderGt(const Point &p, const Point &q) { return yOrderLt(q, p); }
     static bool yOrderGe(const Point &p, const Point &q) { return !yOrderLt(p, q); }
+    static bool xyOrderLt(const Point &p, const Point &q) { return abs(p.x - q.x) <= T(EPS) ? p.y < q.y - T(EPS) : p.x < q.x - T(EPS); }
+    static bool xyOrderLe(const Point &p, const Point &q) { return !xyOrderLt(q, p); }
+    static bool xyOrderGt(const Point &p, const Point &q) { return xyOrderLt(q, p); }
+    static bool xyOrderGe(const Point &p, const Point &q) { return !xyOrderLt(p, q); }
+    static bool yxOrderLt(const Point &p, const Point &q) { return abs(p.y - q.y) <= T(EPS) ? p.x < q.x - T(EPS) : p.y < q.y - T(EPS); }
+    static bool yxOrderLe(const Point &p, const Point &q) { return !yxOrderLt(q, p); }
+    static bool yxOrderGt(const Point &p, const Point &q) { return yxOrderLt(q, p); }
+    static bool yxOrderGe(const Point &p, const Point &q) { return !yxOrderLt(p, q); }
     static bool rOrderLt(const Point &p, const Point &q) { return (p.x * p.x + p.y * p.y) < (q.x * q.x + q.y * q.y) - T(EPS); }
     static bool rOrderLe(const Point &p, const Point &q) { return !rOrderLt(q, p); }
     static bool rOrderGt(const Point &p, const Point &q) { return rOrderLt(q, p); }
@@ -84,5 +78,3 @@ struct Point {
     bool distanceToOrderGt(const Point &p, const Point &q) const { return distanceToOrderLt(q, p); }
     bool distanceToOrderGe(const Point &p, const Point &q) const { return !distanceToOrderLt(p, q); }
 };
-
-struct Point_hash { size_t operator ()(const Point &p) const { return 31 * hash<T> {}(p.x) + hash<T> {}(p.y); } };
