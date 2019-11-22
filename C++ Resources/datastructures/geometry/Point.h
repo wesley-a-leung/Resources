@@ -9,6 +9,7 @@ struct Point {
     T x, y;
     Point(T x = 0, T y = 0) : x(x), y(y) {}
     F polarRadius() const { return sqrt(x * x + y * y); }
+    T polarRadiusSquared() const { return x * x + y * y; }
     F theta() const { return atan2(y, x); }
     F angleTo(const Point &that) const { return atan2(that.y - y, that.x - x); }
     static int ccw(const Point &a, const Point &b, const Point &c) { // -1 if clockwise, 0 if collinear, +1 if counterclockwise
@@ -61,7 +62,7 @@ struct Point {
     static bool yxOrderLe(const Point &p, const Point &q) { return !yxOrderLt(q, p); }
     static bool yxOrderGt(const Point &p, const Point &q) { return yxOrderLt(q, p); }
     static bool yxOrderGe(const Point &p, const Point &q) { return !yxOrderLt(p, q); }
-    static bool rOrderLt(const Point &p, const Point &q) { return (p.x * p.x + p.y * p.y) < (q.x * q.x + q.y * q.y) - T(EPS); }
+    static bool rOrderLt(const Point &p, const Point &q) { return p.polarRadiusSquared() < q.polarRadiusSquared() - T(EPS); }
     static bool rOrderLe(const Point &p, const Point &q) { return !rOrderLt(q, p); }
     static bool rOrderGt(const Point &p, const Point &q) { return rOrderLt(q, p); }
     static bool rOrderGe(const Point &p, const Point &q) { return !rOrderLt(p, q); }
