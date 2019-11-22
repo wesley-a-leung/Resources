@@ -3,7 +3,7 @@
 using namespace std;
 
 // Mo's algorithm on a tree, used to count the number of distinct integers on a path between two nodes
-// Time Complexity: O(V log V + Q log Q + Q * max(B, Q / B) * (update complexity))
+// Time Complexity: O(V log V + Q log Q + Q * max(B, V / B) * (update complexity))
 // Memory Complexity: O(V log V + Q)
 template <const int MAXV, const int MAXQ, const int BLOCKSZ, const int MAXLGV, const bool COMPRESS_VALUES> struct MoTree {
     struct Query {
