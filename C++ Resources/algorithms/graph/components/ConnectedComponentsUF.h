@@ -12,8 +12,7 @@ template <const int MAXV> struct ConnectedComponentsUF {
     bool addEdge(int v, int w) {
         if ((v = find(v)) == (w = find(w))) return false;
         if (UF[v] > UF[w]) swap(v, w);
-        UF[v] += UF[w]; UF[w] = v;
-        return true;
+        UF[v] += UF[w]; UF[w] = v; return true;
     }
     bool connected(int v, int w) { return find(v) == find(w); }
     int getSize(int v) { return -UF[find(v)]; }
