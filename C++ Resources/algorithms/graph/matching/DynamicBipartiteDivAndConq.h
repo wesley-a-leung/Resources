@@ -10,7 +10,7 @@ template <const int MAXV, const int MAXQ, const bool ONE_INDEXED> struct Dynamic
     int Q = 0, cnt, UF[MAXV]; bool P[MAXV]; vector<bool> ans; unordered_map<int, int> present[MAXV];
     vector<pair<pair<int, int>, pair<int, bool>>> history; vector<bool> history2;
     struct Query { int type, v, w, otherTime; } q[MAXQ];
-    int find(int v) { while (UF[v] >= 0) v = UF[v]; return v; }
+    int find(int v) { return UF[v] < 0 ? v : find(UF[v]); }
     bool parity(int v) { bool p = P[v]; for (; UF[v] >= 0; p ^= P[v]) v = UF[v]; return p; }
     void join(int v, int w) {
         int fv = find(v), fw = find(w); bool p = parity(v) ^ parity(w) ^ 1;
