@@ -13,7 +13,7 @@ template <const int MAXN, const bool ONE_INDEXED> struct UnionFindSemiPersistent
         curTime = 0; cnt.emplace_back(curTime, N);
         for (int i = ONE_INDEXED; i < N + ONE_INDEXED; i++) UF[i].emplace_back(curTime, -1);
     }
-    int find(int t, int v) { return UF[v].back().second >= 0 && UF[v].back().first <= t ? find(t, UF[v].back().second) : v; }
+    int find(int t, int v) { return UF[v].back().second < 0 || UF[v].back().first > t ? v : find(t, UF[v].back().second); }
     bool join(int v, int w) {
         ++curTime;
         if ((v = find(curTime, v)) == (w = find(curTime, w))) return false;
