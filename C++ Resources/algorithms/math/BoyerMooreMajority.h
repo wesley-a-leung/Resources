@@ -4,7 +4,7 @@ using namespace std;
 
 // Determines whether a majority element exists.
 // The first pass will find the majority element if it exists,
-// but a second pass is required to determine if it is the majority element
+// but a second pass is required to determine if it is the majority element.
 // Time Complexity: O(N)
 // Memory Complexity: O(1)
 template <class It> pair<typename std::iterator_traits<It>::value_type, bool> boyerMooreMajority(It st, It en) {
