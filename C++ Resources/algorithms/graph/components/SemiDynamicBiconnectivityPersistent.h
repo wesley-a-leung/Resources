@@ -6,7 +6,7 @@ using namespace std;
 // after edges have been added
 // Time Complexity:
 //   solve: O((V + Q) log V)
-//   query: O((log V)^2)
+//   query: O(log V log Q)
 // Memory Complexity O(V + Q)
 template <const int MAXV, const int MAXQ> struct SemiDynamicBiconnectivityPersistent {
     int Q = 0, UF[MAXV], par[MAXV], dep[MAXV]; vector<int> adj[MAXV], ans; vector<pair<int, int>> UF2[MAXV];

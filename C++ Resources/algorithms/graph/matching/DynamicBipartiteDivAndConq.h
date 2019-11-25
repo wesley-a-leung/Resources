@@ -4,7 +4,7 @@ using namespace std;
 
 // Support queries for whether a graph is bipartite or not, after edges have been added or removed
 // Divide and Conquer Solution
-// Time Complexity: O(V + Q (log Q) ^ 2)
+// Time Complexity: O(V + Q log Q log V)
 // Memory Complexity: O(V + Q)
 template <const int MAXV, const int MAXQ, const bool ONE_INDEXED> struct DynamicBipartiteDivAndConq {
     int Q = 0, cnt, UF[MAXV]; bool P[MAXV]; vector<bool> ans; unordered_map<int, int> present[MAXV];
