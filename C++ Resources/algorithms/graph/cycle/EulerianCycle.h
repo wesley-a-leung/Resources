@@ -28,7 +28,7 @@ template <const int MAXV> struct EulerianCycle {
                 } else if (v < w) { q[v].push_back(int(e.size())); q[w].push_back(int(e.size())); e.push_back({v, w, false}); }
             }
         }
-        stack<int> stk; stk.push(s);
+        stack<int, vector<int>> stk; stk.push(s);
         while (!stk.empty()) {
             int v = stk.top(); stk.pop();
             while (front[v] < int(q[v].size())) {

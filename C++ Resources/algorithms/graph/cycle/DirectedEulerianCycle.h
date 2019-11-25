@@ -15,7 +15,7 @@ template <const int MAXV> struct DirectedEulerianCycle {
         for (int v = 0; v < V; v++) if (int(adj[v].size()) > 0) { s = v; break; }
         for (int v = 0; v < V; v++) if (int(adj[v].size()) != inDeg[v]) return false;
         if (s == -1) s = 0;
-        fill(front, front + V, 0); stack<int> stk; stk.push(s);
+        fill(front, front + V, 0); stack<int, vector<int>> stk; stk.push(s);
         while (!stk.empty()) {
             int v = stk.top(); stk.pop();
             for (; front[v] < int(adj[v].size()); v = adj[v][front[v]++]) stk.push(v);

@@ -26,7 +26,7 @@ template <const int MAXN, const int MAXQ, const int BLOCKSZ> struct MoUpdates {
                     qs[bl][br].push_back(i);
             }
         }
-        int l = 0, r = l - 1; curAns = 0; stack<pair<int, int>> revert;
+        int l = 0, r = l - 1; curAns = 0; stack<pair<int, int>, vector<pair<int, int>>> revert;
         for (int bl = 0; bl < blocks; bl++) for (int br = bl; br < blocks; br++) {
             for (int i : qs[bl][br]) {
                 if (isQuery[i]) {

@@ -11,7 +11,7 @@ using namespace std;
 // Memory Complexity: O(V^2 + E)
 template <const int MAXV, class unit> struct JohnsonAPSP {
     unit INF, dist[MAXV][MAXV], h[MAXV]; int id[MAXV], low[MAXV], pre;
-    stack<int> s; vector<vector<int>> components; bitset<MAXV> dp[MAXV], neg[MAXV];
+    stack<int, vector<int>> s; vector<vector<int>> components; bitset<MAXV> dp[MAXV], neg[MAXV];
     bool hasNegativeCycle = false, hasNegativeWeight = false, vis[MAXV], G[MAXV][MAXV], compInNegCyc[MAXV], inNegCyc[MAXV];
     pair<int, unit> to[MAXV][MAXV]; vector<pair<int, unit>> adj[MAXV]; vector<int> DAG[MAXV]; JohnsonAPSP(unit INF) : INF(INF) {}
     void addEdge(int v, int w, unit weight) { adj[v].emplace_back(w, weight); hasNegativeWeight |= weight < 0; }

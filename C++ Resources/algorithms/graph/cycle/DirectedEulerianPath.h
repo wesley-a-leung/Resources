@@ -16,7 +16,7 @@ template <const int MAXV> struct DirectedEulerianPath {
         for (int v = 0; v < V; v++) if (int(adj[v].size()) > inDeg[v]) { deficit += int(adj[v].size()) - inDeg[v]; s = v; }
         if (deficit > 1) return false;
         if (s == -1) s = 0;
-        fill(front, front + V, 0); stack<int> stk; stk.push(s);
+        fill(front, front + V, 0); stack<int, vector<int>> stk; stk.push(s);
         while (!stk.empty()) {
             int v = stk.top(); stk.pop();
             for (; front[v] < int(adj[v].size()); v = adj[v][front[v]++]) stk.push(v);
