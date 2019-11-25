@@ -8,7 +8,7 @@ using namespace std;
 template <const int MAXN, const int MAXM = MAXN> struct MaxZeroSubmatrix {
     int A[MAXN][MAXM], H[MAXN][MAXM];
     int solve(int N, int M) {
-        stack<int> s; int ret = 0;
+        stack<int, vector<int>> s; int ret = 0;
         for (int j = 0; j < M; j++) for (int i = N - 1; i >= 0; i--) H[i][j] = A[i][j] ? 0 : 1 + (i == N - 1 ? 0 : H[i + 1][j]);
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {

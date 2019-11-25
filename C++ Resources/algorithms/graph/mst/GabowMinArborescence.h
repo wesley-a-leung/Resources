@@ -23,7 +23,7 @@ template <const int MAXV, class unit> struct GabowMinArborescence {
         for (int v = 0; v < V; v++) H.emplace_back(0); 
         for (auto &&e : edges) H[e.to].push(e);
         for (int s = 0; s < V; s++) {
-            stack<int> path;
+            stack<int, vector<int>> path;
             for (int v = s; vis[v] == -1;) {
                 path.push(v); vis[v] = s;
                 if (H[v].empty()) return INF;

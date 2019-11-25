@@ -9,7 +9,7 @@ using namespace std;
 //    bfs: O(V log V)
 // Memory Complexity: O(V)
 template <const int MAXV> struct CentroidDecomposition {
-    vector<int> adj[MAXV]; bool exclude[MAXV]; int size[MAXV], par[MAXV];
+    vector<int> adj[MAXV]; bool exclude[MAXV]; int size[MAXV], par[MAXV]; pair<int, int> q[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     int getSize(int v, int prev) {
         size[v] = 1;
@@ -27,11 +27,11 @@ template <const int MAXV> struct CentroidDecomposition {
         return c;
     }
     void bfs(int root = 0) {
-        queue<pair<int, int>> q; q.emplace(root, -1);
-        while (!q.empty()) {
-            int v = q.front().first, c = getCentroid(v, -1, getSize(v, -1));
-            par[c] = q.front().second; q.pop(); exclude[c] = true;
-            for (int w : adj[c]) if (!exclude[w]) q.emplace(w, c);
+        int front = 0, back = 0; q[back++] = make_pair(root, -1);
+        while (front < back) {
+            int v = q[front], c = getCentroid(v, -1, getSize(v, -1));
+            par[c] = q[front++]; exclude[c] = true;
+            for (int w : adj[c]) if (!exclude[w]) q[back++] = make_pair(w, c);
         }
     }
 };

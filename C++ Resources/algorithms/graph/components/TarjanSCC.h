@@ -6,7 +6,8 @@ using namespace std;
 // Time Complexity: O(V + E)
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct TarjanSCC {
-    int id[MAXV], low[MAXV], pre; bool vis[MAXV]; vector<int> adj[MAXV], DAG[MAXV]; vector<vector<int>> components; stack<int> s;
+    int id[MAXV], low[MAXV], pre; bool vis[MAXV]; vector<int> adj[MAXV], DAG[MAXV];
+    vector<vector<int>> components; stack<int, vector<int>> s;
     void addEdge(int v, int w) { adj[v].push_back(w); }
     void dfs(int v) {
         vis[v] = true; int mn = low[v] = pre++; s.push(v);

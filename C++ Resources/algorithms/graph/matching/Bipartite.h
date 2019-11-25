@@ -15,7 +15,7 @@ template <const int MAXV> struct Bipartite {
             for (int w : adj[v]) {
                 if (!vis[w]) { vis[w] = true; to[w] = v; color[w] = !color[v]; q[back++] = w; }
                 else if (color[w] == color[v]) {
-                    bipartite = false; oddCycle.clear(); stack<int> stk; int x = v, y = w;
+                    bipartite = false; oddCycle.clear(); stack<int, vector<int>> stk; int x = v, y = w;
                     while (x != y) { stk.push(x); oddCycle.push_back(y); x = to[x]; y = to[y]; }
                     stk.push(x);
                     while (!stk.empty()) { oddCycle.push_back(stk.top()); stk.pop(); }

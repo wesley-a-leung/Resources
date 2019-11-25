@@ -8,7 +8,8 @@ using namespace std;
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct Biconnected {
     // components is based on articulation points, id is based on bridges
-    int low[MAXV], pre[MAXV], id[MAXV], cur, forestN; bool articulation[MAXV]; stack<pair<int, int>> s; vector<int> isBridge[MAXV];
+    int low[MAXV], pre[MAXV], id[MAXV], cur, forestN; bool articulation[MAXV];
+    stack<pair<int, int>, vector<pair<int, int>>> s; vector<int> isBridge[MAXV];
     vector<int> adj[MAXV], rev[MAXV], forest[MAXV]; vector<vector<int>> components;
     void addEdge(int v, int w) {
         adj[v].push_back(w); adj[w].push_back(v);

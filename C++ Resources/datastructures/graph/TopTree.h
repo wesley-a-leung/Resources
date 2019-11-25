@@ -108,7 +108,7 @@ void Node::rem() {
     p = 0;
 }
 void expose(int x) {
-    stack<int> stk; int y = x, z = x;
+    stack<int, vector<int>> stk; int y = x, z = x;
     for (; z; z = T[z].p) stk.push(z);
     for (; !stk.empty(); stk.pop()) T[stk.top()].propagate();
     T[x].splay(0);
