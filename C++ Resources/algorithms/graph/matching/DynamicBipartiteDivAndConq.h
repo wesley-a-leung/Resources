@@ -35,7 +35,7 @@ template <const int MAXV, const int MAXQ, const bool ONE_INDEXED> struct Dynamic
         while ((int) history.size() > curSize) undo();
         while ((int) history2.size() > curSize2) { cnt -= history2.back(); history2.pop_back(); }
     }
-    void clear(int V = MAXV) { ans.clear(); Q = 0; for (int i = 0; i < V; i++) present[i].clear(); }
+    void clear(int V = MAXV) { ans.clear(); Q = 0; history.clear(); history2.clear(); for (int i = 0; i < V; i++) present[i].clear(); }
     void addEdge(int v, int w) {
         if (v > w) swap(v, w);
         present[v][w] = Q; q[Q++] = {1, v, w, INT_MAX};

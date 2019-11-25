@@ -11,6 +11,7 @@ using namespace std;
 template <const int MAXN, const bool ONE_INDEXED> struct UnionFindUndo {
     int UF[MAXN], cnt; vector<pair<pair<int, int>, int>> history;
     void init(int N) { cnt = N; fill(UF, UF + N + ONE_INDEXED, -1); }
+    void clearHistory() { history.clear(); }
     int find(int v) { return UF[v] < 0 ? v : find(UF[v]); }
     bool join(int v, int w) {
         if ((v = find(v)) == (w = find(w))) return false;
