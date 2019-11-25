@@ -5,7 +5,7 @@ using namespace std;
 // Union Find / Disjoint Sets by size with path compression
 // Time Complexity:
 //   init: O(N)
-//   find, join, connected, getSize: alpha(N)
+//   find, join, connected, getSize: O(alpha(N))
 // Memory Complexity: O(N)
 template <const int MAXN, const bool ONE_INDEXED> struct UnionFind {
     int UF[MAXN], cnt;
