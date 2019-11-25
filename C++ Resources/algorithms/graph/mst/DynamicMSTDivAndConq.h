@@ -4,7 +4,7 @@ using namespace std;
 
 // Supports queries for the minimum spanning tree after an edge is added or removed
 // Offline Divide and Conquer Solution
-// Time Complexity: O(V + E * (Q / B) + Q * B)
+// Time Complexity: O(V + Q log Q log (V + E))
 // Memory Complexity: O(V + E + Q)
 
 using unit = int; const unit NEG_INF = (numeric_limits<unit>::min)();
