@@ -25,7 +25,7 @@ template <const int MAXV> struct Bipartite {
             }
         }
     }
-    bool run(int V) {
+    bool run(int V) { // returns true if there the graph is bipartite
         bipartite = true; fill(color, color + V, WHITE); fill(vis, vis + V, false);
         for (int v = 0; v < V && bipartite; v++) if (!vis[v]) bfs(v);
         return oddCycle.empty();
