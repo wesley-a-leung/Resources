@@ -15,14 +15,15 @@ template <const int MAXM, const int MAXN, class F> struct TwoPhaseSimplex {
     TwoPhaseSimplex(F INF, F EPS) : INF(INF), EPS(EPS) {}
     bool cmp(F a, int b, F c, int d) { return abs(a - c) > EPS ? a < c : b < d; }
     void pivot(int r, int s) {
-        auto &a1 = T[r];
-        for (int j = 0; j <= N + 1; j++) if (j != s) a1[j] /= a1[s];
-        for (int i = 0; i <= M + 1; i++) if (i != r) {
-            auto &a2 = T[i]; F alpha = a2[s];
-            for (int j = 0; j <= N + 1; j++) a2[j] -= a1[j] * alpha;
-            a2[s] = -alpha / a1[s];
+        auto &a1 = T[r]; F inv1 = 1 / a1[s];
+        for (int i = 0; i <= M + 1; i++) if (i != r && abs(T[i][s]) > EPS) {
+            auto &a2 = T[i]; F inv2 = a2[s] * inv1;
+            for (int j = 0; j <= N + 1; j++) a2[j] -= a1[j] * inv2;
+            a2[s] = a1[s] * inv2;
         }
-        a1[s] = 1 / a1[s]; swap(IN[r], OUT[s]);
+        for (int j = 0; j <= N + 1; j++) if (j != s) a1[j] *= inv1;
+        for (int i = 0; i <= M + 1; i++) if (i != r) T[i][s] *= -inv1;
+        a1[s] = inv1; swap(IN[r], OUT[s]);
     }
     bool simplex(int phase) {
         int x = M + phase - 1;
