@@ -75,7 +75,6 @@ Node *Node::expose() {
 }
 void Node::makeRoot() { expose(); rev = !rev; }
 void Node::setDel(int tim) { del = tim; propagate(); update(); expose(); }
-
 template <const int MAXV, const int MAXQ> struct DynamicBiconnectivity {
     int V, Q = 0, bridges; bool isTreeEdge[MAXQ]; vector<Node> T; vector<int> ans; unordered_map<int, int> present[MAXV];
     struct Query { int type, v, w, otherTime; } q[MAXQ];
