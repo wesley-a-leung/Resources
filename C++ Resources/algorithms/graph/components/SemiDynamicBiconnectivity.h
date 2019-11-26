@@ -18,8 +18,7 @@ template <const int MAXV, const int MAXQ> struct SemiDynamicBiconnectivity {
         dep[v] = d; par[v] = prev;
         for (int w : adj[v]) if (w != prev) dfs(w, v, d + 1);
     }
-    void init(int V = MAXV) { fill(UF, UF + V, -1); Q = 0; }
-    void clear(int V = MAXV) { ans.clear(); for (int i = 0; i < V; i++) adj[i].clear(); }
+    void init(int V = MAXV) { fill(UF, UF + V, -1); Q = 0; ans.clear(); for (int i = 0; i < V; i++) adj[i].clear(); }
     void addEdge(int v, int w) {
         if (join(v, w)) { adj[v].push_back(w); adj[w].push_back(v); q[Q++] = {1, v, w}; }
         else q[Q++] = {2, v, w};

@@ -17,8 +17,7 @@ template <const int MAXV, class unit> struct PushRelabelMaxFlow {
         if (v == w) return;
         adj[v].emplace_back(w, vw, int(adj[w].size())); adj[w].emplace_back(v, wv, int(adj[v].size()) - 1);
     }
-    void init(int V = MAXV) { fill(cut, cut + V, false); }
-    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
+    void init(int V = MAXV) { fill(cut, cut + V, false); for (int i = 0; i < V; i++) adj[i].clear(); }
     void push(int v, Edge &e, unit df) {
         int w = e.to;
         if (abs(ex[w]) <= EPS && df > EPS) hs[h[w]].push_back(w);

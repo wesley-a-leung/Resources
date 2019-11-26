@@ -10,7 +10,7 @@ using namespace std;
 template <const int MAXV, const int MAXQ, const int BLOCKSZ> struct DynamicConnectivitySqrtDecomp {
     int Q = 0; vector<int> ans; unordered_map<int, int> present[MAXV]; UnionFindUndo<MAXV, 0> uf;
     struct Query { int type, v, w, otherTime; } q[MAXQ];
-    void clear(int V = MAXV) { ans.clear(); Q = 0; uf.clearHistory(); for (int i = 0; i < V; i++) present[i].clear(); }
+    void clear(int V = MAXV) { ans.clear(); Q = 0; for (int i = 0; i < V; i++) present[i].clear(); }
     void addEdge(int v, int w) {
         if (v > w) swap(v, w);
         present[v][w] = Q; q[Q++] = {1, v, w, INT_MAX};
@@ -31,7 +31,6 @@ template <const int MAXV, const int MAXQ, const int BLOCKSZ> struct DynamicConne
                 ans.push_back(uf.cnt);
                 while (int(uf.history.size()) > curSize) uf.undo();
             }
-            uf.clearHistory();
         }
     }
 };
