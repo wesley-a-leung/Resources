@@ -54,7 +54,7 @@ Node *Node::expose() {
 }
 void Node::makeRoot() { expose(); rev = !rev; }
 template <const int MAXV, const int MAXQ> struct DynamicConnectivityLCT {
-    int V, Q = 0, cnt; vector<Node> T; vector<int> ans; unordered_map<int, int> present[MAXV];
+    int Q = 0, cnt; vector<Node> T; vector<int> ans; unordered_map<int, int> present[MAXV];
     struct Query { int type, v, w, otherTime; } q[MAXQ];
     bool connected(int x, int y) {
         if (x == y) return true;
