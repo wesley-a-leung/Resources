@@ -5,7 +5,7 @@ using namespace std;
 
 // Support queries for the number of components in a graph, after edges have been added or removed
 // Sqrt Decomposition Solution
-// Time Complexity: O((Q / B) * (V + (Q + B^2) * log V))
+// Time Complexity: O((V + Q) * (Q / B) + Q * B * log V)
 // Memory Complexity: O(V + Q)
 template <const int MAXV, const int MAXQ, const int BLOCKSZ> struct DynamicConnectivitySqrtDecomp {
     int Q = 0; vector<int> ans; unordered_map<int, int> present[MAXV]; UnionFindUndo<MAXV, 0> uf;
