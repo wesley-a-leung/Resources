@@ -8,7 +8,7 @@ using namespace std;
 
 const int NO_COVER = INT_MIN, NO_DEL = INT_MAX;
 void check(int &a, const int &b) { if ((a > b && b != NO_COVER) || a == NO_COVER) a = b; }
-// Stripped down version of Link Cut Tree for maximum edge weight queries
+// Stripped down version of Link Cut Tree
 struct Node {
     Node *l, *r, *p; bool rev, isEdge; int edgeCnt, coveredCntSub, coverLazy, covered, coveredSub, del, delMin;
     Node(bool isEdge) : l(nullptr), r(nullptr), p(nullptr), rev(false), isEdge(isEdge), edgeCnt(isEdge), coveredCntSub(0),
