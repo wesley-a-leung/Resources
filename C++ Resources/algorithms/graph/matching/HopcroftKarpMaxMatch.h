@@ -37,8 +37,10 @@ template <const int MAXV> struct HopcroftKarpMaxMatch {
         }
         dist[v] = INT_MAX; return false;
     }
-    void init(int V = MAXV) { fill(mate, mate + V, -1); fill(color, color + V, false); }
-    void clear(int V = MAXV) { typeA.clear(); for (int i = 0; i < V; i++) adj[i].clear(); }
+    void init(int V = MAXV) {
+        fill(mate, mate + V, -1); fill(color, color + V, false); typeA.clear();
+        for (int i = 0; i < V; i++) adj[i].clear();
+    }
     int getMaxMatch() {
         cardinality = 0;
         for (int v = 0; v < MAXV; v++) if (color[v]) typeA.push_back(v);

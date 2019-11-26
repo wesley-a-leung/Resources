@@ -10,9 +10,8 @@ using namespace std;
 // Memory Complexity: O(N)
 template <const int MAXN> struct ConvexHull {
     Point P[MAXN]; vector<Point> hull; // counterclockwise order
-    void clear() { hull.clear(); }
     void run(int N) {
-        sort(P, P + N, Point::xyOrderLt);
+        hull.clear(); sort(P, P + N, Point::xyOrderLt);
         for (int phase = 0; phase < 2; phase++) {
             for (int i = 0, st = int(hull.size()); i < N; i++) {
                 while (int(hull.size()) >= st + 2 && Point::ccw(hull[hull.size() - 2], hull[hull.size() - 1], P[i]) <= 0) hull.pop_back();

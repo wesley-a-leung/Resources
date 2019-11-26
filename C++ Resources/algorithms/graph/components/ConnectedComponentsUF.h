@@ -7,7 +7,7 @@ using namespace std;
 // Memory Complexity: O(V * alpha(V))
 template <const int MAXV> struct ConnectedComponentsUF {
     int UF[MAXV], id[MAXV]; vector<vector<int>> components;
-    void init(int N) { fill(UF, UF + N, -1); }
+    void init(int N) { fill(UF, UF + N, -1); components.clear(); }
     int find(int v) { return UF[v] < 0 ? v : UF[v] = find(UF[v]); }
     bool addEdge(int v, int w) {
         if ((v = find(v)) == (w = find(w))) return false;
@@ -21,5 +21,4 @@ template <const int MAXV> struct ConnectedComponentsUF {
         for (int v = 0; v < V; v++) if (find(v) == v) { id[v] = cnt++; components.emplace_back(1, v); }
         for (int v = 0; v < V; v++) if (id[v] == -1) components[id[v] = id[find(v)]].push_back(v);
     }
-    void clear() { components.clear(); }
 };
