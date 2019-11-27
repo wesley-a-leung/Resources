@@ -54,9 +54,9 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
         }
         return ret;
     }
-    void init(int V) { E = 0; maxCap = 0; fill(st, st + V + 3, 0); fill(outDem, outDem + V, 0); fill(inDem, inDem + V, 0); }
+    void init(int V) { E = 0; maxFlow = maxCap = 0; fill(st, st + V + 3, 0); fill(outDem, outDem + V, 0); fill(inDem, inDem + V, 0); }
     void build(int V) {
-        sort(e, e + E); partial_sum(st, st + V + 1, st);
+        sort(e, e + E); partial_sum(st, st + V + 1, st); maxCap = 0;
         for (int i = 0; i < E; i++) ind[e[i].ind] = i;
         for (int i = 0; i < E; i++) { e[e[i].ind = i].rev = ind[e[i].rev]; maxCap = max(maxCap, e[i].maxCap); }
     }
