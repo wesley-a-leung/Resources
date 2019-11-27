@@ -80,9 +80,9 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
         for (int i = 0; i < E; i++) { st[e[i].to + 1]++; e[i].cap += e[i].dem; e[i].maxCap += e[i].dem; }
         build(V); return ret;
     }
-    unit getFlow(int V, int s, int t) {
-        pair<bool, unit> feasibleFlow = findFeasibleFlow(V, s, t); unit maxFlow = 0;
-        if (feasibleFlow.first) { maxFlow += feasibleFlow.second + dinic(V, s, t); }
+    pair<bool, unit> getFlow(int V, int s, int t) {
+        pair<bool, unit> maxFlow = findFeasibleFlow(V, s, t);
+        if (maxFlow.first) maxFlow.second += dinic(V, s, t);
         return maxFlow;
     }
 };
