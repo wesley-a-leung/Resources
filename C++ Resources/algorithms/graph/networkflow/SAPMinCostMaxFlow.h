@@ -20,7 +20,7 @@ template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct
     flowUnit maxFlow; costUnit phi[MAXV], dist[MAXV], minCost; bool hasNegativeEdgeCost; typename heap::point_iterator ptr[MAXV];
     void addEdge(int v, int w, flowUnit flow, costUnit cost) {
         if (cost < 0) hasNegativeEdgeCost = true;
-        e[E++] = Edge(v, w, flow, cost); e[E++] = Edge(w, v, 0, -cost); st[v + 1]++; st[w + 1]++;
+        e[E++] = Edge(v, w, flow, cost); e[E++] = Edge(w, v, 0, -cost);
         e[E - 2].ind = E - 2; e[E - 1].ind = E - 1; e[E - 2].rev = E - 1; e[E - 1].rev = E - 2;
     }
     void bellmanFord(int V, int s, int t) {
@@ -44,11 +44,15 @@ template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct
         }
         return dist[t] != COST_INF;
     }
-    void init(int V) { E = 0; hasNegativeEdgeCost = false; fill(st, st + V + 1, 0); }
-    pair<flowUnit, costUnit> getMaxFlowMinCost(int V, int s, int t) {
-        maxFlow = 0; minCost = 0; fill(phi, phi + V, 0); sort(e, e + E); partial_sum(st, st + V + 1, st);
-        for (int i = 0; i < E; i++) ind[e[i].ind] = i;
+    void init(int V) { E = 0; hasNegativeEdgeCost = false; }
+    void build(int V) {
+        fill(st, st + V + 1, 0); sort(e, e + E);
+        for (int i = 0; i < E; i++) st[e[ind[e[i].ind] = i].to + 1]++;
+        partial_sum(st, st + V + 1, st);
         for (int i = 0; i < E; i++) e[e[i].ind = i].rev = ind[e[i].rev];
+    }
+    pair<flowUnit, costUnit> getMaxFlowMinCost(int V, int s, int t) {
+        build(V); maxFlow = 0; minCost = 0; fill(phi, phi + V, 0);
         if (hasNegativeEdgeCost) bellmanFord(V, s, t);
         while (dijkstra(V, s, t)) {
             flowUnit aug = FLOW_INF; int cur = t;
