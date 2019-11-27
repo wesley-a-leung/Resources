@@ -21,7 +21,7 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
         }
     };
     int E, cur[MAXV], level[MAXV], q[MAXV], st[MAXV], ind[MAXE * 2 + MAXV * 4];
-    Edge e[MAXE * 2 + MAXV * 4]; unit maxFlow, maxCap, outDem[MAXV], inDem[MAXV];
+    Edge e[MAXE * 2 + MAXV * 4]; unit maxCap, outDem[MAXV], inDem[MAXV];
     void addEdge(int v, int w, unit vwDem, unit vwCap, int type = 1) {
         e[E++] = Edge(v, w, vwDem, vwCap, vwCap, 0, type); e[E++] = Edge(w, v, -vwDem, -vwDem, vwCap - vwDem, 1, type);
         e[E - 2].ind = E - 2; e[E - 1].ind = E - 1; e[E - 2].rev = E - 1; e[E - 1].rev = E - 2; st[v + 1]++; st[w + 1]++;
@@ -31,7 +31,7 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
         fill(level, level + V, -1); level[s] = 0; int front = 0, back = 0; q[back++] = s;
         while (front < back && level[t] == -1) {
             int v = q[front++];
-            for (int i = st[v]; i < st[v + 1] && e[i].maxCap > lim && e[i].isRev <= r; i++) {
+            for (int i = st[v]; i < st[v + 1] && e[i].maxCap >= lim && e[i].isRev <= r; i++) {
                 if (level[e[i].to] == -1 && e[i].resCap > EPS) {
                     level[e[i].to] = level[v] + 1; q[back++] = e[i].to;
                     if (level[t] != -1) return true;
@@ -43,7 +43,7 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
     unit dfs(int v, int t, unit flow, unit lim, char r) {
         if (v == t || flow <= EPS) return flow;
         unit ret = 0;
-        for (int &i = cur[v]; i < st[v + 1] && e[i].maxCap > lim && e[i].isRev <= r; i++) {
+        for (int &i = cur[v]; i < st[v + 1] && e[i].maxCap >= lim && e[i].isRev <= r; i++) {
             if (e[i].resCap > EPS && level[e[i].to] == level[v] + 1) {
                 unit res = dfs(e[i].to, t, min(flow, e[i].resCap), lim, r);
                 if (res > EPS) {
@@ -54,13 +54,14 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
         }
         return ret;
     }
-    void init(int V) { E = 0; maxFlow = maxCap = 0; fill(st, st + V + 3, 0); fill(outDem, outDem + V, 0); fill(inDem, inDem + V, 0); }
+    void init(int V) { E = 0; fill(st, st + V + 3, 0); fill(outDem, outDem + V, 0); fill(inDem, inDem + V, 0); }
     void build(int V) {
         sort(e, e + E); partial_sum(st, st + V + 1, st); maxCap = 0;
         for (int i = 0; i < E; i++) ind[e[i].ind] = i;
         for (int i = 0; i < E; i++) { e[e[i].ind = i].rev = ind[e[i].rev]; maxCap = max(maxCap, e[i].maxCap); }
     }
     unit dinic(int V, int s, int t) {
+        unit maxFlow = 0;
         for (char r = 1 - int(SCALING); r <= 1; r++) for (unit lim = SCALING ? maxCap : EPS; ; lim = max(lim / 2, EPS)) {
             while (bfs(V, s, t, lim, r)) { copy(st, st + V, cur); maxFlow += dfs(s, t, INF, lim, r); }
             if (lim <= EPS) break;
@@ -80,8 +81,8 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
         build(V); return ret;
     }
     unit getFlow(int V, int s, int t) {
-        pair<bool, unit> feasibleFlow = findFeasibleFlow(V, s, t); maxFlow = 0;
-        if (feasibleFlow.first) { maxFlow += feasibleFlow.second; dinic(V, s, t); }
+        pair<bool, unit> feasibleFlow = findFeasibleFlow(V, s, t); unit maxFlow = 0;
+        if (feasibleFlow.first) { maxFlow += feasibleFlow.second + dinic(V, s, t); }
         return maxFlow;
     }
 };
