@@ -69,11 +69,11 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
         }
         return maxFlow;
     }
-    pair<bool, unit> findMinFeasibleFlow(int V, int s = -1, int t = -1) {
+    pair<bool, unit> findFeasibleFlow(unit bnd, int V, int s = -1, int t = -1) {
         int ss = V, tt = V + 1, EE = E;
         for (int i = 0; i < E; i++) { e[i].cap -= e[i].dem; e[i].resCap = e[i].cap; e[i].maxCap -= e[i].dem; }
         for (int v = 0; v < V; v++) { addEdge(ss, v, 0, inDem[v], 2); addEdge(v, tt, 0, outDem[v], 2); }
-        if (s != -1 && t != -1) addEdge(t, s, 0, INF, 2);
+        if (s != -1 && t != -1) addEdge(t, s, 0, bnd, 2);
         build(V + 2); dinic(V + 2, ss, tt); pair<bool, unit> ret(true, 0);
         for (int i = st[ss]; i < st[ss + 1]; i++) if (e[i].resCap > EPS) ret.first = false;
         if (s != -1 && t != -1) for (int i = st[t]; i < st[t + 1]; i++) if (e[i].to == s) ret.second = e[i].cap - e[i].resCap;
@@ -81,8 +81,32 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
         for (int i = 0; i < E; i++) { e[i].cap += e[i].dem; e[i].maxCap += e[i].dem; }
         build(V); return ret;
     }
+    pair<bool, unit> getMinFlowIntegral(int V, int s = -1, int t = -1) {
+        pair<bool, unit> feasible = findFeasibleFlow(INF, V, s, t);
+        if (!feasible.first) return make_pair(false, INF);
+        unit lo = 0, hi = 1;
+        for (int i = 0; i < E; i++) hi += e[i].maxCap;
+        while (lo < hi) {
+            unit mid = lo + (hi - lo) / 2;
+            if (findFeasibleFlow(mid, V, s, t).first) hi = mid;
+            else lo = mid + 1;
+        }
+        findFeasibleFlow(lo, V, s, t); return make_pair(true, lo);
+    }
+    pair<bool, unit> getMinFlowFloatingPoint(int iters, int V, int s = -1, int t = -1) {
+        pair<bool, unit> feasible = findFeasibleFlow(INF, V, s, t);
+        if (!feasible.first) return make_pair(false, INF);
+        unit lo = 0, hi = 0;
+        for (int i = 0; i < E; i++) hi += e[i].maxCap;
+        for (int it = 0; it < iters; iters++) {
+            unit mid = lo + (hi - lo) / 2;
+            if (findFeasibleFlow(mid, V, s, t).first) hi = mid;
+            else lo = mid;
+        }
+        findFeasibleFlow(hi, V, s, t); return make_pair(true, hi);
+    }
     pair<bool, unit> getFlow(int V, int s, int t) {
-        pair<bool, unit> maxFlow = findMinFeasibleFlow(V, s, t);
+        pair<bool, unit> maxFlow = findMinFeasibleFlow(INF, V, s, t);
         if (maxFlow.first) maxFlow.second += dinic(V, s, t);
         return maxFlow;
     }
