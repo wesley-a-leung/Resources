@@ -105,7 +105,7 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
         }
         findFeasibleFlow(hi, V, s, t); return make_pair(true, hi);
     }
-    pair<bool, unit> getFlow(int V, int s, int t) {
+    pair<bool, unit> getMaxFlow(int V, int s, int t) {
         pair<bool, unit> maxFlow = findMinFeasibleFlow(INF, V, s, t);
         if (maxFlow.first) maxFlow.second += dinic(V, s, t);
         return maxFlow;
