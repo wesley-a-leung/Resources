@@ -98,7 +98,7 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
         if (!feasible.first) return make_pair(false, INF);
         unit lo = 0, hi = 0;
         for (int i = 0; i < E; i++) hi += e[i].maxCap;
-        for (int it = 0; it < iters; iters++) {
+        for (int it = 0; it < iters; it++) {
             unit mid = lo + (hi - lo) / 2;
             if (findFeasibleFlow(mid, V, s, t).first) hi = mid;
             else lo = mid;
