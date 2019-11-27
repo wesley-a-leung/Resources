@@ -29,7 +29,7 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
         fill(level, level + V, -1); level[s] = 0; int front = 0, back = 0; q[back++] = s;
         while (front < back && level[t] == -1) {
             int v = q[front++];
-            for (int i = st[v]; i < st[v + 1] && e[i].maxCap >= lim && e[i].isRev <= r; i++) {
+            for (int i = st[v]; i < st[v + 1] && e[i].maxCap > lim && e[i].isRev <= r; i++) {
                 if (level[e[i].to] == -1 && e[i].resCap > EPS) {
                     level[e[i].to] = level[v] + 1; q[back++] = e[i].to;
                     if (level[t] != -1) return true;
@@ -41,7 +41,7 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
     unit dfs(int v, int t, unit flow, unit lim, char r) {
         if (v == t || flow <= EPS) return flow;
         unit ret = 0;
-        for (int &i = cur[v]; i < st[v + 1] && e[i].maxCap >= lim && e[i].isRev <= r; i++) {
+        for (int &i = cur[v]; i < st[v + 1] && e[i].maxCap > lim && e[i].isRev <= r; i++) {
             if (e[i].resCap > EPS && level[e[i].to] == level[v] + 1) {
                 unit res = dfs(e[i].to, t, min(flow, e[i].resCap), lim, r);
                 if (res > EPS) {
