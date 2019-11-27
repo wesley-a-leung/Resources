@@ -76,7 +76,7 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
         if (s != -1 && t != -1) addEdge(t, s, 0, bnd, 2);
         build(V + 2); dinic(V + 2, ss, tt); pair<bool, unit> ret(true, 0);
         for (int i = st[ss]; i < st[ss + 1]; i++) if (e[i].resCap > EPS) ret.first = false;
-        if (s != -1 && t != -1) for (int i = st[t]; i < st[t + 1]; i++) if (e[i].to == s) ret.second = e[i].cap - e[i].resCap;
+        if (s != -1 && t != -1) for (int i = st[t]; i < st[t + 1]; i++) if (e[i].to == s) ret.second += e[i].cap - e[i].resCap;
         sort(e, e + E, [&] (const Edge &a, const Edge &b) { return a.type < b.type; }); E = EE; fill(st, st + V + 1, 0);
         for (int i = 0; i < E; i++) { e[i].cap += e[i].dem; e[i].maxCap += e[i].dem; }
         build(V); return ret;
