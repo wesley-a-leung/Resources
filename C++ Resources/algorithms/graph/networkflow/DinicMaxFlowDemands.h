@@ -24,7 +24,7 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
     Edge e[MAXE * 2 + MAXV * 4]; unit maxCap, outDem[MAXV], inDem[MAXV];
     void addEdge(int v, int w, unit vwDem, unit vwCap, int type = 1) {
         e[E++] = Edge(v, w, vwDem, vwCap, vwCap, 0, type); e[E++] = Edge(w, v, -vwDem, -vwDem, vwCap - vwDem, 1, type);
-        e[E - 2].ind = E - 2; e[E - 1].ind = E - 1; e[E - 2].rev = E - 1; e[E - 1].rev = E - 2; st[v + 1]++; st[w + 1]++;
+        e[E - 2].ind = E - 2; e[E - 1].ind = E - 1; e[E - 2].rev = E - 1; e[E - 1].rev = E - 2;
         if (type == 1) { outDem[v] += vwDem; inDem[w] += vwDem; }
     }
     bool bfs(int V, int s, int t, unit lim, char r) {
@@ -54,10 +54,11 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
         }
         return ret;
     }
-    void init(int V) { E = 0; fill(st, st + V + 3, 0); fill(outDem, outDem + V, 0); fill(inDem, inDem + V, 0); }
+    void init(int V) { E = 0; fill(outDem, outDem + V, 0); fill(inDem, inDem + V, 0); }
     void build(int V) {
-        sort(e, e + E); partial_sum(st, st + V + 1, st); maxCap = 0;
-        for (int i = 0; i < E; i++) ind[e[i].ind] = i;
+        fill(st, st + V + 1, 0); sort(e, e + E);
+        for (int i = 0; i < E; i++) st[e[ind[e[i].ind] = i].to + 1]++;
+        partial_sum(st, st + V + 1, st);
         for (int i = 0; i < E; i++) { e[e[i].ind = i].rev = ind[e[i].rev]; maxCap = max(maxCap, e[i].maxCap); }
     }
     unit dinic(int V, int s, int t) {
@@ -68,20 +69,20 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
         }
         return maxFlow;
     }
-    pair<bool, unit> findFeasibleFlow(int V, int s = -1, int t = -1) {
+    pair<bool, unit> findMinFeasibleFlow(int V, int s = -1, int t = -1) {
         int ss = V, tt = V + 1, EE = E;
-        for (int i = 0; i < E; i++) { e[i].cap -= e[i].dem; e[i].resCap -= e[i].dem; e[i].maxCap -= e[i].dem; }
+        for (int i = 0; i < E; i++) { e[i].cap -= e[i].dem; e[i].resCap = e[i].cap; e[i].maxCap -= e[i].dem; }
         for (int v = 0; v < V; v++) { addEdge(ss, v, 0, inDem[v], 2); addEdge(v, tt, 0, outDem[v], 2); }
         if (s != -1 && t != -1) addEdge(t, s, 0, INF, 2);
         build(V + 2); dinic(V + 2, ss, tt); pair<bool, unit> ret(true, 0);
         for (int i = st[ss]; i < st[ss + 1]; i++) if (e[i].resCap > EPS) ret.first = false;
         if (s != -1 && t != -1) for (int i = st[t]; i < st[t + 1]; i++) if (e[i].to == s) ret.second = e[i].cap - e[i].resCap;
         sort(e, e + E, [&] (const Edge &a, const Edge &b) { return a.type < b.type; }); E = EE; fill(st, st + V + 1, 0);
-        for (int i = 0; i < E; i++) { st[e[i].to + 1]++; e[i].cap += e[i].dem; e[i].maxCap += e[i].dem; }
+        for (int i = 0; i < E; i++) { e[i].cap += e[i].dem; e[i].maxCap += e[i].dem; }
         build(V); return ret;
     }
     pair<bool, unit> getFlow(int V, int s, int t) {
-        pair<bool, unit> maxFlow = findFeasibleFlow(V, s, t);
+        pair<bool, unit> maxFlow = findMinFeasibleFlow(V, s, t);
         if (maxFlow.first) maxFlow.second += dinic(V, s, t);
         return maxFlow;
     }
