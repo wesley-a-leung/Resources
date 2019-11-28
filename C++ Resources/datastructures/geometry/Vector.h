@@ -31,10 +31,15 @@ struct Vector {
         return c;
     }
     Vector operator ^ (const Vector &that) const { return cross3D(that); }
+    T norm() const { return dot(*this); }
     F magnitude() const { return sqrt(dot(*this)); }
     F distanceTo(const Vector &that) const { // treating this and that vector as points
         if (d != that.d) throw invalid_argument("Dimensions don't agree");
         return minus(that).magnitude();
+    }
+    T distanceSquaredTo(const Vector &that) const { // treating this and that vector as points
+        if (d != that.d) throw invalid_argument("Dimensions don't agree");
+        return minus(that).norm();
     }
     // treating this vector as a point, p as a point on the line, and dir as the direction vector of the line
     F distanceTo(const Vector &p, const Vector &dir) const {
