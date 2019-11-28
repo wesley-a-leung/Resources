@@ -26,9 +26,7 @@ struct Point {
     }
     F distanceTo(const Point &that) const { T dx = x - that.x, dy = y - that.y; return sqrt(dx * dx + dy * dy); }
     T distanceSquaredTo(const Point &that) const { T dx = x - that.x, dy = y - that.y; return dx * dx + dy * dy; }
-    bool onSegment(const Point &p, const Point &q) const {
-        return abs(distanceTo(p) + distanceTo(q) - p.distanceTo(q)) <= EPS;
-    }
+    bool onSegment(const Point &p, const Point &q) const { return abs(distanceTo(p) + distanceTo(q) - p.distanceTo(q)) <= EPS; }
     static bool lineSegmentIntersects(const Point &p1, const Point &q1, const Point &p2, const Point &q2) {
         int o1 = Point::ccw(p1, q1, p2), o2 = Point::ccw(p1, q1, q2), o3 = Point::ccw(p2, q2, p1), o4 = Point::ccw(p2, q2, q1);
         if (o1 != o2 && o3 != o4) return true;
