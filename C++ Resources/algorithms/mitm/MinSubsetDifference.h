@@ -8,9 +8,13 @@ using namespace std;
 // Memory Complexity: O(3^(N/2))
 template <const int MAXN, class T> struct MinSubsetDifference {
     T A[MAXN]; vector<int> setA, setB; // setA and setB contain the two disjoint non-empty subset
+    int POW(int N) {
+        int ret = 1;
+        for (int i = 0; i < N; i++) ret *= 3;
+        return ret;
+    }
     void solveHalf(vector<T> &half, vector<pair<T, int>> &diff) {
-        int perms = 1;
-        for (int i = 0; i < int(half.size()); i++) perms *= 3;
+        int perms = POW(int(half.size()));
         for (int i = 1; i < perms; i++) {
             int cur = i; T curDiff = 0;
             for (int j = 0; j < int(half.size()); j++) {
@@ -24,7 +28,7 @@ template <const int MAXN, class T> struct MinSubsetDifference {
     }
     T solve(int N) { // returns the smallest absolute difference of sums, set is split into setA and setB
         T minDiff = (numeric_limits<T>::max)(); vector<T> even, odd; even.reserve(N - N / 2); odd.reserve(N / 2);
-        vector<pair<T, int>> evenDiff, oddDiff; evenDiff.reserve(1 << (N - N / 2)); oddDiff.reserve(1 << (N / 2));
+        vector<pair<T, int>> evenDiff, oddDiff; evenDiff.reserve(POW(N - N / 2)); oddDiff.reserve(POW(N / 2));
         int evenPerm = 0, oddPerm = 0; setA.clear(); setB.clear();
         for (int i = 0; i < N; i++) {
             if (i % 2 == 0) even.push_back(A[i]);
