@@ -2,12 +2,12 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Divides a set into two disjoint non-empty subsets with the smallest absolute difference
-// of sums between them, using a meet in the middle approach
+// Partitions a set into three disjoint subsets, such that at least two are non empty,
+// and have the smallest absolute difference of sums between them, using a meet in the middle approach
 // Time Complexity: Reduces the runtime from O(N * 3^N) to O(N * 3^(N/2))
 // Memory Complexity: O(3^(N/2))
-template <const int MAXN, class T> struct MinSubsetDifference {
-    T A[MAXN]; vector<int> setA, setB; // setA and setB contain the two disjoint non-empty subset
+template <const int MAXN, class T> struct MinDifferenceSubset {
+    T A[MAXN]; vector<int> setA, setB; // setA and setB contain the two disjoint non-empty subsets
     int POW(int N) {
         int ret = 1;
         for (int i = 0; i < N; i++) ret *= 3;
@@ -26,7 +26,7 @@ template <const int MAXN, class T> struct MinSubsetDifference {
         }
         sort(diff.begin(), diff.end()); diff.resize(unique(diff.begin(), diff.end()) - diff.begin());
     }
-    T solve(int N) { // returns the smallest absolute difference of sums, set is split into setA and setB
+    T solve(int N) { // returns the smallest absolute difference of sums, elements are stored in setA and setB
         T minDiff = (numeric_limits<T>::max)(); vector<T> even, odd; even.reserve(N - N / 2); odd.reserve(N / 2);
         vector<pair<T, int>> evenDiff, oddDiff; evenDiff.reserve(POW(N - N / 2)); oddDiff.reserve(POW(N / 2));
         int evenPerm = 0, oddPerm = 0; setA.clear(); setB.clear();
@@ -49,12 +49,12 @@ template <const int MAXN, class T> struct MinSubsetDifference {
             else if (evenDiff[p].first > oddDiff[q].first) q++;
             else break;
         }
-        for (int i = 0; i < (int) even.size(); i++) {
+        for (int i = 0; i < int(even.size()); i++) {
             if (evenPerm % 3 == 1) setA.push_back(i * 2);
             else if (evenPerm % 3 == 2) setB.push_back(i * 2);
             evenPerm /= 3;
         }
-        for (int i = 0; i < (int) odd.size(); i++) {
+        for (int i = 0; i < int(odd.size()); i++) {
             if (oddPerm % 3 == 1) setB.push_back(i * 2 + 1);
             else if (oddPerm % 3 == 2) setA.push_back(i * 2 + 1);
             oddPerm /= 3;
