@@ -11,7 +11,7 @@ using namespace std;
 template <const int MAXN> struct ConvexHull {
     Point P[MAXN]; vector<Point> hull; // counterclockwise order
     void run(int N) {
-        hull.clear(); sort(P, P + N, [&] (const Point &a, const Point &b) { return eq(x(a), x(b)) ? lt(y(a), y(b)) : lt(x(a), x(b)); });
+        hull.clear(); sort(P, P + N, xyOrderLt);
         for (int phase = 0; phase < 2; phase++) {
             for (int i = 0, st = int(hull.size()); i < N; i++) {
                 while (int(hull.size()) >= st + 2 && ccw(hull[hull.size() - 2], hull[hull.size() - 1], P[i]) <= 0) hull.pop_back();

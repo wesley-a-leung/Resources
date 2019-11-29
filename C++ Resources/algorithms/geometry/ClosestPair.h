@@ -12,10 +12,7 @@ template <const int MAXN> struct ClosestPair {
         if (hi <= lo) return;
         int mid = lo + (hi - lo) / 2; Point median = P[mid];
         closest(lo, mid); closest(mid + 1, hi);
-        merge(P + lo, P + mid + 1, P + mid + 1, P + hi + 1, aux, [&] (const Point &a, const Point &b) {
-            return lt(y(a), y(b));
-        });
-        copy(aux, aux + hi - lo + 1, P + lo);
+        merge(P + lo, P + mid + 1, P + mid + 1, P + hi + 1, aux, yOrderLt); copy(aux, aux + hi - lo + 1, P + lo);
         for (int i = lo, k = 0; i <= hi; i++) {
             T dx = x(P[i]) - x(median), dx2 = dx * dx;
             if (lt(dx2, bestDistSquared)) {
@@ -30,8 +27,7 @@ template <const int MAXN> struct ClosestPair {
         }
     }
     T solve(int N) {
-        bestDistSquared = (numeric_limits<T>::max)();
-        sort(P, P + N, [&] (const Point &a, const Point &b) { return lt(x(a), x(b)); });
+        bestDistSquared = (numeric_limits<T>::max)(); sort(P, P + N, xOrderLt);
         closest(0, N - 1); return bestDistSquared;
     }
 };
