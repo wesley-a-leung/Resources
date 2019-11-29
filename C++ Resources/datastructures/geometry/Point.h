@@ -46,7 +46,7 @@ bool intersects(const Point &a, const Point &b, const Point &p, const Point &q) 
     if (o1 != o2 && o3 != o4) return true;
     if (o1 == 0 && onSeg(p, a, b)) return true;
     if (o2 == 0 && onSeg(q, a, b)) return true;
-    if (o3 == 0 && onSeg(p, a, b)) return true;
+    if (o3 == 0 && onSeg(a, p, q)) return true;
     if (o4 == 0 && onSeg(b, p, q)) return true;
     return false;
 }
