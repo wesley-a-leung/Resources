@@ -12,35 +12,28 @@ struct Rectangle {
     T width() const { return xmax - xmin; }
     T height() const { return ymax - ymin; }
     bool intersects(const Rectangle &that) const {
-        return xmax - that.xmin >= -EPS && ymax - that.ymin >= -EPS && that.xmax - xmin >= -EPS && that.ymax - ymin >= -EPS;
+        return le(that.xmin, xmax) && le(that.ymin, ymax) && le(xmin, that.xmax) && le(ymin, that.ymax);
     }
     Rectangle intersection(const Rectangle &that) const {
         return Rectangle(max(xmin, that.xmin), max(ymin, that.ymin), min(xmax, that.xmax), min(ymax, that.ymax));
     }
+    bool contains(const Rectangle &that) const { // does this rectangle contain that rectangle
+        return le(xmin, that.xmin) && le(ymin, that.ymin) && le(that.xmax, xmax) && le(that.ymax, ymax);
+    }
     bool contains(const Point &p) const {
-        return (p.x - xmin >= -EPS) && (xmax - p.x >= -EPS) && (p.y - ymin >= -EPS) && (ymax - p.y >= -EPS);
+        return le(xmin, x(p)) && le(ymin, y(p)) && le(x(p), xmax) && le(y(p), ymax);
     }
     T distanceSquaredTo(const Point &p) const {
         T dx = 0, dy = 0;
-        if (p.x < xmin) dx = p.x - xmin;
-        else if (p.x > xmax) dx = p.x - xmax;
-        if (p.y < ymin) dy = p.y - ymin;
-        else if (p.y > ymax) dy = p.y - ymax;
+        if (x(p) < xmin) dx = x(p) - xmin;
+        else if (x(p) > xmax) dx = x(p) - xmax;
+        if (x(y) < ymin) dy = x(y) - ymin;
+        else if (x(y) > ymax) dy = x(y) - ymax;
         return dx * dx + dy * dy;
     }
-    F distanceTo(const Point &p) const { return sqrt(distanceSquaredTo(p)); }
+    T distanceTo(const Point &p) const { return sqrt(distanceSquaredTo(p)); }
     bool operator == (const Rectangle &that) const {
-        if (abs(xmin - that.xmin) > EPS) return false;
-        if (abs(ymin - that.ymin) > EPS) return false;
-        if (abs(xmax - that.xmax) > EPS) return false;
-        if (abs(ymax - that.ymax) > EPS) return false;
-        return true;
+        return eq(xmin - that.xmin) && eq(ymin - that.ymin) && eq(xmax - that.xmax) && eq(ymax - that.ymax);
     }
     bool operator != (const Rectangle &that) const { return !(*this == that); }
-};
-
-struct Rectangle_hash {
-    size_t operator ()(const Rectangle &r) const {
-        return 31 * (31 * (31 * hash<T> {}(r.xmin) + hash<T> {}(r.ymin)) + hash<T> {}(r.xmax)) + hash<T> {}(r.ymax);
-    }
 };

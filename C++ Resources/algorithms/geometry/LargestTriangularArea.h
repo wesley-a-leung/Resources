@@ -8,25 +8,23 @@ using namespace std;
 // Time Complexity: O(N^2)
 // Memory Complexity: O(N)
 template <const int MAXN> struct LargestTriangularArea {
-    Point P[MAXN], hull[MAXN], PA, PB, PC; F largestArea;
-    F solve(int N) {
-        largestArea = 0;
-        if (N < 3) { PA = P[0]; PB = P[1 % N]; PC = P[2 % N]; return largestArea; }
-        ConvexHull<MAXN> H; copy(P, P + N, H.P); H.run(N); int M = 0;
-        for (auto &&p : H.hull) hull[M++] = p;
-        if (M < 3) { PA = hull[0]; PB = hull[1 % N]; PC = hull[2 % N]; return largestArea; }
-        int a = 0, b = 1, c = 2; largestArea = Point::area2(PA = hull[a], PB = hull[b], PC = hull[c]);
+    ConvexHull<MAXN> ch; Point P[MAXN], PA, PB, PC; T largestArea2;
+    T solve(int N) {
+        largestArea2 = 0;
+        copy(P, P + N, ch.P); ch.run(N); int H = ch.hull.size();
+        if (H < 3) return largestArea2;
+        int a = 0, b = 1, c = 2; largestArea2 = area2(PA = ch.hull[a], PB = ch.hull[b], PC = ch.hull[c]);
         while (true) {
             while (c != a) {
-                T A = Point::area2(hull[a], hull[b], hull[c]), B;
-                while ((B = Point::area2(hull[a], hull[b], hull[(c + 1) % M])) >= A) { c = (c + 1) % M; A = B; }
-                if (largestArea < A) { largestArea = A; PA = hull[a]; PB = hull[b]; PC = hull[c]; }
-                b = (b + 1) % M;
+                T A = area2(ch.hull[a], ch.hull[b], ch.hull[c]), B;
+                while ((B = area2(ch.hull[a], ch.hull[b], ch.hull[(c + 1) % H])) >= A) { c = (c + 1) % H; A = B; }
+                if (largestArea2 < A) { largestArea2 = A; PA = ch.hull[a]; PB = ch.hull[b]; PC = ch.hull[c]; }
+                b = (b + 1) % H;
             }
-            a = (a + 1) % M;
+            a = (a + 1) % H;
             if (a == 0) break;
-            b = (a + 1) % M; c = (b + 1) % M;
+            b = (a + 1) % H; c = (b + 1) % H;
         }
-        return largestArea /= 2.0;
+        return largestArea2;
     }
 };
