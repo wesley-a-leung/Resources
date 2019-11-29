@@ -10,8 +10,7 @@ using namespace std;
 template <const int MAXN> struct LargestTriangularArea {
     ConvexHull<MAXN> ch; Point P[MAXN], PA, PB, PC; T largestArea2;
     T solve(int N) {
-        largestArea2 = 0;
-        copy(P, P + N, ch.P); ch.run(N); int H = ch.hull.size();
+        largestArea2 = 0; copy(P, P + N, ch.P); ch.run(N); int H = ch.hull.size();
         if (H < 3) return largestArea2;
         int a = 0, b = 1, c = 2; largestArea2 = area2(PA = ch.hull[a], PB = ch.hull[b], PC = ch.hull[c]);
         while (true) {

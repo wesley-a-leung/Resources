@@ -5,21 +5,17 @@
 using namespace std;
 
 struct KdTree {
-    bool VERTICAL = false, HORIZONTAL = true;
-    T XMIN, YMIN, XMAX, YMAX;
+    bool VERTICAL = false, HORIZONTAL = true; T XMIN, YMIN, XMAX, YMAX;
     struct Node {
-        Point p; Rectangle r;
-        Node *leftUp = nullptr, *rightDown = nullptr;
+        Point p; Rectangle r; Node *leftUp = nullptr, *rightDown = nullptr;
         Node(const Point &p, const Rectangle &r) : p(p), r(r) {}
     };
     int cnt; Node *root;
-    bool cmpX(const Point &a, const Point &b) { return lt(x(a), x(b)); }
-    bool cmpY(const Point &a, const Point &b) { return lt(y(a), y(b)); }
     template <class It> Node *construct(Node *n, It points, int lo, int hi, bool partition, T xmin, T ymin, T xmax, T ymax) {
         if (lo > hi) return nullptr;
         int mid = lo + (hi - lo) / 2;
-        if (partition == VERTICAL) nth_element(points + lo, points + mid, points + hi + 1, cmpX);
-        else nth_element(points + lo, points + mid, points + hi + 1, cmpY);
+        if (partition == VERTICAL) nth_element(points + lo, points + mid, points + hi + 1, xOrderLt);
+        else nth_element(points + lo, points + mid, points + hi + 1, yOrderLt);
         Point p = *(points + mid);
         n = new Node(p, Rectangle(xmin, ymin, xmax, ymax));
         if (partition == VERTICAL) {
@@ -38,10 +34,10 @@ struct KdTree {
         }
         if (n->p == p) return n;
         if (partition == VERTICAL) {
-            if (cmpX(p, n->p)) n->leftUp = insert(n->leftUp, p, !partition, xmin, ymin, x(n->p), ymax);
+            if (xOrderLt(p, n->p)) n->leftUp = insert(n->leftUp, p, !partition, xmin, ymin, x(n->p), ymax);
             else n->rightDown = insert(n->rightDown, p, !partition, x(n->p), ymin, xmax, ymax);
         } else {
-            if (cmpY(p, n->p)) n->leftUp = insert(n->leftUp, p, !partition, xmin, ymin, xmax, y(n->p));
+            if (yOrderLt(p, n->p)) n->leftUp = insert(n->leftUp, p, !partition, xmin, ymin, xmax, y(n->p));
             else n->rightDown = insert(n->rightDown, p, !partition, xmin, y(n->p), xmax, ymax);
         }
         return n;
@@ -50,10 +46,10 @@ struct KdTree {
         if (nullptr == n) return false;
         if (n->p == p) return true;
         if (partition == VERTICAL) {
-            if (cmpX(p, n->p)) return contains(n->leftUp, p, !partition);
+            if (xOrderLt(p, n->p)) return contains(n->leftUp, p, !partition);
             else return contains(n->rightDown, p, !partition);
         } else {
-            if (cmpY(p, n->p)) return contains(n->leftUp, p, !partition);
+            if (yOrderLt(p, n->p)) return contains(n->leftUp, p, !partition);
             else return contains(n->rightDown, p, !partition);
         }
     }
@@ -63,8 +59,8 @@ struct KdTree {
         range(n->leftUp, q, rect); range(n->rightDown, q, rect);
     }
     Point *findNearest(Node *n, const Point &p, Point *nearest) {
-        if (nullptr == n || (nullptr != nearest && distSq(*nearest, p) < distSq(n->r, p))) return nearest;
-        if (nullptr == nearest || distSq(n->p, p) < distSq(*nearest, p)) nearest = &(n->p);
+        if (nullptr == n || (nullptr != nearest && lt(distSq(*nearest, p), distSq(n->r, p)))) return nearest;
+        if (nullptr == nearest || lt(distSq(n->p, p), distSq(*nearest, p))) nearest = &(n->p);
         if (nullptr != n->leftUp && n->leftUp->r.contains(p)) {
             nearest = findNearest(n->leftUp, p, nearest);
             nearest = findNearest(n->rightDown, p, nearest);

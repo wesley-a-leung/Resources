@@ -33,7 +33,7 @@ struct Rectangle {
     }
     T distanceTo(const Point &p) const { return sqrt(distanceSquaredTo(p)); }
     bool operator == (const Rectangle &that) const {
-        return eq(xmin - that.xmin) && eq(ymin - that.ymin) && eq(xmax - that.xmax) && eq(ymax - that.ymax);
+        return eq(xmin, that.xmin) && eq(ymin, that.ymin) && eq(xmax, that.xmax) && eq(ymax, that.ymax);
     }
     bool operator != (const Rectangle &that) const { return !(*this == that); }
 };
