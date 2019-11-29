@@ -41,7 +41,7 @@ int ccw(const Point &a, const Point &b, const Point &c) { // -1 if clockwise, 0 
 // point a rotated theta radians around p
 Point rotate(const Point &a, const Point &p, const T &theta) { return p + (a - p) * polar(T(1), theta); }
 bool onSeg(const Point &p, const Point &a, const Point &b) { return eq(dist(p, a) + dist(p, b), dist(a, b)); }   
-bool intersects(const Point &a, const Point &b, const Point &p, const Point &q) {
+bool segIntersects(const Point &a, const Point &b, const Point &p, const Point &q) {
     int o1 = ccw(a, b, p), o2 = ccw(a, b, q), o3 = ccw(p, q, a), o4 = ccw(p, q, b);
     if (o1 != o2 && o3 != o4) return true;
     if (o1 == 0 && onSeg(p, a, b)) return true;
@@ -50,7 +50,7 @@ bool intersects(const Point &a, const Point &b, const Point &p, const Point &q) 
     if (o4 == 0 && onSeg(b, p, q)) return true;
     return false;
 }
-Point intersection(const Point &a, const Point &b, const Point &p, const Point &q) {
+Point lineIntersection(const Point &a, const Point &b, const Point &p, const Point &q) {
     T c1 = cross(p - a, b - a), c2 = cross(q - a, b - a);
     if (eq(c1, c2)) throw runtime_error("The lines do not intersect or are collinear");
     return (c1 * q - c2 * p) / (c1 - c2);
