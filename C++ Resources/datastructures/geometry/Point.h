@@ -20,6 +20,7 @@ bool operator == (const Point &a, const T &b) { return a == Point(b); }
 bool operator != (const Point &a, const Point &b) { return !(a == b); }
 bool operator != (const T &a, const Point &b) { return !(a == b); }
 bool operator != (const Point &a, const T &b) { return !(a == b); }
+
 T dot(const Point &a, const Point &b) { return x(conj(a) * b); }
 T cross(const Point &a, const Point &b) { return y(conj(a) * b); }
 T r(const Point &a) { return abs(a); }
@@ -82,19 +83,28 @@ bool ccwOrderLt(const Point &p, const Point &a, const Point &b) { return ccw(p, 
 bool ccwOrderLe(const Point &p, const Point &a, const Point &b) { return !ccwOrderLt(p, b, a); }
 bool ccwOrderGt(const Point &p, const Point &a, const Point &b) { return ccwOrderLt(p, b, a); }
 bool ccwOrderGe(const Point &p, const Point &a, const Point &b) { return !ccwOrderLt(p, a, b); }
-bool angOrderLt(const Point &p, const Point &a, const Point &b) { return lt(ang(p, a), ang(p, b)); }
-bool angOrderLe(const Point &p, const Point &a, const Point &b) { return !angOrderLt(p, b, a); }
-bool angOrderGt(const Point &p, const Point &a, const Point &b) { return angOrderLt(p, b, a); }
-bool angOrderGe(const Point &p, const Point &a, const Point &b) { return !angOrderLt(p, a, b); }
 bool distOrderLt(const Point &p, const Point &a, const Point &b) { return lt(distSq(p, a), distSq(p, b)); }
 bool distOrderLe(const Point &p, const Point &a, const Point &b) { return !distOrderLt(p, b, a); }
 bool distOrderGt(const Point &p, const Point &a, const Point &b) { return distOrderLt(p, b, a); }
 bool distOrderGe(const Point &p, const Point &a, const Point &b) { return !distOrderLt(p, a, b); }
 
-template <class F> struct PointCmp {
-    Point pivot; F cmp;
-    PointCmp(const Point &pivot, F cmp) : pivot(pivot), cmp(cmp) {}
+template <class Func> struct PointCmp {
+    Point pivot; Func cmp;
+    PointCmp(const Point &pivot, Func cmp) : pivot(pivot), cmp(cmp) {}
     bool operator () (const Point &a, const Point &b) { return cmp(pivot, a, b); }
 };
 
-template <class F> auto makePointCmp(const Point &pivot, F cmp) { return PointCmp<F>(pivot, cmp); }
+template <class Func> auto makePointCmp(const Point &pivot, Func cmp) { return PointCmp<Func>(pivot, cmp); }
+
+// returns iterator to first element equal to pivot
+// cmp is the angle comparison function (ccwOrderLt or ccwOrderGt)
+// rot is the rotation comparison function (xyOrderLt, xyOrderGt, yxOrderLt, yxOrderGt)
+// points p that return true for rot(p, pivot) will appear before those that do not
+// points that are equal to pivot appear after all other points
+template <class It, class F1 = function<bool(const Point&, const Point&, const Point&)>,
+        class F2=function<bool(const Point&, const Point&)>>
+        It sortByAng(const Point &pivot, It st, It en, F1 cmp = ccwOrderLt, F2 rot = yxOrderLt) {
+    en = partition(st, en, [&] (const Point &p) { return p != pivot; });
+    It mid = partition(st, en, [&] (const Point &p) { return rot(p, pivot); });
+    PointCmp<F1> pc(pivot, cmp); sort(st, mid, pc); sort(mid, en, pc); return st;
+}
