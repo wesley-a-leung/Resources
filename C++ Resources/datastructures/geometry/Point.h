@@ -106,5 +106,5 @@ template <class It, class F1 = function<bool(const Point&, const Point&, const P
         It sortByAng(const Point &pivot, It st, It en, F1 cmp = ccwOrderLt, F2 rot = yxOrderLt) {
     en = partition(st, en, [&] (const Point &p) { return p != pivot; });
     It mid = partition(st, en, [&] (const Point &p) { return rot(p, pivot); });
-    PointCmp<F1> pc(pivot, cmp); sort(st, mid, pc); sort(mid, en, pc); return st;
+    PointCmp<F1> pc(pivot, cmp); sort(st, mid, pc); sort(mid, en, pc); return en;
 }
