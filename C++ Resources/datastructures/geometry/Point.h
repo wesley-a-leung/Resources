@@ -22,9 +22,9 @@ struct Point {
     // sign of ang matches sign of ccw
     static F ang(const Point &a, const Point &b, const Point &c) { return remainder(b.ang(a) - b.ang(c), 2 * acos(F(-1))); } 
     static int ccw(const Point &a, const Point &b, const Point &c) { // -1 if clockwise, 0 if collinear, +1 if counterclockwise
-        T area2 = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
-        if (lt(area2, T(0))) return -1;
-        else if (gt(area2, T(0))) return +1;
+        T a2 = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+        if (lt(a2, T(0))) return -1;
+        else if (gt(a2, T(0))) return +1;
         else return 0;
     }
     static T area2(const Point &a, const Point &b, const Point &c) { return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x); }
