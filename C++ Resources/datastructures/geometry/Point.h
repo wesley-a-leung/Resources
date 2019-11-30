@@ -28,7 +28,7 @@ struct Point {
         else return 0;
     }
     static T area2(const Point &a, const Point &b, const Point &c) { return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x); }
-    Point rotate(const Point &p, F theta) const { // this point rotated theta radians around p
+    Point rotate(const Point &p, const F &theta) const { // this point rotated theta radians around p
         return Point(p.x + (x - p.x) * cos(theta) - (y - p.y) * sin(theta), p.y + (x - p.x) * sin(theta) + (y - p.y) * cos(theta));
     }
     F dist(const Point &p) const { T dx = x - p.x, dy = y - p.y; return sqrt(F(dx * dx + dy * dy)); }
