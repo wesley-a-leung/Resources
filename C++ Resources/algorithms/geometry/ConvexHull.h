@@ -11,10 +11,10 @@ using namespace std;
 template <const int MAXN> struct ConvexHull {
     Point P[MAXN]; vector<Point> hull; // counterclockwise order
     void run(int N) {
-        hull.clear(); sort(P, P + N, xyOrderLt);
+        hull.clear(); sort(P, P + N, Point::xyOrderLt);
         for (int phase = 0; phase < 2; phase++) {
             for (int i = 0, st = int(hull.size()); i < N; i++) {
-                while (int(hull.size()) >= st + 2 && ccw(hull[hull.size() - 2], hull[hull.size() - 1], P[i]) <= 0) hull.pop_back();
+                while (int(hull.size()) >= st + 2 && Point::ccw(hull[hull.size() - 2], hull[hull.size() - 1], P[i]) <= 0) hull.pop_back();
                 hull.push_back(P[i]);
             }
             hull.pop_back(); reverse(P, P + N);
@@ -24,7 +24,7 @@ template <const int MAXN> struct ConvexHull {
     }
     T getArea2() { // returns twice the area of the convex hull
         T ret = 0; int H = int(hull.size());
-        for (int i = 0; i < H; i++) ret += cross(hull[i], hull[(i + 1) % H]);
+        for (int i = 0; i < H; i++) ret += Point::area2(Point(0, 0), hull[i], hull[(i + 1) % H]);
         return ret;
     }
 };

@@ -14,16 +14,16 @@ struct KdTree {
     template <class It> Node *construct(Node *n, It points, int lo, int hi, bool partition, T xmin, T ymin, T xmax, T ymax) {
         if (lo > hi) return nullptr;
         int mid = lo + (hi - lo) / 2;
-        if (partition == VERTICAL) nth_element(points + lo, points + mid, points + hi + 1, xOrderLt);
-        else nth_element(points + lo, points + mid, points + hi + 1, yOrderLt);
+        if (partition == VERTICAL) nth_element(points + lo, points + mid, points + hi + 1, Point::xOrderLt);
+        else nth_element(points + lo, points + mid, points + hi + 1, Point::yOrderLt);
         Point p = *(points + mid);
         n = new Node(p, Rectangle(xmin, ymin, xmax, ymax));
         if (partition == VERTICAL) {
-            n->leftUp = construct(n->leftUp, points, lo, mid - 1, !partition, xmin, ymin, x(n->p), ymax);
-            n->rightDown = construct(n->rightDown, points, mid + 1, hi, !partition, x(n->p), ymin, xmax, ymax);
+            n->leftUp = construct(n->leftUp, points, lo, mid - 1, !partition, xmin, ymin, n->p.x, ymax);
+            n->rightDown = construct(n->rightDown, points, mid + 1, hi, !partition, n->p.x, ymin, xmax, ymax);
         } else {
-            n->leftUp = construct(n->leftUp, points, lo, mid - 1, !partition, xmin, ymin, xmax, y(n->p));
-            n->rightDown = construct(n->rightDown, points, mid + 1, hi, !partition, xmin, y(n->p), xmax, ymax);
+            n->leftUp = construct(n->leftUp, points, lo, mid - 1, !partition, xmin, ymin, xmax, n->p.y);
+            n->rightDown = construct(n->rightDown, points, mid + 1, hi, !partition, xmin, n->p.y, xmax, ymax);
         }
         return n;
     }
@@ -34,11 +34,11 @@ struct KdTree {
         }
         if (n->p == p) return n;
         if (partition == VERTICAL) {
-            if (xOrderLt(p, n->p)) n->leftUp = insert(n->leftUp, p, !partition, xmin, ymin, x(n->p), ymax);
-            else n->rightDown = insert(n->rightDown, p, !partition, x(n->p), ymin, xmax, ymax);
+            if (Point::xOrderLt(p, n->p)) n->leftUp = insert(n->leftUp, p, !partition, xmin, ymin, n->p.x, ymax);
+            else n->rightDown = insert(n->rightDown, p, !partition, n->p.x, ymin, xmax, ymax);
         } else {
-            if (yOrderLt(p, n->p)) n->leftUp = insert(n->leftUp, p, !partition, xmin, ymin, xmax, y(n->p));
-            else n->rightDown = insert(n->rightDown, p, !partition, xmin, y(n->p), xmax, ymax);
+            if (Point::yOrderLt(p, n->p)) n->leftUp = insert(n->leftUp, p, !partition, xmin, ymin, xmax, n->p.y);
+            else n->rightDown = insert(n->rightDown, p, !partition, xmin, n->p.y, xmax, ymax);
         }
         return n;
     }
@@ -46,10 +46,10 @@ struct KdTree {
         if (nullptr == n) return false;
         if (n->p == p) return true;
         if (partition == VERTICAL) {
-            if (xOrderLt(p, n->p)) return contains(n->leftUp, p, !partition);
+            if (Point::xOrderLt(p, n->p)) return contains(n->leftUp, p, !partition);
             else return contains(n->rightDown, p, !partition);
         } else {
-            if (yOrderLt(p, n->p)) return contains(n->leftUp, p, !partition);
+            if (Point::yOrderLt(p, n->p)) return contains(n->leftUp, p, !partition);
             else return contains(n->rightDown, p, !partition);
         }
     }
@@ -59,8 +59,8 @@ struct KdTree {
         range(n->leftUp, q, rect); range(n->rightDown, q, rect);
     }
     Point *findNearest(Node *n, const Point &p, Point *nearest) {
-        if (nullptr == n || (nullptr != nearest && lt(distSq(*nearest, p), distSq(n->r, p)))) return nearest;
-        if (nullptr == nearest || lt(distSq(n->p, p), distSq(*nearest, p))) nearest = &(n->p);
+        if (nullptr == n || (nullptr != nearest && lt(nearest->distSq(p), n->r.distSq(p)))) return nearest;
+        if (nullptr == nearest || lt(n->p.distSq(p), nearest->distSq(p))) nearest = &(n->p);
         if (nullptr != n->leftUp && n->leftUp->r.contains(p)) {
             nearest = findNearest(n->leftUp, p, nearest);
             nearest = findNearest(n->rightDown, p, nearest);
