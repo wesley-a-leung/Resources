@@ -5,12 +5,12 @@ using namespace std;
 using T = long double; using F = long double; const F EPS = 1e-9;
 static_assert(is_floating_point<F>::value, "F must be a a floating point type");
 
-template <class U> bool lt(const U &a, const U &b) { return a < b - U(EPS); }
-template <class U> bool le(const U &a, const U &b) { return !lt(b, a); }
-template <class U> bool gt(const U &a, const U &b) { return lt(b, a); }
-template <class U> bool ge(const U &a, const U &b) { return !lt(a, b); }
-template <class U> bool eq(const U &a, const U &b) { return !lt(a, b) && !lt(b, a); }
-template <class U> bool ne(const U &a, const U &b) { return lt(a, b) || lt(b, a); }
+template <class T> bool lt(const T &a, const T &b) { return a < b - T(EPS); }
+template <class T> bool le(const T &a, const T &b) { return !lt(b, a); }
+template <class T> bool gt(const T &a, const T &b) { return lt(b, a); }
+template <class T> bool ge(const T &a, const T &b) { return !lt(a, b); }
+template <class T> bool eq(const T &a, const T &b) { return !lt(a, b) && !lt(b, a); }
+template <class T> bool ne(const T &a, const T &b) { return lt(a, b) || lt(b, a); }
 
 struct Point {
     T x, y;
