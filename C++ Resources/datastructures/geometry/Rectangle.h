@@ -21,17 +21,17 @@ struct Rectangle {
         return le(xmin, that.xmin) && le(ymin, that.ymin) && le(that.xmax, xmax) && le(that.ymax, ymax);
     }
     bool contains(const Point &p) const {
-        return le(xmin, x(p)) && le(ymin, y(p)) && le(x(p), xmax) && le(y(p), ymax);
+        return le(xmin, p.x) && le(ymin, p.y) && le(p.x, xmax) && le(p.y, ymax);
     }
-    T distanceSquaredTo(const Point &p) const {
+    T distSq(const Point &p) const {
         T dx = 0, dy = 0;
-        if (x(p) < xmin) dx = x(p) - xmin;
-        else if (x(p) > xmax) dx = x(p) - xmax;
-        if (x(y) < ymin) dy = x(y) - ymin;
-        else if (x(y) > ymax) dy = x(y) - ymax;
+        if (p.x < xmin) dx = p.x - xmin;
+        else if (p.x > xmax) dx = p.x - xmax;
+        if (p.y < ymin) dy = p.y - ymin;
+        else if (p.y > ymax) dy = p.y - ymax;
         return dx * dx + dy * dy;
     }
-    T distanceTo(const Point &p) const { return sqrt(distanceSquaredTo(p)); }
+    F dist(const Point &p) const { return sqrt(distSq(p)); }
     bool operator == (const Rectangle &that) const {
         return eq(xmin, that.xmin) && eq(ymin, that.ymin) && eq(xmax, that.xmax) && eq(ymax, that.ymax);
     }
