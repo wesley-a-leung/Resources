@@ -6,7 +6,7 @@ using namespace std;
 // each coin may be used multiple times
 // Time Complexity: O(TN)
 // Memory Complexity: O(T + N)
-template <const int MAXT, const int MAXN> struct CoinChange {
+template <const int MAXT, const int MAXN> struct MinCoinChange {
     int dp[MAXT], C[MAXN];
     int solve(int T, int N) {
         dp[0] = 0; fill(dp + 1, dp + T + 1, INT_MAX - 1);
