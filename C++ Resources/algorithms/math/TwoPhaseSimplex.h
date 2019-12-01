@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Solve a linear programming problem in canonical form:
+// Solve a linear programming problem with N variables and M equations in canonical form:
 // max c^T x
 // subject to Ax <= b and x >= 0
 // where A is an M x N Matrix; b is a Vector with dimension M; c, x are Vectors with dimension N
