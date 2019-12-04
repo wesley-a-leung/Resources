@@ -28,8 +28,8 @@ template <const int MAXV> struct CentroidDecomposition {
     void bfs(int root = 0) {
         int front = 0, back = 0; q[back++] = make_pair(root, -1);
         while (front < back) {
-            int v = q[front], c = getCentroid(v, -1, getSize(v, -1));
-            par[c] = q[front++]; exclude[c] = true;
+            int v = q[front].first, c = getCentroid(v, -1, getSize(v, -1));
+            par[c] = q[front++].second; exclude[c] = true;
             for (int w : adj[c]) if (!exclude[w]) q[back++] = make_pair(w, c);
         }
     }
