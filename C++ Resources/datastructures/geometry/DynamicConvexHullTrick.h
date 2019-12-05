@@ -14,9 +14,9 @@ struct Line {
 };
 
 // Supports adding lines in the form f(x) = mx + b and finding the maximum value of f(x) at any given x
-// Dynamic variant (allows for updates queries in arbitrary order)
+// Dynamic variant (allows for updates and queries in arbitrary order)
 // Time Complexity:
-//   addLine, getMax O(log N)
+//   addLine, getMax: O(log N)
 // Memory Complexity: O(N) where N is the total number of lines added
 template <const bool maxHull> struct DynamicConvexHullTrick : public multiset<Line> {
     bool bad(iterator y) {
