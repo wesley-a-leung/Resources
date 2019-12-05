@@ -3,26 +3,30 @@
 using namespace std;
 
 struct BigInt {
+    using T = long long; using F = long double;
+    static const constexpr int DIG = 4;
+    static const constexpr T BASE = pow(10, DIG);
     static const constexpr int KARATSUBA_CUTOFF = 32;
-    static const constexpr long double PI = acosl(-1);
-    vector<int> a; int sign;
+    static const constexpr F PI = acos(F(-1));
+    vector<T> a; int sign;
     BigInt() : sign(1) {}
-    BigInt(long long v) { *this = v; }
+    BigInt(T v) { *this = v; }
     BigInt(const string &s) { read(s); }
     void operator = (const BigInt &v) { sign = v.sign; a = v.a; }
-    void operator = (long long v) {
+    void operator = (T v) {
         sign = 1;
         if (v < 0) sign = -1, v = -v;
         a.clear();
-        for (; v > 0; v = v / 10) a.push_back(v % 10);
+        for (; v > 0; v = v / BASE) a.push_back(v % BASE);
     }
     BigInt operator + (const BigInt &v) const {
         if (sign == v.sign) {
             BigInt res = v;
-            for (int i = 0, carry = 0; i < max(int(a.size()), int(v.a.size())) || carry; i++) {
+            T carry = 0;
+            for (int i = 0; i < max(int(a.size()), int(v.a.size())) || carry; i++) {
                 if (i == int(res.a.size())) res.a.push_back(0);
-                res.a[i] += carry + (i < int(a.size()) ? a[i] : 0); carry = res.a[i] >= 10;
-                if (carry) res.a[i] -= 10;
+                res.a[i] += carry + (i < int(a.size()) ? a[i] : 0); carry = res.a[i] >= BASE;
+                if (carry) res.a[i] -= BASE;
             }
             return res;
         }
@@ -32,9 +36,10 @@ struct BigInt {
         if (sign == v.sign) {
             if (abs() >= v.abs()) {
                 BigInt res = *this;
-                for (int i = 0, carry = 0; i < int(v.a.size()) || carry; i++) {
+                T carry = 0;
+                for (int i = 0; i < int(v.a.size()) || carry; i++) {
                     res.a[i] -= carry + (i < int(v.a.size()) ? v.a[i] : 0); carry = res.a[i] < 0;
-                    if (carry) res.a[i] += 10;
+                    if (carry) res.a[i] += BASE;
                 }
                 res.trim(); return res;
             }
@@ -42,22 +47,23 @@ struct BigInt {
         }
         return *this + (-v);
     }
-    void operator *= (int v) {
+    void operator *= (T v) {
         if (v < 0) sign = -sign, v = -v;
-        for (int i = 0, carry = 0; i < int(a.size()) || carry; i++) {
+        T carry = 0;
+        for (int i = 0; i < int(a.size()) || carry; i++) {
             if (i == int(a.size())) a.push_back(0);
-            long long cur = a[i] * (long long) v + carry; carry = (int) (cur / 10); a[i] = (int) (cur % 10);
+            T cur = a[i] * v + carry; carry = cur / BASE; a[i] = cur % BASE;
         }
         trim();
     }
-    BigInt operator * (int v) const { BigInt res = *this; res *= v; return res; }
+    BigInt operator * (T v) const { BigInt res = *this; res *= v; return res; }
     friend pair<BigInt, BigInt> divmod(const BigInt &a1, const BigInt &b1) {
-        int norm = 10 / (b1.a.back() + 1); BigInt a = a1.abs() * norm, b = b1.abs() * norm, q, r; q.a.resize(int(a.a.size()));
+        T norm = BASE / (b1.a.back() + 1); BigInt a = a1.abs() * norm, b = b1.abs() * norm, q, r; q.a.resize(int(a.a.size()));
         for (int i = int(a.a.size()) - 1; i >= 0; i--) {
-            r *= 10; r += a.a[i];
-            int s1 = int(r.a.size()) <= int(b.a.size()) ? 0 : r.a[int(b.a.size())];
-            int s2 = int(r.a.size()) <= int(b.a.size()) - 1 ? 0 : r.a[int(b.a.size()) - 1];
-            int d = ((long long) 10 * s1 + s2) / b.a.back();
+            r *= BASE; r += a.a[i];
+            T s1 = int(r.a.size()) <= int(b.a.size()) ? 0 : r.a[int(b.a.size())];
+            T s2 = int(r.a.size()) <= int(b.a.size()) - 1 ? 0 : r.a[int(b.a.size()) - 1];
+            T d = (BASE * s1 + s2) / b.a.back();
             r -= b * d;
             while (r < 0) r += b, --d;
             q.a[i] = d;
@@ -66,18 +72,18 @@ struct BigInt {
     }
     BigInt operator / (const BigInt &v) const { return divmod(*this, v).first; }
     BigInt operator % (const BigInt &v) const { return divmod(*this, v).second; }
-    void operator /= (int v) {
+    void operator /= (T v) {
         if (v < 0) sign = -sign, v = -v;
         for (int i = int(a.size()) - 1, rem = 0; i >= 0; i--) {
-            long long cur = a[i] + rem * (long long) 10; a[i] = (int) (cur / v); rem = (int) (cur % v);
+            T cur = a[i] + rem * BASE; a[i] = cur / v; rem = cur % v;
         }
         trim();
     }
-    BigInt operator / (int v) const { BigInt res = *this; res /= v; return res; }
-    int operator % (int v) const {
+    BigInt operator / (T v) const { BigInt res = *this; res /= v; return res; }
+    T operator % (T v) const {
         if (v < 0) v = -v;
-        int m = 0;
-        for (int i = int(a.size()) - 1; i >= 0; i--) m = (a[i] + m * (long long) 10) % v;
+        T m = 0;
+        for (int i = int(a.size()) - 1; i >= 0; i--) m = (a[i] + m * BASE) % v;
         return m * sign;
     }
     void operator += (const BigInt &v) { *this = *this + v; }
@@ -102,22 +108,19 @@ struct BigInt {
     bool isZero() const { return a.empty() || (int(a.size()) == 1 && !a[0]); }
     BigInt operator - () const { BigInt res = *this; res.sign = -sign; return res; }
     BigInt abs() const { BigInt res = *this; res.sign *= res.sign; return res; }
-    long long longValue() const { 
-        long long res = 0;
-        for (int i = int(a.size()) - 1; i >= 0; i--) res = res * 10 + a[i];
+    T value() const { 
+        T res = 0;
+        for (int i = int(a.size()) - 1; i >= 0; i--) res = res * BASE + a[i];
         return res * sign;
     }
     friend BigInt gcd(const BigInt &a, const BigInt &b) { return b.isZero() ? a : gcd(b, a % b); }
     friend BigInt lcm(const BigInt &a, const BigInt &b) { return a / gcd(a, b) * b; }
     void read(const string &s) {
         sign = 1; a.clear(); int pos = 0;
-        while (pos < int(s.size()) && (s[pos] == '-' || s[pos] == '+')) {
-            if (s[pos] == '-') sign = -sign;
-            pos++;
-        }
-        for (int i = int(s.size()) - 1; i >= pos; i--) {
-            int x = 0;
-            for (int j = max(pos, i); j <= i; j++) x = x * 10 + s[j] - '0';
+        for (; pos < int(s.size()) && (s[pos] == '-' || s[pos] == '+'); ++pos) if (s[pos] == '-') sign = -sign;
+        for (int i = int(s.size()) - 1; i >= pos; i -= DIG) {
+            T x = 0;
+            for (int j = max(pos, i - DIG + 1); j <= i; j++) x = x * 10 + s[j] - '0';
             a.push_back(x);
         }
         trim();
@@ -126,76 +129,82 @@ struct BigInt {
     string write() const {
         string ret = "";
         if (sign == -1) ret.push_back('-');
-        ret.push_back('0' + (a.empty() ? 0 : a.back()));
-        for (int i = int(a.size()) - 2; i >= 0; i--) ret.push_back('0' + a[i]);
+        for (char c : to_string(a.empty() ? 0 : a.back())) ret.push_back(c);
+        for (int i = int(a.size()) - 2; i >= 0; i--) {
+            string s = to_string(a[i]);
+            for (int j = int(s.size()); j < DIG; j++) ret.push_back('0');
+            for (char c : s) ret.push_back(c);
+        }
         return ret;
     }
     friend ostream& operator << (ostream &stream, const BigInt &v) { stream << v.write(); return stream; }
-    void fft(vector<complex<long double>> &a, bool invert) const {
-        int n = int(a.size());
-        for (int i = 1, j = 0; i < n; i++) {
-            int bit = n >> 1;
-            for (; j >= bit; bit >>= 1) j -= bit;
-            j += bit;
-            if (i < j) swap(a[i], a[j]);
-        }
-        for (int len = 2; len <= n; len <<= 1) {
-            long double ang = 2 * PI / len * (invert ? -1 : 1); complex<long double> wlen(cos(ang), sin(ang));
-            for (int i = 0; i < n; i += len) {
-                complex<long double> w(1);
-                for (int j = 0; j < len / 2; j++) {
-                    complex<long double> u = a[i + j], v = a[i + j + len / 2] * w;
-                    a[i + j] = u + v; a[i + j + len / 2] = u - v; w *= wlen;
-                }
+    void fft(vector<complex<F>> &a) const {
+        int N = int(a.size());
+        vector<complex<F>> roots = {complex<F>(0, 0), complex<F>(1, 0)};
+        int len = __builtin_ctz(int(roots.size())); roots.resize(N);
+        for (; (1 << len) < N; len++) {
+            F mnAngle = 2 * PI / (1 << (len + 1));
+            for (int i = 0; i < (1 << (len - 1)); i++) {
+                int ind = (1 << (len - 1)) + i; F ang = mnAngle * (2 * i + 1);
+                roots[2 * ind] = roots[ind]; roots[2 * ind + 1] = complex<F>(cos(ang), sin(ang));
             }
         }
-        if (invert) for (int i = 0; i < n; i++) a[i] /= n;
+        vector<int> ord(N, 0); len = __builtin_ctz(N);
+        for (int i = 0; i < N; i++) ord[i] = (ord[i >> 1] >> 1) + ((i & 1) << (len - 1));
+        for (int i = 0; i < N; i++) if (i < ord[i]) swap(a[i], a[ord[i]]);
+        for (int len = 1; len < N; len <<= 1) for (int i = 0; i < N; i += len << 1) for (int j = 0; j < len; j++) {
+            complex<F> u = a[i + j], v = a[len + i + j] * roots[len + j]; a[i + j] = u + v; a[len + i + j] = u - v;
+        }
     }
-    void multiply_fft(const vector<int> &a, const vector<int> &b, vector<int> &res) const {
-        vector<complex<long double>> fa(a.begin(), a.end()), fb(b.begin(), b.end()); int n = 1;
-        while (n < max(int(a.size()), int(b.size()))) n <<= 1;
-        n <<= 1; fa.resize(n); fb.resize(n); fft(fa, false); fft(fb, false);
-        for (int i = 0; i < n; i++) fa[i] *= fb[i];
-        fft(fa, true); res.resize(n);
-        for (int i = 0, carry = 0; i < n; i++) { res[i] = int(fa[i].real() + 0.5) + carry; carry = res[i] / 10; res[i] %= 10; }
+    void multiply_fft(const vector<T> &a, const vector<T> &b, vector<T> &res) const {
+        int N = int(a.size()) + int(b.size());
+        while (N & (N - 1)) N++;
+        vector<complex<F>> f(N, 0);
+        for (int i = 0; i < int(a.size()); i++) f[i].real(a[i]);
+        for (int i = 0; i < int(b.size()); i++) f[i].imag(b[i]);
+        fft(f); complex<F> r(0, F(-0.25) / N);
+        for (int i = 0; i <= N / 2; i++) {
+            int j = (N - i) & (N - 1);
+            complex<F> prod = (f[j] * f[j] - conj(f[i] * f[i])) * r; f[i] = prod; f[j] = conj(prod);
+        }
+        fft(f); res.resize(N); T carry = 0;
+        for (int i = 0; i < N; i++) { res[i] = T(f[i].real() + 0.5) + carry; carry = res[i] / BASE; res[i] %= BASE; }
     }
     BigInt operator * (const BigInt &v) const {
         BigInt res; res.sign = sign * v.sign; multiply_fft(a, v.a, res.a); res.trim(); return res;
     }
     BigInt mul_simple(const BigInt &v) const {
         BigInt res; res.sign = sign * v.sign; res.a.resize(int(a.size()) + int(v.a.size()));
-        for (int i = 0; i < int(a.size()); i++) {
-            if (a[i]) {
-                for (int j = 0, carry = 0; j < int(v.a.size()) || carry; j++) {
-                    long long cur = res.a[i + j] + (long long) a[i] * (j < int(v.a.size()) ? v.a[j] : 0) + carry;
-                    carry = (int) (cur / 10); res.a[i + j] = (int) (cur % 10);
-                }
+        for (int i = 0; i < int(a.size()); i++) if (a[i]) {
+            for (int j = 0, carry = 0; j < int(v.a.size()) || carry; j++) {
+                T cur = res.a[i + j] + a[i] * (j < int(v.a.size()) ? v.a[j] : 0) + carry;
+                carry = cur / BASE; res.a[i + j] = cur % BASE;
             }
         }
         res.trim(); return res;
     }
-    typedef vector<long long> vll;
-    static vll karatsubaMultiply(const vll &a, const vll &b) {
+    static vector<T> karatsubaMultiply(const vector<T> &a, const vector<T> &b) {
         int n = int(a.size());
         if (n <= KARATSUBA_CUTOFF) {
-            vll res(n << 1);
+            vector<T> res(n << 1);
             for (int i = 0; i < n; i++) for (int j = 0; j < n; j++) res[i + j] += a[i] * b[j];
             return res;
         }
-        int k = n >> 1; vll a2(a.begin() + k, a.end()), b2(b.begin() + k, b.end()), a2b2 = karatsubaMultiply(a2, b2);
+        int k = n >> 1; vector<T> a2(a.begin() + k, a.end()), b2(b.begin() + k, b.end()), a2b2 = karatsubaMultiply(a2, b2);
         for (int i = 0; i < k; i++) { a2[i] += a[i]; b2[i] += b[i]; }
-        vll r = karatsubaMultiply(a2, b2), a1b1 = karatsubaMultiply(vll(a.begin(), a.begin() + k), vll(b.begin(), b.begin() + k)), res(n << 1);
+        vector<T> r = karatsubaMultiply(a2, b2), a1b1 = karatsubaMultiply(vector<T>(a.begin(), a.begin() + k), vector<T>(b.begin(), b.begin() + k)), res(n << 1);
         for (int i = 0; i < int(r.size()); i++) { res[i] += a1b1[i]; res[i + k] += r[i] - a1b1[i] - a2b2[i]; res[i + n] += a2b2[i]; }
         return res;
     }
     BigInt mul_karatsuba(const BigInt &v) const {
-        vll a(this->a.begin(), this->a.end()), b(v.a.begin(), v.a.end());
+        vector<T> a(this->a.begin(), this->a.end()), b(v.a.begin(), v.a.end());
         while (int(a.size()) < int(b.size())) a.push_back(0);
         while (int(b.size()) < int(a.size())) b.push_back(0);
         while (int(a.size()) & (int(a.size()) - 1)) { a.push_back(0); b.push_back(0); }
-        vll c = karatsubaMultiply(a, b); BigInt res; res.sign = sign * v.sign;
-        for (int i = 0, carry = 0; i < int(c.size()); i++) {
-            long long cur = c[i] + carry; res.a.push_back((int) (cur % 10)); carry = (int) (cur / 10);
+        vector<T> c = karatsubaMultiply(a, b); BigInt res; res.sign = sign * v.sign;
+        T carry = 0;
+        for (int i = 0; i < int(c.size()); i++) {
+            T cur = c[i] + carry; res.a.push_back(cur % BASE); carry = cur / BASE;
         }
         res.trim(); return res;
     }
