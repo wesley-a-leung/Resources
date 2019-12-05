@@ -68,7 +68,7 @@ template <class T> void multiplyInteger(const vector<T> &a, const vector<T> &b, 
     vector<pair<F, F>> f(N, make_pair(0, 0));
     for (int i = 0; i < int(a.size()); i++) f[i].first = a[i];
     for (int i = 0; i < int(b.size()); i++) f[i].second = b[i];
-    fft(f); pair<F, F> r(0, -0.25 / N);
+    fft(f); pair<F, F> r(0, F(-0.25) / N);
     for (int i = 0; i <= N / 2; i++) {
         int j = (N - i) & (N - 1);
         pair<F, F> prod = (f[j] * f[j] - conj(f[i] * f[i])) * r; f[i] = prod; f[j] = conj(prod);

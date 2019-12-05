@@ -3,7 +3,8 @@
 using namespace std;
 
 struct BigInt {
-    static const int KARATSUBA_CUTOFF = 32;
+    static const constexpr int KARATSUBA_CUTOFF = 32;
+    static const constexpr long double PI = acosl(-1);
     vector<int> a; int sign;
     BigInt() : sign(1) {}
     BigInt(long long v) { *this = v; }
@@ -130,7 +131,7 @@ struct BigInt {
         return ret;
     }
     friend ostream& operator << (ostream &stream, const BigInt &v) { stream << v.write(); return stream; }
-    void fft(vector<complex<double> > & a, bool invert) const {
+    void fft(vector<complex<long double>> &a, bool invert) const {
         int n = int(a.size());
         for (int i = 1, j = 0; i < n; i++) {
             int bit = n >> 1;
@@ -139,11 +140,11 @@ struct BigInt {
             if (i < j) swap(a[i], a[j]);
         }
         for (int len = 2; len <= n; len <<= 1) {
-            double ang = 2 * 3.14159265358979323846 / len * (invert ? -1 : 1); complex<double> wlen(cos(ang), sin(ang));
+            long double ang = 2 * PI / len * (invert ? -1 : 1); complex<long double> wlen(cos(ang), sin(ang));
             for (int i = 0; i < n; i += len) {
-                complex<double> w = (1);
+                complex<long double> w(1);
                 for (int j = 0; j < len / 2; j++) {
-                    complex<double> u = a[i + j], v = a[i + j + len / 2] * w;
+                    complex<long double> u = a[i + j], v = a[i + j + len / 2] * w;
                     a[i + j] = u + v; a[i + j + len / 2] = u - v; w *= wlen;
                 }
             }
@@ -151,7 +152,7 @@ struct BigInt {
         if (invert) for (int i = 0; i < n; i++) a[i] /= n;
     }
     void multiply_fft(const vector<int> &a, const vector<int> &b, vector<int> &res) const {
-        vector<complex<double>> fa(a.begin(), a.end()), fb(b.begin(), b.end()); int n = 1;
+        vector<complex<long double>> fa(a.begin(), a.end()), fb(b.begin(), b.end()); int n = 1;
         while (n < max(int(a.size()), int(b.size()))) n <<= 1;
         n <<= 1; fa.resize(n); fb.resize(n); fft(fa, false); fft(fb, false);
         for (int i = 0; i < n; i++) fa[i] *= fb[i];
