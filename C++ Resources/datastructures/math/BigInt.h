@@ -176,7 +176,8 @@ struct BigInt {
     BigInt mul_simple(const BigInt &v) const {
         BigInt res; res.sign = sign * v.sign; res.a.resize(int(a.size()) + int(v.a.size()));
         for (int i = 0; i < int(a.size()); i++) if (a[i]) {
-            for (int j = 0, carry = 0; j < int(v.a.size()) || carry; j++) {
+            T carry = 0;
+            for (int j = 0; j < int(v.a.size()) || carry; j++) {
                 T cur = res.a[i + j] + a[i] * (j < int(v.a.size()) ? v.a[j] : 0) + carry;
                 carry = cur / BASE; res.a[i + j] = cur % BASE;
             }
