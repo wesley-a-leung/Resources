@@ -31,10 +31,12 @@ template <const bool maxHull> struct DynamicConvexHullTrick : public multiset<Li
     }
     void addLine(T m, T b) {
         if (!maxHull) { m = -m; b = -b; }
-        auto y = emplace(m, b, false); y->succ = [=] { return next(y) == end() ? 0 : &*next(y); };
+        auto y = emplace(m, b, false);
         if (bad(y)) { erase(y); return; }
         while (next(y) != end() && bad(next(y))) erase(next(y));
+        y->succ = [=] { return next(y) == end() ? 0 : &*next(y); };
         while (y != begin() && bad(prev(y))) erase(prev(y));
+        if (y != begin()) prev(y)->succ = [=] { return &*y; };
     }
     T getMax(T x) { auto l = *lower_bound(Line(x, 0, true)); return maxHull ? l.m * x + l.b : -(l.m * x + l.b); }
 };
