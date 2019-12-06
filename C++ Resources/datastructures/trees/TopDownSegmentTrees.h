@@ -11,14 +11,14 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree {
         int m = tl + (tr - tl) / 2, rc = cur + (m - tl + 1) * 2; build(cur + 1, tl, m); build(rc, m + 1, tr); T[cur] = merge(T[cur + 1], T[rc]);
     }
     void update(int cur, int tl, int tr, int ind, const Lazy &val) {
-        if (tl > ind || tr < ind) return;
+        if (ind < tl || tr < ind) return;
         if (tl == tr) { T[cur] = applyLazy(T[cur], val); return; }
         int m = tl + (tr - tl) / 2, rc = cur + (m - tl + 1) * 2; update(cur + 1, tl, m, ind, val); update(rc, m + 1, tr, ind, val);
         T[cur] = merge(T[cur + 1], T[rc]);
     }
     Data query(int cur, int tl, int tr, int l, int r) {
-        if (tl > r || tr < l) return qdef;
-        if (tl >= l && tr <= r) return T[cur];
+        if (r < tl || tr < l) return qdef;
+        if (l <= tl && tr <= r) return T[cur];
         int m = tl + (tr - tl) / 2, rc = cur + (m - tl + 1) * 2; return merge(query(cur + 1, tl, m, l, r), query(rc, m + 1, tr, l, r));
     }
     template <class It> void init(It st, It en) {
@@ -51,14 +51,14 @@ template <const int MAXN, const bool ONE_INDEXED> struct LazySegmentTree {
         T[cur] = merge(T[cur + 1], T[rc]); L[cur] = ldef;
     }
     void update(int cur, int tl, int tr, int l, int r, const Lazy &val) {
-        if (tl > r || tr < l) return;
-        if (tl >= l && tr <= r) { T[cur] = applyLazy(T[cur], getSegmentVal(val, tr - tl + 1)); L[cur] = mergeLazy(L[cur], val); return; }
+        if (r < tl || tr < l) return;
+        if (l <= tl && tr <= r) { T[cur] = applyLazy(T[cur], getSegmentVal(val, tr - tl + 1)); L[cur] = mergeLazy(L[cur], val); return; }
         int m = tl + (tr - tl) / 2, rc = cur + (m - tl + 1) * 2; propagate(cur, tl, tr);
         update(cur + 1, tl, m, l, r, val); update(rc, m + 1, tr, l, r, val); T[cur] = merge(T[cur + 1], T[rc]);
     }
     Data query(int cur, int tl, int tr, int l, int r) {
-        if (tl > r || tr < l) return qdef;
-        if (tl >= l && tr <= r) return T[cur];
+        if (r < tl || tr < l) return qdef;
+        if (l <= tl && tr <= r) return T[cur];
         int m = tl + (tr - tl) / 2, rc = cur + (m - tl + 1) * 2; propagate(cur, tl, tr);
         return merge(query(cur + 1, tl, m, l, r), query(rc, m + 1, tr, l, r));
     }
@@ -101,7 +101,7 @@ template <class IndexType, const int MAXNODES, const int MAXROOTS, const bool PE
     }
     int update(int cur, IndexType tl, IndexType tr, IndexType l, IndexType r, const Lazy &val) {
         int ret = PERSISTENT || !cur ? makeNode(cur) : cur;
-        if (tl >= l && tr <= r) {
+        if (l <= tl && tr <= r) {
             VAL[ret] = applyLazy(VAL[ret], getSegmentVal(val, tr - tl + 1)); LZ[ret] = mergeLazy(LZ[ret], val); return ret;
         }
         IndexType m = tl + (tr - tl) / 2; propagate(ret, tl, tr);
@@ -113,9 +113,9 @@ template <class IndexType, const int MAXNODES, const int MAXROOTS, const bool PE
         return ret;
     }
     Data query(int cur, IndexType tl, IndexType tr, IndexType l, IndexType r) {
-        if (tl > r || tr < l) return qdef;
+        if (r < tl || tr < l) return qdef;
         if (!cur) return vdef;
-        if (tl >= l && tr <= r) return VAL[cur];
+        if (l <= tl && tr <= r) return VAL[cur];
         IndexType m = tl + (tr - tl) / 2; propagate(cur, tl, tr); return merge(query(L[cur], tl, m, l, r), query(R[cur], m + 1, tr, l, r));
     }
     template <class It> void init(It st, It en) { N = en - st; makeNode(); roots[curRoot++] = build(ONE_INDEXED, N - !ONE_INDEXED, st); }
