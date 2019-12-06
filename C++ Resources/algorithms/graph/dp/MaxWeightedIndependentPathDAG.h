@@ -12,7 +12,7 @@ template <const int MAXV, class T> struct MaxWeightedIndependentPathDAG {
     T dfs(int v, int t, bool take) {
         if (v == t) return take ? val[v] : 0;
         if (dp[v][take] != (numeric_limits<T>::max)()) return dp[v][take];
-        T ret = (numeric_limits<T>::min)();
+        T ret = (numeric_limits<T>::lowest)();
         for (int w : adj[v]) {
             if (!take) ret = max(ret, dfs(w, true));
             ret = max(ret, dfs(w, false));

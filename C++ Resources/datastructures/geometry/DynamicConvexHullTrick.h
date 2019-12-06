@@ -3,6 +3,7 @@
 using namespace std;
 
 using T = long double;
+
 struct Line {
     T m, b; bool isQuery; mutable function<const Line*()> succ; Line(T m, T b, bool isQuery) : m(m), b(b), isQuery(isQuery) {}
     bool operator < (const Line &L) const {

@@ -11,7 +11,7 @@ template <const int MAXV, class T> struct MaxWeightedIndependentSet {
     void addBiEdge(int v, int w) { addEdge(v, w); addEdge(w, v); }
     T dfs(int v, int prev, bool take) {
         if (dp[v][take] != (numeric_limits<T>::max)()) return dp[v][take];
-        T ret = (numeric_limits<T>::min)();
+        T ret = (numeric_limits<T>::lowest)();
         int cnt = 0;
         for (int w : adj[v]) {
             if (w == prev) continue;
