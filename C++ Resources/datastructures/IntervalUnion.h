@@ -38,3 +38,17 @@ struct IntervalUnion : public set<pair<T, T>, EpsPairCmp> {
         if (ne(R, r2)) this->emplace(R, r2);
     }
 };
+
+// Given a set of intervals, combine them into disjoint intervals of the form [L, R)
+// Returns an iterator to the last disjoint interval
+// Time Complexity: O(N)
+// Memory Complexity: O(1)
+template <class It> It intervalUnion(It st, It en) {
+    assert(is_sorted(st, en, EpsPairCmp()));
+    It cur = st;
+    for (It l = st, r; l < en; l = r, cur++) {
+        *cur = *l;
+        for (r = l + 1; r < en && (le(r->first, cur->second)); r++) cur->second = max(cur->second, r->second);
+    }
+    return cur;
+}
