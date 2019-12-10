@@ -21,7 +21,7 @@ struct EpsPairCmp {
 // Time Complexity:
 //   addInterval, removeInterval: O(log N)
 // Memory Complexity: O(N)
-struct IntervalUnion : set<pair<T, T>, EpsPairCmp> {
+struct IntervalUnion : public set<pair<T, T>, EpsPairCmp> {
     typename set<pair<T, T>, EpsPairCmp>::iterator addInterval(T L, T R) { // adds the interval [L, R)
         if (eq(L, R)) return this->end();
         auto it = this->lower_bound(make_pair(L, R)), before = it;
