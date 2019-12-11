@@ -8,11 +8,12 @@ using namespace std;
 template <class It> void counting_sort(It st, It en) {
     int n = en - st;
     if (n == 0) return;
-    int maxVal = INT_MIN, minVal = INT_MAX, *count = new int[maxVal - minVal + 1], *b = new int[n];
+    auto maxVal = *st, minVal = *en;
     for (It i = st; i < en; i++) { maxVal = max(maxVal, *i); minVal = min(minVal, *i); }
-    for (int i = 0; i <= maxVal - minVal; i++) count[i] = 0;
+    int range = maxVal - minVal + 1, *count = new int[range], *b = new int[n];
+    for (int i = 0; i < range; i++) count[i] = 0;
     for (It i = st; i < en; i++) count[*i - minVal]++;
-    for (int i = 1; i <= maxVal - minVal; i++) count[i] += count[i - 1];
+    for (int i = 1; i < range; i++) count[i] += count[i - 1];
     for (It i = st; i < en; i++) b[--count[*i - minVal]] = *i;
     for (It i = st; i < en; i++) *i = b[i - st];
     delete[] (count); delete[] (b);
