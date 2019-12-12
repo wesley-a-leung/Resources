@@ -61,6 +61,18 @@ template <const int MAXV, const bool ONE_INDEXED, const bool VALUES_ON_EDGES> st
         }
         return dep[v] < dep[w] ? v : w;
     }
+    int kthUp(int v, int w, int k) {
+        while (head[v] != head[w]) {
+            if (pre[v] - pre[head[v]] >= k) return vert[pre[v] - k];
+            k -= pre[v] - pre[head[v]] + 1; v = par[head[v]];
+        }
+        return vert[pre[v] - k];
+    }
+    int kth(int v, int w, int k) {
+        int LCA = lca(v, w);
+        if (dep[v] - dep[LCA] >= k) return kthUp(v, LCA, k);
+        else return kthUp(w, LCA, dep[v] + dep[w] - 2 * dep[LCA] - k);
+    }
     void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     void run(int V, int root = 0) { curInd = int(ONE_INDEXED) - 1; dfs(root, -1, 0); hld(root, -1); }
 };
