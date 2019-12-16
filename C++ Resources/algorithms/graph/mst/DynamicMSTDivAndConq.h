@@ -7,7 +7,7 @@ using namespace std;
 // Time Complexity: O(V + Q log Q log (V + E))
 // Memory Complexity: O(V + E + Q)
 
-using unit = int; const unit NEG_INF = (numeric_limits<unit>::min)();
+using unit = int; const unit NEG_INF = (numeric_limits<unit>::lowest)();
 // Stripped down version of Link Cut Tree for maximum edge weight queries
 using Data = pair<unit, int>; const Data vdef = make_pair(NEG_INF, -1), qdef = make_pair(NEG_INF, -1);
 Data merge(const Data &l, const Data &r) { return max(l, r); }
