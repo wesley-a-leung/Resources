@@ -19,7 +19,7 @@ struct EpsPairCmp {
 
 // Adding and removing intervals from a set
 // Time Complexity:
-//   addInterval, removeInterval: O(log N)
+//   addInterval, removeInterval: O(log N) amortized
 // Memory Complexity: O(N)
 struct IntervalUnion : public set<pair<T, T>, EpsPairCmp> {
     set<pair<T, T>, EpsPairCmp>::iterator addInterval(T L, T R) { // adds the interval [L, R)
