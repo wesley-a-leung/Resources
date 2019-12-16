@@ -11,7 +11,7 @@ using namespace std;
 
 const char NONE = 0, INC = 1, ASSIGN = 2; using Value = int; const Value vdef = 0;
 struct Data {
-    Value mn, mx, sum; int size; Data() : mn((numeric_limits<Value>::max)()), mx((numeric_limits<Value>::min)()), sum(0), size(0) {}
+    Value mn, mx, sum; int size; Data() : mn((numeric_limits<Value>::max)()), mx((numeric_limits<Value>::lowest)()), sum(0), size(0) {}
     Data(const Value &v) : mn(v), mx(v), sum(v), size(1) {}
     Data(const Value &mn, const Value &mx, const Value &sum, int size) : mn(mn), mx(mx), sum(sum), size(size) {}
 };
