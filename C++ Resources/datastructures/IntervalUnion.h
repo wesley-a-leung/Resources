@@ -27,7 +27,7 @@ struct IntervalUnion : public set<pair<T, T>, EpsPairCmp> {
         auto it = lower_bound(make_pair(L, R)), before = it;
         while (it != end() && le(it->first, R)) { R = max(R, it->second); before = it = erase(it); }
         if (it != begin() && ge((--it)->second, L)) { L = min(L, it->first); R = max(R, it->second); erase(it); }
-        return insert(before, make_pair(L, R));
+        return emplace_hint(before, L, R);
     }
     void removeInterval(T L, T R) { // removes the interval [L, R)
         if (eq(L, R)) return;
