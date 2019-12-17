@@ -23,19 +23,19 @@ struct EpsPairCmp {
 // Memory Complexity: O(N)
 struct IntervalUnion : public set<pair<T, T>, EpsPairCmp> {
     set<pair<T, T>, EpsPairCmp>::iterator addInterval(T L, T R) { // adds the interval [L, R)
-        if (eq(L, R)) return this->end();
-        auto it = this->lower_bound(make_pair(L, R)), before = it;
-        while (it != this->end() && le(it->first, R)) { R = max(R, it->second); before = it = this->erase(it); }
-        if (it != this->begin() && ge((--it)->second, L)) { L = min(L, it->first); R = max(R, it->second); this->erase(it); }
-        return this->insert(before, make_pair(L, R));
+        if (eq(L, R)) return end();
+        auto it = lower_bound(make_pair(L, R)), before = it;
+        while (it != end() && le(it->first, R)) { R = max(R, it->second); before = it = erase(it); }
+        if (it != begin() && ge((--it)->second, L)) { L = min(L, it->first); R = max(R, it->second); erase(it); }
+        return insert(before, make_pair(L, R));
     }
     void removeInterval(T L, T R) { // removes the interval [L, R)
         if (eq(L, R)) return;
         auto it = addInterval(L, R);
         auto r2 = it->second;
-        if (eq(it->first, L)) this->erase(it);
+        if (eq(it->first, L)) erase(it);
         else (T&) it->second = L;
-        if (ne(R, r2)) this->emplace(R, r2);
+        if (ne(R, r2)) emplace(R, r2);
     }
 };
 
