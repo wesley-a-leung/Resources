@@ -2,15 +2,22 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-using T = long double;
+using T = long double; const T EPS = 1e-9;
+
+template <class T> bool lt(const T &a, const T &b) { return a < b - T(EPS); }
+template <class T> bool le(const T &a, const T &b) { return !lt(b, a); }
+template <class T> bool gt(const T &a, const T &b) { return lt(b, a); }
+template <class T> bool ge(const T &a, const T &b) { return !lt(a, b); }
+template <class T> bool eq(const T &a, const T &b) { return !lt(a, b) && !lt(b, a); }
+template <class T> bool ne(const T &a, const T &b) { return lt(a, b) || lt(b, a); }
 
 struct Line {
     T m, b; bool isQuery; mutable function<const Line*()> succ; Line(T m, T b, bool isQuery) : m(m), b(b), isQuery(isQuery) {}
     bool operator < (const Line &L) const {
-        if (!L.isQuery) return m < L.m;
+        if (!L.isQuery) return lt(m, L.m);
         const Line *s = succ(); T x = L.m;
         if (!s) return 0;
-        return b - s->b < (s->m - m) * x;
+        return lt(b - s->b, (s->m - m) * x);
     }
 };
 
@@ -24,11 +31,11 @@ template <const bool maxHull> struct DynamicConvexHullTrick : public multiset<Li
         auto z = next(y);
         if (y == begin()) {
             if (z == end()) return 0;
-            return y->m == z->m && y->b <= z->b;
+            return eq(y->m, z->m) && le(y->b, z->b);
         }
         auto x = prev(y);
-        if (z == end()) return y->m == x->m && y->b <= x->b;
-        return (x->b - y->b) * (z->m - y->m) >= (y->b - z->b) * (y->m - x->m);
+        if (z == end()) return eq(y->m, x->m) && le(y->b, x->b);
+        return ge((x->b - y->b) * (z->m - y->m), (y->b - z->b) * (y->m - x->m));
     }
     void addLine(T m, T b) {
         if (!maxHull) { m = -m; b = -b; }
