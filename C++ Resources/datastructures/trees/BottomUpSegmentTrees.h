@@ -2,8 +2,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// single assignment and modifications, range query
-template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree_SAM_RQ {
+// point updates, range query
+template <const int MAXN, const bool ONE_INDEXED> struct SegmentTreeBottomUp {
     using Data = int; using Lazy = int; int N; Data T[2 * MAXN];
     const Data vdef = 0; // default value
     const Data qdef = 0; // query default value
@@ -29,34 +29,8 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree_SAM_RQ {
     }
 };
 
-// range modification, single query
-// works when order of modifications does not affect result
-template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree_RM_SQ {
-    using Data = int; int N; Data T[2 * MAXN];
-    const Data vdef = 0; // default value
-    bool final; // whether the values can be found at the leaves or not
-    Data merge(const Data &l, const Data &r); // to be implemented
-    template <class It> void init(It st, It en) { N = en - st; final = true; for (int i = 0; i < N; i++) { T[N + i] = *(st + i); T[i] = vdef; } }
-    void init(int size) { N = size; final = true; for (int i = 1; i < 2 * N; i++) T[i] = vdef; }
-    void update(int l, int r, const Data &v) {
-        for (l += N - ONE_INDEXED, r += N - ONE_INDEXED, final = false; l <= r; l >>= 1, r >>= 1) {
-            if (l & 1) { T[l] = merge(T[l], v); l++; }
-            if (!(r & 1)) { T[r] = merge(T[r], v); r--; }
-        }
-    }
-    Data query(int i) {
-        if (final) return T[N + i - ONE_INDEXED];
-        Data q = vdef; for (i += N - ONE_INDEXED; i > 0; i >>= 1) q = merge(q, T[i]);
-        return q;
-    }
-    void pushAll() {
-        for (int i = 1; i < N; i++) { T[i << 1] = merge(T[i << 1], T[i]); T[i << 1 | 1] = merge(T[i << 1 | 1], T[i]); T[i] = vdef; }
-        final = true;
-    }
-};
-
-// range assignments/modifications, range query
-template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree_RAM_RQ {
+// range updates, range query
+template <const int MAXN, const bool ONE_INDEXED> struct SegmentTreeLazyBottomUp {
     using Data = int; using Lazy = int; int N, H; Data T[2 * MAXN]; Lazy L[MAXN]; // L stores lazy values
     const Data vdef = 0; // default value
     const Data qdef = 0; // query default value
