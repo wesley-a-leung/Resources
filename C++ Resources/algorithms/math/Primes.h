@@ -27,10 +27,7 @@ vector<long long> primeFactor(long long x) {
 // Memory Complexity: O(log x)
 vector<pair<long long, int>> primeFactorWithCount(long long x) {
     vector<pair<long long, int>> ret;
-    for (long long i = 2; i * i <= x; i++) if (x % i == 0) {
-        ret.emplace_back(i, 0);
-        while (x % i == 0) { ret.back().second++; x /= i; }
-    }
+    for (long long i = 2; i * i <= x; i++) if (x % i == 0) for (ret.emplace_back(i, 0); x % i == 0; x /= i) ret.back().second++;
     if (x > 1) ret.emplace_back(x, 1);
     return ret;
 }
@@ -89,8 +86,8 @@ template <const int MAXN> struct Sieve {
     vector<pair<int, int>> primeFactorWithCount(int x) {
         vector<pair<int, int>> ret;
         while (x != 1) {
-            ret.emplace_back(SPF[x], 0); int spf = SPF[x];
-            while (x % spf == 0) { ret.back().second++; x /= spf; }
+            ret.emplace_back(SPF[x], 0);
+            for (int spf = SPF[x]; x % spf == 0; x /= spf) ret.back().second++;
         }
         return ret;
     }
