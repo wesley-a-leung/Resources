@@ -4,7 +4,7 @@ using namespace std;
 
 // point updates, range query
 template <const int MAXN, const bool ONE_INDEXED> struct SegmentTreeBottomUp {
-    using Data = int; using Lazy = int; int N; Data T[2 * MAXN];
+    using Data = int; using Lazy = int; int N; Data T[MAXN << 1];
     const Data vdef = 0; // default value
     const Data qdef = 0; // query default value
     // operation must be associative (but not necessarily commutative)
@@ -31,7 +31,7 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTreeBottomUp {
 
 // range updates, range query
 template <const int MAXN, const bool ONE_INDEXED> struct SegmentTreeLazyBottomUp {
-    using Data = int; using Lazy = int; int N, H; Data T[2 * MAXN]; Lazy L[MAXN]; // L stores lazy values
+    using Data = int; using Lazy = int; int N, H; Data T[MAXN << 1]; Lazy L[MAXN]; // L stores lazy values
     const Data vdef = 0; // default value
     const Data qdef = 0; // query default value
     const Lazy ldef = 0; // lazy default value
