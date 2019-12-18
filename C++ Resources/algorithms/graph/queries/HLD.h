@@ -53,7 +53,7 @@ template <const int MAXV, const bool ONE_INDEXED, const bool VALUES_ON_EDGES> st
         } else if (!VALUES_ON_EDGES) { int i = pre[dep[v] < dep[w] ? v : w]; update(i, i, true, val); }
     }
     void updateVertex(int v, const Lazy &val) { update(pre[v], pre[v], true, val); }
-    void updateSubtree(int v, const Lazy &val) { update(pre[v], post[v], true, val); }
+    void updateSubtree(int v, const Lazy &val) { update(pre[v] + VALUES_ON_EDGES, post[v], true, val); }
     int lca(int v, int w) {
         while (head[v] != head[w]) {
             if (dep[head[v]] < dep[head[w]]) w = par[head[w]];
