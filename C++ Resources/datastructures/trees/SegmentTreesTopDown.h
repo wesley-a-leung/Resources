@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree {
+template <const int MAXN, const bool ONE_INDEXED> struct SegmentTreeTopDown {
     using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; Data T[MAXN * 2], A[MAXN]; int N;
     Data merge(const Data &l, const Data &r); // to be implemented
     Data applyLazy(const Data &l, const Lazy &r); // to be implemented
@@ -31,7 +31,7 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTree {
     Data query(int l, int r) { return query(0, ONE_INDEXED, N - !ONE_INDEXED, l, r); }
 };
 
-template <const int MAXN, const bool ONE_INDEXED> struct LazySegmentTree {
+template <const int MAXN, const bool ONE_INDEXED> struct LazySegmentTreeTopDown {
     using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ldef = 0; Data T[MAXN * 2], A[MAXN]; Lazy L[MAXN * 2]; int N;
     Data merge(const Data &l, const Data &r); // to be implemented
     Data applyLazy(const Data &l, const Lazy &r); // to be implemented
