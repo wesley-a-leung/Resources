@@ -2,13 +2,17 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Counts the number of triangles in a graph
+// Counts the number of triangles in a graph, ignoring duplicate edges
 // Time Complexity: O(V log E + E sqrt E log E)
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct Triangles {
     int ord[MAXV]; vector<int> adj[MAXV], adj2[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     int run(int V) {
+        for (int v = 0; v < V; v++) {
+            sort(adj[v].begin(), adj[v].end());
+            adj[v].erase(unique(adj[v].begin(), adj[v].end()), adj[v].end());
+        }
         iota(ord, ord + V, 0); int cnt = 0;
         sort(ord, ord + V, [&] (const int &i, const int &j) {
             return make_pair(int(adj[i].size()), i) < make_pair(int(adj[j].size()), j);
