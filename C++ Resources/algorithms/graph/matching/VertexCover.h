@@ -4,8 +4,8 @@ using namespace std;
 
 // Computes small vertex covers
 // Time Complexity:
-//   hasCover: O(2^K KV)
-//   mnCover: O(2^K (V + E))
+//   hasCover: O(E log E + 2^K KV)
+//   mnCover: O(E log E + 2^K (V + E))
 // Memory Complexity: O(V + E)
 template <const int MAXV, const int MAXE> struct VertexCover {
     int E, curE, coveredDep[MAXE]; bool inCover[MAXV], temp[MAXV]; pair<int, int> edges[MAXE];
