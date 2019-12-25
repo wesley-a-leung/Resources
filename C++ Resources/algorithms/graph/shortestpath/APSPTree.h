@@ -6,8 +6,8 @@ using namespace std;
 // Time Complexity:
 //   run: O(V log V)
 //   lca, getDist: O(1)
-template <const int MAXV, const int MAXLGV, class unit> struct APSPTree {
-    int ind, head[MAXV], dep[MAXV], root[MAXV], rmq[MAXLGV][MAXV * 2]; unit dist[MAXV]; vector<pair<int, unit>> adj[MAXV];
+template <const int MAXV, class unit> struct APSPTree {
+    int ind, head[MAXV], dep[MAXV], root[MAXV], rmq[32 - __builtin_clz(MAXV * 2)][MAXV * 2]; unit dist[MAXV]; vector<pair<int, unit>> adj[MAXV];
     void addEdge(int v, int w, unit weight) { adj[v].emplace_back(w, weight); adj[w].emplace_back(v, weight); }
     void dfs(int v, int prev, int r, int d, unit dd) {
         dep[v] = d; dist[v] = dd; root[v] = r; rmq[0][head[v] = ind++] = v;
@@ -17,7 +17,7 @@ template <const int MAXV, const int MAXLGV, class unit> struct APSPTree {
     int RMQ(int l, int r) { int i = 31 - __builtin_clz(r - l + 1); return minDep(rmq[i][l], rmq[i][r - (1 << i) + 1]); }
     void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     void run(int V) {
-        ind = 0; int lg = 32 - __builtin_clz(V * 2 - 1); assert(lg < MAXLGV); fill(root, root + V, -1);
+        ind = 0; int lg = 32 - __builtin_clz(V * 2 - 1); fill(root, root + V, -1);
         for (int i = 0; i < V; i++) if (root[i] == -1) dfs(i, -1, i, 0, 0);
         for (int i = 0; i < lg - 1; i++) for (int j = 0; j < ind; j++) rmq[i + 1][j] = minDep(rmq[i][j], rmq[i][min(j + (1 << i), ind - 1)]);
     }
