@@ -5,12 +5,12 @@ using namespace std;
 // Mo's algorithm on a tree, used to count the number of distinct integers on a path between two nodes
 // Time Complexity: O(V log V + Q log Q + Q * max(B, V / B) * (update complexity))
 // Memory Complexity: O(V log V + Q)
-template <const int MAXV, const int MAXQ, const int BLOCKSZ, const int MAXLGV, const bool COMPRESS_VALUES> struct MoTree {
+template <const int MAXV, const int MAXQ, const int BLOCKSZ, const bool COMPRESS_VALUES> struct MoTree {
     struct Query {
         int l, r, lca, ind, block;
         bool operator < (const Query &q) const { return block == q.block ? r < q.r : block < q.block; }
     };
-    int head[MAXV], dep[MAXV], rmq[MAXLGV][MAXV * 2], pre[MAXV], post[MAXV], vert[MAXV * 2], cnt[MAXV], ans[MAXQ], val[MAXV], temp[MAXV];
+    int head[MAXV], dep[MAXV], rmq[32 - __builtin_clz(MAXV * 2)][MAXV * 2], pre[MAXV], post[MAXV], vert[MAXV * 2], cnt[MAXV], ans[MAXQ], val[MAXV], temp[MAXV];
     int Q = 0, ind1, ind2, curAns; vector<int> adj[MAXV]; Query q[MAXQ]; bool vis[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     void query(int v, int w) { q[Q++] = {v, w, 0, 0, 0}; }
