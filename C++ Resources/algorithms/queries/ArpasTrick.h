@@ -7,7 +7,7 @@ using namespace std;
 // Memory Complexity: O(N + Q)
 template <const int MAXN, const int MAXQ, class T, const bool ONE_INDEXED> struct ArpasTrick {
     T A[MAXN], ans[MAXQ]; int Q = 0, UF[MAXN], stk[MAXN]; vector<pair<int, int>> L[MAXN];
-    int find(int i) { while (i != UF[i]) i = UF[i] = UF[UF[i]]; return i; }
+    int find(int i) { return UF[i] == i ? i : UF[i] = find(UF[i]); }
     // 0-indexed, inclusive
     void query(int l, int r) { L[r].emplace_back(l, Q++); }
     void solve(int N) {
