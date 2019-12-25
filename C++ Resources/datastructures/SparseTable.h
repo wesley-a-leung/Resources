@@ -10,7 +10,7 @@ using namespace std;
 // Memory Complexity: O(N log N)
 template <const int MAXN, class T, class F> struct SparseTable {
     T ST[32 - __builtin_clz(MAXN)][MAXN]; F op;
-    template <class It> void init(It st, It en, F op = F()) {
+    template <class It> void init(It st, It en, F op) {
         this->op = op; int N = en - st, lg = 32 - __builtin_clz(N); copy(st, en, ST[0]);
         for (int i = 0; i < lg - 1; i++) for (int j = 0; j < N; j++) ST[i + 1][j] = op(ST[i][j], ST[i][min(j + (1 << i), N - 1)]);
     }

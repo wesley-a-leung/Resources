@@ -10,7 +10,7 @@ using namespace std;
 // Memory Complexity: O(NM log N log M)
 template <const int MAXN, const int MAXM, class T, class F> struct SparseTable2D {
     T ST[32 - __builtin_clz(MAXN)][32 - __builtin_clz(MAXM)][MAXN][MAXM]; F op;
-    void init(const vector<vector<T>> &v, F op = F()) {
+    void init(const vector<vector<T>> &v, F op) {
         this->op = op; int N = int(v.size()), M = int(v.back().size()), lgN = 32 - __builtin_clz(N), lgM = 32 - __builtin_clz(M);
         for (int jr = 0; jr < N; jr++) for (int jc = 0; jc < M; jc++) ST[0][0][jr][jc] = v[jr][jc];
         for (int ic = 0; ic < lgM - 1; ic++) for (int jr = 0; jr < N; jr++) for (int jc = 0; jc < M; jc++)
