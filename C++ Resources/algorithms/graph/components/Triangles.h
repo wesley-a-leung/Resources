@@ -8,6 +8,7 @@ using namespace std;
 template <const int MAXV> struct Triangles {
     int ord[MAXV]; vector<int> adj[MAXV], adj2[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
+    void clear(int V = MAXV) { for (int v = 0; v < MAXV; v++) { adj[v].clear(); adj2[v].clear(); } }
     int run(int V) {
         for (int v = 0; v < V; v++) {
             sort(adj[v].begin(), adj[v].end());
