@@ -13,8 +13,8 @@ public:
 // Time Complexity:
 //   constructor: O(N)
 //   insert, emplace, erase: O(sqrt(N) + log(N))
-//   push_front, pop_front: O(sqrt(N))
-//   push_back, pop_back, emplace_back, emplace_front: O(1) amortized
+//   push_front, pop_front, emplace_front: O(sqrt(N))
+//   push_back, pop_back, emplace_back: O(1) amortized
 //   front, back, empty, size: O(1)
 //   at, accessor: O(log(N))
 //   values: O(N)
