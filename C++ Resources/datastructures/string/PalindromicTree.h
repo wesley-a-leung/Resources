@@ -6,6 +6,7 @@ using namespace std;
 // Time Complexity:
 //   init: O(S * ALPHABET_SIZE)
 //   addChar: O(log S)
+//   undo: O(1)
 //   add: O(S)
 // Memory Complexity: O(S * ALPHABET_SIZE)
 template<const int MAXS, const int ALPHABET_SIZE, const int OFFSET> struct PalindromicTree {
