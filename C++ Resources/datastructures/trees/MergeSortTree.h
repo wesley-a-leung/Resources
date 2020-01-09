@@ -26,7 +26,7 @@ template <const int MAXN, class T, class Comparator = less<T>> struct MergeSortT
         }
         return ret;
     }
-    int select(int l, int r, int k) { // selects the kth smallest element in the range [l, r] (0-indexed)
+    T select(int l, int r, int k) { // selects the kth smallest element in the range [l, r] (0-indexed)
         int lo = 0, hi = N - 1;
         while (lo <= hi) {
             int mid = lo + (hi - lo) / 2;
