@@ -12,7 +12,7 @@ template <const int MAXN, class T, class Comparator = less<T>> struct MergeSortT
     Comparator cmp; int N; T sorted[MAXN]; vector<T> TR[MAXN << 1];
     template <class It> void init(It st, It en) {
         N = en - st; for (int i = 0; i < N; i++) { TR[N + i] = vector<T>(1, sorted[i] = *(st + i)); }
-        sort(sorted, sorted + N);
+        sort(sorted, sorted + N, cmp);
         for (int i = N - 1; i > 0; i--) {
             TR[i] = vector<T>(); TR[i].reserve(TR[i << 1].size() + TR[i << 1 | 1].size());
             merge(TR[i << 1].begin(), TR[i << 1].end(), TR[i << 1 | 1].begin(), TR[i << 1 | 1].end(), back_inserter(TR[i]), cmp);
