@@ -74,7 +74,7 @@ template <const int MAXV, class flowUnit, class costUnit, const bool USE_LOOK_AH
         };
         minCost = 0;
         for (int v = 0; v < V; v++) for (auto &&e : adj[v]) minCost += e.cost * e.resCap;
-        if (!circulation) maxFlow = getFlow(s, t);
+        maxFlow = circulation ? 0 : getFlow(s, t);
         fill(h, h + V, 0); fill(ex, ex + V, 0); fill(inStk, inStk + V, false);
         for (; bnd > 0; bnd >>= SCALE) {
             for (int v = 0; v < V; v++) cur[v] = adj[v].begin();
