@@ -5,7 +5,7 @@ using namespace std;
 // Computes the maximum flow using a path with the minimum cost using the Push Relabel algorithm with look ahead heuristics
 // Time Complexity: O(E V^2 log (V * C)), much faster in practice
 // Memory Complexity: O(V + E)
-template <const int MAXV, class flowUnit, class costUnit, const bool USE_LOOK_AHEAD> struct PushRelabelMinCostMaxFlow {
+template <const int MAXV, class flowUnit, class costUnit, const bool USE_LOOK_AHEAD, const int SCALE = 2> struct PushRelabelMinCostMaxFlow {
     static_assert(is_integral<costUnit>::value, "costUnit must be an integral type");
     struct Edge {
         int to; flowUnit cap, resCap; costUnit cost; int rev;
@@ -75,7 +75,7 @@ template <const int MAXV, class flowUnit, class costUnit, const bool USE_LOOK_AH
         minCost = 0;
         for (int v = 0; v < V; v++) for (auto &&e : adj[v]) minCost += e.cost * e.resCap;
         maxFlow = getFlow(s, t); fill(h, h + V, 0); fill(ex, ex + V, 0); fill(inStk, inStk + V, false);
-        for (; bnd; bnd >>= 1) {
+        for (; bnd; bnd >>= SCALE) {
             for (int v = 0; v < V; v++) cur[v] = adj[v].begin();
             for (int v = 0; v < V; v++) for (auto &&e: adj[v]) if (h[v] + e.cost - h[e.to] < 0 && e.resCap > FLOW_EPS) push(v, e, e.resCap);
             int top = 0;
@@ -95,7 +95,7 @@ template <const int MAXV, class flowUnit, class costUnit, const bool USE_LOOK_AH
                     }
                 }
             }
-            if (bnd > 1 && (bnd >> 1) == 0) bnd = 1 << 1;
+            if (bnd > 1 && (bnd >> SCALE) == 0) bnd = 1 << SCALE;
         }
         for (int v = 0; v < V; v++) for (auto &&e: adj[v]) minCost -= e.cost * e.resCap;
         minCost /= V * 2;
