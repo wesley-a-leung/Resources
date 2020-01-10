@@ -55,11 +55,11 @@ template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct
         build(V); maxFlow = 0; minCost = 0; fill(phi, phi + V, 0);
         if (hasNegativeEdgeCost) bellmanFord(V, s, t);
         while (dijkstra(V, s, t)) {
-            flowUnit aug = FLOW_INF; int cur = t;
-            while (prev[cur] != -1) { aug = min(aug, e[index[cur]].resCap); cur = prev[cur]; }
-            maxFlow += aug; cur = t;
-            while (prev[cur] != -1) {
-                e[index[cur]].resCap -= aug; e[e[index[cur]].rev].resCap += aug; minCost += aug * e[index[cur]].cost; cur = prev[cur];
+            flowUnit aug = FLOW_INF;
+            for (int cur = t; prev[cur] != -1; cur = prev[cur]) aug = min(aug, e[index[cur]].resCap);
+            maxFlow += aug;
+            for (int cur = t; prev[cur] != -1; cur = prev[cur]) {
+                e[index[cur]].resCap -= aug; e[e[index[cur]].rev].resCap += aug; minCost += aug * e[index[cur]].cost;
             }
             for (int v = 0; v < V; v++) if (dist[v] != COST_INF) phi[v] += dist[v];
         }
