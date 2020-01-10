@@ -48,7 +48,7 @@ template <const int MAXV, class flowUnit, class costUnit, const bool USE_LOOK_AH
         }
         return maxFlow = -ex[s];
     }
-    pair<flowUnit, costUnit> getMaxFlowMinCost(int s, int t) {
+    pair<flowUnit, costUnit> getMaxFlowMinCost(int s, int t, bool circulation) {
         auto push = [&] (int v, Edge &e, flowUnit df) {
             int w = e.to;
             if (e.resCap < df) df = e.resCap;
@@ -74,7 +74,8 @@ template <const int MAXV, class flowUnit, class costUnit, const bool USE_LOOK_AH
         };
         minCost = 0;
         for (int v = 0; v < V; v++) for (auto &&e : adj[v]) minCost += e.cost * e.resCap;
-        maxFlow = getFlow(s, t); fill(h, h + V, 0); fill(ex, ex + V, 0); fill(inStk, inStk + V, false);
+        if (!circulation) maxFlow = getFlow(s, t);
+        fill(h, h + V, 0); fill(ex, ex + V, 0); fill(inStk, inStk + V, false);
         for (; bnd > 0; bnd >>= SCALE) {
             for (int v = 0; v < V; v++) cur[v] = adj[v].begin();
             for (int v = 0; v < V; v++) for (auto &&e: adj[v]) if (h[v] + e.cost - h[e.to] < 0 && e.resCap > FLOW_EPS) push(v, e, e.resCap);
