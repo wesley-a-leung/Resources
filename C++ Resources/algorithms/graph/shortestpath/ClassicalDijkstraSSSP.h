@@ -15,12 +15,12 @@ template <const int MAXV, class unit> struct ClassicalDijkstraSSSP {
     void run(int V, const vector<int> &src) {
         fill(dist, dist + V, INF); fill(to, to + V, make_pair(-1, 0)); fill(done, done + V, false);
         for (int s : src) dist[s] = 0;
-        for (int v = 0; v < V - 1; v++) {
+        for (int i = 0; i < V - 1; i++) {
             int minV = -1;
             for (int w = 0; w < V; w++) if (!done[w] && (minV == -1 || dist[minV] > dist[w])) minV = w;
             done[minV] = true;
             for (auto &&e : adj[minV]) if (dist[e.first] > dist[minV] + e.second) {
-                dist[e.first] = dist[minV] + e.second; to[e.first] = make_pair(v, e.second);
+                dist[e.first] = dist[minV] + e.second; to[e.first] = make_pair(minV, e.second);
             }
         }
     }
