@@ -31,13 +31,15 @@ template <class Value, class CountType, class Comparator = less<Value>> struct S
             v.resize(j + 1);
         }
     }
-    void rebuild() {
+    bool rebuild() {
         if (int(small.size()) > SCALE_FACTOR * sqrt(small.size() + large.size())) {
             int largeSz = int(large.size()); sort(small.begin(), small.end(), pairCmp);
             for (int i = largeSz - 1; i >= 1; i--) large[i].second -= large[i - 1].second;
             for (auto &&p : small) large.push_back(p);
             small.clear(); inplace_merge(large.begin(), large.begin() + largeSz, large.end(), pairCmp); resizeUnique(large);
+            return true;
         }
+        return false;
     }
     void insert(const pair<Value, CountType> &p) { small.push_back(p); tot += p.second; }
     void emplace(const Value &v, const CountType &c) { small.emplace_back(v, c); tot += c; }
@@ -57,8 +59,7 @@ template <class Value, class CountType, class Comparator = less<Value>> struct S
     CountType belowInd(const Value &val) { return ceilingInd(val) - 1; }
     bool contains(const Value &val) {
         if (binary_search(large.begin(), large.end(), make_pair(val, CountType(0)), pairCmp)) return true;
-        rebuild();
-        if (binary_search(large.begin(), large.end(), make_pair(val, CountType(0)), pairCmp)) return true;
+        if (rebuild() && binary_search(large.begin(), large.end(), make_pair(val, CountType(0)), pairCmp)) return true;
         for (auto &&p : small) if (!cmp(val, p.first) && !cmp(p.first, val)) return true;
         return false;
     }

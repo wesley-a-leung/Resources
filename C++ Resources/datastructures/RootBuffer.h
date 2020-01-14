@@ -32,8 +32,8 @@ template <const int R, class Value, class CountType, class Comparator = less<Val
             v.resize(j + 1);
         }
     }
-    void rebuild() {
-        double b = pow(n, 1.0 / R), c = b;
+    bool rebuild() {
+        double b = pow(n, 1.0 / R), c = b; bool rebuilt = false;
         for (int i = 0; i < R - 1; i++, c *= b) {
             if (int(A[i].size()) > SCALE_FACTOR * c) {
                 int nxtSz = int(A[i + 1].size());
@@ -42,8 +42,10 @@ template <const int R, class Value, class CountType, class Comparator = less<Val
                 for (int j = nxtSz - 1; j >= 1; j--) A[i + 1][j].second -= A[i + 1][j - 1].second;
                 for (auto &&p : A[i]) A[i + 1].push_back(p);
                 A[i].clear(); inplace_merge(A[i + 1].begin(), A[i + 1].begin() + nxtSz, A[i + 1].end(), pairCmp); resizeUnique(A[i + 1]);
+                rebuilt = true;
             }
         }
+        return rebuilt;
     }
     void insert(const pair<Value, CountType> &p) { A[0].push_back(p); tot += p.second; n++; }
     void emplace(const Value &v, const CountType &c) { A[0].emplace_back(v, c); tot += c; n++; }
@@ -69,8 +71,7 @@ template <const int R, class Value, class CountType, class Comparator = less<Val
     CountType belowInd(const Value &val) { return ceilingInd(val) - 1; }
     bool contains(const Value &val) {
         for (int i = R - 1; i >= 1; i--) if (binary_search(A[i].begin(), A[i].end(), make_pair(val, CountType(0)), pairCmp)) return true;
-        rebuild();
-        for (int i = R - 1; i >= 1; i--) if (binary_search(A[i].begin(), A[i].end(), make_pair(val, CountType(0)), pairCmp)) return true;
+        if (rebuild()) for (int i = R - 1; i >= 1; i--) if (binary_search(A[i].begin(), A[i].end(), make_pair(val, CountType(0)), pairCmp)) return true;
         for (auto &&p : A[0]) if (!cmp(val, p.first) && !cmp(p.first, val)) return true;
         return false;
     }

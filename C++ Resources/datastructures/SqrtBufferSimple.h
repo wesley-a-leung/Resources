@@ -18,12 +18,14 @@ template <class Value, class Comparator = less<Value>> struct SqrtBufferSimple {
             SCALE_FACTOR(SCALE_FACTOR), large(st, en) {
         assert(is_sorted(st, en, cmp));
     }
-    void rebuild() {
+    bool rebuild() {
         if (int(small.size()) > SCALE_FACTOR * sqrt(small.size() + large.size())) {
             int largeSz = int(large.size()); sort(small.begin(), small.end(), cmp);
             for (auto &&x : small) large.push_back(x);
             small.clear(); inplace_merge(large.begin(), large.begin() + largeSz, large.end(), cmp);
+            return true;
         }
+        return false;
     }
     void insert(const Value &val) { small.push_back(val); }
     int aboveInd(const Value &val) {
@@ -40,8 +42,7 @@ template <class Value, class Comparator = less<Value>> struct SqrtBufferSimple {
     int belowInd(const Value &val) { return ceilingInd(val) - 1; }
     bool contains(const Value &val) {
         if (binary_search(large.begin(), large.end(), val, cmp)) return true;
-        rebuild();
-        if (binary_search(large.begin(), large.end(), val, cmp)) return true;
+        if (rebuild() && binary_search(large.begin(), large.end(), val, cmp)) return true;
         for (auto &&x : small) if (!cmp(val, x) && !cmp(x, val)) return true;
         return false;
     }
