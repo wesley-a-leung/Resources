@@ -70,10 +70,10 @@ Node *Node::findMin() {
     while (x->l) x = x->l;
     x->splay(); return x;
 }
-struct LazyLinkCutTree {
+struct LinkCutTreeLazy {
     vector<Node> T;
-    LazyLinkCutTree(int N) { T.reserve(N); for (int i = 0; i < N; i++) T.emplace_back(i, vdef); }
-    template <class It> LazyLinkCutTree(It st, It en) { int N = en - st; T.reserve(N); for (int i = 0; i < N; i++) T.emplace_back(i, *(st + i)); }
+    LinkCutTreeLazy(int N) { T.reserve(N); for (int i = 0; i < N; i++) T.emplace_back(i, vdef); }
+    template <class It> LinkCutTreeLazy(It st, It en) { int N = en - st; T.reserve(N); for (int i = 0; i < N; i++) T.emplace_back(i, *(st + i)); }
     void makeRoot(int x) { T[x].makeRoot(); }
     bool connected(int x, int y) {
         if (x == y) return true;

@@ -19,7 +19,7 @@ Data merge(const Data &l, const Data &r); // to be implemented
 Data applyLazy(const Data &l, const Lazy &r); // to be implemented
 struct Node {
     Node *l, *r, *p; int vert, size; bool type; long long pri; Data val, sbtr;
-    Node (int vert, bool type, const Data &val) : l(nullptr), r(nullptr), p(nullptr), vert(vert), size(1),
+    Node(int vert, bool type, const Data &val) : l(nullptr), r(nullptr), p(nullptr), vert(vert), size(1),
         type(type), pri(dis(rng64)), val(val), sbtr(val) {}
     void update() {
         size = 1; sbtr = val;
@@ -54,7 +54,7 @@ Node *root(Node *x) {
     while (x->p) x = x->p;
     return x;
 }
-int index(Node *x) {
+int index(Node *x) { // 0-indexed
     if (!x) return -1;
     int ind = Size(x->l);
     for (; x->p; x = x->p) if (x->p->l != x) ind += 1 + Size(x->p->l);
