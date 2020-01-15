@@ -21,7 +21,7 @@ Lazy mergeLazy(const Lazy &l, const Lazy &r); // to be implemented
 Data applyLazy(const Data &l, const Lazy &r); // to be implemented
 struct Node {
     Node *l, *r, *p; int vert, size; bool type; long long pri; Data val, sbtr; Lazy lz;
-    Node (int vert, bool type, const Data &val) : l(nullptr), r(nullptr), p(nullptr), vert(vert), size(1),
+    Node(int vert, bool type, const Data &val) : l(nullptr), r(nullptr), p(nullptr), vert(vert), size(1),
         type(type), pri(dis(rng64)), val(val), sbtr(val), lz(ldef) {}
     void update() {
         size = 1; sbtr = val;
@@ -64,21 +64,21 @@ Node *root(Node *x) {
     while (x->p) x = x->p;
     return x;
 }
-int index(Node *x) {
+int index(Node *x) { // 0-indexed
     if (!x) return -1;
     int ind = Size(x->l);
     for (; x->p; x = x->p) if (x->p->l != x) ind += 1 + Size(x->p->l);
     return ind;
 }
-struct LazyEulerTourTreap {
+struct EulerTourTreapLazy {
     vector<Node> PRE, POST;
-    LazyEulerTourTreap(int N) {
+    EulerTourTreapLazy(int N) {
         PRE.reserve(N); POST.reserve(N); Node *dummy = nullptr;
         for (int i = 0; i < N; i++) {
             PRE.emplace_back(i, ISPRE, vdef); POST.emplace_back(i, ISPOST, vdef); merge(dummy, &PRE.back(), &POST.back());
         }
     }
-    template <class It> LazyEulerTourTreap(It st, It en) {
+    template <class It> EulerTourTreapLazy(It st, It en) {
         int N = en - st; PRE.reserve(N); POST.reserve(N); Node *dummy = nullptr;
         for (int i = 0; i < N; i++) {
             PRE.emplace_back(i, ISPRE, *(st + i)); POST.emplace_back(i, ISPOST, *(st + i)); merge(dummy, &PRE.back(), &POST.back());
