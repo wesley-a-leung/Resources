@@ -64,11 +64,12 @@ Node *root(Node *x) {
     while (x->p) x = x->p;
     return x;
 }
-int index(Node *x) { // 0-indexed
-    if (!x) return -1;
-    int ind = Size(x->l);
-    for (; x->p; x = x->p) if (x->p->l != x) ind += 1 + Size(x->p->l);
-    return ind;
+int index(Node *x, Node *ch = nullptr) { // 0-indexed
+    if (!x) return ch ? 0 : -1;
+    int ind = index(x->p, x); x->propagate();
+    if (!ch) return ind + Size(x->l);
+    else if (x->l == ch) return ind;
+    return ind + 1 + Size(x->l);
 }
 struct EulerTourTreapLazy {
     vector<Node> PRE, POST;
