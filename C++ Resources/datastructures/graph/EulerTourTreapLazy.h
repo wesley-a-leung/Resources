@@ -56,7 +56,8 @@ void split(Node *x, Node *&l, Node *&r, int lsz) {
 }
 Node *min(Node *x) {
     if (!x) return nullptr;
-    while (x->l) x = x->l;
+    x->propagate();
+    if (x->l) return min(x->l);
     return x;
 }
 Node *root(Node *x) {
