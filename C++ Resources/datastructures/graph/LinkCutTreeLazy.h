@@ -67,7 +67,7 @@ Node *Node::expose() {
 void Node::makeRoot() { expose(); rev = !rev; revData(sbtr); }
 Node *Node::findMin() {
     Node *x = this;
-    while (x->l) x = x->l;
+    for (x->propagate(); x->l; (x = x->l)->propagate());
     x->splay(); return x;
 }
 struct LinkCutTreeLazy {
@@ -83,9 +83,9 @@ struct LinkCutTreeLazy {
         if (!connected(x, y)) return -1;
         T[r].makeRoot(); T[x].expose(); return T[y].expose()->vert;
     }
-    bool link(int par, int ch) {
-        if (connected(par, ch)) return false;
-        T[ch].makeRoot(); T[ch].p = &T[par]; return true;
+    bool link(int x, int y) {
+        if (connected(x, y)) return false;
+        T[y].makeRoot(); T[y].p = &T[x]; return true;
     }
     bool cut(int x, int y) {
         if (!connected(x, y)) return false;
