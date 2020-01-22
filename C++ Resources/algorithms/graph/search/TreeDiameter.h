@@ -6,15 +6,20 @@ using namespace std;
 // Time Complexity: O(V)
 // Memory Complexity: O(V)
 template <const int MAXV, class unit> struct TreeDiameter {
-    vector<pair<int, unit>> adj[MAXV];
+    int par[MAXV]; pair<unit, pair<int, int>> diameter; vector<pair<int, unit>> adj[MAXV];
     void addEdge(int v, int w, unit weight) { adj[v].emplace_back(w, weight); adj[w].emplace_back(v, weight); }
     pair<unit, int> dfs(int v, int prev, unit dist) {
-        pair<unit, int> ret(dist, v);
+        pair<unit, int> ret(dist, v); par[v] = prev;
         for (auto &&e : adj[v]) if (e.first != prev) ret = max(ret, dfs(e.first, v, dist + e.second));
         return ret;
     }
     pair<unit, pair<int, int>> getDiameter(int s = 0) { // returns the diameter, along with 2 vertices with that diameter
-        pair<unit, int> t = dfs(s, -1, 0), u = dfs(t.second, -1, 0); return make_pair(u.first, make_pair(t.second, u.second));
+        pair<unit, int> t = dfs(s, -1, 0), u = dfs(t.second, -1, 0); return diameter = make_pair(u.first, make_pair(t.second, u.second));
+    }
+    vector<int> getPath() {
+        vector<int> path;
+        for (int v = diameter.second.second; v != -1; v = par[v]) path.push_back(v);
+        return path;
     }
     void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
 };
