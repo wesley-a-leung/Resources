@@ -6,6 +6,30 @@ template <class T> T abs(T a) { return a >= 0 ? a : -a; }
 
 // Time Complexity of all functions: O(log max(a, b))
 
+unsigned int gcd32(unsigned int u, unsigned int v) {
+    if (u == 0) return v;
+    if (v == 0) return u;
+    int shift = __builtin_ctz(u | v); u >>= __builtin_ctz(u);
+    do {
+        v >>= __builtin_ctz(v);
+        if (u > v) swap(u, v);
+        v = v - u;
+    } while (v != 0);
+    return u << shift;
+}
+
+unsigned long long gcd64(unsigned long long u, unsigned long long v) {
+    if (u == 0) return v;
+    if (v == 0) return u;
+    int shift = __builtin_ctzll(u | v); u >>= __builtin_ctzll(u);
+    do {
+        v >>= __builtin_ctzll(v);
+        if (u > v) swap(u, v);
+        v = v - u;
+    } while (v != 0);
+    return u << shift;
+}
+
 template <class T> T gcd(T a, T b) { return b == 0 ? abs(a) : gcd(b, a % b); }
 
 template <class T> T lcm(T a, T b) { return a == 0 && b == 0 ? 0 : abs(a / gcd(a, b) * b); }
