@@ -10,7 +10,7 @@ template <const int MAXV> struct Biconnected {
     // components is based on articulation points, id is based on bridges
     int low[MAXV], pre[MAXV], id[MAXV], cur; bool articulation[MAXV];
     stack<pair<int, int>, vector<pair<int, int>>> s; vector<int> isBridge[MAXV];
-    vector<int> adj[MAXV], rev[MAXV], forest[MAXV]; vector<vector<int>> components;
+    vector<int> adj[MAXV], rev[MAXV]; vector<vector<int>> components, forest;
     void addEdge(int v, int w) {
         adj[v].push_back(w); adj[w].push_back(v);
         isBridge[v].push_back(false); isBridge[w].push_back(false);
