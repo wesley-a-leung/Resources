@@ -13,7 +13,7 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTreeTopDown {
     void update(int cur, int tl, int tr, int ind, const Lazy &val) {
         if (tl == tr) { T[cur] = applyLazy(T[cur], val); return; }
         int m = tl + (tr - tl) / 2, rc = cur + (m - tl + 1) * 2;
-        if (m <= ind) update(cur + 1, tl, m, ind, val);
+        if (ind <= m) update(cur + 1, tl, m, ind, val);
         else update(rc, m + 1, tr, ind, val);
         T[cur] = merge(T[cur + 1], T[rc]);
     }
