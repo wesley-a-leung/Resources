@@ -8,7 +8,7 @@ using namespace std;
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct Biconnected {
     // components is based on articulation points, id is based on bridges
-    int low[MAXV], pre[MAXV], id[MAXV], cur, forestN; bool articulation[MAXV];
+    int low[MAXV], pre[MAXV], id[MAXV], cur; bool articulation[MAXV];
     stack<pair<int, int>, vector<pair<int, int>>> s; vector<int> isBridge[MAXV];
     vector<int> adj[MAXV], rev[MAXV], forest[MAXV]; vector<vector<int>> components;
     void addEdge(int v, int w) {
@@ -52,9 +52,16 @@ template <const int MAXV> struct Biconnected {
         }
         for (auto &&comp : components) { sort(comp.begin(), comp.end()); comp.erase(unique(comp.begin(), comp.end()), comp.end()); }
     }
-    void genForest(int V) {
-        fill(id, id + V, -1); forestN = 0;
+    void genBridgeForest(int V) {
+        fill(id, id + V, -1); int forestN = 0;
         for (int v = 0; v < V; v++) if (id[v] == -1) dfs2(v, forestN++);
+        forest.assign(forestN, vector<int>());
         for (int v = 0; v < V; v++) for (int w : adj[v]) if (id[v] != id[w]) forest[id[v]].push_back(id[w]);
+    }
+    void genArticulationForest(int V) {
+        forest.assign(V + int(components.size()), vector<int>());
+        for (int i = 0; i < int(components.size()); i++) for (int v : components[i]) {
+            forest[v].push_back(V + i); forest[V + i].push_back(v);
+        }
     }
 };
