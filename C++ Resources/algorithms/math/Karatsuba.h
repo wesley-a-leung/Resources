@@ -22,19 +22,18 @@ template <class T, class ItA, class ItB, class ItRes> void karatsuba(int n, ItA 
 
 // Multiplies 2 big integers
 template <class T> void multiplyInteger(vector<T> a, vector<T> b, vector<T> &res) {
-    while (int(a.size()) < int(b.size())) a.push_back(0);
-    while (int(b.size()) < int(a.size())) b.push_back(0);
-    while (int(a.size()) & (int(a.size()) - 1)) { a.push_back(0); b.push_back(0); }
-    int n = int(a.size()); res.resize(n * 2, 0); karatsuba<T>(n, a.begin(), b.begin(), res.begin()); T carry = 0; static T BASE = pow2(T(10), DIG);
+    int n = max(a.size(), b.size());
+    while (n & (n - 1)) n++;
+    a.resize(n, 0); b.resize(n, 0); res.resize(n * 2, 0); karatsuba<T>(n, a.begin(), b.begin(), res.begin());
+    T carry = 0; static T BASE = pow2(T(10), DIG);
     for (int i = 0; i < n * 2; i++) { T cur = res[i] + carry; res[i] = T(cur % BASE); carry = T(cur / BASE); }
     while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
 }
 
 // Multiplies 2 polynomials
 template <class T> void multiplyPolynomial(vector<T> a, vector<T> b, vector<T> &res) {
-    while (int(a.size()) < int(b.size())) a.push_back(0);
-    while (int(b.size()) < int(a.size())) b.push_back(0);
-    while (int(a.size()) & (int(a.size()) - 1)) { a.push_back(0); b.push_back(0); }
-    int n = int(a.size()); res.resize(n * 2, 0); karatsuba<T>(n, a.begin(), b.begin(), res.begin());
+    int n = max(a.size(), b.size());
+    while (n & (n - 1)) n++;
+    a.resize(n, 0); b.resize(n, 0); res.resize(n * 2, 0); karatsuba<T>(n, a.begin(), b.begin(), res.begin());
     while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
 }
