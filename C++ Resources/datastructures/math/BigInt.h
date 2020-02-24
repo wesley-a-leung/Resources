@@ -6,7 +6,7 @@ struct BigInt {
     using T = long long; using F = long double;
     static const constexpr int DIG = 4;
     static const constexpr T BASE = pow(10, DIG);
-    static const constexpr int KARATSUBA_CUTOFF = 32;
+    static const constexpr int KARATSUBA_CUTOFF = 64;
     static const constexpr F PI = acos(F(-1));
     vector<T> a; int sign;
     BigInt() : sign(1) {}
@@ -184,29 +184,24 @@ struct BigInt {
         }
         res.trim(); return res;
     }
-    static vector<T> karatsubaMultiply(const vector<T> &a, const vector<T> &b) {
-        int n = int(a.size());
+    template <class T, class ItA, class ItB, class ItRes> static void karatsuba(int n, ItA a, ItB b, ItRes res) {
         if (n <= KARATSUBA_CUTOFF) {
-            vector<T> res(n << 1);
+            fill(res, res + n * 2, 0);
             for (int i = 0; i < n; i++) for (int j = 0; j < n; j++) res[i + j] += a[i] * b[j];
-            return res;
+            return;
         }
-        int k = n >> 1; vector<T> a2(a.begin() + k, a.end()), b2(b.begin() + k, b.end()), a2b2 = karatsubaMultiply(a2, b2);
-        for (int i = 0; i < k; i++) { a2[i] += a[i]; b2[i] += b[i]; }
-        vector<T> r = karatsubaMultiply(a2, b2), a1b1 = karatsubaMultiply(vector<T>(a.begin(), a.begin() + k), vector<T>(b.begin(), b.begin() + k)), res(n << 1);
-        for (int i = 0; i < int(r.size()); i++) { res[i] += a1b1[i]; res[i + k] += r[i] - a1b1[i] - a2b2[i]; res[i + n] += a2b2[i]; }
-        return res;
+        int k = n / 2; vector<T> tmp(n, 0), c(n, 0); auto atmp = tmp.begin(), btmp = atmp + k;
+        for (int i = 0; i < k; i++) { atmp[i] = a[i] + a[i + k]; btmp[i] = b[i] + b[i + k]; }
+        karatsuba<T>(k, atmp, btmp, c.begin()); karatsuba<T>(k, a, b, res); karatsuba<T>(k, a + k, b + k, res + n);
+        for (int i = 0; i < k; i++) { T t = res[i + k]; res[i + k] += c[i] - res[i] - res[i + k * 2]; res[i + k * 2] += c[i + k] - t - res[i + k * 3]; }
     }
     BigInt mul_karatsuba(const BigInt &v) const {
         vector<T> a(this->a.begin(), this->a.end()), b(v.a.begin(), v.a.end());
-        while (int(a.size()) < int(b.size())) a.push_back(0);
-        while (int(b.size()) < int(a.size())) b.push_back(0);
-        while (int(a.size()) & (int(a.size()) - 1)) { a.push_back(0); b.push_back(0); }
-        vector<T> c = karatsubaMultiply(a, b); BigInt res; res.sign = sign * v.sign;
-        T carry = 0;
-        for (int i = 0; i < int(c.size()); i++) {
-            T cur = c[i] + carry; res.a.push_back(cur % BASE); carry = cur / BASE;
-        }
+        int n = max(a.size(), b.size());
+        while (n & (n - 1)) n++;
+        a.resize(n, 0); b.resize(n, 0); vector<T> c(n * 2, 0); karatsuba<T>(n, a.begin(), b.begin(), c.begin());
+        T carry = 0; BigInt res; res.sign = sign * v.sign;
+        for (int i = 0; i < n * 2; i++) { T cur = c[i] + carry; res.a.push_back(cur % BASE); carry = T(cur / BASE); }
         res.trim(); return res;
     }
 };
