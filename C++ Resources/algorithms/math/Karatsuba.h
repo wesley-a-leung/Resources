@@ -1,6 +1,9 @@
 #pragma once
 #pragma GCC optimize("Ofast")
 #pragma GCC optimize("unroll-loops")
+// the pragma below can cause issues if non standard functions (double underscore functions) are used
+// it can improve performance for small data types
+// #pragma GCC target("avx,avx2,fma")
 #include <bits/stdc++.h>
 #include "Combinatorics.h"
 using namespace std;
@@ -8,6 +11,7 @@ using namespace std;
 // Karatsuba Multiplication
 // Time Complexity of multiplyInteger, multiplyPolynomial: O(N ^ log_2(3)) where N = size(a) + size(b)
 
+// CUTOFF should be 64 if avx is enabled
 const int CUTOFF = 16, DIG = 1;
 
 template <class T, class ItA, class ItB, class ItRes> void karatsuba(int n, ItA a, ItB b, ItRes res) {
