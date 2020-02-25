@@ -1,4 +1,6 @@
 #pragma once
+#pragma GCC optimize("Ofast")
+#pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>
 #include "Combinatorics.h"
 using namespace std;
@@ -6,7 +8,7 @@ using namespace std;
 // Karatsuba Multiplication
 // Time Complexity of multiplyInteger, multiplyPolynomial: O(N ^ log_2(3)) where N = size(a) + size(b)
 
-const int CUTOFF = 64, DIG = 1;
+const int CUTOFF = 16, DIG = 1;
 
 template <class T, class ItA, class ItB, class ItRes> void karatsuba(int n, ItA a, ItB b, ItRes res) {
     if (n <= CUTOFF) {
