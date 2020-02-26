@@ -14,9 +14,9 @@ long long count_inversions(SrcIt src_st, SrcIt src_en, DstIt dst_st, DstIt dst_e
     ret += count_inversions(dst_st, dst_st + mid + 1, src_st, src_st + mid + 1);
     ret += count_inversions(dst_st + mid + 1, dst_en, src_st + mid + 1, src_en);
     for (int i = 0, j = mid + 1, k = 0; k < n; k++) {
-        if (i > mid) { dst_st[k] = src_st[j++]; }
+        if (i > mid) dst_st[k] = src_st[j++];
         else if (j >= n) { dst_st[k] = src_st[i++]; ret += j - (mid + 1); }
-        else if (src_st[j] < src_st[i]) { dst_st[k] = src_st[j++]; ret += mid + 1 - i; }
+        else if (src_st[j] < src_st[i]) dst_st[k] = src_st[j++];
         else { dst_st[k] = src_st[i++]; ret += j - (mid + 1); }
     }
     return ret;
@@ -41,9 +41,9 @@ long long count_inversions(SrcIt src_st, SrcIt src_en, DstIt dst_st, DstIt dst_e
     ret += count_inversions(dst_st, dst_st + mid + 1, src_st, src_st + mid + 1, cmp);
     ret += count_inversions(dst_st + mid + 1, dst_en, src_st + mid + 1, src_en, cmp);
     for (int i = 0, j = mid + 1, k = 0; k < n; k++) {
-        if (i > mid) { dst_st[k] = src_st[j++]; }
+        if (i > mid) dst_st[k] = src_st[j++];
         else if (j >= n) { dst_st[k] = src_st[i++]; ret += j - (mid + 1); }
-        else if (cmp(src_st[j], src_st[i])) { dst_st[k] = src_st[j++]; ret += mid + 1 - i; }
+        else if (cmp(src_st[j], src_st[i])) dst_st[k] = src_st[j++];
         else { dst_st[k] = src_st[i++]; ret += j - (mid + 1); }
     }
     return ret;
@@ -55,5 +55,5 @@ template <class It, class Comparator> long long count_inversions(It st, It en, C
     for (int i = 0; i < n; i++) aux[i] = st[i];
     long long ret = count_inversions(aux, aux + n, st, en, cmp);
     delete[] (aux);
-    return ret / 2;
+    return ret;
 }
