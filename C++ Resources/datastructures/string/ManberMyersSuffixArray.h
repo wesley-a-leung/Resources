@@ -6,9 +6,9 @@ using namespace std;
 // Time Complexity: O(S log S)
 // Memory Complexity: O(S + ALPHABET_SIZE)
 template <const int MAXS, const int ALPHABET_SIZE, const int OFFSET> struct ManberMyersSuffixArray {
-    int N, ind[MAXS], rnk[MAXS], temp[MAXS], freq[ALPHABET_SIZE], preFreq[ALPHABET_SIZE]; string S;
-    void run() {
-        N = S.length(); ind[N] = N; rnk[N] = -1; fill(freq, freq + ALPHABET_SIZE, 0); preFreq[0] = 0;
+    int N, ind[MAXS], rnk[MAXS], temp[MAXS], freq[ALPHABET_SIZE], preFreq[ALPHABET_SIZE], LCP[MAXS]; string S;
+    void run(const string &s) {
+        S = s; N = S.length(); ind[N] = N; rnk[N] = -1; fill(freq, freq + ALPHABET_SIZE, 0); preFreq[0] = 0;
         for (int i = 0; i < N; i++) freq[S[i] - OFFSET]++;
         for (int i = 1; i < ALPHABET_SIZE; i++) preFreq[i] = preFreq[i - 1] + freq[i - 1];
         for (int i = 0; i < N; i++) rnk[i] = preFreq[S[i] - OFFSET];
@@ -26,6 +26,15 @@ template <const int MAXS, const int ALPHABET_SIZE, const int OFFSET> struct Manb
                 for (int j = l + 1; j < r; j++) rnk[ind[j]] = temp[ind[j]];
                 cnt = 0;
             }
+        }
+    }
+    void buildLCP() {
+        for (int i = 0, k = 0; i < N; i++) {
+            if (rnk[i] == N - 1) { k = 0; continue; }
+            int j = ind[rnk[i] + 1];
+            while (i + k < N && j + k < N && S[i + k] == S[j + k]) k++;
+            LCP[rnk[i]] = k;
+            if (k > 0) k--;
         }
     }
     int getind(int i) { return ind[i]; } // ind in original string of the ith smallest suffix
