@@ -2,22 +2,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// returns the first value in the range [lo, hi) where f(x) == 0
-// if there is no value in [lo, hi) where f(x) == 0, then it returns hi
-// assumes that f(x) is non decreasing in the range [lo, hi)
-// Time Complexity: O(log (hi - lo)) * (cost to compute f(x))
-template <class T, class F> T getExact(T lo, T hi, F f) {
-    T NONE = hi--;
-    while (lo <= hi) {
-        T mid = lo + (hi - lo) / 2;
-        auto fmid = f(mid);
-        if (fmid < 0) lo = mid + 1;
-        else if (fmid > 0) hi = mid - 1;
-        else return mid;
-    }
-    return NONE;
-}
-
 // returns the first value in the range [lo, hi) where f(x) is true
 // if no value in [lo, hi) satisfies f(x), then it returns hi
 // assumes that all values where f(x) is true are greater than all values where f(x) is false
