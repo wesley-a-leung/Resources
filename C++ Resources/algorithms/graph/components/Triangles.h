@@ -3,37 +3,25 @@
 using namespace std;
 
 // Counts the number of triangles in a graph, ignoring duplicate edges
-// Time Complexity: O(V log E + E sqrt E log E)
+// Time Complexity: O(E sqrt E)
 // Memory Complexity: O(V + E)
-template <const int MAXV> struct Triangles {
-    int ord[MAXV]; vector<int> adj[MAXV], adj2[MAXV];
-    void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
-    void clear(int V = MAXV) { for (int v = 0; v < MAXV; v++) { adj[v].clear(); adj2[v].clear(); } }
+template <const int MAXV, const int MAXE> struct Triangles {
+    int E, deg[MAXV], ind[MAXV]; pair<int, int> edges[MAXE]; vector<pair<int, int>> adj[MAXV];
+    void addEdge(int v, int w) { edges[E++] = make_pair(min(v, w), max(v, w)); }
+    void init() { E = 0; }
     int run(int V) {
-        for (int v = 0; v < V; v++) {
-            sort(adj[v].begin(), adj[v].end());
-            adj[v].erase(unique(adj[v].begin(), adj[v].end()), adj[v].end());
+        int cnt = 0; sort(edges, edges + E); E = unique(edges, edges + E) - edges;
+        for (int v = 0; v < V; v++) { deg[v] = 0; ind[v] = -1; adj[v].clear(); }
+        for (int i = 0; i < E; i++) { deg[edges[i].first]++; deg[edges[i].second]++; }
+        for (int i = 0, v, w; i < E; i++) {
+            tie(v, w) = edges[i];
+            if (deg[v] > deg[w]) swap(v, w);
+            adj[v].emplace_back(w, i);
         }
-        iota(ord, ord + V, 0); int cnt = 0;
-        sort(ord, ord + V, [&] (const int &i, const int &j) {
-            return make_pair(int(adj[i].size()), i) < make_pair(int(adj[j].size()), j);
-        });
         for (int v = 0; v < V; v++) {
-            adj2[v] = adj[v]; sort(adj2[v].begin(), adj2[v].end());
-            sort(adj[v].begin(), adj[v].end(), [&] (const int &i, const int &j) {
-                return make_pair(int(adj[i].size()), i) > make_pair(int(adj[j].size()), j);
-            });
-        }
-        for (int i = 0; i < V; i++) {
-            int v = ord[i];
-            for (int j = 0; j < int(adj[v].size()); j++) {
-                int w = adj[v][j];
-                if (make_pair(int(adj[w].size()), w) < make_pair(int(adj[v].size()), v)) break;
-                for (int k = 0; k < j; k++) {
-                    int u = adj[v][k];
-                    if (binary_search(adj2[u].begin(), adj2[u].end(), w)) cnt++;
-                }
-            }
+            for (auto &&e1 : adj[v]) ind[e1.first] = e1.second;
+            for (auto &&e1 : adj[v]) for (auto &&e2 : adj[e1.first]) if (ind[e2.first] != -1) cnt++;
+            for (auto &&e1 : adj[v]) ind[e1.first] = -1;
         }
         return cnt;
     }
