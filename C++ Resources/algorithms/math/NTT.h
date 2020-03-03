@@ -12,7 +12,7 @@ T primitiveRoot(T p) {
     vector<T> fact; T phi = p - 1, n = phi;
     for (T i = 2; i * i <= n; i++) {
         if (n % i == 0) fact.push_back(i);
-        while(n % i == 0) n /= i;
+        while (n % i == 0) n /= i;
     }
     if (n > 1) fact.push_back(n);
     for (T res = 2; res <= p; res++) {
