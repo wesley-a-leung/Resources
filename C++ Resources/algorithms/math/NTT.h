@@ -25,12 +25,12 @@ T primitiveRoot(T p) {
 
 // MOD = C * 2 ^ K + 1, prime
 // for MOD < 1e9:
-//   C = 119, K = 23 (998244353)
-//   C = 5, K = 25 (167772161)
-//   C = 7, K = 26 (469762049)
+//   C = 119, K = 23 (998244353), primitiveRoot = 3
+//   C = 5, K = 25 (167772161), primitiveRoot = 3
+//   C = 7, K = 26 (469762049), primitiveRoot = 3
 // for MOD > 1e9:
-//   C = 479, K = 21 (1004535809)
-//   C = 483, K = 21 (1012924417)
+//   C = 479, K = 21 (1004535809), primitiveRoot = 3
+//   C = 483, K = 21 (1012924417), primitiveRoot = 5
 const T C = 119, K = 23, PK = 1 << K, MOD = C * PK + 1, ROOT = powMod(primitiveRoot(MOD), C, MOD);
 
 vector<int> ord; vector<T> roots;
