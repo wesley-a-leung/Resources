@@ -9,7 +9,7 @@ template <const int MAXS, class T> struct MinEditDistance {
     T dp[2][MAXS]; string substring;
     T solve(const string &s1, const string &s2, T cpyPen = 0, T repPen = 1, T insPen = 1, T delPen = 1) {
         assert(cpyPen < insPen + delPen); assert(repPen < insPen + delPen);
-        for (int i = 0; i <= int(s2.length); i++) dp[0][i] = i * delPen;
+        for (int i = 0; i <= int(s2.length()); i++) dp[0][i] = i * delPen;
         for (int i = 1; i <= int(s1.length()); i++) {
             dp[i % 2][0] = i * insPen;
             for (int j = 1; j <= int(s2.length()); j++) {
