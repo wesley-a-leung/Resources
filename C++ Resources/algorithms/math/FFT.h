@@ -73,7 +73,7 @@ template <class T> void multiplyInteger(const vector<T> &a, const vector<T> &b, 
         int j = (N - i) & (N - 1); pair<F, F> prod = (f[j] * f[j] - conj(f[i] * f[i])) * r; f[i] = prod; f[j] = conj(prod);
     }
     fft(f); res.resize(N); T carry = 0;
-    for (int i = 0; i < N; i++) { res[i] = (T) (f[i].first + 0.5) + carry; carry = res[i] / BASE; res[i] %= BASE; }
+    for (int i = 0; i < N; i++) { res[i] = T(f[i].first + 0.5) + carry; carry = res[i] / BASE; res[i] %= BASE; }
     while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
 }
 
