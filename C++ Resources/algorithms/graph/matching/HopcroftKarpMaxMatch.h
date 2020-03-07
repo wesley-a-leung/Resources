@@ -6,12 +6,12 @@ using namespace std;
 // Time Complexity: O((V + E) sqrt V)
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct HopcroftKarpMaxMatch {
-    int cardinality, mate[MAXV], dist[MAXV], q[MAXV], pathDist; vector<int> adj[MAXV], typeA, typeB;
+    int cardinality, mate[MAXV], dist[MAXV], q[MAXV], pathDist; vector<int> adj[MAXV], type[2];
     bool color[MAXV], inCover[MAXV], vis[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     bool hasPath() {
         pathDist = INT_MAX; int front = 0, back = 0;
-        for (int v : typeA) {
+        for (int v : type[0]) {
             if (mate[v] == -1) { dist[v] = 0; q[back++] = v; }
             else dist[v] = INT_MAX;
         }
@@ -39,27 +39,24 @@ template <const int MAXV> struct HopcroftKarpMaxMatch {
         dist[v] = INT_MAX; return false;
     }
     void init(int V = MAXV) {
-        fill(mate, mate + V, -1); fill(color, color + V, false); typeA.clear(); typeB.clear();
+        fill(mate, mate + V, -1); fill(color, color + V, false);
+        for (int i = 0; i < 2; i++) type[i].clear();
         for (int i = 0; i < V; i++) adj[i].clear();
     }
     int getMaxMatch(int V) {
         cardinality = 0;
-        for (int v = 0; v < V; v++) {
-            if (color[v]) typeA.push_back(v);
-            else typeB.push_back(v);
-        }
-        while (hasPath()) for (int v : typeA) if (mate[v] == -1 && dfs(v)) cardinality++;
+        for (int v = 0; v < V; v++) type[color[v]].push_back(v);
+        while (hasPath()) for (int v : type[0]) if (mate[v] == -1 && dfs(v)) cardinality++;
         return cardinality;
     }
     void dfsVertexCover(int v) {
         if (vis[v]) return;
         vis[v] = true;
-        for (int w : adj[v]) if ((mate[v] != w) == color[v]) dfsVertexCover(w);
+        for (int w : adj[v]) if ((mate[v] == w) == color[v]) dfsVertexCover(w);
     }
     void getVertexCover(int V) {
-        fill(inCover, inCover + V, false); fill(vis, vis + V, false);
-        for (int v : typeA) if (mate[v] == -1) dfsVertexCover(v);
-        for (int v : typeA) inCover[v] = !vis[v];
-        for (int v : typeB) inCover[v] = vis[v];
+        fill(vis, vis + V, false);
+        for (int v : type[0]) if (mate[v] == -1) dfsVertexCover(v);
+        for (int v = 0; v < V; v++) inCover[v] = vis[v] == color[v];
     }
 };
