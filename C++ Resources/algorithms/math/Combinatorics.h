@@ -81,6 +81,7 @@ template <class T> T factorial(T n, T m) {
 // n! % p for a prime p
 // Time Complexity: O(p log n)
 template <class T> T factorialPrime(T n, T p) {
+    if (n >= p) return 0;
     T ret = 1, h = 0;
     while (n > 1) {
         ret = mulMod(ret, ((n / p) & 1) ? p - 1 : T(1), p); h = n % p; n /= p;
