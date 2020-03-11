@@ -3,6 +3,8 @@
 using namespace std;
 
 // Manber Myers Suffix Array to sort suffixes of a string in lexicographical order
+// rnk[i] is the rank of the suffix starting from index i
+// ind[i] is the index in original string of the ith smallest suffix
 // Time Complexity: O(S log S)
 // Memory Complexity: O(S + ALPHABET_SIZE)
 template <const int MAXS, const int ALPHABET_SIZE, const int OFFSET> struct ManberMyersSuffixArray {
@@ -37,6 +39,4 @@ template <const int MAXS, const int ALPHABET_SIZE, const int OFFSET> struct Manb
             if (k > 0) k--;
         }
     }
-    int getind(int i) { return ind[i]; } // ind in original string of the ith smallest suffix
-    string select(int i) { return S.substr(ind[i]); } // returns the ith smallest suffix
 };
