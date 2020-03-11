@@ -9,22 +9,11 @@ using namespace std;
 template <const int MAXS> struct ZAlgorithm {
     int z[MAXS];
     void run(const string &S) {
-        int l = 0, r = 0;
         if (int(S.length()) > 0) z[0] = int(S.length());
-        for (int i = 1; i < int(S.length()); i++) {
-            if (i > r) {
-                l = r = i;
-                while (r < int(S.length()) && S[r] == S[r - l]) r++;
-                r--; z[i] = r - l + 1;
-            } else {
-                int j = i - l;
-                if (z[j] < r - i + 1) z[i] = z[j];
-                else {
-                    l = i;
-                    while (r < int(S.length()) && S[r] == S[r - l]) r++;
-                    r--; z[i] = r - l + 1;
-                }
-            }
+        for (int i = 1, l = 0, r = 0; i < int(S.length()); i++) {
+            if (i <= r) z[i] = min(r - i + 1, z[i - l]);
+            while (i + z[i] < int(S.length()) && S[z[i]] == S[i + z[i]]) ++z[i];
+            if (i + z[i] - 1 > r) r = (l = i) + z[i] - 1;
         }
     }
 };
