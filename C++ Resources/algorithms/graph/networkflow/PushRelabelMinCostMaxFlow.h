@@ -16,7 +16,6 @@ template <const int MAXV, class flowUnit, class costUnit, const bool USE_LOOK_AH
     PushRelabelMinCostMaxFlow(flowUnit FLOW_EPS, costUnit COST_INF) : FLOW_EPS(FLOW_EPS), COST_INF(COST_INF) {}
     void addEdge(int v, int w, flowUnit flow, costUnit cost) {
         if (v == w) return;
-        cost *= V; bnd = max(bnd, abs(cost));
         adj[v].emplace_back(w, flow, cost, int(adj[w].size())); adj[w].emplace_back(v, 0, -cost, int(adj[v].size()) - 1);
     }
     void init(int V) { this->V = V; bnd = 0; for (int i = 0; i < V; i++) adj[i].clear(); }
@@ -73,7 +72,7 @@ template <const int MAXV, class flowUnit, class costUnit, const bool USE_LOOK_AH
             return true;
         };
         minCost = 0;
-        for (int v = 0; v < V; v++) for (auto &&e : adj[v]) minCost += e.cost * e.resCap;
+        for (int v = 0; v < V; v++) for (auto &&e : adj[v]) { e.cost *= V; bnd = max(bnd, e.cost); minCost += e.cost * e.resCap; }
         maxFlow = circulation ? 0 : getFlow(s, t);
         fill(h, h + V, 0); fill(ex, ex + V, 0); fill(inStk, inStk + V, false);
         for (; bnd > 0; bnd >>= SCALE) {
@@ -98,7 +97,7 @@ template <const int MAXV, class flowUnit, class costUnit, const bool USE_LOOK_AH
             }
             if (bnd > 1 && (bnd >> SCALE) == 0) bnd = 1 << SCALE;
         }
-        for (int v = 0; v < V; v++) for (auto &&e: adj[v]) minCost -= e.cost * e.resCap;
+        for (int v = 0; v < V; v++) for (auto &&e: adj[v]) { minCost -= e.cost * e.resCap; e.cost /= V; }
         minCost /= V * 2;
         return {maxFlow, minCost};
     }
