@@ -21,7 +21,7 @@ template <const int MAXS> struct KMP {
         }
         return -1;
     }
-    int multiSearch(const string &txt) { // finds all matches
+    int multiSearch(const string &txt) { // finds all indices in the text of a match
         matches.clear();
         for (int i = 0, j = 0; i < int(txt.length()); i++, j++) {
             while (j >= 0 && (j == int(pat.length()) || txt[i] != pat[j])) j = LCP[j];

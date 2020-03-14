@@ -22,11 +22,11 @@ template <const int MAXS> struct ManacherPalindrome {
     pair<int, int> longestPalindromicSubstring() {
         int length = 0, center = 0;
         for (int i = 1; i < int(s.length()) * 2 + 2; i++) if (p[i] > length) { length = p[i]; center = i; }
-        return make_pair((center - 1 - length) / 2, (center - 1 + length) / 2 - (center - 1 - length) / 2);
+        return make_pair((center - 1 - length) / 2, length);
     }
     // longest palindromic substring centered at index i/2, returns a pair containing the starting index and length
     pair<int, int> longestPalindromicSubstring(int i) {
         int length = p[i + 2], center = i + 2;
-        return make_pair((center - 1 - length) / 2, (center - 1 + length) / 2 - (center - 1 - length) / 2);
+        return make_pair((center - 1 - length) / 2, length);
     }
 };
