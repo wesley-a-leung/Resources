@@ -54,7 +54,7 @@ void fft(vector<pair<F, F>> &a) {
 
 // Multiplies 2 big integers
 template <class T> void multiplyInteger(const vector<T> &a, const vector<T> &b, vector<T> &res) {
-    static_assert(is_integral<T>::value, "T must be an integral type"); static T BASE = pow2(T(10), T(DIG));
+    static_assert(is_integral<T>::value, "T must be an integral type"); static T BASE = pow2(T(10), DIG);
     if (max(int(a.size()), int(b.size())) <= CUTOFF) {
         vector<T> c(int(a.size()) + int(b.size()), 0); T carry = 0;
         for (int i = 0; i < int(a.size()); i++) for (int j = 0; j < int(b.size()); j++) c[i + j] += a[i] * b[j];
