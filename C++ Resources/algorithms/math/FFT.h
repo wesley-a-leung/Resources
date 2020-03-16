@@ -82,7 +82,7 @@ template <class T> void multiplyPolynomial(const vector<T> &a, const vector<T> &
     if (max(int(a.size()), int(b.size())) <= CUTOFF) {
         vector<T> c(int(a.size()) + int(b.size()) - 1, 0);
         for (int i = 0; i < int(a.size()); i++) for (int j = 0; j < int(b.size()); j++) c[i + j] += a[i] * b[j];
-        res.resize(int(a.size()) + int(b.size()), 0); copy(c.begin(), c.end(), res.begin());
+        res.resize(int(a.size()) + int(b.size() - 1), 0); copy(c.begin(), c.end(), res.begin());
         while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
         return;
     }
