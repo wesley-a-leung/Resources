@@ -10,5 +10,5 @@ template <class T, class F> T bisectionSearch(T lo, T hi, F f, int iters) {
         if (f(mid) < 0) lo = mid;
         else hi = mid;
     }
-    return mid;
+    return lo + (hi - lo) / 2;
 }
