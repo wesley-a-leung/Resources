@@ -80,7 +80,7 @@ struct Point {
     static bool ccwOrderLe(const Point &p, const Point &a, const Point &b) { return !ccwOrderLt(p, b, a); }
     static bool ccwOrderGt(const Point &p, const Point &a, const Point &b) { return ccwOrderLt(p, b, a); }
     static bool ccwOrderGe(const Point &p, const Point &a, const Point &b) { return !ccwOrderLt(p, a, b); }
-    static bool distOrderLt(const Point &p, const Point &a, const Point &b) { return lt(p.distSq(a), b.distSq(b)); }
+    static bool distOrderLt(const Point &p, const Point &a, const Point &b) { return lt(p.distSq(a), p.distSq(b)); }
     static bool distOrderLe(const Point &p, const Point &a, const Point &b) { return !distOrderLt(p, b, a); }
     static bool distOrderGt(const Point &p, const Point &a, const Point &b) { return distOrderLt(p, b, a); }
     static bool distOrderGe(const Point &p, const Point &a, const Point &b) { return !distOrderLt(p, a, b); }
