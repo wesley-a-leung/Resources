@@ -24,7 +24,7 @@ struct Line {
     pt refl(ref p) const { return p - perp(p) * T(2) * eval(p) / norm(v); }
     static int intersection(const Line &l1, const Line &l2, pt &res) { // returns 0 if no intersection, 1 if proper intersection, 2 otherwise
         T d = cross(l1.v, l2.v);
-        if (eq(d, T(0))) return eq(l2.v * l1.c, l1.v * l2.c) ? 2 : 0;
+        if (eq(d, T(0))) return l2.v * l1.c == l1.v * l2.c ? 2 : 0;
         res = (l2.v * l1.c - l1.v * l2.c) / d; return 1;
     }
     static Line bisector(const Line &l1, const Line &l2, bool interior) {
