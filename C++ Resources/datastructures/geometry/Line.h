@@ -58,6 +58,13 @@ F segPtDist(ref p, ref a, ref b) {
     }
     return min(dist(p, a), dist(p, b));
 }
+pt closestPtToSeg(ref p, ref a, ref b) {
+    if (a != b) {
+        Line l(a, b);
+        if (l.cmpProjLt()(a, p) && l.cmpProjLt()(p, b)) return l.proj(p);
+    }
+    return lt(dist(p, a), dist(p, b)) ? a : b;
+}
 F segSegDist(ref a, ref b, ref p, ref q) {
     return lineSegIntersects(a, b, p, q) > 0 ? 0 : min(min(segPtDist(p, a, b), segPtDist(q, a, b)), min(segPtDist(a, p, q), segPtDist(b, p, q)));
 }
