@@ -22,10 +22,10 @@ struct Line {
     Line shiftLeft(F d) const { return Line(v, c + d * abs(v)); }
     pt proj(ref p) const { return p - perp(p) * eval(p) / norm(v); }
     pt refl(ref p) const { return p - perp(p) * T(2) * eval(p) / norm(v); }
-    static bool intersects(const Line &l1, const Line &l2, pt &res) {
+    static int intersection(const Line &l1, const Line &l2, pt &res) { // returns 0 if no intersection, 1 if proper intersection, 2 otherwise
         T d = cross(l1.v, l2.v);
-        if (eq(d, T(0))) return false;
-        res = (l2.v * l1.c - l1.v * l2.c) / d; return true;
+        if (eq(d, T(0))) return eq(l2.v * l1.c, l1.v * l2.c) ? 2 : 0;
+        res = (l2.v * l1.c - l1.v * l2.c) / d; return 1;
     }
     static Line bisector(const Line &l1, const Line &l2, bool interior) {
         T s = interior ? 1 : -1; return Line(l2.v / T(abs(l2.v)) + l1.v / T(abs(l1.v)) * s, l2.c / abs(l2.v) + l1.c / abs(l1.v) * s);
