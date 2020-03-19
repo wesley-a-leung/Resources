@@ -16,7 +16,7 @@ template <const int MAXN, class T> struct ClosestSubsetSum {
         sort(sum.begin(), sum.end()); sum.resize(unique(sum.begin(), sum.end()) - sum.begin());
     }
     T solve(int N, T value) { // returns the closest sum, elements are stored in ans
-        ans.clear(); T minDiff = (numeric_limits<T>::max)(), closestSum = (numeric_limits<T>::max)(); int evenPerm = 0, oddPerm = 0;
+        ans.clear(); T minDiff = numeric_limits<T>::max(), closestSum = numeric_limits<T>::max(); int evenPerm = 0, oddPerm = 0;
         vector<T> even, odd; even.reserve(N - N / 2); odd.reserve(N / 2);
         vector<pair<T, int>> evenSum, oddSum; evenSum.reserve(1 << (N - N / 2)); oddSum.reserve(1 << (N / 2));
         for (int i = 0; i < N; i++) {

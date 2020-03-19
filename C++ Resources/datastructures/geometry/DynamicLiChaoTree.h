@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-using T = long double; using IndexType = long long; const T NEG_INF = (numeric_limits<T>::lowest)() / 2;
+using T = long double; using IndexType = long long; const T NEG_INF = numeric_limits<T>::lowest() / 2;
 
 struct Line {
     T m, b;

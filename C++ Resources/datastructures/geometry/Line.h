@@ -66,5 +66,5 @@ pt closestPtToSeg(ref p, ref a, ref b) {
     return lt(dist(p, a), dist(p, b)) ? a : b;
 }
 F segSegDist(ref a, ref b, ref p, ref q) {
-    return lineSegIntersects(a, b, p, q) > 0 ? 0 : min(min(segPtDist(p, a, b), segPtDist(q, a, b)), min(segPtDist(a, p, q), segPtDist(b, p, q)));
+    return lineSegIntersects(a, b, p, q) > 0 ? 0 : min({segPtDist(p, a, b), segPtDist(q, a, b), segPtDist(a, p, q), segPtDist(b, p, q)});
 }
