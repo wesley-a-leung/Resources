@@ -32,7 +32,7 @@ template <const int MAXS, const int ALPHABET_SIZE, const int OFFSET> struct Manb
     }
     void buildLCP() {
         for (int i = 0, k = 0; i < N; i++) {
-            if (rnk[i] == N - 1) { k = 0; continue; }
+            if (rnk[i] == N - 1) { LCP[rnk[i]] = k = 0; continue; }
             int j = ind[rnk[i] + 1];
             while (i + k < N && j + k < N && S[i + k] == S[j + k]) k++;
             LCP[rnk[i]] = k;
