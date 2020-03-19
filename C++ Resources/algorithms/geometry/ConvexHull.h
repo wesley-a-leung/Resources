@@ -9,12 +9,12 @@ using namespace std;
 //   getArea2: O(N)
 // Memory Complexity: O(N)
 template <const int MAXN> struct ConvexHull {
-    Point P[MAXN]; vector<Point> hull; // counterclockwise order
+    pt P[MAXN]; vector<pt> hull; // counterclockwise order
     void run(int N) {
-        hull.clear(); sort(P, P + N, Point::xyOrderLt);
+        hull.clear(); sort(P, P + N, xyOrderLt);
         for (int phase = 0; phase < 2; phase++) {
             for (int i = 0, st = int(hull.size()); i < N; i++) {
-                while (int(hull.size()) >= st + 2 && Point::ccw(hull[hull.size() - 2], hull[hull.size() - 1], P[i]) <= 0) hull.pop_back();
+                while (int(hull.size()) >= st + 2 && ccw(hull[hull.size() - 2], hull[hull.size() - 1], P[i]) <= 0) hull.pop_back();
                 hull.push_back(P[i]);
             }
             hull.pop_back(); reverse(P, P + N);
@@ -23,8 +23,8 @@ template <const int MAXN> struct ConvexHull {
         if (hull.empty() && N > 0) hull.push_back(P[0]);
     }
     T getArea2() { // returns twice the area of the convex hull
-        T ret = 0; int H = int(hull.size());
-        for (int i = 0; i < H; i++) ret += Point::area2(Point(0, 0), hull[i], hull[(i + 1) % H]);
+        T ret = 0; int H = int(hull.size()); pt o(0, 0);
+        for (int i = 0; i < H; i++) ret += area2(o, hull[i], hull[(i + 1) % H]);
         return ret;
     }
 };

@@ -7,19 +7,19 @@ using namespace std;
 // Time Complexity: O(N log N)
 // Memory Complexity: O(N)
 template <const int MAXN> struct ClosestPair {
-    Point P[MAXN], aux[MAXN], best1, best2; T bestDistSquared;
+    pt P[MAXN], aux[MAXN], best1, best2; T bestDistSquared;
     void closest(int lo, int hi) {
         if (hi <= lo) return;
-        int mid = lo + (hi - lo) / 2; Point median = P[mid];
+        int mid = lo + (hi - lo) / 2; pt median = P[mid];
         closest(lo, mid); closest(mid + 1, hi);
-        merge(P + lo, P + mid + 1, P + mid + 1, P + hi + 1, aux, Point::yOrderLt); copy(aux, aux + hi - lo + 1, P + lo);
+        merge(P + lo, P + mid + 1, P + mid + 1, P + hi + 1, aux, yOrderLt); copy(aux, aux + hi - lo + 1, P + lo);
         for (int i = lo, k = 0; i <= hi; i++) {
             T dx = P[i].x - median.x, dx2 = dx * dx;
             if (lt(dx2, bestDistSquared)) {
                 for (int j = k - 1; j >= 0; j--) {
                     T dy = P[i].y - aux[j].y, dy2 = dy * dy;
                     if (!lt(dy2, bestDistSquared)) break;
-                    T dSq = P[i].distSq(aux[j]);
+                    T dSq = distSq(P[i], aux[j]);
                     if (lt(dSq, bestDistSquared)) { bestDistSquared = dSq; best1 = P[i]; best2 = aux[j]; }
                 }
                 aux[k++] = P[i];
@@ -27,7 +27,6 @@ template <const int MAXN> struct ClosestPair {
         }
     }
     T solve(int N) {
-        bestDistSquared = (numeric_limits<T>::max)(); sort(P, P + N, Point::xOrderLt);
-        closest(0, N - 1); return bestDistSquared;
+        bestDistSquared = (numeric_limits<T>::max)(); sort(P, P + N, xOrderLt); closest(0, N - 1); return bestDistSquared;
     }
 };
