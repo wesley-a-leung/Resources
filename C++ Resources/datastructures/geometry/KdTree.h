@@ -14,8 +14,8 @@ struct KdTree {
     template <class It> Node *construct(Node *n, It points, int lo, int hi, bool partition, T xmin, T ymin, T xmax, T ymax) {
         if (lo > hi) return nullptr;
         int mid = lo + (hi - lo) / 2;
-        if (partition == VERTICAL) nth_element(points + lo, points + mid, points + hi + 1, xOrderLt);
-        else nth_element(points + lo, points + mid, points + hi + 1, yOrderLt);
+        if (partition == VERTICAL) nth_element(points + lo, points + mid, points + hi + 1, xOrdLt);
+        else nth_element(points + lo, points + mid, points + hi + 1, yOrdLt);
         pt p = *(points + mid);
         n = new Node(p, Rectangle(xmin, ymin, xmax, ymax));
         if (partition == VERTICAL) {
@@ -34,10 +34,10 @@ struct KdTree {
         }
         if (n->p == p) return n;
         if (partition == VERTICAL) {
-            if (xOrderLt(p, n->p)) n->leftUp = insert(n->leftUp, p, !partition, xmin, ymin, n->p.x, ymax);
+            if (xOrdLt(p, n->p)) n->leftUp = insert(n->leftUp, p, !partition, xmin, ymin, n->p.x, ymax);
             else n->rightDown = insert(n->rightDown, p, !partition, n->p.x, ymin, xmax, ymax);
         } else {
-            if (yOrderLt(p, n->p)) n->leftUp = insert(n->leftUp, p, !partition, xmin, ymin, xmax, n->p.y);
+            if (yOrdLt(p, n->p)) n->leftUp = insert(n->leftUp, p, !partition, xmin, ymin, xmax, n->p.y);
             else n->rightDown = insert(n->rightDown, p, !partition, xmin, n->p.y, xmax, ymax);
         }
         return n;
@@ -46,10 +46,10 @@ struct KdTree {
         if (nullptr == n) return false;
         if (n->p == p) return true;
         if (partition == VERTICAL) {
-            if (xOrderLt(p, n->p)) return contains(n->leftUp, p, !partition);
+            if (xOrdLt(p, n->p)) return contains(n->leftUp, p, !partition);
             else return contains(n->rightDown, p, !partition);
         } else {
-            if (yOrderLt(p, n->p)) return contains(n->leftUp, p, !partition);
+            if (yOrdLt(p, n->p)) return contains(n->leftUp, p, !partition);
             else return contains(n->rightDown, p, !partition);
         }
     }

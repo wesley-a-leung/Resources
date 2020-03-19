@@ -35,72 +35,45 @@ T area2(ref a, ref b, ref c) { return cross(b - a, c - a); }
 int ccw(ref a, ref b, ref c) { return sgn(area2(a, b, c)); }
 // a rotated theta radians around p
 pt rot(ref a, ref p, const F &theta) { return (a - p) * pt(polar(F(1), theta)) + p; }
+pt perp(ref a) { return pt(-a.y, a.x); }
 
-bool xOrderLt(ref a, ref b) { return lt(a.x, b.x); }
-bool xOrderLe(ref a, ref b) { return !xOrderLt(b, a); }
-bool xOrderGt(ref a, ref b) { return xOrderLt(b, a); }
-bool xOrderGe(ref a, ref b) { return !xOrderLt(a, b); }
-bool yOrderLt(ref a, ref b) { return lt(a.y, b.y); }
-bool yOrderLe(ref a, ref b) { return !yOrderLt(b, a); }
-bool yOrderGt(ref a, ref b) { return yOrderLt(b, a); }
-bool yOrderGe(ref a, ref b) { return !yOrderLt(a, b); }
-bool xyOrderLt(ref a, ref b) { return eq(a.x, b.x) ? lt(a.y, b.y) : lt(a.x, b.x); }
-bool xyOrderLe(ref a, ref b) { return !xyOrderLt(b, a); }
-bool xyOrderGt(ref a, ref b) { return xyOrderLt(b, a); }
-bool xyOrderGe(ref a, ref b) { return !xyOrderLt(a, b); }
-bool yxOrderLt(ref a, ref b) { return eq(a.y, b.y) ? lt(a.x, b.x) : lt(a.y, b.y); }
-bool yxOrderLe(ref a, ref b) { return !yxOrderLt(b, a); }
-bool yxOrderGt(ref a, ref b) { return yxOrderLt(b, a); }
-bool yxOrderGe(ref a, ref b) { return !yxOrderLt(a, b); }
-bool rOrderLt(ref a, ref b) { return lt(norm(a), norm(b)); }
-bool rOrderLe(ref a, ref b) { return !rOrderLt(b, a); }
-bool rOrderGt(ref a, ref b) { return rOrderLt(b, a); }
-bool rOrderGe(ref a, ref b) { return !rOrderLt(a, b); }
-bool ccwOrderLt(ref p, ref a, ref b) { return ccw(p, a, b) > 0; }
-bool ccwOrderLe(ref p, ref a, ref b) { return !ccwOrderLt(p, b, a); }
-bool ccwOrderGt(ref p, ref a, ref b) { return ccwOrderLt(p, b, a); }
-bool ccwOrderGe(ref p, ref a, ref b) { return !ccwOrderLt(p, a, b); }
-bool distOrderLt(ref p, ref a, ref b) { return lt(distSq(p, a), distSq(p, b)); }
-bool distOrderLe(ref p, ref a, ref b) { return !distOrderLt(p, b, a); }
-bool distOrderGt(ref p, ref a, ref b) { return distOrderLt(p, b, a); }
-bool distOrderGe(ref p, ref a, ref b) { return !distOrderLt(p, a, b); }
-
-template <class Func> struct PtCmp {
-    pt pivot; Func cmp; PtCmp(ref pivot, Func cmp) : pivot(pivot), cmp(cmp) {}
-    bool operator () (ref a, ref b) { return cmp(pivot, a, b); }
-};
-
-template <class Func> PtCmp<Func> makePointCmp(ref pivot, Func cmp) { return PtCmp<Func>(pivot, cmp); }
+bool xOrdLt(ref a, ref b) { return lt(a.x, b.x); }
+bool xOrdLe(ref a, ref b) { return !xOrdLt(b, a); }
+bool xOrdGt(ref a, ref b) { return xOrdLt(b, a); }
+bool xOrdGe(ref a, ref b) { return !xOrdLt(a, b); }
+bool yOrdLt(ref a, ref b) { return lt(a.y, b.y); }
+bool yOrdLe(ref a, ref b) { return !yOrdLt(b, a); }
+bool yOrdGt(ref a, ref b) { return yOrdLt(b, a); }
+bool yOrdGe(ref a, ref b) { return !yOrdLt(a, b); }
+bool xyOrdLt(ref a, ref b) { return eq(a.x, b.x) ? lt(a.y, b.y) : lt(a.x, b.x); }
+bool xyOrdLe(ref a, ref b) { return !xyOrdLt(b, a); }
+bool xyOrdGt(ref a, ref b) { return xyOrdLt(b, a); }
+bool xyOrdGe(ref a, ref b) { return !xyOrdLt(a, b); }
+bool yxOrdLt(ref a, ref b) { return eq(a.y, b.y) ? lt(a.x, b.x) : lt(a.y, b.y); }
+bool yxOrdLe(ref a, ref b) { return !yxOrdLt(b, a); }
+bool yxOrdGt(ref a, ref b) { return yxOrdLt(b, a); }
+bool yxOrdGe(ref a, ref b) { return !yxOrdLt(a, b); }
+bool rOrdLt(ref a, ref b) { return lt(norm(a), norm(b)); }
+bool rOrdLe(ref a, ref b) { return !rOrdLt(b, a); }
+bool rOrdGt(ref a, ref b) { return rOrdLt(b, a); }
+bool rOrdGe(ref a, ref b) { return !rOrdLt(a, b); }
+function<bool(ref, ref)> ccwOrdLt(ref p) { return [=] (ref a, ref b) { return 0 < ccw(p, a, b); }; }
+function<bool(ref, ref)> ccwOrdLe(ref p) { return [=] (ref a, ref b) { return 0 <= ccw(p, a, b); }; }
+function<bool(ref, ref)> ccwOrdGt(ref p) { return [=] (ref a, ref b) { return 0 > ccw(p, a, b); }; }
+function<bool(ref, ref)> ccwOrdGe(ref p) { return [=] (ref a, ref b) { return 0 >= ccw(p, a, b); }; }
+function<bool(ref, ref)> distOrdLt(ref p) { return [=] (ref a, ref b) { return lt(distSq(p, a), distSq(p, b)); }; }
+function<bool(ref, ref)> distOrdLe(ref p) { return [=] (ref a, ref b) { return le(distSq(p, a), distSq(p, b)); }; }
+function<bool(ref, ref)> distOrdGt(ref p) { return [=] (ref a, ref b) { return gt(distSq(p, a), distSq(p, b)); }; }
+function<bool(ref, ref)> distOrdGe(ref p) { return [=] (ref a, ref b) { return ge(distSq(p, a), distSq(p, b)); }; }
 
 // returns iterator to first element equal to pivot
-// cmp is the angle comparison function (ccwOrderLt or ccwOrderGt)
-// rot is the rotation comparison function (xyOrderLt, xyOrderGt, yxOrderLt, yxOrderGt)
+// cmp is the angle comparison function (ccwOrdLt or ccwOrdGt)
+// rot is the rotation comparison function (xyOrdLt, xyOrdGt, yxOrdLt, yxOrdGt)
 // points p that return true for rot(p, pivot) will appear before those that do not
 // points that are equal to pivot appear after all other points
-template <class It, class F1 = function<bool(ref, ref, ref)>, class F2 = function<bool(ref, ref)>>
-        It sortByAng(ref pivot, It st, It en, F1 cmp = ccwOrderLt, F2 rot = yxOrderLt) {
+template <class It, class F1 = function<function<bool(ref, ref)>(ref)>, class F2 = function<bool(ref, ref)>>
+        It sortByAng(ref pivot, It st, It en, F1 cmp = ccwOrdLt, F2 rot = yxOrdLt) {
     en = partition(st, en, [&] (ref p) { return p != pivot; });
     It mid = partition(st, en, [&] (ref p) { return rot(p, pivot); });
-    PtCmp<F1> pc(pivot, cmp); sort(st, mid, pc); sort(mid, en, pc); return en;
-}
-
-// returns true iff p is on the line segment a-b
-bool onSeg(ref p, ref a, ref b) { return ccw(p, a, b) == 0 && le(dot(a - p, b - p), T(0)); }
-int lineSegIntersects(ref a, ref b, ref p, ref q) { // returns 0 if no intersection, 1 if proper intersection, 2 otherwise
-    int o1 = ccw(a, b, p), o2 = ccw(a, b, q), o3 = ccw(p, q, a), o4 = ccw(p, q, b);
-    if (o1 != o2 && o3 != o4) return 1;
-    else if ((o1 == 0 && onSeg(p, a, b)) || (o2 == 0 && onSeg(q, a, b)) || (o3 == 0 && onSeg(a, p, q)) || (o4 == 0 && onSeg(b, p, q))) return 2;
-    else return 0;
-}
-vector<pt> lineSegIntersection(ref a, ref b, ref p, ref q) {
-    int intersects = lineSegIntersects(a, b, p, q);
-    if (intersects == 0) return vector<pt>();
-    else if (intersects == 1) { T c1 = cross(p - a, b - a), c2 = cross(q - a, b - a); return vector<pt>{(c1 * q - c2 * p) / (c1 - c2)}; }
-    vector<pt> ret;
-    if (onSeg(p, a, b)) ret.push_back(p);
-    if (onSeg(q, a, b)) ret.push_back(q);
-    if (onSeg(a, p, q)) ret.push_back(a);
-    if (onSeg(b, p, q)) ret.push_back(b);
-    sort(ret.begin(), ret.end(), xyOrderLt); ret.erase(unique(ret.begin(), ret.end(), pt_eq()), ret.end());
-    return ret;
+    function<bool(ref, ref)> pc = cmp(pivot); sort(st, mid, pc); sort(mid, en, pc); return en;
 }
