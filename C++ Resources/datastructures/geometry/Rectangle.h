@@ -20,10 +20,10 @@ struct Rectangle {
     bool contains(const Rectangle &that) const { // does this rectangle contain that rectangle
         return le(xmin, that.xmin) && le(ymin, that.ymin) && le(that.xmax, xmax) && le(that.ymax, ymax);
     }
-    bool contains(const Point &p) const {
+    bool contains(ref p) const {
         return le(xmin, p.x) && le(ymin, p.y) && le(p.x, xmax) && le(p.y, ymax);
     }
-    T distSq(const Point &p) const {
+    T distSq(ref p) const {
         T dx = 0, dy = 0;
         if (p.x < xmin) dx = p.x - xmin;
         else if (p.x > xmax) dx = p.x - xmax;
@@ -31,7 +31,7 @@ struct Rectangle {
         else if (p.y > ymax) dy = p.y - ymax;
         return dx * dx + dy * dy;
     }
-    F dist(const Point &p) const { return sqrt(distSq(p)); }
+    F dist(ref p) const { return sqrt(distSq(p)); }
     bool operator == (const Rectangle &that) const {
         return eq(xmin, that.xmin) && eq(ymin, that.ymin) && eq(xmax, that.xmax) && eq(ymax, that.ymax);
     }
