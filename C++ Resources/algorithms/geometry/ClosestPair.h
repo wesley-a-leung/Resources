@@ -26,6 +26,6 @@ template <const int MAXN> struct ClosestPair {
         }
     }
     T solve(int N) {
-        bestDistSquared = (numeric_limits<T>::max)(); sort(P, P + N, xOrdLt); closest(0, N - 1); return bestDistSquared;
+        bestDistSquared = numeric_limits<T>::max(); sort(P, P + N, xOrdLt); closest(0, N - 1); return bestDistSquared;
     }
 };

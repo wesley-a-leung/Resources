@@ -27,7 +27,7 @@ template <const int MAXN, class T> struct MinDifferenceSubset {
         sort(diff.begin(), diff.end()); diff.resize(unique(diff.begin(), diff.end()) - diff.begin());
     }
     T solve(int N) { // returns the smallest absolute difference of sums, elements are stored in setA and setB
-        T minDiff = (numeric_limits<T>::max)(); vector<T> even, odd; even.reserve(N - N / 2); odd.reserve(N / 2);
+        T minDiff = numeric_limits<T>::max(); vector<T> even, odd; even.reserve(N - N / 2); odd.reserve(N / 2);
         vector<pair<T, int>> evenDiff, oddDiff; evenDiff.reserve(POW(N - N / 2)); oddDiff.reserve(POW(N / 2));
         int evenPerm = 0, oddPerm = 0; setA.clear(); setB.clear();
         for (int i = 0; i < N; i++) {

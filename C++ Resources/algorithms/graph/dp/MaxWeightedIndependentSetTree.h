@@ -10,8 +10,8 @@ template <const int MAXV, class T> struct MaxWeightedIndependentSet {
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(w); }
     void addBiEdge(int v, int w) { addEdge(v, w); addEdge(w, v); }
     T dfs(int v, int prev, bool take) {
-        if (dp[v][take] != (numeric_limits<T>::max)()) return dp[v][take];
-        T ret = (numeric_limits<T>::lowest)();
+        if (dp[v][take] != numeric_limits<T>::max()) return dp[v][take];
+        T ret = numeric_limits<T>::lowest();
         int cnt = 0;
         for (int w : adj[v]) {
             if (w == prev) continue;
@@ -24,7 +24,7 @@ template <const int MAXV, class T> struct MaxWeightedIndependentSet {
     }
     void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
     T solve(int V, int root = 0) {
-        for (int i = 0; i < V; i++) dp[i][0] = dp[i][1] = (numeric_limits<T>::max)();
+        for (int i = 0; i < V; i++) dp[i][0] = dp[i][1] = numeric_limits<T>::max();
         return max(dfs(root, true), dfs(root, false));
     }
 };
