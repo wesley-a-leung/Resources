@@ -9,7 +9,7 @@ using namespace std;
 // Memory Complexity: O(len(pat)) additional memory
 template <const int MAXS> struct KMP {
     int LCP[MAXS]; string pat; vector<int> matches;
-    void preCompute(const string &pat) {
+    void run(const string &pat) {
         this->pat = pat; LCP[0] = -1;
         for (int i = 0, j = -1; i < int(pat.length()); i++, j++, LCP[i] = (i != int(pat.length()) && pat[i] == pat[j]) ? LCP[j] : j)
             while (j >= 0 && pat[i] != pat[j]) j = LCP[j];

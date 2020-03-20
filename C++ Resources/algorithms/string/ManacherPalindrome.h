@@ -7,7 +7,7 @@ using namespace std;
 // Memory Complexity: O(S) additional memory
 template <const int MAXS> struct ManacherPalindrome {
     int p[MAXS * 2]; string s; char t[MAXS * 2];
-    void preProcess(const string &s) {
+    void run(const string &s) {
         this->s = s; t[0] = '$'; t[s.length() * 2 + 1] = '#'; t[s.length() * 2 + 2] = '@';
         for (int i = 0; i < int(s.length()); i++) { t[2 * i + 1] = '#'; t[2 * i + 2] = s[i]; }
         int center = 0, right = 0; fill(p, p + int(s.length()) * 2 + 3, 0);
