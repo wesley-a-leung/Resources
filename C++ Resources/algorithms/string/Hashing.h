@@ -16,24 +16,27 @@ mt19937_64 rng64(seq);
 //   getHash: O(H)
 // Memory Complexity: O(S * H)
 template <const int MAXN, const int HASHES, class T, const int OFFSET> struct Hashing {
-    T BASE[HASHES], MOD[HASHES], H[MAXN][HASHES], POW[MAXN][HASHES];
+    T BASE[HASHES], MOD[HASHES], H[MAXN][HASHES], POW[MAXN][HASHES]; struct HASH : public array<T, HASHES> { int len; };
     Hashing(const array<T, HASHES> &mod) {
         for (int h = 0; h < HASHES; h++) { MOD[h] = mod[h]; BASE[h] = uniform_int_distribution<T>(MOD[h] / 2, MOD[h] - 2)(rng64); }
     }
-    void compute(const string &s) {
+    void run(const string &s) {
         int N = int(s.length()); fill(POW[0], POW[0] + HASHES, 1); fill(H[N], H[N] + HASHES, 0);
         for (int i = 1; i <= N; i++) for (int h = 0; h < HASHES; h++) POW[i][h] = mulMod(POW[i - 1][h], BASE[h], MOD[h]);
         for (int i = N - 1; i >= 0; i--) for (int h = 0; h < HASHES; h++)
             H[i][h] = addMod(mulMod(H[i + 1][h], BASE[h], MOD[h]), T(s[i] - OFFSET + 1), MOD[h]);
     }
-    array<T, HASHES> getHash(int l, int r) { // hash for substring [l, r)
-        array<T, HASHES> ret;
+    HASH getHash(int l, int r) { // hash for substring [l, r)
+        HASH ret; ret.len = r - l; 
         for (int h = 0; h < HASHES; h++) ret[h] = subMod(H[l][h], mulMod(H[r][h], POW[r - l][h], MOD[h]), MOD[h]);
         return ret;
     }
-    array<T, HASHES> concat(int l1, int r1, int l2, int r2) { // hash for the concatenated substring [l1, r1) + [l2, r2)
-        array<T, HASHES> h1 = getHash(l1, r1), h2 = getHash(l2, r2), ret;
-        for (int h = 0; h < HASHES; h++) addMod(h1[h], mulMod(h2[h], POW[r1 - l1][h], MOD[h]), MOD[h]);
+    HASH merge(const HASH &h1, const HASH &h2) { // merges 2 hashes
+        HASH ret; ret.len = h1.len + h2.len;
+        for (int h = 0; h < HASHES; h++) ret[h] = addMod(h1[h], mulMod(h2[h], POW[h1.len][h], MOD[h]), MOD[h]);
         return ret;
+    }
+    HASH concat(int l1, int r1, int l2, int r2) { // hash for the concatenated substring [l1, r1) + [l2, r2)
+        return merge(getHash(l1, r1), getHash(l2, r2));
     }
 };
