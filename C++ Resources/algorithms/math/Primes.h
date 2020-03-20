@@ -41,11 +41,11 @@ vector<long long> factors(long long x) {
     return ret;
 }
 
-seed_seq seq {
-    (uint64_t)chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
+std::seed_seq seq{
+    (uint64_t)std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count(),
     (uint64_t)__builtin_ia32_rdtsc(),(uint64_t)(uintptr_t)make_unique<char>().get()
 };
-mt19937_64 rng64(seq);
+std::mt19937_64 rng64(seq);
 
 // Determines whether N is prime using the Miller Rabin Primality Test
 // Time Complexity: O(log N) * (time to square 2 integers) * iterations
