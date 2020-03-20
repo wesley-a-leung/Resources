@@ -8,11 +8,11 @@ using namespace std;
 //   If there are negative weights, but no negative cycles, the time complexity can become exponential
 // Memory Complexity: O(V + E)
 
-seed_seq seq {
-    (uint64_t)chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
+std::seed_seq seq{
+    (uint64_t)std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count(),
     (uint64_t)__builtin_ia32_rdtsc(),(uint64_t)(uintptr_t)make_unique<char>().get()
 };
-mt19937 rng(seq);
+std::mt19937 rng(seq);
 
 template <const int MAXV, class unit> struct SPFA {
     unit INF, dist[MAXV]; int DQ[MAXV]; SPFA(unit INF) : INF(INF) {}
