@@ -7,7 +7,7 @@ std::seed_seq seq{
     (uint64_t)std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count(),
     (uint64_t)__builtin_ia32_rdtsc(),(uint64_t)(uintptr_t)make_unique<char>().get()
 };
-std::mt19937 rng(seq);std::mt19937_64 rng64(seq);
+std::mt19937_64 rng64(seq);
 
 // Computes the hash of a string to allow for easy computation of substring hashes for H hashes
 // MOD should be at least S^2 to prevent collisions
