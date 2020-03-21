@@ -146,7 +146,7 @@ template <const int MAXE, const int MAXRANGE> struct SegmentedSieve {
 template <class T> T pollardsRho(T N, int iterations = 40) {
     auto f = [&] (T x) { return mulMod(x, x, N) + 1; };
     T x = 0, y = 0, p = 2, q; int t = 0, i = 1;
-    while (t++ % 40 != 0 || gcd(p, N) == 1) {
+    while (t++ % iterations != 0 || gcd(p, N) == 1) {
         if (x == y) y = f(x = ++i);
         if ((q = mulMod(p, max(x, y) - min(x, y), N)) != 0) p = q;
         x = f(x); y = f(f(y));
