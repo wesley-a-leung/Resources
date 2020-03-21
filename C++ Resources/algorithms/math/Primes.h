@@ -1,6 +1,7 @@
 #pragma once
 #include <bits/stdc++.h>
 #include "Combinatorics.h"
+#include "GCD.h"
 using namespace std;
 
 // Determines whether x is prime
@@ -48,16 +49,19 @@ std::seed_seq seq{
 std::mt19937_64 rng64(seq);
 
 // Determines whether N is prime using the Miller Rabin Primality Test
-// Time Complexity: O(log N) * (time to square 2 integers) * iterations
-// Memory Complexity: O(1)
-template <class T> bool millerRabin(T N, int iterations) {
-    if (N < 2 || (N != 2 && N % 2 == 0)) return false;
-    T s = N - 1;
-    while (s % 2 == 0) s /= 2;
-    for (int i = 0; i < iterations; i++) {
-        T temp = s, r = powMod(uniform_int_distribution<T>(1, N - 1)(rng64) % N, temp, N);
-        while (temp != N - 1 && r != 1 && r != N - 1) { r = mulMod(r, r, N); temp *= 2; }
-        if (r != N - 1 && temp % 2 == 0) return false;
+// Time Complexity: iterations * time complexity of powMod
+// Memory Complexity: O(iterations)
+template <class T> bool millerRabin(T N, int iterations = 7) {
+    if (N < 2 || N % 6 % 4 != 1) return (N | 1) == 3;
+    vector<T> A = {2, 325, 9375, 28178, 450775, 9780504, 1795265022};
+    while (int(A.size()) < iterations) A.push_back(uniform_int_distribution<long long>(1795265023, numeric_limits<long long>::max())(rng));
+    int s = 0;
+    while (!(((N - 1) >> s) & 1)) s++;
+    T d = N >> s;
+    for (T a : A) {
+        T p = powMod(a % N, d, N); int i = s;
+        while (p != 1 && p != N - 1 && a % N != 0 && i--) p = mulMod(p, p, N);
+        if (p != N - 1 && i != s) return false;
     }
     return true;
 }
@@ -139,26 +143,26 @@ template <const int MAXE, const int MAXRANGE> struct SegmentedSieve {
 // Returns a divisor of N
 // Time Complexity: O(log N)
 // Memory Complexity: O(1)
-template <class T> T pollardsRho(T N) {
-    if (N <= 1) return N;
-    if (N % 2 == 0) return 2;
-    T x = uniform_int_distribution<T>(2, N - 1)(rng64), y = x, c = uniform_int_distribution<T>(1, N - 1)(rng64), d = 1;
-    while (d == 1) {
-        x = addMod(mulMod(x, x, N), c, N); y = addMod(mulMod(y, y, N), c, N); y = addMod(mulMod(y, y, N), c, N); d = __gcd(x >= y ? x - y : y - x, N);
-        if (d == N) return pollardsRho(N);
+template <class T> T pollardsRho(T N, int iterations = 40) {
+    auto f = [&] (T x) { return mulMod(x, x, N) + 1; };
+    T x = 0, y = 0, p = 2, q; int t = 0, i = 1;
+    while (t++ % 40 != 0 || gcd(p, N) == 1) {
+        if (x == y) y = f(x = ++i);
+        if ((q = mulMod(p, max(x, y) - min(x, y), N)) != 0) p = q;
+        x = f(x); y = f(f(y));
     }
-    return d;
+    return gcd(p, N);
 }
 
 // Returns the prime factors of N
-// Time Complexity: O(x ^ (1/4) * (log x) ^ 2)
+// Time Complexity: O(x ^ (1/4) * (log x))
 // Memory Complexity: O(log x)
-template <class T> vector<T> pollardsRhoPrimeFactor(T x, int millerRabinIters) {
+template <class T> vector<T> pollardsRhoPrimeFactor(T x, int pollardsRhoIters = 40, int millerRabinIters = 7) {
     vector<T> ret; queue<T> q; q.push(x);
     while (!q.empty()) {
         T y = q.front(); q.pop();
         if (millerRabin(y, millerRabinIters)) ret.push_back(y);
-        else { q.push(pollardsRho(y)); q.push(y / q.back()); }
+        else { q.push(pollardsRho(y, pollardsRhoIters)); q.push(y / q.back()); }
     }
     return ret;
 }
@@ -166,8 +170,8 @@ template <class T> vector<T> pollardsRhoPrimeFactor(T x, int millerRabinIters) {
 // Returns the prime factors of N and the count of each factor
 // Time Complexity: O(x ^ (1/4) * (log x) ^ 2)
 // Memory Complexity: O(log x)
-template <class T> vector<pair<T, int>> pollardsRhoPrimeFactorWithCount(T x, int millerRabinIters) {
-    vector<T> pf = pollardsRhoPrimeFactor(x, millerRabinIters); sort(pf.begin(), pf.end()); vector<pair<T, int>> ret;
+template <class T> vector<pair<T, int>> pollardsRhoPrimeFactorWithCount(T x, int pollardsRhoIters = 40, int millerRabinIters = 7) {
+    vector<T> pf = pollardsRhoPrimeFactor(x, pollardsRhoIters, millerRabinIters); sort(pf.begin(), pf.end()); vector<pair<T, int>> ret;
     for (int i = 0, cnt = 0; i < int(pf.size()); i++) {
         cnt++;
         if (i + 1 == int(pf.size()) || pf[i] != pf[i + 1]) { ret.emplace_back(pf[i], cnt); cnt = 0; }
