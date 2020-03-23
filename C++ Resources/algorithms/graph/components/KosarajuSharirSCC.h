@@ -6,13 +6,13 @@ using namespace std;
 // Time Complexity: O(V + E)
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct KosarajuSharirSCC {
-    int id[MAXV]; bool vis[MAXV]; vector<int> adj[MAXV], rev[MAXV], DAG[MAXV];
-    vector<vector<int>> components; stack<int, vector<int>> revPost;
+    int id[MAXV]; bool vis[MAXV]; vector<int> adj[MAXV], rev[MAXV], DAG[MAXV], revPost;
+    vector<vector<int>> components;
     void addEdge(int v, int w) { adj[v].push_back(w); rev[w].push_back(v); }
     void postOrder(int v) {
         vis[v] = true;
         for (int w : rev[v]) if (!vis[v]) postOrder(w);
-        revPost.push(v);
+        revPost.push_back(v);
     }
     void dfs(int v) {
         vis[v] = true; id[v] = components.size() - 1; components.back().push_back(v);
@@ -22,11 +22,8 @@ template <const int MAXV> struct KosarajuSharirSCC {
     void run(int V) {
         fill(vis, vis + V, false);
         for (int v = 0; v < V; v++) if (!vis[v]) postOrder(v);
-        fill(vis, vis + V, false);
-        while (!revPost.empty()) {
-            int v = revPost.top(); revPost.pop();
-            if (!vis[v]) { components.emplace_back(); dfs(v); }
-        }
+        fill(vis, vis + V, false); reverse(revPost.begin(), revPost.end());
+        for (int v : revPost) if (!vis[v]) { components.emplace_back(); dfs(v); }
     }
     void genDAG(int V) {
         for (int v = 0; v < V; v++) for (int w : adj[v]) if (id[v] != id[w]) DAG[id[v]].push_back(id[w]);
