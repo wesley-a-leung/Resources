@@ -6,8 +6,7 @@ using namespace std;
 // Time Complexity: O(V + E)
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct KosarajuSharirSCC {
-    int id[MAXV]; bool vis[MAXV]; vector<int> adj[MAXV], rev[MAXV], DAG[MAXV], revPost;
-    vector<vector<int>> components;
+    int id[MAXV]; bool vis[MAXV]; vector<int> adj[MAXV], rev[MAXV], DAG[MAXV], revPost; vector<vector<int>> components;
     void addEdge(int v, int w) { adj[v].push_back(w); rev[w].push_back(v); }
     void postOrder(int v) {
         vis[v] = true;
