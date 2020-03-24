@@ -18,7 +18,7 @@ std::mt19937_64 rng64(seq);
 template <const int MAXN, const int HASHES, class T, const int OFFSET> struct Hashing {
     T BASE[HASHES], MOD[HASHES], H[MAXN][HASHES], POW[MAXN][HASHES]; struct HASH : public array<T, HASHES> { int len; };
     Hashing(const array<T, HASHES> &mod) {
-        for (int h = 0; h < HASHES; h++) { MOD[h] = mod[h]; BASE[h] = uniform_int_distribution<T>(MOD[h] / 2, MOD[h] - 2)(rng64); }
+        for (int h = 0; h < HASHES; h++) { MOD[h] = mod[h]; BASE[h] = uniform_int_distribution<T>(MOD[h] / 4, MOD[h] / 4 * 3)(rng64); }
     }
     void run(const string &s) {
         int N = int(s.length()); fill(POW[0], POW[0] + HASHES, 1); fill(H[N], H[N] + HASHES, 0);
