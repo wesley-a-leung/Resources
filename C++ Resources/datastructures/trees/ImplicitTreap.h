@@ -13,35 +13,17 @@ std::seed_seq seq{
     (uint64_t)__builtin_ia32_rdtsc(),(uint64_t)(uintptr_t)make_unique<char>().get()
 };
 std::mt19937_64 rng64(seq); uniform_int_distribution<long long> dis;
-#define STORE_PARENT 1
 using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0;
 Data merge(const Data &l, const Data &r); // to be implemented
 Data applyLazy(const Data &l, const Lazy &r); // to be implemented
 struct Node {
-    Node *l, *r;
-    #if STORE_PARENT
-        Node *p;
-    #endif
+    Node *l, *r, *p;
     int size; long long pri; Data val, sbtr;
-    Node(const Data &val) : l(nullptr), r(nullptr),
-        #if STORE_PARENT
-            p(nullptr),
-        #endif
-        size(1), pri(dis(rng64)), val(val), sbtr(val) {}
+    Node(const Data &val) : l(nullptr), r(nullptr), p(nullptr), size(1), pri(dis(rng64)), val(val), sbtr(val) {}
     void update() {
         size = 1; sbtr = val;
-        if (l) {
-            #if STORE_PARENT
-                l->p = this;
-            #endif
-            size += l->size; sbtr = merge(l->sbtr, sbtr);
-        }
-        if (r) {
-            #if STORE_PARENT
-                r->p = this;
-            #endif
-            size += r->size; sbtr = merge(sbtr, r->sbtr);
-        }
+        if (l) { l->p = this; size += l->size; sbtr = merge(l->sbtr, sbtr); }
+        if (r) { r->p = this; size += r->size; sbtr = merge(sbtr, r->sbtr); }
     }
     void apply(const Lazy &v) { val = applyLazy(val, v); sbtr = applyLazy(sbtr, v); }
 };
@@ -56,9 +38,7 @@ void merge(Node *&x, Node *l, Node *r) {
 }
 void split(Node *x, Node *&l, Node *&r, int lsz) {
     if (!x) { l = r = nullptr; return; }
-    #if STORE_PARENT
-        x->p = nullptr;
-    #endif
+    x->p = nullptr;
     if (lsz <= Size(x->l)) { split(x->l, l, x->l, lsz); r = x; }
     else { split(x->r, x->r, r, lsz - Size(x->l) - 1); l = x; }
     x->update();
@@ -70,15 +50,12 @@ Node *select(Node *x, int k) { // 0-indexed
     else if (t < k) return select(x->r, k - t - 1);
     return x;
 }
-#if STORE_PARENT
-    int index(Node *x) { // 0-indexed
-        if (!x) return -1;
-        int ind = Size(x->l);
-        for (; x->p; x = x->p) if (x->p->l != x) ind += 1 + Size(x->p->l);
-        return ind;
-    }
-#endif
-
+int index(Node *x) { // 0-indexed
+    if (!x) return -1;
+    int ind = Size(x->l);
+    for (; x->p; x = x->p) if (x->p->l != x) ind += 1 + Size(x->p->l);
+    return ind;
+}
 struct ImplicitTreap {
     vector<Node> T; Node *root;
     ImplicitTreap(int N) {
