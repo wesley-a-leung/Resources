@@ -5,7 +5,7 @@
 // it can improve performance for small data types
 // #pragma GCC target("avx,avx2,fma")
 #include <bits/stdc++.h>
-#include "Combinatorics.h"
+#include "BinaryExponentiation.h"
 using namespace std;
 
 // Karatsuba Multiplication

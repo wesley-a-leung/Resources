@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "Combinatorics.h"
+#include "ModularArithmetic.h"
 using namespace std;
 
 // Number Theoretic Transform
