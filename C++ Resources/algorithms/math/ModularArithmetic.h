@@ -31,30 +31,30 @@ template <class T> T mulModOvf(T a, T b, T mod) {
 }
 
 struct Montgomery {
-    using uint64 = uint64_t; using uint128 = __uint128_t; using int128 = __int128_t;
-    struct uint256 {
-        static uint128 HI(uint128 x) { return x >> 64; }
-        static uint128 LO(uint128 x) { return uint64(x); }
-        uint128 hi, lo;
-        uint256(uint128 lo = 0) : hi(0), lo(lo) {}
-        uint256(uint128 hi, uint128 lo) : hi(hi), lo(lo) {}
-        static uint256 mul(uint128 x, uint128 y) {
-            uint128 t1 = LO(x) * LO(y), t2 = HI(x) * LO(y) + HI(y) * LO(x) + HI(t1);
-            return uint256(HI(x) * HI(y) + HI(t2), (t2 << 64) + LO(t1));
+    using u64 = uint64_t; using u128 = __uint128_t; using s128 = __int128_t;
+    struct u256 {
+        static u128 HI(u128 x) { return x >> 64; }
+        static u128 LO(u128 x) { return u64(x); }
+        u128 hi, lo;
+        u256(u128 lo = 0) : hi(0), lo(lo) {}
+        u256(u128 hi, u128 lo) : hi(hi), lo(lo) {}
+        static u256 mul(u128 x, u128 y) {
+            u128 t1 = LO(x) * LO(y), t2 = HI(x) * LO(y) + HI(y) * LO(x) + HI(t1);
+            return u256(HI(x) * HI(y) + HI(t2), (t2 << 64) + LO(t1));
         }
     };
-    uint128 mod, inv, r2;
-    Montgomery(uint128 mod = 1) : mod(mod), inv(1), r2(-mod % mod) {
+    u128 mod, inv, r2;
+    Montgomery(u128 mod = 1) : mod(mod), inv(1), r2(-mod % mod) {
         for (int i = 0; i < 7; i++) inv *= 2 - mod * inv;
         for (int i = 0; i < 4; i++) if ((r2 <<= 1) >= mod) r2 -= mod;
         for (int i = 0; i < 5; i++) r2 = mul(r2, r2);
     }
-    uint128 init(uint128 x) { return mul(x, r2); }
-    uint128 reduce(uint256 x) {
-        uint128 q = x.lo * inv; int128 a = x.hi - uint256::mul(q, mod).hi;
+    u128 init(u128 x) { return mul(x, r2); }
+    u128 reduce(u256 x) {
+        u128 q = x.lo * inv; s128 a = x.hi - u256::mul(q, mod).hi;
         return a < 0 ? a + mod : a;
     }
-    uint128 mul(uint128 a, uint128 b) { return reduce(uint256::mul(a, b)); }
+    u128 mul(u128 a, u128 b) { return reduce(u256::mul(a, b)); }
 };
 
 // Specialization of mulMod for unsigned 128-bit mod integers
