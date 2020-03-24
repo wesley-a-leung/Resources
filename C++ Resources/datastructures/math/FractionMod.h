@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "../../algorithms/math/Combinatorics.h"
+#include "../../algorithms/math/ModularArithmetic.h"
 using namespace std;
 
 // Data structure representing a Fraction modulo a prime MOD

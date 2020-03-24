@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "../math/Combinatorics.h"
+#include "../math/ModularArithmetic.h"
 using namespace std;
 
 std::seed_seq seq{

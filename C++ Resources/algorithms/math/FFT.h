@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "Combinatorics.h"
+#include "BinaryExponentiation.h"
 using namespace std;
 
 // Fast Fourier Transform
