@@ -30,6 +30,43 @@ template <class T> T mulModOvf(T a, T b, T mod) {
     return x;
 }
 
+struct Montgomery {
+    using uint64 = uint64_t; using uint128 = __uint128_t; using int128 = __int128_t;
+    struct uint256 {
+        static uint128 HI(uint128 x) { return x >> 64; }
+        static uint128 LO(uint128 x) { return uint64(x); }
+        uint128 hi, lo;
+        uint256(uint128 lo = 0) : hi(0), lo(lo) {}
+        uint256(uint128 hi, uint128 lo) : hi(hi), lo(lo) {}
+        static uint256 mul(uint128 x, uint128 y) {
+            uint128 t1 = LO(x) * LO(y), t2 = HI(x) * LO(y) + HI(y) * LO(x) + HI(t1);
+            return uint256(HI(x) * HI(y) + HI(t2), (t2 << 64) + LO(t1));
+        }
+    };
+    uint128 mod, inv, r2;
+    Montgomery(uint128 mod = 1) : mod(mod), inv(1), r2(-mod % mod) {
+        for (int i = 0; i < 7; i++) inv *= 2 - mod * inv;
+        for (int i = 0; i < 4; i++) if ((r2 <<= 1) >= mod) r2 -= mod;
+        for (int i = 0; i < 5; i++) r2 = mul(r2, r2);
+    }
+    uint128 init(uint128 x) { return mul(x, r2); }
+    uint128 reduce(uint256 x) {
+        uint128 q = x.lo * inv; int128 a = x.hi - uint256::mul(q, mod).hi;
+        return a < 0 ? a + mod : a;
+    }
+    uint128 mul(uint128 a, uint128 b) { return reduce(uint256::mul(a, b)); }
+};
+
+// Specialization of mulMod for unsigned 128-bit integers
+// Uses Montgomery Reduction 
+// Time Complexity: O(1)
+// Required: 0 <= a < mod, 0 <= b < mod
+template <> __uint128_t mulMod(__uint128_t a, __uint128_t b, __uint128_t mod) {
+    static Montgomery mont;
+    if (mont.mod != mod) mont = Montgomery(mod);
+    return mont.reduce(mont.mul(mont.init(a), mont.init(b)));
+}
+
 // base ^ pow
 // Time Complexity: O(log pow)
 // If multiplication is an expensive operation, then y = y * y should only be computed when pow > 0
