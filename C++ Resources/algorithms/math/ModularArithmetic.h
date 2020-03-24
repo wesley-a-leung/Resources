@@ -57,11 +57,11 @@ struct Montgomery {
     uint128 mul(uint128 a, uint128 b) { return reduce(uint256::mul(a, b)); }
 };
 
-// Specialization of mulMod for unsigned 128-bit integers
+// Specialization of mulMod for unsigned 128-bit mod integers
 // Uses Montgomery Reduction 
 // Time Complexity: O(1)
 // Required: 0 <= a < mod, 0 <= b < mod
-template <> __uint128_t mulMod(__uint128_t a, __uint128_t b, __uint128_t mod) {
+__uint128_t mulMod128(__uint128_t a, __uint128_t b, __uint128_t mod) {
     static Montgomery mont;
     if (mont.mod != mod) mont = Montgomery(mod);
     return mont.reduce(mont.mul(mont.init(a), mont.init(b)));
