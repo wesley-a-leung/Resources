@@ -12,6 +12,18 @@ template <class T> T factorial(T n, T m) {
     return ret;
 }
 
+// n! % p for a prime p 
+// Time Complexity: O(p log n)  
+template <class T> T factorialPrime(T n, T p) { 
+    if (n >= p) return 0;   
+    T ret = 1, h = 0;   
+    while (n > 1) { 
+        ret = mulMod(ret, ((n / p) & 1) ? p - 1 : T(1), p); h = n % p; n /= p;  
+        for (int i = 2; i <= h; i++) ret = mulMod(ret, T(i), p);    
+    }   
+    return ret; 
+}
+
 // n choose k
 // Time Complexity: O(min(k, n - k))
 template <class T> T choose(int n, int k) {
