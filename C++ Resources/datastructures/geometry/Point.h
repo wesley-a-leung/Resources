@@ -2,11 +2,11 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-using T = long double; using F = long double; using pt = complex<T>; const F EPS = 1e-9;
+using T = long double; using pt = complex<T>; const T EPS = 1e-9;
 #define x real()
 #define y imag()
 #define ref const pt &  
-static_assert(is_floating_point<F>::value, "F must be a a floating point type");
+static_assert(is_floating_point<T>::value, "F must be a a floating point type");
 
 template <class T> bool lt(const T &a, const T &b) { return a < b - T(EPS); }
 template <class T> bool le(const T &a, const T &b) { return !lt(b, a); }
@@ -24,17 +24,17 @@ struct pt_ne { bool operator () (ref a, ref b) const { return a != b; } };
 T dot(ref a, ref b) { return (conj(a) * b).x; }
 T cross(ref a, ref b) { return (conj(a) * b).y; }
 T norm(ref a) { return dot(a, a); }
-F abs(ref a) { return sqrt(F(norm(a))); }
-F arg(ref a) { return atan2(F(a.y), F(a.x)); }
+T abs(ref a) { return sqrt(norm(a)); }
+T arg(ref a) { return atan2(a.y, a.x); }
 T distSq(ref a, ref b) { return norm(b - a); }
-F dist(ref a, ref b) { return abs(b - a); }
-F ang(ref a, ref b) { return arg(b - a); }
+T dist(ref a, ref b) { return abs(b - a); }
+T ang(ref a, ref b) { return arg(b - a); }
 // sign of ang, area2, ccw: -1 if clockwise, 0 if collinear, +1 if counterclockwise
-F ang(ref a, ref b, ref c) { return remainder(ang(b, a) - ang(b, c), 2 * acos(F(-1))); }
+T ang(ref a, ref b, ref c) { return remainder(ang(b, a) - ang(b, c), 2 * acos(T(-1))); }
 T area2(ref a, ref b, ref c) { return cross(b - a, c - a); }
 int ccw(ref a, ref b, ref c) { return sgn(area2(a, b, c)); }
 // a rotated theta radians around p
-pt rot(ref a, ref p, const F &theta) { return (a - p) * pt(polar(F(1), theta)) + p; }
+pt rot(ref a, ref p, const T &theta) { return (a - p) * pt(polar(T(1), theta)) + p; }
 pt perp(ref a) { return pt(-a.y, a.x); }
 
 bool xOrdLt(ref a, ref b) { return lt(a.x, b.x); }

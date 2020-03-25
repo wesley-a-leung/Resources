@@ -11,7 +11,8 @@ struct Line {
     T eval(ref p) const { return cross(v, p) - c; }
     // -1 if left of line, 0 if on line, +1 if right of line
     int onLeft(ref p) const { return sgn(eval(p)); }
-    F dist(ref p) const { return abs(eval(p) / abs(v)); }
+    T distSq(ref p) const { T e = eval(p); return e * e / norm(v); }
+    T dist(ref p) const { return abs(eval(p) / abs(v)); }
     Line perpThrough(ref p) const { return Line(p, p + perp(v)); }
     // sort by othogonal projection
     function<bool(ref, ref)> cmpProjLt() const { return [=] (ref p, ref q) { return lt(dot(v, p), dot(v, q)); }; }
@@ -19,7 +20,7 @@ struct Line {
     function<bool(ref, ref)> cmpProjGt() const { return [=] (ref p, ref q) { return gt(dot(v, p), dot(v, q)); }; }
     function<bool(ref, ref)> cmpProjGe() const { return [=] (ref p, ref q) { return ge(dot(v, p), dot(v, q)); }; }
     Line translate(ref p) const { return Line(v, c + cross(v, p)); }
-    Line shiftLeft(F d) const { return Line(v, c + d * abs(v)); }
+    Line shiftLeft(T d) const { return Line(v, c + d * abs(v)); }
     pt proj(ref p) const { return p - perp(p) * eval(p) / norm(v); }
     pt refl(ref p) const { return p - perp(p) * T(2) * eval(p) / norm(v); }
     static int intersection(const Line &l1, const Line &l2, pt &res) { // returns 0 if no intersection, 1 if proper intersection, 2 otherwise
@@ -28,7 +29,7 @@ struct Line {
         res = (l2.v * l1.c - l1.v * l2.c) / d; return 1;
     }
     static Line bisector(const Line &l1, const Line &l2, bool interior) {
-        T s = interior ? 1 : -1; return Line(l2.v / T(abs(l2.v)) + l1.v / T(abs(l1.v)) * s, l2.c / abs(l2.v) + l1.c / abs(l1.v) * s);
+        T s = interior ? 1 : -1; return Line(l2.v / abs(l2.v) + l1.v / abs(l1.v) * s, l2.c / abs(l2.v) + l1.c / abs(l1.v) * s);
     }
 };
 
@@ -51,7 +52,7 @@ vector<pt> lineSegIntersection(ref a, ref b, ref p, ref q) {
     if (onSeg(b, p, q)) ret.push_back(b);
     sort(ret.begin(), ret.end(), xyOrdLt); ret.erase(unique(ret.begin(), ret.end(), pt_eq()), ret.end()); return ret;
 }
-F segPtDist(ref p, ref a, ref b) {
+T segPtDist(ref p, ref a, ref b) {
     if (a != b) {
         Line l(a, b);
         if (l.cmpProjLt()(a, p) && l.cmpProjLt()(p, b)) return l.dist(p);
@@ -65,6 +66,6 @@ pt closestPtToSeg(ref p, ref a, ref b) {
     }
     return lt(dist(p, a), dist(p, b)) ? a : b;
 }
-F segSegDist(ref a, ref b, ref p, ref q) {
+T segSegDist(ref a, ref b, ref p, ref q) {
     return lineSegIntersects(a, b, p, q) > 0 ? 0 : min({segPtDist(p, a, b), segPtDist(q, a, b), segPtDist(a, p, q), segPtDist(b, p, q)});
 }
