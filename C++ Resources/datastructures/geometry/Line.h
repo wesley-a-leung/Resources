@@ -26,7 +26,7 @@ struct Line {
 };
 int lineIntersection(const Line &l1, const Line &l2, pt &res) { // returns 0 if no intersection, 1 if proper intersection, 2 otherwise
     T d = cross(l1.v, l2.v);
-    if (eq(d, T(0))) return l2.v * l1.c == l1.v * l2.c ? 2 : 0;
+    if (eq(d, 0)) return l2.v * l1.c == l1.v * l2.c ? 2 : 0;
     res = (l2.v * l1.c - l1.v * l2.c) / d; return 1;
 }
 Line bisector(const Line &l1, const Line &l2, bool interior) {
@@ -34,7 +34,7 @@ Line bisector(const Line &l1, const Line &l2, bool interior) {
 }
 
 // returns true iff p is on the line segment a-b
-bool onSeg(ref p, ref a, ref b) { return ccw(p, a, b) == 0 && le(dot(a - p, b - p), T(0)); }
+bool onSeg(ref p, ref a, ref b) { return ccw(p, a, b) == 0 && le(dot(a - p, b - p), 0); }
 int lineSegIntersects(ref a, ref b, ref p, ref q) { // returns 0 if no intersection, 1 if proper intersection, 2 otherwise
     int o1 = ccw(a, b, p), o2 = ccw(a, b, q), o3 = ccw(p, q, a), o4 = ccw(p, q, b);
     if (o1 != o2 && o3 != o4) return 1;
