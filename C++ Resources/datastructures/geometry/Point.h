@@ -25,8 +25,8 @@ struct pt_eq { bool operator () (ref a, ref b) const { return a == b; } };
 struct pt_ne { bool operator () (ref a, ref b) const { return a != b; } }; 
 
 // abs gets polar distance, arg gets polar angle
-T dot(ref a, ref b) { return (conj(a) * b).x; }
-T cross(ref a, ref b) { return (conj(a) * b).y; }
+T dot(ref a, ref b) { return a.x * b.x + a.y * b.y; }
+T cross(ref a, ref b) { return a.x * b.y - a.y * b.x; }
 T norm(ref a) { return dot(a, a); }
 T distSq(ref a, ref b) { return norm(b - a); }
 T dist(ref a, ref b) { return abs(b - a); }
