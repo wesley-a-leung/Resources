@@ -23,8 +23,8 @@ template <const int MAXN> struct ConvexHull {
         if (hull.empty() && N > 0) hull.push_back(P[0]);
     }
     T getArea2() { // returns twice the area of the convex hull
-        T ret = 0; int H = int(hull.size()); pt o(0, 0);
-        for (int i = 0; i < H; i++) ret += area2(o, hull[i], hull[(i + 1) % H]);
+        T ret = 0; int H = int(hull.size()); pt O(0, 0);
+        for (int i = 0; i < H; i++) ret += area2(O, hull[i], hull[(i + 1) % H]);
         return ret;
     }
 };
