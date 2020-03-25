@@ -23,15 +23,15 @@ struct Line {
     Line shiftLeft(T d) const { return Line(v, c + d * abs(v)); }
     pt proj(ref p) const { return p - perp(p) * eval(p) / norm(v); }
     pt refl(ref p) const { return p - perp(p) * T(2) * eval(p) / norm(v); }
-    static int intersection(const Line &l1, const Line &l2, pt &res) { // returns 0 if no intersection, 1 if proper intersection, 2 otherwise
-        T d = cross(l1.v, l2.v);
-        if (eq(d, T(0))) return l2.v * l1.c == l1.v * l2.c ? 2 : 0;
-        res = (l2.v * l1.c - l1.v * l2.c) / d; return 1;
-    }
-    static Line bisector(const Line &l1, const Line &l2, bool interior) {
-        T s = interior ? 1 : -1; return Line(l2.v / abs(l2.v) + l1.v / abs(l1.v) * s, l2.c / abs(l2.v) + l1.c / abs(l1.v) * s);
-    }
 };
+int lineIntersection(const Line &l1, const Line &l2, pt &res) { // returns 0 if no intersection, 1 if proper intersection, 2 otherwise
+    T d = cross(l1.v, l2.v);
+    if (eq(d, T(0))) return l2.v * l1.c == l1.v * l2.c ? 2 : 0;
+    res = (l2.v * l1.c - l1.v * l2.c) / d; return 1;
+}
+Line bisector(const Line &l1, const Line &l2, bool interior) {
+    T s = interior ? 1 : -1; return Line(l2.v / abs(l2.v) + l1.v / abs(l1.v) * s, l2.c / abs(l2.v) + l1.c / abs(l1.v) * s);
+}
 
 // returns true iff p is on the line segment a-b
 bool onSeg(ref p, ref a, ref b) { return ccw(p, a, b) == 0 && le(dot(a - p, b - p), T(0)); }
