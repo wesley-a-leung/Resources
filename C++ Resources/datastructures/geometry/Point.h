@@ -6,7 +6,6 @@ using T = long double; using pt = complex<T>; const T EPS = 1e-9;
 #define x real()
 #define y imag()
 #define ref const pt &  
-static_assert(is_floating_point<T>::value, "F must be a a floating point type");
 
 istream &operator >> (istream &stream, pt &p) { T X, Y; stream >> X >> Y; p.real(X); p.imag(Y); return stream; }
 ostream &operator << (ostream &stream, ref p) { return stream << fixed << setprecision(9) << p.x << ' ' << p.y; }
