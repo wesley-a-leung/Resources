@@ -5,9 +5,9 @@ using namespace std;
 
 struct Line {
     pt v; T c;
-    Line(T a = 0, T b = 0, T c = 0): v(b, -a), c(c) {}
+    Line(T a = 0, T b = 0, T c = 0) : v(b, -a), c(c) {}
     Line(ref v, T c) : v(v), c(c) {}
-    Line(ref p, ref q): v(q - p), c(cross(v, p)) {}
+    Line(ref p, ref q) : v(q - p), c(cross(v, p)) {}
     T eval(ref p) const { return cross(v, p) - c; }
     // -1 if left of line, 0 if on line, +1 if right of line
     int onLeft(ref p) const { return sgn(eval(p)); }

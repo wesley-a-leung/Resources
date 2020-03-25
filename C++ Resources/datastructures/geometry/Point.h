@@ -8,24 +8,26 @@ using T = long double; using pt = complex<T>; const T EPS = 1e-9;
 #define ref const pt &  
 static_assert(is_floating_point<T>::value, "F must be a a floating point type");
 
+istream &operator >> (istream &stream, pt &p) { T X, Y; stream >> X >> Y; p.real(X); p.imag(Y); return stream; }
+ostream &operator << (ostream &stream, ref p) { return stream << fixed << setprecision(9) << p.x << ' ' << p.y; }
+
 template <class T> bool lt(const T &a, const T &b) { return a < b - T(EPS); }
 template <class T> bool le(const T &a, const T &b) { return !lt(b, a); }
 template <class T> bool gt(const T &a, const T &b) { return lt(b, a); }
 template <class T> bool ge(const T &a, const T &b) { return !lt(a, b); }
 template <class T> bool eq(const T &a, const T &b) { return !lt(a, b) && !lt(b, a); }
 template <class T> bool ne(const T &a, const T &b) { return lt(a, b) || lt(b, a); }
-template <class T> int sgn(const T &a) { return lt(a, T(0)) ? -1 : gt(a, T(0)) ? +1 : 0; }
+template <class T> int sgn(const T &a) { return int(gt(a, T(0))) - int(lt(a, T(0))); }
 
 bool operator == (ref a, ref b) { return eq(a.x, b.x) && eq(a.y, b.y); }
 bool operator != (ref a, ref b) { return !(a == b); }
 struct pt_eq { bool operator () (ref a, ref b) const { return a == b; } };
 struct pt_ne { bool operator () (ref a, ref b) const { return a != b; } }; 
 
+// abs gets polar distance, arg gets polar angle
 T dot(ref a, ref b) { return (conj(a) * b).x; }
 T cross(ref a, ref b) { return (conj(a) * b).y; }
 T norm(ref a) { return dot(a, a); }
-T abs(ref a) { return sqrt(norm(a)); }
-T arg(ref a) { return atan2(a.y, a.x); }
 T distSq(ref a, ref b) { return norm(b - a); }
 T dist(ref a, ref b) { return abs(b - a); }
 T ang(ref a, ref b) { return arg(b - a); }

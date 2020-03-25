@@ -59,6 +59,6 @@ template <class T, const T MOD> struct IntMod {
     IM divPrime(const IM &i) const { return *this * i.mulInvPrime(); }
     // if MOD * MOD overflows
     IM divOvf(const IM &i) const { return mulOvf(i.mulInv()); }
-    friend istream &operator >> (istream &stream, IM &v) { stream >> v; return stream; }
-    friend ostream &operator << (ostream &stream, IM &v) { stream << v; return stream; }
+    friend istream &operator >> (istream &stream, IM &v) { stream >> v.v; return stream; }
+    friend ostream &operator << (ostream &stream, const IM &v) { stream << v.v; return stream; }
 };
