@@ -11,13 +11,13 @@ static_assert(is_floating_point<T>::value, "F must be a a floating point type");
 istream &operator >> (istream &stream, pt &p) { T X, Y; stream >> X >> Y; p.real(X); p.imag(Y); return stream; }
 ostream &operator << (ostream &stream, ref p) { return stream << fixed << setprecision(9) << p.x << ' ' << p.y; }
 
-template <class T> bool lt(const T &a, const T &b) { return a < b - T(EPS); }
-template <class T> bool le(const T &a, const T &b) { return !lt(b, a); }
-template <class T> bool gt(const T &a, const T &b) { return lt(b, a); }
-template <class T> bool ge(const T &a, const T &b) { return !lt(a, b); }
-template <class T> bool eq(const T &a, const T &b) { return !lt(a, b) && !lt(b, a); }
-template <class T> bool ne(const T &a, const T &b) { return lt(a, b) || lt(b, a); }
-template <class T> int sgn(const T &a) { return lt(a, T(0)) ? -1 : gt(a, T(0)) ? +1 : 0; }
+bool lt(T a, T b) { return a < b - T(EPS); }
+bool le(T a, T b) { return !lt(b, a); }
+bool gt(T a, T b) { return lt(b, a); }
+bool ge(T a, T b) { return !lt(a, b); }
+bool eq(T a, T b) { return !lt(a, b) && !lt(b, a); }
+bool ne(T a, T b) { return lt(a, b) || lt(b, a); }
+int sgn(T a) { return lt(a, T(0)) ? -1 : gt(a, T(0)) ? +1 : 0; }
 
 bool operator == (ref a, ref b) { return eq(a.x, b.x) && eq(a.y, b.y); }
 bool operator != (ref a, ref b) { return !(a == b); }
