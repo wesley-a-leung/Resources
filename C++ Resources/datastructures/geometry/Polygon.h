@@ -4,8 +4,18 @@
 #include "Line.h"
 using namespace std;
 
-using Polygon = vector<Point>;
+using Polygon = vector<pt>;
 
+T getArea2(const Polygon &poly) {
+    T ret = 0; int n = int(poly.size());
+    for (int i = 0; i < n; i++) ret += cross(poly[i], poly[(i + 1) % n]);
+    return ret;
+}
+pt getCentroid(const Polygon &poly) {
+    T A2 = 0; pt cen(0, 0); int n = int(poly.size());
+    for (int i = 0; i < n; i++) { T a = cross(poly[i], poly[(i + 1) % n]); A2 += a; cen += a * (poly[i] + poly[(i + 1) % n]); }
+    return cen / A2 / T(3);
+}
 // furthest point in the direction dir
 int extremeVertex(const Polygon &poly, ref dir) {
     int n = int(poly.size()), lo = 0, hi = n; pt pp = perp(dir);
