@@ -41,7 +41,7 @@ pair<int, int> lineConvexPolygonIntersection(const Polygon &poly, const Line &li
     }
     if (ret.first == ret.second) return make_pair(ret.first, -1);
     if (!cmpL(ret.first) && !cmpL(ret.second)) {
-        switch (mod(ret.first - ret.second + n + 1)) {
+        switch ((ret.first - ret.second + n + 1) % n) {
             case 0: return make_pair(ret.first, ret.first);
             case 2: return make_pair(ret.second, ret.second);
         }
