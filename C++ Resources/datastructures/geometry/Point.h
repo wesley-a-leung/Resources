@@ -17,7 +17,7 @@ template <class T> bool gt(const T &a, const T &b) { return lt(b, a); }
 template <class T> bool ge(const T &a, const T &b) { return !lt(a, b); }
 template <class T> bool eq(const T &a, const T &b) { return !lt(a, b) && !lt(b, a); }
 template <class T> bool ne(const T &a, const T &b) { return lt(a, b) || lt(b, a); }
-template <class T> int sgn(const T &a) { return int(gt(a, T(0))) - int(lt(a, T(0))); }
+template <class T> int sgn(const T &a) { return lt(a, T(0)) ? -1 : gt(a, T(0)) ? +1 : 0; }
 
 bool operator == (ref a, ref b) { return eq(a.x, b.x) && eq(a.y, b.y); }
 bool operator != (ref a, ref b) { return !(a == b); }
