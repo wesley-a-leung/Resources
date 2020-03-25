@@ -20,7 +20,6 @@ int extremeVertex(const Polygon &poly, ref dir) {
         (ls < ms || (ls == ms && ls == cmp(lo, m)) ? hi : lo) = m;
     }
     return lo;
-    return lo;
 }
 // returns (-1, -1) if no collision
 //         (i, -1) if touching corner i
