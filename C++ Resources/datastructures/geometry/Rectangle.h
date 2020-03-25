@@ -31,7 +31,7 @@ struct Rectangle {
         else if (p.y > ymax) dy = p.y - ymax;
         return dx * dx + dy * dy;
     }
-    F dist(ref p) const { return sqrt(F(distSq(p))); }
+    T dist(ref p) const { return sqrt(distSq(p)); }
     bool operator == (const Rectangle &that) const {
         return eq(xmin, that.xmin) && eq(ymin, that.ymin) && eq(xmax, that.xmax) && eq(ymax, that.ymax);
     }
