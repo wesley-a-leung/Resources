@@ -51,5 +51,7 @@ template <class T, class Comparator = less<T>> struct DynamicConvexHullTrickSqrt
         }
         return mx;
     }
+    int size() { return int(large.size()) + int(small.size()); }
+    bool empty() { return large.empty() && small.empty(); }
     void clear() { large.clear(); small.clear(); }
 };
