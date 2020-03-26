@@ -6,7 +6,7 @@ using namespace std;
 // rnk[i] is the rank of the suffix starting from index i
 // ind[i] is the index in original string of the ith smallest suffix
 // LCP[i] is the longest common prefix of the ith and (i + 1)th smallest suffix
-// A sparse table can be constructed on the LCP array to query the LCP of the ith and jth smallest suffix
+// A min sparse table can be constructed on the LCP array to query the LCP of the ith and jth smallest suffix
 // Time Complexity: O(S log S)
 // Memory Complexity: O(S + ALPHABET_SIZE)
 template <const int MAXS, const int ALPHABET_SIZE, const int OFFSET> struct ManberMyersSuffixArray {
