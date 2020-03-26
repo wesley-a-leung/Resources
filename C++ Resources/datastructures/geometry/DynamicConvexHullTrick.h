@@ -4,12 +4,12 @@ using namespace std;
 
 using T = long double; const T EPS = 1e-9;
 
-template <class T> bool lt(const T &a, const T &b) { return a < b - T(EPS); }
-template <class T> bool le(const T &a, const T &b) { return !lt(b, a); }
-template <class T> bool gt(const T &a, const T &b) { return lt(b, a); }
-template <class T> bool ge(const T &a, const T &b) { return !lt(a, b); }
-template <class T> bool eq(const T &a, const T &b) { return !lt(a, b) && !lt(b, a); }
-template <class T> bool ne(const T &a, const T &b) { return lt(a, b) || lt(b, a); }
+bool lt(T a, T b) { return a < b - EPS; }
+bool le(T a, T b) { return !lt(b, a); }
+bool gt(T a, T b) { return lt(b, a); }
+bool ge(T a, T b) { return !lt(a, b); }
+bool eq(T a, T b) { return !lt(a, b) && !lt(b, a); }
+bool ne(T a, T b) { return lt(a, b) || lt(b, a); }
 
 struct Line {
     T m, b; bool isQuery; mutable function<const Line*()> succ; Line(T m, T b, bool isQuery) : m(m), b(b), isQuery(isQuery) {}
