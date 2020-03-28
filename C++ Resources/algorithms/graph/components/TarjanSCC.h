@@ -3,6 +3,7 @@
 using namespace std;
 
 // Determines the strong components in a directed graph using Tarjan's algorithm
+// Components are in reversed topological order
 // Time Complexity: O(V + E)
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct TarjanSCC {
