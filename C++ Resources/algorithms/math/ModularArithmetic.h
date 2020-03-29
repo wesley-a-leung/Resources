@@ -57,7 +57,7 @@ struct Montgomery {
     u128 mul(u128 a, u128 b) { return reduce(u256::mul(a, b)); }
 };
 
-// Specialization of mulMod for unsigned 128-bit mod integers
+// Specialization of mulMod for unsigned 128-bit mod
 // Uses Montgomery Reduction 
 // Time Complexity: O(1)
 // Required: 0 <= a < mod, 0 <= b < mod
