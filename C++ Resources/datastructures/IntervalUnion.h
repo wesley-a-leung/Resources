@@ -40,7 +40,7 @@ struct IntervalUnion : public set<pair<T, T>, EpsPairCmp> {
 };
 
 // Given a set of intervals, combine them into disjoint intervals of the form [L, R)
-// Returns an iterator to the last disjoint interval
+// Returns an iterator to right after the last disjoint interval
 // Time Complexity: O(N)
 // Memory Complexity: O(1)
 template <class It> It intervalUnion(It st, It en) {
