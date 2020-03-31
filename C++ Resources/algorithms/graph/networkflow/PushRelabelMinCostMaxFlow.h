@@ -15,7 +15,6 @@ template <const int MAXV, class flowUnit, class costUnit, const bool USE_LOOK_AH
     bool inStk[MAXV]; vector<int> hs[MAXV * 2]; vector<Edge> adj[MAXV]; typename vector<Edge>::iterator cur[MAXV];
     PushRelabelMinCostMaxFlow(flowUnit FLOW_EPS, costUnit COST_INF) : FLOW_EPS(FLOW_EPS), COST_INF(COST_INF) {}
     void addEdge(int v, int w, flowUnit flow, costUnit cost) {
-        if (v == w) return;
         adj[v].emplace_back(w, flow, cost, int(adj[w].size())); adj[w].emplace_back(v, 0, -cost, int(adj[v].size()) - 1);
     }
     void init(int V) { this->V = V; bnd = 0; for (int i = 0; i < V; i++) adj[i].clear(); }
