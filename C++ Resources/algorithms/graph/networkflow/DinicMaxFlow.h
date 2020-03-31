@@ -52,11 +52,11 @@ template <const int MAXV, const int MAXE, class unit, const bool SCALING> struct
         }
         return ret;
     }
-    void init(int V) { E = 0; maxCap = 0; fill(cut, cut + V, false); }
+    void init(int V) { E = 0; fill(cut, cut + V, false); }
     void build(int V) {
         fill(st, st + V + 1, 0); sort(e, e + E);
         for (int i = 0; i < E; i++) st[e[ind[e[i].ind] = i].to + 1]++;
-        partial_sum(st, st + V + 1, st);
+        partial_sum(st, st + V + 1, st); maxCap = 0;
         for (int i = 0; i < E; i++) { e[e[i].ind = i].rev = ind[e[i].rev]; maxCap = max(maxCap, e[i].maxCap); }
     }
     unit getFlow(int V, int s, int t) {

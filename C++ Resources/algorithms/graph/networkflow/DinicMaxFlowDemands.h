@@ -6,7 +6,6 @@ using namespace std;
 // Time Complexity:
 //   O(V^2 E), much faster in practice
 //   O(E min(V^(2/3), E^(1/2))) for unit capacities
-//   O(VE log C) with capacity scaling, where C is the maximum capacity of any edge
 // Memory Complexity: O(V + E)
 template <const int MAXV, const int MAXE, class unit> struct DinicMaxFlowDemands {
     unit INF, EPS; DinicMaxFlowDemands(unit INF, unit EPS) : INF(INF), EPS(EPS) {}
