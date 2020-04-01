@@ -44,7 +44,7 @@ template <const int MAXV, const int MAXE, class flowUnit, class costUnit> struct
         }
         return dist[t] != COST_INF;
     }
-    void init(int V) { E = 0; hasNegativeEdgeCost = false; }
+    void init() { E = 0; hasNegativeEdgeCost = false; }
     void build(int V) {
         fill(st, st + V + 1, 0); sort(e, e + E);
         for (int i = 0; i < E; i++) st[e[ind[e[i].ind] = i].to + 1]++;
