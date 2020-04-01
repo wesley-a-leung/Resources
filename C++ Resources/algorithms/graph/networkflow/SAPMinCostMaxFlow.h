@@ -15,8 +15,8 @@ template <const int MAXV, class flowUnit, class costUnit> struct SAPMinCostMaxFl
         int to; flowUnit cap, resCap; costUnit cost; int rev;
         Edge(int to, flowUnit cap, costUnit cost, int rev) : to(to), cap(cap), resCap(cap), cost(cost), rev(rev) {}
     };
-    int prev[MAXV]; Edge *to[MAXV]; vector<Edge> adj[MAXV];
-    flowUnit maxFlow; costUnit phi[MAXV], dist[MAXV], minCost; bool hasNegativeEdgeCost; typename heap::point_iterator ptr[MAXV];
+    int prev[MAXV]; Edge *to[MAXV]; vector<Edge> adj[MAXV]; typename heap::point_iterator ptr[MAXV];
+    flowUnit maxFlow; costUnit phi[MAXV], dist[MAXV], minCost; bool hasNegativeEdgeCost;
     void addEdge(int v, int w, flowUnit flow, costUnit cost) {
         if (cost < 0) hasNegativeEdgeCost = true;
         adj[v].emplace_back(w, flow, cost, int(adj[w].size())); adj[w].emplace_back(v, 0, -cost, int(adj[v].size()) - 1);
