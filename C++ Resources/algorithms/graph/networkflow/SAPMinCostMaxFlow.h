@@ -55,6 +55,6 @@ template <const int MAXV, class flowUnit, class costUnit> struct SAPMinCostMaxFl
             }
             for (int v = 0; v < V; v++) if (dist[v] != COST_INF) phi[v] += dist[v];
         }
-        return {maxFlow, minCost};
+        return make_pair(maxFlow, minCost);
     }
 };

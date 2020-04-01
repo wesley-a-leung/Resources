@@ -80,8 +80,7 @@ template <const int MAXV, class flowUnit, class costUnit, const int SCALE = 3> s
         };
         minCost = 0; bnd = 0; costUnit mul = 2 << __lg(V);
         for (int v = 0; v < V; v++) for (auto &&e : adj[v]) { minCost += e.cost * e.resCap; e.cost *= mul; bnd = max(bnd, e.cost); }
-        maxFlow = circulation ? 0 : getFlow(V, s, t);
-        fill(h, h + V, 0); fill(ex, ex + V, 0);
+        maxFlow = circulation ? 0 : getFlow(V, s, t); fill(h, h + V, 0); fill(ex, ex + V, 0);
         while (bnd > 1) {
             bnd = max(costUnit(1), bnd >> SCALE); top = 0;
             for (int v = 0; v < V; v++) for (auto &&e: adj[v]) if (costH(v, e) < 0 && e.resCap > FLOW_EPS) push(v, e, e.resCap, false);
@@ -89,7 +88,6 @@ template <const int MAXV, class flowUnit, class costUnit, const int SCALE = 3> s
             while (top > 0) discharge(stk[--top]);
         }
         for (int v = 0; v < V; v++) for (auto &&e: adj[v]) { e.cost /= mul; minCost -= e.cost * e.resCap; }
-        minCost /= 2;
-        return {maxFlow, minCost};
+        return make_pair(maxFlow, minCost /= 2);
     }
 };
