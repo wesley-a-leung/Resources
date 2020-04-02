@@ -1,7 +1,7 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "../../../datastructures/IncrementalSkewHeap.h"
-#include "../../../datastructures/UnionFind.h"
+#include "../../../datastructures/LeftistHeapIncremental.h"
+#include "../../../datastructures/UnionFindUndo.h"
 using namespace std;
 
 // Computes the minimum arborescence, or directed minimum spanning tree using Gabow's variant of Edmonds' algorithm
@@ -12,32 +12,44 @@ using namespace std;
 template <const int MAXV, class unit> struct GabowMinArborescence {
     unit INF; GabowMinArborescence(unit INF) : INF(INF) {}
     struct Edge {
-        int from, to; unit weight;
+        int from, to; unit weight; int ind;
+        Edge(int from, int to, unit weight, int ind) : from(from), to(to), weight(weight), ind(ind) {}
         bool operator > (const Edge &e) const { return weight > e.weight; }
-        Edge operator + (const unit &add) const { Edge ret; ret.from = from; ret.to = to; ret.weight = weight + add; return ret; }
+        Edge operator + (const unit &add) const { return Edge(from, to, weight + add, ind); }
     };
-    int vis[MAXV]; vector<Edge> edges; UnionFind<MAXV, 0> uf; unit weight; vector<IncrementalSkewHeap<Edge, greater<Edge>, unit>> H;
-    void addEdge(int from, int to, unit weight) { edges.push_back({from, to, weight}); }
+    int vis[MAXV], path[MAXV], in[MAXV], Q[MAXV]; vector<Edge> edges, mst; UnionFindUndo<MAXV, 0> uf; unit weight;
+    vector<LeftistHeapIncremental<Edge, greater<Edge>, unit>> H;
+    void addEdge(int from, int to, unit weight) { edges.emplace_back(from, to, weight, int(edges.size())); }
     unit run(int V, int root) {
-        weight = 0; fill(vis, vis + V, -1); vis[root] = root; uf.init(V);
+        weight = 0; fill(vis, vis + V, -1); fill(in, in + V, -1); vis[root] = root;
+        vector<tuple<int, int, vector<Edge>>> cycs; uf.init(V);
         for (int v = 0; v < V; v++) H.emplace_back(0); 
         for (auto &&e : edges) H[e.to].push(e);
         for (int s = 0; s < V; s++) {
-            stack<int, vector<int>> path;
+            int qi = 0;
             for (int v = s; vis[v] == -1;) {
-                path.push(v); vis[v] = s;
                 if (H[v].empty()) return INF;
-                Edge minEdge = H[v].top(); int w = uf.find(minEdge.from);
-                weight += minEdge.weight; H[v].increment(-minEdge.weight); H[v].pop();
-                if (vis[w] == s) {
-                    IncrementalSkewHeap<Edge, greater<Edge>, unit> temp(0); int x;
-                    do { x = path.top(); path.pop(); temp.merge(H[x]); } while (uf.join(w, x));
-                    H[uf.find(w)] = move(temp); vis[uf.find(w)] = -1;
+                Edge e = H[v].top(); weight += e.weight; H[v].increment(-e.weight); H[v].pop();
+                Q[qi] = e.ind; path[qi++] = v; vis[v] = s; v = uf.find(e.from);
+                if (vis[v] == s) {
+                    LeftistHeapIncremental<Edge, greater<Edge>, unit> temp(0); int w, t = int(uf.history.size()); vector<Edge> E;
+                    do { temp.merge(H[w = path[--qi]]); E.push_back(edges[Q[qi]]); } while (uf.join(v, w));
+                    H[v = uf.find(v)] = move(temp); vis[v] = -1;
+                    reverse(E.begin(), E.end()); cycs.emplace_back(v, t, E);
                 }
-                v = uf.find(w);
             }
+            for (int i = 0; i < qi; i++) in[uf.find(edges[Q[i]].to)] = Q[i];
         }
+        reverse(cycs.begin(), cycs.end());
+        for (auto &&cyc : cycs) {
+            int v, t; vector<Edge> E; tie(v, t, E) = cyc;
+            while (int(uf.history.size()) > t) uf.undo();
+            Edge inEdge = edges[in[v]];
+            for (auto &&e : E) in[uf.find(e.to)] = e.ind;
+            in[uf.find(inEdge.to)] = inEdge.ind;
+        }
+        for (int v = 0; v < V; v++) if (in[v] != -1) mst.push_back(edges[in[v]]);
         return weight;
     }
-    void clear() { edges.clear(); H.clear(); }
+    void clear() { edges.clear(); mst.clear(); H.clear(); }
 };
