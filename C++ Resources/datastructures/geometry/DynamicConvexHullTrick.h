@@ -4,7 +4,7 @@ using namespace std;
 
 using T = long double; const T EPS = 1e-9;
 
-bool lt(T a, T b) { return a + EPS < b; }
+bool lt(T a, T b) { return a + T(EPS) < b; }
 bool le(T a, T b) { return !lt(b, a); }
 bool gt(T a, T b) { return lt(b, a); }
 bool ge(T a, T b) { return !lt(a, b); }
