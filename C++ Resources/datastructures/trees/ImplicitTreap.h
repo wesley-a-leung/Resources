@@ -12,7 +12,8 @@ std::seed_seq seq{
     (uint64_t)std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count(),
     (uint64_t)__builtin_ia32_rdtsc(),(uint64_t)(uintptr_t)make_unique<char>().get()
 };
-std::mt19937_64 rng64(seq); uniform_int_distribution<long long> dis;
+std::mt19937_64 rng64(seq);
+uniform_int_distribution<long long> dis;
 using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0;
 Data merge(const Data &l, const Data &r); // to be implemented
 Data applyLazy(const Data &l, const Lazy &r); // to be implemented
