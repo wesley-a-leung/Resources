@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "../../../datastructures/LeftistHeapIncremental.h"
+#include "../../../datastructures/SkewHeapIncremental.h"
 #include "../../../datastructures/UnionFindUndo.h"
 using namespace std;
 
@@ -18,7 +18,7 @@ template <const int MAXV, class unit> struct GabowMinArborescence {
         Edge operator + (const unit &add) const { return Edge(from, to, weight + add, ind); }
     };
     int vis[MAXV], path[MAXV], in[MAXV], Q[MAXV]; vector<Edge> edges, mst; UnionFindUndo<MAXV, 0> uf; unit weight;
-    vector<LeftistHeapIncremental<Edge, greater<Edge>, unit>> H;
+    vector<SkewHeapIncremental<Edge, greater<Edge>, unit>> H;
     void addEdge(int from, int to, unit weight) { edges.emplace_back(from, to, weight, int(edges.size())); }
     unit run(int V, int root) {
         weight = 0; fill(vis, vis + V, -1); fill(in, in + V, -1); vis[root] = root;
@@ -32,7 +32,7 @@ template <const int MAXV, class unit> struct GabowMinArborescence {
                 Edge e = H[v].top(); weight += e.weight; H[v].increment(-e.weight); H[v].pop();
                 Q[qi] = e.ind; path[qi++] = v; vis[v] = s; v = uf.find(e.from);
                 if (vis[v] == s) {
-                    LeftistHeapIncremental<Edge, greater<Edge>, unit> temp(0); int w, t = int(uf.history.size()); vector<Edge> E;
+                    SkewHeapIncremental<Edge, greater<Edge>, unit> temp(0); int w, t = int(uf.history.size()); vector<Edge> E;
                     do { temp.merge(H[w = path[--qi]]); E.push_back(edges[Q[qi]]); } while (uf.join(v, w));
                     H[v = uf.find(v)] = move(temp); vis[v] = -1;
                     reverse(E.begin(), E.end()); cycs.emplace_back(v, t, E);
