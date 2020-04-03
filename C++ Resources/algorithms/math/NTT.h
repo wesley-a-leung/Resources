@@ -7,6 +7,7 @@ using namespace std;
 // Time Complexity of multiplyPolynomial: O(N log N) where N = size(a) + size(b)
 
 using T = long long; const int CUTOFF = 150;
+static_assert(is_integral<T>::value, "T must be an integral type");
 
 T primitiveRoot(T p) {
     vector<T> fact; T phi = p - 1, n = phi;
@@ -33,38 +34,25 @@ T primitiveRoot(T p) {
 //   C = 483, K = 21 (1012924417), primitiveRoot = 5
 const T C = 119, K = 23, PK = 1 << K, MOD = C * PK + 1, ROOT = powMod(primitiveRoot(MOD), C, MOD);
 
-vector<int> ord; vector<T> roots;
-
-void computeRoots(int N) {
-    if (int(roots.size()) >= N) return;
-    if (roots.empty()) roots = {0, 1};
-    int len = __builtin_ctz(int(roots.size())); roots.resize(N);
-    for (; (1 << len) < N; len++) {
-        T z = powMod(ROOT, PK >> (len + 1), MOD);
-        for (int i = 1 << (len - 1); i < (1 << len); i++) { roots[2 * i] = roots[i]; roots[2 * i + 1] = mulMod(roots[i], z, MOD); }
+void ntt(vector<T> &a) {
+    int N = int(a.size()); static vector<T> rt(2, 1); static vector<int> ord;
+    for (static int k = 2, len = 1; k < N; k <<= 1, len++) {
+        rt.resize(N); T x = powMod(ROOT, PK >> (len + 1), MOD);
+        for (int i = k; i < (k << 1); i++) rt[i] = i & 1 ? mulMod(rt[i >> 1], x, MOD) : rt[i >> 1];
     }
-}
-
-void reorder(vector<T> &a) {
-    int N = int(a.size());
     if (int(ord.size()) != N) {
         ord.assign(N, 0); int len = __builtin_ctz(N);
         for (int i = 0; i < N; i++) ord[i] = (ord[i >> 1] >> 1) + ((i & 1) << (len - 1));
     }
     for (int i = 0; i < N; i++) if (i < ord[i]) swap(a[i], a[ord[i]]);
-}
-
-void ntt(vector<T> &a) {
-    int N = int(a.size()); computeRoots(N); reorder(a);
     for (int len = 1; len < N; len <<= 1) for (int i = 0; i < N; i += len << 1) for (int j = 0; j < len; j++) {
-        T u = a[i + j], v = mulMod(a[len + i + j], roots[len + j], MOD);
+        T u = a[i + j], v = mulMod(a[len + i + j], rt[len + j], MOD);
         a[i + j] = addMod(u, v, MOD); a[len + i + j] = subMod(u, v, MOD);
     }
 }
 
 // Multiplies 2 polynomials modulo a prime
-template <class T> void multiplyPolynomial(const vector<T> &a, const vector<T> &b, vector<T> &res, bool eq = false) {
-    static_assert(is_integral<T>::value, "T must be an integral type");
+void multiply(const vector<T> &a, const vector<T> &b, vector<T> &res, bool eq = false) {
     if (max(int(a.size()), int(b.size())) <= CUTOFF) {
         vector<T> c(int(a.size()) + int(b.size()) - 1, 0);
         for (int i = 0; i < int(a.size()); i++) for (int j = 0; j < int(b.size()); j++) {
