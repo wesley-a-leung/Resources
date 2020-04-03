@@ -10,7 +10,7 @@ using T = long double; using pt = complex<T>; const T EPS = 1e-9;
 istream &operator >> (istream &stream, pt &p) { T X, Y; stream >> X >> Y; p.real(X); p.imag(Y); return stream; }
 ostream &operator << (ostream &stream, ref p) { return stream << fixed << setprecision(9) << p.x << ' ' << p.y; }
 
-bool lt(T a, T b) { return a + T(EPS) < b; }
+bool lt(T a, T b) { return a + EPS < b; }
 bool le(T a, T b) { return !lt(b, a); }
 bool gt(T a, T b) { return lt(b, a); }
 bool ge(T a, T b) { return !lt(a, b); }
