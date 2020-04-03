@@ -25,7 +25,7 @@ void fft(vector<C> &a) {
     }
 }
 
-// multiplies as integers if integerMul is true, otherwise, multiplies as polynomial
+// multiplies as integers if integerMul is true, multiplies as polynomial otherwise
 template <class T> void multiply(const vector<T> &a, const vector<T> &b, vector<T> &res, bool integerMul) {
     static T BASE = pow(10LL, DIG); int N = int(a.size()) + int(b.size()) - !integerMul;
     if (max(int(a.size()), int(b.size())) <= CUTOFF) {
