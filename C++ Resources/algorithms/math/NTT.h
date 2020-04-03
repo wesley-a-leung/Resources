@@ -51,7 +51,7 @@ void ntt(vector<T> &a) {
     }
 }
 
-// Multiplies 2 polynomials modulo a prime
+// Multiplies 2 polynomials modulo a prime, eq is used as an optimization if a and b are equal
 void multiply(const vector<T> &a, const vector<T> &b, vector<T> &res, bool eq = false) {
     if (max(int(a.size()), int(b.size())) <= CUTOFF) {
         vector<T> c(int(a.size()) + int(b.size()) - 1, 0);
