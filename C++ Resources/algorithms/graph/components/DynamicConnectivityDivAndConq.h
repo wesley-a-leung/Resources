@@ -8,7 +8,7 @@ using namespace std;
 // Time Complexity: O(V + Q log Q log V)
 // Memory Complexity: O(V + Q)
 template <const int MAXV, const int MAXQ> struct DynamicConnectivityDivAndConq {
-    int Q = 0; vector<int> ans; unordered_map<int, int> present[MAXV]; UnionFindUndo<MAXV, 0> uf;
+    int Q = 0; vector<int> ans; unordered_map<int, int> present[MAXV]; UnionFindUndo<MAXV> uf;
     struct Query { int type, v, w, otherTime; } q[MAXQ];
     void solve(int l, int r) {
         if (l == r && q[l].type == 0) ans.push_back(uf.cnt);
