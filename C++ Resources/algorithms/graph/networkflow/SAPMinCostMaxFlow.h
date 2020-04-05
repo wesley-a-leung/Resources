@@ -21,7 +21,7 @@ template <const int MAXV, class flowUnit, class costUnit> struct SAPMinCostMaxFl
         if (cost < 0) hasNegativeEdgeCost = true;
         adj[v].emplace_back(w, flow, cost, int(adj[w].size())); adj[w].emplace_back(v, 0, -cost, int(adj[v].size()) - 1);
     }
-    void bellmanFord(int V, int s, int t) {
+    void bellmanFord(int V, int s) {
         fill(phi, phi + V, COST_INF); phi[s] = 0;
         for (int j = 0; j < V - 1; j++) for (int v = 0; v < V; v++) for (auto &&e : adj[v])
             if (e.resCap > FLOW_EPS) phi[e.to] = min(phi[e.to], phi[v] + e.cost);
@@ -45,7 +45,7 @@ template <const int MAXV, class flowUnit, class costUnit> struct SAPMinCostMaxFl
     void init(int V) { hasNegativeEdgeCost = false; for (int i = 0; i < V; i++) adj[i].clear(); }
     pair<flowUnit, costUnit> getMaxFlowMinCost(int V, int s, int t) {
         maxFlow = 0; minCost = 0; fill(phi, phi + V, 0);
-        if (hasNegativeEdgeCost) bellmanFord(V, s, t);
+        if (hasNegativeEdgeCost) bellmanFord(V, s);
         while (dijkstra(V, s, t)) {
             flowUnit aug = FLOW_INF;
             for (int cur = t; prev[cur] != -1; cur = prev[cur]) aug = min(aug, to[cur]->resCap);
