@@ -7,9 +7,9 @@ using namespace std;
 //   init: O(N)
 //   find, join, connected, getSize: O(alpha(N))
 // Memory Complexity: O(N)
-template <const int MAXN, const bool ONE_INDEXED> struct UnionFind {
+template <const int MAXN> struct UnionFind {
     int UF[MAXN], cnt;
-    void init(int N) { cnt = N; fill(UF, UF + N + ONE_INDEXED, -1); }
+    void init(int N) { cnt = N; fill(UF, UF + N, -1); }
     int find(int v) { return UF[v] < 0 ? v : UF[v] = find(UF[v]); }
     bool join(int v, int w) {
         if ((v = find(v)) == (w = find(w))) return false;

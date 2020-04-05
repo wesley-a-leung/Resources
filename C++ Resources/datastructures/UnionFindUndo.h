@@ -8,9 +8,9 @@ using namespace std;
 //   find, join, connected, getSize: O(log N)
 //   undo: O(1)
 // Memory Complexity: O(N)
-template <const int MAXN, const bool ONE_INDEXED> struct UnionFindUndo {
+template <const int MAXN> struct UnionFindUndo {
     int UF[MAXN], cnt; vector<pair<pair<int, int>, int>> history;
-    void init(int N) { cnt = N; fill(UF, UF + N + ONE_INDEXED, -1); history.clear(); }
+    void init(int N) { cnt = N; fill(UF, UF + N, -1); history.clear(); }
     int find(int v) { return UF[v] < 0 ? v : find(UF[v]); }
     bool join(int v, int w) {
         if ((v = find(v)) == (w = find(w))) return false;

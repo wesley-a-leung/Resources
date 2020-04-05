@@ -8,11 +8,11 @@ using namespace std;
 //   find, join, connected, getSize, getCnt: O(log N)
 //   query: O(log N log Q) for Q join operations
 // Memory Complexity: O(N)
-template <const int MAXN, const bool ONE_INDEXED> struct UnionFindSemiPersistent {
+template <const int MAXN> struct UnionFindSemiPersistent {
     vector<pair<int, int>> UF[MAXN], cnt; int curTime;
     void init(int N) {
         curTime = 0; cnt.emplace_back(curTime, N);
-        for (int i = ONE_INDEXED; i < N + ONE_INDEXED; i++) UF[i].emplace_back(curTime, -1);
+        for (int i = 0; i < N; i++) UF[i].emplace_back(curTime, -1);
     }
     int find(int t, int v) { return UF[v].back().second < 0 || UF[v].back().first > t ? v : find(t, UF[v].back().second); }
     bool join(int v, int w) {
