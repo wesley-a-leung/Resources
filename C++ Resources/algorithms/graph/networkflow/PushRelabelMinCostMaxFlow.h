@@ -17,7 +17,7 @@ template <const int MAXV, class flowUnit, class costUnit, const int SCALE = 3> s
     void addEdge(int v, int w, flowUnit flow, costUnit cost) {
         adj[v].emplace_back(w, flow, cost, int(adj[w].size()) + int(v == w)); adj[w].emplace_back(v, 0, -cost, int(adj[v].size()) - 1);
     }
-    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
+    void init(int V) { for (int i = 0; i < V; i++) adj[i].clear(); }
     flowUnit getFlow(int V, int s, int t) {
         auto push = [&] (int v, Edge &e, flowUnit df) {
             int w = e.to;
