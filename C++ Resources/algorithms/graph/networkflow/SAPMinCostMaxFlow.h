@@ -5,6 +5,7 @@ using namespace std;
 using namespace __gnu_pbds;
 
 // Computes the maximum flow using a path with the minimum cost by finding Shortest Augmenting Paths
+// Unable to deal with negative cost cycles
 // Time Complexity: O(E^2 V log V), much faster in practice
 // Memory Complexity: O(V + E)
 template <const int MAXV, class flowUnit, class costUnit> struct SAPMinCostMaxFlow {
@@ -18,8 +19,9 @@ template <const int MAXV, class flowUnit, class costUnit> struct SAPMinCostMaxFl
     int prev[MAXV]; Edge *to[MAXV]; vector<Edge> adj[MAXV]; typename heap::point_iterator ptr[MAXV];
     flowUnit maxFlow; costUnit phi[MAXV], dist[MAXV], minCost;
     void addEdge(int v, int w, flowUnit flow, costUnit cost) {
+        if (v == w) return;
         if (cost < 0) hasNegativeEdgeCost = true;
-        adj[v].emplace_back(w, flow, cost, int(adj[w].size()) + int(v == w)); adj[w].emplace_back(v, 0, -cost, int(adj[v].size()) - 1);
+        adj[v].emplace_back(w, flow, cost, int(adj[w].size())); adj[w].emplace_back(v, 0, -cost, int(adj[v].size()) - 1);
     }
     void bellmanFord(int V, int s) {
         fill(phi, phi + V, COST_INF); phi[s] = 0;
