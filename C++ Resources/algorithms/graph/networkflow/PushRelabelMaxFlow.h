@@ -22,7 +22,7 @@ template <const int MAXV, class unit> struct PushRelabelMaxFlow {
         if (abs(ex[w]) <= EPS && df > EPS) hs[h[w]].push_back(w);
         e.resCap -= df; adj[w][e.rev].resCap += df; ex[v] -= df; ex[w] += df;
     }
-    unit getFlow(int V, int s, int t) {
+    unit getMaxFlow(int V, int s, int t) {
         if (s == t) return maxFlow = 0;
         fill(h, h + V, 0); h[s] = V; fill(ex, ex + V, 0); ex[t] = 1; fill(cnt, cnt + V * 2, 0); cnt[0] = V - 1;
         for (int v = 0; v < V; v++) cur[v] = adj[v].begin();
