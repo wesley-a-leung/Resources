@@ -14,15 +14,17 @@ template <const int MAXV, class unit> struct PushRelabelMaxFlow {
     unit EPS, maxFlow, ex[MAXV]; PushRelabelMaxFlow(unit EPS) : EPS(EPS) {}
     int h[MAXV], cnt[MAXV * 2]; bool cut[MAXV]; vector<int> hs[MAXV * 2]; vector<Edge> adj[MAXV]; typename vector<Edge>::iterator cur[MAXV];
     void addEdge(int v, int w, unit vw, unit wv = 0) {
-        adj[v].emplace_back(w, vw, int(adj[w].size()) + int(v == w)); adj[w].emplace_back(v, wv, int(adj[v].size()) - 1);
+        if (v == w) return;
+        adj[v].emplace_back(w, vw, int(adj[w].size())); adj[w].emplace_back(v, wv, int(adj[v].size()) - 1);
     }
-    void init(int V) { fill(cut, cut + V, false); for (int i = 0; i < V; i++) adj[i].clear(); }
-    void push(int v, Edge &e, unit df) {
-        int w = e.to;
-        if (abs(ex[w]) <= EPS && df > EPS) hs[h[w]].push_back(w);
-        e.resCap -= df; adj[w][e.rev].resCap += df; ex[v] -= df; ex[w] += df;
-    }
+    void init(int V) { for (int i = 0; i < V; i++) adj[i].clear(); }
     unit getMaxFlow(int V, int s, int t) {
+        auto push = [&] (int v, Edge &e, unit df) {
+            int w = e.to;
+            if (abs(ex[w]) <= EPS && df > EPS) hs[h[w]].push_back(w);
+            e.resCap -= df; adj[w][e.rev].resCap += df; ex[v] -= df; ex[w] += df;
+        };
+        fill(cut, cut + V, false);
         if (s == t) return maxFlow = 0;
         fill(h, h + V, 0); h[s] = V; fill(ex, ex + V, 0); ex[t] = 1; fill(cnt, cnt + V * 2, 0); cnt[0] = V - 1;
         for (int v = 0; v < V; v++) cur[v] = adj[v].begin();
@@ -43,15 +45,7 @@ template <const int MAXV, class unit> struct PushRelabelMaxFlow {
             }
             while (hi >= 0 && hs[hi].empty()) hi--;
         }
+        for (int v = 0; v < V; v++) cut[v] = h[v] >= V;
         return maxFlow = -ex[s];
-    }
-    void inferMinCutDfs(int v) {
-        cut[v] = true;
-        for (auto &&e : adj[v]) if (e.resCap > EPS && !cut[e.to]) inferMinCutDfs(e.to);
-    }
-    unit inferMinCut(int V, int s) {
-        inferMinCutDfs(s); unit minCut = 0;
-        for (int v = 0; v < V; v++) if (cut[v]) for (auto &&e : adj[v]) if (!cut[e.to]) minCut += e.cap;
-        return minCut;
     }
 };
