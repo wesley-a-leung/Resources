@@ -10,8 +10,7 @@ using namespace __gnu_pbds;
 template <const int MAXV, class flowUnit, class costUnit> struct SAPMinCostMaxFlow {
     flowUnit FLOW_INF, FLOW_EPS; costUnit COST_INF; bool hasNegativeEdgeCost;
     using heap = __gnu_pbds::priority_queue<pair<costUnit, int>, greater<pair<costUnit, int>>, pairing_heap_tag>;
-    SAPMinCostMaxFlow(flowUnit FLOW_INF, flowUnit FLOW_EPS, costUnit COST_INF) :
-        FLOW_INF(FLOW_INF), FLOW_EPS(FLOW_EPS), COST_INF(COST_INF), hasNegativeEdgeCost(false) {}
+    SAPMinCostMaxFlow(flowUnit FLOW_INF, flowUnit FLOW_EPS, costUnit COST_INF) : FLOW_INF(FLOW_INF), FLOW_EPS(FLOW_EPS), COST_INF(COST_INF) {}
     struct Edge {
         int to; flowUnit cap, resCap; costUnit cost; int rev;
         Edge(int to, flowUnit cap, costUnit cost, int rev) : to(to), cap(cap), resCap(cap), cost(cost), rev(rev) {}
@@ -43,7 +42,7 @@ template <const int MAXV, class flowUnit, class costUnit> struct SAPMinCostMaxFl
         }
         return dist[t] != COST_INF;
     }
-    void clear(int V) { hasNegativeEdgeCost = false; for (int i = 0; i < V; i++) adj[i].clear(); }
+    void init(int V) { hasNegativeEdgeCost = false; for (int i = 0; i < V; i++) adj[i].clear(); }
     pair<flowUnit, costUnit> getMaxFlowMinCost(int V, int s, int t) {
         maxFlow = 0; minCost = 0; fill(phi, phi + V, 0);
         if (hasNegativeEdgeCost) bellmanFord(V, s);
