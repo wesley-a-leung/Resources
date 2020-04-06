@@ -22,7 +22,7 @@ template <const int MAXV, class flowUnit, class costUnit, const int SCALE = 8> s
         adj[v].emplace_back(w, flow, cost, int(adj[w].size())); adj[w].emplace_back(v, 0, -cost, int(adj[v].size()) - 1);
     }
     void init(int V) { negCost = 0; for (int i = 0; i < V; i++) adj[i].clear(); }
-    flowUnit getMaxFlow(int V, int s, int t) {
+    flowUnit getFlow(int V, int s, int t) {
         auto push = [&] (int v, Edge &e, flowUnit df) {
             int w = e.to;
             if (abs(ex[w]) <= FLOW_EPS && df > FLOW_EPS) hs[h[w]].push_back(w);
@@ -50,7 +50,7 @@ template <const int MAXV, class flowUnit, class costUnit, const int SCALE = 8> s
         }
         return maxFlow = -ex[s];
     }
-    pair<flowUnit, costUnit> getMaxFlowMinCost(int V, int s = -1, int t = -1) {
+    pair<flowUnit, costUnit> getFlowMinCost(int V, int s = -1, int t = -1) {
         auto costP = [&] (int v, const Edge &e) { return e.cost + phi[v] - phi[e.to]; };
         auto push = [&] (int v, Edge &e, flowUnit df, bool pushToStack) {
             if (e.resCap < df) df = e.resCap;
@@ -84,7 +84,7 @@ template <const int MAXV, class flowUnit, class costUnit, const int SCALE = 8> s
         };
         minCost = 0; bnd = 0; costUnit mul = 2 << __lg(V);
         for (int v = 0; v < V; v++) for (auto &&e : adj[v]) { minCost += e.cost * e.resCap; e.cost *= mul; bnd = max(bnd, e.cost); }
-        maxFlow = (s == -1 || t == -1) ? 0 : getMaxFlow(V, s, t); fill(phi, phi + V, 0); fill(ex, ex + V, 0);
+        maxFlow = (s == -1 || t == -1) ? 0 : getFlow(V, s, t); fill(phi, phi + V, 0); fill(ex, ex + V, 0);
         while (bnd > 1) {
             bnd = max(bnd / SCALE, costUnit(1)); top = 0;
             for (int v = 0; v < V; v++) for (auto &&e : adj[v]) if (costP(v, e) < -COST_EPS && e.resCap > FLOW_EPS) push(v, e, e.resCap, false);
