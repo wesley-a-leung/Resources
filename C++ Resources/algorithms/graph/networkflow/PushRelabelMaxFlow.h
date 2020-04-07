@@ -1,3 +1,4 @@
+
 #pragma once
 #include <bits/stdc++.h>
 using namespace std;
@@ -11,7 +12,7 @@ template <const int MAXV, class unit> struct PushRelabelMaxFlow {
         int to; unit cap, resCap; int rev;
         Edge(int to, unit cap, int rev) : to(to), cap(cap), resCap(cap), rev(rev) {}
     };
-    unit EPS, maxFlow, ex[MAXV]; PushRelabelMaxFlow(unit EPS) : EPS(EPS) {}
+    unit EPS, ex[MAXV]; PushRelabelMaxFlow(unit EPS) : EPS(EPS) {}
     int h[MAXV], cnt[MAXV * 2]; bool cut[MAXV]; vector<int> hs[MAXV * 2]; vector<Edge> adj[MAXV]; typename vector<Edge>::iterator cur[MAXV];
     void addEdge(int v, int w, unit vw, unit wv = 0) {
         if (v == w) return;
@@ -25,7 +26,7 @@ template <const int MAXV, class unit> struct PushRelabelMaxFlow {
             e.resCap -= df; adj[w][e.rev].resCap += df; ex[v] -= df; ex[w] += df;
         };
         fill(cut, cut + V, false);
-        if (s == t) return maxFlow = 0;
+        if (s == t) return 0;
         fill(h, h + V, 0); h[s] = V; fill(ex, ex + V, 0); ex[t] = 1; fill(cnt, cnt + V * 2, 0); cnt[0] = V - 1;
         for (int v = 0; v < V; v++) cur[v] = adj[v].begin();
         for (int i = 0; i < V * 2; i++) hs[i].clear();
@@ -46,6 +47,6 @@ template <const int MAXV, class unit> struct PushRelabelMaxFlow {
             while (hi >= 0 && hs[hi].empty()) hi--;
         }
         for (int v = 0; v < V; v++) cut[v] = h[v] >= V;
-        return maxFlow = -ex[s];
+        return -ex[s];
     }
 };
