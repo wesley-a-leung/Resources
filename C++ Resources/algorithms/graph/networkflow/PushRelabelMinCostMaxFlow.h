@@ -11,7 +11,7 @@ template <const int MAXV, class flowUnit, class costUnit, const int SCALE = 8> s
         int to; flowUnit cap, resCap; costUnit cost; int rev;
         Edge(int to, flowUnit cap, costUnit cost, int rev) : to(to), cap(cap), resCap(cap), cost(cost), rev(rev) {}
     };
-    int cnt[MAXV * 2], h[MAXV], stk[MAXV], top; flowUnit FLOW_EPS, maxFlow, ex[MAXV]; costUnit COST_INF, COST_EPS, phi[MAXV], bnd, minCost, negCost;
+    int cnt[MAXV * 2], h[MAXV], stk[MAXV], top; flowUnit FLOW_EPS, ex[MAXV]; costUnit COST_INF, COST_EPS, phi[MAXV], bnd, negCost;
     vector<int> hs[MAXV * 2]; vector<Edge> adj[MAXV]; typename vector<Edge>::iterator cur[MAXV];
     PushRelabelMinCostMaxFlow(flowUnit FLOW_EPS, costUnit COST_INF, costUnit COST_EPS) : FLOW_EPS(FLOW_EPS), COST_INF(COST_INF), COST_EPS(COST_EPS) {}
     void addEdge(int v, int w, flowUnit flow, costUnit cost) {
@@ -28,7 +28,7 @@ template <const int MAXV, class flowUnit, class costUnit, const int SCALE = 8> s
             if (abs(ex[w]) <= FLOW_EPS && df > FLOW_EPS) hs[h[w]].push_back(w);
             e.resCap -= df; adj[w][e.rev].resCap += df; ex[v] -= df; ex[w] += df;
         };
-        if (s == t) return maxFlow = 0;
+        if (s == t) return 0;
         fill(h, h + V, 0); h[s] = V; fill(ex, ex + V, 0); ex[t] = 1; fill(cnt, cnt + V * 2, 0); cnt[0] = V - 1;
         for (int v = 0; v < V; v++) cur[v] = adj[v].begin();
         for (int i = 0; i < V * 2; i++) hs[i].clear();
@@ -48,7 +48,7 @@ template <const int MAXV, class flowUnit, class costUnit, const int SCALE = 8> s
             }
             while (hi >= 0 && hs[hi].empty()) hi--;
         }
-        return maxFlow = -ex[s];
+        return -ex[s];
     }
     pair<flowUnit, costUnit> getFlowMinCost(int V, int s = -1, int t = -1) {
         auto costP = [&] (int v, const Edge &e) { return e.cost + phi[v] - phi[e.to]; };
@@ -82,9 +82,9 @@ template <const int MAXV, class flowUnit, class costUnit, const int SCALE = 8> s
             }
             relabel(v, delta); stk[top++] = v;
         };
-        minCost = 0; bnd = 0; costUnit mul = 2 << __lg(V);
+        costUnit minCost = 0, mul = 2 << __lg(V); bnd = 0;
         for (int v = 0; v < V; v++) for (auto &&e : adj[v]) { minCost += e.cost * e.resCap; e.cost *= mul; bnd = max(bnd, e.cost); }
-        maxFlow = (s == -1 || t == -1) ? 0 : getFlow(V, s, t); fill(phi, phi + V, 0); fill(ex, ex + V, 0);
+        flowUnit maxFlow = (s == -1 || t == -1) ? 0 : getFlow(V, s, t); fill(phi, phi + V, 0); fill(ex, ex + V, 0);
         while (bnd > 1) {
             bnd = max(bnd / SCALE, costUnit(1)); top = 0;
             for (int v = 0; v < V; v++) for (auto &&e : adj[v]) if (costP(v, e) < -COST_EPS && e.resCap > FLOW_EPS) push(v, e, e.resCap, false);
