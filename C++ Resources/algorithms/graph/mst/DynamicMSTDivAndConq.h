@@ -63,7 +63,7 @@ template <const int MAXV> struct DynamicMSTDivAndConq {
         if (x == y) return true;
         T[x].expose(); T[y].expose(); return T[x].p;
     }
-    void link(int par, int ch) { T[ch].makeRoot(); T[ch].p = &T[par]; }
+    void link(int x, int y) { T[y].makeRoot(); T[y].p = &T[x]; }
     void cut(int x, int y) { T[x].makeRoot(); T[y].expose(); T[y].r->p = nullptr; T[y].r = nullptr; }
     Data queryPath(int from, int to) { T[from].makeRoot(); T[to].expose(); return Sbtr(&T[to]); }
     void init(int V, int Q) {
