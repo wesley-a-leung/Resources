@@ -13,13 +13,12 @@ template <const int MAXV, class unit> struct GabowMinArborescence {
     unit INF; GabowMinArborescence(unit INF) : INF(INF) {}
     struct Edge {
         int from, to; unit weight; int ind;
-        Edge(int from, int to, unit weight, int ind) : from(from), to(to), weight(weight), ind(ind) {}
         bool operator > (const Edge &e) const { return weight > e.weight; }
         Edge operator + (const unit &add) const { return Edge(from, to, weight + add, ind); }
     };
     int vis[MAXV], path[MAXV], in[MAXV], Q[MAXV]; vector<Edge> edges, mst; UnionFindUndo<MAXV> uf; unit weight;
     vector<SkewHeapIncremental<Edge, greater<Edge>, unit>> H;
-    void addEdge(int from, int to, unit weight) { edges.emplace_back(from, to, weight, int(edges.size())); }
+    void addEdge(int from, int to, unit weight) { edges.push_back({from, to, weight, int(edges.size())}); }
     unit run(int V, int root) {
         weight = 0; fill(vis, vis + V, -1); fill(in, in + V, -1); vis[root] = root;
         vector<tuple<int, int, vector<Edge>>> cycs; uf.init(V);
