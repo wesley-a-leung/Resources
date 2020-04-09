@@ -8,14 +8,13 @@ using namespace std;
 // Memory Complexity: O(V + Q)
 
 // Stripped down version of Link Cut Tree for minimum edge weight queries
-using Data = pair<int, int>; const Data vdef = make_pair(INT_MAX, -1), qdef = make_pair(INT_MAX, -1);
+using Data = pair<int, int>; const Data vdef = make_pair(INT_MAX, -1);
 Data merge(const Data &l, const Data &r) { return min(l, r); }
 struct Node {
     Node *l, *r, *p; Data val, sbtr; bool rev;
     Node(const Data &val) : l(nullptr), r(nullptr), p(nullptr), val(val), sbtr(val), rev(false) {}
     bool isRoot(); void update(); void propagate(); void rotate(); void splay(); Node *expose(); void makeRoot();
 };
-Data Sbtr(Node *x) { return x ? x->sbtr : qdef; }
 bool Node::isRoot() { return !p || (this != p->l && this != p->r); }
 void Node::update() {
     sbtr = val;
@@ -62,7 +61,7 @@ template <const int MAXV, const int MAXQ> struct DynamicConnectivityLCT {
     }
     void link(int x, int y) { T[y].makeRoot(); T[y].p = &T[x]; }
     void cut(int x, int y) { T[x].makeRoot(); T[y].expose(); T[y].r->p = nullptr; T[y].r = nullptr; }
-    Data queryPath(int from, int to) { T[from].makeRoot(); T[to].expose(); return Sbtr(&T[to]); }
+    Data queryPath(int from, int to) { T[from].makeRoot(); T[to].expose(); return T[to].sbtr; }
     void clear(int V = MAXV) { T.clear(); ans.clear(); Q = 0; for (int i = 0; i < V; i++) present[i].clear(); }
     void addEdge(int v, int w) {
         if (v > w) swap(v, w);
