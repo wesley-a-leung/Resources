@@ -81,7 +81,7 @@ template <const int MAXV, const int MAXQ> struct DynamicConnectivityLCT {
             if (q[i].type == 1) {
                 int v = q[i].v, w = q[i].w, o = q[i].otherTime;
                 if (connected(v, w)) {
-                    pair<int, int> mn = queryPath(v, w);
+                    Data mn = queryPath(v, w);
                     if (mn.first >= o) continue;
                     cut(q[mn.second].v, V + mn.second); cut(q[mn.second].w, V + mn.second); cnt++;
                 }
