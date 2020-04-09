@@ -42,7 +42,7 @@ template <const int MAXV, const int MAXE, const int MAXQ, const int BLOCKSZ, cla
                 edges[q[i].first].weight = q[i].second;
                 large.emplace(edges[q[i].first].weight, q[i].first); small.emplace(edges[q[i].first].weight, q[i].first);
                 stamp[0]++; mst = 0;
-                for (auto &&p: small) if (join(0, find(1, edges[p.second].v), find(1, edges[p.second].w))) mst += edges[p.second].weight;
+                for (auto &&p : small) if (join(0, find(1, edges[p.second].v), find(1, edges[p.second].w))) mst += edges[p.second].weight;
                 ans[i] = forest + mst;
             }
         }
