@@ -59,10 +59,7 @@ template <const int MAXV> struct DynamicMSTDivAndConq {
     int V, MAXNODES = 0; vector<Node> T; unit currentMST; vector<unit> ans; vector<Query> q;
     unordered_map<int, int> present[MAXV]; vector<pair<pair<int, int>, unit>> history;
     void makeNode(int id, unit weight) { T.emplace_back(make_pair(weight, id)); assert(int(T.size()) <= MAXNODES); }
-    bool connected(int x, int y) {
-        if (x == y) return true;
-        T[x].expose(); T[y].expose(); return T[x].p;
-    }
+    bool connected(int x, int y) { T[x].expose(); T[y].expose(); return T[x].p; }
     void link(int x, int y) { T[y].makeRoot(); T[y].p = &T[x]; }
     void cut(int x, int y) { T[x].makeRoot(); T[y].expose(); T[y].r->p = nullptr; T[y].r = nullptr; }
     Data queryPath(int from, int to) { T[from].makeRoot(); T[to].expose(); return Sbtr(&T[to]); }
@@ -73,6 +70,7 @@ template <const int MAXV> struct DynamicMSTDivAndConq {
     void clear(int V = MAXV) { MAXNODES = 0; T.clear(); ans.clear(); q.clear(); for (int i = 0; i < V; i++) present[i].clear(); }
     void add(int i) {
         int v = q[i].v, w = q[i].w; unit weight = q[i].weight;
+        if (v == w) return;
         if (connected(v, w)) {
             Data mx = queryPath(v, w);
             if (mx.first <= weight) return;
