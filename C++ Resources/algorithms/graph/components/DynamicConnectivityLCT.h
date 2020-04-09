@@ -56,7 +56,10 @@ void Node::makeRoot() { expose(); rev = !rev; }
 template <const int MAXV, const int MAXQ> struct DynamicConnectivityLCT {
     int Q = 0, cnt; vector<Node> T; vector<int> ans; unordered_map<int, int> present[MAXV];
     struct Query { int type, v, w, otherTime; } q[MAXQ];
-    bool connected(int x, int y) { T[x].expose(); T[y].expose(); return T[x].p; }
+    bool connected(int x, int y) {
+        if (x == y) return true;
+        T[x].expose(); T[y].expose(); return T[x].p;
+    }
     void link(int x, int y) { T[y].makeRoot(); T[y].p = &T[x]; }
     void cut(int x, int y) { T[x].makeRoot(); T[y].expose(); T[y].r->p = nullptr; T[y].r = nullptr; }
     Data queryPath(int from, int to) { T[from].makeRoot(); T[to].expose(); return Sbtr(&T[to]); }
@@ -77,7 +80,6 @@ template <const int MAXV, const int MAXQ> struct DynamicConnectivityLCT {
         for (int i = 0; i < Q; i++) {
             if (q[i].type == 1) {
                 int v = q[i].v, w = q[i].w, o = q[i].otherTime;
-                if (v == w) continue;
                 if (connected(v, w)) {
                     Data mn = queryPath(v, w);
                     if (mn.first >= o) continue;
