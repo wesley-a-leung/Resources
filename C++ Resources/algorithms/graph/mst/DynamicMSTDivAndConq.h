@@ -74,7 +74,7 @@ template <const int MAXV> struct DynamicMSTDivAndConq {
     void add(int i) {
         int v = q[i].v, w = q[i].w; unit weight = q[i].weight;
         if (connected(v, w)) {
-            pair<unit, int> mx = queryPath(v, w);
+            Data mx = queryPath(v, w);
             if (mx.first <= weight) return;
             history.emplace_back(make_pair(i, mx.second), currentMST);
             cut(q[mx.second].v, V + mx.second); cut(q[mx.second].w, V + mx.second); currentMST -= mx.first;
