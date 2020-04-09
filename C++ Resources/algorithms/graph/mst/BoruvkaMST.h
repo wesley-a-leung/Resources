@@ -20,9 +20,8 @@ template <const int MAXV, class unit> struct BoruvkaMST {
                 if (closest[i] == -1 || edges[e].weight < edges[closest[i]].weight) closest[i] = e;
                 if (closest[j] == -1 || edges[e].weight < edges[closest[j]].weight) closest[j] = e;
             }
-            for (int i = 0; i < V; i++) if (closest[i] != -1) {
-                int v = edges[closest[i]].v, w = edges[closest[i]].w;
-                if (uf.join(v, w)) { mst.push_back(edges[closest[i]]); weight += edges[closest[i]].weight; }
+            for (int i = 0; i < V; i++) if (closest[i] != -1 && uf.join(edges[closest[i]].v, edges[closest[i]].w)) {
+                mst.push_back(edges[closest[i]]); weight += edges[closest[i]].weight;
             }
         }
         return weight;
