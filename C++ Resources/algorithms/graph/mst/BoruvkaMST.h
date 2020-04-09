@@ -11,7 +11,7 @@ template <const int MAXV, class unit> struct BoruvkaMST {
     UnionFind<MAXV> uf; int closest[MAXV]; vector<Edge> edges, mst; unit weight;
     void addEdge(int v, int w, unit weight) { edges.push_back({v, w, weight}); }
     unit run(int V) {
-        weight = 0; uf.init(V); 
+        weight = 0; uf.init(V);
         for (int t = 1; t < V && int(mst.size()) < V - 1; t *= 2) {
             fill(closest, closest + V, -1);
             for (int e = 0; e < int(edges.size()); e++) {
