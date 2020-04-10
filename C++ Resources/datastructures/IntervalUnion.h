@@ -48,7 +48,7 @@ template <class It> It intervalUnion(It st, It en) {
     It cur = st;
     for (It l = st, r; l < en; l = r, cur++) {
         *cur = *l;
-        for (r = l + 1; r < en && (le(r->first, cur->second)); r++) cur->second = max(cur->second, r->second);
+        for (r = l + 1; r < en && le(r->first, cur->second); r++) cur->second = max(cur->second, r->second);
     }
     return cur;
 }
