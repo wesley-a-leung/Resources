@@ -2,16 +2,22 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+using T = long double; const T EPS = 1e-9;
+
+bool lt(T a, T b) { return a + EPS < b; }
+
 // Solves the interval scheduling maximization problem
-// Given a set of intervals [li, ri], find the maximum number of non overlapping intervals
-// Time Complexity: O(N log N)
-// Memory Complexity: O(N)
-template <const int MAXN, class T> struct IntervalSchedulingMax {
-    pair<T, T> intervals[MAXN]; int cnt; bool marked[MAXN];
-    int solve(int N) {
-        sort(intervals, intervals + N, [&] (const pair<T, T> &a, const pair<T, T> &b) { return a.second < b.second; });
-        fill(marked, marked + N, false); cnt = 0; T last = numeric_limits<T>::lowest();
-        for (int i = 0; i < N; i++) if (i == 0 || last < intervals[i].first) { cnt++; marked[i] = true; last = intervals[i].second; }
-        return cnt;
+// Given a set of intervals in the form [L, R), find the maximum number of non overlapping intervals
+// Returns an iterator to right after the last disjoint interval
+// Time Complexity: O(N)
+// Memory Complexity: O(1)
+bool cmp(const pair<T, T> &a, const pair<T, T> &b) { return lt(a.second, b.second); }
+template <class It> It intervalSchedulingMax(It st, It en) {
+    assert(is_sorted(st, en, cmp));
+    It cur = st;
+    for (It l = st, r; l < en; l = r, cur++) {
+        *cur = *l;
+        for (r = l + 1; r < en && lt(r->first, cur->second); r++);
     }
-};
+    return cur;
+}
