@@ -8,12 +8,10 @@ using namespace std;
 //   constructor, empty, top, increment, size: O(1)
 //   pop, push, merge: O(log N)
 template <class Value, class Comparator = less<Value>, class Delta = Value> struct LeftistHeapIncremental {
-    Comparator cmp; Delta ddef;
     struct Node {
-        Value val; Delta delta; int dist; unique_ptr<Node> left, right;
-        Node(const Value &v, const Delta &d) : val(v), delta(d), dist(0) {}
+        Value val; Delta delta; int dist; unique_ptr<Node> left, right; Node(const Value &v, const Delta &d) : val(v), delta(d), dist(0) {}
     };
-    int cnt; unique_ptr<Node> root;
+    Comparator cmp; Delta ddef; int cnt; unique_ptr<Node> root;
     void propagate(unique_ptr<Node> &a) {
         a->val = a->val + a->delta;
         if (a->left) a->left->delta = a->left->delta + a->delta;
@@ -31,10 +29,7 @@ template <class Value, class Comparator = less<Value>, class Delta = Value> stru
     LeftistHeapIncremental(const Delta &ddef) : ddef(ddef), cnt(0) {}
     bool empty() const { return !root; }
     Value top() { propagate(root); return root->val; }
-    Value pop() {
-        propagate(root); Value ret = root->val; root = merge(move(root->left), move(root->right)); cnt--;
-        return ret;
-    }
+    Value pop() { propagate(root); Value ret = root->val; root = merge(move(root->left), move(root->right)); cnt--; return ret; }
     void push(const Value &val) { root = merge(move(root), make_unique<Node>(val, ddef)); cnt++; }
     void increment(const Delta &delta) { if (root) root->delta = root->delta + delta; }
     void merge(LeftistHeapIncremental &h) { root = merge(move(root), move(h.root)); cnt += h.cnt; }

@@ -14,7 +14,9 @@ std::mt19937 rng(seq);
 //   constructor, empty, top, size: O(1)
 //   pop, push, merge: O(log N) expected if randomized, amortized if not 
 template <class Value, class Comparator = less<Value>, const bool RANDOMIZED = false> struct SkewHeap {
-    struct Node { Value val; unique_ptr<Node> left, right; Node(const Value &v) : val(v) {} };
+    struct Node {
+        Value val; unique_ptr<Node> left, right; Node(const Value &v) : val(v) {}
+    };
     Comparator cmp; int cnt; unique_ptr<Node> root;
     unique_ptr<Node> merge(unique_ptr<Node> a, unique_ptr<Node> b) {
         if (!a || !b) return a ? move(a) : move(b);
@@ -25,10 +27,7 @@ template <class Value, class Comparator = less<Value>, const bool RANDOMIZED = f
     SkewHeap() : cnt(0) {}
     bool empty() const { return !root; }
     Value top() const { return root->val; }
-    Value pop() {
-        Value ret = root->val; root = merge(move(root->left), move(root->right)); cnt--;
-        return ret;
-    }
+    Value pop() { Value ret = root->val; root = merge(move(root->left), move(root->right)); cnt--; return ret; }
     void push(const Value &val) { root = merge(move(root), make_unique<Node>(val)); cnt++; }
     void merge(SkewHeap &h) { root = merge(move(root), move(h.root)); cnt += h.cnt; }
     int size() const { return cnt; }
