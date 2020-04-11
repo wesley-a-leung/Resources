@@ -18,4 +18,10 @@ template <const int MAXV, class unit> struct FloydWarshallAPSP {
         for (int u = 0; u < V; u++) for (int v = 0; v < V; v++) for (int w = 0; w < V; w++)
             if (dist[w][w] < 0 && dist[u][w] < INF && dist[w][v] < INF) { dist[u][v] = -INF; hasNegativeCycle = true; break; }
     }
+    vector<int> getPath(int v, int w) {
+        if (nxt[v][w] == -1) return vector<int>();
+        vector<int> path; path.push_back(v);
+        while (v != w) path.push_back(v = nxt[v][w]);
+        return path;
+    }
 };
