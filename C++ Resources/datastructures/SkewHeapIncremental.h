@@ -31,7 +31,7 @@ template <class Value, class Comparator = less<Value>, class Delta = Value, cons
         if (!RANDOMIZED || rng() % 2) a->l.swap(a->r);
         a->r = merge(move(b), move(a->r)); return move(a);
     }
-    SkewHeapIncremental(const Delta &ddef) : ddef(ddef), cnt(0) {}
+    SkewHeapIncremental(const Delta &ddef = Delta()) : ddef(ddef), cnt(0) {}
     bool empty() const { return !root; }
     Value top() { propagate(root); return root->val; }
     Value pop() { propagate(root); Value ret = root->val; root = merge(move(root->l), move(root->r)); cnt--; return ret; }
