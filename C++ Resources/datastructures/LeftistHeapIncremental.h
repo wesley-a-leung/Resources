@@ -26,7 +26,7 @@ template <class Value, class Comparator = less<Value>, class Delta = Value> stru
         if (!a->l || a->l->dist < a->r->dist) a->l.swap(a->r);
         a->dist = (a->r ? a->r->dist : 0) + 1; return move(a);
     }
-    LeftistHeapIncremental(const Delta &ddef) : ddef(ddef), cnt(0) {}
+    LeftistHeapIncremental(const Delta &ddef = Delta()) : ddef(ddef), cnt(0) {}
     bool empty() const { return !root; }
     Value top() { propagate(root); return root->val; }
     Value pop() { propagate(root); Value ret = root->val; root = merge(move(root->l), move(root->r)); cnt--; return ret; }
