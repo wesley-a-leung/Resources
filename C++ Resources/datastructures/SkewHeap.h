@@ -15,19 +15,19 @@ std::mt19937 rng(seq);
 //   pop, push, merge: O(log N) expected if randomized, amortized if not 
 template <class Value, class Comparator = less<Value>, const bool RANDOMIZED = false> struct SkewHeap {
     struct Node {
-        Value val; unique_ptr<Node> left, right; Node(const Value &v) : val(v) {}
+        Value val; unique_ptr<Node> l, r; Node(const Value &v) : val(v) {}
     };
     Comparator cmp; int cnt; unique_ptr<Node> root;
     unique_ptr<Node> merge(unique_ptr<Node> a, unique_ptr<Node> b) {
         if (!a || !b) return a ? move(a) : move(b);
         if (cmp(a->val, b->val)) a.swap(b);
-        if (!RANDOMIZED || rng() % 2) a->left.swap(a->right);
-        a->right = merge(move(b), move(a->right)); return move(a);
+        if (!RANDOMIZED || rng() % 2) a->l.swap(a->r);
+        a->r = merge(move(b), move(a->r)); return move(a);
     }
     SkewHeap() : cnt(0) {}
     bool empty() const { return !root; }
     Value top() const { return root->val; }
-    Value pop() { Value ret = root->val; root = merge(move(root->left), move(root->right)); cnt--; return ret; }
+    Value pop() { Value ret = root->val; root = merge(move(root->l), move(root->r)); cnt--; return ret; }
     void push(const Value &val) { root = merge(move(root), make_unique<Node>(val)); cnt++; }
     void merge(SkewHeap &h) { root = merge(move(root), move(h.root)); cnt += h.cnt; }
     int size() const { return cnt; }
