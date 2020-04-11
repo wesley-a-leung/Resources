@@ -12,7 +12,7 @@ template <class Value, class Comparator = less<Value>, class Delta = Value> stru
         Value val; Delta delta; int dist; unique_ptr<Node> left, right; Node(const Value &v, const Delta &d) : val(v), delta(d), dist(0) {}
     };
     Comparator cmp; Delta ddef; int cnt; unique_ptr<Node> root;
-    void propagate(unique_ptr<Node> &a) {
+    void propagate(const unique_ptr<Node> &a) {
         a->val = a->val + a->delta;
         if (a->left) a->left->delta = a->left->delta + a->delta;
         if (a->right) a->right->delta = a->right->delta + a->delta;
