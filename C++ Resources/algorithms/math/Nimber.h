@@ -5,6 +5,8 @@ using namespace std;
 // Nimber operations
 using u64 = uint64_t; const int MAXBITS = 64; u64 prod[MAXBITS][MAXBITS];
 
+u64 nimAdd(u64 a, u64 b) { return a ^ b; }
+
 u64 nimMulPow2(int i, int j) { // nim product of 2^i, 2^j
     u64 &res = prod[i][j];
     if (res) return res;
@@ -12,8 +14,6 @@ u64 nimMulPow2(int i, int j) { // nim product of 2^i, 2^j
     int a = (i & j) & -(i & j);
     return res = nimMulPow2(i ^ a, j) ^ nimMulPow2((i ^ a) | (a - 1), (j ^ a) | (i & (a - 1)));
 }
-
-u64 nimAdd(u64 a, u64 b) { return a ^ b; }
 
 u64 nimMul(u64 a, u64 b) {
     u64 res = 0;
