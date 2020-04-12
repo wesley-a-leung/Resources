@@ -3,7 +3,7 @@
 using namespace std;
 
 // Nimber operations
-using T = uint64_t; constexpr const int MAXBITS = 8 * sizeof(T); T prod[MAXBITS][MAXBITS];
+using T = uint64_t; constexpr const int BITS = 8 * sizeof(T); T prod[BITS][BITS];
 static_assert(is_unsigned<T>::value, "T must be an unsigned integral type");
 
 T addNim(T a, T b) { return a ^ b; }
@@ -18,7 +18,7 @@ T mulNimPow2(int i, int j) { // nim product of 2^i, 2^j
 
 T mulNim(T a, T b) {
     T res = 0;
-    for (int i = 0; i < MAXBITS; i++) if ((a >> i) & 1) for (int j = 0; j < MAXBITS; j++) if ((b >> j) & 1) res ^= mulNimPow2(i, j);
+    for (int i = 0; i < BITS; i++) if ((a >> i) & 1) for (int j = 0; j < BITS; j++) if ((b >> j) & 1) res = addNim(res, mulNimPow2(i, j));
     return res;
 }
 
