@@ -90,9 +90,9 @@ template <class T, class U> T powModOvf(T base, U pow, T mod) {
 // Modular Multiplicative Inverse of a in Zp for a prime p
 // Time Complexity: O(log p)
 // Required: 0 < a < p, p * p does not overflow
-template <class T> T mulInvPrime(T a, T p) { return powMod(a, p - 2, p); }
+template <class T> T mulInvModPrime(T a, T p) { return powMod(a, p - 2, p); }
 
 // a / b % p for a prime p
 // Time Complexity: O(log p)
 // Required: 0 <= a < p, 0 < b < p, p * p does not overflow
-template <class T> T divModPrime(T a, T b, T p) { return mulMod(a, mulInvPrime(b, p), p); }
+template <class T> T divModPrime(T a, T b, T p) { return mulMod(a, mulInvModPrime(b, p), p); }
