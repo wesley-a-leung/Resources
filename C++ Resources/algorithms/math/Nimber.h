@@ -6,6 +6,9 @@ using namespace std;
 using T = uint64_t; constexpr const int BITS = 8 * sizeof(T); T prod[BITS][BITS];
 static_assert(is_unsigned<T>::value, "T must be an unsigned integral type");
 
+int init() { for (int i = 0; i < BITS; i++) fill(prod[i], prod[i] + BITS, 0); return 0; }
+int _nim = init();
+
 T addNim(T a, T b) { return a ^ b; }
 
 T mulNimPow2(int i, int j) { // nim product of 2^i, 2^j
