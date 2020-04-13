@@ -45,10 +45,7 @@ template <class T, class Comparator = less<T>> struct DynamicConvexHullTrickSqrt
             else hi = mid;
         }
         T mx = large.empty() ? eval(small[0], x) : eval(large[lo], x);
-        for (auto &&line : small) {
-            T y = eval(line, x);
-            if (cmp(mx, y)) mx = y;
-        }
+        for (auto &&line : small) mx = max(mx, eval(line, x), cmp);
         return mx;
     }
     int size() { return int(large.size()) + int(small.size()); }
