@@ -13,16 +13,13 @@ template <const int MAXN> struct LargestTriangularArea {
         largestArea2 = 0; copy(P, P + N, ch.P); ch.run(N); int H = ch.hull.size();
         if (H < 3) return largestArea2;
         int a = 0, b = 1, c = 2; largestArea2 = area2(PA = ch.hull[a], PB = ch.hull[b], PC = ch.hull[c]);
-        while (true) {
-            while (c != a) {
+        for (; ; b = (a + 1) % H, c = (b + 1) % H) {
+            for (; c != a; b = (b + 1) % H) {
                 T A = area2(ch.hull[a], ch.hull[b], ch.hull[c]), B;
                 while ((B = area2(ch.hull[a], ch.hull[b], ch.hull[(c + 1) % H])) >= A) { c = (c + 1) % H; A = B; }
                 if (largestArea2 < A) { largestArea2 = A; PA = ch.hull[a]; PB = ch.hull[b]; PC = ch.hull[c]; }
-                b = (b + 1) % H;
             }
-            a = (a + 1) % H;
-            if (a == 0) break;
-            b = (a + 1) % H; c = (b + 1) % H;
+            if ((a = (a + 1) % H) == 0) break;
         }
         return largestArea2;
     }
