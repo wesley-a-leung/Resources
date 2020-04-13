@@ -18,7 +18,7 @@ template <class T, class Comparator = less<T>> struct DynamicConvexHullTrickSqrt
         return !cmp(a.first, b.first) && !cmp(b.first, a.first) && !cmp(b.second, a.second);
     }
     T eval(const pair<T, T> &a, const T &x) { return a.first * x + a.second; }
-    void buildHull() {
+    void rebuildHull() {
         int back = 0;
         for (auto &&line : large) {
             while (back >= 2 && bad3(large[back - 2], large[back - 1], line)) back--;
@@ -32,7 +32,7 @@ template <class T, class Comparator = less<T>> struct DynamicConvexHullTrickSqrt
             auto lineCmp = [&] (const pair<T, T> &a, const pair<T, T> &b) { return cmp(a.first, b.first); };
             int largeSz = int(large.size()); sort(small.begin(), small.end(), lineCmp);
             for (auto &&x : small) large.push_back(x);
-            small.clear(); inplace_merge(large.begin(), large.begin() + largeSz, large.end(), lineCmp); buildHull();
+            small.clear(); inplace_merge(large.begin(), large.begin() + largeSz, large.end(), lineCmp); rebuildHull();
         }
     }
     void addLine(T m, T b) { small.emplace_back(m, b); }
