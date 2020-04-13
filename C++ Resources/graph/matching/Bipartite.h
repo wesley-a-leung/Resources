@@ -6,10 +6,10 @@ using namespace std;
 // Time Complexity: O(V + E)
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct Bipartite {
-    const bool WHITE = false, BLACK = true; bool bipartite, color[MAXV], vis[MAXV]; int to[MAXV], q[MAXV]; vector<int> oddCycle, adj[MAXV];
+    bool bipartite, color[MAXV], vis[MAXV]; int to[MAXV], q[MAXV]; vector<int> oddCycle, adj[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     void bfs(int s) {
-        color[s] = WHITE; vis[s] = true; int front = 0, back = 0; q[back++] = s;
+        color[s] = false; vis[s] = true; int front = 0, back = 0; q[back++] = s;
         while (front < back) {
             int v = q[front++];
             for (int w : adj[v]) {
@@ -26,7 +26,7 @@ template <const int MAXV> struct Bipartite {
         }
     }
     bool run(int V) { // returns true if there the graph is bipartite
-        bipartite = true; fill(color, color + V, WHITE); fill(vis, vis + V, false);
+        bipartite = true; fill(color, color + V, false); fill(vis, vis + V, false);
         for (int v = 0; v < V && bipartite; v++) if (!vis[v]) bfs(v);
         return oddCycle.empty();
     }
