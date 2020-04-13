@@ -6,7 +6,9 @@ constexpr const int MB = 200;
 char buf[MB << 20];
 size_t buf_ind = sizeof(buf);
 void *operator new(size_t n) { return (void *) &buf[buf_ind -= n]; }
+void *operator new[](size_t n) { return (void *) &buf[buf_ind -= n]; }
 void operator delete(void *) {}
+void operator delete[](void *) {}
 
 template <class T> struct StaticAllocator {
     typedef T value_type; StaticAllocator() {}
