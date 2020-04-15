@@ -5,7 +5,7 @@ using namespace std;
 // Implicit Splay Tree supporting point updates and range queries
 // Time Complexity:
 //   constructor: O(N)
-//   updateVal, queryVal, queryRange: O(log N)
+//   updateVal, queryVal, queryRange: O(log N) amortized
 // Memory Complexity: O(N)
 
 using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0;

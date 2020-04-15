@@ -4,8 +4,8 @@ using namespace std;
 
 // Implicit Treap supporting point updates and range queries
 // Time Complexity:
-//   constructor: O(N)
-//   updateVal, queryVal, queryRange: O(log N)
+//   constructor: O(N log N)
+//   updateVal, queryVal, queryRange: O(log N) expected
 // Memory Complexity: O(N)
 
 std::seed_seq seq{
