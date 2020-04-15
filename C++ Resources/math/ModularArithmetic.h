@@ -8,12 +8,12 @@ template <class T> T posMod(T a, T mod) { T ret = -mod < a && a < mod ? a : a % 
 
 // (a + b) % mod
 // Time Complexity O(1)
-// Required: 0 <= a < mod, 0 <= b < mod, mod + mod does not overflow
+// Required: 0 <= a < mod, 0 <= b < mod, a + b does not overflow
 template <class T> T addMod(T a, T b, T mod) { T ret = a + b; return ret < mod ? ret : ret - mod; }
 
 // (a - b) % mod
 // Time Complexity O(1)
-// Required: 0 <= a < mod, 0 <= b < mod, mod can be represented as a signed integer
+// Required: 0 <= a < mod, 0 <= b < mod, a - b does not underflow
 template <class T> T subMod(T a, T b, T mod) { T ret = a - b; return 0 <= ret ? ret : ret + mod; }
 
 // a * b % mod
