@@ -11,18 +11,18 @@ using namespace std;
 template <class T, class Comparator = less<T>> struct DynamicConvexHullTrickSqrtBuffer {
     Comparator cmp; vector<pair<T, T>> large, small; double SCALE_FACTOR;
     DynamicConvexHullTrickSqrtBuffer(const double SCALE_FACTOR = 1) : SCALE_FACTOR(SCALE_FACTOR) {}
-    bool bad3(const pair<T, T> &a, const pair<T, T> &b, const pair<T, T> &c) {
+    bool ccw(const pair<T, T> &a, const pair<T, T> &b, const pair<T, T> &c) {
         return (b.first - a.first) * (c.second - a.second) <= (b.second - a.second) * (c.first - a.first);
     }
-    bool bad2(const pair<T, T> &a, const pair<T, T> &b) {
+    bool slope(const pair<T, T> &a, const pair<T, T> &b) {
         return !cmp(a.first, b.first) && !cmp(b.first, a.first) && !cmp(a.second, b.second);
     }
     T eval(const pair<T, T> &a, const T &x) { return a.first * x + a.second; }
     void rebuildHull() {
         int back = 0;
         for (auto &&line : large) {
-            while (back >= 2 && bad3(line, large[back - 1], large[back - 2])) back--;
-            while (back >= 1 && bad2(line, large[back - 1])) back--;
+            while (back >= 2 && ccw(line, large[back - 1], large[back - 2])) back--;
+            while (back >= 1 && slope(line, large[back - 1])) back--;
             large[back++] = line;
         }
         large.resize(back);
