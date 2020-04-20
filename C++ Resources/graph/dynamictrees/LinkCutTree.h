@@ -16,7 +16,7 @@ struct Node {
     Node *l, *r, *p; int vert, size; Data val, sbtr; bool rev;
     Node(int vert, const Data &val) : l(nullptr), r(nullptr), p(nullptr), vert(vert), size(1), val(val), sbtr(val), rev(false) {}
     bool isRoot(); void update(); void apply(const Lazy &v); void propagate(); void rotate();
-    void splay(); Node *expose(); void makeRoot(); Node *findMin();
+    void splay(); Node *access(); void makeRoot(); Node *findMin();
 };
 int Size(Node *x) { return x ? x->size : 0; }
 Data Sbtr(Node *x) { return x ? x->sbtr : qdef; }
@@ -52,12 +52,12 @@ void Node::splay() {
     }
     propagate(); update();
 }
-Node *Node::expose() {
+Node *Node::access() {
     Node *last = nullptr;
     for (Node *y = this; y; y = y->p) { y->splay(); y->l = last; last = y; }
     splay(); return last;
 }
-void Node::makeRoot() { expose(); rev = !rev; revData(sbtr); }
+void Node::makeRoot() { access(); rev = !rev; revData(sbtr); }
 Node *Node::findMin() {
     Node *x = this;
     for (x->propagate(); x->l; (x = x->l)->propagate());
@@ -70,31 +70,22 @@ struct LinkCutTree {
     void makeRoot(int x) { T[x].makeRoot(); }
     bool connected(int x, int y) {
         if (x == y) return true;
-        T[x].expose(); T[y].expose(); return T[x].p;
+        T[x].access(); T[y].access(); return T[x].p;
     }
-    int lca(int x, int y, int r) {
-        if (!connected(x, y)) return -1;
-        T[r].makeRoot(); T[x].expose(); return T[y].expose()->vert;
-    }
-    bool link(int x, int y) {
-        if (connected(x, y)) return false;
-        T[y].makeRoot(); T[y].p = &T[x]; return true;
-    }
+    // lca, link, updatePath, queryPath do not check for connectedness
+    int lca(int x, int y) { T[x].access(); return T[y].access()->vert; }
+    void link(int x, int y) { T[y].makeRoot(); T[y].p = &T[x]; }
     bool cut(int x, int y) {
-        if (!connected(x, y)) return false;
-        T[x].makeRoot(); T[y].expose();
+        T[x].makeRoot(); T[y].access();
         if (&T[x] != T[y].r || T[x].l) return false;
         T[y].r->p = nullptr; T[y].r = nullptr; return true;
     }
     bool cutParent(int ch) {
-        T[ch].expose();
+        T[ch].access();
         if (!T[ch].r) return false;
         T[ch].r->p = nullptr; T[ch].r = nullptr; return true;
     }
-    int findParent(int ch) { T[ch].expose(); return T[ch].r ? T[ch].r->findMin()->vert : -1; }
+    int findParent(int ch) { T[ch].access(); return T[ch].r ? T[ch].r->findMin()->vert : -1; }
     void updateVertex(int x, const Lazy &val) { T[x].makeRoot(); T[x].apply(val); }
-    Data queryPath(int from, int to) {
-        if (!connected(from, to)) return qdef;
-        T[from].makeRoot(); T[to].expose(); return Sbtr(&T[to]);
-    }
+    Data queryPath(int from, int to) { T[from].makeRoot(); T[to].access(); return Sbtr(&T[to]); }
 };
