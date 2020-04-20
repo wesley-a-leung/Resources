@@ -42,6 +42,7 @@ template <class T> T EEA(T a, T b, T &x, T &y) {
 }
 
 // Computes the multiplicative inverse of a in Zm
+// Inverse only exists if gcd(a, m) == 1
 // Require: 0 <= a, a < m
 template <class T> T mulInv(T a, T m) {
     T x, y;
