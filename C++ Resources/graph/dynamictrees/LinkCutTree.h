@@ -5,7 +5,7 @@ using namespace std;
 // Link Cut Tree supporting vertex updates and path queries
 // Time Complexity:
 //   constructor: O(N)
-//   makeRoot, findRoot, lca, link, cut, updateVertex, queryPath: O(log N)
+//   makeRoot, findRoot, findParent, lca, link, cut, updateVertex, queryPath: O(log N)
 // Memory Complexity: O(N)
 
 using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0;
@@ -16,7 +16,7 @@ struct Node {
     Node *l, *r, *p; int vert, size; Data val, sbtr; bool rev;
     Node(int vert, const Data &val) : l(nullptr), r(nullptr), p(nullptr), vert(vert), size(1), val(val), sbtr(val), rev(false) {}
     bool isRoot(); void update(); void apply(const Lazy &v); void propagate(); void rotate();
-    void splay(); Node *access(); void makeRoot(); Node *findMin();
+    void splay(); Node *access(); void makeRoot(); Node *findMin(); Node *findMax();
 };
 int Size(Node *x) { return x ? x->size : 0; }
 Data Sbtr(Node *x) { return x ? x->sbtr : qdef; }
@@ -63,6 +63,11 @@ Node *Node::findMin() {
     for (x->propagate(); x->l; (x = x->l)->propagate());
     x->splay(); return x;
 }
+Node *Node::findMax() {
+    Node *x = this;
+    for (x->propagate(); x->r; (x = x->r)->propagate());
+    x->splay(); return x;
+}
 struct LinkCutTree {
     vector<Node> T;
     LinkCutTree(int N) { T.reserve(N); for (int i = 0; i < N; i++) T.emplace_back(i, vdef); }
@@ -86,6 +91,7 @@ struct LinkCutTree {
         T[ch].r->p = nullptr; T[ch].r = nullptr; return true;
     }
     int findParent(int ch) { T[ch].access(); return T[ch].r ? T[ch].r->findMin()->vert : -1; }
+    int findRoot(int x) { T[x].access(); return T[x].findMax()->vert; }
     void updateVertex(int x, const Lazy &val) { T[x].makeRoot(); T[x].apply(val); }
     Data queryPath(int from, int to) { T[from].makeRoot(); T[to].access(); return Sbtr(&T[to]); }
 };
