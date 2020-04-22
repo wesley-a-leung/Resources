@@ -6,7 +6,7 @@ using namespace std;
 
 struct Circle {
     pt o; T r;
-    Circle(T r = 0) : r(r) {}
+    Circle(T r = 0) : o(0, 0), r(r) {}
     Circle(ref o, T r) : o(o), r(r) {}
 };
 vector<pt> circleLineIntersection(const Circle &c, const Line &l) {
