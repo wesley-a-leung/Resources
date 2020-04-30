@@ -7,6 +7,7 @@ using namespace std;
 // Time Complexity:
 //   constructor, empty, top, size: O(1)
 //   pop, push, merge: O(log N)
+// Memory Complexity: O(N)
 template <class Value, class Comparator = less<Value>> struct LeftistHeap {
     struct Node {
         Value val; int dist; unique_ptr<Node> l, r; Node(const Value &v) : val(v), dist(0) {}

@@ -9,6 +9,7 @@ using namespace std;
 //   top: O(B) where B is the number of bits
 //   empty, size: O(1)
 //   pop, push: O(1) amortized
+// Memory Complexity: O(N * B)
 template <class Comparator = less<uint32_t>> struct RadixHeap {
     Comparator cmp; int n; uint32_t last; vector<uint32_t> x[33];
     int bsr(uint32_t a) { return a ? 31 - __builtin_clz(a) : -1; }
