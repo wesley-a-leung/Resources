@@ -9,6 +9,7 @@ using namespace std;
 //   top: O(B) where B is the number of bits
 //   empty, size: O(1)
 //   pop, push: O(1) amortized
+// Memory Complexity: O(N)
 template <class T, class Comparator = less<uint64_t>> struct RadixPriorityQueue64 {
     Comparator cmp; int n; uint64_t last; vector<pair<uint64_t, T>> x[65];
     int bsr(uint64_t a) { return a ? 63 - __builtin_clzll(a) : -1; }

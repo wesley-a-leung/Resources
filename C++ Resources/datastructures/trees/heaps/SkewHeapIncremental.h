@@ -8,11 +8,12 @@ std::seed_seq seq{
 };
 std::mt19937 rng(seq);
 
-// Heap supporting merges
+// Heap supporting merges and increments
 // comparator convention is same as priority_queue in STL
 // Time Complexity:
-//   constructor, empty, top, size: O(1)
+//   constructor, empty, top, increment, size: O(1)
 //   pop, push, merge: O(log N) expected if randomized, amortized if not
+// Memory Complexity: O(N)
 template <class Value, class Comparator = less<Value>, class Delta = Value, const bool RANDOMIZED = false> struct SkewHeapIncremental {
     struct Node {
         Value val; Delta delta; unique_ptr<Node> l, r; Node(const Value &v, const Delta &d) : val(v), delta(d) {}

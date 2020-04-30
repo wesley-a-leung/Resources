@@ -8,7 +8,7 @@ using namespace std;
 template <const int MAXN, class T> struct HamiltonianPath {
     T INF, dist[MAXN][MAXN], dp[1 << MAXN][MAXN]; int order[MAXN];
     HamiltonianPath(T INF) : INF(INF) {}
-    T run(int N) {
+    T solve(int N) {
         T ret = INF;
         for (int i = 0; i < (1 << N); i++) for (int j = 0; j < N; j++) dp[i][j] = INF;
         for (int i = 0; i < N; i++) dp[1 << i][i] = 0;

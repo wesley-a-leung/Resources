@@ -13,6 +13,7 @@ std::mt19937 rng(seq);
 // Time Complexity:
 //   constructor, empty, top, size: O(1)
 //   pop, push, merge: O(log N) expected if randomized, amortized if not 
+// Memory Complexity: O(N)
 template <class Value, class Comparator = less<Value>, const bool RANDOMIZED = false> struct SkewHeap {
     struct Node {
         Value val; unique_ptr<Node> l, r; Node(const Value &v) : val(v) {}

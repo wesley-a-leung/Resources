@@ -7,6 +7,7 @@ using namespace std;
 // Time Complexity:
 //   constructor, empty, top, increment, size: O(1)
 //   pop, push, merge: O(log N)
+// Memory Complexity: O(N)
 template <class Value, class Comparator = less<Value>, class Delta = Value> struct LeftistHeapIncremental {
     struct Node {
         Value val; Delta delta; int dist; unique_ptr<Node> l, r; Node(const Value &v, const Delta &d) : val(v), delta(d), dist(0) {}
