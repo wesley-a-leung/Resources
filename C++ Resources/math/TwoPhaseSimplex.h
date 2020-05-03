@@ -11,7 +11,7 @@ using namespace std;
 // Time Complexity: exponential worst case, polynomial in the average case ~O((N + M) * N * M)
 // Memory Complexity: O(M * N)
 template <const int MAXM, const int MAXN, class F> struct TwoPhaseSimplex {
-    int M, N, IN[MAXM], OUT[MAXN]; F INF, EPS, A[MAXM][MAXN], b[MAXM], c[MAXN], x[MAXN], T[MAXM][MAXN];
+    int M, N, IN[MAXM], OUT[MAXN + 1]; F INF, EPS, A[MAXM][MAXN], b[MAXM], c[MAXN], x[MAXN], T[MAXM + 2][MAXN + 2];
     TwoPhaseSimplex(F INF, F EPS) : INF(INF), EPS(EPS) {}
     bool cmp(F a, int b, F c, int d) { return abs(a - c) > EPS ? a < c : b < d; }
     void pivot(int r, int s) {
