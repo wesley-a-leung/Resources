@@ -6,47 +6,33 @@ using namespace std;
 // Time Complexity: O((V + E) sqrt V)
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct HopcroftKarpMaxMatch {
-    int cardinality, mate[MAXV], dist[MAXV], q[MAXV], pathDist; vector<int> adj[MAXV], type[2];
-    bool color[MAXV], inCover[MAXV], vis[MAXV];
+    int mate[MAXV], lvl[MAXV], q[MAXV]; vector<int> adj[MAXV], type[2]; bool color[MAXV], inCover[MAXV], vis[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
-    bool hasPath() {
-        pathDist = INT_MAX; int front = 0, back = 0;
+    bool bfs() {
+        int front = 0, back = 0;
         for (int v : type[0]) {
-            if (mate[v] == -1) { dist[v] = 0; q[back++] = v; }
-            else dist[v] = INT_MAX;
+            if (mate[v] == -1) lvl[q[back++] = v] = 0;
+            else lvl[v] = -1;
         }
         while (front < back) {
             int v = q[front++];
             for (int w : adj[v]) {
-                if (mate[w] == -1) {
-                    if (pathDist == INT_MAX) pathDist = dist[v] + 1;
-                } else if (dist[mate[w]] == INT_MAX) {
-                    dist[mate[w]] = dist[v] + 1;
-                    if (pathDist == INT_MAX) q[back++] = mate[w];
-                }
+                if (mate[w] == -1) return true;
+                else if (lvl[mate[w]] == -1) lvl[q[back++] = mate[w]] = lvl[v] + 1;
             }
         }
-        return pathDist != INT_MAX;
+        return false;
     }
     bool dfs(int v) {
-        for (int w : adj[v]) {
-            if (mate[w] == -1) {
-                if (pathDist == dist[v] + 1) { mate[w] = v; mate[v] = w; return true; }
-            } else if (dist[mate[w]] == dist[v] + 1) {
-                if (dfs(mate[w])) { mate[w] = v; mate[v] = w; return true; }
-            }
-        }
-        dist[v] = INT_MAX; return false;
+        for (int w : adj[v]) if (mate[w] == -1 || (lvl[mate[w]] == lvl[v] + 1 && dfs(mate[w]))) { mate[mate[v] = w] = v; return true; }
+        lvl[v] = -1; return false;
     }
-    void init(int V = MAXV) {
-        fill(mate, mate + V, -1); fill(color, color + V, false);
-        for (int i = 0; i < 2; i++) type[i].clear();
-        for (int i = 0; i < V; i++) adj[i].clear();
-    }
+    void init(int V) { for (int i = 0; i < V; i++) { adj[i].clear(); color[i] = false; } }
     int getMaxMatch(int V) {
-        cardinality = 0;
-        for (int v = 0; v < V; v++) type[color[v]].push_back(v);
-        while (hasPath()) for (int v : type[0]) if (mate[v] == -1 && dfs(v)) cardinality++;
+        int cardinality = 0;
+        for (int i = 0; i < 2; i++) type[i].clear();
+        for (int v = 0; v < V; v++) { type[color[v]].push_back(v); mate[v] = -1; }
+        while (bfs()) for (int v : type[0]) if (mate[v] == -1 && dfs(v)) cardinality++;
         return cardinality;
     }
     void dfsVertexCover(int v) {
