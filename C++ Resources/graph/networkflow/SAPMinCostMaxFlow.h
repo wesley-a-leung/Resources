@@ -43,7 +43,7 @@ template <const int MAXV, class flowUnit, class costUnit> struct SAPMinCostMaxFl
         }
         return dist[t] != COST_INF;
     }
-    void init(int V) { hasNegativeEdgeCost = false; for (int i = 0; i < V; i++) adj[i].clear(); }
+    void init(int V) { hasNegativeEdgeCost = false; for (int v = 0; v < V; v++) adj[v].clear(); }
     pair<flowUnit, costUnit> getMaxFlowMinCost(int V, int s, int t) {
         flowUnit maxFlow = 0; costUnit minCost = 0; fill(phi, phi + V, 0);
         if (hasNegativeEdgeCost) bellmanFord(V, s);
