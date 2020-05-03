@@ -21,7 +21,7 @@ template <const int MAXV, class flowUnit, class costUnit, const int SCALE = 8> s
         }
         adj[v].emplace_back(w, flow, cost, int(adj[w].size())); adj[w].emplace_back(v, 0, -cost, int(adj[v].size()) - 1);
     }
-    void init(int V) { negCost = 0; for (int i = 0; i < V; i++) adj[i].clear(); }
+    void init(int V) { negCost = 0; for (int v = 0; v < V; v++) adj[v].clear(); }
     flowUnit getFlow(int V, int s, int t) {
         auto push = [&] (int v, Edge &e, flowUnit df) {
             int w = e.to;
