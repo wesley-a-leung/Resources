@@ -27,7 +27,7 @@ template <const int MAXV> struct HopcroftKarpMaxMatch {
         for (int w : adj[v]) if (mate[w] == -1 || (lvl[mate[w]] == lvl[v] + 1 && dfs(mate[w]))) { mate[mate[v] = w] = v; return true; }
         lvl[v] = -1; return false;
     }
-    void init(int V) { for (int i = 0; i < V; i++) { adj[i].clear(); color[i] = false; } }
+    void init(int V) { for (int v = 0; v < V; v++) { adj[v].clear(); color[v] = false; } }
     int getMaxMatch(int V) {
         int cardinality = 0;
         for (int i = 0; i < 2; i++) type[i].clear();
