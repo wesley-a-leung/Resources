@@ -11,14 +11,14 @@ template <const int MAXV, class unit> struct PushRelabelMaxFlowDemands {
         int to; unit dem, cap, resCap; int rev;
         Edge(int to, unit dem, unit cap, int rev) : to(to), dem(dem), cap(cap), resCap(cap), rev(rev) {}
     };
-    unit INF, EPS, ex[MAXV], outDem[MAXV], inDem[MAXV]; PushRelabelMaxFlowDemands(unit INF, unit EPS) : INF(INF), EPS(EPS) {}
-    int h[MAXV], cnt[MAXV * 2]; vector<int> hs[MAXV * 2]; vector<Edge> adj[MAXV]; typename vector<Edge>::iterator cur[MAXV];
+    unit INF, EPS, ex[MAXV + 2], outDem[MAXV], inDem[MAXV]; PushRelabelMaxFlowDemands(unit INF, unit EPS) : INF(INF), EPS(EPS) {}
+    int h[MAXV + 2], cnt[(MAXV + 2) * 2]; vector<int> hs[(MAXV + 2) * 2]; vector<Edge> adj[MAXV + 2]; typename vector<Edge>::iterator cur[MAXV + 2];
     void addEdge(int v, int w, unit vwDem, unit vwCap, int type = 1) {
         assert(v != w);
         adj[v].emplace_back(w, vwDem, vwCap, int(adj[w].size())); adj[w].emplace_back(v, -vwDem, -vwDem, int(adj[v].size()) - 1);
         if (type == 1) { outDem[v] += vwDem; inDem[w] += vwDem; }
     }
-    void init(int V) { for (int i = 0; i < V + 2; i++) { outDem[i] = inDem[i] = 0; adj[i].clear(); } }
+    void init(int V) { for (int v = 0; v < V + 2; v++) { outDem[v] = inDem[v] = 0; adj[v].clear(); } }
     unit getFlow(int V, int s, int t) {
         auto push = [&] (int v, Edge &e, unit df) {
             int w = e.to;
