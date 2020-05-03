@@ -23,6 +23,7 @@ vector<pt> circleCircleIntersection(const Circle &c1, const Circle &c2) {
     sort(ret.begin(), ret.end(), xyOrdLt); ret.erase(unique(ret.begin(), ret.end(), pt_eq()), ret.end()); return ret;
 }
 // if the circles have a single tangent line, then all 4 points returned are equal
+// returns a vector of pairs of tangent points (p1, p2)
 // and the tangent line can be found with line(o1, p).perpThrough(p)
 // aborts if circles are identical
 vector<pair<pt, pt>> circleTangentPoints(const Circle &c1, const Circle &c2, bool inner) {
