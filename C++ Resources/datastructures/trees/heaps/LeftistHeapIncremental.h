@@ -14,9 +14,9 @@ template <class Value, class Comparator = less<Value>, class Delta = Value> stru
     };
     Comparator cmp; Delta ddef; int cnt; unique_ptr<Node> root;
     void propagate(const unique_ptr<Node> &a) {
-        a->val = a->val + a->delta;
-        if (a->l) a->l->delta = a->l->delta + a->delta;
-        if (a->r) a->r->delta = a->r->delta + a->delta;
+        a->val += a->delta;
+        if (a->l) a->l->delta += a->delta;
+        if (a->r) a->r->delta += a->delta;
         a->delta = ddef;
     }
     unique_ptr<Node> merge(unique_ptr<Node> a, unique_ptr<Node> b) {
@@ -32,7 +32,7 @@ template <class Value, class Comparator = less<Value>, class Delta = Value> stru
     Value top() { propagate(root); return root->val; }
     Value pop() { propagate(root); Value ret = root->val; root = merge(move(root->l), move(root->r)); cnt--; return ret; }
     void push(const Value &val) { root = merge(move(root), make_unique<Node>(val, ddef)); cnt++; }
-    void increment(const Delta &delta) { if (root) root->delta = root->delta + delta; }
+    void increment(const Delta &delta) { if (root) root->delta += delta; }
     void merge(LeftistHeapIncremental &h) { root = merge(move(root), move(h.root)); cnt += h.cnt; }
     int size() const { return cnt; }
 };

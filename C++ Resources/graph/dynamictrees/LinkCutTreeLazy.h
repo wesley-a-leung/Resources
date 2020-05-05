@@ -8,7 +8,7 @@ using namespace std;
 //   makeRoot, findRoot, findParent, lca, link, cut, updateVertex, updatePath, queryPath: O(log N)
 // Memory Complexity: O(N)
 
-using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ldef = 0;
+using Data = int; using Lazy = int; const Lazy ldef = 0;
 Data merge(const Data &l, const Data &r); // to be implemented
 Lazy getSegmentVal(const Lazy &v, int k); // to be implemented
 Lazy mergeLazy(const Lazy &l, const Lazy &r); // to be implemented
@@ -17,67 +17,63 @@ void revData(Data &v); // to be implemented
 struct Node {
     Node *l, *r, *p; int vert, size; Data val, sbtr; Lazy lz; bool rev;
     Node(int vert, const Data &val) : l(nullptr), r(nullptr), p(nullptr), vert(vert), size(1), val(val), sbtr(val), lz(ldef), rev(false) {}
-    bool isRoot(); void update(); void apply(const Lazy &v); void propagate(); void rotate();
-    void splay(); Node *access(); void makeRoot(); Node *findMin(); Node *findMax();
+    bool isRoot() { return !p || (this != p->l && this != p->r); }
+    void update() {
+        size = 1; sbtr = val;
+        if (l) { size += l->size; sbtr = merge(l->sbtr, sbtr); }
+        if (r) { size += r->size; sbtr = merge(sbtr, r->sbtr); }
+    }
+    void apply(const Lazy &v) { val = applyLazy(val, v); sbtr = applyLazy(sbtr, getSegmentVal(v, size)); lz = mergeLazy(lz, v); }
+    void propagate() {
+        if (rev) {
+            swap(l, r); rev = false;
+            if (l) { l->rev = !l->rev; revData(l->sbtr); }
+            if (r) { r->rev = !r->rev; revData(r->sbtr); }
+        }
+        if (lz != ldef) {
+            if (l) l->apply(lz);
+            if (r) r->apply(lz);
+            lz = ldef;
+        }
+    }
+    static void connect(Node *ch, Node *par, bool hasCh, bool isL) {
+        if (ch) ch->p = par;
+        if (hasCh) (isL ? par->l : par->r) = ch;
+    }
+    void rotate() {
+        Node *p = this->p, *g = p->p; bool isRootP = p->isRoot(), isL = this == p->l;
+        connect(isL ? r : l, p, true, isL); connect(p, this, true, !isL); connect(this, g, !isRootP, isRootP ? false : p == g->l); p->update();
+    }
+    void splay() {
+        while (!isRoot()) {
+            Node *p = this->p, *g = p->p;
+            if (!p->isRoot()) g->propagate();
+            p->propagate(); propagate();
+            if (!p->isRoot()) ((this == p->l) == (p == g->l) ? p : this)->rotate();
+            rotate();
+        }
+        propagate(); update();
+    }
+    Node *access() {
+        Node *last = nullptr;
+        for (Node *y = this; y; y = y->p) { y->splay(); y->l = last; last = y; }
+        splay(); return last;
+    }
+    void makeRoot() { access(); rev = !rev; revData(sbtr); }
+    Node *findMin() {
+        Node *x = this;
+        for (x->propagate(); x->l; (x = x->l)->propagate());
+        x->splay(); return x;
+    }
+    Node *findMax() {
+        Node *x = this;
+        for (x->propagate(); x->r; (x = x->r)->propagate());
+        x->splay(); return x;
+    }
 };
-int Size(Node *x) { return x ? x->size : 0; }
-Data Sbtr(Node *x) { return x ? x->sbtr : qdef; }
-bool Node::isRoot() { return !p || (this != p->l && this != p->r); }
-void Node::update() {
-    size = 1; sbtr = val;
-    if (l) { size += l->size; sbtr = merge(l->sbtr, sbtr); }
-    if (r) { size += r->size; sbtr = merge(sbtr, r->sbtr); }
-}
-void Node::apply(const Lazy &v) { val = applyLazy(val, v); sbtr = applyLazy(sbtr, getSegmentVal(v, size)); lz = mergeLazy(lz, v); }
-void Node::propagate() {
-    if (rev) {
-        swap(l, r); rev = false;
-        if (l) { l->rev = !l->rev; revData(l->sbtr); }
-        if (r) { r->rev = !r->rev; revData(r->sbtr); }
-    }
-    if (lz != ldef) {
-        if (l) l->apply(lz);
-        if (r) r->apply(lz);
-        lz = ldef;
-    }
-}
-void connect(Node *ch, Node *par, bool hasCh, bool isL) {
-    if (ch) ch->p = par;
-    if (hasCh) (isL ? par->l : par->r) = ch;
-}
-void Node::rotate() {
-    Node *p = this->p, *g = p->p; bool isRootP = p->isRoot(), isL = this == p->l;
-    connect(isL ? r : l, p, true, isL); connect(p, this, true, !isL); connect(this, g, !isRootP, isRootP ? false : p == g->l); p->update();
-}
-void Node::splay() {
-    while (!isRoot()) {
-        Node *p = this->p, *g = p->p;
-        if (!p->isRoot()) g->propagate();
-        p->propagate(); propagate();
-        if (!p->isRoot()) ((this == p->l) == (p == g->l) ? p : this)->rotate();
-        rotate();
-    }
-    propagate(); update();
-}
-Node *Node::access() {
-    Node *last = nullptr;
-    for (Node *y = this; y; y = y->p) { y->splay(); y->l = last; last = y; }
-    splay(); return last;
-}
-void Node::makeRoot() { access(); rev = !rev; revData(sbtr); }
-Node *Node::findMin() {
-    Node *x = this;
-    for (x->propagate(); x->l; (x = x->l)->propagate());
-    x->splay(); return x;
-}
-Node *Node::findMax() {
-    Node *x = this;
-    for (x->propagate(); x->r; (x = x->r)->propagate());
-    x->splay(); return x;
-}
 struct LinkCutTreeLazy {
     vector<Node> T;
-    LinkCutTreeLazy(int N) { T.reserve(N); for (int i = 0; i < N; i++) T.emplace_back(i, vdef); }
+    LinkCutTreeLazy(int N, const Data &vdef) { T.reserve(N); for (int i = 0; i < N; i++) T.emplace_back(i, vdef); }
     template <class It> LinkCutTreeLazy(It st, It en) { int N = en - st; T.reserve(N); for (int i = 0; i < N; i++) T.emplace_back(i, *(st + i)); }
     void makeRoot(int x) { T[x].makeRoot(); }
     bool connected(int x, int y) {
@@ -101,5 +97,5 @@ struct LinkCutTreeLazy {
     int findRoot(int x) { T[x].access(); return T[x].findMax()->vert; }
     void updateVertex(int x, const Lazy &val) { T[x].makeRoot(); T[x].apply(val); }
     void updatePath(int from, int to, const Lazy &val) { T[from].makeRoot(); T[to].access(); T[to].apply(val); }
-    Data queryPath(int from, int to) { T[from].makeRoot(); T[to].access(); return Sbtr(&T[to]); }
+    Data queryPath(int from, int to) { T[from].makeRoot(); T[to].access(); return T[to].sbtr; }
 };

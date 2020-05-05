@@ -10,7 +10,7 @@ using namespace std;
 //   query: O(B + N / B)
 // Memory Complexity: O(N + sqrt N)
 template <const int MAXN, const int BSZ, const bool ONE_INDEXED> struct SqrtDecompArray {
-    using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0;
+    using Data = int; using Lazy = int; const Data qdef = 0;
     Data merge(const Data &l, const Data &r);
     Data applyLazy(const Data &l, const Lazy &r);
     int N; Data small[MAXN], large[MAXN / BSZ + 5];
@@ -18,7 +18,7 @@ template <const int MAXN, const int BSZ, const bool ONE_INDEXED> struct SqrtDeco
         N = en - st; fill(large, large + (N - 1) / BSZ + 1, qdef);
         for (int i = 0; i < N; i++) { small[i] = *(st + i); int bl = i / BSZ; large[bl] = merge(large[bl], small[i]); }
     }
-    void init(int size) {
+    void init(int size, const Data &vdef) {
         N = size; fill(large, large + (N - 1) / BSZ + 1, qdef);
         for (int i = 0; i < N; i++) { small[i] = vdef; int bl = i / BSZ; large[bl] = merge(large[bl], small[i]); }
     }
@@ -45,7 +45,7 @@ template <const int MAXN, const int BSZ, const bool ONE_INDEXED> struct SqrtDeco
 //   query: O(B + N / B)
 // Memory Complexity: O(N + sqrt N)
 template <const int MAXN, const int BSZ, const bool ONE_INDEXED> struct SqrtDecompArrayLazy {
-    using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ldef = 0;
+    using Data = int; using Lazy = int; const Data qdef = 0; const Lazy ldef = 0;
     Data merge(const Data &l, const Data &r); // to be implemented
     Lazy getSegmentVal(const Lazy &v, int k); // to be implemented
     Lazy mergeLazy(const Lazy &l, const Lazy &r); // to be implemented
@@ -55,7 +55,7 @@ template <const int MAXN, const int BSZ, const bool ONE_INDEXED> struct SqrtDeco
         N = en - st; fill(large, large + (N - 1) / BSZ + 1, qdef); fill(lz, lz + (N - 1) / BSZ + 1, ldef);
         for (int i = 0; i < N; i++) { small[i] = *(st + i); int bl = i / BSZ; large[bl] = merge(large[bl], small[i]); }
     }
-    void init(int size) {
+    void init(int size, const Data &vdef) {
         N = size; fill(large, large + (N - 1) / BSZ + 1, qdef); fill(lz, lz + (N - 1) / BSZ + 1, ldef);
         for (int i = 0; i < N; i++) { small[i] = vdef; int bl = i / BSZ; large[bl] = merge(large[bl], small[i]); }
     }

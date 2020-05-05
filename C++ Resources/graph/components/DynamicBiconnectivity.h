@@ -13,68 +13,66 @@ struct Node {
     Node *l, *r, *p; bool rev, isEdge; int edgeCnt, coveredCntSub, coverLazy, covered, coveredSub, del, delMin;
     Node(bool isEdge) : l(nullptr), r(nullptr), p(nullptr), rev(false), isEdge(isEdge), edgeCnt(isEdge), coveredCntSub(0),
         coverLazy(NO_COVER), covered(NO_COVER), coveredSub(NO_COVER), del(NO_DEL), delMin(NO_DEL) {}
-    bool isRoot(); int getCoveredCnt(); void update(); void propagate(); void removeCover(int cover);
-    void rotate(); void splay(); Node *expose(); void makeRoot(); void setDel(int tim);
+    bool isRoot() { return !p || (this != p->l && this != p->r); }
+    int getCoveredCnt() { return coverLazy == NO_COVER ? coveredCntSub : edgeCnt; }
+    void update() {
+        edgeCnt = isEdge; coveredCntSub = isEdge && (covered != NO_COVER); coveredSub = covered; delMin = del;
+        if (l) {
+            check(coveredSub, l->coveredSub); check(coveredSub, l->coverLazy);
+            edgeCnt += l->edgeCnt; coveredCntSub += l->getCoveredCnt(); delMin = min(delMin, l->delMin);
+        }
+        if (r) {
+            check(coveredSub, r->coveredSub); check(coveredSub, r->coverLazy);
+            edgeCnt += r->edgeCnt; coveredCntSub += r->getCoveredCnt(); delMin = min(delMin, r->delMin);
+        }
+    }
+    void propagate() {
+        if (rev) {
+            swap(l, r); rev = false;
+            if (l) l->rev = !l->rev;
+            if (r) r->rev = !r->rev;
+        }
+        if (coverLazy != NO_COVER) {
+            covered = max(covered, coverLazy); check(coveredSub, coverLazy); coveredCntSub = edgeCnt;
+            if (l) l->coverLazy = max(l->coverLazy, coverLazy);
+            if (r) r->coverLazy = max(r->coverLazy, coverLazy);
+            coverLazy = NO_COVER;
+        }
+    }
+    void removeCover(int cover) {
+        if (coverLazy <= cover) coverLazy = NO_COVER;
+        if (coveredSub == NO_COVER || coveredSub > cover) return;
+        if (covered <= cover) covered = NO_COVER;
+        if (l) l->removeCover(cover);
+        if (r) r->removeCover(cover);
+        propagate(); update();
+    }
+    static void connect(Node *ch, Node *par, bool hasCh, bool isL) {
+        if (ch) ch->p = par;
+        if (hasCh) (isL ? par->l : par->r) = ch;
+    }
+    void rotate() {
+        Node *p = this->p, *g = p->p; bool isRootP = p->isRoot(), isL = this == p->l;
+        connect(isL ? r : l, p, true, isL); connect(p, this, true, !isL); connect(this, g, !isRootP, isRootP ? false : p == g->l); p->update();
+    }
+    void splay() {
+        while (!isRoot()) {
+            Node *p = this->p, *g = p->p;
+            if (!p->isRoot()) g->propagate();
+            p->propagate(); propagate();
+            if (!p->isRoot()) ((this == p->l) == (p == g->l) ? p : this)->rotate();
+            rotate();
+        }
+        propagate(); update();
+    }
+    Node *expose() {
+        Node *last = nullptr;
+        for (Node *y = this; y; y = y->p) { y->splay(); y->l = last; last = y; }
+        splay(); return last;
+    }
+    void makeRoot() { expose(); rev = !rev; }
+    void setDel(int tim) { del = tim; propagate(); update(); expose(); }
 };
-bool Node::isRoot() { return !p || (this != p->l && this != p->r); }
-int Node::getCoveredCnt() { return coverLazy == NO_COVER ? coveredCntSub : edgeCnt; }
-void Node::update() {
-    edgeCnt = isEdge; coveredCntSub = isEdge && (covered != NO_COVER); coveredSub = covered; delMin = del;
-    if (l) {
-        check(coveredSub, l->coveredSub); check(coveredSub, l->coverLazy);
-        edgeCnt += l->edgeCnt; coveredCntSub += l->getCoveredCnt(); delMin = min(delMin, l->delMin);
-    }
-    if (r) {
-        check(coveredSub, r->coveredSub); check(coveredSub, r->coverLazy);
-        edgeCnt += r->edgeCnt; coveredCntSub += r->getCoveredCnt(); delMin = min(delMin, r->delMin);
-    }
-}
-void Node::propagate() {
-    if (rev) {
-        swap(l, r); rev = false;
-        if (l) l->rev = !l->rev;
-        if (r) r->rev = !r->rev;
-    }
-    if (coverLazy != NO_COVER) {
-        covered = max(covered, coverLazy); check(coveredSub, coverLazy); coveredCntSub = edgeCnt;
-        if (l) l->coverLazy = max(l->coverLazy, coverLazy);
-        if (r) r->coverLazy = max(r->coverLazy, coverLazy);
-        coverLazy = NO_COVER;
-    }
-}
-void Node::removeCover(int cover) {
-    if (coverLazy <= cover) coverLazy = NO_COVER;
-    if (coveredSub == NO_COVER || coveredSub > cover) return;
-    if (covered <= cover) covered = NO_COVER;
-    if (l) l->removeCover(cover);
-    if (r) r->removeCover(cover);
-    propagate(); update();
-}
-void connect(Node *ch, Node *par, bool hasCh, bool isL) {
-    if (ch) ch->p = par;
-    if (hasCh) (isL ? par->l : par->r) = ch;
-}
-void Node::rotate() {
-    Node *p = this->p, *g = p->p; bool isRootP = p->isRoot(), isL = this == p->l;
-    connect(isL ? r : l, p, true, isL); connect(p, this, true, !isL); connect(this, g, !isRootP, isRootP ? false : p == g->l); p->update();
-}
-void Node::splay() {
-    while (!isRoot()) {
-        Node *p = this->p, *g = p->p;
-        if (!p->isRoot()) g->propagate();
-        p->propagate(); propagate();
-        if (!p->isRoot()) ((this == p->l) == (p == g->l) ? p : this)->rotate();
-        rotate();
-    }
-    propagate(); update();
-}
-Node *Node::expose() {
-    Node *last = nullptr;
-    for (Node *y = this; y; y = y->p) { y->splay(); y->l = last; last = y; }
-    splay(); return last;
-}
-void Node::makeRoot() { expose(); rev = !rev; }
-void Node::setDel(int tim) { del = tim; propagate(); update(); expose(); }
 template <const int MAXV, const int MAXQ> struct DynamicBiconnectivity {
     int V, Q = 0, bridges; bool isTreeEdge[MAXQ]; vector<Node> T; vector<int> ans; unordered_map<int, int> present[MAXV];
     struct Query { int type, v, w, otherTime; } q[MAXQ];

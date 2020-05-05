@@ -4,10 +4,7 @@ using namespace std;
 
 // point updates, range query
 template <const int MAXN, const int MAXM> struct SegmentTreeBottomUp2D {
-    using Data = int; using Lazy = int; int N, M; Data T[MAXN << 1][MAXM << 1];
-    const Data vdef = 0; // default value
-    const Data qdef = 0; // query default value
-    // operation must be associative (but not necessarily commutative)
+    using Data = int; using Lazy = int; const Data vdef = 0; const Data qdef = 0; int N, M; Data T[MAXN << 1][MAXM << 1]; 
     Data merge(const Data &l, const Data &r); // to be implemented
     Data applyLazy(const Data &l, const Lazy &r); // to be implemented
     void init(const vector<vector<Data>> &A) {

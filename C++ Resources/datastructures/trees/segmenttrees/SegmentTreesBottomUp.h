@@ -4,17 +4,14 @@ using namespace std;
 
 // point updates, range query
 template <const int MAXN, const bool ONE_INDEXED> struct SegmentTreeBottomUp {
-    using Data = int; using Lazy = int; int N; Data T[MAXN << 1];
-    const Data vdef = 0; // default value
-    const Data qdef = 0; // query default value
-    // operation must be associative (but not necessarily commutative)
+    using Data = int; using Lazy = int; int N; Data T[MAXN << 1]; const Data qdef = 0;
     Data merge(const Data &l, const Data &r); // to be implemented
     Data applyLazy(const Data &l, const Lazy &r); // to be implemented
     template <class It> void init(It st, It en) {
         N = en - st; for (int i = 0; i < N; i++) T[N + i] = *(st + i);
         for (int i = N - 1; i > 0; i--) T[i] = merge(T[i << 1], T[i << 1 | 1]);
     }
-    void init(int size) {
+    void init(int size, const Data &vdef) {
         N = size; for (int i = 0; i < N; i++) T[N + i] = vdef;
         for (int i = N - 1; i > 0; i--) T[i] = merge(T[i << 1], T[i << 1 | 1]);
     }
@@ -31,11 +28,7 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTreeBottomUp {
 
 // range updates, range query
 template <const int MAXN, const bool ONE_INDEXED> struct SegmentTreeLazyBottomUp {
-    using Data = int; using Lazy = int; int N, H; Data T[MAXN << 1]; Lazy L[MAXN]; // L stores lazy values
-    const Data vdef = 0; // default value
-    const Data qdef = 0; // query default value
-    const Lazy ldef = 0; // lazy default value
-    // operation must be associative (but not necessarily commutative)
+    using Data = int; using Lazy = int; int N, H; Data T[MAXN << 1]; Lazy L[MAXN]; const Data qdef = 0; const Lazy ldef = 0;
     Data merge(const Data &l, const Data &r); // to be implemented
     Lazy getSegmentVal(const Lazy &v, int k); // to be implemented
     Lazy mergeLazy(const Lazy &l, const Lazy &r); // to be implemented
@@ -55,12 +48,12 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTreeLazyBottomUp
         }
     }
     template <class It> void init(It st, It en) {
-        N = en - st; H = 0; for (int i = 1; i <= N; H++) i <<= 1;
+        N = en - st; H = 32 - __builtin_clz(N);
         for (int i = 0; i < N; i++) { T[N + i] = *(st + i); L[i] = ldef; }
         for (int i = N - 1; i > 0; i--) T[i] = merge(T[i << 1], T[i << 1 | 1]);
     }
-    void init(int size) {
-        N = size; H = 0; for (int i = 1; i <= N; H++) i <<= 1;
+    void init(int size, const Data &vdef) {
+        N = size; H = 32 - __builtin_clz(N);
         for (int i = 0; i < N; i++) { T[N + i] = vdef; L[i] = ldef; }
         for (int i = N - 1; i > 0; i--) T[i] = merge(T[i << 1], T[i << 1 | 1]);
     }

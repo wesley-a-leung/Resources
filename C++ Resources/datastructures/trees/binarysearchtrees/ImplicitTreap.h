@@ -14,7 +14,7 @@ std::seed_seq seq{
 };
 std::mt19937_64 rng64(seq);
 uniform_int_distribution<long long> dis;
-using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0;
+using Data = int; using Lazy = int; const Data qdef = 0;
 Data merge(const Data &l, const Data &r); // to be implemented
 Data applyLazy(const Data &l, const Lazy &r); // to be implemented
 struct Node {
@@ -29,7 +29,6 @@ struct Node {
     void apply(const Lazy &v) { val = applyLazy(val, v); sbtr = applyLazy(sbtr, v); }
 };
 int Size(Node *x) { return x ? x->size : 0; }
-Data Val(Node *x) { return x ? x->val : vdef; }
 Data Sbtr(Node *x) { return x ? x->sbtr : qdef; }
 void merge(Node *&x, Node *l, Node *r) {
     if (!l || !r) { x = l ? l : r; }
@@ -59,7 +58,7 @@ int index(Node *x) { // 0-indexed
 }
 struct ImplicitTreap {
     vector<Node> T; Node *root;
-    ImplicitTreap(int N) {
+    ImplicitTreap(int N, const Data &vdef) {
         T.reserve(N); root = nullptr;
         for (int i = 0; i < N; i++) { T.emplace_back(vdef); merge(root, root, &T.back()); }
     }
@@ -69,15 +68,15 @@ struct ImplicitTreap {
     }
     // 0-indexed, inclusive
     void updateVal(int i, const Lazy &val) {
-        Node *left, *mid, *right; split(root, left, mid, i); split(mid, mid, right, 1);
-        mid->apply(val); merge(root, left, mid); merge(root, root, right);
+        Node *l, *m, *r; split(root, l, m, i); split(m, m, r, 1);
+        m->apply(val); merge(root, l, m); merge(root, root, r);
     }
     Data queryVal(int i) {
-        Node *left, *mid, *right; split(root, left, mid, i); split(mid, mid, right, 1);
-        Data ret = Val(mid); merge(root, left, mid); merge(root, root, right); return ret;
+        Node *l, *m, *r; split(root, l, m, i); split(m, m, r, 1);
+        Data ret = m->val; merge(root, l, m); merge(root, root, r); return ret;
     }
-    Data queryRange(int l, int r) {
-        Node *left, *mid, *right; split(root, left, mid, l); split(mid, mid, right, r - l + 1);
-        Data ret = Sbtr(mid); merge(root, left, mid); merge(root, root, right); return ret;
+    Data queryRange(int a, int b) {
+        Node *l, *m, *r; split(root, l, m, a); split(m, m, r, b - a + 1);
+        Data ret = Sbtr(m); merge(root, l, m); merge(root, root, r); return ret;
     }
 };
