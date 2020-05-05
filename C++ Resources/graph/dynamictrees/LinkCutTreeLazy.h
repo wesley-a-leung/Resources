@@ -97,5 +97,5 @@ struct LinkCutTreeLazy {
     int findRoot(int x) { T[x].access(); return T[x].findMax()->vert; }
     void updateVertex(int x, const Lazy &val) { T[x].makeRoot(); T[x].apply(val); }
     void updatePath(int from, int to, const Lazy &val) { T[from].makeRoot(); T[to].access(); T[to].apply(val); }
-    Data queryPath(int from, int to) { T[from].makeRoot(); T[to].access(); return T[to].sbtr; }
+    Data queryPath(int from, int to) { T[to].makeRoot(); T[from].access(); return T[from].sbtr; }
 };

@@ -125,11 +125,11 @@ void expose(int x) {
 // one-indexed
 struct TopTree {
     TopTree(int N) {
-        T.clear(); garbage.clear(); T.reserve(2 * N); garbage.reserve(2 * N); makeNode(vdef, false);
+        T.clear(); garbage.clear(); T.reserve(N * 2); garbage.reserve(N * 2); makeNode(vdef, false);
         for (int i = 1; i <= N; i++) makeNode(vdef, false);
     }
     template <class It> TopTree(It st, It en) {
-        T.clear(); garbage.clear(); T.reserve(2 * (en - st)); garbage.reserve(2 * (en - st)); makeNode(vdef, false);
+        int N = en - st; T.clear(); garbage.clear(); T.reserve(N * 2); garbage.reserve(N * 2); makeNode(vdef, false);
         for (It i = st; i < en; i++) makeNode(*i, false);
     }
     void makeRoot(int x) { expose(x); T[x].reverse(); }
@@ -160,5 +160,5 @@ struct TopTree {
         for (int i = 2; i < 4; i++) if (T[x].ch[i]) ret = merge(ret, T[T[x].ch[i]].sbtr);
         return ret;
     }
-    Data queryPath(int x, int y) { makeRoot(x); expose(y); T[x].splay(0); return T[x].path; }
+    Data queryPath(int x, int y) { makeRoot(y); expose(x); return T[x].path; }
 };
