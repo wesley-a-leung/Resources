@@ -9,50 +9,49 @@ using namespace std;
 
 using unit = int; const unit NEG_INF = numeric_limits<unit>::lowest();
 // Stripped down version of Link Cut Tree for maximum edge weight queries
-using Data = pair<unit, int>; const Data vdef = make_pair(NEG_INF, -1);
+using Data = pair<unit, int>;
 Data merge(const Data &l, const Data &r) { return max(l, r); }
 struct Node {
     Node *l, *r, *p; Data val, sbtr; bool rev;
     Node(const Data &val) : l(nullptr), r(nullptr), p(nullptr), val(val), sbtr(val), rev(false) {}
-    bool isRoot(); void update(); void propagate(); void rotate(); void splay(); Node *expose(); void makeRoot();
+    bool isRoot() { return !p || (this != p->l && this != p->r); }
+    void update() {
+        sbtr = val;
+        if (l) sbtr = merge(l->sbtr, sbtr);
+        if (r) sbtr = merge(sbtr, r->sbtr);
+    }
+    void propagate() {
+        if (rev) {
+            swap(l, r); rev = false;
+            if (l) l->rev = !l->rev;
+            if (r) r->rev = !r->rev;
+        }
+    }
+    static void connect(Node *ch, Node *par, bool hasCh, bool isL) {
+        if (ch) ch->p = par;
+        if (hasCh) (isL ? par->l : par->r) = ch;
+    }
+    void rotate() {
+        Node *p = this->p, *g = p->p; bool isRootP = p->isRoot(), isL = this == p->l;
+        connect(isL ? r : l, p, true, isL); connect(p, this, true, !isL); connect(this, g, !isRootP, isRootP ? false : p == g->l); p->update();
+    }
+    void splay() {
+        while (!isRoot()) {
+            Node *p = this->p, *g = p->p;
+            if (!p->isRoot()) g->propagate();
+            p->propagate(); propagate();
+            if (!p->isRoot()) ((this == p->l) == (p == g->l) ? p : this)->rotate();
+            rotate();
+        }
+        propagate(); update();
+    }
+    Node *expose() {
+        Node *last = nullptr;
+        for (Node *y = this; y; y = y->p) { y->splay(); y->l = last; last = y; }
+        splay(); return last;
+    }
+    void makeRoot() { expose(); rev = !rev; }
 };
-bool Node::isRoot() { return !p || (this != p->l && this != p->r); }
-void Node::update() {
-    sbtr = val;
-    if (l) sbtr = merge(l->sbtr, sbtr);
-    if (r) sbtr = merge(sbtr, r->sbtr);
-}
-void Node::propagate() {
-    if (rev) {
-        swap(l, r); rev = false;
-        if (l) l->rev = !l->rev;
-        if (r) r->rev = !r->rev;
-    }
-}
-void connect(Node *ch, Node *par, bool hasCh, bool isL) {
-    if (ch) ch->p = par;
-    if (hasCh) (isL ? par->l : par->r) = ch;
-}
-void Node::rotate() {
-    Node *p = this->p, *g = p->p; bool isRootP = p->isRoot(), isL = this == p->l;
-    connect(isL ? r : l, p, true, isL); connect(p, this, true, !isL); connect(this, g, !isRootP, isRootP ? false : p == g->l); p->update();
-}
-void Node::splay() {
-    while (!isRoot()) {
-        Node *p = this->p, *g = p->p;
-        if (!p->isRoot()) g->propagate();
-        p->propagate(); propagate();
-        if (!p->isRoot()) ((this == p->l) == (p == g->l) ? p : this)->rotate();
-        rotate();
-    }
-    propagate(); update();
-}
-Node *Node::expose() {
-    Node *last = nullptr;
-    for (Node *y = this; y; y = y->p) { y->splay(); y->l = last; last = y; }
-    splay(); return last;
-}
-void Node::makeRoot() { expose(); rev = !rev; }
 template <const int MAXV> struct DynamicMSTDivAndConq {
     struct Query { int type, v, w; unit weight; int otherTime; };
     int V, MAXNODES = 0; vector<Node> T; unit currentMST; vector<unit> ans; vector<Query> q;
@@ -67,7 +66,7 @@ template <const int MAXV> struct DynamicMSTDivAndConq {
     Data queryPath(int from, int to) { T[from].makeRoot(); T[to].expose(); return T[to].sbtr; }
     void init(int V, int Q) {
         this->V = V; currentMST = 0; T.reserve(MAXNODES = V + Q);
-        for (int i = 0; i < V; i++) T.emplace_back(vdef);
+        for (int i = 0; i < V; i++) T.emplace_back(make_pair(NEG_INF, -1));
     }
     void clear(int V = MAXV) { MAXNODES = 0; T.clear(); ans.clear(); q.clear(); for (int i = 0; i < V; i++) present[i].clear(); }
     void add(int i) {

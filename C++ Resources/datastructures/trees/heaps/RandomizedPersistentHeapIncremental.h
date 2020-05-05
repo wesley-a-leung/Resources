@@ -22,9 +22,9 @@ template <class Value, class Comparator = less<Value>, class Delta = Value> stru
     };
     Comparator cmp; Delta ddef; int cnt; ptr root;
     void propagate(ptr &a) {
-        a->val = a->val + a->delta;
-        if (a->l) { a->l = make_shared<Node>(*a->l); a->l->delta = a->l->delta + a->delta; }
-        if (a->r) { a->r = make_shared<Node>(*a->r); a->r->delta = a->r->delta + a->delta; }
+        a->val += a->delta;
+        if (a->l) { a->l = make_shared<Node>(*a->l); a->l->delta += a->delta; }
+        if (a->r) { a->r = make_shared<Node>(*a->r); a->r->delta += a->delta; }
         a->delta = ddef;
     }
     ptr merge(ptr a, ptr b) {
@@ -38,7 +38,7 @@ template <class Value, class Comparator = less<Value>, class Delta = Value> stru
     Value top() { propagate(root); return root->val; }
     Value pop() { propagate(root); Value ret = root->val; root = merge(root->l, root->r); cnt--; return ret; }
     void push(const Value &val) { root = merge(root, make_shared<Node>(val, ddef)); cnt++; }
-    void increment(const Delta &delta) { if (root) { root = make_shared<Node>(*root); root->delta = root->delta + delta; } }
+    void increment(const Delta &delta) { if (root) { root = make_shared<Node>(*root); root->delta += delta; } }
     void merge(const PersistentRandomizedHeapIncremental &h) { root = merge(root, h.root); cnt += h.cnt; }
     int size() const { return cnt; }
 };

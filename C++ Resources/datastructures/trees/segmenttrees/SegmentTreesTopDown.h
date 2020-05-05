@@ -3,7 +3,7 @@
 using namespace std;
 
 template <const int MAXN, const bool ONE_INDEXED> struct SegmentTreeTopDown {
-    using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; Data T[MAXN * 2], A[MAXN]; int N;
+    using Data = int; using Lazy = int; const Data qdef = 0; int N; Data T[MAXN * 2], A[MAXN];
     Data merge(const Data &l, const Data &r); // to be implemented
     Data applyLazy(const Data &l, const Lazy &r); // to be implemented
     void build(int cur, int tl, int tr) {
@@ -27,13 +27,13 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTreeTopDown {
         for (int i = 0; i < N; i++) A[i + ONE_INDEXED] = *(st + i);
         build(0, ONE_INDEXED, N - !ONE_INDEXED);
     }
-    void init(int size) { N = size; fill(A + ONE_INDEXED, A + N + ONE_INDEXED, vdef); build(0, ONE_INDEXED, N - !ONE_INDEXED); }
+    void init(int size, const Data &vdef) { N = size; fill(A + ONE_INDEXED, A + N + ONE_INDEXED, vdef); build(0, ONE_INDEXED, N - !ONE_INDEXED); }
     void update(int ind, const Lazy &val) { update(0, ONE_INDEXED, N - !ONE_INDEXED, ind, val); }
     Data query(int l, int r) { return query(0, ONE_INDEXED, N - !ONE_INDEXED, l, r); }
 };
 
 template <const int MAXN, const bool ONE_INDEXED> struct SegmentTreeLazyTopDown {
-    using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const Lazy ldef = 0; Data T[MAXN * 2], A[MAXN]; Lazy L[MAXN * 2]; int N;
+    using Data = int; using Lazy = int; const Data qdef = 0; const Lazy ldef = 0; int N; Data T[MAXN * 2], A[MAXN]; Lazy L[MAXN * 2];
     Data merge(const Data &l, const Data &r); // to be implemented
     Data applyLazy(const Data &l, const Lazy &r); // to be implemented
     Lazy getSegmentVal(const Lazy &v, int k); // to be implemented
@@ -68,7 +68,7 @@ template <const int MAXN, const bool ONE_INDEXED> struct SegmentTreeLazyTopDown 
         for (int i = 0; i < N; i++) A[i + ONE_INDEXED] = *(st + i);
         build(0, ONE_INDEXED, N - !ONE_INDEXED);
     }
-    void init(int size) { N = size; fill(A + ONE_INDEXED, A + N + ONE_INDEXED, vdef); build(0, ONE_INDEXED, N - !ONE_INDEXED); }
+    void init(int size, const Data &vdef) { N = size; fill(A + ONE_INDEXED, A + N + ONE_INDEXED, vdef); build(0, ONE_INDEXED, N - !ONE_INDEXED); }
     void update(int l, int r, const Lazy &val) { update(0, ONE_INDEXED, N - !ONE_INDEXED, l, r, val); }
     Data query(int l, int r) { return query(0, ONE_INDEXED, N - !ONE_INDEXED, l, r); }
 };

@@ -14,7 +14,7 @@ std::seed_seq seq{
     (uint64_t)__builtin_ia32_rdtsc(),(uint64_t)(uintptr_t)make_unique<char>().get()
 };
 std::mt19937_64 rng64(seq); uniform_int_distribution<long long> dis;
-using Data = int; using Lazy = int; const Data vdef = 0, qdef = 0; const bool ISPRE = true, ISPOST = false;
+using Data = int; using Lazy = int; const Data qdef = 0; const bool ISPRE = true, ISPOST = false;
 Data merge(const Data &l, const Data &r); // to be implemented
 Data applyLazy(const Data &l, const Lazy &r); // to be implemented
 struct Node {
@@ -29,7 +29,6 @@ struct Node {
     void apply(const Lazy &v) { val = applyLazy(val, v); sbtr = applyLazy(sbtr, v); }
 };
 int Size(Node *x) { return x ? x->size : 0; }
-Data Val(Node *x) { return x ? x->val : vdef; }
 Data Sbtr(Node *x) { return x ? x->sbtr : qdef; }
 void merge(Node *&x, Node *l, Node *r) {
     if (!l || !r) { x = l ? l : r; }
@@ -62,7 +61,7 @@ int index(Node *x) { // 0-indexed
 }
 struct EulerTourTreap {
     vector<Node> PRE, POST;
-    EulerTourTreap(int N) {
+    EulerTourTreap(int N, const Data &vdef) {
         PRE.reserve(N); POST.reserve(N); Node *dummy = nullptr;
         for (int i = 0; i < N; i++) {
             PRE.emplace_back(i, ISPRE, vdef); POST.emplace_back(i, ISPOST, vdef); merge(dummy, &PRE.back(), &POST.back());
@@ -87,7 +86,7 @@ struct EulerTourTreap {
     }
     Data getVertexValue(int v) {
         Node *l, *m, *r; split(root(&PRE[v]), l, m, index(&PRE[v])); split(m, m, r, 1);
-        Data ret = Val(m); merge(l, l, m); merge(l, l, r); return ret;
+        Data ret = m->val; merge(l, l, m); merge(l, l, r); return ret;
     }
     Data getSubtreeValue(int v) { // value may be doubled due to double counting of pre and post
         Node *l, *m, *r; split(root(&PRE[v]), l, m, index(&PRE[v])); split(m, m, r, index(&POST[v]) + 1);

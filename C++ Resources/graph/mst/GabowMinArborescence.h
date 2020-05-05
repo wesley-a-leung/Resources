@@ -14,7 +14,7 @@ template <const int MAXV, class unit> struct GabowMinArborescence {
     struct Edge {
         int from, to; unit weight; int ind;
         bool operator > (const Edge &e) const { return weight > e.weight; }
-        Edge operator + (const unit &add) const { return Edge(from, to, weight + add, ind); }
+        Edge &operator += (const unit &add) { weight += add; return *this; }
     };
     int vis[MAXV], path[MAXV], in[MAXV], Q[MAXV]; vector<Edge> edges, mst; UnionFindUndo<MAXV> uf; unit weight;
     vector<SkewHeapIncremental<Edge, greater<Edge>, unit>> H;
