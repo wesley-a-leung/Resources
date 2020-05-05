@@ -47,7 +47,7 @@ struct Node {
         if (r) r->removeCover(cover);
         propagate(); update();
     }
-    static void connect(Node *ch, Node *par, bool hasCh, bool isL) {
+    friend void connect(Node *ch, Node *par, bool hasCh, bool isL) {
         if (ch) ch->p = par;
         if (hasCh) (isL ? par->l : par->r) = ch;
     }

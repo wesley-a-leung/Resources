@@ -35,7 +35,7 @@ struct Node {
             lz = ldef;
         }
     }
-    static void connect(Node *ch, Node *par, bool isL) {
+    friend void connect(Node *ch, Node *par, bool isL) {
         if (ch) ch->p = par;
         if (par) (isL ? par->l : par->r) = ch;
     }
@@ -73,13 +73,13 @@ int index(Node *&root, Node *x) { // 0-indexed
 }
 void merge(Node *&x, Node *l, Node *r) {
     if (!l || !r) { x = l ? l : r; }
-    else { select(x, l, Size(l) - 1)->splay(); Node::connect(r, x, false); x->update(); }
+    else { select(x, l, Size(l) - 1)->splay(); connect(r, x, false); x->update(); }
 }
 void split(Node *x, Node *&l, Node *&r, int lsz) {
     if (!x) { l = r = nullptr; }
     else if (lsz == 0) { l = nullptr; r = x; }
     else if (lsz == Size(x)) { l = x; r = nullptr; }
-    else { select(l, x, lsz - 1); r = l->r; Node::connect(nullptr, l, false); Node::connect(r, nullptr, false); l->update(); r->propagate(); r->update(); }
+    else { select(l, x, lsz - 1); r = l->r; connect(nullptr, l, false); connect(r, nullptr, false); l->update(); r->propagate(); r->update(); }
 }
 struct ImplicitSplayTreeLazy {
     vector<Node> T; Node *root;
