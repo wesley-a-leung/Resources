@@ -9,7 +9,7 @@ using namespace std;
 
 using unit = int; const unit NEG_INF = numeric_limits<unit>::lowest();
 // Stripped down version of Link Cut Tree for maximum edge weight queries
-using Data = pair<unit, int>; const Data vdef = make_pair(NEG_INF, -1), qdef = make_pair(NEG_INF, -1);
+using Data = pair<unit, int>; const Data qdef = make_pair(NEG_INF, -1);
 Data merge(const Data &l, const Data &r) { return max(l, r); }
 struct Node {
     Node *l, *r, *p; Data val, sbtr; bool rev;
@@ -65,7 +65,7 @@ struct SemiDynamicMST {
     Data queryPath(int from, int to) { T[from].makeRoot(); T[to].expose(); return T[to].sbtr; }
     void init(int V, int Q) {
         this->V = V; currentMST = 0; T.reserve(MAXNODES = V + Q);
-        for (int i = 0; i < V; i++) { T.emplace_back(vdef); }
+        for (int i = 0; i < V; i++) { T.emplace_back(make_pair(NEG_INF, -1)); }
     }
     void clear() { MAXNODES = 0; T.clear(); edges.clear(); }
     unit addEdge(int v, int w, unit weight) {
