@@ -3,6 +3,7 @@
 using namespace std;
 
 // Fenwick Tree or Binary Indexed Tree supporting point updates and prefix range queries over a cumulative function, such as max and min
+// indices are 0-indexed and ranges are inclusive
 // Time Complexity:
 //   constructor: O(N)
 //   update, rmq: O(log N)
