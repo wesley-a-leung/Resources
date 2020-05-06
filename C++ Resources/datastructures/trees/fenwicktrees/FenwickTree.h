@@ -3,27 +3,30 @@
 using namespace std;
 
 // Fenwick Tree or Binary Indexed Tree supporting point updates and range queries in any number of dimensions
+// indices are 0-indexed and ranges are inclusive
 // Time Complexity:
-//   init: O(PI(N_i))
+//   constructor: O(PI(N_i))
 //   update: O(PI(log(N_i)))
 //   rsq: O(2^D * PI(log(N_i)))
 // Memory Complexity: O(PI(N_i))
 // where PI is the product function, N_i is the size in the ith dimension, and D is the number of dimensions
-template <class T, const bool ONE_INDEXED, const int ...Args> struct FenwickTree {
-    T val;
-    void init() { val = 0; }
-    void update(T v) { val += v; }
-    T rsq() { return val; }
-};
-
-template <class T, const bool ONE_INDEXED, const int MAXN, const int ...Ns> struct FenwickTree <T, ONE_INDEXED, MAXN, Ns...> {
-    FenwickTree<T, ONE_INDEXED, Ns...> BIT[MAXN];
-    void init() { for (int i = 0; i < MAXN; i++) BIT[i].init(); }
-    template <class ...Args> void update(int i, Args ...args) { for (i += !ONE_INDEXED; i < MAXN; i += i & -i) BIT[i].update(args...); }
-    template <class ...Args> T rsq(int l, int r, Args ...args) {
-        T ret = 0;
-        for (r += !ONE_INDEXED; r > 0; r -= r & -r) ret += BIT[r].rsq(args...);
-        for (l -= ONE_INDEXED; l > 0; l -= l & -l) ret -= BIT[l].rsq(args...);
+// Tested On:
+//   https://dmoj.ca/problem/ioi01p1
+//   https://dmoj.ca/problem/gfssoc1s4
+template <class T, const int D> struct FenwickTree {
+    int N; vector<FenwickTree<T, D - 1>> BIT;
+    template <class... Args> FenwickTree(int N, Args... args) : N(N), BIT(N + 1, FenwickTree<T, D - 1>(args...)) {}
+    template <class... Args> void update(int i, Args... args) { for (i++; i <= N; i += i & -i) BIT[i].update(args...); }
+    template <class... Args> T rsq(int l, int r, Args... args) {
+        T ret = T();
+        for (; l > 0; l -= l & -l) ret -= BIT[l].rsq(args...);
+        for (r++; r > 0; r -= r & -r) ret += BIT[r].rsq(args...);
         return ret;
     }
+};
+
+template <class T> struct FenwickTree<T, 0> {
+    T val; FenwickTree() : val(T()) {}
+    void update(T v) { val += v; }
+    T rsq() { return val; }
 };

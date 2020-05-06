@@ -2,15 +2,16 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Fenwick Tree or Binary Indexed Tree supporting point updates and prefix range queries for maximum value queries
+// Fenwick Tree or Binary Indexed Tree supporting point updates and prefix range queries over a cumulative function, such as max and min
 // Time Complexity:
-//   init: O(N)
+//   constructor: O(N)
 //   update, rmq: O(log N)
 // Memory Complexity: O(N)
-template <const int MAXN, class T, const bool ONE_INDEXED> struct FenwickTreeMax1D {
-    T BIT[MAXN], NEG_INF;
-    T op(T a, T b) { return max(a, b); }
-    FenwickTreeMax1D(T NEG_INF) : NEG_INF(NEG_INF) { fill(BIT, BIT + MAXN, NEG_INF); }
-    void update(int i, T v) { for (i += !ONE_INDEXED; i < MAXN; i += i & -i) BIT[i] = op(BIT[i], v); }
-    T rmq(int i) { T ret = NEG_INF; for (i += !ONE_INDEXED; i > 0; i -= i & -i) ret = op(ret, BIT[i]); return ret; }
+// Tested On:
+//   https://atcoder.jp/contests/dp/tasks/dp_q
+template <class T, class F> struct FenwickTreeMax1D {
+    int N; vector<T> BIT; F op;
+    FenwickTreeMax1D(int N, T vdef, F op) : N(N), BIT(N + 1, vdef), op(op) {}
+    void update(int i, T v) { for (i++; i <= N; i += i & -i) BIT[i] = op(BIT[i], v); }
+    T rmq(int i) { T ret = BIT[++i]; while ((i -= i & -i) > 0) ret = op(ret, BIT[i]); return ret; }
 };
