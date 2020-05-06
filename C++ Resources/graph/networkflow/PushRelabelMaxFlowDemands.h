@@ -14,7 +14,7 @@ template <const int MAXV, class unit> struct PushRelabelMaxFlowDemands {
     unit INF, EPS, ex[MAXV + 2], outDem[MAXV], inDem[MAXV]; PushRelabelMaxFlowDemands(unit INF, unit EPS) : INF(INF), EPS(EPS) {}
     int h[MAXV + 2], cnt[(MAXV + 2) * 2]; vector<int> hs[(MAXV + 2) * 2]; vector<Edge> adj[MAXV + 2]; typename vector<Edge>::iterator cur[MAXV + 2];
     void addEdge(int v, int w, unit vwDem, unit vwCap, int type = 1) {
-        assert(v != w);
+        assert(v != w); // if this happens, split vertex into two and add an edge with vwDem demand, and infinite capacity
         adj[v].emplace_back(w, vwDem, vwCap, int(adj[w].size())); adj[w].emplace_back(v, -vwDem, -vwDem, int(adj[v].size()) - 1);
         if (type == 1) { outDem[v] += vwDem; inDem[w] += vwDem; }
     }
@@ -38,7 +38,7 @@ template <const int MAXV, class unit> struct PushRelabelMaxFlowDemands {
                     for (auto e = adj[v].begin(); e != adj[v].end(); e++)
                         if (e->resCap > EPS && h[v] > h[e->to] + 1) { h[v] = h[e->to] + 1; cur[v] = e; }
                     cnt[h[v]]++;
-                    if (--cnt[hi] == 0 && hi < V) for (int i = 0; i < V; i++) if (hi < h[i] && h[i] < V) { cnt[h[i]]--; h[i] = V + 1; }
+                    if (--cnt[hi] == 0 && hi < V) for (int w = 0; w < V; w++) if (hi < h[w] && h[w] < V) { cnt[h[w]]--; h[w] = V + 1; }
                     hi = h[v];
                 } else if (cur[v]->resCap > EPS && h[v] == h[cur[v]->to] + 1) push(v, *cur[v], min(ex[v], cur[v]->resCap));
                 else cur[v]++;

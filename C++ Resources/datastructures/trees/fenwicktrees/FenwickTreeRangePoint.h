@@ -10,7 +10,7 @@ using namespace std;
 //   getValue: O(PI(log(N_i)))
 // Memory Complexity: O(PI(N_i))
 // where PI is the product function, N_i is the size in the ith dimension, and D is the number of dimensions
-// Tested On:
+// Tested:
 //   https://mcpt.ca/problem/adifferenceproblem
 template <class T, const int D> struct FenwickTreeRangePoint {
     int N; vector<FenwickTreeRangePoint<T, D - 1>> BIT;

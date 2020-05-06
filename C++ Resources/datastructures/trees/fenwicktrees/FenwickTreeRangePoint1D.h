@@ -8,7 +8,7 @@ using namespace std;
 //   constructor, values: O(N)
 //   update, get: O(log N)
 // Memory Complexity: O(N)
-// Tested On:
+// Tested:
 //   https://codeforces.com/contest/1254/problem/D
 template <class T> struct FenwickTreeRangePoint1D {
     int N; vector<T> BIT; FenwickTreeRangePoint1D(int N) : N(N), BIT(N + 1, T()) {}

@@ -8,7 +8,7 @@ using namespace std;
 //   constructor: O(N)
 //   update, rmq: O(log N)
 // Memory Complexity: O(N)
-// Tested On:
+// Tested:
 //   https://atcoder.jp/contests/dp/tasks/dp_q
 template <class T, class F> struct FenwickTreeMax1D {
     int N; vector<T> BIT; F op;
