@@ -1,20 +1,19 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "FenwickTreeRangePoint1D.h"
 using namespace std;
 
 // Fenwick Tree or Binary Indexed Tree supporting range updates and range queries in 1 dimension
+// indices are 0-indexed and ranges are inclusive
 // Time Complexity:
-//   init: O(N)
+//   constructor: O(N)
 //   update, rsq: O(log N)
 // Memory Complexity: O(N)
-template <const int MAXN, class T, const bool ONE_INDEXED> struct FenwickTreeRange1D {
-    array<T, MAXN> BIT1, BIT2; void init() { BIT1.fill(0); BIT2.fill(0); }
-    T rsq(array<T, MAXN> &BIT, int i) { T ret = 0; for (i += !ONE_INDEXED; i > 0; i -= i & -i) ret += BIT[i]; return ret; }
-    void update(array<T, MAXN> &BIT, int i, T v) { for (i += !ONE_INDEXED; i < MAXN; i += i & -i) BIT[i] += v; }
-    T rsq(int ind) { return rsq(BIT1, ind) * ind - rsq(BIT2, ind); }
-    T rsq(int a, int b) { return rsq(b) - rsq(a - 1); }
-    void update(int a, int b, T v) {
-        update(BIT1, a, v); update(BIT1, b + 1, -v);
-        update(BIT2, a, v * T(a - 1)); update(BIT2, b + 1, -v * T(b));
-    }
+// Tested On:
+//   http://www.usaco.org/index.php?page=viewproblem2&cpid=973
+template <class T> struct FenwickTreeRange1D {
+    vector<FenwickTreeRangePoint1D<T>> FT; FenwickTreeRange1D(int N) : FT(2, FenwickTreeRangePoint1D<T>(N)) {}
+    T rsq(int i) { return FT[1].get(i) * T(i) + FT[0].get(i); }
+    T rsq(int l, int r) { return rsq(r) - rsq(l - 1); }
+    void update(int l, int r, T v) { FT[1].update(l, r, v); FT[0].update(l, v * T(1 - l)); FT[0].update(r + 1, v * T(r)); }
 };

@@ -1,25 +1,24 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "FenwickTreeRangePoint1D.h"
 using namespace std;
 
 // Fenwick Tree supporting range updates with updates in the form of
-// adding v, 2v, 3v, ... to the interval [l, r], and range sum queries
+// adding m + b, 2m + b, 3m + b, ... to the interval [l, r], and range sum queries
+// indices are 0-indexed and ranges are inclusive
 // Time Complexity:
 //   constructor: O(N)
 //   update, rsq: O(log N)
 // Memory Complexity: O(N)
-template <const int MAXN, class T, const bool ONE_INDEXED> struct FenwickTreeLinear {
-    array<T, MAXN> con, lin, quad;
-    T rsq(array<T, MAXN> &BIT, int i) { T ret = 0; for (i += !ONE_INDEXED; i > 0; i -= i & -i) ret += BIT[i]; return ret; }
-    void update(array<T, MAXN> &BIT, int i, T v) { for (i += !ONE_INDEXED; i < MAXN; i += i & -i) BIT[i] += v; }
-    void init() { fill(con.begin(), con.end(), 0); fill(lin.begin(), lin.end(), 0); fill(quad.begin(), quad.end(), 0); }
-    T rsq(int ind) { return (rsq(quad, ind) * (T) ind * (T) ind + rsq(lin, ind) * (T) ind + rsq(con, ind)) / (T) 2; }
-    T rsq(int a, int b) { return rsq(b) - rsq(a - 1); }
-    void update(int a, int b, T value) {
-        int s = a - 1, len = b - a + 1;
-        update(quad, a, value); update(quad, b + 1, -value);
-        update(lin, a, value * ((T) 1 - (T) 2 * (T) s)); update(lin, b + 1, -value * ((T) 1 - (T) 2 * (T) s));
-        update(con, a, value * ((T) s * (T) s - (T) s)); update(con, b + 1, -value * (((T) s * (T) s - (T) s)));
-        update(con, b + 1, value * ((T) len * (T) (len + 1)));
+// Tested On:
+//   https://dmoj.ca/problem/acc3p4
+template <class T> struct FenwickTreeLinear {
+    vector<FenwickTreeRangePoint1D<T>> FT; FenwickTreeLinear(int N) : FT(3, FenwickTreeRangePoint1D<T>(N)) {}
+    T rsq(int i) { return (FT[2].get(i) * T(i) * T(i) + FT[1].get(i) * T(i) + FT[0].get(i)) / 2; }
+    T rsq(int l, int r) { return rsq(r) - rsq(l - 1); }
+    void update(int l, int r, T m, T b) {
+        FT[2].update(l, r, m); FT[1].update(l, r, m * (T(1) - T(l - 1) * T(2)) + b * T(2));
+        FT[0].update(l, m * T(l - 1) * T(l - 2) + b * T(1 - l) * T(2));
+        FT[0].update(r + 1, m * (T(r - l + 1) * T(r - l + 2) - T(l - 1) * T(l - 2)) + b * T(r) * T(2));
     }
 };

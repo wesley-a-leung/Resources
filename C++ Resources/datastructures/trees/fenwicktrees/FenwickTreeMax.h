@@ -2,28 +2,27 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Fenwick Tree or Binary Indexed Tree supporting point updates and prefix range queries for maximum value queries in any number of dimensions
+// Fenwick Tree or Binary Indexed Tree supporting point updates and prefix range queries over a cumulative functor, such as max and min
 // Time Complexity:
-//   init: O(PI(N_i))
+//   constructor: O(PI(N_i))
 //   update, rmq: O(PI(log(N_i)))
 // Memory Complexity: O(PI(N_i))
 // where PI is the product function, N_i is the size in the ith dimension
-using T = int; const T NEG_INF = 0;
-
-T op(T a, T b) { return max(a, b); }
-
-template <const bool ONE_INDEXED, const int ...Args> struct FenwickTreeMax {
-    T val;
-    void init() { val = NEG_INF; }
-    void update(T v) { val = op(val, v); }
-    T rmq() { return val; }
+// Tested On:
+//   https://dmoj.ca/problem/ccc19s5
+template <class T, class C, const int D> struct FenwickTreeMax {
+    int N; vector<FenwickTreeMax<T, C, D - 1>> BIT;
+    template <class... Args> FenwickTreeMax(T vdef, int N, Args... args) : N(N), BIT(N + 1, FenwickTreeMax<T, C, D - 1>(vdef, args...)) {}
+    template <class... Args> void update(int i, Args... args) { for (i++; i <= N; i += i & -i) BIT[i].update(args...); }
+    template <class... Args> T rmq(int i, Args... args) {
+        T ret = BIT[++i].rmq(args...);
+        while ((i -= i & -i) > 0) ret = C()(ret, BIT[i].rmq(args...));
+        return ret;
+    }
 };
 
-template <const bool ONE_INDEXED, const int MAXN, const int ...Ns> struct FenwickTreeMax <ONE_INDEXED, MAXN, Ns...> {
-    FenwickTreeMax<ONE_INDEXED, Ns...> BIT[MAXN];
-    void init() { for (int i = 0; i < MAXN; i++) BIT[i].init(); }
-    template <class ...Args> void update(int i, Args ...args) { for (i += !ONE_INDEXED; i < MAXN; i += i & -i) BIT[i].update(args...); }
-    template <class ...Args> T rmq(int i, Args ...args) {
-        T ret = NEG_INF; for (i += !ONE_INDEXED; i > 0; i -= i & -i) ret = op(ret, BIT[i].rmq(args...)); return ret;
-    }
+template <class T, class C> struct FenwickTreeMax<T, C, 0> {
+    T val; FenwickTreeMax(T vdef) : val(vdef) {}
+    void update(T v) { val = C()(val, v); }
+    T rmq() { return val; }
 };
