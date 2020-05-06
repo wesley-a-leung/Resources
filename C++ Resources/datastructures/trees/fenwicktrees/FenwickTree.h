@@ -10,7 +10,7 @@ using namespace std;
 //   rsq: O(2^D * PI(log(N_i)))
 // Memory Complexity: O(PI(N_i))
 // where PI is the product function, N_i is the size in the ith dimension, and D is the number of dimensions
-// Tested On:
+// Tested:
 //   https://dmoj.ca/problem/ioi01p1
 //   https://dmoj.ca/problem/gfssoc1s4
 template <class T, const int D> struct FenwickTree {

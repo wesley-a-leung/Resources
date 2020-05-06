@@ -8,7 +8,7 @@ using namespace std;
 //   constructor, values: O(N)
 //   update, rsq, bsearch, lower_bound, upper_bound: O(log N)
 // Memory Complexity: O(N)
-// Tested On:
+// Tested:
 //   https://codeforces.com/contest/1279/problem/B
 //   https://codeforces.com/contest/961/problem/E
 template <class T> struct FenwickTree1D {

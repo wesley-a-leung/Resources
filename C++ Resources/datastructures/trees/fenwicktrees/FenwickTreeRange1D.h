@@ -9,7 +9,7 @@ using namespace std;
 //   constructor: O(N)
 //   update, rsq: O(log N)
 // Memory Complexity: O(N)
-// Tested On:
+// Tested:
 //   http://www.usaco.org/index.php?page=viewproblem2&cpid=973
 template <class T> struct FenwickTreeRange1D {
     vector<FenwickTreeRangePoint1D<T>> FT; FenwickTreeRange1D(int N) : FT(2, FenwickTreeRangePoint1D<T>(N)) {}

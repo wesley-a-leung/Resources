@@ -41,7 +41,7 @@ template <const int MAXV, class flowUnit, class costUnit, const int SCALE = 8> s
                     for (auto e = adj[v].begin(); e != adj[v].end(); e++)
                         if (e->resCap > FLOW_EPS && h[v] > h[e->to] + 1) { h[v] = h[e->to] + 1; cur[v] = e; }
                     cnt[h[v]]++;
-                    if (--cnt[hi] == 0 && hi < V) for (int i = 0; i < V; i++) if (hi < h[i] && h[i] < V) { cnt[h[i]]--; h[i] = V + 1; }
+                    if (--cnt[hi] == 0 && hi < V) for (int w = 0; w < V; w++) if (hi < h[w] && h[w] < V) { cnt[h[w]]--; h[w] = V + 1; }
                     hi = h[v];
                 } else if (cur[v]->resCap > FLOW_EPS && h[v] == h[cur[v]->to] + 1) push(v, *cur[v], min(ex[v], cur[v]->resCap));
                 else cur[v]++;

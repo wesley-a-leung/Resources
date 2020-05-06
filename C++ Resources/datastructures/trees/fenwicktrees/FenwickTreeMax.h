@@ -9,7 +9,7 @@ using namespace std;
 //   update, rmq: O(PI(log(N_i)))
 // Memory Complexity: O(PI(N_i))
 // where PI is the product function, N_i is the size in the ith dimension
-// Tested On:
+// Tested:
 //   https://dmoj.ca/problem/ccc19s5
 template <class T, class C, const int D> struct FenwickTreeMax {
     int N; vector<FenwickTreeMax<T, C, D - 1>> BIT;
