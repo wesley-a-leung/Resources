@@ -3,14 +3,20 @@
 using namespace std;
 
 // Maintains the rank of an element in an array
+// 0-indexed ranks
 // Time Complexity:
 //   constructor: O(N)
 //   insert: O(1) amortized
 //   rebuild: O(sqrt(N))
-//   empty, size: O(1)
-//   floor, ceiling, above, below, contains, count: O(sqrt(N) + log(N)) amortized
+//   empty, size, clear: O(1)
+//   floorInd, ceilingInd, aboveInd, belowInd, contains, count: O(sqrt(N)) amortized
 //   values: O(N)
 // Memory Complexity: O(N)
+// Tested:
+//   https://dmoj.ca/problem/dmopc19c3p3
+//   https://dmoj.ca/problem/ccc05s5
+//   https://mcpt.ca/problem/lcc18c5s3
+//   https://codeforces.com/contest/1093/problem/E
 template <class Value, class Comparator = less<Value>> struct SqrtBufferSimple {
     Comparator cmp; double SCALE_FACTOR; vector<Value> small, large;
     SqrtBufferSimple(const double SCALE_FACTOR = 1) : SCALE_FACTOR(SCALE_FACTOR) {}
@@ -46,14 +52,17 @@ template <class Value, class Comparator = less<Value>> struct SqrtBufferSimple {
         for (auto &&x : small) if (!cmp(val, x) && !cmp(x, val)) return true;
         return false;
     }
-    int count(const Value &val) { return aboveInd(val) - ceilingInd(val); }
     // number of values in the range [lo, hi]
-    int count(const Value &lo, const Value &hi) { return aboveInd(hi) - ceilingInd(lo); }
+    int count(const Value &lo, const Value &hi) {
+        rebuild(); int ret = upper_bound(large.begin(), large.end(), hi, cmp) - lower_bound(large.begin(), large.end(), lo, cmp);
+        for (auto &&x : small) ret += !cmp(x, lo) && !cmp(hi, x);
+        return ret;
+    }
     bool empty() const { return small.empty() && large.empty(); } 
     int size() const { return int(small.size() + large.size()); } 
     void clear() { small.clear(); large.clear(); }
-    vector<Value> values() const { // sorted
-        vector<Value> ret;
+    vector<Value> values() const {
+        vector<Value> ret; ret.reserve(size());
         for (auto &&x : small) ret.push_back(x);
         int mid = int(ret.size());
         for (auto &&x : large) ret.push_back(x);

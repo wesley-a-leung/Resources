@@ -27,7 +27,7 @@ template <class T> struct FenwickTreeRangePoint1D {
         }
         partial_sum(ret.begin(), ret.end(), ret.begin()); return ret;
     }
-    void update(int i, T v) { for (i++; i <= N; i += i & -i) BIT[i] += v; }
+    void update(int l, T v) { for (l++; l <= N; l += l & -l) BIT[l] += v; }
     void update(int l, int r, T v) { update(l, v); update(r + 1, -v); }
     T get(int i) { T ret = T(); for (i++; i > 0; i -= i & -i) ret += BIT[i]; return ret; }
 };

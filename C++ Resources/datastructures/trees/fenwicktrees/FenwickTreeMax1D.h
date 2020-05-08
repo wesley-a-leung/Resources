@@ -14,5 +14,5 @@ template <class T, class F> struct FenwickTreeMax1D {
     int N; vector<T> BIT; F op;
     FenwickTreeMax1D(int N, T vdef, F op) : N(N), BIT(N + 1, vdef), op(op) {}
     void update(int i, T v) { for (i++; i <= N; i += i & -i) BIT[i] = op(BIT[i], v); }
-    T rmq(int i) { T ret = BIT[++i]; while ((i -= i & -i) > 0) ret = op(ret, BIT[i]); return ret; }
+    T rmq(int r) { T ret = BIT[++r]; while ((r -= r & -r) > 0) ret = op(ret, BIT[r]); return ret; }
 };
