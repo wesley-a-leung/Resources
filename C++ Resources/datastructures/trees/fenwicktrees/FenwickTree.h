@@ -13,6 +13,7 @@ using namespace std;
 // Tested:
 //   https://dmoj.ca/problem/ioi01p1
 //   https://dmoj.ca/problem/gfssoc1s4
+//   https://dmoj.ca/problem/fallingsnowflakes
 template <class T, const int D> struct FenwickTree {
     int N; vector<FenwickTree<T, D - 1>> BIT;
     template <class... Args> FenwickTree(int N, Args... args) : N(N), BIT(N + 1, FenwickTree<T, D - 1>(args...)) {}
