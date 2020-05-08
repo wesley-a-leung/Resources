@@ -11,8 +11,8 @@ using namespace __gnu_pbds;
 // all update indices must be known beforehand
 // indices are 0-indexed and ranges are inclusive
 // Time Complexity:
-//   constructor: O(Q (log Q + log N) + N)
-//   update, rsq: O(log N log Q)
+//   constructor: O(Q (log Q + log N) + N) for Q updates
+//   update, rsq: O(log N log Q) for Q updates
 // Memory Complexity: O(N + Q log N) for Q updates
 // Tested:
 //   https://dmoj.ca/problem/dmopc19c7p5
@@ -52,8 +52,8 @@ template <class T, class IndexType> struct FenwickTreeSemiSparse2DOffline {
 // all update indices must be known beforehand
 // indices are 0-indexed and ranges are inclusive
 // Time Complexity:
-//   constructor: O(Q log Q)
-//   update, rsq: O((log Q)^2)
+//   constructor: O(Q log Q) for Q updates
+//   update, rsq: O((log Q)^2) for Q updates
 // Memory Complexity: O(Q log Q) for Q updates
 // Tested:
 //   https://dmoj.ca/problem/dmopc19c7p5
