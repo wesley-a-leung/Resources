@@ -8,7 +8,8 @@ using namespace std;
 using namespace __gnu_pbds;
 
 // Sparse Fenwick Tree supporting point updates (with any value) and range queries in 2 dimensions (sparse in 1 dimension)
-// All update indices must be known beforehand
+// all update indices must be known beforehand
+// indices are 0-indexed and ranges are inclusive
 // Time Complexity:
 //   constructor: O(Q (log Q + log N) + N)
 //   update: O(log N log Q)
@@ -50,6 +51,7 @@ template <class T, class IndexType> struct FenwickTreeSemiSparse2DOffline {
 
 // Sparse Fenwick Tree supporting point updates (with value 1) and range queries in 2 dimensions
 // using SqrtBufferSimple (sparse in 1 dimension)
+// indices are 0-indexed and ranges are inclusive
 // Time Complexity:
 //   constructor: O(N)
 //   add, rem: O(log N) amortized
@@ -71,6 +73,7 @@ template <class IndexType> struct FenwickTreeSemiSparse2DSimpleSqrt {
 
 // Sparse Fenwick Tree supporting point updates (with any value) and range queries in 2 dimensions
 // using SqrtBuffer (sparse in 1 dimension)
+// indices are 0-indexed and ranges are inclusive
 // Time Complexity:
 //   constructor: O(N)
 //   update: O(log N) amortized
@@ -104,6 +107,7 @@ template<class T1,class T2,class H1=rand_hash<T1>,class H2=rand_hash<T2>>struct 
 };
 
 // Sparse Fenwick Tree supporting point updates (with value 1) and range queries in 2 dimensions using pbds tree (sparse in 1 dimension)
+// indices are 0-indexed and ranges are inclusive
 // Time Complexity:
 //   constructor: O(N)
 //   add, rem, rsq: O(log N log Q) for Q updates
@@ -121,6 +125,7 @@ template <class IndexType> struct FenwickTreeSemiSparse2DSimpleTreeset {
 };
 
 // Sparse Fenwick Tree supporting point updates (with any value) and range queries in 2 dimensions using pbds hash_table (sparse in 1 dimension)
+// indices are 0-indexed and ranges are inclusive
 // Time Complexity:
 //   constructor: O(N)
 //   update, rsq: O(log N log M) on avareage
@@ -151,6 +156,7 @@ template <class T, class IndexType, class Container = hashmap<IndexType, T>> str
 };
 
 // Sparse Fenwick Tree supporting point updates (with any value) and range queries in 2 dimensions using pbds hash_table (sparse in 2 dimension)
+// indices are 0-indexed and ranges are inclusive
 // Time Complexity:
 //   constructor: O(1)
 //   update, rsq: O(log N log M) on average
