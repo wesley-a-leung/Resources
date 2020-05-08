@@ -15,9 +15,9 @@ template <class T, class C, const int D> struct FenwickTreeMax {
     int N; vector<FenwickTreeMax<T, C, D - 1>> BIT;
     template <class... Args> FenwickTreeMax(T vdef, int N, Args... args) : N(N), BIT(N + 1, FenwickTreeMax<T, C, D - 1>(vdef, args...)) {}
     template <class... Args> void update(int i, Args... args) { for (i++; i <= N; i += i & -i) BIT[i].update(args...); }
-    template <class... Args> T rmq(int i, Args... args) {
-        T ret = BIT[++i].rmq(args...);
-        while ((i -= i & -i) > 0) ret = C()(ret, BIT[i].rmq(args...));
+    template <class... Args> T rmq(int r, Args... args) {
+        T ret = BIT[++r].rmq(args...);
+        while ((r -= r & -r) > 0) ret = C()(ret, BIT[r].rmq(args...));
         return ret;
     }
 };

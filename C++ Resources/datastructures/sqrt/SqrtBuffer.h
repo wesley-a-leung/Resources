@@ -8,9 +8,12 @@ using namespace std;
 //   insert: O(1) amortized
 //   rebuild: O(sqrt(N))
 //   count(): O(1)
-//   floor, ceiling, above, below, contains, count(val), count(lo, hi): O(sqrt(N) + log(N)) amortized
+//   floor, ceiling, above, below, contains, count(val), count(lo, hi): O(sqrt(N)) amortized
 //   valuesAndCount: O(N)
 // Memory Complexity: O(N)
+// Tested:
+//   https://dmoj.ca/problem/apio19p3
+//   https://dmoj.ca/problem/ioi01p1
 template <class Value, class CountType, class Comparator = less<Value>> struct SqrtBuffer {
     Comparator cmp; CountType tot; double SCALE_FACTOR; vector<pair<Value, CountType>> small, large;
     function<bool(const pair<Value, CountType>&, const pair<Value, CountType>&)> pairCmp =
@@ -63,13 +66,19 @@ template <class Value, class CountType, class Comparator = less<Value>> struct S
         for (auto &&p : small) if (!cmp(val, p.first) && !cmp(p.first, val)) return true;
         return false;
     }
-    CountType count(const Value &val) { return aboveInd(val) - ceilingInd(val); }
     // number of values in the range [lo, hi]
-    CountType count(const Value &lo, const Value &hi) { return aboveInd(hi) - ceilingInd(lo); }
+    CountType count(const Value &lo, const Value &hi) {
+        rebuild(); int ind = upper_bound(large.begin(), large.end(), make_pair(hi, CountType(0)), pairCmp) - large.begin();
+        CountType ret = ind == 0 ? 0 : large[ind - 1].second;
+        ind = lower_bound(large.begin(), large.end(), make_pair(lo, CountType(0)), pairCmp) - large.begin();
+        ret -= ind == 0 ? 0 : large[ind - 1].second;
+        for (auto &&p : small) if (!cmp(p.first, lo) && !cmp(hi, p.first)) ret += p.second;
+        return ret;
+    }
     CountType count() const { return tot; } 
     void clear() { tot = 0; small.clear(); large.clear(); }
     vector<pair<Value, CountType>> valuesAndCount() const { // sorted
-        vector<pair<Value, CountType>> ret;
+        vector<pair<Value, CountType>> ret; ret.reserve(large.size() + small.size());
         for (auto &&p : small) ret.push_back(p);
         int mid = int(ret.size());
         for (auto &&p : large) ret.push_back(p);

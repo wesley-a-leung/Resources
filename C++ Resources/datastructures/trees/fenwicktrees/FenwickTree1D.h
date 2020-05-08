@@ -11,6 +11,8 @@ using namespace std;
 // Tested:
 //   https://codeforces.com/contest/1279/problem/B
 //   https://codeforces.com/contest/961/problem/E
+//   https://dmoj.ca/problem/ccc05s5
+//   https://dmoj.ca/problem/apio19p3
 template <class T> struct FenwickTree1D {
     int N; vector<T> BIT; FenwickTree1D(int N) : N(N), BIT(N + 1, T()) {}
     template <class It> FenwickTree1D(It st, It en) : FenwickTree1D(en - st) {
@@ -28,7 +30,7 @@ template <class T> struct FenwickTree1D {
         return ret;
     }
     void update(int i, T v) { for (i++; i <= N; i += i & -i) BIT[i] += v; }
-    T rsq(int i) { T ret = T(); for (i++; i > 0; i -= i & -i) ret += BIT[i]; return ret; }
+    T rsq(int r) { T ret = T(); for (r++; r > 0; r -= r & -r) ret += BIT[r]; return ret; }
     T rsq(int l, int r) { return rsq(r) - rsq(l - 1); }
     template <class F> int bsearch(T v, F cmp) { // returns first index where cmp returns false, N if no such index exists
         T sum = T(); int ind = 0;
