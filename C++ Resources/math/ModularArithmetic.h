@@ -45,6 +45,7 @@ struct Montgomery {
     };
     u128 mod, inv, r2;
     Montgomery(u128 mod = 1) : mod(mod), inv(1), r2(-mod % mod) {
+        // 2^7 = 128, (2^4) ^ (2^5) = 2^128
         for (int i = 0; i < 7; i++) inv *= 2 - mod * inv;
         for (int i = 0; i < 4; i++) if ((r2 <<= 1) >= mod) r2 -= mod;
         for (int i = 0; i < 5; i++) r2 = mul(r2, r2);
