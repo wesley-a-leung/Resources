@@ -107,7 +107,7 @@ void Node::rem() {
     else connect(0, p, findInd());
     p = 0;
 }
-void expose(int x) {
+void access(int x) {
     stack<int, vector<int>> stk; int y = x, z = x;
     for (; z; z = T[z].p) stk.push(z);
     for (; !stk.empty(); stk.pop()) T[stk.top()].propagate();
@@ -132,33 +132,33 @@ struct TopTree {
         int N = en - st; T.clear(); garbage.clear(); T.reserve(N * 2); garbage.reserve(N * 2); makeNode(vdef, false);
         for (It i = st; i < en; i++) makeNode(*i, false);
     }
-    void makeRoot(int x) { expose(x); T[x].reverse(); }
+    void makeRoot(int x) { access(x); T[x].reverse(); }
     int findRoot(int x) { for (; T[x].p; x = T[x].p); return x; }
     int findParent(int x) {
-        expose(x); T[T[x].ch[0]].propagate();
+        access(x); T[T[x].ch[0]].propagate();
         for (x = T[x].ch[0]; x && T[x].ch[1]; x = T[x].ch[1]) T[T[x].ch[1]].propagate();
         return x;
     }
     int cutParent(int x) {
         int y = findParent(x);
-        if (y) { expose(y); T[x].rem(); T[y].update(); }
+        if (y) { access(y); T[x].rem(); T[y].update(); }
         return y;
     }
     void link(int ch, int par) { // makes par the parent of ch, unless par is in the subtree of ch
         int p = cutParent(ch);
         if (findRoot(ch) != findRoot(par)) p = par;
-        if (p) { expose(p); T[ch].add(p); T[p].update(); }
+        if (p) { access(p); T[ch].add(p); T[p].update(); }
     }
     void updateSubtree(int x, const Lazy &lz) {
-        expose(x); T[x].val = applyVal(T[x].val, lz);
+        access(x); T[x].val = applyVal(T[x].val, lz);
         for (int i = 2; i < 4; i++) if (T[x].ch[i]) T[T[x].ch[i]].applySbtr(lz, true);
         T[x].update();
     }
-    void updatePath(int x, int y, const Lazy &lz) { makeRoot(x); expose(y); T[x].splay(0); T[x].applyPath(lz); }
+    void updatePath(int x, int y, const Lazy &lz) { makeRoot(x); access(y); T[x].splay(0); T[x].applyPath(lz); }
     Data querySubtree(int x) {
-        expose(x); Data ret(T[x].val);
+        access(x); Data ret(T[x].val);
         for (int i = 2; i < 4; i++) if (T[x].ch[i]) ret = merge(ret, T[T[x].ch[i]].sbtr);
         return ret;
     }
-    Data queryPath(int x, int y) { makeRoot(y); expose(x); return T[x].path; }
+    Data queryPath(int x, int y) { makeRoot(x); access(y); return T[y].path; }
 };
