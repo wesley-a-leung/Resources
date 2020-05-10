@@ -109,7 +109,7 @@ template <class Value, class Comparator = less<Value>> struct OrderedSqrtArray {
         }
         for (int j = i.first + 1; j < (int) a.size(); j++) prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1].size();
     }
-    template <class ...Args> void emplace(Args &&...args) { insert(T(forward<Args>(args)...)); }
+    template <class ...Args> void emplace(Args &&...args) { insert(Value(forward<Args>(args)...)); }
     bool erase(const Value &val) {
         pair<int, int> i = ceiling_ind(val);
         if (i.first == (int) a.size() || cmp(a[i.first][i.second], val) || cmp(val, a[i.first][i.second])) return false;
