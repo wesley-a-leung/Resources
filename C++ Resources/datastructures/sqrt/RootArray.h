@@ -23,18 +23,13 @@ template <const int R, class Value, class Container> struct RootArray {
     int n, SCALE_FACTOR; vector<Container> a; vector<int> prefixSZ;
     RootArray(const int SCALE_FACTOR = 1) : n(0), SCALE_FACTOR(SCALE_FACTOR) {}
     RootArray(const int n, const int SCALE_FACTOR) : n(n), SCALE_FACTOR(SCALE_FACTOR) {
-        assert(n >= 0); int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
+        assert(n > 0); int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
         for (int i = 0; i < n; i += rootn) { a.emplace_back(min(rootn, n - i)); prefixSZ.push_back(0); }
         for (int i = 1; i < (int) a.size(); i++) prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
     }
     template <class It> RootArray(const It st, const It en, const int SCALE_FACTOR = 1) : n(en - st), SCALE_FACTOR(SCALE_FACTOR) {
-        assert(n >= 0); int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
+        assert(n > 0); int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
         for (It i = st; i < en; i += rootn) { a.emplace_back(i, min(i + rootn, st + n), SCALE_FACTOR); prefixSZ.push_back(0); }
-        for (int i = 1; i < (int) a.size(); i++) prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
-    }
-    RootArray(initializer_list<Value> il, const int SCALE_FACTOR = 1) : n(il.end() - il.begin()), SCALE_FACTOR(SCALE_FACTOR) {
-        assert(n >= 0); int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
-        for (auto i = il.begin(); i < il.end(); i += rootn) { a.emplace_back(i, min(i + rootn, il.end()), SCALE_FACTOR); prefixSZ.push_back(0); }
         for (int i = 1; i < (int) a.size(); i++) prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
     }
     void insert(int k, const Value &val) { // inserts value before kth index
