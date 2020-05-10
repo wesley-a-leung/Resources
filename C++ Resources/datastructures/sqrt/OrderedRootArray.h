@@ -83,7 +83,7 @@ template <const int R, class Value, class Container, class Comparator = less<Val
         }
         for (int j = i + 1; j < (int) a.size(); j++) prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1].size();
     }
-    template <class ...Args> void emplace(Args &&...args) { insert(T(forward<Args>(args)...)); }
+    template <class ...Args> void emplace(Args &&...args) { insert(Value(forward<Args>(args)...)); }
     bool erase(const Value &val) {
         int i = ceiling_ind(val);
         if (i == (int) a.size()) return false;

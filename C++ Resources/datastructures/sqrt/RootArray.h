@@ -75,9 +75,9 @@ template <const int R, class Value, class Container> struct RootArray {
             prefixSZ.push_back(prefixSZ[(int) a.size() - 2] + (int) a[(int) a.size() - 2].size());
         }
     }
-    template <class ...Args> void emplace(int k, Args &&...args) { insert(k, T(forward<Args>(args)...)); }
-    template <class ...Args> void emplace_front(Args &&...args) { push_front(T(forward<Args>(args)...)); }
-    template <class ...Args> void emplace_back(Args &&...args) { push_back(T(forward<Args>(args)...)); }
+    template <class ...Args> void emplace(int k, Args &&...args) { insert(k, Value(forward<Args>(args)...)); }
+    template <class ...Args> void emplace_front(Args &&...args) { push_front(Value(forward<Args>(args)...)); }
+    template <class ...Args> void emplace_back(Args &&...args) { push_back(Value(forward<Args>(args)...)); }
     void erase(const int k) {
         assert(0 <= k && k < n); --n; int lo = 0, hi = (int) (a.size()) - 1, mid;
         while (lo <= hi) {
