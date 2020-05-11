@@ -11,9 +11,9 @@ using namespace std;
 // where PI is the product function, N_i is the size in the ith dimension
 // Tested:
 //   https://dmoj.ca/problem/ccc19s5
-template <class T, class C, const int D> struct FenwickTreeMax {
-    int N; vector<FenwickTreeMax<T, C, D - 1>> BIT;
-    template <class... Args> FenwickTreeMax(T vdef, int N, Args... args) : N(N), BIT(N + 1, FenwickTreeMax<T, C, D - 1>(vdef, args...)) {}
+template <const int D, class T, class C> struct FenwickTreeMax {
+    int N; vector<FenwickTreeMax<D - 1, T, C>> BIT;
+    template <class... Args> FenwickTreeMax(T vdef, int N, Args... args) : N(N), BIT(N + 1, FenwickTreeMax<D - 1, T, C>(vdef, args...)) {}
     template <class... Args> void update(int i, Args... args) { for (i++; i <= N; i += i & -i) BIT[i].update(args...); }
     template <class... Args> T rmq(int r, Args... args) {
         T ret = BIT[++r].rmq(args...);
@@ -22,7 +22,7 @@ template <class T, class C, const int D> struct FenwickTreeMax {
     }
 };
 
-template <class T, class C> struct FenwickTreeMax<T, C, 0> {
+template <class T, class C> struct FenwickTreeMax<0, T, C> {
     T val; FenwickTreeMax(T vdef) : val(vdef) {}
     void update(T v) { val = C()(val, v); }
     T rmq() { return val; }

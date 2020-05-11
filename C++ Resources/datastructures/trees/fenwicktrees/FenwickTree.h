@@ -11,12 +11,13 @@ using namespace std;
 // Memory Complexity: O(PI(N_i))
 // where PI is the product function, N_i is the size in the ith dimension, and D is the number of dimensions
 // Tested:
+//   https://dmoj.ca/problem/ds1
 //   https://dmoj.ca/problem/ioi01p1
 //   https://dmoj.ca/problem/gfssoc1s4
 //   https://dmoj.ca/problem/fallingsnowflakes
-template <class T, const int D> struct FenwickTree {
-    int N; vector<FenwickTree<T, D - 1>> BIT;
-    template <class... Args> FenwickTree(int N, Args... args) : N(N), BIT(N + 1, FenwickTree<T, D - 1>(args...)) {}
+template <const int D, class T> struct FenwickTree {
+    int N; vector<FenwickTree<D - 1, T>> BIT;
+    template <class... Args> FenwickTree(int N, Args... args) : N(N), BIT(N + 1, FenwickTree<D - 1, T>(args...)) {}
     template <class... Args> void update(int i, Args... args) { for (i++; i <= N; i += i & -i) BIT[i].update(args...); }
     template <class... Args> T rsq(int l, int r, Args... args) {
         T ret = T();
@@ -26,7 +27,7 @@ template <class T, const int D> struct FenwickTree {
     }
 };
 
-template <class T> struct FenwickTree<T, 0> {
+template <class T> struct FenwickTree<0, T> {
     T val; FenwickTree() : val(T()) {}
     void update(T v) { val += v; }
     T rsq() { return val; }

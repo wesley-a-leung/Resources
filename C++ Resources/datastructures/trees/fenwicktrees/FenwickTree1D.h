@@ -9,10 +9,12 @@ using namespace std;
 //   update, rsq, bsearch, lower_bound, upper_bound: O(log N)
 // Memory Complexity: O(N)
 // Tested:
+//   https://dmoj.ca/problem/ds1
 //   https://codeforces.com/contest/1279/problem/B
 //   https://codeforces.com/contest/961/problem/E
 //   https://dmoj.ca/problem/ccc05s5
 //   https://dmoj.ca/problem/apio19p3
+//   https://dmoj.ca/problem/cco10p3
 template <class T> struct FenwickTree1D {
     int N; vector<T> BIT; FenwickTree1D(int N) : N(N), BIT(N + 1, T()) {}
     template <class It> FenwickTree1D(It st, It en) : FenwickTree1D(en - st) {

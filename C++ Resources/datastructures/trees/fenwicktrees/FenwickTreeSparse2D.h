@@ -109,8 +109,8 @@ template <class T, class IndexType1, class IndexType2> struct FenwickTreeSparse2
 //   https://dmoj.ca/problem/dmopc19c7p5
 template <class IndexType> struct FenwickTreeSemiSparse2DSimpleSqrt {
     int N; vector<SqrtBufferSimple<IndexType>> IN, OUT;
-    FenwickTreeSemiSparse2DSimpleSqrt(int N, const double SCALE_FACTOR = 1) : N(N),
-        IN(N + 1, SqrtBufferSimple<IndexType>(SCALE_FACTOR)), OUT(N + 1, SqrtBufferSimple<IndexType>(SCALE_FACTOR)) {}
+    FenwickTreeSemiSparse2DSimpleSqrt(int N, double SCALE = 1) : N(N),
+        IN(N + 1, SqrtBufferSimple<IndexType>(SCALE)), OUT(N + 1, SqrtBufferSimple<IndexType>(SCALE)) {}
     void add(int i, IndexType j) { for (i++; i <= N; i += i & -i) IN[i].insert(j); }
     void rem(int i, IndexType j) { for (i++; i <= N; i += i & -i) OUT[i].insert(j); }
     int rsq(int d, IndexType r) { int ret = 0; for (d++; d > 0; d -= d & -d) ret += IN[d].aboveInd(r) - OUT[r].aboveInd(r); return ret; }
@@ -131,7 +131,7 @@ template <class IndexType> struct FenwickTreeSemiSparse2DSimpleSqrt {
 //   https://dmoj.ca/problem/ioi01p1
 template <class T, class IndexType> struct FenwickTreeSemiSparse2DSqrt {
     int N; vector<SqrtBuffer<T, IndexType>> BIT;
-    FenwickTreeSemiSparse2DSqrt(int N, const double SCALE_FACTOR = 1) : N(N), BIT(N + 1, SqrtBuffer<T, IndexType>(SCALE_FACTOR)) {}
+    FenwickTreeSemiSparse2DSqrt(int N, double SCALE = 1) : N(N), BIT(N + 1, SqrtBuffer<T, IndexType>(SCALE)) {}
     void update(int i, IndexType j, T v) { for (i++; i <= N; i += i & -i) BIT[i].emplace(j, v); }
     T rsq(int d, IndexType r) { T ret = T(); for (d++; d > 0; d -= d & -d) ret += BIT[d].aboveInd(r); return ret; }
     T rsq(int d, IndexType l, IndexType r) { T ret = T(); for (d++; d > 0; d -= d & -d) ret += BIT[d].count(l, r); return ret; }
