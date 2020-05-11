@@ -3,15 +3,15 @@
 using namespace std;
 
 // Decomposes the array recursively into N ^ (1 / R) containers of size N ^ ((R - 1) / R) multiplied by a scale factor
-// convention for insert_at is to insert before index k
+// Convention for insert_at is to insert before index k
 // below returns largest element less than val
 // floor returns largest element not greater than val
 // ceiling returns smallest element not less than val
 // above returns smallest element greater than val
 // insert, erase, below, floor, ceiling, above, and contains require the data to be sorted
-// all other operations work regardles of whether it is sorted
-// default comparator is a simple pointer comparator
-// in practice, it is faster than balanced binary search trees when R = 3, and SCALE = 4, even for N >= 1e7
+// All other operations work regardles of whether it is sorted
+// Default comparator is a simple pointer comparator
+// In practice, performs fast, and is faster than balanced binary search trees when R = 3, and SCALE = 4, even for N >= 1e7
 // Time Complexity:
 //   constructor: O(N)
 //   insert, insert_at, erase, erase_at, push_front, pop_front, at, below, floor, ceiling, above, contains: O(R * (N ^ (1 / R)))

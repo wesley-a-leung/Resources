@@ -2,8 +2,10 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Fenwick Tree or Binary Indexed Tree supporting range updates and point queries
-// indices are 0-indexed and ranges are inclusive
+// Fenwick Tree or Binary Indexed Tree supporting range updates and point queries in any number of dimensions
+// Indices are 0-indexed and ranges are inclusive
+// In practice, this version performs as well as the 1D version
+// Very fast in practice, liked most fenwick trees
 // Time Complexity:
 //   constructor: O(PI(N_i))
 //   update: O(2^D * PI(log(N_i)))

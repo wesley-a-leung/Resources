@@ -4,7 +4,8 @@
 using namespace std;
 
 // Fenwick Tree or Binary Indexed Tree supporting range updates and range queries in 1 dimension
-// indices are 0-indexed and ranges are inclusive
+// Indices are 0-indexed and ranges are inclusive
+// Very fast in practice, liked most fenwick trees
 // Time Complexity:
 //   constructor: O(N)
 //   update, rsq: O(log N)
