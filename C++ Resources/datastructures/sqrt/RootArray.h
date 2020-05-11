@@ -14,7 +14,8 @@ using namespace std;
 // In practice, has a small constant, and is faster than balanced binary search trees when R = 3, and SCALE = 6, even for N >= 1e7
 // Time Complexity:
 //   constructor: O(N)
-//   insert, insert_at, erase, erase_at, push_front, pop_front, at, below, floor, ceiling, above, contains: O(R * (N ^ (1 / R)))
+//   insert, insert_at, erase, erase_at, push_front, pop_front, at: O(R * (I ^ (1 / R))) where I is the total number of insertions
+//   below, floor, ceiling, above, contains: O(R * (I ^ (1 / R))) where I is the total number of insertions
 //   front, back, empty, size, pop_back: O(1)
 //   push_back: O(1) amortized
 //   values, clear: O(N)
