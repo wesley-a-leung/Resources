@@ -11,7 +11,7 @@ using namespace std;
 // insert, erase, below, floor, ceiling, above, and contains require the data to be sorted
 // All other operations work regardles of whether it is sorted
 // Default comparator is a simple pointer comparator
-// In practice, has a small constant, and is faster than balanced binary search trees when R = 3, and SCALE = 4, even for N >= 1e7
+// In practice, has a small constant, and is faster than balanced binary search trees when R = 3, and SCALE = 6, even for N >= 1e7
 // Time Complexity:
 //   constructor: O(N)
 //   insert, insert_at, erase, erase_at, push_front, pop_front, at, below, floor, ceiling, above, contains: O(R * (N ^ (1 / R)))
@@ -23,20 +23,23 @@ using namespace std;
 //   https://dmoj.ca/problem/ds4
 //   https://dmoj.ca/problem/cco10p3
 //   https://dmoj.ca/problem/ccc05s5
-
 template <class T> struct ptr_cmp { bool operator () (const T &a, const T &b) const { return &a < &b; } };
 
 template <const int R, class T, class Comparator = ptr_cmp<T>> struct RootArray {
     int N; vector<RootArray<R - 1, T, Comparator>> A; double SCALE; Comparator cmp;
-    RootArray(double SCALE = 4) : N(0), SCALE(SCALE) { assert(SCALE > 0); }
-    template <class It> RootArray(const It st, const It en, double SCALE = 4) : N(en - st), SCALE(SCALE) {
+    int getRootN() {
+        if (N == 0) return 0;
+        int lg = __lg(N); lg -= lg / R; return SCALE * (1 << lg);
+    }
+    RootArray(double SCALE = 6) : N(0), SCALE(SCALE) { assert(SCALE > 0); }
+    template <class It> RootArray(const It st, const It en, double SCALE = 6) : N(en - st), SCALE(SCALE) {
         assert(N >= 0); assert(SCALE > 0);
         if (N == 0) return;
-        int rootN = ceil(pow(N, double(R - 1) / R) * SCALE); A.reserve((N - 1) / rootN + 1);
+        int rootN = getRootN(); A.reserve((N - 1) / rootN + 1);
         for (It i = st; i < en; i += rootN) A.emplace_back(i, min(i + rootN, en), SCALE);
     }
     void split(int i) {
-        int rootN = ceil(pow(N, double(R - 1) / R) * SCALE);
+        int rootN = getRootN();
         if (int(A[i].size()) > 2 * rootN) {
             vector<T> tmp; tmp.reserve(int(A[i].size()) - 2 * rootN);
             while (int(A[i].size()) > rootN) { tmp.push_back(A[i].back()); A[i].pop_back(); }
@@ -142,8 +145,8 @@ template <const int R, class T, class Comparator = ptr_cmp<T>> struct RootArray 
 };
 
 template <class T, class Comparator> struct RootArray<1, T, Comparator> : public vector<T> {
-    using vector<T>::begin; using vector<T>::end; using vector<T>::size; using vector<T>::at; Comparator cmp; RootArray(double = 4) {}
-    template <class It> RootArray(const It st, const It en, double = 4) : vector<T>(st, en) {}
+    using vector<T>::begin; using vector<T>::end; using vector<T>::size; using vector<T>::at; Comparator cmp; RootArray(double = 6) {}
+    template <class It> RootArray(const It st, const It en, double = 6) : vector<T>(st, en) {}
     void insert(const T &val) { vector<T>::insert(lower_bound(begin(), end(), val, cmp), val); }
     void insert_at(int k, const T &val) { vector<T>::insert(begin() + k, val); }
     bool erase(const T &val) { 
