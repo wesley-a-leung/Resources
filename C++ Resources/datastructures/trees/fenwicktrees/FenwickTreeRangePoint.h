@@ -12,9 +12,9 @@ using namespace std;
 // where PI is the product function, N_i is the size in the ith dimension, and D is the number of dimensions
 // Tested:
 //   https://mcpt.ca/problem/adifferenceproblem
-template <class T, const int D> struct FenwickTreeRangePoint {
-    int N; vector<FenwickTreeRangePoint<T, D - 1>> BIT;
-    template <class... Args> FenwickTreeRangePoint(int N, Args... args) : N(N), BIT(N + 1, FenwickTreeRangePoint<T, D - 1>(args...)) {}
+template <const int D, class T> struct FenwickTreeRangePoint {
+    int N; vector<FenwickTreeRangePoint<D - 1, T>> BIT;
+    template <class... Args> FenwickTreeRangePoint(int N, Args... args) : N(N), BIT(N + 1, FenwickTreeRangePoint<D - 1, T>(args...)) {}
     template <class... Args> void update(T v, int l, int r, Args... args) {
         for (l++; l <= N; l += l & -l) BIT[l].update(v, args...);
         for (r += 2; r <= N; r += r & -r) BIT[r].update(-v, args...);
@@ -26,7 +26,7 @@ template <class T, const int D> struct FenwickTreeRangePoint {
     }
 };
 
-template <class T> struct FenwickTreeRangePoint<T, 0> {
+template <class T> struct FenwickTreeRangePoint<0, T> {
     T val; FenwickTreeRangePoint() : val(T()) {}
     void update(T v) { val += v; }
     T get() { return val; }

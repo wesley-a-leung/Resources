@@ -2,127 +2,172 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class no_such_element_exception: public runtime_error {
-public:
-    no_such_element_exception(): runtime_error("No such element exists"){}
-    no_such_element_exception(string message): runtime_error(message){}
-};
-
-// Decomposes the array into N ^ (1 / R) containers of size N ^ ((R - 1) / R) multiplied by a factor
-// The factor should be between 1 and 10, and should be smaller for large N
+// Decomposes the array recursively into N ^ (1 / R) containers of size N ^ ((R - 1) / R) multiplied by a scale factor
+// convention for insert_at is to insert before index k
+// below returns largest element less than val
+// floor returns largest element not greater than val
+// ceiling returns smallest element not less than val
+// above returns smallest element greater than val
+// insert, erase, below, floor, ceiling, above, and contains require the data to be sorted
+// all other operations work regardles of whether it is sorted
+// default comparator is a simple pointer comparator
+// in practice, it is faster than balanced binary search trees when R = 3, and SCALE = 4, even for N >= 1e7
 // Time Complexity:
 //   constructor: O(N)
-//   insert, emplace, erase: O(R * (N ^ (1 / R)) + log(N)) amortized
-//   push_front, pop_front, emplace_front: O(R * (N ^ (1 / R))) amortized
-//   push_back, pop_back, emplace_back: O(1) amortized
-//   front, back, empty, size: O(1)
-//   at, accessor: O(log(N))
-//   values: O(N)
+//   insert, insert_at, erase, erase_at, push_front, pop_front, at, below, floor, ceiling, above, contains: O(R * (N ^ (1 / R)))
+//   front, back, empty, size, pop_back: O(1)
+//   push_back: O(1) amortized
+//   values, clear: O(N)
 // Memory Complexity: O(N)
-template <const int R, class Value, class Container> struct RootArray {
-    int n, SCALE_FACTOR; vector<Container> a; vector<int> prefixSZ;
-    RootArray(const int SCALE_FACTOR = 1) : n(0), SCALE_FACTOR(SCALE_FACTOR) {}
-    RootArray(const int n, const int SCALE_FACTOR) : n(n), SCALE_FACTOR(SCALE_FACTOR) {
-        assert(n > 0); int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
-        for (int i = 0; i < n; i += rootn) { a.emplace_back(min(rootn, n - i)); prefixSZ.push_back(0); }
-        for (int i = 1; i < (int) a.size(); i++) prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
+// Tested:
+//   https://dmoj.ca/problem/ds4
+//   https://dmoj.ca/problem/cco10p3
+//   https://dmoj.ca/problem/ccc05s5
+
+template <class T> struct ptr_cmp { bool operator () (const T &a, const T &b) const { return &a < &b; } };
+
+template <const int R, class T, class Comparator = ptr_cmp<T>> struct RootArray {
+    int N; vector<RootArray<R - 1, T, Comparator>> A; double SCALE; Comparator cmp;
+    RootArray(double SCALE = 4) : N(0), SCALE(SCALE) { assert(SCALE > 0); }
+    template <class It> RootArray(const It st, const It en, double SCALE = 4) : N(en - st), SCALE(SCALE) {
+        assert(N >= 0); assert(SCALE > 0);
+        if (N == 0) return;
+        int rootN = ceil(pow(N, double(R - 1) / R) * SCALE); A.reserve((N - 1) / rootN + 1);
+        for (It i = st; i < en; i += rootN) A.emplace_back(i, min(i + rootN, en), SCALE);
     }
-    template <class It> RootArray(const It st, const It en, const int SCALE_FACTOR = 1) : n(en - st), SCALE_FACTOR(SCALE_FACTOR) {
-        assert(n > 0); int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
-        for (It i = st; i < en; i += rootn) { a.emplace_back(i, min(i + rootn, st + n), SCALE_FACTOR); prefixSZ.push_back(0); }
-        for (int i = 1; i < (int) a.size(); i++) prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
-    }
-    void insert(int k, const Value &val) { // inserts value before kth index
-        assert(0 <= k && k <= n);
-        if (n++ == 0) { a.emplace_back(SCALE_FACTOR); prefixSZ.push_back(0); }
-        int lo = 0, hi = (int) (a.size()) - 1, mid;
-        while (lo <= hi) {
-            mid = lo + (hi - lo) / 2;
-            if (k < prefixSZ[mid]) hi = mid - 1;
-            else lo = mid + 1;
-        }
-        k -= prefixSZ[hi]; int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR; a[hi].insert(k, val);
-        if ((int) a[hi].size() > 2 * rootn) {
-            vector<Value> b;
-            while (a[hi].size() > rootn) { b.push_back(a[hi].back()); a[hi].pop_back(); }
-            reverse(b.begin(), b.end()); a.emplace(a.begin() + hi + 1, b.begin(), b.end(), SCALE_FACTOR); prefixSZ.push_back(0);
-        }
-        for (int i = hi + 1; i < (int) a.size(); i++) prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
-    }
-    void push_front(const Value &val) {
-        if (n++ == 0) { a.emplace_back(SCALE_FACTOR); prefixSZ.push_back(0); }
-        a.front().push_front(val);
-        int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
-        if ((int) a.front().size() > 2 * rootn) {
-            vector<Value> b;
-            while (a.front().size() > rootn) { b.push_back(a.front().back()); a.front().pop_back(); }
-            reverse(b.begin(), b.end()); a.emplace(a.begin() + 1, b.begin(), b.end(), SCALE_FACTOR); prefixSZ.push_back(0);
+    void split(int i) {
+        int rootN = ceil(pow(N, double(R - 1) / R) * SCALE);
+        if (int(A[i].size()) > 2 * rootN) {
+            vector<T> tmp; tmp.reserve(int(A[i].size()) - 2 * rootN);
+            while (int(A[i].size()) > rootN) { tmp.push_back(A[i].back()); A[i].pop_back(); }
+            A.emplace(A.begin() + i + 1, tmp.rbegin(), tmp.rend(), SCALE);
         }
     }
-    void push_back(const Value &val) {
-        if (n++ == 0) { a.emplace_back(SCALE_FACTOR); prefixSZ.push_back(0); }
-        a.back().push_back(val);
-        int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
-        if ((int) a.back().size() > 2 * rootn) {
-            vector<Value> b;
-            while (a.back().size() > rootn) { b.push_back(a.back().back()); a.back().pop_back(); }
-            reverse(b.begin(), b.end()); a.emplace_back(b.begin(), b.end(), SCALE_FACTOR);
-            prefixSZ.push_back(prefixSZ[(int) a.size() - 2] + (int) a[(int) a.size() - 2].size());
-        }
+    void insert(const T &val) {
+        if (N++ == 0) { A.emplace_back(SCALE); A.back().insert(val); return; }
+        int i = 0;
+        while (i < int(A.size()) && !cmp(val, A[i].front())) i++;
+        if (--i < 0) i = 0;
+        A[i].insert(val); split(i);
     }
-    template <class ...Args> void emplace(int k, Args &&...args) { insert(k, Value(forward<Args>(args)...)); }
-    template <class ...Args> void emplace_front(Args &&...args) { push_front(Value(forward<Args>(args)...)); }
-    template <class ...Args> void emplace_back(Args &&...args) { push_back(Value(forward<Args>(args)...)); }
-    void erase(const int k) {
-        assert(0 <= k && k < n); --n; int lo = 0, hi = (int) (a.size()) - 1, mid;
-        while (lo <= hi) {
-            mid = lo + (hi - lo) / 2;
-            if (k < prefixSZ[mid]) hi = mid - 1;
-            else lo = mid + 1;
-        }
-        a[hi].erase(k - prefixSZ[hi]);
-        if (a[hi].empty()) { a.erase(a.begin() + hi); prefixSZ.pop_back(); }
-        for (int i = hi + 1; i < (int) a.size(); i++) prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
+    void insert_at(int k, const T &val) {
+        assert(0 <= k && k <= N);
+        if (k == N) { push_back(val); return; }
+        N++; int i = 0;
+        while (int(A[i].size()) <= k) k -= int(A[i++].size());
+        A[i].insert_at(k, val); split(i);
+    }
+    bool erase(const T &val) {
+        int i = 0;
+        while (i < int(A.size()) && !cmp(val, A[i].front())) i++;
+        if (--i < 0 || !A[i].erase(val)) return false;
+        if (A[i].empty()) A.erase(A.begin() + i);
+        N--; return true;
+    }
+    void erase_at(int k) {
+        assert(0 <= k && k < N); int i = 0;
+        while (int(A[i].size()) <= k) k -= int(A[i++].size());
+        N--; A[i].erase_at(k);
+        if (A[i].empty()) A.erase(A.begin() + i);
+    }
+    int size() const { return N; }
+    bool empty() const { return N == 0; }
+    const T &front() const { assert(N > 0); return A.front().front(); }
+    T &front() { assert(N > 0); return A.front().front(); }
+    const T &back() const { assert(N > 0); return A.back().back(); }
+    T &back() { assert(N > 0); return A.back().back(); }
+    void push_front(const T &val) {
+        if (N++ == 0) { A.emplace_back(SCALE); A.back().push_back(val); return; }
+        A.front().push_front(val); split(0);
+    }
+    void push_back(const T &val) {
+        if (N++ == 0) { A.emplace_back(SCALE); A.back().push_back(val); return; }
+        A.back().push_back(val); split(int(A.size()) - 1);
     }
     void pop_front() {
-        assert(n > 0); --n; a.front().pop_front();
-        if (a.front().empty()) { a.erase(a.begin()); prefixSZ.pop_back(); }
-        for (int i = 1; i < (int) a.size(); i++) prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
+        assert(N > 0); N--; A.front().pop_front();
+        if (A.front().empty()) A.erase(A.begin());
     }
     void pop_back() {
-        assert(n > 0); --n; a.back().pop_back();
-        if (a.back().empty()) { a.pop_back(); prefixSZ.pop_back(); }
+        assert(N > 0); N--; A.back().pop_back();
+        if (A.back().empty()) A.pop_back();
     }
-    const Value &at(const int k) const {
-        assert(0 <= k && k < n); int lo = 0, hi = ((int) a.size()) - 1, mid;
-        while (lo <= hi) {
-            mid = lo + (hi - lo) / 2;
-            if (k < prefixSZ[mid]) hi = mid - 1;
-            else lo = mid + 1;
-        }
-        return a[hi].at(k - prefixSZ[hi]);
+    const T &at(int k) const {
+        assert(0 <= k && k < N); int i = 0;
+        while (int(A[i].size()) <= k) k -= int(A[i++].size());
+        return A[i].at(k);
     }
-    Value &at(const int k) {
-        assert(0 <= k && k < n); int lo = 0, hi = ((int) a.size()) - 1, mid;
-        while (lo <= hi) {
-            mid = lo + (hi - lo) / 2;
-            if (k < prefixSZ[mid]) hi = mid - 1;
-            else lo = mid + 1;
-        }
-        return a[hi].at(k - prefixSZ[hi]);
+    T &at(int k) {
+        assert(0 <= k && k < N); int i = 0;
+        while (int(A[i].size()) <= k) k -= int(A[i++].size());
+        return A[i].at(k);
     }
-    const Value &operator [](const int k) const { return at(k); }
-    Value &operator [](const int k) { return at(k); }
-    const Value &front() const { assert(n > 0); return a.front().front(); }
-    Value &front() { assert(n > 0); return a.front().front(); }
-    const Value &back() const { assert(n > 0); return a.back().back(); }
-    Value &back() { assert(n > 0); return a.back().back(); }
-    bool empty() const { return n == 0; }
-    int size() const { return n; }
-    vector<Value> values() const {
-        vector<Value> ret;
-        for (auto &&ai : a) for (auto &&aij : ai.values()) ret.push_back(aij);
+    pair<int, T *> below(const T &val) {
+        int i = 0, k = 0;
+        while (i < int(A.size()) && cmp(A[i].front(), val)) k += int(A[i++].size());
+        if (--i >= 0) k -= int(A[i].size());
+        else return make_pair(-1, nullptr);
+        pair<int, T *> ret = A[i].below(val); ret.first += k; return ret;
+    }
+    pair<int, T *> floor(const T &val) {
+        int i = 0, k = 0;
+        while (i < int(A.size()) && !cmp(val, A[i].front())) k += int(A[i++].size());
+        if (--i >= 0) k -= int(A[i].size());
+        else return make_pair(-1, nullptr);
+        pair<int, T *> ret = A[i].floor(val); ret.first += k; return ret;
+    }
+    pair<int, T *> ceiling(const T &val) {
+        int i = 0, k = 0;
+        while (i < int(A.size()) && cmp(A[i].back(), val)) k += int(A[i++].size());
+        if (i >= int(A.size())) return make_pair(N, nullptr);
+        pair<int, T *> ret = A[i].ceiling(val); ret.first += k; return ret;
+    }
+    pair<int, T *> above(const T &val) {
+        int i = 0, k = 0;
+        while (i < int(A.size()) && !cmp(val, A[i].back())) k += int(A[i++].size());
+        if (i >= int(A.size())) return make_pair(N, nullptr);
+        pair<int, T *> ret = A[i].above(val); ret.first += k; return ret;
+    }
+    bool contains(const T &val) const {
+        int i = 0;
+        while (i < int(A.size()) && cmp(A[i].back(), val)) i++;
+        return i < int(A.size()) && A[i].contains(val);
+    }
+    vector<T> values() const {
+        vector<T> ret; ret.reserve(N);
+        for (auto &&ai : A) for (auto &&aij : ai.values()) ret.push_back(aij);
         return ret;
     }
-    void clear() { n = 0; a.clear(); prefixSZ.clear(); }
+    void clear() { N = 0; A.clear(); }
+};
+
+template <class T, class Comparator> struct RootArray<1, T, Comparator> : public vector<T> {
+    using vector<T>::begin; using vector<T>::end; using vector<T>::size; using vector<T>::at; Comparator cmp; RootArray(double = 4) {}
+    template <class It> RootArray(const It st, const It en, double = 4) : vector<T>(st, en) {}
+    void insert(const T &val) { vector<T>::insert(lower_bound(begin(), end(), val, cmp), val); }
+    void insert_at(int k, const T &val) { vector<T>::insert(begin() + k, val); }
+    bool erase(const T &val) { 
+        auto it = lower_bound(begin(), end(), val, cmp);
+        if (it == end() || cmp(*it, val) || cmp(val, *it)) return false;
+        vector<T>::erase(it); return true;
+    }
+    void erase_at(int k) { vector<T>::erase(begin() + k); }
+    void push_front(const T &val) { vector<T>::insert(begin(), val); }
+    void pop_front() { vector<T>::erase(begin()); }
+    pair<int, T *> below(const T &val) {
+        int i = lower_bound(begin(), end(), val, cmp) - begin() - 1; return make_pair(i, i < 0 ? nullptr : &at(i));
+    }
+    pair<int, T *> floor(const T &val) {
+        int i = upper_bound(begin(), end(), val, cmp) - begin() - 1; return make_pair(i, i < 0 ? nullptr : &at(i));
+    }
+    pair<int, T *> ceiling(const T &val) {
+        int i = lower_bound(begin(), end(), val, cmp) - begin(); return make_pair(i, i >= int(size()) ? nullptr : &at(i));
+    }
+    pair<int, T *> above(const T &val) {
+        int i = upper_bound(begin(), end(), val, cmp) - begin(); return make_pair(i, i >= int(size()) ? nullptr : &at(i));
+    }
+    bool contains(const T &val) const {
+        int i = lower_bound(begin(), end(), val, cmp) - begin(); return i < int(size()) && !cmp(val, at(i)) && !cmp(at(i), val);
+    }
+    const RootArray<1, T, Comparator> &values() const { return *this; }
 };
