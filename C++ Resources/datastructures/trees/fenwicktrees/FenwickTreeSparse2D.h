@@ -11,11 +11,12 @@ using namespace __gnu_pbds;
 // while others are sparse in both dimensions. Certain implementations only allow for increments and decrements of 1
 // In general, the offline fenwick trees are faster than the sqrt implementations, which are faster than the pbds implementations
 // Offline fenwick trees and sqrt implementations have small constants, treeset implementation has a moderate constant,
-// and hashmap implementations have a large constant
+// and hashmap implementations have large constants
 
 // Sparse Fenwick Tree supporting point updates (with any value) and range queries in 2 dimensions (sparse in 1 dimension)
 // All update indices must be known beforehand
 // Indices are 0-indexed and ranges are inclusive
+// In practice, has a small constant
 // Time Complexity:
 //   constructor: O(Q (log Q + log N) + N) for Q updates
 //   update, rsq: O(log N log Q) for Q updates
@@ -57,6 +58,7 @@ template <class T, class IndexType> struct FenwickTreeSemiSparse2DOffline {
 // Sparse Fenwick Tree supporting point updates (with any value) and range queries in 2 dimensions (sparse in 2 dimensions)
 // All update indices must be known beforehand
 // Indices are 0-indexed and ranges are inclusive
+// In practice, has a small constant
 // Time Complexity:
 //   constructor: O(Q log Q) for Q updates
 //   update, rsq: O((log Q)^2) for Q updates
@@ -100,6 +102,7 @@ template <class T, class IndexType1, class IndexType2> struct FenwickTreeSparse2
 
 // Sparse Fenwick Tree supporting point updates (with value 1) and range queries in 2 dimensions using SqrtBufferSimple (sparse in 1 dimension)
 // Indices are 0-indexed and ranges are inclusive
+// In practice, has a small constant
 // Time Complexity:
 //   constructor: O(N)
 //   add, rem: O(log N) amortized
@@ -121,6 +124,7 @@ template <class IndexType> struct FenwickTreeSemiSparse2DSimpleSqrt {
 
 // Sparse Fenwick Tree supporting point updates (with any value) and range queries in 2 dimensions using SqrtBuffer (sparse in 1 dimension)
 // Indices are 0-indexed and ranges are inclusive
+// In practice, has a small constant
 // Time Complexity:
 //   constructor: O(N)
 //   update: O(log N) amortized
@@ -155,6 +159,7 @@ template<class T1,class T2,class H1=rand_hash<T1>,class H2=rand_hash<T2>>struct 
 
 // Sparse Fenwick Tree supporting point updates (with value 1) and range queries in 2 dimensions using pbds tree (sparse in 1 dimension)
 // Indices are 0-indexed and ranges are inclusive
+// In practice, has a moderate constant
 // Time Complexity:
 //   constructor: O(N)
 //   add, rem, rsq: O(log N log Q) for Q updates
@@ -173,6 +178,7 @@ template <class IndexType> struct FenwickTreeSemiSparse2DSimpleTreeset {
 
 // Sparse Fenwick Tree supporting point updates (with any value) and range queries in 2 dimensions using pbds hash_table (sparse in 1 dimension)
 // Indices are 0-indexed and ranges are inclusive
+// In practice, has a large constant
 // Time Complexity:
 //   constructor: O(N)
 //   update, rsq: O(log N log M) on avareage
@@ -204,6 +210,7 @@ template <class T, class IndexType, class Container = hashmap<IndexType, T>> str
 
 // Sparse Fenwick Tree supporting point updates (with any value) and range queries in 2 dimensions using pbds hash_table (sparse in 2 dimensions)
 // Indices are 0-indexed and ranges are inclusive
+// In practice, has a large constant
 // Time Complexity:
 //   constructor: O(1)
 //   update, rsq: O(log N log M) on average
