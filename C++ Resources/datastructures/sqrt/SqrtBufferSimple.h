@@ -4,7 +4,7 @@ using namespace std;
 
 // Maintains the rank of an element in an array
 // 0-indexed ranks
-// In practice, performs very fast, and is faster than RootArray and balanced binary search trees
+// In practice, has a very small constant, and is faster than RootArray and balanced binary search trees
 // Time Complexity:
 //   constructor: O(N)
 //   insert: O(1) amortized
