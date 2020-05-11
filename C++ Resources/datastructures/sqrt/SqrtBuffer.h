@@ -3,6 +3,8 @@
 using namespace std;
 
 // Maintains the rank of an element in an array, allowing for multiple insertions at the same time (including negative)
+// 0-indexed ranks
+// In practice, performs very fast, and is faster than RootArray and balanced binary search trees
 // Time Complexity:
 //   constructor: O(N)
 //   insert: O(1) amortized
@@ -64,8 +66,7 @@ template <class T, class CountType, class Comparator = less<T>> struct SqrtBuffe
         for (auto &&p : small) if (!cmp(val, p.first) && !cmp(p.first, val)) return true;
         return false;
     }
-    // number of values in the range [lo, hi]
-    CountType count(const T &lo, const T &hi) {
+    CountType count(const T &lo, const T &hi) { // number of values in the range [lo, hi]
         rebuild(); int ind = upper_bound(large.begin(), large.end(), make_pair(hi, CountType(0)), pairCmp) - large.begin();
         CountType ret = ind == 0 ? 0 : large[ind - 1].second;
         ind = lower_bound(large.begin(), large.end(), make_pair(lo, CountType(0)), pairCmp) - large.begin();

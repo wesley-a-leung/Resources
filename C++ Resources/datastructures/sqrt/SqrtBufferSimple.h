@@ -4,6 +4,7 @@ using namespace std;
 
 // Maintains the rank of an element in an array
 // 0-indexed ranks
+// In practice, performs very fast, and is faster than RootArray and balanced binary search trees
 // Time Complexity:
 //   constructor: O(N)
 //   insert: O(1) amortized
@@ -49,8 +50,7 @@ template <class T, class Comparator = less<T>> struct SqrtBufferSimple {
         for (auto &&x : small) if (!cmp(val, x) && !cmp(x, val)) return true;
         return false;
     }
-    // number of values in the range [lo, hi]
-    int count(const T &lo, const T &hi) {
+    int count(const T &lo, const T &hi) { // number of values in the range [lo, hi]
         rebuild(); int ret = upper_bound(large.begin(), large.end(), hi, cmp) - lower_bound(large.begin(), large.end(), lo, cmp);
         for (auto &&x : small) ret += !cmp(x, lo) && !cmp(hi, x);
         return ret;
@@ -58,7 +58,7 @@ template <class T, class Comparator = less<T>> struct SqrtBufferSimple {
     bool empty() const { return small.empty() && large.empty(); } 
     int size() const { return int(small.size() + large.size()); } 
     void clear() { small.clear(); large.clear(); }
-    vector<T> values() const {
+    vector<T> values() const { // sorted
         vector<T> ret; ret.reserve(size());
         for (auto &&x : small) ret.push_back(x);
         int mid = int(ret.size());
