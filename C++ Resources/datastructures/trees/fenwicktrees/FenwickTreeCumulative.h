@@ -6,7 +6,7 @@ using namespace std;
 // such as max and min, in any number of dimensions
 // Indices are 0-indexed and ranges are inclusive
 // In practice, this version performs as well as the 1D version
-// Very fast in practice, liked most fenwick trees
+// Very small constant, liked most fenwick trees
 // Time Complexity:
 //   constructor: O(PI(N_i))
 //   update, query: O(PI(log(N_i)))

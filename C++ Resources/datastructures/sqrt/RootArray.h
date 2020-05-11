@@ -11,7 +11,7 @@ using namespace std;
 // insert, erase, below, floor, ceiling, above, and contains require the data to be sorted
 // All other operations work regardles of whether it is sorted
 // Default comparator is a simple pointer comparator
-// In practice, performs fast, and is faster than balanced binary search trees when R = 3, and SCALE = 4, even for N >= 1e7
+// In practice, has a small constant, and is faster than balanced binary search trees when R = 3, and SCALE = 4, even for N >= 1e7
 // Time Complexity:
 //   constructor: O(N)
 //   insert, insert_at, erase, erase_at, push_front, pop_front, at, below, floor, ceiling, above, contains: O(R * (N ^ (1 / R)))

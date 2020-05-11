@@ -10,7 +10,8 @@ using namespace __gnu_pbds;
 // A collection of sparse fenwick trees implemented in various methods. Some are only sparse in a single dimension,
 // while others are sparse in both dimensions. Certain implementations only allow for increments and decrements of 1
 // In general, the offline fenwick trees are faster than the sqrt implementations, which are faster than the pbds implementations
-// Offline fenwick trees and sqrt implementations are fast, treeset implementation is moderate, and hashmap implementations are very slow
+// Offline fenwick trees and sqrt implementations have small constants, treeset implementation has a moderate constant,
+// and hashmap implementations have a large constant
 
 // Sparse Fenwick Tree supporting point updates (with any value) and range queries in 2 dimensions (sparse in 1 dimension)
 // All update indices must be known beforehand
