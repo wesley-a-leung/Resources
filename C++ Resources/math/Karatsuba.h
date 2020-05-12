@@ -1,9 +1,4 @@
 #pragma once
-#pragma GCC optimize("Ofast")
-#pragma GCC optimize("unroll-loops")
-// the pragma below can cause issues if non standard functions (double underscore functions) are used
-// it can improve performance for small data types
-// #pragma GCC target("avx,avx2,fma")
 #include <bits/stdc++.h>
 #include "BinaryExponentiation.h"
 using namespace std;
@@ -26,20 +21,14 @@ template <class T, class ItA, class ItB, class ItRes> void karatsuba(int n, ItA 
     for (int i = 0; i < k; i++) { T t = res[i + k]; res[i + k] += c[i] - res[i] - res[i + k * 2]; res[i + k * 2] += c[i + k] - t - res[i + k * 3]; }
 }
 
-// Multiplies 2 big integers
-template <class T> void multiplyInteger(vector<T> a, vector<T> b, vector<T> &res) {
+// multiplies as integers if integerMul is true, multiplies as polynomial otherwise
+template <class T> void multiplyInteger(vector<T> a, vector<T> b, vector<T> &res, bool integerMul) {
     int n = max(a.size(), b.size());
     while (n & (n - 1)) n++;
     a.resize(n, 0); b.resize(n, 0); res.resize(n * 2, 0); karatsuba<T>(n, a.begin(), b.begin(), res.begin());
-    T carry = 0; static T BASE = pow2(T(10), DIG);
-    for (int i = 0; i < n * 2; i++) { T cur = res[i] + carry; res[i] = T(cur % BASE); carry = T(cur / BASE); }
-    while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
-}
-
-// Multiplies 2 polynomials
-template <class T> void multiplyPolynomial(vector<T> a, vector<T> b, vector<T> &res) {
-    int n = max(a.size(), b.size());
-    while (n & (n - 1)) n++;
-    a.resize(n, 0); b.resize(n, 0); res.resize(n * 2, 0); karatsuba<T>(n, a.begin(), b.begin(), res.begin());
+    if (integerMul) {
+        T carry = 0; static T BASE = pow2(T(10), DIG);
+        for (int i = 0; i < n * 2; i++) { T cur = res[i] + carry; res[i] = T(cur % BASE); carry = T(cur / BASE); }
+    }
     while (int(res.size()) > 1 && res.back() == 0) res.pop_back();
 }
