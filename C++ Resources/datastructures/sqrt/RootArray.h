@@ -27,7 +27,7 @@ using namespace std;
 template <class T> struct ptr_cmp { bool operator () (const T &a, const T &b) const { return &a < &b; } };
 
 template <const int R, class T, class Comparator = ptr_cmp<T>> struct RootArray {
-    int N; vector<RootArray<R - 1, T, Comparator>> A; double SCALE; Comparator cmp;
+    static_assert(R > 0, "R must be positive"); int N; vector<RootArray<R - 1, T, Comparator>> A; double SCALE; Comparator cmp;
     int getRootN() {
         if (N == 0) return 0;
         int lg = __lg(N); lg -= lg / R; return SCALE * (1 << lg);
