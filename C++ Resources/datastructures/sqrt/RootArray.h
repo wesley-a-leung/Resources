@@ -3,19 +3,22 @@
 using namespace std;
 
 // Decomposes the array recursively into N ^ (1 / R) containers of size N ^ ((R - 1) / R) multiplied by a scale factor
-// Convention for insert_at is to insert before index k
-// below returns largest element less than val
-// floor returns largest element not greater than val
-// ceiling returns smallest element not less than val
-// above returns smallest element greater than val
-// insert, erase, below, floor, ceiling, above, and contains require the data to be sorted
+// insert, erase, below, floor, ceiling, above, and find require the data to be sorted by the comparator
+// insert inserts before the first index i where cmp(at(i), val) is false
+// erase erases the first index i where cmp(at(i), val) and cmp(val, at(i)) are false, if it exists
+// insert_at inserts before index k
+// below returns the last element x where cmp(x, val) is true
+// floor returns the last element x where cmp(val, x) is false
+// ceiling returns the first element x where cmp(x, val) is false
+// above returns the first element x where cmp(val, x) is true
+// find returns the first element x where cmp(val, x) and cmp(x, val) are false, if it exists
 // All other operations work regardles of whether it is sorted
 // Default comparator is a simple pointer comparator
 // In practice, has a small constant, and is faster than balanced binary search trees when R = 3, and SCALE = 6, even for N >= 1e7
 // Time Complexity:
 //   constructor: O(N)
 //   insert, insert_at, erase, erase_at, push_front, pop_front, at: O(R * (I ^ (1 / R))) where I is the total number of insertions
-//   below, floor, ceiling, above, contains: O(R * (I ^ (1 / R))) where I is the total number of insertions
+//   below, floor, ceiling, above, find: O(R * (I ^ (1 / R))) where I is the total number of insertions
 //   front, back, empty, size, pop_back: O(1)
 //   push_back: O(1) amortized
 //   values, clear: O(N)
@@ -24,10 +27,8 @@ using namespace std;
 //   https://dmoj.ca/problem/ds4
 //   https://dmoj.ca/problem/cco10p3
 //   https://dmoj.ca/problem/ccc05s5
-template <class T> struct ptr_cmp { bool operator () (const T &a, const T &b) const { return &a < &b; } };
-
-template <const int R, class T, class Comparator = ptr_cmp<T>> struct RootArray {
-    static_assert(R > 0, "R must be positive"); int N; vector<RootArray<R - 1, T, Comparator>> A; double SCALE; Comparator cmp;
+template <const int R, class T> struct RootArray {
+    static_assert(R > 0, "R must be positive"); int N; vector<RootArray<R - 1, T>> A; double SCALE;
     int getRootN() {
         if (N == 0) return 0;
         int lg = __lg(N); lg -= lg / R; return SCALE * (1 << lg);
@@ -47,12 +48,12 @@ template <const int R, class T, class Comparator = ptr_cmp<T>> struct RootArray 
             A.emplace(A.begin() + i + 1, tmp.rbegin(), tmp.rend(), SCALE);
         }
     }
-    void insert(const T &val) {
-        if (N++ == 0) { A.emplace_back(SCALE); A.back().insert(val); return; }
+    template <class Comp> void insert(const T &val, Comp cmp) {
+        if (N++ == 0) { A.emplace_back(SCALE); A.back().insert(val, cmp); return; }
         int i = 0;
-        while (i < int(A.size()) && !cmp(val, A[i].front())) i++;
-        if (--i < 0) i = 0;
-        A[i].insert(val); split(i);
+        while (i < int(A.size()) && cmp(A[i].back(), val)) i++;
+        if (i >= int(A.size())) i = int(A.size()) - 1;
+        A[i].insert(val, cmp); split(i);
     }
     void insert_at(int k, const T &val) {
         assert(0 <= k && k <= N);
@@ -61,10 +62,10 @@ template <const int R, class T, class Comparator = ptr_cmp<T>> struct RootArray 
         while (int(A[i].size()) <= k) k -= int(A[i++].size());
         A[i].insert_at(k, val); split(i);
     }
-    bool erase(const T &val) {
+    template <class Comp> bool erase(const T &val, Comp cmp) {
         int i = 0;
-        while (i < int(A.size()) && !cmp(val, A[i].front())) i++;
-        if (--i < 0 || !A[i].erase(val)) return false;
+        while (i < int(A.size()) && cmp(A[i].back(), val)) i++;
+        if (i >= int(A.size()) || !A[i].erase(val, cmp)) return false;
         if (A[i].empty()) A.erase(A.begin() + i);
         N--; return true;
     }
@@ -106,36 +107,36 @@ template <const int R, class T, class Comparator = ptr_cmp<T>> struct RootArray 
         while (int(A[i].size()) <= k) k -= int(A[i++].size());
         return A[i].at(k);
     }
-    pair<int, T *> below(const T &val) {
+    template <class Comp> pair<int, T *> below(const T &val, Comp cmp) {
         int i = 0, k = 0;
         while (i < int(A.size()) && cmp(A[i].front(), val)) k += int(A[i++].size());
         if (--i >= 0) k -= int(A[i].size());
         else return make_pair(-1, nullptr);
-        pair<int, T *> ret = A[i].below(val); ret.first += k; return ret;
+        pair<int, T *> ret = A[i].below(val, cmp); ret.first += k; return ret;
     }
-    pair<int, T *> floor(const T &val) {
+    template <class Comp> pair<int, T *> floor(const T &val, Comp cmp) {
         int i = 0, k = 0;
         while (i < int(A.size()) && !cmp(val, A[i].front())) k += int(A[i++].size());
         if (--i >= 0) k -= int(A[i].size());
         else return make_pair(-1, nullptr);
-        pair<int, T *> ret = A[i].floor(val); ret.first += k; return ret;
+        pair<int, T *> ret = A[i].floor(val, cmp); ret.first += k; return ret;
     }
-    pair<int, T *> ceiling(const T &val) {
+    template <class Comp> pair<int, T *> ceiling(const T &val, Comp cmp) {
         int i = 0, k = 0;
         while (i < int(A.size()) && cmp(A[i].back(), val)) k += int(A[i++].size());
         if (i >= int(A.size())) return make_pair(N, nullptr);
-        pair<int, T *> ret = A[i].ceiling(val); ret.first += k; return ret;
+        pair<int, T *> ret = A[i].ceiling(val, cmp); ret.first += k; return ret;
     }
-    pair<int, T *> above(const T &val) {
+    template <class Comp> pair<int, T *> above(const T &val, Comp cmp) {
         int i = 0, k = 0;
         while (i < int(A.size()) && !cmp(val, A[i].back())) k += int(A[i++].size());
         if (i >= int(A.size())) return make_pair(N, nullptr);
-        pair<int, T *> ret = A[i].above(val); ret.first += k; return ret;
+        pair<int, T *> ret = A[i].above(val, cmp); ret.first += k; return ret;
     }
-    bool contains(const T &val) const {
-        int i = 0;
-        while (i < int(A.size()) && cmp(A[i].back(), val)) i++;
-        return i < int(A.size()) && A[i].contains(val);
+    template <class Comp> pair<int, T *> find(const T &val, Comp cmp) {
+        pair<int, T *> ret = ceiling(val, cmp);
+        if (ret.second == nullptr || cmp(val, *(ret.second)) || cmp(*(ret.second), val)) return make_pair(size(), nullptr);
+        return ret;
     }
     vector<T> values() const {
         vector<T> ret; ret.reserve(N);
@@ -145,12 +146,12 @@ template <const int R, class T, class Comparator = ptr_cmp<T>> struct RootArray 
     void clear() { N = 0; A.clear(); }
 };
 
-template <class T, class Comparator> struct RootArray<1, T, Comparator> : public vector<T> {
-    using vector<T>::begin; using vector<T>::end; using vector<T>::size; using vector<T>::at; Comparator cmp; RootArray(double = 6) {}
+template <class T> struct RootArray<1, T> : public vector<T> {
+    using vector<T>::begin; using vector<T>::end; using vector<T>::size; using vector<T>::at; RootArray(double = 6) {}
     template <class It> RootArray(const It st, const It en, double = 6) : vector<T>(st, en) {}
-    void insert(const T &val) { vector<T>::insert(lower_bound(begin(), end(), val, cmp), val); }
+    template <class Comp> void insert(const T &val, Comp cmp) { vector<T>::insert(lower_bound(begin(), end(), val, cmp), val); }
     void insert_at(int k, const T &val) { vector<T>::insert(begin() + k, val); }
-    bool erase(const T &val) { 
+    template <class Comp> bool erase(const T &val, Comp cmp) { 
         auto it = lower_bound(begin(), end(), val, cmp);
         if (it == end() || cmp(*it, val) || cmp(val, *it)) return false;
         vector<T>::erase(it); return true;
@@ -158,20 +159,22 @@ template <class T, class Comparator> struct RootArray<1, T, Comparator> : public
     void erase_at(int k) { vector<T>::erase(begin() + k); }
     void push_front(const T &val) { vector<T>::insert(begin(), val); }
     void pop_front() { vector<T>::erase(begin()); }
-    pair<int, T *> below(const T &val) {
+    template <class Comp> pair<int, T *> below(const T &val, Comp cmp) {
         int i = lower_bound(begin(), end(), val, cmp) - begin() - 1; return make_pair(i, i < 0 ? nullptr : &at(i));
     }
-    pair<int, T *> floor(const T &val) {
+    template <class Comp> pair<int, T *> floor(const T &val, Comp cmp) {
         int i = upper_bound(begin(), end(), val, cmp) - begin() - 1; return make_pair(i, i < 0 ? nullptr : &at(i));
     }
-    pair<int, T *> ceiling(const T &val) {
+    template <class Comp> pair<int, T *> ceiling(const T &val, Comp cmp) {
         int i = lower_bound(begin(), end(), val, cmp) - begin(); return make_pair(i, i >= int(size()) ? nullptr : &at(i));
     }
-    pair<int, T *> above(const T &val) {
+    template <class Comp> pair<int, T *> above(const T &val, Comp cmp) {
         int i = upper_bound(begin(), end(), val, cmp) - begin(); return make_pair(i, i >= int(size()) ? nullptr : &at(i));
     }
-    bool contains(const T &val) const {
-        int i = lower_bound(begin(), end(), val, cmp) - begin(); return i < int(size()) && !cmp(val, at(i)) && !cmp(at(i), val);
+    template <class Comp> pair<int, T *> find(const T &val, Comp cmp) {
+        pair<int, T *> ret = ceiling(val, cmp);
+        if (ret.second == nullptr || cmp(val, *(ret.second)) || cmp(*(ret.second), val)) return make_pair(size(), nullptr);
+        return ret;
     }
-    const RootArray<1, T, Comparator> &values() const { return *this; }
+    const RootArray<1, T> &values() const { return *this; }
 };
