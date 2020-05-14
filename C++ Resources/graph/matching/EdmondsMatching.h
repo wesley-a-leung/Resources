@@ -7,7 +7,7 @@ using namespace std;
 // Time Complexity: O(V^2 * E)
 // Memory Complexity: O(V + E)
 template <const int MAXV, const int MAXE> struct EdmondsMatching {
-    int cardinality, match[MAXV], par[MAXV], id[MAXV], vis2[MAXV], q[MAXV], to[MAXE], st[MAXV], en[MAXV], stamp;
+    int cardinality, match[MAXV], par[MAXV], id[MAXV], vis2[MAXV], q[MAXV], stamp;
     bool vis[MAXV], blossom[MAXV]; vector<int> adj[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
     void markPath(int i, int b, int j) {
@@ -29,8 +29,7 @@ template <const int MAXV, const int MAXE> struct EdmondsMatching {
         fill(par, par + V, -1); fill(vis, vis + V, false); iota(id, id + V, 0); vis[s] = true; int front = 0, back = 0; q[back++] = s;
         while (front < back) {
             int v = q[front++];
-            for (int e = st[v]; e < en[v]; e++) {
-                int w = to[e];
+            for (int w : adj[v]) {
                 if (id[v] == id[w] || match[v] == w) continue;
                 if (w == s || (match[w] != -1 && par[match[w]] != -1)) {
                     int newBase = lca(v, w); fill(blossom, blossom + V, false); markPath(v, newBase, w); markPath(w, newBase, v);
@@ -49,11 +48,6 @@ template <const int MAXV, const int MAXE> struct EdmondsMatching {
     }
     int getMaxMatch(int V) {
         fill(match, match + V, -1); fill(vis2, vis2 + V, 0); stamp = 0; cardinality = 0;
-        for (int v = 0, cur = 0; v < V; v++) { 
-            st[v] = cur;
-            for (int w : adj[v]) to[cur++] = w;
-            en[v] = cur;
-        }
         for (int i = 0, v; i < V; i++) if (match[i] == -1) for (v = getAugmentingPath(V, i); v != -1;) {
             int pv = par[v], ppv = match[pv]; match[v] = pv; match[pv] = v; v = ppv;
         }

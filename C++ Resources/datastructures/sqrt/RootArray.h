@@ -4,8 +4,10 @@ using namespace std;
 
 // Decomposes the array recursively into N ^ (1 / R) containers of size N ^ ((R - 1) / R) multiplied by a scale factor
 // insert, erase, below, floor, ceiling, above, and find require the data to be sorted by the comparator
+// and returns a pair of the index and a pointer to the element (or null if it does not exist)
 // insert inserts before the first index i where cmp(at(i), val) is false
 // erase erases the first index i where cmp(at(i), val) and cmp(val, at(i)) are false, if it exists
+// find returns the first index of x if it exists
 // insert_at inserts before index k
 // below returns the last element x where cmp(x, val) is true
 // floor returns the last element x where cmp(val, x) is false
