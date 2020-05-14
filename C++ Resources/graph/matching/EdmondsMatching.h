@@ -6,7 +6,7 @@ using namespace std;
 // is incident with at most one edge in the matching
 // Time Complexity: O(V^2 * E)
 // Memory Complexity: O(V + E)
-template <const int MAXV, const int MAXE> struct EdmondsMatching {
+template <const int MAXV> struct EdmondsMatching {
     int cardinality, match[MAXV], par[MAXV], id[MAXV], vis2[MAXV], q[MAXV], stamp;
     bool vis[MAXV], blossom[MAXV]; vector<int> adj[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
