@@ -13,7 +13,6 @@ using namespace std;
 // Tested:
 //   https://dmoj.ca/problem/ds1
 //   https://codeforces.com/contest/1279/problem/B
-//   https://codeforces.com/contest/961/problem/E
 //   https://dmoj.ca/problem/ccc05s5
 //   https://dmoj.ca/problem/apio19p3
 //   https://dmoj.ca/problem/cco10p3
