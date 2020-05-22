@@ -6,7 +6,7 @@ using namespace std;
 // Fenwick Tree supporting range updates with updates in the form of
 // adding m + b, 2m + b, 3m + b, ... to the interval [l, r], and range sum queries
 // Indices are 0-indexed and ranges are inclusive
-// Very small constant, liked most fenwick trees
+// Very small constant, like most fenwick trees
 // Time Complexity:
 //   constructor: O(N)
 //   update, rsq: O(log N)

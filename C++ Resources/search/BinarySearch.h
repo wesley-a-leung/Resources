@@ -15,6 +15,8 @@ using namespace std;
 // Tested:
 //   https://mcpt.ca/problem/lcc18c5s3
 //   https://dmoj.ca/problem/apio19p3
+//   https://dmoj.ca/problem/pib20p2
+//   https://codingcompetitions.withgoogle.com/codejam/round/000000000019ffb9/00000000003384ea
 const bool First = true, Last = false;
 template <const bool ISFIRST, class T, class F> T bsearch(T lo, T hi, F f) {
     hi--;
