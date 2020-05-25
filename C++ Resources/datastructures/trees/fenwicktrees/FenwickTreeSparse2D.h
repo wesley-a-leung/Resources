@@ -170,24 +170,10 @@ template <class IndexType> struct FenwickTreeSemiSparse2DSimpleTreeset {
 // Tested:
 //   https://dmoj.ca/problem/fallingsnowflakes
 template <class T, class IndexType, class Container = hashmap<IndexType, T>> struct FenwickTreeSemiSparse2D {
-    int N, M; vector<Container> BIT;
-    FenwickTreeSemiSparse2D(int N, int M) : N(N), M(M), BIT(N + 1) {}
-    void update(int i, IndexType j, T v) {
-        i++; j++;
-        for (int x = i; x <= N; x += x & -x) for (IndexType y = j; y <= M; y += y & -y) {
-            auto it = BIT[x].find(y);
-            if (it == BIT[x].end()) BIT[x][y] += v;
-            else if ((it->second += v) == T()) BIT[x].erase(it->first);
-        }
-    }
-    T rsq(int d, IndexType r) {
-        d++; r++; T ret = T();
-        for (int x = d; x > 0; x -= x & -x) for (IndexType y = r; y > 0; y -= y & -y) {
-            auto it = BIT[x].find(y);
-            if (it != BIT[x].end()) ret += it->second;
-        }
-        return ret;
-    }
+    int N; vector<FenwickTreeSparse1D<T, IndexType, Container>> BIT;
+    FenwickTreeSemiSparse2D(int N, int M) : N(N), BIT(N + 1, FenwickTreeSparse1D<T, IndexType, Container>(M)) {}
+    void update(int i, IndexType j, T v) { for (i++; i <= N; i += i & -i) BIT[i].update(j, v); }
+    T rsq(int d, IndexType r) { T ret = T(); for (d++; d > 0; d -= d & -d) ret += BIT[d].rsq(r); return ret; }
     T rsq(int d, IndexType l, IndexType r) { return rsq(d, r) - rsq(d, l - 1); }
     T rsq(int u, int d, IndexType l, IndexType r) { return rsq(d, l, r) - rsq(u - 1, l, r); }
 };
