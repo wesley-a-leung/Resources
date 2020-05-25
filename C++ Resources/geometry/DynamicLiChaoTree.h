@@ -14,10 +14,10 @@ struct Line {
 // Supports adding lines in the form f(x) = mx + b and finding the maximum value of f(x) at any value of x
 // along with line segments where l <= x <= r, in any order
 // Time Complexity:
-//   addLine: O(log N)
-//   addLineSegment: O((log N)^2)
-//   getMax: O(log N)
-// Memory Complexity: O(N log R) where N is the number of lines added
+//   addLine: O(log (MX - MN))
+//   addLineSegment: O((log (MX - MN))^2)
+//   getMax: O(log (MX - MN))
+// Memory Complexity: O(N log (MX - MN)) where N is the number of lines added
 template <const bool maxHull> struct DynamicLiChaoTree {
     struct Node {
         Line line; IndexType l, r;
