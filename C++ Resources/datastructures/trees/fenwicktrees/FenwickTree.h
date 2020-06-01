@@ -19,9 +19,9 @@ using namespace std;
 //   https://dmoj.ca/problem/fallingsnowflakes
 template <const int D, class T> struct FenwickTree {
     int N; vector<FenwickTree<D - 1, T>> BIT;
-    template <class ...Args> FenwickTree(int N, Args... args) : N(N), BIT(N + 1, FenwickTree<D - 1, T>(args...)) {}
-    template <class ...Args> void update(int i, Args... args) { for (i++; i <= N; i += i & -i) BIT[i].update(args...); }
-    template <class ...Args> T rsq(int l, int r, Args... args) {
+    template <class ...Args> FenwickTree(int N, Args ...args) : N(N), BIT(N + 1, FenwickTree<D - 1, T>(args...)) {}
+    template <class ...Args> void update(int i, Args ...args) { for (i++; i <= N; i += i & -i) BIT[i].update(args...); }
+    template <class ...Args> T rsq(int l, int r, Args ...args) {
         T ret = T();
         for (; l > 0; l -= l & -l) ret -= BIT[l].rsq(args...);
         for (r++; r > 0; r -= r & -r) ret += BIT[r].rsq(args...);
