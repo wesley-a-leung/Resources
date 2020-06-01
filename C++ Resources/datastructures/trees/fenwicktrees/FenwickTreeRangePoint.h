@@ -16,12 +16,12 @@ using namespace std;
 //   https://mcpt.ca/problem/adifferenceproblem
 template <const int D, class T> struct FenwickTreeRangePoint {
     int N; vector<FenwickTreeRangePoint<D - 1, T>> BIT;
-    template <class ...Args> FenwickTreeRangePoint(int N, Args... args) : N(N), BIT(N + 1, FenwickTreeRangePoint<D - 1, T>(args...)) {}
-    template <class ...Args> void update(T v, int l, int r, Args... args) {
+    template <class ...Args> FenwickTreeRangePoint(int N, Args ...args) : N(N), BIT(N + 1, FenwickTreeRangePoint<D - 1, T>(args...)) {}
+    template <class ...Args> void update(T v, int l, int r, Args ...args) {
         for (l++; l <= N; l += l & -l) BIT[l].update(v, args...);
         for (r += 2; r <= N; r += r & -r) BIT[r].update(-v, args...);
     }
-    template <class ...Args> T get(int i, Args... args) {
+    template <class ...Args> T get(int i, Args ...args) {
         T ret = T();
         for (i++; i > 0; i -= i & -i) ret += BIT[i].get(args...);
         return ret;
