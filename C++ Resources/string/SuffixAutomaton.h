@@ -2,13 +2,13 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Suffix Automata
+// Suffix Automaton
 // Time Complexity:
 //   add: O(S)
 //   addLetter: amortized O(1)
 //   LCS: O(S)
 // Memory Complexity: O(S * ALPHABET_SIZE)
-template <const int ALPHABET_SIZE, const int OFFSET> struct SuffixAutomata {
+template <const int ALPHABET_SIZE, const int OFFSET> struct SuffixAutomaton {
     vector<array<int, ALPHABET_SIZE>> to; vector<int> len, link; int last;
     void init() {
         to.clear(); len.clear(); link.clear(); last = 0;
