@@ -18,11 +18,11 @@ using namespace std;
 //   https://dmoj.ca/problem/ioi01p1
 template <class T, class CountType, class Comparator = less<T>> struct SqrtBuffer {
     Comparator cmp; CountType tot; double SCALE; vector<pair<T, CountType>> small, large;
-    function<bool(const pair<T, CountType>&, const pair<T, CountType>&)> pairCmp =
-        [&] (const pair<T, CountType> &a, const pair<T, CountType> &b) { return cmp(a.first, b.first); };
-    SqrtBuffer(double SCALE = 1) : tot(0), SCALE(SCALE) {}
-    template <class PairIt> SqrtBuffer(const PairIt st, const PairIt en, double SCALE = 1) : SCALE(SCALE), large(st, en) {
-        assert(is_sorted(st, en, pairCmp)); resizeUnique(large); tot = 0; for (auto &&p : large) tot += p.second;
+    function<bool(const pair<T, CountType>&, const pair<T, CountType>&)> pairCmp;
+    SqrtBuffer(double SCALE = 1) : tot(0), SCALE(SCALE),
+        pairCmp([&] (const pair<T, CountType> &a, const pair<T, CountType> &b) { return cmp(a.first, b.first); }) {}
+    template <class PairIt> SqrtBuffer(const PairIt st, const PairIt en, double SCALE = 1) : SqrtBuffer(SCALE) {
+        assert(is_sorted(st, en, pairCmp)); large.insert(large.end(), st, en); resizeUnique(large); for (auto &&p : large) tot += p.second;
     }
     void resizeUnique(vector<pair<T, CountType>> &v) {
         if (!v.empty()) {
