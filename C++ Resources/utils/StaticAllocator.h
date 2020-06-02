@@ -5,6 +5,7 @@ using namespace std;
 // Static allocator to improve speed of memory access
 // Tested:
 //   https://dmoj.ca/problem/wac4p5
+//   https://dmoj.ca/problem/ioi12p3
 constexpr const int MB = 200;
 char buf[MB << 20]; size_t buf_ind = sizeof(buf);
 

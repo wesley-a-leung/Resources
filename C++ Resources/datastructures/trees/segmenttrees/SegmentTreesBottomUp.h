@@ -46,7 +46,7 @@ template <class Combine> struct SegmentTreeBottomUp {
 
 // Bottom up segment tree supporting range updates and range queries
 // Indices are 0-indexed and ranges are inclusive
-// In practice, has a small constant, not quite as fast as fenwick trees, but slightly faster than top down segment trees
+// In practice, has a small constant, not quite as fast as fenwick trees, and similar performance as top down segment trees
 // A combine struct is provided with typedefs/using for data and lazy, a query default value (qdef), lazy default value (ldef),
 // and implementations of applyLazy, merge, getSegmentVal, and mergeLazy
 // Below is a sample struct for range assignment and range sum queries
