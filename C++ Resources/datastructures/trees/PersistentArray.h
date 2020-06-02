@@ -3,10 +3,16 @@
 using namespace std;
 
 // Persistent Array
+// Indices are 0-indexed
+// In practice, has a large constant
+// Copy assignment/constructor creates a new version of the data structure
 // Time Complexity:
 //   constructor, get, set: O(log N)
 //   size: O(1)
 // Memory Complexity: O(N + Q log N) for Q operations
+// Tested:
+//   https://dmoj.ca/problem/wac4p5
+//   https://dmoj.ca/problem/ioi12p3
 template <class T> struct PersistentArray {
     struct Node; using ptr = shared_ptr<Node>;
     struct Node {

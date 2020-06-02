@@ -3,50 +3,53 @@
 using namespace std;
 
 // Segment Tree supporting range updates with updates in the form of
-// adding v, 2v, 3v, ... to the interval [l, r], and range sum queries
+// adding m + b, 2m + b, 3m + b, ... to the interval [l, r], and range sum queries
+// Indices are 0-indexed and ranges are inclusive
+// In practice, has a small constant, but slower than FenwickTreeLinear
 // Time Complexity:
 //   constructor: O(N)
 //   update, query: O(log N)
 // Memory Complexity: O(N)
-
-using type = long long; using Data = pair<type, type>;
-Data operator + (const Data &a, const Data &b) { return make_pair(a.first + b.first, a.second + b.second); }
-Data operator * (const Data &a, const Data &b) { return make_pair(a.first * b.first, a.second * b.second); }
-
-template <const int MAXN, const bool ONE_INDEXED> struct SegmentTreeLinear {
-    Data T[MAXN * 2], L[MAXN * 2]; type A[MAXN]; int N; const Data ZERO = make_pair(0, 0);
-    type sumTo(type n) { return n * (n + 1) / 2; }
-    Data sumBet(type l, type r) { return make_pair(r - l + 1, sumTo(r) - sumTo(l - 1)); }
-    void propagate(int cur, int cL, int cR) {
-        int m = cL + (cR - cL) / 2, rc = cur + (m - cL + 1) * 2;
-        if (L[cur] != ZERO) {
-            T[cur + 1] = T[cur + 1] + L[cur] * sumBet(cL, m); L[cur + 1] = L[cur + 1] + L[cur];
-            T[rc] = T[rc] + L[cur] * sumBet(m + 1, cR); L[rc] = L[rc] + L[cur];
-            L[cur] = ZERO;
+// Tested:
+//   https://dmoj.ca/problem/acc3p4
+template <class T> struct SegmentTreeLinear {
+    using Pair = pair<T, T>;
+    Pair add(const Pair &l, const Pair &r) { return Pair(l.first + r.first, l.second + r.second); }
+    Pair mul(const Pair &l, const Pair &r) { return Pair(l.first * r.first, l.second * r.second); }
+    const Pair ZERO = Pair(0, 0); int N; vector<Pair> TR; vector<Pair> LZ;
+    T sumTo(T k) { return k * (k + 1) / 2; }
+    Pair sumBet(T l, T r) { return Pair(r - l + 1, sumTo(r) - sumTo(l - 1)); }
+    void propagate(int x, int tl, int tr) {
+        if (LZ[x] != ZERO) {
+            int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2;
+            TR[x + 1] = add(TR[x + 1], mul(LZ[x], sumBet(tl, m))); LZ[x + 1] = add(LZ[x + 1], LZ[x]);
+            TR[rc] = add(TR[rc], mul(LZ[x], sumBet(m + 1, tr))); LZ[rc] = add(LZ[rc], LZ[x]);
+            LZ[x] = ZERO;
         }
     }
-    void build(int cur, int cL, int cR) {
-        if (cL == cR) { T[cur] = make_pair(A[cL], 0); L[cur] = ZERO; return; }
-        int m = cL + (cR - cL) / 2, rc = cur + (m - cL + 1) * 2; build(cur + 1, cL, m); build(rc, m + 1, cR); T[cur] = T[cur + 1] + T[rc];
+    template <class F> void build(int x, int tl, int tr, F a) {
+        if (tl == tr) { TR[x] = a(tl); return; }
+        int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2;
+        build(x + 1, tl, m, a); build(rc, m + 1, tr, a); TR[x] = add(TR[x + 1], TR[rc]);
     }
-    void update(int cur, int cL, int cR, int l, int r, const Data &val) {
-        if (cL > r || cR < l) return;
-        if (cL >= l && cR <= r) { T[cur] = T[cur] + val * sumBet(cL, cR); L[cur] = L[cur] + val; return; }
-        int m = cL + (cR - cL) / 2, rc = cur + (m - cL + 1) * 2; propagate(cur, cL, cR);
-        update(cur + 1, cL, m, l, r, val); update(rc, m + 1, cR, l, r, val); T[cur] = T[cur + 1] + T[rc];
+    void update(int x, int tl, int tr, int l, int r, const Pair &v) {
+        if (r < tl || tr < l) return;
+        if (l <= tl && tr <= r) { TR[x] = add(TR[x], mul(v, sumBet(tl, tr))); LZ[x] = add(LZ[x], v); return; }
+        int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2; propagate(x, tl, tr);
+        update(x + 1, tl, m, l, r, v); update(rc, m + 1, tr, l, r, v); TR[x] = add(TR[x + 1], TR[rc]);
     }
-    Data query(int cur, int cL, int cR, int l, int r) {
-        if (cL > r || cR < l) return ZERO;
-        if (cL >= l && cR <= r) return T[cur];
-        int m = cL + (cR - cL) / 2, rc = cur + (m - cL + 1) * 2; propagate(cur, cL, cR);
-        return query(cur + 1, cL, m, l, r) + query(rc, m + 1, cR, l, r);
+    Pair query(int x, int tl, int tr, int l, int r) {
+        if (r < tl || tr < l) return ZERO;
+        if (l <= tl && tr <= r) return TR[x];
+        int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2; propagate(x, tl, tr);
+        return add(query(x + 1, tl, m, l, r), query(rc, m + 1, tr, l, r));
     }
-    template <class It> void init(It st, It en) {
-        N = en - st;
-        for (int i = 0; i < N; i++) A[i + ONE_INDEXED] = *(st + i);
-        build(0, ONE_INDEXED, N - !ONE_INDEXED);
+    template <class It> SegmentTreeLinear(It st, It en) : N(en - st), TR(N * 2 - 1, ZERO), LZ(N * 2 - 1, ZERO) {
+        build(0, 0, N - 1, [&] (int i) { return Pair(*(st + i), 0); });
     }
-    void init(int size) { N = size; fill(A + ONE_INDEXED, A + N + ONE_INDEXED, 0); build(0, ONE_INDEXED, N - !ONE_INDEXED); }
-    void update(int l, int r, type val) { update(0, ONE_INDEXED, N - !ONE_INDEXED, l, r, make_pair((1 - l) * val, val)); }
-    type query(int l, int r) { Data q = query(0, ONE_INDEXED, N - !ONE_INDEXED, l, r); return q.first + q.second; }
+    SegmentTreeLinear(int N, const T &vdef) : N(N), TR(N * 2 - 1, ZERO), LZ(N * 2 - 1, ZERO) {
+        build(0, 0, N - 1, [&] (int i) { return Pair(vdef, 0); });
+    }
+    void update(int l, int r, T m, T b) { update(0, 0, N - 1, l, r, Pair((1 - l) * m + b, m)); }
+    T query(int l, int r) { Pair q = query(0, 0, N - 1, l, r); return q.first + q.second; }
 };
