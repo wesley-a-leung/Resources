@@ -135,7 +135,7 @@ template <class Combine> struct SegmentTreeLazyTopDown {
 //   query: O(log N)
 // Memory Complexity: O(Q log N) for Q updates
 // Tested:
-//   http://codeforces.com/contest/915/problem/E
+//   https://codeforces.com/contest/915/problem/E
 //   https://codeforces.com/contest/1080/problem/F
 template <class IndexType, const bool PERSISTENT, class Combine> struct SegmentTreeDynamic {
     using Data = typename Combine::Data; using Lazy = typename Combine::Lazy; Combine C; IndexType N;
