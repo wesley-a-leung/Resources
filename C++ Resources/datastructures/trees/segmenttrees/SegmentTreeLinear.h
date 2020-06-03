@@ -35,13 +35,13 @@ template <class T> struct SegmentTreeLinear {
     void update(int x, int tl, int tr, int l, int r, const Pair &v) {
         if (r < tl || tr < l) return;
         if (l <= tl && tr <= r) { TR[x] = add(TR[x], mul(v, sumBet(tl, tr))); LZ[x] = add(LZ[x], v); return; }
-        int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2; propagate(x, tl, tr);
+        propagate(x, tl, tr); int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2;
         update(x + 1, tl, m, l, r, v); update(rc, m + 1, tr, l, r, v); TR[x] = add(TR[x + 1], TR[rc]);
     }
     Pair query(int x, int tl, int tr, int l, int r) {
         if (r < tl || tr < l) return ZERO;
         if (l <= tl && tr <= r) return TR[x];
-        int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2; propagate(x, tl, tr);
+        propagate(x, tl, tr); int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2;
         return add(query(x + 1, tl, m, l, r), query(rc, m + 1, tr, l, r));
     }
     template <class It> SegmentTreeLinear(It st, It en) : N(en - st), TR(N * 2 - 1, ZERO), LZ(N * 2 - 1, ZERO) {
