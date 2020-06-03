@@ -6,7 +6,7 @@ using namespace std;
 // Indices are 0-indexed and ranges are inclusive
 // In practice, has a small constant, not quite as fast as fenwick trees, but faster than top down segment trees
 // A combine struct is provided with typedefs/using for data and lazy, a query default value (qdef),
-// and implementations of applyLazy and merge
+// and implementations of merge and applyLazy
 // Below is a sample struct for point increments and range max queries
 // struct Combine {
 //     using Data = int;
@@ -22,6 +22,7 @@ using namespace std;
 // Tested:
 //   https://dmoj.ca/problem/ds3
 //   https://dmoj.ca/problem/coci17c1p5
+//   https://dmoj.ca/problem/cco20p5
 //   https://www.spoj.com/problems/BRCKTS/
 template <class Combine> struct SegmentTreeBottomUp {
     using Data = typename Combine::Data; using Lazy = typename Combine::Lazy; Combine C; int N; vector<Data> TR;
@@ -48,7 +49,7 @@ template <class Combine> struct SegmentTreeBottomUp {
 // Indices are 0-indexed and ranges are inclusive
 // In practice, has a small constant, not quite as fast as fenwick trees, and similar performance as top down segment trees
 // A combine struct is provided with typedefs/using for data and lazy, a query default value (qdef), lazy default value (ldef),
-// and implementations of applyLazy, merge, getSegmentVal, and mergeLazy
+// and implementations of merge, applyLazy, getSegmentVal, and mergeLazy
 // Below is a sample struct for range assignment and range sum queries
 // struct Combine {
 //     using Data = int;
