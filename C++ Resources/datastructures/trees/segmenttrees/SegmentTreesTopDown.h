@@ -8,7 +8,7 @@ using namespace std;
 // and similar performance as bottom up lazy segment trees
 // A combine struct is provided with typedefs/using for data and lazy, a query default value (qdef), lazy default value (ldef),
 // and implementations of merge, applyLazy, getSegmentVal, and mergeLazy
-// If LAZY is false, then only qdef, merge, and applyLazy, are required to be implemented
+// If LAZY is false, then only qdef, merge, and applyLazy are required to be implemented
 // Below is a sample struct for point assignment and range sum queries
 // struct Combine {
 //     using Data = int;
