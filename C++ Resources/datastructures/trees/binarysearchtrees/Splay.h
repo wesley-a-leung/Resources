@@ -7,9 +7,10 @@ using namespace std;
 // makeNode creates a new node passing v to the node constructor
 // applyToRange applies the function f to a node x where x is the disconnected subtree
 // with indices in the range [i, j] for the tree rooted at root
-// select find the kth node in the tree rooted at root
-// index finds the index of node x in the tree rooted at root
-// getFirst returns the first node y (and its index) in the tree rooted at root where cmp(y->val, v) returns false
+// select find the kth node in the tree rooted at root, and makes it the new root (or the last node accessed if null)
+// index finds the index of node x in the tree rooted at root, and makes it the new root
+// getFirst returns the first node y (and its index) in the tree rooted at root where cmp(y->val, v) returns false,
+// and makes it the new root (or the last node accessed if null)
 // build builds a splay tree over the range of indices [l, r] where a(i) is passed to the constructor of the ith node
 // clear adds all nodes in the subtree of x to the deleted buffer
 // Node must have the following:
@@ -86,13 +87,15 @@ template <class _Node> struct Splay {
         }
     }
     Node *select(Node *&root, int k) {
+        Node *last = nullptr;
         while (root) {
-            root->propagate(); int t = root->l ? root->l->sz : 0;
+            (last = root)->propagate(); int t = root->l ? root->l->sz : 0;
             if (t > k) root = root->l;
             else if (t < k) { root = root->r; k -= t + 1; }
             else break;
         }
         if (root) splay(root);
+        else if (last) splay(root = last);
         return root;
     }
     int index(Node *&root, Node *x) {
