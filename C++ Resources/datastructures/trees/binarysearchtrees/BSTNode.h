@@ -4,21 +4,21 @@ using namespace std;
 
 // Node classes for Treap and Splay trees
 // A node class must contain at a minimum, the following for Treap and Splay support:
-//   Data: typedef/using of the value type this node stores
 //   HAS_PAR: const static bool indicating whether this node has a parent pointer
 //   sz: integer representing the size of the subtree
 //   l: pointer of the same node type to the left child
 //   r: pointer of the same node type to the right child
-//   val: Data representing the value of the node
 //   update: void() that updates the size of subtree, along with any additional information
 //   propagate: void() that pushes information lazily to the children
 //   If HAS_PAR is true, then it should also contain the following:
 //     p: pointer of the same node type to the parent
 //   If the node class is used in conjunction with DynamicRangeOperations, then it must also contain the following:
+//     Data: typedef/using of the value type this node stores
 //     Lazy: typedef/using of the lazy type used to update the node (even if no lazy propagation occurs)
 //     RANGE_UPDATES: const static bool indicating whether range updates are supported
 //     RANGE_QUERIES: const static bool indicating whether range queries are supported
 //     RANGE_REVERSALS: const static bool indicating whether range reversals are supported
+//     val: Data representing the value of the node
 //     apply: void(const Lazy &v) that updates the information of the node (including optional aggregate and lazy information)
 //   If RANGE_UPDATES is true, then the following are required:
 //     lz: Lazy representing the lazy information that will be pushed to the child nodes

@@ -25,14 +25,14 @@ using namespace std;
 //       qdef: static Data() returning the query default value
 //     If RANGE_REVERSALS is true, then the following are required:
 //       reverse(): void() that reverses the subtree rooted at that node (aggregate data and any lazy flags should be reversed)
-//   makeNode: Node *(const Data &) that returns a new node with the arguments passed to the constructor
+//   makeNode: Node *(const T &) that returns a new node with the argument passed to the constructor
 //   applyToRange: void(Node *&, int, int, void(Node *&)) that applies a function to a node pointer to the disconnected
 //   subtree of the given range
 //   select: Node *(Node *&, int) that selects the kth node in a tree
-//   getFirst: pair<int, Node *>(Node *&, const Data &, bool(const Data &, const Data &)) that finds the first node
+//   getFirst: pair<int, Node *>(Node *&, const T &, bool(const Data &, const T &)) that finds the first node
 //   and its index where cmp(x->val, val) returns false
-//   build: Node *(int, int, Data(int)) that returns a node representing the tree built over a range with a function
-//   that returns the value for an index
+//   build: Node *(int, int, T(int)) that returns a node representing the tree built over a range with a function
+//   that returns the argument passed to the constructor
 //   clear: void(Node *) that clears/erases a subtree's nodes
 // Time Complexity if Treap or Splay is used:
 //   constructor: O(N) expected / O(N)
@@ -52,12 +52,12 @@ template <class Tree> struct DynamicRangeOperations : public Tree {
     using Node = typename Tree::Node; using Data = typename Node::Data; using Lazy = typename Node::Lazy; Node *root;
     using Tree::makeNode; using Tree::applyToRange; using Tree::select; using Tree::getFirst; using Tree::build; using Tree::clear;
     template <class It> DynamicRangeOperations(It st, It en) { root = build(0, en - st - 1, [&] (int i) { return *(st + i); }); }
-    DynamicRangeOperations(int N, const Data &vdef) : Tree(N, vdef) { root = build(0, N - 1, [&] (int i) { return vdef; }); }
-    void insert_at(int i, const Data &v) { applyToRange(root, i, i - 1, [&] (Node *&x) { x = makeNode(v); }); }
+    template <class T> DynamicRangeOperations(int N, const T &vdef) : Tree(N, vdef) { root = build(0, N - 1, [&] (int i) { return vdef; }); }
+    template <class T> void insert_at(int i, const T &v) { applyToRange(root, i, i - 1, [&] (Node *&x) { x = makeNode(v); }); }
     template <class It> void insert_at(int i, It st, It en) {
         applyToRange(root, i, i - 1, [&] (Node *&x) { x = build(0, en - st - 1, [&] (int i) { return *(st + i); }); }); 
     }
-    template <class Comp> void insert(const Data &v, Comp cmp) { insert_at(getFirst(root, v, cmp).first, v); }
+    template <class T, class Comp> void insert(const T &v, Comp cmp) { insert_at(getFirst(root, v, cmp).first, v); }
     void erase_at(int i) { applyToRange(root, i, i, [&] (Node *&x) { clear(x); x = nullptr; }); }
     void erase_at(int i, int j) { if (i <= j) applyToRange(root, i, j, [&] (Node *&x) { clear(x); x = nullptr; }); }
     template <class Comp> void erase(const Data &v, Comp cmp) {

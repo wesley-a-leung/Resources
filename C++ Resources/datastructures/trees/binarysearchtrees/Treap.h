@@ -11,19 +11,20 @@ using namespace std;
 // select find the kth node in the subtree of x
 // index finds the index of node x in its tree (root is a dummy argument to maintain consistency with splay)
 // getFirst returns the first node y (and its index) in the subtree of x where cmp(y->val, v) returns false
-// build builds a treap over the range of indices [l, r] where a(i) of type Data is passed to the constructor of the ith node
+// build builds a treap over the range of indices [l, r] where a(i) is passed to the constructor of the ith node
 // clear adds all nodes in the subtree of x to the deleted buffer
 // Node must have the following:
-//   Data: typedef/using of the value type this node stores
 //   HAS_PAR: const static bool indicating whether this node has a parent pointer
 //   sz: integer representing the size of the subtree
 //   l: pointer of the same node type to the left child
 //   r: pointer of the same node type to the right child
-//   val: Data representing the value of the node
 //   update: void() that updates the size of subtree, along with any additional information
 //   propagate: void() that pushes information lazily to the children
 //   If HAS_PAR is true, then it should also contain the following:
 //     p: pointer of the same node type to the parent
+//   If getFirst is called, then the following is also required:
+//     val: any type representing the value of the node
+// Can be used in conjunction with DynamicRangeOperations to support range operations using treap node operations
 // Time Complexity:
 //   build: O(N) expected
 //   clear: O(N)
@@ -38,13 +39,13 @@ using namespace std;
 //   https://dmoj.ca/problem/acc1p1 (applyToRange)
 //   https://wcipeg.com/problem/noi05p2 (applyToRange)
 template <class _Node> struct Treap {
-    using Node = _Node; using Data = typename Node::Data;
+    using Node = _Node;
     struct TreapNode : public Node {
         long long pri;
-        TreapNode(const Data &v) : Node(v), pri(uniform_int_distribution<long long>()(rng64)) {}
+        template <class T> TreapNode(const T &v) : Node(v), pri(uniform_int_distribution<long long>()(rng64)) {}
     };
     deque<TreapNode> TR; deque<Node*> deleted;
-    Node *makeNode(const Data &v) {
+    template <class T> Node *makeNode(const T &v) {
         if (deleted.empty()) { TR.emplace_back(v); return &TR.back(); }
         Node *x = deleted.back(); deleted.pop_back(); *x = Node(v); return x;
     }
@@ -88,7 +89,7 @@ template <class _Node> struct Treap {
         };
         return dfs(x, nullptr);
     }
-    template <class Comp> pair<int, Node *> getFirst(Node *x, const Data &v, Comp cmp) {
+    template <class T, class Comp> pair<int, Node *> getFirst(Node *x, const T &v, Comp cmp) {
         pair<int, Node *> ret(0, nullptr);
         while (x) {
             x->propagate();
