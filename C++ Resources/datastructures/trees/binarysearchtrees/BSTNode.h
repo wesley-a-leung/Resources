@@ -138,7 +138,7 @@ template <class Combine> struct NodeAgg {
 // };
 // Tested:
 //   https://dmoj.ca/problem/acc1p1
-//   https://wcipeg.com/problem/noi05p2
+//   https://dmoj.ca/problem/noi05p2
 template <class Combine> struct NodeLazyAgg {
   using Data = typename Combine::Data;
   using Lazy = typename Combine::Lazy;

@@ -45,7 +45,7 @@ using namespace std;
 //   https://codeforces.com/contest/863/problem/D (applyToRange)
 //   https://dmoj.ca/problem/dmpg17g2 (applyToRange)
 //   https://dmoj.ca/problem/acc1p1 (applyToRange)
-//   https://wcipeg.com/problem/noi05p2 (applyToRange)
+//   https://dmoj.ca/problem/noi05p2 (applyToRange)
 template <class _Node> struct Treap {
   using Node = _Node;
   struct TreapNode : public Node {
