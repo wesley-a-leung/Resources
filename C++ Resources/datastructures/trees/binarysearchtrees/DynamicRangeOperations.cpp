@@ -73,7 +73,7 @@ using namespace std;
 //   https://codeforces.com/contest/863/problem/D (reverse)
 //   https://dmoj.ca/problem/dmpg17g2 (point update, range queries)
 //   https://dmoj.ca/problem/acc1p1 (reverse, range queries)
-//   https://wcipeg.com/problem/noi05p2
+//   https://dmoj.ca/problem/noi05p2
 //     (insert_at, erase_at, range update, reverse, range queries)
 template <class Tree> struct DynamicRangeOperations : public Tree {
   using Node = typename Tree::Node; using Data = typename Node::Data;
