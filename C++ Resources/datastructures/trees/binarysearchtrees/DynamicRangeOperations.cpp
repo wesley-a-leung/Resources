@@ -51,8 +51,8 @@ using namespace std;
 template <class Tree> struct DynamicRangeOperations : public Tree {
     using Node = typename Tree::Node; using Data = typename Node::Data; using Lazy = typename Node::Lazy; Node *root;
     using Tree::makeNode; using Tree::applyToRange; using Tree::select; using Tree::getFirst; using Tree::build; using Tree::clear;
-    template <class It> DynamicRangeOperations(It st, It en) { root = build(0, en - st - 1, [&] (int i) { return *(st + i); }); }
-    template <class T> DynamicRangeOperations(int N, const T &vdef) : Tree(N, vdef) { root = build(0, N - 1, [&] (int i) { return vdef; }); }
+    template <class It> DynamicRangeOperations(It st, It en) : root(build(0, en - st - 1, [&] (int i) { return *(st + i); })) {}
+    template <class T> DynamicRangeOperations(int N, const T &vdef) : root(build(0, N - 1, [&] (int i) { return vdef; })) {}
     template <class T> void insert_at(int i, const T &v) { applyToRange(root, i, i - 1, [&] (Node *&x) { x = makeNode(v); }); }
     template <class It> void insert_at(int i, It st, It en) {
         applyToRange(root, i, i - 1, [&] (Node *&x) { x = build(0, en - st - 1, [&] (int i) { return *(st + i); }); }); 
