@@ -26,7 +26,7 @@ using namespace std;
 //     sbtr: Data representing the aggregate data of the subtree
 //     qdef: static Data() returning the query default value
 //   If RANGE_REVERSALS is true, then the following are required:
-//     reverse(): void() that reverses the subtree rooted at that node (aggregate data and any lazy flags should be reversed)
+//     reverse: void() that reverses the subtree rooted at that node (aggregate data and any lazy flags should be reversed)
 
 // Sample node class for a single value of type T, supporting range reversals, and point assignment
 // Tested:
@@ -58,7 +58,18 @@ template <class T> struct NodeVal {
     void reverse() { rev = !rev; }
 };
 
-// Sample node class for aggregate range queries using the Combine struct, along with range reversals, and point assignment
+// Sample node class for aggregate range queries using a Combine struct, along with range reversals, and point assignment
+// The combine struct must have typedefs/using for data and lazy, a query default value (qdef),
+// and implementations of merge, applyLazy, and if RANGE_REVERSALS is true, revData
+// Below is a sample struct for point assignment and range sum queries, and range reversals
+// struct Combine {
+//     using Data = int;
+//     using Lazy = int;
+//     const Data qdef = 0;
+//     Data merge(const Data &l, const Data &r) const { return l + r; }
+//     Data applyLazy(const Data &l, const Lazy &r) const { return r; }
+//     void revData(Data &v) const {}
+// };
 // Tested:
 //   https://dmoj.ca/problem/dmpg17g2
 template <class Combine> struct NodeAgg {
@@ -87,7 +98,21 @@ template <class Combine> struct NodeAgg {
     static Data qdef() { return Combine().qdef; }
 };
 
-// Sample node class for aggregate range queries and lazy range updates using the Combine struct, along with range reversals
+// Sample node class for aggregate range queries and lazy range updates using a Combine struct, along with range reversals
+// The combine struct must have typedefs/using for data and lazy, a query default value (qdef),
+// and implementations of merge, applyLazy, getSegmentVal, mergeLazy, and if RANGE_REVERSALS is true, revData
+// Below is a sample struct for range assignment and range sum queries, and range reversals
+// struct Combine {
+//     using Data = int;
+//     using Lazy = int;
+//     const Data qdef = 0;
+//     const Lazy ldef = numeric_limits<int>::min();
+//     Data merge(const Data &l, const Data &r) const { return l + r; }
+//     Data applyLazy(const Data &l, const Lazy &r) const { return r; }
+//     Lazy getSegmentVal(const Lazy &v, int k) const { return v * k; }
+//     Lazy mergeLazy(const Lazy &l, const Lazy &r) const { return r; }
+//     void revData(Data &v) const {}
+// };
 // Tested:
 //   https://dmoj.ca/problem/acc1p1
 //   https://wcipeg.com/problem/noi05p2

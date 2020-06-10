@@ -24,7 +24,7 @@ using namespace std;
 //       sbtr: Data representing the aggregate data of the subtree
 //       qdef: static Data() returning the query default value
 //     If RANGE_REVERSALS is true, then the following are required:
-//       reverse(): void() that reverses the subtree rooted at that node (aggregate data and any lazy flags should be reversed)
+//       reverse: void() that reverses the subtree rooted at that node (aggregate data and any lazy flags should be reversed)
 //   makeNode: Node *(const T &) that returns a new node with the argument passed to the constructor
 //   applyToRange: void(Node *&, int, int, void(Node *&)) that applies a function to a node pointer to the disconnected
 //   subtree of the given range
