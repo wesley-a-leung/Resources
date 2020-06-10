@@ -2,24 +2,30 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Data struct used for maximum non empty contiguous subarray for Segment Trees, Link Cut Trees, etc
-template <class T> struct MaxContiguousSubarrayData { T pre, suf, sum, maxSum; bool isNull; };
-template <class T> MaxContiguousSubarrayData<T> makeData(bool isNull = true, const T &v = 0) {
-    MaxContiguousSubarrayData<T> ret; ret.pre = ret.suf = ret.sum = ret.maxSum = v; ret.isNull = isNull; return ret;
-}
-template <class T> MaxContiguousSubarrayData<T> merge(const MaxContiguousSubarrayData<T> &l, const MaxContiguousSubarrayData<T> &r) {
-    if (l.isNull) return r;
-    if (r.isNull) return l;
-    MaxContiguousSubarrayData<T> ret; ret.isNull = false; ret.pre = max(l.pre, l.sum + r.pre); ret.suf = max(l.suf + r.sum, r.suf);
-    ret.sum = l.sum + r.sum; ret.maxSum = max(max(l.maxSum, r.maxSum), l.suf + r.pre); return ret;
-}
-// range assignments
-template <class T> MaxContiguousSubarrayData<T> applyLazy(const MaxContiguousSubarrayData<T> &l, const pair<T, T> &r) {
-    MaxContiguousSubarrayData<T> ret; ret.pre = ret.suf = ret.maxSum = max(r.first, r.second); ret.sum = r.first; ret.isNull = false; return ret;
-}
-// reversing interval
-template <class T> void revData(MaxContiguousSubarrayData<T> &v) { swap(v.pre, v.suf); }
-// getSegmentVal returns a pair containing the range value, and the actual value
-template <class T> pair<T, T> getSegmentVal(const pair<T, T> &l, int k) { return make_pair(l.first * k, l.second); }
-template <class T> pair<T, T> mergeLazy(const pair<T, T> &l, const pair<T, T> &r) { return r; }
-template <class T> pair<T, T> makeLazy(const T &v) { return make_pair(v, v); }
+// Combine struct used for maximum non empty contiguous subarray for Segment Trees, Implict Treaps, Link Cut Trees, etc
+// Tested:
+//   https://dmoj.ca/problem/dmpg17g2
+//   https://mcpt.ca/problem/seq3
+//   https://dmoj.ca/problem/acc1p1
+//   https://dmoj.ca/problem/seq2
+template <class T> struct MaxContiguousSubarraySum {
+    struct Data { T pre, suf, sum, maxSum; };
+    using Lazy = pair<T, T>;
+    static Data makeData(const T &v) { Data ret; ret.pre = ret.suf = ret.sum = ret.maxSum = v; return ret; }
+    static Lazy makeLazy(const T &v) { return Lazy(v, v); }
+    const Data qdef = [&] () { Data ret = makeData(numeric_limits<T>::lowest()); ret.sum = 0; return ret; }();
+    const Lazy ldef = makeLazy(numeric_limits<T>::lowest());
+    Data merge(const Data &l, const Data &r) const {
+        if (l.maxSum == numeric_limits<T>::lowest()) return r;
+        if (r.maxSum == numeric_limits<T>::lowest()) return l;
+        Data ret; ret.pre = max(l.pre, l.sum + r.pre); ret.suf = max(l.suf + r.sum, r.suf);
+        ret.sum = l.sum + r.sum; ret.maxSum = max(max(l.maxSum, r.maxSum), l.suf + r.pre); return ret;
+    }
+    Data applyLazy(const Data &l, const Lazy &r) const {
+        Data ret; ret.pre = ret.suf = ret.maxSum = max(r.first, r.second); ret.sum = r.first; return ret;
+    }
+    template <class IndexType> Lazy getSegmentVal(const Lazy &v, IndexType k) const { return Lazy(v.first * k, v.second); }
+    Lazy mergeLazy(const Lazy &l, const Lazy &r) const { return r; }
+    void revData(Data &v) const { swap(v.pre, v.suf); }
+    template <class IndexType> Data getSegmentVdef(IndexType k) const { return makeData(0); }
+};

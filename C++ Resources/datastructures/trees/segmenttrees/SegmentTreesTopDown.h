@@ -34,6 +34,7 @@ using namespace std;
 // Memory Complexity: O(N)
 // Tested:
 //   https://dmoj.ca/problem/ds3 (LAZY = false)
+//   https://dmoj.ca/problem/dmpg17g2 (LAZY = false)
 //   https://dmoj.ca/problem/coci17c1p5 (LAZY = false)
 //   https://dmoj.ca/problem/cco20p5 (LAZY = false)
 //   https://www.spoj.com/problems/BRCKTS/ (LAZY = false)
@@ -41,6 +42,7 @@ using namespace std;
 //   https://dmoj.ca/problem/dmopc18c5p5 (LAZY = true)
 //   https://dmoj.ca/problem/dmopc18c6p5 (LAZY = true)
 //   https://dmoj.ca/problem/lazy (LAZY = true)
+//   https://mcpt.ca/problem/seq3 (LAZY = true)
 template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
     using Data = typename Combine::Data; using Lazy = typename Combine::Lazy; Combine C; int N; vector<Data> TR; vector<Lazy> LZ;
     #define lazy_def template <const bool _ = LAZY> typename enable_if<_>::type
@@ -87,6 +89,8 @@ template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
     lazy_def update(int l, int r, const Lazy &v) { update(0, 0, N - 1, l, r, v); }
     void update(int i, const Lazy &v) { update(0, 0, N - 1, i, i, v); }
     Data query(int l, int r) { return query(0, 0, N - 1, l, r); }
+    #undef lazy_def
+    #undef not_lazy_def
 };
 
 // Top down dynamic segment tree supporting range updates and range queries
@@ -190,4 +194,6 @@ template <class IndexType, const bool LAZY, const bool PERSISTENT, class Combine
     Data query(IndexType l, IndexType r, int rootInd = -1) { return query(~rootInd ? roots[rootInd] : roots.back(), 0, N - 1, l, r); }
     void revert(int rootInd) { roots.push_back(roots[rootInd]); }
     void reserveNodes(int k) { L.reserve(k); R.reserve(k); TR.reserve(k); if (LAZY) LZ.reserve(k); }
+    #undef lazy_def
+    #undef not_lazy_def
 };

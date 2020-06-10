@@ -139,7 +139,7 @@ template <const int R, class T> struct RootArray {
     }
     template <class Comp> pair<int, T *> find(const T &val, Comp cmp) {
         pair<int, T *> ret = ceiling(val, cmp);
-        if (ret.second == nullptr || cmp(val, *(ret.second)) || cmp(*(ret.second), val)) return make_pair(size(), nullptr);
+        if (!ret.second || cmp(val, *(ret.second)) || cmp(*(ret.second), val)) return make_pair(N, nullptr);
         return ret;
     }
     vector<T> values() const {
@@ -177,8 +177,8 @@ template <class T> struct RootArray<1, T> : public vector<T> {
     }
     template <class Comp> pair<int, T *> find(const T &val, Comp cmp) {
         pair<int, T *> ret = ceiling(val, cmp);
-        if (ret.second == nullptr || cmp(val, *(ret.second)) || cmp(*(ret.second), val)) return make_pair(size(), nullptr);
+        if (!ret.second || cmp(val, *(ret.second)) || cmp(*(ret.second), val)) return make_pair(size(), nullptr);
         return ret;
     }
-    const RootArray<1, T> &values() const { return *this; }
+    RootArray<1, T> values() const { return *this; }
 };
