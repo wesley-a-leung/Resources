@@ -3,6 +3,8 @@
 using namespace std;
 
 // Operations on ranges of a dynamic array, backed by a generic binary search tree
+// Indices are 0-indexed and ranges are inclusive
+// Supperts point/range updates/queries, range reversals and binary searching as long as Node contains the appropriate flags
 // Tree should be of type Treap or Splay, or any struct that has the following:
 //   Node: struct with at least following (more may be required by the underlying Tree being used):
 //     Data: typedef/using of the value type this node stores
