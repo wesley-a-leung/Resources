@@ -21,6 +21,7 @@ using namespace std;
 // Memory Complexity: O(N)
 // Tested:
 //   https://dmoj.ca/problem/ds3
+//   https://dmoj.ca/problem/dmpg17g2
 //   https://dmoj.ca/problem/coci17c1p5
 //   https://dmoj.ca/problem/cco20p5
 //   https://www.spoj.com/problems/BRCKTS/
@@ -70,6 +71,7 @@ template <class Combine> struct SegmentTreeBottomUp {
 //   https://dmoj.ca/problem/dmopc18c5p5
 //   https://dmoj.ca/problem/dmopc18c6p5
 //   https://dmoj.ca/problem/lazy
+//   https://mcpt.ca/problem/seq3
 template <class Combine> struct SegmentTreeLazyBottomUp {
     using Data = typename Combine::Data; using Lazy = typename Combine::Lazy; Combine C; int N, lgN; vector<Data> TR; vector<Lazy> LZ;
     void apply(int i, const Lazy &v, int k) {

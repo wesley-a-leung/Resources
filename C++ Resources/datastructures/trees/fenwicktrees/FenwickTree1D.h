@@ -4,6 +4,7 @@ using namespace std;
 
 // Fenwick Tree or Binary Indexed Tree supporting point updates and range queries in 1 dimension
 // Indices are 0-indexed and ranges are inclusive
+// bsearch returns first index where cmp returns false, N if no such index exists
 // In practice, this version performs as well as the multidimensional version
 // Very small constant, like most fenwick trees
 // Time Complexity:
@@ -35,7 +36,7 @@ template <class T> struct FenwickTree1D {
     void update(int i, T v) { for (i++; i <= N; i += i & -i) BIT[i] += v; }
     T rsq(int r) { T ret = T(); for (r++; r > 0; r -= r & -r) ret += BIT[r]; return ret; }
     T rsq(int l, int r) { return rsq(r) - rsq(l - 1); }
-    template <class F> int bsearch(T v, F cmp) { // returns first index where cmp returns false, N if no such index exists
+    template <class F> int bsearch(T v, F cmp) {
         T sum = T(); int ind = 0;
         for (int j = __lg(N + 1); j >= 0; j--) {
             int i = ind + (1 << j);

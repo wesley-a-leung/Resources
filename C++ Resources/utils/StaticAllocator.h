@@ -9,7 +9,7 @@ using namespace std;
 constexpr const int MB = 200;
 char buf[MB << 20]; size_t buf_ind = sizeof(buf);
 
-// overloading new and delete operators
+// Overloading new and delete operators
 void *operator new (size_t n) { return (void *) &buf[buf_ind -= n]; }
 void *operator new[] (size_t n) { return (void *) &buf[buf_ind -= n]; }
 void operator delete (void *) {}
