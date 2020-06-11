@@ -12,6 +12,7 @@ using namespace std;
 //   update, get: O(log N)
 // Memory Complexity: O(N)
 // Tested:
+//   https://mcpt.ca/problem/asquirrelproblem
 //   https://codeforces.com/contest/1254/problem/D
 template <class T> struct FenwickTreeRangePoint1D {
   int N; vector<T> BIT;
