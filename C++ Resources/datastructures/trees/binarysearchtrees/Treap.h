@@ -68,9 +68,9 @@ template <class _Node> struct Treap {
     x->update();
   }
   template <const int _ = Node::HAS_PAR>
-    typename enable_if<_>::type setP(Node *x, Node *p) { if (x) x->p = p; }
+  typename enable_if<_>::type setP(Node *x, Node *p) { if (x) x->p = p; }
   template <const int _ = Node::HAS_PAR>
-    typename enable_if<!_>::type setP(Node *, Node *) {}
+  typename enable_if<!_>::type setP(Node *, Node *) {}
   void split(Node *x, Node *&l, Node *&r, int lsz) {
     if (!x) { l = r = nullptr; return; }
     x->propagate(); setP(x, nullptr); int t = x->l ? x->l->sz : 0;
@@ -92,7 +92,7 @@ template <class _Node> struct Treap {
     return x;
   }
   template <const int _ = Node::HAS_PAR>
-      typename enable_if<_, int>::type index(Node *root, Node *x) {
+  typename enable_if<_, int>::type index(Node *root, Node *x) {
     function<int(Node *, Node *)> dfs = [&] (Node *x, Node *ch) {
       if (!x) return ch ? 0 : -1;
       int ind = dfs(x->p, x); x->propagate();
@@ -102,8 +102,8 @@ template <class _Node> struct Treap {
     };
     return dfs(x, nullptr);
   }
-  template <class T, class Comp> pair<int, Node *> getFirst(Node *x,
-      const T &v, Comp cmp) {
+  template <class T, class Comp>
+  pair<int, Node *> getFirst(Node *x, const T &v, Comp cmp) {
     pair<int, Node *> ret(0, nullptr); while (x) {
       x->propagate();
       if (!cmp(x->val, v)) { ret.second = x; x = x->l; }

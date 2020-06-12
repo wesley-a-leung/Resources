@@ -25,8 +25,8 @@ template <class T> struct FenwickTreeLinear {
   void update(int l, int r, T m, T b) {
     FT[2].update(l, r, m);
     FT[1].update(l, r, m * (T(1) - T(l - 1) * T(2)) + b * T(2));
-    FT[0].update(l, m * T(l - 1) * T(l - 2) + b * T(1 - l) * T(2));
-    FT[0].update(r + 1, m * (T(r - l + 1) * T(r - l + 2) - T(l - 1) * T(l - 2))
-                 + b * T(r) * T(2));
+    T con1 = m * T(l - 1) * T(l - 2) + b * T(1 - l) * T(2);
+    T con2 = m * T(r - l + 1) * T(r - l + 2) + b * (r - l + 1) * T(2);
+    FT[0].update(l, con1); FT[0].update(r + 1, con2 - con1);
   }
 };

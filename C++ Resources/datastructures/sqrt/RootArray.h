@@ -117,31 +117,27 @@ template <const int R, class T> struct RootArray {
     return A[i].at(k);
   }
   template <class Comp> pair<int, T *> below(const T &val, Comp cmp) {
-    int i = 0, k = 0;
-    while (i < int(A.size()) && cmp(A[i].front(), val))
+    int i = 0, k = 0; while (i < int(A.size()) && cmp(A[i].front(), val))
       k += int(A[i++].size());
     if (--i >= 0) k -= int(A[i].size());
     else return make_pair(-1, nullptr);
     pair<int, T *> ret = A[i].below(val, cmp); ret.first += k; return ret;
   }
   template <class Comp> pair<int, T *> floor(const T &val, Comp cmp) {
-    int i = 0, k = 0;
-    while (i < int(A.size()) && !cmp(val, A[i].front()))
+    int i = 0, k = 0; while (i < int(A.size()) && !cmp(val, A[i].front()))
       k += int(A[i++].size());
     if (--i >= 0) k -= int(A[i].size());
     else return make_pair(-1, nullptr);
     pair<int, T *> ret = A[i].floor(val, cmp); ret.first += k; return ret;
   }
   template <class Comp> pair<int, T *> ceiling(const T &val, Comp cmp) {
-    int i = 0, k = 0;
-    while (i < int(A.size()) && cmp(A[i].back(), val))
+    int i = 0, k = 0; while (i < int(A.size()) && cmp(A[i].back(), val))
       k += int(A[i++].size());
     if (i >= int(A.size())) return make_pair(N, nullptr);
     pair<int, T *> ret = A[i].ceiling(val, cmp); ret.first += k; return ret;
   }
   template <class Comp> pair<int, T *> above(const T &val, Comp cmp) {
-    int i = 0, k = 0;
-    while (i < int(A.size()) && !cmp(val, A[i].back()))
+    int i = 0, k = 0; while (i < int(A.size()) && !cmp(val, A[i].back()))
       k += int(A[i++].size());
     if (i >= int(A.size())) return make_pair(N, nullptr);
     pair<int, T *> ret = A[i].above(val, cmp); ret.first += k; return ret;

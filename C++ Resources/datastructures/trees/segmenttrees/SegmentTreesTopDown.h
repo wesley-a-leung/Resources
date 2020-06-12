@@ -210,7 +210,7 @@ template <class IndexType, const bool LAZY, const bool PERSISTENT,
     TR[x] = C.merge(TR[L[x]], TR[R[x]]); return x;
   }
   int update(int y, IndexType tl, IndexType tr, IndexType l, IndexType r,
-      const Lazy &v, int trSz) {
+             const Lazy &v, int trSz) {
     int x = !~y || (PERSISTENT && y < trSz) ? makeNode(y, tl, tr) : y;
     if (l <= tl && tr <= r) { apply(x, tl, tr, v); return x; }
     propagate(x, tl, tr); IndexType m = tl + (tr - tl) / 2;
