@@ -32,7 +32,7 @@ template <class T, class IndexType> struct FenwickTreeSemiSparse2DOffline {
   int N; vector<int> st, cnt; vector<IndexType> inds; vector<T> BIT;
   int getInd(int i, IndexType j) {
     return upper_bound(inds.begin() + st[i], inds.begin() + st[i] + cnt[i], j)
-           - inds.begin() - st[i];
+        - inds.begin() - st[i];
   }
   FenwickTreeSemiSparse2DOffline(int N,
                                  vector<pair<int, IndexType>> updateInds)
@@ -46,8 +46,7 @@ template <class T, class IndexType> struct FenwickTreeSemiSparse2DOffline {
       if (cnt[i] == 0 || u.second != last[i]) { cnt[i]++; last[i] = u.second; }
     for (int i = 1; i <= N; i++) st[i] = st[i - 1] + cnt[i - 1];
     inds.resize(st[N] + cnt[N]); BIT.resize(st[N] + cnt[N]);
-    fill(cnt.begin(), cnt.end(), 0);
-    for (auto &&u : updateInds)
+    fill(cnt.begin(), cnt.end(), 0); for (auto &&u : updateInds)
       for (int i = u.first + 1; i <= N; i += i & -i)
         if (cnt[i] == 0 || u.second != inds[st[i] + cnt[i] - 1])
           inds[st[i] + cnt[i]++] = u.second;
@@ -58,8 +57,7 @@ template <class T, class IndexType> struct FenwickTreeSemiSparse2DOffline {
         BIT[s + y - 1] += v;
   }
   T rsq(int d, IndexType r) {
-    T ret = T();
-    for (d++; d > 0; d -= d & -d)
+    T ret = T(); for (d++; d > 0; d -= d & -d)
       for (int s = st[d], y = getInd(d, r); y > 0; y -= y & -y)
         ret += BIT[s + y - 1];
     return ret;
@@ -93,7 +91,7 @@ struct FenwickTreeSparse2DOffline {
   int getInd2(int i, IndexType2 j) {
     return upper_bound(inds2.begin() + st[i],
                        inds2.begin() + st[i] + cnt[i], j)
-           - inds2.begin() - st[i];
+        - inds2.begin() - st[i];
   }
   FenwickTreeSparse2DOffline(vector<pair<IndexType1, IndexType2>> updateInds)
       : inds1(updateInds.size()) {
@@ -107,16 +105,14 @@ struct FenwickTreeSparse2DOffline {
     sort(inds1.begin(), inds1.end());
     inds1.erase(unique(inds1.begin(), inds1.end()), inds1.end());
     U = int(inds1.size()); st.assign(U + 1, 0); cnt.assign(U + 1, 0);
-    vector<IndexType2> last(U + 1, T());
-    for (auto &&u : updateInds)
+    vector<IndexType2> last(U + 1, T()); for (auto &&u : updateInds)
       for (int i = getInd1(u.first); i <= U; i += i & -i)
         if (cnt[i] == 0 || u.second != last[i]) {
           cnt[i]++; last[i] = u.second;
         }
     for (int i = 1; i <= U; i++) st[i] = st[i - 1] + cnt[i - 1];
     inds2.resize(st[U] + cnt[U]); BIT.resize(st[U] + cnt[U]);
-    fill(cnt.begin(), cnt.end(), 0);
-    for (auto &&u : updateInds)
+    fill(cnt.begin(), cnt.end(), 0); for (auto &&u : updateInds)
       for (int i = getInd1(u.first); i <= U; i += i & -i)
         if (cnt[i] == 0 || u.second != inds2[st[i] + cnt[i] - 1])
           inds2[st[i] + cnt[i]++] = u.second;
@@ -127,8 +123,7 @@ struct FenwickTreeSparse2DOffline {
         BIT[s + y - 1] += v;
   }
   T rsq(IndexType1 d, IndexType2 r) {
-    T ret = T();
-    for (int x = getInd1(d); x > 0; x -= x & -x)
+    T ret = T(); for (int x = getInd1(d); x > 0; x -= x & -x)
       for (int s = st[x], y = getInd2(x, r); y > 0; y -= y & -y)
         ret += BIT[s + y - 1];
     return ret;
@@ -166,14 +161,12 @@ template <class IndexType> struct FenwickTreeSemiSparse2DSimpleSqrt {
     for (i++; i <= N; i += i & -i) OUT[i].insert(j);
   }
   int rsq(int d, IndexType r) {
-    int ret = 0;
-    for (d++; d > 0; d -= d & -d)
+    int ret = 0; for (d++; d > 0; d -= d & -d)
       ret += IN[d].aboveInd(r) - OUT[r].aboveInd(r);
     return ret;
   }
   int rsq(int d, IndexType l, IndexType r) {
-    int ret = 0;
-    for (d++; d > 0; d -= d & -d)
+    int ret = 0; for (d++; d > 0; d -= d & -d)
       ret += IN[d].count(l, r) - OUT[d].count(l, r);
     return ret;
   }
@@ -236,8 +229,7 @@ template <class IndexType> struct FenwickTreeSemiSparse2DSimpleTreeset {
       BIT[i].erase(BIT[i].lower_bound(make_pair(j, 0)));
   }
   int rsq(int d, IndexType r) {
-    int ret = 0;
-    for (d++; d > 0; d -= d & -d)
+    int ret = 0; for (d++; d > 0; d -= d & -d)
       ret += BIT[d].order_of_key(make_pair(r, stamp));
     return ret;
   }
@@ -293,11 +285,9 @@ template <class T, class IndexType1, class IndexType2,
           class Container = hashmap<pair<IndexType1, IndexType2>, T,
                                     pair_hash<IndexType1, IndexType2>>>
 struct FenwickTreeSparse2D {
-  int N, M; Container BIT;
-  FenwickTreeSparse2D(int N, int M) : N(N), M(M) {}
+  int N, M; Container BIT; FenwickTreeSparse2D(int N, int M) : N(N), M(M) {}
   void update(IndexType1 i, IndexType2 j, T v) {
-    i++; j++;
-    for (IndexType1 x = i; x <= N; x += x & -x) {
+    i++; j++; for (IndexType1 x = i; x <= N; x += x & -x) {
       for (IndexType2 y = j; y <= M; y += y & -y) {
         auto it = BIT.find(make_pair(x, y));
         if (it == BIT.end()) BIT[make_pair(x, y)] += v;
@@ -306,8 +296,7 @@ struct FenwickTreeSparse2D {
     }
   }
   T rsq(IndexType1 d, IndexType2 r) {
-    d++; r++; T ret = T();
-    for (IndexType1 x = d; x > 0; x -= x & -x) {
+    d++; r++; T ret = T(); for (IndexType1 x = d; x > 0; x -= x & -x) {
       for (IndexType2 y = r; y > 0; y -= y & -y) {
         auto it = BIT.find(make_pair(x, y));
         if (it != BIT.end()) ret += it->second;
