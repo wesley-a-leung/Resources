@@ -84,7 +84,7 @@ template <class T, class IndexType> struct FenwickTreeSemiSparse2DOffline {
 //   https://codeforces.com/contest/1093/problem/E
 //   https://dmoj.ca/problem/fallingsnowflakes
 template <class T, class IndexType1, class IndexType2>
-    struct FenwickTreeSparse2DOffline {
+struct FenwickTreeSparse2DOffline {
   int U; vector<int> st, cnt; vector<IndexType1> inds1;
   vector<IndexType2> inds2; vector<T> BIT;
   int getInd1(IndexType1 i) {
@@ -261,7 +261,7 @@ template <class IndexType> struct FenwickTreeSemiSparse2DSimpleTreeset {
 // Tested:
 //   https://dmoj.ca/problem/fallingsnowflakes
 template <class T, class IndexType, class Container = hashmap<IndexType, T>>
-    struct FenwickTreeSemiSparse2D {
+struct FenwickTreeSemiSparse2D {
   int N; vector<FenwickTreeSparse1D<T, IndexType, Container>> BIT;
   FenwickTreeSemiSparse2D(int N, int M)
       : N(N), BIT(N + 1, FenwickTreeSparse1D<T, IndexType, Container>(M)) {}
@@ -292,7 +292,7 @@ template <class T, class IndexType, class Container = hashmap<IndexType, T>>
 template <class T, class IndexType1, class IndexType2,
           class Container = hashmap<pair<IndexType1, IndexType2>, T,
                                     pair_hash<IndexType1, IndexType2>>>
-    struct FenwickTreeSparse2D {
+struct FenwickTreeSparse2D {
   int N, M; Container BIT;
   FenwickTreeSparse2D(int N, int M) : N(N), M(M) {}
   void update(IndexType1 i, IndexType2 j, T v) {

@@ -48,11 +48,10 @@ using namespace std;
 //   https://dmoj.ca/problem/lazy (LAZY = true)
 //   https://mcpt.ca/problem/seq3 (LAZY = true)
 template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
+#define lazy_def template <const bool _ = LAZY> typename enable_if<_>::type
+#define agg_def template <const bool _ = LAZY> typename enable_if<!_>::type
   using Data = typename Combine::Data; using Lazy = typename Combine::Lazy;
   Combine C; int N; vector<Data> TR; vector<Lazy> LZ;
-  #define lazy_def template <const bool _ = LAZY> typename enable_if<_>::type
-  #define not_lazy_def template <const bool _ = LAZY> \
-    typename enable_if<!_>::type
   lazy_def propagate(int x, int tl, int tr) {
     if (LZ[x] != C.ldef) {
       int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2;
@@ -62,12 +61,12 @@ template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
       LZ[rc] = C.mergeLazy(LZ[rc], LZ[x]); LZ[x] = C.ldef;
     }
   }
-  not_lazy_def propagate(int, int, int) {}
+  agg_def propagate(int, int, int) {}
   lazy_def apply(int x, int tl, int tr, const Lazy &v) {
     TR[x] = C.applyLazy(TR[x], C.getSegmentVal(v, tr - tl + 1));
     LZ[x] = C.mergeLazy(LZ[x], v);
   }
-  not_lazy_def apply(int x, int, int, const Lazy &v) {
+  agg_def apply(int x, int, int, const Lazy &v) {
     TR[x] = C.applyLazy(TR[x], v);
   }
   template <class F> void build(int x, int tl, int tr, F a) {
@@ -92,7 +91,7 @@ template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
     return C.merge(query(x + 1, tl, m, l, r), query(rc, m + 1, tr, l, r));
   }
   lazy_def initLazy() { LZ.assign(N * 2 - 1, C.ldef); }
-  not_lazy_def initLazy() {}
+  agg_def initLazy() {}
   template <class It> SegmentTreeTopDown(It st, It en)
       : N(en - st), TR(N * 2 - 1, C.qdef) {
     initLazy(); build(0, 0, N - 1, [&] (int i) { return *(st + i); });
@@ -105,8 +104,8 @@ template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
   }
   void update(int i, const Lazy &v) { update(0, 0, N - 1, i, i, v); }
   Data query(int l, int r) { return query(0, 0, N - 1, l, r); }
-  #undef lazy_def
-  #undef not_lazy_def
+#undef lazy_def
+#undef agg_def
 };
 
 // Top down dynamic segment tree supporting range updates and range queries
@@ -165,14 +164,13 @@ template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
 //   https://www.spoj.com/problems/TTM/ (LAZY = true, PERSISTENT = true)
 template <class IndexType, const bool LAZY, const bool PERSISTENT,
           class Combine> struct SegmentTreeDynamic {
+#define lazy_def template <const bool _ = LAZY> typename enable_if<_>::type
+#define agg_def template <const bool _ = LAZY> typename enable_if<!_>::type
   using Data = typename Combine::Data; using Lazy = typename Combine::Lazy;
   Combine C; IndexType N;
   vector<int> L, R, roots; vector<Data> TR; vector<Lazy> LZ;
-  #define lazy_def template <const bool _ = LAZY> typename enable_if<_>::type
-  #define not_lazy_def template <const bool _ = LAZY> \
-    typename enable_if<!_>::type
   lazy_def pushBackLazy(int cp) { LZ.push_back(~cp ? LZ[cp] : C.ldef); }
-  not_lazy_def pushBackLazy(int) {}
+  agg_def pushBackLazy(int) {}
   int makeNode(int cp, IndexType tl, IndexType tr) {
     if (~cp) { L.push_back(L[cp]); R.push_back(R[cp]); TR.push_back(TR[cp]); }
     else {
@@ -196,12 +194,12 @@ template <class IndexType, const bool LAZY, const bool PERSISTENT,
       LZ[R[x]] = C.mergeLazy(LZ[R[x]], LZ[x]); LZ[x] = C.ldef;
     }
   }
-  not_lazy_def propagate(int, IndexType, IndexType) {}
+  agg_def propagate(int, IndexType, IndexType) {}
   lazy_def apply(int x, IndexType tl, IndexType tr, const Lazy &v) {
     TR[x] = C.applyLazy(TR[x], C.getSegmentVal(v, tr - tl + 1));
     LZ[x] = C.mergeLazy(LZ[x], v);
   }
-  not_lazy_def apply(int x, IndexType, IndexType, const Lazy &v) {
+  agg_def apply(int x, IndexType, IndexType, const Lazy &v) {
     TR[x] = C.applyLazy(TR[x], v);
   }
   template <class It> int build(IndexType tl, IndexType tr, It st) {
@@ -255,6 +253,6 @@ template <class IndexType, const bool LAZY, const bool PERSISTENT,
   void reserveNodes(int k) {
     L.reserve(k); R.reserve(k); TR.reserve(k); if (LAZY) LZ.reserve(k);
   }
-  #undef lazy_def
-  #undef not_lazy_def
+#undef lazy_def
+#undef agg_def
 };

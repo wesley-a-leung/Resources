@@ -32,7 +32,7 @@ template <class T> struct MaxContiguousSubarraySum {
     ret.sum = r.first; return ret;
   }
   template <class IndexType>
-      Lazy getSegmentVal(const Lazy &v, IndexType k) const {
+  Lazy getSegmentVal(const Lazy &v, IndexType k) const {
     return Lazy(v.first * k, v.second);
   }
   Lazy mergeLazy(const Lazy &l, const Lazy &r) const { return r; }

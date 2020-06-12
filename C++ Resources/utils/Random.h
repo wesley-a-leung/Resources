@@ -9,11 +9,11 @@ using namespace std;
 //   https://atcoder.jp/contests/agc026/tasks/agc026_c
 //   https://dmoj.ca/problem/ds4
 seed_seq seq {
-    uint64_t(chrono::duration_cast<chrono::nanoseconds>(
-      chrono::steady_clock::now().time_since_epoch()).count()
-    ),
-    uint64_t(__builtin_ia32_rdtsc()),
-    uint64_t(uintptr_t(make_unique<char>().get()))
+  uint64_t(chrono::duration_cast<chrono::nanoseconds>(
+    chrono::steady_clock::now().time_since_epoch()).count()
+  ),
+  uint64_t(__builtin_ia32_rdtsc()),
+  uint64_t(uintptr_t(make_unique<char>().get()))
 };
 
 mt19937 rng(seq); mt19937_64 rng64(seq);

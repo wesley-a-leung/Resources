@@ -20,13 +20,12 @@ using namespace std;
 //   https://dmoj.ca/problem/ccc20s3
 //   https://dmoj.ca/problem/wac4p4
 //   https://www.spoj.com/problems/DISUBSTR/
-template <class T> struct ManberMyersSuffixArray {
+template <class T> struct SuffixArray {
   int N; vector<T> S; vector<int> ind, rnk, LCP;
-  template <class It> ManberMyersSuffixArray(It st, It en)
+  template <class It> SuffixArray(It st, It en)
       : N(en - st), S(st, en), ind(N + 1), rnk(N + 1), LCP(N) {
     vector<T> SS = S; sort(SS.begin(), SS.end()); rnk[ind[N] = N] = -1;
-    vector<int> tmp(N + 1, 0);
-    for (int i = 0; i < N; i++) {
+    vector<int> tmp(N + 1, 0); for (int i = 0; i < N; i++) {
       rnk[i] = lower_bound(SS.begin(), SS.end(), S[i]) - SS.begin();
       ind[rnk[i] + tmp[rnk[i]]++] = i;
     }
@@ -68,7 +67,7 @@ template <class T> struct ManberMyersSuffixArray {
 //   https://dmoj.ca/problem/ccc20s3
 //   https://dmoj.ca/problem/wac4p4
 template <class T> struct LongestCommonSubstring {
-  ManberMyersSuffixArray<T> SA; SparseTable<int, function<int(int, int)>> ST;
+  SuffixArray<T> SA; SparseTable<int, function<int(int, int)>> ST;
   template <class It> LongestCommonSubstring(It st, It en)
     : SA(st, en),
       ST(SA.LCP.begin(), SA.LCP.end(),

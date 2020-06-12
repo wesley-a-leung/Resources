@@ -104,8 +104,7 @@ template <class _Node> struct Treap {
   }
   template <class T, class Comp> pair<int, Node *> getFirst(Node *x,
       const T &v, Comp cmp) {
-    pair<int, Node *> ret(0, nullptr);
-    while (x) {
+    pair<int, Node *> ret(0, nullptr); while (x) {
       x->propagate();
       if (!cmp(x->val, v)) { ret.second = x; x = x->l; }
       else { ret.first += 1 + (x->l ? x->l->sz : 0); x = x->r; }

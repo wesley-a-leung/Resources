@@ -48,15 +48,13 @@ template <const int R, class T> struct RootArray {
   RootArray(double SCALE = 6) : N(0), SCALE(SCALE) { assert(SCALE > 0); }
   template <class It> RootArray(const It st, const It en, double SCALE = 6)
       : N(en - st), SCALE(SCALE) {
-    assert(N >= 0); assert(SCALE > 0);
-    if (N == 0) return;
+    assert(N >= 0); assert(SCALE > 0); if (N == 0) return;
     int rootN = getRootN(); A.reserve((N - 1) / rootN + 1);
     for (It i = st; i < en; i += rootN)
       A.emplace_back(i, min(i + rootN, en), SCALE);
   }
   void split(int i) {
-    int rootN = getRootN();
-    if (int(A[i].size()) > 2 * rootN) {
+    int rootN = getRootN(); if (int(A[i].size()) > 2 * rootN) {
       vector<T> tmp; tmp.reserve(int(A[i].size()) - 2 * rootN);
       while (int(A[i].size()) > rootN) {
         tmp.push_back(A[i].back()); A[i].pop_back();
@@ -71,8 +69,7 @@ template <const int R, class T> struct RootArray {
     A[i].insert(val, cmp); split(i);
   }
   void insert_at(int k, const T &val) {
-    assert(0 <= k && k <= N);
-    if (k == N) { push_back(val); return; }
+    assert(0 <= k && k <= N); if (k == N) { push_back(val); return; }
     N++; int i = 0; while (int(A[i].size()) <= k) k -= int(A[i++].size());
     A[i].insert_at(k, val); split(i);
   }
