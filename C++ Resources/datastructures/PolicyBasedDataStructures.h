@@ -20,9 +20,9 @@ using namespace __gnu_pbds;
 //   https://dmoj.ca/problem/fallingsnowflakes
 //   https://atcoder.jp/contests/agc026/tasks/agc026_c
 template <class K, class H = rand_hash<K>, class ...Ts>
-  using hashset = gp_hash_table<K, null_type, H, Ts ...>;
+using hashset = gp_hash_table<K, null_type, H, Ts ...>;
 template <class K, class V, class H = rand_hash<K>, class ...Ts>
-  using hashmap = gp_hash_table<K, V, H, Ts ...>;
+using hashmap = gp_hash_table<K, V, H, Ts ...>;
 
 // Ordered treeset and treemap
 // API is similar to set and map in C++ 03
@@ -37,8 +37,8 @@ template <class K, class V, class H = rand_hash<K>, class ...Ts>
 //   https://codeforces.com/contest/1093/problem/E
 //   http://www.usaco.org/index.php?page=viewproblem2&cpid=898
 template <class K, class C = less<K>, class ...Ts>
-  using treeset = tree<K, null_type, C, rb_tree_tag,
-                       tree_order_statistics_node_update, Ts ...>;
+using treeset = tree<K, null_type, C, rb_tree_tag,
+                     tree_order_statistics_node_update, Ts ...>;
 template <class K, class V, class C = less<K>, class ...Ts>
-  using treemap = tree<K, V, C, rb_tree_tag,
-                       tree_order_statistics_node_update, Ts ...>;
+using treemap = tree<K, V, C, rb_tree_tag,
+                     tree_order_statistics_node_update, Ts ...>;

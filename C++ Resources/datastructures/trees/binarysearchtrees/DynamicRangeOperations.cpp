@@ -99,9 +99,8 @@ template <class Tree> struct DynamicRangeOperations : public Tree {
     applyToRange(root, i, i, [&] (Node *&x) { clear(x); x = nullptr; });
   }
   void erase_at(int i, int j) {
-    if (i <= j) {
+    if (i <= j)
       applyToRange(root, i, j, [&] (Node *&x) { clear(x); x = nullptr; });
-    }
   }
   template <class Comp> void erase(const Data &v, Comp cmp) {
     pair<int, Node *> p = getFirst(root, v, cmp);
@@ -112,22 +111,22 @@ template <class Tree> struct DynamicRangeOperations : public Tree {
     applyToRange(root, i, i, [&] (Node *&x) { x->apply(v); });
   }
   template <const int _ = Node::RANGE_UPDATES>
-      typename enable_if<_>::type update(int i, int j, const Lazy &v) {
+  typename enable_if<_>::type update(int i, int j, const Lazy &v) {
     if (i <= j) applyToRange(root, i, j, [&] (Node *&x) { x->apply(v); });
   }
   template <const int _ = Node::RANGE_REVERSALS>
-      typename enable_if<_>::type reverse(int i, int j) {
+  typename enable_if<_>::type reverse(int i, int j) {
     if (i <= j) applyToRange(root, i, j, [&] (Node *&x) { x->reverse(); });
   }
   int size() { return root ? root->sz : 0; }
   Data at(int i) { return select(root, i)->val; }
   template <class Comp>
-      pair<int, Data *> lower_bound(const Data &v, Comp cmp) {
+  pair<int, Data *> lower_bound(const Data &v, Comp cmp) {
     pair<int, Node *> p = getFirst(root, v, cmp);
     return make_pair(p.first, p.second ? &p.second->val : nullptr);
   }
   template <class Comp>
-      pair<int, Data *> upper_bound(const Data &v, Comp cmp) {
+  pair<int, Data *> upper_bound(const Data &v, Comp cmp) {
     return lower_bound(v, [&] (const Data &a, const Data &b) {
       return !cmp(b, a);
     });
@@ -139,7 +138,7 @@ template <class Tree> struct DynamicRangeOperations : public Tree {
     return ret;
   }
   template <const int _ = Node::RANGE_QUERIES>
-      typename enable_if<_, Data>::type query(int i, int j) {
+  typename enable_if<_, Data>::type query(int i, int j) {
     Data ret = Node::qdef();
     if (i <= j) applyToRange(root, i, j, [&] (Node *&x) { ret = x->sbtr; });
     return ret;

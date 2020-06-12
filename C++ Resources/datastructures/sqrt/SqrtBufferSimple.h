@@ -24,8 +24,8 @@ template <class T, class Comparator = less<T>> struct SqrtBufferSimple {
   Comparator cmp; double SCALE; vector<T> small, large;
   SqrtBufferSimple(double SCALE = 1) : SCALE(SCALE) {}
   template <class It>
-      SqrtBufferSimple(const It st, const It en, double SCALE = 1)
-          : SCALE(SCALE), large(st, en) {
+  SqrtBufferSimple(const It st, const It en, double SCALE = 1)
+      : SCALE(SCALE), large(st, en) {
     assert(is_sorted(st, en, cmp));
   }
   bool rebuild() {
@@ -41,14 +41,14 @@ template <class T, class Comparator = less<T>> struct SqrtBufferSimple {
   int aboveInd(const T &val) {
     rebuild();
     int ret = upper_bound(large.begin(), large.end(), val, cmp)
-              - large.begin();
+        - large.begin();
     for (auto &&x : small) ret += !cmp(val, x);
     return ret;
   }
   int ceilingInd(const T &val) {
     rebuild();
     int ret = lower_bound(large.begin(), large.end(), val, cmp)
-              - large.begin();
+        - large.begin();
     for (auto &&x : small) ret += cmp(x, val);
     return ret;
   }
@@ -64,7 +64,7 @@ template <class T, class Comparator = less<T>> struct SqrtBufferSimple {
   int count(const T &lo, const T &hi) {
     rebuild();
     int ret = upper_bound(large.begin(), large.end(), hi, cmp)
-              - lower_bound(large.begin(), large.end(), lo, cmp);
+        - lower_bound(large.begin(), large.end(), lo, cmp);
     for (auto &&x : small) ret += !cmp(x, lo) && !cmp(hi, x);
     return ret;
   }
@@ -74,9 +74,7 @@ template <class T, class Comparator = less<T>> struct SqrtBufferSimple {
   vector<T> values() const {
     vector<T> ret; ret.reserve(size());
     for (auto &&x : small) ret.push_back(x);
-    int mid = int(ret.size());
-    for (auto &&x : large) ret.push_back(x);
-    inplace_merge(ret.begin(), ret.begin() + mid, ret.end(), cmp);
-    return ret;
+    int mid = int(ret.size()); for (auto &&x : large) ret.push_back(x);
+    inplace_merge(ret.begin(), ret.begin() + mid, ret.end(), cmp); return ret;
   }
 };

@@ -20,7 +20,7 @@ using namespace std;
 //   https://dmoj.ca/problem/apio19p3
 //   https://dmoj.ca/problem/ioi01p1
 template <class T, class CountType, class Comparator = less<T>>
-    struct SqrtBuffer {
+struct SqrtBuffer {
   Comparator cmp; CountType tot; double SCALE;
   vector<pair<T, CountType>> small, large;
   struct PairCmp {
@@ -31,8 +31,8 @@ template <class T, class CountType, class Comparator = less<T>>
   };
   SqrtBuffer(double SCALE = 1) : tot(0), SCALE(SCALE) {}
   template <class PairIt>
-      SqrtBuffer(const PairIt st, const PairIt en, double SCALE = 1)
-          : SqrtBuffer(SCALE) {
+  SqrtBuffer(const PairIt st, const PairIt en, double SCALE = 1)
+      : SqrtBuffer(SCALE) {
     assert(is_sorted(st, en, PairCmp())); large.insert(large.end(), st, en);
     resizeUnique(large); for (auto &&p : large) tot += p.second;
   }
@@ -69,7 +69,7 @@ template <class T, class CountType, class Comparator = less<T>>
     rebuild();
     int ind = upper_bound(large.begin(), large.end(),
                           make_pair(val, CountType(0)), PairCmp())
-              - large.begin();
+        - large.begin();
     CountType ret = ind == 0 ? 0 : large[ind - 1].second;
     for (auto &&p : small) if (!cmp(val, p.first)) ret += p.second;
     return ret;
@@ -78,7 +78,7 @@ template <class T, class CountType, class Comparator = less<T>>
     rebuild();
     int ind = lower_bound(large.begin(), large.end(),
                           make_pair(val, CountType(0)), PairCmp())
-              - large.begin();
+        - large.begin();
     CountType ret = ind == 0 ? 0 : large[ind - 1].second;
     for (auto &&p : small) if (cmp(p.first, val)) ret += p.second;
     return ret;
@@ -99,11 +99,11 @@ template <class T, class CountType, class Comparator = less<T>>
     rebuild();
     int ind = upper_bound(large.begin(), large.end(),
                           make_pair(hi, CountType(0)), PairCmp())
-              - large.begin();
+        - large.begin();
     CountType ret = ind == 0 ? 0 : large[ind - 1].second;
     ind = lower_bound(large.begin(), large.end(),
                       make_pair(lo, CountType(0)), PairCmp())
-          - large.begin();
+        - large.begin();
     ret -= ind == 0 ? 0 : large[ind - 1].second;
     for (auto &&p : small) if (!cmp(p.first, lo) && !cmp(hi, p.first))
       ret += p.second;
@@ -114,8 +114,7 @@ template <class T, class CountType, class Comparator = less<T>>
   vector<pair<T, CountType>> valuesAndCount() const {
     vector<pair<T, CountType>> ret; ret.reserve(large.size() + small.size());
     for (auto &&p : small) ret.push_back(p);
-    int mid = int(ret.size());
-    for (auto &&p : large) ret.push_back(p);
+    int mid = int(ret.size()); for (auto &&p : large) ret.push_back(p);
     inplace_merge(ret.begin(), ret.begin() + mid, ret.end(), PairCmp());
     resizeUnique(ret); return ret;
   }

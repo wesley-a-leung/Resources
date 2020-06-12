@@ -9,8 +9,7 @@ using namespace std;
 //   https://dmoj.ca/problem/fallingsnowflakes
 //   https://atcoder.jp/contests/agc026/tasks/agc026_c
 const size_t RANDOM = uniform_int_distribution<size_t>(
-  0, numeric_limits<size_t>::max()
-)(rng64);
+    0, numeric_limits<size_t>::max())(rng64);
 template <class T, class H = hash<T>> struct rand_hash {
   static uint64_t splitmix64(uint64_t x) {
     x += 0x9e3779b97f4a7c15; x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
@@ -36,6 +35,6 @@ template <class T1, class T2, class H1 = rand_hash<T1>,
 //   https://dmoj.ca/problem/fallingsnowflakes
 //   https://atcoder.jp/contests/agc026/tasks/agc026_c
 template <class K, class H = rand_hash<K>, class ...Ts>
-  using uset = unordered_set<K, H, Ts ...>;
+using uset = unordered_set<K, H, Ts ...>;
 template <class K, class V, class H = rand_hash<K>, class ...Ts>
-  using umap = unordered_map<K, V, H, Ts ...>;
+using umap = unordered_map<K, V, H, Ts ...>;

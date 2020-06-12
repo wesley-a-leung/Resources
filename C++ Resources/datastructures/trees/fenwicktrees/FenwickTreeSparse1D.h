@@ -68,7 +68,7 @@ template <class T, class IndexType> struct FenwickTreeSparse1DOffline {
 //   https://dmoj.ca/problem/cco10p3
 //   https://dmoj.ca/problem/fallingsnowflakes
 template <class T, class IndexType, class Container = hashmap<IndexType, T>>
-    struct FenwickTreeSparse1D {
+struct FenwickTreeSparse1D {
   IndexType N; Container BIT; FenwickTreeSparse1D(IndexType N) : N(N) {}
   void update(IndexType i, T v) { for (i++; i <= N; i += i & -i) BIT[i] += v; }
   T rsq(IndexType r) {

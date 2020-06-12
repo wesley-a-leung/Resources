@@ -96,8 +96,7 @@ template <class _Node> struct Splay {
     }
   }
   Node *select(Node *&root, int k) {
-    Node *last = nullptr;
-    while (root) {
+    Node *last = nullptr; while (root) {
       (last = root)->propagate(); int t = root->l ? root->l->sz : 0;
       if (t > k) root = root->l;
       else if (t < k) { root = root->r; k -= t + 1; }
@@ -112,7 +111,7 @@ template <class _Node> struct Splay {
     splay(root); return root->l ? root->l->sz : 0;
   }
   template <class T, class Comp>
-      pair<int, Node *> getFirst(Node *&root, const T &v, Comp cmp) {
+  pair<int, Node *> getFirst(Node *&root, const T &v, Comp cmp) {
     pair<int, Node *> ret(0, nullptr); Node *last = nullptr;
     for (Node *x = root; x;) {
       (last = x)->propagate();

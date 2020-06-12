@@ -31,24 +31,24 @@ template <class Combine> struct SegmentTreeBottomUp {
   using Data = typename Combine::Data; using Lazy = typename Combine::Lazy;
   Combine C; int N; vector<Data> TR;
   template <class It> SegmentTreeBottomUp(It st, It en)
-      : N(en - st), TR(N << 1, C.qdef) {
+      : N(en - st), TR(N * 2, C.qdef) {
     copy(st, en, TR.begin() + N);
     for (int i = N - 1; i > 0; i--)
-      TR[i] = C.merge(TR[i << 1], TR[i << 1 | 1]);
+      TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
   }
   SegmentTreeBottomUp(int N, const Data &vdef)
-      : N(N), TR(N << 1, C.qdef) {
+      : N(N), TR(N * 2, C.qdef) {
     fill(TR.begin() + N, TR.end(), vdef);
     for (int i = N - 1; i > 0; i--)
-      TR[i] = C.merge(TR[i << 1], TR[i << 1 | 1]);
+      TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
   }
   void update(int i, const Lazy &v) {
-    for (i += N, TR[i] = C.applyLazy(TR[i], v); i >>= 1;)
-      TR[i] = C.merge(TR[i << 1], TR[i << 1 | 1]);
+    for (i += N, TR[i] = C.applyLazy(TR[i], v); i /= 2;)
+      TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
   }
   Data query(int l, int r) {
     Data ql = C.qdef, qr = C.qdef;
-    for (l += N, r += N; l <= r; l >>= 1, r >>= 1) {
+    for (l += N, r += N; l <= r; l /= 2, r /= 2) {
       if (l & 1) ql = C.merge(ql, TR[l++]);
       if (!(r & 1)) qr = C.merge(TR[r--], qr);
     }
@@ -92,34 +92,31 @@ template <class Combine> struct SegmentTreeLazyBottomUp {
     if (i < N) LZ[i] = C.mergeLazy(LZ[i], v);
   }
   void pushup(int i) {
-    for (int k = 2; i >>= 1; k <<= 1) {
-      TR[i] = C.merge(TR[i << 1], TR[i << 1 | 1]);
+    for (int k = 2; i /= 2; k *= 2) {
+      TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
       if (LZ[i] != C.ldef)
         TR[i] = C.applyLazy(TR[i], C.getSegmentVal(LZ[i], k));
     }
   }
   void propagate(int i) {
     int h = lgN + 1, k = 1 << lgN, ii = i >> h;
-    for (; h > 0; ii = i >> --h, k >>= 1) if (LZ[ii] != C.ldef) {
-      apply(ii << 1, LZ[ii], k); apply(ii << 1 | 1, LZ[ii], k);
-      LZ[ii] = C.ldef;
+    for (; h > 0; ii = i >> --h, k /= 2) if (LZ[ii] != C.ldef) {
+      apply(ii * 2, LZ[ii], k); apply(ii * 2 + 1, LZ[ii], k); LZ[ii] = C.ldef;
     }
   }
   template <class It> SegmentTreeLazyBottomUp(It st, It en)
-      : N(en - st), lgN(__lg(N)), TR(N << 1, C.qdef), LZ(N, C.ldef) {
+      : N(en - st), lgN(__lg(N)), TR(N * 2, C.qdef), LZ(N, C.ldef) {
     copy(st, en, TR.begin() + N);
-    for (int i = N - 1; i > 0; i--)
-      TR[i] = C.merge(TR[i << 1], TR[i << 1 | 1]);
+    for (int i = N - 1; i > 0; i--) TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
   }
   SegmentTreeLazyBottomUp(int N, const Data &vdef)
-      : N(N), lgN(__lg(N)), TR(N << 1, C.qdef), LZ(N, C.ldef) {
+      : N(N), lgN(__lg(N)), TR(N * 2, C.qdef), LZ(N, C.ldef) {
     fill(TR.begin() + N, TR.end(), vdef);
-    for (int i = N - 1; i > 0; i--)
-      TR[i] = C.merge(TR[i << 1], TR[i << 1 | 1]);
+    for (int i = N - 1; i > 0; i--) TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
   }
   void update(int l, int r, const Lazy &v) {
     int l0 = l += N, r0 = r += N, k = 1; propagate(l); propagate(r);
-    for (; l <= r; l >>= 1, r >>= 1, k <<= 1) {
+    for (; l <= r; l /= 2, r /= 2, k *= 2) {
       if (l & 1) apply(l++, v, k);
       if (!(r & 1)) apply(r--, v, k);
     }
@@ -127,7 +124,7 @@ template <class Combine> struct SegmentTreeLazyBottomUp {
   }
   Data query(int l, int r) {
     propagate(l += N); propagate(r += N); Data ql = C.qdef, qr = C.qdef;
-    for (; l <= r; l >>= 1, r >>= 1) {
+    for (; l <= r; l /= 2, r /= 2) {
       if (l & 1) ql = C.merge(ql, TR[l++]);
       if (!(r & 1)) qr = C.merge(TR[r--], qr);
     }
