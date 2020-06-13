@@ -1,5 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "MakeUnique.h"
 using namespace std;
 
 // 32-bit and 64-bit random number generators using a time-based seed sequence
