@@ -64,5 +64,4 @@ template <class T, class Comparator = less<T>> struct WaveletTree {
                         }) - ind.begin() - 1;
     return j < 0 ? 0 : rank(roots[l], roots[r + 1], 0, N - 1, 0, j);
   }
-#undef def
 };
