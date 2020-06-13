@@ -3,7 +3,7 @@
 using namespace std;
 
 // With C++ 11 not having std::make_unique defined, a simple implementation
-//   of std::make_unique is provided
+//   of make_unique is provided
 // Tested:
 //   https://dmoj.ca/problem/set
 template <class T, class ...Args> unique_ptr<T> _make_unique(Args &&...args) {
