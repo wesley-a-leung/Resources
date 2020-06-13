@@ -4,6 +4,10 @@ using namespace std;
 
 // Wavelet Tree (using a persistent segment tree)
 //   supporting select and rank operations for a subarray
+// select finds the kth smallest element in the subarray [l, r]
+// rank finds the index of the element v if the subarray [l, r] was sorted
+// count counts the number of elements in the subarray [l, r] in the
+//   range [lo, hi]
 // Indices are 0-indexed and ranges are inclusive
 // In practice, has a large constant, slower than Merge Sort Trees for
 //   rank queries, but much faster for select queries
@@ -11,9 +15,9 @@ using namespace std;
 //   constructor, rank, select: O(N log N)
 // Memory Complexity: O(N log N)
 // Tested:
-//   https://www.spoj.com/problems/KQUERY/ (rank)
-//   https://www.spoj.com/problems/KQUERYO/ (rank)
-//   https://codeforces.com/contest/1284/problem/D (rank)
+//   https://www.spoj.com/problems/KQUERY/ (rank/count)
+//   https://www.spoj.com/problems/KQUERYO/ (rank/count)
+//   https://codeforces.com/contest/1284/problem/D (rank/count)
 //   https://www.spoj.com/problems/MKTHNUM/ (select)
 //   https://judge.yosupo.jp/problem/range_kth_smallest (select)
 template <class T, class Comparator = less<T>> struct WaveletTree {
@@ -58,10 +62,19 @@ template <class T, class Comparator = less<T>> struct WaveletTree {
   T select(int l, int r, int k) {
     return A[ind[select(roots[l], roots[r + 1], 0, N - 1, k)]];
   }
-  int rank(int l, int r, T k) {
+  int rank(int l, int r, T v) {
     int j = lower_bound(ind.begin(), ind.end(), N, [&] (int i, int) {
-                          return cmp(A[i], k);
+                          return cmp(A[i], v);
                         }) - ind.begin() - 1;
     return j < 0 ? 0 : rank(roots[l], roots[r + 1], 0, N - 1, 0, j);
+  }
+  int count(int l, int r, T lo, T hi) {
+    int a = lower_bound(ind.begin(), ind.end(), N, [&] (int i, int) {
+                          return cmp(A[i], lo);
+                        }) - ind.begin();
+    int b = upper_bound(ind.begin(), ind.end(), N, [&] (int, int i) {
+                          return cmp(hi, A[i]);
+                        }) - ind.begin() - 1;
+    return a > b ? 0 : rank(roots[l], roots[r + 1], 0, N - 1, a, b);
   }
 };
