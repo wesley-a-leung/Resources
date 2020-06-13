@@ -80,8 +80,9 @@ template <class Tree> struct DynamicRangeOperations : public Tree {
   using Lazy = typename Node::Lazy; Node *root;
   using Tree::makeNode; using Tree::applyToRange; using Tree::select;
   using Tree::getFirst; using Tree::build; using Tree::clear;
-  template <class It> DynamicRangeOperations(It st, It en)
-      : root(build(0, en - st - 1, [&] (int i) { return *(st + i); })) {}
+  template <class It> // thrid argument is dummy argument to prevent ambiguity
+  DynamicRangeOperations(It st, It en, typename It::pointer = nullptr)
+      : root(build(0, en - st + 1, [&] (int i) { return *(st + i); })) {}
   template <class T> DynamicRangeOperations(int N, const T &vdef)
       : root(build(0, N - 1, [&] (int i) { return vdef; })) {}
   template <class T> void insert_at(int i, const T &v) {

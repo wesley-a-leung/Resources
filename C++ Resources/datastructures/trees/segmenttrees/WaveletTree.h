@@ -4,7 +4,6 @@ using namespace std;
 
 // Wavelet Tree (using a persistent segment tree)
 //   supporting select and rank operations for a subarray
-// boolean flag to specify mode of the wavelet tree (rank or select)
 // Indices are 0-indexed and ranges are inclusive
 // In practice, has a large constant, slower than Merge Sort Trees for
 //   rank queries, but much faster for select queries
@@ -17,12 +16,8 @@ using namespace std;
 //   https://codeforces.com/contest/1284/problem/D (rank)
 //   https://www.spoj.com/problems/MKTHNUM/ (select)
 //   https://judge.yosupo.jp/problem/range_kth_smallest (select)
-const bool Rank = true, Select = false;
-template <const bool MODE, class T, class Comparator = less<T>>
-struct WaveletTree {
-#define def(mode, ret) template <const bool _ = MODE>\
-typename enable_if<_ == mode, ret>::type
-  Comparator cmp; int N, curNode; vector<int> P, aux, roots; vector<T> A;
+template <class T, class Comparator = less<T>> struct WaveletTree {
+  Comparator cmp; int N, curNode; vector<int> ind, rnk, roots; vector<T> A;
   struct Node { int l, r, val; }; vector<Node> TR;
   int build(int tl, int tr) {
     int x = curNode++; if (tl == tr) { TR[x].val = 0; return x; }
@@ -37,39 +32,37 @@ typename enable_if<_ == mode, ret>::type
     TR[y].r = update(TR[x].r, m + 1, tr, i);
     TR[y].val = TR[TR[y].l].val + TR[TR[y].r].val; return y;
   }
-  def(Select, int) select(int x, int y, int tl, int tr, int k) {
+  int select(int x, int y, int tl, int tr, int k) {
     if (tl == tr) return tl;
     int m = tl + (tr - tl) / 2, t = TR[TR[y].l].val - TR[TR[x].l].val;
     if (k < t) return select(TR[x].l, TR[y].l, tl, m, k);
     else return select(TR[x].r, TR[y].r, m + 1, tr, k - t);
   }
-  def(Rank, int) rank(int x, int tl, int tr, int l, int r) {
+  int rank(int x, int y, int tl, int tr, int l, int r) {
     if (r < tl || tr < l) return 0;
-    if (l <= tl && tr <= r) return TR[x].val;
-    int m = tl + (tr - tl) / 2;
-    return rank(TR[x].l, tl, m, l, r) + rank(TR[x].r, m + 1, tr, l, r);
+    if (l <= tl && tr <= r) return TR[y].val - TR[x].val;
+    int m = tl + (tr - tl) / 2; return rank(TR[x].l, TR[y].l, tl, m, l, r)
+        + rank(TR[x].r, TR[y].r, m + 1, tr, l, r);
   }
   template <class It> WaveletTree(It st, It en)
-      : N(en - st), curNode(0), P(N), aux(N), roots(N + 1), A(st, en),
+      : N(en - st), curNode(0), ind(N), rnk(N), roots(N + 1), A(st, en),
         TR(N * (__lg(N * 2 - 1) + 3) - 1) {
-    iota(P.begin(), P.end(), 0);
-    stable_sort(P.begin(), P.end(), [&] (int i, int j) {
+    iota(ind.begin(), ind.end(), 0);
+    stable_sort(ind.begin(), ind.end(), [&] (int i, int j) {
       return cmp(A[i], A[j]);
     });
-    for (int i = 0; i < N; i++) {
-      if (MODE == Rank) aux[i] = P[i];
-      else aux[P[i]] = i;
-    }
+    for (int i = 0; i < N; i++) rnk[ind[i]] = i;
     roots[0] = build(0, N - 1); for (int i = 0; i < N; i++)
-      roots[i + 1] = update(roots[i], 0, N - 1, aux[i]);
+      roots[i + 1] = update(roots[i], 0, N - 1, rnk[i]);
   }
-  def(Select, T) select(int l, int r, int k) {
-    return A[P[select(roots[l], roots[r + 1], 0, N - 1, k)]];
+  T select(int l, int r, int k) {
+    return A[ind[select(roots[l], roots[r + 1], 0, N - 1, k)]];
   }
-  def(Rank, int) rank(int l, int r, T k) {
-    return rank(roots[lower_bound(P.begin(), P.end(), N, [&] (int i, int) {
+  int rank(int l, int r, T k) {
+    int j = lower_bound(ind.begin(), ind.end(), N, [&] (int i, int) {
                   return cmp(A[i], k);
-                }) - P.begin()], 0, N - 1, l, r);
+                }) - ind.begin() - 1;
+    return j < 0 ? 0 : rank(roots[l], roots[r + 1], 0, N - 1, 0, j);
   }
 #undef def
 };
