@@ -1,38 +1,50 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "../../../search/BinarySearch.h"
 using namespace std;
 
 // Merge Sort Tree supporting select and rank operations for a subarray
+// Indices are 0-indexed and ranges are inclusive
+// In practice, has a small constant, faster than Wavlet Trees for
+//   rank queries, but much slower for select queries
 // Time Complexity:
-//   init: O(N log N)
+//   constructor: O(N log N)
 //   rank: O((log N)^2)
 //   select: O((log N)^3)
 // Memory Complexity: O(N log N)
-template <const int MAXN, class T, class Comparator = less<T>> struct MergeSortTree {
-    Comparator cmp; int N; T sorted[MAXN]; vector<T> TR[MAXN << 1];
-    template <class It> void init(It st, It en) {
-        N = en - st; for (int i = 0; i < N; i++) { TR[N + i] = vector<T>(1, sorted[i] = *(st + i)); }
-        sort(sorted, sorted + N, cmp);
-        for (int i = N - 1; i > 0; i--) {
-            TR[i] = vector<T>(); TR[i].reserve(TR[i << 1].size() + TR[i << 1 | 1].size());
-            merge(TR[i << 1].begin(), TR[i << 1].end(), TR[i << 1 | 1].begin(), TR[i << 1 | 1].end(), back_inserter(TR[i]), cmp);
-        }
+// Tested:
+//   https://www.spoj.com/problems/KQUERY/ (rank)
+//   https://www.spoj.com/problems/KQUERYO/ (rank)
+//   https://codeforces.com/contest/1284/problem/D (rank)
+//   https://www.spoj.com/problems/MKTHNUM/ (select)
+//   https://judge.yosupo.jp/problem/range_kth_smallest (select)
+template <class T, class Comparator = less<T>> struct MergeSortTree {
+  Comparator cmp; int N; vector<T> sorted; vector<vector<T>> TR;
+  template <class It> MergeSortTree(It st, It en)
+      : N(en - st), sorted(st, en), TR(N * 2) {
+    for (int i = 0; i < N; i++) TR[N + i] = vector<T>(1, sorted[i]);
+    sort(sorted.begin(), sorted.end(), cmp); for (int i = N - 1; i > 0; i--) {
+      TR[i].reserve(TR[i * 2].size() + TR[i * 2 + 1].size());
+      merge(TR[i * 2].begin(), TR[i * 2].end(), TR[i * 2 + 1].begin(),
+            TR[i * 2 + 1].end(), back_inserter(TR[i]), cmp);
     }
-    int rank(int l, int r, T k) { // counts the number of elements less than k in the range [l, r] (0-indexed)
-        int ret = 0;
-        for (l += N, r += N; l <= r; l >>= 1, r >>= 1) {
-            if (l & 1) { ret += lower_bound(TR[l].begin(), TR[l].end(), k, cmp) - TR[l].begin(); l++; }
-            if (!(r & 1)) { ret += lower_bound(TR[r].begin(), TR[r].end(), k, cmp) - TR[r].begin(); r--; }
-        }
-        return ret;
+  }
+  int rank(int l, int r, T k) {
+    int ret = 0; for (l += N, r += N; l <= r; l /= 2, r /= 2) {
+      if (l & 1) {
+        ret += lower_bound(TR[l].begin(), TR[l].end(), k, cmp) - TR[l].begin();
+        l++;
+      }
+      if (!(r & 1)) {
+        ret += lower_bound(TR[r].begin(), TR[r].end(), k, cmp) - TR[r].begin();
+        r--;
+      }
     }
-    T select(int l, int r, int k) { // selects the kth smallest element in the range [l, r] (0-indexed)
-        int lo = 0, hi = N - 1;
-        while (lo <= hi) {
-            int mid = lo + (hi - lo) / 2;
-            if (rank(l, r, sorted[mid]) <= k) lo = mid + 1;
-            else hi = mid - 1;
-        }
-        return sorted[hi];
-    }
+    return ret;
+  }
+  T select(int l, int r, int k) {
+    return sorted[bsearch<Last>(0, N, [&] (int mid) {
+      return rank(l, r, sorted[mid]) <= k;
+    })];
+  }
 };

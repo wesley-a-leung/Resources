@@ -15,11 +15,13 @@ using namespace std;
 // Time Complexity: O(S log S)
 // Memory Complexity: O(S)
 // Tested:
+//   https://judge.yosupo.jp/problem/suffixarray
+//   https://judge.yosupo.jp/problem/number_of_substrings
+//   https://www.spoj.com/problems/DISUBSTR/
 //   https://dmoj.ca/problem/coci06c5p6
 //   https://dmoj.ca/problem/ccc20j4
 //   https://dmoj.ca/problem/ccc20s3
 //   https://dmoj.ca/problem/wac4p4
-//   https://www.spoj.com/problems/DISUBSTR/
 template <class T> struct SuffixArray {
   int N; vector<T> S; vector<int> ind, rnk, LCP;
   template <class It> SuffixArray(It st, It en)

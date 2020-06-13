@@ -23,17 +23,17 @@ template <class T, class CountType, class Comparator = less<T>>
 struct SqrtBuffer {
   Comparator cmp; CountType tot; double SCALE;
   vector<pair<T, CountType>> small, large;
-  struct PairCmp {
+  struct {
     bool operator () (const pair<T, CountType> &a,
                       const pair<T, CountType> &b) const {
       return Comparator()(a.first, b.first);
     }
-  };
+  } pairCmp;
   SqrtBuffer(double SCALE = 1) : tot(0), SCALE(SCALE) {}
   template <class PairIt>
   SqrtBuffer(const PairIt st, const PairIt en, double SCALE = 1)
       : SqrtBuffer(SCALE) {
-    assert(is_sorted(st, en, PairCmp())); large.insert(large.end(), st, en);
+    assert(is_sorted(st, en, pairCmp)); large.insert(large.end(), st, en);
     resizeUnique(large); for (auto &&p : large) tot += p.second;
   }
   void resizeUnique(vector<pair<T, CountType>> &v) {
@@ -49,12 +49,12 @@ struct SqrtBuffer {
   bool rebuild() {
     if (int(small.size()) > SCALE * sqrt(small.size() + large.size())) {
       int largeSz = int(large.size());
-      sort(small.begin(), small.end(), PairCmp());
+      sort(small.begin(), small.end(), pairCmp);
       for (int i = largeSz - 1; i >= 1; i--)
         large[i].second -= large[i - 1].second;
       for (auto &&p : small) large.push_back(p);
       inplace_merge(large.begin(), large.begin() + largeSz, large.end(),
-                    PairCmp());
+                    pairCmp);
       resizeUnique(large); small.clear(); return true;
     }
     return false;
@@ -68,7 +68,7 @@ struct SqrtBuffer {
   CountType aboveInd(const T &val) {
     rebuild();
     int ind = upper_bound(large.begin(), large.end(),
-                          make_pair(val, CountType(0)), PairCmp())
+                          make_pair(val, CountType(0)), pairCmp)
         - large.begin();
     CountType ret = ind == 0 ? 0 : large[ind - 1].second;
     for (auto &&p : small) if (!cmp(val, p.first)) ret += p.second;
@@ -77,7 +77,7 @@ struct SqrtBuffer {
   CountType ceilingInd(const T &val) {
     rebuild();
     int ind = lower_bound(large.begin(), large.end(),
-                          make_pair(val, CountType(0)), PairCmp())
+                          make_pair(val, CountType(0)), pairCmp)
         - large.begin();
     CountType ret = ind == 0 ? 0 : large[ind - 1].second;
     for (auto &&p : small) if (cmp(p.first, val)) ret += p.second;
@@ -87,9 +87,9 @@ struct SqrtBuffer {
   CountType belowInd(const T &val) { return ceilingInd(val) - 1; }
   bool contains(const T &val) {
     if (binary_search(large.begin(), large.end(),
-        make_pair(val, CountType(0)), PairCmp())) return true;
+        make_pair(val, CountType(0)), pairCmp)) return true;
     if (rebuild() && binary_search(large.begin(), large.end(),
-                                   make_pair(val, CountType(0)), PairCmp()))
+                                   make_pair(val, CountType(0)), pairCmp))
       return true;
     for (auto &&p : small) if (!cmp(val, p.first) && !cmp(p.first, val))
       return true;
@@ -98,11 +98,11 @@ struct SqrtBuffer {
   CountType count(const T &lo, const T &hi) {
     rebuild();
     int ind = upper_bound(large.begin(), large.end(),
-                          make_pair(hi, CountType(0)), PairCmp())
+                          make_pair(hi, CountType(0)), pairCmp)
         - large.begin();
     CountType ret = ind == 0 ? 0 : large[ind - 1].second;
     ind = lower_bound(large.begin(), large.end(),
-                      make_pair(lo, CountType(0)), PairCmp())
+                      make_pair(lo, CountType(0)), pairCmp)
         - large.begin();
     ret -= ind == 0 ? 0 : large[ind - 1].second;
     for (auto &&p : small) if (!cmp(p.first, lo) && !cmp(hi, p.first))
@@ -115,7 +115,7 @@ struct SqrtBuffer {
     vector<pair<T, CountType>> ret; ret.reserve(large.size() + small.size());
     for (auto &&p : small) ret.push_back(p);
     int mid = int(ret.size()); for (auto &&p : large) ret.push_back(p);
-    inplace_merge(ret.begin(), ret.begin() + mid, ret.end(), PairCmp());
+    inplace_merge(ret.begin(), ret.begin() + mid, ret.end(), pairCmp);
     resizeUnique(ret); return ret;
   }
 };
