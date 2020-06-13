@@ -42,11 +42,11 @@ template <class T, class Comparator = less<T>> struct WaveletTree {
     if (k < t) return select(TR[x].l, TR[y].l, tl, m, k);
     else return select(TR[x].r, TR[y].r, m + 1, tr, k - t);
   }
-  int rank(int x, int y, int tl, int tr, int l, int r) {
+  int count(int x, int y, int tl, int tr, int l, int r) {
     if (r < tl || tr < l) return 0;
     if (l <= tl && tr <= r) return TR[y].val - TR[x].val;
-    int m = tl + (tr - tl) / 2; return rank(TR[x].l, TR[y].l, tl, m, l, r)
-        + rank(TR[x].r, TR[y].r, m + 1, tr, l, r);
+    int m = tl + (tr - tl) / 2; return count(TR[x].l, TR[y].l, tl, m, l, r)
+        + count(TR[x].r, TR[y].r, m + 1, tr, l, r);
   }
   template <class It> WaveletTree(It st, It en)
       : N(en - st), curNode(0), ind(N), rnk(N), roots(N + 1), A(st, en),
@@ -66,7 +66,7 @@ template <class T, class Comparator = less<T>> struct WaveletTree {
     int j = lower_bound(ind.begin(), ind.end(), N, [&] (int i, int) {
                           return cmp(A[i], v);
                         }) - ind.begin() - 1;
-    return j < 0 ? 0 : rank(roots[l], roots[r + 1], 0, N - 1, 0, j);
+    return j < 0 ? 0 : count(roots[l], roots[r + 1], 0, N - 1, 0, j);
   }
   int count(int l, int r, T lo, T hi) {
     int a = lower_bound(ind.begin(), ind.end(), N, [&] (int i, int) {
@@ -75,6 +75,6 @@ template <class T, class Comparator = less<T>> struct WaveletTree {
     int b = upper_bound(ind.begin(), ind.end(), N, [&] (int, int i) {
                           return cmp(hi, A[i]);
                         }) - ind.begin() - 1;
-    return a > b ? 0 : rank(roots[l], roots[r + 1], 0, N - 1, a, b);
+    return a > b ? 0 : count(roots[l], roots[r + 1], 0, N - 1, a, b);
   }
 };
