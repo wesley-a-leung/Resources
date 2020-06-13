@@ -60,8 +60,8 @@ template <class T, class Comparator = less<T>> struct WaveletTree {
   }
   int rank(int l, int r, T k) {
     int j = lower_bound(ind.begin(), ind.end(), N, [&] (int i, int) {
-                  return cmp(A[i], k);
-                }) - ind.begin() - 1;
+                          return cmp(A[i], k);
+                        }) - ind.begin() - 1;
     return j < 0 ? 0 : rank(roots[l], roots[r + 1], 0, N - 1, 0, j);
   }
 #undef def
