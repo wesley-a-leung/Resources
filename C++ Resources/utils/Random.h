@@ -9,6 +9,7 @@ using namespace std;
 //   https://dmoj.ca/problem/fallingsnowflakes
 //   https://atcoder.jp/contests/agc026/tasks/agc026_c
 //   https://dmoj.ca/problem/ds4
+//   https://judge.yosupo.jp/problem/associative_array
 seed_seq seq {
   uint64_t(chrono::duration_cast<chrono::nanoseconds>(
     chrono::steady_clock::now().time_since_epoch()).count()

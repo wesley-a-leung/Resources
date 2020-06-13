@@ -16,6 +16,7 @@ using namespace std;
 //   and D is the number of dimensions
 // Tested:
 //   https://dmoj.ca/problem/ds1
+//   https://judge.yosupo.jp/problem/point_add_range_sum
 //   https://dmoj.ca/problem/ioi01p1
 //   https://dmoj.ca/problem/gfssoc1s4
 //   https://dmoj.ca/problem/fallingsnowflakes

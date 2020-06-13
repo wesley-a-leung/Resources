@@ -15,6 +15,7 @@ using namespace std;
 // Memory Complexity: O(N)
 // Tested:
 //   https://dmoj.ca/problem/ds1
+//   https://judge.yosupo.jp/problem/point_add_range_sum
 //   https://codeforces.com/contest/1279/problem/B
 //   https://dmoj.ca/problem/ccc05s5
 //   https://dmoj.ca/problem/apio19p3

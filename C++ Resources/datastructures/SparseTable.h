@@ -14,6 +14,7 @@ using namespace std;
 // Tested:
 //   https://dmoj.ca/problem/ncco3d2p1
 //   https://www.spoj.com/problems/RMQSQ/
+//   https://judge.yosupo.jp/problem/staticrmq
 template <class T, class F> struct SparseTable {
   int N; vector<vector<T>> ST; F op;
   template <class It> SparseTable(It st, It en, F op)

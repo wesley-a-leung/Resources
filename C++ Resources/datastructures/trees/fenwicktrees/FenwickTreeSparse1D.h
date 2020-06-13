@@ -27,7 +27,7 @@ template <class T, class IndexType> struct FenwickTreeSparse1DOffline {
   int getInd(IndexType i) {
     return std::upper_bound(inds.begin(), inds.end(), i) - inds.begin();
   }
-  FenwickTreeSparse1DOffline(IndexType N, const vector<int> &updateInds)
+  FenwickTreeSparse1DOffline(IndexType N, const vector<IndexType> &updateInds)
       : N(N), inds(updateInds) {
     sort(inds.begin(), inds.end());
     inds.erase(unique(inds.begin(), inds.end()), inds.end());

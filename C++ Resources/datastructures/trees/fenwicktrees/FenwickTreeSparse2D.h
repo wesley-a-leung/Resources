@@ -78,6 +78,7 @@ template <class T, class IndexType> struct FenwickTreeSemiSparse2DOffline {
 //   update, rsq: O((log Q)^2) for Q updates
 // Memory Complexity: O(Q log Q) for Q updates
 // Tested:
+//   https://judge.yosupo.jp/problem/point_add_rectangle_sum
 //   https://dmoj.ca/problem/dmopc19c7p5
 //   https://codeforces.com/contest/1093/problem/E
 //   https://dmoj.ca/problem/fallingsnowflakes
@@ -136,7 +137,7 @@ struct FenwickTreeSparse2DOffline {
   }
 };
 
-// Sparse Fenwick Tree supporting point updates (with value 1)
+// Sparse Fenwick Tree supporting point updates (with value 1 and -1)
 //   and range queries in 2 dimensions
 //   using SqrtBufferSimple (sparse in 1 dimension)
 // Indices are 0-indexed and ranges are inclusive
@@ -207,7 +208,7 @@ template <class T, class IndexType> struct FenwickTreeSemiSparse2DSqrt {
   }
 };
 
-// Sparse Fenwick Tree supporting point updates (with value 1) 
+// Sparse Fenwick Tree supporting point updates (with value 1 and -1) 
 //   and range queries in 2 dimensions using pbds tree (sparse in 1 dimension)
 // Indices are 0-indexed and ranges are inclusive
 // In practice, has a moderate constant
@@ -255,7 +256,7 @@ template <class IndexType> struct FenwickTreeSemiSparse2DSimpleTreeset {
 template <class T, class IndexType, class Container = hashmap<IndexType, T>>
 struct FenwickTreeSemiSparse2D {
   int N; vector<FenwickTreeSparse1D<T, IndexType, Container>> BIT;
-  FenwickTreeSemiSparse2D(int N, int M)
+  FenwickTreeSemiSparse2D(int N, IndexType M)
       : N(N), BIT(N + 1, FenwickTreeSparse1D<T, IndexType, Container>(M)) {}
   void update(int i, IndexType j, T v) {
     for (i++; i <= N; i += i & -i) BIT[i].update(j, v);
@@ -285,7 +286,8 @@ template <class T, class IndexType1, class IndexType2,
           class Container = hashmap<pair<IndexType1, IndexType2>, T,
                                     pair_hash<IndexType1, IndexType2>>>
 struct FenwickTreeSparse2D {
-  int N, M; Container BIT; FenwickTreeSparse2D(int N, int M) : N(N), M(M) {}
+  IndexType1 N; IndexType2 M; Container BIT;
+  FenwickTreeSparse2D(IndexType1 N, IndexType2 M) : N(N), M(M) {}
   void update(IndexType1 i, IndexType2 j, T v) {
     i++; j++; for (IndexType1 x = i; x <= N; x += x & -x) {
       for (IndexType2 y = j; y <= M; y += y & -y) {
