@@ -17,14 +17,15 @@ using namespace std;
 //   https://dmoj.ca/problem/ccc19s5
 template <const int D, class T, class C> struct FenwickTreeCumulative {
   int N; vector<FenwickTreeCumulative<D - 1, T, C>> BIT;
-  template <class ...Args> FenwickTreeCumulative(T vdef, int N, Args ...args)
-      : N(N), BIT(N + 1, FenwickTreeCumulative<D - 1, T, C>(vdef, args...)) {}
-  template <class ...Args> void update(int i, Args ...args) {
-    for (i++; i <= N; i += i & -i) BIT[i].update(args...);
+  template <class ...Args> FenwickTreeCumulative(T vdef, int N, Args &&...args)
+      : N(N), BIT(N + 1, FenwickTreeCumulative<D - 1, T, C>(
+            vdef, forward<Args>(args)...)) {}
+  template <class ...Args> void update(int i, Args &&...args) {
+    for (i++; i <= N; i += i & -i) BIT[i].update(forward<Args>(args)...);
   }
-  template <class ...Args> T query(int r, Args ...args) {
-    T ret = BIT[++r].query(args...);
-    while ((r -= r & -r) > 0) ret = C()(ret, BIT[r].query(args...));
+  template <class ...Args> T query(int r, Args &&...args) {
+    T ret = BIT[++r].query(forward<Args>(args)...); while ((r -= r & -r) > 0)
+      ret = C()(ret, BIT[r].query(forward<Args>(args)...));
     return ret;
   }
 };
