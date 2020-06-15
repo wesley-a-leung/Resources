@@ -2,8 +2,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Computes the number of trials required to determine which of the F floors will
-// an egg break on, using E eggs, assuming eggs cannot be resued if broken
+// Computes the number of trials required to determine which of the F floors an
+// egg will break on, using E eggs, assuming eggs cannot be reused if broken
 // Time Complexity:
 //   preCompute: O(E^2)
 //   query: O(log E)

@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Maintans the difference between adjacent elements in a sorted set
+// Maintains the difference between adjacent elements in a sorted set
 // Time Complexity:
 //   insert, erase: O(log N)
 // Memory Complexity: O(N)

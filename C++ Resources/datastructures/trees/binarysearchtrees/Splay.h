@@ -9,7 +9,7 @@ using namespace std;
 // makeNode creates a new node passing v to the node constructor
 // applyToRange applies the function f to a node x where x is the disconnected
 //   subtree with indices in the range [i, j] for the tree rooted at root
-// select find the kth node in the tree rooted at root,
+// select finds the kth node in the tree rooted at root,
 //   and makes it the new root (or the last node accessed if null)
 // index finds the index of node x in the tree rooted at root,
 //   and makes it the new root

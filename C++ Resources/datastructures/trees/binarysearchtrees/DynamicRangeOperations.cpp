@@ -58,7 +58,7 @@ using namespace std;
 //                O(N) for Splay
 //   insert, insert_at: O(log N + M) expected for Treap,
 //                      O(log N + M) amortized for Splay,
-//                      each for for M inserted elements
+//                      each for M inserted elements
 //   erase: erase_at: O(log N + M) expected for Treap,
 //                    O(log N + M) amortized for Splay,
 //                    each for M deleted elements

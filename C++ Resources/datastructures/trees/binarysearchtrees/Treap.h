@@ -10,7 +10,7 @@ using namespace std;
 // makeNode creates a new node passing v to the node constructor
 // applyToRange applies the function f to a node x where x is the disconnected
 //   subtree with indices in the range [i, j] for the tree rooted at root
-// select find the kth node in the subtree of x
+// select finds the kth node in the subtree of x
 // index finds the index of node x in its tree
 //   (root is a dummy argument to maintain consistency with splay api)
 // getFirst returns the first node y (and its index) in the subtree of x
