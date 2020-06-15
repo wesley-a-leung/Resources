@@ -18,6 +18,7 @@ using namespace std;
 // Memory Complexity: O(N log N)
 // Tested:
 //   https://www.spoj.com/problems/GSS1/
+//   https://www.spoj.com/problems/GSS5/
 //   https://judge.yosupo.jp/problem/staticrmq
 template <class T, class F> struct DisjointSparseTable {
   int N; vector<vector<T>> ST; F op;
