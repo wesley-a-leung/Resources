@@ -8,11 +8,13 @@ using namespace std;
 // In practice, has a small constant, not quite as fast as fenwick trees
 //   or bottom up non lazy segment trees,
 //   and similar performance as bottom up lazy segment trees
-// A combine struct is provided with typedefs/using for data and lazy,
+// A combine struct is provided as a template parameter
+//   with typedefs/using for data and lazy,
 //   a query default value (qdef), lazy default value (ldef),
 //   and implementations of merge, applyLazy, getSegmentVal, and mergeLazy
 // If LAZY is false, then only qdef, merge, and applyLazy are required
 //   to be implemented
+// merge, and applyLazy must both be associative
 // Below is a sample struct for point assignment and range sum queries
 // struct Combine {
 //   using Data = int;
@@ -111,12 +113,14 @@ template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
 // Top down dynamic segment tree supporting range updates and range queries
 // Indices are 0-indexed and ranges are inclusive
 // In practice, has a large constant
-// A combine struct is provided with typedefs/using for data and lazy,
+// A combine struct is provided as a template parameter
+//   with typedefs/using for data and lazy,
 //   a query default value (qdef), lazy default value (ldef),
 //   and implementations of merge, applyLazy, getSegmentVal, mergeLazy,
 //   and getSegmentVdef
 // If LAZY is false, then only qdef, merge, applyLazy,
 //   and getSegmentVdef are required to be implemented
+// merge, applyLazy, and mergeLazy must all be associative
 // Below is a sample struct for point assignment and range sum queries,
 //   where the default value of each index is 1
 // struct Combine {

@@ -2,11 +2,16 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Sparse Table for generic operations
-// F must be a binary operator that is associative and idempotent
+// Sparse Table supporting range queries on a static array
 // Indices are 0-indexed and ranges are inclusive
 // In practice, constructor has a small constant,
-//   query has a moderate constant, but still faster than segment trees
+//   query has a large constant, but still faster than segment trees
+//   and performs similarly to disjoint sparse tables
+// op must be an associative and idempotent operation
+// op must also be passed in the constructor with its type specified
+//   as a template parameter, and must be constructable; thus, it cannot be
+//   a function pointer, and must be a lambda/std::function, or an instance
+//   of a functor with the () operator defined (slightly faster in practice)
 // Time Complexity:
 //   constructor: O(N log N)
 //   query: O(1)

@@ -5,6 +5,7 @@ using namespace std;
 // Combine struct used for maximum non empty contiguous subarray
 //   for Segment Trees, Implict Treaps, Link Cut Trees, etc
 // Tested:
+//   https://www.spoj.com/problems/GSS1/
 //   https://dmoj.ca/problem/dmpg17g2
 //   https://mcpt.ca/problem/seq3
 //   https://dmoj.ca/problem/acc1p1
