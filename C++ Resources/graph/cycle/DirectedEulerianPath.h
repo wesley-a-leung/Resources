@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Finds a directed eulerian path (every edge travered exactly once) in an directed graph
+// Finds a directed eulerian path (every edge traversed exactly once) in an directed graph
 // Time Complexity: O(V + E)
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct DirectedEulerianPath {

@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// counts the number of partitions of a number such that the sum is equal to n
+// counts the number of partitions of a number such that the sum is equal to N
 // Time Complexity: O(N^2)
 // Memory Complexity: O(N)
 template <const int MAXN> struct Partitions1 {
@@ -14,7 +14,7 @@ template <const int MAXN> struct Partitions1 {
     }
 };
 
-// counts the number of partitions of size k, for a number such that the sum is equal to n
+// counts the number of partitions of size K, for a number such that the sum is equal to N
 // Time Complexity: O(NK)
 // Memory Complexity: O(NK)
 template <const int MAXN, const int MAXK> struct Partitions2 {

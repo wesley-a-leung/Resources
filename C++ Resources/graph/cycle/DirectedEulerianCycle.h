@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Finds a directed eulerian cycle (every edge travered exactly once, returning to the start vertex) in an directed graph
+// Finds a directed eulerian cycle (every edge traversed exactly once, returning to the start vertex) in an directed graph
 // Time Complexity: O(V + E)
 // Memory Complexity: O(V + E)
 template <const int MAXV> struct DirectedEulerianCycle {
