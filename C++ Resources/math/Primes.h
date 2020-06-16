@@ -54,7 +54,7 @@ std::mt19937_64 rng64(seq);
 template <class T> bool millerRabin(T N, int iterations = 7) {
     if (N < 2 || N % 6 % 4 != 1) return (N | 1) == 3;
     vector<T> A = {2, 325, 9375, 28178, 450775, 9780504, 1795265022};
-    while (int(A.size()) < iterations) A.push_back(uniform_int_distribution<long long>(1795265023, numeric_limits<long long>::max())(rng));
+    while (int(A.size()) < iterations) A.push_back(uniform_int_distribution<long long>(1795265023, numeric_limits<long long>::max())(rng64));
     int s = 0;
     while (!(((N - 1) >> s) & 1)) s++;
     T d = N >> s;

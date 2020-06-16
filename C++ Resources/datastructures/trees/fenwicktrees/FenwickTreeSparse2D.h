@@ -1,5 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "FenwickTreeSparse1D.h"
 #include "../../PolicyBasedDataStructures.h"
 #include "../../sqrt/SqrtBufferSimple.h"
 #include "../../sqrt/SqrtBuffer.h"
