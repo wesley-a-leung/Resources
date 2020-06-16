@@ -20,8 +20,8 @@ template <class C> void adjacent_difference_2d(const C &diff, int N, int M, C &A
     }
 }
 
-template <class C> auto rsq(const C &pre, int u, int d, int l, int r) {
-    auto val = pre[d][r];
+template <class C> auto rsq(const C &pre, int u, int d, int l, int r) -> typename decay<decltype(pre[d][r])>::type {
+    typename decay<decltype(pre[d][r])>::type val = pre[d][r];
     if (u > 0) val -= pre[u - 1][r];
     if (l > 0) val -= pre[d][l - 1];
     if (u > 0 && l > 0) val += pre[u - 1][l - 1];
