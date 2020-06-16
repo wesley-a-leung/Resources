@@ -1,0 +1,29 @@
+name: build
+on: [push, pull_request]
+jobs:
+  compile-cpp:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Check version
+      run: g++ --version
+    - name: Compile
+      run: find "C++ Resources/" -name "*.h" -exec g++ -std=c++14 {} +
+  compile-java:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Check version
+      run: javac -version
+    - name: Compile
+      run: find "Java Resources/" -name "*.java" -exec javac {} +
+  compile-kotlin:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: |
+        sudo snap install --classic kotlin
+        kotlinc -version
+    - name: Compile
+      run: find "Kotlin Resources/" -name "*.kt" -exec kotlinc {} +
