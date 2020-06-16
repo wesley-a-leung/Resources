@@ -1,6 +1,7 @@
 #pragma once
 #include <bits/stdc++.h>
 #include "../math/ModularArithmetic.h"
+#include "../utils/MakeUnique.h"
 using namespace std;
 
 std::seed_seq seq{

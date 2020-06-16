@@ -2,6 +2,7 @@
 #include <bits/stdc++.h>
 #include "ModularArithmetic.h"
 #include "GCD.h"
+#include "../utils/MakeUnique.h"
 using namespace std;
 
 // Determines whether x is prime
