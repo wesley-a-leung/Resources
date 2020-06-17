@@ -23,7 +23,7 @@ jobs:
     - name: Replace pragma once
       run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Compile
-      run: find "Content/C++//" -name "*.h" -exec g++ -std=c++11 -fsyntax-only {} +
+      run: find "Content/C++/" -name "*.h" -exec g++ -std=c++11 -fsyntax-only {} +
   compile-cpp14:
     runs-on: ubuntu-latest
     steps:
@@ -32,9 +32,9 @@ jobs:
       run: |
         g++ --version
     - name: Replace pragma once
-      run: find "Content/C++//" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
+      run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Compile
-      run: find "Content/C++//" -name "*.h" -exec g++ -std=c++14 -fsyntax-only {} +
+      run: find "Content/C++/" -name "*.h" -exec g++ -std=c++14 -fsyntax-only {} +
   compile-cpp17:
     runs-on: ubuntu-latest
     steps:
@@ -43,9 +43,9 @@ jobs:
       run: |
         g++ --version
     - name: Replace pragma once
-      run: find "Content/C++//" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
+      run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Compile
-      run: find "Content/C++//" -name "*.h" -exec g++ -std=c++17 -fsyntax-only {} +
+      run: find "Content/C++/" -name "*.h" -exec g++ -std=c++17 -fsyntax-only {} +
   compile-java8:
     runs-on: ubuntu-latest
     steps:
