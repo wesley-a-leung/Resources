@@ -7,6 +7,7 @@ using namespace std;
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
+// Order of arguments for update differs slightly from FenwickTreeRangePoint
 // In practice, this version performs as well as the multidimensional version
 // Very small constant, like most fenwick trees
 // Time Complexity:

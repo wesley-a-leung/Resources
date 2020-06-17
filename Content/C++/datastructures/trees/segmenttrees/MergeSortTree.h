@@ -45,7 +45,7 @@ template <class T, class Comparator = less<T>> struct MergeSortTree {
     return ret;
   }
   T select(int l, int r, int k) {
-    return sorted[bsearch<Last>(0, N, [&] (int mid) {
+    return sorted[bsearch<LAST>(0, N, [&] (int mid) {
       return rank(l, r, sorted[mid]) <= k;
     })];
   }

@@ -21,7 +21,7 @@ using namespace std;
 //   https://dmoj.ca/problem/coci17c1p5
 //   https://dmoj.ca/problem/dmopc18c5p5
 //   https://www.spoj.com/problems/MKTHNUM/
-const bool First = true, Last = false;
+const bool FIRST = true, LAST = false;
 template <const bool ISFIRST, class T, class F> T bsearch(T lo, T hi, F f) {
   hi--; while (lo <= hi) {
     T mid = lo + (hi - lo) / 2;

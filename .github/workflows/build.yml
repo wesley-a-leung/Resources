@@ -1,6 +1,18 @@
 name: build
 on: [push, pull_request]
 jobs:
+  check-line-endings:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check line endings
+      run: find "Content/" -type f \( -iname \*.h -o -iname \*.java -o -iname \*.kt \) -exec python3 Scripts/CheckLineEndings.py {} +
+  check-line-lengths:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check line lengths
+      run: find "Content/" -type f \( -iname \*.h -o -iname \*.java -o -iname \*.kt \) -exec python3 Scripts/CheckLineLengths.py {} +
   compile-cpp11:
     runs-on: ubuntu-latest
     steps:
@@ -9,9 +21,9 @@ jobs:
       run: |
         g++ --version
     - name: Replace pragma once
-      run: find "C++ Resources/" -name "*.h" -exec python3 .github/ReplacePragmas.py {} +
+      run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Compile
-      run: find "C++ Resources/" -name "*.h" -exec g++ -std=c++11 -fsyntax-only {} +
+      run: find "Content/C++//" -name "*.h" -exec g++ -std=c++11 -fsyntax-only {} +
   compile-cpp14:
     runs-on: ubuntu-latest
     steps:
@@ -20,9 +32,9 @@ jobs:
       run: |
         g++ --version
     - name: Replace pragma once
-      run: find "C++ Resources/" -name "*.h" -exec python3 .github/ReplacePragmas.py {} +
+      run: find "Content/C++//" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Compile
-      run: find "C++ Resources/" -name "*.h" -exec g++ -std=c++14 -fsyntax-only {} +
+      run: find "Content/C++//" -name "*.h" -exec g++ -std=c++14 -fsyntax-only {} +
   compile-cpp17:
     runs-on: ubuntu-latest
     steps:
@@ -31,9 +43,9 @@ jobs:
       run: |
         g++ --version
     - name: Replace pragma once
-      run: find "C++ Resources/" -name "*.h" -exec python3 .github/ReplacePragmas.py {} +
+      run: find "Content/C++//" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Compile
-      run: find "C++ Resources/" -name "*.h" -exec g++ -std=c++17 -fsyntax-only {} +
+      run: find "Content/C++//" -name "*.h" -exec g++ -std=c++17 -fsyntax-only {} +
   compile-java8:
     runs-on: ubuntu-latest
     steps:
@@ -55,7 +67,7 @@ jobs:
     - name: Check version
       run: javac -version
     - name: Compile
-      run: find "Java Resources/" -name "*.java" -exec javac {} +
+      run: find "Content/Java/" -name "*.java" -exec javac {} +
   compile-kotlin:
     runs-on: ubuntu-latest
     steps:
@@ -65,4 +77,26 @@ jobs:
         sudo snap install --classic kotlin
         kotlinc -version
     - name: Compile
-      run: find "Kotlin Resources/" -name "*.kt" -exec kotlinc {} +
+      run: find "Content/Kotlin/" -name "*.kt" -exec kotlinc {} +
+  fuzz-tests-cpp:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check versions
+      run: |
+        g++ --version
+    - name: Replace pragma once
+      run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
+    - name: Run fuzz tests
+      run: $ find "Tests/C++/" -name "*FuzzTest.cpp" -exec Scripts/RunCppTests.sh {} +
+  stress-tests-cpp:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check versions
+      run: |
+        g++ --version
+    - name: Replace pragma once
+      run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
+    - name: Run stress tests
+      run: $ find "Tests/C++/" -name "*StressTest.cpp" -exec Scripts/RunCppTests.sh {} +
