@@ -5,8 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Check version
+    - name: Check versions
       run: g++ --version
+      run: python --version
+    - name: Replace pragma once
+      run: find "C++ Resources/" -name "*.h" -exec python ReplacePragmas.py {} +
     - name: Compile
       run: find "C++ Resources/" -name "*.h" -exec g++ -std=c++11 -fsyntax-only {} +
   compile-java:
