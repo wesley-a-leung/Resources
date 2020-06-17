@@ -1,4 +1,4 @@
-# script to remove pramga once at the top of C++ header files and replace
+# Script to remove pramga once at the top of C++ header files and replace
 # them with header guards
 import pathlib
 import sys

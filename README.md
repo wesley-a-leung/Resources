@@ -13,6 +13,12 @@ statements on a single line
 - `if`, `else`, `for`, `while`, etc ... statements should either be immediately
 followed by a single statement and a newline, a block wrapped in curly braces
 followed by a newline, or only a newline
+- short functions and blocks can be squeezed onto a single line wrapped in
+curly braces
+- all lines should end in `\n`
+- important variables and constants should be completely capitalized,
+classes and filename should be upper camel case, other variables and functions
+should be lower camel case, unless it is to match C++ STL conventions
 - otherwise, mostly adhering to
 [Google's Style Guide](https://google.github.io/styleguide/cppguide.html)
 - templates should either be a standalone function, or a struct/class

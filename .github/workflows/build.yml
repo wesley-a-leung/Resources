@@ -8,7 +8,6 @@ jobs:
     - name: Check versions
       run: |
         g++ --version
-        python3 --version
     - name: Replace pragma once
       run: find "C++ Resources/" -name "*.h" -exec python3 .github/ReplacePragmas.py {} +
     - name: Compile
@@ -20,7 +19,6 @@ jobs:
     - name: Check versions
       run: |
         g++ --version
-        python3 --version
     - name: Replace pragma once
       run: find "C++ Resources/" -name "*.h" -exec python3 .github/ReplacePragmas.py {} +
     - name: Compile
@@ -32,7 +30,6 @@ jobs:
     - name: Check versions
       run: |
         g++ --version
-        python3 --version
     - name: Replace pragma once
       run: find "C++ Resources/" -name "*.h" -exec python3 .github/ReplacePragmas.py {} +
     - name: Compile
