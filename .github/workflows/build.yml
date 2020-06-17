@@ -1,10 +1,10 @@
 name: build
 on: [push, pull_request]
 jobs:
-  compile-cpp:
+  compile-cpp11:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Check versions
       run: |
         g++ --version
@@ -13,10 +13,48 @@ jobs:
       run: find "C++ Resources/" -name "*.h" -exec python3 .github/ReplacePragmas.py {} +
     - name: Compile
       run: find "C++ Resources/" -name "*.h" -exec g++ -std=c++11 -fsyntax-only {} +
-  compile-java:
+  compile-cpp14:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
+    - name: Check versions
+      run: |
+        g++ --version
+        python3 --version
+    - name: Replace pragma once
+      run: find "C++ Resources/" -name "*.h" -exec python3 .github/ReplacePragmas.py {} +
+    - name: Compile
+      run: find "C++ Resources/" -name "*.h" -exec g++ -std=c++14 -fsyntax-only {} +
+  compile-cpp17:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check versions
+      run: |
+        g++ --version
+        python3 --version
+    - name: Replace pragma once
+      run: find "C++ Resources/" -name "*.h" -exec python3 .github/ReplacePragmas.py {} +
+    - name: Compile
+      run: find "C++ Resources/" -name "*.h" -exec g++ -std=c++17 -fsyntax-only {} +
+  compile-java8:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v1.3.0
+      with:
+        java-version: '8'
+    - name: Check version
+      run: javac -version
+    - name: Compile
+      run: find "Java Resources/" -name "*.java" -exec javac {} +
+  compile-java11:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v1.3.0
+      with:
+        java-version: '11'
     - name: Check version
       run: javac -version
     - name: Compile
@@ -24,7 +62,7 @@ jobs:
   compile-kotlin:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Install dependencies
       run: |
         sudo snap install --classic kotlin
