@@ -5,11 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Check line ending
-      run: find -type f \( -iname \*.h -o -iname \*.java -o -iname \*.kt \) -exec python3 .github/CheckLineEnding.py {} +
-  check-line-length:
+    - name: Check line endings
+      run: find -type f \( -iname \*.h -o -iname \*.java -o -iname \*.kt \) -exec python3 .github/CheckLineEndings.py {} +
+  check-line-lengths:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Check line length
-      run: find -type f \( -iname \*.h -o -iname \*.java -o -iname \*.kt \) -exec python3 .github/CheckLineLength.py {} +
+    - name: Check line lengths
+      run: find -type f \( -iname \*.h -o -iname \*.java -o -iname \*.kt \) -exec python3 .github/CheckLineLengths.py {} +
