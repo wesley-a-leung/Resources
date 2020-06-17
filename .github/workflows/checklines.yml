@@ -1,6 +1,12 @@
-name: line length
+name: check lines
 on: [push, pull_request]
 jobs:
+  check-line-endings:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check line ending
+      run: find -type f \( -iname \*.h -o -iname \*.java -o -iname \*.kt \) -exec python3 .github/CheckLineEnding.py {} +
   check-line-length:
     runs-on: ubuntu-latest
     steps:
