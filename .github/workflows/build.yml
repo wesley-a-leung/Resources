@@ -56,7 +56,7 @@ jobs:
     - name: Check version
       run: javac -version
     - name: Compile
-      run: find "Java Resources/" -name "*.java" -exec javac {} +
+      run: find "Content/Java/" -name "*.java" -exec javac {} +
   compile-java11:
     runs-on: ubuntu-latest
     steps:
@@ -88,7 +88,7 @@ jobs:
     - name: Replace pragma once
       run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Run fuzz tests
-      run: $ find "Tests/C++/" -name "*FuzzTest.cpp" -exec Scripts/RunCppTests.sh {} +
+      run: find "Tests/C++/" -name "*FuzzTest.cpp" -exec Scripts/RunCppTests.sh {} +
   stress-tests-cpp:
     runs-on: ubuntu-latest
     steps:
@@ -99,4 +99,4 @@ jobs:
     - name: Replace pragma once
       run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Run stress tests
-      run: $ find "Tests/C++/" -name "*StressTest.cpp" -exec Scripts/RunCppTests.sh {} +
+      run: find "Tests/C++/" -name "*StressTest.cpp" -exec Scripts/RunCppTests.sh {} +
