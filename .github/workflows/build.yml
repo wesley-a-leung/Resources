@@ -6,7 +6,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Check versions
-      run: /
+      run: |
         g++ --version
         python --version
     - name: Replace pragma once
