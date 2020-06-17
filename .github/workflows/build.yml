@@ -8,9 +8,9 @@ jobs:
     - name: Check versions
       run: |
         g++ --version
-        python --version
+        python3 --version
     - name: Replace pragma once
-      run: find "C++ Resources/" -name "*.h" -exec python ReplacePragmas.py {} +
+      run: find "C++ Resources/" -name "*.h" -exec python3 ReplacePragmas.py {} +
     - name: Compile
       run: find "C++ Resources/" -name "*.h" -exec g++ -std=c++11 -fsyntax-only {} +
   compile-java:
