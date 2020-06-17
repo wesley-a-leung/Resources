@@ -4,7 +4,9 @@ using namespace std;
 
 // Fenwick Tree or Binary Indexed Tree supporting point updates
 //   and range queries in 1 dimension
-// Indices are 0-indexed and ranges are inclusive
+// Indices are 0-indexed and ranges are inclusive with the exception of
+//   functions that accept two iterators as a parameter, such as
+//   the constructor, which are exclusive
 // bsearch returns first index where cmp returns false,
 //   or N if no such index exists
 // In practice, this version performs as well as the multidimensional version

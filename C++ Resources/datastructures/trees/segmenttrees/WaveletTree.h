@@ -8,7 +8,9 @@ using namespace std;
 // rank finds the index of the element v if the subarray [l, r] was sorted
 // count counts the number of elements in the subarray [l, r] in the
 //   range [lo, hi]
-// Indices are 0-indexed and ranges are inclusive
+// Indices are 0-indexed and ranges are inclusive with the exception of
+//   functions that accept two iterators as a parameter, such as
+//   the constructor, which are exclusive
 // In practice, has a large constant, slower than Merge Sort Trees for
 //   rank queries, but much faster for select queries
 // Time Complexity:

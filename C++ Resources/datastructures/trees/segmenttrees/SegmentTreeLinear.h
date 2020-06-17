@@ -5,7 +5,9 @@ using namespace std;
 // Segment Tree supporting range updates with updates in the form of
 //   adding m + b, 2m + b, 3m + b, ... to the interval [l, r],
 //   and range sum queries
-// Indices are 0-indexed and ranges are inclusive
+// Indices are 0-indexed and ranges are inclusive with the exception of
+//   functions that accept two iterators as a parameter, such as
+//   the constructor, which are exclusive
 // In practice, has a small constant, but slower than FenwickTreeLinear
 // Time Complexity:
 //   constructor: O(N)

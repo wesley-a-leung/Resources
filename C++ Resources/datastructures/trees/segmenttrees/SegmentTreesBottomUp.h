@@ -3,7 +3,9 @@
 using namespace std;
 
 // Bottom up segment tree supporting point updates and range queries
-// Indices are 0-indexed and ranges are inclusive
+// Indices are 0-indexed and ranges are inclusive with the exception of
+//   functions that accept two iterators as a parameter, such as
+//   the constructor, which are exclusive
 // In practice, has a small constant, not quite as fast as fenwick trees,
 //   but faster than top down segment trees
 // A combine struct is provided as a template parameter
@@ -58,7 +60,9 @@ template <class Combine> struct SegmentTreeBottomUp {
 };
 
 // Bottom up segment tree supporting range updates and range queries
-// Indices are 0-indexed and ranges are inclusive
+// Indices are 0-indexed and ranges are inclusive with the exception of
+//   functions that accept two iterators as a parameter, such as
+//   the constructor, which are exclusive
 // In practice, has a small constant, not quite as fast as fenwick trees,
 //   and similar performance as top down segment trees
 // A combine struct is provided as a template parameter

@@ -4,7 +4,9 @@ using namespace std;
 
 // Top down segment tree supporting point updates and range queries,
 //   with a lazy template argument to enable range updates
-// Indices are 0-indexed and ranges are inclusive
+// Indices are 0-indexed and ranges are inclusive with the exception of
+//   functions that accept two iterators as a parameter, such as
+//   the constructor, which are exclusive
 // In practice, has a small constant, not quite as fast as fenwick trees
 //   or bottom up non lazy segment trees,
 //   and similar performance as bottom up lazy segment trees
@@ -111,7 +113,9 @@ template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
 };
 
 // Top down dynamic segment tree supporting range updates and range queries
-// Indices are 0-indexed and ranges are inclusive
+// Indices are 0-indexed and ranges are inclusive with the exception of
+//   functions that accept two iterators as a parameter, such as
+//   the constructor, which are exclusive
 // In practice, has a large constant
 // A combine struct is provided as a template parameter
 //   with typedefs/using for data and lazy,

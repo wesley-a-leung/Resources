@@ -4,7 +4,9 @@
 using namespace std;
 
 // Merge Sort Tree supporting select and rank operations for a subarray
-// Indices are 0-indexed and ranges are inclusive
+// Indices are 0-indexed and ranges are inclusive with the exception of
+//   functions that accept two iterators as a parameter, such as
+//   the constructor, which are exclusive
 // In practice, has a small constant, faster than Wavelet Trees for
 //   rank queries, but much slower for select queries
 // Time Complexity:

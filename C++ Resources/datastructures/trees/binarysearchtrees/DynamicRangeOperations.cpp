@@ -4,7 +4,9 @@ using namespace std;
 
 // Operations on ranges of a dynamic array,
 //   backed by a generic binary search tree
-// Indices are 0-indexed and ranges are inclusive
+// Indices are 0-indexed and ranges are inclusive with the exception of
+//   functions that accept two iterators as a parameter, such as
+//   the constructor, which are exclusive
 // Supports point/range updates/queries, range reversals,
 //   and binary searching as long as Node contains the appropriate flags
 // Also supports insertion and erasing at an index or with a comparator

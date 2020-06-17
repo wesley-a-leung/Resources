@@ -3,7 +3,9 @@
 using namespace std;
 
 // Disjoint Sparse Table supporting range queries on a static array
-// Indices are 0-indexed and ranges are inclusive
+// Indices are 0-indexed and ranges are inclusive with the exception of
+//   functions that accept two iterators as a parameter, such as
+//   the constructor, which are exclusive
 // In practice, constructor has a small constant,
 //   query has a large constant, but still faster than segment trees
 //   and performs similarly to sparse tables

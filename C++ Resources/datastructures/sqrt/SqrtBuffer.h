@@ -4,7 +4,9 @@ using namespace std;
 
 // Maintains the rank of an element in an array, allowing for multiple
 //   insertions at the same time (including negative)
-// Indices are 0-indexed and ranges are inclusive
+// Indices are 0-indexed and ranges are inclusive with the exception of
+//   functions that accept two iterators as a parameter, such as
+//   the constructor, which are exclusive
 // In practice, has a very small constant, and is faster than RootArray and
 //   balanced binary search trees
 // Time Complexity:
