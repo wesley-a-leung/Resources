@@ -6,8 +6,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Check versions
-      run: g++ --version
-      run: python --version
+      run: /
+        g++ --version
+        python --version
     - name: Replace pragma once
       run: find "C++ Resources/" -name "*.h" -exec python ReplacePragmas.py {} +
     - name: Compile
