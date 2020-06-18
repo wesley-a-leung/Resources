@@ -32,3 +32,5 @@ complexity,  time complexity and memory complexity,
 and specify where it was tested
 - if template parameters are non-trivial, those should be described as well,
 possibly with an example provided
+- constant factors (very small, small, moderate, large, very large) roughly
+differ by factors of 10
