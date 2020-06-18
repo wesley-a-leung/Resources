@@ -21,7 +21,7 @@ using namespace std;
 //   where cmp(val, x) and cmp(x, val) are false, if it exists
 // All other operations work regardless of whether it is sorted or not
 // Default comparator is a simple pointer comparator
-// In practice, has a small constant, and is faster than balanced binary
+// In practice, has a very small constant, and is faster than balanced binary
 //   search trees when R = 3, and SCALE = 6, even for N >= 1e7
 // Time Complexity:
 //   constructor: O(N)

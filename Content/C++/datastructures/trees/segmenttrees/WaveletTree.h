@@ -11,7 +11,7 @@ using namespace std;
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
-// In practice, has a large constant, slower than Merge Sort Trees for
+// In practice, has a moderate constant, slower than Merge Sort Trees for
 //   rank queries, but much faster for select queries
 // Time Complexity:
 //   constructor, rank, select: O(N log N)

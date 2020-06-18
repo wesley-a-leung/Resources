@@ -7,7 +7,7 @@ using namespace std;
 //   in any number of dimensions
 // Indices are 0-indexed and ranges are inclusive
 // In practice, this version performs as well as the 1D version
-// Very small constant, like most fenwick trees
+// Small constant, like most fenwick trees, and faster than segment trees
 // Time Complexity:
 //   constructor: O(PI(N_i))
 //   update, query: O(PI(log(N_i)))

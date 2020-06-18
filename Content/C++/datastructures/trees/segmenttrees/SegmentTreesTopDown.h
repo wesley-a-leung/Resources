@@ -116,7 +116,7 @@ template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
-// In practice, has a large constant
+// In practice, has a moderate constant
 // A combine struct is provided as a template parameter
 //   with typedefs/using for data and lazy,
 //   a query default value (qdef), lazy default value (ldef),

@@ -9,7 +9,7 @@ using namespace std;
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
 // In practice, this version performs as well as the multidimensional version
-// Very small constant, like most fenwick trees
+// Small constant, like most fenwick trees, and faster than segment trees
 // Time Complexity:
 //   constructor: O(N)
 //   update, query: O(log N)

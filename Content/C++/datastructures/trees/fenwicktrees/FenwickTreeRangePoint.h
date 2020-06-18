@@ -7,7 +7,7 @@ using namespace std;
 // Indices are 0-indexed and ranges are inclusive
 // Order of arguments for update differs slightly from FenwickTreeRangePoint1D
 // In practice, this version performs as well as the 1D version
-// Very small constant, like most fenwick trees
+// Small constant, like most fenwick trees, and faster than segment trees
 // Time Complexity:
 //   constructor: O(PI(N_i))
 //   update: O(2^D * PI(log(N_i)))

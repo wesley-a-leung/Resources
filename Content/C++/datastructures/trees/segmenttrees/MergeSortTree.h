@@ -7,7 +7,7 @@ using namespace std;
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
-// In practice, has a small constant, faster than Wavelet Trees for
+// In practice, has a moderate constant, faster than Wavelet Trees for
 //   rank queries, but much slower for select queries
 // Time Complexity:
 //   constructor: O(N log N)

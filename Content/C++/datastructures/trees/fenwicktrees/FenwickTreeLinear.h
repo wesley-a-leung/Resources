@@ -7,7 +7,7 @@ using namespace std;
 //   adding m + b, 2m + b, 3m + b, ... to the interval [l, r],
 //   and range sum queries
 // Indices are 0-indexed and ranges are inclusive
-// Very small constant, like most fenwick trees
+// Small constant, like most fenwick trees, and faster than segment trees
 // Time Complexity:
 //   constructor: O(N)
 //   update, rsq: O(log N)

@@ -6,8 +6,8 @@ using namespace std;
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
-// In practice, has a very small constant, and is faster than RootArray and
-//   balanced binary search trees
+// In practice, has a very small constant, performs similarly to RootArray,
+//   and is faster than balanced binary search trees
 // Time Complexity:
 //   constructor: O(N)
 //   insert: O(1) amortized

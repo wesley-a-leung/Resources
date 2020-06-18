@@ -31,6 +31,8 @@ template <class T1, class T2, class H1 = rand_hash<T1>,
 };
 
 // unordered_set and unordered_map with a randomized hash
+// In practice, has a moderate constant, but still slower than
+//   pbds::gp_hash_table
 // Tested:
 //   https://dmoj.ca/problem/set
 //   https://dmoj.ca/problem/fallingsnowflakes

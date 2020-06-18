@@ -1,6 +1,5 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "FenwickTreeSparse1D.h"
 #include "../../PolicyBasedDataStructures.h"
 #include "../../sqrt/SqrtBufferSimple.h"
 #include "../../sqrt/SqrtBuffer.h"
@@ -12,9 +11,6 @@ using namespace __gnu_pbds;
 // Certain implementations only allow for increments and decrements of 1
 // In general, offline fenwick trees are faster than sqrt implementations,
 //   which are faster than the pbds implementations
-// Offline fenwick trees and sqrt implementations have small constants,
-//   pbds tree implementation has a moderate constant,
-//   and pbds hash_table implementations have large constants
 
 // Sparse Fenwick Tree supporting point updates (with any value)
 //   and range queries in 2 dimensions (sparse in 1 dimension)
@@ -142,7 +138,7 @@ struct FenwickTreeSparse2DOffline {
 //   and range queries in 2 dimensions
 //   using SqrtBufferSimple (sparse in 1 dimension)
 // Indices are 0-indexed and ranges are inclusive
-// In practice, has a small constant
+// In practice, has a very small constant
 // Time Complexity:
 //   constructor: O(N)
 //   add, rem: O(log N) amortized
@@ -151,9 +147,9 @@ struct FenwickTreeSparse2DOffline {
 // Tested:
 //   https://codeforces.com/contest/1093/problem/E
 //   https://dmoj.ca/problem/dmopc19c7p5
-template <class IndexType> struct FenwickTreeSemiSparse2DSimpleSqrt {
+template <class IndexType> struct FenwickTreeSemiSparse2DSimple {
   int N; vector<SqrtBufferSimple<IndexType>> IN, OUT;
-  FenwickTreeSemiSparse2DSimpleSqrt(int N, double SCALE = 1)
+  FenwickTreeSemiSparse2DSimple(int N, double SCALE = 1)
       : N(N), IN(N + 1, SqrtBufferSimple<IndexType>(SCALE)),
         OUT(N + 1, SqrtBufferSimple<IndexType>(SCALE)) {}
   void add(int i, IndexType j) {
@@ -164,7 +160,7 @@ template <class IndexType> struct FenwickTreeSemiSparse2DSimpleSqrt {
   }
   int rsq(int d, IndexType r) {
     int ret = 0; for (d++; d > 0; d -= d & -d)
-      ret += IN[d].aboveInd(r) - OUT[r].aboveInd(r);
+      ret += IN[d].aboveInd(r) - OUT[d].aboveInd(r);
     return ret;
   }
   int rsq(int d, IndexType l, IndexType r) {
@@ -180,7 +176,7 @@ template <class IndexType> struct FenwickTreeSemiSparse2DSimpleSqrt {
 // Sparse Fenwick Tree supporting point updates (with any value)
 //   and range queries in 2 dimensions using SqrtBuffer (sparse in 1 dimension)
 // Indices are 0-indexed and ranges are inclusive
-// In practice, has a small constant
+// In practice, has a very small constant
 // Time Complexity:
 //   constructor: O(N)
 //   update: O(log N) amortized
@@ -189,9 +185,9 @@ template <class IndexType> struct FenwickTreeSemiSparse2DSimpleSqrt {
 // Tested:
 //   https://dmoj.ca/problem/apio19p3
 //   https://dmoj.ca/problem/ioi01p1
-template <class T, class IndexType> struct FenwickTreeSemiSparse2DSqrt {
+template <class T, class IndexType> struct FenwickTreeSemiSparse2D {
   int N; vector<SqrtBuffer<T, IndexType>> BIT;
-  FenwickTreeSemiSparse2DSqrt(int N, double SCALE = 1)
+  FenwickTreeSemiSparse2D(int N, double SCALE = 1)
       : N(N), BIT(N + 1, SqrtBuffer<T, IndexType>(SCALE)) {}
   void update(int i, IndexType j, T v) {
     for (i++; i <= N; i += i & -i) BIT[i].emplace(j, v);
@@ -209,106 +205,102 @@ template <class T, class IndexType> struct FenwickTreeSemiSparse2DSqrt {
   }
 };
 
-// Sparse Fenwick Tree supporting point updates (with value 1 and -1) 
-//   and range queries in 2 dimensions using pbds tree (sparse in 1 dimension)
-// Indices are 0-indexed and ranges are inclusive
-// In practice, has a moderate constant
-// Time Complexity:
-//   constructor: O(N)
-//   add, rem, rsq: O(log N log Q) for Q updates
-// Memory Complexity: O(N + Q log N) for Q updates
-// Tested:
-//   https://codeforces.com/contest/1093/problem/E
-template <class IndexType> struct FenwickTreeSemiSparse2DSimpleTreeset {
-  int N, stamp; vector<treeset<pair<IndexType, int>>> BIT;
-  FenwickTreeSemiSparse2DSimpleTreeset(int N)
-      : N(N), stamp(0), BIT(N + 1, treeset<pair<IndexType, int>>()) {}
-  void add(int i, IndexType j) {
-    for (i++; i <= N; i += i & -i) BIT[i].insert(make_pair(j, stamp++));
-  }
-  void rem(int i, IndexType j) {
-    for (i++; i <= N; i += i & -i)
-      BIT[i].erase(BIT[i].lower_bound(make_pair(j, 0)));
-  }
-  int rsq(int d, IndexType r) {
-    int ret = 0; for (d++; d > 0; d -= d & -d)
-      ret += BIT[d].order_of_key(make_pair(r, stamp));
-    return ret;
-  }
-  int rsq(int d, IndexType l, IndexType r) {
-    return rsq(d, r) - rsq(d, l - 1);
-  }
-  int rsq(int u, int d, IndexType l, IndexType r) {
-    return rsq(d, l, r) - rsq(u - 1, l, r);
-  }
-};
-
-// Sparse Fenwick Tree supporting point updates (with any value)
+// Sparse Fenwick Tree supporting point updates (with value 1 and -1)
 //   and range queries in 2 dimensions
-//   using pbds hash_table (sparse in 1 dimension)
+//   using pbds hash_table for the first dimension,
+//   and SqrtBufferSimple for the second dimension (sparse in 2 dimensions)
 // Indices are 0-indexed and ranges are inclusive
-// In practice, has a large constant
-// Time Complexity:
-//   constructor: O(N)
-//   update, rsq: O(log N log M) on avareage
-// Memory Complexity: O(N + Q log N log M) for Q updates
-// Tested:
-//   https://dmoj.ca/problem/fallingsnowflakes
-template <class T, class IndexType, class Container = hashmap<IndexType, T>>
-struct FenwickTreeSemiSparse2D {
-  int N; vector<FenwickTreeSparse1D<T, IndexType, Container>> BIT;
-  FenwickTreeSemiSparse2D(int N, IndexType M)
-      : N(N), BIT(N + 1, FenwickTreeSparse1D<T, IndexType, Container>(M)) {}
-  void update(int i, IndexType j, T v) {
-    for (i++; i <= N; i += i & -i) BIT[i].update(j, v);
-  }
-  T rsq(int d, IndexType r) {
-    T ret = T(); for (d++; d > 0; d -= d & -d) ret += BIT[d].rsq(r);
-    return ret;
-  }
-  T rsq(int d, IndexType l, IndexType r) { return rsq(d, r) - rsq(d, l - 1); }
-  T rsq(int u, int d, IndexType l, IndexType r) {
-    return rsq(d, l, r) - rsq(u - 1, l, r);
-  }
-};
-
-// Sparse Fenwick Tree supporting point updates (with any value)
-//   and range queries in 2 dimensions
-//   using pbds hash_table (sparse in 2 dimensions)
-// Indices are 0-indexed and ranges are inclusive
-// In practice, has a large constant
+// In practice, has a very small constant
 // Time Complexity:
 //   constructor: O(1)
-//   update, rsq: O(log N log M) on average
-// Memory Complexity: O(Q log N log M) for Q updates
+//   add, rem: O(log N) amortized
+//   rsq: O(log N sqrt Q) amortized for Q updates
+// Memory Complexity: O(Q log N) for Q updates
+// Tested:
+//   https://codeforces.com/contest/1093/problem/E
+template <class IndexType1, class IndexType2,
+          class Container = hashmap<
+              IndexType1, pair<SqrtBufferSimple<IndexType2>,
+                               SqrtBufferSimple<IndexType2>>>>
+struct FenwickTreeSparse2DSimple {
+  IndexType1 N; double SCALE; Container BIT;
+  FenwickTreeSparse2DSimple(IndexType1 N, double SCALE = 1)
+      : N(N), SCALE(SCALE) {}
+  void add(IndexType1 i, IndexType2 j) {
+    i++; for (IndexType1 x = i; x <= N; x += x & -x) {
+      auto it = BIT.find(x); if (it == BIT.end()) {
+        BIT[x] = make_pair(SqrtBufferSimple<IndexType2>(SCALE),
+                           SqrtBufferSimple<IndexType2>(SCALE));
+      }
+      BIT[x].first.insert(j);
+    }
+  }
+  void rem(IndexType1 i, IndexType2 j) {
+    i++; for (IndexType1 x = i; x <= N; x += x & -x) {
+      auto it = BIT.find(x); if (it == BIT.end()) {
+        BIT[x] = make_pair(SqrtBufferSimple<IndexType2>(SCALE),
+                           SqrtBufferSimple<IndexType2>(SCALE));
+      }
+      BIT[x].second.insert(j);
+    }
+  }
+  int rsq(IndexType1 d, IndexType2 r) {
+    d++; int ret = 0; for (IndexType1 x = d; x > 0; x -= x & -x) {
+      auto it = BIT.find(x);
+      ret += it->second.first.aboveInd(r) - it->second.second.aboveInd(r);
+    }
+    return ret;
+  }
+  int rsq(IndexType1 d, IndexType2 l, IndexType2 r) {
+    d++; int ret = 0; for (IndexType1 x = d; x > 0; x -= x & -x) {
+      auto it = BIT.find(x);
+      ret += it->second.first.count(l, r) - it->second.second.count(l, r);
+    }
+    return ret;
+  }
+  int rsq(IndexType1 u, IndexType1 d, IndexType2 l, IndexType2 r) {
+    return rsq(d, l, r) - rsq(u - 1, l, r);
+  }
+};
+
+// Sparse Fenwick Tree supporting point updates (with any value)
+//   and range queries in 2 dimensions
+//   using pbds hash_table for the first dimension,
+//   and SqrtBuffer for the second dimension (sparse in 2 dimensions)
+// Indices are 0-indexed and ranges are inclusive
+// In practice, has a very small constant
+// Time Complexity:
+//   constructor: O(1)
+//   update: O(log N) amortized
+//   rsq: O(log N sqrt Q) amortized for Q updates
+// Memory Complexity: O(Q log N) for Q update
 // Tested:
 //   https://dmoj.ca/problem/fallingsnowflakes
 template <class T, class IndexType1, class IndexType2,
-          class Container = hashmap<pair<IndexType1, IndexType2>, T,
-                                    pair_hash<IndexType1, IndexType2>>>
+          class Container = hashmap<IndexType1, SqrtBuffer<IndexType2, T>>>
 struct FenwickTreeSparse2D {
-  IndexType1 N; IndexType2 M; Container BIT;
-  FenwickTreeSparse2D(IndexType1 N, IndexType2 M) : N(N), M(M) {}
+  IndexType1 N; double SCALE; Container BIT;
+  FenwickTreeSparse2D(IndexType1 N, double SCALE = 1) : N(N), SCALE(SCALE) {}
   void update(IndexType1 i, IndexType2 j, T v) {
-    i++; j++; for (IndexType1 x = i; x <= N; x += x & -x) {
-      for (IndexType2 y = j; y <= M; y += y & -y) {
-        auto it = BIT.find(make_pair(x, y));
-        if (it == BIT.end()) BIT[make_pair(x, y)] += v;
-        else if ((it->second += v) == T()) BIT.erase(it->first);
-      }
+    i++; for (IndexType1 x = i; x <= N; x += x & -x) {
+      auto it = BIT.find(x); if (it == BIT.end()) {
+        (BIT[x] = SqrtBuffer<IndexType2, T>(SCALE)).emplace(j, v);
+      } else it->second.emplace(j, v);
     }
   }
   T rsq(IndexType1 d, IndexType2 r) {
-    d++; r++; T ret = T(); for (IndexType1 x = d; x > 0; x -= x & -x) {
-      for (IndexType2 y = r; y > 0; y -= y & -y) {
-        auto it = BIT.find(make_pair(x, y));
-        if (it != BIT.end()) ret += it->second;
-      }
+    d++; T ret = T(); for (IndexType1 x = d; x > 0; x -= x & -x) {
+      auto it = BIT.find(x);
+      if (it != BIT.end()) ret += it->second.aboveInd(r);
     }
     return ret;
   }
   T rsq(IndexType1 d, IndexType2 l, IndexType2 r) {
-    return rsq(d, r) - rsq(d, l - 1);
+    d++; T ret = T(); for (IndexType1 x = d; x > 0; x -= x & -x) {
+      auto it = BIT.find(x);
+      if (it != BIT.end()) ret += it->second.count(l, r);
+    }
+    return ret;
   }
   T rsq(IndexType1 u, IndexType1 d, IndexType2 l, IndexType2 r) {
     return rsq(d, l, r) - rsq(u - 1, l, r);

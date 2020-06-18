@@ -9,7 +9,7 @@ using namespace std;
 //   the constructor, which are exclusive
 // Order of arguments for update differs slightly from FenwickTreeRangePoint
 // In practice, this version performs as well as the multidimensional version
-// Very small constant, like most fenwick trees
+// Small constant, like most fenwick trees, and faster than segment trees
 // Time Complexity:
 //   constructor, values: O(N)
 //   update, get: O(log N)

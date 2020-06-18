@@ -12,6 +12,7 @@ using namespace std;
 //     if no value in [lo, hi) satisfies f(x), then it returns lo - 1
 //     assumes that all values where f(x) is true are less than all values
 //     where f(x) is false
+// In practice, has a small constant
 // Time Complexity: O(log (hi - lo)) * (cost to compute f(x))
 // Memory Complexity: O(1)
 // Tested:

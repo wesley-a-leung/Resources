@@ -16,7 +16,7 @@ using namespace __gnu_pbds;
 // https://gcc.gnu.org/onlinedocs/libstdc++/ext/pb_ds/gp_hash_table.html
 //   and https://gcc.gnu.org/onlinedocs/libstdc++/ext/pb_ds/container_base.html
 //   contain most of the public methods
-// In practice, has a large constant, but faster than unordered_set
+// In practice, has a moderate constant, but faster than unordered_set
 //   and unordered_map (at the expense of using more memory)
 // Time Complexity: O(1) on average, O(N) worst case
 // Memory Complexity: O(N)
@@ -66,7 +66,7 @@ using treemap = tree<K, V, C, rb_tree_tag,
 // https://gcc.gnu.org/onlinedocs/libstdc++/ext/pb_ds/pq_performance_tests.html
 //   contains a summary of the time complexities of each tag
 // On average, pairing_heap_tag performs the best out of all tags
-// In practice, has a large constant, slower than std::priority_queue
+// In practice, has a moderate constant, slower than std::priority_queue
 //   join is only slightly faster than small to large merging when
 //   amortization applies
 // Time Complexity (for pairing_heap_tag):

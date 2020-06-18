@@ -7,7 +7,7 @@ using namespace std;
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
 // In practice, constructor has a small constant,
-//   query has a large constant, but still faster than segment trees
+//   query has a moderate constant, but still faster than segment trees
 //   and performs similarly to sparse tables
 // op must be an associative operation
 // op must also be passed in the constructor with its type specified
