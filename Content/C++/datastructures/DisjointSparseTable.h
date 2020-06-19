@@ -6,7 +6,7 @@ using namespace std;
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
-// In practice, constructor has a small constant,
+// In practice, the constructor has a small constant,
 //   query has a moderate constant, but still faster than segment trees
 //   and performs similarly to sparse tables
 // op must be an associative operation

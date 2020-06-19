@@ -36,14 +36,12 @@ template <class Combine> struct SegmentTreeBottomUp {
   template <class It> SegmentTreeBottomUp(It st, It en)
       : N(en - st), TR(N * 2, C.qdef) {
     copy(st, en, TR.begin() + N);
-    for (int i = N - 1; i > 0; i--)
-      TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
+    for (int i = N - 1; i > 0; i--) TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
   }
   SegmentTreeBottomUp(int N, const Data &vdef)
       : N(N), TR(N * 2, C.qdef) {
     fill(TR.begin() + N, TR.end(), vdef);
-    for (int i = N - 1; i > 0; i--)
-      TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
+    for (int i = N - 1; i > 0; i--) TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
   }
   void update(int i, const Lazy &v) {
     for (i += N, TR[i] = C.applyLazy(TR[i], v); i /= 2;)
@@ -98,12 +96,9 @@ template <class Combine> struct SegmentTreeLazyBottomUp {
     TR[i] = C.applyLazy(TR[i], C.getSegmentVal(v, k));
     if (i < N) LZ[i] = C.mergeLazy(LZ[i], v);
   }
-  void pushup(int i) {
-    for (int k = 2; i /= 2; k *= 2) {
-      TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
-      if (LZ[i] != C.ldef)
-        TR[i] = C.applyLazy(TR[i], C.getSegmentVal(LZ[i], k));
-    }
+  void eval(int i, int k) {
+    TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
+    if (LZ[i] != C.ldef) TR[i] = C.applyLazy(TR[i], C.getSegmentVal(LZ[i], k));
   }
   void propagate(int i) {
     int h = lgN + 1, k = 1 << lgN, ii = i >> h;
@@ -122,12 +117,17 @@ template <class Combine> struct SegmentTreeLazyBottomUp {
     for (int i = N - 1; i > 0; i--) TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
   }
   void update(int l, int r, const Lazy &v) {
-    int l0 = l += N, r0 = r += N, k = 1; propagate(l); propagate(r);
+    propagate(l += N); propagate(r += N); bool bl = 0, br = 0; int k = 1;
     for (; l <= r; l /= 2, r /= 2, k *= 2) {
-      if (l % 2) apply(l++, v, k);
-      if (!(r % 2)) apply(r--, v, k);
+      if (bl) eval(l - 1, k);
+      if (br) eval(r + 1, k);
+      if (l % 2) { apply(l++, v, k); bl = 1; }
+      if (!(r % 2)) { apply(r--, v, k); br = 1; }
     }
-    pushup(l0); pushup(r0);
+    for (l--, r++; r; l /= 2, r /= 2, k *= 2) {
+      if (bl) eval(l, k);
+      if (br && (!bl || l != r)) eval(r, k);
+    }
   }
   Data query(int l, int r) {
     propagate(l += N); propagate(r += N); Data ql = C.qdef, qr = C.qdef;
