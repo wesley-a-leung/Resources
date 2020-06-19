@@ -6,7 +6,6 @@ input = sys.stdin.readline
 
 for i in range(1, len(sys.argv)):
   filename = sys.argv[i]
-  print("Replacing #pragma once for", filename)
   headerguard = pathlib.Path(filename).stem.upper() + "_H"
   output = []
   with open(filename, "r") as file:
