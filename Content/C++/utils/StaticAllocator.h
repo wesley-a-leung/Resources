@@ -14,6 +14,8 @@ void *operator new (size_t n) { return (void *) &buf[buf_ind -= n]; }
 void *operator new[] (size_t n) { return (void *) &buf[buf_ind -= n]; }
 void operator delete (void *) {}
 void operator delete[] (void *) {}
+void operator delete (void *, size_t) {}
+void operator delete[] (void *, size_t) {}
 
 // Allocator class to be used with stl data structures
 template <class T> struct StaticAllocator {
