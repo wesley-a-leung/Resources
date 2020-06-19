@@ -9,11 +9,11 @@ using namespace std;
 // queryInd: returns the index of the maximum element in the subarray [l, r],
 //   breaking ties by selecting the first such index
 // query: returns the maximum element in the subarray [l, r]
-// In practice, the constructor has a moderate constant, and is significantly
-//   faster than sparse table's constructor, query has a moderate constant, and
+// In practice, the constructor has a moderate constant and is significantly
+//   faster than sparse table's constructor, query has a moderate constant and
 //   is slightly slower than sparse table's query
 // Time Complexity:
-//   constructor: O(N)
+//   constructor: O(N log N), but O(N) if N < 2^32
 //   query: O(1)
 // Memory Complexity: O(N)
 // Tested:
