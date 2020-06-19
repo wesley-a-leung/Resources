@@ -9,7 +9,7 @@ for i in $(seq 1 $numTests); do
   total+=1
   echo ""
   echo "$(basename $test):"
-  g++ -std=c++17 -O2 $test -o Test.o
+  g++ -std=c++17 -O2 -Wall -Wextra -pedantic-errors -Werror $test -o Test.o
   retCode=$?
   if (($retCode == 0)); then
     timeout 1m ./Test.o

@@ -13,34 +13,37 @@ using namespace std;
 //   faster than sparse table's constructor, query has a moderate constant and
 //   is slightly slower than sparse table's query
 // Time Complexity:
-//   constructor: O(N log N), but O(N) if N < 2^32
+//   constructor: O(N / B log (N / B)), where B is the number of bits in mask_t
 //   query: O(1)
 // Memory Complexity: O(N)
 // Tested:
 //   https://dmoj.ca/problem/ncco3d2p1
 //   https://www.spoj.com/problems/RMQSQ/
 //   https://judge.yosupo.jp/problem/staticrmq
-template <class T, class Comparator = less<T>> struct FischerHeunStructure {
-  int N, M; vector<T> A; vector<uint32_t> mask; vector<vector<int>> ST;
-  int lb(uint32_t x) { return x == 0 ? 0 : __lg(x); }
+template <class T, class Comparator = less<T>, class mask_t = uint32_t>
+struct FischerHeunStructure {
+  static_assert(is_integral<mask_t>::value, "mask_t must be integral");
+  static_assert(is_unsigned<mask_t>::value, "mask_t must be unsigned");
+  static constexpr int B = __lg(numeric_limits<mask_t>::max()) + 1;
+  int N, M; vector<T> A; vector<mask_t> mask; vector<vector<int>> ST;
   int cmpInd(int i, int j) { return Comparator()(A[i], A[j]) ? j : i; }
-  int small(int r, int sz = 32) {
-    return r - lb(sz == 32 ? mask[r] : mask[r] & ((1U << sz) - 1));
+  int small(int r, int sz) {
+    return r - __lg(sz == B ? mask[r] : mask[r] & ((mask_t(1) << sz) - 1));
   }
   template <class It> FischerHeunStructure(It st, It en)
-      : N(en - st), M(N / 32), A(st, en), mask(N),
-        ST(lb(M) + 1, vector<int>(M)) {
-    uint32_t k = 0; for (int i = 0; i < N; mask[i++] = k |= 1)
-      for (k <<= 1; k && cmpInd(i - lb(k & -k), i) == i; k ^= k & -k);
-    for (int i = 0; i < M; i++) ST[0][i] = small(32 * (i + 1) - 1);
+      : N(en - st), M(N / B), A(st, en), mask(N),
+        ST(M == 0 ? 1 : __lg(M) + 1, vector<int>(M)) {
+    mask_t k = 0; for (int i = 0; i < N; mask[i++] = k |= 1)
+      for (k <<= 1; k && cmpInd(i - __lg(k & -k), i) == i; k ^= k & -k);
+    for (int i = 0; i < M; i++) ST[0][i] = small(B * (i + 1) - 1, B);
     for (int i = 0; i < int(ST.size()) - 1; i++) for (int j = 0; j < M; j++)
       ST[i + 1][j] = cmpInd(ST[i][j], ST[i][min(j + (1 << i), M - 1)]);
   }
   int queryInd(int l, int r) {
-    if (r - l + 1 <= 32) return small(r, r - l + 1);
-    int ql = small(l + 32 - 1), qr = small(r); l = l / 32 + 1; r = r / 32 - 1;
-    if (l <= r) {
-      int i = lb(r - l + 1);
+    if (r - l + 1 <= B) return small(r, r - l + 1);
+    int ql = small(l + B - 1, B), qr = small(r, B);
+    l = l / B + 1; r = r / B - 1; if (l <= r) {
+      int i = __lg(r - l + 1);
       ql = cmpInd(ql, cmpInd(ST[i][l], ST[i][r - (1 << i) + 1]));
     }
     return cmpInd(ql, qr);

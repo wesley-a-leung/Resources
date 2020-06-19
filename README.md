@@ -12,7 +12,7 @@ Data Structures, Algorithms, Utility Classes
 statements on a single line  
 - `if`, `else`, `for`, `while`, etc ... statements should either be immediately
 followed by a single statement and a newline, a block wrapped in curly braces
-followed by a newline, or only a newline
+followed by a newline, a curly brace and a newline, or only a newline
 - short functions and blocks can be squeezed onto a single line wrapped in
 curly braces
 - all lines should end in `\n`
@@ -30,7 +30,11 @@ member functions and fields if not obvious, specify conventions used,
 mention the constant factor (roughly) relative to its advertised time
 complexity,  time complexity and memory complexity,
 and specify where it was tested
-- if template parameters are non-trivial, those should be described as well,
-possibly with an example provided
 - constant factors (very small, small, moderate, large, very large) roughly
 differ by factors of 10
+- if template parameters are non-trivial, those should be described as well,
+possibly with an example provided
+- std::vector is prefered to fixed-sized arrays, use std::vector::reserve if
+possible
+- the new operator should be avoided and memory should be allocated on the
+stack, or std::unique_ptr should be used
