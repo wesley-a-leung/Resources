@@ -19,7 +19,7 @@ template <const int MAXN, const int MAXM = MAXN> struct MaxZeroSubmatrix {
                 }
                 s.push(minInd);
             }
-            while (!s.empty()) ret = max(ret, (M - s.top()) * H[i][s.top()]); s.pop();
+            for (; !s.empty(); s.pop()) ret = max(ret, (M - s.top()) * H[i][s.top()]);
         }
         return ret;
     }
