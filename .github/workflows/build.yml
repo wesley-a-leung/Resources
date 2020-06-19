@@ -45,7 +45,7 @@ jobs:
     - name: Replace pragma once
       run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Compile
-      run: find "Content/C++/" -name "*.h" -exec Scripts/Compile.sh "g++ -std=c++17" -fsyntax-only {} +
+      run: find "Content/C++/" -name "*.h" -exec Scripts/Compile.sh "g++ -std=c++17 -fsyntax-only" {} +
   compile-java8:
     runs-on: ubuntu-latest
     steps:
