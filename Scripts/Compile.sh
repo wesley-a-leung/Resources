@@ -19,8 +19,8 @@ for i in $(seq 2 $numTests); do
 done
 
 echo ""
-echo "$total test(s) ran"
-echo "$pass passed"
+echo "$total files(s) compiled"
+echo "$pass successful"
 echo "$fail failed"
 
 if (($fail != 0)); then
