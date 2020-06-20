@@ -26,13 +26,13 @@ template <class T> struct PersistentArray {
     int m = l + (r - l) / 2;
     ptr left = build(l, m - 1, f); T a = f(); ptr right = build(m + 1, r, f);
     return make_shared<Node>(m, a, left, right);
-  };
+  }
   ptr dfs(const ptr &x, int k, const T &v) {
     if (k < x->k) return make_shared<Node>(x->k, x->v, dfs(x->l, k, v), x->r);
     else if (k > x->k)
       return make_shared<Node>(x->k, x->v, x->l, dfs(x->r, k, v));
     else return make_shared<Node>(x->k, v, x->l, x->r);
-  };
+  }
   template <class F> PersistentArray(int N, F f)
       : N(N), root(build(0, N - 1, f)) {}
   template <class It> PersistentArray(It st, It en)
