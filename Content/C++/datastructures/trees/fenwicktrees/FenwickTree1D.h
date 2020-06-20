@@ -16,6 +16,7 @@ using namespace std;
 //   update, rsq, bsearch, lower_bound, upper_bound: O(log N)
 // Memory Complexity: O(N)
 // Tested:
+//   Fuzz and Stress Tested
 //   https://dmoj.ca/problem/ds1
 //   https://judge.yosupo.jp/problem/point_add_range_sum
 //   https://codeforces.com/contest/1279/problem/B

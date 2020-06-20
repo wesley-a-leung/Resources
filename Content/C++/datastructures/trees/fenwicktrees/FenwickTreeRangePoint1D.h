@@ -15,6 +15,7 @@ using namespace std;
 //   update, get: O(log N)
 // Memory Complexity: O(N)
 // Tested:
+//   Fuzz and Stress Tested
 //   https://mcpt.ca/problem/asquirrelproblem
 //   https://codeforces.com/contest/1254/problem/D
 template <class T> struct FenwickTreeRangePoint1D {
@@ -28,7 +29,7 @@ template <class T> struct FenwickTreeRangePoint1D {
     }
   }
   template <class It> FenwickTreeRangePoint1D(It st, It en)
-      : FenwickTreeRangePoint1D(N, [&] { return *st++; }) {}
+      : FenwickTreeRangePoint1D(en - st, [&] { return *st++; }) {}
   vector<T> values() {
     vector<T> ret(BIT.begin() + 1, BIT.end()); for (int i = N; i >= 1; i--) {
       int j = i + (i & -i); if (j <= N) ret[j - 1] -= ret[i - 1];

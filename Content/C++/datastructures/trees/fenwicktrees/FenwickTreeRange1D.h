@@ -12,6 +12,7 @@ using namespace std;
 //   update, rsq: O(log N)
 // Memory Complexity: O(N)
 // Tested:
+//   Fuzz and Stress Tested
 //   http://www.usaco.org/index.php?page=viewproblem2&cpid=973
 template <class T> struct FenwickTreeRange1D {
   vector<FenwickTreeRangePoint1D<T>> FT;

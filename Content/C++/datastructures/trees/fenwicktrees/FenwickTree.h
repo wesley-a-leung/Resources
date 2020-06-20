@@ -15,6 +15,7 @@ using namespace std;
 // PI is the product function, N_i is the size in the ith dimension,
 //   and D is the number of dimensions
 // Tested:
+//   Fuzz and Stress Tested
 //   https://dmoj.ca/problem/ds1
 //   https://judge.yosupo.jp/problem/point_add_range_sum
 //   https://dmoj.ca/problem/ioi01p1
