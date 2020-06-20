@@ -22,15 +22,19 @@ using namespace std;
 //   https://judge.yosupo.jp/problem/range_kth_smallest (select)
 template <class T, class Comparator = less<T>> struct MergeSortTree {
   Comparator cmp; int N; vector<T> sorted; vector<vector<T>> TR;
-  template <class It> MergeSortTree(It st, It en)
-      : N(en - st), sorted(st, en), TR(N * 2) {
-    for (int i = 0; i < N; i++) TR[N + i] = vector<T>(1, sorted[i]);
+  template <class F> MergeSortTree(int N, F f)
+      : N(N), TR(N * 2) {
+    sorted.reserve(N); for (int i = 0; i < N; i++) {
+      sorted.push_back(f()); TR[N + i] = vector<T>(1, sorted.back());
+    }
     sort(sorted.begin(), sorted.end(), cmp); for (int i = N - 1; i > 0; i--) {
       TR[i].reserve(TR[i * 2].size() + TR[i * 2 + 1].size());
       merge(TR[i * 2].begin(), TR[i * 2].end(), TR[i * 2 + 1].begin(),
             TR[i * 2 + 1].end(), back_inserter(TR[i]), cmp);
     }
   }
+  template <class It> MergeSortTree(It st, It en)
+      : MergeSortTree(en - st, [&] { return *st++; }) {}
   int rank(int l, int r, T k) {
     int ret = 0; for (l += N, r += N; l <= r; l /= 2, r /= 2) {
       if (l & 1) {

@@ -16,7 +16,8 @@ using namespace std;
 // getFirst returns the first node y (and its index) in the subtree of x
 //   where cmp(y->val, v) returns false
 // build builds a treap over the range of indices [l, r]
-//   where a(i) is passed to the constructor of the ith node
+//   where f is a generating function that passed arguments to the
+//   node constructor
 // clear adds all nodes in the subtree of x to the deleted buffer
 // Node must have the following:
 //   HAS_PAR: const static bool indicating whether this node has
@@ -111,11 +112,15 @@ template <class _Node> struct Treap {
     }
     return ret;
   }
-  template <class F> Node *build(int l, int r, F a) {
+  template <class F> Node *buildRec(int l, int r, F &f) {
     if (l > r) return nullptr;
-    if (l == r) return makeNode(a(l));
-    Node *ret; int m = l + (r - l) / 2;
-    merge(ret, build(l, m, a), build(m + 1, r, a)); return ret;
+    if (l == r) return makeNode(f());
+    int m = l + (r - l) / 2; Node *ret;
+    Node *left = buildRec(l, m, f), *right = buildRec(m + 1, r, f);
+    merge(ret, left, right); return ret;
+  }
+  template <class F> Node *build(int l, int r, F f) {
+    return buildRec(l, r, f);
   }
   void clear(Node *x) {
     if (!x) return;

@@ -30,15 +30,17 @@ struct FischerHeunStructure {
   int small(int r, int sz) {
     return r - __lg(sz == B ? mask[r] : mask[r] & ((mask_t(1) << sz) - 1));
   }
-  template <class It> FischerHeunStructure(It st, It en)
-      : N(en - st), M(N / B), A(st, en), mask(N),
-        ST(M == 0 ? 1 : __lg(M) + 1, vector<int>(M)) {
-    mask_t k = 0; for (int i = 0; i < N; mask[i++] = k |= 1)
-      for (k <<= 1; k && cmpInd(i - __lg(k & -k), i) == i; k ^= k & -k);
+  template <class F> FischerHeunStructure(int N, F f)
+      : N(N), M(N / B), mask(N), ST(M == 0 ? 1 : __lg(M) + 1, vector<int>(M)) {
+    A.reserve(N); mask_t k = 0; for (int i = 0; i < N; mask[i++] = k |= 1)
+      for (A.push_back(f()), k <<= 1; k && cmpInd(i - __lg(k & -k), i) == i;)
+        k ^= k & -k;
     for (int i = 0; i < M; i++) ST[0][i] = small(B * (i + 1) - 1, B);
     for (int i = 0; i < int(ST.size()) - 1; i++) for (int j = 0; j < M; j++)
       ST[i + 1][j] = cmpInd(ST[i][j], ST[i][min(j + (1 << i), M - 1)]);
   }
+  template <class It> FischerHeunStructure(It st, It en)
+      : FischerHeunStructure(en - st, [&] { return *st++; }) {}
   int queryInd(int l, int r) {
     if (r - l + 1 <= B) return small(r, r - l + 1);
     int ql = small(l + B - 1, B), qr = small(r, B);

@@ -17,7 +17,8 @@ using namespace std;
 //   where cmp(y->val, v) returns false,
 // and makes it the new root (or the last node accessed if null)
 // build builds a splay tree over the range of indices [l, r]
-//   where a(i) is passed to the constructor of the ith node
+//   where f is a generating function that passed arguments to the
+//   node constructor
 // clear adds all nodes in the subtree of x to the deleted buffer
 // Node must have the following:
 //   HAS_PAR: const static bool indicating whether this node has
@@ -122,12 +123,15 @@ template <class _Node> struct Splay {
     else if (last) splay(root = last);
     return ret;
   }
-  template <class F> Node *build(int l, int r, F a) {
+  template <class F> Node *buildRec(int l, int r, F &f) {
     if (l > r) return nullptr;
-    int m = l + (r - l) / 2; Node *ret = makeNode(a(m));
-    Node *left = build(l, m - 1, a), *right = build(m + 1, r, a);
+    int m = l + (r - l) / 2; Node *left = buildRec(l, m - 1, f);
+    Node *ret = makeNode(f()), *right = buildRec(m + 1, r, f);
     connect(left, ret, true); connect(right, ret, false); ret->update();
     return ret;
+  }
+  template <class F> Node *build(int l, int r, F f) {
+    return buildRec(l, r, f);
   }
   void clear(Node *x) {
     if (!x) return;

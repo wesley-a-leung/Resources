@@ -35,10 +35,10 @@ template <class T> struct SegmentTreeLinear {
       LZ[rc] = add(LZ[rc], LZ[x]); LZ[x] = ZERO;
     }
   }
-  template <class F> void build(int x, int tl, int tr, F a) {
-    if (tl == tr) { TR[x] = a(tl); return; }
+  template <class F> void build(int x, int tl, int tr, F &f) {
+    if (tl == tr) { TR[x] = Pair(f(), 0); return; }
     int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2;
-    build(x + 1, tl, m, a); build(rc, m + 1, tr, a);
+    build(x + 1, tl, m, f); build(rc, m + 1, tr, f);
     TR[x] = add(TR[x + 1], TR[rc]);
   }
   void update(int x, int tl, int tr, int l, int r, const Pair &v) {
@@ -59,14 +59,14 @@ template <class T> struct SegmentTreeLinear {
     int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2;
     return add(query(x + 1, tl, m, l, r), query(rc, m + 1, tr, l, r));
   }
-  template <class It> SegmentTreeLinear(It st, It en)
-      : N(en - st), TR(N * 2 - 1, ZERO), LZ(N * 2 - 1, ZERO) {
-    build(0, 0, N - 1, [&] (int i) { return Pair(*(st + i), 0); });
-  }
-  SegmentTreeLinear(int N, const T &vdef)
+  template <class F> SegmentTreeLinear(int N, F f)
       : N(N), TR(N * 2 - 1, ZERO), LZ(N * 2 - 1, ZERO) {
-    build(0, 0, N - 1, [&] (int i) { return Pair(vdef, 0); });
+    build(0, 0, N - 1, f);
   }
+  template <class It> SegmentTreeLinear(It st, It en)
+      : SegmentTreeLinear(en - st, [&] { return *st++; }) {}
+  SegmentTreeLinear(int N, const T &vdef)
+      : SegmentTreeLinear(N, [&] { return vdef; }) {}
   void update(int l, int r, T m, T b) {
     update(0, 0, N - 1, l, r, Pair((1 - l) * m + b, m));
   }

@@ -7,7 +7,7 @@ using namespace std;
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
-// bsearch: returns first index where cmp returns false,
+// bsearch returns first index where cmp returns false,
 //   or N if no such index exists
 // In practice, this version performs as well as the multidimensional version
 // Small constant, like most fenwick trees, and faster than segment trees
@@ -24,12 +24,13 @@ using namespace std;
 //   https://dmoj.ca/problem/cco10p3
 template <class T> struct FenwickTree1D {
   int N; vector<T> BIT; FenwickTree1D(int N) : N(N), BIT(N + 1, T()) {}
-  template <class It> FenwickTree1D(It st, It en) : FenwickTree1D(en - st) {
+  template <class F> FenwickTree1D(int N, F f) : FenwickTree1D(N) {
     for (int i = 1; i <= N; i++) {
-      BIT[i] += *(st + i - 1); int j = i + (i & -i);
-      if (j <= N) BIT[j] += BIT[i];
+      BIT[i] += f(); int j = i + (i & -i); if (j <= N) BIT[j] += BIT[i];
     }
   }
+  template <class It> FenwickTree1D(It st, It en)
+      : FenwickTree1D(en - st, [&] { return *st++; }) {}
   vector<T> values() {
     vector<T> ret(BIT.begin() + 1, BIT.end()); for (int i = N; i >= 1; i--) {
       int j = i + (i & -i); if (j <= N) ret[j - 1] -= ret[i - 1];

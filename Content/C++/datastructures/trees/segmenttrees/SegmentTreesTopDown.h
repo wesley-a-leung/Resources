@@ -73,10 +73,10 @@ template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
   agg_def apply(int x, int, int, const Lazy &v) {
     TR[x] = C.applyLazy(TR[x], v);
   }
-  template <class F> void build(int x, int tl, int tr, F a) {
-    if (tl == tr) { TR[x] = a(tl); return; }
+  template <class F> void build(int x, int tl, int tr, F &f) {
+    if (tl == tr) { TR[x] = f(); return; }
     int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2;
-    build(x + 1, tl, m, a); build(rc, m + 1, tr, a);
+    build(x + 1, tl, m, f); build(rc, m + 1, tr, f);
     TR[x] = C.merge(TR[x + 1], TR[rc]);
   }
   void update(int x, int tl, int tr, int l, int r, const Lazy &v) {
@@ -96,13 +96,14 @@ template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
   }
   lazy_def initLazy() { LZ.assign(N * 2 - 1, C.ldef); }
   agg_def initLazy() {}
+  template <class F> SegmentTreeTopDown(int N, F f)
+      : N(N), TR(N * 2 - 1, C.qdef) {
+    initLazy(); build(0, 0, N - 1, f);
+  }
   template <class It> SegmentTreeTopDown(It st, It en)
-      : N(en - st), TR(N * 2 - 1, C.qdef) {
-    initLazy(); build(0, 0, N - 1, [&] (int i) { return *(st + i); });
-  }
-  SegmentTreeTopDown(int N, const Data &vdef) : N(N), TR(N * 2 - 1, C.qdef) {
-    initLazy(); build(0, 0, N - 1, [&] (int i) { return vdef; });
-  }
+      : SegmentTreeTopDown(en - st, [&] { return *st++; }) {}
+  SegmentTreeTopDown(int N, const Data &vdef)
+      : SegmentTreeTopDown(N, [&] { return vdef; }) {}
   lazy_def update(int l, int r, const Lazy &v) {
     update(0, 0, N - 1, l, r, v);
   }
@@ -154,8 +155,8 @@ template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
 //   }
 // };
 // Time Complexity:
-//   constructor: O(1) for single argument constructor,
-//                O(N) for two argument constructor
+//   constructor: O(1) for size constructor,
+//                O(N) for iteartor and generating function constructors
 //   update: O(log N) amortized unless reserveNodes is called beforehand
 //   query: O(log N)
 // Memory Complexity: O(Q log N) for Q updates for single argument constructor,
@@ -210,11 +211,11 @@ template <class IndexType, const bool LAZY, const bool PERSISTENT,
   agg_def apply(int x, IndexType, IndexType, const Lazy &v) {
     TR[x] = C.applyLazy(TR[x], v);
   }
-  template <class It> int build(IndexType tl, IndexType tr, It st) {
+  template <class F> int build(IndexType tl, IndexType tr, F &f) {
     int x = makeNode(-1, tl, tr);
-    if (tl == tr) { TR[x] = *(st + tl); return x; }
-    IndexType m = tl + (tr - tl) / 2; int nl = build(tl, m, st); L[x] = nl;
-    int nr = build(m + 1, tr, st); R[x] = nr;
+    if (tl == tr) { TR[x] = f(); return x; }
+    IndexType m = tl + (tr - tl) / 2; int nl = build(tl, m, f); L[x] = nl;
+    int nr = build(m + 1, tr, f); R[x] = nr;
     TR[x] = C.merge(TR[L[x]], TR[R[x]]); return x;
   }
   int update(int y, IndexType tl, IndexType tr, IndexType l, IndexType r,
@@ -239,10 +240,11 @@ template <class IndexType, const bool LAZY, const bool PERSISTENT,
     propagate(x, tl, tr); IndexType m = tl + (tr - tl) / 2;
     return C.merge(query(L[x], tl, m, l, r), query(R[x], m + 1, tr, l, r));
   }
-  template <class It> SegmentTreeDynamic(It st, It en)
-      : N(en - st) {
-    reserveNodes(N * 2 - 1); roots.push_back(build(0, N - 1, st));
+  template <class F> SegmentTreeDynamic(IndexType N, F f) : N(N) {
+    reserveNodes(N * 2 - 1); roots.push_back(build(0, N - 1, f));
   }
+  template <class It> SegmentTreeDynamic(It st, It en)
+      : SegmentTreeDynamic(en - st, [&] { return *st++; }) {}
   SegmentTreeDynamic(IndexType N) : N(N) { roots.push_back(-1); }
   lazy_def update(IndexType l, IndexType r, const Lazy &v, bool newRoot) {
     int nr = update(roots.back(), 0, N - 1, l, r, v, TR.size());

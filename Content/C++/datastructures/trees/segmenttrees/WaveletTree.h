@@ -50,9 +50,10 @@ template <class T, class Comparator = less<T>> struct WaveletTree {
     int m = tl + (tr - tl) / 2; return count(TR[x].l, TR[y].l, tl, m, l, r)
         + count(TR[x].r, TR[y].r, m + 1, tr, l, r);
   }
-  template <class It> WaveletTree(It st, It en)
-      : N(en - st), curNode(0), ind(N), rnk(N), roots(N + 1), A(st, en),
+  template <class F> WaveletTree(int N, F f)
+      : N(N), curNode(0), ind(N), rnk(N), roots(N + 1),
         TR(N * (__lg(N * 2 - 1) + 3) - 1) {
+    A.reserve(N); for (int i = 0; i < N; i++) A.push_back(f());
     iota(ind.begin(), ind.end(), 0);
     stable_sort(ind.begin(), ind.end(), [&] (int i, int j) {
       return cmp(A[i], A[j]);
@@ -61,6 +62,8 @@ template <class T, class Comparator = less<T>> struct WaveletTree {
     roots[0] = build(0, N - 1); for (int i = 0; i < N; i++)
       roots[i + 1] = update(roots[i], 0, N - 1, rnk[i]);
   }
+  template <class It> WaveletTree(It st, It en)
+      : WaveletTree(en - st, [&] { return *st++; }) {}
   T select(int l, int r, int k) {
     return A[ind[select(roots[l], roots[r + 1], 0, N - 1, k)]];
   }

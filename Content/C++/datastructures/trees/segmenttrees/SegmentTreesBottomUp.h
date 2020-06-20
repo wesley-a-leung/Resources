@@ -33,16 +33,15 @@ using namespace std;
 template <class Combine> struct SegmentTreeBottomUp {
   using Data = typename Combine::Data; using Lazy = typename Combine::Lazy;
   Combine C; int N; vector<Data> TR;
-  template <class It> SegmentTreeBottomUp(It st, It en)
-      : N(en - st), TR(N * 2, C.qdef) {
-    copy(st, en, TR.begin() + N);
-    for (int i = N - 1; i > 0; i--) TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
-  }
-  SegmentTreeBottomUp(int N, const Data &vdef)
+  template <class F> SegmentTreeBottomUp(int N, F f)
       : N(N), TR(N * 2, C.qdef) {
-    fill(TR.begin() + N, TR.end(), vdef);
+    generate(TR.begin() + N, TR.end(), f);
     for (int i = N - 1; i > 0; i--) TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
   }
+  template <class It> SegmentTreeBottomUp(It st, It en)
+      : SegmentTreeBottomUp(en - st, [&] { return *st++; }) {}
+  SegmentTreeBottomUp(int N, const Data &vdef)
+      : SegmentTreeBottomUp(N, [&] { return vdef; }) {}
   void update(int i, const Lazy &v) {
     for (i += N, TR[i] = C.applyLazy(TR[i], v); i /= 2;)
       TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
@@ -106,16 +105,15 @@ template <class Combine> struct SegmentTreeLazyBottomUp {
       apply(ii * 2, LZ[ii], k); apply(ii * 2 + 1, LZ[ii], k); LZ[ii] = C.ldef;
     }
   }
-  template <class It> SegmentTreeLazyBottomUp(It st, It en)
-      : N(en - st), lgN(__lg(N)), TR(N * 2, C.qdef), LZ(N, C.ldef) {
-    copy(st, en, TR.begin() + N);
-    for (int i = N - 1; i > 0; i--) TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
-  }
-  SegmentTreeLazyBottomUp(int N, const Data &vdef)
+  template <class F> SegmentTreeLazyBottomUp(int N, F f)
       : N(N), lgN(__lg(N)), TR(N * 2, C.qdef), LZ(N, C.ldef) {
-    fill(TR.begin() + N, TR.end(), vdef);
+    generate(TR.begin() + N, TR.end(), f);
     for (int i = N - 1; i > 0; i--) TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
   }
+  template <class It> SegmentTreeLazyBottomUp(It st, It en)
+      : SegmentTreeLazyBottomUp(en - st, [&] { return *st++; }) {}
+  SegmentTreeLazyBottomUp(int N, const Data &vdef)
+      : SegmentTreeLazyBottomUp(N, [&] { return vdef; }) {}
   void update(int l, int r, const Lazy &v) {
     propagate(l += N); propagate(r += N); bool bl = 0, br = 0; int k = 1;
     for (; l <= r; l /= 2, r /= 2, k *= 2) {

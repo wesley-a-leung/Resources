@@ -16,7 +16,7 @@ using namespace __gnu_pbds;
 //   and range queries in 1 dimension
 // All update indices must be known beforehand
 // Indices are 0-indexed and ranges are inclusive
-// bsearch: returns first index where cmp returns false,
+// bsearch returns first index where cmp returns false,
 //   or N if no such index exists
 // In practice, has a small constant
 // Time Complexity:
@@ -60,7 +60,7 @@ template <class T, class IndexType> struct FenwickTreeSparse1DOffline {
 // Sparse Fenwick Tree supporting point updates (with any value)
 //   and range queries in 1 dimension using pbds hash_table
 // Indices are 0-indexed and ranges are inclusive
-// bsearch: returns first index where cmp returns false,
+// bsearch returns first index where cmp returns false,
 //   or N if no such index exists
 // In practice, has a moderate constant
 // Time Complexity:

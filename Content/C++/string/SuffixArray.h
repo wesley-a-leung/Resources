@@ -24,8 +24,9 @@ using namespace std;
 //   https://dmoj.ca/problem/wac4p4
 template <class T> struct SuffixArray {
   int N; vector<T> S; vector<int> ind, rnk, LCP;
-  template <class It> SuffixArray(It st, It en)
-      : N(en - st), S(st, en), ind(N + 1), rnk(N + 1), LCP(N) {
+  template <class F> SuffixArray(int N, F f)
+      : N(N), ind(N + 1), rnk(N + 1), LCP(N) {
+    S.reserve(N); for (int i = 0; i < N; i++) S.push_back(f());
     vector<T> SS = S; sort(SS.begin(), SS.end()); rnk[ind[N] = N] = -1;
     vector<int> tmp(N + 1, 0); for (int i = 0; i < N; i++) {
       rnk[i] = lower_bound(SS.begin(), SS.end(), S[i]) - SS.begin();
@@ -50,6 +51,8 @@ template <class T> struct SuffixArray {
       if ((LCP[rnk[i]] = k) > 0) k--;
     }
   }
+  template <class It> SuffixArray(It st, It en)
+      : SuffixArray(en - st, [&] { return *st++; }) {}
 };
 
 // Computes the longest common substring of two prefixes of a string
@@ -70,10 +73,12 @@ template <class T> struct SuffixArray {
 //   https://dmoj.ca/problem/wac4p4
 template <class T> struct LongestCommonSubstring {
   SuffixArray<T> SA; SparseTable<int, function<int(int, int)>> ST;
-  template <class It> LongestCommonSubstring(It st, It en)
-    : SA(st, en),
+  template <class F> LongestCommonSubstring(int N, F f)
+    : SA(N, f),
       ST(SA.LCP.begin(), SA.LCP.end(),
          [&] (int a, int b) { return min(a, b); }) {}
+  template <class It> LongestCommonSubstring(It st, It en)
+      : LongestCommonSubstring(en - st, [&] { return *st++; }) {}
   int lcsRnk(int i, int j) {
     if (i > j) swap(i, j);
     return i == j ? int(SA.S.size()) - j : ST.query(i, j - 1);
