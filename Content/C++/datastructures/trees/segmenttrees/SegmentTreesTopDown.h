@@ -46,11 +46,13 @@ using namespace std;
 //   https://dmoj.ca/problem/coci17c1p5 (LAZY = false)
 //   https://dmoj.ca/problem/cco20p5 (LAZY = false)
 //   https://www.spoj.com/problems/BRCKTS/ (LAZY = false)
+//   https://judge.yosupo.jp/problem/point_set_range_composite (LAZY = false)
 //   https://dmoj.ca/problem/dmopc17c4p6 (LAZY = true)
 //   https://dmoj.ca/problem/dmopc18c5p5 (LAZY = true)
 //   https://dmoj.ca/problem/dmopc18c6p5 (LAZY = true)
 //   https://dmoj.ca/problem/lazy (LAZY = true)
 //   https://mcpt.ca/problem/seq3 (LAZY = true)
+//   https://judge.yosupo.jp/problem/range_affine_range_sum (LAZY = true)
 template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
 #define lazy_def template <const bool _ = LAZY> typename enable_if<_>::type
 #define agg_def template <const bool _ = LAZY> typename enable_if<!_>::type

@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Node classes for Treap and Splay trees
+// Node classes for Treap and Splay trees, as well as Link Cut Trees
 // A node class must contain at a minimum,
 //     the following for Treap and Splay support:
 //   HAS_PAR: const static bool indicating whether this node has
@@ -45,6 +45,7 @@ using namespace std;
 //   https://dmoj.ca/problem/ds4
 //   https://codeforces.com/contest/1288/problem/E
 //   https://codeforces.com/contest/863/problem/D
+//   https://oj.uz/problem/view/JOI13_synchronization
 template <class T> struct NodeVal {
   using Data = T;
   using Lazy = Data;
@@ -76,6 +77,7 @@ template <class T> struct NodeVal {
 // The combine struct must have typedefs/using for data and lazy,
 //   a query default value (qdef), and implementations of merge, applyLazy,
 //   and if RANGE_REVERSALS is true, revData
+// merge, and applyLazy must both be associative
 // Below is a sample struct for point assignment and range sum queries,
 //  and range reversals
 // struct Combine {
@@ -88,6 +90,10 @@ template <class T> struct NodeVal {
 // };
 // Tested:
 //   https://dmoj.ca/problem/dmpg17g2
+//   https://dmoj.ca/problem/ccoprep16c2q3
+//   https://dmoj.ca/problem/coi08p2
+//   https://www.spoj.com/problems/QTREE2/
+//   https://judge.yosupo.jp/problem/point_set_range_composite
 template <class Combine> struct NodeAgg {
   using Data = typename Combine::Data;
   using Lazy = typename Combine::Lazy;
@@ -123,6 +129,7 @@ template <class Combine> struct NodeAgg {
 // The combine struct must have typedefs/using for data and lazy,
 //   a query default value (qdef), and implementations of merge, applyLazy,
 //   getSegmentVal, mergeLazy, and if RANGE_REVERSALS is true, revData
+// merge, applyLazy, and mergeLazy must all be associative
 // Below is a sample struct for range assignment and range sum queries,
 //   and range reversals
 // struct Combine {
@@ -139,6 +146,7 @@ template <class Combine> struct NodeAgg {
 // Tested:
 //   https://dmoj.ca/problem/acc1p1
 //   https://dmoj.ca/problem/noi05p2
+//   https://dmoj.ca/problem/ds5easy
 template <class Combine> struct NodeLazyAgg {
   using Data = typename Combine::Data;
   using Lazy = typename Combine::Lazy;

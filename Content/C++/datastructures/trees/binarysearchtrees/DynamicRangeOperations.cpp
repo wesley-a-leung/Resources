@@ -3,7 +3,7 @@
 using namespace std;
 
 // Operations on ranges of a dynamic array,
-//   backed by a generic binary search tree
+//   backed by a generic binary search tree (such as Splay.h or Treap.h)
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive

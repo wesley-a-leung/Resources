@@ -3,7 +3,8 @@
 #include "../../../utils/Random.h"
 using namespace std;
 
-// Generic Treap node operations supporting a generic node class
+// Generic Treap node operations supporting a generic node class (such
+//   as the structs in BSTNode.h)
 // Indices are 0-indexed and ranges are inclusive
 // In practice, has a moderate constant, not as fast as segment trees
 //   and slightly slower than Splay
@@ -57,7 +58,7 @@ template <class _Node> struct Treap {
   deque<TreapNode> TR; deque<Node*> deleted;
   template <class T> Node *makeNode(const T &v) {
     if (deleted.empty()) { TR.emplace_back(v); return &TR.back(); }
-    Node *x = deleted.back(); deleted.pop_back(); *x = Node(v); return x;
+    Node *x = deleted.back(); deleted.pop_back(); *x = TreapNode(v); return x;
   }
   long long pri(Node *x) { return static_cast<TreapNode*>(x)->pri; }
   void merge(Node *&x, Node *l, Node *r) {

@@ -30,6 +30,7 @@ using namespace std;
 //   https://dmoj.ca/problem/coci17c1p5
 //   https://dmoj.ca/problem/cco20p5
 //   https://www.spoj.com/problems/BRCKTS/
+//   https://judge.yosupo.jp/problem/point_set_range_composite
 template <class Combine> struct SegmentTreeBottomUp {
   using Data = typename Combine::Data; using Lazy = typename Combine::Lazy;
   Combine C; int N; vector<Data> TR;
@@ -88,6 +89,7 @@ template <class Combine> struct SegmentTreeBottomUp {
 //   https://dmoj.ca/problem/dmopc18c6p5
 //   https://dmoj.ca/problem/lazy
 //   https://mcpt.ca/problem/seq3
+//   https://judge.yosupo.jp/problem/range_affine_range_sum
 template <class Combine> struct SegmentTreeLazyBottomUp {
   using Data = typename Combine::Data; using Lazy = typename Combine::Lazy;
   Combine C; int N, lgN; vector<Data> TR; vector<Lazy> LZ;

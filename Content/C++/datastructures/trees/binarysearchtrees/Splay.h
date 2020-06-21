@@ -2,7 +2,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Generic Splay Tree node operations supporting a generic node class
+// Generic Splay Tree node operations supporting a generic node class (such
+//   as the structs in BSTNode.h)
 // Indices are 0-indexed and ranges are inclusive
 // In practice, has a moderate constant, not as fast as segment trees
 //   and slightly faster than Treap
@@ -46,22 +47,23 @@ using namespace std;
 //   https://dmoj.ca/problem/dmpg17g2 (applyToRange)
 //   https://dmoj.ca/problem/acc1p1 (applyToRange)
 //   https://dmoj.ca/problem/noi05p2 (applyToRange)
-template <class _Node> struct Splay {
-  using Node = _Node; deque<Node> TR; deque<Node*> deleted;
+template <class _Node, class Container = deque<_Node>> struct Splay {
+  using Node = _Node; Container TR; deque<Node*> deleted;
   static_assert(Node::HAS_PAR, "Splay Node must have parent pointer");
   template <class T> Node *makeNode(const T &v) {
     if (deleted.empty()) { TR.emplace_back(v); return &TR.back(); }
-    Node *x = deleted.back(); deleted.pop_back(); *x = Node(v); return x;
+    Node *x = deleted.back(); deleted.pop_back();
+    *x = typename Container::value_type(v); return x;
   }
-  virtual bool isRoot(Node *x) { return !x->p; }
-  void connect(Node *x, Node *p, bool isL) {
+  bool isRoot(Node *x) { return !x->p || (x != x->p->l && x != x->p->r); }
+  void connect(Node *x, Node *p, bool hasCh, bool isL) {
     if (x) x->p = p;
-    if (p) (isL ? p->l : p->r) = x;
+    if (hasCh) (isL ? p->l : p->r) = x;
   }
   void rotate(Node *x) {
     Node *p = x->p, *g = p->p; bool isRootP = isRoot(p), isL = x == p->l;
-    connect(isL ? x->r : x->l, p, isL); connect(p, x, !isL);
-    connect(x, g, !isRootP && p == g->l); p->update();
+    connect(isL ? x->r : x->l, p, true, isL); connect(p, x, true, !isL);
+    connect(x, g, !isRootP, !isRootP && p == g->l); p->update();
   }
   void splay(Node *x) {
     while (!isRoot(x)) {
@@ -77,22 +79,22 @@ template <class _Node> struct Splay {
     if (i <= 0 && sz - 1 <= j) {
       f(root); if (root) { root->propagate(); root->update(); }
     } else if (i <= 0) {
-      Node *l = select(root, j + 1)->l; connect(nullptr, root, true);
-      root->update(); connect(l, nullptr, true); f(l);
+      Node *l = select(root, j + 1)->l; connect(nullptr, root, true, true);
+      root->update(); connect(l, nullptr, false, true); f(l);
       if (l) { l->propagate(); l->update(); }
-      connect(l, root, true); root->update();
+      connect(l, root, true, true); root->update();
     } else if (sz - 1 <= j) {
-      Node *r = select(root, i - 1)->r; connect(nullptr, root, false);
-      root->update(); connect(r, nullptr, false); f(r);
+      Node *r = select(root, i - 1)->r; connect(nullptr, root, true, false);
+      root->update(); connect(r, nullptr, false, false); f(r);
       if (r) { r->propagate(); r->update(); }
-      connect(r, root, false); root->update();
+      connect(r, root, true, false); root->update();
     } else {
-      Node *r = select(root, i - 1)->r; connect(nullptr, root, false);
-      root->update(); connect(r, nullptr, false);
-      Node *l = select(r, j - i + 1)->l; connect(nullptr, r, true);
-      r->update(); connect(l, nullptr, true); f(l);
+      Node *r = select(root, i - 1)->r; connect(nullptr, root, true, false);
+      root->update(); connect(r, nullptr, false, false);
+      Node *l = select(r, j - i + 1)->l; connect(nullptr, r, true, true);
+      r->update(); connect(l, nullptr, false, true); f(l);
       if (l) { l->propagate(); l->update(); }
-      connect(l, r, true); r->update(); connect(r, root, false);
+      connect(l, r, true, true); r->update(); connect(r, root, true, false);
       root->update();
     }
   }
@@ -127,8 +129,8 @@ template <class _Node> struct Splay {
     if (l > r) return nullptr;
     int m = l + (r - l) / 2; Node *left = buildRec(l, m - 1, f);
     Node *ret = makeNode(f()), *right = buildRec(m + 1, r, f);
-    connect(left, ret, true); connect(right, ret, false); ret->update();
-    return ret;
+    connect(left, ret, ret, true); connect(right, ret, ret, false);
+    ret->update(); return ret;
   }
   template <class F> Node *build(int l, int r, F f) {
     return buildRec(l, r, f);
