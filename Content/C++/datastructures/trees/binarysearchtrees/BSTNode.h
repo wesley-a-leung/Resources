@@ -93,7 +93,7 @@ template <class T> struct NodeVal {
 //   https://dmoj.ca/problem/ccoprep16c2q3
 //   https://dmoj.ca/problem/coi08p2
 //   https://www.spoj.com/problems/QTREE2/
-//   https://judge.yosupo.jp/problem/point_set_range_composite
+//   https://judge.yosupo.jp/problem/dynamic_tree_vertex_set_path_composite
 template <class Combine> struct NodeAgg {
   using Data = typename Combine::Data;
   using Lazy = typename Combine::Lazy;

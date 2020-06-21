@@ -54,7 +54,7 @@ using namespace std;
 //   https://dmoj.ca/problem/ccoprep16c2q3
 //   https://dmoj.ca/problem/ds5easy
 //   https://www.spoj.com/problems/QTREE2/
-//   https://judge.yosupo.jp/problem/point_set_range_composite
+//   https://judge.yosupo.jp/problem/dynamic_tree_vertex_set_path_composite
 //   https://oj.uz/problem/view/JOI13_synchronization
 template <class Node> struct LinkCutTree : public Splay<Node, vector<Node>> {
   using Tree = Splay<Node, vector<Node>>;
@@ -116,7 +116,8 @@ template <class Node> struct LinkCutTree : public Splay<Node, vector<Node>> {
     return k <= d ? vert(select(nx, d - k)) : -1;
   }
   void updateVertex(int x, const Lazy &v) {
-    access(&TR[x]); TR[x].apply(v); TR[x].update();
+    access(&TR[x]); Node *l = TR[x].l; TR[x].l = nullptr;
+    TR[x].apply(v); TR[x].propagate(); TR[x].update(); TR[x].l = l;
   }
   template <const int _ = Node::RANGE_UPDATES>
   typename enable_if<_>::type updatePathFromRoot(int to, const Lazy &v) {
