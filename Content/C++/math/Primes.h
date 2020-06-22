@@ -2,7 +2,9 @@
 #include <bits/stdc++.h>
 #include "ModularArithmetic.h"
 #include "GCD.h"
+#if __cplusplus < 201402L
 #include "../utils/MakeUnique.h"
+#endif
 using namespace std;
 
 // Determines whether x is prime

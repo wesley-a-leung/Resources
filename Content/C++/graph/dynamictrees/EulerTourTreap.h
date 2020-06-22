@@ -1,6 +1,8 @@
 #pragma once
 #include <bits/stdc++.h>
+#if __cplusplus < 201402L
 #include "../../utils/MakeUnique.h"
+#endif
 using namespace std;
 
 // Euler Tour Treap supporting vertex updates and vertex/subtree queries
