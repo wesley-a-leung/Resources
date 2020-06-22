@@ -8,7 +8,7 @@ for i in $(seq 1 $numTests); do
   test=${!i}
   total+=1
   echo ""
-  echo "$(basename $test):"
+  echo "$test:"
   g++ -std=c++17 -O2 -Wall -Wextra -pedantic-errors -Werror $test -o Test.o
   retCode=$?
   if (($retCode == 0)); then

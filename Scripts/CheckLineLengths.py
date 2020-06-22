@@ -6,13 +6,20 @@ input = sys.stdin.readline
 exitCode = 0
 # for i in range(1, len(sys.argv)):
 #   filename = sys.argv[i]
-#   with open(filename, "r") as file:
+#   print()
+#   print(filename + ":")
+#   with open(filename, "rb") as file:
 #     replacePragmaOnce = False
+#     curLine = 0
 #     for line in file:
-#       if line[-1] == '\n':
+#       curLine += 1
+#       if line.endswith(b"\n"):
 #         line = line[:-1]
 #       if len(line) > 79:
-#         print(filename + " violates maximum line length of 79")
+#         print("Contains a line violating maximum line length of 79")
+#         print("First occurrence on line " + str(curLine))
 #         exitCode = 1
 #         break
+#     else:
+#       print("Line lengths good")
 sys.exit(exitCode)

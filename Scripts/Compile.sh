@@ -7,7 +7,7 @@ for i in $(seq 2 $numTests); do
   test=${!i}
   total+=1
   echo ""
-  echo "$(basename $test):"
+  echo "$test:"
   $1 $test
   retCode=$?
   if (($retCode == 0)); then

@@ -6,6 +6,8 @@ input = sys.stdin.readline
 
 for i in range(1, len(sys.argv)):
   filename = sys.argv[i]
+  print()
+  print(filename + ":")
   headerguard = pathlib.Path(filename).stem.upper() + "_H"
   output = []
   with open(filename, "r") as file:
@@ -21,6 +23,9 @@ for i in range(1, len(sys.argv)):
     if replacePragmaOnce:
       output.append("\n")
       output.append("#endif\n")
+      print("Replaced #pragma once")
+    else:
+      print("Nothing to replace")
   with open(filename, "w") as file:
     for line in output:
       file.write(line)
