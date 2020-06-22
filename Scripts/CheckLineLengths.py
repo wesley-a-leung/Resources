@@ -3,7 +3,9 @@
 import sys
 input = sys.stdin.readline
 
-exitCode = 0
+total = 0
+good = 0
+bad = 0
 # for i in range(1, len(sys.argv)):
 #   filename = sys.argv[i]
 #   print()
@@ -18,8 +20,13 @@ exitCode = 0
 #       if len(line) > 79:
 #         print("Contains a line violating maximum line length of 79")
 #         print("First occurrence on line " + str(curLine))
-#         exitCode = 1
+#         bad += 1
 #         break
 #     else:
 #       print("Line lengths good")
-sys.exit(exitCode)
+#       good += 1
+print()
+print(str(total) + " file(s) checked")
+print(str(good) + " good")
+print(str(bad) + " with errors")
+sys.exit(bad != 0)
