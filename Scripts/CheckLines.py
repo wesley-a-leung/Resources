@@ -27,7 +27,7 @@ for i in range(1, len(sys.argv)):
       #   print("line " + str(curLine) + " violates maximum line length of 79")
       #   ok = False
     if ok:
-      print("Line endings good")
+      print("All lines good")
       good += 1
     else:
       bad += 1
