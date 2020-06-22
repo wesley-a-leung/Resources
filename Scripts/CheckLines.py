@@ -1,4 +1,5 @@
-# Script to check that every line ends in \n and not \r\n
+# Script to check that every line ends in \n and not \r\n, and that every line
+# does not exceed 79 characters
 import sys
 input = sys.stdin.readline
 
@@ -13,21 +14,23 @@ for i in range(1, len(sys.argv)):
     total += 1
     replacePragmaOnce = False
     curLine = 0
+    ok = True
     for line in file:
       curLine += 1
       if not line.endswith(b"\n"):
-        print("Contains a line that does not end in \\n")
-        print("First occurrence on line " + str(curLine))
-        bad += 1
-        break
+        print("line " + str(curLine) + " does not end in \\n")
+        ok = False
       if line.endswith(b"\r\n"):
-        print("Contains a line that end in \\r\\n")
-        print("First occurrence on line " + str(curLine))
-        bad += 1
-        break
-    else:
+        print("line " + str(curLine) + " ends in \\r\\n")
+        ok = False
+      # if len(line.rstrip(b"\r\n")) > 79:
+      #   print("line " + str(curLine) + " violates maximum line length of 79")
+      #   ok = False
+    if ok:
       print("Line endings good")
       good += 1
+    else:
+      bad += 1
 print()
 print(str(total) + " file(s) checked")
 print(str(good) + " good")

@@ -1,18 +1,12 @@
 name: build
 on: [push, pull_request]
 jobs:
-  check-line-endings:
+  check-lines:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Check line endings
-      run: find "Content/" -type f \( -iname \*.h -o -iname \*.java -o -iname \*.kt \) -exec python3 Scripts/CheckLineEndings.py {} +
-  check-line-lengths:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Check line lengths
-      run: find "Content/" -type f \( -iname \*.h -o -iname \*.java -o -iname \*.kt \) -exec python3 Scripts/CheckLineLengths.py {} +
+    - name: Check lines
+      run: find "Content/" -type f -exec python3 Scripts/CheckLines.py {} +
   compile-cpp11:
     runs-on: ubuntu-latest
     steps:
