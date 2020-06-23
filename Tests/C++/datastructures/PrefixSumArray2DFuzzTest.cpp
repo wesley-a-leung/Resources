@@ -10,7 +10,7 @@ void test1() {
   for (int ti = 0; ti < TESTCASES; ti++) {
     int N = 10 - rng() % 2;
     int M = 20 - rng() % 2;
-    vector<vector<long long>> A(N, vector<long long>(M)), B(N, vector<long long>(M));
+    long long A[10][20], B[10][20];
     for (int i = 0; i < N; i++) for (int j = 0; j < M; j++) B[i][j] = A[i][j] = rng() % int(1e6) + 1;
     adjacent_difference_2d(B, N, M, B);
     int U = 100 - rng() % 5;
@@ -40,7 +40,7 @@ void test1() {
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
-  cout << "Subtest 1 (std::vector) Passed" << endl;
+  cout << "Subtest 1 (C style array) Passed" << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   cout << "  Checksum: " << checkSum << endl;
 }
@@ -96,7 +96,7 @@ void test3() {
   for (int ti = 0; ti < TESTCASES; ti++) {
     int N = 10 - rng() % 2;
     int M = 20 - rng() % 2;
-    long long A[10][20], B[10][20];
+    vector<vector<long long>> A(N, vector<long long>(M)), B(N, vector<long long>(M));
     for (int i = 0; i < N; i++) for (int j = 0; j < M; j++) B[i][j] = A[i][j] = rng() % int(1e6) + 1;
     adjacent_difference_2d(B, N, M, B);
     int U = 100 - rng() % 5;
@@ -126,7 +126,7 @@ void test3() {
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
-  cout << "Subtest 3 (C style array) Passed" << endl;
+  cout << "Subtest 3 (std::vector) Passed" << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   cout << "  Checksum: " << checkSum << endl;
 }

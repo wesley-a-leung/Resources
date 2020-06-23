@@ -7,46 +7,7 @@ void test1() {
   mt19937_64 rng(0);
   constexpr int N = 4000;
   constexpr int M = 6000;
-  vector<vector<long long>> A(N, vector<long long>(M));
-  for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e5) + 1;
-  adjacent_difference_2d(A, N, M, A);
-  int U = 5e6;
-  for (int i = 0; i < U; i++) {
-    int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
-    if (u > d) swap(u, d);
-    if (l > r) swap(l, r); 
-    long long v = rng() % int(1e5) + 1;
-    add(A, N, M, u, d, l, r, v);
-  }
-  partial_sum_2d(A, N, M, A);
-  partial_sum_2d(A, N, M, A);
-  int Q = 5e6;
-  vector<long long> ans;
-  for (int i = 0; i < Q; i++) {
-    int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
-    if (u > d) swap(u, d);
-    if (l > r) swap(l, r); 
-    ans.push_back(rsq(A, u, d, l, r));
-  }
-  const auto end_time = chrono::system_clock::now();
-  double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
-  cout << "Subtest 1 (std::vector) Passed" << endl;
-  cout << "  N: " << N << endl;
-  cout << "  M: " << M << endl;
-  cout << "  U: " << U << endl;
-  cout << "  Q: " << Q << endl;
-  cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
-  long long checkSum = 0;
-  for (auto &&a : ans) checkSum ^= a;
-  cout << "  Checksum: " << checkSum << endl;
-}
-
-void test2() {
-  const auto start_time = chrono::system_clock::now();
-  mt19937_64 rng(0);
-  constexpr int N = 4000;
-  constexpr int M = 6000;
-  vector<vector<long long>> A(N, vector<long long>(M));
+  long long A[N][M];
   for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e5) + 1;
   adjacent_difference_2d(A, N, M, A);
   int U = 1;
@@ -69,7 +30,46 @@ void test2() {
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
-  cout << "Subtest 2 (std::vector) Passed" << endl;
+  cout << "Subtest 1 (C style array) Passed" << endl;
+  cout << "  N: " << N << endl;
+  cout << "  M: " << M << endl;
+  cout << "  U: " << U << endl;
+  cout << "  Q: " << Q << endl;
+  cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
+  long long checkSum = 0;
+  for (auto &&a : ans) checkSum ^= a;
+  cout << "  Checksum: " << checkSum << endl;
+}
+
+void test2() {
+  const auto start_time = chrono::system_clock::now();
+  mt19937_64 rng(0);
+  constexpr int N = 4000;
+  constexpr int M = 6000;
+  long long A[N][M];
+  for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e5) + 1;
+  adjacent_difference_2d(A, N, M, A);
+  int U = 5e6;
+  for (int i = 0; i < U; i++) {
+    int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
+    if (u > d) swap(u, d);
+    if (l > r) swap(l, r); 
+    long long v = rng() % int(1e5) + 1;
+    add(A, N, M, u, d, l, r, v);
+  }
+  partial_sum_2d(A, N, M, A);
+  partial_sum_2d(A, N, M, A);
+  int Q = 5e6;
+  vector<long long> ans;
+  for (int i = 0; i < Q; i++) {
+    int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
+    if (u > d) swap(u, d);
+    if (l > r) swap(l, r); 
+    ans.push_back(rsq(A, u, d, l, r));
+  }
+  const auto end_time = chrono::system_clock::now();
+  double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
+  cout << "Subtest 2 (C style array) Passed" << endl;
   cout << "  N: " << N << endl;
   cout << "  M: " << M << endl;
   cout << "  U: " << U << endl;
@@ -88,7 +88,7 @@ void test3() {
   array<array<long long, M>, N> A;
   for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e5) + 1;
   adjacent_difference_2d(A, N, M, A);
-  int U = 5e6;
+  int U = 1;
   for (int i = 0; i < U; i++) {
     int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
     if (u > d) swap(u, d);
@@ -98,7 +98,7 @@ void test3() {
   }
   partial_sum_2d(A, N, M, A);
   partial_sum_2d(A, N, M, A);
-  int Q = 5e6;
+  int Q = 1;
   vector<long long> ans;
   for (int i = 0; i < Q; i++) {
     int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
@@ -127,7 +127,7 @@ void test4() {
   array<array<long long, M>, N> A;
   for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e5) + 1;
   adjacent_difference_2d(A, N, M, A);
-  int U = 1;
+  int U = 5e6;
   for (int i = 0; i < U; i++) {
     int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
     if (u > d) swap(u, d);
@@ -137,7 +137,7 @@ void test4() {
   }
   partial_sum_2d(A, N, M, A);
   partial_sum_2d(A, N, M, A);
-  int Q = 1;
+  int Q = 5e6;
   vector<long long> ans;
   for (int i = 0; i < Q; i++) {
     int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
@@ -163,46 +163,7 @@ void test5() {
   mt19937_64 rng(0);
   constexpr int N = 4000;
   constexpr int M = 6000;
-  long long A[N][M];
-  for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e5) + 1;
-  adjacent_difference_2d(A, N, M, A);
-  int U = 5e6;
-  for (int i = 0; i < U; i++) {
-    int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
-    if (u > d) swap(u, d);
-    if (l > r) swap(l, r); 
-    long long v = rng() % int(1e5) + 1;
-    add(A, N, M, u, d, l, r, v);
-  }
-  partial_sum_2d(A, N, M, A);
-  partial_sum_2d(A, N, M, A);
-  int Q = 5e6;
-  vector<long long> ans;
-  for (int i = 0; i < Q; i++) {
-    int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
-    if (u > d) swap(u, d);
-    if (l > r) swap(l, r); 
-    ans.push_back(rsq(A, u, d, l, r));
-  }
-  const auto end_time = chrono::system_clock::now();
-  double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
-  cout << "Subtest 5 (C style array) Passed" << endl;
-  cout << "  N: " << N << endl;
-  cout << "  M: " << M << endl;
-  cout << "  U: " << U << endl;
-  cout << "  Q: " << Q << endl;
-  cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
-  long long checkSum = 0;
-  for (auto &&a : ans) checkSum ^= a;
-  cout << "  Checksum: " << checkSum << endl;
-}
-
-void test6() {
-  const auto start_time = chrono::system_clock::now();
-  mt19937_64 rng(0);
-  constexpr int N = 4000;
-  constexpr int M = 6000;
-  long long A[N][M];
+  vector<vector<long long>> A(N, vector<long long>(M));
   for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e5) + 1;
   adjacent_difference_2d(A, N, M, A);
   int U = 1;
@@ -225,7 +186,46 @@ void test6() {
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
-  cout << "Subtest 6 (C style array) Passed" << endl;
+  cout << "Subtest 5 (std::vector) Passed" << endl;
+  cout << "  N: " << N << endl;
+  cout << "  M: " << M << endl;
+  cout << "  U: " << U << endl;
+  cout << "  Q: " << Q << endl;
+  cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
+  long long checkSum = 0;
+  for (auto &&a : ans) checkSum ^= a;
+  cout << "  Checksum: " << checkSum << endl;
+}
+
+void test6() {
+  const auto start_time = chrono::system_clock::now();
+  mt19937_64 rng(0);
+  constexpr int N = 4000;
+  constexpr int M = 6000;
+  vector<vector<long long>> A(N, vector<long long>(M));
+  for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e5) + 1;
+  adjacent_difference_2d(A, N, M, A);
+  int U = 5e6;
+  for (int i = 0; i < U; i++) {
+    int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
+    if (u > d) swap(u, d);
+    if (l > r) swap(l, r); 
+    long long v = rng() % int(1e5) + 1;
+    add(A, N, M, u, d, l, r, v);
+  }
+  partial_sum_2d(A, N, M, A);
+  partial_sum_2d(A, N, M, A);
+  int Q = 5e6;
+  vector<long long> ans;
+  for (int i = 0; i < Q; i++) {
+    int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
+    if (u > d) swap(u, d);
+    if (l > r) swap(l, r); 
+    ans.push_back(rsq(A, u, d, l, r));
+  }
+  const auto end_time = chrono::system_clock::now();
+  double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
+  cout << "Subtest 6 (std::vector) Passed" << endl;
   cout << "  N: " << N << endl;
   cout << "  M: " << M << endl;
   cout << "  U: " << U << endl;
