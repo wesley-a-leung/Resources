@@ -7,6 +7,7 @@ using namespace std;
 // Creates a prefix sum array pre from the 2d array A of size N x M
 // pre[i][j] is the sum of all elements in the subarray A[0..i][0..j]
 // Indices are 0-indexed
+// In practice, has a small constant
 // Time Complexity: O(NM)
 // Memory Complexity: O(1) additional memory
 // Tested:
@@ -25,6 +26,7 @@ template <class C> void partial_sum_2d(const C &A, int N, int M, C &pre) {
 // Creates a difference array diff from the 2d array A of size N x M
 // A[i][j] is the sum of all elements in the subarray diff[0..i][0..j]
 // Indices are 0-indexed
+// In practice, has a small constant
 // Time Complexity: O(NM)
 // Memory Complexity: O(1) additional memory
 // Tested:
@@ -41,6 +43,7 @@ void adjacent_difference_2d(const C &diff, int N, int M, C &A) {
 
 // Computes the sum of a subarray A[u..d][l..r] with prefix sum array pre
 // Indices are 0-indexed and ranges are inclusive
+// In practice, has a moderate constant
 // Time Complexity: O(1)
 // Memory Complexity: O(1) additional memory
 // Tested:
@@ -58,6 +61,7 @@ template <class C> auto rsq(const C &pre, int u, int d, int l, int r)
 // Adds v to the subarray A[u..d][l..r] with difference array diff
 //   of size N x M
 // Indices are 0-indexed and ranges are inclusive
+// In practice, has a moderate constant
 // Time Complexity: O(1)
 // Memory Complexity: O(1) additional memory
 // Tested:
