@@ -9,7 +9,7 @@ using namespace std;
 // Small constant, like most fenwick trees, and faster than segment trees
 // Time Complexity:
 //   constructor: O(N)
-//   update, rsq: O(log N)
+//   update, query: O(log N)
 // Memory Complexity: O(N)
 // Tested:
 //   Fuzz and Stress Tested
@@ -17,8 +17,8 @@ using namespace std;
 template <class T> struct FenwickTreeRange1D {
   vector<FenwickTreeRangePoint1D<T>> FT;
   FenwickTreeRange1D(int N) : FT(2, FenwickTreeRangePoint1D<T>(N)) {}
-  T rsq(int r) { return FT[1].get(r) * T(r) + FT[0].get(r); }
-  T rsq(int l, int r) { return rsq(r) - rsq(l - 1); }
+  T query(int r) { return FT[1].get(r) * T(r) + FT[0].get(r); }
+  T query(int l, int r) { return query(r) - query(l - 1); }
   void update(int l, int r, T v) {
     FT[1].update(l, r, v); FT[0].update(l, v * T(1 - l));
     FT[0].update(r + 1, v * T(r));

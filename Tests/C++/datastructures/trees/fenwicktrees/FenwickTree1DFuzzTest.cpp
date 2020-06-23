@@ -37,9 +37,9 @@ void test1() {
         long long sm = 0;
         for (int j = l; j <= r; j++) sm += A[j];
         ans0.push_back(sm);
-        ans1.push_back(FT1.rsq(l, r));
-        ans2.push_back(FT2.rsq(l, r));
-        ans3.push_back(FT3.rsq(l, r));
+        ans1.push_back(FT1.query(l, r));
+        ans2.push_back(FT2.query(l, r));
+        ans3.push_back(FT3.query(l, r));
       }
     }
     vector<long long> A1 = FT1.values(), A2 = FT2.values();
@@ -86,11 +86,11 @@ void test2() {
         long long sm = 0;
         for (int j = l; j <= r; j++) sm += A[j];
         ans0.push_back(sm);
-        ans1.push_back(FT1.rsq(l, r));
-        ans2.push_back(FT2.rsq(l, r));
+        ans1.push_back(FT1.query(l, r));
+        ans2.push_back(FT2.query(l, r));
         ans3.push_back(ans2.back());
       } else if (t == 2) {
-        long long TOT = FT1.rsq(N - 1) * 2 + 1;
+        long long TOT = FT1.query(N - 1) * 2 + 1;
         long long v = rng() % TOT;
         int j = 0;
         long long sm = 0;
@@ -99,10 +99,10 @@ void test2() {
         ans1.push_back(FT1.lower_bound(v));
         ans2.push_back(FT2.lower_bound(v));
         ans3.push_back(bsearch<FIRST>(0, N, [&] (int k) {
-          return FT2.rsq(k) >= v;
+          return FT2.query(k) >= v;
         }));
       } else {
-        long long TOT = FT1.rsq(N - 1) * 2 + 1;
+        long long TOT = FT1.query(N - 1) * 2 + 1;
         long long v = rng() % TOT;
         int j = 0;
         long long sm = 0;
@@ -111,7 +111,7 @@ void test2() {
         ans1.push_back(FT1.upper_bound(v));
         ans2.push_back(FT2.upper_bound(v));
         ans3.push_back(bsearch<FIRST>(0, N, [&] (int k) {
-          return FT2.rsq(k) > v;
+          return FT2.query(k) > v;
         }));
       }
     }

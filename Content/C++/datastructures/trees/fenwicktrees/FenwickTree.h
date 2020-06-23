@@ -10,7 +10,7 @@ using namespace std;
 // Time Complexity:
 //   constructor: O(PI(N_i))
 //   update: O(PI(log(N_i)))
-//   rsq: O(2^D * PI(log(N_i)))
+//   query: O(2^D * PI(log(N_i)))
 // Memory Complexity: O(PI(N_i))
 // PI is the product function, N_i is the size in the ith dimension,
 //   and D is the number of dimensions
@@ -28,10 +28,10 @@ template <const int D, class T> struct FenwickTree {
   template <class ...Args> void update(int i, Args &&...args) {
     for (i++; i <= N; i += i & -i) BIT[i].update(forward<Args>(args)...);
   }
-  template <class ...Args> T rsq(int l, int r, Args &&...args) {
+  template <class ...Args> T query(int l, int r, Args &&...args) {
     T ret = T();
-    for (; l > 0; l -= l & -l) ret -= BIT[l].rsq(forward<Args>(args)...);
-    for (r++; r > 0; r -= r & -r) ret += BIT[r].rsq(forward<Args>(args)...);
+    for (; l > 0; l -= l & -l) ret -= BIT[l].query(forward<Args>(args)...);
+    for (r++; r > 0; r -= r & -r) ret += BIT[r].query(forward<Args>(args)...);
     return ret;
   }
 };
@@ -39,5 +39,5 @@ template <const int D, class T> struct FenwickTree {
 template <class T> struct FenwickTree<0, T> {
   T val; FenwickTree() : val(T()) {}
   void update(T v) { val += v; }
-  T rsq() { return val; }
+  T query() { return val; }
 };

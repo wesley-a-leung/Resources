@@ -19,7 +19,7 @@ using namespace __gnu_pbds;
 // In practice, has a small constant
 // Time Complexity:
 //   constructor: O(Q (log Q + log N) + N) for Q updates
-//   update, rsq: O(log N log Q) for Q updates
+//   update, query: O(log N log Q) for Q updates
 // Memory Complexity: O(N + Q log N) for Q updates
 // Tested:
 //   https://dmoj.ca/problem/dmopc19c7p5
@@ -53,15 +53,17 @@ template <class T, class IndexType> struct FenwickTreeSemiSparse2DOffline {
       for (int s = st[i], c = cnt[i], y = getInd(i, j); y <= c; y += y & -y)
         BIT[s + y - 1] += v;
   }
-  T rsq(int d, IndexType r) {
+  T query(int d, IndexType r) {
     T ret = T(); for (d++; d > 0; d -= d & -d)
       for (int s = st[d], y = getInd(d, r); y > 0; y -= y & -y)
         ret += BIT[s + y - 1];
     return ret;
   }
-  T rsq(int d, IndexType l, IndexType r) { return rsq(d, r) - rsq(d, l - 1); }
-  T rsq(int u, int d, IndexType l, IndexType r) {
-    return rsq(d, l, r) - rsq(u - 1, l, r);
+  T query(int d, IndexType l, IndexType r) {
+    return query(d, r) - query(d, l - 1);
+  }
+  T query(int u, int d, IndexType l, IndexType r) {
+    return query(d, l, r) - query(u - 1, l, r);
   }
 };
 
@@ -72,7 +74,7 @@ template <class T, class IndexType> struct FenwickTreeSemiSparse2DOffline {
 // In practice, has a small constant
 // Time Complexity:
 //   constructor: O(Q log Q) for Q updates
-//   update, rsq: O((log Q)^2) for Q updates
+//   update, query: O((log Q)^2) for Q updates
 // Memory Complexity: O(Q log Q) for Q updates
 // Tested:
 //   https://judge.yosupo.jp/problem/point_add_rectangle_sum
@@ -120,17 +122,17 @@ struct FenwickTreeSparse2DOffline {
       for (int s = st[x], c = cnt[x], y = getInd2(x, j); y <= c; y += y & -y)
         BIT[s + y - 1] += v;
   }
-  T rsq(IndexType1 d, IndexType2 r) {
+  T query(IndexType1 d, IndexType2 r) {
     T ret = T(); for (int x = getInd1(d); x > 0; x -= x & -x)
       for (int s = st[x], y = getInd2(x, r); y > 0; y -= y & -y)
         ret += BIT[s + y - 1];
     return ret;
   }
-  T rsq(IndexType1 d, IndexType2 l, IndexType2 r) {
-    return rsq(d, r) - rsq(d, l - 1);
+  T query(IndexType1 d, IndexType2 l, IndexType2 r) {
+    return query(d, r) - query(d, l - 1);
   }
-  T rsq(IndexType1 u, IndexType1 d, IndexType2 l, IndexType2 r) {
-    return rsq(d, l, r) - rsq(u - 1, l, r);
+  T query(IndexType1 u, IndexType1 d, IndexType2 l, IndexType2 r) {
+    return query(d, l, r) - query(u - 1, l, r);
   }
 };
 
@@ -142,7 +144,7 @@ struct FenwickTreeSparse2DOffline {
 // Time Complexity:
 //   constructor: O(N)
 //   add, rem: O(log N) amortized
-//   rsq: O(log N sqrt Q) amortized for Q updates
+//   query: O(log N sqrt Q) amortized for Q updates
 // Memory Complexity: O(N + Q log N) for Q updates
 // Tested:
 //   https://codeforces.com/contest/1093/problem/E
@@ -158,18 +160,18 @@ template <class IndexType> struct FenwickTreeSemiSparse2DSimple {
   void rem(int i, IndexType j) {
     for (i++; i <= N; i += i & -i) OUT[i].insert(j);
   }
-  int rsq(int d, IndexType r) {
+  int query(int d, IndexType r) {
     int ret = 0; for (d++; d > 0; d -= d & -d)
       ret += IN[d].aboveInd(r) - OUT[d].aboveInd(r);
     return ret;
   }
-  int rsq(int d, IndexType l, IndexType r) {
+  int query(int d, IndexType l, IndexType r) {
     int ret = 0; for (d++; d > 0; d -= d & -d)
       ret += IN[d].count(l, r) - OUT[d].count(l, r);
     return ret;
   }
-  int rsq(int u, int d, IndexType l, IndexType r) {
-    return rsq(d, l, r) - rsq(u - 1, l, r);
+  int query(int u, int d, IndexType l, IndexType r) {
+    return query(d, l, r) - query(u - 1, l, r);
   }
 };
 
@@ -180,7 +182,7 @@ template <class IndexType> struct FenwickTreeSemiSparse2DSimple {
 // Time Complexity:
 //   constructor: O(N)
 //   update: O(log N) amortized
-//   rsq: O(log N sqrt Q) amortized for Q updates
+//   query: O(log N sqrt Q) amortized for Q updates
 // Memory Complexity: O(N + Q log N) for Q updates
 // Tested:
 //   https://dmoj.ca/problem/apio19p3
@@ -192,16 +194,16 @@ template <class T, class IndexType> struct FenwickTreeSemiSparse2D {
   void update(int i, IndexType j, T v) {
     for (i++; i <= N; i += i & -i) BIT[i].emplace(j, v);
   }
-  T rsq(int d, IndexType r) {
+  T query(int d, IndexType r) {
     T ret = T(); for (d++; d > 0; d -= d & -d) ret += BIT[d].aboveInd(r);
     return ret;
   }
-  T rsq(int d, IndexType l, IndexType r) {
+  T query(int d, IndexType l, IndexType r) {
     T ret = T(); for (d++; d > 0; d -= d & -d) ret += BIT[d].count(l, r);
     return ret;
   }
-  T rsq(int u, int d, IndexType l, IndexType r) {
-    return rsq(d, l, r) - rsq(u - 1, l, r);
+  T query(int u, int d, IndexType l, IndexType r) {
+    return query(d, l, r) - query(u - 1, l, r);
   }
 };
 
@@ -214,7 +216,7 @@ template <class T, class IndexType> struct FenwickTreeSemiSparse2D {
 // Time Complexity:
 //   constructor: O(1)
 //   add, rem: O(log N) amortized
-//   rsq: O(log N sqrt Q) amortized for Q updates
+//   query: O(log N sqrt Q) amortized for Q updates
 // Memory Complexity: O(Q log N) for Q updates
 // Tested:
 //   https://codeforces.com/contest/1093/problem/E
@@ -244,22 +246,22 @@ struct FenwickTreeSparse2DSimple {
       BIT[x].second.insert(j);
     }
   }
-  int rsq(IndexType1 d, IndexType2 r) {
+  int query(IndexType1 d, IndexType2 r) {
     d++; int ret = 0; for (IndexType1 x = d; x > 0; x -= x & -x) {
       auto it = BIT.find(x);
       ret += it->second.first.aboveInd(r) - it->second.second.aboveInd(r);
     }
     return ret;
   }
-  int rsq(IndexType1 d, IndexType2 l, IndexType2 r) {
+  int query(IndexType1 d, IndexType2 l, IndexType2 r) {
     d++; int ret = 0; for (IndexType1 x = d; x > 0; x -= x & -x) {
       auto it = BIT.find(x);
       ret += it->second.first.count(l, r) - it->second.second.count(l, r);
     }
     return ret;
   }
-  int rsq(IndexType1 u, IndexType1 d, IndexType2 l, IndexType2 r) {
-    return rsq(d, l, r) - rsq(u - 1, l, r);
+  int query(IndexType1 u, IndexType1 d, IndexType2 l, IndexType2 r) {
+    return query(d, l, r) - query(u - 1, l, r);
   }
 };
 
@@ -272,7 +274,7 @@ struct FenwickTreeSparse2DSimple {
 // Time Complexity:
 //   constructor: O(1)
 //   update: O(log N) amortized
-//   rsq: O(log N sqrt Q) amortized for Q updates
+//   query: O(log N sqrt Q) amortized for Q updates
 // Memory Complexity: O(Q log N) for Q update
 // Tested:
 //   https://dmoj.ca/problem/fallingsnowflakes
@@ -288,21 +290,21 @@ struct FenwickTreeSparse2D {
       } else it->second.emplace(j, v);
     }
   }
-  T rsq(IndexType1 d, IndexType2 r) {
+  T query(IndexType1 d, IndexType2 r) {
     d++; T ret = T(); for (IndexType1 x = d; x > 0; x -= x & -x) {
       auto it = BIT.find(x);
       if (it != BIT.end()) ret += it->second.aboveInd(r);
     }
     return ret;
   }
-  T rsq(IndexType1 d, IndexType2 l, IndexType2 r) {
+  T query(IndexType1 d, IndexType2 l, IndexType2 r) {
     d++; T ret = T(); for (IndexType1 x = d; x > 0; x -= x & -x) {
       auto it = BIT.find(x);
       if (it != BIT.end()) ret += it->second.count(l, r);
     }
     return ret;
   }
-  T rsq(IndexType1 u, IndexType1 d, IndexType2 l, IndexType2 r) {
-    return rsq(d, l, r) - rsq(u - 1, l, r);
+  T query(IndexType1 u, IndexType1 d, IndexType2 l, IndexType2 r) {
+    return query(d, l, r) - query(u - 1, l, r);
   }
 };

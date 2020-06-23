@@ -24,7 +24,7 @@ for i in range(1, len(sys.argv)):
         print("line " + str(curLine) + " ends in \\r\\n")
         ok = False
       # if len(line.rstrip(b"\r\n")) > 79:
-      #   print("line " + str(curLine) + " violates maximum line length of 79")
+      #   print("line " + str(curLine) + " exceeds maximum line length of 79")
       #   ok = False
     if ok:
       print("All lines good")

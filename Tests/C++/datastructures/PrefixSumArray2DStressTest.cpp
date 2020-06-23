@@ -2,13 +2,16 @@
 #include "../../../Content/C++/datastructures/PrefixSumArray2D.h"
 using namespace std;
 
+long long A[4000][6000];
+array<array<long long, 6000>, 4000> B;
+vector<vector<long long>> C(4000, vector<long long>(6000));
+
 void test1() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
   constexpr int N = 4000;
   constexpr int M = 6000;
-  long long A[N][M];
-  for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e5) + 1;
+  for (int i = 0; i < N; i++) for (int j = 0; j < M; j++) A[i][j] = rng() % int(1e5) + 1;
   adjacent_difference_2d(A, N, M, A);
   int U = 1;
   for (int i = 0; i < U; i++) {
@@ -46,8 +49,7 @@ void test2() {
   mt19937_64 rng(0);
   constexpr int N = 500;
   constexpr int M = 1000;
-  long long A[N][M];
-  for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e5) + 1;
+  for (int i = 0; i < N; i++) for (int j = 0; j < M; j++) A[i][j] = rng() % int(1e5) + 1;
   adjacent_difference_2d(A, N, M, A);
   int U = 5e6;
   for (int i = 0; i < U; i++) {
@@ -85,26 +87,25 @@ void test3() {
   mt19937_64 rng(0);
   constexpr int N = 4000;
   constexpr int M = 6000;
-  array<array<long long, M>, N> A;
-  for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e5) + 1;
-  adjacent_difference_2d(A, N, M, A);
+  for (int i = 0; i < N; i++) for (int j = 0; j < M; j++) B[i][j] = rng() % int(1e5) + 1;
+  adjacent_difference_2d(B, N, M, B);
   int U = 1;
   for (int i = 0; i < U; i++) {
     int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
     if (u > d) swap(u, d);
     if (l > r) swap(l, r); 
     long long v = rng() % int(1e5) + 1;
-    add(A, N, M, u, d, l, r, v);
+    add(B, N, M, u, d, l, r, v);
   }
-  partial_sum_2d(A, N, M, A);
-  partial_sum_2d(A, N, M, A);
+  partial_sum_2d(B, N, M, B);
+  partial_sum_2d(B, N, M, B);
   int Q = 1;
   vector<long long> ans;
   for (int i = 0; i < Q; i++) {
     int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
     if (u > d) swap(u, d);
     if (l > r) swap(l, r); 
-    ans.push_back(rsq(A, u, d, l, r));
+    ans.push_back(rsq(B, u, d, l, r));
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
@@ -124,26 +125,25 @@ void test4() {
   mt19937_64 rng(0);
   constexpr int N = 500;
   constexpr int M = 1000;
-  array<array<long long, M>, N> A;
-  for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e5) + 1;
-  adjacent_difference_2d(A, N, M, A);
+  for (int i = 0; i < N; i++) for (int j = 0; j < M; j++) B[i][j] = rng() % int(1e5) + 1;
+  adjacent_difference_2d(B, N, M, B);
   int U = 5e6;
   for (int i = 0; i < U; i++) {
     int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
     if (u > d) swap(u, d);
     if (l > r) swap(l, r); 
     long long v = rng() % int(1e5) + 1;
-    add(A, N, M, u, d, l, r, v);
+    add(B, N, M, u, d, l, r, v);
   }
-  partial_sum_2d(A, N, M, A);
-  partial_sum_2d(A, N, M, A);
+  partial_sum_2d(B, N, M, B);
+  partial_sum_2d(B, N, M, B);
   int Q = 5e6;
   vector<long long> ans;
   for (int i = 0; i < Q; i++) {
     int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
     if (u > d) swap(u, d);
     if (l > r) swap(l, r); 
-    ans.push_back(rsq(A, u, d, l, r));
+    ans.push_back(rsq(B, u, d, l, r));
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
@@ -163,26 +163,25 @@ void test5() {
   mt19937_64 rng(0);
   constexpr int N = 4000;
   constexpr int M = 6000;
-  vector<vector<long long>> A(N, vector<long long>(M));
-  for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e5) + 1;
-  adjacent_difference_2d(A, N, M, A);
+  for (int i = 0; i < N; i++) for (int j = 0; j < M; j++) C[i][j] = rng() % int(1e5) + 1;
+  adjacent_difference_2d(C, N, M, C);
   int U = 1;
   for (int i = 0; i < U; i++) {
     int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
     if (u > d) swap(u, d);
     if (l > r) swap(l, r); 
     long long v = rng() % int(1e5) + 1;
-    add(A, N, M, u, d, l, r, v);
+    add(C, N, M, u, d, l, r, v);
   }
-  partial_sum_2d(A, N, M, A);
-  partial_sum_2d(A, N, M, A);
+  partial_sum_2d(C, N, M, C);
+  partial_sum_2d(C, N, M, C);
   int Q = 1;
   vector<long long> ans;
   for (int i = 0; i < Q; i++) {
     int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
     if (u > d) swap(u, d);
     if (l > r) swap(l, r); 
-    ans.push_back(rsq(A, u, d, l, r));
+    ans.push_back(rsq(C, u, d, l, r));
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
@@ -202,26 +201,25 @@ void test6() {
   mt19937_64 rng(0);
   constexpr int N = 500;
   constexpr int M = 1000;
-  vector<vector<long long>> A(N, vector<long long>(M));
-  for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e5) + 1;
-  adjacent_difference_2d(A, N, M, A);
+  for (int i = 0; i < N; i++) for (int j = 0; j < M; j++) C[i][j] = rng() % int(1e5) + 1;
+  adjacent_difference_2d(C, N, M, C);
   int U = 5e6;
   for (int i = 0; i < U; i++) {
     int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
     if (u > d) swap(u, d);
     if (l > r) swap(l, r); 
     long long v = rng() % int(1e5) + 1;
-    add(A, N, M, u, d, l, r, v);
+    add(C, N, M, u, d, l, r, v);
   }
-  partial_sum_2d(A, N, M, A);
-  partial_sum_2d(A, N, M, A);
+  partial_sum_2d(C, N, M, C);
+  partial_sum_2d(C, N, M, C);
   int Q = 5e6;
   vector<long long> ans;
   for (int i = 0; i < Q; i++) {
     int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
     if (u > d) swap(u, d);
     if (l > r) swap(l, r); 
-    ans.push_back(rsq(A, u, d, l, r));
+    ans.push_back(rsq(C, u, d, l, r));
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));

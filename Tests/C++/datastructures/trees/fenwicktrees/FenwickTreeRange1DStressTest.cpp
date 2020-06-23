@@ -22,7 +22,7 @@ void test1() {
     } else {
       int l = rng() % N, r = rng() % N;
       if (l > r) swap(l, r);
-      ans.push_back(FT.rsq(l, r));
+      ans.push_back(FT.query(l, r));
     }
   }
   const auto end_time = chrono::system_clock::now();

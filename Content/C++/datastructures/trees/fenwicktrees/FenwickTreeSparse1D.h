@@ -21,7 +21,7 @@ using namespace __gnu_pbds;
 // In practice, has a small constant
 // Time Complexity:
 //   constructor: O(Q log Q) for Q updates
-//   update, rsq, bsearch, lower_bound, upper_bound: O(log Q) for Q updates
+//   update, query, bsearch, lower_bound, upper_bound: O(log Q) for Q updates
 // Memory Complexity: O(Q log Q) for Q updates
 // Tested:
 //   https://dmoj.ca/problem/ccc05s5
@@ -40,11 +40,11 @@ template <class T, class IndexType> struct FenwickTreeSparse1DOffline {
   void update(IndexType i, T v) {
     for (int x = getInd(i); x <= int(inds.size()); x += x & -x) BIT[x] += v;
   }
-  T rsq(IndexType r) {
+  T query(IndexType r) {
     T ret = T(); for (int x = getInd(r); x > 0; x -= x & -x) ret += BIT[x];
     return ret;
   }
-  T rsq(IndexType l, IndexType r) { return rsq(r) - rsq(l - 1); }
+  T query(IndexType l, IndexType r) { return query(r) - query(l - 1); }
   template <class F> IndexType bsearch(T v, F cmp) {
     T sum = T(); int ind = 0;
     for (int j = __lg(int(inds.size()) + 1); j >= 0; j--) {
@@ -65,7 +65,7 @@ template <class T, class IndexType> struct FenwickTreeSparse1DOffline {
 // In practice, has a moderate constant
 // Time Complexity:
 //   constructor: O(1)
-//   update, rsq, bsearch, lower_bound, upper_bound: O(log N) on average
+//   update, query, bsearch, lower_bound, upper_bound: O(log N) on average
 // Memory Complexity: O(Q log N) for Q updates
 // Tested:
 //   https://dmoj.ca/problem/ds4
@@ -74,13 +74,13 @@ template <class T, class IndexType, class Container = hashmap<IndexType, T>>
 struct FenwickTreeSparse1D {
   IndexType N; Container BIT; FenwickTreeSparse1D(IndexType N) : N(N) {}
   void update(IndexType i, T v) { for (i++; i <= N; i += i & -i) BIT[i] += v; }
-  T rsq(IndexType r) {
+  T query(IndexType r) {
     T ret = T(); for (r++; r > 0; r -= r & -r) {
       auto it = BIT.find(r); if (it != BIT.end()) ret += it->second;
     }
     return ret;
   }
-  T rsq(IndexType l, IndexType r) { return rsq(r) - rsq(l - 1); }
+  T query(IndexType l, IndexType r) { return query(r) - query(l - 1); }
   template <class F> IndexType bsearch(T v, F cmp) {
     T sum = T(); IndexType ind = 0;
     for (IndexType j = __lg(N + 1); j >= 0; j--) {

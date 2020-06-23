@@ -13,7 +13,7 @@ using namespace std;
 // Small constant, like most fenwick trees, and faster than segment trees
 // Time Complexity:
 //   constructor, values: O(N)
-//   update, rsq, bsearch, lower_bound, upper_bound: O(log N)
+//   update, query, bsearch, lower_bound, upper_bound: O(log N)
 // Memory Complexity: O(N)
 // Tested:
 //   Fuzz and Stress Tested
@@ -21,8 +21,8 @@ using namespace std;
 //   https://judge.yosupo.jp/problem/point_add_range_sum
 //   https://codeforces.com/contest/1279/problem/B
 //   https://dmoj.ca/problem/ccc05s5
-//   https://dmoj.ca/problem/apio19p3
 //   https://dmoj.ca/problem/cco10p3
+//   https://dmoj.ca/problem/apio19p3
 template <class T> struct FenwickTree1D {
   int N; vector<T> BIT; FenwickTree1D(int N) : N(N), BIT(N + 1, T()) {}
   template <class F> FenwickTree1D(int N, F f) : FenwickTree1D(N) {
@@ -39,11 +39,11 @@ template <class T> struct FenwickTree1D {
     return ret;
   }
   void update(int i, T v) { for (i++; i <= N; i += i & -i) BIT[i] += v; }
-  T rsq(int r) {
+  T query(int r) {
     T ret = T(); for (r++; r > 0; r -= r & -r) ret += BIT[r];
     return ret;
   }
-  T rsq(int l, int r) { return rsq(r) - rsq(l - 1); }
+  T query(int l, int r) { return query(r) - query(l - 1); }
   template <class F> int bsearch(T v, F cmp) {
     T sum = T(); int ind = 0; for (int j = __lg(N + 1); j >= 0; j--) {
       int i = ind + (1 << j);

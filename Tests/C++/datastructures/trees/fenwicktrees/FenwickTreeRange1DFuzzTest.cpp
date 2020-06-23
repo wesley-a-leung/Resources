@@ -29,7 +29,7 @@ void test1() {
         long long sm = 0;
         for (int j = l; j <= r; j++) sm += A[j];
         ans0.push_back(sm);
-        ans1.push_back(FT.rsq(l, r));
+        ans1.push_back(FT.query(l, r));
       }
     }
     assert(ans0 == ans1);

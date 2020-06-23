@@ -22,7 +22,7 @@ void test1() {
     } else {
       int l = rng() % N, r = rng() % N;
       if (l > r) swap(l, r);
-      ans.push_back(FT.rsq(l, r));
+      ans.push_back(FT.query(l, r));
     }
   }
   const auto end_time = chrono::system_clock::now();
@@ -55,7 +55,7 @@ void test2() {
     } else {
       int l = rng() % N, r = rng() % N;
       if (l > r) swap(l, r);
-      ans.push_back(FT.rsq(l, r));
+      ans.push_back(FT.query(l, r));
     }
   }
   const auto end_time = chrono::system_clock::now();
@@ -88,7 +88,7 @@ void test3() {
     } else {
       int l = rng() % N, r = rng() % N;
       if (l > r) swap(l, r);
-      ans.push_back(FT.rsq(l, r));
+      ans.push_back(FT.query(l, r));
     }
   }
   const auto end_time = chrono::system_clock::now();
@@ -120,15 +120,15 @@ void test4() {
     } else if (t == 1) {
       int l = rng() % N, r = rng() % N;
       if (l > r) swap(l, r);
-      ans.push_back(FT.rsq(l, r));
+      ans.push_back(FT.query(l, r));
     } else if (t == 2) {
-      long long TOT = FT.rsq(N - 1) * 2 + 1;
+      long long TOT = FT.query(N - 1) * 2 + 1;
       long long v = rng() % TOT;
-      ans.push_back(FT.lower_bound(v));
+      ans.push_back(FT.bsearch(v, less<long long>()));
     } else {
-      long long TOT = FT.rsq(N - 1) * 2 + 1;
+      long long TOT = FT.query(N - 1) * 2 + 1;
       long long v = rng() % TOT;
-      ans.push_back(FT.upper_bound(v));
+      ans.push_back(FT.bsearch(v, less_equal<long long>()));
     }
   }
   const auto end_time = chrono::system_clock::now();
@@ -160,24 +160,24 @@ void test5() {
     } else if (t == 1) {
       int l = rng() % N, r = rng() % N;
       if (l > r) swap(l, r);
-      ans.push_back(FT.rsq(l, r));
+      ans.push_back(FT.query(l, r));
     } else if (t == 2) {
-      long long TOT = FT.rsq(N - 1) * 2 + 1;
+      long long TOT = FT.query(N - 1) * 2 + 1;
       long long v = rng() % TOT;
       ans.push_back(bsearch<FIRST>(0, N, [&] (int k) {
-          return FT.rsq(k) > v;
+          return FT.query(k) > v;
       }));
     } else {
-      long long TOT = FT.rsq(N - 1) * 2 + 1;
+      long long TOT = FT.query(N - 1) * 2 + 1;
       long long v = rng() % TOT;
       ans.push_back(bsearch<FIRST>(0, N, [&] (int k) {
-          return FT.rsq(k) >= v;
+          return FT.query(k) >= v;
       }));
     }
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
-  cout << "Subtest 5 (bsearch with rsq) Passed" << endl;
+  cout << "Subtest 5 (bsearch with query) Passed" << endl;
   cout << "  N: " << N << endl;
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;

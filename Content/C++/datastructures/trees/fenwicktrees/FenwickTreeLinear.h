@@ -10,18 +10,18 @@ using namespace std;
 // Small constant, like most fenwick trees, and faster than segment trees
 // Time Complexity:
 //   constructor: O(N)
-//   update, rsq: O(log N)
+//   update, query: O(log N)
 // Memory Complexity: O(N)
 // Tested:
 //   https://dmoj.ca/problem/acc3p4
 template <class T> struct FenwickTreeLinear {
   vector<FenwickTreeRangePoint1D<T>> FT;
   FenwickTreeLinear(int N) : FT(3, FenwickTreeRangePoint1D<T>(N)) {}
-  T rsq(int r) {
+  T query(int r) {
     return (FT[2].get(r) * T(r) * T(r) + FT[1].get(r) * T(r)
             + FT[0].get(r)) / 2;
   }
-  T rsq(int l, int r) { return rsq(r) - rsq(l - 1); }
+  T query(int l, int r) { return query(r) - query(l - 1); }
   void update(int l, int r, T m, T b) {
     FT[2].update(l, r, m);
     FT[1].update(l, r, m * (T(1) - T(l - 1) * T(2)) + b * T(2));
