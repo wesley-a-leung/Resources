@@ -44,8 +44,8 @@ void test1() {
 void test2() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
-  constexpr int N = 4000;
-  constexpr int M = 6000;
+  constexpr int N = 500;
+  constexpr int M = 1000;
   long long A[N][M];
   for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e5) + 1;
   adjacent_difference_2d(A, N, M, A);
@@ -122,8 +122,8 @@ void test3() {
 void test4() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
-  constexpr int N = 4000;
-  constexpr int M = 6000;
+  constexpr int N = 500;
+  constexpr int M = 1000;
   array<array<long long, M>, N> A;
   for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e5) + 1;
   adjacent_difference_2d(A, N, M, A);
@@ -200,8 +200,8 @@ void test5() {
 void test6() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
-  constexpr int N = 4000;
-  constexpr int M = 6000;
+  constexpr int N = 500;
+  constexpr int M = 1000;
   vector<vector<long long>> A(N, vector<long long>(M));
   for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e5) + 1;
   adjacent_difference_2d(A, N, M, A);
