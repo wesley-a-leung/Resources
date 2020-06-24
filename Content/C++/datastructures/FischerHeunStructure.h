@@ -6,6 +6,7 @@ using namespace std;
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
+// comparator convention is same as priority_queue in STL
 // queryInd: returns the index of the maximum element in the subarray [l, r],
 //   breaking ties by selecting the first such index
 // query: returns the maximum element in the subarray [l, r]
