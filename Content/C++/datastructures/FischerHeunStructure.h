@@ -21,18 +21,19 @@ using namespace std;
 //   https://dmoj.ca/problem/ncco3d2p1
 //   https://www.spoj.com/problems/RMQSQ/
 //   https://judge.yosupo.jp/problem/staticrmq
-template <class T, class Comparator = less<T>, class mask_t = uint32_t>
+template <class T, class Cmp = less<T>, class mask_t = uint32_t>
 struct FischerHeunStructure {
   static_assert(is_integral<mask_t>::value, "mask_t must be integral");
   static_assert(is_unsigned<mask_t>::value, "mask_t must be unsigned");
   static constexpr int B = __lg(numeric_limits<mask_t>::max()) + 1;
-  int N, M; vector<T> A; vector<mask_t> mask; vector<vector<int>> ST;
-  int cmpInd(int i, int j) { return Comparator()(A[i], A[j]) ? j : i; }
+  int N, M; vector<T> A; vector<mask_t> mask; vector<vector<int>> ST; Cmp cmp;
+  int cmpInd(int i, int j) { return cmp(A[i], A[j]) ? j : i; }
   int small(int r, int sz = B) {
     return r - __lg(sz == B ? mask[r] : mask[r] & ((mask_t(1) << sz) - 1));
   }
-  template <class F> FischerHeunStructure(int N, F f)
-      : N(N), M(N / B), mask(N), ST(M == 0 ? 1 : __lg(M) + 1, vector<int>(M)) {
+  template <class F> FischerHeunStructure(int N, F f, Cmp cmp = Cmp())
+      : N(N), M(N / B), mask(N), ST(M == 0 ? 1 : __lg(M) + 1, vector<int>(M)),
+        cmp(cmp) {
     A.reserve(N); mask_t k = 0; for (int i = 0; i < N; mask[i++] = k |= 1)
       for (A.push_back(f()), k <<= 1; k && cmpInd(i - __lg(k & -k), i) == i;)
         k ^= k & -k;
@@ -40,8 +41,8 @@ struct FischerHeunStructure {
     for (int i = 0; i < int(ST.size()) - 1; i++) for (int j = 0; j < M; j++)
       ST[i + 1][j] = cmpInd(ST[i][j], ST[i][min(j + (1 << i), M - 1)]);
   }
-  template <class It> FischerHeunStructure(It st, It en)
-      : FischerHeunStructure(en - st, [&] { return *st++; }) {}
+  template <class It> FischerHeunStructure(It st, It en, Cmp cmp = Cmp())
+      : FischerHeunStructure(en - st, [&] { return *st++; }, cmp) {}
   int queryInd(int l, int r) {
     if (r - l + 1 <= B) return small(r, r - l + 1);
     int ql = small(l + B - 1), qr = small(r); l = l / B + 1; r = r / B - 1;

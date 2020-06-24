@@ -10,7 +10,7 @@ using namespace std;
 //   https://mcpt.ca/problem/seq3
 //   https://dmoj.ca/problem/acc1p1
 //   https://dmoj.ca/problem/seq2
-template <class T> struct MaxContiguousSubarraySum {
+template <class T> struct MaxContiguousSubarraySumCombine {
   struct Data { T pre, suf, sum, maxSum; };
   using Lazy = pair<T, T>;
   static Data makeData(const T &v) {

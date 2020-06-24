@@ -241,5 +241,6 @@ int main() {
   test4();
   test5();
   test6();
+  cout << "Test Passed" << endl;
   return 0;
 }
