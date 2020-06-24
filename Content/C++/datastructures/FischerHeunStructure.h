@@ -27,7 +27,7 @@ struct FischerHeunStructure {
   static constexpr int B = __lg(numeric_limits<mask_t>::max()) + 1;
   int N, M; vector<T> A; vector<mask_t> mask; vector<vector<int>> ST;
   int cmpInd(int i, int j) { return Comparator()(A[i], A[j]) ? j : i; }
-  int small(int r, int sz) {
+  int small(int r, int sz = B) {
     return r - __lg(sz == B ? mask[r] : mask[r] & ((mask_t(1) << sz) - 1));
   }
   template <class F> FischerHeunStructure(int N, F f)
@@ -35,7 +35,7 @@ struct FischerHeunStructure {
     A.reserve(N); mask_t k = 0; for (int i = 0; i < N; mask[i++] = k |= 1)
       for (A.push_back(f()), k <<= 1; k && cmpInd(i - __lg(k & -k), i) == i;)
         k ^= k & -k;
-    for (int i = 0; i < M; i++) ST[0][i] = small(B * (i + 1) - 1, B);
+    for (int i = 0; i < M; i++) ST[0][i] = small(B * (i + 1) - 1);
     for (int i = 0; i < int(ST.size()) - 1; i++) for (int j = 0; j < M; j++)
       ST[i + 1][j] = cmpInd(ST[i][j], ST[i][min(j + (1 << i), M - 1)]);
   }
@@ -43,8 +43,8 @@ struct FischerHeunStructure {
       : FischerHeunStructure(en - st, [&] { return *st++; }) {}
   int queryInd(int l, int r) {
     if (r - l + 1 <= B) return small(r, r - l + 1);
-    int ql = small(l + B - 1, B), qr = small(r, B);
-    l = l / B + 1; r = r / B - 1; if (l <= r) {
+    int ql = small(l + B - 1), qr = small(r); l = l / B + 1; r = r / B - 1;
+    if (l <= r) {
       int i = __lg(r - l + 1);
       ql = cmpInd(ql, cmpInd(ST[i][l], ST[i][r - (1 << i) + 1]));
     }
