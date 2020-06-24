@@ -25,7 +25,7 @@ using namespace std;
 //   https://judge.yosupo.jp/problem/staticrmq
 template <class T, class Op> struct DisjointSparseTable {
   int N; vector<vector<T>> ST; Op op;
-  template <class F> DisjointSparseTable(int N, F f, Op op)
+  template <class F> DisjointSparseTable(int N, F f, Op op = Op())
       : N(N), ST(__lg(N * 2 - 1) + 1), op(op) {
     ST[0].reserve(N); for (int i = 0; i < N; i++) ST[0].push_back(f());
     for (int i = 1; i < int(ST.size()); i++) {
@@ -37,7 +37,7 @@ template <class T, class Op> struct DisjointSparseTable {
       }
     }
   }
-  template <class It> DisjointSparseTable(It st, It en, Op op)
+  template <class It> DisjointSparseTable(It st, It en, Op op = Op())
       : DisjointSparseTable(en - st, [&] { return *st++; }, op) {}
   T query(int l, int r) {
     if (l == r) return ST[0][l];

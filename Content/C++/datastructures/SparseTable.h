@@ -25,7 +25,7 @@ using namespace std;
 //   https://judge.yosupo.jp/problem/staticrmq
 template <class T, class Op> struct SparseTable {
   int N; vector<vector<T>> ST; Op op;
-  template <class F> SparseTable(int N, F f, Op op)
+  template <class F> SparseTable(int N, F f, Op op = Op())
       : N(N), ST(__lg(N) + 1), op(op) {
     ST[0].reserve(N); for (int i = 0; i < N; i++) ST[0].push_back(f());
     for (int i = 0; i < int(ST.size()) - 1; i++) {
@@ -33,7 +33,7 @@ template <class T, class Op> struct SparseTable {
         ST[i + 1][j] = op(ST[i][j], ST[i][min(j + (1 << i), N - 1)]);
     }
   }
-  template <class It> SparseTable(It st, It en, Op op)
+  template <class It> SparseTable(It st, It en, Op op = Op())
       : SparseTable(en - st, [&] { return *st++; }, op) {}
   T query(int l, int r) {
     int i = __lg(r - l + 1); return op(ST[i][l], ST[i][r - (1 << i) + 1]);

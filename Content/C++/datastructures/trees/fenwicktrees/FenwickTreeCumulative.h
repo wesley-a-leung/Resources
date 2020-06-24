@@ -16,22 +16,22 @@ using namespace std;
 // Tested:
 //   https://dmoj.ca/problem/ccc19s5
 template <const int D, class T, class C> struct FenwickTreeCumulative {
-  int N; vector<FenwickTreeCumulative<D - 1, T, C>> BIT;
-  template <class ...Args> FenwickTreeCumulative(T vdef, int N, Args &&...args)
-      : N(N), BIT(N + 1, FenwickTreeCumulative<D - 1, T, C>(
-            vdef, forward<Args>(args)...)) {}
+  int N; T qdef; vector<FenwickTreeCumulative<D - 1, T, C>> BIT;
+  template <class ...Args> FenwickTreeCumulative(T qdef, int N, Args &&...args)
+      : N(N), qdef(qdef), BIT(N + 1, FenwickTreeCumulative<D - 1, T, C>(
+            qdef, forward<Args>(args)...)) {}
   template <class ...Args> void update(int i, Args &&...args) {
     for (i++; i <= N; i += i & -i) BIT[i].update(forward<Args>(args)...);
   }
   template <class ...Args> T query(int r, Args &&...args) {
-    T ret = BIT[++r].query(forward<Args>(args)...); while ((r -= r & -r) > 0)
+    T ret = qdef; for (r++; r > 0; r -= r & -r)
       ret = C()(ret, BIT[r].query(forward<Args>(args)...));
     return ret;
   }
 };
 
 template <class T, class C> struct FenwickTreeCumulative<0, T, C> {
-  T val; FenwickTreeCumulative(T vdef) : val(vdef) {}
+  T val; FenwickTreeCumulative(T qdef) : val(qdef) {}
   void update(T v) { val = C()(val, v); }
   T query() { return val; }
 };
