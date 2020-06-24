@@ -20,6 +20,7 @@ using namespace std;
 //   query: O(1)
 // Memory Complexity: O(N log N)
 // Tested:
+//   Fuzz and Stress Tested
 //   https://dmoj.ca/problem/ncco3d2p1
 //   https://www.spoj.com/problems/RMQSQ/
 //   https://judge.yosupo.jp/problem/staticrmq

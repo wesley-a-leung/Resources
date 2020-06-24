@@ -18,6 +18,7 @@ using namespace std;
 //   query: O(1) assuming bitshift for mask_t is O(1)
 // Memory Complexity: O(N + N / B log (N / B)) assuming mask_t is O(1) memory
 // Tested:
+//   Fuzz and Stress Tested
 //   https://dmoj.ca/problem/ncco3d2p1
 //   https://www.spoj.com/problems/RMQSQ/
 //   https://judge.yosupo.jp/problem/staticrmq
