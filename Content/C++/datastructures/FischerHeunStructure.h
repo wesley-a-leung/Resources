@@ -14,8 +14,8 @@ using namespace std;
 //   is slightly slower than sparse table's query
 // Time Complexity:
 //   constructor: O(N / B log (N / B)), where B is the number of bits in mask_t
-//   query: time complexity of bit shifting for mask_t
-// Memory Complexity: O(N)
+//   query: O(1) assuming bitshift for mask_t is O(1)
+// Memory Complexity: O(N + N / B log (N / B)) assuming mask_t is O(1) memory
 // Tested:
 //   https://dmoj.ca/problem/ncco3d2p1
 //   https://www.spoj.com/problems/RMQSQ/
