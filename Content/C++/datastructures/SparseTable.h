@@ -27,7 +27,7 @@ using namespace std;
 template <class T, class Op> struct SparseTable {
   int N; vector<vector<T>> ST; Op op;
   template <class F> SparseTable(int N, F f, Op op = Op())
-      : N(N), ST(__lg(N) + 1), op(op) {
+      : N(N), ST(N == 0 ? 0 : __lg(N) + 1), op(op) {
     ST[0].reserve(N); for (int i = 0; i < N; i++) ST[0].push_back(f());
     for (int i = 0; i < int(ST.size()) - 1; i++) {
       ST[i + 1] = ST[0]; for (int j = 0; j < N; j++)

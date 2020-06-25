@@ -3,6 +3,7 @@
 using namespace std;
 
 using T = long double; using IndexType = long long; const T NEG_INF = numeric_limits<T>::lowest() / 2;
+static_assert(is_integral<IndexType>::value, "IndexType must be integeral");
 
 struct Line {
     T m, b;
@@ -32,7 +33,7 @@ template <const bool maxHull> struct DynamicLiChaoTree {
         if (TR[cur].line.eval(tl) < line.eval(tl)) swap(line, TR[cur].line);
         IndexType m = tl + (tr - tl) / 2;
         if (line.eval(m) >= TR[cur].line.eval(m)) { swap(line, TR[cur].line); int cl = addLine(TR[cur].l, tl, m, line); TR[cur].l = cl; }
-        else { int cr = addLine(TR[cur].r, m + is_integral<IndexType>::value, tr, line); TR[cur].r = cr; }
+        else { int cr = addLine(TR[cur].r, m + 1, tr, line); TR[cur].r = cr; }
         return cur;
     }
     int addLineSegment(int cur, IndexType tl, IndexType tr, IndexType l, IndexType r, Line line) {
@@ -40,14 +41,14 @@ template <const bool maxHull> struct DynamicLiChaoTree {
         if (l <= tl && tr <= r) return addLine(cur, tl, tr, line);
         if (cur == -1) { cur = int(TR.size()); TR.emplace_back(); }
         IndexType m = tl + (tr - tl) / 2;
-        int cl = addLineSegment(TR[cur].l, tl, m, l, r, line), cr = addLineSegment(TR[cur].r, m + is_integral<IndexType>::value, tr, l, r, line);
+        int cl = addLineSegment(TR[cur].l, tl, m, l, r, line), cr = addLineSegment(TR[cur].r, m + 1, tr, l, r, line);
         TR[cur].l = cl; TR[cur].r = cr; return cur;
     }
     T getMax(int cur, IndexType tl, IndexType tr, IndexType x) {
         if (cur == -1) return NEG_INF;
         T ret = TR[cur].line.eval(x); IndexType m = tl + (tr - tl) / 2;
         if (x <= m) return max(ret, getMax(TR[cur].l, tl, m, x));
-        else return max(ret, getMax(TR[cur].r, m + is_integral<IndexType>::value, tr, x));
+        else return max(ret, getMax(TR[cur].r, m + 1, tr, x));
     }
     void addLine(Line line) { root = addLine(root, MN, MX, maxHull ? line : Line(-line.m, -line.b)); }
     void addLineSegment(Line line, IndexType l, IndexType r) { root = addLineSegment(root, MN, MX, l, r, maxHull ? line : Line(-line.m, -line.b)); }

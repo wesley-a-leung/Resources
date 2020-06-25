@@ -60,8 +60,8 @@ template <class T> struct SegmentTreeLinear {
     return add(query(x + 1, tl, m, l, r), query(rc, m + 1, tr, l, r));
   }
   template <class F> SegmentTreeLinear(int N, F f)
-      : N(N), TR(N * 2 - 1, ZERO), LZ(N * 2 - 1, ZERO) {
-    build(0, 0, N - 1, f);
+      : N(N), TR(max(0, N * 2 - 1), ZERO), LZ(max(0, N * 2 - 1), ZERO) {
+    if (N > 0) build(0, 0, N - 1, f);
   }
   template <class It> SegmentTreeLinear(It st, It en)
       : SegmentTreeLinear(en - st, [&] { return *st++; }) {}

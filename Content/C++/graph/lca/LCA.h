@@ -39,7 +39,7 @@ struct LCA {
   }
   template <class Graph>
   LCA(const Graph &G, const vector<int> &roots = vector<int>())
-      : root(G.V, -1), pre(G.V), vert(G.V * 2 - 1), dep(G.V),
+      : root(G.V, -1), pre(G.V), vert(max(0, G.V * 2 - 1)), dep(G.V),
         FHS(init(G, roots)) {}
   template <class Graph> LCA(const Graph &G, int rt)
       : LCA(G, vector<int>(1, rt)) {}

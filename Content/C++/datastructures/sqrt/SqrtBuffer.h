@@ -31,7 +31,7 @@ struct SqrtBuffer {
       return Comparator()(a.first, b.first);
     }
   } pairCmp;
-  SqrtBuffer(double SCALE = 1) : tot(0), SCALE(SCALE) {}
+  SqrtBuffer(double SCALE = 1) : tot(CountType()), SCALE(SCALE) {}
   template <class PairIt>
   SqrtBuffer(const PairIt st, const PairIt en, double SCALE = 1)
       : SqrtBuffer(SCALE) {
@@ -70,18 +70,18 @@ struct SqrtBuffer {
   CountType aboveInd(const T &val) {
     rebuild();
     int ind = upper_bound(large.begin(), large.end(),
-                          make_pair(val, CountType(0)), pairCmp)
+                          make_pair(val, CountType()), pairCmp)
         - large.begin();
-    CountType ret = ind == 0 ? 0 : large[ind - 1].second;
+    CountType ret = ind == 0 ? CountType() : large[ind - 1].second;
     for (auto &&p : small) if (!cmp(val, p.first)) ret += p.second;
     return ret;
   }
   CountType ceilingInd(const T &val) {
     rebuild();
     int ind = lower_bound(large.begin(), large.end(),
-                          make_pair(val, CountType(0)), pairCmp)
+                          make_pair(val, CountType()), pairCmp)
         - large.begin();
-    CountType ret = ind == 0 ? 0 : large[ind - 1].second;
+    CountType ret = ind == 0 ? CountType() : large[ind - 1].second;
     for (auto &&p : small) if (cmp(p.first, val)) ret += p.second;
     return ret;
   }
@@ -89,9 +89,9 @@ struct SqrtBuffer {
   CountType belowInd(const T &val) { return ceilingInd(val) - 1; }
   bool contains(const T &val) {
     if (binary_search(large.begin(), large.end(),
-        make_pair(val, CountType(0)), pairCmp)) return true;
+        make_pair(val, CountType()), pairCmp)) return true;
     if (rebuild() && binary_search(large.begin(), large.end(),
-                                   make_pair(val, CountType(0)), pairCmp))
+                                   make_pair(val, CountType()), pairCmp))
       return true;
     for (auto &&p : small) if (!cmp(val, p.first) && !cmp(p.first, val))
       return true;
@@ -100,19 +100,19 @@ struct SqrtBuffer {
   CountType count(const T &lo, const T &hi) {
     rebuild();
     int ind = upper_bound(large.begin(), large.end(),
-                          make_pair(hi, CountType(0)), pairCmp)
+                          make_pair(hi, CountType()), pairCmp)
         - large.begin();
-    CountType ret = ind == 0 ? 0 : large[ind - 1].second;
+    CountType ret = ind == 0 ? CountType() : large[ind - 1].second;
     ind = lower_bound(large.begin(), large.end(),
-                      make_pair(lo, CountType(0)), pairCmp)
+                      make_pair(lo, CountType()), pairCmp)
         - large.begin();
-    ret -= ind == 0 ? 0 : large[ind - 1].second;
+    ret -= ind == 0 ? CountType() : large[ind - 1].second;
     for (auto &&p : small) if (!cmp(p.first, lo) && !cmp(hi, p.first))
       ret += p.second;
     return ret;
   }
   CountType count() const { return tot; } 
-  void clear() { tot = 0; small.clear(); large.clear(); }
+  void clear() { tot = CountType(); small.clear(); large.clear(); }
   vector<pair<T, CountType>> valuesAndCount() const {
     vector<pair<T, CountType>> ret; ret.reserve(large.size() + small.size());
     for (auto &&p : small) ret.push_back(p);

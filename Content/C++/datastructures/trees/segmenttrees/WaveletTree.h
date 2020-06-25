@@ -52,14 +52,15 @@ template <class T, class Comparator = less<T>> struct WaveletTree {
   }
   template <class F> WaveletTree(int N, F f)
       : N(N), curNode(0), ind(N), rnk(N), roots(N + 1),
-        TR(N * (__lg(N * 2 - 1) + 3) - 1) {
+        TR(N == 0 ? 0 : N * (__lg(N * 2 - 1) + 3) - 1) {
     A.reserve(N); for (int i = 0; i < N; i++) A.push_back(f());
     iota(ind.begin(), ind.end(), 0);
     stable_sort(ind.begin(), ind.end(), [&] (int i, int j) {
       return cmp(A[i], A[j]);
     });
     for (int i = 0; i < N; i++) rnk[ind[i]] = i;
-    roots[0] = build(0, N - 1); for (int i = 0; i < N; i++)
+    if (N > 0) roots[0] = build(0, N - 1);
+    for (int i = 0; i < N; i++)
       roots[i + 1] = update(roots[i], 0, N - 1, rnk[i]);
   }
   template <class It> WaveletTree(It st, It en)

@@ -9,7 +9,7 @@ void test1() {
   const int TESTCASES = 1e5;
   long long checkSum = 0;
   for (int ti = 0; ti < TESTCASES; ti++) {
-    int N = 100 - rng() % 5;
+    int N = rng() % 101;
     vector<long long> A(N);
     for (auto &&ai : A) ai = rng() % int(1e9) + 1;
     FenwickTreeRangePoint1D<long long> FT1(N);
@@ -19,7 +19,7 @@ void test1() {
       FT1.update(i, i, A[i]);
       FT3.update(A[i], i, i);
     }
-    int Q = 100 - rng() % 5;
+    int Q = N == 0 ? 0 : 100 - rng() % 5;
     vector<long long> ans0, ans1, ans2, ans3;
     for (int i = 0; i < Q; i++) {
       int t = rng() % 2;

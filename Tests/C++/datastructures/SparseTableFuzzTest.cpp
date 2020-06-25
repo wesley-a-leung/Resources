@@ -9,11 +9,11 @@ void test1() {
   long long checkSum = 0;
   struct Min { int operator () (int a, int b) { return min(a, b); } };
   for (int ti = 0; ti < TESTCASES; ti++) {
-    int N = 100 - rng() % 5;
+    int N = rng() % 101;
     vector<int> A(N);
     for (auto &&a : A) a = rng() % int(1e9) + 1;
     SparseTable<int, Min> ST(A.begin(), A.end());
-    int Q = 100 - rng() % 5;
+    int Q = N == 0 ? 0 : 100 - rng() % 5;
     vector<int> ans0, ans1;
     for (int i = 0; i < Q; i++) {
       int l = rng() % N, r = rng() % N;

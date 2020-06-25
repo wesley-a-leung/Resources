@@ -27,6 +27,7 @@ using namespace __gnu_pbds;
 //   https://dmoj.ca/problem/ccc05s5
 //   https://dmoj.ca/problem/cco10p3
 template <class T, class IndexType> struct FenwickTreeSparse1DOffline {
+  static_assert(is_integral<IndexType>::value, "IndexType must be integeral");
   IndexType N; vector<T> BIT; vector<IndexType> inds;
   int getInd(IndexType i) {
     return std::upper_bound(inds.begin(), inds.end(), i) - inds.begin();
@@ -72,6 +73,7 @@ template <class T, class IndexType> struct FenwickTreeSparse1DOffline {
 //   https://dmoj.ca/problem/cco10p3
 template <class T, class IndexType, class Container = hashmap<IndexType, T>>
 struct FenwickTreeSparse1D {
+  static_assert(is_integral<IndexType>::value, "IndexType must be integeral");
   IndexType N; Container BIT; FenwickTreeSparse1D(IndexType N) : N(N) {}
   void update(IndexType i, T v) { for (i++; i <= N; i += i & -i) BIT[i] += v; }
   T query(IndexType r) {

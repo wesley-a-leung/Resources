@@ -41,7 +41,7 @@ template <class T> struct WeightedLCA {
   }
   template <class WeightedGraph>
   WeightedLCA(const WeightedGraph &G, const vector<int> &roots = vector<int>())
-      : root(G.V, -1), pre(G.V), vert(G.V * 2 - 1), dist(G.V),
+      : root(G.V, -1), pre(G.V), vert(max(0, G.V * 2 - 1)), dist(G.V),
         FHS(init(G, roots)) {}
   template <class WeightedGraph> WeightedLCA(const WeightedGraph &G, int rt)
       : WeightedLCA(G, vector<int>(1, rt)) {}

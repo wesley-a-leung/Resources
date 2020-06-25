@@ -8,13 +8,13 @@ void test1() {
   const int TESTCASES = 1e5;
   long long checkSum = 0;
   for (int ti = 0; ti < TESTCASES; ti++) {
-    int N = 10 - rng() % 2;
-    int M = 20 - rng() % 2;
+    int N = rng() % 11;
+    int M = rng() % 21;
     vector<vector<long long>> A(N, vector<long long>(M));
     for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e9) + 1;
     FenwickTreeRangePoint<2, long long> FT(N, M);
     for (int i = 0; i < N; i++) for (int j = 0; j < M; j++) FT.update(A[i][j], i, i, j, j);
-    int Q = 100 - rng() % 5;
+    int Q = N == 0 || M == 0 ? 0 : 100 - rng() % 5;
     vector<long long> ans0, ans1;
     for (int i = 0; i < Q; i++) {
       int t = rng() % 2;

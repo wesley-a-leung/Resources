@@ -99,8 +99,8 @@ template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
   lazy_def initLazy() { LZ.assign(N * 2 - 1, C.ldef); }
   agg_def initLazy() {}
   template <class F> SegmentTreeTopDown(int N, F f)
-      : N(N), TR(N * 2 - 1, C.qdef) {
-    initLazy(); build(0, 0, N - 1, f);
+      : N(N), TR(max(0, N * 2 - 1), C.qdef) {
+    if (N > 0) { initLazy(); build(0, 0, N - 1, f); }
   }
   template <class It> SegmentTreeTopDown(It st, It en)
       : SegmentTreeTopDown(en - st, [&] { return *st++; }) {}
@@ -177,6 +177,7 @@ template <class IndexType, const bool LAZY, const bool PERSISTENT,
           class Combine> struct SegmentTreeDynamic {
 #define lazy_def template <const bool _ = LAZY> typename enable_if<_>::type
 #define agg_def template <const bool _ = LAZY> typename enable_if<!_>::type
+  static_assert(is_integral<IndexType>::value, "IndexType must be integeral");
   using Data = typename Combine::Data; using Lazy = typename Combine::Lazy;
   Combine C; IndexType N;
   vector<int> L, R, roots; vector<Data> TR; vector<Lazy> LZ;
@@ -243,7 +244,9 @@ template <class IndexType, const bool LAZY, const bool PERSISTENT,
     return C.merge(query(L[x], tl, m, l, r), query(R[x], m + 1, tr, l, r));
   }
   template <class F> SegmentTreeDynamic(IndexType N, F f) : N(N) {
-    reserveNodes(N * 2 - 1); roots.push_back(build(0, N - 1, f));
+    if (N > 0) {
+      reserveNodes(N * 2 - 1); roots.push_back(build(0, N - 1, f));
+    }
   }
   template <class It> SegmentTreeDynamic(It st, It en)
       : SegmentTreeDynamic(en - st, [&] { return *st++; }) {}

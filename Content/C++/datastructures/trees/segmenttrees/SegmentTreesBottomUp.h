@@ -108,7 +108,7 @@ template <class Combine> struct SegmentTreeLazyBottomUp {
     }
   }
   template <class F> SegmentTreeLazyBottomUp(int N, F f)
-      : N(N), lgN(__lg(N)), TR(N * 2, C.qdef), LZ(N, C.ldef) {
+      : N(N), lgN(N == 0 ? 0 : __lg(N)), TR(N * 2, C.qdef), LZ(N, C.ldef) {
     generate(TR.begin() + N, TR.end(), f);
     for (int i = N - 1; i > 0; i--) TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
   }

@@ -25,9 +25,9 @@ using namespace __gnu_pbds;
 //   https://dmoj.ca/problem/fallingsnowflakes
 //   https://atcoder.jp/contests/agc026/tasks/agc026_c
 //   https://judge.yosupo.jp/problem/associative_array
-template <class K, class H = rand_hash<K>, class ...Ts>
+template <class K, class H = rand_hash, class ...Ts>
 using hashset = gp_hash_table<K, null_type, H, Ts ...>;
-template <class K, class V, class H = rand_hash<K>, class ...Ts>
+template <class K, class V, class H = rand_hash, class ...Ts>
 using hashmap = gp_hash_table<K, V, H, Ts ...>;
 
 // Ordered treeset and treemap
