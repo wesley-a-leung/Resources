@@ -33,9 +33,9 @@ struct LCA {
     ind = 0; if (roots.empty()) {
       for (int v = 0; v < G.V; v++) if (root[v] == -1) dfs(G, v, -1, v, 0);
     } else for (int rt : roots) dfs(G, rt, -1, rt, 0);
-    return move(RMQ(vert.begin(), vert.begin() + ind, [&] (int v, int w) {
-                      return dep[v] > dep[w];
-                    }));
+    return RMQ(vert.begin(), vert.begin() + ind, [&] (int v, int w) {
+                 return dep[v] > dep[w];
+               });
   }
   template <class Graph>
   LCA(const Graph &G, const vector<int> &roots = vector<int>())

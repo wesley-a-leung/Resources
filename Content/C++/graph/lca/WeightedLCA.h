@@ -35,9 +35,9 @@ template <class T> struct WeightedLCA {
     ind = 0; if (roots.empty()) {
       for (int v = 0; v < G.V; v++) if (root[v] == -1) dfs(G, v, -1, v, T());
     } else for (int rt : roots) dfs(G, rt, -1, rt, T());
-    return move(RMQ(vert.begin(), vert.begin() + ind, [&] (int v, int w) {
-                      return dist[v] > dist[w];
-                    }));
+    return RMQ(vert.begin(), vert.begin() + ind, [&] (int v, int w) {
+                 return dist[v] > dist[w];
+               });
   }
   template <class WeightedGraph>
   WeightedLCA(const WeightedGraph &G, const vector<int> &roots = vector<int>())
