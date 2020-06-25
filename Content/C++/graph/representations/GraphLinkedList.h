@@ -29,7 +29,7 @@ struct GraphLinkedList {
     const GraphLinkedList &G; int i;
     Iterator(const GraphLinkedList &G, int i) : G(G), i(i) {}
     Iterator &operator ++ () { i = G.NXT[i]; return *this; }
-    const int operator * () const { return G.TO[i]; }
+    int operator * () const { return G.TO[i]; }
     bool operator != (const Iterator &it) const { return i != it.i; }
   };
   struct Adj {
@@ -69,7 +69,7 @@ template <class T> struct WeightedGraphLinkedList {
     const WeightedGraphLinkedList &G; int i;
     Iterator(const WeightedGraphLinkedList &G, int i) : G(G), i(i) {}
     Iterator &operator ++ () { i = G.NXT[i]; return *this; }
-    const pair<int, T> operator * () const {
+    pair<int, T> operator * () const {
       return make_pair(G.TO[i], G.WEIGHT[i]);
     }
     bool operator != (const Iterator &it) const { return i != it.i; }

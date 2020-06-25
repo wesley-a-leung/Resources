@@ -36,7 +36,7 @@ struct GraphStatic {
     const GraphStatic &G; int i;
     Iterator(const GraphStatic &G, int i) : G(G), i(i) {}
     Iterator &operator ++ () { i++; return *this; }
-    const int operator * () const { return G.TO[i]; }
+    int operator * () const { return G.TO[i]; }
     bool operator != (const Iterator &it) const { return i != it.i; }
   };
   struct Adj {
@@ -85,7 +85,7 @@ template <class T> struct WeightedGraphStatic {
     const WeightedGraphStatic &G; int i;
     Iterator(const WeightedGraphStatic &G, int i) : G(G), i(i) {}
     Iterator &operator ++ () { i++; return *this; }
-    const pair<int, T> operator * () const {
+    pair<int, T> operator * () const {
       return make_pair(G.TO[i], G.WEIGHT[i]);
     }
     bool operator != (const Iterator &it) const { return i != it.i; }
