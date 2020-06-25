@@ -33,7 +33,7 @@ struct FischerHeunStructure {
     return r - __lg(sz == B ? mask[r] : mask[r] & ((mask_t(1) << sz) - 1));
   }
   template <class F> FischerHeunStructure(int N, F f, Cmp cmp = Cmp())
-      : N(N), M(N / B), mask(N), ST(M == 0 ? 1 : __lg(M) + 1, vector<int>(M)),
+      : N(N), M(N / B), mask(N), ST(M == 0 ? 0 : __lg(M) + 1, vector<int>(M)),
         cmp(cmp) {
     A.reserve(N); mask_t k = 0; for (int i = 0; i < N; mask[i++] = k |= 1)
       for (A.push_back(f()), k <<= 1; k && cmpInd(i - __lg(k & -k), i) == i;)
