@@ -1,3 +1,5 @@
+![build](https://github.com/wesley-a-leung/Resources/workflows/build/badge.svg)
+
 # Resources
 Data Structures, Algorithms, Utility Classes
 
