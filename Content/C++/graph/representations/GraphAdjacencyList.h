@@ -8,6 +8,7 @@ using namespace std;
 //   has a small constant
 // Graph construction is slower than static graphs and linked lists
 // Graph traveral is faster than static graphs, but slower than linked lists
+// Uses more memory than static graphs and linked lists
 // Time Complexity:
 //   constructor: O(V)
 //   addBiEdge, addDiEdge: O(1) amortized
@@ -29,6 +30,7 @@ struct GraphAdjacencyList {
 //   has a small constant
 // Graph construction is slower than static graphs and linked lists
 // Graph traveral is faster than static graphs, but slower than linked lists
+// Uses more memory than static graphs and linked lists
 // Time Complexity:
 //   constructor: O(V)
 //   addBiEdge, addDiEdge: O(1) amortized

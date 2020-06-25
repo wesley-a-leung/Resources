@@ -12,6 +12,7 @@ using namespace std;
 // Graph construction is faster than adjacency lists, but slower than
 //   linked lists
 // Graph traveral is faster than adjacency lists and linked lists
+// Uses less memory than adjacency lists, but more memory than linked lists
 // Time Complexity:
 //   constructor: O(V)
 //   addDiEdge: O(1) amortized
@@ -58,6 +59,7 @@ struct GraphStatic {
 // Graph construction is faster than adjacency lists, but slower than
 //   linked lists
 // Graph traveral is faster than adjacency lists and linked lists
+// Uses less memory than adjacency lists, but more memory than linked lists
 // Time Complexity:
 //   constructor: O(V)
 //   addDiEdge: O(1) amortized

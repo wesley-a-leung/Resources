@@ -9,6 +9,7 @@ using namespace std;
 //   has a moderate constant
 // Graph construction is faster than static graphs and adjacency lists
 // Graph traveral is slower than static graphs and adjacency lists
+// Uses less memory than static graphs and adjacency lists
 // Time Complexity:
 //   constructor: O(V)
 //   addDiEdge: O(1) amortized
@@ -48,6 +49,7 @@ struct GraphLinkedList {
 //   has a moderate constant
 // Graph construction is faster than static graphs and adjacency lists
 // Graph traveral is slower than static graphs and adjacency lists
+// Uses less memory than static graphs and adjacency lists
 // Time Complexity:
 //   constructor: O(V)
 //   addBiEdge, addDiEdge: O(1) amortized
