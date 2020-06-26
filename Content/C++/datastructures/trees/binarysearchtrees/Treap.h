@@ -16,9 +16,8 @@ using namespace std;
 //   (root is a dummy argument to maintain consistency with splay api)
 // getFirst returns the first node y (and its index) in the subtree of x
 //   where cmp(y->val, v) returns false
-// build builds a treap over the range of indices [l, r]
-//   where f is a generating function that passed arguments to the
-//   node constructor
+// build builds a treap with N nodes using a generating function f
+//   that passes a single argument to the node constructor
 // clear adds all nodes in the subtree of x to the deleted buffer
 // Node must have the following:
 //   HAS_PAR: const static bool indicating whether this node has
@@ -120,9 +119,7 @@ template <class _Node> struct Treap {
     Node *left = buildRec(l, m, f), *right = buildRec(m + 1, r, f);
     merge(ret, left, right); return ret;
   }
-  template <class F> Node *build(int l, int r, F f) {
-    return buildRec(l, r, f);
-  }
+  template <class F> Node *build(int N, F f) { return buildRec(0, N - 1, f); }
   void clear(Node *x) {
     if (!x) return;
     clear(x->l); deleted.push_back(x); clear(x->r);

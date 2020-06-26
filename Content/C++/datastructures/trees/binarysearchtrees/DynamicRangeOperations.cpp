@@ -51,8 +51,8 @@ using namespace std;
 //                               bool(const Data &, const T &))
 //     that finds the first node and its index
 //     where cmp(x->val, val) returns false
-//   build: Node *(int, int, T()) that returns a node representing
-//     the tree built over a range with a function that returns
+//   build: Node *(int, T()) that returns a node representing
+//     the tree of a specified size with a function that returns
 //     the argument passed to the constructor
 //   clear: void(Node *) that clears/erases a subtree's nodes
 // Time Complexity if Treap or Splay is used:
@@ -82,8 +82,7 @@ template <class Tree> struct DynamicRangeOperations : public Tree {
   using Lazy = typename Node::Lazy; Node *root;
   using Tree::makeNode; using Tree::applyToRange; using Tree::select;
   using Tree::getFirst; using Tree::build; using Tree::clear;
-  template <class F> DynamicRangeOperations(int N, F f)
-      : root(build(0, N - 1, f)) {}
+  template <class F> DynamicRangeOperations(int N, F f) : root(build(N, f)) {}
   template <class It> DynamicRangeOperations(It st, It en)
       : DynamicRangeOperations(en - st, [&] { return *st++; }) {}
   DynamicRangeOperations() : root(nullptr) {}
@@ -91,7 +90,7 @@ template <class Tree> struct DynamicRangeOperations : public Tree {
     applyToRange(root, i, i - 1, [&] (Node *&x) { x = makeNode(v); });
   }
   template <class F> void insert_at(int i, int n, F f) {
-    applyToRange(root, i, i - 1, [&] (Node *&x) { x = build(0, n - 1, f); }); 
+    applyToRange(root, i, i - 1, [&] (Node *&x) { x = build(n, f); }); 
   }
   template <class It> void insert_at(int i, It st, It en) {
     insert_at(i, en - st, [&] { return *st++; });
