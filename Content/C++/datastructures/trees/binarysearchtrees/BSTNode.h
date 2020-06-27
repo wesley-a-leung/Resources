@@ -10,6 +10,7 @@ using namespace std;
 //   sz: integer representing the size of the subtree
 //   l: pointer of the same node type to the left child
 //   r: pointer of the same node type to the right child
+//   constructor: takes a single argument with the information for the node
 //   update: void() that updates the size of subtree,
 //     along with any additional information
 //   propagate: void() that pushes information lazily to the children

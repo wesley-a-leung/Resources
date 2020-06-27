@@ -21,6 +21,7 @@ using namespace std;
 //   that passes a single argument to the node constructor
 // clear adds all nodes in the subtree of x to the deleted buffer
 // Node must have the following:
+//   constructor: takes a single argument with the information for the node
 //   HAS_PAR: const static bool indicating whether this node has
 //     a parent pointer, which MUST be true for splay
 //   sz: integer representing the size of the subtree

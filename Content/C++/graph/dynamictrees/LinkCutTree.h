@@ -25,6 +25,7 @@ using namespace std;
 //   r: pointer of the same node type to the right child
 //   p: pointer of the same node type to the parent
 //   val: Data representing the value of the node
+//   constructor: takes a single argument with the information for the node
 //   update: void() that updates the size of subtree,
 //     along with any additional information
 //   propagate: void() that pushes information lazily to the children

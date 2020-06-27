@@ -22,6 +22,7 @@ using namespace std;
 //   https://dmoj.ca/problem/ncco3d2p1
 //   https://www.spoj.com/problems/RMQSQ/
 //   https://judge.yosupo.jp/problem/staticrmq
+//   https://codeforces.com/contest/1062/problem/E
 template <class T, class Cmp = less<T>, class mask_t = uint32_t>
 struct FischerHeunStructure {
   static_assert(is_integral<mask_t>::value, "mask_t must be integral");

@@ -29,6 +29,7 @@ using namespace std;
 //     l: pointer of the same node type to the left child
 //     r: pointer of the same node type to the right child
 //     val: Data representing the value of the node
+//     constructor: takes a single argument with the information for the node
 //     propagate: void() that pushes information lazily to the children
 //     apply: void(const Lazy &v) that updates the information of the node
 //       (including optional aggregate and lazy information)

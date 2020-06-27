@@ -8,9 +8,11 @@ using namespace std;
 //   range minimum query using the Fischer Heun Structure
 // Vertices are 0-indexed
 // In practice, lca and getDist have a moderate constant, constructor is
-//   dependent on the graph data structure
-// contructor accepts a generic graph data structure with the [] operator
-//   defined to iterate over the adjacency list, and a single root of the tree,
+//   dependent on the tree data structure
+// contructor accepts a generic tree data structure (weighted or unweighted)
+//   with the [] operator defined to iterate over the adjacency list (which is
+//   a list of ints for an unweighted tree, or a list of pair<int, T> for a
+//   weighted tree with weights of type T), and a single root of the tree,
 //   or a list of roots of the forests (if no root is provided, then the
 //   minimum vertex is chosen for each forest)
 // getDist assumes v and w are connected
@@ -21,32 +23,39 @@ using namespace std;
 // Tested:
 //   https://judge.yosupo.jp/problem/lca
 //   https://www.spoj.com/problems/LCASQ
-struct LCA {
+//   https://codeforces.com/contest/1062/problem/E
+//   https://dmoj.ca/problem/rte16s3
+template <class T = int> struct LCA {
   using RMQ = FischerHeunStructure<int, function<bool(int, int)>>;
-  int ind; vector<int> root, pre, vert, dep; RMQ FHS;
-  template <class Graph>
-  void dfs(const Graph &G, int v, int prev, int r, int d) {
-    root[v] = r; dep[v] = d; vert[pre[v] = ind++] = v; for (int w : G[v])
-      if (w != prev) { dfs(G, w, v, r, d + 1); vert[ind++] = v; }
+  int ind; vector<int> root, pre, vert; vector<T> dist; RMQ FHS;
+  int getTo(int e) { return e; }
+  T getWeight(int) { return 1; }
+  int getTo(const pair<int, T> &e) { return e.first; }
+  T getWeight(const pair<int, T> &e) { return e.second; }
+  template <class Tree> void dfs(const Tree &G, int v, int prev, int r, T d) {
+    root[v] = r; dist[v] = d; vert[pre[v] = ind++] = v; for (auto &&e : G[v]) {
+      int w = getTo(e);
+      if (w != prev) { dfs(G, w, v, r, d + getWeight(e)); vert[ind++] = v; }
+    }
   }
-  template <class Graph> RMQ init(const Graph &G, const vector<int> &roots) {
+  template <class Tree> RMQ init(const Tree &G, const vector<int> &roots) {
     ind = 0; if (roots.empty()) {
-      for (int v = 0; v < G.V; v++) if (root[v] == -1) dfs(G, v, -1, v, 0);
-    } else for (int rt : roots) dfs(G, rt, -1, rt, 0);
+      for (int v = 0; v < G.V; v++) if (root[v] == -1) dfs(G, v, -1, v, T());
+    } else for (int rt : roots) dfs(G, rt, -1, rt, T());
     return RMQ(vert.begin(), vert.begin() + ind, [&] (int v, int w) {
-                 return dep[v] > dep[w];
+                 return dist[v] > dist[w];
                });
   }
-  template <class Graph>
-  LCA(const Graph &G, const vector<int> &roots = vector<int>())
-      : root(G.V, -1), pre(G.V), vert(max(0, G.V * 2 - 1)), dep(G.V),
+  template <class Tree>
+  LCA(const Tree &G, const vector<int> &roots = vector<int>())
+      : root(G.V, -1), pre(G.V), vert(max(0, G.V * 2 - 1)), dist(G.V),
         FHS(init(G, roots)) {}
-  template <class Graph> LCA(const Graph &G, int rt)
+  template <class Tree> LCA(const Tree &G, int rt)
       : LCA(G, vector<int>(1, rt)) {}
   int lca(int v, int w) {
     if (pre[v] > pre[w]) swap(v, w);
     return FHS.query(pre[v], pre[w]);
   }
   bool connected(int v, int w) { return root[v] == root[w]; }
-  int getDist(int v, int w) { return dep[v] + dep[w] - 2 * dep[lca(v, w)]; }
+  T getDist(int v, int w) { return dist[v] + dist[w] - 2 * dist[lca(v, w)]; }
 };
