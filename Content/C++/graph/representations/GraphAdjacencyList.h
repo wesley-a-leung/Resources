@@ -12,16 +12,14 @@ using namespace std;
 // Time Complexity:
 //   constructor: O(V)
 //   addBiEdge, addDiEdge: O(1) amortized
-//   operator []: O(1)
+//   operator [], size: O(1)
 // Memory Complexity: O(V + E)
 // Tested:
 //   https://judge.yosupo.jp/problem/lca
-struct GraphAdjacencyList {
-  int V; vector<vector<int>> adj;
-  GraphAdjacencyList(int V) : V(V), adj(V) {}
-  void addDiEdge(int from, int to) { adj[from].push_back(to); }
+struct GraphAdjacencyList : public vector<vector<int>> {
+  GraphAdjacencyList(int V) : vector<vector<int>>(V) {}
+  void addDiEdge(int from, int to) { at(from).push_back(to); }
   void addBiEdge(int v, int w) { addDiEdge(v, w); addDiEdge(w, v); }
-  const vector<int> &operator [] (int v) const { return adj[v]; }
 };
 
 // Adjacency List representation of a weighted graph
@@ -34,18 +32,17 @@ struct GraphAdjacencyList {
 // Time Complexity:
 //   constructor: O(V)
 //   addBiEdge, addDiEdge: O(1) amortized
-//   operator []: O(1)
+//   operator [], size: O(1)
 // Memory Complexity: O(V + E)
 // Tested:
 //   https://dmoj.ca/problem/rte16s3
-template <class T> struct WeightedGraphAdjacencyList {
-  int V; vector<vector<pair<int, T>>> adj;
-  WeightedGraphAdjacencyList(int V) : V(V), adj(V) {}
+template <class T>
+struct WeightedGraphAdjacencyList : public vector<vector<pair<int, T>>> {
+  WeightedGraphAdjacencyList(int V) : vector<vector<pair<int, T>>>(V) {}
   void addDiEdge(int from, int to, T weight) {
-    adj[from].emplace_back(to, weight);
+    this->at(from).emplace_back(to, weight);
   }
   void addBiEdge(int v, int w, T weight) {
     addDiEdge(v, w, weight); addDiEdge(w, v, weight);
   }
-  const vector<pair<int, T>> &operator [] (int v) const { return adj[v]; }
 };

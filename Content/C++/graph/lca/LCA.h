@@ -10,11 +10,12 @@ using namespace std;
 // In practice, lca and getDist have a moderate constant, constructor is
 //   dependent on the tree data structure
 // contructor accepts a generic tree data structure (weighted or unweighted)
-//   with the [] operator defined to iterate over the adjacency list (which is
-//   a list of ints for an unweighted tree, or a list of pair<int, T> for a
-//   weighted tree with weights of type T), and a single root of the tree,
-//   or a list of roots of the forests (if no root is provided, then the
-//   minimum vertex is chosen for each forest)
+//   with the [] operator (const) defined to iterate over the adjacency list
+//   (which is a list of ints for an unweighted tree, or a list of pair<int, T>
+//   for a weighted tree with weights of type T), as well as a member function
+//   size() (const) that returns the number of vertices in the graph, and a
+//   single root of the tree, or a list of roots of the forests (if no root is
+//   provided, then the minimum vertex is chosen for each forest)
 // getDist assumes v and w are connected
 // Time Complexity:
 //   constructor: O(V)
@@ -27,7 +28,7 @@ using namespace std;
 //   https://dmoj.ca/problem/rte16s3
 template <class T = int> struct LCA {
   using RMQ = FischerHeunStructure<int, function<bool(int, int)>>;
-  int ind; vector<int> root, pre, vert; vector<T> dist; RMQ FHS;
+  int V, ind; vector<int> root, pre, vert; vector<T> dist; RMQ FHS;
   int getTo(int e) { return e; }
   T getWeight(int) { return 1; }
   int getTo(const pair<int, T> &e) { return e.first; }
@@ -40,7 +41,7 @@ template <class T = int> struct LCA {
   }
   template <class Tree> RMQ init(const Tree &G, const vector<int> &roots) {
     ind = 0; if (roots.empty()) {
-      for (int v = 0; v < G.V; v++) if (root[v] == -1) dfs(G, v, -1, v, T());
+      for (int v = 0; v < V; v++) if (root[v] == -1) dfs(G, v, -1, v, T());
     } else for (int rt : roots) dfs(G, rt, -1, rt, T());
     return RMQ(vert.begin(), vert.begin() + ind, [&] (int v, int w) {
                  return dist[v] > dist[w];
@@ -48,7 +49,7 @@ template <class T = int> struct LCA {
   }
   template <class Tree>
   LCA(const Tree &G, const vector<int> &roots = vector<int>())
-      : root(G.V, -1), pre(G.V), vert(max(0, G.V * 2 - 1)), dist(G.V),
+      : V(G.size()), root(V, -1), pre(V), vert(max(0, V * 2 - 1)), dist(V),
         FHS(init(G, roots)) {}
   template <class Tree> LCA(const Tree &G, int rt)
       : LCA(G, vector<int>(1, rt)) {}
