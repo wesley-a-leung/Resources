@@ -36,17 +36,15 @@ template <class T> struct SuffixArray {
     rnk[ind[N]] = -1; for (int i = 0; i < N; i++) {
       rnk[ind[i]] = i > 0 && S[ind[i]] == S[ind[i - 1]] ? rnk[ind[i - 1]] : i;
     }
-    for (int h = 1; h < N; h += h) for (int r = 1, cnt = 0; r <= N; r++) {
-      if (rnk[ind[r - 1]] == rnk[ind[r]]) cnt++;
-      else if (cnt > 0) {
-        int l = r - cnt - 1; cnt = 0;
+    for (int h = 1; h < N; h += h) for (int l = 0, r = 1; r <= N; r++) {
+      if (rnk[ind[r - 1]] != rnk[ind[r]] && l + 1 < r) {
         sort(ind.begin() + l, ind.begin() + r, [&] (int a, int b) {
           return rnk[h + a] < rnk[h + b];
         });
-        for (int j = l + 1, cur = rnk[ind[l]]; j < r; tmp[ind[j++]] = cur)
-          if (rnk[h + ind[j - 1]] < rnk[h + ind[j]]) cur = rnk[ind[l]] + j - l;
-        for (int j = l + 1; j < r; j++) rnk[ind[j]] = tmp[ind[j]];
-      }
+        tmp[l] = l; for (int j = l + 1; j < r; j++)
+          tmp[j] = rnk[h + ind[j - 1]] < rnk[h + ind[j]] ? j : tmp[j - 1];
+        for (l++; l < r; l++) rnk[ind[l]] = tmp[l];
+      } else if (rnk[ind[r - 1]] != rnk[ind[r]]) l++;
     }
     ind.pop_back(); rnk.pop_back(); tmp.pop_back();
     for (int i = 0, k = 0; i < N; i++) {
