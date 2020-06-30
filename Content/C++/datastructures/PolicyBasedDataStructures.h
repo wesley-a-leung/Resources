@@ -11,7 +11,7 @@ using namespace __gnu_pbds;
 //   as well as priority queues
 
 // Unordered hashmap with randomized hash
-// API is similar to unordered_set and unordered_map in C++ 03,
+// API is similar to set and map in C++ 03,
 //   except there is no count function (use member function find instead)
 // https://gcc.gnu.org/onlinedocs/libstdc++/ext/pb_ds/gp_hash_table.html
 //   and https://gcc.gnu.org/onlinedocs/libstdc++/ext/pb_ds/container_base.html
