@@ -86,7 +86,7 @@ template <class T> struct LongestCommonPrefix {
       : LongestCommonPrefix(en - st, [&] { return *st++; }) {}
   int lcpRnk(int i, int j) {
     if (i > j) swap(i, j);
-    return i == j ? int(SA.S.size()) - j : FHS.query(i, j - 1);
+    return i == j ? int(SA.S.size()) - SA.ind[j] : FHS.query(i, j - 1);
   }
   int lcp(int i, int j) { return lcpRnk(SA.rnk[i], SA.rnk[j]); }
 };
