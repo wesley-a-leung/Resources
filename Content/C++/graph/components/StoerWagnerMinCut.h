@@ -47,7 +47,5 @@ template <const int MAXV, class unit> struct StoerWagnerGlobalMinCut {
         }
         return weight;
     }
-    void init(int V) {
-        for (int v = 0; v < V; v++) { adj[v].clear(); adj[v].reserve(V - 1); }
-    }
+    void init(int V) { for (int v = 0; v < V; v++) adj[v].clear(); }
 };
