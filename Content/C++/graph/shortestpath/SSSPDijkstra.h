@@ -19,7 +19,7 @@ using namespace std;
 //   vertex to vertex v
 // In practice, constructor has a small constant
 // Time Complexity:
-//   constructor: O((V + E) log E) if a regular priority queue is used
+//   constructor: O((V + E) log E)
 //   getPath: O(V)
 // Memory Complexity: O(V + E)
 // Tested:
