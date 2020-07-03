@@ -7,8 +7,6 @@ using namespace std;
 //   and the distance between 2 vertices by reduing the problem to a
 //   range minimum query using the Fischer Heun Structure
 // Vertices are 0-indexed
-// In practice, lca and getDist have a moderate constant, constructor is
-//   dependent on the tree data structure
 // contructor accepts a generic tree data structure (weighted or unweighted)
 //   with the [] operator (const) defined to iterate over the adjacency list
 //   (which is a list of ints for an unweighted tree, or a list of pair<int, T>
@@ -17,6 +15,8 @@ using namespace std;
 //   single root of the tree, or a list of roots of the forests (if no root is
 //   provided, then the minimum vertex is chosen for each forest)
 // getDist assumes v and w are connected
+// In practice, lca and getDist have a moderate constant, constructor is
+//   dependent on the tree data structure
 // Time Complexity:
 //   constructor: O(V)
 //   lca, connected, getDist: O(1)

@@ -17,6 +17,7 @@ using namespace std;
 // Time Complexity: O(S (log S)^2)
 // Memory Complexity: O(S)
 // Tested:
+//   Fuzz and Stress Tested
 //   https://judge.yosupo.jp/problem/suffixarray
 //   https://judge.yosupo.jp/problem/number_of_substrings
 //   https://www.spoj.com/problems/DISUBSTR/
@@ -75,6 +76,7 @@ template <class T> struct SuffixArray {
 //   lcpRnk, lcp: O(1)
 // Memory Complexity: O(S)
 // Tested:
+//   Fuzz and Stress Tested
 //   https://dmoj.ca/problem/ccc20j4
 //   https://dmoj.ca/problem/ccc20s3
 //   https://dmoj.ca/problem/wac4p4

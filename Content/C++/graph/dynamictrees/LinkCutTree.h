@@ -57,7 +57,7 @@ using namespace std;
 //   https://www.spoj.com/problems/QTREE2/
 //   https://judge.yosupo.jp/problem/dynamic_tree_vertex_set_path_composite
 //   https://oj.uz/problem/view/JOI13_synchronization
-template <class Node> struct LinkCutTree : public Splay<Node, vector<Node>> {
+template <class Node> struct LCT : public Splay<Node, vector<Node>> {
   using Tree = Splay<Node, vector<Node>>;
   using Tree::TR; using Tree::makeNode; using Tree::splay; using Tree::select;
   using Data = typename Node::Data; using Lazy = typename Node::Lazy;
@@ -141,9 +141,8 @@ template <class Node> struct LinkCutTree : public Splay<Node, vector<Node>> {
     makeRoot(from); access(&TR[to]);
     return from == to || TR[from].p ? TR[to].sbtr : Node::qdef();
   }
-  template <class F> LinkCutTree(int N, F f) {
+  template <class F> LCT(int N, F f) {
     TR.reserve(N); for (int i = 0; i < N; i++) makeNode(f());
   }
-  template <class It> LinkCutTree(It st, It en)
-      : LinkCutTree(en - st, [&] { *st++; }) {}
+  template <class It> LCT(It st, It en) : LCT(en - st, [&] { *st++; }) {}
 };

@@ -6,8 +6,6 @@ using namespace std;
 // Generic Treap node operations supporting a generic node class (such
 //   as the structs in BSTNode.h)
 // Indices are 0-indexed and ranges are inclusive
-// In practice, has a moderate constant, not as fast as segment trees
-//   and slightly slower than Splay
 // makeNode creates a new node passing v to the node constructor
 // applyToRange applies the function f to a node x where x is the disconnected
 //   subtree with indices in the range [i, j] for the tree rooted at root
@@ -35,6 +33,8 @@ using namespace std;
 //     val: any type representing the value of the node
 // Can be used in conjunction with DynamicRangeOperations to support
 //   range operations using treap node operations
+// In practice, has a moderate constant, not as fast as segment trees
+//   and slightly slower than Splay
 // Time Complexity:
 //   build: O(N) expected
 //   clear: O(N)
