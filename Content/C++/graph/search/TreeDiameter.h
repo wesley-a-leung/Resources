@@ -1,25 +1,35 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "BreadthFirstSearch.h"
 using namespace std;
 
-// Computes the diameter of a component, assuming the graph is a forest
-// Time Complexity: O(V)
+// Computes the diameter of a tree
+// Vertices are 0-indexed
+// contructor accepts a generic tree data structure (weighted or unweighted)
+//   with the [] operator (const) defined to iterate over the adjacency list
+//   (which is a list of ints for an unweighted tree, or a list of
+//   pair<int, T> for a weighted tree with weights of type T), as well as a
+//   member function size() (const) that returns the number of vertices in the
+//   tree
+// getPath() returns the list of edges on the diameter
+// In practice, constructor has a moderate constant
+// Time Complexity:
+//   constructor: O(V)
+//   getPath: O(V)
 // Memory Complexity: O(V)
-template <const int MAXV, class unit> struct TreeDiameter {
-    int par[MAXV]; pair<unit, pair<int, int>> diameter; vector<pair<int, unit>> adj[MAXV];
-    void addEdge(int v, int w, unit weight) { adj[v].emplace_back(w, weight); adj[w].emplace_back(v, weight); }
-    pair<unit, int> dfs(int v, int prev, unit dist) {
-        pair<unit, int> ret(dist, v); par[v] = prev;
-        for (auto &&e : adj[v]) if (e.first != prev) ret = max(ret, dfs(e.first, v, dist + e.second));
-        return ret;
-    }
-    pair<unit, pair<int, int>> getDiameter(int s = 0) { // returns the diameter, along with 2 vertices with that diameter
-        pair<unit, int> t = dfs(s, -1, 0), u = dfs(t.second, -1, 0); return diameter = make_pair(u.first, make_pair(t.second, u.second));
-    }
-    vector<int> getPath() {
-        vector<int> path;
-        for (int v = diameter.second.second; v != -1; v = par[v]) path.push_back(v);
-        return path;
-    }
-    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
+template <class T = int> struct TreeDiameter {
+  BFS<T> bfs; pair<int, int> endpoints; T diameter;
+  template <class Tree>
+  TreeDiameter(const Tree &G, T INF = numeric_limits<T>::max())
+      : bfs(G, 0, INF) {
+    endpoints.first = max_element(bfs.dist.begin(), bfs.dist.end())
+        - bfs.dist.begin();
+    move(bfs); bfs = BFS<T>(G, endpoints.first);
+    endpoints.second = max_element(bfs.dist.begin(), bfs.dist.end())
+        - bfs.dist.begin();
+    diameter = bfs.dist[endpoints.second];
+  }
+  vector<typename BFS<T>::Edge> getPath() {
+    return bfs.getPath(endpoints.second);
+  }
 };

@@ -23,6 +23,7 @@ using namespace std;
 //   getPath: O(V)
 // Memory Complexity: O(V + E)
 // Tested:
+//   https://www.spoj.com/problems/BITMAP/
 //   https://dmoj.ca/problem/ddrp3
 template <class T = int> struct BFS {
   vector<T> dist; vector<int> par; T INF;
@@ -45,8 +46,13 @@ template <class T = int> struct BFS {
   template <class Graph> BFS(const Graph &G, int s,
                              T INF = numeric_limits<T>::max())
       : BFS(G, vector<int>(1, s), INF) {}
-  vector<int> getPath(int v) {
-    vector<int> path; for (; v != -1; v = par[v]) path.push_back(v);
+  struct Edge {
+    int from, to; T weight;
+    Edge(int from, int to, T weight) : from(from), to(to), weight(weight) {}
+  };
+  vector<Edge> getPath(int v) {
+    vector<Edge> path; for (; par[v] != -1; v = par[v])
+      path.emplace_back(par[v], v, dist[v] - dist[par[v]]);
     reverse(path.begin(), path.end()); return path;
   }
 };

@@ -27,21 +27,19 @@ using namespace std;
 //   https://open.kattis.com/problems/shortestpath1
 //   https://dmoj.ca/problem/sssp
 template <class T> struct SSSPDijkstra {
-  vector<T> dist; vector<pair<int, T>> par; T INF;
+  vector<T> dist; vector<int> par; T INF;
   template <class WeightedGraph>
   SSSPDijkstra(const WeightedGraph &G, const vector<int> &srcs,
                T INF = numeric_limits<T>::max())
-      : dist(G.size(), INF), par(G.size(), make_pair(-1, INF)), INF(INF) {
+      : dist(G.size(), INF), par(G.size(), -1), INF(INF) {
     std::priority_queue<pair<T, int>, vector<pair<T, int>>,
                         greater<pair<T, int>>> PQ;
     for (int s : srcs) PQ.emplace(dist[s] = 0, s);
     while (!PQ.empty()) {
       T d = PQ.top().first; int v = PQ.top().second; PQ.pop();
       if (d > dist[v]) continue;
-      for (auto &&e : G[v]) if (dist[e.first] > dist[v] + e.second) {
-        par[e.first] = make_pair(v, e.second);
-        PQ.emplace(dist[e.first] = dist[v] + e.second, e.first);
-      }
+      for (auto &&e : G[v]) if (dist[e.first] > dist[v] + e.second)
+        PQ.emplace(dist[e.first] = dist[par[e.first] = v] + e.second, e.first);
     }
   }
   template <class WeightedGraph> SSSPDijkstra(const WeightedGraph &G, int s,
@@ -52,8 +50,8 @@ template <class T> struct SSSPDijkstra {
     Edge(int from, int to, T weight) : from(from), to(to), weight(weight) {}
   };
   vector<Edge> getPath(int v) {
-    vector<Edge> path; for (; par[v].first != -1; v = par[v].first)
-      path.emplace_back(par[v].first, v, par[v].second);
+    vector<Edge> path; for (; par[v] != -1; v = par[v])
+      path.emplace_back(par[v], v, dist[v] - dist[par[v]]);
     reverse(path.begin(), path.end()); return path;
   }
 };
