@@ -1,38 +1,39 @@
-# Script to remove pramga once at the top of C++ header files and replace
-# them with header guards
+import argparse
 import pathlib
-import sys
-input = sys.stdin.readline
 
-total = 0
+parser = argparse.ArgumentParser(
+  description="Script to remove pramga once at the top of C++ header files "
+              "and replace them with header guards",
+)
+parser.add_argument("filenames", metavar="file", type=str, nargs="+")
+filenames = parser.parse_args().filenames
+
 replaced = 0
-for i in range(1, len(sys.argv)):
-  total += 1
-  filename = sys.argv[i]
+for filename in filenames:
   print()
   print(filename + ":")
   headerguard = pathlib.Path(filename).stem.upper() + "_H"
   output = []
   with open(filename, "r") as file:
     replacePragmaOnce = False
-    for line in file:
-      if line == "#pragma once\n":
-        output.append("#ifndef " + headerguard + "\n")
-        output.append("#define " + headerguard + "\n")
-        output.append("\n")
+    for line in file.read().split("\n"):
+      if line == "#pragma once":
+        output.append("#ifndef " + headerguard)
+        output.append("#define " + headerguard)
+        output.append("")
         replacePragmaOnce = True
       else:
         output.append(line)
     if replacePragmaOnce:
-      output.append("\n")
-      output.append("#endif\n")
+      output.append("")
+      output.append("#endif")
       print("Replaced #pragma once")
       replaced += 1
     else:
       print("Nothing to replace")
   with open(filename, "w") as file:
-    for line in output:
-      file.write(line)
+    file.write("\n".join(output) + "\n")
+
 print()
-print(str(total) + " file(s) checked")
-print(str(replaced) + " file(s) modified")
+print(len(filenames), "file(s) checked")
+print(replaced, "file(s) modified")
