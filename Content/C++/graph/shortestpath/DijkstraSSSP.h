@@ -26,10 +26,10 @@ using namespace std;
 //   https://judge.yosupo.jp/problem/shortest_path
 //   https://open.kattis.com/problems/shortestpath1
 //   https://dmoj.ca/problem/sssp
-template <class T> struct SSSPDijkstra {
+template <class T> struct DijkstraSSSP {
   vector<T> dist; vector<int> par; T INF;
   template <class WeightedGraph>
-  SSSPDijkstra(const WeightedGraph &G, const vector<int> &srcs,
+  DijkstraSSSP(const WeightedGraph &G, const vector<int> &srcs,
                T INF = numeric_limits<T>::max())
       : dist(G.size(), INF), par(G.size(), -1), INF(INF) {
     std::priority_queue<pair<T, int>, vector<pair<T, int>>,
@@ -42,9 +42,9 @@ template <class T> struct SSSPDijkstra {
         PQ.emplace(dist[e.first] = dist[par[e.first] = v] + e.second, e.first);
     }
   }
-  template <class WeightedGraph> SSSPDijkstra(const WeightedGraph &G, int s,
+  template <class WeightedGraph> DijkstraSSSP(const WeightedGraph &G, int s,
                                               T INF = numeric_limits<T>::max())
-      : SSSPDijkstra(G, vector<int>(1, s), INF) {}
+      : DijkstraSSSP(G, vector<int>(1, s), INF) {}
   struct Edge {
     int from, to; T weight;
     Edge(int from, int to, T weight) : from(from), to(to), weight(weight) {}
@@ -78,10 +78,10 @@ template <class T> struct SSSPDijkstra {
 // Memory Complexity: O(V + E)
 // Tested:
 //   https://dmoj.ca/problem/sssp
-template <class T> struct SSSPDijkstraClassical {
+template <class T> struct ClassicalDijkstraSSSP {
   vector<T> dist; vector<pair<int, T>> par; T INF;
   template <class WeightedGraph>
-  SSSPDijkstraClassical(const WeightedGraph &G, const vector<int> &srcs,
+  ClassicalDijkstraSSSP(const WeightedGraph &G, const vector<int> &srcs,
                         T INF = numeric_limits<T>::max())
       : dist(G.size(), INF), par(G.size(), make_pair(-1, INF)), INF(INF) {
     vector<bool> done(G.size(), false); for (int s : srcs) dist[s] = 0;
@@ -97,9 +97,9 @@ template <class T> struct SSSPDijkstraClassical {
     }
   }
   template <class WeightedGraph>
-  SSSPDijkstraClassical(const WeightedGraph &G, int s,
+  ClassicalDijkstraSSSP(const WeightedGraph &G, int s,
                         T INF = numeric_limits<T>::max())
-      : SSSPDijkstraClassical(G, vector<int>(1, s), INF) {}
+      : ClassicalDijkstraSSSP(G, vector<int>(1, s), INF) {}
   struct Edge {
     int from, to; T weight;
     Edge(int from, int to, T weight) : from(from), to(to), weight(weight) {}

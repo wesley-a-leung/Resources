@@ -17,8 +17,8 @@ using namespace std;
 // Memory Complexity: O(V + E)
 // Tested:
 //   https://judge.yosupo.jp/problem/lca
-struct GraphLinkedList {
-  vector<int> HEAD, TO, NXT; GraphLinkedList(int V) : HEAD(V, -1) {}
+struct LinkedListGraph {
+  vector<int> HEAD, TO, NXT; LinkedListGraph(int V) : HEAD(V, -1) {}
   void reserveDiEdges(int maxEdges) {
     TO.reserve(maxEdges); NXT.reserve(maxEdges);
   }
@@ -27,15 +27,15 @@ struct GraphLinkedList {
   }
   void addBiEdge(int v, int w) { addDiEdge(v, w); addDiEdge(w, v); }
   struct Iterator {
-    const GraphLinkedList &G; int i;
-    Iterator(const GraphLinkedList &G, int i) : G(G), i(i) {}
+    const LinkedListGraph &G; int i;
+    Iterator(const LinkedListGraph &G, int i) : G(G), i(i) {}
     Iterator &operator ++ () { i = G.NXT[i]; return *this; }
     int operator * () const { return G.TO[i]; }
     bool operator != (const Iterator &it) const { return i != it.i; }
   };
   struct Adj {
-    const GraphLinkedList &G; int v;
-    Adj(const GraphLinkedList &G, int v) : G(G), v(v) {}
+    const LinkedListGraph &G; int v;
+    Adj(const LinkedListGraph &G, int v) : G(G), v(v) {}
     const Iterator begin() const { return Iterator(G, G.HEAD[v]); }
     const Iterator end() const { return Iterator(G, -1); }
   };
@@ -58,9 +58,9 @@ struct GraphLinkedList {
 // Memory Complexity: O(V + E)
 // Tested:
 //   https://dmoj.ca/problem/rte16s3
-template <class T> struct WeightedGraphLinkedList {
+template <class T> struct LinkedListWeightedGraph {
   vector<int> HEAD, TO, NXT; vector<T> WEIGHT;
-  WeightedGraphLinkedList(int V) : HEAD(V, -1) {}
+  LinkedListWeightedGraph(int V) : HEAD(V, -1) {}
   void reserveDiEdges(int maxEdges) {
     TO.reserve(maxEdges); NXT.reserve(maxEdges); WEIGHT.reserve(maxEdges);
   }
@@ -72,8 +72,8 @@ template <class T> struct WeightedGraphLinkedList {
     addDiEdge(v, w, weight); addDiEdge(w, v, weight);
   }
   struct Iterator {
-    const WeightedGraphLinkedList &G; int i;
-    Iterator(const WeightedGraphLinkedList &G, int i) : G(G), i(i) {}
+    const LinkedListWeightedGraph &G; int i;
+    Iterator(const LinkedListWeightedGraph &G, int i) : G(G), i(i) {}
     Iterator &operator ++ () { i = G.NXT[i]; return *this; }
     pair<int, T> operator * () const {
       return make_pair(G.TO[i], G.WEIGHT[i]);
@@ -81,8 +81,8 @@ template <class T> struct WeightedGraphLinkedList {
     bool operator != (const Iterator &it) const { return i != it.i; }
   };
   struct Adj {
-    const WeightedGraphLinkedList &G; int v;
-    Adj(const WeightedGraphLinkedList &G, int v) : G(G), v(v) {}
+    const LinkedListWeightedGraph &G; int v;
+    Adj(const LinkedListWeightedGraph &G, int v) : G(G), v(v) {}
     const Iterator begin() const { return Iterator(G, G.HEAD[v]); }
     const Iterator end() const { return Iterator(G, -1); }
   };

@@ -26,13 +26,13 @@ using namespace __gnu_pbds;
 // Tested:
 //   https://dmoj.ca/problem/ccc05s5
 //   https://dmoj.ca/problem/cco10p3
-template <class T, class IndexType> struct FenwickTreeSparse1DOffline {
+template <class T, class IndexType> struct OfflineSparseFenwickTree1D {
   static_assert(is_integral<IndexType>::value, "IndexType must be integeral");
   IndexType N; vector<T> BIT; vector<IndexType> inds;
   int getInd(IndexType i) {
     return std::upper_bound(inds.begin(), inds.end(), i) - inds.begin();
   }
-  FenwickTreeSparse1DOffline(IndexType N, const vector<IndexType> &updateInds)
+  OfflineSparseFenwickTree1D(IndexType N, const vector<IndexType> &updateInds)
       : N(N), inds(updateInds) {
     sort(inds.begin(), inds.end());
     inds.erase(unique(inds.begin(), inds.end()), inds.end());
@@ -72,9 +72,9 @@ template <class T, class IndexType> struct FenwickTreeSparse1DOffline {
 //   https://dmoj.ca/problem/ds4
 //   https://dmoj.ca/problem/cco10p3
 template <class T, class IndexType, class Container = hashmap<IndexType, T>>
-struct FenwickTreeSparse1D {
+struct SparseFenwickTree1D {
   static_assert(is_integral<IndexType>::value, "IndexType must be integeral");
-  IndexType N; Container BIT; FenwickTreeSparse1D(IndexType N) : N(N) {}
+  IndexType N; Container BIT; SparseFenwickTree1D(IndexType N) : N(N) {}
   void update(IndexType i, T v) { for (i++; i <= N; i += i & -i) BIT[i] += v; }
   T query(IndexType r) {
     T ret = T(); for (r++; r > 0; r -= r & -r) {

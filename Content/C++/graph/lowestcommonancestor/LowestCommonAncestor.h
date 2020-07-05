@@ -7,16 +7,17 @@ using namespace std;
 //   and the distance between 2 vertices by reduing the problem to a
 //   range minimum query using the Fischer Heun Structure
 // Vertices are 0-indexed
-// contructor accepts a generic tree data structure (weighted or unweighted)
+// contructor accepts a generic forest data structure (weighted or unweighted)
 //   with the [] operator (const) defined to iterate over the adjacency list
-//   (which is a list of ints for an unweighted tree, or a list of pair<int, T>
-//   for a weighted tree with weights of type T), as well as a member function
-//   size() (const) that returns the number of vertices in the graph, and a
-//   single root of the tree, or a list of roots of the forests (if no root is
-//   provided, then the minimum vertex is chosen for each forest)
+//   (which is a list of ints for an unweighted forest, or a list of
+//   pair<int, T> for a weighted forest with weights of type T), as well as a
+//   member function size() (const) that returns the number of vertices in the
+//   forest, and a single root of the forest, or a list of roots of the forests
+//   (if no root is provided, then the minimum vertex is chosen
+//   for each forest)
 // getDist assumes v and w are connected
 // In practice, lca and getDist have a moderate constant, constructor is
-//   dependent on the tree data structure
+//   dependent on the forest data structure
 // Time Complexity:
 //   constructor: O(V)
 //   lca, connected, getDist: O(1)
@@ -33,13 +34,14 @@ template <class T = int> struct LCA {
   T getWeight(int) { return 1; }
   int getTo(const pair<int, T> &e) { return e.first; }
   T getWeight(const pair<int, T> &e) { return e.second; }
-  template <class Tree> void dfs(const Tree &G, int v, int prev, int r, T d) {
+  template <class Forest>
+  void dfs(const Forest &G, int v, int prev, int r, T d) {
     root[v] = r; dist[v] = d; vert[pre[v] = ind++] = v; for (auto &&e : G[v]) {
       int w = getTo(e);
       if (w != prev) { dfs(G, w, v, r, d + getWeight(e)); vert[ind++] = v; }
     }
   }
-  template <class Tree> RMQ init(const Tree &G, const vector<int> &roots) {
+  template <class Forest> RMQ init(const Forest &G, const vector<int> &roots) {
     ind = 0; if (roots.empty()) {
       for (int v = 0; v < V; v++) if (root[v] == -1) dfs(G, v, -1, v, T());
     } else for (int rt : roots) dfs(G, rt, -1, rt, T());
@@ -47,11 +49,11 @@ template <class T = int> struct LCA {
                  return dist[v] > dist[w];
                });
   }
-  template <class Tree>
-  LCA(const Tree &G, const vector<int> &roots = vector<int>())
+  template <class Forest>
+  LCA(const Forest &G, const vector<int> &roots = vector<int>())
       : V(G.size()), root(V, -1), pre(V), vert(max(0, V * 2 - 1)), dist(V),
         FHS(init(G, roots)) {}
-  template <class Tree> LCA(const Tree &G, int rt)
+  template <class Forest> LCA(const Forest &G, int rt)
       : LCA(G, vector<int>(1, rt)) {}
   int lca(int v, int w) {
     if (pre[v] > pre[w]) swap(v, w);

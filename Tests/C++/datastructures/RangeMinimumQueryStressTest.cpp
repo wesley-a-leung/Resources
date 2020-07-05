@@ -14,7 +14,7 @@ void test1() {
   for (auto &&ai : A) ai = rng() % int(1e9) + 1;
   SparseTable<int, Min> ST(A.begin(), A.end());
   int Q = 1;
-  vector<long long> ans;
+  vector<int> ans;
   for (int i = 0; i < Q; i++) {
     int l = rng() % N, r = rng() % N;
     if (l > r) swap(l, r);
@@ -27,7 +27,7 @@ void test1() {
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (auto &&a : ans) checkSum ^= a;
+  for (auto &&a : ans) checkSum = (31 * checkSum + a) % (long long)(1e9 + 7);
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -40,7 +40,7 @@ void test2() {
   for (auto &&ai : A) ai = rng() % int(1e9) + 1;
   SparseTable<int, Min> ST(A.begin(), A.end());
   int Q = 1e7;
-  vector<long long> ans;
+  vector<int> ans;
   for (int i = 0; i < Q; i++) {
     int l = rng() % N, r = rng() % N;
     if (l > r) swap(l, r);
@@ -53,7 +53,7 @@ void test2() {
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (auto &&a : ans) checkSum ^= a;
+  for (auto &&a : ans) checkSum = (31 * checkSum + a) % (long long)(1e9 + 7);
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -66,7 +66,7 @@ void test3() {
   for (auto &&ai : A) ai = rng() % int(1e9) + 1;
   DisjointSparseTable<int, Min> ST(A.begin(), A.end());
   int Q = 1;
-  vector<long long> ans;
+  vector<int> ans;
   for (int i = 0; i < Q; i++) {
     int l = rng() % N, r = rng() % N;
     if (l > r) swap(l, r);
@@ -79,7 +79,7 @@ void test3() {
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (auto &&a : ans) checkSum ^= a;
+  for (auto &&a : ans) checkSum = (31 * checkSum + a) % (long long)(1e9 + 7);
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -92,7 +92,7 @@ void test4() {
   for (auto &&ai : A) ai = rng() % int(1e9) + 1;
   DisjointSparseTable<int, Min> ST(A.begin(), A.end());
   int Q = 1e7;
-  vector<long long> ans;
+  vector<int> ans;
   for (int i = 0; i < Q; i++) {
     int l = rng() % N, r = rng() % N;
     if (l > r) swap(l, r);
@@ -105,7 +105,7 @@ void test4() {
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (auto &&a : ans) checkSum ^= a;
+  for (auto &&a : ans) checkSum = (31 * checkSum + a) % (long long)(1e9 + 7);
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -117,7 +117,7 @@ void test5() {
   for (auto &&ai : A) ai = rng() % int(1e9) + 1;
   FischerHeunStructure<int, greater<int>> ST(A.begin(), A.end());
   int Q = 1;
-  vector<long long> ans;
+  vector<int> ans;
   for (int i = 0; i < Q; i++) {
     int l = rng() % N, r = rng() % N;
     if (l > r) swap(l, r);
@@ -130,7 +130,7 @@ void test5() {
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (auto &&a : ans) checkSum ^= a;
+  for (auto &&a : ans) checkSum = (31 * checkSum + a) % (long long)(1e9 + 7);
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -142,7 +142,7 @@ void test6() {
   for (auto &&ai : A) ai = rng() % int(1e9) + 1;
   FischerHeunStructure<int, greater<int>> ST(A.begin(), A.end());
   int Q = 1e7;
-  vector<long long> ans;
+  vector<int> ans;
   for (int i = 0; i < Q; i++) {
     int l = rng() % N, r = rng() % N;
     if (l > r) swap(l, r);
@@ -155,7 +155,7 @@ void test6() {
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (auto &&a : ans) checkSum ^= a;
+  for (auto &&a : ans) checkSum = (31 * checkSum + a) % (long long)(1e9 + 7);
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -173,7 +173,7 @@ void test7() {
   };
   SegmentTreeBottomUp<Combine> ST(A.begin(), A.end());
   int Q = 1;
-  vector<long long> ans;
+  vector<int> ans;
   for (int i = 0; i < Q; i++) {
     int l = rng() % N, r = rng() % N;
     if (l > r) swap(l, r);
@@ -186,7 +186,7 @@ void test7() {
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (auto &&a : ans) checkSum ^= a;
+  for (auto &&a : ans) checkSum = (31 * checkSum + a) % (long long)(1e9 + 7);
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -204,7 +204,7 @@ void test8() {
   };
   SegmentTreeBottomUp<Combine> ST(A.begin(), A.end());
   int Q = 1e7;
-  vector<long long> ans;
+  vector<int> ans;
   for (int i = 0; i < Q; i++) {
     int l = rng() % N, r = rng() % N;
     if (l > r) swap(l, r);
@@ -217,7 +217,7 @@ void test8() {
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (auto &&a : ans) checkSum ^= a;
+  for (auto &&a : ans) checkSum = (31 * checkSum + a) % (long long)(1e9 + 7);
   cout << "  Checksum: " << checkSum << endl;
 }
 

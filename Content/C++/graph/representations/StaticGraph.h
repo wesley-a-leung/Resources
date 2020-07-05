@@ -21,8 +21,8 @@ using namespace std;
 // Memory Complexity: O(V + E)
 // Tested:
 //   https://judge.yosupo.jp/problem/lca
-struct GraphStatic {
-  vector<int> ST, TO, A, B; GraphStatic(int V) : ST(V + 1, 0) {}
+struct StaticGraph {
+  vector<int> ST, TO, A, B; StaticGraph(int V) : ST(V + 1, 0) {}
   void reserveDiEdges(int maxEdges) {
     TO.reserve(maxEdges); A.reserve(maxEdges); B.reserve(maxEdges);
   }
@@ -35,15 +35,15 @@ struct GraphStatic {
     for (int e = 0; e < int(A.size()); e++) TO[--ST[A[e]]] = B[e];
   }
   struct Iterator {
-    const GraphStatic &G; int i;
-    Iterator(const GraphStatic &G, int i) : G(G), i(i) {}
+    const StaticGraph &G; int i;
+    Iterator(const StaticGraph &G, int i) : G(G), i(i) {}
     Iterator &operator ++ () { i++; return *this; }
     int operator * () const { return G.TO[i]; }
     bool operator != (const Iterator &it) const { return i != it.i; }
   };
   struct Adj {
-    const GraphStatic &G; int v;
-    Adj(const GraphStatic &G, int v) : G(G), v(v) {}
+    const StaticGraph &G; int v;
+    Adj(const StaticGraph &G, int v) : G(G), v(v) {}
     const Iterator begin() const { return Iterator(G, G.ST[v]); }
     const Iterator end() const { return Iterator(G, G.ST[v + 1]); }
   };
@@ -70,9 +70,9 @@ struct GraphStatic {
 // Memory Complexity: O(V + E)
 // Tested:
 //   https://dmoj.ca/problem/rte16s3
-template <class T> struct WeightedGraphStatic {
+template <class T> struct StaticWeightedGraph {
   vector<int> ST, TO, A, B; vector<T> C, WEIGHT;
-  WeightedGraphStatic(int V) : ST(V + 1, 0) {}
+  StaticWeightedGraph(int V) : ST(V + 1, 0) {}
   void reserveDiEdges(int maxEdges) {
     TO.reserve(maxEdges); A.reserve(maxEdges); B.reserve(maxEdges);
   }
@@ -89,8 +89,8 @@ template <class T> struct WeightedGraphStatic {
     }
   }
   struct Iterator {
-    const WeightedGraphStatic &G; int i;
-    Iterator(const WeightedGraphStatic &G, int i) : G(G), i(i) {}
+    const StaticWeightedGraph &G; int i;
+    Iterator(const StaticWeightedGraph &G, int i) : G(G), i(i) {}
     Iterator &operator ++ () { i++; return *this; }
     pair<int, T> operator * () const {
       return make_pair(G.TO[i], G.WEIGHT[i]);
@@ -98,8 +98,8 @@ template <class T> struct WeightedGraphStatic {
     bool operator != (const Iterator &it) const { return i != it.i; }
   };
   struct Adj {
-    const WeightedGraphStatic &G; int v;
-    Adj(const WeightedGraphStatic &G, int v) : G(G), v(v) {}
+    const StaticWeightedGraph &G; int v;
+    Adj(const StaticWeightedGraph &G, int v) : G(G), v(v) {}
     const Iterator begin() const { return Iterator(G, G.ST[v]); }
     const Iterator end() const { return Iterator(G, G.ST[v + 1]); }
   };

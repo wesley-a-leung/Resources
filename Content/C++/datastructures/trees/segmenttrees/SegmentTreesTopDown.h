@@ -174,7 +174,7 @@ template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
 //     (LAZY = true, PERSISTENT = false)
 //   https://www.spoj.com/problems/TTM/ (LAZY = true, PERSISTENT = true)
 template <class IndexType, const bool LAZY, const bool PERSISTENT,
-          class Combine> struct SegmentTreeDynamic {
+          class Combine> struct DynamicSegmentTree {
 #define lazy_def template <const bool _ = LAZY> typename enable_if<_>::type
 #define agg_def template <const bool _ = LAZY> typename enable_if<!_>::type
   static_assert(is_integral<IndexType>::value, "IndexType must be integeral");
@@ -243,14 +243,14 @@ template <class IndexType, const bool LAZY, const bool PERSISTENT,
     propagate(x, tl, tr); IndexType m = tl + (tr - tl) / 2;
     return C.merge(query(L[x], tl, m, l, r), query(R[x], m + 1, tr, l, r));
   }
-  template <class F> SegmentTreeDynamic(IndexType N, F f) : N(N) {
+  template <class F> DynamicSegmentTree(IndexType N, F f) : N(N) {
     if (N > 0) {
       reserveNodes(N * 2 - 1); roots.push_back(build(0, N - 1, f));
     }
   }
-  template <class It> SegmentTreeDynamic(It st, It en)
-      : SegmentTreeDynamic(en - st, [&] { return *st++; }) {}
-  SegmentTreeDynamic(IndexType N) : N(N) { roots.push_back(-1); }
+  template <class It> DynamicSegmentTree(It st, It en)
+      : DynamicSegmentTree(en - st, [&] { return *st++; }) {}
+  DynamicSegmentTree(IndexType N) : N(N) { roots.push_back(-1); }
   lazy_def update(IndexType l, IndexType r, const Lazy &v, bool newRoot) {
     int nr = update(roots.back(), 0, N - 1, l, r, v, TR.size());
     if (newRoot) roots.push_back(nr);

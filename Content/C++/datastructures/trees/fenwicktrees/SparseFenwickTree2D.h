@@ -25,14 +25,14 @@ using namespace __gnu_pbds;
 //   https://dmoj.ca/problem/dmopc19c7p5
 //   https://codeforces.com/contest/1093/problem/E
 //   https://dmoj.ca/problem/fallingsnowflakes
-template <class T, class IndexType> struct FenwickTreeSemiSparse2DOffline {
+template <class T, class IndexType> struct OfflineSemiSparseFenwickTree2D {
   static_assert(is_integral<IndexType>::value, "IndexType must be integeral");
   int N; vector<int> st, cnt; vector<IndexType> inds; vector<T> BIT;
   int getInd(int i, IndexType j) {
     return upper_bound(inds.begin() + st[i], inds.begin() + st[i] + cnt[i], j)
         - inds.begin() - st[i];
   }
-  FenwickTreeSemiSparse2DOffline(int N,
+  OfflineSemiSparseFenwickTree2D(int N,
                                  vector<pair<int, IndexType>> updateInds)
       : N(N), st(N + 1, 0), cnt(N + 1, 0) {
     sort(updateInds.begin(), updateInds.end(),
@@ -83,7 +83,7 @@ template <class T, class IndexType> struct FenwickTreeSemiSparse2DOffline {
 //   https://codeforces.com/contest/1093/problem/E
 //   https://dmoj.ca/problem/fallingsnowflakes
 template <class T, class IndexType1, class IndexType2>
-struct FenwickTreeSparse2DOffline {
+struct OfflineSparseFenwickTree2D {
   static_assert(is_integral<IndexType1>::value,
                 "IndexType1 must be integeral");
   static_assert(is_integral<IndexType2>::value,
@@ -98,7 +98,7 @@ struct FenwickTreeSparse2DOffline {
                        inds2.begin() + st[i] + cnt[i], j)
         - inds2.begin() - st[i];
   }
-  FenwickTreeSparse2DOffline(vector<pair<IndexType1, IndexType2>> updateInds)
+  OfflineSparseFenwickTree2D(vector<pair<IndexType1, IndexType2>> updateInds)
       : inds1(updateInds.size()) {
     sort(updateInds.begin(), updateInds.end(),
          [&] (const pair<IndexType1, IndexType2> &a,
@@ -154,10 +154,10 @@ struct FenwickTreeSparse2DOffline {
 // Tested:
 //   https://codeforces.com/contest/1093/problem/E
 //   https://dmoj.ca/problem/dmopc19c7p5
-template <class IndexType> struct FenwickTreeSemiSparse2DSimple {
+template <class IndexType> struct SemiSparseFenwickTree2DSimple {
   static_assert(is_integral<IndexType>::value, "IndexType must be integeral");
   int N; vector<SqrtBufferSimple<IndexType>> IN, OUT;
-  FenwickTreeSemiSparse2DSimple(int N, double SCALE = 1)
+  SemiSparseFenwickTree2DSimple(int N, double SCALE = 1)
       : N(N), IN(N + 1, SqrtBufferSimple<IndexType>(SCALE)),
         OUT(N + 1, SqrtBufferSimple<IndexType>(SCALE)) {}
   void add(int i, IndexType j) {
@@ -193,10 +193,10 @@ template <class IndexType> struct FenwickTreeSemiSparse2DSimple {
 // Tested:
 //   https://dmoj.ca/problem/apio19p3
 //   https://dmoj.ca/problem/ioi01p1
-template <class T, class IndexType> struct FenwickTreeSemiSparse2D {
+template <class T, class IndexType> struct SemiSparseFenwickTree2D {
   static_assert(is_integral<IndexType>::value, "IndexType must be integeral");
   int N; vector<SqrtBuffer<T, IndexType>> BIT;
-  FenwickTreeSemiSparse2D(int N, double SCALE = 1)
+  SemiSparseFenwickTree2D(int N, double SCALE = 1)
       : N(N), BIT(N + 1, SqrtBuffer<T, IndexType>(SCALE)) {}
   void update(int i, IndexType j, T v) {
     for (i++; i <= N; i += i & -i) BIT[i].emplace(j, v);
@@ -231,13 +231,13 @@ template <class IndexType1, class IndexType2,
           class Container = hashmap<
               IndexType1, pair<SqrtBufferSimple<IndexType2>,
                                SqrtBufferSimple<IndexType2>>>>
-struct FenwickTreeSparse2DSimple {
+struct SparseFenwickTree2DSimple {
   static_assert(is_integral<IndexType1>::value,
                 "IndexType1 must be integeral");
   static_assert(is_integral<IndexType2>::value,
                 "IndexType2 must be integeral");
   IndexType1 N; double SCALE; Container BIT;
-  FenwickTreeSparse2DSimple(IndexType1 N, double SCALE = 1)
+  SparseFenwickTree2DSimple(IndexType1 N, double SCALE = 1)
       : N(N), SCALE(SCALE) {}
   void add(IndexType1 i, IndexType2 j) {
     i++; for (IndexType1 x = i; x <= N; x += x & -x) {
@@ -291,13 +291,13 @@ struct FenwickTreeSparse2DSimple {
 //   https://dmoj.ca/problem/fallingsnowflakes
 template <class T, class IndexType1, class IndexType2,
           class Container = hashmap<IndexType1, SqrtBuffer<IndexType2, T>>>
-struct FenwickTreeSparse2D {
+struct SparseFenwickTree2D {
   static_assert(is_integral<IndexType1>::value,
                 "IndexType1 must be integeral");
   static_assert(is_integral<IndexType2>::value,
                 "IndexType2 must be integeral");
   IndexType1 N; double SCALE; Container BIT;
-  FenwickTreeSparse2D(IndexType1 N, double SCALE = 1) : N(N), SCALE(SCALE) {}
+  SparseFenwickTree2D(IndexType1 N, double SCALE = 1) : N(N), SCALE(SCALE) {}
   void update(IndexType1 i, IndexType2 j, T v) {
     i++; for (IndexType1 x = i; x <= N; x += x & -x) {
       auto it = BIT.find(x); if (it == BIT.end()) {

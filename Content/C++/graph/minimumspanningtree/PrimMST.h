@@ -3,32 +3,38 @@
 using namespace std;
 
 // Computes the minimum spanning tree using Prims's algorithm
+// Vertices are 0-indexed
+// In practice, has a small constant, faster than Boruvka, slower that Kruskal
 // Time Complexity:
-//   O(E log E) if a regular priority queue is used
-//   O(E log V) if an indexed priority queue or pairing heap is used
-//   Note: unlike Dijkstra's algorithm, the conditions to use a radix heap are not satisfied
+//   constructor: O((V + E) log E)
 // Memory Complexity: O(V + E)
-template <const int MAXV, class unit> struct PrimMST {
-    unit INF; PrimMST(unit INF) : INF(INF) {}
-    struct Edge { int v, w; unit weight; };
-    pair<int, unit> to[MAXV]; unit weight, cost[MAXV]; vector<Edge> mst; bool vis[MAXV]; vector<pair<int, unit>> adj[MAXV];
-    void addEdge(int v, int w, unit weight) { adj[v].emplace_back(w, weight); adj[w].emplace_back(v, weight); }
-    unit run(int V) {
-        weight = 0; fill(vis, vis + V, false); fill(cost, cost + V, INF); fill(to, to + V, make_pair(-1, 0));
-        std::priority_queue<pair<unit, int>, vector<pair<unit, int>>, greater<pair<unit, int>>> PQ;
-        for (int s = 0; s < V; s++) if (!vis[s]) {
-            PQ.emplace(cost[s] = 0, s);
-            while (!PQ.empty()) {
-                int v = PQ.top().second; PQ.pop(); vis[v] = true;
-                for (auto &&e : adj[v]) if (!vis[e.first] && e.second < cost[e.first]) {
-                    to[e.first] = {v, e.second}; PQ.emplace(cost[e.first] = e.second, e.first);
-                }
-            }
+// Tested:
+//   Stress Tested
+//   https://open.kattis.com/problems/minspantree
+template <class T> struct PrimMST {
+  struct Edge {
+    int v, w; T weight;
+    Edge(int v, int w, T weight) : v(v), w(w), weight(weight) {}
+  };
+  T mstWeight; vector<Edge> mstEdges;
+  template <class WeightedGraph> PrimMST(const WeightedGraph &G,
+                                         T INF = numeric_limits<T>::max())
+      : mstWeight() {
+    int V = G.size(); vector<bool> vis(V, false);
+    vector<T> cost(V, INF); vector<int> to(V, -1);
+    std::priority_queue<pair<T, int>, vector<pair<T, int>>,
+                        greater<pair<T, int>>> PQ;
+    for (int s = 0; s < V; s++) if (!vis[s]) {
+      PQ.emplace(cost[s] = T(), s); while (!PQ.empty()) {
+        int v = PQ.top().second; PQ.pop(); if (vis[v]) continue;
+        vis[v] = true;
+        for (auto &&e : G[v]) if (!vis[e.first] && e.second < cost[e.first]) {
+          to[e.first] = v; PQ.emplace(cost[e.first] = e.second, e.first);
         }
-        for (int v = 0; v < V; v++) if (to[v].first != -1) {
-            mst.push_back({v, to[v].first, to[v].second}); weight += to[v].second;
-        }
-        return weight;
+      }
     }
-    void clear() { mst.clear(); for (int i = 0; i < MAXV; i++) adj[i].clear(); }
+    for (int v = 0; v < V; v++) if (to[v] != -1) {
+      mstEdges.emplace_back(v, to[v], cost[v]); mstWeight += cost[v];
+    }
+  }
 };

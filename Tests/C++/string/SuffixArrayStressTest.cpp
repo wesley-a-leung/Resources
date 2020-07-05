@@ -76,7 +76,7 @@ void test4() {
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (auto &&a : ans) checkSum ^= a;
+  for (auto &&a : ans) checkSum = (31 * checkSum + a) % (long long)(1e9 + 7);
   cout << "  Checksum: " << checkSum << endl;
 }
 

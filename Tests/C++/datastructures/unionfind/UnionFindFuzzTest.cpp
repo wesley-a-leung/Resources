@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "../../../Content/C++/datastructures/FischerHeunStructure.h"
+#include "../../../../Content/C++/datastructures/unionfind/UnionFind.h"
 using namespace std;
 
 void test1() {
@@ -7,26 +7,27 @@ void test1() {
   mt19937_64 rng(0);
   const int TESTCASES = 1e5;
   long long checkSum = 0;
-  struct Min { int operator () (int a, int b) { return min(a, b); } };
   for (int ti = 0; ti < TESTCASES; ti++) {
     int N = rng() % 101;
-    vector<int> A(N);
-    for (auto &&a : A) a = rng() % int(100) + 1;
-    FischerHeunStructure<int, greater<int>> ST(A.begin(), A.end());
+    UnionFind uf(N);
+    vector<vector<int>> sets(N);
+    vector<int> par(N);
+    for (int i = 0; i < N; i++) sets[par[i] = i].push_back(i);
     int Q = N == 0 ? 0 : 100 - rng() % 5;
-    vector<int> ans0, ans1, ansA0, ansA1;
+    vector<int> ans0, ans1;
     for (int i = 0; i < Q; i++) {
-      int l = rng() % N, r = rng() % N;
-      if (l > r) swap(l, r);
-      int mnInd = l;
-      for (int j = l + 1; j <= r; j++) if (A[mnInd] > A[j]) mnInd = j;
-      ans0.push_back(mnInd);
-      ansA0.push_back(A[ans0.back()]);
-      ans1.push_back(ST.queryInd(l, r));
-      ansA1.push_back(A[ans1.back()]);
+      if (rng() % 2 == 0) {
+        int v = rng() % N;
+        ans0.push_back(int(sets[par[v]].size()));
+        ans1.push_back(uf.getSize(v));
+      } else {
+        int v = rng() % N, w = rng() % N;
+        if (sets[par[v]].size() < sets[par[w]].size()) swap(v, w);
+        if (par[w] != par[v]) for (int x : sets[par[w]]) sets[par[x] = par[v]].push_back(x);
+        uf.join(v, w);
+      }
     }
     assert(ans0 == ans1);
-    assert(ansA0 == ansA1);
     for (auto &&a : ans0) checkSum = (31 * checkSum + a) % (long long)(1e9 + 7);
   }
   const auto end_time = chrono::system_clock::now();

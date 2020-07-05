@@ -4,27 +4,34 @@
 using namespace std;
 
 // Computes the minimum spanning tree using Boruvka's algorithm
-// Time Complexity: O(E log V)
+// Vertices are 0-indexed
+// In practice, has a small constant, slower than Prim and Kruskal
+// Time Complexity:
+//   constructor: O(V + E log V)
 // Memory Complexity: O(V + E)
-template <const int MAXV, class unit> struct BoruvkaMST {
-    struct Edge { int v, w; unit weight; };
-    UnionFind<MAXV> uf; int closest[MAXV]; vector<Edge> edges, mst; unit weight;
-    void addEdge(int v, int w, unit weight) { edges.push_back({v, w, weight}); }
-    unit run(int V) {
-        weight = 0; uf.init(V);
-        for (int t = 1; t < V && int(mst.size()) < V - 1; t *= 2) {
-            fill(closest, closest + V, -1);
-            for (int e = 0; e < int(edges.size()); e++) {
-                int i = uf.find(edges[e].v), j = uf.find(edges[e].w);
-                if (i == j) continue;
-                if (closest[i] == -1 || edges[e].weight < edges[closest[i]].weight) closest[i] = e;
-                if (closest[j] == -1 || edges[e].weight < edges[closest[j]].weight) closest[j] = e;
-            }
-            for (int i = 0; i < V; i++) if (closest[i] != -1 && uf.join(edges[closest[i]].v, edges[closest[i]].w)) {
-                mst.push_back(edges[closest[i]]); weight += edges[closest[i]].weight;
-            }
-        }
-        return weight;
+//   Stress Tested
+//   https://open.kattis.com/problems/minspantree
+template <class T> struct BoruvkaMST {
+  struct Edge {
+    int v, w; T weight;
+    Edge(int v, int w, T weight) : v(v), w(w), weight(weight) {}
+  };
+  T mstWeight; vector<Edge> mstEdges; UnionFind uf;
+  BoruvkaMST(int V, const vector<Edge> &edges) : mstWeight(), uf(V) {
+    for (int t = 1; t < V && int(mstEdges.size()) < V - 1; t *= 2) {
+      vector<int> closest(V, -1); for (int e = 0; e < int(edges.size()); e++) {
+        int v = uf.find(edges[e].v), w = uf.find(edges[e].w);
+        if (v == w) continue;
+        if (closest[v] == -1 || edges[e].weight < edges[closest[v]].weight)
+          closest[v] = e;
+        if (closest[w] == -1 || edges[e].weight < edges[closest[w]].weight)
+          closest[w] = e;
+      }
+      for (int v = 0; v < V; v++) if (closest[v] != -1
+          && uf.join(edges[closest[v]].v, edges[closest[v]].w)) {
+        mstEdges.push_back(edges[closest[v]]);
+        mstWeight += edges[closest[v]].weight;
+      }
     }
-    void clear() { edges.clear(); mst.clear(); }
+  }
 };

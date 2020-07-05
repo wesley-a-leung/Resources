@@ -16,8 +16,8 @@ using namespace std;
 // Memory Complexity: O(V + E)
 // Tested:
 //   https://judge.yosupo.jp/problem/lca
-struct GraphAdjacencyList : public vector<vector<int>> {
-  GraphAdjacencyList(int V) : vector<vector<int>>(V) {}
+struct AdjacencyListGraph : public vector<vector<int>> {
+  AdjacencyListGraph(int V) : vector<vector<int>>(V) {}
   void addDiEdge(int from, int to) { at(from).push_back(to); }
   void addBiEdge(int v, int w) { addDiEdge(v, w); addDiEdge(w, v); }
 };
@@ -37,8 +37,8 @@ struct GraphAdjacencyList : public vector<vector<int>> {
 // Tested:
 //   https://dmoj.ca/problem/rte16s3
 template <class T>
-struct WeightedGraphAdjacencyList : public vector<vector<pair<int, T>>> {
-  WeightedGraphAdjacencyList(int V) : vector<vector<pair<int, T>>>(V) {}
+struct AdjacencyListWeightedGraph : public vector<vector<pair<int, T>>> {
+  AdjacencyListWeightedGraph(int V) : vector<vector<pair<int, T>>>(V) {}
   void addDiEdge(int from, int to, T weight) {
     this->at(from).emplace_back(to, weight);
   }
