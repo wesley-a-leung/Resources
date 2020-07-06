@@ -6,8 +6,8 @@ using namespace std;
 //   of make_unique is provided
 // Template Arguments:
 //   T: the type of the object to construct
-//   ...Args: variadic arguments of the types of arguments being pased to the
-//     object being constructor
+//   ...Args: variadic arguments of the types of the arguments being passed to
+//     the object being constructor
 // Return Value:
 //   a unique_ptr of type T
 // Tested:
