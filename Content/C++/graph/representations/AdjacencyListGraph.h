@@ -4,6 +4,14 @@ using namespace std;
 
 // Adjacency List representation of a graph
 // Vertices are 0-indexed
+// Constructor Arguments:
+//   V: the number of vertices in the graph
+// Functions:
+//   addDiEdge(from, to): adds a directed edge from the vertex from,
+//     to the vertex to
+//   addBiEdge(v, w): adds a bidirectional edge between vertices v and w
+//   operator [v]: returns a reference to a list of vertices adjacent to v
+//   size(): returns the number of vertices in the graph
 // In practice, addBiEdge, addDiEdge have a moderate constant, operator []
 //   has a small constant
 // Graph construction is slower than static graphs and linked lists
@@ -24,6 +32,17 @@ struct AdjacencyListGraph : public vector<vector<int>> {
 
 // Adjacency List representation of a weighted graph
 // Vertices are 0-indexed
+// Template Arguments:
+//   T: the type of the weight of the edges in the weighted graph
+// Constructor Arguments:
+//   V: the number of vertices in the weighted graph
+// Functions:
+//   addDiEdge(from, to, weight): adds a directed edge from the vertex from,
+//     to the vertex to, with a weight of weight
+//   addBiEdge(v, w, weight): adds a bidirectional edge between vertices v
+//     and w, with a weight of weight
+//   operator [v]: returns a reference to a list of edges incident to v
+//   size(): returns the number of vertices in the graph
 // In practice, addBiEdge, addDiEdge have a moderate constant, operator []
 //   has a small constant
 // Graph construction is slower than static graphs and linked lists

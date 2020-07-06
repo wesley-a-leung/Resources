@@ -5,12 +5,18 @@ using namespace std;
 
 // Computes the connected components of a graph using Union Find
 // Vertices are 0-indexed
+// Constructor Arguments:
+//   V: number of vertices in the graph
+//   edges: a vector of pairs containing the endpoints of each edge
+// Members:
+//   id: a vector of the index of the component each vertex is part of
+//   components: a vector of vectors containing the vertices in each component
 // In practice, has a small constant, faster than bfs and dfs
 // Time Complexity:
 //   constructor: O((V + E) * alpha(V))
 // Memory Complexity: O(V) additional memory
 // Testd:
-//   https://dmoj.ca/problem/ccc03j5s3
+//   https://dmoj.ca/problem/ccc03s3
 //   https://codeforces.com/contest/1253/problem/D
 struct CC {
   vector<int> id; vector<vector<int>> components; UnionFind uf;

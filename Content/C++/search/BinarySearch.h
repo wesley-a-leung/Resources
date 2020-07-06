@@ -2,16 +2,24 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// If ISFIRST is true:
-//   Returns the first value in the range [lo, hi) where f(x) is true
-//     if no value in [lo, hi) satisfies f(x), then it returns hi
-//     assumes that all values where f(x) is true are greater than all values
-//     where f(x) is false
-// IF ISFIRST is false:
-//   Returns the last value in the range [lo, hi) where f(x) is true
-//     if no value in [lo, hi) satisfies f(x), then it returns lo - 1
-//     assumes that all values where f(x) is true are less than all values
-//     where f(x) is false
+// Binary search over a range for the first or last occurence of a return value
+//   for a boolean function
+// Template Arguments:
+//   ISFIRST: boolean of whether of not the first of last occurence is being
+//     searched for
+//   T: the type of the range to search over
+//   F: the type of the function that is being searched over
+// Return Value:
+//   If ISFIRST is true:
+//     Returns the first value in the range [lo, hi) where f(x) is true
+//       if no value in [lo, hi) satisfies f(x), then it returns hi
+//       assumes that all values where f(x) is true are greater than all values
+//       where f(x) is false
+//   IF ISFIRST is false:
+//     Returns the last value in the range [lo, hi) where f(x) is true
+//       if no value in [lo, hi) satisfies f(x), then it returns lo - 1
+//       assumes that all values where f(x) is true are less than all values
+//       where f(x) is false
 // In practice, has a small constant
 // Time Complexity: O(log (hi - lo)) * (cost to compute f(x))
 // Memory Complexity: O(1)

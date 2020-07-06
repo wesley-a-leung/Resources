@@ -7,15 +7,26 @@ using namespace std;
 //   and the distance between 2 vertices by reduing the problem to a
 //   range minimum query using the Fischer Heun Structure
 // Vertices are 0-indexed
-// contructor accepts a generic forest data structure (weighted or unweighted)
-//   with the [] operator (const) defined to iterate over the adjacency list
-//   (which is a list of ints for an unweighted forest, or a list of
-//   pair<int, T> for a weighted forest with weights of type T), as well as a
-//   member function size() (const) that returns the number of vertices in the
-//   forest, and a single root of the forest, or a list of roots of the forests
-//   (if no root is provided, then the minimum vertex is chosen
-//   for each forest)
-// getDist assumes v and w are connected
+// Template Arguments:
+//   T: the type of the weight of the edges in the forest
+// Constructor Arguments:
+//   G: a generic forest data structure (weighted or unweighted)
+//     with the [] operator (const) defined to iterate over the adjacency list
+//     (which is a list of ints for an unweighted forest, or a list of
+//     pair<int, T> for a weighted forest with weights of type T), as well as a
+//     member function size() (const) that returns the number of vertices
+//     in the forest
+//   rt: a single root vertex
+//   roots: a vector of root vertices
+// Members:
+//   root: vector of roots for the forest each vertex is in
+//   dist: vector of distance to each vertex from the root of its forest
+// Functions:
+//   lca(v, w): returns the lowest common ancestor of vertices v and w assuming
+//     v and w are connected
+//   connected(v, w): returns true if and only if v and w are connected
+//   getDist(v, w): returns the distance between vertices v and w assuming
+//     v and w are connected
 // In practice, lca and getDist have a moderate constant, constructor is
 //   dependent on the forest data structure
 // Time Complexity:

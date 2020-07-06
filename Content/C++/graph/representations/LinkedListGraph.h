@@ -5,6 +5,17 @@ using namespace std;
 // Adjacency List representation of a graph using linked list,
 //   implemented with fixed size arrays if reserveEdges is called beforehand
 // Vertices are 0-indexed
+// Constructor Arguments:
+//   V: the number of vertices in the graph
+// Functions:
+//   reserveDiEdges(maxEdges): reserves space for maxEdges directed edges
+//     (bidirectional edges take up twice as much space)
+//   addDiEdge(from, to): adds a directed edge from the vertex from,
+//     to the vertex to
+//   addBiEdge(v, w): adds a bidirectional edge between vertices v and w
+//   operator [v]: returns a struct with the begin() and end() defined to
+//     iterate over the vertices adjacent to vertex v
+//   size(): returns the number of vertices in the graph
 // In practice, addBiEdge, addDiEdge have a small constant, operator []
 //   has a moderate constant
 // Graph construction is faster than static graphs and adjacency lists
@@ -46,6 +57,20 @@ struct LinkedListGraph {
 // Adjacency List representation of a weighted graph using linked list,
 //   implemented with fixed size arrays if reserveEdges is called beforehand
 // Vertices are 0-indexed
+// Template Arguments:
+//   T: the type of the weight of the edges in the weighted graph
+// Constructor Arguments:
+//   V: the number of vertices in the weighted graph
+// Functions:
+//   reserveDiEdges(maxEdges): reserves space for maxEdges directed edges
+//     (bidirectional edges take up twice as much space)
+//   addDiEdge(from, to, weight): adds a directed edge from the vertex from,
+//     to the vertex to, with a weight of weight
+//   addBiEdge(v, w, weight): adds a bidirectional edge between vertices v
+//     and w, with a weight of weight
+//   operator [v]: returns a struct with the begin() and end() defined to
+//     iterate over the edges incident to vertex v
+//   size(): returns the number of vertices in the graph
 // In practice, addBiEdge, addDiEdge have a small constant, operator []
 //   has a moderate constant
 // Graph construction is faster than static graphs and adjacency lists

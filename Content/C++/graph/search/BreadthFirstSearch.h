@@ -4,19 +4,26 @@ using namespace std;
 
 // Breadth First Traversal of a graph (weighted or unweighted)
 // Vertices are 0-indexed
-// contructor accepts a generic graph data structure (weighted or unweighted)
-//   with the [] operator (const) defined to iterate over the adjacency list
-//   (which is a list of ints for an unweighted graph, or a list of
-//   pair<int, T> for a weighted graph with weights of type T), as well as a
-//   member function size() (const) that returns the number of vertices in the
-//   graph, a single source vertex, or a list of sources,
-//   and a value for infinity
-// dist[v] is the distance from the closest source vertex to vertex v,
-//   or INF if unreachable, and is also the shortest distance for
-//   an unweighted graph
-// par[v] is the parent vertex for vertex v in the breadth first search tree
-// getPath(v) returns the list of vertices on the path from the closest source
-//   vertex to vertex v
+// Template Arguments:
+//   T: the type of the weight of the edges in the graph
+// Constructor Arguments:
+//   G: a generic graph data structure (weighted or unweighted)
+//     with the [] operator (const) defined to iterate over the adjacency list
+//     (which is a list of ints for an unweighted graph, or a list of
+//     pair<int, T> for a weighted graph with weights of type T), as well as a
+//     member function size() (const) that returns the number of vertices
+//     in the graph
+//   s: a single source vertex
+//   src: a vector of source vertices
+//   INF: a value for infinity
+// Members:
+//   dist: vector of distance from the closest source vertex to each vertex,
+//     or INF if unreachable, and is also the shortest distance for
+//     an unweighted graph
+//   par: the parent vertex for each vertex in the breadth first search tree
+// Functions:
+//   getPath(v): returns the list of edges on the path from the closest
+//     source vertex to vertex v
 // In practice, constructor has a moderate constant
 // Time Complexity:
 //   constructor: O(V + E)

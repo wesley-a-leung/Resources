@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Static allocator to improve speed of memory access
+// Static allocator to improve the speed of memory access
 // Tested:
 //   https://dmoj.ca/problem/wac4p5
 //   https://dmoj.ca/problem/ioi12p3

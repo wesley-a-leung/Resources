@@ -5,6 +5,12 @@ using namespace std;
 
 // Computes the minimum spanning tree using Boruvka's algorithm
 // Vertices are 0-indexed
+// Constructor Arguments:
+//   V: number of vertices in the graph
+//   edges: a vector of KruskalMST::Edge of the edges in the graph
+// Members:
+//   mstWeight: the weight of the mst
+//   mstEdges: a vector of KruskalMST::Edge of the edges in the mst
 // In practice, has a small constant, slower than Prim and Kruskal
 // Time Complexity:
 //   constructor: O(V + E log V)

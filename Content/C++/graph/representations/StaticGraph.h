@@ -7,6 +7,18 @@ using namespace std;
 // build must be called before the graph can be used, and edges cannot be
 //   added afterwards
 // Vertices are 0-indexed
+// Constructor Arguments:
+//   V: the number of vertices in the graph
+// Functions:
+//   reserveDiEdges(maxEdges): reserves space for maxEdges directed edges
+//     (bidirectional edges take up twice as much space)
+//   addDiEdge(from, to): adds a directed edge from the vertex from,
+//     to the vertex to
+//   addBiEdge(v, w): adds a bidirectional edge between vertices v and w
+//   operator [v]: returns a struct with the begin() and end() defined to
+//     iterate over the vertices adjacent to vertex v
+//   size(): returns the number of vertices in the graph
+//   build(): builds a graph using the edges that have been added
 // In practice, addBiEdge and addDiEdge have a small constant, build has a
 //   moderate constant, and operator [] has a very small constant
 // Graph construction is faster than adjacency lists, but slower than
@@ -56,6 +68,21 @@ struct StaticGraph {
 // build must be called before the graph can be used, and edges cannot be
 //   added afterwards
 // Vertices are 0-indexed
+// Template Arguments:
+//   T: the type of the weight of the edges in the weighted graph
+// Constructor Arguments:
+//   V: the number of vertices in the weighted graph
+// Functions:
+//   reserveDiEdges(maxEdges): reserves space for maxEdges directed edges
+//     (bidirectional edges take up twice as much space)
+//   addDiEdge(from, to, weight): adds a directed edge from the vertex from,
+//     to the vertex to, with a weight of weight
+//   addBiEdge(v, w, weight): adds a bidirectional edge between vertices v
+//     and w, with a weight of weight
+//   operator [v]: returns a struct with the begin() and end() defined to
+//     iterate over the edges incident to vertex v
+//   size(): returns the number of vertices in the graph
+//   build(): builds a graph using the edges that have been added
 // In practice, addBiEdge and addDiEdge have a small constant, build has a
 //   moderate constant, and operator [] has a very small constant
 // Graph construction is faster than adjacency lists, but slower than

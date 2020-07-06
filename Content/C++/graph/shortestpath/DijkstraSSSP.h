@@ -5,18 +5,25 @@ using namespace std;
 // Dijkstra's single source shortest path algorithm for weighted graphs
 //   without negative weights
 // Vertices are 0-indexed
-// contructor accepts a generic weighted graph data structure
-//   with the [] operator (const) defined to iterate over the adjacency list
-//   (which is a list of pair<int, T> with weights of type T), as well as a
-//   member function size() (const) that returns the number of vertices in the
-//   graph, a single source vertex, or a list of sources,
-//   and a value for infinity
-// dist[v] is the distance from the closest source vertex to vertex v,
-//   or INF if unreachable
-// par[v] is a pair of the parent vertex for vertex v in the dijkstra tree,
-//   and the weight of the edge to the parent
-// getPath(v) returns the list of edges on the path from the closest source
-//   vertex to vertex v
+// Template Arguments:
+//   T: the type of the weight of the edges in the graph
+// Constructor Arguments:
+//   G: a generic graph data structure (weighted or unweighted)
+//     with the [] operator (const) defined to iterate over the adjacency list
+//     (which is a list of ints for an unweighted graph, or a list of
+//     pair<int, T> for a weighted graph with weights of type T), as well as a
+//     member function size() (const) that returns the number of vertices
+//     in the graph
+//   s: a single source vertex
+//   src: a vector of source vertices
+//   INF: a value for infinity
+// Members:
+//   dist: vector of shortest distance from the closest source vertex to each
+//     vertex, or INF if unreachable
+//   par: the parent vertex for each vertex in the Dijkstra tree
+// Functions:
+//   getPath(v): returns the list of edges on the path from the closest
+//     source vertex to vertex v
 // In practice, constructor has a small constant
 // Time Complexity:
 //   constructor: O((V + E) log E)
@@ -59,18 +66,25 @@ template <class T> struct DijkstraSSSP {
 // Classical Dijkstra's single source shortest path algorithm for
 //   weighted graphs without negative weights
 // Vertices are 0-indexed
-// contructor accepts a generic weighted graph data structure
-//   with the [] operator (const) defined to iterate over the adjacency list
-//   (which is a list of pair<int, T> with weights of type T), as well as a
-//   member function size() (const) that returns the number of vertices in the
-//   graph, a single source vertex, or a list of sources,
-//   and a value for infinity
-// dist[v] is the distance from the closest source vertex to vertex v,
-//   or INF if unreachable
-// par[v] is a pair of the parent vertex for vertex v in the dijkstra tree,
-//   and the weight of the edge to the parent
-// getPath(v) returns the list of edges on the path from the closest source
-//   vertex to vertex v
+// Template Arguments:
+//   T: the type of the weight of the edges in the graph
+// Constructor Arguments:
+//   G: a generic graph data structure (weighted or unweighted)
+//     with the [] operator (const) defined to iterate over the adjacency list
+//     (which is a list of ints for an unweighted graph, or a list of
+//     pair<int, T> for a weighted graph with weights of type T), as well as a
+//     member function size() (const) that returns the number of vertices
+//     in the graph
+//   s: a single source vertex
+//   src: a vector of source vertices
+//   INF: a value for infinity
+// Members:
+//   dist: vector of shortest distance from the closest source vertex to each
+//     vertex, or INF if unreachable
+//   par: the parent vertex for each vertex in the Dijkstra tree
+// Functions:
+//   getPath(v): returns the list of edges on the path from the closest
+//     source vertex to vertex v
 // In practice, constructor has a small constant
 // Time Complexity:
 //   constructor: O(V^2 + E)
