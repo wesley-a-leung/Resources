@@ -9,6 +9,7 @@ using namespace std;
 // Time Complexity:
 //   constructor: O(V + E log V)
 // Memory Complexity: O(V + E)
+// Tested:
 //   Stress Tested
 //   https://open.kattis.com/problems/minspantree
 template <class T> struct BoruvkaMST {

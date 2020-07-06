@@ -14,6 +14,7 @@ using namespace std;
 //   Fuzz and Stress Tested
 //   https://judge.yosupo.jp/problem/unionfind
 //   https://dmoj.ca/problem/ds2
+//   https://tssoj.ca/problem/ninjaclasher18c2p3
 struct UnionFind {
   vector<int> UF; int cnt; UnionFind(int N) : UF(N, -1), cnt(N) {}
   int find(int v) { return UF[v] < 0 ? v : UF[v] = find(UF[v]); }

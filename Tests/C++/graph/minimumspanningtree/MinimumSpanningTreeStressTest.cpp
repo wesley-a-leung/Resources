@@ -7,20 +7,20 @@ using namespace std;
 
 void test1() {
   mt19937_64 rng(0);
-  int N = 1e6, M = 5e6;
+  int V = 1e6, E = 5e6;
   vector<KruskalMST<long long>::Edge> edges;
-  for (int i = 0; i < M; i++) {
-    int v = rng() % N, w = rng() % N;
+  for (int i = 0; i < E; i++) {
+    int v = rng() % V, w = rng() % V;
     long long weight = rng() % (long long)(1e9) + 1;
     edges.emplace_back(v, w, weight);
   }
   const auto start_time = chrono::system_clock::now();
-  KruskalMST<long long> mst(N, move(edges));
+  KruskalMST<long long> mst(V, move(edges));
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 1 (Kruskal) Passed" << endl;
-  cout << "  N: " << N << endl;
-  cout << "  M: " << M << endl;
+  cout << "  V: " << V << endl;
+  cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = mst.mstWeight % (long long)(1e9 + 7);
   for (auto &&e : mst.mstEdges) if (e.v > e.w) swap(e.v, e.w);
@@ -37,11 +37,11 @@ void test1() {
 
 void test2() {
   mt19937_64 rng(0);
-  int N = 1e6, M = 5e6;
-  StaticWeightedGraph<long long> G(N);
-  G.reserveDiEdges(M * 2);
-  for (int i = 0; i < M; i++) {
-    int v = rng() % N, w = rng() % N;
+  int V = 1e6, E = 5e6;
+  StaticWeightedGraph<long long> G(V);
+  G.reserveDiEdges(E * 2);
+  for (int i = 0; i < E; i++) {
+    int v = rng() % V, w = rng() % V;
     long long weight = rng() % (long long)(1e9) + 1;
     G.addBiEdge(v, w, weight);
   }
@@ -51,8 +51,8 @@ void test2() {
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 2 (Prim) Passed" << endl;
-  cout << "  N: " << N << endl;
-  cout << "  M: " << M << endl;
+  cout << "  V: " << V << endl;
+  cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = mst.mstWeight % (long long)(1e9 + 7);
   for (auto &&e : mst.mstEdges) if (e.v > e.w) swap(e.v, e.w);
@@ -69,20 +69,20 @@ void test2() {
 
 void test3() {
   mt19937_64 rng(0);
-  int N = 1e6, M = 5e6;
+  int V = 1e6, E = 5e6;
   vector<BoruvkaMST<long long>::Edge> edges;
-  for (int i = 0; i < M; i++) {
-    int v = rng() % N, w = rng() % N;
+  for (int i = 0; i < E; i++) {
+    int v = rng() % V, w = rng() % V;
     long long weight = rng() % (long long)(1e9) + 1;
     edges.emplace_back(v, w, weight);
   }
   const auto start_time = chrono::system_clock::now();
-  BoruvkaMST<long long> mst(N, move(edges));
+  BoruvkaMST<long long> mst(V, move(edges));
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 3 (Boruvka) Passed" << endl;
-  cout << "  N: " << N << endl;
-  cout << "  M: " << M << endl;
+  cout << "  V: " << V << endl;
+  cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = mst.mstWeight % (long long)(1e9 + 7);
   for (auto &&e : mst.mstEdges) if (e.v > e.w) swap(e.v, e.w);

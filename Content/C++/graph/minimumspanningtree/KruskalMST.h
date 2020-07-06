@@ -9,6 +9,7 @@ using namespace std;
 // Time Complexity:
 //   constructor: O(V + E log E)
 // Memory Complexity: O(V + E)
+// Tested:
 //   Stress Tested
 //   https://open.kattis.com/problems/minspantree
 template <class T> struct KruskalMST {
