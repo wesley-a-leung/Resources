@@ -8,7 +8,7 @@ using namespace std;
 // In practice, has a small constant, slower than Prim and Kruskal
 // Time Complexity:
 //   constructor: O(V + E log V)
-// Memory Complexity: O(V + E)
+// Memory Complexity: O(V) additional memory
 // Tested:
 //   Stress Tested
 //   https://open.kattis.com/problems/minspantree
