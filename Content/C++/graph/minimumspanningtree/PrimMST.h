@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Computes the minimum spanning tree using Prims's algorithm
+// Computes the minimum spanning tree (or forest) using Prims's algorithm
 // Vertices are 0-indexed
 // Constructor Arguments:
 //   G: a generic weighted graph data structure

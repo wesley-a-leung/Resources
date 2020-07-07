@@ -3,7 +3,7 @@
 #include "../../datastructures/unionfind/UnionFind.h"
 using namespace std;
 
-// Computes the minimum spanning tree using Boruvka's algorithm
+// Computes the minimum spanning tree (or forest) using Boruvka's algorithm
 // Vertices are 0-indexed
 // Constructor Arguments:
 //   V: number of vertices in the graph
