@@ -13,7 +13,7 @@ using namespace std;
 //   INF: a value for infinity
 // Members:
 //   mstWeight: the weight of the mst
-//   mstEdges: a vector of KruskalMST::Edge of the edges in the mst
+//   mstEdges: a vector of tuples of the edges in the mst
 // In practice, has a small constant, faster than Boruvka, slower that Kruskal
 // Time Complexity:
 //   constructor: O((V + E) log E)
@@ -22,11 +22,7 @@ using namespace std;
 //   Stress Tested
 //   https://open.kattis.com/problems/minspantree
 template <class T> struct PrimMST {
-  struct Edge {
-    int v, w; T weight;
-    Edge(int v, int w, T weight) : v(v), w(w), weight(weight) {}
-  };
-  T mstWeight; vector<Edge> mstEdges;
+  using Edge = tuple<int, int, T>; T mstWeight; vector<Edge> mstEdges;
   template <class WeightedGraph> PrimMST(const WeightedGraph &G,
                                          T INF = numeric_limits<T>::max())
       : mstWeight() {

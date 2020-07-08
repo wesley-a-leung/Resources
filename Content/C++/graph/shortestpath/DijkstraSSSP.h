@@ -34,7 +34,7 @@ using namespace std;
 //   https://open.kattis.com/problems/shortestpath1
 //   https://dmoj.ca/problem/sssp
 template <class T> struct DijkstraSSSP {
-  vector<T> dist; vector<int> par; T INF;
+  using Edge = tuple<int, int, T>; vector<T> dist; vector<int> par; T INF;
   template <class WeightedGraph>
   DijkstraSSSP(const WeightedGraph &G, const vector<int> &srcs,
                T INF = numeric_limits<T>::max())
@@ -52,10 +52,6 @@ template <class T> struct DijkstraSSSP {
   template <class WeightedGraph> DijkstraSSSP(const WeightedGraph &G, int s,
                                               T INF = numeric_limits<T>::max())
       : DijkstraSSSP(G, vector<int>(1, s), INF) {}
-  struct Edge {
-    int from, to; T weight;
-    Edge(int from, int to, T weight) : from(from), to(to), weight(weight) {}
-  };
   vector<Edge> getPath(int v) {
     vector<Edge> path; for (; par[v] != -1; v = par[v])
       path.emplace_back(par[v], v, dist[v] - dist[par[v]]);
@@ -93,34 +89,28 @@ template <class T> struct DijkstraSSSP {
 // Tested:
 //   https://dmoj.ca/problem/sssp
 template <class T> struct ClassicalDijkstraSSSP {
-  vector<T> dist; vector<pair<int, T>> par; T INF;
+  using Edge = tuple<int, int, T>; vector<T> dist; vector<int> par; T INF;
   template <class WeightedGraph>
   ClassicalDijkstraSSSP(const WeightedGraph &G, const vector<int> &srcs,
                         T INF = numeric_limits<T>::max())
-      : dist(G.size(), INF), par(G.size(), make_pair(-1, INF)), INF(INF) {
+      : dist(G.size(), INF), par(G.size(), -1), INF(INF) {
     vector<bool> done(G.size(), false); for (int s : srcs) dist[s] = 0;
     for (int i = 0; i < int(G.size()) - 1; i++) {
       int v = -1; for (int w = 0; w < int(G.size()); w++)
         if (!done[w] && (v == -1 || dist[v] > dist[w])) v = w;
       if (dist[v] == INF) break;
       done[v] = true;
-      for (auto &&e : G[v]) if (dist[e.first] > dist[v] + e.second) {
-        par[e.first] = make_pair(v, e.second);
-        dist[e.first] = dist[v] + e.second;
-      }
+      for (auto &&e : G[v]) if (dist[e.first] > dist[v] + e.second)
+        dist[e.first] = dist[par[e.first] = v] + e.second;
     }
   }
   template <class WeightedGraph>
   ClassicalDijkstraSSSP(const WeightedGraph &G, int s,
                         T INF = numeric_limits<T>::max())
       : ClassicalDijkstraSSSP(G, vector<int>(1, s), INF) {}
-  struct Edge {
-    int from, to; T weight;
-    Edge(int from, int to, T weight) : from(from), to(to), weight(weight) {}
-  };
   vector<Edge> getPath(int v) {
-    vector<Edge> path; for (; par[v].first != -1; v = par[v].first)
-      path.emplace_back(par[v].first, v, par[v].second);
+    vector<Edge> path; for (; par[v] != -1; v = par[v])
+      path.emplace_back(par[v], v, dist[v] - dist[par[v]]);
     reverse(path.begin(), path.end()); return path;
   }
 };
