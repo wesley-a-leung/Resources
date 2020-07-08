@@ -23,14 +23,12 @@ void test1() {
   cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = mst.mstWeight % (long long)(1e9 + 7);
-  for (auto &&e : mst.mstEdges) if (e.v > e.w) swap(e.v, e.w);
-  sort(mst.mstEdges.begin(), mst.mstEdges.end(), [&] (const KruskalMST<long long>::Edge &a, KruskalMST<long long>::Edge &b) {
-    return make_tuple(a.v, a.w, a.weight) < make_tuple(b.v, b.w, b.weight);
-  });
+  for (auto &&e : mst.mstEdges) if (get<0>(e) > get<1>(e)) swap(get<0>(e), get<1>(e));
+  sort(mst.mstEdges.begin(), mst.mstEdges.end());
   for (auto &&e : mst.mstEdges) {
-    checkSum = (31 * checkSum + e.v) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + e.w) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + e.weight) % (long long)(1e9 + 7);
+    checkSum = (31 * checkSum + get<0>(e)) % (long long)(1e9 + 7);
+    checkSum = (31 * checkSum + get<1>(e)) % (long long)(1e9 + 7);
+    checkSum = (31 * checkSum + get<2>(e)) % (long long)(1e9 + 7);
   }
   cout << "  Checksum: " << checkSum << endl;
 }
@@ -55,14 +53,12 @@ void test2() {
   cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = mst.mstWeight % (long long)(1e9 + 7);
-  for (auto &&e : mst.mstEdges) if (e.v > e.w) swap(e.v, e.w);
-  sort(mst.mstEdges.begin(), mst.mstEdges.end(), [&] (const PrimMST<long long>::Edge &a, PrimMST<long long>::Edge &b) {
-    return make_tuple(a.v, a.w, a.weight) < make_tuple(b.v, b.w, b.weight);
-  });
+  for (auto &&e : mst.mstEdges) if (get<0>(e) > get<1>(e)) swap(get<0>(e), get<1>(e));
+  sort(mst.mstEdges.begin(), mst.mstEdges.end());
   for (auto &&e : mst.mstEdges) {
-    checkSum = (31 * checkSum + e.v) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + e.w) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + e.weight) % (long long)(1e9 + 7);
+    checkSum = (31 * checkSum + get<0>(e)) % (long long)(1e9 + 7);
+    checkSum = (31 * checkSum + get<1>(e)) % (long long)(1e9 + 7);
+    checkSum = (31 * checkSum + get<2>(e)) % (long long)(1e9 + 7);
   }
   cout << "  Checksum: " << checkSum << endl;
 }
@@ -85,14 +81,12 @@ void test3() {
   cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = mst.mstWeight % (long long)(1e9 + 7);
-  for (auto &&e : mst.mstEdges) if (e.v > e.w) swap(e.v, e.w);
-  sort(mst.mstEdges.begin(), mst.mstEdges.end(), [&] (const BoruvkaMST<long long>::Edge &a, BoruvkaMST<long long>::Edge &b) {
-    return make_tuple(a.v, a.w, a.weight) < make_tuple(b.v, b.w, b.weight);
-  });
+  for (auto &&e : mst.mstEdges) if (get<0>(e) > get<1>(e)) swap(get<0>(e), get<1>(e));
+  sort(mst.mstEdges.begin(), mst.mstEdges.end());
   for (auto &&e : mst.mstEdges) {
-    checkSum = (31 * checkSum + e.v) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + e.w) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + e.weight) % (long long)(1e9 + 7);
+    checkSum = (31 * checkSum + get<0>(e)) % (long long)(1e9 + 7);
+    checkSum = (31 * checkSum + get<1>(e)) % (long long)(1e9 + 7);
+    checkSum = (31 * checkSum + get<2>(e)) % (long long)(1e9 + 7);
   }
   cout << "  Checksum: " << checkSum << endl;
 }

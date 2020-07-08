@@ -3,16 +3,16 @@
 using namespace std;
 
 void test1() {
+  const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
   int V = 2e6, E = 4e6;
-  vector<pair<int, int>> edges;
+  CC cc(V);
   for (int i = 0; i < E; i++) {
     int c = rng() % 100;
     int v = rng() % (V / 100) + (V / 100) * c, w = rng() % (V / 100) + (V / 100) * c;
-    edges.emplace_back(v, w);
+    cc.addEdge(v, w);
   }
-  const auto start_time = chrono::system_clock::now();
-  CC cc(V, move(edges));
+  cc.assign();
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 1 Passed" << endl;
