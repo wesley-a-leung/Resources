@@ -16,7 +16,7 @@ using namespace std;
 //   s: a single source vertex
 //   src: a vector of source vertices
 //   INF: a value for infinity
-// Members:
+// Fields:
 //   dist: vector of distance from the closest source vertex to each vertex,
 //     or INF if unreachable, and is also the shortest distance for
 //     an unweighted graph

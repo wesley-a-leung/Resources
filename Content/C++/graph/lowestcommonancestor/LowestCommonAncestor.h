@@ -18,7 +18,7 @@ using namespace std;
 //     in the forest
 //   rt: a single root vertex
 //   roots: a vector of root vertices
-// Members:
+// Fields:
 //   root: vector of roots for the forest each vertex is in
 //   dist: vector of distance to each vertex from the root of its forest
 // Functions:

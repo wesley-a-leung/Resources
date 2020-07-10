@@ -8,7 +8,7 @@ using namespace std;
 // Constructor Arguments:
 //   V: number of vertices in the graph
 //   edges: a vector of the edges in the graph
-// Members:
+// Fields:
 //   mstWeight: the weight of the mst
 //   mstEdges: a vector of tuples of the edges in the mst
 // In practice, has a small constant, slower than Prim and Kruskal

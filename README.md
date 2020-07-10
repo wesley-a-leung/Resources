@@ -27,21 +27,21 @@ should be lower camel case, unless it is to match C++ STL conventions
 - functions and classes should have generic types if possible
 - classes should have constant parameters passed as template parameters if
 possible, variable paremeters should be passed in the constructor
-- classes and functions should have a quick summary, descriptions of
-member functions and fields if not obvious, specify conventions used,
-mention the constant factor (roughly) relative to its advertised time
-complexity,  time complexity and memory complexity,
-and specify where it was tested
+- classes and functions should have a quick summary, specify conventions used,
+descriptions of template parameters, constructor arguments, member functions
+and fields, mention the constant factor (roughly) relative to its advertised
+time complexity, time complexity and memory complexity, and specify where it
+was tested
 - constant factors (very small, small, moderate, large, very large) roughly
 differ by factors of 10
 - if template parameters are non-trivial, those should be described as well,
 possibly with an example provided
-- std::vector is prefered to fixed-sized arrays, use std::vector::reserve if
-possible
+- `std::vector` is prefered to fixed-sized arrays, use `std::vector::reserve`
+if possible
 - the new operator should be avoided and memory should be allocated on the
-stack, or std::unique_ptr should be used
+stack, or `std::unique_ptr` should be used
 - data structures should have a constructor accepting a size variable as well
 as a function/lambda that accepts no arguments and returns successive values
-for each index (see std::generate), if appropriate, a function that accepts
+for each index (see `std::generate`), if appropriate, a function that accepts
 two iterators representing an exclusive range to be copied, and if appropriate,
 a constructor accepting a size variable and a default value

@@ -17,7 +17,7 @@ using namespace std;
 //   s: a single source vertex
 //   src: a vector of source vertices
 //   INF: a value for infinity
-// Members:
+// Fields:
 //   dist: vector of shortest distance from the closest source vertex to each
 //     vertex, or INF if unreachable
 //   par: the parent vertex for each vertex in the Dijkstra tree
@@ -41,7 +41,7 @@ template <class T> struct DijkstraSSSP {
       : dist(G.size(), INF), par(G.size(), -1), INF(INF) {
     std::priority_queue<pair<T, int>, vector<pair<T, int>>,
                         greater<pair<T, int>>> PQ;
-    for (int s : srcs) PQ.emplace(dist[s] = 0, s);
+    for (int s : srcs) PQ.emplace(dist[s] = T(), s);
     while (!PQ.empty()) {
       T d = PQ.top().first; int v = PQ.top().second; PQ.pop();
       if (d > dist[v]) continue;
@@ -74,7 +74,7 @@ template <class T> struct DijkstraSSSP {
 //   s: a single source vertex
 //   src: a vector of source vertices
 //   INF: a value for infinity
-// Members:
+// Fields:
 //   dist: vector of shortest distance from the closest source vertex to each
 //     vertex, or INF if unreachable
 //   par: the parent vertex for each vertex in the Dijkstra tree
@@ -94,7 +94,7 @@ template <class T> struct ClassicalDijkstraSSSP {
   ClassicalDijkstraSSSP(const WeightedGraph &G, const vector<int> &srcs,
                         T INF = numeric_limits<T>::max())
       : dist(G.size(), INF), par(G.size(), -1), INF(INF) {
-    vector<bool> done(G.size(), false); for (int s : srcs) dist[s] = 0;
+    vector<bool> done(G.size(), false); for (int s : srcs) dist[s] = T();
     for (int i = 0; i < int(G.size()) - 1; i++) {
       int v = -1; for (int w = 0; w < int(G.size()); w++)
         if (!done[w] && (v == -1 || dist[v] > dist[w])) v = w;

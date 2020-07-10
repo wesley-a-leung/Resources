@@ -11,7 +11,7 @@ using namespace std;
 //     member function size() (const) that returns the number of vertices
 //     in the graph
 //   INF: a value for infinity
-// Members:
+// Fields:
 //   mstWeight: the weight of the mst
 //   mstEdges: a vector of tuples of the edges in the mst
 // In practice, has a small constant, faster than Boruvka, slower that Kruskal

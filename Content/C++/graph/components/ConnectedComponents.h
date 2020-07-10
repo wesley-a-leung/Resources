@@ -7,7 +7,7 @@ using namespace std;
 // Vertices are 0-indexed
 // Constructor Arguments:
 //   V: number of vertices in the graph
-// Members:
+// Fields:
 //   id: a vector of the index of the component each vertex is part of
 //   components: a vector of vectors containing the vertices in each component
 // Functions:
