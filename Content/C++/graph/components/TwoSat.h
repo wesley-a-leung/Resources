@@ -1,33 +1,42 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "TarjanSCC.h"
+#include "StronglyConnectedComponents.h"
 using namespace std;
 
-// Solves the two satisfiability problem:
+// Solves the two satisfiability problem
 // Given a conjuntive normal form (x0 | x1) & (x2 | !x1) & ...
-// determine whether a consistent assignment exists
-// Time Complexity: O(N + M) for N variables, M equations
-// Memory Complexity: O(N + M) for N varaibles, M equations
-template <const int MAXN> struct TwoSat {
-    TarjanSCC<MAXN * 2> scc; bool vis[MAXN * 2], x[MAXN * 2]; int post[MAXN * 2], cur;
-    // adds the disjunction xi | xj, with possible negations
-    void addEquation(bool affI, int i, bool affJ, int j) { 
-        i = i * 2 + affI; j = j * 2 + affJ;
-        scc.addEdge(i ^ 1, j); scc.addEdge(j ^ 1, i);
+//   determine whether a consistent assignment exists
+// Variables are 0-indexed
+// Constructor Arguments:
+//   N: the number of variables
+//   disjunctions: a vector of tuple in the form
+//     (bool affI, int i, bool affJ, int j) each representing a disjunction
+//     with affI indicating if x_i is the affirmative (if true) or the negation
+//     (if false), and similarly with x_j
+// Fields:
+//   x: a vector of booleans for one possible valid assignment, or empty if
+//     no valid assignment exists
+// Time Complexity:
+//   constructor: O(N + M) for M equations
+// Memory Complexity: O(N + M)
+// Tested:
+//   https://judge.yosupo.jp/problem/two_sat
+//   https://codeforces.com/contest/1215/problem/F
+struct TwoSat {
+  SCC scc; vector<bool> x;
+  vector<vector<int>> init(
+      int N, const vector<tuple<bool, int, bool, int>> &disjunctions) {
+    vector<vector<int>> adj(N * 2);
+    for (auto &&d : disjunctions) {
+      int i = get<1>(d) * 2 + get<0>(d), j = get<3>(d) * 2 + get<2>(d);
+      adj[i ^ 1].push_back(j); adj[j ^ 1].push_back(i);
     }
-    void dfs(int v) {
-        vis[v] = true;
-        for (int w : scc.DAG[v]) if (!vis[w]) dfs(w);
-        post[v] = cur++;
-    }
-    bool solve(int N) {
-        scc.run(N * 2);
-        for (int i = 0; i < N; i++) if (scc.id[i * 2] == scc.id[i * 2 + 1]) return false;
-        scc.genDAG(N * 2);
-        fill(vis, vis + N * 2, false);
-        for (int i = 0; i < int(scc.components.size()); i++) if (!vis[i]) dfs(i);
-        for (int i = 0; i < N; i++) x[i] = post[scc.id[i * 2]] > post[scc.id[i * 2 + 1]];
-        return true;
-    }
-    void clear(int N = MAXN) { scc.clear(); }
+    return adj;
+  }
+  TwoSat(int N, const vector<tuple<bool, int, bool, int>> &disjunctions)
+      : scc(init(N, disjunctions)) {
+    for (int i = 0; i < N; i++) if (scc.id[i * 2] == scc.id[i * 2 + 1]) return;
+    x.assign(N, false);
+    for (int i = 0; i < N; i++) x[i] = scc.id[i * 2] > scc.id[i * 2 + 1];
+  }
 };

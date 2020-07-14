@@ -18,7 +18,7 @@ using namespace std;
 // Time Complexity:
 //   constructor: O((V + E) * alpha(V))
 // Memory Complexity: O(V)
-// Testd:
+// Tested:
 //   https://dmoj.ca/problem/ccc03s3
 //   https://codeforces.com/contest/1253/problem/D
 struct CC {
