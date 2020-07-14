@@ -69,7 +69,7 @@ template <class T> struct SuffixArray {
 //   lexicographically least suffixes
 // lcp(i, j) computes the longest common prefix of the suffixes starting
 //   from index i and j
-// In practice, constructor has a very small constant, lcp has a
+// In practice, the constructor has a very small constant, lcp has a
 //   moderate constant, still faster than using segment trees
 // Time Complexity:
 //   constructor: O(S (log S)^2)

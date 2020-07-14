@@ -22,7 +22,7 @@ using namespace std;
 // In practice, has a moderate constant, faster than Kosaraju
 // Time Complexity:
 //   constructor: O(V + E)
-// Memory Complexity: O(V) additional memory
+// Memory Complexity: O(V)
 // Tested:
 //   Stress Tested
 //   https://judge.yosupo.jp/problem/scc

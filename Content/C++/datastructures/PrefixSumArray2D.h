@@ -9,7 +9,7 @@ using namespace std;
 // Indices are 0-indexed
 // In practice, has a small constant
 // Time Complexity: O(NM)
-// Memory Complexity: O(1) additional memory
+// Memory Complexity: O(1)
 // Tested:
 //   Fuzz and Stress Tested
 //   https://codeforces.com/contest/635/problem/A
@@ -28,7 +28,7 @@ template <class C> void partial_sum_2d(const C &A, int N, int M, C &pre) {
 // Indices are 0-indexed
 // In practice, has a small constant
 // Time Complexity: O(NM)
-// Memory Complexity: O(1) additional memory
+// Memory Complexity: O(1)
 // Tested:
 //   Fuzz and Stress Tested
 template <class C>
@@ -45,7 +45,7 @@ void adjacent_difference_2d(const C &diff, int N, int M, C &A) {
 // Indices are 0-indexed and ranges are inclusive
 // In practice, has a moderate constant
 // Time Complexity: O(1)
-// Memory Complexity: O(1) additional memory
+// Memory Complexity: O(1)
 // Tested:
 //   Fuzz and Stress Tested
 //   https://codeforces.com/contest/635/problem/A
@@ -63,7 +63,7 @@ template <class C> auto rsq(const C &pre, int u, int d, int l, int r)
 // Indices are 0-indexed and ranges are inclusive
 // In practice, has a moderate constant
 // Time Complexity: O(1)
-// Memory Complexity: O(1) additional memory
+// Memory Complexity: O(1)
 // Tested:
 //   Fuzz and Stress Tested
 //   https://dmoj.ca/problem/dmpg15s5

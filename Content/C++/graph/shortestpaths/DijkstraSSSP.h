@@ -20,16 +20,17 @@ using namespace std;
 // Fields:
 //   dist: vector of shortest distance from the closest source vertex to each
 //     vertex, or INF if unreachable
-//   par: the parent vertex for each vertex in the Dijkstra tree
+//   par: the parent vertex for each vertex in the shorest path tree
 // Functions:
-//   getPath(v): returns the list of edges on the path from the closest
-//     source vertex to vertex v
-// In practice, constructor has a small constant
+//   getPath(v): returns the list of directed edges on the path from the
+//     closest source vertex to vertex v
+// In practice, the constructor has a small constant
 // Time Complexity:
 //   constructor: O((V + E) log E)
 //   getPath: O(V)
-// Memory Complexity: O(V + E)
+// Memory Complexity: O(V)
 // Tested:
+//   Stress Tested
 //   https://judge.yosupo.jp/problem/shortest_path
 //   https://open.kattis.com/problems/shortestpath1
 //   https://dmoj.ca/problem/sssp
@@ -77,16 +78,17 @@ template <class T> struct DijkstraSSSP {
 // Fields:
 //   dist: vector of shortest distance from the closest source vertex to each
 //     vertex, or INF if unreachable
-//   par: the parent vertex for each vertex in the Dijkstra tree
+//   par: the parent vertex for each vertex in the shorest path tree
 // Functions:
-//   getPath(v): returns the list of edges on the path from the closest
-//     source vertex to vertex v
-// In practice, constructor has a small constant
+//   getPath(v): returns the list of directed edges on the path from the
+//     closest source vertex to vertex v
+// In practice, the constructor has a small constant
 // Time Complexity:
 //   constructor: O(V^2 + E)
 //   getPath: O(V)
-// Memory Complexity: O(V + E)
+// Memory Complexity: O(V)
 // Tested:
+//   Stress Tested
 //   https://dmoj.ca/problem/sssp
 template <class T> struct ClassicalDijkstraSSSP {
   using Edge = tuple<int, int, T>; vector<T> dist; vector<int> par; T INF;

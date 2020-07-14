@@ -22,13 +22,13 @@ using namespace std;
 //     an unweighted graph
 //   par: the parent vertex for each vertex in the breadth first search tree
 // Functions:
-//   getPath(v): returns the list of edges on the path from the closest
-//     source vertex to vertex v
-// In practice, constructor has a moderate constant
+//   getPath(v): returns the list of directed edges on the path from the
+//     closest source vertex to vertex v
+// In practice, the constructor has a moderate constant
 // Time Complexity:
 //   constructor: O(V + E)
 //   getPath: O(V)
-// Memory Complexity: O(V + E)
+// Memory Complexity: O(V)
 // Tested:
 //   https://www.spoj.com/problems/BITMAP/
 //   https://dmoj.ca/problem/ddrp3

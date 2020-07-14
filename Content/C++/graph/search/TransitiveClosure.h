@@ -18,7 +18,7 @@ using namespace std;
 // Time Complexity:
 //   constructor: O(V + E + MAXV E / 64)
 //   reachable: O(1)
-// Memory Complexity: O(MAXV V / 64)
+// Memory Complexity: O(V + E + MAXV V / 64)
 // Tested:
 //   Stress Tested
 //   https://dmoj.ca/problem/acc2p2
