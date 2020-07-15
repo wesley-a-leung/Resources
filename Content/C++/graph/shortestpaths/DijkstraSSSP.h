@@ -20,7 +20,8 @@ using namespace std;
 // Fields:
 //   dist: vector of shortest distance from the closest source vertex to each
 //     vertex, or INF if unreachable
-//   par: the parent vertex for each vertex in the shorest path tree
+//   par: the parent vertex for each vertex in the shortest path tree, or
+//     -1 if there is no parent
 // Functions:
 //   getPath(v): returns the list of directed edges on the path from the
 //     closest source vertex to vertex v
@@ -78,7 +79,8 @@ template <class T> struct DijkstraSSSP {
 // Fields:
 //   dist: vector of shortest distance from the closest source vertex to each
 //     vertex, or INF if unreachable
-//   par: the parent vertex for each vertex in the shorest path tree
+//   par: the parent vertex for each vertex in the shortest path tree, or
+//     -1 if there is no parent
 // Functions:
 //   getPath(v): returns the list of directed edges on the path from the
 //     closest source vertex to vertex v

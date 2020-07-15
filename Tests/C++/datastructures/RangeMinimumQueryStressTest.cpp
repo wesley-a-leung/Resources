@@ -27,7 +27,7 @@ void test1() {
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (auto &&a : ans) checkSum = (31 * checkSum + a) % (long long)(1e9 + 7);
+  for (auto &&a : ans) checkSum = 31 * checkSum + a;
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -53,7 +53,7 @@ void test2() {
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (auto &&a : ans) checkSum = (31 * checkSum + a) % (long long)(1e9 + 7);
+  for (auto &&a : ans) checkSum = 31 * checkSum + a;
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -79,7 +79,7 @@ void test3() {
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (auto &&a : ans) checkSum = (31 * checkSum + a) % (long long)(1e9 + 7);
+  for (auto &&a : ans) checkSum = 31 * checkSum + a;
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -105,7 +105,7 @@ void test4() {
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (auto &&a : ans) checkSum = (31 * checkSum + a) % (long long)(1e9 + 7);
+  for (auto &&a : ans) checkSum = 31 * checkSum + a;
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -130,7 +130,7 @@ void test5() {
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (auto &&a : ans) checkSum = (31 * checkSum + a) % (long long)(1e9 + 7);
+  for (auto &&a : ans) checkSum = 31 * checkSum + a;
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -155,7 +155,7 @@ void test6() {
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (auto &&a : ans) checkSum = (31 * checkSum + a) % (long long)(1e9 + 7);
+  for (auto &&a : ans) checkSum = 31 * checkSum + a;
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -186,7 +186,7 @@ void test7() {
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (auto &&a : ans) checkSum = (31 * checkSum + a) % (long long)(1e9 + 7);
+  for (auto &&a : ans) checkSum = 31 * checkSum + a;
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -217,7 +217,7 @@ void test8() {
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (auto &&a : ans) checkSum = (31 * checkSum + a) % (long long)(1e9 + 7);
+  for (auto &&a : ans) checkSum = 31 * checkSum + a;
   cout << "  Checksum: " << checkSum << endl;
 }
 

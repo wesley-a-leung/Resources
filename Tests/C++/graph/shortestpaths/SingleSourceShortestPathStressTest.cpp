@@ -22,7 +22,7 @@ void test1() {
   cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (int v = 0; v < V; v++) checkSum = (31 * checkSum + sssp.dist[v]) % (long long)(1e9 + 7);
+  for (int v = 0; v < V; v++) checkSum = 31 * checkSum + sssp.dist[v];
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -46,7 +46,7 @@ void test2() {
   cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (int v = 0; v < V; v++) checkSum = (31 * checkSum + sssp.dist[v]) % (long long)(1e9 + 7);
+  for (int v = 0; v < V; v++) checkSum = 31 * checkSum + sssp.dist[v];
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -70,7 +70,7 @@ void test3() {
   cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (int v = 0; v < V; v++) checkSum = (31 * checkSum + sssp.dist[v]) % (long long)(1e9 + 7);
+  for (int v = 0; v < V; v++) checkSum = 31 * checkSum + sssp.dist[v];
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -94,7 +94,7 @@ void test4() {
   cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (int v = 0; v < V; v++) checkSum = (31 * checkSum + sssp.dist[v]) % (long long)(1e9 + 7);
+  for (int v = 0; v < V; v++) checkSum = 31 * checkSum + sssp.dist[v];
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -118,7 +118,7 @@ void test5() {
   cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (int v = 0; v < V; v++) checkSum = (31 * checkSum + sssp.dist[v]) % (long long)(1e9 + 7);
+  for (int v = 0; v < V; v++) checkSum = 31 * checkSum + sssp.dist[v];
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -142,7 +142,7 @@ void test6() {
   cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (int v = 0; v < V; v++) checkSum = (31 * checkSum + sssp.dist[v]) % (long long)(1e9 + 7);
+  for (int v = 0; v < V; v++) checkSum = 31 * checkSum + sssp.dist[v];
   cout << "  Checksum: " << checkSum << endl;
 }
 

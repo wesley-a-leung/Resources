@@ -18,7 +18,8 @@ using namespace std;
 // Fields:
 //   dist: vector of shortest distance from the closest source vertex to each
 //     vertex, or INF if unreachable
-//   par: the parent vertex for each vertex in the shortest path tree
+//   par: the parent vertex for each vertex in the shortest path tree, or
+//     -1 if there is no parent
 //   hasNegativeCycle: a boolean that is true if there is a negative cycle
 //     in the graph and false otherwise
 // Functions:
@@ -26,7 +27,7 @@ using namespace std;
 //     closest source vertex to vertex v
 // In practice, the constructor has a very small constant
 // Time Complexity:
-//   constructor: O(V E + E log E)
+//   constructor: O(E (V + log E))
 //   getPath: O(V)
 // Memory Complexity: O(V + E)
 // Tested:

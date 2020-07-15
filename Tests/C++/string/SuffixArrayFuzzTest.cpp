@@ -25,20 +25,20 @@ void test1() {
     for (int i = 0; i < N; i++) {
       assert(suffixes[i].second == LCP.SA.ind[i]);
       inv[suffixes[i].second] = i;
-      checkSum = (31 * checkSum + LCP.SA.ind[i]) % (long long)(1e9 + 7);
+      checkSum = 31 * checkSum + LCP.SA.ind[i];
     }
     for (int i = 0; i < N; i++) {
       assert(inv[i] == LCP.SA.rnk[i]);
-      checkSum = (31 * checkSum + LCP.SA.rnk[i]) % (long long)(1e9 + 7);
+      checkSum = 31 * checkSum + LCP.SA.rnk[i];
     }
     for (int i = 0; i < N - 1; i++) {
       assert(lcp(suffixes[i].first, suffixes[i + 1].first) == LCP.SA.LCP[i]);
-      checkSum = (31 * checkSum + LCP.SA.LCP[i]) % (long long)(1e9 + 7);
+      checkSum = 31 * checkSum + LCP.SA.LCP[i];
     }
     if (N > 0) assert(LCP.SA.LCP[N - 1] == 0);
     for (int i = 0; i < N; i++) for (int j = i; j < N; j++) {
       assert(lcp(A.substr(i), A.substr(j)) == LCP.lcp(i, j));
-      checkSum = (31 * checkSum + LCP.lcp(i, j)) % (long long)(1e9 + 7);
+      checkSum = 31 * checkSum + LCP.lcp(i, j);
     }
   }
   const auto end_time = chrono::system_clock::now();

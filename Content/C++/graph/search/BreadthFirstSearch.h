@@ -20,7 +20,8 @@ using namespace std;
 //   dist: vector of distance from the closest source vertex to each vertex,
 //     or INF if unreachable, and is also the shortest distance for
 //     an unweighted graph
-//   par: the parent vertex for each vertex in the breadth first search tree
+//   par: the parent vertex for each vertex in the breadth first search tree,
+//     or -1 if there is no parent
 // Functions:
 //   getPath(v): returns the list of directed edges on the path from the
 //     closest source vertex to vertex v

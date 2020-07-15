@@ -26,9 +26,9 @@ using namespace std;
 // Time Complexity:
 //   constructor: O(N)
 //   insert, insert_at, erase, erase_at, push_front, pop_front, at:
-//     O(R * (I ^ (1 / R))) where I is the total number of insertions
+//     O(R (I ^ (1 / R))) where I is the total number of insertions
 //   below, floor, ceiling, above, find:
-//     O(R * (I ^ (1 / R))) where I is the total number of insertions
+//     O(R (I ^ (1 / R))) where I is the total number of insertions
 //   front, back, empty, size, pop_back: O(1)
 //   push_back: O(1) amortized
 //   values, clear: O(N)

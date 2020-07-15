@@ -22,13 +22,13 @@ void test1() {
   cout << "  V: " << V << endl;
   cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
-  long long checkSum = mst.mstWeight % (long long)(1e9 + 7);
+  long long checkSum = mst.mstWeight;
   for (auto &&e : mst.mstEdges) if (get<0>(e) > get<1>(e)) swap(get<0>(e), get<1>(e));
   sort(mst.mstEdges.begin(), mst.mstEdges.end());
   for (auto &&e : mst.mstEdges) {
-    checkSum = (31 * checkSum + get<0>(e)) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + get<1>(e)) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + get<2>(e)) % (long long)(1e9 + 7);
+    checkSum = 31 * checkSum + get<0>(e);
+    checkSum = 31 * checkSum + get<1>(e);
+    checkSum = 31 * checkSum + get<2>(e);
   }
   cout << "  Checksum: " << checkSum << endl;
 }
@@ -50,13 +50,13 @@ void test2() {
   cout << "  V: " << V << endl;
   cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
-  long long checkSum = mst.mstWeight % (long long)(1e9 + 7);
+  long long checkSum = mst.mstWeight;
   for (auto &&e : mst.mstEdges) if (get<0>(e) > get<1>(e)) swap(get<0>(e), get<1>(e));
   sort(mst.mstEdges.begin(), mst.mstEdges.end());
   for (auto &&e : mst.mstEdges) {
-    checkSum = (31 * checkSum + get<0>(e)) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + get<1>(e)) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + get<2>(e)) % (long long)(1e9 + 7);
+    checkSum = 31 * checkSum + get<0>(e);
+    checkSum = 31 * checkSum + get<1>(e);
+    checkSum = 31 * checkSum + get<2>(e);
   }
   cout << "  Checksum: " << checkSum << endl;
 }
@@ -78,13 +78,13 @@ void test3() {
   cout << "  V: " << V << endl;
   cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
-  long long checkSum = mst.mstWeight % (long long)(1e9 + 7);
+  long long checkSum = mst.mstWeight;
   for (auto &&e : mst.mstEdges) if (get<0>(e) > get<1>(e)) swap(get<0>(e), get<1>(e));
   sort(mst.mstEdges.begin(), mst.mstEdges.end());
   for (auto &&e : mst.mstEdges) {
-    checkSum = (31 * checkSum + get<0>(e)) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + get<1>(e)) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + get<2>(e)) % (long long)(1e9 + 7);
+    checkSum = 31 * checkSum + get<0>(e);
+    checkSum = 31 * checkSum + get<1>(e);
+    checkSum = 31 * checkSum + get<2>(e);
   }
   cout << "  Checksum: " << checkSum << endl;
 }
@@ -106,13 +106,13 @@ void test4() {
   cout << "  V: " << V << endl;
   cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
-  long long checkSum = mst.mstWeight % (long long)(1e9 + 7);
+  long long checkSum = mst.mstWeight;
   for (auto &&e : mst.mstEdges) if (get<0>(e) > get<1>(e)) swap(get<0>(e), get<1>(e));
   sort(mst.mstEdges.begin(), mst.mstEdges.end());
   for (auto &&e : mst.mstEdges) {
-    checkSum = (31 * checkSum + get<0>(e)) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + get<1>(e)) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + get<2>(e)) % (long long)(1e9 + 7);
+    checkSum = 31 * checkSum + get<0>(e);
+    checkSum = 31 * checkSum + get<1>(e);
+    checkSum = 31 * checkSum + get<2>(e);
   }
   cout << "  Checksum: " << checkSum << endl;
 }
@@ -136,13 +136,13 @@ void test5() {
   cout << "  V: " << V << endl;
   cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
-  long long checkSum = mst.mstWeight % (long long)(1e9 + 7);
+  long long checkSum = mst.mstWeight;
   for (auto &&e : mst.mstEdges) if (get<0>(e) > get<1>(e)) swap(get<0>(e), get<1>(e));
   sort(mst.mstEdges.begin(), mst.mstEdges.end());
   for (auto &&e : mst.mstEdges) {
-    checkSum = (31 * checkSum + get<0>(e)) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + get<1>(e)) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + get<2>(e)) % (long long)(1e9 + 7);
+    checkSum = 31 * checkSum + get<0>(e);
+    checkSum = 31 * checkSum + get<1>(e);
+    checkSum = 31 * checkSum + get<2>(e);
   }
   cout << "  Checksum: " << checkSum << endl;
 }
@@ -166,13 +166,13 @@ void test6() {
   cout << "  V: " << V << endl;
   cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
-  long long checkSum = mst.mstWeight % (long long)(1e9 + 7);
+  long long checkSum = mst.mstWeight;
   for (auto &&e : mst.mstEdges) if (get<0>(e) > get<1>(e)) swap(get<0>(e), get<1>(e));
   sort(mst.mstEdges.begin(), mst.mstEdges.end());
   for (auto &&e : mst.mstEdges) {
-    checkSum = (31 * checkSum + get<0>(e)) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + get<1>(e)) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + get<2>(e)) % (long long)(1e9 + 7);
+    checkSum = 31 * checkSum + get<0>(e);
+    checkSum = 31 * checkSum + get<1>(e);
+    checkSum = 31 * checkSum + get<2>(e);
   }
   cout << "  Checksum: " << checkSum << endl;
 }
@@ -196,13 +196,13 @@ void test7() {
   cout << "  V: " << V << endl;
   cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
-  long long checkSum = mst.mstWeight % (long long)(1e9 + 7);
+  long long checkSum = mst.mstWeight;
   for (auto &&e : mst.mstEdges) if (get<0>(e) > get<1>(e)) swap(get<0>(e), get<1>(e));
   sort(mst.mstEdges.begin(), mst.mstEdges.end());
   for (auto &&e : mst.mstEdges) {
-    checkSum = (31 * checkSum + get<0>(e)) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + get<1>(e)) % (long long)(1e9 + 7);
-    checkSum = (31 * checkSum + get<2>(e)) % (long long)(1e9 + 7);
+    checkSum = 31 * checkSum + get<0>(e);
+    checkSum = 31 * checkSum + get<1>(e);
+    checkSum = 31 * checkSum + get<2>(e);
   }
   cout << "  Checksum: " << checkSum << endl;
 }

@@ -20,7 +20,7 @@ void test1() {
   cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
-  for (int v = 0; v < V; v++) checkSum = (31 * checkSum + cc.id[v]) % (long long)(1e9 + 7);
+  for (int v = 0; v < V; v++) checkSum = 31 * checkSum + cc.id[v];
   cout << "  Checksum: " << checkSum << endl;
 }
 

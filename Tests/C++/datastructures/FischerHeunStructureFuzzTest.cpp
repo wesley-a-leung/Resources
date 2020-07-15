@@ -27,7 +27,7 @@ void test1() {
     }
     assert(ans0 == ans1);
     assert(ansA0 == ansA1);
-    for (auto &&a : ans0) checkSum = (31 * checkSum + a) % (long long)(1e9 + 7);
+    for (auto &&a : ans0) checkSum = 31 * checkSum + a;
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
