@@ -26,8 +26,7 @@ struct TwoSat {
   SCC scc; vector<bool> x;
   vector<vector<int>> init(
       int N, const vector<tuple<bool, int, bool, int>> &disjunctions) {
-    vector<vector<int>> adj(N * 2);
-    for (auto &&d : disjunctions) {
+    vector<vector<int>> adj(N * 2); for (auto &&d : disjunctions) {
       int i = get<1>(d) * 2 + get<0>(d), j = get<3>(d) * 2 + get<2>(d);
       adj[i ^ 1].push_back(j); adj[j ^ 1].push_back(i);
     }

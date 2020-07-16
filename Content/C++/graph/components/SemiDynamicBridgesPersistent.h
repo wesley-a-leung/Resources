@@ -2,13 +2,13 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Supports persistent queries for the earliest time two vertices are in the same biconnected component
+// Supports persistent queries for the earliest time two vertices are in the same 2-edge connected component
 // after edges have been added
 // Time Complexity:
 //   solve: O((V + Q) log V)
 //   query: O(log V log Q)
 // Memory Complexity O(V + Q)
-template <const int MAXV, const int MAXQ> struct SemiDynamicBiconnectivityPersistent {
+template <const int MAXV, const int MAXQ> struct SemiDynamicBridgesPersistent {
     int Q = 0, UF[MAXV], par[MAXV], dep[MAXV]; vector<int> adj[MAXV], ans; vector<pair<int, int>> UF2[MAXV];
     struct Query { int type, v, w; } q[MAXQ];
     int find(int v) { return UF[v] < 0 ? v : UF[v] = find(UF[v]); }
@@ -42,9 +42,9 @@ template <const int MAXV, const int MAXQ> struct SemiDynamicBiconnectivityPersis
             }
         }
     }
-    // returns the first time i (0-indexed) such that v and w are in the same biconnected component
+    // returns the first time i (0-indexed) such that v and w are in the same 2-edge connected component
     // after the ith edge is added
-    // returns -1 if v = w and Q if they are never in the same biconnected component
+    // returns -1 if v = w and Q if they are never in the same 2-edge connected component
     int query(int v, int w) {
         int lo = -1, hi = Q;
         while (lo < hi) {

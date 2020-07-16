@@ -73,7 +73,7 @@ struct Node {
     void makeRoot() { expose(); rev = !rev; }
     void setDel(int tim) { del = tim; propagate(); update(); expose(); }
 };
-template <const int MAXV, const int MAXQ> struct DynamicBiconnectivity {
+template <const int MAXV, const int MAXQ> struct DynamicBridges {
     int V, Q = 0, bridges; bool isTreeEdge[MAXQ]; vector<Node> T; vector<int> ans; unordered_map<int, int> present[MAXV];
     struct Query { int type, v, w, otherTime; } q[MAXQ];
     bool connected(int x, int y) {

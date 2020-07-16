@@ -29,9 +29,9 @@ using namespace std;
 //   https://dmoj.ca/problem/acc2p2
 //   https://ecna18.kattis.com/problems/watchyourstep
 struct SCC {
-  int V, ind, top; vector<int> id, low, stk; vector<vector<int>> components;
+  int ind, top; vector<int> id, low, stk; vector<vector<int>> components;
   template <class Digraph> void dfs(const Digraph &G, int v) {
-    id[v] = -1; int mn = low[stk[top++] = v] = ind++; for (int w : G[v]) {
+    id[stk[top++] = v] = -1; int mn = low[v] = ind++; for (int w : G[v]) {
       if (id[w] == -2) dfs(G, w);
       mn = min(mn, low[w]);
     }
@@ -42,8 +42,8 @@ struct SCC {
     } while (w != v);
   }
   template <class Digraph> SCC(const Digraph &G)
-      : V(G.size()), ind(0), top(0), id(V, -2), low(V), stk(V) {
-    for (int v = 0; v < V; v++) if (id[v] == -2) dfs(G, v);
+      : ind(0), top(0), id(G.size(), -2), low(G.size()), stk(G.size()) {
+    for (int v = 0; v < int(G.size()); v++) if (id[v] == -2) dfs(G, v);
   }
   template <class Digraph>
   SCC(const Digraph &G, vector<pair<int, int>> &condensationEdges) : SCC(G) {

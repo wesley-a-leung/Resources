@@ -5,7 +5,7 @@ using namespace std;
 // Supports queries for the number of bridges in a graph after edges have been added
 // Time Complexity: O(V + Q)
 // Memory Complexity O(V + Q)
-template <const int MAXV, const int MAXQ> struct SemiDynamicBiconnectivity {
+template <const int MAXV, const int MAXQ> struct SemiDynamicBridges {
     int Q = 0, UF[MAXV], par[MAXV], dep[MAXV]; vector<int> adj[MAXV], ans;
     struct Query { int type, v, w; } q[MAXQ];
     int find(int v) { return UF[v] < 0 ? v : UF[v] = find(UF[v]); }

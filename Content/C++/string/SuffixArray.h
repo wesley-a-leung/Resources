@@ -8,13 +8,28 @@ using namespace std;
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
-// rnk[i] is the rank of the suffix starting from index i
-// ind[i] is the index in original string of the
-//   ith lexicographically smallest suffix
-// LCP[i] is the longest common prefix of the ith and (i + 1)th
-//   lexicographically smallest suffix
+// Template Arguments:
+//   T: the type of the character/element in the string/array
+// Constructor Arguments:
+//   N: the length of the string/array
+//   f: a generating function that returns the ith element on the ith call
+//   st: an iterator pointing to the first element in the array
+//   en: an iterator pointing to after the last element in the array
+// Fields:
+//   N: the length of the string/array
+//   S: a vector of type T representing the string/array
+//   rnk: a vector of the ranks of the suffices (rnk[i] is the rank of the
+//     suffix starting from index i)
+//   ind: a vector of the indices in the original string of the suffices
+//     sorted in lexicographical order (ind[i] is the index in original string
+//     of the ith lexicographically smallest suffix)
+//   LCP: a vector of the longest common prefixes between the suffices when
+//     sorted in lexicographical order (LCP[i] is the longest common prefix of
+//     the ith and (i + 1)th lexicographically smallest suffix, with LCP[N - 1]
+//     being 0)
 // In practice, has a very small constant
-// Time Complexity: O(S (log S)^2)
+// Time Complexity:
+//   constructor: O(S (log S)^2)
 // Memory Complexity: O(S)
 // Tested:
 //   Fuzz and Stress Tested
@@ -65,10 +80,20 @@ template <class T> struct SuffixArray {
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
-// lcpRnk(i, j) computes the longest common prefix of the ith and jth
-//   lexicographically least suffixes
-// lcp(i, j) computes the longest common prefix of the suffixes starting
-//   from index i and j
+// Template Arguments:
+//   T: the type of the character/element in the string/array
+// Constructor Arguments:
+//   N: the number of elements in the string/array
+//   f: a generating function that returns the ith element on the ith call
+//   st: an iterator pointing to the first element in the array
+//   en: an iterator pointing to after the last element in the array
+// Fields:
+//   SA: the associated suffix array constructed from the string/array
+// Functions:
+//   lcpRnk(i, j): computes the longest common prefix of the ith and jth
+//     lexicographically least suffixes
+//   lcp(i, j): computes the longest common prefix of the suffixes starting
+//     from index i and j
 // In practice, the constructor has a very small constant, lcp has a
 //   moderate constant, still faster than using segment trees
 // Time Complexity:
