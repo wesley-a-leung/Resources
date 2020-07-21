@@ -15,7 +15,7 @@ using namespace std;
 // getFirst returns the first node y (and its index) in the tree rooted at root
 //   where cmp(y->val, v) returns false,
 // and makes it the new root (or the last node accessed if null)
-// build builds a treap with N nodes using a generating function f
+// build builds a splay tree with N nodes using a generating function f
 //   that passes a single argument to the node constructor
 // clear adds all nodes in the subtree of x to the deleted buffer
 // Node must have the following:
