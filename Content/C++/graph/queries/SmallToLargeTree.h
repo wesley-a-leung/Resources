@@ -6,7 +6,7 @@ using namespace std;
 // with a certain property
 // Time Complexity: O(V log V + Q)
 // Memory Complexity: O(V + Q)
-template <const int MAXV, const int MAXQ, const bool COMPRESS_VALUES> struct DSUTree {
+template <const int MAXV, const int MAXQ, const bool COMPRESS_VALUES> struct SmallToLargeTree {
     int Q = 0, ans[MAXQ], color[MAXV], temp[MAXV], size[MAXV], cnt[MAXV];
     vector<int> adj[MAXV]; vector<pair<int, int>> q[MAXV];
     void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }

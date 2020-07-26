@@ -4,11 +4,23 @@ using namespace std;
 
 // Union Find / Disjoint Sets by size with path compression
 // Indices are 0-indexed
+// Constructor Arguments:
+//   N: the number of elements in the set
+// Fields:
+//   cnt: the current number of disjoint sets
+//   UF: a vector of integers representing the parent of each element in the
+//     tree, or the negative of the size of the set if that element is a root
+// Functions:
+//   find(v): find the root of the set containing element v
+//   join(v, w): merges the sets containing v and w, returns true if they
+//     were originally disjoint before the merge, false otherwise
+//   connected(v, w): returns true if v and w are in the same set,
+//     false otherwise
+//   getSize(v): returns the size of the set containing element v
 // In practice, has a small constant
 // Time Complexity:
 //   constructor: O(N)
-//   find, join, connected, getSize: O(alpha N) amortized,
-//                                   O(log N) worse case
+//   find, join, connected, getSize: O(alpha N) amortized, O(log N) worse case
 // Memory Complexity: O(N)
 // Tested:
 //   Fuzz and Stress Tested
