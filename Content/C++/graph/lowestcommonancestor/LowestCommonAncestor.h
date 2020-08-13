@@ -58,7 +58,7 @@ template <class T = int> struct LCA {
     vert.reserve(V); if (roots.empty()) {
       for (int v = 0; v < V; v++) if (root[v] == -1) dfs(G, v, -1, v, T());
     } else for (int rt : roots) dfs(G, rt, -1, rt, T());
-    return RMQ(vert.size(), [&, i = 0] () mutable { return pre[vert[i++]]; });
+    int i = 0; return RMQ(vert.size(), [&] { return pre[vert[i++]]; });
   }
   template <class Forest>
   LCA(const Forest &G, const vector<int> &roots = vector<int>())
