@@ -8,6 +8,18 @@ using namespace std;
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
 // Order of arguments for update differs slightly from FenwickTreeRangePoint
+// Template Arguments:
+//   T: the type of the value
+// Constructor Arguments:
+//   N: the size of the first dimension
+//   f: a generating function that returns the ith element on the ith call
+//   st: an iterator pointing to the first element in the array
+//   en: an iterator pointing to after the last element in the array
+// Functions:
+//   values(): returns a vector of the fenwick tree decomposed into an array
+//   update(l, v): add v to the range [l..N - 1]
+//   update(l, r, v): add v to the range [l..r]
+//   get(i): queries the value at index i
 // In practice, this version performs as well as the multidimensional version
 // Small constant, like most fenwick trees, and faster than segment trees
 // Time Complexity:

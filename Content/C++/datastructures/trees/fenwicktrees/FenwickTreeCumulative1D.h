@@ -8,8 +8,23 @@ using namespace std;
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
-// bsearch returns first index where cmp returns false,
-//   or N if no such index exists
+// Template Arguments:
+//   T: the type of the value
+//   C: a struct with the cumulative operation
+//     Functions:
+//       operator (l, r): combines the values l and r
+// Constructor Arguments:
+//   N: the size of the first dimension
+//   f: a generating function that returns the ith element on the ith call
+//   st: an iterator pointing to the first element in the array
+//   en: an iterator pointing to after the last element in the array
+//   vdef: the default value for each element in the array
+//   op: an instance of the C struct
+// Functions:
+//   update(i, v): add v to the value at index i
+//   query(r): queries the range [0, r]
+//   bsearch(v, cmp): returns the first index where cmp(op(A[0..i]), v)
+//     returns false, or N if no such index exists, assumes A is sorted by cmp
 // In practice, this version performs as well as the multidimensional version
 // Small constant, like most fenwick trees, and faster than segment trees
 // Time Complexity:
@@ -20,11 +35,11 @@ using namespace std;
 //   https://atcoder.jp/contests/dp/tasks/dp_q
 //   https://dmoj.ca/problem/ds1
 //   https://dmoj.ca/problem/cco10p3
-template <class T, class Op> struct FenwickTreeCumulative1D {
-  int N; vector<T> BIT; Op op;
-  FenwickTreeCumulative1D(int N, T vdef, Op op = Op())
+template <class T, class C> struct FenwickTreeCumulative1D {
+  int N; vector<T> BIT; C op;
+  FenwickTreeCumulative1D(int N, T vdef, C op = C())
       : N(N), BIT(N + 1, vdef), op(op) {}
-  template <class F> FenwickTreeCumulative1D(int N, F f, T vdef, Op op = Op())
+  template <class F> FenwickTreeCumulative1D(int N, F f, T vdef, C op = C())
       : FenwickTreeCumulative1D(N, vdef, op) {
     for (int i = 1; i <= N; i++) {
       BIT[i] = op(BIT[i], f());
@@ -32,7 +47,7 @@ template <class T, class Op> struct FenwickTreeCumulative1D {
     }
   }
   template <class It>
-  FenwickTreeCumulative1D(It st, It en, T vdef, Op op = Op())
+  FenwickTreeCumulative1D(It st, It en, T vdef, C op = C())
       : FenwickTreeCumulative1D(en - st, [&] { return *st++; }, vdef, op) {}
   void update(int i, T v) {
     for (i++; i <= N; i += i & -i) BIT[i] = op(BIT[i], v);

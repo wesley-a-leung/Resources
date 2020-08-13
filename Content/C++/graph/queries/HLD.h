@@ -2,77 +2,84 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Decomposes a tree into chains, such that a path from any vertex to the root will cover at most log V chains
+// Decomposes a tree into chains, such that a path from any vertex to the root
+//   will cover at most O(log V) chains
+// Can be used with PathQueries.h for path queries
+// Vertices and indices are 0-indexed
+// Constructor Arguments:
+//   G: a generic forest data structure
+//     with the [] operator (const) defined to iterate over the adjacency list
+//     (which is a list of ints), as well as a member function size() (const)
+//     that returns the number of vertices in the forest
+// Fields:
+//   root: vector of roots for the forest each vertex is in
+//   dep: vector of depths to each vertex from the root of its forest
+//   par: vector of parent vertices for each vertex (or -1 if its a root)
+//   size: vector of sizes of the subtree for each vertex
+//   head: vector of the head of the chain of each vertex
+//   pre: vector of the pre order traversal indices for each vertex
+//   post: vector of the post order traversal indices (the last pre order index
+//     in its subtree) for each vertex
+//   vert: vector of vertex for each pre order index
+// Functions:
+//   lca(v, w): returns the lowest common ancestor of vertices v and w assuming
+//     v and w are connected
+//   connected(v, w): returns true if and only if v and w are connected
+//   dist(v, w): returns the distance between vertices v and w assuming
+//     v and w are connected
+//   kthParent(v, k): returns the kth parent of the vertex v
+//   kthPath(v, w, k): returns the kth vertex on the path from v to w
+// In practice, constructor has a moderate constant,
+//   lca, dist, kthParent, kthPath, have a small constant
 // Time Complexity:
-//   run: O(V)
-//   lca: O(log V)
-//   updatePath, queryPath: O(log V) * (complexity of update/query)
-//   updateVertex, queryVertex, updateSubtree, querySubtree: O(1) * (complexity of update)
+//   constructor: O(V)
+//   lca, dist, kthParent, kthPath: O(log V)
+//   connected: O(1)
 // Memory Complexity: O(V)
-template <const int MAXV, const bool ONE_INDEXED, const bool VALUES_ON_EDGES> struct HLD {
-    using Data = int; using Lazy = int; const Data qdef = 0;
-    int dep[MAXV], par[MAXV], size[MAXV], head[MAXV], pre[MAXV], post[MAXV], vert[MAXV], curInd; vector<int> adj[MAXV];
-    void addEdge(int a, int b) { adj[a].push_back(b); adj[b].push_back(a); }
-    void dfs(int v, int prev, int d) {
-        dep[v] = d; par[v] = prev; size[v] = 1; head[v] = -1;
-        for (int w : adj[v]) if (w != prev) { dfs(w, v, d + 1); size[v] += size[w]; }
+// Tested:
+//   https://www.spoj.com/problems/GSS7/
+//   https://www.spoj.com/problems/QTREE2/
+struct HLD {
+  int V, ind; vector<int> root, dep, par, size, head, pre, post, vert;
+  template <class Forest>
+  void dfs(const Forest &G, int v, int prev, int r, int d) {
+    root[v] = r; dep[v] = d; par[v] = prev; size[v] = 1; for (int w : G[v])
+      if (w != prev) { dfs(G, w, v, r, d + 1); size[v] += size[w]; }
+  }
+  template <class Forest> void hld(const Forest &G, int v, int prev) {
+    if (head[v] == -1) head[v] = v;
+    vert[pre[v] = ++ind] = v; int heavy = -1;
+    for (int w : G[v]) if (w != prev && (heavy == -1 || size[heavy] < size[w]))
+      heavy = w;
+    if (heavy != -1) { head[heavy] = head[v]; hld(G, heavy, v); }
+    for (int w : G[v]) if (w != prev && w != heavy) hld(G, w, v);
+    post[v] = ind;
+  }
+  int lca(int v, int w) {
+    while (head[v] != head[w]) {
+      if (dep[head[v]] < dep[head[w]]) w = par[head[w]];
+      else v = par[head[v]];
     }
-    void hld(int v, int prev) {
-        if (head[v] == -1) head[v] = v;
-        vert[pre[v] = ++curInd] = v; int maxInd = -1;
-        for (int w : adj[v]) if (w != prev && (maxInd == -1 || size[maxInd] < size[w])) maxInd = w;
-        if (maxInd != -1) { head[maxInd] = head[v]; hld(maxInd, v); }
-        for (int w : adj[v]) if (w != prev && w != maxInd) hld(w, v);
-        post[v] = curInd;
+    return dep[v] < dep[w] ? v : w;
+  }
+  int dist(int v, int w) { return dep[v] + dep[w] - 2 * dep[lca(v, w)]; }
+  int kthParent(int v, int k) {
+    while (par[head[v]] != -1) {
+      if (pre[v] - pre[head[v]] >= k) return vert[pre[v] - k];
+      k -= pre[v] - pre[head[v]] + 1; v = par[head[v]];
     }
-    Data merge(const Data &l, const Data &r); // to be implemented
-    void update(int l, int r, bool up, const Lazy &val); // to be implemented
-    Data query(int l, int r, bool up); // to be implemented
-    Data queryPath(int v, int w) {
-        Data up = qdef, down = qdef;
-        while (head[v] != head[w]) {
-            if (dep[head[v]] < dep[head[w]]) { down = merge(query(pre[head[w]], pre[w], false), down); w = par[head[w]]; }
-            else { up = merge(up, query(pre[head[v]], pre[v], true)); v = par[head[v]]; }
-        }
-        if (v != w) {
-            if (dep[v] < dep[w]) up = merge(up, query(pre[v] + VALUES_ON_EDGES, pre[w], false));
-            else down = merge(query(pre[w] + VALUES_ON_EDGES, pre[v], true), down);
-        } else if (!VALUES_ON_EDGES) { int i = pre[dep[v] < dep[w] ? v : w]; up = merge(up, query(i, i, true)); }
-        return merge(up, down);
-    }
-    Data queryVertex(int v) { return query(pre[v], pre[v], true); }
-    Data querySubtree(int v) { return query(pre[v], post[v], true); }
-    void updatePath(int v, int w, const Lazy &val) {
-        while (head[v] != head[w]) {
-            if (dep[head[v]] < dep[head[w]]) { update(pre[head[w]], pre[w], false, val); w = par[head[w]]; }
-            else { update(pre[head[v]], pre[v], true, val); v = par[head[v]]; }
-        }
-        if (v != w) {
-            if (dep[v] < dep[w]) update(pre[v] + VALUES_ON_EDGES, pre[w], false, val);
-            else update(pre[w] + VALUES_ON_EDGES, pre[v], true, val);
-        } else if (!VALUES_ON_EDGES) { int i = pre[dep[v] < dep[w] ? v : w]; update(i, i, true, val); }
-    }
-    void updateVertex(int v, const Lazy &val) { update(pre[v], pre[v], true, val); }
-    void updateSubtree(int v, const Lazy &val) { update(pre[v] + VALUES_ON_EDGES, post[v], true, val); }
-    int lca(int v, int w) {
-        while (head[v] != head[w]) {
-            if (dep[head[v]] < dep[head[w]]) w = par[head[w]];
-            else v = par[head[v]];
-        }
-        return dep[v] < dep[w] ? v : w;
-    }
-    int kthUp(int v, int w, int k) {
-        while (head[v] != head[w]) {
-            if (pre[v] - pre[head[v]] >= k) return vert[pre[v] - k];
-            k -= pre[v] - pre[head[v]] + 1; v = par[head[v]];
-        }
-        return vert[pre[v] - k];
-    }
-    int kth(int v, int w, int k) {
-        int LCA = lca(v, w);
-        if (dep[v] - dep[LCA] >= k) return kthUp(v, LCA, k);
-        else return kthUp(w, LCA, dep[v] + dep[w] - 2 * dep[LCA] - k);
-    }
-    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
-    void run(int V, int root = 0) { curInd = int(ONE_INDEXED) - 1; dfs(root, -1, 0); hld(root, -1); }
+    return pre[v] < k ? -1 : vert[pre[v] - k];
+  }
+  int kthPath(int v, int w, int k) {
+    int LCA = lca(v, w);
+    if (dep[v] - dep[LCA] >= k) return kthParent(v, k);
+    else return kthParent(w, dep[v] + dep[w] - 2 * dep[LCA] - k);
+  }
+  bool connected(int v, int w) { return root[v] == root[w]; }
+  template <class Forest> HLD(const Forest &G)
+      : V(G.size()), ind(-1), root(V, -1), dep(V), par(V), size(V),
+        head(V, -1), pre(V), post(V), vert(V) {
+    for (int v = 0; v < V; v++)
+      if (root[v] == -1) { dfs(G, v, -1, v, 0); hld(G, v, -1); }
+  }
 };

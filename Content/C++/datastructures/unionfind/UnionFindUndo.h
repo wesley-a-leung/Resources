@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Union Find / Disjoint Sets by size supporting undos
+// Union Find by size supporting undos
 // Time Complexity:
 //   init: O(N)
 //   find, join, connected, getSize: O(log N)

@@ -6,6 +6,22 @@ using namespace std;
 //   and prefix range queries over a cumulative functor, such as max and min,
 //   in any number of dimensions
 // Indices are 0-indexed and ranges are inclusive
+// Template Arguments:
+//   D: the number of dimensions of the fenwick tree
+//   T: the type of the value
+//   C: a struct with the cumulative operation
+//     Functions:
+//       operator (l, r): combines the values l and r
+// Constructor Arguments:
+//   qdef: the default query value
+//   N: the size of the first dimension
+//   ...args: the sizes of the second, third, fourth, etc. dimensions
+// Functions:
+//   update(i, ...args): updates the index i in the first dimension,
+//     and ...args for the next dimensions, with the last argument
+//     being the value to update the index
+//   query(r, ...args): queries the range [0, r] in the first dimension,
+//     with the remaining arguments for the next dimensions
 // In practice, this version performs as well as the 1D version
 // Small constant, like most fenwick trees, and faster than segment trees
 // Time Complexity:

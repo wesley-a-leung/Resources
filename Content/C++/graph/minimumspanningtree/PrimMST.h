@@ -64,7 +64,7 @@ template <class T> struct PrimMST {
 // Memory Complexity: O(V + E)
 // Tested:
 //   Stress Tested
-//   https://judge.evanzhang.ca/problem/anmstproblem
+//   https://mcpt.ca/problem/anmstproblem
 template <class T> struct ClassicalPrimMST {
   using Edge = tuple<int, int, T>; T mstWeight; vector<Edge> mstEdges;
   template <class WeightedGraph>

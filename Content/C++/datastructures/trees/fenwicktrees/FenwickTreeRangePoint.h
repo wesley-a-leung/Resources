@@ -6,6 +6,18 @@ using namespace std;
 //   and point queries in any number of dimensions
 // Indices are 0-indexed and ranges are inclusive
 // Order of arguments for update differs slightly from FenwickTreeRangePoint1D
+// Template Arguments:
+//   D: the number of dimensions of the fenwick tree
+//   T: the type of the value
+// Constructor Arguments:
+//   N: the size of the first dimension
+//   ...args: the sizes of the second, third, fourth, etc. dimensions
+// Functions:
+//   update(v, l, r, ...args): queries the range [l, r] in the first dimension,
+//     and alternating arguments in args for beginning and ending ranges for
+//     the next dimensions with the value v
+//   get(i, ...args): queries the index i in the first
+//     dimension, and ...args for the next dimensions
 // In practice, this version performs as well as the 1D version
 // Small constant, like most fenwick trees, and faster than segment trees
 // Time Complexity:

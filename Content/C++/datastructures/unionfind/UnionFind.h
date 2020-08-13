@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Union Find / Disjoint Sets by size with path compression
+// Union Find by size with path compression
 // Indices are 0-indexed
 // Constructor Arguments:
 //   N: the number of elements in the set

@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Combine struct used for maximum non empty contiguous subarray
+// Combine struct used for maximum non empty subarray
 //   for Segment Trees, Implict Treaps, Link Cut Trees, etc
 // Tested:
 //   https://www.spoj.com/problems/GSS1/
@@ -10,7 +10,7 @@ using namespace std;
 //   https://mcpt.ca/problem/seq3
 //   https://dmoj.ca/problem/acc1p1
 //   https://dmoj.ca/problem/noi05p2
-template <class T> struct MaxContiguousSubarraySumCombine {
+template <class T> struct MaxSubarraySumCombine {
   struct Data { T pre, suf, sum, maxSum; };
   using Lazy = pair<T, T>;
   static Data makeData(const T &v) {
@@ -18,7 +18,8 @@ template <class T> struct MaxContiguousSubarraySumCombine {
   }
   static Lazy makeLazy(const T &v) { return Lazy(v, v); }
   const Data qdef = [&] () {
-    Data ret = makeData(numeric_limits<T>::lowest()); ret.sum = T(); return ret;
+    Data ret = makeData(numeric_limits<T>::lowest()); ret.sum = T();
+    return ret;
   }();
   const Lazy ldef = makeLazy(numeric_limits<T>::lowest());
   Data merge(const Data &l, const Data &r) const {

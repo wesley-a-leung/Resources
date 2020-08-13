@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Union Find / Disjoint Sets by size supporting queries for a past version of the data structure
+// Union Find by size supporting queries for a past version of the data structure
 // Time Complexity:
 //   init: O(N)
 //   find, join, connected, getSize, getCnt: O(log N)

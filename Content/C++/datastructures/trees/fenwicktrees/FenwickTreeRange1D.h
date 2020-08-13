@@ -6,6 +6,15 @@ using namespace std;
 // Fenwick Tree or Binary Indexed Tree supporting range updates
 //   and range queries in 1 dimension
 // Indices are 0-indexed and ranges are inclusive
+// numeric_limits<T>::max() * N must not overflow
+// Template Arguments:
+//   T: the type of the value
+// Constructor Arguments:
+//   N: the size of the first dimension
+// Functions:
+//   update(l, r, v): add v to the range [l..r]
+//   query(r): queries the range [0, r]
+//   query(l, r): queries the range [l, r]
 // Small constant, like most fenwick trees, and faster than segment trees
 // Time Complexity:
 //   constructor: O(N)

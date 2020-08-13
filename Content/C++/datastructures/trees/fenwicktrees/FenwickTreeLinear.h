@@ -4,9 +4,18 @@
 using namespace std;
 
 // Fenwick Tree supporting range updates with updates in the form of
-//   adding m + b, 2m + b, 3m + b, ... to the interval [l, r],
+//   adding m + b, 2m + b, 3m + b, ... to the range [l, r],
 //   and range sum queries
 // Indices are 0-indexed and ranges are inclusive
+// numeric_limits<T>::max() * N * N must not overflow
+// Template Arguments:
+//   T: the type of the value
+// Constructor Arguments:
+//   N: the size of the first dimension
+// Functions:
+//   update(l, r, m, b): add m + b, 2m + b, 3m + b, ... to the range [l, r]
+//   query(r): queries the range [0, r]
+//   query(l, r): queries the range [l, r]
 // Small constant, like most fenwick trees, and faster than segment trees
 // Time Complexity:
 //   constructor: O(N)

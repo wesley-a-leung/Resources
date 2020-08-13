@@ -7,9 +7,24 @@ using namespace std;
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
-// bsearch returns first index where cmp returns false,
-//   or N if no such index exists
-// In practice, this version performs as well as the multidimensional version
+// Template Arguments:
+//   T: the type of the value
+// Constructor Arguments:
+//   N: the size of the first dimension
+//   f: a generating function that returns the ith element on the ith call
+//   st: an iterator pointing to the first element in the array
+//   en: an iterator pointing to after the last element in the array
+// Functions:
+//   values(): returns a vector of the fenwick tree decomposed into an array
+//   update(i, v): add v to the value at index i
+//   query(r): queries the range [0, r]
+//   query(l, r): queries the range [l, r]
+//   bsearch(v, cmp): returns the first index where cmp(sum(A[0..i]), v)
+//     returns false, or N if no such index exists
+//   lower_bound(v): returns the first index where sum(A[0..i]) >= v, assumes
+//     A is sorted by cmp
+//   upper_bound(v): returns the first index where sum(A[0..i]) > v, assumes
+//     A is sorted by cmp
 // Small constant, like most fenwick trees, and faster than segment trees
 // Time Complexity:
 //   constructor, values: O(N)
