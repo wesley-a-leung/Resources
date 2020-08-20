@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "../search/DepthFirstOrder.h"
+#include "../search/TopologicalOrder.h"
 using namespace std;
 
 // Computes the shortest path (based on the comparator) on a directed acyclic graph
