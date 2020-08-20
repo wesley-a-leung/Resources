@@ -9,9 +9,10 @@ using namespace std;
 //   MAXV: the maximum number of vertices in the graph
 // Constructor Arguments:
 //   G: a generic graph data structure
-//     with the [] operator (const) defined to iterate over the adjacency list
-//     (which is a list of ints), as well as a member function size() (const)
-//     that returns the number of vertices in the graph
+//     Functions:
+//       operator [v] const: iterates over the adjacency list of vertex v
+//         (which is a list of ints)
+//       size() const: returns the number of vertices in the graph
 // Functions:
 //   reachable(v, w): returns true if w is reachable from v and false otherwise
 // In practice, has a very small constant, faster than the

@@ -11,7 +11,7 @@ using namespace std;
 template <const int MAXN> struct UnionFindSemiPersistent {
     vector<pair<int, int>> UF[MAXN], cnt; int curTime;
     void init(int N) {
-        curTime = 0; cnt.emplace_back(curTime, N);
+        curTime = -1; cnt.emplace_back(curTime, N);
         for (int i = 0; i < N; i++) UF[i].emplace_back(curTime, -1);
     }
     int find(int t, int v) { return UF[v].back().second < 0 || UF[v].back().first > t ? v : find(t, UF[v].back().second); }

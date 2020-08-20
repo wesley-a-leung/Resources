@@ -6,10 +6,10 @@ using namespace std;
 // Vertices are 0-indexed
 // Constructor Arguments:
 //   G: a generic weighted graph data structure
-//     with the [] operator (const) defined to iterate over the adjacency list
-//     (which is a list of pair<int, T> with weights of type T), as well as a
-//     member function size() (const) that returns the number of vertices
-//     in the graph
+//     Functions:
+//       operator [v] const: iterates over the adjacency list of vertex v
+//         (which is a list of pair<int, T> with weights of type T)
+//       size() const: returns the number of vertices in the graph
 //   INF: a value for infinity
 // Fields:
 //   mstWeight: the weight of the mst

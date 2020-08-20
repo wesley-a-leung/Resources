@@ -7,9 +7,10 @@ using namespace std;
 // Vertices are 0-indexed
 // Constructor Arguments:
 //   G: a generic graph data structure
-//     with the [] operator (const) defined to iterate over the adjacency list
-//     (which is a list of ints), as well as a member function size() (const)
-//     that returns the number of vertices in the graph
+//     Functions:
+//       operator [v] const: iterates over the adjacency list of vertex v
+//         (which is a list of ints)
+//       size() const: returns the number of vertices in the graph
 // Fields:
 //   id: a vector of the index of the 2-edge connected component each vertex
 //     is part of

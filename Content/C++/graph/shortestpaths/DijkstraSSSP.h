@@ -8,12 +8,11 @@ using namespace std;
 // Template Arguments:
 //   T: the type of the weight of the edges in the graph
 // Constructor Arguments:
-//   G: a generic graph data structure (weighted or unweighted)
-//     with the [] operator (const) defined to iterate over the adjacency list
-//     (which is a list of ints for an unweighted graph, or a list of
-//     pair<int, T> for a weighted graph with weights of type T), as well as a
-//     member function size() (const) that returns the number of vertices
-//     in the graph
+//   G: a generic weighted graph data structure
+//     Functions:
+//       operator [v] const: iterates over the adjacency list of vertex v
+//         (which is a list of pair<int, T> with weights of type T)
+//       size() const: returns the number of vertices in the graph
 //   s: a single source vertex
 //   src: a vector of source vertices
 //   INF: a value for infinity
@@ -53,7 +52,7 @@ template <class T> struct DijkstraSSSP {
   }
   template <class WeightedGraph> DijkstraSSSP(const WeightedGraph &G, int s,
                                               T INF = numeric_limits<T>::max())
-      : DijkstraSSSP(G, vector<int>(1, s), INF) {}
+      : DijkstraSSSP(G, vector<int>{s}, INF) {}
   vector<Edge> getPath(int v) {
     vector<Edge> path; for (; par[v] != -1; v = par[v])
       path.emplace_back(par[v], v, dist[v] - dist[par[v]]);
@@ -67,12 +66,11 @@ template <class T> struct DijkstraSSSP {
 // Template Arguments:
 //   T: the type of the weight of the edges in the graph
 // Constructor Arguments:
-//   G: a generic graph data structure (weighted or unweighted)
-//     with the [] operator (const) defined to iterate over the adjacency list
-//     (which is a list of ints for an unweighted graph, or a list of
-//     pair<int, T> for a weighted graph with weights of type T), as well as a
-//     member function size() (const) that returns the number of vertices
-//     in the graph
+//   G: a generic weighted graph data structure
+//     Functions:
+//       operator [v] const: iterates over the adjacency list of vertex v
+//         (which is a list of pair<int, T> with weights of type T)
+//       size() const: returns the number of vertices in the graph
 //   s: a single source vertex
 //   src: a vector of source vertices
 //   INF: a value for infinity
@@ -111,7 +109,7 @@ template <class T> struct ClassicalDijkstraSSSP {
   template <class WeightedGraph>
   ClassicalDijkstraSSSP(const WeightedGraph &G, int s,
                         T INF = numeric_limits<T>::max())
-      : ClassicalDijkstraSSSP(G, vector<int>(1, s), INF) {}
+      : ClassicalDijkstraSSSP(G, vector<int>{s}, INF) {}
   vector<Edge> getPath(int v) {
     vector<Edge> path; for (; par[v] != -1; v = par[v])
       path.emplace_back(par[v], v, dist[v] - dist[par[v]]);

@@ -58,7 +58,7 @@ template <class T> struct BellmanFordSSSP {
   }
   BellmanFordSSSP(int V, const vector<Edge> &edges, int s,
                   T INF = numeric_limits<T>::max())
-      : BellmanFordSSSP(V, edges, vector<int>(1, s), INF) {}
+      : BellmanFordSSSP(V, edges, vector<int>{s}, INF) {}
   vector<Edge> getPath(int v) {
     vector<Edge> path; for (; par[v] != -1; v = par[v])
       path.emplace_back(par[v], v, dist[v] - dist[par[v]]);

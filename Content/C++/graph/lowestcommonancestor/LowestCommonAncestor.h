@@ -11,11 +11,11 @@ using namespace std;
 //   T: the type of the weight of the edges in the forest
 // Constructor Arguments:
 //   G: a generic forest data structure (weighted or unweighted)
-//     with the [] operator (const) defined to iterate over the adjacency list
-//     (which is a list of ints for an unweighted forest, or a list of
-//     pair<int, T> for a weighted forest with weights of type T), as well as a
-//     member function size() (const) that returns the number of vertices
-//     in the forest
+//     Functions:
+//       operator [v] const: iterates over the adjacency list of vertex v
+//         (which is a list of ints for an unweighted forest, or a list of
+//         pair<int, T> for a weighted forest with weights of type T)
+//       size() const: returns the number of vertices in the forest
 //   rt: a single root vertex
 //   roots: a vector of root vertices
 // Fields:
@@ -57,14 +57,14 @@ template <class T = int> struct LCA {
   template <class Forest> RMQ init(const Forest &G, const vector<int> &roots) {
     vert.reserve(V); if (roots.empty()) {
       for (int v = 0; v < V; v++) if (root[v] == -1) dfs(G, v, -1, v, T());
-    } else for (int rt : roots) dfs(G, rt, -1, rt, T());
+    } else for (int v : roots) if (root[v] == -1) dfs(G, v, -1, v, T());
     int i = 0; return RMQ(vert.size(), [&] { return pre[vert[i++]]; });
   }
   template <class Forest>
   LCA(const Forest &G, const vector<int> &roots = vector<int>())
       : V(G.size()), root(V, -1), pre(V), dep(V), FHS(init(G, roots)) {}
   template <class Forest> LCA(const Forest &G, int rt)
-      : LCA(G, vector<int>(1, rt)) {}
+      : LCA(G, vector<int>{rt}) {}
   int lca(int v, int w) {
     if (v == w) return v;
     if (pre[v] > pre[w]) swap(v, w);

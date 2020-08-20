@@ -2,39 +2,47 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Computes Depth First Orders of a graph (pre order, post order, topological / reverse post order)
-// Time Complexity: O(V + E)
-// Memory Complexity: O(V + E)
-template <const int MAXV> struct DFSOrder {
-    int preInd[MAXV], postInd[MAXV], revPostInd[MAXV], preOrd[MAXV], postOrd[MAXV], revPostOrd[MAXV], curPre, curPost, curRevPost;
-    vector<int> adj[MAXV];
-    void addEdge(int v, int w) { adj[v].push_back(w); }
-    void addBiEdge(int v, int w) { addEdge(v, w); addEdge(w, v); }
-    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
-    void dfs(int v) {
-        preOrd[preInd[v] = curPre++] = v;
-        for (int w : adj[v]) if (preInd[w] == -1) dfs(w);
-        postOrd[postInd[v] = curPost++] = revPostOrd[revPostInd[v] = curRevPost--] = v;
-    }
-    void run(int V, int s = 0) {
-        fill(preInd, preInd + V, -1); curPre = curPost = 0; curRevPost = V - 1; dfs(s);
-        for (int v = 0; v < V; v++) if (preInd[v] == -1) dfs(v);
-    }
-};
-
-// Computes the Topological of a directed graph iteratively
-// Time Complexity: O(V + E)
-// Memory Complexity: O(V + E)
-template <const int MAXV> struct TopologicalOrder {
-    int ind[MAXV], ord[MAXV], inDeg[MAXV]; vector<int> adj[MAXV];
-    void addEdge(int v, int w) { adj[v].push_back(w); inDeg[w]++; }
-    void init(int V = MAXV) { for (int i = 0; i < V; i++) { adj[i].clear(); inDeg[i] = 0; } }
-    void run(int V) {
-        int front = 0, back = 0; fill(ind, ind + V, -1);
-        for (int v = 0; v < V; v++) if (inDeg[v] == 0) ord[back++] = v;
-        while (front < back) {
-            int v = ord[front]; ind[v] = front++;
-            for (int w : adj[v]) if (--inDeg[w] == 0) ord[back++] = w;
-        }
-    }
+// Computes Depth First Orders of a graph (pre order, post order,
+//   topological/reverse post order)
+// Vertices are 0-indexed
+// Constructor Arguments:
+//   G: a generic graph data structure
+//     Functions:
+//       operator [v] const: iterates over the adjacency list of vertex v
+//         (which is a list of ints)
+//       size() const: returns the number of vertices in the graph
+//   rt: a single root vertex
+//   roots: a vector of root vertices
+// Fields:
+//   preInd: a vector of the pre order index for each vertex
+//   postInd: a vector of the post order index for each vertex
+//   revPostInd: a vector of the topological/reverse post order index
+//     for each vertex
+//   preVert: a vector of the vertices sorted by pre order index
+//   postVert: a vector of the vertices sorted by pre order index
+//   revPostVert: a vector of the vertices sorted by topological/reverse post
+//     order index
+// In practice, has a moderate constant
+// Time Complexity:
+//   constructor: O(V + E)
+// Memory Complexity: O(V)
+// Tested:
+//   https://atcoder.jp/contests/nikkei2019-qual/tasks/nikkei2019_qual_d
+//   https://codeforces.com/contest/24/problem/A
+struct DFSOrder {
+  int V, curPre, curPost, curRevPost;
+  vector<int> preInd, postInd, revPostInd, preVert, postVert, revPostVert;
+  template <class Graph> void dfs(const Graph &G, int v) {
+    preVert[preInd[v] = curPre++] = v;
+    for (int w : G[v]) if (preInd[w] == -1) dfs(G, w);
+    postVert[postInd[v] = curPost++] = v;
+    revPostVert[revPostInd[v] = curRevPost--] = v;
+  }
+  template <class Graph> DFSOrder(const Graph &G, const vector<int> &roots)
+      : V(G.size()), curPre(0), curPost(0), curRevPost(V - 1), preInd(V, -1),
+        postInd(V), revPostInd(V), preVert(V), postVert(V), revPostVert(V) {
+    for (int v : roots) if (preInd[v] == -1) dfs(G, v);
+  }
+  template <class Graph> DFSOrder(const Graph &G, int rt)
+      : DFSOrder(G, vector<int>{rt}) {}
 };

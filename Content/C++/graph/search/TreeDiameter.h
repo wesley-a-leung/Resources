@@ -9,11 +9,11 @@ using namespace std;
 //   T: the type of the weight of the edges in the graph
 // Constructor Arguments:
 //   G: a generic graph data structure (weighted or unweighted)
-//     with the [] operator (const) defined to iterate over the adjacency list
-//     (which is a list of ints for an unweighted graph, or a list of
-//     pair<int, T> for a weighted graph with weights of type T), as well as a
-//     member function size() (const) that returns the number of vertices
-//     in the graph
+//     Functions:
+//       operator [v] const: iterates over the adjacency list of vertex v
+//         (which is a list of ints for an unweighted graph, or a list of
+//         pair<int, T> for a weighted graph with weights of type T)
+//       size() const: returns the number of vertices in the graph
 //   INF: a value for infinity
 // Fields:
 //   endpoints: a pair containing the vertices on the endpoints of the diameter
