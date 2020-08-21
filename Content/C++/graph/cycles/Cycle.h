@@ -2,51 +2,48 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Finds a cycle in an undirected graph (including self loops and parallel edges)
-// Time Complexity: O(V + E)
-// Memory Complexity: O(V + E)
-template <const int MAXV> struct Cycle {
-    bool vis[MAXV]; int to[MAXV]; vector<int> adj[MAXV], cycle;
-    void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
-    bool hasSelfLoop(int V) {
-        for (int v = 0; v < V; v++) for (int w : adj[v]) {
-            if (v != w) continue;
-            cycle.clear(); cycle.push_back(v); cycle.push_back(v);
-            return true;
+// Finds a cycle in an undirected graph (including self loops and
+//   parallel edges)
+// Vertices are 0-indexed
+// Constructor Arguments:
+//   G: a generic graph data structure
+//     Functions:
+//       operator [v] const: iterates over the adjacency list of vertex v
+//         (which is a list of ints)
+//       size() const: returns the number of vertices in the graph
+// Fields:
+//   cycle: a vector of the vertices in the cycle with the first vertex equal
+//     to the last vertex; if there is no cycle, then it is empty
+// In practice, has a moderate constant
+// Time Complexity:
+//   constructor: O(V + E)
+// Memory Complexity: O(V)
+// Tested:
+//   https://cses.fi/problemset/task/1669
+struct Cycle {
+  int V; vector<bool> vis; vector<int> to, cycle;
+  template <class Graph> void dfs(const Graph &G, int v, int prev) {
+    vis[v] = true; for (int w : G[v]) {
+      if (!vis[w]) dfs(G, w, to[w] = v);
+      else if (w != prev) {
+        for (int x = v; x != w; x = to[x]) cycle.push_back(x);
+        cycle.push_back(w); cycle.push_back(v);
+      }
+      if (!cycle.empty()) return;
+    }
+  }
+  template <class Graph>
+  Cycle(const Graph &G) : V(G.size()), vis(V, false), to(V) {
+    for (int v = 0; v < V; v++) {
+      for (int w : G[v]) {
+        if (v == w) { cycle.push_back(v); cycle.push_back(v); return; }
+        if (vis[w]) {
+          cycle.push_back(v); cycle.push_back(w); cycle.push_back(v); return;
         }
-        return false;
+      }
+      for (int w : G[v]) vis[w] = false;
     }
-    bool hasParallelEdges(int V) {
-        fill(vis, vis + V, false);
-        for (int v = 0; v < V; v++) {
-            for (int w : adj[v]) {
-                if (vis[w]) {
-                    cycle.clear(); cycle.push_back(v); cycle.push_back(w); cycle.push_back(v);
-                    return true;
-                }
-                vis[w] = true;
-            }
-            for (int w : adj[v]) vis[w] = false;
-        }
-        return false;
-    }
-    void dfs(int v, int prev) {
-        vis[v] = true;
-        for (int w : adj[v]) {
-            if (!cycle.empty()) return;
-            if (!vis[w]) { to[w] = v; dfs(w, v); }
-            else if (w != prev) {
-                cycle.clear();
-                for (int x = v; x != w; x = to[x]) cycle.push_back(x);
-                cycle.push_back(w); cycle.push_back(v);
-            }
-        }
-    }
-    void clear(int V = MAXV) { cycle.clear(); for (int i = 0; i < V; i++) adj[i].clear(); }
-    bool run(int V) { // returns true if there is a cycle
-        if (hasSelfLoop(V) || hasParallelEdges(V)) return true;
-        fill(vis, vis + V, false);
-        for (int v = 0; v < V; v++) if (!vis[v]) dfs(v, -1);
-        return !cycle.empty();
-    }
+    fill(vis.begin(), vis.end(), false);
+    for (int v = 0; v < V && cycle.empty(); v++) if (!vis[v]) dfs(G, v, -1);
+  }
 };

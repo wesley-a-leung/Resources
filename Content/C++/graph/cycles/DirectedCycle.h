@@ -2,29 +2,40 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Finds a cycle in a directed graph
-// Time Complexity: O(V + E)
-// Memory Complexity: O(V + E)
-template <const int MAXV> struct DirectedCycle {
-    bool vis[MAXV], onStack[MAXV]; int to[MAXV]; vector<int> adj[MAXV], cycle;
-    void addEdge(int v, int w) { adj[v].push_back(w); }
-    void dfs(int v) {
-        vis[v] = onStack[v] = true;
-        for (int w : adj[v]) {
-            if (!cycle.empty()) return;
-            else if (!vis[w]) { to[w] = v; dfs(w); }
-            else if (onStack[w]) {
-                cycle.clear();
-                for (int x = v; x != w; x = to[x]) cycle.push_back(x);
-                cycle.push_back(w); cycle.push_back(v);
-            }
-        }
-        onStack[v] = false;
+// Finds a directed cycle in a directed graph (including self loops and
+//   parallel edges)
+// Vertices are 0-indexed
+// Constructor Arguments:
+//   G: a generic directed graph data structure
+//     Functions:
+//       operator [v] const: iterates over the adjacency list of vertex v
+//         (which is a list of ints)
+//       size() const: returns the number of vertices in the graph
+// Fields:
+//   cycle: a vector of the vertices in the directed cycle with the first
+//     vertex equal to the last vertex; if there is no cycle, then it is empty
+// In practice, has a moderate constant
+// Time Complexity:
+//   constructor: O(V + E)
+// Memory Complexity: O(V)
+// Tested:
+//   https://cses.fi/problemset/task/1678
+struct DirectedCycle {
+  int V; vector<bool> vis, onStk; vector<int> to, cycle;
+  template <class Digraph> void dfs(const Digraph &G, int v) {
+    vis[v] = onStk[v] = true; for (int w : G[v]) {
+      if (!vis[w]) { to[w] = v; dfs(G, w); }
+      else if (onStk[w]) {
+        for (int x = v; x != w; x = to[x]) cycle.push_back(x);
+        cycle.push_back(w); cycle.push_back(v);
+        reverse(cycle.begin(), cycle.end());
+      }
+      if (!cycle.empty()) return;
     }
-    void clear(int V = MAXV) { cycle.clear(); for (int i = 0; i < V; i++) adj[i].clear(); }
-    bool run(int V) { // returns true if there is a directed cycle
-        fill(vis, vis + V, false); fill(onStack, onStack + V, false);
-        for (int v = 0; v < V; v++) if (!vis[v] && cycle.empty()) dfs(v);
-        return !cycle.empty();
-    }
+    onStk[v] = false;
+  }
+  template <class Digraph> DirectedCycle(const Digraph &G)
+      : V(G.size()), vis(V, false), onStk(V, false), to(V) {
+    for (int v = 0; v < V && cycle.empty(); v++) if (!vis[v]) dfs(G, v);
+  }
 };
