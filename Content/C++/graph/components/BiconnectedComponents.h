@@ -24,6 +24,7 @@ using namespace std;
 //   constructor: O(V + E)
 // Memory Complexity: O(V + E)
 // Tested:
+//   Stress Tested
 //   https://dmoj.ca/problem/ccoprep1p2
 //   https://dmoj.ca/problem/dmpg18s6
 struct BCC {

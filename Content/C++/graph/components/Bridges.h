@@ -22,6 +22,7 @@ using namespace std;
 //   constructor: O(V + E)
 // Memory Complexity: O(V)
 // Tested:
+//   Stress Tested
 //   https://judge.yosupo.jp/problem/two_edge_connected_components
 struct Bridges {
   int ind, top; vector<int> id, low, pre, stk; vector<vector<int>> components;

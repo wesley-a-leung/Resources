@@ -19,6 +19,7 @@ using namespace std;
 //   constructor: O(V + E)
 // Memory Complexity: O(V)
 // Tested:
+//   Stress Tested
 //   https://cses.fi/problemset/task/1678
 struct DirectedCycle {
   int V; vector<bool> vis, onStk; vector<int> to, cycle;

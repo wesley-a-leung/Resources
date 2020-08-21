@@ -7,7 +7,7 @@ void test1() {
   mt19937_64 rng(0);
   int V = 2e6, E = 4e6;
   StaticGraph G(V);
-  G.reserveDiEdges(E);
+  G.reserveDiEdges(E * 2);
   for (int i = 0; i < E; i++) {
     int c = rng() % 2;
     int v = rng() % (V / 2) + (V / 2) * c, w = rng() % (V / 2) + (V / 2) * c;
