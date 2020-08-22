@@ -9,7 +9,7 @@ struct Line {
     Line(ref v, T c) : v(v), c(c) {}
     Line(ref p, ref q) : v(q - p), c(cross(v, p)) {}
     T eval(ref p) const { return cross(v, p) - c; }
-    // -1 if left of line, 0 if on line, +1 if right of line
+    // +1 if left of line, 0 if on line, -1 if right of line
     int onLeft(ref p) const { return sgn(eval(p)); }
     T distSq(ref p) const { T e = eval(p); return e * e / norm(v); }
     T dist(ref p) const { return abs(eval(p) / abs(v)); }
