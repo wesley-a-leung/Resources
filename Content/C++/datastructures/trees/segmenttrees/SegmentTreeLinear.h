@@ -26,13 +26,13 @@ template <class T> struct SegmentTreeLinear {
   const Pair ZERO = Pair(0, 0); int N; vector<Pair> TR; vector<Pair> LZ;
   T sumTo(T k) { return k * (k + 1) / 2; }
   Pair sumBet(T l, T r) { return Pair(r - l + 1, sumTo(r) - sumTo(l - 1)); }
+  void apply(int x, int tl, int tr, const Pair &v) {
+    TR[x] = add(TR[x], mul(v, sumBet(tl, tr))); LZ[x] = add(LZ[x], v);
+  }
   void propagate(int x, int tl, int tr) {
     if (LZ[x] != ZERO) {
       int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2;
-      TR[x + 1] = add(TR[x + 1], mul(LZ[x], sumBet(tl, m)));
-      LZ[x + 1] = add(LZ[x + 1], LZ[x]);
-      TR[rc] = add(TR[rc], mul(LZ[x], sumBet(m + 1, tr)));
-      LZ[rc] = add(LZ[rc], LZ[x]); LZ[x] = ZERO;
+      apply(x + 1, tl, m, LZ[x]); apply(rc, m + 1, tr, LZ[x]); LZ[x] = ZERO;
     }
   }
   template <class F> void build(int x, int tl, int tr, F &f) {
@@ -42,10 +42,7 @@ template <class T> struct SegmentTreeLinear {
     TR[x] = add(TR[x + 1], TR[rc]);
   }
   void update(int x, int tl, int tr, int l, int r, const Pair &v) {
-    if (l <= tl && tr <= r) {
-      TR[x] = add(TR[x], mul(v, sumBet(tl, tr))); LZ[x] = add(LZ[x], v);
-      return;
-    }
+    if (l <= tl && tr <= r) { apply(x, tl, tr, v); return; }
     propagate(x, tl, tr);
     int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2;
     if (tl <= r && l <= m) update(x + 1, tl, m, l, r, v);
