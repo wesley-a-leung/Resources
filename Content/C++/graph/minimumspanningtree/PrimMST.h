@@ -5,7 +5,7 @@ using namespace std;
 // Computes the minimum spanning tree (or forest) using Prims's algorithm
 // Vertices are 0-indexed
 // Constructor Arguments:
-//   G: a generic weighted graph data structure
+//   G: a generic weighted graph structure
 //     Functions:
 //       operator [v] const: iterates over the adjacency list of vertex v
 //         (which is a list of pair<int, T> with weights of type T)
@@ -49,7 +49,7 @@ template <class T> struct PrimMST {
 //   algorithm
 // Vertices are 0-indexed
 // Constructor Arguments:
-//   G: a generic weighted graph data structure
+//   G: a generic weighted graph structure
 //     with the [] operator (const) defined to iterate over the adjacency list
 //     (which is a list of pair<int, T> with weights of type T), as well as a
 //     member function size() (const) that returns the number of vertices

@@ -6,7 +6,7 @@ using namespace std;
 //   identifies bridges
 // Vertices are 0-indexed
 // Constructor Arguments:
-//   G: a generic graph data structure
+//   G: a generic graph structure
 //     Functions:
 //       operator [v] const: iterates over the adjacency list of vertex v
 //         (which is a list of ints)

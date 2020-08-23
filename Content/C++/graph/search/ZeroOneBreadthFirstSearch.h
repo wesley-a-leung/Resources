@@ -7,7 +7,7 @@ using namespace std;
 // Template Arguments:
 //   T: the type of the weight of the edges in the graph
 // Constructor Arguments:
-//   G: a generic weighted graph data structure
+//   G: a generic weighted graph structure
 //     Functions:
 //       operator [v] const: iterates over the adjacency list of vertex v
 //         (which is a list of pair<int, T> with weights of type T)

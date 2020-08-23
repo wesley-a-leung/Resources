@@ -6,7 +6,7 @@ using namespace std;
 //   Tarjan's algorithm
 // Vertices are 0-indexed
 // Constructor Arguments:
-//   G: a generic directed graph data structure
+//   G: a generic directed graph structure
 //     Functions:
 //       operator [v] const: iterates over the adjacency list of vertex v
 //         (which is a list of ints)

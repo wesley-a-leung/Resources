@@ -6,7 +6,7 @@ using namespace std;
 //   topological/reverse post order)
 // Vertices are 0-indexed
 // Constructor Arguments:
-//   G: a generic graph data structure
+//   G: a generic graph structure
 //     Functions:
 //       operator [v] const: iterates over the adjacency list of vertex v
 //         (which is a list of ints)
@@ -22,7 +22,7 @@ using namespace std;
 //   postVert: a vector of the vertices sorted by pre order index
 //   revPostVert: a vector of the vertices sorted by topological/reverse post
 //     order index
-// In practice, has a moderate constant
+// In practice, has a moderate constant, slower than TopologicalOrder
 // Time Complexity:
 //   constructor: O(V + E)
 // Memory Complexity: O(V)
