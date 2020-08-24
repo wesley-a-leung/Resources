@@ -2,24 +2,44 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Bidirectional Breadth First Search of a graph
-// Time Complexity: O(V + E)
-// Memory Complexity: O(V + E)
-template <const int MAXV> struct BidirectionalBFS {
-    int dist[MAXV], to[MAXV], q[MAXV], vis[MAXV], stamp = 0; vector<int> adj[MAXV]; pair<int, int> edgeOnPath;
-    void addBiEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
-    void clear(int V = MAXV) { stamp = 0; for (int i = 0; i < MAXV; i++) adj[i].clear(); }
-    int run(int V, int s, int t) {
-        if (s == t) return 0;
-        if (stamp++ == 0) fill(vis, vis + V, 0);
-        int front = 0, back = 0; dist[s] = dist[t] = 0; q[back++] = s; q[back++] = t; vis[s] = stamp; vis[t] = -stamp;
-        while (front < back) {
-            int v = q[front++];
-            for (int w : adj[v]) {
-                if (vis[v] == -vis[w]) { edgeOnPath = make_pair(v, w); return dist[v] + dist[w] + 1; }
-                else if (vis[v] != vis[w]) { dist[w] = dist[v] + 1; vis[w] = vis[v]; to[w] = v; q[back++] = w; }
-            }
+// Bidirectional breadth first search of an undirected, unweighted graph to
+//   query for the distance between two vertices
+// Vertices are 0-indexed
+// Template Arguments:
+//   Graph: a generic undirected graph structure
+//     Functions:
+//       operator [v] const: iterates over the adjacency list of vertex v
+//         which is a list of ints
+//       size() const: returns the number of vertices in the graph
+// Constructor Arguments:
+//   G: a instance of Graph
+// Functions:
+//   dist(s, t): returns the distance between vertices s and t
+// In practice, the constructor has a small constant,
+//   dist has a moderate constant
+// Time Complexity:
+//   constructor: O(V + E)
+//   dist: O(V + E) worst case, much better in practice if s and t are
+//     connected and the graph is random and sparse
+// Memory Complexity: O(V)
+// Tested:
+//   https://dmoj.ca/problem/acc1p2
+template <class Graph> struct BidirectionalBFS {
+  Graph G; vector<int> d, vis, q; int stamp;
+  BidirectionalBFS(const Graph &G)
+      : G(G), d(G.size(), INT_MAX), vis(G.size(), 0), q(G.size()), stamp(0) {}
+  int dist(int s, int t) {
+    if (s == t) return 0;
+    int front = 0, back = 0; d[s] = d[t] = 0;
+    vis[q[back++] = s] = ++stamp; vis[q[back++] = t] = -stamp;
+    while (front < back) {
+      int v = q[front++]; for (int w : G[v]) {
+        if (vis[v] == -vis[w]) return d[v] + d[w] + 1;
+        else if (vis[v] != vis[w]) {
+          d[q[back++] = w] = d[v] + 1; vis[w] = vis[v];
         }
-        return -1;
+      }
     }
+    return INT_MAX;
+  }
 };

@@ -42,7 +42,7 @@ template <class T = int> struct BFS {
   template <class Graph> BFS(const Graph &G, const vector<int> &srcs,
                              T INF = numeric_limits<T>::max())
       : dist(G.size(), INF), par(G.size(), -1), INF(INF) {
-    vector<int> q(G.size(), -1); int front = 0, back = 0;
+    vector<int> q(G.size()); int front = 0, back = 0;
     for (int s : srcs) dist[q[back++] = s] = T();
     while (front < back) {
       int v = q[front++]; for (auto &&e : G[v]) {

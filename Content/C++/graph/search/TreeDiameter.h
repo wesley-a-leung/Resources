@@ -3,17 +3,17 @@
 #include "BreadthFirstSearch.h"
 using namespace std;
 
-// Computes the diameter of a tree (weighted or unweighted)
+// Computes the diameter of a undirected tree (weighted or unweighted)
 // Vertices are 0-indexed
 // Template Arguments:
-//   T: the type of the weight of the edges in the graph
+//   T: the type of the weight of the edges in the tree
 // Constructor Arguments:
-//   G: a generic graph structure (weighted or unweighted)
+//   G: a generic undirected tree structure (weighted or unweighted)
 //     Functions:
 //       operator [v] const: iterates over the adjacency list of vertex v
-//         (which is a list of ints for an unweighted graph, or a list of
-//         pair<int, T> for a weighted graph with weights of type T)
-//       size() const: returns the number of vertices in the graph
+//         (which is a list of ints for an unweighted tree, or a list of
+//         pair<int, T> for a weighted tree with weights of type T)
+//       size() const: returns the number of vertices in the tree
 //   INF: a value for infinity
 // Fields:
 //   endpoints: a pair containing the vertices on the endpoints of the diameter
