@@ -57,57 +57,60 @@ template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
 #define lazy_def template <const bool _ = LAZY> typename enable_if<_>::type
 #define agg_def template <const bool _ = LAZY> typename enable_if<!_>::type
   using Data = typename Combine::Data; using Lazy = typename Combine::Lazy;
-  Combine C; int N; vector<Data> TR; vector<Lazy> LZ;
+  template <const bool _, const int __ = 0> struct Node {
+    Data val; Node() : val(Combine().qdef) {}
+  };
+  template <const int __> struct Node<true, __> {
+    Data val; Lazy lz; Node() : val(Combine().qdef), lz(Combine().ldef) {}
+  };
+  Combine C; int N; vector<Node<LAZY>> TR;
   lazy_def apply(int x, int tl, int tr, const Lazy &v) {
-    TR[x] = C.applyLazy(TR[x], C.getSegmentVal(v, tr - tl + 1));
-    LZ[x] = C.mergeLazy(LZ[x], v);
+    TR[x].val = C.applyLazy(TR[x].val, C.getSegmentVal(v, tr - tl + 1));
+    TR[x].lz = C.mergeLazy(TR[x].lz, v);
   }
   agg_def apply(int x, int, int, const Lazy &v) {
-    TR[x] = C.applyLazy(TR[x], v);
+    TR[x].val = C.applyLazy(TR[x].val, v);
   }
   lazy_def propagate(int x, int tl, int tr) {
-    if (LZ[x] != C.ldef) {
-      int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2;
-      apply(x + 1, tl, m, LZ[x]); apply(rc, m + 1, tr, LZ[x]); LZ[x] = C.ldef;
+    if (TR[x].lz != C.ldef) {
+      int m = tl + (tr - tl) / 2; apply(x * 2, tl, m, TR[x].lz);
+      apply(x * 2 + 1, m + 1, tr, TR[x].lz); TR[x].lz = C.ldef;
     }
   }
   agg_def propagate(int, int, int) {}
   template <class F> void build(int x, int tl, int tr, F &f) {
-    if (tl == tr) { TR[x] = f(); return; }
-    int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2;
-    build(x + 1, tl, m, f); build(rc, m + 1, tr, f);
-    TR[x] = C.merge(TR[x + 1], TR[rc]);
+    if (tl == tr) { TR[x].val = f(); return; }
+    int m = tl + (tr - tl) / 2;
+    build(x * 2, tl, m, f); build(x * 2 + 1, m + 1, tr, f);
+    TR[x].val = C.merge(TR[x * 2].val, TR[x * 2 + 1].val);
   }
   void update(int x, int tl, int tr, int l, int r, const Lazy &v) {
     if (l <= tl && tr <= r) { apply(x, tl, tr, v); return; }
-    propagate(x, tl, tr);
-    int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2;
-    if (tl <= r && l <= m) update(x + 1, tl, m, l, r, v);
-    if (m + 1 <= r && l <= tr) update(rc, m + 1, tr, l, r, v);
-    TR[x] = C.merge(TR[x + 1], TR[rc]);
+    propagate(x, tl, tr); int m = tl + (tr - tl) / 2;
+    if (tl <= r && l <= m) update(x * 2, tl, m, l, r, v);
+    if (m + 1 <= r && l <= tr) update(x * 2 + 1, m + 1, tr, l, r, v);
+    TR[x].val = C.merge(TR[x * 2].val, TR[x * 2 + 1].val);
   }
   Data query(int x, int tl, int tr, int l, int r) {
     if (r < tl || tr < l) return C.qdef;
-    if (l <= tl && tr <= r) return TR[x];
-    propagate(x, tl, tr);
-    int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2;
-    return C.merge(query(x + 1, tl, m, l, r), query(rc, m + 1, tr, l, r));
+    if (l <= tl && tr <= r) return TR[x].val;
+    propagate(x, tl, tr); int m = tl + (tr - tl) / 2;
+    return C.merge(query(x * 2, tl, m, l, r),
+                   query(x * 2 + 1, m + 1, tr, l, r));
   }
-  lazy_def initLazy() { LZ.assign(N * 2 - 1, C.ldef); }
-  agg_def initLazy() {}
   template <class F> SegmentTreeTopDown(int N, F f)
-      : N(N), TR(max(0, N * 2 - 1), C.qdef) {
-    if (N > 0) { initLazy(); build(0, 0, N - 1, f); }
+      : N(N), TR(N == 0 ? 0 : 1 << __lg(N * 4 - 1)) {
+    if (N > 0) { build(1, 0, N - 1, f); }
   }
   template <class It> SegmentTreeTopDown(It st, It en)
       : SegmentTreeTopDown(en - st, [&] { return *st++; }) {}
   SegmentTreeTopDown(int N, const Data &vdef)
       : SegmentTreeTopDown(N, [&] { return vdef; }) {}
   lazy_def update(int l, int r, const Lazy &v) {
-    update(0, 0, N - 1, l, r, v);
+    update(1, 0, N - 1, l, r, v);
   }
-  void update(int i, const Lazy &v) { update(0, 0, N - 1, i, i, v); }
-  Data query(int l, int r) { return query(0, 0, N - 1, l, r); }
+  void update(int i, const Lazy &v) { update(1, 0, N - 1, i, i, v); }
+  Data query(int l, int r) { return query(1, 0, N - 1, l, r); }
 #undef lazy_def
 #undef agg_def
 };
@@ -162,7 +165,6 @@ template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
 //                    O(N + Q log N) for two argument constructor 
 // Tested:
 //   https://dmoj.ca/problem/ccc05s5 (LAZY = false, PERSISTENT = false)
-//   https://wcipeg.com/problem/wc184s4 (LAZY = false, PERSISTENT = true)
 //   https://codeforces.com/contest/1080/problem/F
 //     (LAZY = false, PERSISTENT = true)
 //   https://codeforces.com/contest/915/problem/E
@@ -176,43 +178,45 @@ template <class IndexType, const bool LAZY, const bool PERSISTENT,
 #define agg_def template <const bool _ = LAZY> typename enable_if<!_>::type
   static_assert(is_integral<IndexType>::value, "IndexType must be integeral");
   using Data = typename Combine::Data; using Lazy = typename Combine::Lazy;
-  Combine C; IndexType N;
-  vector<int> L, R, roots; vector<Data> TR; vector<Lazy> LZ;
-  lazy_def pushBackLazy(int cp) { LZ.push_back(~cp ? LZ[cp] : C.ldef); }
-  agg_def pushBackLazy(int) {}
+  template <const bool _, const int __ = 0> struct Node {
+    Data val; int l, r; Node(const Data &val) : val(val), l(-1), r(-1) {}
+  };
+  template <const int __> struct Node<true, __> {
+    Data val; Lazy lz; int l, r;
+    Node(const Data &val) : val(val), lz(Combine().ldef), l(-1), r(-1) {}
+  };
+  Combine C; IndexType N; vector<int> roots; vector<Node<LAZY>> TR;
   int makeNode(int cp, IndexType tl, IndexType tr) {
-    if (~cp) { L.push_back(L[cp]); R.push_back(R[cp]); TR.push_back(TR[cp]); }
-    else {
-      L.push_back(-1); R.push_back(-1);
-      TR.push_back(C.getSegmentVdef(tr - tl + 1));
-    }
-    pushBackLazy(cp); return int(TR.size()) - 1;
+    if (~cp) TR.push_back(TR[cp]);
+    else TR.emplace_back(C.getSegmentVdef(tr - tl + 1));
+    return int(TR.size()) - 1;
   }
   lazy_def apply(int x, IndexType tl, IndexType tr, const Lazy &v) {
-    TR[x] = C.applyLazy(TR[x], C.getSegmentVal(v, tr - tl + 1));
-    LZ[x] = C.mergeLazy(LZ[x], v);
+    TR[x].val = C.applyLazy(TR[x].val, C.getSegmentVal(v, tr - tl + 1));
+    TR[x].lz = C.mergeLazy(TR[x].lz, v);
   }
   agg_def apply(int x, IndexType, IndexType, const Lazy &v) {
-    TR[x] = C.applyLazy(TR[x], v);
+    TR[x].val = C.applyLazy(TR[x].val, v);
   }
   lazy_def propagate(int x, IndexType tl, IndexType tr) {
-    if (LZ[x] != C.ldef) {
-      IndexType m = tl + (tr - tl) / 2; if (!~L[x] || PERSISTENT) {
-        int nl = makeNode(L[x], tl, m); L[x] = nl;
+    if (TR[x].lz != C.ldef) {
+      IndexType m = tl + (tr - tl) / 2; if (!~TR[x].l || PERSISTENT) {
+        int nl = makeNode(TR[x].l, tl, m); TR[x].l = nl;
       }
-      if (!~R[x] || PERSISTENT) {
-        int nr = makeNode(R[x], m + 1, tr); R[x] = nr;
+      if (!~TR[x].r || PERSISTENT) {
+        int nr = makeNode(TR[x].r, m + 1, tr); TR[x].r = nr;
       }
-      apply(L[x], tl, m, LZ[x]); apply(R[x], m + 1, tr, LZ[x]); LZ[x] = C.ldef;
+      apply(TR[x].l, tl, m, TR[x].lz); apply(TR[x].r, m + 1, tr, TR[x].lz);
+      TR[x].lz = C.ldef;
     }
   }
   agg_def propagate(int, IndexType, IndexType) {}
   template <class F> int build(IndexType tl, IndexType tr, F &f) {
     int x = makeNode(-1, tl, tr);
-    if (tl == tr) { TR[x] = f(); return x; }
-    IndexType m = tl + (tr - tl) / 2; int nl = build(tl, m, f); L[x] = nl;
-    int nr = build(m + 1, tr, f); R[x] = nr;
-    TR[x] = C.merge(TR[L[x]], TR[R[x]]); return x;
+    if (tl == tr) { TR[x].val = f(); return x; }
+    IndexType m = tl + (tr - tl) / 2; int nl = build(tl, m, f); TR[x].l = nl;
+    int nr = build(m + 1, tr, f); TR[x].r = nr;
+    TR[x].val = C.merge(TR[TR[x].l].val, TR[TR[x].r].val); return x;
   }
   int update(int y, IndexType tl, IndexType tr, IndexType l, IndexType r,
              const Lazy &v, int trSz) {
@@ -220,21 +224,23 @@ template <class IndexType, const bool LAZY, const bool PERSISTENT,
     if (l <= tl && tr <= r) { apply(x, tl, tr, v); return x; }
     propagate(x, tl, tr); IndexType m = tl + (tr - tl) / 2;
     if (tl <= r && l <= m) {
-      int nl = update(L[x], tl, m, l, r, v, trSz); L[x] = nl;
+      int nl = update(TR[x].l, tl, m, l, r, v, trSz); TR[x].l = nl;
     }
     if (m + 1 <= r && l <= tr) {
-      int nr = update(R[x], m + 1, tr, l, r, v, trSz); R[x] = nr;
+      int nr = update(TR[x].r, m + 1, tr, l, r, v, trSz); TR[x].r = nr;
     }
-    TR[x] = C.merge(~L[x] ? TR[L[x]] : C.getSegmentVdef(m - tl + 1),
-                    ~R[x] ? TR[R[x]] : C.getSegmentVdef(tr - m));
+    TR[x].val = C.merge(~TR[x].l ? TR[TR[x].l].val
+                                 : C.getSegmentVdef(m - tl + 1),
+                        ~TR[x].r ? TR[TR[x].r].val : C.getSegmentVdef(tr - m));
     return x;
   }
   Data query(int x, IndexType tl, IndexType tr, IndexType l, IndexType r) {
     if (r < tl || tr < l) return C.qdef;
     if (!~x) return C.getSegmentVdef(tr - tl + 1);
-    if (l <= tl && tr <= r) return TR[x];
+    if (l <= tl && tr <= r) return TR[x].val;
     propagate(x, tl, tr); IndexType m = tl + (tr - tl) / 2;
-    return C.merge(query(L[x], tl, m, l, r), query(R[x], m + 1, tr, l, r));
+    return C.merge(query(TR[x].l, tl, m, l, r),
+                   query(TR[x].r, m + 1, tr, l, r));
   }
   template <class F> DynamicSegmentTree(IndexType N, F f) : N(N) {
     if (N > 0) {
@@ -258,9 +264,7 @@ template <class IndexType, const bool LAZY, const bool PERSISTENT,
     return query(~rootInd ? roots[rootInd] : roots.back(), 0, N - 1, l, r);
   }
   void revert(int rootInd) { roots.push_back(roots[rootInd]); }
-  void reserveNodes(int k) {
-    L.reserve(k); R.reserve(k); TR.reserve(k); if (LAZY) LZ.reserve(k);
-  }
+  void reserveNodes(int k) { TR.reserve(k); }
 #undef lazy_def
 #undef agg_def
 };

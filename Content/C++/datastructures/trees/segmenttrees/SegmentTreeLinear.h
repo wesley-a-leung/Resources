@@ -23,51 +23,50 @@ template <class T> struct SegmentTreeLinear {
   Pair mul(const Pair &l, const Pair &r) {
     return Pair(l.first * r.first, l.second * r.second);
   }
-  const Pair ZERO = Pair(0, 0); int N; vector<Pair> TR; vector<Pair> LZ;
+  struct Node { Pair val, lz; }; int N; vector<Node> TR;
   T sumTo(T k) { return k * (k + 1) / 2; }
   Pair sumBet(T l, T r) { return Pair(r - l + 1, sumTo(r) - sumTo(l - 1)); }
   void apply(int x, int tl, int tr, const Pair &v) {
-    TR[x] = add(TR[x], mul(v, sumBet(tl, tr))); LZ[x] = add(LZ[x], v);
+    TR[x].val = add(TR[x].val, mul(v, sumBet(tl, tr)));
+    TR[x].lz = add(TR[x].lz, v);
   }
   void propagate(int x, int tl, int tr) {
-    if (LZ[x] != ZERO) {
-      int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2;
-      apply(x + 1, tl, m, LZ[x]); apply(rc, m + 1, tr, LZ[x]); LZ[x] = ZERO;
+    if (TR[x].lz != Pair()) {
+      int m = tl + (tr - tl) / 2; apply(x * 2, tl, m, TR[x].lz);
+      apply(x * 2 + 1, m + 1, tr, TR[x].lz); TR[x].lz = Pair();
     }
   }
   template <class F> void build(int x, int tl, int tr, F &f) {
-    if (tl == tr) { TR[x] = Pair(f(), 0); return; }
-    int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2;
-    build(x + 1, tl, m, f); build(rc, m + 1, tr, f);
-    TR[x] = add(TR[x + 1], TR[rc]);
+    if (tl == tr) { TR[x].val = Pair(f(), T()); return; }
+    int m = tl + (tr - tl) / 2;
+    build(x * 2, tl, m, f); build(x * 2 + 1, m + 1, tr, f);
+    TR[x].val = add(TR[x * 2].val, TR[x * 2 + 1].val);
   }
   void update(int x, int tl, int tr, int l, int r, const Pair &v) {
     if (l <= tl && tr <= r) { apply(x, tl, tr, v); return; }
-    propagate(x, tl, tr);
-    int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2;
-    if (tl <= r && l <= m) update(x + 1, tl, m, l, r, v);
-    if (m + 1 <= r && l <= tr) update(rc, m + 1, tr, l, r, v);
-    TR[x] = add(TR[x + 1], TR[rc]);
+    propagate(x, tl, tr); int m = tl + (tr - tl) / 2;
+    if (tl <= r && l <= m) update(x * 2, tl, m, l, r, v);
+    if (m + 1 <= r && l <= tr) update(x * 2 + 1, m + 1, tr, l, r, v);
+    TR[x].val = add(TR[x * 2].val, TR[x * 2 + 1].val);
   }
   Pair query(int x, int tl, int tr, int l, int r) {
-    if (r < tl || tr < l) return ZERO;
-    if (l <= tl && tr <= r) return TR[x];
-    propagate(x, tl, tr);
-    int m = tl + (tr - tl) / 2, rc = x + (m - tl + 1) * 2;
-    return add(query(x + 1, tl, m, l, r), query(rc, m + 1, tr, l, r));
+    if (r < tl || tr < l) return Pair();
+    if (l <= tl && tr <= r) return TR[x].val;
+    propagate(x, tl, tr); int m = tl + (tr - tl) / 2;
+    return add(query(x * 2, tl, m, l, r), query(x * 2 + 1, m + 1, tr, l, r));
   }
   template <class F> SegmentTreeLinear(int N, F f)
-      : N(N), TR(max(0, N * 2 - 1), ZERO), LZ(max(0, N * 2 - 1), ZERO) {
-    if (N > 0) build(0, 0, N - 1, f);
+      : N(N), TR(N == 0 ? 0 : 1 << __lg(N * 4 - 1)) {
+    if (N > 0) build(1, 0, N - 1, f);
   }
   template <class It> SegmentTreeLinear(It st, It en)
       : SegmentTreeLinear(en - st, [&] { return *st++; }) {}
   SegmentTreeLinear(int N, const T &vdef)
       : SegmentTreeLinear(N, [&] { return vdef; }) {}
   void update(int l, int r, T m, T b) {
-    update(0, 0, N - 1, l, r, Pair((1 - l) * m + b, m));
+    update(1, 0, N - 1, l, r, Pair((1 - l) * m + b, m));
   }
   T query(int l, int r) {
-    Pair q = query(0, 0, N - 1, l, r); return q.first + q.second;
+    Pair q = query(1, 0, N - 1, l, r); return q.first + q.second;
   }
 };
