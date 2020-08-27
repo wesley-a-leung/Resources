@@ -11,7 +11,7 @@ using namespace std;
 // Template Arguments:
 //   T: the type of the value
 // Constructor Arguments:
-//   N: the size of the first dimension
+//   N: the size of the array
 // Functions:
 //   update(l, r, m, b): add m + b, 2m + b, 3m + b, ... to the range [l, r]
 //   query(r): queries the range [0, r]

@@ -11,6 +11,21 @@ using namespace std;
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
+// Template Arguments:
+//   T: the type of the element of the array
+//   Comparator: the comparator to compare two elements
+// Constructor Arguments:
+//   N: the size of the array
+//   f: a generating function that returns the ith element on the ith call
+//   st: an iterator pointing to the first element in the array
+//   en: an iterator pointing to after the last element in the array
+// Functions:
+//   rank(l, r, k): returns the number of elements less than k (using the
+//     comparator) in the range [l, r]
+//   count(l, r, lo, hi) returns the number of elements not less than lo and
+//     not greater than hi (using the comparator) in the range [l, r]
+//   select(l, r, k): selects the kth element sorted by the comparator if the
+//     range [l, r] was sorted
 // In practice, has a moderate constant, slower than Merge Sort Trees for
 //   rank queries, but much faster for select queries
 // Time Complexity:

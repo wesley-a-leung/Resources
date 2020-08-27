@@ -10,7 +10,7 @@ using namespace std;
 // Template Arguments:
 //   T: the type of the value
 // Constructor Arguments:
-//   N: the size of the first dimension
+//   N: the size of the array
 //   f: a generating function that returns the ith element on the ith call
 //   st: an iterator pointing to the first element in the array
 //   en: an iterator pointing to after the last element in the array

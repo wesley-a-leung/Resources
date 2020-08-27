@@ -2,7 +2,7 @@
 #include "../../../Content/C++/datastructures/DisjointSparseTable.h"
 #include "../../../Content/C++/datastructures/FischerHeunStructure.h"
 #include "../../../Content/C++/datastructures/SparseTable.h"
-#include "../../../Content/C++/datastructures/trees/segmenttrees/SegmentTreesBottomUp.h"
+#include "../../../Content/C++/datastructures/trees/segmenttrees/SegmentTreeBottomUp.h"
 using namespace std;
 
 void test1() {
