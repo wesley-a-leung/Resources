@@ -16,6 +16,21 @@ using namespace __gnu_pbds;
 //   and range queries in 2 dimensions (sparse in 1 dimension)
 // All update indices must be known beforehand
 // Indices are 0-indexed and ranges are inclusive
+// Template Arguments:
+//   T: the type of the value
+//   IndexType: the type of the index of the second dimension of the array
+// Constructor Arguments:
+//   N: the size of the first dimension of the array
+//   updateInds: a vector of pairs of ints and IndexType containing the indices
+//     for both dimensions for each update
+// Functions:
+//   update(i, j, v): add v to the value A[i][j]
+//   query(d, r): queries the range [0, d] in the first dimension and
+//     [0, r] in the second dimension
+//   query(d, l, r): queries the range [0, d] in the first dimension and
+//     [l, r] in the second dimension
+//   query(u, d, l, r): queries the range [u, d] in the first dimension and
+//     [l, r] in the second dimension
 // In practice, has a small constant
 // Time Complexity:
 //   constructor: O(Q (log Q + log N) + N) for Q updates
@@ -72,6 +87,21 @@ template <class T, class IndexType> struct OfflineSemiSparseFenwickTree2D {
 //   and range queries in 2 dimensions (sparse in 2 dimensions)
 // All update indices must be known beforehand
 // Indices are 0-indexed and ranges are inclusive
+// Template Arguments:
+//   T: the type of the value
+//   IndexType1: the type of the index of the first dimension of the array
+//   IndexType2: the type of the index of the second dimension of the array
+// Constructor Arguments:
+//   updateInds: a vector of pairs of IndexType1 and IndexType2 containing
+//     the indices for both dimensions for each update
+// Functions:
+//   update(i, j, v): add v to the value A[i][j]
+//   query(d, r): queries the range [0, d] in the first dimension and
+//     [0, r] in the second dimension
+//   query(d, l, r): queries the range [0, d] in the first dimension and
+//     [l, r] in the second dimension
+//   query(u, d, l, r): queries the range [u, d] in the first dimension and
+//     [l, r] in the second dimension
 // In practice, has a small constant
 // Time Complexity:
 //   constructor: O(Q log Q) for Q updates
@@ -145,6 +175,20 @@ struct OfflineSparseFenwickTree2D {
 //   and range queries in 2 dimensions
 //   using SqrtBufferSimple (sparse in 1 dimension)
 // Indices are 0-indexed and ranges are inclusive
+// Template Arguments:
+//   IndexType: the type of the index of the second dimension of the array
+// Constructor Arguments:
+//   N: the size of the first dimension of the array
+//   SCALE: the value to scale sqrt by (for SqrtBufferSimple)
+// Functions:
+//   add(i, j): add 1 to the value A[i][j]
+//   rem(i, j): subtract 1 from the value A[i][j]
+//   query(d, r): queries the range [0, d] in the first dimension and
+//     [0, r] in the second dimension
+//   query(d, l, r): queries the range [0, d] in the first dimension and
+//     [l, r] in the second dimension
+//   query(u, d, l, r): queries the range [u, d] in the first dimension and
+//     [l, r] in the second dimension
 // In practice, has a very small constant
 // Time Complexity:
 //   constructor: O(N)
@@ -184,6 +228,20 @@ template <class IndexType> struct SemiSparseFenwickTree2DSimple {
 // Sparse Fenwick Tree supporting point updates (with any value)
 //   and range queries in 2 dimensions using SqrtBuffer (sparse in 1 dimension)
 // Indices are 0-indexed and ranges are inclusive
+// Template Arguments:
+//   T: the type of the value
+//   IndexType: the type of the index of the second dimension of the array
+// Constructor Arguments:
+//   N: the size of the first dimension of the array
+//   SCALE: the value to scale sqrt by (for SqrtBuffer)
+// Functions:
+//   update(i, j, v): add v to the value A[i][j]
+//   query(d, r): queries the range [0, d] in the first dimension and
+//     [0, r] in the second dimension
+//   query(d, l, r): queries the range [0, d] in the first dimension and
+//     [l, r] in the second dimension
+//   query(u, d, l, r): queries the range [u, d] in the first dimension and
+//     [l, r] in the second dimension
 // In practice, has a very small constant
 // Time Complexity:
 //   constructor: O(N)
@@ -219,6 +277,23 @@ template <class T, class IndexType> struct SemiSparseFenwickTree2D {
 //   using pbds hash_table for the first dimension,
 //   and SqrtBufferSimple for the second dimension (sparse in 2 dimensions)
 // Indices are 0-indexed and ranges are inclusive
+// Template Arguments:
+//   IndexType1: the type of the index of the first dimension of the array
+//   IndexType2: the type of the index of the second dimension of the array
+//   Container: the container to represent an unordered mapping from
+//     IndexType1 to pair of SqrtBufferSimple<IndexType2>
+// Constructor Arguments:
+//   N: the size of the first dimension of the array
+//   SCALE: the value to scale sqrt by (for SqrtBufferSimple)
+// Functions:
+//   add(i, j): add 1 to the value A[i][j]
+//   rem(i, j): subtract 1 from the value A[i][j]
+//   query(d, r): queries the range [0, d] in the first dimension and
+//     [0, r] in the second dimension
+//   query(d, l, r): queries the range [0, d] in the first dimension and
+//     [l, r] in the second dimension
+//   query(u, d, l, r): queries the range [u, d] in the first dimension and
+//     [l, r] in the second dimension
 // In practice, has a very small constant
 // Time Complexity:
 //   constructor: O(1)
@@ -281,6 +356,23 @@ struct SparseFenwickTree2DSimple {
 //   using pbds hash_table for the first dimension,
 //   and SqrtBuffer for the second dimension (sparse in 2 dimensions)
 // Indices are 0-indexed and ranges are inclusive
+// Template Arguments:
+//   T: the type of the value
+//   IndexType1: the type of the index of the first dimension of the array
+//   IndexType2: the type of the index of the second dimension of the array
+//   Container: the container to represent an unordered mapping from
+//     IndexType1 to SqrtBuffer<IndexType2, T>
+// Constructor Arguments:
+//   N: the size of the first dimension of the array
+//   SCALE: the value to scale sqrt by (for SqrtBuffer)
+// Functions:
+//   update(i, j, v): add v to the value A[i][j]
+//   query(d, r): queries the range [0, d] in the first dimension and
+//     [0, r] in the second dimension
+//   query(d, l, r): queries the range [0, d] in the first dimension and
+//     [l, r] in the second dimension
+//   query(u, d, l, r): queries the range [u, d] in the first dimension and
+//     [l, r] in the second dimension
 // In practice, has a very small constant
 // Time Complexity:
 //   constructor: O(1)

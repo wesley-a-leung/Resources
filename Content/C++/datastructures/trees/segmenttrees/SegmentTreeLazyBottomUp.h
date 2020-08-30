@@ -49,8 +49,6 @@ using namespace std;
 // Memory Complexity: O(N)
 // Tested:
 //   https://dmoj.ca/problem/dmopc17c4p6
-//   https://dmoj.ca/problem/dmopc18c5p5
-//   https://dmoj.ca/problem/dmopc18c6p5
 //   https://dmoj.ca/problem/lazy
 //   https://mcpt.ca/problem/seq3
 //   https://judge.yosupo.jp/problem/range_affine_range_sum

@@ -68,8 +68,6 @@ using namespace std;
 //   https://www.spoj.com/problems/BRCKTS/ (LAZY = false)
 //   https://judge.yosupo.jp/problem/point_set_range_composite (LAZY = false)
 //   https://dmoj.ca/problem/dmopc17c4p6 (LAZY = true)
-//   https://dmoj.ca/problem/dmopc18c5p5 (LAZY = true)
-//   https://dmoj.ca/problem/dmopc18c6p5 (LAZY = true)
 //   https://dmoj.ca/problem/lazy (LAZY = true)
 //   https://mcpt.ca/problem/seq3 (LAZY = true)
 //   https://judge.yosupo.jp/problem/range_affine_range_sum (LAZY = true)

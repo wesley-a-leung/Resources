@@ -16,8 +16,22 @@ using namespace __gnu_pbds;
 //   and range queries in 1 dimension
 // All update indices must be known beforehand
 // Indices are 0-indexed and ranges are inclusive
-// bsearch returns first index where cmp returns false,
-//   or N if no such index exists
+// Template Arguments:
+//   T: the type of the value
+//   IndexType: the type of the index of the array
+// Constructor Arguments:
+//   N: the size of the array
+//   updateInds: a vector of IndexType containing the indices for each update
+// Functions:
+//   update(i, v): add v to the value at index i
+//   query(r): queries the range [0, r]
+//   query(l, r): queries the range [l, r]
+//   bsearch(v, cmp): returns the first index where cmp(sum(A[0..i]), v)
+//     returns false, or N if no such index exists
+//   lower_bound(v): returns the first index where sum(A[0..i]) >= v, assumes
+//     A is sorted by cmp
+//   upper_bound(v): returns the first index where sum(A[0..i]) > v, assumes
+//     A is sorted by cmp
 // In practice, has a small constant
 // Time Complexity:
 //   constructor: O(Q log Q) for Q updates
@@ -61,8 +75,21 @@ template <class T, class IndexType> struct OfflineSparseFenwickTree1D {
 // Sparse Fenwick Tree supporting point updates (with any value)
 //   and range queries in 1 dimension using pbds hash_table
 // Indices are 0-indexed and ranges are inclusive
-// bsearch returns first index where cmp returns false,
-//   or N if no such index exists
+// Template Arguments:
+//   T: the type of the value
+//   IndexType: the type of the index of the array
+// Constructor Arguments:
+//   N: the size of the array
+// Functions:
+//   update(i, v): add v to the value at index i
+//   query(r): queries the range [0, r]
+//   query(l, r): queries the range [l, r]
+//   bsearch(v, cmp): returns the first index where cmp(sum(A[0..i]), v)
+//     returns false, or N if no such index exists
+//   lower_bound(v): returns the first index where sum(A[0..i]) >= v, assumes
+//     A is sorted by cmp
+//   upper_bound(v): returns the first index where sum(A[0..i]) > v, assumes
+//     A is sorted by cmp
 // In practice, has a moderate constant
 // Time Complexity:
 //   constructor: O(1)
