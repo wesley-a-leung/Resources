@@ -22,6 +22,8 @@ template <class T, class Cmp> struct Line {
 //     convention is same as priority_queue in STL
 //   INTEGRAL: a boolean indicating whether T is integral or not (necessary
 //     for types such as __int128_t)
+// Constructor Arguments:
+//   INF: a value for infinity
 // Functions (in addition to std::multiset):
 //   addLine(m, b): adds a line in the form f(x) = mx + b to the set of lines
 //   getMax(x): finds the maximum x value (based on the comparator) for all
