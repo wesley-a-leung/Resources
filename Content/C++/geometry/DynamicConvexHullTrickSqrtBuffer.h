@@ -1,54 +1,73 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "../search/BinarySearch.h"
 using namespace std;
 
-// Supports adding lines in the form f(x) = mx + b and finding the maximum value of f(x) at any given x
-// Dynamic variant (allows for updates and queries in arbitrary order)
+// Supports adding lines in the form f(x) = mx + b and finding
+//   the maximum value of f(x) at any given x; this version allows for
+//   updates and queries in arbitrary order
+// Template Arguments:
+//   T: the type of the slope (m) and intercept (b) of the line, as well as
+//     the type of the function argument (x), must be able to store m * b
+//   Cmp: the comparator to compare two f(x) values,
+//     convention is same as priority_queue in STL
+// Functions:
+//   addLine(m, b): adds a line in the form f(x) = mx + b to the set of lines
+//   getMax(x): finds the maximum x value (based on the comparator) for all
+//     inserted lines
+//   size(): returns the number of lines in the convex hull
+//   reserve(N): reserves space for N lines in the convex hull
+// In practice, has a very small constant, around the same performance as
+//   DynamicConvexHullTrick (which uses multiset)
 // Time Complexity:
-//   addLine: O(1)
-//   getMax: O(sqrt(N) + log(N)) amortized
-// Memory Complexity: O(N) where N is the total number of lines added
-template <class T, class Comparator = less<T>> struct DynamicConvexHullTrickSqrtBuffer {
-    Comparator cmp; vector<pair<T, T>> large, small; double SCALE_FACTOR;
-    DynamicConvexHullTrickSqrtBuffer(const double SCALE_FACTOR = 1) : SCALE_FACTOR(SCALE_FACTOR) {}
-    bool ccw(const pair<T, T> &a, const pair<T, T> &b, const pair<T, T> &c) {
-        return (b.first - a.first) * (c.second - a.second) <= (b.second - a.second) * (c.first - a.first);
+//   addLine: O(1) amortized
+//   getMax: O(sqrt(N) + log(N)) amortized for N lines in the convex hull
+//   size: O(1)
+//   reserve: O(N)
+// Memory Complexity: O(N) for N lines in the convex hull
+// Tested:
+//   https://judge.yosupo.jp/problem/line_add_get_min
+//   https://naq18.kattis.com/problems/longestlife
+//   https://www.spoj.com/problems/CHTPRAC/
+template <class T, class Cmp = less<T>>
+struct DynamicConvexHullTrickSqrtBuffer {
+  struct Line {
+    T m, b; Line(T m, T b) : m(m), b(b) {}
+    T eval(T x) const { return m * x + b; }
+    bool operator < (const Line &l) const { return Cmp()(m, l.m); }
+  };
+  vector<Line> large, small; double SCALE;
+  DynamicConvexHullTrickSqrtBuffer(double SCALE = 1) : SCALE(SCALE) {}
+  bool ccw(const Line &a, const Line &b, const Line &c) {
+    return (b.m - a.m) * (c.b - a.b) <= (b.b - a.b) * (c.m - a.m);
+  }
+  bool slope(const Line &a, const Line &b) {
+    return !Cmp()(a.m, b.m) && !Cmp()(b.m, a.m) && !Cmp()(a.b, b.b);
+  }
+  void rebuildHull() {
+    int back = 0; for (auto &&line : large) {
+      while (back >= 2 && ccw(line, large[back - 1], large[back - 2])) back--;
+      while (back >= 1 && slope(line, large[back - 1])) back--;
+      large[back++] = line;
     }
-    bool slope(const pair<T, T> &a, const pair<T, T> &b) {
-        return !cmp(a.first, b.first) && !cmp(b.first, a.first) && !cmp(a.second, b.second);
+    large.resize(back, Line(T(), T()));
+  }
+  int size() const { return large.size() + small.size(); }
+  void rebuild() {
+    if (int(small.size()) > SCALE * sqrt(size())) {
+      int lSz = large.size(); sort(small.begin(), small.end());
+      large.insert(large.end(), small.begin(), small.end()); small.clear();
+      inplace_merge(large.begin(), large.begin() + lSz, large.end());
+      rebuildHull();
     }
-    T eval(const pair<T, T> &a, const T &x) { return a.first * x + a.second; }
-    void rebuildHull() {
-        int back = 0;
-        for (auto &&line : large) {
-            while (back >= 2 && ccw(line, large[back - 1], large[back - 2])) back--;
-            while (back >= 1 && slope(line, large[back - 1])) back--;
-            large[back++] = line;
-        }
-        large.resize(back);
-    }
-    void rebuild() {
-        if (int(small.size()) > SCALE_FACTOR * sqrt(small.size() + large.size())) {
-            auto lineCmp = [&] (const pair<T, T> &a, const pair<T, T> &b) { return cmp(a.first, b.first); };
-            int largeSz = int(large.size()); sort(small.begin(), small.end(), lineCmp);
-            for (auto &&x : small) large.push_back(x);
-            small.clear(); inplace_merge(large.begin(), large.begin() + largeSz, large.end(), lineCmp); rebuildHull();
-        }
-    }
-    void addLine(T m, T b) { small.emplace_back(m, b); }
-    T getMax(T x) {
-        rebuild();
-        int lo = 0, hi = int(large.size()) - 1;
-        while (lo < hi) {
-            int mid = lo + (hi - lo) / 2;
-            if (!cmp(eval(large[mid + 1], x), eval(large[mid], x))) lo = mid + 1;
-            else hi = mid;
-        }
-        T mx = large.empty() ? eval(small[0], x) : eval(large[lo], x);
-        for (auto &&line : small) mx = max(mx, eval(line, x), cmp);
-        return mx;
-    }
-    int size() { return int(large.size()) + int(small.size()); }
-    bool empty() { return large.empty() && small.empty(); }
-    void clear() { large.clear(); small.clear(); }
+  }
+  void addLine(T m, T b) { small.emplace_back(m, b); }
+  T getMax(T x) {
+    rebuild(); int ind = bsearch<FIRST>(0, int(large.size()) - 1, [&] (int i) {
+      return Cmp()(large[i + 1].eval(x), large[i].eval(x));
+    });
+    T mx = (large.empty() ? small[0] : large[ind]).eval(x);
+    for (auto &&line : small) mx = max(mx, line.eval(x), Cmp());
+    return mx;
+  }
 };
