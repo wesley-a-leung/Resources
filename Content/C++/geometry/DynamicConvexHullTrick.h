@@ -37,6 +37,7 @@ template <class T, class Cmp> struct Line {
 //   https://judge.yosupo.jp/problem/line_add_get_min
 //   https://naq18.kattis.com/problems/longestlife
 //   https://www.spoj.com/problems/CHTPRAC/
+//   https://facebook.com/codingcompetitions/hacker-cup/2020/round-2/problems/D
 template <class T, class Cmp = less<T>,
           const bool INTEGRAL = is_integral<T>::value>
 struct DynamicConvexHullTrick : public multiset<Line<T, Cmp>> {
