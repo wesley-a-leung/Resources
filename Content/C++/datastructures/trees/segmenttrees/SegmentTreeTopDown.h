@@ -9,7 +9,7 @@ using namespace std;
 //   the constructor, which are exclusive
 // Template Arguments:
 //   LAZY: boolean to indicate whether or not range updates are enabled
-//   Combine: struct to combine data and lazy values
+//   C: struct to combine data and lazy values
 //     Fields:
 //       Data: typedef/using for the data type
 //       Lazy: typedef/using for the lazy type
@@ -25,16 +25,16 @@ using namespace std;
 //         value v when applied over a segment of length k
 //       mergeLazy(l, r) (only required if LAZY is true): returns the values
 //         l of type Lazy merged with r of type Lazy, must be associative
-//     Sample Struct: Combine supports point increments and range max queries,
-//         while Combine2 supports range assignments and range sum queries
-//       struct Combine {
+//     Sample Struct: C1 supports point increments and range max queries,
+//         while C2 supports range assignments and range sum queries
+//       struct C1 {
 //         using Data = int;
 //         using Lazy = int;
 //         const Data qdef = numeric_limits<int>::min();
 //         Data merge(const Data &l, const Data &r) const { return max(l, r); }
 //         Data applyLazy(const Data &l, const Lazy &r) const { return l + r; }
 //       };
-//       struct Combine2 {
+//       struct C2 {
 //         using Data = int;
 //         using Lazy = int;
 //         const Data qdef = 0;
@@ -71,28 +71,28 @@ using namespace std;
 //   https://dmoj.ca/problem/lazy (LAZY = true)
 //   https://mcpt.ca/problem/seq3 (LAZY = true)
 //   https://judge.yosupo.jp/problem/range_affine_range_sum (LAZY = true)
-template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
+template <const bool LAZY, class C> struct SegmentTreeTopDown {
 #define lazy_def template <const bool _ = LAZY> typename enable_if<_>::type
 #define agg_def template <const bool _ = LAZY> typename enable_if<!_>::type
-  using Data = typename Combine::Data; using Lazy = typename Combine::Lazy;
+  using Data = typename C::Data; using Lazy = typename C::Lazy;
   template <const bool _, const int __ = 0> struct Node {
-    Data val; Node() : val(Combine().qdef) {}
+    Data val; Node() : val(C().qdef) {}
   };
   template <const int __> struct Node<true, __> {
-    Data val; Lazy lz; Node() : val(Combine().qdef), lz(Combine().ldef) {}
+    Data val; Lazy lz; Node() : val(C().qdef), lz(C().ldef) {}
   };
-  Combine C; int N; vector<Node<LAZY>> TR;
+  int N; vector<Node<LAZY>> TR;
   lazy_def apply(int x, int tl, int tr, const Lazy &v) {
-    TR[x].val = C.applyLazy(TR[x].val, C.getSegmentVal(v, tr - tl + 1));
-    TR[x].lz = C.mergeLazy(TR[x].lz, v);
+    TR[x].val = C().applyLazy(TR[x].val, C().getSegmentVal(v, tr - tl + 1));
+    TR[x].lz = C().mergeLazy(TR[x].lz, v);
   }
   agg_def apply(int x, int, int, const Lazy &v) {
-    TR[x].val = C.applyLazy(TR[x].val, v);
+    TR[x].val = C().applyLazy(TR[x].val, v);
   }
   lazy_def propagate(int x, int tl, int tr) {
-    if (TR[x].lz != C.ldef) {
+    if (TR[x].lz != C().ldef) {
       int m = tl + (tr - tl) / 2; apply(x * 2, tl, m, TR[x].lz);
-      apply(x * 2 + 1, m + 1, tr, TR[x].lz); TR[x].lz = C.ldef;
+      apply(x * 2 + 1, m + 1, tr, TR[x].lz); TR[x].lz = C().ldef;
     }
   }
   agg_def propagate(int, int, int) {}
@@ -100,20 +100,20 @@ template <const bool LAZY, class Combine> struct SegmentTreeTopDown {
     if (tl == tr) { TR[x].val = f(); return; }
     int m = tl + (tr - tl) / 2;
     build(x * 2, tl, m, f); build(x * 2 + 1, m + 1, tr, f);
-    TR[x].val = C.merge(TR[x * 2].val, TR[x * 2 + 1].val);
+    TR[x].val = C().merge(TR[x * 2].val, TR[x * 2 + 1].val);
   }
   void update(int x, int tl, int tr, int l, int r, const Lazy &v) {
     if (l <= tl && tr <= r) { apply(x, tl, tr, v); return; }
     propagate(x, tl, tr); int m = tl + (tr - tl) / 2;
     if (tl <= r && l <= m) update(x * 2, tl, m, l, r, v);
     if (m + 1 <= r && l <= tr) update(x * 2 + 1, m + 1, tr, l, r, v);
-    TR[x].val = C.merge(TR[x * 2].val, TR[x * 2 + 1].val);
+    TR[x].val = C().merge(TR[x * 2].val, TR[x * 2 + 1].val);
   }
   Data query(int x, int tl, int tr, int l, int r) {
-    if (r < tl || tr < l) return C.qdef;
+    if (r < tl || tr < l) return C().qdef;
     if (l <= tl && tr <= r) return TR[x].val;
     propagate(x, tl, tr); int m = tl + (tr - tl) / 2;
-    return C.merge(query(x * 2, tl, m, l, r),
+    return C().merge(query(x * 2, tl, m, l, r),
                    query(x * 2 + 1, m + 1, tr, l, r));
   }
   template <class F> SegmentTreeTopDown(int N, F f)

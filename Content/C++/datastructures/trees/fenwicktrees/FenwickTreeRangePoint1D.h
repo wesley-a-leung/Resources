@@ -29,7 +29,6 @@ using namespace std;
 // Tested:
 //   Fuzz and Stress Tested
 //   https://mcpt.ca/problem/asquirrelproblem
-//   https://codeforces.com/contest/1254/problem/D
 template <class T> struct FenwickTreeRangePoint1D {
   int N; vector<T> BIT;
   FenwickTreeRangePoint1D(int N) : N(N), BIT(N + 1, T()) {}

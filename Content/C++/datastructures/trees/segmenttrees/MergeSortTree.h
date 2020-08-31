@@ -9,7 +9,7 @@ using namespace std;
 //   the constructor, which are exclusive
 // Template Arguments:
 //   T: the type of the element of the array
-//   Comparator: the comparator to compare two elements
+//   Cmp: the comparator to compare two elements
 // Constructor Arguments:
 //   N: the size of the array
 //   f: a generating function that returns the ith element on the ith call
@@ -33,17 +33,17 @@ using namespace std;
 //   https://codeforces.com/contest/1284/problem/D (rank)
 //   https://www.spoj.com/problems/MKTHNUM/ (select)
 //   https://judge.yosupo.jp/problem/range_kth_smallest (select)
-template <class T, class Comparator = less<T>> struct MergeSortTree {
-  Comparator cmp; int N; vector<T> sorted; vector<vector<T>> TR;
-  template <class F> MergeSortTree(int N, F f)
-      : N(N), TR(N * 2) {
+template <class T, class Cmp = less<T>> struct MergeSortTree {
+  int N; vector<T> sorted; vector<vector<T>> TR;
+  template <class F> MergeSortTree(int N, F f) : N(N), TR(N * 2) {
     sorted.reserve(N); for (int i = 0; i < N; i++) {
       sorted.push_back(f()); TR[N + i] = vector<T>(1, sorted.back());
     }
-    sort(sorted.begin(), sorted.end(), cmp); for (int i = N - 1; i > 0; i--) {
+    sort(sorted.begin(), sorted.end(), Cmp());
+    for (int i = N - 1; i > 0; i--) {
       TR[i].reserve(TR[i * 2].size() + TR[i * 2 + 1].size());
       merge(TR[i * 2].begin(), TR[i * 2].end(), TR[i * 2 + 1].begin(),
-            TR[i * 2 + 1].end(), back_inserter(TR[i]), cmp);
+            TR[i * 2 + 1].end(), back_inserter(TR[i]), Cmp());
     }
   }
   template <class It> MergeSortTree(It st, It en)
@@ -51,11 +51,13 @@ template <class T, class Comparator = less<T>> struct MergeSortTree {
   int rank(int l, int r, T k) {
     int ret = 0; for (l += N, r += N; l <= r; l /= 2, r /= 2) {
       if (l & 1) {
-        ret += lower_bound(TR[l].begin(), TR[l].end(), k, cmp) - TR[l].begin();
+        ret += lower_bound(TR[l].begin(), TR[l].end(), k, Cmp())
+            - TR[l].begin();
         l++;
       }
       if (!(r & 1)) {
-        ret += lower_bound(TR[r].begin(), TR[r].end(), k, cmp) - TR[r].begin();
+        ret += lower_bound(TR[r].begin(), TR[r].end(), k, Cmp())
+            - TR[r].begin();
         r--;
       }
     }

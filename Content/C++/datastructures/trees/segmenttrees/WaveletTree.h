@@ -13,7 +13,7 @@ using namespace std;
 //   the constructor, which are exclusive
 // Template Arguments:
 //   T: the type of the element of the array
-//   Comparator: the comparator to compare two elements
+//   Cmp: the comparator to compare two elements
 // Constructor Arguments:
 //   N: the size of the array
 //   f: a generating function that returns the ith element on the ith call
@@ -37,8 +37,8 @@ using namespace std;
 //   https://codeforces.com/contest/1284/problem/D (rank/count)
 //   https://www.spoj.com/problems/MKTHNUM/ (select)
 //   https://judge.yosupo.jp/problem/range_kth_smallest (select)
-template <class T, class Comparator = less<T>> struct WaveletTree {
-  Comparator cmp; int N, curNode; vector<int> ind, rnk, roots; vector<T> A;
+template <class T, class Cmp = less<T>> struct WaveletTree {
+  int N, curNode; vector<int> ind, rnk, roots; vector<T> A;
   struct Node { int l, r, val; }; vector<Node> TR;
   int build(int tl, int tr) {
     int x = curNode++; if (tl == tr) { TR[x].val = 0; return x; }
@@ -71,7 +71,7 @@ template <class T, class Comparator = less<T>> struct WaveletTree {
     A.reserve(N); for (int i = 0; i < N; i++) A.push_back(f());
     iota(ind.begin(), ind.end(), 0);
     stable_sort(ind.begin(), ind.end(), [&] (int i, int j) {
-      return cmp(A[i], A[j]);
+      return Cmp()(A[i], A[j]);
     });
     for (int i = 0; i < N; i++) rnk[ind[i]] = i;
     if (N > 0) roots[0] = build(0, N - 1);
@@ -85,16 +85,16 @@ template <class T, class Comparator = less<T>> struct WaveletTree {
   }
   int rank(int l, int r, T v) {
     int j = lower_bound(ind.begin(), ind.end(), N, [&] (int i, int) {
-                          return cmp(A[i], v);
+                          return Cmp()(A[i], v);
                         }) - ind.begin() - 1;
     return j < 0 ? 0 : count(roots[l], roots[r + 1], 0, N - 1, 0, j);
   }
   int count(int l, int r, T lo, T hi) {
     int a = lower_bound(ind.begin(), ind.end(), N, [&] (int i, int) {
-                          return cmp(A[i], lo);
+                          return Cmp()(A[i], lo);
                         }) - ind.begin();
     int b = upper_bound(ind.begin(), ind.end(), N, [&] (int, int i) {
-                          return cmp(hi, A[i]);
+                          return Cmp()(hi, A[i]);
                         }) - ind.begin() - 1;
     return a > b ? 0 : count(roots[l], roots[r + 1], 0, N - 1, a, b);
   }

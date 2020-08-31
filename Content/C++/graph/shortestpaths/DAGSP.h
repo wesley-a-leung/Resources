@@ -8,7 +8,7 @@ using namespace std;
 // Vertices are 0-indexed
 // Template Arguments:
 //   T: the type of the weight of the edges in the graph
-//   Comparator: the comparator to compare two distances; less<T> will
+//   Cmp: the comparator to compare two distances; less<T> will
 //     compute the shortest path while greater<T> will compute the longest path
 // Constructor Arguments:
 //   G: a generic directed acyclic graph structure (weighted or unweighted)
@@ -20,7 +20,7 @@ using namespace std;
 //   s: a single source vertex
 //   src: a vector of source vertices
 //   INF: a value for infinity for shortest path, or negative infinity
-//     for longest path; (Comparator()(INF, x)) must return false for all
+//     for longest path; (Cmp()(INF, x)) must return false for all
 //     values of x
 // Fields:
 //   dist: vector of distance from the closest source vertex to each vertex,
@@ -38,7 +38,7 @@ using namespace std;
 // Memory Complexity: O(V)
 // Tested:
 //   https://atcoder.jp/contests/dp/tasks/dp_g
-template <class T, class Comparator = less<T>> struct DAGSP {
+template <class T, class Cmp = less<T>> struct DAGSP {
   using Edge = tuple<int, int, T>; vector<T> dist; vector<int> par; T INF;
   TopologicalOrder ord;
   int getTo(int e) { return e; }
@@ -50,7 +50,7 @@ template <class T, class Comparator = less<T>> struct DAGSP {
     for (int s : srcs) dist[s] = T();
     for (int v : ord.ord) for (auto &&e : G[v]) {
       int w = getTo(e); T weight = getWeight(e);
-      if (dist[v] != INF && Comparator()(dist[v] + weight, dist[w]))
+      if (dist[v] != INF && Cmp()(dist[v] + weight, dist[w]))
         dist[w] = dist[par[w] = v] + weight;
     }
   }

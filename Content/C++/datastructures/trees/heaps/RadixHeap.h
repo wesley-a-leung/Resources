@@ -12,7 +12,7 @@ using namespace std;
 //   empty, size: O(1)
 //   pop, push: O(1) amortized
 // Memory Complexity: O(NB)
-template <class Key, class Comparator = less<Key>>
+template <class Key, class Cmp = less<Key>>
 struct RadixHeap {
   static_assert(is_integral<Key>::value, "Key must be integral");
   static_assert(is_unsigned<Key>::value, "Key must be unsigned");
@@ -27,7 +27,7 @@ struct RadixHeap {
     if (x[0].empty()) {
       int i = 0; while (x[i].empty()) i++;
       last = x[i][0]; for (int j = 1; j < int(x[i].size()); j++)
-        if (Comparator()(last, x[i][j])) last = x[i][j];
+        if (Cmp()(last, x[i][j])) last = x[i][j];
       for (auto &&p : x[i]) aux(p);
       x[i].clear();
     }

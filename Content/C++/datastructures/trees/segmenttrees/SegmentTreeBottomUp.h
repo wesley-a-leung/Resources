@@ -7,7 +7,7 @@ using namespace std;
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
 // Template Arguments:
-//   Combine: struct to combine data and lazy values
+//   C: struct to combine data and lazy values
 //     Fields:
 //       Data: typedef/using for the data type
 //       Lazy: typedef/using for the lazy type
@@ -18,7 +18,7 @@ using namespace std;
 //       applyLazy(l, r): returns the value r of type Lazy applied to
 //         l of type Data, must be associative
 //     Sample Struct: supporting point increments and range max queries
-//       struct Combine {
+//       struct C {
 //         using Data = int;
 //         using Lazy = int;
 //         const Data qdef = numeric_limits<int>::min();
@@ -47,28 +47,28 @@ using namespace std;
 //   https://dmoj.ca/problem/cco20p5
 //   https://www.spoj.com/problems/BRCKTS/
 //   https://judge.yosupo.jp/problem/point_set_range_composite
-template <class Combine> struct SegmentTreeBottomUp {
-  using Data = typename Combine::Data; using Lazy = typename Combine::Lazy;
-  Combine C; int N; vector<Data> TR;
+template <class C> struct SegmentTreeBottomUp {
+  using Data = typename C::Data; using Lazy = typename C::Lazy;
+  int N; vector<Data> TR;
   template <class F> SegmentTreeBottomUp(int N, F f)
-      : N(N), TR(N * 2, C.qdef) {
-    generate(TR.begin() + N, TR.end(), f);
-    for (int i = N - 1; i > 0; i--) TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
+      : N(N), TR(N * 2, C().qdef) {
+    generate(TR.begin() + N, TR.end(), f); for (int i = N - 1; i > 0; i--)
+      TR[i] = C().merge(TR[i * 2], TR[i * 2 + 1]);
   }
   template <class It> SegmentTreeBottomUp(It st, It en)
       : SegmentTreeBottomUp(en - st, [&] { return *st++; }) {}
   SegmentTreeBottomUp(int N, const Data &vdef)
       : SegmentTreeBottomUp(N, [&] { return vdef; }) {}
   void update(int i, const Lazy &v) {
-    for (i += N, TR[i] = C.applyLazy(TR[i], v); i /= 2;)
-      TR[i] = C.merge(TR[i * 2], TR[i * 2 + 1]);
+    for (i += N, TR[i] = C().applyLazy(TR[i], v); i /= 2;)
+      TR[i] = C().merge(TR[i * 2], TR[i * 2 + 1]);
   }
   Data query(int l, int r) {
-    Data ql = C.qdef, qr = C.qdef;
+    Data ql = C().qdef, qr = C().qdef;
     for (l += N, r += N; l <= r; l /= 2, r /= 2) {
-      if (l % 2) ql = C.merge(ql, TR[l++]);
-      if (!(r % 2)) qr = C.merge(TR[r--], qr);
+      if (l % 2) ql = C().merge(ql, TR[l++]);
+      if (!(r % 2)) qr = C().merge(TR[r--], qr);
     }
-    return C.merge(ql, qr);
+    return C().merge(ql, qr);
   }
 };

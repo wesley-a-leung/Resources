@@ -14,7 +14,7 @@ using namespace std;
 // Memory Complexity: O(NB)
 // Tested:
 //   https://judge.yosupo.jp/problem/shortest_path
-template <class Key, class Val, class Comparator = less<Key>>
+template <class Key, class Val, class Cmp = less<Key>>
 struct RadixPriorityQueue {
   static_assert(is_integral<Key>::value, "Key must be integral");
   static_assert(is_unsigned<Key>::value, "Key must be unsigned");
@@ -29,7 +29,7 @@ struct RadixPriorityQueue {
     if (x[0].empty()) {
       int i = 0; while (x[i].empty()) i++;
       last = x[i][0].first; for (int j = 1; j < int(x[i].size()); j++)
-        if (Comparator()(last, x[i][j].first)) last = x[i][j].first;
+        if (Cmp()(last, x[i][j].first)) last = x[i][j].first;
       for (auto &&p : x[i]) aux(p);
       x[i].clear();
     }

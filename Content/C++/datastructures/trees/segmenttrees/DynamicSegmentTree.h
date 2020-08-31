@@ -10,7 +10,7 @@ using namespace std;
 //   IndexType: the type of the index of the array
 //   LAZY: boolean to indicate whether or not range updates are enabled
 //   PERSISTENT: boolean to indicate whether or not updates are persistent
-//   Combine: struct to combine data and lazy values
+//   C: struct to combine data and lazy values
 //     Fields:
 //       Data: typedef/using for the data type
 //       Lazy: typedef/using for the lazy type
@@ -28,11 +28,11 @@ using namespace std;
 //         l of type Lazy merged with r of type Lazy, must be associative
 //       getSegmentVdef(k): returns the default value over a segment of
 //         length k
-//     Sample Struct: Combine supports point assignments and range sum queries,
-//         where the default value of each index is 1, Combine2 supports 
+//     Sample Struct: C1 supports point assignments and range sum queries,
+//         where the default value of each index is 1, C2 supports 
 //         range assignments and range sum queries, where the default value of
 //         each index is 1
-//       struct Combine {
+//       struct C1 {
 //         using Data = int;
 //         using Lazy = int;
 //         const Data qdef = 0;
@@ -42,7 +42,7 @@ using namespace std;
 //           return k;
 //         }
 //       };
-//       struct Combine2 {
+//       struct C2 {
 //         using Data = int;
 //         using Lazy = int;
 //         const Data qdef = 0;
@@ -89,34 +89,34 @@ using namespace std;
 //   https://codeforces.com/gym/101982/problem/F
 //     (LAZY = true, PERSISTENT = false)
 //   https://www.spoj.com/problems/TTM/ (LAZY = true, PERSISTENT = true)
-template <class IndexType, const bool LAZY, const bool PERSISTENT,
-          class Combine> struct DynamicSegmentTree {
+template <class IndexType, const bool LAZY, const bool PERSISTENT, class C>
+struct DynamicSegmentTree {
 #define lazy_def template <const bool _ = LAZY> typename enable_if<_>::type
 #define agg_def template <const bool _ = LAZY> typename enable_if<!_>::type
   static_assert(is_integral<IndexType>::value, "IndexType must be integeral");
-  using Data = typename Combine::Data; using Lazy = typename Combine::Lazy;
+  using Data = typename C::Data; using Lazy = typename C::Lazy;
   template <const bool _, const int __ = 0> struct Node {
     Data val; int l, r; Node(const Data &val) : val(val), l(-1), r(-1) {}
   };
   template <const int __> struct Node<true, __> {
     Data val; Lazy lz; int l, r;
-    Node(const Data &val) : val(val), lz(Combine().ldef), l(-1), r(-1) {}
+    Node(const Data &val) : val(val), lz(C().ldef), l(-1), r(-1) {}
   };
-  Combine C; IndexType N; vector<int> roots; vector<Node<LAZY>> TR;
+  IndexType N; vector<int> roots; vector<Node<LAZY>> TR;
   int makeNode(int cp, IndexType tl, IndexType tr) {
     if (~cp) TR.push_back(TR[cp]);
-    else TR.emplace_back(C.getSegmentVdef(tr - tl + 1));
+    else TR.emplace_back(C().getSegmentVdef(tr - tl + 1));
     return int(TR.size()) - 1;
   }
   lazy_def apply(int x, IndexType tl, IndexType tr, const Lazy &v) {
-    TR[x].val = C.applyLazy(TR[x].val, C.getSegmentVal(v, tr - tl + 1));
-    TR[x].lz = C.mergeLazy(TR[x].lz, v);
+    TR[x].val = C().applyLazy(TR[x].val, C().getSegmentVal(v, tr - tl + 1));
+    TR[x].lz = C().mergeLazy(TR[x].lz, v);
   }
   agg_def apply(int x, IndexType, IndexType, const Lazy &v) {
-    TR[x].val = C.applyLazy(TR[x].val, v);
+    TR[x].val = C().applyLazy(TR[x].val, v);
   }
   lazy_def propagate(int x, IndexType tl, IndexType tr) {
-    if (TR[x].lz != C.ldef) {
+    if (TR[x].lz != C().ldef) {
       IndexType m = tl + (tr - tl) / 2; if (!~TR[x].l || PERSISTENT) {
         int nl = makeNode(TR[x].l, tl, m); TR[x].l = nl;
       }
@@ -124,7 +124,7 @@ template <class IndexType, const bool LAZY, const bool PERSISTENT,
         int nr = makeNode(TR[x].r, m + 1, tr); TR[x].r = nr;
       }
       apply(TR[x].l, tl, m, TR[x].lz); apply(TR[x].r, m + 1, tr, TR[x].lz);
-      TR[x].lz = C.ldef;
+      TR[x].lz = C().ldef;
     }
   }
   agg_def propagate(int, IndexType, IndexType) {}
@@ -133,7 +133,7 @@ template <class IndexType, const bool LAZY, const bool PERSISTENT,
     if (tl == tr) { TR[x].val = f(); return x; }
     IndexType m = tl + (tr - tl) / 2; int nl = build(tl, m, f); TR[x].l = nl;
     int nr = build(m + 1, tr, f); TR[x].r = nr;
-    TR[x].val = C.merge(TR[TR[x].l].val, TR[TR[x].r].val); return x;
+    TR[x].val = C().merge(TR[TR[x].l].val, TR[TR[x].r].val); return x;
   }
   int update(int y, IndexType tl, IndexType tr, IndexType l, IndexType r,
              const Lazy &v, int trSz) {
@@ -146,18 +146,19 @@ template <class IndexType, const bool LAZY, const bool PERSISTENT,
     if (m + 1 <= r && l <= tr) {
       int nr = update(TR[x].r, m + 1, tr, l, r, v, trSz); TR[x].r = nr;
     }
-    TR[x].val = C.merge(~TR[x].l ? TR[TR[x].l].val
-                                 : C.getSegmentVdef(m - tl + 1),
-                        ~TR[x].r ? TR[TR[x].r].val : C.getSegmentVdef(tr - m));
+    TR[x].val = C().merge(~TR[x].l ? TR[TR[x].l].val
+                                   : C().getSegmentVdef(m - tl + 1),
+                          ~TR[x].r ? TR[TR[x].r].val
+                                   : C().getSegmentVdef(tr - m));
     return x;
   }
   Data query(int x, IndexType tl, IndexType tr, IndexType l, IndexType r) {
-    if (r < tl || tr < l) return C.qdef;
-    if (!~x) return C.getSegmentVdef(tr - tl + 1);
+    if (r < tl || tr < l) return C().qdef;
+    if (!~x) return C().getSegmentVdef(tr - tl + 1);
     if (l <= tl && tr <= r) return TR[x].val;
     propagate(x, tl, tr); IndexType m = tl + (tr - tl) / 2;
-    return C.merge(query(TR[x].l, tl, m, l, r),
-                   query(TR[x].r, m + 1, tr, l, r));
+    return C().merge(query(TR[x].l, tl, m, l, r),
+                     query(TR[x].r, m + 1, tr, l, r));
   }
   template <class F> DynamicSegmentTree(IndexType N, F f) : N(N) {
     if (N > 0) {
