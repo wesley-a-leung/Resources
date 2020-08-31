@@ -17,8 +17,8 @@ using namespace std;
 //     inserted lines
 //   size(): returns the number of lines in the convex hull
 //   reserve(N): reserves space for N lines in the convex hull
-// In practice, has a very small constant, around the same performance as
-//   DynamicConvexHullTrick (which uses multiset)
+// In practice, has a very small constant, performance compared to
+//   DynamicConvexHullTrick (which uses multiset) can vary
 // Time Complexity:
 //   addLine: O(1) amortized
 //   getMax: O(sqrt(N) + log(N)) amortized for N lines in the convex hull

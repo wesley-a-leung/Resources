@@ -28,8 +28,8 @@ template <class T, class Cmp> struct Line {
 //   addLine(m, b): adds a line in the form f(x) = mx + b to the set of lines
 //   getMax(x): finds the maximum x value (based on the comparator) for all
 //     inserted lines
-// In practice, has a moderate constant, around the same performance as
-//   DynamicConvexHullTrickSqrtBuffer
+// In practice, has a moderate constant, performance compared to
+//   DynamicConvexHullTrickSqrtBuffer can vary
 // Time Complexity:
 //   addLine, getMax: O(log(N)) amortized for N lines in the convex hull
 // Memory Complexity: O(N) for N lines in the convex hull
