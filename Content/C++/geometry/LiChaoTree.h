@@ -2,49 +2,70 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-using T = long long; const T NEG_INF = numeric_limits<T>::lowest() / 2;
-
-struct Line {
-    T m, b;
-    Line(T m = 0, T b = NEG_INF) : m(m), b(b) {}
-    T eval(int x) const { return b == NEG_INF ? NEG_INF : m * x + b; }
-    bool majorize(const Line &line, int l, int r) const { return eval(l) >= line.eval(l) && eval(r) >= line.eval(r); }
-};
-
-// Supports adding lines in the form f(x) = mx + b and finding the maximum value of f(x) at integer values of x
-// along with line segments where l <= x <= r, in any order
+// Supports adding lines in the form f(x) = mx + b, or line segments
+//   in the form of f(x) = mx + b over l <= x <= r, and finding
+//   the maximum value of f(x) at an integral point x where 0 <= x < N
+// Template Arguments:
+//   T: the type of the slope (m) and intercept (b) of the line, as well as
+//     the type of the function argument (x)
+//   Cmp: the comparator to compare two f(x) values,
+//     convention is same as priority_queue in STL
+// Constructor Arguments:
+//   N: the maximum bound (exclusive) for the value of x, allowing queries
+//     where 0 <= x < N
+//   INF: a value for positive infinity, must be negatable
+// Functions:
+//   addLine(m, b): adds a line in the form f(x) = mx + b to the set of lines
+//   addLine(m, b, l, r): adds a line segment in the form f(x) = mx + b
+//     where l <= x <= r, to the set of lines
+//   getMax(x): finds the maximum value of f(x) (based on the comparator)
+//     for all inserted lines
+//   clear(): removes all lines from the seg
+// In practice, has a moderate constant, performance compared to
+//   DynamicConvexHullTrick (which uses multiset) and
+//   DynamicConvexHullTrickSqrtBuffer can vary
 // Time Complexity:
-//   addLine: O(log N)
-//   addLineSegment: O((log N)^2)
-//   getMax: O(log N)
-// Memory Complexity: O(N) where N is the range of x
-template <const int MAXN, const bool ONE_INDEXED, const bool maxHull> struct LiChaoTree {
-    int N; Line TR[MAXN * 2];
-    void init(int size) { N = size; }
-    void addLine(int cur, int tl, int tr, Line line) {
-        if (line.majorize(TR[cur], tl, tr)) swap(line, TR[cur]);
-        if (TR[cur].majorize(line, tl, tr)) return;
-        if (TR[cur].eval(tl) < line.eval(tl)) swap(line, TR[cur]);
-        int m = tl + (tr - tl) / 2, rc = cur + (m - tl + 1) * 2;
-        if (line.eval(m) >= TR[cur].eval(m)) { swap(line, TR[cur]); addLine(cur + 1, tl, m, line); }
-        else addLine(rc, m + 1, tr, line);
-    }
-    void addLineSegment(int cur, int tl, int tr, int l, int r, Line line) {
-        if (r < tl || tr < l) return;
-        if (l <= tl && tr <= r) { addLine(cur, tl, tr, line); return; }
-        int m = tl + (tr - tl) / 2, rc = cur + (m - tl + 1) * 2;
-        addLineSegment(cur + 1, tl, m, l, r, line); addLineSegment(rc, m + 1, tr, l, r, line);
-    }
-    T getMax(int cur, int tl, int tr, int x) {
-        T ret = TR[cur].eval(x);
-        if (tl == tr) return ret;
-        int m = tl + (tr - tl) / 2, rc = cur + (m - tl + 1) * 2;
-        if (x <= m) return max(ret, getMax(cur + 1, tl, m, x));
-        else return max(ret, getMax(rc, m + 1, tr, x));
-    }
-    void addLine(Line line) { addLine(0, ONE_INDEXED, N - !ONE_INDEXED, maxHull ? line : Line(-line.m, -line.b)); }
-    void addLineSegment(Line line, int l, int r) {
-        addLineSegment(0, ONE_INDEXED, N - !ONE_INDEXED, l, r, maxHull ? line : Line(-line.m, -line.b));
-    }
-    T getMax(int x) { T ret = getMax(0, ONE_INDEXED, N - !ONE_INDEXED, x); return maxHull ? ret : -ret; }
+//   constructor: O(1)
+//   addLine, getMax: O(log N) for the range [0, N)
+//   addLineSegment: O((log N) ^ 2) for the range [0, N)
+//   clear: O(N) for the range [0, N)
+// Memory Complexity: O(N) for the range [0, N)
+// Tested:
+//   https://csacademy.com/contest/round-70/task/squared-ends/
+template <class T, class Cmp = less<T>> struct LiChaoTree {
+  int N; T INF; using Line = pair<T, T>; vector<Line> TR;
+  T eval(const Line &l, int x) const {
+    return l.second == INF ? INF : l.first * x + l.second;
+  }
+  bool majorize(const Line &a, const Line &b, int l, int r) {
+    return !Cmp()(eval(a, l), eval(b, l)) && !Cmp()(eval(a, r), eval(b, r));
+  }
+  LiChaoTree(int N, T inf = numeric_limits<T>::max())
+      : N(N), INF(min(inf, -inf, Cmp())), TR(N * 4, Line(T(), INF)) {}
+  void addLine(int k, int tl, int tr, Line line) {
+    if (majorize(line, TR[k], tl, tr)) swap(line, TR[k]);
+    if (majorize(TR[k], line, tl, tr)) return;
+    if (Cmp()(eval(TR[k], tl), eval(line, tl))) swap(line, TR[k]);
+    int m = tl + (tr - tl) / 2; if (!Cmp()(eval(line, m), eval(TR[k], m))) {
+      swap(line, TR[k]); addLine(k * 2, tl, m, line);
+    } else addLine(k * 2 + 1, m + 1, tr, line);
+  }
+  void addLineSegment(int k, int tl, int tr, int l, int r, Line line) {
+    if (r < tl || tr < l) return;
+    if (l <= tl && tr <= r) { addLine(k, tl, tr, line); return; }
+    int m = tl + (tr - tl) / 2; addLineSegment(k * 2, tl, m, l, r, line);
+    addLineSegment(k * 2 + 1, m + 1, tr, l, r, line);
+  }
+  T getMax(int k, int tl, int tr, int x) const {
+    T ret = eval(TR[k], x); if (tl == tr) return ret;
+    int m = tl + (tr - tl) / 2;
+    if (x <= m) return max(ret, getMax(k * 2, tl, m, x), Cmp());
+    else return max(ret, getMax(k * 2 + 1, m + 1, tr, x), Cmp());
+  }
+  void addLine(T m, T b) { addLine(1, 0, N - 1, Line(m, b)); }
+  void addLineSegment(T m, T b, int l, int r) {
+    addLineSegment(1, 0, N - 1, l, r, Line(m, b));
+  }
+  T getMax(int x) const { return getMax(1, 0, N - 1, x); }
+  void clear() { fill(TR.begin(), TR.end(), Line(T(), INF)); }
 };

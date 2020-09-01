@@ -23,20 +23,22 @@ template <class T, class Cmp> struct Line {
 //   INTEGRAL: a boolean indicating whether T is integral or not (necessary
 //     for types such as __int128_t)
 // Constructor Arguments:
-//   INF: a value for infinity
+//   INF: a value for positive infinity, must be negatable
 // Functions (in addition to std::multiset):
 //   addLine(m, b): adds a line in the form f(x) = mx + b to the set of lines
-//   getMax(x): finds the maximum x value (based on the comparator) for all
-//     inserted lines
+//   getMax(x): finds the maximum value of f(x) (based on the comparator)
+//     for all inserted lines
 // In practice, has a moderate constant, performance compared to
-//   DynamicConvexHullTrickSqrtBuffer can vary
+//   DynamicConvexHullTrickSqrtBuffer and DynamicLiChao can vary
 // Time Complexity:
+//   constructor: O(1)
 //   addLine, getMax: O(log(N)) amortized for N lines in the convex hull
 // Memory Complexity: O(N) for N lines in the convex hull
 // Tested:
 //   https://judge.yosupo.jp/problem/line_add_get_min
 //   https://naq18.kattis.com/problems/longestlife
 //   https://www.spoj.com/problems/CHTPRAC/
+//   https://csacademy.com/contest/round-70/task/squared-ends/
 //   https://facebook.com/codingcompetitions/hacker-cup/2020/round-2/problems/D
 template <class T, class Cmp = less<T>,
           const bool INTEGRAL = is_integral<T>::value>

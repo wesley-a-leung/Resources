@@ -11,15 +11,18 @@ using namespace std;
 //     the type of the function argument (x), must be able to store m * b
 //   Cmp: the comparator to compare two f(x) values,
 //     convention is same as priority_queue in STL
+// Constructor Arguments:
+//   SCALE: the value to scale sqrt by
 // Functions:
 //   addLine(m, b): adds a line in the form f(x) = mx + b to the set of lines
-//   getMax(x): finds the maximum x value (based on the comparator) for all
-//     inserted lines
+//   getMax(x): finds the maximum value of f(x) (based on the comparator)
+//     for all inserted lines
 //   size(): returns the number of lines in the convex hull
 //   reserve(N): reserves space for N lines in the convex hull
 // In practice, has a very small constant, performance compared to
-//   DynamicConvexHullTrick (which uses multiset) can vary
+//   DynamicConvexHullTrick (which uses multiset) and DynamicLiChao can vary
 // Time Complexity:
+//   constructor: O(1)
 //   addLine: O(1) amortized
 //   getMax: O(sqrt(N) + log(N)) amortized for N lines in the convex hull
 //   size: O(1)
@@ -29,6 +32,7 @@ using namespace std;
 //   https://judge.yosupo.jp/problem/line_add_get_min
 //   https://naq18.kattis.com/problems/longestlife
 //   https://www.spoj.com/problems/CHTPRAC/
+//   https://csacademy.com/contest/round-70/task/squared-ends/
 //   https://facebook.com/codingcompetitions/hacker-cup/2020/round-2/problems/D
 template <class T, class Cmp = less<T>>
 struct DynamicConvexHullTrickSqrtBuffer {
@@ -38,7 +42,7 @@ struct DynamicConvexHullTrickSqrtBuffer {
     bool operator < (const Line &l) const { return Cmp()(m, l.m); }
   };
   vector<Line> large, small; double SCALE;
-  DynamicConvexHullTrickSqrtBuffer(double SCALE = 1) : SCALE(SCALE) {}
+  DynamicConvexHullTrickSqrtBuffer(double SCALE = 4) : SCALE(SCALE) {}
   bool ccw(const Line &a, const Line &b, const Line &c) {
     return (b.m - a.m) * (c.b - a.b) <= (b.b - a.b) * (c.m - a.m);
   }
