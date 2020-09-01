@@ -25,7 +25,7 @@ using namespace std;
 //   clear(): removes all lines from the seg
 // In practice, has a moderate constant, performance compared to
 //   DynamicConvexHullTrick (which uses multiset) and
-//   DynamicConvexHullTrickSqrtBuffer can vary
+//   DynamicConvexHullTrickSqrtBuffer can vary, slower than LiChaoTree
 // Time Complexity:
 //   constructor: O(1)
 //   addLine, getMax: O(log(MX - MN)) for the range [MX, MN]

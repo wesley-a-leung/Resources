@@ -23,7 +23,7 @@ using namespace std;
 //   clear(): removes all lines from the seg
 // In practice, has a moderate constant, performance compared to
 //   DynamicConvexHullTrick (which uses multiset) and
-//   DynamicConvexHullTrickSqrtBuffer can vary
+//   DynamicConvexHullTrickSqrtBuffer can vary, faster than DynamicLiChaoTree
 // Time Complexity:
 //   constructor: O(1)
 //   addLine, getMax: O(log N) for the range [0, N)
@@ -57,7 +57,7 @@ template <class T, class Cmp = less<T>> struct LiChaoTree {
     addLineSegment(k * 2 + 1, m + 1, tr, l, r, line);
   }
   T getMax(int k, int tl, int tr, int x) const {
-    T ret = eval(TR[k], x); if (tl == tr) return ret;
+    T ret = eval(TR[k], x); if (ret == INF || tl == tr) return ret;
     int m = tl + (tr - tl) / 2;
     if (x <= m) return max(ret, getMax(k * 2, tl, m, x), Cmp());
     else return max(ret, getMax(k * 2 + 1, m + 1, tr, x), Cmp());
