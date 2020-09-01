@@ -39,7 +39,6 @@ using namespace std;
 //   https://dmoj.ca/problem/coci06c5p6
 //   https://dmoj.ca/problem/ccc20j4
 //   https://dmoj.ca/problem/ccc20s3
-//   https://dmoj.ca/problem/wac4p4
 template <class T> struct SuffixArray {
   int N; vector<T> S; vector<int> ind, rnk, LCP;
   template <class F> SuffixArray(int N, F f)
@@ -104,7 +103,6 @@ template <class T> struct SuffixArray {
 //   Fuzz and Stress Tested
 //   https://dmoj.ca/problem/ccc20j4
 //   https://dmoj.ca/problem/ccc20s3
-//   https://dmoj.ca/problem/wac4p4
 template <class T> struct LongestCommonPrefix {
   SuffixArray<T> SA; FischerHeunStructure<int, greater<int>> FHS;
   template <class F> LongestCommonPrefix(int N, F f)
