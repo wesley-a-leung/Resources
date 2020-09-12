@@ -168,8 +168,8 @@ void test7() {
   struct Combine {
     using Data = int;
     using Lazy = int;
-    const Data qdef = numeric_limits<int>::max();
-    Data merge(const Data &l, const Data &r) const { return min(l, r); }
+    static Data qdef() { return numeric_limits<int>::max(); }
+    static Data merge(const Data &l, const Data &r) { return min(l, r); }
   };
   SegmentTreeBottomUp<Combine> ST(A.begin(), A.end());
   int Q = 1;
@@ -199,8 +199,8 @@ void test8() {
   struct Combine {
     using Data = int;
     using Lazy = int;
-    const Data qdef = numeric_limits<int>::max();
-    Data merge(const Data &l, const Data &r) const { return min(l, r); }
+    static Data qdef() { return numeric_limits<int>::max(); }
+    static Data merge(const Data &l, const Data &r) { return min(l, r); }
   };
   SegmentTreeBottomUp<Combine> ST(A.begin(), A.end());
   int Q = 1e7;
