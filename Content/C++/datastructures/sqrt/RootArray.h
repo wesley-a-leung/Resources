@@ -37,7 +37,7 @@ using namespace std;
 //   https://dmoj.ca/problem/ds4
 //   https://dmoj.ca/problem/cco10p3
 //   https://dmoj.ca/problem/ccc05s5
-//   https://wcipeg.com/problem/wc184s4
+//   https://dmoj.ca/problem/wc18c4s4
 template <const int R, class T> struct RootArray {
   static_assert(R > 0, "R must be positive");
   int N; vector<RootArray<R - 1, T>> A; double SCALE;

@@ -6,7 +6,7 @@ using namespace std;
 // Vertices are 0-indexed
 // Constructor Arguments:
 //   G: a generic weighted graph structure
-//     Functions:
+//     Required Functions:
 //       operator [v] const: iterates over the adjacency list of vertex v
 //         (which is a list of pair<int, T> with weights of type T)
 //       size() const: returns the number of vertices in the graph

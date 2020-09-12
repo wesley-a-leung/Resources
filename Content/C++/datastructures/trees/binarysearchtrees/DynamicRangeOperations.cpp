@@ -3,59 +3,104 @@
 using namespace std;
 
 // Operations on ranges of a dynamic array,
-//   backed by a generic binary search tree (such as Splay.h or Treap.h)
-// Indices are 0-indexed and ranges are inclusive with the exception of
-//   functions that accept two iterators as a parameter, such as
-//   the constructor, which are exclusive
+//   backed by a generic binary search tree (such as Treap or Splay)
 // Supports point/range updates/queries, range reversals,
 //   and binary searching as long as Node contains the appropriate flags
 // Also supports insertion and erasing at an index or with a comparator
 //   (as long as all values in the tree are sorted by the same comparator),
 //   with insert_at inserting an element or range before the specified index
-// cmp for insert must be of type bool(const Data &, const T &)
-// Tree should be of type Treap or Splay, or any struct that has the following:
-//   Node: struct with at least following
-//       (more may be required by the underlying Tree being used):
-//     Data: typedef/using of the value type this node stores
-//     Lazy: typedef/using of the lazy type used to update the node
-//       (even if no lazy propagation occurs)
-//     sz: integer representing the size of the subtree
-//     RANGE_UPDATES: const static bool indicating whether range updates
-//       are supported
-//     RANGE_QUERIES: const static bool indicating whether range queries
-//       are supported
-//     RANGE_REVERSALS: const static bool indicating whether range reversals
-//       are supported
-//     l: pointer of the same node type to the left child
-//     r: pointer of the same node type to the right child
-//     val: Data representing the value of the node
-//     constructor: takes a single argument with the information for the node
-//     propagate: void() that pushes information lazily to the children
-//     apply: void(const Lazy &v) that updates the information of the node
-//       (including optional aggregate and lazy information)
-//   If RANGE_UPDATES is true, then the following are required:
-//     lz: Lazy representing the lazy information that will be pushed to
-//       the child nodes
-//   If RANGE_QUERIES is true, then the following are required:
-//     sbtr: Data representing the aggregate data of the subtree
-//     qdef: static Data() returning the query default value
-//   If RANGE_REVERSALS is true, then the following are required:
-//     reverse: void() that reverses the subtree rooted at that node
-//       (aggregate data and any lazy flags should be reversed)
-//   makeNode: Node *(const T &) that returns a new node with
-//     the argument passed to the constructor
-//   applyToRange: void(Node *&, int, int, void(Node *&)) that applies
-//     a function to a node pointer to the disconnected subtree
-//     of the given range
-//   select: Node *(Node *&, int) that selects the kth node in a tree
-//   getFirst: pair<int, Node *>(Node *&, const T &,
-//                               bool(const Data &, const T &))
-//     that finds the first node and its index
-//     where cmp(x->val, val) returns false
-//   build: Node *(int, T()) that returns a node representing
-//     the tree of a specified size with a function that returns
-//     the argument passed to the constructor
-//   clear: void(Node *) that clears/erases a subtree's nodes
+// Indices are 0-indexed and ranges are inclusive with the exception of
+//   functions that accept two iterators as a parameter, such as
+//   the constructor, which are exclusive
+// Template Arguments:
+//   Tree: either Treap or Splay, each may have additional required fields
+//       or functions
+//     Required Fields:
+//       Node: typedef/using of the node class containing information about
+//           each node in the tree
+//         Required Fields:
+//           Data: typedef/using for the data type
+//           Lazy: typedef/using for the lazy type
+//           static const RANGE_UPDATES: a boolean indicating whether
+//             range updates are permitted
+//           static const RANGE_QUERIES: a boolean indicating whether
+//             range queries are permitted
+//           static const RANGE_REVERSALS: a boolean indicating whether
+//             range reversals are permitted
+//           l: a pointer to the left child
+//           r: a pointer to the right child
+//           val: the value of type Data being stored
+//           lz: only required if RANGE_UPDATES is true, the value of type
+//             Lazy to be propagated
+//           sbtr: only required if RANGE_QUERIES is true, the aggregate
+//             value of type Data for the subtree
+//         Required Functions:
+//           constructor(v): initializes a node with the value v
+//           propagate(): propagates the current node's lazy information
+//             (including rev) to its children
+//           apply(v): applies the lazy value v to the node
+//           reverse(): only required if RANGE_REVERSALS is true, marks
+//             this node's subtree for reversal (aggregate data and any lazy
+//             flags should be reversed)
+//           static qdef(): only required if RANGE_QUERIES is true, returns the
+//             query default value
+//     Required Functions:
+//       makeNode(v): creates a new node passing v to the node constructor
+//       applyToRange(root, i, j, f): applies the function f (accepting a
+//         node pointer or reference to a node pointer) to a node x where x
+//         is the disconnected subtree with indices in the range [i, j] for the
+//         tree rooted at root (passed by reference)
+//       select(x, k): returns the kth node in the subtree of x
+//       getFirst(x, v, cmp): returns the first node y (and its index) in the
+//         subtree of x where cmp(y->val, v) returns false
+//       build(N, f): builds a tree with N nodes using a generating function f
+//         and returns the ith element on the ith call, which is passes
+//         to the node constructor
+//       clear(x): adds all nodes in the subtree of x to the deleted buffer
+// Constructor Arguments:
+//   N: the size of the array
+//   f: a generating function that returns the ith element on the ith call,
+//     which is passed to the node constructor
+//   st: an iterator pointing to the first element in the array,
+//     whos elements are passed to the node constructor
+//   en: an iterator pointing to after the last element in the array,
+//     whos elements are passed to the node constructor
+// Functions:
+//   insert_at(i, v): inserts a node before index i by passing v to the
+//     node constructor
+//   insert_at(i, n, f): inserts n nodes before index i by passing the return
+//     value of the kth call to f to the node constructor for each of the
+//     n calls
+//   insert_at(i, st, en): inserts en - st nodes before index i where st is an
+//     iterator pointing to before the first element in the array, and en is an
+//     iterator pointing to after the last element in the array, where the
+//     elements are passed to the node constructor
+//   insert(v, cmp): inserts a node before the first of node y where
+//     cmp(y->val, v) returns false, by passing v to the node constructor
+//   erase_at(i): erases the node at index i
+//   erase_at(j): erases the nodes between index i and j inclusive
+//   erase(v, cmp): erases the first node y where both cmp(y->val, v) and
+//     cmp(v, y->val) returns false
+//   update(i, v): updates the node at index i with the lazy value v
+//   update(i, j, v): only valid if Node::RANGE_UPDATES is true, updates the
+//     nodes between index i and j inclusive with the lazy value v
+//   reverse(i, j): only valid if Node::RANGE_REVERSALS is true, reverses the
+//     nodes between index i and j inclusive
+//   size(): returns the number of nodes in the trees
+//   at(i): returns the value of the node at index i
+//   lower_bound(v, cmp): returns the index and pointer to the value of the
+//     first node y such that cmp(y->val, v) returns false, returns
+//     {size(), nullptr} if none exist
+//   upper_bound(v, cmp): returns the index and pointer to the value of the
+//     first node y such that cmp(v, y->val) returns true, returns
+//     {size(), nullptr} if none exist
+//   find(v, cmp): returns the index and pointer to the value of the
+//     first node y such that both cmp(y->val, v) and cmp(v, y->val) return
+//     false, returns {size(), nullptr} if none exist
+//   query(i, j): only valid if Node::RANGE_QUERIES is true, returns the
+//     aggregate value of the nodes between index i and j inclusive,
+//     Node::qdef() if empty
+//   values(): returns a vector of the values of all nodes in the tree
 // Time Complexity if Treap or Splay is used:
 //   constructor: O(N) expected for Treap,
 //                O(N) for Splay
@@ -74,7 +119,6 @@ using namespace std;
 // Tested:
 //   https://dmoj.ca/problem/ds4 (insert, erase, at, find, values)
 //   https://codeforces.com/contest/863/problem/D (reverse)
-//   https://dmoj.ca/problem/dmpg17g2 (point update, range queries)
 //   https://dmoj.ca/problem/acc1p1 (reverse, range queries)
 //   https://dmoj.ca/problem/noi05p2
 //     (insert_at, erase_at, range update, reverse, range queries)

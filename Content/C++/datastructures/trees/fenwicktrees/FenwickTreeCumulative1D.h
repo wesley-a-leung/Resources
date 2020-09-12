@@ -11,14 +11,14 @@ using namespace std;
 // Template Arguments:
 //   T: the type of the value
 //   C: a struct with the cumulative operation
-//     Functions:
+//     Required Functions:
 //       operator (l, r): combines the values l and r
 // Constructor Arguments:
 //   N: the size of the array
 //   f: a generating function that returns the ith element on the ith call
 //   st: an iterator pointing to the first element in the array
 //   en: an iterator pointing to after the last element in the array
-//   vdef: the default value for each element in the array
+//   qdef: the identity element of the operation
 //   op: an instance of the C struct
 // Functions:
 //   update(i, v): add v to the value at index i
@@ -37,18 +37,18 @@ using namespace std;
 //   https://dmoj.ca/problem/cco10p3
 template <class T, class C> struct FenwickTreeCumulative1D {
   int N; vector<T> BIT; C op;
-  FenwickTreeCumulative1D(int N, T vdef, C op = C())
-      : N(N), BIT(N + 1, vdef), op(op) {}
-  template <class F> FenwickTreeCumulative1D(int N, F f, T vdef, C op = C())
-      : FenwickTreeCumulative1D(N, vdef, op) {
+  FenwickTreeCumulative1D(int N, T qdef, C op = C())
+      : N(N), BIT(N + 1, qdef), op(op) {}
+  template <class F> FenwickTreeCumulative1D(int N, F f, T qdef, C op = C())
+      : FenwickTreeCumulative1D(N, qdef, op) {
     for (int i = 1; i <= N; i++) {
       BIT[i] = op(BIT[i], f());
       int j = i + (i & -i); if (j <= N) BIT[j] = op(BIT[j], BIT[i]);
     }
   }
   template <class It>
-  FenwickTreeCumulative1D(It st, It en, T vdef, C op = C())
-      : FenwickTreeCumulative1D(en - st, [&] { return *st++; }, vdef, op) {}
+  FenwickTreeCumulative1D(It st, It en, T qdef, C op = C())
+      : FenwickTreeCumulative1D(en - st, [&] { return *st++; }, qdef, op) {}
   void update(int i, T v) {
     for (i++; i <= N; i += i & -i) BIT[i] = op(BIT[i], v);
   }

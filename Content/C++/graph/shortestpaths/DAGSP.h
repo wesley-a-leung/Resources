@@ -12,7 +12,7 @@ using namespace std;
 //     compute the shortest path while greater<T> will compute the longest path
 // Constructor Arguments:
 //   G: a generic directed acyclic graph structure (weighted or unweighted)
-//     Functions:
+//     Required Functions:
 //       operator [v] const: iterates over the adjacency list of vertex v
 //         (which is a list of ints for an unweighted graph, or a list of
 //         pair<int, T> for a weighted graph with weights of type T)

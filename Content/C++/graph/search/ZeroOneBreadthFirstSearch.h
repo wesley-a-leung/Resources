@@ -8,7 +8,7 @@ using namespace std;
 //   T: the type of the weight of the edges in the graph
 // Constructor Arguments:
 //   G: a generic weighted graph structure
-//     Functions:
+//     Required Functions:
 //       operator [v] const: iterates over the adjacency list of vertex v
 //         (which is a list of pair<int, T> with weights of type T)
 //       size() const: returns the number of vertices in the graph

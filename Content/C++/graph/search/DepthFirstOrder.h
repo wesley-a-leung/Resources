@@ -7,12 +7,12 @@ using namespace std;
 // Vertices are 0-indexed
 // Constructor Arguments:
 //   G: a generic graph structure
-//     Functions:
+//     Required Functions:
 //       operator [v] const: iterates over the adjacency list of vertex v
 //         (which is a list of ints)
 //       size() const: returns the number of vertices in the graph
 //   rt: a single root vertex
-//   roots: a vector of root vertices
+//   roots: a vector of root vertices for each connected component
 // Fields:
 //   preInd: a vector of the pre order index for each vertex
 //   postInd: a vector of the post order index for each vertex

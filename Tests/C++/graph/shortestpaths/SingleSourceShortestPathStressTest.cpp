@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 #include "../../../../Content/C++/graph/representations/StaticGraph.h"
 #include "../../../../Content/C++/graph/shortestpaths/BellmanFordSSSP.h"
+#include "../../../../Content/C++/graph/shortestpaths/ClassicalDijkstraSSSP.h"
 #include "../../../../Content/C++/graph/shortestpaths/DijkstraSSSP.h"
 using namespace std;
 

@@ -4,42 +4,55 @@
 using namespace std;
 
 // Generic Treap node operations supporting a generic node class (such
-//   as the structs in BSTNode.h)
+//   as the structs in BSTNode)
 // Can be used in conjunction with DynamicRangeOperations to support
 //   range operations using treap node operations
 // Indices are 0-indexed and ranges are inclusive
-// makeNode creates a new node passing v to the node constructor
-// applyToRange applies the function f to a node x where x is the disconnected
-//   subtree with indices in the range [i, j] for the tree rooted at root
-// select finds the kth node in the subtree of x
-// index finds the index of node x in its tree
-//   (root is a dummy argument to maintain consistency with splay api)
-// getFirst returns the first node y (and its index) in the subtree of x
-//   where cmp(y->val, v) returns false
-// build builds a treap with N nodes using a generating function f
-//   that passes a single argument to the node constructor
-// clear adds all nodes in the subtree of x to the deleted buffer
-// Node must have the following:
-//   constructor: takes a single argument with the information for the node
-//   HAS_PAR: const static bool indicating whether this node has
-//     a parent pointer
-//   sz: integer representing the size of the subtree
-//   l: pointer of the same node type to the left child
-//   r: pointer of the same node type to the right child
-//   update: void() that updates the size of subtree,
-//     along with any additional information
-//   propagate: void() that pushes information lazily to the children
-//   If HAS_PAR is true, then it should also contain the following:
-//     p: pointer of the same node type to the parent
-//   If getFirst is called, then the following is also required:
-//     val: any type representing the value of the node
+// Template Arguments:
+//   _Node: a generic node class (sample structs are in BSTNode)
+//     Required Fields:
+//       static const HAS_PAR: a boolean indicating whether a
+//         parent pointer exists
+//       sz: the number of nodes in the subtree
+//       l: a pointer to the left child
+//       r: a pointer to the right child
+//       p: only required if index is called, a pointer to the parent
+//       val: only required if getFirst is called, the value being stored
+//     Required Functions:
+//       constructor(v): initializes a node with the value v
+//       update(): updates the current node's information based on its children
+//       propagate(): propagates the current node's lazy information (including
+//         rev) to its children
+// Fields:
+//   Node: equivalent to _Node
+//   TR: a deque of all nodes (including potentially deleted nodes)
+//   deleted: a deque of node pointers to store deleted nodes
+// Functions:
+//   merge(x, l, r): merges the nodes l and r into the node x
+//   split(x, l, r, lsz): splits the node x into the nodes l and r with
+//     the size of l being lsz
+//   makeNode(v): creates a new node passing v to the node constructor
+//   applyToRange(root, i, j, f): applies the function f (accepting a
+//     node pointer or reference to a node pointer) to a node x where x
+//     is the disconnected subtree with indices in the range [i, j] for the
+//     tree rooted at root (passed by reference)
+//   select(x, k): returns the kth node in the subtree of x
+//   index(root, x): only valid if Node::HAS_PAR is true, returns the index
+//     of node x in its tree (root is a dummy argument to maintain
+//     consistency with Splay api)
+//   getFirst(x, v, cmp): returns the first node y (and its index) in the
+//     subtree of x where cmp(y->val, v) returns false
+//   build(N, f): builds a treap with N nodes using a generating function f
+//     and returns the ith element on the ith call, which is passes
+//     to the node constructor
+//   clear(x): adds all nodes in the subtree of x to the deleted buffer
 // In practice, has a moderate constant, not as fast as segment trees
 //   and slightly slower than Splay
 // Time Complexity:
 //   build: O(N) expected
 //   clear: O(N)
 //   makeNode: O(1)
-//   merge, split, applyToRange, index, select, getFirst: O(log N) expected
+//   merge, split, applyToRange, select, index, getFirst: O(log N) expected
 // Memory Complexity: O(N)
 // Tested:
 //   https://dmoj.ca/problem/ds4 (applyToRange, select, getFirst)

@@ -8,29 +8,30 @@ using namespace std;
 //   the constructor, which are exclusive
 // Template Arguments:
 //   C: struct to combine data and lazy values
-//     Fields:
+//     Required Fields:
 //       Data: typedef/using for the data type
 //       Lazy: typedef/using for the lazy type
-//       qdef: the query default value of type Data
-//     Functions:
-//       merge(l, r): returns the values l of type Data merged with
+//     Required Functions:
+//       static qdef(): returns the query default value of type Data
+//       static ldef(): returns the lazy default value of type Lazy
+//       static merge(l, r): returns the values l of type Data merged with
 //         r of type Data, must be associative
-//       applyLazy(l, r): returns the value r of type Lazy applied to
+//       static applyLazy(l, r): returns the value r of type Lazy applied to
 //         l of type Data, must be associative
-//       getSegmentVal(v, k): returns the lazy value v when applied over a
-//         segment of length k
-//       mergeLazy(l, r): returns the values l of type Lazy merged with
+//       static getSegmentVal(v, k): returns the lazy value v when applied over
+//         a segment of length k
+//       static mergeLazy(l, r): returns the values l of type Lazy merged with
 //         r of type Lazy, must be associative
 //     Sample Struct: supporting range assignments and range sum queries
-//       struct Cs {
+//       struct C {
 //         using Data = int;
 //         using Lazy = int;
-//         const Data qdef = 0;
-//         const Lazy ldef = numeric_limits<int>::min();
-//         Data merge(const Data &l, const Data &r) const { return l + r; }
-//         Data applyLazy(const Data &l, const Lazy &r) const { return r; }
-//         Lazy getSegmentVal(const Lazy &v, int k) const { return v * k; }
-//         Lazy mergeLazy(const Lazy &l, const Lazy &r) const { return r; }
+//         static Data qdef() { return 0; }
+//         static Lazy ldef() { return numeric_limits<int>::min(); }
+//         static Data merge(const Data &l, const Data &r) { return l + r; }
+//         static Data applyLazy(const Data &l, const Lazy &r) { return r; }
+//         static Lazy getSegmentVal(const Lazy &v, int k) { return v * k; }
+//         static Lazy mergeLazy(const Lazy &l, const Lazy &r) { return r; }
 //       };
 // Constructor Arguments:
 //   N: the size of the array
@@ -48,32 +49,33 @@ using namespace std;
 //   update, query: O(log N)
 // Memory Complexity: O(N)
 // Tested:
-//   https://dmoj.ca/problem/dmopc17c4p6
 //   https://dmoj.ca/problem/lazy
 //   https://mcpt.ca/problem/seq3
 //   https://judge.yosupo.jp/problem/range_affine_range_sum
+//   https://dmoj.ca/problem/dmopc17c4p6
 template <class C> struct SegmentTreeLazyBottomUp {
   using Data = typename C::Data; using Lazy = typename C::Lazy;
   int N, lgN; vector<Data> TR; vector<Lazy> LZ;
   void apply(int i, const Lazy &v, int k) {
-    TR[i] = C().applyLazy(TR[i], C().getSegmentVal(v, k));
-    if (i < N) LZ[i] = C().mergeLazy(LZ[i], v);
+    TR[i] = C::applyLazy(TR[i], C::getSegmentVal(v, k));
+    if (i < N) LZ[i] = C::mergeLazy(LZ[i], v);
   }
   void eval(int i, int k) {
-    TR[i] = C().merge(TR[i * 2], TR[i * 2 + 1]); if (LZ[i] != C().ldef)
-      TR[i] = C().applyLazy(TR[i], C().getSegmentVal(LZ[i], k));
+    TR[i] = C::merge(TR[i * 2], TR[i * 2 + 1]); if (LZ[i] != C::ldef())
+      TR[i] = C::applyLazy(TR[i], C::getSegmentVal(LZ[i], k));
   }
   void propagate(int i) {
     int h = lgN + 1, k = 1 << lgN, ii = i >> h;
-    for (; h > 0; ii = i >> --h, k /= 2) if (LZ[ii] != C().ldef) {
+    for (; h > 0; ii = i >> --h, k /= 2) if (LZ[ii] != C::ldef()) {
       apply(ii * 2, LZ[ii], k); apply(ii * 2 + 1, LZ[ii], k);
-      LZ[ii] = C().ldef;
+      LZ[ii] = C::ldef();
     }
   }
   template <class F> SegmentTreeLazyBottomUp(int N, F f)
-      : N(N), lgN(N == 0 ? 0 : __lg(N)), TR(N * 2, C().qdef), LZ(N, C().ldef) {
-    generate(TR.begin() + N, TR.end(), f); for (int i = N - 1; i > 0; i--)
-      TR[i] = C().merge(TR[i * 2], TR[i * 2 + 1]);
+      : N(N), lgN(N == 0 ? 0 : __lg(N)),
+        TR(N * 2, C::qdef()), LZ(N, C::ldef()) {
+    generate(TR.begin() + N, TR.end(), f);
+    for (int i = N - 1; i > 0; i--) TR[i] = C::merge(TR[i * 2], TR[i * 2 + 1]);
   }
   template <class It> SegmentTreeLazyBottomUp(It st, It en)
       : SegmentTreeLazyBottomUp(en - st, [&] { return *st++; }) {}
@@ -93,11 +95,11 @@ template <class C> struct SegmentTreeLazyBottomUp {
     }
   }
   Data query(int l, int r) {
-    propagate(l += N); propagate(r += N); Data ql = C().qdef, qr = C().qdef;
+    propagate(l += N); propagate(r += N); Data ql = C::qdef(), qr = C::qdef();
     for (; l <= r; l /= 2, r /= 2) {
-      if (l % 2) ql = C().merge(ql, TR[l++]);
-      if (!(r % 2)) qr = C().merge(TR[r--], qr);
+      if (l % 2) ql = C::merge(ql, TR[l++]);
+      if (!(r % 2)) qr = C::merge(TR[r--], qr);
     }
-    return C().merge(ql, qr);
+    return C::merge(ql, qr);
   }
 };

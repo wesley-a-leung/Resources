@@ -5,44 +5,85 @@ using namespace std;
 
 // Link Cut Tree backed by a splay tree
 // Vertices are 0-indexed, constructor with iterators is an exclusive range
-// Accepts a generic node class as a template parameter (such as the
-//   structs in BSTNode.h)
-// Node: struct with at least following
-//     (more may be required by the underlying Tree being used):
-//   Data: typedef/using of the value type this node stores
-//   Lazy: typedef/using of the lazy type used to update the node
-//     (even if no lazy propagation occurs)
-//   sz: integer representing the size of the subtree
-//   RANGE_UPDATES: const static bool indicating whether range updates
-//     are supported
-//   RANGE_QUERIES: const static bool indicating whether range queries
-//     are supported
-//   RANGE_REVERSALS: const static bool indicating whether range reversals
-//     are supported
-//   HAS_PAR: const static bool indicating whether this node has
-//     a parent pointer, which MUST be true for a link cut tree
-//   l: pointer of the same node type to the left child
-//   r: pointer of the same node type to the right child
-//   p: pointer of the same node type to the parent
-//   val: Data representing the value of the node
-//   constructor: takes a single argument with the information for the node
-//   update: void() that updates the size of subtree,
-//     along with any additional information
-//   propagate: void() that pushes information lazily to the children
-//   apply: void(const Lazy &v) that updates the information of the node
-//     (including optional aggregate and lazy information)
-// If RANGE_UPDATES is true, then the following are required to support
-//     path updates:
-//   lz: Lazy representing the lazy information that will be pushed to
-//     the child nodes
-// If RANGE_QUERIES is true, then the following are required to support
-//     path queries:
-//   sbtr: Data representing the aggregate data of the subtree
-//   qdef: static Data() returning the query default value
-// If RANGE_REVERSALS is true, then the following are required to support
-//     unrooted link cut trees:
-//   reverse: void() that reverses the subtree rooted at that node
-//     (aggregate data and any lazy flags should be reversed)
+// Template Arguments:
+//   Node: a generic node class (sample structs are in BSTNode)
+//     Required Fields:
+//       Data: typedef/using for the data type
+//       Lazy: typedef/using for the lazy type
+//       static const RANGE_UPDATES: a boolean indicating whether
+//         range updates are permitted
+//       static const RANGE_QUERIES: a boolean indicating whether
+//         range queries are permitted
+//       static const RANGE_REVERSALS: a boolean indicating whether
+//         range reversals are permitted
+//       static const HAS_PAR: a boolean indicating whether a
+//         parent pointer exists, must be true for LinkCutTree
+//       sz: the number of nodes in the subtree
+//       l: a pointer to the left child
+//       r: a pointer to the right child
+//       p: a pointer to the parent
+//       val: only required if getFirst is called, the value being stored
+//       sbtr: only required if RANGE_QUERIES is true to support path queries,
+//         the aggregate value of type Data for the subtree
+//       lz: only required if RANGE_UPDATES is true to support path updates,
+//         the value of type Lazy to be propagated
+//     Required Functions:
+//       constructor(v): initializes a node with the value v
+//       update(): updates the current node's information based on its children
+//       propagate(): propagates the current node's lazy information (including
+//         rev) to its children
+//       apply(v): applies the lazy value v to the node
+//       reverse(): only required if RANGE_REVERSALS is true to support
+//         rerooting, marks this node's subtree for reversal (aggregate data
+//         and any lazy flags should be reversed)
+//       static qdef(): returns the query default value
+// Constructor Arguments:
+//   N: the number of nodes in the link cut tree
+//   f: a generating function that returns the ith element on the ith call,
+//     which is passed to the node constructor
+//   st: an iterator pointing to the first element in the array,
+//     whos elements are passed to the node constructor
+//   en: an iterator pointing to after the last element in the array,
+//     whos elements are passed to the node constructor
+// Functions:
+//   makeRoot(x): only valid if Node::RANGE_REVERSALS is true, makes x the
+//     root of its connected component
+//   lca(x, y): returns the lowest common ancestor of x and y in
+//     the current forest, returns -1 if not connected
+//   connected(x, y): returns whether x and y are connected
+//   link(x, y): only valid if Node::RANGE_REVERSALS is true, links the nodes
+//     x and y, assumes x and y are not connected, reroots the tree at node y
+//   safeLink(x, y): only valid if Node::RANGE_REVERSALS is true, links
+//     the nodes x and y, returns false if already connected, true otherwise,
+//     reroots the tree at node y
+//   linkParent(par, ch): makes par the parent of the node ch, returns false if
+//     par and ch are already connected, true otherwise
+//   cut(x, y): only valid if Node::RANGE_REVERSALS is true, cuts the edge
+//     between nodes x and y, returns false if this edge doesn't exist,
+//     true otherwise, reroots the forest at node x
+//   cutParent(x): cuts the edge between node x and its parent, returns false
+//     if no parent exists (x is a root), true otherwise
+//   findParent(x): returns the parent of node x, -1 if it doesn't exist
+//   findRoot(x): returns the root of the forest containing node x
+//   depth(x): returns the depth of node x, where the depth of the root is 0
+//   kthParent(x): returns the kth parent of node x, where the 0th parent is
+//     x, -1 if it doesn't exist
+//   updateVertex(x, v): updates the node x with the lazy value v
+//   updatePathFromRoot(to, v): only valid if Node::RANGE_UPDATES is true,
+//     updates the path from the root of the forest containing
+//     node to, to node to, with the lazy value v
+//   updatePath(from, to, v): only valid if Node::RANGE_UPDATES and
+//     Node::RANGE_REVERSALS are true, updates the path from node
+//     from to node to, reroots the forest at node from, with the lazy value v,
+//     reroots the forest at node from
+//   queryVertex(x): returns the value of node x
+//   queryPathFromRoot(to): only valid if Node::RANGE_QUERIES is true,
+//     returns the aggregate value of the path from the root of the forest
+//     containing node to, to node to
+//   queryPath(from, to) only valid if Node::RANGE_QUERIES and
+//     Node::RANGE_REVERSALS are true, returns the aggregate value of the path
+//     from node from to node to, reroots the forest at node from, reroots the
+//     forest at node from
 // Time Complexity:
 //   constructor: O(N)
 //   makeRoot, lca, connected, link, safeLink, linkParent, cut, cutParent,

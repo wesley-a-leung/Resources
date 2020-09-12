@@ -9,7 +9,7 @@ using namespace std;
 //   T: the type of the weight of the edges in the tree
 // Constructor Arguments:
 //   G: a generic undirected tree structure (weighted or unweighted)
-//     Functions:
+//     Required Functions:
 //       operator [v] const: iterates over the adjacency list of vertex v
 //         (which is a list of ints for an unweighted tree, or a list of
 //         pair<int, T> for a weighted tree with weights of type T)

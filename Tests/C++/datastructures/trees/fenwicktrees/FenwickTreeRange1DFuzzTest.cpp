@@ -11,8 +11,7 @@ void test1() {
     int N = rng() % 101;
     vector<long long> A(N);
     for (auto &&ai : A) ai = rng() % int(1e9) + 1;
-    FenwickTreeRange1D<long long> FT(N);
-    for (int i = 0; i < N; i++) FT.update(i, i, A[i]);
+    FenwickTreeRange1D<long long> FT(A.begin(), A.end());
     int Q = N == 0 ? 0 : 100 - rng() % 5;
     vector<long long> ans0, ans1;
     for (int i = 0; i < Q; i++) {

@@ -7,7 +7,7 @@ using namespace std;
 // Vertices are 0-indexed
 // Constructor Arguments:
 //   G: a generic undirected graph structure
-//     Functions:
+//     Required Functions:
 //       operator [v] const: iterates over the adjacency list of vertex v
 //         (which is a list of ints)
 //       size() const: returns the number of vertices in the graph

@@ -10,10 +10,10 @@ using namespace std;
 //   D: the number of dimensions of the fenwick tree
 //   T: the type of the value
 //   C: a struct with the cumulative operation
-//     Functions:
+//     Required Functions:
 //       operator (l, r): combines the values l and r
 // Constructor Arguments:
-//   qdef: the default query value
+//   qdef: the identity element of the operation
 //   N: the size of the first dimension
 //   ...args: the sizes of the second, third, fourth, etc. dimensions
 // Functions:

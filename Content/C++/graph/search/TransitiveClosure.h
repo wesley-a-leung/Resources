@@ -9,7 +9,7 @@ using namespace std;
 //   MAXV: the maximum number of vertices in the graph
 // Constructor Arguments:
 //   G: a generic graph structure
-//     Functions:
+//     Required Functions:
 //       operator [v] const: iterates over the adjacency list of vertex v
 //         (which is a list of ints)
 //       size() const: returns the number of vertices in the graph

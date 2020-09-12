@@ -10,39 +10,44 @@ using namespace std;
 // Template Arguments:
 //   LAZY: boolean to indicate whether or not range updates are enabled
 //   C: struct to combine data and lazy values
-//     Fields:
+//     Required Fields:
 //       Data: typedef/using for the data type
 //       Lazy: typedef/using for the lazy type
-//       qdef: the query default value of type Data
-//       ldef (only required if LAZY is true): the lazy default value of
-//         type Lazy
-//     Functions:
-//       merge(l, r): returns the values l of type Data merged with
+//     Required Functions:
+//       static qdef(): returns the query default value of type Data
+//       static ldef() (only required if LAZY is true): returns the lazy
+//         default value of type Lazy
+//       static merge(l, r): returns the values l of type Data merged with
 //         r of type Data, must be associative
-//       applyLazy(l, r): returns the value r of type Lazy applied to
+//       static applyLazy(l, r): returns the value r of type Lazy applied to
 //         l of type Data, must be associative
-//       getSegmentVal(v, k) (only required if LAZY is true): returns the lazy
-//         value v when applied over a segment of length k
-//       mergeLazy(l, r) (only required if LAZY is true): returns the values
-//         l of type Lazy merged with r of type Lazy, must be associative
+//       static getSegmentVal(v, k): only required if LAZY is true, returns
+//         the lazy value v when applied over a segment of length k
+//       static mergeLazy(l, r): only required if LAZY is true, returns
+//         the values l of type Lazy merged with r of type Lazy,
+//         must be associative
 //     Sample Struct: C1 supports point increments and range max queries,
 //         while C2 supports range assignments and range sum queries
 //       struct C1 {
 //         using Data = int;
 //         using Lazy = int;
-//         const Data qdef = numeric_limits<int>::min();
-//         Data merge(const Data &l, const Data &r) const { return max(l, r); }
-//         Data applyLazy(const Data &l, const Lazy &r) const { return l + r; }
+//         static Data qdef() { return numeric_limits<int>::min(); }
+//         static Data merge(const Data &l, const Data &r) {
+//           return max(l, r);
+//         }
+//         static Data applyLazy(const Data &l, const Lazy &r) {
+//           return l + r;
+//         }
 //       };
 //       struct C2 {
 //         using Data = int;
 //         using Lazy = int;
-//         const Data qdef = 0;
-//         const Lazy ldef = numeric_limits<int>::min();
-//         Data merge(const Data &l, const Data &r) const { return l + r; }
-//         Data applyLazy(const Data &l, const Lazy &r) const { return r; }
-//         Lazy getSegmentVal(const Lazy &v, int k) const { return v * k; }
-//         Lazy mergeLazy(const Lazy &l, const Lazy &r) const { return r; }
+//         static Data qdef() { return 0; }
+//         static Lazy ldef() { return numeric_limits<int>::min(); }
+//         static Data merge(const Data &l, const Data &r) { return l + r; }
+//         static Data applyLazy(const Data &l, const Lazy &r) { return r; }
+//         static Lazy getSegmentVal(const Lazy &v, int k) { return v * k; }
+//         static Lazy mergeLazy(const Lazy &l, const Lazy &r) { return r; }
 //       };
 // Constructor Arguments:
 //   N: the size of the array
@@ -52,6 +57,7 @@ using namespace std;
 //   vdef: the default value to fill the array with
 // Functions:
 //   update(i, v): updates the index i with the lazy value v
+//   update(l, r, v): update the range [l, r] with the lazy value v
 //   query(l, r): queries the range [l, r] and returns the aggregate value
 // In practice, has a small constant, not quite as fast as fenwick trees
 //   or bottom up non lazy segment trees,
@@ -64,35 +70,33 @@ using namespace std;
 //   https://dmoj.ca/problem/ds3 (LAZY = false)
 //   https://dmoj.ca/problem/dmpg17g2 (LAZY = false)
 //   https://dmoj.ca/problem/coci17c1p5 (LAZY = false)
-//   https://dmoj.ca/problem/cco20p5 (LAZY = false)
-//   https://www.spoj.com/problems/BRCKTS/ (LAZY = false)
 //   https://judge.yosupo.jp/problem/point_set_range_composite (LAZY = false)
-//   https://dmoj.ca/problem/dmopc17c4p6 (LAZY = true)
 //   https://dmoj.ca/problem/lazy (LAZY = true)
 //   https://mcpt.ca/problem/seq3 (LAZY = true)
 //   https://judge.yosupo.jp/problem/range_affine_range_sum (LAZY = true)
+//   https://dmoj.ca/problem/dmopc17c4p6 (LAZY = true)
 template <const bool LAZY, class C> struct SegmentTreeTopDown {
 #define lazy_def template <const bool _ = LAZY> typename enable_if<_>::type
 #define agg_def template <const bool _ = LAZY> typename enable_if<!_>::type
   using Data = typename C::Data; using Lazy = typename C::Lazy;
   template <const bool _, const int __ = 0> struct Node {
-    Data val; Node() : val(C().qdef) {}
+    Data val; Node() : val(C::qdef()) {}
   };
   template <const int __> struct Node<true, __> {
-    Data val; Lazy lz; Node() : val(C().qdef), lz(C().ldef) {}
+    Data val; Lazy lz; Node() : val(C::qdef()), lz(C::ldef()) {}
   };
   int N; vector<Node<LAZY>> TR;
   lazy_def apply(int x, int tl, int tr, const Lazy &v) {
-    TR[x].val = C().applyLazy(TR[x].val, C().getSegmentVal(v, tr - tl + 1));
-    TR[x].lz = C().mergeLazy(TR[x].lz, v);
+    TR[x].val = C::applyLazy(TR[x].val, C::getSegmentVal(v, tr - tl + 1));
+    TR[x].lz = C::mergeLazy(TR[x].lz, v);
   }
   agg_def apply(int x, int, int, const Lazy &v) {
-    TR[x].val = C().applyLazy(TR[x].val, v);
+    TR[x].val = C::applyLazy(TR[x].val, v);
   }
   lazy_def propagate(int x, int tl, int tr) {
-    if (TR[x].lz != C().ldef) {
+    if (TR[x].lz != C::ldef()) {
       int m = tl + (tr - tl) / 2; apply(x * 2, tl, m, TR[x].lz);
-      apply(x * 2 + 1, m + 1, tr, TR[x].lz); TR[x].lz = C().ldef;
+      apply(x * 2 + 1, m + 1, tr, TR[x].lz); TR[x].lz = C::ldef();
     }
   }
   agg_def propagate(int, int, int) {}
@@ -100,20 +104,20 @@ template <const bool LAZY, class C> struct SegmentTreeTopDown {
     if (tl == tr) { TR[x].val = f(); return; }
     int m = tl + (tr - tl) / 2;
     build(x * 2, tl, m, f); build(x * 2 + 1, m + 1, tr, f);
-    TR[x].val = C().merge(TR[x * 2].val, TR[x * 2 + 1].val);
+    TR[x].val = C::merge(TR[x * 2].val, TR[x * 2 + 1].val);
   }
   void update(int x, int tl, int tr, int l, int r, const Lazy &v) {
     if (l <= tl && tr <= r) { apply(x, tl, tr, v); return; }
     propagate(x, tl, tr); int m = tl + (tr - tl) / 2;
     if (tl <= r && l <= m) update(x * 2, tl, m, l, r, v);
     if (m + 1 <= r && l <= tr) update(x * 2 + 1, m + 1, tr, l, r, v);
-    TR[x].val = C().merge(TR[x * 2].val, TR[x * 2 + 1].val);
+    TR[x].val = C::merge(TR[x * 2].val, TR[x * 2 + 1].val);
   }
   Data query(int x, int tl, int tr, int l, int r) {
-    if (r < tl || tr < l) return C().qdef;
+    if (r < tl || tr < l) return C::qdef();
     if (l <= tl && tr <= r) return TR[x].val;
     propagate(x, tl, tr); int m = tl + (tr - tl) / 2;
-    return C().merge(query(x * 2, tl, m, l, r),
+    return C::merge(query(x * 2, tl, m, l, r),
                    query(x * 2 + 1, m + 1, tr, l, r));
   }
   template <class F> SegmentTreeTopDown(int N, F f)

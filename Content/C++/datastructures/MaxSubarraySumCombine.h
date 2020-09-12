@@ -17,29 +17,29 @@ template <class T> struct MaxSubarraySumCombine {
     Data ret; ret.pre = ret.suf = ret.sum = ret.maxSum = v; return ret;
   }
   static Lazy makeLazy(const T &v) { return Lazy(v, v); }
-  const Data qdef = [&] () {
+  static Data qdef() {
     Data ret = makeData(numeric_limits<T>::lowest()); ret.sum = T();
     return ret;
-  }();
-  const Lazy ldef = makeLazy(numeric_limits<T>::lowest());
-  Data merge(const Data &l, const Data &r) const {
+  }
+  static Lazy ldef() { return makeLazy(numeric_limits<T>::lowest()); }
+  static Data merge(const Data &l, const Data &r) {
     if (l.maxSum == numeric_limits<T>::lowest()) return r;
     if (r.maxSum == numeric_limits<T>::lowest()) return l;
     Data ret; ret.pre = max(l.pre, l.sum + r.pre);
     ret.suf = max(l.suf + r.sum, r.suf); ret.sum = l.sum + r.sum;
     ret.maxSum = max(max(l.maxSum, r.maxSum), l.suf + r.pre); return ret;
   }
-  Data applyLazy(const Data &, const Lazy &r) const {
+  static Data applyLazy(const Data &, const Lazy &r) {
     Data ret; ret.pre = ret.suf = ret.maxSum = max(r.first, r.second);
     ret.sum = r.first; return ret;
   }
   template <class IndexType>
-  Lazy getSegmentVal(const Lazy &v, IndexType k) const {
+  static Lazy getSegmentVal(const Lazy &v, IndexType k) {
     return Lazy(v.first * k, v.second);
   }
-  Lazy mergeLazy(const Lazy &, const Lazy &r) const { return r; }
-  void revData(Data &v) const { swap(v.pre, v.suf); }
-  template <class IndexType> Data getSegmentVdef(IndexType) const {
+  static Lazy mergeLazy(const Lazy &, const Lazy &r) { return r; }
+  static void revData(Data &v) { swap(v.pre, v.suf); }
+  template <class IndexType> static Data getSegmentVdef(IndexType) {
     return makeData(IndexType());
   }
 };

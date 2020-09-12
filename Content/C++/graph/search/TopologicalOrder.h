@@ -8,7 +8,7 @@ using namespace std;
 //   G: a generic directed acyclic graph structure
 //       which can be weighted or unweighted, though weights do not change
 //       the topological order
-//     Functions:
+//     Required Functions:
 //       operator [v] const: iterates over the adjacency list of vertex v
 //         (which is a list of ints for an unweighted graph, or a list of
 //         pair<int, T> for a weighted graph with weights of type T)

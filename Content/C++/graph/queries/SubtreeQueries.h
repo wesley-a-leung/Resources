@@ -2,28 +2,82 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Supports updates and queries on a subtree
+// Supports subtree updates and queries on a forest
+// Vertices and indices are 0-indexed
+// Template Arguments:
+//   R: struct supporting range updates and queries on indices
+//     Required Fields:
+//       Data: typedef/using for the data type
+//       Lazy: typedef/using for the lazy type
+//     Required Functions:
+//       static qdef(): returns the query default value of type Data
+//       constructor(A): takes a vector A of type Data with the initial
+//         value of each index
+//       update(l, r, val): updates the range [l, r] with the value val
+//       query(l, r): queries the range [l, r]
+//     Sample Struct: supporting range sum updates and queries
+//       struct R {
+//         using Data = int;
+//         using Lazy = int;
+//         static Data qdef() { return 0; }
+//         FenwickTreeRange1D<Data> FT;
+//         R(const vector<Data> &A) : FT(A.begin(), A.end()) {}
+//         void update(int l, int r, const Lazy &val) { FT.update(l, r, val); }
+//         Data query(int l, int r) { return FT.query(l, r); }
+//       };
+//   VALUES_ON_EDGES: boolean indicating whether the values are on the edges
+//     (the largest depth vertex of the edge) or the vertices
+// Constructor Arguments:
+//   G: a generic forest data structure
+//     Required Functions:
+//       operator [v] const: iterates over the adjacency list of vertex v
+//         (which is a list of ints)
+//       size() const: returns the number of vertices in the forest
+//   A: a vector of type R::Data with the initial value of each vertex
+// Functions:
+//   updateVertex(v, val): updates the vertex v with the value val
+//   updateSubtree(v, val): updates the subtree of vertex v with the value val
+//   queryVertex(v): queries the vertex v
+//   querySubtree(v): queries the subtree of vertex v
+// In practice, constructor has a moderate constant,
+//   update and query functions have a very small constant plus
+//   the constants of R's update and query functions
 // Time Complexity:
-//   run: O(V)
-//   updateVertex, updateSubtree, querySubtree: O(1) * (complexity of update/query)
-// Memory Complexity: O(V)
-template <const int MAXV, const bool ONE_INDEXED> struct SubtreeQueries {
-    using Data = int; using Lazy = int; int st[MAXV], en[MAXV], vert[MAXV], curInd; vector<int> adj[MAXV];
-    void update(int i, const Lazy &val); // to be implemented
-    void update(int l, int r, const Lazy &val); // to be implemented
-    Data query(int l, int r); // to be implemented
-    void dfs(int v, int prev) {
-        vert[st[v] = ++curInd] = v;
-        for (int w : adj[v]) if (w != prev) dfs(w, v);
-        en[v] = curInd;
-    }
-    void clear(int V = MAXV) { for (int i = 0; i < V; i++) adj[i].clear(); }
-    void run(int V, int root = 0) {
-        curInd = int(ONE_INDEXED) - 1; fill(st, st + V, -1); dfs(root, -1);
-        for (int v = 0; v < V; v++) if (st[v] == -1) dfs(v, -1);
-    }
-    void addEdge(int a, int b) { adj[a].push_back(b); adj[b].push_back(a); }
-    void updateVertex(int v, const Lazy &val) { update(st[v], val); }
-    void updateSubtree(int v, const Lazy &val) { update(st[v], en[v], val); }
-    Data querySubtree(int v) { return query(st[v], en[v]); }
+//   constructor: O(V) + time complexity of R's constructor
+//   updateVertex, updateSubtree, queryVertex, querySubtree:
+//     time complexity of update/query
+// Memory Complexity: O(V) + memory complexity of R
+// Tested:
+//   https://judge.yosupo.jp/problem/vertex_add_subtree_sum
+//   https://codeforces.com/contest/620/problem/E
+template <class R, const bool VALUES_ON_EDGES> struct SubtreeQueries {
+  using Data = typename R::Data; using Lazy = typename R::Lazy;
+  int V, ind; vector<int> pre, post, vert; R ops;
+  void updateVertex(int v, const Lazy &val) {
+    ops.update(pre[v], pre[v], val);
+  }
+  void updateSubtree(int v, const Lazy &val) {
+    int l = pre[v] + VALUES_ON_EDGES, r = post[v];
+    if (l <= r) ops.update(l, r, val);
+  }
+  Data queryVertex(int v) { return ops.query(pre[v], pre[v]); }
+  Data querySubtree(int v) {
+    int l = pre[v] + VALUES_ON_EDGES, r = post[v];
+    return l <= r ? ops.query(l, r) : R::qdef();
+  }
+  template <class Forest> void dfs(const Forest &G, int v, int prev) {
+    vert[pre[v] = ++ind] = v; for (int w : G[v]) if (w != prev) dfs(G, w, v);
+    post[v] = ind;
+  }
+  template <class Forest>
+  vector<Data> reorder(const Forest &G, const vector<Data> &A) {
+    for (int v = 0; v < V; v++) if (pre[v] == -1) dfs(G, v, -1);
+    vector<Data> ret; ret.reserve(V);
+    for (int i = 0; i < V; i++) ret.push_back(A[vert[i]]);
+    return ret;
+  }
+  template <class Forest>
+  SubtreeQueries(const Forest &G, const vector<Data> &A)
+      : V(G.size()), ind(-1), pre(V, -1), post(V), vert(V),
+        ops(reorder(G, A)) {}
 };

@@ -8,13 +8,14 @@ using namespace std;
 // Vertices and indices are 0-indexed
 // Constructor Arguments:
 //   G: a generic forest data structure
-//     Functions:
+//     Required Functions:
 //       operator [v] const: iterates over the adjacency list of vertex v
 //         (which is a list of ints)
 //       size() const: returns the number of vertices in the forest
 // Fields:
 //   root: vector of roots for the forest each vertex is in
-//   dep: vector of depths to each vertex from the root of its forest
+//   dep: vector of depths to each vertex from the root of
+//     its connected component
 //   par: vector of parent vertices for each vertex (or -1 if its a root)
 //   size: vector of sizes of the subtree for each vertex
 //   head: vector of the head of the chain of each vertex
@@ -38,8 +39,9 @@ using namespace std;
 //   connected: O(1)
 // Memory Complexity: O(V)
 // Tested:
-//   https://www.spoj.com/problems/GSS7/
 //   https://www.spoj.com/problems/QTREE2/
+//   https://www.spoj.com/problems/GSS7/
+//   https://judge.yosupo.jp/problem/vertex_set_path_composite
 struct HLD {
   int V, ind; vector<int> root, dep, par, size, head, pre, post, vert;
   template <class Forest>

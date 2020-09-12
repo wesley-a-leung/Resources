@@ -11,16 +11,17 @@ using namespace std;
 //   T: the type of the weight of the edges in the forest
 // Constructor Arguments:
 //   G: a generic forest data structure (weighted or unweighted)
-//     Functions:
+//     Required Functions:
 //       operator [v] const: iterates over the adjacency list of vertex v
 //         (which is a list of ints for an unweighted forest, or a list of
 //         pair<int, T> for a weighted forest with weights of type T)
 //       size() const: returns the number of vertices in the forest
 //   rt: a single root vertex
-//   roots: a vector of root vertices
+//   roots: a vector of root vertices for each connected component
 // Fields:
 //   root: vector of roots for the forest each vertex is in
-//   dep: vector of depths to each vertex from the root of its forest
+//   dep: vector of depths to each vertex from the root of
+//     its connected component
 //   pre: vector of the pre order traversal indices for each vertex
 //   vert: vector of vertex for each pre order index
 // Functions:
