@@ -27,6 +27,7 @@ using namespace std;
 //   https://judge.yosupo.jp/problem/unionfind
 //   https://dmoj.ca/problem/ds2
 //   https://tssoj.ca/problem/ninjaclasher18c2p3
+//   https://atcoder.jp/contests/abc177/tasks/abc177_d
 struct UnionFind {
   vector<int> UF; int cnt; UnionFind(int N) : UF(N, -1), cnt(N) {}
   int find(int v) { return UF[v] < 0 ? v : UF[v] = find(UF[v]); }
