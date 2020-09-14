@@ -8,7 +8,7 @@ using namespace std;
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
 // Template Arguments:
-//   T: the type of the value
+//   T: the type of each element
 // Constructor Arguments:
 //   N: the size of the array
 //   f: a generating function that returns the ith element on the ith call

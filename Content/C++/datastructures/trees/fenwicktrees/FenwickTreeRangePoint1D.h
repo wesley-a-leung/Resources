@@ -9,7 +9,7 @@ using namespace std;
 //   the constructor, which are exclusive
 // Order of arguments for update differs slightly from FenwickTreeRangePoint
 // Template Arguments:
-//   T: the type of the value
+//   T: the type of each element
 // Constructor Arguments:
 //   N: the size of the array
 //   f: a generating function that returns the ith element on the ith call

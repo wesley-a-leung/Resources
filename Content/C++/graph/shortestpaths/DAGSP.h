@@ -8,8 +8,10 @@ using namespace std;
 // Vertices are 0-indexed
 // Template Arguments:
 //   T: the type of the weight of the edges in the graph
-//   Cmp: the comparator to compare two distances; less<T> will
-//     compute the shortest path while greater<T> will compute the longest path
+//   Cmp: the comparator to compare two distances; less<T> will compute
+//       the shortest path while greater<T> will compute the longest path
+//     Required Functions:
+//       operator (a, b): returns true if and only if a compares less than b
 // Constructor Arguments:
 //   G: a generic directed acyclic graph structure (weighted or unweighted)
 //     Required Functions:

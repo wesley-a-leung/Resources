@@ -8,7 +8,7 @@ using namespace std;
 // Indices are 0-indexed and ranges are inclusive
 // numeric_limits<T>::max() * N must not overflow
 // Template Arguments:
-//   T: the type of the value
+//   T: the type of each element
 // Constructor Arguments:
 //   N: the size of the array
 //   f: a generating function that returns the ith element on the ith call

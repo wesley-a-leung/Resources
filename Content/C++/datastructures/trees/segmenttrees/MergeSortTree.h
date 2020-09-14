@@ -10,6 +10,8 @@ using namespace std;
 // Template Arguments:
 //   T: the type of the element of the array
 //   Cmp: the comparator to compare two elements
+//     Required Functions:
+//       operator (a, b): returns true if and only if a compares less than b
 // Constructor Arguments:
 //   N: the size of the array
 //   f: a generating function that returns the ith element on the ith call

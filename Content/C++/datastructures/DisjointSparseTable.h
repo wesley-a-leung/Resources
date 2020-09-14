@@ -2,19 +2,30 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Disjoint Sparse Table supporting range queries on a static array
+// Disjoint Sparse Table supporting associative range queries on a static array
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
+// Template Arguments:
+//   T: the type of each element
+//   Op: a struct with the operation (can also be of type
+//       std::function<T(T, T)>); in practice, custom struct is faster than
+///      std::function
+//     Required Functions:
+//       operator (l, r): merges the values l and r, must be associative
+// Constructor Arguments:
+//   N: the size of the array
+//   f: a generating function that returns the ith element on the ith call
+//   st: an iterator pointing to the first element in the array
+//   en: an iterator pointing to after the last element in the array
+//   op: an instance of the Op struct
+// Functions:
+//   query(l, r): returns the aggregate value of the elements in
+//     the range [l, r] 
 // In practice, the constructor has a small constant,
 //   query has a moderate constant, but still faster than segment trees,
 //   slightly faster than Fischer Heun Structure, and performs similarly to
 //   sparse tables
-// op must be an associative operation
-// op must also be passed in the constructor with its type specified
-//   as a template parameter, and must be constructable; thus, it cannot be
-//   a function pointer, and must be a lambda/std::function, or an instance
-//   of a functor with the () operator defined (slightly faster in practice)
 // Time Complexity:
 //   constructor: O(N log N)
 //   query: O(1)

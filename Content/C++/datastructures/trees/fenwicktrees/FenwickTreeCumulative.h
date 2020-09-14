@@ -8,8 +8,8 @@ using namespace std;
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   D: the number of dimensions of the fenwick tree
-//   T: the type of the value
-//   C: a struct with the cumulative operation
+//   T: the type of each element
+//   Op: a struct with the cumulative operation
 //     Required Functions:
 //       operator (l, r): combines the values l and r
 // Constructor Arguments:
@@ -31,23 +31,23 @@ using namespace std;
 // where PI is the product function, N_i is the size in the ith dimension
 // Tested:
 //   https://dmoj.ca/problem/ccc19s5
-template <const int D, class T, class C> struct FenwickTreeCumulative {
-  int N; T qdef; vector<FenwickTreeCumulative<D - 1, T, C>> BIT;
+template <const int D, class T, class Op> struct FenwickTreeCumulative {
+  int N; T qdef; vector<FenwickTreeCumulative<D - 1, T, Op>> BIT;
   template <class ...Args> FenwickTreeCumulative(T qdef, int N, Args &&...args)
-      : N(N), qdef(qdef), BIT(N + 1, FenwickTreeCumulative<D - 1, T, C>(
+      : N(N), qdef(qdef), BIT(N + 1, FenwickTreeCumulative<D - 1, T, Op>(
             qdef, forward<Args>(args)...)) {}
   template <class ...Args> void update(int i, Args &&...args) {
     for (i++; i <= N; i += i & -i) BIT[i].update(forward<Args>(args)...);
   }
   template <class ...Args> T query(int r, Args &&...args) {
     T ret = qdef; for (r++; r > 0; r -= r & -r)
-      ret = C()(ret, BIT[r].query(forward<Args>(args)...));
+      ret = Op()(ret, BIT[r].query(forward<Args>(args)...));
     return ret;
   }
 };
 
-template <class T, class C> struct FenwickTreeCumulative<0, T, C> {
+template <class T, class Op> struct FenwickTreeCumulative<0, T, Op> {
   T val; FenwickTreeCumulative(T qdef) : val(qdef) {}
-  void update(T v) { val = C()(val, v); }
+  void update(T v) { val = Op()(val, v); }
   T query() { return val; }
 };

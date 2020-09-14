@@ -19,7 +19,9 @@ template <class T, class Cmp> struct Line {
 //   T: the type of the slope (m) and intercept (b) of the line, as well as
 //     the type of the function argument (x)
 //   Cmp: the comparator to compare two f(x) values,
-//     convention is same as priority_queue in STL
+//       convention is same as priority_queue in STL
+//     Required Functions:
+//       operator (a, b): returns true if and only if a compares less than b
 //   INTEGRAL: a boolean indicating whether T is integral or not (necessary
 //     for types such as __int128_t)
 // Constructor Arguments:

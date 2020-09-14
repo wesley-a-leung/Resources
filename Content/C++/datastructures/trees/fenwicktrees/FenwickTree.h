@@ -7,7 +7,7 @@ using namespace std;
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   D: the number of dimensions of the fenwick tree
-//   T: the type of the value
+//   T: the type of each element
 // Constructor Arguments:
 //   N: the size of the first dimension
 //   ...args: the sizes of the second, third, fourth, etc. dimensions

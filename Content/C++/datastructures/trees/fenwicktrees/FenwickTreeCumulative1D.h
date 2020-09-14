@@ -9,8 +9,8 @@ using namespace std;
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
 // Template Arguments:
-//   T: the type of the value
-//   C: a struct with the cumulative operation
+//   T: the type of each element
+//   Op: a struct with the cumulative operation
 //     Required Functions:
 //       operator (l, r): combines the values l and r
 // Constructor Arguments:
@@ -19,7 +19,7 @@ using namespace std;
 //   st: an iterator pointing to the first element in the array
 //   en: an iterator pointing to after the last element in the array
 //   qdef: the identity element of the operation
-//   op: an instance of the C struct
+//   op: an instance of the Op struct
 // Functions:
 //   update(i, v): add v to the value at index i
 //   query(r): queries the range [0, r]

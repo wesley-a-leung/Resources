@@ -17,7 +17,7 @@ using namespace __gnu_pbds;
 // All update indices must be known beforehand
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
-//   T: the type of the value
+//   T: the type of each element
 //   IndexType: the type of the index of the second dimension of the array
 // Constructor Arguments:
 //   N: the size of the first dimension of the array
@@ -88,7 +88,7 @@ template <class T, class IndexType> struct OfflineSemiSparseFenwickTree2D {
 // All update indices must be known beforehand
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
-//   T: the type of the value
+//   T: the type of each element
 //   IndexType1: the type of the index of the first dimension of the array
 //   IndexType2: the type of the index of the second dimension of the array
 // Constructor Arguments:
@@ -229,7 +229,7 @@ template <class IndexType> struct SemiSparseFenwickTree2DSimple {
 //   and range queries in 2 dimensions using SqrtBuffer (sparse in 1 dimension)
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
-//   T: the type of the value
+//   T: the type of each element
 //   IndexType: the type of the index of the second dimension of the array
 // Constructor Arguments:
 //   N: the size of the first dimension of the array
@@ -357,7 +357,7 @@ struct SparseFenwickTree2DSimple {
 //   and SqrtBuffer for the second dimension (sparse in 2 dimensions)
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
-//   T: the type of the value
+//   T: the type of each element
 //   IndexType1: the type of the index of the first dimension of the array
 //   IndexType2: the type of the index of the second dimension of the array
 //   Container: the container to represent an unordered mapping from

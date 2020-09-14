@@ -17,7 +17,7 @@ using namespace __gnu_pbds;
 // All update indices must be known beforehand
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
-//   T: the type of the value
+//   T: the type of each element
 //   IndexType: the type of the index of the array
 // Constructor Arguments:
 //   N: the size of the array
@@ -76,7 +76,7 @@ template <class T, class IndexType> struct OfflineSparseFenwickTree1D {
 //   and range queries in 1 dimension using pbds hash_table
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
-//   T: the type of the value
+//   T: the type of each element
 //   IndexType: the type of the index of the array
 // Constructor Arguments:
 //   N: the size of the array

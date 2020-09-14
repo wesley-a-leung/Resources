@@ -6,16 +6,29 @@ using namespace std;
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
-// comparator convention is same as priority_queue in STL
-// queryInd: returns the index of the maximum element in the subarray [l, r],
-//   breaking ties by selecting the first such index
-// query: returns the maximum element in the subarray [l, r]
+// Template Arguments:
+//   T: the type of each element
+//   Cmp: the comparator to compare two values,
+//       convention is same as priority_queue in STL
+//     Required Functions:
+//       operator (a, b): returns true if and only if a compares less than b
+// Constructor Arguments:
+//   N: the size of the array
+//   f: a generating function that returns the ith element on the ith call
+//   st: an iterator pointing to the first element in the array
+//   en: an iterator pointing to after the last element in the array
+//   cmp: an instance of the Cmp struct
+// Functions:
+//   queryInd(l, r): returns the index of the maximum element in
+//     the subarray [l, r], breaking ties by selecting the first such index
+//   query(l, r): returns the maximum element (based on the comparator) in
+//     the subarray [l, r]
 // In practice, the constructor has a moderate constant and is significantly
 //   faster than sparse table's constructor, query has a moderate constant and
 //   is slightly slower than sparse table's query
 // Time Complexity:
 //   constructor: O(N / B log (N / B)), where B is the number of bits in mask_t
-//   query: O(1) assuming bitshift for mask_t is O(1)
+//   queryInd, query: O(1) assuming bitshift for mask_t is O(1)
 // Memory Complexity: O(N + N / B log (N / B)) assuming mask_t is O(1) memory
 // Tested:
 //   Fuzz and Stress Tested
