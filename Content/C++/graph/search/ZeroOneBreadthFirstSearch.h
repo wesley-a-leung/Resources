@@ -29,6 +29,7 @@ using namespace std;
 // Memory Complexity: O(V)
 // Tested:
 //   https://www.codechef.com/problems/REVERSE
+//   https://atcoder.jp/contests/abc176/tasks/abc176_d
 struct ZeroOneBFS {
   using Edge = tuple<int, int, int>; vector<int> dist, par;
   template <class WeightedGraph>

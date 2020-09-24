@@ -16,8 +16,9 @@ using namespace __gnu_pbds;
 // https://gcc.gnu.org/onlinedocs/libstdc++/ext/pb_ds/gp_hash_table.html
 //   and https://gcc.gnu.org/onlinedocs/libstdc++/ext/pb_ds/container_base.html
 //   contain most of the public methods
-// In practice, has a moderate constant, but faster than unordered_set
-//   and unordered_map (at the expense of using more memory)
+// In practice, has a moderate constant, faster than unordered_set
+//   and unordered_map (at the expense of using more memory), but slower than
+//   a sorted vector + binary search
 // Time Complexity: O(1) on average, O(N) worst case
 // Memory Complexity: O(N)
 // Tested:

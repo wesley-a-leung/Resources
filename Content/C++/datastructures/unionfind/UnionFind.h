@@ -7,11 +7,11 @@ using namespace std;
 // Constructor Arguments:
 //   N: the number of elements in the set
 // Fields:
-//   cnt: the current number of disjoint sets
-//   UF: a vector of integers representing the parent of each element in the
+//   UF: a vector of integers representing the root of each element in the
 //     tree, or the negative of the size of the set if that element is a root
+//   cnt: the current number of disjoint sets
 // Functions:
-//   find(v): find the root of the set containing element v
+//   find(v): finds the root of the set containing element v
 //   join(v, w): merges the sets containing v and w, returns true if they
 //     were originally disjoint before the merge, false otherwise
 //   connected(v, w): returns true if v and w are in the same set,
@@ -26,7 +26,6 @@ using namespace std;
 //   Fuzz and Stress Tested
 //   https://judge.yosupo.jp/problem/unionfind
 //   https://dmoj.ca/problem/ds2
-//   https://tssoj.ca/problem/ninjaclasher18c2p3
 //   https://atcoder.jp/contests/abc177/tasks/abc177_d
 struct UnionFind {
   vector<int> UF; int cnt; UnionFind(int N) : UF(N, -1), cnt(N) {}

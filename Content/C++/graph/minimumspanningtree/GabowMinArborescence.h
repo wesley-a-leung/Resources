@@ -16,12 +16,12 @@ template <const int MAXV, class unit> struct GabowMinArborescence {
         bool operator > (const Edge &e) const { return weight > e.weight; }
         Edge &operator += (const unit &add) { weight += add; return *this; }
     };
-    int vis[MAXV], path[MAXV], in[MAXV], Q[MAXV]; vector<Edge> edges, mst; UnionFindUndo<MAXV> uf; unit weight;
+    int vis[MAXV], path[MAXV], in[MAXV], Q[MAXV]; vector<Edge> edges, mst; unit weight;
     vector<SkewHeapIncremental<Edge, greater<Edge>, unit>> H;
     void addEdge(int from, int to, unit weight) { edges.push_back({from, to, weight, int(edges.size())}); }
     unit run(int V, int root) {
         weight = 0; fill(vis, vis + V, -1); fill(in, in + V, -1); vis[root] = root;
-        vector<tuple<int, int, vector<Edge>>> cycs; uf.init(V);
+        vector<tuple<int, int, vector<Edge>>> cycs; UnionFindUndo uf(V);
         for (int v = 0; v < V; v++) H.emplace_back(0); 
         for (auto &&e : edges) H[e.to].push(e);
         for (int s = 0; s < V; s++) {

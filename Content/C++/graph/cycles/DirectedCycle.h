@@ -21,6 +21,7 @@ using namespace std;
 // Tested:
 //   Stress Tested
 //   https://cses.fi/problemset/task/1678
+//   https://judge.yosupo.jp/problem/cycle_detection
 struct DirectedCycle {
   int V; vector<bool> vis, onStk; vector<int> to, cycle;
   template <class Digraph> void dfs(const Digraph &G, int v) {

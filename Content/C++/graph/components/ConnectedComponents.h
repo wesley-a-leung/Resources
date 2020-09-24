@@ -23,11 +23,13 @@ using namespace std;
 //   https://codeforces.com/contest/1253/problem/D
 struct CC {
   int V; vector<int> id; vector<vector<int>> components; UnionFind uf;
-  CC(int V) : V(V), id(V, -1), uf(V) {}
+  CC(int V) : V(V), id(V), uf(V) {}
   void addEdge(int v, int w) { uf.join(v, w); }
   void assign() {
-    components.clear(); for (int v = 0; v < V; v++) if (uf.find(v) == v) {
+    components.clear(); fill(id.begin(), id.end(), -1);
+    for (int v = 0; v < V; v++) if (uf.find(v) == v) {
       id[v] = components.size(); components.emplace_back(1, v);
+      components.back().reserve(uf.getSize(v));
     }
     for (int v = 0; v < V; v++) if (id[v] == -1)
       components[id[v] = id[uf.find(v)]].push_back(v);

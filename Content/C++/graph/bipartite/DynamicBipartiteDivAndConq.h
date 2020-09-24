@@ -1,10 +1,10 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "../../datastructures/unionfind/UnionFindUndo.h"
+#include "SemiDynamicBipartiteUndo.h"
 using namespace std;
 
-// Support queries on connected components, after edges have been
-//   added or removed
+// Support queries on connected components and bipartiteness, after edges
+//   have been added or removed
 // Constructor Arguments:
 //   V: the number of vertices in the graph
 // Fields:
@@ -19,19 +19,22 @@ using namespace std;
 //   addSizeQuery(v): adds a query asking for the number of vertices in the
 //     same connected component as vertex v
 //   addCntQuery(): adds a query asking for the number of connected components
+//   addComponentBipartiteQuery(v): adds a query asking for whether the
+//     connected component containing vertex v is bipartite
+//   addBipartiteGraphQuery(): adds a query asking if the graph is bipartite
 //   solveQueries(): solves all queries asked so far
 // In practice, has a small constant
 // Time Complexity:
 //   constructor: O(V)
 //   addEdge, removeEdge, addConnectedQuery, addSizeQuery, addCntQuery: O(1)
+//   addComponentBipartiteQuery, addBipartiteGraphQuery: O(1)
 //   solveQueries: O(V + Q log Q log V)
 // Memory Complexity: O(V + Q) for Q edge additions/removals and queries
 // Tested:
-//   https://codeforces.com/gym/100551/problem/A
-//   https://codeforces.com/gym/100551/problem/E
-struct DynamicConnectivityDivAndConq {
+//   https://codeforces.com/contest/813/problem/F
+struct DynamicBipartiteDivAndConq {
   int V; vector<tuple<int, int, int, int>> queries; vector<int> ans;
-  DynamicConnectivityDivAndConq(int V) : V(V) {}
+  DynamicBipartiteDivAndConq(int V) : V(V) {}
   void addEdge(int v, int w) {
     if (v > w) swap(v, w);
     queries.emplace_back(0, v, w, -1);
@@ -45,6 +48,12 @@ struct DynamicConnectivityDivAndConq {
   }
   void addSizeQuery(int v) { queries.emplace_back(3, v, v, queries.size()); }
   void addCntQuery() { queries.emplace_back(4, -1, -1, queries.size()); }
+  void addComponentBipartiteQuery(int v) {
+    queries.emplace_back(5, v, v, queries.size());
+  }
+  void addBipartiteGraphQuery() {
+    queries.emplace_back(6, -1, -1, queries.size());
+  }
   void solveQueries() {
     vector<pair<int, int>> edges; int Q = queries.size(); edges.reserve(Q);
     for (auto &&q : queries) if (get<0>(q) == 0)
@@ -62,21 +71,23 @@ struct DynamicConnectivityDivAndConq {
         get<3>(queries[last[j]]) = i; last[j] = temp;
       }
     }
-    UnionFindUndo uf(V); ans.clear(); ans.reserve(Q);
+    SemiDynamicBipartiteUndo uf(V); ans.clear(); ans.reserve(Q);
     function<void(int, int)> dc = [&] (int l, int r) {
       if (l == r) {
         int t, v, w, _; tie(t, v, w, _) = queries[l];
         if (t == 2) ans.push_back(uf.connected(v, w));
         else if (t == 3) ans.push_back(uf.getSize(v));
         else if (t == 4) ans.push_back(uf.cnt);
+        else if (t == 5) ans.push_back(uf.componentBipartite(v));
+        else if (t == 6) ans.push_back(uf.bipartiteGraph);
         return;
       }
       int m = l + (r - l) / 2, curSize = uf.history.size();
       for (int i = m + 1; i <= r; i++) if (get<3>(queries[i]) < l)
-        uf.join(get<1>(queries[i]), get<2>(queries[i]));
+        uf.addEdge(get<1>(queries[i]), get<2>(queries[i]));
       dc(l, m); while (int(uf.history.size()) > curSize) uf.undo();
       for (int i = l; i <= m; i++) if (get<3>(queries[i]) > r)
-        uf.join(get<1>(queries[i]), get<2>(queries[i]));
+        uf.addEdge(get<1>(queries[i]), get<2>(queries[i]));
       dc(m + 1, r); while (int(uf.history.size()) > curSize) uf.undo();
     };
     if (Q > 0) dc(0, Q - 1);

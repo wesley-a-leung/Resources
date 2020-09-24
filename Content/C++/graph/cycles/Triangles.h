@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Counts the number of triangles in a simple graph
+// Runs a callback on the triangles in a simple graph
 // Vertices are 0-indexed
 // Template Arguments:
 //   F: the type of the function f (can be deduced automatically in some cases)
