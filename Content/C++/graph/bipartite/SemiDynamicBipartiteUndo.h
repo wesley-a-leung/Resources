@@ -47,8 +47,7 @@ struct SemiDynamicBipartiteUndo {
     return make_pair(v, p);
   }
   void addEdge(int v, int w) {
-    bool pv, pw; tie(v, pv) = find(v); tie(w, pw) = find(w);
-    if (v == w) {
+    bool pv, pw; tie(v, pv) = find(v); tie(w, pw) = find(w); if (v == w) {
       history.emplace_back(v, w, 0, bipartiteGraph, B[v]);
       bipartiteGraph &= (B[v] = B[v] & (pv ^ pw)); return;
     }
