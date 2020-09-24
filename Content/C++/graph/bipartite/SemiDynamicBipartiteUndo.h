@@ -33,7 +33,7 @@ using namespace std;
 //   constructor: O(V)
 //   find, addEdge, connected, getSize, componentBipartite: O(log V)
 //   undo: O(1)
-// Memory Complexity: O(V)
+// Memory Complexity: O(V + Q) for Q calls to addEdge
 // Tested:
 //   https://www.spoj.com/problems/BUGLIFE/
 //   https://codeforces.com/contest/813/problem/F
