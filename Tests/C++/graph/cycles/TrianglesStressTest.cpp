@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "../../../../Content/C++/graph/components/Triangles.h"
+#include "../../../../Content/C++/graph/cycles/Triangles.h"
 using namespace std;
 
 void test1() {
