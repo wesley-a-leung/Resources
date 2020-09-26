@@ -22,6 +22,7 @@ template <class T, const T MOD> struct IntMod {
     IM &operator += (const IM &i) { v += i.v; if (v >= MOD) v -= MOD; return *this; }
     IM operator - (const IM &i) const { IM ret; ret.v = v - i.v; if (ret.v < 0) ret.v += MOD; return ret;  }
     IM &operator -= (const IM &i) { v -= i.v; if (v < 0) v += MOD; return *this; }
+    IM operator - () const { return IM(-v); }
     // when MOD * MOD doesn't overflow
     IM operator * (const IM &i) const { return IM(v * i.v % MOD); }
     // when MOD * MOD doesn't overflow
@@ -59,6 +60,6 @@ template <class T, const T MOD> struct IntMod {
     IM divPrime(const IM &i) const { return *this * i.mulInvPrime(); }
     // if MOD * MOD overflows
     IM divOvf(const IM &i) const { return mulOvf(i.mulInv()); }
-    friend istream &operator >> (istream &stream, IM &v) { stream >> v; return stream; }
-    friend ostream &operator << (ostream &stream, IM &v) { stream << v; return stream; }
+    friend istream &operator >> (istream &stream, IM &i) { stream >> i.v; return stream; }
+    friend ostream &operator << (ostream &stream, const IM &i) { stream << i.v; return stream; }
 };

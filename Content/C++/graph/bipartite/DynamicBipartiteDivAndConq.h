@@ -22,12 +22,18 @@ using namespace std;
 //   addComponentBipartiteQuery(v): adds a query asking for whether the
 //     connected component containing vertex v is bipartite
 //   addBipartiteGraphQuery(): adds a query asking if the graph is bipartite
+//   addColorQuery(v): adds a query asking for the color of vertex v for one
+//     possible coloring of the graph, assuming the component is bipartite
+//   addPathParity(v, w): adds a query asking for the parity of the path from
+//     v to w (false if even number of edges, true if odd), assuming the
+//     component is bipartite and v and w are connected
 //   solveQueries(): solves all queries asked so far
 // In practice, has a small constant
 // Time Complexity:
 //   constructor: O(V)
 //   addEdge, removeEdge, addConnectedQuery, addSizeQuery, addCntQuery: O(1)
 //   addComponentBipartiteQuery, addBipartiteGraphQuery: O(1)
+//   addColorQuery, addPathParity: O(1)
 //   solveQueries: O(V + Q log Q log V)
 // Memory Complexity: O(V + Q) for Q edge additions/removals and queries
 // Tested:
@@ -53,6 +59,10 @@ struct DynamicBipartiteDivAndConq {
   }
   void addBipartiteGraphQuery() {
     queries.emplace_back(6, -1, -1, queries.size());
+  }
+  void addColorQuery(int v) { queries.emplace_back(7, v, v, queries.size()); }
+  void addPathParityQuery(int v, int w) {
+    queries.emplace_back(8, v, w, queries.size());
   }
   void solveQueries() {
     vector<pair<int, int>> edges; int Q = queries.size(); edges.reserve(Q);
@@ -80,6 +90,8 @@ struct DynamicBipartiteDivAndConq {
         else if (t == 4) ans.push_back(uf.cnt);
         else if (t == 5) ans.push_back(uf.componentBipartite(v));
         else if (t == 6) ans.push_back(uf.bipartiteGraph);
+        else if (t == 7) ans.push_back(uf.color(v));
+        else if (t == 8) ans.push_back(uf.pathParity(v, w));
         return;
       }
       int m = l + (r - l) / 2, curSize = uf.history.size();

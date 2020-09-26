@@ -29,13 +29,20 @@ using namespace std;
 //     vertex v
 //   componentBipartite(v): returns whether the connected component containing
 //     vertex v is bipartite or not
+//   color(v): returns the color of vertex v for one
+//     possible coloring of the graph, assuming the component is bipartite
+//   pathParity(v, w): return the parity of the path from
+//     v to w (false if even number of edges, true if odd), assuming the
+//     component is bipartite and v and w are connected
 // Time Complexity:
 //   constructor: O(V)
-//   find, addEdge, connected, getSize, componentBipartite: O(log V)
+//   find, addEdge, connected, getSize: O(log V)
+//   componentBipartite, color, pathParity: O(log V)
 //   undo: O(1)
 // Memory Complexity: O(V + Q) for Q calls to addEdge
 // Tested:
 //   https://www.spoj.com/problems/BUGLIFE/
+//   https://cses.fi/problemset/task/1668
 //   https://codeforces.com/contest/813/problem/F
 struct SemiDynamicBipartiteUndo {
   vector<int> UF; vector<bool> P, B; int cnt; bool bipartiteGraph;
@@ -63,4 +70,6 @@ struct SemiDynamicBipartiteUndo {
   bool connected(int v, int w) { return find(v).first == find(w).first; }
   int getSize(int v) { return -UF[find(v).first]; }
   bool componentBipartite(int v) { return B[find(v).first]; }
+  bool color(int v) { return find(v).second; }
+  bool pathParity(int v, int w) { return color(v) ^ color(w); }
 };
