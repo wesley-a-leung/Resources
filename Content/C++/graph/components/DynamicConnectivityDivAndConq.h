@@ -4,7 +4,7 @@
 using namespace std;
 
 // Support queries on connected components, after edges have been
-//   added or removed
+//   added or removed, using divide and conquer
 // Constructor Arguments:
 //   V: the number of vertices in the graph
 // Fields:
@@ -20,7 +20,7 @@ using namespace std;
 //     same connected component as vertex v
 //   addCntQuery(): adds a query asking for the number of connected components
 //   solveQueries(): solves all queries asked so far
-// In practice, has a small constant
+// In practice, has a small constant, faster than DynamicConnectivityLCT
 // Time Complexity:
 //   constructor: O(V)
 //   addEdge, removeEdge, addConnectedQuery, addSizeQuery, addCntQuery: O(1)

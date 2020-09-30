@@ -1,93 +1,106 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "../dynamictrees/LinkCutTree.h"
 using namespace std;
 
-// Support queries for the number of components in a graph, after edges have been added or removed
-// Link Cut Tree Solution
-// Time Complexity: O(V + Q * log(V + Q))
-// Memory Complexity: O(V + Q)
-
-// Stripped down version of Link Cut Tree for minimum edge weight queries
-using Data = pair<int, int>;
-Data merge(const Data &l, const Data &r) { return min(l, r); }
-struct Node {
-    Node *l, *r, *p; Data val, sbtr; bool rev;
-    Node(const Data &val) : l(nullptr), r(nullptr), p(nullptr), val(val), sbtr(val), rev(false) {}
-    bool isRoot() { return !p || (this != p->l && this != p->r); }
+// Support queries on connected components, after edges have been
+//   added or removed, using a Link Cut Tree
+// Constructor Arguments:
+//   V: the number of vertices in the graph
+// Fields:
+//   ans: a vector of integers with the answer for
+//     each query (1 is true, 0 is false for boolean queries)
+// Functions:
+//   addEdge(v, w): adds an edge between vertices v and w
+//   removeEdge(v, w): removes an edge between vertices v and w, assuming
+//     an edge exists
+//   addConnectedQuery(v, w): adds a query asking whether v and w are in the
+//     same connected component
+//   addCntQuery(): adds a query asking for the number of connected components
+//   solveQueries(): solves all queries asked so far
+// In practice, has a moderate constant, slower than
+//   DynamicConnectivityDivAndConq
+// Time Complexity:
+//   constructor: O(V)
+//   addEdge, removeEdge, addConnectedQuery, addCntQuery: O(1)
+//   solveQueries: O(V + Q (log Q + log V))
+// Memory Complexity: O(V + Q) for Q edge additions/removals and queries
+// Tested:
+//   https://codeforces.com/gym/100551/problem/A
+//   https://codeforces.com/gym/100551/problem/E
+struct DynamicConnectivityLCT {
+  struct Node {
+    using Data = pair<int, int>; using Lazy = Data;
+    static const bool RANGE_UPDATES = false, RANGE_QUERIES = true;
+    static const bool RANGE_REVERSALS = true, HAS_PAR = true;
+    bool rev; Node *l, *r, *p; Data val, sbtr;
+    Node(const Data &v)
+        : rev(false), l(nullptr), r(nullptr), p(nullptr), val(v), sbtr(v) {}
     void update() {
-        sbtr = val;
-        if (l) sbtr = merge(l->sbtr, sbtr);
-        if (r) sbtr = merge(sbtr, r->sbtr);
+      sbtr = val;
+      if (l) { sbtr = min(l->sbtr, sbtr); }
+      if (r) { sbtr = min(sbtr, r->sbtr); }
     }
     void propagate() {
-        if (rev) {
-            swap(l, r); rev = false;
-            if (l) l->rev = !l->rev;
-            if (r) r->rev = !r->rev;
+      if (rev) {
+        swap(l, r); rev = false;
+        if (l) l->reverse();
+        if (r) r->reverse();
+      }
+    }
+    void reverse() { rev = !rev; }
+    static Data qdef() { return make_pair(INT_MAX, -1); }
+  };
+  int V; vector<tuple<int, int, int, int>> queries; vector<int> ans;
+  DynamicConnectivityLCT(int V) : V(V) {}
+  void addEdge(int v, int w) {
+    if (v > w) swap(v, w);
+    queries.emplace_back(0, v, w, -1);
+  }
+  void removeEdge(int v, int w) {
+    if (v > w) swap(v, w);
+    queries.emplace_back(1, v, w, -1);
+  }
+  void addConnectedQuery(int v, int w) {
+    queries.emplace_back(2, v, w, queries.size());
+  }
+  void addCntQuery() { queries.emplace_back(3, -1, -1, queries.size()); }
+  void solveQueries() {
+    vector<pair<int, int>> edges; int Q = queries.size(); edges.reserve(Q);
+    for (auto &&q : queries) if (get<0>(q) == 0)
+      edges.emplace_back(get<1>(q), get<2>(q));
+    sort(edges.begin(), edges.end()); vector<int> last(edges.size(), INT_MAX);
+    for (int i = 0; i < Q; i++) {
+      int t, v, w, _; tie(t, v, w, _) = queries[i]; if (t == 0) {
+        int j = lower_bound(edges.begin(), edges.end(), make_pair(v, w))
+            - edges.begin();
+        get<3>(queries[i]) = last[j]; last[j] = i;
+      } else if (t == 1) {
+        int j = lower_bound(edges.begin(), edges.end(), make_pair(v, w))
+            - edges.begin();
+        int temp = get<3>(queries[get<3>(queries[i]) = last[j]]);
+        get<3>(queries[last[j]]) = i; last[j] = temp;
+      }
+    }
+    LCT<Node> lct(V + Q, [&, i = 0] () mutable {
+      pair<int, int> ret = i < V ? make_pair(INT_MAX, INT_MAX)
+                                 : make_pair(get<3>(queries[i - V]), i - V);
+      i++; return ret;
+    });
+    ans.clear(); for (int i = 0, cnt = V; i < Q; i++) {
+      int t, v, w, o; tie(t, v, w, o) = queries[i]; if (t == 0) {
+        if (lct.connected(v, w)) {
+          int z, j; tie(z, j) = lct.queryPath(v, w); if (z >= o) continue;
+          lct.cut(get<1>(queries[j]), V + j);
+          lct.cut(get<2>(queries[j]), V + j); cnt++;
         }
-    }
-    friend void connect(Node *ch, Node *par, bool hasCh, bool isL) {
-        if (ch) ch->p = par;
-        if (hasCh) (isL ? par->l : par->r) = ch;
-    }
-    void rotate() {
-        Node *p = this->p, *g = p->p; bool isRootP = p->isRoot(), isL = this == p->l;
-        connect(isL ? r : l, p, true, isL); connect(p, this, true, !isL); connect(this, g, !isRootP, isRootP ? false : p == g->l); p->update();
-    }
-    void splay() {
-        while (!isRoot()) {
-            Node *p = this->p, *g = p->p;
-            if (!p->isRoot()) g->propagate();
-            p->propagate(); propagate();
-            if (!p->isRoot()) ((this == p->l) == (p == g->l) ? p : this)->rotate();
-            rotate();
+        lct.link(v, V + i); lct.link(w, V + i); cnt--;
+      } else if (t == 1) {
+        if (lct.connected(v, V + o)) {
+          lct.cut(v, V + o); lct.cut(w, V + o); cnt++;
         }
-        propagate(); update();
+      } else if (t == 2) ans.push_back(lct.connected(v, w));
+      else if (t == 3) ans.push_back(cnt);
     }
-    Node *expose() {
-        Node *last = nullptr;
-        for (Node *y = this; y; y = y->p) { y->splay(); y->l = last; last = y; }
-        splay(); return last;
-    }
-    void makeRoot() { expose(); rev = !rev; }
-};
-template <const int MAXV, const int MAXQ> struct DynamicConnectivityLCT {
-    int Q = 0, cnt; vector<Node> T; vector<int> ans; unordered_map<int, int> present[MAXV];
-    struct Query { int type, v, w, otherTime; } q[MAXQ];
-    bool connected(int x, int y) {
-        if (x == y) return true;
-        T[x].expose(); T[y].expose(); return T[x].p;
-    }
-    void link(int x, int y) { T[y].makeRoot(); T[y].p = &T[x]; }
-    void cut(int x, int y) { T[x].makeRoot(); T[y].expose(); T[y].r->p = nullptr; T[y].r = nullptr; }
-    Data queryPath(int from, int to) { T[from].makeRoot(); T[to].expose(); return T[to].sbtr; }
-    void clear(int V = MAXV) { T.clear(); ans.clear(); Q = 0; for (int i = 0; i < V; i++) present[i].clear(); }
-    void addEdge(int v, int w) {
-        if (v > w) swap(v, w);
-        present[v][w] = Q; q[Q++] = {1, v, w, INT_MAX - 1};
-    }
-    void removeEdge(int v, int w) {
-        if (v > w) swap(v, w);
-        int insTime = present[v][w]; q[Q] = {-1, v, w, insTime}; q[insTime].otherTime = Q++; present[v].erase(w);
-    }
-    void query() { q[Q] = {0, -1, -1, Q}; Q++; }
-    void solve(int V) {
-        cnt = V; T.reserve(V + Q);
-        for (int i = 0; i < V; i++) T.emplace_back(make_pair(INT_MAX, -1));
-        for (int i = 0; i < Q; i++) T.emplace_back(make_pair(q[i].otherTime, i));
-        for (int i = 0; i < Q; i++) {
-            if (q[i].type == 1) {
-                int v = q[i].v, w = q[i].w, o = q[i].otherTime;
-                if (connected(v, w)) {
-                    Data mn = queryPath(v, w);
-                    if (mn.first >= o) continue;
-                    cut(q[mn.second].v, V + mn.second); cut(q[mn.second].w, V + mn.second); cnt++;
-                }
-                link(v, V + i); link(w, V + i); cnt--;
-            } else if (q[i].type == -1) {
-                int v = q[i].v, w = q[i].w, o = q[i].otherTime;
-                if (connected(v, V + o)) { cut(v, V + o); cut(w, V + o); cnt++; }
-            } else ans.push_back(cnt);
-        }
-    }
+  }
 };
