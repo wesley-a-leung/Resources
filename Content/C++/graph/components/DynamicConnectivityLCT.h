@@ -82,10 +82,10 @@ struct DynamicConnectivityLCT {
         get<3>(queries[last[j]]) = i; last[j] = temp;
       }
     }
-    LCT<Node> lct(V + Q, [&, i = 0] () mutable {
-      pair<int, int> ret = i < V ? make_pair(INT_MAX, INT_MAX)
-                                 : make_pair(get<3>(queries[i - V]), i - V);
-      i++; return ret;
+    int k = 0; LCT<Node> lct(V + Q, [&] {
+      pair<int, int> ret = k < V ? make_pair(INT_MAX, INT_MAX)
+                                 : make_pair(get<3>(queries[k - V]), k - V);
+      k++; return ret;
     });
     ans.clear(); for (int i = 0, cnt = V; i < Q; i++) {
       int t, v, w, o; tie(t, v, w, o) = queries[i]; if (t == 0) {
