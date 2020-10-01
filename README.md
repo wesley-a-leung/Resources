@@ -21,7 +21,7 @@ curly braces
 - important variables and constants should be completely capitalized,
 classes and filename should be upper camel case, other variables and functions
 should be lower camel case, unless it is to match C++ STL conventions
-- otherwise, mostly adhering to
+- otherwise mostly adheres to
 [Google's Style Guide](https://google.github.io/styleguide/cppguide.html)
 - templates should either be a standalone function, or a struct/class
 - functions and classes should have generic types if possible
