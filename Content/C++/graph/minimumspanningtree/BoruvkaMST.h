@@ -5,6 +5,8 @@ using namespace std;
 
 // Computes the minimum spanning tree (or forest) using Boruvka's algorithm
 // Vertices are 0-indexed
+// Template Arguments:
+//   T: the type of the weight of the edges
 // Constructor Arguments:
 //   V: number of vertices in the graph
 //   edges: a vector of tuples in the form (v, w, weight) representing

@@ -1,80 +1,74 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "../dynamictrees/LinkCutTree.h"
 using namespace std;
 
-// Supports queries for the minimum spanning tree after an edge has been added
-// Online Link Cut Tree Solution
-// Time Complexity: O((V + Q) log (V + Q))
-// Memory Complexity: O(V + Q)
-
-using unit = int; const unit NEG_INF = numeric_limits<unit>::lowest();
-// Stripped down version of Link Cut Tree for maximum edge weight queries
-using Data = pair<unit, int>; const Data qdef = make_pair(NEG_INF, -1);
-Data merge(const Data &l, const Data &r) { return max(l, r); }
-struct Node {
-    Node *l, *r, *p; Data val, sbtr; bool rev;
-    Node(const Data &val) : l(nullptr), r(nullptr), p(nullptr), val(val), sbtr(val), rev(false) {}
-    bool isRoot() { return !p || (this != p->l && this != p->r); }
+// Supports queries for the minimum spanning tree (or forest) after
+//   edges have been added, using a Link Cut Tree
+// Template Arguments:
+//   T: the type of the weight of the edges
+// Constructor Arguments:
+//   V: number of vertices in the graph
+//   NEG_INF: a value for negative infinity of type T
+// Fields:
+//   mstWeight: the weight of the current mst
+//   mstEdges: a vector of tuples of the edges in the current mst in the form
+//     (v, w, weight) representing an undirected edge in the graph between
+//     vertices v and w with weight of weight
+//   lct: a Link Cut Tree of the current mst of the graph
+// Functions:
+//   addEdge(v, w, weight): adds an undirected edge in the graph between
+//     vertices v and w with weight of weight
+// In practice, has a moderate constant
+// Time Complexity:
+//   constructor: O(V)
+//   addEdge: O(log V)
+// Memory Complexity: O(V)
+// Tested:
+//   https://dmoj.ca/problem/noi14p2
+//   https://open.kattis.com/problems/minspantree
+template <class T> struct SemiDynamicMST {
+  struct Node {
+    using Data = pair<T, int>; using Lazy = Data;
+    static const bool RANGE_UPDATES = false, RANGE_QUERIES = true;
+    static const bool RANGE_REVERSALS = true, HAS_PAR = true;
+    bool rev; Node *l, *r, *p; Data val, sbtr;
+    Node(const Data &v)
+        : rev(false), l(nullptr), r(nullptr), p(nullptr), val(v), sbtr(v) {}
     void update() {
-        sbtr = val;
-        if (l) sbtr = merge(l->sbtr, sbtr);
-        if (r) sbtr = merge(sbtr, r->sbtr);
+      sbtr = val;
+      if (l) { sbtr = max(l->sbtr, sbtr); }
+      if (r) { sbtr = max(sbtr, r->sbtr); }
     }
     void propagate() {
-        if (rev) {
-            swap(l, r); rev = false;
-            if (l) l->rev = !l->rev;
-            if (r) r->rev = !r->rev;
-        }
+      if (rev) {
+        swap(l, r); rev = false;
+        if (l) l->reverse();
+        if (r) r->reverse();
+      }
     }
-    friend void connect(Node *ch, Node *par, bool hasCh, bool isL) {
-        if (ch) ch->p = par;
-        if (hasCh) (isL ? par->l : par->r) = ch;
+    void apply(const Lazy &v) { val = v; update(); }
+    void reverse() { rev = !rev; }
+    static Data qdef() { return make_pair(T(), -1); }
+  };
+  using Edge = tuple<int, int, T>; int V, top; vector<int> stk;
+  T mstWeight; vector<Edge> mstEdges; LCT<Node> lct;
+  SemiDynamicMST(int V, T NEG_INF = numeric_limits<T>::lowest())
+      : V(V), top(max(0, V - 1)), stk(top), mstWeight(T()),
+        lct(V + top, [&] { return make_pair(NEG_INF, -1); }) {
+    iota(stk.rbegin(), stk.rend(), 0); mstEdges.reserve(top);
+  }
+  void addEdge(int v, int w, T weight) {
+    if (v == w) return;
+    T z; int j; tie(z, j) = lct.queryPath(v, w); if (j != -1) {
+      if (z <= weight) return;
+      lct.cut(get<0>(mstEdges[j]), V + j); lct.cut(get<1>(mstEdges[j]), V + j);
+      stk[top++] = j; mstWeight -= z;
     }
-    void rotate() {
-        Node *p = this->p, *g = p->p; bool isRootP = p->isRoot(), isL = this == p->l;
-        connect(isL ? r : l, p, true, isL); connect(p, this, true, !isL); connect(this, g, !isRootP, isRootP ? false : p == g->l); p->update();
-    }
-    void splay() {
-        while (!isRoot()) {
-            Node *p = this->p, *g = p->p;
-            if (!p->isRoot()) g->propagate();
-            p->propagate(); propagate();
-            if (!p->isRoot()) ((this == p->l) == (p == g->l) ? p : this)->rotate();
-            rotate();
-        }
-        propagate(); update();
-    }
-    Node *expose() {
-        Node *last = nullptr;
-        for (Node *y = this; y; y = y->p) { y->splay(); y->l = last; last = y; }
-        splay(); return last;
-    }
-    void makeRoot() { expose(); rev = !rev; }
-};
-struct SemiDynamicMST {
-    struct Edge { int v, w; unit weight; };
-    int V, MAXNODES = 0; vector<Node> T; unit currentMST; vector<Edge> edges;
-    void makeNode(int id, unit weight) { T.emplace_back(make_pair(weight, id)); assert(int(T.size()) <= MAXNODES); }
-    bool connected(int x, int y) {
-        if (x == y) return true;
-        T[x].expose(); T[y].expose(); return T[x].p;
-    }
-    void link(int par, int ch) { T[ch].makeRoot(); T[ch].p = &T[par]; }
-    void cut(int x, int y) { T[x].makeRoot(); T[y].expose(); T[y].r->p = nullptr; T[y].r = nullptr; }
-    Data queryPath(int from, int to) { T[from].makeRoot(); T[to].expose(); return T[to].sbtr; }
-    void init(int V, int Q) {
-        this->V = V; currentMST = 0; T.reserve(MAXNODES = V + Q);
-        for (int i = 0; i < V; i++) { T.emplace_back(make_pair(NEG_INF, -1)); }
-    }
-    void clear() { MAXNODES = 0; T.clear(); edges.clear(); }
-    unit addEdge(int v, int w, unit weight) {
-        if (connected(v, w)) {
-            pair<unit, int> mx = queryPath(v, w);
-            if (mx.first <= weight) return currentMST;
-            cut(edges[mx.second].v, V + mx.second); cut(edges[mx.second].w, V + mx.second); currentMST -= mx.first;
-        }
-        int id = int(edges.size()); edges.push_back({v, w, weight}); makeNode(id, weight);
-        link(v, V + id); link(w, V + id); currentMST += weight; return currentMST;
-    }
+    j = stk[--top]; Edge e(v, w, weight);
+    if (j >= int(mstEdges.size())) mstEdges.push_back(e);
+    else mstEdges[j] = e;
+    lct.updateVertex(V + j, make_pair(weight, j));
+    lct.link(v, V + j); lct.link(w, V + j); mstWeight += weight;
+  }
 };

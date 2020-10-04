@@ -69,7 +69,7 @@ struct DynamicConnectivityLCT {
     vector<pair<int, int>> edges; int Q = queries.size(); edges.reserve(Q);
     for (auto &&q : queries) if (get<0>(q) == 0)
       edges.emplace_back(get<1>(q), get<2>(q));
-    sort(edges.begin(), edges.end()); vector<int> last(edges.size(), INT_MAX);
+    sort(edges.begin(), edges.end()); vector<int> last(edges.size(), Q);
     for (int i = 0; i < Q; i++) {
       int t, v, w, _; tie(t, v, w, _) = queries[i]; if (t == 0) {
         int j = lower_bound(edges.begin(), edges.end(), make_pair(v, w))
@@ -83,19 +83,21 @@ struct DynamicConnectivityLCT {
       }
     }
     int k = 0; LCT<Node> lct(V + Q, [&] {
-      pair<int, int> ret = k < V ? make_pair(INT_MAX, INT_MAX)
+      pair<int, int> ret = k < V ? make_pair(INT_MAX, -1)
                                  : make_pair(get<3>(queries[k - V]), k - V);
       k++; return ret;
     });
     ans.clear(); for (int i = 0, cnt = V; i < Q; i++) {
       int t, v, w, o; tie(t, v, w, o) = queries[i]; if (t == 0) {
-        if (lct.connected(v, w)) {
-          int z, j; tie(z, j) = lct.queryPath(v, w); if (z >= o) continue;
+        if (v == w) continue;
+        int z, j; tie(z, j) = lct.queryPath(v, w); if (j != -1) {
+          if (z >= o) continue;
           lct.cut(get<1>(queries[j]), V + j);
           lct.cut(get<2>(queries[j]), V + j); cnt++;
         }
         lct.link(v, V + i); lct.link(w, V + i); cnt--;
       } else if (t == 1) {
+        if (v == w) continue;
         if (lct.connected(v, V + o)) {
           lct.cut(v, V + o); lct.cut(w, V + o); cnt++;
         }

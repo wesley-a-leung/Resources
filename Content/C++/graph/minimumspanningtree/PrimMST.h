@@ -4,6 +4,8 @@ using namespace std;
 
 // Computes the minimum spanning tree (or forest) using Prims's algorithm
 // Vertices are 0-indexed
+// Template Arguments:
+//   T: the type of the weight of the edges
 // Constructor Arguments:
 //   G: a generic weighted graph structure
 //     Required Functions:
