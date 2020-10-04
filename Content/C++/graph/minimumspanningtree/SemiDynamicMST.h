@@ -47,7 +47,7 @@ template <class T> struct SemiDynamicMST {
         if (r) r->reverse();
       }
     }
-    void apply(const Lazy &v) { val = v; update(); }
+    void apply(const Lazy &v) { val = sbtr = v; }
     void reverse() { rev = !rev; }
     static Data qdef() { return make_pair(T(), -1); }
   };
