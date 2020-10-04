@@ -11,8 +11,8 @@ using namespace std;
 //   LAZY: boolean to indicate whether or not range updates are enabled
 //   C: struct to combine data and lazy values
 //     Required Fields:
-//       Data: typedef/using for the data type
-//       Lazy: typedef/using for the lazy type
+//       Data: the data type
+//       Lazy: the lazy type
 //     Required Functions:
 //       static qdef(): returns the query default value of type Data
 //       static ldef() (only required if LAZY is true): returns the lazy

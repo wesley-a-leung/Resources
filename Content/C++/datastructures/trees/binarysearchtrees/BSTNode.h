@@ -12,8 +12,8 @@ using namespace std;
 // Constructor Arguments:
 //   v: the value of type Data to store
 // Fields:
-//   Data: typedef/using for the data type, equivalent to T
-//   Lazy: typedef/using for the lazy type, equivalent to T
+//   Data: the data type, equivalent to T
+//   Lazy: the lazy type, equivalent to T
 //   static const RANGE_UPDATES: a boolean indicating whether range updates
 //     are permitted
 //   static const RANGE_QUERIES: a boolean indicating whether range queries
@@ -67,8 +67,8 @@ template <class T> struct NodeVal {
 // Template Arguments:
 //   C: struct to combine data and lazy values
 //     Required Fields:
-//       Data: typedef/using for the data type
-//       Lazy: typedef/using for the lazy type
+//       Data: the data type
+//       Lazy: the lazy type
 //     Required Functions:
 //       static qdef(): returns the query default value of type Data
 //       static merge(l, r): returns the values l of type Data merged with
@@ -92,8 +92,8 @@ template <class T> struct NodeVal {
 // Constructor Arguments:
 //   v: the value of type Data to store
 // Fields:
-//   Data: typedef/using for the data type, equivalent to C::Data
-//   Lazy: typedef/using for the lazy type, equivalent to C::Lazy
+//   Data: the data type, equivalent to C::Data
+//   Lazy: the lazy type, equivalent to C::Lazy
 //   static const RANGE_UPDATES: a boolean indicating whether range updates
 //     are permitted
 //   static const RANGE_QUERIES: a boolean indicating whether range queries
@@ -154,8 +154,8 @@ template <class C> struct NodeAgg {
 // Template Arguments:
 //   C: struct to combine data and lazy values
 //     Required Fields:
-//       Data: typedef/using for the data type
-//       Lazy: typedef/using for the lazy type
+//       Data: the data type
+//       Lazy: the lazy type
 //     Required Functions:
 //       static qdef(): returns the query default value of type Data
 //       static merge(l, r): returns the values l of type Data merged with
@@ -184,8 +184,8 @@ template <class C> struct NodeAgg {
 // Constructor Arguments:
 //   v: the value of type Data to store
 // Fields:
-//   Data: typedef/using for the data type, equivalent to C::Data
-//   Lazy: typedef/using for the lazy type, equivalent to C::Lazy
+//   Data: the data type, equivalent to C::Data
+//   Lazy: the lazy type, equivalent to C::Lazy
 //   static const RANGE_UPDATES: a boolean indicating whether range updates
 //     are permitted
 //   static const RANGE_QUERIES: a boolean indicating whether range queries

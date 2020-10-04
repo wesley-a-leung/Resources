@@ -7,8 +7,8 @@ using namespace std;
 // Template Arguments:
 //   R: struct supporting range updates and queries on indices
 //     Required Fields:
-//       Data: typedef/using for the data type
-//       Lazy: typedef/using for the lazy type
+//       Data: the data type
+//       Lazy: the lazy type
 //     Required Functions:
 //       static qdef(): returns the query default value of type Data
 //       constructor(A): takes a vector A of type Data with the initial

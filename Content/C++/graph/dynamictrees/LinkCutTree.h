@@ -8,8 +8,8 @@ using namespace std;
 // Template Arguments:
 //   Node: a generic node class (sample structs are in BSTNode)
 //     Required Fields:
-//       Data: typedef/using for the data type
-//       Lazy: typedef/using for the lazy type
+//       Data: the data type
+//       Lazy: the lazy type
 //       static const RANGE_UPDATES: a boolean indicating whether
 //         range updates are permitted
 //       static const RANGE_QUERIES: a boolean indicating whether

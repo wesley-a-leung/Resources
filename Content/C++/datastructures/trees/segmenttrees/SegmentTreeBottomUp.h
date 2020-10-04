@@ -9,8 +9,8 @@ using namespace std;
 // Template Arguments:
 //   C: struct to combine data and lazy values
 //     Required Fields:
-//       Data: typedef/using for the data type
-//       Lazy: typedef/using for the lazy type
+//       Data: the data type
+//       Lazy: the lazy type
 //     Required Functions:
 //       static qdef(): returns the query default value of type Data
 //       static merge(l, r): returns the values l of type Data merged with

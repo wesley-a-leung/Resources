@@ -12,8 +12,8 @@ using namespace std;
 //   PERSISTENT: boolean to indicate whether or not updates are persistent
 //   C: struct to combine data and lazy values
 //     Required Fields:
-//       Data: typedef/using for the data type
-//       Lazy: typedef/using for the lazy type
+//       Data: the data type
+//       Lazy: the lazy type
 //     Required Functions:
 //       static qdef(): returns the query default value of type Data
 //       static ldef() (only required if LAZY is true): returns the lazy

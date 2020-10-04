@@ -8,8 +8,8 @@ using namespace std;
 // Template Arguments:
 //   R: struct supporting range updates and queries on indices
 //     Required Fields:
-//       Data: typedef/using for the data type
-//       Lazy: typedef/using for the lazy type
+//       Data: the data type
+//       Lazy: the lazy type
 //     Required Functions:
 //       static merge(l, r): merges the datas l and r
 //       static invData(v): returns the inverse of v of type Data
