@@ -36,9 +36,13 @@ template <class T> T lcm(T a, T b) { return a == 0 && b == 0 ? 0 : abs(a / gcd(a
 
 // Extended Euclidean Algorithm to compute x and y, where ax + by = gcd(a, b)
 template <class T> T EEA(T a, T b, T &x, T &y) {
-    T g = b, r = a; x = 0, y = 1;
-    while (r != 0) { T q = g / r; g %= r; swap(g, r); x -= q * y; swap(x, y); }
-    return g;
+    T xx = y = 0, yy = x = 1;
+    while (b != 0) {
+        T q = a / b; a %= b; swap(a, b);
+        x -= q * xx; swap(x, xx);
+        y -= q * yy; swap(y, yy);
+    }
+    return a;
 }
 
 // Computes the multiplicative inverse of a in Zm
