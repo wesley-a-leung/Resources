@@ -42,6 +42,7 @@ template <class T> T EEA(T a, T b, T &x, T &y) {
         x -= q * xx; swap(x, xx);
         y -= q * yy; swap(y, yy);
     }
+    if (a < 0) { a = -a; x = -x; y = -y; }
     return a;
 }
 
