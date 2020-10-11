@@ -44,6 +44,7 @@ using namespace std;
 //       size() const: returns the number of vertices in the forest
 //   A: a vector of type R::Data with the initial value of each vertex
 // Functions:
+//   connected(v, w): returns true if and only if v and w are connected
 //   updatePathFromRoot(v, val): updates the path betwen vertex v and
 //     the root of its connected component with the lazy value val
 //   updatePath(v, w, val): updates the path between vertices v and w with
@@ -54,6 +55,7 @@ using namespace std;
 //   the constants of R's update and query functions
 // Time Complexity:
 //   constructor: O(V) + time complexity of R's constructor
+//   connected: O(1)
 //   updatePathFromRoot, updatePath, queryVertex:
 //     time complexity of update/query
 // Memory Complexity: O(V) + memory complexity of R

@@ -42,6 +42,7 @@ using namespace std;
 //   rt: a single root vertex
 //   roots: a vector of root vertices for each connected component
 // Functions:
+//   connected(v, w): returns true if and only if v and w are connected
 //   updateVertex(v, val): updates the vertex v with the value val
 //   queryPathFromRoot(v): queries the path betwen vertex v and the root of
 //     its connected component
@@ -51,6 +52,7 @@ using namespace std;
 //   the constants of R's update and query functions
 // Time Complexity:
 //   constructor: O(V) + time complexity of R's constructor
+//   connected: O(1)
 //   updateVertex, queryPathFromRoot, queryPath:
 //     time complexity of update/query
 // Memory Complexity: O(V) + memory complexity of R
