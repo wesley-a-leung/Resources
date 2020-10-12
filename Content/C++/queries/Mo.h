@@ -51,8 +51,7 @@ using namespace std;
 //     };
 // Constructor Arguments:
 //   A: a vector of type S::T of the values in the array
-//   queries: a vector of pairs containing the inclusive endpoints of
-//     the queries
+//   queries: a vector of type S::Q representing the queries
 // Fields:
 //   ans: a vector of integers with the answer for each query
 // In practice, has a very small constant

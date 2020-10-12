@@ -40,8 +40,7 @@ using namespace std;
 //         (which is a list of ints)
 //       size() const: returns the number of vertices in the forest
 //   A: a vector of type S::T of the values in the array
-//   queries: a vector of pairs containing the inclusive endpoints of
-//     the queries
+//   queries: a vector of type S::Q representing the queries
 // Fields:
 //   ans: a vector of integers with the answer for each query
 // In practice, has a very small constant
@@ -50,7 +49,7 @@ using namespace std;
 //     for K queries where C is the time complexity of S's constructor,
 //     U is the time complexity of S.add and S.remove,
 //     and T is the time compexity of S.query
-// Memory Complexity: O(K) for K queries
+// Memory Complexity: O(V + K) for K queries
 // Tested:
 //   https://www.spoj.com/problems/COT2/
 //   https://www.spoj.com/problems/GOT/
