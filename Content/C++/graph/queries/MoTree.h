@@ -1,58 +1,104 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "../lowestcommonancestor/LowestCommonAncestor.h"
 using namespace std;
 
-// Mo's algorithm on a tree, used to count the number of distinct integers on a path between two nodes
-// Time Complexity: O(V log V + Q log Q + Q * max(B, V / B) * (update complexity))
-// Memory Complexity: O(V log V + Q)
-template <const int MAXV, const int MAXQ, const int BLOCKSZ, const bool COMPRESS_VALUES> struct MoTree {
-    struct Query {
-        int l, r, lca, ind, block;
-        bool operator < (const Query &q) const { return block == q.block ? r < q.r : block < q.block; }
+// Mo's algorithm on a tree to answer offline queries over paths on a forest
+//   where each vertex has a value provided by an array A
+// Template Arguments:
+//   S: struct to maintain a multiset of the elements in a set
+//   Required Fields:
+//     T: the type of each element
+//     R: the type of the return value for each query
+//     Q: the query object that contains information for each query
+//       Required Fields:
+//         v: one vertex of the query path
+//         w: the other vertex of the query path
+//   Required Functions:
+//     constructor(A): takes a vector A of type T equal to the static array
+//       representing the values for each vertex of the graph
+//     add(v): adds the value v to the multiset
+//     remove(v): removes the value v from the multiset
+//   Sample Struct: supporting queries for whether a value c exists on
+//       a path between vertices v and w
+//     struct S {
+//       using T = int; using R = bool;
+//       struct Q { int v, w, c; };
+//       vector<T> cnt;
+//       S(const vector<T> &A)
+//           : cnt(*max_element(A.begin(), A.end()) + 1, 0) {}
+//       void add(const T &v) { cnt[v]++; }
+//       void remove(const T &v) { --cnt[v]; }
+//       R query(const Q &q) const {
+//         return 0 <= q.c && q.c < int(cnt.size()) && cnt[q.c] > 0;
+//       }
+//     };
+// Constructor Arguments:
+//   G: a generic forest data structure
+//     Required Functions:
+//       operator [v] const: iterates over the adjacency list of vertex v
+//         (which is a list of ints)
+//       size() const: returns the number of vertices in the forest
+//   A: a vector of type S::T of the values in the array
+//   queries: a vector of pairs containing the inclusive endpoints of
+//     the queries
+// Fields:
+//   ans: a vector of integers with the answer for each query
+// In practice, has a very small constant
+// Time Complexity:
+//   constructor: O(C + K (U (log K + sqrt V) + T))
+//     for K queries where C is the time complexity of S's constructor,
+//     U is the time complexity of S.add and S.remove,
+//     and T is the time compexity of S.query
+// Memory Complexity: O(K) for K queries
+// Tested:
+//   https://www.spoj.com/problems/COT2/
+//   https://www.spoj.com/problems/GOT/
+template <class S> struct MoTree {
+  using T = typename S::T; using R = typename S::R; using Q = typename S::Q;
+  struct Query {
+    Q q; int l, r, lca, i, b;
+    Query(const Q &q, int l, int r, int lca, int i, int b)
+        : q(q), l(l), r(r), lca(lca), i(i), b(b) {}
+    bool operator < (const Query &o) const {
+      return b == o.b ? r < o.r : b < o.b;
+    }
+  };
+  int V, ind; vector<int> pre, post, vert; LCA<> lca; vector<R> ans;
+  template <class Forest> void dfs(const Forest &G, int v, int prev) {
+    vert[pre[v] = ind++] = v; for (int w : G[v]) if (w != prev) dfs(G, w, v);
+    vert[post[v] = ind++] = v;
+  }
+  template <class Forest> LCA<> init(const Forest &G) {
+    vector<int> roots; for (int v = 0; v < V; v++)
+      if (pre[v] == -1) { roots.push_back(v); dfs(G, v, -1); }
+    return LCA<>(G, roots);
+  }
+  template <class Forest> MoTree(const Forest &G, const vector<T> &A,
+                                 const vector<Q> &queries, double SCALE = 2)
+      : V(G.size()), ind(0), pre(V, -1), post(V), vert(V * 2), lca(init(G)) {
+    int K = queries.size(), bsz = max(1.0, sqrt(A.size()) * SCALE);
+    vector<Query> q; q.reserve(K); vector<bool> vis(V, false); S s(A);
+    for (int i = 0; i < K; i++) {
+      int v = queries[i].v, w = queries[i].w, u = lca.lca(v, w);
+      if (pre[v] > pre[w]) swap(v, w);
+      int l = u == v ? pre[v] : post[v], r = pre[w];
+      q.emplace_back(queries[i], l, r, u, i, l / bsz);
+    }
+    auto update = [&] (int v) {
+      if (vis[v]) s.remove(A[v]);
+      else s.add(A[v]);
+      vis[v] = !vis[v];
     };
-    int head[MAXV], dep[MAXV], rmq[32 - __builtin_clz(MAXV * 2)][MAXV * 2], pre[MAXV], post[MAXV], vert[MAXV * 2], cnt[MAXV], ans[MAXQ], val[MAXV], temp[MAXV];
-    int Q = 0, ind1, ind2, curAns; vector<int> adj[MAXV]; Query q[MAXQ]; bool vis[MAXV];
-    void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
-    void query(int v, int w) { q[Q++] = {v, w, 0, 0, 0}; }
-    void dfs(int v, int prev, int d) {
-        dep[v] = d; rmq[0][head[v] = ind1++] = v; vert[pre[v] = ind2++] = v;
-        for (int w : adj[v]) if (w != prev) { dfs(w, v, d + 1); rmq[0][ind1++] = v; }
-        vert[post[v] = ind2++] = v;
+    sort(q.begin(), q.end()); int l = 0, r = l - 1; for (auto &&qi : q) {
+      while (l < qi.l) update(vert[l++]);
+      while (l > qi.l) update(vert[--l]);
+      while (r < qi.r) update(vert[++r]);
+      while (r > qi.r) update(vert[r--]);
+      if (qi.lca != vert[l] && qi.lca != vert[r]) update(qi.lca);
+      R res = s.query(qi.q); if (ans.empty()) ans.resize(K, res);
+      ans[qi.i] = res;
+      if (qi.lca != vert[l] && qi.lca != vert[r]) update(qi.lca);
     }
-    int minDep(int v, int w) { return dep[v] < dep[w] ? v : w; }
-    int RMQ(int l, int r) { int i = 31 - __builtin_clz(r - l + 1); return minDep(rmq[i][l], rmq[i][r - (1 << i) + 1]); }
-    int lca(int v, int w) { if (head[v] > head[w]) swap(v, w); return RMQ(head[v], head[w]); }
-    void add(int i) { if (cnt[val[i]]++ == 0) curAns++; }
-    void rem(int i) { if (--cnt[val[i]] == 0) curAns--; }
-    void update(int v) {
-        if (vis[v]) rem(v);
-        else add(v);
-        vis[v] = !vis[v];
-    }
-    void run(int V) {
-        ind1 = ind2 = 0; int lg = 32 - __builtin_clz(V * 2 - 1); fill(cnt, cnt + V, 0); fill(vis, vis + V, false); dfs(0, -1, 0);
-        for (int i = 0; i < lg - 1; i++) for (int j = 0; j < ind1; j++) rmq[i + 1][j] = minDep(rmq[i][j], rmq[i][min(j + (1 << i), ind1 - 1)]);
-        if (COMPRESS_VALUES) {
-            copy(val, val + V, temp); sort(temp, temp + V); int k = unique(temp, temp + V) - temp;
-            for (int v = 0; v < V; v++) val[v] = lower_bound(temp, temp + k, val[v]) - temp;
-        }
-        for (int i = 0; i < Q; i++) {
-            int v = q[i].l, w = q[i].r; q[i].lca = lca(v, w);
-            if (pre[v] > pre[w]) swap(v, w);
-            if (q[i].lca == v) { q[i].l = pre[v]; q[i].r = pre[w]; }
-            else { q[i].l = post[v]; q[i].r = pre[w]; }
-            q[i].ind = i; q[i].block = q[i].l / BLOCKSZ;
-        }
-        sort(q, q + Q); int l = q[0].l, r = l - 1; curAns = 0;
-        for (int i = 0; i < Q; i++) {
-            while (l < q[i].l) update(vert[l++]);
-            while (l > q[i].l) update(vert[--l]);
-            while (r < q[i].r) update(vert[++r]);
-            while (r > q[i].r) update(vert[r--]);
-            if (q[i].lca != vert[l] && q[i].lca != vert[r]) update(q[i].lca);
-            ans[q[i].ind] = curAns;
-            if (q[i].lca != vert[l] && q[i].lca != vert[r]) update(q[i].lca);
-        }
-    }
-    void clear(int V = MAXV) { Q = 0; for (int i = 0; i < V; i++) adj[i].clear(); }
+  }
 };

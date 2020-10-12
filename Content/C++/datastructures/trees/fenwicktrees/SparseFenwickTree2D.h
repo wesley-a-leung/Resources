@@ -54,7 +54,7 @@ template <class T, class IndexType> struct OfflineSemiSparseFenwickTree2D {
          [&] (const pair<int, IndexType> &a, const pair<int, IndexType> &b) {
       return a.second < b.second;
     });
-    vector<IndexType> last(N + 1, T());
+    vector<IndexType> last(N + 1, IndexType());
     for (auto &&u : updateInds) for (int i = u.first + 1; i <= N; i += i & -i)
       if (cnt[i] == 0 || u.second != last[i]) { cnt[i]++; last[i] = u.second; }
     for (int i = 1; i <= N; i++) st[i] = st[i - 1] + cnt[i - 1];
@@ -140,7 +140,7 @@ struct OfflineSparseFenwickTree2D {
     sort(inds1.begin(), inds1.end());
     inds1.erase(unique(inds1.begin(), inds1.end()), inds1.end());
     U = int(inds1.size()); st.assign(U + 1, 0); cnt.assign(U + 1, 0);
-    vector<IndexType2> last(U + 1, T()); for (auto &&u : updateInds)
+    vector<IndexType2> last(U + 1, IndexType2()); for (auto &&u : updateInds)
       for (int i = getInd1(u.first); i <= U; i += i & -i)
         if (cnt[i] == 0 || u.second != last[i]) {
           cnt[i]++; last[i] = u.second;

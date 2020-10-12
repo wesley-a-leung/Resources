@@ -9,7 +9,7 @@ using namespace std;
 //   Required Fields:
 //     T: the type of each element
 //     R: the type of the return value for each query
-//     Q: the type query object that contains information for each query
+//     Q: the query object that contains information for each query
 //       Required Fields:
 //         l: the left endpoint of the query range
 //         r: the right endpoint of the query range
@@ -59,7 +59,8 @@ using namespace std;
 // Time Complexity:
 //   constructor: O(C + K (U (log K + sqrt N) + T))
 //     for K queries where C is the time complexity of S's constructor,
-//     U is the time complexity of S.add and S.remove,
+//     U is the time complexity of S.addLeft, S.addRight,
+//     S.removeLeft, S.removeRight,
 //     and T is the time compexity of S.query
 // Memory Complexity: O(K) for K queries
 // Tested:
