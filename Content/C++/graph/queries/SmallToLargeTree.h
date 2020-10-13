@@ -38,8 +38,11 @@ using namespace std;
 //       size() const: returns the number of vertices in the forest
 //   A: a vector of type S::T of the values in the array
 //   queries: a vector of type S::Q representing the queries
+//   rt: a single root vertex
+//   roots: a vector of root vertices for each connected component
 // Fields:
 //   ans: a vector of integers with the answer for each query
+// In practice, has a moderate constant
 // Time Complexity:
 //   constructor: O(C + U V log V + K T)
 //     for K queries where C is the time complexity of S's constructor,
@@ -52,8 +55,9 @@ using namespace std;
 template <class S> struct SmallToLargeTree {
   using T = typename S::T; using R = typename S::R; using Q = typename S::Q;
   vector<R> ans;
-  template <class Forest> SmallToLargeTree(const Forest &G, const vector<T> &A,
-                                           const vector<Q> &queries) {
+  template <class Forest> SmallToLargeTree(
+      const Forest &G, const vector<T> &A, const vector<Q> &queries,
+      const vector<int> &roots = vector<int>()) {
     int V = G.size(), K = queries.size();
     vector<int> st(V + 1, 0), size(V, 0), ind(K); S s(A); 
     function<void(int, int)> getSize = [&] (int v, int prev) {
@@ -80,7 +84,12 @@ template <class S> struct SmallToLargeTree {
     for (int i = 0; i < K; i++) st[queries[i].v]++;
     partial_sum(st.begin(), st.end(), st.begin());
     for (int i = 0; i < K; i++) ind[--st[queries[i].v]] = i;
-    for (int v = 0; v < V; v++)
-      if (size[v] == 0) { getSize(0, -1); dfs(0, -1, 0); }
+    if (roots.empty()) {
+      for (int v = 0; v < V; v++)
+        if (size[v] == 0) { getSize(v, -1); dfs(v, -1, 0); }
+    } else for (int v : roots) { getSize(v, -1); dfs(v, -1, 0); }
   }
+  template <class Forest> SmallToLargeTree(
+      const Forest &G, const vector<T> &A, const vector<Q> &queries, int rt)
+      : SmallToLargeTree(G, A, queries, vector<int>{rt}) {}
 };

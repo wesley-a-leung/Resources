@@ -34,6 +34,13 @@ using namespace std;
 //         (which is a list of ints)
 //       size() const: returns the number of vertices in the forest
 //   A: a vector of type R::Data with the initial value of each vertex
+//   rt: a single root vertex
+//   roots: a vector of root vertices for each connected component
+// Fields:
+//   pre: vector of the pre order traversal indices for each vertex
+//   post: vector of the post order traversal indices (the last pre order index
+//     in its subtree) for each vertex
+//   vert: vector of vertex for each pre order index
 // Functions:
 //   updateVertex(v, val): updates the vertex v with the value val
 //   updateSubtree(v, val): updates the subtree of vertex v with the value val
@@ -70,14 +77,21 @@ template <class R, const bool VALUES_ON_EDGES> struct SubtreeQueries {
     post[v] = ind;
   }
   template <class Forest>
-  vector<Data> reorder(const Forest &G, const vector<Data> &A) {
-    for (int v = 0; v < V; v++) if (pre[v] == -1) dfs(G, v, -1);
+  vector<Data> reorder(const Forest &G, const vector<Data> &A,
+                       const vector<int> &roots) {
+    if (roots.empty()) {
+      for (int v = 0; v < V; v++) if (pre[v] == -1) dfs(G, v, -1);
+    } else for (int v : roots) if (pre[v] == -1) dfs(G, v, -1);
     vector<Data> ret; ret.reserve(V);
     for (int i = 0; i < V; i++) ret.push_back(A[vert[i]]);
     return ret;
   }
   template <class Forest>
-  SubtreeQueries(const Forest &G, const vector<Data> &A)
+  SubtreeQueries(const Forest &G, const vector<Data> &A,
+                 const vector<int> &roots = vector<int>())
       : V(G.size()), ind(-1), pre(V, -1), post(V), vert(V),
-        ops(reorder(G, A)) {}
+        ops(reorder(G, A, roots)) {}
+  template <class Forest>
+  SubtreeQueries(const Forest &G, const vector<Data> &A, int rt)
+      : SubtreeQueries(G, A, vector<int>{rt}) {}
 };

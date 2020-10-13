@@ -48,6 +48,8 @@ using namespace std;
 //         (which is a list of ints)
 //       size() const: returns the number of vertices in the forest
 //   A: a vector of type R::Data with the initial value of each vertex
+//   rt: a single root vertex
+//   roots: a vector of root vertices for each connected component
 // Functions:
 //   updatePath(v, w, val): updates the path from v to w with the value val
 //   updateVertex(v, val): updates the vertex v with the value val
@@ -121,6 +123,11 @@ struct PathQueries : public HLD {
     for (int i = 0; i < V; i++) ret.push_back(A[vert[i]]);
     return ret;
   }
-  template <class Forest> PathQueries(const Forest &G, const vector<Data> &A)
-      : HLD(G), ops(reorder(A)) {}
+  template <class Forest>
+  PathQueries(const Forest &G, const vector<Data> &A,
+              const vector<int> &roots = vector<int>())
+      : HLD(G, roots), ops(reorder(A)) {}
+  template <class Forest>
+  PathQueries(const Forest &G, const vector<Data> &A, int rt)
+      : HLD(G, rt), ops(reorder(A)) {}
 };

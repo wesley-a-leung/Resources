@@ -12,6 +12,8 @@ using namespace std;
 //       operator [v] const: iterates over the adjacency list of vertex v
 //         (which is a list of ints)
 //       size() const: returns the number of vertices in the forest
+//   rt: a single root vertex
+//   roots: a vector of root vertices for each connected component
 // Fields:
 //   root: vector of roots for the forest each vertex is in
 //   dep: vector of depths to each vertex from the root of
@@ -79,10 +81,15 @@ struct HLD {
     else return kthParent(w, dep[v] + dep[w] - 2 * dep[LCA] - k);
   }
   bool connected(int v, int w) { return root[v] == root[w]; }
-  template <class Forest> HLD(const Forest &G)
+  template <class Forest>
+  HLD(const Forest &G, const vector<int> &roots = vector<int>())
       : V(G.size()), ind(-1), root(V, -1), dep(V), par(V), size(V),
         head(V, -1), pre(V), post(V), vert(V) {
-    for (int v = 0; v < V; v++)
-      if (root[v] == -1) { dfs(G, v, -1, v, 0); hld(G, v, -1); }
+    if (roots.empty()) {
+      for (int v = 0; v < V; v++)
+        if (root[v] == -1) { dfs(G, v, -1, v, 0); hld(G, v, -1); }
+    } else for (int v : root) { dfs(G, v, -1, v, 0); hld(G, v, -1); }
   }
+  template <class Forest> HLD(const Forest &G, int rt)
+      : HLD(G, vector<int>{rt}) {}
 };
