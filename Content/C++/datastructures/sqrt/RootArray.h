@@ -4,23 +4,48 @@ using namespace std;
 
 // Decomposes the array recursively into N ^ (1 / R) containers of
 //   size N ^ ((R - 1) / R) multiplied by a scale factor
-// insert, erase, below, floor, ceiling, above, and find require the data to be
-//   sorted by the comparator and returns a pair of the index and a pointer to
-//   the element (or null if it does not exist)
 // Indices are 0-indexed
-// insert inserts before the first index i where cmp(at(i), val) is false
-// erase erases the first index i
-//   where cmp(at(i), val) and cmp(val, at(i)) are false, if it exists
-// find returns the first index of x if it exists
-// insert_at inserts before index k
-// below returns the last element x where cmp(x, val) is true
-// floor returns the last element x where cmp(val, x) is false
-// ceiling returns the first element x where cmp(x, val) is false
-// above returns the first element x where cmp(val, x) is true
-// find returns the first element x
-//   where cmp(val, x) and cmp(x, val) are false, if it exists
-// All other operations work regardless of whether it is sorted or not
-// Default comparator is a simple pointer comparator
+// Template Arguments:
+//   R: the number of recursive levels
+//   T: the type of data being stored
+// Constructor Arguments:
+//   st: an iterator pointing to the first element in the array
+//   en: an iterator pointing to after the last element in the array
+//   SCALE: the value to scale N ^ ((R - 1) / R) by
+// Functions:
+//   insert(val, cmp): inserts val before the first index i where
+//     cmp(at(i), val) is false assuming the data is sorted by cmp
+//   insert_at(k, val): inserts val before index k
+//   erase(val, cmp): erases the element at the first index i where
+//     where cmp(at(i), val) and cmp(val, at(i)) are false, if it exists,
+//     returns true if the element was erased, false otherwise
+//   erase_at(k): erases the element at index k
+//   size(): returns the size of the array
+//   empty(): returns whether or not the array is empty
+//   front(): accessor or modifier for the first element in the array
+//   back(): accessor or modifier for the first element in the array
+//   push_front(val): adds the val to the front of the array
+//   push_back(val): adds the val to the back of the array
+//   pop_front(): removes the first element in the array
+//   pop_back(): removes the last element in the array
+//   at(k): accessor or modifier for the element at index k 
+//   below(val, cmp): returns the index and a pointer to
+//     the last element x where cmp(x, val) is true,
+//     or (-1, nullptr) if none exist
+//   floor(val, cmp): returns the index and a pointer to
+//     the last element x where cmp(val, x) is false,
+//     or (-1, nullptr) if none exist
+//   ceiling(val, cmp): returns the index and a pointer to
+//     the first element x where cmp(x, val) is false,
+//     or (N, nullptr) if none exist
+//   above(val, cmp): returns the index and a pointer to
+//     the first element x where cmp(val, x) is true,
+//     or (N, nullptr) if none exist
+//   find(val, cmp): returns the index and a pointer to
+//     the first element x where cmp(val, x) and cmp(x, val) are false,
+//     or (N, nullptr) if none exist
+//   values(): returns a vector of all values in the array
+//   clear(): clears the array
 // In practice, has a very small constant, and is faster than balanced binary
 //   search trees when R = 3, and SCALE = 6, even for N >= 1e7
 // Time Complexity:
