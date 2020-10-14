@@ -2,10 +2,23 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Persistent Array
+// Persistent Array where copy assignment/constructor creates
+//   a new version of the data structure
 // Indices are 0-indexed
+// Template Arguments:
+//   T: the type of each element
+// Constructor Arguments:
+//   N: the size of the array
+//   f: a generating function that returns the ith element on the ith call
+//   st: an iterator pointing to the first element in the array
+//   en: an iterator pointing to after the last element in the array
+//   v: the default value to fill the array with
+// Functions:
+//   get(k): returns a constant reference to the kth element in the
+//     current version
+//   set(k, v): sets the kth element to index v in the current version
+//   size(): returns the size of the array
 // In practice, has a large constant
-// Copy assignment/constructor creates a new version of the data structure
 // Time Complexity:
 //   constructor, get, set: O(log N)
 //   size: O(1)

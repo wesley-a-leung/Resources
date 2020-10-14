@@ -3,9 +3,22 @@
 using namespace std;
 
 // Radix Priority Queue
-// All new keys pushed to the queue must be less than the last call to top
-// top and pop return the key-value pair with the maximum key
-// Comparator convention is same as priority_queue in STL
+// Template Arguments:
+//   Key: the type of the key, must be an unsigned integral type
+//   Val: the type of the value
+//   Cmp: the comparator to compare two values of type Key,
+//       convention is same as priority_queue in STL
+//     Required Functions:
+//       operator (a, b): returns true if and only if a compares less than b
+// Functions:
+//   empty(): returns whether the priority queue is empty
+//   size(): returns the number of elements in the priority queue
+//   top(): returns the largest element in the priority queue based on
+//     the comparator
+//   pop(): pops the largest element in the priority queue based on
+//     the comparator
+//   push(key, val): pushes the key value pair onto the priority queue,
+//     key must compare less than the the last call to top
 // In practice, has a small constant
 // Time Complexity:
 //   top: O(B) where B is the number of bits in Key

@@ -3,9 +3,19 @@
 using namespace std;
 
 // Radix Heap
-// All new keys pushed to the queue must be less than the last call to top
-// top and pop return the maximum key
-// Comparator convention is same as priority_queue in STL
+// Template Arguments:
+//   Key: the type of the key, must be an unsigned integral type
+//   Cmp: the comparator to compare two values of type Key,
+//       convention is same as priority_queue in STL
+//     Required Functions:
+//       operator (a, b): returns true if and only if a compares less than b
+// Functions:
+//   empty(): returns whether the heap is empty
+//   size(): returns the number of elements in the heap
+//   top(): returns the largest element in the heap based on the comparator
+//   pop(): pops the largest element in the heap based on the comparator
+//   push(key): pushes the key onto the heap, must compare less than
+//     the the last call to top
 // In practice, has a small constant
 // Time Complexity:
 //   top: O(B) where B is the number of bits
