@@ -21,8 +21,8 @@ using namespace std;
 //     key must compare less than the the last call to top
 // In practice, has a small constant
 // Time Complexity:
-//   top: O(B) where B is the number of bits in Key
 //   empty, size: O(1)
+//   top: O(B) where B is the number of bits in Key
 //   pop, push: O(1) amortized
 // Memory Complexity: O(NB)
 // Tested:

@@ -13,7 +13,7 @@ using namespace std;
 //   https://judge.yosupo.jp/problem/associative_array
 seed_seq seq {
   uint64_t(chrono::duration_cast<chrono::nanoseconds>(
-    chrono::steady_clock::now().time_since_epoch()).count()),
+      chrono::steady_clock::now().time_since_epoch()).count()),
   uint64_t(__builtin_ia32_rdtsc()),
   uint64_t(uintptr_t(make_unique<char>().get()))
 };

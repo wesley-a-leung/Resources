@@ -5,34 +5,48 @@
 #endif
 using namespace std;
 
-std::seed_seq seq{
-    (uint64_t)std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count(),
-    (uint64_t)__builtin_ia32_rdtsc(),(uint64_t)(uintptr_t)make_unique<char>().get()
-};
-std::mt19937 rng(seq);
-
-// Heap supporting merges
-// comparator convention is same as priority_queue in STL
+// Skew Heap supporting merges
+// Template Arguments:
+//   T: the type of each element
+//   Cmp: the comparator to compare two values of type T,
+//       convention is same as priority_queue in STL
+//     Required Functions:
+//       operator (a, b): returns true if and only if a compares less than b
+// Functions:
+//   empty(): returns whether the heap is empty
+//   size(): returns the number of elements in the heap
+//   top(): returns the largest element in the heap based on the comparator
+//   pop(): pops the largest element in the heap based on the comparator
+//   push(key): pushes val onto the heap
+//   merge(h): merges the heap h into this heap, destroys heap h
+// In practice, has a moderate constant
 // Time Complexity:
-//   constructor, empty, top, size: O(1)
-//   pop, push, merge: O(log N) expected if randomized, amortized if not 
+//   constructor, empty, size, top: O(1)
+//   pop, push: O(log N) amortized
+//   merge: O(log (N + M)) amortized where M is the size of heap h
 // Memory Complexity: O(N)
-template <class Value, class Comparator = less<Value>, const bool RANDOMIZED = false> struct SkewHeap {
-    struct Node {
-        Value val; unique_ptr<Node> l, r; Node(const Value &v) : val(v) {}
-    };
-    Comparator cmp; int cnt; unique_ptr<Node> root;
-    unique_ptr<Node> merge(unique_ptr<Node> a, unique_ptr<Node> b) {
-        if (!a || !b) return a ? move(a) : move(b);
-        if (cmp(a->val, b->val)) a.swap(b);
-        if (!RANDOMIZED || rng() % 2) a->l.swap(a->r);
-        a->r = merge(move(b), move(a->r)); return move(a);
-    }
-    SkewHeap() : cnt(0) {}
-    bool empty() const { return !root; }
-    Value top() const { return root->val; }
-    Value pop() { Value ret = root->val; root = merge(move(root->l), move(root->r)); cnt--; return ret; }
-    void push(const Value &val) { root = merge(move(root), make_unique<Node>(val)); cnt++; }
-    void merge(SkewHeap &h) { root = merge(move(root), move(h.root)); cnt += h.cnt; }
-    int size() const { return cnt; }
+// Tested:
+//   https://dmoj.ca/problem/apio16p2
+template <class T, class Cmp = less<T>> struct SkewHeap {
+  struct Node { T val; unique_ptr<Node> l, r; Node(const T &v) : val(v) {} };
+  Cmp cmp; int cnt; unique_ptr<Node> root;
+  unique_ptr<Node> merge(unique_ptr<Node> a, unique_ptr<Node> b) {
+    if (!a || !b) return a ? move(a) : move(b);
+    if (cmp(a->val, b->val)) a.swap(b);
+    a->l.swap(a->r); a->r = merge(move(b), move(a->r)); return move(a);
+  }
+  SkewHeap() : cnt(0) {}
+  bool empty() const { return !root; }
+  int size() const { return cnt; }
+  T top() const { return root->val; }
+  T pop() {
+    T ret = root->val; root = merge(move(root->l), move(root->r)); cnt--;
+    return ret;
+  }
+  void push(const T &val) {
+    root = merge(move(root), make_unique<Node>(val)); cnt++;
+  }
+  void merge(SkewHeap &h) {
+    root = merge(move(root), move(h.root)); cnt += h.cnt;
+  }
 };
