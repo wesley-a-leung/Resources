@@ -7,7 +7,7 @@ using namespace std;
 // Vertices are 0-indexed
 //   V: the number of vertices in the graph
 // Fields:
-//   UF: a vector of integers representing the root of each vertex in the
+//   UF: a vector of integers representing the parent of each vertex in the
 //     tree, or the negative of the size of the connected component if that
 //     vertex is a root
 //   P: a vector of booleans representing the parity of the path to the root

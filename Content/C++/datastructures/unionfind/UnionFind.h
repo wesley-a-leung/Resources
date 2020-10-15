@@ -7,7 +7,7 @@ using namespace std;
 // Constructor Arguments:
 //   N: the number of elements in the set
 // Fields:
-//   UF: a vector of integers representing the root of each element in the
+//   UF: a vector of integers representing the parent of each element in the
 //     tree, or the negative of the size of the set if that element is a root
 //   cnt: the current number of disjoint sets
 // Functions:

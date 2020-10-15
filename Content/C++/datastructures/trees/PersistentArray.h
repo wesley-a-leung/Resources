@@ -18,14 +18,13 @@ using namespace std;
 //     current version
 //   set(k, v): sets the kth element to index v in the current version
 //   size(): returns the size of the array
-// In practice, has a large constant
+// In practice, has a moderate constant
 // Time Complexity:
 //   constructor, get, set: O(log N)
 //   size: O(1)
 // Memory Complexity: O(N + Q log N) for Q operations
 // Tested:
-//   https://dmoj.ca/problem/wac4p5
-//   https://dmoj.ca/problem/ioi12p3
+//   https://judge.yosupo.jp/problem/persistent_queue
 template <class T> struct PersistentArray {
   struct Node; using ptr = shared_ptr<Node>;
   struct Node {
