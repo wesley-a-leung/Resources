@@ -13,7 +13,8 @@ using namespace std;
 //   empty(): returns whether the heap is empty
 //   size(): returns the number of elements in the heap
 //   top(): returns the largest element in the heap based on the comparator
-//   pop(): pops the largest element in the heap based on the comparator
+//   pop(): pops the largest element in the heap based on the comparator,
+//     and returns that element
 //   push(key): pushes the key onto the heap, must compare less than
 //     the the last call to top
 // In practice, has a small constant

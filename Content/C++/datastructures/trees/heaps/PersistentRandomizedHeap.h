@@ -17,7 +17,7 @@ using namespace std;
 //   top(): returns the largest element in the current heap based
 //     on the comparator
 //   pop(): pops the largest element in the current heap based
-//     on the comparator
+//     on the comparator, and returns that element
 //   push(key): pushes val onto the current heap
 //   merge(h): merges the heap h into the current heap
 // In practice, has a moderate constant

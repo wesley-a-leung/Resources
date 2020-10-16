@@ -17,7 +17,8 @@ using namespace std;
 //   empty(): returns whether the heap is empty
 //   size(): returns the number of elements in the heap
 //   top(): returns the largest element in the heap based on the comparator
-//   pop(): pops the largest element in the heap based on the comparator
+//   pop(): pops the largest element in the heap based on the comparator,
+//     and returns that element
 //   push(key): pushes val onto the heap
 //   increment(delta): increments all elements in the heap by delta
 //   merge(h): merges the heap h into this heap, destroys heap h
@@ -48,7 +49,7 @@ struct SkewHeapIncremental {
     propagate(a); propagate(b); if (cmp(a->val, b->val)) a.swap(b);
     a->l.swap(a->r); a->r = merge(move(b), move(a->r)); return move(a);
   }
-  SkewHeapIncremental(const Delta &ddef) : ddef(ddef), cnt(0) {}
+  SkewHeapIncremental(const Delta &ddef = Delta()) : ddef(ddef), cnt(0) {}
   bool empty() const { return !root; }
   int size() const { return cnt; }
   T top() { propagate(root); return root->val; }

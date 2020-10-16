@@ -16,7 +16,7 @@ using namespace std;
 //   top(): returns the largest element in the priority queue based on
 //     the comparator
 //   pop(): pops the largest element in the priority queue based on
-//     the comparator
+//     the comparator, and returns that element
 //   push(key, val): pushes the key value pair onto the priority queue,
 //     key must compare less than the the last call to top
 // In practice, has a small constant
