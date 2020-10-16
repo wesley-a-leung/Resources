@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include "../../../../Content/C++/graph/minimumspanningtree/ClassicalPrimMST.h"
 #include "../../../../Content/C++/graph/minimumspanningtree/BoruvkaMST.h"
 #include "../../../../Content/C++/graph/minimumspanningtree/KruskalMST.h"
 #include "../../../../Content/C++/graph/minimumspanningtree/PrimMST.h"
