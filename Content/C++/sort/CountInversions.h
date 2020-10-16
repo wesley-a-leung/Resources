@@ -16,7 +16,7 @@ long long count_inversions(SrcIt src_st, SrcIt src_en, DstIt dst_st, DstIt dst_e
     for (int i = 0, j = mid + 1, k = 0; k < n; k++) {
         if (i > mid) dst_st[k] = src_st[j++];
         else if (j >= n) { dst_st[k] = src_st[i++]; ret += j - (mid + 1); }
-        else if (src_st[j] < src_st[i]) dst_st[k] = src_st[j++];
+        else if (src_st[j] < src_st[i]) { dst_st[k] = src_st[j++]; ret += mid + 1 - i; }
         else { dst_st[k] = src_st[i++]; ret += j - (mid + 1); }
     }
     return ret;
@@ -43,7 +43,7 @@ long long count_inversions(SrcIt src_st, SrcIt src_en, DstIt dst_st, DstIt dst_e
     for (int i = 0, j = mid + 1, k = 0; k < n; k++) {
         if (i > mid) dst_st[k] = src_st[j++];
         else if (j >= n) { dst_st[k] = src_st[i++]; ret += j - (mid + 1); }
-        else if (cmp(src_st[j], src_st[i])) dst_st[k] = src_st[j++];
+        else if (cmp(src_st[j], src_st[i])) { dst_st[k] = src_st[j++]; ret += mid + 1 - i; }
         else { dst_st[k] = src_st[i++]; ret += j - (mid + 1); }
     }
     return ret;
