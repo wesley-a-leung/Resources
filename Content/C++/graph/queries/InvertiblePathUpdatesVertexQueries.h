@@ -43,6 +43,8 @@ using namespace std;
 //         (which is a list of ints)
 //       size() const: returns the number of vertices in the forest
 //   A: a vector of type R::Data with the initial value of each vertex
+//   rt: a single root vertex
+//   roots: a vector of root vertices for each connected component
 // Functions:
 //   connected(v, w): returns true if and only if v and w are connected
 //   updatePathFromRoot(v, val): updates the path betwen vertex v and
@@ -91,7 +93,7 @@ struct InvertiblePathUpdatesVertexQueries {
                        const vector<int> &roots) {
     if (roots.empty()) {
       for (int v = 0; v < V; v++) if (par[v] == -1) dfs(G, v, -1);
-    } else for (int v : roots) if (par[v] == -1) dfs(G, v, -1);
+    } else for (int v : roots) dfs(G, v, -1);
     vector<Data> ret; ret.reserve(V);
     for (int i = 0; i < V; i++) ret.push_back(A[vert[i]]);
     for (int v = 0; v < V; v++) if (post[v] + 1 < V) {

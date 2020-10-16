@@ -39,7 +39,6 @@ using namespace std;
 // Tested:
 //   https://judge.yosupo.jp/problem/lca
 //   https://www.spoj.com/problems/LCASQ
-//   https://codeforces.com/contest/1062/problem/E
 //   https://dmoj.ca/problem/rte16s3
 template <class T = int> struct LCA {
   using RMQ = FischerHeunStructure<int, greater<int>>;
@@ -58,7 +57,7 @@ template <class T = int> struct LCA {
   template <class Forest> RMQ init(const Forest &G, const vector<int> &roots) {
     vert.reserve(V); if (roots.empty()) {
       for (int v = 0; v < V; v++) if (root[v] == -1) dfs(G, v, -1, v, T());
-    } else for (int v : roots) if (root[v] == -1) dfs(G, v, -1, v, T());
+    } else for (int v : roots) dfs(G, v, -1, v, T());
     int i = 0; return RMQ(vert.size(), [&] { return pre[vert[i++]]; });
   }
   template <class Forest>
