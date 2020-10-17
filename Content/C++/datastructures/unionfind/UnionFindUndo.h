@@ -26,7 +26,7 @@ using namespace std;
 //   constructor: O(N)
 //   find, join, connected, getSize: O(log N)
 //   undo: O(1)
-// Memory Complexity: O(N)
+// Memory Complexity: O(N + Q) for Q calls to join
 // Tested:
 //   https://dmoj.ca/problem/apio19p2
 struct UnionFindUndo {
@@ -34,13 +34,16 @@ struct UnionFindUndo {
   UnionFindUndo(int N) : UF(N, -1), cnt(N) { history.reserve(N); }
   int find(int v) { return UF[v] < 0 ? v : find(UF[v]); }
   bool join(int v, int w) {
-    if ((v = find(v)) == (w = find(w))) return false;
+    if ((v = find(v)) == (w = find(w))) {
+      history.emplace_back(v, w, 0); return false;
+    }
     if (UF[v] > UF[w]) swap(v, w);
     history.emplace_back(v, w, UF[w]);
     UF[v] += UF[w]; UF[w] = v; cnt--; return true;
   }
   void undo() {
     int v, w, ufw; tie(v, w, ufw) = history.back(); history.pop_back();
+    if (ufw == 0) return;
     UF[w] = ufw; UF[v] -= UF[w]; cnt++;
   }
   bool connected(int v, int w) { return find(v) == find(w); }
