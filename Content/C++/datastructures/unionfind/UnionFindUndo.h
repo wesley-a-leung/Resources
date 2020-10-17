@@ -16,8 +16,8 @@ using namespace std;
 //   find(v): finds the root of the set containing element v
 //   join(v, w): merges the sets containing v and w, returns true if they
 //     were originally disjoint before the merge, false otherwise
-//   undo(): undoes the call to join that returned true by popping from the
-//     history stack
+//   undo(): undoes the last call to join that regardless of its return value
+//     by popping from the history stack
 //   connected(v, w): returns true if v and w are in the same set,
 //     false otherwise
 //   getSize(v): returns the size of the set containing element v
