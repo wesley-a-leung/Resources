@@ -15,8 +15,7 @@ using namespace std;
 //   G: a instance of Graph
 // Functions:
 //   dist(s, t): returns the distance between vertices s and t
-// In practice, the constructor has a small constant,
-//   dist has a moderate constant
+// In practice, has a moderate constant
 // Time Complexity:
 //   constructor: O(V + E)
 //   dist: O(V + E) worst case, much better in practice if s and t are

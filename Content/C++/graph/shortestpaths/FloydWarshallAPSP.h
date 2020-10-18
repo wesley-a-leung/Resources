@@ -14,7 +14,8 @@ using namespace std;
 //   INF: a value for infinity, must be negatable
 // Fields:
 //   dist: a vector of vectors of the shortest distance between each pair
-//     of vertices
+//     of vertices, INF if there is no path, -INF if the shortest path
+//     has no lower bound
 //   par: a vector of vectors of the parent vertex for each vertex in the
 //     shortest path tree for each source vertex (par[v][w] is the parent
 //     of vertex w in the shortest path tree from vertex v), or -1 if there is
@@ -24,7 +25,7 @@ using namespace std;
 // Functions:
 //   getPath(v, w): returns the list of directed edges on the path from
 //     vertex v to vertex w
-// In practice, the constructor has a very small constant
+// In practice, has a very small constant
 // Time Complexity:
 //   constructor: O(V^3)
 //   getPath: O(V)

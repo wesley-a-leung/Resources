@@ -20,7 +20,7 @@ using namespace std;
 //   diameter: the length of the diameter
 // Functions:
 //   getPath(): returns the list of edges on the diameter
-// In practice, the constructor has a moderate constant
+// In practice, has a moderate constant
 // Time Complexity:
 //   constructor: O(V)
 //   getPath: O(V)

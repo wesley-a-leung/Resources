@@ -1,74 +1,101 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "../search/TransitiveClosure.h"
 using namespace std;
 
-// Johnson's all pairs shortest path algorithm for weighted graphs with negative weights
-// Can also detect negative cycles
+// Johnson's all pairs shortest path algorithm for weighted graphs
+//   with negative weights
+// Able to detect negative cycles
+// Vertices are 0-indexed
+// Template Arguments:
+//   T: the type of the weight of the edges in the graph
+// Constructor Arguments:
+//   G: a generic weighted graph structure
+//     Required Functions:
+//       operator [v] const: iterates over the adjacency list of vertex v
+//         (which is a list of pair<int, T> with weights of type T)
+//       size() const: returns the number of vertices in the graph
+//   MAXV: the maximum number of vertices in the graph
+//   INF: a value for infinity, must be negatable
+// Fields:
+//   dist: a vector of vectors of the shortest distance between each pair
+//     of vertices, INF if there is no path, -INF if the shortest path
+//     has no lower bound
+//   par: a vector of vectors of the parent vertex for each vertex in the
+//     shortest path tree for each source vertex (par[v][w] is the parent
+//     of vertex w in the shortest path tree from vertex v), or -1 if there is
+//     no parent
+//   hasNegativeCycle: a boolean that is true if there is a negative cycle
+//     in the graph and false otherwise
+// Functions:
+//   getPath(v, w): returns the list of directed edges on the path from
+//     vertex v to vertex w
+// In practice, has a small constant
 // Time Complexity:
-//   O(VE log E) if a regular priority queue is used
-//   O(VE log V) if an indexed priority queue or pairing heap is used
-//   O(VE log (sum of weights)) if all weights are integers and a radix heap is used
-// Memory Complexity: O(V^2 + E)
-template <const int MAXV, class unit> struct JohnsonAPSP {
-    unit INF, dist[MAXV][MAXV], h[MAXV]; int id[MAXV], low[MAXV], pre;
-    stack<int, vector<int>> s; vector<vector<int>> components; bitset<MAXV> dp[MAXV], neg[MAXV];
-    bool hasNegativeCycle = false, hasNegativeWeight = false, vis[MAXV], G[MAXV][MAXV], compInNegCyc[MAXV], inNegCyc[MAXV];
-    pair<int, unit> to[MAXV][MAXV]; vector<pair<int, unit>> adj[MAXV]; vector<int> DAG[MAXV]; JohnsonAPSP(unit INF) : INF(INF) {}
-    void addEdge(int v, int w, unit weight) { adj[v].emplace_back(w, weight); hasNegativeWeight |= weight < 0; }
-    void addBiEdge(int v, int w, unit weight) { addEdge(v, w, weight); addEdge(w, v, weight); }
-    void clear(int V = MAXV) { hasNegativeCycle = hasNegativeWeight = false; for (int i = 0; i < V; i++) adj[i].clear(); }
-    void dfs(int v) {
-        vis[v] = true; int mn = low[v] = pre++; s.push(v);
-        for (auto &&e: adj[v]) {
-            if (!vis[e.first]) dfs(e.first);
-            if (low[e.first] < mn) mn = low[e.first];
+//   constructor: O(VE log E)
+//   getPath: O(V)
+// Memory Complexity: O(V + E + MAXV V / 64)
+// Tested:
+//   https://dmoj.ca/problem/apsp
+template <class T, const int MAXV> struct JohnsonAPSP {
+  using Edge = tuple<int, int, T>; int V; vector<vector<T>> dist;
+  vector<vector<int>> par; T INF; bool hasNegativeCycle;
+  template <class WeightedGraph>
+  JohnsonAPSP(const WeightedGraph &G, T INF = numeric_limits<T>::max())
+      : V(G.size()), dist(V, vector<T>(V, INF)), par(V, vector<int>(V, -1)),
+        INF(INF), hasNegativeCycle(false) {
+    bool hasNegativeWeight = false; for (int v = 0; v < V; v++)
+      for (auto &&e : G[v]) hasNegativeWeight |= e.second < T();
+    vector<bool> inNegCyc(V, false); vector<T> h(V, T());
+    vector<int> id; vector<bitset<MAXV>> neg; if (hasNegativeWeight) {
+      TransitiveClosureSCC<MAXV> tc(G); id = tc.scc.id;
+      vector<bool> compInNegCyc(tc.dp.size(), false);
+      for (int i = 0; i < V - 1; i++) for (int v = 0; v < V; v++)
+        for (auto &&e : G[v]) if (id[v] == id[e.first])
+          h[e.first] = min(h[e.first], h[v] + e.second);
+      for (int v = 0; v < V; v++) for (auto &&e : G[v])
+        if (id[v] == id[e.first] && h[e.first] > h[v] + e.second)
+          compInNegCyc[id[v]] = true;
+      for (int v = 0; v < V; v++)
+        hasNegativeCycle |= (inNegCyc[v] = compInNegCyc[id[v]]);
+      fill(h.begin(), h.end(), T());
+      for (int i = 0; i < V - 1; i++) for (int v = 0; v < V; v++)
+        for (auto &&e : G[v]) if (!inNegCyc[v] && !inNegCyc[e.first])
+          h[e.first] = min(h[e.first], h[v] + e.second);
+      vector<bool> vis(tc.dp.size(), false); neg.resize(vis.size());
+      function<void(int)> dfs = [&] (int v) {
+        vis[v] = 1; for (int e = tc.st[v]; e < tc.st[v + 1]; e++) {
+          int w = tc.DAG[e].second; if (!vis[w]) dfs(w);
+          neg[v] |= neg[w];
         }
-        if (mn < low[v]) { low[v] = mn; return; }
-        int w; components.emplace_back();
-        do { w = s.top(); s.pop(); id[w] = components.size() - 1; components.back().push_back(w); low[w] = INT_MAX; } while (w != v);
+        if (compInNegCyc[v]) neg[v] = tc.dp[v];
+      };
+      for (int i = 0; i < int(neg.size()); i++) if (!vis[i]) dfs(i);
     }
-    void markNegativeCycles(int V) {
-        fill(vis, vis + V, false); pre = 0; components.clear(); fill(h, h + V, 0); fill(compInNegCyc, compInNegCyc + V, false);
-        for (int v = 0; v < V; v++) if (!vis[v]) dfs(v);
-        for (int i = 0; i < V - 1; i++) for (int v = 0; v < V; v++) for (auto &&e : adj[v])
-            if (id[v] == id[e.first] && h[e.first] > h[v] + e.second) h[e.first] = h[v] + e.second;
-        for (int v = 0; v < V; v++) for (auto &&e : adj[v]) if (id[v] == id[e.first] && h[e.first] > h[v] + e.second) compInNegCyc[id[v]] = true;
-        for (int v = 0; v < V; v++) hasNegativeCycle |= (inNegCyc[v] = compInNegCyc[id[v]]);
-    }
-    void tcDfs(int v) {
-        if (vis[v]) return;
-        vis[v] = true;
-        for (int w : components[v]) dp[v][w] = 1;
-        for (int w : DAG[v]) { tcDfs(w); dp[v] |= dp[w]; neg[v] |= neg[w]; }
-        if (compInNegCyc[v]) neg[v] = dp[v];
-    }
-    void run(int V) {
-        for (int v = 0; v < V; v++) { fill(dist[v], dist[v] + V, INF); fill(to[v], to[v] + V, make_pair(-1, 0)); }
-        if (hasNegativeWeight) {
-            markNegativeCycles(V); fill(h, h + V, 0);
-            for (int i = 0; i < V - 1; i++) for (int v = 0; v < V; v++) for (auto &&e : adj[v])
-                if (!inNegCyc[v] && !inNegCyc[e.first] && h[e.first] > h[v] + e.second) h[e.first] = h[v] + e.second;
-            for (int v = 0; v < V; v++) for (auto &&e : adj[v]) if (id[v] != id[e.first]) G[id[v]][id[e.first]] = true;
-            for (int i = 0; i < int(components.size()); i++) {
-                dp[i].reset(); neg[i].reset(); vis[i] = false;
-                for (int j = 0; j < int(components.size()); j++) if (G[i][j]) DAG[i].push_back(j);
-            }
-            for (int i = 0; i < int(components.size()); i++) tcDfs(i);
-        } else fill(h, h + V, 0);
-        for (int s = 0; s < V; s++) {
-            if (!inNegCyc[s]) {
-                std::priority_queue<pair<unit, int>, vector<pair<unit, int>>, greater<pair<unit, int>>> PQ; PQ.emplace(dist[s][s] = 0, s);
-                while (!PQ.empty()) {
-                    unit d = PQ.top().first; int v = PQ.top().second; PQ.pop();
-                    if (d > dist[s][v]) continue;
-                    for (auto &&e : adj[v]) if (!inNegCyc[e.first] && dist[s][e.first] > dist[s][v] + e.second + h[v] - h[e.first]) {
-                        to[s][e.first] = make_pair(v, e.second); PQ.emplace(dist[s][e.first] = dist[s][v] + e.second + h[v] - h[e.first], e.first);
-                    }
-                }
-            }
-            if (hasNegativeWeight) for (int v = 0; v < V; v++) if (neg[id[s]][v]) dist[s][v] = -INF;
+    for (int s = 0; s < V; s++) {
+      if (!inNegCyc[s]) {
+        std::priority_queue<pair<T, int>, vector<pair<T, int>>,
+                            greater<pair<T, int>>> PQ;
+        PQ.emplace(dist[s][s] = T(), s); while (!PQ.empty()) {
+          T d = PQ.top().first; int v = PQ.top().second; PQ.pop();
+          if (d > dist[s][v]) continue;
+          for (auto &&e : G[v]) {
+            int w = e.first; T weight = e.second + h[v] - h[w];
+            if (!inNegCyc[w] && dist[s][w] > dist[s][v] + weight)
+              PQ.emplace(dist[s][w] = dist[s][par[s][w] = v] + weight, w);
+          }
         }
-        if (hasNegativeWeight) for (int v = 0; v < V; v++) for (int w = 0; w < V; w++)
-            if (abs(dist[v][w]) < INF) dist[v][w] = dist[v][w] - h[v] + h[w];
+      }
+      if (hasNegativeWeight) for (int v = 0; v < V; v++)
+        if (neg[id[s]][id[v]]) dist[s][v] = -INF;
     }
+    if (hasNegativeWeight) for (int v = 0; v < V; v++)
+      for (int w = 0; w < V; w++) if (dist[v][w] != INF && dist[v][w] != -INF)
+        dist[v][w] = dist[v][w] - h[v] + h[w];
+  }
+  vector<Edge> getPath(int v, int w) {
+    vector<Edge> path; for (; par[v][w] != -1; w = par[v][w])
+      path.emplace_back(par[v][w], w, dist[v][w] - dist[v][par[v][w]]);
+    reverse(path.begin(), path.end()); return path;
+  }
 };

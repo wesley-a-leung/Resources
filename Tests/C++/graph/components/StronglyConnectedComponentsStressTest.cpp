@@ -16,7 +16,7 @@ void test1() {
   G.build();
   const auto start_time = chrono::system_clock::now();
   vector<pair<int, int>> condensationEdges;
-  SCC scc(G, condensationEdges);
+  SCC<> scc(G, condensationEdges);
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 1 Passed" << endl;

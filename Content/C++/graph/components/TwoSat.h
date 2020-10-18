@@ -16,6 +16,7 @@ using namespace std;
 // Fields:
 //   x: a vector of booleans for one possible valid assignment, or empty if
 //     no valid assignment exists
+// In practice, has a large constant
 // Time Complexity:
 //   constructor: O(N + M) for M equations
 // Memory Complexity: O(N + M)

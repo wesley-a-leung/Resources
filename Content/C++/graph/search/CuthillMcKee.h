@@ -3,28 +3,43 @@
 using namespace std;
 
 // Cuthill-McKee reordering of a graph to reduce the bandwith
-// Time Complexity: O(V log E + E)
-// Memory Complexity: O(V + E)
-template <const int MAXV> struct CuthillMcKee {
-    int P[MAXV], ord[MAXV], ind[MAXV]; vector<int> adj[MAXV];
-    void addEdge(int v, int w) { adj[v].push_back(w); adj[w].push_back(v); }
-    void clear(int V = MAXV) { for (int v = 0; v < V; v++) adj[v].clear(); }
-    void run(int V, bool rev) {
-        auto cmpDeg = [&] (const int &v, const int &w) {
-            return int(adj[v].size()) == int(adj[w].size()) ? v < w : int(adj[v].size()) < int(adj[w].size());
-        };
-        int front = 0, back = 0; fill(ind, ind + V, 0); iota(P, P + V, 0); sort(P, P + V, cmpDeg);
-        for (int v = 0; v < V; v++) sort(adj[v].begin(), adj[v].end(), cmpDeg);
-        for (int i = 0; i < V; i++) {
-            int s = P[i];
-            if (ind[s]) continue;
-            ind[ord[back++] = s] = 1;
-            while (front < back) {
-                int v = ord[front++];
-                for (int w : adj[v]) if (!ind[w]) ind[ord[back++] = w] = 1;
-            }
-        }
-        if (rev) reverse(ord, ord + V);
-        for (int i = 0; i < V; i++) ind[ord[i]] = i;
+// Vertices are 0-indexed
+// Constructor Arguments:
+//   G: a generic undirected graph structure
+//     Required Functions:
+//       operator [v] const: iterates over the adjacency list of vertex v
+//         (which is a list of ints)
+//       size() const: returns the number of vertices in the graph
+//   rev: a boolean indicating whether the order should be reversed or not,
+//     performs better with Gaussian Elimination
+// Fields:
+//   mapping: a mapping from the original vertex to the reordered vertex
+//   revMapping: a mapping from the reordered vertex to the original vertex
+// In practice, has a small constant
+// Time Complexity:
+//   constructor: O(V log V + E log E)
+// Memory Complexity: O(V)
+// Tested:
+//   https://dmoj.ca/problem/ddrp3
+struct CuthillMcKee {
+  int V; vector<int> mapping, revMapping, deg;
+  template <class Graph> CuthillMcKee(const Graph &G, bool rev = false)
+      : V(G.size()), mapping(V, 0), revMapping(V), deg(V, 0) {
+    for (int v = 0; v < V; v++) for (int w : G[v]) { deg[v]++; deg[w]++; }
+    auto cmpDeg = [&] (int v, int w) {
+      return make_pair(deg[v], v) < make_pair(deg[w], w);
+    };
+    int front = 0, back = 0; vector<int> P(V); iota(P.begin(), P.end(), 0);
+    sort(P.begin(), P.end(), cmpDeg); for (int i = 0; i < V; i++) {
+      int s = P[i]; if (mapping[s]) continue;
+      mapping[revMapping[back++] = s] = 1; while (front < back) {
+        int v = revMapping[front++]; vector<int> adj; adj.reserve(deg[v]);
+        for (int w : G[v]) adj.push_back(w);
+        sort(adj.begin(), adj.end(), cmpDeg);
+        for (int w : adj) if (!mapping[w]) mapping[revMapping[back++] = w] = 1;
+      }
     }
+    if (rev) reverse(revMapping.begin(), revMapping.end());
+    for (int i = 0; i < V; i++) mapping[revMapping[i]] = i;
+  }
 };

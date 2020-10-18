@@ -22,7 +22,7 @@ using namespace std;
 // Functions:
 //   getPath(v): returns the list of directed edges on the path from the
 //     closest source vertex to vertex v
-// In practice, the constructor has a moderate constant
+// In practice, has a moderate constant
 // Time Complexity:
 //   constructor: O(V + E)
 //   getPath: O(V)

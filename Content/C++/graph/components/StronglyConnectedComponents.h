@@ -6,10 +6,13 @@ using namespace std;
 //   Tarjan's algorithm
 // Vertices are 0-indexed
 // Constructor Arguments:
-//   G: a generic directed graph structure
+//   G: a generic directed acyclic graph structure
+//       which can be weighted or unweighted, though weights do not change
+//       the topological order
 //     Required Functions:
 //       operator [v] const: iterates over the adjacency list of vertex v
-//         (which is a list of ints)
+//         (which is a list of ints for an unweighted graph, or a list of
+//         pair<int, T> for a weighted graph with weights of type T)
 //       size() const: returns the number of vertices in the graph
 //   condensationEdges: a reference to a vector of pairs that will store the
 //     edges in the condensation graph when all vertices in an scc are
@@ -31,9 +34,11 @@ using namespace std;
 //   https://ecna18.kattis.com/problems/watchyourstep
 struct SCC {
   int ind, top; vector<int> id, low, stk; vector<vector<int>> components;
+  int getTo(int e) { return e; }
+  template <class T> int getTo(const pair<int, T> &e) { return e.first; }
   template <class Digraph> void dfs(const Digraph &G, int v) {
-    id[stk[top++] = v] = -1; int mn = low[v] = ind++; for (int w : G[v]) {
-      if (id[w] == -2) dfs(G, w);
+    id[stk[top++] = v] = -1; int mn = low[v] = ind++; for (auto &&e : G[v]) {
+      int w = getTo(e); if (id[w] == -2) dfs(G, w);
       mn = min(mn, low[w]);
     }
     if (mn < low[v]) { low[v] = mn; return; }
@@ -49,8 +54,9 @@ struct SCC {
   template <class Digraph>
   SCC(const Digraph &G, vector<pair<int, int>> &condensationEdges) : SCC(G) {
     vector<int> last(components.size(), -1);
-    for (auto &&comp : components) for (int v : comp)
-      for (int w : G[v]) if (id[v] != id[w] && last[id[w]] != id[v])
+    for (auto &&comp : components) for (int v : comp) for (auto &&e : G[v]) {
+      int w = getTo(e); if (id[v] != id[w] && last[id[w]] != id[v])
         condensationEdges.emplace_back(last[id[w]] = id[v], id[w]);
+    }
   }
 };
