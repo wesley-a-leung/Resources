@@ -27,6 +27,7 @@ using namespace std;
 // Tested:
 //   https://open.kattis.com/contests/nwerc18open/problems/fastestspeedrun
 //   https://codeforces.com/contest/240/problem/E
+//   https://judge.yosupo.jp/problem/directedmst
 template <class T> struct GabowMinArborescence {
   using Edge = tuple<int, int, T>;
   struct Pair {
