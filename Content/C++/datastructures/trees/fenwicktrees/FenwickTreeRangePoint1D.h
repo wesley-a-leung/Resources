@@ -20,6 +20,12 @@ using namespace std;
 //   update(l, v): add v to the range [l..N - 1]
 //   update(l, r, v): add v to the range [l..r]
 //   get(i): queries the value at index i
+//   bsearch(v, cmp): returns the first index where cmp(A[i], v)
+//     returns false, or N if no such index exists
+//   lower_bound(v): returns the first index where A[i] >= v, assumes
+//     A is sorted by cmp
+//   upper_bound(v): returns the first index where A[i] > v, assumes
+//     A is sorted by cmp
 // In practice, this version performs as well as the multidimensional version
 // Small constant, like most fenwick trees, and faster than segment trees
 // Time Complexity:
@@ -29,6 +35,7 @@ using namespace std;
 // Tested:
 //   Fuzz and Stress Tested
 //   https://mcpt.ca/problem/asquirrelproblem
+//   https://codeforces.com/contest/1404/problem/C
 template <class T> struct FenwickTreeRangePoint1D {
   int N; vector<T> BIT;
   FenwickTreeRangePoint1D(int N) : N(N), BIT(N + 1, T()) {}
@@ -53,4 +60,13 @@ template <class T> struct FenwickTreeRangePoint1D {
     T ret = T(); for (i++; i > 0; i -= i & -i) ret += BIT[i];
     return ret;
   }
+  template <class F> int bsearch(T v, F cmp) {
+    T val = T(); int ind = 0; for (int j = __lg(N + 1); j >= 0; j--) {
+      int i = ind + (1 << j);
+      if (i <= N && cmp(val + BIT[i], v)) val += BIT[ind = i];
+    }
+    return ind;
+  }
+  int lower_bound(T v) { return bsearch(v, less<T>()); }
+  int upper_bound(T v) { return bsearch(v, less_equal<T>()); }
 };
