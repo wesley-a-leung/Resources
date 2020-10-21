@@ -21,7 +21,7 @@ using namespace std;
 // In practice, has a moderate constant, slower than
 //   DynamicConnectivityDivAndConq
 // Time Complexity:
-//   constructor: O(V)
+//   constructor: O(1)
 //   addEdge, removeEdge, addConnectedQuery, addCntQuery: O(1)
 //   solveQueries: O(V + Q (log Q + log V))
 // Memory Complexity: O(V + Q) for Q edge additions/removals and queries

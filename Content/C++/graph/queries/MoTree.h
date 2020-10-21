@@ -53,15 +53,15 @@ using namespace std;
 // Tested:
 //   https://www.spoj.com/problems/COT2/
 //   https://www.spoj.com/problems/GOT/
+//   https://dmoj.ca/problem/year2018p6
 template <class S> struct MoTree {
   using T = typename S::T; using R = typename S::R; using Q = typename S::Q;
   struct Query {
     Q q; int l, r, lca, i, b;
     Query(const Q &q, int l, int r, int lca, int i, int b)
         : q(q), l(l), r(r), lca(lca), i(i), b(b) {}
-    bool operator < (const Query &o) const {
-      return b == o.b ? r < o.r : b < o.b;
-    }
+    pair<int, int> getPair() const { return make_pair(b, b % 2 ? -r : r); }
+    bool operator < (const Query &o) const { return getPair() < o.getPair(); }
   };
   int V, ind; vector<int> pre, post, vert; LCA<> lca; vector<R> ans;
   template <class Forest> void dfs(const Forest &G, int v, int prev) {

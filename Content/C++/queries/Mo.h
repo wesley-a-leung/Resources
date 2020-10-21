@@ -70,9 +70,8 @@ template <class S> struct Mo {
   using T = typename S::T; using R = typename S::R; using Q = typename S::Q;
   struct Query {
     Q q; int i, b; Query(const Q &q, int i, int b) : q(q), i(i), b(b) {}
-    bool operator < (const Query &o) const {
-      return b == o.b ? q.r < o.q.r : b < o.b;
-    }
+    pair<int, int> getPair() const { return make_pair(b, b % 2 ? -q.r : q.r); }
+    bool operator < (const Query &o) const { return getPair() < o.getPair(); }
   };
   vector<R> ans;
   Mo(const vector<T> &A, const vector<Q> &queries, double SCALE = 2) {

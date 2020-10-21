@@ -30,7 +30,7 @@ using namespace std;
 //   solveQueries(): solves all queries asked so far
 // In practice, has a small constant
 // Time Complexity:
-//   constructor: O(V)
+//   constructor: O(1)
 //   addEdge, removeEdge, addConnectedQuery, addSizeQuery, addCntQuery: O(1)
 //   addComponentBipartiteQuery, addBipartiteGraphQuery: O(1)
 //   addColorQuery, addPathParity: O(1)

@@ -22,7 +22,7 @@ using namespace std;
 //   solveQueries(): solves all queries asked so far
 // In practice, has a small constant, faster than DynamicConnectivityLCT
 // Time Complexity:
-//   constructor: O(V)
+//   constructor: O(1)
 //   addEdge, removeEdge, addConnectedQuery, addSizeQuery, addCntQuery: O(1)
 //   solveQueries: O(V + Q log Q log V)
 // Memory Complexity: O(V + Q) for Q edge additions/removals and queries
