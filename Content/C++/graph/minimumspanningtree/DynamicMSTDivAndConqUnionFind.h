@@ -19,7 +19,7 @@ using namespace std;
 //   addMstQuery(v, w): adds a query asking for the current minimum spanning
 //     tree (or forest)
 //   solveQueries(): solves all queries asked so far
-// In practice, has a moderate constant, faster than DynamicMSTDivAndConqLCT
+// In practice, has a small constant, faster than DynamicMSTDivAndConqLCT
 // Time Complexity:
 //   constructor: O(V)
 //   addEdge, removeEdge, addMstQuery: O(1)
