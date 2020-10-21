@@ -60,7 +60,7 @@ template <class T> struct DynamicMSTDivAndConqLCT {
         get<4>(queries[last[j]]) = i; last[j] = temp;
       }
     }
-    SemiDynamicMSTUndo sdmst(V, NEG_INF); ans.clear(); ans.reserve(Q);
+    SemiDynamicMSTUndo<T> sdmst(V, NEG_INF); ans.clear(); ans.reserve(Q);
     function<void(int, int)> dc = [&] (int l, int r) {
       if (l == r) {
         int t, v, w, _; T weight; tie(t, v, w, weight, _) = queries[l];
