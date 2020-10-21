@@ -46,8 +46,8 @@ template <class T> struct DynamicMSTDivAndConqUnionFind {
     for (auto &&q : queries) if (get<0>(q) == 0)
       edges.emplace_back(get<1>(q), get<2>(q), get<3>(q));
     sort(edges.begin(), edges.end());
-    vector<int> cntAdd(edges.size(), 0), cntRem = cntAdd;
-    for (int i = 0; i < Q; i++) {
+    vector<int> cntAdd(edges.size(), 0), cntRem = cntAdd, qinds{-1};
+    qinds.reserve(Q); for (int i = 0; i < Q; i++) {
       int t, v, w, _; T weight; tie(t, v, w, weight, _) = queries[i];
       tuple<int, int, T> e(v, w, weight); if (t == 0) {
         int j = lower_bound(edges.begin(), edges.end(), e) - edges.begin();
@@ -55,7 +55,7 @@ template <class T> struct DynamicMSTDivAndConqUnionFind {
       } else if (t == 1) {
         int j = lower_bound(edges.begin(), edges.end(), e) - edges.begin();
         get<4>(queries[i]) = j + cntRem[j]++;
-      }
+      } else if (t == 2) qinds.push_back(i);
     }
     UnionFindUndo uf(V); ans.clear(); ans.reserve(Q);
     vector<bool> active(edges.size(), false), changed(edges.size(), false);
@@ -64,26 +64,28 @@ template <class T> struct DynamicMSTDivAndConqUnionFind {
                                     : active[i];
     };
     function<void(int, int, vector<int> &, T)> dc
-        = [&] (int l, int r, vector<int> &maybe, T curMST) {
-      int curSize = uf.history.size();
-      if (l == r) {
-        int t = get<0>(queries[l]), j = get<4>(queries[l]);
-        if (t == 0) active[j] = true;
-        else if (t == 1) active[j] = false;
-        else if (t == 2) {
-          sort(maybe.begin(), maybe.end(), cmpEdge); for (int j : maybe)
-            if (active[j] && uf.join(get<0>(edges[j]), get<1>(edges[j])))
-              curMST += get<2>(edges[j]);
-          ans.push_back(curMST);
-          while (int(uf.history.size()) > curSize) uf.undo();
+        = [&] (int ql, int qr, vector<int> &maybe, T curMST) {
+      int curSize = uf.history.size(); if (ql == qr) {
+        for (int i = qinds[ql - 1] + 1; i <= qinds[qr]; i++) {
+          int t = get<0>(queries[i]), j = get<4>(queries[i]);
+          if (t == 0) active[j] = true;
+          else if (t == 1) active[j] = false;
+          else if (t == 2) {
+            sort(maybe.begin(), maybe.end(), cmpEdge); for (int j : maybe)
+              if (active[j] && uf.join(get<0>(edges[j]), get<1>(edges[j])))
+                curMST += get<2>(edges[j]);
+            ans.push_back(curMST);
+            while (int(uf.history.size()) > curSize) uf.undo();
+          }
         }
         return;
       }
       sort(maybe.begin(), maybe.end(), cmpEdge);
-      for (int i = l; i <= r; i++) if (get<0>(queries[i]) <= 1) {
-        int j = get<4>(queries[i]); changed[j] = true;
-        uf.join(get<0>(edges[j]), get<1>(edges[j]));
-      }
+      for (int i = qinds[ql - 1] + 1; i <= qinds[qr]; i++)
+        if (get<0>(queries[i]) <= 1) {
+          int j = get<4>(queries[i]); changed[j] = true;
+          uf.join(get<0>(edges[j]), get<1>(edges[j]));
+        }
       vector<int> must; for (int j : maybe)
         if (!changed[j] && uf.join(get<0>(edges[j]), get<1>(edges[j])))
           must.push_back(j);
@@ -95,15 +97,15 @@ template <class T> struct DynamicMSTDivAndConqUnionFind {
         if (changed[j] || uf.join(get<0>(edges[j]), get<1>(edges[j])))
           newMaybe.push_back(j);
       while (int(uf.history.size()) > curSize2) uf.undo();
-      for (int i = l; i <= r; i++) if (get<0>(queries[i]) <= 1)
-        changed[get<4>(queries[i])] = false;
-      int m = l + (r - l) / 2;
-      dc(l, m, newMaybe, curMST); dc(m + 1, r, newMaybe, curMST);
+      for (int i = qinds[ql - 1] + 1; i <= qinds[qr]; i++)
+        if (get<0>(queries[i]) <= 1) changed[get<4>(queries[i])] = false;
+      int qm = ql + (qr - ql) / 2;
+      dc(ql, qm, newMaybe, curMST); dc(qm + 1, qr, newMaybe, curMST);
       while (int(uf.history.size()) > curSize) uf.undo();
     };
-    if (Q > 0) {
+    if (int(qinds.size()) > 1) {
       vector<int> maybe(edges.size()); iota(maybe.begin(), maybe.end(), 0);
-      dc(0, Q - 1, maybe, T());
+      dc(1, int(qinds.size()) - 1, maybe, T());
     }
   }
 };
