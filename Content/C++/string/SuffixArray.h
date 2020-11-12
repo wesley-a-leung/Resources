@@ -106,7 +106,7 @@ template <class T> struct SuffixArray {
 template <class T> struct LongestCommonPrefix {
   SuffixArray<T> SA; FischerHeunStructure<int, greater<int>> FHS;
   template <class F> LongestCommonPrefix(int N, F f)
-    : SA(N, f), FHS(SA.LCP.begin(), SA.LCP.end()) {}
+      : SA(N, f), FHS(SA.LCP.begin(), SA.LCP.end()) {}
   template <class It> LongestCommonPrefix(It st, It en)
       : LongestCommonPrefix(en - st, [&] { return *st++; }) {}
   int lcpRnk(int i, int j) {
