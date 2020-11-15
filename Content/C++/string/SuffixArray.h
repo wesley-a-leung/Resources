@@ -13,8 +13,8 @@ using namespace std;
 // Constructor Arguments:
 //   N: the length of the string/array
 //   f: a generating function that returns the ith element on the ith call
-//   st: an iterator pointing to the first element in the array
-//   en: an iterator pointing to after the last element in the array
+//   st: an iterator pointing to the first element in the string/array
+//   en: an iterator pointing to after the last element in the string/array
 // Fields:
 //   N: the length of the string/array
 //   S: a vector of type T representing the string/array
@@ -84,8 +84,8 @@ template <class T> struct SuffixArray {
 // Constructor Arguments:
 //   N: the number of elements in the string/array
 //   f: a generating function that returns the ith element on the ith call
-//   st: an iterator pointing to the first element in the array
-//   en: an iterator pointing to after the last element in the array
+//   st: an iterator pointing to the first element in the string/array
+//   en: an iterator pointing to after the last element in the string/array
 // Fields:
 //   SA: the associated suffix array constructed from the string/array
 // Functions:
