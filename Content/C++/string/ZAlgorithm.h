@@ -67,7 +67,7 @@ template <class T> struct ZAlgorithm {
 //     of the pattern and the text string
 //   matches: a vector of all starting indices of the pattern string in
 //     the text string
-// In practice, has a moderate constant
+// In practice, has a moderate constant, slightly slower than KMP
 // Time Complexity:
 //   constructor: O(N + M)
 // Memory Complexity: O(N + M)
