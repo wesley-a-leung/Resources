@@ -3,6 +3,7 @@ import sys
 
 parser = argparse.ArgumentParser(
   description="Script to check that every line ends in \\n and not \\r\\n, "
+              "does not contain \\t, "
               "and that every line does not exceed 79 characters",
 )
 parser.add_argument("filenames", metavar="file", type=str, nargs="+")
@@ -21,6 +22,9 @@ for filename in filenames:
         ok = False
       if line.endswith(b"\r\n"):
         print(f"line {curLine} ends in \\r\\n")
+        ok = False
+      if line.find(b"\t") != -1:
+        print(f"line {curLine} contains \\t")
         ok = False
       # if len(line.rstrip(b"\r\n")) > 79:
       #   print(f"line {curLine} exceeds maximum line length of 79")
