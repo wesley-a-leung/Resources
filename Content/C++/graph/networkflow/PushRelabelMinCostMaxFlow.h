@@ -6,8 +6,8 @@ using namespace std;
 // A sample edge struct for minimum cost maximum flow
 // Flow of edge can be found with cap - resCap
 // Template Arguments:
-//   _CostUnit: the type of the flow
-//   _CostUnit: the type of the flow
+//   _FlowUnit: the type of the flow
+//   _CostUnit: the type of the cost
 // Constructor Arguments:
 //   to: the vertex that this directed edge ends at
 //   rev: the index in the adjacency list of vertex to of the reverse edge
