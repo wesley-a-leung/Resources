@@ -118,7 +118,7 @@ struct PushRelabelMinCostMaxFlow : public PushRelabelMaxFlow<Edge> {
         stk[top++] = e.to;
     };
     auto relabel = [&] (int v, CostUnit delta) {
-      if (delta < COST_INF)  phi[v] -= delta + bnd;
+      if (delta < COST_INF) phi[v] -= delta + bnd;
       else { infs[v]--; phi[v] -= bnd; }
     };
     auto lookAhead = [&] (int v) {
