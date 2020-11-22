@@ -1,79 +1,130 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "PushRelabelMaxFlow.h"
 using namespace std;
 
-// Finds a feasible flow and computes the minimum and maximum flow in a flow network with demands using the Push Relabel algorithm
-// with the highest label selection rule and gap relabelling heuristic
-// Time Complexity: O(V^2 sqrt E), faster in practice
+// A sample edge struct for maximum flow with demands
+// Flow of edge can be found with cap - resCap
+// Template Arguments:
+//   _FlowUnit: the type of the flow
+// Constructor Arguments:
+//   to: the vertex that this directed edge ends at
+//   rev: the index in the adjacency list of vertex to of the reverse edge
+//   dem: the initial demand of this edge
+//   cap: the initial capacity of this edge
+// Fields:
+//   FlowUnit: the type of the flow
+//   to: the vertex that this directed edge ends at
+//   rev: the index in the adjacency list of vertex to of the reverse edge
+//   dem: the initial demand of this edge
+//   cap: the initial capacity of this edge
+//   resCap: the residual capacity of this edge
+// Tested:
+//   https://dmoj.ca/problem/wac4p6
+//   https://codeforces.com/gym/100199/problem/B
+template <class _FlowUnit> struct FlowEdgeDemands {
+  using FlowUnit = _FlowUnit; int to, rev; FlowUnit dem, cap, resCap;
+  FlowEdgeDemands(int to, int rev, FlowUnit dem, FlowUnit cap)
+      : to(to), rev(rev), dem(dem), cap(cap), resCap(cap) {}
+};
+
+// Computes the maximum flow in a flow network with edge demands using the
+//   Push Relabel algorithm with the highest label selection rule and
+//   gap relabelling heuristic
+// Vertices are 0-indexed
+// Template Arguments:
+//   Edge: a generic edge class (such as FlowEdgeDemands)
+//     Required Fields:
+//       FlowUnit: the type of the flow
+//       to: the vertex that this directed edge ends at
+//       rev: the index in the adjacency list of vertex to of the reverse edge
+//       dem: the initial demand of this edge
+//       cap: the initial capacity of this edge
+//       resCap: the residual capacity of this edge
+//     Required Functions:
+//       constructor(to, rev, dem, cap): initializes the edge to vertex to with
+//         the reverse index rev, demand dem, and capacity cap
+// Constructor Arguments:
+//   V: the number of vertices in the flow network
+//   FLOW_INF: a value for the flow infinity
+//   FLOW_EPS: a value for the flow epsilon
+// Fields:
+//   V: the number of vertices in the flow network
+//   FLOW_INF: a value for the flow infinity
+//   FLOW_EPS: a value for the flow epsilon
+//   G: an adjacency list of all edges and reverse edges in the flow network
+// Functions:
+//   addEdge(v, w, vwDem, wvCap): adds an edge from v to w with capacity
+//     vwCap and a demand of vwDem
+//   getFeasibleFlow(s, t, flowType): computes a feasible flow (or circulation
+//     if s and t are -1), maximizes the flow value if flowType is positive,
+//     minimizes it if flowType is negative, and finds any flow if 0; returns
+//     a pair of a boolean and FlowUnit indicating whether a flow is feasible
+//     and the flow value
+//   getMinFlow(s, t): returns a pair of a boolean and FlowUnit indicating
+//     whether a flow is feasible and the minimum flow value
+//   getMaxFlow(s, t): returns a pair of a boolean and FlowUnit indicating
+//     whether a flow is feasible and the maximum flow value
+// In practice, has a very small constant
+// Time Complexity:
+//   constructor: O(V)
+//   addEdge: O(1)
+//   getFlow: O(V^2 sqrt E)
 // Memory Complexity: O(V + E)
-template <const int MAXV, class unit> struct PushRelabelMaxFlowDemands {
-    struct Edge {
-        int to; unit dem, cap, resCap; int rev;
-        Edge(int to, unit dem, unit cap, int rev) : to(to), dem(dem), cap(cap), resCap(cap), rev(rev) {}
-    };
-    unit INF, EPS, ex[MAXV + 2], outDem[MAXV], inDem[MAXV]; PushRelabelMaxFlowDemands(unit INF, unit EPS) : INF(INF), EPS(EPS) {}
-    int h[MAXV + 2], cnt[(MAXV + 2) * 2]; vector<int> hs[(MAXV + 2) * 2]; vector<Edge> adj[MAXV + 2]; typename vector<Edge>::iterator cur[MAXV + 2];
-    void addEdge(int v, int w, unit vwDem, unit vwCap, int type = 1) {
-        assert(v != w); // if this happens, split vertex into two and add an edge with vwDem demand, and infinite capacity
-        adj[v].emplace_back(w, vwDem, vwCap, int(adj[w].size())); adj[w].emplace_back(v, -vwDem, -vwDem, int(adj[v].size()) - 1);
-        if (type == 1) { outDem[v] += vwDem; inDem[w] += vwDem; }
+// Tested:
+//   https://dmoj.ca/problem/wac4p6
+//   https://codeforces.com/gym/100199/problem/B
+template <class Edge>
+struct PushRelabelMaxFlowDemands : public PushRelabelMaxFlow<Edge> {
+  using MF = PushRelabelMaxFlow<Edge>;
+  using FlowUnit = typename Edge::FlowUnit; using MF::V; using MF::G;
+  FlowUnit FLOW_INF; vector<FlowUnit> outDem, inDem;
+  PushRelabelMaxFlowDemands(
+      int V, FlowUnit FLOW_INF = numeric_limits<FlowUnit>::max(),
+      FlowUnit FLOW_EPS = FlowUnit(1e-9))
+      : MF(V, FLOW_EPS), FLOW_INF(FLOW_INF),
+        outDem(V, FlowUnit()), inDem(V, FlowUnit()) {}
+  void addEdge(int v, int w, FlowUnit vwDem, FlowUnit vwCap, int type = 1) {
+    if (v == w) return;
+    G[v].emplace_back(w, int(G[w].size()), vwDem, vwCap);
+    G[w].emplace_back(v, int(G[v].size()) - 1, -vwDem, -vwDem);
+    if (type == 1) { outDem[v] += vwDem; inDem[w] += vwDem; }
+  }
+  pair<bool, FlowUnit> getFeasibleFlow(int s = -1, int t = -1,
+                                       int flowType = 0) {
+    int ss = V, tt = V + 1; G.emplace_back(); G.emplace_back();
+    FlowUnit bnd = FLOW_INF, sm = 0;
+    pair<bool, FlowUnit> ret(true, flowType < 0 ? FLOW_INF : FlowUnit());
+    for (int v = 0; v < V; v++) {
+      for (auto &&e : G[v]) e.cap -= e.dem;
+      addEdge(ss, v, FlowUnit(), inDem[v], 2);
+      addEdge(v, tt, FlowUnit(), outDem[v], 2); sm += inDem[v];
     }
-    void init(int V) { for (int v = 0; v < V + 2; v++) { outDem[v] = inDem[v] = 0; adj[v].clear(); } }
-    unit getFlow(int V, int s, int t) {
-        auto push = [&] (int v, Edge &e, unit df) {
-            int w = e.to;
-            if (abs(ex[w]) <= EPS && df > EPS) hs[h[w]].push_back(w);
-            e.resCap -= df; adj[w][e.rev].resCap += df; ex[v] -= df; ex[w] += df;
-        };
-        if (s == t) return 0;
-        fill(h, h + V, 0); h[s] = V; fill(ex, ex + V, 0); ex[t] = 1; fill(cnt, cnt + V * 2, 0); cnt[0] = V - 1;
-        for (int v = 0; v < V; v++) cur[v] = adj[v].begin();
-        for (int i = 0; i < V * 2; i++) hs[i].clear();
-        for (auto &&e : adj[s]) push(s, e, e.resCap);
-        if (!hs[0].empty()) for (int hi = 0; hi >= 0;) {
-            int v = hs[hi].back(); hs[hi].pop_back();
-            while (ex[v] > EPS) {
-                if (cur[v] == adj[v].end()) {
-                    h[v] = INT_MAX;
-                    for (auto e = adj[v].begin(); e != adj[v].end(); e++)
-                        if (e->resCap > EPS && h[v] > h[e->to] + 1) { h[v] = h[e->to] + 1; cur[v] = e; }
-                    cnt[h[v]]++;
-                    if (--cnt[hi] == 0 && hi < V) for (int w = 0; w < V; w++) if (hi < h[w] && h[w] < V) { cnt[h[w]]--; h[w] = V + 1; }
-                    hi = h[v];
-                } else if (cur[v]->resCap > EPS && h[v] == h[cur[v]->to] + 1) push(v, *cur[v], min(ex[v], cur[v]->resCap));
-                else cur[v]++;
-            }
-            while (hi >= 0 && hs[hi].empty()) hi--;
-        }
-        return -ex[s];
+    for (int h = 0; h < 2; h++) {
+      for (int v = 0; v < V + 2; v++) for (auto &&e : G[v]) e.resCap = e.cap;
+      if (s != -1 && t != -1) addEdge(t, s, FlowUnit(), bnd, 2);
+      V += 2;
+      if (sm - (bnd = MF::getFlow(ss, tt)) > MF::FLOW_EPS) ret.first = false;
+      V -= 2; if (s != -1 && t != -1) {
+        G[s].pop_back();
+        if (ret.first) ret.second = G[t].back().cap - G[t].back().resCap;
+        G[t].pop_back();
+      }
+      if (flowType >= 0 || !ret.first || h > 0) break;
+      for (int v = 0; v < V + 2; v++) for (auto &&e : G[v]) e.resCap = e.cap;
+      V += 2; bnd -= MF::getFlow(ss, tt); V -= 2;
     }
-    pair<bool, unit> getFeasibleFlow(int V, int s = -1, int t = -1, int flowType = 0) {
-        int ss = V, tt = V + 1; unit bnd = INF, sm = 0; pair<bool, unit> ret(true, flowType < 0 ? INF : 0);
-        for (int v = 0; v < V; v++) {
-            for (auto &&e : adj[v]) e.cap -= e.dem;
-            addEdge(ss, v, 0, inDem[v], 2); addEdge(v, tt, 0, outDem[v], 2); sm += inDem[v];
-        }
-        for (int h = 0; h < 2; h++) {
-            for (int v = 0; v < V + 2; v++) for (auto &&e : adj[v]) e.resCap = e.cap;
-            if (s != -1 && t != -1) addEdge(t, s, 0, bnd, 2);
-            if (sm - (bnd = getFlow(V + 2, ss, tt)) > EPS) ret.first = false;
-            if (s != -1 && t != -1) {
-                adj[s].pop_back();
-                if (ret.first) ret.second = adj[t].back().cap - adj[t].back().resCap;
-                adj[t].pop_back();
-            }
-            if (flowType >= 0 || !ret.first || h > 0) break;
-            for (int v = 0; v < V + 2; v++) for (auto &&e : adj[v]) e.resCap = e.cap;
-            bnd -= getFlow(V + 2, ss, tt);
-        }
-        adj[ss].clear(); adj[tt].clear();
-        for (int v = 0; v < V; v++) {
-            adj[v].pop_back(); adj[v].pop_back();
-            for (auto &&e : adj[v]) e.cap += e.dem;
-        }
-        if (flowType > 0 && ret.first) ret.second += getFlow(V, s, t);
-        return ret;
+    G.pop_back(); G.pop_back();
+    for (int v = 0; v < V; v++) {
+      G[v].pop_back(); G[v].pop_back(); for (auto &&e : G[v]) e.cap += e.dem;
     }
-    pair<bool, unit> getMinFlow(int V, int s, int t) { return getFeasibleFlow(V, s, t, -1); }
-    pair<bool, unit> getMaxFlow(int V, int s, int t) { return getFeasibleFlow(V, s, t, 1); }
+    if (flowType > 0 && ret.first) ret.second += MF::getFlow(s, t);
+    return ret;
+  }
+  pair<bool, FlowUnit> getMinFlow(int s, int t) {
+    return getFeasibleFlow(s, t, -1);
+  }
+  pair<bool, FlowUnit> getMaxFlow(int s, int t) {
+    return getFeasibleFlow(s, t, 1);
+  }
 };
