@@ -25,6 +25,7 @@ using namespace std;
 //   https://open.kattis.com/problems/mincostmaxflow
 //   https://loj.ac/p/102
 //   https://uoj.ac/problem/487
+//   https://www.spoj.com/problems/SCITIES/
 template <class _FlowUnit, class _CostUnit> struct FlowCostEdge {
   using FlowUnit = _FlowUnit; using CostUnit = _CostUnit;
   int to, rev; FlowUnit cap, resCap; CostUnit cost;
@@ -71,12 +72,13 @@ template <class _FlowUnit, class _CostUnit> struct FlowCostEdge {
 // Time Complexity:
 //   constructor: O(V)
 //   addEdge: O(1)
-//   getFlow: O(V^2 sqrt E)
+//   getFlowMinCost: O(E V^2 log (VC)) where C is the maximum edge cost
 // Memory Complexity: O(V + E)
 // Tested:
 //   https://open.kattis.com/problems/mincostmaxflow
 //   https://loj.ac/p/102
 //   https://uoj.ac/problem/487
+//   https://www.spoj.com/problems/SCITIES/
 template <class Edge>
 struct PushRelabelMinCostMaxFlow : public PushRelabelMaxFlow<Edge> {
   using MF = PushRelabelMaxFlow<Edge>;
@@ -116,8 +118,8 @@ struct PushRelabelMinCostMaxFlow : public PushRelabelMaxFlow<Edge> {
         stk[top++] = e.to;
     };
     auto relabel = [&] (int v, CostUnit delta) {
-      if (delta == COST_INF) { infs[v]--; phi[v] -= bnd; }
-      else phi[v] -= delta + bnd;
+      if (delta < COST_INF)  phi[v] -= delta + bnd;
+      else { infs[v]--; phi[v] -= bnd; }
     };
     auto lookAhead = [&] (int v) {
       if (abs(ex[v]) > FLOW_EPS) return false;

@@ -41,6 +41,7 @@ using namespace std;
 //   Stress Tested
 //   https://www.spoj.com/problems/BUGLIFE/
 //   https://cses.fi/problemset/task/1668
+//   https://tlx.toki.id/problems/troc-16/D
 struct SemiDynamicBipartite {
   vector<int> UF; vector<bool> P, B; int cnt; bool bipartiteGraph;
   SemiDynamicBipartite(int V)
