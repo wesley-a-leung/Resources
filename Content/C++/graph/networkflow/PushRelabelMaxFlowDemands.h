@@ -20,6 +20,7 @@ using namespace std;
 //   cap: the initial capacity of this edge
 //   resCap: the residual capacity of this edge
 // Tested:
+//   https://loj.ac/p/117
 //   https://dmoj.ca/problem/wac4p6
 //   https://codeforces.com/gym/100199/problem/B
 template <class _FlowUnit> struct FlowEdgeDemands {
@@ -72,6 +73,7 @@ template <class _FlowUnit> struct FlowEdgeDemands {
 //   getFeasibleFlow, getMinFlow, getMaxFlow: O(V^2 sqrt E)
 // Memory Complexity: O(V + E)
 // Tested:
+//   https://loj.ac/p/117
 //   https://dmoj.ca/problem/wac4p6
 //   https://codeforces.com/gym/100199/problem/B
 template <class Edge>

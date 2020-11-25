@@ -46,10 +46,10 @@ using namespace std;
 // Time Complexity:
 //   constructor: O(N)
 //   insert: O(1) amortized
-//   rebuild: O(sqrt(N))
+//   rebuild: O(sqrt N)
 //   count(): O(1)
 //   floor, ceiling, above, below, contains, count(val), count(lo, hi):
-//     O(sqrt(N)) amortized
+//     O(sqrt N) amortized
 //   valuesAndCount: O(N)
 // Memory Complexity: O(N)
 // Tested:

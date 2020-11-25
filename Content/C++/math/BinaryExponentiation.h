@@ -2,12 +2,24 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// base ^ pow
+// Computes base to the power of pow
+// Template Arguments:
+//   T: the type of base
+//   U: the type of pow
+// Function Arguments:
+//   base: the base
+//   pow: the power, must be non negative and integral
+// Return value: returns base to the power of pow
+// In practice, has a small constant
 // Time Complexity: O(log pow)
-// If multiplication is an expensive operation, then y = y * y should only be computed when pow > 0
-// Required: 0 <= pow
+// Memory Complexity: O(1)
+// Tested:
+//   https://cses.fi/problemset/task/1095
 template <class T, class U> T pow2(T base, U pow) {
-    T x = 1;
-    for (; pow > 0; pow >>= 1, base = base * base) if (pow & 1) x = x * base;
-    return x;
+  T x = 1; while (true) {
+    if (pow % 2 == 1) x = x * base;
+    if ((pow /= 2) == 0) break;
+    base = base * base;
+  }
+  return x;
 }

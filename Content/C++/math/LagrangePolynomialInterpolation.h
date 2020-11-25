@@ -2,14 +2,30 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Given a set of N points, (X[i], Y[i]), compute a polynomial P of degree N - 1,
-// such that P passes through them. P(x) = A[0] * x^0 + ... + A[N - 1] * x^(N - 1).
-// For real numbers, pick X[i] = C * cos(i / (N - 1) * PI) for a large constant C
-template <const int MAXN, class T> struct LagrangePolynomialInterpolation {
-    T X[MAXN], Y[MAXN], A[MAXN], temp[MAXN];
-    void solve(int N) {
-        for (int k = 0; k < N - 1; k++) for (int i = k + 1; i < N; i++) Y[i] = (Y[i] - Y[k]) / (X[i] - X[k]);
-        T last = 0; temp[0] = 1; fill(temp + 1, temp + N, 0); fill(A, A + N, 0);
-        for (int k = 0; k < N; k++) for (int i = 0; i < N; i++) { A[i] += Y[k] * temp[i]; swap(last, temp[i]); temp[i] -= X[k] * last; }
-    }
-};
+// Given a set of N points, P[i] = (X[i], Y[i]), compute a polynomial Q of
+//   degree N - 1, such that Q passes through them:
+//   Q(x) = A[0] * x^0 + ... + A[N - 1] * x^(N - 1).
+// For real numbers, pick X[i] = C * cos(i / (N - 1) * PI) for a
+//   large constant C
+// Template Arguments:
+//   T: the type of the x and y values, as well as the coefficients
+// Function Arguments:
+//   P: a vector of pairs of type T representing the N points
+// Return Value: a polynomial of degree N - 1 (with N coefficients) with
+//   the ith coefficient associated with the term x^i
+// In practice, has a small constant
+// Time Complexity: O(N^2)
+// Memory Complexity: O(N)
+// Tested:
+//   https://dmoj.ca/problem/angieandfunctions
+template <class T>
+vector<T> lagrangePolynomialInterpolation(vector<pair<T, T>> P) {
+  int N = P.size(); vector<T> A(N, T()), temp(N, T()); temp[0] = T(1);
+  for (int k = 0; k < N; k++) for (int i = k + 1; i < N; i++)
+    P[i].second = (P[i].second - P[k].second) / (P[i].first - P[k].first);
+  T last = T(); for (int k = 0; k < N; k++) for (int i = 0; i < N; i++) {
+    A[i] += P[k].second * temp[i]; swap(last, temp[i]);
+    temp[i] -= P[k].first * last;
+  }
+  return A;
+}

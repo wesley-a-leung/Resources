@@ -40,10 +40,10 @@ using namespace std;
 // Time Complexity:
 //   constructor: O(N)
 //   insert: O(1) amortized
-//   rebuild: O(sqrt(N))
+//   rebuild: O(sqrt N)
 //   empty, size, clear: O(1)
 //   floorInd, ceilingInd, aboveInd, belowInd, contains, count:
-//     O(sqrt(N)) amortized
+//     O(sqrt N) amortized
 //   values: O(N)
 // Memory Complexity: O(N)
 // Tested:
