@@ -43,6 +43,7 @@ template <class T, const T MOD,
           const bool MUL_OVERFLOW = (numeric_limits<T>::max() / MOD < MOD)>
     struct IntMod {
   static_assert(is_integral<T>::value, "T must be an integral type");
+  static_assert(is_signed<T>::value, "T must be a signed type");
   static_assert(0 < MOD, "MOD must be a positive integer");
   using IM = IntMod<T, MOD, PRIME_MOD, MUL_OVERFLOW>;
   T v = 0; IntMod() {}
