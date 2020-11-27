@@ -10,7 +10,7 @@ using namespace std;
 //   a: the value to find the positive modulo
 //   mod: the modulo
 // Return Value: the positive modulo of a by mod
-// In practice, has a small constant
+// In practice, has a very small constant
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
 // Tested:
@@ -27,7 +27,7 @@ template <class T> T posMod(T a, T mod) {
 //   b: the second value, must be in the range [0, mod)
 //   mod: the modulo
 // Return Value: a + b modulo mod, a value in the range [0, mod)
-// In practice, has a small constant
+// In practice, has a very small constant
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
 // Tested:
@@ -45,7 +45,7 @@ template <class T> T addMod(T a, T b, T mod) {
 //   b: the second value, must be in the range [0, mod)
 //   mod: the modulo
 // Return Value: a - b modulo mod, a value in the range [0, mod)
-// In practice, has a small constant
+// In practice, has a very small constant
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
 // Tested:
@@ -62,7 +62,7 @@ template <class T> T subMod(T a, T b, T mod) {
 //   b: the second value, must be in the range [0, mod)
 //   mod: the modulo
 // Return Value: a * b modulo mod, a value in the range [0, mod)
-// In practice, has a small constant
+// In practice, has a very small constant
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
 // Tested:

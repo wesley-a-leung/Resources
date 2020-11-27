@@ -46,7 +46,7 @@ template <class T, const T MOD,
   static_assert(is_signed<T>::value, "T must be a signed type");
   static_assert(0 < MOD, "MOD must be a positive integer");
   using IM = IntMod<T, MOD, PRIME_MOD, MUL_OVERFLOW>;
-  T v = 0; IntMod() {}
+  T v; IntMod() : v(0) {}
   IntMod(const T &x) {
     v = -MOD < x && x < MOD ? x : x % MOD; if (v < 0) v += MOD;
   }
