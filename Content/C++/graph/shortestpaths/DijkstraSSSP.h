@@ -28,7 +28,7 @@ using namespace std;
 // Time Complexity:
 //   constructor: O((V + E) log E)
 //   getPath: O(V)
-// Memory Complexity: O(V)
+// Memory Complexity: O(V + E)
 // Tested:
 //   Stress Tested
 //   https://judge.yosupo.jp/problem/shortest_path
