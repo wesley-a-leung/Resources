@@ -34,6 +34,7 @@ using namespace std;
 //   lps(i): O(1)
 // Memory Complexity: O(S)
 // Tested:
+//   https://judge.yosupo.jp/problem/enumerate_palindromes
 //   https://www.spoj.com/problems/LPS/
 template <class T> struct ManacherPalindrome {
   int N; vector<T> S, SS; vector<int> p;
