@@ -103,7 +103,7 @@ template <class T, const T MOD,
   IM operator / (const IM &i) const { return IM(*this) /= i; }
   IM &operator /= (const IM &i) { return *this *= i.mulInv(); }
   friend istream &operator >> (istream &stream, IM &i) {
-    stream >> i.v; return stream;
+    T v; stream >> v; i = IM(v); return stream;
   }
   friend ostream &operator << (ostream &stream, const IM &i) {
     stream << i.v; return stream;
