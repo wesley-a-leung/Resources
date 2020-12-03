@@ -39,7 +39,8 @@ template <class T, class Op> struct DisjointSparseTable {
   int N; vector<vector<T>> ST; Op op;
   template <class F> DisjointSparseTable(int N, F f, Op op = Op())
       : N(N), ST(N == 0 ? 0 : __lg(N * 2 - 1) + 1), op(op) {
-    ST[0].reserve(N); for (int i = 0; i < N; i++) ST[0].push_back(f());
+    if (N > 0) ST[0].reserve(N);
+    for (int i = 0; i < N; i++) ST[0].push_back(f());
     for (int i = 1; i < int(ST.size()); i++) {
       ST[i] = ST[0]; for (int j = 0, len = 1 << i; j < N; j += len) {
         int k = min(j + len / 2, N) - 1; T agg = ST[i][k] = ST[0][k];

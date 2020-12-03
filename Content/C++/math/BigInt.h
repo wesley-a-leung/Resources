@@ -12,13 +12,6 @@ struct BigInt {
     BigInt() : sign(1) {}
     BigInt(T v) { *this = v; }
     BigInt(const string &s) { read(s); }
-    void operator = (const BigInt &v) { sign = v.sign; a = v.a; }
-    void operator = (T v) {
-        sign = 1;
-        if (v < 0) sign = -1, v = -v;
-        a.clear();
-        for (; v > 0; v = v / BASE) a.push_back(v % BASE);
-    }
     BigInt operator + (const BigInt &v) const {
         if (sign == v.sign) {
             BigInt res = v;

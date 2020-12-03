@@ -66,7 +66,7 @@ struct C {
   static Data merge(const Data &l, const Data &r) {
     return min(l, r);
   }
-  static Data applyLazy(const Data &l, const Lazy &r) {
+  static Data applyLazy(const Data &, const Lazy &r) {
     return r;
   }
 };
