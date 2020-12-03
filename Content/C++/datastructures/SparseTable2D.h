@@ -2,26 +2,53 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// 2 Dimensional Sparse Table for generic operations
-// F must be a binary operator that is associative and idempotent
+// 2D Sparse Table supporting associative and idempotent range queries on
+//   a static 2D array
+// Indices are 0-indexed and ranges are inclusive
+// Template Arguments:
+//   T: the type of each element
+//   Op: a struct with the operation (can also be of type
+//       std::function<T(T, T)>); in practice, custom struct is faster than
+///      std::function
+//     Required Functions:
+//       operator (l, r): merges the values l and r, must be
+//         associative and idempotent
+// Constructor Arguments:
+//   A: a 2D vector of elements of type T
+//   op: an instance of the Op struct
+// Functions:
+//   query(u, d, l, r): returns the aggregate value of the elements in
+//     the range [u, d] in the first dimension and [l, r] in
+//     the second dimension
+// In practice, the constructor has a small constant,
+//   query has a moderate constant, but still faster than segment trees
 // Time Complexity:
-//   init: O(NM log N log M)
+//   constructor: O(NM log N log M)
 //   query: O(1)
 // Memory Complexity: O(NM log N log M)
-template <const int MAXN, const int MAXM, class T, class F> struct SparseTable2D {
-    T ST[32 - __builtin_clz(MAXN)][32 - __builtin_clz(MAXM)][MAXN][MAXM]; F op;
-    void init(const vector<vector<T>> &v, F op) {
-        this->op = op; int N = int(v.size()), M = int(v.back().size()), lgN = 32 - __builtin_clz(N), lgM = 32 - __builtin_clz(M);
-        for (int jr = 0; jr < N; jr++) for (int jc = 0; jc < M; jc++) ST[0][0][jr][jc] = v[jr][jc];
-        for (int ic = 0; ic < lgM - 1; ic++) for (int jr = 0; jr < N; jr++) for (int jc = 0; jc < M; jc++)
-            ST[0][ic + 1][jr][jc] = op(ST[0][ic][jr][jc], ST[0][ic][jr][min(jc + (1 << ic), M - 1)]);
-        for (int ir = 0; ir < lgN - 1; ir++) for (int ic = 0; ic < lgM; ic++) for (int jr = 0; jr < N; jr++) for (int jc = 0; jc < M; jc++)
-            ST[ir + 1][ic][jr][jc] = op(ST[ir][ic][jr][jc], ST[ir][ic][min(jr + (1 << ir), N - 1)][jc]);
-    }
-    // 0-indexed, inclusive
-    T query(int u, int d, int l, int r) {
-        int ir = 31 - __builtin_clz(d - u + 1), ic = 31 - __builtin_clz(r - l + 1);
-        return op(op(ST[ir][ic][u][l], ST[ir][ic][d - (1 << ir) + 1][r - (1 << ic) + 1]),
-            op(ST[ir][ic][d - (1 << ir) + 1][l], ST[ir][ic][u][r - (1 << ic) + 1]));
-    }
+// Tested:
+//   Fuzz and Stress Tested
+//   https://dmoj.ca/problem/2drmq
+//   http://www.usaco.org/index.php?page=viewproblem2&cpid=972
+template <class T, class Op> struct SparseTable2D {
+  int N, M, lgN, lgM; vector<vector<vector<vector<T>>>> ST; Op op;
+  SparseTable2D(const vector<vector<T>> &A, Op op = Op())
+      : N(A.size()), M(N == 0 ? 0 : A[0].size()),
+        lgN(N == 0 ? 0 : __lg(N) + 1), lgM(M == 0 ? 0 : __lg(M) + 1),
+        ST(lgN, vector<vector<vector<T>>>(lgM, A)), op(op) {
+    for (int ic = 0; ic < lgM - 1; ic++) for (int jr = 0; jr < N; jr++)
+      for (int jc = 0; jc < M; jc++) ST[0][ic + 1][jr][jc] = op(
+          ST[0][ic][jr][jc], ST[0][ic][jr][min(jc + (1 << ic), M - 1)]);
+    for (int ir = 0; ir < lgN - 1; ir++) for (int ic = 0; ic < lgM; ic++)
+      for (int jr = 0; jr < N; jr++) for (int jc = 0; jc < M; jc++)
+        ST[ir + 1][ic][jr][jc] = op(
+            ST[ir][ic][jr][jc], ST[ir][ic][min(jr + (1 << ir), N - 1)][jc]);
+  }
+  T query(int u, int d, int l, int r) {
+    int ir = __lg(d - u + 1), ic = __lg(r - l + 1);
+    return op(op(ST[ir][ic][u][l],
+                 ST[ir][ic][d - (1 << ir) + 1][r - (1 << ic) + 1]),
+              op(ST[ir][ic][d - (1 << ir) + 1][l],
+                 ST[ir][ic][u][r - (1 << ic) + 1]));
+  }
 };
