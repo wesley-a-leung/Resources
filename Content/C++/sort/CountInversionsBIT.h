@@ -1,19 +1,53 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "../datastructures/trees/fenwicktrees/FenwickTree1D.h"
 using namespace std;
 
-// Counts the number of inversions of an array using a BIT
+// Counts inversions and sorts an array using a Fenwick Tree with a comparator
+// Template Arguments:
+//   It: the type of the iterator
+//   Cmp: the comparator to compare two values
+//     Required Functions:
+//       operator (a, b): returns true if and only if a compares less than b
+// Function Arguments:
+//   st: an iterator pointing to the first element in the array
+//   en: an iterator pointing to after the last element in the array
+//   cmp: an instance of the Cmp struct
+// Return Value: the number of inversions in the array
+// In practice, has a moderate constant, slower than the merge sort version
 // Time Complexity: O(N log N)
 // Memory Complexity: O(N)
-template <const int MAXN> struct CountInversionsBIT {
-    int A[MAXN], temp[MAXN], BIT[MAXN];
-    void update(int i, int v) { for (; i < MAXN; i += i & -i) BIT[i] += v; }
-    int rsq(int i) { int ret = 0; for (; i > 0; i -= i & -i) ret += BIT[i]; return ret; }
-    long long solve(int N) {
-        copy(A, A + N, temp); sort(temp, temp + N); int k = unique(temp, temp + N) - temp;
-        for (int i = 0; i < N; i++) A[i] = lower_bound(temp, temp + k, A[i]) - temp + 1;
-        fill(BIT, BIT + MAXN, 0); long long ret = 0;
-        for (int i = N - 1; i >= 0; i--) { ret += rsq(A[i] - 1); update(A[i], 1); }
-        return ret;
-    }
-};
+// Tested:
+//   https://www.spoj.com/problems/INVCNT/
+//   https://codeforces.com/problemsets/acmsguru/problem/99999/180
+template <class It, class Cmp>
+long long countInversionsBIT(It st, It en, Cmp cmp) {
+  vector<typename iterator_traits<It>::value_type> tmp(st, en);
+  int N = en - st; long long ret = 0; sort(tmp.begin(), tmp.end(), cmp);
+  tmp.erase(unique(tmp.begin(), tmp.end()), tmp.end()); vector<int> C(N);
+  for (int i = 0; i < N; i++)
+    C[i] = lower_bound(tmp.begin(), tmp.end(), st[i], cmp) - tmp.begin();
+  FenwickTree1D<int> FT(tmp.size()); for (int i = N - 1; i >= 0; i--) {
+    ret += FT.query(C[i] - 1); FT.update(C[i], 1);
+  }
+  return ret;
+}
+
+// Counts inversions and sorts an array using a Fenwick Tree with
+//   the default < operator
+// Template Arguments:
+//   It: the type of the iterator
+// Function Arguments:
+//   st: an iterator pointing to the first element in the array
+//   en: an iterator pointing to after the last element in the array
+// Return Value: the number of inversions in the array
+// In practice, has a moderate constant, slower than the merge sort version
+// Time Complexity: O(N log N)
+// Memory Complexity: O(N)
+// Tested:
+//   https://www.spoj.com/problems/INVCNT/
+//   https://codeforces.com/problemsets/acmsguru/problem/99999/180
+template <class It> long long countInversionsBIT(It st, It en) {
+  return countInversionsBIT(st, en,
+                            less<typename decay<decltype(*st)>::type>());
+}

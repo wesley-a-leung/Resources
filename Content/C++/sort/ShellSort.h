@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Sorts an array using shell sort and a comparator
+// Sorts an array using shell sort with a comparator
 // Template Arguments:
 //   It: the type of the iterator
 //   Cmp: the comparator to compare two values
@@ -15,14 +15,16 @@ using namespace std;
 // In practice, has a very small constant
 // Time Complexity: O(N^(4/3))
 // Memory Complexity: O(1)
-template <class It, class Cmp> void shell_sort(It st, It en, Cmp cmp) {
+// Tested:
+//   https://dmoj.ca/problem/bf1hard
+template <class It, class Cmp> void shellSort(It st, It en, Cmp cmp) {
   int n = en - st, h = 1; while (h < n * 4 / 9) h = h * 9 / 4 + 1;
   for (; h >= 1; h = h * 4 / 9) for (int i = h; i < n; i++)
     for (int j = i; j >= h && cmp(st[j], st[j - h]); j -= h)
       swap(st[j], st[j - h]);
 }
 
-// Sorts an array using shell sort using the default < operator
+// Sorts an array using shell sort with the default < operator
 // Template Arguments:
 //   It: the type of the iterator
 // Function Arguments:
@@ -31,6 +33,8 @@ template <class It, class Cmp> void shell_sort(It st, It en, Cmp cmp) {
 // In practice, has a very small constant
 // Time Complexity: O(N^(4/3))
 // Memory Complexity: O(1)
-template <class It> void shell_sort(It st, It en) {
-  shell_sort(st, en, less<decltype(*st)>());
+// Tested:
+//   https://dmoj.ca/problem/bf1hard
+template <class It> void shellSort(It st, It en) {
+  shellSort(st, en, less<typename decay<decltype(*st)>::type>());
 }

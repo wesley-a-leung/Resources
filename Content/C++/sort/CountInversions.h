@@ -2,58 +2,63 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Counts the number of inversions in an array, while also sorting using merge sort
-// Time Complexity: O(N log N) worse case
-// Memory Complexity: O(N) additional memory
-
-template <class SrcIt, class DstIt>
-long long count_inversions(SrcIt src_st, SrcIt src_en, DstIt dst_st, DstIt dst_en) {
-    int n = src_en - src_st;
-    if (n <= 1) return 0;
-    int mid = (n - 1) / 2; long long ret = 0;
-    ret += count_inversions(dst_st, dst_st + mid + 1, src_st, src_st + mid + 1);
-    ret += count_inversions(dst_st + mid + 1, dst_en, src_st + mid + 1, src_en);
-    for (int i = 0, j = mid + 1, k = 0; k < n; k++) {
-        if (i > mid) dst_st[k] = src_st[j++];
-        else if (j >= n) { dst_st[k] = src_st[i++]; ret += j - (mid + 1); }
-        else if (src_st[j] < src_st[i]) { dst_st[k] = src_st[j++]; ret += mid + 1 - i; }
-        else { dst_st[k] = src_st[i++]; ret += j - (mid + 1); }
+// Helper function for inversion counting
+template <class InIt, class OutIt, class Cmp>
+long long countInversions(InIt st1, OutIt st2, int N, Cmp cmp, int len) {
+  long long ret = 0; for (int lo = 0; lo < N; lo += len + len) {
+    int mid = min(lo + len, N), hi = min(mid + len, N);
+    for (int i = lo, j = mid, k = lo; k < hi; k++) {
+      if (i >= mid) st2[k] = st1[j++];
+      else if (j >= hi) { st2[k] = st1[i++]; ret += j - mid; }
+      else if (cmp(st1[j], st1[i])) { st2[k] = st1[j++]; ret += mid - i; }
+      else { st2[k] = st1[i++]; ret += j - mid; }
     }
-    return ret;
+  }
+  return ret;
 }
 
-template <class It> long long count_inversions(It st, It en) {
-    typedef typename std::iterator_traits<It>::value_type T;
-    int n = en - st; T *aux = new T[n];
-    for (int i = 0; i < n; i++) aux[i] = st[i];
-    long long ret = count_inversions(aux, aux + n, st, en);
-    delete[] (aux);
-    return ret / 2;
+// Counts inversions and sorts an array using merge sort with a comparator
+// Template Arguments:
+//   It: the type of the iterator
+//   Cmp: the comparator to compare two values
+//     Required Functions:
+//       operator (a, b): returns true if and only if a compares less than b
+// Function Arguments:
+//   st: an iterator pointing to the first element in the array
+//   en: an iterator pointing to after the last element in the array
+//   cmp: an instance of the Cmp struct
+// Return Value: the number of inversions in the array
+// In practice, has a small constant, faster than the Fenwick Tree version
+// Time Complexity: O(N log N)
+// Memory Complexity: O(N)
+// Tested:
+//   https://www.spoj.com/problems/INVCNT/
+//   https://codeforces.com/problemsets/acmsguru/problem/99999/180
+template <class It, class Cmp>
+long long countInversions(It st, It en, Cmp cmp) {
+  vector<typename iterator_traits<It>::value_type> tmp(st, en);
+  int N = en - st; auto aux = tmp.begin(); long long ret = 0; bool flag = true;
+  for (int len = 1; len < N; len *= 2, flag = !flag)
+    ret += flag ? countInversions(aux, st, N, cmp, len)
+                : countInversions(st, aux, N, cmp, len);
+  if (flag) copy_n(aux, N, st);
+  return ret / 2;
 }
 
-/////////////////// COMPARATOR SORT ///////////////////
-
-template <class SrcIt, class DstIt, class Comparator>
-long long count_inversions(SrcIt src_st, SrcIt src_en, DstIt dst_st, DstIt dst_en, Comparator cmp) {
-    int n = src_en - src_st;
-    if (n <= 1) return 0;
-    int mid = (n - 1) / 2; long long ret = 0;
-    ret += count_inversions(dst_st, dst_st + mid + 1, src_st, src_st + mid + 1, cmp);
-    ret += count_inversions(dst_st + mid + 1, dst_en, src_st + mid + 1, src_en, cmp);
-    for (int i = 0, j = mid + 1, k = 0; k < n; k++) {
-        if (i > mid) dst_st[k] = src_st[j++];
-        else if (j >= n) { dst_st[k] = src_st[i++]; ret += j - (mid + 1); }
-        else if (cmp(src_st[j], src_st[i])) { dst_st[k] = src_st[j++]; ret += mid + 1 - i; }
-        else { dst_st[k] = src_st[i++]; ret += j - (mid + 1); }
-    }
-    return ret;
-}
-
-template <class It, class Comparator> long long count_inversions(It st, It en, Comparator cmp) {
-    typedef typename std::iterator_traits<It>::value_type T;
-    int n = en - st; T *aux = new T[n];
-    for (int i = 0; i < n; i++) aux[i] = st[i];
-    long long ret = count_inversions(aux, aux + n, st, en, cmp);
-    delete[] (aux);
-    return ret;
+// Counts inversions and sorts an array using merge sort with
+//   the default < operator
+// Template Arguments:
+//   It: the type of the iterator
+// Function Arguments:
+//   st: an iterator pointing to the first element in the array
+//   en: an iterator pointing to after the last element in the array
+// Return Value: the number of inversions in the array
+// In practice, has a small constant, faster than the Fenwick Tree version
+// Time Complexity: O(N log N)
+// Memory Complexity: O(N)
+// Tested:
+//   https://www.spoj.com/problems/INVCNT/
+//   https://codeforces.com/problemsets/acmsguru/problem/99999/180
+template <class It> long long countInversions(It st, It en) {
+  return countInversions(st, en, less<typename decay<decltype(*st)>::type>());
 }
