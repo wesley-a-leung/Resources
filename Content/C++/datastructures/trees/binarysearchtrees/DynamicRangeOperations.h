@@ -122,6 +122,8 @@ using namespace std;
 //   https://dmoj.ca/problem/acc1p1 (reverse, range queries)
 //   https://dmoj.ca/problem/noi05p2
 //     (insert_at, erase_at, range update, reverse, range queries)
+//   https://judge.yosupo.jp/problem/dynamic_sequence_range_affine_range_sum
+//     (insert_at, erase_at, range update, reverse, range queries)
 template <class Tree> struct DynamicRangeOperations : public Tree {
   using Node = typename Tree::Node; using Data = typename Node::Data;
   using Lazy = typename Node::Lazy; Node *root;

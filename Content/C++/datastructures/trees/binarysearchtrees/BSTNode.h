@@ -213,6 +213,7 @@ template <class C> struct NodeAgg {
 //   https://dmoj.ca/problem/acc1p1
 //   https://dmoj.ca/problem/noi05p2
 //   https://dmoj.ca/problem/ds5easy
+//   https://judge.yosupo.jp/problem/dynamic_sequence_range_affine_range_sum
 template <class C> struct NodeLazyAgg {
   using Data = typename C::Data; using Lazy = typename C::Lazy;
   static const bool RANGE_UPDATES = true, RANGE_QUERIES = true;

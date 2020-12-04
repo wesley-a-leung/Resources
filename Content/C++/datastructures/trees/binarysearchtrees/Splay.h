@@ -62,6 +62,8 @@ using namespace std;
 //   https://dmoj.ca/problem/dmpg17g2 (applyToRange)
 //   https://dmoj.ca/problem/acc1p1 (applyToRange)
 //   https://dmoj.ca/problem/noi05p2 (applyToRange)
+//   https://judge.yosupo.jp/problem/dynamic_sequence_range_affine_range_sum
+//     (applyToRange)
 template <class _Node, class Container = deque<_Node>> struct Splay {
   using Node = _Node; Container TR; deque<Node*> deleted;
   static_assert(Node::HAS_PAR, "Splay Node must have parent pointer");

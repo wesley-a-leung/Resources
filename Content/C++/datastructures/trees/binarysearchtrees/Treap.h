@@ -61,6 +61,8 @@ using namespace std;
 //   https://dmoj.ca/problem/dmpg17g2 (applyToRange)
 //   https://dmoj.ca/problem/acc1p1 (applyToRange)
 //   https://dmoj.ca/problem/noi05p2 (applyToRange)
+//   https://judge.yosupo.jp/problem/dynamic_sequence_range_affine_range_sum
+//     (applyToRange)
 template <class _Node> struct Treap {
   using Node = _Node;
   struct TreapNode : public Node {
