@@ -15,8 +15,8 @@ void test1() {
   }
   G.build();
   const auto start_time = chrono::system_clock::now();
-  vector<pair<int, int>> blockForestEdges;
-  BCC bcc(G, blockForestEdges);
+  vector<pair<int, int>> blockCutForestEdges;
+  BCC bcc(G, blockCutForestEdges);
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 1 Passed" << endl;
@@ -28,8 +28,8 @@ void test1() {
     checkSum = 31 * checkSum + v;
     for (int id : bcc.ids[v]) checkSum = 31 * checkSum + id;
   }
-  sort(blockForestEdges.begin(), blockForestEdges.end());
-  for (auto &&e : blockForestEdges) {
+  sort(blockCutForestEdges.begin(), blockCutForestEdges.end());
+  for (auto &&e : blockCutForestEdges) {
     checkSum = 31 * checkSum + e.first;
     checkSum = 31 * checkSum + e.second;
   }

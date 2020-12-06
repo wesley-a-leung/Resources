@@ -10,8 +10,8 @@ using namespace std;
 //       operator [v] const: iterates over the adjacency list of vertex v
 //         (which is a list of ints)
 //       size() const: returns the number of vertices in the graph
-//   blockForestEdges: a reference to a vector of pairs that will store the
-//     edges in the block forest with the articulation vertices having the
+//   blockCutForestEdges: a reference to a vector of pairs that will store the
+//     edges in the block-cut forest with the articulation vertices having the
 //     same index in the original graph, non articulation vertices being
 //     isolated, and each bcc/block having an index offset by V
 // Fields:
@@ -61,9 +61,9 @@ struct BCC {
     }
   }
   template <class Graph>
-  BCC(const Graph &G, vector<pair<int, int>> &blockForestEdges) : BCC(G) {
+  BCC(const Graph &G, vector<pair<int, int>> &blockCutForestEdges) : BCC(G) {
     for (int v = 0; v < int(G.size()); v++) if (articulation[v])
       for (int id : ids[v])
-        blockForestEdges.emplace_back(v, int(G.size()) + id);
+        blockCutForestEdges.emplace_back(v, int(G.size()) + id);
   }
 };
