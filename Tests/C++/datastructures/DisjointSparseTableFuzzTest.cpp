@@ -7,7 +7,7 @@ void test1() {
   mt19937_64 rng(0);
   const int TESTCASES = 1e5;
   long long checkSum = 0;
-  static constexpr long long MOD = 1e9;
+  static constexpr const long long MOD = 1e9;
   struct MulMod { long long operator () (long long a, long long b) { return a * b % MOD; } };
   for (int ti = 0; ti < TESTCASES; ti++) {
     int N = rng() % 101;

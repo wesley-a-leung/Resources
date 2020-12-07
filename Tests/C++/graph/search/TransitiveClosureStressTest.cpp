@@ -5,7 +5,7 @@ using namespace std;
 
 void test1() {
   mt19937_64 rng(0);
-  constexpr int V = 5e3, E = 2e4;
+  constexpr const int V = 5e3, E = 2e4;
   vector<bitset<V>> matrix(V);
   for (int i = 0; i < E; i++) {
     int v, w;
@@ -38,7 +38,7 @@ void test1() {
 
 void test2() {
   mt19937_64 rng(0);
-  constexpr int V = 5e3, E = 2e4;
+  constexpr const int V = 5e3, E = 2e4;
   vector<bitset<V>> matrix(V);
   for (int i = 0; i < E; i++) {
     int v = rng() % V;
@@ -65,7 +65,7 @@ void test2() {
 
 void test3() {
   mt19937_64 rng(0);
-  constexpr int V = 5e3, E = 2e5;
+  constexpr const int V = 5e3, E = 2e5;
   vector<bitset<V>> matrix(V);
   for (int i = 0; i < E; i++) {
     int v, w;
@@ -98,7 +98,7 @@ void test3() {
 
 void test4() {
   mt19937_64 rng(0);
-  constexpr int V = 5e3, E = 2e5;
+  constexpr const int V = 5e3, E = 2e5;
   vector<bitset<V>> matrix(V);
   for (int i = 0; i < E; i++) {
     int v = rng() % V;
@@ -125,7 +125,7 @@ void test4() {
 
 void test5() {
   mt19937_64 rng(0);
-  constexpr int V = 5e3, E = 2e4;
+  constexpr const int V = 5e3, E = 2e4;
   StaticGraph G(V);
   G.reserveDiEdges(E);
   for (int i = 0; i < E; i++) {
@@ -160,7 +160,7 @@ void test5() {
 
 void test6() {
   mt19937_64 rng(0);
-  constexpr int V = 5e3, E = 2e4;
+  constexpr const int V = 5e3, E = 2e4;
   StaticGraph G(V);
   G.reserveDiEdges(E);
   for (int i = 0; i < E; i++) {
@@ -189,7 +189,7 @@ void test6() {
 
 void test7() {
   mt19937_64 rng(0);
-  constexpr int V = 5e3, E = 2e5;
+  constexpr const int V = 5e3, E = 2e5;
   StaticGraph G(V);
   G.reserveDiEdges(E);
   for (int i = 0; i < E; i++) {
@@ -224,7 +224,7 @@ void test7() {
 
 void test8() {
   mt19937_64 rng(0);
-  constexpr int V = 5e3, E = 2e5;
+  constexpr const int V = 5e3, E = 2e5;
   StaticGraph G(V);
   G.reserveDiEdges(E);
   for (int i = 0; i < E; i++) {
@@ -253,7 +253,7 @@ void test8() {
 
 void test9() {
   mt19937_64 rng(0);
-  constexpr int V = 5e4, E = 2e5;
+  constexpr const int V = 5e4, E = 2e5;
   StaticGraph G(V);
   G.reserveDiEdges(E);
   for (int i = 0; i < E; i++) {
@@ -288,7 +288,7 @@ void test9() {
 
 void test10() {
   mt19937_64 rng(0);
-  constexpr int V = 5e4, E = 2e5;
+  constexpr const int V = 5e4, E = 2e5;
   StaticGraph G(V);
   G.reserveDiEdges(E);
   for (int i = 0; i < E; i++) {

@@ -31,7 +31,7 @@ template <class Key, class Val, class Cmp = less<Key>>
 struct RadixPriorityQueue {
   static_assert(is_integral<Key>::value, "Key must be integral");
   static_assert(is_unsigned<Key>::value, "Key must be unsigned");
-  static constexpr int B = __lg(numeric_limits<Key>::max()) + 1;
+  static constexpr const int B = __lg(numeric_limits<Key>::max()) + 1;
   int N; Key last; vector<vector<pair<Key, Val>>> x;
   RadixPriorityQueue() : N(0), last(0), x(B + 1) {}
   int lg(Key a) const { return a ? __lg(a) : -1; }

@@ -9,8 +9,8 @@ vector<vector<long long>> C(4000, vector<long long>(6000));
 void test1() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
-  constexpr int N = 4000;
-  constexpr int M = 6000;
+  constexpr const int N = 4000;
+  constexpr const int M = 6000;
   for (int i = 0; i < N; i++) for (int j = 0; j < M; j++) A[i][j] = rng() % int(1e5) + 1;
   adjacent_difference_2d(A, N, M, A);
   int U = 1;
@@ -47,8 +47,8 @@ void test1() {
 void test2() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
-  constexpr int N = 500;
-  constexpr int M = 1000;
+  constexpr const int N = 500;
+  constexpr const int M = 1000;
   for (int i = 0; i < N; i++) for (int j = 0; j < M; j++) A[i][j] = rng() % int(1e5) + 1;
   adjacent_difference_2d(A, N, M, A);
   int U = 5e6;
@@ -85,8 +85,8 @@ void test2() {
 void test3() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
-  constexpr int N = 4000;
-  constexpr int M = 6000;
+  constexpr const int N = 4000;
+  constexpr const int M = 6000;
   for (int i = 0; i < N; i++) for (int j = 0; j < M; j++) B[i][j] = rng() % int(1e5) + 1;
   adjacent_difference_2d(B, N, M, B);
   int U = 1;
@@ -123,8 +123,8 @@ void test3() {
 void test4() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
-  constexpr int N = 500;
-  constexpr int M = 1000;
+  constexpr const int N = 500;
+  constexpr const int M = 1000;
   for (int i = 0; i < N; i++) for (int j = 0; j < M; j++) B[i][j] = rng() % int(1e5) + 1;
   adjacent_difference_2d(B, N, M, B);
   int U = 5e6;
@@ -161,8 +161,8 @@ void test4() {
 void test5() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
-  constexpr int N = 4000;
-  constexpr int M = 6000;
+  constexpr const int N = 4000;
+  constexpr const int M = 6000;
   for (int i = 0; i < N; i++) for (int j = 0; j < M; j++) C[i][j] = rng() % int(1e5) + 1;
   adjacent_difference_2d(C, N, M, C);
   int U = 1;
@@ -199,8 +199,8 @@ void test5() {
 void test6() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
-  constexpr int N = 500;
-  constexpr int M = 1000;
+  constexpr const int N = 500;
+  constexpr const int M = 1000;
   for (int i = 0; i < N; i++) for (int j = 0; j < M; j++) C[i][j] = rng() % int(1e5) + 1;
   adjacent_difference_2d(C, N, M, C);
   int U = 5e6;

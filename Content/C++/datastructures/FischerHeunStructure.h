@@ -36,12 +36,11 @@ using namespace std;
 //   https://dmoj.ca/problem/ncco3d2p1
 //   https://www.spoj.com/problems/RMQSQ/
 //   https://judge.yosupo.jp/problem/staticrmq
-//   https://codeforces.com/contest/1062/problem/E
 template <class T, class Cmp = less<T>, class mask_t = uint32_t>
 struct FischerHeunStructure {
   static_assert(is_integral<mask_t>::value, "mask_t must be integral");
   static_assert(is_unsigned<mask_t>::value, "mask_t must be unsigned");
-  static constexpr int B = __lg(numeric_limits<mask_t>::max()) + 1;
+  static constexpr const int B = __lg(numeric_limits<mask_t>::max()) + 1;
   int N, M; vector<T> A; vector<mask_t> mask; vector<vector<int>> ST; Cmp cmp;
   int cmpInd(int i, int j) { return cmp(A[i], A[j]) ? j : i; }
   int small(int r, int sz = B) {

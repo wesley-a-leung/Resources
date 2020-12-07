@@ -49,7 +49,7 @@ T mulNimPow2(T prod[BITS][BITS], int i, int j) {
 //   https://judge.yosupo.jp/problem/nim_product_64
 template <class T> T mulNim(T a, T b) {
   static_assert(is_unsigned<T>::value, "T must be an unsigned integral type");
-  static constexpr int BITS = 8 * sizeof(T);
+  static constexpr const int BITS = 8 * sizeof(T);
   static T prod[BITS][BITS]; static T ZERO = initNim(prod);
   T res = ZERO; for (int i = 0; i < BITS; i++) if ((a >> i) & 1)
     for (int j = 0; j < BITS; j++) if ((b >> j) & 1)
