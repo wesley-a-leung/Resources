@@ -5,7 +5,7 @@ using namespace std;
 // Computes the maximum subarray sum of size K or more
 // Time Complexity: O(N)
 // Memory Complexity: O(N)
-template <const int MAXN, class T> struct MaxSubarraySumK {
+template <const int MAXN, class T> struct MaxSubarraySumKMore {
     T A[MAXN], maxSum[MAXN];
     T solve(int N, int K) {
         maxSum[0] = A[0]; T curMax = A[0], sum = 0;
