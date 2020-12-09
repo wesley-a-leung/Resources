@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Computes the minimum lexiographical rotation of a string
+// Computes the minimum lexicographical rotation of a string
 // Time Complexity: O(S)
 // Memory Complexity: O(S) additional memory
 template <const int MAXS> struct MinLexicographicalRotation {

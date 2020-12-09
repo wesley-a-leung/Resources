@@ -39,7 +39,7 @@ using namespace std;
 //   select(x, k): returns the kth node in the subtree of x
 //   index(root, x): only valid if Node::HAS_PAR is true, returns the index
 //     of node x in its tree (root is a dummy argument to maintain
-//     consistency with Splay api)
+//     consistency with Splay API)
 //   getFirst(x, v, cmp): returns the first node y (and its index) in the
 //     subtree of x where cmp(y->val, v) returns false
 //   build(N, f): builds a treap with N nodes using a generating function f
