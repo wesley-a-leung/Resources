@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 #include "../../../../Content/C++/graph/representations/StaticGraph.h"
-#include "../../../../Content/C++/graph/search/TransitiveClosure.h"
+#include "../../../../Content/C++/graph/search/TransitiveClosureFloydWarshall.h"
+#include "../../../../Content/C++/graph/search/TransitiveClosureSCC.h"
 using namespace std;
 
 void test1() {

@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "../search/TransitiveClosure.h"
+#include "../search/TransitiveClosureSCC.h"
 using namespace std;
 
 // Johnson's all pairs shortest path algorithm for weighted graphs

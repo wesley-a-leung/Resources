@@ -8,6 +8,8 @@ using namespace std;
 //     subject to Ax <= b and x >= 0
 //     where A is an M x N matrix; b is a vector with dimension M;
 //     c, x are vectors with dimension N
+// Template Arguments:
+//   F: a floating point type
 // Constructor Arguments:
 //   A: a M x N coefficient matrix 
 //   b: a constraint vector, with dimension M
@@ -26,7 +28,7 @@ using namespace std;
 // In practice, has a very small constant
 // Time Complexity:
 //   constructor: O(2^N), worst case, must faster in practice
-// Memory Complexity: O(M * N)
+// Memory Complexity: O(MN)
 // Tested:
 //   https://open.kattis.com/problems/cheeseifyouplease
 //   https://open.kattis.com/problems/goatropes
