@@ -92,14 +92,13 @@ template <class _Node, class Container = deque<_Node>> struct Splay {
     x->propagate(); x->update();
   }
   template <class F> void applyToRange(Node *&root, int i, int j, F f) {
-    if (i <= 0 && (root ? root->sz : 0) - 1 <= j) {
+    if (i == 0 && j == (root ? root->sz : 0) - 1) {
       f(root); if (root) { root->propagate(); root->update(); }
     } else {
-      int off = max(0, i);
-      Node *t = off ? select(root, i - 1)->r : select(root, j + 1)->l;
-      connect(nullptr, root, true, !off); root->update();
-      connect(t, nullptr, false, !off); applyToRange(t, i - off, j - off, f);
-      connect(t, root, true, !off); root->update();
+      Node *t = i ? select(root, i - 1)->r : select(root, j + 1)->l;
+      connect(nullptr, root, true, !i); root->update();
+      connect(t, nullptr, false, !i); applyToRange(t, 0, j - i, f);
+      connect(t, root, true, !i); root->update();
     }
   }
   Node *select(Node *&root, int k) {
