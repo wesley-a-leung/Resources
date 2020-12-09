@@ -92,27 +92,19 @@ template <class _Node, class Container = deque<_Node>> struct Splay {
     x->propagate(); x->update();
   }
   template <class F> void applyToRange(Node *&root, int i, int j, F f) {
-    int sz = root ? root->sz : 0;
-    if (i <= 0 && sz - 1 <= j) {
+    int sz = root ? root->sz : 0; if (i <= 0 && sz - 1 <= j) {
       f(root); if (root) { root->propagate(); root->update(); }
     } else if (i <= 0) {
       Node *l = select(root, j + 1)->l; connect(nullptr, root, true, true);
       root->update(); connect(l, nullptr, false, true); f(l);
       if (l) { l->propagate(); l->update(); }
       connect(l, root, true, true); root->update();
-    } else if (sz - 1 <= j) {
-      Node *r = select(root, i - 1)->r; connect(nullptr, root, true, false);
-      root->update(); connect(r, nullptr, false, false); f(r);
-      if (r) { r->propagate(); r->update(); }
-      connect(r, root, true, false); root->update();
     } else {
       Node *r = select(root, i - 1)->r; connect(nullptr, root, true, false);
-      root->update(); connect(r, nullptr, false, false);
-      Node *l = select(r, j - i + 1)->l; connect(nullptr, r, true, true);
-      r->update(); connect(l, nullptr, false, true); f(l);
-      if (l) { l->propagate(); l->update(); }
-      connect(l, r, true, true); r->update(); connect(r, root, true, false);
-      root->update();
+      root->update(); connect(r, nullptr, false, false); if (sz - 1 <= j) {
+        f(r); if (r) { r->propagate(); r->update(); }
+      } else applyToRange(r, 0, j - i, f);
+      connect(r, root, true, false); root->update();
     }
   }
   Node *select(Node *&root, int k) {
