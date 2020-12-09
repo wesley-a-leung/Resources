@@ -12,7 +12,7 @@ using namespace std;
 //       convention is same as priority_queue in STL
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
-//   mask_t: the type to store a bitmas, should have around log(N) bits
+//   mask_t: the type to store a bitmask, should have around log(N) bits
 // Constructor Arguments:
 //   N: the size of the array
 //   f: a generating function that returns the ith element on the ith call

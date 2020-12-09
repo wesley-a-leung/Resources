@@ -28,7 +28,7 @@ using namespace std;
 //     which returns the ith element of the text string/array on the ith call
 //   search(stTxt, enTxt): returns a vector of all starting indices of the
 //     pattern string in the text string/array in the range [stTxt, enTxt)
-// In practice, has a moderate constant, slightly fster than ZAlgorithm
+// In practice, has a moderate constant, slightly faster than ZAlgorithm
 // Time Complexity:
 //   constructor: O(N)
 //   search: O(M)

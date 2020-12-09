@@ -10,7 +10,7 @@ Data Structures, Algorithms, Utility Classes
 ### Currently being refactored
 - 79 character line limit  
 - 2 spaces for indentation  
-- very compressed coding style to reduce wasted space in pdf, with multiple
+- very compressed coding style to reduce wasted space in PDF, with multiple
 statements on a single line  
 - `if`, `else`, `for`, `while`, etc ... statements should either be immediately
 followed by a single statement and a newline, a block wrapped in curly braces
@@ -26,7 +26,7 @@ should be lower camel case, unless it is to match C++ STL conventions
 - templates should either be a standalone function, or a struct/class
 - functions and classes should have generic types if possible
 - classes should have constant parameters passed as template parameters if
-possible, variable paremeters should be passed in the constructor
+possible, variable parameters should be passed in the constructor
 - classes and functions should have a quick summary, specify conventions used,
 descriptions of template parameters, constructor arguments, member functions
 and fields, mention the constant factor (roughly) relative to its advertised
@@ -36,7 +36,7 @@ was tested
 differ by factors of 10
 - if template parameters are non-trivial, those should be described as well,
 possibly with an example provided
-- `std::vector` is prefered to fixed-sized arrays, use `std::vector::reserve`
+- `std::vector` is preferred to fixed-sized arrays, use `std::vector::reserve`
 if possible
 - the new operator should be avoided and memory should be allocated on the
 stack, or `std::unique_ptr` should be used
