@@ -108,8 +108,7 @@ template <class _Node, class Container = deque<_Node>> struct Splay {
       else if (t < k) { root = root->r; k -= t + 1; }
       else break;
     }
-    if (root) splay(root);
-    else if (last) splay(root = last);
+    if (last) splay(root = last);
     return root;
   }
   int index(Node *&root, Node *x) {
@@ -118,14 +117,12 @@ template <class _Node, class Container = deque<_Node>> struct Splay {
   }
   template <class T, class Comp>
   pair<int, Node *> getFirst(Node *&root, const T &v, Comp cmp) {
-    pair<int, Node *> ret(0, nullptr); Node *last = nullptr;
-    for (Node *x = root; x;) {
-      (last = x)->propagate();
-      if (!cmp(x->val, v)) { root = ret.second = x; x = x->l; }
-      else { ret.first += 1 + (x->l ? x->l->sz : 0); x = x->r; }
+    pair<int, Node *> ret(0, nullptr); Node *last = nullptr; while (root) {
+      (last = root)->propagate();
+      if (!cmp(root->val, v)) { ret.second = root; root = root->l; }
+      else { ret.first += 1 + (root->l ? root->l->sz : 0); root = root->r; }
     }
-    if (root) splay(root);
-    else if (last) splay(root = last);
+    if (last) splay(root = last);
     return ret;
   }
   template <class F> Node *buildRec(int l, int r, F &f) {
