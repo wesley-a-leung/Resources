@@ -7,8 +7,12 @@ using namespace std;
 // Template Arguments:
 //   ISFIRST: boolean of whether of not the first of last occurence is being
 //     searched for
-//   T: the type of the range to search over
+//   T: the type of the range to search over, must be integral
 //   F: the type of the function that is being searched over
+// Function Argyments:
+//   lo: the inclusive lower bound
+//   hi: the exclusive upper bound
+//   f: the function to search over
 // Return Value:
 //   If ISFIRST is true:
 //     Returns the first value in the range [lo, hi) where f(x) is true
@@ -21,7 +25,7 @@ using namespace std;
 //       assumes that all values where f(x) is true are less than all values
 //       where f(x) is false
 // In practice, has a small constant
-// Time Complexity: O(log (hi - lo)) * (cost to compute f(x))
+// Time Complexity: O(log (hi - lo)) * (cost to compute f(x)))
 // Memory Complexity: O(1)
 // Tested:
 //   https://mcpt.ca/problem/lcc18c5s3
@@ -30,6 +34,7 @@ using namespace std;
 //   https://dmoj.ca/problem/coci17c1p5
 const bool FIRST = true, LAST = false;
 template <const bool ISFIRST, class T, class F> T bsearch(T lo, T hi, F f) {
+  static_assert(is_integral<T>::value, "T must be integral");
   hi--; while (lo <= hi) {
     T mid = lo + (hi - lo) / 2;
     if (f(mid) == ISFIRST) hi = mid - 1;
