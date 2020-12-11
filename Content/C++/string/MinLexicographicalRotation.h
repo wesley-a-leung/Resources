@@ -2,24 +2,26 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Computes the minimum lexicographical rotation of a string
-// Time Complexity: O(S)
-// Memory Complexity: O(S) additional memory
-template <const int MAXS> struct MinLexicographicalRotation {
-    int F[MAXS * 2];
-    int run(const string &S) { // returns the index of the start the minimum rotation
-        string T = S + S; fill(F, F + T.size(), -1); int k = 0;
-        for (int i = 1; i < int(T.size()); i++) {
-            int j = F[i - k - 1];
-            while (j != -1 && T[i] != T[j + k + 1]) {
-                if (T[i] < T[j + k + 1]) k = i - j - 1;
-                j = F[j];
-            }
-            if (T[i] != T[j + k + 1]) {
-                if (T[i] < T[k]) k = i;
-                F[i - k] = -1;
-            } else F[i - k] = j + 1;
-        }
-        return k;
-    }
-};
+// Finds the minimum lexicographical rotation of a string
+// Template Arguments:
+//   T: the type of the character/element in the string/array
+// Function Arguments:
+//   st: an iterator pointing to the first element in the string/array
+//   en: an iterator pointing to after the last element in the string/array
+// Return Value: returns an iterator to the first element of the minimum
+//   lexicographical rotation of the string/array
+// In practice, has a small constant
+// Time Complexity: O(N)
+// Memory Complexity: O(1)
+// Tested:
+//   https://cses.fi/problemset/task/1110/
+template <class It> It minRotation(It st, It en) {
+  int N = en - st, i = 0;
+  auto ind = [&] (int i) { return i < N ? i : i - N; };
+  for (int j = 0; j < N; j++) for (int k = 0; k < N; k++) {
+    auto &a = st[ind(i + k)], &b = st[ind(j + k)];
+    if (i + k == j || a < b) { j += max(0, k - 1); break; }
+    if (a > b) { i = j; break; }
+  }
+  return st + i;
+}

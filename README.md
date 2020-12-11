@@ -40,8 +40,9 @@ possibly with an example provided
 if possible
 - the new operator should be avoided and memory should be allocated on the
 stack, or `std::unique_ptr` should be used
-- data structures should have a constructor accepting a size variable as well
-as a function/lambda that accepts no arguments and returns successive values
-for each index (see `std::generate`), if appropriate, a function that accepts
-two iterators representing an exclusive range to be copied, and if appropriate,
-a constructor accepting a size variable and a default value
+- data structures should have at last one of the following constructors:
+a constructor accepting a size variable as well as a function/lambda that
+accepts no arguments and returns successive values for each index (see
+`std::generate`), a constructor that accepts two iterators representing an 
+half open range to be copied, and a constructor accepting a size variable and a
+default value
