@@ -97,7 +97,8 @@ struct SAMArrayNode {
 // In practice, has a moderate constant
 // Time Complexity:
 //   constructor: time complexity of node constructor
-//   add: O(1) * time complexity of node constructor amortized
+//   add: O(1) amortized + time complexity of node constructor
+//        + time complexity of getEdge in Node
 //   terminate: O(1)
 // Memory Complexity: O(N) * memory complexity of node, after N calls to add
 // Tested:

@@ -106,7 +106,8 @@ struct PalTreeArrayNode {
 // In practice, has a small constant
 // Time Complexity:
 //   constructor: time complexity of node constructor
-//   add: O(log N) + time complexity of node constructor amortized
+//   add: O(log N) + time complexity of node constructor
+//        + time complexity of getEdge in Node
 //   undo: time complexity of setEdge in Node
 // Memory Complexity: O(N) * memory complexity of node, after N calls to add
 // Tested:
