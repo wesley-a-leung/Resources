@@ -71,6 +71,7 @@ struct SAMArrayNode {
 };
 
 // Suffix Automaton with the root node at 0
+// Each distinct path from the root is a substring of the set of words inserted
 // Template Arguments:
 //   Node: a node class
 //     Required Fields:
