@@ -59,17 +59,21 @@ using namespace std;
 //   update(i, v): updates the index i with the lazy value v
 //   update(l, r, v): update the range [l, r] with the lazy value v
 //   query(l, r): queries the range [l, r] and returns the aggregate value
+//   bsearchPrefix(l, r, f): returns the smallest index i in the range [l, r]
+//     such that f(query(l, i)) returns true or r + 1 if none exist
+//   bsearchSuffix(l, r, f): returns the largest index i in the range [l, r]
+//     such that f(query(i, r)) returns true of l - 1 if none exist
 // In practice, has a small constant, not quite as fast as fenwick trees
 //   or bottom up non lazy segment trees,
 //   and similar performance as bottom up lazy segment trees
 // Time Complexity:
 //   constructor: O(N)
-//   update, query: O(log N)
+//   update, query, bsearchPrefix, bsearchSuffix: O(log N)
 // Memory Complexity: O(N)
 // Tested:
 //   https://dmoj.ca/problem/ds3 (LAZY = false)
 //   https://dmoj.ca/problem/dmpg17g2 (LAZY = false)
-//   https://dmoj.ca/problem/coci17c1p5 (LAZY = false)
+//   https://dmoj.ca/problem/coci17c1p5 (LAZY = false, bsearchPrefix)
 //   https://judge.yosupo.jp/problem/point_set_range_composite (LAZY = false)
 //   https://dmoj.ca/problem/lazy (LAZY = true)
 //   https://mcpt.ca/problem/seq3 (LAZY = true)
@@ -120,6 +124,30 @@ template <const bool LAZY, class C> struct SegmentTreeTopDown {
     return C::merge(query(x * 2, tl, m, l, r),
                    query(x * 2 + 1, m + 1, tr, l, r));
   }
+  template <class F>
+  int bsearchPrefix(int x, int tl, int tr, int l, int r, Data &agg, F f) {
+    if (r < tl || tr < l) return r + 1;
+    if (tl != tr) propagate(x, tl, tr);
+    if (l <= tl && tr <= r) {
+      Data v = C::merge(agg, TR[x].val); if (!f(v)) { agg = v; return r + 1; }
+    }
+    if (tl == tr) return tl;
+    int m = tl + (tr - tl) / 2;
+    int ret = bsearchPrefix(x * 2, tl, m, l, r, agg, f);
+    return ret <= r ? ret : bsearchPrefix(x * 2 + 1, m + 1, tr, l, r, agg, f);
+  }
+  template <class F>
+  int bsearchSuffix(int x, int tl, int tr, int l, int r, Data &agg, F f) {
+    if (r < tl || tr < l) return l - 1;
+    if (tl != tr) propagate(x, tl, tr);
+    if (l <= tl && tr <= r) {
+      Data v = C::merge(agg, TR[x].val); if (!f(v)) { agg = v; return l - 1; }
+    }
+    if (tl == tr) return tl;
+    int m = tl + (tr - tl) / 2;
+    int ret = bsearchSuffix(x * 2 + 1, m + 1, tr, l, r, agg, f);
+    return l <= ret ? ret : bsearchSuffix(x * 2, tl, m, l, r, agg, f);
+  }
   template <class F> SegmentTreeTopDown(int N, F f)
       : N(N), TR(N == 0 ? 0 : 1 << __lg(N * 4 - 1)) {
     if (N > 0) { build(1, 0, N - 1, f); }
@@ -133,6 +161,12 @@ template <const bool LAZY, class C> struct SegmentTreeTopDown {
   }
   void update(int i, const Lazy &v) { update(1, 0, N - 1, i, i, v); }
   Data query(int l, int r) { return query(1, 0, N - 1, l, r); }
+  template <class F> int bsearchPrefix(int l, int r, F f) {
+    Data agg = C::qdef(); return bsearchPrefix(1, 0, N - 1, l, r, agg, f);
+  }
+  template <class F> int bsearchSuffix(int l, int r, F f) {
+    Data agg = C::qdef(); return bsearchSuffix(1, 0, N - 1, l, r, agg, f);
+  }
 #undef lazy_def
 #undef agg_def
 };

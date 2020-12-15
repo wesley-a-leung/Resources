@@ -40,6 +40,8 @@ using namespace std;
 //   queries: a vector of type S::Q representing the queries
 //   rt: a single root vertex
 //   roots: a vector of root vertices for each connected component
+//   f: a function from S::T to any arithmetic type, f(A[v]) needs to return
+//     the weight of the vertex v with value A[v]
 // Fields:
 //   ans: a vector of integers with the answer for each query
 // In practice, has a moderate constant
@@ -56,13 +58,14 @@ using namespace std;
 template <class S> struct SmallToLargeTree {
   using T = typename S::T; using R = typename S::R; using Q = typename S::Q;
   vector<R> ans;
-  template <class Forest> SmallToLargeTree(
+  template <class Forest, class F = function<int(T)>> SmallToLargeTree(
       const Forest &G, const vector<T> &A, const vector<Q> &queries,
-      const vector<int> &roots = vector<int>()) {
-    int V = G.size(), K = queries.size();
-    vector<int> st(V + 1, 0), size(V, 0), ind(K); S s(A); 
+      const vector<int> &roots = vector<int>(), F f = [] (T) { return 1; } ) {
+    using weight_t = decltype(f(T())); int V = G.size(), K = queries.size();
+    vector<int> st(V + 1, 0), ind(K); S s(A);
+    vector<weight_t> size(V, weight_t());
     function<void(int, int)> getSize = [&] (int v, int prev) {
-      size[v] = 1;
+      size[v] = f(A[v]);
       for (int w : G[v]) if (w != prev) { getSize(w, v); size[v] += size[w]; }
     };
     function<void(int, int, int, bool)> update = [&] (
@@ -87,10 +90,11 @@ template <class S> struct SmallToLargeTree {
     for (int i = 0; i < K; i++) ind[--st[queries[i].v]] = i;
     if (roots.empty()) {
       for (int v = 0; v < V; v++)
-        if (size[v] == 0) { getSize(v, -1); dfs(v, -1, 0); }
+        if (size[v] == weight_t()) { getSize(v, -1); dfs(v, -1, 0); }
     } else for (int v : roots) { getSize(v, -1); dfs(v, -1, 0); }
   }
-  template <class Forest> SmallToLargeTree(
-      const Forest &G, const vector<T> &A, const vector<Q> &queries, int rt)
-      : SmallToLargeTree(G, A, queries, vector<int>{rt}) {}
+  template <class Forest, class F = function<int(T)>> SmallToLargeTree(
+      const Forest &G, const vector<T> &A, const vector<Q> &queries, int rt,
+      F f = [] (T) { return 1; })
+      : SmallToLargeTree(G, A, queries, vector<int>{rt}, f) {}
 };

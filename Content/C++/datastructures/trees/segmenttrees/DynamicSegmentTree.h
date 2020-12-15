@@ -72,18 +72,26 @@ using namespace std;
 //     a new version if newRoot is true
 //   query(l, r, rootInd): queries the range [l, r] for the version rootInd (or
 //     the latest version of rootInd is -1), and returns the aggregate value
+//   bsearchPrefix(l, r, f, rootInd): returns the smallest index i in the
+//     range [l, r] for the version rootInd (or the latest version of rootInd
+//     is -1) such that f(query(l, i)) returns true or r + 1 if none exist
+//   bsearchSuffix(l, r, f, rootInd): returns the largest index i in the
+//     range [l, r] for the version rootInd (or the latest version of rootInd
+//     is -1) such that f(query(i, r)) returns true of l - 1 if none exist
 //   revert(rootInd): creates a new version based off of version rootInd
 //   reserveNodes(k): reserves space for k nodes in the dynamic segment tree
 // In practice, has a moderate constant
 // Time Complexity:
 //   constructor: O(1) for size constructor,
 //                O(N) for iteartor and generating function constructors
-//   update: O(log N) amortized unless reserveNodes is called beforehand
-//   query: O(log N)
+//   update, query, bsearchPrefix, bsearchSuffix: O(log N) amortized unless
+//     reserveNodes is called beforehand
 // Memory Complexity: O(Q log N) for Q updates for single argument constructor,
 //                    O(N + Q log N) for two argument constructor 
 // Tested:
 //   https://dmoj.ca/problem/ccc05s5 (LAZY = false, PERSISTENT = false)
+//   https://dmoj.ca/problem/wc18c4s4 (LAZY = false, PERSISTENT = true,
+//     bsearchPrefix, bsearchSuffix)
 //   https://codeforces.com/contest/1080/problem/F
 //     (LAZY = false, PERSISTENT = true)
 //   https://codeforces.com/contest/915/problem/E
@@ -154,11 +162,43 @@ struct DynamicSegmentTree {
   }
   Data query(int x, IndexType tl, IndexType tr, IndexType l, IndexType r) {
     if (r < tl || tr < l) return C::qdef();
-    if (!~x) return C::getSegmentVdef(tr - tl + 1);
+    if (!~x) return C::getSegmentVdef(min(r, tr) - max(l, tl) + 1);
     if (l <= tl && tr <= r) return TR[x].val;
     propagate(x, tl, tr); IndexType m = tl + (tr - tl) / 2;
     return C::merge(query(TR[x].l, tl, m, l, r),
                     query(TR[x].r, m + 1, tr, l, r));
+  }
+  template <class F>
+  int bsearchPrefix(int y, IndexType tl, IndexType tr,
+                    IndexType l, IndexType r, Data &agg, F f, IndexType &ret) {
+    if (r < tl || tr < l) { ret = r + 1; return y; }
+    int x = !~y ? makeNode(y, tl, tr) : y; if (tl != tr) propagate(x, tl, tr);
+    if (l <= tl && tr <= r) {
+      Data v = C::merge(agg, TR[x].val);
+      if (!f(v)) { agg = v; ret = r + 1; return x; }
+    }
+    if (tl == tr) { ret = tl; return x; }
+    int m = tl + (tr - tl) / 2;
+    int nl = bsearchPrefix(TR[x].l, tl, m, l, r, agg, f, ret);
+    TR[x].l = nl; if (ret <= r) return x;
+    int nr = bsearchPrefix(TR[x].r, m + 1, tr, l, r, agg, f, ret);
+    TR[x].r = nr; return x;
+  }
+  template <class F>
+  int bsearchSuffix(int y, IndexType tl, IndexType tr,
+                    IndexType l, IndexType r, Data &agg, F f, IndexType &ret) {
+    if (r < tl || tr < l) { ret = l - 1; return y; }
+    int x = !~y ? makeNode(y, tl, tr) : y; if (tl != tr) propagate(x, tl, tr);
+    if (l <= tl && tr <= r) {
+      Data v = C::merge(agg, TR[x].val);
+      if (!f(v)) { agg = v; ret = l - 1; return x; }
+    }
+    if (tl == tr) { ret = tl; return x; }
+    int m = tl + (tr - tl) / 2;
+    int nr = bsearchSuffix(TR[x].r, m + 1, tr, l, r, agg, f, ret);
+    TR[x].r = nr; if (l <= ret) return x;
+    int nl = bsearchSuffix(TR[x].l, tl, m, l, r, agg, f, ret);
+    TR[x].l = nl; return x;
   }
   template <class F> DynamicSegmentTree(IndexType N, F f) : N(N) {
     if (N > 0) {
@@ -180,6 +220,20 @@ struct DynamicSegmentTree {
   }
   Data query(IndexType l, IndexType r, int rootInd = -1) {
     return query(~rootInd ? roots[rootInd] : roots.back(), 0, N - 1, l, r);
+  }
+  template <class F>
+  IndexType bsearchPrefix(int l, int r, F f, int rootInd = -1) {
+    Data agg = C::qdef(); IndexType ret = r + 1;
+    int &root = ~rootInd ? roots[rootInd] : roots.back();
+    root = bsearchPrefix(root, 0, N - 1, l, r, agg, f, ret);
+    return ret;
+  }
+  template <class F>
+  IndexType bsearchSuffix(int l, int r, F f, int rootInd = -1) {
+    Data agg = C::qdef(); IndexType ret = l - 1;
+    int &root = ~rootInd ? roots[rootInd] : roots.back();
+    root = bsearchSuffix(root, 0, N - 1, l, r, agg, f, ret);
+    return ret;
   }
   void revert(int rootInd) { roots.push_back(roots[rootInd]); }
   void reserveNodes(int k) { TR.reserve(k); }

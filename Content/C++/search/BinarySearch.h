@@ -31,7 +31,6 @@ using namespace std;
 //   https://mcpt.ca/problem/lcc18c5s3
 //   https://dmoj.ca/problem/apio19p3
 //   https://dmoj.ca/problem/pib20p2
-//   https://dmoj.ca/problem/coci17c1p5
 const bool FIRST = true, LAST = false;
 template <const bool ISFIRST, class T, class F> T bsearch(T lo, T hi, F f) {
   static_assert(is_integral<T>::value, "T must be integral");
