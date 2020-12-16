@@ -4,7 +4,8 @@ using namespace std;
 
 // Finds the minimum lexicographical rotation of a string
 // Template Arguments:
-//   T: the type of the character/element in the string/array
+//   It: the type of the iterator point to each character/element in
+//     the string/array
 // Function Arguments:
 //   st: an iterator pointing to the first element in the string/array
 //   en: an iterator pointing to after the last element in the string/array
