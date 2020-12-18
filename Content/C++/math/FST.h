@@ -16,6 +16,7 @@ using namespace std;
 // Tested:
 //   https://ccoj.ca/problem/fwht1
 //   https://judge.yosupo.jp/problem/subset_convolution
+//   https://judge.yosupo.jp/problem/bitwise_and_convolution
 const int OR = 0, AND = 1, XOR = 2;
 template <const int TYPE, class T> void fst(vector<T> &a, bool inv) {
   int N = int(a.size()); assert(!(N & (N - 1)));
