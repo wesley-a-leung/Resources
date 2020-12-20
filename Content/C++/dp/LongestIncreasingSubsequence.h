@@ -9,8 +9,9 @@ using namespace std;
 //   st: an iterator pointing to the first element in the array
 //   en: an iterator pointing to after the last element in the array
 // Return Value: a vector of indices of the element in a longest increasing
-//   subsequence of the array
-// In practice, has a small constant, faster than
+//   subsequence of the array, the indices is guaranteed to be the
+//   lexicographically largest vector of indices
+// In practice, has a very small constant, faster than
 //   LongestIncreasingSubsequenceBIT.h
 // Time Complexity: O(N log N)
 // Memory Complexity: O(N)
@@ -24,8 +25,9 @@ template <class It> vector<int> longestIncreasingSubsequence(It st, It en) {
     int j = lower_bound(dp.begin(), dp.end(), make_pair(st[i], -1))
         - dp.begin();
     ret[i] = j == 0 ? -1 : dp[j - 1].second;
-    if (j >= int(dp.size())) dp.emplace_back(st[i], k = i);
+    if (j >= int(dp.size())) dp.emplace_back(st[i], i);
     else dp[j] = make_pair(st[i], i);
+    if (j == int(dp.size()) - 1) k = i;
   }
   for (int i = N, p; k != -1; k = p) { p = ret[k]; ret[--i] = k; }
   ret.erase(ret.begin(), ret.end() - dp.size()); return ret;
