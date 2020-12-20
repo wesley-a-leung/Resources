@@ -1,4 +1,5 @@
-**/*.class
+*.class
+*.stackdump
 **/bin/
 **/Debug/
 **/Codebook/

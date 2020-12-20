@@ -16,7 +16,7 @@ using namespace std;
 //   bridges: a vector of pairs that stores the bridges in the graph
 // Functions:
 //   addEdge(v, w): adds an edge between vertices v and w
-//   addConnectedQuery(v, w): adds a query asking whether v and w are in the
+//   add2ConnectedQuery(v, w): adds a query asking whether v and w are in the
 //     same 2-edge connected component
 //   addSizeQuery(v): adds a query asking for the number of vertices in the
 //     same 2-edge connected component as vertex v
@@ -27,7 +27,7 @@ using namespace std;
 // In practice, has a small constant
 // Time Complexity:
 //   constructor: O(V)
-//   addEdge, addConnectedQuery, addSizeQuery: O(1)
+//   addEdge, add2ConnectedQuery, addSizeQuery: O(1)
 //   addCntQuery, addBridgeQuery: O(1)
 //   solveQueries: O(Q alpha V) after Q edge additions and queries
 // Memory Complexity: O(V + Q) for Q edge additions and queries
@@ -39,7 +39,7 @@ struct SemiDynamicBridges {
   vector<vector<int>> components; vector<pair<int, int>> bridges;
   SemiDynamicBridges(int V) : V(V), id(V) {}
   void addEdge(int v, int w) { queries.emplace_back(0, v, w); }
-  void addConnectedQuery(int v, int w) { queries.emplace_back(2, v, w); }
+  void add2ConnectedQuery(int v, int w) { queries.emplace_back(2, v, w); }
   void addSizeQuery(int v) { queries.emplace_back(3, v, v); }
   void addCntQuery() { queries.emplace_back(4, -1, -1); }
   void addBridgeQuery() { queries.emplace_back(5, -1, -1); }
