@@ -3,6 +3,7 @@
 using namespace std;
 
 // Sorts an array using shell sort with a comparator
+// Shell sort is not stable
 // Template Arguments:
 //   It: the type of the iterator
 //   Cmp: the comparator to compare two values
@@ -25,6 +26,7 @@ template <class It, class Cmp> void shellSort(It st, It en, Cmp cmp) {
 }
 
 // Sorts an array using shell sort with the default < operator
+// Shell sort is not stable
 // Template Arguments:
 //   It: the type of the iterator
 // Function Arguments:
@@ -36,5 +38,5 @@ template <class It, class Cmp> void shellSort(It st, It en, Cmp cmp) {
 // Tested:
 //   https://dmoj.ca/problem/bf1hard
 template <class It> void shellSort(It st, It en) {
-  shellSort(st, en, less<typename decay<decltype(*st)>::type>());
+  shellSort(st, en, less<typename iterator_traits<It>::value_type>());
 }

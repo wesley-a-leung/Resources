@@ -60,5 +60,6 @@ long long countInversions(It st, It en, Cmp cmp) {
 //   https://www.spoj.com/problems/INVCNT/
 //   https://codeforces.com/problemsets/acmsguru/problem/99999/180
 template <class It> long long countInversions(It st, It en) {
-  return countInversions(st, en, less<typename decay<decltype(*st)>::type>());
+  return countInversions(st, en,
+                         less<typename iterator_traits<It>::value_type>());
 }

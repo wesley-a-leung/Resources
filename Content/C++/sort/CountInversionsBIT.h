@@ -49,5 +49,5 @@ long long countInversionsBIT(It st, It en, Cmp cmp) {
 //   https://codeforces.com/problemsets/acmsguru/problem/99999/180
 template <class It> long long countInversionsBIT(It st, It en) {
   return countInversionsBIT(st, en,
-                            less<typename decay<decltype(*st)>::type>());
+                            less<typename iterator_traits<It>::value_type>());
 }
