@@ -2,6 +2,8 @@
 #include "../../../Content/C++/dp/SubsetSum.h"
 using namespace std;
 
+const int M = 100;
+
 void test1() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
@@ -11,14 +13,16 @@ void test1() {
     int N = rng() % 11;
     vector<int> A(N);
     for (auto &&a : A) a = rng() % int(10) + 1;
+    bitset<M + 1> possible = subsetSum<M>(A.begin(), A.end());
     int tot = accumulate(A.begin(), A.end(), 0);
-    vector<int> cnt(tot + 1, 0), dp = subsetSum<int>(A.begin(), A.end(), tot);
+    vector<int> cnt(tot + 1, 0), dp = subsetSumCount<int>(A.begin(), A.end(), tot);
     for (int mask = 0; mask < (1 << N); mask++) {
       int sm = 0;
       for (int i = 0; i < N; i++) if ((mask >> i) & 1) sm += A[i];
       cnt[sm]++;
     }
     assert(cnt == dp);
+    for (int i = 0; i < int(cnt.size()); i++) assert(possible[i] == bool(cnt[i]));
     for (int i : dp) checkSum = 31 * checkSum + i;
   }
   const auto end_time = chrono::system_clock::now();

@@ -30,10 +30,9 @@ template <class It,
           class V = typename iterator_traits<It>::value_type::second_type>
 vector<V> unboundedKnapsack(It st, It en, int M,
                             V INF = numeric_limits<V>::max()) {
-  vector<V> dp(M + 1, -INF); dp[0] = V();
-  for (It cur = st; cur != en; cur++) for (int j = 0; j <= M; j++)
-    if (cur->first <= j && dp[j - cur->first] > -INF)
-      dp[j] = max(dp[j], dp[j - cur->first] + cur->second);
+  vector<V> dp(M + 1, -INF); dp[0] = V(); for (It cur = st; cur != en; cur++)
+  for (int j = cur->first; j <= M; j++) if (dp[j - cur->first] > -INF)
+    dp[j] = max(dp[j], dp[j - cur->first] + cur->second);
   return dp;
 }
 
@@ -65,9 +64,8 @@ template <class It,
           class W = typename iterator_traits<It>::value_type::first_type>
 vector<W> unboundedKnapsackDual(It st, It en, int K,
                                W INF = numeric_limits<W>::max()) {
-  vector<W> dp(K + 1, INF); dp[0] = W();
-  for (It cur = st; cur != en; cur++) for (int j = 0; j <= K; j++)
-    if (cur->second <= j && dp[j - cur->second] < INF)
-      dp[j] = min(dp[j], dp[j - cur->second] + cur->first);
+  vector<W> dp(K + 1, INF); dp[0] = W(); for (It cur = st; cur != en; cur++)
+  for (int j = cur->second; j <= K; j++) if (dp[j - cur->second] < INF)
+    dp[j] = min(dp[j], dp[j - cur->second] + cur->first);
   return dp;
 }
