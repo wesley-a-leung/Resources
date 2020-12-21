@@ -49,7 +49,7 @@ template <class T, const T MOD> void ntt(vector<T> &a) {
   assert(PK != 0 && "MOD must be of the form C * 2^K + 1");
   static T ROOT = powMod(primitiveRoot(MOD), (MOD - 1) / PK, MOD);
   static vector<T> rt(2, 1); static vector<int> ord; static int k = 2, len = 1;
-  int N = int(a.size()); assert(N <= PK); assert(!(N & (N - 1)));
+  int N = a.size(); assert(N <= PK); assert(!(N & (N - 1)));
   for (; k < N; k <<= 1, len++) {
     rt.resize(N); T x = powMod(ROOT, PK >> (len + 1), MOD);
     for (int i = k; i < (k << 1); i++)

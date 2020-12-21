@@ -19,7 +19,7 @@ template <class F> void fft(vector<complex<F>> &a) {
   static_assert(is_floating_point<F>::value,
                 "F must be a floating point type");
   static vector<complex<F>> rt(2, 1); static vector<int> ord; static int k = 2;
-  static F PI = acos(F(-1)); int N = int(a.size()); assert(!(N & (N - 1)));
+  static F PI = acos(F(-1)); int N = a.size(); assert(!(N & (N - 1)));
   for (; k < N; k <<= 1) {
     rt.resize(N); complex<F> x = polar(F(1), PI / k);
     for (int i = k; i < (k << 1); i++)

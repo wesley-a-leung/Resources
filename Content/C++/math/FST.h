@@ -19,7 +19,7 @@ using namespace std;
 //   https://judge.yosupo.jp/problem/bitwise_and_convolution
 const int OR = 0, AND = 1, XOR = 2;
 template <const int TYPE, class T> void fst(vector<T> &a, bool inv) {
-  int N = int(a.size()); assert(!(N & (N - 1)));
+  int N = a.size(); assert(!(N & (N - 1)));
   for (int len = 1; len < N; len <<= 1) for (int i = 0; i < N; i += len << 1)
     for (int j = 0; j < len; j++) {
       T &u = a[i + j], &v = a[len + i + j];
