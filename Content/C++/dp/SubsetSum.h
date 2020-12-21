@@ -38,6 +38,7 @@ template <class T, class It> vector<T> subsetSumCount(It st, It en, int M) {
 // Memory Complexity: O(M / 64)
 // Tested:
 //   Fuzz Tested
+//   https://cses.fi/problemset/task/1745/
 template <const int M, class It> bitset<M + 1> subsetSum(It st, It en) {
   bitset<M + 1> dp; dp[0] = true;
   for (It cur = st; cur != en; cur++) dp |= dp << *cur;
