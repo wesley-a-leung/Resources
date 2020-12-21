@@ -2,31 +2,72 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Computes the maximum value that can be obtained by items in a knapsack (from a selection of N items)
-// that can hold a maximum of M weight, allowing for repeated instances of items
+// Solves the unbounded knapsack problem (each item can appear any number
+//   of times)
+// Template Arguments:
+//   It: the type of the iterator for the array of pairs
+//     with the first element being the weight of type int, and the second
+//     being the value of type V
+//   V: the value type
+// Function Arguments:
+//   st: an iterator pointing to the first element in the array of pairs
+//     with the first element being the weight of type int, and the second
+//     being the value of type V
+//   en: an iterator pointing to after the last element in the array of pairs
+//     with the first element being the weight of type int, and the second
+//     being the value of type V
+//   M: type maximum weight the knapsack can hold
+//   INF: a value of type V for infinity
+// Return Value: a vector dp of size M + 1 with dp[i] being the maximum value
+//   that a knapsack with weights summing to exactly i has (or -INF if that sum
+//   is not possible)
+// In practice, has a very small constant
 // Time Complexity: O(NM)
-// Space Complexity: O(N + M)
-template <const int MAXN, const int MAXM, class value_type> struct UnboundedKnapsack {
-    int W[MAXN]; value_type V[MAXN], dp[MAXM];
-    value_type solve(int N, int M) {
-        fill(dp, dp + M + 1, 0);
-        for (int j = 0; j <= M; j++) for (int i = 0; i < N; i++) if (W[i] <= j) dp[j] = max(dp[j], dp[j - W[i]] + V[i]);
-        return dp[M];
-    }
-};
+// Memory Complexity: O(M)
+// Tested:
+//   https://www.spoj.com/problems/DBALLZ/
+template <class It,
+          class V = typename iterator_traits<It>::value_type::second_type>
+vector<V> unboundedKnapsack(It st, It en, int M,
+                            V INF = numeric_limits<V>::max()) {
+  vector<V> dp(M + 1, -INF); dp[0] = V();
+  for (It cur = st; cur != en; cur++) for (int j = 0; j <= M; j++)
+    if (cur->first <= j && dp[j - cur->first] > -INF)
+      dp[j] = max(dp[j], dp[j - cur->first] + cur->second);
+  return dp;
+}
 
-// Computes the maximum value that can be obtained by items in a knapsack (from a selection of N items)
-// that can hold a maximum of M weight, allowing for repeated instances of items,
-// by turning the maximization problem into a minimization problem, with K as the maximum bound of the answer
+// Solves the dual of the unbounded knapsack problem (each item can appear
+//   any number of times)
+// Template Arguments:
+//   It: the type of the iterator for the array of pairs
+//     with the first element being the weight of type int, and the second
+//     being the value of type V
+//   W: the weight type
+// Function Arguments:
+//   st: an iterator pointing to the first element in the array of pairs
+//     with the first element being the weight of type W, and the second
+//     being the value of type int
+//   en: an iterator pointing to after the last element in the array of pairs
+//     with the first element being the weight of type W, and the second
+//     being the value of type int
+//   K: type maximum value the knapsack can hold
+//   INF: a value of type W for infinity
+// Return Value: a vector dp of size K + 1 with dp[i] being the minimum weight
+//   that a knapsack with values summing to exactly i has (or INF if that sum
+//   is not possible)
+// In practice, has a very small constant
 // Time Complexity: O(NK)
-// Space Complexity: O(N + K)
-template <const int MAXN, const int MAXK, class weight_type> struct UnboundedKnapsackDual {
-    weight_type W[MAXN], dp[MAXK], INF; int V[MAXN];
-    UnboundedKnapsackDual(weight_type INF) : INF(INF) {}
-    int solve(int N, weight_type M, int K) {
-        fill(dp, dp + K + 1, INF); dp[0] = 0;
-        for (int j = 0; j <= K; j++) for (int i = 0; i < N; i++) if (V[i] <= j) dp[j] = min(dp[j], dp[j - V[i]] + W[i]);
-        for (int j = K; j >= 0; j--) if (dp[j] <= M) return j;
-        assert(false); return -1;
-    }
-};
+// Memory Complexity: O(K)
+// Tested:
+//   https://www.spoj.com/problems/PIGBANK/
+template <class It,
+          class W = typename iterator_traits<It>::value_type::first_type>
+vector<W> unboundedKnapsackDual(It st, It en, int K,
+                               W INF = numeric_limits<W>::max()) {
+  vector<W> dp(K + 1, INF); dp[0] = W();
+  for (It cur = st; cur != en; cur++) for (int j = 0; j <= K; j++)
+    if (cur->second <= j && dp[j - cur->second] < INF)
+      dp[j] = min(dp[j], dp[j - cur->second] + cur->first);
+  return dp;
+}
