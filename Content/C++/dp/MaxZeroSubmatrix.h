@@ -2,25 +2,30 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Computes the area of the largest submatrix that contains only 0s
+// Computes the maximum submatrix sum of a boolean matrix
+// Function Arguments:
+//   A: a vector of vector of booleans
+// Return Value: the maximum submatrix sum of the boolean matrix
+// In practice, has a moderate constant
 // Time Complexity: O(NM)
 // Memory Complexity: O(NM)
-template <const int MAXN, const int MAXM = MAXN> struct MaxZeroSubmatrix {
-    int A[MAXN][MAXM], H[MAXN][MAXM];
-    int solve(int N, int M) {
-        stack<int, vector<int>> s; int ret = 0;
-        for (int j = 0; j < M; j++) for (int i = N - 1; i >= 0; i--) H[i][j] = A[i][j] ? 0 : 1 + (i == N - 1 ? 0 : H[i + 1][j]);
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                int minInd = j;
-                while (!s.empty() && H[i][s.top()] >= H[i][j]) {
-                    ret = max(ret, (j - s.top()) * (H[i][s.top()]));
-                    minInd = s.top(); s.pop(); H[i][minInd] = H[i][j];
-                }
-                s.push(minInd);
-            }
-            for (; !s.empty(); s.pop()) ret = max(ret, (M - s.top()) * H[i][s.top()]);
-        }
-        return ret;
+// Tested:
+//   https://dmoj.ca/problem/ccoprep16q1
+int maxSubmatrix(const vector<vector<bool>> &A) {
+  int N = A.size(), M = N == 0 ? 0 : A[0].size(), top = 0, ret = 0;
+  vector<int> stk(M); vector<vector<int>> H(N, vector<int>(M, 0));
+  for (int i = N - 1; i >= 0; i--) for (int j = 0; j < M; j++) if (A[i][j])
+    H[i][j] = i == N - 1 ? 1 : H[i + 1][j] + 1;
+  for (int i = 0; i < N; i++) {
+    for (int j = 0; j < M; j++) {
+      int k = j; while (top > 0 && H[i][stk[top - 1]] >= H[i][j]) {
+        ret = max(ret, (j - stk[top - 1]) * H[i][stk[top - 1]]);
+        H[i][k = stk[--top]] = H[i][j];
+      }
+      stk[top++] = k;
     }
-};
+    for (; top > 0; top--)
+      ret = max(ret, (M - stk[top - 1]) * H[i][stk[top - 1]]);
+  }
+  return ret;
+}

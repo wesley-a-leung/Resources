@@ -4,6 +4,15 @@ using namespace std;
 
 // Combine struct used for maximum non empty subarray
 //   for Segment Trees, Implict Treaps, Link Cut Trees, etc
+// Template Arguments:
+//   T: the type of the element
+// Functions:
+//   makeData(v): returns a MaxSubarraySumCombine<T>::Data initialized with v
+//   makeLazy(v): returns a MaxSubarraySumCombine<T>::Lazy initialized with v
+// Time Complexity:
+//   all functions: O(1)
+// Time Complexity: O(1)
+// Memory Complexity: O(1)
 // Tested:
 //   https://www.spoj.com/problems/GSS1/
 //   https://dmoj.ca/problem/dmpg17g2

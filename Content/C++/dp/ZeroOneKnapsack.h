@@ -16,10 +16,10 @@ using namespace std;
 //     with the first element being the weight of type int, and the second
 //     being the value of type V
 //   M: type maximum weight the knapsack can hold
-//   INF: a value of type V for infinity
+//   NEG_INF: a value of type V for negative infinity
 // Return Value: a vector dp of size M + 1 with dp[i] being the maximum value
-//   that a knapsack with weights summing to exactly i has (or -INF if that sum
-//   is not possible)
+//   that a knapsack with weights summing to exactly i has (or NEG_INF if
+//   that sum is not possible)
 // In practice, has a very small constant
 // Time Complexity: O(NM)
 // Memory Complexity: O(M)
@@ -28,9 +28,10 @@ using namespace std;
 template <class It,
           class V = typename iterator_traits<It>::value_type::second_type>
 vector<V> zeroOneKnapsack(It st, It en, int M,
-                          V INF = numeric_limits<V>::max()) {
-  vector<V> dp(M + 1, -INF); dp[0] = V(); for (It cur = st; cur != en; cur++)
-    for (int j = M; j >= cur->first; j--) if (dp[j - cur->first] > -INF)
+                          V NEG_INF = numeric_limits<V>::lowest()) {
+  vector<V> dp(M + 1, NEG_INF); dp[0] = V();
+  for (It cur = st; cur != en; cur++) for (int j = M; j >= cur->first; j--)
+    if (dp[j - cur->first] > NEG_INF)
       dp[j] = max(dp[j], dp[j - cur->first] + cur->second);
   return dp;
 }
