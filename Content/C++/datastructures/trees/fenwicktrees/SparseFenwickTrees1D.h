@@ -29,9 +29,9 @@ using namespace __gnu_pbds;
 //   bsearch(v, cmp): returns the first index where cmp(sum(A[0..i]), v)
 //     returns false, or N if no such index exists
 //   lower_bound(v): returns the first index where sum(A[0..i]) >= v, assumes
-//     A is sorted by cmp
+//     cmp(sum(A[0..i + 1]), sum(A[0..i])) returns false
 //   upper_bound(v): returns the first index where sum(A[0..i]) > v, assumes
-//     A is sorted by cmp
+//     cmp(sum(A[0..i + 1]), sum(A[0..i])) returns false
 // In practice, has a small constant
 // Time Complexity:
 //   constructor: O(Q log Q) for Q updates
