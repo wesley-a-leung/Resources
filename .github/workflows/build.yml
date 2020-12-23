@@ -1,4 +1,4 @@
-name: build-ubuntu
+name: build
 on: [push, pull_request]
 jobs:
   check-lines:
