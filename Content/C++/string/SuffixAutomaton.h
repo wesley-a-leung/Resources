@@ -61,7 +61,7 @@ template <class _T> struct SAMMapNode {
 // Tested:
 //   https://www.spoj.com/problems/LCS/
 //   https://dmoj.ca/problem/coci14c5p6
-template <class _T, const int ALPHABET_SIZE, const int OFFSET>
+template <class _T, const int ALPHABET_SIZE, const _T OFFSET>
 struct SAMArrayNode {
   using T = _T; int len, link; array<int, ALPHABET_SIZE> to;
   SAMArrayNode(int len) : len(len), link(-1) { to.fill(-1); }

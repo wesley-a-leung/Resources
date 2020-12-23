@@ -67,7 +67,7 @@ template <class _T> struct PalTreeMapNode {
 // Tested:
 //   https://dmoj.ca/problem/mmcc15p3
 //   https://dmoj.ca/problem/apio14p1
-template <class _T, const int ALPHABET_SIZE, const int OFFSET>
+template <class _T, const int ALPHABET_SIZE, const _T OFFSET>
 struct PalTreeArrayNode {
   using T = _T; int len, link, qlink; array<int, ALPHABET_SIZE> to;
   PalTreeArrayNode(int len) : len(len), link(1), qlink(1) { to.fill(1); }
