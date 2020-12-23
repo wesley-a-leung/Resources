@@ -37,7 +37,7 @@ template <class T> T primitiveRoot(T p) {
 // Memory Complexity: O(N)
 // Tested:
 //   https://judge.yosupo.jp/problem/convolution_mod
-//  https://judge.yosupo.jp/problem/convolution_mod_1000000007
+//   https://judge.yosupo.jp/problem/convolution_mod_1000000007
 template <class T, const T MOD> void ntt(vector<T> &a) {
   static_assert(is_integral<T>::value, "T must be an integral type");
   static_assert(is_signed<T>::value, "T must be a signed type");
