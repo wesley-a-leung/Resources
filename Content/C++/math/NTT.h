@@ -33,8 +33,8 @@ template <class T> T primitiveRoot(T p) {
 // Function Arguments:
 //   a: a reference to the vector of type T in the range [0, MOD)
 // In practice, has a moderate constant, faster than FFT and Karatsuba
-// Time Complexity: O(n log n) where n = size(a)
-// Memory Complexity: O(n)
+// Time Complexity: O(N log N) where N = size(a)
+// Memory Complexity: O(N)
 // Tested:
 //   https://judge.yosupo.jp/problem/convolution_mod
 //  https://judge.yosupo.jp/problem/convolution_mod_1000000007
@@ -82,8 +82,8 @@ template <class T, const T MOD> void ntt(vector<T> &a) {
 // Return Value: a vector of type T representing the polynomial a times b with
 //   no trailing zeros, all value in the range [0, MOD)
 // In practice, has a moderate constant
-// Time Complexity: O(n log n) where n = size(a)
-// Memory Complexity: O(n)
+// Time Complexity: O(N log N) where N = size(a) + size(b)
+// Memory Complexity: O(N)
 // Tested:
 //   https://judge.yosupo.jp/problem/convolution_mod
 //   https://judge.yosupo.jp/problem/convolution_mod_1000000007

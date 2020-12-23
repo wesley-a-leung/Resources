@@ -11,12 +11,12 @@ using namespace std;
 //   inv: a boolean indicating whether the inverse transform should be
 //     performed or not
 // In practice, has a small constant
-// Time Complexity: O(n log n) where n = size(a)
-// Memory Complexity: O(n)
+// Time Complexity: O(N log N) where N = size(a)
+// Memory Complexity: O(N)
 // Tested:
-//   https://ccoj.ca/problem/fwht1
 //   https://judge.yosupo.jp/problem/subset_convolution
 //   https://judge.yosupo.jp/problem/bitwise_and_convolution
+//   https://judge.yosupo.jp/problem/bitwise_xor_convolution
 const int OR = 0, AND = 1, XOR = 2;
 template <const int TYPE, class T> void fst(vector<T> &a, bool inv) {
   int N = a.size(); assert(!(N & (N - 1)));

@@ -10,8 +10,8 @@ using namespace std;
 //     to convolute
 // In practice, has a moderate constant, faster than using Karatsuba, slower
 //   than NTT
-// Time Complexity: O(n log n) where n = size(a)
-// Memory Complexity: O(n)
+// Time Complexity: O(N log N) where N = size(a)
+// Memory Complexity: O(N)
 // Tested:
 //   https://open.kattis.com/problems/polymul2
 //   https://dmoj.ca/problem/atimesb
@@ -51,8 +51,8 @@ template <class F> void fft(vector<complex<F>> &a) {
 // Return Value: a vector of type T representing the polynomial a times b with
 //   no trailing zeros
 // In practice, has a moderate constant
-// Time Complexity: O(n log n) where n = size(a) + size(b)
-// Memory Complexity: O(n)
+// Time Complexity: O(N log N) where N = size(a) + size(b)
+// Memory Complexity: O(N)
 // Tested:
 //   https://open.kattis.com/problems/polymul2
 const int FFT_CUTOFF = 30000;
