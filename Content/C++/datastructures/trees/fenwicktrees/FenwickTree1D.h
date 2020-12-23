@@ -22,9 +22,11 @@ using namespace std;
 //   bsearch(v, cmp): returns the first index where cmp(sum(A[0..i]), v)
 //     returns false, or N if no such index exists
 //   lower_bound(v): returns the first index where sum(A[0..i]) >= v, assumes
-//     cmp(sum(A[0..i + 1]), sum(A[0..i])) returns false
+//     cmp(sum(A[0..i + 1]), sum(A[0..i])) returns false, returns N if no such
+//     index exists
 //   upper_bound(v): returns the first index where sum(A[0..i]) > v, assumes
-//     cmp(sum(A[0..i + 1]), sum(A[0..i])) returns false
+//     cmp(sum(A[0..i + 1]), sum(A[0..i])) returns false, returns N if no such
+//     index exists
 // Small constant, like most fenwick trees, and faster than segment trees
 // Time Complexity:
 //   constructor, values: O(N)
