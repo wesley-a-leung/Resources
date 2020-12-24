@@ -20,15 +20,15 @@ using namespace std;
 //   f(l, m, r): computes the cost function for the range [l, r) with the
 //     midpoint m
 //   cmp: an instance of the Cmp struct
-// Return Value: the maximum dp value (based on the comparator) for
-//   the range [0, N)
+// Return Value: a dp array of size N x (N + 1) with dp[l][r] equal to the
+//   maximum dp value (based on the comparator) of the range [l, r)
 // In practice, has a small constant
 // Time Complexity: O(N^2)
 // Memory Complexity: O(N^2)
 // Tested:
 //   https://atcoder.jp/contests/dp/tasks/dp_n
 template <class T, class F, class Cmp = less<T>>
-T knuth(int N, F f, Cmp cmp = Cmp()) {
+vector<vector<T>> knuth(int N, F f, Cmp cmp = Cmp()) {
   assert(N > 0); vector<vector<T>> dp(N, vector<T>(N + 1, T()));
   vector<vector<int>> mid(N, vector<int>(N + 1));
   for (int l = N - 1; l >= 0; l--) for (int r = l; r <= N; r++) {
@@ -39,5 +39,5 @@ T knuth(int N, F f, Cmp cmp = Cmp()) {
       if (m == st || cmp(dp[l][r], cost)) { dp[l][r] = cost; mid[l][r] = m; }
     }
   }
-  return dp[0][N];
+  return dp;
 }
