@@ -34,8 +34,8 @@ long long countInversions(InIt st1, OutIt st2, int N, Cmp cmp, int len) {
 // Tested:
 //   https://www.spoj.com/problems/INVCNT/
 //   https://codeforces.com/problemsets/acmsguru/problem/99999/180
-template <class It, class Cmp>
-long long countInversions(It st, It en, Cmp cmp) {
+template <class It, class Cmp = less<typename iterator_traits<It>::value_type>>
+long long countInversions(It st, It en, Cmp cmp = Cmp()) {
   vector<typename iterator_traits<It>::value_type> tmp(st, en);
   int N = en - st; auto aux = tmp.begin(); long long ret = 0; bool flag = true;
   for (int len = 1; len < N; len *= 2, flag = !flag)
@@ -43,23 +43,4 @@ long long countInversions(It st, It en, Cmp cmp) {
                 : countInversions(st, aux, N, cmp, len);
   if (flag) copy_n(aux, N, st);
   return ret / 2;
-}
-
-// Counts inversions and sorts an array using merge sort with
-//   the default < operator
-// Template Arguments:
-//   It: the type of the iterator
-// Function Arguments:
-//   st: an iterator pointing to the first element in the array
-//   en: an iterator pointing to after the last element in the array
-// Return Value: the number of inversions in the array
-// In practice, has a small constant, faster than the Fenwick Tree version
-// Time Complexity: O(N log N)
-// Memory Complexity: O(N)
-// Tested:
-//   https://www.spoj.com/problems/INVCNT/
-//   https://codeforces.com/problemsets/acmsguru/problem/99999/180
-template <class It> long long countInversions(It st, It en) {
-  return countInversions(st, en,
-                         less<typename iterator_traits<It>::value_type>());
 }

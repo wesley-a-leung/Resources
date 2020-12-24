@@ -20,8 +20,8 @@ using namespace std;
 // Tested:
 //   https://www.spoj.com/problems/INVCNT/
 //   https://codeforces.com/problemsets/acmsguru/problem/99999/180
-template <class It, class Cmp>
-long long countInversionsBIT(It st, It en, Cmp cmp) {
+template <class It, class Cmp = less<typename iterator_traits<It>::value_type>>
+long long countInversionsBIT(It st, It en, Cmp cmp = Cmp()) {
   vector<typename iterator_traits<It>::value_type> tmp(st, en);
   int N = en - st; long long ret = 0; sort(tmp.begin(), tmp.end(), cmp);
   tmp.erase(unique(tmp.begin(), tmp.end()), tmp.end()); vector<int> C(N);
@@ -31,23 +31,4 @@ long long countInversionsBIT(It st, It en, Cmp cmp) {
     ret += FT.query(C[i] - 1); FT.update(C[i], 1);
   }
   return ret;
-}
-
-// Counts inversions and sorts an array using a Fenwick Tree with
-//   the default < operator
-// Template Arguments:
-//   It: the type of the iterator
-// Function Arguments:
-//   st: an iterator pointing to the first element in the array
-//   en: an iterator pointing to after the last element in the array
-// Return Value: the number of inversions in the array
-// In practice, has a moderate constant, slower than the merge sort version
-// Time Complexity: O(N log N)
-// Memory Complexity: O(N)
-// Tested:
-//   https://www.spoj.com/problems/INVCNT/
-//   https://codeforces.com/problemsets/acmsguru/problem/99999/180
-template <class It> long long countInversionsBIT(It st, It en) {
-  return countInversionsBIT(st, en,
-                            less<typename iterator_traits<It>::value_type>());
 }
