@@ -9,7 +9,11 @@ using namespace std;
 //   T: the type of each element
 // Constructor Arguments:
 //   D: a vector of length K with the size of each dimension
+//   st: an iterator pointing to the first element in the flattened array
+//   en: an iterator pointing to after the last element in the flattened array
 // Functions:
+//   values(): returns a vector of the fenwick tree decomposed into a
+//     flattened array
 //   update(ind, v): updates the indices spcified by the vector ind holding the
 //     index for each dimension, with the value v
 //   query(ind): queries the indices spcified by the vector ind holding a pair
@@ -23,26 +27,40 @@ using namespace std;
 //   PI is the product function, N_i is the size in the ith dimension
 // Tested:
 //   https://dmoj.ca/problem/inaho2
+//   https://dmoj.ca/problem/inaho7
 template <class T> struct FenwickTreeKD {
-  vector<int> D, suf; vector<T> BIT;
-  FenwickTreeKD(const vector<int> &D) : D(D), suf(D.size()) {
-    int prod = 1; for (int i = int(D.size()) - 1; i >= 0; i--) {
-      suf[i] = prod; prod *= D[i];
-    }
-    BIT.resize(prod);
+  int K; vector<int> D, suf; vector<T> BIT;
+  FenwickTreeKD(const vector<int> &D) : K(D.size()), D(D), suf(K + 1, 1) {
+    for (int i = K - 1; i >= 0; i--) suf[i] = suf[i + 1] * D[i];
+    BIT.resize(suf[0]);
+  }
+  int dig(int i, int d) { return i % suf[d] / suf[d + 1]; }
+  int nxt(int i) { i++; i += i & -i; return --i; }
+  template <class It> FenwickTreeKD(const vector<int> &D, It st, It en)
+      : FenwickTreeKD(D) {
+    assert(en - st == suf[0]); copy(st, en, BIT.begin());
+    for (int d = 0; d < K; d++) for (int i = 0; i < suf[0]; i++)
+      if (nxt(dig(i, d)) < D[d])
+        BIT[i + (nxt(dig(i, d)) - dig(i, d)) * suf[d + 1]] += BIT[i];
+  }
+  vector<T> values() {
+    vector<T> ret = BIT; for (int d = K - 1; d >= 0; d--)
+      for (int i = suf[0] - 1; i >= 0; i--) if (nxt(dig(i, d)) < D[d])
+        ret[i + (nxt(dig(i, d)) - dig(i, d)) * suf[d + 1]] -= ret[i];
+    return ret;
   }
   void update(const vector<int> &ind, const T &v, int d = 0, int pos = 0) {
-    if (d == int(D.size())) BIT[pos] += v;
+    if (d == K) BIT[pos] += v;
     else for (int i = ind[d] + 1; i <= D[d]; i += i & -i)
-      update(ind, v, d + 1, pos + (i - 1) * suf[d]);
+      update(ind, v, d + 1, pos + (i - 1) * suf[d + 1]);
   }
   T query(const vector<pair<int, int>> &ind, int d = 0, int pos = 0) {
-    T ret = T(); if (d == int(D.size())) ret += BIT[pos];
+    T ret = T(); if (d == K) ret += BIT[pos];
     else {
       for (int l = ind[d].first; l > 0; l -= l & -l)
-        ret -= query(ind, d + 1, pos + (l - 1) * suf[d]);
+        ret -= query(ind, d + 1, pos + (l - 1) * suf[d + 1]);
       for (int r = ind[d].second + 1; r > 0; r -= r & -r)
-        ret += query(ind, d + 1, pos + (r - 1) * suf[d]);
+        ret += query(ind, d + 1, pos + (r - 1) * suf[d + 1]);
     }
     return ret;
   }
