@@ -91,7 +91,7 @@ const int NTT_CUTOFF = 30000;
 template <class T, const T MOD>
 vector<T> mulPolyNTT(const vector<T> &a, const vector<T> &b, bool eq = false) {
   int N = max(0, int(a.size()) + int(b.size()) - 1);
-  if ((long long)(a.size()) * (long long)(a.size()) <= NTT_CUTOFF) {
+  if ((long long)(a.size()) * (long long)(b.size()) <= NTT_CUTOFF) {
     vector<T> res(N, T()); for (int i = 0; i < int(a.size()); i++)
       for (int j = 0; j < int(b.size()); j++)
         res[i + j] = addMod(res[i + j], mulMod(a[i], b[j], MOD), MOD);

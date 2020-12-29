@@ -59,7 +59,7 @@ const int FFT_CUTOFF = 30000;
 template <class T, class F = long double>
 vector<T> mulPolyFFT(const vector<T> &a, const vector<T> &b) {
   int N = max(0, int(a.size()) + int(b.size()) - 1);
-  if ((long long)(a.size()) * (long long)(a.size()) <= FFT_CUTOFF) {
+  if ((long long)(a.size()) * (long long)(b.size()) <= FFT_CUTOFF) {
     vector<T> res(N, T()); for (int i = 0; i < int(a.size()); i++)
       for (int j = 0; j < int(b.size()); j++) res[i + j] += a[i] * b[j];
     while (int(res.size()) > 1 && res.back() == T()) res.pop_back();
