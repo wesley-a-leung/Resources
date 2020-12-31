@@ -46,7 +46,7 @@ vector<T> multisubsetSumCount(It st, It en, int M) {
 //   https://mcpt.ca/problem/acoinproblem
 template <class T = bool, class It>
 vector<T> multisubsetSum(It st, It en, int M) {
-  vector<T> dp(M + 1, 0); dp[0] = 1; for (It cur = st; cur != en; cur++)
+  vector<T> dp(M + 1, 0); dp[0] = T(1); for (It cur = st; cur != en; cur++)
     for (int j = *cur; j <= M; j++) dp[j] = dp[j] || dp[j - *cur];
   return dp;
 }
