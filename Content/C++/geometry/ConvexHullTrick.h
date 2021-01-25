@@ -51,10 +51,10 @@ struct ConvexHullTrick {
       T c2 = (L[size() - 1].b - b) * (L[size() - 2].m - m);
       return REVERSE ? c1 >= c2 : c1 <= c2;
     };
-    while (size() >= 2 && ccw()) L.pop_back();
     while (!L.empty() && !Cmp()(m, L[size() - 1].m)
            && !Cmp()(L[size() - 1].m, m) && !Cmp()(b, L[size() - 1].b))
       L.pop_back();
+    while (size() >= 2 && ccw()) L.pop_back();
     if (size() == back) back++;
     L.emplace_back(m, b);
     front = min(front, size() - 1); back = min(back, size());

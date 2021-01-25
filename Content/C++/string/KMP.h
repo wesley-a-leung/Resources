@@ -31,30 +31,40 @@ using namespace std;
 // In practice, has a moderate constant, slightly faster than ZAlgorithm
 // Time Complexity:
 //   constructor: O(N)
-//   search: O(M)
+//   search, multisearch: O(M)
 // Memory Complexity: O(N)
 // Tested:
+//   https://dmoj.ca/problem/bf4
 //   https://open.kattis.com/problems/stringmatching
 template <class T> struct KMP {
   int N; vector<T> pat; vector<int> LPS;
   template <class F> KMP(int N, F f) : N(N), LPS(N + 1, -1) {
-    pat.reserve(N); for (int i = 0, j = -1; i < N;) {
-      pat.push_back(f()); while (j >= 0 && pat[i] != pat[j]) j = LPS[j];
+    pat.reserve(N); for (int i = 0; i < N; i++) pat.push_back(f());
+    for (int i = 0, j = -1; i < N;) {
+      while (j >= 0 && pat[i] != pat[j]) j = LPS[j];
       i++; j++; LPS[i] = (i != N && pat[i] == pat[j] ? LPS[j] : j);
     }
   }
   template <class ItPat> KMP(ItPat stPat, ItPat enPat)
       : KMP(enPat - stPat, [&] { return *stPat++; }) {}
-  template <class G> vector<int> search(int M, G g) {
-    vector<int> matches; vector<T> txt; txt.reserve(M);
-    for (int i = 0; i < M; i++) txt.push_back(g());
+  template <class G> int search(int M, G g) {
     for (int i = 0, j = 0; i < M; i++, j++) {
-      while (j >= 0 && (j == N || txt[i] != pat[j])) j = LPS[j];
+      T a = g(); while (j >= 0 && a != pat[j]) j = LPS[j];
+      if (j == N - 1) return i - j;
+    }
+    return -1;
+  }
+  template <class ItTxt> int search(ItTxt stTxt, ItTxt enTxt) {
+    return search(enTxt - stTxt, [&] { return *stTxt++; });
+  }
+  template <class G> vector<int> multiSearch(int M, G g) {
+    vector<int> matches; for (int i = 0, j = 0; i < M; i++, j++) {
+      T a = g(); while (j >= 0 && (j == N || a != pat[j])) j = LPS[j];
       if (j == N - 1) matches.push_back(i - j);
     }
     return matches;
   }
-  template <class ItTxt> vector<int> search(ItTxt stTxt, ItTxt enTxt) {
-    return search(enTxt - stTxt, [&] { return *stTxt++; });
+  template <class ItTxt> vector<int> multiSearch(ItTxt stTxt, ItTxt enTxt) {
+    return multiSearch(enTxt - stTxt, [&] { return *stTxt++; });
   }
 };

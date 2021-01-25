@@ -53,8 +53,8 @@ struct DynamicConvexHullTrickSqrtBuffer {
   }
   void rebuildHull() {
     int back = 0; for (auto &&line : large) {
-      while (back >= 2 && ccw(line, large[back - 1], large[back - 2])) back--;
       while (back >= 1 && slope(line, large[back - 1])) back--;
+      while (back >= 2 && ccw(line, large[back - 1], large[back - 2])) back--;
       large[back++] = line;
     }
     large.resize(back, Line(T(), T()));

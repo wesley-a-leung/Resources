@@ -263,7 +263,9 @@ template <class T, class F> void segmentedSieve(T lo, T hi, F f) {
 // Tested:
 //   https://loj.ac/p/6466
 //   https://www.spoj.com/problems/FACT2/
+//   https://judge.yosupo.jp/problem/factorize
 template <class T> T pollardsRho(T N, int iterations = 40) {
+  if (N == 1) return 1;
   auto f = [&] (T x) { return mulMod(x, x, N) + 1; };
   T x = 0, y = 0, p = 2, q; int t = 0, i = 1;
   while (t++ % iterations != 0 || gcd(p, N) == 1) {
@@ -289,9 +291,11 @@ template <class T> T pollardsRho(T N, int iterations = 40) {
 // Memory Complexity: O(log x)
 // Tested:
 //   https://www.spoj.com/problems/FACT2/
+//   https://judge.yosupo.jp/problem/factorize
 template <class T>
 vector<T> pollardsRhoPrimeFactor(T x, int pollardsRhoIters = 40,
                                  int millerRabinIters = 7) {
+  if (x == 1) return vector<T>();
   vector<T> ret; queue<T> q; q.push(x); while (!q.empty()) {
     T y = q.front(); q.pop();
     if (millerRabin(y, millerRabinIters)) ret.push_back(y);

@@ -27,17 +27,21 @@ using namespace std;
 //   Stress Tested
 //   https://dmoj.ca/problem/ccoprep1p2
 //   https://dmoj.ca/problem/dmpg18s6
+//   https://dmoj.ca/problem/si17c3p4
 struct BCC {
   int ind; vector<int> low, pre; vector<pair<int, int>> stk;
-  vector<vector<int>> ids, components; vector<bool> articulation;
+  vector<bool> articulation; vector<vector<int>> ids, components;
+  vector<vector<pair<int, int>>> edgesInComp;
   void assign(int x, int id) {
     if (ids[x].empty() || ids[x].back() != id) {
       ids[x].push_back(id); components.back().push_back(x);
     }
   }
   void makeComponent(int v = -1, int w = -1) {
-    int x, y, id = components.size(); components.emplace_back(); do {
+    int x, y, id = components.size();
+    components.emplace_back(); edgesInComp.emplace_back(); do {
       tie(x, y) = stk.back(); stk.pop_back(); assign(x, id); assign(y, id);
+      edgesInComp.back().emplace_back(x, y);
     } while (!stk.empty() && (x != v || y != w));
   }
   template <class Graph> void dfs(const Graph &G, int v, int prev) {
@@ -55,7 +59,7 @@ struct BCC {
   }
   template <class Graph> BCC(const Graph &G)
       : ind(0), low(G.size()), pre(G.size(), -1),
-        ids(G.size()), articulation(G.size(), false) {
+        articulation(G.size(), false), ids(G.size()) {
     for (int v = 0; v < int(G.size()); v++) if (pre[v] == -1) {
       dfs(G, v, -1); if (!stk.empty()) makeComponent();
     }

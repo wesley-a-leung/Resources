@@ -2,16 +2,18 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Computes the maximum submatrix sum of a boolean matrix
+// Computes the maximum submatrix of a boolean matrix where
+//   all elements are true
 // Function Arguments:
 //   A: a vector of vector of booleans
-// Return Value: the maximum submatrix sum of the boolean matrix
+// Return Value: the maximum submatrix of the boolean matrix where
+//   all elements are true
 // In practice, has a moderate constant
 // Time Complexity: O(NM)
 // Memory Complexity: O(NM)
 // Tested:
 //   https://dmoj.ca/problem/ccoprep16q1
-int maxSubmatrix(const vector<vector<bool>> &A) {
+int maxOneSubmatrix(const vector<vector<bool>> &A) {
   int N = A.size(), M = N == 0 ? 0 : A[0].size(), top = 0, ret = 0;
   vector<int> stk(M); vector<vector<int>> H(N, vector<int>(M, 0));
   for (int i = N - 1; i >= 0; i--) for (int j = 0; j < M; j++) if (A[i][j])

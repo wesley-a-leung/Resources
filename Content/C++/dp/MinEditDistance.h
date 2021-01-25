@@ -37,8 +37,8 @@ T minEditDistance(It1 st1, It1 en1, It2 st2, It2 en2, T cpyPen = T(),
   for (int i = 1; i <= N; i++) {
     int cur = i % 2, prv = 1 - cur; dp[cur][0] = dp[prv][0] + delPen;
     for (int j = 1; j <= M; j++) {
-      dp[cur][j] = min({dp[prv][j - 1] + repPen, dp[cur][j - 1] + insPen,
-                        dp[prv][j] + delPen});
+      dp[cur][j] = min(min(dp[prv][j - 1] + repPen, dp[cur][j - 1] + insPen),
+                       dp[prv][j] + delPen);
       if (st1[i - 1] == st2[j - 1])
         dp[cur][j] = min(dp[cur][j], dp[prv][j - 1] + cpyPen);
     }

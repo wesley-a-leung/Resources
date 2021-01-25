@@ -86,7 +86,7 @@ struct PalTreeArrayNode {
 //         longest palindromic suffix of this node)
 //       qlink: the index of the quick link of this node (the node with the
 //         longest palindromic suffix which has a different preceding character
-//     as the link node)
+//         as the link node)
 //     Required Functions:
 //       constructor(len): initializes the node with a length of len with
 //         link, qlink, and edges pointing to 1 by default
@@ -97,17 +97,22 @@ struct PalTreeArrayNode {
 // Constructor Arguments:
 //   def: the default value of type T, cannot be in the string/array
 // Fields:
-//   S: the current string with the default character at the front
+//   S: the current string with the default character at the front and
+//     between words
 //   TR: the vector of all nodes in the tree
-//   last: a vector of integers with the last node after each addition
+//   last: a vector of integers with the last node after each addition or
+//     terminate call
 // Functions:
 //   add(a): adds the element a to the tree
-//   undo(): undoes the last added element
+//   terminate(): terminates the current word, returning to the root (which
+//     allows for another word to be added with add(a))
+//   undo(): undoes the last added element, or a terminate operation
 // In practice, has a small constant
 // Time Complexity:
 //   constructor: time complexity of node constructor
 //   add: O(log N) + time complexity of node constructor
 //        + time complexity of getEdge in Node
+//   terminate: O(1)
 //   undo: time complexity of setEdge in Node
 // Memory Complexity: O(N) * memory complexity of node, after N calls to add
 // Tested:
@@ -115,9 +120,9 @@ struct PalTreeArrayNode {
 //   https://dmoj.ca/problem/apio14p1
 template <class Node> struct PalindromicTree {
   using T = typename Node::T;
-  vector<T> S; vector<Node> TR; vector<int> last, modified;
+  T def; vector<T> S; vector<Node> TR; vector<int> last, modified;
   PalindromicTree(const T &def)
-      : S(1, def), TR(vector<Node>{Node(-1), Node(0)}), last(1, 1) {
+      : def(def), S(1, def), TR(vector<Node>{Node(-1), Node(0)}), last(1, 1) {
     TR[1].link = TR[1].qlink = 0;
   }
   int getLink(int x, int i) {
@@ -132,9 +137,12 @@ template <class Node> struct PalindromicTree {
       TR[u].link = TR[getLink(TR[p].link, i)].getEdge(a);
       T b = S[i - TR[TR[u].link].len], c = S[i - TR[TR[TR[u].link].link].len];
       TR[u].qlink = b == c ? TR[TR[u].link].qlink : TR[u].link;
-      TR[p].setEdge(a, u); modified.back() = p;
+      TR[modified.back() = p].setEdge(a, u);
     }
     last.push_back(TR[p].getEdge(a));
+  }
+  void terminate() {
+    S.push_back(def); last.push_back(1); modified.push_back(-1);
   }
   void undo() {
     if (modified.back() != -1) {
