@@ -12,7 +12,7 @@ using namespace std;
 //   Cmp: the comparator to compare two indices,
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
-// Constructor Arguments:
+// Function Arguments:
 //   st: an iterator pointing to the first element in the array of pairs
 //     with the first element being the inclusive left bound of the interval
 //     and the second element being the exclusive right bound of the interval
