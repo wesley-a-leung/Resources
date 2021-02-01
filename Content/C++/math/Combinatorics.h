@@ -383,5 +383,5 @@ T geoSeq(T a1, T r, U n) { return a1 * pow2(r, n - 1); }
 // Tested:
 //   Fuzz Tested
 template <class T, class U> T geoSeries(T a1, T r, U n) {
-  return r == 1 ? a1 * n : a1 * (1 - pow2(r, n)) / (1 - r);
+  return r == 1 ? a1 * n : a1 * (T(1) - pow2(r, n)) / (T(1) - r);
 }
