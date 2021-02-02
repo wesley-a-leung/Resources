@@ -21,8 +21,8 @@ struct Line {
     function<bool(ref, ref)> cmpProjGe() const { return [=] (ref p, ref q) { return ge(dot(v, p), dot(v, q)); }; }
     Line translate(ref p) const { return Line(v, c + cross(v, p)); }
     Line shiftLeft(T d) const { return Line(v, c + d * abs(v)); }
-    pt proj(ref p) const { return p - perp(p) * eval(p) / norm(v); }
-    pt refl(ref p) const { return p - perp(p) * T(2) * eval(p) / norm(v); }
+    pt proj(ref p) const { return p - perp(v) * eval(p) / norm(v); }
+    pt refl(ref p) const { return p - perp(v) * T(2) * eval(p) / norm(v); }
 };
 int lineIntersection(const Line &l1, const Line &l2, pt &res) { // returns 0 if no intersection, 1 if proper intersection, 2 otherwise
     T d = cross(l1.v, l2.v);
