@@ -1,126 +1,152 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "../dynamictrees/LinkCutTree.h"
 using namespace std;
 
-// Support queries for the number of bridges in a graph, after edges have been added or removed
-// Time Complexity: O(V + Q * log(V + Q))
-// Memory Complexity: O(V + Q)
-
-const int NO_COVER = INT_MIN, NO_DEL = INT_MAX;
-void check(int &a, const int &b) { if ((a > b && b != NO_COVER) || a == NO_COVER) a = b; }
-// Stripped down version of Link Cut Tree
-struct Node {
-    Node *l, *r, *p; bool rev, isEdge; int edgeCnt, coveredCntSub, coverLazy, covered, coveredSub, del, delMin;
-    Node(bool isEdge) : l(nullptr), r(nullptr), p(nullptr), rev(false), isEdge(isEdge), edgeCnt(isEdge), coveredCntSub(0),
-        coverLazy(NO_COVER), covered(NO_COVER), coveredSub(NO_COVER), del(NO_DEL), delMin(NO_DEL) {}
-    bool isRoot() { return !p || (this != p->l && this != p->r); }
-    int getCoveredCnt() { return coverLazy == NO_COVER ? coveredCntSub : edgeCnt; }
+// Support queries for the number of bridges in a graph, after edges have been
+//   added or removed, using a Link Cut Tree
+// Constructor Arguments:
+//   V: the number of vertices in the graph
+// Fields:
+//   ans: a vector of integers with the answer for each query
+// Functions:
+//   addEdge(v, w): adds an edge between vertices v and w
+//   removeEdge(v, w): removes an edge between vertices v and w, assuming
+//     an edge exists
+//   addBridgeQuery(): adds a query for the number of bridges in the graph
+//   solveQueries(): solves all queries asked so far
+// In practice, has a moderate constant
+// Time Complexity:
+//   constructor: O(1)
+//   addEdge, removeEdge, addBridgeQuery: O(1)
+//   solveQueries: O(V + Q (log Q + log V))
+// Memory Complexity: O(V + Q) for Q edge additions/removals and queries
+// Tested:
+//   https://codeforces.com/gym/100551/problem/D
+struct DynamicBridges {
+  struct Node {
+    static constexpr const int NO_COVER = INT_MIN, NO_DEL = INT_MAX;
+    static void check(int &a, const int &b) {
+      if ((a > b && b != NO_COVER) || a == NO_COVER) a = b;
+    }
+    using Data = pair<int, int>; using Lazy = Data;
+    static const bool RANGE_UPDATES = false, RANGE_QUERIES = true;
+    static const bool RANGE_REVERSALS = true, HAS_PAR = true;
+    bool isEdge, rev; Data val, sbtr;
+    int edgeCnt, coveredCntSub, coverLazy, covered, coveredSub;
+    Node *l, *r, *p;
+    Node(const Data &v)
+        : isEdge(false), rev(false), val(v), sbtr(v), edgeCnt(0),
+          coveredCntSub(0), coverLazy(NO_COVER), covered(NO_COVER),
+          coveredSub(NO_COVER), l(nullptr), r(nullptr), p(nullptr) {}
+    int getCoveredCnt() {
+      return coverLazy == NO_COVER ? coveredCntSub : edgeCnt;
+    }
     void update() {
-        edgeCnt = isEdge; coveredCntSub = isEdge && (covered != NO_COVER); coveredSub = covered; delMin = del;
-        if (l) {
-            check(coveredSub, l->coveredSub); check(coveredSub, l->coverLazy);
-            edgeCnt += l->edgeCnt; coveredCntSub += l->getCoveredCnt(); delMin = min(delMin, l->delMin);
-        }
-        if (r) {
-            check(coveredSub, r->coveredSub); check(coveredSub, r->coverLazy);
-            edgeCnt += r->edgeCnt; coveredCntSub += r->getCoveredCnt(); delMin = min(delMin, r->delMin);
-        }
+      edgeCnt = isEdge; coveredCntSub = isEdge && (covered != NO_COVER);
+      coveredSub = covered; sbtr = val;
+      if (l) {
+        check(coveredSub, l->coveredSub); check(coveredSub, l->coverLazy);
+        edgeCnt += l->edgeCnt; coveredCntSub += l->getCoveredCnt();
+        sbtr = min(l->sbtr, sbtr);
+      }
+      if (r) {
+        check(coveredSub, r->coveredSub); check(coveredSub, r->coverLazy);
+        edgeCnt += r->edgeCnt; coveredCntSub += r->getCoveredCnt();
+        sbtr = min(r->sbtr, sbtr);
+      }
     }
     void propagate() {
-        if (rev) {
-            swap(l, r); rev = false;
-            if (l) l->rev = !l->rev;
-            if (r) r->rev = !r->rev;
-        }
-        if (coverLazy != NO_COVER) {
-            covered = max(covered, coverLazy); check(coveredSub, coverLazy); coveredCntSub = edgeCnt;
-            if (l) l->coverLazy = max(l->coverLazy, coverLazy);
-            if (r) r->coverLazy = max(r->coverLazy, coverLazy);
-            coverLazy = NO_COVER;
-        }
+      if (rev) {
+        swap(l, r); rev = false;
+        if (l) l->reverse();
+        if (r) r->reverse();
+      }
+      if (coverLazy != NO_COVER) {
+        covered = max(covered, coverLazy); check(coveredSub, coverLazy);
+        if (l) l->coverLazy = max(l->coverLazy, coverLazy);
+        if (r) r->coverLazy = max(r->coverLazy, coverLazy);
+        coveredCntSub = edgeCnt; coverLazy = NO_COVER;
+      }
     }
     void removeCover(int cover) {
-        if (coverLazy <= cover) coverLazy = NO_COVER;
-        if (coveredSub == NO_COVER || coveredSub > cover) return;
-        if (covered <= cover) covered = NO_COVER;
-        if (l) l->removeCover(cover);
-        if (r) r->removeCover(cover);
-        propagate(); update();
+      if (coverLazy <= cover) coverLazy = NO_COVER;
+      if (coveredSub == NO_COVER || coveredSub > cover) return;
+      if (covered <= cover) covered = NO_COVER;
+      if (l) l->removeCover(cover);
+      if (r) r->removeCover(cover);
+      propagate(); update();
     }
-    friend void connect(Node *ch, Node *par, bool hasCh, bool isL) {
-        if (ch) ch->p = par;
-        if (hasCh) (isL ? par->l : par->r) = ch;
+    void reverse() { rev = !rev; }
+    static Data qdef() { return make_pair(NO_DEL, -1); }
+  };
+  int V; vector<tuple<int, int, int, int>> queries; vector<int> ans;
+  DynamicBridges(int V) : V(V) {}
+  void addEdge(int v, int w) {
+    if (v > w) swap(v, w);
+    queries.emplace_back(0, v, w, -1);
+  }
+  void removeEdge(int v, int w) {
+    if (v > w) swap(v, w);
+    queries.emplace_back(1, v, w, -1);
+  }
+  void addBridgeQuery() { queries.emplace_back(2, -1, -1, -1); }
+  void solveQueries() {
+    vector<pair<int, int>> edges; int Q = queries.size(); edges.reserve(Q);
+    for (auto &&q : queries) if (get<0>(q) == 0)
+      edges.emplace_back(get<1>(q), get<2>(q));
+    sort(edges.begin(), edges.end()); vector<int> last(edges.size(), Q);
+    for (int i = 0; i < Q; i++) {
+      int t, v, w, _; tie(t, v, w, _) = queries[i]; if (t == 0) {
+        int j = lower_bound(edges.begin(), edges.end(), make_pair(v, w))
+            - edges.begin();
+        get<3>(queries[i]) = last[j]; last[j] = i;
+      } else if (t == 1) {
+        int j = lower_bound(edges.begin(), edges.end(), make_pair(v, w))
+            - edges.begin();
+        int temp = get<3>(queries[get<3>(queries[i]) = last[j]]);
+        get<3>(queries[last[j]]) = i; last[j] = temp;
+      }
     }
-    void rotate() {
-        Node *p = this->p, *g = p->p; bool isRootP = p->isRoot(), isL = this == p->l;
-        connect(isL ? r : l, p, true, isL); connect(p, this, true, !isL); connect(this, g, !isRootP, isRootP ? false : p == g->l); p->update();
-    }
-    void splay() {
-        while (!isRoot()) {
-            Node *p = this->p, *g = p->p;
-            if (!p->isRoot()) g->propagate();
-            p->propagate(); propagate();
-            if (!p->isRoot()) ((this == p->l) == (p == g->l) ? p : this)->rotate();
-            rotate();
+    int k = 0, bridges = 0; LCT<Node> lct(V + Q, [&] {
+      pair<int, int> ret = k < V ? make_pair(Node::NO_DEL, -1)
+                                 : make_pair(get<3>(queries[k - V]), k - V);
+      k++; return ret;
+    });
+    for (int i = 0; i < Q; i++)
+       lct.TR[V + i].edgeCnt = int(lct.TR[V + i].isEdge = true);
+    auto cover = [&] (int x, int y, int coverId) {
+      lct.queryPath(x, y); bridges += lct.TR[y].getCoveredCnt();
+      lct.TR[y].coverLazy = coverId;
+      bridges -= lct.TR[y].getCoveredCnt();
+    };
+    auto uncover = [&] (int x, int y, int coverId) {
+      lct.queryPath(x, y); bridges += lct.TR[y].getCoveredCnt();
+      lct.TR[y].removeCover(coverId);
+      bridges -= lct.TR[y].getCoveredCnt();
+    };
+    auto addTreeEdge = [&] (int v, int w, int i) {
+      lct.link(v, V + i); lct.link(w, V + i); bridges++;
+    };
+    auto removeTreeEdge = [&] (int v, int w, int i) {
+      lct.cut(v, V + i); lct.cut(w, V + i);
+      bridges += lct.TR[V + i].getCoveredCnt() - 1;
+    };
+    ans.clear(); for (int i = 0; i < Q; i++) {
+      int t, v, w, o; tie(t, v, w, o) = queries[i]; if (t == 0) {
+        if (v == w) continue;
+        int z, j; tie(z, j) = lct.queryPath(v, w);
+        if (j == -1) addTreeEdge(v, w, i);
+        else {
+          if (z >= o) { cover(v, w, o); continue; }
+          int x = get<1>(queries[j]), y = get<2>(queries[j]);
+          removeTreeEdge(x, y, j); addTreeEdge(v, w, i); cover(x, y, z);
         }
-        propagate(); update();
+      } else if (t == 1) {
+        if (v == w) continue;
+        if (lct.connected(v, V + o)) removeTreeEdge(v, w, o);
+        else uncover(v, w, i);
+      } else if (t == 2) ans.push_back(bridges);
     }
-    Node *expose() {
-        Node *last = nullptr;
-        for (Node *y = this; y; y = y->p) { y->splay(); y->l = last; last = y; }
-        splay(); return last;
-    }
-    void makeRoot() { expose(); rev = !rev; }
-    void setDel(int tim) { del = tim; propagate(); update(); expose(); }
-};
-template <const int MAXV, const int MAXQ> struct DynamicBridges {
-    int V, Q = 0, bridges; bool isTreeEdge[MAXQ]; vector<Node> T; vector<int> ans; unordered_map<int, int> present[MAXV];
-    struct Query { int type, v, w, otherTime; } q[MAXQ];
-    bool connected(int x, int y) {
-        if (x == y) return true;
-        T[x].expose(); T[y].expose(); return T[x].p;
-    }
-    void link(int x, int y) { T[y].makeRoot(); T[y].p = &T[x]; }
-    void cut(int x, int y) { T[x].makeRoot(); T[y].expose(); T[y].r->p = nullptr; T[y].r = nullptr; }
-    void cover(int x, int y, int coverId) {
-        T[y].makeRoot(); T[x].expose(); bridges += T[x].getCoveredCnt(); T[x].coverLazy = coverId; bridges -= T[x].getCoveredCnt();
-    }
-    void unCover(int x, int y, int coverId) {
-        T[y].makeRoot(); T[x].expose(); bridges += T[x].getCoveredCnt(); T[x].removeCover(coverId); bridges -= T[x].getCoveredCnt();
-    }
-    int pathMinDel(int x, int y) { T[y].makeRoot(); T[x].expose(); return T[x].delMin; }
-    void insertTreeEdge(int id) {
-        T[V + id].setDel(q[id].otherTime); link(V + id, q[id].v); link(V + id, q[id].w); bridges++; isTreeEdge[id] = true;
-    }
-    void removeTreeEdge(int id) {
-        cut(V + id, q[id].v); cut(V + id, q[id].w); bridges += T[V + id].getCoveredCnt() - 1; isTreeEdge[id] = false;
-    }
-    void clear(int V = MAXV) { T.clear(); ans.clear(); Q = 0; for (int i = 0; i < V; i++) present[i].clear(); }
-    void addEdge(int v, int w) {
-        if (v > w) swap(v, w);
-        present[v][w] = Q; q[Q++] = {1, v, w, INT_MAX - 1};
-    }
-    void removeEdge(int v, int w) {
-        if (v > w) swap(v, w);
-        int insTime = present[v][w]; q[Q] = {-1, v, w, insTime}; q[insTime].otherTime = Q++; present[v].erase(w);
-    }
-    void query() { q[Q] = {0, -1, -1, Q}; Q++; }
-    void solve(int V) {
-        this->V = V; bridges = 0; T.reserve(V + Q); fill(isTreeEdge, isTreeEdge + Q, false);
-        for (int i = 0; i < V; i++) T.emplace_back(false);
-        for (int i = 0; i < Q; i++) T.emplace_back(true);
-        for (int i = 0; i < Q; i++) {
-            int v = q[i].v, w = q[i].w, o = q[i].otherTime;
-            if (q[i].type == 1) {
-                if (connected(v, w)) {
-                    int minCover = pathMinDel(v, w), coverTime = i;
-                    if (minCover < o) { coverTime = q[minCover].otherTime; removeTreeEdge(coverTime); insertTreeEdge(i); }
-                    cover(q[coverTime].v, q[coverTime].w, q[coverTime].otherTime);
-                } else insertTreeEdge(i);
-            } else if (q[i].type == -1) {
-                if (isTreeEdge[q[i].otherTime]) removeTreeEdge(q[i].otherTime);
-                else unCover(q[i].v, q[i].w, i);
-            } else ans.push_back(bridges);
-        }
-    }
+  }
 };

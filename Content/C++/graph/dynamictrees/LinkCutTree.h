@@ -25,8 +25,6 @@ using namespace std;
 //       val: only required if getFirst is called, the value being stored
 //       sbtr: only required if RANGE_QUERIES is true to support path queries,
 //         the aggregate value of type Data for the subtree
-//       lz: only required if RANGE_UPDATES is true to support path updates,
-//         the value of type Lazy to be propagated
 //     Required Functions:
 //       constructor(v): initializes a node with the value v
 //       update(): updates the current node's information based on its children
