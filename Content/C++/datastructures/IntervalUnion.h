@@ -33,7 +33,7 @@ struct IntervalUnion : public set<pair<T, T>, PairCmp<Cmp>> {
     if (!Cmp()(L, R) && !Cmp()(R, L)) return this->end();
     auto it = this->lower_bound(make_pair(L, R)), before = it;
     while (it != this->end() && !Cmp()(R, it->first)) {
-      R = max(R, it->second); before = it = this->erase(it);
+      R = max(R, it->second, Cmp()); before = it = this->erase(it);
     }
     if (it != this->begin() && !Cmp()((--it)->second, L)) {
       L = min(L, it->first); R = max(R, it->second, Cmp()); this->erase(it);
