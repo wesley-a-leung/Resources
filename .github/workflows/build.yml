@@ -11,35 +11,54 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Check versions
+    - name: Install dependencies
       run: |
-        g++ --version
+        sudo apt update
+        sudo apt install g++-10
+        g++-10 --version
     - name: Replace pragma once
       run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Compile
-      run: find "Content/C++/" -name "*.h" -exec Scripts/Compile.sh "g++ -std=c++11 -Wall -Wextra -pedantic-errors -Werror -fsyntax-only" {} +
+      run: find "Content/C++/" -name "*.h" -exec Scripts/Compile.sh "g++-10 -std=c++11 -Wall -Wextra -pedantic-errors -Werror -fsyntax-only" {} +
   compile-cpp14:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Check versions
+    - name: Install dependencies
       run: |
-        g++ --version
+        sudo apt update
+        sudo apt install g++-10
+        g++-10 --version
     - name: Replace pragma once
       run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Compile
-      run: find "Content/C++/" -name "*.h" -exec Scripts/Compile.sh "g++ -std=c++14 -Wall -Wextra -pedantic-errors -Werror -fsyntax-only" {} +
+      run: find "Content/C++/" -name "*.h" -exec Scripts/Compile.sh "g++-10 -std=c++14 -Wall -Wextra -pedantic-errors -Werror -fsyntax-only" {} +
   compile-cpp17:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Check versions
+    - name: Install dependencies
       run: |
-        g++ --version
+        sudo apt update
+        sudo apt install g++-10
+        g++-10 --version
     - name: Replace pragma once
       run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Compile
-      run: find "Content/C++/" -name "*.h" -exec Scripts/Compile.sh "g++ -std=c++17 -Wall -Wextra -pedantic-errors -Werror -fsyntax-only" {} +
+      run: find "Content/C++/" -name "*.h" -exec Scripts/Compile.sh "g++-10 -std=c++17 -Wall -Wextra -pedantic-errors -Werror -fsyntax-only" {} +
+  compile-cpp20:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install g++-10
+        g++-10 --version
+    - name: Replace pragma once
+      run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
+    - name: Compile
+      run: find "Content/C++/" -name "*.h" -exec Scripts/Compile.sh "g++-10 -std=c++20 -Wall -Wextra -pedantic-errors -Werror -fsyntax-only" {} +
   compile-java8:
     runs-on: ubuntu-latest
     steps:
@@ -76,9 +95,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Check versions
+    - name: Install dependencies
       run: |
-        g++ --version
+        sudo apt update
+        sudo apt install g++-10
+        g++-10 --version
     - name: Replace pragma once
       run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Run fuzz tests
@@ -87,9 +108,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Check versions
+    - name: Install g++
       run: |
-        g++ --version
+        sudo apt update
+        sudo apt install g++-10
+        g++-10 --version
     - name: Replace pragma once
       run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Run stress tests

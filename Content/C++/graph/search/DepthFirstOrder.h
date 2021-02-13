@@ -19,7 +19,7 @@ using namespace std;
 //   revPostInd: a vector of the topological/reverse post order index
 //     for each vertex
 //   preVert: a vector of the vertices sorted by pre order index
-//   postVert: a vector of the vertices sorted by pre order index
+//   postVert: a vector of the vertices sorted by post order index
 //   revPostVert: a vector of the vertices sorted by topological/reverse post
 //     order index
 // In practice, has a moderate constant, slower than TopologicalOrder
@@ -38,10 +38,13 @@ struct DFSOrder {
     postVert[postInd[v] = curPost++] = v;
     revPostVert[revPostInd[v] = curRevPost--] = v;
   }
-  template <class Graph> DFSOrder(const Graph &G, const vector<int> &roots)
+  template <class Graph>
+  DFSOrder(const Graph &G, const vector<int> &roots = vector<int>())
       : V(G.size()), curPre(0), curPost(0), curRevPost(V - 1), preInd(V, -1),
         postInd(V), revPostInd(V), preVert(V), postVert(V), revPostVert(V) {
-    for (int v : roots) if (preInd[v] == -1) dfs(G, v);
+    if (roots.empty()) {
+      for (int v = 0; v < V; v++) if (preInd[v] == -1) dfs(G, v);
+    } else for (int v : roots) if (preInd[v] == -1) dfs(G, v);
   }
   template <class Graph> DFSOrder(const Graph &G, int rt)
       : DFSOrder(G, vector<int>{rt}) {}

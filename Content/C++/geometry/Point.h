@@ -1,28 +1,33 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "../utils/EpsCmp.h"
 using namespace std;
 
-using T = long double; using pt = complex<T>; const T EPS = 1e-9;
+// Functions for a 2D point
 #define x real()
 #define y imag()
 #define ref const pt &
-
-istream &operator >> (istream &stream, pt &p) { T X, Y; stream >> X >> Y; p.real(X); p.imag(Y); return stream; }
-ostream &operator << (ostream &stream, ref p) { return stream << fixed << setprecision(9) << p.x << ' ' << p.y; }
-
-bool lt(T a, T b) { return a + EPS < b; }
-bool le(T a, T b) { return !lt(b, a); }
-bool gt(T a, T b) { return lt(b, a); }
-bool ge(T a, T b) { return !lt(a, b); }
-bool eq(T a, T b) { return !lt(a, b) && !lt(b, a); }
-bool ne(T a, T b) { return lt(a, b) || lt(b, a); }
-int sgn(T a) { return lt(a, 0) ? -1 : gt(a, 0) ? +1 : 0; }
-
-bool operator == (ref a, ref b) { return eq(a.x, b.x) && eq(a.y, b.y); }
-bool operator != (ref a, ref b) { return !(a == b); }
+using pt = complex<T>;
+istream &operator >> (istream &stream, pt &p) {
+  T X, Y; stream >> X >> Y; p = pt(X, Y); return stream;
+}
+ostream &operator << (ostream &stream, ref p) {
+  return stream << p.x << ' ' << p.y;
+}
+bool operator < (ref a, ref b) {
+  return eq(a.x, b.x) ? lt(a.y, b.y) : lt(a.x, b.x);
+}
+bool operator <= (ref a, ref b) { return !(b < a); }
+bool operator > (ref a, ref b) { return b < a; }
+bool operator >= (ref a, ref b) { return !(a < b); }
+bool operator == (ref a, ref b) { return !(a < b) && !(b < a); }
+bool operator != (ref a, ref b) { return a < b || b < a; }  
+struct pt_lt { bool operator () (ref a, ref b) const { return a < b; } };
+struct pt_le { bool operator () (ref a, ref b) const { return a <= b; } };
+struct pt_gt { bool operator () (ref a, ref b) const { return a > b; } };
+struct pt_ge { bool operator () (ref a, ref b) const { return a >= b; } };
 struct pt_eq { bool operator () (ref a, ref b) const { return a == b; } };
 struct pt_ne { bool operator () (ref a, ref b) const { return a != b; } }; 
-
 // abs gets polar distance, arg gets polar angle
 T dot(ref a, ref b) { return a.x * b.x + a.y * b.y; }
 T cross(ref a, ref b) { return a.x * b.y - a.y * b.x; }
@@ -30,51 +35,40 @@ T norm(ref a) { return dot(a, a); }
 T distSq(ref a, ref b) { return norm(b - a); }
 T dist(ref a, ref b) { return abs(b - a); }
 T ang(ref a, ref b) { return arg(b - a); }
-// sign of ang, area2, ccw: -1 if clockwise, 0 if collinear, +1 if counterclockwise
-T ang(ref a, ref b, ref c) { return remainder(ang(b, a) - ang(b, c), 2 * acos(T(-1))); }
+// sign of ang, area2, ccw: 1 if counterclockwise, 0 if collinear,
+//   -1 if clockwise
+T ang(ref a, ref b, ref c) {
+  return remainder(ang(b, a) - ang(b, c), 2 * acos(T(-1)));
+}
+// signed area of triangle a, b, c
 T area2(ref a, ref b, ref c) { return cross(b - a, c - a); }
 int ccw(ref a, ref b, ref c) { return sgn(area2(a, b, c)); }
 // a rotated theta radians around p
-pt rot(ref a, ref p, const T &theta) { return (a - p) * pt(polar(T(1), theta)) + p; }
+pt rot(ref a, ref p, const T &theta) {
+  return (a - p) * pt(polar(T(1), theta)) + p;
+}
+// rotated 90 degrees ccw
 pt perp(ref a) { return pt(-a.y, a.x); }
-
-bool xOrdLt(ref a, ref b) { return lt(a.x, b.x); }
-bool xOrdLe(ref a, ref b) { return !xOrdLt(b, a); }
-bool xOrdGt(ref a, ref b) { return xOrdLt(b, a); }
-bool xOrdGe(ref a, ref b) { return !xOrdLt(a, b); }
-bool yOrdLt(ref a, ref b) { return lt(a.y, b.y); }
-bool yOrdLe(ref a, ref b) { return !yOrdLt(b, a); }
-bool yOrdGt(ref a, ref b) { return yOrdLt(b, a); }
-bool yOrdGe(ref a, ref b) { return !yOrdLt(a, b); }
-bool xyOrdLt(ref a, ref b) { return eq(a.x, b.x) ? lt(a.y, b.y) : lt(a.x, b.x); }
-bool xyOrdLe(ref a, ref b) { return !xyOrdLt(b, a); }
-bool xyOrdGt(ref a, ref b) { return xyOrdLt(b, a); }
-bool xyOrdGe(ref a, ref b) { return !xyOrdLt(a, b); }
-bool yxOrdLt(ref a, ref b) { return eq(a.y, b.y) ? lt(a.x, b.x) : lt(a.y, b.y); }
-bool yxOrdLe(ref a, ref b) { return !yxOrdLt(b, a); }
-bool yxOrdGt(ref a, ref b) { return yxOrdLt(b, a); }
-bool yxOrdGe(ref a, ref b) { return !yxOrdLt(a, b); }
-bool rOrdLt(ref a, ref b) { return lt(norm(a), norm(b)); }
-bool rOrdLe(ref a, ref b) { return !rOrdLt(b, a); }
-bool rOrdGt(ref a, ref b) { return rOrdLt(b, a); }
-bool rOrdGe(ref a, ref b) { return !rOrdLt(a, b); }
-function<bool(ref, ref)> ccwOrdLt(ref p) { return [=] (ref a, ref b) { return 0 < ccw(p, a, b); }; }
-function<bool(ref, ref)> ccwOrdLe(ref p) { return [=] (ref a, ref b) { return 0 <= ccw(p, a, b); }; }
-function<bool(ref, ref)> ccwOrdGt(ref p) { return [=] (ref a, ref b) { return 0 > ccw(p, a, b); }; }
-function<bool(ref, ref)> ccwOrdGe(ref p) { return [=] (ref a, ref b) { return 0 >= ccw(p, a, b); }; }
-function<bool(ref, ref)> distOrdLt(ref p) { return [=] (ref a, ref b) { return lt(distSq(p, a), distSq(p, b)); }; }
-function<bool(ref, ref)> distOrdLe(ref p) { return [=] (ref a, ref b) { return le(distSq(p, a), distSq(p, b)); }; }
-function<bool(ref, ref)> distOrdGt(ref p) { return [=] (ref a, ref b) { return gt(distSq(p, a), distSq(p, b)); }; }
-function<bool(ref, ref)> distOrdGe(ref p) { return [=] (ref a, ref b) { return ge(distSq(p, a), distSq(p, b)); }; }
-
-// returns iterator to first element equal to pivot
-// cmp is the angle comparison function (ccwOrdLt or ccwOrdGt)
-// rot is the rotation comparison function (xyOrdLt, xyOrdGt, yxOrdLt, yxOrdGt)
-// points p that return true for rot(p, pivot) will appear before those that do not
-// points that are equal to pivot appear after all other points
-template <class It, class F1 = function<function<bool(ref, ref)>(ref)>, class F2 = function<bool(ref, ref)>>
-        It sortByAng(ref pivot, It st, It en, F1 cmp = ccwOrdLt, F2 rot = yxOrdLt) {
-    en = partition(st, en, [&] (ref p) { return p != pivot; });
-    It mid = partition(st, en, [&] (ref p) { return rot(p, pivot); });
-    function<bool(ref, ref)> pc = cmp(pivot); sort(st, mid, pc); sort(mid, en, pc); return en;
+// Sorts around the pivot point in polar order assuming the angles relative
+//   to the pivot are in the range [-PI, PI)
+// Points equal to the pivot are moves to the end
+// Template Arguments:
+//   It: the type of the iterator
+// Function Arguments:
+//   st: an iterator pointing to the first element in the array
+//   en: an iterator pointing to after the last element in the array
+//   pivot: the point to sort around
+// Return Value: an iterator to the first element equal to pivot
+// In practice, has a small constant
+// Time Complexity: O(N log N)
+// Memory Complexity: O(1)
+// Tested:
+//   https://judge.yosupo.jp/problem/sort_points_by_argument
+template <class It> It sortByAng(It st, It en, ref pivot) {
+  en = partition(st, en, [&] (ref p) { return p != pivot; });
+  It mid = partition(st, en, [&] (ref p) {
+    return eq(p.y, pivot.y) ? lt(p.x, pivot.x) : lt(p.y, pivot.y);
+  });
+  auto cmp = [&] (ref p, ref q) { return 0 < ccw(pivot, p, q); };
+  sort(st, mid, cmp); sort(mid, en, cmp); return en;
 }

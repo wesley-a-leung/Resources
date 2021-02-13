@@ -106,6 +106,6 @@ template <class T, const T MOD,
     T v; stream >> v; i = IM(v); return stream;
   }
   friend ostream &operator << (ostream &stream, const IM &i) {
-    stream << i.v; return stream;
+    return stream << i.v;
   }
 };
