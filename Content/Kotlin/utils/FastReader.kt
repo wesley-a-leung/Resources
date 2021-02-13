@@ -90,7 +90,8 @@ class FastReader {
     return String(buf, 0, cnt)
   }
   fun nextLine(): String {
-    while (bufferPointer > 0 && buffer[bufferPointer - 1] == 13.toByte()) read()
+    while (bufferPointer > 0 && buffer[bufferPointer - 1] == 13.toByte())
+      read()
     var c: Byte
     var cnt: Int = 0
     c = read()

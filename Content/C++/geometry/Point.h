@@ -44,7 +44,7 @@ T ang(ref a, ref b, ref c) {
 T area2(ref a, ref b, ref c) { return cross(b - a, c - a); }
 int ccw(ref a, ref b, ref c) { return sgn(area2(a, b, c)); }
 // a rotated theta radians around p
-pt rot(ref a, ref p, const T &theta) {
+pt rot(ref a, ref p, T theta) {
   return (a - p) * pt(polar(T(1), theta)) + p;
 }
 // rotated 90 degrees ccw
