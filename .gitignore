@@ -58,3 +58,4 @@ bld/
 
 ## Kotlin
 **/META-INF/
+*.jar
