@@ -29,7 +29,7 @@ template <class Cmp> struct PairCmp {
 //   https://dmoj.ca/problem/art6
 template <class T, class Cmp = less<T>>
 struct IntervalUnion : public set<pair<T, T>, PairCmp<Cmp>> {
-  set<pair<T, T>, PairCmp<Cmp>>::iterator addInterval(T L, T R) {
+  typename set<pair<T, T>, PairCmp<Cmp>>::iterator addInterval(T L, T R) {
     if (!Cmp()(L, R) && !Cmp()(R, L)) return this->end();
     auto it = this->lower_bound(make_pair(L, R)), before = it;
     while (it != this->end() && !Cmp()(R, it->first)) {
