@@ -12,9 +12,13 @@ bool ge(T a, T b) { return !lt(a, b); }
 bool eq(T a, T b) { return !lt(a, b) && !lt(b, a); }
 bool ne(T a, T b) { return lt(a, b) || lt(b, a); }
 int sgn(T a) { return lt(a, 0) ? -1 : lt(0, a) ? 1 : 0; }
-template <class F> struct Functor {
-  F f; Functor(F f) : f(f) {}
-  template <class U>
-  bool operator () (const U &a, const U &b) const { return f(a, b); }
+struct eps_lt { bool operator () (T a, T b) const { return lt(a, b); } };
+struct eps_le { bool operator () (T a, T b) const { return !lt(b, a); } };
+struct eps_gt { bool operator () (T a, T b) const { return lt(b, a); } };
+struct eps_ge { bool operator () (T a, T b) const { return !lt(a, b); } };
+struct eps_eq {
+  bool operator () (T a, T b) const { return !lt(a, b) && !lt(b, a); }
 };
-template <class F> Functor<F> makeFunctor(F f) { return Functor<F>(f); }
+struct eps_ne {
+  bool operator () (T a, T b) const { return lt(a, b) || lt(b, a); }
+};
