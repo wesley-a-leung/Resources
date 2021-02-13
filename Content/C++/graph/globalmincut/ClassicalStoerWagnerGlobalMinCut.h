@@ -6,7 +6,7 @@ using namespace __gnu_pbds;
 
 // Computes the global minimum cut for a weighted graph
 // A cut is a partition of the vertices into two nonempty subsets
-// A crossing edges is an edge with endpoints in both subsets
+// A crossing edge is an edge with endpoints in both subsets
 // The cost of a cut is the sum of the weights of the crossing edges
 // Vertices are 0-indexed
 // Template Arguments:

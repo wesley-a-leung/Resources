@@ -12,10 +12,10 @@ using namespace std;
 //     Required Fields:
 //       T: the type of each element in the string/array
 //       S: a vector of type T representing the string/array
-//       ind: a vector of the indices in the original string of the suffices
+//       ind: a vector of the indices in the original string of the suffixes
 //         sorted in lexicographical order (ind[i] is the index in original
 //         string of the ith lexicographically smallest suffix)
-//       LCP: a vector of the longest common prefixes between the suffices when
+//       LCP: a vector of the longest common prefixes between the suffixes when
 //         sorted in lexicographical order (LCP[i] is the longest common prefix
 //         of the ith and (i + 1)th lexicographically smallest suffix, with
 //         LCP[N - 1] being 0)

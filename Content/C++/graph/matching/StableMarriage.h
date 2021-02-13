@@ -9,10 +9,10 @@ using namespace std;
 //   it is guaranteed that a solution always exists
 // Constructor Arguments:
 //   aPrefs: a matrix of size N x M with aPrefs[i][j] representing the jth
-//     prefered choice for the partner of type B for person i of type A;
+//     preferred choice for the partner of type B for person i of type A;
 //     aPrefs[i] must be a permutation from 0 to M - 1
 //   bPrefs: a matrix of size M x N with bPrefs[j][i] representing the ith
-//     prefered choice for the partner of type A for person j of type B;
+//     preferred choice for the partner of type A for person j of type B;
 //     bPrefs[j] must be a permutation from 0 to N - 1
 // Fields:
 //   N: the number of people of type A

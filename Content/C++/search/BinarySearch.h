@@ -5,7 +5,7 @@ using namespace std;
 // Binary search over a range for the first or last occurence of a return value
 //   for a boolean function
 // Template Arguments:
-//   ISFIRST: boolean of whether of not the first of last occurence is being
+//   ISFIRST: boolean of whether or not the first of last occurence is being
 //     searched for
 //   T: the type of the range to search over, must be integral
 //   F: the type of the function that is being searched over

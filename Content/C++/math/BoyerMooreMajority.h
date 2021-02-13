@@ -9,7 +9,7 @@ using namespace std;
 // Function Arguments:
 //   st: an iterator pointing to the first element in the array
 //   en: an iterator pointing to after the last element in the array
-// Return Value: returns an iterator to an elmenet that is a candidate for the
+// Return Value: returns an iterator to an element that is a candidate for the
 //   majority element in the range [st, en)
 // In practice, has a very small constant
 // Time Complexity: O(N)

@@ -51,7 +51,7 @@ pt rot(ref a, ref p, T theta) {
 pt perp(ref a) { return pt(-a.y, a.x); }
 // Sorts around the pivot point in polar order assuming the angles relative
 //   to the pivot are in the range [-PI, PI)
-// Points equal to the pivot are moves to the end
+// Points equal to the pivot are moved to the end
 // Template Arguments:
 //   It: the type of the iterator
 // Function Arguments:
