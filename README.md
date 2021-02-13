@@ -7,7 +7,7 @@ Data Structures, Algorithms, Utility Classes
 - Java Resources compile in Java 8, Java 11  
 - Kotlin Resources compile in Kotlin 1.4  
 
-### Currently being refactored
+### Style Guidelines
 - 79 character line limit  
 - 2 spaces for indentation  
 - very compressed coding style to reduce wasted space in PDF, with multiple
