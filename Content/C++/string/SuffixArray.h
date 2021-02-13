@@ -18,12 +18,12 @@ using namespace std;
 //   T: the type of the character/element in the string/array
 //   N: the length of the string/array
 //   S: a vector of type T representing the string/array
-//   rnk: a vector of the ranks of the suffices (rnk[i] is the rank of the
+//   rnk: a vector of the ranks of the suffixes (rnk[i] is the rank of the
 //     suffix starting from index i)
-//   ind: a vector of the indices in the original string of the suffices
+//   ind: a vector of the indices in the original string of the suffixes
 //     sorted in lexicographical order (ind[i] is the index in original string
 //     of the ith lexicographically smallest suffix)
-//   LCP: a vector of the longest common prefixes between the suffices when
+//   LCP: a vector of the longest common prefixes between the suffixes when
 //     sorted in lexicographical order (LCP[i] is the longest common prefix of
 //     the ith and (i + 1)th lexicographically smallest suffix, with LCP[N - 1]
 //     being 0)

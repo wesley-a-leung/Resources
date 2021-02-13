@@ -48,7 +48,7 @@ using namespace std;
 //   constructor: O(C + K (U (log K + sqrt V) + T))
 //     for K queries where C is the time complexity of S's constructor,
 //     U is the time complexity of S.add and S.remove,
-//     and T is the time compexity of S.query
+//     and T is the time complexity of S.query
 // Memory Complexity: O(V + K) for K queries
 // Tested:
 //   https://www.spoj.com/problems/COT2/

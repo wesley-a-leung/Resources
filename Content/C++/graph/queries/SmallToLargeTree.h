@@ -49,7 +49,7 @@ using namespace std;
 //   constructor: O(C + U V log V + K T)
 //     for K queries where C is the time complexity of S's constructor,
 //     U is the time complexity of S.add and S.remove,
-//     and T is the time compexity of S.query
+//     and T is the time complexity of S.query
 // Memory Complexity: O(V + K) for K queries
 // Tested:
 //   https://cses.fi/problemset/task/1139/

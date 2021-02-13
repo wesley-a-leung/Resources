@@ -10,7 +10,7 @@ using namespace std;
 //   st: an iterator pointing to the first element in the array
 //   en: an iterator pointing to after the last element in the array
 // Return Value: a vector of indices of the element in the longest increasing
-//   subsequence of the array, guaranteed the the values of those indices form
+//   subsequence of the array, guaranteed that the values of those indices form
 //   the lexicographically least subsequence
 // In practice, has a small constant, slower than
 //   LongestIncreasingSubsequence.h

@@ -60,7 +60,7 @@ using namespace std;
 //     for K queries where C is the time complexity of S's constructor,
 //     U is the time complexity of S.addLeft, S.addRight,
 //     S.removeLeft, S.removeRight,
-//     and T is the time compexity of S.query
+//     and T is the time complexity of S.query
 // Memory Complexity: O(K) for K queries
 // Tested:
 //   https://www.spoj.com/problems/DQUERY/

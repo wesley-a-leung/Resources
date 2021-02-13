@@ -3,7 +3,7 @@
 using namespace std;
 
 // Fenwick Tree or Binary Indexed Tree supporting point updates
-//   and range queries in K dimension, even if K is not known at copile time
+//   and range queries in K dimension, even if K is not known at compile time
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   T: the type of each element
@@ -14,10 +14,10 @@ using namespace std;
 // Functions:
 //   values(): returns a vector of the fenwick tree decomposed into a
 //     flattened array
-//   update(ind, v): updates the indices spcified by the vector ind holding the
-//     index for each dimension, with the value v
-//   query(ind): queries the indices spcified by the vector ind holding a pair
-//     specifying the range for each dimension
+//   update(ind, v): updates the indices specified by the vector ind holding
+//     the index for each dimension, with the value v
+//   query(ind): queries the indices specified by the vector ind holding a
+//     pair specifying the range for each dimension
 // Small constant, like most fenwick trees, slower than FenwickTree.h
 // Time Complexity:
 //   constructor: O(PI(N_i))
