@@ -3,11 +3,12 @@
 #include "../utils/EpsCmp.h"
 #include "Point.h"
 #include "Line.h"
+#include "Circle.h"
 using namespace std;
 
 using Polygon = vector<pt>;
 int mod(int i, int n) { return i < n ? i : i - n; }
-// Determines twice the signed area of a simplepolygon
+// Determines twice the signed area of a simple polygon
 // Function Arguments:
 //   poly: the points of the simple polygon
 // Return Value: twice the signed area of the polygon, positive if
@@ -21,7 +22,7 @@ T getArea2(const Polygon &poly) {
   for (int i = 0; i < n; i++) ret += cross(poly[i], poly[mod(i + 1, n)]);
   return ret;
 }
-// Determines centroid of a simplepolygon
+// Determines centroid of a simple polygon
 // Function Arguments:
 //   poly: the points of the simple polygon
 // Return Value: the centroid of the polygon
@@ -63,9 +64,9 @@ int extremeVertex(const Polygon &poly, ref dir) {
   }
   return lo;
 }
-// Finds the intersection of a line and a polygon
+// Finds the intersection of a convex polygon and a line
 // Function Arguments:
-//   poly: the points of the convex polygon
+//   poly: the points of the convex polygon in ccw order
 //   line: the line
 // Return Value: (-1, -1) if no collision
 //               (i, -1) if touching corner i
@@ -77,7 +78,7 @@ int extremeVertex(const Polygon &poly, ref dir) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://codeforces.com/contest/799/problem/G
-pair<int, int> lineConvexPolygonIntersection(const Polygon &poly,
+pair<int, int> convexPolygonLineIntersection(const Polygon &poly,
                                              const Line &line) {
   int n = poly.size(), endA = extremeVertex(poly, -perp(line.v));
   int endB = extremeVertex(poly, perp(line.v));
@@ -98,5 +99,31 @@ pair<int, int> lineConvexPolygonIntersection(const Polygon &poly,
       case 2: return make_pair(ret.second, ret.second);
     }
   }
+  return ret;
+}
+// Determines the area of the intersection of a simple polygon and a circle
+// Function Arguments:
+//   poly: the points of the simple polygon in ccw order
+//   c: the circle
+// Return Value: the area of the intersection of the simple polygon and
+//   the circle
+// Time Complexity: O(N)
+// Memory Complexity: O(1)
+// Tested:
+//   https://ecna18.kattis.com/problems/pizzacutting
+T polygonCircleIntersectionArea(const Polygon &poly, const Circle &c) {
+  T r2 = c.r * c.r / 2;
+  auto f = [&] (ref p, ref q) { return atan2(cross(p, q), dot(p, q)); };
+  auto tri = [&] (ref p, ref q) {
+    pt d = q - p; T a = dot(d, p) / norm(d);
+    T b = (norm(p) - c.r * c.r) / norm(d), det = a * a - b;
+    if (!lt(0, det)) return f(p, q) * r2;
+    T s = max(T(0), -a - sqrt(det)), t = min(T(1), -a + sqrt(det));
+    if (lt(t, 0) || !lt(s, 1)) return f(p, q) * r2;
+    pt u = p + d * s, v = p + d * t;
+    return f(p, u) * r2 + cross(u, v) / 2 + f(v, q) * r2;
+  };
+  T ret = 0; for (int n = poly.size(), i = 0; i < n; i++)
+    ret += tri(poly[i] - c.o, poly[mod(i + 1, n)] - c.o);
   return ret;
 }
