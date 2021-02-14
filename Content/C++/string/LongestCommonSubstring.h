@@ -2,10 +2,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Finds the longest common substring of two strings
-// Indices are 0-indexed and ranges are inclusive with the exception of
-//   functions that accept two iterators as a parameter, such as
-//   the constructor, which are exclusive
+// Finds the longest common substring of multiple strings
+// Indices are 0-indexed
 // Template Arguments:
 //   SuffixArray: a generic suffix array to be used (should be either
 //       SuffixArray in SuffixArray.h or SAISSuffixArray in SAISSuffixArray.h)
@@ -20,60 +18,58 @@ using namespace std;
 //         of the ith and (i + 1)th lexicographically smallest suffix, with
 //         LCP[N - 1] being 0)
 //     Required Functions:
-//       constructor(N, f): construts a suffix array with a string/array of
-//         length N with the generating function that returns the ith element
-//          on the ith call
+//       constructor(st, en): construts a suffix array with a string/array
+//         represented by the elements between the iterators st and en
 // Constructor Arguments:
-//   N: the length of the first string/array
-//   f: a generating function that returns the ith element of the first
-//     string/array on the ith call
-//   M: the length of the second string/array
-//   g: a generating function that returns the ith element of the second
-//     string/array on the ith call
-//   stA: an iterator pointing to the first element in the
-//     first string/array
-//   enA: an iterator pointing to after the last element in
-//     first string/array
-//   stB: an iterator pointing to the first element in the
-//     second string/array
-//   enB: an iterator pointing to after the last element in
-//     second string/array
-//   sep: a separator character that does not appear in either string/array
+//   A: a vector of the string/array
+//   sep: a vector of max(0, A.size() - 1) different separator character
+//     that do not appear in any of the string/array
 // Fields:
-//   SA: the associated suffix array constructed from the string/array A,
-//     concatenated with the separator, conatenated with the string/array B
-//   lcs: the string/array of longest common substring of A and B
+//   SA: the associated suffix array constructed from the strings/arrays
+//     concatenated together, separated by the separator character
 // In practice, the constructor has a very small constant
 // Time Complexity:
-//   constructor: time complexity of SuffixArray for a string of length N + M
-// Memory Complexity: memory complexity of SuffixArray for a string of length
-//   N + M
+//   constructor: time complexity of SuffixArray for the length of the
+//     concatenated string
+// Memory Complexity: memory complexity of SuffixArray for the length of the
+//   concatenated string
 // Tested:
-//   https://www.spoj.com/problems/LCS/
+//   https://www.spoj.com/problems/LCS2/
 template <class SuffixArray> struct LongestCommonSubstring {
-  using T = typename SuffixArray::T; SuffixArray SA; vector<T> lcs;
-  template <class F, class G>
-  SuffixArray init(int N, F f, int M, G g, T sep) {
-    int i = 0;
-    return SuffixArray(N + M + 1, [&] {
-      T ret = i < N ? f() : i == N ? sep : g(); i++; return ret;
-    });
+  using T = typename SuffixArray::T;
+  vector<int> ind; vector<T> lcs; SuffixArray SA;
+  SuffixArray init(const vector<vector<T>> &A, const vector<T> &sep) {
+    int len = max(0, int(A.size()) - 1); for (auto &&a : A) len += a.size();
+    vector<T> S; S.reserve(len); ind.resize(len, -1);
+    for (int i = 0; i < int(A.size()); i++) {
+      if (i > 0) S.push_back(sep[i - 1]);
+      fill(ind.begin() + S.size(), ind.begin() + S.size() + A[i].size(), i);
+      S.insert(S.end(), A[i].begin(), A[i].end());
+    }
+    return SuffixArray(S.begin(), S.end());
   }
-  template <class F, class G>
-  LongestCommonSubstring(int N, F f, int M, G g, T sep)
-      : SA(init(N, f, M, g, sep)) {
-    pair<int, int> mx(-1, -1); for (int i = 0; i < N + M; i++)
-      if (SA.ind[i] != N && SA.ind[i + 1] != N
-          && (SA.ind[i] < N) != (SA.ind[i + 1] < N))
-        mx = max(mx, make_pair(SA.LCP[i], SA.ind[i]));
+  LongestCommonSubstring(const vector<vector<T>> &A, const vector<T> &sep)
+      : ind(), SA(init(A, sep)) {
+    int K = A.size(); if (K == 0) return;
+    if (K == 1) { lcs = A[0]; return; }
+    vector<int> freq(K, 0), dq(SA.N); pair<int, int> mx(-1, -1);
+    for (int l = 0, r = 0, front = 0, back = 0, cnt = 0; r < SA.N; r++) {
+      if (ind[SA.ind[r]] != -1) {
+        cnt += freq[ind[SA.ind[r]]]++ == 0; if (cnt == K) {
+          while (true) {
+            int i = ind[SA.ind[l]]; if (i != -1 && freq[i] == 1) break;
+            l++; if (i != -1) freq[i]--;
+          }
+          while (dq[front] < l) front++;
+          mx = max(mx, make_pair(SA.LCP[dq[front]], SA.ind[dq[front]]));
+        }
+      }
+      while (front < back && SA.LCP[dq[back - 1]] >= SA.LCP[r]) back--;
+      dq[back++] = r;
+    }
     if (mx.first != -1) {
       lcs.reserve(mx.first);
       for (int i = 0; i < mx.first; i++) lcs.push_back(SA.S[mx.second + i]);
     }
   }
-  template <class ItPat, class ItTxt>
-  LongestCommonSubstring(ItPat stPat, ItPat enPat, ItTxt stTxt, ItTxt enTxt,
-                         T sep)
-      : LongestCommonSubstring(enPat - stPat, [&] { return *stPat++; },
-                               enTxt - stTxt, [&] { return *stTxt++; }, sep) {}
 };
