@@ -50,11 +50,13 @@ template <class T> struct Fraction {
     return *this;
   }
   bool operator < (const F &f) const {
-    F a = reduce(), b = f.reduce(); return a.num * b.den < b.num * a.den;
+    F a = den >= 0 ? *this : F(-num, -den);
+    F b = f.den >= 0 ? f : F(-f.num, -f.den);
+    return a.num * b.den < b.num * a.den;
   }
   bool operator <= (const F &f) const { return !(f < *this); }
   bool operator > (const F &f) const { return f < *this; }
   bool operator >= (const F &f) const { return !(*this < f); }
   bool operator == (const F &f) const { return !(*this < f) && !(f < *this); }
-  bool operator != (const F &f) const { return !(*this == f); }
+  bool operator != (const F &f) const { return *this < f || f < *this; }
 };
