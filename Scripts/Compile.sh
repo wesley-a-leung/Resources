@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# first command line argument is the compile command, following arguments are
+# the files to compile
 numTests=$#
 declare -i total=0
 declare -i pass=0
@@ -26,4 +28,3 @@ echo "$fail failed"
 if (($fail != 0)); then
   exit 1
 fi
-
