@@ -62,15 +62,12 @@ template <class T, const int MAXV> struct JohnsonAPSP {
       for (int i = 0; i < V - 1; i++) for (int v = 0; v < V; v++)
         for (auto &&e : G[v]) if (!inNegCyc[v] && !inNegCyc[e.first])
           h[e.first] = min(h[e.first], h[v] + e.second);
-      vector<bool> vis(tc.dp.size(), false); neg.resize(vis.size());
-      function<void(int)> dfs = [&] (int v) {
-        vis[v] = 1; for (int e = tc.st[v]; e < tc.st[v + 1]; e++) {
-          int w = tc.DAG[e].second; if (!vis[w]) dfs(w);
-          neg[v] |= neg[w];
-        }
-        if (compInNegCyc[v]) neg[v] = tc.dp[v];
-      };
-      for (int i = 0; i < int(neg.size()); i++) if (!vis[i]) dfs(i);
+      neg.resize(tc.dp.size()); for (auto &&e : tc.DAG) {
+        if (compInNegCyc[e.second]) neg[e.first] |= tc.dp[e.second];
+        else neg[e.first] |= neg[e.second];
+      }
+      for (int i = 0; i < int(neg.size()); i++) if (compInNegCyc[i])
+        neg[i] = tc.dp[i];
     }
     for (int s = 0; s < V; s++) {
       if (!inNegCyc[s]) {

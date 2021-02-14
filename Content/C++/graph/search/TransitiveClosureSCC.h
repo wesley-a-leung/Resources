@@ -26,20 +26,11 @@ using namespace std;
 //   https://dmoj.ca/problem/acc2p2
 //   https://ecna18.kattis.com/problems/watchyourstep
 template <const int MAXV> struct TransitiveClosureSCC {
-  vector<pair<int, int>> DAG; SCC scc; vector<bool> vis; vector<int> st;
-  vector<bitset<MAXV>> dp;
-  void dfs(int v) {
-    dp[v][v] = vis[v] = 1; for (int e = st[v]; e < st[v + 1]; e++) {
-      int w = DAG[e].second; if (!vis[w]) dfs(w);
-      dp[v] |= dp[w];
-    }
-  }
+  vector<pair<int, int>> DAG; SCC scc; vector<bitset<MAXV>> dp;
   template <class Graph> TransitiveClosureSCC(const Graph &G)
-      : DAG(), scc(G, DAG), vis(scc.components.size(), false),
-        st(vis.size() + 1, 0), dp(vis.size()) {
-    for (int e = int(DAG.size()) - 1; e >= 0; e--) st[DAG[e].first + 1]++;
-    partial_sum(st.begin(), st.end(), st.begin());
-    for (int v = 0; v < int(dp.size()); v++) if (!vis[v]) dfs(v);
+      : DAG(), scc(G, DAG), dp(scc.components.size()) {
+    for (int i = 0; i < int(dp.size()); i++) dp[i][i] = 1;
+    for (auto &&e : DAG) dp[e.first] |= dp[e.second];
   }
   bool reachable(int v, int w) { return dp[scc.id[v]][scc.id[w]]; }
 };
