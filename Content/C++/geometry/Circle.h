@@ -28,11 +28,28 @@ struct Circle {
 // Memory Complexity: O(1)
 vector<pt> circleLineIntersection(const Circle &c, const Line &l) {
   vector<pt> ret; T h2 = c.r * c.r - l.distSq(c.o); if (!lt(h2, 0)) {
-    pt p = l.proj(c.o), h = l.v * sqrt(h2) / abs(l.v);
+    pt p = l.proj(c.o), h = l.v * sqrt(max(h2, T(0))) / abs(l.v);
     ret.push_back(p - h); ret.push_back(p + h);
   }
   sort(ret.begin(), ret.end(), pt_lt());
   ret.erase(unique(ret.begin(), ret.end(), pt_eq()), ret.end());
+  return ret;
+}
+// Determine the area of the intersection of a circle and a half-plane defined
+//   by the left side of a line
+// Function Arguments:
+//   c: the circle
+//   l: the line with the half-plane defined by the left side
+// Return Value: the are of the intersection of the circle and the half-plane
+// Time Complexity: O(1)
+// Memory Complexity: O(1)
+T circleHalfPlaneIntersectionArea(const Circle &c, const Line &l) {
+  T h2 = c.r * c.r - l.distSq(c.o), ret = 0; if (!lt(h2, 0)) {
+    pt p = l.proj(c.o), h = l.v * sqrt(max(h2, T(0))) / abs(l.v);
+    pt a = p - h, b = p + h; T theta = abs(ang(a, c.o, b));
+    ret = c.r * c.r * (theta - sin(theta)) / 2;
+  }
+  if (l.onLeft(c.o) > 0) ret = PI * c.r * c.r - ret;
   return ret;
 }
 // Determine the intersection of two circles
@@ -52,7 +69,7 @@ int circleCircleIntersection(const Circle &c1, const Circle &c2,
   if (eq(d2, 0)) return eq(c1.r, c2.r) ? 2 : 0;
   T pd = (d2 + c1.r * c1.r - c2.r * c2.r) / 2;
   T h2 = c1.r * c1.r - pd * pd / d2; if (!lt(h2, 0)) {
-    pt p = c1.o + d * pd / d2, h = perp(d) * sqrt(h2 / d2);
+    pt p = c1.o + d * pd / d2, h = perp(d) * sqrt(max(h2 / d2, T(0)));
     res.push_back(p - h); res.push_back(p + h);
   }
   sort(res.begin(), res.end(), pt_lt());
@@ -77,7 +94,7 @@ int circleTangentPoints(const Circle &c1, const Circle &c2, bool inner,
   T d2 = norm(d), h2 = d2 - dr * dr;
   if (eq(d2, 0) || lt(h2, 0)) return eq(h2, 0) ? 2 : 0;
   for (T sign : {T(-1), T(1)}) {
-    pt v = (d * dr + perp(d) * sqrt(h2) * sign) / d2;
+    pt v = (d * dr + perp(d) * sqrt(max(h2, T(0))) * sign) / d2;
     res.emplace_back(c1.o + v * c1.r, c2.o + v * r2);
   }
   return 1;

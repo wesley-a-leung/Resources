@@ -7,7 +7,7 @@ using namespace std;
 #define x real()
 #define y imag()
 #define ref const pt &
-using pt = complex<T>;
+using pt = complex<T>; constexpr const T PI = acos(T(-1));
 istream &operator >> (istream &stream, pt &p) {
   T X, Y; stream >> X >> Y; p = pt(X, Y); return stream;
 }
@@ -38,7 +38,7 @@ T ang(ref a, ref b) { return arg(b - a); }
 // sign of ang, area2, ccw: 1 if counterclockwise, 0 if collinear,
 //   -1 if clockwise
 T ang(ref a, ref b, ref c) {
-  return remainder(ang(b, a) - ang(b, c), 2 * acos(T(-1)));
+  return remainder(ang(b, a) - ang(b, c), 2 * PI);
 }
 // signed area of triangle a, b, c
 T area2(ref a, ref b, ref c) { return cross(b - a, c - a); }
