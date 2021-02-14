@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Suffix Array Incduced Sort to sort suffixes of a string in
+// Suffix Array InducedF Sort to sort suffixes of a string in
 //   lexicographical order
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
