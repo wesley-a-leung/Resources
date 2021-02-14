@@ -5,6 +5,8 @@ using namespace std;
 // Solves the maximum disjoint intervals problem
 // Given a set of intervals in the form [L, R] which are sorted by R,
 //   find the maximum number of disjoint intervals
+// Maximum number of disjoint intervals is equivalent to the minimum number of
+//   points to cover each interval
 // Template Arguments:
 //   It: the type of the iterator for the array of pairs
 //     with the first element being the inclusive left bound of the interval
