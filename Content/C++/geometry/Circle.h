@@ -45,6 +45,7 @@ vector<pt> circleLineIntersection(const Circle &c, const Line &l) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://codeforces.com/contest/420/problem/E
+//   https://naq20.kattis.com/problems/drawingcircles
 int circleCircleIntersection(const Circle &c1, const Circle &c2,
                              vector<pt> &res) {
   pt d = c2.o - c1.o; T d2 = norm(d);

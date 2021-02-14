@@ -19,8 +19,8 @@ template <class Cmp> struct PairCmp {
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
 // Functions:
-//   addInterval(L, R): adds an interval [L, R) to the set
-//   removeInterval(L, R): removes the interval [L, R) from the set
+//   addInterval(L, R): adds an interval [L, R] to the set
+//   removeInterval(L, R): removes the interval [L, R] from the set
 // In practice, has a moderate constant
 // Time Complexity:
 //   addInterval, removeInterval: O(log N) amortized
@@ -36,7 +36,8 @@ struct IntervalUnion : public set<pair<T, T>, PairCmp<Cmp>> {
       R = max(R, it->second, Cmp()); before = it = this->erase(it);
     }
     if (it != this->begin() && !Cmp()((--it)->second, L)) {
-      L = min(L, it->first); R = max(R, it->second, Cmp()); this->erase(it);
+      L = min(L, it->first, Cmp()); R = max(R, it->second, Cmp());
+      this->erase(it);
     }
     return this->emplace_hint(before, L, R);
   }
@@ -50,21 +51,21 @@ struct IntervalUnion : public set<pair<T, T>, PairCmp<Cmp>> {
 };
 
 // Given a set of sorted intervals (by the PairCmp struct), combine
-//   them into disjoint intervals of the form [L, R)
+//   them into disjoint intervals of the form [L, R]
 // Template Arguments:
 //   It: the type of the iterator for the array of pairs
 //     with the first element being the inclusive left bound of the interval
-//     and the second element being the exclusive right bound of the interval
+//     and the second element being the inclusive right bound of the interval
 //   Cmp: the comparator to compare two indices,
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
 // Function Arguments:
 //   st: an iterator pointing to the first element in the array of pairs
 //     with the first element being the inclusive left bound of the interval
-//     and the second element being the exclusive right bound of the interval
+//     and the second element being the inclusive right bound of the interval
 //   en: an iterator pointing to after the last element in the array of pairs
 //     with the first element being the inclusive left bound of the interval
-//     and the second element being the exclusive right bound of the interval
+//     and the second element being the inclusive right bound of the interval
 //   cmp: an instance of the Cmp struct
 // Return Value: an iterator to right after the last disjoint interval
 // In practice, has a small constant
@@ -72,13 +73,14 @@ struct IntervalUnion : public set<pair<T, T>, PairCmp<Cmp>> {
 // Memory Complexity: O(1)
 // Tested:
 //   https://dmoj.ca/problem/art6
+//   https://naq20.kattis.com/problems/drawingcircles
 template <
     class It,
     class Cmp = less<typename iterator_traits<It>::value_type::first_type>>
 It intervalUnion(It st, It en, Cmp cmp = Cmp()) {
   assert(is_sorted(st, en, PairCmp<Cmp>()));
-  It cur = st; for (It l = st, r; l < en; l = r, cur++) {
-    *cur = *l; for (r = l + 1; r < en && !cmp(cur->second, r->first); r++)
+  It cur = st; for (It l = st, r; l != en; l = r, cur++) {
+    *cur = *l; for (r = l + 1; r != en && !cmp(cur->second, r->first); r++)
       cur->second = max(cur->second, r->second, cmp);
   }
   return cur;
