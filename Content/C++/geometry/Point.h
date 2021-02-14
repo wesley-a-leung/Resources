@@ -23,11 +23,15 @@ bool operator >= (ref a, ref b) { return !(a < b); }
 bool operator == (ref a, ref b) { return !(a < b) && !(b < a); }
 bool operator != (ref a, ref b) { return a < b || b < a; }
 struct pt_lt { bool operator () (ref a, ref b) const { return a < b; } };
-struct pt_le { bool operator () (ref a, ref b) const { return a <= b; } };
-struct pt_gt { bool operator () (ref a, ref b) const { return a > b; } };
-struct pt_ge { bool operator () (ref a, ref b) const { return a >= b; } };
-struct pt_eq { bool operator () (ref a, ref b) const { return a == b; } };
-struct pt_ne { bool operator () (ref a, ref b) const { return a != b; } };
+struct pt_le { bool operator () (ref a, ref b) const { return !(b < a); } };
+struct pt_gt { bool operator () (ref a, ref b) const { return b < a; } };
+struct pt_ge { bool operator () (ref a, ref b) const { return !(a < b); } };
+struct pt_eq {
+  bool operator () (ref a, ref b) const { return !(a < b) && !(b < a); }
+};
+struct pt_ne {
+  bool operator () (ref a, ref b) const { return a < b || b < a; }
+};
 // abs gets polar distance, arg gets polar angle
 T dot(ref a, ref b) { return a.x * b.x + a.y * b.y; }
 T cross(ref a, ref b) { return a.x * b.y - a.y * b.x; }
