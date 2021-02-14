@@ -51,7 +51,7 @@ template <class T> T addMod(T a, T b, T mod) {
 // Tested:
 //   https://open.kattis.com/problems/modulararithmetic
 template <class T> T subMod(T a, T b, T mod) {
-  return a >= b ? a - b : a - b + mod;
+  return a >= b ? a - b : a + mod - b;
 }
 
 // Multiplies two integers a and b modulo mod where a * b does not overflow
@@ -244,7 +244,7 @@ template <class T> T divModPrimeOvf(T a, T b, T p) {
 //     their product modulo mod in Montgomery form
 // In practice, has a small constant
 // Time Complexity:
-//   constructor. init, reduce, mul: O(1)
+//   constructor, init, reduce, mul: O(1)
 // Memory Complexity: O(1)
 // Tested:
 //   https://loj.ac/p/6466
@@ -291,4 +291,40 @@ struct Montgomery {
 __uint128_t mulMod(__uint128_t a, __uint128_t b, __uint128_t mod) {
   static Montgomery mont; if (mont.mod != mod) mont = Montgomery(mod);
   return mont.reduce(mont.mul(mont.init(a), mont.init(b)));
+}
+
+// Barret Reduction for fast modulo
+// Constructor Arguments:
+//   mod: the modulo of the space
+// Functions:
+//   reduce(a): returns a value congruent to a modulo mod in the range
+//     [0, 2 mod)
+// In practice, has a very small constant
+// Time Complexity:
+//   constructor, reduce: O(1)
+// Memory Complexity: O(1)
+// Tested:
+//   https://open.kattis.com/problems/modulararithmetic
+struct Barret {
+  uint64_t mod, inv;
+  Barret(uint64_t mod = 1) : mod(mod), inv(uint64_t(-1) / mod) {}
+  uint64_t reduce(uint64_t a) {
+    return a - uint64_t((__uint128_t(inv) * a) >> 64) * mod;
+  }
+};
+
+// Fast modulo using Barret Reduction
+// Function Arguments:
+//   a: the value to modulo
+//   mod: the modulo
+// Return Value: a modulo mod
+// In practice, has a very small constant
+// Time Complexity: O(1)
+// Memory Complexity: O(1)
+// Tested:
+//   https://open.kattis.com/problems/modulararithmetic
+uint64_t bmod(uint64_t a, uint64_t mod) {
+  static Barret b; if (b.mod != mod) b = Barret(mod);
+  uint64_t ret = b.reduce(a); if (ret >= mod) ret -= mod;
+  return ret;
 }
