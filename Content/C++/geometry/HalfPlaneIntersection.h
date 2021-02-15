@@ -22,8 +22,8 @@ vector<pt> halfPlaneIntersection(vector<Line> lines) {
     int s = sgn(arg(a.v) - arg(b.v));
     return (s == 0 ? a.onLeft(b.proj(pt(0, 0))) : s) < 0;
   });
-  int N = lines.size(); vector<Line> dq(N + 1, lines[0]); vector<pt> ret(N);
-  int front = 0, back = 0; for (int i = 1; i <= N; i++) {
+  int N = lines.size(), front = 0, back = 0; vector<Line> dq(N + 1, lines[0]);
+  vector<pt> ret(N); for (int i = 1; i <= N; i++) {
     if (i == N) lines.push_back(dq[front]);
     if (eq(arg(lines[i - 1].v), arg(lines[i].v))) continue;
     while (front < back && lines[i].onLeft(ret[back - 1]) < 0) back--;
