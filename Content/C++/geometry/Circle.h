@@ -76,6 +76,26 @@ int circleCircleIntersection(const Circle &c1, const Circle &c2,
   res.erase(unique(res.begin(), res.end(), pt_eq()), res.end());
   return !res.empty();
 }
+// Determine the area of the intersection of two circles
+// Function Arguments:
+//   c1: the first circle
+//   c2: the second circle
+// Return Value: the area of the intersection of the two circles
+// Time Complexity: O(1)
+// Memory Complexity: O(1)
+// Tested:
+//   https://codeforces.com/contest/600/problem/D
+T circleCircleIntersectionArea(const Circle &c1, const Circle &c2) {
+  T d = dist(c1.o, c2.o); if (!lt(d, c1.r + c2.r)) return 0;
+  if (!lt(c2.r, d + c1.r)) return PI * c1.r * c1.r;
+  if (!lt(c1.r, d + c2.r)) return PI * c2.r * c2.r;
+  auto A = [&] (T r1, T r2) {
+    T a = (d * d + r1 * r1 - r2 * r2) / (2 * d * r1);
+    T theta = 2 * acos(max(T(-1), min(T(1), a)));
+    return r1 * r1 * (theta - sin(theta)) / 2;
+  };
+  return A(c1.r, c2.r) + A(c2.r, c1.r);
+}
 // Determine the tangents of two circles
 // Function Arguments:
 //   c1: the first circle
