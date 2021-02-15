@@ -99,3 +99,18 @@ int circleTangentPoints(const Circle &c1, const Circle &c2, bool inner,
   }
   return 1;
 }
+// Determines the circumcircle from 3 collinear points
+// Function Arguments:
+//   a: the first point
+//   b: the second point
+//   c: the third point
+// Return Value: the circumcircle of the 3 points
+// Time Complexity: O(1)
+// Memory Complexity: O(1)
+// Tested:
+//   https://www.spoj.com/problems/QCJ4/
+Circle circumcircle(pt a, pt b, pt c) {
+  b -= a; c -= a;
+  pt ret = b * c * (conj(c) - conj(b)) / (b * conj(c) - conj(b) * c);
+  return Circle(a + ret, abs(ret));
+}

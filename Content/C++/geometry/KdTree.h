@@ -58,8 +58,12 @@ struct KdTree {
     pt p; Rectangle r; Node *lu, *rd;
     Node(ref p, const Rectangle &r) : p(p), r(r), lu(nullptr), rd(nullptr) {}
   };
+  deque<Node> TR;
   static bool xOrdLt(ref p, ref q) { return lt(p.x, q.x); }
   static bool yOrdLt(ref p, ref q) { return lt(p.y, q.y); }
+  Node *makeNode(ref p, const Rectangle &r) {
+    TR.emplace_back(p, r); return &TR.back();
+  }
   T XMIN, YMIN, XMAX, YMAX; int cnt; Node *root;
   template <class It>
   Node *build(Node *n, It points, int lo, int hi, bool partition,
@@ -68,7 +72,7 @@ struct KdTree {
     int mid = lo + (hi - lo) / 2; if (partition)
       nth_element(points + lo, points + mid, points + hi + 1, xOrdLt);
     else nth_element(points + lo, points + mid, points + hi + 1, yOrdLt);
-    pt p = *(points + mid); n = new Node(p, Rectangle(xmin, ymin, xmax, ymax));
+    pt p = *(points + mid); n = makeNode(p, Rectangle(xmin, ymin, xmax, ymax));
     if (partition) {
       n->lu = build(n->lu, points, lo, mid - 1, !partition,
                     xmin, ymin, n->p.x, ymax);
@@ -84,7 +88,7 @@ struct KdTree {
   }
   Node *insert(Node *n, ref p, bool partition,
                T xmin, T ymin, T xmax, T ymax) {
-    if (!n) { cnt++; return new Node(p, Rectangle(xmin, ymin, xmax, ymax)); }
+    if (!n) { cnt++; return makeNode(p, Rectangle(xmin, ymin, xmax, ymax)); }
     if (n->p == p) return n;
     if (partition) {
       if (xOrdLt(p, n->p)) n->lu = insert(n->lu, p, !partition,
