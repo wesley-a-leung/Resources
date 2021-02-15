@@ -24,7 +24,7 @@ vector<pt> convexHull(vector<pt> P) {
     }
     hull.pop_back(); reverse(P.begin(), P.end());
   }
-  if (int(hull.size()) == 2 && hull[0] == hull[1]) hull.pop_back();
+  if (int(hull.size()) == 2 && pt_eq()(hull[0], hull[1])) hull.pop_back();
   if (hull.empty() && !P.empty()) hull.push_back(P[0]);
   return hull;
 }

@@ -37,9 +37,29 @@ pt getCentroid(const vector<pt> &poly) {
   }
   return cen / A2 / T(3);
 }
-// Determines whether a point is inside a convex polygon
+// Determines the orientation of a convex polygon
 // Function Arguments:
 //   poly: the points of the convex polygon
+// Return Value: 1 if counterclockwise, 1 if clockwise, 0 if a point or a line
+// Time Complexity: O(1)
+// Memory Complexity: O(1)
+int isCcwConvexPolygon(const vector<pt> &poly) {
+  return ccw(poly.back(), poly[0], poly[mod(1, poly.size())]);
+}
+// Determines the orientation of a simple polygon
+// Function Arguments:
+//   poly: the points of the simple polygon
+// Return Value: 1 if counterclockwise, 1 if clockwise, 0 if a point or a line
+// Time Complexity: O(N)
+// Memory Complexity: O(1)
+int isCcwPolygon(const vector<pt> &poly) {
+  int n = poly.size();
+  int i = min_element(poly.begin(), poly.end(), pt_lt()) - poly.begin();
+  return ccw(poly[mod(i + n - 1, n)], poly[i], poly[mod(i + 1, n)]);
+}
+// Determines whether a point is inside a convex polygon
+// Function Arguments:
+//   poly: the points of the convex polygon in ccw order
 //   p: the point to check
 // Return Value: -1 if inside the polygon, 0 if on the edge, 1 if outside
 // Time Complexity: O(log N)
@@ -59,11 +79,35 @@ int isInsideConvexPolygon(const vector<pt> &poly, ref p) {
   }
   return ccw(poly[a], poly[b], p);
 }
+// Determines whether a point is inside a simple polygon
+// Function Arguments:
+//   poly: the points of the simple polygon in ccw order
+//   p: the point to check
+// Return Value: -1 if inside the polygon, 0 if on the edge, 1 if outside
+// Time Complexity: O(N)
+// Memory Complexity: O(1)
+// Tested:
+//   https://open.kattis.com/problems/pointinpolygon
+int isInsidePolygon(const vector<pt> &poly, ref p) {
+  int n = poly.size(), windingNumber = 0; for (int i = 0; i < n; i++) {
+    if (pt_eq()(p, poly[i])) return 0;
+    int j = mod(i + 1, n); if (eq(p.y, poly[i].y) && eq(p.y, poly[j].y)) {
+      if (!lt(p.x, min(poly[i].x, poly[j].x))
+          && !lt(max(poly[i].x, poly[j].x), p.x)) return 0;
+    } else {
+      bool below = lt(poly[i].y, p.y); if (below != lt(poly[j].y, p.y)) {
+        int o = ccw(poly[i], poly[j], p); if (o == 0) return 0;
+        if (below == (o > 0)) windingNumber += below ? 1 : -1;
+      }
+    }
+  }
+  return windingNumber == 0 ? 1 : -1;
+}
 // Finds an extreme vertex of a convex polygon (a vertex where there are
 //   no points in the polygon to the right of a vector drawn in
 //   the specified direction from that point)
 // Function Arguments:
-//   poly: the points of the convex polygon
+//   poly: the points of the convex polygon in ccw order
 //   dir: the direction
 // Return Value: the index of an extreme vertex
 // Time Complexity: O(log N)
