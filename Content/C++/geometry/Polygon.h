@@ -192,9 +192,7 @@ vector<pt> polygonHalfPlaneIntersection(const vector<pt> &poly,
 // Tested:
 //   https://ecna17.kattis.com/problems/abstractart
 T polygonUnion(const vector<vector<pt>> &polys) {
-  auto rat = [&] (ref p, ref q) {
-    return sgn(q.x) ? p.x / q.x : p.y / q.y;
-  };
+  auto rat = [&] (ref p, ref q) { return sgn(q.x) ? p.x / q.x : p.y / q.y; };
   T ret = 0; for (int i = 0; i < int(polys.size()); i++)
     for (int v = 0; v < int(polys[i].size()); v++) {
       pt a = polys[i][v], b = polys[i][mod(v + 1, polys[i].size())];
