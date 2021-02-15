@@ -22,19 +22,15 @@ vector<pt> halfPlaneIntersection(vector<Line> lines) {
     int s = sgn(arg(a.v) - arg(b.v));
     return (s == 0 ? a.onLeft(b.proj(pt(0, 0))) : s) < 0;
   });
-  deque<Line> dq{lines[0]}; deque<pt> ret;
-  int N = lines.size(); for (int i = 1; i <= N; i++) {
-    if (i == N) lines.push_back(dq.front());
+  int N = lines.size(); vector<Line> dq(N + 1, lines[0]); vector<pt> ret(N);
+  int front = 0, back = 0; for (int i = 1; i <= N; i++) {
+    if (i == N) lines.push_back(dq[front]);
     if (eq(arg(lines[i - 1].v), arg(lines[i].v))) continue;
-    while (!ret.empty() && lines[i].onLeft(ret.back()) < 0) {
-      dq.pop_back(); ret.pop_back();
-    }
-    while (i != N && !ret.empty() && lines[i].onLeft(ret.front()) < 0) {
-      dq.pop_front(); ret.pop_front();
-    }
-    pt inter; if (lineIntersection(lines[i], dq.back(), inter) != 1) continue;
-    dq.push_back(lines[i]); ret.push_back(inter);
+    while (front < back && lines[i].onLeft(ret[back - 1]) < 0) back--;
+    while (i != N && front < back && lines[i].onLeft(ret[front]) < 0) front++;
+    pt inter; if (lineIntersection(lines[i], dq[back], inter) != 1) continue;
+    ret[back++] = inter; dq[back] = lines[i];
   }
-  if (int(ret.size()) <= 2) return vector<pt>();
-  return vector<pt>(ret.begin(), ret.end());
+  if (back - front <= 2) return vector<pt>();
+  return vector<pt>(ret.begin() + front, ret.begin() + back);
 }
