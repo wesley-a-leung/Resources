@@ -90,16 +90,9 @@ int isInsideConvexPolygon(const vector<pt> &poly, ref p) {
 //   https://open.kattis.com/problems/pointinpolygon
 int isInsidePolygon(const vector<pt> &poly, ref p) {
   int n = poly.size(), windingNumber = 0; for (int i = 0; i < n; i++) {
-    if (pt_eq()(p, poly[i])) return 0;
-    int j = mod(i + 1, n); if (eq(p.y, poly[i].y) && eq(p.y, poly[j].y)) {
-      if (!lt(p.x, min(poly[i].x, poly[j].x))
-          && !lt(max(poly[i].x, poly[j].x), p.x)) return 0;
-    } else {
-      bool below = lt(poly[i].y, p.y); if (below != lt(poly[j].y, p.y)) {
-        int o = ccw(poly[i], poly[j], p); if (o == 0) return 0;
-        if (below == (o > 0)) windingNumber += below ? 1 : -1;
-      }
-    }
+    pt a = poly[i], b = poly[mod(i + 1, n)]; if (lt(b.y, a.y)) swap(a, b);
+    if (onSeg(p, a, b)) return 0;
+    windingNumber ^= (!lt(p.y, a.y) && lt(p.y, b.y) && ccw(p, a, b) > 0);
   }
   return windingNumber == 0 ? 1 : -1;
 }
