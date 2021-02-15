@@ -5,6 +5,9 @@ using namespace std;
 
 // Computes the Delaunay Triangulation of a set of distinct points
 // Collinear points have no triangulation
+// If there are 4 or more points on the same circle, the triangulation is
+//   ambiguous, otherwise it is unique
+// Each circumcircle does not completely contain any of the input points
 // Constructor Arguments:
 //   P: the distinct points
 // Fields:
