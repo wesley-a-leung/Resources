@@ -81,7 +81,7 @@ int isInsideConvexPolygon(const vector<pt> &poly, ref p) {
 }
 // Determines whether a point is inside a simple polygon
 // Function Arguments:
-//   poly: the points of the simple polygon in ccw order
+//   poly: the points of the simple polygon in ccw order or cw order
 //   p: the point to check
 // Return Value: -1 if inside the polygon, 0 if on the edge, 1 if outside
 // Time Complexity: O(N)
@@ -126,7 +126,7 @@ int extremeVertex(const vector<pt> &poly, ref dir) {
 // Finds the intersection of a convex polygon and a line
 // Function Arguments:
 //   poly: the points of the convex polygon in ccw order
-//   line: the line
+//   l: the line
 // Return Value: (-1, -1) if no collision
 //               (i, -1) if touching corner i
 //               (i, i) if along side (i, i + 1)
@@ -138,10 +138,10 @@ int extremeVertex(const vector<pt> &poly, ref dir) {
 // Tested:
 //   https://codeforces.com/contest/799/problem/G
 pair<int, int> convexPolygonLineIntersection(const vector<pt> &poly,
-                                             const Line &line) {
-  int n = poly.size(), endA = extremeVertex(poly, -perp(line.v));
-  int endB = extremeVertex(poly, perp(line.v));
-  auto cmpL = [&] (int i) { return line.onLeft(poly[i]); };
+                                             const Line &l) {
+  int n = poly.size(), endA = extremeVertex(poly, -perp(l.v));
+  int endB = extremeVertex(poly, perp(l.v));
+  auto cmpL = [&] (int i) { return l.onLeft(poly[i]); };
   pair<int, int> ret(-1, -1);
   if (cmpL(endA) > 0 || cmpL(endB) < 0) return ret;
   for (int i = 0; i < 2; i++) {
@@ -157,6 +157,27 @@ pair<int, int> convexPolygonLineIntersection(const vector<pt> &poly,
       case 0: return make_pair(ret.first, ret.first);
       case 2: return make_pair(ret.second, ret.second);
     }
+  }
+  return ret;
+}
+// Determines the intersection of a simple polygon and a half-plane defined
+//   by the left side of a line
+// Function Arguments:
+//   poly: the points of the simple polygon in ccw order
+//   l: the line with the half-plane defined by the left side
+// Return Value: the polygon defined by the intersection of the simple polygon
+//   and the half-plane
+// Time Complexity: O(N)
+// Memory Complexity: O(N)
+vector<pt> polygonHalfPlaneIntersection(const vector<pt> &poly,
+                                        const Line &l) {
+  int n = poly.size(); vector<pt> ret; for (int i = 0; i < n; i++) {
+    int j = mod(i + n - 1, n); bool side = l.onLeft(poly[i]) > 0;
+    if (side != (l.onLeft(poly[j]) > 0)) {
+      pt p; lineIntersection(l, Line(poly[i], poly[j]), p);
+      ret.push_back(p);
+    }
+    if (side) ret.push_back(poly[i]);
   }
   return ret;
 }
