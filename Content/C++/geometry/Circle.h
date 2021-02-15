@@ -9,15 +9,15 @@ using namespace std;
 struct Circle {
   pt o; T r; Circle(T r = 0) : o(0, 0), r(r) {}
   Circle(ref o, T r) : o(o), r(r) {}
-  // 1 if p is inside this circle, 0 if on this circle,
-  //   -1 if outside this circle
-  int contains(ref p) const { return sgn(r * r - distSq(o, p)); }
-  // 1 if c is strictly inside this circle, 0 if inside and touching this
-  //   circle, -1 otherwise
-  int contains(const Circle &c) const { return sgn(r - c.r - dist(o, c.o)); }
+  // -1 if p is inside this circle, 0 if on this circle,
+  //   1 if outside this circle
+  int contains(ref p) const { return sgn(distSq(o, p) - r * r); }
+  // -1 if c is strictly inside this circle, 0 if inside and touching this
+  //   circle, 1 otherwise
+  int contains(const Circle &c) const { return sgn(c.r - r + dist(o, c.o)); }
   // 1 if c is strictly outside this circle, 0 if outside and touching this
   //   circle, -1 otherwise
-  int disjoint(const Circle &c) const { return sgn(r + c.r - dist(o, c.o)); }
+  int disjoint(const Circle &c) const { return sgn(c.r + r - dist(o, c.o)); }
 };
 // Determine the intersection of a circle and a line
 // Function Arguments:

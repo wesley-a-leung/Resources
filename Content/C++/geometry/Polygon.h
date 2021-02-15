@@ -6,7 +6,7 @@
 #include "Circle.h"
 using namespace std;
 
-using Polygon = vector<pt>;
+// Functions for 2D polygons
 int mod(int i, int n) { return i < n ? i : i - n; }
 // Determines twice the signed area of a simple polygon
 // Function Arguments:
@@ -17,7 +17,7 @@ int mod(int i, int n) { return i < n ? i : i - n; }
 // Memory Complexity: O(1)
 // Tested:
 //   https://open.kattis.com/problems/crane
-T getArea2(const Polygon &poly) {
+T getArea2(const vector<pt> &poly) {
   T ret = 0; int n = poly.size();
   for (int i = 0; i < n; i++) ret += cross(poly[i], poly[mod(i + 1, n)]);
   return ret;
@@ -30,12 +30,34 @@ T getArea2(const Polygon &poly) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://open.kattis.com/problems/crane
-pt getCentroid(const Polygon &poly) {
+pt getCentroid(const vector<pt> &poly) {
   T A2 = 0; pt cen(0, 0); int n = poly.size(); for (int i = 0; i < n; i++) {
     T a = cross(poly[i], poly[mod(i + 1, n)]); A2 += a;
     cen += a * (poly[i] + poly[mod(i + 1, n)]);
   }
   return cen / A2 / T(3);
+}
+// Determines whether a point is inside a convex polygon
+// Function Arguments:
+//   poly: the points of the convex polygon
+//   p: the point to check
+// Return Value: -1 if inside the polygon, 0 if on the edge, 1 if outside
+// Time Complexity: O(log N)
+// Memory Complexity: O(1)
+// Tested:
+//   https://codeforces.com/contest/166/problem/B
+int isInsideConvexPolygon(const vector<pt> &poly, ref p) {
+  int n = poly.size(), a = 1, b = n - 1;
+  if (n < 3) return onSeg(p, poly[0], poly.back()) ? 0 : 1;
+  if (Line(poly[0], poly[a]).onLeft(poly[b])) swap(a, b);
+  int o1 = Line(poly[0], poly[a]).onLeft(p);
+  int o2 = Line(poly[0], poly[b]).onLeft(p);
+  if (o1 > 0 || o2 < 0) return 1;
+  if (o1 == 0 || o2 == 0) return 0;
+  while (abs(a - b) > 1) {
+    int c = (a + b) / 2; (Line(poly[0], poly[c]).onLeft(p) > 0 ? b : a) = c;
+  }
+  return ccw(poly[a], poly[b], p);
 }
 // Finds an extreme vertex of a convex polygon (a vertex where there are
 //   no points in the polygon to the right of a vector drawn in
@@ -48,7 +70,7 @@ pt getCentroid(const Polygon &poly) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://codeforces.com/contest/799/problem/G
-int extremeVertex(const Polygon &poly, ref dir) {
+int extremeVertex(const vector<pt> &poly, ref dir) {
   int n = poly.size(), lo = 0, hi = n; pt pp = perp(dir);
   auto cmp = [&] (int i, int j) {
     return sgn(cross(pp, poly[mod(i, n)] - poly[mod(j, n)]));
@@ -78,7 +100,7 @@ int extremeVertex(const Polygon &poly, ref dir) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://codeforces.com/contest/799/problem/G
-pair<int, int> convexPolygonLineIntersection(const Polygon &poly,
+pair<int, int> convexPolygonLineIntersection(const vector<pt> &poly,
                                              const Line &line) {
   int n = poly.size(), endA = extremeVertex(poly, -perp(line.v));
   int endB = extremeVertex(poly, perp(line.v));
@@ -111,7 +133,7 @@ pair<int, int> convexPolygonLineIntersection(const Polygon &poly,
 // Memory Complexity: O(1)
 // Tested:
 //   https://ecna18.kattis.com/problems/pizzacutting
-T polygonCircleIntersectionArea(const Polygon &poly, const Circle &c) {
+T polygonCircleIntersectionArea(const vector<pt> &poly, const Circle &c) {
   T r2 = c.r * c.r / 2;
   auto f = [&] (ref p, ref q) { return atan2(cross(p, q), dot(p, q)); };
   auto tri = [&] (ref p, ref q) {
