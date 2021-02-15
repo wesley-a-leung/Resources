@@ -52,6 +52,8 @@ int isCcwConvexPolygon(const vector<pt> &poly) {
 // Return Value: 1 if counterclockwise, 1 if clockwise, 0 if a point or a line
 // Time Complexity: O(N)
 // Memory Complexity: O(1)
+// Tested:
+//   https://ecna17.kattis.com/problems/abstractart
 int isCcwPolygon(const vector<pt> &poly) {
   int n = poly.size();
   int i = min_element(poly.begin(), poly.end(), pt_lt()) - poly.begin();
@@ -69,13 +71,12 @@ int isCcwPolygon(const vector<pt> &poly) {
 int isInsideConvexPolygon(const vector<pt> &poly, ref p) {
   int n = poly.size(), a = 1, b = n - 1;
   if (n < 3) return onSeg(p, poly[0], poly.back()) ? 0 : 1;
-  if (Line(poly[0], poly[a]).onLeft(poly[b])) swap(a, b);
-  int o1 = Line(poly[0], poly[a]).onLeft(p);
-  int o2 = Line(poly[0], poly[b]).onLeft(p);
+  if (ccw(poly[0], poly[a], poly[b])) swap(a, b);
+  int o1 = ccw(poly[0], poly[a], p), o2 = ccw(poly[0], poly[b], p);
   if (o1 > 0 || o2 < 0) return 1;
   if (o1 == 0 || o2 == 0) return 0;
   while (abs(a - b) > 1) {
-    int c = (a + b) / 2; (Line(poly[0], poly[c]).onLeft(p) > 0 ? b : a) = c;
+    int c = (a + b) / 2; (ccw(poly[0], poly[c], p) > 0 ? b : a) = c;
   }
   return ccw(poly[a], poly[b], p);
 }
@@ -180,6 +181,45 @@ vector<pt> polygonHalfPlaneIntersection(const vector<pt> &poly,
     if (side) ret.push_back(poly[i]);
   }
   return ret;
+}
+// Computes the area of union of multiple polygons
+// Function Arguments:
+//   polys: a vector of the polygons represented by a vector of points given in
+//     ccw order
+// Return Value: the area of the union of all the polygons
+// Time Complexity: O(N^2) for N total points
+// Memory Complexity: O(N) for N total points
+// Tested:
+//   https://ecna17.kattis.com/problems/abstractart
+T polygonUnion(const vector<vector<pt>> &polys) {
+  auto rat = [&] (ref p, ref q) {
+    return sgn(q.x) ? p.x / q.x : p.y / q.y;
+  };
+  T ret = 0; for (int i = 0; i < int(polys.size()); i++)
+    for (int v = 0; v < int(polys[i].size()); v++) {
+      pt a = polys[i][v], b = polys[i][mod(v + 1, polys[i].size())];
+      vector<pair<T, int>> segs{make_pair(0, 0), make_pair(1, 0)};
+      for (int j = 0; j < int(polys.size()); j++) if (i != j)
+        for (int w = 0; w < int(polys[j].size()); w++) {
+          pt c = polys[j][w], d = polys[j][mod(w + 1, polys[j].size())];
+          int sc = ccw(a, b, c), sd = ccw(a, b, d); if (sc != sd) {
+            T sa = area2(c, d, a), sb = area2(c, d, b); if (lt(min(sc, sd), 0))
+              segs.emplace_back(sa / (sa - sb), sgn(sc - sd));
+          } else if (!sc && !sd && j < i && sgn(dot(b - a, d - c)) > 0) {
+            segs.emplace_back(rat(c - a, b - a), 1);
+            segs.emplace_back(rat(d - a, b - a), -1);
+          }
+        }
+      sort(segs.begin(), segs.end());
+      for (auto &&s : segs) s.first = min(max(s.first, T(0)), T(1));
+      T sm = 0; int cnt = segs[0].second;
+      for (int j = 1; j < int(segs.size()); j++) {
+        if (!cnt) sm += segs[j].first - segs[j - 1].first;
+        cnt += segs[j].second;
+      }
+      ret += cross(a, b) * sm;
+    }
+  return ret / 2;
 }
 // Determines the area of the intersection of a simple polygon and a circle
 // Function Arguments:
