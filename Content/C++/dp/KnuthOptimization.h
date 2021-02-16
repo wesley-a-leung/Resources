@@ -9,8 +9,7 @@ using namespace std;
 //   where mid[l][r] is the optimal value of m for dp[l][r]
 // Template Arguments:
 //   T: the type of the return value of the cost function
-//   F: the type of the function used to compute the cost function (can be
-//     can be deduced automatically in some cases)
+//   F: the type of the function used to compute the cost function
 //   Cmp: the comparator to compare two T values,
 //       convention is same as priority_queue in STL
 //     Required Functions:

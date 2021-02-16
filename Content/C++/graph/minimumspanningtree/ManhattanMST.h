@@ -8,6 +8,7 @@ using namespace std;
 //   points |x_i - x_j| + |y_i - y_j|
 // Generates up to 4N candidate edges with each point connected to its nearest
 //   neighbour in each octant
+// Vertices are 0-indexed
 // Template Arguments:
 //   T: the type of the coordinates of the points
 // Constructor Arguments:

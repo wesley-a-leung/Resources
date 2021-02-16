@@ -5,7 +5,7 @@ using namespace std;
 // Runs a callback on the triangles in a simple graph
 // Vertices are 0-indexed
 // Template Arguments:
-//   F: the type of the function f (can be deduced automatically in some cases)
+//   F: the type of the function f
 // Function Arguments:
 //   V: number of vertices in the simple graph
 //   edges: a vector of pairs in the form (v, w) representing
