@@ -29,7 +29,7 @@ void maximalCliques(const vector<B> &matrix, F &f, B P, B X, B R) {
 //   f(s): the function to run a callback on for each clique, where s is a
 //     bitset representing which vertices are in the clique
 // In practice, has a very small constant
-// Time Complexity: O(3^(V / 3)), must faster in practice
+// Time Complexity: O(3^(V / 3)), much faster in practice
 // Memory Complexity: O(V^2 / 64)
 // Tested:
 //   https://open.kattis.com/problems/friends

@@ -27,7 +27,7 @@ using namespace std;
 //     any solution if unbounded, empty if infeasible
 // In practice, has a very small constant
 // Time Complexity:
-//   constructor: O(2^N), worst case, must faster in practice
+//   constructor: O(2^N), worst case, much faster in practice
 // Memory Complexity: O(MN)
 // Tested:
 //   https://open.kattis.com/problems/cheeseifyouplease

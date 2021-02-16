@@ -15,7 +15,7 @@ using namespace std;
 // Fields:
 //   maximumClique: a vertex of vertices in the maximum clique
 // In practice, has a very small constant
-// Time Complexity: exponential, must faster in practice
+// Time Complexity: exponential, much faster in practice
 // Memory Complexity: O(V^2)
 // Tested:
 //   https://dmoj.ca/problem/clique
