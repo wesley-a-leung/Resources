@@ -30,7 +30,7 @@ for filename in filenames:
       if not ignoreLenViolation and len(line.rstrip(b"\r\n")) > 79:
         print(f"line {curLine} exceeds maximum line length of 79")
         ok = False
-      ignoreLenViolation = "ignore next line length violation" in line
+      ignoreLenViolation = b"ignore next line length violation" in line
     if ok:
       print("All lines good")
       good += 1
