@@ -119,7 +119,7 @@ int circleTangentPoints(const Circle &c1, const Circle &c2, bool inner,
   }
   return 1;
 }
-// Determines the circumcircle from 3 collinear points
+// Determines the circumcircle from 3 non-collinear points
 // Function Arguments:
 //   a: the first point
 //   b: the second point
