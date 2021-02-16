@@ -15,7 +15,7 @@ template <class Cmp> struct PairCmp {
 // Adding and removing intervals from a set
 // Template Arguments:
 //   T: the type of the endpoints of the intervals
-//   Cmp: the comparator to compare two indices,
+//   Cmp: the comparator to compare two points,
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
 // Functions:
@@ -56,7 +56,7 @@ struct IntervalUnion : public set<pair<T, T>, PairCmp<Cmp>> {
 //   It: the type of the iterator for the array of pairs
 //     with the first element being the inclusive left bound of the interval
 //     and the second element being the inclusive right bound of the interval
-//   Cmp: the comparator to compare two indices,
+//   Cmp: the comparator to compare two points,
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
 // Function Arguments:
