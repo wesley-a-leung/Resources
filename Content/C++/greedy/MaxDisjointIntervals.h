@@ -12,7 +12,7 @@ using namespace std;
 //   It: the type of the iterator for the array of pairs
 //     with the first element being the inclusive left bound of the interval
 //     and the second element being the inclusive right bound of the interval
-//   Cmp: the comparator to compare two points,
+//   Cmp: the comparator to compare two points
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
 // Function Arguments:

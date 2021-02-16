@@ -4,12 +4,12 @@ using namespace std;
 
 // Solves the minimum interval cover problem
 // Given a set of intervals in the form [L, R] which are sorted by L,
-//   find the minium number of intervals to cover a target interval
+//   find the minimum number of intervals to cover a target interval
 // Template Arguments
 //   It: the type of the iterator for the array of pairs
 //     with the first element being the inclusive left bound of the interval
 //     and the second element being the inclusive right bound of the interval
-//   Cmp: the comparator to compare two points,
+//   Cmp: the comparator to compare two points
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
 //   T: the type of the points
@@ -20,6 +20,10 @@ using namespace std;
 //   en: an iterator pointing to after the last element in the array of pairs
 //     with the first element being the inclusive left bound of the interval
 //     and the second element being the inclusive right bound of the interval
+//   target: the target interval to cover with the first element being the
+//     inclusive left bound of the target interval and the second element
+//     being the inclusive right bound of the interval
+//   cmp: an instance of the Cmp struct
 // Return Value: an iterator to after the last interval in the minimum
 //   cover after the array is modified, or st if no cover exists
 // In practice, has a very small constant
