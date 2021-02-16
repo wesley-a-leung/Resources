@@ -70,7 +70,8 @@ template <class _FlowUnit> struct FlowEdgeDemands {
 // Time Complexity:
 //   constructor: O(V)
 //   addEdge: O(1)
-//   getFeasibleFlow, getMinFlow, getMaxFlow: O(V^2 sqrt E)
+//   getFeasibleFlow, getMinFlow, getMaxFlow: O(V^2 sqrt E),
+//     much faster in practice
 // Memory Complexity: O(V + E)
 // Tested:
 //   https://loj.ac/p/117

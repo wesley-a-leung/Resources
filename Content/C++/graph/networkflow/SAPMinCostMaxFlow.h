@@ -30,7 +30,7 @@ using namespace __gnu_pbds;
 // Time Complexity:
 //   constructor: O(V)
 //   addEdge: O(1)
-//   getFlowMinCost: O(E^2 V log V)
+//   getFlowMinCost: O(E^2 V log V), much faster in practice
 // Memory Complexity: O(V + E)
 // Tested:
 //   https://open.kattis.com/problems/mincostmaxflow

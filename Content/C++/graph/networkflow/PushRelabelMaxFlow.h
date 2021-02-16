@@ -50,7 +50,7 @@ template <class _FlowUnit> struct FlowEdge {
 //   FLOW_EPS: a value for the flow epsilon
 //   G: an adjacency list of all edges and reverse edges in the flow network
 //   cut: a vector of booleans indicating which side of a minimum s-t cut it
-//     is on
+//     is on (true if on the same side as s, false if on the same side as t)
 // Functions:
 //   addEdge(v, w, vwCap, wvCap): adds an edge from v to w with capacity
 //     vwCap and a reverse capacity of wvCap
@@ -60,7 +60,7 @@ template <class _FlowUnit> struct FlowEdge {
 // Time Complexity:
 //   constructor: O(V)
 //   addEdge: O(1)
-//   getFlow: O(V^2 sqrt E)
+//   getFlow: O(V^2 sqrt E), much faster in practice
 // Memory Complexity: O(V + E)
 // Tested:
 //   https://open.kattis.com/problems/maxflow

@@ -72,7 +72,8 @@ template <class _FlowUnit, class _CostUnit> struct FlowCostEdge {
 // Time Complexity:
 //   constructor: O(V)
 //   addEdge: O(1)
-//   getFlowMinCost: O(E V^2 log (VC)) where C is the maximum edge cost
+//   getFlowMinCost: O(E V^2 log (VC)) where C is the maximum edge cost,
+//     much faster in practice
 // Memory Complexity: O(V + E)
 // Tested:
 //   https://open.kattis.com/problems/mincostmaxflow

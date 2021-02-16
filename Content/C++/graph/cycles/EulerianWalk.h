@@ -4,6 +4,16 @@ using namespace std;
 
 // Finds an Eulerian walk (or a circuit) in a graph which can be
 //   either undirected or directed
+// A undirected walk exists iff every exactly zero of two vertices has an odd
+//   degree and all nonzero degree vertices are in a single connected component
+// A undirected circuit exists iff every vertex has an even degree
+//   and all nonzero degree vertices are in a single connected component
+// A directed walk exists iff at most one vertex has outDeg - inDeg = 1 and at
+//   most one vertex has inDeg - outDeg = 1, with all other vertices having
+//   inDeg = outDeg and all vertices all nonzero degree vertices are in a
+//   single connected component of the underlying undirected graph
+// A directed circuit exists iff all vertices have inDeg = outDeg and all
+//   nonzero degree vertices are in a single strongly connected component
 // Vertices are 0-indexed
 // Function Arguments:
 //   V: number of vertices in the graph
