@@ -8,7 +8,8 @@ Data Structures, Algorithms, Utility Classes
 - Kotlin Resources compile in Kotlin 1.4  
 
 ### Style Guidelines
-- 79 character line limit  
+- 79 character line limit unless the previous line contains the string
+`ignore next line length violation`  
 - 2 spaces for indentation  
 - very compressed coding style to reduce wasted space in PDF, with multiple
 statements on a single line  
