@@ -8,13 +8,13 @@ namespace IO {
   template <class T> struct is_iterator {
     template <class U, typename std::enable_if<
         !std::is_convertible<U, const char *>::value, int>::type = 0>
-    constexpr static auto has_indirection(int)
+    static constexpr auto has_indirection(int)
         ->decltype(*std::declval<U>(), bool()) {
       return true;
     }
     template <class>
-    constexpr static bool has_indirection(long) { return false; }
-    constexpr static bool value = has_indirection<T>(0);
+    static constexpr bool has_indirection(long) { return false; }
+    static constexpr bool value = has_indirection<T>(0);
   };
   constexpr const int _bufSize = 1 << 16, _maxNumLength = 128;
   char _inputBuf[_bufSize + 1], *_inputPtr = _inputBuf, _sign, _c, _last = -1;
