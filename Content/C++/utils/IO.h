@@ -1,6 +1,5 @@
 #pragma once
 #include <bits/stdc++.h>
-using namespace std;
 
 // Functions for fast IO
 namespace IO {
