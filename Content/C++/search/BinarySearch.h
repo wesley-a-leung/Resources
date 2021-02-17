@@ -25,7 +25,7 @@ using namespace std;
 //       assumes that all values where f(x) is true are less than all values
 //       where f(x) is false
 // In practice, has a small constant
-// Time Complexity: O(log (hi - lo)) * (cost to compute f(x)))
+// Time Complexity: O(log (hi - lo)) * (cost to compute f(x))
 // Memory Complexity: O(1)
 // Tested:
 //   https://mcpt.ca/problem/lcc18c5s3
