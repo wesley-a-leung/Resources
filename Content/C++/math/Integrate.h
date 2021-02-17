@@ -23,7 +23,7 @@ template <class F, class T> T rec(F &f, T a, T b, T eps, T s) {
 //   f(x): the function returning the y value at x
 //   eps: a value for epsilon
 // Return Value: the integral of f over the range [a, b]
-// Time Complexity: O(b - a) * (cost to compute f(x)))
+// Time Complexity: O(b - a) * (cost to compute f(x))
 // Memory Complexity: O(1)
 // Tested:
 //   https://codeforces.com/problemsets/acmsguru/problem/99999/217
