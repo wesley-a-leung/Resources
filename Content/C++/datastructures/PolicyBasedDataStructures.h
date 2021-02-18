@@ -78,7 +78,3 @@ using treemap = tree<K, V, C, rb_tree_tag,
 //   https://dmoj.ca/problem/apio16p2
 template <class T, class C = less<T>, class Tag = pairing_heap_tag>
 using pbdsheap = __gnu_pbds::priority_queue<T, C, Tag>;
-template <class T, class Tag = pairing_heap_tag>
-using minpbdsheap = pbdsheap<T, greater<T>, Tag>;
-template <class T, class Tag = pairing_heap_tag>
-using maxpbdsheap = pbdsheap<T, less<T>, Tag>;

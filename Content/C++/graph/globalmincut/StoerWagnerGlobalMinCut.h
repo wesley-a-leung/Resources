@@ -49,7 +49,7 @@ template <class T> struct StoerWagnerGlobalMinCut {
     vector<vector<Edge>> H = G; fill(cut.begin(), cut.end(), false);
     cutWeight = INF; vector<int> par(V); iota(par.begin(), par.end(), 0);
     for (int phase = V - 1; phase > 0; phase--) {
-      vector<T> W(V, T()); maxpbdsheap<pair<T, int>> PQ;
+      vector<T> W(V, T()); pbdsheap<pair<T, int>> PQ;
       vector<typename decltype(PQ)::point_iterator> ptr(V, PQ.end());
       for (int v = 1; v < V; v++) if (par[v] == v)
         ptr[v] = PQ.push(make_pair(W[v], v));
