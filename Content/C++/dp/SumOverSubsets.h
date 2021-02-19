@@ -3,27 +3,27 @@
 using namespace std;
 
 // Sum over subsets (or supersets) (similar to FST.h)
-// Transforms an array A into in array A' such that A'[i] is equal to the sum
-//   of all A[j] such that i | j == i if TYPE == SUBSET or i & j == i if
+// Transforms an array a into in array a' such that a'[i] is equal to the sum
+//   of all a[j] such that i | j == i if TYPE == SUBSET or i & j == i if
 //   TYPE == SUPERSET
 // Template Arguments:
 //   TYPE: SUBSET or SUPERSET
 //   T: the type of each element
 // Function Arguments:
-//   A: a reference to the vector of type T to transform
+//   a: a reference to the vector of type T to transform
 //   inv: a boolean indicating whether the inverse transform should be
 //     performed or not
-// Time Complexity: O(N 2^N) where 1 << N == size(A)
+// Time Complexity: O(N log N) where N = size(a)
 // Memory Complexity: O(1)
 // Tested:
 //   https://judge.yosupo.jp/problem/bitwise_and_convolution
-//   https://csacademy.com/contest/round-53/task/maxor/statement/
+//   https://csacademy.com/contest/round-53/task/maxor/
 const bool SUBSET = true, SUPERSET = false;
-template <const bool TYPE, class T> void sos(vector<T> &A, bool inv) {
-  int S = A.size(), N = __lg(S); assert((1 << N) == S);
-  for (int i = 0; i < N; i++) for (int mask = 0; mask < S; mask++)
+template <const bool TYPE, class T> void sos(vector<T> &a, bool inv) {
+  int N = a.size(), lg = __lg(N); assert((1 << lg) == N);
+  for (int i = 0; i < lg; i++) for (int mask = 0; mask < N; mask++)
     if (((mask >> i) & 1) == TYPE) {
-      if (inv) A[mask] -= A[mask ^ (1 << i)];
-      else A[mask] += A[mask ^ (1 << i)];
+      if (inv) a[mask] -= a[mask ^ (1 << i)];
+      else a[mask] += a[mask ^ (1 << i)];
     }
 }
