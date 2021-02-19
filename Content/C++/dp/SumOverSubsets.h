@@ -20,10 +20,9 @@ using namespace std;
 //   https://csacademy.com/contest/round-53/task/maxor/
 const bool SUBSET = true, SUPERSET = false;
 template <const bool TYPE, class T> void sos(vector<T> &a, bool inv) {
-  int N = a.size(), lg = __lg(N); assert((1 << lg) == N);
-  for (int i = 0; i < lg; i++) for (int mask = 0; mask < N; mask++)
-    if (((mask >> i) & 1) == TYPE) {
-      if (inv) a[mask] -= a[mask ^ (1 << i)];
-      else a[mask] += a[mask ^ (1 << i)];
+  int N = a.size(); assert(!(N & (N - 1))); for (int m = 1; m < N; m <<= 1)
+    for (int mask = 0; mask < N; mask++) if (bool(mask & m) == TYPE) {
+      if (inv) a[mask] -= a[mask ^ m];
+      else a[mask] += a[mask ^ m];
     }
 }
