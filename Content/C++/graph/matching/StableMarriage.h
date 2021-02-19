@@ -5,8 +5,8 @@ using namespace std;
 // Given N people of type A and M people of type B, and a list of their ranked
 //   preferences for partners, the goal is to arrange min(N, M) pairs such that
 //   if a person x of type A prefers a person y of type B more than their
-//   current partner, then person y prefers their current partner more than x;
-//   it is guaranteed that a solution always exists
+//   current partner, then person y prefers their current partner more than x
+// It is guaranteed that a solution always exists
 // Constructor Arguments:
 //   aPrefs: a matrix of size N x M with aPrefs[i][j] representing the jth
 //     preferred choice for the partner of type B for person i of type A;
@@ -21,6 +21,7 @@ using namespace std;
 //     type A, or -1 if that person of type A is unmatched
 //   aForB: a vector representing the partner of type A for each person of
 //     type B, or -1 if that person of type B is unmatched
+// In practice, has a moderate constant
 // Time Complexity:
 //   constructor O(NM)
 // Memory Complexity: O(NM)

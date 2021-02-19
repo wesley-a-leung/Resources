@@ -18,7 +18,7 @@ using namespace std;
 //   color: a vector of integers in the range [0, D) that has a length equal
 //     to the length of edges representing coloring of the edges
 // In practice, has a small constant
-// Time Complexity: O(E log D sqrt (E / D)) where D is the maximum
+// Time Complexity: O(V log V + E log D sqrt (E / D)) where D is the maximum
 //   degree of any vertex
 // Memory Complexity: O(V + E)
 // Tested:
