@@ -3,7 +3,7 @@
 #include "BinaryExponentiation.h"
 using namespace std;
 
-// Struct representing integers modulo MOD
+// Struct representing integers modulo MOD where MOD can change during runtime
 // Template Arguments:
 //   T: the type of the integer, must be integral
 // Constructor Arguments:
