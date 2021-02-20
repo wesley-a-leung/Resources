@@ -3,7 +3,7 @@
 using namespace std;
 
 // Sum over subsets (or supersets) (similar to FST.h)
-// Transforms an array a into in array a' such that a'[i] is equal to the sum
+// Transforms an array a into an array a' such that a'[i] is equal to the sum
 //   of all a[j] such that i | j == i if TYPE == SUBSET or i & j == i if
 //   TYPE == SUPERSET
 // Template Arguments:

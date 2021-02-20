@@ -1,22 +1,22 @@
 #pragma once
 #include <bits/stdc++.h>
 #include "BinaryExponentiation.h"
-#include "Primes.h"
 using namespace std;
 
 // Struct representing integers modulo MOD
 // Template Arguments:
 //   T: the type of the integer, must be integral
-//   MOD: the value to mod by, must be non negative
-//   PRIME_MOD: a boolean indicating whether MOD is prime, can be computed
-//     automatically if C++ 14 or above, and if MOD is small
-//   MUL_OVERFLOW: a boolean indicating whether MOD * MOD overflows, can be
-//     computed automatically if numeric_limits<T>::max() exists
 // Constructor Arguments:
 //   x: the value to initialize the struct with
 // Fields:
+//   static MOD: the value to mod by, must be non negative
+//   static PRIME_MOD: a boolean indicating whether MOD is prime
+//   static MUL_OVERFLOW: a boolean indicating whether MOD * MOD overflows
 //   v: the value
 // Functions:
+//   statis setMod(mod, primeMod, mulOverflow): sets the mod to MOD, with
+//     primeMod indicating whether the mod is prime and mulOverflow indicating
+//     whether multiplication overflows
 //   <, <=, >, >=, ==, !=: comparison operators
 //   ++, --, +, +=, -, -=, *, *=: standard arithmetic operators modulo MOD
 //   pow(p): returns this value raises this to the power of p
@@ -28,27 +28,24 @@ using namespace std;
 //   >>, <<: input and output operators
 // Time Complexity:
 //   constructor: O(1)
+//   setMod: O(1)
 //   <, <=, >, >=, ==, !=, ++, --, +, +=, -, -=, >>, <<: O(1)
 //   *, *=: O(1) if MUL_OVERFLOW is false, O(log MOD) otherwise
 //   pow: O(log MOD) if MUL_OVERFLOW is false, O((log MOD)^2) otherwise
 //   hasMulInv, mulInv, /, /=: O(log MOD)
 // Memory Complexity: O(1)
 // Tested:
-//   https://dmoj.ca/problem/angieandfunctions
-template <class T, const T MOD,
-#if __cplusplus < 201402L
-          const bool PRIME_MOD,
-#else
-          const bool PRIME_MOD = isPrime(MOD),
-#endif
-          const bool MUL_OVERFLOW = (numeric_limits<T>::max() / MOD < MOD)>
-    struct IntMod {
+//   https://open.kattis.com/problems/modulararithmetic
+template <class T> struct DynamicIntMod {
   static_assert(is_integral<T>::value, "T must be an integral type");
   static_assert(is_signed<T>::value, "T must be a signed type");
-  static_assert(0 < MOD, "MOD must be a positive integer");
-  using IM = IntMod<T, MOD, PRIME_MOD, MUL_OVERFLOW>;
-  T v; IntMod() : v(0) {}
-  IntMod(const T &x) {
+  using IM = DynamicIntMod<T>;
+  static T MOD; static bool PRIME_MOD, MUL_OVERFLOW;
+  static void setMod(T mod, bool primeMod = false, bool mulOverflow = false) {
+    MOD = mod; PRIME_MOD = primeMod; MUL_OVERFLOW = mulOverflow;
+  }
+  T v; DynamicIntMod() : v(0) {}
+  DynamicIntMod(const T &x) {
     v = -MOD < x && x < MOD ? x : x % MOD; if (v < 0) v += MOD;
   }
   bool operator < (const IM &i) const { return v < i.v; }
@@ -101,6 +98,7 @@ template <class T, const T MOD,
     } else return true;
   }
   IM mulInv() const {
+    assert(v != 0);
     if (!PRIME_MOD || MUL_OVERFLOW) {
       T g = MOD, r = v, x = 0, y = 1; while (r != 0) {
         T q = g / r; g %= r; swap(g, r); x -= q * y; swap(x, y);
@@ -117,3 +115,7 @@ template <class T, const T MOD,
     return stream << i.v;
   }
 };
+
+template <class T> T DynamicIntMod<T>::MOD = T(1);
+template <class T> bool DynamicIntMod<T>::PRIME_MOD = false;
+template <class T> bool DynamicIntMod<T>::MUL_OVERFLOW = false;

@@ -21,6 +21,7 @@ using namespace std;
 // Memory Complexity: O(V^2)
 // Tested:
 //   https://dmoj.ca/problem/clique
+//   https://judge.yosupo.jp/problem/maximum_independent_set
 struct MaximumClique {
   static constexpr const double limit = 0.025;
   struct Vertex { int i, d; Vertex(int i) : i(i), d(0) {} };

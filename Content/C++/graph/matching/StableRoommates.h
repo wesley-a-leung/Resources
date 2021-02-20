@@ -3,7 +3,7 @@
 using namespace std;
 
 // Given N people, and a list of their ranked preferences for roommates,
-//   the goal is to arrange N / 2 pairs such that if a person x of prefers
+//   the goal is to arrange N / 2 pairs such that if a person x prefers
 //   a person y more than their current roommate, then person y prefers
 //   their current roommate more than x
 // Constructor Arguments:

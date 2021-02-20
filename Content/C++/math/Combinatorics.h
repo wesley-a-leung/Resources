@@ -346,6 +346,7 @@ T arithSeq(T a1, T d, U n) { return a1 + d * (n - 1); }
 // In practice has a very small constant
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
+//   Fuzz Tested
 template <class T, class U>
 T arithSeries(T a1, T d, U n) { return n * (a1 + arithSeq(a1, d, n)) / 2; }
 
@@ -384,4 +385,28 @@ T geoSeq(T a1, T r, U n) { return a1 * pow2(r, n - 1); }
 //   Fuzz Tested
 template <class T, class U> T geoSeries(T a1, T r, U n) {
   return r == 1 ? a1 * n : a1 * (T(1) - pow2(r, n)) / (T(1) - r);
+}
+
+// Computes the sum of floor((a * i + b) / m) for 0 <= i < n
+// Equivalent to the number of integer points (x, y) where 0 <= x < n and
+//   0 <= y <= (a * i + b) / m
+// Template Arguments:
+//   T: an integral type
+// Function Arguments:
+//   n: the upper bound for x
+//   a: the linear factor's numerator
+//   b: the constant factor's numerator
+//   m: the common denominator
+// Return Value: the sum of floor((a * i + b) / m) for 0 <= i < n
+// In practice, has a small constant
+// Time Complexity: O(log n)
+// Memory Complexity: O(1)
+// Tested:
+//   https://judge.yosupo.jp/problem/sum_of_floor_of_linear
+template <class T> T sumFloorLinear(T n, T a, T b, T m) {
+  static_assert(is_integral<T>::value, "T must be integral");
+  if (a == 0) return (b / m) * n;
+  if (a >= m || b >= m) return ((a / m) * (n - 1) + 2 * (b / m)) * n / 2
+                               + sumFloorLinear(n, a % m, b % m, m);
+  return sumFloorLinear((a * n + b) / m, m, (a * n + b) % m, a);
 }

@@ -18,7 +18,7 @@ using namespace std;
 //   maxXor(v): returns the maximum value of v xor any value in the trie
 // Time Complexity:
 //   constructor: O(1)
-//   insert, contains erase, minXor, maxXor: O(log MX)
+//   insert, contains, erase, minXor, maxXor: O(log MX)
 // Memory Complexity: O(Q log MX) for Q insertions
 // Tested:
 //   Fuzz Tested

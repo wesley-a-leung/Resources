@@ -16,7 +16,7 @@ using namespace std;
 //     bPrefs[j] must be a permutation from 0 to N - 1
 // Fields:
 //   N: the number of people of type A
-//   M: the number of people of type A
+//   M: the number of people of type B
 //   bForA: a vector representing the partner of type B for each person of
 //     type A, or -1 if that person of type A is unmatched
 //   aForB: a vector representing the partner of type A for each person of

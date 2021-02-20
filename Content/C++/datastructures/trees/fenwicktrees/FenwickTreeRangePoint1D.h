@@ -27,7 +27,7 @@ using namespace std;
 //   upper_bound(v): returns the first index where A[i] > v, assumes
 //     A is sorted by cmp
 // In practice, this version performs as well as the multidimensional version
-// Small constant, like most fenwick trees, and faster than segment trees
+// In practice, has a small constant, faster than segment trees
 // Time Complexity:
 //   constructor, values: O(N)
 //   update, get: O(log N)

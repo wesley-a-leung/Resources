@@ -19,7 +19,7 @@ using namespace std;
 //     and alternating arguments in args for beginning and ending ranges for
 //     the next dimensions
 // In practice, this version performs as well as the 1D version
-// Small constant, like most fenwick trees, and faster than segment trees
+// In practice, has a small constant, faster than segment trees
 // Time Complexity:
 //   constructor: O(PI(N_i))
 //   update: O(PI(log(N_i)))

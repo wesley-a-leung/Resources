@@ -26,7 +26,7 @@ using namespace std;
 //   bsearch(v, cmp): returns the first index where cmp(op(A[0..i]), v)
 //     returns false, or N if no such index exists, assumes A is sorted by cmp
 // In practice, this version performs as well as the multidimensional version
-// Small constant, like most fenwick trees, and faster than segment trees
+// In practice, has a small constant, faster than segment trees
 // Time Complexity:
 //   constructor: O(N)
 //   update, query: O(log N)

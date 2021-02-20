@@ -7,7 +7,7 @@ using namespace std;
 // Template Arguments:
 //   F: the type of the function f
 // Function Arguments:
-//   V: number of vertices in the simple graph
+//   V: the number of vertices in the simple graph
 //   edges: a vector of pairs in the form (v, w) representing
 //     an undirected edge in the simple graph (no self loops or parallel edges)
 //     between vertices v and w

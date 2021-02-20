@@ -3,8 +3,9 @@
 using namespace std;
 
 // Recursive helper function
-template <class B, class F>
-void maximalCliques(const vector<B> &matrix, F &f, B P, B X, B R) {
+template <const int MAXV, class F>
+void maximalCliques(const vector<bitset<MAXV>> &matrix, F &f, bitset<MAXV> P,
+                    bitset<MAXV> X, bitset<MAXV> R) {
   if (!P.any()) {
     if (!X.any()) f(R);
     return;
@@ -12,7 +13,7 @@ void maximalCliques(const vector<B> &matrix, F &f, B P, B X, B R) {
   auto q = (P | X)._Find_first(); auto cands = P & ~matrix[q];
   for (int i = 0; i < int(matrix.size()); i++) if (cands[i]) {
     R[i] = 1;
-    maximalCliques(matrix, f, P & matrix[i], X & matrix[i], R);
+    maximalCliques<MAXV, F>(matrix, f, P & matrix[i], X & matrix[i], R);
     R[i] = P[i] = 0; X[i] = 1;
   }
 }
@@ -21,7 +22,7 @@ void maximalCliques(const vector<B> &matrix, F &f, B P, B X, B R) {
 // A clique is maximal if any vertex added to it would result in a non-clique
 // Vertices are 0-indexed
 // Template Arguments:
-//   B: a bitset of a fixed size of at least the size of matrix
+//   MAXV: the maximum number of vertices in the graph
 //   F: the type of the function f
 // Function Arguments:
 //   matrix: a matrix of bitsets representing the adjacency matrix of the
@@ -33,7 +34,8 @@ void maximalCliques(const vector<B> &matrix, F &f, B P, B X, B R) {
 // Memory Complexity: O(V^2 / 64)
 // Tested:
 //   https://open.kattis.com/problems/friends
-template <class B, class F>
-void maximalCliques(const vector<B> &matrix, F f) {
-  maximalCliques(matrix, f, ~B(), B(), B());
+template <const int MAXV, class F>
+void maximalCliques(const vector<bitset<MAXV>> &matrix, F f) {
+  maximalCliques<MAXV, F>(matrix, f, ~bitset<MAXV>(), bitset<MAXV>(),
+                          bitset<MAXV>());
 }

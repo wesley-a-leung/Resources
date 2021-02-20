@@ -10,13 +10,13 @@ using namespace std;
 //   will be used
 // Vertices and colors are 0-indexed
 // Constructor Arguments:
-//   V: number of vertices in the simple graph
+//   V: the number of vertices in the simple graph
 //   edges: a vector of pairs in the form (v, w) representing
 //     an undirected edge in the graph; side[v] != side[w] must hold
 //   side: the side of the bipartition each vertex is part of
 // Fields:
 //   color: a vector of integers in the range [0, D) that has a length equal
-//     to the length of edges representing coloring of the edges
+//     to the length of edges representing the coloring of the edges
 // In practice, has a small constant
 // Time Complexity: O(V log V + E log D sqrt (E / D)) where D is the maximum
 //   degree of any vertex
@@ -31,8 +31,8 @@ struct BipartiteEdgeColoring {
     }
     int D = *max_element(deg.begin(), deg.end()); UnionFind uf(V);
     for (int s = 0; s < 2; s++) {
-      priority_queue<pair<int, int>, vector<pair<int, int>>,
-                     greater<pair<int, int>>> PQ;
+      std::priority_queue<pair<int, int>, vector<pair<int, int>>,
+                          greater<pair<int, int>>> PQ;
       for (int v = 0; v < V; v++) if (side[v] == s) PQ.emplace(deg[v], v);
       while (int(PQ.size()) >= 2) {
         pair<int, int> v = PQ.top(); PQ.pop();

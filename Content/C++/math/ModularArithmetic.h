@@ -3,13 +3,13 @@
 #include "GCD.h"
 using namespace std;
 
-// Computes the positive modulo of a by mod
+// Computes the non negative remainder of a by mod
 // Template Arguments:
 //   T: the type of a and mod
 // Function Arguments:
-//   a: the value to find the positive modulo
+//   a: the value to find the non negative remainder
 //   mod: the modulo
-// Return Value: the positive modulo of a by mod
+// Return Value: the non negative remainder of a by mod
 // In practice, has a very small constant
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
@@ -293,7 +293,7 @@ __uint128_t mulMod(__uint128_t a, __uint128_t b, __uint128_t mod) {
   return mont.reduce(mont.mul(mont.init(a), mont.init(b)));
 }
 
-// Barret Reduction for fast modulo
+// Barrett Reduction for fast modulo
 // Constructor Arguments:
 //   mod: the modulo of the space
 // Functions:
@@ -305,15 +305,15 @@ __uint128_t mulMod(__uint128_t a, __uint128_t b, __uint128_t mod) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://open.kattis.com/problems/modulararithmetic
-struct Barret {
+struct Barrett {
   uint64_t mod, inv;
-  Barret(uint64_t mod = 1) : mod(mod), inv(uint64_t(-1) / mod) {}
+  Barrett(uint64_t mod = 1) : mod(mod), inv(uint64_t(-1) / mod) {}
   uint64_t reduce(uint64_t a) {
     return a - uint64_t((__uint128_t(inv) * a) >> 64) * mod;
   }
 };
 
-// Fast modulo using Barret Reduction
+// Fast modulo using Barrett Reduction
 // Function Arguments:
 //   a: the value to modulo
 //   mod: the modulo
@@ -324,7 +324,7 @@ struct Barret {
 // Tested:
 //   https://open.kattis.com/problems/modulararithmetic
 uint64_t bmod(uint64_t a, uint64_t mod) {
-  static Barret b; if (b.mod != mod) b = Barret(mod);
+  static Barrett b; if (b.mod != mod) b = Barrett(mod);
   uint64_t ret = b.reduce(a); if (ret >= mod) ret -= mod;
   return ret;
 }

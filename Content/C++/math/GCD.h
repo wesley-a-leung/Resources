@@ -84,6 +84,7 @@ template <class T> T EEA(T a, T b, T &x, T &y) {
 // Tested:
 //   https://dmoj.ca/problem/modinv
 template <class T> T mulInv(T a, T m) {
+  if (a == 0) return -1;
   T x, y; if (EEA(a, m, x, y) != 1) return -1;
   x %= m; return x < 0 ? x + m : x;
 }

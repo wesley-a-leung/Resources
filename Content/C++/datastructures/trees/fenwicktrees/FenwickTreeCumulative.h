@@ -23,7 +23,7 @@ using namespace std;
 //   query(r, ...args): queries the range [0, r] in the first dimension,
 //     with the remaining arguments for the next dimensions
 // In practice, this version performs as well as the 1D version
-// Small constant, like most fenwick trees, and faster than segment trees
+// In practice, has a small constant, faster than segment trees
 // Time Complexity:
 //   constructor: O(PI(N_i))
 //   update, query: O(PI(log(N_i)))

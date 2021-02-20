@@ -2,13 +2,13 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Assigns colors to the edges of an undirected simple grpah such that
+// Assigns colors to the edges of an undirected simple graph such that
 //   no edges that share an endpoint have the same color
 // If D is the maximum degree of any vertex, then at most D + 1 colors
 //   will be used
 // Vertices and colors are 0-indexed
 // Constructor Arguments:
-//   V: number of vertices in the simple graph
+//   V: the number of vertices in the simple graph
 //   edges: a vector of pairs in the form (v, w) representing
 //     an undirected edge in the simple graph (no self loops or parallel edges)
 //     between vertices v and w

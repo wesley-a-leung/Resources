@@ -11,7 +11,7 @@ using namespace std;
 //   lines: a vector of lines representing the half-planes defined by the
 //     left side
 // Return Value: a vector of points representing the intersection of the
-//   half planes, or an empty vector if the intersection is infinity or empty
+//   half planes, or an empty vector if the intersection is infinite or empty
 // In practice, has a moderate constant
 // Time Complexity: O(N log N)
 // Memory Complexity: O(N)

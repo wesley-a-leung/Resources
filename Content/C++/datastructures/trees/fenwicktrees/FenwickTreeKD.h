@@ -18,7 +18,7 @@ using namespace std;
 //     the index for each dimension, with the value v
 //   query(ind): queries the indices specified by the vector ind holding a
 //     pair specifying the range for each dimension
-// Small constant, like most fenwick trees, slower than FenwickTree.h
+// In practice, has a small constant, slower than FenwickTree.h
 // Time Complexity:
 //   constructor: O(PI(N_i))
 //   update: O(PI(log(N_i)))

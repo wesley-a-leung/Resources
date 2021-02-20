@@ -18,7 +18,7 @@ using namespace std;
 //   update(l, r, v): add v to the range [l..r]
 //   query(r): queries the range [0, r]
 //   query(l, r): queries the range [l, r]
-// Small constant, like most fenwick trees, and faster than segment trees
+// In practice, has a small constant, faster than segment trees
 // Time Complexity:
 //   constructor: O(N)
 //   update, query: O(log N)
