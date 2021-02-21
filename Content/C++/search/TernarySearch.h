@@ -7,7 +7,7 @@ using namespace std;
 //   T: the type of the range to search over, must be a floating point type
 //   F: the type of the function that is being searched over
 //   Cmp: the comparator to compare two f(x) values,
-//       convention is same as priority_queue in STL
+//       convention is same as std::priority_queue in STL
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
 // Function Arguments:

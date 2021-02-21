@@ -8,7 +8,7 @@ using namespace std;
 // Template Arguments:
 //   T: the type of each element
 //   Cmp: the comparator to compare two values of type T,
-//       convention is same as priority_queue in STL
+//       convention is same as std::priority_queue in STL
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
 //   Delta: the type of the incremental element

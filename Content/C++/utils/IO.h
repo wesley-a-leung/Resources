@@ -1,6 +1,12 @@
 #pragma once
 #include <bits/stdc++.h>
 
+// Unsyncs the C++ and C std output streams and unties cin and cout to
+//   speed up standard input and output
+void unSyncUntie() {
+  std::ios::sync_with_stdio(0); std::cin.tie(0); std::cout.tie(0);
+}
+
 // Functions for fast IO
 namespace IO {
 #define INTERACTIVE_INPUT 0

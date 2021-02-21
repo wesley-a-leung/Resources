@@ -10,7 +10,7 @@ using namespace std;
 //   T: the type of the slope (m) and intercept (b) of the line, as well as
 //     the type of the function argument (x), must be able to store m * b
 //   Cmp: the comparator to compare two f(x) values,
-//       convention is same as priority_queue in STL
+//       convention is same as std::priority_queue in STL
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
 // Constructor Arguments:

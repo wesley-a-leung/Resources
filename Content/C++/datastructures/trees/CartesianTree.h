@@ -8,7 +8,7 @@ using namespace std;
 // Template Arguments:
 //   It: the type of the iterator
 //   Cmp: the comparator to compare two values,
-//       convention is same as priority_queue in STL
+//       convention is same as std::priority_queue in STL
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
 // Function Arguments:
