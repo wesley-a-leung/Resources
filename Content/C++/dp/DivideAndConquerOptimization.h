@@ -3,7 +3,7 @@
 using namespace std;
 
 // Divide and Conquer Dynamic Programming Optimization
-// Must statisfy dp[k][i] = max(dp[k - 1][j] + cost(k, j, i))
+// Must satisfy dp[k][i] = max(dp[k - 1][j] + cost(k, j, i))
 //   for 0 <= j <= i <= N and opt[k][i] <= opt[k][i + 1] where opt[k][i] is
 //   the optimal value of j for dp[k][i]
 // Template Arguments:

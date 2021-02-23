@@ -3,7 +3,7 @@
 using namespace std;
 
 // Knuth's Dynamic Programming Optimization
-// Must statisfy dp[l][r] = max(dp[l][m] + dp[m][r] + cost(l, m, r))
+// Must satisfy dp[l][r] = max(dp[l][m] + dp[m][r] + cost(l, m, r))
 //   for l <= m <= r and
 //   max(l + 1, opt[l][r - 1]) <= opt[l][r] <= min(opt[l + 1][r], r - 1),
 //   where opt[l][r] is the optimal value of m for dp[l][r]

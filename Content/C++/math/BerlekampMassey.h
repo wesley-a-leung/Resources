@@ -25,7 +25,6 @@ template <class T> vector<T> berlekampMassey(const vector<T> &A) {
     if (2 * L > i) continue;
     L = i + 1 - L; B = tmp; b = d; m = 0;
   }
-  C.resize(L + 1); C.erase(C.begin());
-  for (auto &&c : C) c = -c;
+  C.resize(L + 1); C.erase(C.begin()); for (auto &&c : C) c = -c;
   return C;
 }
