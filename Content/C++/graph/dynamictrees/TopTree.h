@@ -71,6 +71,13 @@ using namespace std;
 //     from node from to node to, reroots the forest at node from, reroots the
 //     forest at node from
 //   querySubtree(x): returns the aggregate value of the subtree of node x
+// In practice, has a large constant
+// Time Complexity:
+//   constructor: O(N)
+//   makeRoot, lca, connected, link, safeLink, cutParent,
+//     findParent, findRoot, depth, kthParent, updateVertex,
+//     updatePathFromRoot, updatePath, updateSubtree, queryVertex,
+//     queryPathFromRoot, queryPath, querySubtree: O(log N) amortized
 // Memory Complexity: O(N)
 // Tested:
 //   https://www.spoj.com/problems/QTREE2/

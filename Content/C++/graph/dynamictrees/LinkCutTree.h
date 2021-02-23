@@ -85,6 +85,7 @@ using namespace std;
 //     Node::RANGE_REVERSALS are true, returns the aggregate value of the path
 //     from node from to node to, reroots the forest at node from, reroots the
 //     forest at node from
+// In practice, has a moderate constant
 // Time Complexity:
 //   constructor: O(N)
 //   makeRoot, lca, connected, link, safeLink, linkParent, cut, cutParent,
