@@ -39,8 +39,8 @@ using namespace std;
 //           propagate(): propagates the current node's lazy information
 //             (including rev) to its children
 //           apply(v): applies the lazy value v to the node
-//           reverse(): only required if RANGE_REVERSALS is true, marks
-//             this node's subtree for reversal (aggregate data and any lazy
+//           reverse(): only required if RANGE_REVERSALS is true, reverse
+//             this node's subtree (aggregate data and any lazy
 //             flags should be reversed)
 //           static qdef(): only required if RANGE_QUERIES is true, returns the
 //             query default value

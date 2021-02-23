@@ -32,7 +32,7 @@ using namespace std;
 //   propagate(): propagates the current node's lazy information (including
 //     rev) to its children
 //   apply(v): applies the lazy value v to the node
-//   reverse(): marks this node's subtree for reversal (lazy flags
+//   reverse(): reverse this node's subtree (lazy flags
 //     should be reversed)
 // Tested:
 //   https://dmoj.ca/problem/ds4
@@ -53,13 +53,13 @@ template <class T> struct NodeVal {
   }
   void propagate() {
     if (rev) {
-      swap(l, r); rev = false;
+      rev = false;
       if (l) l->reverse();
       if (r) r->reverse();
     }
   }
   void apply(const Lazy &v) { val = v; }
-  void reverse() { rev = !rev; }
+  void reverse() { rev = !rev; swap(l, r); }
 };
 
 // Sample node class for aggregate range queries using a struct to combine
@@ -113,7 +113,7 @@ template <class T> struct NodeVal {
 //   propagate(): propagates the current node's lazy information (including
 //     rev) to its children
 //   apply(v): applies the lazy value v to the node
-//   reverse(): marks this node's subtree for reversal (aggregate data and any
+//   reverse(): reverse this node's subtree (aggregate data and any
 //     lazy flags should be reversed)
 //   static qdef(): returns the query default value for the struct C
 // Tested:
@@ -137,7 +137,7 @@ template <class C> struct NodeAgg {
   }
   void propagate() {
     if (rev) {
-      swap(l, r); rev = false;
+      rev = false;
       if (l) l->reverse();
       if (r) r->reverse();
     }
@@ -145,7 +145,7 @@ template <class C> struct NodeAgg {
   void apply(const Lazy &v) {
     val = C::applyLazy(val, v); sbtr = C::applyLazy(sbtr, v);
   }
-  void reverse() { rev = !rev; C::revData(sbtr); }
+  void reverse() { rev = !rev; swap(l, r); C::revData(sbtr); }
   static Data qdef() { return C::qdef(); }
 };
 
@@ -206,7 +206,7 @@ template <class C> struct NodeAgg {
 //   propagate(): propagates the current node's lazy information (including
 //     rev) to its children
 //   apply(v): applies the lazy value v to the node
-//   reverse(): marks this node's subtree for reversal (aggregate data and any
+//   reverse(): reverse this node's subtree (aggregate data and any
 //     lazy flags should be reversed)
 //   static qdef(): returns the query default value for the struct C
 // Tested:
@@ -229,7 +229,7 @@ template <class C> struct NodeLazyAgg {
   }
   void propagate() {
     if (rev) {
-      swap(l, r); rev = false;
+      rev = false;
       if (l) l->reverse();
       if (r) r->reverse();
     }
@@ -243,6 +243,6 @@ template <class C> struct NodeLazyAgg {
     lz = C::mergeLazy(lz, v); val = C::applyLazy(val, v);
     sbtr = C::applyLazy(sbtr, C::getSegmentVal(v, sz));
   }
-  void reverse() { rev = !rev; C::revData(sbtr); }
+  void reverse() { rev = !rev; swap(l, r); C::revData(sbtr); }
   static Data qdef() { return C::qdef(); }
 };

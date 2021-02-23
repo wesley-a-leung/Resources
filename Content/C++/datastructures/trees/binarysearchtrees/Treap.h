@@ -70,7 +70,7 @@ template <class _Node> struct Treap {
     template <class T> TreapNode(const T &v)
         : Node(v), pri(uniform_int_distribution<long long>()(rng64)) {}
   };
-  deque<TreapNode> TR; deque<Node*> deleted;
+  deque<TreapNode> TR; deque<Node *> deleted;
   template <class T> Node *makeNode(const T &v) {
     if (deleted.empty()) { TR.emplace_back(v); return &TR.back(); }
     Node *x = deleted.back(); deleted.pop_back(); *x = TreapNode(v); return x;

@@ -65,7 +65,7 @@ using namespace std;
 //   https://judge.yosupo.jp/problem/dynamic_sequence_range_affine_range_sum
 //     (applyToRange)
 template <class _Node, class Container = deque<_Node>> struct Splay {
-  using Node = _Node; Container TR; deque<Node*> deleted;
+  using Node = _Node; Container TR; deque<Node *> deleted;
   static_assert(Node::HAS_PAR, "Splay Node must have parent pointer");
   template <class T> Node *makeNode(const T &v) {
     if (deleted.empty()) { TR.emplace_back(v); return &TR.back(); }

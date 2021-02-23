@@ -3,8 +3,11 @@
 #include "../../datastructures/trees/binarysearchtrees/Splay.h"
 using namespace std;
 
-// Link Cut Tree backed by a splay tree
-// Vertices are 0-indexed, constructor with iterators is an exclusive range
+// Link Cut Tree supporting path operations on a dynamic tree,
+//   backed by a splay tree
+// Vertices are 0-indexed, with the exception of
+//   functions that accept two iterators as a parameter, such as
+//   the constructor, which are exclusive
 // Template Arguments:
 //   Node: a generic node class (sample structs are in BSTNode)
 //     Required Fields:
@@ -32,7 +35,7 @@ using namespace std;
 //         rev) to its children
 //       apply(v): applies the lazy value v to the node
 //       reverse(): only required if RANGE_REVERSALS is true to support
-//         rerooting, marks this node's subtree for reversal (aggregate data
+//         rerooting, reverse this node's subtree (aggregate data
 //         and any lazy flags should be reversed)
 //       static qdef(): returns the query default value
 // Constructor Arguments:
@@ -78,7 +81,7 @@ using namespace std;
 //   queryPathFromRoot(to): only valid if Node::RANGE_QUERIES is true,
 //     returns the aggregate value of the path from the root of the forest
 //     containing node to, to node to
-//   queryPath(from, to) only valid if Node::RANGE_QUERIES and
+//   queryPath(from, to): only valid if Node::RANGE_QUERIES and
 //     Node::RANGE_REVERSALS are true, returns the aggregate value of the path
 //     from node from to node to, reroots the forest at node from, reroots the
 //     forest at node from
