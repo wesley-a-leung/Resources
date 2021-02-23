@@ -26,6 +26,8 @@ struct Circle {
 // Return Value: the points of intersection (if any) of the circle and the line
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
+// Tested:
+//   https://dmoj.ca/problem/noi05p6
 vector<pt> circleLineIntersection(const Circle &c, const Line &l) {
   vector<pt> ret; T h2 = c.r * c.r - l.distSq(c.o); if (!lt(h2, 0)) {
     pt p = l.proj(c.o), h = l.v * sqrt(max(h2, T(0))) / abs(l.v);
@@ -43,6 +45,8 @@ vector<pt> circleLineIntersection(const Circle &c, const Line &l) {
 // Return Value: the are of the intersection of the circle and the half-plane
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
+// Tested:
+//   https://dmoj.ca/problem/noi05p6
 T circleHalfPlaneIntersectionArea(const Circle &c, const Line &l) {
   T h2 = c.r * c.r - l.distSq(c.o), ret = 0; if (!lt(h2, 0)) {
     pt p = l.proj(c.o), h = l.v * sqrt(max(h2, T(0))) / abs(l.v);
@@ -63,6 +67,7 @@ T circleHalfPlaneIntersectionArea(const Circle &c, const Line &l) {
 // Tested:
 //   https://codeforces.com/contest/420/problem/E
 //   https://naq20.kattis.com/problems/drawingcircles
+//   https://dmoj.ca/problem/noi05p6
 int circleCircleIntersection(const Circle &c1, const Circle &c2,
                              vector<pt> &res) {
   pt d = c2.o - c1.o; T d2 = norm(d);
@@ -108,6 +113,7 @@ T circleCircleIntersectionArea(const Circle &c1, const Circle &c2) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://dmoj.ca/problem/nccc7s4
+//   https://dmoj.ca/problem/noi05p6
 int circleTangentPoints(const Circle &c1, const Circle &c2, bool inner,
                        vector<pair<pt, pt>> &res) {
   pt d = c2.o - c1.o; T r2 = inner ? -c2.r : c2.r, dr = c1.r - r2;
