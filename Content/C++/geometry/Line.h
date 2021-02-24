@@ -24,6 +24,8 @@ struct Line {
   Line shiftLeft(T d) const { return Line(v, c + d * abs(v)); }
   pt proj(ref p) const { return p - perp(v) * eval(p) / norm(v); }
   pt refl(ref p) const { return p - perp(v) * T(2) * eval(p) / norm(v); }
+  // compares points by orthogonal projection
+  bool cmpProj(ref p, ref q) const { return lt(dot(v, p), dot(v, q)); }
 };
 
 // Bisector of 2 lines
@@ -130,9 +132,7 @@ vector<pt> lineSegIntersection(ref a, ref b, ref p, ref q) {
 // Memory Complexity: O(1)
 pt closestPtToSeg(ref p, ref a, ref b) {
   if (a != b) {
-    Line l(a, b);
-    if (lt(dot(l.v, a), dot(l.v, p)) && lt(dot(l.v, p), dot(l.v, b)))
-      return l.proj(p);
+    Line l(a, b); if (l.cmpProj(a, p) && l.cmpProj(p, b)) return l.proj(p);
   }
   return lt(dist(p, a), dist(p, b)) ? a : b;
 }
@@ -148,9 +148,7 @@ pt closestPtToSeg(ref p, ref a, ref b) {
 //   https://open.kattis.com/problems/segmentdistance
 T segPtDist(ref p, ref a, ref b) {
   if (a != b) {
-    Line l(a, b);
-    if (lt(dot(l.v, a), dot(l.v, p)) && lt(dot(l.v, p), dot(l.v, b)))
-      return l.dist(p);
+    Line l(a, b); if (l.cmpProj(a, p) && l.cmpProj(p, b)) return l.dist(p);
   }
   return min(dist(p, a), dist(p, b));
 }
