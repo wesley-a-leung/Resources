@@ -16,7 +16,8 @@ using namespace std;
 // Time Complexity: O(N log N)
 // Memory Complexity: O(N)
 // Tested:
-//   https://open.kattis.com/problems/bigbrother
+//   https://ncpc20.kattis.com/problems/bigbrother
+//   https://maps19.kattis.com/problems/marshlandrescues
 vector<pt> halfPlaneIntersection(vector<Line> lines) {
   sort(lines.begin(), lines.end(), [&] (const Line &a, const Line &b) {
     int s = sgn(arg(a.v) - arg(b.v));
