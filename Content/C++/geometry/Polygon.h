@@ -8,6 +8,7 @@ using namespace std;
 
 // Functions for 2D polygons
 int mod(int i, int n) { return i < n ? i : i - n; }
+
 // Determines twice the signed area of a simple polygon
 // Function Arguments:
 //   poly: the points of the simple polygon
@@ -22,6 +23,7 @@ T getArea2(const vector<pt> &poly) {
   for (int i = 0; i < n; i++) ret += cross(poly[i], poly[mod(i + 1, n)]);
   return ret;
 }
+
 // Determines centroid of a simple polygon
 // Function Arguments:
 //   poly: the points of the simple polygon
@@ -37,6 +39,7 @@ pt getCentroid(const vector<pt> &poly) {
   }
   return cen / A2 / T(3);
 }
+
 // Determines the orientation of a convex polygon
 // Function Arguments:
 //   poly: the points of the convex polygon
@@ -46,6 +49,7 @@ pt getCentroid(const vector<pt> &poly) {
 int isCcwConvexPolygon(const vector<pt> &poly) {
   return ccw(poly.back(), poly[0], poly[mod(1, poly.size())]);
 }
+
 // Determines the orientation of a simple polygon
 // Function Arguments:
 //   poly: the points of the simple polygon
@@ -59,6 +63,7 @@ int isCcwPolygon(const vector<pt> &poly) {
   int i = min_element(poly.begin(), poly.end(), pt_lt()) - poly.begin();
   return ccw(poly[mod(i + n - 1, n)], poly[i], poly[mod(i + 1, n)]);
 }
+
 // Determines whether a point is inside a convex polygon
 // Function Arguments:
 //   poly: the points of the convex polygon in ccw order
@@ -80,6 +85,7 @@ int isInsideConvexPolygon(const vector<pt> &poly, ref p) {
   }
   return ccw(poly[a], poly[b], p);
 }
+
 // Determines whether a point is inside a simple polygon
 // Function Arguments:
 //   poly: the points of the simple polygon in ccw order or cw order
@@ -97,6 +103,7 @@ int isInsidePolygon(const vector<pt> &poly, ref p) {
   }
   return windingNumber == 0 ? 1 : -1;
 }
+
 // Finds an extreme vertex of a convex polygon (a vertex where there are
 //   no points in the polygon to the right of a vector drawn in
 //   the specified direction from that point)
@@ -124,6 +131,7 @@ int extremeVertex(const vector<pt> &poly, ref dir) {
   }
   return lo;
 }
+
 // Finds the intersection of a convex polygon and a line
 // Function Arguments:
 //   poly: the points of the convex polygon in ccw order
@@ -161,6 +169,7 @@ pair<int, int> convexPolygonLineIntersection(const vector<pt> &poly,
   }
   return ret;
 }
+
 // Determines the intersection of a simple polygon and a half-plane defined
 //   by the left side of a line
 // Function Arguments:
@@ -182,6 +191,7 @@ vector<pt> polygonHalfPlaneIntersection(const vector<pt> &poly,
   }
   return ret;
 }
+
 // Computes the area of union of multiple polygons
 // Function Arguments:
 //   polys: a vector of the polygons represented by a vector of points given in
@@ -219,6 +229,7 @@ T polygonUnion(const vector<vector<pt>> &polys) {
     }
   return ret / 2;
 }
+
 // Determines the area of the intersection of a simple polygon and a circle
 // Function Arguments:
 //   poly: the points of the simple polygon in ccw order

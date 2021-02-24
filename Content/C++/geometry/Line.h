@@ -25,6 +25,7 @@ struct Line {
   pt proj(ref p) const { return p - perp(v) * eval(p) / norm(v); }
   pt refl(ref p) const { return p - perp(v) * T(2) * eval(p) / norm(v); }
 };
+
 // Bisector of 2 lines
 // Function Arguments:
 //   l1: the first line
@@ -38,6 +39,7 @@ Line bisector(const Line &l1, const Line &l2, bool interior) {
   return Line(l2.v / abs(l2.v) + l1.v / abs(l1.v) * s,
               l2.c / abs(l2.v) + l1.c / abs(l1.v) * s);
 }
+
 // Intersection of 2 lines
 // Function Arguments:
 //   l1: the first line
@@ -53,6 +55,7 @@ int lineIntersection(const Line &l1, const Line &l2, pt &res) {
   if (eq(d, 0)) return pt_eq()(l2.v * l1.c, l1.v * l2.c) ? 2 : 0;
   res = (l2.v * l1.c - l1.v * l2.c) / d; return 1;
 }
+
 // Determines if a point is on a line segment
 // Function Arguments:
 //   p: the point to check if on the line segment
@@ -66,6 +69,7 @@ int lineIntersection(const Line &l1, const Line &l2, pt &res) {
 bool onSeg(ref p, ref a, ref b) {
   return !ccw(p, a, b) && !lt(0, dot(a - p, b - p));
 }
+
 // Determine if two line segments intersect
 // Function Arguments:
 //   a: one endpoint of the first line segment
@@ -85,6 +89,7 @@ int lineSegIntersects(ref a, ref b, ref p, ref q) {
     return 2;
   else return 0;
 }
+
 // Determine the intersection of two line segments
 // Function Arguments:
 //   a: one endpoint of the first line segment
@@ -115,6 +120,7 @@ vector<pt> lineSegIntersection(ref a, ref b, ref p, ref q) {
   ret.erase(unique(ret.begin(), ret.end(), pt_eq()), ret.end());
   return ret;
 }
+
 // Finds the closest point on a line segment to another point
 //   p: the reference point
 //   a: one endpoint of the line segment
@@ -130,6 +136,7 @@ pt closestPtToSeg(ref p, ref a, ref b) {
   }
   return lt(dist(p, a), dist(p, b)) ? a : b;
 }
+
 // Finds the distance to the closest point on a line segment to another point
 //   p: the reference point
 //   a: one endpoint of the line segment
@@ -147,6 +154,7 @@ T segPtDist(ref p, ref a, ref b) {
   }
   return min(dist(p, a), dist(p, b));
 }
+
 // Finds the closest distance between two line segments
 //   a: one endpoint of the first line segment
 //   b: the other endpoint of the first line segment

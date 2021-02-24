@@ -19,6 +19,7 @@ struct Circle {
   //   circle, -1 otherwise
   int disjoint(const Circle &c) const { return sgn(c.r + r - dist(o, c.o)); }
 };
+
 // Determine the intersection of a circle and a line
 // Function Arguments:
 //   c: the circle
@@ -37,6 +38,7 @@ vector<pt> circleLineIntersection(const Circle &c, const Line &l) {
   ret.erase(unique(ret.begin(), ret.end(), pt_eq()), ret.end());
   return ret;
 }
+
 // Determine the area of the intersection of a circle and a half-plane defined
 //   by the left side of a line
 // Function Arguments:
@@ -56,6 +58,7 @@ T circleHalfPlaneIntersectionArea(const Circle &c, const Line &l) {
   if (l.onLeft(c.o) > 0) ret = PI * c.r * c.r - ret;
   return ret;
 }
+
 // Determine the intersection of two circles
 // Function Arguments:
 //   c1: the first circle
@@ -81,6 +84,7 @@ int circleCircleIntersection(const Circle &c1, const Circle &c2,
   res.erase(unique(res.begin(), res.end(), pt_eq()), res.end());
   return !res.empty();
 }
+
 // Determine the area of the intersection of two circles
 // Function Arguments:
 //   c1: the first circle
@@ -101,6 +105,7 @@ T circleCircleIntersectionArea(const Circle &c1, const Circle &c2) {
   };
   return A(c1.r, c2.r) + A(c2.r, c1.r);
 }
+
 // Determine the tangents of two circles
 // Function Arguments:
 //   c1: the first circle
@@ -125,6 +130,7 @@ int circleTangentPoints(const Circle &c1, const Circle &c2, bool inner,
   }
   return 1;
 }
+
 // Determines the circumcircle from 3 non-collinear points
 // Function Arguments:
 //   a: the first point

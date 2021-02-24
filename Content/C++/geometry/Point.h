@@ -53,6 +53,7 @@ pt rot(ref a, ref p, T theta) {
 }
 // rotated 90 degrees ccw
 pt perp(ref a) { return pt(-a.y, a.x); }
+
 // Sorts around the pivot point in polar order assuming the angles relative
 //   to the pivot are in the range [-PI, PI)
 // Points equal to the pivot are moved to the end
