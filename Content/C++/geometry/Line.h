@@ -124,6 +124,7 @@ vector<pt> lineSegIntersection(ref a, ref b, ref p, ref q) {
 }
 
 // Finds the closest point on a line segment to another point
+// Function Arguments
 //   p: the reference point
 //   a: one endpoint of the line segment
 //   b: the other endpoint of the line segment
@@ -138,6 +139,7 @@ pt closestPtToSeg(ref p, ref a, ref b) {
 }
 
 // Finds the distance to the closest point on a line segment to another point
+// Function Arguments
 //   p: the reference point
 //   a: one endpoint of the line segment
 //   b: the other endpoint of the line segment
@@ -154,6 +156,7 @@ T segPtDist(ref p, ref a, ref b) {
 }
 
 // Finds the closest distance between two line segments
+// Function Arguments
 //   a: one endpoint of the first line segment
 //   b: the other endpoint of the first line segment
 //   p: one endpoint of the second line segment
