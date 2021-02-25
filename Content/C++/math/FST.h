@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Fast Subset Transform (similar to SumOverSubsets.h)
+// Fast Subset Transform (similar to SumOverSubsets)
 // Template Arguments:
 //   TYPE: the type of susbet transform (OR, AND, or XOR)
 //   T: the type of each element

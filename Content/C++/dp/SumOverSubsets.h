@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Sum over subsets (or supersets) (similar to FST.h)
+// Sum over subsets (or supersets) (similar to FST)
 // Transforms an array a into an array a' such that a'[i] is equal to the sum
 //   of all a[j] such that i | j == i if TYPE == SUBSET or i & j == i if
 //   TYPE == SUPERSET

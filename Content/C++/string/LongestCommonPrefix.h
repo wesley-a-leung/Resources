@@ -11,7 +11,7 @@ using namespace std;
 //   the constructor, which are exclusive
 // Template Arguments:
 //   SuffixArray: a generic suffix array to be used (should be either
-//       SuffixArray in SuffixArray.h or SAISSuffixArray in SAISSuffixArray.h)
+//       SuffixArray in SuffixArray or SAISSuffixArray in SAISSuffixArray)
 //     Required Fields:
 //       S: a vector of type T representing the string/array
 //       rnk: a vector of the ranks of the suffixes (rnk[i] is the rank of the

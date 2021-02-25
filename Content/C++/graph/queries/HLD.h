@@ -4,7 +4,7 @@ using namespace std;
 
 // Decomposes a tree into chains, such that a path from any vertex to the root
 //   will cover at most O(log V) chains
-// Can be used with PathQueries.h for path queries
+// Can be used with PathQueries for path queries
 // Vertices and indices are 0-indexed
 // Constructor Arguments:
 //   G: a generic forest data structure

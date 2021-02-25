@@ -27,7 +27,7 @@ using namespace std;
 //     sorted in lexicographical order (LCP[i] is the longest common prefix of
 //     the ith and (i + 1)th lexicographically smallest suffix, with LCP[N - 1]
 //     being 0)
-// In practice, has a moderate constant, usually faster than SuffixArray.h
+// In practice, has a moderate constant, usually faster than SuffixArray
 // Time Complexity:
 //   constructor: O(N + K) where K is the range of the string/array
 // Memory Complexity: O(N + K)

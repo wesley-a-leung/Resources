@@ -8,7 +8,7 @@ using namespace std;
 //   the constructor, which are exclusive
 // Template Arguments:
 //   SuffixArray: a generic suffix array to be used (should be either
-//       SuffixArray in SuffixArray.h or SAISSuffixArray in SAISSuffixArray.h)
+//       SuffixArray in SuffixArray or SAISSuffixArray in SAISSuffixArray)
 //     Required Fields:
 //       T: the type of each element in the string/array
 //       S: a vector of type T representing the string/array
