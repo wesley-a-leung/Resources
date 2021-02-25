@@ -49,3 +49,10 @@ pt3 rot(ref3 a, ref3 axis, T theta) {
   return a * cos(theta) + (unit(axis) * a * sin(theta))
       + (unit(axis) * (unit(axis) | a) * (1 - cos(theta)));
 }
+// sign of volume6 and above: 1 if d is above the plane abc with
+//   normal ab x ac, 0 if on the plane, -1 if below the plane
+// 6 times the signed area of the tetrahedron abcd
+T volume6(ref3 a, ref3 b, ref3 c, ref3 d) {
+  return (b - a) * (c - a) | (d - a);
+}
+int above(ref3 a, ref3 b, ref3 c, ref3 d) { return sgn(volume6(a, b, c, d)); }

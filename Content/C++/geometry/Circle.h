@@ -55,7 +55,7 @@ T circleHalfPlaneIntersectionArea(const Circle &c, const Line &l) {
     pt a = p - h, b = p + h; T theta = abs(ang(a, c.o, b));
     ret = c.r * c.r * (theta - sin(theta)) / 2;
   }
-  if (l.onLeft(c.o) > 0) ret = PI * c.r * c.r - ret;
+  if (l.onLeft(c.o) > 0) ret = acos(T(-1)) * c.r * c.r - ret;
   return ret;
 }
 
@@ -96,8 +96,8 @@ int circleCircleIntersection(const Circle &c1, const Circle &c2,
 //   https://codeforces.com/contest/600/problem/D
 T circleCircleIntersectionArea(const Circle &c1, const Circle &c2) {
   T d = dist(c1.o, c2.o); if (!lt(d, c1.r + c2.r)) return 0;
-  if (!lt(c2.r, d + c1.r)) return PI * c1.r * c1.r;
-  if (!lt(c1.r, d + c2.r)) return PI * c2.r * c2.r;
+  if (!lt(c2.r, d + c1.r)) return acos(T(-1)) * c1.r * c1.r;
+  if (!lt(c1.r, d + c2.r)) return acos(T(-1)) * c2.r * c2.r;
   auto A = [&] (T r1, T r2) {
     T a = (d * d + r1 * r1 - r2 * r2) / (2 * d * r1);
     T theta = 2 * acos(max(T(-1), min(T(1), a)));
