@@ -60,8 +60,10 @@ Line3D perpThrough(const Plane3D &pi, ref3 o) {
 Plane3D perpThrough(const Line3D &l, ref3 o) { return Plane3D(l.d, o); }
 
 // Transforms points to a new coordinate system where the x and y axes are
-//   on the plane, with the z axes being the normal vector (positive z is in
+//   on the plane, with the z axis being the normal vector (positive z is in
 //   the direction of the normal vector)
+// Z coordinate is guaranteed to be the distance to the plane (positive if
+//   above plane, negative if below, 0 if on)
 // Constructor Arguments:
 //   pi: a plane
 //   p, q, r: 3 non-collinear points
