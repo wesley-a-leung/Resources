@@ -15,6 +15,8 @@ using namespace std;
 //   rotate(theta): rotates the point theta radians around the origin
 //   reflect(dir): reflects the point across the line passing through the
 //     origin with direction dir
+//   projects(dir): projects the point onto the line passing through the
+//     origin with direction dir
 //   applyTransform(p): applies the transformation to the point p
 //   inverse(): returns the inverse of this transformation
 // Time Complexity:
@@ -65,6 +67,11 @@ struct AffineTransform {
     T n = norm(dir); a /= n; b /= n;
     prependMatrix({array<T, 2>{a, b}, {b, -a}}, {T(0), T(0)});
   }
+  void project(ref dir) {
+    T a = dir.x * dir.x, b = dir.x * dir.y, c = dir.y * dir.y;
+    T n = norm(dir); a /= n; b /= n; c /= n;
+    prependMatrix({array<T, 2>{a, b}, {b, c}}, {T(0), T(0)});
+  }
   pt applyTransform(ref p) {
     return pt(m[0][0] * p.x + m[0][1] * p.y + b[0],
               m[1][0] * p.x + m[1][1] * p.y + b[1]);
@@ -72,7 +79,7 @@ struct AffineTransform {
   AffineTransform inverse() const {
     AffineTransform ret;
     ret.prependMatrix({array<T, 2>{T(1), T(0)}, {T(0), T(1)}}, {-b[0], -b[1]});
-    T det = m[0][0] * m[1][1] - m[0][1] * m[1][0];
+    T det = m[0][0] * m[1][1] - m[0][1] * m[1][0]; assert(!eq(det, 0));
     ret.prependMatrix({array<T, 2>{m[1][1] / det, -m[0][1] / det},
                                   {-m[1][0] / det, m[0][0] / det}},
                       {T(0), T(0)});
