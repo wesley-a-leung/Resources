@@ -7,6 +7,8 @@ using namespace std;
 #define ref3 const pt3 &
 struct pt3 {
   T x, y, z; pt3(T x = 0, T y = 0, T z = 0) : x(x), y(y), z(z) {}
+  pt3 operator + () const { return *this; }
+  pt3 operator - () const { return pt3(-x, -y, -z); }
   pt3 operator + (ref3 p) const { return pt3(x + p.x, y + p.y, z + p.z); }
   pt3 &operator += (ref3 p) { return *this = *this + p; }
   pt3 operator - (ref3 p) const { return pt3(x - p.x, y - p.y, z - p.z); }
@@ -42,9 +44,7 @@ T abs(ref3 p) { return sqrt(norm(p)); }
 pt3 unit(ref3 p) { return p / abs(p); }
 T distSq(ref3 a, ref3 b) { return norm(b - a); }
 T dist(ref3 a, ref3 b) { return abs(b - a); }
-T ang(ref3 a, ref3 b) {
-  return acos(max(T(-1), min(T(1), (a | b) / abs(a) / abs(b))));
-}
+T ang(ref3 a, ref3 b) { return acos(min(T(1), (a | b) / abs(a) / abs(b))); }
 pt3 rot(ref3 a, ref3 axis, T theta) {
   return a * cos(theta) + (unit(axis) * a * sin(theta))
       + (unit(axis) * (unit(axis) | a) * (1 - cos(theta)));
