@@ -40,8 +40,7 @@ struct AffineTransform {
       for (int k = 0; k < 2; k++) resm[i][j] += m2[i][k] * m[k][j];
     }
     for (int i = 0; i < 2; i++) {
-      resb[i] = b2[i];
-      for (int j = 0; j < 2; j++) resb[i] += m2[i][j] * b[j];
+      resb[i] = b2[i]; for (int j = 0; j < 2; j++) resb[i] += m2[i][j] * b[j];
     }
     m = resm; b = resb;
   }
