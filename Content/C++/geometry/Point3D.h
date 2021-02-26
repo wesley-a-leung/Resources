@@ -27,7 +27,7 @@ struct pt3 {
   bool operator > (ref3 p) const { return p < *this; }
   bool operator >= (ref3 p) const { return !(*this < p); }
   bool operator == (ref3 p) const { return !(*this < p) && !(p < *this); }
-  bool operator != (ref3 p) const { return !(*this == p); }
+  bool operator != (ref3 p) const { return *this < p || p < *this; }
   T operator | (ref3 p) const { return x * p.x + y * p.y + z * p.z; }
   pt3 operator * (ref3 p) const {
     return pt3(y * p.z - z * p.y, z * p.x - x * p.z, x * p.y - y * p.x);
