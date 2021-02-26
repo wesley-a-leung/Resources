@@ -19,13 +19,13 @@ pt3 vectorArea2(const vector<pt3> &face) {
   return ret;
 }
 
-// Returns the area of a face of coplanar points
+// Returns the absolute area of a face of coplanar points
 // Function Arguments:
 //   face: the coplanar points of the face
 // Return Value: the area of the face
 // Time Complexity: O(N)
 // Memory Complexity: O(1)
-T faceArea(const vector<pt3> &face) { return abs(vectorArea2(face)); }
+T faceArea(const vector<pt3> &face) { return abs(vectorArea2(face)) / T(2); }
 
 // Flips some of the faces of a polyhedron such that they are oriented
 //   consistently (they will either all be pointed outwards or inwards)
