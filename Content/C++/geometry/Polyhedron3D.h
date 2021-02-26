@@ -32,7 +32,7 @@ T faceArea(const vector<pt3> &face) { return abs(vectorArea2(face)) / T(2); }
 // Function Arguments:
 //   faces: a reference to a vector of vector of points representing
 //     the faces of the polyhedron to be reoriented
-// Time Complexity: O(F) for F faces
+// Time Complexity: O(N) for N total points
 // Memory Complexity: O(1)
 void reorient(vector<vector<pt3>> &faces) {
   int n = faces.size(); vector<vector<pair<int, bool>>> G(n);
