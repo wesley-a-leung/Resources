@@ -81,6 +81,7 @@ using namespace std;
 // Memory Complexity: O(N)
 // Tested:
 //   https://www.spoj.com/problems/QTREE2/
+//   https://judge.yosupo.jp/problem/dynamic_tree_vertex_set_path_composite
 //   https://judge.yosupo.jp/problem/dynamic_tree_subtree_add_subtree_sum
 //   https://dmoj.ca/problem/ds5
 template <class C> struct TopTree {
