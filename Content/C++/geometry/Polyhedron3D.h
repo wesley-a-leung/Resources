@@ -36,23 +36,24 @@ T faceArea(const vector<pt3> &face) { return abs(vectorArea2(face)) / T(2); }
 // Memory Complexity: O(1)
 void reorient(vector<vector<pt3>> &faces) {
   int n = faces.size(); vector<vector<pair<int, bool>>> G(n);
-  map<pair<pt3, pt3>, int> edges; for (int v = 0; v < n; v++)
+  map<pair<pt3, pt3>, int> seen; for (int v = 0; v < n; v++)
     for (int i = 0, m = faces[v].size(); i < m; i++) {
       pt3 a = faces[v][i], b = faces[v][(i + 1) % m];
-      auto it = edges.find(make_pair(a, b)); bool s = true;
-      if (it == edges.end()) { it = edges.find(make_pair(b, a)); s = false; }
-      if (it != edges.end()) {
-        int w = it->second; G[v].emplace_back(w, s); G[w].emplace_back(v, s);
-      } else edges[make_pair(a, b)] = v;
+      auto it = seen.find(make_pair(a, b)); bool f = true;
+      if (it == seen.end()) { it = seen.find(make_pair(b, a)); f = false; }
+      if (it != seen.end()) {
+        int w = it->second; G[v].emplace_back(w, f); G[w].emplace_back(v, f);
+      } else seen[make_pair(a, b)] = v;
     }
-  vector<bool> vis(n, false), flip(n, false); vector<int> q(n);
-  int front = 0, back = 0; q[back++] = 0; while (front < back) {
-    int v = q[front++]; for (auto &&e : G[v]) if (!vis[e.first]) {
-      vis[q[back++] = e.first] = true; flip[e.first] = flip[v] ^ e.second;
-    }
+  vector<char> flip(n, -1); vector<int> q(n); int front = 0, back = 0;
+  flip[q[back++] = 0] = 0; while (front < back) {
+    int v = q[front++]; for (auto &&e : G[v]) if (flip[e.first] == -1)
+      flip[q[back++] = e.first] = flip[v] ^ e.second;
   }
-  for (int v = 0; v < n; v++) if (flip[v])
-    reverse(faces[v].begin(), faces[v].end());
+  for (int v = 0; v < n; v++) {
+    assert(flip[v] != -1);
+    if (flip[v]) reverse(faces[v].begin(), faces[v].end());
+  }
 }
 
 // Returns 6 times the signed volume of a polyhedron
