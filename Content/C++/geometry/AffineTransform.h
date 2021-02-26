@@ -29,8 +29,7 @@ struct AffineTransform {
   array<array<T, 2>, 2> m; array<T, 2> b;
   AffineTransform() {
     for (int i = 0; i < 2; i++) {
-      for (int j = 0; j < 2; j++) m[i][j] = i == j ? T(1) : T(0);
-      b[i] = T(0);
+      b[i] = T(0); for (int j = 0; j < 2; j++) m[i][j] = i == j ? T(1) : T(0);
     }
   }
   void prependMatrix(const array<array<T, 2>, 2> &m2, const array<T, 2> &b2) {
