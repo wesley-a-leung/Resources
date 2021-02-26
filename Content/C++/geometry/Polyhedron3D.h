@@ -55,11 +55,11 @@ void reorient(vector<vector<pt3>> &faces) {
     reverse(faces[v].begin(), faces[v].end());
 }
 
-// Returns 6 times the signed area of a polyhedron
+// Returns 6 times the signed volume of a polyhedron
 // Function Arguments:
 //   faces: a vector of vector of points representing
 //     the faces of the polyhedron with consistent orientation
-// Return Value: 6 times the signed area of the polygon, positive if
+// Return Value: 6 times the signed volume of the polygon, positive if
 //   all vector areas point outwards, negative if inwards
 // Time Complexity: O(N) for N total points
 // Memory Complexity: O(1)
