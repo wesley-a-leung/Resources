@@ -67,5 +67,5 @@ pt3 sph(T r, T theta, T phi) {
   return pt3(r * cos(theta) * cos(phi), r * cos(theta) * sin(phi),
              r * sin(theta));
 }
-T inc(ref3 p) { return atan(sqrt(p.x * p.x + p.y * p.y) / p.z); }
+T inc(ref3 p) { return atan(p.z / sqrt(p.x * p.x + p.y * p.y)); }
 T az(ref3 p) { return atan2(p.y, p.x); }
