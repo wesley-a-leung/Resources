@@ -57,8 +57,8 @@ bool spherePlaneIntersection(const Sphere &s, const Plane3D &pi,
   res.first = pi.proj(s.o); res.second = sqrt(max(d2, T(0))); return true;
 }
 
-// Determine the surface area of the sphere above the intersection of a sphere and
-//   a half-space defined by the space above a plane
+// Determine the surface area of the sphere above the intersection of
+//   a sphere and a half-space defined by the space above a plane
 // Function Arguments:
 //   s: the sphere
 //   pi: the plane with the half-space defined as the space above the plane
@@ -72,8 +72,8 @@ T sphereHalfSpaceIntersectionSurfaceArea(const Sphere &s, const Plane3D &pi) {
   return acos(T(-1)) * 2 * s.r * h;
 }
 
-// Determine the volume of the sphere above the intersection of a sphere and
-//   a half-space defined by the space above a plane
+// Determine the volume of the sphere above the intersection of
+//   a sphere and a half-space defined by the space above a plane
 // Function Arguments:
 //   s: the sphere
 //   pi: the plane with the half-space defined as the space above the plane

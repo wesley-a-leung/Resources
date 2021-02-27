@@ -16,6 +16,7 @@ int mod(int i, int n) { return i < n ? i : i - n; }
 // Time Complexity: O(N)
 // Memory Complexity: O(1)
 // Tested:
+//   https://open.kattis.com/problems/polygonarea
 //   https://open.kattis.com/problems/crane
 T getArea2(const vector<pt> &poly) {
   T ret = 0; int n = poly.size();
