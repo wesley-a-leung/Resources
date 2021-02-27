@@ -78,7 +78,8 @@ bool onSeg(ref p, ref a, ref b) {
 //   b: the other endpoint of the first line segment
 //   p: one endpoint of the second line segment
 //   q: the other endpoint of the second line segment
-// Return Value: 0 if no intersection, 1 if proper intersection, 2 otherwise
+// Return Value: 0 if no intersection, 1 if proper intersection (a single
+//   point and not an endpoint), 2 otherwise
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
 // Tested:
@@ -119,8 +120,7 @@ vector<pt> lineSegIntersection(ref a, ref b, ref p, ref q) {
   if (onSeg(a, p, q)) ret.push_back(a);
   if (onSeg(b, p, q)) ret.push_back(b);
   sort(ret.begin(), ret.end(), pt_lt());
-  ret.erase(unique(ret.begin(), ret.end(), pt_eq()), ret.end());
-  return ret;
+  ret.erase(unique(ret.begin(), ret.end(), pt_eq()), ret.end()); return ret;
 }
 
 // Finds the closest point on a line segment to another point

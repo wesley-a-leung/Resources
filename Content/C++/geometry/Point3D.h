@@ -44,7 +44,10 @@ T abs(ref3 p) { return sqrt(norm(p)); }
 pt3 unit(ref3 p) { return p / abs(p); }
 T distSq(ref3 a, ref3 b) { return norm(b - a); }
 T dist(ref3 a, ref3 b) { return abs(b - a); }
-T ang(ref3 a, ref3 b) { return acos(min(T(1), (a | b) / abs(a) / abs(b))); }
+// returns an angle in the range [0, PI]
+T ang(ref3 a, ref3 b) {
+  return acos(max(T(-1), min(T(1), (a | b) / abs(a) / abs(b))));
+}
 pt3 rot(ref3 a, ref3 axis, T theta) {
   return a * cos(theta) + (unit(axis) * a * sin(theta))
       + (unit(axis) * (unit(axis) | a) * (1 - cos(theta)));
@@ -56,3 +59,13 @@ T volume6(ref3 a, ref3 b, ref3 c, ref3 d) {
   return (b - a) * (c - a) | (d - a);
 }
 int above(ref3 a, ref3 b, ref3 c, ref3 d) { return sgn(volume6(a, b, c, d)); }
+// Converts a position based on radius (r >= 0), inclination/latitude
+//   (-PI / 2 <= theta <= PI / 2), and azimuth/longitude (-PI < phi <= PI)
+// Convention is that the x axis passes through the meridian (phi = 0), and
+//   the z axis passes through the North Pole (theta = Pi / 2)
+pt3 sph(T r, T theta, T phi) {
+  return pt3(r * cos(theta) * cos(phi), r * cos(theta) * sin(phi),
+             r * sin(theta));
+}
+T inc(ref3 p) { return atan(sqrt(p.x * p.x + p.y * p.y) / p.z); }
+T az(ref3 p) { return atan2(p.y, p.x); }

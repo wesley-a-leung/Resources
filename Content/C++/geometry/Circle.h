@@ -18,6 +18,8 @@ struct Circle {
   // 1 if c is strictly outside this circle, 0 if outside and touching this
   //   circle, -1 otherwise
   int disjoint(const Circle &c) const { return sgn(c.r + r - dist(o, c.o)); }
+  pt proj(ref p) const { return o + (p - o) * r / dist(o, p); }
+  pt inv(ref p) const { return o + (p - o) * r * r / distSq(o, p); }
 };
 
 // Determine the intersection of a circle and a line
@@ -35,8 +37,7 @@ vector<pt> circleLineIntersection(const Circle &c, const Line &l) {
     ret.push_back(p - h); ret.push_back(p + h);
   }
   sort(ret.begin(), ret.end(), pt_lt());
-  ret.erase(unique(ret.begin(), ret.end(), pt_eq()), ret.end());
-  return ret;
+  ret.erase(unique(ret.begin(), ret.end(), pt_eq()), ret.end()); return ret;
 }
 
 // Determine the area of the intersection of a circle and a half-plane defined

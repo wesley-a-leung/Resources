@@ -38,22 +38,6 @@ struct Plane3D {
     return make_tuple(a, a + v1, a + v2);
   }
 };
-T ang(const Plane3D &pi1, const Plane3D &pi2) { return ang(pi1.n, pi2.n); }
-bool isParallel(const Plane3D &pi1, const Plane3D &pi2) {
-  return eq(norm(pi1.n * pi2.n), 0);
-}
-bool isPerpendicular(const Plane3D &pi1, const Plane3D &pi2) {
-  return eq(norm(pi1.n | pi2.n), 0);
-}
-T ang(const Plane3D &pi, const Line3D &l) {
-  return acos(T(-1)) / T(2) - ang(pi.n, l.d);
-}
-bool isParallel(const Plane3D &pi, const Line3D &l) {
-  return eq(norm(pi.n * l.d), 0);
-}
-bool isPerpendicular(const Plane3D &pi, const Line3D &l) {
-  return eq(norm(pi.n | l.d), 0);
-}
 Line3D perpThrough(const Plane3D &pi, ref3 o) {
   Line3D ret; ret.o = o; ret.d = pi.n; return ret;
 }

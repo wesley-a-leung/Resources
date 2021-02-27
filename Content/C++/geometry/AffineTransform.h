@@ -18,7 +18,8 @@ using namespace std;
 //   projects(dir): projects the point onto the line passing through the
 //     origin with direction dir
 //   applyTransform(p): applies the transformation to the point p
-//   inverse(): returns the inverse of this transformation
+//   inverse(): returns the inverse of this transformation,
+//     determinant of m must nonzero
 // Time Complexity:
 //   constructor, prependMatrix, transform, scaleX, scaleY, scale, translate,
 //     rotate, reflect, applyTransform, inverse: O(1)
