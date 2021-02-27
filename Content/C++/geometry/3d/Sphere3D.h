@@ -61,7 +61,7 @@ bool spherePlaneIntersection(const Sphere &s, const Plane3D &pi,
 //   a half-space defined by the space above a plane
 // Function Arguments:
 //   s: the sphere
-//   p: the plane with the half-space defined as the space above the plane
+//   pi: the plane with the half-space defined as the space above the plane
 // Return Value: the surface area of the sphere above the intersection of
 //   the sphere and the half-space
 // Time Complexity: O(1)
@@ -76,7 +76,7 @@ T sphereHalfSpaceIntersectionSurfaceArea(const Sphere &s, const Plane3D &pi) {
 //   a half-space defined by the space above a plane
 // Function Arguments:
 //   s: the sphere
-//   p: the plane with the half-space defined as the space above the plane
+//   pi: the plane with the half-space defined as the space above the plane
 // Return Value: the volume of the sphere above the intersection of
 //   the sphere and the half-space
 // Time Complexity: O(1)
