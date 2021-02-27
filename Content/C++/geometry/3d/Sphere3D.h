@@ -2,6 +2,7 @@
 #include <bits/stdc++.h>
 #include "Point3D.h"
 #include "Line3D.h"
+#include "Plane3D.h"
 using namespace std;
 
 // Functions for a 3D sphere
@@ -38,4 +39,50 @@ vector<pt3> sphereLineIntersection(const Sphere &s, const Line3D &l) {
   }
   sort(ret.begin(), ret.end());
   ret.erase(unique(ret.begin(), ret.end()), ret.end()); return ret;
+}
+
+// Determine the intersection of a sphere and a plane
+// Function Arguments:
+//   s: the sphere
+//   pi: the plane
+//   res: a pair of pt3 and T, representing the centre of the circle, and the
+//     radius of the circle of intersection if it exists (guaranteed to be on
+//     the plane)
+// Return Value: a boolean indicating whether an intersection exists or not
+// Time Complexity: O(1)
+// Memory Complexity: O(1)
+bool spherePlaneIntersection(const Sphere &s, const Plane3D &pi,
+                             pair<pt3, T> &res) {
+  T d2 = s.r * s.r - pi.distSq(s.o); if (lt(d2, 0)) return false;
+  res.first = pi.proj(s.o); res.second = sqrt(max(d2, T(0))); return true;
+}
+
+// Determine the surface area of the sphere above the intersection of a sphere and
+//   a half-space defined by the space above a plane
+// Function Arguments:
+//   s: the sphere
+//   p: the plane with the half-space defined as the space above the plane
+// Return Value: the surface area of the sphere above the intersection of
+//   the sphere and the half-space
+// Time Complexity: O(1)
+// Memory Complexity: O(1)
+T sphereHalfSpaceIntersectionSurfaceArea(const Sphere &s, const Plane3D &pi) {
+  T d2 = s.r * s.r - pi.distSq(s.o), h = lt(d2, 0) ? 0 : s.r - pi.dist(s.o);
+  if (pi.isAbove(s.o) > 0) h = s.r * 2 - h;
+  return acos(T(-1)) * 2 * s.r * h;
+}
+
+// Determine the volume of the sphere above the intersection of a sphere and
+//   a half-space defined by the space above a plane
+// Function Arguments:
+//   s: the sphere
+//   p: the plane with the half-space defined as the space above the plane
+// Return Value: the volume of the sphere above the intersection of
+//   the sphere and the half-space
+// Time Complexity: O(1)
+// Memory Complexity: O(1)
+T sphereHalfSpaceIntersectionVolume(const Sphere &s, const Plane3D &pi) {
+  T d2 = s.r * s.r - pi.distSq(s.o), h = lt(d2, 0) ? 0 : s.r - pi.dist(s.o);
+  if (pi.isAbove(s.o) > 0) h = s.r * 2 - h;
+  return acos(T(-1)) * h * h / 3 * (3 * s.r - h);
 }

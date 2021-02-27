@@ -44,7 +44,7 @@ vector<pt> circleLineIntersection(const Circle &c, const Line &l) {
 // Function Arguments:
 //   c: the circle
 //   l: the line with the half-plane defined by the left side
-// Return Value: the are of the intersection of the circle and the half-plane
+// Return Value: the area of the intersection of the circle and the half-plane
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
 // Tested:
