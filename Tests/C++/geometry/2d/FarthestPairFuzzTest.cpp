@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "../../../Content/C++/geometry/FarthestPair.h"
+#include "../../../../Content/C++/geometry/2d/FarthestPair.h"
 using namespace std;
 
 void test1() {

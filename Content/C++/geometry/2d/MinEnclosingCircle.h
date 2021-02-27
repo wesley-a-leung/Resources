@@ -1,5 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "../../utils/Random.h"
 #include "Point.h"
 #include "Circle.h"
 using namespace std;
