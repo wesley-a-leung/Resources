@@ -2,7 +2,6 @@
 #include <bits/stdc++.h>
 #include "Point.h"
 #include "Circle.h"
-#include "../utils/Random.h"
 using namespace std;
 
 // Determines the minimum enclosing circle of a set of points

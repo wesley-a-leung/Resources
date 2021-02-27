@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "../search/BinarySearch.h"
+#include "../../search/BinarySearch.h"
 using namespace std;
 
 // Supports adding lines in the form f(x) = mx + b and finding
