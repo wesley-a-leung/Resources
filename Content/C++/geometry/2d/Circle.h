@@ -25,7 +25,7 @@ struct Circle {
 // Function Arguments:
 //   c: the circle
 //   l: the line
-// Return Value: the points of intersection (if any) of the circle and the line
+// Return Value: the points of intersection, if any, of the circle and the line
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
 // Tested:
@@ -63,7 +63,7 @@ T circleHalfPlaneIntersectionArea(const Circle &c, const Line &l) {
 // Function Arguments:
 //   c1: the first circle
 //   c2: the second circle
-//   res: the points of intersection (if any) of the two circles
+//   res: the points of intersection, if any, of the two circles
 // Return Value: 0 if no intersection, 2 if identical circles, 1 otherwise
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
