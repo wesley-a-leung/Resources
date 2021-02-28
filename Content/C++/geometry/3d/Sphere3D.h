@@ -36,7 +36,8 @@ struct Sphere {
   }
   // Returns the points of intersection (or segment of intersection) between
   //   the great circle segments a-b and p-q
-  vector<pt3> greatCircleSegIntersection(pt3 a, pt3 b, pt3 p, pt3 q) const {
+  vector<pt3> greatCircleSegIntersection(ref3 a, ref3 b,
+                                         ref3 p, ref3 q) const {
     assert(isGreatCircleSeg(a, b) && isGreatCircleSeg(p, q));
     pt3 ab = (a - o) * (b - o), pq = (p - o) * (q - o);
     int oa = sgn(pq | (a - o)), ob = sgn(pq | (b - o));
