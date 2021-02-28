@@ -38,10 +38,11 @@ struct Sphere {
   //   the great circle segments a-b and p-q
   vector<pt3> greatCircleSegIntersection(pt3 a, pt3 b, pt3 p, pt3 q) const {
     assert(isGreatCircleSeg(a, b) && isGreatCircleSeg(p, q));
-    a -= o; b -= o; p -= o; q -= o; pt3 ab = a * b, pq = p * q;
-    int oa = sgn(pq | a), ob = sgn(pq | b), op = sgn(ab | p), oq = sgn(ab | q);
+    pt3 ab = (a - o) * (b - o), pq = (p - o) * (q - o);
+    int oa = sgn(pq | (a - o)), ob = sgn(pq | (b - o));
+    int op = sgn(ab | (p - o)), oq = sgn(ab | (q - o));
     if (oa != ob && op != oq && oa != op)
-      return vector<pt3>{proj(ab * pq * op)};
+      return vector<pt3>{proj(o + ab * pq * op)};
     vector<pt3> ret; if (onSphereSeg(p, a, b)) ret.push_back(p);
     if (onSphereSeg(q, a, b)) ret.push_back(q);
     if (onSphereSeg(a, p, q)) ret.push_back(a);
