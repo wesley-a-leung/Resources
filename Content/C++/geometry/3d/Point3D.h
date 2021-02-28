@@ -45,9 +45,7 @@ pt3 unit(ref3 p) { return p / abs(p); }
 T distSq(ref3 a, ref3 b) { return norm(b - a); }
 T dist(ref3 a, ref3 b) { return abs(b - a); }
 // returns an angle in the range [0, PI]
-T ang(ref3 a, ref3 b) {
-  return acos(max(T(-1), min(T(1), (a | b) / abs(a) / abs(b))));
-}
+T ang(ref3 a, ref3 b) { return acos(min(T(1), abs(a | b) / abs(a) / abs(b))); }
 pt3 rot(ref3 a, ref3 axis, T theta) {
   return a * cos(theta) + (unit(axis) * a * sin(theta))
       + (unit(axis) * (unit(axis) | a) * (1 - cos(theta)));

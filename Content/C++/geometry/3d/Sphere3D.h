@@ -29,7 +29,7 @@ struct Sphere {
     a -= o; b -= o; return !eq(norm(a * b), 0) || lt(0, (a | b)); 
   }
   // Returns whether p is on the great circle segment a-b
-  bool onSphereSeg(pt3 p, pt3 a, pt3 b) const {
+  bool onSphSeg(pt3 p, pt3 a, pt3 b) const {
     assert(isGreatCircleSeg(a, b)); p -= o; a -= o; b -= o; pt3 n = a * b;
     if (eq(norm(n), 0)) return eq(norm(a * p), 0) && lt(0, (a | p));
     return eq((n | p), 0) && !lt((n | a * p), 0) && !lt(0, (n | b * p));
@@ -44,12 +44,30 @@ struct Sphere {
     int op = sgn(ab | (p - o)), oq = sgn(ab | (q - o));
     if (oa != ob && op != oq && oa != op)
       return vector<pt3>{proj(o + ab * pq * op)};
-    vector<pt3> ret; if (onSphereSeg(p, a, b)) ret.push_back(p);
-    if (onSphereSeg(q, a, b)) ret.push_back(q);
-    if (onSphereSeg(a, p, q)) ret.push_back(a);
-    if (onSphereSeg(b, p, q)) ret.push_back(b);
+    vector<pt3> ret; if (onSphSeg(p, a, b)) ret.push_back(p);
+    if (onSphSeg(q, a, b)) ret.push_back(q);
+    if (onSphSeg(a, p, q)) ret.push_back(a);
+    if (onSphSeg(b, p, q)) ret.push_back(b);
     sort(ret.begin(), ret.end());
     ret.erase(unique(ret.begin(), ret.end()), ret.end()); return ret;
+  }
+  // Returns the angle between 3 points on the sphere, positive angle if
+  //   a-b-c forms a ccw turn, negative if cw, 0 if collinear
+  T angSph(pt3 a, pt3 b, pt3 c) const {
+    assert(contains(a) == 0 && contains(b) == 0 && contains(c) == 0);
+    a -= o; b -= o; c -= o; T theta = ang(b * a, b * c);
+    return (a * b | c) < 0 ? -theta : theta;
+  }
+  // Returns the surface area of a polygon on the sphere, inside area if
+  //   points are in ccw order, outside area if points are in cw order
+  T surfaceAreaOnSph(const vector<pt3> &poly) {
+    int n = poly.size(); T PI = acos(T(-1)), a = -(n - 2) * PI;
+    for (int i = 0; i < n; i++) {
+      T ang = angSph(poly[i], poly[(i + 1) % n], poly[(i + 2) % n]);
+      if (ang < 0) ang += 2 * PI;
+      a += ang;
+    }
+    return r * r * a;
   }
 };
 
