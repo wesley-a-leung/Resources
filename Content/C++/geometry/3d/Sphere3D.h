@@ -60,7 +60,7 @@ struct Sphere3D {
   // Returns the surface area of a polygon projected onto the sphere,
   //   inside area if points are in ccw order, outside area if points are
   //   in cw order
-  T surfaceAreaOnSph(const vector<pt3> &poly) {
+  T surfaceAreaOnSph(const vector<pt3> &poly) const {
     int n = poly.size(); T PI = acos(T(-1)), a = -(n - 2) * PI;
     for (int i = 0; i < n; i++) {
       T ang = angSph(poly[i], poly[(i + 1) % n], poly[(i + 2) % n]);
