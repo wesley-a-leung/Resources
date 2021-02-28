@@ -1,6 +1,7 @@
 #pragma once
 #include <bits/stdc++.h>
 #include "Point3D.h"
+#include "Sphere3D.h"
 using namespace std;
 
 // Functions for a 3D polyhedron
@@ -66,4 +67,22 @@ void reorient(vector<vector<pt3>> &faces) {
 T getVolume6(const vector<vector<pt3>> &faces) {
   T vol6 = 0; for (auto &&face : faces) vol6 += (vectorArea2(face) | face[0]);
   return vol6;
+}
+
+// Determines if a point is inside a polyhedron or not
+// Points on the polyhedron are considered to be inside
+// Function Arguments:
+//   faces: a vector of vector of points representing
+//     the faces of the polyhedron with consistent orientation
+//   p: the point to check
+// Return Value: -1 if inside the polyhedron, 0 if on the face, 1 if outside
+// Time Complexity: O(N) for N total points
+// Memory Complexity: O(1)
+int isInside(const vector<vector<pt3>> &faces, ref3 p) {
+  T sum = 0, PI = acos(T(-1)); Sphere3D s(p, 1); for (auto &&face : faces) {
+    pt3 a = face[0], b = face[1], c = face[2], n = (b - a) * (c - a);
+    if (eq((n | p) - (n | a), 0)) return 0;
+    sum += remainder(s.surfaceAreaOnSph(face), 4 * PI);
+  }
+  return bool(round(sum / (4 * PI))) ? 1 : -1;
 }
