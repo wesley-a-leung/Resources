@@ -23,6 +23,32 @@ struct Sphere {
   // Shortest distance on the sphere between the projections of a and b onto
   //   this sphere
   T greatCircleDist(ref3 a, ref3 b) const { return r * ang(a - o, b - o); }
+  // Is a-b a valid great circle segment (not on opposite sides)
+  bool isGreatCircleSeg(pt3 a, pt3 b) const {
+    assert(contains(a) == 0 && contains(b) == 0);
+    a -= o; b -= o; return !eq(norm(a * b), 0) || lt(0, (a | b)); 
+  }
+  // Returns whether p is on the great circle segment a-b
+  bool onSphereSeg(pt3 p, pt3 a, pt3 b) const {
+    assert(isGreatCircleSeg(a, b)); p -= o; a -= o; b -= o; pt3 n = a * b;
+    if (eq(norm(n), 0)) return eq(norm(a * p), 0) && lt(0, (a | p));
+    return eq((n | p), 0) && !lt((n | a * p), 0) && !lt(0, (n | b * p));
+  }
+  // Returns the points of intersection (or segment of intersection) between
+  //   the great circle segments a-b and p-q
+  vector<pt3> greatCircleSegIntersection(pt3 a, pt3 b, pt3 p, pt3 q) const {
+    assert(isGreatCircleSeg(a, b) && isGreatCircleSeg(p, q));
+    a -= o; b -= o; p -= o; q -= o; pt3 ab = a * b, pq = p * q;
+    int oa = sgn(pq | a), ob = sgn(pq | b), op = sgn(ab | p), oq = sgn(ab | q);
+    if (oa != ob && op != oq && oa != op)
+      return vector<pt3>{proj(ab * pq * op)};
+    vector<pt3> ret; if (onSphereSeg(p, a, b)) ret.push_back(p);
+    if (onSphereSeg(q, a, b)) ret.push_back(q);
+    if (onSphereSeg(a, p, q)) ret.push_back(a);
+    if (onSphereSeg(b, p, q)) ret.push_back(b);
+    sort(ret.begin(), ret.end());
+    ret.erase(unique(ret.begin(), ret.end()), ret.end()); return ret;
+  }
 };
 
 // Determine the intersection of a sphere and a line
@@ -57,48 +83,22 @@ bool spherePlaneIntersection(const Sphere &s, const Plane3D &pi,
   res.first = pi.proj(s.o); res.second = sqrt(max(d2, T(0))); return true;
 }
 
-// Determine the surface area of the sphere above the intersection of
-//   a sphere and a half-space defined by the space above a plane
+// Determine the surface area and volume of the sphere above the intersection
+//   of a sphere and a half-space defined by the space above a plane
 // Function Arguments:
 //   s: the sphere
 //   pi: the plane with the half-space defined as the space above the plane
-// Return Value: the surface area of the sphere above the intersection of
-//   the sphere and the half-space
+// Return Value: a pair containing the surface area and the volume of the
+//   sphere above the intersection of the sphere and the half-space
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
-T sphereHalfSpaceIntersectionSurfaceArea(const Sphere &s, const Plane3D &pi) {
+pair<T, T> sphereHalfSpaceIntersectionSAV(const Sphere &s, const Plane3D &pi) {
   T d2 = s.r * s.r - pi.distSq(s.o), h = lt(d2, 0) ? 0 : s.r - pi.dist(s.o);
   if (pi.isAbove(s.o) > 0) h = s.r * 2 - h;
-  return acos(T(-1)) * 2 * s.r * h;
+  T PI = acos(T(-1));
+  return make_pair(PI * 2 * s.r * h, PI * h * h / 3 * (3 * s.r - h));
 }
 
-// Determine the volume of the sphere above the intersection of
-//   a sphere and a half-space defined by the space above a plane
-// Function Arguments:
-//   s: the sphere
-//   pi: the plane with the half-space defined as the space above the plane
-// Return Value: the volume of the sphere above the intersection of
-//   the sphere and the half-space
-// Time Complexity: O(1)
-// Memory Complexity: O(1)
-T sphereHalfSpaceIntersectionVolume(const Sphere &s, const Plane3D &pi) {
-  T d2 = s.r * s.r - pi.distSq(s.o), h = lt(d2, 0) ? 0 : s.r - pi.dist(s.o);
-  if (pi.isAbove(s.o) > 0) h = s.r * 2 - h;
-  return acos(T(-1)) * h * h / 3 * (3 * s.r - h);
-}
-
-// Determine the intersection of two spheres
-// Function Arguments:
-//   s1: the first sphere
-//   s2: the second sphere
-//   pi: the plane of intersection, if it exists, of the two spheres,
-//     with the normal pointing in the direction from s1.o to s2.o
-//   c: a pair of pt3 and T, representing the centre of the circle, and the
-//     radius of the circle of intersection if it exists, guaranteed to be on
-//     the plane pi
-// Return Value: 0 if no intersection, 2 if identical spheres, 1 otherwise
-// Time Complexity: O(1)
-// Memory Complexity: O(1)
 int sphereSphereIntersection(const Sphere &s1, const Sphere &s2,
                              Plane3D &pi, pair<pt3, T> &c) {
   pt3 d = s2.o - s1.o; T d2 = norm(d);
@@ -109,46 +109,27 @@ int sphereSphereIntersection(const Sphere &s1, const Sphere &s2,
   pi = Plane3D(d, c.first = s1.o + d * pd / d2); return 1;
 }
 
-// Determine the surface area of the union of two spheres
+// Determine the surface area and volume of the union of two spheres
 // Function Arguments:
 //   s1: the first sphere
 //   s2: the second sphere
-// Return Value: the surface area of the union of the two spheres
+// Return Value: a pair containing the surface area and volume of the union of
+//   the two spheres
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
-T sphereSphereUnionSurfaceArea(const Sphere &s1, const Sphere &s2) {
-  pt3 d = s2.o - s1.o; T d2 = norm(d), dr = abs(s1.r - s2.r);
+pair<T, T> sphereSphereUnionSAV(const Sphere &s1, const Sphere &s2) {
+  pt3 d = s2.o - s1.o; T d2 = norm(d), dr = abs(s1.r - s2.r), PI = acos(T(-1));
   if (!lt(dr * dr, d2)) {
-    T r = max(s1.r, s2.r); return acos(T(-1)) * 4 * r * r;
+    T r = max(s1.r, s2.r);
+    return make_pair(PI * 4 * r * r, PI * 4 * r * r * r / 3);
   }
   T sr = s1.r + s2.r; if (lt(sr * sr, d2)) {
-    return acos(T(-1)) * 4 * (s1.r * s1.r + s2.r * s2.r);
+    return make_pair(PI * 4 * (s1.r * s1.r + s2.r * s2.r),
+                     PI * 4 * (s1.r * s1.r * s1.r + s2.r * s2.r * s2.r) / 3);
   }
   T pd = (d2 + s1.r * s1.r - s2.r * s2.r) / 2;
   Plane3D pi = Plane3D(d, s1.o + d * pd / d2);
-  T ret = sphereHalfSpaceIntersectionSurfaceArea(s2, pi);
-  ret += sphereHalfSpaceIntersectionSurfaceArea(s1, Plane3D(-pi.n, -pi.d));
-  return ret;
-}
-
-// Determine the volume of the union of two spheres
-// Function Arguments:
-//   s1: the first sphere
-//   s2: the second sphere
-// Return Value: the volume of the union of the two spheres
-// Time Complexity: O(1)
-// Memory Complexity: O(1)
-T sphereSphereUnionVolume(const Sphere &s1, const Sphere &s2) {
-  pt3 d = s2.o - s1.o; T d2 = norm(d), dr = abs(s1.r - s2.r);
-  if (!lt(dr * dr, d2)) {
-    T r = max(s1.r, s2.r); return acos(T(-1)) * 4 * r * r * r / 3;
-  }
-  T sr = s1.r + s2.r; if (lt(sr * sr, d2)) {
-    return acos(T(-1)) * 4 * (s1.r * s1.r * s1.r + s2.r * s2.r * s2.r) / 3;
-  }
-  T pd = (d2 + s1.r * s1.r - s2.r * s2.r) / 2;
-  Plane3D pi = Plane3D(d, s1.o + d * pd / d2);
-  T ret = sphereHalfSpaceIntersectionVolume(s2, pi);
-  ret += sphereHalfSpaceIntersectionVolume(s1, Plane3D(-pi.n, -pi.d));
-  return ret;
+  pair<T, T> a = sphereHalfSpaceIntersectionSAV(s2, pi);
+  pair<T, T> b = sphereHalfSpaceIntersectionSAV(s1, Plane3D(-pi.n, -pi.d));
+  a.first += b.first; a.second += b.second; return a;
 }
