@@ -19,6 +19,7 @@ using namespace std;
 // Tested:
 //   https://ncpc20.kattis.com/problems/bigbrother
 //   https://maps19.kattis.com/problems/marshlandrescues
+//   https://dmoj.ca/problem/ccoprep3p3
 vector<pt> halfPlaneIntersection(vector<Line> lines) {
   Angle::setPivot(pt(0, 0));
   sort(lines.begin(), lines.end(), [&] (const Line &a, const Line &b) {

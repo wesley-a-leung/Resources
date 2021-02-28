@@ -6,7 +6,7 @@ using namespace std;
 // Functions for a 2D line
 struct Line {
   pt v; T c;
-  // ax + by = c
+  // ax + by = c, left side is ax + by >= c
   Line(T a = 0, T b = 0, T c = 0) : v(b, -a), c(c) {}
   // direction vector v with offset c
   Line(ref v, T c) : v(v), c(c) {}
