@@ -2,8 +2,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Binary search over a range for the first or last occurrence of a return value
-//   for a boolean function
+// Binary search over a range for the first or last occurrence of
+//   a return value for a boolean function
 // Template Arguments:
 //   ISFIRST: boolean of whether or not the first of last occurrence is being
 //     searched for
