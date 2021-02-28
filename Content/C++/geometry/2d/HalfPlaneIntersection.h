@@ -1,11 +1,13 @@
 #pragma once
 #include <bits/stdc++.h>
 #include "Point.h"
+#include "Angle.h"
 #include "Line.h"
 using namespace std;
 
 // Computes the intersection of half-planes defined by the left side of
 //   a set of lines
+// Angle::pivot is set to (0, 0)
 // Function Arguments:
 //   lines: a vector of lines representing the half-planes defined by the
 //     left side
@@ -18,14 +20,15 @@ using namespace std;
 //   https://ncpc20.kattis.com/problems/bigbrother
 //   https://maps19.kattis.com/problems/marshlandrescues
 vector<pt> halfPlaneIntersection(vector<Line> lines) {
+  Angle::setPivot(pt(0, 0));
   sort(lines.begin(), lines.end(), [&] (const Line &a, const Line &b) {
-    int s = sgn(arg(a.v) - arg(b.v));
-    return (s == 0 ? a.onLeft(b.proj(pt(0, 0))) : s) < 0;
+    Angle angA(a.v), angB(b.v);
+    return angA == angB ? a.onLeft(b.proj(pt(0, 0))) < 0 : angA < angB;
   });
   int N = lines.size(), front = 0, back = 0; vector<Line> q(N + 1, lines[0]);
   vector<pt> ret(N); for (int i = 1; i <= N; i++) {
     if (i == N) lines.push_back(q[front]);
-    if (eq(arg(lines[i - 1].v), arg(lines[i].v))) continue;
+    if (Angle(lines[i - 1].v) == Angle(lines[i].v)) continue;
     while (front < back && lines[i].onLeft(ret[back - 1]) < 0) back--;
     while (i != N && front < back && lines[i].onLeft(ret[front]) < 0) front++;
     pt inter; if (lineIntersection(lines[i], q[back], inter) != 1) continue;

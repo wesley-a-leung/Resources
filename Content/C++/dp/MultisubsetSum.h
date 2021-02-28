@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Solves the multisubset sum problem with the occurence of each sum (elements
+// Solves the multisubset sum problem with the occurrence of each sum (elements
 //   can be chosen multiple times)
 // Template Arguments:
 //   T: the type of the count

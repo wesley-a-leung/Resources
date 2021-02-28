@@ -53,27 +53,3 @@ pt rot(ref a, ref p, T theta) {
 }
 // rotated 90 degrees ccw
 pt perp(ref a) { return pt(-a.y, a.x); }
-
-// Sorts around the pivot point in polar order assuming the angles relative
-//   to the pivot are in the range [-PI, PI)
-// Points equal to the pivot are moved to the end
-// Template Arguments:
-//   It: the type of the iterator
-// Function Arguments:
-//   st: an iterator pointing to the first element in the array
-//   en: an iterator pointing to after the last element in the array
-//   pivot: the point to sort around
-// Return Value: an iterator to the first element equal to pivot
-// In practice, has a small constant
-// Time Complexity: O(N log N)
-// Memory Complexity: O(1)
-// Tested:
-//   https://judge.yosupo.jp/problem/sort_points_by_argument
-template <class It> It sortByAng(It st, It en, ref pivot) {
-  en = partition(st, en, [&] (ref p) { return p != pivot; });
-  It mid = partition(st, en, [&] (ref p) {
-    return eq(p.y, pivot.y) ? lt(p.x, pivot.x) : lt(p.y, pivot.y);
-  });
-  auto cmp = [&] (ref p, ref q) { return 0 < ccw(pivot, p, q); };
-  sort(st, mid, cmp); sort(mid, en, cmp); return en;
-}
