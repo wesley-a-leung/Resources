@@ -13,6 +13,8 @@ using namespace std;
 //   when looking from above (where up is the direction of the return vector)
 // Time Complexity: O(N)
 // Memory Complexity: O(1)
+// Tested:
+//   https://www.spoj.com/problems/CH3D/
 pt3 vectorArea2(const vector<pt3> &face) {
   pt3 ret(0, 0, 0); for (int i = 0, n = face.size(); i < n; i++)
     ret += face[i] * face[(i + 1) % n];
@@ -25,6 +27,8 @@ pt3 vectorArea2(const vector<pt3> &face) {
 // Return Value: the area of the face
 // Time Complexity: O(N)
 // Memory Complexity: O(1)
+// Tested:
+//   https://www.spoj.com/problems/CH3D/
 T faceArea(const vector<pt3> &face) { return abs(vectorArea2(face)) / T(2); }
 
 // Flips some of the faces of a polyhedron such that they are oriented
@@ -56,14 +60,30 @@ void reorient(vector<vector<pt3>> &faces) {
   }
 }
 
+// Returns the surface area of a polyhedron
+// Function Arguments:
+//   faces: a vector of vector of points representing
+//     the faces of the polyhedron with consistent orientation
+// Return Value: the surface area of the polyhedron
+// Time Complexity: O(N) for N total points
+// Memory Complexity: O(1)
+// Tested:
+//   https://www.spoj.com/problems/CH3D/
+T getSurfaceArea(const vector<vector<pt3>> &faces) {
+  T sa = 0; for (auto &&face : faces) sa += faceArea(face);
+  return sa;
+}
+
 // Returns 6 times the signed volume of a polyhedron
 // Function Arguments:
 //   faces: a vector of vector of points representing
 //     the faces of the polyhedron with consistent orientation
-// Return Value: 6 times the signed volume of the polygon, positive if
+// Return Value: 6 times the signed volume of the polyhedron, positive if
 //   all vector areas point outwards, negative if inwards
 // Time Complexity: O(N) for N total points
 // Memory Complexity: O(1)
+// Tested:
+//   https://www.spoj.com/problems/CH3D/
 T getVolume6(const vector<vector<pt3>> &faces) {
   T vol6 = 0; for (auto &&face : faces) vol6 += (vectorArea2(face) | face[0]);
   return vol6;
