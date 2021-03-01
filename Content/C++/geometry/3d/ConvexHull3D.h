@@ -11,7 +11,7 @@ using namespace std;
 // Return Value: a vector of faces in the convex hull, with each face being a
 //   vector of exactly 3 points, all facing outwards
 // In practice, has a large constant
-// Time Complexity: O(N log N)
+// Time Complexity: O(N log N) expected
 // Memory Complexity: O(N log N)
 // Tested:
 //   https://www.spoj.com/problems/CH3D/
