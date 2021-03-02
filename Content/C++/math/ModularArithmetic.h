@@ -72,6 +72,7 @@ template <class T> T subMod(T a, T b, T mod) {
 template <class T> T mulMod(T a, T b, T mod) { return a * b % mod; }
 
 // Computes base to the power pow modulo mod where mod * mod does not overflow
+// Assumes 0^0 = 1
 // Template Arguments:
 //   T: the type of base and mod
 //   U: the type of pow
@@ -102,7 +103,7 @@ template <class T, class U> T powMod(T base, U pow, T mod) {
 //   T: the type of a and p
 // Function Arguments:
 //   a: the value to find the inverse of, must be in the range [0, p)
-//   p: the prime mod
+//   p: the prime modulo
 // Return Value: the multiplicative inverse of a for a prime mod p
 // In practice, has a small constant
 // Time Complexity: O(log p)
@@ -118,7 +119,7 @@ template <class T> T mulInvModPrime(T a, T p) { return powMod(a, p - 2, p); }
 // Function Arguments:
 //   a: the dividend, must be in the range [0, p)
 //   b: the divisor, must be in the range [1, p)
-//   p: the prime mod
+//   p: the prime modulo
 // Return Value: a / b modulo p
 // In practice, has a small constant
 // Time Complexity: O(log p)
@@ -204,7 +205,7 @@ template <class T, class U> T powModOvf(T base, U pow, T mod) {
 //   T: the type of a and p
 // Function Arguments:
 //   a: the value to find the inverse of, must be in the range [0, p)
-//   p: the prime mod
+//   p: the prime modulo
 // Return Value: the multiplicative inverse of a for a prime mod p
 // In practice, has a small constant
 // Time Complexity: O(log p log mod)
@@ -223,7 +224,7 @@ template <class T> T mulInvModPrimeOvf(T a, T p) {
 // Function Arguments:
 //   a: the dividend, must be in the range [0, p)
 //   b: the divisor, must be in the range [1, p)
-//   p: the prime mod
+//   p: the prime modulo
 // Return Value: a / b modulo p
 // In practice, has a small constant
 // Time Complexity: O(log p log mod)

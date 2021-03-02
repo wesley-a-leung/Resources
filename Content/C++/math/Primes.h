@@ -239,7 +239,7 @@ struct EulersTotient {
 // Tested:
 //   https://dmoj.ca/problem/phantom3
 template <class T, class F> void segmentedSieve(T lo, T hi, F f) {
-  lo = max(lo, T(2)); T sqrtHi = sqrtl(hi) + 5;
+  lo = max(lo, T(2)); T sqrtHi = sqrtl(hi) + 2;
   while (sqrtHi * sqrtHi > hi) sqrtHi--;
   vector<bool> p1(sqrtHi + 1, false), p2(hi - lo + 1, false);
   p1[0] = p1[1] = true; for (T i = 2; i <= sqrtHi; i++) if (!p1[i]) {
