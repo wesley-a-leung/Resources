@@ -6,7 +6,7 @@ using namespace std;
 
 // Computes the nth tetration of a modulo mod
 // Template Arguments:
-//   T: the type of base
+//   T: the type of base and mod
 //   U: the type of the number of iterations
 // Function Arguments:
 //   a: the base
