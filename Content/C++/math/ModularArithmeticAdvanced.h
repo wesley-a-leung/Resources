@@ -1,6 +1,7 @@
 #pragma once
 #include <bits/stdc++.h>
 #include "ModularArithmetic.h"
+#include "GCD.h"
 #include "Primes.h"
 using namespace std;
 
