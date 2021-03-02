@@ -7,7 +7,7 @@ using namespace std;
 // Computes the nth tetration of a modulo mod
 // Template Arguments:
 //   T: the type of base
-//   U: the type of number of iterations
+//   U: the type of the number of iterations
 // Function Arguments:
 //   a: the base
 //   n: the number of iterations
@@ -19,12 +19,12 @@ using namespace std;
 // Memory Complexity: O(log(mod))
 // Tested:
 //   https://judge.yosupo.jp/problem/tetration_mod
-template <class T> T tetraMod(T a, T n, T mod) {
+template <class T, class U> T tetraMod(T a, U n, T mod) {
   if (mod == T(1)) return T(0);
-  if (a == T(0)) return (T(1) - n % T(2)) % mod;
-  if (n == T(0)) return T(1) % mod;
-  if (n == T(1)) return a % mod;
-  if (n == T(2)) return powMod(a % mod, a, mod);
+  if (a == T(0)) return (T(1) - T(n % U(2))) % mod;
+  if (n == U(0)) return T(1) % mod;
+  if (n == U(1)) return a % mod;
+  if (n == U(2)) return powMod(a % mod, a, mod);
   T p = phi(mod); return powMod(a % mod, tetraMod(a, n - 1, p) + p, mod);
 }
 
