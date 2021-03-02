@@ -97,7 +97,7 @@ template <class T> T sqrtMod(T a, T p) {
   T g = powMod(n % p, s, p); while (true) {
     T t = b, m = T(0); for (; m < r && t != T(1); m++) t = mulMod(t, t, p);
     if (m == T(0)) return x;
-    T gs = powMod(g, 1LL << (r - m - 1), p);
+    T gs = g; for (int i = 0; i < r - m - 1; i++) gs = mulMod(gs, gs, p);
     g = mulMod(gs, gs, p); x = mulMod(x, gs, p); b = mulMod(b, g, p); r = m;
   }
   return -1;
