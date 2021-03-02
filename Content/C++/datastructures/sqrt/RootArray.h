@@ -4,7 +4,9 @@ using namespace std;
 
 // Decomposes the array recursively into N ^ (1 / R) containers of
 //   size N ^ ((R - 1) / R) multiplied by a scale factor
-// Indices are 0-indexed
+// Indices are 0-indexed and ranges are inclusive with the exception of
+//   functions that accept two iterators as a parameter, such as
+//   the constructor, which are exclusive
 // Template Arguments:
 //   R: the number of recursive levels
 //   T: the type of data being stored
@@ -15,11 +17,11 @@ using namespace std;
 // Functions:
 //   insert(val, cmp): inserts val before the first index i where
 //     cmp(at(i), val) is false assuming the data is sorted by cmp
-//   insert_at(k, val): inserts val before index k
+//   insert_at(k, val): inserts val before index k (0 <= k <= N)
 //   erase(val, cmp): erases the element at the first index i where
 //     where cmp(at(i), val) and cmp(val, at(i)) are false, if it exists,
 //     returns true if the element was erased, false otherwise
-//   erase_at(k): erases the element at index k
+//   erase_at(k): erases the element at index k (0 <= k < N)
 //   size(): returns the size of the array
 //   empty(): returns whether or not the array is empty
 //   front(): accessor or modifier for the first element in the array
@@ -28,7 +30,7 @@ using namespace std;
 //   push_back(val): adds the val to the back of the array
 //   pop_front(): removes the first element in the array
 //   pop_back(): removes the last element in the array
-//   at(k): accessor or modifier for the element at index k 
+//   at(k): accessor or modifier for the element at index k (0 <= k < N)
 //   below(val, cmp): returns the index and a pointer to
 //     the last element x where cmp(x, val) is true,
 //     or (-1, nullptr) if none exist
@@ -73,7 +75,7 @@ template <const int R, class T> struct RootArray {
   RootArray(double SCALE = 6) : N(0), SCALE(SCALE) { assert(SCALE > 0); }
   template <class It> RootArray(const It st, const It en, double SCALE = 6)
       : N(en - st), SCALE(SCALE) {
-    assert(N >= 0); assert(SCALE > 0); if (N == 0) return;
+    assert(SCALE > 0); if (N == 0) return;
     int rootN = getRootN(); A.reserve((N - 1) / rootN + 1);
     for (It i = st; i < en; i += rootN)
       A.emplace_back(i, min(i + rootN, en), SCALE);
@@ -82,9 +84,10 @@ template <const int R, class T> struct RootArray {
     int rootN = getRootN(); if (int(A[i].size()) > 2 * rootN) {
       vector<T> tmp; tmp.reserve(int(A[i].size()) - 2 * rootN);
       while (int(A[i].size()) > rootN) {
-        tmp.push_back(A[i].back()); A[i].pop_back();
+        tmp.push_back(move(A[i].back())); A[i].pop_back();
       }
-      A.emplace(A.begin() + i + 1, tmp.rbegin(), tmp.rend(), SCALE);
+      A.emplace(A.begin() + i + 1, make_move_iterator(tmp.rbegin()),
+                make_move_iterator(tmp.rend()), SCALE);
     }
   }
   template <class Comp> void insert(const T &val, Comp cmp) {
@@ -94,7 +97,7 @@ template <const int R, class T> struct RootArray {
     A[i].insert(val, cmp); split(i);
   }
   void insert_at(int k, const T &val) {
-    assert(0 <= k && k <= N); if (k == N) { push_back(val); return; }
+    if (k == N) { push_back(val); return; }
     N++; int i = 0; while (int(A[i].size()) <= k) k -= int(A[i++].size());
     A[i].insert_at(k, val); split(i);
   }
@@ -105,16 +108,15 @@ template <const int R, class T> struct RootArray {
     N--; return true;
   }
   void erase_at(int k) {
-    assert(0 <= k && k < N); int i = 0;
-    while (int(A[i].size()) <= k) k -= int(A[i++].size());
+    int i = 0; while (int(A[i].size()) <= k) k -= int(A[i++].size());
     N--; A[i].erase_at(k); if (A[i].empty()) A.erase(A.begin() + i);
   }
   int size() const { return N; }
   bool empty() const { return N == 0; }
-  const T &front() const { assert(N > 0); return A.front().front(); }
-  T &front() { assert(N > 0); return A.front().front(); }
-  const T &back() const { assert(N > 0); return A.back().back(); }
-  T &back() { assert(N > 0); return A.back().back(); }
+  const T &front() const { return A.front().front(); }
+  T &front() { return A.front().front(); }
+  const T &back() const { return A.back().back(); }
+  T &back() { return A.back().back(); }
   void push_front(const T &val) {
     if (N++ == 0) { A.emplace_back(SCALE); A.back().push_back(val); return; }
     A.front().push_front(val); split(0);
@@ -124,21 +126,19 @@ template <const int R, class T> struct RootArray {
     A.back().push_back(val); split(int(A.size()) - 1);
   }
   void pop_front() {
-    assert(N > 0); N--; A.front().pop_front();
+    N--; A.front().pop_front();
     if (A.front().empty()) A.erase(A.begin());
   }
   void pop_back() {
-    assert(N > 0); N--; A.back().pop_back();
+    N--; A.back().pop_back();
     if (A.back().empty()) A.pop_back();
   }
   const T &at(int k) const {
-    assert(0 <= k && k < N); int i = 0;
-    while (int(A[i].size()) <= k) k -= int(A[i++].size());
+    int i = 0; while (int(A[i].size()) <= k) k -= int(A[i++].size());
     return A[i].at(k);
   }
   T &at(int k) {
-    assert(0 <= k && k < N); int i = 0;
-    while (int(A[i].size()) <= k) k -= int(A[i++].size());
+    int i = 0; while (int(A[i].size()) <= k) k -= int(A[i++].size());
     return A[i].at(k);
   }
   template <class Comp> pair<int, T *> below(const T &val, Comp cmp) {

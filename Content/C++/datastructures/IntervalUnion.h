@@ -52,6 +52,7 @@ struct IntervalUnion : public set<pair<T, T>, PairCmp<Cmp>> {
 
 // Given a set of sorted intervals (by the PairCmp struct), combine
 //   them into disjoint intervals of the form [L, R]
+// Assumes range is sorted, similar to std::unique
 // Template Arguments:
 //   It: the type of the iterator for the array of pairs
 //     with the first element being the inclusive left bound of the interval

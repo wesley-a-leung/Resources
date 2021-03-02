@@ -8,6 +8,7 @@ using namespace std;
 // Maximum number of disjoint intervals is equivalent to the minimum number of
 //   points to cover each interval (with the points being the right endpoints
 //   of the disjoint intervals)
+// Assumes range is sorted, similar to std::unique
 // Template Arguments:
 //   It: the type of the iterator for the array of pairs
 //     with the first element being the inclusive left bound of the interval

@@ -5,6 +5,7 @@ using namespace std;
 // Solves the minimum interval cover problem
 // Given a set of intervals in the form [L, R] which are sorted by L,
 //   find the minimum number of intervals to cover a target interval
+// Assumes range is sorted, similar to std::unique
 // Template Arguments
 //   It: the type of the iterator for the array of pairs
 //     with the first element being the inclusive left bound of the interval
