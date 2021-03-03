@@ -13,6 +13,7 @@ using namespace std;
 //       size() const: returns the number of vertices in the graph
 //   color: a vector of booleans of size V indicating the color of each vertex
 // Fields:
+//   V: the number of vertices in the graph
 //   cardinality: the cardinality of the maximum matching
 //   mate: the other vertex in the matching, or -1 if unmatched
 //   inCover: a vector of booleans indicating whether a vertex is in the
