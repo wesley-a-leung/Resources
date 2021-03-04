@@ -60,6 +60,43 @@ template <class T> vector<pair<T, int>> primeFactorWithCount(T x) {
   return ret;
 }
 
+// Computes phi(x) which is the number of positive integers less than or equal
+//   to x that are relatively prime to x
+// Template Arguments:
+//   T: the type of x
+// Function Arguments:
+//   x: the value to find phi(x)
+// Return Value: phi(x)
+// In practice, has a small constant
+// Time Complexity: O(sqrt x)
+// Memory Complexity: O(1)
+// Tested:
+//   https://www.spoj.com/problems/ETF/
+template <class T> T phi(T x) {
+  T ret = x; for (T i = 2; i * i <= x; i++) if (x % i == 0)
+    for (ret -= ret / i; x % i == 0; x /= i);
+  if (x > 1) ret -= ret / x;
+  return ret;
+}
+
+// Computes mobius(x), which is 1 if x contains a squared prime factor,
+//   -1 if x has an odd number of prime factors with no squares,
+//   1 if x has an even number of prime factors with no squares
+// Template Arguments:
+//   T: the type of x
+// Function Arguments:
+//   x: the value to find mobius(x)
+// Return Value: the value of mobius(x)
+// In practice, has a small constant
+// Time Complexity: O(sqrt x)
+// Memory Complexity: O(1)
+template <class T> int mobius(T x) {
+  int ret = 1; for (T i = 2; i * i <= x; i++)
+    if (x % i == 0) { x /= i; ret *= -1; if (x % i == 0) return 0; }
+  if (x > 1) ret *= -1;
+  return ret;
+}
+
 // Finds the factors of x
 // Template Arguments:
 //   T: the type of x
@@ -136,16 +173,21 @@ struct Sieve {
   bool isPrime(int x) { return x == 2 || (x % 2 == 1 && p[x / 2]); }
 };
 
-// Sieve of Erathosthenes to identify primes and the smallest prime factor of
-//   each number from 1 to N
+// Sieve of Erathosthenes to identify primes, the smallest prime factor of
+//   each number from 1 to N, the phi function, and the mobius function
 // Constructor Arguments:
 //   N: the maximum value
 // Fields:
 //   isPrime: a vector of N + 1 booleans inidicating whether each integer is
 //     prime or not
+//   primes: a vector of all primes less than or equal to N
 //   SPF: a vector of N + 1 integers representing the smallest prime factor
 //     less than or equal to each integer
-//   primes: a vector of all primes less than or equal to N
+//   phi: a vector of integers with phi[i] equal to the number of positive
+//     integers less than or equal to i that are relatively prime to i
+//   mobius: a vector of chars with mobius[i] equal to 1 if i contains a
+//     squared prime factor, -1 if it has an odd number of prime factors with
+//     no squares, 1 if it has an even number of prime factors with no squares
 // Functions:
 //   primeFactor(x): returns a sorted vector of integers with the
 //     prime factorization of x
@@ -157,16 +199,21 @@ struct Sieve {
 //   primeFactor, primeFactorWithCount: O(log x)
 // Memory Complexity: O(N)
 // Tested:
-//   https://codeforces.com/contest/1034/problem/A
 //   https://tlx.toki.id/problems/troc-16/E
+//   https://dmoj.ca/problem/nccc7j5
 struct SievePrimeFactoring {
-  vector<bool> isPrime; vector<int> SPF, primes;
-  SievePrimeFactoring(int N) : isPrime(N + 1, true), SPF(N + 1) {
-    isPrime[0] = isPrime[1] = false; for (int i = 2; i <= N; i++) {
-      if (isPrime[i]) primes.push_back(SPF[i] = i);
-      for (int j = 0; j < int(primes.size())
-          && i * primes[j] <= N && primes[j] <= SPF[i]; j++) {
-        isPrime[i * primes[j]] = false; SPF[i * primes[j]] = primes[j];
+  vector<bool> isPrime; vector<int> primes, SPF, phi; vector<char> mobius;
+  SievePrimeFactoring(int N)
+      : isPrime(N + 1, true), SPF(N + 1, 0), phi(N + 1, 0), mobius(N + 1, 1) {
+    isPrime[0] = isPrime[1] = false; phi[1] = 1; for (int i = 2; i <= N; i++) {
+      if (isPrime[i]) {
+        primes.push_back(SPF[i] = i); phi[i] = i - 1; mobius[i] = -1;
+      }
+      for (int p : primes) {
+        if (i * p > N) break;
+        isPrime[i * p] = false; SPF[i * p] = p;
+        if (i % p == 0) { phi[i * p] = phi[i] * p; mobius[i * p] = 0; break; }
+        phi[i * p] = phi[i] * phi[p]; mobius[i * p] = mobius[i] * -1;
       }
     }
   }
@@ -180,48 +227,6 @@ struct SievePrimeFactoring {
       for (int spf = SPF[x]; x % spf == 0; x /= spf) ret.back().second++;
     }
     return ret;
-  }
-};
-
-// Computes phi(x) which is the number of positive integers less than or equal
-//   to x that are relatively prime to x
-// Template Arguments:
-//   T: the type of x
-// Function Arguments:
-//   x: the value to find phi(x)
-// Return Value: phi(x)
-// In practice, has a small constant
-// Time Complexity: O(sqrt x)
-// Memory Complexity: O(1)
-// Tested:
-//   https://www.spoj.com/problems/ETF/
-template <class T> T phi(T x) {
-  T ret = x; for (T i = 2; i * i <= x; i++) if (x % i == 0)
-    for (ret -= ret / i; x % i == 0; x /= i);
-  if (x > 1) ret -= ret / x;
-  return ret;
-}
-
-// Euler's Totient function
-// Constructor Arguments:
-//   N: the maximum value
-// Fields:
-//   phi: a vector of integers with phi[i] equal to the number of positive
-//     integers less than or equal to i that are relatively prime to i
-// In practice, has a small constant
-// Time Complexity:
-//   constructor: O(N log log N)
-// Memory Complexity: O(N)
-// Tested:
-//   https://www.spoj.com/problems/ETF/
-struct EulersTotient {
-  vector<int> phi;
-  EulersTotient(int N) : phi(N + 1) {
-    iota(phi.begin(), phi.end(), 0);
-    for (int i = 2; i <= N; i++) if (phi[i] == i) {
-      phi[i] = i - 1;
-      for (int j = i * 2; j <= N; j += i) phi[j] = phi[j] / i * (i - 1);
-    }
   }
 };
 
