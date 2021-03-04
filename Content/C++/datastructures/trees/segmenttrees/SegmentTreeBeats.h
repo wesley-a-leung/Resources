@@ -15,7 +15,7 @@ using namespace std;
 //     Required Functions:
 //       static qdef(): returns the query default value of type Data
 //       static ldef(): returns the lazy default value of type Lazy
-//       staticMakeLazy(d, a): returns a lazy value created from the Data d
+//       static makeLazy(d, a): returns a lazy value created from the Data d
 //         and Arg a
 //       static breakCond(d, a): returns the condition for when to stop the
 //         recusion based on Data d and Arg a
