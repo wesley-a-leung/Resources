@@ -45,9 +45,10 @@ void reorient(vector<vector<pt3>> &faces) {
       pt3 a = faces[v][i], b = faces[v][(i + 1) % m];
       auto it = seen.find(make_pair(a, b)); bool f = true;
       if (it == seen.end()) { it = seen.find(make_pair(b, a)); f = false; }
-      if (it != seen.end()) {
+      if (it == seen.end()) seen[make_pair(a, b)] = v;
+      else {
         int w = it->second; G[v].emplace_back(w, f); G[w].emplace_back(v, f);
-      } else seen[make_pair(a, b)] = v;
+      }
     }
   vector<char> flip(n, -1); vector<int> q(n); int front = 0, back = 0;
   flip[q[back++] = 0] = 0; while (front < back) {

@@ -4,15 +4,15 @@
 using namespace std;
 
 // Computes the Delaunay Triangulation of a set of distinct points
-// Collinear points have no triangulation
+// If all points are collinear points, there is triangulation
 // If there are 4 or more points on the same circle, the triangulation is
 //   ambiguous, otherwise it is unique
 // Each circumcircle does not completely contain any of the input points
 // Constructor Arguments:
 //   P: the distinct points
 // Fields:
-//   triangulation: a vector of tuple of 3 points, representing a triangle in
-//     the triangulation
+//   tri: a vector of arrays of 3 points, representing a triangle in
+//     the triangulation, points given in ccw order
 // In practice, has a moderate constant
 // Time Complexity:
 //   construction: O(N log N)
@@ -31,7 +31,7 @@ struct DelaunayTriangulation {
     Q prv() { return rot->o->rot; }
     Q nxt() { return r()->prv(); }
   };
-  deque<Quad> buf; vector<tuple<pt, pt, pt>> triangulation;
+  deque<Quad> buf; vector<array<pt, 3>> tri;
   Q makeQuad(ref p) { buf.emplace_back(p); return &buf.back(); }
   bool circ(ref p, ref a, ref b, ref c) {
     T p2 = norm(p), A = norm(a) - p2, B = norm(b) - p2, C = norm(c) - p2;
@@ -95,8 +95,8 @@ struct DelaunayTriangulation {
     };
     add(); P.clear();
     while (qi < int(q.size())) if (!(e = q[qi++])->mark) add();
-    assert(P.size() % 3 == 0); triangulation.reserve(P.size() / 3);
+    assert(P.size() % 3 == 0); tri.reserve(P.size() / 3);
     for (int i = 0; i < int(P.size()); i += 3)
-      triangulation.emplace_back(P[i], P[i + 1], P[i + 2]);
+      tri.emplace_back(array<pt, 3>{P[i], P[i + 1], P[i + 2]});
   }
 };
