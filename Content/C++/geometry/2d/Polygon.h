@@ -17,7 +17,7 @@ int mod(int i, int n) { return i < n ? i : i - n; }
 // Memory Complexity: O(1)
 // Tested:
 //   https://open.kattis.com/problems/polygonarea
-//   https://open.kattis.com/problems/crane
+//   https://icpc.kattis.com/problems/crane
 T getArea2(const vector<pt> &poly) {
   T ret = 0; int n = poly.size();
   for (int i = 0; i < n; i++) ret += cross(poly[i], poly[mod(i + 1, n)]);
@@ -31,7 +31,7 @@ T getArea2(const vector<pt> &poly) {
 // Time Complexity: O(N)
 // Memory Complexity: O(1)
 // Tested:
-//   https://open.kattis.com/problems/crane
+//   https://icpc.kattis.com/problems/crane
 pt getCentroid(const vector<pt> &poly) {
   T A2 = 0; pt cen(0, 0); int n = poly.size(); for (int i = 0; i < n; i++) {
     T a = cross(poly[i], poly[mod(i + 1, n)]); A2 += a;

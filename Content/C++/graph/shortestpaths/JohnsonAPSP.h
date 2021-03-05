@@ -74,7 +74,7 @@ template <class T, const int MAXV> struct JohnsonAPSP {
         std::priority_queue<pair<T, int>, vector<pair<T, int>>,
                             greater<pair<T, int>>> PQ;
         PQ.emplace(dist[s][s] = T(), s); while (!PQ.empty()) {
-          T d = PQ.top().first; int v = PQ.top().second; PQ.pop();
+          T d; int v; tie(d, v) = PQ.top(); PQ.pop();
           if (d > dist[s][v]) continue;
           for (auto &&e : G[v]) {
             int w = e.first; T weight = e.second + h[v] - h[w];

@@ -44,8 +44,7 @@ template <class T> struct DijkstraSSSP {
                         greater<pair<T, int>>> PQ;
     for (int s : srcs) PQ.emplace(dist[s] = T(), s);
     while (!PQ.empty()) {
-      T d = PQ.top().first; int v = PQ.top().second; PQ.pop();
-      if (d > dist[v]) continue;
+      T d; int v; tie(d, v) = PQ.top(); PQ.pop(); if (d > dist[v]) continue;
       for (auto &&e : G[v]) if (dist[e.first] > dist[v] + e.second)
         PQ.emplace(dist[e.first] = dist[par[e.first] = v] + e.second, e.first);
     }

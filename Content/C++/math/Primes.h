@@ -79,7 +79,7 @@ template <class T> T phi(T x) {
   return ret;
 }
 
-// Computes mobius(x), which is 1 if x contains a squared prime factor,
+// Computes mobius(x), which is 0 if x contains a squared prime factor,
 //   -1 if x has an odd number of prime factors with no squares,
 //   1 if x has an even number of prime factors with no squares
 // Template Arguments:
@@ -178,14 +178,14 @@ struct Sieve {
 // Constructor Arguments:
 //   N: the maximum value
 // Fields:
-//   isPrime: a vector of N + 1 booleans inidicating whether each integer is
+//   isPrime: a vector of N + 1 booleans indicating whether each integer is
 //     prime or not
 //   primes: a vector of all primes less than or equal to N
 //   SPF: a vector of N + 1 integers representing the smallest prime factor
 //     less than or equal to each integer
 //   phi: a vector of integers with phi[i] equal to the number of positive
 //     integers less than or equal to i that are relatively prime to i
-//   mobius: a vector of chars with mobius[i] equal to 1 if i contains a
+//   mobius: a vector of chars with mobius[i] equal to 0 if i contains a
 //     squared prime factor, -1 if it has an odd number of prime factors with
 //     no squares, 1 if it has an even number of prime factors with no squares
 // Functions:
@@ -230,7 +230,7 @@ struct SievePrimeFactoring {
   }
 };
 
-// Segmented Sieve of Erathosthenes to identify primes between lo and hi
+// Segmented Sieve of Eratosthenes to identify primes between lo and hi
 // Template Arguments:
 //   T: the type of lo and hi
 //   F: the type of f

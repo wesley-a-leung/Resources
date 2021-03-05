@@ -42,7 +42,7 @@ template <class T> struct StoerWagnerGlobalMinCut {
     if (v == w) return;
     G[v].emplace_back(w, weight, int(G[w].size()));
     G[w].emplace_back(v, weight, int(G[v].size()) - 1);
-  } 
+  }
   StoerWagnerGlobalMinCut(int V, T INF = numeric_limits<T>::max())
       : V(V), G(V), cut(V, false), cutWeight(INF), INF(INF) {}
   T globalMinCut() {
@@ -56,7 +56,7 @@ template <class T> struct StoerWagnerGlobalMinCut {
       for (auto &&e : H[0]) if (ptr[e.to] != PQ.end())
         PQ.modify(ptr[e.to], make_pair(W[e.to] += e.weight, e.to));
       for (int i = 0, v, last = 0; i < phase; i++, last = v) {
-        T w = PQ.top().first; v = PQ.top().second; PQ.pop(); ptr[v] = PQ.end();
+        T w; tie(w, v) = PQ.top(); PQ.pop(); ptr[v] = PQ.end();
         if (i == phase - 1) {
           if (cutWeight > w) {
             cutWeight = w; for (int x = 0; x < V; x++) cut[x] = par[x] == v;
