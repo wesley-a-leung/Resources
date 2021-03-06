@@ -49,7 +49,6 @@ using namespace std;
 //     to the node constructor
 //   clear(x): adds all nodes in the subtree of x to the deleted buffer
 // In practice, has a moderate constant, not as fast as segment trees
-//   and slightly faster than Treap
 // Time Complexity:
 //   build, clear: O(N)
 //   makeNode: O(1)

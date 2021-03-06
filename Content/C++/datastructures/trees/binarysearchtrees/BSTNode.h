@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Sample node structs for Splay, Treap, DynamicRangeOperations,
+// Sample node structs for Splay, DynamicRangeOperations,
 //   and LinkCutTree with different required fields required for each
 
 // Sample node class for a single value of type T, supporting range reversals,

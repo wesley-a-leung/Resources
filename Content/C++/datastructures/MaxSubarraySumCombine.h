@@ -3,7 +3,7 @@
 using namespace std;
 
 // Combine struct used for maximum non empty subarray
-//   for Segment Trees, Implict Treaps, Link Cut Trees, etc
+//   for Segment Trees, Dynamic Range Operations, Link Cut Trees, etc
 // Template Arguments:
 //   T: the type of the element
 // Functions:

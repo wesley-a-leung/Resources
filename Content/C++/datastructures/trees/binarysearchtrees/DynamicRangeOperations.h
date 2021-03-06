@@ -1,9 +1,9 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "Splay.h"
 using namespace std;
 
-// Operations on ranges of a dynamic array,
-//   backed by a generic binary search tree (such as Treap or Splay)
+// Operations on ranges of a dynamic array, backed by a splay tree
 // Supports point/range updates/queries, range reversals,
 //   and binary searching as long as Node contains the appropriate flags
 // Also supports insertion and erasing at an index or with a comparator
@@ -13,50 +13,34 @@ using namespace std;
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
 // Template Arguments:
-//   Tree: either Treap or Splay, each may have additional required fields
-//       or functions
+//   Node: typedef/using of the node class containing information about
+//       each node in the tree
 //     Required Fields:
-//       Node: typedef/using of the node class containing information about
-//           each node in the tree
-//         Required Fields:
-//           Data: the data type
-//           Lazy: the lazy type
-//           static const RANGE_UPDATES: a boolean indicating whether
-//             range updates are permitted
-//           static const RANGE_QUERIES: a boolean indicating whether
-//             range queries are permitted
-//           static const RANGE_REVERSALS: a boolean indicating whether
-//             range reversals are permitted
-//           l: a pointer to the left child
-//           r: a pointer to the right child
-//           val: the value of type Data being stored
-//           lz: only required if RANGE_UPDATES is true, the value of type
-//             Lazy to be propagated
-//           sbtr: only required if RANGE_QUERIES is true, the aggregate
-//             value of type Data for the subtree
-//         Required Functions:
-//           constructor(v): initializes a node with the value v
-//           propagate(): propagates the current node's lazy information
-//             (including rev) to its children
-//           apply(v): applies the lazy value v to the node
-//           reverse(): only required if RANGE_REVERSALS is true, reverse
-//             this node's subtree (aggregate data and any lazy
-//             flags should be reversed)
-//           static qdef(): only required if RANGE_QUERIES is true, returns the
-//             query default value
+//       Data: the data type
+//       Lazy: the lazy type
+//       static const RANGE_UPDATES: a boolean indicating whether
+//         range updates are permitted
+//       static const RANGE_QUERIES: a boolean indicating whether
+//         range queries are permitted
+//       static const RANGE_REVERSALS: a boolean indicating whether
+//         range reversals are permitted
+//       l: a pointer to the left child
+//       r: a pointer to the right child
+//       val: the value of type Data being stored
+//       lz: only required if RANGE_UPDATES is true, the value of type
+//         Lazy to be propagated
+//       sbtr: only required if RANGE_QUERIES is true, the aggregate
+//         value of type Data for the subtree
 //     Required Functions:
-//       makeNode(v): creates a new node passing v to the node constructor
-//       applyToRange(root, i, j, f): applies the function f (accepting a
-//         node pointer or reference to a node pointer) to a node x where x
-//         is the disconnected subtree with indices in the range [i, j] for the
-//         tree rooted at root (passed by reference)
-//       select(x, k): returns the kth node in the subtree of x
-//       getFirst(x, v, cmp): returns the first node y (and its index) in the
-//         subtree of x where cmp(y->val, v) returns false
-//       build(N, f): builds a tree with N nodes using a generating function f
-//         and returns the ith element on the ith call, which is passes
-//         to the node constructor
-//       clear(x): adds all nodes in the subtree of x to the deleted buffer
+//       constructor(v): initializes a node with the value v
+//       propagate(): propagates the current node's lazy information
+//         (including rev) to its children
+//       apply(v): applies the lazy value v to the node
+//       reverse(): only required if RANGE_REVERSALS is true, reverse
+//         this node's subtree (aggregate data and any lazy
+//         flags should be reversed)
+//       static qdef(): only required if RANGE_QUERIES is true, returns the
+//         query default value
 // Constructor Arguments:
 //   N: the size of the array
 //   f: a generating function that returns the ith element on the ith call,
@@ -101,21 +85,15 @@ using namespace std;
 //     aggregate value of the nodes between index i and j inclusive,
 //     Node::qdef() if empty
 //   values(): returns a vector of the values of all nodes in the tree
-// Time Complexity if Treap or Splay is used:
-//   constructor: O(N) expected for Treap,
-//                O(N) for Splay
-//   insert, insert_at: O(log N + M) expected for Treap,
-//                      O(log N + M) amortized for Splay,
-//                      each for M inserted elements
-//   erase: erase_at: O(log N + M) expected for Treap,
-//                    O(log N + M) amortized for Splay,
-//                    each for M deleted elements
+// Time Complexity:
+//   constructor: O(N)
+//   insert, insert_at: O(log N + M) amortized for M inserted elements
+//   erase: erase_at: O(log N + M) amortized for M deleted elements
 //   update, reverse, at, lower_bound, upper_bound, find, query:
-//     O(log N) expected for Treap,
-//     O(log N) amortized for Splay
+//     O(log N) amortized
 //   values: O(N)
 //   size: O(1)
-// Memory Complexity if Treap or Splay is used: O(N)
+// Memory Complexity: O(N)
 // Tested:
 //   https://dmoj.ca/problem/ds4 (insert, erase, at, find, values)
 //   https://codeforces.com/contest/863/problem/D (reverse)
@@ -124,9 +102,9 @@ using namespace std;
 //     (insert_at, erase_at, range update, reverse, range queries)
 //   https://judge.yosupo.jp/problem/dynamic_sequence_range_affine_range_sum
 //     (insert_at, erase_at, range update, reverse, range queries)
-template <class Tree> struct DynamicRangeOperations : public Tree {
-  using Node = typename Tree::Node; using Data = typename Node::Data;
-  using Lazy = typename Node::Lazy; Node *root;
+template <class Node> struct DynamicRangeOperations : public Splay<Node> {
+  using Data = typename Node::Data; using Lazy = typename Node::Lazy;
+  Node *root; using Tree = Splay<Node>;
   using Tree::makeNode; using Tree::applyToRange; using Tree::select;
   using Tree::getFirst; using Tree::build; using Tree::clear;
   template <class F> DynamicRangeOperations(int N, F f) : root(build(N, f)) {}
