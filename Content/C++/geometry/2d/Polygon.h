@@ -12,7 +12,7 @@ int mod(int i, int n) { return i < n ? i : i - n; }
 // Function Arguments:
 //   poly: the points of the simple polygon
 // Return Value: twice the signed area of the polygon, positive if
-//   counterclockwise, negative if clockwise
+//   ccw, negative if cw
 // Time Complexity: O(N)
 // Memory Complexity: O(1)
 // Tested:
@@ -43,7 +43,7 @@ pt getCentroid(const vector<pt> &poly) {
 // Determines the orientation of a convex polygon
 // Function Arguments:
 //   poly: the points of the convex polygon
-// Return Value: 1 if counterclockwise, 1 if clockwise, 0 if a point or a line
+// Return Value: 1 if ccw, 1 if cw, 0 if a point or a line
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
 int isCcwConvexPolygon(const vector<pt> &poly) {
@@ -53,7 +53,7 @@ int isCcwConvexPolygon(const vector<pt> &poly) {
 // Determines the orientation of a simple polygon
 // Function Arguments:
 //   poly: the points of the simple polygon
-// Return Value: 1 if counterclockwise, 1 if clockwise, 0 if a point or a line
+// Return Value: 1 if ccw, 1 if cw, 0 if a point or a line
 // Time Complexity: O(N)
 // Memory Complexity: O(1)
 // Tested:
