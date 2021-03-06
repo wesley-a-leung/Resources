@@ -75,7 +75,7 @@ template <class _Node> struct Treap {
     if (deleted.empty()) { TR.emplace_back(v); return &TR.back(); }
     Node *x = deleted.back(); deleted.pop_back(); *x = TreapNode(v); return x;
   }
-  long long pri(Node *x) { return static_cast<TreapNode*>(x)->pri; }
+  long long pri(Node *x) { return static_cast<TreapNode *>(x)->pri; }
   void merge(Node *&x, Node *l, Node *r) {
     if (l) l->propagate();
     if (r) r->propagate();
