@@ -29,6 +29,26 @@ using namespace std;
 //     val does not compare less than that element
 //   belowInd(val): returns the index of the largest element that
 //     compares less than val
+//   aboveVal(val): returns a pointer to the smallest element where
+//     val compares less than that element, nullptr if it does not exist
+//   ceilingVal(val): returns a pointer to the smallest element that
+//     does not compare less than val, nullptr if it does not exist
+//   floorVal(val): returns a pointer to the largest element where val does not
+//     compare less than that element, nullptr if it does not exist
+//   belowVal(val): returns a pointer to the largest element that
+//     compares less than val, nullptr if it does not exist
+//   above(val): returns a pair containing the index and a pointer to the
+//     smallest element where val compares less than that element,
+//     pointer is nullptr if it does not exist
+//   ceiling(val): returns a pair containing the index and a pointer to the
+//     smallest element that does not compare less than val,
+//     pointer is nullptr if it does not exist
+//   floor(val): returns a pair containing the index and a pointer to the
+//     largest element where val does not compare less than that element,
+//     pointer is nullptr if it does not exist
+//   below(val): returns a pair containing the index and a pointer to the
+//     largest element that compares less than val,
+//     pointer is nullptr if it does not exist
 //   contains(val): returns whether val is in the multiset or not
 //   count(lo, hi): returns the number of values in the range [lo, hi]
 //   empty(): returns whether the multiset is empty or not
@@ -42,8 +62,9 @@ using namespace std;
 //   insert: O(1) amortized
 //   rebuild: O(sqrt N)
 //   empty, size, clear: O(1)
-//   floorInd, ceilingInd, aboveInd, belowInd, contains, count:
-//     O(sqrt N) amortized
+//   floorInd, ceilingInd, aboveInd, belowInd: O(sqrt N) amortized
+//   floorVal, ceilingVal, aboveVal, belowVal: O(sqrt N) amortized
+//   floor, ceiling, above, below, contains, count: O(sqrt N) amortized
 //   values: O(N)
 // Memory Complexity: O(N)
 // Tested:
@@ -85,6 +106,72 @@ template <class T, class Cmp = less<T>> struct SqrtBufferSimple {
   }
   int floorInd(const T &val) { return aboveInd(val) - 1; }
   int belowInd(const T &val) { return ceilingInd(val) - 1; }
+  T *aboveVal(const T &val) {
+    rebuild(); T *y = nullptr;
+    auto it = upper_bound(large.begin(), large.end(), val, Cmp());
+    if (it != large.end()) y = &*it;
+    for (auto &&x : small) if (Cmp()(val, x) && (!y || Cmp()(x, *y))) y = &x;
+    return y;
+  }
+  T *ceilingVal(const T &val) {
+    rebuild(); T *y = nullptr;
+    auto it = lower_bound(large.begin(), large.end(), val, Cmp());
+    if (it != large.end()) y = &*it;
+    for (auto &&x : small) if (!Cmp()(x, val) && (!y || Cmp()(x, *y))) y = &x;
+    return y;
+  }
+  T *floorVal(const T &val) {
+    rebuild(); T *y = nullptr;
+    auto it = upper_bound(large.begin(), large.end(), val, Cmp());
+    if (it != large.begin()) y = &*--it;
+    for (auto &&x : small) if (!Cmp()(val, x) && (!y || Cmp()(*y, x))) y = &x;
+    return y;
+  }
+  T *belowVal(const T &val) {
+    rebuild(); T *y = nullptr;
+    auto it = lower_bound(large.begin(), large.end(), val, Cmp());
+    if (it != large.begin()) y = &*--it;
+    for (auto &&x : small) if (Cmp()(x, val) && (!y || Cmp()(*y, x))) y = &x;
+    return y;
+  }
+  pair<int, T *> above(const T &val) {
+    rebuild(); T *y = nullptr;
+    auto it = upper_bound(large.begin(), large.end(), val, Cmp());
+    int cnt = it - large.begin(); if (it != large.end()) y = &*it;
+    for (auto &&x : small) {
+      if (!Cmp()(val, x)) cnt++;
+      else if (!y || Cmp()(x, *y)) y = &x;
+    }
+    return make_pair(cnt, y);
+  }
+  pair<int, T *> ceiling(const T &val) {
+    rebuild(); T *y = nullptr;
+    auto it = lower_bound(large.begin(), large.end(), val, Cmp());
+    int cnt = it - large.begin(); if (it != large.end()) y = &*it;
+    for (auto &&x : small) {
+      if (Cmp()(x, val)) cnt++;
+      else if (!y || Cmp()(x, *y)) y = &x;
+    }
+    return make_pair(cnt, y);
+  }
+  pair<int, T *> floor(const T &val) {
+    rebuild(); T *y = nullptr;
+    auto it = upper_bound(large.begin(), large.end(), val, Cmp());
+    int cnt = it - large.begin(); if (it != large.begin()) y = &*--it;
+    for (auto &&x : small) if (!Cmp()(val, x)) {
+      cnt++; if (!y || Cmp()(*y, x)) y = &x;
+    }
+    return make_pair(--cnt, y);
+  }
+  pair<int, T *> below(const T &val) {
+    rebuild(); T *y = nullptr;
+    auto it = lower_bound(large.begin(), large.end(), val, Cmp());
+    int cnt = it - large.begin(); if (it != large.begin()) y = &*--it;
+    for (auto &&x : small) if (Cmp()(x, val)) {
+      cnt++; if (!y || Cmp()(*y, x)) y = &x;
+    }
+    return make_pair(--cnt, y);
+  }
   bool contains(const T &val) {
     if (binary_search(large.begin(), large.end(), val, Cmp())) return true;
     if (rebuild() && binary_search(large.begin(), large.end(), val, Cmp()))

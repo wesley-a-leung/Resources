@@ -4,6 +4,8 @@ using namespace std;
 
 // Maintains the rank of an element in a multiset, allowing for multiple
 //   insertions of the same element at the same time (including negative)
+// Note that elements with a count of 0 or negative are still in the multiset
+//   as elements cannot be removed
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
