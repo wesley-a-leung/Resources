@@ -44,13 +44,13 @@ template <class T> struct SemiDynamicMSTUndo {
     }
     void propagate() {
       if (rev) {
-        swap(l, r); rev = false;
         if (l) l->reverse();
         if (r) r->reverse();
+        rev = false;
       }
     }
     void apply(const Lazy &v) { val = sbtr = v; }
-    void reverse() { rev = !rev; }
+    void reverse() { rev = !rev; swap(l, r); }
     static Data qdef() { return make_pair(T(), -1); }
   };
   using Edge = tuple<int, int, T>; int V, top; vector<int> stk;

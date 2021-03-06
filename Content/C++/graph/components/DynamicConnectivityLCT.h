@@ -43,12 +43,12 @@ struct DynamicConnectivityLCT {
     }
     void propagate() {
       if (rev) {
-        swap(l, r); rev = false;
         if (l) l->reverse();
         if (r) r->reverse();
+        rev = false;
       }
     }
-    void reverse() { rev = !rev; }
+    void reverse() { rev = !rev; swap(l, r); }
     static Data qdef() { return make_pair(INT_MAX, -1); }
   };
   int V; vector<tuple<int, int, int, int>> queries; vector<int> ans;
