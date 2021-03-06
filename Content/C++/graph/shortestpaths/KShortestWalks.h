@@ -9,7 +9,7 @@ using namespace std;
 // Function Arguments:
 //   V: number of vertices in the directed graph
 //   edges: a vector of tuples in the form (v, w, weight) representing
-//     an directed edge in the graph from vertex v to w with
+//     a directed edge in the graph from vertex v to w with
 //     weight of weight
 //   K: the number of shortest walks to compute
 //   s: the source vertex

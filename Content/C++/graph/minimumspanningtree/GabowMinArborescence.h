@@ -13,7 +13,7 @@ using namespace std;
 // Constructor Arguments:
 //   V: number of vertices in the directed graph
 //   edges: a vector of tuples in the form (v, w, weight) representing
-//     an directed edge in the graph from vertex v to w with
+//     a directed edge in the graph from vertex v to w with
 //     weight of weight
 //   root: the root of the directed mst to find
 //   INF: a value for infinity
