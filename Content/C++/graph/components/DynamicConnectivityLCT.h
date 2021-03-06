@@ -32,7 +32,7 @@ struct DynamicConnectivityLCT {
   struct Node {
     using Data = pair<int, int>; using Lazy = Data;
     static const bool RANGE_UPDATES = false, RANGE_QUERIES = true;
-    static const bool RANGE_REVERSALS = true, HAS_PAR = true;
+    static const bool RANGE_REVERSALS = true;
     bool rev; Node *l, *r, *p; Data val, sbtr;
     Node(const Data &v)
         : rev(false), l(nullptr), r(nullptr), p(nullptr), val(v), sbtr(v) {}

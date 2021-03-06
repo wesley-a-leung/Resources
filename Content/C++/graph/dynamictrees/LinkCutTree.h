@@ -19,8 +19,6 @@ using namespace std;
 //         range queries are permitted
 //       static const RANGE_REVERSALS: a boolean indicating whether
 //         range reversals are permitted
-//       static const HAS_PAR: a boolean indicating whether a
-//         parent pointer exists, must be true for LinkCutTree
 //       sz: the number of nodes in the subtree
 //       l: a pointer to the left child
 //       r: a pointer to the right child

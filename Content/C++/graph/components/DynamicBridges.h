@@ -31,7 +31,7 @@ struct DynamicBridges {
     }
     using Data = pair<int, int>; using Lazy = Data;
     static const bool RANGE_UPDATES = false, RANGE_QUERIES = true;
-    static const bool RANGE_REVERSALS = true, HAS_PAR = true;
+    static const bool RANGE_REVERSALS = true;
     bool isEdge, rev; Data val, sbtr;
     int edgeCnt, coveredCntSub, coverLazy, covered, coveredSub;
     Node *l, *r, *p;

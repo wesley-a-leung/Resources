@@ -20,7 +20,6 @@ using namespace std;
 //     are permitted
 //   static const RANGE_REVERSALS: a boolean indicating whether range reversals
 //     are permitted
-//   static const HAS_PAR: a boolean indicating whether a parent pointer exists
 //   rev: a boolean indicating whether the subtree needs to be reversed
 //   sz: the number of nodes in the subtree
 //   l: a pointer to the left child
@@ -42,7 +41,7 @@ using namespace std;
 template <class T> struct NodeVal {
   using Data = T; using Lazy = Data;
   static const bool RANGE_UPDATES = false, RANGE_QUERIES = false;
-  static const bool RANGE_REVERSALS = true, HAS_PAR = true;
+  static const bool RANGE_REVERSALS = true;
   bool rev; int sz; NodeVal *l, *r, *p; Data val;
   NodeVal(const Data &v)
       : rev(false), sz(1), l(nullptr), r(nullptr), p(nullptr), val(v) {}
@@ -100,7 +99,6 @@ template <class T> struct NodeVal {
 //     are permitted
 //   static const RANGE_REVERSALS: a boolean indicating whether range reversals
 //     are permitted
-//   static const HAS_PAR: a boolean indicating whether a parent pointer exists
 //   rev: a boolean flag indicating whether the subtree needs to be reversed
 //   sz: the number of nodes in the subtree
 //   l: a pointer to the left child
@@ -125,7 +123,7 @@ template <class T> struct NodeVal {
 template <class C> struct NodeAgg {
   using Data = typename C::Data; using Lazy = typename C::Lazy;
   static const bool RANGE_UPDATES = false, RANGE_QUERIES = true;
-  static const bool RANGE_REVERSALS = true, HAS_PAR = true;
+  static const bool RANGE_REVERSALS = true;
   bool rev; int sz; NodeAgg *l, *r, *p; Data val, sbtr;
   NodeAgg(const Data &v)
       : rev(false), sz(1), l(nullptr), r(nullptr), p(nullptr),
@@ -192,7 +190,6 @@ template <class C> struct NodeAgg {
 //     are permitted
 //   static const RANGE_REVERSALS: a boolean indicating whether range reversals
 //     are permitted
-//   static const HAS_PAR: a boolean indicating whether a parent pointer exists
 //   rev: a boolean flag indicating whether the subtree needs to be reversed
 //   sz: the number of nodes in the subtree
 //   l: a pointer to the left child
@@ -217,7 +214,7 @@ template <class C> struct NodeAgg {
 template <class C> struct NodeLazyAgg {
   using Data = typename C::Data; using Lazy = typename C::Lazy;
   static const bool RANGE_UPDATES = true, RANGE_QUERIES = true;
-  static const bool RANGE_REVERSALS = true, HAS_PAR = true;
+  static const bool RANGE_REVERSALS = true;
   bool rev; int sz; NodeLazyAgg *l, *r, *p; Lazy lz; Data val, sbtr;
   NodeLazyAgg(const Data &v)
       : rev(false), sz(1), l(nullptr), r(nullptr), p(nullptr),

@@ -10,8 +10,6 @@ using namespace std;
 // Template Arguments:
 //   _Node: a generic node class (sample structs are in BSTNode)
 //     Required Fields:
-//       static const HAS_PAR: a boolean indicating whether a
-//         parent pointer exists, must be true for Splay
 //       sz: the number of nodes in the subtree
 //       l: a pointer to the left child
 //       r: a pointer to the right child
@@ -65,7 +63,6 @@ using namespace std;
 //     (applyToRange)
 template <class _Node, class Container = deque<_Node>> struct Splay {
   using Node = _Node; Container TR; deque<Node *> deleted;
-  static_assert(Node::HAS_PAR, "Splay Node must have parent pointer");
   template <class T> Node *makeNode(const T &v) {
     if (deleted.empty()) { TR.emplace_back(v); return &TR.back(); }
     Node *x = deleted.back(); deleted.pop_back();
