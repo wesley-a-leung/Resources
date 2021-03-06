@@ -52,9 +52,9 @@ template <class T> struct NodeVal {
   }
   void propagate() {
     if (rev) {
-      rev = false;
       if (l) l->reverse();
       if (r) r->reverse();
+      rev = false;
     }
   }
   void apply(const Lazy &v) { val = v; }
@@ -135,9 +135,9 @@ template <class C> struct NodeAgg {
   }
   void propagate() {
     if (rev) {
-      rev = false;
       if (l) l->reverse();
       if (r) r->reverse();
+      rev = false;
     }
   }
   void apply(const Lazy &v) {
@@ -226,9 +226,9 @@ template <class C> struct NodeLazyAgg {
   }
   void propagate() {
     if (rev) {
-      rev = false;
       if (l) l->reverse();
       if (r) r->reverse();
+      rev = false;
     }
     if (lz != C::ldef()) {
       if (l) l->apply(lz);

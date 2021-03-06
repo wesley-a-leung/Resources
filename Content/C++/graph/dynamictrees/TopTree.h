@@ -116,7 +116,8 @@ template <class C> struct TopTree {
     }
     void propagate() {
       if (rev) {
-        rev = false; for (int i = 0; i < 2; i++) if (ch[i]) ch[i]->reverse();
+        for (int i = 0; i < 2; i++) if (ch[i]) ch[i]->reverse();
+        rev = false;
       }
       if (lzpath != C::ldef() && !aux) {
         for (int i = 0; i < 2; i++) if (ch[i]) ch[i]->applyPath(lzpath);
