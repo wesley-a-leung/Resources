@@ -50,7 +50,7 @@ pt3 closestOnL1ToL2(const Line3D &l1, const Line3D &l2) {
 // Return Value: 0 if no intersection, 1 if point of intersection, 2 otherwise
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
-int lineIntersection(const Line3D &l1, const Line3D &l2, pt3 &res) {
+int lineLineIntersection(const Line3D &l1, const Line3D &l2, pt3 &res) {
   pt3 n = l1.d * l2.d; if (eq(norm(n), 0)) return eq(l1.dist(l2.o), 0) ? 2 : 0;
   res = closestOnL1ToL2(l1, l2); return 1;
 }
@@ -80,14 +80,14 @@ bool onSeg(ref3 p, ref3 a, ref3 b) {
 //   the point of intersection; if the line segments have a line segment of
 //   intersection, a vector containing the two endpoints of the
 //   line segment intersection
-vector<pt3> lineSegIntersection(ref3 a, ref3 b, ref3 p, ref3 q) {
+vector<pt3> segSegIntersection(ref3 a, ref3 b, ref3 p, ref3 q) {
   vector<pt3> ret; if (a == b) {
     if (onSeg(a, p, q)) ret.push_back(a);
   } else if (p == q) {
     if (onSeg(p, a, b)) ret.push_back(p);
   } else {
     pt3 inter; Line3D l1(a, b), l2(p, q);
-    int cnt = lineIntersection(l1, l2, inter);
+    int cnt = lineLineIntersection(l1, l2, inter);
     if (cnt == 1) ret.push_back(inter);
     else if (cnt == 2) {
       if (onSeg(p, a, b)) ret.push_back(p);
@@ -142,7 +142,7 @@ T segPtDist(ref3 p, ref3 a, ref3 b) {
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
 T segSegDist(ref3 a, ref3 b, ref3 p, ref3 q) {
-  return !lineSegIntersection(a, b, p, q).empty()
+  return !segSegIntersection(a, b, p, q).empty()
       ? 0
       : min({segPtDist(p, a, b), segPtDist(q, a, b),
              segPtDist(a, p, q), segPtDist(b, p, q)});

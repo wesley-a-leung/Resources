@@ -184,7 +184,7 @@ vector<pt> polygonHalfPlaneIntersection(const vector<pt> &poly,
   int n = poly.size(); vector<pt> ret; for (int i = 0; i < n; i++) {
     int j = mod(i + n - 1, n); bool side = l.onLeft(poly[i]) > 0;
     if (side != (l.onLeft(poly[j]) > 0)) {
-      pt p; lineIntersection(l, Line(poly[i], poly[j]), p);
+      pt p; lineLineIntersection(l, Line(poly[i], poly[j]), p);
       ret.push_back(p);
     }
     if (side) ret.push_back(poly[i]);

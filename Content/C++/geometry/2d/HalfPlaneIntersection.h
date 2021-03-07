@@ -27,12 +27,12 @@ vector<pt> halfPlaneIntersection(vector<Line> lines) {
     return angA == angB ? a.onLeft(b.proj(pt(0, 0))) < 0 : angA < angB;
   });
   int N = lines.size(), front = 0, back = 0; vector<Line> q(N + 1, lines[0]);
-  vector<pt> ret(N); for (int i = 1; i <= N; i++) {
+  vector<pt> ret(N); pt inter; for (int i = 1; i <= N; i++) {
     if (i == N) lines.push_back(q[front]);
     if (Angle(lines[i - 1].v) == Angle(lines[i].v)) continue;
     while (front < back && lines[i].onLeft(ret[back - 1]) < 0) back--;
     while (i != N && front < back && lines[i].onLeft(ret[front]) < 0) front++;
-    pt inter; if (lineIntersection(lines[i], q[back], inter) != 1) continue;
+    if (lineLineIntersection(lines[i], q[back], inter) != 1) continue;
     ret[back++] = inter; q[back] = lines[i];
   }
   if (back - front <= 2) return vector<pt>();

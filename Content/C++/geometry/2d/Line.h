@@ -51,7 +51,7 @@ Line bisector(const Line &l1, const Line &l2, bool interior) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://dmoj.ca/problem/nccc7s5
-int lineIntersection(const Line &l1, const Line &l2, pt &res) {
+int lineLineIntersection(const Line &l1, const Line &l2, pt &res) {
   T d = cross(l1.v, l2.v);
   if (eq(d, 0)) return pt_eq()(l2.v * l1.c, l1.v * l2.c) ? 2 : 0;
   res = (l2.v * l1.c - l1.v * l2.c) / d; return 1;
@@ -83,7 +83,7 @@ bool onSeg(ref p, ref a, ref b) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://open.kattis.com/problems/segmentintersection
-int lineSegIntersects(ref a, ref b, ref p, ref q) {
+int segSegIntersects(ref a, ref b, ref p, ref q) {
   int o1 = ccw(a, b, p), o2 = ccw(a, b, q), o3 = ccw(p, q, a);
   int o4 = ccw(p, q, b); if (o1 != o2 && o3 != o4) return 1;
   else if ((!o1 && onSeg(p, a, b)) || (!o2 && onSeg(q, a, b))
@@ -107,8 +107,8 @@ int lineSegIntersects(ref a, ref b, ref p, ref q) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://open.kattis.com/problems/segmentintersection
-vector<pt> lineSegIntersection(ref a, ref b, ref p, ref q) {
-  int intersects = lineSegIntersects(a, b, p, q);
+vector<pt> segSegIntersection(ref a, ref b, ref p, ref q) {
+  int intersects = segSegIntersects(a, b, p, q);
   if (!intersects) return vector<pt>();
   else if (intersects == 1) {
     T c1 = cross(p - a, b - a), c2 = cross(q - a, b - a);
@@ -168,7 +168,7 @@ T segPtDist(ref p, ref a, ref b) {
 // Tested:
 //   https://open.kattis.com/problems/segmentdistance
 T segSegDist(ref a, ref b, ref p, ref q) {
-  return lineSegIntersects(a, b, p, q) > 0
+  return segSegIntersects(a, b, p, q) > 0
       ? 0
       : min({segPtDist(p, a, b), segPtDist(q, a, b),
              segPtDist(a, p, q), segPtDist(b, p, q)});
