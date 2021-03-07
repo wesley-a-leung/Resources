@@ -119,7 +119,7 @@ T circleCircleIntersectionArea(const Circle &c1, const Circle &c2) {
 // Tested:
 //   https://dmoj.ca/problem/nccc7s4
 //   https://dmoj.ca/problem/noi05p6
-int circleTangentPoints(const Circle &c1, const Circle &c2, bool inner,
+int circleCircleTangentPoints(const Circle &c1, const Circle &c2, bool inner,
                        vector<pair<pt, pt>> &res) {
   pt d = c2.o - c1.o; T r2 = inner ? -c2.r : c2.r, dr = c1.r - r2;
   T d2 = norm(d), h2 = d2 - dr * dr;
