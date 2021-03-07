@@ -26,9 +26,7 @@ struct Angle {
     return int(!lt(p.y, 0) && (!eq(p.y, 0) || !lt(p.x, 0)));
   }
   bool operator < (const Angle &a) const {
-    auto p1 = make_pair(half(), (p.y - pivot.y) * (a.p.x - pivot.x));
-    auto p2 = make_pair(a.half(), (p.x - pivot.x) * (a.p.y - pivot.y));
-    return p1 < p2;
+    int h = half() - a.half(); return h == 0 ? ccw(pivot, p, a.p) > 0 : h < 0;
   }
   bool operator <= (const Angle &a) const { return !(a < *this); }
   bool operator > (const Angle &a) const { return a < *this; }
