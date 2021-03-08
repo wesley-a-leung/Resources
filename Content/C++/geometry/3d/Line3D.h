@@ -31,7 +31,7 @@ T lineLineDist(const Line3D &l1, const Line3D &l2) {
 }
 
 // Closest point on the line l1 to the line l2
-// If l1 and l2 are parallel, it returns l1.o
+// If l1 and l2 are parallel, it returns the projection of (0, 0, 0) on l1
 // Function Arguments:
 //   l1: the first line
 //   l2: the second line
@@ -39,7 +39,7 @@ T lineLineDist(const Line3D &l1, const Line3D &l2) {
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
 pt3 closestOnL1ToL2(const Line3D &l1, const Line3D &l2) {
-  pt3 n = l1.d * l2.d; if (eq(norm(n), 0)) return l1.o;
+  pt3 n = l1.d * l2.d; if (eq(norm(n), 0)) return l1.proj(pt3(0, 0, 0));
   pt3 n2 = l2.d * n; return l1.o + l2.d * ((l2.o - l1.o) | n2) / (l1.d | n2);
 }
 
