@@ -16,7 +16,7 @@ for filename in filenames:
   output = []
   with open(filename, "r") as file:
     replacePragmaOnce = False
-    for line in file.read().split("\n"):
+    for line in file.read().splitlines():
       if line == "#pragma once":
         output.append("#ifndef " + headerguard)
         output.append("#define " + headerguard)
