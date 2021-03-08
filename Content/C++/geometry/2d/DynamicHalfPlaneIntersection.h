@@ -13,11 +13,13 @@ struct LineCmp {
 };
 
 // Computes the intersection (and area) of half-planes defined by the left side
-//   of a set of lines where half-planes are added dynamically
+//   of a set of lines (including the line itself) where half-planes are
+//   added dynamically
 // An initial bounded rectangle is provided to ensure the intersection area
 //   is never infinity
 // Lines are stores in a map, with the associated point being the intersection
 //   with the previous line in the map (assuming the map is circular)
+// Points in the intersection may be collinear or identical
 // Angle::pivot is set to (0, 0) after every operation
 // Constructor Arguments:
 //   lowerLeft: the lower left corner of the initial bounding rectangle
@@ -31,14 +33,14 @@ struct LineCmp {
 //   HalfPlaneIntersection, but appears to have more precision issues
 // Time Complexity:
 //   constructor, empty: O(1)
-//   addHalfPlane: O(log N)
+//   addHalfPlane: O(log N) amortized
 // Memory Complexity: O(N)
 // Tested:
 //   https://open.kattis.com/problems/bigbrother
 //   https://maps19.kattis.com/problems/marshlandrescues
 //   https://dmoj.ca/problem/ccoprep3p3
 struct DynamicHalfPlaneIntersection : public map<Line, pt, LineCmp> {
-  using M = map<Line, pt, LineCmp>; using iter = M::iterator; T a2;
+  using iter = map<Line, pt, LineCmp>::iterator; T a2;
   DynamicHalfPlaneIntersection(ref lowerLeft, ref upperRight)
       : a2((upperRight.x - lowerLeft.x) * (upperRight.y - lowerLeft.y) * 2) {
     assert(lt(lowerLeft.x, upperRight.x) && lt(lowerLeft.y, upperRight.y));
@@ -54,20 +56,19 @@ struct DynamicHalfPlaneIntersection : public map<Line, pt, LineCmp> {
     a2 -= cross(a->second, it->second) + cross(it->second, b->second);
     erase(it); return b;
   }
-  void clear() { M::clear(); a2 = 0; }
   void addHalfPlane(const Line &l) {
     if (empty()) return;
     iter b = lower_bound(l); if (b == end()) b = begin();
     if (l.onLeft(b->second) >= 0) return;
-    iter a = prv(b); while (a != b && l.onLeft(a->second) <= 0) a = prv(a);
-    if (a == b) { clear(); return; }
+    iter a = prv(b); while (a != b && l.onLeft(a->second) < 0) a = prv(a);
+    if (a == b) { clear(); a2 = 0; return; }
     for (iter c = nxt(a); c != b; c = rem(c)); 
-    for (iter c = nxt(b); l.onLeft(c->second) <= 0; c = nxt(b = rem(b)));
+    for (iter c = nxt(b); l.onLeft(c->second) < 0; c = nxt(b = rem(b)));
     iter c = nxt(b); pt p;
+    if (lineLineIntersection(l, b->first, p) != 1) return;
     a2 -= cross(a->second, b->second) + cross(b->second, c->second);
-    if (lineLineIntersection(l, b->first, b->second) != 1) { clear(); return; }
-    a2 += cross(b->second, c->second);
-    if (lineLineIntersection(a->first, l, p) != 1) { clear(); return; }
+    a2 += cross(b->second = p, c->second);
+    if (lineLineIntersection(a->first, l, p) != 1) return;
     a2 += cross(a->second, p) + cross(p, b->second); emplace_hint(b, l, p);
   }
 };
