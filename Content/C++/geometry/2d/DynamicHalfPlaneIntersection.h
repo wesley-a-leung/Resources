@@ -14,17 +14,19 @@ struct LineCmp {
 
 // Computes the intersection (and area) of half-planes defined by the left side
 //   of a set of lines where half-planes are added dynamically
+// An initial bounded rectangle is provided to ensure the intersection area
+//   is never infinity
 // Lines are stores in a map, with the associated point being the intersection
 //   with the previous line in the map (assuming the map is circular)
 // Angle::pivot is set to (0, 0) after every operation
 // Constructor Arguments:
 //   lowerLeft: the lower left corner of the initial bounding rectangle
-//   upperRight: the lower left corner of the initial bounding rectangle
+//   upperRight: the upper right corner of the initial bounding rectangle
 // Fields:
 //   a2: twice the area of the intersection of the half-planes
 // Functions:
-//   addHalfPlane(l): adds the half-planes defined by the left side of l
-//   empty(): returns whether the interection is empty or not
+//   addHalfPlane(l): adds the half-plane defined by the left side of l
+//   empty(): returns whether the intersection is empty or not
 // In practice, has a moderate constant, can be faster than
 //   HalfPlaneIntersection, but appears to have more precision issues
 // Time Complexity:
