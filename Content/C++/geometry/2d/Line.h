@@ -148,7 +148,7 @@ pt closestPtToSeg(ref p, ref a, ref b) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://open.kattis.com/problems/segmentdistance
-T segPtDist(ref p, ref a, ref b) {
+T ptSegDist(ref p, ref a, ref b) {
   if (a != b) {
     Line l(a, b);
     if (l.cmpProj(a, p) < 0 && l.cmpProj(p, b) < 0) return l.dist(p);
@@ -170,6 +170,6 @@ T segPtDist(ref p, ref a, ref b) {
 T segSegDist(ref a, ref b, ref p, ref q) {
   return segSegIntersects(a, b, p, q) > 0
       ? 0
-      : min({segPtDist(p, a, b), segPtDist(q, a, b),
-             segPtDist(a, p, q), segPtDist(b, p, q)});
+      : min({ptSegDist(p, a, b), ptSegDist(q, a, b),
+             ptSegDist(a, p, q), ptSegDist(b, p, q)});
 }

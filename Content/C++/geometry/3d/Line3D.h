@@ -7,7 +7,7 @@ using namespace std;
 struct Line3D {
   pt3 o, d;
   // points p and q
-  Line3D(pt3 p = pt3(), pt3 q = pt3()) : o(p), d(p - q) {}
+  Line3D(pt3 p = pt3(), pt3 q = pt3()) : o(p), d(q - p) {}
   bool onLine(ref3 p) const { return eq(norm(d * (p - o)), 0); }
   T distSq(ref3 p) const { return norm(d * (p - o)) / norm(d); }
   T dist(ref3 p) const { return sqrt(distSq(p)); }
@@ -31,6 +31,7 @@ T lineLineDist(const Line3D &l1, const Line3D &l2) {
 }
 
 // Closest point on the line l1 to the line l2
+// If l1 and l2 are parallel, it returns l1.o
 // Function Arguments:
 //   l1: the first line
 //   l2: the second line
@@ -38,8 +39,8 @@ T lineLineDist(const Line3D &l1, const Line3D &l2) {
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
 pt3 closestOnL1ToL2(const Line3D &l1, const Line3D &l2) {
-  pt3 n2 = l2.d * (l1.d * l2.d);
-  return l1.o + l2.d * ((l2.o - l1.o) | n2) / (l1.d | n2);
+  pt3 n = l1.d * l2.d; if (eq(norm(n), 0)) return l1.o;
+  pt3 n2 = l2.d * n; return l1.o + l2.d * ((l2.o - l1.o) | n2) / (l1.d | n2);
 }
 
 // Intersection of 2 lines
