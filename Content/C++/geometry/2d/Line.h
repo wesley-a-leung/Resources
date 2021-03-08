@@ -130,7 +130,7 @@ vector<pt> segSegIntersection(ref a, ref b, ref p, ref q) {
 // Return Value: the closest point to p on the line segment a-b
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
-pt closestPtToSeg(ref p, ref a, ref b) {
+pt closestPtOnSeg(ref p, ref a, ref b) {
   if (a != b) {
     Line l(a, b);
     if (l.cmpProj(a, p) < 0 && l.cmpProj(p, b) < 0) return l.proj(p);
