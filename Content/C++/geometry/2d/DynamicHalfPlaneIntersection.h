@@ -21,7 +21,7 @@ struct LineCmp {
 //   lowerLeft: the lower left corner of the initial bounding rectangle
 //   upperRight: the lower left corner of the initial bounding rectangle
 // Fields:
-//   a2: the area of the intersection of the half-planes
+//   a2: twice the area of the intersection of the half-planes
 // Functions:
 //   addHalfPlane(l): adds the half-planes defined by the left side of l
 //   empty(): returns whether the interection is empty or not
