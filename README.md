@@ -1,4 +1,5 @@
-![build](https://github.com/wesley-a-leung/Resources/workflows/build/badge.svg)
+[![ubuntu-build](https://github.com/wesley-a-leung/Resources/actions/workflows/ubuntu-build.yml/badge.svg)](https://github.com/wesley-a-leung/Resources/actions/workflows/ubuntu-build.yml)
+[![windows-build](https://github.com/wesley-a-leung/Resources/actions/workflows/windows-build.yml/badge.svg)](https://github.com/wesley-a-leung/Resources/actions/workflows/windows-build.yml)
 
 # Resources
 Data Structures, Algorithms, Utility Classes
