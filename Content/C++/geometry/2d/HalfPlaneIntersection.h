@@ -7,7 +7,7 @@ using namespace std;
 
 // Computes the intersection of half-planes defined by the left side of
 //   a set of lines (including the line itself)
-// Points in the intersection may be collinear or identical
+// Points on the intersection may be identical
 // Angle::pivot is set to (0, 0)
 // Function Arguments:
 //   lines: a vector of lines representing the half-planes defined by the

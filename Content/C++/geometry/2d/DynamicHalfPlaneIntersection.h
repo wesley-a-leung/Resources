@@ -19,7 +19,7 @@ struct LineCmp {
 //   is never infinity
 // Lines are stores in a map, with the associated point being the intersection
 //   with the previous line in the map (assuming the map is circular)
-// Points in the intersection may be collinear or identical
+// Points on the intersection may be identical
 // Angle::pivot is set to (0, 0) after every operation
 // Constructor Arguments:
 //   lowerLeft: the lower left corner of the initial bounding rectangle
@@ -62,12 +62,16 @@ struct DynamicHalfPlaneIntersection : public map<Line, pt, LineCmp> {
     if (l.onLeft(b->second) >= 0) return;
     iter a = prv(b); while (a != b && l.onLeft(a->second) < 0) a = prv(a);
     if (a == b) { clear(); a2 = 0; return; }
-    for (iter c = nxt(a); c != b; c = rem(c)); 
-    pt p; for (iter c = nxt(b); l.onLeft(c->second) < 0; c = nxt(b = rem(b)));
-    iter c = nxt(b); if (lineLineIntersection(l, b->first, p) != 1) return;
+    iter c = nxt(a); while (c != b) c = rem(c); 
+    c = nxt(b); while (l.onLeft(c->second) < 0) c = nxt(b = rem(b));
+    pt p, q; bool add = 1; if (lineLineIntersection(a->first, l, p) != 1
+        || lineLineIntersection(l, b->first, q) != 1) {
+      add = 0; assert(lineLineIntersection(a->first, b->first, q) == 1);
+    }
     a2 -= cross(a->second, b->second) + cross(b->second, c->second);
-    a2 += cross(b->second = p, c->second);
-    if (lineLineIntersection(a->first, l, p) != 1) return;
-    a2 += cross(a->second, p) + cross(p, b->second); emplace_hint(b, l, p);
+    a2 += cross(a->second, q) + cross(q, c->second); b->second = q; if (add) {
+      a2 -= cross(a->second, q);
+      a2 += cross(a->second, p) + cross(p, q); emplace_hint(b, l, p);
+    }
   }
 };
