@@ -63,9 +63,8 @@ struct DynamicHalfPlaneIntersection : public map<Line, pt, LineCmp> {
     iter a = prv(b); while (a != b && l.onLeft(a->second) < 0) a = prv(a);
     if (a == b) { clear(); a2 = 0; return; }
     for (iter c = nxt(a); c != b; c = rem(c)); 
-    for (iter c = nxt(b); l.onLeft(c->second) < 0; c = nxt(b = rem(b)));
-    iter c = nxt(b); pt p;
-    if (lineLineIntersection(l, b->first, p) != 1) return;
+    pt p; for (iter c = nxt(b); l.onLeft(c->second) < 0; c = nxt(b = rem(b)));
+    iter c = nxt(b); if (lineLineIntersection(l, b->first, p) != 1) return;
     a2 -= cross(a->second, b->second) + cross(b->second, c->second);
     a2 += cross(b->second = p, c->second);
     if (lineLineIntersection(a->first, l, p) != 1) return;
