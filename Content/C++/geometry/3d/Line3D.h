@@ -125,7 +125,7 @@ pt3 closestPtToSeg(ref3 p, ref3 a, ref3 b) {
 // Return Value: the distance to the closest point to p on the line segment a-b
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
-T segPtDist(ref3 p, ref3 a, ref3 b) {
+T ptSegDist(ref3 p, ref3 a, ref3 b) {
   if (a != b) {
     Line3D l(a, b);
     if (l.cmpProj(a, p) < 0 && l.cmpProj(p, b) < 0) return l.dist(p);
@@ -145,6 +145,6 @@ T segPtDist(ref3 p, ref3 a, ref3 b) {
 T segSegDist(ref3 a, ref3 b, ref3 p, ref3 q) {
   return !segSegIntersection(a, b, p, q).empty()
       ? 0
-      : min({segPtDist(p, a, b), segPtDist(q, a, b),
-             segPtDist(a, p, q), segPtDist(b, p, q)});
+      : min({ptSegDist(p, a, b), ptSegDist(q, a, b),
+             ptSegDist(a, p, q), ptSegDist(b, p, q)});
 }
