@@ -50,11 +50,11 @@ struct DynamicConvexHullTrick : public multiset<Line<T, Cmp>> {
   using multiset<L>::lower_bound; using iter = typename multiset<L>::iterator;
   T INF; DynamicConvexHullTrick(T INF = numeric_limits<T>::max()) : INF(INF) {}
   template <const bool _ = INTEGRAL>
-  typename enable_if<_, T>::type div(T a, T b) const {
+  static typename enable_if<_, T>::type div(T a, T b) {
     return a / b - T((a ^ b) < T() && Cmp()(T(), a % b));
   }
   template <const bool _ = INTEGRAL>
-  typename enable_if<!_, T>::type div(T a, T b) const { return a / b; }
+  static typename enable_if<!_, T>::type div(T a, T b) { return a / b; }
   bool intersect(iter x, iter y) {
     if (y == end()) { x->x = INF; return false; }
     if (!Cmp()(x->m, y->m) && !Cmp()(y->m, x->m))

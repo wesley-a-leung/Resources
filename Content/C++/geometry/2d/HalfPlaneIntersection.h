@@ -13,11 +13,12 @@ using namespace std;
 //     left side
 // Return Value: a vector of points representing the intersection of the
 //   half planes, or an empty vector if the intersection is infinite or empty
-// In practice, has a moderate constant
+// In practice, has a moderate constant, can be slower than
+//   DynamicHalfPlaneIntersection, but appears to have less precision issues
 // Time Complexity: O(N log N)
 // Memory Complexity: O(N)
 // Tested:
-//   https://ncpc20.kattis.com/problems/bigbrother
+//   https://open.kattis.com/problems/bigbrother
 //   https://maps19.kattis.com/problems/marshlandrescues
 //   https://dmoj.ca/problem/ccoprep3p3
 vector<pt> halfPlaneIntersection(vector<Line> lines) {
