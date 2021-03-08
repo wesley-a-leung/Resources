@@ -93,7 +93,7 @@ jobs:
     - name: Replace pragma once
       run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Run fuzz tests
-      run: find "Tests/C++/" -name "*FuzzTest.cpp" -exec Scripts/RunCppTests.sh "g++10 -std=c++11 -O2 -Wall -Wextra -pedantic-errors" {} +
+      run: find "Tests/C++/" -name "*FuzzTest.cpp" -exec Scripts/RunCppTests.sh "g++-10 -std=c++11 -O2 -Wall -Wextra -pedantic-errors" {} +
   stress-tests-cpp:
     runs-on: ubuntu-latest
     steps:
@@ -104,4 +104,4 @@ jobs:
     - name: Replace pragma once
       run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Run stress tests
-      run: find "Tests/C++/" -name "*StressTest.cpp" -exec Scripts/RunCppTests.sh "g++10 -std=c++11 -O2 -Wall -Wextra -pedantic-errors" {} +
+      run: find "Tests/C++/" -name "*StressTest.cpp" -exec Scripts/RunCppTests.sh "g++-10 -std=c++11 -O2 -Wall -Wextra -pedantic-errors" {} +
