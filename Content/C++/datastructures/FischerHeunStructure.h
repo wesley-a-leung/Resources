@@ -21,7 +21,9 @@ using namespace std;
 //   cmp: an instance of the Cmp struct
 // Functions:
 //   queryInd(l, r): returns the index of the maximum element in
-//     the subarray [l, r], breaking ties by selecting the first such index
+//     the subarray [l, r], breaking ties by selecting the first such index;
+//     the last such index can be obtained by using less_equal or greater_equal
+//     as the Cmp struct
 //   query(l, r): returns the maximum element (based on the comparator) in
 //     the subarray [l, r]
 // In practice, the constructor has a moderate constant and is significantly

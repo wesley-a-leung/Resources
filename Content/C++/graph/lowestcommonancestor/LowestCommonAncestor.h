@@ -26,6 +26,8 @@ using namespace std;
 // Functions:
 //   lca(v, w): returns the lowest common ancestor of vertices v and w assuming
 //     v and w are connected
+//   getDirectChild(anc, des): returns the direct child of anc that is on the
+//     path from anc to des, where anc is an ancestor of des
 //   connected(v, w): returns true if and only if v and w are connected
 //   dist(v, w): returns the distance between vertices v and w assuming
 //     v and w are connected
@@ -33,31 +35,33 @@ using namespace std;
 //   dependent on the forest data structure
 // Time Complexity:
 //   constructor: O(V)
-//   lca, connected, dist: O(1)
+//   lca, getDirectChild, connected, dist: O(1)
 // Memory Complexity: O(V)
 // Tested:
 //   https://judge.yosupo.jp/problem/lca
 //   https://www.spoj.com/problems/LCASQ
 //   https://dmoj.ca/problem/rte16s3
+//   https://dmoj.ca/problem/wac1p6
 template <class T = int> struct LCA {
-  using RMQ = FischerHeunStructure<int, greater<int>>;
-  int V; vector<int> root, pre, vert; vector<T> dep; RMQ FHS;
+  using RMQ = FischerHeunStructure<int, greater_equal<int>>;
+  int V; vector<int> root, pre, top, bot; vector<T> dep; RMQ FHS;
   int getTo(int e) { return e; }
   T getWeight(int) { return 1; }
   int getTo(const pair<int, T> &e) { return e.first; }
   T getWeight(const pair<int, T> &e) { return e.second; }
   template <class Forest>
   void dfs(const Forest &G, int v, int prev, int r, T d) {
-    root[v] = r; dep[v] = d; pre[v] = vert.size(); for (auto &&e : G[v]) {
-      int w = getTo(e);
-      if (w != prev) { vert.push_back(v); dfs(G, w, v, r, d + getWeight(e)); }
+    root[v] = r; dep[v] = d; pre[v] = top.size(); for (auto &&e : G[v]) {
+      int w = getTo(e); if (w != prev) {
+        top.push_back(v); bot.push_back(w); dfs(G, w, v, r, d + getWeight(e));
+      }
     }
   }
   template <class Forest> RMQ init(const Forest &G, const vector<int> &roots) {
-    vert.reserve(V); if (roots.empty()) {
+    top.reserve(V); bot.reserve(V); if (roots.empty()) {
       for (int v = 0; v < V; v++) if (root[v] == -1) dfs(G, v, -1, v, T());
     } else for (int v : roots) dfs(G, v, -1, v, T());
-    int i = 0; return RMQ(vert.size(), [&] { return pre[vert[i++]]; });
+    int i = 0; return RMQ(top.size(), [&] { return pre[top[i++]]; });
   }
   template <class Forest>
   LCA(const Forest &G, const vector<int> &roots = vector<int>())
@@ -67,7 +71,10 @@ template <class T = int> struct LCA {
   int lca(int v, int w) {
     if (v == w) return v;
     if (pre[v] > pre[w]) swap(v, w);
-    return vert[FHS.query(pre[v], pre[w] - 1)];
+    return top[FHS.queryInd(pre[v], pre[w] - 1)];
+  }
+  int getDirectChild(int anc, int des) {
+    return bot[FHS.queryInd(pre[anc], pre[des] - 1)];
   }
   bool connected(int v, int w) { return root[v] == root[w]; }
   T dist(int v, int w) { return dep[v] + dep[w] - 2 * dep[lca(v, w)]; }
