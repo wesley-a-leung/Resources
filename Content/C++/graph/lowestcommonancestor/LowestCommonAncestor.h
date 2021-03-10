@@ -54,7 +54,7 @@ template <class T = int> struct LCA {
       int v = stk[--ssz]; if (v != r) { top[i] = pre[v]; bot[i++] = v; }
       root[v] = r; pre[v] = i; for (auto &&e : G[v]) {
         int w = getTo(e);
-        if (pre[v] == -1) dep[stk[ssz++] = w] = dep[pre[w] = v] + getWeight(e);
+        if (pre[w] == -1) dep[stk[ssz++] = w] = dep[pre[w] = v] + getWeight(e);
       }
     }
   }
