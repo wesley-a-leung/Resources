@@ -129,7 +129,7 @@ pair<T, T> sphereHalfSpaceIntersectionSAV(const Sphere3D &s,
 //   c1: the first circle
 //   c2: the second circle
 //   c: a tuple containing the plane the circle lies on (pointing away
-//     from s1), the center of the circle and the radius
+//     from s1), the center of the circle, and the radius
 // Return Value: 0 if no intersection, 2 if identical spheres, 1 otherwise
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
