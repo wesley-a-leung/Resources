@@ -23,7 +23,6 @@ using namespace std;
 //   dep: vector of depths to each vertex from the root of
 //     its connected component
 //   pre: vector of the pre order traversal indices for each vertex
-//   vert: vector of vertex for each pre order index
 // Functions:
 //   lca(v, w): returns the lowest common ancestor of vertices v and w assuming
 //     v and w are connected
