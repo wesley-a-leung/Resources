@@ -14,7 +14,7 @@ using namespace std;
 //   rotate(theta): rotates the point theta radians around the origin
 //   reflect(dir): reflects the point across the line passing through the
 //     origin with direction dir
-//   projects(dir): projects the point onto the line passing through the
+//   project(dir): projects the point onto the line passing through the
 //     origin with direction dir
 //   applyTransform(p): applies the transformation to the point p
 //   inverse(): returns the inverse of this transformation,

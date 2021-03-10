@@ -14,10 +14,14 @@ struct Sphere3D {
   int contains(ref3 p) const { return sgn(distSq(o, p) - r * r); }
   // -1 if s is strictly inside this sphere, 0 if inside and touching this
   //   sphere, 1 otherwise
-  int contains(const Sphere3D &s) const { return sgn(s.r - r + dist(o, s.o)); }
+  int contains(const Sphere3D &s) const {
+    T dr = r - s.r; return lt(dr, 0) ? 1 : sgn(distSq(o, s.o) - dr * dr);
+  }
   // 1 if s is strictly outside this sphere, 0 if outside and touching this
   //   sphere, -1 otherwise
-  int disjoint(const Sphere3D &s) const { return sgn(s.r + r - dist(o, s.o)); }
+  int disjoint(const Sphere3D &s) const {
+    T sr = r + s.r; return sgn(sr * sr - distSq(o, s.o));
+  }
   pt3 proj(ref3 p) const { return o + (p - o) * r / dist(o, p); }
   pt3 inv(ref3 p) const { return o + (p - o) * r * r / distSq(o, p); }
   // Shortest distance on the sphere between the projections of a and b onto
@@ -91,7 +95,7 @@ vector<pt3> sphereLineIntersection(const Sphere3D &s, const Line3D &l) {
 // Function Arguments:
 //   s: the sphere
 //   pi: the plane
-//   res: a pair of pt3 and T, representing the centre of the circle, and the
+//   res: a pair of pt3 and T, representing the center of the circle, and the
 //     radius of the circle of intersection if it exists, guaranteed to be on
 //     the plane pi
 // Return Value: a boolean indicating whether an intersection exists or not
@@ -120,37 +124,44 @@ pair<T, T> sphereHalfSpaceIntersectionSAV(const Sphere3D &s,
   return make_pair(PI * 2 * s.r * h, PI * h * h / 3 * (3 * s.r - h));
 }
 
+// Determine the intersection of two spheres
+// Function Arguments:
+//   c1: the first circle
+//   c2: the second circle
+//   c: a tuple containing the plane the circle lies on (pointing away
+//     from s1), the center of the circle and the radius
+// Return Value: 0 if no intersection, 2 if identical spheres, 1 otherwise
+// Time Complexity: O(1)
+// Memory Complexity: O(1)
 int sphereSphereIntersection(const Sphere3D &s1, const Sphere3D &s2,
-                             Plane3D &pi, pair<pt3, T> &c) {
+                             tuple<Plane3D, pt3, T> &c) {
   pt3 d = s2.o - s1.o; T d2 = norm(d);
   if (eq(d2, 0)) return eq(s1.r, s2.r) ? 2 : 0;
   T pd = (d2 + s1.r * s1.r - s2.r * s2.r) / 2, h2 = s1.r * s1.r - pd * pd / d2;
   if (lt(h2, 0)) return 0;
-  c.second = sqrt(max(h2, T(0)));
-  pi = Plane3D(d, c.first = s1.o + d * pd / d2); return 1;
+  pt3 o = s1.o + d * pd / d2;
+  c = make_tuple(Plane3D(d, o), o, sqrt(max(h2, T(0)))); return 1;
 }
 
-// Determine the surface area and volume of the union of two spheres
+// Determine the surface area and volume of the intersection of two spheres
 // Function Arguments:
 //   s1: the first sphere
 //   s2: the second sphere
-// Return Value: a pair containing the surface area and volume of the union of
-//   the two spheres
+// Return Value: a pair containing the surface area and volume of the
+//   intersection of the two spheres
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
-pair<T, T> sphereSphereUnionSAV(const Sphere3D &s1, const Sphere3D &s2) {
+pair<T, T> sphereSphereIntersectionSAV(const Sphere3D &s1,
+                                       const Sphere3D &s2) {
   pt3 d = s2.o - s1.o; T d2 = norm(d), dr = abs(s1.r - s2.r), PI = acos(T(-1));
   if (!lt(dr * dr, d2)) {
-    T r = max(s1.r, s2.r);
+    T r = min(s1.r, s2.r);
     return make_pair(PI * 4 * r * r, PI * 4 * r * r * r / 3);
   }
-  T sr = s1.r + s2.r; if (lt(sr * sr, d2)) {
-    return make_pair(PI * 4 * (s1.r * s1.r + s2.r * s2.r),
-                     PI * 4 * (s1.r * s1.r * s1.r + s2.r * s2.r * s2.r) / 3);
-  }
+  T sr = s1.r + s2.r; if (lt(sr * sr, d2)) return make_pair(T(0), T(0));
   T pd = (d2 + s1.r * s1.r - s2.r * s2.r) / 2;
   Plane3D pi = Plane3D(d, s1.o + d * pd / d2);
-  pair<T, T> a = sphereHalfSpaceIntersectionSAV(s2, pi);
-  pair<T, T> b = sphereHalfSpaceIntersectionSAV(s1, Plane3D(-pi.n, -pi.d));
+  pair<T, T> a = sphereHalfSpaceIntersectionSAV(s1, pi);
+  pair<T, T> b = sphereHalfSpaceIntersectionSAV(s2, Plane3D(-pi.n, -pi.d));
   a.first += b.first; a.second += b.second; return a;
 }

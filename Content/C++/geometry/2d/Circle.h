@@ -13,10 +13,14 @@ struct Circle {
   int contains(ref p) const { return sgn(distSq(o, p) - r * r); }
   // -1 if c is strictly inside this circle, 0 if inside and touching this
   //   circle, 1 otherwise
-  int contains(const Circle &c) const { return sgn(c.r - r + dist(o, c.o)); }
+  int contains(const Circle &c) const {
+    T dr = r - c.r; return lt(dr, 0) ? 1 : sgn(distSq(o, c.o) - dr * dr);
+  }
   // 1 if c is strictly outside this circle, 0 if outside and touching this
   //   circle, -1 otherwise
-  int disjoint(const Circle &c) const { return sgn(c.r + r - dist(o, c.o)); }
+  int disjoint(const Circle &c) const {
+    T sr = r + c.r; return sgn(sr * sr - distSq(o, c.o));
+  }
   pt proj(ref p) const { return o + (p - o) * r / dist(o, p); }
   pt inv(ref p) const { return o + (p - o) * r * r / distSq(o, p); }
 };
