@@ -20,9 +20,10 @@ using namespace std;
 //   roots: a vector of root vertices for each connected component
 // Fields:
 //   root: vector of roots for the forest each vertex is in
+//   par: vector of parent vertices for each vertex (or -1 if its a root)
+//   pre: vector of the pre order traversal indices for each vertex
 //   dep: vector of depths to each vertex from the root of
 //     its connected component
-//   pre: vector of the pre order traversal indices for each vertex
 // Functions:
 //   lca(v, w): returns the lowest common ancestor of vertices v and w assuming
 //     v and w are connected
