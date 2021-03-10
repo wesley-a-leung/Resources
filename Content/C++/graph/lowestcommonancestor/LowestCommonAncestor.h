@@ -28,13 +28,14 @@ using namespace std;
 //     v and w are connected
 //   getDirectChild(anc, des): returns the direct child of anc that is on the
 //     path from anc to des, where anc is an ancestor of des
+//   connected(v, w): returns true if and only if v and w are connected
 //   dist(v, w): returns the distance between vertices v and w assuming
 //     v and w are connected
 // In practice, lca and dist have a moderate constant, constructor is
 //   dependent on the forest data structure
 // Time Complexity:
 //   constructor: O(V)
-//   lca, getDirectChild, dist: O(1)
+//   lca, getDirectChild, connected, dist: O(1)
 // Memory Complexity: O(V)
 // Tested:
 //   https://judge.yosupo.jp/problem/lca
@@ -43,7 +44,7 @@ using namespace std;
 //   https://dmoj.ca/problem/wac1p6
 template <class T = int> struct LCA {
   using RMQ = FischerHeunStructure<int, greater_equal<int>>;
-  int V, i; vector<int> par, pre, top, bot, stk; vector<T> dep; RMQ FHS;
+  int V, i; vector<int> root, par, pre, top, bot, stk; vector<T> dep; RMQ FHS;
   int getTo(int e) { return e; }
   T getWeight(int) { return 1; }
   int getTo(const pair<int, T> &e) { return e.first; }
@@ -51,7 +52,7 @@ template <class T = int> struct LCA {
   template <class Forest> void dfs(const Forest &G, int r) {
     int ssz = 0; stk[ssz++] = r; while (ssz > 0) {
       int v = stk[--ssz]; if (v != r) { top[i] = par[v]; bot[i++] = v; }
-      pre[v] = i; for (auto &&e : G[v]) {
+      root[v] = r; pre[v] = i; for (auto &&e : G[v]) {
         int w = getTo(e);
         if (w != par[v]) dep[stk[ssz++] = w] = dep[par[w] = v] + getWeight(e);
       }
@@ -65,8 +66,8 @@ template <class T = int> struct LCA {
   }
   template <class Forest>
   LCA(const Forest &G, const vector<int> &roots = vector<int>())
-      : V(G.size()), i(0), par(V, -1), pre(V, -1), top(V), bot(V), stk(V),
-        dep(V, T()), FHS(init(G, roots)) {}
+      : V(G.size()), i(0), root(V, -1), par(V, -1), pre(V, -1), top(V), bot(V),
+        stk(V), dep(V, T()), FHS(init(G, roots)) {}
   template <class Forest> LCA(const Forest &G, int rt)
       : LCA(G, vector<int>{rt}) {}
   int lca(int v, int w) {
@@ -77,5 +78,6 @@ template <class T = int> struct LCA {
   int getDirectChild(int anc, int des) {
     return bot[FHS.queryInd(pre[anc], pre[des] - 1)];
   }
+  bool connected(int v, int w) { return root[v] == root[w]; }
   T dist(int v, int w) { return dep[v] + dep[w] - 2 * dep[lca(v, w)]; }
 };
