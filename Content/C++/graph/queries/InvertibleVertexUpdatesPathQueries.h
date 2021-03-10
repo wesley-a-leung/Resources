@@ -42,7 +42,6 @@ using namespace std;
 //   rt: a single root vertex
 //   roots: a vector of root vertices for each connected component
 // Functions:
-//   connected(v, w): returns true if and only if v and w are connected
 //   updateVertex(v, val): updates the vertex v with the value val
 //   queryPathFromRoot(v): queries the path betwen vertex v and the root of
 //     its connected component
@@ -52,7 +51,6 @@ using namespace std;
 //   the constants of R's update and query functions
 // Time Complexity:
 //   constructor: O(V) + time complexity of R's constructor
-//   connected: O(1)
 //   updateVertex, queryPathFromRoot, queryPath:
 //     time complexity of update/query
 // Memory Complexity: O(V) + memory complexity of R
@@ -63,7 +61,6 @@ template <class R, const bool VALUES_ON_EDGES>
 struct InvertibleVertexUpdatesPathQueries {
   using Data = typename R::Data; using Lazy = typename R::Lazy;
   LCA<> lca; int V, ind; vector<int> par, pre, post, vert; R ops;
-  bool connected(int v, int w) { return lca.connected(v, w); }
   void updateVertex(int v, const Lazy &val) {
     ops.update(pre[v], val); if (post[v] + 1 <= post[lca.root[v]])
       ops.update(post[v] + 1, R::invLazy(val));
