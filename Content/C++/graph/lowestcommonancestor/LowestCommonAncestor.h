@@ -20,7 +20,6 @@ using namespace std;
 //   roots: a vector of root vertices for each connected component
 // Fields:
 //   root: vector of roots for the forest each vertex is in
-//   par: vector of parent vertices for each vertex (or -1 if its a root)
 //   pre: vector of the pre order traversal indices for each vertex
 //   dep: vector of depths to each vertex from the root of
 //     its connected component
@@ -45,30 +44,30 @@ using namespace std;
 //   https://dmoj.ca/problem/wac1p6
 template <class T = int> struct LCA {
   using RMQ = FischerHeunStructure<int, greater_equal<int>>;
-  int V, i; vector<int> root, par, pre, top, bot, stk; vector<T> dep; RMQ FHS;
+  int V, i; vector<int> root, pre, top, bot, stk; vector<T> dep; RMQ FHS;
   int getTo(int e) { return e; }
   T getWeight(int) { return 1; }
   int getTo(const pair<int, T> &e) { return e.first; }
   T getWeight(const pair<int, T> &e) { return e.second; }
   template <class Forest> void dfs(const Forest &G, int r) {
     int ssz = 0; stk[ssz++] = r; while (ssz > 0) {
-      int v = stk[--ssz]; if (v != r) { top[i] = par[v]; bot[i++] = v; }
+      int v = stk[--ssz]; if (v != r) { top[i] = pre[v]; bot[i++] = v; }
       root[v] = r; pre[v] = i; for (auto &&e : G[v]) {
         int w = getTo(e);
-        if (w != par[v]) dep[stk[ssz++] = w] = dep[par[w] = v] + getWeight(e);
+        if (pre[v] == -1) dep[stk[ssz++] = w] = dep[pre[w] = v] + getWeight(e);
       }
     }
   }
   template <class Forest> RMQ init(const Forest &G, const vector<int> &roots) {
     if (roots.empty()) {
-      for (int v = 0; v < V; v++) if (par[v] == -1) dfs(G, v);
+      for (int v = 0; v < V; v++) if (pre[v] == -1) dfs(G, v);
     } else for (int v : roots) dfs(G, v);
     int j = 0; return RMQ(i, [&] { return pre[top[j++]]; });
   }
   template <class Forest>
   LCA(const Forest &G, const vector<int> &roots = vector<int>())
-      : V(G.size()), i(0), root(V, -1), par(V, -1), pre(V, -1), top(V), bot(V),
-        stk(V), dep(V, T()), FHS(init(G, roots)) {}
+      : V(G.size()), i(0), root(V, -1), pre(V, -1), top(V), bot(V), stk(V),
+        dep(V, T()), FHS(init(G, roots)) {}
   template <class Forest> LCA(const Forest &G, int rt)
       : LCA(G, vector<int>{rt}) {}
   int lca(int v, int w) {
