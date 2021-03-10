@@ -57,7 +57,7 @@ struct DynamicConvexHullTrickSqrtBuffer {
       while (back >= 2 && ccw(line, large[back - 1], large[back - 2])) back--;
       large[back++] = line;
     }
-    large.resize(back, Line(T(), T()));
+    large.erase(large.begin() + back, large.end());
   }
   int size() const { return large.size() + small.size(); }
   void rebuild() {

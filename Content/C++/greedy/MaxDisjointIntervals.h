@@ -3,45 +3,37 @@
 using namespace std;
 
 // Solves the maximum disjoint intervals problem
-// Given a set of intervals in the form [L, R] which are sorted by R,
-//   find the maximum number of disjoint intervals
+// Given a set of intervals in the form [L, R], find the maximum number of
+//   disjoint intervals
 // Maximum number of disjoint intervals is equivalent to the minimum number of
 //   points to cover each interval (with the points being the right endpoints
 //   of the disjoint intervals)
-// Assumes range is sorted, similar to std::unique
+// Range is modified in-place
 // Template Arguments:
-//   It: the type of the iterator for the array of pairs
-//     with the first element being the inclusive left bound of the interval
-//     and the second element being the inclusive right bound of the interval
+//   T: the type of the endpoints of the intervals
 //   Cmp: the comparator to compare two points
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
 // Function Arguments:
-//   st: an iterator pointing to the first element in the array of pairs
-//     with the first element being the inclusive left bound of the interval
-//     and the second element being the inclusive right bound of the interval
-//   en: an iterator pointing to after the last element in the array of pairs
-//     with the first element being the inclusive left bound of the interval
-//     and the second element being the inclusive right bound of the interval
+//   A: a reference to a vector of pairs with the first element being the
+//     inclusive left bound of the interval and the second element being the
+//     inclusive right bound of the interval
 //   cmp: an instance of the Cmp struct
-// Return Value: an iterator to after the last disjoint interval after the
-//   array is modified
+// Return Value: a reference to the modified vector
 // In practice, has a very small constant
-// Time Complexity: O(N)
+// Time Complexity: O(N log N)
 // Memory Complexity: O(1)
 // Tested:
 //   https://codeforces.com/contest/1141/problem/F2
 //   https://oj.uz/problem/view/COCI21_planine
-template <
-    class It,
-    class Cmp = less<typename iterator_traits<It>::value_type::first_type>>
-It maxDisjointIntervals(It st, It en, Cmp cmp = Cmp()) {
-  using Pair = typename iterator_traits<It>::value_type;
-  assert(is_sorted(st, en, [&] (const Pair &a, const Pair &b) {
+template <class T, class Cmp = less<T>>
+vector<pair<T, T>> &maxDisjointIntervals(vector<pair<T, T>> &A,
+                                         Cmp cmp = Cmp()) {
+  sort(A.begin(), A.end(), [&] (const pair<T, T> &a, const pair<T, T> &b) {
     return cmp(a.second, b.second);
-  }));
-  It cur = st; for (It l = st, r = st; l != en; l = r, cur++) {
-    *cur = *l; for (r = l + 1; r != en && !cmp(cur->second, r->first); r++);
+  });
+  int i = 0; for (int l = 0, r = 0, N = A.size(); l < N; l = r, i++) {
+    A[i] = A[l]; for (r = l + 1; r < N && !cmp(A[i].second, A[r].first); r++);
   }
-  return cur;
+  A.erase(A.begin() + i, A.end()); return A;
 }

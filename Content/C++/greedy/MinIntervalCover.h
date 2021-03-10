@@ -3,52 +3,44 @@
 using namespace std;
 
 // Solves the minimum interval cover problem
-// Given a set of intervals in the form [L, R] which are sorted by L,
-//   find the minimum number of intervals to cover a target interval
-// Assumes range is sorted, similar to std::unique
+// Given a set of intervals in the form [L, R], find the minimum number of
+//   intervals to cover a target interval
+// Range is modified in-place
 // Template Arguments
-//   It: the type of the iterator for the array of pairs
-//     with the first element being the inclusive left bound of the interval
-//     and the second element being the inclusive right bound of the interval
+//   T: the type of the endpoints of the intervals
 //   Cmp: the comparator to compare two points
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
 //   T: the type of the points
 // Function Arguments:
-//   st: an iterator pointing to the first element in the array of pairs
-//     with the first element being the inclusive left bound of the interval
-//     and the second element being the inclusive right bound of the interval
-//   en: an iterator pointing to after the last element in the array of pairs
-//     with the first element being the inclusive left bound of the interval
-//     and the second element being the inclusive right bound of the interval
+//   A: a reference to a vector of pairs with the first element being the
+//     inclusive left bound of the interval and the second element being the
+//     inclusive right bound of the interval
 //   target: the target interval to cover with the first element being the
 //     inclusive left bound of the target interval and the second element
 //     being the inclusive right bound of the interval
 //   cmp: an instance of the Cmp struct
-// Return Value: an iterator to after the last interval in the minimum
-//   cover after the array is modified, or st if no cover exists
+// Return Value: a reference to the modified vector
 // In practice, has a very small constant
-// Time Complexity: O(N)
+// Time Complexity: O(N log N)
 // Memory Complexity: O(1)
 // Tested:
 //   https://open.kattis.com/problems/intervalcover
-template <
-    class It,
-    class Cmp = less<typename iterator_traits<It>::value_type::first_type>,
-    class T = typename iterator_traits<It>::value_type::first_type>
-It minIntervalCover(It st, It en, pair<T, T> target, Cmp cmp = Cmp()) {
-  using Pair = typename iterator_traits<It>::value_type;
-  assert(is_sorted(st, en, [&] (const Pair &a, const Pair &b) {
+template <class T, class Cmp = less<T>>
+vector<pair<T, T>> &minIntervalCover(vector<pair<T, T>> &A,
+                                     pair<T, T> target, Cmp cmp = Cmp()) {
+  sort(A.begin(), A.end(), [&] (const pair<T, T> &a, const pair<T, T> &b) {
     return cmp(a.first, b.first);
-  }));
-  bool first = true; It cur = st;
-  for (It i = st; i != en && (first || cmp(target.first, target.second));) {
-    if (cmp(target.first, i->first)) return st;
+  });
+  bool first = true; int i = 0, N = A.size();
+  for (int j = 0; j < N && (first || cmp(target.first, target.second));) {
+    if (cmp(target.first, A[j].first)) { A.clear(); return A; }
     else {
-      for (*cur = *i; i != en && !cmp(target.first, i->first); i++)
-        if (cmp(cur->second, i->second)) *cur = *i;
-      target.first = cur++->second; first = false;
+      for (A[i] = A[j]; j < N && !cmp(target.first, A[j].first); j++)
+        if (cmp(A[i].second, A[j].second)) A[i] = A[j];
+      target.first = A[i++].second; first = false;
     }
   }
-  return first || cmp(target.first, target.second) ? st : cur;
+  if (first || cmp(target.first, target.second)) i = 0;
+  A.erase(A.begin() + i, A.end()); return A;
 }

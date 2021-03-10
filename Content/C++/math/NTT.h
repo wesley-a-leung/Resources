@@ -51,7 +51,7 @@ template <class T, const T MOD> void ntt(vector<T> &a) {
   static vector<T> rt(2, 1); static vector<int> ord; static int k = 2, len = 1;
   int N = a.size(); assert(N <= PK); assert(!(N & (N - 1)));
   for (; k < N; k <<= 1, len++) {
-    rt.resize(N); T x = powMod(ROOT, PK >> (len + 1), MOD);
+    rt.resize(N, T()); T x = powMod(ROOT, PK >> (len + 1), MOD);
     for (int i = k; i < (k << 1); i++)
       rt[i] = i & 1 ? mulMod(rt[i >> 1], x, MOD) : rt[i >> 1];
   }

@@ -24,8 +24,8 @@ using namespace std;
 //   addBipartiteGraphQuery(): adds a query asking if the graph is bipartite
 //   addColorQuery(v): adds a query asking for the color of vertex v for one
 //     possible coloring of the graph, assuming the component is bipartite
-//   addPathParity(v, w): adds a query asking for the parity of the path from
-//     v to w (false if even number of edges, true if odd), assuming the
+//   addPathParityQuery(v, w): adds a query asking for the parity of the path
+//     from v to w (false if even number of edges, true if odd), assuming the
 //     component is bipartite and v and w are connected
 //   solveQueries(): solves all queries asked so far
 // In practice, has a small constant

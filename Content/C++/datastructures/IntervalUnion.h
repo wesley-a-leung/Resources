@@ -12,7 +12,8 @@ template <class Cmp> struct PairCmp {
   } 
 };
 
-// Adding and removing intervals from a set
+// Adding and removing intervals from a set such that the combined intervals
+//   are non-overlapping
 // Template Arguments:
 //   T: the type of the endpoints of the intervals
 //   Cmp: the comparator to compare two points
@@ -50,39 +51,32 @@ struct IntervalUnion : public set<pair<T, T>, PairCmp<Cmp>> {
   }
 };
 
-// Given a set of sorted intervals (by the PairCmp struct), combine
+// Given a set of intervals (by the PairCmp struct), combine
 //   them into disjoint intervals of the form [L, R]
-// Assumes range is sorted, similar to std::unique
+// Range is modified in-place
 // Template Arguments:
-//   It: the type of the iterator for the array of pairs
-//     with the first element being the inclusive left bound of the interval
-//     and the second element being the inclusive right bound of the interval
+//   T: the type of the endpoints of the intervals
 //   Cmp: the comparator to compare two points
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
 // Function Arguments:
-//   st: an iterator pointing to the first element in the array of pairs
-//     with the first element being the inclusive left bound of the interval
-//     and the second element being the inclusive right bound of the interval
-//   en: an iterator pointing to after the last element in the array of pairs
-//     with the first element being the inclusive left bound of the interval
-//     and the second element being the inclusive right bound of the interval
+//   A: a reference to a vector of pairs with the first element being the
+//     inclusive left bound of the interval and the second element being the
+//     inclusive right bound of the interval
 //   cmp: an instance of the Cmp struct
-// Return Value: an iterator to right after the last disjoint interval
+// Return Value: a reference to the modified vector
 // In practice, has a small constant
-// Time Complexity: O(N)
+// Time Complexity: O(N log N)
 // Memory Complexity: O(1)
 // Tested:
 //   https://dmoj.ca/problem/art6
-//   https://naq20.kattis.com/problems/drawingcircles
-template <
-    class It,
-    class Cmp = less<typename iterator_traits<It>::value_type::first_type>>
-It intervalUnion(It st, It en, Cmp cmp = Cmp()) {
-  assert(is_sorted(st, en, PairCmp<Cmp>()));
-  It cur = st; for (It l = st, r; l != en; l = r, cur++) {
-    *cur = *l; for (r = l + 1; r != en && !cmp(cur->second, r->first); r++)
-      cur->second = max(cur->second, r->second, cmp);
+//   https://open.kattis.com/problems/drawingcircles
+template <class T, class Cmp = less<T>>
+vector<pair<T, T>> &intervalUnion(vector<pair<T, T>> &A, Cmp cmp = Cmp()) {
+  sort(A.begin(), A.end(), PairCmp<Cmp>());
+  int i = 0; for (int l = 0, r = 0, N = A.size(); l < N; l = r, i++) {
+    A[i] = A[l]; for (r = l + 1; r < N && !cmp(A[i].second, A[r].first); r++)
+      A[i].second = max(A[i].second, A[r].second, cmp);
   }
-  return cur;
+  A.erase(A.begin() + i, A.end()); return A;
 }

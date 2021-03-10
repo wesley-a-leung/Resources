@@ -81,7 +81,7 @@ struct SqrtBuffer {
           v[++j] = v[i]; v[j].second += v[j - 1].second;
         } else v[j].second += v[i].second;
       }
-      v.resize(j + 1);
+      v.erase(v.begin() + j + 1, v.end());
     }
   }
   bool rebuild() {
