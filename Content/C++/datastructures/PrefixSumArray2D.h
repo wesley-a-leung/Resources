@@ -32,12 +32,12 @@ template <class C> void partial_sum_2d(const C &A, int N, int M, C &pre) {
 // Tested:
 //   Fuzz and Stress Tested
 template <class C>
-void adjacent_difference_2d(const C &diff, int N, int M, C &A) {
+void adjacent_difference_2d(const C &A, int N, int M, C &diff) {
   for (int i = N - 1; i >= 0; i--) for (int j = M - 1; j >= 0; j--) {
-    A[i][j] = diff[i][j];
-    if (i > 0) A[i][j] -= diff[i - 1][j];
-    if (j > 0) A[i][j] -= diff[i][j - 1];
-    if (i > 0 && j > 0) A[i][j] += diff[i - 1][j - 1];
+    diff[i][j] = A[i][j];
+    if (i > 0) diff[i][j] -= A[i - 1][j];
+    if (j > 0) diff[i][j] -= A[i][j - 1];
+    if (i > 0 && j > 0) diff[i][j] += A[i - 1][j - 1];
   }
 }
 
