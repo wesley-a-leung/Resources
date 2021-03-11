@@ -1,44 +1,31 @@
 #include <bits/stdc++.h>
-#include "../../../../../Content/C++/datastructures/trees/segmenttrees/SegmentTreeBottomUp2D.h"
+#include "../../../../../Content/C++/datastructures/trees/segmenttrees/RangeAddRangeSum2D.h"
 using namespace std;
-
-struct C {
-  using Data = long long;
-  using Lazy = long long;
-  static Data qdef() { return 0; }
-  static Data merge(const Data &l, const Data &r) {
-    return l + r;
-  }
-  static Data applyLazy(const Data &l, const Lazy &r) {
-    return l + r;
-  }
-};
 
 void test1() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
-  const int TESTCASES = 1e5;
+  const int TESTCASES = 1e4;
   long long checkSum = 0;
   for (int ti = 0; ti < TESTCASES; ti++) {
-    int N = rng() % 11;
+    int N = rng() % 21;
     int M = rng() % 21;
     vector<vector<long long>> A(N, vector<long long>(M));
     for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e9) + 1;
-    SegmentTreeBottomUp2D<C> ST(A);
+    RangeAddRangeSum2D<long long> ST(A);
     int Q = N == 0 || M == 0 ? 0 : 100 - rng() % 5;
     vector<long long> ans0, ans1;
     for (int i = 0; i < Q; i++) {
       int t = rng() % 2;
+      int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
+      if (u > d) swap(u, d);
+      if (l > r) swap(l, r);
       if (t == 0) {
-        int i = rng() % N, j = rng() % M;
         long long v = rng() % int(1e9) + 1;
-        A[i][j] += v;
-        ST.update(i, j, v);
+        for (int j = u; j <= d; j++) for (int k = l; k <= r; k++) A[j][k] += v;
+        ST.update(u, d, l, r, v);
       } else {
-        int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
-        if (u > d) swap(u, d);
-        if (l > r) swap(l, r);
-        long long sm = C::qdef();
+        long long sm = 0;
         for (int j = u; j <= d; j++) for (int k = l; k <= r; k++) sm += A[j][k];
         ans0.push_back(sm);
         ans1.push_back(ST.query(u, d, l, r));
@@ -57,29 +44,28 @@ void test1() {
 void test2() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
-  const int TESTCASES = 1e5;
+  const int TESTCASES = 1e4;
   long long checkSum = 0;
   for (int ti = 0; ti < TESTCASES; ti++) {
-    int N = rng() % 11;
+    int N = rng() % 21;
     int M = rng() % 21;
     vector<vector<long long>> A(N, vector<long long>(M));
     for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e9) + 1;
-    SegmentTreeBottomUp2D<C> ST(N, M, 0);
-    for (int i = 0; i < N; i++) for (int j = 0; j < M; j++) ST.update(i, j, A[i][j]);
+    RangeAddRangeSum2D<long long> ST(N, M);
+    for (int i = 0; i < N; i++) for (int j = 0; j < M; j++) ST.update(i, i, j, j, A[i][j]);
     int Q = N == 0 || M == 0 ? 0 : 100 - rng() % 5;
     vector<long long> ans0, ans1;
     for (int i = 0; i < Q; i++) {
       int t = rng() % 2;
+      int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
+      if (u > d) swap(u, d);
+      if (l > r) swap(l, r);
       if (t == 0) {
-        int i = rng() % N, j = rng() % M;
         long long v = rng() % int(1e9) + 1;
-        A[i][j] += v;
-        ST.update(i, j, v);
+        for (int j = u; j <= d; j++) for (int k = l; k <= r; k++) A[j][k] += v;
+        ST.update(u, d, l, r, v);
       } else {
-        int u = rng() % N, d = rng() % N, l = rng() % M, r = rng() % M;
-        if (u > d) swap(u, d);
-        if (l > r) swap(l, r);
-        long long sm = C::qdef();
+        long long sm = 0;
         for (int j = u; j <= d; j++) for (int k = l; k <= r; k++) sm += A[j][k];
         ans0.push_back(sm);
         ans1.push_back(ST.query(u, d, l, r));
@@ -90,7 +76,7 @@ void test2() {
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
-  cout << "Subtest 2 (vdef constructor) Passed" << endl;
+  cout << "Subtest 2 (0 constructor) Passed" << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   cout << "  Checksum: " << checkSum << endl;
 }

@@ -30,11 +30,11 @@ using namespace std;
 // Constructor Arguments:
 //   N: the size of the first dimension of the array
 //   M: the size of the second dimension of the array
-//   A: a 2D vector of elements of type T
+//   A: a 2D vector of elements of type Data
 //   vdef: the default value to fill the array with
 // Functions:
 //   update(i, j, v): updates the value A[i][j] with the lazy value v
-//   query(l, r): queries the range [u, d] in the first dimension and
+//   query(u, d, l, r): queries the range [u, d] in the first dimension and
 //     [l, r] in the second dimension and returns the aggregate value
 // In practice, has a small constant, not quite as fast as fenwick trees
 // Time Complexity:
