@@ -2,6 +2,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+// ignore next line length violation
+// Based on https://github.com/cheran-senthil/PyRival/blob/master/pyrival/strings/suffix_array.py
+//   which has an Apache 2.0 license
 // Suffix Array Induced Sort to sort suffixes of a string in
 //   lexicographical order
 // Indices are 0-indexed and ranges are inclusive with the exception of
