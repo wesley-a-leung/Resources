@@ -10,7 +10,8 @@ using namespace std;
 //   T: the type of each edge weight
 // Constructor Arguments:
 //   matrix: a V x V matrix containing the weight of the edge between two
-//     vertices, 0 if an edge doesn't exist, must be symmetric
+//     vertices, 0 if an edge doesn't exist, must be symmetric and
+//      non negative
 //   INF: a value for infinity
 // Fields:
 //   V: the number of vertices in the graph
@@ -175,6 +176,7 @@ template <class T> struct GeneralWeightedMaxMatch {
     iota(st.begin(), st.begin() + V + 1, 0); T mx = T();
     for (int v = 1; v <= V; v++) for (int w = 1; w <= V; w++) {
       G[v][w].v = v; G[v][w].w = w; floFrom[v][w] = (v == w ?  v : 0);
+      assert(G[v][w].weight >= T());
       mx = max(mx, G[v][w].weight = matrix[v - 1][w - 1]);
     }
     fill(lab.begin() + 1, lab.begin() + V + 1, mx);
