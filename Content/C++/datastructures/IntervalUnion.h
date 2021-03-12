@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Help struct to compare two pairs
+// Helper struct to compare two pairs
 template <class Cmp> struct PairCmp {
   template <class T>
   bool operator () (const pair<T, T> &a, const pair<T, T> &b) const {
@@ -12,47 +12,72 @@ template <class Cmp> struct PairCmp {
   } 
 };
 
-// Adding and removing intervals from a set such that the combined intervals
-//   are non-overlapping
+// Struct representing no operation
+struct NoOp {
+  template <class T> void operator () (const T &, const T &) const {}
+};
+
+// Adding and removing half-open intervals from a set such that the combined
+//   intervals are disjoint
 // Template Arguments:
 //   T: the type of the endpoints of the intervals
 //   Cmp: the comparator to compare two points
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
+//   Add: a struct with a callback function (can also be of type
+//       std::function<T(T, T)>); in practice, custom struct is faster than
+//       std::function
+//     Required Functions:
+//       operator (l, r): adds the interval [l, r) to the set of
+//         disjoint intervals
+//   Rem: a struct with a callback function (can also be of type
+//       std::function<T(T, T)>); in practice, custom struct is faster than
+//       std::function
+//     Required Functions:
+//       operator (l, r): removes the interval [l, r) from the set of
+//         disjoint intervals
+// Constructor Arguments:
+//   add: an instance of Add
+//   rem: an instance of Rem
 // Functions:
-//   addInterval(L, R): adds an interval [L, R] to the set
-//   removeInterval(L, R): removes the interval [L, R] from the set
+//   addInterval(L, R): adds an interval [L, R) to the set
+//   removeInterval(L, R): removes the interval [L, R) from the set
 // In practice, has a moderate constant
 // Time Complexity:
 //   addInterval, removeInterval: O(log N) amortized
 // Memory Complexity: O(N)
 // Tested:
 //   https://dmoj.ca/problem/art6
-template <class T, class Cmp = less<T>>
+//   http://www.usaco.org/index.php?page=viewproblem2&cpid=973
+template <class T, class Cmp = less<T>, class Add = NoOp, class Rem = NoOp>
 struct IntervalUnion : public set<pair<T, T>, PairCmp<Cmp>> {
+  Add add; Rem rem;
+  IntervalUnion(Add add = Add(), Rem rem = Rem()) : add(add), rem(rem) {}
   typename set<pair<T, T>, PairCmp<Cmp>>::iterator addInterval(T L, T R) {
     if (!Cmp()(L, R) && !Cmp()(R, L)) return this->end();
     auto it = this->lower_bound(make_pair(L, R)), before = it;
     while (it != this->end() && !Cmp()(R, it->first)) {
-      R = max(R, it->second, Cmp()); before = it = this->erase(it);
+      R = max(R, it->second, Cmp()); rem(it->first, it->second);
+      before = it = this->erase(it);
     }
     if (it != this->begin() && !Cmp()((--it)->second, L)) {
       L = min(L, it->first, Cmp()); R = max(R, it->second, Cmp());
-      this->erase(it);
+      rem(it->first, it->second); this->erase(it);
     }
-    return this->emplace_hint(before, L, R);
+    add(L, R); return this->emplace_hint(before, L, R);
   }
   void removeInterval(T L, T R) {
     if (!Cmp()(L, R) && !Cmp()(R, L)) return;
     auto it = addInterval(L, R); auto r2 = it->second;
-    if (!Cmp()(it->first, L) && !Cmp()(L, it->first)) this->erase(it);
-    else (T &) it->second = L;
-    if (Cmp()(R, r2) || Cmp()(r2, R)) this->emplace(R, r2);
+    if (!Cmp()(it->first, L) && !Cmp()(L, it->first)) {
+      rem(it->first, it->second); this->erase(it);
+    } else (T &) it->second = L;
+    if (Cmp()(R, r2) || Cmp()(r2, R)) { add(R, r2); this->emplace(R, r2); }
   }
 };
 
 // Given a set of intervals (by the PairCmp struct), combine
-//   them into disjoint intervals of the form [L, R]
+//   them into disjoint half-open intervals of the form [L, R)
 // Range is modified in-place
 // Template Arguments:
 //   T: the type of the endpoints of the intervals
@@ -62,7 +87,7 @@ struct IntervalUnion : public set<pair<T, T>, PairCmp<Cmp>> {
 // Function Arguments:
 //   A: a reference to a vector of pairs with the first element being the
 //     inclusive left bound of the interval and the second element being the
-//     inclusive right bound of the interval
+//     exclusive right bound of the interval
 //   cmp: an instance of the Cmp struct
 // Return Value: a reference to the modified vector
 // In practice, has a small constant
