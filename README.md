@@ -10,9 +10,9 @@ and Windows
 - Kotlin Resources compile in Kotlin 1.4  
 
 ### Licensing
-- Most files are covered under `LICENSE.md`, with certain files being covered
-under a different license, which is stated at the top of the file with the
-license file also being provided in its folder
+- most files are covered under `LICENSE.md`, with certain files being covered
+under a different license, which are stated at the top of those files with the
+license files also being provided in its folder
 
 ### Style Guidelines
 - 79 character line limit unless the previous line contains the string
