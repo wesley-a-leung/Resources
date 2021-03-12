@@ -7,6 +7,32 @@ void unSyncUntie() {
   std::ios::sync_with_stdio(0); std::cin.tie(0); std::cout.tie(0);
 }
 
+// 128-bit integers IO operations
+std::istream &operator >> (std::istream &stream, __uint128_t &x) {
+  std::string s; stream >> s; x = 0;
+  for (int i = 0; i < int(s.length()); i++) x = x * 10 + (s[i] - '0');
+  return stream;
+}
+
+std::istream &operator >> (std::istream &stream, __int128_t &x) {
+  std::string s; stream >> s; x = 0; int i = 0; bool neg = false;
+  if (s[0] == '-') { neg = true; i++; }
+  for (; i < int(s.length()); i++) x = x * 10 + (s[i] - '0');
+  if (neg) x *= -1;
+  return stream;
+}
+
+std::ostream &operator << (std::ostream &stream, __uint128_t x) {
+  if (x == 0) return stream << '0';
+  std::string s; for (; x > 0; x /= 10) s.push_back('0' + x % 10);
+  std::reverse(s.begin(), s.end()); return stream << s;
+}
+
+std::ostream &operator << (std::ostream &stream, const __int128_t &x) {
+  if (x < 0) return stream << '-' << __uint128_t(-x);
+  else return stream << __uint128_t(x);
+}
+
 // Functions for fast IO
 namespace IO {
 #define INTERACTIVE_INPUT 0
