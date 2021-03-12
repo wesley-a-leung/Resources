@@ -26,7 +26,7 @@ for filename in filenames:
       if line.find(b"\t") != -1:
         print(f"line {curLine} contains \\t")
         ok = False
-      if not line.find(b"http") != -1 and len(line.rstrip(b"\r\n")) > 79:
+      if line.find(b"http") != -1 and len(line.rstrip(b"\r\n")) > 79:
         print(f"line {curLine} exceeds maximum line length of 79")
         ok = False
     if ok:
