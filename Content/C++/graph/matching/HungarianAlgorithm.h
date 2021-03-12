@@ -60,7 +60,7 @@ template <class T> struct HungarianAlgorithm {
           pair<int, T> d = A[i0][j] == INF ? make_pair(1, T())
                                            : make_pair(0, A[i0][j]);
           sub(d, d1[i0]); sub(d, d2[j]);
-          if (d < dist[j]) { dist[j] = d; par[j] = j0; }
+          if (dist[j].first > 0 || d < dist[j]) { dist[j] = d; par[j] = j0; }
           if (dist[j] < delta) delta = dist[j1 = j];
         }
         j0 = j1; for (int j = 0; j <= M; j++) {
@@ -74,7 +74,7 @@ template <class T> struct HungarianAlgorithm {
       if (workerForJob[j] == N) workerForJob[j] = -1;
       else jobForWorker[workerForJob[j]] = j;
     }
-    cost = d2[M].first < 0 ? INF : d2[M].first > 0 ? -INF : -d2[M].second;
+    cost = d2[M].first < 0 ? INF : -d2[M].second;
     if (rev) { swap(N, M); jobForWorker.swap(workerForJob); }
   }
 };
