@@ -2,7 +2,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// ignore next line length violation
 // Modified from https://github.com/kth-competitive-programming/kactl/blob/master/content/graph/MaximumClique.h,
 //   which itself is based on
 //   https://gitlab.com/janezkonc/mcqd/blob/master/mcqd.h,

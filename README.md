@@ -15,8 +15,7 @@ under a different license, which are stated at the top of those files with the
 license files also being provided in its folder
 
 ### Style Guidelines
-- 79 character line limit unless the previous line contains the string
-`ignore next line length violation`  
+- 79 character line limit unless the previous line contains the string `http`  
 - 2 spaces for indentation  
 - very compressed coding style to reduce wasted space in PDF, with multiple
 statements on a single line  

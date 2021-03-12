@@ -16,7 +16,6 @@ for filename in filenames:
   print(filename + ":")
   with open(filename, "rb") as file:
     ok = True
-    ignoreLenViolation = False
     for curLine, line in enumerate(file, 1):
       if not line.endswith(b"\n"):
         print(f"line {curLine} does not end in \\n")
@@ -27,10 +26,9 @@ for filename in filenames:
       if line.find(b"\t") != -1:
         print(f"line {curLine} contains \\t")
         ok = False
-      if not ignoreLenViolation and len(line.rstrip(b"\r\n")) > 79:
+      if not line.contains(b"http") and len(line.rstrip(b"\r\n")) > 79:
         print(f"line {curLine} exceeds maximum line length of 79")
         ok = False
-      ignoreLenViolation = b"ignore next line length violation" in line
     if ok:
       print("All lines good")
       good += 1
