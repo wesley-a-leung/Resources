@@ -7,7 +7,7 @@ using namespace std;
 // Functions for a 3D plane
 struct Plane3D {
   pt3 n; T d;
-  // ax + by + cz = d, above is ax + by + cz >= d
+  // ax + by + cz = d, above is ax + by + cz > d
   Plane3D(T a = 0, T b = 0, T c = 0, T d = 0) : n(a, b, c), d(d) {}
   // normal n, offset d
   Plane3D(ref3 n, T d) : n(n), d(d) {}

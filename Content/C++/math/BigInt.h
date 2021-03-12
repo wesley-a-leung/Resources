@@ -86,6 +86,7 @@ struct BigInt {
   BigInt(const string &s) { read(s); }
   BigInt(T v) : BigInt(to_string(v)) {}
   bool isZero() const { return a.empty() || (int(a.size()) == 1 && !a[0]); }
+  BigInt operator + () const { return *this; }
   BigInt operator - () const {
     BigInt res = *this; res.sign = -sign; return res;
   }
