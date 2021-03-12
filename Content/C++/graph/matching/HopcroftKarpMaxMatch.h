@@ -4,6 +4,7 @@ using namespace std;
 
 // Computes the maximum matching (and minimum vertex cover) on
 //   an unweighted bipartite graph
+// The maximum independent set is any vertex not in the minimum vertex cover
 // Vertices are 0-indexed
 // Constructor Arguments:
 //   G: a generic undirected bipartite graph structure

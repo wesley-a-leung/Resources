@@ -66,7 +66,7 @@ int isCcwPolygon(const vector<pt> &poly) {
 
 // Determines whether a point is inside a convex polygon
 // Function Arguments:
-//   poly: the points of the convex polygon in ccw order
+//   poly: the points of the convex polygon in ccw order or cw order
 //   p: the point to check
 // Return Value: -1 if inside the polygon, 0 if on the edge, 1 if outside
 // Time Complexity: O(log N)
@@ -76,7 +76,7 @@ int isCcwPolygon(const vector<pt> &poly) {
 int isInsideConvexPolygon(const vector<pt> &poly, ref p) {
   int n = poly.size(), a = 1, b = n - 1;
   if (n < 3) return onSeg(p, poly[0], poly.back()) ? 0 : 1;
-  if (ccw(poly[0], poly[a], poly[b])) swap(a, b);
+  if (ccw(poly[0], poly[a], poly[b]) > 0) swap(a, b);
   int o1 = ccw(poly[0], poly[a], p), o2 = ccw(poly[0], poly[b], p);
   if (o1 > 0 || o2 < 0) return 1;
   if (o1 == 0 || o2 == 0) return 0;
@@ -171,7 +171,7 @@ pair<int, int> convexPolygonLineIntersection(const vector<pt> &poly,
 }
 
 // Determines the intersection of a simple polygon and a half-plane defined
-//   by the left side of a line
+//   by the left side of a line (including the line itself)
 // Function Arguments:
 //   poly: the points of the simple polygon in ccw order
 //   l: the line with the half-plane defined by the left side
@@ -179,15 +179,17 @@ pair<int, int> convexPolygonLineIntersection(const vector<pt> &poly,
 //   and the half-plane
 // Time Complexity: O(N)
 // Memory Complexity: O(N)
+// Tested:
+//   https://dmoj.ca/problem/utso15p6
 vector<pt> polygonHalfPlaneIntersection(const vector<pt> &poly,
                                         const Line &l) {
   int n = poly.size(); vector<pt> ret; for (int i = 0; i < n; i++) {
-    int j = mod(i + n - 1, n); bool side = l.onLeft(poly[i]) > 0;
-    if (side != (l.onLeft(poly[j]) > 0)) {
-      pt p; lineLineIntersection(l, Line(poly[i], poly[j]), p);
-      ret.push_back(p);
+    int j = mod(i + 1, n), o1 = l.onLeft(poly[i]), o2 = l.onLeft(poly[j]);
+    if (o1 >= 0) ret.push_back(poly[i]);
+    if (o1 && o2 && o1 != o2) {
+      pt p; if (lineLineIntersection(l, Line(poly[i], poly[j]), p) == 1)
+        ret.push_back(p);
     }
-    if (side) ret.push_back(poly[i]);
   }
   return ret;
 }

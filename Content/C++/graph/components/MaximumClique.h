@@ -8,7 +8,8 @@ using namespace std;
 //   which has a GPL3 license
 // Computes the clique with the maximum number of vertices in a graph
 // Can be used to compute the maximum independent set by finding the maximum
-//   clique on the complement graph
+//   clique on the complement graph, with the minimum vertex cover being any
+//   vertex not in the maximum independent set
 // Vertices are 0-indexed
 // Constructor Arguments:
 //   matrix: a vector of vector of booleans representing the adjacency matrix
