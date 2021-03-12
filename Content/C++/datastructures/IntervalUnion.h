@@ -53,7 +53,8 @@ template <class T, class Cmp = less<T>, class Add = NoOp, class Rem = NoOp>
 struct IntervalUnion : public set<pair<T, T>, PairCmp<Cmp>> {
   Add add; Rem rem;
   IntervalUnion(Add add = Add(), Rem rem = Rem()) : add(add), rem(rem) {}
-  typename set<pair<T, T>, PairCmp<Cmp>>::iterator addInterval(T L, T R) {
+  typename set<pair<T, T>, PairCmp<Cmp>>::iterator addInterval(const T &L,
+                                                               const T &R) {
     if (!Cmp()(L, R) && !Cmp()(R, L)) return this->end();
     auto it = this->lower_bound(make_pair(L, R)), before = it;
     while (it != this->end() && !Cmp()(R, it->first)) {
@@ -66,7 +67,7 @@ struct IntervalUnion : public set<pair<T, T>, PairCmp<Cmp>> {
     }
     add(L, R); return this->emplace_hint(before, L, R);
   }
-  void removeInterval(T L, T R) {
+  void removeInterval(const T &L, const T &R) {
     if (!Cmp()(L, R) && !Cmp()(R, L)) return;
     auto it = addInterval(L, R); auto r2 = it->second;
     if (!Cmp()(it->first, L) && !Cmp()(L, it->first)) {
