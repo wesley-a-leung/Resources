@@ -6,7 +6,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Check lines
-      run: find "Content/" -type f -exec python3 Scripts/CheckLines.py {} +
+      run: find "Content/"  \( -iname \*.h -o -iname \*.java -o -iname \*.kt \) -exec python3 Scripts/CheckLines.py {} +
   compile-cpp11:
     runs-on: ubuntu-latest
     steps:

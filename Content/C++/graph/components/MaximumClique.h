@@ -3,7 +3,7 @@
 using namespace std;
 
 // ignore next line length violation
-// Based on https://github.com/kth-competitive-programming/kactl/blob/master/content/graph/MaximumClique.h,
+// Modified from https://github.com/kth-competitive-programming/kactl/blob/master/content/graph/MaximumClique.h,
 //   which itself is based on
 //   https://gitlab.com/janezkonc/mcqd/blob/master/mcqd.h,
 //   which has a GPL3 license
