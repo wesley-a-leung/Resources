@@ -11,7 +11,7 @@ using namespace std;
 //   all elements are true
 // In practice, has a moderate constant
 // Time Complexity: O(NM)
-// Memory Complexity: O(NM)
+// Memory Complexity: O(M)
 // Tested:
 //   https://dmoj.ca/problem/ccoprep16q1
 int maxOneSubmatrix(const vector<vector<bool>> &A) {
