@@ -14,8 +14,10 @@ using namespace std;
 //   contains(v): returns whether the trie contains the value v
 //   erase(v): erases the value v into the trie if it exists,
 //     returns whether it was erased or not
-//   minXor(v): returns the minimum value of v xor any value in the trie
-//   maxXor(v): returns the maximum value of v xor any value in the trie
+//   minXor(v): returns the minimum value of v xor any value in the trie, trie
+//     cannot be empty
+//   maxXor(v): returns the maximum value of v xor any value in the trie, trie
+//     cannot be empty
 // Time Complexity:
 //   constructor: O(1)
 //   insert, contains, erase, minXor, maxXor: O(log MX)
@@ -23,6 +25,7 @@ using namespace std;
 // Tested:
 //   Fuzz Tested
 //   https://judge.yosupo.jp/problem/set_xor_min
+//   https://www.acmicpc.net/problem/16903
 template <class T> struct BinaryTrie {
   struct Node : public array<int, 2> {
     Node() : array<int, 2>() { fill(-1); }
@@ -59,7 +62,7 @@ template <class T> struct BinaryTrie {
       bool b = (v >> i) & 1; if (TR[cur][b] == -1) return cur;
       TR[cur][b] = rec(TR[cur][b], i - 1);
       if (TR[cur][0] == -1 && TR[cur][1] == -1) {
-        ret = true; deleted.push_back(cur); return -1;
+        assert(ret); deleted.push_back(cur); return -1;
       } else return cur;
     };
     if (root != -1) root = rec(root, lg);
