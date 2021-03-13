@@ -85,7 +85,7 @@ bool onSeg(ref p, ref a, ref b) {
 //   https://open.kattis.com/problems/segmentintersection
 int segSegIntersects(ref a, ref b, ref p, ref q) {
   int o1 = ccw(a, b, p), o2 = ccw(a, b, q), o3 = ccw(p, q, a);
-  int o4 = ccw(p, q, b); if (o1 != o2 && o3 != o4) return 1;
+  int o4 = ccw(p, q, b); if (o1 * o2 < 0 && o3 * o4 < 0) return 1;
   else if ((!o1 && onSeg(p, a, b)) || (!o2 && onSeg(q, a, b))
            || (!o3 && onSeg(a, p, q)) || (!o4 && onSeg(b, p, q)))
     return 2;
