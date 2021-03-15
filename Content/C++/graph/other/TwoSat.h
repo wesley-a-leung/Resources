@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "StronglyConnectedComponents.h"
+#include "../components/StronglyConnectedComponents.h"
 using namespace std;
 
 // Solves the two satisfiability problem

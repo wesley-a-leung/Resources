@@ -6,9 +6,8 @@ using namespace std;
 //   Tarjan's algorithm
 // Vertices are 0-indexed
 // Constructor Arguments:
-//   G: a generic directed acyclic graph structure
-//       which can be weighted or unweighted, though weights do not change
-//       the topological order
+//   G: a generic directed graph structure which can be weighted or unweighted,
+//       though weights do not change the components
 //     Required Functions:
 //       operator [v] const: iterates over the adjacency list of vertex v
 //         (which is a list of ints for an unweighted graph, or a list of
