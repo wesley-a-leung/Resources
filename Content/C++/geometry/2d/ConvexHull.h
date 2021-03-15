@@ -13,7 +13,7 @@ using namespace std;
 // Tested:
 //   https://open.kattis.com/problems/convexhull
 vector<pt> convexHull(vector<pt> P) {
-  vector<pt> hull; sort(P.begin(), P.end(), pt_lt());
+  vector<pt> hull; sort(P.begin(), P.end());
   for (int phase = 0; phase < 2; phase++) {
     for (int i = 0, st = int(hull.size()); i < int(P.size()); i++) {
       while (int(hull.size()) >= st + 2
@@ -23,7 +23,7 @@ vector<pt> convexHull(vector<pt> P) {
     }
     hull.pop_back(); reverse(P.begin(), P.end());
   }
-  if (int(hull.size()) == 2 && pt_eq()(hull[0], hull[1])) hull.pop_back();
+  if (int(hull.size()) == 2 && hull[0] == hull[1]) hull.pop_back();
   if (hull.empty() && !P.empty()) hull.push_back(P[0]);
   return hull;
 }

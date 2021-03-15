@@ -53,7 +53,7 @@ Line bisector(const Line &l1, const Line &l2, bool interior) {
 //   https://dmoj.ca/problem/nccc7s5
 int lineLineIntersection(const Line &l1, const Line &l2, pt &res) {
   T d = cross(l1.v, l2.v);
-  if (eq(d, 0)) return pt_eq()(l2.v * l1.c, l1.v * l2.c) ? 2 : 0;
+  if (eq(d, 0)) return l2.v * l1.c == l1.v * l2.c ? 2 : 0;
   res = (l2.v * l1.c - l1.v * l2.c) / d; return 1;
 }
 
@@ -118,8 +118,8 @@ vector<pt> segSegIntersection(ref a, ref b, ref p, ref q) {
   if (onSeg(q, a, b)) ret.push_back(q);
   if (onSeg(a, p, q)) ret.push_back(a);
   if (onSeg(b, p, q)) ret.push_back(b);
-  sort(ret.begin(), ret.end(), pt_lt());
-  ret.erase(unique(ret.begin(), ret.end(), pt_eq()), ret.end()); return ret;
+  sort(ret.begin(), ret.end());
+  ret.erase(unique(ret.begin(), ret.end()), ret.end()); return ret;
 }
 
 // Finds the closest point on a line segment to another point

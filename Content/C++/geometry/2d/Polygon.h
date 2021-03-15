@@ -60,7 +60,7 @@ int isCcwConvexPolygon(const vector<pt> &poly) {
 //   https://open.kattis.com/problems/abstractart
 int isCcwPolygon(const vector<pt> &poly) {
   int n = poly.size();
-  int i = min_element(poly.begin(), poly.end(), pt_lt()) - poly.begin();
+  int i = min_element(poly.begin(), poly.end()) - poly.begin();
   return ccw(poly[mod(i + n - 1, n)], poly[i], poly[mod(i + 1, n)]);
 }
 

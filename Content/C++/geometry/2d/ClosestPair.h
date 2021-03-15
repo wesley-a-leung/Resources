@@ -40,6 +40,6 @@ struct ClosestPair {
     }
   }
   ClosestPair(vector<pt> P) : bestDistSq(numeric_limits<T>::max()) {
-    sort(P.begin(), P.end(), pt_lt()); closest(P, 0, int(P.size()) - 1);
+    sort(P.begin(), P.end()); closest(P, 0, int(P.size()) - 1);
   }
 };

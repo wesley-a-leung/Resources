@@ -83,8 +83,7 @@ struct DelaunayTriangulation {
     return make_pair(ra, rb);
   }
   DelaunayTriangulation(vector<pt> P) {
-    sort(P.begin(), P.end(), pt_lt());
-    assert(unique(P.begin(), P.end(), pt_eq()) == P.end());
+    sort(P.begin(), P.end()); assert(unique(P.begin(), P.end()) == P.end());
     if (int(P.size()) < 2) return;
     Q e = rec(P, 0, int(P.size()) - 1).first; vector<Q> q{e}; int qi = 0;
     while (ccw(e->o->f(), e->f(), e->p) < 0) e = e->o;

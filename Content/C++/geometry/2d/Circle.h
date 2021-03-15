@@ -38,8 +38,7 @@ struct Circle {
 vector<pt> circleLineIntersection(const Circle &c, const Line &l) {
   vector<pt> ret; T h2 = c.r * c.r - l.distSq(c.o); if (!lt(h2, 0)) {
     pt p = l.proj(c.o), h = l.v * sqrt(max(h2, T(0))) / abs(l.v);
-    ret.push_back(p - h); pt q = p + h;
-    if (!pt_eq()(ret.back(), q)) ret.push_back(q);
+    ret.push_back(p - h); pt q = p + h; if (ret.back() != q) ret.push_back(q);
   }
   return ret;
 }
@@ -85,8 +84,7 @@ int circleCircleIntersection(const Circle &c1, const Circle &c2,
   T pd = (d2 + c1.r * c1.r - c2.r * c2.r) / 2;
   T h2 = c1.r * c1.r - pd * pd / d2; if (!lt(h2, 0)) {
     pt p = c1.o + d * pd / d2, h = perp(d) * sqrt(max(h2 / d2, T(0)));
-    res.push_back(p - h); pt q = p + h;
-    if (!pt_eq()(res.back(), q)) res.push_back(q);
+    res.push_back(p - h); pt q = p + h; if (res.back() != q) res.push_back(q);
   }
   return !res.empty();
 }

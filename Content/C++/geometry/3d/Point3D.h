@@ -5,34 +5,30 @@ using namespace std;
 
 // Functions for a 3D point
 #define ref3 const pt3 &
+#define OP(op, U, a, x, y, z) \
+  pt3 operator op (U a) const { return pt3(x, y, z); } \
+  pt3 &operator op##= (U a) { return *this = *this op a; }
+#define CMP(op, body) bool operator op (ref3 p) const { return body; }
 struct pt3 {
   T x, y, z; pt3(T x = 0, T y = 0, T z = 0) : x(x), y(y), z(z) {}
   pt3 operator + () const { return *this; }
   pt3 operator - () const { return pt3(-x, -y, -z); }
-  pt3 operator + (ref3 p) const { return pt3(x + p.x, y + p.y, z + p.z); }
-  pt3 &operator += (ref3 p) { return *this = *this + p; }
-  pt3 operator - (ref3 p) const { return pt3(x - p.x, y - p.y, z - p.z); }
-  pt3 &operator -= (ref3 p) { return *this = *this + p; }
-  pt3 operator * (T a) const { return pt3(x * a, y * a, z * a); }
-  pt3 &operator *= (T a) { return *this = *this * a; }
+  OP(+, ref3, p, x + p.x, y + p.y, z + p.z)
+  OP(-, ref3, p, x - p.x, y - p.y, z - p.z)
+  OP(*, T, a, x * a, y * a, z * a) OP(/, T, a, x / a, y / a, z / a)
   friend pt3 operator * (T a, ref3 p) {
     return pt3(a * p.x, a * p.y, a * p.z);
   }
-  pt3 operator / (T a) const { return pt3(x / a, y / a, z / a); }
-  pt3 &operator /= (T a) { return *this = *this / a; }
   bool operator < (ref3 p) const {
     return eq(x, p.x) ? (eq(y, p.y) ? lt(z, p.z) : lt(y, p.y)) : lt(x, p.x);
   }
-  bool operator <= (ref3 p) const { return !(p < *this); }
-  bool operator > (ref3 p) const { return p < *this; }
-  bool operator >= (ref3 p) const { return !(*this < p); }
-  bool operator == (ref3 p) const { return !(*this < p) && !(p < *this); }
-  bool operator != (ref3 p) const { return *this < p || p < *this; }
+  CMP(<=, !(p < *this)) CMP(>, p < *this) CMP(>=, !(*this < p))
+  CMP(==, !(*this < p) && !(p < *this)) CMP(!=, *this < p || p < *this)
   T operator | (ref3 p) const { return x * p.x + y * p.y + z * p.z; }
-  pt3 operator * (ref3 p) const {
-    return pt3(y * p.z - z * p.y, z * p.x - x * p.z, x * p.y - y * p.x);
-  }
+  OP(*, ref3, p, y * p.z - z * p.y, z * p.x - x * p.z, x * p.y - y * p.x)
 };
+#undef OP
+#undef CMP
 istream &operator >> (istream &stream, pt3 &p) {
   return stream >> p.x >> p.y >> p.z;
 }

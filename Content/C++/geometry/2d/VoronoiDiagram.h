@@ -36,17 +36,11 @@ using namespace std;
 // Tested:
 //   https://open.kattis.com/problems/pandapreserve
 struct VoronoiDiagram {
-  struct PairPtCmp {
-    bool operator () (const pair<pt, pt> &a, const pair<pt, pt> &b) const {
-      return pt_eq()(a.first, b.first) ? pt_lt()(a.second, b.second)
-                                       : pt_lt()(a.first, b.first);
-    }
-  };
   vector<array<pt, 3>> tri; vector<Circle> circumcircles; vector<pt> rayDir;
   vector<vector<int>> G;
   VoronoiDiagram(const vector<pt> &P)
       : tri(DelaunayTriangulation(P).tri), G(tri.size()) {
-    map<pair<pt, pt>, int, PairPtCmp> seen; circumcircles.reserve(tri.size());
+    map<pair<pt, pt>, int> seen; circumcircles.reserve(tri.size());
     for (auto &&t : tri)
       circumcircles.push_back(circumcircle(t[0], t[1], t[2]));
     for (int h = 0; h < 2; h++) for (int i = 0; i < int(tri.size()); i++)
