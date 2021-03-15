@@ -29,7 +29,8 @@ struct Circle {
 // Function Arguments:
 //   c: the circle
 //   l: the line
-// Return Value: the points of intersection, if any, of the circle and the line
+// Return Value: the points of intersection, if any, of the circle and
+//   the line, guaranteed to be sorted based on projection on the line
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
 // Tested:
@@ -37,10 +38,10 @@ struct Circle {
 vector<pt> circleLineIntersection(const Circle &c, const Line &l) {
   vector<pt> ret; T h2 = c.r * c.r - l.distSq(c.o); if (!lt(h2, 0)) {
     pt p = l.proj(c.o), h = l.v * sqrt(max(h2, T(0))) / abs(l.v);
-    ret.push_back(p - h); ret.push_back(p + h);
+    ret.push_back(p - h); pt q = p + h;
+    if (!pt_eq()(ret.back(), q)) ret.push_back(q);
   }
-  sort(ret.begin(), ret.end(), pt_lt());
-  ret.erase(unique(ret.begin(), ret.end(), pt_eq()), ret.end()); return ret;
+  return ret;
 }
 
 // Determine the area of the intersection of a circle and a half-plane defined
@@ -67,13 +68,15 @@ T circleHalfPlaneIntersectionArea(const Circle &c, const Line &l) {
 // Function Arguments:
 //   c1: the first circle
 //   c2: the second circle
-//   res: the points of intersection, if any, of the two circles
+//   res: the points of intersection, if any, of the two circles;
+//     the first point is guaranteed to not be on the left side of the
+//     line from c1.o to c2.o
 // Return Value: 0 if no intersection, 2 if identical circles, 1 otherwise
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
 // Tested:
 //   https://codeforces.com/contest/420/problem/E
-//   https://naq20.kattis.com/problems/drawingcircles
+//   https://open.kattis.com/problems/drawingcircles
 //   https://dmoj.ca/problem/noi05p6
 int circleCircleIntersection(const Circle &c1, const Circle &c2,
                              vector<pt> &res) {
@@ -82,10 +85,9 @@ int circleCircleIntersection(const Circle &c1, const Circle &c2,
   T pd = (d2 + c1.r * c1.r - c2.r * c2.r) / 2;
   T h2 = c1.r * c1.r - pd * pd / d2; if (!lt(h2, 0)) {
     pt p = c1.o + d * pd / d2, h = perp(d) * sqrt(max(h2 / d2, T(0)));
-    res.push_back(p - h); res.push_back(p + h);
+    res.push_back(p - h); pt q = p + h;
+    if (!pt_eq()(res.back(), q)) res.push_back(q);
   }
-  sort(res.begin(), res.end(), pt_lt());
-  res.erase(unique(res.begin(), res.end(), pt_eq()), res.end());
   return !res.empty();
 }
 
@@ -116,7 +118,9 @@ T circleCircleIntersectionArea(const Circle &c1, const Circle &c2) {
 //   c2: the second circle
 //   inner: whether to find the inner or outer tangents
 //   res: a vector of pairs of size 2 of the tangents, with each pair
-//     representing a point on the first circle and the second circle
+//     representing a point on the first circle and the second circle;
+//     the first point is guaranteed to not be on the left side of the
+//     line from c1.o to c2.o
 // Return Value: 0 if no tangents, 2 if identical circles, 1 otherwise
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
@@ -124,7 +128,7 @@ T circleCircleIntersectionArea(const Circle &c1, const Circle &c2) {
 //   https://dmoj.ca/problem/nccc7s4
 //   https://dmoj.ca/problem/noi05p6
 int circleCircleTangentPoints(const Circle &c1, const Circle &c2, bool inner,
-                       vector<pair<pt, pt>> &res) {
+                              vector<pair<pt, pt>> &res) {
   pt d = c2.o - c1.o; T r2 = inner ? -c2.r : c2.r, dr = c1.r - r2;
   T d2 = norm(d), h2 = d2 - dr * dr;
   if (eq(d2, 0) || lt(h2, 0)) return eq(h2, 0) ? 2 : 0;

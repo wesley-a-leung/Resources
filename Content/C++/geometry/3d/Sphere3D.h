@@ -79,16 +79,16 @@ struct Sphere3D {
 // Function Arguments:
 //   s: the sphere
 //   l: the line
-// Return Value: the points of intersection (if any) of the sphere and the line
+// Return Value: the points of intersection (if any) of the sphere and
+//   the line, guaranteed to be sorted based on projection on the line
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
 vector<pt3> sphereLineIntersection(const Sphere3D &s, const Line3D &l) {
   vector<pt3> ret; T h2 = s.r * s.r - l.distSq(s.o); if (!lt(h2, 0)) {
     pt3 p = l.proj(s.o), h = l.d * sqrt(max(h2, T(0))) / abs(l.d);
-    ret.push_back(p - h); ret.push_back(p + h);
+    ret.push_back(p - h); pt3 q = p + h; if (ret.back() != q) ret.push_back(q);
   }
-  sort(ret.begin(), ret.end());
-  ret.erase(unique(ret.begin(), ret.end()), ret.end()); return ret;
+  return ret;
 }
 
 // Determine the intersection of a sphere and a plane
