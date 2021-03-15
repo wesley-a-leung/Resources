@@ -20,7 +20,7 @@ using namespace std;
 // Tested:
 //   Stress Tested
 //   https://dmoj.ca/problem/acc2p2
-//   https://ecna18.kattis.com/problems/watchyourstep
+//   https://open.kattis.com/problems/watchyourstep
 template <const int MAXV> struct TransitiveClosureFloydWarshall {
   vector<bitset<MAXV>> dp;
   TransitiveClosureFloydWarshall(const vector<bitset<MAXV>> &matrix)

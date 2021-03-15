@@ -43,7 +43,7 @@ using namespace std;
 // Tested:
 //   https://judge.yosupo.jp/problem/line_add_get_min
 //   https://judge.yosupo.jp/problem/segment_add_get_min
-//   https://naq18.kattis.com/problems/longestlife
+//   https://open.kattis.com/problems/longestlife
 //   https://www.spoj.com/problems/CHTPRAC/
 //   https://csacademy.com/contest/round-70/task/squared-ends/
 template <class IndexType, class T, class Cmp = less<T>>

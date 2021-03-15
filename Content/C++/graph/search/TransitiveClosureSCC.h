@@ -24,7 +24,7 @@ using namespace std;
 // Tested:
 //   Stress Tested
 //   https://dmoj.ca/problem/acc2p2
-//   https://ecna18.kattis.com/problems/watchyourstep
+//   https://open.kattis.com/problems/watchyourstep
 template <const int MAXV> struct TransitiveClosureSCC {
   vector<pair<int, int>> DAG; SCC scc; vector<bitset<MAXV>> dp;
   template <class Graph> TransitiveClosureSCC(const Graph &G)

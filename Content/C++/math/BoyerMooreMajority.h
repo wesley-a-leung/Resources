@@ -15,7 +15,7 @@ using namespace std;
 // Time Complexity: O(N)
 // Memory Complexity: O(1)
 // Tested:
-//   https://mcpc19.kattis.com/problems/farmingmars
+//   https://open.kattis.com/problems/farmingmars
 template <class It> It boyerMooreMajority(It st, It en) {
   It ret = st; int cnt = 0; for (It cur = st; cur != en; cur++) {
     if (cnt == 0) { ret = cur; cnt++; }

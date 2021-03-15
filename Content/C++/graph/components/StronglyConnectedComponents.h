@@ -30,7 +30,7 @@ using namespace std;
 //   Stress Tested
 //   https://judge.yosupo.jp/problem/scc
 //   https://dmoj.ca/problem/acc2p2
-//   https://ecna18.kattis.com/problems/watchyourstep
+//   https://open.kattis.com/problems/watchyourstep
 struct SCC {
   int ind, top; vector<int> id, low, stk; vector<vector<int>> components;
   int getTo(int e) { return e; }

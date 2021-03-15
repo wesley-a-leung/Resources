@@ -17,7 +17,7 @@ int mod(int i, int n) { return i < n ? i : i - n; }
 // Memory Complexity: O(1)
 // Tested:
 //   https://open.kattis.com/problems/polygonarea
-//   https://icpc.kattis.com/problems/crane
+//   https://open.kattis.com/problems/crane
 T getArea2(const vector<pt> &poly) {
   T ret = 0; int n = poly.size();
   for (int i = 0; i < n; i++) ret += cross(poly[i], poly[mod(i + 1, n)]);
@@ -31,7 +31,7 @@ T getArea2(const vector<pt> &poly) {
 // Time Complexity: O(N)
 // Memory Complexity: O(1)
 // Tested:
-//   https://icpc.kattis.com/problems/crane
+//   https://open.kattis.com/problems/crane
 pt getCentroid(const vector<pt> &poly) {
   T A2 = 0; pt cen(0, 0); int n = poly.size(); for (int i = 0; i < n; i++) {
     T a = cross(poly[i], poly[mod(i + 1, n)]); A2 += a;
@@ -57,7 +57,7 @@ int isCcwConvexPolygon(const vector<pt> &poly) {
 // Time Complexity: O(N)
 // Memory Complexity: O(1)
 // Tested:
-//   https://ecna17.kattis.com/problems/abstractart
+//   https://open.kattis.com/problems/abstractart
 int isCcwPolygon(const vector<pt> &poly) {
   int n = poly.size();
   int i = min_element(poly.begin(), poly.end(), pt_lt()) - poly.begin();
@@ -202,7 +202,7 @@ vector<pt> polygonHalfPlaneIntersection(const vector<pt> &poly,
 // Time Complexity: O(N^2) for N total points
 // Memory Complexity: O(N) for N total points
 // Tested:
-//   https://ecna17.kattis.com/problems/abstractart
+//   https://open.kattis.com/problems/abstractart
 T polygonUnion(const vector<vector<pt>> &polys) {
   auto rat = [&] (ref p, ref q) { return sgn(q.x) ? p.x / q.x : p.y / q.y; };
   T ret = 0; for (int i = 0; i < int(polys.size()); i++)
@@ -241,7 +241,7 @@ T polygonUnion(const vector<vector<pt>> &polys) {
 // Time Complexity: O(N)
 // Memory Complexity: O(1)
 // Tested:
-//   https://ecna18.kattis.com/problems/pizzacutting
+//   https://open.kattis.com/problems/pizzacutting
 T polygonCircleIntersectionArea(const vector<pt> &poly, const Circle &c) {
   T r2 = c.r * c.r / 2;
   auto f = [&] (ref p, ref q) { return atan2(cross(p, q), dot(p, q)); };

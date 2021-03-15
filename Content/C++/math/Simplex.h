@@ -30,7 +30,7 @@ using namespace std;
 //   constructor: O(2^N), worst case, much faster in practice
 // Memory Complexity: O(MN)
 // Tested:
-//   https://ecna19.kattis.com/problems/cheeseifyouplease
+//   https://open.kattis.com/problems/cheeseifyouplease
 //   https://open.kattis.com/problems/goatropes
 //   https://codeforces.com/contest/375/problem/E
 //   https://codeforces.com/contest/605/problem/C

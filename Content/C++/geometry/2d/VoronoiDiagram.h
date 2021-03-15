@@ -34,7 +34,7 @@ using namespace std;
 //   construction: O(N log N)
 // Memory Complexity: O(N log N)
 // Tested:
-//   https://icpc.kattis.com/problems/pandapreserve
+//   https://open.kattis.com/problems/pandapreserve
 struct VoronoiDiagram {
   struct PairPtCmp {
     bool operator () (const pair<pt, pt> &a, const pair<pt, pt> &b) const {

@@ -19,7 +19,7 @@ using namespace std;
 // Time Complexity: O(VE)
 // Memory Complexity: O(VD) where D is the maximum degree of any vertex
 // Tested:
-//   https://ncpc18.kattis.com/problems/gamescheduling
+//   https://open.kattis.com/problems/gamescheduling
 struct EdgeColoring {
   vector<int> color;
   EdgeColoring(int V, const vector<pair<int, int>> &edges)

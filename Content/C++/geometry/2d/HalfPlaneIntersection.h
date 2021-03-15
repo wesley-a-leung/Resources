@@ -37,7 +37,7 @@ using namespace std;
 // Memory Complexity: O(N)
 // Tested:
 //   https://open.kattis.com/problems/bigbrother
-//   https://maps19.kattis.com/problems/marshlandrescues
+//   https://open.kattis.com/problems/marshlandrescues
 //   https://dmoj.ca/problem/ccoprep3p3
 pair<int, vector<pt>> halfPlaneIntersection(vector<Line> lines) {
   Angle::setPivot(pt(0, 0));

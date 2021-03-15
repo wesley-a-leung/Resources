@@ -38,7 +38,7 @@ template <class T, class Cmp> struct Line {
 // Memory Complexity: O(N) for N lines in the convex hull
 // Tested:
 //   https://judge.yosupo.jp/problem/line_add_get_min
-//   https://naq18.kattis.com/problems/longestlife
+//   https://open.kattis.com/problems/longestlife
 //   https://www.spoj.com/problems/CHTPRAC/
 //   https://csacademy.com/contest/round-70/task/squared-ends/
 //   https://facebook.com/codingcompetitions/hacker-cup/2020/round-2/problems/D

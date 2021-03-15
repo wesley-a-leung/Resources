@@ -27,7 +27,7 @@ using namespace std;
 // Memory Complexity: O(NM)
 // Tested:
 //   https://www.spoj.com/problems/STABLEMP/
-//   https://ncpc19.kattis.com/problems/jealousyoungsters
+//   https://open.kattis.com/problems/jealousyoungsters
 struct StableMarriage {
   int N, M; vector<int> bForA, aForB;
   StableMarriage(const vector<vector<int>> &aPrefs,

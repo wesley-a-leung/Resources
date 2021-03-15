@@ -37,7 +37,7 @@ struct LineCmp {
 // Memory Complexity: O(N)
 // Tested:
 //   https://open.kattis.com/problems/bigbrother
-//   https://maps19.kattis.com/problems/marshlandrescues
+//   https://open.kattis.com/problems/marshlandrescues
 //   https://dmoj.ca/problem/ccoprep3p3
 struct DynamicHalfPlaneIntersection : public map<Line, pt, LineCmp> {
   using iter = map<Line, pt, LineCmp>::iterator; T a2;

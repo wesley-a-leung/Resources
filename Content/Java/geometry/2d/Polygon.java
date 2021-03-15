@@ -12,7 +12,7 @@ import java.awt.geom.*;
 //     objects in areas
 //   getArea(area): returns the area of the Area object area
 // Tested:
-//   https://ecna17.kattis.com/problems/abstractart
+//   https://open.kattis.com/problems/abstractart
 //   https://codeforces.com/problemset/gymProblem/100952/J
 public class Polygon {
   public static Area makeArea(double[][] P) {

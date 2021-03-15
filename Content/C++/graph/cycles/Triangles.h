@@ -20,7 +20,7 @@ using namespace std;
 // Tested:
 //   Fuzz and Stress Tested
 //   https://mcpt.ca/problem/lcc19c3s4
-//   https://vietnam-national18.kattis.com/problems/gottacatchemall
+//   https://open.kattis.com/problems/gottacatchemall
 //   https://judge.yosupo.jp/problem/enumerate_triangles
 //   https://dmoj.ca/problem/year2019p7
 template <class F>
