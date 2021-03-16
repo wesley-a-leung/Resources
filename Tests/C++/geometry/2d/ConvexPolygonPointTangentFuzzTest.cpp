@@ -74,7 +74,12 @@ void test1() {
       do {
         p = pt(dis(rng), dis(rng));
       } while (isInConvexPolygon(poly, p) <= 0);
-      if (N == 2 && rng() % 10 == 0) p = poly[1] * T(2) - poly[0];
+      if (N >= 2 && rng() % 10 == 0) {
+        int j = rng() % N;
+        int k = mod(j + 1, N);
+        if (rng() % 2) swap(j, k);
+        p = poly[j] * T(2) - poly[k];
+      }
       pair<int, int> tangent = convexPolygonPointTangent(poly, p);
       assert(0 <= tangent.first && tangent.first < N);
       assert(0 <= tangent.second && tangent.second < N);
