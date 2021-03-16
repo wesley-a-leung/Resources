@@ -52,6 +52,10 @@ vector<pt> generateConvexPolygon(int N, mt19937_64 &rng) {
   x = xmin - xminPoly;
   y = ymin - yminPoly;
   for (int i = 0; i < N; i++) P[i] += pt(x, y);
+  for (int i = 0; i < N; i++) for (int j = 0; j < N; j++)
+    assert(segSegIntersects(P[i], P[mod(i + 1, N)], P[j], P[mod(j + 1, N)]) != 1);
+  if (N == 2) assert(P[0] != P[1]);
+  if (N >= 3) for (int i = 0; i < N; i++) assert(ccw(P[mod(i + N - 1, N)], P[i], P[mod(i + 1, N)]) > 0);
   return P;
 }
 
@@ -63,10 +67,6 @@ void test1() {
   for (int ti = 0; ti < TESTCASES; ti++) {
     int N = rng() % 10 + 1;
     vector<pt> poly = generateConvexPolygon(N, rng);
-    for (int i = 0; i < N; i++) for (int j = 0; j < N; j++)
-      assert(segSegIntersects(poly[i], poly[mod(i + 1, N)], poly[j], poly[mod(j + 1, N)]) != 1);
-    if (N == 2) assert(poly[0] != poly[1]);
-    if (N >= 3) for (int i = 0; i < N; i++) assert(ccw(poly[mod(i + N - 1, N)], poly[i], poly[mod(i + 1, N)]) > 0);
     int Q = rng() % 100 + 1;
     uniform_real_distribution<T> dis(-10, 10);
     for (int i = 0; i < Q; i++) {
@@ -76,6 +76,8 @@ void test1() {
       } while (isInConvexPolygon(poly, p) <= 0);
       if (N == 2 && rng() % 10 == 0) p = poly[1] * T(2) - poly[0];
       pair<int, int> tangent = convexPolygonPointTangent(poly, p);
+      assert(0 <= tangent.first && tangent.first < N);
+      assert(0 <= tangent.second && tangent.second < N);
       checkSum = 31 * checkSum + tangent.first;
       checkSum = 31 * checkSum + tangent.second;
       if (N == 1) {
