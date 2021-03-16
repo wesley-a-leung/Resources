@@ -83,9 +83,9 @@ void test1() {
       } else if (N == 2) {
         if (tangent.first == tangent.second) assert(ccw(poly[0], poly[1], p) == 0);
       } else assert(tangent.first != tangent.second);
-      for (int j = tangent.first; j != tangent.second; j = (j + 1) % N) assert(ccw(poly[j], poly[mod(j + 1, N)], p) < 0);
+      for (int j = tangent.first; j != tangent.second; j = mod(j + 1, N)) assert(ccw(poly[j], poly[mod(j + 1, N)], p) < 0);
       bool isFirst = true;
-      for (int j = tangent.second; isFirst || j != tangent.first; j = (j + 1) % N) {
+      for (int j = tangent.second; isFirst || j != tangent.first; j = mod(j + 1, N)) {
         isFirst = false;
         assert(ccw(poly[j], poly[mod(j + 1, N)], p) >= 0);
       }
