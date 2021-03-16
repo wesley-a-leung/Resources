@@ -99,7 +99,7 @@ T getVolume6(const vector<vector<pt3>> &faces) {
 // Return Value: -1 if inside the polyhedron, 0 if on the face, 1 if outside
 // Time Complexity: O(N) for N total points
 // Memory Complexity: O(1)
-int isInside(const vector<vector<pt3>> &faces, ref3 p) {
+int isInPolyhedron(const vector<vector<pt3>> &faces, ref3 p) {
   T sum = 0, PI = acos(T(-1)); Sphere3D s(p, 1); for (auto &&face : faces) {
     pt3 a = face[0], b = face[1], c = face[2], n = (b - a) * (c - a);
     if (eq((n | p) - (n | a), 0)) return 0;

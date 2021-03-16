@@ -117,16 +117,16 @@ T circleCircleIntersectionArea(const Circle &c1, const Circle &c2) {
 //   inner: whether to find the inner or outer tangents
 //   res: a vector of pairs of size 2 of the tangents, with each pair
 //     representing a point on the first circle and the second circle;
-//     the first point is guaranteed to not be on the left side of the
-//     line from c1.o to c2.o
+//     the first point in each pair is guaranteed to not be on the left side of
+//     the line from c1.o to c2.o
 // Return Value: 0 if no tangents, 2 if identical circles, 1 otherwise
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
 // Tested:
 //   https://dmoj.ca/problem/nccc7s4
 //   https://dmoj.ca/problem/noi05p6
-int circleCircleTangentPoints(const Circle &c1, const Circle &c2, bool inner,
-                              vector<pair<pt, pt>> &res) {
+int circleCircleTangent(const Circle &c1, const Circle &c2, bool inner,
+                        vector<pair<pt, pt>> &res) {
   pt d = c2.o - c1.o; T r2 = inner ? -c2.r : c2.r, dr = c1.r - r2;
   T d2 = norm(d), h2 = d2 - dr * dr;
   if (eq(d2, 0) || lt(h2, 0)) return eq(h2, 0) ? 2 : 0;

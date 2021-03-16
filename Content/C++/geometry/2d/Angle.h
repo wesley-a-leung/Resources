@@ -38,7 +38,7 @@ struct Angle {
   }
   bool operator != (const Angle &a) const { return *this < a || a < *this; }
   Angle operator + () const { return *this; }
-  Angle operator - () const { return Angle(pt(p.x, -p.y)); }
+  Angle operator - () const { return Angle(conj(p)); }
   Angle operator + (const Angle &a) const {
     return Angle(pivot + (p - pivot) * (a.p - pivot));
   }

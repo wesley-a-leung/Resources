@@ -73,7 +73,7 @@ int isCcwPolygon(const vector<pt> &poly) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://codeforces.com/contest/166/problem/B
-int isInsideConvexPolygon(const vector<pt> &poly, ref p) {
+int isInConvexPolygon(const vector<pt> &poly, ref p) {
   int n = poly.size(), a = 1, b = n - 1;
   if (n < 3) return onSeg(p, poly[0], poly.back()) ? 0 : 1;
   if (ccw(poly[0], poly[a], poly[b]) > 0) swap(a, b);
@@ -95,7 +95,7 @@ int isInsideConvexPolygon(const vector<pt> &poly, ref p) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://open.kattis.com/problems/pointinpolygon
-int isInsidePolygon(const vector<pt> &poly, ref p) {
+int isInPolygon(const vector<pt> &poly, ref p) {
   int n = poly.size(), windingNumber = 0; for (int i = 0; i < n; i++) {
     pt a = poly[i], b = poly[mod(i + 1, n)]; if (lt(b.y, a.y)) swap(a, b);
     if (onSeg(p, a, b)) return 0;
@@ -168,6 +168,41 @@ pair<int, int> convexPolygonLineIntersection(const vector<pt> &poly,
     }
   }
   return ret;
+}
+
+// Finds the tangent of a convex polygon and a point strictly outside
+//   the polygon
+// Function Arguments:
+//   poly: the points of the convex polygon in ccw order
+//   p: the point strictly outside the polygon
+// Return Value: a pair containing the tangent indices, with the first index
+//   being the left tangent point and the second index being the right tangent
+//   if p is considered to be below the polygon; all points strictly between
+//   the tangent indices are strictly within the tangent lines, while all other
+//   points are on or outside the tangent lines
+// Time Complexity: O(log N)
+// Memory Complexity: O(1)
+// Tested:
+//   https://dmoj.ca/problem/coci19c2p5
+//   Fuzz Tested
+pair<int, int> convexPolygonPointTangent(const vector<pt> &poly, ref p) {
+  int n = poly.size(), c = ccw(p, poly[0], poly.back()), lo = 0, hi = n - 2;
+  bool farSide = c ? c < 0 : lt(distSq(p, poly.back()), distSq(p, poly[0]));
+  while (lo <= hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (ccw(p, poly[0], poly[mid]) == (farSide ? -1 : 1)
+        || (ccw(poly[mid], poly[mod(mid + 1, n)], p) < 0) == farSide)
+      hi = mid - 1;
+    else lo = mid + 1;
+  }
+  int a = lo; lo = 1; hi = n - 1; while (lo <= hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (ccw(p, poly[0], poly[mid]) == (farSide ? 1 : -1)
+        || (ccw(poly[mid], poly[mod(mid + 1, n)], p) < 0) == farSide)
+      lo = mid + 1;
+    else hi = mid - 1;
+  }
+  int b = mod(lo, n); return farSide ? make_pair(a, b) : make_pair(b, a);
 }
 
 // Determines the intersection of a simple polygon and a half-plane defined
