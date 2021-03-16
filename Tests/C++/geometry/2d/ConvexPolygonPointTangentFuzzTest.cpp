@@ -61,7 +61,7 @@ void test1() {
   const int TESTCASES = 1e5;
   long long checkSum = 0;
   for (int ti = 0; ti < TESTCASES; ti++) {
-    int N = rng() % 10 + 2;
+    int N = rng() % 10 + 1;
     vector<pt> poly = generateConvexPolygon(N, rng);
     for (int i = 0; i < N; i++) for (int j = 0; j < N; j++)
       assert(segSegIntersects(poly[i], poly[mod(i + 1, N)], poly[j], poly[mod(j + 1, N)]) != 1);
@@ -74,12 +74,18 @@ void test1() {
       do {
         p = pt(dis(rng), dis(rng));
       } while (isInConvexPolygon(poly, p) <= 0);
+      if (N == 2 && rng() % 10 == 0) p = poly[1] * T(2) - poly[0];
       pair<int, int> tangent = convexPolygonPointTangent(poly, p);
       checkSum = 31 * checkSum + tangent.first;
       checkSum = 31 * checkSum + tangent.second;
+      if (N == 1) {
+        assert(tangent.first == tangent.second && tangent.first == 0);
+      } else if (N == 2) {
+        if (tangent.first == tangent.second) assert(ccw(poly[0], poly[1], p) == 0);
+      } else assert(tangent.first != tangent.second);
       for (int j = tangent.first; j != tangent.second; j = (j + 1) % N) assert(ccw(poly[j], poly[mod(j + 1, N)], p) < 0);
       bool isFirst = true;
-      for (int j = tangent.second; !isFirst && j != tangent.first; j = (j + 1) % N) {
+      for (int j = tangent.second; isFirst || j != tangent.first; j = (j + 1) % N) {
         isFirst = false;
         assert(ccw(poly[j], poly[mod(j + 1, N)], p) >= 0);
       }
