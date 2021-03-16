@@ -186,8 +186,8 @@ pair<int, int> convexPolygonLineIntersection(const vector<pt> &poly,
 //   https://dmoj.ca/problem/coci19c2p5
 //   Fuzz Tested
 pair<int, int> convexPolygonPointTangent(const vector<pt> &poly, ref p) {
-  int n = poly.size(), c = ccw(p, poly[0], poly.back()), lo = 0, hi = n - 2;
-  bool farSide = c ? c < 0 : lt(distSq(p, poly.back()), distSq(p, poly[0]));
+  int n = poly.size(), o = ccw(p, poly[0], poly.back()), lo = 0, hi = n - 2;
+  bool farSide = o ? o < 0 : lt(distSq(p, poly.back()), distSq(p, poly[0]));
   while (lo <= hi) {
     int mid = lo + (hi - lo) / 2;
     if (ccw(p, poly[0], poly[mid]) == (farSide ? -1 : 1)
@@ -203,6 +203,26 @@ pair<int, int> convexPolygonPointTangent(const vector<pt> &poly, ref p) {
     else hi = mid - 1;
   }
   int b = mod(lo, n); return farSide ? make_pair(a, b) : make_pair(b, a);
+}
+
+// Finds the closest point on the edge of the polygon to a point strictly
+//   outside the polygon
+// Function Arguments:
+//   poly: the points of the convex polygon in ccw order
+//   p: the point strictly outside the polygon
+// Return Value: the closest point on the edge of the polygon to the point p
+// Time Complexity: O(log N)
+// Memory Complexity: O(1)
+// Tested:
+//   Fuzz Tested
+pt closestPointOnConvexPolygon(const vector<pt> &poly, ref p) {
+  pair<int, int> tangent = convexPolygonPointTangent(poly, p);
+  int n = poly.size(); pt ret = poly[tangent.first];
+  for (int i = tangent.first; i != tangent.second; i = mod(i + 1, n)) {
+    pt q = closestPtOnSeg(p, poly[i], poly[mod(i + 1, n)]);
+    if (lt(distSq(p, q), distSq(p, ret))) ret = q;
+  }
+  return ret;
 }
 
 // Determines the intersection of a simple polygon and a half-plane defined

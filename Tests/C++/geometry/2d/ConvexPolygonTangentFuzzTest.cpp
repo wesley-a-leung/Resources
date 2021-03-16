@@ -62,7 +62,7 @@ vector<pt> generateConvexPolygon(int N, mt19937_64 &rng) {
 void test1() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
-  const int TESTCASES = 1e5;
+  const int TESTCASES = 5e4;
   long long checkSum = 0;
   for (int ti = 0; ti < TESTCASES; ti++) {
     int N = rng() % 10 + 1;
@@ -86,27 +86,63 @@ void test1() {
       checkSum = 31 * checkSum + tangent.first;
       checkSum = 31 * checkSum + tangent.second;
       if (N == 1) {
-        assert(tangent.first == tangent.second && tangent.first == 0);
+        assert(tangent.first == tangent.second);
       } else if (N == 2) {
         if (tangent.first == tangent.second) assert(ccw(poly[0], poly[1], p) == 0);
       } else assert(tangent.first != tangent.second);
-      for (int j = tangent.first; j != tangent.second; j = mod(j + 1, N)) assert(ccw(poly[j], poly[mod(j + 1, N)], p) < 0);
-      bool isFirst = true;
-      for (int j = tangent.second; isFirst || j != tangent.first; j = mod(j + 1, N)) {
-        isFirst = false;
-        assert(ccw(poly[j], poly[mod(j + 1, N)], p) >= 0);
+      Line l1(p, poly[tangent.first]), l2(p, poly[tangent.second]);
+      for (int i = 0; i < N; i++) {
+        assert(l1.onLeft(poly[i]) < 0 || (l1.onLeft(poly[i]) == 0 && le(distSq(p, poly[tangent.first]), distSq(p, poly[i]))));
+        assert(l2.onLeft(poly[i]) > 0 || (l2.onLeft(poly[i]) == 0 && le(distSq(p, poly[tangent.second]), distSq(p, poly[i]))));
       }
     }
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
-  cout << "Subtest 1 Passed" << endl;
+  cout << "Subtest 1 (Convex Polygon Point Tangent) Passed" << endl;
+  cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
+  cout << "  Checksum: " << checkSum << endl;
+}
+
+void test2() {
+  const auto start_time = chrono::system_clock::now();
+  mt19937_64 rng(0);
+  const int TESTCASES = 5e4;
+  long long checkSum = 0;
+  for (int ti = 0; ti < TESTCASES; ti++) {
+    int N = rng() % 10 + 1;
+    vector<pt> poly = generateConvexPolygon(N, rng);
+    int Q = 100;
+    uniform_real_distribution<T> dis(-10, 10);
+    for (int i = 0; i < Q; i++) {
+      pt p;
+      do {
+        p = pt(dis(rng), dis(rng));
+      } while (isInConvexPolygon(poly, p) <= 0);
+      if (N >= 2 && rng() % 10 == 0) {
+        int j = rng() % N;
+        int k = mod(j + 1, N);
+        if (rng() % 2) swap(j, k);
+        p = poly[j] * T(2) - poly[k];
+      }
+      pt closest = closestPointOnConvexPolygon(poly, p);
+      for (int j = 0; j < N; j++) {
+        pt q = closestPtOnSeg(p, poly[j], poly[mod(j + 1, N)]);
+        assert(le(distSq(p, closest), distSq(p, q)));
+      }
+      checkSum = 31 * checkSum + distSq(p, closest);
+    }
+  }
+  const auto end_time = chrono::system_clock::now();
+  double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
+  cout << "Subtest 2 (Closest Point on Convex Polygon) Passed" << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   cout << "  Checksum: " << checkSum << endl;
 }
 
 int main() {
   test1();
+  test2();
   cout << "Test Passed" << endl;
   return 0;
 }

@@ -135,7 +135,7 @@ pt closestPtOnSeg(ref p, ref a, ref b) {
     Line l(a, b);
     if (l.cmpProj(a, p) < 0 && l.cmpProj(p, b) < 0) return l.proj(p);
   }
-  return lt(dist(p, a), dist(p, b)) ? a : b;
+  return lt(distSq(p, a), distSq(p, b)) ? a : b;
 }
 
 // Finds the distance to the closest point on a line segment to another point
