@@ -67,7 +67,7 @@ void test1() {
   for (int ti = 0; ti < TESTCASES; ti++) {
     int N = rng() % 10 + 1;
     vector<pt> poly = generateConvexPolygon(N, rng);
-    int Q = rng() % 100 + 1;
+    int Q = 100;
     uniform_real_distribution<T> dis(-10, 10);
     for (int i = 0; i < Q; i++) {
       pt p;
