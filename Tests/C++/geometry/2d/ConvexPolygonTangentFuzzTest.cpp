@@ -92,9 +92,9 @@ void test1() {
         if (tangent.first == tangent.second) assert(ccw(poly[0], poly[1], p) == 0);
       } else assert(tangent.first != tangent.second);
       Line l1(p, poly[tangent.first]), l2(p, poly[tangent.second]);
-      for (int i = 0; i < N; i++) {
-        assert(l1.onLeft(poly[i]) < 0 || (l1.onLeft(poly[i]) == 0 && le(distSq(p, poly[tangent.first]), distSq(p, poly[i]))));
-        assert(l2.onLeft(poly[i]) > 0 || (l2.onLeft(poly[i]) == 0 && le(distSq(p, poly[tangent.second]), distSq(p, poly[i]))));
+      for (int j = 0; j < N; j++) {
+        assert(l1.onLeft(poly[j]) < 0 || (l1.onLeft(poly[j]) == 0 && le(distSq(p, poly[tangent.first]), distSq(p, poly[j]))));
+        assert(l2.onLeft(poly[j]) > 0 || (l2.onLeft(poly[j]) == 0 && le(distSq(p, poly[tangent.second]), distSq(p, poly[j]))));
       }
     }
   }
@@ -172,9 +172,9 @@ void test2() {
           assert(eq(circleHalfPlaneIntersectionArea(c, l1), 0));
           assert(eq(circleHalfPlaneIntersectionArea(c, Line(-l2.v, -l2.c)), 0));
         }
-        for (int i = 0; i < N; i++) {
-          assert(l1.onLeft(poly[i]) < 0 || (l1.onLeft(poly[i]) == 0 && le(distSq(a, poly[tangent.first]), distSq(a, poly[i]))));
-          assert(l2.onLeft(poly[i]) > 0 || (l2.onLeft(poly[i]) == 0 && le(distSq(b, poly[tangent.second]), distSq(b, poly[i]))));
+        for (int j = 0; j < N; j++) {
+          assert(l1.onLeft(poly[j]) < 0 || (l1.onLeft(poly[j]) == 0 && le(distSq(a, poly[tangent.first]), distSq(a, poly[j]))));
+          assert(l2.onLeft(poly[j]) > 0 || (l2.onLeft(poly[j]) == 0 && le(distSq(b, poly[tangent.second]), distSq(b, poly[j]))));
         }
       }
     }
@@ -187,6 +187,48 @@ void test2() {
 }
 
 void test3() {
+  const auto start_time = chrono::system_clock::now();
+  mt19937_64 rng(0);
+  const int TESTCASES = 1e5;
+  long long checkSum = 0;
+  for (int ti = 0; ti < TESTCASES; ti++) {
+    int N = rng() % 10 + 1, M = rng() % 10 + 1;
+    bool inner = rng() % 2;
+    vector<pt> poly1 = generateConvexPolygon(N, rng), poly2 = generateConvexPolygon(M, rng);
+    pt add = rng() % 2 ? pt(1, 0) : pt(0, 1);
+    for (auto &&p : poly2) p += add;
+    if (rng() % 2) {
+      swap(N, M);
+      swap(poly1, poly2);
+    }
+    vector<pair<int, int>> tangent = convexPolygonConvexPolygonTangent(poly1, poly2, inner);
+    assert(0 <= tangent[0].first && tangent[0].first < N);
+    assert(0 <= tangent[1].first && tangent[1].first < N);
+    assert(0 <= tangent[0].second && tangent[0].second < M);
+    assert(0 <= tangent[1].second && tangent[1].second < M);
+    checkSum = 31 * checkSum + tangent[0].first;
+    checkSum = 31 * checkSum + tangent[0].second;
+    checkSum = 31 * checkSum + tangent[1].first;
+    checkSum = 31 * checkSum + tangent[1].second;
+    pt a = poly1[tangent[0].first], b = poly1[tangent[1].first], c = poly2[tangent[0].second], d = poly2[tangent[1].second];
+    Line l1(a, c), l2(b, d);
+    for (int i = 0; i < N; i++) {
+      assert(l1.onLeft(poly1[i]) > 0 || (l1.onLeft(poly1[i]) == 0 && le(distSq(c, a), distSq(c, poly1[i]))));
+      assert(l2.onLeft(poly1[i]) < 0 || (l2.onLeft(poly1[i]) == 0 && le(distSq(d, b), distSq(d, poly1[i]))));
+    }
+    for (int i = 0; i < M; i++) {
+      assert(l1.onLeft(poly2[i]) == (inner ? -1 : 1) || (l1.onLeft(poly2[i]) == 0 && le(distSq(a, c), distSq(a, poly2[i]))));
+      assert(l2.onLeft(poly2[i]) == (inner ? 1 : -1) || (l2.onLeft(poly2[i]) == 0 && le(distSq(b, d), distSq(b, poly2[i]))));
+    }
+  }
+  const auto end_time = chrono::system_clock::now();
+  double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
+  cout << "Subtest 3 (Convex Polygon Convex Polygon Tangent) Passed" << endl;
+  cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
+  cout << "  Checksum: " << checkSum << endl;
+}
+
+void test4() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
   const int TESTCASES = 5e4;
@@ -217,7 +259,7 @@ void test3() {
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
-  cout << "Subtest 3 (Closest Point on Convex Polygon) Passed" << endl;
+  cout << "Subtest 4 (Closest Point on Convex Polygon) Passed" << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   cout << "  Checksum: " << checkSum << endl;
 }
@@ -226,6 +268,7 @@ int main() {
   test1();
   test2();
   test3();
+  test4();
   cout << "Test Passed" << endl;
   return 0;
 }

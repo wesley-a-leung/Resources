@@ -259,6 +259,47 @@ pair<int, int> convexPolygonCircleTangent(const vector<pt> &poly,
   return make_pair(a, b);
 }
 
+// Finds the tangents of two convex polygons that do not intersect
+// Function Arguments:
+//   poly1: the first convex polygon
+//   poly2: the second convex polygon that does not intersect with the first
+//   inner: whether to find the inner or outer tangents
+// Return Value: a vector of pairs containing the tangent indices, with the
+//   first element in each pair being the index of the first polygon, and the
+//   second element being the index in the second polygon; first point in
+//   each pair is the left tangent point of the first polygon if the second
+//   polgon is considered to be below the first polygon
+// Time Complexity: O(log N log M)
+// Memory Complexity: O(1)
+// Tested:
+//   Fuzz Tested
+vector<pair<int, int>> convexPolygonConvexPolygonTangent(
+    const vector<pt> &poly1, const vector<pt> &poly2, bool inner) {
+  int n = poly1.size(), a = 0, b = 0; vector<pair<int, int>> ret;
+  for (int h = 0; h < 2; h++) {
+    pt q = poly2[convexPolygonPointSingleTangent(poly2, poly1[0], inner ^ h)];
+    int o = ccw(q, poly1[0], poly1.back());
+    bool farSide = o ? o < 0
+                     : lt(distSq(q, poly1.back()), distSq(q, poly1[0]));
+    int lo = farSide == h, hi = lo + n - 2; while (lo <= hi) {
+      int mid = lo + (hi - lo) / 2;
+      q = poly2[convexPolygonPointSingleTangent(poly2, poly1[mid], inner ^ h)];
+      if (ccw(q, poly1[0], poly1[mid]) == (h ? 1 : -1)) {
+        if (farSide != h) hi = mid - 1;
+        else lo = mid + 1;
+      } else {
+        if ((ccw(poly1[mid], poly1[mod(mid + 1, n)], q) < 0) != h)
+          hi = mid - 1;
+        else lo = mid + 1;
+      }
+    }
+    (h ? b : a) = mod(lo, n);
+  }
+  int c = convexPolygonPointSingleTangent(poly2, poly1[a], inner);
+  int d = convexPolygonPointSingleTangent(poly2, poly1[b], !inner);
+  ret.emplace_back(a, c); ret.emplace_back(b, d); return ret;
+}
+
 // Finds the closest point on the edge of the polygon to a point strictly
 //   outside the polygon
 // Function Arguments:
