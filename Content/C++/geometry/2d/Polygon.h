@@ -271,12 +271,18 @@ pair<int, int> convexPolygonCircleTangent(const vector<pt> &poly,
 //   Fuzz Tested
 pt closestPointOnConvexPolygon(const vector<pt> &poly, ref p) {
   pair<int, int> tangent = convexPolygonPointTangent(poly, p);
-  int n = poly.size(); pt ret = poly[tangent.first];
-  for (int i = tangent.first; i != tangent.second; i = mod(i + 1, n)) {
-    pt q = closestPtOnSeg(p, poly[i], poly[mod(i + 1, n)]);
-    if (lt(distSq(p, q), distSq(p, ret))) ret = q;
+  int n = poly.size(), len = tangent.second - tangent.first;
+  if (len < 0) len += n;
+  if (len == 0) return poly[tangent.first];
+  int lo = 0, hi = len - 2; while (lo <= hi) {
+    int mid = lo + (hi - lo) / 2, i = mod(tangent.first + mid, n);
+    if (ptSegDist(p, poly[i], poly[mod(i + 1, n)])
+        < ptSegDist(p, poly[mod(i + 1, n)], poly[mod(i + 2, n)]))
+      hi = mid - 1;
+    else lo = mid + 1;
   }
-  return ret;
+  int i = mod(tangent.first + lo, n);
+  return closestPtOnSeg(p, poly[i], poly[mod(i + 1, n)]);
 }
 
 // Determines the intersection of a simple polygon and a half-plane defined
