@@ -275,7 +275,7 @@ pair<int, int> convexPolygonCircleTangent(const vector<pt> &poly,
 //   Fuzz Tested
 vector<pair<int, int>> convexPolygonConvexPolygonTangent(
     const vector<pt> &poly1, const vector<pt> &poly2, bool inner) {
-  int n = poly1.size(), a = 0, b = 0; vector<pair<int, int>> ret;
+  int n = poly1.size(), a = 0, b = 0, c = 0, d = 0; vector<pair<int, int>> ret;
   for (int h = 0; h < 2; h++) {
     pt q = poly2[convexPolygonPointSingleTangent(poly2, poly1[0], inner ^ h)];
     int o = ccw(q, poly1[0], poly1.back());
@@ -293,10 +293,9 @@ vector<pair<int, int>> convexPolygonConvexPolygonTangent(
         else lo = mid + 1;
       }
     }
-    (h ? b : a) = mod(lo, n);
+    (h ? b : a) = lo = mod(lo, n);
+    (h ? d : c) = convexPolygonPointSingleTangent(poly2, poly1[lo], inner ^ h);
   }
-  int c = convexPolygonPointSingleTangent(poly2, poly1[a], inner);
-  int d = convexPolygonPointSingleTangent(poly2, poly1[b], !inner);
   ret.emplace_back(a, c); ret.emplace_back(b, d); return ret;
 }
 
