@@ -186,23 +186,78 @@ pair<int, int> convexPolygonLineIntersection(const vector<pt> &poly,
 //   https://dmoj.ca/problem/coci19c2p5
 //   Fuzz Tested
 pair<int, int> convexPolygonPointTangent(const vector<pt> &poly, ref p) {
-  int n = poly.size(), o = ccw(p, poly[0], poly.back()), lo = 0, hi = n - 2;
+  int n = poly.size(), o = ccw(p, poly[0], poly.back());
   bool farSide = o ? o < 0 : lt(distSq(p, poly.back()), distSq(p, poly[0]));
-  while (lo <= hi) {
-    int mid = lo + (hi - lo) / 2;
-    if (ccw(p, poly[0], poly[mid]) == (farSide ? -1 : 1)
-        || (ccw(poly[mid], poly[mod(mid + 1, n)], p) < 0) == farSide)
-      hi = mid - 1;
-    else lo = mid + 1;
+  int lo = !farSide, hi = n - 2 + !farSide; while (lo <= hi) {
+    int mid = lo + (hi - lo) / 2; if (ccw(p, poly[0], poly[mid]) == -1) {
+      if (farSide) hi = mid - 1;
+      else lo = mid + 1;
+    } else {
+      if (ccw(poly[mid], poly[mod(mid + 1, n)], p) < 0) hi = mid - 1;
+      else lo = mid + 1;
+    }
   }
-  int a = lo; lo = 1; hi = n - 1; while (lo <= hi) {
-    int mid = lo + (hi - lo) / 2;
-    if (ccw(p, poly[0], poly[mid]) == (farSide ? 1 : -1)
-        || (ccw(poly[mid], poly[mod(mid + 1, n)], p) < 0) == farSide)
-      lo = mid + 1;
-    else hi = mid - 1;
+  int a = mod(lo, n); lo = farSide; hi = n - 2 + farSide; while (lo <= hi) {
+    int mid = lo + (hi - lo) / 2; if (ccw(p, poly[0], poly[mid]) == 1) {
+      if (farSide) lo = mid + 1;
+      else hi = mid - 1;
+    } else {
+      if (ccw(poly[mid], poly[mod(mid + 1, n)], p) >= 0) hi = mid - 1;
+      else lo = mid + 1;
+    }
   }
-  int b = mod(lo, n); return farSide ? make_pair(a, b) : make_pair(b, a);
+  return make_pair(a, mod(lo, n));
+}
+
+// Finds the tangent of a convex polygon and a circle strictly and completely
+//   outside the polygon
+// Function Arguments:
+//   poly: the points of the convex polygon in ccw order
+//   c: the circle strictly and completely outside the polygon
+//   inner: whether to find the inner or outer tangents
+// Return Value: a pair containing the tangent indices, with the first index
+//   being the left tangent point and the second index being the right tangent
+//   if c is considered to be below the polygon; all points strictly between
+//   the tangent indices are strictly within the tangent lines, while all other
+//   points are on or outside the tangent lines (same index means all points
+//   are inside or on the tangent lines)
+// Time Complexity: O(log N)
+// Memory Complexity: O(1)
+// Tested:
+//   Fuzz Tested
+pair<int, int> convexPolygonCircleTangent(const vector<pt> &poly,
+                                          const Circle &c, bool inner) {
+  int n = poly.size(); vector<pair<pt, pt>> tangent;
+  assert(circleCircleTangent(Circle(poly[0], 0), c, inner, tangent) == 1);
+  pt q = tangent[0].second; int o = ccw(q, poly[0], poly.back());
+  bool farSide = o ? o < 0 : lt(distSq(q, poly.back()), distSq(q, poly[0]));
+  int lo = !farSide, hi = n - 2 + !farSide; while (lo <= hi) {
+    int mid = lo + (hi - lo) / 2; tangent.clear();
+    assert(circleCircleTangent(Circle(poly[mid], 0), c, inner, tangent) == 1);
+    q = tangent[0].second; if (ccw(q, poly[0], poly[mid]) == -1) {
+      if (farSide) hi = mid - 1;
+      else lo = mid + 1;
+    } else {
+      if (ccw(poly[mid], poly[mod(mid + 1, n)], q) < 0) hi = mid - 1;
+      else lo = mid + 1;
+    }
+  }
+  int a = mod(lo, n); tangent.clear();
+  assert(circleCircleTangent(Circle(poly[0], 0), c, inner, tangent) == 1);
+  q = tangent[1].second; o = ccw(q, poly[0], poly.back());
+  farSide = o ? o < 0 : lt(distSq(q, poly.back()), distSq(q, poly[0]));
+  lo = farSide; hi = n - 2 + farSide; while (lo <= hi) {
+    int mid = lo + (hi - lo) / 2; tangent.clear();
+    assert(circleCircleTangent(Circle(poly[mid], 0), c, inner, tangent) == 1);
+    q = tangent[1].second; if (ccw(q, poly[0], poly[mid]) == 1) {
+      if (farSide) lo = mid + 1;
+      else hi = mid - 1;
+    } else {
+      if (ccw(poly[mid], poly[mod(mid + 1, n)], q) >= 0) hi = mid - 1;
+      else lo = mid + 1;
+    }
+  }
+  return make_pair(a, mod(lo, n));
 }
 
 // Finds the closest point on the edge of the polygon to a point strictly

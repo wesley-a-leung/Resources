@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 #include "../../../../Content/C++/geometry/2d/Line.h"
 #include "../../../../Content/C++/geometry/2d/Angle.h"
+#include "../../../../Content/C++/geometry/2d/Circle.h"
 #include "../../../../Content/C++/geometry/2d/Polygon.h"
 using namespace std;
 
@@ -107,6 +108,87 @@ void test1() {
 void test2() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
+  const int TESTCASES = 5e3;
+  long long checkSum = 0;
+  for (int ti = 0; ti < TESTCASES; ti++) {
+    int N = rng() % 10 + 1;
+    vector<pt> poly = generateConvexPolygon(N, rng);
+    int Q = 100;
+    uniform_real_distribution<T> dis(-10, 10), dis2(0, 10);
+    for (int i = 0; i < Q; i++) {
+      pt p;
+      do {
+        p = pt(dis(rng), dis(rng));
+      } while (isInConvexPolygon(poly, p) <= 0);
+      if (N >= 2 && rng() % 10 == 0) {
+        int j = rng() % N;
+        int k = mod(j + 1, N);
+        if (rng() % 2) swap(j, k);
+        p = poly[j] * T(2) - poly[k];
+      }
+      T r;
+      int iter = 0;
+      auto good = [&] {
+        if (iter++ >= 100000) {
+          do {
+            p = pt(dis(rng), dis(rng));
+          } while (isInConvexPolygon(poly, p) <= 0);
+          iter = 0;
+        }
+        if (gt(polygonCircleIntersectionArea(poly, Circle(p, r)), 0)) return false;
+        for (int j = 0; j < N; j++) if (Circle(p, r).contains(poly[j]) <= 0) return false;
+        if (N > 1) for (int j = 0; j < N; j++) {
+          vector<pt> inter = circleLineIntersection(Circle(p, r), Line(poly[j], poly[mod(j + 1, N)]));
+          if (!inter.empty() && !segSegIntersection(poly[j], poly[mod(j + 1, N)], inter[0], inter.back()).empty()) return false;
+        }
+        return true;
+      };
+      do {
+        r = dis2(rng);
+      } while (!good());
+      if (rng() % 10 == 0) r = 0;
+      bool inner = rng() % 2;
+      Circle c(p, r);
+      pair<int, int> tangent = convexPolygonCircleTangent(poly, c, inner);
+      assert(0 <= tangent.first && tangent.first < N);
+      assert(0 <= tangent.second && tangent.second < N);
+      checkSum = 31 * checkSum + tangent.first;
+      checkSum = 31 * checkSum + tangent.second;
+      if (N == 1) {
+        assert(tangent.first == tangent.second);
+      }
+      if (r == 0) {
+        assert(tangent == convexPolygonPointTangent(poly, p));
+      } else {
+        vector<pair<pt, pt>> t1, t2;
+        circleCircleTangent(Circle(poly[tangent.first], 0), c, inner, t1);
+        circleCircleTangent(Circle(poly[tangent.second], 0), c, inner, t2);
+        pt a = t1[0].second, b = t2[1].second;
+        Line l1(a, poly[tangent.first]), l2(b, poly[tangent.second]);
+        if (inner) {
+          assert(eq(circleHalfPlaneIntersectionArea(c, Line(-l1.v, -l1.c)), 0));
+          assert(eq(circleHalfPlaneIntersectionArea(c, l2), 0));
+        } else {
+          assert(eq(circleHalfPlaneIntersectionArea(c, l1), 0));
+          assert(eq(circleHalfPlaneIntersectionArea(c, Line(-l2.v, -l2.c)), 0));
+        }
+        for (int i = 0; i < N; i++) {
+          assert(l1.onLeft(poly[i]) < 0 || (l1.onLeft(poly[i]) == 0 && le(distSq(a, poly[tangent.first]), distSq(a, poly[i]))));
+          assert(l2.onLeft(poly[i]) > 0 || (l2.onLeft(poly[i]) == 0 && le(distSq(b, poly[tangent.second]), distSq(b, poly[i]))));
+        }
+      }
+    }
+  }
+  const auto end_time = chrono::system_clock::now();
+  double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
+  cout << "Subtest 2 (Convex Polygon Circle Tangent) Passed" << endl;
+  cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
+  cout << "  Checksum: " << checkSum << endl;
+}
+
+void test3() {
+  const auto start_time = chrono::system_clock::now();
+  mt19937_64 rng(0);
   const int TESTCASES = 5e4;
   long long checkSum = 0;
   for (int ti = 0; ti < TESTCASES; ti++) {
@@ -135,7 +217,7 @@ void test2() {
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
-  cout << "Subtest 2 (Closest Point on Convex Polygon) Passed" << endl;
+  cout << "Subtest 3 (Closest Point on Convex Polygon) Passed" << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   cout << "  Checksum: " << checkSum << endl;
 }
@@ -143,6 +225,7 @@ void test2() {
 int main() {
   test1();
   test2();
+  test3();
   cout << "Test Passed" << endl;
   return 0;
 }
