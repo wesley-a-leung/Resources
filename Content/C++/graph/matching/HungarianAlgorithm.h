@@ -4,9 +4,13 @@ using namespace std;
 
 // Solves the assignment problem of matching N workers to M jobs with the
 //   minimum cost where each worker can only be assigned to at most 1 job and
-//   each job can only be assigned to at most 1 worker
-// Maximum cost can be found by negating all non infinity values in the matrix
-//   and taking the negative of the minimum cost
+//   each job can only be assigned to at most 1 worker and there are exactly
+//   min(N, M) assignments
+// Maximum cost assignment can be found by negating all non infinity values in
+//   the matrix and taking the negative of the minimum cost
+// Maximum cost matching can be found by negating all non infinity values in
+//   the matrix, setting all infinity values to 0 and taking the negative of
+//   the minimum cost
 // Template Arguments:
 //   T: the type of the cost
 // Constructor Arguments:
