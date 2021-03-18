@@ -3,7 +3,7 @@
 #include "Point.h"
 #include "Angle.h"
 #include "Line.h"
-#include "../../datastructures/intervalUnion.h"
+#include "../../datastructures/IntervalUnion.h"
 using namespace std;
 
 // Functions for a 2D circle
