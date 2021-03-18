@@ -45,6 +45,25 @@ vector<pt> circleLineIntersection(const Circle &c, const Line &l) {
   return ret;
 }
 
+// Determine the intersection of a circle and a line segment
+// Function Arguments:
+//   c: the circle
+//   a: the first point on the line segment
+//   b: the second point on the line segment
+// Return Value: the points of intersection, if any, of the circle and
+//   the line segment, guaranteed to be sorted based on projection on the line
+//   from a to b
+// Time Complexity: O(1)
+// Memory Complexity: O(1)
+vector<pt> circleSegIntersection(const Circle &c, ref a, ref b) {
+  vector<pt> ret; if (a == b) { if (c.contains(a) == 0) ret.push_back(a); }
+  else {
+    Line l(a, b); for (auto &&p : circleLineIntersection(c, l))
+      if (l.cmpProj(a, p) < 0 && l.cmpProj(p, b) < 0) ret.push_back(p);
+  }
+  return ret;
+}
+
 // Determine the area of the intersection of a circle and a half-plane defined
 //   by the left side of a line
 // Function Arguments:
@@ -163,7 +182,7 @@ Circle circumcircle(pt a, pt b, pt c) {
 // Memory Complexity: O(N^2)
 // Tested:
 //   https://www.spoj.com/problems/CIRU/
-T circleUnion(const vector<Circle> &circles) {
+T circleUnionArea(const vector<Circle> &circles) {
   int n = circles.size(); vector<bool> inside(n, false);
   vector<vector<pair<Angle, Angle>>> intervals(n);
   for (int i = 0; i < n; i++) for (int j = 0; j < n; j++) {

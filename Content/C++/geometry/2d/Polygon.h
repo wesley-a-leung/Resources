@@ -5,7 +5,8 @@
 #include "Circle.h"
 using namespace std;
 
-// Functions for 2D polygons
+// Functions for 2D polygons, represented by a vector of the N points in
+//   the polygon
 int mod(int i, int n) { return i < n ? i : i - n; }
 
 // Determines twice the signed area of a simple polygon
@@ -331,7 +332,7 @@ pt closestPointOnConvexPolygon(const vector<pt> &poly, ref p) {
 //   poly: the points of the simple polygon in ccw order
 //   l: the line with the half-plane defined by the left side
 // Return Value: the polygon defined by the intersection of the simple polygon
-//   and the half-plane
+//   and the half-plane, assuming the result is a single simple polyon
 // Time Complexity: O(N)
 // Memory Complexity: O(N)
 // Tested:
