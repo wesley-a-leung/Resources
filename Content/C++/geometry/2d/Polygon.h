@@ -375,10 +375,9 @@ T polygonUnion(const vector<vector<pt>> &polys) {
             segs.emplace_back(rat(d - a, b - a), -1);
           }
         }
-      sort(segs.begin(), segs.end());
+      sort(segs.begin(), segs.end()); T sm = 0;
       for (auto &&s : segs) s.first = min(max(s.first, T(0)), T(1));
-      T sm = 0; int cnt = segs[0].second;
-      for (int j = 1; j < int(segs.size()); j++) {
+      for (int j = 1, cnt = segs[0].second; j < int(segs.size()); j++) {
         if (!cnt) sm += segs[j].first - segs[j - 1].first;
         cnt += segs[j].second;
       }
