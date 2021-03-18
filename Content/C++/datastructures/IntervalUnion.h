@@ -99,7 +99,11 @@ struct IntervalUnion : public set<pair<T, T>, PairCmp<Cmp>> {
 //   https://open.kattis.com/problems/drawingcircles
 template <class T, class Cmp = less<T>>
 vector<pair<T, T>> &intervalUnion(vector<pair<T, T>> &A, Cmp cmp = Cmp()) {
-  sort(A.begin(), A.end(), PairCmp<Cmp>());
+  sort(A.begin(), A.end(), [&] (const pair<T, T> &a, const pair<T, T> &b) {
+    if (cmp(a.first, b.first)) return true;
+    if (cmp(b.first, a.first)) return false;
+    return cmp(a.second, b.second);
+  });
   int i = 0; for (int l = 0, r = 0, N = A.size(); l < N; l = r, i++) {
     A[i] = A[l]; for (r = l + 1; r < N && !cmp(A[i].second, A[r].first); r++)
       A[i].second = max(A[i].second, A[r].second, cmp);
