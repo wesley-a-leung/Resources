@@ -55,6 +55,8 @@ vector<pt> circleLineIntersection(const Circle &c, const Line &l) {
 //   from a to b
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
+// Tested:
+//   https://dmoj.ca/problem/noi05p6
 vector<pt> circleSegIntersection(const Circle &c, ref a, ref b) {
   vector<pt> ret; if (a == b) { if (c.contains(a) == 0) ret.push_back(a); }
   else {
