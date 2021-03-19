@@ -7,8 +7,11 @@ jobs:
     - uses: actions/checkout@v2
     - name: Check lines
       run: find "Content/"  \( -iname \*.h -o -iname \*.java -o -iname \*.kt \) -exec python3 Scripts/CheckLines.py {} +
-  compile-cpp11:
+  compile-cpp:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        cpp-version: [c++11, c++14, c++17, c++20]
     steps:
     - uses: actions/checkout@v2
     - name: Check version
@@ -17,58 +20,17 @@ jobs:
     - name: Replace pragma once
       run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Compile
-      run: find "Content/C++/" -name "*.h" -exec Scripts/Compile.sh "g++-10 -std=c++11 -Wall -Wextra -pedantic-errors -Werror -fsyntax-only" {} +
-  compile-cpp14:
+      run: find "Content/C++/" -name "*.h" -exec Scripts/Compile.sh "g++-10 -std=${{ matrix.cpp-version }} -Wall -Wextra -pedantic-errors -Werror -fsyntax-only" {} +
+  compile-java:
     runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Check version
-      run: |
-        g++-10 --version
-    - name: Replace pragma once
-      run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
-    - name: Compile
-      run: find "Content/C++/" -name "*.h" -exec Scripts/Compile.sh "g++-10 -std=c++14 -Wall -Wextra -pedantic-errors -Werror -fsyntax-only" {} +
-  compile-cpp17:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Check version
-      run: |
-        g++-10 --version
-    - name: Replace pragma once
-      run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
-    - name: Compile
-      run: find "Content/C++/" -name "*.h" -exec Scripts/Compile.sh "g++-10 -std=c++17 -Wall -Wextra -pedantic-errors -Werror -fsyntax-only" {} +
-  compile-cpp20:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Check version
-      run: |
-        g++-10 --version
-    - name: Replace pragma once
-      run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
-    - name: Compile
-      run: find "Content/C++/" -name "*.h" -exec Scripts/Compile.sh "g++-10 -std=c++20 -Wall -Wextra -pedantic-errors -Werror -fsyntax-only" {} +
-  compile-java8:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: ['8', '11']
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-java@v1
       with:
-        java-version: '8'
-    - name: Check version
-      run: javac -version
-    - name: Compile
-      run: find "Content/Java/" -name "*.java" -exec Scripts/Compile.sh javac {} +
-  compile-java11:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-java@v1
-      with:
-        java-version: '11'
+        java-version: ${{ matrix.java-version }}
     - name: Check version
       run: javac -version
     - name: Compile
