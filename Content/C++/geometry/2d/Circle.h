@@ -187,7 +187,7 @@ Circle circumcircle(pt a, pt b, pt c) {
 T circleUnionArea(const vector<Circle> &circles) {
   int n = circles.size(); T ret = 0; for (int i = 0; i < n; i++) {
     vector<pair<Angle, Angle>> intervals; bool inside = false;
-    for (int j = 0; j < n; j++) {
+    for (int j = 0; j < n; j++) if (i != j) {
       int o = circles[j].contains(circles[i]);
       if (o < 0 || (o == 0 && (lt(circles[i].r, circles[j].r) || j < i))) {
         inside = true; break;
