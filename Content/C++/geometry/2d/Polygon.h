@@ -478,7 +478,7 @@ T polygonCircleUnionArea(const vector<vector<pt>> &polys,
     }
     for (int i = 0; i < m; i++) {
       vector<pt> inter = circleLineIntersection(circles[i], mLine);
-      assert(int(inter.size()) != 1); if (int(inter.size()) == 2) {
+      if (int(inter.size()) == 2) {
         Pair a = Pair(inter[0].y, make_pair(i, -1));
         Pair b = Pair(inter[1].y, make_pair(i, -2));
         intervals.emplace_back(a, b);
