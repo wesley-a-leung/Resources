@@ -355,7 +355,7 @@ vector<pt> polygonHalfPlaneIntersection(const vector<pt> &poly,
 //   polys: a vector of the polygons represented by a vector of points given in
 //     ccw order
 // Return Value: the area of the union of all the polygons
-// Time Complexity: O(N^2) for N total points
+// Time Complexity: O(N^2 log N) for N total points
 // Memory Complexity: O(N) for N total points
 // Tested:
 //   https://open.kattis.com/problems/abstractart
