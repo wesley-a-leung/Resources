@@ -504,7 +504,7 @@ T polygonCircleUnionArea(const vector<vector<pt>> &polys,
     };
     for (auto &&i : intervalUnion(intervals)) {
       pt a, b, c, d; tie(a, b) = getPts(i.first); tie(c, d) = getPts(i.second);
-      ret += (r - l) * ((c.y - a.y) + (d.y - b.y)) / T(2);
+      ret += (r - l) * ((c.y - a.y) + (d.y - b.y)) / 2;
       if (i.first.second.second < 0) {
         Circle circ = circles[i.first.second.first]; assert(a != b);
         ret += circleHalfPlaneIntersectionArea(circ, Line(b, a));

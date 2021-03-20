@@ -61,7 +61,7 @@ vector<pt> circleSegIntersection(const Circle &c, ref a, ref b) {
   vector<pt> ret; if (a == b) { if (c.contains(a) == 0) ret.push_back(a); }
   else {
     Line l(a, b); for (auto &&p : circleLineIntersection(c, l))
-      if (l.cmpProj(a, p) < 0 && l.cmpProj(p, b) < 0) ret.push_back(p);
+      if (l.cmpProj(a, p) <= 0 && l.cmpProj(p, b) <= 0) ret.push_back(p);
   }
   return ret;
 }
@@ -186,16 +186,15 @@ Circle circumcircle(pt a, pt b, pt c) {
 //   https://www.spoj.com/problems/CIRU/
 T circleUnionArea(const vector<Circle> &circles) {
   int n = circles.size(); T ret = 0; for (int i = 0; i < n; i++) {
-    vector<pair<Angle, Angle>> intervals; bool inside = false;
-    for (int j = 0; j < n; j++) if (i != j) {
+    vector<pair<Angle, Angle>> intervals; Angle::setPivot(circles[i].o);
+    bool inside = false; for (int j = 0; j < n; j++) if (i != j) {
       int o = circles[j].contains(circles[i]);
       if (o < 0 || (o == 0 && (lt(circles[i].r, circles[j].r) || j < i))) {
         inside = true; break;
       }
       vector<pt> p; circleCircleIntersection(circles[i], circles[j], p);
       if (int(p.size()) == 2) {
-        Angle a(p[0]), b(p[1]); Angle::setPivot(circles[i].o);
-        if (a < b) intervals.emplace_back(a, b);
+        Angle a(p[0]), b(p[1]); if (a < b) intervals.emplace_back(a, b);
         else {
           intervals.emplace_back(a, circles[i].o);
           Angle c(circles[i].o - pt(circles[i].r, 0));
@@ -206,14 +205,13 @@ T circleUnionArea(const vector<Circle> &circles) {
     if (inside) continue;
     if (intervals.empty()) ret += acos(T(-1)) * circles[i].r * circles[i].r;
     else {
-      Angle::setPivot(circles[i].o); intervalUnion(intervals);
-      if (intervals.back().second == circles[i].o) {
+      intervalUnion(intervals); if (intervals.back().second == circles[i].o) {
         intervals.front().first = intervals.back().first; intervals.pop_back();
       }
       for (int j = 0, m = int(intervals.size()); j < m; j++) {
         pt a = intervals[j].second.p;
         pt b = intervals[j + 1 == m ? 0 : j + 1].first.p;
-        ret += cross(a, b) / T(2);
+        ret += cross(a, b) / 2;
         ret += circleHalfPlaneIntersectionArea(circles[i], Line(b, a));
       }
     }
