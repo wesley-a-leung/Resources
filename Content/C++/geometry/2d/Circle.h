@@ -196,7 +196,7 @@ T circleUnionArea(const vector<Circle> &circles) {
       if (int(p.size()) == 2) {
         Angle a(p[0]), b(p[1]); if (a < b) intervals.emplace_back(a, b);
         else {
-          intervals.emplace_back(a, circles[i].o);
+          intervals.emplace_back(a, Angle(circles[i].o));
           Angle c(circles[i].o - pt(circles[i].r, 0));
           intervals.emplace_back(c, b);
         }
