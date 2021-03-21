@@ -397,6 +397,7 @@ T polygonUnion(const vector<vector<pt>> &polys) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://open.kattis.com/problems/pizzacutting
+//   https://open.kattis.com/problems/birthdaycake
 T polygonCircleIntersectionArea(const vector<pt> &poly, const Circle &c) {
   T r2 = c.r * c.r / 2;
   auto f = [&] (ref p, ref q) { return atan2(cross(p, q), dot(p, q)); };
