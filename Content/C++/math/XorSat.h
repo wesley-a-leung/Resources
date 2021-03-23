@@ -28,6 +28,7 @@ using namespace std;
 // Memory Complexity: O(M MAXN / 64)
 // Tested:
 //   https://dmoj.ca/problem/tle16c1p6
+//   https://dmoj.ca/problem/dmopc20c4p6
 template <const int MAXN> struct XorSat {
   static const int NO_SOLUTION = 0, ONE_SOLUTION = 1, INF_SOLUTIONS = 2;
   int M, N, solutions; bitset<MAXN> x;
