@@ -427,7 +427,6 @@ T polygonCircleIntersectionArea(const vector<pt> &poly, const Circle &c) {
 // Tested:
 //   https://open.kattis.com/problems/abstractart
 //   https://dmoj.ca/problem/noi05p6
-//   https://dmoj.ca/problem/noi09p6
 T polygonCircleUnionArea(const vector<vector<pt>> &polys,
                          const vector<Circle> &circles) {
   using Pair = pair<T, pair<int, int>>; vector<T> xs;
