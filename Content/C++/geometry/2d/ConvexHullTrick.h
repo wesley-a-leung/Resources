@@ -47,12 +47,12 @@ struct ConvexHullTrick {
   int size() const { return L.size(); }
   void addLine(T m, T b) {
     auto ccw = [&] {
-      T c1 = (L[size() - 1].m - m) * (L[size() - 2].b - b);
-      T c2 = (L[size() - 1].b - b) * (L[size() - 2].m - m);
+      T c1 = (L.back().m - m) * (L[size() - 2].b - b);
+      T c2 = (L.back().b - b) * (L[size() - 2].m - m);
       return REVERSE ? c1 >= c2 : c1 <= c2;
     };
-    while (!L.empty() && !Cmp()(m, L[size() - 1].m)
-           && !Cmp()(L[size() - 1].m, m) && !Cmp()(b, L[size() - 1].b))
+    while (!L.empty() && !Cmp()(m, L.back().m)
+           && !Cmp()(L.back().m, m) && !Cmp()(b, L.back().b))
       L.pop_back();
     while (size() >= 2 && ccw()) L.pop_back();
     if (size() == back) back++;

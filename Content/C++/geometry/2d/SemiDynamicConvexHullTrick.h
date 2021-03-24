@@ -2,12 +2,12 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Helper struct for DynamicConvexHullTrick
-template <class T, class Cmp> struct Line {
+// Helper struct for SemiDynamicConvexHullTrick
+template <class T, class Cmp> struct CHTLine {
   bool isQuery; T m, b; mutable T x;
-  Line(T m, T b) : isQuery(false), m(m), b(b), x(T()) {}
-  Line(T x) : isQuery(true), m(T()), b(T()), x(x) {}
-  bool operator < (const Line &l) const {
+  CHTLine(T m, T b) : isQuery(false), m(m), b(b), x(T()) {}
+  CHTLine(T x) : isQuery(true), m(T()), b(T()), x(x) {}
+  bool operator < (const CHTLine &l) const {
     return isQuery || l.isQuery ? x < l.x : Cmp()(m, l.m);
   }
 };
@@ -31,7 +31,7 @@ template <class T, class Cmp> struct Line {
 //   getMax(x): finds the maximum value of f(x) (based on the comparator)
 //     for all inserted lines
 // In practice, has a moderate constant, performance compared to
-//   DynamicConvexHullTrickSqrtBuffer and DynamicLiChao can vary
+//   SemiDynamicConvexHullTrickSqrtBuffer and SparseLiChao can vary
 // Time Complexity:
 //   constructor: O(1)
 //   addLine, getMax: O(log(N)) amortized for N lines in the convex hull
@@ -44,11 +44,11 @@ template <class T, class Cmp> struct Line {
 //   https://facebook.com/codingcompetitions/hacker-cup/2020/round-2/problems/D
 template <class T, class Cmp = less<T>,
           const bool INTEGRAL = is_integral<T>::value>
-struct DynamicConvexHullTrick : public multiset<Line<T, Cmp>> {
-  using L = Line<T, Cmp>; using multiset<L>::begin; using multiset<L>::end;
-  using multiset<L>::emplace; using multiset<L>::erase;
-  using multiset<L>::lower_bound; using iter = typename multiset<L>::iterator;
-  T INF; DynamicConvexHullTrick(T INF = numeric_limits<T>::max()) : INF(INF) {}
+struct SemiDynamicConvexHullTrick : public multiset<CHTLine<T, Cmp>> {
+  using L = CHTLine<T, Cmp>; using iter = typename multiset<L>::iterator;
+  using multiset<L>::begin; using multiset<L>::end; using multiset<L>::emplace;
+  using multiset<L>::erase; using multiset<L>::lower_bound; T INF;
+  SemiDynamicConvexHullTrick(T INF = numeric_limits<T>::max()) : INF(INF) {}
   template <const bool _ = INTEGRAL>
   static typename enable_if<_, T>::type div(T a, T b) {
     return a / b - T((a ^ b) < T() && Cmp()(T(), a % b));

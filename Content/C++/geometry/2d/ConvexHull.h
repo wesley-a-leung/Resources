@@ -13,13 +13,12 @@ using namespace std;
 // Tested:
 //   https://open.kattis.com/problems/convexhull
 vector<pt> convexHull(vector<pt> P) {
-  vector<pt> hull; sort(P.begin(), P.end());
-  for (int phase = 0; phase < 2; phase++) {
-    for (int i = 0, st = int(hull.size()); i < int(P.size()); i++) {
+  vector<pt> hull; sort(P.begin(), P.end()); for (int h = 0; h < 2; h++) {
+    int st = hull.size(); for (auto &&p : P) {
       while (int(hull.size()) >= st + 2
-          && ccw(hull[hull.size() - 2], hull[hull.size() - 1], P[i]) <= 0)
+          && ccw(hull[hull.size() - 2], hull.back(), p) <= 0)
         hull.pop_back();
-      hull.push_back(P[i]);
+      hull.push_back(p);
     }
     hull.pop_back(); reverse(P.begin(), P.end());
   }

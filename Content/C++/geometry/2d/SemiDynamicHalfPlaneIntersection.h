@@ -5,7 +5,7 @@
 #include "Line.h"
 using namespace std;
 
-// Helper struct for DynamicHalfPlaneIntersection
+// Helper struct for SemiDynamicHalfPlaneIntersection
 struct LineCmp {
   bool operator () (const Line &a, const Line &b) const {
     Angle::setPivot(pt(0, 0)); return Angle(a.v) < Angle(b.v);
@@ -14,7 +14,7 @@ struct LineCmp {
 
 // Computes the intersection (and area) of half-planes defined by the left side
 //   of a set of lines (including the line itself) where half-planes are
-//   added dynamically
+//   added at any time
 // An initial bounded rectangle is provided to ensure the intersection area
 //   is never infinity
 // Lines are stores in a map, with the associated point being the intersection
@@ -39,9 +39,9 @@ struct LineCmp {
 //   https://open.kattis.com/problems/bigbrother
 //   https://open.kattis.com/problems/marshlandrescues
 //   https://dmoj.ca/problem/ccoprep3p3
-struct DynamicHalfPlaneIntersection : public map<Line, pt, LineCmp> {
+struct SemiDynamicHalfPlaneIntersection : public map<Line, pt, LineCmp> {
   using iter = map<Line, pt, LineCmp>::iterator; T a2;
-  DynamicHalfPlaneIntersection(ref lowerLeft, ref upperRight)
+  SemiDynamicHalfPlaneIntersection(ref lowerLeft, ref upperRight)
       : a2((upperRight.x - lowerLeft.x) * (upperRight.y - lowerLeft.y) * 2) {
     assert(lt(lowerLeft.x, upperRight.x) && lt(lowerLeft.y, upperRight.y));
     emplace(Line(pt(1, 0), lowerLeft.y), lowerLeft);

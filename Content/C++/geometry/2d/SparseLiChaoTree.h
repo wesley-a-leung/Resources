@@ -26,8 +26,8 @@ using namespace std;
 //     for all inserted lines
 //   clear(): removes all lines from the seg
 // In practice, has a moderate constant, performance compared to
-//   DynamicConvexHullTrick (which uses multiset) and
-//   DynamicConvexHullTrickSqrtBuffer can vary, slower than LiChaoTree
+//   SemiDynamicConvexHullTrick (which uses multiset) and
+//   SemiDynamicConvexHullTrickSqrtBuffer can vary, slower than LiChaoTree
 // Time Complexity:
 //   constructor: O(1)
 //   addLine, getMax: O(log(MX - MN)) for the range [MX, MN]
@@ -47,7 +47,7 @@ using namespace std;
 //   https://www.spoj.com/problems/CHTPRAC/
 //   https://csacademy.com/contest/round-70/task/squared-ends/
 template <class IndexType, class T, class Cmp = less<T>>
-struct DynamicLiChaoTree {
+struct SparseLiChaoTree {
   static_assert(is_integral<IndexType>::value, "IndexType must be integeral");
   using Line = pair<T, T>;
   struct Node {
@@ -60,8 +60,8 @@ struct DynamicLiChaoTree {
   bool majorize(const Line &a, const Line &b, IndexType l, IndexType r) {
     return !Cmp()(eval(a, l), eval(b, l)) && !Cmp()(eval(a, r), eval(b, r));
   }
-  DynamicLiChaoTree(IndexType MN, IndexType MX,
-                    T inf = numeric_limits<T>::max())
+  SparseLiChaoTree(IndexType MN, IndexType MX,
+                   T inf = numeric_limits<T>::max())
       : MN(MN), MX(MX), INF(min(inf, -inf, Cmp())), root(-1) {}
   int addLine(int k, IndexType tl, IndexType tr, Line line) {
     if (k == -1) { k = TR.size(); TR.emplace_back(T(), INF); }

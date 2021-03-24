@@ -22,7 +22,7 @@ using namespace std;
 //   size(): returns the number of lines in the convex hull
 //   reserve(N): reserves space for N lines in the convex hull
 // In practice, has a very small constant, performance compared to
-//   DynamicConvexHullTrick (which uses multiset) and DynamicLiChao can vary
+//   SemiDynamicConvexHullTrick (which uses multiset) and SparseLiChao can vary
 // Time Complexity:
 //   constructor: O(1)
 //   addLine: O(1) amortized
@@ -37,14 +37,14 @@ using namespace std;
 //   https://csacademy.com/contest/round-70/task/squared-ends/
 //   https://facebook.com/codingcompetitions/hacker-cup/2020/round-2/problems/D
 template <class T, class Cmp = less<T>>
-struct DynamicConvexHullTrickSqrtBuffer {
+struct SemiDynamicConvexHullTrickSqrtBuffer {
   struct Line {
     T m, b; Line(T m, T b) : m(m), b(b) {}
     T eval(T x) const { return m * x + b; }
     bool operator < (const Line &l) const { return Cmp()(m, l.m); }
   };
   vector<Line> large, small; double SCALE;
-  DynamicConvexHullTrickSqrtBuffer(double SCALE = 4) : SCALE(SCALE) {}
+  SemiDynamicConvexHullTrickSqrtBuffer(double SCALE = 4) : SCALE(SCALE) {}
   bool ccw(const Line &a, const Line &b, const Line &c) {
     return (b.m - a.m) * (c.b - a.b) <= (b.b - a.b) * (c.m - a.m);
   }
