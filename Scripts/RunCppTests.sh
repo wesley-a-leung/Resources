@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# first command line argument is the compile command, following arguments are
+# the files to compile
 ulimit -s 524288
 numArgs=$#
 declare -i total=0
