@@ -4,6 +4,8 @@
 using namespace std;
 
 // Functions for a 2D point
+// * operator between 2 points is complex number multiplication
+// / operator between 2 points is complex number division
 #define ref const pt &
 #define OP(op, U, a, x, y) pt operator op (U a) const { return pt(x, y); } \
   pt &operator op##= (U a) { return *this = *this op a; }

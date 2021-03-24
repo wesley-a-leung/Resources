@@ -8,8 +8,8 @@ using namespace std;
 // Constructor Arguments:
 //   P: the vector of points
 // Fields:
-//   best1: the first point in the pair of farthest point
-//   best2: the second point in the pair of farthest point
+//   best1: the first point in the pair of farthest points
+//   best2: the second point in the pair of farthest points
 //   bestDistSq: the distance squared between best1 and best2 
 //   hull: the points in the convex hull of P 
 // In practice, has a small constant

@@ -7,8 +7,8 @@ using namespace std;
 // Constructor Arguments:
 //   P: the vector of points
 // Fields:
-//   best1: the first point in the pair of closest point
-//   best2: the second point in the pair of closest point
+//   best1: the first point in the pair of closest points
+//   best2: the second point in the pair of closest points
 //   bestDistSq: the distance squared between best1 and best2 
 // In practice, has a moderate constant
 // Time Complexity:

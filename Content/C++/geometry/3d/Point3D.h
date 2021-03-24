@@ -4,6 +4,8 @@
 using namespace std;
 
 // Functions for a 3D point
+// * operator between 2 points is cross product
+// | operator between 2 points is dot product
 #define ref3 const pt3 &
 #define OP(op, U, a, x, y, z) \
   pt3 operator op (U a) const { return pt3(x, y, z); } \
