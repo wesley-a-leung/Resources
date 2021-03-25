@@ -22,8 +22,6 @@ template <class T, class Cmp> struct CHTLine {
 //       convention is same as std::priority_queue in STL
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
-//   INTEGRAL: a boolean indicating whether T is integral or not (necessary
-//     for types such as __int128_t)
 // Constructor Arguments:
 //   INF: a value for positive infinity, must be negatable
 // Functions (in addition to std::multiset):
@@ -41,20 +39,18 @@ template <class T, class Cmp> struct CHTLine {
 //   https://open.kattis.com/problems/longestlife
 //   https://www.spoj.com/problems/CHTPRAC/
 //   https://csacademy.com/contest/round-70/task/squared-ends/
-//   https://facebook.com/codingcompetitions/hacker-cup/2020/round-2/problems/D
-template <class T, class Cmp = less<T>,
-          const bool INTEGRAL = is_integral<T>::value>
+template <class T, class Cmp = less<T>>
 struct SemiDynamicConvexHullTrick : public multiset<CHTLine<T, Cmp>> {
   using L = CHTLine<T, Cmp>; using iter = typename multiset<L>::iterator;
   using multiset<L>::begin; using multiset<L>::end; using multiset<L>::emplace;
   using multiset<L>::erase; using multiset<L>::lower_bound; T INF;
   SemiDynamicConvexHullTrick(T INF = numeric_limits<T>::max()) : INF(INF) {}
-  template <const bool _ = INTEGRAL>
-  static typename enable_if<_, T>::type div(T a, T b) {
+  template <const bool _ = is_floating_point<T>::value>
+  static typename enable_if<_, T>::type div(T a, T b) { return a / b; }
+  template <const bool _ = is_floating_point<T>::value>
+  static typename enable_if<!_, T>::type div(T a, T b) {
     return a / b - T((a ^ b) < T() && Cmp()(T(), a % b));
   }
-  template <const bool _ = INTEGRAL>
-  static typename enable_if<!_, T>::type div(T a, T b) { return a / b; }
   bool intersect(iter x, iter y) {
     if (y == end()) { x->x = INF; return false; }
     if (!Cmp()(x->m, y->m) && !Cmp()(y->m, x->m))

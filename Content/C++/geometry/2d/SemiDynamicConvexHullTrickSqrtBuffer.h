@@ -35,7 +35,6 @@ using namespace std;
 //   https://open.kattis.com/problems/longestlife
 //   https://www.spoj.com/problems/CHTPRAC/
 //   https://csacademy.com/contest/round-70/task/squared-ends/
-//   https://facebook.com/codingcompetitions/hacker-cup/2020/round-2/problems/D
 template <class T, class Cmp = less<T>>
 struct SemiDynamicConvexHullTrickSqrtBuffer {
   struct Line {
