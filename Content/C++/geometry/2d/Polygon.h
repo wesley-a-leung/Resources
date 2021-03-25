@@ -105,9 +105,8 @@ int isInPolygon(const vector<pt> &poly, ref p) {
   return windingNumber == 0 ? 1 : -1;
 }
 
-// Finds an extreme vertex of a convex polygon (a vertex where there are
-//   no points in the polygon to the right of a vector drawn in
-//   the specified direction from that point)
+// Finds an extreme vertex of a convex polygon (a vertex that is the furthest
+//   point in that direction)
 // Function Arguments:
 //   poly: the points of the convex polygon in ccw order
 //   dir: the direction
