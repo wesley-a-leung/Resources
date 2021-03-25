@@ -106,7 +106,8 @@ int isInPolygon(const vector<pt> &poly, ref p) {
 }
 
 // Finds an extreme vertex of a convex polygon (a vertex that is the furthest
-//   point in that direction)
+//   point in that direction, selecting the rightmost vertex if there are
+//   multiple)
 // Function Arguments:
 //   poly: the points of the convex polygon in ccw order
 //   dir: the direction
@@ -115,6 +116,7 @@ int isInPolygon(const vector<pt> &poly, ref p) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://codeforces.com/contest/799/problem/G
+//   https://www.acmicpc.net/problem/4225
 int extremeVertex(const vector<pt> &poly, ref dir) {
   int n = poly.size(), lo = 0, hi = n; pt pp = perp(dir);
   auto cmp = [&] (int i, int j) {
