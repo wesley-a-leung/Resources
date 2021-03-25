@@ -17,7 +17,7 @@ using namespace std;
 //   https://www.spoj.com/problems/CH3D/
 vector<vector<pt3>> convexHull3D(vector<pt3> P) {
   vector<array<int, 3>> hullInd; shuffle(P.begin(), P.end(), rng);
-  int N = P.size(); for (int i = 1, num = 1; i < N; i++) {
+  int n = P.size(); for (int i = 1, num = 1; i < n; i++) {
     if (num == 1) {
       if (P[0] != P[i]) { swap(P[1], P[i]); num++; }
     } else if (num == 2) {
@@ -28,8 +28,8 @@ vector<vector<pt3>> convexHull3D(vector<pt3> P) {
       if (above(P[0], P[1], P[2], P[i]) != 0) { swap(P[3], P[i]); num++; }
     }
   }
-  vector<bool> active; vector<vector<int>> vis(N), rvis;
-  vector<array<pair<int, int>, 3>> other; vector<int> label(N, -1);
+  vector<bool> active; vector<vector<int>> vis(n), rvis;
+  vector<array<pair<int, int>, 3>> other; vector<int> label(n, -1);
   auto addFace = [&] (int a, int b, int c) {
     hullInd.push_back({a, b, c}); active.push_back(true);
     rvis.emplace_back(); other.emplace_back();
@@ -49,8 +49,8 @@ vector<vector<pt3>> convexHull3D(vector<pt3> P) {
   };
   addFace(0, 1, 2); addFace(0, 2, 1); if (abv(1, 3)) swap(P[1], P[2]);
   for (int i = 0; i < 3; i++) glue(0, i, 1, 2 - i);
-  for (int i = 3; i < N; i++) addEdge(abv(1, i), i);
-  for (int i = 3; i < N; i++) {
+  for (int i = 3; i < n; i++) addEdge(abv(1, i), i);
+  for (int i = 3; i < n; i++) {
     vector<int> rem; for (auto &&t : vis[i])
       if (active[t]) { active[t] = false; rem.push_back(t); }
     if (rem.empty()) continue;

@@ -67,7 +67,7 @@ int lineLineIntersection(const Line3D &l1, const Line3D &l2, pt3 &res) {
 bool onSeg(ref3 p, ref3 a, ref3 b) {
   if (a == b) return p == a;
   Line3D l(a, b);
-  return l.onLine(p) && l.cmpProj(a, p) < 0 && l.cmpProj(p, b) < 0;
+  return l.onLine(p) && l.cmpProj(a, p) <= 0 && l.cmpProj(p, b) <= 0;
 }
 
 // Determine the intersection of two line segments
@@ -80,7 +80,7 @@ bool onSeg(ref3 p, ref3 a, ref3 b) {
 //   of points; if the line segments intersect at a point, a vector containing
 //   the point of intersection; if the line segments have a line segment of
 //   intersection, a vector containing the two endpoints of the
-//   line segment intersection
+//   line segment intersection (it can return more if there is precision error)
 vector<pt3> segSegIntersection(ref3 a, ref3 b, ref3 p, ref3 q) {
   vector<pt3> ret; if (a == b) {
     if (onSeg(a, p, q)) ret.push_back(a);

@@ -102,7 +102,7 @@ int segSegIntersects(ref a, ref b, ref p, ref q) {
 //   of points; if the line segments intersect at a point, a vector containing
 //   the point of intersection; if the line segments have a line segment of
 //   intersection, a vector containing the two endpoints of the
-//   line segment intersection
+//   line segment intersection (it can return more if there is precision error)
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
 // Tested:
