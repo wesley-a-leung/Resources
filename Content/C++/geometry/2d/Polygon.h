@@ -423,7 +423,8 @@ T polygonCircleIntersectionArea(const vector<pt> &poly, const Circle &c) {
 //     ccw order
 //   circles: a vector of the circles
 // Return Value: the area of the union of all the polygons and all the circles
-// Time Complexity: O((N + M)^3 log (N + M)) for N total points and M circles
+// Time Complexity: O(K (N + M) log (N + M)) for N total points, M circles, and
+//                  K unique x coordinates of points of intersections
 // Memory Complexity: O((N + M)^2) for N total points and M circles
 // Tested:
 //   https://open.kattis.com/problems/abstractart
