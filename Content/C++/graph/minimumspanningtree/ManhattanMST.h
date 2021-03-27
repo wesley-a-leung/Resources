@@ -32,7 +32,7 @@ template <class T> struct ManhattanMST : public KruskalMST<T> {
       });
       map<T, int> M; for (int i : id) {
         auto it = M.lower_bound(-P[i].second);
-        for (; it != M.end(); M.erase(it++)) {
+        for (; it != M.end(); it = M.erase(it)) {
           int j = it->second;
           T dx = P[i].first - P[j].first, dy = P[i].second - P[j].second;
           if (dy > dx) break;
