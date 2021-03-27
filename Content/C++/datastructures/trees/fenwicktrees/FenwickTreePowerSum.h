@@ -23,10 +23,10 @@ using namespace std;
 // Memory Complexity: O(KN + K^3)
 // Tested:
 //   https://dmoj.ca/problem/tle17c3p6
-template <class T> struct FenwickTreePolynomial {
+template <class T> struct FenwickTreePowerSum {
   int N, K; vector<FenwickTree1D<T>> FT; vector<T> fact;
   vector<vector<T>> cof, pascal; vector<vector<vector<T>>> sumDiff;
-  FenwickTreePolynomial(int N, int K)
+  FenwickTreePowerSum(int N, int K)
       : N(N), K(K), FT(K + 2, FenwickTree1D<T>(N)), fact(K + 2, T(1)),
         cof(K + 1), pascal(K + 2), sumDiff(K + 1, vector<vector<T>>(K + 2)) {
     for (int i = 1; i < K + 2; i++) fact.push_back(fact.back() * T(i));

@@ -20,14 +20,14 @@ using namespace std;
 //   update(l, r, m, b): update the range [l, r] with
 //     m + b, 2m + b, 3m + b, ...
 //   query(l, r): returns the sum of elements in the range [l, r]
-// In practice, has a small constant, but slower than FenwickTreeLinear
+// In practice, has a small constant, but slower than FenwickTreeAffine
 // Time Complexity:
 //   constructor: O(N)
 //   update, query: O(log N)
 // Memory Complexity: O(N)
 // Tested:
 //   https://dmoj.ca/problem/acc3p4
-template <class T> struct SegmentTreeLinear {
+template <class T> struct SegmentTreeAffine {
   using Pair = pair<T, T>;
   Pair add(const Pair &l, const Pair &r) {
     return Pair(l.first + r.first, l.second + r.second);
@@ -67,14 +67,14 @@ template <class T> struct SegmentTreeLinear {
     propagate(x, tl, tr); int m = tl + (tr - tl) / 2;
     return add(query(x * 2, tl, m, l, r), query(x * 2 + 1, m + 1, tr, l, r));
   }
-  template <class F> SegmentTreeLinear(int N, F f)
+  template <class F> SegmentTreeAffine(int N, F f)
       : N(N), TR(N == 0 ? 0 : 1 << __lg(N * 4 - 1)) {
     if (N > 0) build(1, 0, N - 1, f);
   }
-  template <class It> SegmentTreeLinear(It st, It en)
-      : SegmentTreeLinear(en - st, [&] { return *st++; }) {}
-  SegmentTreeLinear(int N, const T &vdef)
-      : SegmentTreeLinear(N, [&] { return vdef; }) {}
+  template <class It> SegmentTreeAffine(It st, It en)
+      : SegmentTreeAffine(en - st, [&] { return *st++; }) {}
+  SegmentTreeAffine(int N, const T &vdef = T())
+      : SegmentTreeAffine(N, [&] { return vdef; }) {}
   void update(int l, int r, T m, T b) {
     update(1, 0, N - 1, l, r, Pair((1 - l) * m + b, m));
   }

@@ -16,16 +16,16 @@ using namespace std;
 //   update(l, r, m, b): add m + b, 2m + b, 3m + b, ... to the range [l, r]
 //   query(r): queries the range [0, r]
 //   query(l, r): queries the range [l, r]
-// In practice, has a small constant, faster than segment trees
+// In practice, has a small constant, faster than SegmentTreeAffine
 // Time Complexity:
 //   constructor: O(N)
 //   update, query: O(log N)
 // Memory Complexity: O(N)
 // Tested:
 //   https://dmoj.ca/problem/acc3p4
-template <class T> struct FenwickTreeLinear {
+template <class T> struct FenwickTreeAffine {
   vector<FenwickTreeRangePoint1D<T>> FT;
-  FenwickTreeLinear(int N) : FT(3, FenwickTreeRangePoint1D<T>(N)) {}
+  FenwickTreeAffine(int N) : FT(3, FenwickTreeRangePoint1D<T>(N)) {}
   T query(int r) {
     return (FT[2].get(r) * T(r) * T(r) + FT[1].get(r) * T(r)
             + FT[0].get(r)) / 2;

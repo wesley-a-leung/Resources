@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "HLD.h"
+#include "HeavyLightDecomposition.h"
 using namespace std;
 
 // Supports path (and subtree) updates and queries on a forest
