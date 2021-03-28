@@ -43,11 +43,10 @@ template <class T> struct CountDistinctOnlinePersistentTree {
     TR.reserve(1 + (N + 1) * __lg(N * 2 + 1) - (1 << __lg(N * 2 + 1)));
     vector<T> temp = A; sort(temp.begin(), temp.end());
     temp.erase(unique(temp.begin(), temp.end()), temp.end());
-    vector<int> C(N), last(temp.size(), -1); for (int i = 0; i < N; i++)
-      C[i] = lower_bound(temp.begin(), temp.end(), A[i]) - temp.begin();
-    for (int i = 0, rt = -1; i < N; i++) {
-      if (last[C[i]] != -1) rt = update(rt, 0, N - 1, last[C[i]]);
-      roots[last[C[i]] = i] = rt;
+    vector<int> last(temp.size(), -1); for (int i = 0, rt = -1; i < N; i++) {
+      int c = lower_bound(temp.begin(), temp.end(), A[i]) - temp.begin();
+      if (last[c] != -1) rt = update(rt, 0, N - 1, last[c]);
+      roots[last[c] = i] = rt;
     }
   }
   int query(int l, int r) {

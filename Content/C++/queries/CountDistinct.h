@@ -27,14 +27,14 @@ template <class T> struct CountDistinct {
       : ans(queries.size()) {
     int N = A.size(); vector<T> temp = A; sort(temp.begin(), temp.end());
     temp.erase(unique(temp.begin(), temp.end()), temp.end());
-    vector<int> C(N), last(temp.size(), -1); for (int i = 0; i < N; i++)
-      C[i] = lower_bound(temp.begin(), temp.end(), A[i]) - temp.begin();
+    vector<int> last(temp.size(), -1);
     vector<tuple<int, int, int>> q; int i = 0; FenwickTree1D<int> ft(N);
     for (auto &&qi : queries) q.emplace_back(qi.first, qi.second, i++);
     sort(q.rbegin(), q.rend()); i = N - 1; for (auto &&qi : q) {
       int l, r, ind; tie(l, r, ind) = qi; for (; i >= l; i--) {
-        if (last[C[i]] != -1) ft.update(last[C[i]], -1);
-        ft.update(last[C[i]] = i, 1);
+        int c = lower_bound(temp.begin(), temp.end(), A[i]) - temp.begin();
+        if (last[c] != -1) ft.update(last[c], -1);
+        ft.update(last[c] = i, 1);
       }
       ans[ind] = ft.query(r);
     }

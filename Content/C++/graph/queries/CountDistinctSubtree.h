@@ -48,12 +48,13 @@ template <class T> struct CountDistinctSubtree {
     for (int v = 0; v < V; v++)
       st[C[v] = lower_bound(temp.begin(), temp.end(), A[v]) - temp.begin()]++;
     partial_sum(st.begin(), st.end(), st.begin());
-    for (int v = 0; v < V; v++) ind[--st[C[v]]] = v;
-    for (int i = 0; i < int(temp.size()); i++)
+    for (int i = V - 1; i >= 0; i--) ind[--st[C[sbtr.vert[i]]]] = sbtr.vert[i];
+    for (int i = 0; i < int(temp.size()); i++) {
       for (int j = st[i]; j < st[i + 1]; j++) {
         sbtr.updateVertex(ind[j], 1); if (j + 1 < st[i + 1])
           sbtr.updateVertex(lca.lca(ind[j], ind[j + 1]), -1);
       }
+    }
     partial_sum(sbtr.ops.A.begin(), sbtr.ops.A.end(), sbtr.ops.A.begin());
   }
   template <class Forest>
