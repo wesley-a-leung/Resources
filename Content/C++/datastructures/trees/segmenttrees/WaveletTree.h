@@ -63,7 +63,7 @@ template <class T, class Cmp = less<T>> struct WaveletTree {
   }
   template <class F> WaveletTree(int N, F f)
       : N(N), ind(N), rnk(N), roots(N + 1) {
-    TR.reserve(N == 0 ? 0 : N * (__lg(N * 4 - 1))); A.reserve(N);
+    TR.reserve(N == 0 ? 0 : N * __lg(N * 4 - 1)); A.reserve(N);
     for (int i = 0; i < N; i++) A.push_back(f());
     iota(ind.begin(), ind.end(), 0);
     stable_sort(ind.begin(), ind.end(), [&] (int i, int j) {
