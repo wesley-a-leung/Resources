@@ -1,7 +1,7 @@
 #pragma once
 #include <bits/stdc++.h>
 #include "../../datastructures/trees/fenwicktrees/FenwickTree1D.h"
-#include "../lowestcommonancestor/LowestCommonAncestor.h"
+#include "LowestCommonAncestor.h"
 #include "SubtreeQueries.h"
 using namespace std;
 

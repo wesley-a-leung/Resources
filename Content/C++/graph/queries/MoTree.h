@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "../lowestcommonancestor/LowestCommonAncestor.h"
+#include "LowestCommonAncestor.h"
 using namespace std;
 
 // Mo's algorithm on a tree to answer offline queries over paths on a forest

@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "../lowestcommonancestor/LowestCommonAncestor.h"
+#include "LowestCommonAncestor.h"
 #include "SubtreeQueries.h"
 using namespace std;
 

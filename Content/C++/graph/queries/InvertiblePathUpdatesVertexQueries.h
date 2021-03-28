@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "../lowestcommonancestor/LowestCommonAncestor.h"
+#include "LowestCommonAncestor.h"
 using namespace std;
 
 // Supports path updates and vertex queries on a forest
