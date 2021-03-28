@@ -20,8 +20,8 @@ using namespace std;
 // Time Complexity:
 //   constructor: O(N log N)
 //   update: O(log N)
-//   query: O(log N sqrt Q)
-// Memory Complexity: O(N + Q log N) for Q updates
+//   query: O(log N sqrt(N + Q))
+// Memory Complexity: O((N + Q) log N) for Q updates
 // Tested:
 //   https://dmoj.ca/problem/mnyc17p6
 template <class T, class C = map<T, set<int>>> struct CountDistinctUpdates {

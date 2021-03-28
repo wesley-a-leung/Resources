@@ -30,13 +30,13 @@ template <class T> struct CountDistinct {
     vector<int> C(N), last(temp.size(), -1); for (int i = 0; i < N; i++)
       C[i] = lower_bound(temp.begin(), temp.end(), A[i]) - temp.begin();
     vector<tuple<int, int, int>> q; int i = 0; FenwickTree1D<int> ft(N);
-    for (auto &&qi : queries) q.emplace_back(qi.second, qi.first, i++);
-    sort(q.begin(), q.end()); i = 0; for (auto &&qi : q) {
-      int r, l, ind; tie(r, l, ind) = qi; while (i <= r) {
-        int c = C[i]; if (last[c] != -1) ft.update(last[c], -1);
-        ft.update(last[c] = i++, 1);
+    for (auto &&qi : queries) q.emplace_back(qi.first, qi.second, i++);
+    sort(q.rbegin(), q.rend()); i = N - 1; for (auto &&qi : q) {
+      int l, r, ind; tie(l, r, ind) = qi; for (; i >= l; i--) {
+        if (last[C[i]] != -1) ft.update(last[C[i]], -1);
+        ft.update(last[C[i]] = i, 1);
       }
-      ans[ind] = ft.query(l, r);
+      ans[ind] = ft.query(r);
     }
   }
 };

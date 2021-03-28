@@ -40,44 +40,40 @@ using namespace std;
 //   https://www.spoj.com/problems/MKTHNUM/ (select)
 //   https://judge.yosupo.jp/problem/range_kth_smallest (select)
 template <class T, class Cmp = less<T>> struct WaveletTree {
-  int N, curNode; vector<int> ind, rnk, roots; vector<T> A;
-  struct Node { int l, r, val; }; vector<Node> TR;
-  int build(int tl, int tr) {
-    int x = curNode++; if (tl == tr) { TR[x].val = 0; return x; }
-    int m = tl + (tr - tl) / 2;
-    TR[x].l = build(tl, m); TR[x].r = build(m + 1, tr);
-    TR[x].val = TR[TR[x].l].val + TR[TR[x].r].val; return x;
-  }
+  struct Node { int l, r, val; Node() : l(-1), r(-1), val(0) {} };
+  int N; vector<int> ind, rnk, roots; vector<T> A; vector<Node> TR;
   int update(int x, int tl, int tr, int i) {
-    if (i < tl || tr < i) return x;
-    int y = curNode++; if (tl == tr) { TR[y].val = 1; return y; }
-    int m = tl + (tr - tl) / 2; TR[y].l = update(TR[x].l, tl, m, i);
-    TR[y].r = update(TR[x].r, m + 1, tr, i);
-    TR[y].val = TR[TR[y].l].val + TR[TR[y].r].val; return y;
+    TR.push_back(~x ? TR[x] : Node()); TR[x = int(TR.size()) - 1].val++;
+    if (tl == tr) return x;
+    int m = tl + (tr - tl) / 2;
+    if (i <= m) TR[x].l = update(TR[x].l, tl, m, i);
+    else TR[x].r = update(TR[x].r, m + 1, tr, i);
+    return x;
   }
   int select(int x, int y, int tl, int tr, int k) {
     if (tl == tr) return tl;
-    int m = tl + (tr - tl) / 2, t = TR[TR[y].l].val - TR[TR[x].l].val;
-    if (k < t) return select(TR[x].l, TR[y].l, tl, m, k);
-    else return select(TR[x].r, TR[y].r, m + 1, tr, k - t);
+    int m = tl + (tr - tl) / 2; int t = (~y && ~TR[y].l ? TR[TR[y].l].val : 0)
+        - (~x && ~TR[x].l ? TR[TR[x].l].val : 0);
+    if (k < t) return select(~x ? TR[x].l : x, ~y ? TR[y].l : y, tl, m, k);
+    else return select(~x ? TR[x].r : x, ~y ? TR[y].r : y, m + 1, tr, k - t);
   }
   int count(int x, int y, int tl, int tr, int l, int r) {
     if (r < tl || tr < l) return 0;
-    if (l <= tl && tr <= r) return TR[y].val - TR[x].val;
-    int m = tl + (tr - tl) / 2; return count(TR[x].l, TR[y].l, tl, m, l, r)
-        + count(TR[x].r, TR[y].r, m + 1, tr, l, r);
+    if (l <= tl && tr <= r) return (~y ? TR[y].val : 0) - (~x ? TR[x].val : 0);
+    int m = tl + (tr - tl) / 2;
+    return count(~x ? TR[x].l : x, ~y ? TR[y].l : y, tl, m, l, r)
+        + count(~x ? TR[x].r : x, ~y ? TR[y].r : y, m + 1, tr, l, r);
   }
   template <class F> WaveletTree(int N, F f)
-      : N(N), curNode(0), ind(N), rnk(N), roots(N + 1),
-        TR(N == 0 ? 0 : N * (__lg(N * 2 - 1) + 3) - 1) {
-    A.reserve(N); for (int i = 0; i < N; i++) A.push_back(f());
+      : N(N), ind(N), rnk(N), roots(N + 1) {
+    TR.reserve(N == 0 ? 0 : N * (__lg(N * 4 - 1))); A.reserve(N);
+    for (int i = 0; i < N; i++) A.push_back(f());
     iota(ind.begin(), ind.end(), 0);
     stable_sort(ind.begin(), ind.end(), [&] (int i, int j) {
       return Cmp()(A[i], A[j]);
     });
     for (int i = 0; i < N; i++) rnk[ind[i]] = i;
-    if (N > 0) roots[0] = build(0, N - 1);
-    for (int i = 0; i < N; i++)
+    roots[0] = -1; for (int i = 0; i < N; i++)
       roots[i + 1] = update(roots[i], 0, N - 1, rnk[i]);
   }
   template <class It> WaveletTree(It st, It en)
