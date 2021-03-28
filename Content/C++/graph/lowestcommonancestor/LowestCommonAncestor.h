@@ -49,19 +49,18 @@ template <class T = int> struct LCA {
   T getWeight(int) { return 1; }
   int getTo(const pair<int, T> &e) { return e.first; }
   T getWeight(const pair<int, T> &e) { return e.second; }
-  template <class Forest> void dfs(const Forest &G, int r) {
-    int ssz = 0; stk[ssz++] = r; while (ssz > 0) {
-      int v = stk[--ssz]; if (v != r) { top[i] = pre[v]; bot[i++] = v; }
-      root[v] = r; pre[v] = i; for (auto &&e : G[v]) {
-        int w = getTo(e);
-        if (pre[w] == -1) dep[stk[ssz++] = w] = dep[pre[w] = v] + getWeight(e);
+  template <class Forest> void dfs(const Forest &G, int v) {
+    pre[v] = i; for (auto &&e : G[v]) {
+      int w = getTo(e); if (pre[w] == -1) {
+        dep[bot[i] = w] = dep[top[i] = v] + getWeight(e); i++;
+        root[w] = root[v]; dfs(G, w);
       }
     }
   }
   template <class Forest> RMQ init(const Forest &G, const vector<int> &roots) {
     if (roots.empty()) {
-      for (int v = 0; v < V; v++) if (pre[v] == -1) dfs(G, v);
-    } else for (int v : roots) dfs(G, v);
+      for (int v = 0; v < V; v++) if (pre[v] == -1) dfs(G, root[v] = v);
+    } else for (int v : roots) dfs(G, root[v] = v);
     int j = 0; return RMQ(i, [&] { return pre[top[j++]]; });
   }
   template <class Forest>
