@@ -24,11 +24,10 @@ template <class It, class Cmp = less<typename iterator_traits<It>::value_type>>
 long long countInversionsBIT(It st, It en, Cmp cmp = Cmp()) {
   vector<typename iterator_traits<It>::value_type> tmp(st, en);
   int N = en - st; long long ret = 0; sort(tmp.begin(), tmp.end(), cmp);
-  tmp.erase(unique(tmp.begin(), tmp.end()), tmp.end()); vector<int> C(N);
-  for (int i = 0; i < N; i++)
-    C[i] = lower_bound(tmp.begin(), tmp.end(), st[i], cmp) - tmp.begin();
+  tmp.erase(unique(tmp.begin(), tmp.end()), tmp.end());
   FenwickTree1D<int> FT(tmp.size()); for (int i = N - 1; i >= 0; i--) {
-    ret += FT.query(C[i] - 1); FT.update(C[i], 1);
+    int c = lower_bound(tmp.begin(), tmp.end(), st[i], cmp) - tmp.begin();
+    ret += FT.query(c - 1); FT.update(c, 1);
   }
   return ret;
 }
