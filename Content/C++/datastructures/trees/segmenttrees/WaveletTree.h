@@ -3,11 +3,7 @@
 using namespace std;
 
 // Wavelet Tree (using a persistent segment tree)
-//   supporting select and rank operations for a subarray
-// select finds the kth smallest element in the subarray [l, r]
-// rank finds the index of the element v if the subarray [l, r] was sorted
-// count counts the number of elements in the subarray [l, r] in the
-//   range [lo, hi]
+//   supporting rank and select operations for a subarray
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
@@ -29,9 +25,10 @@ using namespace std;
 //   select(l, r, k): selects the kth element sorted by the comparator if the
 //     range [l, r] was sorted
 // In practice, has a moderate constant, slightly faster than MergeSortTree for
-//   rank queries, much faster for select queries, but uses more memory
+//   rank and count queries, much faster for select queries,
+//   but uses more memory
 // Time Complexity:
-//   constructor, rank, select: O(N log N)
+//   constructor, rank, count select: O(N log N)
 // Memory Complexity: O(N log N)
 // Tested:
 //   https://www.spoj.com/problems/KQUERY/ (rank/count)
@@ -50,19 +47,19 @@ template <class T, class Cmp = less<T>> struct WaveletTree {
     else TR[x].r = update(TR[x].r, m + 1, tr, i);
     return x;
   }
-  int select(int x, int y, int tl, int tr, int k) {
-    if (tl == tr) return tl;
-    int m = tl + (tr - tl) / 2; int t = (~y && ~TR[y].l ? TR[TR[y].l].val : 0)
-        - (~x && ~TR[x].l ? TR[TR[x].l].val : 0);
-    if (k < t) return select(~x ? TR[x].l : x, ~y ? TR[y].l : y, tl, m, k);
-    else return select(~x ? TR[x].r : x, ~y ? TR[y].r : y, m + 1, tr, k - t);
-  }
   int count(int x, int y, int tl, int tr, int l, int r) {
     if (r < tl || tr < l) return 0;
     if (l <= tl && tr <= r) return (~y ? TR[y].val : 0) - (~x ? TR[x].val : 0);
     int m = tl + (tr - tl) / 2;
     return count(~x ? TR[x].l : x, ~y ? TR[y].l : y, tl, m, l, r)
         + count(~x ? TR[x].r : x, ~y ? TR[y].r : y, m + 1, tr, l, r);
+  }
+  int select(int x, int y, int tl, int tr, int k) {
+    if (tl == tr) return tl;
+    int m = tl + (tr - tl) / 2; int t = (~y && ~TR[y].l ? TR[TR[y].l].val : 0)
+        - (~x && ~TR[x].l ? TR[TR[x].l].val : 0);
+    if (k < t) return select(~x ? TR[x].l : x, ~y ? TR[y].l : y, tl, m, k);
+    else return select(~x ? TR[x].r : x, ~y ? TR[y].r : y, m + 1, tr, k - t);
   }
   template <class F> WaveletTree(int N, F f)
       : N(N), ind(N), rnk(N), roots(N + 1) {
@@ -78,9 +75,6 @@ template <class T, class Cmp = less<T>> struct WaveletTree {
   }
   template <class It> WaveletTree(It st, It en)
       : WaveletTree(en - st, [&] { return *st++; }) {}
-  T select(int l, int r, int k) {
-    return A[ind[select(roots[l], roots[r + 1], 0, N - 1, k)]];
-  }
   int rank(int l, int r, T v) {
     int j = lower_bound(ind.begin(), ind.end(), N, [&] (int i, int) {
                           return Cmp()(A[i], v);
@@ -95,5 +89,8 @@ template <class T, class Cmp = less<T>> struct WaveletTree {
                           return Cmp()(hi, A[i]);
                         }) - ind.begin() - 1;
     return a > b ? 0 : count(roots[l], roots[r + 1], 0, N - 1, a, b);
+  }
+  T select(int l, int r, int k) {
+    return A[ind[select(roots[l], roots[r + 1], 0, N - 1, k)]];
   }
 };

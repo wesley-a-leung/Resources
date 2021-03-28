@@ -3,7 +3,7 @@
 #include "../../../search/BinarySearch.h"
 using namespace std;
 
-// Merge Sort Tree supporting select and rank operations for a subarray
+// Merge Sort Tree supporting rank and select operations for a subarray
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
@@ -20,19 +20,22 @@ using namespace std;
 // Functions:
 //   rank(l, r, k): returns the number of elements less than k (using the
 //     comparator) in the range [l, r]
+//   count(l, r, lo, hi) returns the number of elements not less than lo and
+//     not greater than hi (using the comparator) in the range [l, r]
 //   select(l, r, k): selects the kth element sorted by the comparator if the
 //     range [l, r] was sorted
 // In practice, has a small constant, slightly slower than WaveletTree for
-//   rank queries, much slower for select queries, but uses less memory
+//   rank and count queries, much slower for select queries,
+//   but uses less memory
 // Time Complexity:
 //   constructor: O(N log N)
-//   rank: O((log N)^2)
+//   rank, count: O((log N)^2)
 //   select: O((log N)^3)
 // Memory Complexity: O(N log N)
 // Tested:
-//   https://www.spoj.com/problems/KQUERY/ (rank)
-//   https://www.spoj.com/problems/KQUERYO/ (rank)
-//   https://codeforces.com/contest/1284/problem/D (rank)
+//   https://www.spoj.com/problems/KQUERY/ (rank/count)
+//   https://www.spoj.com/problems/KQUERYO/ (rank/count)
+//   https://codeforces.com/contest/1284/problem/D (rank/count)
 //   https://www.spoj.com/problems/MKTHNUM/ (select)
 //   https://judge.yosupo.jp/problem/range_kth_smallest (select)
 template <class T, class Cmp = less<T>> struct MergeSortTree {
@@ -60,6 +63,21 @@ template <class T, class Cmp = less<T>> struct MergeSortTree {
       if (!(r & 1)) {
         ret += lower_bound(TR[r].begin(), TR[r].end(), k, Cmp())
             - TR[r].begin();
+        r--;
+      }
+    }
+    return ret;
+  }
+  int count(int l, int r, T lo, T hi) {
+    int ret = 0; for (l += N, r += N; l <= r; l /= 2, r /= 2) {
+      if (l & 1) {
+        ret += upper_bound(TR[l].begin(), TR[l].end(), hi, Cmp())
+            - lower_bound(TR[l].begin(), TR[l].end(), lo, Cmp());
+        l++;
+      }
+      if (!(r & 1)) {
+        ret += upper_bound(TR[r].begin(), TR[r].end(), hi, Cmp())
+            - lower_bound(TR[r].begin(), TR[r].end(), lo, Cmp());
         r--;
       }
     }
