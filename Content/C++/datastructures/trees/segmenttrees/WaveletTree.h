@@ -29,8 +29,7 @@ using namespace std;
 //   select(l, r, k): selects the kth element sorted by the comparator if the
 //     range [l, r] was sorted
 // In practice, has a moderate constant, slightly faster than MergeSortTree for
-//   rank queries, much faster for select queries, but uses more memory than
-//   MergeSortTree
+//   rank queries, much faster for select queries, but uses more memory
 // Time Complexity:
 //   constructor, rank, select: O(N log N)
 // Memory Complexity: O(N log N)
