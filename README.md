@@ -5,20 +5,31 @@
 Data Structures, Algorithms, Utility Classes
 
 - C++ Resources compile with g++-10 in C++11, C++14, C++17, and C++20 on Ubuntu
-and Windows  
-- Java Resources compile in Java 8, Java 11  
-- Kotlin Resources compile in Kotlin 1.4  
+and Windows
+- Java Resources compile in Java 8, Java 11
+- Kotlin Resources compile in Kotlin 1.4
 
 ### Licensing
-- most files are covered under `LICENSE`, with certain files being covered
-under a different license, which are stated at the top of those files with the
-license files also being provided in its folder
+- most files are covered under [`LICENSE.txt`](https://github.com/wesley-a-leung/Resources/blob/master/LICENSE.txt)
+(GNU Affero General Public License 3.0), with certain files being covered under
+a different license, which are listed below, and stated at the top of those
+files with the license files also being provided in its folder
+
+##### Apache License 2.0
+
+- [`Content/C++/string/SAISSuffixArray.h`](https://github.com/wesley-a-leung/Resources/blob/master/Content/C++/string/SAISSuffixArray.h)
+[LICENSE](https://github.com/wesley-a-leung/Resources/blob/master/Content/C++/string/LICENSE.SAISSuffixArray.txt)
+
+##### GNU General Public License 3.0
+
+- [`Content/C++/graph/other/MaximumClique.h`](https://github.com/wesley-a-leung/Resources/blob/master/Content/C++/graph/other/MaximumClique.h)
+[LICENSE](https://github.com/wesley-a-leung/Resources/blob/master/Content/C++/graph/other/LICENSE.MaximumClique.txt)
 
 ### Style Guidelines
-- 79 character line limit unless the line contains the string `http`  
-- 2 spaces for indentation  
+- 79 character line limit unless the line contains the string `http`
+- 2 spaces for indentation
 - very compressed coding style to reduce wasted space in PDF, with multiple
-statements on a single line  
+statements on a single line
 - `if`, `else`, `for`, `while`, etc ... statements should either be immediately
 followed by a single statement and a newline, a block wrapped in curly braces
 followed by a newline, a curly brace and a newline, or only a newline
