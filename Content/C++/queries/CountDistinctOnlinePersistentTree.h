@@ -3,7 +3,7 @@
 using namespace std;
 
 // Supports online queries for the number of distinct elements in the
-//   range [l, r] for a static array A of length N
+//   range [l, r] for a static array A of length N using a persistent tree
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   T: the type of each element
@@ -11,14 +11,15 @@ using namespace std;
 //   A: a vector of type T of the values in the array
 // Functions:
 //   query(l, r): returns the number of distinct values in the range [l, r]
-// In practice, has a moderate constant
+// In practice, has a moderate constant, slightly faster than the merge sort
+//   tree version, but uses more memory 
 // Time Complexity:
 //   constructor: O(N log N)
 //   query: O(log N)
 // Memory Complexity: O(N log N)
 // Tested:
 //   https://www.acmicpc.net/problem/14898
-template <class T> struct CountDistinctOnline {
+template <class T> struct CountDistinctOnlinePersistentTree {
   struct Node { int l, r, val; Node() : l(-1), r(-1), val(0) {} };
   int N; vector<int> roots; vector<Node> TR;
   int update(int x, int tl, int tr, int i) {
@@ -37,7 +38,8 @@ template <class T> struct CountDistinctOnline {
     return ret + query(TR[x].l, tl, m - 1, l, r)
         + query(TR[x].r, m + 1, tr, l, r);
   }
-  CountDistinctOnline(const vector<T> &A) : N(A.size()), roots(N) {
+  CountDistinctOnlinePersistentTree(const vector<T> &A)
+      : N(A.size()), roots(N) {
     TR.reserve(1 + (N + 1) * __lg(N * 2 + 1) - (1 << __lg(N * 2 + 1)));
     vector<T> temp = A; sort(temp.begin(), temp.end());
     temp.erase(unique(temp.begin(), temp.end()), temp.end());

@@ -22,8 +22,9 @@ using namespace std;
 //     comparator) in the range [l, r]
 //   select(l, r, k): selects the kth element sorted by the comparator if the
 //     range [l, r] was sorted
-// In practice, has a moderate constant, faster than Wavelet Trees for
-//   rank queries, but much slower for select queries
+// In practice, has a small constant, slightly slower than WaveletTree for
+//   rank queries, much slower for select queries, but uses less memory than
+//   WaveletTree
 // Time Complexity:
 //   constructor: O(N log N)
 //   rank: O((log N)^2)
