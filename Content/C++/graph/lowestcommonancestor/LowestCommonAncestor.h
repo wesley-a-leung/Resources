@@ -44,15 +44,15 @@ using namespace std;
 //   https://dmoj.ca/problem/wac1p6
 template <class T = int> struct LCA {
   using RMQ = FischerHeunStructure<int, greater_equal<int>>;
-  int V, i; vector<int> root, pre, top, bot, stk; vector<T> dep; RMQ FHS;
+  int V, ind; vector<int> root, pre, top, bot, stk; vector<T> dep; RMQ FHS;
   int getTo(int e) { return e; }
   T getWeight(int) { return 1; }
   int getTo(const pair<int, T> &e) { return e.first; }
   T getWeight(const pair<int, T> &e) { return e.second; }
   template <class Forest> void dfs(const Forest &G, int v) {
-    pre[v] = i; for (auto &&e : G[v]) {
+    pre[v] = ind; for (auto &&e : G[v]) {
       int w = getTo(e); if (pre[w] == -1) {
-        dep[bot[i] = w] = dep[top[i] = v] + getWeight(e); i++;
+        dep[bot[ind] = w] = dep[top[ind] = v] + getWeight(e); ind++;
         root[w] = root[v]; dfs(G, w);
       }
     }
@@ -61,11 +61,11 @@ template <class T = int> struct LCA {
     if (roots.empty()) {
       for (int v = 0; v < V; v++) if (pre[v] == -1) dfs(G, root[v] = v);
     } else for (int v : roots) dfs(G, root[v] = v);
-    int j = 0; return RMQ(i, [&] { return pre[top[j++]]; });
+    int i = 0; return RMQ(ind, [&] { return pre[top[i++]]; });
   }
   template <class Forest>
   LCA(const Forest &G, const vector<int> &roots = vector<int>())
-      : V(G.size()), i(0), root(V, -1), pre(V, -1), top(V), bot(V), stk(V),
+      : V(G.size()), ind(0), root(V, -1), pre(V, -1), top(V), bot(V), stk(V),
         dep(V, T()), FHS(init(G, roots)) {}
   template <class Forest> LCA(const Forest &G, int rt)
       : LCA(G, vector<int>{rt}) {}
