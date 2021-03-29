@@ -27,7 +27,7 @@ template <class T> struct CountDistinctOnlineMergeSortTree {
     temp.erase(unique(temp.begin(), temp.end()), temp.end());
     vector<int> last(temp.size(), -1); for (int i = 0; i < N; i++) {
       int c = lower_bound(temp.begin(), temp.end(), A[i]) - temp.begin();
-      TR[N + i] = vector<int>(1, last[c]); last[c] = i;
+      TR[N + i] = vector<int>{last[c]}; last[c] = i;
     }
     for (int i = N - 1; i > 0; i--) {
       TR[i].reserve(TR[i * 2].size() + TR[i * 2 + 1].size());

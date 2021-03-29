@@ -42,7 +42,7 @@ template <class T, class Cmp = less<T>> struct MergeSortTree {
   int N; vector<T> sorted; vector<vector<T>> TR;
   template <class F> MergeSortTree(int N, F f) : N(N), TR(N * 2) {
     sorted.reserve(N); for (int i = 0; i < N; i++) {
-      sorted.push_back(f()); TR[N + i] = vector<T>(1, sorted.back());
+      sorted.push_back(f()); TR[N + i] = vector<T>{sorted.back()};
     }
     sort(sorted.begin(), sorted.end(), Cmp());
     for (int i = N - 1; i > 0; i--) {
