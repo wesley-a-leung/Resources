@@ -21,7 +21,7 @@ using namespace std;
 //   https://www.spoj.com/problems/INVCNT/
 //   https://codeforces.com/problemsets/acmsguru/problem/99999/180
 template <class It, class Cmp = less<typename iterator_traits<It>::value_type>>
-long long countInversionsBIT(It st, It en, Cmp cmp = Cmp()) {
+long long countInversionsFenwick(It st, It en, Cmp cmp = Cmp()) {
   vector<typename iterator_traits<It>::value_type> tmp(st, en);
   int N = en - st; long long ret = 0; sort(tmp.begin(), tmp.end(), cmp);
   tmp.erase(unique(tmp.begin(), tmp.end()), tmp.end());

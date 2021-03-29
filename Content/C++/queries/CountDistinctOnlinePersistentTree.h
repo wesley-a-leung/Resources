@@ -12,7 +12,8 @@ using namespace std;
 // Functions:
 //   query(l, r): returns the number of distinct values in the range [l, r]
 // In practice, has a moderate constant, slightly faster than the merge sort
-//   tree version, but uses more memory 
+//   segment tree version and faster than the merge sort fenwick tree version,
+//   but uses more memory 
 // Time Complexity:
 //   constructor: O(N log N)
 //   query: O(log N)

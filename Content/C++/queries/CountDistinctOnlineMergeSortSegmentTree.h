@@ -3,7 +3,8 @@
 using namespace std;
 
 // Supports online queries for the number of distinct elements in the
-//   range [l, r] for a static array A of length N using a merge sort tree
+//   range [l, r] for a static array A of length N using
+//   a merge sort segment tree
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   T: the type of each element
@@ -12,16 +13,17 @@ using namespace std;
 // Functions:
 //   query(l, r): returns the number of distinct values in the range [l, r]
 // In practice, has a small constant, slightly slower than the persistent
-//   tree version, but uses less memory
+//   tree version, but uses less memory, slightly faster than the merge sort
+//   fenwick tree version, but uses more memory
 // Time Complexity:
 //   constructor: O(N log N)
 //   query: O((log N)^2)
 // Memory Complexity: O(N log N)
 // Tested:
 //   https://www.acmicpc.net/problem/14898
-template <class T> struct CountDistinctOnlineMergeSortTree {
+template <class T> struct CountDistinctOnlineMergeSortSegmentTree {
   int N; vector<vector<int>> TR;
-  CountDistinctOnlineMergeSortTree(const vector<T> &A)
+  CountDistinctOnlineMergeSortSegmentTree(const vector<T> &A)
       : N(A.size()), TR(N * 2) {
     vector<T> temp = A; sort(temp.begin(), temp.end());
     temp.erase(unique(temp.begin(), temp.end()), temp.end());

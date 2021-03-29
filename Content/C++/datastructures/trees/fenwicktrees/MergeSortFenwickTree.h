@@ -3,7 +3,7 @@
 #include "../../../search/BinarySearch.h"
 using namespace std;
 
-// Merge Sort Tree supporting rank and select operations for a subarray
+// Merge Sort Fenwick Tree supporting rank and select operations for a subarray
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
@@ -24,9 +24,11 @@ using namespace std;
 //     not greater than hi (using the comparator) in the range [l, r]
 //   select(l, r, k): selects the kth element sorted by the comparator if the
 //     range [l, r] was sorted
-// In practice, has a small constant, slightly slower than WaveletTree for
+// In practice, has a small constant, slower than WaveletTree for
 //   rank and count queries, much slower for select queries,
-//   but uses less memory
+//   but uses less memory (for integers, coordinate compression can be used
+//   otherwise), slightly slower than MergeSortSegmentTree, but uses less
+//   memory
 // Time Complexity:
 //   constructor: O(N log N)
 //   rank, count: O((log N)^2)
@@ -38,50 +40,40 @@ using namespace std;
 //   https://codeforces.com/contest/1284/problem/D (rank/count)
 //   https://www.spoj.com/problems/MKTHNUM/ (select)
 //   https://judge.yosupo.jp/problem/range_kth_smallest (select)
-template <class T, class Cmp = less<T>> struct MergeSortTree {
-  int N; vector<T> sorted; vector<vector<T>> TR;
-  template <class F> MergeSortTree(int N, F f) : N(N), TR(N * 2) {
-    sorted.reserve(N); for (int i = 0; i < N; i++) {
-      sorted.push_back(f()); TR[N + i] = vector<T>{sorted.back()};
+template <class T, class Cmp = less<T>> struct MergeSortFenwickTree {
+  int N; vector<T> sorted; vector<vector<T>> BIT;
+  int rank(int r, T k) {
+    int ret = 0; for (r++; r > 0; r -= r & -r)
+      ret += lower_bound(BIT[r].begin(), BIT[r].end(), k, Cmp())
+          - BIT[r].begin();
+    return ret;
+  }
+  int count(int r, T lo, T hi) {
+    int ret = 0; for (r++; r > 0; r -= r & -r)
+      ret += upper_bound(BIT[r].begin(), BIT[r].end(), hi, Cmp())
+          - lower_bound(BIT[r].begin(), BIT[r].end(), lo, Cmp());
+    return ret;
+  }
+  template <class F> MergeSortFenwickTree(int N, F f) : N(N), BIT(N + 1) {
+    sorted.reserve(N); vector<int> S(N + 1, 1); for (int i = 1; i <= N; i++) {
+      BIT[i].reserve(S[i]); int j = i + (i & -i); if (j <= N) S[j] += S[i];
+    }
+    for (int i = 1; i <= N; i++) {
+      T a = f(); sorted.push_back(a);
+      auto it = lower_bound(BIT[i].begin(), BIT[i].end(), a, Cmp());
+      BIT[i].insert(it, a); int j = i + (i & -i); if (j <= N) {
+        int k = BIT[j].size();
+        BIT[j].insert(BIT[j].end(), BIT[i].begin(), BIT[i].end());
+        inplace_merge(BIT[j].begin(), BIT[j].begin() + k, BIT[j].end(), Cmp());
+      }
     }
     sort(sorted.begin(), sorted.end(), Cmp());
-    for (int i = N - 1; i > 0; i--) {
-      TR[i].reserve(TR[i * 2].size() + TR[i * 2 + 1].size());
-      merge(TR[i * 2].begin(), TR[i * 2].end(), TR[i * 2 + 1].begin(),
-            TR[i * 2 + 1].end(), back_inserter(TR[i]), Cmp());
-    }
   }
-  template <class It> MergeSortTree(It st, It en)
-      : MergeSortTree(en - st, [&] { return *st++; }) {}
-  int rank(int l, int r, T k) {
-    int ret = 0; for (l += N, r += N; l <= r; l /= 2, r /= 2) {
-      if (l & 1) {
-        ret += lower_bound(TR[l].begin(), TR[l].end(), k, Cmp())
-            - TR[l].begin();
-        l++;
-      }
-      if (!(r & 1)) {
-        ret += lower_bound(TR[r].begin(), TR[r].end(), k, Cmp())
-            - TR[r].begin();
-        r--;
-      }
-    }
-    return ret;
-  }
+  template <class It> MergeSortFenwickTree(It st, It en)
+      : MergeSortFenwickTree(en - st, [&] { return *st++; }) {}
+  int rank(int l, int r, T k) { return rank(r, k) - rank(l - 1, k); }
   int count(int l, int r, T lo, T hi) {
-    int ret = 0; for (l += N, r += N; l <= r; l /= 2, r /= 2) {
-      if (l & 1) {
-        ret += upper_bound(TR[l].begin(), TR[l].end(), hi, Cmp())
-            - lower_bound(TR[l].begin(), TR[l].end(), lo, Cmp());
-        l++;
-      }
-      if (!(r & 1)) {
-        ret += upper_bound(TR[r].begin(), TR[r].end(), hi, Cmp())
-            - lower_bound(TR[r].begin(), TR[r].end(), lo, Cmp());
-        r--;
-      }
-    }
-    return ret;
+    return count(r, lo, hi) - count(l - 1, lo, hi);
   }
   T select(int l, int r, int k) {
     return sorted[bsearch<LAST>(0, N, [&] (int mid) {

@@ -20,7 +20,8 @@ using namespace std;
 //   Fuzz and Stress Tested
 //   https://dmoj.ca/problem/lis
 //   https://open.kattis.com/problems/longincsubseq
-template <class It> vector<int> longestIncreasingSubsequenceBIT(It st, It en) {
+template <class It>
+vector<int> longestIncreasingSubsequenceFenwick(It st, It en) {
   vector<typename iterator_traits<It>::value_type> tmp(st, en);
   int N = en - st, mx = 0; sort(tmp.begin(), tmp.end());
   tmp.erase(unique(tmp.begin(), tmp.end()), tmp.end());

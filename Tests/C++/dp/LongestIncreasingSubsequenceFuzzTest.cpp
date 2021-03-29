@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #include "../../../Content/C++/dp/LongestIncreasingSubsequence.h"
-#include "../../../Content/C++/dp/LongestIncreasingSubsequenceBIT.h"
+#include "../../../Content/C++/dp/LongestIncreasingSubsequenceFenwick.h"
 using namespace std;
 
 void test1() {
@@ -48,14 +48,14 @@ void test2() {
       for (int i = 0; i < int(B.size()) - 1 && good; i++) good &= B[i] < B[i + 1];
       if (good && make_pair(-int(B.size()), B) < make_pair(-int(minB.size()), minB)) minB = B;
     }
-    vector<int> inds = longestIncreasingSubsequenceBIT(A.begin(), A.end()), B;
+    vector<int> inds = longestIncreasingSubsequenceFenwick(A.begin(), A.end()), B;
     for (int i : inds) B.push_back(A[i]);
     assert(B == minB);
     for (int i : inds) checkSum = 31 * checkSum + i;
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
-  cout << "Subtest 2 (BIT) Passed" << endl;
+  cout << "Subtest 2 (Fenwick) Passed" << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   cout << "  Checksum: " << checkSum << endl;
 }
