@@ -25,10 +25,11 @@ using namespace std;
 //     lo and not greater than hi (using the comparator) in the range [l, r]
 //   select(l, r, k): selects the kth active element sorted by the comparator
 //     if the range [l, r] was sorted
-// In practice, has a small constant
+// In practice, has a small constant, faster than using a
+//   2D Sparse Fenwick Tree
 // Time Complexity:
 //   constructor: O(N log N)
-//   update, rank, count, select: O((log N)^2)
+//   update, rank, count, select: O(log(N) log(N / 64))
 // Memory Complexity: O((N log N) / 64)
 // Tested:
 //   https://dmoj.ca/problem/dmopc19c7p5 (rank/count)
