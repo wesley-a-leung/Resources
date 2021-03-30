@@ -6,7 +6,7 @@ using namespace std;
 // Computes the maximum submatrix of a boolean matrix where
 //   all elements are true
 // Function Arguments:
-//   A: a vector of vector of booleans
+//   A: a vector of vectors of booleans
 // Return Value: the maximum submatrix of the boolean matrix where
 //   all elements are true
 // In practice, has a moderate constant

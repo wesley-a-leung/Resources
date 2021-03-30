@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "../../../Content/C++/datastructures/BitPrefixSum.h"
+#include "../../../Content/C++/datastructures/BitPrefixSumArray.h"
 using namespace std;
 
 void test1() {
@@ -35,18 +35,18 @@ void test2() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
   constexpr const int N = 1e7, U = 1e7, Q = 1e7;
-  BitPrefixSum bps(N);
+  BitPrefixSumArray bpsa(N);
   for (int i = 0; i < U; i++) {
     int j = rng() % N, v = rng() % 2;
-    bps.set(j, v);
+    bpsa.set(j, v);
   }
-  bps.build();
+  bpsa.build();
   vector<int> ans;
   ans.reserve(Q);
   for (int i = 0; i < Q; i++) {
     int l = rng() % N, r = rng() % N;
     if (l > r) swap(l, r);
-    ans.push_back(bps.query(l, r));
+    ans.push_back(bpsa.query(l, r));
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
@@ -64,18 +64,18 @@ void test3() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
   constexpr const int N = 1e9, U = 1e7, Q = 1e7;
-  BitPrefixSum bps(N);
+  BitPrefixSumArray bpsa(N);
   for (int i = 0; i < U; i++) {
     int j = rng() % N, v = rng() % 2;
-    bps.set(j, v);
+    bpsa.set(j, v);
   }
-  bps.build();
+  bpsa.build();
   vector<int> ans;
   ans.reserve(Q);
   for (int i = 0; i < Q; i++) {
     int l = rng() % N, r = rng() % N;
     if (l > r) swap(l, r);
-    ans.push_back(bps.query(l, r));
+    ans.push_back(bpsa.query(l, r));
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));

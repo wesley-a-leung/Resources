@@ -12,7 +12,7 @@ using namespace std;
 //   vertex not in the maximum independent set
 // Vertices are 0-indexed
 // Constructor Arguments:
-//   matrix: a vector of vector of booleans representing the adjacency matrix
+//   matrix: a vector of vectors of booleans representing the adjacency matrix
 //     of the graph, must be symmetric
 // Fields:
 //   maximumClique: a vertex of vertices in the maximum clique

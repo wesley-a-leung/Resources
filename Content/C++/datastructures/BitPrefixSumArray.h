@@ -22,9 +22,9 @@ using namespace std;
 // Memory Complexity: O(N / 64)
 // Tested:
 //   Fuzz and Stress Tested
-struct BitPrefixSum {
+struct BitPrefixSumArray {
   int M; vector<uint64_t> mask; vector<int> pre;
-  BitPrefixSum(int N) : M((N >> 6) + 1), mask(M, 0), pre(M + 1, 0) {}
+  BitPrefixSumArray(int N) : M((N >> 6) + 1), mask(M, 0), pre(M + 1, 0) {}
   void set(int i, bool v) {
     int j = i >> 6, k = i & 63;
     mask[j] = (mask[j] & ~(uint64_t(1) << k)) | (uint64_t(v) << k);

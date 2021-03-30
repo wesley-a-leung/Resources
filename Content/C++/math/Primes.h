@@ -342,7 +342,7 @@ vector<pair<T, int>> pollardsRhoPrimeFactorWithCount(
 // Constructor Arguments:
 //   N: the maximum value
 // Fields:
-//   factors: a vector of vector of integers with factors[i] being the sorted
+//   factors: a vector of vectors of integers with factors[i] being the sorted
 //     factors of i
 // In practice, has a moderate constant
 // Time Complexity:

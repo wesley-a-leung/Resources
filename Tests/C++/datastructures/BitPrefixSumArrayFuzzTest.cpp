@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "../../../Content/C++/datastructures/BitPrefixSum.h"
+#include "../../../Content/C++/datastructures/BitPrefixSumArray.h"
 using namespace std;
 
 void test1() {
@@ -10,23 +10,23 @@ void test1() {
   for (int ti = 0; ti < TESTCASES; ti++) {
     int N = rng() % 1001;
     vector<int> A(N + 1, 0);
-    BitPrefixSum bps(N);
+    BitPrefixSumArray bpsa(N);
     int U = N == 0 ? 0 : 1000 - rng() % 5;
     for (int i = 0; i < U; i++) {
       int j = rng() % N, v = rng() % 2;
       A[j + 1] = v;
-      bps.set(j, v);
+      bpsa.set(j, v);
     }
-    for (int i = 0; i < N; i++) assert(A[i + 1] == bps.get(i));
+    for (int i = 0; i < N; i++) assert(A[i + 1] == bpsa.get(i));
     partial_sum(A.begin(), A.end(), A.begin());
-    bps.build();
+    bpsa.build();
     int Q = N == 0 ? 0 : 1000 - rng() % 5;
     vector<int> ans0, ans1;
     for (int i = 0; i < Q; i++) {
       int l = rng() % N, r = rng() % N;
       if (l > r) swap(l, r);
       ans0.push_back(A[r + 1] - A[l]);
-      ans1.push_back(bps.query(l, r));
+      ans1.push_back(bpsa.query(l, r));
     }
     assert(ans0 == ans1);
     for (auto &&a : ans0) checkSum = 31 * checkSum + a;

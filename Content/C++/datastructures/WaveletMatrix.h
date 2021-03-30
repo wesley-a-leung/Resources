@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "BitPrefixSum.h"
+#include "BitPrefixSumArray.h"
 using namespace std;
 
 // Wavelet Matrix supporting rank and select operations for a subarray
@@ -35,9 +35,9 @@ using namespace std;
 //   https://www.spoj.com/problems/MKTHNUM/ (select)
 //   https://judge.yosupo.jp/problem/range_kth_smallest (select)
 template <class T, class Cmp = less<T>> struct WaveletMatrix {
-  int N, H; vector<int> mid; vector<BitPrefixSum> B; vector<T> S;
+  int N, H; vector<int> mid; vector<BitPrefixSumArray> B; vector<T> S;
   template <class F> WaveletMatrix(int N, F f)
-      : N(N), H(N == 0 ? 0 : __lg(N) + 1), mid(H), B(H, BitPrefixSum(N)) {
+      : N(N), H(N == 0 ? 0 : __lg(N) + 1), mid(H), B(H, BitPrefixSumArray(N)) {
     S.reserve(N); for (int i = 0; i < N; i++) S.push_back(f());
     vector<T> temp = S; sort(S.begin(), S.end(), Cmp()); vector<int> C(N);
     for (int i = 0; i < N; i++)
@@ -52,7 +52,7 @@ template <class T, class Cmp = less<T>> struct WaveletMatrix {
   }
   template <class It> WaveletMatrix(It st, It en)
       : WaveletMatrix(en - st, [&] { return *st++; }) {}
-  template <class F> int cnt(int l, int r, T v, F f) {
+  template <class F> int cnt(int l, int r, const T &v, F f) {
     int ret = 0, cur = 0; for (int h = H - 1; h >= 0; h--) {
       int ph = 1 << h, ql = B[h].query(l - 1), qr = B[h].query(r);
       if (cur + ph - 1 >= N || f(v, S[cur + ph - 1])) { l = ql; r = qr - 1; }
@@ -60,10 +60,10 @@ template <class T, class Cmp = less<T>> struct WaveletMatrix {
     }
     return ret;
   }
-  int rank(int l, int r, T v) {
+  int rank(int l, int r, const T &v) {
     return cnt(l, r, v, [&] (const T &a, const T &b) { return !Cmp()(b, a); });
   }
-  int count(int l, int r, T lo, T hi) {
+  int count(int l, int r, const T &lo, const T &hi) {
     return cnt(l, r, hi, [&] (const T &a, const T &b) { return Cmp()(a, b); })
         - cnt(l, r, lo, [&] (const T &a, const T &b) { return !Cmp()(b, a); });
   }

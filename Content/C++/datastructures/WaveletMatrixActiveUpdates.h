@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "BitPrefixSum.h"
+#include "BitPrefixSumArray.h"
 #include "trees/fenwicktrees/BitFenwickTree.h"
 using namespace std;
 
@@ -33,12 +33,12 @@ using namespace std;
 // Memory Complexity: O((N log N) / 64)
 // Tested:
 //   https://dmoj.ca/problem/dmopc19c7p5 (rank/count)
-template <class T, class Cmp = less<T>> struct WaveletMatrixUpdates {
-  int N, H; vector<int> mid; vector<BitPrefixSum> B;
+template <class T, class Cmp = less<T>> struct WaveletMatrixActiveUpdates {
+  int N, H; vector<int> mid; vector<BitPrefixSumArray> B;
   vector<BitFenwickTree> active; vector<T> S;
-  WaveletMatrixUpdates(vector<T> A, const vector<bool> isActive)
+  WaveletMatrixActiveUpdates(const vector<T> &A, const vector<bool> isActive)
       : N(A.size()), H(N == 0 ? 0 : __lg(N) + 1), mid(H),
-        B(H, BitPrefixSum(N)), active(H, BitFenwickTree(N)), S(move(A)) {
+        B(H, BitPrefixSumArray(N)), active(H, BitFenwickTree(N)), S(A) {
     vector<T> temp = S; sort(S.begin(), S.end(), Cmp());
     vector<int> C(N), ind(N); for (int i = 0; i < N; i++)
       C[i] = lower_bound(S.begin(), S.end(), temp[i], Cmp()) - S.begin();
@@ -60,7 +60,7 @@ template <class T, class Cmp = less<T>> struct WaveletMatrixUpdates {
       } else i += mid[h] - B[h].query(i - 1);
     }
   }
-  template <class F> int cnt(int l, int r, T v, F f) {
+  template <class F> int cnt(int l, int r, const T &v, F f) {
     int ret = 0, cur = 0; for (int h = H - 1; h >= 0; h--) {
       int ph = 1 << h, ql = B[h].query(l - 1), qr = B[h].query(r);
       int al = active[h].query(l - 1), ar = active[h].query(r);
@@ -69,10 +69,10 @@ template <class T, class Cmp = less<T>> struct WaveletMatrixUpdates {
     }
     return ret;
   }
-  int rank(int l, int r, T v) {
+  int rank(int l, int r, const T &v) {
     return cnt(l, r, v, [&] (const T &a, const T &b) { return !Cmp()(b, a); });
   }
-  int count(int l, int r, T lo, T hi) {
+  int count(int l, int r, const T &lo, const T &hi) {
     return cnt(l, r, hi, [&] (const T &a, const T &b) { return Cmp()(a, b); })
         - cnt(l, r, lo, [&] (const T &a, const T &b) { return !Cmp()(b, a); });
   }

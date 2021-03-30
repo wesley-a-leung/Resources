@@ -34,7 +34,7 @@ T faceArea(const vector<pt3> &face) { return abs(vectorArea2(face)) / T(2); }
 // Flips some of the faces of a polyhedron such that they are oriented
 //   consistently (they will either all be pointed outwards or inwards)
 // Function Arguments:
-//   faces: a reference to a vector of vector of points representing
+//   faces: a reference to a vector of vectors of points representing
 //     the faces of the polyhedron to be reoriented
 // Time Complexity: O(N) for N total points
 // Memory Complexity: O(1)
@@ -63,7 +63,7 @@ void reorient(vector<vector<pt3>> &faces) {
 
 // Returns the surface area of a polyhedron
 // Function Arguments:
-//   faces: a vector of vector of points representing
+//   faces: a vector of vectors of points representing
 //     the faces of the polyhedron with consistent orientation
 // Return Value: the surface area of the polyhedron
 // Time Complexity: O(N) for N total points
@@ -77,7 +77,7 @@ T getSurfaceArea(const vector<vector<pt3>> &faces) {
 
 // Returns 6 times the signed volume of a polyhedron
 // Function Arguments:
-//   faces: a vector of vector of points representing
+//   faces: a vector of vectors of points representing
 //     the faces of the polyhedron with consistent orientation
 // Return Value: 6 times the signed volume of the polyhedron, positive if
 //   all vector areas point outwards, negative if inwards
@@ -93,7 +93,7 @@ T getVolume6(const vector<vector<pt3>> &faces) {
 // Determines if a point is inside a polyhedron or not
 // Points on the polyhedron are considered to be inside
 // Function Arguments:
-//   faces: a vector of vector of points representing
+//   faces: a vector of vectors of points representing
 //     the faces of the polyhedron with consistent orientation
 //   p: the point to check
 // Return Value: -1 if inside the polyhedron, 0 if on the face, 1 if outside
