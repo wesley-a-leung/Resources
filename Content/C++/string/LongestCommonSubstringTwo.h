@@ -29,7 +29,8 @@ using namespace std;
 //     string/array on the ith call
 //   M: the length of the second string/array
 //   g: a generating function that returns the ith element of the second
-//     string/array on the ith call
+//     string/array on the ith call, guaranteed to be called after all calls
+//     to f
 //   stA: an iterator pointing to the first element in the
 //     first string/array
 //   enA: an iterator pointing to after the last element in

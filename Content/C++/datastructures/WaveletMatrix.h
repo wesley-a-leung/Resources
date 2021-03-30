@@ -43,7 +43,7 @@ template <class T, class Cmp = less<T>> struct WaveletMatrix {
     for (int i = 0; i < N; i++)
       C[i] = lower_bound(S.begin(), S.end(), temp[i], Cmp()) - S.begin();
     for (int h = H - 1; h >= 0; h--) {
-      int ph = 1 << h; for (int i = 0; i < N; i++) B[h].set(i, C[i] < ph);
+      int ph = 1 << h; for (int i = 0; i < N; i++) B[h].set(i, C[i] <= ph - 1);
       mid[h] = stable_partition(C.begin(), C.end(), [&] (int v) {
                                   return v <= ph - 1;
                                 }) - C.begin();
@@ -69,9 +69,9 @@ template <class T, class Cmp = less<T>> struct WaveletMatrix {
   }
   T select(int l, int r, int k) {
     int cur = 0; for (int h = H - 1; h >= 0; h--) {
-      int ph = 1 << h, ql = B[h].query(l - 1), qr = B[h].query(r);
+      int ql = B[h].query(l - 1), qr = B[h].query(r);
       if (k < qr - ql) { l = ql; r = qr - 1; }
-      else { cur += ph; k -= qr - ql; l += mid[h] - ql; r += mid[h] - qr; }
+      else { cur += 1 << h; k -= qr - ql; l += mid[h] - ql; r += mid[h] - qr; }
     }
     return S[cur];
   }

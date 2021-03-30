@@ -53,7 +53,8 @@ template <class T> struct ZAlgorithm {
 //     string/array on the ith call
 //   M: the length of the text string/array
 //   g: a generating function that returns the ith element of the text
-//     string/array on the ith call
+//     string/array on the ith call, guaranteed to be called after all calls
+//     to f
 //   stPat: an iterator pointing to the first element in the
 //     pattern string/array
 //   enPat: an iterator pointing to after the last element in

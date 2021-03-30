@@ -2,8 +2,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Prefix Sum Array where all values are 0 or 1, where all updates are before
-//   all queries
+// Prefix Sum Array supporting range sum queries where all values are 0 or 1,
+//   and all values are set before all queries
 // Indices are 0-indexed and ranges are inclusive
 // Constructor Arguments:
 //   N: the size of the array
@@ -17,8 +17,7 @@ using namespace std;
 // In practice, has a moderate constant, performs faster than a regular prefix
 //   sum array and uses less memory
 // Time Complexity:
-//   constructor: O(1)
-//   set, get, query: O(1)
+//   constructor, set, get, query: O(1)
 //   build: O(N / 64)
 // Memory Complexity: O(N / 64)
 // Tested:
