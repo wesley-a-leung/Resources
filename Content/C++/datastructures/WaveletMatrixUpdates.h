@@ -17,7 +17,8 @@ using namespace std;
 //   isActive: a vector of booleans indicating whether each element is
 //     initially active or not
 // Functions:
-//   update(i, activeVal): updates the status of the ith element to activeVal
+//   update(i, activeStatus): updates the status of the ith element to
+//     activeStatus (active if true, inactive if false)
 //   rank(l, r, k): returns the number of active elements less than k (using
 //     the comparator) in the range [l, r]
 //   count(l, r, lo, hi) returns the number of active elements not less than
@@ -51,10 +52,10 @@ template <class T, class Cmp = less<T>> struct WaveletMatrixUpdates {
       for (int i = mid[h]; i < N; i++) C[ind[i]] -= ph;
     }
   }
-  void update(int i, bool activeVal) {
+  void update(int i, bool activeStatus) {
     for (int h = H - 1; h >= 0; h--) {
       if (B[h].get(i)) {
-        active[h].update(i, activeVal); i = B[h].query(i - 1);
+        active[h].update(i, activeStatus); i = B[h].query(i - 1);
       } else i += mid[h] - B[h].query(i - 1);
     }
   }
