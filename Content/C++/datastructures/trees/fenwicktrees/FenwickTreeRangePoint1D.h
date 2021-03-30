@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Fenwick Tree or Binary Indexed Tree supporting range updates
+// Fenwick Tree or Binary Indexed Tree supporting range addition updates
 //   and point queries in 1 dimension
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as

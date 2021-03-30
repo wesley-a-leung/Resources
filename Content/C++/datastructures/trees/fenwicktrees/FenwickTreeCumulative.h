@@ -20,8 +20,9 @@ using namespace std;
 //   update(i, ...args): updates the index i in the first dimension,
 //     and ...args for the next dimensions, with the last argument
 //     being the value to update the index
-//   query(r, ...args): queries the range [0, r] in the first dimension,
-//     with the remaining arguments for the next dimensions
+//   query(r, ...args): queries the cumulative value of the range [0, r] in
+//     the first dimension, with the remaining arguments for the
+//     next dimensions
 // In practice, this version performs as well as the 1D version
 // In practice, has a small constant, faster than segment trees
 // Time Complexity:

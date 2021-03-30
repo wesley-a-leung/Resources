@@ -13,8 +13,8 @@ using namespace std;
 //   N: the size of the array
 // Functions:
 //   update(l, r, v, k): add v, 2^k v, 3^k v, ... to the range [l, r]
-//   query(r): queries the range [0, r]
-//   query(l, r): queries the range [l, r]
+//   query(r): queries the sum of the range [0, r]
+//   query(l, r): queries the sum of the range [l, r]
 // In practice, has a small constant, faster than segment trees
 // Time Complexity:
 //   constructor: O(N + K^3)

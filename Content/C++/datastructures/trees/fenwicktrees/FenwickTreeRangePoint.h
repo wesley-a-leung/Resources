@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Fenwick Tree or Binary Indexed Tree supporting range updates
+// Fenwick Tree or Binary Indexed Tree supporting range addition updates
 //   and point queries in any number of dimensions
 // Indices are 0-indexed and ranges are inclusive
 // Order of arguments for update differs slightly from FenwickTreeRangePoint1D
@@ -13,13 +13,13 @@ using namespace std;
 //   N: the size of the first dimension
 //   ...args: the sizes of the second, third, fourth, etc. dimensions
 // Functions:
-//   update(v, l, r, ...args): queries the range [l, r] in the first dimension,
-//     and alternating arguments in args for beginning and ending ranges for
-//     the next dimensions with the value v
-//   get(i, ...args): queries the index i in the first
+//   update(v, l, r, ...args): add to the range [l, r] in the first
+//     dimension, and alternating arguments in args for beginning and
+//     ending ranges for the next dimensions with the value v
+//   get(i, ...args): queries the value of index i in the first
 //     dimension, and ...args for the next dimensions
-// In practice, this version performs as well as the 1D version
-// In practice, has a small constant, faster than segment trees
+// In practice, has a small constant, faster than segment trees and comparable
+//   to the 1D version
 // Time Complexity:
 //   constructor: O(PI(N_i))
 //   update: O(2^D * PI(log(N_i)))

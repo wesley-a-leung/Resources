@@ -4,7 +4,7 @@
 using namespace std;
 
 // Fenwick Tree or Binary Indexed Tree supporting range updates
-//   and range queries in 1 dimension
+//   and range sum queries in 1 dimension
 // Indices are 0-indexed and ranges are inclusive
 // numeric_limits<T>::max() * N must not overflow
 // Template Arguments:
@@ -16,8 +16,8 @@ using namespace std;
 //   en: an iterator pointing to after the last element in the array
 // Functions:
 //   update(l, r, v): add v to the range [l..r]
-//   query(r): queries the range [0, r]
-//   query(l, r): queries the range [l, r]
+//   query(r): queries the sum of the range [0, r]
+//   query(l, r): queries the sum of the range [l, r]
 // In practice, has a small constant, faster than segment trees
 // Time Complexity:
 //   constructor: O(N)

@@ -13,7 +13,7 @@ using namespace __gnu_pbds;
 //   which are faster than the pbds implementations
 
 // Sparse Fenwick Tree supporting point updates (with any value)
-//   and range queries in 2 dimensions (sparse in 1 dimension)
+//   and range sum queries in 2 dimensions (sparse in 1 dimension)
 // All update indices must be known beforehand
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
@@ -25,12 +25,12 @@ using namespace __gnu_pbds;
 //     for both dimensions for each update
 // Functions:
 //   update(i, j, v): add v to the value A[i][j]
-//   query(d, r): queries the range [0, d] in the first dimension and
-//     [0, r] in the second dimension
-//   query(d, l, r): queries the range [0, d] in the first dimension and
-//     [l, r] in the second dimension
-//   query(u, d, l, r): queries the range [u, d] in the first dimension and
-//     [l, r] in the second dimension
+//   query(d, r): queries the sum of the range [0, d] in the first dimension
+//     and [0, r] in the second dimension
+//   query(d, l, r): queries the sum of the range [0, d] in the first dimension
+//     and [l, r] in the second dimension
+//   query(u, d, l, r): queries the sum of the range [u, d] in the first
+//     dimension and [l, r] in the second dimension
 // In practice, has a small constant
 // Time Complexity:
 //   constructor: O(Q (log Q + log N) + N) for Q updates
@@ -84,7 +84,7 @@ template <class T, class IndexType> struct OfflineSemiSparseFenwickTree2D {
 };
 
 // Sparse Fenwick Tree supporting point updates (with any value)
-//   and range queries in 2 dimensions (sparse in 2 dimensions)
+//   and range sum queries in 2 dimensions (sparse in 2 dimensions)
 // All update indices must be known beforehand
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
@@ -96,12 +96,12 @@ template <class T, class IndexType> struct OfflineSemiSparseFenwickTree2D {
 //     the indices for both dimensions for each update
 // Functions:
 //   update(i, j, v): add v to the value A[i][j]
-//   query(d, r): queries the range [0, d] in the first dimension and
-//     [0, r] in the second dimension
-//   query(d, l, r): queries the range [0, d] in the first dimension and
-//     [l, r] in the second dimension
-//   query(u, d, l, r): queries the range [u, d] in the first dimension and
-//     [l, r] in the second dimension
+//   query(d, r): queries the sum of the range [0, d] in the first dimension
+//     and [0, r] in the second dimension
+//   query(d, l, r): queries the sum of the range [0, d] in the first dimension
+//     and [l, r] in the second dimension
+//   query(u, d, l, r): queries the sum of the range [u, d] in the first
+//     dimension and [l, r] in the second dimension
 // In practice, has a small constant
 // Time Complexity:
 //   constructor: O(Q log Q) for Q updates
@@ -172,7 +172,7 @@ struct OfflineSparseFenwickTree2D {
 };
 
 // Sparse Fenwick Tree supporting point updates (with value 1 and -1)
-//   and range queries in 2 dimensions
+//   and range sum queries in 2 dimensions
 //   using SqrtBufferSimple (sparse in 1 dimension)
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
@@ -183,12 +183,12 @@ struct OfflineSparseFenwickTree2D {
 // Functions:
 //   add(i, j): add 1 to the value A[i][j]
 //   rem(i, j): subtract 1 from the value A[i][j]
-//   query(d, r): queries the range [0, d] in the first dimension and
-//     [0, r] in the second dimension
-//   query(d, l, r): queries the range [0, d] in the first dimension and
-//     [l, r] in the second dimension
-//   query(u, d, l, r): queries the range [u, d] in the first dimension and
-//     [l, r] in the second dimension
+//   query(d, r): queries the sum of the range [0, d] in the first dimension
+//     and [0, r] in the second dimension
+//   query(d, l, r): queries the sum of the range [0, d] in the first dimension
+//     and [l, r] in the second dimension
+//   query(u, d, l, r): queries the sum of the range [u, d] in the first
+//     dimension and [l, r] in the second dimension
 // In practice, has a very small constant
 // Time Complexity:
 //   constructor: O(N)
@@ -226,7 +226,8 @@ template <class IndexType> struct SemiSparseFenwickTree2DSimple {
 };
 
 // Sparse Fenwick Tree supporting point updates (with any value)
-//   and range queries in 2 dimensions using SqrtBuffer (sparse in 1 dimension)
+//   and range sum queries in 2 dimensions using SqrtBuffer (sparse in
+//   1 dimension)
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   T: the type of each element
@@ -236,12 +237,12 @@ template <class IndexType> struct SemiSparseFenwickTree2DSimple {
 //   SCALE: the value to scale sqrt by (for SqrtBuffer)
 // Functions:
 //   update(i, j, v): add v to the value A[i][j]
-//   query(d, r): queries the range [0, d] in the first dimension and
-//     [0, r] in the second dimension
-//   query(d, l, r): queries the range [0, d] in the first dimension and
-//     [l, r] in the second dimension
-//   query(u, d, l, r): queries the range [u, d] in the first dimension and
-//     [l, r] in the second dimension
+//   query(d, r): queries the sum of the range [0, d] in the first dimension
+//     and [0, r] in the second dimension
+//   query(d, l, r): queries the sum of the range [0, d] in the first dimension
+//     and [l, r] in the second dimension
+//   query(u, d, l, r): queries the sum of the range [u, d] in the first
+//     dimension and [l, r] in the second dimension
 // In practice, has a very small constant
 // Time Complexity:
 //   constructor: O(N)
@@ -273,7 +274,7 @@ template <class T, class IndexType> struct SemiSparseFenwickTree2D {
 };
 
 // Sparse Fenwick Tree supporting point updates (with value 1 and -1)
-//   and range queries in 2 dimensions
+//   and range sum queries in 2 dimensions
 //   using pbds hash_table for the first dimension,
 //   and SqrtBufferSimple for the second dimension (sparse in 2 dimensions)
 // Indices are 0-indexed and ranges are inclusive
@@ -288,12 +289,12 @@ template <class T, class IndexType> struct SemiSparseFenwickTree2D {
 // Functions:
 //   add(i, j): add 1 to the value A[i][j]
 //   rem(i, j): subtract 1 from the value A[i][j]
-//   query(d, r): queries the range [0, d] in the first dimension and
-//     [0, r] in the second dimension
-//   query(d, l, r): queries the range [0, d] in the first dimension and
-//     [l, r] in the second dimension
-//   query(u, d, l, r): queries the range [u, d] in the first dimension and
-//     [l, r] in the second dimension
+//   query(d, r): queries the sum of the range [0, d] in the first dimension
+//     and [0, r] in the second dimension
+//   query(d, l, r): queries the sum of the range [0, d] in the first dimension
+//     and [l, r] in the second dimension
+//   query(u, d, l, r): queries the sum of the range [u, d] in the first
+//     dimension and [l, r] in the second dimension
 // In practice, has a very small constant
 // Time Complexity:
 //   constructor: O(1)
@@ -352,7 +353,7 @@ struct SparseFenwickTree2DSimple {
 };
 
 // Sparse Fenwick Tree supporting point updates (with any value)
-//   and range queries in 2 dimensions
+//   and range sum queries in 2 dimensions
 //   using pbds hash_table for the first dimension,
 //   and SqrtBuffer for the second dimension (sparse in 2 dimensions)
 // Indices are 0-indexed and ranges are inclusive
@@ -367,12 +368,12 @@ struct SparseFenwickTree2DSimple {
 //   SCALE: the value to scale sqrt by (for SqrtBuffer)
 // Functions:
 //   update(i, j, v): add v to the value A[i][j]
-//   query(d, r): queries the range [0, d] in the first dimension and
-//     [0, r] in the second dimension
-//   query(d, l, r): queries the range [0, d] in the first dimension and
-//     [l, r] in the second dimension
-//   query(u, d, l, r): queries the range [u, d] in the first dimension and
-//     [l, r] in the second dimension
+//   query(d, r): queries the sum of the range [0, d] in the first dimension
+//     and [0, r] in the second dimension
+//   query(d, l, r): queries the sum of the range [0, d] in the first dimension
+//     and [l, r] in the second dimension
+//   query(u, d, l, r): queries the sum of the range [u, d] in the first
+//     dimension and [l, r] in the second dimension
 // In practice, has a very small constant
 // Time Complexity:
 //   constructor: O(1)

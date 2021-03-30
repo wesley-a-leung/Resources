@@ -3,7 +3,7 @@
 using namespace std;
 
 // Fenwick Tree or Binary Indexed Tree supporting point updates
-//   and range queries in 1 dimension
+//   and range sum queries in 1 dimension
 // Indices are 0-indexed and ranges are inclusive with the exception of
 //   functions that accept two iterators as a parameter, such as
 //   the constructor, which are exclusive
@@ -17,8 +17,8 @@ using namespace std;
 // Functions:
 //   values(): returns a vector of the fenwick tree decomposed into an array
 //   update(i, v): add v to the value at index i
-//   query(r): queries the range [0, r]
-//   query(l, r): queries the range [l, r]
+//   query(r): queries the sum of the range [0, r]
+//   query(l, r): queries the sum of the range [l, r]
 //   bsearch(v, cmp): returns the first index where cmp(sum(A[0..i]), v)
 //     returns false, or N if no such index exists
 //   lower_bound(v): returns the first index where sum(A[0..i]) >= v, assumes

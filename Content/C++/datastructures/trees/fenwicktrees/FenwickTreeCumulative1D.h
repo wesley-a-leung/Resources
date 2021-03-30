@@ -22,7 +22,7 @@ using namespace std;
 //   op: an instance of the Op struct
 // Functions:
 //   update(i, v): add v to the value at index i
-//   query(r): queries the range [0, r]
+//   query(r): queries the cumulative value of the range [0, r]
 //   bsearch(v, cmp): returns the first index where cmp(op(A[0..i]), v)
 //     returns false, or N if no such index exists, assumes A is sorted by cmp
 // In practice, this version performs as well as the multidimensional version

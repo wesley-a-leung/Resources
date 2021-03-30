@@ -13,7 +13,7 @@ using namespace __gnu_pbds;
 //   SqrtBuffer, and RootArray, which are faster than the pbds implementation
 
 // Sparse Fenwick Tree supporting point updates (with any value)
-//   and range queries in 1 dimension
+//   and range sum queries in 1 dimension
 // All update indices must be known beforehand
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
@@ -24,8 +24,8 @@ using namespace __gnu_pbds;
 //   updateInds: a vector of IndexType containing the indices for each update
 // Functions:
 //   update(i, v): add v to the value at index i
-//   query(r): queries the range [0, r]
-//   query(l, r): queries the range [l, r]
+//   query(r): queries the sum of the range [0, r]
+//   query(l, r): queries the sum of the range [l, r]
 //   bsearch(v, cmp): returns the first index where cmp(sum(A[0..i]), v)
 //     returns false, or N if no such index exists
 //   lower_bound(v): returns the first index where sum(A[0..i]) >= v, assumes
@@ -75,7 +75,7 @@ template <class T, class IndexType> struct OfflineSparseFenwickTree1D {
 };
 
 // Sparse Fenwick Tree supporting point updates (with any value)
-//   and range queries in 1 dimension using pbds hash_table
+//   and range sum queries in 1 dimension using pbds hash_table
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   T: the type of each element
@@ -84,8 +84,8 @@ template <class T, class IndexType> struct OfflineSparseFenwickTree1D {
 //   N: the size of the array
 // Functions:
 //   update(i, v): add v to the value at index i
-//   query(r): queries the range [0, r]
-//   query(l, r): queries the range [l, r]
+//   query(r): queries the sum of the range [0, r]
+//   query(l, r): queries the sum of the range [l, r]
 //   bsearch(v, cmp): returns the first index where cmp(sum(A[0..i]), v)
 //     returns false, or N if no such index exists
 //   lower_bound(v): returns the first index where sum(A[0..i]) >= v, assumes

@@ -14,8 +14,8 @@ using namespace std;
 //   N: the size of the array
 // Functions:
 //   update(l, r, m, b): add m + b, 2m + b, 3m + b, ... to the range [l, r]
-//   query(r): queries the range [0, r]
-//   query(l, r): queries the range [l, r]
+//   query(r): queries the sum of the range [0, r]
+//   query(l, r): queries the sum of the range [l, r]
 // In practice, has a small constant, faster than SegmentTreeAffine
 // Time Complexity:
 //   constructor: O(N)

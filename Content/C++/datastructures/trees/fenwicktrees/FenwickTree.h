@@ -3,7 +3,7 @@
 using namespace std;
 
 // Fenwick Tree or Binary Indexed Tree supporting point updates
-//   and range queries in any number of dimensions
+//   and range sum queries in any number of dimensions
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   D: the number of dimensions of the fenwick tree
@@ -15,11 +15,11 @@ using namespace std;
 //   update(i, ...args): updates the index i in the first dimension,
 //     and ...args for the next dimensions, with the last argument
 //     being the value to add to the index
-//   query(l, r, ...args): queries the range [l, r] in the first dimension,
-//     and alternating arguments in args for beginning and ending ranges for
-//     the next dimensions
-// In practice, this version performs as well as the 1D version
-// In practice, has a small constant, faster than segment trees
+//   query(l, r, ...args): queries the sum of the range [l, r] in the first
+//     dimension, and alternating arguments in args for beginning and ending
+//     ranges for the next dimensions
+// In practice, has a small constant, faster than segment trees and comparable
+//   to the 1D version
 // Time Complexity:
 //   constructor: O(PI(N_i))
 //   update: O(PI(log(N_i)))

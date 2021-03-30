@@ -16,8 +16,8 @@ using namespace std;
 //     flattened array
 //   update(ind, v): updates the indices specified by the vector ind holding
 //     the index for each dimension, with the value v
-//   query(ind): queries the indices specified by the vector ind holding a
-//     pair specifying the range for each dimension
+//   query(ind): queries the sum of the indices specified by the vector ind
+//     holding a pair specifying the range for each dimension
 // In practice, has a small constant, slower than FenwickTree.h
 // Time Complexity:
 //   constructor: O(PI(N_i))
