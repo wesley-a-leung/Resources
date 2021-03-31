@@ -60,8 +60,7 @@ struct BitFenwickTree {
   }
   int query(int l, int r) { return query(r) - query(l - 1); }
   template <class F> int getKth(uint64_t m, int sum, int v, F cmp) {
-    for (int i = 0; i < 64; i++, m >>= 1)
-      if (!cmp(sum += m & 1, v)) return i;
+    for (int i = 0; i < 64; i++, m >>= 1) if (!cmp(sum += m & 1, v)) return i;
     return 64;
   }
   template <class F> int bsearch(int v, F cmp) {
