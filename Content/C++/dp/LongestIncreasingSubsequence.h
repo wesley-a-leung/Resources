@@ -11,8 +11,7 @@ using namespace std;
 // Return Value: a vector of indices of the element in a longest increasing
 //   subsequence of the array, the indices is guaranteed to be the
 //   lexicographically largest vector of indices
-// In practice, has a very small constant, faster than
-//   LongestIncreasingSubsequenceBIT.h
+// In practice, has a very small constant, faster than the Fenwick Tree version
 // Time Complexity: O(N log N)
 // Memory Complexity: O(N)
 // Tested:
