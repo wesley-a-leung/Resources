@@ -11,7 +11,8 @@ using namespace std;
 // Functions:
 //   set(i, v): sets the initial value of index i with the boolean value v
 //   get(i): gets the current value of index i
-//   build(): builds the fenwick tree, set should not be called afterwards
+//   build(): builds the fenwick tree, set should not be called afterwards,
+//     does not need to be called if there are no calls to set
 //   update(i, v): updates the value of index i with the boolean value v,
 //     should not be called before build unless there were no calls to set
 //   query(r): queries the sum of the range [0, r]
