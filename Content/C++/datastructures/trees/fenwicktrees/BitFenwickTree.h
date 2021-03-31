@@ -33,6 +33,7 @@ using namespace std;
 // Memory Complexity: O(N / 64)
 // Tested:
 //   Fuzz and Stress Tested
+//   https://judge.yosupo.jp/problem/predecessor_problem
 struct BitFenwickTree {
   int N, M; vector<uint64_t> mask; vector<int> BIT;
   BitFenwickTree(int N) : N(N), M((N >> 6) + 1), mask(M, 0), BIT(M + 1, 0) {}
@@ -59,17 +60,15 @@ struct BitFenwickTree {
     return ret + __builtin_popcountll(mask[j] & ((uint64_t(1) << k) - 1));
   }
   int query(int l, int r) { return query(r) - query(l - 1); }
-  template <class F> int getKth(uint64_t m, int sum, int v, F cmp) {
-    for (int i = 0; i < 64; i++, m >>= 1) if (!cmp(sum += m & 1, v)) return i;
-    return 64;
-  }
   template <class F> int bsearch(int v, F cmp) {
     int sum = 0, ind = 0; for (int j = __lg(M + 1); j >= 0; j--) {
       int i = ind + (1 << j);
       if (i <= M && cmp(sum + BIT[i], v)) sum += BIT[ind = i];
     }
     if (ind == M) return N;
-    return (ind << 6) + getKth(mask[ind], sum, v, cmp);
+    uint64_t m = mask[ind]; ind <<= 6;
+    for (;; ind++, m >>= 1) if (!cmp(sum += m & 1, v)) break;
+    return ind;
   }
   int lower_bound(int v) { return bsearch(v, less<int>()); }
   int upper_bound(int v) { return bsearch(v, less_equal<int>()); }
