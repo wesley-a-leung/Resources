@@ -6,7 +6,7 @@ using namespace std;
 void test1() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
-  constexpr const int N = 1e7, U = 1e7, Q = 1e7;
+  constexpr const int N = 1e7, Q = 1e7;
   vector<int> A(N);
   for (auto &&ai : A) ai = rng() % 2;
   FenwickTree1D<int> FT(A.begin(), A.end());
@@ -29,7 +29,6 @@ void test1() {
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 1 (Fenwick Tree) Passed" << endl;
   cout << "  N: " << N << endl;
-  cout << "  U: " << U << endl;
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
@@ -40,7 +39,7 @@ void test1() {
 void test2() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
-  constexpr const int N = 1e7, U = 1e7, Q = 1e7;
+  constexpr const int N = 1e7, Q = 1e7;
   BitFenwickTree BFT(N);
   for (int i = 0; i < N; i++) BFT.set(i, rng() % 2);
   BFT.build();
@@ -62,7 +61,6 @@ void test2() {
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 2 (Bit Fenwick Tree) Passed" << endl;
   cout << "  N: " << N << endl;
-  cout << "  U: " << U << endl;
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
@@ -73,7 +71,7 @@ void test2() {
 void test3() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
-  constexpr const int N = 1e9, U = 1e7, Q = 1e7;
+  constexpr const int N = 1e9, Q = 1e7;
   BitFenwickTree BFT(N);
   for (int i = 0; i < N; i++) BFT.set(i, rng() % 2);
   BFT.build();
@@ -95,7 +93,6 @@ void test3() {
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 3 (Bit Fenwick Tree) Passed" << endl;
   cout << "  N: " << N << endl;
-  cout << "  U: " << U << endl;
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
@@ -106,7 +103,7 @@ void test3() {
 void test4() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
-  constexpr const int N = 1e7, U = 1e7, Q = 1e7;
+  constexpr const int N = 1e7, Q = 1e7;
   vector<int> A(N);
   for (auto &&ai : A) ai = rng() % 2;
   FenwickTree1D<int> FT(A.begin(), A.end());
@@ -137,7 +134,6 @@ void test4() {
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 4 (Fenwick Tree, lower_bound, upper_bound) Passed" << endl;
   cout << "  N: " << N << endl;
-  cout << "  U: " << U << endl;
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
@@ -148,7 +144,7 @@ void test4() {
 void test5() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
-  constexpr const int N = 1e7, U = 1e7, Q = 1e7;
+  constexpr const int N = 1e7, Q = 1e7;
   BitFenwickTree BFT(N);
   for (int i = 0; i < N; i++) BFT.set(i, rng() % 2);
   BFT.build();
@@ -178,7 +174,6 @@ void test5() {
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 5 (Bit Fenwick Tree, lower_bound, upper_bound) Passed" << endl;
   cout << "  N: " << N << endl;
-  cout << "  U: " << U << endl;
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
@@ -189,7 +184,7 @@ void test5() {
 void test6() {
   const auto start_time = chrono::system_clock::now();
   mt19937_64 rng(0);
-  constexpr const int N = 1e7, U = 1e7, Q = 1e7;
+  constexpr const int N = 1e7, Q = 1e7;
   BitFenwickTree BFT(N);
   for (int i = 0; i < N; i++) BFT.set(i, rng() % 2);
   BFT.build();
@@ -223,7 +218,6 @@ void test6() {
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 6 (Bit Fenwick Tree, bsearch with query) Passed" << endl;
   cout << "  N: " << N << endl;
-  cout << "  U: " << U << endl;
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
   long long checkSum = 0;
