@@ -17,7 +17,7 @@ using namespace std;
 // Time Complexity:
 //   constructor: O(N log N)
 //   query: O(log N)
-// Memory Complexity: O((N log N) / 64)
+// Memory Complexity: O(N + (N log N) / 64)
 // Tested:
 //   https://www.acmicpc.net/problem/14898
 template <class T> struct CountDistinct {

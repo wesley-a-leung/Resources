@@ -27,7 +27,7 @@ using namespace std;
 // In practice, has a moderate constant
 // Time Complexity:
 //   constructor, rank, count, select: O(N log N)
-// Memory Complexity: O((N log N) / 64)
+// Memory Complexity: O(N + (N log N) / 64)
 // Tested:
 //   https://www.spoj.com/problems/KQUERY/ (rank/count)
 //   https://www.spoj.com/problems/KQUERYO/ (rank/count)

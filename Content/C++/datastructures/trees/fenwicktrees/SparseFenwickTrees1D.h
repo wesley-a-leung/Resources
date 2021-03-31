@@ -23,7 +23,8 @@ using namespace __gnu_pbds;
 //   N: the size of the array
 //   updateInds: a vector of IndexType containing the indices for each update
 // Functions:
-//   update(i, v): add v to the value at index i
+//   update(i, v): add v to the value at index i, i must be an element
+//     in updateInds
 //   query(r): queries the sum of the range [0, r]
 //   query(l, r): queries the sum of the range [l, r]
 //   bsearch(v, cmp): returns the first index where cmp(sum(A[0..i]), v)
@@ -36,9 +37,9 @@ using namespace __gnu_pbds;
 //     index exists
 // In practice, has a small constant
 // Time Complexity:
-//   constructor: O(Q log Q) for Q updates
-//   update, query, bsearch, lower_bound, upper_bound: O(log Q) for Q updates
-// Memory Complexity: O(Q log Q) for Q updates
+//   constructor: O(Q log U) for U updates
+//   update, query, bsearch, lower_bound, upper_bound: O(log U) for U updates
+// Memory Complexity: O(Q log U) for U updates
 // Tested:
 //   https://dmoj.ca/problem/ccc05s5
 //   https://dmoj.ca/problem/cco10p3
@@ -96,7 +97,7 @@ template <class T, class IndexType> struct OfflineSparseFenwickTree1D {
 // Time Complexity:
 //   constructor: O(1)
 //   update, query, bsearch, lower_bound, upper_bound: O(log N) on average
-// Memory Complexity: O(Q log N) for Q updates
+// Memory Complexity: O(U log N) for U updates
 // Tested:
 //   https://dmoj.ca/problem/ds4
 //   https://dmoj.ca/problem/cco10p3

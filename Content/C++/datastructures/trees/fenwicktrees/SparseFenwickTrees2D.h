@@ -24,7 +24,8 @@ using namespace __gnu_pbds;
 //   updateInds: a vector of pairs of ints and IndexType containing the indices
 //     for both dimensions for each update
 // Functions:
-//   update(i, j, v): add v to the value A[i][j]
+//   update(i, j, v): add v to the value A[i][j], (i, j) must be an element
+//     of updateInds
 //   query(d, r): queries the sum of the range [0, d] in the first dimension
 //     and [0, r] in the second dimension
 //   query(d, l, r): queries the sum of the range [0, d] in the first dimension
@@ -33,9 +34,9 @@ using namespace __gnu_pbds;
 //     dimension and [l, r] in the second dimension
 // In practice, has a small constant
 // Time Complexity:
-//   constructor: O(Q (log Q + log N) + N) for Q updates
-//   update, query: O(log N log Q) for Q updates
-// Memory Complexity: O(N + Q log N) for Q updates
+//   constructor: O(Q (log Q + log N) + N) for U updates
+//   update, query: O(log N log U) for U updates
+// Memory Complexity: O(N + U log N) for U updates
 // Tested:
 //   https://dmoj.ca/problem/dmopc19c7p5
 //   https://codeforces.com/contest/1093/problem/E
@@ -95,7 +96,8 @@ template <class T, class IndexType> struct OfflineSemiSparseFenwickTree2D {
 //   updateInds: a vector of pairs of IndexType1 and IndexType2 containing
 //     the indices for both dimensions for each update
 // Functions:
-//   update(i, j, v): add v to the value A[i][j]
+//   update(i, j, v): add v to the value A[i][j], (i, j) must be an element
+//     of updateInds
 //   query(d, r): queries the sum of the range [0, d] in the first dimension
 //     and [0, r] in the second dimension
 //   query(d, l, r): queries the sum of the range [0, d] in the first dimension
@@ -104,9 +106,9 @@ template <class T, class IndexType> struct OfflineSemiSparseFenwickTree2D {
 //     dimension and [l, r] in the second dimension
 // In practice, has a small constant
 // Time Complexity:
-//   constructor: O(Q log Q) for Q updates
-//   update, query: O((log Q)^2) for Q updates
-// Memory Complexity: O(Q log Q) for Q updates
+//   constructor: O(U log U) for U updates
+//   update, query: O((log U)^2) for U updates
+// Memory Complexity: O(U log U) for U updates
 // Tested:
 //   https://judge.yosupo.jp/problem/point_add_rectangle_sum
 //   https://dmoj.ca/problem/dmopc19c7p5
@@ -193,8 +195,8 @@ struct OfflineSparseFenwickTree2D {
 // Time Complexity:
 //   constructor: O(N)
 //   add, rem: O(log N) amortized
-//   query: O(log N sqrt Q) amortized for Q updates
-// Memory Complexity: O(N + Q log N) for Q updates
+//   query: O(log N sqrt U) amortized for U updates
+// Memory Complexity: O(N + U log N) for U updates
 // Tested:
 //   https://codeforces.com/contest/1093/problem/E
 //   https://dmoj.ca/problem/dmopc19c7p5
@@ -247,8 +249,8 @@ template <class IndexType> struct SemiSparseFenwickTree2DSimple {
 // Time Complexity:
 //   constructor: O(N)
 //   update: O(log N) amortized
-//   query: O(log N sqrt Q) amortized for Q updates
-// Memory Complexity: O(N + Q log N) for Q updates
+//   query: O(log N sqrt U) amortized for U updates
+// Memory Complexity: O(N + U log N) for U updates
 // Tested:
 //   https://dmoj.ca/problem/apio19p3
 //   https://dmoj.ca/problem/ioi01p1
@@ -299,8 +301,8 @@ template <class T, class IndexType> struct SemiSparseFenwickTree2D {
 // Time Complexity:
 //   constructor: O(1)
 //   add, rem: O(log N) amortized
-//   query: O(log N sqrt Q) amortized for Q updates
-// Memory Complexity: O(Q log N) for Q updates
+//   query: O(log N sqrt U) amortized for U updates
+// Memory Complexity: O(U log N) for U updates
 // Tested:
 //   https://codeforces.com/contest/1093/problem/E
 template <class IndexType1, class IndexType2,
@@ -378,8 +380,8 @@ struct SparseFenwickTree2DSimple {
 // Time Complexity:
 //   constructor: O(1)
 //   update: O(log N) amortized
-//   query: O(log N sqrt Q) amortized for Q updates
-// Memory Complexity: O(Q log N) for Q update
+//   query: O(log N sqrt U) amortized for U updates
+// Memory Complexity: O(U log N) for U update
 // Tested:
 //   https://dmoj.ca/problem/fallingsnowflakes
 template <class T, class IndexType1, class IndexType2,

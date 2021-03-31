@@ -9,7 +9,7 @@ void test1() {
   mt19937_64 rng(0);
   int N = 1e7;
   vector<long long> A(N);
-  for (auto &&ai : A) ai = rng() % int(1e9) + 1;
+  for (auto &&ai : A) ai = rng() % int(1e6) + 1;
   FenwickTree1D<long long> FT(A.begin(), A.end());
   int Q = 1e7;
   vector<long long> ans;
@@ -17,7 +17,7 @@ void test1() {
     int t = rng() % 2;
     if (t == 0) {
       int i = rng() % N;
-      long long v = rng() % int(1e9) + 1;
+      long long v = rng() % int(1e6) + 1;
       FT.update(i, v);
     } else {
       int l = rng() % N, r = rng() % N;
@@ -41,7 +41,7 @@ void test2() {
   mt19937_64 rng(0);
   int N = 1e7;
   vector<long long> A(N);
-  for (auto &&ai : A) ai = rng() % int(1e9) + 1;
+  for (auto &&ai : A) ai = rng() % int(1e6) + 1;
   FenwickTree1D<long long> FT(N);
   for (int i = 0; i < N; i++) FT.update(i, A[i]);
   int Q = 1e7;
@@ -50,7 +50,7 @@ void test2() {
     int t = rng() % 2;
     if (t == 0) {
       int i = rng() % N;
-      long long v = rng() % int(1e9) + 1;
+      long long v = rng() % int(1e6) + 1;
       FT.update(i, v);
     } else {
       int l = rng() % N, r = rng() % N;
@@ -74,7 +74,7 @@ void test3() {
   mt19937_64 rng(0);
   int N = 1e7;
   vector<long long> A(N);
-  for (auto &&ai : A) ai = rng() % int(1e9) + 1;
+  for (auto &&ai : A) ai = rng() % int(1e6) + 1;
   FenwickTree<1, long long> FT(N);
   for (int i = 0; i < N; i++) FT.update(i, A[i]);
   int Q = 1e7;
@@ -83,7 +83,7 @@ void test3() {
     int t = rng() % 2;
     if (t == 0) {
       int i = rng() % N;
-      long long v = rng() % int(1e9) + 1;
+      long long v = rng() % int(1e6) + 1;
       FT.update(i, v);
     } else {
       int l = rng() % N, r = rng() % N;
@@ -107,7 +107,7 @@ void test4() {
   mt19937_64 rng(0);
   int N = 1e7;
   vector<long long> A(N);
-  for (auto &&ai : A) ai = rng() % int(1e9) + 1;
+  for (auto &&ai : A) ai = rng() % int(1e6) + 1;
   FenwickTree1D<long long> FT(A.begin(), A.end());
   int Q = 1e7;
   vector<long long> ans;
@@ -115,7 +115,7 @@ void test4() {
     int t = rng() % 4;
     if (t == 0) {
       int i = rng() % N;
-      long long v = rng() % int(1e9) + 1;
+      long long v = rng() % int(1e6) + 1;
       FT.update(i, v);
     } else if (t == 1) {
       int l = rng() % N, r = rng() % N;
@@ -147,7 +147,7 @@ void test5() {
   mt19937_64 rng(0);
   int N = 1e7;
   vector<long long> A(N);
-  for (auto &&ai : A) ai = rng() % int(1e9) + 1;
+  for (auto &&ai : A) ai = rng() % int(1e6) + 1;
   FenwickTree1D<long long> FT(A.begin(), A.end());
   int Q = 1e7;
   vector<long long> ans;
@@ -155,7 +155,7 @@ void test5() {
     int t = rng() % 4;
     if (t == 0) {
       int i = rng() % N;
-      long long v = rng() % int(1e9) + 1;
+      long long v = rng() % int(1e6) + 1;
       FT.update(i, v);
     } else if (t == 1) {
       int l = rng() % N, r = rng() % N;
@@ -165,13 +165,13 @@ void test5() {
       long long TOT = FT.query(N - 1) * 2 + 1;
       long long v = rng() % TOT;
       ans.push_back(bsearch<FIRST>(0, N, [&] (int k) {
-          return FT.query(k) > v;
+        return FT.query(k) >= v;
       }));
     } else {
       long long TOT = FT.query(N - 1) * 2 + 1;
       long long v = rng() % TOT;
       ans.push_back(bsearch<FIRST>(0, N, [&] (int k) {
-          return FT.query(k) >= v;
+        return FT.query(k) > v;
       }));
     }
   }

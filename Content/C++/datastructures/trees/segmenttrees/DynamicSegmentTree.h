@@ -86,8 +86,8 @@ using namespace std;
 //                O(N) for iteartor and generating function constructors
 //   update, query, bsearchPrefix, bsearchSuffix: O(log N) amortized unless
 //     reserveNodes is called beforehand
-// Memory Complexity: O(Q log N) for Q updates for single argument constructor,
-//                    O(N + Q log N) for two argument constructor 
+// Memory Complexity: O(U log N) for U updates for single argument constructor,
+//                    O(N + U log N) for two argument constructor 
 // Tested:
 //   https://dmoj.ca/problem/ccc05s5 (LAZY = false, PERSISTENT = false)
 //   https://dmoj.ca/problem/wc18c4s4 (LAZY = false, PERSISTENT = true,

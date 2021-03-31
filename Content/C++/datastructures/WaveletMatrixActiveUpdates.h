@@ -30,7 +30,7 @@ using namespace std;
 // Time Complexity:
 //   constructor: O(N log N)
 //   update, rank, count, select: O(log(N) log(N / 64))
-// Memory Complexity: O((N log N) / 64)
+// Memory Complexity: O(N + (N log N) / 64)
 // Tested:
 //   https://dmoj.ca/problem/dmopc19c7p5 (rank/count)
 template <class T, class Cmp = less<T>> struct WaveletMatrixActiveUpdates {

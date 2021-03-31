@@ -31,7 +31,7 @@ using namespace std;
 //   constructor: O((N + U) log (N + U)) for U total updates
 //   update, rank, count, select: O(log(N + U) log((N + U) / 64)) for
 //     U total updates
-// Memory Complexity: O(((N + U) log (N + U)) / 64) for U total updates
+// Memory Complexity: O(N + ((N + U) log (N + U)) / 64) for U total updates
 // Tested:
 //   https://www.spoj.com/problems/KQUERY2/ (rank/count)
 template <class T, class Cmp = less<T>> struct WaveletMatrixOfflineUpdates {
@@ -39,7 +39,7 @@ template <class T, class Cmp = less<T>> struct WaveletMatrixOfflineUpdates {
   WaveletMatrixActiveUpdates<T, Cmp> init(const vector<T> &A,
                                           const vector<vector<T>> &updates) {
     assert(A.size() == updates.size()); int N = A.size();
-    for (int i = 0; i < N; i++) cur[i + 1] = 1 + int(updates[i].size());
+    for (int i = 0; i < N; i++) cur[i + 1] = updates[i].size() + 1;
     partial_sum(cur.begin(), cur.end(), cur.begin());
     vector<T> ret; ret.reserve(cur[N]); for (int i = 0; i < N; i++) {
       ret.push_back(A[i]);

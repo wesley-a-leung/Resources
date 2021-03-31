@@ -16,12 +16,13 @@ using namespace std;
 // Functions:
 //   update(i, v): updates index i with the value v
 //   query(l, r): returns the number of distinct values in the range [l, r]
-// In practice, has a very small constant
+// In practice, has a very small constant, slightly slower than the
+//   offline version
 // Time Complexity:
 //   constructor: O(N log N)
 //   update: O(log N)
-//   query: O(log N sqrt(N + Q))
-// Memory Complexity: O((N + Q) log N) for Q updates
+//   query: O(log N sqrt(N + U)) for U updates
+// Memory Complexity: O((N + U) log N) for U updates
 // Tested:
 //   https://dmoj.ca/problem/mnyc17p6
 template <class T, class C = map<T, set<int>>> struct CountDistinctUpdates {

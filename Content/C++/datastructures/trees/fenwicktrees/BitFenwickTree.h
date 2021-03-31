@@ -16,18 +16,26 @@ using namespace std;
 //     should not be called before build unless there were no calls to set
 //   query(r): queries the sum of the range [0, r]
 //   query(l, r): queries the sum of the range [l, r]
+//   bsearch(v, cmp): returns the first index where cmp(sum(A[0..i]), v)
+//     returns false, or N if no such index exists
+//   lower_bound(v): returns the first index where sum(A[0..i]) >= v, assumes
+//     cmp(sum(A[0..i + 1]), sum(A[0..i])) returns false, returns N if no such
+//     index exists
+//   upper_bound(v): returns the first index where sum(A[0..i]) > v, assumes
+//     cmp(sum(A[0..i + 1]), sum(A[0..i])) returns false, returns N if no such
+//     index exists
 // In practice, has a moderate constant, performs faster than a regular fenwick
 //   tree and uses less memory
 // Time Complexity:
 //   constructor, set, get: O(1)
-//   update, query: O(log(N / 64))
+//   update, query, bsearch, lower_bound, upper_bound: O(log(N / 64))
 //   build: O(N / 64)
 // Memory Complexity: O(N / 64)
 // Tested:
 //   Fuzz and Stress Tested
 struct BitFenwickTree {
-  int M; vector<uint64_t> mask; vector<int> BIT;
-  BitFenwickTree(int N) : M((N >> 6) + 1), mask(M, 0), BIT(M + 1, 0) {}
+  int N, M; vector<uint64_t> mask; vector<int> BIT;
+  BitFenwickTree(int N) : N(N), M((N >> 6) + 1), mask(M, 0), BIT(M + 1, 0) {}
   void set(int i, bool v) {
     int j = i >> 6, k = i & 63;
     mask[j] = (mask[j] & ~(uint64_t(1) << k)) | (uint64_t(v) << k);
@@ -51,4 +59,19 @@ struct BitFenwickTree {
     return ret + __builtin_popcountll(mask[j] & ((uint64_t(1) << k) - 1));
   }
   int query(int l, int r) { return query(r) - query(l - 1); }
+  template <class F> int getKth(uint64_t m, int sum, int v, F cmp) {
+    for (int i = 0; i < 64; i++, m >>= 1)
+      if (!cmp(sum += m & 1, v)) return i;
+    return 64;
+  }
+  template <class F> int bsearch(int v, F cmp) {
+    int sum = 0, ind = 0; for (int j = __lg(M + 1); j >= 0; j--) {
+      int i = ind + (1 << j);
+      if (i <= M && cmp(sum + BIT[i], v)) sum += BIT[ind = i];
+    }
+    if (ind == M) return N;
+    return (ind << 6) + getKth(mask[ind], sum, v, cmp);
+  }
+  int lower_bound(int v) { return bsearch(v, less<int>()); }
+  int upper_bound(int v) { return bsearch(v, less_equal<int>()); }
 };
