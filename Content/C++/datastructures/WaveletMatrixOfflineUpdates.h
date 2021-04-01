@@ -23,7 +23,7 @@ using namespace std;
 //   count(l, r, lo, hi) returns the number of elements not less than
 //     lo and not greater than hi (using the comparator) in the range [l, r]
 //     in the current array
-//   select(l, r, k): selects the kth element sorted by the comparator
+//   select(l, r, k): returns the kth element sorted by the comparator
 //     if the range [l, r] was sorted in the current array
 // In practice, has a small constant, faster than using an
 //   Offline or Online 2D Sparse Fenwick Tree

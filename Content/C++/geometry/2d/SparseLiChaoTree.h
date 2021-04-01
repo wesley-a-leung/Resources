@@ -6,6 +6,7 @@ using namespace std;
 //   in the form of f(x) = mx + b over l <= x <= r, and finding
 //   the maximum value of f(x) at an integral point x where MN <= x <= MX
 // Template Arguments:
+//   IndexType: the type of x for queries (and l and r for addLineSegment)
 //   T: the type of the slope (m) and intercept (b) of the line, as well as
 //     the type of the function argument (x)
 //   Cmp: the comparator to compare two f(x) values,
@@ -20,7 +21,7 @@ using namespace std;
 //   INF: a value for positive infinity, must be negatable
 // Functions:
 //   addLine(m, b): adds a line in the form f(x) = mx + b to the set of lines
-//   addLine(m, b, l, r): adds a line segment in the form f(x) = mx + b
+//   addLineSegment(m, b, l, r): adds a line segment in the form f(x) = mx + b
 //     where l <= x <= r, to the set of lines
 //   getMax(x): finds the maximum value of f(x) (based on the comparator)
 //     for all inserted lines
@@ -32,20 +33,16 @@ using namespace std;
 //   constructor: O(1)
 //   addLine, getMax: O(log(MX - MN)) for the range [MX, MN]
 //   addLineSegment: O(log(MX - MN) ^ 2) for the range [MX, MN]
-//   clear: O(Q log(MX - MN)) for the range [MX, MN] and
-//            Q addLine queries,
-//          O(Q log(MX - MN)^2) for the range [MX, MN] and
-//            Q addLineSegmentqueries
-// Memory Complexity: O(Q log(MX - MN)) for the range [MX, MN] and
-//                      Q addLine queries,
-//                    O(Q log(MX - MN)^2) for the range [MX, MN] and
-//                      Q addLineSegment queries
+//   clear: O(Q log(MX - MN) + U (log(MX - MN))^2) for the range
+//            [MX, MN], Q addLine queries, and U addLineSegment queries
+// Memory Complexity: O(Q log(MX - MN) + U (log(MX - MN))^2) for the range
+//                      [MX, MN], Q addLine queries, and U addLineSegment
+//                      queries
 // Tested:
 //   https://judge.yosupo.jp/problem/line_add_get_min
 //   https://judge.yosupo.jp/problem/segment_add_get_min
 //   https://open.kattis.com/problems/longestlife
 //   https://www.spoj.com/problems/CHTPRAC/
-//   https://csacademy.com/contest/round-70/task/squared-ends/
 template <class IndexType, class T, class Cmp = less<T>>
 struct SparseLiChaoTree {
   static_assert(is_integral<IndexType>::value, "IndexType must be integeral");
@@ -54,9 +51,7 @@ struct SparseLiChaoTree {
     Line line; int l, r; Node(T m, T b) : line(m, b), l(-1), r(-1) {}
   };
   IndexType MN, MX; T INF; int root; vector<Node> TR;
-  T eval(const Line &l, IndexType x) const {
-    return l.second == INF ? INF : l.first * x + l.second;
-  }
+  T eval(const Line &l, IndexType x) const { return l.first * x + l.second; }
   bool majorize(const Line &a, const Line &b, IndexType l, IndexType r) {
     return !Cmp()(eval(a, l), eval(b, l)) && !Cmp()(eval(a, r), eval(b, r));
   }

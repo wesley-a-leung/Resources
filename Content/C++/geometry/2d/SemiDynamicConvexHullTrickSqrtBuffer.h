@@ -22,7 +22,8 @@ using namespace std;
 //   size(): returns the number of lines in the convex hull
 //   reserve(N): reserves space for N lines in the convex hull
 // In practice, has a very small constant, performance compared to
-//   SemiDynamicConvexHullTrick (which uses multiset) and SparseLiChao can vary
+//   SemiDynamicConvexHullTrick (which uses multiset) and SparseLiChao
+//   can vary, slower than LiChao
 // Time Complexity:
 //   constructor: O(1)
 //   addLine: O(1) amortized
@@ -34,7 +35,6 @@ using namespace std;
 //   https://judge.yosupo.jp/problem/line_add_get_min
 //   https://open.kattis.com/problems/longestlife
 //   https://www.spoj.com/problems/CHTPRAC/
-//   https://csacademy.com/contest/round-70/task/squared-ends/
 template <class T, class Cmp = less<T>>
 struct SemiDynamicConvexHullTrickSqrtBuffer {
   struct Line {

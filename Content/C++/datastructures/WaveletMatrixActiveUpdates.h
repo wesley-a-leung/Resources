@@ -5,7 +5,8 @@
 using namespace std;
 
 // Wavelet Matrix supporting rank and select operations for a subarray where
-//   elements can be updated to be active or not
+//   elements can be updated to be active or not (indices do not change
+//   when an element is set to active or not)
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   T: the type of the element of the array
@@ -23,7 +24,7 @@ using namespace std;
 //     the comparator) in the range [l, r]
 //   count(l, r, lo, hi) returns the number of active elements not less than
 //     lo and not greater than hi (using the comparator) in the range [l, r]
-//   select(l, r, k): selects the kth active element sorted by the comparator
+//   select(l, r, k): returns the kth active element sorted by the comparator
 //     if the range [l, r] was sorted
 // In practice, has a small constant, faster than using a
 //   2D Sparse Fenwick Tree

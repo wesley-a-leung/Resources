@@ -29,7 +29,8 @@ template <class T, class Cmp> struct CHTLine {
 //   getMax(x): finds the maximum value of f(x) (based on the comparator)
 //     for all inserted lines
 // In practice, has a moderate constant, performance compared to
-//   SemiDynamicConvexHullTrickSqrtBuffer and SparseLiChao can vary
+//   SemiDynamicConvexHullTrickSqrtBuffer and SparseLiChao can vary, slower
+//   than LiChao
 // Time Complexity:
 //   constructor: O(1)
 //   addLine, getMax: O(log(N)) amortized for N lines in the convex hull
@@ -38,7 +39,6 @@ template <class T, class Cmp> struct CHTLine {
 //   https://judge.yosupo.jp/problem/line_add_get_min
 //   https://open.kattis.com/problems/longestlife
 //   https://www.spoj.com/problems/CHTPRAC/
-//   https://csacademy.com/contest/round-70/task/squared-ends/
 template <class T, class Cmp = less<T>>
 struct SemiDynamicConvexHullTrick : public multiset<CHTLine<T, Cmp>> {
   using L = CHTLine<T, Cmp>; using iter = typename multiset<L>::iterator;
