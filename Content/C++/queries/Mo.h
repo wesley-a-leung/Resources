@@ -3,7 +3,8 @@
 using namespace std;
 
 // Mo's algorithm to answer offline ranges queries over
-//   a static array A of length N
+//   a static array A of length N where elements can be added to and removed
+//   from a multiset-like object
 // Template Arguments:
 //   S: struct to maintain a multiset of the elements in the subarray [l, r]
 //   Required Fields:
@@ -14,7 +15,8 @@ using namespace std;
 //         l: the left endpoint of the query range
 //         r: the right endpoint of the query range
 //   Required Functions:
-//     constructor(A): takes a vector A of type T equal to the static array
+//     constructor(...args): takes any number of arguments (arguments are
+//       passed from constructor of Mo)
 //     addLeft(v): adds the value v to the multiset by expanding the subarray
 //       [l, r] to [l - 1, r]
 //     addRight(v): adds the value v to the multiset by expanding the subarray
@@ -52,16 +54,19 @@ using namespace std;
 // Constructor Arguments:
 //   A: a vector of type S::T of the values in the array
 //   queries: a vector of type S::Q representing the queries
+//   SCALE: the value to scale sqrt by
+//   ...args: arguments to pass to the constructor of S
 // Fields:
 //   ans: a vector of integers with the answer for each query
 // In practice, has a very small constant
 // Time Complexity:
-//   constructor: O(C + K (U (log K + sqrt N) + T))
+//   constructor: O(C + K ((log K + U sqrt N) + T))
 //     for K queries where C is the time complexity of S's constructor,
 //     U is the time complexity of S.addLeft, S.addRight,
 //     S.removeLeft, S.removeRight,
 //     and T is the time complexity of S.query
-// Memory Complexity: O(K) for K queries
+// Memory Complexity: O(K + M) for K queries where M is the memory complexity
+//   of S
 // Tested:
 //   https://www.spoj.com/problems/DQUERY/
 //   https://atcoder.jp/contests/abc174/tasks/abc174_f
@@ -74,9 +79,11 @@ template <class S> struct Mo {
     bool operator < (const Query &o) const { return getPair() < o.getPair(); }
   };
   vector<R> ans;
-  Mo(const vector<T> &A, const vector<Q> &queries, double SCALE = 2) {
+  template <class ...Args> Mo(const vector<T> &A, const vector<Q> &queries,
+                              double SCALE = 2, Args &&...args) {
     int K = queries.size(), bsz = max(1.0, sqrt(A.size()) * SCALE);
-    vector<Query> q; q.reserve(K); S s(A); for (int i = 0; i < K; i++)
+    vector<Query> q; q.reserve(K); S s(forward<Args>(args)...);
+    for (int i = 0; i < K; i++)
       q.emplace_back(queries[i], i, queries[i].l / bsz);
     sort(q.begin(), q.end()); int l = 0, r = l - 1; for (auto &&qi : q) {
       while (l < qi.q.l) s.removeLeft(A[l++]);

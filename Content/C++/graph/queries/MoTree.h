@@ -15,8 +15,8 @@ using namespace std;
 //         v: one vertex of the query path
 //         w: the other vertex of the query path
 //   Required Functions:
-//     constructor(A): takes a vector A of type T equal to the static array
-//       representing the values for each vertex of the graph
+//     constructor(...args): takes any number of arguments (arguments are
+//       passed from constructor of MoTree)
 //     add(v): adds the value v to the multiset
 //     remove(v): removes the value v from the multiset
 //   Sample Struct: supporting queries for whether a value c exists on
@@ -41,11 +41,13 @@ using namespace std;
 //       size() const: returns the number of vertices in the forest
 //   A: a vector of type S::T of the values in the array
 //   queries: a vector of type S::Q representing the queries
+//   SCALE: the value to scale sqrt by
+//   ...args: arguments to pass to the constructor of S
 // Fields:
 //   ans: a vector of integers with the answer for each query
 // In practice, has a very small constant
 // Time Complexity:
-//   constructor: O(C + K (U (log K + sqrt V) + T))
+//   constructor: O(C + K ((log K + U sqrt V) + T))
 //     for K queries where C is the time complexity of S's constructor,
 //     U is the time complexity of S.add and S.remove,
 //     and T is the time complexity of S.query
@@ -73,12 +75,13 @@ template <class S> struct MoTree {
       if (pre[v] == -1) { roots.push_back(v); dfs(G, v, -1); }
     return LCA<>(G, roots);
   }
-  template <class Forest> MoTree(const Forest &G, const vector<T> &A,
-                                 const vector<Q> &queries, double SCALE = 2)
+  template <class Forest, class ...Args> MoTree(
+      const Forest &G, const vector<T> &A, const vector<Q> &queries,
+      double SCALE = 2, Args &&...args)
       : V(G.size()), ind(0), pre(V, -1), post(V), vert(V * 2), lca(init(G)) {
     int K = queries.size(), bsz = max(1.0, sqrt(A.size()) * SCALE);
-    vector<Query> q; q.reserve(K); vector<bool> vis(V, false); S s(A);
-    for (int i = 0; i < K; i++) {
+    vector<Query> q; q.reserve(K); vector<bool> vis(V, false);
+    S s(forward<Args>(args)...); for (int i = 0; i < K; i++) {
       int v = queries[i].v, w = queries[i].w, u = lca.lca(v, w);
       if (pre[v] > pre[w]) swap(v, w);
       int l = u == v ? pre[v] : post[v], r = pre[w];
