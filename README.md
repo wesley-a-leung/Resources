@@ -10,20 +10,20 @@ and Windows
 - Kotlin Resources compile in Kotlin 1.4
 
 ### Licensing
-- most files are covered under [`LICENSE.txt`](https://github.com/wesley-a-leung/Resources/blob/master/LICENSE.txt)
+- most files are covered under [`LICENSE.txt`](https://github.com/wesley-a-leung/Resources/blob/main/LICENSE.txt)
 (GNU Affero General Public License 3.0), with certain files being covered under
 a different license, which are listed below, and stated at the top of those
 files with the license files also being provided in its folder
 
 ##### Apache License 2.0
 
-- [`Content/C++/string/SAISSuffixArray.h`](https://github.com/wesley-a-leung/Resources/blob/master/Content/C++/string/SAISSuffixArray.h)
-[LICENSE](https://github.com/wesley-a-leung/Resources/blob/master/Content/C++/string/LICENSE.SAISSuffixArray.txt)
+- [`Content/C++/string/SAISSuffixArray.h`](https://github.com/wesley-a-leung/Resources/blob/main/Content/C++/string/SAISSuffixArray.h)
+[LICENSE](https://github.com/wesley-a-leung/Resources/blob/main/Content/C++/string/LICENSE.SAISSuffixArray.txt)
 
 ##### GNU General Public License 3.0
 
-- [`Content/C++/graph/other/MaximumClique.h`](https://github.com/wesley-a-leung/Resources/blob/master/Content/C++/graph/other/MaximumClique.h)
-[LICENSE](https://github.com/wesley-a-leung/Resources/blob/master/Content/C++/graph/other/LICENSE.MaximumClique.txt)
+- [`Content/C++/graph/other/MaximumClique.h`](https://github.com/wesley-a-leung/Resources/blob/main/Content/C++/graph/other/MaximumClique.h)
+[LICENSE](https://github.com/wesley-a-leung/Resources/blob/main/Content/C++/graph/other/LICENSE.MaximumClique.txt)
 
 ### Style Guidelines
 - 79 character line limit unless the line contains the string `http`
