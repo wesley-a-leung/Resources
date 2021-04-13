@@ -52,7 +52,7 @@ using namespace std;
 //   length N + M + 1
 // Tested:
 //   https://www.spoj.com/problems/LCS/
-template <class SuffixArray> struct LongestCommonSubstringTwo {
+template <class SuffixArray> struct LongestCommonSubstringOfTwo {
   using T = typename SuffixArray::T; SuffixArray SA; vector<T> lcs;
   template <class F, class G>
   SuffixArray init(int N, F f, int M, G g, T sep) {
@@ -62,7 +62,7 @@ template <class SuffixArray> struct LongestCommonSubstringTwo {
     });
   }
   template <class F, class G>
-  LongestCommonSubstringTwo(int N, F f, int M, G g, T sep)
+  LongestCommonSubstringOfTwo(int N, F f, int M, G g, T sep)
       : SA(init(N, f, M, g, sep)) {
     pair<int, int> mx(-1, -1); for (int i = 0; i < N + M; i++)
       if (SA.ind[i] != N && SA.ind[i + 1] != N
@@ -74,9 +74,9 @@ template <class SuffixArray> struct LongestCommonSubstringTwo {
     }
   }
   template <class ItPat, class ItTxt>
-  LongestCommonSubstringTwo(ItPat stPat, ItPat enPat, ItTxt stTxt, ItTxt enTxt,
-                            T sep)
-      : LongestCommonSubstringTwo(enPat - stPat, [&] { return *stPat++; },
-                                  enTxt - stTxt, [&] { return *stTxt++; },
-                                  sep) {}
+  LongestCommonSubstringOfTwo(ItPat stPat, ItPat enPat,
+                              ItTxt stTxt, ItTxt enTxt, T sep)
+      : LongestCommonSubstringOfTwo(enPat - stPat, [&] { return *stPat++; },
+                                    enTxt - stTxt, [&] { return *stTxt++; },
+                                    sep) {}
 };
