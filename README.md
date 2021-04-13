@@ -61,6 +61,6 @@ stack, or `std::unique_ptr` should be used
 - data structures should have at least one of the following constructors:
 a constructor accepting a size variable as well as a function/lambda that
 accepts no arguments and returns successive values for each index (see
-`std::generate`), a constructor that accepts two iterators representing an 
-half open range to be copied, and a constructor accepting a size variable and a
+`std::generate`), a constructor that accepts two iterators representing a 
+half-open range to be copied, and a constructor accepting a size variable and a
 default value
