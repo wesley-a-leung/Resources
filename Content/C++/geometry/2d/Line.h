@@ -35,6 +35,8 @@ struct Line {
 // Return Value: a line representing the bisector
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
+// Tested:
+//   https://dmoj.ca/problem/secret
 Line bisector(const Line &l1, const Line &l2, bool interior) {
   T s = interior ? 1 : -1;
   return Line(l2.v / abs(l2.v) + l1.v / abs(l1.v) * s,
