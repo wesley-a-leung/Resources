@@ -9,7 +9,7 @@ using namespace std;
 // Function Arguments:
 //   st: an iterator pointing to the first element in the string/array
 //   en: an iterator pointing to after the last element in the string/array
-// Return Value: returns an iterator to the first element of the minimum
+// Return Value: an iterator to the first element of the minimum
 //   lexicographical rotation of the string/array
 // In practice, has a small constant
 // Time Complexity: O(N)
