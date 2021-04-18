@@ -5,7 +5,8 @@ using namespace std;
 // Factorizes a string S into Lyndon words w1w2w3... where w1, w2, w3, ... are
 //   in non-increasing order
 // Guaranteed to exist and is unique
-// A Lyndon word is lexicographically smaller than all its nontrivial suffixes
+// A Lyndon word is lexicographically smaller than all of its nontrivial
+//   suffixes
 // Template Arguments:
 //   It: the type of the iterator point to each character/element in
 //     the string/array
