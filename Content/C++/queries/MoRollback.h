@@ -19,7 +19,7 @@ using namespace std;
 //       passed from constructor of Mo)
 //     add(v): adds the value v to the multiset
 //     save(): saves the current state of the multiset
-//     rollback(): rollsback the multiset to the saved state
+//     rollback(): rollbacks the multiset to the saved state
 //     reset(): resets the multiset to its initial state
 //     query(q): returns the answer of type R for the query q of type Q to
 //       the multiset, which is guaranteed to contain all elements in the range
