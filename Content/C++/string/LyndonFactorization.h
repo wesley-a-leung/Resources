@@ -8,7 +8,7 @@ using namespace std;
 // A Lyndon word is lexicographically smaller than all of its nontrivial
 //   suffixes
 // Template Arguments:
-//   It: the type of the iterator point to each character/element in
+//   It: the type of the iterator pointing to each character/element in
 //     the string/array
 // Function Arguments:
 //   st: an iterator pointing to the first element in the string/array

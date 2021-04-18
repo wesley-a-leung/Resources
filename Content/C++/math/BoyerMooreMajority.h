@@ -3,7 +3,7 @@
 using namespace std;
 
 // Finds a candidate for the majority element in a range [st, en)
-//   It: the type of the iterator point to each element in the array
+//   It: the type of the iterator pointing to each element in the array
 // The candidate is the majority element if and only if
 //   std::count(st, en, boyerMooreMajority(st, en)) > (en - st) / 2
 // Function Arguments:
