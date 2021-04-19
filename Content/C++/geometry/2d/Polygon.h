@@ -3,6 +3,7 @@
 #include "Point.h"
 #include "Line.h"
 #include "Circle.h"
+#include "../../datastructures/IntervalUnion.h"
 using namespace std;
 
 // Functions for 2D polygons, represented by a vector of the N points in
