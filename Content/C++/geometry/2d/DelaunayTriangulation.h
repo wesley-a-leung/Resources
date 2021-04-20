@@ -24,25 +24,24 @@ struct DelaunayTriangulation {
                                      numeric_limits<T>::max());
   struct Quad; using Q = Quad *;
   struct Quad {
-    Q o, rot; pt p; bool mark;
-    Quad(ref p) : o(nullptr), rot(nullptr), p(p), mark(false) {}
-    Q r() { return rot->rot; }
-    pt f() { return r()->p; }
+    Q rot, o; pt p; bool mark;
+    Quad(Q rot) : rot(rot), o(nullptr), p(inf), mark(false) {}
+    Q &r() { return rot->rot; }
+    pt &f() { return r()->p; }
     Q prv() { return rot->o->rot; }
     Q nxt() { return r()->prv(); }
   };
-  deque<Quad> buf; vector<array<pt, 3>> tri;
-  Q makeQuad(ref p) { buf.emplace_back(p); return &buf.back(); }
+  Q head; deque<Quad> buf; vector<array<pt, 3>> tri;
+  Q makeQuad(Q rot) { buf.emplace_back(rot); return &buf.back(); }
   bool circ(ref p, ref a, ref b, ref c) {
     T p2 = norm(p), A = norm(a) - p2, B = norm(b) - p2, C = norm(c) - p2;
     return lt(0, area2(p, a, b) * C + area2(p, b, c) * A + area2(p, c, a) * B);
   }
   Q makeEdge(ref a, ref b) {
-    Q q[] = {makeQuad(a), makeQuad(inf), makeQuad(b), makeQuad(inf)};
-    for (int i = 0; i < 4; i++) {
-      q[i]->o = q[-i & 3]; q[i]->rot = q[(i + 1) & 3];
-    }
-    return q[0];
+    Q r = head ? head : makeQuad(makeQuad(makeQuad(makeQuad(nullptr))));
+    head = r->o; r->r()->r() = r;
+    for (int i = 0; i < 4; i++) { r = r->rot; r->o = i & 1 ? r : r->r(); }
+    r->p = a; r->f() = b; return r;
   }
   void splice(Q a, Q b) { swap(a->o->rot->o, b->o->rot->o); swap(a->o, b->o); }
   Q connect(Q a, Q b) {
@@ -68,12 +67,12 @@ struct DelaunayTriangulation {
       Q l = base->r()->o; if (valid(l, base))
         while (circ(l->o->f(), base->f(), base->p, l->f())) {
           Q t = l->o; splice(l, l->prv()); splice(l->r(), l->r()->prv());
-          l = t;
+          l->o = head; head = l; l = t;
         }
       Q r = base->prv(); if (valid(r, base))
         while (circ(r->prv()->f(), base->f(), base->p, r->f())) {
           Q t = r->prv(); splice(r, r->prv()); splice(r->r(), r->r()->prv());
-          r = t;
+          r->o = head; head = r; r = t;
         }
       if (!valid(l, base) && !valid(r, base)) break;
       if (!valid(l, base) || (valid(r, base)
@@ -82,7 +81,7 @@ struct DelaunayTriangulation {
     }
     return make_pair(ra, rb);
   }
-  DelaunayTriangulation(vector<pt> P) {
+  DelaunayTriangulation(vector<pt> P) : head(nullptr) {
     sort(P.begin(), P.end()); assert(unique(P.begin(), P.end()) == P.end());
     if (int(P.size()) < 2) return;
     Q e = rec(P, 0, int(P.size()) - 1).first; vector<Q> q{e}; int qi = 0;
@@ -96,6 +95,6 @@ struct DelaunayTriangulation {
     while (qi < int(q.size())) if (!(e = q[qi++])->mark) add();
     assert(P.size() % 3 == 0); tri.reserve(P.size() / 3);
     for (int i = 0; i < int(P.size()); i += 3)
-      tri.emplace_back(array<pt, 3>{P[i], P[i + 1], P[i + 2]});
+      tri.push_back(array<pt, 3>{P[i], P[i + 1], P[i + 2]});
   }
 };
