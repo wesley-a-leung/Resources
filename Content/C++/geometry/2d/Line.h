@@ -111,7 +111,7 @@ int segSegIntersects(ref a, ref b, ref p, ref q) {
 vector<pt> segSegIntersection(ref a, ref b, ref p, ref q) {
   int intersects = segSegIntersects(a, b, p, q);
   if (!intersects) return vector<pt>();
-  else if (intersects == 1) {
+  if (intersects == 1) {
     T c1 = cross(p - a, b - a), c2 = cross(q - a, b - a);
     return vector<pt>{(c1 * q - c2 * p) / (c1 - c2)};
   }
