@@ -133,11 +133,9 @@ vector<pt> segSegIntersection(ref a, ref b, ref p, ref q) {
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
 pt closestPtOnSeg(ref p, ref a, ref b) {
-  if (a != b) {
-    Line l(a, b);
-    if (l.cmpProj(a, p) < 0 && l.cmpProj(p, b) < 0) return l.proj(p);
-  }
-  return lt(distSq(p, a), distSq(p, b)) ? a : b;
+  if (a == b) return dist(a, p);
+  T d = distSq(a, b), t = min(d, max(T(0), dot(p - a, b - a)));
+  return a + (b - a) * t / d;
 }
 
 // Finds the distance to the closest point on a line segment to another point
@@ -151,11 +149,9 @@ pt closestPtOnSeg(ref p, ref a, ref b) {
 // Tested:
 //   https://open.kattis.com/problems/segmentdistance
 T ptSegDist(ref p, ref a, ref b) {
-  if (a != b) {
-    Line l(a, b);
-    if (l.cmpProj(a, p) < 0 && l.cmpProj(p, b) < 0) return l.dist(p);
-  }
-  return min(dist(p, a), dist(p, b));
+  if (a == b) return dist(a, p);
+  T d = distSq(a, b), t = min(d, max(T(0), dot(p - a, b - a)));
+  return abs((p - a) * d - (b - a) * t) / d;
 }
 
 // Finds the closest distance between two line segments
