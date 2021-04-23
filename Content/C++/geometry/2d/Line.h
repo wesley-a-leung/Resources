@@ -86,12 +86,13 @@ bool onSeg(ref p, ref a, ref b) {
 // Tested:
 //   https://open.kattis.com/problems/segmentintersection
 int segSegIntersects(ref a, ref b, ref p, ref q) {
-  int o1 = ccw(a, b, p), o2 = ccw(a, b, q), o3 = ccw(p, q, a);
-  int o4 = ccw(p, q, b); if (o1 * o2 < 0 && o3 * o4 < 0) return 1;
-  else if (onSeg(p, a, b) || onSeg(q, a, b)
-           || onSeg(a, p, q) || onSeg(b, p, q))
+  auto o = [&] (ref p1, ref p2, ref p3) {
+    T a2 = area2(p1, p2, p3); return (a2 < 0) ? -1 : (0 < a2) ? 1 : 0;
+  };
+  if (o(a, b, p) * o(a, b, q) < 0 && o(p, q, a) * o(p, q, b) < 0) return 1;
+  if (onSeg(p, a, b) || onSeg(q, a, b) || onSeg(a, p, q) || onSeg(b, p, q))
     return 2;
-  else return 0;
+  return 0;
 }
 
 // Determine the intersection of two line segments
