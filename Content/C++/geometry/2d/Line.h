@@ -133,7 +133,7 @@ vector<pt> segSegIntersection(ref a, ref b, ref p, ref q) {
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
 pt closestPtOnSeg(ref p, ref a, ref b) {
-  if (a == b) return dist(a, p);
+  if (a == b) return a;
   T d = distSq(a, b), t = min(d, max(T(0), dot(p - a, b - a)));
   return a + (b - a) * t / d;
 }
