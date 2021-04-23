@@ -16,8 +16,9 @@ using namespace std;
 //   reduce(): reduces the fraction to lowest terms with a positive denominator
 //   +, +=, -, -=, *, *=, /, /=: standard arithmetic operators on fractions
 //   <, <=, >, >=, ==, !=: comparison operators
+//   >>, <<: input and output operators
 // Time Complexity:
-//   constructor, +, +=, -, -=, *, *=, /, /=: O(1)
+//   constructor, +, +=, -, -=, *, *=, /, /=, >>, <<: O(1)
 //   reduce, <, <=, >, >=, ==, !=: O(log(max(num, den)))
 // Memory Complexity: O(1)
 // Tested:
@@ -59,4 +60,24 @@ template <class T> struct Fraction {
   bool operator >= (const F &f) const { return !(*this < f); }
   bool operator == (const F &f) const { return !(*this < f) && !(f < *this); }
   bool operator != (const F &f) const { return *this < f || f < *this; }
+  friend istream &operator >> (istream &stream, F &f) {
+    return stream >> f.num >> f.den;
+  }
+  friend ostream &operator << (ostream &stream, const F &f) {
+    return stream << f.num << '/' << f.den;
+  }
 };
+
+#define ftype long double
+template <class T> Fraction<T> abs(Fraction<T> a) { return a >= 0 ? a : -a; }
+#define FUN(name) \
+  template <class T> ftype name(Fraction<T> a) { \
+    return name((ftype)(a.num) / (ftype)(a.den)); \
+  }
+FUN(sqrt) FUN(sin) FUN(cos) FUN(tan) FUN(asin) FUN(acos) FUN(atan)
+#undef FUN
+template <class T> ftype atan2(Fraction<T> y, Fraction<T> x) {
+  return atan2((ftype)(y.num) / (ftype)(y.den),
+               (ftype)(x.num) / (ftype)(x.den));
+}
+#undef ftype

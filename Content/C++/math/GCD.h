@@ -2,17 +2,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Type templated absolute value function
-// Template Arguments:
-//   T: the type of a
-// Function Arguments:
-//   a: the value to take the absolute value of
-// Return Value: the absolute value of a
-// In practice, has a small constant
-// Time Complexity: O(1)
-// Memory Complexity: O(1)
-template <class T> T abs(T a) { return a >= 0 ? a : -a; }
-
 // Type templated greatest common divisor function
 // Always returns a non negative integer
 // Template Arguments:
