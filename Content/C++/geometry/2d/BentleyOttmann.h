@@ -8,7 +8,7 @@ using namespace std;
 struct Seg {
   static T X; mutable pt p, q; mutable int i; bool isQuery;
   T y() const { pt v = q - p; return (cross(v, p) + v.y * X) / v.x; }
-  Seg(ref p, ref q, int i) : p(p), q(q), i(i), isQuery(false) {
+  Seg(pt p, pt q, int i) : p(p), q(q), i(i), isQuery(false) {
     assert(!eq(p.x, q.x)); if (p > q) swap(this->p, this->q);
   }
   Seg(T Y) : p(X, Y), q(p), i(-1), isQuery(true) {}
@@ -24,7 +24,7 @@ T Seg::X = 0;
 // Helper struct for bentleyOttmann
 struct SegEvent {
   pt p; int type, i, j;
-  SegEvent(ref p, int type, int i, int j) : p(p), type(type), i(i), j(j) {}
+  SegEvent(pt p, int type, int i, int j) : p(p), type(type), i(i), j(j) {}
   bool operator > (const SegEvent &e) const {
     return eq(e.p.x, p.x) ? (eq(e.type, type) ? lt(e.p.y, p.y)
                                               : lt(e.type, type))

@@ -53,24 +53,24 @@ struct AffineTransform {
   void scale(T a) {
     prependMatrix({array<T, 2>{a, T(0)}, {T(0), a}}, {T(0), T(0)});
   }
-  void translate(ref p) {
+  void translate(pt p) {
     prependMatrix({array<T, 2>{T(1), T(0)}, {T(0), T(1)}}, {p.x, p.y});
   }
   void rotate(T theta) {
     T c = cos(theta), s = sin(theta);
     prependMatrix({array<T, 2>{c, -s}, {s, c}}, {T(0), T(0)});
   }
-  void reflect(ref dir) {
+  void reflect(pt dir) {
     T a = dir.x * dir.x - dir.y * dir.y, b = T(2) * dir.x * dir.y;
     T n = norm(dir); a /= n; b /= n;
     prependMatrix({array<T, 2>{a, b}, {b, -a}}, {T(0), T(0)});
   }
-  void project(ref dir) {
+  void project(pt dir) {
     T a = dir.x * dir.x, b = dir.x * dir.y, c = dir.y * dir.y;
     T n = norm(dir); a /= n; b /= n; c /= n;
     prependMatrix({array<T, 2>{a, b}, {b, c}}, {T(0), T(0)});
   }
-  pt applyTransform(ref p) {
+  pt applyTransform(pt p) {
     return pt(m[0][0] * p.x + m[0][1] * p.y + b[0],
               m[1][0] * p.x + m[1][1] * p.y + b[1]);
   }

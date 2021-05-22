@@ -75,7 +75,7 @@ int isCcwPolygon(const vector<pt> &poly) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://codeforces.com/contest/166/problem/B
-int isInConvexPolygon(const vector<pt> &poly, ref p) {
+int isInConvexPolygon(const vector<pt> &poly, pt p) {
   int n = poly.size(), a = 1, b = n - 1;
   if (n < 3) return onSeg(p, poly[0], poly.back()) ? 0 : 1;
   if (ccw(poly[0], poly[a], poly[b]) > 0) swap(a, b);
@@ -97,7 +97,7 @@ int isInConvexPolygon(const vector<pt> &poly, ref p) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://open.kattis.com/problems/pointinpolygon
-int isInPolygon(const vector<pt> &poly, ref p) {
+int isInPolygon(const vector<pt> &poly, pt p) {
   int n = poly.size(), windingNumber = 0; for (int i = 0; i < n; i++) {
     pt a = poly[i], b = poly[mod(i + 1, n)]; if (lt(b.y, a.y)) swap(a, b);
     if (onSeg(p, a, b)) return 0;
@@ -118,7 +118,7 @@ int isInPolygon(const vector<pt> &poly, ref p) {
 // Tested:
 //   https://codeforces.com/contest/799/problem/G
 //   https://www.acmicpc.net/problem/4225
-int extremeVertex(const vector<pt> &poly, ref dir) {
+int extremeVertex(const vector<pt> &poly, pt dir) {
   int n = poly.size(), lo = 0, hi = n; pt pp = perp(dir);
   auto cmp = [&] (int i, int j) {
     return sgn(cross(pp, poly[mod(i, n)] - poly[mod(j, n)]));
@@ -187,7 +187,7 @@ pair<int, int> convexPolygonLineIntersection(const vector<pt> &poly,
 // Tested:
 //   https://dmoj.ca/problem/coci19c2p5
 //   Fuzz Tested
-int convexPolygonPointSingleTangent(const vector<pt> &poly, ref p, bool left) {
+int convexPolygonPointSingleTangent(const vector<pt> &poly, pt p, bool left) {
   int n = poly.size(), o = ccw(p, poly[0], poly.back());
   bool farSide = o ? o < 0 : lt(distSq(p, poly.back()), distSq(p, poly[0]));
   int lo = farSide != left, hi = lo + n - 2; while (lo <= hi) {
@@ -218,7 +218,7 @@ int convexPolygonPointSingleTangent(const vector<pt> &poly, ref p, bool left) {
 // Tested:
 //   https://dmoj.ca/problem/coci19c2p5
 //   Fuzz Tested
-pair<int, int> convexPolygonPointTangent(const vector<pt> &poly, ref p) {
+pair<int, int> convexPolygonPointTangent(const vector<pt> &poly, pt p) {
   return make_pair(convexPolygonPointSingleTangent(poly, p, true),
                    convexPolygonPointSingleTangent(poly, p, false));
 }
@@ -312,7 +312,7 @@ vector<pair<int, int>> convexPolygonConvexPolygonTangent(
 // Memory Complexity: O(1)
 // Tested:
 //   Fuzz Tested
-pt closestPointOnConvexPolygon(const vector<pt> &poly, ref p) {
+pt closestPointOnConvexPolygon(const vector<pt> &poly, pt p) {
   pair<int, int> tangent = convexPolygonPointTangent(poly, p);
   int n = poly.size(), len = tangent.second - tangent.first;
   if (len < 0) len += n;
@@ -362,7 +362,7 @@ vector<pt> polygonHalfPlaneIntersection(const vector<pt> &poly,
 // Tested:
 //   https://open.kattis.com/problems/abstractart
 T polygonUnion(const vector<vector<pt>> &polys) {
-  auto rat = [&] (ref p, ref q) { return sgn(q.x) ? p.x / q.x : p.y / q.y; };
+  auto rat = [&] (pt p, pt q) { return sgn(q.x) ? p.x / q.x : p.y / q.y; };
   T ret = 0; for (int i = 0; i < int(polys.size()); i++)
     for (int v = 0; v < int(polys[i].size()); v++) {
       pt a = polys[i][v], b = polys[i][mod(v + 1, polys[i].size())];
@@ -402,8 +402,8 @@ T polygonUnion(const vector<vector<pt>> &polys) {
 //   https://open.kattis.com/problems/birthdaycake
 T polygonCircleIntersectionArea(const vector<pt> &poly, const Circle &c) {
   T r2 = c.r * c.r / 2;
-  auto f = [&] (ref p, ref q) { return atan2(cross(p, q), dot(p, q)); };
-  auto tri = [&] (ref p, ref q) {
+  auto f = [&] (pt p, pt q) { return atan2(cross(p, q), dot(p, q)); };
+  auto tri = [&] (pt p, pt q) {
     pt d = q - p; T a = dot(d, p) / norm(d);
     T b = (norm(p) - c.r * c.r) / norm(d), det = a * a - b;
     if (!lt(0, det)) return f(p, q) * r2;

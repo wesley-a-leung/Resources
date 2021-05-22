@@ -21,8 +21,8 @@ using namespace std;
 // Tested:
 //   https://judge.yosupo.jp/problem/sort_points_by_argument
 struct Angle {
-  static pt pivot; static void setPivot(ref p) { pivot = p; }
-  pt p; Angle(ref p = pt(0, 0)) : p(p) {}
+  static pt pivot; static void setPivot(pt p) { pivot = p; }
+  pt p; Angle(pt p = pt(0, 0)) : p(p) {}
   int half() const {
     if (eq(p.x, pivot.x) && eq(p.y, pivot.y)) return 2;
     return int(!lt(p.y, pivot.y) && (!eq(p.y, pivot.y) || !lt(p.x, pivot.x)));

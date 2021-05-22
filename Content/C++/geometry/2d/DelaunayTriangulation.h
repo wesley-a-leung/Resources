@@ -33,11 +33,11 @@ struct DelaunayTriangulation {
   };
   Q head; deque<Quad> buf; vector<array<pt, 3>> tri;
   Q makeQuad(Q rot) { buf.emplace_back(rot); return &buf.back(); }
-  bool circ(ref p, ref a, ref b, ref c) {
+  bool circ(pt p, pt a, pt b, pt c) {
     T p2 = norm(p), A = norm(a) - p2, B = norm(b) - p2, C = norm(c) - p2;
     return lt(0, area2(p, a, b) * C + area2(p, b, c) * A + area2(p, c, a) * B);
   }
-  Q makeEdge(ref a, ref b) {
+  Q makeEdge(pt a, pt b) {
     Q r = head ? head : makeQuad(makeQuad(makeQuad(makeQuad(nullptr))));
     head = r->o; r->r()->r() = r;
     for (int i = 0; i < 4; i++) { r = r->rot; r->o = i & 1 ? r : r->r(); }

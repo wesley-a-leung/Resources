@@ -9,10 +9,10 @@ using namespace std;
 // Functions for a 2D circle
 struct Circle {
   pt o; T r; Circle(T r = 0) : o(0, 0), r(r) {}
-  Circle(ref o, T r) : o(o), r(r) {}
+  Circle(pt o, T r) : o(o), r(r) {}
   // -1 if p is inside this circle, 0 if on this circle,
   //   1 if outside this circle
-  int contains(ref p) const { return sgn(distSq(o, p) - r * r); }
+  int contains(pt p) const { return sgn(distSq(o, p) - r * r); }
   // -1 if c is strictly inside this circle, 0 if inside and touching this
   //   circle, 1 otherwise
   int contains(const Circle &c) const {
@@ -23,8 +23,8 @@ struct Circle {
   int disjoint(const Circle &c) const {
     T sr = r + c.r; return sgn(sr * sr - distSq(o, c.o));
   }
-  pt proj(ref p) const { return o + (p - o) * r / dist(o, p); }
-  pt inv(ref p) const { return o + (p - o) * r * r / distSq(o, p); }
+  pt proj(pt p) const { return o + (p - o) * r / dist(o, p); }
+  pt inv(pt p) const { return o + (p - o) * r * r / distSq(o, p); }
 };
 
 // Determine the intersection of a circle and a line
@@ -57,7 +57,7 @@ vector<pt> circleLineIntersection(const Circle &c, const Line &l) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://dmoj.ca/problem/noi05p6
-vector<pt> circleSegIntersection(const Circle &c, ref a, ref b) {
+vector<pt> circleSegIntersection(const Circle &c, pt a, pt b) {
   vector<pt> ret; if (a == b) { if (c.contains(a) == 0) ret.push_back(a); }
   else {
     Line l(a, b); for (auto &&p : circleLineIntersection(c, l))

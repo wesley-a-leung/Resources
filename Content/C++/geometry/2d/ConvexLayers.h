@@ -8,7 +8,7 @@ struct DecrementalUpperHull {
   struct Link; using ptr = Link *;
   struct Link {
     int id; pt p; ptr prv, nxt;
-    Link(int id, ref p) : id(id), p(p), prv(nullptr), nxt(nullptr) {}
+    Link(int id, pt p) : id(id), p(p), prv(nullptr), nxt(nullptr) {}
   };
   struct Node {
     ptr chain, back, tangent;
@@ -31,12 +31,12 @@ struct DecrementalUpperHull {
   void fixChain(int x, ptr l, ptr r, bool rev) {
     if (rev) {
       tie(r, l) = findBridge(r, l, [&] (ptr q) { return q->prv; }, 
-                             [&] (ref a, ref b, ref c) {
+                             [&] (pt a, pt b, pt c) {
                                return ccw(a, b, c) >= 0;
                              });
     } else {
       tie(l, r) = findBridge(l, r, [&] (ptr q) { return q->nxt; },
-                             [&] (ref a, ref b, ref c) {
+                             [&] (pt a, pt b, pt c) {
                                return ccw(a, b, c) <= 0;
                              });
     }

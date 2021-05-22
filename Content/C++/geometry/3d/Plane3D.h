@@ -10,25 +10,23 @@ struct Plane3D {
   // ax + by + cz = d, above is ax + by + cz > d
   Plane3D(T a = 0, T b = 0, T c = 0, T d = 0) : n(a, b, c), d(d) {}
   // normal n, offset d
-  Plane3D(ref3 n, T d) : n(n), d(d) {}
+  Plane3D(pt3 n, T d) : n(n), d(d) {}
   // normal n, point p
-  Plane3D(ref3 n, ref3 p) : n(n), d(n | p) {}
+  Plane3D(pt3 n, pt3 p) : n(n), d(n | p) {}
   // 3 non-collinear points p, q, r
-  Plane3D(ref3 p, ref3 q, ref3 r) : Plane3D((q - p) * (r - p), p) {}
-  T eval(ref3 p) const { return (n | p) - d; }
+  Plane3D(pt3 p, pt3 q, pt3 r) : Plane3D((q - p) * (r - p), p) {}
+  T eval(pt3 p) const { return (n | p) - d; }
   // 1 if above plane, 0 if on plane, -1 if below plane
-  int isAbove(ref3 p) const { return sgn(eval(p)); }
-  T distSq(ref3 p) const { T e = eval(p); return e * e / norm(n); }
-  T dist(ref3 p) const { return abs(eval(p) / abs(n)); }
-  Plane3D translate(ref3 p) const { return Plane3D(n, d + (n | p)); }
+  int isAbove(pt3 p) const { return sgn(eval(p)); }
+  T distSq(pt3 p) const { T e = eval(p); return e * e / norm(n); }
+  T dist(pt3 p) const { return abs(eval(p) / abs(n)); }
+  Plane3D translate(pt3 p) const { return Plane3D(n, d + (n | p)); }
   Plane3D shiftUp(T e) const { return Plane3D(n, d + e * abs(n)); }
-  pt3 proj(ref3 p) const { return p - n * eval(p) / norm(n); }
-  pt3 refl(ref3 p) const { return p - n * T(2) * eval(p) / norm(n); }
+  pt3 proj(pt3 p) const { return p - n * eval(p) / norm(n); }
+  pt3 refl(pt3 p) const { return p - n * T(2) * eval(p) / norm(n); }
   // returns 1 if the projections of a, b, c on this plane form a ccw turn
   //   looking from above, 0 if collinear, -1 if cw
-  int ccwProj(ref3 a, ref3 b, ref3 c) const {
-    return sgn((b - a) * (c - a) | n);
-  }
+  int ccwProj(pt3 a, pt3 b, pt3 c) const { return sgn((b - a) * (c - a) | n); }
   // returns a tuple (a, b, c) of 3 non-collinear points on the plane,
   //   guaranteed that ccwProj(a, b, c) == 1
   tuple<pt3, pt3, pt3> getPts() const {
@@ -37,10 +35,10 @@ struct Plane3D {
     return make_tuple(a, a + v1, a + v2);
   }
 };
-Line3D perpThrough(const Plane3D &pi, ref3 o) {
+Line3D perpThrough(const Plane3D &pi, pt3 o) {
   Line3D ret; ret.o = o; ret.d = pi.n; return ret;
 }
-Plane3D perpThrough(const Line3D &l, ref3 o) { return Plane3D(l.d, o); }
+Plane3D perpThrough(const Line3D &l, pt3 o) { return Plane3D(l.d, o); }
 
 // Transforms points to a new coordinate system where the x and y axes are
 //   on the plane, with the z axis being the normal vector (positive z is in
@@ -63,10 +61,10 @@ struct CoordinateTransformation {
     pt3 p, q, r; tie(p, q, r) = pi.getPts(); o = p;
     dx = unit(q - p); dz = unit(dx * (r - p)); dy = dz * dx;
   }
-  CoordinateTransformation(ref3 p, ref3 q, ref3 r) : o(p) {
+  CoordinateTransformation(pt3 p, pt3 q, pt3 r) : o(p) {
     dx = unit(q - p); dz = unit(dx * (r - p)); dy = dz * dx;
   }
-  pt3 transform(ref3 p) const {
+  pt3 transform(pt3 p) const {
     return pt3((p - o) | dx, (p - o) | dy, (p - o) | dz);
   }
 };

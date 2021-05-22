@@ -41,7 +41,7 @@ struct LineCmp {
 //   https://dmoj.ca/problem/ccoprep3p3
 struct SemiDynamicHalfPlaneIntersection : public map<Line, pt, LineCmp> {
   using iter = map<Line, pt, LineCmp>::iterator; T a2;
-  SemiDynamicHalfPlaneIntersection(ref lowerLeft, ref upperRight)
+  SemiDynamicHalfPlaneIntersection(pt lowerLeft, pt upperRight)
       : a2((upperRight.x - lowerLeft.x) * (upperRight.y - lowerLeft.y) * 2) {
     assert(lt(lowerLeft.x, upperRight.x) && lt(lowerLeft.y, upperRight.y));
     emplace(Line(pt(1, 0), lowerLeft.y), lowerLeft);

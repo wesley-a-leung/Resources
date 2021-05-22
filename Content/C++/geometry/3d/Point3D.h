@@ -6,55 +6,54 @@ using namespace std;
 // Functions for a 3D point
 // * operator between 2 points is cross product
 // | operator between 2 points is dot product
-#define ref3 const pt3 &
 #define OP(op, U, a, x, y, z) \
   pt3 operator op (U a) const { return pt3(x, y, z); } \
   pt3 &operator op##= (U a) { return *this = *this op a; }
-#define CMP(op, body) bool operator op (ref3 p) const { return body; }
+#define CMP(op, body) bool operator op (pt3 p) const { return body; }
 struct pt3 {
-  T x, y, z; pt3(T x = 0, T y = 0, T z = 0) : x(x), y(y), z(z) {}
+  T x, y, z; constexpr pt3(T x = 0, T y = 0, T z = 0) : x(x), y(y), z(z) {}
   pt3 operator + () const { return *this; }
   pt3 operator - () const { return pt3(-x, -y, -z); }
-  OP(+, ref3, p, x + p.x, y + p.y, z + p.z)
-  OP(-, ref3, p, x - p.x, y - p.y, z - p.z)
+  OP(+, pt3, p, x + p.x, y + p.y, z + p.z)
+  OP(-, pt3, p, x - p.x, y - p.y, z - p.z)
   OP(*, T, a, x * a, y * a, z * a) OP(/, T, a, x / a, y / a, z / a)
-  friend pt3 operator * (T a, ref3 p) {
+  friend pt3 operator * (T a, pt3 p) {
     return pt3(a * p.x, a * p.y, a * p.z);
   }
-  bool operator < (ref3 p) const {
+  bool operator < (pt3 p) const {
     return eq(x, p.x) ? (eq(y, p.y) ? lt(z, p.z) : lt(y, p.y)) : lt(x, p.x);
   }
   CMP(<=, !(p < *this)) CMP(>, p < *this) CMP(>=, !(*this < p))
   CMP(==, !(*this < p) && !(p < *this)) CMP(!=, *this < p || p < *this)
-  T operator | (ref3 p) const { return x * p.x + y * p.y + z * p.z; }
-  OP(*, ref3, p, y * p.z - z * p.y, z * p.x - x * p.z, x * p.y - y * p.x)
+  T operator | (pt3 p) const { return x * p.x + y * p.y + z * p.z; }
+  OP(*, pt3, p, y * p.z - z * p.y, z * p.x - x * p.z, x * p.y - y * p.x)
 };
 #undef OP
 #undef CMP
 istream &operator >> (istream &stream, pt3 &p) {
   return stream >> p.x >> p.y >> p.z;
 }
-ostream &operator << (ostream &stream, ref3 p) {
+ostream &operator << (ostream &stream, pt3 p) {
   return stream << p.x << ' ' << p.y << ' ' << p.z;
 }
-T norm(ref3 p) { return p | p; }
-T abs(ref3 p) { return sqrt(norm(p)); }
-pt3 unit(ref3 p) { return p / abs(p); }
-T distSq(ref3 a, ref3 b) { return norm(b - a); }
-T dist(ref3 a, ref3 b) { return abs(b - a); }
+T norm(pt3 p) { return p | p; }
+T abs(pt3 p) { return sqrt(norm(p)); }
+pt3 unit(pt3 p) { return p / abs(p); }
+T distSq(pt3 a, pt3 b) { return norm(b - a); }
+T dist(pt3 a, pt3 b) { return abs(b - a); }
 // returns an angle in the range [0, PI]
-T ang(ref3 a, ref3 b) { return acos(min(T(1), abs(a | b) / abs(a) / abs(b))); }
-pt3 rot(ref3 a, ref3 axis, T theta) {
+T ang(pt3 a, pt3 b) { return acos(min(T(1), abs(a | b) / abs(a) / abs(b))); }
+pt3 rot(pt3 a, pt3 axis, T theta) {
   return a * cos(theta) + (unit(axis) * a * sin(theta))
       + (unit(axis) * (unit(axis) | a) * (1 - cos(theta)));
 }
 // sign of volume6 and above: 1 if d is above the plane abc with
 //   normal ab x ac, 0 if on the plane, -1 if below the plane
 // 6 times the signed area of the tetrahedron abcd
-T volume6(ref3 a, ref3 b, ref3 c, ref3 d) {
+T volume6(pt3 a, pt3 b, pt3 c, pt3 d) {
   return (b - a) * (c - a) | (d - a);
 }
-int above(ref3 a, ref3 b, ref3 c, ref3 d) { return sgn(volume6(a, b, c, d)); }
+int above(pt3 a, pt3 b, pt3 c, pt3 d) { return sgn(volume6(a, b, c, d)); }
 // Converts a position based on radius (r >= 0), inclination/latitude
 //   (-PI / 2 <= theta <= PI / 2), and azimuth/longitude (-PI < phi <= PI)
 // Convention is that the x axis passes through the meridian (phi = 0), and
@@ -63,5 +62,5 @@ pt3 sph(T r, T theta, T phi) {
   return pt3(r * cos(theta) * cos(phi), r * cos(theta) * sin(phi),
              r * sin(theta));
 }
-T inc(ref3 p) { return atan2(p.z, sqrt(p.x * p.x + p.y * p.y)); }
-T az(ref3 p) { return atan2(p.y, p.x); }
+T inc(pt3 p) { return atan2(p.z, sqrt(p.x * p.x + p.y * p.y)); }
+T az(pt3 p) { return atan2(p.y, p.x); }

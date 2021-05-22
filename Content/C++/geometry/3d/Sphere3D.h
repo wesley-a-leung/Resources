@@ -8,10 +8,10 @@ using namespace std;
 // Functions for a 3D sphere
 struct Sphere3D {
   pt3 o; T r; Sphere3D(T r = 0) : o(0, 0), r(r) {}
-  Sphere3D(ref3 o, T r) : o(o), r(r) {}
+  Sphere3D(pt3 o, T r) : o(o), r(r) {}
   // -1 if p is inside this sphere, 0 if on this sphere,
   //   1 if outside this sphere
-  int contains(ref3 p) const { return sgn(distSq(o, p) - r * r); }
+  int contains(pt3 p) const { return sgn(distSq(o, p) - r * r); }
   // -1 if s is strictly inside this sphere, 0 if inside and touching this
   //   sphere, 1 otherwise
   int contains(const Sphere3D &s) const {
@@ -22,11 +22,11 @@ struct Sphere3D {
   int disjoint(const Sphere3D &s) const {
     T sr = r + s.r; return sgn(sr * sr - distSq(o, s.o));
   }
-  pt3 proj(ref3 p) const { return o + (p - o) * r / dist(o, p); }
-  pt3 inv(ref3 p) const { return o + (p - o) * r * r / distSq(o, p); }
+  pt3 proj(pt3 p) const { return o + (p - o) * r / dist(o, p); }
+  pt3 inv(pt3 p) const { return o + (p - o) * r * r / distSq(o, p); }
   // Shortest distance on the sphere between the projections of a and b onto
   //   this sphere
-  T greatCircleDist(ref3 a, ref3 b) const { return r * ang(a - o, b - o); }
+  T greatCircleDist(pt3 a, pt3 b) const { return r * ang(a - o, b - o); }
   // Is a-b a valid great circle segment (not on opposite sides)
   bool isGreatCircleSeg(pt3 a, pt3 b) const {
     assert(contains(a) == 0 && contains(b) == 0);
@@ -40,8 +40,8 @@ struct Sphere3D {
   }
   // Returns the points of intersection (or segment of intersection) between
   //   the great circle segments a-b and p-q
-  vector<pt3> greatCircleSegIntersection(ref3 a, ref3 b,
-                                         ref3 p, ref3 q) const {
+  vector<pt3> greatCircleSegIntersection(pt3 a, pt3 b,
+                                         pt3 p, pt3 q) const {
     assert(isGreatCircleSeg(a, b) && isGreatCircleSeg(p, q));
     pt3 ab = (a - o) * (b - o), pq = (p - o) * (q - o);
     int oa = sgn(pq | (a - o)), ob = sgn(pq | (b - o));

@@ -17,7 +17,7 @@ using namespace std;
 // Tested:
 //   https://open.kattis.com/problems/closestpair2
 struct ClosestPair {
-  static bool yOrdLt(ref p, ref q) { return lt(p.y, q.y); }
+  static bool yOrdLt(pt p, pt q) { return lt(p.y, q.y); }
   pt best1, best2; T bestDistSq;
   void closest(vector<pt> &P, int lo, int hi) {
     if (hi <= lo) return;

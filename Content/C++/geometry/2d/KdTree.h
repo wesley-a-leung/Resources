@@ -40,11 +40,11 @@ struct KdTree {
       return !lt(xmax, that.xmin) && !lt(ymax, that.ymin)
           && !lt(that.xmax, xmin) && !lt(that.ymax, ymin);
     }
-    bool contains(ref p) const {
+    bool contains(pt p) const {
       return !lt(p.x, xmin) && !lt(p.y, ymin)
           && !lt(xmax, p.x) && !lt(ymax, p.y);
     }
-    T distSq(ref p) const {
+    T distSq(pt p) const {
       T dx = 0, dy = 0;
       if (p.x < xmin) dx = p.x - xmin;
       else if (p.x > xmax) dx = p.x - xmax;
@@ -55,12 +55,12 @@ struct KdTree {
   };
   struct Node {
     pt p; Rectangle r; Node *lu, *rd;
-    Node(ref p, const Rectangle &r) : p(p), r(r), lu(nullptr), rd(nullptr) {}
+    Node(pt p, const Rectangle &r) : p(p), r(r), lu(nullptr), rd(nullptr) {}
   };
   deque<Node> TR;
-  static bool xOrdLt(ref p, ref q) { return lt(p.x, q.x); }
-  static bool yOrdLt(ref p, ref q) { return lt(p.y, q.y); }
-  Node *makeNode(ref p, const Rectangle &r) {
+  static bool xOrdLt(pt p, pt q) { return lt(p.x, q.x); }
+  static bool yOrdLt(pt p, pt q) { return lt(p.y, q.y); }
+  Node *makeNode(pt p, const Rectangle &r) {
     TR.emplace_back(p, r); return &TR.back();
   }
   T XMIN, YMIN, XMAX, YMAX; int cnt; Node *root;
@@ -85,7 +85,7 @@ struct KdTree {
     }
     return n;
   }
-  Node *insert(Node *n, ref p, bool partition,
+  Node *insert(Node *n, pt p, bool partition,
                T xmin, T ymin, T xmax, T ymax) {
     if (!n) { cnt++; return makeNode(p, Rectangle(xmin, ymin, xmax, ymax)); }
     if (n->p == p) return n;
@@ -102,7 +102,7 @@ struct KdTree {
     }
     return n;
   }
-  bool contains(Node *n, ref p, bool partition) {
+  bool contains(Node *n, pt p, bool partition) {
     if (!n) return false;
     if (n->p == p) return true;
     if (partition) {
@@ -118,7 +118,7 @@ struct KdTree {
     if (rect.contains(n->p)) ret.push_back(n->p);
     range(n->lu, ret, rect); range(n->rd, ret, rect);
   }
-  bool findNearest(Node *n, ref p, bool hasNearest, pt &nearest) {
+  bool findNearest(Node *n, pt p, bool hasNearest, pt &nearest) {
     if (!n || (hasNearest && lt(distSq(nearest, p), n->r.distSq(p))))
       return hasNearest;
     if (!hasNearest || lt(distSq(n->p, p), distSq(nearest, p))) {
@@ -142,12 +142,12 @@ struct KdTree {
   }
   bool empty() { return cnt == 0; }
   int size() { return cnt; }
-  void insert(ref p) { root = insert(root, p, true, XMIN, YMIN, XMAX, YMAX); }
-  bool contains(ref p) { return contains(root, p, true); }
+  void insert(pt p) { root = insert(root, p, true, XMIN, YMIN, XMAX, YMAX); }
+  bool contains(pt p) { return contains(root, p, true); }
   vector<pt> range(const Rectangle &rect) {
     vector<pt> ret; range(root, ret, rect); return ret;
   }
-  bool findNearest(ref p, pt &nearest) {
+  bool findNearest(pt p, pt &nearest) {
     return findNearest(root, p, false, nearest);
   }
 };

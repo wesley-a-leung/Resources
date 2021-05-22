@@ -9,22 +9,22 @@ struct Line {
   // ax + by = c, left side is ax + by > c
   Line(T a = 0, T b = 0, T c = 0) : v(b, -a), c(c) {}
   // direction vector v with offset c
-  Line(ref v, T c) : v(v), c(c) {}
+  Line(pt v, T c) : v(v), c(c) {}
   // points p and q
-  Line(ref p, ref q) : v(q - p), c(cross(v, p)) {}
-  T eval(ref p) const { return cross(v, p) - c; }
+  Line(pt p, pt q) : v(q - p), c(cross(v, p)) {}
+  T eval(pt p) const { return cross(v, p) - c; }
   // 1 if left of line, 0 if on line, -1 if right of line
-  int onLeft(ref p) const { return sgn(eval(p)); }
-  T distSq(ref p) const { T e = eval(p); return e * e / norm(v); }
-  T dist(ref p) const { return abs(eval(p) / abs(v)); }
+  int onLeft(pt p) const { return sgn(eval(p)); }
+  T distSq(pt p) const { T e = eval(p); return e * e / norm(v); }
+  T dist(pt p) const { return abs(eval(p) / abs(v)); }
   // rotated 90 degrees ccw
-  Line perpThrough(ref p) const { return Line(p, p + perp(v)); }
-  Line translate(ref p) const { return Line(v, c + cross(v, p)); }
+  Line perpThrough(pt p) const { return Line(p, p + perp(v)); }
+  Line translate(pt p) const { return Line(v, c + cross(v, p)); }
   Line shiftLeft(T d) const { return Line(v, c + d * abs(v)); }
-  pt proj(ref p) const { return p - perp(v) * eval(p) / norm(v); }
-  pt refl(ref p) const { return p - perp(v) * T(2) * eval(p) / norm(v); }
+  pt proj(pt p) const { return p - perp(v) * eval(p) / norm(v); }
+  pt refl(pt p) const { return p - perp(v) * T(2) * eval(p) / norm(v); }
   // compares points by orthogonal projection (3 way comparison)
-  int cmpProj(ref p, ref q) const { return sgn(dot(v, p) - dot(v, q)); }
+  int cmpProj(pt p, pt q) const { return sgn(dot(v, p) - dot(v, q)); }
 };
 
 // Bisector of 2 lines
@@ -69,7 +69,7 @@ int lineLineIntersection(const Line &l1, const Line &l2, pt &res) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://open.kattis.com/problems/segmentintersection
-bool onSeg(ref p, ref a, ref b) {
+bool onSeg(pt p, pt a, pt b) {
   return !ccw(p, a, b) && !lt(0, dot(a - p, b - p));
 }
 
@@ -85,7 +85,7 @@ bool onSeg(ref p, ref a, ref b) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://open.kattis.com/problems/segmentintersection
-int segSegIntersects(ref a, ref b, ref p, ref q) {
+int segSegIntersects(pt a, pt b, pt p, pt q) {
   if (ccw(a, b, p) * ccw(a, b, q) < 0 && ccw(p, q, a) * ccw(p, q, b) < 0)
     return 1;
   if (onSeg(p, a, b) || onSeg(q, a, b) || onSeg(a, p, q) || onSeg(b, p, q))
@@ -108,7 +108,7 @@ int segSegIntersects(ref a, ref b, ref p, ref q) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://open.kattis.com/problems/segmentintersection
-vector<pt> segSegIntersection(ref a, ref b, ref p, ref q) {
+vector<pt> segSegIntersection(pt a, pt b, pt p, pt q) {
   int intersects = segSegIntersects(a, b, p, q);
   if (!intersects) return vector<pt>();
   if (intersects == 1) {
@@ -131,7 +131,7 @@ vector<pt> segSegIntersection(ref a, ref b, ref p, ref q) {
 // Return Value: the closest point to p on the line segment a-b
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
-pt closestPtOnSeg(ref p, ref a, ref b) {
+pt closestPtOnSeg(pt p, pt a, pt b) {
   if (a == b) return a;
   T d = distSq(a, b), t = min(d, max(T(0), dot(p - a, b - a)));
   return a + (b - a) * t / d;
@@ -147,7 +147,7 @@ pt closestPtOnSeg(ref p, ref a, ref b) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://open.kattis.com/problems/segmentdistance
-T ptSegDist(ref p, ref a, ref b) {
+T ptSegDist(pt p, pt a, pt b) {
   if (a == b) return dist(a, p);
   T d = distSq(a, b), t = min(d, max(T(0), dot(p - a, b - a)));
   return abs((p - a) * d - (b - a) * t) / d;
@@ -164,7 +164,7 @@ T ptSegDist(ref p, ref a, ref b) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://open.kattis.com/problems/segmentdistance
-T segSegDist(ref a, ref b, ref p, ref q) {
+T segSegDist(pt a, pt b, pt p, pt q) {
   return segSegIntersects(a, b, p, q) > 0
       ? 0
       : min({ptSegDist(p, a, b), ptSegDist(q, a, b),
