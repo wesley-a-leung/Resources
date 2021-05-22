@@ -16,9 +16,7 @@ struct pt {
   OP(+, pt, p, x + p.x, y + p.y) OP(-, pt, p, x - p.x, y - p.y)
   OP(*, T, a, x * a, y * a) OP(/, T, a, x / a, y / a)
   friend pt operator * (T a, pt p) { return pt(a * p.x, a * p.y); }
-  bool operator < (pt p) const {
-    return eq(x, p.x) ? lt(y, p.y) : lt(x, p.x);
-  }
+  bool operator < (pt p) const { return eq(x, p.x) ? lt(y, p.y) : lt(x, p.x); }
   CMP(<=, !(p < *this)) CMP(>, p < *this) CMP(>=, !(*this < p))
   CMP(==, !(*this < p) && !(p < *this)) CMP(!=, *this < p || p < *this)
   OP(*, pt, p, x * p.x - y * p.y, y * p.x + x * p.y)
