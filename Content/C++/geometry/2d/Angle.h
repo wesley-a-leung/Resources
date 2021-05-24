@@ -30,7 +30,7 @@ struct Angle {
     if (eq(p.x, pivot.x) && eq(p.y, pivot.y)) return 2;
     return int(!lt(p.y, pivot.y) && (!eq(p.y, pivot.y) || !lt(p.x, pivot.x)));
   }
-  bool operator < (const Angle &a) const {
+  bool operator < (Angle a) const {
     int h = half() - a.half(); return h == 0 ? ccw(pivot, p, a.p) > 0 : h < 0;
   }
   CMP(<=, !(a < *this)) CMP(>, a < *this) CMP(>=, !(*this < a))
