@@ -20,6 +20,9 @@ using namespace std;
 // Memory Complexity: O(1)
 // Tested:
 //   https://judge.yosupo.jp/problem/sort_points_by_argument
+#define OP(op, body) Angle operator op (Angle a) const { return body; } \
+  Angle &operator op##= (Angle a) { return *this = *this op a; }
+#define CMP(op, body) bool operator op (Angle a) const { return body; }
 struct Angle {
   static pt pivot; static void setPivot(pt p) { pivot = p; }
   pt p; Angle(pt p = pt(0, 0)) : p(p) {}
@@ -30,21 +33,13 @@ struct Angle {
   bool operator < (const Angle &a) const {
     int h = half() - a.half(); return h == 0 ? ccw(pivot, p, a.p) > 0 : h < 0;
   }
-  bool operator <= (const Angle &a) const { return !(a < *this); }
-  bool operator > (const Angle &a) const { return a < *this; }
-  bool operator >= (const Angle &a) const { return !(*this < a); }
-  bool operator == (const Angle &a) const {
-    return !(*this < a) && !(a < *this);
-  }
-  bool operator != (const Angle &a) const { return *this < a || a < *this; }
+  CMP(<=, !(a < *this)) CMP(>, a < *this) CMP(>=, !(*this < a))
+  CMP(==, !(*this < a) && !(a < *this)) CMP(!=, *this < a || a < *this)
   Angle operator + () const { return *this; }
   Angle operator - () const { return Angle(conj(p)); }
-  Angle operator + (const Angle &a) const {
-    return Angle(pivot + (p - pivot) * (a.p - pivot));
-  }
-  Angle &operator += (const Angle &a) { return *this = *this + a; }
-  Angle operator - (const Angle &a) const { return *this + (-a); }
-  Angle &operator -= (const Angle &a) { return *this = *this - a; }
+  OP(+, Angle(pivot + (p - pivot) * (a.p - pivot))) OP(-, *this + (-a))
 };
+#undef OP
+#undef CMP
 
 pt Angle::pivot = pt(0, 0);

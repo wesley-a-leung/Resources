@@ -17,7 +17,7 @@ struct LineCmp {
 //   added at any time
 // An initial bounded rectangle is provided to ensure the intersection area
 //   is never infinity
-// Lines are stores in a map, with the associated point being the intersection
+// Lines are stored in a map, with the associated point being the intersection
 //   with the previous line in the map (assuming the map is circular)
 // Points on the intersection may be identical
 // Angle::pivot is set to (0, 0) after every operation
