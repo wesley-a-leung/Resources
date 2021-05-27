@@ -55,7 +55,7 @@ struct CircleTangentCmp : public Ray {
   }
 };
 
-// Maintains the convex hull of points were points can be added at any time
+// Maintains the convex hull of points where points can be added at any time
 // Points are stored as a circular ordered set of Rays, with an associated
 //   Line in the direction towards the next point
 // Points are strictly convex
@@ -112,8 +112,7 @@ struct CircleTangentCmp : public Ray {
 //   https://dmoj.ca/problem/ccoprep3p3
 //   https://www.acmicpc.net/problem/4225
 struct SemiDynamicConvexHull : public set<Ray> {
-  using SS = set<Ray>; using iter = SS::iterator;
-  T a2; SemiDynamicConvexHull() : a2(0) {}
+  using iter = set<Ray>::iterator; T a2; SemiDynamicConvexHull() : a2(0) {}
   iter mod(iter it) const { return !empty() && it == end() ? begin() : it; }
   iter prv(iter it) const { return prev(it == begin() ? end() : it); }
   iter nxt(iter it) const { return mod(next(it)); }
@@ -121,7 +120,7 @@ struct SemiDynamicConvexHull : public set<Ray> {
     iter a = prv(it), b = nxt(it); a2 += cross(a->p, b->p);
     a2 -= cross(a->p, it->p) + cross(it->p, b->p); erase(it); return b;
   }
-  void clear() { SS::clear(); a2 = 0; }
+  void clear() { set<Ray>::clear(); a2 = 0; }
   int isIn(pt p) const {
     if (empty()) return 1;
     pt a = begin()->p, b = prev(end())->p; if (onSeg(p, a, b)) return 0;

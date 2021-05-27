@@ -31,8 +31,7 @@ using namespace std;
 //     line) from P[0], P[2] is a point on the second line, and P[3] is another
 //     point on the second line in its positive direction from P[2]
 //   code == 3: the intersection is the entire plane, with an empty vector
-// In practice, has a moderate constant, can be slower than
-//   DynamicHalfPlaneIntersection, but appears to have less precision issues
+// In practice, has a moderate constant
 // Time Complexity: O(N log N)
 // Memory Complexity: O(N)
 // Tested:

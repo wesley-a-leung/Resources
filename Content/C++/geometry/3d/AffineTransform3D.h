@@ -9,11 +9,11 @@ using namespace std;
 //   transform(t): applies the AffineTransformation t to this
 //   scale(p): scales the x, y, z coordinates by p.x, p.y, p.z respectively
 //   translate(p): translates the point by p
-//   rotate(axis, theta): rotates the point theta radians around line from
+//   rotate(axis, theta): rotates the point theta radians around the line from
 //     the origin in the direction of axis
-//   reflect(norm): reflects the point across the plane passing though the
+//   reflect(norm): reflects the point across the plane passing through the
 //     origin with the normal vector norm
-//   project(norm): projects the point across the plane passing though the
+//   project(norm): projects the point across the plane passing through the
 //     origin with the normal vector norm
 //   applyTransform(p): applies the transformation to the point p
 //   inverse(): returns the inverse of this transformation,
