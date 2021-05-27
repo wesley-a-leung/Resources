@@ -25,9 +25,7 @@ struct pt {
 };
 #undef OP
 #undef CMP
-istream &operator >> (istream &stream, pt &p) {
-  return stream >> p.x >> p.y;
-}
+istream &operator >> (istream &stream, pt &p) { return stream >> p.x >> p.y; }
 ostream &operator << (ostream &stream, pt p) {
   return stream << p.x << ' ' << p.y;
 }
