@@ -3,6 +3,7 @@
 #include "../../../../Content/C++/geometry/2d/Angle.h"
 #include "../../../../Content/C++/geometry/2d/Circle.h"
 #include "../../../../Content/C++/geometry/2d/Polygon.h"
+#include "../../../../Content/C++/geometry/2d/SemiDynamicConvexHull.h"
 using namespace std;
 
 vector<pt> generateConvexPolygon(int N, mt19937_64 &rng) {
@@ -68,6 +69,8 @@ void test1() {
   for (int ti = 0; ti < TESTCASES; ti++) {
     int N = rng() % 10 + 1;
     vector<pt> poly = generateConvexPolygon(N, rng);
+    SemiDynamicConvexHull ch;
+    for (auto &&p : poly) assert(ch.addPoint(p));
     int Q = 100;
     uniform_real_distribution<T> dis(-10, 10);
     for (int i = 0; i < Q; i++) {
@@ -96,6 +99,9 @@ void test1() {
         assert(l1.onLeft(poly[j]) < 0 || (l1.onLeft(poly[j]) == 0 && le(distSq(p, poly[tangent.first]), distSq(p, poly[j]))));
         assert(l2.onLeft(poly[j]) > 0 || (l2.onLeft(poly[j]) == 0 && le(distSq(p, poly[tangent.second]), distSq(p, poly[j]))));
       }
+      auto tangent2 = ch.pointTangents(p);
+      assert(poly[tangent.first] == tangent2.first->p);
+      assert(poly[tangent.second] == tangent2.second->p);
     }
   }
   const auto end_time = chrono::system_clock::now();
@@ -113,6 +119,8 @@ void test2() {
   for (int ti = 0; ti < TESTCASES; ti++) {
     int N = rng() % 10 + 1;
     vector<pt> poly = generateConvexPolygon(N, rng);
+    SemiDynamicConvexHull ch;
+    for (auto &&p : poly) assert(ch.addPoint(p));
     int Q = 100;
     uniform_real_distribution<T> dis(-10, 10), dis2(0, 10);
     for (int i = 0; i < Q; i++) {
@@ -177,6 +185,9 @@ void test2() {
           assert(l2.onLeft(poly[j]) > 0 || (l2.onLeft(poly[j]) == 0 && le(distSq(b, poly[tangent.second]), distSq(b, poly[j]))));
         }
       }
+      auto tangent2 = ch.circleTangents(c, inner);
+      assert(poly[tangent.first] == tangent2.first->p);
+      assert(poly[tangent.second] == tangent2.second->p);
     }
   }
   const auto end_time = chrono::system_clock::now();
@@ -201,6 +212,9 @@ void test3() {
       swap(N, M);
       swap(poly1, poly2);
     }
+    SemiDynamicConvexHull ch1, ch2;
+    for (auto &&p : poly1) assert(ch1.addPoint(p));
+    for (auto &&p : poly2) assert(ch2.addPoint(p));
     vector<pair<int, int>> tangent = convexPolygonConvexPolygonTangent(poly1, poly2, inner);
     assert(0 <= tangent[0].first && tangent[0].first < N);
     assert(0 <= tangent[1].first && tangent[1].first < N);
@@ -220,6 +234,11 @@ void test3() {
       assert(l1.onLeft(poly2[i]) == (inner ? -1 : 1) || (l1.onLeft(poly2[i]) == 0 && le(distSq(a, c), distSq(a, poly2[i]))));
       assert(l2.onLeft(poly2[i]) == (inner ? 1 : -1) || (l2.onLeft(poly2[i]) == 0 && le(distSq(b, d), distSq(b, poly2[i]))));
     }
+    auto tangent2 = ch1.hullTangents(ch2, inner);
+    assert(a == tangent2[0].first->p);
+    assert(b == tangent2[1].first->p);
+    assert(c == tangent2[0].second->p);
+    assert(d == tangent2[1].second->p);
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));

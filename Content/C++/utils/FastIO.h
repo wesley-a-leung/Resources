@@ -1,8 +1,8 @@
 #pragma once
 #include <bits/stdc++.h>
 
-// Unsyncs the C++ and C std output streams and unties cin and cout to
-//   speed up standard input and output
+// Unsyncs the C++ and C std output streams and unties cin to
+//   speed up standard input
 void unSyncUntie() {
   std::ios::sync_with_stdio(0); std::cin.tie(0);
 }

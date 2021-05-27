@@ -118,7 +118,8 @@ bool spherePlaneIntersection(const Sphere3D &s, const Plane3D &pi,
 // Memory Complexity: O(1)
 pair<T, T> sphereHalfSpaceIntersectionSAV(const Sphere3D &s,
                                           const Plane3D &pi) {
-  T d2 = s.r * s.r - pi.distSq(s.o), h = lt(d2, 0) ? 0 : s.r - pi.dist(s.o);
+  T d2 = s.r * s.r - pi.distSq(s.o);
+  T h = lt(d2, 0) ? T(0) : s.r - abs(pi.dist(s.o));
   if (pi.isAbove(s.o) > 0) h = s.r * 2 - h;
   T PI = acos(T(-1));
   return make_pair(PI * 2 * s.r * h, PI * h * h / 3 * (3 * s.r - h));

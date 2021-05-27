@@ -7,9 +7,7 @@ using namespace std;
 // Functions:
 //   prependMatrix(m2, b2): sets m = m2 * m and b = m2 * b + b2
 //   transform(t): applies the AffineTransformation t to this
-//   scaleX(a): scales the x coordinates by a
-//   scaleY(a): scales the y coordinates by a
-//   scale(a): scales the x and y coordinates by a
+//   scale(p): scales the x and y coordinates by p.x and p.y respectively
 //   translate(p): translates the point by p
 //   rotate(theta): rotates the point theta radians around the origin
 //   reflect(dir): reflects the point across the line passing through the
@@ -20,8 +18,8 @@ using namespace std;
 //   inverse(): returns the inverse of this transformation,
 //     determinant of m must nonzero
 // Time Complexity:
-//   constructor, prependMatrix, transform, scaleX, scaleY, scale, translate,
-//     rotate, reflect, applyTransform, inverse: O(1)
+//   constructor, prependMatrix, transform, scale, translate, rotate, reflect,
+//     project, applyTransform, inverse: O(1)
 // Memory Complexity: O(1)
 // Tested:
 //   https://dmoj.ca/problem/tree3
@@ -44,14 +42,8 @@ struct AffineTransform {
     m = resm; b = resb;
   }
   void transform(const AffineTransform &t) { prependMatrix(t.m, t.b); }
-  void scaleX(T a) {
-    prependMatrix({array<T, 2>{a, T(0)}, {T(0), T(1)}}, {T(0), T(0)});
-  }
-  void scaleY(T a) {
-    prependMatrix({array<T, 2>{T(1), T(0)}, {T(0), a}}, {T(0), T(0)});
-  }
-  void scale(T a) {
-    prependMatrix({array<T, 2>{a, T(0)}, {T(0), a}}, {T(0), T(0)});
+  void scale(pt p) {
+    prependMatrix({array<T, 2>{p.x, T(0)}, {T(0), p.y}}, {T(0), T(0)});
   }
   void translate(pt p) {
     prependMatrix({array<T, 2>{T(1), T(0)}, {T(0), T(1)}}, {p.x, p.y});

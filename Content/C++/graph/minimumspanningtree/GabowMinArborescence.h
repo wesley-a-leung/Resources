@@ -7,7 +7,7 @@ using namespace std;
 // Computes the minimum arborescence, or directed minimum spanning tree using
 //   Gabow's variant of Edmonds' algorithm
 // The directed minimum spanning tree is a set of edges such that every vertex
-//   is reachable from the root,  the sum of the edge weights is minimized
+//   is reachable from the root, the sum of the edge weights is minimized
 // Template Arguments:
 //   T: the type of the weight of the edges
 // Constructor Arguments:

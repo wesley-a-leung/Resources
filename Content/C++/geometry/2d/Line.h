@@ -13,10 +13,10 @@ struct Line {
   // points p and q
   Line(pt p, pt q) : v(q - p), c(cross(v, p)) {}
   T eval(pt p) const { return cross(v, p) - c; }
-  // 1 if left of line, 0 if on line, -1 if right of line
+  // sign of onLeft, dist: 1 if left of line, 0 if on line, -1 if right of line
   int onLeft(pt p) const { return sgn(eval(p)); }
+  T dist(pt p) const { return eval(p) / abs(v); }
   T distSq(pt p) const { T e = eval(p); return e * e / norm(v); }
-  T dist(pt p) const { return abs(eval(p) / abs(v)); }
   // rotated 90 degrees ccw
   Line perpThrough(pt p) const { return Line(p, p + perp(v)); }
   Line translate(pt p) const { return Line(v, c + cross(v, p)); }

@@ -16,10 +16,11 @@ struct Plane3D {
   // 3 non-collinear points p, q, r
   Plane3D(pt3 p, pt3 q, pt3 r) : Plane3D((q - p) * (r - p), p) {}
   T eval(pt3 p) const { return (n | p) - d; }
-  // 1 if above plane, 0 if on plane, -1 if below plane
+  // sign of isAbove, dist, dist: 1 if above plane, 0 if on plane,
+  //   -1 if below plane
   int isAbove(pt3 p) const { return sgn(eval(p)); }
+  T dist(pt3 p) const { return eval(p) / abs(n); }
   T distSq(pt3 p) const { T e = eval(p); return e * e / norm(n); }
-  T dist(pt3 p) const { return abs(eval(p) / abs(n)); }
   Plane3D translate(pt3 p) const { return Plane3D(n, d + (n | p)); }
   Plane3D shiftUp(T e) const { return Plane3D(n, d + e * abs(n)); }
   pt3 proj(pt3 p) const { return p - n * eval(p) / norm(n); }

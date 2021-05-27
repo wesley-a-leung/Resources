@@ -180,8 +180,8 @@ pair<int, int> convexPolygonLineIntersection(const vector<pt> &poly,
 //   p: the point strictly outside the polygon
 //   left: whether the left or right tangent line is found if p is
 //     considered to be below the polygon
-// Return Value: a pair containing the tangent index, with the closest point
-//   to p being selected if there are multiple indices
+// Return Value: the tangent index, with the closest point to p being
+//   selected if there are multiple indices
 // Time Complexity: O(log N)
 // Memory Complexity: O(1)
 // Tested:
@@ -268,10 +268,10 @@ pair<int, int> convexPolygonCircleTangent(const vector<pt> &poly,
 //   poly2: the second convex polygon that does not intersect with the first
 //   inner: whether to find the inner or outer tangents
 // Return Value: a vector of pairs containing the tangent indices, with the
-//   first element in each pair being the index of the first polygon, and the
+//   first element in each pair being the index in the first polygon, and the
 //   second element being the index in the second polygon; first point in
 //   each pair is the left tangent point of the first polygon if the second
-//   polgon is considered to be below the first polygon
+//   polygon is considered to be below the first polygon
 // Time Complexity: O(log N log M)
 // Memory Complexity: O(1)
 // Tested:

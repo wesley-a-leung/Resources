@@ -17,9 +17,7 @@ struct pt3 {
   OP(+, pt3, p, x + p.x, y + p.y, z + p.z)
   OP(-, pt3, p, x - p.x, y - p.y, z - p.z)
   OP(*, T, a, x * a, y * a, z * a) OP(/, T, a, x / a, y / a, z / a)
-  friend pt3 operator * (T a, pt3 p) {
-    return pt3(a * p.x, a * p.y, a * p.z);
-  }
+  friend pt3 operator * (T a, pt3 p) { return pt3(a * p.x, a * p.y, a * p.z); }
   bool operator < (pt3 p) const {
     return eq(x, p.x) ? (eq(y, p.y) ? lt(z, p.z) : lt(y, p.y)) : lt(x, p.x);
   }
@@ -62,5 +60,5 @@ pt3 sph(T r, T theta, T phi) {
   return pt3(r * cos(theta) * cos(phi), r * cos(theta) * sin(phi),
              r * sin(theta));
 }
-T inc(pt3 p) { return atan2(p.z, sqrt(p.x * p.x + p.y * p.y)); }
+T inc(pt3 p) { return atan2(p.z, T(sqrt(p.x * p.x + p.y * p.y))); }
 T az(pt3 p) { return atan2(p.y, p.x); }

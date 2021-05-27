@@ -26,7 +26,7 @@ using namespace std;
 template <class T> struct Fraction {
   static_assert(is_integral<T>::value, "T must be an integral type");
   using F = Fraction<T>; T num, den;
-  Fraction(T num = T(), T den = T(1)) : num(num), den(den) {}
+  constexpr Fraction(T num = T(), T den = T(1)) : num(num), den(den) {}
   F reduce() const {
     T g = gcd(num, den);
     return den >= 0 ? F(num / g, den / g) : F(-num / g, -den / g);
