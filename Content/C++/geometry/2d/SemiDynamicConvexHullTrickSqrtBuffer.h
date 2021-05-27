@@ -40,14 +40,14 @@ struct SemiDynamicConvexHullTrickSqrtBuffer {
   struct Line {
     T m, b; Line(T m, T b) : m(m), b(b) {}
     T eval(T x) const { return m * x + b; }
-    bool operator < (const Line &l) const { return Cmp()(m, l.m); }
+    bool operator < (Line l) const { return Cmp()(m, l.m); }
   };
   vector<Line> large, small; double SCALE;
   SemiDynamicConvexHullTrickSqrtBuffer(double SCALE = 4) : SCALE(SCALE) {}
-  bool ccw(const Line &a, const Line &b, const Line &c) {
+  bool ccw(Line a, Line b, Line c) {
     return (b.m - a.m) * (c.b - a.b) <= (b.b - a.b) * (c.m - a.m);
   }
-  bool slope(const Line &a, const Line &b) {
+  bool slope(Line a, Line b) {
     return !Cmp()(a.m, b.m) && !Cmp()(b.m, a.m) && !Cmp()(a.b, b.b);
   }
   void rebuildHull() {

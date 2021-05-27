@@ -37,7 +37,7 @@ struct Line {
 // Memory Complexity: O(1)
 // Tested:
 //   https://dmoj.ca/problem/secret
-Line bisector(const Line &l1, const Line &l2, bool interior) {
+Line bisector(Line l1, Line l2, bool interior) {
   T s = interior ? 1 : -1;
   return Line(l2.v / abs(l2.v) + l1.v / abs(l1.v) * s,
               l2.c / abs(l2.v) + l1.c / abs(l1.v) * s);
@@ -53,7 +53,7 @@ Line bisector(const Line &l1, const Line &l2, bool interior) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://dmoj.ca/problem/nccc7s5
-int lineLineIntersection(const Line &l1, const Line &l2, pt &res) {
+int lineLineIntersection(Line l1, Line l2, pt &res) {
   T d = cross(l1.v, l2.v);
   if (eq(d, 0)) return l2.v * l1.c == l1.v * l2.c ? 2 : 0;
   res = (l2.v * l1.c - l1.v * l2.c) / d; return 1;

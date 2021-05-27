@@ -149,8 +149,7 @@ int extremeVertex(const vector<pt> &poly, pt dir) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://codeforces.com/contest/799/problem/G
-pair<int, int> convexPolygonLineIntersection(const vector<pt> &poly,
-                                             const Line &l) {
+pair<int, int> convexPolygonLineIntersection(const vector<pt> &poly, Line l) {
   int n = poly.size(), endA = extremeVertex(poly, -perp(l.v));
   int endB = extremeVertex(poly, perp(l.v));
   auto cmpL = [&] (int i) { return l.onLeft(poly[i]); };
@@ -240,7 +239,7 @@ pair<int, int> convexPolygonPointTangent(const vector<pt> &poly, pt p) {
 // Tested:
 //   Fuzz Tested
 pair<int, int> convexPolygonCircleTangent(const vector<pt> &poly,
-                                          const Circle &c, bool inner) {
+                                          Circle c, bool inner) {
   int n = poly.size(), a = 0, b = 0; vector<pair<pt, pt>> t;
   for (int h = 0; h < 2; h++) {
     assert(circleCircleTangent(Circle(poly[0], 0), c, inner, t) == 1);
@@ -339,8 +338,7 @@ pt closestPointOnConvexPolygon(const vector<pt> &poly, pt p) {
 // Memory Complexity: O(N)
 // Tested:
 //   https://dmoj.ca/problem/utso15p6
-vector<pt> polygonHalfPlaneIntersection(const vector<pt> &poly,
-                                        const Line &l) {
+vector<pt> polygonHalfPlaneIntersection(const vector<pt> &poly, Line l) {
   int n = poly.size(); vector<pt> ret; for (int i = 0; i < n; i++) {
     int j = mod(i + 1, n), o1 = l.onLeft(poly[i]), o2 = l.onLeft(poly[j]);
     if (o1 >= 0) ret.push_back(poly[i]);
@@ -400,7 +398,7 @@ T polygonUnion(const vector<vector<pt>> &polys) {
 // Tested:
 //   https://open.kattis.com/problems/pizzacutting
 //   https://open.kattis.com/problems/birthdaycake
-T polygonCircleIntersectionArea(const vector<pt> &poly, const Circle &c) {
+T polygonCircleIntersectionArea(const vector<pt> &poly, Circle c) {
   T r2 = c.r * c.r / 2;
   auto f = [&] (pt p, pt q) { return atan2(cross(p, q), dot(p, q)); };
   auto tri = [&] (pt p, pt q) {

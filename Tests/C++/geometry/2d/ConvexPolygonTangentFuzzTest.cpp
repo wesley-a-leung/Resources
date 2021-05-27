@@ -42,7 +42,7 @@ vector<pt> generateConvexPolygon(int N, mt19937_64 &rng) {
   shuffle(yv.begin(), yv.end(), rng);
   vector<pt> V(N), P;
   for (int i = 0; i < N; i++) V[i] = pt(xv[i], yv[i]);
-  sort(V.begin(), V.end(), [&] (const pt &a, const pt &b) {
+  sort(V.begin(), V.end(), [&] (pt a, pt b) {
     return Angle(a) < Angle(b);
   });
   T x = 0, xminPoly = 0, y = 0, yminPoly = 0;

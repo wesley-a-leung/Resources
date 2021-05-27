@@ -14,12 +14,12 @@ struct Sphere3D {
   int contains(pt3 p) const { return sgn(distSq(o, p) - r * r); }
   // -1 if s is strictly inside this sphere, 0 if inside and touching this
   //   sphere, 1 otherwise
-  int contains(const Sphere3D &s) const {
+  int contains(Sphere3D s) const {
     T dr = r - s.r; return lt(dr, 0) ? 1 : sgn(distSq(o, s.o) - dr * dr);
   }
   // 1 if s is strictly outside this sphere, 0 if outside and touching this
   //   sphere, -1 otherwise
-  int disjoint(const Sphere3D &s) const {
+  int disjoint(Sphere3D s) const {
     T sr = r + s.r; return sgn(sr * sr - distSq(o, s.o));
   }
   pt3 proj(pt3 p) const { return o + (p - o) * r / dist(o, p); }
@@ -83,7 +83,7 @@ struct Sphere3D {
 //   the line, guaranteed to be sorted based on projection on the line
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
-vector<pt3> sphereLineIntersection(const Sphere3D &s, const Line3D &l) {
+vector<pt3> sphereLineIntersection(Sphere3D s, Line3D l) {
   vector<pt3> ret; T h2 = s.r * s.r - l.distSq(s.o); if (!lt(h2, 0)) {
     pt3 p = l.proj(s.o), h = l.d * sqrt(max(h2, T(0))) / abs(l.d);
     ret.push_back(p - h); pt3 q = p + h; if (ret.back() != q) ret.push_back(q);
@@ -101,8 +101,7 @@ vector<pt3> sphereLineIntersection(const Sphere3D &s, const Line3D &l) {
 // Return Value: a boolean indicating whether an intersection exists or not
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
-bool spherePlaneIntersection(const Sphere3D &s, const Plane3D &pi,
-                             pair<pt3, T> &res) {
+bool spherePlaneIntersection(Sphere3D s, Plane3D pi, pair<pt3, T> &res) {
   T d2 = s.r * s.r - pi.distSq(s.o); if (lt(d2, 0)) return false;
   res.first = pi.proj(s.o); res.second = sqrt(max(d2, T(0))); return true;
 }
@@ -116,8 +115,7 @@ bool spherePlaneIntersection(const Sphere3D &s, const Plane3D &pi,
 //   sphere above the intersection of the sphere and the half-space
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
-pair<T, T> sphereHalfSpaceIntersectionSAV(const Sphere3D &s,
-                                          const Plane3D &pi) {
+pair<T, T> sphereHalfSpaceIntersectionSAV(Sphere3D s, Plane3D pi) {
   T d2 = s.r * s.r - pi.distSq(s.o);
   T h = lt(d2, 0) ? T(0) : s.r - abs(pi.dist(s.o));
   if (pi.isAbove(s.o) > 0) h = s.r * 2 - h;
@@ -134,7 +132,7 @@ pair<T, T> sphereHalfSpaceIntersectionSAV(const Sphere3D &s,
 // Return Value: 0 if no intersection, 2 if identical spheres, 1 otherwise
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
-int sphereSphereIntersection(const Sphere3D &s1, const Sphere3D &s2,
+int sphereSphereIntersection(Sphere3D s1, Sphere3D s2,
                              tuple<Plane3D, pt3, T> &c) {
   pt3 d = s2.o - s1.o; T d2 = norm(d);
   if (eq(d2, 0)) return eq(s1.r, s2.r) ? 2 : 0;
@@ -152,8 +150,7 @@ int sphereSphereIntersection(const Sphere3D &s1, const Sphere3D &s2,
 //   intersection of the two spheres
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
-pair<T, T> sphereSphereIntersectionSAV(const Sphere3D &s1,
-                                       const Sphere3D &s2) {
+pair<T, T> sphereSphereIntersectionSAV(Sphere3D s1, Sphere3D s2) {
   pt3 d = s2.o - s1.o; T d2 = norm(d), dr = abs(s1.r - s2.r), PI = acos(T(-1));
   if (!lt(dr * dr, d2)) {
     T r = min(s1.r, s2.r);

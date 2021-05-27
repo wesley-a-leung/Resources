@@ -36,10 +36,10 @@ struct Plane3D {
     return make_tuple(a, a + v1, a + v2);
   }
 };
-Line3D perpThrough(const Plane3D &pi, pt3 o) {
+Line3D perpThrough(Plane3D pi, pt3 o) {
   Line3D ret; ret.o = o; ret.d = pi.n; return ret;
 }
-Plane3D perpThrough(const Line3D &l, pt3 o) { return Plane3D(l.d, o); }
+Plane3D perpThrough(Line3D l, pt3 o) { return Plane3D(l.d, o); }
 
 // Transforms points to a new coordinate system where the x and y axes are
 //   on the plane, with the z axis being the normal vector (positive z is in
@@ -58,7 +58,7 @@ Plane3D perpThrough(const Line3D &l, pt3 o) { return Plane3D(l.d, o); }
 //   https://dmoj.ca/problem/utso15p6
 struct CoordinateTransformation {
   pt3 o, dx, dy, dz;
-  CoordinateTransformation(const Plane3D &pi) {
+  CoordinateTransformation(Plane3D pi) {
     pt3 p, q, r; tie(p, q, r) = pi.getPts(); o = p;
     dx = unit(q - p); dz = unit(dx * (r - p)); dy = dz * dx;
   }
@@ -78,7 +78,7 @@ struct CoordinateTransformation {
 // Return Value: 0 if no intersection, 1 if point of intersection, 2 otherwise
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
-int planeLineIntersection(const Plane3D &pi, const Line3D &l, pt3 &res) {
+int planeLineIntersection(Plane3D pi, Line3D l, pt3 &res) {
   T a = pi.n | l.d; if (eq(norm(a), 0)) return pi.isAbove(l.o) == 0 ? 2 : 0;
   res = l.o - l.d * pi.eval(l.o) / a; return 1;
 }
@@ -93,8 +93,7 @@ int planeLineIntersection(const Plane3D &pi, const Line3D &l, pt3 &res) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://dmoj.ca/problem/utso15p6
-int planePlaneIntersection(const Plane3D &pi1, const Plane3D &pi2,
-                           Line3D &res) {
+int planePlaneIntersection(Plane3D pi1, Plane3D pi2, Line3D &res) {
   pt3 d = pi1.n * pi2.n; if (eq(norm(d), 0))
     return eq(abs(pi1.d / abs(pi1.n)), abs(pi2.d / abs(pi2.n))) ? 2 : 0;
   res.o = (pi2.n * pi1.d - pi1.n * pi2.d) * d / norm(d); res.d = d; return 1;

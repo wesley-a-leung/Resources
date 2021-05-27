@@ -25,7 +25,7 @@ struct Line3D {
 // Return Value: the closest distance between 2 lines
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
-T lineLineDist(const Line3D &l1, const Line3D &l2) {
+T lineLineDist(Line3D l1, Line3D l2) {
   pt3 n = l1.d * l2.d; if (eq(norm(n), 0)) return l1.dist(l2.o);
   return abs((l2.o - l1.o) | n) / abs(n);
 }
@@ -38,7 +38,7 @@ T lineLineDist(const Line3D &l1, const Line3D &l2) {
 // Return Value: the closest point on the line l1 to the line l2
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
-pt3 closestOnL1ToL2(const Line3D &l1, const Line3D &l2) {
+pt3 closestOnL1ToL2(Line3D l1, Line3D l2) {
   pt3 n = l1.d * l2.d; if (eq(norm(n), 0)) return l1.proj(pt3(0, 0, 0));
   pt3 n2 = l2.d * n; return l1.o + l2.d * ((l2.o - l1.o) | n2) / (l1.d | n2);
 }
@@ -51,7 +51,7 @@ pt3 closestOnL1ToL2(const Line3D &l1, const Line3D &l2) {
 // Return Value: 0 if no intersection, 1 if point of intersection, 2 otherwise
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
-int lineLineIntersection(const Line3D &l1, const Line3D &l2, pt3 &res) {
+int lineLineIntersection(Line3D l1, Line3D l2, pt3 &res) {
   pt3 n = l1.d * l2.d; if (eq(norm(n), 0)) return eq(l1.dist(l2.o), 0) ? 2 : 0;
   res = closestOnL1ToL2(l1, l2); return 1;
 }

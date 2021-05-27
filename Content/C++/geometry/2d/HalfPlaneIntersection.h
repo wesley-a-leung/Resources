@@ -41,12 +41,11 @@ using namespace std;
 //   https://dmoj.ca/problem/ccoprep3p3
 pair<int, vector<pt>> halfPlaneIntersection(vector<Line> lines) {
   Angle::setPivot(pt(0, 0));
-  sort(lines.begin(), lines.end(), [&] (const Line &a, const Line &b) {
+  sort(lines.begin(), lines.end(), [&] (Line a, Line b) {
     Angle angA(a.v), angB(b.v);
     return angA == angB ? a.onLeft(b.proj(pt(0, 0))) < 0 : angA < angB;
   });
-  lines.erase(unique(lines.begin(), lines.end(), [&] (const Line &a,
-                                                      const Line &b) {
+  lines.erase(unique(lines.begin(), lines.end(), [&] (Line a, Line b) {
     return Angle(a.v) == Angle(b.v); 
   }), lines.end());
   int N = lines.size(); if (N == 0) return make_pair(3, vector<pt>());

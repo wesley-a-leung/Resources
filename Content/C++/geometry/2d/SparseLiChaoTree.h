@@ -51,8 +51,8 @@ struct SparseLiChaoTree {
     Line line; int l, r; Node(T m, T b) : line(m, b), l(-1), r(-1) {}
   };
   IndexType MN, MX; T INF; int root; vector<Node> TR;
-  T eval(const Line &l, IndexType x) const { return l.first * x + l.second; }
-  bool majorize(const Line &a, const Line &b, IndexType l, IndexType r) {
+  T eval(Line l, IndexType x) const { return l.first * x + l.second; }
+  bool majorize(Line a, Line b, IndexType l, IndexType r) {
     return !Cmp()(eval(a, l), eval(b, l)) && !Cmp()(eval(a, r), eval(b, r));
   }
   SparseLiChaoTree(IndexType MN, IndexType MX,

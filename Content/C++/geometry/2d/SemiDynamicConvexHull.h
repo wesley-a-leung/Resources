@@ -11,7 +11,7 @@ using namespace std;
 //   p: the point
 //   l: a line passing through p, representing the direction
 struct Ray {
-  pt p; Line l; Ray(pt p, const Line &l = Line()) : p(p), l(l) {}
+  pt p; Line l; Ray(pt p, Line l = Line()) : p(p), l(l) {}
   virtual bool cmp(const Ray &l) const {
     Angle::setPivot(pt(0, 0)); return Angle(l.l.v) < Angle(this->l.v);
   }
@@ -42,8 +42,7 @@ struct PointTangentCmp : public Ray {
 // Helper struct for circleTangents
 struct CircleTangentCmp : public Ray {
   pt q; Circle c; bool inner, h, farSide;
-  CircleTangentCmp(pt p, pt q, const Circle &c,
-                   bool inner, bool h, bool farSide)
+  CircleTangentCmp(pt p, pt q, Circle c, bool inner, bool h, bool farSide)
       : Ray(p), q(q), c(c), inner(inner), h(h), farSide(farSide) {}
   virtual bool cmp(const Ray &l) const {
     if (farSide == h && l.p == p) return true;
@@ -139,7 +138,7 @@ struct SemiDynamicConvexHull : public set<Ray> {
   pair<iter, iter> pointTangents(pt p) const {
     return make_pair(singlePointTangent(p, 1), singlePointTangent(p, 0));
   }
-  pair<iter, iter> circleTangents(const Circle &c, bool inner) const {
+  pair<iter, iter> circleTangents(Circle c, bool inner) const {
     pair<iter, iter> ret; pt a = begin()->p, b = prev(end())->p;
     for (int h = 0; h < 2; h++) {
       vector<pair<pt, pt>> t;
@@ -167,7 +166,7 @@ struct SemiDynamicConvexHull : public set<Ray> {
   iter extremeVertex(pt dir) const {
     return mod(lower_bound(Ray(pt(0, 0), Line(perp(dir), 0))));
   }
-  void halfPlaneIntersection(const Line &l) {
+  void halfPlaneIntersection(Line l) {
     if (empty()) return;
     iter b = mod(lower_bound(Ray(pt(0, 0), l)));
     if (l.onLeft(b->p) >= 0) return;

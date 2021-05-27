@@ -15,12 +15,12 @@ struct Circle {
   int contains(pt p) const { return sgn(distSq(o, p) - r * r); }
   // -1 if c is strictly inside this circle, 0 if inside and touching this
   //   circle, 1 otherwise
-  int contains(const Circle &c) const {
+  int contains(Circle c) const {
     T dr = r - c.r; return lt(dr, 0) ? 1 : sgn(distSq(o, c.o) - dr * dr);
   }
   // 1 if c is strictly outside this circle, 0 if outside and touching this
   //   circle, -1 otherwise
-  int disjoint(const Circle &c) const {
+  int disjoint(Circle c) const {
     T sr = r + c.r; return sgn(sr * sr - distSq(o, c.o));
   }
   pt proj(pt p) const { return o + (p - o) * r / dist(o, p); }
@@ -37,7 +37,7 @@ struct Circle {
 // Memory Complexity: O(1)
 // Tested:
 //   https://dmoj.ca/problem/noi05p6
-vector<pt> circleLineIntersection(const Circle &c, const Line &l) {
+vector<pt> circleLineIntersection(Circle c, Line l) {
   vector<pt> ret; T h2 = c.r * c.r - l.distSq(c.o); if (!lt(h2, 0)) {
     pt p = l.proj(c.o), h = l.v * sqrt(max(h2, T(0))) / abs(l.v);
     ret.push_back(p - h); pt q = p + h; if (ret.back() != q) ret.push_back(q);
@@ -57,7 +57,7 @@ vector<pt> circleLineIntersection(const Circle &c, const Line &l) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://dmoj.ca/problem/noi05p6
-vector<pt> circleSegIntersection(const Circle &c, pt a, pt b) {
+vector<pt> circleSegIntersection(Circle c, pt a, pt b) {
   vector<pt> ret; if (a == b) { if (c.contains(a) == 0) ret.push_back(a); }
   else {
     Line l(a, b); for (auto &&p : circleLineIntersection(c, l))
@@ -76,7 +76,7 @@ vector<pt> circleSegIntersection(const Circle &c, pt a, pt b) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://dmoj.ca/problem/noi05p6
-T circleHalfPlaneIntersectionArea(const Circle &c, const Line &l) {
+T circleHalfPlaneIntersectionArea(Circle c, Line l) {
   T h2 = c.r * c.r - l.distSq(c.o), ret = 0; if (!lt(h2, 0)) {
     pt p = l.proj(c.o), h = l.v * sqrt(max(h2, T(0))) / abs(l.v);
     pt a = p - h, b = p + h; T theta = abs(ang(a, c.o, b));
@@ -100,8 +100,7 @@ T circleHalfPlaneIntersectionArea(const Circle &c, const Line &l) {
 //   https://codeforces.com/contest/420/problem/E
 //   https://open.kattis.com/problems/drawingcircles
 //   https://dmoj.ca/problem/noi05p6
-int circleCircleIntersection(const Circle &c1, const Circle &c2,
-                             vector<pt> &res) {
+int circleCircleIntersection(Circle c1, Circle c2, vector<pt> &res) {
   pt d = c2.o - c1.o; T d2 = norm(d);
   if (eq(d2, 0)) return eq(c1.r, c2.r) ? 2 : 0;
   T pd = (d2 + c1.r * c1.r - c2.r * c2.r) / 2;
@@ -121,7 +120,7 @@ int circleCircleIntersection(const Circle &c1, const Circle &c2,
 // Memory Complexity: O(1)
 // Tested:
 //   https://codeforces.com/contest/600/problem/D
-T circleCircleIntersectionArea(const Circle &c1, const Circle &c2) {
+T circleCircleIntersectionArea(Circle c1, Circle c2) {
   T d = dist(c1.o, c2.o); if (!lt(d, c1.r + c2.r)) return 0;
   if (!lt(c2.r, d + c1.r)) return acos(T(-1)) * c1.r * c1.r;
   if (!lt(c1.r, d + c2.r)) return acos(T(-1)) * c2.r * c2.r;
@@ -148,7 +147,7 @@ T circleCircleIntersectionArea(const Circle &c1, const Circle &c2) {
 // Tested:
 //   https://dmoj.ca/problem/nccc7s4
 //   https://dmoj.ca/problem/noi05p6
-int circleCircleTangent(const Circle &c1, const Circle &c2, bool inner,
+int circleCircleTangent(Circle c1, Circle c2, bool inner,
                         vector<pair<pt, pt>> &res) {
   pt d = c2.o - c1.o; T r2 = inner ? -c2.r : c2.r, dr = c1.r - r2;
   T d2 = norm(d), h2 = d2 - dr * dr;

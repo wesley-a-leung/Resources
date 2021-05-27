@@ -39,8 +39,8 @@ using namespace std;
 //   https://www.spoj.com/problems/CHTPRAC/
 template <class T, class Cmp = less<T>> struct LiChaoTree {
   using Line = pair<T, T>; int N; T INF; vector<Line> TR; vector<T> X;
-  T eval(const Line &l, int i) const { return l.first * X[i] + l.second; }
-  bool majorize(const Line &a, const Line &b, int l, int r) {
+  T eval(Line l, int i) const { return l.first * X[i] + l.second; }
+  bool majorize(Line a, Line b, int l, int r) {
     return !Cmp()(eval(a, l), eval(b, l)) && !Cmp()(eval(a, r), eval(b, r));
   }
   int cInd(T x) const {
