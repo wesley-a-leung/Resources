@@ -86,13 +86,15 @@ struct CircleTangentCmp : public Ray {
 //     polygon if the second polygon is considered to be below the
 //     first polygon
 //   addPoint(p): adds the point p and removes any points that are no longer
-//     in the convex hull; returns true if p is in the hull, false otherwise
+//     in the convex hull; returns true if p is in the hull, false otherwise;
+//     Angle::pivot is set to (0, 0)
 //   extremeVertex(dir): returns an iterator pointing to an extreme vertex
 //     in the direction dir (a vertex that is the furthest point in that
-//     direction, selecting the rightmost vertex if there are multiple)
+//     direction, selecting the rightmost vertex if there are multiple);
+//     Angle::pivot is set to (0, 0)
 //   halfPlaneIntersection(l): intersects this convex hull with the half-plane
 //     specified by the left side of l (including l itself); resulting hull
-//     is strictly convex
+//     is strictly convex; Angle::pivot is set to (0, 0)
 // In practice, has a moderate constant
 // Time Complexity:
 //   constructor: O(1)
