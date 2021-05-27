@@ -21,7 +21,7 @@ struct pt {
   CMP(==, !(*this < p) && !(p < *this)) CMP(!=, *this < p || p < *this)
   OP(*, pt, p, x * p.x - y * p.y, y * p.x + x * p.y)
   OP(/, pt, p, (x * p.x + y * p.y) / (p.x * p.x + p.y * p.y),
-                (y * p.x - x * p.y) / (p.x * p.x + p.y * p.y))
+               (y * p.x - x * p.y) / (p.x * p.x + p.y * p.y))
 };
 #undef OP
 #undef CMP
