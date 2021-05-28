@@ -26,7 +26,7 @@ struct Sphere3D {
   pt3 inv(pt3 p) const { return o + (p - o) * r * r / distSq(o, p); }
   // Shortest distance on the sphere between the projections of a and b onto
   //   this sphere
-  T greatCircleDist(pt3 a, pt3 b) const { return r * ang(a - o, b - o); }
+  T greatCircleDist(pt3 a, pt3 b) const { return r * ang(a, o, b); }
   // Is a-b a valid great circle segment (not on opposite sides)
   bool isGreatCircleSeg(pt3 a, pt3 b) const {
     assert(contains(a) == 0 && contains(b) == 0);
@@ -58,7 +58,7 @@ struct Sphere3D {
   // Returns the angle between 3 points projected onto the sphere,
   //   positive angle if a-b-c forms a ccw turn, negative if cw, 0 if collinear
   T angSph(pt3 a, pt3 b, pt3 c) const {
-    a -= o; b -= o; c -= o; T theta = ang(b * a, b * c);
+    a -= o; b -= o; c -= o; T theta = ang(b * a, pt3(0, 0, 0), b * c);
     return (a * b | c) < 0 ? -theta : theta;
   }
   // Returns the surface area of a polygon projected onto the sphere,

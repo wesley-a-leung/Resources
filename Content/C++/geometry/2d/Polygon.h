@@ -400,15 +400,15 @@ T polygonUnion(const vector<vector<pt>> &polys) {
 //   https://open.kattis.com/problems/birthdaycake
 T polygonCircleIntersectionArea(const vector<pt> &poly, Circle c) {
   T r2 = c.r * c.r / 2;
-  auto f = [&] (pt p, pt q) { return atan2(cross(p, q), dot(p, q)); };
   auto tri = [&] (pt p, pt q) {
     pt d = q - p; T a = dot(d, p) / norm(d);
     T b = (norm(p) - c.r * c.r) / norm(d), det = a * a - b;
-    if (!lt(0, det)) return f(p, q) * r2;
+    if (!lt(0, det)) return ang(q, pt(0, 0), p) * r2;
     T s = max(T(0), -a - sqrt(det)), t = min(T(1), -a + sqrt(det));
-    if (lt(t, 0) || !lt(s, 1)) return f(p, q) * r2;
+    if (lt(t, 0) || !lt(s, 1)) return ang(q, pt(0, 0), p) * r2;
     pt u = p + d * s, v = p + d * t;
-    return f(p, u) * r2 + cross(u, v) / 2 + f(v, q) * r2;
+    return ang(u, pt(0, 0), p) * r2 + cross(u, v) / 2
+        + ang(q, pt(0, 0), v) * r2;
   };
   T ret = 0; for (int n = poly.size(), i = 0; i < n; i++)
     ret += tri(poly[i] - c.o, poly[mod(i + 1, n)] - c.o);

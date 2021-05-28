@@ -40,7 +40,9 @@ pt3 unit(pt3 p) { return p / abs(p); }
 T distSq(pt3 a, pt3 b) { return norm(b - a); }
 T dist(pt3 a, pt3 b) { return abs(b - a); }
 // returns an angle in the range [0, PI]
-T ang(pt3 a, pt3 b) { return acos(min(T(1), abs(a | b) / abs(a) / abs(b))); }
+T ang(pt3 a, pt3 b, pt3 c) {
+  a = unit(a - b); c = unit(c - b); return 2 * atan2(abs(a - c), abs(a + c));
+}
 pt3 rot(pt3 a, pt3 axis, T theta) {
   return a * cos(theta) + (unit(axis) * a * sin(theta))
       + (unit(axis) * (unit(axis) | a) * (1 - cos(theta)));

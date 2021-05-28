@@ -42,8 +42,7 @@ T ang(pt a, pt b) { return arg(b - a); }
 // sign of ang, area2, ccw: 1 if counterclockwise, 0 if collinear,
 //   -1 if clockwise
 T ang(pt a, pt b, pt c) {
-  a -= b; c -= b;
-  return remainder(atan2(a.y, a.x) - atan2(c.y, c.x), 2 * acos(T(-1)));
+  a -= b; c -= b; return arg(pt(dot(c, a), cross(c, a)));
 }
 // twice the signed area of triangle a, b, c
 T area2(pt a, pt b, pt c) { return cross(b - a, c - a); }
