@@ -25,17 +25,12 @@ using namespace std;
 // Tested:
 //   https://codeforces.com/problemsets/acmsguru/problem/99999/265
 struct AffineTransform3D {
-  static T determinant(const array<array<T, 3>, 3> &A) {
-    T a = A[0][0], b = A[0][1], c = A[0][2];
-    T d = A[1][0], e = A[1][1], f = A[1][2];
-    T g = A[2][0], h = A[2][1], k = A[2][2];
-    return a * (e * k - f * h) - b * (d * k - f * g) + c * (d * h - e * g);
-  }
   static array<array<T, 3>, 3> inverse(const array<array<T, 3>, 3> &A) {
     T a = A[0][0], b = A[0][1], c = A[0][2];
     T d = A[1][0], e = A[1][1], f = A[1][2];
     T g = A[2][0], h = A[2][1], k = A[2][2];
-    T det = determinant(A); array<array<T, 3>, 3> ret;
+    T det = a * (e * k - f * h) - b * (d * k - f * g) + c * (d * h - e * g);
+    assert(!eq(det, 0)); array<array<T, 3>, 3> ret;
     ret[0][0] = (e * k - f * h) / det;
     ret[0][1] = -(b * k - c * h) / det;
     ret[0][2] = (b * f - c * e) / det;
@@ -116,7 +111,6 @@ struct AffineTransform3D {
                                   {T(0), T(1), T(0)},
                                   {T(0), T(0), T(1)}},
                       {-b[0], -b[1], -b[2]});
-    assert(!eq(determinant(m), 0));
     ret.prependMatrix(inverse(m), {T(0), T(0), T(0)}); return ret;
   }
 };
