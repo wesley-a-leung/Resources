@@ -21,7 +21,7 @@ struct Ray {
 // Helper struct for isIn
 struct IsInCmp : public Ray {
   pt q, r; IsInCmp(pt p, pt q, pt r) : Ray(p), q(q), r(r) {}
-  virtual bool cmp(const Ray &l) const {
+  bool cmp(const Ray &l) const override {
     return q != l.p && ccw(p, l.p + l.l.v, r) > 0;
   }
 };
@@ -31,7 +31,7 @@ struct PointTangentCmp : public Ray {
   pt q, r; bool left, farSide;
   PointTangentCmp(pt p, pt q, pt r, bool left, bool farSide)
       : Ray(p), q(q), r(r), left(left), farSide(farSide) {}
-  virtual bool cmp(const Ray &l) const {
+  bool cmp(const Ray &l) const override {
     if (farSide != left && l.p == p) return true;
     if (farSide == left && l.p == q) return false;
     if (ccw(r, p, l.p) == (left ? -1 : 1)) return farSide != left;
@@ -44,7 +44,7 @@ struct CircleTangentCmp : public Ray {
   pt q; Circle c; bool inner, h, farSide;
   CircleTangentCmp(pt p, pt q, Circle c, bool inner, bool h, bool farSide)
       : Ray(p), q(q), c(c), inner(inner), h(h), farSide(farSide) {}
-  virtual bool cmp(const Ray &l) const {
+  bool cmp(const Ray &l) const override {
     if (farSide == h && l.p == p) return true;
     if (farSide != h && l.p == q) return false;
     vector<pair<pt, pt>> t;
@@ -194,7 +194,7 @@ struct HullTangentCmp : public Ray {
   HullTangentCmp(pt p, pt q, const SemiDynamicConvexHull &hull,
                  bool inner, bool h, bool farSide)
       : Ray(p), q(q), hull(hull), inner(inner), h(h), farSide(farSide) {}
-  virtual bool cmp(const Ray &l) const {
+  bool cmp(const Ray &l) const override {
     if (farSide == h && l.p == p) return true;
     if (farSide != h && l.p == q) return false;
     pt q = hull.singlePointTangent(l.p, inner ^ h)->p;
