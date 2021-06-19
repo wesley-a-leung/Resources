@@ -29,7 +29,7 @@ template <class T> T primitiveRoot(T p) {
 //       167772161 = 5 * 2^25 + 1, primitiveRoot = 3
 //       469762049 = 7 * 2^26 + 1, primitiveRoot = 3
 //       1004535809 = 479 * 2^21 + 1, primitiveRoot = 3
-//       1004535809 = 483 * 2^21 + 1, primitiveRoot = 5
+//       1012924417 = 483 * 2^21 + 1, primitiveRoot = 5
 // Function Arguments:
 //   a: a reference to the vector of type T in the range [0, MOD)
 // In practice, has a moderate constant, faster than FFT and Karatsuba
