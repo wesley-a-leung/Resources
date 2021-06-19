@@ -24,8 +24,9 @@ using namespace std;
 //     for all inserted lines, x must be in the vector xs
 //   clear(): removes all lines from the seg
 // In practice, has a moderate constant, performance compared to
-//   DynamicConvexHullTrick (which uses multiset) and
-//   DynamicConvexHullTrickSqrtBuffer can vary, faster than SparseLiChaoTree
+//   IncrementalConvexHullTrick (which uses multiset) and
+//   IncrementalConvexHullTrickSqrtBuffer can vary, faster than
+//   SparseLiChaoTree
 // Time Complexity:
 //   constructor: O(1)
 //   addLine, getMax: O(log N) for the range [0, N)

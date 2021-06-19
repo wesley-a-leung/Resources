@@ -42,9 +42,9 @@ using namespace std;
 //   https://www.spoj.com/problems/BUGLIFE/
 //   https://cses.fi/problemset/task/1668
 //   https://tlx.toki.id/problems/troc-16/D
-struct SemiDynamicBipartite {
+struct IncrementalBipartite {
   vector<int> UF; vector<bool> P, B; int cnt; bool bipartiteGraph;
-  SemiDynamicBipartite(int V)
+  IncrementalBipartite(int V)
       : UF(V, -1), P(V, false), B(V, true), cnt(V), bipartiteGraph(true) {}
   pair<int, bool> find(int v) {
     bool p = P[v]; for (; UF[v] >= 0; p ^= P[v = UF[v]]) if (UF[UF[v]] >= 0) {

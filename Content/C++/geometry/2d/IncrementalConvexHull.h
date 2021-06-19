@@ -111,8 +111,8 @@ struct CircleTangentCmp : public Ray {
 //   https://open.kattis.com/problems/marshlandrescues
 //   https://dmoj.ca/problem/ccoprep3p3
 //   https://www.acmicpc.net/problem/4225
-struct SemiDynamicConvexHull : public set<Ray> {
-  using iter = set<Ray>::iterator; T a2; SemiDynamicConvexHull() : a2(0) {}
+struct IncrementalConvexHull : public set<Ray> {
+  using iter = set<Ray>::iterator; T a2; IncrementalConvexHull() : a2(0) {}
   iter mod(iter it) const { return !empty() && it == end() ? begin() : it; }
   iter prv(iter it) const { return prev(it == begin() ? end() : it); }
   iter nxt(iter it) const { return mod(next(it)); }
@@ -151,7 +151,7 @@ struct SemiDynamicConvexHull : public set<Ray> {
     }
     return ret;
   }
-  vector<pair<iter, iter>> hullTangents(const SemiDynamicConvexHull &hull,
+  vector<pair<iter, iter>> hullTangents(const IncrementalConvexHull &hull,
                                         bool inner) const;
   bool addPoint(pt p) {
     if (empty()) { emplace(p, Line(p, p)); return true; }
@@ -190,8 +190,8 @@ struct SemiDynamicConvexHull : public set<Ray> {
 
 // Helper struct for hullTangents
 struct HullTangentCmp : public Ray {
-  pt q; const SemiDynamicConvexHull &hull; bool inner, h, farSide;
-  HullTangentCmp(pt p, pt q, const SemiDynamicConvexHull &hull,
+  pt q; const IncrementalConvexHull &hull; bool inner, h, farSide;
+  HullTangentCmp(pt p, pt q, const IncrementalConvexHull &hull,
                  bool inner, bool h, bool farSide)
       : Ray(p), q(q), hull(hull), inner(inner), h(h), farSide(farSide) {}
   bool cmp(const Ray &l) const override {
@@ -203,8 +203,8 @@ struct HullTangentCmp : public Ray {
   }
 };
 
-vector<pair<SemiDynamicConvexHull::iter, SemiDynamicConvexHull::iter>>
-    SemiDynamicConvexHull::hullTangents(const SemiDynamicConvexHull &hull,
+vector<pair<IncrementalConvexHull::iter, IncrementalConvexHull::iter>>
+    IncrementalConvexHull::hullTangents(const IncrementalConvexHull &hull,
                                         bool inner) const {
   vector<pair<iter, iter>> ret(2); pt a = begin()->p, b = prev(end())->p;
   for (int h = 0; h < 2; h++) {

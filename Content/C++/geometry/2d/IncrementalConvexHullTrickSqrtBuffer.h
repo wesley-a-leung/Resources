@@ -22,7 +22,7 @@ using namespace std;
 //   size(): returns the number of lines in the convex hull
 //   reserve(N): reserves space for N lines in the convex hull
 // In practice, has a very small constant, performance compared to
-//   SemiDynamicConvexHullTrick (which uses multiset) and SparseLiChao
+//   IncrementalConvexHullTrick (which uses multiset) and SparseLiChao
 //   can vary, slower than LiChao
 // Time Complexity:
 //   constructor: O(1)
@@ -36,14 +36,14 @@ using namespace std;
 //   https://open.kattis.com/problems/longestlife
 //   https://www.spoj.com/problems/CHTPRAC/
 template <class T, class Cmp = less<T>>
-struct SemiDynamicConvexHullTrickSqrtBuffer {
+struct IncrementalConvexHullTrickSqrtBuffer {
   struct Line {
     T m, b; Line(T m, T b) : m(m), b(b) {}
     T eval(T x) const { return m * x + b; }
     bool operator < (Line l) const { return Cmp()(m, l.m); }
   };
   vector<Line> large, small; double SCALE;
-  SemiDynamicConvexHullTrickSqrtBuffer(double SCALE = 4) : SCALE(SCALE) {}
+  IncrementalConvexHullTrickSqrtBuffer(double SCALE = 4) : SCALE(SCALE) {}
   bool ccw(Line a, Line b, Line c) {
     return (b.m - a.m) * (c.b - a.b) <= (b.b - a.b) * (c.m - a.m);
   }

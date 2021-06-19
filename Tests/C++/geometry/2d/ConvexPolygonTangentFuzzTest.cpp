@@ -3,7 +3,7 @@
 #include "../../../../Content/C++/geometry/2d/Angle.h"
 #include "../../../../Content/C++/geometry/2d/Circle.h"
 #include "../../../../Content/C++/geometry/2d/Polygon.h"
-#include "../../../../Content/C++/geometry/2d/SemiDynamicConvexHull.h"
+#include "../../../../Content/C++/geometry/2d/IncrementalConvexHull.h"
 using namespace std;
 
 vector<pt> generateConvexPolygon(int N, mt19937_64 &rng) {
@@ -69,7 +69,7 @@ void test1() {
   for (int ti = 0; ti < TESTCASES; ti++) {
     int N = rng() % 10 + 1;
     vector<pt> poly = generateConvexPolygon(N, rng);
-    SemiDynamicConvexHull ch;
+    IncrementalConvexHull ch;
     for (auto &&p : poly) assert(ch.addPoint(p));
     int Q = 100;
     uniform_real_distribution<T> dis(-10, 10);
@@ -119,7 +119,7 @@ void test2() {
   for (int ti = 0; ti < TESTCASES; ti++) {
     int N = rng() % 10 + 1;
     vector<pt> poly = generateConvexPolygon(N, rng);
-    SemiDynamicConvexHull ch;
+    IncrementalConvexHull ch;
     for (auto &&p : poly) assert(ch.addPoint(p));
     int Q = 100;
     uniform_real_distribution<T> dis(-10, 10), dis2(0, 10);
@@ -212,7 +212,7 @@ void test3() {
       swap(N, M);
       swap(poly1, poly2);
     }
-    SemiDynamicConvexHull ch1, ch2;
+    IncrementalConvexHull ch1, ch2;
     for (auto &&p : poly1) assert(ch1.addPoint(p));
     for (auto &&p : poly2) assert(ch2.addPoint(p));
     vector<pair<int, int>> tangent = convexPolygonConvexPolygonTangent(poly1, poly2, inner);

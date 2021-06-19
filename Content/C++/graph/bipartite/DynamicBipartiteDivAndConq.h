@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "SemiDynamicBipartiteUndo.h"
+#include "IncrementalBipartiteUndo.h"
 using namespace std;
 
 // Support queries on connected components and bipartiteness, after edges
@@ -81,7 +81,7 @@ struct DynamicBipartiteDivAndConq {
         get<3>(queries[last[j]]) = i; last[j] = temp;
       }
     }
-    SemiDynamicBipartiteUndo uf(V); ans.clear(); ans.reserve(Q);
+    IncrementalBipartiteUndo uf(V); ans.clear(); ans.reserve(Q);
     function<void(int, int)> dc = [&] (int l, int r) {
       if (l == r) {
         int t, v, w, _; tie(t, v, w, _) = queries[l];

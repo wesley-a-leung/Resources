@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "SemiDynamicMSTUndo.h"
+#include "IncrementalMSTUndo.h"
 using namespace std;
 
 // Support queries for the minimum spanning tree, after edges have been
@@ -61,22 +61,22 @@ template <class T> struct DynamicMSTDivAndConqLCT {
         get<4>(queries[last[j]]) = i; last[j] = temp;
       }
     }
-    SemiDynamicMSTUndo<T> sdmst(V, NEG_INF); ans.clear(); ans.reserve(Q);
+    IncrementalMSTUndo<T> imst(V, NEG_INF); ans.clear(); ans.reserve(Q);
     function<void(int, int)> dc = [&] (int l, int r) {
       if (l == r) {
         int t, v, w, _; T weight; tie(t, v, w, weight, _) = queries[l];
-        if (t == 2) ans.push_back(sdmst.mstWeight);
+        if (t == 2) ans.push_back(imst.mstWeight);
         return;
       }
-      int m = l + (r - l) / 2, curSize = sdmst.history.size();
+      int m = l + (r - l) / 2, curSize = imst.history.size();
       for (int i = m + 1; i <= r; i++) if (get<4>(queries[i]) < l)
-        sdmst.addEdge(get<1>(queries[i]), get<2>(queries[i]),
+        imst.addEdge(get<1>(queries[i]), get<2>(queries[i]),
                       get<3>(queries[i]));
-      dc(l, m); while (int(sdmst.history.size()) > curSize) sdmst.undo();
+      dc(l, m); while (int(imst.history.size()) > curSize) imst.undo();
       for (int i = l; i <= m; i++) if (get<4>(queries[i]) > r)
-        sdmst.addEdge(get<1>(queries[i]), get<2>(queries[i]),
+        imst.addEdge(get<1>(queries[i]), get<2>(queries[i]),
                       get<3>(queries[i]));
-      dc(m + 1, r); while (int(sdmst.history.size()) > curSize) sdmst.undo();
+      dc(m + 1, r); while (int(imst.history.size()) > curSize) imst.undo();
     };
     if (Q > 0) dc(0, Q - 1);
   }

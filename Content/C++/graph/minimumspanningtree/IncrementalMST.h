@@ -28,7 +28,7 @@ using namespace std;
 //   https://dmoj.ca/problem/noi14p2
 //   https://open.kattis.com/problems/minspantree
 //   https://codeforces.com/gym/101047/problem/I
-template <class T> struct SemiDynamicMST {
+template <class T> struct IncrementalMST {
   struct Node {
     using Data = pair<T, int>; using Lazy = Data;
     static const bool RANGE_UPDATES = false, RANGE_QUERIES = true;
@@ -54,7 +54,7 @@ template <class T> struct SemiDynamicMST {
   };
   using Edge = tuple<int, int, T>; int V, top; vector<int> stk;
   T mstWeight; vector<Edge> mstEdges; LCT<Node> lct;
-  SemiDynamicMST(int V, T NEG_INF = numeric_limits<T>::lowest())
+  IncrementalMST(int V, T NEG_INF = numeric_limits<T>::lowest())
       : V(V), top(max(0, V - 1)), stk(top), mstWeight(T()),
         lct(V + top, [&] { return make_pair(NEG_INF, -1); }) {
     iota(stk.rbegin(), stk.rend(), 0); mstEdges.reserve(top);

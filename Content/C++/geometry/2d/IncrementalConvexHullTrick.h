@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Helper struct for SemiDynamicConvexHullTrick
+// Helper struct for IncrementalConvexHullTrick
 template <class T, class Cmp> struct CHTLine {
   bool isQuery; T m, b; mutable T x;
   CHTLine(T m, T b) : isQuery(false), m(m), b(b), x(T()) {}
@@ -29,7 +29,7 @@ template <class T, class Cmp> struct CHTLine {
 //   getMax(x): finds the maximum value of f(x) (based on the comparator)
 //     for all inserted lines
 // In practice, has a moderate constant, performance compared to
-//   SemiDynamicConvexHullTrickSqrtBuffer and SparseLiChao can vary, slower
+//   IncrementalConvexHullTrickSqrtBuffer and SparseLiChao can vary, slower
 //   than LiChao
 // Time Complexity:
 //   constructor: O(1)
@@ -40,11 +40,11 @@ template <class T, class Cmp> struct CHTLine {
 //   https://open.kattis.com/problems/longestlife
 //   https://www.spoj.com/problems/CHTPRAC/
 template <class T, class Cmp = less<T>>
-struct SemiDynamicConvexHullTrick : public multiset<CHTLine<T, Cmp>> {
+struct IncrementalConvexHullTrick : public multiset<CHTLine<T, Cmp>> {
   using L = CHTLine<T, Cmp>; using iter = typename multiset<L>::iterator;
   using multiset<L>::begin; using multiset<L>::end; using multiset<L>::emplace;
   using multiset<L>::erase; using multiset<L>::lower_bound; T INF;
-  SemiDynamicConvexHullTrick(T INF = numeric_limits<T>::max()) : INF(INF) {}
+  IncrementalConvexHullTrick(T INF = numeric_limits<T>::max()) : INF(INF) {}
   template <const bool _ = is_floating_point<T>::value>
   static typename enable_if<_, T>::type div(T a, T b) { return a / b; }
   template <const bool _ = is_floating_point<T>::value>

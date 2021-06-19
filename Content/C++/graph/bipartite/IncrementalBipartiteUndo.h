@@ -44,10 +44,10 @@ using namespace std;
 //   https://www.spoj.com/problems/BUGLIFE/
 //   https://cses.fi/problemset/task/1668
 //   https://codeforces.com/contest/813/problem/F
-struct SemiDynamicBipartiteUndo {
+struct IncrementalBipartiteUndo {
   vector<int> UF; vector<bool> P, B; int cnt; bool bipartiteGraph;
   vector<tuple<int, int, int, bool, bool>> history;
-  SemiDynamicBipartiteUndo(int V)
+  IncrementalBipartiteUndo(int V)
       : UF(V, -1), P(V, false), B(V, true), cnt(V), bipartiteGraph(true) {}
   pair<int, bool> find(int v) {
     bool p = P[v]; for (; UF[v] >= 0; p ^= P[v = UF[v]]);

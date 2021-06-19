@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #include "../../../../Content/C++/graph/bipartite/Bipartite.h"
-#include "../../../../Content/C++/graph/bipartite/SemiDynamicBipartite.h"
+#include "../../../../Content/C++/graph/bipartite/IncrementalBipartite.h"
 #include "../../../../Content/C++/graph/representations/StaticGraph.h"
 using namespace std;
 
@@ -29,19 +29,19 @@ void test1() {
 void test2() {
   mt19937_64 rng(0);
   int V = 2e6, E = 4e6;
-  SemiDynamicBipartite sdbp(V);
+  IncrementalBipartite ibp(V);
   const auto start_time = chrono::system_clock::now();
   for (int i = 0; i < E; i++) {
     int v = rng() % V, w = rng() % V;
-    sdbp.addEdge(v, w);
+    ibp.addEdge(v, w);
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
-  cout << "Subtest 2 (Semi Dynamic Bipartite) Passed" << endl;
+  cout << "Subtest 2 (Incremental Bipartite) Passed" << endl;
   cout << "  V: " << V << endl;
   cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
-  long long checkSum = sdbp.bipartiteGraph;
+  long long checkSum = ibp.bipartiteGraph;
   cout << "  Checksum: " << checkSum << endl;
 }
 
@@ -70,19 +70,19 @@ void test3() {
 void test4() {
   mt19937_64 rng(0);
   int V = 2e6, E = 4e6;
-  SemiDynamicBipartite sdbp(V);
+  IncrementalBipartite ibp(V);
   const auto start_time = chrono::system_clock::now();
   for (int i = 0; i < E; i++) {
     int v = rng() % (V / 2) * 2, w = rng() % (V / 2) * 2 + 1;
-    sdbp.addEdge(v, w);
+    ibp.addEdge(v, w);
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
-  cout << "Subtest 4 (Semi Dynamic Bipartite) Passed" << endl;
+  cout << "Subtest 4 (Incremental Bipartite) Passed" << endl;
   cout << "  V: " << V << endl;
   cout << "  E: " << E << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
-  long long checkSum = sdbp.bipartiteGraph;
+  long long checkSum = ibp.bipartiteGraph;
   cout << "  Checksum: " << checkSum << endl;
 }
 

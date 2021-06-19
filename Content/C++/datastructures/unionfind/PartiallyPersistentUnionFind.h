@@ -37,9 +37,9 @@ using namespace std;
 // Memory Complexity: O(N)
 // Tested:
 //   https://codeforces.com/contest/1253/problem/F
-struct UnionFindSemiPersistent {
+struct PartiallyPersistentUnionFind {
   vector<vector<pair<int, int>>> UF; vector<pair<int, int>> cnt; int curTime;
-  UnionFindSemiPersistent(int N)
+  PartiallyPersistentUnionFind(int N)
       : UF(N, vector<pair<int, int>>{make_pair(curTime, -1)}),
         cnt{make_pair(curTime, N)}, curTime(-1) {}
   int find(int t, int v) {

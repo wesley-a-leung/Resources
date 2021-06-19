@@ -34,10 +34,10 @@ using namespace std;
 // Tested:
 //   https://codeforces.com/gym/100551/problem/B
 //   https://judge.yosupo.jp/problem/two_edge_connected_components
-struct SemiDynamicBridges {
+struct IncrementalBridges {
   int V; vector<tuple<int, int, int>> queries; vector<int> ans, id;
   vector<vector<int>> components; vector<pair<int, int>> bridges;
-  SemiDynamicBridges(int V) : V(V), id(V) {}
+  IncrementalBridges(int V) : V(V), id(V) {}
   void addEdge(int v, int w) { queries.emplace_back(0, v, w); }
   void add2ConnectedQuery(int v, int w) { queries.emplace_back(2, v, w); }
   void addSizeQuery(int v) { queries.emplace_back(3, v, v); }
