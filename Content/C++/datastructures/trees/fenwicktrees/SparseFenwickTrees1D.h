@@ -41,6 +41,7 @@ using namespace __gnu_pbds;
 //   update, query, bsearch, lower_bound, upper_bound: O(log U) for U updates
 // Memory Complexity: O(Q log U) for U updates
 // Tested:
+//   https://codeforces.com/contest/903/problem/D
 //   https://dmoj.ca/problem/ccc05s5
 //   https://dmoj.ca/problem/cco10p3
 template <class T, class IndexType> struct OfflineSparseFenwickTree1D {

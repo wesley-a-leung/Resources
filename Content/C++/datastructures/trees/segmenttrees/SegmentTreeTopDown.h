@@ -62,7 +62,7 @@ using namespace std;
 //   bsearchPrefix(l, r, f): returns the smallest index i in the range [l, r]
 //     such that f(query(l, i)) returns true or r + 1 if none exist
 //   bsearchSuffix(l, r, f): returns the largest index i in the range [l, r]
-//     such that f(query(i, r)) returns true of l - 1 if none exist
+//     such that f(query(i, r)) returns true or l - 1 if none exist
 // In practice, has a small constant, not quite as fast as fenwick trees
 //   or bottom up non lazy segment trees,
 //   and similar performance as bottom up lazy segment trees

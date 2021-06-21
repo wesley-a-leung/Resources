@@ -27,6 +27,7 @@ template <class T> struct StaticAllocator {
 };
 
 // 32-bit pointer
+#define CMP(op, body) bool operator op (small_ptr p) const { return body; }
 template <class T> struct small_ptr {
   unsigned ind;
   small_ptr(T *p = 0) : ind(p ? unsigned((char *) p - buf) : 0) {}
@@ -34,4 +35,8 @@ template <class T> struct small_ptr {
   T *operator -> () const { return &**this; }
   T &operator [] (int a) const { return (&**this)[a]; }
   explicit operator bool () const { return ind; }
+  bool operator < (const small_ptr &p) const { return ind < p.ind; }
+  CMP(<=, !(p < *this)) CMP(>, p < *this) CMP(>=, !(*this < p))
+  CMP(==, !(*this < p) && !(p < *this)) CMP(!=, *this < p || p < *this)
 };
+#undef CMP
