@@ -35,7 +35,7 @@ template <class T> struct small_ptr {
   T *operator -> () const { return &**this; }
   T &operator [] (int a) const { return (&**this)[a]; }
   explicit operator bool () const { return ind; }
-  bool operator < (const small_ptr &p) const { return ind < p.ind; }
+  bool operator < (small_ptr p) const { return ind < p.ind; }
   CMP(<=, !(p < *this)) CMP(>, p < *this) CMP(>=, !(*this < p))
   CMP(==, !(*this < p) && !(p < *this)) CMP(!=, *this < p || p < *this)
 };
