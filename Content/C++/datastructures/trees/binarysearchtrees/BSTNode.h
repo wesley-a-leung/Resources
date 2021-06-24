@@ -37,6 +37,7 @@ using namespace std;
 //   https://dmoj.ca/problem/ds4
 //   https://codeforces.com/contest/1288/problem/E
 //   https://codeforces.com/contest/863/problem/D
+//   https://codeforces.com/contest/13/problem/E
 //   https://oj.uz/problem/view/JOI13_synchronization
 template <class T> struct NodeVal {
   using Data = T; using Lazy = Data;
@@ -116,7 +117,6 @@ template <class T> struct NodeVal {
 //   static qdef(): returns the query default value for the struct C
 // Tested:
 //   https://dmoj.ca/problem/dmpg17g2
-//   https://dmoj.ca/problem/ccoprep16c2q3
 //   https://dmoj.ca/problem/coi08p2
 //   https://www.spoj.com/problems/QTREE2/
 //   https://judge.yosupo.jp/problem/dynamic_tree_vertex_set_path_composite

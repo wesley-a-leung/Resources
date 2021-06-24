@@ -93,7 +93,7 @@ using namespace std;
 // Memory Complexity: O(N)
 // Tested:
 //   https://dmoj.ca/problem/coi08p2
-//   https://dmoj.ca/problem/ccoprep16c2q3
+//   https://codeforces.com/contest/13/problem/E
 //   https://dmoj.ca/problem/ds5easy
 //   https://www.spoj.com/problems/QTREE2/
 //   https://judge.yosupo.jp/problem/dynamic_tree_vertex_set_path_composite
