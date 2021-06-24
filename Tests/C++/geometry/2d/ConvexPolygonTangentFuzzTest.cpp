@@ -255,6 +255,8 @@ void test4() {
   for (int ti = 0; ti < TESTCASES; ti++) {
     int N = rng() % 10 + 1;
     vector<pt> poly = generateConvexPolygon(N, rng);
+    IncrementalConvexHull ch;
+    for (auto &&p : poly) assert(ch.addPoint(p));
     int Q = 100;
     uniform_real_distribution<T> dis(-10, 10);
     for (int i = 0; i < Q; i++) {
@@ -274,6 +276,8 @@ void test4() {
         assert(le(distSq(p, closest), distSq(p, q)));
       }
       checkSum = 31 * checkSum + distSq(p, closest);
+      pt closest2 = ch.closestPt(p);
+      assert(eq(distSq(closest, closest2), 0));
     }
   }
   const auto end_time = chrono::system_clock::now();

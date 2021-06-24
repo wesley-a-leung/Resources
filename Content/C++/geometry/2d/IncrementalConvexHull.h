@@ -10,8 +10,10 @@ using namespace std;
 // Fields:
 //   p: the point
 //   l: a line passing through p, representing the direction
+//   nxt: a pointer to the next ray in the circular set
 struct Ray {
-  pt p; Line l; Ray(pt p, Line l = Line()) : p(p), l(l) {}
+  pt p; Line l; mutable const Ray *nxt;
+  Ray(pt p, Line l = Line()) : p(p), l(l), nxt(nullptr) {}
   virtual bool cmp(const Ray &l) const {
     Angle::setPivot(pt(0, 0)); return Angle(l.l.v) < Angle(this->l.v);
   }
@@ -22,7 +24,7 @@ struct Ray {
 struct IsInCmp : public Ray {
   pt q, r; IsInCmp(pt p, pt q, pt r) : Ray(p), q(q), r(r) {}
   bool cmp(const Ray &l) const override {
-    return q != l.p && ccw(p, l.p + l.l.v, r) > 0;
+    return q != l.p && ccw(p, l.nxt->p, r) > 0;
   }
 };
 
@@ -35,7 +37,7 @@ struct PointTangentCmp : public Ray {
     if (farSide != left && l.p == p) return true;
     if (farSide == left && l.p == q) return false;
     if (ccw(r, p, l.p) == (left ? -1 : 1)) return farSide != left;
-    else return (ccw(l.p, l.p + l.l.v, r) < 0) != left;
+    else return (ccw(l.p, l.nxt->p, r) < 0) != left;
   }
 };
 
@@ -51,7 +53,19 @@ struct CircleTangentCmp : public Ray {
     assert(circleCircleTangent(Circle(l.p, 0), c, inner, t) == 1);
     pt q = t[h].second;
     if (ccw(q, p, l.p) == (h ? 1 : -1)) return farSide == h;
-    else return (ccw(l.p, l.p + l.l.v, q) < 0) == h;
+    else return (ccw(l.p, l.nxt->p, q) < 0) == h;
+  }
+};
+
+// Helper struct for closestPt
+struct ClosestPointCmp : public Ray {
+  Angle lo, hi;
+  ClosestPointCmp(pt p, Angle lo, Angle hi) : Ray(p), lo(lo), hi(hi) {}
+  bool cmp(const Ray &l) const override {
+    Angle::setPivot(pt(0, 0)); if (Angle(l.l.v) < lo) return true;
+    if (hi < Angle(l.l.v)) return false;
+    return ptSegDist(p, l.p, l.nxt->p)
+        >= ptSegDist(p, l.nxt->p, l.nxt->nxt->p);
   }
 };
 
@@ -85,6 +99,8 @@ struct CircleTangentCmp : public Ray {
 //     point in each pair is the left inner/outer tangent point of the first
 //     polygon if the second polygon is considered to be below the
 //     first polygon
+//   closestPt(p): returns the closest point on the edge of the polygon to
+//     the point p where p is strictly outside the polygon
 //   addPoint(p): adds the point p and removes any points that are no longer
 //     in the convex hull; returns true if p is in the hull, false otherwise;
 //     Angle::pivot is set to (0, 0)
@@ -99,7 +115,8 @@ struct CircleTangentCmp : public Ray {
 // Time Complexity:
 //   constructor: O(1)
 //   clear: O(N)
-//   isIn, singlePointTangent, pointTangents, circleTangents: O(log N)
+//   isIn, singlePointTangent, pointTangents, circleTangents,
+//     closestPt: O(log N)
 //   hullTangents: O(log N log M)
 //   addPoint: O(log N + K) for K removed points
 //   extremeVertex: O(log N)
@@ -116,6 +133,14 @@ struct IncrementalConvexHull : public set<Ray> {
   iter mod(iter it) const { return !empty() && it == end() ? begin() : it; }
   iter prv(iter it) const { return prev(it == begin() ? end() : it); }
   iter nxt(iter it) const { return mod(next(it)); }
+  void erase(iter it) {
+    iter a = prv(it), b = nxt(it); set<Ray>::erase(it); if (empty()) return;
+    a->nxt = &*b;
+  }
+  void emplace(pt p, Line l) {
+    iter it = set<Ray>::emplace(p, l).first;
+    prv(it)->nxt = &*it; it->nxt = &*nxt(it);
+  }
   iter rem(iter it) {
     iter a = prv(it), b = nxt(it); a2 += cross(a->p, b->p);
     a2 -= cross(a->p, it->p) + cross(it->p, b->p); erase(it); return b;
@@ -150,6 +175,21 @@ struct IncrementalConvexHull : public set<Ray> {
           a, b, c, inner, h, farSide)));
     }
     return ret;
+  }
+  pt closestPt(pt p) const {
+    auto f = [&] (iter a, iter b) {
+      if (a == b) return a->p;
+      if (a != (b = prv(b))) 
+        a = mod(lower_bound(ClosestPointCmp(
+            p, Angle(a->l.v), Angle(prv(b)->l.v))));
+      return closestPtOnSeg(p, a->p, a->nxt->p);
+    };
+    iter a, b; tie(a, b) = pointTangents(p); if (*b < *a) {
+      pt q = f(a, prev(end())), r = f(begin(), b);
+      pt s = distSq(p, q) < distSq(p, r) ? q : r;
+      pt t = closestPtOnSeg(p, prev(end())->p, begin()->p);
+      return distSq(p, s) < distSq(p, t) ? s : t;
+    } else return f(a, b);
   }
   vector<pair<iter, iter>> hullTangents(const IncrementalConvexHull &hull,
                                         bool inner) const;
@@ -199,7 +239,7 @@ struct HullTangentCmp : public Ray {
     if (farSide != h && l.p == q) return false;
     pt q = hull.singlePointTangent(l.p, inner ^ h)->p;
     if (ccw(q, p, l.p) == (h ? 1 : -1)) return farSide == h;
-    else return (ccw(l.p, l.p + l.l.v, q) < 0) == h;
+    else return (ccw(l.p, l.nxt->p, q) < 0) == h;
   }
 };
 
