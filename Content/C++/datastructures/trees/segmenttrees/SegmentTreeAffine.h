@@ -48,7 +48,7 @@ template <class T> struct SegmentTreeAffine {
       apply(x * 2 + 1, m + 1, tr, TR[x].lz); TR[x].lz = Pair();
     }
   }
-  template <class F> void build(int x, int tl, int tr, F &f) {
+  template <class F> void build(int x, int tl, int tr, const F &f) {
     if (tl == tr) { TR[x].val = Pair(f(), T()); return; }
     int m = tl + (tr - tl) / 2;
     build(x * 2, tl, m, f); build(x * 2 + 1, m + 1, tr, f);

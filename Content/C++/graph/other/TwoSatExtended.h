@@ -5,18 +5,21 @@ using namespace std;
 
 // Solves the two satisfiability problem and provides all possible values
 //   for each variable
-// Given a conjuntive normal form (x0 | x1) & (x2 | !x1) & ...
-//   determine whether a consistent assignment exists
+// Given an implication graph, determine whether a consistent assignment exists
+// Functions for created an implication graph can be seen in ImplicationGraph.h
 // Variables are 0-indexed
 // Template Arguments:
 //   MAXN: the maximum number of variables
 // Constructor Arguments:
-//   N: the number of variables
-//   disjunctions: a vector of tuple in the form
-//     (bool affI, int i, bool affJ, int j) each representing a disjunction
-//     with affI indicating if x_i is the affirmative (if true) or the negation
-//     (if false), and similarly with x_j
+//   G: the implication graph with N * 2 vertices for N variables with vertex
+//       a * 2 + 1 representing the affirmative for variable a, and a * 2
+//       representing the negative for variable a
+//     Required Functions:
+//       operator [v] const: iterates over the adjacency list of vertex v
+//         which is a list of ints)
+//       size() const: returns the number of vertices in the graph
 // Fields:
+//   scc: the SCC of the implication graph
 //   possibilities: a vector of integers representing the possible values for
 //     that variable; 0 if guaranteed to be false, 1 if guaranteed to be true,
 //     2 otherwise
@@ -29,17 +32,9 @@ using namespace std;
 template <const int MAXN> struct TwoSatExtended {
   vector<pair<int, int>> DAG; SCC scc; vector<bitset<MAXN * 2>> dp;
   vector<int> possibilities;
-  vector<vector<int>> init(
-      int N, const vector<tuple<bool, int, bool, int>> &disjunctions) {
-    vector<vector<int>> G(N * 2); for (auto &&d : disjunctions) {
-      int i = get<1>(d) * 2 + get<0>(d), j = get<3>(d) * 2 + get<2>(d);
-      G[i ^ 1].push_back(j); G[j ^ 1].push_back(i);
-    }
-    return G;
-  }
-  TwoSatExtended(int N,
-                 const vector<tuple<bool, int, bool, int>> &disjunctions)
-      : DAG(), scc(init(N, disjunctions), DAG) {
+  template <class ImplicationGraph>
+  TwoSatExtended(const ImplicationGraph &G) : DAG(), scc(G, DAG) {
+    int N = G.size() / 2;
     for (int i = 0; i < N; i++) if (scc.id[i * 2] == scc.id[i * 2 + 1]) return;
     dp.resize(scc.components.size());
     for (int i = 0; i < int(dp.size()); i++) dp[i][i] = 1;
