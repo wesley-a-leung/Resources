@@ -26,6 +26,8 @@ using namespace std;
 // Functions:
 //   lca(v, w): returns the lowest common ancestor of vertices v and w assuming
 //     v and w are connected
+//   lca(r, v, w): returns the lowest common ancestor of vertices v and w if
+//     their component is rooted a r, assuming r, v, and w are connected
 //   getDirectChild(anc, des): returns the direct child of anc that is on the
 //     path from anc to des, where anc is an ancestor of des
 //   connected(v, w): returns true if and only if v and w are connected
@@ -42,6 +44,7 @@ using namespace std;
 //   https://www.spoj.com/problems/LCASQ
 //   https://dmoj.ca/problem/rte16s3
 //   https://dmoj.ca/problem/wac1p6
+//   https://www.acmicpc.net/problem/15480
 template <class T = int> struct LCA {
   using RMQ = FischerHeunStructure<int, greater_equal<int>>;
   int V, ind; vector<int> root, pre, top, bot, stk; vector<T> dep; RMQ FHS;
@@ -73,6 +76,10 @@ template <class T = int> struct LCA {
     if (v == w) return v;
     if (pre[v] > pre[w]) swap(v, w);
     return top[FHS.queryInd(pre[v], pre[w] - 1)];
+  }
+  int lca(int r, int v, int w) {
+    int a = lca(r, v), b = lca(r, w), c = lca(v, w);
+    int d = dep[a] > dep[b] ? a : b; return dep[c] > dep[d] ? c : d;
   }
   int getDirectChild(int anc, int des) {
     return bot[FHS.queryInd(pre[anc], pre[des] - 1)];
