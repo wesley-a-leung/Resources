@@ -8,14 +8,14 @@ using namespace std;
 //   a * 2 + 1 representing the affirmative for variable a, and a * 2
 //   representing the negative for variable a
 
-// Adds an implication (a -> b) with affA indicating if x_a is the affirmative
-//   (if true) or the negative (if false), and similarly with x_b
+// Adds an implication (a -> b) with affA indicating if a is the affirmative
+//   (if true) or the negative (if false), and similarly with b
 // Template Arguments:
 //   F: the type of f
 // Functions Arguments:
-//   affA: whether x_a is affirmative
+//   affA: whether a is affirmative
 //   a: the first variable
-//   affB: whether x_b is affirmative
+//   affB: whether b is affirmative
 //   b: the second variable
 //   f(i, j): the function to run a callback on for the corresponding edge
 //     created by the implication
@@ -24,14 +24,14 @@ void addImpl(bool affA, int a, bool affB, int b, const F &f) {
   f(a * 2 + affA, b * 2 + affB);
 }
 
-// Adds a disjunction (a | b) with affA indicating if x_a is the affirmative
-//   (if true) or the negative (if false), and similarly with x_b
+// Adds a disjunction (a | b) with affA indicating if a is the affirmative
+//   (if true) or the negative (if false), and similarly with b
 // Template Arguments:
 //   F: the type of f
 // Functions Arguments:
-//   affA: whether x_a is affirmative
+//   affA: whether a is affirmative
 //   a: the first variable
-//   affB: whether x_b is affirmative
+//   affB: whether b is affirmative
 //   b: the second variable
 //   f(i, j): the function to run a callback on for the corresponding edge
 //     created by the disjunction
