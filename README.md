@@ -13,7 +13,7 @@ and Windows
 - most files are covered under [`LICENSE.txt`](https://github.com/wesley-a-leung/Resources/blob/main/LICENSE.txt)
 (Creative Commons Zero 1.0), with certain files being covered under
 a different license, which are listed below, and stated at the top of those
-files with the license files also being provided in its folder
+files with the license files also being provided in their folders
 
 ##### Apache License 2.0
 
