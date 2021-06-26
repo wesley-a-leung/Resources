@@ -36,6 +36,7 @@ using namespace std;
 // Tested:
 //   https://dmoj.ca/problem/bf4
 //   https://open.kattis.com/problems/stringmatching
+//   https://codeforces.com/contest/1466/problem/G
 template <class T> struct KMP {
   int N; vector<T> pat; vector<int> LPS;
   template <class F> KMP(int N, F f) : N(N), LPS(N + 1, -1) {

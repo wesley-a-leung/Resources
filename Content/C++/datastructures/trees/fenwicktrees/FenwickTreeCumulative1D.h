@@ -21,7 +21,7 @@ using namespace std;
 //   qdef: the identity element of the operation
 //   op: an instance of the Op struct
 // Functions:
-//   update(i, v): add v to the value at index i
+//   update(i, v): modifies the value A[i] to op(A[i], v)
 //   query(r): queries the cumulative value of the range [0, r]
 //   bsearch(v, cmp): returns the first index where cmp(op(A[0..i]), v)
 //     returns false, or N if no such index exists, assumes A is sorted by cmp

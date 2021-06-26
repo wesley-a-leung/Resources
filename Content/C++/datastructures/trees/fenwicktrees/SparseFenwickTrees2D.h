@@ -85,6 +85,74 @@ template <class T, class IndexType> struct OfflineSemiSparseFenwickTree2D {
 };
 
 // Sparse Fenwick Tree supporting point updates (with any value)
+//   and prefix range queries over a cumulative function or functor,
+//   such as max and min, in 2 dimensions (sparse in 1 dimension)
+// All update indices must be known beforehand
+// Indices are 0-indexed and ranges are inclusive
+// Template Arguments:
+//   T: the type of each element
+//   IndexType: the type of the index of the second dimension of the array
+//   Op: a struct with the cumulative operation
+//     Required Functions:
+//       operator (l, r): combines the values l and r
+// Constructor Arguments:
+//   N: the size of the first dimension of the array
+//   updateInds: a vector of pairs of ints and IndexType containing the indices
+//     for both dimensions for each update
+//   qdef: the identity element of the operation
+//   op: an instance of the Op struct
+// Functions:
+//   update(i, j, v): modifies the value A[i][j] to op(A[i][j], v), (i, j)
+//     must be an element of updateInds
+//   query(d, r): queries the cumulative value of the range [0, d] in the
+//     first dimension and [0, r] in the second dimension
+// In practice, has a small constant
+// Time Complexity:
+//   constructor: O(Q (log Q + log N) + N) for U updates
+//   update, query: O(log N log U) for U updates
+// Memory Complexity: O(N + U log N) for U updates
+// Tested:
+//   https://codeforces.com/contest/1523/problem/G
+template <class T, class IndexType, class C>
+struct OfflineSemiSparseFenwickTreeCumulative2D {
+  static_assert(is_integral<IndexType>::value, "IndexType must be integeral");
+  int N; vector<int> st, cnt; vector<IndexType> inds; vector<T> BIT;
+  T qdef; C op;
+  int getInd(int i, IndexType j) {
+    return upper_bound(inds.begin() + st[i], inds.begin() + st[i] + cnt[i], j)
+        - inds.begin() - st[i];
+  }
+  OfflineSemiSparseFenwickTreeCumulative2D(
+      int N, vector<pair<int, IndexType>> updateInds, T qdef, C op = C())
+      : N(N), st(N + 1, 0), cnt(N + 1, 0), qdef(qdef), op(op) {
+    sort(updateInds.begin(), updateInds.end(),
+         [&] (const pair<int, IndexType> &a, const pair<int, IndexType> &b) {
+      return a.second < b.second;
+    });
+    vector<IndexType> last(N + 1, IndexType());
+    for (auto &&u : updateInds) for (int i = u.first + 1; i <= N; i += i & -i)
+      if (cnt[i] == 0 || u.second != last[i]) { cnt[i]++; last[i] = u.second; }
+    for (int i = 1; i <= N; i++) st[i] = st[i - 1] + cnt[i - 1];
+    inds.resize(st[N] + cnt[N]); BIT.resize(st[N] + cnt[N], qdef);
+    fill(cnt.begin(), cnt.end(), 0); for (auto &&u : updateInds)
+      for (int i = u.first + 1; i <= N; i += i & -i)
+        if (cnt[i] == 0 || u.second != inds[st[i] + cnt[i] - 1])
+          inds[st[i] + cnt[i]++] = u.second;
+  }
+  void update(int i, IndexType j, T v) {
+    for (i++; i <= N; i += i & -i)
+      for (int s = st[i], c = cnt[i], y = getInd(i, j); y <= c; y += y & -y)
+        BIT[s + y - 1] = op(BIT[s + y - 1], v);
+  }
+  T query(int d, IndexType r) {
+    T ret = qdef; for (d++; d > 0; d -= d & -d)
+      for (int s = st[d], y = getInd(d, r); y > 0; y -= y & -y)
+        ret = op(ret, BIT[s + y - 1]);
+    return ret;
+  }
+};
+
+// Sparse Fenwick Tree supporting point updates (with any value)
 //   and range sum queries in 2 dimensions (sparse in 2 dimensions)
 // All update indices must be known beforehand
 // Indices are 0-indexed and ranges are inclusive
@@ -170,6 +238,89 @@ struct OfflineSparseFenwickTree2D {
   }
   T query(IndexType1 u, IndexType1 d, IndexType2 l, IndexType2 r) {
     return query(d, l, r) - query(u - 1, l, r);
+  }
+};
+
+// Sparse Fenwick Tree supporting point updates (with any value)
+//   and prefix range queries over a cumulative function or functor,
+//   such as max and min, in 2 dimensions (sparse in 2 dimensions)
+// All update indices must be known beforehand
+// Indices are 0-indexed and ranges are inclusive
+// Template Arguments:
+//   T: the type of each element
+//   IndexType1: the type of the index of the first dimension of the array
+//   IndexType2: the type of the index of the second dimension of the array
+//   Op: a struct with the cumulative operation
+//     Required Functions:
+//       operator (l, r): combines the values l and r
+// Constructor Arguments:
+//   updateInds: a vector of pairs of IndexType1 and IndexType2 containing
+//     the indices for both dimensions for each update
+//   qdef: the identity element of the operation
+//   op: an instance of the Op struct
+// Functions:
+//   update(i, j, v): modifies the value A[i][j] to op(A[i][j], v), (i, j)
+//     must be an element of updateInds
+//   query(d, r): queries the cumulative value of the range [0, d] in the
+//     first dimension and [0, r] in the second dimension
+// In practice, has a small constant
+// Time Complexity:
+//   constructor: O(U log U) for U updates
+//   update, query: O((log U)^2) for U updates
+// Memory Complexity: O(U log U) for U updates
+// Tested:
+//   https://codeforces.com/contest/1523/problem/G
+template <class T, class IndexType1, class IndexType2, class C>
+struct OfflineSparseFenwickTreeCumulative2D {
+  static_assert(is_integral<IndexType1>::value,
+                "IndexType1 must be integeral");
+  static_assert(is_integral<IndexType2>::value,
+                "IndexType2 must be integeral");
+  int U; vector<int> st, cnt; vector<IndexType1> inds1;
+  vector<IndexType2> inds2; vector<T> BIT; T qdef; C op;
+  int getInd1(IndexType1 i) {
+    return upper_bound(inds1.begin(), inds1.end(), i) - inds1.begin();
+  }
+  int getInd2(int i, IndexType2 j) {
+    return upper_bound(inds2.begin() + st[i],
+                       inds2.begin() + st[i] + cnt[i], j)
+        - inds2.begin() - st[i];
+  }
+  OfflineSparseFenwickTreeCumulative2D(
+      vector<pair<IndexType1, IndexType2>> updateInds, T qdef, C op)
+      : inds1(updateInds.size()), qdef(qdef), op(op) {
+    sort(updateInds.begin(), updateInds.end(),
+         [&] (const pair<IndexType1, IndexType2> &a,
+              const pair<IndexType1, IndexType2> &b) {
+      return a.second < b.second;
+    });
+    for (int i = 0; i < int(updateInds.size()); i++)
+      inds1[i] = updateInds[i].first;
+    sort(inds1.begin(), inds1.end());
+    inds1.erase(unique(inds1.begin(), inds1.end()), inds1.end());
+    U = int(inds1.size()); st.assign(U + 1, 0); cnt.assign(U + 1, 0);
+    vector<IndexType2> last(U + 1, IndexType2()); for (auto &&u : updateInds)
+      for (int i = getInd1(u.first); i <= U; i += i & -i)
+        if (cnt[i] == 0 || u.second != last[i]) {
+          cnt[i]++; last[i] = u.second;
+        }
+    for (int i = 1; i <= U; i++) st[i] = st[i - 1] + cnt[i - 1];
+    inds2.resize(st[U] + cnt[U]); BIT.resize(st[U] + cnt[U], qdef);
+    fill(cnt.begin(), cnt.end(), 0); for (auto &&u : updateInds)
+      for (int i = getInd1(u.first); i <= U; i += i & -i)
+        if (cnt[i] == 0 || u.second != inds2[st[i] + cnt[i] - 1])
+          inds2[st[i] + cnt[i]++] = u.second;
+  }
+  void update(IndexType1 i, IndexType2 j, T v) {
+    for (int x = getInd1(i); x <= U; x += x & -x)
+      for (int s = st[x], c = cnt[x], y = getInd2(x, j); y <= c; y += y & -y)
+        BIT[s + y - 1] = op(BIT[s + y - 1], v);
+  }
+  T query(IndexType1 d, IndexType2 r) {
+    T ret = qdef; for (int x = getInd1(d); x > 0; x -= x & -x)
+      for (int s = st[x], y = getInd2(x, r); y > 0; y -= y & -y)
+        ret = op(ret, BIT[s + y - 1]);
+    return ret;
   }
 };
 

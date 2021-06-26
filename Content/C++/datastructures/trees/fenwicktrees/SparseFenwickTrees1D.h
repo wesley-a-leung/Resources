@@ -77,6 +77,69 @@ template <class T, class IndexType> struct OfflineSparseFenwickTree1D {
 };
 
 // Sparse Fenwick Tree supporting point updates (with any value)
+//   and prefix range queries over a cumulative function or functor,
+//   such as max and min, in 1 dimension
+// All update indices must be known beforehand
+// Indices are 0-indexed and ranges are inclusive
+// Template Arguments:
+//   T: the type of each element
+//   IndexType: the type of the index of the array
+//   Op: a struct with the cumulative operation
+//     Required Functions:
+//       operator (l, r): combines the values l and r
+// Constructor Arguments:
+//   N: the size of the array
+//   updateInds: a vector of IndexType containing the indices for each update
+//   qdef: the identity element of the operation
+//   op: an instance of the Op struct
+// Functions:
+//   update(i, v): modifies the value A[i] to op(A[i], v), i must be an element
+//     in updateInds
+//   query(r): queries the cumulative value of the range [0, r]
+//   bsearch(v, cmp): returns the first index where cmp(op(A[0..i]), v)
+//     returns false, or N if no such index exists, assumes A is sorted by cmp
+// In practice, has a small constant
+// Time Complexity:
+//   constructor: O(Q log U) for U updates
+//   update, query, bsearch, lower_bound, upper_bound: O(log U) for U updates
+// Memory Complexity: O(Q log U) for U updates
+// Tested:
+//   https://atcoder.jp/contests/dp/tasks/dp_q
+template <class T, class IndexType, class C>
+struct OfflineSparseFenwickTreeCumulative1D {
+  static_assert(is_integral<IndexType>::value, "IndexType must be integeral");
+  IndexType N; vector<T> BIT; vector<IndexType> inds; T qdef; C op;
+  int getInd(IndexType i) {
+    return std::upper_bound(inds.begin(), inds.end(), i) - inds.begin();
+  }
+  OfflineSparseFenwickTreeCumulative1D(
+      IndexType N, const vector<IndexType> &updateInds, T qdef, C op)
+      : N(N), inds(updateInds), qdef(qdef), op(op) {
+    sort(inds.begin(), inds.end());
+    inds.erase(unique(inds.begin(), inds.end()), inds.end());
+    BIT.assign(int(inds.size()) + 1, qdef);
+  }
+  void update(IndexType i, T v) {
+    for (int x = getInd(i); x <= int(inds.size()); x += x & -x)
+      BIT[x] = op(BIT[x], v);
+  }
+  T query(IndexType r) {
+    T ret = qdef;
+    for (int x = getInd(r); x > 0; x -= x & -x) ret = op(ret, BIT[x]);
+    return ret;
+  }
+  template <class F> IndexType bsearch(T v, F cmp) {
+    T agg = qdef; int ind = 0;
+    for (int j = __lg(int(inds.size()) + 1); j >= 0; j--) {
+      int i = ind + (1 << j);
+      if (i < int(inds.size()) && cmp(op(agg, BIT[i]), v))
+        agg = op(agg, BIT[ind = i]);
+    }
+    return ind == int(inds.size()) ? N : inds[ind];
+  }
+};
+
+// Sparse Fenwick Tree supporting point updates (with any value)
 //   and range sum queries in 1 dimension using pbds hash_table
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
