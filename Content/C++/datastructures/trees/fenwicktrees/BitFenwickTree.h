@@ -1,6 +1,5 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "FenwickTree1D.h"
 using namespace std;
 
 // Fenwick Tree supporting range sum queries where all values are 0 or 1,
@@ -19,12 +18,6 @@ using namespace std;
 //   query(l, r): queries the sum of the range [l, r]
 //   bsearch(v, cmp): returns the first index where cmp(sum(A[0..i]), v)
 //     returns false, or N if no such index exists
-//   lower_bound(v): returns the first index where sum(A[0..i]) >= v, assumes
-//     cmp(sum(A[0..i + 1]), sum(A[0..i])) returns false, returns N if no such
-//     index exists
-//   upper_bound(v): returns the first index where sum(A[0..i]) > v, assumes
-//     cmp(sum(A[0..i + 1]), sum(A[0..i])) returns false, returns N if no such
-//     index exists
 // In practice, has a moderate constant, performs faster than a regular fenwick
 //   tree and uses less memory
 // Time Complexity:
@@ -71,6 +64,4 @@ struct BitFenwickTree {
     for (;; ind++, m >>= 1) if (!cmp(sum += m & 1, v)) break;
     return ind;
   }
-  int lower_bound(int v) { return bsearch(v, less<int>()); }
-  int upper_bound(int v) { return bsearch(v, less_equal<int>()); }
 };

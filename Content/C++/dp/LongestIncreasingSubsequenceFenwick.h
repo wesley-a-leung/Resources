@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "../datastructures/trees/fenwicktrees/FenwickTreeCumulative1D.h"
+#include "../datastructures/trees/fenwicktrees/FenwickTree1D.h"
 using namespace std;
 
 // Computes a longest increasing subsequence in an array
@@ -28,7 +28,7 @@ vector<int> longestIncreasingSubsequenceFenwick(It st, It en) {
   vector<int> ret(N), ind(N + 1, -1); for (int i = 0; i < N; i++)
     ret[i] = lower_bound(tmp.begin(), tmp.end(), st[i]) - tmp.begin();
   struct Max { int operator () (int a, int b) { return max(a, b); } };
-  FenwickTreeCumulative1D<int, Max> FT(N, 0); for (int i = 0; i < N; i++) {
+  FenwickTree1D<int, Max> FT(N, 0); for (int i = 0; i < N; i++) {
     int len = FT.query(ret[i] - 1) + 1; if (ind[len] == -1) ind[mx = len] = i;
     else if (!(st[ind[len]] < st[i])) ind[len] = i; 
     FT.update(ret[i], len); ret[i] = ind[len - 1];

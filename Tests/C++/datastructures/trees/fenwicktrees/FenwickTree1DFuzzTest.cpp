@@ -96,8 +96,8 @@ void test2() {
         long long sm = 0;
         while (j < N && sm + A[j] < v) sm += A[j++];
         ans0.push_back(j);
-        ans1.push_back(FT1.lower_bound(v));
-        ans2.push_back(FT2.lower_bound(v));
+        ans1.push_back(FT1.bsearch(v, less<int>()));
+        ans2.push_back(FT2.bsearch(v, less<int>()));
         ans3.push_back(bsearch<FIRST>(0, N, [&] (int k) {
           return FT2.query(k) >= v;
         }));
@@ -108,8 +108,8 @@ void test2() {
         long long sm = 0;
         while (j < N && sm + A[j] <= v) sm += A[j++];
         ans0.push_back(j);
-        ans1.push_back(FT1.upper_bound(v));
-        ans2.push_back(FT2.upper_bound(v));
+        ans1.push_back(FT1.bsearch(v, less_equal<int>));
+        ans2.push_back(FT2.bsearch(v, less_equal<int>));
         ans3.push_back(bsearch<FIRST>(0, N, [&] (int k) {
           return FT2.query(k) > v;
         }));

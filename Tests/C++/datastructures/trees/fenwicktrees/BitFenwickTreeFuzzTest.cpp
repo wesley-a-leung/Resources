@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include "../../../../../Content/C++/datastructures/trees/fenwicktrees/BitFenwickTree.h"
+#include "../../../../../Content/C++/datastructures/trees/fenwicktrees/FenwickTree1D.h"
 using namespace std;
 
 void test1() {
@@ -73,13 +74,13 @@ void test2() {
       } else if (t == 2) {
         int TOT = FT.query(N - 1) * 2 + 1;
         int v = rng() % TOT;
-        ans0.push_back(FT.lower_bound(v));
-        ans1.push_back(BFT.lower_bound(v));
+        ans0.push_back(FT.bsearch(v, less<int>()));
+        ans1.push_back(BFT.bsearch(v, less<int>()));
       } else if (t == 3) {
         int TOT = FT.query(N - 1) * 2 + 1;
         int v = rng() % TOT;
-        ans0.push_back(FT.upper_bound(v));
-        ans1.push_back(BFT.upper_bound(v));
+        ans0.push_back(FT.bsearch(v, less_equal<int>()));
+        ans1.push_back(BFT.bsearch(v, less_equal<int>()));
       }
     }
     assert(ans0 == ans1);
