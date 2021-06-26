@@ -4,7 +4,7 @@ using namespace std;
 
 // Fenwick Tree or Binary Indexed Tree supporting point updates
 //   and range queries over a cumulative function or functor,
-//   such as max and min, in K dimension, even if K is not known at
+//   such as max and min, in K dimensions, even if K is not known at
 //   compile time
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
