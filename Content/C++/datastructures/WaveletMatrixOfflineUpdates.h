@@ -29,7 +29,7 @@ using namespace std;
 //   Offline or Online 2D Sparse Fenwick Tree
 // Time Complexity:
 //   constructor: O((N + U) log (N + U)) for U total updates
-//   update, rank, count, select: O(log(N + U) log((N + U) / 64)) for
+//   updateToNextVal, rank, count, select: O(log(N + U) log((N + U) / 64)) for
 //     U total updates
 // Memory Complexity: O(N + ((N + U) log (N + U)) / 64) for U total updates
 // Tested:
