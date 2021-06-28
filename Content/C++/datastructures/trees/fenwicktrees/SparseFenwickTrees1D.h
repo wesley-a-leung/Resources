@@ -40,7 +40,7 @@ using namespace __gnu_pbds;
 // Time Complexity:
 //   constructor: O(Q log U) for U updates
 //   update, query, bsearch: O(log U) for U updates
-// Memory Complexity: O(Q log U) for U updates
+// Memory Complexity: O(U) for U updates
 // Tested:
 //   https://codeforces.com/contest/903/problem/D
 //   https://dmoj.ca/problem/cco10p3
