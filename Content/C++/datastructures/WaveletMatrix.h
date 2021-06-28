@@ -26,7 +26,8 @@ using namespace std;
 //     range [l, r] was sorted
 // In practice, has a moderate constant
 // Time Complexity:
-//   constructor, rank, count, select: O(N log N)
+//   constructor: O(N log N)
+//   rank, count, select: O(log N)
 // Memory Complexity: O(N + (N log N) / 64)
 // Tested:
 //   https://www.spoj.com/problems/KQUERY/ (rank/count)
