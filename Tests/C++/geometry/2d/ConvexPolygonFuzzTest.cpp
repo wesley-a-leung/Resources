@@ -287,11 +287,74 @@ void test4() {
   cout << "  Checksum: " << checkSum << endl;
 }
 
+void test5() {
+  const auto start_time = chrono::system_clock::now();
+  mt19937_64 rng(0);
+  const int TESTCASES = 5e4;
+  long long checkSum = 0;
+  for (int ti = 0; ti < TESTCASES; ti++) {
+    int N = rng() % 10 + 1;
+    vector<pt> poly = generateConvexPolygon(N, rng);
+    IncrementalConvexHull ch;
+    for (auto &&p : poly) assert(ch.addPoint(p));
+    int Q = 100;
+    uniform_real_distribution<T> dis(-10, 10);
+    for (int i = 0; i < Q; i++) {
+      pt p;
+      do {
+        p = pt(dis(rng), dis(rng));
+      } while (isInConvexPolygon(poly, p) <= 0);
+      pt q;
+      do {
+        q = pt(dis(rng), dis(rng));
+      } while (isInConvexPolygon(poly, p) <= 0);
+      if (N >= 2 && rng() % 10 == 0) {
+        int j = rng() % N;
+        p = poly[j];
+        if (rng() % 2) q = poly[mod(j + 1, N)];
+      }
+      Line l(p, q);
+      pair<int, int> sides = convexPolygonLineIntersection(poly, l);
+      vector<pt> ans0, ans1, ans2 = ch.lineIntersection(l);
+      auto addToVec = [&] (vector<pt> &v, int i) {
+        pt a = poly[i], b = poly[mod(i + 1, N)];
+        if (a != b) {
+          pt c;
+          lineLineIntersection(l, Line(a, b), c);
+          if (onSeg(c, a, b)) v.push_back(c);
+        }
+        if (l.onLeft(a) == 0) v.push_back(a);
+        if (l.onLeft(b) == 0) v.push_back(b);
+      };
+      auto clean = [&] (vector<pt> &v) {
+        sort(v.begin(), v.end()); v.erase(unique(v.begin(), v.end()), v.end());
+      };
+      if (sides.first != -1) addToVec(ans1, sides.first);
+      if (sides.second != -1) addToVec(ans1, sides.second);
+      for (int j = 0; j < N; j++) addToVec(ans0, j);
+      clean(ans0);
+      clean(ans1);
+      assert(ans0 == ans1);
+      assert(ans0 == ans2);
+      for (pt a : ans0) {
+        checkSum = 31 * checkSum + a.x;
+        checkSum = 31 * checkSum + a.y;
+      }
+    }
+  }
+  const auto end_time = chrono::system_clock::now();
+  double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
+  cout << "Subtest 5 (Line Convex Polygon Intersection) Passed" << endl;
+  cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
+  cout << "  Checksum: " << checkSum << endl;
+}
+
 int main() {
-  test1();
-  test2();
-  test3();
-  test4();
+  // test1();
+  // test2();
+  // test3();
+  // test4();
+  test5();
   cout << "Test Passed" << endl;
   return 0;
 }

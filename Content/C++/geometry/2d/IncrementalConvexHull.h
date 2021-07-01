@@ -14,8 +14,8 @@ using namespace std;
 struct Ray {
   pt p; Line l; mutable const Ray *nxt;
   Ray(pt p, Line l = Line()) : p(p), l(l), nxt(nullptr) {}
-  virtual bool cmp(const Ray &l) const {
-    Angle::setPivot(pt(0, 0)); return Angle(l.l.v) < Angle(this->l.v);
+  virtual bool cmp(const Ray &o) const {
+    Angle::setPivot(pt(0, 0)); return Angle(o.l.v) < Angle(l.v);
   }
   bool operator < (const Ray &r) const { return r.cmp(*this); }
 };
@@ -23,8 +23,8 @@ struct Ray {
 // Helper struct for isIn
 struct IsInCmp : public Ray {
   pt q, r; IsInCmp(pt p, pt q, pt r) : Ray(p), q(q), r(r) {}
-  bool cmp(const Ray &l) const override {
-    return q != l.p && ccw(p, l.nxt->p, r) > 0;
+  bool cmp(const Ray &o) const override {
+    return q != o.p && ccw(p, o.nxt->p, r) > 0;
   }
 };
 
@@ -33,11 +33,11 @@ struct PointTangentCmp : public Ray {
   pt q, r; bool left, farSide;
   PointTangentCmp(pt p, pt q, pt r, bool left, bool farSide)
       : Ray(p), q(q), r(r), left(left), farSide(farSide) {}
-  bool cmp(const Ray &l) const override {
-    if (farSide != left && l.p == p) return true;
-    if (farSide == left && l.p == q) return false;
-    if (ccw(r, p, l.p) == (left ? -1 : 1)) return farSide != left;
-    else return (ccw(l.p, l.nxt->p, r) < 0) != left;
+  bool cmp(const Ray &o) const override {
+    if (farSide != left && o.p == p) return true;
+    if (farSide == left && o.p == q) return false;
+    if (ccw(r, p, o.p) == (left ? -1 : 1)) return farSide != left;
+    else return (ccw(o.p, o.nxt->p, r) < 0) != left;
   }
 };
 
@@ -46,14 +46,14 @@ struct CircleTangentCmp : public Ray {
   pt q; Circle c; bool inner, h, farSide;
   CircleTangentCmp(pt p, pt q, Circle c, bool inner, bool h, bool farSide)
       : Ray(p), q(q), c(c), inner(inner), h(h), farSide(farSide) {}
-  bool cmp(const Ray &l) const override {
-    if (farSide == h && l.p == p) return true;
-    if (farSide != h && l.p == q) return false;
+  bool cmp(const Ray &o) const override {
+    if (farSide == h && o.p == p) return true;
+    if (farSide != h && o.p == q) return false;
     vector<pair<pt, pt>> t;
-    assert(circleCircleTangent(Circle(l.p, 0), c, inner, t) == 1);
+    assert(circleCircleTangent(Circle(o.p, 0), c, inner, t) == 1);
     pt q = t[h].second;
-    if (ccw(q, p, l.p) == (h ? 1 : -1)) return farSide == h;
-    else return (ccw(l.p, l.nxt->p, q) < 0) == h;
+    if (ccw(q, p, o.p) == (h ? 1 : -1)) return farSide == h;
+    else return (ccw(o.p, o.nxt->p, q) < 0) == h;
   }
 };
 
@@ -61,11 +61,23 @@ struct CircleTangentCmp : public Ray {
 struct ClosestPointCmp : public Ray {
   Angle lo, hi;
   ClosestPointCmp(pt p, Angle lo, Angle hi) : Ray(p), lo(lo), hi(hi) {}
-  bool cmp(const Ray &l) const override {
-    Angle::setPivot(pt(0, 0)); if (Angle(l.l.v) < lo) return true;
-    if (hi < Angle(l.l.v)) return false;
-    return ptSegDist(p, l.p, l.nxt->p)
-        >= ptSegDist(p, l.nxt->p, l.nxt->nxt->p);
+  bool cmp(const Ray &o) const override {
+    Angle::setPivot(pt(0, 0)); if (Angle(o.l.v) < lo) return true;
+    if (hi < Angle(o.l.v)) return false;
+    return ptSegDist(p, o.p, o.nxt->p)
+        >= ptSegDist(p, o.nxt->p, o.nxt->nxt->p);
+  }
+};
+
+// Helper struct for lineIntersection
+struct LineIntersectionCmp : public Ray {
+  Angle lo, hi;
+  LineIntersectionCmp(Line l, Angle lo, Angle hi)
+      : Ray(pt(0, 0), l), lo(lo), hi(hi) {}
+  bool cmp(const Ray &o) const override {
+    Angle::setPivot(pt(0, 0)); if (Angle(o.l.v) < lo) return true;
+    if (hi < Angle(o.l.v)) return false;
+    return l.onLeft(o.nxt->p) < 0;
   }
 };
 
@@ -108,6 +120,11 @@ struct ClosestPointCmp : public Ray {
 //     in the direction dir (a vertex that is the furthest point in that
 //     direction, selecting the rightmost vertex if there are multiple);
 //     Angle::pivot is set to (0, 0)
+//   lineIntersection(l): if l does not intersect with this convex hull, an
+//     empty vector is returned; if there is one point of intersection, a
+//     vector containing the point of intersection is returned; if there is a
+//     segment of intersection, a vector containing two endpoints of the
+//     line segment intersection is returned
 //   halfPlaneIntersection(l): intersects this convex hull with the half-plane
 //     specified by the left side of l (including l itself); resulting hull
 //     is strictly convex; Angle::pivot is set to (0, 0)
@@ -116,13 +133,12 @@ struct ClosestPointCmp : public Ray {
 //   constructor: O(1)
 //   clear: O(N)
 //   isIn, singlePointTangent, pointTangents, circleTangents,
-//     closestPt: O(log N)
+//     closestPt, extremeVertex, lineIntersection: O(log N)
 //   hullTangents: O(log N log M)
-//   addPoint: O(log N + K) for K removed points
-//   extremeVertex: O(log N)
-//   halfPlaneIntersection: O(log N + K) for K removed points
+//   addPoint, halfPlaneIntersection: O(log N + K) for K removed points
 // Memory Complexity: O(1)
 // Tested:
+//   Fuzz Tested
 //   https://codeforces.com/problemsets/acmsguru/problem/99999/277
 //   https://open.kattis.com/problems/bigbrother
 //   https://open.kattis.com/problems/marshlandrescues
@@ -207,6 +223,28 @@ struct IncrementalConvexHull : public set<Ray> {
   iter extremeVertex(pt dir) const {
     return mod(lower_bound(Ray(pt(0, 0), Line(perp(dir), 0))));
   }
+  vector<pt> lineIntersection(Line l) const {
+    vector<pt> ret;
+    auto check = [&] (iter a) {
+      pt p = a->p, q = a->nxt->p; if (p != q) {
+        pt r; lineLineIntersection(l, a->l, r);
+        if (onSeg(r, p, q)) ret.push_back(r);
+      }
+      if (l.onLeft(p) == 0) ret.push_back(p);
+      if (l.onLeft(q) == 0) ret.push_back(q);
+    };
+    auto f = [&] (iter a, iter b) {
+      if (a == b) check(a);
+      else check(mod(lower_bound(LineIntersectionCmp(
+          l, Angle(a->l.v), Angle(prv(b)->l.v)))));
+    };
+    Line l2(-l.v, -l.c); iter a = mod(lower_bound(Ray(pt(0, 0), l)));
+    iter b = mod(lower_bound(Ray(pt(0, 0), l2)));
+    if (*b < *a) { std::swap(a, b); std::swap(l, l2); }
+    f(a, b); std::swap(l, l2); f(b, prev(end())); f(begin(), a);
+    sort(ret.begin(), ret.end());
+    ret.erase(unique(ret.begin(), ret.end()), ret.end()); return ret;
+  }
   void halfPlaneIntersection(Line l) {
     if (empty()) return;
     iter b = mod(lower_bound(Ray(pt(0, 0), l)));
@@ -234,12 +272,12 @@ struct HullTangentCmp : public Ray {
   HullTangentCmp(pt p, pt q, const IncrementalConvexHull &hull,
                  bool inner, bool h, bool farSide)
       : Ray(p), q(q), hull(hull), inner(inner), h(h), farSide(farSide) {}
-  bool cmp(const Ray &l) const override {
-    if (farSide == h && l.p == p) return true;
-    if (farSide != h && l.p == q) return false;
-    pt q = hull.singlePointTangent(l.p, inner ^ h)->p;
-    if (ccw(q, p, l.p) == (h ? 1 : -1)) return farSide == h;
-    else return (ccw(l.p, l.nxt->p, q) < 0) == h;
+  bool cmp(const Ray &o) const override {
+    if (farSide == h && o.p == p) return true;
+    if (farSide != h && o.p == q) return false;
+    pt q = hull.singlePointTangent(o.p, inner ^ h)->p;
+    if (ccw(q, p, o.p) == (h ? 1 : -1)) return farSide == h;
+    else return (ccw(o.p, o.nxt->p, q) < 0) == h;
   }
 };
 

@@ -148,6 +148,7 @@ int extremeVertex(const vector<pt> &poly, pt dir) {
 // Time Complexity: O(log N)
 // Memory Complexity: O(1)
 // Tested:
+//   Fuzz Tested
 //   https://codeforces.com/contest/799/problem/G
 pair<int, int> convexPolygonLineIntersection(const vector<pt> &poly, Line l) {
   int n = poly.size(), endA = extremeVertex(poly, -perp(l.v));
@@ -184,8 +185,8 @@ pair<int, int> convexPolygonLineIntersection(const vector<pt> &poly, Line l) {
 // Time Complexity: O(log N)
 // Memory Complexity: O(1)
 // Tested:
-//   https://dmoj.ca/problem/coci19c2p5
 //   Fuzz Tested
+//   https://dmoj.ca/problem/coci19c2p5
 int convexPolygonPointSingleTangent(const vector<pt> &poly, pt p, bool left) {
   int n = poly.size(), o = ccw(p, poly[0], poly.back());
   bool farSide = o ? o < 0 : lt(distSq(p, poly.back()), distSq(p, poly[0]));
@@ -215,8 +216,8 @@ int convexPolygonPointSingleTangent(const vector<pt> &poly, pt p, bool left) {
 // Time Complexity: O(log N)
 // Memory Complexity: O(1)
 // Tested:
-//   https://dmoj.ca/problem/coci19c2p5
 //   Fuzz Tested
+//   https://dmoj.ca/problem/coci19c2p5
 pair<int, int> convexPolygonPointTangent(const vector<pt> &poly, pt p) {
   return make_pair(convexPolygonPointSingleTangent(poly, p, true),
                    convexPolygonPointSingleTangent(poly, p, false));
