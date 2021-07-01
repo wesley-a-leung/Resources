@@ -23,8 +23,10 @@ using namespace std;
 //     inserted lines
 //   getMaxMonoInc(x): finds the maximum x value (based on the comparator)
 //     for all inserted lines, where all queries have non decreasing x values
+//     (based on the standard < operator)
 //   getMaxMonoDec(x): finds the maximum x value (based on the comparator)
 //     for all inserted lines, where all queries have non increasing x values
+//     (based on the standard < operator)
 //   size(): returns the number of lines in the convex hull
 //   reserve(N): reserves space for N lines in the convex hull
 // In practice, has a moderate constant
