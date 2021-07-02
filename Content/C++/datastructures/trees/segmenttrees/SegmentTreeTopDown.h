@@ -141,7 +141,7 @@ template <const bool LAZY, class C> struct SegmentTreeTopDown {
     if (r < tl || tr < l) return l - 1;
     if (tl != tr) propagate(x, tl, tr);
     if (l <= tl && tr <= r) {
-      Data v = C::merge(agg, TR[x].val); if (!f(v)) { agg = v; return l - 1; }
+      Data v = C::merge(TR[x].val, agg); if (!f(v)) { agg = v; return l - 1; }
     }
     if (tl == tr) return tl;
     int m = tl + (tr - tl) / 2;
