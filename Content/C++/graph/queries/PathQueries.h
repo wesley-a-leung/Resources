@@ -82,7 +82,7 @@ struct PathQueries : public HLD {
         ops.update(pre[v] + VALUES_ON_EDGES, pre[w], val, false);
       else ops.update(pre[w] + VALUES_ON_EDGES, pre[v], val, true);
     } else if (!VALUES_ON_EDGES) {
-      int i = pre[dep[v] < dep[w] ? v : w]; ops.update(i, i, val, true);
+      int i = pre[dep[v] < dep[w] ? v : w]; ops.update(i, i, val, false);
     }
   }
   void updateVertex(int v, const Lazy &val) {
@@ -103,13 +103,13 @@ struct PathQueries : public HLD {
       }
     }
     if (v != w) {
-      if (dep[v] < dep[w]) 
+      if (dep[v] < dep[w])
         qu = R::merge(qu, ops.query(pre[v] + VALUES_ON_EDGES, pre[w], false));
       else
         qd = R::merge(ops.query(pre[w] + VALUES_ON_EDGES, pre[v], true), qd);
     } else if (!VALUES_ON_EDGES) {
       int i = pre[dep[v] < dep[w] ? v : w];
-      qu = R::merge(qu, ops.query(i, i, true));
+      qu = R::merge(qu, ops.query(i, i, false));
     }
     return R::merge(qu, qd);
   }
