@@ -64,9 +64,11 @@ template <class T, class Cmp = less<T>> struct WaveletMatrixActiveUpdates {
   template <class F> int cnt(int l, int r, const T &v, F f) {
     int ret = 0, cur = 0; for (int h = H - 1; h >= 0; h--) {
       int ph = 1 << h, ql = B[h].query(l - 1), qr = B[h].query(r);
-      int al = active[h].query(l - 1), ar = active[h].query(r);
       if (cur + ph - 1 >= N || f(v, S[cur + ph - 1])) { l = ql; r = qr - 1; }
-      else { cur += ph; ret += ar - al; l += mid[h] - ql; r += mid[h] - qr; }
+      else {
+        cur += ph; ret += active[h].query(l, r);
+        l += mid[h] - ql; r += mid[h] - qr;
+      }
     }
     return ret;
   }
@@ -80,9 +82,8 @@ template <class T, class Cmp = less<T>> struct WaveletMatrixActiveUpdates {
   T select(int l, int r, int k) {
     int cur = 0; for (int h = H - 1; h >= 0; h--) {
       int ql = B[h].query(l - 1), qr = B[h].query(r);
-      int al = active[h].query(l - 1), ar = active[h].query(r);
-      if (k < ar - al) { l = ql; r = qr - 1; }
-      else { cur += 1 << h; k -= ar - al; l += mid[h] - ql; r += mid[h] - qr; }
+      int a = active[h].query(l, r); if (k < a) { l = ql; r = qr - 1; }
+      else { cur += 1 << h; k -= a; l += mid[h] - ql; r += mid[h] - qr; }
     }
     return S[cur];
   }
