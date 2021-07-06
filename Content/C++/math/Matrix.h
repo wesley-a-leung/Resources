@@ -28,9 +28,8 @@ template <class T> int getN(const Matrix<T> &A) { return A.size(); }
 // Memory Complexity: O(1)
 // Tested:
 //   Fuzz Tested
-template <class T> int getM(const Matrix<T> &A) {
-  return A.empty() ? 0 : A[0].size();
-}
+template <class T>
+int getM(const Matrix<T> &A) { return A.empty() ? 0 : A[0].size(); }
 
 // Creates a matrix of size N x M filled with the default value of T
 // Template Arguments:
@@ -48,18 +47,18 @@ template <class T> Matrix<T> makeMatrix(int N, int M) {
   return vector<vector<T>>(N, vector<T>(M, T()));
 }
 
-// Creates an identify matrix of size N x N
+// Creates an identity matrix of size N x N
 // Template Arguments:
 //   T: the type of each element in the matrix
 // Function Arguments:
 //   N: the size of both dimensions
-// Return Value: an identify matrix of size N x N
+// Return Value: an identity matrix of size N x N
 // In practice, has a very small constant
 // Time Complexity: O(N^2)
 // Memory Complexity: O(N^2)
 // Tested:
 //   https://www.spoj.com/problems/MPOW/
-template <class T> Matrix<T> identity(int N) {
+template <class T> Matrix<T> identityMatrix(int N) {
   Matrix<T> A = makeMatrix<T>(N, N);
   for (int i = 0; i < N; i++) A[i][i] = T(1);
   return A;
@@ -77,7 +76,7 @@ template <class T> Matrix<T> identity(int N) {
 // Tested:
 //   Fuzz Tested
 template <class T> Matrix<T> transpose(const Matrix<T> &A) {
-  Matrix<T> C = makeMatrix<T>(getN(A), getM(A));
+  Matrix<T> C = makeMatrix<T>(getM(A), getN(A));
   for (int i = 0; i < getN(C); i++) for (int j = 0; j < getM(C); j++)
     C[i][j] = A[j][i];
   return C;
@@ -201,7 +200,7 @@ Matrix<T> &operator *= (Matrix<T> &A, const Matrix<T> &B) { return A = A * B; }
 //   https://www.spoj.com/problems/MPOW/
 template <class T, class U> Matrix<T> powMat(Matrix<T> A, U pow) {
   assert(getN(A) == getM(A));
-  Matrix<T> x = identity<T>(getN(A)); while (true) {
+  Matrix<T> x = identityMatrix<T>(getN(A)); while (true) {
     if (pow % 2 == 1) x *= A;
     if ((pow /= 2) == 0) break;
     A *= A;
@@ -252,7 +251,7 @@ template <class T> T det(Matrix<T> A) {
 //   https://www.spoj.com/problems/MIFF/
 template <class T> Matrix<T> invMat(Matrix<T> A, T EPS = T(1e-9)) {
   auto abs = [&] (T a) { return a >= 0 ? a : -a; };
-  int N = getN(A); assert(N == getM(A)); Matrix<T> I = identity<T>(N);
+  int N = getN(A); assert(N == getM(A)); Matrix<T> I = identityMatrix<T>(N);
   for (int i = 0; i < N; i++) {
     int mx = i; for (int j = i; j < N; j++)
       if (A[j][i] != 0) { mx = j; break; }

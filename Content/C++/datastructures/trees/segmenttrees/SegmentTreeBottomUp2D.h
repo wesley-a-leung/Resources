@@ -71,7 +71,7 @@ template <class C> struct SegmentTreeBottomUp2D {
   }
   void update(int i, int j, const Lazy &v) {
     for (int ii = N + i; ii > 0; ii /= 2) {
-      if (ii == N + i) TR[ii][M + j] = C::applyLazy(TR[N + i][M + j], v);
+      if (ii == N + i) TR[N + i][M + j] = C::applyLazy(TR[N + i][M + j], v);
       else TR[ii][M + j] = C::merge(TR[ii * 2][M + j], TR[ii * 2 + 1][M + j]);
       for (int jj = M + j; jj /= 2;)
         TR[ii][jj] = C::merge(TR[ii][jj * 2], TR[ii][jj * 2 + 1]);
