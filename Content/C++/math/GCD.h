@@ -11,7 +11,7 @@ using namespace std;
 //   b: the second value
 // Return Value: the greatest common divisor of a and b
 // In practice, has a small constant
-// Time Complexity: O(log(max(a, b)))
+// Time Complexity: O(log(min(a, b)))
 // Memory Complexity: O(1)
 // Tested:
 //   https://hackerrank.com/contests/projecteuler/challenges/euler005/problem
@@ -26,7 +26,7 @@ template <class T> T gcd(T a, T b) { return b == 0 ? abs(a) : gcd(b, a % b); }
 //   b: the second value
 // Return Value: the lowest common multiple of a and b
 // In practice, has a small constant
-// Time Complexity: O(log(max(a, b)))
+// Time Complexity: O(log(min(a, b)))
 // Memory Complexity: O(1)
 // Tested:
 //   https://hackerrank.com/contests/projecteuler/challenges/euler005/problem
@@ -44,7 +44,7 @@ template <class T> T lcm(T a, T b) {
 //   y: a reference to a variable to store y
 // Return Value: the greatest common divisor of a and b
 // In practice, has a small constant
-// Time Complexity: O(log(max(a, b)))
+// Time Complexity: O(log(min(a, b)))
 // Memory Complexity: O(1)
 // Tested:
 //   https://dmoj.ca/problem/modinv
@@ -118,7 +118,7 @@ template <class T> pair<T, T> solveCongruence(T a, T c, T m) {
 //   y: a reference to a pair storing y and its mod (equal to -a / gcd(a, b))
 // Return Value: true if there is a solution, false otherwise
 // In practice, has a small constant
-// Time Complexity: O(log(max(a, b)))
+// Time Complexity: O(log(min(a, b)))
 // Memory Complexity: O(1)
 // Tested:
 //   https://www.spoj.com/problems/CEQU/
@@ -141,7 +141,7 @@ template <class T> bool LDE(T a, T b, T c, pair<T, T> &x, pair<T, T> &y) {
 // Return Value: the pair x and lcm(a.second, b.second) where
 //   0 <= x < lcm(a.second, b.second), x is -1 if there is no solution
 // In practice, has a small constant
-// Time Complexity: O(log(max(a.second, b.second)))
+// Time Complexity: O(log(min(a.second, b.second)))
 // Memory Complexity: O(1)
 // Tested:
 //   https://open.kattis.com/problems/generalchineseremainder
