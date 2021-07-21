@@ -50,14 +50,3 @@ void addOr(bool affA, int a, bool affB, int b, const F &f) {
 template <class F> void setTrue(int a, const F &f) {
   addImpl(false, a, true, a, f);
 }
-
-// Sets the variable a to false
-// Template Arguments:
-//   F: the type of f
-// Functions Arguments:
-//   a: the variable
-//   f(i, j): the function to run a callback on for the corresponding edge
-//     created by setting this variable to false
-template <class F> void setFalse(int a, const F &f) {
-  addImpl(true, a, false, a, f);
-}
