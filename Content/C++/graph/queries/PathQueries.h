@@ -116,7 +116,7 @@ struct PathQueries : public HLD {
   Data queryVertex(int v) { return ops.query(pre[v], pre[v], false); }
   Data querySubtree(int v) {
     int l = pre[v] + VALUES_ON_EDGES, r = post[v];
-    return l <= r ? ops.query(l, r, false) : ops.qdef;
+    return l <= r ? ops.query(l, r, false) : R::qdef();
   }
   vector<Data> reorder(const vector<Data> &A) {
     vector<Data> ret; ret.reserve(V);
