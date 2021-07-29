@@ -88,7 +88,7 @@ struct HLD {
     if (roots.empty()) {
       for (int v = 0; v < V; v++)
         if (root[v] == -1) { dfs(G, v, -1, v, 0); hld(G, v, -1); }
-    } else for (int v : root) { dfs(G, v, -1, v, 0); hld(G, v, -1); }
+    } else for (int v : roots) { dfs(G, v, -1, v, 0); hld(G, v, -1); }
   }
   template <class Forest> HLD(const Forest &G, int rt)
       : HLD(G, vector<int>{rt}) {}
