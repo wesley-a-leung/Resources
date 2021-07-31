@@ -25,6 +25,7 @@ using namespace std;
 // Memory Complexity: O(V^2)
 // Tested:
 //   https://uoj.ac/problem/81
+//   https://judge.yosupo.jp/problem/general_weighted_matching
 template <class T> struct GeneralWeightedMaxMatch {
   struct Edge {
     int v, w; T weight; Edge() : v(0), w(0), weight(T()) {}

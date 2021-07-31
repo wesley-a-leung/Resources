@@ -249,6 +249,7 @@ template <class T> T det(Matrix<T> A) {
 // Memory Complexity: O(N^2)
 // Tested:
 //   https://www.spoj.com/problems/MIFF/
+//   https://judge.yosupo.jp/problem/inverse_matrix
 template <class T> Matrix<T> invMat(Matrix<T> A, T EPS = T(1e-9)) {
   auto abs = [&] (T a) { return a >= 0 ? a : -a; };
   int N = getN(A); assert(N == getM(A)); Matrix<T> I = identityMatrix<T>(N);

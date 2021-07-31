@@ -27,7 +27,8 @@ template <class T, class U> T tetraMod(T a, U n, T mod) {
   if (n == U(0)) return T(1) % mod;
   if (n == U(1)) return a % mod;
   if (n == U(2)) return powMod(a % mod, a, mod);
-  T p = phi(mod); return powMod(a % mod, tetraMod(a, n - 1, p) + p, mod);
+  T p = phi(mod), ret = tetraMod(a, n - 1, p); if (ret == 0) ret += p;
+  return powMod(a % mod, ret, mod);
 }
 
 // Helper function returning a * b % mod + mod if a * b >= mod, 
