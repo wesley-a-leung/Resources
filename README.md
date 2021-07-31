@@ -7,7 +7,7 @@ Data Structures, Algorithms, Utility Classes
 - C++ Resources compile with g++-10 in C++11, C++14, C++17, and C++20 on Ubuntu
 and Windows
 - Java Resources compile in Java 8, Java 11
-- Kotlin Resources compile in Kotlin 1.4
+- Kotlin Resources compile in Kotlin 1.5
 
 ### Licensing
 - most files are covered under [`LICENSE.txt`](https://github.com/wesley-a-leung/Resources/blob/main/LICENSE.txt)
