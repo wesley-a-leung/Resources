@@ -1,7 +1,7 @@
 #pragma once
 #include <bits/stdc++.h>
 #include "IncrementalMSTUndo.h"
-#include "../../queries/SetDivAndConq.h"
+#include "../../queries/LIFOSetDivAndConq.h"
 using namespace std;
 
 // Support queries for the minimum spanning tree, after edges have been
@@ -44,7 +44,7 @@ template <class U> struct DynamicMSTDivAndConqLCT {
     }
     R query(const Q &) { return imst.mstWeight; }
   };
-  int V; U NEG_INF; SetDivAndConq<S> s; vector<U> &ans = s.ans;
+  int V; U NEG_INF; LIFOSetDivAndConq<S> s; vector<U> &ans = s.ans;
   DynamicMSTDivAndConqLCT(int V, U NEG_INF = numeric_limits<U>::lowest())
       : V(V), NEG_INF(NEG_INF) {}
   void addEdge(int v, int w, U weight) {

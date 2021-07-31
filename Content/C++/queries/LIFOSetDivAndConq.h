@@ -54,7 +54,7 @@ using namespace std;
 // In practice, has a small constant
 // Tested:
 //   https://judge.yosupo.jp/problem/dynamic_graph_vertex_add_component_sum
-template <class S> struct SetDivAndConq {
+template <class S> struct LIFOSetDivAndConq {
   using T = typename S::T; using R = typename S::R; using Q = typename S::Q;
   vector<T> add, rem; vector<Q> queries; vector<R> ans; vector<int> type;
   void addElement(const T &v) { add.push_back(v); type.push_back(1); }
@@ -81,7 +81,8 @@ template <class S> struct SetDivAndConq {
           ans.push_back(s.query(queries[events[l].first]));
         return;
       }
-      int m = l + (r - l) / 2; s.saveOnStack(); for (int i = m + 1; i <= r; i++)
+      int m = l + (r - l) / 2; s.saveOnStack();
+      for (int i = m + 1; i <= r; i++)
         if (events[i].second < l) s.add(A[events[i].first]);
       dc(l, m); s.rollback(); s.saveOnStack(); for (int i = l; i <= m; i++)
         if (events[i].second > r) s.add(A[events[i].first]);
