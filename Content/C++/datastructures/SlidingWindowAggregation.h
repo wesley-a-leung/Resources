@@ -34,9 +34,8 @@ template <class T, class Op> struct SWAG {
   void push(const T &v) { q.push_back(v); backAgg = op(backAgg, v); }
   T getAgg() const { return front == mid ? backAgg : op(q[front], backAgg); }
   void pop() {
-    if (front++ == mid) {
-      for (int i = int(q.size()) - 2; i >= mid; i--) q[i] = op(q[i], q[i + 1]);
-      mid = q.size(); backAgg = qdef;
-    }
+    if (front++ < mid) return;
+    for (int i = int(q.size()) - 2; i >= mid; i--) q[i] = op(q[i], q[i + 1]);
+    mid = q.size(); backAgg = qdef;
   }
 };
