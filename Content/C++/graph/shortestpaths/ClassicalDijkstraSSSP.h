@@ -42,7 +42,7 @@ template <class T> struct ClassicalDijkstraSSSP {
     for (int i = 0; i < int(G.size()) - 1; i++) {
       int v = -1; for (int w = 0; w < int(G.size()); w++)
         if (!done[w] && (v == -1 || dist[v] > dist[w])) v = w;
-      if (dist[v] == INF) break;
+      if (dist[v] >= INF) break;
       done[v] = true;
       for (auto &&e : G[v]) if (dist[e.first] > dist[v] + e.second)
         dist[e.first] = dist[par[e.first] = v] + e.second;

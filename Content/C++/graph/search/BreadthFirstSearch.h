@@ -46,7 +46,7 @@ template <class T = int> struct BFS {
     for (int s : srcs) dist[q[back++] = s] = T();
     while (front < back) {
       int v = q[front++]; for (auto &&e : G[v]) {
-        int w = getTo(e); if (dist[w] == INF)
+        int w = getTo(e); if (dist[w] >= INF)
           dist[q[back++] = w] = dist[par[w] = v] + getWeight(e);
       }
     }

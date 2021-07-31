@@ -32,7 +32,7 @@ template <class T> struct ClassicalPrimMST {
       mn[s] = T(); while (true) {
         int v = -1; for (int w = 0; w < V; w++)
           if (!done[w] && (v == -1 || mn[v] > mn[w])) v = w;
-        if (v == -1 || mn[v] == INF) break;
+        if (v == -1 || mn[v] >= INF) break;
         done[v] = true;
         for (auto &&e : G[v]) if (!done[e.first] && e.second < mn[e.first]) {
           to[e.first] = v; mn[e.first] = e.second;

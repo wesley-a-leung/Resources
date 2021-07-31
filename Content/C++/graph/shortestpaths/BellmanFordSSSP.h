@@ -50,7 +50,7 @@ template <class T> struct BellmanFordSSSP {
       inCycle = false; for (auto &&e : edges) {
         int v, w; T weight; tie(v, w, weight) = e;
         if (dist[v] < INF && dist[w] > -INF
-            && (dist[v] == -INF || dist[w] > dist[v] + weight)) {
+            && (dist[v] <= -INF || dist[w] > dist[v] + weight)) {
           dist[w] = -INF; inCycle = hasNegativeCycle = true;
         }
       }

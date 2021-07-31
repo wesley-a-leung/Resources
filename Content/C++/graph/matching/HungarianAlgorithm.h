@@ -61,7 +61,7 @@ template <class T> struct HungarianAlgorithm {
         done[j0] = true; int i0 = workerForJob[j0], j1 = M;
         pair<int, T> delta = make_pair(1, T());
         for (int j = 0; j < M; j++) if (!done[j]) {
-          pair<int, T> d = A[i0][j] == INF ? make_pair(1, T())
+          pair<int, T> d = A[i0][j] >= INF ? make_pair(1, T())
                                            : make_pair(0, A[i0][j]);
           sub(d, d1[i0]); sub(d, d2[j]);
           if (dist[j].first > 0 || d < dist[j]) { dist[j] = d; par[j] = j0; }

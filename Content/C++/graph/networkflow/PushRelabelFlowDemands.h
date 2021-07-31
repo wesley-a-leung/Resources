@@ -3,7 +3,7 @@
 #include "PushRelabelMaxFlow.h"
 using namespace std;
 
-// A sample edge struct for maximum flow with demands
+// A sample edge struct for flow with demands
 // Flow of edge can be found with cap - resCap
 // Template Arguments:
 //   _FlowUnit: the type of the flow
@@ -29,9 +29,9 @@ template <class _FlowUnit> struct FlowEdgeDemands {
       : to(to), rev(rev), dem(dem), cap(cap), resCap(cap) {}
 };
 
-// Computes the maximum flow in a flow network with edge demands using the
-//   Push Relabel algorithm with the highest label selection rule and
-//   gap relabelling heuristic
+// Computes the minimum/feasible/maximum flow in a flow network with
+//   edge demands using the Push Relabel algorithm with the highest label
+//   selection rule and gap relabelling heuristic
 // Vertices are 0-indexed
 // Template Arguments:
 //   Edge: a generic edge class (such as FlowEdgeDemands)
@@ -78,11 +78,11 @@ template <class _FlowUnit> struct FlowEdgeDemands {
 //   https://dmoj.ca/problem/wac4p6
 //   https://codeforces.com/gym/100199/problem/B
 template <class Edge>
-struct PushRelabelMaxFlowDemands : public PushRelabelMaxFlow<Edge> {
+struct PushRelabelFlowDemands : public PushRelabelMaxFlow<Edge> {
   using MF = PushRelabelMaxFlow<Edge>;
   using FlowUnit = typename Edge::FlowUnit; using MF::V; using MF::G;
   FlowUnit FLOW_INF; vector<FlowUnit> outDem, inDem;
-  PushRelabelMaxFlowDemands(
+  PushRelabelFlowDemands(
       int V, FlowUnit FLOW_INF = numeric_limits<FlowUnit>::max(),
       FlowUnit FLOW_EPS = FlowUnit(1e-9))
       : MF(V, FLOW_EPS), FLOW_INF(FLOW_INF),

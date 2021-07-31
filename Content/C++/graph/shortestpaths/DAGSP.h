@@ -52,7 +52,7 @@ template <class T, class Cmp = less<T>> struct DAGSP {
     for (int s : srcs) dist[s] = T();
     for (int v : ord.ord) for (auto &&e : G[v]) {
       int w = getTo(e); T weight = getWeight(e);
-      if (dist[v] != INF && Cmp()(dist[v] + weight, dist[w]))
+      if (Cmp()(dist[v], INF) && Cmp()(dist[v] + weight, dist[w]))
         dist[w] = dist[par[w] = v] + weight;
     }
   }

@@ -37,11 +37,11 @@ vector<V> boundedKnapsack(It st, It en, int M,
     if (w <= M) for (int s = 0; s < w; s++) {
       V alpha = V(); int ql = 0, qr = 0, dql = 0, dqr = 0;
       for (int j = s; j <= M; j += w) {
-        alpha += v; V a = dp[j] == NEG_INF ? NEG_INF : dp[j] - alpha;
+        alpha += v; V a = dp[j] <= NEG_INF ? NEG_INF : dp[j] - alpha;
         while (dql < dqr && dq[dqr - 1] < a) dqr--;
         q[qr++] = dq[dqr++] = a;
         while (qr - ql > f + 1) if (q[ql++] == dq[dql]) dql++;
-        dp[j] = dq[dql] == NEG_INF ? NEG_INF : dq[dql] + alpha;
+        dp[j] = dq[dql] <= NEG_INF ? NEG_INF : dq[dql] + alpha;
       }
     }
   }
@@ -83,11 +83,11 @@ vector<W> boundedKnapsackDual(It st, It en, int K,
     if (v <= K) for (int s = 0; s < v; s++) {
       W alpha = W(); int ql = 0, qr = 0, dql = 0, dqr = 0;
       for (int j = s; j <= K; j += v) {
-        alpha += w; W a = dp[j] == INF ? INF : dp[j] - alpha;
+        alpha += w; W a = dp[j] >= INF ? INF : dp[j] - alpha;
         while (dql < dqr && dq[dqr - 1] > a) dqr--;
         q[qr++] = dq[dqr++] = a;
         while (qr - ql > f + 1) if (q[ql++] == dq[dql]) dql++;
-        dp[j] = dq[dql] == INF ? INF : dq[dql] + alpha;
+        dp[j] = dq[dql] >= INF ? INF : dq[dql] + alpha;
       }
     }
   }

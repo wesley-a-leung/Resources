@@ -14,7 +14,8 @@ using namespace std;
 //   mstWeight: the weight of the current mst
 //   mstEdges: a vector of tuples of the edges in the current mst in the form
 //     (v, w, weight) representing an undirected edge in the graph between
-//     vertices v and w with weight of weight
+//     vertices v and w with weight of weight, returns true if the edge is
+//     added, false otherwise
 //   lct: a Link Cut Tree of the current mst of the graph
 // Functions:
 //   addEdge(v, w, weight): adds an undirected edge in the graph between
@@ -59,10 +60,10 @@ template <class T> struct IncrementalMST {
         lct(V + top, [&] { return make_pair(NEG_INF, -1); }) {
     iota(stk.rbegin(), stk.rend(), 0); mstEdges.reserve(top);
   }
-  void addEdge(int v, int w, T weight) {
-    if (v == w) return;
+  bool addEdge(int v, int w, T weight) {
+    if (v == w) return false;
     T z; int j; tie(z, j) = lct.queryPath(v, w); if (j != -1) {
-      if (z <= weight) return;
+      if (z <= weight) return false;
       lct.cut(get<0>(mstEdges[j]), V + j); lct.cut(get<1>(mstEdges[j]), V + j);
       stk[top++] = j; mstWeight -= z;
     }
@@ -70,6 +71,6 @@ template <class T> struct IncrementalMST {
     if (j >= int(mstEdges.size())) mstEdges.push_back(e);
     else mstEdges[j] = e;
     lct.updateVertex(V + j, make_pair(weight, j));
-    lct.link(v, V + j); lct.link(w, V + j); mstWeight += weight;
+    lct.link(v, V + j); lct.link(w, V + j); mstWeight += weight; return true;
   }
 };

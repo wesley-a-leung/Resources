@@ -87,7 +87,7 @@ template <class T, const int MAXV> struct JohnsonAPSP {
         if (neg[id[s]][id[v]]) dist[s][v] = -INF;
     }
     if (hasNegativeWeight) for (int v = 0; v < V; v++)
-      for (int w = 0; w < V; w++) if (dist[v][w] != INF && dist[v][w] != -INF)
+      for (int w = 0; w < V; w++) if (dist[v][w] < INF && dist[v][w] > -INF)
         dist[v][w] = dist[v][w] - h[v] + h[w];
   }
   vector<Edge> getPath(int v, int w) {
