@@ -28,13 +28,15 @@ using namespace std;
 // Tested:
 //   https://judge.yosupo.jp/problem/queue_operate_all_composite
 template <class T, class Op> struct SWAG {
-  vector<T> A, B; T qdef, bAgg; Op op;
-  SWAG(const T &qdef, Op op = Op()) : qdef(qdef), bAgg(qdef), op(op) {}
-  void push(const T &v) { B.push_back(v); bAgg = op(bAgg, v); }
-  T getAgg() const { return A.empty() ? bAgg : op(A.back(), bAgg); }
+  vector<T> q; T qdef, backAgg; int front, mid; Op op;
+  SWAG(const T &qdef, Op op = Op())
+      : qdef(qdef), backAgg(qdef), front(0), mid(0), op(op) {}
+  void push(const T &v) { q.push_back(v); backAgg = op(backAgg, v); }
+  T getAgg() const { return front == mid ? backAgg : op(q[front], backAgg); }
   void pop() {
-    if (A.empty()) for (T aAgg = bAgg = qdef; !B.empty(); B.pop_back())
-      A.push_back(aAgg = op(B.back(), aAgg));
-    A.pop_back();
+    if (front++ == mid) {
+      for (int i = int(q.size()) - 2; i >= mid; i--) q[i] = op(q[i], q[i + 1]);
+      mid = q.size(); backAgg = qdef;
+    }
   }
 };
