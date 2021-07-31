@@ -3,8 +3,8 @@
 using namespace std;
 
 // Uses divide and conquer to answer offline ranges queries over
-//   a multiset where elements can be added at any time, but elements can only
-//   be deleted in LIFO order
+//   a multiset where elements can be added or removed at anytime, but the
+//   underlying data structure is only able to deleted elements in LIFO order
 // Template Arguments:
 //   S: struct to maintain a multiset of elements
 //   Required Fields:
@@ -13,7 +13,7 @@ using namespace std;
 //     Q: the query object that contains information for each query
 //   Required Functions:
 //     constructor(...args): takes any number of arguments (arguments are
-//       passed from constructor of SetDivAndConq)
+//       passed from constructor of LIFOSetDivAndConq)
 //     add(v): adds the value v to the multiset
 //     saveOnStack(): adds the current state to the save stack
 //     rollback(): rollbacks the multiset to the top of the save stack, and
