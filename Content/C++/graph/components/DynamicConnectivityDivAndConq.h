@@ -1,6 +1,7 @@
 #pragma once
 #include <bits/stdc++.h>
 #include "../../datastructures/unionfind/UnionFindUndo.h"
+#include "../../queries/SetDivAndConq.h"
 using namespace std;
 
 // Support queries on connected components, after edges have been
@@ -30,55 +31,39 @@ using namespace std;
 //   https://codeforces.com/gym/100551/problem/A
 //   https://codeforces.com/gym/100551/problem/E
 struct DynamicConnectivityDivAndConq {
-  int V; vector<tuple<int, int, int, int>> queries; vector<int> ans;
+  struct S {
+    using T = pair<int, int>; using R = int;
+    struct Q { int type, v, w; };
+    UnionFindUndo uf; vector<int> stk;
+    S(int V) : uf(V) {}
+    void add(const T &v) { uf.join(v.first, v.second); }
+    void saveOnStack() { stk.push_back(uf.history.size()); }
+    void rollback() {
+      while (int(uf.history.size()) > stk.back()) uf.undo();
+      stk.pop_back();
+    }
+    R query(const Q &q) {
+      if (q.type == 1) return uf.connected(q.v, q.w);
+      else if (q.type == 2) return uf.getSize(q.v);
+      else return uf.cnt;
+    }
+  };
+  int V; SetDivAndConq<S> s; vector<int> &ans = s.ans;
   DynamicConnectivityDivAndConq(int V) : V(V) {}
   void addEdge(int v, int w) {
     if (v > w) swap(v, w);
-    queries.emplace_back(0, v, w, -1);
+    s.addElement(make_pair(v, w));
   }
   void removeEdge(int v, int w) {
     if (v > w) swap(v, w);
-    queries.emplace_back(1, v, w, -1);
+    s.removeElement(make_pair(v, w));
   }
   void addConnectedQuery(int v, int w) {
-    queries.emplace_back(2, v, w, queries.size());
+    S::Q q; q.type = 1; q.v = v; q.w = w; s.addQuery(q);
   }
-  void addSizeQuery(int v) { queries.emplace_back(3, v, v, queries.size()); }
-  void addCntQuery() { queries.emplace_back(4, -1, -1, queries.size()); }
-  void solveQueries() {
-    vector<pair<int, int>> edges; int Q = queries.size(); edges.reserve(Q);
-    for (auto &&q : queries) if (get<0>(q) == 0)
-      edges.emplace_back(get<1>(q), get<2>(q));
-    sort(edges.begin(), edges.end()); vector<int> last(edges.size(), INT_MAX);
-    for (int i = 0; i < Q; i++) {
-      int t, v, w, _; tie(t, v, w, _) = queries[i]; if (t == 0) {
-        int j = lower_bound(edges.begin(), edges.end(), make_pair(v, w))
-            - edges.begin();
-        get<3>(queries[i]) = last[j]; last[j] = i;
-      } else if (t == 1) {
-        int j = lower_bound(edges.begin(), edges.end(), make_pair(v, w))
-            - edges.begin();
-        int temp = get<3>(queries[get<3>(queries[i]) = last[j]]);
-        get<3>(queries[last[j]]) = i; last[j] = temp;
-      }
-    }
-    UnionFindUndo uf(V); ans.clear(); ans.reserve(Q);
-    function<void(int, int)> dc = [&] (int l, int r) {
-      if (l == r) {
-        int t, v, w, _; tie(t, v, w, _) = queries[l];
-        if (t == 2) ans.push_back(uf.connected(v, w));
-        else if (t == 3) ans.push_back(uf.getSize(v));
-        else if (t == 4) ans.push_back(uf.cnt);
-        return;
-      }
-      int m = l + (r - l) / 2, curSize = uf.history.size();
-      for (int i = m + 1; i <= r; i++) if (get<3>(queries[i]) < l)
-        uf.join(get<1>(queries[i]), get<2>(queries[i]));
-      dc(l, m); while (int(uf.history.size()) > curSize) uf.undo();
-      for (int i = l; i <= m; i++) if (get<3>(queries[i]) > r)
-        uf.join(get<1>(queries[i]), get<2>(queries[i]));
-      dc(m + 1, r); while (int(uf.history.size()) > curSize) uf.undo();
-    };
-    if (Q > 0) dc(0, Q - 1);
+  void addSizeQuery(int v) {
+    S::Q q; q.type = 2; q.v = q.w = v; s.addQuery(q);
   }
+  void addCntQuery() { S::Q q; q.type = 3; q.v = q.w = -1; s.addQuery(q); }
+  void solveQueries() { s.solveQueries(V); }
 };

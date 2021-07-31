@@ -10,8 +10,7 @@ using namespace std;
 //   UF: a vector of integers representing the parent of each element in the
 //     tree, or the negative of the size of the set if that element is a root
 //   cnt: the current number of disjoint sets
-//   history: a vector of tuples storing the history of all join calls that
-//     returned true
+//   history: a vector of tuples storing the history of all join calls
 // Functions:
 //   find(v): finds the root of the set containing element v
 //   join(v, w): merges the sets containing v and w, returns true if they

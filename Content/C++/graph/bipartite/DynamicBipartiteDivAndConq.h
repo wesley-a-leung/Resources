@@ -1,6 +1,7 @@
 #pragma once
 #include <bits/stdc++.h>
 #include "IncrementalBipartiteUndo.h"
+#include "../../queries/SetDivAndConq.h"
 using namespace std;
 
 // Support queries on connected components and bipartiteness, after edges
@@ -39,69 +40,55 @@ using namespace std;
 // Tested:
 //   https://codeforces.com/contest/813/problem/F
 struct DynamicBipartiteDivAndConq {
-  int V; vector<tuple<int, int, int, int>> queries; vector<int> ans;
+  struct S {
+    using T = pair<int, int>; using R = int;
+    struct Q { int type, v, w; };
+    IncrementalBipartiteUndo uf; vector<int> stk;
+    S(int V) : uf(V) {}
+    void add(const T &v) { uf.addEdge(v.first, v.second); }
+    void saveOnStack() { stk.push_back(uf.history.size()); }
+    void rollback() {
+      while (int(uf.history.size()) > stk.back()) uf.undo();
+      stk.pop_back();
+    }
+    R query(const Q &q) {
+      if (q.type == 1) return uf.connected(q.v, q.w);
+      else if (q.type == 2) return uf.getSize(q.v);
+      else if (q.type == 3) return uf.cnt;
+      else if (q.type == 4) return uf.componentBipartite(q.v);
+      else if (q.type == 5) return uf.bipartiteGraph;
+      else if (q.type == 6) return uf.color(q.v);
+      else return uf.pathParity(q.v, q.w);
+    }
+  };
+  int V; SetDivAndConq<S> s; vector<int> &ans = s.ans;
   DynamicBipartiteDivAndConq(int V) : V(V) {}
   void addEdge(int v, int w) {
     if (v > w) swap(v, w);
-    queries.emplace_back(0, v, w, -1);
+    s.addElement(make_pair(v, w));
   }
   void removeEdge(int v, int w) {
     if (v > w) swap(v, w);
-    queries.emplace_back(1, v, w, -1);
+    s.removeElement(make_pair(v, w));
   }
   void addConnectedQuery(int v, int w) {
-    queries.emplace_back(2, v, w, queries.size());
+    S::Q q; q.type = 1; q.v = v; q.w = w; s.addQuery(q);
   }
-  void addSizeQuery(int v) { queries.emplace_back(3, v, v, queries.size()); }
-  void addCntQuery() { queries.emplace_back(4, -1, -1, queries.size()); }
+  void addSizeQuery(int v) {
+    S::Q q; q.type = 2; q.v = q.w = v; s.addQuery(q);
+  }
+  void addCntQuery() { S::Q q; q.type = 3; q.v = q.w = -1; s.addQuery(q); }
   void addComponentBipartiteQuery(int v) {
-    queries.emplace_back(5, v, v, queries.size());
+    S::Q q; q.type = 4; q.v = q.w = v; s.addQuery(q);
   }
   void addBipartiteGraphQuery() {
-    queries.emplace_back(6, -1, -1, queries.size());
+    S::Q q; q.type = 5; q.v = q.w = -1; s.addQuery(q);
   }
-  void addColorQuery(int v) { queries.emplace_back(7, v, v, queries.size()); }
+  void addColorQuery(int v) {
+    S::Q q; q.type = 6; q.v = q.w = v; s.addQuery(q);
+  }
   void addPathParityQuery(int v, int w) {
-    queries.emplace_back(8, v, w, queries.size());
+    S::Q q; q.type = 7; q.v = v; q.w = w; s.addQuery(q);
   }
-  void solveQueries() {
-    vector<pair<int, int>> edges; int Q = queries.size(); edges.reserve(Q);
-    for (auto &&q : queries) if (get<0>(q) == 0)
-      edges.emplace_back(get<1>(q), get<2>(q));
-    sort(edges.begin(), edges.end()); vector<int> last(edges.size(), INT_MAX);
-    for (int i = 0; i < Q; i++) {
-      int t, v, w, _; tie(t, v, w, _) = queries[i]; if (t == 0) {
-        int j = lower_bound(edges.begin(), edges.end(), make_pair(v, w))
-            - edges.begin();
-        get<3>(queries[i]) = last[j]; last[j] = i;
-      } else if (t == 1) {
-        int j = lower_bound(edges.begin(), edges.end(), make_pair(v, w))
-            - edges.begin();
-        int temp = get<3>(queries[get<3>(queries[i]) = last[j]]);
-        get<3>(queries[last[j]]) = i; last[j] = temp;
-      }
-    }
-    IncrementalBipartiteUndo uf(V); ans.clear(); ans.reserve(Q);
-    function<void(int, int)> dc = [&] (int l, int r) {
-      if (l == r) {
-        int t, v, w, _; tie(t, v, w, _) = queries[l];
-        if (t == 2) ans.push_back(uf.connected(v, w));
-        else if (t == 3) ans.push_back(uf.getSize(v));
-        else if (t == 4) ans.push_back(uf.cnt);
-        else if (t == 5) ans.push_back(uf.componentBipartite(v));
-        else if (t == 6) ans.push_back(uf.bipartiteGraph);
-        else if (t == 7) ans.push_back(uf.color(v));
-        else if (t == 8) ans.push_back(uf.pathParity(v, w));
-        return;
-      }
-      int m = l + (r - l) / 2, curSize = uf.history.size();
-      for (int i = m + 1; i <= r; i++) if (get<3>(queries[i]) < l)
-        uf.addEdge(get<1>(queries[i]), get<2>(queries[i]));
-      dc(l, m); while (int(uf.history.size()) > curSize) uf.undo();
-      for (int i = l; i <= m; i++) if (get<3>(queries[i]) > r)
-        uf.addEdge(get<1>(queries[i]), get<2>(queries[i]));
-      dc(m + 1, r); while (int(uf.history.size()) > curSize) uf.undo();
-    };
-    if (Q > 0) dc(0, Q - 1);
-  }
+  void solveQueries() { s.solveQueries(V); }
 };

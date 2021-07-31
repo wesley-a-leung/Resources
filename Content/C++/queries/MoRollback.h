@@ -52,8 +52,8 @@ using namespace std;
 //   constructor: O(C + K ((log K + A sqrt N) + R + T) + D sqrt N)
 //     for K queries where C is the time complexity of S's constructor,
 //     A is the time complexity of S.add, T is the time complexity of S.query,
-//     R is the time complexity of S.rollback, and D is the time complexity of
-//     S.reset
+//     R is the time complexity of S.save and S.rollback,
+//     and D is the time complexity of S.reset
 // Memory Complexity: O(K + M) for K queries where M is the memory complexity
 //   of S
 // Tested:
