@@ -12,7 +12,8 @@ using namespace std;
 //   T: the type of each element
 //   Op: a struct with the cumulative operation (plus<T> by default)
 //     Required Functions:
-//       operator (l, r): combines the values l and r
+//       operator (l, r): combines the values l and r, must be associative and
+//         commutatitve
 //   Inv: a struct with the inverse cumulative operation (minus<T> by default),
 //       if Op has no inverse, some dummy struct may need to be provided
 //     Required Functions:

@@ -12,7 +12,8 @@ using namespace std;
 //   T: the type of each element
 //   Op: a struct with the cumulative operation (plus<T> by default)
 //     Required Functions:
-//       operator (l, r): combines the values l and r
+//       operator (l, r): combines the values l and r, must be associative and
+//         commutatitve
 // Constructor Arguments:
 //   N: the size of the array
 //   f: a generating function that returns the ith element on the ith call

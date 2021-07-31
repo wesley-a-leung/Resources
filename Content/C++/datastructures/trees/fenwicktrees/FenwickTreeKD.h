@@ -11,7 +11,8 @@ using namespace std;
 //   T: the type of each element
 //   Op: a struct with the cumulative operation (plus<T> by default)
 //     Required Functions:
-//       operator (l, r): combines the values l and r
+//       operator (l, r): combines the values l and r, must be associative and
+//         commutatitve
 // Constructor Arguments:
 //   D: a vector of length K with the size of each dimension
 //   st: an iterator pointing to the first element in the flattened array

@@ -12,7 +12,7 @@ using namespace std;
 //       std::function<T(T, T)>); in practice, custom struct is faster than
 ///      std::function
 //     Required Functions:
-//       operator (l, r): merges the values l and r, must be associative
+//       operator (l, r): combines the values l and r, must be associative
 // Constructor Arguments:
 //   N: the size of the array
 //   f: a generating function that returns the ith element on the ith call

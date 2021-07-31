@@ -8,7 +8,8 @@ using namespace std;
 //   T: the type of the weight
 //   Op: a struct with the cumulative operation to combine weights
 //     Required Functions:
-//       operator (l, r): combines the values l and r
+//       operator (l, r): combines the values l and r, must be associative and
+//         commutative
 // Constructor Arguments:
 //   W: a vector of type T of the weights of each element in the set
 //   op: an instance of the Op struct

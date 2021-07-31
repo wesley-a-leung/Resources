@@ -13,7 +13,7 @@ using namespace std;
 //       std::function<T(T, T)>); in practice, custom struct is faster than
 ///      std::function
 //     Required Functions:
-//       operator (l, r): merges the values l and r, must be
+//       operator (l, r): combines the values l and r, must be
 //         associative and idempotent
 // Constructor Arguments:
 //   N: the size of the array

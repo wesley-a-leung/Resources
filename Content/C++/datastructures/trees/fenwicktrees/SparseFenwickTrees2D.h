@@ -22,7 +22,8 @@ using namespace __gnu_pbds;
 //   IndexType: the type of the index of the second dimension of the array
 //   Op: a struct with the cumulative operation (plus<T> by default)
 //     Required Functions:
-//       operator (l, r): combines the values l and r
+//       operator (l, r): combines the values l and r, must be associative and
+//         commutatitve
 // Constructor Arguments:
 //   N: the size of the first dimension of the array
 //   updateInds: a vector of pairs of ints and IndexType containing the indices
@@ -107,7 +108,8 @@ struct OfflineSemiSparseFenwickTree2D {
 //   IndexType2: the type of the index of the second dimension of the array
 //   Op: a struct with the cumulative operation (plus<T> by default)
 //     Required Functions:
-//       operator (l, r): combines the values l and r
+//       operator (l, r): combines the values l and r, must be associative and
+//         commutatitve
 // Constructor Arguments:
 //   updateInds: a vector of pairs of IndexType1 and IndexType2 containing
 //     the indices for both dimensions for each update

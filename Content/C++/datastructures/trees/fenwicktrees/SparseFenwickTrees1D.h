@@ -22,7 +22,8 @@ using namespace __gnu_pbds;
 //   IndexType: the type of the index of the array
 //   Op: a struct with the cumulative operation (plus<T> by default)
 //     Required Functions:
-//       operator (l, r): combines the values l and r
+//       operator (l, r): combines the values l and r, must be associative and
+//         commutatitve
 // Constructor Arguments:
 //   N: the size of the array
 //   updateInds: a vector of IndexType containing the indices for each update
@@ -92,7 +93,8 @@ struct OfflineSparseFenwickTree1D {
 //   IndexType: the type of the index of the array
 //   Op: a struct with the cumulative operation (plus<T> by default)
 //     Required Functions:
-//       operator (l, r): combines the values l and r
+//       operator (l, r): combines the values l and r, must be associative and
+//         commutatitve
 // Constructor Arguments:
 //   N: the size of the array
 //   qdef: the identity element of the operation
