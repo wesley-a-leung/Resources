@@ -4,7 +4,8 @@ using namespace std;
 
 // Uses divide and conquer to answer offline ranges queries over
 //   a multiset where elements can be added or removed at anytime, but the
-//   underlying data structure is only able to deleted elements in LIFO order
+//   underlying data structure is only able to add and delete elements in FIFO
+//   order, as well as save and restore its state
 // Template Arguments:
 //   S: struct to maintain a multiset of elements
 //   Required Fields:
@@ -13,7 +14,7 @@ using namespace std;
 //     Q: the query object that contains information for each query
 //   Required Functions:
 //     constructor(...args): takes any number of arguments (arguments are
-//       passed from constructor of LIFOSetDivAndConq)
+//       passed from FIFOSetDivAndConq::solveQueries)
 //     add(v): adds the value v to the multiset
 //     saveOnStack(): adds the current state to the save stack
 //     rollback(): rollbacks the multiset to the top of the save stack, and
@@ -36,27 +37,29 @@ using namespace std;
 //       }
 //       R query(const Q &q) { return uf.getWeight(q.v); }
 //     };
+// Fields:
+//   ans: a vector of integers with the answer for each query
 // Functions:
 //   addElement(v): adds v to the multiset
 //   removeElement(v): removes v from the multiset
 //   addQuery(q): adds a query of type S::Q
 //   solveQueries(...args): solves all queries asked so far, with
 //     ...args being passed to the constructor of S
-// Time Complexity: O(C + A E (R + log E) + KT)
-//   for K queries and E total elements where C is the time complexity
-//   of S's constructor, A is the time complexity of S.add,
-//   T is the time complexity of S.query, and R is the time complexity of
-//   S.saveOnStack and S.rollback
+// In practice, has a small constant
+// Time Complexity:
+//   addElement, removeElement: O(1) amortized
+//   solveQueries: O(C + A E (R + log E) + KT)
+//     for K queries and E total elements where C is the time complexity
+//     of S's constructor, A is the time complexity of S.add,
+//     T is the time complexity of S.query, and R is the time complexity of
+//     S.saveOnStack and S.rollback
 // Memory Complexity: O(K + E + M) for K queries and E total elements, where
 //   M is the memory complexity of S
-// Fields:
-//   ans: a vector of integers with the answer for each query
-// In practice, has a small constant
 // Tested:
 //   https://judge.yosupo.jp/problem/dynamic_graph_vertex_add_component_sum
-template <class S> struct LIFOSetDivAndConq {
+template <class S> struct FIFOSetDivAndConq {
   using T = typename S::T; using R = typename S::R; using Q = typename S::Q;
-  vector<T> add, rem; vector<Q> queries; vector<R> ans; vector<int> type;
+  vector<T> add, rem; vector<Q> queries; vector<R> ans; vector<char> type;
   void addElement(const T &v) { add.push_back(v); type.push_back(1); }
   void removeElement(const T &v) { rem.push_back(v); type.push_back(-1); }
   void addQuery(const Q &q) { queries.push_back(q); type.push_back(0); }
