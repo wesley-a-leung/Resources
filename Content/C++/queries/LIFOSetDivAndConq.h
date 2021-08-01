@@ -15,10 +15,8 @@ using namespace std;
 //   Required Functions:
 //     constructor(...args): takes any number of arguments (arguments are
 //       passed from LIFOSetDivAndConq::solveQueries)
-//     add(v): adds the value v to the multiset
-//     saveOnStack(): adds the current state to the save stack
-//     rollback(): rollbacks the multiset to the top of the save stack, and
-//       pops from the save stack
+//     push(v): adds the value v to the multiset
+//     pop(): pops the most recent element pushed to the multiset
 //     query(q): returns the answer of type R for the query q of type Q to
 //       the multiset
 //   Sample Struct: supports queries for the sum of element in the same
@@ -27,14 +25,10 @@ using namespace std;
 //     struct S {
 //       using T = pair<int, int>; using R = long long;
 //       struct Q { int v; };
-//       WeightedUnionFindUndo<R, plus<R>> uf; vector<int> stk;
+//       WeightedUnionFindUndo<R, plus<R>> uf;
 //       S(const vector<R> &W) : uf(W) {}
-//       void add(const T &v) { uf.join(v.first, v.second); }
-//       void saveOnStack() { stk.push_back(uf.history.size()); }
-//       void rollback() {
-//         while (int(uf.history.size()) > stk.back()) uf.undo();
-//         stk.pop_back();
-//       }
+//       void push(const T &e) { uf.join(e.first, e.second); }
+//       void pop() { uf.undo(); }
 //       R query(const Q &q) { return uf.getWeight(q.v); }
 //     };
 // Fields:
@@ -48,11 +42,10 @@ using namespace std;
 // In practice, has a small constant
 // Time Complexity:
 //   addElement, removeElement: O(1) amortized
-//   solveQueries: O(C + A E (R + log E) + KT)
+//   solveQueries: O(C + P E log E + KT)
 //     for K queries and E total elements where C is the time complexity
-//     of S's constructor, A is the time complexity of S.add,
-//     T is the time complexity of S.query, and R is the time complexity of
-//     S.saveOnStack and S.rollback
+//     of S's constructor, P is the time complexity of S.push and S.pop,
+//     T is the time complexity of S.query
 // Memory Complexity: O(K + E + M) for K queries and E total elements, where
 //   M is the memory complexity of S
 // Tested:
@@ -84,12 +77,12 @@ template <class S> struct LIFOSetDivAndConq {
           ans.push_back(s.query(queries[events[l].first]));
         return;
       }
-      int m = l + (r - l) / 2; s.saveOnStack();
-      for (int i = m + 1; i <= r; i++)
-        if (events[i].second < l) s.add(A[events[i].first]);
-      dc(l, m); s.rollback(); s.saveOnStack(); for (int i = l; i <= m; i++)
-        if (events[i].second > r) s.add(A[events[i].first]);
-      dc(m + 1, r); s.rollback();
+      int m = l + (r - l) / 2; int cnt = 0; for (int i = m + 1; i <= r; i++)
+        if (events[i].second < l) { s.push(A[events[i].first]); cnt++; }
+      dc(l, m); for (int i = 0; i < cnt; i++) s.pop();
+      cnt = 0; for (int i = l; i <= m; i++)
+        if (events[i].second > r) { s.push(A[events[i].first]); cnt++; }
+      dc(m + 1, r); for (int i = 0; i < cnt; i++) s.pop();
     };
     if (E > 0) dc(0, E - 1);
   }

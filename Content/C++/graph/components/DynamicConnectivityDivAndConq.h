@@ -34,14 +34,10 @@ struct DynamicConnectivityDivAndConq {
   struct S {
     using T = pair<int, int>; using R = int;
     struct Q { int type, v, w; };
-    UnionFindUndo uf; vector<int> stk;
+    UnionFindUndo uf;
     S(int V) : uf(V) {}
-    void add(const T &v) { uf.join(v.first, v.second); }
-    void saveOnStack() { stk.push_back(uf.history.size()); }
-    void rollback() {
-      while (int(uf.history.size()) > stk.back()) uf.undo();
-      stk.pop_back();
-    }
+    void push(const T &e) { uf.join(e.first, e.second); }
+    void pop() { uf.undo(); }
     R query(const Q &q) {
       if (q.type == 1) return uf.connected(q.v, q.w);
       else if (q.type == 2) return uf.getSize(q.v);

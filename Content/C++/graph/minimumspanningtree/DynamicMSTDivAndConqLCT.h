@@ -34,14 +34,10 @@ template <class U> struct DynamicMSTDivAndConqLCT {
   struct S {
     using T = tuple<int, int, U>; using R = U;
     struct Q { bool _; };
-    IncrementalMSTUndo<U> imst; vector<int> stk;
+    IncrementalMSTUndo<U> imst;
     S(int V, U NEG_INF) : imst(V, NEG_INF) {}
-    void add(const T &v) { imst.addEdge(get<0>(v), get<1>(v), get<2>(v)); }
-    void saveOnStack() { stk.push_back(imst.history.size()); }
-    void rollback() {
-      while (int(imst.history.size()) > stk.back()) imst.undo();
-      stk.pop_back();
-    }
+    void push(const T &e) { imst.addEdge(get<0>(e), get<1>(e), get<2>(e)); }
+    void pop() { imst.undo(); }
     R query(const Q &) { return imst.mstWeight; }
   };
   int V; U NEG_INF; LIFOSetDivAndConq<S> s; vector<U> &ans = s.ans;
