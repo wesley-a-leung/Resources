@@ -1,7 +1,7 @@
 #pragma once
 #include <bits/stdc++.h>
 #include "../../datastructures/unionfind/UnionFindUndo.h"
-#include "../../queries/FIFOSetDivAndConq.h"
+#include "../../queries/LIFOSetDivAndConq.h"
 using namespace std;
 
 // Support queries on connected components, after edges have been
@@ -48,7 +48,7 @@ struct DynamicConnectivityDivAndConq {
       else return uf.cnt;
     }
   };
-  int V; FIFOSetDivAndConq<S> s; vector<int> &ans = s.ans;
+  int V; LIFOSetDivAndConq<S> s; vector<int> &ans = s.ans;
   DynamicConnectivityDivAndConq(int V) : V(V) {}
   void addEdge(int v, int w) {
     if (v > w) swap(v, w);

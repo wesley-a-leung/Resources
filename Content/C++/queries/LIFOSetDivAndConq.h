@@ -4,7 +4,7 @@ using namespace std;
 
 // Uses divide and conquer to answer offline ranges queries over
 //   a multiset where elements can be added or removed at anytime, but the
-//   underlying data structure is only able to add and delete elements in FIFO
+//   underlying data structure is only able to add and delete elements in LIFO
 //   order, as well as save and restore its state
 // Template Arguments:
 //   S: struct to maintain a multiset of elements
@@ -14,7 +14,7 @@ using namespace std;
 //     Q: the query object that contains information for each query
 //   Required Functions:
 //     constructor(...args): takes any number of arguments (arguments are
-//       passed from FIFOSetDivAndConq::solveQueries)
+//       passed from LIFOSetDivAndConq::solveQueries)
 //     add(v): adds the value v to the multiset
 //     saveOnStack(): adds the current state to the save stack
 //     rollback(): rollbacks the multiset to the top of the save stack, and
@@ -57,7 +57,7 @@ using namespace std;
 //   M is the memory complexity of S
 // Tested:
 //   https://judge.yosupo.jp/problem/dynamic_graph_vertex_add_component_sum
-template <class S> struct FIFOSetDivAndConq {
+template <class S> struct LIFOSetDivAndConq {
   using T = typename S::T; using R = typename S::R; using Q = typename S::Q;
   vector<T> add, rem; vector<Q> queries; vector<R> ans; vector<char> type;
   void addElement(const T &v) { add.push_back(v); type.push_back(1); }
