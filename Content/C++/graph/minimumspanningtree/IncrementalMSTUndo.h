@@ -20,8 +20,7 @@ using namespace std;
 //   history: a vector of tuples storing information of the last edge added
 // Functions:
 //   addEdge(v, w, weight): adds an undirected edge in the graph between
-//     vertices v and w with weight of weight, returns true if the edge is
-//     added, false otherwise
+//     vertices v and w with weight of weight
 //   undo(): undoes the last edge added to the graph
 // In practice, has a moderate constant
 // Time Complexity:
@@ -62,11 +61,11 @@ template <class T> struct IncrementalMSTUndo {
         lct(V + top, [&] { return make_pair(NEG_INF, -1); }) {
     iota(stk.rbegin(), stk.rend(), 0); mstEdges.reserve(top);
   }
-  bool addEdge(int v, int w, T weight) {
+  void addEdge(int v, int w, T weight) {
     Edge e(v, w, weight); history.emplace_back(-1, e, -1, e, false);
-    if (v == w) return false;
+    if (v == w) return;
     T z; int j; tie(z, j) = lct.queryPath(v, w); if (j != -1) {
-      if (z <= weight) return false;
+      if (z <= weight) return;
       lct.cut(get<0>(mstEdges[j]), V + j); lct.cut(get<1>(mstEdges[j]), V + j);
       get<0>(history.back()) = stk[top++] = j; mstWeight -= z;
       get<1>(history.back()) = mstEdges[j];
@@ -76,7 +75,6 @@ template <class T> struct IncrementalMSTUndo {
     } else mstEdges[j] = e;
     lct.updateVertex(V + j, make_pair(weight, j)); lct.link(v, V + j);
     lct.link(w, V + j); mstWeight += weight; get<3>(history.back()) = e;
-    return true;
   }
   void undo() {
     int j = get<2>(history.back()); Edge e = get<3>(history.back());
