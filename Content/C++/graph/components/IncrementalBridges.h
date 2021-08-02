@@ -74,6 +74,7 @@ struct IncrementalBridges {
     lct.updatePathFromRoot(w, 1); if (!q.first) bridges -= q.second;
   }
   bool twoEdgeConnected(int v, int w) {
+    if (v == w) return true;
     pair<bool, int> q = lct.queryPath(v, w); return q.first && q.second > 0;
   }
 };
