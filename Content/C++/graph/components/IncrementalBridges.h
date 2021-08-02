@@ -11,10 +11,11 @@ using namespace std;
 //   bridges: the current number of bridges in the graph
 // Functions:
 //   addEdge(v, w): adds an edge between vertices v and w
-// In practice, has a moderate constant
+//   twoEdgeConnected(v, w): queries whether v and w are in the
+//     same 2-edge connected component
 // Time Complexity:
 //   constructor: O(V)
-//   addEdge: O(log V)
+//   addEdge, twoEdgeConnected: O(log V)
 // Memory Complexity: O(V)
 // Tested:
 //   https://codeforces.com/gym/100551/problem/B
@@ -56,7 +57,7 @@ struct IncrementalBridges {
       lz = v; val.first = v; sbtr.first = v;
     }
     void reverse() { rev = !rev; swap(l, r); }
-    static Data qdef() { return make_pair(true, 1); }
+    static Data qdef() { return make_pair(true, 0); }
   };
   int V, treeEdges, bridges; LCT<Node> lct;
   LCT<Node> init(int V) {
@@ -66,12 +67,13 @@ struct IncrementalBridges {
   }
   IncrementalBridges(int V) : V(V), treeEdges(0), bridges(0), lct(init(V)) {}
   void addEdge(int v, int w) {
-    if (!lct.connected(v, w)) {
+    pair<bool, int> q = lct.queryPath(v, w); if (q.second == 0) {
       lct.link(v, V + treeEdges); lct.link(w, V + treeEdges++); bridges++;
       return;
     }
-    lct.makeRoot(v); pair<bool, int> q = lct.queryPathFromRoot(w);
-    if (!q.first) bridges -= q.second;
-    lct.updatePathFromRoot(w, 1);
+    lct.updatePathFromRoot(w, 1); if (!q.first) bridges -= q.second;
+  }
+  bool twoEdgeConnected(int v, int w) {
+    pair<bool, int> q = lct.queryPath(v, w); return q.first && q.second > 0;
   }
 };
