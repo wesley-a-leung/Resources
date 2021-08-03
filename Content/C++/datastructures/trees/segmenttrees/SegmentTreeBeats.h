@@ -102,7 +102,7 @@ template <class C> struct SegmentTreeBeats {
       apply(x * 2 + 1, m + 1, tr, TR[x].lz); TR[x].lz = C::ldef();
     }
   }
-  template <class F> void build(int x, int tl, int tr, const F &f) {
+  template <class F> void build(int x, int tl, int tr, F &f) {
     if (tl == tr) { TR[x].val = f(); return; }
     int m = tl + (tr - tl) / 2;
     build(x * 2, tl, m, f); build(x * 2 + 1, m + 1, tr, f);

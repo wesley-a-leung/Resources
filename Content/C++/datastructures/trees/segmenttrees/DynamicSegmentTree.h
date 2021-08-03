@@ -136,7 +136,7 @@ struct DynamicSegmentTree {
     }
   }
   agg_def propagate(int, IndexType, IndexType) {}
-  template <class F> int build(IndexType tl, IndexType tr, const F &f) {
+  template <class F> int build(IndexType tl, IndexType tr, F &f) {
     int x = makeNode(-1, tl, tr);
     if (tl == tr) { TR[x].val = f(); return x; }
     IndexType m = tl + (tr - tl) / 2; int nl = build(tl, m, f); TR[x].l = nl;

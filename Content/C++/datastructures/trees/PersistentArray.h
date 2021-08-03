@@ -33,7 +33,7 @@ template <class T> struct PersistentArray {
         : v(v), l(l), r(r) {}
   };
   int N; ptr root;
-  template <class F> ptr build(int l, int r, const F &f) {
+  template <class F> ptr build(int l, int r, F &f) {
     if (l >= r) return l == r ? make_shared<Node>(f()) : ptr();
     int m = l + (r - l) / 2;
     ptr left = build(l, m - 1, f); T a = f(); ptr right = build(m + 1, r, f);

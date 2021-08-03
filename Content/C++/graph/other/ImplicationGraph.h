@@ -19,8 +19,7 @@ using namespace std;
 //   b: the second variable
 //   f(i, j): the function to run a callback on for the corresponding edge
 //     created by the implication
-template <class F>
-void addImpl(bool affA, int a, bool affB, int b, const F &f) {
+template <class F> void addImpl(bool affA, int a, bool affB, int b, F f) {
   f(a * 2 + affA, b * 2 + affB);
 }
 
@@ -35,8 +34,7 @@ void addImpl(bool affA, int a, bool affB, int b, const F &f) {
 //   b: the second variable
 //   f(i, j): the function to run a callback on for the corresponding edge
 //     created by the disjunction
-template <class F>
-void addOr(bool affA, int a, bool affB, int b, const F &f) {
+template <class F> void addOr(bool affA, int a, bool affB, int b, F f) {
   addImpl(!affA, a, affB, b, f); addImpl(!affB, b, affA, a, f);
 }
 
@@ -47,6 +45,6 @@ void addOr(bool affA, int a, bool affB, int b, const F &f) {
 //   a: the variable
 //   f(i, j): the function to run a callback on for the corresponding edge
 //     created by setting this variable to true
-template <class F> void setTrue(int a, const F &f) {
+template <class F> void setTrue(int a, F f) {
   addImpl(false, a, true, a, f);
 }

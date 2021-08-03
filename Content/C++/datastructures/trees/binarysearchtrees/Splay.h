@@ -121,7 +121,7 @@ template <class _Node, class Container = deque<_Node>> struct Splay {
     if (last) splay(root = last);
     return ret;
   }
-  template <class F> Node *buildRec(int l, int r, const F &f) {
+  template <class F> Node *buildRec(int l, int r, F &f) {
     if (l > r) return nullptr;
     int m = l + (r - l) / 2; Node *left = buildRec(l, m - 1, f);
     Node *ret = makeNode(f()), *right = buildRec(m + 1, r, f);

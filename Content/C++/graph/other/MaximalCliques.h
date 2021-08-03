@@ -4,7 +4,7 @@ using namespace std;
 
 // Recursive helper function
 template <const int MAXV, class F>
-void maximalCliques(const vector<bitset<MAXV>> &matrix, const F &f,
+void maximalCliques(const vector<bitset<MAXV>> &matrix, F &f,
                     bitset<MAXV> P, bitset<MAXV> X, bitset<MAXV> R) {
   if (!P.any()) {
     if (!X.any()) f(R);
@@ -35,7 +35,7 @@ void maximalCliques(const vector<bitset<MAXV>> &matrix, const F &f,
 // Tested:
 //   https://open.kattis.com/problems/friends
 template <const int MAXV, class F>
-void maximalCliques(const vector<bitset<MAXV>> &matrix, const F &f) {
+void maximalCliques(const vector<bitset<MAXV>> &matrix, F f) {
   maximalCliques<MAXV, F>(matrix, f, ~bitset<MAXV>(), bitset<MAXV>(),
                           bitset<MAXV>());
 }
