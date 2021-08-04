@@ -30,9 +30,9 @@ using namespace std;
 // In practice, has a moderate constant
 // Time Complexity:
 //   constructor: O(1)
-//   add: O(log N) amortized for N elements in the pareto optimum
-//   queryPrefix, queryProperPrefix: O(N) for N elements in the pareto optimum
-// Memory Complexity: O(N) for N elements in the pareto optimum
+//   add: O(log N) amortized
+//   queryPrefix, queryProperPrefix: O(log N)
+// Memory Complexity: O(N)
 // Tested:
 //   https://dmoj.ca/problem/dpq
 template <class K, class V, class KCmp = less<K>, class VCmp = less<V>>
