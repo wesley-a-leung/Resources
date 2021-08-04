@@ -9,7 +9,7 @@ using namespace std;
 // Function Arguments:
 //   A: a vector of the first N terms of the sequence
 //   C: a vector of the the N recurrence coefficients of the sequence
-// Return Value: the Kth term of the linear recurrence
+// Return Value: the Kth term (0-indexed) of the linear recurrence
 // Time Complexity: O(N^2 log K)
 // Memory Complexity: O(N)
 // Tested:

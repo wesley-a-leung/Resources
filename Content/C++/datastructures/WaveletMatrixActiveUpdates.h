@@ -24,8 +24,8 @@ using namespace std;
 //     the comparator) in the range [l, r]
 //   count(l, r, lo, hi) returns the number of active elements not less than
 //     lo and not greater than hi (using the comparator) in the range [l, r]
-//   select(l, r, k): returns the kth active element sorted by the comparator
-//     if the range [l, r] was sorted
+//   select(l, r, k): returns the kth active element (0-indexed) sorted by the
+//     comparator if the range [l, r] was sorted
 // In practice, has a small constant, faster than using a
 //   2D Sparse Fenwick Tree
 // Time Complexity:

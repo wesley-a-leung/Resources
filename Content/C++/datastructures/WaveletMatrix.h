@@ -22,8 +22,8 @@ using namespace std;
 //     comparator) in the range [l, r]
 //   count(l, r, lo, hi) returns the number of elements not less than lo and
 //     not greater than hi (using the comparator) in the range [l, r]
-//   select(l, r, k): returns the kth element sorted by the comparator if the
-//     range [l, r] was sorted
+//   select(l, r, k): returns the kth element (0-indexed) sorted by the
+//     comparator if the range [l, r] was sorted
 // In practice, has a moderate constant
 // Time Complexity:
 //   constructor: O(N log N)

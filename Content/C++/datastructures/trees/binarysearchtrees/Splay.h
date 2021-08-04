@@ -35,7 +35,7 @@ using namespace std;
 //     node pointer or reference to a node pointer) to a node x where x
 //     is the disconnected subtree with indices in the range [i, j] for the
 //     tree rooted at root (passed by reference)
-//   select(root, k): returns the kth node in the subtree of root,
+//   select(root, k): returns the kth node (0-indexed) in the subtree of root,
 //     and makes it the new root (or the last node accessed if null)
 //   index(root, x): returns the index of node x in the tree rooted at root,
 //     and makes it the new root

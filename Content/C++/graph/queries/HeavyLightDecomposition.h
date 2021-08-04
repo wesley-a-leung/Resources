@@ -31,8 +31,10 @@ using namespace std;
 //   connected(v, w): returns true if and only if v and w are connected
 //   dist(v, w): returns the distance between vertices v and w assuming
 //     v and w are connected
-//   kthParent(v, k): returns the kth parent of the vertex v
-//   kthPath(v, w, k): returns the kth vertex on the path from v to w
+//   kthParent(v, k): returns the kth parent of the vertex v (0th parent is v,
+//     1st parent is the parent of v) 
+//   kthPath(v, w, k): returns the kth vertex (0-indexed) on the path from
+//     v to w
 // In practice, constructor has a moderate constant,
 //   lca, dist, kthParent, kthPath, have a small constant
 // Time Complexity:

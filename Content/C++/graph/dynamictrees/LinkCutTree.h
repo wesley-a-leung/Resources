@@ -65,8 +65,8 @@ using namespace std;
 //   findParent(x): returns the parent of node x, -1 if it doesn't exist
 //   findRoot(x): returns the root of the forest containing node x
 //   depth(x): returns the depth of node x, where the depth of the root is 0
-//   kthParent(x): returns the kth parent of node x, where the 0th parent is
-//     x, -1 if it doesn't exist
+//   kthParent(x): returns the kth parent of node x (0th parent is x,
+//     1st parent is the parent of x), -1 if it doesn't exist
 //   updateVertex(x, v): updates the node x with the lazy value v
 //   updatePathFromRoot(to, v): only valid if Node::RANGE_UPDATES is true,
 //     updates the path from the root of the forest containing
