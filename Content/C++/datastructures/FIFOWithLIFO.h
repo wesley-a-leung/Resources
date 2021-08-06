@@ -2,9 +2,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Supports FIFO operations on a multiset of elements with queries to the
-//  data structure, where the underlying data structure only supports LIFO
-//  operations
+// Supports online queries and FIFO operations on a multiset of elements,
+//   where the underlying data structure only supports LIFO operations
 // Template Arguments:
 //   S: struct to maintain a multiset of elements
 //   Required Fields:
