@@ -24,6 +24,10 @@ using namespace std;
 // Tested:
 //   https://judge.yosupo.jp/problem/bipartite_edge_coloring
 struct BipartiteEdgeColoring {
+  struct Pair {
+    int s, v; Pair(int s, int v) : s(s), v(v) {}
+    bool operator < (const Pair &o) const { return s > o.s; }
+  };
   int makeDRegular(int &V, vector<pair<int, int>> &edges, vector<bool> &side) {
     vector<int> deg(V, 0); for (auto &&e : edges) {
       if (side[e.first]) swap(e.first, e.second);
@@ -31,14 +35,11 @@ struct BipartiteEdgeColoring {
     }
     int D = *max_element(deg.begin(), deg.end()); UnionFind uf(V);
     for (int s = 0; s < 2; s++) {
-      std::priority_queue<pair<int, int>, vector<pair<int, int>>,
-                          greater<pair<int, int>>> PQ;
+      std::priority_queue<Pair> PQ;
       for (int v = 0; v < V; v++) if (side[v] == s) PQ.emplace(deg[v], v);
       while (int(PQ.size()) >= 2) {
-        pair<int, int> v = PQ.top(); PQ.pop();
-        pair<int, int> w = PQ.top(); PQ.pop(); if (v.first + w.first <= D) {
-          uf.join(v.second, w.second); PQ.emplace(v.first + w.first, v.second);
-        }
+        Pair a = PQ.top(); PQ.pop(); Pair b = PQ.top(); PQ.pop();
+        if (a.s + b.s <= D) { uf.join(a.v, b.v); PQ.emplace(a.s + b.s, a.v); }
       }
     }
     vector<int> cnt(2, 0), id(V, -1); int curId = 0;

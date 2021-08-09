@@ -25,16 +25,18 @@ using namespace std;
 //   https://open.kattis.com/problems/minspantree
 template <class T> struct PrimMST {
   using Edge = tuple<int, int, T>; T mstWeight; vector<Edge> mstEdges;
+  struct Node {
+    T d; int v; Node(T d, int v) : d(d), v(v) {}
+    bool operator < (const Node &o) const { return d > o.d; }
+  };
   template <class WeightedGraph>
   PrimMST(const WeightedGraph &G, T INF = numeric_limits<T>::max())
       : mstWeight() {
     int V = G.size(); vector<bool> done(V, false);
-    vector<T> mn(V, INF); vector<int> to(V, -1);
-    std::priority_queue<pair<T, int>, vector<pair<T, int>>,
-                        greater<pair<T, int>>> PQ;
+    vector<T> mn(V, INF); vector<int> to(V, -1); std::priority_queue<Node> PQ;
     for (int s = 0; s < V; s++) if (!done[s]) {
       PQ.emplace(mn[s] = T(), s); while (!PQ.empty()) {
-        int v = PQ.top().second; PQ.pop(); if (done[v]) continue;
+        int v = PQ.top().v; PQ.pop(); if (done[v]) continue;
         done[v] = true;
         for (auto &&e : G[v]) if (!done[e.first] && e.second < mn[e.first]) {
           to[e.first] = v; PQ.emplace(mn[e.first] = e.second, e.first);

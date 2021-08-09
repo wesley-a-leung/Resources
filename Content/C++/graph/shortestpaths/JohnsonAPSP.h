@@ -40,6 +40,10 @@ using namespace std;
 template <class T, const int MAXV> struct JohnsonAPSP {
   using Edge = tuple<int, int, T>; int V; vector<vector<T>> dist;
   vector<vector<int>> par; T INF; bool hasNegativeCycle;
+  struct Node {
+    T d; int v; Node(T d, int v) : d(d), v(v) {}
+    bool operator < (const Node &o) const { return d > o.d; }
+  };
   template <class WeightedGraph>
   JohnsonAPSP(const WeightedGraph &G, T INF = numeric_limits<T>::max())
       : V(G.size()), dist(V, vector<T>(V, INF)), par(V, vector<int>(V, -1)),
@@ -71,10 +75,9 @@ template <class T, const int MAXV> struct JohnsonAPSP {
     }
     for (int s = 0; s < V; s++) {
       if (!inNegCyc[s]) {
-        std::priority_queue<pair<T, int>, vector<pair<T, int>>,
-                            greater<pair<T, int>>> PQ;
+        std::priority_queue<Node> PQ;
         PQ.emplace(dist[s][s] = T(), s); while (!PQ.empty()) {
-          T d; int v; tie(d, v) = PQ.top(); PQ.pop();
+          T d = PQ.top().d; int v = PQ.top().v; PQ.pop();
           if (d > dist[s][v]) continue;
           for (auto &&e : G[v]) {
             int w = e.first; T weight = e.second + h[v] - h[w];
@@ -87,7 +90,7 @@ template <class T, const int MAXV> struct JohnsonAPSP {
         if (neg[id[s]][id[v]]) dist[s][v] = -INF;
     }
     if (hasNegativeWeight) for (int v = 0; v < V; v++)
-      for (int w = 0; w < V; w++) if (dist[v][w] < INF && dist[v][w] > -INF)
+      for (int w = 0; w < V; w++) if (dist[v][w] != INF && dist[v][w] != -INF)
         dist[v][w] = dist[v][w] - h[v] + h[w];
   }
   vector<Edge> getPath(int v, int w) {

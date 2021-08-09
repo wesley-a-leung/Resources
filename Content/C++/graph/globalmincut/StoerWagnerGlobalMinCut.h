@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "../../datastructures/PolicyBasedDataStructures.h"
+#include <ext/pb_ds/priority_queue.hpp>
 using namespace std;
 using namespace __gnu_pbds;
 
@@ -37,6 +37,10 @@ template <class T> struct StoerWagnerGlobalMinCut {
     int to; T weight; int rev;
     Edge(int to, T weight, int rev) : to(to), weight(weight), rev(rev) {}
   };
+  struct Node {
+    T w; int v; Node(T w, int v) : w(w), v(v) {}
+    bool operator < (const Node &o) const { return w < o.w; }
+  };
   int V; vector<vector<Edge>> G; vector<bool> cut; T cutWeight, INF;
   void addEdge(int v, int w, T weight) {
     if (v == w) return;
@@ -49,14 +53,14 @@ template <class T> struct StoerWagnerGlobalMinCut {
     vector<vector<Edge>> H = G; fill(cut.begin(), cut.end(), false);
     cutWeight = INF; vector<int> par(V); iota(par.begin(), par.end(), 0);
     for (int phase = V - 1; phase > 0; phase--) {
-      vector<T> W(V, T()); pbdsheap<pair<T, int>> PQ;
+      vector<T> W(V, T()); __gnu_pbds::priority_queue<Node> PQ;
       vector<typename decltype(PQ)::point_iterator> ptr(V, PQ.end());
       for (int v = 1; v < V; v++) if (par[v] == v)
-        ptr[v] = PQ.push(make_pair(W[v], v));
+        ptr[v] = PQ.push(Node(W[v], v));
       for (auto &&e : H[0]) if (ptr[e.to] != PQ.end())
-        PQ.modify(ptr[e.to], make_pair(W[e.to] += e.weight, e.to));
+        PQ.modify(ptr[e.to], Node(W[e.to] += e.weight, e.to));
       for (int i = 0, v, last = 0; i < phase; i++, last = v) {
-        T w; tie(w, v) = PQ.top(); PQ.pop(); ptr[v] = PQ.end();
+        T w = PQ.top().w; v = PQ.top().v; PQ.pop(); ptr[v] = PQ.end();
         if (i == phase - 1) {
           if (cutWeight > w) {
             cutWeight = w; for (int x = 0; x < V; x++) cut[x] = par[x] == v;
@@ -75,7 +79,7 @@ template <class T> struct StoerWagnerGlobalMinCut {
           for (int x = 0; x < V; x++) if (par[x] == v) par[x] = last;
         } else {
           for (auto &&e : H[v]) if (ptr[e.to] != PQ.end())
-            PQ.modify(ptr[e.to], make_pair(W[e.to] += e.weight, e.to));
+            PQ.modify(ptr[e.to], Node(W[e.to] += e.weight, e.to));
         }
       }
     }

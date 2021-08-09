@@ -36,15 +36,19 @@ using namespace std;
 //   https://dmoj.ca/problem/sssp
 template <class T> struct DijkstraSSSP {
   using Edge = tuple<int, int, T>; vector<T> dist; vector<int> par; T INF;
+  struct Node {
+    T d; int v; Node(T d, int v) : d(d), v(v) {}
+    bool operator < (const Node &o) const { return d > o.d; }
+  };
   template <class WeightedGraph>
   DijkstraSSSP(const WeightedGraph &G, const vector<int> &srcs,
                T INF = numeric_limits<T>::max())
       : dist(G.size(), INF), par(G.size(), -1), INF(INF) {
-    std::priority_queue<pair<T, int>, vector<pair<T, int>>,
-                        greater<pair<T, int>>> PQ;
+    std::priority_queue<Node> PQ;
     for (int s : srcs) PQ.emplace(dist[s] = T(), s);
     while (!PQ.empty()) {
-      T d; int v; tie(d, v) = PQ.top(); PQ.pop(); if (d > dist[v]) continue;
+      T d = PQ.top().d; int v = PQ.top().v; PQ.pop();
+      if (d > dist[v]) continue;
       for (auto &&e : G[v]) if (dist[e.first] > dist[v] + e.second)
         PQ.emplace(dist[e.first] = dist[par[e.first] = v] + e.second, e.first);
     }

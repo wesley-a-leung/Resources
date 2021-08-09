@@ -43,9 +43,10 @@ template <class FlowUnit, class CostUnit> struct SAPMinCostMaxFlow {
     Edge(int to, int rev, FlowUnit cap, CostUnit cost)
         : to(to), rev(rev), cap(cap), resCap(cap), cost(cost) {}
   };
-  using heap = __gnu_pbds::priority_queue<pair<CostUnit, int>,
-                                          greater<pair<CostUnit, int>>,
-                                          pairing_heap_tag>;
+  struct Node {
+    CostUnit d; int v; Node(CostUnit d, int v) : d(d), v(v) {}
+    bool operator < (const Node &o) const { return d > o.d; }
+  };
   int V; FlowUnit FLOW_EPS; CostUnit COST_INF; vector<vector<Edge>> G;
   bool hasNegativeCost; vector<CostUnit> phi, dist;
   vector<Edge*> to; vector<int> par; 
@@ -70,17 +71,17 @@ template <class FlowUnit, class CostUnit> struct SAPMinCostMaxFlow {
   }
   bool dijkstra(int s, int t) {
     fill(dist.begin(), dist.end(), COST_INF); fill(par.begin(), par.end(), -1);
-    vector<bool> seen(V, false);
-    heap PQ; vector<typename heap::point_iterator> ptr(V, PQ.end());
-    ptr[s] = PQ.push(make_pair(dist[s] = CostUnit(), s)); while (!PQ.empty()) {
-      int v = PQ.top().second; PQ.pop(); ptr[v] = PQ.end(); seen[v] = true;
+    vector<bool> seen(V, false); __gnu_pbds::priority_queue<Node> PQ;
+    vector<typename decltype(PQ)::point_iterator> ptr(V, PQ.end());
+    ptr[s] = PQ.push(Node(dist[s] = CostUnit(), s)); while (!PQ.empty()) {
+      int v = PQ.top().v; PQ.pop(); ptr[v] = PQ.end(); seen[v] = true;
       for (auto &&e : G[v]) {
         int w = e.to; if (seen[w] || e.resCap <= FLOW_EPS) continue;
         CostUnit d = dist[v] + e.cost + phi[v] - phi[w];
         if (dist[w] <= d) continue;
         par[w] = v; to[w] = &e;
-        if (ptr[w] == PQ.end()) ptr[w] = PQ.push(make_pair(dist[w] = d, w));
-        else PQ.modify(ptr[w], make_pair(dist[w] = d, w));
+        if (ptr[w] == PQ.end()) ptr[w] = PQ.push(Node(dist[w] = d, w));
+        else PQ.modify(ptr[w], Node(dist[w] = d, w));
       }
     }
     return dist[t] < COST_INF;

@@ -27,19 +27,25 @@ vector<T> kShortestWalks(int V, const vector<tuple<int, int, T>> &edges, int K,
   if (K == 0) return vector<T>();
   using Heap = PersistentRandomizedHeap<pair<T, int>, greater<pair<T, int>>>;
   using ptr = typename Heap::ptr; vector<Heap> cand(V);
+  struct Node1 {
+    T d; int v; Node1(T d, int v) : d(d), v(v) {}
+    bool operator < (const Node1 &o) const { return d > o.d; }
+  };
+  struct Node2 {
+    T d; int v; ptr p; Node2(T d, int v, ptr p) : d(d), v(v), p(p) {}
+    bool operator < (const Node2 &o) const { return d > o.d; }
+  };
   vector<T> dist(V, INF), ret; ret.reserve(K); vector<int> ord; ord.reserve(V);
   vector<pair<int, int>> par(V, make_pair(-1, -1));
   vector<vector<tuple<int, T, int>>> G(V), H(V);
-  std::priority_queue<pair<T, int>, vector<pair<T, int>>,
-                      greater<pair<T, int>>> PQ;
-  std::priority_queue<tuple<T, int, ptr>, vector<tuple<T, int, ptr>>,
-                      greater<tuple<T, int, ptr>>> ans;
+  std::priority_queue<Node1> PQ;
+  std::priority_queue<Node2> ans;
   for (int i = 0; i < int(edges.size()); i++) {
     int v, w; T weight; tie(v, w, weight) = edges[i];
     G[v].emplace_back(w, weight, i); H[w].emplace_back(v, weight, i);
   }
   PQ.emplace(dist[t] = T(), t); while (!PQ.empty()) {
-    T d; int v; tie(d, v) = PQ.top(); PQ.pop(); if (d > dist[v]) continue;
+    T d = PQ.top().d; int v = PQ.top().v; PQ.pop(); if (d > dist[v]) continue;
     ord.push_back(v);
     for (auto &&e : H[v]) if (dist[get<0>(e)] > dist[v] + get<1>(e)) {
       PQ.emplace(dist[get<0>(e)] = dist[v] + get<1>(e), get<0>(e));
@@ -60,7 +66,8 @@ vector<T> kShortestWalks(int V, const vector<tuple<int, int, T>> &edges, int K,
   }
   while (int(ret.size()) < K) {
     if (ans.empty()) { ret.push_back(INF); continue; }
-    T d; int v; ptr p; tie(d, v, p) = ans.top(); ans.pop(); ret.push_back(d);
+    T d = ans.top().d; int v = ans.top().v; ptr p = ans.top().p; ans.pop();
+    ret.push_back(d);
     if (p->l) ans.emplace(d + p->l->val.first - p->val.first, v, p->l);
     if (p->r) ans.emplace(d + p->r->val.first - p->val.first, v, p->r);
     v = p->val.second;
