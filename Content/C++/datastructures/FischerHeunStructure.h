@@ -30,7 +30,8 @@ using namespace std;
 //   faster than sparse table's constructor, query has a moderate constant and
 //   is slightly slower than sparse table's query
 // Time Complexity:
-//   constructor: O(N / B log (N / B)), where B is the number of bits in mask_t
+//   constructor: O(N + N / B log (N / B)), where B is
+//     the number of bits in mask_t
 //   queryInd, query: O(1) assuming bitshift for mask_t is O(1)
 // Memory Complexity: O(N + N / B log (N / B)) assuming mask_t is O(1) memory
 // Tested:
