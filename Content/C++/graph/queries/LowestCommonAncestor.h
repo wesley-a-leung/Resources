@@ -85,5 +85,5 @@ template <class T = int> struct LCA {
     return bot[FHS.queryInd(pre[anc], pre[des] - 1)];
   }
   bool connected(int v, int w) { return root[v] == root[w]; }
-  T dist(int v, int w) { return dep[v] + dep[w] - 2 * dep[lca(v, w)]; }
+  T dist(int v, int w) { return dep[v] + dep[w] - T(2) * dep[lca(v, w)]; }
 };
