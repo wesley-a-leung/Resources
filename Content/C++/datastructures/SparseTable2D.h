@@ -36,13 +36,15 @@ template <class T, class Op> struct SparseTable2D {
       : N(A.size()), M(N == 0 ? 0 : A[0].size()),
         lgN(N == 0 ? 0 : __lg(N) + 1), lgM(M == 0 ? 0 : __lg(M) + 1),
         ST(lgN, vector<vector<vector<T>>>(lgM, A)), op(op) {
-    for (int ic = 0; ic < lgM - 1; ic++) for (int jr = 0; jr < N; jr++)
-      for (int jc = 0; jc < M; jc++) ST[0][ic + 1][jr][jc] = op(
-          ST[0][ic][jr][jc], ST[0][ic][jr][min(jc + (1 << ic), M - 1)]);
-    for (int ir = 0; ir < lgN - 1; ir++) for (int ic = 0; ic < lgM; ic++)
-      for (int jr = 0; jr < N; jr++) for (int jc = 0; jc < M; jc++)
-        ST[ir + 1][ic][jr][jc] = op(
-            ST[ir][ic][jr][jc], ST[ir][ic][min(jr + (1 << ir), N - 1)][jc]);
+    for (int ir = 0; ir < lgN; ir++) {
+      for (int ic = 0; ic < lgM - 1; ic++)
+        for (int jr = 0; jr < N; jr++) for (int jc = 0; jc < M; jc++)
+          ST[ir][ic + 1][jr][jc] = op(
+              ST[ir][ic][jr][jc], ST[ir][ic][jr][min(jc + (1 << ic), M - 1)]);
+      if (ir < lgN - 1) for (int jr = 0; jr < N; jr++)
+        for (int jc = 0; jc < M; jc++) ST[ir + 1][0][jr][jc] = op(
+            ST[ir][0][jr][jc], ST[ir][0][min(jr + (1 << ir), N - 1)][jc]);
+    }
   }
   T query(int u, int d, int l, int r) {
     int ir = __lg(d - u + 1), ic = __lg(r - l + 1);
