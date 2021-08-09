@@ -47,7 +47,7 @@ using namespace std;
 //   https://www.acmicpc.net/problem/15480
 template <class T = int> struct LCA {
   using RMQ = FischerHeunStructure<int, greater_equal<int>>;
-  int V, ind; vector<int> root, pre, top, bot, stk; vector<T> dep; RMQ FHS;
+  int V, ind; vector<int> root, pre, top, bot; vector<T> dep; RMQ FHS;
   int getTo(int e) { return e; }
   T getWeight(int) { return 1; }
   int getTo(const pair<int, T> &e) { return e.first; }
@@ -68,7 +68,7 @@ template <class T = int> struct LCA {
   }
   template <class Forest>
   LCA(const Forest &G, const vector<int> &roots = vector<int>())
-      : V(G.size()), ind(0), root(V, -1), pre(V, -1), top(V), bot(V), stk(V),
+      : V(G.size()), ind(0), root(V, -1), pre(V, -1), top(V), bot(V),
         dep(V, T()), FHS(init(G, roots)) {}
   template <class Forest> LCA(const Forest &G, int rt)
       : LCA(G, vector<int>{rt}) {}
