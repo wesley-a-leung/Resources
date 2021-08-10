@@ -23,7 +23,8 @@ using namespace std;
 //   constructor: O(N)
 //   isZero: O(1)
 //   read, write, >>, <<, <, <=, >, >=, ==, !=, abs, ++, --, +, +=, -, -=: O(N)
-//   *, *=: O(N log N)
+//   *, *= (long long variants): O(N)
+//   *, *= (BigInt variants): O(N log N)
 //   /, /=, % (long long variants): O(N)
 //   /, /=, %, %= (BigInt variants): O(N^2)
 // Memory Complexity: O(N)
@@ -132,6 +133,15 @@ struct BigInt {
     return *this + (-v);
   }
   BigInt &operator -= (const BigInt &v) { return *this = *this - v; }
+  BigInt operator * (T v) const { BigInt res = *this; res *= v; return res; }
+  BigInt &operator *= (T v) {
+    if (v < 0) { sign = -sign; v = -v; }
+    T carry = 0; for (int i = 0; i < int(a.size()) || carry; i++) {
+      if (i == int(a.size())) a.push_back(0);
+      T cur = a[i] * v + carry; carry = cur / BASE; a[i] = cur % BASE;
+    }
+    trim(); return *this;
+  }
   BigInt operator * (const BigInt &v) const {
     BigInt res; res.a = mulIntFFT(a, v.a, BASE); res.sign = sign * v.sign;
     res.trim(); return res;
