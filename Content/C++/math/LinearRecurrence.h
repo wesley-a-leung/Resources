@@ -6,9 +6,11 @@ using namespace std;
 //   A[i] = sum (C[j] * A[i - 1 - j]) for 0 <= j < N
 // Template Arguments:
 //   T: the type of the elements in the sequence
+//   U: the type of K
 // Function Arguments:
 //   A: a vector of the first N terms of the sequence
 //   C: a vector of the the N recurrence coefficients of the sequence
+//   K: the term of the sequence to find
 // Return Value: the Kth term (0-indexed) of the linear recurrence
 // Time Complexity: O(N^2 log K)
 // Memory Complexity: O(N)

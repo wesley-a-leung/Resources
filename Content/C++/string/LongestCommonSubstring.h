@@ -35,6 +35,7 @@ using namespace std;
 //   concatenated string
 // Tested:
 //   https://www.spoj.com/problems/LCS2/
+//   https://open.kattis.com/problems/longestcommonsubstring
 template <class SuffixArray> struct LongestCommonSubstring {
   using T = typename SuffixArray::T;
   vector<int> ind; vector<T> lcs; SuffixArray SA;
