@@ -6,7 +6,7 @@ using namespace std;
 // Supports path updates and vertex queries on a forest
 // Vertices and indices are 0-indexed
 // Template Arguments:
-//   R: struct supporting range updates and queries on indices
+//   R: struct supporting range updates and point queries on indices
 //     Required Fields:
 //       Data: the data type
 //       Lazy: the lazy type
@@ -19,7 +19,7 @@ using namespace std;
 //         value of each index
 //       update(l, r, val): updates the range [l, r] with the value val
 //       query(i): queries the index i
-//     Sample Struct: supporting range sum updates and queries
+//     Sample Struct: supporting range increments and point queries
 //       struct R {
 //         using Data = int;
 //         using Lazy = int;

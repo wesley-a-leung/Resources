@@ -1,6 +1,7 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "../datastructures/WaveletMatrixOfflineUpdates.h"
+#include "../datastructures/trees/fenwicktrees/BitFenwickTree.h"
+#include "../datastructures/WaveletMatrixAggregationOfflineUpdates.h"
 using namespace std;
 
 // Supports online queries for the number of distinct elements in the
@@ -30,8 +31,22 @@ using namespace std;
 //   https://dmoj.ca/problem/mnyc17p6
 template <class T, class C = map<T, set<int>>>
 struct CountDistinctOfflineUpdates {
+  struct R {
+    using Data = int; using Lazy = int;
+    static Data qdef() { return 0; }
+    static Data merge(const Data &l, const Data &r) { return l + r; }
+    static Data applyLazy(const Data &l, const Lazy &r) { return l + r; }
+    static Data invData(const Data &v) { return -v; }
+    BitFenwickTree FT;
+    R(const vector<Data> &A) : FT(A.size()) {
+      for (int i = 0; i < int(A.size()); i++) FT.set(i, A[i]);
+      FT.build();
+    }
+    void update(int i, const Lazy &val) { FT.update(i, val); }
+    Data query(int l, int r) { return FT.query(l, r); }
+  };
   C M; int N, cur, ucnt; vector<int> en; vector<pair<int, int>> wupds;
-  WaveletMatrixOfflineUpdates<int> wm;
+  WaveletMatrixAggregationOfflineUpdates<int, R> wm;
   void add(int i, const T &v, vector<pair<int, int>> &wus) {
     set<int> &mv = M[v]; auto it = mv.upper_bound(i);
     int j = it == mv.begin() ? -1 : *prev(it); wus.emplace_back(i, j);
@@ -53,10 +68,12 @@ struct CountDistinctOfflineUpdates {
     }
     return ret;
   }
-  WaveletMatrixOfflineUpdates<int> init2(const vector<T> &A) {
+  WaveletMatrixAggregationOfflineUpdates<int, R> init2(const vector<T> &A) {
     int N = A.size(); vector<vector<int>> vals(N);
     for (auto &&wu : wupds) vals[wu.first].push_back(wu.second);
-    return WaveletMatrixOfflineUpdates<int>(vector<int>(N, N), vals);
+    return WaveletMatrixAggregationOfflineUpdates<int, R>(vector<int>(N, N),
+                                                          vector<int>(N, 1),
+                                                          vals);
   }
   template <class ...Args>
   CountDistinctOfflineUpdates(const vector<T> &A,
@@ -64,11 +81,12 @@ struct CountDistinctOfflineUpdates {
                               Args &&...args)
       : M(forward<Args>(args)...), N(A.size()), cur(0), ucnt(0),
         en(updates.size(), 0), wupds(init1(A, updates)), wm(init2(A)) {
-    for (int k = 0; k < cur; k++) wm.updateToNextVal(wupds[k].first);
+    for (int k = 0; k < cur; k++) wm.updateToNextKey(wupds[k].first);
   }
   void processNextUpdate() {
-    for (; cur < en[ucnt]; cur++) wm.updateToNextVal(wupds[cur].first);
+    for (; cur < en[ucnt]; cur++) wm.updateToNextKey(wupds[cur].first);
     ucnt++;
   }
-  int query(int l, int r) { return wm.rank(l, r, l); }
+  int query(int l, int r) { return wm.query(l, r, l - 1); }
 };
+

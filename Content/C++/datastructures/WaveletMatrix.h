@@ -36,6 +36,8 @@ using namespace std;
 //   https://www.spoj.com/problems/MKTHNUM/ (select)
 //   https://judge.yosupo.jp/problem/range_kth_smallest (select)
 template <class T, class Cmp = less<T>> struct WaveletMatrix {
+#define clt [&] (const T &a, const T &b) { return Cmp()(a, b); }
+#define cle [&] (const T &a, const T &b) { return !Cmp()(b, a); }
   int N, H; vector<int> mid; vector<BitPrefixSumArray> B; vector<T> S;
   template <class F> WaveletMatrix(int N, F f)
       : N(N), H(N == 0 ? 0 : __lg(N) + 1), mid(H), B(H, BitPrefixSumArray(N)) {
@@ -61,12 +63,9 @@ template <class T, class Cmp = less<T>> struct WaveletMatrix {
     }
     return ret;
   }
-  int rank(int l, int r, const T &v) {
-    return cnt(l, r, v, [&] (const T &a, const T &b) { return !Cmp()(b, a); });
-  }
+  int rank(int l, int r, const T &v) { return cnt(l, r, v, cle); }
   int count(int l, int r, const T &lo, const T &hi) {
-    return cnt(l, r, hi, [&] (const T &a, const T &b) { return Cmp()(a, b); })
-        - cnt(l, r, lo, [&] (const T &a, const T &b) { return !Cmp()(b, a); });
+    return cnt(l, r, hi, clt) - cnt(l, r, lo, cle);
   }
   T select(int l, int r, int k) {
     int cur = 0; for (int h = H - 1; h >= 0; h--) {
@@ -76,4 +75,6 @@ template <class T, class Cmp = less<T>> struct WaveletMatrix {
     }
     return S[cur];
   }
+#undef clt
+#undef cle
 };
