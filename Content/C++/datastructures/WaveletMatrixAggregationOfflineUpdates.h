@@ -92,8 +92,7 @@ struct WaveletMatrixAggregationOfflineUpdates {
     }
     vector<Data> temp(ret.size(), R::qdef());
     for (int i = 0; i < N; i++) temp[cur[i]] = D[i];
-    return WaveletMatrixAggregation<T, R, Cmp>(ret.begin(), ret.end(),
-                                               temp.begin());
+    return WaveletMatrixAggregation<T, R, Cmp>(ret, temp);
   }
   WaveletMatrixAggregationOfflineUpdates(const vector<T> &A,
                                          const vector<Data> &D,

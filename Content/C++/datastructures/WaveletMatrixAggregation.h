@@ -38,13 +38,8 @@ using namespace std;
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
 // Constructor Arguments:
-//   N: the size of the array
-//   f: a generating function that returns the ith key on the ith call
-//   g: a generating function that returns the data for the ith element on
-//     the ith call
-//   st1: an iterator pointing to the first key in the array
-//   en1: an iterator pointing to after the last key in the array
-//   st2: an iterator pointing to the first data in the array
+//   A: a vector of type T containing the initial keys of the array
+//   X: a vector of type R::Data containing the initial data of the array
 // Functions:
 //   update(i, v): updates the ith data with the lazy value v
 //   query(l, r, hi): returns the aggregate value of the data associated with
@@ -75,15 +70,14 @@ struct WaveletMatrixAggregation {
   using Data = typename R::Data; using Lazy = typename R::Lazy;
   int N, H; vector<int> mid; vector<BitPrefixSumArray> B;
   vector<R> D; vector<T> S;
-  template <class F, class G> WaveletMatrixAggregation(int N, F f, G g)
-      : N(N), H(N == 0 ? 0 : __lg(N) + 1), mid(H), B(H, BitPrefixSumArray(N)) {
-    S.reserve(N); for (int i = 0; i < N; i++) S.push_back(f());
+  WaveletMatrixAggregation(const vector<T> &A, const vector<Data> &X)
+      : N(A.size()), H(N == 0 ? 0 : __lg(N) + 1), mid(H),
+        B(H, BitPrefixSumArray(N)), S(A) {
     vector<T> temp = S; sort(S.begin(), S.end(), Cmp());
     vector<int> C(N), ind(N); for (int i = 0; i < N; i++)
       C[i] = lower_bound(S.begin(), S.end(), temp[i], Cmp()) - S.begin();
-    iota(ind.begin(), ind.end(), 0); vector<Data> X; X.reserve(N);
-    for (int i = 0; i < N; i++) X.push_back(g());
-    D.reserve(H); vector<Data> Y = X; for (int h = H - 1; h >= 0; h--) {
+    iota(ind.begin(), ind.end(), 0); D.reserve(H); vector<Data> Y = X;
+    for (int h = H - 1; h >= 0; h--) {
       int ph = 1 << h; for (int i = 0; i < N; i++) {
         if (C[ind[i]] <= ph - 1) { B[h].set(i, 1); Y[i] = X[ind[i]]; }
         else Y[i] = R::qdef();
@@ -96,10 +90,6 @@ struct WaveletMatrixAggregation {
     }
     reverse(D.begin(), D.end());
   }
-  template <class It1, class It2>
-  WaveletMatrixAggregation(It1 st1, It1 en1, It2 st2)
-      : WaveletMatrixAggregation(en1 - st1, [&] { return *st1++; },
-                                 [&] { return *st2++; }) {}
   void update(int i, const Lazy &v) {
     for (int h = H - 1; h >= 0; h--) {
       if (B[h].get(i)) { D[h].update(i, v); i = B[h].query(i - 1); }

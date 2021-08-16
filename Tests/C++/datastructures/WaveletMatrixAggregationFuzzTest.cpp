@@ -29,7 +29,7 @@ void test1() {
     for (int i = 0; i < N; i++) A[i] = rng() % MAXA;
     vector<int> B(N, 0);
     for (int i = 0; i < N; i++) B[i] = rng() % 2;
-    WaveletMatrixAggregation<int, R> wm(A.begin(), A.end(), B.begin());
+    WaveletMatrixAggregation<int, R> wm(A, B);
     int Q = N == 0 ? 0 : rng() % 101;
     vector<int> ans0, ans1;
     for (int i = 0; i < Q; i++) {
