@@ -39,8 +39,8 @@ struct Circle {
 //   https://dmoj.ca/problem/noi05p6
 vector<pt> circleLineIntersection(Circle c, Line l) {
   vector<pt> ret; T h2 = c.r * c.r - l.distSq(c.o); if (!lt(h2, 0)) {
-    pt p = l.proj(c.o), h = l.v * sqrt(max(h2, T(0))) / abs(l.v);
-    ret.push_back(p - h); pt q = p + h; if (ret.back() != q) ret.push_back(q);
+    pt p = l.proj(c.o), h = l.v * sqrt(max(h2, T(0))) / abs(l.v), q = p + h;
+    ret.push_back(p - h); if (ret.back() != q) ret.push_back(q);
   }
   return ret;
 }
@@ -207,9 +207,9 @@ T circleUnionArea(const vector<Circle> &circles) {
       intervalUnion(intervals); if (intervals.back().second == circles[i].o) {
         intervals.front().first = intervals.back().first; intervals.pop_back();
       }
-      for (int j = 0, m = int(intervals.size()); j < m; j++) {
+      for (int j = 0, k = int(intervals.size()); j < k; j++) {
         pt a = intervals[j].second.p;
-        pt b = intervals[j + 1 == m ? 0 : j + 1].first.p;
+        pt b = intervals[j + 1 == k ? 0 : j + 1].first.p;
         ret += cross(a, b) / 2;
         ret += circleHalfPlaneIntersectionArea(circles[i], Line(b, a));
       }

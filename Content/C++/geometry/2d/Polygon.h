@@ -370,9 +370,11 @@ T polygonUnion(const vector<vector<pt>> &polys) {
         for (int w = 0; w < int(polys[j].size()); w++) {
           pt c = polys[j][w], d = polys[j][mod(w + 1, polys[j].size())];
           int sc = ccw(a, b, c), sd = ccw(a, b, d); if (sc != sd) {
-            T sa = area2(c, d, a), sb = area2(c, d, b); if (lt(min(sc, sd), 0))
+            if (min(sc, sd) < 0) {
+              T sa = area2(c, d, a), sb = area2(c, d, b);
               segs.emplace_back(sa / (sa - sb), sgn(sc - sd));
-          } else if (!sc && !sd && j < i && sgn(dot(b - a, d - c)) > 0) {
+            }
+          } else if (j < i && !sc && !sd && sgn(dot(b - a, d - c)) > 0) {
             segs.emplace_back(rat(c - a, b - a), 1);
             segs.emplace_back(rat(d - a, b - a), -1);
           }
