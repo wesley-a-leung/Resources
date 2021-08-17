@@ -61,6 +61,7 @@ template <class _T> struct SAMMapNode {
 // Tested:
 //   https://www.spoj.com/problems/LCS/
 //   https://dmoj.ca/problem/coci14c5p6
+//   https://dmoj.ca/problem/coci11c5p6
 template <class _T, const int ALPHABET_SIZE, const _T OFFSET>
 struct SAMArrayNode {
   using T = _T; int len, link; array<int, ALPHABET_SIZE> to;
@@ -106,6 +107,7 @@ struct SAMArrayNode {
 //   https://www.spoj.com/problems/LCS/
 //   https://dmoj.ca/problem/coci14c5p6
 //   https://open.kattis.com/problems/stringmultimatching
+//   https://dmoj.ca/problem/coci11c5p6
 template <class Node> struct SuffixAutomaton {
   using T = typename Node::T; vector<Node> TR; int last;
   SuffixAutomaton() : TR(1, Node(0)), last(0) {}
