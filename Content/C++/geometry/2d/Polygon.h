@@ -3,7 +3,6 @@
 #include "Point.h"
 #include "Line.h"
 #include "Circle.h"
-#include "../../datastructures/IntervalUnion.h"
 using namespace std;
 
 // Functions for 2D polygons, represented by a vector of the N points in
@@ -425,98 +424,108 @@ T polygonCircleIntersectionArea(const vector<pt> &poly, Circle c) {
 //     ccw order
 //   circles: a vector of the circles
 // Return Value: the area of the union of all the polygons and all the circles
-// Time Complexity: O(K (N + M) log (N + M)) for N total points, M circles, and
-//                  K unique x coordinates of points of intersections
+// Time Complexity: O((N + M)^2 log (N + M)) for N total points and M circles
 // Memory Complexity: O((N + M)^2) for N total points and M circles
 // Tested:
 //   https://open.kattis.com/problems/abstractart
+//   https://www.spoj.com/problems/CIRU/
 //   https://dmoj.ca/problem/noi05p6
 T polygonCircleUnionArea(const vector<vector<pt>> &polys,
                          const vector<Circle> &circles) {
-  using Pair = pair<T, pair<int, int>>; vector<T> xs;
-  int n = polys.size(), m = circles.size(); for (int i1 = 0; i1 < n; i1++) {
-    for (int j1 = 0; j1 < int(polys[i1].size()); j1++) {
-      xs.push_back(polys[i1][j1].x);
-      pt a = polys[i1][j1], b = polys[i1][mod(j1 + 1, polys[i1].size())];
-      for (int i2 = 0; i2 < i1; i2++) {
-        for (int j2 = 0; j2 < int(polys[i2].size()); j2++) {
-          pt c = polys[i2][j2], d = polys[i2][mod(j2 + 1, polys[i2].size())];
-          if (segSegIntersects(a, b, c, d) == 1) {
-            vector<pt> inter = segSegIntersection(a, b, c, d);
-            assert(int(inter.size()) == 1); xs.push_back(inter[0].x);
+  int n = polys.size(), m = circles.size(); T ret = 0;
+  auto rat = [&] (pt p, pt q) { return sgn(q.x) ? p.x / q.x : p.y / q.y; };
+  for (int i = 0; i < n; i++) for (int v = 0; v < int(polys[i].size()); v++) {
+    pt a = polys[i][v], b = polys[i][mod(v + 1, polys[i].size())];
+    if (a == b) continue;
+    vector<pair<T, int>> segs{make_pair(0, 0), make_pair(1, 0)};
+    for (int j = 0; j < n; j++) if (i != j)
+      for (int w = 0; w < int(polys[j].size()); w++) {
+        pt c = polys[j][w], d = polys[j][mod(w + 1, polys[j].size())];
+        int sc = ccw(a, b, c), sd = ccw(a, b, d); if (sc != sd) {
+          if (min(sc, sd) < 0) {
+            T sa = area2(c, d, a), sb = area2(c, d, b);
+            segs.emplace_back(sa / (sa - sb), sgn(sc - sd));
           }
+        } else if (j < i && !sc && !sd && sgn(dot(b - a, d - c)) > 0) {
+          segs.emplace_back(rat(c - a, b - a), 1);
+          segs.emplace_back(rat(d - a, b - a), -1);
         }
       }
-      for (int i2 = 0; i2 < m; i2++)
-        for (auto &&p : circleSegIntersection(circles[i2], a, b))
-          xs.push_back(p.x);
+    Line l(a, b); for (int j = 0; j < m; j++) {
+      vector<pt> p = circleLineIntersection(circles[j], l);
+      if (int(p.size()) == 2) {
+        segs.emplace_back(rat(p[0] - a, b - a), 1);
+        segs.emplace_back(rat(p[1] - a, b - a), -1);
+      }
     }
-  }
-  for (int i1 = 0; i1 < m; i1++) {
-    Circle c1 = circles[i1]; xs.push_back(c1.o.x - c1.r);
-    xs.push_back(c1.o.x + c1.r); for (int i2 = 0; i2 < i1; i2++) {
-      Circle c2 = circles[i2]; vector<pt> inter;
-      circleCircleIntersection(c1, c2, inter);
-      for (auto &&p : inter) xs.push_back(p.x);
+    sort(segs.begin(), segs.end()); T sm = 0;
+    for (auto &&s : segs) s.first = min(max(s.first, T(0)), T(1));
+    for (int j = 1, cnt = segs[0].second; j < int(segs.size()); j++) {
+      if (!cnt) sm += segs[j].first - segs[j - 1].first;
+      cnt += segs[j].second;
     }
+    ret += cross(a, b) * sm / 2;
   }
-  sort(xs.begin(), xs.end()); xs.erase(unique(xs.begin(), xs.end()), xs.end());
-  T ret = 0; for (int k = 0; k < int(xs.size()) - 1; k++) {
-    T l = xs[k], r = xs[k + 1]; if (eq(l, r)) continue;
-    T mid = l + (r - l) / 2; Line mLine(pt(mid, 0), pt(mid, 1));
-    vector<pair<Pair, Pair>> intervals; for (int i = 0; i < n; i++) {
-      vector<pair<T, int>> ys; for (int j = 0; j < int(polys[i].size()); j++) {
-        pt a = polys[i][j], b = polys[i][mod(j + 1, polys[i].size())];
-        assert(mLine.eval(a) != 0 && mLine.eval(b) != 0);
-        if ((mLine.eval(a) < 0) != (mLine.eval(b) < 0)) {
-          pt p; assert(lineLineIntersection(Line(a, b), mLine, p) == 1);
-          ys.emplace_back(p.y, j);
+  for (int i = 0; i < m; i++) {
+    vector<pair<Angle, int>> segs; Angle::setPivot(circles[i].o);
+    segs.emplace_back(Angle(circles[i].o - pt(circles[i].r, 0)), 0);
+    segs.emplace_back(Angle(circles[i].o + pt(circles[i].r, 0)), 0);
+    segs.emplace_back(Angle(circles[i].o), 0); bool covered = false;
+    for (int j = 0; j < m; j++) if (i != j) {
+      int o = circles[j].contains(circles[i]);
+      if (o < 0 || (o == 0 && (lt(circles[i].r, circles[j].r) || j < i))) {
+        covered = true; break;
+      }
+      vector<pt> p; circleCircleIntersection(circles[i], circles[j], p);
+      if (int(p.size()) == 2) {
+        Angle a(p[0]), b(p[1]);
+        segs.emplace_back(a, 1); segs.emplace_back(b, -1); if (a >= b) {
+          segs.emplace_back(Angle(circles[i].o - pt(circles[i].r, 0)), 1);
+          segs.emplace_back(Angle(circles[i].o), -1);
         }
       }
-      assert(int(ys.size()) % 2 == 0); sort(ys.begin(), ys.end());
-      for (int j = 0; j < int(ys.size()); j += 2) {
-        Pair a = Pair(ys[j].first, make_pair(i, ys[j].second));
-        Pair b = Pair(ys[j + 1].first, make_pair(i, ys[j + 1].second));
-        intervals.emplace_back(a, b);
-      }
     }
-    for (int i = 0; i < m; i++) {
-      vector<pt> inter = circleLineIntersection(circles[i], mLine);
-      if (int(inter.size()) == 2) {
-        Pair a = Pair(inter[0].y, make_pair(i, -1));
-        Pair b = Pair(inter[1].y, make_pair(i, -2));
-        intervals.emplace_back(a, b);
+    for (int j = 0; j < n && !covered; j++) {
+      vector<pair<Angle, int>> tmp; bool hasInter = false;
+      for (int w = 0; w < int(polys[j].size()); w++) {
+        pt c = polys[j][w], d = polys[j][mod(w + 1, polys[j].size())];
+        if (c == d) continue;
+        int sc = circles[i].contains(c), sd = circles[i].contains(d);
+        vector<pt> p = circleSegIntersection(circles[i], c, d); if (sc != sd) {
+          if (min(sc, sd) < 0 && int(p.size()) == 1) {
+            hasInter = true; tmp.emplace_back(Angle(p[0]), sgn(sd - sc));
+          } else if (min(sc, sd) > 0 && int(p.size()) == 2) {
+            hasInter = true; tmp.emplace_back(Angle(p[sc == 0]), sgn(sd - sc));
+          }
+        } else if (int(p.size()) == 2) {
+          hasInter = true; tmp.emplace_back(Angle(p[1]), 1);
+          tmp.emplace_back(Angle(p[0]), -1);
+        }
       }
+      auto cmp = [&] (const pair<Angle, int> &a, const pair<Angle, int> &b) {
+        return make_pair(a.first, -a.second) < make_pair(b.first, -b.second);
+      };
+      sort(tmp.begin(), tmp.end(), cmp);
+      if (!tmp.empty() && tmp[0].second < 0) {
+        tmp.emplace_back(Angle(circles[i].o - pt(circles[i].r, 0)), 1);
+        tmp.emplace_back(Angle(circles[i].o), -1);
+      }
+      segs.insert(segs.end(), tmp.begin(), tmp.end());
+      if (!hasInter && isInPolygon(polys[j], circles[i].o) <= 0)
+        for (auto &&p : polys[j])
+          if (circles[i].contains(p) > 0) { covered = true; break; }
     }
-    auto getPts = [&] (const Pair &p) {
-      int i = p.second.first, j = p.second.second;
-      Line lLine(pt(l, 0), pt(l, 1)), rLine(pt(r, 0), pt(r, 1));
-      if (j < 0) {
-        Circle c = circles[i];
-        vector<pt> left = circleLineIntersection(c, lLine);
-        vector<pt> right = circleLineIntersection(c, rLine);
-        if (left.empty()) left.push_back(c.o - pt(c.r, 0));
-        if (right.empty()) right.push_back(c.o + pt(c.r, 0));
-        if (j == -1) return make_pair(left[0], right[0]);
-        else return make_pair(left.back(), right.back());
-      } else {
-        pt a = polys[i][j], b = polys[i][mod(j + 1, polys[i].size())], p1, p2;
-        assert(lineLineIntersection(Line(a, b), lLine, p1) == 1);
-        assert(lineLineIntersection(Line(a, b), rLine, p2) == 1);
-        return make_pair(p1, p2);
+    if (covered) continue;
+    sort(segs.begin(), segs.end()); for (auto &&s : segs)
+      if (s.first.p == circles[i].o) s.first.p -= pt(circles[i].r, 0);
+    for (int j = 1, cnt = segs[0].second; j < int(segs.size()); j++) {
+      if (!cnt) {
+        pt a = segs[j - 1].first.p, b = segs[j].first.p; if (a != b) {
+          ret += cross(a, b) / 2;
+          ret += circleHalfPlaneIntersectionArea(circles[i], Line(b, a));
+        }
       }
-    };
-    for (auto &&i : intervalUnion(intervals)) {
-      pt a, b, c, d; tie(a, b) = getPts(i.first); tie(c, d) = getPts(i.second);
-      ret += (r - l) * ((c.y - a.y) + (d.y - b.y)) / 2;
-      if (i.first.second.second < 0) {
-        Circle circ = circles[i.first.second.first]; assert(a != b);
-        ret += circleHalfPlaneIntersectionArea(circ, Line(b, a));
-      }
-      if (i.second.second.second < 0) {
-        Circle circ = circles[i.second.second.first]; assert(c != d);
-        ret += circleHalfPlaneIntersectionArea(circ, Line(c, d));
-      }
+      cnt += segs[j].second;
     }
   }
   return ret;

@@ -84,9 +84,11 @@ struct Sphere3D {
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
 vector<pt3> sphereLineIntersection(Sphere3D s, Line3D l) {
-  vector<pt3> ret; T h2 = s.r * s.r - l.distSq(s.o); if (!lt(h2, 0)) {
-    pt3 p = l.proj(s.o), h = l.d * sqrt(max(h2, T(0))) / abs(l.d), q = p + h;
-    ret.push_back(p - h); if (ret.back() != q) ret.push_back(q);
+  vector<pt3> ret; T h2 = s.r * s.r - l.distSq(s.o); pt3 p = l.proj(s.o);
+  if (eq(h2, 0)) ret.push_back(p);
+  else if (!lt(h2, 0)) {
+    pt3 h = l.d * sqrt(max(h2, T(0))) / abs(l.d);
+    ret.push_back(p - h); ret.push_back(p + h);
   }
   return ret;
 }

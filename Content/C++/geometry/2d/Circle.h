@@ -38,9 +38,11 @@ struct Circle {
 // Tested:
 //   https://dmoj.ca/problem/noi05p6
 vector<pt> circleLineIntersection(Circle c, Line l) {
-  vector<pt> ret; T h2 = c.r * c.r - l.distSq(c.o); if (!lt(h2, 0)) {
-    pt p = l.proj(c.o), h = l.v * sqrt(max(h2, T(0))) / abs(l.v), q = p + h;
-    ret.push_back(p - h); if (ret.back() != q) ret.push_back(q);
+  vector<pt> ret; T h2 = c.r * c.r - l.distSq(c.o); pt p = l.proj(c.o);
+  if (eq(h2, 0)) ret.push_back(p);
+  else if (!lt(h2, 0)) {
+    pt h = l.v * sqrt(max(h2, T(0))) / abs(l.v);
+    ret.push_back(p - h); ret.push_back(p + h);
   }
   return ret;
 }
@@ -104,9 +106,11 @@ int circleCircleIntersection(Circle c1, Circle c2, vector<pt> &res) {
   pt d = c2.o - c1.o; T d2 = norm(d);
   if (eq(d2, 0)) return eq(c1.r, c2.r) ? 2 : 0;
   T pd = (d2 + c1.r * c1.r - c2.r * c2.r) / 2;
-  T h2 = c1.r * c1.r - pd * pd / d2; if (!lt(h2, 0)) {
-    pt p = c1.o + d * pd / d2, h = perp(d) * sqrt(max(h2 / d2, T(0)));
-    res.push_back(p - h); pt q = p + h; if (res.back() != q) res.push_back(q);
+  T h2 = c1.r * c1.r - pd * pd / d2; pt p = c1.o + d * pd / d2;
+  if (eq(h2, 0)) res.push_back(p);
+  else if (!lt(h2, 0)) {
+    pt h = perp(d) * sqrt(max(h2 / d2, T(0)));
+    res.push_back(p - h); res.push_back(p + h);
   }
   return !res.empty();
 }
