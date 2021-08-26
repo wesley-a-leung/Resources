@@ -86,8 +86,8 @@ struct Sphere3D {
 vector<pt3> sphereLineIntersection(Sphere3D s, Line3D l) {
   vector<pt3> ret; T h2 = s.r * s.r - l.distSq(s.o); pt3 p = l.proj(s.o);
   if (eq(h2, 0)) ret.push_back(p);
-  else if (!lt(h2, 0)) {
-    pt3 h = l.d * sqrt(max(h2, T(0))) / abs(l.d);
+  else if (lt(0, h2)) {
+    pt3 h = l.d * sqrt(h2) / abs(l.d);
     ret.push_back(p - h); ret.push_back(p + h);
   }
   return ret;
