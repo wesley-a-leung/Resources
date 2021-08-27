@@ -34,8 +34,8 @@ using namespace __gnu_pbds;
 //   https://hackerrank.com/contests/w37/challenges/two-efficient-teams/problem
 template <class T> struct StoerWagnerGlobalMinCut {
   struct Edge {
-    int to; T weight; int rev;
-    Edge(int to, T weight, int rev) : to(to), weight(weight), rev(rev) {}
+    int to, rev; T weight;
+    Edge(int to, int rev,  T weight) : to(to), rev(rev), weight(weight) {}
   };
   struct Node {
     T w; int v; Node(T w, int v) : w(w), v(v) {}
@@ -44,8 +44,8 @@ template <class T> struct StoerWagnerGlobalMinCut {
   int V; vector<vector<Edge>> G; vector<bool> cut; T cutWeight, INF;
   void addEdge(int v, int w, T weight) {
     if (v == w) return;
-    G[v].emplace_back(w, weight, int(G[w].size()));
-    G[w].emplace_back(v, weight, int(G[v].size()) - 1);
+    G[v].emplace_back(w, int(G[w].size()), weight);
+    G[w].emplace_back(v, int(G[v].size()) - 1, weight);
   }
   StoerWagnerGlobalMinCut(int V, T INF = numeric_limits<T>::max())
       : V(V), G(V), cut(V, false), cutWeight(INF), INF(INF) {}
@@ -73,7 +73,7 @@ template <class T> struct StoerWagnerGlobalMinCut {
           }
           for (auto &&e : H[v]) if (W[e.to] != T()) {
             H[e.to][e.rev].to = last; H[e.to][e.rev].rev = H[last].size();
-            H[last].emplace_back(e.to, e.weight, e.rev);
+            H[last].emplace_back(e.to, e.rev, e.weight);
           }
           H[v].clear();
           for (int x = 0; x < V; x++) if (par[x] == v) par[x] = last;
