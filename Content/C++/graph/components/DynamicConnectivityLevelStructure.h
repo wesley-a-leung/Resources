@@ -24,7 +24,7 @@ using namespace std;
 //   constructor: O(V)
 //   addEdge, connected, getSize: O(log V)
 //   removeEdge: O((log V)^2) amortized
-// Memory Complexity: O(V log V)
+// Memory Complexity: O((V + E) log V)
 // Tested:
 //   https://www.acmicpc.net/problem/17465
 struct DynamicConnectivityLevelStructure {
