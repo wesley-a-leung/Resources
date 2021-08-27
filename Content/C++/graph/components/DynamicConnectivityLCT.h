@@ -3,7 +3,7 @@
 #include "../dynamictrees/LinkCutTree.h"
 using namespace std;
 
-// Support queries on connected components, after edges have been
+// Support offline queries on connected components, after edges have been
 //   added or removed, using a Link Cut Tree
 // Constructor Arguments:
 //   V: the number of vertices in the graph
@@ -19,7 +19,8 @@ using namespace std;
 //   addCntQuery(): adds a query asking for the number of connected components
 //   solveQueries(): solves all queries asked so far
 // In practice, has a moderate constant, slower than
-//   DynamicConnectivityDivAndConq
+//   DynamicConnectivityDivAndConq, faster than
+//   DynamicConnectivityLevelStructure
 // Time Complexity:
 //   constructor: O(1)
 //   addEdge, removeEdge, addConnectedQuery, addCntQuery: O(1)

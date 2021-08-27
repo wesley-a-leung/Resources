@@ -4,7 +4,7 @@
 #include "../../queries/LIFOSetDivAndConq.h"
 using namespace std;
 
-// Support queries for the minimum spanning tree, after edges have been
+// Support offline queries for the minimum spanning tree, after edges have been
 //   added or removed, using divide and conquer and a Link Cut Tree
 // Template Arguments:
 //   U: the type of the weight of the edges

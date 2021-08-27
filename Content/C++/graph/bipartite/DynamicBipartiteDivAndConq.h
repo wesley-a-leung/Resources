@@ -4,8 +4,8 @@
 #include "../../queries/LIFOSetDivAndConq.h"
 using namespace std;
 
-// Support queries on connected components and bipartiteness, after edges
-//   have been added or removed, using divide and conquer
+// Support offline queries on connected components and bipartiteness, after
+//   edges have been added or removed, using divide and conquer
 // Constructor Arguments:
 //   V: the number of vertices in the graph
 // Fields:

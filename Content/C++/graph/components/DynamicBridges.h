@@ -3,8 +3,8 @@
 #include "../dynamictrees/LinkCutTree.h"
 using namespace std;
 
-// Support queries for the number of bridges in a graph, after edges have been
-//   added or removed, using a Link Cut Tree
+// Support offline queries for the number of bridges in a graph, after edges
+//   have been added or removed, using a Link Cut Tree
 // Constructor Arguments:
 //   V: the number of vertices in the graph
 // Fields:

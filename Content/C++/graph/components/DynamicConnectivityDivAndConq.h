@@ -4,7 +4,7 @@
 #include "../../queries/LIFOSetDivAndConq.h"
 using namespace std;
 
-// Support queries on connected components, after edges have been
+// Support offline queries on connected components, after edges have been
 //   added or removed, using divide and conquer
 // Constructor Arguments:
 //   V: the number of vertices in the graph
@@ -21,7 +21,8 @@ using namespace std;
 //     same connected component as vertex v
 //   addCntQuery(): adds a query asking for the number of connected components
 //   solveQueries(): solves all queries asked so far
-// In practice, has a small constant, faster than DynamicConnectivityLCT
+// In practice, has a small constant, faster than DynamicConnectivityLCT and
+//   DynamicConnectivityLevelStructure
 // Time Complexity:
 //   constructor: O(1)
 //   addEdge, removeEdge, addConnectedQuery, addSizeQuery, addCntQuery: O(1)
