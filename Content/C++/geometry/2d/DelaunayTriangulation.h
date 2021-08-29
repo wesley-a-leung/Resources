@@ -19,6 +19,7 @@ using namespace std;
 // Memory Complexity: O(N)
 // Tested:
 //   https://dmoj.ca/problem/cco08p6
+//   https://codeforces.com/problemsets/acmsguru/problem/99999/383
 struct DelaunayTriangulation {
   static constexpr const pt inf = pt(numeric_limits<T>::max(),
                                      numeric_limits<T>::max());
