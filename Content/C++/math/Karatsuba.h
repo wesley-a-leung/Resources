@@ -30,7 +30,7 @@ void karatsuba(int n, ItA a, ItB b, ItRes res) {
       for (int j = 0; j < n; j++) res[i + j] += a[i] * b[j];
     return;
   }
-  int k = n / 2; vector<T> tmp(n, T()), c(n, T());
+  assert(!(n & (n - 1))); int k = n / 2; vector<T> tmp(n, T()), c(n, T());
   auto atmp = tmp.begin(), btmp = atmp + k; for (int i = 0; i < k; i++) {
     atmp[i] = a[i] + a[i + k]; btmp[i] = b[i] + b[i + k];
   }
