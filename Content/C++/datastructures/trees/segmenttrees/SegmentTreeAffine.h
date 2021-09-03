@@ -5,17 +5,12 @@ using namespace std;
 // Segment Tree supporting range updates with updates in the form of
 //   adding m + b, 2m + b, 3m + b, ... to the interval [l, r],
 //   and range sum queries
-// Indices are 0-indexed and ranges are inclusive with the exception of
-//   functions that accept two iterators as a parameter, such as
-//   the constructor, which are exclusive
+// Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   T: the type of the element of the array
 // Constructor Arguments:
 //   N: the size of the array
-//   f: a generating function that returns the ith element on the ith call
-//   st: an iterator pointing to the first element in the array
-//   en: an iterator pointing to after the last element in the array
-//   vdef: the default value to fill the array with
+//   A: a vector of type T
 // Functions:
 //   update(l, r, m, b): update the range [l, r] with
 //     m + b, 2m + b, 3m + b, ...
@@ -48,10 +43,10 @@ template <class T> struct SegmentTreeAffine {
       apply(x * 2 + 1, m + 1, tr, TR[x].lz); TR[x].lz = Pair();
     }
   }
-  template <class F> void build(int x, int tl, int tr, F &f) {
-    if (tl == tr) { TR[x].val = Pair(f(), T()); return; }
+  void build(const vector<T> &A, int x, int tl, int tr) {
+    if (tl == tr) { TR[x].val = Pair(A[tl], T()); return; }
     int m = tl + (tr - tl) / 2;
-    build(x * 2, tl, m, f); build(x * 2 + 1, m + 1, tr, f);
+    build(A, x * 2, tl, m); build(A, x * 2 + 1, m + 1, tr);
     TR[x].val = add(TR[x * 2].val, TR[x * 2 + 1].val);
   }
   void update(int x, int tl, int tr, int l, int r, const Pair &v) {
@@ -67,14 +62,10 @@ template <class T> struct SegmentTreeAffine {
     propagate(x, tl, tr); int m = tl + (tr - tl) / 2;
     return add(query(x * 2, tl, m, l, r), query(x * 2 + 1, m + 1, tr, l, r));
   }
-  template <class F> SegmentTreeAffine(int N, F f)
-      : N(N), TR(N == 0 ? 0 : 1 << __lg(N * 4 - 1)) {
-    if (N > 0) build(1, 0, N - 1, f);
+  SegmentTreeAffine(int N) : N(N), TR(N == 0 ? 0 : 1 << __lg(N * 4 - 1)) {}
+  SegmentTreeAffine(const vector<T> &A) : SegmentTreeAffine(A.size()) {
+    if (N > 0) build(A, 1, 0, N - 1);
   }
-  template <class It> SegmentTreeAffine(It st, It en)
-      : SegmentTreeAffine(en - st, [&] { return *st++; }) {}
-  SegmentTreeAffine(int N, const T &vdef = T())
-      : SegmentTreeAffine(N, [&] { return vdef; }) {}
   void update(int l, int r, T m, T b) {
     update(1, 0, N - 1, l, r, Pair((1 - l) * m + b, m));
   }

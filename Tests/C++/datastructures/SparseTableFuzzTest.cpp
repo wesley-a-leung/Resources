@@ -12,7 +12,7 @@ void test1() {
     int N = rng() % 101;
     vector<int> A(N);
     for (auto &&a : A) a = rng() % int(1e9) + 1;
-    SparseTable<int, Min> ST(A.begin(), A.end());
+    SparseTable<int, Min> ST(A);
     int Q = N == 0 ? 0 : 100 - rng() % 5;
     vector<int> ans0, ans1;
     for (int i = 0; i < Q; i++) {

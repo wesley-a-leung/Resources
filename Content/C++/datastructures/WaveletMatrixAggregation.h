@@ -5,9 +5,9 @@ using namespace std;
 
 // Wavelet Matrix supporting 2D aggregation queries where the data can change,
 //   but not the keys
+// Indices are 0-indexed and ranges are inclusive
 // Queries bounded by 3 indices require a commutative operation, while queries
 //   bounded by 4 indices also requires the data to be invertible
-// Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   T: the type of the element of the array
 //   R: struct supporting point updates and range queries on indices
@@ -30,7 +30,7 @@ using namespace std;
 //         static Data merge(const Data &l, const Data &r) { return l + r; }
 //         static Data invData(const Data &v) { return -v; }
 //         FenwickTree1D<Data> FT;
-//         R(const vector<Data> &A) : FT(A.begin(), A.end()) {}
+//         R(const vector<Data> &A) : FT(A) {}
 //         void update(int i, const Lazy &val) { FT.update(i, val); }
 //         Data query(int l, int r) { return FT.query(l, r); }
 //       };
@@ -70,9 +70,9 @@ struct WaveletMatrixAggregation {
   using Data = typename R::Data; using Lazy = typename R::Lazy;
   int N, H; vector<int> mid; vector<BitPrefixSumArray> B;
   vector<R> D; vector<T> S;
-  WaveletMatrixAggregation(const vector<T> &A, const vector<Data> &X)
+  WaveletMatrixAggregation(vector<T> A, const vector<Data> &X)
       : N(A.size()), H(N == 0 ? 0 : __lg(N) + 1), mid(H),
-        B(H, BitPrefixSumArray(N)), S(A) {
+        B(H, BitPrefixSumArray(N)), S(move(A)) {
     vector<T> temp = S; sort(S.begin(), S.end(), Cmp());
     vector<int> C(N), ind(N); for (int i = 0; i < N; i++)
       C[i] = lower_bound(S.begin(), S.end(), temp[i], Cmp()) - S.begin();

@@ -3,9 +3,7 @@
 using namespace std;
 
 // Bottom up segment tree supporting point updates and range queries
-// Indices are 0-indexed and ranges are inclusive with the exception of
-//   functions that accept two iterators as a parameter, such as
-//   the constructor, which are exclusive
+// Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   C: struct to combine data and lazy values
 //     Required Fields:
@@ -31,10 +29,7 @@ using namespace std;
 //       };
 // Constructor Arguments:
 //   N: the size of the array
-//   f: a generating function that returns the ith element on the ith call
-//   st: an iterator pointing to the first element in the array
-//   en: an iterator pointing to after the last element in the array
-//   vdef: the default value to fill the array with
+//   A: a vector of type C::Data
 // Functions:
 //   update(i, v): updates the index i with the lazy value v
 //   query(l, r): queries the range [l, r] and returns the aggregate value
@@ -52,15 +47,11 @@ using namespace std;
 template <class C> struct SegmentTreeBottomUp {
   using Data = typename C::Data; using Lazy = typename C::Lazy;
   int N; vector<Data> TR;
-  template <class F> SegmentTreeBottomUp(int N, F f)
-      : N(N), TR(N * 2, C::qdef()) {
-    generate(TR.begin() + N, TR.end(), f);
+  SegmentTreeBottomUp(int N) : N(N), TR(N * 2, C::qdef()) {}
+  SegmentTreeBottomUp(const vector<Data> &A) : SegmentTreeBottomUp(A.size()) {
+    copy(A.begin(), A.end(), TR.begin() + N);
     for (int i = N - 1; i > 0; i--) TR[i] = C::merge(TR[i * 2], TR[i * 2 + 1]);
   }
-  template <class It> SegmentTreeBottomUp(It st, It en)
-      : SegmentTreeBottomUp(en - st, [&] { return *st++; }) {}
-  SegmentTreeBottomUp(int N, const Data &vdef)
-      : SegmentTreeBottomUp(N, [&] { return vdef; }) {}
   void update(int i, const Lazy &v) {
     for (i += N, TR[i] = C::applyLazy(TR[i], v); i /= 2;)
       TR[i] = C::merge(TR[i * 2], TR[i * 2 + 1]);

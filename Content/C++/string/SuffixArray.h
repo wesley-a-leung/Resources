@@ -2,26 +2,20 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Suffix Array using Sadakane's algorithm to sort suffixes of a string in
+// Suffix Array using Sadakane's algorithm to sort suffixes of an array in
 //   lexicographical order
-// Indices are 0-indexed and ranges are inclusive with the exception of
-//   functions that accept two iterators as a parameter, such as
-//   the constructor, which are exclusive
+// Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
-//   _T: the type of the character/element in the string/array
+//   _T: the type of each element in the array
 // Constructor Arguments:
-//   N: the length of the string/array
-//   f: a generating function that returns the ith element on the ith call
-//   st: an iterator pointing to the first element in the string/array
-//   en: an iterator pointing to after the last element in the string/array
+//   S: a vector of type _T
 // Fields:
-//   T: the type of the character/element in the string/array
-//   N: the length of the string/array
-//   S: a vector of type T representing the string/array
+//   T: the type of the character/element in the array
+//   N: the length of the array
 //   rnk: a vector of the ranks of the suffixes (rnk[i] is the rank of the
 //     suffix starting from index i)
-//   ind: a vector of the indices in the original string of the suffixes
-//     sorted in lexicographical order (ind[i] is the index in original string
+//   ind: a vector of the indices in the original array of the suffixes
+//     sorted in lexicographical order (ind[i] is the index in original array
 //     of the ith lexicographically smallest suffix)
 //   LCP: a vector of the longest common prefixes between the suffixes when
 //     sorted in lexicographical order (LCP[i] is the longest common prefix of
@@ -39,10 +33,9 @@ using namespace std;
 //   https://dmoj.ca/problem/coci06c5p6
 //   https://dmoj.ca/problem/ccc20s3
 template <class _T> struct SuffixArray {
-  using T = _T; int N; vector<T> S; vector<int> ind, rnk, LCP;
-  template <class F> SuffixArray(int N, F f)
-      : N(N), ind(N + 1), rnk(N + 1), LCP(N + 1) {
-    S.reserve(N); for (int i = 0; i < N; i++) S.push_back(f());
+  using T = _T; int N; vector<int> ind, rnk, LCP;
+  SuffixArray(const vector<T> &S)
+      : N(S.size()), ind(N + 1), rnk(N + 1), LCP(N + 1) {
     vector<int> &tmp = LCP; iota(ind.begin(), ind.end(), 0);
     sort(ind.begin(), ind.begin() + N, [&] (int a, int b) {
       return S[a] < S[b];
@@ -68,6 +61,4 @@ template <class _T> struct SuffixArray {
       if ((LCP[rnk[i]] = k) > 0) k--;
     }
   }
-  template <class It> SuffixArray(It st, It en)
-      : SuffixArray(en - st, [&] { return *st++; }) {}
 };

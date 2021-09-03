@@ -15,8 +15,7 @@ using namespace std;
 //         commutatitve
 // Constructor Arguments:
 //   D: a vector of length K with the size of each dimension
-//   st: an iterator pointing to the first element in the flattened array
-//   en: an iterator pointing to after the last element in the flattened array
+//   A: the flattened array, represented by a vector of type T
 // Functions:
 //   values(inv): returns a vector of the fenwick tree decomposed into a
 //     flattened array, where inv is the inverse of op (minus<T>() by default)
@@ -41,16 +40,17 @@ using namespace std;
 //   https://dmoj.ca/problem/inaho7
 template <class T, class Op = plus<T>> struct FenwickTreeKD {
   int K; vector<int> D, suf; vector<T> BIT; T qdef; Op op;
+  int dig(int i, int d) { return i % suf[d] / suf[d + 1]; }
+  int nxt(int i) { i++; i += i & -i; return --i; }
   FenwickTreeKD(const vector<int> &D, T qdef = T(), Op op = Op())
       : K(D.size()), D(D), suf(K + 1, 1), qdef(qdef), op(op) {
     for (int i = K - 1; i >= 0; i--) suf[i] = suf[i + 1] * D[i];
-    BIT.resize(suf[0]);
+    BIT.resize(suf[0], qdef);
   }
-  int dig(int i, int d) { return i % suf[d] / suf[d + 1]; }
-  int nxt(int i) { i++; i += i & -i; return --i; }
-  template <class It> FenwickTreeKD(const vector<int> &D, It st, It en)
-      : FenwickTreeKD(D) {
-    assert(en - st == suf[0]); copy(st, en, BIT.begin());
+  FenwickTreeKD(const vector<int> &D, vector<T> A, T qdef = T(), Op op = Op())
+      : K(D.size()), D(D), suf(K + 1, 1), BIT(move(A)), qdef(qdef), op(op) {
+    for (int i = K - 1; i >= 0; i--) suf[i] = suf[i + 1] * D[i];
+    assert(int(BIT.size()) == suf[0]);
     for (int d = 0; d < K; d++) for (int i = 0; i < suf[0]; i++)
       if (nxt(dig(i, d)) < D[d]) {
         int j = i + (nxt(dig(i, d)) - dig(i, d)) * suf[d + 1];

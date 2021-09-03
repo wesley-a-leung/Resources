@@ -4,26 +4,20 @@ using namespace std;
 
 // Modified from https://github.com/cheran-senthil/PyRival/blob/master/pyrival/strings/suffix_array.py
 //   which has an Apache 2.0 license
-// Suffix Array Induced Sort to sort suffixes of a string in
+// Suffix Array Induced Sort to sort suffixes of an array in
 //   lexicographical order
-// Indices are 0-indexed and ranges are inclusive with the exception of
-//   functions that accept two iterators as a parameter, such as
-//   the constructor, which are exclusive
+// Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
-//   _T: the type of the character/element in the string/array
+//   _T: the type of each element in the array
 // Constructor Arguments:
-//   N: the length of the string/array
-//   f: a generating function that returns the ith element on the ith call
-//   st: an iterator pointing to the first element in the string/array
-//   en: an iterator pointing to after the last element in the string/array
+//   S: a vector of type _T
 // Fields:
-//   T: the type of the character/element in the string/array
-//   N: the length of the string/array
-//   S: a vector of type T representing the string/array
+//   T: the type of the character/element in the array
+//   N: the length of the array
 //   rnk: a vector of the ranks of the suffixes (rnk[i] is the rank of the
 //     suffix starting from index i)
-//   ind: a vector of the indices in the original string of the suffixes
-//     sorted in lexicographical order (ind[i] is the index in original string
+//   ind: a vector of the indices in the original array of the suffixes
+//     sorted in lexicographical order (ind[i] is the index in original array
 //     of the ith lexicographically smallest suffix)
 //   LCP: a vector of the longest common prefixes between the suffixes when
 //     sorted in lexicographical order (LCP[i] is the longest common prefix of
@@ -31,7 +25,7 @@ using namespace std;
 //     being 0)
 // In practice, has a moderate constant, usually faster than SuffixArray
 // Time Complexity:
-//   constructor: O(N + K) where K is the range of the string/array
+//   constructor: O(N + K) where K is the range of the array
 // Memory Complexity: O(N + K)
 // Tested:
 //   Fuzz and Stress Tested
@@ -86,9 +80,8 @@ template <class _T> struct SAISSuffixArray {
     for (int i = 0; i < int(S.size()); i++) A[i] = S[i] - offset;
     return A;
   }
-  int N; vector<T> S; vector<int> ind, rnk, LCP;
-  template <class F> SAISSuffixArray(int N, F f) : N(N) {
-    S.reserve(N); for (int i = 0; i < N; i++) S.push_back(f());
+  int N; vector<int> ind, rnk, LCP;
+  SAISSuffixArray(const vector<T> &S) : N(S.size()) {
     ind = SAIS(init(S)); rnk.resize(N); LCP.resize(N);
     for (int i = 0; i < N; i++) rnk[ind[i]] = i;
     for (int i = 0, k = 0; i < N; i++) {
@@ -98,7 +91,4 @@ template <class _T> struct SAISSuffixArray {
       if ((LCP[rnk[i]] = k) > 0) k--;
     }
   }
-  template <class It>
-  SAISSuffixArray(It st, It en)
-      : SAISSuffixArray(en - st, [&] { return *st++; }) {}
 };

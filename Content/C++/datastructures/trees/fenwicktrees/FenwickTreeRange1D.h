@@ -11,9 +11,7 @@ using namespace std;
 //   T: the type of each element
 // Constructor Arguments:
 //   N: the size of the array
-//   f: a generating function that returns the ith element on the ith call
-//   st: an iterator pointing to the first element in the array
-//   en: an iterator pointing to after the last element in the array
+//   A: a vector of type T
 // Functions:
 //   update(l, r, v): add v to the range [l..r]
 //   query(r): queries the sum of the range [0, r]
@@ -29,11 +27,8 @@ using namespace std;
 template <class T> struct FenwickTreeRange1D {
   vector<FenwickTree1D<T>> FT;
   FenwickTreeRange1D(int N) : FT(2, FenwickTree1D<T>(N)) {}
-  template <class F> FenwickTreeRange1D(int N, F f) {
-    FT.reserve(2); FT.emplace_back(N, f); FT.emplace_back(N);
-  }
-  template <class It> FenwickTreeRange1D(It st, It en) {
-    FT.reserve(2); FT.emplace_back(st, en); FT.emplace_back(en - st);
+  FenwickTreeRange1D(const vector<T> &A) {
+    FT.reserve(2); FT.emplace_back(A); FT.emplace_back(A.size());
   }
   T query(int r) { return FT[1].query(r) * T(r) + FT[0].query(r); }
   T query(int l, int r) { return query(r) - query(l - 1); }

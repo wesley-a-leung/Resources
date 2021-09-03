@@ -30,7 +30,7 @@ using namespace std;
 //         static Data invData(const Data &v) { return -v; }
 //         static Lazy invLazy(const Lazy &v) { return -v; }
 //         FenwickTreeRangePoint1D<Data> FT;
-//         R(const vector<Data> &A) : FT(A.begin(), A.end()) {}
+//         R(const vector<Data> &A) : FT(A) {}
 //         void update(int l, int r, const Lazy &val) { FT.update(l, r, val); }
 //         Data query(int i) { return FT.get(i); }
 //       };

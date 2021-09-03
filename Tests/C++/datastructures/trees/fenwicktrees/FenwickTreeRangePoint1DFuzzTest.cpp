@@ -13,7 +13,7 @@ void test1() {
     vector<long long> A(N);
     for (auto &&ai : A) ai = rng() % int(1e9) + 1;
     FenwickTreeRangePoint1D<long long> FT1(N);
-    FenwickTreeRangePoint1D<long long> FT2(A.begin(), A.end());
+    FenwickTreeRangePoint1D<long long> FT2(A);
     FenwickTreeRangePoint<1, long long> FT3(N);
     for (int i = 0; i < N; i++) {
       FT1.update(i, i, A[i]);

@@ -54,13 +54,8 @@ was tested
 differ by factors of 10
 - if template parameters are non-trivial, those should be described as well,
 possibly with an example provided
-- `std::vector` is preferred to fixed-sized arrays, use `std::vector::reserve`
+- `std::vector` is preferred over fixed-sized arrays and `std::string`, use
+`std::vector::reserve`
 if possible
 - the new operator should be avoided and memory should be allocated on the
 stack, or `std::unique_ptr` should be used
-- data structures should have at least one of the following constructors:
-a constructor accepting a size variable as well as a function/lambda that
-accepts no arguments and returns successive values for each index (see
-`std::generate`), a constructor that accepts two iterators representing a 
-half-open range to be copied, and a constructor accepting a size variable and a
-default value

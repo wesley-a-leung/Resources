@@ -37,7 +37,7 @@ struct CountDistinctSubtreeUpdates {
   struct R {
     using Data = int; using Lazy = int; FenwickTree1D<Data> FT;
     static Data qdef() { return 0; }
-    R(const vector<Data> &A) : FT(A.begin(), A.end()) {}
+    R(const vector<Data> &A) : FT(A) {}
     void update(int l, int, const Lazy &val) { FT.update(l, val); }
     Data query(int l, int r) { return FT.query(l, r); }
   };

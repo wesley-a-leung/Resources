@@ -32,10 +32,10 @@ using namespace std;
 //   http://www.usaco.org/index.php?page=viewproblem2&cpid=972
 template <class T, class Op> struct SparseTable2D {
   int N, M, lgN, lgM; vector<vector<vector<vector<T>>>> ST; Op op;
-  SparseTable2D(const vector<vector<T>> &A, Op op = Op())
+  SparseTable2D(vector<vector<T>> A, Op op = Op())
       : N(A.size()), M(N == 0 ? 0 : A[0].size()),
         lgN(N == 0 ? 0 : __lg(N) + 1), lgM(M == 0 ? 0 : __lg(M) + 1),
-        ST(lgN, vector<vector<vector<T>>>(lgM, A)), op(op) {
+        ST(lgN, vector<vector<vector<T>>>(lgM, move(A))), op(op) {
     for (int ir = 0; ir < lgN; ir++) {
       for (int ic = 0; ic < lgM - 1; ic++)
         for (int jr = 0; jr < N; jr++) for (int jc = 0; jc < M; jc++)

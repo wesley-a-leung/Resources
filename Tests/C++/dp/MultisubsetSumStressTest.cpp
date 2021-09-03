@@ -8,7 +8,7 @@ void test1() {
   vector<int> A(N);
   for (auto &&a : A) a = rng() % int(1e3) + 1;
   const auto start_time = chrono::system_clock::now();
-  auto dp = multisubsetSum<bool>(A.begin(), A.end(), M);
+  auto dp = multisubsetSum<bool>(A, M);
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 1 (bool) Passed" << endl;
@@ -24,7 +24,7 @@ void test2() {
   vector<int> A(N);
   for (auto &&a : A) a = rng() % int(1e3) + 1;
   const auto start_time = chrono::system_clock::now();
-  auto dp = multisubsetSum<char>(A.begin(), A.end(), M);
+  auto dp = multisubsetSum<char>(A, M);
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 2 (char) Passed" << endl;
@@ -40,7 +40,7 @@ void test3() {
   vector<int> A(N);
   for (auto &&a : A) a = rng() % int(1e3) + 1;
   const auto start_time = chrono::system_clock::now();
-  auto dp = multisubsetSum<int>(A.begin(), A.end(), M);
+  auto dp = multisubsetSum<int>(A, M);
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 3 (int) Passed" << endl;

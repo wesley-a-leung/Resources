@@ -2,24 +2,27 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Finds a candidate for the majority element in a range [st, en)
-//   It: the type of the iterator pointing to each element in the array
-// The candidate is the majority element if and only if
-//   std::count(st, en, boyerMooreMajority(st, en)) > (en - st) / 2
+// Finds a candidate for the majority element with constant space
+// A second pass is required to ensure the candidate is actually a
+//   majority element
+// Template Arguments:
+//   F: the type of the function generating the elements
 // Function Arguments:
-//   st: an iterator pointing to the first element in the array
-//   en: an iterator pointing to after the last element in the array
-// Return Value: returns an iterator to an element that is a candidate for the
-//   majority element in the range [st, en)
+//   N: the number of elements
+//   f: a function that returns the ith element on the ith call
+// Return Value: returns an element that is a candidate for the
+//   majority element
 // In practice, has a very small constant
 // Time Complexity: O(N)
 // Memory Complexity: O(1)
 // Tested:
 //   https://open.kattis.com/problems/farmingmars
-template <class It> It boyerMooreMajority(It st, It en) {
-  It ret = st; int cnt = 0; for (It cur = st; cur != en; cur++) {
-    if (cnt == 0) { ret = cur; cnt++; }
-    else if (*cur == *ret) cnt++;
+template <class F>
+auto boyerMooreMajority(int N, F f) -> typename decay<decltype(f())>::type {
+  typename decay<decltype(f())>::type ret = f();
+  for (int cnt = 1, i = 1; i < N; i++) {
+    auto v = f(); if (cnt == 0) { ret = v; cnt++; }
+    else if (v == ret) cnt++;
     else cnt--;
   }
   return ret;

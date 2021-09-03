@@ -26,15 +26,10 @@ using namespace std;
 template <class T> struct RangeAddRangeSum2D {
   int N, M; vector<FenwickTreeRange1D<T>> full, part;
   void build(int x, int tu, int td, const vector<vector<T>> &pre) {
-    int i = -1; part[x] = FenwickTreeRange1D<T>(M, [&] {
-      ++i; return pre[td][i] - (tu == 0 ? T() : pre[tu - 1][i]);
-    });
-    if (tu == td) {
-      i = -1; full[x] = FenwickTreeRange1D<T>(M, [&] {
-        ++i; return pre[td][i] - (tu == 0 ? T() : pre[tu - 1][i]);
-      });
-      return;
-    }
+    vector<T> tmp(M); for (int i = 0; i < M; i++)
+      tmp[i] = pre[td][i] - (tu == 0 ? T() : pre[tu - 1][i]);
+    part[x] = FenwickTreeRange1D<T>(tmp);
+    if (tu == td) { full[x] = FenwickTreeRange1D<T>(tmp); return; }
     int m = tu + (td - tu) / 2, rc = x + (m - tu + 1) * 2;
     build(x + 1, tu, m, pre); build(rc, m + 1, td, pre);
   }

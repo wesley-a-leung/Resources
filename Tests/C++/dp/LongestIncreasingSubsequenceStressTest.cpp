@@ -9,7 +9,7 @@ void test1() {
   vector<int> A(N);
   for (auto &&a : A) a = rng() % int(6) + 1;
   const auto start_time = chrono::system_clock::now();
-  vector<int> inds = longestIncreasingSubsequence(A.begin(), A.end());
+  vector<int> inds = longestIncreasingSubsequence(A);
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 1 (lower_bound) Passed" << endl;
@@ -25,7 +25,7 @@ void test2() {
   vector<int> A(N);
   for (auto &&a : A) a = rng() % int(6) + 1;
   const auto start_time = chrono::system_clock::now();
-  vector<int> inds = longestIncreasingSubsequenceFenwick(A.begin(), A.end());
+  vector<int> inds = longestIncreasingSubsequenceFenwick(A);
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 2 (Fenwick) Passed" << endl;

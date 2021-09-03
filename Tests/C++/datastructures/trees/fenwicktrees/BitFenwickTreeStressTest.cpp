@@ -10,7 +10,7 @@ void test1() {
   constexpr const int N = 1e7, Q = 1e7;
   vector<int> A(N);
   for (auto &&ai : A) ai = rng() % 2;
-  FenwickTree1D<int> FT(A.begin(), A.end());
+  FenwickTree1D<int> FT(A);
   vector<int> ans;
   ans.reserve(Q);
   for (int i = 0; i < Q; i++) {
@@ -107,7 +107,7 @@ void test4() {
   constexpr const int N = 1e7, Q = 1e7;
   vector<int> A(N);
   for (auto &&ai : A) ai = rng() % 2;
-  FenwickTree1D<int> FT(A.begin(), A.end());
+  FenwickTree1D<int> FT(A);
   vector<int> ans;
   ans.reserve(Q);
   for (int i = 0; i < Q; i++) {

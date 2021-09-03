@@ -4,9 +4,7 @@ using namespace std;
 
 // Top down segment tree supporting point updates and range queries,
 //   with a lazy template argument to enable range updates
-// Indices are 0-indexed and ranges are inclusive with the exception of
-//   functions that accept two iterators as a parameter, such as
-//   the constructor, which are exclusive
+// Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   LAZY: boolean to indicate whether or not range updates are enabled
 //   C: struct to combine data and lazy values
@@ -53,10 +51,7 @@ using namespace std;
 //       };
 // Constructor Arguments:
 //   N: the size of the array
-//   f: a generating function that returns the ith element on the ith call
-//   st: an iterator pointing to the first element in the array
-//   en: an iterator pointing to after the last element in the array
-//   vdef: the default value to fill the array with
+//   A: a vector of type C::Data
 // Functions:
 //   update(i, v): updates the index i with the lazy value v
 //   update(l, r, v): update the range [l, r] with the lazy value v
@@ -106,10 +101,10 @@ template <const bool LAZY, class C> struct SegmentTreeTopDown {
     }
   }
   agg_def propagate(int, int, int) {}
-  template <class F> void build(int x, int tl, int tr, F &f) {
-    if (tl == tr) { TR[x].val = f(); return; }
+  void build(const vector<Data> &A, int x, int tl, int tr) {
+    if (tl == tr) { TR[x].val = A[tl]; return; }
     int m = tl + (tr - tl) / 2;
-    build(x * 2, tl, m, f); build(x * 2 + 1, m + 1, tr, f);
+    build(A, x * 2, tl, m); build(A, x * 2 + 1, m + 1, tr);
     TR[x].val = C::merge(TR[x * 2].val, TR[x * 2 + 1].val);
   }
   void update(int x, int tl, int tr, int l, int r, const Lazy &v) {
@@ -150,14 +145,10 @@ template <const bool LAZY, class C> struct SegmentTreeTopDown {
     int ret = bsearchSuffix(x * 2 + 1, m + 1, tr, l, r, agg, f);
     return l <= ret ? ret : bsearchSuffix(x * 2, tl, m, l, r, agg, f);
   }
-  template <class F> SegmentTreeTopDown(int N, F f)
-      : N(N), TR(N == 0 ? 0 : 1 << __lg(N * 4 - 1)) {
-    if (N > 0) { build(1, 0, N - 1, f); }
+  SegmentTreeTopDown(int N) : N(N), TR(N == 0 ? 0 : 1 << __lg(N * 4 - 1)) {}
+  SegmentTreeTopDown(const vector<Data> &A) : SegmentTreeTopDown(A.size()) {
+    if (N > 0) { build(A, 1, 0, N - 1); }
   }
-  template <class It> SegmentTreeTopDown(It st, It en)
-      : SegmentTreeTopDown(en - st, [&] { return *st++; }) {}
-  SegmentTreeTopDown(int N, const Data &vdef)
-      : SegmentTreeTopDown(N, [&] { return vdef; }) {}
   lazy_def update(int l, int r, const Lazy &v) {
     update(1, 0, N - 1, l, r, v);
   }

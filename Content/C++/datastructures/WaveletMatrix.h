@@ -4,9 +4,7 @@
 using namespace std;
 
 // Wavelet Matrix supporting rank and select operations for a subarray
-// Indices are 0-indexed and ranges are inclusive with the exception of
-//   functions that accept two iterators as a parameter, such as
-//   the constructor, which are exclusive
+// Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   T: the type of the element of the array
 //   Cmp: the comparator to compare two elements
@@ -39,9 +37,9 @@ template <class T, class Cmp = less<T>> struct WaveletMatrix {
 #define clt [&] (const T &a, const T &b) { return Cmp()(a, b); }
 #define cle [&] (const T &a, const T &b) { return !Cmp()(b, a); }
   int N, H; vector<int> mid; vector<BitPrefixSumArray> B; vector<T> S;
-  template <class F> WaveletMatrix(int N, F f)
-      : N(N), H(N == 0 ? 0 : __lg(N) + 1), mid(H), B(H, BitPrefixSumArray(N)) {
-    S.reserve(N); for (int i = 0; i < N; i++) S.push_back(f());
+  WaveletMatrix(vector<T> A)
+      : N(A.size()), H(N == 0 ? 0 : __lg(N) + 1), mid(H),
+        B(H, BitPrefixSumArray(N)), S(move(A)) {
     vector<T> temp = S; sort(S.begin(), S.end(), Cmp()); vector<int> C(N);
     for (int i = 0; i < N; i++)
       C[i] = lower_bound(S.begin(), S.end(), temp[i], Cmp()) - S.begin();
@@ -53,8 +51,6 @@ template <class T, class Cmp = less<T>> struct WaveletMatrix {
       B[h].build(); for (int i = mid[h]; i < N; i++) C[i] -= ph;
     }
   }
-  template <class It> WaveletMatrix(It st, It en)
-      : WaveletMatrix(en - st, [&] { return *st++; }) {}
   template <class F> int cnt(int l, int r, const T &v, F f) {
     int ret = 0, cur = 0; for (int h = H - 1; h >= 0; h--) {
       int ph = 1 << h, ql = B[h].query(l - 1), qr = B[h].query(r);

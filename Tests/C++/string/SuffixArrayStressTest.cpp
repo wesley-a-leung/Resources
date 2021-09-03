@@ -10,7 +10,7 @@ void test1() {
   vector<int> A(N);
   for (auto &&ai : A) ai = rng() % int(1e9) + 1;
   const auto start_time = chrono::system_clock::now();
-  SuffixArray<int> SA(A.begin(), A.end());
+  SuffixArray<int> SA(A);
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 1 (Random, large alphabet, SuffixArray) Passed" << endl;
@@ -33,7 +33,7 @@ void test2() {
   sort(tmp.begin(), tmp.end());
   tmp.erase(unique(tmp.begin(), tmp.end()), tmp.end());
   for (auto &&ai : A) ai = lower_bound(tmp.begin(), tmp.end(), ai) - tmp.begin();
-  SAISSuffixArray<int> SA(A.begin(), A.end());
+  SAISSuffixArray<int> SA(A);
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 2 (Random, large alphabet, SAISSuffixArray) Passed" << endl;
@@ -52,7 +52,7 @@ void test3() {
   vector<int> A(N);
   for (auto &&ai : A) ai = rng() % N + 1;
   const auto start_time = chrono::system_clock::now();
-  SuffixArray<int> SA(A.begin(), A.end());
+  SuffixArray<int> SA(A);
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 3 (Random, medium alphabet, SuffixArray) Passed" << endl;
@@ -71,7 +71,7 @@ void test4() {
   vector<int> A(N);
   for (auto &&ai : A) ai = rng() % N + 1;
   const auto start_time = chrono::system_clock::now();
-  SAISSuffixArray<int> SA(A.begin(), A.end());
+  SAISSuffixArray<int> SA(A);
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 4 (Random, medium alphabet, SAISSuffixArray) Passed" << endl;
@@ -90,7 +90,7 @@ void test5() {
   vector<int> A(N);
   for (auto &&ai : A) ai = rng() % 26 + 1;
   const auto start_time = chrono::system_clock::now();
-  SuffixArray<int> SA(A.begin(), A.end());
+  SuffixArray<int> SA(A);
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 5 (Random, small alphabet, SuffixArray) Passed" << endl;
@@ -109,7 +109,7 @@ void test6() {
   vector<int> A(N);
   for (auto &&ai : A) ai = rng() % 26 + 1;
   const auto start_time = chrono::system_clock::now();
-  SAISSuffixArray<int> SA(A.begin(), A.end());
+  SAISSuffixArray<int> SA(A);
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 6 (Random, small alphabet, SAISSuffixArray) Passed" << endl;
@@ -130,7 +130,7 @@ void test7() {
   vector<int> A(N);
   for (int i = 0; i < N; i++) A[i] = B[i % 500];
   const auto start_time = chrono::system_clock::now();
-  SuffixArray<int> SA(A.begin(), A.end());
+  SuffixArray<int> SA(A);
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 7 (Period 500, SuffixArray) Passed" << endl;
@@ -151,7 +151,7 @@ void test8() {
   vector<int> A(N);
   for (int i = 0; i < N; i++) A[i] = B[i % 500];
   const auto start_time = chrono::system_clock::now();
-  SAISSuffixArray<int> SA(A.begin(), A.end());
+  SAISSuffixArray<int> SA(A);
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 8 (Period 500, SAISSuffixArray) Passed" << endl;
@@ -169,7 +169,7 @@ void test9() {
   int N = 2e6;
   vector<int> A(N, rng() % N + 1);
   const auto start_time = chrono::system_clock::now();
-  SuffixArray<int> SA(A.begin(), A.end());
+  SuffixArray<int> SA(A);
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 9 (Period 1, SuffixArray) Passed" << endl;
@@ -187,7 +187,7 @@ void test10() {
   int N = 2e6;
   vector<int> A(N, rng() % N + 1);
   const auto start_time = chrono::system_clock::now();
-  SAISSuffixArray<int> SA(A.begin(), A.end());
+  SAISSuffixArray<int> SA(A);
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 10 (Period 1, SAISSuffixArray) Passed" << endl;
@@ -205,7 +205,7 @@ void test11() {
   int N = 2e6;
   vector<int> A(N, rng() % N + 1);
   const auto start_time = chrono::system_clock::now();
-  LongestCommonPrefix<SuffixArray<int>> LCP(A.begin(), A.end());
+  LongestCommonPrefix<SuffixArray<int>> LCP(A);
   int Q = 1e7;
   vector<int> ans;
   for (int i = 0; i < Q; i++) ans.push_back(LCP.lcp(rng() % N, rng() % N));
@@ -225,7 +225,7 @@ void test12() {
   int N = 2e6;
   vector<int> A(N, rng() % N + 1);
   const auto start_time = chrono::system_clock::now();
-  LongestCommonPrefix<SAISSuffixArray<int>> LCP(A.begin(), A.end());
+  LongestCommonPrefix<SAISSuffixArray<int>> LCP(A);
   int Q = 1e7;
   vector<int> ans;
   for (int i = 0; i < Q; i++) ans.push_back(LCP.lcp(rng() % N, rng() % N));

@@ -10,7 +10,7 @@ void test1() {
   int N = 1e7;
   vector<long long> A(N);
   for (auto &&ai : A) ai = rng() % int(1e6) + 1;
-  FenwickTree1D<long long> FT(A.begin(), A.end());
+  FenwickTree1D<long long> FT(A);
   int Q = 1e7;
   vector<long long> ans;
   for (int i = 0; i < Q; i++) {
@@ -27,7 +27,7 @@ void test1() {
   }
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
-  cout << "Subtest 1 (1D Iterator Constructor) Passed" << endl;
+  cout << "Subtest 1 (1D vector Constructor) Passed" << endl;
   cout << "  N: " << N << endl;
   cout << "  Q: " << Q << endl;
   cout << "  Time: " << fixed << setprecision(3) << sec << "s" << endl;
@@ -108,7 +108,7 @@ void test4() {
   int N = 1e7;
   vector<long long> A(N);
   for (auto &&ai : A) ai = rng() % int(1e6) + 1;
-  FenwickTree1D<long long> FT(A.begin(), A.end());
+  FenwickTree1D<long long> FT(A);
   int Q = 1e7;
   vector<long long> ans;
   for (int i = 0; i < Q; i++) {
@@ -148,7 +148,7 @@ void test5() {
   int N = 1e7;
   vector<long long> A(N);
   for (auto &&ai : A) ai = rng() % int(1e6) + 1;
-  FenwickTree1D<long long> FT(A.begin(), A.end());
+  FenwickTree1D<long long> FT(A);
   int Q = 1e7;
   vector<long long> ans;
   for (int i = 0; i < Q; i++) {

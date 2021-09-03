@@ -60,10 +60,9 @@ struct IncrementalBridges {
     static Data qdef() { return make_pair(true, 0); }
   };
   int V, treeEdges, bridges; LCT<Node> lct;
-  LCT<Node> init(int V) {
-    int i = 0; return LCT<Node>(max(0, V * 2 - 1), [&] {
-      return make_pair(i++ < V, 1);
-    });
+  vector<pair<bool, int>> init(int V) {
+    vector<pair<bool, int>> ret(max(0, V * 2 - 1), make_pair(false, 1));
+    fill(ret.begin(), ret.begin() + V, make_pair(true, 1)); return ret;
   }
   IncrementalBridges(int V) : V(V), treeEdges(0), bridges(0), lct(init(V)) {}
   void addEdge(int v, int w) {

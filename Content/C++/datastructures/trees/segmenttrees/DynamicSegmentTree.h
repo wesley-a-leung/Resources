@@ -3,9 +3,7 @@
 using namespace std;
 
 // Top down dynamic segment tree supporting range updates and range queries
-// Indices are 0-indexed and ranges are inclusive with the exception of
-//   functions that accept two iterators as a parameter, such as
-//   the constructor, which are exclusive
+// Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   IndexType: the type of the index of the array
 //   LAZY: boolean to indicate whether or not range updates are enabled
@@ -61,9 +59,7 @@ using namespace std;
 //       };
 // Constructor Arguments:
 //   N: the size of the array
-//   f: a generating function that returns the ith element on the ith call
-//   st: an iterator pointing to the first element in the array
-//   en: an iterator pointing to after the last element in the array
+//   A: a vector of type C::Data
 // Functions:
 //   update(i, v, newRoot): updates the index i with the lazy value v
 //     and creates a new version if newRoot is true
@@ -136,11 +132,11 @@ struct DynamicSegmentTree {
     }
   }
   agg_def propagate(int, IndexType, IndexType) {}
-  template <class F> int build(IndexType tl, IndexType tr, F &f) {
+  int build(const vector<Data> &A, IndexType tl, IndexType tr) {
     int x = makeNode(-1, tl, tr);
-    if (tl == tr) { TR[x].val = f(); return x; }
-    IndexType m = tl + (tr - tl) / 2; int nl = build(tl, m, f); TR[x].l = nl;
-    int nr = build(m + 1, tr, f); TR[x].r = nr;
+    if (tl == tr) { TR[x].val = A[tl]; return x; }
+    IndexType m = tl + (tr - tl) / 2; int nl = build(A, tl, m); TR[x].l = nl;
+    int nr = build(A, m + 1, tr); TR[x].r = nr;
     TR[x].val = C::merge(TR[TR[x].l].val, TR[TR[x].r].val); return x;
   }
   int update(int y, IndexType tl, IndexType tr, IndexType l, IndexType r,
@@ -200,13 +196,11 @@ struct DynamicSegmentTree {
     int nl = bsearchSuffix(TR[x].l, tl, m, l, r, agg, f, ret);
     TR[x].l = nl; return x;
   }
-  template <class F> DynamicSegmentTree(IndexType N, F f) : N(N) {
+  DynamicSegmentTree(const vector<Data> &A) : N(A.size()) {
     if (N > 0) {
-      reserveNodes(N * 2 - 1); roots.push_back(build(0, N - 1, f));
+      reserveNodes(N * 2 - 1); roots.push_back(build(A, 0, N - 1));
     }
   }
-  template <class It> DynamicSegmentTree(It st, It en)
-      : DynamicSegmentTree(en - st, [&] { return *st++; }) {}
   DynamicSegmentTree(IndexType N) : N(N) { roots.push_back(-1); }
   lazy_def update(IndexType l, IndexType r, const Lazy &v, bool newRoot) {
     int nr = update(roots.back(), 0, N - 1, l, r, v, TR.size());

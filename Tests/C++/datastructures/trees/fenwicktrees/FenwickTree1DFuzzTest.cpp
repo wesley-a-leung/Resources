@@ -14,7 +14,7 @@ void test1() {
     vector<long long> A(N);
     for (auto &&ai : A) ai = rng() % int(1e9) + 1;
     FenwickTree1D<long long> FT1(N);
-    FenwickTree1D<long long> FT2(A.begin(), A.end());
+    FenwickTree1D<long long> FT2(A);
     FenwickTree<1, long long> FT3(N);
     for (int i = 0; i < N; i++) {
       FT1.update(i, A[i]);
@@ -68,7 +68,7 @@ void test2() {
     vector<long long> A(N);
     for (auto &&ai : A) ai = rng() % maxVal + 1;
     FenwickTree1D<long long> FT1(N);
-    FenwickTree1D<long long> FT2(A.begin(), A.end());
+    FenwickTree1D<long long> FT2(A);
     for (int i = 0; i < N; i++) FT1.update(i, A[i]);
     int Q = N == 0 ? 0 : 100 - rng() % 5;
     vector<long long> ans0, ans1, ans2, ans3;

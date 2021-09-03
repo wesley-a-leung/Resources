@@ -9,9 +9,7 @@ using namespace std;
 // Also supports insertion and erasing at an index or with a comparator
 //   (as long as all values in the tree are sorted by the same comparator),
 //   with insert_at inserting an element or range before the specified index
-// Indices are 0-indexed and ranges are inclusive with the exception of
-//   functions that accept two iterators as a parameter, such as
-//   the constructor, which are exclusive
+// Indices are 0-indexed and ranges are inclusive 
 // Template Arguments:
 //   Node: typedef/using of the node class containing information about
 //       each node in the tree
@@ -43,22 +41,13 @@ using namespace std;
 //         query default value
 // Constructor Arguments:
 //   N: the size of the array
-//   f: a generating function that returns the ith element on the ith call,
-//     which is passed to the node constructor
-//   st: an iterator pointing to the first element in the array,
-//     whos elements are passed to the node constructor
-//   en: an iterator pointing to after the last element in the array,
-//     whos elements are passed to the node constructor
+//   A: the array
 // Functions:
 //   insert_at(i, v): inserts a node before index i by passing v to the
 //     node constructor
-//   insert_at(i, n, f): inserts n nodes before index i by passing the return
-//     value of the kth call to f to the node constructor for each of the
-//     n calls
-//   insert_at(i, st, en): inserts en - st nodes before index i where st is an
-//     iterator pointing to before the first element in the array, and en is an
-//     iterator pointing to after the last element in the array, where the
-//     elements are passed to the node constructor
+//   insert_at(i, A): inserts the elements in the vector A before index i,
+//     where the elements are passed to the node constructor in the order
+//     they appear
 //   insert(v, cmp): inserts a node before the first of node y where
 //     cmp(y->val, v) returns false, by passing v to the node constructor
 //   erase_at(i): erases the node at index i
@@ -107,18 +96,14 @@ template <class Node> struct DynamicRangeOperations : public Splay<Node> {
   Node *root; using Tree = Splay<Node>;
   using Tree::makeNode; using Tree::applyToRange; using Tree::select;
   using Tree::getFirst; using Tree::build; using Tree::clear;
-  template <class F> DynamicRangeOperations(int N, F f) : root(build(N, f)) {}
-  template <class It> DynamicRangeOperations(It st, It en)
-      : DynamicRangeOperations(en - st, [&] { return *st++; }) {}
+  template <class T>
+  DynamicRangeOperations(const vector<T> &A) : root(build(A)) {}
   DynamicRangeOperations() : root(nullptr) {}
   template <class T> void insert_at(int i, const T &v) {
     applyToRange(root, i, i - 1, [&] (Node *&x) { x = makeNode(v); });
   }
-  template <class F> void insert_at(int i, int n, F f) {
-    applyToRange(root, i, i - 1, [&] (Node *&x) { x = build(n, f); }); 
-  }
-  template <class It> void insert_at(int i, It st, It en) {
-    insert_at(i, en - st, [&] { return *st++; });
+  template <class T> void insert_at(int i, const vector<T> &A) {
+    applyToRange(root, i, i - 1, [&] (Node *&x) { x = build(A); }); 
   }
   template <class T, class Comp> void insert(const T &v, Comp cmp) {
     insert_at(getFirst(root, v, cmp).first, v);

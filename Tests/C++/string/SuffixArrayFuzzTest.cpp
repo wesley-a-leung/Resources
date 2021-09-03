@@ -4,10 +4,14 @@
 #include "../../../Content/C++/string/SAISSuffixArray.h"
 using namespace std;
 
-int lcp(const basic_string<int> &A, const basic_string<int> &B) {
+int lcp(const vector<int> &A, const vector<int> &B) {
   int i = 0;
   for (; i < min(int(A.size()), int(B.size())); i++) if (A[i] != B[i]) break;
   return i;
+}
+
+vector<int> suffix(const vector<int> &A, int i) {
+  return vector<int>(A.begin() + i, A.end());
 }
 
 void test1() {
@@ -17,12 +21,12 @@ void test1() {
   long long checkSum = 0;
   for (int ti = 0; ti < TESTCASES; ti++) {
     int N = rng() % 11;
-    basic_string<int> A(N, 0);
+    vector<int> A(N, 0);
     for (auto &&a : A) a = rng() % int(10) + 1e5;
-    LongestCommonPrefix<SuffixArray<int>> LCP1(A.begin(), A.end());
-    LongestCommonPrefix<SAISSuffixArray<int>> LCP2(A.begin(), A.end());
-    vector<pair<basic_string<int>, int>> suffixes;
-    for (int i = 0; i < N; i++) suffixes.emplace_back(A.substr(i), i);
+    LongestCommonPrefix<SuffixArray<int>> LCP1(A);
+    LongestCommonPrefix<SAISSuffixArray<int>> LCP2(A);
+    vector<pair<vector<int>, int>> suffixes;
+    for (int i = 0; i < N; i++) suffixes.emplace_back(suffix(A, i), i);
     sort(suffixes.begin(), suffixes.end());
     vector<int> inv(N, -1);
     for (int i = 0; i < N; i++) {
@@ -46,8 +50,8 @@ void test1() {
       assert(LCP2.SA.LCP[N - 1] == 0);
     }
     for (int i = 0; i < N; i++) for (int j = i; j < N; j++) {
-      assert(lcp(A.substr(i), A.substr(j)) == LCP1.lcp(i, j));
-      assert(lcp(A.substr(i), A.substr(j)) == LCP2.lcp(i, j));
+      assert(lcp(suffix(A, i), suffix(A, j)) == LCP1.lcp(i, j));
+      assert(lcp(suffix(A, i), suffix(A, j)) == LCP2.lcp(i, j));
       checkSum = 31 * checkSum + LCP1.lcp(i, j);
     }
   }

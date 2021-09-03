@@ -108,12 +108,9 @@ struct DynamicBridges {
         get<3>(queries[last[j]]) = i; last[j] = temp;
       }
     }
-    int k = 0, bridges = 0; LCT<Node> lct(V + Q, [&] {
-      pair<int, int> ret = k < V ? make_pair(Node::NO_DEL, -1)
-                                 : make_pair(get<3>(queries[k - V]), k - V);
-      k++; return ret;
-    });
-    for (int i = 0; i < Q; i++)
+    vector<pair<int, int>> tmp(V + Q, make_pair(Node::NO_DEL, -1));
+    for (int i = 0; i < Q; i++) tmp[V + i] = make_pair(get<3>(queries[i]), i);
+    LCT<Node> lct(tmp); int bridges = 0; for (int i = 0; i < Q; i++)
        lct.TR[V + i].edgeCnt = int(lct.TR[V + i].isEdge = true);
     auto cover = [&] (int x, int y, int coverId) {
       lct.queryPath(x, y); bridges += lct.TR[y].getCoveredCnt();

@@ -58,7 +58,7 @@ template <class T> struct IncrementalMSTUndo {
   vector<tuple<int, Edge, int, Edge, bool>> history;
   IncrementalMSTUndo(int V, T NEG_INF = numeric_limits<T>::lowest())
       : V(V), top(max(0, V - 1)), stk(top), mstWeight(T()),
-        lct(V + top, [&] { return make_pair(NEG_INF, -1); }) {
+        lct(vector<pair<T, int>>(V + top, make_pair(NEG_INF, -1))) {
     iota(stk.rbegin(), stk.rend(), 0); mstEdges.reserve(top);
   }
   void addEdge(int v, int w, T weight) {

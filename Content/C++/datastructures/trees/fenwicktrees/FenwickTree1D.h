@@ -5,9 +5,7 @@ using namespace std;
 // Fenwick Tree or Binary Indexed Tree supporting point updates
 //   and range queries over a cumulative function or functor,
 //   such as sum, max, and min, in 1 dimension
-// Indices are 0-indexed and ranges are inclusive with the exception of
-//   functions that accept two iterators as a parameter, such as
-//   the constructor, which are exclusive
+// Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   T: the type of each element
 //   Op: a struct with the cumulative operation (plus<T> by default)
@@ -16,9 +14,7 @@ using namespace std;
 //         commutatitve
 // Constructor Arguments:
 //   N: the size of the array
-//   f: a generating function that returns the ith element on the ith call
-//   st: an iterator pointing to the first element in the array
-//   en: an iterator pointing to after the last element in the array
+//   A: a vector of type T
 //   qdef: the identity element of the operation
 //   op: an instance of the Op struct
 // Functions:
@@ -44,15 +40,13 @@ template <class T, class Op = plus<T>> struct FenwickTree1D {
   int N; vector<T> BIT; Op op;
   FenwickTree1D(int N, T qdef = T(), Op op = Op())
       : N(N), BIT(N + 1, qdef), op(op) {}
-  template <class F> FenwickTree1D(int N, F f, T qdef = T(), Op op = Op())
-      : FenwickTree1D(N, qdef, op) {
+  FenwickTree1D(const vector<T> &A, T qdef = T(), Op op = Op())
+      : FenwickTree1D(A.size(), qdef, op) {
     for (int i = 1; i <= N; i++) {
-      BIT[i] = op(BIT[i], f());
+      BIT[i] = op(BIT[i], A[i - 1]);
       int j = i + (i & -i); if (j <= N) BIT[j] = op(BIT[j], BIT[i]);
     }
   }
-  template <class It> FenwickTree1D(It st, It en, T qdef = T(), Op op = Op())
-      : FenwickTree1D(en - st, [&] { return *st++; }, qdef, op) {}
   template <class Inv = minus<T>> vector<T> values(Inv inv = Inv()) {
     vector<T> ret(BIT.begin() + 1, BIT.end()); for (int i = N; i >= 1; i--) {
       int j = i + (i & -i);

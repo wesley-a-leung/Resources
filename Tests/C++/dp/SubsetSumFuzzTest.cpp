@@ -13,9 +13,9 @@ void test1() {
     int N = rng() % 11;
     vector<int> A(N);
     for (auto &&a : A) a = rng() % int(10) + 1;
-    bitset<M + 1> possible = subsetSum<M>(A.begin(), A.end());
+    bitset<M + 1> possible = subsetSum<M>(A);
     int tot = accumulate(A.begin(), A.end(), 0);
-    vector<int> cnt(tot + 1, 0), dp = subsetSumCount<int>(A.begin(), A.end(), tot);
+    vector<int> cnt(tot + 1, 0), dp = subsetSumCount<int>(A, tot);
     for (int mask = 0; mask < (1 << N); mask++) {
       int sm = 0;
       for (int i = 0; i < N; i++) if ((mask >> i) & 1) sm += A[i];

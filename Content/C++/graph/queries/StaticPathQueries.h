@@ -24,7 +24,7 @@ using namespace std;
 //           return MaxSubarraySumCombine<int>::merge(l, r);
 //         }
 //         SegmentTreeLazyBottomUp<MaxSubarraySumCombine<int>> ST;
-//         R(const vector<Data> &A) : ST(A.begin(), A.end()) {}
+//         R(const vector<Data> &A) : ST(A) {}
 //         Data query(int l, int r, bool rev) {
 //           Data ret = ST.query(l, r);
 //           if (rev) swap(ret.pre, ret.suf);

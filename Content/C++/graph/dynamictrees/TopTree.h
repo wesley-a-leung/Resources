@@ -3,9 +3,7 @@
 using namespace std;
 
 // Top Tree supporting path and subtree operations on a dynamic tree
-// Vertices are 0-indexed, with the exception of
-//   functions that accept two iterators as a parameter, such as
-//   the constructor, which are exclusive
+// Vertices are 0-indexed
 // Template Arguments:
 //   C: struct to combine data and lazy values
 //     Required Fields:
@@ -34,10 +32,7 @@ using namespace std;
 //         static void revData(Data &v) {}
 //       };
 // Constructor Arguments:
-//   N: the number of nodes in the link cut tree
-//   f: a generating function that returns the ith element on the ith call
-//   st: an iterator pointing to the first element in the array
-//   en: an iterator pointing to after the last element in the array
+//   A: a vector of type C::Data
 // Functions:
 //   makeRoot(x): makes x the root of its connected component
 //   lca(x, y): returns the lowest common ancestor of x and y in
@@ -261,9 +256,7 @@ template <class C> struct TopTree {
     }
     return ret;
   }
-  template <class F> TopTree(int N, F f) {
-    TR.reserve(N * 2); for (int i = 0; i < N; i++) makeNode(false, f());
+  TopTree(const vector<Data> &A) {
+    TR.reserve(A.size() * 2); for (auto &&a : A) makeNode(false, a);
   }
-  template <class It>
-  TopTree(It st, It en) : TopTree(en - st, [&] { *st++; }) {}
 };

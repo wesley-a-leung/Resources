@@ -1,6 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "../datastructures/trees/fenwicktrees/FenwickTree1D.h"
+#include "../datastructures/trees/fenwicktrees/BitFenwickTree.h"
 using namespace std;
 
 // Supports offline queries for the number of distinct elements in the
@@ -29,12 +29,12 @@ template <class T> struct CountDistinctOffline {
     int N = A.size(); vector<T> temp = A; sort(temp.begin(), temp.end());
     temp.erase(unique(temp.begin(), temp.end()), temp.end());
     vector<int> last(temp.size(), -1);
-    vector<tuple<int, int, int>> q; int i = 0; FenwickTree1D<int> ft(N);
+    vector<tuple<int, int, int>> q; int i = 0; BitFenwickTree ft(N);
     for (auto &&qi : queries) q.emplace_back(qi.first, qi.second, i++);
     sort(q.rbegin(), q.rend()); i = N - 1; for (auto &&qi : q) {
       int l, r, ind; tie(l, r, ind) = qi; for (; i >= l; i--) {
         int c = lower_bound(temp.begin(), temp.end(), A[i]) - temp.begin();
-        if (last[c] != -1) ft.update(last[c], -1);
+        if (last[c] != -1) ft.update(last[c], 0);
         ft.update(last[c] = i, 1);
       }
       ans[ind] = ft.query(r);

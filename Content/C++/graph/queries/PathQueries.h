@@ -29,7 +29,7 @@ using namespace std;
 //           return MaxSubarraySumCombine<int>::merge(l, r);
 //         }
 //         SegmentTreeLazyBottomUp<MaxSubarraySumCombine<int>> ST;
-//         R(const vector<Data> &A) : ST(A.begin(), A.end()) {}
+//         R(const vector<Data> &A) : ST(A) {}
 //         void update(int l, int r, const Lazy &val, bool) {
 //           ST.update(l, r, val);
 //         }

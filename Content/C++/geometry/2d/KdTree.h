@@ -9,8 +9,7 @@ using namespace std;
 //   ymin: the minimum y value
 //   xmax: the maximum x value
 //   ymax: the maximum y value
-//   st: an iterator pointing to the first point in the array
-//   en: an iterator pointing to the after the last point in the array
+//   P: the points
 // Functions:
 //   empty(): returns true if the tree is empty, false otherwise
 //   size(): the number of points in the tree
@@ -65,22 +64,22 @@ struct KdTree {
   }
   T XMIN, YMIN, XMAX, YMAX; int cnt; Node *root;
   template <class It>
-  Node *build(Node *n, It points, int lo, int hi, bool partition,
-                  T xmin, T ymin, T xmax, T ymax) {
+  Node *build(Node *n, It st, int lo, int hi, bool partition,
+              T xmin, T ymin, T xmax, T ymax) {
     if (lo > hi) return nullptr;
     int mid = lo + (hi - lo) / 2; if (partition)
-      nth_element(points + lo, points + mid, points + hi + 1, xOrdLt);
-    else nth_element(points + lo, points + mid, points + hi + 1, yOrdLt);
-    pt p = *(points + mid); n = makeNode(p, Rectangle(xmin, ymin, xmax, ymax));
+      nth_element(st + lo, st + mid, st + hi + 1, xOrdLt);
+    else nth_element(st + lo, st + mid, st + hi + 1, yOrdLt);
+    pt p = *(st + mid); n = makeNode(p, Rectangle(xmin, ymin, xmax, ymax));
     if (partition) {
-      n->lu = build(n->lu, points, lo, mid - 1, !partition,
+      n->lu = build(n->lu, st, lo, mid - 1, !partition,
                     xmin, ymin, n->p.x, ymax);
-      n->rd = build(n->rd, points, mid + 1, hi, !partition,
+      n->rd = build(n->rd, st, mid + 1, hi, !partition,
                     n->p.x, ymin, xmax, ymax);
     } else {
-      n->lu = build(n->lu, points, lo, mid - 1, !partition,
+      n->lu = build(n->lu, st, lo, mid - 1, !partition,
                     xmin, ymin, xmax, n->p.y);
-      n->rd = build(n->rd, points, mid + 1, hi, !partition,
+      n->rd = build(n->rd, st, mid + 1, hi, !partition,
                     xmin, n->p.y, xmax, ymax);
     }
     return n;
@@ -136,9 +135,9 @@ struct KdTree {
   KdTree(T xmin, T ymin, T xmax, T ymax)
       : XMIN(xmin), YMIN(ymin), XMAX(xmax), YMAX(ymax),
         cnt(0), root(nullptr) {}
-  template <class It> KdTree(T xmin, T ymin, T xmax, T ymax, It st, It en)
-      : XMIN(xmin), YMIN(ymin), XMAX(xmax), YMAX(ymax), cnt(en - st) {
-    root = build(root, st, 0, cnt - 1, true, XMIN, YMIN, XMAX, YMAX);
+    KdTree(T xmin, T ymin, T xmax, T ymax, vector<pt> P)
+      : XMIN(xmin), YMIN(ymin), XMAX(xmax), YMAX(ymax), cnt(P.size()) {
+    root = build(root, P.begin(), 0, cnt - 1, true, XMIN, YMIN, XMAX, YMAX);
   }
   bool empty() { return cnt == 0; }
   int size() { return cnt; }

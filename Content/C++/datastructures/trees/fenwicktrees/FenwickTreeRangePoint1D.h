@@ -5,9 +5,7 @@ using namespace std;
 // Fenwick Tree or Binary Indexed Tree supporting range updates
 //   and point queries, over a cumulative functor, such as sum, max, and min,
 //   in 1 dimension
-// Indices are 0-indexed and ranges are inclusive with the exception of
-//   functions that accept two iterators as a parameter, such as
-//   the constructor, which are exclusive
+// Indices are 0-indexed and ranges are inclusive
 // Order of arguments for update differs slightly from FenwickTreeRangePoint
 // Template Arguments:
 //   T: the type of each element
@@ -17,9 +15,7 @@ using namespace std;
 //         commutatitve
 // Constructor Arguments:
 //   N: the size of the array
-//   f: a generating function that returns the ith element on the ith call
-//   st: an iterator pointing to the first element in the array
-//   en: an iterator pointing to after the last element in the array
+//   A: a vector of type T
 //   qdef: the identity element of the operation
 //   op: an instance of the Op struct
 //   inv(l, r): a functor or function that performs the inverse operation of
@@ -47,20 +43,15 @@ template <class T, class Op = plus<T>> struct FenwickTreeRangePoint1D {
   int N; vector<T> BIT; Op op;
   FenwickTreeRangePoint1D(int N, T qdef = T(), Op op = Op())
       : N(N), BIT(N + 1, qdef), op(op) {}
-  template <class F, class Inv = minus<T>>
-  FenwickTreeRangePoint1D(int N, F f, T qdef = T(),
+  template <class Inv = minus<T>>
+  FenwickTreeRangePoint1D(const vector<T> &A, T qdef = T(),
                           Op op = Op(), Inv inv = Inv())
-      : FenwickTreeRangePoint1D(N, qdef, op) {
+      : FenwickTreeRangePoint1D(A.size(), qdef, op) {
     T prv = T(); for (int i = 1; i <= N; i++) {
-      T cur = f(); BIT[i] = op(BIT[i], inv(cur, prv)); prv = cur;
+      BIT[i] = op(BIT[i], inv(A[i - 1], prv)); prv = A[i - 1];
       int j = i + (i & -i); if (j <= N) BIT[j] = op(BIT[j], BIT[i]);
     }
   }
-  template <class It, class Inv = minus<T>>
-  FenwickTreeRangePoint1D(It st, It en, T qdef = T(),
-                          Op op = Op(), Inv inv = Inv())
-      : FenwickTreeRangePoint1D(en - st, [&] { return *st++; }, qdef,
-                                op, inv) {}
   template <class Inv = minus<T>> vector<T> values(Inv inv = Inv()) {
     vector<T> ret(BIT.begin() + 1, BIT.end()); for (int i = N; i >= 1; i--) {
       int j = i + (i & -i);

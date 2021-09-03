@@ -5,9 +5,7 @@ using namespace std;
 
 // Link Cut Tree supporting path operations on a dynamic tree,
 //   backed by a splay tree
-// Vertices are 0-indexed, with the exception of
-//   functions that accept two iterators as a parameter, such as
-//   the constructor, which are exclusive
+// Vertices are 0-indexed
 // Template Arguments:
 //   Node: a generic node class (sample structs are in BSTNode)
 //     Required Fields:
@@ -37,13 +35,7 @@ using namespace std;
 //         and any lazy flags should be reversed)
 //       static qdef(): returns the query default value
 // Constructor Arguments:
-//   N: the number of nodes in the link cut tree
-//   f: a generating function that returns the ith element on the ith call,
-//     which is passed to the node constructor
-//   st: an iterator pointing to the first element in the array,
-//     whos elements are passed to the node constructor
-//   en: an iterator pointing to after the last element in the array,
-//     whos elements are passed to the node constructor
+//   A: a vector of type Node::Data
 // Functions:
 //   makeRoot(x): only valid if Node::RANGE_REVERSALS is true, makes x the
 //     root of its connected component
@@ -182,8 +174,7 @@ template <class Node> struct LCT : public Splay<Node, vector<Node>> {
     makeRoot(from); access(&TR[to]);
     return from == to || TR[from].p ? TR[to].sbtr : Node::qdef();
   }
-  template <class F> LCT(int N, F f) {
-    TR.reserve(N); for (int i = 0; i < N; i++) makeNode(f());
+  LCT(const vector<Data> &A) {
+    TR.reserve(A.size()); for (auto &&a : A) makeNode(a);
   }
-  template <class It> LCT(It st, It en) : LCT(en - st, [&] { *st++; }) {}
 };

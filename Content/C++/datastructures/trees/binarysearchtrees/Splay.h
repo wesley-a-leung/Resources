@@ -42,9 +42,7 @@ using namespace std;
 //   getFirst(root, v, cmp): returns the first node y (and its index) in the
 //     tree rooted at root where cmp(y->val, v) returns false, and makes it the
 //     new root (or the last node accessed if null)
-//   build(N, f): builds a splay tree with N nodes using a generating
-//     function f and returns the ith element on the ith call, which is passes
-//     to the node constructor
+//   build(A): builds a splay tree on the array A
 //   clear(x): adds all nodes in the subtree of x to the deleted buffer
 // In practice, has a moderate constant, not as fast as segment trees
 // Time Complexity:
@@ -121,14 +119,15 @@ template <class _Node, class Container = deque<_Node>> struct Splay {
     if (last) splay(root = last);
     return ret;
   }
-  template <class F> Node *buildRec(int l, int r, F &f) {
+  template <class T> Node *buildRec(const vector<T> &A, int l, int r) {
     if (l > r) return nullptr;
-    int m = l + (r - l) / 2; Node *left = buildRec(l, m - 1, f);
-    Node *ret = makeNode(f()), *right = buildRec(m + 1, r, f);
+    int m = l + (r - l) / 2; Node *left = buildRec(A, l, m - 1);
+    Node *ret = makeNode(A[m]), *right = buildRec(A, m + 1, r);
     connect(left, ret, ret, true); connect(right, ret, ret, false);
     ret->update(); return ret;
   }
-  template <class F> Node *build(int N, F f) { return buildRec(0, N - 1, f); }
+  template <class T>
+  Node *build(const vector<T> &A) { return buildRec(A, 0, int(A.size()) - 1); }
   void clear(Node *x) {
     if (!x) return;
     clear(x->l); deleted.push_back(x); clear(x->r);

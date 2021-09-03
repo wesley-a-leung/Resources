@@ -12,7 +12,7 @@ void test1() {
   int N = 2e6;
   vector<int> A(N);
   for (auto &&ai : A) ai = rng() % int(1e9) + 1;
-  SparseTable<int, Min> ST(A.begin(), A.end());
+  SparseTable<int, Min> ST(A);
   int Q = 1;
   vector<int> ans;
   for (int i = 0; i < Q; i++) {
@@ -38,7 +38,7 @@ void test2() {
   int N = 2e6;
   vector<int> A(N);
   for (auto &&ai : A) ai = rng() % int(1e9) + 1;
-  SparseTable<int, Min> ST(A.begin(), A.end());
+  SparseTable<int, Min> ST(A);
   int Q = 1e7;
   vector<int> ans;
   for (int i = 0; i < Q; i++) {
@@ -64,7 +64,7 @@ void test3() {
   int N = 2e6;
   vector<int> A(N);
   for (auto &&ai : A) ai = rng() % int(1e9) + 1;
-  DisjointSparseTable<int, Min> ST(A.begin(), A.end());
+  DisjointSparseTable<int, Min> ST(A);
   int Q = 1;
   vector<int> ans;
   for (int i = 0; i < Q; i++) {
@@ -90,7 +90,7 @@ void test4() {
   int N = 2e6;
   vector<int> A(N);
   for (auto &&ai : A) ai = rng() % int(1e9) + 1;
-  DisjointSparseTable<int, Min> ST(A.begin(), A.end());
+  DisjointSparseTable<int, Min> ST(A);
   int Q = 1e7;
   vector<int> ans;
   for (int i = 0; i < Q; i++) {
@@ -115,7 +115,7 @@ void test5() {
   int N = 2e6;
   vector<int> A(N);
   for (auto &&ai : A) ai = rng() % int(1e9) + 1;
-  FischerHeunStructure<int, greater<int>> ST(A.begin(), A.end());
+  FischerHeunStructure<int, greater<int>> ST(A);
   int Q = 1;
   vector<int> ans;
   for (int i = 0; i < Q; i++) {
@@ -140,7 +140,7 @@ void test6() {
   int N = 2e6;
   vector<int> A(N);
   for (auto &&ai : A) ai = rng() % int(1e9) + 1;
-  FischerHeunStructure<int, greater<int>> ST(A.begin(), A.end());
+  FischerHeunStructure<int, greater<int>> ST(A);
   int Q = 1e7;
   vector<int> ans;
   for (int i = 0; i < Q; i++) {
@@ -171,7 +171,7 @@ void test7() {
     static Data qdef() { return numeric_limits<int>::max(); }
     static Data merge(const Data &l, const Data &r) { return min(l, r); }
   };
-  SegmentTreeBottomUp<Combine> ST(A.begin(), A.end());
+  SegmentTreeBottomUp<Combine> ST(A);
   int Q = 1;
   vector<int> ans;
   for (int i = 0; i < Q; i++) {
@@ -202,7 +202,7 @@ void test8() {
     static Data qdef() { return numeric_limits<int>::max(); }
     static Data merge(const Data &l, const Data &r) { return min(l, r); }
   };
-  SegmentTreeBottomUp<Combine> ST(A.begin(), A.end());
+  SegmentTreeBottomUp<Combine> ST(A);
   int Q = 1e7;
   vector<int> ans;
   for (int i = 0; i < Q; i++) {

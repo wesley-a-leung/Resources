@@ -8,7 +8,7 @@ void test1() {
   int N = 5e6;
   vector<long long> A(N);
   for (auto &&ai : A) ai = rng() % int(1e4) + 1;
-  FenwickTreeRange1D<long long> FT(A.begin(), A.end());
+  FenwickTreeRange1D<long long> FT(A);
   int Q = 5e6;
   vector<long long> ans;
   for (int i = 0; i < Q; i++) {

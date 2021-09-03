@@ -3,19 +3,14 @@
 using namespace std;
 
 // Maintains the rank of an element in a multiset
-// Indices are 0-indexed and ranges are inclusive with the exception of
-//   functions that accept two iterators as a parameter, such as
-//   the constructor, which are exclusive
+// Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   T: the type of the values being stored
 //   Cmp: the comparator to compare two f(x) values,
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
 // Constructor Arguments:
-//   st: an iterator pointing to the first element in the sorted array of
-//     initial values
-//   en: an iterator pointing to after the last element in the sorted array of
-//     initial values
+//   v: a vector of type T to initialize the structure
 //   SCALE: the value to scale sqrt by
 // Functions:
 //   rebuild(): rebuilds the multiset by moving all elements in the small
@@ -75,10 +70,9 @@ using namespace std;
 template <class T, class Cmp = less<T>> struct SqrtBufferSimple {
   double SCALE; vector<T> small, large;
   SqrtBufferSimple(double SCALE = 1) : SCALE(SCALE) {}
-  template <class It>
-  SqrtBufferSimple(const It st, const It en, double SCALE = 1)
-      : SCALE(SCALE), large(st, en) {
-    assert(is_sorted(st, en, Cmp()));
+  SqrtBufferSimple(const vector<T> &v, double SCALE = 1)
+      : SCALE(SCALE), large(v) {
+    assert(is_sorted(v.begin(), v.end(), Cmp()));
   }
   bool rebuild() {
     if (int(small.size()) > SCALE * sqrt(small.size() + large.size())) {

@@ -20,7 +20,7 @@ void test1() {
       for (int i = 0; i < int(inds.size()) - 1 && good; i++) good &= A[inds[i]] < A[inds[i + 1]];
       if (good && make_pair(int(inds.size()), inds) > make_pair(int(maxInds.size()), maxInds)) maxInds = inds;
     }
-    vector<int> inds = longestIncreasingSubsequence(A.begin(), A.end());
+    vector<int> inds = longestIncreasingSubsequence(A);
     assert(inds == maxInds);
     for (int i : inds) checkSum = 31 * checkSum + i;
   }
@@ -48,7 +48,7 @@ void test2() {
       for (int i = 0; i < int(B.size()) - 1 && good; i++) good &= B[i] < B[i + 1];
       if (good && make_pair(-int(B.size()), B) < make_pair(-int(minB.size()), minB)) minB = B;
     }
-    vector<int> inds = longestIncreasingSubsequenceFenwick(A.begin(), A.end()), B;
+    vector<int> inds = longestIncreasingSubsequenceFenwick(A), B;
     for (int i : inds) B.push_back(A[i]);
     assert(B == minB);
     for (int i : inds) checkSum = 31 * checkSum + i;

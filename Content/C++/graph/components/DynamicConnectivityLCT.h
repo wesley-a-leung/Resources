@@ -33,7 +33,7 @@ struct DynamicConnectivityLCT {
   struct Node {
     using Data = pair<int, int>; using Lazy = Data;
     static const bool RANGE_UPDATES = false, RANGE_QUERIES = true;
-    static const bool RANGE_REVERSALS = true;
+    static const bool RANGE_REVERSALS = true, HAS_PAR = true;
     bool rev; Node *l, *r, *p; Data val, sbtr;
     Node(const Data &v)
         : rev(false), l(nullptr), r(nullptr), p(nullptr), val(v), sbtr(v) {}
@@ -44,12 +44,12 @@ struct DynamicConnectivityLCT {
     }
     void propagate() {
       if (rev) {
+        swap(l, r); rev = false;
         if (l) l->reverse();
         if (r) r->reverse();
-        rev = false;
       }
     }
-    void reverse() { rev = !rev; swap(l, r); }
+    void reverse() { rev = !rev; }
     static Data qdef() { return make_pair(INT_MAX, -1); }
   };
   int V; vector<tuple<int, int, int, int>> queries; vector<int> ans;
@@ -83,12 +83,9 @@ struct DynamicConnectivityLCT {
         get<3>(queries[last[j]]) = i; last[j] = temp;
       }
     }
-    int k = 0; LCT<Node> lct(V + Q, [&] {
-      pair<int, int> ret = k < V ? make_pair(INT_MAX, -1)
-                                 : make_pair(get<3>(queries[k - V]), k - V);
-      k++; return ret;
-    });
-    ans.clear(); for (int i = 0, cnt = V; i < Q; i++) {
+    vector<pair<int, int>> tmp(V + Q, make_pair(INT_MAX, -1));
+    for (int i = 0; i < Q; i++) tmp[V + i] = make_pair(get<3>(queries[i]), i);
+    LCT<Node> lct(tmp); ans.clear(); for (int i = 0, cnt = V; i < Q; i++) {
       int t, v, w, o; tie(t, v, w, o) = queries[i]; if (t == 0) {
         if (v == w) continue;
         int z, j; tie(z, j) = lct.queryPath(v, w); if (j != -1) {

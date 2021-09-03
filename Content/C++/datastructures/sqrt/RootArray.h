@@ -4,15 +4,12 @@ using namespace std;
 
 // Decomposes the array recursively into N ^ (1 / R) containers of
 //   size N ^ ((R - 1) / R) multiplied by a scale factor
-// Indices are 0-indexed and ranges are inclusive with the exception of
-//   functions that accept two iterators as a parameter, such as
-//   the constructor, which are exclusive
+// Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   R: the number of recursive levels
 //   T: the type of data being stored
 // Constructor Arguments:
-//   st: an iterator pointing to the first element in the array
-//   en: an iterator pointing to after the last element in the array
+//   v: a vector of type T to initialize the structure
 //   SCALE: the value to scale N ^ ((R - 1) / R) by
 // Functions:
 //   insert(val, cmp): inserts val before the first index i where
@@ -74,12 +71,14 @@ template <const int R, class T> struct RootArray {
     int lg = __lg(N); lg -= lg / R; return SCALE * (1 << lg);
   }
   RootArray(double SCALE = 6) : N(0), SCALE(SCALE) { assert(SCALE > 0); }
-  template <class It> RootArray(const It st, const It en, double SCALE = 6)
-      : N(en - st), SCALE(SCALE) {
+  RootArray(const vector<T> &v, double SCALE = 6) : N(v.size()), SCALE(SCALE) {
     assert(SCALE > 0); if (N == 0) return;
     int rootN = getRootN(); A.reserve((N - 1) / rootN + 1);
-    for (It i = st; i < en; i += rootN)
-      A.emplace_back(i, min(i + rootN, en), SCALE);
+    for (int i = 0; i < N; i += rootN) {
+      int en = min(i + rootN, N);
+      A.emplace_back(vector<T>(make_move_iterator(v.begin() + i),
+                               make_move_iterator(v.begin() + en)), SCALE);
+    }
   }
   void split(int i) {
     int rootN = getRootN(); if (int(A[i].size()) > 2 * rootN) {
@@ -87,8 +86,8 @@ template <const int R, class T> struct RootArray {
       while (int(A[i].size()) > rootN) {
         tmp.push_back(move(A[i].back())); A[i].pop_back();
       }
-      A.emplace(A.begin() + i + 1, make_move_iterator(tmp.rbegin()),
-                make_move_iterator(tmp.rend()), SCALE);
+      reverse(tmp.begin(), tmp.end());
+      A.emplace(A.begin() + i + 1, move(tmp), SCALE);
     }
   }
   template <class Comp> void insert(const T &val, Comp cmp) {
@@ -185,8 +184,7 @@ template <const int R, class T> struct RootArray {
 template <class T> struct RootArray<1, T> : public vector<T> {
   using vector<T>::begin; using vector<T>::end; using vector<T>::size;
   using vector<T>::at; RootArray(double = 6) {}
-  template <class It> RootArray(const It st, const It en, double = 6)
-      : vector<T>(st, en) {}
+  RootArray(const vector<T> &v, double = 6) : vector<T>(v) {}
   template <class Comp> void insert(const T &val, Comp cmp) {
     vector<T>::insert(lower_bound(begin(), end(), val, cmp), val);
   }

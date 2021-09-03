@@ -6,9 +6,7 @@ using namespace std;
 //   insertions of the same element at the same time (including negative)
 // Note that elements with a count of 0 or negative are still in the multiset
 //   as elements cannot be removed
-// Indices are 0-indexed and ranges are inclusive with the exception of
-//   functions that accept two iterators as a parameter, such as
-//   the constructor, which are exclusive
+// Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   T: the type of the values being stored
 //   CountType: the type of the count of elements in the set
@@ -16,10 +14,7 @@ using namespace std;
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
 // Constructor Arguments:
-//   st: an iterator pointing to the first element in an array of pairs
-//     containing the sorted initial values and the count of each element
-//   en: an iterator pointing to after the last element in an array of pairs
-//     containing the sorted initial values and the count of each element
+//   v: a vector of type pair<T, CountType> to initialize the structure
 //   SCALE: the value to scale sqrt by
 // Functions:
 //   rebuild(): rebuilds the multiset by moving all elements in the small
@@ -68,10 +63,10 @@ struct SqrtBuffer {
     }
   };
   SqrtBuffer(double SCALE = 1) : tot(CountType()), SCALE(SCALE) {}
-  template <class PairIt>
-  SqrtBuffer(const PairIt st, const PairIt en, double SCALE = 1)
+  SqrtBuffer(const vector<pair<T, CountType>> &v, double SCALE = 1)
       : SqrtBuffer(SCALE) {
-    assert(is_sorted(st, en, PairCmp())); large.insert(large.end(), st, en);
+    assert(is_sorted(v.begin(), v.end(), PairCmp()));
+    large.insert(large.end(), v.begin(), v.end());
     resizeUnique(large); for (auto &&p : large) tot += p.second;
   }
   void resizeUnique(vector<pair<T, CountType>> &v) {

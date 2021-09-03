@@ -41,8 +41,8 @@ struct FischerHeunStructure2D {
       : N(A.size()), M(N == 0 ? 0 : A[0].size()),
         lgN(N == 0 ? 0 : __lg(N) + 1), FHS(lgN), cmp(cmp) {
     for (int i = 0; i < lgN; i++) {
-      FHS[i].reserve(N); for (int j = 0; j < N; j++)
-        FHS[i].emplace_back(A[j].begin(), A[j].end(), cmp);
+      FHS[i].reserve(N);
+      for (int j = 0; j < N; j++) FHS[i].emplace_back(A[j], cmp);
       if (i < lgN - 1) for (int j = 0; j < N; j++) for (int k = 0; k < M; k++)
         A[j][k] = cmpVal(A[j][k], A[min(j + (1 << i), N - 1)][k]);
     }

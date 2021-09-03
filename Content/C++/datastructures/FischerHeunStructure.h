@@ -3,9 +3,7 @@
 using namespace std;
 
 // Fischer Heun Structure supporting range maximum queries on a static array
-// Indices are 0-indexed and ranges are inclusive with the exception of
-//   functions that accept two iterators as a parameter, such as
-//   the constructor, which are exclusive
+// Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   T: the type of each element
 //   Cmp: the comparator to compare two values,
@@ -49,18 +47,15 @@ struct FischerHeunStructure {
   int small(int r, int sz = B) {
     return r - __lg(sz == B ? mask[r] : mask[r] & ((mask_t(1) << sz) - 1));
   }
-  template <class F> FischerHeunStructure(int N, F f, Cmp cmp = Cmp())
-      : N(N), M(N / B), mask(N), ST(M == 0 ? 0 : __lg(M) + 1, vector<int>(M)),
-        cmp(cmp) {
-    A.reserve(N); mask_t k = 0; for (int i = 0; i < N; mask[i++] = k |= 1)
-      for (A.push_back(f()), k <<= 1; k && cmpInd(i - __lg(k & -k), i) == i;)
-        k ^= k & -k;
+  FischerHeunStructure(vector<T> A, Cmp cmp = Cmp())
+      : N(A.size()), M(N / B), A(move(A)), mask(N),
+        ST(M == 0 ? 0 : __lg(M) + 1, vector<int>(M)), cmp(cmp) {
+    mask_t k = 0; for (int i = 0; i < N; mask[i++] = k |= 1)
+      for (k <<= 1; k && cmpInd(i - __lg(k & -k), i) == i;) k ^= k & -k;
     for (int i = 0; i < M; i++) ST[0][i] = small(B * (i + 1) - 1);
     for (int i = 0; i < int(ST.size()) - 1; i++) for (int j = 0; j < M; j++)
       ST[i + 1][j] = cmpInd(ST[i][j], ST[i][min(j + (1 << i), M - 1)]);
   }
-  template <class It> FischerHeunStructure(It st, It en, Cmp cmp = Cmp())
-      : FischerHeunStructure(en - st, [&] { return *st++; }, cmp) {}
   int queryInd(int l, int r) {
     if (r - l + 1 <= B) return small(r, r - l + 1);
     int ql = small(l + B - 1), qr = small(r); l = l / B + 1; r = r / B - 1;

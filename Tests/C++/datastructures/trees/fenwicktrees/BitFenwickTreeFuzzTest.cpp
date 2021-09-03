@@ -12,7 +12,7 @@ void test1() {
     int N = rng() % 1001;
     vector<int> A(N);
     for (auto &&ai : A) ai = rng() % 2;
-    FenwickTree1D<int> FT(A.begin(), A.end());
+    FenwickTree1D<int> FT(A);
     BitFenwickTree BFT(N);
     for (int i = 0; i < N; i++) BFT.set(i, A[i]);
     BFT.build();
@@ -52,7 +52,7 @@ void test2() {
     int N = rng() % 1001;
     vector<int> A(N);
     for (auto &&ai : A) ai = rng() % 2;
-    FenwickTree1D<int> FT(A.begin(), A.end());
+    FenwickTree1D<int> FT(A);
     BitFenwickTree BFT(N);
     for (int i = 0; i < N; i++) BFT.set(i, A[i]);
     BFT.build();

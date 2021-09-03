@@ -22,14 +22,15 @@ using namespace std;
 //   https://www.acmicpc.net/problem/14898
 template <class T> struct CountDistinct {
   WaveletMatrix<int> wm;
-  WaveletMatrix<int> init(const vector<T> &A) {
+  vector<int> init(const vector<T> &A) {
     vector<T> temp = A; sort(temp.begin(), temp.end());
     temp.erase(unique(temp.begin(), temp.end()), temp.end());
-    vector<int> last(temp.size(), -1); int i = 0;
-    return WaveletMatrix<int>(A.size(), [&] {
+    vector<int> last(temp.size(), -1), ret(A.size());
+    for (int i = 0; i < int(A.size()); i++) {
       int c = lower_bound(temp.begin(), temp.end(), A[i]) - temp.begin();
-      int ret = last[c]; last[c] = i++; return ret;
-    });
+      ret[i] = last[c]; last[c] = i;
+    }
+    return ret;
   }
   CountDistinct(const vector<T> &A) : wm(init(A)) {}
   int query(int l, int r) { return wm.rank(l, r, l); }

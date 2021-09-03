@@ -11,7 +11,7 @@ void test1() {
     int N = rng() % 101;
     vector<int> A(N);
     for (auto &&a : A) a = rng() % int(100) + 1;
-    FischerHeunStructure<int, greater<int>> ST(A.begin(), A.end());
+    FischerHeunStructure<int, greater<int>> ST(A);
     int Q = N == 0 ? 0 : 100 - rng() % 5;
     vector<int> ans0, ans1, ansA0, ansA1;
     for (int i = 0; i < Q; i++) {
@@ -44,7 +44,7 @@ void test2() {
     int N = rng() % 101;
     vector<int> A(N);
     for (auto &&a : A) a = rng() % int(100) + 1;
-    FischerHeunStructure<int, greater_equal<int>> ST(A.begin(), A.end());
+    FischerHeunStructure<int, greater_equal<int>> ST(A);
     int Q = N == 0 ? 0 : 100 - rng() % 5;
     vector<int> ans0, ans1, ansA0, ansA1;
     for (int i = 0; i < Q; i++) {

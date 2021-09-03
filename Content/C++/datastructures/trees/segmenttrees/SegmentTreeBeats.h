@@ -3,9 +3,7 @@
 using namespace std;
 
 // Top down segment tree supporting advanced range updates and queries
-// Indices are 0-indexed and ranges are inclusive with the exception of
-//   functions that accept two iterators as a parameter, such as
-//   the constructor, which are exclusive
+// Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
 //   C: struct to combine data and lazy values
 //     Required Fields:
@@ -57,10 +55,7 @@ using namespace std;
 //       };
 // Constructor Arguments:
 //   N: the size of the array
-//   f: a generating function that returns the ith element on the ith call
-//   st: an iterator pointing to the first element in the array
-//   en: an iterator pointing to after the last element in the array
-//   vdef: the default value to fill the array with
+//   A: a vector of type C::Data
 // Functions:
 //   update(l, r, v): update the range [l, r] with the Arg v
 //   query(l, r): queries the range [l, r] and returns the aggregate value
@@ -94,10 +89,10 @@ template <class C> struct SegmentTreeBeats {
       apply(x * 2 + 1, m + 1, tr, TR[x].lz); TR[x].lz = C::ldef();
     }
   }
-  template <class F> void build(int x, int tl, int tr, F &f) {
-    if (tl == tr) { TR[x].val = f(); return; }
+  void build(const vector<Data> &A, int x, int tl, int tr) {
+    if (tl == tr) { TR[x].val = A[tl]; return; }
     int m = tl + (tr - tl) / 2;
-    build(x * 2, tl, m, f); build(x * 2 + 1, m + 1, tr, f);
+    build(A, x * 2, tl, m); build(A, x * 2 + 1, m + 1, tr);
     TR[x].val = C::merge(TR[x * 2].val, TR[x * 2 + 1].val);
   }
   void update(int x, int tl, int tr, int l, int r, const Arg &v) {
@@ -142,14 +137,10 @@ template <class C> struct SegmentTreeBeats {
     int ret = bsearchSuffix(x * 2 + 1, m + 1, tr, l, r, agg, f);
     return l <= ret ? ret : bsearchSuffix(x * 2, tl, m, l, r, agg, f);
   }
-  template <class F> SegmentTreeBeats(int N, F f)
-      : N(N), TR(N == 0 ? 0 : 1 << __lg(N * 4 - 1)) {
-    if (N > 0) { build(1, 0, N - 1, f); }
+  SegmentTreeBeats(int N) : N(N), TR(N == 0 ? 0 : 1 << __lg(N * 4 - 1)) {}
+  SegmentTreeBeats(const vector<Data> &A) : SegmentTreeBeats(A.size()) {
+    if (N > 0) { build(A, 1, 0, N - 1); }
   }
-  template <class It> SegmentTreeBeats(It st, It en)
-      : SegmentTreeBeats(en - st, [&] { return *st++; }) {}
-  SegmentTreeBeats(int N, const Data &vdef)
-      : SegmentTreeBeats(N, [&] { return vdef; }) {}
   void update(int l, int r, const Arg &v) { update(1, 0, N - 1, l, r, v); }
   Data query(int l, int r) { return query(1, 0, N - 1, l, r); }
   template <class F> int bsearchPrefix(int l, int r, F f) {
