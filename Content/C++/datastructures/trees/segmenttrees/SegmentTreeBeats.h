@@ -23,16 +23,14 @@ using namespace std;
 //         based on Data d and Arg a
 //       static merge(l, r): returns the values l of type Data merged with
 //         r of type Data, must be associative
-//       static applyLazy(l, r): returns the value r of type Lazy applied to
-//         l of type Data, must be associative
-//       static getSegmentVal(v, k): returns the lazy value v when applied over
-//         a segment of length k
+//       static applyLazy(l, r, k): returns the value r of type Lazy applied to
+//         l of type Data over a segment of length k, must be associative
 //       static mergeLazy(l, r): returns the values l of type Lazy merged with
 //         r of type Lazy, must be associative
 //     Sample Struct: supporting range modulo and range sum queries
 //       struct C {
 //         struct Data { int sm, mx, mn; };
-//         using Lazy = pair<int, int>;
+//         using Lazy = int;
 //         using Arg = int;
 //         static Data qdef() {
 //           Data ret; ret.sm = 0;
@@ -40,10 +38,8 @@ using namespace std;
 //           ret.mn = numeric_limits<int>::max();
 //           return ret;
 //         }
-//         static Lazy ldef() { return make_pair(-1, -1); }
-//         static Lazy makeLazy(const Data &d, const Arg &a) {
-//           return make_pair(a, a);
-//         }
+//         static Lazy ldef() { return -1; }
+//         static Lazy makeLazy(const Data &d, const Arg &a) { return a; }
 //         static bool breakCond(const Data &d, const Arg &a) {
 //           return d.mx < a;
 //         }
@@ -54,12 +50,8 @@ using namespace std;
 //           Data ret; ret.sm = l.sm + r.sm;
 //           ret.mx = max(l.mx, r.mx); ret.mn = min(l.mn, r.mn); return ret;
 //         }
-//         static Data applyLazy(const Data &l, const Lazy &r) {
-//           Data ret; ret.sm = r.second; ret.mx = ret.mn = r.first;
-//           return ret;
-//         }
-//         static Lazy getSegmentVal(const Lazy &v, int k) {
-//           return make_pair(v.first, v.second * k);
+//         static Data applyLazy(const Data &l, const Lazy &r, int k) {
+//           Data ret; ret.sm = r * k; ret.mx = ret.mn = r; return ret;
 //         }
 //         static Lazy mergeLazy(const Lazy &l, const Lazy &r) { return r; }
 //       };
@@ -93,7 +85,7 @@ template <class C> struct SegmentTreeBeats {
   };
   int N; vector<Node> TR;
   void apply(int x, int tl, int tr, const Lazy &v) {
-    TR[x].val = C::applyLazy(TR[x].val, C::getSegmentVal(v, tr - tl + 1));
+    TR[x].val = C::applyLazy(TR[x].val, v, tr - tl + 1);
     TR[x].lz = C::mergeLazy(TR[x].lz, v);
   }
   void propagate(int x, int tl, int tr) {
@@ -112,7 +104,7 @@ template <class C> struct SegmentTreeBeats {
     if (r < tl || tr < l || C::breakCond(TR[x].val, v)) return;
     if (l <= tl && tr <= r && C::tagCond(TR[x].val, v)) {
       Lazy lz = C::makeLazy(TR[x].val, v);
-      TR[x].val = C::applyLazy(TR[x].val, C::getSegmentVal(lz, tr - tl + 1));
+      TR[x].val = C::applyLazy(TR[x].val, lz, tr - tl + 1);
       TR[x].lz = C::mergeLazy(TR[x].lz, lz); return;
     }
     propagate(x, tl, tr); int m = tl + (tr - tl) / 2;

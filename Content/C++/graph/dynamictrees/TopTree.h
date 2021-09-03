@@ -15,12 +15,8 @@ using namespace std;
 //       static qdef(): returns the query default value of type Data
 //       static merge(l, r): returns the values l of type Data merged with
 //         r of type Data, must be associative
-//       static applyLazy(l, r): returns the value r of type Lazy applied to
-//         l of type Data, must be associative
-//       static applyLazy(l, r): returns the value r of type Lazy applied to
-//         l of type Data, must be associative
-//       static getSegmentVal(v, k): returns the lazy value v when applied over
-//         a segment of length k
+//       static applyLazy(l, r, k): returns the value r of type Lazy applied to
+//         l of type Data over a segment of length k, must be associative
 //       static mergeLazy(l, r): returns the values l of type Lazy merged with
 //         r of type Lazy, must be associative
 //       static revData(v): reverses the value v of type Data
@@ -31,8 +27,9 @@ using namespace std;
 //         static Data qdef() { return 0; }
 //         static Lazy ldef() { return numeric_limits<int>::min(); }
 //         static Data merge(const Data &l, const Data &r) { return l + r; }
-//         static Data applyLazy(const Data &l, const Lazy &r) { return r; }
-//         static Lazy getSegmentVal(const Lazy &v, int k) { return v * k; }
+//         static Data applyLazy(const Data &l, const Lazy &r, int k) {
+//           return r * k;
+//         }
 //         static Lazy mergeLazy(const Lazy &l, const Lazy &r) { return r; }
 //         static void revData(Data &v) {}
 //       };
@@ -95,14 +92,14 @@ template <class C> struct TopTree {
           path(aux ? C::qdef() : v), vtr(C::qdef()) {
       ch.fill(nullptr);
     }
-    void applyVal(const Lazy &v) { val = C::applyLazy(val, v); }
+    void applyVal(const Lazy &v) { val = C::applyLazy(val, v, 1); }
     void applyPath(const Lazy &v) {
       applyVal(v); lzpath = C::mergeLazy(lzpath, v);
-      if (szpath > 0) path = C::applyLazy(path, C::getSegmentVal(v, szpath));
+      if (szpath > 0) path = C::applyLazy(path, v, szpath);
     }
     void applyVtr(const Lazy &v, bool ap = true) {
       lzvtr = C::mergeLazy(lzvtr, v);
-      if (szvtr > 0) vtr = C::applyLazy(vtr, C::getSegmentVal(v, szvtr));
+      if (szvtr > 0) vtr = C::applyLazy(vtr, v, szvtr);
       if (!aux && ap) applyPath(v);
     }
     void update() {

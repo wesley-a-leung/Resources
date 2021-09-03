@@ -160,10 +160,8 @@ template <class C> struct NodeAgg {
 //         r of type Data, must be associative
 //       static applyLazy(l, r): returns the value r of type Lazy applied to
 //         l of type Data, must be associative
-//       static applyLazy(l, r): returns the value r of type Lazy applied to
-//         l of type Data, must be associative
-//       static getSegmentVal(v, k): returns the lazy value v when applied over
-//         a segment of length k
+//       static applyLazy(l, r, k): returns the value r of type Lazy applied to
+//         l of type Data over a segment of length k, must be associative
 //       static mergeLazy(l, r): returns the values l of type Lazy merged with
 //         r of type Lazy, must be associative
 //       static revData(v): reverses the value v of type Data
@@ -174,8 +172,9 @@ template <class C> struct NodeAgg {
 //         static Data qdef() { return 0; }
 //         static Lazy ldef() { return numeric_limits<int>::min(); }
 //         static Data merge(const Data &l, const Data &r) { return l + r; }
-//         static Data applyLazy(const Data &l, const Lazy &r) { return r; }
-//         static Lazy getSegmentVal(const Lazy &v, int k) { return v * k; }
+//         static Data applyLazy(const Data &l, const Lazy &r, int k) {
+//           return r * k;
+//         }
 //         static Lazy mergeLazy(const Lazy &l, const Lazy &r) { return r; }
 //         static void revData(Data &v) {}
 //       };
@@ -237,8 +236,8 @@ template <class C> struct NodeLazyAgg {
     }
   }
   void apply(const Lazy &v) {
-    lz = C::mergeLazy(lz, v); val = C::applyLazy(val, v);
-    sbtr = C::applyLazy(sbtr, C::getSegmentVal(v, sz));
+    lz = C::mergeLazy(lz, v); val = C::applyLazy(val, v, 1);
+    sbtr = C::applyLazy(sbtr, v, sz);
   }
   void reverse() { rev = !rev; swap(l, r); C::revData(sbtr); }
   static Data qdef() { return C::qdef(); }

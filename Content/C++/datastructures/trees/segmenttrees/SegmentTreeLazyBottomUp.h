@@ -16,10 +16,8 @@ using namespace std;
 //       static ldef(): returns the lazy default value of type Lazy
 //       static merge(l, r): returns the values l of type Data merged with
 //         r of type Data, must be associative
-//       static applyLazy(l, r): returns the value r of type Lazy applied to
-//         l of type Data, must be associative
-//       static getSegmentVal(v, k): returns the lazy value v when applied over
-//         a segment of length k
+//       static applyLazy(l, r, k): returns the value r of type Lazy applied to
+//         l of type Data over a segment of length k, must be associative
 //       static mergeLazy(l, r): returns the values l of type Lazy merged with
 //         r of type Lazy, must be associative
 //     Sample Struct: supporting range assignments and range sum queries
@@ -29,8 +27,9 @@ using namespace std;
 //         static Data qdef() { return 0; }
 //         static Lazy ldef() { return numeric_limits<int>::min(); }
 //         static Data merge(const Data &l, const Data &r) { return l + r; }
-//         static Data applyLazy(const Data &l, const Lazy &r) { return r; }
-//         static Lazy getSegmentVal(const Lazy &v, int k) { return v * k; }
+//         static Data applyLazy(const Data &l, const Lazy &r, int k) {
+//           return r * k;
+//         }
 //         static Lazy mergeLazy(const Lazy &l, const Lazy &r) { return r; }
 //       };
 // Constructor Arguments:
@@ -57,12 +56,12 @@ template <class C> struct SegmentTreeLazyBottomUp {
   using Data = typename C::Data; using Lazy = typename C::Lazy;
   int N, lgN; vector<Data> TR; vector<Lazy> LZ;
   void apply(int i, const Lazy &v, int k) {
-    TR[i] = C::applyLazy(TR[i], C::getSegmentVal(v, k));
+    TR[i] = C::applyLazy(TR[i], v, k);
     if (i < N) LZ[i] = C::mergeLazy(LZ[i], v);
   }
   void eval(int i, int k) {
-    TR[i] = C::merge(TR[i * 2], TR[i * 2 + 1]); if (LZ[i] != C::ldef())
-      TR[i] = C::applyLazy(TR[i], C::getSegmentVal(LZ[i], k));
+    TR[i] = C::merge(TR[i * 2], TR[i * 2 + 1]);
+    if (LZ[i] != C::ldef()) TR[i] = C::applyLazy(TR[i], LZ[i], k);
   }
   void propagate(int i) {
     int h = lgN + 1, k = 1 << lgN, ii = i >> h;

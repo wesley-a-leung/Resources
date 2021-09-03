@@ -16,14 +16,15 @@ using namespace std;
 //       Lazy: the lazy type
 //     Required Functions:
 //       static qdef(): returns the query default value of type Data
-//       static ldef() (only required if LAZY is true): returns the lazy
+//       static ldef(): only required if LAZY is true, returns the lazy
 //         default value of type Lazy
 //       static merge(l, r): returns the values l of type Data merged with
 //         r of type Data, must be associative
-//       static applyLazy(l, r): returns the value r of type Lazy applied to
-//         l of type Data, must be associative
-//       static getSegmentVal(v, k): only required if LAZY is true, returns
-//         the lazy value v when applied over a segment of length k
+//       static applyLazy(l, r): only required if LAZY is false, returns the
+//         value r of type Lazy applied to l of type Data, must be associative
+//       static applyLazy(l, r, k): only required if LAZY is true, returns the
+//         value r of type Lazy applied to l of type Data over a segment of
+//         length k, must be associative
 //       static mergeLazy(l, r): only required if LAZY is true, returns
 //         the values l of type Lazy merged with r of type Lazy,
 //         must be associative
@@ -49,10 +50,9 @@ using namespace std;
 //         static Data qdef() { return 0; }
 //         static Lazy ldef() { return numeric_limits<int>::min(); }
 //         static Data merge(const Data &l, const Data &r) { return l + r; }
-//         static Data applyLazy(const Data &l, const Lazy &r) { return r; }
 //         template <class IndexType>
-//         static Lazy getSegmentVal(const Lazy &v, IndexType k) {
-//           return v * k;
+//         static Data applyLazy(const Data &l, const Lazy &r, int k) {
+//           return r * k;
 //         }
 //         static Lazy mergeLazy(const Lazy &l, const Lazy &r) { return r; }
 //         template <class IndexType> static Data getSegmentVdef(IndexType k) {
@@ -117,7 +117,7 @@ struct DynamicSegmentTree {
     return int(TR.size()) - 1;
   }
   lazy_def apply(int x, IndexType tl, IndexType tr, const Lazy &v) {
-    TR[x].val = C::applyLazy(TR[x].val, C::getSegmentVal(v, tr - tl + 1));
+    TR[x].val = C::applyLazy(TR[x].val, v, tr - tl + 1);
     TR[x].lz = C::mergeLazy(TR[x].lz, v);
   }
   agg_def apply(int x, IndexType, IndexType, const Lazy &v) {
