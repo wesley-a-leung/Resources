@@ -11,7 +11,8 @@ using namespace std;
 //   T: the type of each element
 // Constructor Arguments:
 //   N: the size of the array
-//   A: a vector of type T
+//   A: a vector of type T, memory is saved if this is moved and has
+//     a capacity of N + 1
 // Functions:
 //   update(l, r, v): add v to the range [l..r]
 //   query(r): queries the sum of the range [0, r]
@@ -27,8 +28,8 @@ using namespace std;
 template <class T> struct FenwickTreeRange1D {
   vector<FenwickTree1D<T>> FT;
   FenwickTreeRange1D(int N) : FT(2, FenwickTree1D<T>(N)) {}
-  FenwickTreeRange1D(const vector<T> &A) {
-    FT.reserve(2); FT.emplace_back(A); FT.emplace_back(A.size());
+  FenwickTreeRange1D(vector<T> A) {
+    FT.reserve(2); FT.emplace_back(move(A)); FT.emplace_back(FT[0].N);
   }
   T query(int r) { return FT[1].query(r) * T(r) + FT[0].query(r); }
   T query(int l, int r) { return query(r) - query(l - 1); }

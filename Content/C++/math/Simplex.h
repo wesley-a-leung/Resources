@@ -11,7 +11,8 @@ using namespace std;
 // Template Arguments:
 //   F: a floating point type
 // Constructor Arguments:
-//   A: a M x N coefficient matrix 
+//   A: a M x N coefficient matrix, memory is saved if this is moved and has
+//     a capacity of M + 2 x N + 2
 //   b: a constraint vector, with dimension M
 //   c: a cost vector, with dimension N
 //   INF: a value for infinity

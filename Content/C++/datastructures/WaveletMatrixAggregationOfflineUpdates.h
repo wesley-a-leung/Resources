@@ -36,7 +36,7 @@ using namespace std;
 //         }
 //         static Data invData(const Data &v) { return -v; }
 //         FenwickTree1D<Data> FT;
-//         R(const vector<Data> &A) : FT(A.begin(), A.end()) {}
+//         R(vector<Data> A) : FT(move(A)) {}
 //         void update(int i, const Lazy &val) { FT.update(i, val); }
 //         Data query(int l, int r) { return FT.query(l, r); }
 //       };

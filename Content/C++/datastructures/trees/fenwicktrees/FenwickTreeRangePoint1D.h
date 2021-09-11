@@ -15,7 +15,8 @@ using namespace std;
 //         commutatitve
 // Constructor Arguments:
 //   N: the size of the array
-//   A: a vector of type T
+//   A: a vector of type T, memory is saved if this is moved and has
+//     a capacity of N + 1
 //   qdef: the identity element of the operation
 //   op: an instance of the Op struct
 //   inv(l, r): a functor or function that performs the inverse operation of
@@ -44,11 +45,12 @@ template <class T, class Op = plus<T>> struct FenwickTreeRangePoint1D {
   FenwickTreeRangePoint1D(int N, T qdef = T(), Op op = Op())
       : N(N), BIT(N + 1, qdef), op(op) {}
   template <class Inv = minus<T>>
-  FenwickTreeRangePoint1D(const vector<T> &A, T qdef = T(),
+  FenwickTreeRangePoint1D(vector<T> A, T qdef = T(),
                           Op op = Op(), Inv inv = Inv())
-      : FenwickTreeRangePoint1D(A.size(), qdef, op) {
-    T prv = T(); for (int i = 1; i <= N; i++) {
-      BIT[i] = op(BIT[i], inv(A[i - 1], prv)); prv = A[i - 1];
+      : N(A.size()), BIT(move(A)), op(op) {
+    adjacent_difference(BIT.begin(), BIT.end(), BIT.begin(), inv);
+    BIT.reserve(N + 1); BIT.insert(BIT.begin(), qdef);
+    for (int i = 1; i <= N; i++) {
       int j = i + (i & -i); if (j <= N) BIT[j] = op(BIT[j], BIT[i]);
     }
   }

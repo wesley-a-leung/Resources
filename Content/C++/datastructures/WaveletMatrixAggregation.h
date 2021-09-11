@@ -30,7 +30,7 @@ using namespace std;
 //         static Data merge(const Data &l, const Data &r) { return l + r; }
 //         static Data invData(const Data &v) { return -v; }
 //         FenwickTree1D<Data> FT;
-//         R(const vector<Data> &A) : FT(A) {}
+//         R(vector<Data> A) : FT(move(A)) {}
 //         void update(int i, const Lazy &val) { FT.update(i, val); }
 //         Data query(int l, int r) { return FT.query(l, r); }
 //       };
@@ -82,7 +82,7 @@ struct WaveletMatrixAggregation {
         if (C[ind[i]] <= ph - 1) { B[h].set(i, 1); Y[i] = X[ind[i]]; }
         else Y[i] = R::qdef();
       }
-      D.emplace_back(Y);
+      D.emplace_back(move(Y));
       mid[h] = stable_partition(ind.begin(), ind.end(), [&] (int i) {
                                   return C[i] <= ph - 1;
                                 }) - ind.begin();

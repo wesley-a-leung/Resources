@@ -10,6 +10,8 @@ using namespace std;
 // numeric_limits<T>::max() * N * N must not overflow
 // Template Arguments:
 //   T: the type of each element
+//   A: a vector of type T, memory is saved if this is moved and has
+//     a capacity of N + 1
 // Constructor Arguments:
 //   N: the size of the array
 // Functions:
@@ -26,9 +28,14 @@ using namespace std;
 template <class T> struct FenwickTreeAffine {
   vector<FenwickTreeRangePoint1D<T>> FT;
   FenwickTreeAffine(int N) : FT(3, FenwickTreeRangePoint1D<T>(N)) {}
+  FenwickTreeAffine(vector<T> A) {
+    for (auto &&a : A) a *= T(2);
+    FT.reserve(3); FT.emplace_back(move(A));
+    FT.emplace_back(FT[0].N); FT.emplace_back(FT[0].N);
+  }
   T query(int r) {
     return (FT[2].get(r) * T(r) * T(r) + FT[1].get(r) * T(r)
-            + FT[0].get(r)) / 2;
+            + FT[0].get(r)) / T(2);
   }
   T query(int l, int r) { return query(r) - query(l - 1); }
   void update(int l, int r, T m, T b) {

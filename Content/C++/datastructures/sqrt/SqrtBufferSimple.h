@@ -70,9 +70,9 @@ using namespace std;
 template <class T, class Cmp = less<T>> struct SqrtBufferSimple {
   double SCALE; vector<T> small, large;
   SqrtBufferSimple(double SCALE = 1) : SCALE(SCALE) {}
-  SqrtBufferSimple(const vector<T> &v, double SCALE = 1)
-      : SCALE(SCALE), large(v) {
-    assert(is_sorted(v.begin(), v.end(), Cmp()));
+  SqrtBufferSimple(vector<T> v, double SCALE = 1)
+      : SCALE(SCALE), large(move(v)) {
+    assert(is_sorted(large.begin(), large.end(), Cmp()));
   }
   bool rebuild() {
     if (int(small.size()) > SCALE * sqrt(small.size() + large.size())) {

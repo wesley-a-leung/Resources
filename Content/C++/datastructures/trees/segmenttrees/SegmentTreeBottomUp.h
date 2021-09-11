@@ -29,7 +29,8 @@ using namespace std;
 //       };
 // Constructor Arguments:
 //   N: the size of the array
-//   A: a vector of type C::Data
+//   A: a vector of type C::Data, memory is saved if this is moved and has
+//     a capacity of 2N
 // Functions:
 //   update(i, v): updates the index i with the lazy value v
 //   query(l, r): queries the range [l, r] and returns the aggregate value
@@ -48,8 +49,8 @@ template <class C> struct SegmentTreeBottomUp {
   using Data = typename C::Data; using Lazy = typename C::Lazy;
   int N; vector<Data> TR;
   SegmentTreeBottomUp(int N) : N(N), TR(N * 2, C::qdef()) {}
-  SegmentTreeBottomUp(const vector<Data> &A) : SegmentTreeBottomUp(A.size()) {
-    copy(A.begin(), A.end(), TR.begin() + N);
+  SegmentTreeBottomUp(vector<Data> A) : N(A.size()), TR(move(A))   {
+    TR.resize(N * 2, C::qdef()); copy_n(TR.begin(), N, TR.begin() + N);
     for (int i = N - 1; i > 0; i--) TR[i] = C::merge(TR[i * 2], TR[i * 2 + 1]);
   }
   void update(int i, const Lazy &v) {

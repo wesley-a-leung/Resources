@@ -63,10 +63,9 @@ struct SqrtBuffer {
     }
   };
   SqrtBuffer(double SCALE = 1) : tot(CountType()), SCALE(SCALE) {}
-  SqrtBuffer(const vector<pair<T, CountType>> &v, double SCALE = 1)
-      : SqrtBuffer(SCALE) {
-    assert(is_sorted(v.begin(), v.end(), PairCmp()));
-    large.insert(large.end(), v.begin(), v.end());
+  SqrtBuffer(vector<pair<T, CountType>> v, double SCALE = 1)
+      : tot(CountType()), SCALE(SCALE), large(move(v)) {
+    assert(is_sorted(large.begin(), large.end(), PairCmp()));
     resizeUnique(large); for (auto &&p : large) tot += p.second;
   }
   void resizeUnique(vector<pair<T, CountType>> &v) {

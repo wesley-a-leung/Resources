@@ -21,7 +21,7 @@ using namespace std;
 //         using Lazy = int;
 //         static Data qdef() { return 0; }
 //         FenwickTreeRange1D<Data> FT;
-//         R(const vector<Data> &A) : FT(A) {}
+//         R(vector<Data> A) : FT(move(A)) {}
 //         void update(int l, int r, const Lazy &val) { FT.update(l, r, val); }
 //         Data query(int l, int r) { return FT.query(l, r); }
 //       };

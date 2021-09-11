@@ -14,7 +14,8 @@ using namespace std;
 //         commutatitve
 // Constructor Arguments:
 //   N: the size of the array
-//   A: a vector of type T
+//   A: a vector of type T, memory is saved if this is moved and has
+//     a capacity of N + 1
 //   qdef: the identity element of the operation
 //   op: an instance of the Op struct
 // Functions:
@@ -40,10 +41,10 @@ template <class T, class Op = plus<T>> struct FenwickTree1D {
   int N; vector<T> BIT; Op op;
   FenwickTree1D(int N, T qdef = T(), Op op = Op())
       : N(N), BIT(N + 1, qdef), op(op) {}
-  FenwickTree1D(const vector<T> &A, T qdef = T(), Op op = Op())
-      : FenwickTree1D(A.size(), qdef, op) {
+  FenwickTree1D(vector<T> A, T qdef = T(), Op op = Op())
+      : N(A.size()), BIT(move(A)), op(op) {
+    BIT.reserve(N + 1); BIT.insert(BIT.begin(), qdef);
     for (int i = 1; i <= N; i++) {
-      BIT[i] = op(BIT[i], A[i - 1]);
       int j = i + (i & -i); if (j <= N) BIT[j] = op(BIT[j], BIT[i]);
     }
   }
