@@ -90,21 +90,23 @@ struct LineIntersectionCmp : public Ray {
 // Functions:
 //   clear(): clears the points in the convex hull
 //   isIn(p): returns -1 if inside the polygon, 0 if on the edge, 1 if outside
-//   singlePointTangent, (p, left): returns an iterator pointing to the left or
+//   singlePointTangent(p, left): returns an iterator pointing to the left or
 //     right tangent, with the closest point to p being selected if there are
-//     multiple points
+//     multiple points, p must be strictly outside the polygon
 //   pointTangents(p): returns a pair of iterators, with the first iterator
 //     being the left tangent point and the second iterator being the right
 //     tangent if p is considered to be below the polygon; all points strictly
 //     between the tangent iterator are strictly within the tangent lines,
-//     while all other points are on or outside the tangent lines
+//     while all other points are on or outside the tangent lines,
+//     p must be strictly outside the polygon
 //   circleTangents(c, inner): returns a pair of iterators, with the first
 //     iterator being the left inner or outer tangent point and the second
 //     iterator being the right tangent if c is considered to be below the
 //     polygon; all points strictly between the tangent iterator are strictly
 //     within the tangent lines, while all other points are on or outside the
 //     tangent lines (same iterator means all points are inside or on the
-//     tangent lines)
+//     tangent lines), the circle must be strictly and completely outside the
+//     polygon
 //   hullTangents(hull, inner): returns a vector of pair of iterators, with the
 //     first element in each pair being the iterator in the first polygon,
 //     and the second element being the iteraetor in the second polygon; first

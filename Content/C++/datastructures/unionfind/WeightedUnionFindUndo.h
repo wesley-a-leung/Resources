@@ -41,8 +41,8 @@ using namespace std;
 template <class T, class Op> struct WeightedUnionFindUndo {
   vector<int> UF; vector<T> W; int cnt;
   vector<tuple<int, int, int, T, T>> history; Op op;
-  WeightedUnionFindUndo(const vector<T> &W, Op op = Op())
-      : UF(W.size(), -1), W(W), cnt(W.size()), op(op) {
+  WeightedUnionFindUndo(vector<T> W, Op op = Op())
+      : UF(W.size(), -1), W(move(W)), cnt(UF.size()), op(op) {
     history.reserve(W.size());
   }
   int find(int v) { return UF[v] < 0 ? v : find(UF[v]); }

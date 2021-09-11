@@ -37,8 +37,8 @@ using namespace std;
 //   https://dmoj.ca/problem/noi15p5
 template <class T, class Op> struct WeightedUnionFind {
   vector<int> UF; vector<T> W; int cnt; Op op;
-  WeightedUnionFind(const vector<T> &W, Op op = Op())
-      : UF(W.size(), -1), W(W), cnt(W.size()), op(op) {}
+  WeightedUnionFind(vector<T> W, Op op = Op())
+      : UF(W.size(), -1), W(move(W)), cnt(UF.size()), op(op) {}
   int find(int v) { return UF[v] < 0 ? v : UF[v] = find(UF[v]); }
   bool join(int v, int w) {
     if ((v = find(v)) == (w = find(w))) return false;

@@ -11,10 +11,7 @@ using namespace std;
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
 // Constructor Arguments:
-//   N: the size of the array
-//   f: a generating function that returns the ith element on the ith call
-//   st: an iterator pointing to the first element in the array
-//   en: an iterator pointing to after the last element in the array
+//   A: a vector of type T of the values in the array
 // Functions:
 //   rank(l, r, k): returns the number of elements less than k (using the
 //     comparator) in the range [l, r]
