@@ -32,7 +32,7 @@ template <class T> struct CountDistinctSubtree {
   struct R {
     using Data = int; using Lazy = int; vector<Data> A;
     static Data qdef() { return 0; }
-    R(const vector<Data> &A) : A(A) {}
+    R(vector<Data> A) : A(move(A)) {}
     void update(int l, int, const Lazy &val) { A[l] += val; }
     Data query(int l, int r) { return A[r] - (l == 0 ? 0 : A[l - 1]); }
   };

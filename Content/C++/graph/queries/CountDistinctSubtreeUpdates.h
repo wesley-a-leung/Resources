@@ -55,11 +55,14 @@ struct CountDistinctSubtreeUpdates {
   }
   void update(int v, const T &val) { upd(v, A[v], -1); upd(v, A[v] = val, 1); }
   int query(int v) { return sbtr.querySubtree(v); }
+  vector<int> init(int V) {
+    vector<int> ret; ret.reserve(V + 1); ret.resize(V, 0); return ret;
+  }
   template <class Forest, class ...Args> CountDistinctSubtreeUpdates(
       const Forest &G, const vector<T> &A,
       const vector<int> &roots = vector<int>(), Args &&...args)
       : A(A), M(forward<Args>(args)...),
-        lca(G, roots), sbtr(G, vector<int>(A.size(), 0), roots) {
+        lca(G, roots), sbtr(G, init(A.size()), roots) {
     for (int v = 0; v < int(G.size()); v++) upd(v, A[v], 1);
   }
   template <class Forest, class ...Args>

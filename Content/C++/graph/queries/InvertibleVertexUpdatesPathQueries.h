@@ -87,7 +87,7 @@ struct InvertibleVertexUpdatesPathQueries {
     if (roots.empty()) {
       for (int v = 0; v < V; v++) if (par[v] == -1) dfs(G, v, -1);
     } else for (int v : roots) dfs(G, v, -1);
-    vector<Data> ret; ret.reserve(V);
+    vector<Data> ret; ret.reserve(A.capacity());
     for (int i = 0; i < V; i++) ret.push_back(A[vert[i]]);
     for (int v = 0; v < V; v++) if (post[v] + 1 <= post[lca.root[v]]) {
       ret[post[v] + 1] = R::merge(ret[post[v] + 1], R::invData(A[v]));

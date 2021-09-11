@@ -1,4 +1,4 @@
-#pragma once
+re#pragma once
 #include <bits/stdc++.h>
 #include "HeavyLightDecomposition.h"
 using namespace std;
@@ -29,7 +29,7 @@ using namespace std;
 //           return MaxSubarraySumCombine<int>::merge(l, r);
 //         }
 //         SegmentTreeLazyBottomUp<MaxSubarraySumCombine<int>> ST;
-//         R(const vector<Data> &A) : ST(A) {}
+//         R(vector<Data> A) : ST(move(A)) {}
 //         void update(int l, int r, const Lazy &val, bool) {
 //           ST.update(l, r, val);
 //         }
@@ -119,7 +119,7 @@ struct PathQueries : public HLD {
     return l <= r ? ops.query(l, r, false) : R::qdef();
   }
   vector<Data> reorder(const vector<Data> &A) {
-    vector<Data> ret; ret.reserve(V);
+    vector<Data> ret; ret.reserve(A.capacity());
     for (int i = 0; i < V; i++) ret.push_back(A[vert[i]]);
     return ret;
   }
