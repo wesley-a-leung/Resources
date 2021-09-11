@@ -37,7 +37,6 @@ using namespace std;
 //   https://codeforces.com/contest/1061/problem/E
 //   https://codeforces.com/contest/1288/problem/F
 //   https://www.spoj.com/problems/BABY/
-//   https://dmoj.ca/problem/noi08p3
 template <class F> struct Simplex {
   static_assert(is_floating_point<F>::value,
                 "F must be a floating point type");
@@ -69,15 +68,14 @@ template <class F> struct Simplex {
       pivot(r, s);
     }
   }
-  Simplex(vector<vector<F>> A, const vector<F> &b, const vector<F> &c,
+  Simplex(const vector<vector<F>> &A, const vector<F> &b, const vector<F> &c,
           F INF = numeric_limits<F>::infinity(), F EPS = F(1e-9))
       : M(b.size()), N(c.size()), INF(INF), EPS(EPS), IN(M), OUT(N + 1),
-        T(move(A)) {
-    T.reserve(M + 2); for (int i = 0; i < M; i++) {
-      T[i].resize(N + 2, F());
+        T(M + 2, vector<F>(N + 2, F())) {
+    for (int i = 0; i < M; i++) {
+      copy(A[i].begin(), A[i].end(), T[i].begin());
       IN[i] = N + i; T[i][N] = F(-1); T[i][N + 1] = b[i];
     }
-    T.emplace_back(N + 2, F()); T.emplace_back(N + 2, F());
     for (int j = 0; j < N; j++) { OUT[j] = j; T[M][j] = -c[j]; }
     OUT[N] = -1; T[M + 1][N] = F(1); int r = 0;
     for (int i = 1; i < M; i++) if (T[i][N + 1] < T[r][N + 1]) r = i;
