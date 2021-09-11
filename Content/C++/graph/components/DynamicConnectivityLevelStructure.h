@@ -22,7 +22,7 @@ using namespace std;
 //   DynamicConnectivityDivAndConq
 // Time Complexity:
 //   constructor: O(V)
-//   addEdge, connected, getSize: O(log V)
+//   addEdge, connected, getSize: O(log V) amortized
 //   removeEdge: O((log V)^2) amortized
 // Memory Complexity: O((V + E) log V)
 // Tested:

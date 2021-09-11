@@ -22,7 +22,9 @@ using namespace std;
 //   reserve(N): reserves space for N lines in the convex hull
 // In practice, has a moderate constant
 // Time Complexity:
-//   addLine, getMax: O(log N)
+//   addLine: O(log N) if reserve is called beforehand,
+//            O(log N) amortized otherwise
+//   getMax: O(log N)
 //   undo, size: O(1)
 //   reserve: O(N)
 // Memory Complexity: O(N) for N lines in the convex hull

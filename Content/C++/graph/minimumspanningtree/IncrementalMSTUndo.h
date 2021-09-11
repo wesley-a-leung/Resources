@@ -25,7 +25,7 @@ using namespace std;
 // In practice, has a moderate constant
 // Time Complexity:
 //   constructor: O(V)
-//   addEdge, undo: O(log V)
+//   addEdge, undo: O(log V) amortized
 // Memory Complexity: O(V)
 // Tested:
 //   https://dmoj.ca/problem/ccoprep4p3

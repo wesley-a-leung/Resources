@@ -16,6 +16,7 @@ using namespace std;
 //   qdef: the query default value
 //   op: an instance of the Op struct
 // Functions:
+//   reserve(v): reserves space for N elements
 //   push(v): pushes the value v into the queue
 //   getAgg(): returns the aggregate value of the elements in the queue
 //     aggregated in the order they were pushed
@@ -23,7 +24,9 @@ using namespace std;
 // In practice, has a moderate constant
 // Time Complexity:
 //   constructor, getAgg: O(1)
-//   push, pop: O(1) amortized
+//   reserve: O(N)
+//   push: O(1) if reserved is called beforehand, O(1) amortized otherwise
+//   pop: O(1) amortized
 // Memory Complexity: O(N)
 // Tested:
 //   https://judge.yosupo.jp/problem/queue_operate_all_composite
@@ -31,6 +34,7 @@ template <class T, class Op> struct SWAG {
   vector<T> q; T qdef, backAgg; int front, mid; Op op;
   SWAG(const T &qdef, Op op = Op())
       : qdef(qdef), backAgg(qdef), front(0), mid(0), op(op) {}
+  void reserve(int N) { q.reserve(N); }
   void push(const T &v) { q.push_back(v); backAgg = op(backAgg, v); }
   T getAgg() const { return front == mid ? backAgg : op(q[front], backAgg); }
   void pop() {

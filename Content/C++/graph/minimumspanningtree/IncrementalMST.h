@@ -22,7 +22,7 @@ using namespace std;
 // In practice, has a moderate constant
 // Time Complexity:
 //   constructor: O(V)
-//   addEdge: O(log V)
+//   addEdge: O(log V) amortized
 // Memory Complexity: O(V)
 // Tested:
 //   https://dmoj.ca/problem/noi14p2

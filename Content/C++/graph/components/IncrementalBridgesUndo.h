@@ -17,7 +17,7 @@ using namespace std;
 //     same 2-edge connected component
 // Time Complexity:
 //   constructor: O(V)
-//   addEdge, undo, twoEdgeConnected: O(log V)
+//   addEdge, undo, twoEdgeConnected: O(log V) amortized
 // Memory Complexity: O(V)
 // Tested:
 //   https://codeforces.com/gym/100551/problem/D
