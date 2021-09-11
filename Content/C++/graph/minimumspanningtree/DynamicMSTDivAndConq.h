@@ -19,7 +19,7 @@ using namespace std;
 //   addMstQuery(v, w): adds a query asking for the current minimum spanning
 //     tree (or forest)
 //   solveQueries(): solves all queries asked so far
-// In practice, has a small constant, faster than DynamicMSTDivAndConqLCT
+// In practice, has a small constant
 // Time Complexity:
 //   constructor: O(V)
 //   addEdge, removeEdge, addMstQuery: O(1)
@@ -27,9 +27,9 @@ using namespace std;
 // Memory Complexity: O(V + Q) for Q edge additions/removals and queries
 // Tested:
 //   https://dmoj.ca/problem/ccoprep4p3
-template <class T> struct DynamicMSTDivAndConqUnionFind {
+template <class T> struct DynamicMSTDivAndConq {
   int V; vector<tuple<int, int, int, T, int>> queries; vector<T> ans;
-  DynamicMSTDivAndConqUnionFind(int V) : V(V) {}
+  DynamicMSTDivAndConq(int V) : V(V) {}
   void addEdge(int v, int w, T weight) {
     if (v > w) swap(v, w);
     queries.emplace_back(0, v, w, weight, -1);
