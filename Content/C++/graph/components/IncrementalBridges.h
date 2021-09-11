@@ -1,78 +1,51 @@
 #pragma once
 #include <bits/stdc++.h>
-#include "../dynamictrees/LinkCutTree.h"
+#include "../../datastructures/unionfind/UnionFind.h"
 using namespace std;
 
-// Support queries for the number of bridges in a graph, after edges have been
-//   added, using a Link Cut Tree
+// Support online queries for the number of bridges in a graph, after edges
+//   have been added
 // Constructor Arguments:
 //   V: the number of vertices in the graph
 // Fields:
-//   bridges: the current number of bridges in the graph
+//   bridgeCnt: the current number of bridges in the graph
+//   uf1: a UnionFind data structure representing the 1-edge connected
+//     components
+//   uf2: a UnionFind data structure representing the 2-edge connected
+//     components
 // Functions:
 //   addEdge(v, w): adds an edge between vertices v and w
-//   twoEdgeConnected(v, w): queries whether v and w are in the
-//     same 2-edge connected component
 // Time Complexity:
 //   constructor: O(V)
-//   addEdge, twoEdgeConnected: O(log V)
+//   addEdge: O(log V) amortized
 // Memory Complexity: O(V)
 // Tested:
 //   https://codeforces.com/gym/100551/problem/B
 struct IncrementalBridges {
-  struct Node {
-    using Data = pair<bool, int>; using Lazy = bool;
-    static const bool RANGE_UPDATES = true, RANGE_QUERIES = true;
-    static const bool RANGE_REVERSALS = true;
-    bool rev; int sz; Node *l, *r, *p; Lazy lz; Data val, sbtr;
-    Node(const Data &v)
-        : rev(false), sz(1), l(nullptr), r(nullptr), p(nullptr),
-          lz(false), val(v), sbtr(v) {}
-    void update() {
-      sz = 1; sbtr = val;
-      if (l) {
-        sz += l->sz;
-        if (sbtr.first && !l->sbtr.first) sbtr = l->sbtr;
-        else if (sbtr.first == l->sbtr.first) sbtr.second += l->sbtr.second;
-      }
-      if (r) {
-        sz += r->sz;
-        if (sbtr.first && !r->sbtr.first) sbtr = r->sbtr;
-        else if (sbtr.first == r->sbtr.first) sbtr.second += r->sbtr.second;
-      }
-    }
-    void propagate() {
-      if (rev) {
-        if (l) l->reverse();
-        if (r) r->reverse();
-        rev = false;
-      }
-      if (lz) {
-        if (l) l->apply(lz);
-        if (r) r->apply(lz);
-        lz = false;
-      }
-    }
-    void apply(const Lazy &v) {
-      lz = v; val.first = v; sbtr.first = v;
-    }
-    void reverse() { rev = !rev; swap(l, r); }
-    static Data qdef() { return make_pair(true, 0); }
-  };
-  int V, treeEdges, bridges; LCT<Node> lct;
-  vector<pair<bool, int>> init(int V) {
-    vector<pair<bool, int>> ret(max(0, V * 2 - 1), make_pair(false, 1));
-    fill(ret.begin(), ret.begin() + V, make_pair(true, 1)); return ret;
+  UnionFind uf1, uf2; vector<int> par, mn, vis; int stamp, bridgeCnt;
+  IncrementalBridges(int V)
+      : uf1(V), uf2(V), par(V, -1), mn(V, -1), vis(V, -1),
+        stamp(-1), bridgeCnt(0) {
+    iota(mn.begin(), mn.end(), 0);
   }
-  IncrementalBridges(int V) : V(V), treeEdges(0), bridges(0), lct(init(V)) {}
   void addEdge(int v, int w) {
-    pair<bool, int> q = lct.queryPath(v, w); if (q.second == 0) {
-      lct.link(v, V + treeEdges); lct.link(w, V + treeEdges++); bridges++;
-      return;
+    if (uf2.connected(v, w)) return;
+    if (uf1.connected(v, w)) {
+      stamp++; int lca = -1; for (int x = v, y = w;; swap(x, y)) if (x != -1) {
+        if (vis[x = mn[uf2.find(x)]] == stamp) { lca = x; break; }
+        vis[x] = stamp; x = par[x];
+      }
+      for (int h = 0; h < 2; h++, swap(v, w))
+        for (v = mn[uf2.find(v)]; v != lca;) {
+          int p = mn[uf2.find(par[v])], pp = par[p]; uf2.join(v, p);
+          par[v = mn[uf2.find(v)] = p] = pp; bridgeCnt--;
+        }
+    } else {
+      if (uf1.getSize(v) < uf1.getSize(w)) swap(v, w);
+      for (int p = -1, last = v, x = w; x != -1; last = x, x = p) {
+        x = mn[uf2.find(x)]; p = par[x]; par[x] = last;
+      }
+      bridgeCnt++; uf1.join(v, w);
     }
-    lct.updatePathFromRoot(w, 1); if (!q.first) bridges -= q.second;
-  }
-  bool twoEdgeConnected(int v, int w) {
-    pair<bool, int> q = lct.queryPath(v, w); return q.first && q.second > 0;
   }
 };

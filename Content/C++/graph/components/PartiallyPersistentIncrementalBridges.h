@@ -68,8 +68,8 @@ struct PartiallyPersistentIncrementalBridges
         int v, w; tie(v, w) = edges[i];
         for (v = mn[find(i, v)], w = mn[find(i, w)]; v != w;) {
           if (dep[v] < dep[w]) swap(v, w);
-          int p = mn[find(i, par[v])]; join(v, p); curTime--; curBridgeCnt--;
-          v = mn[find(i, v)] = dep[v] < dep[p] ? v : p;
+          int p = mn[find(i, par[v])]; join(v, p); v = mn[find(i, v)] = p;
+          curTime--; curBridgeCnt--;
         }
       }
       bridgeCnt[i] = curBridgeCnt; curTime++;

@@ -110,24 +110,24 @@ struct DynamicBridges {
     }
     vector<pair<int, int>> tmp(V + Q, make_pair(Node::NO_DEL, -1));
     for (int i = 0; i < Q; i++) tmp[V + i] = make_pair(get<3>(queries[i]), i);
-    LCT<Node> lct(tmp); int bridges = 0; for (int i = 0; i < Q; i++)
+    LCT<Node> lct(tmp); int bridgeCnt = 0; for (int i = 0; i < Q; i++)
        lct.TR[V + i].edgeCnt = int(lct.TR[V + i].isEdge = true);
     auto cover = [&] (int x, int y, int coverId) {
-      lct.queryPath(x, y); bridges += lct.TR[y].getCoveredCnt();
+      lct.queryPath(x, y); bridgeCnt += lct.TR[y].getCoveredCnt();
       lct.TR[y].coverLazy = coverId;
-      bridges -= lct.TR[y].getCoveredCnt();
+      bridgeCnt -= lct.TR[y].getCoveredCnt();
     };
     auto uncover = [&] (int x, int y, int coverId) {
-      lct.queryPath(x, y); bridges += lct.TR[y].getCoveredCnt();
+      lct.queryPath(x, y); bridgeCnt += lct.TR[y].getCoveredCnt();
       lct.TR[y].removeCover(coverId);
-      bridges -= lct.TR[y].getCoveredCnt();
+      bridgeCnt -= lct.TR[y].getCoveredCnt();
     };
     auto addTreeEdge = [&] (int v, int w, int i) {
-      lct.link(v, V + i); lct.link(w, V + i); bridges++;
+      lct.link(v, V + i); lct.link(w, V + i); bridgeCnt++;
     };
     auto removeTreeEdge = [&] (int v, int w, int i) {
       lct.cut(v, V + i); lct.cut(w, V + i);
-      bridges += lct.TR[V + i].getCoveredCnt() - 1;
+      bridgeCnt += lct.TR[V + i].getCoveredCnt() - 1;
     };
     ans.clear(); for (int i = 0; i < Q; i++) {
       int t, v, w, o; tie(t, v, w, o) = queries[i]; if (t == 0) {
@@ -143,7 +143,7 @@ struct DynamicBridges {
         if (v == w) continue;
         if (lct.connected(v, V + o)) removeTreeEdge(v, w, o);
         else uncover(v, w, i);
-      } else if (t == 2) ans.push_back(bridges);
+      } else if (t == 2) ans.push_back(bridgeCnt);
     }
   }
 };
