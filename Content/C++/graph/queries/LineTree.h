@@ -38,12 +38,12 @@ template <class T, class Cmp = less<T>> struct LineTree {
     sort(edges.begin(), edges.end(), [&] (const Edge &a, const Edge &b) {
       return cmp(get<2>(a), get<2>(b));
     });
-    vector<int> nxt(V, -1), A(V, 0), ret; int k = 0;
+    vector<int> nxt(V, -1), A(V, 0), ret; ret.reserve(V); int k = 0;
     auto op = [&] (const pair<int, int> &a, const pair<int, int> &b) {
       nxt[a.second] = b.first; A[a.second] = k;
       return make_pair(a.first, b.second);
     };
-    ret.reserve(V); vector<pair<int, int>> W(V);
+    vector<pair<int, int>> W(V);
     for (int v = 0; v < V; v++) W[v] = make_pair(v, v);
     WeightedUnionFind<pair<int, int>, decltype(op)> uf(move(W), op);
     weights.reserve(edges.size()); for (auto &&e : edges) {
