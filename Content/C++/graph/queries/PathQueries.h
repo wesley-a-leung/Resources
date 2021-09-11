@@ -1,4 +1,4 @@
-re#pragma once
+#pragma once
 #include <bits/stdc++.h>
 #include "HeavyLightDecomposition.h"
 using namespace std;
