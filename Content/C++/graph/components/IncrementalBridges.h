@@ -24,7 +24,7 @@ using namespace std;
 struct IncrementalBridges {
   UnionFind uf1, uf2; vector<int> par, mn, vis; int stamp, bridgeCnt;
   IncrementalBridges(int V)
-      : uf1(V), uf2(V), par(V, -1), mn(V, -1), vis(V, -1),
+      : uf1(V), uf2(V), par(V, -1), mn(V), vis(V, -1),
         stamp(-1), bridgeCnt(0) {
     iota(mn.begin(), mn.end(), 0);
   }
@@ -43,7 +43,7 @@ struct IncrementalBridges {
     } else {
       if (uf1.getSize(v) < uf1.getSize(w)) swap(v, w);
       for (int p = -1, last = v, x = w; x != -1; last = x, x = p) {
-        x = mn[uf2.find(x)]; p = par[x]; par[x] = last;
+        p = par[x = mn[uf2.find(x)]]; par[x] = last;
       }
       bridgeCnt++; uf1.join(v, w);
     }
