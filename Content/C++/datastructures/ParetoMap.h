@@ -17,6 +17,8 @@ using namespace std;
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
 // Constructor Arguments:
+//   kcmp: an instance of KCmp
+//   vcmp: an instance of VCmp
 //   NEG_INF: a value for negative infinity
 // Functions:
 //   add(k, v): adds the key value pair (k, v) and maintains the pareto
@@ -37,8 +39,10 @@ using namespace std;
 //   https://dmoj.ca/problem/dpq
 template <class K, class V, class KCmp = less<K>, class VCmp = less<V>>
 struct ParetoMap : public map<K, V, KCmp> {
-  using M = map<K, V, KCmp>; V NEG_INF;
-  ParetoMap(V NEG_INF = numeric_limits<V>::lowest()) : NEG_INF(NEG_INF) {}
+  using M = map<K, V, KCmp>; VCmp vcmp; V NEG_INF;
+  ParetoMap(KCmp kcmp = KCmp(), VCmp vcmp = VCmp(),
+            V NEG_INF = numeric_limits<V>::lowest())
+      : M(KCmp()), vcmp(vcmp), NEG_INF(NEG_INF) {}
   void add(K k, V v) {
     auto it = M::lower_bound(k);
     if (it != M::begin() && !VCmp()(prev(it)->second, v)) return;

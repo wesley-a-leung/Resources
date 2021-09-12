@@ -4,11 +4,12 @@ using namespace std;
 
 // Helper struct to compare two pairs
 template <class Cmp> struct PairCmp {
+  Cmp cmp; PairCmp(Cmp cmp = Cmp()) : cmp(cmp) {}
   template <class T>
   bool operator () (const pair<T, T> &a, const pair<T, T> &b) const {
-    if (Cmp()(a.first, b.first)) return true;
-    if (Cmp()(b.first, a.first)) return false;
-    return Cmp()(a.second, b.second);
+    if (cmp(a.first, b.first)) return true;
+    if (cmp(b.first, a.first)) return false;
+    return cmp(a.second, b.second);
   } 
 };
 
@@ -37,6 +38,7 @@ struct NoOp {
 //       operator (l, r): removes the interval [l, r) from the set of
 //         disjoint intervals
 // Constructor Arguments:
+//   cmp: an instance of Cmp
 //   add: an instance of Add
 //   rem: an instance of Rem
 // Functions:
@@ -51,28 +53,30 @@ struct NoOp {
 //   http://www.usaco.org/index.php?page=viewproblem2&cpid=973
 template <class T, class Cmp = less<T>, class Add = NoOp, class Rem = NoOp>
 struct IntervalUnion : public set<pair<T, T>, PairCmp<Cmp>> {
-  Add add; Rem rem;
-  IntervalUnion(Add add = Add(), Rem rem = Rem()) : add(add), rem(rem) {}
+  Cmp cmp; Add add; Rem rem;
+  IntervalUnion(Cmp cmp = Cmp(), Add add = Add(), Rem rem = Rem())
+      : set<pair<T, T>, PairCmp<Cmp>>(PairCmp<Cmp>(cmp)),
+        cmp(cmp), add(add), rem(rem) {}
   typename set<pair<T, T>, PairCmp<Cmp>>::iterator addInterval(T L, T R) {
-    if (!Cmp()(L, R) && !Cmp()(R, L)) return this->end();
+    if (!cmp(L, R) && !cmp(R, L)) return this->end();
     auto it = this->lower_bound(make_pair(L, R)), before = it;
-    while (it != this->end() && !Cmp()(R, it->first)) {
-      R = max(R, it->second, Cmp()); rem(it->first, it->second);
+    while (it != this->end() && !cmp(R, it->first)) {
+      R = max(R, it->second, cmp); rem(it->first, it->second);
       before = it = this->erase(it);
     }
-    if (it != this->begin() && !Cmp()((--it)->second, L)) {
-      L = min(L, it->first, Cmp()); R = max(R, it->second, Cmp());
+    if (it != this->begin() && !cmp((--it)->second, L)) {
+      L = min(L, it->first, cmp); R = max(R, it->second, cmp);
       rem(it->first, it->second); this->erase(it);
     }
     add(L, R); return this->emplace_hint(before, L, R);
   }
   void removeInterval(T L, T R) {
-    if (!Cmp()(L, R) && !Cmp()(R, L)) return;
+    if (!cmp(L, R) && !cmp(R, L)) return;
     auto it = addInterval(L, R); auto r2 = it->second;
-    if (!Cmp()(it->first, L) && !Cmp()(L, it->first)) {
+    if (!cmp(it->first, L) && !cmp(L, it->first)) {
       rem(it->first, it->second); this->erase(it);
     } else (T &) it->second = L;
-    if (Cmp()(R, r2) || Cmp()(r2, R)) { add(R, r2); this->emplace(R, r2); }
+    if (cmp(R, r2) || cmp(r2, R)) { add(R, r2); this->emplace(R, r2); }
   }
 };
 

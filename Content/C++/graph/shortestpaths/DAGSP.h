@@ -24,6 +24,7 @@ using namespace std;
 //   INF: a value for infinity for shortest path, or negative infinity
 //     for longest path; (Cmp()(INF, x)) must return false for all
 //     values of x
+//   cmp: an instance of the Cmp struct
 // Fields:
 //   dist: vector of distance from the closest source vertex to each vertex,
 //     or INF if unreachable, and is also the shortest distance for
@@ -47,17 +48,18 @@ template <class T, class Cmp = less<T>> struct DAGSP {
   T getWeight(int) { return 1; }
   int getTo(const pair<int, T> &e) { return e.first; }
   T getWeight(const pair<int, T> &e) { return e.second; }
-  template <class DAG> DAGSP(const DAG &G, const vector<int> &srcs, T INF)
+  template <class DAG>
+  DAGSP(const DAG &G, const vector<int> &srcs, T INF, Cmp cmp = Cmp())
       : dist(G.size(), INF), par(G.size(), -1), INF(INF), ord(G) {
     for (int s : srcs) dist[s] = T();
     for (int v : ord.ord) for (auto &&e : G[v]) {
       int w = getTo(e); T weight = getWeight(e);
-      if (Cmp()(dist[v], INF) && Cmp()(dist[v] + weight, dist[w]))
+      if (cmp(dist[v], INF) && cmp(dist[v] + weight, dist[w]))
         dist[w] = dist[par[w] = v] + weight;
     }
   }
-  template <class DAG> DAGSP(const DAG &G, int s, T INF)
-      : DAGSP(G, vector<int>{s}, INF) {}
+  template <class DAG> DAGSP(const DAG &G, int s, T INF, Cmp cmp = Cmp())
+      : DAGSP(G, vector<int>{s}, INF, cmp) {}
   vector<Edge> getPath(int v) {
     vector<Edge> path; for (; par[v] != -1; v = par[v])
       path.emplace_back(par[v], v, dist[v] - dist[par[v]]);

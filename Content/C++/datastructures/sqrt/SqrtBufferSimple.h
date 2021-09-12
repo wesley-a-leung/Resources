@@ -12,6 +12,7 @@ using namespace std;
 // Constructor Arguments:
 //   v: a vector of type T to initialize the structure
 //   SCALE: the value to scale sqrt by
+//   cmp: an instance of the Cmp struct
 // Functions:
 //   rebuild(): rebuilds the multiset by moving all elements in the small
 //     container to the large container
@@ -68,17 +69,18 @@ using namespace std;
 //   https://mcpt.ca/problem/lcc18c5s3
 //   https://codeforces.com/contest/1093/problem/E
 template <class T, class Cmp = less<T>> struct SqrtBufferSimple {
-  double SCALE; vector<T> small, large;
-  SqrtBufferSimple(double SCALE = 1) : SCALE(SCALE) {}
-  SqrtBufferSimple(vector<T> v, double SCALE = 1)
-      : SCALE(SCALE), large(move(v)) {
-    assert(is_sorted(large.begin(), large.end(), Cmp()));
+  double SCALE; Cmp cmp; vector<T> small, large;
+  SqrtBufferSimple(double SCALE = 1, Cmp cmp = Cmp())
+      : SCALE(SCALE), cmp(cmp) {}
+  SqrtBufferSimple(vector<T> v, double SCALE = 1, Cmp cmp = Cmp())
+      : SCALE(SCALE), cmp(cmp), large(move(v)) {
+    assert(is_sorted(large.begin(), large.end(), cmp));
   }
   bool rebuild() {
     if (int(small.size()) > SCALE * sqrt(small.size() + large.size())) {
-      int lSz = large.size(); sort(small.begin(), small.end(), Cmp());
+      int lSz = large.size(); sort(small.begin(), small.end(), cmp);
       for (auto &&x : small) large.push_back(x);
-      inplace_merge(large.begin(), large.begin() + lSz, large.end(), Cmp());
+      inplace_merge(large.begin(), large.begin() + lSz, large.end(), cmp);
       small.clear(); return true;
     }
     return false;
@@ -86,98 +88,98 @@ template <class T, class Cmp = less<T>> struct SqrtBufferSimple {
   void insert(const T &val) { small.push_back(val); }
   int aboveInd(const T &val) {
     rebuild();
-    int ret = upper_bound(large.begin(), large.end(), val, Cmp())
+    int ret = upper_bound(large.begin(), large.end(), val, cmp)
         - large.begin();
-    for (auto &&x : small) ret += !Cmp()(val, x);
+    for (auto &&x : small) ret += !cmp(val, x);
     return ret;
   }
   int ceilingInd(const T &val) {
     rebuild();
-    int ret = lower_bound(large.begin(), large.end(), val, Cmp())
+    int ret = lower_bound(large.begin(), large.end(), val, cmp)
         - large.begin();
-    for (auto &&x : small) ret += Cmp()(x, val);
+    for (auto &&x : small) ret += cmp(x, val);
     return ret;
   }
   int floorInd(const T &val) { return aboveInd(val) - 1; }
   int belowInd(const T &val) { return ceilingInd(val) - 1; }
   T *aboveVal(const T &val) {
     rebuild(); T *y = nullptr;
-    auto it = upper_bound(large.begin(), large.end(), val, Cmp());
+    auto it = upper_bound(large.begin(), large.end(), val, cmp);
     if (it != large.end()) y = &*it;
-    for (auto &&x : small) if (Cmp()(val, x) && (!y || Cmp()(x, *y))) y = &x;
+    for (auto &&x : small) if (cmp(val, x) && (!y || cmp(x, *y))) y = &x;
     return y;
   }
   T *ceilingVal(const T &val) {
     rebuild(); T *y = nullptr;
-    auto it = lower_bound(large.begin(), large.end(), val, Cmp());
+    auto it = lower_bound(large.begin(), large.end(), val, cmp);
     if (it != large.end()) y = &*it;
-    for (auto &&x : small) if (!Cmp()(x, val) && (!y || Cmp()(x, *y))) y = &x;
+    for (auto &&x : small) if (!cmp(x, val) && (!y || cmp(x, *y))) y = &x;
     return y;
   }
   T *floorVal(const T &val) {
     rebuild(); T *y = nullptr;
-    auto it = upper_bound(large.begin(), large.end(), val, Cmp());
+    auto it = upper_bound(large.begin(), large.end(), val, cmp);
     if (it != large.begin()) y = &*--it;
-    for (auto &&x : small) if (!Cmp()(val, x) && (!y || Cmp()(*y, x))) y = &x;
+    for (auto &&x : small) if (!cmp(val, x) && (!y || cmp(*y, x))) y = &x;
     return y;
   }
   T *belowVal(const T &val) {
     rebuild(); T *y = nullptr;
-    auto it = lower_bound(large.begin(), large.end(), val, Cmp());
+    auto it = lower_bound(large.begin(), large.end(), val, cmp);
     if (it != large.begin()) y = &*--it;
-    for (auto &&x : small) if (Cmp()(x, val) && (!y || Cmp()(*y, x))) y = &x;
+    for (auto &&x : small) if (cmp(x, val) && (!y || cmp(*y, x))) y = &x;
     return y;
   }
   pair<int, T *> above(const T &val) {
     rebuild(); T *y = nullptr;
-    auto it = upper_bound(large.begin(), large.end(), val, Cmp());
+    auto it = upper_bound(large.begin(), large.end(), val, cmp);
     int cnt = it - large.begin(); if (it != large.end()) y = &*it;
     for (auto &&x : small) {
-      if (!Cmp()(val, x)) cnt++;
-      else if (!y || Cmp()(x, *y)) y = &x;
+      if (!cmp(val, x)) cnt++;
+      else if (!y || cmp(x, *y)) y = &x;
     }
     return make_pair(cnt, y);
   }
   pair<int, T *> ceiling(const T &val) {
     rebuild(); T *y = nullptr;
-    auto it = lower_bound(large.begin(), large.end(), val, Cmp());
+    auto it = lower_bound(large.begin(), large.end(), val, cmp);
     int cnt = it - large.begin(); if (it != large.end()) y = &*it;
     for (auto &&x : small) {
-      if (Cmp()(x, val)) cnt++;
-      else if (!y || Cmp()(x, *y)) y = &x;
+      if (cmp(x, val)) cnt++;
+      else if (!y || cmp(x, *y)) y = &x;
     }
     return make_pair(cnt, y);
   }
   pair<int, T *> floor(const T &val) {
     rebuild(); T *y = nullptr;
-    auto it = upper_bound(large.begin(), large.end(), val, Cmp());
+    auto it = upper_bound(large.begin(), large.end(), val, cmp);
     int cnt = it - large.begin(); if (it != large.begin()) y = &*--it;
-    for (auto &&x : small) if (!Cmp()(val, x)) {
-      cnt++; if (!y || Cmp()(*y, x)) y = &x;
+    for (auto &&x : small) if (!cmp(val, x)) {
+      cnt++; if (!y || cmp(*y, x)) y = &x;
     }
     return make_pair(--cnt, y);
   }
   pair<int, T *> below(const T &val) {
     rebuild(); T *y = nullptr;
-    auto it = lower_bound(large.begin(), large.end(), val, Cmp());
+    auto it = lower_bound(large.begin(), large.end(), val, cmp);
     int cnt = it - large.begin(); if (it != large.begin()) y = &*--it;
-    for (auto &&x : small) if (Cmp()(x, val)) {
-      cnt++; if (!y || Cmp()(*y, x)) y = &x;
+    for (auto &&x : small) if (cmp(x, val)) {
+      cnt++; if (!y || cmp(*y, x)) y = &x;
     }
     return make_pair(--cnt, y);
   }
   bool contains(const T &val) {
-    if (binary_search(large.begin(), large.end(), val, Cmp())) return true;
-    if (rebuild() && binary_search(large.begin(), large.end(), val, Cmp()))
+    if (binary_search(large.begin(), large.end(), val, cmp)) return true;
+    if (rebuild() && binary_search(large.begin(), large.end(), val, cmp))
       return true;
-    for (auto &&x : small) if (!Cmp()(val, x) && !Cmp()(x, val)) return true;
+    for (auto &&x : small) if (!cmp(val, x) && !cmp(x, val)) return true;
     return false;
   }
   int count(const T &lo, const T &hi) {
     rebuild();
-    int ret = upper_bound(large.begin(), large.end(), hi, Cmp())
-        - lower_bound(large.begin(), large.end(), lo, Cmp());
-    for (auto &&x : small) ret += !Cmp()(x, lo) && !Cmp()(hi, x);
+    int ret = upper_bound(large.begin(), large.end(), hi, cmp)
+        - lower_bound(large.begin(), large.end(), lo, cmp);
+    for (auto &&x : small) ret += !cmp(x, lo) && !cmp(hi, x);
     return ret;
   }
   bool empty() const { return small.empty() && large.empty(); } 
@@ -187,7 +189,7 @@ template <class T, class Cmp = less<T>> struct SqrtBufferSimple {
     vector<T> ret; ret.reserve(size());
     for (auto &&x : small) ret.push_back(x);
     int mid = int(ret.size()); for (auto &&x : large) ret.push_back(x);
-    inplace_merge(ret.begin(), ret.begin() + mid, ret.end(), Cmp());
+    inplace_merge(ret.begin(), ret.begin() + mid, ret.end(), cmp);
     return ret;
   }
 };

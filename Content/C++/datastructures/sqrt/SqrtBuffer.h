@@ -16,6 +16,7 @@ using namespace std;
 // Constructor Arguments:
 //   v: a vector of type pair<T, CountType> to initialize the structure
 //   SCALE: the value to scale sqrt by
+//   cmp: an instance of the Cmp struct
 // Functions:
 //   rebuild(): rebuilds the multiset by moving all elements in the small
 //     container to the large container
@@ -54,18 +55,20 @@ using namespace std;
 //   https://dmoj.ca/problem/ioi01p1
 template <class T, class CountType, class Cmp = less<T>>
 struct SqrtBuffer {
-  CountType tot; double SCALE;
-  vector<pair<T, CountType>> small, large;
   struct PairCmp {
+    Cmp cmp; PairCmp(Cmp cmp) : cmp(cmp) {}
     bool operator () (const pair<T, CountType> &a,
                       const pair<T, CountType> &b) const {
-      return Cmp()(a.first, b.first);
+      return cmp(a.first, b.first);
     }
   };
-  SqrtBuffer(double SCALE = 1) : tot(CountType()), SCALE(SCALE) {}
-  SqrtBuffer(vector<pair<T, CountType>> v, double SCALE = 1)
-      : tot(CountType()), SCALE(SCALE), large(move(v)) {
-    assert(is_sorted(large.begin(), large.end(), PairCmp()));
+  CountType tot; double SCALE; PairCmp pcmp;
+  vector<pair<T, CountType>> small, large;
+  SqrtBuffer(double SCALE = 1, Cmp cmp = Cmp())
+    : tot(CountType()), SCALE(SCALE), pcmp(PairCmp(cmp)) {}
+  SqrtBuffer(vector<pair<T, CountType>> v, double SCALE = 1, Cmp cmp = Cmp())
+      : tot(CountType()), SCALE(SCALE), pcmp(PairCmp(cmp)), large(move(v)) {
+    assert(is_sorted(large.begin(), large.end(), pcmp));
     resizeUnique(large); for (auto &&p : large) tot += p.second;
   }
   void resizeUnique(vector<pair<T, CountType>> &v) {
@@ -80,12 +83,10 @@ struct SqrtBuffer {
   }
   bool rebuild() {
     if (int(small.size()) > SCALE * sqrt(small.size() + large.size())) {
-      int lSz = large.size(); sort(small.begin(), small.end(), PairCmp());
-      for (int i = lSz - 1; i >= 1; i--)
-        large[i].second -= large[i - 1].second;
+      int lSz = large.size(); sort(small.begin(), small.end(), pcmp);
+      for (int i = lSz - 1; i > 0; i--) large[i].second -= large[i - 1].second;
       for (auto &&p : small) large.push_back(p);
-      inplace_merge(large.begin(), large.begin() + lSz, large.end(),
-                    PairCmp());
+      inplace_merge(large.begin(), large.begin() + lSz, large.end(), pcmp);
       resizeUnique(large); small.clear(); return true;
     }
     return false;
@@ -99,7 +100,7 @@ struct SqrtBuffer {
   CountType aboveInd(const T &val) {
     rebuild();
     int ind = upper_bound(large.begin(), large.end(),
-                          make_pair(val, CountType()), PairCmp())
+                          make_pair(val, CountType()), pcmp)
         - large.begin();
     CountType ret = ind == 0 ? CountType() : large[ind - 1].second;
     for (auto &&p : small) if (!Cmp()(val, p.first)) ret += p.second;
@@ -108,7 +109,7 @@ struct SqrtBuffer {
   CountType ceilingInd(const T &val) {
     rebuild();
     int ind = lower_bound(large.begin(), large.end(),
-                          make_pair(val, CountType()), PairCmp())
+                          make_pair(val, CountType()), pcmp)
         - large.begin();
     CountType ret = ind == 0 ? CountType() : large[ind - 1].second;
     for (auto &&p : small) if (Cmp()(p.first, val)) ret += p.second;
@@ -118,9 +119,9 @@ struct SqrtBuffer {
   CountType belowInd(const T &val) { return ceilingInd(val) - 1; }
   bool contains(const T &val) {
     if (binary_search(large.begin(), large.end(),
-        make_pair(val, CountType()), PairCmp())) return true;
+        make_pair(val, CountType()), pcmp)) return true;
     if (rebuild() && binary_search(large.begin(), large.end(),
-                                   make_pair(val, CountType()), PairCmp()))
+                                   make_pair(val, CountType()), pcmp))
       return true;
     for (auto &&p : small) if (!Cmp()(val, p.first) && !Cmp()(p.first, val))
       return true;
@@ -129,11 +130,11 @@ struct SqrtBuffer {
   CountType count(const T &lo, const T &hi) {
     rebuild();
     int ind = upper_bound(large.begin(), large.end(),
-                          make_pair(hi, CountType()), PairCmp())
+                          make_pair(hi, CountType()), pcmp)
         - large.begin();
     CountType ret = ind == 0 ? CountType() : large[ind - 1].second;
     ind = lower_bound(large.begin(), large.end(),
-                      make_pair(lo, CountType()), PairCmp())
+                      make_pair(lo, CountType()), pcmp)
         - large.begin();
     ret -= ind == 0 ? CountType() : large[ind - 1].second;
     for (auto &&p : small) if (!Cmp()(p.first, lo) && !Cmp()(hi, p.first))
@@ -146,7 +147,7 @@ struct SqrtBuffer {
     vector<pair<T, CountType>> ret; ret.reserve(large.size() + small.size());
     for (auto &&p : small) ret.push_back(p);
     int mid = int(ret.size()); for (auto &&p : large) ret.push_back(p);
-    inplace_merge(ret.begin(), ret.begin() + mid, ret.end(), PairCmp());
+    inplace_merge(ret.begin(), ret.begin() + mid, ret.end(), pcmp);
     resizeUnique(ret); return ret;
   }
 };

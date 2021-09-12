@@ -48,6 +48,7 @@ using namespace std;
 //   D: a vector of type R::Data containing the initial data of the array
 //   updates: a vector of vectors of type T containing the sequence of updates
 //     to each index in the order they are updated
+//   cmp: an instance of the Cmp struct
 // Functions:
 //   updateToNextKey(i): updates the ith key to the next key in the update
 //     sequence
@@ -79,9 +80,9 @@ template <class T, class R, class Cmp = less<T>>
 struct WaveletMatrixAggregationOfflineUpdates {
   using Data = typename R::Data; using Lazy = typename R::Lazy;
   vector<int> cur; vector<Data> D; WaveletMatrixAggregation<T, R, Cmp> wm;
-  WaveletMatrixAggregation<T, R, Cmp> init(const vector<T> &A,
-                                           const vector<Data> &D,
-                                           const vector<vector<T>> &updates) {
+  WaveletMatrixAggregation<T, R, Cmp> init(
+      const vector<T> &A, const vector<Data> &D,
+      const vector<vector<T>> &updates, Cmp cmp) {
     assert(A.size() == D.size()); assert(A.size() == updates.size());
     int N = A.size();
     for (int i = 0; i < N; i++) cur[i + 1] = updates[i].size() + 1;
@@ -92,12 +93,12 @@ struct WaveletMatrixAggregationOfflineUpdates {
     }
     vector<Data> temp(ret.size(), R::qdef());
     for (int i = 0; i < N; i++) temp[cur[i]] = D[i];
-    return WaveletMatrixAggregation<T, R, Cmp>(move(ret), temp);
+    return WaveletMatrixAggregation<T, R, Cmp>(move(ret), temp, cmp);
   }
-  WaveletMatrixAggregationOfflineUpdates(const vector<T> &A,
-                                         const vector<Data> &D,
-                                         const vector<vector<T>> &updates)
-      : cur(A.size() + 1, 0), D(D), wm(init(A, D, updates)) {}
+  WaveletMatrixAggregationOfflineUpdates(
+      const vector<T> &A, const vector<Data> &D,
+      const vector<vector<T>> &updates, Cmp cmp = Cmp())
+      : cur(A.size() + 1, 0), D(D), wm(init(A, D, updates, cmp)) {}
   void updateToNextKey(int i) {
     wm.update(cur[i], R::qdef()); wm.update(++cur[i], D[i]);
   }

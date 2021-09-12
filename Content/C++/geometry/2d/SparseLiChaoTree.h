@@ -18,6 +18,7 @@ using namespace std;
 //     where MN <= x
 //   MX: the maximum bound (inclusive) for the value of x, allowing queries
 //     where x <= MX
+//   cmp: an instance of the Cmp struct
 //   INF: a value for positive infinity, must be negatable
 // Functions:
 //   addLine(m, b): adds a line in the form f(x) = mx + b to the set of lines
@@ -50,21 +51,21 @@ struct SparseLiChaoTree {
   struct Node {
     Line line; int l, r; Node(T m, T b) : line(m, b), l(-1), r(-1) {}
   };
-  IndexType MN, MX; T INF; int root; vector<Node> TR;
+  IndexType MN, MX; Cmp cmp; T INF; int root; vector<Node> TR;
   T eval(Line l, IndexType x) const { return l.first * x + l.second; }
   bool majorize(Line a, Line b, IndexType l, IndexType r) {
-    return !Cmp()(eval(a, l), eval(b, l)) && !Cmp()(eval(a, r), eval(b, r));
+    return !cmp(eval(a, l), eval(b, l)) && !cmp(eval(a, r), eval(b, r));
   }
-  SparseLiChaoTree(IndexType MN, IndexType MX,
+  SparseLiChaoTree(IndexType MN, IndexType MX, Cmp cmp = Cmp(),
                    T inf = numeric_limits<T>::max())
-      : MN(MN), MX(MX), INF(min(inf, -inf, Cmp())), root(-1) {}
+      : MN(MN), MX(MX), cmp(cmp), INF(min(inf, -inf, cmp)), root(-1) {}
   int addLine(int k, IndexType tl, IndexType tr, Line line) {
     if (k == -1) { k = TR.size(); TR.emplace_back(T(), INF); }
     if (majorize(line, TR[k].line, tl, tr)) swap(line, TR[k].line);
     if (majorize(TR[k].line, line, tl, tr)) return k;
-    if (Cmp()(eval(TR[k].line, tl), eval(line, tl))) swap(line, TR[k].line);
+    if (cmp(eval(TR[k].line, tl), eval(line, tl))) swap(line, TR[k].line);
     IndexType m = tl + (tr - tl) / 2;
-    if (!Cmp()(eval(line, m), eval(TR[k].line, m))) {
+    if (!cmp(eval(line, m), eval(TR[k].line, m))) {
       swap(line, TR[k].line);
       int nl = addLine(TR[k].l, tl, m, line); TR[k].l = nl;
     } else { int nr = addLine(TR[k].r, m + 1, tr, line); TR[k].r = nr; }
@@ -83,8 +84,8 @@ struct SparseLiChaoTree {
   T getMax(int k, IndexType tl, IndexType tr, IndexType x) const {
     if (k == -1) return INF;
     T ret = eval(TR[k].line, x); IndexType m = tl + (tr - tl) / 2;
-    if (x <= m) return max(ret, getMax(TR[k].l, tl, m, x), Cmp());
-    else return max(ret, getMax(TR[k].r, m + 1, tr, x), Cmp());
+    if (x <= m) return max(ret, getMax(TR[k].l, tl, m, x), cmp);
+    else return max(ret, getMax(TR[k].r, m + 1, tr, x), cmp);
   }
   void addLine(T m, T b) { root = addLine(root, MN, MX, Line(m, b)); }
   void addLineSegment(T m, T b, IndexType l, IndexType r) {

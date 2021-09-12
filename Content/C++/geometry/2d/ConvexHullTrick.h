@@ -15,6 +15,8 @@ using namespace std;
 //       operator (a, b): returns true if and only if a compares less than b
 //   REVERSE: boolean to indicate whether the lines are added in reverse order
 //     of the comparator
+// Constructor Arguments:
+//   cmp: an instance of the Cmp struct
 // Functions:
 //   addLine(m, b): adds a line in the form f(x) = mx + b to the set of lines,
 //     lines must be added in the order of slope sorted by Cmp, or in reverse
@@ -45,7 +47,8 @@ struct ConvexHullTrick {
     T m, b; Line(T m, T b) : m(m), b(b) {}
     T eval(T x) const { return m * x + b; }
   };
-  vector<Line> L; int front, back; ConvexHullTrick() : front(0), back(0) {}
+  vector<Line> L; Cmp cmp; int front, back;
+  ConvexHullTrick(Cmp cmp = Cmp()) : cmp(cmp), front(0), back(0) {}
   int size() const { return L.size(); }
   void addLine(T m, T b) {
     auto ccw = [&] {
@@ -53,8 +56,8 @@ struct ConvexHullTrick {
       T c2 = (L.back().b - b) * (L[size() - 2].m - m);
       return REVERSE ? c1 >= c2 : c1 <= c2;
     };
-    while (!L.empty() && !Cmp()(m, L.back().m)
-           && !Cmp()(L.back().m, m) && !Cmp()(b, L.back().b))
+    while (!L.empty() && !cmp(m, L.back().m) && !cmp(L.back().m, m)
+           && !cmp(b, L.back().b))
       L.pop_back();
     while (size() >= 2 && ccw()) L.pop_back();
     if (size() == back) back++;
@@ -62,13 +65,12 @@ struct ConvexHullTrick {
     front = min(front, size() - 1); back = min(back, size());
   }
   T moveFront(T x) {
-    while (front + 1 < size()
-           && !Cmp()(L[front + 1].eval(x), L[front].eval(x)))
+    while (front + 1 < size() && !cmp(L[front + 1].eval(x), L[front].eval(x)))
       front++;
     return L[front].eval(x);
   }
   T moveBack(T x) {
-    while (back - 2 >= 0 && !Cmp()(L[back - 2].eval(x), L[back - 1].eval(x)))
+    while (back - 2 >= 0 && !cmp(L[back - 2].eval(x), L[back - 1].eval(x)))
       back--;
     return L[back - 1].eval(x);
   }
@@ -76,7 +78,7 @@ struct ConvexHullTrick {
   T getMaxMonoDec(T x) { return REVERSE ? moveFront(x) : moveBack(x); }
   T getMax(T x) const {
     return L[bsearch<FIRST>(0, size() - 1, [&] (int i) {
-      return Cmp()(L[i + 1].eval(x), L[i].eval(x));
+      return cmp(L[i + 1].eval(x), L[i].eval(x));
     })].eval(x);
   }
   void reserve(int N) { L.reserve(N); }

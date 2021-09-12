@@ -12,6 +12,8 @@ using namespace std;
 //       convention is same as std::priority_queue in STL
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
+// Constructor Arguments:
+//   cmp: an instance of the Cmp struct
 // Functions:
 //   addLine(m, b): adds a line in the form f(x) = mx + b to the set of lines,
 //     lines must be added in the order of slope sorted by Cmp
@@ -35,14 +37,13 @@ template <class T, class Cmp = less<T>> struct ConvexHullTrickUndo {
     T m, b; Line(T m = T(), T b = T()) : m(m), b(b) {}
     T eval(T x) const { return m * x + b; }
   };
-  vector<pair<int, Line>> history; vector<Line> L; int back;
-  ConvexHullTrickUndo() : back(0) {}
+  vector<pair<int, Line>> history; vector<Line> L; Cmp cmp; int back;
+  ConvexHullTrickUndo(Cmp cmp = Cmp()) : cmp(cmp), back(0) {}
   int size() const { return back; }
   void addLine(T m, T b) {
     int i = back; if (i >= 1)
       i = bsearch<LAST>(1, i + 1, [&] (int j) {
-        return Cmp()(m, L[j - 1].m) || Cmp()(L[j - 1].m, m)
-            || Cmp()(b, L[j - 1].b);
+        return cmp(m, L[j - 1].m) || cmp(L[j - 1].m, m) || cmp(b, L[j - 1].b);
       });
     if (i >= 2)
       i = bsearch<LAST>(2, i + 1, [&] (int j) {
@@ -56,7 +57,7 @@ template <class T, class Cmp = less<T>> struct ConvexHullTrickUndo {
   void undo() { tie(back, L[back - 1]) = history.back(); history.pop_back(); }
   T getMax(T x) const {
     return L[bsearch<FIRST>(0, back - 1, [&] (int i) {
-      return Cmp()(L[i + 1].eval(x), L[i].eval(x));
+      return cmp(L[i + 1].eval(x), L[i].eval(x));
     })].eval(x);
   }
   void reserve(int N) { L.reserve(N); history.reserve(N); }

@@ -15,6 +15,7 @@ using namespace std;
 //       operator (a, b): returns true if and only if a compares less than b
 // Constructor Arguments:
 //   xs: a vector of type T of the possible x values for each query
+//   cmp: an instance of the Cmp struct
 //   inf: a value for positive infinity, must be negatable
 // Functions:
 //   addLine(m, b): adds a line in the form f(x) = mx + b to the set of lines
@@ -39,10 +40,10 @@ using namespace std;
 //   https://open.kattis.com/problems/longestlife
 //   https://www.spoj.com/problems/CHTPRAC/
 template <class T, class Cmp = less<T>> struct LiChaoTree {
-  using Line = pair<T, T>; int N; T INF; vector<Line> TR; vector<T> X;
+  using Line = pair<T, T>; int N; Cmp cmp; T INF; vector<Line> TR; vector<T> X;
   T eval(Line l, int i) const { return l.first * X[i] + l.second; }
   bool majorize(Line a, Line b, int l, int r) {
-    return !Cmp()(eval(a, l), eval(b, l)) && !Cmp()(eval(a, r), eval(b, r));
+    return !cmp(eval(a, l), eval(b, l)) && !cmp(eval(a, r), eval(b, r));
   }
   int cInd(T x) const {
     return lower_bound(X.begin(), X.end(), x) - X.begin();
@@ -50,16 +51,17 @@ template <class T, class Cmp = less<T>> struct LiChaoTree {
   int fInd(T x) const {
     return upper_bound(X.begin(), X.end(), x) - X.begin() - 1;
   }
-  LiChaoTree(const vector<T> &xs, T inf = numeric_limits<T>::max())
-      : INF(min(inf, -inf, Cmp())), X(xs) {
+  LiChaoTree(const vector<T> &xs, Cmp cmp = Cmp(),
+             T inf = numeric_limits<T>::max())
+      : cmp(cmp), INF(min(inf, -inf, cmp)), X(xs) {
     sort(X.begin(), X.end()); X.erase(unique(X.begin(), X.end()), X.end());
     N = X.size(); TR.assign(N == 0 ? 0 : 1 << __lg(N * 4 - 1), Line(T(), INF));
   }
   void addLine(int k, int tl, int tr, Line line) {
     if (majorize(line, TR[k], tl, tr)) swap(line, TR[k]);
     if (majorize(TR[k], line, tl, tr)) return;
-    if (Cmp()(eval(TR[k], tl), eval(line, tl))) swap(line, TR[k]);
-    int m = tl + (tr - tl) / 2; if (!Cmp()(eval(line, m), eval(TR[k], m))) {
+    if (cmp(eval(TR[k], tl), eval(line, tl))) swap(line, TR[k]);
+    int m = tl + (tr - tl) / 2; if (!cmp(eval(line, m), eval(TR[k], m))) {
       swap(line, TR[k]); addLine(k * 2, tl, m, line);
     } else addLine(k * 2 + 1, m + 1, tr, line);
   }
@@ -72,8 +74,8 @@ template <class T, class Cmp = less<T>> struct LiChaoTree {
   T getMax(int k, int tl, int tr, int i) const {
     T ret = eval(TR[k], i); if (tl == tr) return ret;
     int m = tl + (tr - tl) / 2;
-    if (i <= m) return max(ret, getMax(k * 2, tl, m, i), Cmp());
-    else return max(ret, getMax(k * 2 + 1, m + 1, tr, i), Cmp());
+    if (i <= m) return max(ret, getMax(k * 2, tl, m, i), cmp);
+    else return max(ret, getMax(k * 2 + 1, m + 1, tr, i), cmp);
   }
   void addLine(T m, T b) { addLine(1, 0, N - 1, Line(m, b)); }
   void addLineSegment(T m, T b, T l, T r) {

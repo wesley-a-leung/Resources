@@ -14,6 +14,7 @@ using namespace std;
 //     Required Functions:
 //       operator (a, b): returns true if and only if a compares less than b
 // Constructor Arguments:
+//   cmp: an instance of the Cmp struct
 //   SCALE: the value to scale sqrt by
 // Functions:
 //   addLine(m, b): adds a line in the form f(x) = mx + b to the set of lines
@@ -40,15 +41,15 @@ struct IncrementalConvexHullTrickSqrtBuffer {
   struct Line {
     T m, b; Line(T m, T b) : m(m), b(b) {}
     T eval(T x) const { return m * x + b; }
-    bool operator < (Line l) const { return Cmp()(m, l.m); }
   };
-  vector<Line> large, small; double SCALE;
-  IncrementalConvexHullTrickSqrtBuffer(double SCALE = 4) : SCALE(SCALE) {}
+  vector<Line> large, small; Cmp cmp; double SCALE;
+  IncrementalConvexHullTrickSqrtBuffer(Cmp cmp = Cmp(), double SCALE = 4)
+      : cmp(cmp), SCALE(SCALE) {}
   bool ccw(Line a, Line b, Line c) {
     return (b.m - a.m) * (c.b - a.b) <= (b.b - a.b) * (c.m - a.m);
   }
   bool slope(Line a, Line b) {
-    return !Cmp()(a.m, b.m) && !Cmp()(b.m, a.m) && !Cmp()(a.b, b.b);
+    return !cmp(a.m, b.m) && !cmp(b.m, a.m) && !cmp(a.b, b.b);
   }
   void rebuildHull() {
     int back = 0; for (auto &&line : large) {
@@ -61,19 +62,20 @@ struct IncrementalConvexHullTrickSqrtBuffer {
   int size() const { return large.size() + small.size(); }
   void rebuild() {
     if (int(small.size()) > SCALE * sqrt(size())) {
-      int lSz = large.size(); sort(small.begin(), small.end());
+      auto lcmp = [&] (Line a, Line b) { return cmp(a.m, b.m); };
+      int lSz = large.size(); sort(small.begin(), small.end(), lcmp);
       large.insert(large.end(), small.begin(), small.end()); small.clear();
-      inplace_merge(large.begin(), large.begin() + lSz, large.end());
+      inplace_merge(large.begin(), large.begin() + lSz, large.end(), lcmp);
       rebuildHull();
     }
   }
   void addLine(T m, T b) { small.emplace_back(m, b); }
   T getMax(T x) {
     rebuild(); int ind = bsearch<FIRST>(0, int(large.size()) - 1, [&] (int i) {
-      return Cmp()(large[i + 1].eval(x), large[i].eval(x));
+      return cmp(large[i + 1].eval(x), large[i].eval(x));
     });
     T mx = (large.empty() ? small[0] : large[ind]).eval(x);
-    for (auto &&line : small) mx = max(mx, line.eval(x), Cmp());
+    for (auto &&line : small) mx = max(mx, line.eval(x), cmp);
     return mx;
   }
 };

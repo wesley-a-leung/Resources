@@ -40,6 +40,7 @@ using namespace std;
 // Constructor Arguments:
 //   A: a vector of type T containing the initial keys of the array
 //   X: a vector of type R::Data containing the initial data of the array
+//   cmp: an instance of the Cmp struct
 // Functions:
 //   update(i, v): updates the ith data with the lazy value v
 //   query(l, r, hi): returns the aggregate value of the data associated with
@@ -65,17 +66,17 @@ using namespace std;
 //   https://dmoj.ca/problem/dmopc19c7p5
 template <class T, class R, class Cmp = less<T>>
 struct WaveletMatrixAggregation {
-#define clt [&] (const T &a, const T &b) { return Cmp()(a, b); }
-#define cle [&] (const T &a, const T &b) { return !Cmp()(b, a); }
+#define clt [&] (const T &a, const T &b) { return cmp(a, b); }
+#define cle [&] (const T &a, const T &b) { return !cmp(b, a); }
   using Data = typename R::Data; using Lazy = typename R::Lazy;
-  int N, H; vector<int> mid; vector<BitPrefixSumArray> B;
+  int N, H; Cmp cmp; vector<int> mid; vector<BitPrefixSumArray> B;
   vector<R> D; vector<T> S;
-  WaveletMatrixAggregation(vector<T> A, const vector<Data> &X)
-      : N(A.size()), H(N == 0 ? 0 : __lg(N) + 1), mid(H),
+  WaveletMatrixAggregation(vector<T> A, const vector<Data> &X, Cmp cmp = Cmp())
+      : N(A.size()), H(N == 0 ? 0 : __lg(N) + 1), cmp(cmp), mid(H),
         B(H, BitPrefixSumArray(N)), S(move(A)) {
-    vector<T> temp = S; sort(S.begin(), S.end(), Cmp());
+    vector<T> temp = S; sort(S.begin(), S.end(), cmp);
     vector<int> C(N), ind(N); for (int i = 0; i < N; i++)
-      C[i] = lower_bound(S.begin(), S.end(), temp[i], Cmp()) - S.begin();
+      C[i] = lower_bound(S.begin(), S.end(), temp[i], cmp) - S.begin();
     iota(ind.begin(), ind.end(), 0); D.reserve(H); vector<Data> Y = X;
     for (int h = H - 1; h >= 0; h--) {
       int ph = 1 << h; for (int i = 0; i < N; i++) {

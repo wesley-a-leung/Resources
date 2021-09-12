@@ -12,6 +12,7 @@ using namespace std;
 //       operator (a, b): returns true if and only if a compares less than b
 // Constructor Arguments:
 //   A: a vector of type T of the values in the array
+//   cmp: an instance of the Cmp struct
 // Functions:
 //   rank(l, r, k): returns the number of elements less than k (using the
 //     comparator) in the range [l, r]
@@ -31,15 +32,15 @@ using namespace std;
 //   https://www.spoj.com/problems/MKTHNUM/ (select)
 //   https://judge.yosupo.jp/problem/range_kth_smallest (select)
 template <class T, class Cmp = less<T>> struct WaveletMatrix {
-#define clt [&] (const T &a, const T &b) { return Cmp()(a, b); }
-#define cle [&] (const T &a, const T &b) { return !Cmp()(b, a); }
-  int N, H; vector<int> mid; vector<BitPrefixSumArray> B; vector<T> S;
-  WaveletMatrix(vector<T> A)
-      : N(A.size()), H(N == 0 ? 0 : __lg(N) + 1), mid(H),
+#define clt [&] (const T &a, const T &b) { return cmp(a, b); }
+#define cle [&] (const T &a, const T &b) { return !cmp(b, a); }
+  int N, H; Cmp cmp; vector<int> mid; vector<BitPrefixSumArray> B; vector<T> S;
+  WaveletMatrix(vector<T> A, Cmp cmp = Cmp())
+      : N(A.size()), H(N == 0 ? 0 : __lg(N) + 1), cmp(cmp), mid(H),
         B(H, BitPrefixSumArray(N)), S(move(A)) {
-    vector<T> temp = S; sort(S.begin(), S.end(), Cmp()); vector<int> C(N);
+    vector<T> temp = S; sort(S.begin(), S.end(), cmp); vector<int> C(N);
     for (int i = 0; i < N; i++)
-      C[i] = lower_bound(S.begin(), S.end(), temp[i], Cmp()) - S.begin();
+      C[i] = lower_bound(S.begin(), S.end(), temp[i], cmp) - S.begin();
     for (int h = H - 1; h >= 0; h--) {
       int ph = 1 << h; for (int i = 0; i < N; i++) B[h].set(i, C[i] <= ph - 1);
       mid[h] = stable_partition(C.begin(), C.end(), [&] (int v) {
