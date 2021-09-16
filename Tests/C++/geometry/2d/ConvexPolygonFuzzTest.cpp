@@ -337,8 +337,8 @@ void test5() {
       assert(ans0 == ans1);
       assert(ans0 == ans2);
       for (pt a : ans0) {
-        checkSum = 31 * checkSum + a.x;
-        checkSum = 31 * checkSum + a.y;
+        checkSum = 31 * checkSum + 1e9 * a.x;
+        checkSum = 31 * checkSum + 1e9 * a.y;
       }
     }
   }
@@ -350,10 +350,10 @@ void test5() {
 }
 
 int main() {
-  // test1();
-  // test2();
-  // test3();
-  // test4();
+  test1();
+  test2();
+  test3();
+  test4();
   test5();
   cout << "Test Passed" << endl;
   return 0;
