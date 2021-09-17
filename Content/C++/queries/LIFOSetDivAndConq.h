@@ -45,7 +45,8 @@ using namespace std;
 //   solveQueries: O(C + P E log E + KT)
 //     for K queries and E total elements where C is the time complexity
 //     of S's constructor, P is the time complexity of S.push and S.pop,
-//     T is the time complexity of S.query
+//     T is the time complexity of S.query, with S.push and S.pop being called
+//     at most O(log K) times in total for each element, over all operations
 // Memory Complexity: O(K + E + M) for K queries and E total elements, where
 //   M is the memory complexity of S
 // Tested:

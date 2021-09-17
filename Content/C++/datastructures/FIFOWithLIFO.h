@@ -33,25 +33,29 @@ using namespace std;
 // Time Complexity:
 //   push: O(P) where P is the time complexity of S.push
 //   pop: O(P log N) amortized where P is the time complexity of
-//     S.push and S.pop
+//     S.push and S.pop, with S.push and S.pop being called at most O(log N)
+//     times in total for each element, over all operations
 //   query: O(T) where T is the time complexity of S.query
 // Memory Complexity: O(N)
 // Tested:
 //   https://codeforces.com/contest/1386/problem/C
 template <class S> struct FIFOWithLIFO : public S {
-  using T = typename S::T; using S::query; vector<pair<T, bool>> stk;
+  using T = typename S::T; vector<pair<T, bool>> stk; vector<T> A, B; int cntA;
   template <class ...Args>
-  FIFOWithLIFO(Args &&...args) : S(forward<Args>(args)...) {}
-  void push(const T &v) { stk.emplace_back(v, false); S::push(v); }
+  FIFOWithLIFO(Args &&...args) : S(forward<Args>(args)...), cntA(0) {}
+  void push(const T &v, bool a = false) { stk.emplace_back(v, a); S::push(v); }
   void pop() {
-    if (!stk.back().second) {
-      vector<T> A, B{stk.back().first}; stk.pop_back(); S::pop();
-      for (; !stk.empty() && A.size() != B.size(); stk.pop_back(), S::pop())
-        (stk.back().second ? A : B).push_back(stk.back().first);
-      reverse(A.begin(), A.end()); if (!A.empty()) reverse(B.begin(), B.end());
-      for (auto &&b : B) { stk.emplace_back(b, A.empty()); S::push(b); }
-      for (auto &&a : A) { stk.emplace_back(a, true); S::push(a); }
+    if (cntA == 0) {
+      reverse(stk.begin(), stk.end()); cntA = stk.size();
+      for (int i = 0; i < cntA; i++) S::pop();
+      for (auto &&s : stk) { S::push(s.first); s.second = true; }
     }
-    stk.pop_back(); S::pop();
+    for (; !stk.back().second; stk.pop_back(), S::pop())
+      B.push_back(stk.back().first);
+    int m = cntA & -cntA; for (int i = 0; i < m; i++, stk.pop_back(), S::pop())
+      A.push_back(stk.back().first);
+    for (; !B.empty(); B.pop_back()) push(B.back());
+    for (; !A.empty(); A.pop_back()) push(A.back(), true);
+    stk.pop_back(); S::pop(); cntA--;
   }
 };
