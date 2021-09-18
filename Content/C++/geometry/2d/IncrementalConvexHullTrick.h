@@ -50,11 +50,13 @@ struct IncrementalConvexHullTrick : public multiset<CHTLine<T>, FUN> {
   }
   IncrementalConvexHullTrick(Cmp cmp = Cmp(), T INF = numeric_limits<T>::max())
       : MS(makeFun(cmp)), cmp(cmp), INF(INF) {}
-  template <const bool _ = is_floating_point<T>::value>
-  typename enable_if<_, T>::type div(T a, T b) { return a / b; }
-  template <const bool _ = is_floating_point<T>::value>
-  typename enable_if<!_, T>::type div(T a, T b) {
-    return a / b - T((a ^ b) < T() && cmp(T(), a % b));
+  template <const bool _ = is_integral<T>::value
+                || is_same<__int128_t, T>::value>
+  typename enable_if<!_, T>::type div(T a, T b) { return a / b; }
+  template <const bool _ = is_integral<T>::value
+                || is_same<__int128_t, T>::value>
+  typename enable_if<_, T>::type div(T a, T b) {
+    return a / b - T((a < T()) != (b < T()) && T() != a % b);
   }
   bool intersect(iter x, iter y) {
     if (y == end()) { x->x = INF; return false; }
