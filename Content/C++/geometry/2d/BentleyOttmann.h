@@ -7,15 +7,21 @@ using namespace std;
 // Helper struct for bentleyOttmann
 struct Seg {
   static T X; mutable pt p, q; mutable int i; bool isQuery;
-  T y() const { pt v = q - p; return (cross(v, p) + v.y * X) / v.x; }
+  pair<T, T> y() const {
+    pt v = q - p; return make_pair(cross(v, p) + v.y * X, v.x);
+  }
   Seg(pt p, pt q, int i) : p(p), q(q), i(i), isQuery(false) {
     assert(!eq(p.x, q.x)); if (p > q) swap(this->p, this->q);
   }
   Seg(T Y) : p(X, Y), q(p), i(-1), isQuery(true) {}
   bool operator < (const Seg &s) const {
-    if (isQuery) return lt(p.y, s.y());
-    else if (s.isQuery) return lt(y(), s.p.y);
-    else return lt(y(), s.y());
+    if (isQuery) {
+      pair<T, T> p2 = s.y(); return lt(p.y * p2.second, p2.first);
+    } else if (s.isQuery) {
+      pair<T, T> p1 = y(); return lt(p1.first, s.p.y * p1.second);
+    }
+    pair<T, T> p1 = y(), p2 = s.y();
+    return lt(p1.first * p2.second, p2.first * p1.second);
   }
 };
 
@@ -76,7 +82,10 @@ template <class F> void bentleyOttmann(const vector<pair<pt, pt>> &segs, F f) {
   };
   auto checkRange = [&] (int i, T lo, T hi) {
     auto it = active.lower_bound(Seg(lo));
-    for (; it != active.end() && !lt(hi, it->y()); it++) {
+    auto check = [&] {
+      pair<T, T> y = it->y(); return !lt(hi * y.second, y.first);
+    };
+    for (; it != active.end() && check(); it++) {
       pt a, b; tie(a, b) = segs[i];
       if (segSegIntersects(a, b, it->p, it->q) && !checkSeen(i, it->i))
         f(i, it->i);
