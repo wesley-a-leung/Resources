@@ -82,7 +82,11 @@ void test1() {
     T a2 = getArea2(poly), sm = 0;
     auto tris = polygonTriangulation(poly);
     assert(int(tris.size()) == int(poly.size()) - 2);
-    for (auto &&t : tris) sm += area2(t[0], t[1], t[2]);
+    for (auto &&t : tris) {
+      T ta2 = area2(t[0], t[1], t[2]);
+      assert(lt(0, ta2));
+      sm += ta2;
+    }
     assert(eq(a2, sm));
     checkSum += a2;
   }
@@ -105,7 +109,11 @@ void test2() {
     T a2 = getArea2(poly), sm = 0;
     auto tris = polygonTriangulation(poly);
     assert(int(tris.size()) == int(poly.size()) - 2);
-    for (auto &&t : tris) sm += area2(t[0], t[1], t[2]);
+    for (auto &&t : tris) {
+      T ta2 = area2(t[0], t[1], t[2]);
+      assert(lt(0, ta2));
+      sm += ta2;
+    }
     assert(eq(a2, sm));
     checkSum += a2;
   }
@@ -124,7 +132,11 @@ void test3() {
   T a2 = getArea2(poly), sm = 0;
   auto tris = polygonTriangulation(poly);
   assert(int(tris.size()) == int(poly.size()) - 2);
-  for (auto &&t : tris) sm += area2(t[0], t[1], t[2]);
+  for (auto &&t : tris) {
+    T ta2 = area2(t[0], t[1], t[2]);
+    assert(lt(0, ta2));
+    sm += ta2;
+  }
   assert(eq(a2, sm));
   checkSum += a2;
   const auto end_time = chrono::system_clock::now();
@@ -142,7 +154,11 @@ void test4() {
   T a2 = getArea2(poly), sm = 0;
   auto tris = polygonTriangulation(poly);
   assert(int(tris.size()) == int(poly.size()) - 2);
-  for (auto &&t : tris) sm += area2(t[0], t[1], t[2]);
+  for (auto &&t : tris) {
+    T ta2 = area2(t[0], t[1], t[2]);
+    assert(lt(0, ta2));
+    sm += ta2;
+  }
   assert(eq(a2, sm));
   checkSum += a2;
   const auto end_time = chrono::system_clock::now();
