@@ -15,6 +15,7 @@ using namespace std;
 // Memory Complexity: O(1)
 // Tested:
 //   https://www.spoj.com/problems/CH3D/
+//   https://open.kattis.com/problems/threedprinter
 pt3 vectorArea2(const vector<pt3> &face) {
   pt3 ret(0, 0, 0); for (int i = 0, n = face.size(); i < n; i++)
     ret += face[i] * face[(i + 1) % n];
@@ -38,6 +39,8 @@ T faceArea(const vector<pt3> &face) { return abs(vectorArea2(face)) / T(2); }
 //     the faces of the polyhedron to be reoriented
 // Time Complexity: O(N) for N total points
 // Memory Complexity: O(1)
+// Tested:
+//   https://open.kattis.com/problems/threedprinter
 void reorient(vector<vector<pt3>> &faces) {
   int n = faces.size(); vector<vector<pair<int, bool>>> G(n);
   map<pair<pt3, pt3>, int> seen; for (int v = 0; v < n; v++)
@@ -85,6 +88,7 @@ T getSurfaceArea(const vector<vector<pt3>> &faces) {
 // Memory Complexity: O(1)
 // Tested:
 //   https://www.spoj.com/problems/CH3D/
+//   https://open.kattis.com/problems/threedprinter
 T getVolume6(const vector<vector<pt3>> &faces) {
   T vol6 = 0; for (auto &&face : faces) vol6 += (vectorArea2(face) | face[0]);
   return vol6;
