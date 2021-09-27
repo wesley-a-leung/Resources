@@ -16,7 +16,7 @@ struct Plane3D {
   // 3 non-collinear points p, q, r
   Plane3D(pt3 p, pt3 q, pt3 r) : Plane3D((q - p) * (r - p), p) {}
   T eval(pt3 p) const { return (n | p) - d; }
-  // sign of isAbove, dist, dist: 1 if above plane, 0 if on plane,
+  // sign of isAbove, dist: 1 if above plane, 0 if on plane,
   //   -1 if below plane
   int isAbove(pt3 p) const { return sgn(eval(p)); }
   T dist(pt3 p) const { return eval(p) / abs(n); }
