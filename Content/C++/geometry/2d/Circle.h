@@ -18,8 +18,8 @@ struct Circle {
   int contains(Circle c) const {
     T dr = r - c.r; return lt(dr, 0) ? 1 : sgn(distSq(o, c.o) - dr * dr);
   }
-  // 1 if c is strictly outside this circle, 0 if outside and touching this
-  //   circle, -1 otherwise
+  // -1 if c is strictly outside this circle, 0 if outside and touching this
+  //   circle, 1 otherwise
   int disjoint(Circle c) const {
     T sr = r + c.r; return sgn(sr * sr - distSq(o, c.o));
   }
