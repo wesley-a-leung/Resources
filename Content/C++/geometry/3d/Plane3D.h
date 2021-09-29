@@ -56,6 +56,7 @@ Plane3D perpThrough(Line3D l, pt3 o) { return Plane3D(l.d, o); }
 // Memory Complexity: O(1)
 // Tested:
 //   https://dmoj.ca/problem/utso15p6
+//   https://open.kattis.com/problems/starsinacan
 struct CoordinateTransformation {
   pt3 o, dx, dy, dz;
   CoordinateTransformation(Plane3D pi) {

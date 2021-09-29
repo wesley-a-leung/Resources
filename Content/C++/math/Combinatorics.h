@@ -342,7 +342,7 @@ T arithSeq(T a1, T d, U n) { return a1 + d * (n - 1); }
 //   a1: the starting value
 //   d: the common difference
 //   n: the maximum index of the term to sum, must be positive
-// Return Value: the sum of the arithmetic sequence form term 1 to n
+// Return Value: the sum of the arithmetic sequence from term 1 to n
 // In practice has a very small constant
 // Time Complexity: O(1)
 // Memory Complexity: O(1)
@@ -377,7 +377,7 @@ T geoSeq(T a1, T r, U n) { return a1 * pow2(r, n - 1); }
 //   a1: the starting value
 //   r: the common ratio
 //   n: the maximum index of the term to sum, must be positive
-// Return Value: the sum of the geometric sequence form term 1 to n
+// Return Value: the sum of the geometric sequence from term 1 to n
 // In practice has a small constant
 // Time Complexity: O(log n)
 // Memory Complexity: O(1)
@@ -386,6 +386,20 @@ T geoSeq(T a1, T r, U n) { return a1 * pow2(r, n - 1); }
 template <class T, class U> T geoSeries(T a1, T r, U n) {
   return r == 1 ? a1 * n : a1 * (T(1) - pow2(r, n)) / (T(1) - r);
 }
+
+// Computes the sum of a infinite geometric sequence with starting value a1 and
+//   common ratio r where -1 < r < 1
+// Template Arguments:
+//   T: the type of a1 and r
+// Function Arguments:
+//   a1: the starting value
+//   r: the common ratio
+// Return Value: the sum of the infinite geometric sequence
+// In practice has a small constant
+// Time Complexity: O(1)
+// Memory Complexity: O(1)
+template <class T>
+T infGeoSeries(T a1, T r) { assert(-1 < r && r < 1); return a1 / (T(1) - r); }
 
 // Computes the sum of floor((a * i + b) / m) for 0 <= i < n
 // Equivalent to the number of integer points (x, y) where 0 <= x < n and

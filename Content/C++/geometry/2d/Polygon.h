@@ -338,6 +338,7 @@ pt closestPointOnConvexPolygon(const vector<pt> &poly, pt p) {
 // Memory Complexity: O(N)
 // Tested:
 //   https://dmoj.ca/problem/utso15p6
+//   https://open.kattis.com/problems/canyon
 vector<pt> polygonHalfPlaneIntersection(const vector<pt> &poly, Line l) {
   int n = poly.size(); vector<pt> ret; for (int i = 0; i < n; i++) {
     int j = mod(i + 1, n), o1 = l.onLeft(poly[i]), o2 = l.onLeft(poly[j]);

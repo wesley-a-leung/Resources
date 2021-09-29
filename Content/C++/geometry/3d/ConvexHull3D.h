@@ -16,6 +16,7 @@ using namespace std;
 // Tested:
 //   https://www.spoj.com/problems/CH3D/
 //   https://open.kattis.com/problems/worminapple
+//   https://open.kattis.com/problems/starsinacan
 vector<vector<pt3>> convexHull3D(vector<pt3> P) {
   vector<array<int, 3>> hullInd; shuffle(P.begin(), P.end(), rng);
   int n = P.size(); for (int i = 1, num = 1; i < n; i++) {

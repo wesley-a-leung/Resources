@@ -14,6 +14,7 @@ using namespace std;
 // Memory Complexity: O(N)
 // Tested:
 //   https://www.spoj.com/problems/QCJ4/
+//   https://open.kattis.com/problems/starsinacan
 Circle minEnclosingCircle(vector<pt> P) {
   shuffle(P.begin(), P.end(), rng); Circle c(P[0], 0);
   for (int i = 0; i < int(P.size()); i++) if (lt(c.r, dist(P[i], c.o))) {
