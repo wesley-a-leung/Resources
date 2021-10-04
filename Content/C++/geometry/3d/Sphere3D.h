@@ -17,8 +17,8 @@ struct Sphere3D {
   int contains(Sphere3D s) const {
     T dr = r - s.r; return lt(dr, 0) ? 1 : sgn(distSq(o, s.o) - dr * dr);
   }
-  // 1 if s is strictly outside this sphere, 0 if outside and touching this
-  //   sphere, -1 otherwise
+  // -1 if s is strictly outside this sphere, 0 if outside and touching this
+  //   sphere, 1 otherwise
   int disjoint(Sphere3D s) const {
     T sr = r + s.r; return sgn(sr * sr - distSq(o, s.o));
   }
