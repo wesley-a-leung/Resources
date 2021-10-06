@@ -9,18 +9,18 @@ using namespace std;
 struct Sphere3D {
   pt3 o; T r; Sphere3D(T r = 0) : o(0, 0), r(r) {}
   Sphere3D(pt3 o, T r) : o(o), r(r) {}
-  // -1 if p is inside this sphere, 0 if on this sphere,
-  //   1 if outside this sphere
-  int contains(pt3 p) const { return sgn(distSq(o, p) - r * r); }
-  // -1 if s is strictly inside this sphere, 0 if inside and touching this
-  //   sphere, 1 otherwise
+  // 1 if p is inside this sphere, 0 if on this sphere,
+  //   -1 if outside this sphere
+  int contains(pt3 p) const { return sgn(r * r - distSq(o, p)); }
+  // 1 if s is strictly inside this sphere, 0 if inside and touching this
+  //   sphere, -1 otherwise
   int contains(Sphere3D s) const {
-    T dr = r - s.r; return lt(dr, 0) ? 1 : sgn(distSq(o, s.o) - dr * dr);
+    T dr = r - s.r; return lt(dr, 0) ? -1 : sgn(dr * dr - distSq(o, s.o));
   }
-  // -1 if s is strictly outside this sphere, 0 if outside and touching this
-  //   sphere, 1 otherwise
+  // 1 if s is strictly outside this sphere, 0 if outside and touching this
+  //   sphere, -1 otherwise
   int disjoint(Sphere3D s) const {
-    T sr = r + s.r; return sgn(sr * sr - distSq(o, s.o));
+    T sr = r + s.r; return sgn(distSq(o, s.o) - sr * sr);
   }
   pt3 proj(pt3 p) const { return o + (p - o) * r / dist(o, p); }
   pt3 inv(pt3 p) const { return o + (p - o) * r * r / distSq(o, p); }

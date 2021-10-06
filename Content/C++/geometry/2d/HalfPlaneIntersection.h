@@ -17,13 +17,15 @@ using namespace std;
 //   code == 0: the intersection is finite (possibly empty),
 //     with the vector containing the points on the intersection;
 //   code == 1: the intersection is infinite and bounded by a series of
-//     line segments and rays (possibly a single ray), with the
+//     line segments and rays (possibly a single infinite line), with the
 //     vector P[0], P[1], ..., P[k] where the first ray is represented by
 //     the point P[1] in the direction towards P[0], and the second ray is
 //     represented by the point P[k - 1] in the direction towards P[k];
 //     the remaining points P[1], ..., P[k - 1] represent the intersections
-//     between the line segments and rays
-//   code == 2: the intersection if infinite and bounded by two lines
+//     between the line segments and rays; if there are only 2 points, then
+//     the intersection is bounded by the left side of the line from
+//     P[0] to P[1]
+//   code == 2: the intersection is infinite and bounded by two lines
 //     (possibly coincident lines in opposite directions), with the vector
 //     containing exactly 4 points (P[0], P[1], P[2], P[3]), where P[0] is a
 //     point on the first bounding line, P[1] is another point on the first

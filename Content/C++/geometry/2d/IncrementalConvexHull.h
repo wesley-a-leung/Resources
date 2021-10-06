@@ -89,7 +89,7 @@ struct LineIntersectionCmp : public Ray {
 //   a2: twice the area of the convex hull
 // Functions:
 //   clear(): clears the points in the convex hull
-//   isIn(p): returns -1 if inside the polygon, 0 if on the edge, 1 if outside
+//   isIn(p): returns 1 if inside the polygon, 0 if on the edge, -1 if outside
 //   singlePointTangent(p, left): returns an iterator pointing to the left or
 //     right tangent, with the closest point to p being selected if there are
 //     multiple points, p must be strictly outside the polygon
@@ -165,14 +165,14 @@ struct IncrementalConvexHull : public set<Ray> {
   }
   void clear() { set<Ray>::clear(); a2 = 0; }
   int isIn(pt p) const {
-    if (empty()) return 1;
+    if (empty()) return -1;
     pt a = begin()->p, b = prev(end())->p; if (onSeg(p, a, b)) return 0;
     auto it = lower_bound(IsInCmp(a, b, p)); pt q = nxt(it)->p;
     if (onSeg(p, it->p, q)) return 0;
     vector<pt> P{a, it->p, q}; sort(P.begin(), P.end());
     P.erase(unique(P.begin(), P.end()), P.end());
-    if (int(P.size()) < 3) return onSeg(p, P[0], P.back()) ? 0 : 1;
-    return ccw(it->p, q, p) >= 0 ? -1 : 1;
+    if (int(P.size()) < 3) return onSeg(p, P[0], P.back()) ? 0 : -1;
+    return ccw(it->p, q, p) >= 0 ? 1 : -1;
   }
   iter singlePointTangent(pt p, bool left) const {
     pt a = begin()->p, b = prev(end())->p; int o = ccw(p, a, b);
@@ -213,7 +213,7 @@ struct IncrementalConvexHull : public set<Ray> {
                                         bool inner) const;
   bool addPoint(pt p) {
     if (empty()) { emplace(p, Line(p, p)); return true; }
-    if (isIn(p) <= 0) return false;
+    if (isIn(p) >= 0) return false;
     iter l, r; tie(l, r) = pointTangents(p); l = prv(l);
     if (ccw(l->p, nxt(l)->p, p) > 0) l = nxt(l);
     if (ccw(p, r->p, nxt(r)->p) == 0) r = nxt(r);

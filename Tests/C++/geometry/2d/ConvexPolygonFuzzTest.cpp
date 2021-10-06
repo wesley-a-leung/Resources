@@ -77,7 +77,7 @@ void test1() {
       pt p;
       do {
         p = pt(dis(rng), dis(rng));
-      } while (isInConvexPolygon(poly, p) <= 0);
+      } while (isInConvexPolygon(poly, p) >= 0);
       if (N >= 2 && rng() % 10 == 0) {
         int j = rng() % N;
         int k = mod(j + 1, N);
@@ -127,7 +127,7 @@ void test2() {
       pt p;
       do {
         p = pt(dis(rng), dis(rng));
-      } while (isInConvexPolygon(poly, p) <= 0);
+      } while (isInConvexPolygon(poly, p) >= 0);
       if (N >= 2 && rng() % 10 == 0) {
         int j = rng() % N;
         int k = mod(j + 1, N);
@@ -140,11 +140,11 @@ void test2() {
         if (iter++ >= 100000) {
           do {
             p = pt(dis(rng), dis(rng));
-          } while (isInConvexPolygon(poly, p) <= 0);
+          } while (isInConvexPolygon(poly, p) >= 0);
           iter = 0;
         }
         if (gt(polygonCircleIntersectionArea(poly, Circle(p, r)), 0)) return false;
-        for (int j = 0; j < N; j++) if (Circle(p, r).contains(poly[j]) <= 0) return false;
+        for (int j = 0; j < N; j++) if (Circle(p, r).contains(poly[j]) >= 0) return false;
         if (N > 1) for (int j = 0; j < N; j++) {
           vector<pt> inter = circleLineIntersection(Circle(p, r), Line(poly[j], poly[mod(j + 1, N)]));
           if (!inter.empty() && !segSegIntersection(poly[j], poly[mod(j + 1, N)], inter[0], inter.back()).empty()) return false;
@@ -263,7 +263,7 @@ void test4() {
       pt p;
       do {
         p = pt(dis(rng), dis(rng));
-      } while (isInConvexPolygon(poly, p) <= 0);
+      } while (isInConvexPolygon(poly, p) >= 0);
       if (N >= 2 && rng() % 10 == 0) {
         int j = rng() % N;
         int k = mod(j + 1, N);
@@ -303,11 +303,11 @@ void test5() {
       pt p;
       do {
         p = pt(dis(rng), dis(rng));
-      } while (isInConvexPolygon(poly, p) <= 0);
+      } while (isInConvexPolygon(poly, p) >= 0);
       pt q;
       do {
         q = pt(dis(rng), dis(rng));
-      } while (isInConvexPolygon(poly, p) <= 0);
+      } while (isInConvexPolygon(poly, p) >= 0);
       if (N >= 2 && rng() % 10 == 0) {
         int j = rng() % N;
         p = poly[j];

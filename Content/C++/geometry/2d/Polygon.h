@@ -7,6 +7,8 @@ using namespace std;
 
 // Functions for 2D polygons, represented by a vector of the N points in
 //   the polygon
+
+// Returns i mod n if i is in the range [0, 2n)
 int mod(int i, int n) { return i < n ? i : i - n; }
 
 // Determines twice the signed area of a simple polygon
@@ -69,29 +71,29 @@ int isCcwPolygon(const vector<pt> &poly) {
 // Function Arguments:
 //   poly: the points of the convex polygon in ccw order or cw order
 //   p: the point to check
-// Return Value: -1 if inside the polygon, 0 if on the edge, 1 if outside
+// Return Value: 1 if inside the polygon, 0 if on the edge, -1 if outside
 // Time Complexity: O(log N)
 // Memory Complexity: O(1)
 // Tested:
 //   https://codeforces.com/contest/166/problem/B
 int isInConvexPolygon(const vector<pt> &poly, pt p) {
   int n = poly.size(), a = 1, b = n - 1;
-  if (n < 3) return onSeg(p, poly[0], poly.back()) ? 0 : 1;
+  if (n < 3) return onSeg(p, poly[0], poly.back()) ? 0 : -1;
   if (ccw(poly[0], poly[a], poly[b]) > 0) swap(a, b);
-  int o1 = ccw(poly[0], poly[a], p), o2 = ccw(poly[0], poly[b], p);
-  if (o1 > 0 || o2 < 0) return 1;
+  int o1 = ccw(poly[0], p, poly[a]), o2 = ccw(poly[0], p, poly[b]);
+  if (o1 < 0 || o2 > 0) return -1;
   if (o1 == 0 || o2 == 0) return 0;
   while (abs(a - b) > 1) {
-    int c = (a + b) / 2; (ccw(poly[0], poly[c], p) > 0 ? b : a) = c;
+    int c = (a + b) / 2; (ccw(poly[0], p, poly[c]) < 0 ? b : a) = c;
   }
-  return ccw(poly[a], poly[b], p);
+  return ccw(poly[a], p, poly[b]);
 }
 
 // Determines whether a point is inside a simple polygon
 // Function Arguments:
 //   poly: the points of the simple polygon in ccw order or cw order
 //   p: the point to check
-// Return Value: -1 if inside the polygon, 0 if on the edge, 1 if outside
+// Return Value: 1 if inside the polygon, 0 if on the edge, -1 if outside
 // Time Complexity: O(N)
 // Memory Complexity: O(1)
 // Tested:
@@ -102,7 +104,7 @@ int isInPolygon(const vector<pt> &poly, pt p) {
     if (onSeg(p, a, b)) return 0;
     windingNumber ^= (!lt(p.y, a.y) && lt(p.y, b.y) && ccw(p, a, b) > 0);
   }
-  return windingNumber == 0 ? 1 : -1;
+  return windingNumber == 0 ? -1 : 1;
 }
 
 // Finds an extreme vertex of a convex polygon (a vertex that is the furthest
@@ -474,7 +476,7 @@ T polygonCircleUnionArea(const vector<vector<pt>> &polys,
     segs.emplace_back(Angle(circles[i].o), 0); bool covered = false;
     for (int j = 0; j < m; j++) if (i != j) {
       int o = circles[j].contains(circles[i]);
-      if (o < 0 || (o == 0 && (lt(circles[i].r, circles[j].r) || j < i))) {
+      if (o > 0 || (o == 0 && (lt(circles[i].r, circles[j].r) || j < i))) {
         covered = true; break;
       }
       vector<pt> p; circleCircleIntersection(circles[i], circles[j], p);
@@ -493,10 +495,10 @@ T polygonCircleUnionArea(const vector<vector<pt>> &polys,
         if (c == d) continue;
         int sc = circles[i].contains(c), sd = circles[i].contains(d);
         vector<pt> p = circleSegIntersection(circles[i], c, d); if (sc != sd) {
-          if (min(sc, sd) < 0 && int(p.size()) == 1) {
-            hasInter = true; tmp.emplace_back(Angle(p[0]), sgn(sd - sc));
-          } else if (min(sc, sd) > 0 && int(p.size()) == 2) {
-            hasInter = true; tmp.emplace_back(Angle(p[sc == 0]), sgn(sd - sc));
+          if (min(sc, sd) > 0 && int(p.size()) == 1) {
+            hasInter = true; tmp.emplace_back(Angle(p[0]), sgn(sc - sd));
+          } else if (min(sc, sd) < 0 && int(p.size()) == 2) {
+            hasInter = true; tmp.emplace_back(Angle(p[sc == 0]), sgn(sc - sd));
           }
         } else if (int(p.size()) == 2) {
           hasInter = true; tmp.emplace_back(Angle(p[1]), 1);
@@ -512,9 +514,9 @@ T polygonCircleUnionArea(const vector<vector<pt>> &polys,
         tmp.emplace_back(Angle(circles[i].o), -1);
       }
       segs.insert(segs.end(), tmp.begin(), tmp.end());
-      if (!hasInter && isInPolygon(polys[j], circles[i].o) <= 0)
+      if (!hasInter && isInPolygon(polys[j], circles[i].o) >= 0)
         for (auto &&p : polys[j])
-          if (circles[i].contains(p) > 0) { covered = true; break; }
+          if (circles[i].contains(p) < 0) { covered = true; break; }
     }
     if (covered) continue;
     sort(segs.begin(), segs.end()); for (auto &&s : segs)

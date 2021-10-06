@@ -95,12 +95,11 @@ T getVolume6(const vector<vector<pt3>> &faces) {
 }
 
 // Determines if a point is inside a polyhedron or not
-// Points on the polyhedron are considered to be inside
 // Function Arguments:
 //   faces: a vector of vectors of points representing
 //     the faces of the polyhedron with consistent orientation
 //   p: the point to check
-// Return Value: -1 if inside the polyhedron, 0 if on the face, 1 if outside
+// Return Value: 1 if inside the polyhedron, 0 if on the face, -1 if outside
 // Time Complexity: O(N) for N total points
 // Memory Complexity: O(1)
 int isInPolyhedron(const vector<vector<pt3>> &faces, pt3 p) {
@@ -109,5 +108,5 @@ int isInPolyhedron(const vector<vector<pt3>> &faces, pt3 p) {
     if (eq((n | p) - (n | a), 0)) return 0;
     sum += remainder(s.surfaceAreaOnSph(face), 4 * PI);
   }
-  return bool(round(sum / (4 * PI))) ? 1 : -1;
+  return eq(sum, 0) ? -1 : 1;
 }

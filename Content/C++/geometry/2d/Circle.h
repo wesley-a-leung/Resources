@@ -10,18 +10,18 @@ using namespace std;
 struct Circle {
   pt o; T r; Circle(T r = 0) : o(0, 0), r(r) {}
   Circle(pt o, T r) : o(o), r(r) {}
-  // -1 if p is inside this circle, 0 if on this circle,
-  //   1 if outside this circle
-  int contains(pt p) const { return sgn(distSq(o, p) - r * r); }
-  // -1 if c is strictly inside this circle, 0 if inside and touching this
-  //   circle, 1 otherwise
+  // 1 if p is inside this circle, 0 if on this circle,
+  //   -1 if outside this circle
+  int contains(pt p) const { return sgn(r * r - distSq(o, p)); }
+  // 1 if c is strictly inside this circle, 0 if inside and touching this
+  //   circle, -1 otherwise
   int contains(Circle c) const {
-    T dr = r - c.r; return lt(dr, 0) ? 1 : sgn(distSq(o, c.o) - dr * dr);
+    T dr = r - c.r; return lt(dr, 0) ? -1 : sgn(dr * dr - distSq(o, c.o));
   }
-  // -1 if c is strictly outside this circle, 0 if outside and touching this
-  //   circle, 1 otherwise
+  // 1 if c is strictly outside this circle, 0 if outside and touching this
+  //   circle, -1 otherwise
   int disjoint(Circle c) const {
-    T sr = r + c.r; return sgn(sr * sr - distSq(o, c.o));
+    T sr = r + c.r; return sgn(distSq(o, c.o) - sr * sr);
   }
   pt proj(pt p) const { return o + (p - o) * r / dist(o, p); }
   pt inv(pt p) const { return o + (p - o) * r * r / distSq(o, p); }
@@ -191,7 +191,7 @@ T circleUnionArea(const vector<Circle> &circles) {
     vector<pair<Angle, Angle>> intervals; Angle::setPivot(circles[i].o);
     bool inside = false; for (int j = 0; j < n; j++) if (i != j) {
       int o = circles[j].contains(circles[i]);
-      if (o < 0 || (o == 0 && (lt(circles[i].r, circles[j].r) || j < i))) {
+      if (o > 0 || (o == 0 && (lt(circles[i].r, circles[j].r) || j < i))) {
         inside = true; break;
       }
       vector<pt> p; circleCircleIntersection(circles[i], circles[j], p);

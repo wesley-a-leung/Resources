@@ -7,7 +7,7 @@ using namespace std;
 struct Line3D {
   pt3 o, d;
   // points p and q
-  Line3D(pt3 p = pt3(), pt3 q = pt3()) : o(p), d(q - p) {}
+  Line3D(pt3 p = pt3(0, 0, 0), pt3 q = pt3(0, 0, 0)) : o(p), d(q - p) {}
   bool onLine(pt3 p) const { return eq(norm(d * (p - o)), 0); }
   T distSq(pt3 p) const { return norm(d * (p - o)) / norm(d); }
   T dist(pt3 p) const { return sqrt(distSq(p)); }
