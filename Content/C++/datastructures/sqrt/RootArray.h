@@ -82,7 +82,7 @@ template <const int R, class T> struct RootArray {
   }
   void split(int i) {
     int rootN = getRootN(); if (int(A[i].size()) > 2 * rootN) {
-      vector<T> tmp; tmp.reserve(int(A[i].size()) - 2 * rootN);
+      vector<T> tmp; tmp.reserve(int(A[i].size()) - rootN);
       while (int(A[i].size()) > rootN) {
         tmp.push_back(move(A[i].back())); A[i].pop_back();
       }
