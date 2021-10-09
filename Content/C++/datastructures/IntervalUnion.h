@@ -10,7 +10,7 @@ template <class Cmp> struct PairCmp {
     if (cmp(a.first, b.first)) return true;
     if (cmp(b.first, a.first)) return false;
     return cmp(a.second, b.second);
-  } 
+  }
 };
 
 // Struct representing no operation
