@@ -34,7 +34,7 @@ using namespace std;
 //   https://open.kattis.com/problems/cordonbleu
 //   https://www.spoj.com/problems/BABY/
 //   https://dmoj.ca/problem/tle17c7p5
-//   https://ecna20.kattis.com/problems/ecna20.workers
+//   https://open.kattis.com/problems/workers
 template <class T> struct HungarianAlgorithm {
   int N, M; T cost; vector<int> jobForWorker, workerForJob;
   HungarianAlgorithm(vector<vector<T>> A, T INF = numeric_limits<T>::max())

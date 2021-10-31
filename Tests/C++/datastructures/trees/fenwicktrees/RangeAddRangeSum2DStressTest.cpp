@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "../../../../../Content/C++/datastructures/trees/segmenttrees/RangeAddRangeSum2D.h"
+#include "../../../../../Content/C++/datastructures/trees/fenwicktrees/RangeAddRangeSum2D.h"
 using namespace std;
 
 void test1() {
@@ -7,9 +7,7 @@ void test1() {
   mt19937_64 rng(0);
   int N = 2000;
   int M = 3000;
-  vector<vector<long long>> A(N, vector<long long>(M));
-  for (auto &&ai : A) for (auto &&aij : ai) aij = rng() % int(1e9) + 1;
-  RangeAddRangeSum2D<long long> ST(A);
+  RangeAddRangeSum2D<long long> ST(N, M);
   int Q = 1e5;
   vector<long long> ans;
   for (int i = 0; i < Q; i++) {

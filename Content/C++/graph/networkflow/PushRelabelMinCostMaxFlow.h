@@ -26,7 +26,7 @@ using namespace std;
 //   https://loj.ac/p/102
 //   https://uoj.ac/problem/487
 //   https://www.spoj.com/problems/SCITIES/
-//   https://ecna20.kattis.com/problems/ecna20.workers
+//   https://open.kattis.com/problems/workers
 template <class _FlowUnit, class _CostUnit> struct FlowCostEdge {
   using FlowUnit = _FlowUnit; using CostUnit = _CostUnit;
   int to, rev; FlowUnit cap, resCap; CostUnit cost;
@@ -81,7 +81,7 @@ template <class _FlowUnit, class _CostUnit> struct FlowCostEdge {
 //   https://loj.ac/p/102
 //   https://uoj.ac/problem/487
 //   https://www.spoj.com/problems/SCITIES/
-//   https://ecna20.kattis.com/problems/ecna20.workers
+//   https://open.kattis.com/problems/workers
 template <class Edge>
 struct PushRelabelMinCostMaxFlow : public PushRelabelMaxFlow<Edge> {
   using MF = PushRelabelMaxFlow<Edge>;

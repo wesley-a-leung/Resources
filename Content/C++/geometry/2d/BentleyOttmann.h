@@ -58,7 +58,7 @@ struct VerticalSeg {
 // Tested:
 //   Fuzz Tested
 //   https://open.kattis.com/problems/polygon
-//   https://ecna20.kattis.com/problems/ecna20.scholarslawn
+//   https://open.kattis.com/problems/scholarslawn
 template <class F> void bentleyOttmann(const vector<pair<pt, pt>> &segs, F f) {
   std::priority_queue<SegEvent, vector<SegEvent>, greater<SegEvent>> events;
   int n = segs.size(); for (int i = 0; i < n; i++) {
@@ -134,7 +134,7 @@ template <class F> void bentleyOttmann(const vector<pair<pt, pt>> &segs, F f) {
 // Time Complexity: O((N + K) log N) for N line segments and K intersections
 // Memory Complexity: O(N + K)
 // Tested:
-//   https://ecna20.kattis.com/problems/ecna20.scholarslawn
+//   https://open.kattis.com/problems/scholarslawn
 vector<pair<pt, pt>> segArrangement(const vector<pair<pt, pt>> &segs) {
   int n = segs.size(); vector<vector<pt>> ptsOnSegs(n); set<pair<pt, pt>> ret;
   bentleyOttmann(segs, [&] (int i, int j) {
