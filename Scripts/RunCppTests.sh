@@ -11,10 +11,10 @@ for i in $(seq 2 $numArgs); do
   total+=1
   echo ""
   echo "$test:"
-  $1 $test -o Test.o
+  $1 $test -o $test.o
   retCode=$?
   if (($retCode == 0)); then
-    timeout 5m ./Test.o
+    timeout 5m ./$test.o
     retCode=$?
     if (($retCode == 0)); then
       pass+=1
@@ -23,7 +23,7 @@ for i in $(seq 2 $numArgs); do
       echo "Test Failed"
       echo "  Exit Code: $retCode"
     fi
-    rm Test.o
+    rm $test.o
   else
     fail+=1
     echo "Failed to compile"
