@@ -17,11 +17,11 @@ jobs:
     - uses: actions/checkout@v2
     - name: Check version
       run: |
-        g++-10 --version
+        g++ --version
     - name: Replace pragma once
       run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Compile
-      run: find "Content/C++/" -name "*.h" -exec Scripts/Compile.sh "g++-10 -std=${{ matrix.cpp-version }} -Wall -Wextra -pedantic-errors -Werror -fsyntax-only" {} +
+      run: find "Content/C++/" -name "*.h" -exec Scripts/Compile.sh "g++ -std=${{ matrix.cpp-version }} -Wall -Wextra -pedantic-errors -Werror -fsyntax-only" {} +
   compile-java:
     runs-on: ubuntu-latest
     strategy:
@@ -53,19 +53,19 @@ jobs:
     - uses: actions/checkout@v2
     - name: Check version
       run: |
-        g++-10 --version
+        g++ --version
     - name: Replace pragma once
       run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Run fuzz tests
-      run: find "Tests/C++/" -name "*FuzzTest.cpp" -exec Scripts/RunCppTests.sh "g++-10 -std=c++11 -O2 -Wall -Wextra -pedantic-errors" {} +
+      run: find "Tests/C++/" -name "*FuzzTest.cpp" -exec Scripts/RunCppTests.sh "g++ -std=c++11 -O2 -Wall -Wextra -pedantic-errors" {} +
   stress-tests-cpp:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Check version
       run: |
-        g++-10 --version
+        g++ --version
     - name: Replace pragma once
       run: find "Content/C++/" -name "*.h" -exec python3 Scripts/ReplacePragmas.py {} +
     - name: Run stress tests
-      run: find "Tests/C++/" -name "*StressTest.cpp" -exec Scripts/RunCppTests.sh "g++-10 -std=c++11 -O2 -Wall -Wextra -pedantic-errors" {} +
+      run: find "Tests/C++/" -name "*StressTest.cpp" -exec Scripts/RunCppTests.sh "g++ -std=c++11 -O2 -Wall -Wextra -pedantic-errors" {} +
