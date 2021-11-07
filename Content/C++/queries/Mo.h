@@ -86,9 +86,9 @@ template <class S> struct Mo {
     for (int i = 0; i < K; i++)
       q.emplace_back(queries[i], i, queries[i].l / bsz);
     sort(q.begin(), q.end()); int l = 0, r = l - 1; for (auto &&qi : q) {
-      while (l < qi.q.l) s.removeLeft(A[l++]);
       while (l > qi.q.l) s.addLeft(A[--l]);
       while (r < qi.q.r) s.addRight(A[++r]);
+      while (l < qi.q.l) s.removeLeft(A[l++]);
       while (r > qi.q.r) s.removeRight(A[r--]);
       R res = s.query(qi.q); if (ans.empty()) ans.resize(K, res);
       ans[qi.i] = res;

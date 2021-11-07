@@ -93,9 +93,9 @@ template <class S> struct MoTree {
       vis[v] = !vis[v];
     };
     sort(q.begin(), q.end()); int l = 0, r = l - 1; for (auto &&qi : q) {
-      while (l < qi.l) update(vert[l++]);
       while (l > qi.l) update(vert[--l]);
       while (r < qi.r) update(vert[++r]);
+      while (l < qi.l) update(vert[l++]);
       while (r > qi.r) update(vert[r--]);
       if (qi.lca != vert[l] && qi.lca != vert[r]) update(qi.lca);
       R res = s.query(qi.q); if (ans.empty()) ans.resize(K, res);
