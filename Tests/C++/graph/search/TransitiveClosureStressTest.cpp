@@ -21,7 +21,7 @@ void test1() {
     matrix[v][w] = 1;
   }
   const auto start_time = chrono::system_clock::now();
-  TransitiveClosureFloydWarshall<V> tc(matrix);
+  TransitiveClosureFloydWarshall<V> tc(move(matrix));
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 1 (Floyd Warshall Random) Passed" << endl;
@@ -48,7 +48,7 @@ void test2() {
     matrix[v][w] = 1;
   }
   const auto start_time = chrono::system_clock::now();
-  TransitiveClosureFloydWarshall<V> tc(matrix);
+  TransitiveClosureFloydWarshall<V> tc(move(matrix));
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 2 (Floyd Warshall Lines) Passed" << endl;
@@ -81,7 +81,7 @@ void test3() {
     matrix[v][w] = 1;
   }
   const auto start_time = chrono::system_clock::now();
-  TransitiveClosureFloydWarshall<V> tc(matrix);
+  TransitiveClosureFloydWarshall<V> tc(move(matrix));
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 3 (Floyd Warshall Random) Passed" << endl;
@@ -108,7 +108,7 @@ void test4() {
     matrix[v][w] = 1;
   }
   const auto start_time = chrono::system_clock::now();
-  TransitiveClosureFloydWarshall<V> tc(matrix);
+  TransitiveClosureFloydWarshall<V> tc(move(matrix));
   const auto end_time = chrono::system_clock::now();
   double sec = ((end_time - start_time).count() / double(chrono::system_clock::period::den));
   cout << "Subtest 4 (Floyd Warshall Lines) Passed" << endl;

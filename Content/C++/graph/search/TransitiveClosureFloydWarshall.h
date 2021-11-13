@@ -23,8 +23,8 @@ using namespace std;
 //   https://open.kattis.com/problems/watchyourstep
 template <const int MAXV> struct TransitiveClosureFloydWarshall {
   vector<bitset<MAXV>> dp;
-  TransitiveClosureFloydWarshall(const vector<bitset<MAXV>> &matrix)
-      : dp(matrix) {
+  TransitiveClosureFloydWarshall(vector<bitset<MAXV>> matrix)
+      : dp(move(matrix)) {
     int V = dp.size(); for (int v = 0; v < V; v++) dp[v][v] = 1;
     for (int u = 0; u < V; u++) for (int v = 0; v < V; v++)
       if (dp[v][u]) dp[v] |= dp[u];
