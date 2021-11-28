@@ -22,7 +22,7 @@ using namespace std;
 //     be large (products should be least N^2) and prime
 // Fields:
 //   N: the length of the array
-//   BASE: aarray<HTYPE, HASHES> with the bases for each hash
+//   BASE: array<HTYPE, HASHES> with the bases for each hash
 //   MOD: array<HTYPE, HASHES> with the mods for each hash
 //   H: a vector of array<HTYPE, HASHES> of size N + 1 with the suffix hashes
 //     starting at each index
@@ -39,7 +39,7 @@ using namespace std;
 // In practice, has a moderate constant
 // Time Complexity:
 //   constructor: O(N HASHES)
-//   getHash, merge, concat: O(N HASHES)
+//   getHash, merge, concat: O(HASHES)
 // Memory Complexity: O(N HASHES)
 // Tested:
 //   https://dmoj.ca/problem/globexcup19j5hard
