@@ -69,7 +69,8 @@ struct InvertiblePathUpdatesVertexQueries {
   LCA<> lca; int V, ind; vector<int> par, pre, post, vert; R ops;
   bool connected(int v, int w) { return lca.connected(v, w); }
   void updatePathFromRoot(int v, const Lazy &val) {
-    return ops.update(pre[lca.root[v]], pre[v], val);
+    int l = pre[lca.root[v]] + int(VALUES_ON_EDGES), r = pre[v];
+    if (l <= r) ops.update(l, r, val);
   }
   void updatePath(int v, int w, const Lazy &val) {
     updatePathFromRoot(v, val); updatePathFromRoot(w, val);
@@ -96,9 +97,8 @@ struct InvertiblePathUpdatesVertexQueries {
     } else for (int v : roots) dfs(G, v, -1);
     vector<Data> ret; ret.reserve(A.capacity());
     for (int i = 0; i < V; i++) ret.push_back(A[vert[i]]);
-    for (int v = 0; v < V; v++) if (post[v] + 1 < V) {
+    for (int v = 0; v < V; v++) if (post[v] + 1 < V)
       ret[post[v] + 1] = R::merge(ret[post[v] + 1], R::invData(A[v]));
-    }
     return ret;
   }
   template <class Forest> InvertiblePathUpdatesVertexQueries(

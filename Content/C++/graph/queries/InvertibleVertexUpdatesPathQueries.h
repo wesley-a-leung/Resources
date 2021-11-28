@@ -11,6 +11,7 @@ using namespace std;
 //       Data: the data type
 //       Lazy: the lazy type
 //     Required Functions:
+//       static qdef(): returns the query default value of type Data
 //       static merge(l, r): merges the datas l and r
 //       static invData(v): returns the inverse of v of type Data
 //       static invLazy(v): returns the inverse of v of type Lazy
@@ -22,6 +23,7 @@ using namespace std;
 //       struct R {
 //         using Data = int;
 //         using Lazy = int;
+//         static Data qdef() { return 0; }
 //         static Data merge(const Data &l, const Data &r) { return l + r; }
 //         static Data invData(const Data &v) { return -v; }
 //         static Lazy invLazy(const Lazy &v) { return -v; }
@@ -68,7 +70,10 @@ struct InvertibleVertexUpdatesPathQueries {
     ops.update(pre[v], val); if (post[v] + 1 <= post[lca.root[v]])
       ops.update(post[v] + 1, R::invLazy(val));
   }
-  Data queryPathFromRoot(int v) { return ops.query(pre[lca.root[v]], pre[v]); }
+  Data queryPathFromRoot(int v) {
+    int l = pre[lca.root[v]] + int(VALUES_ON_EDGES), r = pre[v];
+    return l <= r ? ops.query(pre[lca.root[v]], pre[v]) : R::qdef();
+  }
   Data queryPath(int v, int w) {
     Data ret = R::merge(queryPathFromRoot(v), queryPathFromRoot(w));
     int u = lca.lca(v, w); Data inv = queryPathFromRoot(u);
@@ -89,9 +94,8 @@ struct InvertibleVertexUpdatesPathQueries {
     } else for (int v : roots) dfs(G, v, -1);
     vector<Data> ret; ret.reserve(A.capacity());
     for (int i = 0; i < V; i++) ret.push_back(A[vert[i]]);
-    for (int v = 0; v < V; v++) if (post[v] + 1 <= post[lca.root[v]]) {
+    for (int v = 0; v < V; v++) if (post[v] + 1 <= post[lca.root[v]])
       ret[post[v] + 1] = R::merge(ret[post[v] + 1], R::invData(A[v]));
-    }
     return ret;
   }
   template <class Forest> InvertibleVertexUpdatesPathQueries(
