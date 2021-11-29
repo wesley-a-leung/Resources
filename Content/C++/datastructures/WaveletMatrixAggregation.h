@@ -102,7 +102,7 @@ struct WaveletMatrixAggregation {
       int ph = 1 << h, ql = B[h].query(l - 1), qr = B[h].query(r);
       if (cur + ph - 1 >= N || f(v, S[cur + ph - 1])) { l = ql; r = qr - 1; }
       else {
-        cur += ph; ret = R::merge(ret, D[h].query(l, r));
+        cur += ph; if (l <= r) ret = R::merge(ret, D[h].query(l, r));
         l += mid[h] - ql; r += mid[h] - qr;
       }
     }
@@ -115,7 +115,7 @@ struct WaveletMatrixAggregation {
   template <class F> pair<bool, T *> bsearch(int l, int r, F f) {
     int cur = 0; Data agg = R::qdef(); for (int h = H - 1; h >= 0; h--) {
       int ql = B[h].query(l - 1), qr = B[h].query(r);
-      Data val = D[h].query(l, r);
+      Data val = l <= r ? D[h].query(l, r) : R::qdef();
       if (f(R::merge(agg, val))) { l = ql; r = qr - 1; }
       else {
         cur += 1 << h; agg = R::merge(agg, val);

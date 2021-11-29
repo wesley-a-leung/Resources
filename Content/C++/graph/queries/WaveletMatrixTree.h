@@ -49,15 +49,15 @@ struct WaveletMatrixTree {
     for (int w : G[v]) if (w != prev) dfs(G, w, v);
     post[v] = postInd++;
   }
-  void build(const vector<int> &C, const vector<int> &ind, vector<int> &mid,
+  void build(const vector<int> &A, const vector<int> &ind, vector<int> &mid,
              vector<BitPrefixSumArray> &B) {
-    vector<int> A(V); for (int i = 0; i < V; i++) A[ind[i]] = C[i];
+    vector<int> C(V); for (int v = 0; v < V; v++) C[ind[v]] = A[v];
     for (int h = H - 1; h >= 0; h--) {
-      int ph = 1 << h; for (int i = 0; i < V; i++) B[h].set(i, A[i] <= ph - 1);
-      mid[h] = stable_partition(A.begin(), A.end(), [&] (int v) {
+      int ph = 1 << h; for (int i = 0; i < V; i++) B[h].set(i, C[i] <= ph - 1);
+      mid[h] = stable_partition(C.begin(), C.end(), [&] (int v) {
                                   return v <= ph - 1;
-                                }) - A.begin();
-      B[h].build(); for (int i = mid[h]; i < V; i++) A[i] -= ph;
+                                }) - C.begin();
+      B[h].build(); for (int i = mid[h]; i < V; i++) C[i] -= ph;
     }
   }
   template <class Forest>
@@ -69,8 +69,8 @@ struct WaveletMatrixTree {
     sort(S.begin(), S.end(), cmp); if (roots.empty()) {
       for (int v = 0; v < V; v++) if (par[v] == -1) dfs(G, v, -1);
     } else for (int v : roots) dfs(G, v, -1);
-    vector<int> C(V); for (int i = 0; i < V; i++)
-      C[i] = lower_bound(S.begin(), S.end(), A[i], cmp) - S.begin();
+    vector<int> C(V); for (int v = 0; v < V; v++)
+      C[v] = lower_bound(S.begin(), S.end(), A[v], cmp) - S.begin();
     build(C, pre, mid1, B1); build(C, post, mid2, B2);
   }
   template <class Forest>
