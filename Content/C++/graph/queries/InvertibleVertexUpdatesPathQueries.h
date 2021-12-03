@@ -3,7 +3,8 @@
 #include "LowestCommonAncestor.h"
 using namespace std;
 
-// Supports vertex updates and path queries on a forest
+// Supports vertex updates and path queries for invertible operations on
+//   a forest
 // Vertices and indices are 0-indexed
 // Template Arguments:
 //   R: struct supporting point updates and range queries on indices

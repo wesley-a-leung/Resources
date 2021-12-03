@@ -1,22 +1,37 @@
 #include <bits/stdc++.h>
 #include "../../../../Content/C++/graph/queries/WaveletMatrixTreeAggregation.h"
+#include "../../../../Content/C++/graph/queries/WaveletMatrixHeavyLightDecomposition.h"
 #include "../../../../Content/C++/graph/representations/StaticGraph.h"
 #include "../../../../Content/C++/datastructures/trees/fenwicktrees/BitFenwickTree.h"
 using namespace std;
 
-struct R {
+struct R1 {
   using Data = int;
   using Lazy = int;
   static Data qdef() { return 0; }
   static Data merge(const Data &l, const Data &r) { return l + r; }
   static Data invData(const Data &v) { return -v; }
   BitFenwickTree FT;
-  R(const vector<Data> &A) : FT(A.size()) {
+  R1(const vector<Data> &A) : FT(A.size()) {
     for (int i = 0; i < int(A.size()); i++) FT.set(i, A[i]);
     FT.build();
   }
   void update(int i, const Lazy &val) { FT.update(i, val); }
   Data query(int r) { return FT.query(r); }
+};
+
+struct R2 {
+  using Data = int;
+  using Lazy = int;
+  static Data qdef() { return 0; }
+  static Data merge(const Data &l, const Data &r) { return l + r; }
+  BitFenwickTree FT;
+  R2(const vector<Data> &A) : FT(A.size()) {
+    for (int i = 0; i < int(A.size()); i++) FT.set(i, A[i]);
+    FT.build();
+  }
+  void update(int i, const Lazy &val) { FT.update(i, val); }
+  Data query(int l, int r) { return FT.query(l, r); }
 };
 
 void test1() {
@@ -33,7 +48,8 @@ void test1() {
     StaticGraph G(V);
     for (int v = 1; v < V; v++) G.addBiEdge(rng() % v, v);
     G.build();
-    WaveletMatrixTreeAggregation<int, R, true> wm(G, A, X);
+    WaveletMatrixTreeAggregation<int, R1, true> wm(G, A, X);
+    WaveletMatrixHLD<int, R2, true> hld(G, A, X);
     int Q = V <= 1 ? 0 : rng() % 101;
     vector<int> par(V), dep(V);
     function<void(int, int, int)> dfs = [&] (int v, int prev, int d) {
@@ -57,7 +73,7 @@ void test1() {
       ret.insert(ret.end(), ret2.begin(), ret2.end());
       return ret;
     };
-    vector<int> ans0, ans1;
+    vector<int> ans0, ans1, ans2;
     for (int i = 0; i < Q; i++) {
       int t = rng() % 3;
       if (t == 0) {
@@ -66,6 +82,7 @@ void test1() {
           v = rng() % V;
         } while (v == 0);
         wm.update(v, X[v] ^= 1);
+        hld.update(v, X[v]);
       } else if (t == 1) {
         int v = rng() % V, w;
         do {
@@ -77,6 +94,7 @@ void test1() {
         for (int x : getPath(v, w)) if (a <= A[x] && A[x] <= b) sm += X[x];
         ans0.push_back(sm);
         ans1.push_back(wm.query(v, w, a, b));
+        ans2.push_back(hld.query(v, w, a, b));
       } else {
         int v = rng() % V, w;
         do {
@@ -93,9 +111,14 @@ void test1() {
           return agg >= k;
         });
         ans1.push_back(p.first ? *p.second : INT_MAX);
+        p = hld.bsearch(v, w, [&] (int agg) {
+          return agg >= k;
+        });
+        ans2.push_back(p.first ? *p.second : INT_MAX);
       }
     }
     assert(ans0 == ans1);
+    assert(ans0 == ans2);
     for (auto &&a : ans0) checkSum = 31 * checkSum + a;
   }
   const auto end_time = chrono::system_clock::now();
@@ -119,7 +142,8 @@ void test2() {
     StaticGraph G(V);
     for (int v = 1; v < V; v++) G.addBiEdge(rng() % v, v);
     G.build();
-    WaveletMatrixTreeAggregation<int, R, false> wm(G, A, X);
+    WaveletMatrixTreeAggregation<int, R1, false> wm(G, A, X);
+    WaveletMatrixHLD<int, R2, false> hld(G, A, X);
     int Q = V == 0 ? 0 : rng() % 101;
     vector<int> par(V), dep(V);
     function<void(int, int, int)> dfs = [&] (int v, int prev, int d) {
@@ -144,12 +168,13 @@ void test2() {
       ret.insert(ret.end(), ret2.begin(), ret2.end());
       return ret;
     };
-    vector<int> ans0, ans1;
+    vector<int> ans0, ans1, ans2;
     for (int i = 0; i < Q; i++) {
       int t = rng() % 3;
       if (t == 0) {
         int v = rng() % V;
         wm.update(v, X[v] ^= 1);
+        hld.update(v, X[v]);
       } else if (t == 1) {
         int v = rng() % V, w = rng() % V;
         int a = rng() % MAXA, b = rng() % MAXA;
@@ -158,6 +183,7 @@ void test2() {
         for (int x : getPath(v, w)) if (a <= A[x] && A[x] <= b) sm += X[x];
         ans0.push_back(sm);
         ans1.push_back(wm.query(v, w, a, b));
+        ans2.push_back(hld.query(v, w, a, b));
       } else {
         int v = rng() % V, w = rng() % V;
         int k = rng() % ((wm.query(v, v, MAXA) + 1) * 2);
@@ -171,9 +197,14 @@ void test2() {
           return agg >= k;
         });
         ans1.push_back(p.first ? *p.second : INT_MAX);
+        p = hld.bsearch(v, w, [&] (int agg) {
+          return agg >= k;
+        });
+        ans2.push_back(p.first ? *p.second : INT_MAX);
       }
     }
     assert(ans0 == ans1);
+    assert(ans0 == ans2);
     for (auto &&a : ans0) checkSum = 31 * checkSum + a;
   }
   const auto end_time = chrono::system_clock::now();
