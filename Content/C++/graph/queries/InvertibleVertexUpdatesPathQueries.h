@@ -12,7 +12,8 @@ using namespace std;
 //       Lazy: the lazy type
 //     Required Functions:
 //       static qdef(): returns the query default value of type Data
-//       static merge(l, r): merges the datas l and r
+//       static merge(l, r): returns the values l of type Data merged with
+//         r of type Data, must be associative and commutative
 //       static invData(v): returns the inverse of v of type Data
 //       static invLazy(v): returns the inverse of v of type Lazy
 //       constructor(A): takes a vector A of type Data with the initial

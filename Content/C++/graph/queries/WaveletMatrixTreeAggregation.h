@@ -15,7 +15,8 @@ using namespace std;
 //       Lazy: the lazy type
 //     Required Functions:
 //       static qdef(): returns the query default value
-//       static merge(l, r): merges the datas l and r
+//       static merge(l, r): returns the values l of type Data merged with
+//         r of type Data, must be associative and commutative
 //       static invData(v): returns the inverse of v of type Data
 //       constructor(A): takes a vector A of type Data with the initial
 //         value of each index
@@ -90,15 +91,13 @@ struct WaveletMatrixTreeAggregation {
     vector<int> C(V), P(V); vector<Data> Y = X, Z = X; D.reserve(H);
     for (int v = 0; v < V; v++) { C[ind[v]] = A[v]; Y[ind[v]] = X[v]; }
     iota(P.begin(), P.end(), 0); for (int h = H - 1; h >= 0; h--) {
-      int ph = 1 << h; for (int i = 0; i < V; i++) {
-        if (C[P[i]] <= ph - 1) { B[h].set(i, 1); Z[i] = Y[P[i]]; }
-        else Z[i] = R::qdef();
-      }
-      D.emplace_back(Z);
+      int ph = 1 << h;
+      for (int i = 0; i < V; i++) B[h].set(i, C[P[i]] <= ph - 1); 
       mid[h] = stable_partition(P.begin(), P.end(), [&] (int i) {
                                   return C[i] <= ph - 1;
                                 }) - P.begin();
-      B[h].build(); for (int i = mid[h]; i < V; i++) C[P[i]] -= ph;
+      B[h].build(); for (int i = 0; i < V; i++) Z[i] = Y[P[i]];
+      D.emplace_back(Z); for (int i = mid[h]; i < V; i++) C[P[i]] -= ph;
     }
     reverse(D.begin(), D.end());
   }
@@ -135,10 +134,11 @@ struct WaveletMatrixTreeAggregation {
   }
   void update(int v, const Lazy &val) {
     for (int a = pre[v], b = post[v], h = H - 1; h >= 0; h--) {
-      if (B1[h].get(a)) { D1[h].update(a, val); a = B1[h].query(a - 1); }
+      if (B1[h].get(a)) a = B1[h].query(a - 1);
       else a += mid1[h] - B1[h].query(a - 1);
-      if (B2[h].get(b)) { D2[h].update(b, val); b = B2[h].query(b - 1); }
+      if (B2[h].get(b)) b = B2[h].query(b - 1);
       else b += mid2[h] - B2[h].query(b - 1);
+      D1[h].update(a, val); D2[h].update(b, val);
     }
   }
   void qryRanges(int h, Ranges &ranges) {
@@ -148,7 +148,7 @@ struct WaveletMatrixTreeAggregation {
   }
   Data qryAgg(int h, const Ranges &ranges) {
     Data ret = R::qdef(); for (auto &&r : ranges) {
-      int a = get<0>(r), b = get<1>(r), t = get<2>(r);
+      int a = get<3>(r) - 1, b = get<4>(r) - 1, t = get<2>(r);
       Data q = a >= 0 ? D1[h].query(a) : R::qdef();
       if (b >= 0) q = R::merge(q, R::invData(D2[h].query(b)));
       if (t <= -1) q = R::invData(q);
@@ -168,12 +168,12 @@ struct WaveletMatrixTreeAggregation {
     }
   }
   template <class F> Data qry(int v, int w, const T &x, F f) {
-    Ranges ranges = getRanges(v, w);
-    Data ret = R::qdef(); int cur = 0; for (int h = H - 1; h >= 0; h--) {
+    Ranges ranges = getRanges(v, w); Data ret = R::qdef();
+    for (int cur = 0, h = H - 1; h >= 0; h--) {
       int ph = 1 << h; qryRanges(h, ranges);
       if (cur + ph - 1 >= V || f(x, S[cur + ph - 1])) left(ranges);
       else {
-        cur += ph; ret = R::merge(ret, qryAgg(h, ranges)); right(h, ranges);
+        ret = R::merge(ret, qryAgg(h, ranges)); cur += ph; right(h, ranges);
       }
     }
     return ret;

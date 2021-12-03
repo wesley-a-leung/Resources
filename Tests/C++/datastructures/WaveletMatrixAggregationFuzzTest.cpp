@@ -8,7 +8,6 @@ struct R {
   using Lazy = int;
   static Data qdef() { return 0; }
   static Data merge(const Data &l, const Data &r) { return l + r; }
-  static Data invData(const Data &v) { return -v; }
   BitFenwickTree FT;
   R(const vector<Data> &A) : FT(A.size()) {
     for (int i = 0; i < int(A.size()); i++) FT.set(i, A[i]);

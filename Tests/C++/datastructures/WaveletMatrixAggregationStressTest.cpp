@@ -8,7 +8,6 @@ struct R {
   using Lazy = int;
   static Data qdef() { return 0; }
   static Data merge(const Data &l, const Data &r) { return l + r; }
-  static Data invData(const Data &v) { return -v; }
   BitFenwickTree FT;
   R(const vector<Data> &A) : FT(A.size()) {
     for (int i = 0; i < int(A.size()); i++) FT.set(i, A[i]);
@@ -29,6 +28,7 @@ void test1() {
   const auto start_time = chrono::system_clock::now();
   WaveletMatrixAggregation<int, R> wm(A, B);
   vector<int> ans;
+  ans.reserve(Q);
   for (int i = 0; i < Q; i++) {
     int t = rng() % 3;
     if (t == 0) {

@@ -16,8 +16,8 @@ using namespace std;
 //       Lazy: the lazy type
 //     Required Functions:
 //       static qdef(): returns the query default value
-//       static merge(l, r): merges the datas l and r
-//       static invData(v): returns the inverse of v of type Data
+//       static merge(l, r): returns the values l of type Data merged with
+//         r of type Data, must be associative and commutative
 //       constructor(A): takes a vector A of type Data with the initial
 //         value of each index
 //       update(i, val): updates the index i with the value val
@@ -28,7 +28,6 @@ using namespace std;
 //         using Lazy = int;
 //         static Data qdef() { return 0; }
 //         static Data merge(const Data &l, const Data &r) { return l + r; }
-//         static Data invData(const Data &v) { return -v; }
 //         FenwickTree1D<Data> FT;
 //         R(const vector<Data> &A) : FT(A) {}
 //         void update(int i, const Lazy &val) { FT.update(i, val); }
@@ -52,7 +51,7 @@ using namespace std;
 //   bsearch(l, r, f): over all keys in the array, finds the first key k such
 //     that query(l, r, k) returns true
 // In practice, has a small constant, faster than using a
-//   2D Sparse Fenwick Tree
+//   2D Sparse Fenwick Tree or Segment Tree
 // Time Complexity:
 //   constructor: O((N + C) log N) where C is the time complexity of
 //     R's constructor
@@ -79,43 +78,74 @@ struct WaveletMatrixAggregation {
       C[i] = lower_bound(S.begin(), S.end(), temp[i], cmp) - S.begin();
     iota(ind.begin(), ind.end(), 0); D.reserve(H); vector<Data> Y = X;
     for (int h = H - 1; h >= 0; h--) {
-      int ph = 1 << h; for (int i = 0; i < N; i++) {
-        if (C[ind[i]] <= ph - 1) { B[h].set(i, 1); Y[i] = X[ind[i]]; }
-        else Y[i] = R::qdef();
-      }
-      D.emplace_back(Y);
+      int ph = 1 << h;
+      for (int i = 0; i < N; i++) B[h].set(i, C[ind[i]] <= ph - 1); 
       mid[h] = stable_partition(ind.begin(), ind.end(), [&] (int i) {
                                   return C[i] <= ph - 1;
                                 }) - ind.begin();
-      B[h].build(); for (int i = mid[h]; i < N; i++) C[ind[i]] -= ph;
+      B[h].build(); for (int i = 0; i < N; i++) Y[i] = X[ind[i]];
+      D.emplace_back(Y); for (int i = mid[h]; i < N; i++) C[ind[i]] -= ph;
     }
     reverse(D.begin(), D.end());
   }
   void update(int i, const Lazy &v) {
     for (int h = H - 1; h >= 0; h--) {
-      if (B[h].get(i)) { D[h].update(i, v); i = B[h].query(i - 1); }
+      if (B[h].get(i)) i = B[h].query(i - 1);
       else i += mid[h] - B[h].query(i - 1);
+      D[h].update(i, v);
     }
   }
-  template <class F> Data qry(int l, int r, const T &v, F f) {
-    Data ret = R::qdef(); int cur = 0; for (int h = H - 1; h >= 0; h--) {
+  template <class F>
+  Data qryPre(int h, int cur, int l, int r, const T &v, F f) {
+    Data ret = R::qdef(); for (; h >= 0; h--) {
       int ph = 1 << h, ql = B[h].query(l - 1), qr = B[h].query(r);
       if (cur + ph - 1 >= N || f(v, S[cur + ph - 1])) { l = ql; r = qr - 1; }
       else {
-        cur += ph; if (l <= r) ret = R::merge(ret, D[h].query(l, r));
-        l += mid[h] - ql; r += mid[h] - qr;
+        if (ql < qr) ret = R::merge(ret, D[h].query(ql, qr - 1));
+        cur += ph; l += mid[h] - ql; r += mid[h] - qr;
       }
     }
     return ret;
   }
-  Data query(int l, int r, const T &hi) { return qry(l, r, hi, clt); }
+  template <class F>
+  Data qrySuf(int h, int cur, int l, int r, const T &v, F f) {
+    Data ret = R::qdef(); for (; h >= 0; h--) {
+      int ph = 1 << h, ql = B[h].query(l - 1), qr = B[h].query(r);
+      if (cur + ph - 1 >= N || f(v, S[cur + ph - 1])) {
+        if (l - ql <= r - qr)
+          ret = R::merge(ret, D[h].query(l + mid[h] - ql, r + mid[h] - qr));
+        if (h == 0 && ql < qr) ret = R::merge(ret, D[h].query(ql, qr - 1));
+        l = ql; r = qr - 1;
+      } else {
+        if (h == 0 && l - ql <= r - qr)
+          ret = R::merge(ret, D[h].query(l + mid[h] - ql, r + mid[h] - qr));
+        cur += ph; l += mid[h] - ql; r += mid[h] - qr;
+      }
+    }
+    return ret;
+  }
+  Data query(int l, int r, const T &hi) {
+    return qryPre(H - 1, 0, l, r, hi, clt);
+  }
   Data query(int l, int r, const T &lo, const T &hi) {
-    return R::merge(qry(l, r, hi, clt), R::invData(qry(l, r, lo, cle)));
+    for (int cur = 0, h = H - 1; h >= 0; h--) {
+      int ph = 1 << h, ql = B[h].query(l - 1), qr = B[h].query(r);
+      bool loLeft = cur + ph - 1 >= N || !cmp(S[cur + ph - 1], lo);
+      bool hiLeft = cur + ph - 1 >= N || cmp(hi, S[cur + ph - 1]);
+      if (loLeft != hiLeft) {
+        Data ret = R::merge(qrySuf(h - 1, cur, ql, qr - 1, lo, cle),
+                            qryPre(h - 1, cur + ph, l + mid[h] - ql,
+                                   r + mid[h] - qr, hi, clt));
+        return h == 0 && ql < qr ? R::merge(ret, D[h].query(ql, qr - 1)) : ret;
+      } else if (loLeft) { l = ql; r = qr - 1; }
+      else { cur += ph; l += mid[h] - ql; r += mid[h] - qr; }
+    }
+    return R::qdef();
   }
   template <class F> pair<bool, T *> bsearch(int l, int r, F f) {
     int cur = 0; Data agg = R::qdef(); for (int h = H - 1; h >= 0; h--) {
       int ql = B[h].query(l - 1), qr = B[h].query(r);
-      Data val = l <= r ? D[h].query(l, r) : R::qdef();
+      Data val = ql < qr ? D[h].query(ql, qr - 1) : R::qdef();
       if (f(R::merge(agg, val))) { l = ql; r = qr - 1; }
       else {
         cur += 1 << h; agg = R::merge(agg, val);

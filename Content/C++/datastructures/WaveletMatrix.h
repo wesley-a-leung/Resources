@@ -50,7 +50,7 @@ template <class T, class Cmp = less<T>> struct WaveletMatrix {
     }
   }
   template <class F> int cnt(int l, int r, const T &v, F f) {
-    int ret = 0, cur = 0; for (int h = H - 1; h >= 0; h--) {
+    int ret = 0; for (int cur = 0, h = H - 1; h >= 0; h--) {
       int ph = 1 << h, ql = B[h].query(l - 1), qr = B[h].query(r);
       if (cur + ph - 1 >= N || f(v, S[cur + ph - 1])) { l = ql; r = qr - 1; }
       else { cur += ph; ret += qr - ql; l += mid[h] - ql; r += mid[h] - qr; }

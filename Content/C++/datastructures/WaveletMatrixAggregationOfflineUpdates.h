@@ -17,10 +17,10 @@ using namespace std;
 //       Lazy: the lazy type
 //     Required Functions:
 //       static qdef(): returns the query default value
-//       static merge(l, r): merges the datas l and r
+//       static merge(l, r): returns the values l of type Data merged with
+//         r of type Data, must be associative and commutative
 //       static applyLazy(l, r): returns the value r of type Lazy applied to
 //         l of type Data
-//       static invData(v): returns the inverse of v of type Data
 //       constructor(A): takes a vector A of type Data with the initial
 //         value of each index
 //       update(i, val): updates the index i with the value val
@@ -34,7 +34,6 @@ using namespace std;
 //         static Data applyLazy(const Data &l, const Lazy &r) {
 //           return l + r;
 //         }
-//         static Data invData(const Data &v) { return -v; }
 //         FenwickTree1D<Data> FT;
 //         R(vector<Data> A) : FT(move(A)) {}
 //         void update(int i, const Lazy &val) { FT.update(i, val); }
@@ -62,7 +61,7 @@ using namespace std;
 //   bsearch(l, r, f): over all keys in the array, finds the first key k such
 //     that query(l, r, k) returns true
 // In practice, has a small constant, faster than using an
-//   Offline or Online 2D Sparse Fenwick Tree
+//   Offline or Online 2D Sparse Fenwick Tree or Segment Tree
 // Time Complexity:
 //   constructor: O((N + K + C) log N + K) where C is the time complexity of
 //     R's constructor for K total updates

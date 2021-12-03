@@ -36,7 +36,6 @@ struct CountDistinctOfflineUpdates {
     static Data qdef() { return 0; }
     static Data merge(const Data &l, const Data &r) { return l + r; }
     static Data applyLazy(const Data &l, const Lazy &r) { return l + r; }
-    static Data invData(const Data &v) { return -v; }
     BitFenwickTree FT;
     R(const vector<Data> &A) : FT(A.size()) {
       for (int i = 0; i < int(A.size()); i++) FT.set(i, A[i]);
@@ -89,4 +88,3 @@ struct CountDistinctOfflineUpdates {
   }
   int query(int l, int r) { return wm.query(l, r, l - 1); }
 };
-

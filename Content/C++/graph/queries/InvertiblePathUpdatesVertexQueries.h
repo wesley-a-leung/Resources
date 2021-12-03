@@ -11,7 +11,8 @@ using namespace std;
 //       Data: the data type
 //       Lazy: the lazy type
 //     Required Functions:
-//       static merge(l, r): merges the datas l and r
+//       static merge(l, r): returns the values l of type Data merged with
+//         r of type Data, must be associative and commutative
 //       static mergeLazy(l, r): merges the lazy values l and r
 //       static invData(v): returns the inverse of v of type Data
 //       static invLazy(v): returns the inverse of v of type Lazy

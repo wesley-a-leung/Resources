@@ -109,7 +109,7 @@ struct WaveletMatrixTree {
   }
   template <class F> int cnt(int v, int w, const T &x, F f) {
     Ranges ranges = getRanges(v, w);
-    int ret = 0, cur = 0; for (int h = H - 1; h >= 0; h--) {
+    int ret = 0; for (int cur = 0, h = H - 1; h >= 0; h--) {
       int ph = 1 << h, val = query(h, ranges);
       if (cur + ph - 1 >= V || f(x, S[cur + ph - 1])) left(ranges);
       else { cur += ph; ret += val; right(h, ranges); }
