@@ -15,6 +15,7 @@ void test1() {
   SparseTable<int, Min> ST(A);
   int Q = 1;
   vector<int> ans;
+  ans.reserve(Q);
   for (int i = 0; i < Q; i++) {
     int l = rng() % N, r = rng() % N;
     if (l > r) swap(l, r);
@@ -41,6 +42,7 @@ void test2() {
   SparseTable<int, Min> ST(A);
   int Q = 1e7;
   vector<int> ans;
+  ans.reserve(Q);
   for (int i = 0; i < Q; i++) {
     int l = rng() % N, r = rng() % N;
     if (l > r) swap(l, r);
@@ -67,6 +69,7 @@ void test3() {
   DisjointSparseTable<int, Min> ST(A);
   int Q = 1;
   vector<int> ans;
+  ans.reserve(Q);
   for (int i = 0; i < Q; i++) {
     int l = rng() % N, r = rng() % N;
     if (l > r) swap(l, r);
@@ -93,6 +96,7 @@ void test4() {
   DisjointSparseTable<int, Min> ST(A);
   int Q = 1e7;
   vector<int> ans;
+  ans.reserve(Q);
   for (int i = 0; i < Q; i++) {
     int l = rng() % N, r = rng() % N;
     if (l > r) swap(l, r);
@@ -118,6 +122,7 @@ void test5() {
   FischerHeunStructure<int, greater<int>> ST(A);
   int Q = 1;
   vector<int> ans;
+  ans.reserve(Q);
   for (int i = 0; i < Q; i++) {
     int l = rng() % N, r = rng() % N;
     if (l > r) swap(l, r);
@@ -143,6 +148,7 @@ void test6() {
   FischerHeunStructure<int, greater<int>> ST(A);
   int Q = 1e7;
   vector<int> ans;
+  ans.reserve(Q);
   for (int i = 0; i < Q; i++) {
     int l = rng() % N, r = rng() % N;
     if (l > r) swap(l, r);
@@ -174,6 +180,7 @@ void test7() {
   SegmentTreeBottomUp<Combine> ST(A);
   int Q = 1;
   vector<int> ans;
+  ans.reserve(Q);
   for (int i = 0; i < Q; i++) {
     int l = rng() % N, r = rng() % N;
     if (l > r) swap(l, r);
@@ -205,6 +212,7 @@ void test8() {
   SegmentTreeBottomUp<Combine> ST(A);
   int Q = 1e7;
   vector<int> ans;
+  ans.reserve(Q);
   for (int i = 0; i < Q; i++) {
     int l = rng() % N, r = rng() % N;
     if (l > r) swap(l, r);
