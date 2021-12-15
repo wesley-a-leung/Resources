@@ -58,7 +58,7 @@ template <class T> struct StringMatching {
   }
   StringMatching(const vector<T> &pat, const vector<T> &txt)
       : Z(init(pat, txt)) {
-    for (int i = 0; i < int(txt.size()); i++)
+    assert(int(pat.size()) >= 1); for (int i = 0; i < int(txt.size()); i++)
       if (Z.z[pat.size() + i] >= int(pat.size())) matches.push_back(i);
   }
 };

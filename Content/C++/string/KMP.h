@@ -12,8 +12,10 @@ using namespace std;
 //   N: the length of the pattern
 //   fail: a vector of integers where the ith value is the fallback index when
 //     a match failure occures
-// Functions:
-//   search(txt): returns a vector of all starting indices of the
+// Functions
+//   search(txt): returns the starting index of the first occurrence of pat in
+//     txt, or -1 if there are none
+//   multisearch(txt): returns a vector of all starting indices of the
 //     pattern array in the text txt
 // In practice, has a moderate constant, slightly faster than ZAlgorithm
 // Time Complexity:
@@ -27,7 +29,7 @@ using namespace std;
 template <class T> struct KMP {
   int N; vector<T> pat; vector<int> fail;
   KMP(const vector<T> &pat) : N(pat.size()), pat(pat), fail(N + 1, -1) {
-    for (int i = 0, j = -1; i < N;) {
+    assert(N >= 1); for (int i = 0, j = -1; i < N;) {
       while (j >= 0 && pat[i] != pat[j]) j = fail[j];
       i++; j++; fail[i] = (i != N && pat[i] == pat[j] ? fail[j] : j);
     }
