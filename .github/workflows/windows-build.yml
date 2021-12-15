@@ -16,3 +16,25 @@ jobs:
       run: C:\msys64\usr\bin\find "Content/" -name "*.h" -printf "%p " | C:\msys64\usr\bin\xargs python3 Scripts/ReplacePragmas.py
     - name: Compile
       run: C:\msys64\usr\bin\find "Content/" -name "*.h" -printf "%p " | C:\msys64\usr\bin\xargs Scripts/Compile.sh "C:\msys64\mingw64\bin\g++ -std=${{ matrix.cpp-version }} -Wall -Wextra -pedantic-errors -Werror -fsyntax-only"
+  fuzz-tests-cpp:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check version
+      run: |
+        C:\msys64\mingw64\bin\g++ --version
+    - name: Replace pragma once
+      run: C:\msys64\usr\bin\find "Content/" -name "*.h" -printf "%p " | C:\msys64\usr\bin\xargs python3 Scripts/ReplacePragmas.py
+    - name: Run fuzz tests
+      run: C:\msys64\usr\bin\find "Tests/" -name "*FuzzTest.cpp" -printf "%p " | C:\msys64\usr\bin\xargs Scripts/RunCppTests.sh "C:\msys64\mingw64\bin\g++ -std=c++11 -O2 -Wall -Wextra -pedantic-errors -Werror -Wl,--stack,1000000000"
+  stress-tests-cpp:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check version
+      run: |
+        C:\msys64\mingw64\bin\g++ --version
+    - name: Replace pragma once
+      run: C:\msys64\usr\bin\find "Content/" -name "*.h" -printf "%p " | C:\msys64\usr\bin\xargs python3 Scripts/ReplacePragmas.py
+    - name: Run stress tests
+      run: C:\msys64\usr\bin\find "Tests/" -name "*StressTest.cpp" -printf "%p " | C:\msys64\usr\bin\xargs Scripts/RunCppTests.sh "C:\msys64\mingw64\bin\g++ -std=c++11 -O2 -Wall -Wextra -pedantic-errors -Werror -Wl,--stack,1000000000"
