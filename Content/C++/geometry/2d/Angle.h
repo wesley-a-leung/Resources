@@ -36,7 +36,7 @@ struct Angle {
   CMP(<=, !(a < *this)) CMP(>, a < *this) CMP(>=, !(*this < a))
   CMP(==, !(*this < a) && !(a < *this)) CMP(!=, *this < a || a < *this)
   Angle operator + () const { return *this; }
-  Angle operator - () const { return Angle(conj(p)); }
+  Angle operator - () const { return Angle(pivot + conj(p - pivot)); }
   OP(+, Angle(pivot + (p - pivot) * (a.p - pivot))) OP(-, *this + (-a))
 };
 #undef OP
