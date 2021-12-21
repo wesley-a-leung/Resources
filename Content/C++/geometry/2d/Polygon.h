@@ -152,11 +152,19 @@ int extremeVertex(const vector<pt> &poly, pt dir) {
 //   Fuzz Tested
 //   https://codeforces.com/contest/799/problem/G
 pair<int, int> convexPolygonLineIntersection(const vector<pt> &poly, Line l) {
-  int n = poly.size(), endA = extremeVertex(poly, -perp(l.v));
+  int n = poly.size();
+  if (n == 1) return make_pair(l.onLeft(poly[0]) == 0 ? 0 : -1, -1);
+  if (n == 2) {
+    int o0 = l.onLeft(poly[0]), o1 = l.onLeft(poly[1]);
+    if (o0 == 0 && o1 == 0) return make_pair(0, 0);
+    if (o0 == 0) return make_pair(0, -1);
+    if (o1 == 0) return make_pair(1, -1);
+    return o0 == o1 ? make_pair(-1, -1) : make_pair(0, 1);
+  }
+  int endA = extremeVertex(poly, -perp(l.v));
   int endB = extremeVertex(poly, perp(l.v));
   auto cmpL = [&] (int i) { return l.onLeft(poly[i]); };
-  pair<int, int> ret(-1, -1);
-  if (cmpL(endA) > 0 || cmpL(endB) < 0) return ret;
+  pair<int, int> ret(-1, -1); if (cmpL(endA) > 0 || cmpL(endB) < 0) return ret;
   for (int i = 0; i < 2; i++) {
     int lo = endB, hi = endA; while (mod(lo + 1, n) != hi) {
       int m = mod((lo + hi + (lo < hi ? 0 : n)) / 2, n);
