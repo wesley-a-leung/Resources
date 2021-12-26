@@ -30,39 +30,40 @@ template <class T> struct SegmentTreeAffine {
   Pair mul(const Pair &l, const Pair &r) {
     return Pair(l.first * r.first, l.second * r.second);
   }
-  struct Node { Pair val, lz; }; int N; vector<Node> TR;
+  int N; vector<Pair> TR, LZ;
   T sumTo(T k) { return k * (k + 1) / 2; }
   Pair sumBet(T l, T r) { return Pair(r - l + 1, sumTo(r) - sumTo(l - 1)); }
   void apply(int x, int tl, int tr, const Pair &v) {
-    TR[x].val = add(TR[x].val, mul(v, sumBet(tl, tr)));
-    TR[x].lz = add(TR[x].lz, v);
+    TR[x] = add(TR[x], mul(v, sumBet(tl, tr)));
+    if (x < int(LZ.size())) LZ[x] = add(LZ[x], v);
   }
   void propagate(int x, int tl, int tr) {
-    if (TR[x].lz != Pair()) {
-      int m = tl + (tr - tl) / 2; apply(x * 2, tl, m, TR[x].lz);
-      apply(x * 2 + 1, m + 1, tr, TR[x].lz); TR[x].lz = Pair();
+    if (LZ[x] != Pair()) {
+      int m = tl + (tr - tl) / 2; apply(x * 2, tl, m, LZ[x]);
+      apply(x * 2 + 1, m + 1, tr, LZ[x]); LZ[x] = Pair();
     }
   }
   void build(const vector<T> &A, int x, int tl, int tr) {
-    if (tl == tr) { TR[x].val = Pair(A[tl], T()); return; }
-    int m = tl + (tr - tl) / 2;
-    build(A, x * 2, tl, m); build(A, x * 2 + 1, m + 1, tr);
-    TR[x].val = add(TR[x * 2].val, TR[x * 2 + 1].val);
+    if (tl == tr) { TR[x] = Pair(A[tl], T()); return; }
+    int m = tl + (tr - tl) / 2; build(A, x * 2, tl, m);
+    build(A, x * 2 + 1, m + 1, tr); TR[x] = add(TR[x * 2], TR[x * 2 + 1]);
   }
   void update(int x, int tl, int tr, int l, int r, const Pair &v) {
     if (l <= tl && tr <= r) { apply(x, tl, tr, v); return; }
     propagate(x, tl, tr); int m = tl + (tr - tl) / 2;
     if (tl <= r && l <= m) update(x * 2, tl, m, l, r, v);
     if (m + 1 <= r && l <= tr) update(x * 2 + 1, m + 1, tr, l, r, v);
-    TR[x].val = add(TR[x * 2].val, TR[x * 2 + 1].val);
+    TR[x] = add(TR[x * 2], TR[x * 2 + 1]);
   }
   Pair query(int x, int tl, int tr, int l, int r) {
     if (r < tl || tr < l) return Pair();
-    if (l <= tl && tr <= r) return TR[x].val;
+    if (l <= tl && tr <= r) return TR[x];
     propagate(x, tl, tr); int m = tl + (tr - tl) / 2;
     return add(query(x * 2, tl, m, l, r), query(x * 2 + 1, m + 1, tr, l, r));
   }
-  SegmentTreeAffine(int N) : N(N), TR(N == 0 ? 0 : 1 << __lg(N * 4 - 1)) {}
+  SegmentTreeAffine(int N)
+      : N(N), TR(N == 0 ? 0 : 1 << __lg(N * 4 - 1)),
+        LZ(N == 0 ? 0 : 1 << __lg(N * 2 - 1)) {}
   SegmentTreeAffine(const vector<T> &A) : SegmentTreeAffine(A.size()) {
     if (N > 0) build(A, 1, 0, N - 1);
   }
