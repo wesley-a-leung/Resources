@@ -80,53 +80,47 @@ template <const bool LAZY, class C> struct SegmentTreeTopDown {
 #define lazy_def template <const bool _ = LAZY> typename enable_if<_>::type
 #define agg_def template <const bool _ = LAZY> typename enable_if<!_>::type
   using Data = typename C::Data; using Lazy = typename C::Lazy;
-  template <const bool _, const int __ = 0> struct Node {
-    Data val; Node() : val(C::qdef()) {}
-  };
-  template <const int __> struct Node<true, __> {
-    Data val; Lazy lz; Node() : val(C::qdef()), lz(C::ldef()) {}
-  };
-  int N; vector<Node<LAZY>> TR;
+  int N; vector<Data> TR; vector<Lazy> LZ;
   lazy_def apply(int x, int tl, int tr, const Lazy &v) {
-    TR[x].val = C::applyLazy(TR[x].val, v, tr - tl + 1);
-    TR[x].lz = C::mergeLazy(TR[x].lz, v);
+    TR[x] = C::applyLazy(TR[x], v, tr - tl + 1);
+    if (x < int(LZ.size())) LZ[x] = C::mergeLazy(LZ[x], v);
   }
   agg_def apply(int x, int, int, const Lazy &v) {
-    TR[x].val = C::applyLazy(TR[x].val, v);
+    TR[x] = C::applyLazy(TR[x], v);
   }
   lazy_def propagate(int x, int tl, int tr) {
-    if (TR[x].lz != C::ldef()) {
-      int m = tl + (tr - tl) / 2; apply(x * 2, tl, m, TR[x].lz);
-      apply(x * 2 + 1, m + 1, tr, TR[x].lz); TR[x].lz = C::ldef();
+    if (LZ[x] != C::ldef()) {
+      int m = tl + (tr - tl) / 2; apply(x * 2, tl, m, LZ[x]);
+      apply(x * 2 + 1, m + 1, tr, LZ[x]); LZ[x] = C::ldef();
     }
   }
   agg_def propagate(int, int, int) {}
   void build(const vector<Data> &A, int x, int tl, int tr) {
-    if (tl == tr) { TR[x].val = A[tl]; return; }
+    if (tl == tr) { TR[x] = A[tl]; return; }
     int m = tl + (tr - tl) / 2;
     build(A, x * 2, tl, m); build(A, x * 2 + 1, m + 1, tr);
-    TR[x].val = C::merge(TR[x * 2].val, TR[x * 2 + 1].val);
+    TR[x] = C::merge(TR[x * 2], TR[x * 2 + 1]);
   }
   void update(int x, int tl, int tr, int l, int r, const Lazy &v) {
     if (l <= tl && tr <= r) { apply(x, tl, tr, v); return; }
     propagate(x, tl, tr); int m = tl + (tr - tl) / 2;
     if (tl <= r && l <= m) update(x * 2, tl, m, l, r, v);
     if (m + 1 <= r && l <= tr) update(x * 2 + 1, m + 1, tr, l, r, v);
-    TR[x].val = C::merge(TR[x * 2].val, TR[x * 2 + 1].val);
+    TR[x] = C::merge(TR[x * 2], TR[x * 2 + 1]);
   }
   Data query(int x, int tl, int tr, int l, int r) {
     if (r < tl || tr < l) return C::qdef();
-    if (l <= tl && tr <= r) return TR[x].val;
+    if (l <= tl && tr <= r) return TR[x];
     propagate(x, tl, tr); int m = tl + (tr - tl) / 2;
     return C::merge(query(x * 2, tl, m, l, r),
-                   query(x * 2 + 1, m + 1, tr, l, r));
+                    query(x * 2 + 1, m + 1, tr, l, r));
   }
   template <class F>
   int bsearchPrefix(int x, int tl, int tr, int l, int r, Data &agg, F f) {
     if (r < tl || tr < l) return r + 1;
     if (tl != tr) propagate(x, tl, tr);
     if (l <= tl && tr <= r) {
-      Data v = C::merge(agg, TR[x].val); if (!f(v)) { agg = v; return r + 1; }
+      Data v = C::merge(agg, TR[x]); if (!f(v)) { agg = v; return r + 1; }
     }
     if (tl == tr) return tl;
     int m = tl + (tr - tl) / 2;
@@ -138,14 +132,17 @@ template <const bool LAZY, class C> struct SegmentTreeTopDown {
     if (r < tl || tr < l) return l - 1;
     if (tl != tr) propagate(x, tl, tr);
     if (l <= tl && tr <= r) {
-      Data v = C::merge(TR[x].val, agg); if (!f(v)) { agg = v; return l - 1; }
+      Data v = C::merge(TR[x], agg); if (!f(v)) { agg = v; return l - 1; }
     }
     if (tl == tr) return tl;
     int m = tl + (tr - tl) / 2;
     int ret = bsearchSuffix(x * 2 + 1, m + 1, tr, l, r, agg, f);
     return l <= ret ? ret : bsearchSuffix(x * 2, tl, m, l, r, agg, f);
   }
-  SegmentTreeTopDown(int N) : N(N), TR(N == 0 ? 0 : 1 << __lg(N * 4 - 1)) {}
+  SegmentTreeTopDown(int N)
+      : N(N), TR(N == 0 ? 0 : 1 << __lg(N * 4 - 1), C::qdef()) {
+    if (LAZY) LZ.resize(N == 0 ? 0 : 1 << __lg(N * 2 - 1), C::ldef());
+  }
   SegmentTreeTopDown(const vector<Data> &A) : SegmentTreeTopDown(A.size()) {
     if (N > 0) { build(A, 1, 0, N - 1); }
   }

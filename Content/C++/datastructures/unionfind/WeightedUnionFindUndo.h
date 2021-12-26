@@ -52,7 +52,8 @@ template <class T, class Op> struct WeightedUnionFindUndo {
     }
     if (UF[v] > UF[w]) swap(v, w);
     history.emplace_back(v, w, UF[w], W[v], W[w]);
-    UF[v] += UF[w]; UF[w] = v; W[v] = op(W[v], W[w]); cnt--; return true;
+    UF[v] += UF[w]; UF[w] = v; W[v] = op(move(W[v]), move(W[w])); cnt--;
+    return true;
   }
   void undo() {
     int v, w, ufw; T wv, ww; tie(v, w, ufw, wv, ww) = history.back();
@@ -61,5 +62,5 @@ template <class T, class Op> struct WeightedUnionFindUndo {
   }
   bool connected(int v, int w) { return find(v) == find(w); }
   int getSize(int v) { return -UF[find(v)]; }
-  T getWeight(int v) { return W[find(v)]; }
+  T &getWeight(int v) { return W[find(v)]; }
 };

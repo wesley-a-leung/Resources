@@ -43,9 +43,10 @@ template <class T, class Op> struct WeightedUnionFind {
   bool join(int v, int w) {
     if ((v = find(v)) == (w = find(w))) return false;
     if (UF[v] > UF[w]) swap(v, w);
-    UF[v] += UF[w]; UF[w] = v; W[v] = op(W[v], W[w]); cnt--; return true;
+    UF[v] += UF[w]; UF[w] = v; W[v] = op(move(W[v]), move(W[w])); cnt--;
+    return true;
   }
   bool connected(int v, int w) { return find(v) == find(w); }
   int getSize(int v) { return -UF[find(v)]; }
-  T getWeight(int v) { return W[find(v)]; }
+  T &getWeight(int v) { return W[find(v)]; }
 };
