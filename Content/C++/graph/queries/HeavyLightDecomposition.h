@@ -35,6 +35,11 @@ using namespace std;
 //     1st parent is the parent of v) 
 //   kthPath(v, w, k): returns the kth vertex (0-indexed) on the path from
 //     v to w
+//   getChains(v, w, edgeChains): returns a tuple of left index, right index,
+//     and a boolean indicating the ranges of the chains on the path from v to
+//     w and whether the range is reversed, with the chains being provided in
+//     order from v to w, with the lca of v and w being included if edgeChains
+//     is false, and excluded if it is true
 // In practice, constructor has a moderate constant,
 //   lca, dist, kthParent, kthPath, have a small constant
 // Time Complexity:
@@ -83,6 +88,26 @@ struct HLD {
     else return kthParent(w, dep[v] + dep[w] - 2 * dep[LCA] - k);
   }
   bool connected(int v, int w) { return root[v] == root[w]; }
+  vector<tuple<int, int, bool>> getChains(int v, int w, bool edgeChains) {
+    vector<tuple<int, int, bool>> vChains, wChains;
+    while (head[v] != head[w]) {
+      if (dep[head[v]] < dep[head[w]]) {
+        wChains.emplace_back(pre[head[w]], pre[w], false); w = par[head[w]];
+      } else {
+        vChains.emplace_back(pre[head[v]], pre[v], true); v = par[head[v]];
+      }
+    }
+    if (v != w) {
+      if (dep[v] < dep[w])
+        wChains.emplace_back(pre[v] + edgeChains, pre[w], false);
+      else vChains.emplace_back(pre[w] + edgeChains, pre[v], true);
+    } else if (!edgeChains) {
+      int i = pre[dep[v] < dep[w] ? v : w]; wChains.emplace_back(i, i, false);
+    }
+    reverse(wChains.begin(), wChains.end());
+    vChains.insert(vChains.end(), wChains.begin(), wChains.end());
+    return vChains;
+  }
   template <class Forest>
   HLD(const Forest &G, const vector<int> &roots = vector<int>())
       : V(G.size()), ind(-1), root(V, -1), dep(V), par(V), size(V),
