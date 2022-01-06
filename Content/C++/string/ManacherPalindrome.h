@@ -14,7 +14,8 @@ using namespace std;
 //     at each half index (including paddings at each end)
 // Functions:
 //   lps(): returns a pair containing the starting index and length (in the
-//     original string) of the longest palindromic substring/subarray
+//     original string) of the longest palindromic substring/subarray, picking
+//     the earliest string if there are multiple of the same length
 //   lps(i): returns a pair containing the starting index and length (in the
 //     original string) of the longest palindromic substring/subarray centered
 //     at index i/2.0

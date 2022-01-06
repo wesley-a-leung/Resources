@@ -27,6 +27,7 @@ using namespace std;
 // Fields:
 //   SA: the associated suffix array constructed from the arrays
 //     concatenated together, separated by the separator character
+//   lcs: the longest common subarray of all arrays
 // In practice, the constructor has a very small constant
 // Time Complexity:
 //   constructor: time complexity of SuffixArray for the length of the
