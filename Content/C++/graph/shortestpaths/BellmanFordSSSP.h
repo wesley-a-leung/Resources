@@ -17,7 +17,8 @@ using namespace std;
 //   INF: a value for infinity, must be negatable
 // Fields:
 //   dist: vector of shortest distance from the closest source vertex to each
-//     vertex, or INF if unreachable
+//     vertex, or INF if there is no path, -INF if the shortest path
+//     has no lower bound
 //   par: the parent vertex for each vertex in the shortest path tree, or
 //     -1 if there is no parent
 //   hasNegativeCycle: a boolean that is true if there is a negative cycle
