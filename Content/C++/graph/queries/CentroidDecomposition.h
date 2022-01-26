@@ -11,10 +11,11 @@ using namespace std;
 //       operator [v] const: iterates over the adjacency list of vertex v
 //         (which is a list of ints)
 //       size() const: returns the number of vertices in the forest
-//   f(G, excl, c): a function to call on each centroid of its component where
-//     G is a reference to the graph, excl is a reference to an array of bools
-//     that indicates whether a vertex has been previously used as a centroid,
-//     and c is the current centroid (excl[c] is false)
+//   f(G, excl, c, p): a function to call on each centroid of its
+//     component where G is a reference to the graph, excl is a reference to
+//     an array of bools that indicates whether a vertex has been previously
+//     used as a centroid, c is the current centroid (excl[c] is false),
+//     and p is its parent in the centorid tree
 // Return Value: a vector of integers representing the parent of each vertex
 //   in the centroid tree, or -1 if it is a root
 // In practice, has a moderate constant
@@ -41,7 +42,7 @@ vector<int> centroidDecomposition(const Forest &G, F f) {
     int front = 0, back = 0; q[back++] = make_pair(s, -1);
     while (front < back) {
       int v = q[front].first, c = dfs(v, -1, getSize(v, -1));
-      par[c] = q[front++].second; f(G, excl, c); excl[c] = true;
+      par[c] = q[front++].second; f(G, excl, c, par[c]); excl[c] = true;
       for (int w : G[c]) if (!excl[w]) q[back++] = make_pair(w, c);
     }
   }

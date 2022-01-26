@@ -40,7 +40,7 @@ T lineLineDist(Line3D l1, Line3D l2) {
 // Memory Complexity: O(1)
 pt3 closestOnL1ToL2(Line3D l1, Line3D l2) {
   pt3 n = l1.d * l2.d; if (eq(norm(n), 0)) return l1.proj(pt3(0, 0, 0));
-  pt3 n2 = l2.d * n; return l1.o + l2.d * ((l2.o - l1.o) | n2) / (l1.d | n2);
+  pt3 n2 = l2.d * n; return l1.o + l1.d * ((l2.o - l1.o) | n2) / (l1.d | n2);
 }
 
 // Intersection of 2 lines
