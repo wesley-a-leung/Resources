@@ -33,7 +33,7 @@ ostream &operator << (ostream &stream, __uint128_t x) {
   reverse(s.begin(), s.end()); return stream << s;
 }
 
-ostream &operator << (ostream &stream, const __int128_t &x) {
+ostream &operator << (ostream &stream, __int128_t x) {
   if (x < 0) return stream << '-' << __uint128_t(-x);
   else return stream << __uint128_t(x);
 }
