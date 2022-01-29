@@ -2,6 +2,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+template <class T> T abs(T a) { return a >= 0 ? a : -a; }
+
 // Type templated greatest common divisor function
 // Always returns a non negative integer
 // Template Arguments:
