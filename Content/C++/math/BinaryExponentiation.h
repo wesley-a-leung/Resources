@@ -9,7 +9,7 @@ using namespace std;
 // Function Arguments:
 //   base: the base
 //   pow: the power, must be non negative and integral
-// Return value: returns base to the power of pow
+// Return Value: returns base to the power of pow
 // In practice, has a small constant
 // Time Complexity: O(log pow)
 // Memory Complexity: O(1)
