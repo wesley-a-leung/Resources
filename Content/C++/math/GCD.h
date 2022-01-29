@@ -2,8 +2,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-template <class T> T abs(T a) { return a >= 0 ? a : -a; }
-
 // Type templated greatest common divisor function
 // Always returns a non negative integer
 // Template Arguments:
@@ -17,7 +15,9 @@ template <class T> T abs(T a) { return a >= 0 ? a : -a; }
 // Memory Complexity: O(1)
 // Tested:
 //   https://hackerrank.com/contests/projecteuler/challenges/euler005/problem
-template <class T> T gcd(T a, T b) { return b == 0 ? abs(a) : gcd(b, a % b); }
+template <class T> T gcd(T a, T b) {
+  return b == 0 ? (a >= 0 ? a : -a) : gcd(b, a % b);
+}
 
 // Type templated lowest common multiple function
 // Always returns a non negative integer
@@ -33,7 +33,10 @@ template <class T> T gcd(T a, T b) { return b == 0 ? abs(a) : gcd(b, a % b); }
 // Tested:
 //   https://hackerrank.com/contests/projecteuler/challenges/euler005/problem
 template <class T> T lcm(T a, T b) {
-  return a == 0 && b == 0 ? 0 : abs(a / gcd(a, b) * b);
+  if (a == 0 || b == 0) return 0;
+  if (a < 0) a = -a;
+  if (b < 0) b = -b;
+  return a / gcd(a, b) * b;
 }
 
 // Extended Euclidean Algorithm to compute x and y, where ax + by = gcd(a, b)
