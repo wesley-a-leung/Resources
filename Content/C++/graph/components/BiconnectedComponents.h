@@ -25,9 +25,7 @@ using namespace std;
 // Memory Complexity: O(V + E)
 // Tested:
 //   Stress Tested
-//   https://dmoj.ca/problem/ccoprep1p2
-//   https://dmoj.ca/problem/dmpg18s6
-//   https://dmoj.ca/problem/si17c3p4
+//   https://judge.yosupo.jp/problem/biconnected_components
 struct BCC {
   int ind; vector<int> low, pre; vector<pair<int, int>> stk;
   vector<bool> articulation; vector<vector<int>> ids, components;
@@ -37,32 +35,30 @@ struct BCC {
       ids[x].push_back(id); components.back().push_back(x);
     }
   }
-  void makeComponent(int v = -1, int w = -1) {
-    int x, y, id = components.size();
-    components.emplace_back(); edgesInComp.emplace_back(); do {
+  void makeComponent(int s) {
+    int x, y, id = components.size(); components.emplace_back();
+    edgesInComp.emplace_back(); while (int(stk.size()) > s) {
       tie(x, y) = stk.back(); stk.pop_back(); assign(x, id); assign(y, id);
       edgesInComp.back().emplace_back(x, y);
-    } while (!stk.empty() && (x != v || y != w));
+    }
   }
   template <class Graph> void dfs(const Graph &G, int v, int prev) {
-    low[v] = pre[v] = ind++; int children = 0; for (int w : G[v]) {
-      if (pre[w] == -1) {
-        children++; stk.emplace_back(v, w); dfs(G, w, v);
-        low[v] = min(low[v], low[w]);
-        if ((prev == -1 && children > 1) || (prev != -1 && low[w] >= pre[v])) {
-          articulation[v] = true; makeComponent(v, w);
-        }
-      } else if (w != prev && pre[w] < low[v]) {
-        low[v] = pre[w]; stk.emplace_back(v, w);
+    low[v] = pre[v] = ind++; bool parEdge = false; for (int w : G[v]) {
+      if (w == prev && !parEdge) parEdge = true;
+      else if (pre[w] == -1) {
+        int s = stk.size(); stk.emplace_back(v, w);
+        dfs(G, w, v); low[v] = min(low[v], low[w]);
+        if (low[w] >= pre[v]) { articulation[v] = true; makeComponent(s); }
+      } else {
+        low[v] = min(low[v], pre[w]);
+        if (pre[w] < pre[v]) stk.emplace_back(v, w);
       }
     }
   }
   template <class Graph> BCC(const Graph &G)
       : ind(0), low(G.size()), pre(G.size(), -1),
         articulation(G.size(), false), ids(G.size()) {
-    for (int v = 0; v < int(G.size()); v++) if (pre[v] == -1) {
-      dfs(G, v, -1); if (!stk.empty()) makeComponent();
-    }
+    for (int v = 0; v < int(G.size()); v++) if (pre[v] == -1) dfs(G, v, -1);
   }
   template <class Graph>
   BCC(const Graph &G, vector<pair<int, int>> &blockCutForestEdges) : BCC(G) {

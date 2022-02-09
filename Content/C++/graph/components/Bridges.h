@@ -36,11 +36,11 @@ struct Bridges {
   template <class Graph> void dfs(const Graph &G, int v, int prev) {
     id[stk[top++] = v] = -1; low[v] = pre[v] = ind++; bool parEdge = false;
     for (int w : G[v]) {
-      if (w == prev && !parEdge) { parEdge = true; continue; }
-      if (id[w] == -2) {
+      if (w == prev && !parEdge) parEdge = true;
+      else if (id[w] == -2) {
         dfs(G, w, v); low[v] = min(low[v], low[w]);
         if (low[w] == pre[w]) { bridges.emplace_back(v, w); makeComponent(w); }
-      } else if (id[w] == -1) low[v] = min(low[v], pre[w]);
+      } else low[v] = min(low[v], pre[w]);
     }
   }
   template <class Graph> Bridges(const Graph &G)
