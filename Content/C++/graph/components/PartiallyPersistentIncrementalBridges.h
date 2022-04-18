@@ -39,7 +39,7 @@ using namespace std;
 //   getBridgeCnt: O(1)
 // Memory Complexity: O(V + E)
 // Tested:
-//   https://dmoj.ca/problem/mcco17p3
+//   https://dmoj.ca/problem/mcco17d1p3
 struct PartiallyPersistentIncrementalBridges
     : public PartiallyPersistentUnionFind {
   vector<int> bridgeCnt;
