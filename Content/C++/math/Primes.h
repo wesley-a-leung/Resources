@@ -255,11 +255,12 @@ template <class T, class F> void segmentedSieve(T lo, T hi, F f) {
   for (T i = 0; i < hi - lo + 1; i++) if (!p2[i]) f(lo + i);
 }
 
-// Returns an arbitrary divisor of N
+// Returns an arbitrary divisor of non prime N
 // Template Arguments:
 //   T: the type of N
 // Function Arguments:
-//   N: the value to find a divisor, mulMod(N, N, N) should not overflow
+//   N: the non prime value to find a divisor, mulMod(N, N, N) should not
+//     overflow
 //   iterations: number of iterations to run, should be at least 40
 // Return Value: an arbitrary divisor of N
 // In practice, has a moderate constant
