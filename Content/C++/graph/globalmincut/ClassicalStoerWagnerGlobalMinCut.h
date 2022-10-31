@@ -25,7 +25,7 @@ using namespace std;
 // Time Complexity:
 //   constructor: O(V^2)
 //   addEdge: O(1)
-//   globalMinCut: O(V^2)
+//   globalMinCut: O(V^3)
 // Memory Complexity: O(V^2)
 // Tested:
 //   https://dmoj.ca/problem/checkercut
