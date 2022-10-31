@@ -1,8 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
-#include <ext/pb_ds/priority_queue.hpp>
 using namespace std;
-using namespace __gnu_pbds;
 
 // Computes the global minimum cut for a weighted graph
 // A cut is a partition of the vertices into two nonempty subsets
