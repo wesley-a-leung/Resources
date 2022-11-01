@@ -1,6 +1,7 @@
 #pragma once
 #include <bits/stdc++.h>
 #include "Point.h"
+#include "Angle.h"
 #include "Line.h"
 #include "Circle.h"
 using namespace std;
