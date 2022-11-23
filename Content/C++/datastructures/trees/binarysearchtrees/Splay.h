@@ -8,7 +8,7 @@ using namespace std;
 //   range operations using splay node operations
 // Indices are 0-indexed and ranges are inclusive
 // Template Arguments:
-//   _Node: a generic node class (sample structs are in BSTNode)
+//   Node: a generic node class (sample structs are in BSTNode)
 //     Required Fields:
 //       sz: the number of nodes in the subtree
 //       l: a pointer to the left child
@@ -20,11 +20,10 @@ using namespace std;
 //       update(): updates the current node's information based on its children
 //       propagate(): propagates the current node's lazy information (including
 //         rev) to its children
-//   Container: a container to contain _Node objects (or some child class of
-//     _Node), recommended to use deque<_Node> or vector<_Node> if there is
+//   Container: a container to contain Node objects (or some child class of
+//     Node), recommended to use deque<Node> or vector<Node> if there is
 //    a fixed number of nodes and TR can be reserved beforehand
 // Fields:
-//   Node: equivalent to _Node
 //   TR: a container of type Container to store the nodes (including
 //     potentially deleted nodes)
 //   deleted: a deque of node pointers to store deleted nodes
@@ -59,8 +58,8 @@ using namespace std;
 //   https://dmoj.ca/problem/noi05p2 (applyToRange)
 //   https://judge.yosupo.jp/problem/dynamic_sequence_range_affine_range_sum
 //     (applyToRange)
-template <class _Node, class Container = deque<_Node>> struct Splay {
-  using Node = _Node; Container TR; deque<Node *> deleted;
+template <class Node, class Container = deque<Node>> struct Splay {
+  Container TR; deque<Node *> deleted;
   template <class T> Node *makeNode(const T &v) {
     if (deleted.empty()) { TR.emplace_back(v); return &TR.back(); }
     Node *x = deleted.back(); deleted.pop_back();
