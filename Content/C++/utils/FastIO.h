@@ -71,7 +71,7 @@ namespace IO {
       && std::is_signed<I>::value>::type read(I &x) { _readSigned(x); }
   template <class UI> typename std::enable_if<std::is_integral<UI>::value
       && std::is_unsigned<UI>::value>::type read(UI &x) {
-    _readUnsignedSigned(x);
+    _readUnsigned(x);
   }
 #if __SIZEOF_INT128__
   void read(__int128_t &x) { _readSigned(x); }
