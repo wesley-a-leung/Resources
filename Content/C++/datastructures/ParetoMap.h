@@ -42,7 +42,7 @@ struct ParetoMap : public map<K, V, KCmp> {
   using M = map<K, V, KCmp>; VCmp vcmp; V NEG_INF;
   ParetoMap(KCmp kcmp = KCmp(), VCmp vcmp = VCmp(),
             V NEG_INF = numeric_limits<V>::lowest())
-      : M(KCmp()), vcmp(vcmp), NEG_INF(NEG_INF) {}
+      : M(kcmp), vcmp(vcmp), NEG_INF(NEG_INF) {}
   void add(K k, V v) {
     auto it = M::lower_bound(k);
     if (it != M::begin() && !VCmp()(prev(it)->second, v)) return;
