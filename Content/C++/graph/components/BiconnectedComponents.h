@@ -43,8 +43,9 @@ struct BCC {
     }
   }
   template <class Graph> void dfs(const Graph &G, int v, int prev) {
-    low[v] = pre[v] = ind++; bool parEdge = false; for (int w : G[v]) {
-      if (w == prev && !parEdge) parEdge = true;
+    low[v] = pre[v] = ind++; bool parEdge = false; int deg = 0;
+    for (int w : G[v]) {
+      deg++; if (w == prev && !parEdge) parEdge = true;
       else if (pre[w] == -1) {
         int s = stk.size(); stk.emplace_back(v, w);
         dfs(G, w, v); low[v] = min(low[v], low[w]);
@@ -54,6 +55,7 @@ struct BCC {
         if (pre[w] < pre[v]) stk.emplace_back(v, w);
       }
     }
+    if (deg == 0) { makeComponent(0); assign(v, int(components.size()) - 1); }
   }
   template <class Graph> BCC(const Graph &G)
       : ind(0), low(G.size()), pre(G.size(), -1),
